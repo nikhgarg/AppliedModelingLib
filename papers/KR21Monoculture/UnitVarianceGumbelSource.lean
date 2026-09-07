@@ -18,8 +18,8 @@ coordinates, its score map has exactly the source form, and its ranking PMF is
 the independently constructed Plackett--Luce PMF at `theta / (sqrt 6 / pi)`.
 -/
 
-open EconCSLib MeasureTheory ProbabilityTheory
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib.SocialChoice.Ranking
 
 namespace KR21Monoculture
 

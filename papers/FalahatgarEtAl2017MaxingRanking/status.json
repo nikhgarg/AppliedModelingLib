@@ -1,0 +1,211 @@
+{
+  "schema": 1,
+  "id": "FalahatgarEtAl2017MaxingRanking",
+  "title": "Maxing and Ranking with Few Assumptions",
+  "authors": "Moein Falahatgar, Yi Hao, Alon Orlitsky, Venkatadheeraj Pichapati, and Vaishakh Ravindrakumar",
+  "source_version": "NeurIPS 2017 published main paper and official supplement",
+  "source_inventory_review_required": true,
+  "repository_visibility": "public",
+  "build_target": "lake build +FalahatgarEtAl2017MaxingRanking",
+  "status": "formalized",
+  "main_caveat": "",
+  "human_summary": "",
+  "human_summary_review": {
+    "status": "draft",
+    "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+  },
+  "review_entrypoint": "papers/FalahatgarEtAl2017MaxingRanking/FINAL_VALIDATION_REPORT.md",
+  "human_review": {
+    "reviewed_rows": 0,
+    "total_rows": 23,
+    "stale_rows": 0,
+    "mismatch_rows": 0,
+    "uncertain_rows": 0,
+    "source": "v11 PaperInterface claim surface; human entries are recorded after direct review"
+  },
+  "paper_interface": {
+    "path": "papers/FalahatgarEtAl2017MaxingRanking/PaperInterface.lean",
+    "line_count": 587,
+    "declaration_rows": 23,
+    "review_rows": 23,
+    "oversized": false,
+    "maintainability_issue": null
+  },
+  "artifacts": {
+    "paper_interface": "papers/FalahatgarEtAl2017MaxingRanking/PaperInterface.lean",
+    "proof_interface": "papers/FalahatgarEtAl2017MaxingRanking/ProofInterface.lean",
+    "assumptions": "papers/FalahatgarEtAl2017MaxingRanking/Assumptions.lean",
+    "final_validation_report": "papers/FalahatgarEtAl2017MaxingRanking/FINAL_VALIDATION_REPORT.md",
+    "dependency_dag_tex": "papers/FalahatgarEtAl2017MaxingRanking/docs/DependencyDAG.tex",
+    "dependency_dag_pdf": "papers/FalahatgarEtAl2017MaxingRanking/docs/DependencyDAG.pdf",
+    "human_review_packet_tex": "papers/FalahatgarEtAl2017MaxingRanking/docs/HUMAN_REVIEW_PACKET.tex",
+    "human_review_packet_pdf": "papers/FalahatgarEtAl2017MaxingRanking/docs/HUMAN_REVIEW_PACKET.pdf",
+    "source_proof_fidelity": "papers/FalahatgarEtAl2017MaxingRanking/audit/source_proof_fidelity.json",
+    "library_semantic_review": "papers/FalahatgarEtAl2017MaxingRanking/audit/library_semantic_review.json",
+    "v11_raw_source_spec_screening": "papers/FalahatgarEtAl2017MaxingRanking/audit/v11_raw_source_spec_screening.json"
+  },
+  "review_surface": {
+    "source_file": "papers/FalahatgarEtAl2017MaxingRanking/PaperInterface.lean",
+    "proof_module": "FalahatgarEtAl2017MaxingRanking.ProofInterface",
+    "proof_file": "papers/FalahatgarEtAl2017MaxingRanking/ProofInterface.lean",
+    "assumption_source_file": "papers/FalahatgarEtAl2017MaxingRanking/Assumptions.lean",
+    "require_source_spec_correspondence": true,
+    "llm_statement_review": {
+      "lean_to_tex_file": "papers/FalahatgarEtAl2017MaxingRanking/audit/lean_to_tex_llm.json",
+      "match_judgment_file": "papers/FalahatgarEtAl2017MaxingRanking/audit/statement_match_llm.json",
+      "library_semantic_review_file": "papers/FalahatgarEtAl2017MaxingRanking/audit/library_semantic_review.json",
+      "v11_screening_file": "papers/FalahatgarEtAl2017MaxingRanking/audit/v11_raw_source_spec_screening.json",
+      "review_surface_audit_file": "papers/FalahatgarEtAl2017MaxingRanking/audit/review_surface_llm.json",
+      "paper_coverage_audit_file": "papers/FalahatgarEtAl2017MaxingRanking/audit/paper_coverage_llm.json",
+      "defect_support_judgment_file": "papers/FalahatgarEtAl2017MaxingRanking/audit/defect_support_match_llm.json",
+      "assumption_judgment_file": "papers/FalahatgarEtAl2017MaxingRanking/audit/assumption_match_llm.json",
+      "surface_audit_threshold": 30,
+      "surface_warning_threshold": 120,
+      "require_explicit_source_routes": true,
+      "require_source_claim_atoms": true,
+      "require_direct_expression_semantics_review": "v1",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
+      "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim."
+    },
+    "llm_paper_coverage_review": {
+      "paper_coverage_audit_file": "papers/FalahatgarEtAl2017MaxingRanking/audit/paper_coverage_llm.json",
+      "defect_support_judgment_file": "papers/FalahatgarEtAl2017MaxingRanking/audit/defect_support_match_llm.json",
+      "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, algorithms, and named statements, then judge whether every source item has a reviewed semantic route or a typed source disposition."
+    },
+    "llm_assumption_review": {
+      "assumption_judgment_file": "papers/FalahatgarEtAl2017MaxingRanking/audit/assumption_match_llm.json",
+      "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
+    },
+    "llm_source_record_review": {
+      "source_record_audit_file": "papers/FalahatgarEtAl2017MaxingRanking/audit/source_record_audit.json",
+      "source_record_judgment_file": "papers/FalahatgarEtAl2017MaxingRanking/audit/source_record_match_llm.json",
+      "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt."
+    },
+    "semantic_model_review": {
+      "schema": 2,
+      "required_dimensions": [
+        "expanded_binders_and_domain",
+        "carrier_and_domain",
+        "probability_support_endpoints",
+        "joint_law_and_state_evolution",
+        "conditioning_and_calibration_semantics",
+        "expectation_definedness",
+        "null_cell_totalization_and_partition_scope",
+        "extended_rate_codomain"
+      ],
+      "policy": "Review the complete expanded finite probability models, adaptive state evolution, source parameter domains, comparison-count codomains, and every paper-local or material library prerequisite used by a result route."
+    },
+    "source_proof_fidelity_review": {
+      "ledger_file": "papers/FalahatgarEtAl2017MaxingRanking/audit/source_proof_fidelity.json",
+      "policy": "Audit source proof steps by source locator and mathematical claim. Record source extraction corrections, the shared Prune cardinality typo, Algorithm 7's proof-consistent display fixes, and Theorem 8's natively proved cited dependency with their exact result-level effects."
+    },
+    "assumption_policy": "strict",
+    "assumption_names": [],
+    "source_definition_names": [
+      "FalahatgarEtAl2017MaxingRanking.StrongStochasticTransitivity",
+      "FalahatgarEtAl2017MaxingRanking.AbsoluteMaximum",
+      "FalahatgarEtAl2017MaxingRanking.EpsilonMaximum",
+      "FalahatgarEtAl2017MaxingRanking.EpsilonPreferenceRanking",
+      "FalahatgarEtAl2017MaxingRanking.PreferenceRanking",
+      "FalahatgarEtAl2017MaxingRanking.GoodAnchor",
+      "FalahatgarEtAl2017MaxingRanking.bordaScore",
+      "FalahatgarEtAl2017MaxingRanking.EpsilonBordaMaximum",
+      "FalahatgarEtAl2017MaxingRanking.EpsilonBordaRanking"
+    ],
+    "proposition_spec_proofs": {
+      "lemma1_compareSpec": "lemma1_compare_proof",
+      "theorem2_seqEliminateSpec": "theorem2_seqEliminate_proof",
+      "lemma3_pickAnchorSpec": "lemma3_pickAnchor_proof",
+      "remark4_pickAnchorLinearCutoffSpec": "remark4_pickAnchorLinearCutoff_proof",
+      "lemma5_pruneSpec": "lemma5_prune_proof",
+      "theorem6_optMaximizeSpec": "theorem6_optMaximize_proof",
+      "theorem7_rankingLowerBoundSpec": "theorem7_rankingLowerBound_proof",
+      "theorem8_bordaMaxingSpec": "theorem8_bordaMaxing_proof",
+      "theorem9_bordaRankingSpec": "theorem9_bordaRanking_proof",
+      "lemma10_compareCapSpec": "lemma10_compareCap_proof",
+      "lemma11_compareLowerSpec": "lemma11_compareLower_proof",
+      "lemma12_compareUpperSpec": "lemma12_compareUpper_proof",
+      "lemma13_pruneRetentionSpec": "lemma13_pruneRetention_proof",
+      "lemma14_pruneOneRoundSpec": "lemma14_pruneOneRound_proof",
+      "lemma15_pruneMultiRoundSpec": "lemma15_pruneMultiRound_proof",
+      "lemma16_finalCheckAnchorSpec": "lemma16_finalCheckAnchor_proof",
+      "lemma17_anchorPruneSpec": "lemma17_anchorPrune_proof",
+      "lemma18_optMaximizeTailSpec": "lemma18_optMaximizeTail_proof",
+      "lemma19_estimateProbabilitySpec": "lemma19_estimateProbability_proof",
+      "lemma20_strongTransitivityRankingSpec": "lemma20_strongTransitivityRanking_proof",
+      "lemma21_estimateBordaScoreSpec": "lemma21_estimateBordaScore_proof",
+      "theorem22_bordaRankingSpec": "theorem22_bordaRanking_proof",
+      "sstMaximumAndRankingExistenceSpec": "sstMaximumAndRankingExistence_proof"
+    },
+    "paper_coverage_required": true,
+    "include_names": [
+      "lemma1_compareSpec",
+      "theorem2_seqEliminateSpec",
+      "lemma3_pickAnchorSpec",
+      "remark4_pickAnchorLinearCutoffSpec",
+      "lemma5_pruneSpec",
+      "theorem6_optMaximizeSpec",
+      "theorem7_rankingLowerBoundSpec",
+      "theorem8_bordaMaxingSpec",
+      "theorem9_bordaRankingSpec",
+      "lemma10_compareCapSpec",
+      "lemma11_compareLowerSpec",
+      "lemma12_compareUpperSpec",
+      "lemma13_pruneRetentionSpec",
+      "lemma14_pruneOneRoundSpec",
+      "lemma15_pruneMultiRoundSpec",
+      "lemma16_finalCheckAnchorSpec",
+      "lemma17_anchorPruneSpec",
+      "lemma18_optMaximizeTailSpec",
+      "lemma19_estimateProbabilitySpec",
+      "lemma20_strongTransitivityRankingSpec",
+      "lemma21_estimateBordaScoreSpec",
+      "theorem22_bordaRankingSpec",
+      "sstMaximumAndRankingExistenceSpec"
+    ],
+    "slices": [
+      {
+        "id": "main_text",
+        "title": "Main-paper results",
+        "names": [
+          "sstMaximumAndRankingExistenceSpec",
+          "lemma1_compareSpec",
+          "theorem2_seqEliminateSpec",
+          "lemma3_pickAnchorSpec",
+          "remark4_pickAnchorLinearCutoffSpec",
+          "theorem7_rankingLowerBoundSpec",
+          "theorem8_bordaMaxingSpec",
+          "theorem9_bordaRankingSpec"
+        ]
+      },
+      {
+        "id": "appendix",
+        "title": "Supplement results",
+        "names": [
+          "lemma10_compareCapSpec",
+          "lemma11_compareLowerSpec",
+          "lemma12_compareUpperSpec",
+          "lemma13_pruneRetentionSpec",
+          "lemma14_pruneOneRoundSpec",
+          "lemma16_finalCheckAnchorSpec",
+          "lemma18_optMaximizeTailSpec",
+          "lemma19_estimateProbabilitySpec",
+          "lemma20_strongTransitivityRankingSpec",
+          "lemma21_estimateBordaScoreSpec",
+          "theorem22_bordaRankingSpec"
+        ]
+      },
+      {
+        "id": "additional_source_results",
+        "title": "Additional source results",
+        "names": [
+          "lemma5_pruneSpec",
+          "theorem6_optMaximizeSpec",
+          "lemma15_pruneMultiRoundSpec",
+          "lemma17_anchorPruneSpec"
+        ]
+      }
+    ],
+    "require_v11_raw_source_spec_screening": true
+  }
+}

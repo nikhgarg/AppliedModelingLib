@@ -144,6 +144,14 @@ class StatementReceiptReissueError(ValueError):
     """Raised when a reissue plan cannot establish current evidence."""
 
 
+def statement_receipt_review_rows(
+    rows: Iterable[review_dashboard.ReviewItem],
+) -> list[review_dashboard.ReviewItem]:
+    """Select paper claims; source-model assumptions have a separate review lane."""
+
+    return [item for item in rows if not item.is_assumption]
+
+
 HistoricalManifestReplayRecipeVerifier = Callable[[Mapping[str, object]], str | None]
 HistoricalManifestReplayCurrentClosureAuthorityVerifier = Callable[
     ["CurrentReceiptSurface", Mapping[str, object]],
@@ -294,6 +302,7 @@ class CurrentReceiptSurface:
     targets: list[CurrentReceiptTarget]
     source_route_inventory: dict[str, dict[str, Any]]
     direct_expression_semantics_review: bool = False
+    source_record_audit_sha256: str = ""
 
     def input_pins(self) -> dict[str, str]:
         return {
@@ -310,6 +319,7 @@ class CurrentReceiptSurface:
                     )
                 }
             ),
+            "source_record_audit_sha256": self.source_record_audit_sha256,
         }
 
 
@@ -529,8 +539,29 @@ def current_statement_receipt_surface(folder: Path) -> CurrentReceiptSurface:
     if not route_inventory:
         raise StatementReceiptReissueError("current source-route inventory is empty")
 
+    raw_audit_path = folder / "audit" / "source_record_audit.json"
+    if not raw_audit_path.is_file():
+        raise StatementReceiptReissueError(
+            "current source-record audit is unavailable for statement-receipt provenance"
+        )
+    raw_audit = _read_json_object(
+        raw_audit_path.read_bytes(), label="current source-record audit"
+    )
+    if error := source_record_audit_receipt_error(raw_audit):
+        raise StatementReceiptReissueError(
+            "current source-record audit receipt is invalid: " + error
+        )
+    source_record_audit_sha256 = _required_sha256(
+        raw_audit.get("source_record_audit_sha256"),
+        label="current source-record audit digest",
+    )
+
     targets_by_identity: dict[str, CurrentReceiptTarget] = {}
-    for item in rows:
+    # Assumption rows belong to the separate source-model provenance lane
+    # (``assumption_match_llm.json``).  They intentionally need not name one
+    # source-map item, so admitting them here would demand an impossible
+    # direct statement route and duplicate the model review as a paper claim.
+    for item in statement_receipt_review_rows(rows):
         signature = _required_sha256(
             item.lean_signature_sha256,
             label="current cache Lean signature",
@@ -607,6 +638,7 @@ def current_statement_receipt_surface(folder: Path) -> CurrentReceiptSurface:
         direct_expression_semantics_review=(
             review_dashboard.llm_direct_expression_semantics_review_required(folder)
         ),
+        source_record_audit_sha256=source_record_audit_sha256,
     )
 
 
@@ -1200,6 +1232,11 @@ def _current_entry_error(
         dict(entry),
         inventory=surface.source_route_inventory,
         require_statement_target=True,
+        require_verbatim_source_inputs=(
+            review_dashboard.statement_review_requires_verbatim_source_inputs(
+                entry
+            )
+        ),
     )
     if route_error:
         return "source-route receipt is invalid: " + route_error
@@ -3540,6 +3577,8 @@ def materialize_statement_receipt_reissue(
         "comment": comment,
         "items": dict(sorted(output_items.items())),
     }
+    if surface.source_record_audit_sha256:
+        sidecar["source_record_audit_sha256"] = surface.source_record_audit_sha256
     archive = _archive_payload(
         surface=surface,
         prior=prior,

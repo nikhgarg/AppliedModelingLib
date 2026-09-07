@@ -16,7 +16,7 @@ satisfies every clause of Definition 1; that requires a separate bridge from
 its explicit density to the corrected global-`W^{1,1}` source theorem.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open scoped BigOperators
 open MeasureTheory
 open ProbabilityTheory
@@ -70,7 +70,7 @@ def appendixB2SourceGaussianMixtureRank
     (s theta : ℝ) :
     (AppendixB2NoiseTriple × AppendixBGaussianTriple) → Ranking 1 :=
   fun omega =>
-    EconCSLib.SocialChoice.Ranking.rankByScore
+    AppliedModelingLib.SocialChoice.Ranking.rankByScore
       (fun c => appendixB2Value c +
         appendixB2SourceGaussianMixtureNoise s omega c / theta)
 
@@ -78,7 +78,7 @@ theorem appendixB2SourceGaussianMixtureRank_measurable
     (s theta : ℝ) :
     Measurable (appendixB2SourceGaussianMixtureRank s theta) := by
   unfold appendixB2SourceGaussianMixtureRank
-  exact EconCSLib.SocialChoice.Ranking.measurable_rankByScore _
+  exact AppliedModelingLib.SocialChoice.Ranking.measurable_rankByScore _
     (fun c => measurable_const.add
       ((appendixB2SourceGaussianMixtureNoise_measurable s c).div_const theta))
 
@@ -183,11 +183,11 @@ remains strict.
 theorem appendixB2_sourceScaledGaussianMixture_reversal :
     ∃ delta : ℝ, 0 < delta ∧ ∀ s : ℝ, 0 < s → s < delta →
       0 <
-        EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+        AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
             ((appendixB2SourceGaussianMixtureFamily s).dist (9 / 10))
             ((appendixB2SourceGaussianMixtureFamily s).dist (11 / 10))
             appendixB2Value -
-          EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+          AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
             ((appendixB2SourceGaussianMixtureFamily s).dist (9 / 10))
             ((appendixB2SourceGaussianMixtureFamily s).dist (9 / 10))
             appendixB2Value := by

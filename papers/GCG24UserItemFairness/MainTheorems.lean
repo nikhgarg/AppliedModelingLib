@@ -614,15 +614,27 @@ theorem paper_unconstrained_user_fairness_optimum_eq_one
   exact W.optimalUserFairnessAtLevel_zero_eq_one hNonneg hRow
 
 /--
-Appendix D, Lemma 3: without item-fairness constraints, the user-fairness
-optimum is `1`.
+Appendix D, Lemma 3: in the two-opposing-type model and without item-fairness
+constraints, the user-fairness optimum is `1`.
 -/
 theorem paper_lemma3_unconstrained_user_fairness_eq_one
-    {m n : ℕ} [NeZero m] [NeZero n]
-    (W : RecommendationModel m n)
-    (hNonneg : W.Nonnegative) (hRow : W.RowHasPositiveItem) :
-    W.optimalUserFairnessAtLevel 0 = 1 := by
-  exact W.paper_unconstrained_user_fairness_optimum_eq_one hNonneg hRow
+    {n : ℕ} [NeZero n] (alpha : ℝ) (v : Item n → ℝ)
+    (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
+    (hpos : ∀ j : Item n, 0 < v j)
+    (_hdec : OpposingTypes.StrictlyDecreasingByIndex v) :
+    TypeWeightedRecommendationModel.optimalTypeFairnessAtLevel
+      (OpposingTypes.twoTypeReducedModel alpha v) 0 = 1 := by
+  have hWeight : (OpposingTypes.twoTypeReducedModel alpha v).NonnegativeWeights :=
+    TypeWeightedRecommendationModel.nonnegativeWeights_of_positiveWeights
+      (OpposingTypes.twoTypeReducedModel alpha v)
+      (OpposingTypes.twoTypeReducedModel_positiveWeights alpha v halpha0 halpha1)
+  have hUtility : (OpposingTypes.twoTypeReducedModel alpha v).NonnegativeUtilities :=
+    TypeWeightedRecommendationModel.nonnegativeUtilities_of_positiveUtilities
+      (OpposingTypes.twoTypeReducedModel alpha v)
+      (OpposingTypes.twoTypeReducedModel_positiveUtilities alpha v hpos)
+  exact TypeWeightedRecommendationModel.optimalTypeFairnessAtLevel_zero_eq_one
+    (OpposingTypes.twoTypeReducedModel alpha v) hWeight hUtility
+    (OpposingTypes.twoTypeReducedModel_rowHasPositiveItem alpha v hpos)
 
 /--
 Price-of-fairness identity at an arbitrary item-fairness fraction.
@@ -1317,7 +1329,7 @@ theorem paper_problem6_policyOptimal_value_eq_finiteMin
     {alpha : ℝ} {v : Item n → ℝ} {ρ : TypePolicy 2 n} {ell : ℝ}
     (hopt : Problem6PolicyOptimal alpha v ρ ell) :
     ell =
-      EconCSLib.finiteMin (fun l : Item n =>
+      AppliedModelingLib.finiteMin (fun l : Item n =>
         pairShare alpha v l * (ρ 0 l).toReal +
           (1 - pairShare alpha v l) * (ρ 1 l).toReal) := by
   exact problem6PolicyOptimal_value_eq_finiteMin hopt
@@ -8449,7 +8461,7 @@ theorem paper_problem11_policyOptimal_value_eq_finiteMin
     {ρ : TypePolicy 3 n} {ell : ℝ}
     (hopt : Theorem4Problem11PolicyOptimal beta v ρ ell) :
     ell =
-      EconCSLib.finiteMin
+      AppliedModelingLib.finiteMin
         (fun j : Item n => theorem4Problem11PolicyItemValue beta v ρ j) := by
   exact theorem4Problem11PolicyOptimal_value_eq_finiteMin hopt
 

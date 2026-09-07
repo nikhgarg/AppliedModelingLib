@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Probability.GaussianSignalRCD
+import AppliedModelingLib.Foundations.Probability.GaussianSignalRCD
 import LG21TestOptionalPolicies.ContinuousAccessConditionedPopulation
 
 /-!
@@ -48,11 +48,11 @@ theorem lg21ContinuousGaussianAccessPopulation_condDistrib_skill_given_score_ae
           (lg21ContinuousPopulationFeature testFeature))]
       (fun score : ℝ =>
         gaussianReal
-          (EconCSLib.Probability.gaussianSignalWeight
+          (AppliedModelingLib.Probability.gaussianSignalWeight
             (M.priorVariance : ℝ) (M.noiseVariance testFeature : ℝ) * score +
-            EconCSLib.Probability.gaussianSignalPriorWeight
+            AppliedModelingLib.Probability.gaussianSignalPriorWeight
               (M.priorVariance : ℝ) (M.noiseVariance testFeature : ℝ) * M.priorMean)
-          (EconCSLib.Probability.gaussianSignalPosteriorVariance
+          (AppliedModelingLib.Probability.gaussianSignalPosteriorVariance
             (M.priorVariance : ℝ) (M.noiseVariance testFeature : ℝ))) := by
   let law := lg21ContinuousGaussianAccessPopulationLaw M
   letI : IsProbabilityMeasure law := by
@@ -63,10 +63,10 @@ theorem lg21ContinuousGaussianAccessPopulation_condDistrib_skill_given_score_ae
   let score : Bool × (ℝ × (Feature → ℝ)) → ℝ :=
     lg21ContinuousPopulationFeature testFeature
   let pairLaw : Measure (ℝ × ℝ) :=
-    EconCSLib.Probability.gaussianSignalPair M.priorMean
+    AppliedModelingLib.Probability.gaussianSignalPair M.priorMean
       (M.priorVariance : ℝ) (M.noiseVariance testFeature : ℝ)
   let posteriorKernel : Kernel ℝ ℝ :=
-    EconCSLib.Probability.gaussianSignalPosteriorKernel M.priorMean
+    AppliedModelingLib.Probability.gaussianSignalPosteriorKernel M.priorMean
       (M.priorVariance : ℝ) (M.noiseVariance testFeature : ℝ)
   have hskill : Measurable skill := by
     change Measurable fun student : Bool × (ℝ × (Feature → ℝ)) => student.2.1
@@ -83,7 +83,7 @@ theorem lg21ContinuousGaussianAccessPopulation_condDistrib_skill_given_score_ae
   have hraw : law.map (fun student => (skill student, score student)) =
       pairLaw.map (fun pair => (pair.1, pair.1 + pair.2)) := by
     simpa only [law, skill, score, pairLaw,
-      EconCSLib.Probability.gaussianSignalPair,
+      AppliedModelingLib.Probability.gaussianSignalPair,
       Real.toNNReal_coe] using
       lg21ContinuousGaussianAccessPopulation_skill_score_joint M haccess testFeature
   have hsourceJoint : law.map (fun student => (score student, skill student)) =
@@ -107,7 +107,7 @@ theorem lg21ContinuousGaussianAccessPopulation_condDistrib_skill_given_score_ae
       _ = gaussianReal M.priorMean
             ((M.priorVariance : ℝ) + (M.noiseVariance testFeature : ℝ)).toNNReal ⊗ₘ
           posteriorKernel := by
-        exact EconCSLib.Probability.gaussianSignalPair_score_latent_joint_factorization
+        exact AppliedModelingLib.Probability.gaussianSignalPair_score_latent_joint_factorization
           M.priorMean (M.priorVariance : ℝ) (M.noiseVariance testFeature : ℝ)
           hpriorVariance hnoiseVariance
   have hsourceScore : law.map score =
@@ -129,9 +129,9 @@ theorem lg21ContinuousGaussianAccessPopulation_condDistrib_skill_given_score_ae
             measurable_snd (by fun_prop))
       _ = gaussianReal M.priorMean
           ((M.priorVariance : ℝ) + (M.noiseVariance testFeature : ℝ)).toNNReal := by
-        simpa only [pairLaw, EconCSLib.Probability.gaussianSignalPair,
-          EconCSLib.Probability.gaussianSignalScore, Real.toNNReal_coe] using
-          EconCSLib.Probability.gaussianSignalPair_score_marginal
+        simpa only [pairLaw, AppliedModelingLib.Probability.gaussianSignalPair,
+          AppliedModelingLib.Probability.gaussianSignalScore, Real.toNNReal_coe] using
+          AppliedModelingLib.Probability.gaussianSignalPair_score_marginal
             M.priorMean (M.priorVariance : ℝ) (M.noiseVariance testFeature : ℝ)
             hpriorVariance hnoiseVariance
   have hjoint : law.map (fun student => (score student, skill student)) =
@@ -139,14 +139,14 @@ theorem lg21ContinuousGaussianAccessPopulation_condDistrib_skill_given_score_ae
     rw [hsourceScore]
     exact hsourceJoint
   letI : IsFiniteKernel posteriorKernel := by
-    unfold posteriorKernel EconCSLib.Probability.gaussianSignalPosteriorKernel
+    unfold posteriorKernel AppliedModelingLib.Probability.gaussianSignalPosteriorKernel
     infer_instance
   have hcond := condDistrib_ae_eq_of_measure_eq_compProd_of_measurable
     (μ := law) (X := score) (Y := skill) (κ := posteriorKernel)
     hscore hskill hjoint
   filter_upwards [hcond] with observed hobserved
   simpa only [law, skill, score, posteriorKernel,
-    EconCSLib.Probability.gaussianSignalPosteriorKernel_apply] using hobserved
+    AppliedModelingLib.Probability.gaussianSignalPosteriorKernel_apply] using hobserved
 
 end
 

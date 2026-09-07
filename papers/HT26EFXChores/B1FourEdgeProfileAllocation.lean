@@ -12,7 +12,7 @@ Source: `EFXadditivechores.tex`, lines 2526--2542.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- The six unordered two-agent fibres partition an M₂ pool when every chore
 is small for exactly two agents. -/
@@ -33,7 +33,7 @@ theorem m2_eq_union_of_six_type_pools_of_smallExactlyTwo
       simpa [IsSmallForExactlyTwo] using hsmall item hitem
     obtain ⟨first, second, hdistinct, htype⟩ := Finset.card_eq_two.mp hitemCard
     fin_cases first <;> fin_cases second <;>
-      simp_all [m2TypeChorePool] <;> aesop
+      simp_all [m2TypeChorePool] <;> decide
   · intro item hitem
     rcases Finset.mem_union.mp hitem with h01234 | h23
     · rcases Finset.mem_union.mp h01234 with h0123 | h13

@@ -1,4 +1,4 @@
-import LBG24SpatialUnderreporting.PaperInterface
+import LBG24SpatialUnderreporting.LegacyPaperInterface
 
 /-!
 # LBG24 proof support
@@ -14,7 +14,7 @@ namespace LBG24SpatialUnderreporting
 
 open Filter
 open MeasureTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped BigOperators Function ProbabilityTheory Topology NNReal
 
 noncomputable section
@@ -89,7 +89,10 @@ theorem lemma1_nonhomogeneous_marked_poisson_process_construction
         Lemma1MarkedPoissonThinning.MarkedPoissonReportingProcess.exists_markedPoissonReportingProcess
           incidentRate detectionProbability hincident hdetection hdetection_le with
       ⟨Ω, mΩ, P, M, hlatent, hdetectionEq⟩
-    rcases M.observed_process_is_homogeneous_poisson with
+    have M_detection_pos : 0 < M.detectionProbability := by
+      rw [hdetectionEq]
+      exact hdetection
+    rcases M.observed_process_is_homogeneous_poisson M_detection_pos with
       ⟨observedProcess, _hcount, hrate⟩
     refine ⟨Ω, mΩ, P, observedProcess, ?_⟩
     rw [hrate, hlatent, hdetectionEq]
@@ -117,6 +120,7 @@ theorem equation7_zero_count_proportional_to_causal_stopping_eq8
   rw [AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood_factorizes_eq8
     M D rate_pos exposure_pos]
   rw [hcount, equation7_zero_inflated_likelihood_zero]
+  simp only [sourcePoissonPMF, sourcePoissonPMFOnSourceDomain]
   ring
 
 /--
@@ -138,6 +142,7 @@ theorem equation7_positive_count_proportional_to_causal_stopping_eq8
   rw [AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood_factorizes_eq8
     M D rate_pos exposure_pos]
   rw [equation7_zero_inflated_likelihood_positive_count hcount]
+  simp only [sourcePoissonPMF, sourcePoissonPMFOnSourceDomain]
   ring
 
 /-! ## Proposition 1 restricted witness -/

@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts import source_record_current_revalidation as REVALIDATION  # noqa: E402
+from scripts import source_record_obligation_groups as OBLIGATIONS  # noqa: E402
 from scripts import (  # noqa: E402
     source_record_current_revalidation_sidecar_binding as SIDECAR_BINDING,
 )
@@ -41,7 +42,7 @@ from scripts.source_record_target_disposition import (  # noqa: E402
 
 
 PAPER = "FixturePaper"
-PROMPT = REVALIDATION.SOURCE_RECORD_V10_PROMPT_VERSION
+PROMPT = OBLIGATIONS.SOURCE_RECORD_V10_PROMPT_VERSION
 
 
 def digest(char: str) -> str:
@@ -783,7 +784,7 @@ class SourceRecordCurrentRevalidationTests(unittest.TestCase):
         key: str,
         updates: dict[str, str],
     ) -> dict[str, object]:
-        groups, errors = REVALIDATION._raw_item_groups(raw)
+        groups, errors = OBLIGATIONS.raw_source_record_obligation_groups(raw)
         self.assertEqual(errors, {})
         group = groups[key]
         semantic_members = group["semantic_model_items"]
@@ -1730,7 +1731,7 @@ class SourceRecordCurrentRevalidationTests(unittest.TestCase):
                 "verdict": "matches_literal_source",
             },
         }
-        groups, group_errors = REVALIDATION._raw_item_groups(raw)
+        groups, group_errors = OBLIGATIONS.raw_source_record_obligation_groups(raw)
         self.assertEqual(group_errors, {})
         descriptor = groups[key]["descriptor_sha256"]
         assert isinstance(descriptor, str)
@@ -2064,6 +2065,11 @@ class SourceRecordCurrentRevalidationTests(unittest.TestCase):
         """A stale replay cannot make an errored raw receipt reusable."""
 
         raw = raw_audit()
+        raw["source_contract_association_error_count"] = 1
+        raw["source_contract_association_errors"] = [
+            "fixture representation-only association diagnostic"
+        ]
+        stamp_source_record_audit_receipts(raw)
         with patch.object(
             REVALIDATION.EVIDENCE,
             "source_record_semantic_contract_revalidation_context",
@@ -2076,6 +2082,54 @@ class SourceRecordCurrentRevalidationTests(unittest.TestCase):
                 "current raw semantic-contract replay is invalid: "
                 "artifact is stale for the raw receipt",
             )
+
+    def test_current_clean_raw_does_not_launch_structural_replay(self) -> None:
+        """A clean authenticated surface needs no correction transaction."""
+
+        raw = raw_audit()
+        with patch.object(
+            REVALIDATION.EVIDENCE,
+            "source_record_semantic_contract_revalidation_context",
+        ) as context:
+            self.assertEqual(
+                REVALIDATION._raw_audit_error(
+                    raw, paper=PAPER, paper_dir=self.paper_dir
+                ),
+                "",
+            )
+        context.assert_not_called()
+
+    def test_archived_clean_raw_does_not_read_live_semantic_replay(self) -> None:
+        """An archived clean receipt is validated from its own bytes only."""
+
+        raw = raw_audit()
+        with patch.object(
+            REVALIDATION.EVIDENCE,
+            "source_record_semantic_contract_revalidation_context",
+        ) as context:
+            self.assertEqual(
+                REVALIDATION._raw_audit_error(
+                    raw,
+                    paper=PAPER,
+                    paper_dir=self.paper_dir,
+                    use_paper_local_semantic_contract_revalidation=False,
+                ),
+                "",
+            )
+        context.assert_not_called()
+
+        raw["source_contract_association_error_count"] = 1
+        raw["source_contract_association_errors"] = ["unresolved archived route"]
+        stamp_source_record_audit_receipts(raw)
+        self.assertEqual(
+            REVALIDATION._raw_audit_error(
+                raw,
+                paper=PAPER,
+                paper_dir=self.paper_dir,
+                use_paper_local_semantic_contract_revalidation=False,
+            ),
+            "current raw audit recorded source-contract association errors",
+        )
 
     def test_current_raw_revalidation_rejects_inconsistent_suppressed_error_count(
         self,
@@ -2264,7 +2318,7 @@ class SourceRecordCurrentRevalidationTests(unittest.TestCase):
         raw, prior, attestation, path, selected_key, overlay_key = (
             self.selected_revalidation_fixture()
         )
-        groups, group_errors = REVALIDATION._raw_item_groups(raw)
+        groups, group_errors = OBLIGATIONS.raw_source_record_obligation_groups(raw)
         self.assertEqual(group_errors, {})
         descriptors = {
             key: str(group["descriptor_sha256"])
@@ -2326,8 +2380,6 @@ class SourceRecordCurrentRevalidationTests(unittest.TestCase):
             descriptors[manual_key],
         )
         lanes = (
-            SimpleNamespace(label="scoped_receipt", items={}),
-            SimpleNamespace(label="attested_selected", items={}),
             # Schema-2 rebind is a distinct stronger registry lane; the
             # selected workflow records that transport label rather than
             # treating it as an implementation detail of historical reuse.
@@ -2335,16 +2387,14 @@ class SourceRecordCurrentRevalidationTests(unittest.TestCase):
                 label="semantic_rebind",
                 items={semantic_rebind_key: {"transport": "semantic-rebind"}},
             ),
-            SimpleNamespace(label="schema4_to5", items={}),
             SimpleNamespace(
                 label="differential",
                 items={differential_key: {"transport": "differential"}},
             ),
-            SimpleNamespace(label="historical_descriptor", items={}),
         )
         union = {
-            differential_key: lanes[4].items[differential_key],
-            semantic_rebind_key: lanes[2].items[semantic_rebind_key],
+            differential_key: lanes[1].items[differential_key],
+            semantic_rebind_key: lanes[0].items[semantic_rebind_key],
         }
         registry = SimpleNamespace(
             load_authenticated_current_overlay_lanes=lambda *_args, **_kwargs: lanes,

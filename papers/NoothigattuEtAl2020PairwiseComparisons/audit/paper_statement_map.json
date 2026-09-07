@@ -1,0 +1,888 @@
+{
+  "curated_at": "2026-08-26T00:00:00Z",
+  "curator": "Codex Noothigattu--Peters--Procaccia source-first inventory",
+  "items": {
+    "claimA_1": {
+      "aliases": [
+        "Claim A.1",
+        "claimA1_coin_flip_likelihoodSpec",
+        "claimA1_coin_flip_likelihood_proof"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.claimA1_coin_flip_likelihood_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "NoothigattuEtAl2020PairwiseComparisons.claimA1_coin_flip_likelihood_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "NoothigattuEtAl2020PairwiseComparisons.claimA1_coin_flip_likelihoodSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 784,
+          "line_start": 780,
+          "publication_locator": "cited publication",
+          "quoted_text": "Claim A.1 (Coin flip likelihood). For h, t > 0 and p 2 (0, 1), the function f (p) = h · log(p) + t ·\nlog(1 p) is strictly concave with the maximum uniquely attained at\n                                                                  h\n                                                          p̂ =\n                                                                 h+t",
+          "quoted_text_sha256": "5b46f9f2e8980537e2cc7c2a73d0d329a54075a727dbcff64bd932301b053cb4"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "claimA.1",
+          "identity_schema": 2,
+          "reviewed_lean_route": "NoothigattuEtAl2020PairwiseComparisons.claimA1_coin_flip_likelihood_proof",
+          "semantic_claim": "For positive heads and tails counts, the coin-flip log likelihood is strictly concave on the open unit interval and has the unique maximizer h divided by h plus t.",
+          "source_locator": "cited publication:780-784",
+          "source_quote_sha256": "5b46f9f2e8980537e2cc7c2a73d0d329a54075a727dbcff64bd932301b053cb4"
+        }
+      ],
+      "source_kind": "claim",
+      "source_location": "cited publication:780-784",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "15d87cf7b68b1a6bceeb55c7bb8673db98c9f9b34ffa5ca69e5cb3e5e46996ea",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "420dc88c8feff033deec49d6516e8d63457c5350295c2c5fbe28fdacee1d2b31",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "semantic_bridge": "Direct formula-level review confirmed that the source and expanded Spec have the same positive heads and tails premises, open-unit probability domain, Bernoulli log-likelihood, strict concavity, maximizing ratio h/(h+t), and uniqueness of every maximizer.",
+            "source_atom_sha256": "4259686b6b17076ca38ca24e4e65ecb4188114fa90ddd0f449b25bd4ac478759",
+            "spec_component_sha256s": [
+              "852649f3d718e80eebddffad9e75a217a3c6b46174c195535344eb91690403bd"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "bfa50e91fddf392e56181f926066b57fe0d766b51074a56c9424e3c8bdde5011",
+        "spec_closure_sha256": "24a332c3555f9e0922f7a12287675dafe4fcd27d56c46599231144bc29c6fc5c",
+        "spec_surface_sha256": "852649f3d718e80eebddffad9e75a217a3c6b46174c195535344eb91690403bd"
+      },
+      "source_status": "direct byte-pinned source presentation",
+      "statement": "For positive heads and tails counts, the coin-flip log likelihood is strictly concave on the open unit interval and has the unique maximizer h divided by h plus t.",
+      "support_lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.claimA1_coin_flip_likelihoodSpec"
+      ]
+    },
+    "claimC_1": {
+      "aliases": [
+        "Claim C.1",
+        "claimC1_strict_crossed_productSpec",
+        "claimC1_strict_crossed_product_proof"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.claimC1_strict_crossed_product_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "NoothigattuEtAl2020PairwiseComparisons.claimC1_strict_crossed_product_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "NoothigattuEtAl2020PairwiseComparisons.claimC1_strict_crossed_productSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 1055,
+          "line_start": 1055,
+          "publication_locator": "cited publication",
+          "quoted_text": "Claim C.1. Let c, d, e, f > 0 such that c > d and e > f . Then ce + df > cf + de.",
+          "quoted_text_sha256": "82a346db3e3ba45710e7375c9ba863dcce9aae9050ca94f99be02dd3bd0d669e"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "claimC.1",
+          "identity_schema": 2,
+          "reviewed_lean_route": "NoothigattuEtAl2020PairwiseComparisons.claimC1_strict_crossed_product_proof",
+          "semantic_claim": "For positive c, d, e, f with c greater than d and e greater than f, ce plus df is greater than cf plus de.",
+          "source_locator": "cited publication:1055-1055",
+          "source_quote_sha256": "82a346db3e3ba45710e7375c9ba863dcce9aae9050ca94f99be02dd3bd0d669e"
+        }
+      ],
+      "source_kind": "claim",
+      "source_location": "cited publication:1055-1055",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "15d87cf7b68b1a6bceeb55c7bb8673db98c9f9b34ffa5ca69e5cb3e5e46996ea",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "48037b1e3d2cf03db8e04bf7b34007cee3d00c4c1b5cd565f59af3dcb5630419",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "semantic_bridge": "Direct formula-level review confirmed the same four positivity premises, equivalent strict order premises c>d and e>f, and identical crossed-product inequality ce+df>cf+de in the expanded Spec.",
+            "source_atom_sha256": "c2e8465d4504313350f2811b83893af00879eace9c580aaed15f11ea58af6f5f",
+            "spec_component_sha256s": [
+              "bf5167052062e6cf3e25233fc87c1310fd6773ed6883c2be8fdc0e2897f5b17d"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "80c19a677d227cd71e76e5de8498c2e56dcc06a979aa97b686197e9140af61ae",
+        "spec_closure_sha256": "5a32a90cac779ffdf4f634d5a6f032e582aaae39906f9cce9b9994c2fccfa4d6",
+        "spec_surface_sha256": "bf5167052062e6cf3e25233fc87c1310fd6773ed6883c2be8fdc0e2897f5b17d"
+      },
+      "source_status": "direct byte-pinned source presentation",
+      "statement": "For positive c, d, e, f with c greater than d and e greater than f, ce plus df is greater than cf plus de.",
+      "support_lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.claimC1_strict_crossed_productSpec"
+      ]
+    },
+    "definition3_1": {
+      "aliases": [
+        "Definition 3.1",
+        "definition3_1_pareto_efficiency"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.definition3_1_pareto_efficiency"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 265,
+          "line_start": 256,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 3.1 (Pareto efficiency). Suppose a, b 2 X satisfy #{a          b} > #{b      a}, and are such\nthat for every other alternative x 2 X \\ {a, b}, we have\n                     #{a        x} > #{b    x}    and     #{x    a} < #{x         b}.\n\nThen, for every MLE ˆ, Pareto efficiency requires that ˆa       ˆb .\n\nTo see that this definition captures the desired behavior in the multi-agent case, note that if ai > bi ,\nthen the dataset #i satisfies the condition of Definition 3.1 with high probability as weP     grow the\nnumber of comparisons in #i , and similarly the condition holds for the pooled dataset # = i2R #i .\nThis version of Pareto efficiency is feasible; in fact, it is satisfied by most random utility models.",
+          "quoted_text_sha256": "5021125efb41532a66ebe8cf809492acfb10d7ac6da1295dc8e105817aed5fcf"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "definition3.1",
+          "identity_schema": 2,
+          "reviewed_lean_route": "NoothigattuEtAl2020PairwiseComparisons.definition3_1_pareto_efficiency",
+          "semantic_claim": "Pareto efficiency requires every MLE to rank a at least as high as b when a strictly dominates b in their direct count and in every outgoing and incoming comparison against every third alternative.",
+          "source_locator": "cited publication:256-265",
+          "source_quote_sha256": "5021125efb41532a66ebe8cf809492acfb10d7ac6da1295dc8e105817aed5fcf"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:256-265",
+      "source_status": "direct byte-pinned source presentation",
+      "statement": "Pareto efficiency requires every MLE to rank a at least as high as b when a strictly dominates b in their direct count and in every outgoing and incoming comparison against every third alternative."
+    },
+    "definition4_1": {
+      "aliases": [
+        "Definition 4.1",
+        "definition4_1_monotonicitySpec"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.definition4_1_monotonicitySpec"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 308,
+          "line_start": 280,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 4.1 (Monotonicity). Suppose that # and #̃ are two datasets with unique MLEs ˆ and ˜.\nSuppose that #̃{x y} = #{x y} for all x, y 2 X except that #̃{a                   b} > #{a     b}. Then,\nmonotonicity requires that for all x 2 X ,\n                           ˜a     ˜x   ˆa    ˆx    and    ˜b    ˜x  ˆb    ˆx .\n\nEquivalently, monotonicity requires that if #{a b} decreases, then a becomes weaker relative to\nother alternatives, and b becomes stronger. We can interpret monotonicity as guaranteeing a kind of\nparticipation incentive: If we ask an agent to compare a to b, the agent is assured that the answer can\nonly influence our inferred utilities in the desired direction.\n\n\n                                                    5\n\f \u0001\u0002\u0006\n                                                      d     \u0001\u0002\u0007                                                  d     \u0001\u0002\u0006\n \u0001\u0002\u0003\n                                                            \u0001\u0002\u0001                                                  a     \u0001\u0002\u0001                                                   a\n \u0001\u0002\u0004\n                                                           -\u0001\u0002\u0007                                                       -\u0001\u0002\u0006                                                   c#\n \u0001\u0002\u0005\n                                                           -\u0001\u0002\u0006                                                  b\"                                                          b\"\n \u0001\u0002\u0001                                                  a    -\u0001\u0002\u0005\n                                                                                                                      -\u0001\u0002\u0005\n                                                                                                                                                                             d\n-\u0001\u0002\u0005\n                                                      b\"   -\u0001\u0002\u0004                                                  c#   -\u0001\u0002\u0004\n-\u0001\u0002\u0004\n                                                           -\u0001\u0002\u0003                                                       -\u0001\u0002\u0003\n-\u0001\u0002\u0003                                                  c#\n       (17, 86, 38, 56, , 4, 19, 89, 1, 67, 83, 34)               (95, 74, 36, 53, , 39, 62, 48, 1, 30, 77, 8)               (63, 54, 12, 19, , 54, 57, 80, 49, 7, 50, 20)",
+          "quoted_text_sha256": "42024ee058fc03d87e348d1d40afeb7c45a66f63c62753e2da29ed9098626a55"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "definition4.1",
+          "identity_schema": 2,
+          "reviewed_lean_route": "NoothigattuEtAl2020PairwiseComparisons.definition4_1_monotonicitySpec",
+          "semantic_claim": "When only the count a over b increases between two datasets with unique MLEs, a must become weakly stronger and b weakly weaker relative to every alternative.",
+          "source_locator": "cited publication:280-308",
+          "source_quote_sha256": "42024ee058fc03d87e348d1d40afeb7c45a66f63c62753e2da29ed9098626a55"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:280-308",
+      "source_status": "direct byte-pinned source presentation",
+      "statement": "When only the count a over b increases between two datasets with unique MLEs, a must become weakly stronger and b weakly weaker relative to every alternative."
+    },
+    "definition5_1": {
+      "aliases": [
+        "Definition 5.1",
+        "definition5_1_pairwise_majority_consistencySpec"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.definition5_1_pairwise_majority_consistencySpec"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 387,
+          "line_start": 380,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 5.1. Suppose it is possible to label alternatives as X = {x1 , . . . , xm } such that whenever\ni < j, it holds that #{xi       xj } > #{xj        xi }. Then, pairwise majority consistency (PMC)\n                              ˆ\nrequires that for every MLE , it holds that xiˆ       ˆx for all i < j.\n                                                        j\n\n\nIn contrast to our previous properties, PMC is violated by random utility models.",
+          "quoted_text_sha256": "9d25a9171f8d9a7675babd4807099c0b966014442764bab32374288969cd31a3"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "definition5.1",
+          "identity_schema": 2,
+          "reviewed_lean_route": "NoothigattuEtAl2020PairwiseComparisons.definition5_1_pairwise_majority_consistencySpec",
+          "semantic_claim": "Pairwise majority consistency requires every MLE to respect any strict pairwise-count majority ranking of all alternatives.",
+          "source_locator": "cited publication:380-387",
+          "source_quote_sha256": "9d25a9171f8d9a7675babd4807099c0b966014442764bab32374288969cd31a3"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:380-387",
+      "source_status": "direct byte-pinned source presentation",
+      "statement": "Pairwise majority consistency requires every MLE to respect any strict pairwise-count majority ranking of all alternatives."
+    },
+    "definition6_1": {
+      "aliases": [
+        "Definition 6.1",
+        "definition6_1_separabilitySpec"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.definition6_1_separabilitySpec"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 467,
+          "line_start": 459,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 6.1. Consider two datasets #1 and #2 , and let ˆ1 and ˆ2 be MLEs. Suppose there exist\ntwo alternatives a, b 2 X such that ˆa1 > ˆb1 and ˆa2 > ˆb2 . Separability requires that for every\nMLE ˆ for the pooled dataset # = #1 + #2 , it also holds that ˆa > ˆb .\n\nSeparability is also called consistency, and seems particularly desirable in cases where we combine\npairwise comparisons from different sources. While perhaps on first glance innocuous, separability is\nan extremely strong requirement, and few rules satisfy it; one can prove in general that separability\nconstrains rules to be linear [Myerson, 1995]. Since likelihood maximization is not linear, it is no\nsurprise that MLEs for random utility models fail separability.",
+          "quoted_text_sha256": "491c92112c2d5c61be671849a26a0fd47b258607c86a0fd1bebfc82874c3085a"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "definition6.1",
+          "identity_schema": 2,
+          "reviewed_lean_route": "NoothigattuEtAl2020PairwiseComparisons.definition6_1_separabilitySpec",
+          "semantic_claim": "Separability requires the pooled-dataset MLE to preserve any strict pairwise order shared by MLEs of both component datasets.",
+          "source_locator": "cited publication:459-467",
+          "source_quote_sha256": "491c92112c2d5c61be671849a26a0fd47b258607c86a0fd1bebfc82874c3085a"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:459-467",
+      "source_status": "direct byte-pinned source presentation",
+      "statement": "Separability requires the pooled-dataset MLE to preserve any strict pairwise order shared by MLEs of both component datasets."
+    },
+    "lemma2_1": {
+      "aliases": [
+        "Lemma 2.1",
+        "lemma2_1_mle_existsSpec",
+        "lemma2_1_mle_exists_proof"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.lemma2_1_mle_exists_proof"
+      ],
+      "semantic_context_requirements": [
+        {
+          "explanation": "Section 2 defines the finite off-diagonal count dataset, comparison graph, score vector, CDF-like link, pairwise win probability, log-likelihood, fixed-reference normalization, MLE, and pooled counts used by Lemma 2.1 and its reusable-library prerequisites.",
+          "kind": "section2_pairwise_random_utility_model",
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 193,
+              "line_start": 126,
+              "publication_locator": "cited publication",
+              "quoted_text": "2       Model\n\nLet X be a finite set of alternatives. For notational simplicity, we let X 2 = {(x, y) : x, y 2 X , x 6= y}\ndenote the set of distinct pairs of alternatives. Let # : X 2 ! N be a dataset of pairwise comparisons\nbetween alternatives: For x, y 2 X , #{x y} is the number of times x beat y in the dataset.\nThe (pairwise) comparison graph G# = (X , E) with respect to dataset # is the directed graph with\nthe alternatives X as the vertices, and edges E such that there exists a directed edge (u, v) 2 E iff\n#{u      v} > 0. We say that G# is connected if its undirected form is connected, and we call it\nstrongly connected if for all (x, y) 2 X 2 , there is a directed path from x to y in G# .\nGiven a dataset, our goal is to learn a random utility model (RUM). A random utility model specifies,\nfor any two distinct alternatives x, y 2 X , the probability that when asking the decision maker to\ncompare x and y, the answer will be x > y. (Due to noise, when repeatedly querying the same\npair, we may see different answers.) For us, a random utility model is parameterized by a vector\n  2 RX , where x is an unknown utility value for x 2 X . When we ask for a comparison between\ntwo alternatives x, y 2 X , we model the decision maker as sampling noisy utilities u(x) and u(y)\nfrom distributions parameterized by (and typically centered at) x and y . Then, the decision maker\nreports the comparison x > y iff u(x) > u(y).\nIn this paper, we focus on random utility models with i.i.d. noise, so that u(x) = x + ⇣(x), where\n⇣(x) ⇠ P is i.i.d. across all alternatives. Let F be the CDF of a random variable which is the\ndifference between two independent random variables with distribution P. Then the probability that\nalternative x beats y when they are compared is2\n\n              Pr(x     y) = Pr(u(x) > u(y)) = Pr(⇣(y)           ⇣(x) <    x      y) = F ( x        y ).   (1)\n\nWe derived Equation (1) from a specific noise model, but it makes sense for any function F : R !\n[0, 1] with CDF-like properties, even if it does not correspond to a noise distribution P. Indeed, we\ncan take any F which is non-decreasing, satisfies F ( u) + F (        u) = 1 for all u 2 R, and is\nsuch that lim u! 1 F ( u) = 0 and lim u!1 F ( u) = 1. We adopt Equation (1) as the general\ndefinition of a random utility model for our technical results.\nTwo of the most common random utility models are\n\n    • the Thurstone–Mosteller (TM) model: We sample utility as u(x) = x + ⇣(x), with i.i.d. noise\n      ⇣(x) ⇠ N (0, 1/2). This is equivalent to Equation (1) with F as the Gaussian CDF .\n    • the Bradley–Terry model (equivalent to the Plackett–Luce model restricted to pairwise compar-\n                                    eu(x)\n      isons), where Pr(x y) = eu(x)   +eu(y)\n                                             . This is Equation (1) with F as the logistic function.\n\nWe usually assume that F is strictly log-concave, and that it is strictly monotonic and continuous,3 so\nthat F has an inverse on (0, 1). These conditions hold for Thurstone–Mosteller and Bradley–Terry.\n\n    2\n        We assume P to be a continuous distribution, and so we do not have to worry about ties.\n    3\n        Continuity of F is guaranteed when the corresponding noise distribution P is continuous.\n\n\n                                                         3\n\fFor a random utility model, given a dataset #, our goal is to find parameters ( x )x2X that best fit #.\nWe find these parameters by maximum likelihood estimation. The log-likelihood is given by\n                                      X\n                           L( ) =            #{x y} log F ( x          y ).\n                                     (x,y)2X 2\n\nWhen the dataset # is clear from the context, we write ˆ 2 RX for a parameter vector that maximizes\nlog-likelihood, and say that ˆ is the MLE. Note that if c 2 R is a scalar, then L( ) = L( + c) for\nall 2 RX (since Pr(x y) depends only on the difference x              y ), so the MLE is only defined\nup to an additive shift. For concreteness, we pick some r 2 X , call it the reference alternative, and\nfix r = 0; then, we maximize L over D = { 2 RX : r = 0}.\nA random utility model is particularly appropriate when the dataset # consists of pairwise com-\nparisons which are all reported by a single decision maker. However, in many cases the dataset is\nobtained by pooling reports from many agents, for instance to minimize the labeling effort of each\nindividual agent, or if we have the explicit aim to aggregate preferencesP from different agents. Some\nof the axioms we study are explicitly motivated by cases where # = i2R #i , i.e., the dataset is\nobtained by pooling individual datasets, where R is the set of agents. It then seems natural to assume\nthat each agent behaves in accordance with some random utility model with unknown parameters i\nand unknown CDF-like function Fi . Then the dataset #i is generated by repeatedly querying the\nagent’s random utility model for a comparison.",
+              "quoted_text_sha256": "4b03f9d580b0beab3d87ec2f1349f048e1a7be3e98a08d59a22fcbb144a7e11e"
+            }
+          ],
+          "source_location": "cited publication:126-193"
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "NoothigattuEtAl2020PairwiseComparisons.lemma2_1_mle_exists_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "NoothigattuEtAl2020PairwiseComparisons.lemma2_1_mle_existsSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 216,
+          "line_start": 207,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 2.1 (MLE exists). Suppose F is strictly monotonic and continuous. Then the MLE exists if\nand only if every connected component of the comparison graph G# is strongly connected.\nFor alternative x, y 2 X , we define the perfect-fit distance between x and y as\n                                            ✓                           ◆\n                                                       #{x y}\n                             (x, y) := F 1                                .\n                                              #{x y} + #{y x}\nThis is the difference in utilities of x and y required for the model to exactly match the observed\nfrequencies of #{x y} and #{y x} in the data. We can check that the MLE will respect this\nperfect-fit distance when an alternative has only a single neighbor in the comparison graph.",
+          "quoted_text_sha256": "1d15ea9fdc4cefaaced5396e5bf5533b8110bc5bdab6ee90111861c5e9bd05f2"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma2.1",
+          "identity_schema": 2,
+          "reviewed_lean_route": "NoothigattuEtAl2020PairwiseComparisons.lemma2_1_mle_exists_proof",
+          "semantic_claim": "A finite maximum-likelihood estimate exists exactly when every connected component of the comparison graph is strongly connected, under strict monotonicity and continuity of the link.",
+          "source_locator": "cited publication:207-216",
+          "source_quote_sha256": "1d15ea9fdc4cefaaced5396e5bf5533b8110bc5bdab6ee90111861c5e9bd05f2"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:207-216",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "15d87cf7b68b1a6bceeb55c7bb8673db98c9f9b34ffa5ca69e5cb3e5e46996ea",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "dfaa536842795e76ac07773e9fe26d7cc041a10156df156aca906b9d3ffbc087",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "semantic_bridge": "Direct formula-level review of the byte-pinned Lemma 2.1 together with its exact Section 2 model context and the complete expanded Spec confirmed the same finite count model, link conditions, fixed-reference MLE existence, comparison-graph component condition, quantifier scope, and biconditional conclusion. The page-boundary form-feed is presentation only; no source summary, declaration name, or wrapper supplied semantic evidence.",
+            "source_atom_sha256": "8d1a41ef97313cce9dee413acd792ee961df3dd54420c7e0f76d0f5b7354495b",
+            "spec_component_sha256s": [
+              "fe14051a4d2cf956af6127465e9946603bcbbd86e76ef553b6a08858a65d6ac9"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "71ee9426b618aadd28fdeb49c385eeeec0d1be003c0e20c5d7977902b9114452",
+        "spec_closure_sha256": "dc599e919f37444c4d465b858f9a3d036c8cca095e39485ee8b8eb9d44b63dd0",
+        "spec_surface_sha256": "fe14051a4d2cf956af6127465e9946603bcbbd86e76ef553b6a08858a65d6ac9"
+      },
+      "source_status": "direct byte-pinned source presentation",
+      "statement": "A finite maximum-likelihood estimate exists exactly when every connected component of the comparison graph is strongly connected, under strict monotonicity and continuity of the link.",
+      "support_lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.lemma2_1_mle_existsSpec"
+      ]
+    },
+    "lemma2_2": {
+      "aliases": [
+        "Lemma 2.2",
+        "lemma2_2_one_neighbor_perfect_fitSpec",
+        "lemma2_2_one_neighbor_perfect_fit_proof"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.lemma2_2_one_neighbor_perfect_fit_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "NoothigattuEtAl2020PairwiseComparisons.lemma2_2_one_neighbor_perfect_fit_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "NoothigattuEtAl2020PairwiseComparisons.lemma2_2_one_neighbor_perfect_fitSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 223,
+          "line_start": 217,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 2.2. Let F be strictly monotonic and continuous. Suppose that for alternative a there is\nexactly one alternative b for which #{a         b} + #{b      a} > 0. If both #{a       b} > 0 and\n                                  ˆ\n#{b a} > 0, then any MLE satisfies a        ˆ     ˆb = (a, b).\n\nWe can use this result to provide a stronger bound on the MLE than the one from Lemma 2.1, which\nholds under slightly stronger conditions.",
+          "quoted_text_sha256": "0a0c2c09dd80bd2a526d63a15416b3137b582a14883aa6c014dbf04cc7ca2b87"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma2.2",
+          "identity_schema": 2,
+          "reviewed_lean_route": "NoothigattuEtAl2020PairwiseComparisons.lemma2_2_one_neighbor_perfect_fit_proof",
+          "semantic_claim": "If an alternative has exactly one comparison-graph neighbor and both directed counts are positive, every MLE fits that pair's observed frequency exactly.",
+          "source_locator": "cited publication:217-223",
+          "source_quote_sha256": "0a0c2c09dd80bd2a526d63a15416b3137b582a14883aa6c014dbf04cc7ca2b87"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:217-223",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "15d87cf7b68b1a6bceeb55c7bb8673db98c9f9b34ffa5ca69e5cb3e5e46996ea",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "356b9bb3248f6f6207a6ffb3747c3dcdce6d08454fcdeaff0debad59bd463a28",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "semantic_bridge": "Direct formula-level review confirmed that the source's sole-neighbor, two positive directed counts, continuous strictly monotone link, and MLE hypotheses correspond to the expanded Spec premises, while equality to the inverse-link perfect-fit distance is expressed equivalently as existence and uniqueness of the preimage delta together with the identical score-difference equality.",
+            "source_atom_sha256": "3a5b158aadfa43c57a976010adc9b1ea1cf0f7010b07a808e524b5fc02e7e068",
+            "spec_component_sha256s": [
+              "32e2572611a1724c1cab2b835a1cf0a4dfa7704d4116da67ad7c61eee9c656a2"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "e64557fb9ea065dacfcb24d6c7e509b986a3b672148bf751b4b4881d28208f67",
+        "spec_closure_sha256": "4b73a7aaf1b9da44b3995248ccdc4ada47d6b95cf922ff929807faad7ff6a42c",
+        "spec_surface_sha256": "32e2572611a1724c1cab2b835a1cf0a4dfa7704d4116da67ad7c61eee9c656a2"
+      },
+      "source_status": "direct byte-pinned source presentation",
+      "statement": "If an alternative has exactly one comparison-graph neighbor and both directed counts are positive, every MLE fits that pair's observed frequency exactly.",
+      "support_lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.lemma2_2_one_neighbor_perfect_fitSpec"
+      ]
+    },
+    "lemma2_3": {
+      "aliases": [
+        "Lemma 2.3",
+        "lemma2_3_mle_supNorm_boundSpec",
+        "lemma2_3_mle_supNorm_bound_proof"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.lemma2_3_mle_supNorm_bound_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "NoothigattuEtAl2020PairwiseComparisons.lemma2_3_mle_supNorm_bound_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "NoothigattuEtAl2020PairwiseComparisons.lemma2_3_mle_supNorm_boundSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 227,
+          "line_start": 224,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 2.3. Suppose that #{x            y} > 0 and #{y      x} > 0 for all x and y, and that F is\ncontinuous and strictly monotonic. Then for every MLE ˆ we have the bound\n                                   k ˆk1  |X | · max (x, y).\n                                                   (x,y)2X 2",
+          "quoted_text_sha256": "6a92338ad66fd2bceea9ebd74a413ba0febacb98f1e0587498ccf2cad62abf59"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma2.3",
+          "identity_schema": 2,
+          "reviewed_lean_route": "NoothigattuEtAl2020PairwiseComparisons.lemma2_3_mle_supNorm_bound_proof",
+          "semantic_claim": "With positive comparison counts in both directions for every distinct pair, every MLE has sup norm at most the number of alternatives times the largest perfect-fit distance.",
+          "source_locator": "cited publication:224-227",
+          "source_quote_sha256": "6a92338ad66fd2bceea9ebd74a413ba0febacb98f1e0587498ccf2cad62abf59"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:224-227",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "15d87cf7b68b1a6bceeb55c7bb8673db98c9f9b34ffa5ca69e5cb3e5e46996ea",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "92f4b1b5eff1bcbbb22b2e052b119d6a53ede9efdcdbb23b44ecf73b08e74196",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "semantic_bridge": "Direct formula-level review confirmed the same finite-alternative domain, positive counts in both directions for every distinct pair, continuity and strict monotonicity, MLE premise, infinity norm, cardinality factor, maximum perfect-fit distance, and weak upper bound. The expanded Spec makes the source's distinct-pair convention explicit without changing the claim.",
+            "source_atom_sha256": "578b211818eb02ff496a43200a04fc6685d1651665de4d779a44244c6fe67ea6",
+            "spec_component_sha256s": [
+              "5e6393685d1ad54a7d232d34b5a25bb4e6c80b68294f93482b8e43500b99eaab"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "7e61bc7fc1c7f22abbe4e8665fd1c009b467b1ae7fdbc082dae8c5a0b02483b7",
+        "spec_closure_sha256": "cfc5e75489cee9f55a4acb34bdab5e48974bca61a28dd9cce3720f92511c881e",
+        "spec_surface_sha256": "5e6393685d1ad54a7d232d34b5a25bb4e6c80b68294f93482b8e43500b99eaab"
+      },
+      "source_status": "direct byte-pinned source presentation",
+      "statement": "With positive comparison counts in both directions for every distinct pair, every MLE has sup norm at most the number of alternatives times the largest perfect-fit distance.",
+      "support_lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.lemma2_3_mle_supNorm_boundSpec"
+      ]
+    },
+    "lemma2_4": {
+      "aliases": [
+        "Lemma 2.4",
+        "lemma2_4_strictConcavity_and_unique_mleSpec",
+        "lemma2_4_strictConcavity_and_unique_mle_proof"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.lemma2_4_strictConcavity_and_unique_mle_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "NoothigattuEtAl2020PairwiseComparisons.lemma2_4_strictConcavity_and_unique_mle_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "NoothigattuEtAl2020PairwiseComparisons.lemma2_4_strictConcavity_and_unique_mleSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 240,
+          "line_start": 239,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 2.4. Suppose that F is strictly log-concave. Then L( ) is strictly concave and the MLE is\nunique (assuming it exists), if and only if the comparison graph G# is connected.",
+          "quoted_text_sha256": "9e7cb91063c5eaada978a5e4344dca713dbe594a806a157b3f9e19c742d4db81"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma2.4",
+          "identity_schema": 2,
+          "reviewed_lean_route": "NoothigattuEtAl2020PairwiseComparisons.lemma2_4_strictConcavity_and_unique_mle_proof",
+          "semantic_claim": "Under strict log-concavity, the likelihood is strictly concave and its MLE is unique, when it exists, exactly when the comparison graph is connected.",
+          "source_locator": "cited publication:239-240",
+          "source_quote_sha256": "9e7cb91063c5eaada978a5e4344dca713dbe594a806a157b3f9e19c742d4db81"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:239-240",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "15d87cf7b68b1a6bceeb55c7bb8673db98c9f9b34ffa5ca69e5cb3e5e46996ea",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "2d4090b4fd5d278f2ba3feee9c20bb0a5206ef80b50680c2e74abedbdd5b3a31",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "semantic_bridge": "Direct formula-level review confirmed that strict log-concavity is the expanded premise and that the conjunction of strict likelihood concavity on the fixed-reference score space and uniqueness of every existing MLE is equivalent to undirected comparison-graph connectedness, with the same quantifier and existence scope as the source.",
+            "source_atom_sha256": "8bd2fe18e03adbb8cd5c63a29a4a8b3077d1c32d73d239c8282d882d286ba169",
+            "spec_component_sha256s": [
+              "2bf6793a16161bae3b246347ea279fe57c270d1ab1d5e124973665756d925191"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "82d36320de3a4d6fccc318b1bd3304982b780db2631e318f74c4c5568d3f7900",
+        "spec_closure_sha256": "f45dc69cd1af532aae98f688c1229c0f0b27657acd209d2aefa3f1c856afb879",
+        "spec_surface_sha256": "2bf6793a16161bae3b246347ea279fe57c270d1ab1d5e124973665756d925191"
+      },
+      "source_status": "direct byte-pinned source presentation",
+      "statement": "Under strict log-concavity, the likelihood is strictly concave and its MLE is unique, when it exists, exactly when the comparison graph is connected.",
+      "support_lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.lemma2_4_strictConcavity_and_unique_mleSpec"
+      ]
+    },
+    "theorem3_2": {
+      "aliases": [
+        "Theorem 3.2",
+        "theorem3_2_mle_satisfies_pareto_efficiencySpec",
+        "theorem3_2_mle_satisfies_pareto_efficiency_proof"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.theorem3_2_mle_satisfies_pareto_efficiency_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "NoothigattuEtAl2020PairwiseComparisons.theorem3_2_mle_satisfies_pareto_efficiency_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "NoothigattuEtAl2020PairwiseComparisons.theorem3_2_mle_satisfies_pareto_efficiencySpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 271,
+          "line_start": 266,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 3.2. Maximum likelihood estimation satisfies Pareto efficiency if F is strictly monotonic.\n\nThe key idea behind the proof (given in Appendix C) is that if a, b 2 X satisfy the condition of\nDefinition 3.1 but some MLE ˆ puts ˆa < ˆb , then the parameter vector equal to ˆ except that\n      ˆ             ˆ\n a = b and b = a has strictly higher log-likelihood.",
+          "quoted_text_sha256": "384b9b70bc8880f2b5bd5fc400f3262026fc1694b9805cb468e63eef7be60554"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem3.2",
+          "identity_schema": 2,
+          "reviewed_lean_route": "NoothigattuEtAl2020PairwiseComparisons.theorem3_2_mle_satisfies_pareto_efficiency_proof",
+          "semantic_claim": "Maximum likelihood estimation satisfies Definition 3.1 Pareto efficiency whenever the link is strictly monotonic.",
+          "source_locator": "cited publication:266-271",
+          "source_quote_sha256": "384b9b70bc8880f2b5bd5fc400f3262026fc1694b9805cb468e63eef7be60554"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:266-271",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "15d87cf7b68b1a6bceeb55c7bb8673db98c9f9b34ffa5ca69e5cb3e5e46996ea",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "fbab025f3c3168d61a017470312fcee534c7bb2a653b427571040087b51d1e9a",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "semantic_bridge": "Direct review of Theorem 3.2, exact Definition 3.1, and the expanded Spec confirmed the same strictly monotone link, MLE, three families of strict count inequalities, and resulting weak score order. The reviewed Pareto predicate carries the full source definition rather than relying on its name.",
+            "source_atom_sha256": "650d642c12fdacab8d0c434595e574680d4488970f18b1ac65fc57e23d4f812d",
+            "spec_component_sha256s": [
+              "6473338d3bfffe0859a57e164a32205e99a4be5bb0ab17d1ac982a08a23c1c3a"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "c4693c1bf5186b9dcca0a2bd28da4f42723d599e9dd3cb4597607911420b21a9",
+        "spec_closure_sha256": "f9790065095224b918e0305332dc358d4ca05f4bc2f731ce91ad8e56312540b2",
+        "spec_surface_sha256": "6473338d3bfffe0859a57e164a32205e99a4be5bb0ab17d1ac982a08a23c1c3a"
+      },
+      "source_status": "direct byte-pinned source presentation",
+      "statement": "Maximum likelihood estimation satisfies Definition 3.1 Pareto efficiency whenever the link is strictly monotonic.",
+      "support_lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.theorem3_2_mle_satisfies_pareto_efficiencySpec"
+      ]
+    },
+    "theorem4_2": {
+      "aliases": [
+        "Theorem 4.2",
+        "theorem4_2_mle_satisfies_monotonicitySpec",
+        "theorem4_2_mle_satisfies_monotonicity_proof"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.theorem4_2_mle_satisfies_monotonicity_proof"
+      ],
+      "semantic_context_requirements": [
+        {
+          "explanation": "Theorem 4.2 says that MLE satisfies monotonicity; Definition 4.1 supplies the exact one-count increase and relative-score inequalities meant by that conclusion.",
+          "kind": "definition4_1_monotonicity",
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 308,
+              "line_start": 280,
+              "publication_locator": "cited publication",
+              "quoted_text": "Definition 4.1 (Monotonicity). Suppose that # and #̃ are two datasets with unique MLEs ˆ and ˜.\nSuppose that #̃{x y} = #{x y} for all x, y 2 X except that #̃{a                   b} > #{a     b}. Then,\nmonotonicity requires that for all x 2 X ,\n                           ˜a     ˜x   ˆa    ˆx    and    ˜b    ˜x  ˆb    ˆx .\n\nEquivalently, monotonicity requires that if #{a b} decreases, then a becomes weaker relative to\nother alternatives, and b becomes stronger. We can interpret monotonicity as guaranteeing a kind of\nparticipation incentive: If we ask an agent to compare a to b, the agent is assured that the answer can\nonly influence our inferred utilities in the desired direction.\n\n\n                                                    5\n\f \u0001\u0002\u0006\n                                                      d     \u0001\u0002\u0007                                                  d     \u0001\u0002\u0006\n \u0001\u0002\u0003\n                                                            \u0001\u0002\u0001                                                  a     \u0001\u0002\u0001                                                   a\n \u0001\u0002\u0004\n                                                           -\u0001\u0002\u0007                                                       -\u0001\u0002\u0006                                                   c#\n \u0001\u0002\u0005\n                                                           -\u0001\u0002\u0006                                                  b\"                                                          b\"\n \u0001\u0002\u0001                                                  a    -\u0001\u0002\u0005\n                                                                                                                      -\u0001\u0002\u0005\n                                                                                                                                                                             d\n-\u0001\u0002\u0005\n                                                      b\"   -\u0001\u0002\u0004                                                  c#   -\u0001\u0002\u0004\n-\u0001\u0002\u0004\n                                                           -\u0001\u0002\u0003                                                       -\u0001\u0002\u0003\n-\u0001\u0002\u0003                                                  c#\n       (17, 86, 38, 56, , 4, 19, 89, 1, 67, 83, 34)               (95, 74, 36, 53, , 39, 62, 48, 1, 30, 77, 8)               (63, 54, 12, 19, , 54, 57, 80, 49, 7, 50, 20)",
+              "quoted_text_sha256": "42024ee058fc03d87e348d1d40afeb7c45a66f63c62753e2da29ed9098626a55"
+            }
+          ],
+          "source_location": "cited publication:280-308"
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "NoothigattuEtAl2020PairwiseComparisons.theorem4_2_mle_satisfies_monotonicity_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "NoothigattuEtAl2020PairwiseComparisons.theorem4_2_mle_satisfies_monotonicitySpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 371,
+          "line_start": 324,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 4.2. Maximum likelihood estimation satisfies monotonicity if F is strictly monotonic,\nlog-concave, and differentiable.\nThe proof, given in Appendix D, is relatively unwieldy. For intuition, let us provide an outline of\na proof for the special case of three alternatives a, b, c. Let # and #̃ be datasets that are identical\nexcept that #{a b} < #̃{a b}, and let ˆ and ˜ be the respective MLEs, which are unique by\nLemma 2.4. We take a as reference, so ˆa = ˜a = 0. It is easy to see that ˆb       ˜b , since otherwise\n ˆ would have greater log-likelihood than ˜ for the dataset #̃, as ˆ performs better on the a vs b\ncomparisons, and performs no worse on other comparisons by optimality for #. To see that also\n ˆc    ˜c , consider first the dataset # and associated log-likelihood L( b , c ) (with a fixed to 0).\nNow, for x 2 R, let (x) denote the value of c that maximizes L(x, c ), i.e., maximizes likelihood\namong parameters with a = 0 and b = x. One can show that, since F is strictly log-concave,\n  (x) is increasing in x.5 Notice that the number of comparisons between a and b in a dataset does\nnot influence the optimum position of c , once a and b are fixed. Hence, the function is the same\nwhether defined for # or for #̃, since they only differ in a vs b comparisons. We have already seen\nthat ˜b  ˆb . Since is increasing, we have ˜c = ( ˜b )  ( ˆb ) = ˆc , proving monotonicity.\nTo visualize monotonicity, consider the three examples in Figure 1. For four alternatives, we generated\nrandom datasets by choosing #{x y} uniformly at random between 1 and 100, and picked three\nexamples. In each case, we let #{b           c} vary from 0 to 100 (going horizontally from left to\nright), and show how the MLE of the Thurstone–Mosteller model changes as the number of b c\ncomparisons grows; we fix ˆa = 0 as reference. As predicted by Theorem 4.2, the orange line of ˆb\nis increasing, while the green line of ˆc is decreasing. Note that the change in #{b c} can affect\nother alternatives; in the middle figure, the relative positions of a and d swap.\n                            P\nIn the pooled setting # = i2R #i of Section 2, where each agent i 2 R is described by a random\nutility model with parameters i that generates #i , a natural notion of monotonicity is this: Suppose\nwe calculate the MLE ˆ for # and suppose we increase the utility ai for some agent i and some\nalternative a while keeping all other parameters fixed. Then the updated MLE ˜ should satisfy\n ˜a ˜x       ˆa ˆx for all x 2 X : the learned utility of a increases relative to other alternatives.\n    4\n      For the Bradley–Terry model, monotonicity is easier to check, since the first-order conditions of likelihood\nmaximization in that model are well-behaved [González-Díaz et al., 2014, Prop. 6.3]; that proof does not\ngeneralize to other models.\n    5\n      Assume that F is twice differentiable. Since log F is strictly concave, its second derivative is strictly\nnegative. A straightforward calculation shows that then @ 2 L/@ c @ c < 0 and that @ 2 L/@ c @ b > 0. By\ndefinition of , for each x, (@L/@ c )(x, (x)) = 0. Since @ 2 L/@ c @ b > 0, the function @L/@ c is\nincreasing in its first argument, and so (@L/@ c )(x + , (x)) > 0 for all > 0. Since @ 2 L/@ c @ c < 0,\nthe function @L/@ c is decreasing in its second argument, and hence (x + ) > (x), as desired.\n\n\n                                                                                        6\n\fTheorem 4.2 implies that random utility models (subject to the theorem’s conditions) satisfy this\npooled monotonicity notion with high probability, when #i consists of many samples and when the\nnumber of comparisons is uniform across pairs. The reason is this: with high probability, the increase\nof ai increases the number of a x comparisons in #i for all x. Assuming for now that no other\ndataset #j and no other pairs in #i are affected, then successively invoking Theorem 4.2 on a x\npairs yields the result. Now, with some probability, other parts will be affected, but not too much.\nSince the MLE is continuous in # (see Appendix E), this noise will not invalidate monotonicity.",
+          "quoted_text_sha256": "8a463f1cfb548e8ddb3d51dfe1e078b280030ae02cfa275c45812803c35a8c96"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem4.2",
+          "identity_schema": 2,
+          "reviewed_lean_route": "NoothigattuEtAl2020PairwiseComparisons.theorem4_2_mle_satisfies_monotonicity_proof",
+          "semantic_claim": "Maximum likelihood estimation satisfies Definition 4.1 monotonicity when the link is strictly monotonic, log-concave, and differentiable.",
+          "source_locator": "cited publication:324-371",
+          "source_quote_sha256": "8a463f1cfb548e8ddb3d51dfe1e078b280030ae02cfa275c45812803c35a8c96"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:324-371",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "15d87cf7b68b1a6bceeb55c7bb8673db98c9f9b34ffa5ca69e5cb3e5e46996ea",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "8a3d98bf180211ef8f8df4f8198e9729145296a40fdf3efbeaada8b8e1b7d3b0",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "semantic_bridge": "Direct review of the byte-pinned theorem, exact Definition 4.1 context, and expanded Spec confirmed the identical strict-monotonicity, log-concavity, differentiability premises and the full one-count-increase monotonicity conclusion, including both relative-score inequalities for every comparison alternative.",
+            "source_atom_sha256": "eb265e8a8af261a5cac6f9d7a8709399a4c5913f9e4ab934a2e2c1538c47ae6a",
+            "spec_component_sha256s": [
+              "03dd468c1448b2ca38aa0bcd61d37af4a1afd688668c5e8bd7af06fbee397310"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "aefbae5bb74c7a5de0782d136774e13c015a53c4cb5e0614fffad165947d1424",
+        "spec_closure_sha256": "48e8fef4f5046a7e8bbce9f5912a204529c7b7982de52ca9b0a78fcac3994bd5",
+        "spec_surface_sha256": "03dd468c1448b2ca38aa0bcd61d37af4a1afd688668c5e8bd7af06fbee397310"
+      },
+      "source_status": "direct byte-pinned source presentation",
+      "statement": "Maximum likelihood estimation satisfies Definition 4.1 monotonicity when the link is strictly monotonic, log-concave, and differentiable.",
+      "support_lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.theorem4_2_mle_satisfies_monotonicitySpec"
+      ]
+    },
+    "theorem5_3": {
+      "aliases": [
+        "Theorem 5.3",
+        "theorem5_3_mle_violates_pairwise_majority_consistencySpec",
+        "theorem5_3_mle_violates_pairwise_majority_consistency_proof"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.theorem5_3_mle_violates_pairwise_majority_consistency_proof"
+      ],
+      "semantic_context_requirements": [
+        {
+          "explanation": "Theorem 5.3 says that MLE violates pairwise majority consistency; Definition 5.1 supplies the exact global ranking property being negated.",
+          "kind": "definition5_1_pairwise_majority_consistency",
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 387,
+              "line_start": 380,
+              "publication_locator": "cited publication",
+              "quoted_text": "Definition 5.1. Suppose it is possible to label alternatives as X = {x1 , . . . , xm } such that whenever\ni < j, it holds that #{xi       xj } > #{xj        xi }. Then, pairwise majority consistency (PMC)\n                              ˆ\nrequires that for every MLE , it holds that xiˆ       ˆx for all i < j.\n                                                        j\n\n\nIn contrast to our previous properties, PMC is violated by random utility models.",
+              "quoted_text_sha256": "9d25a9171f8d9a7675babd4807099c0b966014442764bab32374288969cd31a3"
+            }
+          ],
+          "source_location": "cited publication:380-387"
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "NoothigattuEtAl2020PairwiseComparisons.theorem5_3_mle_violates_pairwise_majority_consistency_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "NoothigattuEtAl2020PairwiseComparisons.theorem5_3_mle_violates_pairwise_majority_consistencySpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 416,
+          "line_start": 406,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 5.3. Maximum likelihood estimation violates pairwise majority consistency whenever F is\nstrictly monotonic, strictly log-concave, and differentiable.\n\nHow frequent are PMC violations? Write %{x y} = #{x y}/(#{x y} + #{y x}) for\nthe fraction of x vs y comparisons that x wins. For X = {a, b, c}, let T be the space of datasets with\n                            0.5 < %{a       b}, %{a     c}, %{b    c}  1.\n\nFor all datasets in T , PMC requires that ˆa > ˆb > ˆc . In Figure 2, we draw the cube T and show\nthe regions where the MLE for Thurstone–Mosteller fails PMC. Example 5.2, suitably normalized,\nfalls in the upper orange region. Sampling uniformly over T , we find that Thurstone–Mosteller fails\nPMC in 17.8% of datasets, while Bradley–Terry fails in 16.6% of datasets.",
+          "quoted_text_sha256": "a753432c1745bdff9018c651b4fe7796696f5d7637be8616f3b6bb524e386fa9"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem5.3",
+          "identity_schema": 2,
+          "reviewed_lean_route": "NoothigattuEtAl2020PairwiseComparisons.theorem5_3_mle_violates_pairwise_majority_consistency_proof",
+          "semantic_claim": "Maximum likelihood estimation violates pairwise majority consistency for every strictly monotonic, strictly log-concave, differentiable link in the source class.",
+          "source_locator": "cited publication:406-416",
+          "source_quote_sha256": "a753432c1745bdff9018c651b4fe7796696f5d7637be8616f3b6bb524e386fa9"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:406-416",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "15d87cf7b68b1a6bceeb55c7bb8673db98c9f9b34ffa5ca69e5cb3e5e46996ea",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "b1ef80c5b64f098c5fccdd9865fcd8b4625e29758658299be33789e6cea00967",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "semantic_bridge": "Direct review of the byte-pinned theorem, exact Definition 5.1 context, and expanded Spec confirmed the same strictly monotone, strictly log-concave, differentiable link premises and negation of the full universal pairwise-majority-consistency property. The predicate's quantifiers and strict score order were reviewed in full.",
+            "source_atom_sha256": "2029ba44ec15af0cb8472657765ea3a128258f48343276a962385597ce6003a1",
+            "spec_component_sha256s": [
+              "0f61472d4128ddc084ce0d2608779361a7c642c24d944327f768692c623c8877"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "1c3b11e1440d7ffad043b3e82553c2b194a6406e7a8774cb18b4960cc9fdfc0c",
+        "spec_closure_sha256": "1fb2ece746ffd90bb562f4bd33bd058bf12db0a40047103e88f7c02a6d461216",
+        "spec_surface_sha256": "0f61472d4128ddc084ce0d2608779361a7c642c24d944327f768692c623c8877"
+      },
+      "source_status": "direct byte-pinned source presentation",
+      "statement": "Maximum likelihood estimation violates pairwise majority consistency for every strictly monotonic, strictly log-concave, differentiable link in the source class.",
+      "support_lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.theorem5_3_mle_violates_pairwise_majority_consistencySpec"
+      ]
+    },
+    "theorem6_3": {
+      "aliases": [
+        "Theorem 6.3",
+        "theorem6_3_mle_violates_separabilitySpec",
+        "theorem6_3_mle_violates_separability_proof"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.theorem6_3_mle_violates_separability_proof"
+      ],
+      "semantic_context_requirements": [
+        {
+          "explanation": "Theorem 6.3 says that MLE violates separability; Definition 6.1 supplies the exact two-dataset pooling property being negated.",
+          "kind": "definition6_1_separability",
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 467,
+              "line_start": 459,
+              "publication_locator": "cited publication",
+              "quoted_text": "Definition 6.1. Consider two datasets #1 and #2 , and let ˆ1 and ˆ2 be MLEs. Suppose there exist\ntwo alternatives a, b 2 X such that ˆa1 > ˆb1 and ˆa2 > ˆb2 . Separability requires that for every\nMLE ˆ for the pooled dataset # = #1 + #2 , it also holds that ˆa > ˆb .\n\nSeparability is also called consistency, and seems particularly desirable in cases where we combine\npairwise comparisons from different sources. While perhaps on first glance innocuous, separability is\nan extremely strong requirement, and few rules satisfy it; one can prove in general that separability\nconstrains rules to be linear [Myerson, 1995]. Since likelihood maximization is not linear, it is no\nsurprise that MLEs for random utility models fail separability.",
+              "quoted_text_sha256": "491c92112c2d5c61be671849a26a0fd47b258607c86a0fd1bebfc82874c3085a"
+            }
+          ],
+          "source_location": "cited publication:459-467"
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "NoothigattuEtAl2020PairwiseComparisons.theorem6_3_mle_violates_separability_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "NoothigattuEtAl2020PairwiseComparisons.theorem6_3_mle_violates_separabilitySpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 496,
+          "line_start": 485,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 6.3. Maximum likelihood estimation violates separability whenever F is strictly monotonic,\nstrictly log-concave, and differentiable.\n\nLike for PMC, we can again ask on what percentage of (pairs of) datasets the MLE fails separately.\nSince we sample over pairs, we might guess the answer to be of lower order than in the case of PMC,\nand this is borne out by the data. For m = 3 alternatives, sampling uniformly over the space of\ndatasets for which each pair of distinct alternatives is compared equally often, we find that on about\n1.5% of dataset pairs, Thurstone–Mosteller fails separability. This fraction increases as m increases,\nsince there are more pairs of alternatives for which separability can be violated.\n\n\n                                                                    8",
+          "quoted_text_sha256": "afa9af715cc96eddec1301db9827ff9c2ba1980952479a27593ca4a4cd712b28"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem6.3",
+          "identity_schema": 2,
+          "reviewed_lean_route": "NoothigattuEtAl2020PairwiseComparisons.theorem6_3_mle_violates_separability_proof",
+          "semantic_claim": "Maximum likelihood estimation violates separability for every strictly monotonic, strictly log-concave, differentiable link in the source class.",
+          "source_locator": "cited publication:485-496",
+          "source_quote_sha256": "afa9af715cc96eddec1301db9827ff9c2ba1980952479a27593ca4a4cd712b28"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:485-496",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "15d87cf7b68b1a6bceeb55c7bb8673db98c9f9b34ffa5ca69e5cb3e5e46996ea",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "485800814d0add586644412de28119c71e242104d515e1932bcd7db82cd70544",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "semantic_bridge": "Direct review of the byte-pinned theorem, exact Definition 6.1 context, and expanded Spec confirmed the same strictly monotone, strictly log-concave, differentiable link premises and negation of the full two-dataset pooling separability property. The component and pooled MLE quantifiers and strict order were reviewed in full.",
+            "source_atom_sha256": "45901d49323b10b13b4880e4db025fb7b9a6c5af8ae36e198b1473a5b2017dbf",
+            "spec_component_sha256s": [
+              "de37e984b553b5a4752ff1b7f1d7f4d2ed6800d1184d745e000ca99134a95cbb"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "67800db11ac0a83ebef047fa72bd2b65aba623dda36d6e7d863c722aa7692c0e",
+        "spec_closure_sha256": "c34793ee073ee7dd41247d190891573f1fb1d7a07b63be29bcfd07a6e9389c3e",
+        "spec_surface_sha256": "de37e984b553b5a4752ff1b7f1d7f4d2ed6800d1184d745e000ca99134a95cbb"
+      },
+      "source_status": "direct byte-pinned source presentation",
+      "statement": "Maximum likelihood estimation violates separability for every strictly monotonic, strictly log-concave, differentiable link in the source class.",
+      "support_lean_declarations": [
+        "NoothigattuEtAl2020PairwiseComparisons.theorem6_3_mle_violates_separabilitySpec"
+      ]
+    }
+  },
+  "paper": "NoothigattuEtAl2020PairwiseComparisons",
+  "paper_interface_namespace": "NoothigattuEtAl2020PairwiseComparisons",
+  "paper_semantic_prerequisite_sources": {
+    "NoothigattuEtAl2020PairwiseComparisons.definition3_1_pareto_efficiency": "definition3_1",
+    "NoothigattuEtAl2020PairwiseComparisons.definition4_1_monotonicitySpec": "definition4_1",
+    "NoothigattuEtAl2020PairwiseComparisons.definition5_1_pairwise_majority_consistencySpec": "definition5_1",
+    "NoothigattuEtAl2020PairwiseComparisons.definition6_1_separabilitySpec": "definition6_1"
+  },
+  "schema": 1,
+  "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
+  "source_anchor_evidence_required": true,
+  "source_artifact_sha256": "4fb2747b73e16ea3f73e3739b6b6e0e231820384225d3094ed0fb5f057a68e82",
+  "source_claim_atoms_schema": 1,
+  "source_coverage_mode": "named_theoretical_statements",
+  "source_curated": true,
+  "source_inventory_kind": "theoretical_model_and_results",
+  "source_inventory_policy": "All twelve numbered main-paper definitions, lemmas, and theorems and both named supplementary proof claims are retained as fourteen source-facing semantic-review items. The named numerical examples, figures, and empirical percentages remain context rather than independent normal-scope theorem targets.",
+  "source_named_result_inventory_review": {
+    "candidate_presentations": [
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_001",
+        "presentation_label": "Example 5.2",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "Example 5.2 gives one numerical three-alternative counterexample to pairwise-majority consistency, including approximate MLE values. The general source claim is the already inventoried Theorem 5.3; validating this particular numerical computation is deep-audit material rather than a separate direct-review theorem row.",
+        "source_anchor": {
+          "line_end": 402,
+          "line_start": 388,
+          "publication_locator": "cited publication",
+          "quoted_text": "Example 5.2. Consider X = {a, b, c}, and consider the dataset\n #{a     b} = 3, #{b      a} = 2, #{a      c} = 3, #{c      a} = 2, #{b      c} = 10, #{c      b} = 1.\nThis dataset conforms to Definition 5.1 if we label x1 , x2 , x3 = a, b, c. However, the unique MLE in\nthe Thurstone–Mosteller model is ˆa = 0, ˆb ⇡ 0.217 and ˆc ⇡ 0.751, so that ˆb > ˆa > ˆc . The\nsame example works for Bradley–Terry, which has MLE ˆa = 0, ˆb ⇡ 0.316 and ˆc ⇡ 1.256.\n\nWhy does the MLE not respect the majority ordering on this example? \u0006\u0007\u0001                       b\"\nIf the number #{b        c} was slightly above 1, we would obtain an   \u0006\u0007\u0006                    a\nMLE respecting the majority ordering, with a b c. However, as -\u0006\u0007\u0001\n#{b c} increases, due to the monotonicity of MLEs (Theorem 4.2), -\u0006\u0007\u0002\nwe find that ˆb increases and ˆc decreases. When #{b c} becomes -\u0006\u0007\u0003\n                                                                                              c#\nsufficiently large, ˆb crosses ˆa . Thus, we find that the MLE has the     \u0001  \u0002   \u0003    \u0004    \u0005\u0006\n\nordering b a c, which violates PMC. The figure on the right shows this behavior in the style of",
+          "quoted_text_sha256": "96a83c14830183b5c78d692b4390b309853faff31d2aa9145f5bb57a6197c247"
+        },
+        "visible_kind": "example"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_002",
+        "presentation_label": "Example 6.2",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "Example 6.2 gives two numerical datasets and approximate MLE values illustrating a separability failure. The general source claim is the already inventoried Theorem 6.3; the particular numerical counterexample computation remains deep-audit material rather than a separate direct-review theorem row.",
+        "source_anchor": {
+          "line_end": 484,
+          "line_start": 468,
+          "publication_locator": "cited publication",
+          "quoted_text": "Example 6.2. Let X = {a, b, c}, and consider the two datasets\n               #1 {a       c} = 6, #1 {c                 a} = 4, #1 {c         b} = 100, #1 {b        c} = 1, and\n                2                                   2               2                       2\n               # {a        c} = 6, # {c                  a} = 4, # {b          a} = 100, # {a           b} = 1,\nwith 0 counts on all unspecified pairs. The unique MLEs for Thurstone–Mosteller on #1 and #2 are\n          ˆ1 = 0, ˆ1 ⇡             2.58, ˆc1 ⇡           0.253;     and       ˆ2 = 0, ˆ2 ⇡ 2.330, ˆ2 ⇡        0.253.\n           a           b                                                      a       b                 c\n\nWe have both ˆa1 > ˆc1 and ˆa2 > ˆc2 . However, the unique MLE on # = #1 + #2 is ˆa = 0,\nˆb ⇡ 0.987 and ˆc ⇡ 1.973. Thus. ˆa < ˆc , and so Thurstone–Mosteller violates separability. (The\nsame example shows that Bradley–Terry violates separability.)\n\nIntuitively, in both #1 and #2 there is a weak tendency to rank a above c, and the MLE can implement\nthis tendency without incurring any cost on other pairs (since Lemma 2.2 applies). However, once we\ncombine the datasets, a strong consensus for c b a emerges, and overriding this consensus to\nensure a c is not worth it. While failing separability, the MLE’s behavior seems perfectly sensible,\nand we prove in Appendix F that all random utility model do the same on this kind of example.",
+          "quoted_text_sha256": "c6d98abca0767b511c7d4b3aa6d88e0fb4ace9840297217d3b25dae3134fad26"
+        },
+        "visible_kind": "example"
+      }
+    ],
+    "complete": true,
+    "discovered_candidate_presentation_sha256": "c4e4dd417dca02380088381ae9157caf7aea37b08079376ce053c1d998f98efc",
+    "discovered_named_result_sha256": "a284718ca0534401e05e78deca25fc9fc0a0aad21498ef4a8a1f7f257cf22c30",
+    "discovered_prose_definition_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "method": "Independent holistic read of the complete 1,790-line byte-pinned combined proceedings-and-supplement transcript against the current fourteen-item named theoretical map. The read confirmed that the only additional labelled mathematical presentations are Examples 5.2 and 6.2; both are numerical illustrations of already inventoried Theorems 5.3 and 6.3 rather than independent theorem targets.",
+    "prose_definition_presentations": [],
+    "schema": 1,
+    "source_artifact_sha256": "4fb2747b73e16ea3f73e3739b6b6e0e231820384225d3094ed0fb5f057a68e82",
+    "validated_at": "2026-09-02T08:56:37Z",
+    "validator": "independent full-source candidate-surface review"
+  },
+  "source_spec_correspondence_schema": 1,
+  "source_url": "https://proceedings.neurips.cc/paper_files/paper/2020/hash/cdaa9b682e10c291d3bbadca4c96f5de-Abstract.html",
+  "source_version": "NeurIPS 2020 published conference paper and official supplement",
+  "title": "Axioms for Learning from Pairwise Comparisons"
+}

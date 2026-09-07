@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Reissue current source-to-library semantic-review records.
+"""Reissue current source-to-reusable-declaration semantic-review records.
 
-The reviewer, not this command, decides whether a reusable EconCSLib
+The reviewer, not this command, decides whether a reusable repository
 declaration matches its selected paper-source bundle.  This command requires
-an explicit judgment and reason for every material library declaration on the
-selected PaperInterface surface, rebuilds the exact source, Lean-produced
-semantic-target, and bounded Lean-declaration digests, and writes the one
-canonical paper-local ledger.
+an explicit judgment and reason for every new or semantically changed material
+library declaration on the selected PaperInterface surface. Existing rows are
+reused only when their exact source bundle and Lean-produced semantic-target
+identities are unchanged. The command rebuilds bounded declaration and routing
+metadata and writes the one canonical paper-local ledger.
 
 It is intentionally parallel to the v11 source-to-Spec screening writer.  It
 never turns a declaration name, docstring, dashboard gloss, or old hash into a
@@ -16,7 +17,7 @@ semantic verdict.
 from __future__ import annotations
 
 import argparse
-import hashlib
+from collections import defaultdict, deque
 import json
 import sys
 from datetime import datetime, timezone
@@ -25,18 +26,35 @@ from typing import Any, Mapping
 
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT / "scripts") not in sys.path:
-    sys.path.insert(0, str(ROOT / "scripts"))
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
-import review_dashboard  # noqa: E402
-import review_dashboard_packet  # noqa: E402
+from scripts import semantic_review_decision_queue as review_queue  # noqa: E402
+from scripts.current_closeout.review_surface import (  # noqa: E402
+    load_current_v11_review_graph_projection,
+)
+from scripts.obligation_routes import (  # noqa: E402
+    EvidenceRouteSet,
+    ObligationRouteError,
+)
+from scripts.semantic_prerequisite_projection import (  # noqa: E402
+    LIBRARY_SEMANTIC_TARGET_PROTOCOL,
+    REQUIRED_LLM_LIBRARY_SEMANTIC_REVIEW_PROMPT_VERSION,
+    selected_library_semantic_prerequisite_targets,
+)
+from scripts.corrected_target_identity import (  # noqa: E402
+    APPROVED_CORRECTED_TARGET_MATCH,
+    current_approved_corrected_target_metadata,
+    source_requires_approved_corrected_target,
+)
 
 
 LEDGER_RELATIVE = Path("audit") / "library_semantic_review.json"
-PROMPT_VERSION = "library-statement-match-v2-verbatim-source-anchor-lean-display-exact-code"
-TARGET_PROTOCOL = "lean-library-display-plus-exact-code-v1"
-DIRECT_SPEC_DEPENDENCY_PROTOCOL = "lean-expanded-paper-spec-library-surface-v1"
-VALID_VERDICTS = frozenset({"matches", "mismatch", "uncertain"})
+PROMPT_VERSION = REQUIRED_LLM_LIBRARY_SEMANTIC_REVIEW_PROMPT_VERSION
+TARGET_PROTOCOL = LIBRARY_SEMANTIC_TARGET_PROTOCOL
+VALID_VERDICTS = frozenset(
+    {"matches", APPROVED_CORRECTED_TARGET_MATCH, "mismatch", "uncertain"}
+)
 
 
 class LibraryReviewReissueError(ValueError):
@@ -55,213 +73,233 @@ def _load_object(path: Path, *, label: str) -> dict[str, Any]:
 
 def _decisions(path: Path, *, paper: str) -> dict[str, dict[str, Any]]:
     payload = _load_object(path, label="decision file")
-    if payload.get("schema") != 1:
-        raise LibraryReviewReissueError("decision file schema must be 1")
-    if payload.get("paper") != paper:
-        raise LibraryReviewReissueError("decision file paper does not match --paper")
-    raw_items = payload.get("items")
-    if not isinstance(raw_items, Mapping) or not raw_items:
-        raise LibraryReviewReissueError("decision file needs a nonempty items object")
-    raw_redirects = payload.get("source_item_redirects", {})
-    if not isinstance(raw_redirects, Mapping) or not all(
-        isinstance(source, str)
-        and source.strip()
-        and isinstance(target, str)
-        and target.strip()
-        for source, target in raw_redirects.items()
-    ):
-        raise LibraryReviewReissueError(
-            "source_item_redirects must be a map of nonempty source-map item ids"
+    try:
+        return review_queue.normalized_decisions(
+            payload,
+            paper=paper,
+            valid_verdicts=VALID_VERDICTS,
         )
-    redirects = {str(source).strip(): str(target).strip() for source, target in raw_redirects.items()}
-    decisions: dict[str, dict[str, Any]] = {}
-    for raw_name, raw in raw_items.items():
-        name = str(raw_name or "").strip()
-        if not name or not isinstance(raw, Mapping):
-            raise LibraryReviewReissueError("each decision needs a nonempty library name and object")
-        judgment = str(raw.get("judgment") or "").strip().lower()
-        reason = str(raw.get("reason") or "").strip()
-        if judgment not in VALID_VERDICTS:
-            raise LibraryReviewReissueError(f"{name}: unsupported judgment `{judgment}`")
-        if not reason:
-            raise LibraryReviewReissueError(f"{name}: reviewer reason is required")
-        decision = dict(raw)
-        decision["judgment"] = judgment
-        decision["reason"] = reason
-        source_item = decision.get("source_item")
-        if isinstance(source_item, str) and source_item.strip() in redirects:
-            decision["source_item"] = redirects[source_item.strip()]
-        decisions[name] = decision
-    return decisions
+    except review_queue.SemanticReviewDecisionQueueError as exc:
+        raise LibraryReviewReissueError(str(exc)) from exc
 
 
-def _selected_claims(paper_dir: Path, source_map: Mapping[str, Any]) -> list[dict[str, str]]:
-    raw_items = source_map.get("items")
-    if not isinstance(raw_items, Mapping):
-        raise LibraryReviewReissueError("paper statement map has no items object")
-    specs = {
-        str(contract.get("spec_declaration") or "").strip()
-        for item in raw_items.values()
-        if isinstance(item, Mapping)
-        for contract in [item.get("semantic_contract")]
-        if isinstance(contract, Mapping)
-        and str(contract.get("spec_declaration") or "").strip()
-    }
-    claims = [
-        {
-            "interface_source": str(source),
-            "lean_statement": str(source),
-            "semantic_spec_declaration": str(full),
-        }
-        for _kind, _short, full, source, _comment, _line, _path in review_dashboard.parse_review_source_declarations(
-            paper_dir / "PaperInterface.lean"
-        )
-        if str(full) in specs
-    ]
-    if not claims:
-        raise LibraryReviewReissueError("no source-facing PaperInterface Specs were found")
-    return claims
-
-
-def _expanded_spec_dependency_surface(
-    paper_dir: Path,
-    claims: list[dict[str, str]],
+def decision_template(
+    source_map: Mapping[str, Any],
+    semantic_targets: Mapping[str, Mapping[str, Any]],
+    paper_prerequisite_targets: Mapping[str, Mapping[str, Any]],
+    library_targets: Mapping[str, Mapping[str, Any]],
     *,
-    require_build: bool = True,
-    semantic_targets_override: Mapping[str, Mapping[str, Any]] | None = None,
+    paper: str,
 ) -> dict[str, Any]:
-    """Obtain the current Lean-expanded reusable-library surface.
+    """Return a dependency-routed, deliberately non-evidentiary work queue.
 
-    This is deliberately separate from the reviewer decisions below.  Lean
-    resolves unqualified/open-namespace names; the reviewer then gives an
-    explicit source-to-definition verdict for every resulting material owner.
+    Lean owns the complete paper/library dependency closure.  Typed source
+    routes seed candidate source items at its roots, and those candidates are
+    propagated only along Lean-emitted dependency edges.  This narrows what a
+    reviewer must inspect without inferring a verdict from names or locations.
     """
 
-    specifications = sorted(
-        {
-            str(claim.get("semantic_spec_declaration") or "").strip()
-            for claim in claims
-            if str(claim.get("semantic_spec_declaration") or "").strip()
-        }
-    )
-    if not specifications:
-        raise LibraryReviewReissueError("no source-facing PaperInterface Specs were found")
-    if semantic_targets_override is None:
-        try:
-            resolved = review_dashboard_packet.semantic_expanded_spec_targets(
-                paper_dir, specifications, require_build=require_build
-            )
-        except ValueError as exc:
-            raise LibraryReviewReissueError(
-                "Lean could not produce the expanded source-facing Spec surface: " + str(exc)
-            ) from exc
-    else:
-        resolved = {
-            str(name): dict(target)
-            for name, target in semantic_targets_override.items()
-            if str(name).strip() and isinstance(target, Mapping)
-        }
-    if set(resolved) != set(specifications):
-        missing = sorted(set(specifications) - set(resolved))
-        raise LibraryReviewReissueError(
-            "Lean could not produce the complete expanded-library dependency surface"
-            + (": " + ", ".join(missing) if missing else "")
-        )
     try:
-        interface_bytes = (paper_dir / "PaperInterface.lean").read_bytes()
-    except OSError as exc:
-        raise LibraryReviewReissueError(
-            f"could not read PaperInterface.lean for dependency surface: {exc}"
-        ) from exc
-    source_by_spec = {
-        str(claim["semantic_spec_declaration"]): str(claim["interface_source"])
-        for claim in claims
-    }
-    items: dict[str, Any] = {}
-    for spec in specifications:
-        direct = list(resolved[spec].get("library_declarations", ()))
-        owners = sorted(
-            {
-                review_dashboard.library_review_owner_declaration(name)
-                for name in direct
-            }
+        routes = EvidenceRouteSet.from_source_map(
+            source_map
         )
-        items[spec] = {
-            "spec_source_sha256": review_dashboard.statement_digest(source_by_spec[spec]),
-            "semantic_target_sha256": str(
-                resolved[spec].get("display_sha256") or ""
+    except ObligationRouteError as exc:
+        raise LibraryReviewReissueError(
+            "invalid typed source route surface: " + str(exc)
+        ) from exc
+    try:
+        selected_targets = selected_library_semantic_prerequisite_targets(
+            source_map,
+            library_targets,
+        )
+    except ValueError as exc:
+        raise LibraryReviewReissueError(str(exc)) from exc
+    expected = set(selected_targets)
+    result_by_spec = routes.result_route_by_specification()
+    missing_specs = sorted(set(result_by_spec) - set(semantic_targets))
+    if missing_specs:
+        raise LibraryReviewReissueError(
+            "staged Lean cache lacks typed result Specs: "
+            + ", ".join(missing_specs[:4])
+        )
+
+    raw_explicit_sources = source_map.get(
+        "library_semantic_prerequisite_sources", {}
+    )
+    if not isinstance(raw_explicit_sources, Mapping) or not all(
+        isinstance(declaration, str)
+        and declaration.strip()
+        and isinstance(source_item, str)
+        and source_item.strip()
+        for declaration, source_item in raw_explicit_sources.items()
+    ):
+        raise LibraryReviewReissueError(
+            "library_semantic_prerequisite_sources must map nonempty Lean "
+            "declaration names to nonempty source-item ids"
+        )
+    explicit_sources = {
+        str(declaration).strip(): str(source_item).strip()
+        for declaration, source_item in raw_explicit_sources.items()
+    }
+    unknown_explicit_declarations = sorted(set(explicit_sources) - expected)
+    if unknown_explicit_declarations:
+        raise LibraryReviewReissueError(
+            "library_semantic_prerequisite_sources names absent Lean-selected "
+            "material declarations: " + ", ".join(unknown_explicit_declarations)
+        )
+    raw_source_items = source_map.get("items")
+    source_items = raw_source_items if isinstance(raw_source_items, Mapping) else {}
+    unknown_explicit_source_items = sorted(
+        set(explicit_sources.values()) - set(source_items)
+    )
+    if unknown_explicit_source_items:
+        raise LibraryReviewReissueError(
+            "library_semantic_prerequisite_sources names absent source items: "
+            + ", ".join(unknown_explicit_source_items)
+        )
+
+    if source_map.get("semantic_route_schema") == 2:
+        # The explicit typed map is the sole source-semantic frontier. The
+        # Lean graph still retains every recursive reusable dependency for
+        # proof, axiom, and import checks, but a proof helper with no source
+        # statement must not acquire a made-up LLM comparison row.
+        return {
+            "schema": 1,
+            "paper": paper,
+            "comment": (
+                "Non-evidence review work queue. Each row is one explicitly "
+                "source-mapped reusable semantic root from the Lean-owned "
+                "dependency graph. Recursive proof-only reusable dependencies "
+                "remain graph-checked support and are not source-review rows."
             ),
-            "direct_library_declarations": direct,
-            "review_owner_declarations": owners,
+            "unrouted_declarations": [],
+            "items": {
+                name: {
+                    "source_item": explicit_sources[name],
+                    "candidate_source_items": [explicit_sources[name]],
+                    "judgment": "",
+                    "reason": "",
+                }
+                for name in sorted(expected)
+            },
+        }
+
+    owners: dict[str, set[str]] = defaultdict(set)
+    pending_library: deque[tuple[str, str]] = deque()
+
+    def library_owner(raw: object) -> str:
+        name = str(raw or "").strip()
+        # Current graph edges already name the Lean-selected review owner.
+        # Re-normalizing them through a Python declaration table creates a
+        # second, potentially stale semantic owner authority.
+        return name
+
+    def seed_library(raw: object, source_item: str) -> None:
+        name = library_owner(raw)
+        if not name:
+            return
+        if name not in expected:
+            raise LibraryReviewReissueError(
+                "staged library surface omits Lean-routed declaration: " + name
+            )
+        # Lean owns whether this declaration is material and all recursive
+        # dependencies.  A source map may nevertheless select the one source
+        # model/result that semantically introduces a reused library concept;
+        # a downstream theorem conclusion is often only a structural route.
+        pending_library.append((name, explicit_sources.get(name, source_item)))
+
+    paper_owners: dict[str, set[str]] = defaultdict(set)
+    pending_paper: deque[tuple[str, str]] = deque()
+
+    for specification, route in result_by_spec.items():
+        target = semantic_targets.get(specification)
+        if not isinstance(target, Mapping):
+            continue
+        for name in target.get("library_declarations", ()):
+            seed_library(name, route.source_item_id)
+        for raw_name in target.get("prerequisite_declarations", ()):
+            name = str(raw_name or "").strip()
+            if name:
+                pending_paper.append((name, route.source_item_id))
+
+    for route in routes.routes:
+        for declaration in route.semantic_declarations:
+            if declaration in expected:
+                seed_library(declaration, route.source_item_id)
+            elif declaration:
+                pending_paper.append((declaration, route.source_item_id))
+
+    while pending_paper:
+        declaration, source_item = pending_paper.popleft()
+        if source_item in paper_owners[declaration]:
+            continue
+        paper_owners[declaration].add(source_item)
+        target = paper_prerequisite_targets.get(declaration)
+        if not isinstance(target, Mapping):
+            continue
+        for name in target.get("direct_library_declarations", ()):
+            seed_library(name, source_item)
+        for raw_child in target.get("direct_paper_declarations", ()):
+            child = str(raw_child or "").strip()
+            if child in paper_prerequisite_targets:
+                pending_paper.append((child, source_item))
+
+    while pending_library:
+        declaration, source_item = pending_library.popleft()
+        if source_item in owners[declaration]:
+            continue
+        owners[declaration].add(source_item)
+        target = library_targets.get(declaration)
+        if not isinstance(target, Mapping):
+            continue
+        for child in target.get("direct_library_declarations", ()):
+            seed_library(child, source_item)
+
+    items: dict[str, Any] = {}
+    for name in sorted(expected):
+        candidates = sorted(owners.get(name, ()))
+        items[name] = {
+            "source_item": candidates[0] if len(candidates) == 1 else "",
+            "candidate_source_items": candidates,
+            "judgment": "",
+            "reason": "",
         }
     return {
         "schema": 1,
-        "protocol": DIRECT_SPEC_DEPENDENCY_PROTOCOL,
-        "paper_interface_sha256": hashlib.sha256(interface_bytes).hexdigest(),
+        "paper": paper,
+        "comment": (
+            "Non-evidence review work queue. Candidate source items follow only "
+            "typed source routes and Lean-produced dependency edges, except that "
+            "a source map may select one explicit canonical source connection for "
+            "a material reusable declaration. The reviewer "
+            "must inspect exact source bytes, the full Lean display, and exact "
+            "bounded declaration code before filling every judgment and reason."
+        ),
+        "unrouted_declarations": sorted(expected - set(owners)),
         "items": items,
     }
 
 
-def _direct_surface_owners(surface: Mapping[str, Any]) -> set[str]:
-    """Return the declared material owners, rejecting malformed injected data."""
-
-    items = surface.get("items")
-    if not isinstance(items, Mapping):
-        raise LibraryReviewReissueError("direct-library dependency surface has no items object")
-    owners: set[str] = set()
-    for spec, raw in items.items():
-        if not str(spec or "").strip() or not isinstance(raw, Mapping):
-            raise LibraryReviewReissueError("direct-library dependency surface has malformed item")
-        raw_owners = raw.get("review_owner_declarations")
-        if not isinstance(raw_owners, list) or any(
-            not isinstance(name, str) or not name.startswith("EconCSLib.")
-            for name in raw_owners
-        ):
-            raise LibraryReviewReissueError(
-                "direct-library dependency surface has malformed review-owner declarations"
-            )
-        owners.update(raw_owners)
-    return owners
-
-
-def _lean_expanded_library_owners(
-    paper_dir: Path, source_map: Mapping[str, Any]
-) -> set[str]:
-    """Return every reusable declaration left in Lean's expanded Spec target."""
-
-    raw_items = source_map.get("items")
-    if not isinstance(raw_items, Mapping):
-        raise LibraryReviewReissueError("paper statement map has no items object")
-    specifications = sorted(
-        {
-            str(contract.get("spec_declaration") or "").strip()
-            for item in raw_items.values()
-            if isinstance(item, Mapping)
-            for contract in [item.get("semantic_contract")]
-            if isinstance(contract, Mapping)
-            and str(contract.get("spec_declaration") or "").strip()
-        }
-    )
-    if not specifications:
-        raise LibraryReviewReissueError("no source-facing PaperInterface Specs were found")
+def _template_output_path(paper_dir: Path, raw_path: Path) -> Path:
     try:
-        targets = review_dashboard_packet.semantic_expanded_spec_targets(
-            paper_dir, specifications
+        return review_queue.template_output_path(
+            paper_dir, raw_path, repository_root=ROOT
         )
-    except ValueError as exc:
-        raise LibraryReviewReissueError(
-            "Lean could not produce expanded semantic library targets: " + str(exc)
-        ) from exc
-    if set(targets) != set(specifications):
-        raise LibraryReviewReissueError(
-            "Lean did not return every selected expanded semantic library target"
+    except review_queue.SemanticReviewDecisionQueueError as exc:
+        raise LibraryReviewReissueError(str(exc)) from exc
+
+
+def _content_addressed_queue_path(
+    paper_dir: Path, payload: Mapping[str, Any]
+) -> Path:
+    try:
+        return review_queue.content_addressed_queue_path(
+            paper_dir,
+            payload,
+            filename_prefix="library_semantic_reissue_decisions_",
         )
-    return {
-        review_dashboard.library_review_owner_declaration(declaration)
-        for target in targets.values()
-        for declaration in target.get("library_declarations", ())
-        if str(declaration).strip().startswith("EconCSLib.")
-    }
+    except review_queue.SemanticReviewDecisionQueueError as exc:
+        raise LibraryReviewReissueError(str(exc)) from exc
 
 
 def _merged_ledger(
@@ -269,7 +307,11 @@ def _merged_ledger(
 ) -> dict[str, Any]:
     raw_existing = existing.get("items")
     existing_items = raw_existing if isinstance(raw_existing, Mapping) else {}
-    merged: dict[str, Any] = {}
+    merged: dict[str, Any] = {
+        str(name): dict(row)
+        for name, row in existing_items.items()
+        if str(name).strip() and isinstance(row, Mapping)
+    }
     for name, decision in decisions.items():
         prior = existing_items.get(name)
         row = dict(prior) if isinstance(prior, Mapping) else {}
@@ -294,55 +336,146 @@ def _merged_ledger(
     return merged
 
 
-def _material_entries(
-    paper_dir: Path,
-    source_map: Mapping[str, Any],
-    ledger_items: Mapping[str, Any],
-    direct_surface: Mapping[str, Any],
-    prerequisite_owners: set[str],
-    library_semantic_targets_override: Mapping[str, Mapping[str, Any]] | None = None,
-    library_semantic_target_errors_override: Mapping[str, str] | None = None,
-) -> list[dict[str, Any]]:
-    """Build entries through the dashboard's exact source/code extractors.
+def _unchanged_semantic_judgment(
+    prior: object, entry: Mapping[str, Any]
+) -> dict[str, str] | None:
+    """Return reusable reviewer metadata for one exact semantic identity.
 
-    The dashboard is given a temporary in-memory ledger through a narrow mock
-    of its loader.  This avoids a write-before-validation path while retaining
-    one implementation of source-bundle and bounded-declaration parsing.
+    Navigation coordinates and bounded declaration bytes may be refreshed
+    mechanically. Reviewer authority is reusable only when the byte-pinned
+    paper source bundle and Lean-produced semantic target are identical.
     """
 
-    claims = _selected_claims(paper_dir, source_map)
-    owners = sorted(_direct_surface_owners(direct_surface))
-    for claim in claims:
-        claim["library_review_owner_declarations"] = owners
-    if prerequisite_owners:
-        claims.append(
-            {
-                "library_review_owner_declarations": sorted(prerequisite_owners),
-            }
-        )
-    original = review_dashboard._library_semantic_review_payload
+    return review_queue.reusable_semantic_judgment(
+        prior,
+        entry,
+        target_protocol_field="library_semantic_target_protocol",
+        target_protocol=TARGET_PROTOCOL,
+        prior_code_sha256_field="library_definition_sha256",
+        current_code_sha256_field="current_named_library_definition_sha256",
+        prior_target_sha256_field="library_semantic_target_sha256",
+        current_target_sha256_field="library_semantic_target_sha256",
+    )
 
-    def loader(folder: Path) -> tuple[Mapping[str, Any], str]:
-        if folder.resolve() != paper_dir.resolve():
-            return original(folder)
-        return {
-            "schema": 1,
-            "paper": paper_dir.name,
-            "prompt_version": PROMPT_VERSION,
-            "target_protocol": TARGET_PROTOCOL,
-            "items": ledger_items,
-        }, ""
 
-    review_dashboard._library_semantic_review_payload = loader
-    try:
-        return review_dashboard.human_review_library_prerequisites(
+def _review_support(review_graph: Any, roots: set[str]) -> tuple[dict, dict]:
+    """Transport the same Lean-owned context used for paper prerequisites."""
+
+    return review_queue.review_support_from_targets(
+        review_graph.target_material(), root_declarations=roots
+    )
+
+
+def _enrich_decision_template(
+    payload: Mapping[str, Any],
+    *,
+    paper_dir: Path,
+    source_map: Mapping[str, Any],
+    entries: list[dict[str, Any]],
+    review_graph: Any,
+) -> dict[str, Any]:
+    support, names_by_root = _review_support(review_graph, set(payload["items"]))
+    return review_queue.enrich_queue(
+        payload,
+        paper_dir=paper_dir,
+        source_map=source_map,
+        material_by_name={str(entry["lean_name"]): entry for entry in entries},
+        semantic_target_field="library_semantic_target",
+        semantic_target_sha256_field="library_semantic_target_sha256",
+        declaration_source_field="library_definition",
+        declaration_source_sha256_field="library_definition_sha256",
+        supporting_declarations=support,
+        supporting_declaration_names_by_item=names_by_root,
+    )
+
+
+def current_changed_decision_template_and_path(
+    paper_dir: Path,
+    *,
+    review_graph: Any,
+) -> tuple[dict[str, Any], Path] | None:
+    """Return the exact changed library queue and content-addressed path."""
+
+    source_map = review_graph.context.statement_map
+    semantic_targets = review_graph.semantic_targets
+    paper_targets = review_graph.paper_prerequisite_targets
+    library_targets = review_graph.library_semantic_targets
+    payload = decision_template(
+        source_map,
+        semantic_targets,
+        paper_targets,
+        library_targets,
+        paper=paper_dir.name,
+    )
+    current_path = paper_dir / LEDGER_RELATIVE
+    current = (
+        _load_object(current_path, label="current library ledger")
+        if current_path.is_file()
+        else {}
+    )
+    raw_existing = current.get("items")
+    existing_items = raw_existing if isinstance(raw_existing, Mapping) else {}
+    provisional_items: dict[str, Any] = {}
+    for name, item in payload["items"].items():
+        prior = existing_items.get(name)
+        row = dict(prior) if isinstance(prior, Mapping) else dict(item)
+        row["candidate_source_items"] = item.get("candidate_source_items", [])
+        provisional_items[name] = row
+    provisional = {
+        "schema": 1,
+        "paper": paper_dir.name,
+        "prompt_version": PROMPT_VERSION,
+        "target_protocol": TARGET_PROTOCOL,
+        "items": provisional_items,
+    }
+    entries = list(
+        review_graph.project_library_prerequisites(
             paper_dir,
-            claims,
-            semantic_targets_override=library_semantic_targets_override,
-            semantic_target_errors_override=library_semantic_target_errors_override,
+            ledger=provisional,
         )
-    finally:
-        review_dashboard._library_semantic_review_payload = original
+    )
+    payload, entries = review_queue.changed_only_template_surface(
+        payload,
+        entries,
+        existing_items,
+        reusable_judgment=_unchanged_semantic_judgment,
+    )
+    if not payload["items"]:
+        return None
+    try:
+        payload = _enrich_decision_template(
+            payload,
+            paper_dir=paper_dir,
+            source_map=source_map,
+            entries=entries,
+            review_graph=review_graph,
+        )
+    except review_queue.SemanticReviewDecisionQueueError as exc:
+        raise LibraryReviewReissueError(str(exc)) from exc
+    return payload, _content_addressed_queue_path(paper_dir, payload)
+
+
+def current_structural_refresh_required(
+    paper_dir: Path,
+    *,
+    review_graph: Any,
+) -> bool:
+    """Report stale routing metadata after every judgment semantically reuses."""
+
+    current_path = paper_dir / LEDGER_RELATIVE
+    if not current_path.is_file():
+        return False
+    current = _load_object(current_path, label="current library ledger")
+    entries = review_graph.project_library_prerequisites(
+        paper_dir,
+        ledger=current,
+    )
+    if any(entry.get("semantic_current") is not True for entry in entries):
+        return True
+    # Semantic reuse may authorize an approved-context metadata rebind. The
+    # terminal surface still needs the writer's current exact source bundle.
+    refreshed = reissue(paper_dir, {}, validator="", review_graph=review_graph)
+    return current.get("items") != refreshed.get("items")
 
 
 def reissue(
@@ -350,123 +483,93 @@ def reissue(
     decisions: Mapping[str, Mapping[str, Any]],
     *,
     validator: str,
-    direct_dependency_surface: Mapping[str, Any] | None = None,
-    require_build: bool = True,
-    packet_lean_cache: Mapping[str, Any] | None = None,
+    review_graph: Any,
+    allow_retired_decisions: bool = False,
 ) -> dict[str, Any]:
-    if not validator.strip():
+    if decisions and not validator.strip():
         raise LibraryReviewReissueError("--validator must be nonempty")
-    source_map = _load_object(paper_dir / "audit" / "paper_statement_map.json", label="source map")
-    source_items = source_map.get("items")
-    if not isinstance(source_items, Mapping):
-        raise LibraryReviewReissueError("paper statement map has no items object")
-    specs = sorted(
-        {
-            str(contract.get("spec_declaration") or "").strip()
-            for item in source_items.values()
-            if isinstance(item, Mapping)
-            for contract in [item.get("semantic_contract")]
-            if isinstance(contract, Mapping)
-            and str(contract.get("spec_declaration") or "").strip()
-        }
-    )
-    cached_semantic_targets: Mapping[str, Mapping[str, Any]] | None = None
-    cached_prerequisite_targets: Mapping[str, Mapping[str, Any]] | None = None
-    cached_library_targets: Mapping[str, Mapping[str, Any]] | None = None
-    cached_library_errors: Mapping[str, str] | None = None
-    if packet_lean_cache is not None:
-        raw_specs = packet_lean_cache.get("specifications")
-        raw_semantic = packet_lean_cache.get("semantic_targets")
-        raw_prerequisites = packet_lean_cache.get("paper_prerequisite_targets")
-        raw_library = packet_lean_cache.get("library_semantic_targets")
-        raw_library_errors = packet_lean_cache.get("library_semantic_target_errors")
-        if (
-            raw_specs != specs
-            or not isinstance(raw_semantic, Mapping)
-            or not isinstance(raw_prerequisites, Mapping)
-            or not isinstance(raw_library, Mapping)
-            or not isinstance(raw_library_errors, Mapping)
-        ):
-            raise LibraryReviewReissueError(
-                "packet Lean cache is incomplete for the current selected Spec surface"
-            )
-        cached_semantic_targets = raw_semantic
-        cached_prerequisite_targets = raw_prerequisites
-        cached_library_targets = raw_library
-        cached_library_errors = {
-            str(name): str(error)
-            for name, error in raw_library_errors.items()
-            if str(name).strip() and str(error).strip()
-        }
-    if isinstance(direct_dependency_surface, Mapping):
-        direct_surface = dict(direct_dependency_surface)
-    else:
-        direct_surface = _expanded_spec_dependency_surface(
-            paper_dir,
-            _selected_claims(paper_dir, source_map),
-            require_build=require_build,
-            semantic_targets_override=cached_semantic_targets,
+    source_map = review_graph.context.statement_map
+    try:
+        specs = list(
+            EvidenceRouteSet.from_source_map(
+                source_map
+            ).result_specifications()
+        )
+    except ObligationRouteError as exc:
+        raise LibraryReviewReissueError(
+            "invalid typed source route surface: " + str(exc)
+        ) from exc
+    if list(review_graph.specifications) != specs:
+        raise LibraryReviewReissueError(
+            "current v11 review transaction does not match the selected Spec surface"
         )
     current_path = paper_dir / LEDGER_RELATIVE
-    current = _load_object(current_path, label="current library ledger") if current_path.is_file() else {}
-    merged = _merged_ledger(current, decisions)
-    try:
-        semantic_targets = (
-            {
-                str(name): dict(target)
-                for name, target in cached_semantic_targets.items()
-                if str(name).strip() and isinstance(target, Mapping)
-            }
-            if cached_semantic_targets is not None
-            else (
-                review_dashboard_packet.semantic_expanded_spec_targets(
-                    paper_dir, specs, require_build=require_build
-                )
-                if specs
-                else {}
-            )
-        )
-        paper_prerequisites = review_dashboard_packet.paper_semantic_prerequisites(
-            paper_dir,
-            semantic_targets,
-            require_build=require_build,
-            semantic_targets_by_name_override=cached_prerequisite_targets,
-        )
-    except ValueError as exc:
-        raise LibraryReviewReissueError(
-            "could not obtain paper-prerequisite library surface: " + str(exc)
-        ) from exc
-    prerequisite_owners = {
-        review_dashboard.library_review_owner_declaration(declaration)
-        for prerequisite in paper_prerequisites
-        for declaration in prerequisite.get("direct_library_declarations", ())
-        if str(declaration).strip().startswith("EconCSLib.")
-    }
-    entries = _material_entries(
-        paper_dir,
+    current = (
+        _load_object(current_path, label="current library ledger")
+        if current_path.is_file()
+        else {}
+    )
+    raw_existing = current.get("items")
+    existing_items = raw_existing if isinstance(raw_existing, Mapping) else {}
+    merged_decisions = _merged_ledger(current, decisions)
+    template = decision_template(
         source_map,
-        merged,
-        direct_surface,
-        prerequisite_owners,
-        library_semantic_targets_override=cached_library_targets,
-        library_semantic_target_errors_override=cached_library_errors,
+        review_graph.semantic_targets,
+        review_graph.paper_prerequisite_targets,
+        review_graph.library_semantic_targets,
+        paper=paper_dir.name,
+    )
+    provisional_items: dict[str, Any] = {}
+    for name, item in template["items"].items():
+        if name in decisions:
+            row = dict(merged_decisions[name])
+        else:
+            prior = existing_items.get(name)
+            row = dict(prior) if isinstance(prior, Mapping) else dict(item)
+        row["candidate_source_items"] = item.get("candidate_source_items", [])
+        provisional_items[name] = row
+    entries = list(
+        review_graph.project_library_prerequisites(
+            paper_dir,
+            ledger={
+                "schema": 1,
+                "paper": paper_dir.name,
+                "prompt_version": PROMPT_VERSION,
+                "target_protocol": TARGET_PROTOCOL,
+                "items": provisional_items,
+            },
+        )
     )
     material_names = {str(entry.get("lean_name") or "").strip() for entry in entries}
-    if set(decisions) != material_names:
-        missing = sorted(material_names - set(decisions))
-        extra = sorted(set(decisions) - material_names)
+    by_name = {str(entry.get("lean_name") or "").strip(): entry for entry in entries}
+    bindings = review_queue.unique_reusable_judgment_bindings(
+        by_name,
+        existing_items,
+        reusable_judgment=_unchanged_semantic_judgment,
+    )
+    missing = sorted(material_names - set(decisions) - set(bindings))
+    extra = sorted(set(decisions) - material_names)
+    if missing or (extra and not allow_retired_decisions):
         parts: list[str] = []
         if missing:
-            parts.append("missing decisions for " + ", ".join(missing))
+            parts.append(
+                "missing decisions for new or semantically changed declarations: "
+                + ", ".join(missing)
+            )
         if extra:
             parts.append("decisions outside the material surface: " + ", ".join(extra))
         raise LibraryReviewReissueError("library decision coverage is not exact: " + "; ".join(parts))
+    if extra:
+        # See the paper-local analogue: a current typed route can explicitly
+        # retire a former helper row without invalidating independently
+        # reviewed rows whose byte-pinned source and Lean targets are unchanged.
+        decisions = {name: decision for name, decision in decisions.items() if name in material_names}
 
     records: dict[str, Any] = {}
-    by_name = {str(entry.get("lean_name") or "").strip(): entry for entry in entries}
+    current_support: tuple[dict, dict] | None = None
     for name in sorted(material_names):
         entry = by_name[name]
-        decision = decisions[name]
+        decision = decisions.get(name)
         if not str(entry.get("library_definition") or "").strip():
             raise LibraryReviewReissueError(
                 f"{name}: exact bounded library declaration is unavailable: "
@@ -482,21 +585,105 @@ def reissue(
                 f"{name}: exact paper source connection is unavailable: "
                 + str(entry.get("source_connection_error") or "")
             )
-        raw = merged[name]
-        record = {
-            key: raw[key]
-            for key in (
-                "source_item",
-                "source_location",
-                "source_anchor_evidence",
-                "semantic_context_requirements",
-                "library_source_path",
-                "library_line_start",
-                "library_line_end",
-                "label",
+        if decision is not None:
+            reviewer = {
+                "judgment": str(decision["judgment"]),
+                "reason": str(decision["reason"]),
+                "validator": validator.strip(),
+                "validator_type": "llm_as_judge",
+                "validated_at": datetime.now(timezone.utc)
+                .replace(microsecond=0)
+                .isoformat(),
+            }
+            raw = provisional_items.get(name)
+            if not isinstance(raw, Mapping):
+                raise LibraryReviewReissueError(
+                    f"{name}: current library review template has no source-routed entry"
+                )
+        else:
+            prior_name, reviewer = bindings[name]
+            raw = existing_items[prior_name]
+        if decision is not None:
+            try:
+                if current_support is None:
+                    current_support = _review_support(review_graph, set(decisions))
+                support, names_by_root = current_support
+                support_digest = review_queue.selected_supporting_declarations_sha256(
+                    support, names_by_root[name]
+                ) or ""
+                review_queue.validate_current_identity(
+                    name,
+                    decision,
+                    {**entry, "semantic_supporting_declarations_sha256": support_digest},
+                    semantic_target_sha256_field="library_semantic_target_sha256",
+                    declaration_source_sha256_field="library_definition_sha256",
+                )
+            except review_queue.SemanticReviewDecisionQueueError as exc:
+                raise LibraryReviewReissueError(str(exc)) from exc
+            source_item = str(entry.get("source_item") or "").strip()
+            source_items = source_map.get("items")
+            source_record = (
+                source_items.get(source_item)
+                if isinstance(source_items, Mapping)
+                else None
             )
-            if key in raw
-        }
+            requires_corrected_target = source_requires_approved_corrected_target(
+                source_record
+            )
+            if (
+                requires_corrected_target
+                and decision["judgment"] != APPROVED_CORRECTED_TARGET_MATCH
+            ):
+                raise LibraryReviewReissueError(
+                    f"{name}: corrected source route requires a "
+                    "`matches_approved_corrected_target` judgment"
+                )
+            if (
+                not requires_corrected_target
+                and decision["judgment"] == APPROVED_CORRECTED_TARGET_MATCH
+            ):
+                raise LibraryReviewReissueError(
+                    f"{name}: approved-corrected-target judgment has no corrected source route"
+                )
+            if requires_corrected_target:
+                try:
+                    corrected_metadata = current_approved_corrected_target_metadata(
+                        source_record,
+                        decision.get("_reviewed_approved_corrected_target"),
+                    )
+                except ValueError as exc:
+                    raise LibraryReviewReissueError(f"{name}: {exc}") from exc
+            else:
+                corrected_metadata = {}
+        else:
+            corrected_metadata = (
+                {
+                    "corrected_target_protocol": str(
+                        raw.get("corrected_target_protocol") or ""
+                    ).strip(),
+                    "corrected_target_review_sha256": str(
+                        raw.get("corrected_target_review_sha256") or ""
+                    ).strip().lower(),
+                }
+                if reviewer.get("judgment") == APPROVED_CORRECTED_TARGET_MATCH
+                else {}
+            )
+        record: dict[str, Any] = {}
+        current_source_item = str(entry.get("source_item") or "").strip()
+        if current_source_item:
+            record["source_item"] = current_source_item
+        elif isinstance(raw.get("source_anchor_evidence"), list):
+            record["source_anchor_evidence"] = raw["source_anchor_evidence"]
+        source_location = str(entry.get("source_locator") or "").strip()
+        if source_location:
+            record["source_location"] = source_location
+        if "semantic_context_requirements" in raw:
+            record["semantic_context_requirements"] = raw[
+                "semantic_context_requirements"
+            ]
+        label = str(entry.get("label") or "").strip()
+        if label:
+            record["label"] = label
         record.update(
             {
                 "library_declaration": name,
@@ -507,13 +694,16 @@ def reissue(
                 "library_semantic_target_sha256": entry[
                     "library_semantic_target_sha256"
                 ],
+                "elaborated_signature_sha256": entry[
+                    "elaborated_signature_sha256"
+                ],
                 "library_semantic_target_protocol": TARGET_PROTOCOL,
                 "source_input_bundle_sha256": entry["source_input_bundle_sha256"],
-                "judgment": decision["judgment"],
-                "reason": decision["reason"],
-                "validator": validator.strip(),
-                "validator_type": "llm_as_judge",
-                "validated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+                "source_anchor_bundle_sha256": entry[
+                    "source_anchor_bundle_sha256"
+                ],
+                **corrected_metadata,
+                **reviewer,
             }
         )
         records[name] = record
@@ -527,7 +717,6 @@ def reissue(
             "current semantic target and exact bounded declaration code. These "
             "prerequisites are not additional paper-claim rows."
         ),
-        "direct_spec_dependency_surface": direct_surface,
         "items": records,
     }
 
@@ -536,22 +725,48 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--paper", required=True)
-    parser.add_argument("--decisions", type=Path, required=True)
-    parser.add_argument("--validator", required=True)
-    parser.add_argument(
-        "--skip-build",
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--decisions", type=Path)
+    mode.add_argument(
+        "--emit-template",
+        type=Path,
+        help=(
+            "write a blank non-evidence work queue from the current v11 review "
+            "transaction; candidate source routes are structural navigation only"
+        ),
+    )
+    mode.add_argument(
+        "--refresh-current",
         action="store_true",
         help=(
-            "obtain fresh Lean displays without invoking an additional build; use only "
-            "immediately after a successful focused paper build in the same checkout"
+            "refresh only derived routing and declaration-location metadata; "
+            "refuse unless every exact source-to-library judgment is reusable"
+        ),
+    )
+    parser.add_argument("--validator", default="")
+    parser.add_argument(
+        "--v11-review-graph",
+        action="store_true",
+        help=(
+            "use the exact current builder-issued v11 graph targets; this loads "
+            "no dashboard cache and launches no Lean discovery"
         ),
     )
     parser.add_argument(
-        "--packet-lean-cache",
+        "--changed-only",
         action="store_true",
         help=(
-            "reuse the exact-current staged packet Lean-display cache; use only after "
-            "a successful focused paper build in the same checkout"
+            "with --emit-template, include only declarations whose exact source-bundle "
+            "or Lean semantic identity cannot reuse the current ledger judgment"
+        ),
+    )
+    parser.add_argument(
+        "--allow-retired-decisions",
+        action="store_true",
+        help=(
+            "with --decisions, discard judgments for declarations explicitly "
+            "retired from the current graph surface; retained rows must still "
+            "pass exact source and Lean semantic-identity validation"
         ),
     )
     parser.add_argument("--write", action="store_true")
@@ -561,43 +776,147 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     paper_dir = args.root.resolve() / "papers" / args.paper
-    decisions = _decisions(args.decisions, paper=args.paper)
-    packet_cache = None
-    if args.packet_lean_cache:
-        source_map = _load_object(
-            paper_dir / "audit" / "paper_statement_map.json", label="source map"
+    if not args.v11_review_graph:
+        raise LibraryReviewReissueError(
+            "current semantic-review writing requires --v11-review-graph"
         )
-        source_items = source_map.get("items")
-        specs = sorted(
-            {
-                str(contract.get("spec_declaration") or "").strip()
-                for item in (source_items.values() if isinstance(source_items, Mapping) else ())
-                if isinstance(item, Mapping)
-                for contract in [item.get("semantic_contract")]
-                if isinstance(contract, Mapping)
-                and str(contract.get("spec_declaration") or "").strip()
-            }
+    review_graph = load_current_v11_review_graph_projection(
+        args.root.resolve(), paper_dir
+    )
+    if review_graph is None:
+        raise LibraryReviewReissueError(
+            "no exact-current v11 review graph; prepare the unified graph first"
         )
-        packet_cache = review_dashboard_packet._current_packet_lean_cache(
-            paper_dir, specs
-        )
-        if packet_cache is None:
+    if args.emit_template is not None:
+        if args.write or args.validator.strip():
             raise LibraryReviewReissueError(
-                "no exact-current packet Lean cache; prepare its three stages first"
+                "--emit-template cannot be combined with --write or --validator"
             )
+        source_map = review_graph.context.statement_map
+        semantic_targets = review_graph.semantic_targets
+        paper_targets = review_graph.paper_prerequisite_targets
+        library_targets = review_graph.library_semantic_targets
+        payload = decision_template(
+            source_map,
+            semantic_targets,
+            paper_targets,
+            library_targets,
+            paper=args.paper,
+        )
+        existing_items: Mapping[str, Any] = {}
+        provisional_items = payload["items"]
+        if args.changed_only:
+            current_path = paper_dir / LEDGER_RELATIVE
+            current = (
+                _load_object(current_path, label="current library ledger")
+                if current_path.is_file()
+                else {}
+            )
+            raw_existing = current.get("items")
+            existing_items = raw_existing if isinstance(raw_existing, Mapping) else {}
+            provisional_items = {}
+            for name, item in payload["items"].items():
+                prior = existing_items.get(name)
+                row = dict(prior) if isinstance(prior, Mapping) else dict(item)
+                row["candidate_source_items"] = item.get("candidate_source_items", [])
+                provisional_items[name] = row
+        provisional = {
+            "schema": 1,
+            "paper": args.paper,
+            "prompt_version": PROMPT_VERSION,
+            "target_protocol": TARGET_PROTOCOL,
+            "items": provisional_items,
+        }
+        entries = list(
+            review_graph.project_library_prerequisites(
+                paper_dir,
+                ledger=provisional,
+            )
+        )
+        if args.changed_only:
+            payload, entries = review_queue.changed_only_template_surface(
+                payload,
+                entries,
+                existing_items,
+                reusable_judgment=_unchanged_semantic_judgment,
+            )
+            if not payload["items"]:
+                print(
+                    f"{args.paper}: no new or semantically changed library "
+                    "declarations need reviewer decisions"
+                )
+                return 0
+        try:
+            payload = _enrich_decision_template(
+                payload,
+                paper_dir=paper_dir,
+                source_map=source_map,
+                entries=entries,
+                review_graph=review_graph,
+            )
+        except review_queue.SemanticReviewDecisionQueueError as exc:
+            raise LibraryReviewReissueError(str(exc)) from exc
+        path = _template_output_path(paper_dir, args.emit_template)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        print(
+            f"{args.paper}: wrote non-evidence library decision template {path} "
+            f"({len(payload['items'])} rows; "
+            f"{len(payload['unrouted_declarations'])} unrouted)"
+        )
+        return 0
+    if args.refresh_current:
+        if args.validator.strip() or args.changed_only:
+            raise LibraryReviewReissueError(
+                "--refresh-current cannot be combined with --validator or --changed-only"
+            )
+        payload = reissue(
+            paper_dir,
+            {},
+            validator="",
+            review_graph=review_graph,
+        )
+        if not args.write:
+            print(
+                f"{args.paper}: validated structural refresh with all "
+                f"{len(payload['items'])} semantic judgments reused; rerun with --write"
+            )
+            return 0
+        path = paper_dir / LEDGER_RELATIVE
+        path.write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        print(
+            f"{args.paper}: refreshed {path} with all "
+            f"{len(payload['items'])} semantic judgments reused"
+        )
+        return 0
+    if not args.validator.strip():
+        raise LibraryReviewReissueError("--decisions requires --validator")
+    if args.changed_only:
+        raise LibraryReviewReissueError("--changed-only is valid only with --emit-template")
+    assert args.decisions is not None
+    decisions = _decisions(args.decisions, paper=args.paper)
     payload = reissue(
         paper_dir,
         decisions,
         validator=args.validator,
-        require_build=not args.skip_build,
-        packet_lean_cache=packet_cache,
+        review_graph=review_graph,
+        allow_retired_decisions=args.allow_retired_decisions,
     )
     if not args.write:
         print(f"{args.paper}: validated {len(decisions)} library decisions; rerun with --write")
         return 0
     path = paper_dir / LEDGER_RELATIVE
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"{args.paper}: wrote {path} ({len(decisions)} library decisions)")
+    print(
+        f"{args.paper}: wrote {path} "
+        f"({len(payload['items'])} active library decisions)"
+    )
     return 0
 
 

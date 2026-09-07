@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "Roth82StableMatching",
-  "private_source_map_sha256": "e12802b264e69f1b75182142997d9437c4c6428139189b7e0a39aced88b35d17",
+  "private_source_map_sha256": "6ad732dca092d4a50d55c1ea99045fc046ee34cd2d4033daac06b231af7381a0",
   "public_manifest_path": "papers/Roth82StableMatching/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "6f4fcec3667df130eb40a4d9ad312e3c3ff8153c9ea4d10f1c18c763f9bff615",
+  "public_source_map_sha256": "1bfa0c60583a6681c3411b2fa0ebfd11c79a6eefb1870e6be14e709b4837fd00",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,

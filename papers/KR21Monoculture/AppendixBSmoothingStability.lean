@@ -1,6 +1,6 @@
 import KR21Monoculture.AppendixB
 
-open EconCSLib
+open AppliedModelingLib
 open scoped BigOperators
 
 namespace KR21Monoculture
@@ -112,9 +112,9 @@ private theorem rankByScore_eventually_eq_of_continuous_zero_perturbation
       ContinuousAt (fun s => perturb s c) 0)
     (hzero : ∀ c : Candidate 1, perturb 0 c = 0) :
     ∀ᶠ s in nhds 0,
-      EconCSLib.SocialChoice.Ranking.rankByScore
+      AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun c => base c + perturb s c) =
-        EconCSLib.SocialChoice.Ranking.rankByScore base := by
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore base := by
   have hscore_zero : (fun c => base c + perturb 0 c) = base := by
     funext c
     rw [hzero c, add_zero]
@@ -123,7 +123,7 @@ private theorem rankByScore_eventually_eq_of_continuous_zero_perturbation
     intro i j hij
     simpa only [hzero i, hzero j, add_zero] using hnoTie i j hij
   have hstable :=
-    EconCSLib.SocialChoice.Ranking.eventually_rankByScore_eq_of_continuousAt_of_noTies
+    AppliedModelingLib.SocialChoice.Ranking.eventually_rankByScore_eq_of_continuousAt_of_noTies
       (score := fun s c => base c + perturb s c)
       (x := 0)
       (fun c => continuousAt_const.add (hcontinuous c))
@@ -141,9 +141,9 @@ theorem appendixB1_rankByScore_eventually_eq_of_continuous_perturbation
       ContinuousAt (fun s => perturb s c) 0)
     (hzero : ∀ c : Candidate 1, perturb 0 c = 0) :
     ∀ᶠ s in nhds 0,
-      EconCSLib.SocialChoice.Ranking.rankByScore
+      AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun c => appendixB1DiscreteScore noise c + perturb s c) =
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (appendixB1DiscreteScore noise) := by
   exact rankByScore_eventually_eq_of_continuous_zero_perturbation
     (appendixB1DiscreteScore noise)
@@ -158,9 +158,9 @@ theorem appendixB2_algorithmRankByScore_eventually_eq_of_continuous_perturbation
       ContinuousAt (fun s => perturb s c) 0)
     (hzero : ∀ c : Candidate 1, perturb 0 c = 0) :
     ∀ᶠ s in nhds 0,
-      EconCSLib.SocialChoice.Ranking.rankByScore
+      AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun c => appendixB2AlgorithmDiscreteScore noise c + perturb s c) =
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (appendixB2AlgorithmDiscreteScore noise) := by
   exact rankByScore_eventually_eq_of_continuous_zero_perturbation
     (appendixB2AlgorithmDiscreteScore noise)
@@ -175,9 +175,9 @@ theorem appendixB2_humanRankByScore_eventually_eq_of_continuous_perturbation
       ContinuousAt (fun s => perturb s c) 0)
     (hzero : ∀ c : Candidate 1, perturb 0 c = 0) :
     ∀ᶠ s in nhds 0,
-      EconCSLib.SocialChoice.Ranking.rankByScore
+      AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun c => appendixB2HumanDiscreteScore noise c + perturb s c) =
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (appendixB2HumanDiscreteScore noise) := by
   exact rankByScore_eventually_eq_of_continuous_zero_perturbation
     (appendixB2HumanDiscreteScore noise)
@@ -199,11 +199,11 @@ private theorem pmfPairExp_continuousAt_of_atomwise
     (hright : ∀ b : β, ContinuousAt (fun t => ((lawRight t) b).toReal) x)
     (payoff : α → β → ℝ) :
     ContinuousAt
-      (fun t => EconCSLib.pmfPairExp (lawLeft t) (lawRight t) payoff) x := by
-  unfold EconCSLib.pmfPairExp EconCSLib.pmfExp
-  apply EconCSLib.continuousAt_finset_sum
+      (fun t => AppliedModelingLib.pmfPairExp (lawLeft t) (lawRight t) payoff) x := by
+  unfold AppliedModelingLib.pmfPairExp AppliedModelingLib.pmfExp
+  apply AppliedModelingLib.continuousAt_finset_sum
   intro a _
-  exact (hleft a).mul (EconCSLib.continuousAt_finset_sum Finset.univ
+  exact (hleft a).mul (AppliedModelingLib.continuousAt_finset_sum Finset.univ
     (fun b _ => (hright b).mul continuousAt_const))
 
 /--
@@ -222,38 +222,38 @@ theorem appendixB1_reversal_persists_of_atomwise_continuity
       ContinuousAt (fun s => ((law s) pi).toReal) 0)
     (hbase : law 0 = appendixB1RankingPMF) :
     ∃ delta : ℝ, 0 < delta ∧ ∀ s : ℝ, 0 < s → s < delta →
-      EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+      AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
           (law s) (law s) appendixB1Value -
-        EconCSLib.SocialChoice.Ranking.expectedSecondMoverShared
+        AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverShared
           (law s) appendixB1Value < 0 := by
-  have hindependent : EconCSLib.EpsilonContinuousAt
-      (fun s => EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+  have hindependent : AppliedModelingLib.EpsilonContinuousAt
+      (fun s => AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
         (law s) (law s) appendixB1Value) 0 :=
-    EconCSLib.epsilonContinuousAt_of_continuousAt
+    AppliedModelingLib.epsilonContinuousAt_of_continuousAt
       (pmfPairExp_continuousAt_of_atomwise hatom hatom
-        (EconCSLib.SocialChoice.Ranking.secondMoverUtility appendixB1Value))
-  have hshared : EconCSLib.EpsilonContinuousAt
-      (fun s => EconCSLib.SocialChoice.Ranking.expectedSecondMoverShared
+        (AppliedModelingLib.SocialChoice.Ranking.secondMoverUtility appendixB1Value))
+  have hshared : AppliedModelingLib.EpsilonContinuousAt
+      (fun s => AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverShared
         (law s) appendixB1Value) 0 := by
-    unfold EconCSLib.SocialChoice.Ranking.expectedSecondMoverShared
-    exact EconCSLib.epsilonContinuousAt_pmfExp_of_atom
-      (fun pi => EconCSLib.epsilonContinuousAt_of_continuousAt (hatom pi)) _
-  have hgap := EconCSLib.epsilonContinuousAt_sub hindependent hshared
+    unfold AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverShared
+    exact AppliedModelingLib.epsilonContinuousAt_pmfExp_of_atom
+      (fun pi => AppliedModelingLib.epsilonContinuousAt_of_continuousAt (hatom pi)) _
+  have hgap := AppliedModelingLib.epsilonContinuousAt_sub hindependent hshared
   have hzero :
-      (fun s => EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+      (fun s => AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
           (law s) (law s) appendixB1Value -
-        EconCSLib.SocialChoice.Ranking.expectedSecondMoverShared
+        AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverShared
           (law s) appendixB1Value) 0 < 0 := by
     change
-      EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+      AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
           (law 0) (law 0) appendixB1Value -
-        EconCSLib.SocialChoice.Ranking.expectedSecondMoverShared
+        AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverShared
           (law 0) appendixB1Value < 0
     rw [hbase]
     rw [appendixB1_definition2_reversal_exact]
     norm_num
-  simpa using EconCSLib.exists_right_radius_lt_of_epsilonContinuousAt
-    hgap (EconCSLib.epsilonContinuousAt_const 0 0) hzero
+  simpa using AppliedModelingLib.exists_right_radius_lt_of_epsilonContinuousAt
+    hgap (AppliedModelingLib.epsilonContinuousAt_const 0 0) hzero
 
 /--
 The exact Appendix B.2 reversal survives every sufficiently small positive
@@ -273,38 +273,38 @@ theorem appendixB2_reversal_persists_of_atomwise_continuity
     (hhuman_base : human 0 = appendixB2HumanRankingPMF) :
     ∃ delta : ℝ, 0 < delta ∧ ∀ s : ℝ, 0 < s → s < delta →
       0 <
-        EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+        AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
             (human s) (algorithm s) appendixB2Value -
-          EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+          AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
             (human s) (human s) appendixB2Value := by
-  have hAgainstAlgorithm : EconCSLib.EpsilonContinuousAt
-      (fun s => EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+  have hAgainstAlgorithm : AppliedModelingLib.EpsilonContinuousAt
+      (fun s => AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
         (human s) (algorithm s) appendixB2Value) 0 :=
-    EconCSLib.epsilonContinuousAt_of_continuousAt
+    AppliedModelingLib.epsilonContinuousAt_of_continuousAt
       (pmfPairExp_continuousAt_of_atomwise hhuman halgorithm
-        (EconCSLib.SocialChoice.Ranking.secondMoverUtility appendixB2Value))
-  have hAgainstHuman : EconCSLib.EpsilonContinuousAt
-      (fun s => EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+        (AppliedModelingLib.SocialChoice.Ranking.secondMoverUtility appendixB2Value))
+  have hAgainstHuman : AppliedModelingLib.EpsilonContinuousAt
+      (fun s => AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
         (human s) (human s) appendixB2Value) 0 :=
-    EconCSLib.epsilonContinuousAt_of_continuousAt
+    AppliedModelingLib.epsilonContinuousAt_of_continuousAt
       (pmfPairExp_continuousAt_of_atomwise hhuman hhuman
-        (EconCSLib.SocialChoice.Ranking.secondMoverUtility appendixB2Value))
-  have hgap := EconCSLib.epsilonContinuousAt_sub hAgainstAlgorithm hAgainstHuman
+        (AppliedModelingLib.SocialChoice.Ranking.secondMoverUtility appendixB2Value))
+  have hgap := AppliedModelingLib.epsilonContinuousAt_sub hAgainstAlgorithm hAgainstHuman
   have hzero : 0 <
       (fun s =>
-        EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+        AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
             (human s) (algorithm s) appendixB2Value -
-          EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+          AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
             (human s) (human s) appendixB2Value) 0 := by
     change 0 <
-      EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+      AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
           (human 0) (algorithm 0) appendixB2Value -
-        EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+        AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
           (human 0) (human 0) appendixB2Value
     rw [halgorithm_base, hhuman_base]
     rw [appendixB2_definition3_reversal_exact]
     norm_num
-  simpa using EconCSLib.exists_right_radius_lt_of_epsilonContinuousAt
-    (EconCSLib.epsilonContinuousAt_const 0 0) hgap hzero
+  simpa using AppliedModelingLib.exists_right_radius_lt_of_epsilonContinuousAt
+    (AppliedModelingLib.epsilonContinuousAt_const 0 0) hgap hzero
 
 end KR21Monoculture

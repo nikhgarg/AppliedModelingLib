@@ -4,10 +4,17 @@
 % Do not hand-edit generated packets; annotate the PDF or reconcile notes into
 % the paper-local human-review log.
 \documentclass[10pt]{article}
-\usepackage[margin=0.43in]{geometry}
+\usepackage[margin=0.43in,footskip=0.2in]{geometry}
 \usepackage{fontspec}
-\setmainfont{Latin Modern Roman}
-\setmonofont{DejaVu Sans Mono}
+% Use a Unicode-complete main face as well as a Unicode-complete code face.
+% Reviewer reasons and source labels can contain exact Greek symbols outside
+% verbatim blocks; silently dropping one would corrupt the review packet.
+\setmainfont{DejaVu Serif}
+% The broad DejaVu Sans Unicode coverage preserves Lean's mathematical glyphs
+% (including U+2216 set difference and superscript identifiers) in verbatim
+% review blocks.  Its proportional metrics are preferable to silently missing
+% exact semantic text from a narrower monospace font.
+\setmonofont{DejaVu Sans}
 \usepackage{hyperref}
 \usepackage{amssymb}
 \usepackage{fvextra}
@@ -15,7 +22,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.15em}
 \linespread{0.92}
-\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,breaklinks=true}
 \DefineVerbatimEnvironment{ReviewVerbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\scriptsize}
 \newcommand{\reviewerbox}{%
   \par\noindent\fbox{\parbox{0.96\linewidth}{\rule{0pt}{0.38in}}}\par
@@ -36,10 +43,10 @@ specifications, and hash-bound raw-source-to-Spec screening records.
 
 \noindent\textbf{Paper:} GGRS26CombattingGerrymanderingRCV\\
 \textbf{Paper id:} \texttt{GGRS26CombattingGerrymanderingRCV}\\
-\textbf{Source version:} not recorded\\
+\textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright arXiv:2107.07083 source bundle and byte-pinned cited publication transcript}\\
 \textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
 \textbf{Rows:} 2\\
-\textbf{Generated:} 2026-08-18\\
+\textbf{Generated:} 2026-09-06\\
 \textbf{Source URL:} \href{https://arxiv.org/pdf/2107.07083.pdf}{official source}
 
 
@@ -55,160 +62,877 @@ log.
 \section*{Open the interactive dashboard}
 The interactive dashboard is an optional alternative to using this PDF; it
 presents the same review surface rather than an additional review requirement.
-After forking and cloning (or pulling) EconCSLib, run the following from the
+After forking and cloning (or pulling) AppliedModelingLib, run the following from the
 repository root. The cache command is needed only the first time in a new clone.
 \begin{ReviewVerbatim}
-cd <your-EconCSLib-checkout>
+cd <your-repository-checkout>
 lake exe cache get
 python3 scripts/review_dashboard.py --paper GGRS26CombattingGerrymanderingRCV --serve
 \end{ReviewVerbatim}
 Open \url{http://127.0.0.1:8765/} in a browser and keep that terminal running
-while reviewing. The dashboard records saved annotations in this paper's
+while reviewing. The dashboard records saved annotations in this paper's local
 reviewer-owned review record.
 
 \section*{Contents}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{library-section-d7b65b2188cee3f6}{Semantic library prerequisites (7; not paper claims)}
+\item \hyperlink{governing-declaration-section-5ef5ef0364b6939c}{Governing Lean declarations (32; supporting context)}
+\item \hyperlink{paper-prerequisite-section-5ef5ef0364b6939c}{Paper-specific semantic prerequisites (24; not paper claims)}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{library-prerequisite-74004300ed253601}{EconCSLib.SocialChoice.Voting.Ballot}
-\item \hyperlink{library-prerequisite-edef4d1e6800759f}{EconCSLib.SocialChoice.Voting.Ballot.Valid}
-\item \hyperlink{library-prerequisite-abd030f98668caa8}{EconCSLib.SocialChoice.Voting.Ballot.nextActive}
-\item \hyperlink{library-prerequisite-2389b592d48713a6}{EconCSLib.SocialChoice.Voting.STVQuota}
-\item \hyperlink{library-prerequisite-77a99ecb4dbfd19a}{EconCSLib.SocialChoice.Voting.pavWeight}
-\item \hyperlink{library-prerequisite-5024bd1849c74c85}{EconCSLib.SocialChoice.Voting.pavHarmonicSum}
-\item \hyperlink{library-prerequisite-cefd1f6a5d714129}{EconCSLib.SocialChoice.Voting.roundedSeatShare}
+\item \hyperlink{paper-prerequisite-9acd2440ce1052db}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Source\allowbreak{}STV\allowbreak{}State}
+\item \hyperlink{paper-prerequisite-37b91baa3b4ddc9d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights}
+\item \hyperlink{paper-prerequisite-b12522706ad3f624}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}candidate\_\allowbreak{}ranked\_\allowbreak{}before}
+\item \hyperlink{paper-prerequisite-a48f905958044eb5}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}complete\_\allowbreak{}solid\_\allowbreak{}coalition\_\allowbreak{}rankings}
+\item \hyperlink{paper-prerequisite-e34992194a8b7f0d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}first\_\allowbreak{}active\_\allowbreak{}candidate}
+\item \hyperlink{paper-prerequisite-7086a653b0f05ea7}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}committee\_\allowbreak{}score}
+\item \hyperlink{paper-prerequisite-517db5abc400efba}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}fixed\_\allowbreak{}size\_\allowbreak{}selected\_\allowbreak{}committee}
+\item \hyperlink{paper-prerequisite-82e254229a66cc0e}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}fixed\_\allowbreak{}size\_\allowbreak{}selected\_\allowbreak{}committee}
+\item \hyperlink{paper-prerequisite-58801459d14912d4}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}min\_\allowbreak{}argmax}
+\item \hyperlink{paper-prerequisite-edccbf02c4bd6a6e}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}selection}
+\item \hyperlink{paper-prerequisite-5fa565502cdaaed9}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}seat\_\allowbreak{}count}
+\item \hyperlink{paper-prerequisite-c0f468d3ce4de7e0}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}count}
+\item \hyperlink{paper-prerequisite-652a33f58da6d128}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}count\_\allowbreak{}spec}
+\item \hyperlink{paper-prerequisite-42c2df760fca2c30}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}execution\_\allowbreak{}terminal}
+\item \hyperlink{paper-prerequisite-587c1da71549064c}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}tally}
+\item \hyperlink{paper-prerequisite-01a70a9b3aa00da3}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}d\_\allowbreak{}favoring\_\allowbreak{}transition}
+\item \hyperlink{paper-prerequisite-abed5fd2c2d17fba}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}surplus\_\allowbreak{}transfer\_\allowbreak{}policy}
+\item \hyperlink{paper-prerequisite-78828233cae137c4}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}rule\_\allowbreak{}execution}
+\item \hyperlink{paper-prerequisite-f7db6c9d33a2a094}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}democratic\_\allowbreak{}seat\_\allowbreak{}count}
+\item \hyperlink{paper-prerequisite-9ae92c4421f50a56}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}seat\_\allowbreak{}count\_\allowbreak{}spec}
+\item \hyperlink{paper-prerequisite-1ce27606523bc987}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}counts}
+\item \hyperlink{paper-prerequisite-52e1d78ea1832965}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}counts\_\allowbreak{}add}
+\item \hyperlink{paper-prerequisite-2324cfa92955386c}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}counts\_\allowbreak{}spec}
+\item \hyperlink{paper-prerequisite-aea2ad46d27b40e1}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}two\_\allowbreak{}party\_\allowbreak{}voter\_\allowbreak{}model}
 \end{itemize}
 \item \hyperlink{source-section-f10b5f68e4acf3dc}{Source claims (2)}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{source-claim-6ccc405fd526f01f}{paper\_lemma\_c1\_pav\_selector\_eq\_unique\_integer\_intervalSpec}
-\item \hyperlink{source-claim-fbce9a9eb0cbc369}{paper\_proposition1\_all\_ballot\_routed\_surplus\_transfer\_outcomes\_and\_selected\_pavSpec}
+\item \hyperlink{source-claim-6ccc405fd526f01f}{paper\_\allowbreak{}lemma\_\allowbreak{}c1\_\allowbreak{}pav\_\allowbreak{}selector\_\allowbreak{}eq\_\allowbreak{}unique\_\allowbreak{}integer\_\allowbreak{}interval\allowbreak{}Spec}
+\item \hyperlink{source-claim-1d81d5a90a327c0b}{paper\_\allowbreak{}proposition1\_\allowbreak{}source\_\allowbreak{}selected\_\allowbreak{}stv\_\allowbreak{}and\_\allowbreak{}pav\allowbreak{}Spec}
 \end{itemize}
 \end{itemize}
 
 \clearpage
-\hypertarget{library-section-d7b65b2188cee3f6}{}
-\section*{Material library prerequisites}
-\hypertarget{library-prerequisite-74004300ed253601}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}SocialChoice.\allowbreak{}Voting.\allowbreak{}Ballot}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 394-\allowbreak{}408\par}
-\paragraph{Verbatim paper-source connection}
+\hypertarget{governing-declaration-section-5ef5ef0364b6939c}{}
+\section*{Governing Lean declarations}
+These exact graph-bound declaration bodies are retained by the displayed specifications or reviewed prerequisites. They are supporting context and do not add source-result rows or semantic judgments.
+\hypertarget{governing-declaration-e1905fd3de83673d}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Approval\allowbreak{}Ballot}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each
-voter instead submits a ranking over candidates (here, we assume the rankings are complete, not
-partial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as
-follows. The number of first-place votes for each candidate is counted. Any candidate with a number
-of votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus
-votes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has
-enough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,
-and their votes are transferred. The process continues until Nk candidates have been selected, or
-the number of remaining candidates equals the number of remaining seats. STV is commonly used
-in practice in multi-winner elections.
-    Details can differ in how such votes are transferred, but our results in Section 3 do not depend
-on the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV
-rule, in which each voter keeps a fractional number of votes equal to their share of the winning
-candidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we
-assume that ties are broken in favor of candidates from party D, but randomly within each party.5
+type:
+Type u_1 → Type u_1
+
+value:
+fun (Candidate : Type u_1) => Finset Candidate
 \end{ReviewVerbatim}
 
-\paragraph{Lean-expanded library semantic target}
+
+\hypertarget{governing-declaration-4c0320b08e4fb484}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-(Candidate : Type u_1) → List Candidate
+type:
+Type u_1 → Type u_1
+
+value:
+fun (Candidate : Type u_1) => List Candidate
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+
+\hypertarget{governing-declaration-d09ca390012680b9}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot.\allowbreak{}Valid}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-abbrev Ballot (Candidate : Type*) := List Candidate
+type:
+{Candidate : Type u_1} → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate → Prop
+
+value:
+fun {Candidate : Type u_1} (ballot : AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) => List.Nodup ballot
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The Lean target is a finite ordered candidate list, which is the source's complete ranking submitted by each voter.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-edef4d1e6800759f}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}SocialChoice.\allowbreak{}Voting.\allowbreak{}Ballot.\allowbreak{}Valid}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 394-\allowbreak{}400\par}
-\paragraph{Verbatim paper-source connection}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\end{itemize}
+\hypertarget{governing-declaration-e1f9416a9e057b38}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot.\allowbreak{}next\allowbreak{}Active}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each
-voter instead submits a ranking over candidates (here, we assume the rankings are complete, not
-partial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as
-follows. The number of first-place votes for each candidate is counted. Any candidate with a number
-of votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus
-votes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has
-enough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Candidate : Type u_1} (ballot : EconCSLib.SocialChoice.Voting.Ballot Candidate), List.Nodup ballot
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def Valid {Candidate : Type*} (ballot : Ballot Candidate) : Prop :=
-  ballot.Nodup
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source assumes each voter submits a complete ranking over candidates. The Lean predicate records the ordinary ranking condition that no candidate is listed twice.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-abd030f98668caa8}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}SocialChoice.\allowbreak{}Voting.\allowbreak{}Ballot.\allowbreak{}nextActive}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 394-\allowbreak{}400\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each
-voter instead submits a ranking over candidates (here, we assume the rankings are complete, not
-partial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as
-follows. The number of first-place votes for each candidate is counted. Any candidate with a number
-of votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus
-votes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has
-enough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
+type:
 {Candidate : Type u_1} →
-  [inst : DecidableEq Candidate] →
-    (ballot : EconCSLib.SocialChoice.Voting.Ballot Candidate) →
-      (active : Finset Candidate) →
-        List.brecOn ballot fun ballot f =>
-          (match (motive :=
-              (ballot : EconCSLib.SocialChoice.Voting.Ballot Candidate) → List.below ballot → Option Candidate)
-              ballot with
-            | [] => fun x => none
-            | c :: rest => fun x => if c ∈ active then some c else x.1)
-            f
+  [DecidableEq Candidate] →
+    AppliedModelingLib.SocialChoice.Voting.Ballot Candidate → Finset Candidate → Option Candidate
+
+value:
+fun {Candidate : Type u_1} [DecidableEq Candidate] (ballot : AppliedModelingLib.SocialChoice.Voting.Ballot Candidate)
+    (active : Finset Candidate) =>
+  List.brecOn ballot (AppliedModelingLib.SocialChoice.Voting.Ballot.nextActive._f active)
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\end{itemize}
+\hypertarget{governing-declaration-0946df2e282443c1}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot.\allowbreak{}active\allowbreak{}Support}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-def nextActive {Candidate : Type*} [DecidableEq Candidate]
-    (ballot : Ballot Candidate) (active : Finset Candidate) : Option Candidate :=
-  match ballot with
-  | [] => none
-  | c :: rest => if c ∈ active then some c else nextActive rest active
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [DecidableEq Candidate] →
+      Finset Voter →
+        (Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) → Finset Candidate → Candidate → Finset Voter
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} [DecidableEq Candidate] (voters : Finset Voter)
+    (ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) (active : Finset Candidate)
+    (candidate : Candidate) =>
+  {voter ∈ voters | (ballots voter).nextActive active = some candidate}
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} STV uses each voter's ordered preferences as candidates are selected or eliminated. The Lean function returns the first remaining active candidate in that ranking.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{governing-declaration-e1f9416a9e057b38}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot.\allowbreak{}next\allowbreak{}Active}
+\end{itemize}
+\hypertarget{governing-declaration-d2947cd1d156937d}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Is\allowbreak{}Min\allowbreak{}Argmax\allowbreak{}On}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+(ℕ → ℝ) → ℕ → ℕ → Prop
+
+value:
+fun (score : ℕ → ℝ) (choice upper : ℕ) =>
+  choice ≤ upper ∧
+    (∀ candidate ≤ upper, score candidate ≤ score choice) ∧
+      ∀ candidate ≤ upper, score candidate = score choice → choice ≤ candidate
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-d335879a7207e841}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}STV\allowbreak{}Quota}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℕ → ℕ → ℕ
+
+value:
+fun (seats voters : ℕ) => voters / (seats + 1) + 1
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-29a9f7b3ffbf6002}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}approved\allowbreak{}Committee\allowbreak{}Count}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Candidate : Type u_1} → [DecidableEq Candidate] → Finset Candidate → Finset Candidate → ℕ
+
+value:
+fun {Candidate : Type u_1} [DecidableEq Candidate] (committee ballot : Finset Candidate) => (committee ∩ ballot).card
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-f1687c008b580b02}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}pav\allowbreak{}Weight}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℕ → ℝ
+
+value:
+fun (approved : ℕ) => if approved = 0 then 0 else (↑approved)⁻¹
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-319dd7372e1f661f}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}pav\allowbreak{}Harmonic\allowbreak{}Sum}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℕ → ℝ
+
+value:
+fun (a : ℕ) => Nat.brecOn a AppliedModelingLib.SocialChoice.Voting.pavHarmonicSum._f
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-f1687c008b580b02}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}pav\allowbreak{}Weight}
+\end{itemize}
+\hypertarget{governing-declaration-2d4e6f0580886d40}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}rounded\allowbreak{}Seat\allowbreak{}Share}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℕ → ℝ → ℕ → Prop
+
+value:
+fun (seatCount : ℕ) (partyShare : ℝ) (seats : ℕ) =>
+  seatCount = ⌊partyShare * ↑seats⌋₊ ∨ seatCount = ⌈partyShare * ↑seats⌉₊
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-6f573ea35df34e74}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}thiele\allowbreak{}Score}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Candidate : Type u_1} →
+  {Score : Type u_2} →
+    [DecidableEq Candidate] →
+      [AddMonoid Score] →
+        (ℕ → Score) → Finset Candidate → List (AppliedModelingLib.SocialChoice.Voting.ApprovalBallot Candidate) → Score
+
+value:
+fun {Candidate : Type u_1} {Score : Type u_2} [DecidableEq Candidate] [AddMonoid Score] (weight : ℕ → Score)
+    (committee : Finset Candidate) (profile : List (AppliedModelingLib.SocialChoice.Voting.ApprovalBallot Candidate)) =>
+  (List.map
+      (fun (ballot : Finset Candidate) =>
+        weight (AppliedModelingLib.SocialChoice.Voting.approvedCommitteeCount committee ballot))
+      profile).sum
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-e1905fd3de83673d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Approval\allowbreak{}Ballot}
+\item \hyperlink{governing-declaration-29a9f7b3ffbf6002}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}approved\allowbreak{}Committee\allowbreak{}Count}
+\end{itemize}
+\hypertarget{governing-declaration-8b872df78d871e1b}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}State}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+field active:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [inst : DecidableEq Voter] →
+      [inst_1 : DecidableEq Candidate] →
+        {voters : Finset Voter} →
+          {initialCandidates : Finset Candidate} →
+            GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates → Finset Candidate
+
+field elected:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [inst : DecidableEq Voter] →
+      [inst_1 : DecidableEq Candidate] →
+        {voters : Finset Voter} →
+          {initialCandidates : Finset Candidate} →
+            GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates → Finset Candidate
+
+field weight:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [inst : DecidableEq Voter] →
+      [inst_1 : DecidableEq Candidate] →
+        {voters : Finset Voter} →
+          {initialCandidates : Finset Candidate} →
+            GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates → Voter → ℝ
+
+field active_subset_initial:
+∀ {Voter : Type u_1} {Candidate : Type u_2} [inst : DecidableEq Voter] [inst_1 : DecidableEq Candidate]
+  {voters : Finset Voter} {initialCandidates : Finset Candidate}
+  (self : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates),
+  self.active ⊆ initialCandidates
+
+field elected_subset_initial:
+∀ {Voter : Type u_1} {Candidate : Type u_2} [inst : DecidableEq Voter] [inst_1 : DecidableEq Candidate]
+  {voters : Finset Voter} {initialCandidates : Finset Candidate}
+  (self : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates),
+  self.elected ⊆ initialCandidates
+
+field active_elected_disjoint:
+∀ {Voter : Type u_1} {Candidate : Type u_2} [inst : DecidableEq Voter] [inst_1 : DecidableEq Candidate]
+  {voters : Finset Voter} {initialCandidates : Finset Candidate}
+  (self : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates),
+  Disjoint self.active self.elected
+
+field weight_nonneg:
+∀ {Voter : Type u_1} {Candidate : Type u_2} [inst : DecidableEq Voter] [inst_1 : DecidableEq Candidate]
+  {voters : Finset Voter} {initialCandidates : Finset Candidate}
+  (self : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates),
+  ∀ voter ∈ voters, 0 ≤ self.weight voter
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-e4f70d25375921c7}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}State.\allowbreak{}initial}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [inst : DecidableEq Voter] →
+      [inst_1 : DecidableEq Candidate] →
+        {voters : Finset Voter} →
+          {initialCandidates : Finset Candidate} →
+            (initialWeight : Voter → ℝ) →
+              (∀ voter ∈ voters, 0 ≤ initialWeight voter) →
+                GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} [DecidableEq Voter] [DecidableEq Candidate] {voters : Finset Voter}
+    {initialCandidates : Finset Candidate} (initialWeight : Voter → ℝ)
+    (hinitialWeight_nonneg : ∀ voter ∈ voters, 0 ≤ initialWeight voter) =>
+  { active := initialCandidates, elected := ∅, weight := initialWeight,
+    active_subset_initial := fun {{candidate : Candidate}} (hcandidate : candidate ∈ initialCandidates) => hcandidate,
+    elected_subset_initial := GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState.initial._proof_1,
+    active_elected_disjoint := GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState.initial._proof_2,
+    weight_nonneg := hinitialWeight_nonneg }
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-8b872df78d871e1b}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}State}
+\end{itemize}
+\hypertarget{governing-declaration-27b5b75da6f75108}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}Terminal}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [inst : DecidableEq Voter] →
+      [inst_1 : DecidableEq Candidate] →
+        {voters : Finset Voter} →
+          {initialCandidates : Finset Candidate} →
+            ℕ → GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates → Prop
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} [DecidableEq Voter] [DecidableEq Candidate] {voters : Finset Voter}
+    {initialCandidates : Finset Candidate} (seats : ℕ)
+    (state : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates) =>
+  state.elected.card = seats ∨ state.active.card = seats - state.elected.card
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-8b872df78d871e1b}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}State}
+\end{itemize}
+\hypertarget{governing-declaration-3adeede1bc778473}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Party\allowbreak{}Approval\allowbreak{}Ballot}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+Type u_1 → Type u_1
+
+value:
+fun (Candidate : Type u_1) => AppliedModelingLib.SocialChoice.Voting.ApprovalBallot Candidate
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-e1905fd3de83673d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Approval\allowbreak{}Ballot}
+\end{itemize}
+\hypertarget{governing-declaration-21463db3a6da8b5e}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}ballot\allowbreak{}Routed\allowbreak{}Party\allowbreak{}Final\allowbreak{}Seats}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [inst : DecidableEq Voter] →
+      [inst_1 : DecidableEq Candidate] →
+        {voters : Finset Voter} →
+          {initialCandidates : Finset Candidate} →
+            Finset Candidate → ℕ → GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates → ℕ
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} [DecidableEq Voter] [DecidableEq Candidate] {voters : Finset Voter}
+    {initialCandidates : Finset Candidate} (partyCandidates : Finset Candidate) (seats : ℕ)
+    (state : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates) =>
+  (state.elected ∩ partyCandidates).card +
+    if state.elected.card < seats then (state.active ∩ partyCandidates).card else 0
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-8b872df78d871e1b}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}State}
+\end{itemize}
+\hypertarget{governing-declaration-e25badf495bb0753}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}ballot\allowbreak{}Routed\allowbreak{}Support}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [DecidableEq Candidate] →
+      Finset Voter →
+        (Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) → Finset Candidate → Candidate → Finset Voter
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} [DecidableEq Candidate] (voters : Finset Voter)
+    (ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) (active : Finset Candidate)
+    (candidate : Candidate) =>
+  AppliedModelingLib.SocialChoice.Voting.Ballot.activeSupport voters ballots active candidate
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{governing-declaration-0946df2e282443c1}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot.\allowbreak{}active\allowbreak{}Support}
+\end{itemize}
+\hypertarget{governing-declaration-9546927b87891fe9}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}ballot\allowbreak{}Routed\allowbreak{}Tally}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [DecidableEq Candidate] →
+      Finset Voter →
+        (Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) →
+          Finset Candidate → (Voter → ℝ) → Candidate → ℝ
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} [DecidableEq Candidate] (voters : Finset Voter)
+    (ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) (active : Finset Candidate)
+    (weight : Voter → ℝ) (candidate : Candidate) =>
+  ∑ voter ∈ GGRS26CombattingGerrymanderingRCV.ballotRoutedSupport voters ballots active candidate, weight voter
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{governing-declaration-e25badf495bb0753}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}ballot\allowbreak{}Routed\allowbreak{}Support}
+\end{itemize}
+\hypertarget{governing-declaration-9554b7918969e197}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}Transfer\allowbreak{}Policy}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+field electUpdate:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [inst : DecidableEq Voter] →
+      [inst_1 : DecidableEq Candidate] →
+        {voters : Finset Voter} →
+          {ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate} →
+            {quota : ℝ} →
+              GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy voters ballots quota →
+                Finset Candidate → Candidate → (Voter → ℝ) → (Voter → ℝ) → Prop
+
+field eliminateUpdate:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [inst : DecidableEq Voter] →
+      [inst_1 : DecidableEq Candidate] →
+        {voters : Finset Voter} →
+          {ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate} →
+            {quota : ℝ} →
+              GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy voters ballots quota →
+                Finset Candidate → Candidate → (Voter → ℝ) → (Voter → ℝ) → Prop
+
+field elect_exists:
+∀ {Voter : Type u_1} {Candidate : Type u_2} [inst : DecidableEq Voter] [inst_1 : DecidableEq Candidate]
+  {voters : Finset Voter} {ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate} {quota : ℝ}
+  (self : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy voters ballots quota)
+  (active : Finset Candidate) (winner : Candidate) (beforeWeight : Voter → ℝ),
+  (∀ voter ∈ voters, 0 ≤ beforeWeight voter) →
+    winner ∈ active →
+      quota ≤ GGRS26CombattingGerrymanderingRCV.ballotRoutedTally voters ballots active beforeWeight winner →
+        ∃ (afterWeight : Voter → ℝ), self.electUpdate active winner beforeWeight afterWeight
+
+field eliminate_exists:
+∀ {Voter : Type u_1} {Candidate : Type u_2} [inst : DecidableEq Voter] [inst_1 : DecidableEq Candidate]
+  {voters : Finset Voter} {ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate} {quota : ℝ}
+  (self : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy voters ballots quota)
+  (active : Finset Candidate) (loser : Candidate) (beforeWeight : Voter → ℝ),
+  (∀ voter ∈ voters, 0 ≤ beforeWeight voter) →
+    loser ∈ active → ∃ (afterWeight : Voter → ℝ), self.eliminateUpdate active loser beforeWeight afterWeight
+
+field elect_preserves_nonneg:
+∀ {Voter : Type u_1} {Candidate : Type u_2} [inst : DecidableEq Voter] [inst_1 : DecidableEq Candidate]
+  {voters : Finset Voter} {ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate} {quota : ℝ}
+  (self : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy voters ballots quota)
+  (active : Finset Candidate) (winner : Candidate) (beforeWeight afterWeight : Voter → ℝ),
+  (∀ voter ∈ voters, 0 ≤ beforeWeight voter) →
+    self.electUpdate active winner beforeWeight afterWeight → ∀ voter ∈ voters, 0 ≤ afterWeight voter
+
+field elect_unchanged_off_support:
+∀ {Voter : Type u_1} {Candidate : Type u_2} [inst : DecidableEq Voter] [inst_1 : DecidableEq Candidate]
+  {voters : Finset Voter} {ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate} {quota : ℝ}
+  (self : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy voters ballots quota)
+  (active : Finset Candidate) (winner : Candidate) (beforeWeight afterWeight : Voter → ℝ),
+  (∀ voter ∈ voters, 0 ≤ beforeWeight voter) →
+    self.electUpdate active winner beforeWeight afterWeight →
+      ∀ voter ∈ voters,
+        voter ∉ GGRS26CombattingGerrymanderingRCV.ballotRoutedSupport voters ballots active winner →
+          afterWeight voter = beforeWeight voter
+
+field elect_support_mass_drop_exactly_quota:
+∀ {Voter : Type u_1} {Candidate : Type u_2} [inst : DecidableEq Voter] [inst_1 : DecidableEq Candidate]
+  {voters : Finset Voter} {ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate} {quota : ℝ}
+  (self : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy voters ballots quota)
+  (active : Finset Candidate) (winner : Candidate) (beforeWeight afterWeight : Voter → ℝ),
+  (∀ voter ∈ voters, 0 ≤ beforeWeight voter) →
+    self.electUpdate active winner beforeWeight afterWeight →
+      ∑ voter ∈ GGRS26CombattingGerrymanderingRCV.ballotRoutedSupport voters ballots active winner, afterWeight voter =
+        ∑ voter ∈ GGRS26CombattingGerrymanderingRCV.ballotRoutedSupport voters ballots active winner,
+            beforeWeight voter -
+          quota
+
+field eliminate_weight_unchanged:
+∀ {Voter : Type u_1} {Candidate : Type u_2} [inst : DecidableEq Voter] [inst_1 : DecidableEq Candidate]
+  {voters : Finset Voter} {ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate} {quota : ℝ}
+  (self : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy voters ballots quota)
+  (active : Finset Candidate) (loser : Candidate) (beforeWeight afterWeight : Voter → ℝ),
+  (∀ voter ∈ voters, 0 ≤ beforeWeight voter) →
+    self.eliminateUpdate active loser beforeWeight afterWeight →
+      ∀ voter ∈ voters, afterWeight voter = beforeWeight voter
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{governing-declaration-e25badf495bb0753}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}ballot\allowbreak{}Routed\allowbreak{}Support}
+\item \hyperlink{governing-declaration-9546927b87891fe9}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}ballot\allowbreak{}Routed\allowbreak{}Tally}
+\end{itemize}
+\hypertarget{governing-declaration-4dcbe128f2b022b3}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}D\allowbreak{}Favoring\allowbreak{}STV\allowbreak{}Transition}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [inst : DecidableEq Voter] →
+      [inst_1 : DecidableEq Candidate] →
+        {voters : Finset Voter} →
+          {initialCandidates : Finset Candidate} →
+            {favoredParty : Finset Candidate} →
+              (ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) →
+                (quota : ℝ) →
+                  GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy voters ballots quota →
+                    ℕ →
+                      GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates →
+                        GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates → Prop
+
+constructor GGRS26CombattingGerrymanderingRCV.BallotRoutedDFavoringSTVTransition.elect:
+∀ {Voter : Type u_1} {Candidate : Type u_2} [inst : DecidableEq Voter] [inst_1 : DecidableEq Candidate]
+  {voters : Finset Voter} {initialCandidates favoredParty : Finset Candidate}
+  {ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate} {quota : ℝ}
+  {policy : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy voters ballots quota} {seats : ℕ}
+  {before after : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates} (winner : Candidate),
+  ¬GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTerminal seats before →
+    winner ∈ before.active →
+      before.elected.card < seats →
+        quota ≤ GGRS26CombattingGerrymanderingRCV.ballotRoutedTally voters ballots before.active before.weight winner →
+          (winner ∉ favoredParty →
+              ∀ candidate ∈ before.active,
+                GGRS26CombattingGerrymanderingRCV.ballotRoutedTally voters ballots before.active before.weight
+                      candidate =
+                    GGRS26CombattingGerrymanderingRCV.ballotRoutedTally voters ballots before.active before.weight
+                      winner →
+                  candidate ∉ favoredParty) →
+            after.active = before.active.erase winner →
+              after.elected = insert winner before.elected →
+                policy.electUpdate before.active winner before.weight after.weight →
+                  GGRS26CombattingGerrymanderingRCV.BallotRoutedDFavoringSTVTransition ballots quota policy seats before
+                    after
+
+constructor GGRS26CombattingGerrymanderingRCV.BallotRoutedDFavoringSTVTransition.eliminate:
+∀ {Voter : Type u_1} {Candidate : Type u_2} [inst : DecidableEq Voter] [inst_1 : DecidableEq Candidate]
+  {voters : Finset Voter} {initialCandidates favoredParty : Finset Candidate}
+  {ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate} {quota : ℝ}
+  {policy : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy voters ballots quota} {seats : ℕ}
+  {before after : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates} (loser : Candidate),
+  ¬GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTerminal seats before →
+    loser ∈ before.active →
+      (∀ candidate ∈ before.active,
+          GGRS26CombattingGerrymanderingRCV.ballotRoutedTally voters ballots before.active before.weight candidate <
+            quota) →
+        (∀ candidate ∈ before.active,
+            GGRS26CombattingGerrymanderingRCV.ballotRoutedTally voters ballots before.active before.weight loser ≤
+              GGRS26CombattingGerrymanderingRCV.ballotRoutedTally voters ballots before.active before.weight
+                candidate) →
+          (loser ∈ favoredParty →
+              ∀ candidate ∈ before.active,
+                GGRS26CombattingGerrymanderingRCV.ballotRoutedTally voters ballots before.active before.weight
+                      candidate =
+                    GGRS26CombattingGerrymanderingRCV.ballotRoutedTally voters ballots before.active before.weight
+                      loser →
+                  candidate ∈ favoredParty) →
+            after.active = before.active.erase loser →
+              after.elected = before.elected →
+                policy.eliminateUpdate before.active loser before.weight after.weight →
+                  GGRS26CombattingGerrymanderingRCV.BallotRoutedDFavoringSTVTransition ballots quota policy seats before
+                    after
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{governing-declaration-8b872df78d871e1b}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}State}
+\item \hyperlink{governing-declaration-27b5b75da6f75108}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}Terminal}
+\item \hyperlink{governing-declaration-9554b7918969e197}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}Transfer\allowbreak{}Policy}
+\item \hyperlink{governing-declaration-9546927b87891fe9}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}ballot\allowbreak{}Routed\allowbreak{}Tally}
+\end{itemize}
+\hypertarget{governing-declaration-3bfffc20e8b6444f}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}D\allowbreak{}Favoring\allowbreak{}STV\allowbreak{}Run}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [inst : DecidableEq Voter] →
+      [inst_1 : DecidableEq Candidate] →
+        {voters : Finset Voter} →
+          {initialCandidates : Finset Candidate} →
+            {favoredParty : Finset Candidate} →
+              (ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) →
+                (quota : ℝ) →
+                  GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy voters ballots quota →
+                    ℕ →
+                      GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates →
+                        GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates → Prop
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} [DecidableEq Voter] [DecidableEq Candidate] {voters : Finset Voter}
+    {initialCandidates favoredParty : Finset Candidate}
+    (ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) (quota : ℝ)
+    (policy : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy voters ballots quota) (seats : ℕ)
+    (initial terminal : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState voters initialCandidates) =>
+  Relation.ReflTransGen
+    (GGRS26CombattingGerrymanderingRCV.BallotRoutedDFavoringSTVTransition ballots quota policy seats) initial terminal
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{governing-declaration-4dcbe128f2b022b3}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}D\allowbreak{}Favoring\allowbreak{}STV\allowbreak{}Transition}
+\item \hyperlink{governing-declaration-8b872df78d871e1b}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}State}
+\item \hyperlink{governing-declaration-9554b7918969e197}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}Transfer\allowbreak{}Policy}
+\end{itemize}
+\hypertarget{governing-declaration-3a02b26960fad588}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}complete\_\allowbreak{}ranked\_\allowbreak{}ballots}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [DecidableEq Candidate] →
+      Finset Voter → (Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) → Finset Candidate → Prop
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} [DecidableEq Candidate] (voters : Finset Voter)
+    (ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) (allCandidates : Finset Candidate) =>
+  ∀ voter ∈ voters,
+    (ballots voter).Valid ∧ ∀ (candidate : Candidate), candidate ∈ ballots voter ↔ candidate ∈ allCandidates
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{governing-declaration-d09ca390012680b9}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot.\allowbreak{}Valid}
+\end{itemize}
+\hypertarget{governing-declaration-ab89c07c272f0ccf}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}complete\_\allowbreak{}party\_\allowbreak{}ranking\_\allowbreak{}ballots}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [DecidableEq Candidate] →
+      Finset Voter →
+        (Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) → Finset Candidate → Finset Candidate → Prop
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} [DecidableEq Candidate] (voters : Finset Voter)
+    (ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate)
+    (partyCandidates allCandidates : Finset Candidate) =>
+  GGRS26CombattingGerrymanderingRCV.paper_complete_ranked_ballots voters ballots allCandidates ∧
+    ∀ voter ∈ voters,
+      ∀ (active : Finset Candidate),
+        (∃ same ∈ partyCandidates, same ∈ active) →
+          ∃ same ∈ partyCandidates, (ballots voter).nextActive active = some same
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{governing-declaration-e1f9416a9e057b38}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot.\allowbreak{}next\allowbreak{}Active}
+\item \hyperlink{governing-declaration-3a02b26960fad588}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}complete\_\allowbreak{}ranked\_\allowbreak{}ballots}
+\end{itemize}
+\hypertarget{governing-declaration-2864a4aebe1e6e50}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}thiele\_\allowbreak{}weights}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+GGRS26CombattingGerrymanderingRCV.PaperThieleWeights
+
+value:
+{ marginalWeight := AppliedModelingLib.SocialChoice.Voting.pavWeight,
+  marginal_nonincreasing := GGRS26CombattingGerrymanderingRCV.paper_pav_thiele_weights._proof_1,
+  voterScore := AppliedModelingLib.SocialChoice.Voting.pavHarmonicSum,
+  voterScore_zero := GGRS26CombattingGerrymanderingRCV.paper_pav_thiele_weights._proof_2,
+  voterScore_succ := GGRS26CombattingGerrymanderingRCV.paper_pav_thiele_weights._proof_3 }
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-319dd7372e1f661f}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}pav\allowbreak{}Harmonic\allowbreak{}Sum}
+\item \hyperlink{governing-declaration-f1687c008b580b02}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}pav\allowbreak{}Weight}
+\item \hyperlink{paper-prerequisite-37b91baa3b4ddc9d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights}
+\end{itemize}
+\hypertarget{governing-declaration-a26378e50367c86c}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}proposition1\_\allowbreak{}ballot\_\allowbreak{}routed\_\allowbreak{}stv\_\allowbreak{}initial\_\allowbreak{}state}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    [inst : DecidableEq Voter] →
+      [inst_1 : DecidableEq Candidate] →
+        (allVoters : Finset Voter) →
+          (initialActive : Finset Candidate) →
+            GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState allVoters initialActive
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} [DecidableEq Voter] [DecidableEq Candidate] (allVoters : Finset Voter)
+    (initialActive : Finset Candidate) =>
+  GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState.initial (fun (x : Voter) => 1)
+    (GGRS26CombattingGerrymanderingRCV.paper_proposition1_ballot_routed_stv_initial_state._proof_1 allVoters)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-8b872df78d871e1b}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}State}
+\item \hyperlink{governing-declaration-e4f70d25375921c7}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}State.\allowbreak{}initial}
+\end{itemize}
+\hypertarget{governing-declaration-d8487ebdee5a1786}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}seat\_\allowbreak{}score}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+GGRS26CombattingGerrymanderingRCV.PaperThieleWeights → ℝ → ℕ → ℕ → ℝ
+
+value:
+fun (weights : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights) (partyShare : ℝ) (seats seatCount : ℕ) =>
+  partyShare * weights.voterScore seatCount + (1 - partyShare) * weights.voterScore (seats - seatCount)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-37b91baa3b4ddc9d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights}
+\end{itemize}
+\hypertarget{governing-declaration-656ba6456b1c16b1}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}min\_\allowbreak{}argmax}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℕ → ℝ → ℕ → Prop
+
+value:
+fun (seatCount : ℕ) (partyShare : ℝ) (seats : ℕ) =>
+  GGRS26CombattingGerrymanderingRCV.paper_thiele_party_min_argmax
+    GGRS26CombattingGerrymanderingRCV.paper_pav_thiele_weights seatCount partyShare seats
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2864a4aebe1e6e50}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}thiele\_\allowbreak{}weights}
+\item \hyperlink{paper-prerequisite-58801459d14912d4}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}min\_\allowbreak{}argmax}
+\end{itemize}
+\hypertarget{governing-declaration-6c3e49fcf5e23bf7}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}pav\allowbreak{}Seat\allowbreak{}Integer\allowbreak{}Interval}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℤ → ℝ → ℕ → Prop
+
+value:
+fun (seatCount : ℤ) (partyShare : ℝ) (seats : ℕ) =>
+  partyShare * ↑(seats + 1) - 1 ≤ ↑seatCount ∧ ↑seatCount < partyShare * ↑(seats + 1)
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-71aa9e7dd85c440d}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}integer\_\allowbreak{}interval}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℤ → ℝ → ℕ → Prop
+
+value:
+fun (seatCount : ℤ) (partyShare : ℝ) (seats : ℕ) =>
+  GGRS26CombattingGerrymanderingRCV.pavSeatIntegerInterval seatCount partyShare seats
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-6c3e49fcf5e23bf7}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}pav\allowbreak{}Seat\allowbreak{}Integer\allowbreak{}Interval}
+\end{itemize}
+\hypertarget{governing-declaration-d36d27b8173a66a1}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}seat\allowbreak{}Share\allowbreak{}Rounded}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℕ → ℝ → ℕ → Prop
+
+value:
+fun (seatCount : ℕ) (partyShare : ℝ) (seats : ℕ) =>
+  AppliedModelingLib.SocialChoice.Voting.roundedSeatShare seatCount partyShare seats
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2d4e6f0580886d40}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}rounded\allowbreak{}Seat\allowbreak{}Share}
+\end{itemize}
+\hypertarget{governing-declaration-64adc81e0c40ba7a}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}seat\_\allowbreak{}share\_\allowbreak{}rounded}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℕ → ℝ → ℕ → Prop
+
+value:
+fun (seatCount : ℕ) (partyShare : ℝ) (seats : ℕ) =>
+  GGRS26CombattingGerrymanderingRCV.seatShareRounded seatCount partyShare seats
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-d36d27b8173a66a1}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}seat\allowbreak{}Share\allowbreak{}Rounded}
+\end{itemize}
 \clearpage
-\hypertarget{library-prerequisite-2389b592d48713a6}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}SocialChoice.\allowbreak{}Voting.\allowbreak{}STVQuota}
+\hypertarget{paper-prerequisite-section-5ef5ef0364b6939c}{}
+\section*{Paper-specific semantic prerequisites}
+\hypertarget{paper-prerequisite-9acd2440ce1052db}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Source\allowbreak{}STV\allowbreak{}State}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Source\allowbreak{}STV\allowbreak{}State\par}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 394-\allowbreak{}408\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
@@ -229,28 +953,39 @@ candidate’s surplus votes (we describe this formally in Section 4). For consis
 assume that ties are broken in favor of candidates from party D, but randomly within each party.5
 \end{ReviewVerbatim}
 
-\paragraph{Lean-expanded library semantic target}
+
+
+\paragraph{Lean-elaborated paper signature}
 \begin{ReviewVerbatim}
-(seats voters : ℕ) → voters / (seats + 1) + 1
+field active:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} → GGRS26CombattingGerrymanderingRCV.PaperSourceSTVState Voter Candidate → Finset Candidate
+
+field elected:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} → GGRS26CombattingGerrymanderingRCV.PaperSourceSTVState Voter Candidate → Finset Candidate
+
+field weight:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} → GGRS26CombattingGerrymanderingRCV.PaperSourceSTVState Voter Candidate → Voter → ℝ
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def STVQuota (seats voters : ℕ) : ℕ :=
-  voters / (seats + 1) + 1
-\end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
+\paragraph{Recorded source-to-declaration screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The Lean target is the stated Droop threshold, voters divided by seats plus one and then plus one, used to decide whether a candidate is elected.
+{\raggedright
+\textbf{Reason:} Exposes the active and elected candidate sets and current ballot weights that comprise the source STV count state;\allowbreak{} its execution predicate supplies the associated operational constraints.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{library-prerequisite-77a99ecb4dbfd19a}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}SocialChoice.\allowbreak{}Voting.\allowbreak{}pavWeight}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 377-\allowbreak{}388\par}
+\hypertarget{paper-prerequisite-37b91baa3b4ddc9d}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 377-\allowbreak{}393\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 A Thiele rule is characterized by a function λ. Each voter v in district k provides a set Sv
@@ -265,30 +1000,215 @@ voter, the set C receives a number of points equal to the number of candidates i
 voter likes, and so the Nk candidates with the most votes win. We further consider Proportional
 Approval Voting (PAV), a Thiele rule with λPAV (i) = 1i ; and Thiele Squared, with λTS = i12 . PAV
 is well-studied in the theoretical social choice literature and comes with optimality guarantees (in
+terms of proportionality) (Skowron 2021). Thiele Squared induces even sharper diminishing returns
+than PAV in a voter having more of their preferred candidates winning, and thus prioritizes more
+voters having at least one approved candidate (and 50/50 outcomes between two parties, regardless
+of underlying vote shares). More generally, Thiele rules both contain common voting rules and
+parameterize a rule’s tendency to favor proportional or balanced outcomes.
 \end{ReviewVerbatim}
 
-\paragraph{Lean-expanded library semantic target}
+
+
+\paragraph{Lean-elaborated paper signature}
 \begin{ReviewVerbatim}
-(approved : ℕ) → if approved = 0 then 0 else (↑approved)⁻¹
+field marginalWeight:
+GGRS26CombattingGerrymanderingRCV.PaperThieleWeights → ℕ → ℝ
+
+field marginal_nonincreasing:
+∀ (self : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights) (i j : ℕ),
+  1 ≤ i → i ≤ j → self.marginalWeight j ≤ self.marginalWeight i
+
+field voterScore:
+GGRS26CombattingGerrymanderingRCV.PaperThieleWeights → ℕ → ℝ
+
+field voterScore_zero:
+∀ (self : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights), self.voterScore 0 = 0
+
+field voterScore_succ:
+∀ (self : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights) (n : ℕ),
+  self.voterScore (n + 1) = self.voterScore n + self.marginalWeight (n + 1)
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-noncomputable def pavWeight (approved : ℕ) : ℝ :=
-  if approved = 0 then 0 else (approved : ℝ)⁻¹
-\end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
+\paragraph{Recorded source-to-declaration screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The source's PAV selector uses the PAV marginal-weight function in its displayed objective. The Lean target gives the standard 1/i PAV weight for positive indices and makes the unused zero index total.
+{\raggedright
+\textbf{Reason:} Its positive-\allowbreak{}index nonincreasing marginals, zero cumulative score, and successor recurrence encode the source Thiele sum from i=1 through n, including diminishing returns.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{library-prerequisite-5024bd1849c74c85}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}SocialChoice.\allowbreak{}Voting.\allowbreak{}pavHarmonicSum}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 377-\allowbreak{}388\par}
+\hypertarget{paper-prerequisite-b12522706ad3f624}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}candidate\_\allowbreak{}ranked\_\allowbreak{}before}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}candidate\_\allowbreak{}ranked\_\allowbreak{}before\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 415-\allowbreak{}426\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Voter assumptions. Next, we require assumptions on how voters rank or approve candidates.
+For each Thiele rule, we assume that in each district k there are exactly Nk candidates from each
+party, and each voter simply approves all the candidates in their party.6 For STV, we assume that
+in each district k there are at least Nk candidates from each party.7 For our primarily empirical
+analysis, we further assume that parties are solid coalitions (Dummett 1984): that each voter ranks
+all candidates of their party over each candidate of the other party, though intra-party rankings
+may vary. These assumptions reflect that party membership is a strong predictor of the party of
+the candidate for which a voter votes. Such an assumption, using historical party vote shares to
+predict vote shares in future elections, is used throughout the redistricting literature for SMDs; our
+additional assumption is that this behavior extends to partisan voting in multi-member elections.
+We relax this assumption in Section 4 and study intra-party effects, where voters may disagree on
+within-party rankings, in Appendix B.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{Candidate : Type u_1} → Candidate → Candidate → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate → Prop
+
+value:
+fun {Candidate : Type u_1} (higher lower : Candidate)
+    (ballot : AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) =>
+  ∃ (earlier : AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) (middle : List Candidate) (suffix :
+    List Candidate), ballot = earlier ++ higher :: middle ++ lower :: suffix
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Its list decomposition requires the higher candidate to occur strictly before the lower candidate, which is the exact ranking relation needed for source solid coalitions.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-a48f905958044eb5}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}complete\_\allowbreak{}solid\_\allowbreak{}coalition\_\allowbreak{}rankings}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}complete\_\allowbreak{}solid\_\allowbreak{}coalition\_\allowbreak{}rankings\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 415-\allowbreak{}426\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Voter assumptions. Next, we require assumptions on how voters rank or approve candidates.
+For each Thiele rule, we assume that in each district k there are exactly Nk candidates from each
+party, and each voter simply approves all the candidates in their party.6 For STV, we assume that
+in each district k there are at least Nk candidates from each party.7 For our primarily empirical
+analysis, we further assume that parties are solid coalitions (Dummett 1984): that each voter ranks
+all candidates of their party over each candidate of the other party, though intra-party rankings
+may vary. These assumptions reflect that party membership is a strong predictor of the party of
+the candidate for which a voter votes. Such an assumption, using historical party vote shares to
+predict vote shares in future elections, is used throughout the redistricting literature for SMDs; our
+additional assumption is that this behavior extends to partisan voting in multi-member elections.
+We relax this assumption in Section 4 and study intra-party effects, where voters may disagree on
+within-party rankings, in Appendix B.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    Finset Voter →
+      (Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) →
+        Finset Candidate → Finset Candidate → Finset Candidate → Prop
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} (voters : Finset Voter)
+    (ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate)
+    (partyCandidates otherPartyCandidates allCandidates : Finset Candidate) =>
+  Disjoint partyCandidates otherPartyCandidates ∧
+    allCandidates = partyCandidates ∪ otherPartyCandidates ∧
+      ∀ voter ∈ voters,
+        (ballots voter).Valid ∧
+          (∀ (candidate : Candidate), candidate ∈ ballots voter ↔ candidate ∈ allCandidates) ∧
+            ∀ same ∈ partyCandidates,
+              ∀ other ∈ otherPartyCandidates,
+                GGRS26CombattingGerrymanderingRCV.paper_candidate_ranked_before same other (ballots voter)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{governing-declaration-d09ca390012680b9}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot.\allowbreak{}Valid}
+\item \hyperlink{paper-prerequisite-b12522706ad3f624}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}candidate\_\allowbreak{}ranked\_\allowbreak{}before}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Uses disjoint complete two-\allowbreak{}party rosters and requires every valid full ballot to rank each own-\allowbreak{}party candidate above every other-\allowbreak{}party candidate, while leaving within-\allowbreak{}party ordering unrestricted as in the source.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-e34992194a8b7f0d}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}first\_\allowbreak{}active\_\allowbreak{}candidate}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}first\_\allowbreak{}active\_\allowbreak{}candidate\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 394-\allowbreak{}408\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each
+voter instead submits a ranking over candidates (here, we assume the rankings are complete, not
+partial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as
+follows. The number of first-place votes for each candidate is counted. Any candidate with a number
+of votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus
+votes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has
+enough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,
+and their votes are transferred. The process continues until Nk candidates have been selected, or
+the number of remaining candidates equals the number of remaining seats. STV is commonly used
+in practice in multi-winner elections.
+    Details can differ in how such votes are transferred, but our results in Section 3 do not depend
+on the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV
+rule, in which each voter keeps a fractional number of votes equal to their share of the winning
+candidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we
+assume that ties are broken in favor of candidates from party D, but randomly within each party.5
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{Candidate : Type u_1} → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate → Finset Candidate → Candidate → Prop
+
+value:
+fun {Candidate : Type u_1} (ballot : AppliedModelingLib.SocialChoice.Voting.Ballot Candidate)
+    (active : Finset Candidate) (candidate : Candidate) =>
+  candidate ∈ active ∧
+    ∃ (preceding : AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) (suffix : List Candidate),
+      ballot = preceding ++ candidate :: suffix ∧ ∀ earlier ∈ preceding, earlier ∉ active
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Requires an active candidate with every earlier listed candidate inactive, exactly the source rule's first currently active preference.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-7086a653b0f05ea7}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}committee\_\allowbreak{}score}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}committee\_\allowbreak{}score\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 377-\allowbreak{}393\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 A Thiele rule is characterized by a function λ. Each voter v in district k provides a set Sv
@@ -303,64 +1223,1287 @@ voter, the set C receives a number of points equal to the number of candidates i
 voter likes, and so the Nk candidates with the most votes win. We further consider Proportional
 Approval Voting (PAV), a Thiele rule with λPAV (i) = 1i ; and Thiele Squared, with λTS = i12 . PAV
 is well-studied in the theoretical social choice literature and comes with optimality guarantees (in
+terms of proportionality) (Skowron 2021). Thiele Squared induces even sharper diminishing returns
+than PAV in a voter having more of their preferred candidates winning, and thus prioritizes more
+voters having at least one approved candidate (and 50/50 outcomes between two parties, regardless
+of underlying vote shares). More generally, Thiele rules both contain common voting rules and
+parameterize a rule’s tendency to favor proportional or balanced outcomes.
 \end{ReviewVerbatim}
 
-\paragraph{Lean-expanded library semantic target}
+
+
+\paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
-(a : ℕ) →
-  Nat.brecOn a fun x f =>
-    (match (motive := (x : ℕ) → Nat.below x → ℝ) x with
-      | 0 => fun x => 0
-      | n.succ => fun x => x.1 + EconCSLib.SocialChoice.Voting.pavWeight (n + 1))
-      f
+type:
+{Candidate : Type u_1} →
+  GGRS26CombattingGerrymanderingRCV.PaperThieleWeights →
+    Finset Candidate → List (GGRS26CombattingGerrymanderingRCV.PartyApprovalBallot Candidate) → ℝ
+
+value:
+fun {Candidate : Type u_1} (weights : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights)
+    (committee : Finset Candidate) (profile : List (GGRS26CombattingGerrymanderingRCV.PartyApprovalBallot Candidate)) =>
+  AppliedModelingLib.SocialChoice.Voting.thieleScore weights.voterScore committee profile
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-noncomputable def pavHarmonicSum : ℕ → ℝ
-  | 0 => 0
-  | n + 1 => pavHarmonicSum n + pavWeight (n + 1)
-
-@[simp] theorem pavHarmonicSum_zero : pavHarmonicSum 0 = 0 := rfl
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-6f573ea35df34e74}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}thiele\allowbreak{}Score}
+\item \hyperlink{paper-prerequisite-37b91baa3b4ddc9d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights}
+\item \hyperlink{governing-declaration-3adeede1bc778473}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Party\allowbreak{}Approval\allowbreak{}Ballot}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} Lemma C.1 displays the PAV objective as sums of PAV marginal weights over the two parties' selected candidates. The Lean recursion is that harmonic partial sum.
+{\raggedright
+\textbf{Reason:} Maps each approval set to the cumulative score at its intersection count with the committee and sums across voters, exactly the source Thiele committee-\allowbreak{}score formula.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{library-prerequisite-cefd1f6a5d714129}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}SocialChoice.\allowbreak{}Voting.\allowbreak{}roundedSeatShare}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 485-\allowbreak{}490\par}
+\hypertarget{paper-prerequisite-517db5abc400efba}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}fixed\_\allowbreak{}size\_\allowbreak{}selected\_\allowbreak{}committee}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}fixed\_\allowbreak{}size\_\allowbreak{}selected\_\allowbreak{}committee\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 377-\allowbreak{}393\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
-Proposition 1 (Seat shares under STV). Suppose – for a given district with M seats and V ≥
-M (M + 1) voters – that a fraction yp of voters belong to each party p ∈ {R, D}, and that there are
-at least M candidates per party. Assume that each party’s voters rank all same-party candidates
-above all other-party candidates, and ties are broken in party D’s favor.
-    Let nR (yR , ST V ) be the number of winners belonging to party R using STV. Then, both
-nR (yR , ST V ) and nR (yR , λPAV ) are in {⌊yR M ⌋, ⌈yR M ⌉}.
+A Thiele rule is characterized by a function λ. Each voter v in district k provides a set Sv
+of the Nk candidates they like most. The set of winners is determined as follows. Consider a
+potential set of winners C. The amount of points that voter v contributes to C is i=1         λ(i), and
+                                                                                     P|Sv ∩C|
+
+the set C with the most points across voters (after tie-breaking) is selected. The (non-increasing)
+function λ establishes that votes have diminishing returns; the ith approved candidate in the set is
+worth λ(i). For example, winner-take-all approval voting is a Thiele rule with λ(i) = 1: for each
+voter, the set C receives a number of points equal to the number of candidates in the set that the
+voter likes, and so the Nk candidates with the most votes win. We further consider Proportional
+Approval Voting (PAV), a Thiele rule with λPAV (i) = 1i ; and Thiele Squared, with λTS = i12 . PAV
+is well-studied in the theoretical social choice literature and comes with optimality guarantees (in
+terms of proportionality) (Skowron 2021). Thiele Squared induces even sharper diminishing returns
+than PAV in a voter having more of their preferred candidates winning, and thus prioritizes more
+voters having at least one approved candidate (and 50/50 outcomes between two parties, regardless
+of underlying vote shares). More generally, Thiele rules both contain common voting rules and
+parameterize a rule’s tendency to favor proportional or balanced outcomes.
 \end{ReviewVerbatim}
 
-\paragraph{Lean-expanded library semantic target}
+
+
+\paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
-∀ (seatCount : ℕ) (partyShare : ℝ) (seats : ℕ), seatCount = ⌊partyShare * ↑seats⌋₊ ∨ seatCount = ⌈partyShare * ↑seats⌉₊
+type:
+{Candidate : Type u_1} →
+  GGRS26CombattingGerrymanderingRCV.PaperThieleWeights →
+    (Finset Candidate → Finset Candidate → Prop) →
+      Finset Candidate →
+        Finset Candidate → List (GGRS26CombattingGerrymanderingRCV.PartyApprovalBallot Candidate) → ℕ → Prop
+
+value:
+fun {Candidate : Type u_1} (weights : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights)
+    (tiePreferred : Finset Candidate → Finset Candidate → Prop) (candidates committee : Finset Candidate)
+    (profile : List (GGRS26CombattingGerrymanderingRCV.PartyApprovalBallot Candidate)) (seats : ℕ) =>
+  committee ⊆ candidates ∧
+    committee.card = seats ∧
+      (∀ other ⊆ candidates,
+          other.card = seats →
+            GGRS26CombattingGerrymanderingRCV.paper_thiele_committee_score weights other profile ≤
+              GGRS26CombattingGerrymanderingRCV.paper_thiele_committee_score weights committee profile) ∧
+        ∀ other ⊆ candidates,
+          other.card = seats →
+            GGRS26CombattingGerrymanderingRCV.paper_thiele_committee_score weights other profile =
+                GGRS26CombattingGerrymanderingRCV.paper_thiele_committee_score weights committee profile →
+              tiePreferred committee other
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def roundedSeatShare (seatCount : ℕ) (partyShare : ℝ) (seats : ℕ) : Prop :=
-  seatCount = ⌊partyShare * (seats : ℝ)⌋₊ ∨
-    seatCount = ⌈partyShare * (seats : ℝ)⌉₊
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-37b91baa3b4ddc9d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights}
+\item \hyperlink{governing-declaration-3adeede1bc778473}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Party\allowbreak{}Approval\allowbreak{}Ballot}
+\item \hyperlink{paper-prerequisite-7086a653b0f05ea7}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}committee\_\allowbreak{}score}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} Proposition 1 states membership in the two-element floor-or-ceiling set for vote share times seats. The Lean predicate is exactly that disjunction.
+{\raggedright
+\textbf{Reason:} Requires a subset of the candidate roster of the fixed district size with globally maximal Thiele score, resolving equal maximizers by the supplied tie preference as the source specifies.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-82e254229a66cc0e}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}fixed\_\allowbreak{}size\_\allowbreak{}selected\_\allowbreak{}committee}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}fixed\_\allowbreak{}size\_\allowbreak{}selected\_\allowbreak{}committee\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 377-\allowbreak{}393\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+A Thiele rule is characterized by a function λ. Each voter v in district k provides a set Sv
+of the Nk candidates they like most. The set of winners is determined as follows. Consider a
+potential set of winners C. The amount of points that voter v contributes to C is i=1         λ(i), and
+                                                                                     P|Sv ∩C|
+
+the set C with the most points across voters (after tie-breaking) is selected. The (non-increasing)
+function λ establishes that votes have diminishing returns; the ith approved candidate in the set is
+worth λ(i). For example, winner-take-all approval voting is a Thiele rule with λ(i) = 1: for each
+voter, the set C receives a number of points equal to the number of candidates in the set that the
+voter likes, and so the Nk candidates with the most votes win. We further consider Proportional
+Approval Voting (PAV), a Thiele rule with λPAV (i) = 1i ; and Thiele Squared, with λTS = i12 . PAV
+is well-studied in the theoretical social choice literature and comes with optimality guarantees (in
+terms of proportionality) (Skowron 2021). Thiele Squared induces even sharper diminishing returns
+than PAV in a voter having more of their preferred candidates winning, and thus prioritizes more
+voters having at least one approved candidate (and 50/50 outcomes between two parties, regardless
+of underlying vote shares). More generally, Thiele rules both contain common voting rules and
+parameterize a rule’s tendency to favor proportional or balanced outcomes.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{Candidate : Type u_1} →
+  (Finset Candidate → Finset Candidate → Prop) →
+    Finset Candidate →
+      Finset Candidate → List (GGRS26CombattingGerrymanderingRCV.PartyApprovalBallot Candidate) → ℕ → Prop
+
+value:
+fun {Candidate : Type u_1} (tiePreferred : Finset Candidate → Finset Candidate → Prop)
+    (candidates committee : Finset Candidate)
+    (profile : List (GGRS26CombattingGerrymanderingRCV.PartyApprovalBallot Candidate)) (seats : ℕ) =>
+  GGRS26CombattingGerrymanderingRCV.paper_thiele_fixed_size_selected_committee
+    GGRS26CombattingGerrymanderingRCV.paper_pav_thiele_weights tiePreferred candidates committee profile seats
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-3adeede1bc778473}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Party\allowbreak{}Approval\allowbreak{}Ballot}
+\item \hyperlink{governing-declaration-2864a4aebe1e6e50}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}thiele\_\allowbreak{}weights}
+\item \hyperlink{paper-prerequisite-517db5abc400efba}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}fixed\_\allowbreak{}size\_\allowbreak{}selected\_\allowbreak{}committee}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Specializes fixed-\allowbreak{}cardinality global Thiele maximization to harmonic PAV weights and the supplied tie rule, matching the source PAV winner definition.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-58801459d14912d4}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}min\_\allowbreak{}argmax}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}min\_\allowbreak{}argmax\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 428-\allowbreak{}456\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Calculating seat share given vote shares. Suppose – for a given district with Nk seats and
+Vk voters – we know the fraction yp of voters that belong to each party p ∈ {R, D} (vote share).
+How do we calculate the number of winners np from each party for a given social choice function?
+   Given our assumptions (including solid coalitions), it is straightforward to efficiently do so for
+Thiele rules, as candidates from a given party receive the same votes—and so we do not have to
+consider individual candidates, only the number of winners from each party directly. Then, we have
+that the party R seat share is:
+                                                                             n
+                                                         "           "
+                                    nR (yR , λ) = min arg max yR
+                                                                             X
+                                                                                   λ(i)
+                                                     n           n
+                                                                             i=1
+                                                                                   [U+F8F9 private-use glyph][U+F8F9 private-use glyph]
+                                                                      k −n
+                                                                     NX
+                                                      +(1 − yR )             λ(i)[U+F8FB private-use glyph][U+F8FB private-use glyph] .                               (1)
+                                                                      i=1
+
+    The inner arg max comes directly from the rule definition – for a given n, suppose a fraction
+yR approves n candidates. Then that will yield yR ni=1 λ(i) points, with the remaining fraction
+                                                      P
+
+1 − yR approving Nk − n candidates and yielding an additional (1 − yR ) N     i=1 λ(i) points. The
+                                                                           P k −n
+
+outer min simply encodes tie-breaking in favor of party D.8 The party D seat share is nD (yR , λ) ≜
+Nk − nR (yR , λ).
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+GGRS26CombattingGerrymanderingRCV.PaperThieleWeights → ℕ → ℝ → ℕ → Prop
+
+value:
+fun (weights : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights) (seatCount : ℕ) (partyShare : ℝ) (seats : ℕ) =>
+  AppliedModelingLib.SocialChoice.Voting.IsMinArgmaxOn
+    (GGRS26CombattingGerrymanderingRCV.paper_thiele_party_seat_score weights partyShare seats) seatCount seats
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-d2947cd1d156937d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Is\allowbreak{}Min\allowbreak{}Argmax\allowbreak{}On}
+\item \hyperlink{paper-prerequisite-37b91baa3b4ddc9d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights}
+\item \hyperlink{governing-declaration-d8487ebdee5a1786}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}seat\_\allowbreak{}score}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Uses the bounded global party-\allowbreak{}score maximum and chooses the smallest co-\allowbreak{}maximizer, exactly the source outer min arg max that favors D in party ties.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-edccbf02c4bd6a6e}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}selection}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}selection\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 428-\allowbreak{}456\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Calculating seat share given vote shares. Suppose – for a given district with Nk seats and
+Vk voters – we know the fraction yp of voters that belong to each party p ∈ {R, D} (vote share).
+How do we calculate the number of winners np from each party for a given social choice function?
+   Given our assumptions (including solid coalitions), it is straightforward to efficiently do so for
+Thiele rules, as candidates from a given party receive the same votes—and so we do not have to
+consider individual candidates, only the number of winners from each party directly. Then, we have
+that the party R seat share is:
+                                                                             n
+                                                         "           "
+                                    nR (yR , λ) = min arg max yR
+                                                                             X
+                                                                                   λ(i)
+                                                     n           n
+                                                                             i=1
+                                                                                   [U+F8F9 private-use glyph][U+F8F9 private-use glyph]
+                                                                      k −n
+                                                                     NX
+                                                      +(1 − yR )             λ(i)[U+F8FB private-use glyph][U+F8FB private-use glyph] .                               (1)
+                                                                      i=1
+
+    The inner arg max comes directly from the rule definition – for a given n, suppose a fraction
+yR approves n candidates. Then that will yield yR ni=1 λ(i) points, with the remaining fraction
+                                                      P
+
+1 − yR approving Nk − n candidates and yielding an additional (1 − yR ) N     i=1 λ(i) points. The
+                                                                           P k −n
+
+outer min simply encodes tie-breaking in favor of party D.8 The party D seat share is nD (yR , λ) ≜
+Nk − nR (yR , λ).
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+(weights : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights) →
+  (partyShare : ℝ) →
+    (seats : ℕ) →
+      { seatCount : ℕ //
+        GGRS26CombattingGerrymanderingRCV.paper_thiele_party_min_argmax weights seatCount partyShare seats }
+
+value:
+fun (weights : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights) (partyShare : ℝ) (seats : ℕ) =>
+  ⟨Classical.choose
+      (GGRS26CombattingGerrymanderingRCV.paper_thiele_party_republican_selection._proof_1 weights partyShare seats),
+    GGRS26CombattingGerrymanderingRCV.paper_thiele_party_republican_selection._proof_2 weights partyShare seats⟩
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-d2947cd1d156937d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Is\allowbreak{}Min\allowbreak{}Argmax\allowbreak{}On}
+\item \hyperlink{paper-prerequisite-37b91baa3b4ddc9d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights}
+\item \hyperlink{paper-prerequisite-58801459d14912d4}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}min\_\allowbreak{}argmax}
+\item \hyperlink{governing-declaration-d8487ebdee5a1786}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}seat\_\allowbreak{}score}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The selection subtype carries exactly the bounded maximum and smallest-\allowbreak{}tie conditions of the source n\_\allowbreak{}R definition, without adding implementation semantics.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-5fa565502cdaaed9}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}seat\_\allowbreak{}count}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}seat\_\allowbreak{}count\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 428-\allowbreak{}456\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Calculating seat share given vote shares. Suppose – for a given district with Nk seats and
+Vk voters – we know the fraction yp of voters that belong to each party p ∈ {R, D} (vote share).
+How do we calculate the number of winners np from each party for a given social choice function?
+   Given our assumptions (including solid coalitions), it is straightforward to efficiently do so for
+Thiele rules, as candidates from a given party receive the same votes—and so we do not have to
+consider individual candidates, only the number of winners from each party directly. Then, we have
+that the party R seat share is:
+                                                                             n
+                                                         "           "
+                                    nR (yR , λ) = min arg max yR
+                                                                             X
+                                                                                   λ(i)
+                                                     n           n
+                                                                             i=1
+                                                                                   [U+F8F9 private-use glyph][U+F8F9 private-use glyph]
+                                                                      k −n
+                                                                     NX
+                                                      +(1 − yR )             λ(i)[U+F8FB private-use glyph][U+F8FB private-use glyph] .                               (1)
+                                                                      i=1
+
+    The inner arg max comes directly from the rule definition – for a given n, suppose a fraction
+yR approves n candidates. Then that will yield yR ni=1 λ(i) points, with the remaining fraction
+                                                      P
+
+1 − yR approving Nk − n candidates and yielding an additional (1 − yR ) N     i=1 λ(i) points. The
+                                                                           P k −n
+
+outer min simply encodes tie-breaking in favor of party D.8 The party D seat share is nD (yR , λ) ≜
+Nk − nR (yR , λ).
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+GGRS26CombattingGerrymanderingRCV.PaperThieleWeights → ℝ → ℕ → ℕ
+
+value:
+fun (weights : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights) (partyShare : ℝ) (seats : ℕ) =>
+  ↑(GGRS26CombattingGerrymanderingRCV.paper_thiele_party_republican_selection weights partyShare seats)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-37b91baa3b4ddc9d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights}
+\item \hyperlink{paper-prerequisite-58801459d14912d4}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}min\_\allowbreak{}argmax}
+\item \hyperlink{paper-prerequisite-edccbf02c4bd6a6e}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}selection}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Projects the Republican component of the source least-\allowbreak{}maximizer selection while retaining the feasibility, maximality, and tie-\allowbreak{}breaking properties in the paired specification.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-c0f468d3ce4de7e0}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}count}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}count\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 428-\allowbreak{}456\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Calculating seat share given vote shares. Suppose – for a given district with Nk seats and
+Vk voters – we know the fraction yp of voters that belong to each party p ∈ {R, D} (vote share).
+How do we calculate the number of winners np from each party for a given social choice function?
+   Given our assumptions (including solid coalitions), it is straightforward to efficiently do so for
+Thiele rules, as candidates from a given party receive the same votes—and so we do not have to
+consider individual candidates, only the number of winners from each party directly. Then, we have
+that the party R seat share is:
+                                                                             n
+                                                         "           "
+                                    nR (yR , λ) = min arg max yR
+                                                                             X
+                                                                                   λ(i)
+                                                     n           n
+                                                                             i=1
+                                                                                   [U+F8F9 private-use glyph][U+F8F9 private-use glyph]
+                                                                      k −n
+                                                                     NX
+                                                      +(1 − yR )             λ(i)[U+F8FB private-use glyph][U+F8FB private-use glyph] .                               (1)
+                                                                      i=1
+
+    The inner arg max comes directly from the rule definition – for a given n, suppose a fraction
+yR approves n candidates. Then that will yield yR ni=1 λ(i) points, with the remaining fraction
+                                                      P
+
+1 − yR approving Nk − n candidates and yielding an additional (1 − yR ) N     i=1 λ(i) points. The
+                                                                           P k −n
+
+outer min simply encodes tie-breaking in favor of party D.8 The party D seat share is nD (yR , λ) ≜
+Nk − nR (yR , λ).
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+ℝ → ℕ → ℕ
+
+value:
+fun (partyShare : ℝ) (seats : ℕ) =>
+  GGRS26CombattingGerrymanderingRCV.paper_thiele_party_republican_seat_count
+    GGRS26CombattingGerrymanderingRCV.paper_pav_thiele_weights partyShare seats
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2864a4aebe1e6e50}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}thiele\_\allowbreak{}weights}
+\item \hyperlink{paper-prerequisite-5fa565502cdaaed9}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}seat\_\allowbreak{}count}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Projects the constructed PAV least-\allowbreak{}maximizing R-\allowbreak{}seat count, the source n\_\allowbreak{}R selector used in Proposition 1.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-652a33f58da6d128}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}count\_\allowbreak{}spec}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}count\_\allowbreak{}spec\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 428-\allowbreak{}456\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Calculating seat share given vote shares. Suppose – for a given district with Nk seats and
+Vk voters – we know the fraction yp of voters that belong to each party p ∈ {R, D} (vote share).
+How do we calculate the number of winners np from each party for a given social choice function?
+   Given our assumptions (including solid coalitions), it is straightforward to efficiently do so for
+Thiele rules, as candidates from a given party receive the same votes—and so we do not have to
+consider individual candidates, only the number of winners from each party directly. Then, we have
+that the party R seat share is:
+                                                                             n
+                                                         "           "
+                                    nR (yR , λ) = min arg max yR
+                                                                             X
+                                                                                   λ(i)
+                                                     n           n
+                                                                             i=1
+                                                                                   [U+F8F9 private-use glyph][U+F8F9 private-use glyph]
+                                                                      k −n
+                                                                     NX
+                                                      +(1 − yR )             λ(i)[U+F8FB private-use glyph][U+F8FB private-use glyph] .                               (1)
+                                                                      i=1
+
+    The inner arg max comes directly from the rule definition – for a given n, suppose a fraction
+yR approves n candidates. Then that will yield yR ni=1 λ(i) points, with the remaining fraction
+                                                      P
+
+1 − yR approving Nk − n candidates and yielding an additional (1 − yR ) N     i=1 λ(i) points. The
+                                                                           P k −n
+
+outer min simply encodes tie-breaking in favor of party D.8 The party D seat share is nD (yR , λ) ≜
+Nk − nR (yR , λ).
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+∀ (partyShare : ℝ) (seats : ℕ),
+  GGRS26CombattingGerrymanderingRCV.paper_pav_min_argmax
+    (GGRS26CombattingGerrymanderingRCV.paper_pav_selected_seat_count partyShare seats) partyShare seats
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-656ba6456b1c16b1}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}min\_\allowbreak{}argmax}
+\item \hyperlink{paper-prerequisite-c0f468d3ce4de7e0}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}count}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} States that the constructed PAV R-\allowbreak{}seat count satisfies the full bounded minimum-\allowbreak{}argmax selector relation from the source display.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-42c2df760fca2c30}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}execution\_\allowbreak{}terminal}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}execution\_\allowbreak{}terminal\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 394-\allowbreak{}408\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each
+voter instead submits a ranking over candidates (here, we assume the rankings are complete, not
+partial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as
+follows. The number of first-place votes for each candidate is counted. Any candidate with a number
+of votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus
+votes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has
+enough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,
+and their votes are transferred. The process continues until Nk candidates have been selected, or
+the number of remaining candidates equals the number of remaining seats. STV is commonly used
+in practice in multi-winner elections.
+    Details can differ in how such votes are transferred, but our results in Section 3 do not depend
+on the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV
+rule, in which each voter keeps a fractional number of votes equal to their share of the winning
+candidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we
+assume that ties are broken in favor of candidates from party D, but randomly within each party.5
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} → ℕ → GGRS26CombattingGerrymanderingRCV.PaperSourceSTVState Voter Candidate → Prop
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} (seats : ℕ)
+    (state : GGRS26CombattingGerrymanderingRCV.PaperSourceSTVState Voter Candidate) =>
+  state.elected.card = seats ∨ state.active.card = seats - state.elected.card
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-9acd2440ce1052db}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Source\allowbreak{}STV\allowbreak{}State}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} States precisely the source terminal cases:\allowbreak{} M elected candidates, or the still-\allowbreak{}active candidates fill the seats that remain.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-587c1da71549064c}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}tally}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}tally\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 394-\allowbreak{}408\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each
+voter instead submits a ranking over candidates (here, we assume the rankings are complete, not
+partial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as
+follows. The number of first-place votes for each candidate is counted. Any candidate with a number
+of votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus
+votes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has
+enough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,
+and their votes are transferred. The process continues until Nk candidates have been selected, or
+the number of remaining candidates equals the number of remaining seats. STV is commonly used
+in practice in multi-winner elections.
+    Details can differ in how such votes are transferred, but our results in Section 3 do not depend
+on the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV
+rule, in which each voter keeps a fractional number of votes equal to their share of the winning
+candidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we
+assume that ties are broken in favor of candidates from party D, but randomly within each party.5
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    Finset Voter →
+      (Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) → Finset Candidate → (Voter → ℝ) → Candidate → ℝ
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} (allVoters : Finset Voter)
+    (ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) (active : Finset Candidate)
+    (weight : Voter → ℝ) (candidate : Candidate) =>
+  ∑ voter ∈ allVoters with
+    GGRS26CombattingGerrymanderingRCV.paper_first_active_candidate (ballots voter) active candidate, weight voter
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{paper-prerequisite-e34992194a8b7f0d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}first\_\allowbreak{}active\_\allowbreak{}candidate}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Sums the current weights of exactly those ballots whose first active listed candidate is the candidate being tallied, matching the source current tally.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-01a70a9b3aa00da3}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}d\_\allowbreak{}favoring\_\allowbreak{}transition}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}d\_\allowbreak{}favoring\_\allowbreak{}transition\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 394-\allowbreak{}408\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each
+voter instead submits a ranking over candidates (here, we assume the rankings are complete, not
+partial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as
+follows. The number of first-place votes for each candidate is counted. Any candidate with a number
+of votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus
+votes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has
+enough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,
+and their votes are transferred. The process continues until Nk candidates have been selected, or
+the number of remaining candidates equals the number of remaining seats. STV is commonly used
+in practice in multi-winner elections.
+    Details can differ in how such votes are transferred, but our results in Section 3 do not depend
+on the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV
+rule, in which each voter keeps a fractional number of votes equal to their share of the winning
+candidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we
+assume that ties are broken in favor of candidates from party D, but randomly within each party.5
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    Finset Voter →
+      (Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) →
+        Finset Candidate →
+          ℝ →
+            ℕ →
+              (Finset Candidate → Candidate → (Voter → ℝ) → (Voter → ℝ) → Prop) →
+                (Finset Candidate → Candidate → (Voter → ℝ) → (Voter → ℝ) → Prop) →
+                  GGRS26CombattingGerrymanderingRCV.PaperSourceSTVState Voter Candidate →
+                    GGRS26CombattingGerrymanderingRCV.PaperSourceSTVState Voter Candidate → Prop
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} (allVoters : Finset Voter)
+    (ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) (favoredParty : Finset Candidate)
+    (quota : ℝ) (seats : ℕ)
+    (electUpdate eliminateUpdate : Finset Candidate → Candidate → (Voter → ℝ) → (Voter → ℝ) → Prop)
+    (before after : GGRS26CombattingGerrymanderingRCV.PaperSourceSTVState Voter Candidate) =>
+  (∃ (winner : Candidate),
+      ¬GGRS26CombattingGerrymanderingRCV.paper_source_stv_execution_terminal seats before ∧
+        winner ∈ before.active ∧
+          before.elected.card < seats ∧
+            quota ≤
+                GGRS26CombattingGerrymanderingRCV.paper_source_stv_tally allVoters ballots before.active before.weight
+                  winner ∧
+              (winner ∉ favoredParty →
+                  ∀ candidate ∈ before.active,
+                    GGRS26CombattingGerrymanderingRCV.paper_source_stv_tally allVoters ballots before.active
+                          before.weight candidate =
+                        GGRS26CombattingGerrymanderingRCV.paper_source_stv_tally allVoters ballots before.active
+                          before.weight winner →
+                      candidate ∉ favoredParty) ∧
+                after.active = before.active.erase winner ∧
+                  after.elected = insert winner before.elected ∧
+                    electUpdate before.active winner before.weight after.weight) ∨
+    ∃ (loser : Candidate),
+      ¬GGRS26CombattingGerrymanderingRCV.paper_source_stv_execution_terminal seats before ∧
+        loser ∈ before.active ∧
+          (∀ candidate ∈ before.active,
+              GGRS26CombattingGerrymanderingRCV.paper_source_stv_tally allVoters ballots before.active before.weight
+                  candidate <
+                quota) ∧
+            (∀ candidate ∈ before.active,
+                GGRS26CombattingGerrymanderingRCV.paper_source_stv_tally allVoters ballots before.active before.weight
+                    loser ≤
+                  GGRS26CombattingGerrymanderingRCV.paper_source_stv_tally allVoters ballots before.active before.weight
+                    candidate) ∧
+              (loser ∈ favoredParty →
+                  ∀ candidate ∈ before.active,
+                    GGRS26CombattingGerrymanderingRCV.paper_source_stv_tally allVoters ballots before.active
+                          before.weight candidate =
+                        GGRS26CombattingGerrymanderingRCV.paper_source_stv_tally allVoters ballots before.active
+                          before.weight loser →
+                      candidate ∈ favoredParty) ∧
+                after.active = before.active.erase loser ∧
+                  after.elected = before.elected ∧ eliminateUpdate before.active loser before.weight after.weight
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{paper-prerequisite-9acd2440ce1052db}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Source\allowbreak{}STV\allowbreak{}State}
+\item \hyperlink{paper-prerequisite-42c2df760fca2c30}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}execution\_\allowbreak{}terminal}
+\item \hyperlink{paper-prerequisite-587c1da71549064c}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}tally}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Gives the source-\allowbreak{}shaped quota-\allowbreak{}election-\allowbreak{}before-\allowbreak{}elimination and minimum-\allowbreak{}tally elimination cases, favors D in cross-\allowbreak{}party ties, and represents all within-\allowbreak{}party random outcomes as pathwise support only.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-abed5fd2c2d17fba}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}surplus\_\allowbreak{}transfer\_\allowbreak{}policy}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}surplus\_\allowbreak{}transfer\_\allowbreak{}policy\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 394-\allowbreak{}408\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each
+voter instead submits a ranking over candidates (here, we assume the rankings are complete, not
+partial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as
+follows. The number of first-place votes for each candidate is counted. Any candidate with a number
+of votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus
+votes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has
+enough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,
+and their votes are transferred. The process continues until Nk candidates have been selected, or
+the number of remaining candidates equals the number of remaining seats. STV is commonly used
+in practice in multi-winner elections.
+    Details can differ in how such votes are transferred, but our results in Section 3 do not depend
+on the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV
+rule, in which each voter keeps a fractional number of votes equal to their share of the winning
+candidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we
+assume that ties are broken in favor of candidates from party D, but randomly within each party.5
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    Finset Voter →
+      (Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) →
+        ℝ →
+          (Finset Candidate → Candidate → (Voter → ℝ) → (Voter → ℝ) → Prop) →
+            (Finset Candidate → Candidate → (Voter → ℝ) → (Voter → ℝ) → Prop) → Prop
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} (allVoters : Finset Voter)
+    (ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) (quota : ℝ)
+    (electUpdate eliminateUpdate : Finset Candidate → Candidate → (Voter → ℝ) → (Voter → ℝ) → Prop) =>
+  (∀ (active : Finset Candidate) (winner : Candidate) (beforeWeight : Voter → ℝ),
+      (∀ voter ∈ allVoters, 0 ≤ beforeWeight voter) →
+        winner ∈ active →
+          quota ≤
+              GGRS26CombattingGerrymanderingRCV.paper_source_stv_tally allVoters ballots active beforeWeight winner →
+            ∃ (afterWeight : Voter → ℝ), electUpdate active winner beforeWeight afterWeight) ∧
+    (∀ (active : Finset Candidate) (loser : Candidate) (beforeWeight : Voter → ℝ),
+        (∀ voter ∈ allVoters, 0 ≤ beforeWeight voter) →
+          loser ∈ active → ∃ (afterWeight : Voter → ℝ), eliminateUpdate active loser beforeWeight afterWeight) ∧
+      (∀ (active : Finset Candidate) (winner : Candidate) (beforeWeight afterWeight : Voter → ℝ),
+          (∀ voter ∈ allVoters, 0 ≤ beforeWeight voter) →
+            electUpdate active winner beforeWeight afterWeight → ∀ voter ∈ allVoters, 0 ≤ afterWeight voter) ∧
+        (∀ (active : Finset Candidate) (winner : Candidate) (beforeWeight afterWeight : Voter → ℝ),
+            (∀ voter ∈ allVoters, 0 ≤ beforeWeight voter) →
+              electUpdate active winner beforeWeight afterWeight →
+                ∀ voter ∈ allVoters,
+                  ¬GGRS26CombattingGerrymanderingRCV.paper_first_active_candidate (ballots voter) active winner →
+                    afterWeight voter = beforeWeight voter) ∧
+          (∀ (active : Finset Candidate) (winner : Candidate) (beforeWeight afterWeight : Voter → ℝ),
+              (∀ voter ∈ allVoters, 0 ≤ beforeWeight voter) →
+                electUpdate active winner beforeWeight afterWeight →
+                  ∑ voter ∈ allVoters with
+                      GGRS26CombattingGerrymanderingRCV.paper_first_active_candidate (ballots voter) active winner,
+                      afterWeight voter =
+                    ∑ voter ∈ allVoters with
+                        GGRS26CombattingGerrymanderingRCV.paper_first_active_candidate (ballots voter) active winner,
+                        beforeWeight voter -
+                      quota) ∧
+            ∀ (active : Finset Candidate) (loser : Candidate) (beforeWeight afterWeight : Voter → ℝ),
+              (∀ voter ∈ allVoters, 0 ≤ beforeWeight voter) →
+                eliminateUpdate active loser beforeWeight afterWeight →
+                  ∀ voter ∈ allVoters, afterWeight voter = beforeWeight voter
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{paper-prerequisite-e34992194a8b7f0d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}first\_\allowbreak{}active\_\allowbreak{}candidate}
+\item \hyperlink{paper-prerequisite-587c1da71549064c}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}tally}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Requires a quota winner's supporter mass to fall by exactly the quota while off-\allowbreak{}support mass is fixed and leaves eliminations unchanged, matching the source's stated surplus-\allowbreak{}preserving transfer-\allowbreak{}policy scope.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-78828233cae137c4}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}rule\_\allowbreak{}execution}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}rule\_\allowbreak{}execution\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 394-\allowbreak{}408\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each
+voter instead submits a ranking over candidates (here, we assume the rankings are complete, not
+partial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as
+follows. The number of first-place votes for each candidate is counted. Any candidate with a number
+of votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus
+votes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has
+enough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,
+and their votes are transferred. The process continues until Nk candidates have been selected, or
+the number of remaining candidates equals the number of remaining seats. STV is commonly used
+in practice in multi-winner elections.
+    Details can differ in how such votes are transferred, but our results in Section 3 do not depend
+on the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV
+rule, in which each voter keeps a fractional number of votes equal to their share of the winning
+candidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we
+assume that ties are broken in favor of candidates from party D, but randomly within each party.5
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    Finset Voter →
+      (Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) →
+        Finset Candidate →
+          Finset Candidate →
+            ℕ →
+              (Finset Candidate → Candidate → (Voter → ℝ) → (Voter → ℝ) → Prop) →
+                (Finset Candidate → Candidate → (Voter → ℝ) → (Voter → ℝ) → Prop) →
+                  GGRS26CombattingGerrymanderingRCV.PaperSourceSTVState Voter Candidate → Prop
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} (allVoters : Finset Voter)
+    (ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate)
+    (initialCandidates favoredParty : Finset Candidate) (seats : ℕ)
+    (electUpdate eliminateUpdate : Finset Candidate → Candidate → (Voter → ℝ) → (Voter → ℝ) → Prop)
+    (terminal : GGRS26CombattingGerrymanderingRCV.PaperSourceSTVState Voter Candidate) =>
+  have initial : GGRS26CombattingGerrymanderingRCV.PaperSourceSTVState Voter Candidate :=
+    { active := initialCandidates, elected := ∅, weight := fun (x : Voter) => 1 };
+  (∀ voter ∈ allVoters,
+      (ballots voter).Valid ∧ ∀ (candidate : Candidate), candidate ∈ ballots voter ↔ candidate ∈ initialCandidates) ∧
+    favoredParty ⊆ initialCandidates ∧
+      GGRS26CombattingGerrymanderingRCV.paper_source_surplus_transfer_policy allVoters ballots
+          (↑(AppliedModelingLib.SocialChoice.Voting.STVQuota seats allVoters.card)) electUpdate eliminateUpdate ∧
+        Relation.ReflTransGen
+            (GGRS26CombattingGerrymanderingRCV.paper_source_stv_d_favoring_transition allVoters ballots favoredParty
+              (↑(AppliedModelingLib.SocialChoice.Voting.STVQuota seats allVoters.card)) seats electUpdate
+              eliminateUpdate)
+            initial terminal ∧
+          GGRS26CombattingGerrymanderingRCV.paper_source_stv_execution_terminal seats terminal
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{governing-declaration-d09ca390012680b9}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot.\allowbreak{}Valid}
+\item \hyperlink{governing-declaration-d335879a7207e841}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}STV\allowbreak{}Quota}
+\item \hyperlink{paper-prerequisite-9acd2440ce1052db}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Source\allowbreak{}STV\allowbreak{}State}
+\item \hyperlink{paper-prerequisite-01a70a9b3aa00da3}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}d\_\allowbreak{}favoring\_\allowbreak{}transition}
+\item \hyperlink{paper-prerequisite-42c2df760fca2c30}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}stv\_\allowbreak{}execution\_\allowbreak{}terminal}
+\item \hyperlink{paper-prerequisite-abed5fd2c2d17fba}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}source\_\allowbreak{}surplus\_\allowbreak{}transfer\_\allowbreak{}policy}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Combines complete valid rankings, exact Droop quota, initial unit weights, a surplus-\allowbreak{}transfer policy, D-\allowbreak{}favoring transitions, and a terminal state;\allowbreak{} this is the selected source execution route and asserts no probability law.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-f7db6c9d33a2a094}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}democratic\_\allowbreak{}seat\_\allowbreak{}count}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}democratic\_\allowbreak{}seat\_\allowbreak{}count\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 428-\allowbreak{}456\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Calculating seat share given vote shares. Suppose – for a given district with Nk seats and
+Vk voters – we know the fraction yp of voters that belong to each party p ∈ {R, D} (vote share).
+How do we calculate the number of winners np from each party for a given social choice function?
+   Given our assumptions (including solid coalitions), it is straightforward to efficiently do so for
+Thiele rules, as candidates from a given party receive the same votes—and so we do not have to
+consider individual candidates, only the number of winners from each party directly. Then, we have
+that the party R seat share is:
+                                                                             n
+                                                         "           "
+                                    nR (yR , λ) = min arg max yR
+                                                                             X
+                                                                                   λ(i)
+                                                     n           n
+                                                                             i=1
+                                                                                   [U+F8F9 private-use glyph][U+F8F9 private-use glyph]
+                                                                      k −n
+                                                                     NX
+                                                      +(1 − yR )             λ(i)[U+F8FB private-use glyph][U+F8FB private-use glyph] .                               (1)
+                                                                      i=1
+
+    The inner arg max comes directly from the rule definition – for a given n, suppose a fraction
+yR approves n candidates. Then that will yield yR ni=1 λ(i) points, with the remaining fraction
+                                                      P
+
+1 − yR approving Nk − n candidates and yielding an additional (1 − yR ) N     i=1 λ(i) points. The
+                                                                           P k −n
+
+outer min simply encodes tie-breaking in favor of party D.8 The party D seat share is nD (yR , λ) ≜
+Nk − nR (yR , λ).
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+GGRS26CombattingGerrymanderingRCV.PaperThieleWeights → ℝ → ℕ → ℕ
+
+value:
+fun (weights : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights) (partyShare : ℝ) (seats : ℕ) =>
+  seats - GGRS26CombattingGerrymanderingRCV.paper_thiele_party_republican_seat_count weights partyShare seats
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-37b91baa3b4ddc9d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights}
+\item \hyperlink{paper-prerequisite-5fa565502cdaaed9}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}seat\_\allowbreak{}count}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Defines the Democratic count as M minus the selected Republican count, exactly the source relation n\_\allowbreak{}D = M -\allowbreak{} n\_\allowbreak{}R.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-9ae92c4421f50a56}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}seat\_\allowbreak{}count\_\allowbreak{}spec}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}seat\_\allowbreak{}count\_\allowbreak{}spec\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 428-\allowbreak{}456\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Calculating seat share given vote shares. Suppose – for a given district with Nk seats and
+Vk voters – we know the fraction yp of voters that belong to each party p ∈ {R, D} (vote share).
+How do we calculate the number of winners np from each party for a given social choice function?
+   Given our assumptions (including solid coalitions), it is straightforward to efficiently do so for
+Thiele rules, as candidates from a given party receive the same votes—and so we do not have to
+consider individual candidates, only the number of winners from each party directly. Then, we have
+that the party R seat share is:
+                                                                             n
+                                                         "           "
+                                    nR (yR , λ) = min arg max yR
+                                                                             X
+                                                                                   λ(i)
+                                                     n           n
+                                                                             i=1
+                                                                                   [U+F8F9 private-use glyph][U+F8F9 private-use glyph]
+                                                                      k −n
+                                                                     NX
+                                                      +(1 − yR )             λ(i)[U+F8FB private-use glyph][U+F8FB private-use glyph] .                               (1)
+                                                                      i=1
+
+    The inner arg max comes directly from the rule definition – for a given n, suppose a fraction
+yR approves n candidates. Then that will yield yR ni=1 λ(i) points, with the remaining fraction
+                                                      P
+
+1 − yR approving Nk − n candidates and yielding an additional (1 − yR ) N     i=1 λ(i) points. The
+                                                                           P k −n
+
+outer min simply encodes tie-breaking in favor of party D.8 The party D seat share is nD (yR , λ) ≜
+Nk − nR (yR , λ).
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+∀ (weights : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights) (partyShare : ℝ) (seats : ℕ),
+  GGRS26CombattingGerrymanderingRCV.paper_thiele_party_min_argmax weights
+    (GGRS26CombattingGerrymanderingRCV.paper_thiele_party_republican_seat_count weights partyShare seats) partyShare
+    seats
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-37b91baa3b4ddc9d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights}
+\item \hyperlink{paper-prerequisite-58801459d14912d4}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}min\_\allowbreak{}argmax}
+\item \hyperlink{paper-prerequisite-5fa565502cdaaed9}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}seat\_\allowbreak{}count}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} States that the selected Republican count obeys the full source bounded least-\allowbreak{}maximizer relation for the two-\allowbreak{}party Thiele score.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-1ce27606523bc987}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}counts}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}counts\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 428-\allowbreak{}456\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Calculating seat share given vote shares. Suppose – for a given district with Nk seats and
+Vk voters – we know the fraction yp of voters that belong to each party p ∈ {R, D} (vote share).
+How do we calculate the number of winners np from each party for a given social choice function?
+   Given our assumptions (including solid coalitions), it is straightforward to efficiently do so for
+Thiele rules, as candidates from a given party receive the same votes—and so we do not have to
+consider individual candidates, only the number of winners from each party directly. Then, we have
+that the party R seat share is:
+                                                                             n
+                                                         "           "
+                                    nR (yR , λ) = min arg max yR
+                                                                             X
+                                                                                   λ(i)
+                                                     n           n
+                                                                             i=1
+                                                                                   [U+F8F9 private-use glyph][U+F8F9 private-use glyph]
+                                                                      k −n
+                                                                     NX
+                                                      +(1 − yR )             λ(i)[U+F8FB private-use glyph][U+F8FB private-use glyph] .                               (1)
+                                                                      i=1
+
+    The inner arg max comes directly from the rule definition – for a given n, suppose a fraction
+yR approves n candidates. Then that will yield yR ni=1 λ(i) points, with the remaining fraction
+                                                      P
+
+1 − yR approving Nk − n candidates and yielding an additional (1 − yR ) N     i=1 λ(i) points. The
+                                                                           P k −n
+
+outer min simply encodes tie-breaking in favor of party D.8 The party D seat share is nD (yR , λ) ≜
+Nk − nR (yR , λ).
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+GGRS26CombattingGerrymanderingRCV.PaperThieleWeights → ℝ → ℕ → ℕ → ℕ → Prop
+
+value:
+fun (weights : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights) (partyShare : ℝ) (seats nR nD : ℕ) =>
+  GGRS26CombattingGerrymanderingRCV.paper_thiele_party_min_argmax weights nR partyShare seats ∧ nD = seats - nR
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-37b91baa3b4ddc9d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights}
+\item \hyperlink{paper-prerequisite-58801459d14912d4}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}min\_\allowbreak{}argmax}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Pairs the source least-\allowbreak{}maximizing Republican count with the complementary Democratic count, matching the two reported party seat shares.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-52e1d78ea1832965}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}counts\_\allowbreak{}add}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}counts\_\allowbreak{}add\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 428-\allowbreak{}456\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Calculating seat share given vote shares. Suppose – for a given district with Nk seats and
+Vk voters – we know the fraction yp of voters that belong to each party p ∈ {R, D} (vote share).
+How do we calculate the number of winners np from each party for a given social choice function?
+   Given our assumptions (including solid coalitions), it is straightforward to efficiently do so for
+Thiele rules, as candidates from a given party receive the same votes—and so we do not have to
+consider individual candidates, only the number of winners from each party directly. Then, we have
+that the party R seat share is:
+                                                                             n
+                                                         "           "
+                                    nR (yR , λ) = min arg max yR
+                                                                             X
+                                                                                   λ(i)
+                                                     n           n
+                                                                             i=1
+                                                                                   [U+F8F9 private-use glyph][U+F8F9 private-use glyph]
+                                                                      k −n
+                                                                     NX
+                                                      +(1 − yR )             λ(i)[U+F8FB private-use glyph][U+F8FB private-use glyph] .                               (1)
+                                                                      i=1
+
+    The inner arg max comes directly from the rule definition – for a given n, suppose a fraction
+yR approves n candidates. Then that will yield yR ni=1 λ(i) points, with the remaining fraction
+                                                      P
+
+1 − yR approving Nk − n candidates and yielding an additional (1 − yR ) N     i=1 λ(i) points. The
+                                                                           P k −n
+
+outer min simply encodes tie-breaking in favor of party D.8 The party D seat share is nD (yR , λ) ≜
+Nk − nR (yR , λ).
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+∀ (weights : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights) (partyShare : ℝ) (seats : ℕ),
+  GGRS26CombattingGerrymanderingRCV.paper_thiele_party_republican_seat_count weights partyShare seats +
+      GGRS26CombattingGerrymanderingRCV.paper_thiele_party_democratic_seat_count weights partyShare seats =
+    seats
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-37b91baa3b4ddc9d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights}
+\item \hyperlink{paper-prerequisite-f7db6c9d33a2a094}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}democratic\_\allowbreak{}seat\_\allowbreak{}count}
+\item \hyperlink{paper-prerequisite-5fa565502cdaaed9}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}seat\_\allowbreak{}count}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Proves the paired counts sum to the district magnitude through the selected count's bound, expressing the source complement relation without natural-\allowbreak{}number truncation.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-2324cfa92955386c}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}counts\_\allowbreak{}spec}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}counts\_\allowbreak{}spec\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 428-\allowbreak{}456\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Calculating seat share given vote shares. Suppose – for a given district with Nk seats and
+Vk voters – we know the fraction yp of voters that belong to each party p ∈ {R, D} (vote share).
+How do we calculate the number of winners np from each party for a given social choice function?
+   Given our assumptions (including solid coalitions), it is straightforward to efficiently do so for
+Thiele rules, as candidates from a given party receive the same votes—and so we do not have to
+consider individual candidates, only the number of winners from each party directly. Then, we have
+that the party R seat share is:
+                                                                             n
+                                                         "           "
+                                    nR (yR , λ) = min arg max yR
+                                                                             X
+                                                                                   λ(i)
+                                                     n           n
+                                                                             i=1
+                                                                                   [U+F8F9 private-use glyph][U+F8F9 private-use glyph]
+                                                                      k −n
+                                                                     NX
+                                                      +(1 − yR )             λ(i)[U+F8FB private-use glyph][U+F8FB private-use glyph] .                               (1)
+                                                                      i=1
+
+    The inner arg max comes directly from the rule definition – for a given n, suppose a fraction
+yR approves n candidates. Then that will yield yR ni=1 λ(i) points, with the remaining fraction
+                                                      P
+
+1 − yR approving Nk − n candidates and yielding an additional (1 − yR ) N     i=1 λ(i) points. The
+                                                                           P k −n
+
+outer min simply encodes tie-breaking in favor of party D.8 The party D seat share is nD (yR , λ) ≜
+Nk − nR (yR , λ).
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+∀ (weights : GGRS26CombattingGerrymanderingRCV.PaperThieleWeights) (partyShare : ℝ) (seats : ℕ),
+  GGRS26CombattingGerrymanderingRCV.paper_thiele_party_selected_seat_counts weights partyShare seats
+    (GGRS26CombattingGerrymanderingRCV.paper_thiele_party_republican_seat_count weights partyShare seats)
+    (GGRS26CombattingGerrymanderingRCV.paper_thiele_party_democratic_seat_count weights partyShare seats)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-37b91baa3b4ddc9d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Paper\allowbreak{}Thiele\allowbreak{}Weights}
+\item \hyperlink{paper-prerequisite-f7db6c9d33a2a094}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}democratic\_\allowbreak{}seat\_\allowbreak{}count}
+\item \hyperlink{paper-prerequisite-5fa565502cdaaed9}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}republican\_\allowbreak{}seat\_\allowbreak{}count}
+\item \hyperlink{paper-prerequisite-1ce27606523bc987}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}thiele\_\allowbreak{}party\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}counts}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} States the exact source selector relation together with the Democratic complement for the constructed pair of party seat counts.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-aea2ad46d27b40e1}{}
+\subsection*{\small\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}two\_\allowbreak{}party\_\allowbreak{}voter\_\allowbreak{}model}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}two\_\allowbreak{}party\_\allowbreak{}voter\_\allowbreak{}model\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 415-\allowbreak{}426\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Voter assumptions. Next, we require assumptions on how voters rank or approve candidates.
+For each Thiele rule, we assume that in each district k there are exactly Nk candidates from each
+party, and each voter simply approves all the candidates in their party.6 For STV, we assume that
+in each district k there are at least Nk candidates from each party.7 For our primarily empirical
+analysis, we further assume that parties are solid coalitions (Dummett 1984): that each voter ranks
+all candidates of their party over each candidate of the other party, though intra-party rankings
+may vary. These assumptions reflect that party membership is a strong predictor of the party of
+the candidate for which a voter votes. Such an assumption, using historical party vote shares to
+predict vote shares in future elections, is used throughout the redistricting literature for SMDs; our
+additional assumption is that this behavior extends to partisan voting in multi-member elections.
+We relax this assumption in Section 4 and study intra-party effects, where voters may disagree on
+within-party rankings, in Appendix B.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{Voter : Type u_1} →
+  {Candidate : Type u_2} →
+    Finset Voter →
+      Finset Voter →
+        Finset Voter →
+          Finset Candidate →
+            Finset Candidate →
+              (Voter → GGRS26CombattingGerrymanderingRCV.PartyApprovalBallot Candidate) →
+                Finset Candidate →
+                  Finset Candidate →
+                    Finset Candidate → (Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) → ℕ → Prop
+
+value:
+fun {Voter : Type u_1} {Candidate : Type u_2} (allVoters partyVoters otherPartyVoters : Finset Voter)
+    (thielePartyCandidates thieleOtherPartyCandidates : Finset Candidate)
+    (approvalBallots : Voter → GGRS26CombattingGerrymanderingRCV.PartyApprovalBallot Candidate)
+    (stvPartyCandidates stvOtherPartyCandidates allSTVCandidates : Finset Candidate)
+    (rankingBallots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate) (seats : ℕ) =>
+  allVoters = partyVoters ∪ otherPartyVoters ∧
+    Disjoint partyVoters otherPartyVoters ∧
+      Disjoint thielePartyCandidates thieleOtherPartyCandidates ∧
+        thielePartyCandidates.card = seats ∧
+          thieleOtherPartyCandidates.card = seats ∧
+            (∀ voter ∈ partyVoters, approvalBallots voter = thielePartyCandidates) ∧
+              (∀ voter ∈ otherPartyVoters, approvalBallots voter = thieleOtherPartyCandidates) ∧
+                seats ≤ stvPartyCandidates.card ∧
+                  seats ≤ stvOtherPartyCandidates.card ∧
+                    GGRS26CombattingGerrymanderingRCV.paper_complete_solid_coalition_rankings partyVoters rankingBallots
+                        stvPartyCandidates stvOtherPartyCandidates allSTVCandidates ∧
+                      GGRS26CombattingGerrymanderingRCV.paper_complete_solid_coalition_rankings otherPartyVoters
+                        rankingBallots stvOtherPartyCandidates stvPartyCandidates allSTVCandidates
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{governing-declaration-3adeede1bc778473}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Party\allowbreak{}Approval\allowbreak{}Ballot}
+\item \hyperlink{paper-prerequisite-a48f905958044eb5}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}complete\_\allowbreak{}solid\_\allowbreak{}coalition\_\allowbreak{}rankings}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Uses disjoint R/\allowbreak{}D voter blocks and candidate rosters, party approval sets, enough candidates for each rule, and complete solid-\allowbreak{}coalition rankings, matching the source two-\allowbreak{}party electorate and ballot model.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
@@ -393,24 +2536,70 @@ Lemma C.1. Let yR ∈ (0, 1]. Consider
                                     yR (M + 1) − 1 ≤ ell < yR (M + 1)
 
     Then, nR (yR , λPAV ) = ell, for all yR , M .
+
+[Next verbatim source excerpt]
+
+    A Thiele rule is characterized by a function λ. Each voter v in district k provides a set Sv
+of the Nk candidates they like most. The set of winners is determined as follows. Consider a
+potential set of winners C. The amount of points that voter v contributes to C is i=1         λ(i), and
+                                                                                     P|Sv ∩C|
+
+the set C with the most points across voters (after tie-breaking) is selected. The (non-increasing)
+function λ establishes that votes have diminishing returns; the ith approved candidate in the set is
+worth λ(i). For example, winner-take-all approval voting is a Thiele rule with λ(i) = 1: for each
+voter, the set C receives a number of points equal to the number of candidates in the set that the
+voter likes, and so the Nk candidates with the most votes win. We further consider Proportional
+Approval Voting (PAV), a Thiele rule with λPAV (i) = 1i ; and Thiele Squared, with λTS = i12 . PAV
+is well-studied in the theoretical social choice literature and comes with optimality guarantees (in
+terms of proportionality) (Skowron 2021). Thiele Squared induces even sharper diminishing returns
+than PAV in a voter having more of their preferred candidates winning, and thus prioritizes more
+voters having at least one approved candidate (and 50/50 outcomes between two parties, regardless
+of underlying vote shares). More generally, Thiele rules both contain common voting rules and
+parameterize a rule’s tendency to favor proportional or balanced outcomes.
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {seats : ℕ} {partyShare : ℝ},
-  0 < partyShare →
-    partyShare ≤ 1 →
-      ∃ seatCount,
-        GGRS26CombattingGerrymanderingRCV.paper_pav_min_argmax seatCount partyShare seats ∧
-          ∃ ell,
-            ↑seatCount = ell ∧
-              GGRS26CombattingGerrymanderingRCV.paper_pav_integer_interval ell partyShare seats ∧
-                (∀ (other : ℤ),
-                    GGRS26CombattingGerrymanderingRCV.paper_pav_integer_interval other partyShare seats → other = ell) ∧
-                  ∀ (otherSeatCount : ℕ),
-                    GGRS26CombattingGerrymanderingRCV.paper_pav_min_argmax otherSeatCount partyShare seats →
-                      ↑otherSeatCount = ell
+  1 ≤ seats →
+    0 < partyShare →
+      partyShare ≤ 1 →
+        ∃ (seatCount : ℕ),
+          GGRS26CombattingGerrymanderingRCV.paper_pav_min_argmax seatCount partyShare seats ∧
+            ∃ (ell : ℤ),
+              ↑seatCount = ell ∧
+                GGRS26CombattingGerrymanderingRCV.paper_pav_integer_interval ell partyShare seats ∧
+                  (∀ (other : ℤ),
+                      GGRS26CombattingGerrymanderingRCV.paper_pav_integer_interval other partyShare seats →
+                        other = ell) ∧
+                    ∀ (otherSeatCount : ℕ),
+                      GGRS26CombattingGerrymanderingRCV.paper_pav_min_argmax otherSeatCount partyShare seats →
+                        ↑otherSeatCount = ell
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-71aa9e7dd85c440d}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}integer\_\allowbreak{}interval}
+\item \hyperlink{governing-declaration-656ba6456b1c16b1}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}min\_\allowbreak{}argmax}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: ℕ
+2. parameter: ℝ
+3. assumption: 1 ≤ seats
+4. assumption: 0 < partyShare
+5. assumption: partyShare ≤ 1
+6. conclusion: ∃ (seatCount : ℕ),
+  GGRS26CombattingGerrymanderingRCV.paper_pav_min_argmax seatCount partyShare seats ∧
+    ∃ (ell : ℤ),
+      ↑seatCount = ell ∧
+        GGRS26CombattingGerrymanderingRCV.paper_pav_integer_interval ell partyShare seats ∧
+          (∀ (other : ℤ),
+              GGRS26CombattingGerrymanderingRCV.paper_pav_integer_interval other partyShare seats → other = ell) ∧
+            ∀ (otherSeatCount : ℕ),
+              GGRS26CombattingGerrymanderingRCV.paper_pav_min_argmax otherSeatCount partyShare seats →
+                ↑otherSeatCount = ell
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -420,12 +2609,14 @@ GGRS26CombattingGerrymanderingRCV.paper_lemma_c1_pav_selector_eq_unique_integer_
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The Lean-expanded target quantifies the source domain y\_R in (0,1], defines the leftmost PAV maximizer using the displayed harmonic objective, and states its equality to the unique integer in the displayed half-open interval.
+{\raggedright
+\textbf{Reason:} The frozen target has the source's positive party-\allowbreak{}share and positive district-\allowbreak{}magnitude domain, PAV harmonic leftmost maximizer on 0 through M, the displayed half-\allowbreak{}open integer interval, and equality of every such selector to its unique ell.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-fbce9a9eb0cbc369}{}
+\hypertarget{source-claim-1d81d5a90a327c0b}{}
 \section*{Review row 2}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 485-\allowbreak{}490\par}
 \paragraph{Verbatim source input}
@@ -436,65 +2627,216 @@ at least M candidates per party. Assume that each party’s voters rank all same
 above all other-party candidates, and ties are broken in party D’s favor.
     Let nR (yR , ST V ) be the number of winners belonging to party R using STV. Then, both
 nR (yR , ST V ) and nR (yR , λPAV ) are in {⌊yR M ⌋, ⌈yR M ⌉}.
+
+[Next verbatim source excerpt]
+
+    In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each
+voter instead submits a ranking over candidates (here, we assume the rankings are complete, not
+partial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as
+follows. The number of first-place votes for each candidate is counted. Any candidate with a number
+of votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus
+votes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has
+enough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,
+and their votes are transferred. The process continues until Nk candidates have been selected, or
+the number of remaining candidates equals the number of remaining seats. STV is commonly used
+in practice in multi-winner elections.
+    Details can differ in how such votes are transferred, but our results in Section 3 do not depend
+on the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV
+rule, in which each voter keeps a fractional number of votes equal to their share of the winning
+candidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we
+assume that ties are broken in favor of candidates from party D, but randomly within each party.5
+
+[Next verbatim source excerpt]
+
+    At a high level, the proof establishes that no candidate receives meaningful (in terms of party
+vote share) votes from voters of the other party; in terms of party vote share, we can proceed with
+running two separate STV processes. Then, the sequential round path dependence does not matter,
+as the overall number of first-place votes for candidates of each party is invariant, and so the final
+partisan outcome depends just on initial vote shares. We note that the proof does not depend on
+our assumption of fractional STV; other transfer rules (such as random voter transfer) that preserve
+the number of surplus votes would induce seat shares according to the same formula.
+
+[Next verbatim source excerpt]
+
+    A Thiele rule is characterized by a function λ. Each voter v in district k provides a set Sv
+of the Nk candidates they like most. The set of winners is determined as follows. Consider a
+potential set of winners C. The amount of points that voter v contributes to C is i=1         λ(i), and
+                                                                                     P|Sv ∩C|
+
+the set C with the most points across voters (after tie-breaking) is selected. The (non-increasing)
+function λ establishes that votes have diminishing returns; the ith approved candidate in the set is
+worth λ(i). For example, winner-take-all approval voting is a Thiele rule with λ(i) = 1: for each
+voter, the set C receives a number of points equal to the number of candidates in the set that the
+voter likes, and so the Nk candidates with the most votes win. We further consider Proportional
+Approval Voting (PAV), a Thiele rule with λPAV (i) = 1i ; and Thiele Squared, with λTS = i12 . PAV
+is well-studied in the theoretical social choice literature and comes with optimality guarantees (in
+terms of proportionality) (Skowron 2021). Thiele Squared induces even sharper diminishing returns
+than PAV in a voter having more of their preferred candidates winning, and thus prioritizes more
+voters having at least one approved candidate (and 50/50 outcomes between two parties, regardless
+of underlying vote shares). More generally, Thiele rules both contain common voting rules and
+parameterize a rule’s tendency to favor proportional or balanced outcomes.
+
+[Next verbatim source excerpt]
+
+    In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each
+voter instead submits a ranking over candidates (here, we assume the rankings are complete, not
+partial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as
+follows. The number of first-place votes for each candidate is counted. Any candidate with a number
+of votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus
+votes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has
+enough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,
+and their votes are transferred. The process continues until Nk candidates have been selected, or
+the number of remaining candidates equals the number of remaining seats. STV is commonly used
+in practice in multi-winner elections.
+    Details can differ in how such votes are transferred, but our results in Section 3 do not depend
+on the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV
+rule, in which each voter keeps a fractional number of votes equal to their share of the winning
+candidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we
+assume that ties are broken in favor of candidates from party D, but randomly within each party.5
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ {Voter : Type u_1} {Candidate : Type u_2} [inst : DecidableEq Voter] [inst_1 : DecidableEq Candidate]
-  {partyVoters otherPartyVoters allVoters : Finset Voter}
-  {ballots : Voter → EconCSLib.SocialChoice.Voting.Ballot Candidate}
-  {partyCandidates otherPartyCandidates initialActive : Finset Candidate} {seats voters : ℕ} {partyShare : ℝ}
-  (policy :
-    GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy allVoters ballots
-      ↑(EconCSLib.SocialChoice.Voting.STVQuota seats voters)),
-  0 < partyShare →
-    partyShare ≤ 1 →
-      seats * (seats + 1) ≤ voters →
-        seats ≤ partyCandidates.card →
-          seats ≤ otherPartyCandidates.card →
-            GGRS26CombattingGerrymanderingRCV.paper_complete_party_ranking_ballots partyVoters ballots partyCandidates
-                initialActive →
-              GGRS26CombattingGerrymanderingRCV.paper_complete_party_ranking_ballots otherPartyVoters ballots
-                  otherPartyCandidates initialActive →
-                voters = allVoters.card →
-                  allVoters = partyVoters ∪ otherPartyVoters →
-                    Disjoint partyVoters otherPartyVoters →
-                      Disjoint partyCandidates otherPartyCandidates →
-                        partyCandidates ⊆ initialActive →
-                          otherPartyCandidates ⊆ initialActive →
-                            initialActive ⊆ partyCandidates ∪ otherPartyCandidates →
-                              partyShare * ↑voters = ↑partyVoters.card →
-                                (1 - partyShare) * ↑voters = ↑otherPartyVoters.card →
-                                  ∀
-                                    (terminal :
-                                      GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState allVoters initialActive),
-                                    Relation.ReflTransGen
-                                        (GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransition ballots
-                                          (↑(EconCSLib.SocialChoice.Voting.STVQuota seats voters)) policy seats)
-                                        (GGRS26CombattingGerrymanderingRCV.paper_proposition1_ballot_routed_stv_initial_state
-                                          allVoters initialActive)
-                                        terminal →
-                                      GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTerminal seats terminal →
-                                        ∀ (pavSeatCount : ℕ),
-                                          GGRS26CombattingGerrymanderingRCV.paper_pav_min_argmax pavSeatCount partyShare
-                                              seats →
-                                            GGRS26CombattingGerrymanderingRCV.paper_seat_share_rounded
-                                                (GGRS26CombattingGerrymanderingRCV.ballotRoutedPartyFinalSeats
-                                                  partyCandidates seats terminal)
-                                                partyShare seats ∧
-                                              GGRS26CombattingGerrymanderingRCV.paper_seat_share_rounded pavSeatCount
-                                                partyShare seats
+∀ {Voter : Type u_1} {Candidate : Type u_2} {partyVoters otherPartyVoters allVoters : Finset Voter}
+  {ballots : Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate}
+  {partyCandidates otherPartyCandidates initialActive : Finset Candidate} {seats voters : ℕ} {partyShare : ℝ},
+  1 ≤ seats →
+    0 ≤ partyShare →
+      partyShare ≤ 1 →
+        seats * (seats + 1) ≤ voters →
+          seats ≤ partyCandidates.card →
+            seats ≤ otherPartyCandidates.card →
+              GGRS26CombattingGerrymanderingRCV.paper_complete_party_ranking_ballots partyVoters ballots partyCandidates
+                  initialActive →
+                GGRS26CombattingGerrymanderingRCV.paper_complete_party_ranking_ballots otherPartyVoters ballots
+                    otherPartyCandidates initialActive →
+                  voters = allVoters.card →
+                    allVoters = partyVoters ∪ otherPartyVoters →
+                      Disjoint partyVoters otherPartyVoters →
+                        Disjoint partyCandidates otherPartyCandidates →
+                          partyCandidates ⊆ initialActive →
+                            otherPartyCandidates ⊆ initialActive →
+                              initialActive ⊆ partyCandidates ∪ otherPartyCandidates →
+                                partyShare * ↑voters = ↑partyVoters.card →
+                                  (1 - partyShare) * ↑voters = ↑otherPartyVoters.card →
+                                    (∀
+                                        (policy :
+                                          GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy allVoters
+                                            ballots ↑(AppliedModelingLib.SocialChoice.Voting.STVQuota seats voters)),
+                                        (∃ (terminal :
+                                            GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState allVoters
+                                              initialActive),
+                                            GGRS26CombattingGerrymanderingRCV.BallotRoutedDFavoringSTVRun ballots
+                                                (↑(AppliedModelingLib.SocialChoice.Voting.STVQuota seats voters)) policy
+                                                seats
+                                                (GGRS26CombattingGerrymanderingRCV.paper_proposition1_ballot_routed_stv_initial_state
+                                                  allVoters initialActive)
+                                                terminal ∧
+                                              GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTerminal seats
+                                                terminal) ∧
+                                          ∀
+                                            (terminal :
+                                              GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState allVoters
+                                                initialActive),
+                                            GGRS26CombattingGerrymanderingRCV.BallotRoutedDFavoringSTVRun ballots
+                                                (↑(AppliedModelingLib.SocialChoice.Voting.STVQuota seats voters)) policy
+                                                seats
+                                                (GGRS26CombattingGerrymanderingRCV.paper_proposition1_ballot_routed_stv_initial_state
+                                                  allVoters initialActive)
+                                                terminal →
+                                              GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTerminal seats terminal →
+                                                GGRS26CombattingGerrymanderingRCV.paper_seat_share_rounded
+                                                  (GGRS26CombattingGerrymanderingRCV.ballotRoutedPartyFinalSeats
+                                                    partyCandidates seats terminal)
+                                                  partyShare seats) ∧
+                                      GGRS26CombattingGerrymanderingRCV.paper_seat_share_rounded
+                                        (GGRS26CombattingGerrymanderingRCV.paper_pav_selected_seat_count partyShare
+                                          seats)
+                                        partyShare seats
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4c0320b08e4fb484}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}Ballot}
+\item \hyperlink{governing-declaration-d335879a7207e841}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Social\allowbreak{}Choice.\allowbreak{}Voting.\allowbreak{}STV\allowbreak{}Quota}
+\item \hyperlink{governing-declaration-3bfffc20e8b6444f}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}D\allowbreak{}Favoring\allowbreak{}STV\allowbreak{}Run}
+\item \hyperlink{governing-declaration-8b872df78d871e1b}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}State}
+\item \hyperlink{governing-declaration-27b5b75da6f75108}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}Terminal}
+\item \hyperlink{governing-declaration-9554b7918969e197}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}Ballot\allowbreak{}Routed\allowbreak{}STV\allowbreak{}Transfer\allowbreak{}Policy}
+\item \hyperlink{governing-declaration-21463db3a6da8b5e}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}ballot\allowbreak{}Routed\allowbreak{}Party\allowbreak{}Final\allowbreak{}Seats}
+\item \hyperlink{governing-declaration-ab89c07c272f0ccf}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}complete\_\allowbreak{}party\_\allowbreak{}ranking\_\allowbreak{}ballots}
+\item \hyperlink{paper-prerequisite-c0f468d3ce4de7e0}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}pav\_\allowbreak{}selected\_\allowbreak{}seat\_\allowbreak{}count}
+\item \hyperlink{governing-declaration-a26378e50367c86c}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}proposition1\_\allowbreak{}ballot\_\allowbreak{}routed\_\allowbreak{}stv\_\allowbreak{}initial\_\allowbreak{}state}
+\item \hyperlink{governing-declaration-64adc81e0c40ba7a}{GGRS26\allowbreak{}Combatting\allowbreak{}Gerrymandering\allowbreak{}RCV.\allowbreak{}paper\_\allowbreak{}seat\_\allowbreak{}share\_\allowbreak{}rounded}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Finset Voter
+4. parameter: Finset Voter
+5. parameter: Finset Voter
+6. parameter: Voter → AppliedModelingLib.SocialChoice.Voting.Ballot Candidate
+7. parameter: Finset Candidate
+8. parameter: Finset Candidate
+9. parameter: Finset Candidate
+10. parameter: ℕ
+11. parameter: ℕ
+12. parameter: ℝ
+13. assumption: 1 ≤ seats
+14. assumption: 0 ≤ partyShare
+15. assumption: partyShare ≤ 1
+16. assumption: seats * (seats + 1) ≤ voters
+17. assumption: seats ≤ partyCandidates.card
+18. assumption: seats ≤ otherPartyCandidates.card
+19. assumption: GGRS26CombattingGerrymanderingRCV.paper_complete_party_ranking_ballots partyVoters ballots partyCandidates initialActive
+20. assumption: GGRS26CombattingGerrymanderingRCV.paper_complete_party_ranking_ballots otherPartyVoters ballots otherPartyCandidates
+  initialActive
+21. assumption: voters = allVoters.card
+22. assumption: allVoters = partyVoters ∪ otherPartyVoters
+23. assumption: Disjoint partyVoters otherPartyVoters
+24. assumption: Disjoint partyCandidates otherPartyCandidates
+25. assumption: partyCandidates ⊆ initialActive
+26. assumption: otherPartyCandidates ⊆ initialActive
+27. assumption: initialActive ⊆ partyCandidates ∪ otherPartyCandidates
+28. assumption: partyShare * ↑voters = ↑partyVoters.card
+29. assumption: (1 - partyShare) * ↑voters = ↑otherPartyVoters.card
+30. conclusion: (∀
+    (policy :
+      GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTransferPolicy allVoters ballots
+        ↑(AppliedModelingLib.SocialChoice.Voting.STVQuota seats voters)),
+    (∃ (terminal : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState allVoters initialActive),
+        GGRS26CombattingGerrymanderingRCV.BallotRoutedDFavoringSTVRun ballots
+            (↑(AppliedModelingLib.SocialChoice.Voting.STVQuota seats voters)) policy seats
+            (GGRS26CombattingGerrymanderingRCV.paper_proposition1_ballot_routed_stv_initial_state allVoters
+              initialActive)
+            terminal ∧
+          GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTerminal seats terminal) ∧
+      ∀ (terminal : GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVState allVoters initialActive),
+        GGRS26CombattingGerrymanderingRCV.BallotRoutedDFavoringSTVRun ballots
+            (↑(AppliedModelingLib.SocialChoice.Voting.STVQuota seats voters)) policy seats
+            (GGRS26CombattingGerrymanderingRCV.paper_proposition1_ballot_routed_stv_initial_state allVoters
+              initialActive)
+            terminal →
+          GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVTerminal seats terminal →
+            GGRS26CombattingGerrymanderingRCV.paper_seat_share_rounded
+              (GGRS26CombattingGerrymanderingRCV.ballotRoutedPartyFinalSeats partyCandidates seats terminal) partyShare
+              seats) ∧
+  GGRS26CombattingGerrymanderingRCV.paper_seat_share_rounded
+    (GGRS26CombattingGerrymanderingRCV.paper_pav_selected_seat_count partyShare seats) partyShare seats
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-GGRS26CombattingGerrymanderingRCV.paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_pav
+GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pav
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The Lean-expanded target states the source's two-party solid-coalition STV/PAV rounded-seat conclusion for every reachable ballot-routed surplus-preserving terminal outcome. The source's D-favoring tie convention is a subset of this tie-robust result, so the formal target is stronger rather than omitting a needed source instance.
+{\raggedright
+\textbf{Reason:} The target retains V >= M(M+1), the two-\allowbreak{}party solid-\allowbreak{}coalition model, at least M candidates per party, exact Droop quota, D-\allowbreak{}favoring STV and the floor-\allowbreak{}or-\allowbreak{}ceiling STV/\allowbreak{}PAV conclusion;\allowbreak{} within-\allowbreak{}party randomness is used only as pathwise outcome support, not as a probability-\allowbreak{}law claim.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox

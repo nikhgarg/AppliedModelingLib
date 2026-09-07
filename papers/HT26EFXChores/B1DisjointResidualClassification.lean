@@ -12,7 +12,7 @@ Source: EFXadditivechores.tex, lines 2420--2443.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- In source Case B.2.1(b), deleting three chores from the dominant
 (0,1)-type fibre leaves an exceptional residue with auxiliary endpoints

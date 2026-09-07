@@ -1,14 +1,14 @@
-import EconCSLib.Foundations.Probability.Admissions
-import EconCSLib.Foundations.Probability.FiniteMixture
-import EconCSLib.Foundations.Probability.Gaussian
-import EconCSLib.Foundations.Probability.GaussianMathlib
-import EconCSLib.Foundations.Math.AffineThreshold
-import EconCSLib.Foundations.Math.ConvexCombination
-import EconCSLib.Foundations.Math.ThresholdCharacterization
-import EconCSLib.Foundations.Optimization.BinaryChoice
+import AppliedModelingLib.Foundations.Probability.Admissions
+import AppliedModelingLib.Foundations.Probability.FiniteMixture
+import AppliedModelingLib.Foundations.Probability.Gaussian
+import AppliedModelingLib.Foundations.Probability.GaussianMathlib
+import AppliedModelingLib.Foundations.Math.AffineThreshold
+import AppliedModelingLib.Foundations.Math.ConvexCombination
+import AppliedModelingLib.Foundations.Math.ThresholdCharacterization
+import AppliedModelingLib.GameTheory.Choice.Binary
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 open scoped ENNReal
 
 /-!
@@ -163,12 +163,12 @@ theorem paper_reporting_gaussian_threshold_iff_cutoff
   M.threshold_le_posteriorMean_update_iff_cutoff_le theta k base threshold value
 
 /-- A one-dimensional decision rule is a lower-cutoff rule. -/
-abbrev lg21LowerCutoffStrategy (choose : ℝ → Prop) : Prop := EconCSLib.LowerCutoffStrategy choose
+abbrev lg21LowerCutoffStrategy (choose : ℝ → Prop) : Prop := AppliedModelingLib.LowerCutoffStrategy choose
 
 /-- Every lower-cutoff rule is monotone in the source paper's direction. -/
 theorem lg21_monotone_of_lowerCutoffStrategy
     {choose : ℝ → Prop} (hcutoff : lg21LowerCutoffStrategy choose) :
-    ∀ {low high : ℝ}, low ≤ high → choose low → choose high :=  EconCSLib.monotone_of_lowerCutoffStrategy hcutoff
+    ∀ {low high : ℝ}, low ≤ high → choose low → choose high :=  AppliedModelingLib.monotone_of_lowerCutoffStrategy hcutoff
 
 /--
 Theorem 3.1 threshold support: any positive-slope affine Bayesian comparison
@@ -216,7 +216,7 @@ theorem paper_lemma4_1_reporting_cutoff_has_profitable_deviation_core
               ∃ profitableScore : ℝ,
                 profitableScore ∈ Set.Ioo indifferentScore cutoff ∧
                   noReportEstimate < reportedEstimate profitableScore :=
-    EconCSLib.exists_indifference_and_profitable_above_of_continuous_strictMonoOn_Icc_crossing
+    AppliedModelingLib.exists_indifference_and_profitable_above_of_continuous_strictMonoOn_Icc_crossing
       hcont hmono hscore_lt hlow hcutoff
 
 /--
@@ -397,7 +397,7 @@ reporting.
 abbrev lg21NoProfitableWithholdingDeviation
     (reports : ℝ → Prop) (reportedEstimate : ℝ → ℝ)
     (noReportEstimate : ℝ) : Prop :=
-  EconCSLib.NoProfitableUnchosenDeviation
+  AppliedModelingLib.NoProfitableUnchosenDeviation
     reports reportedEstimate (fun _score : ℝ => noReportEstimate)
 
 /--
@@ -407,7 +407,7 @@ dominate choosing it.
 -/
 abbrev lg21NoProfitableBinaryChoiceDeviation
     (chooses : ℝ → Prop) (choosePayoff otherPayoff : ℝ → ℝ) : Prop :=
-  EconCSLib.NoProfitableBinaryChoiceDeviation chooses choosePayoff otherPayoff
+  AppliedModelingLib.NoProfitableBinaryChoiceDeviation chooses choosePayoff otherPayoff
 
 /--
 If some type has a value where the outside option strictly beats the chosen
@@ -420,7 +420,7 @@ theorem lg21_not_all_choose_of_binaryChoiceDeviation_exists_other_better
         chooses choosePayoff otherPayoff)
     (hbetter : ∃ value, choosePayoff value < otherPayoff value) :
     ¬ ∀ value, chooses value :=
-    EconCSLib.not_all_choose_of_noProfitableBinaryChoiceDeviation_exists_other_better
+    AppliedModelingLib.not_all_choose_of_noProfitableBinaryChoiceDeviation_exists_other_better
       hbest hbetter
 
 /--
@@ -435,7 +435,7 @@ theorem lg21_not_no_choose_of_binaryChoiceDeviation_exists_choose_better
         chooses choosePayoff otherPayoff)
     (hbetter : ∃ value, otherPayoff value < choosePayoff value) :
     ¬ ∀ value, ¬ chooses value :=
-    EconCSLib.not_no_choose_of_noProfitableBinaryChoiceDeviation_exists_choose_better
+    AppliedModelingLib.not_no_choose_of_noProfitableBinaryChoiceDeviation_exists_choose_better
       hbest hbetter
 
 /--
@@ -456,7 +456,7 @@ theorem paper_theorem3_1_optional_reporting_gaussian_best_response_nontrivial
         (fun _score : ℝ => noReportEstimate)) :
     (∃ score : ℝ, reports score) ∧
       (∃ score : ℝ, ¬ reports score) :=
-  EconCSLib.exists_chosen_and_unchosen_of_noProfitableBinaryChoiceDeviation_crosses
+  AppliedModelingLib.exists_chosen_and_unchosen_of_noProfitableBinaryChoiceDeviation_crosses
     hbest
     (paper_gaussian_posteriorMean_update_exists_above
       M theta k noReportEstimate)
@@ -479,7 +479,7 @@ theorem paper_theorem3_1_report_required_affine_best_response_nontrivial
         (fun _skill : ℝ => noTakeEstimate)) :
     (∃ skill : ℝ, takes skill) ∧
       (∃ skill : ℝ, ¬ takes skill) :=
-  EconCSLib.exists_chosen_and_unchosen_of_noProfitableBinaryChoiceDeviation_crosses
+  AppliedModelingLib.exists_chosen_and_unchosen_of_noProfitableBinaryChoiceDeviation_crosses
     hbest
     (exists_lt_affine intercept noTakeEstimate hslope)
     (exists_affine_lt intercept noTakeEstimate hslope)
@@ -512,7 +512,7 @@ theorem paper_theorem3_1_optional_reporting_gaussian_threshold_of_best_response_
       (M.centeredFamily.signalWeight k) noReportEstimate
   refine ⟨cutoff, ?_⟩
   exact
-    EconCSLib.choice_rule_iff_threshold_of_noProfitableBinaryChoiceDeviation_tiebreak
+    AppliedModelingLib.choice_rule_iff_threshold_of_noProfitableBinaryChoiceDeviation_tiebreak
       hbest
       (fun score => by
         simpa [cutoff] using
@@ -541,7 +541,7 @@ theorem paper_theorem3_1_report_required_affine_threshold_of_best_response_tiebr
   let qBar : ℝ := affineCutoff intercept slope noTakeEstimate
   refine ⟨qBar, ?_⟩
   exact
-    EconCSLib.choice_rule_iff_threshold_of_noProfitableBinaryChoiceDeviation_tiebreak
+    AppliedModelingLib.choice_rule_iff_threshold_of_noProfitableBinaryChoiceDeviation_tiebreak
       hbest
       (fun skill => by
         simpa [qBar] using
@@ -1102,7 +1102,7 @@ theorem paper_lemma4_1_no_nontrivial_reporting_cutoff_of_no_profitable_withholdi
     ⟨indifferentScore, _hindiff_mem, _hindiff_eq, _hweak,
       profitableScore, hprofitable_mem, hprofitable⟩
   exact
-    EconCSLib.false_of_lowerCutoff_noProfitableUnchosenDeviation_exists_below_cutoff_profitable
+    AppliedModelingLib.false_of_lowerCutoff_noProfitableUnchosenDeviation_exists_below_cutoff_profitable
       (choosePayoff := reportedEstimate)
       (otherPayoff := fun _score : ℝ => noReportEstimate)
       hcutoffStrategy hnoDeviation ⟨profitableScore, hprofitable_mem.2, hprofitable⟩
@@ -1442,7 +1442,7 @@ chance of obtaining a score that would improve the school estimate.
 -/
 abbrev lg21NoProfitableTestTakingDeviation
     (takes : ℝ → Prop) (testBenefitProb : ℝ → ℝ) : Prop :=
-  EconCSLib.NoProfitableUnchosenDeviation
+  AppliedModelingLib.NoProfitableUnchosenDeviation
     takes testBenefitProb (fun _skill : ℝ => (1 / 2 : ℝ))
 
 /--
@@ -1466,7 +1466,7 @@ theorem paper_lemma4_1_no_nontrivial_take_test_cutoff_of_no_profitable_deviation
       api hscale hcutoff with
     ⟨skill, hskill_mem, hprofitable⟩
   exact
-    EconCSLib.false_of_lowerCutoff_noProfitableUnchosenDeviation_exists_below_cutoff_profitable
+    AppliedModelingLib.false_of_lowerCutoff_noProfitableUnchosenDeviation_exists_below_cutoff_profitable
       (choosePayoff := fun skill : ℝ =>
         api.thresholdPassProb
           (lg21GaussianTestScoreLaw skill scale hscale) qTilde)
@@ -2022,7 +2022,7 @@ The source proof of Theorem 4.4 only needs the distributional fact that, after
 conditioning on the observed non-test profile, the imputed test score for a
 student without access is sampled from the same conditional test-score law as a
 student with access.  This paper-facing abbreviation points to the reusable
-finite conditional-resampling interface in `EconCSLib`.
+finite conditional-resampling interface in `AppliedModelingLib`.
 -/
 abbrev LG21ResamplingExperiment
     (ΩBase ΩTest Estimate : Type*) [Fintype ΩBase] [DecidableEq ΩBase] := ConditionalResamplingExperiment ΩBase ΩTest Estimate
@@ -2397,7 +2397,7 @@ Definition 1 equilibrium data, abstracted from the paper's test-taking and
 reporting action space.  `StudentInfo` packages the student's true skill and
 observed non-test features, while `Action` packages the `(Y,X)` decision.
 -/
-abbrev LG21EquilibriumData (StudentInfo Action : Type*) := EconCSLib.ChoiceEquilibriumData StudentInfo Action
+abbrev LG21EquilibriumData (StudentInfo Action : Type*) := AppliedModelingLib.ChoiceEquilibriumData StudentInfo Action
 
 /--
 Definition 1 equilibrium predicate: chosen actions are feasible, weakly
@@ -2405,7 +2405,7 @@ maximize estimated payoff among feasible actions, and the estimation rule is
 consistent with the induced decisions.
 -/
 abbrev lg21Equilibrium {StudentInfo Action : Type*}
-    (E : LG21EquilibriumData StudentInfo Action) : Prop := EconCSLib.IsChoiceEquilibrium E
+    (E : LG21EquilibriumData StudentInfo Action) : Prop := AppliedModelingLib.IsChoiceEquilibrium E
 
 /--
 Definition 1 source equilibrium data with the paper's decision functions.
@@ -2461,7 +2461,7 @@ theorem lg21SourceEquilibrium_feasible
     (info : LG21AccessStudentInfo Skill Base Test) :
     LG21AccessAction.feasible E.requirement
       (LG21AccessStudentInfo.chosenAction
-        E.takeDecision E.reportDecision info) := EconCSLib.isChoiceEquilibrium_feasible hEq info
+        E.takeDecision E.reportDecision info) := AppliedModelingLib.isChoiceEquilibrium_feasible hEq info
 
 theorem lg21SourceEquilibrium_best_response
     {Skill Base Test : Type*}
@@ -2473,13 +2473,13 @@ theorem lg21SourceEquilibrium_best_response
     E.payoff info action ≤
       E.payoff info
         (LG21AccessStudentInfo.chosenAction
-          E.takeDecision E.reportDecision info) := EconCSLib.isChoiceEquilibrium_best_response hEq info action hfeasible
+          E.takeDecision E.reportDecision info) := AppliedModelingLib.isChoiceEquilibrium_best_response hEq info action hfeasible
 
 theorem lg21SourceEquilibrium_estimationConsistent
     {Skill Base Test : Type*}
     {E : LG21SourceEquilibriumData Skill Base Test}
     (hEq : lg21SourceEquilibrium E) :
-    E.estimationConsistent := EconCSLib.isChoiceEquilibrium_consistency hEq
+    E.estimationConsistent := AppliedModelingLib.isChoiceEquilibrium_consistency hEq
 
 /--
 Binary reporting subgame used to connect Definition 1-style best responses to
@@ -2489,7 +2489,7 @@ def lg21ReportingEquilibriumData
     (reports : ℝ → Prop) [DecidablePred reports]
     (reportedEstimate : ℝ → ℝ) (noReportEstimate : ℝ) :
     LG21EquilibriumData ℝ Bool :=
-  EconCSLib.binaryChoiceEquilibriumData
+  AppliedModelingLib.binaryChoiceEquilibriumData
     reports reportedEstimate (fun _score : ℝ => noReportEstimate)
 
 theorem lg21NoProfitableWithholdingDeviation_of_reporting_equilibrium
@@ -2500,7 +2500,7 @@ theorem lg21NoProfitableWithholdingDeviation_of_reporting_equilibrium
         (lg21ReportingEquilibriumData
           reports reportedEstimate noReportEstimate)) :
     lg21NoProfitableWithholdingDeviation
-      reports reportedEstimate noReportEstimate :=  EconCSLib.noProfitableUnchosenDeviation_of_binaryChoiceEquilibrium hEq
+      reports reportedEstimate noReportEstimate :=  AppliedModelingLib.noProfitableUnchosenDeviation_of_binaryChoiceEquilibrium hEq
 
 /--
 Binary reporting equilibrium gives the full two-sided best-response condition:
@@ -2515,7 +2515,7 @@ theorem lg21NoProfitableBinaryChoiceDeviation_of_reporting_equilibrium
         (lg21ReportingEquilibriumData
           reports reportedEstimate noReportEstimate)) :
     lg21NoProfitableBinaryChoiceDeviation
-      reports reportedEstimate (fun _score : ℝ => noReportEstimate) :=  EconCSLib.noProfitableBinaryChoiceDeviation_of_binaryChoiceEquilibrium hEq
+      reports reportedEstimate (fun _score : ℝ => noReportEstimate) :=  AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_binaryChoiceEquilibrium hEq
 
 /--
 Source Definition 1 optional-reporting projection: if a source equilibrium's
@@ -2552,7 +2552,7 @@ theorem lg21NoProfitableWithholdingDeviation_of_source_optional_equilibrium
   let infoOf : ℝ → LG21AccessStudentInfo Skill Base ℝ := fun score =>
     { skill := skill, base := base, test := score }
   refine
-    EconCSLib.noProfitableUnchosenDeviation_of_choiceEquilibrium_payoff_projection
+    AppliedModelingLib.noProfitableUnchosenDeviation_of_choiceEquilibrium_payoff_projection
       (E := E.toEquilibriumData) hEq infoOf
       (fun _score => LG21AccessAction.takeAndReport) ?_ ?_ ?_
   · intro score
@@ -2636,7 +2636,7 @@ theorem lg21NoProfitableBinaryChoiceDeviation_of_optional_reporting_source_model
   let infoOf : ℝ → LG21AccessStudentInfo Skill Base ℝ := fun score =>
       { skill := skill, base := base, test := score }
   refine
-    EconCSLib.noProfitableBinaryChoiceDeviation_of_choiceEquilibrium_payoff_projection
+    AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choiceEquilibrium_payoff_projection
       (E := sourceE.toEquilibriumData) hEq infoOf
       (fun _score => LG21AccessAction.takeAndReport)
       (fun _score => LG21AccessAction.takeAndWithhold) ?_ ?_ ?_ ?_ ?_ ?_
@@ -2715,7 +2715,7 @@ theorem lg21NoProfitableBinaryChoiceDeviation_of_base_optional_reporting_source_
   let infoOf : ℝ → LG21AccessStudentInfo Skill Base ℝ := fun score =>
       { skill := skill, base := base, test := score }
   refine
-    EconCSLib.noProfitableBinaryChoiceDeviation_of_choiceEquilibrium_payoff_projection
+    AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choiceEquilibrium_payoff_projection
       (E := sourceE.toEquilibriumData) hEq infoOf
       (fun _score => LG21AccessAction.takeAndReport)
       (fun _score => LG21AccessAction.takeAndWithhold) ?_ ?_ ?_ ?_ ?_ ?_
@@ -2800,7 +2800,7 @@ def lg21TestTakingEquilibriumData
     (takes : ℝ → Prop) [DecidablePred takes]
     (testBenefitProb : ℝ → ℝ) :
     LG21EquilibriumData ℝ Bool :=
-  EconCSLib.binaryChoiceEquilibriumData
+  AppliedModelingLib.binaryChoiceEquilibriumData
     takes testBenefitProb (fun _skill : ℝ => (1 / 2 : ℝ))
 
 theorem lg21NoProfitableTestTakingDeviation_of_taking_equilibrium
@@ -2809,7 +2809,7 @@ theorem lg21NoProfitableTestTakingDeviation_of_taking_equilibrium
     (hEq :
       lg21Equilibrium
         (lg21TestTakingEquilibriumData takes testBenefitProb)) :
-    lg21NoProfitableTestTakingDeviation takes testBenefitProb :=  EconCSLib.noProfitableUnchosenDeviation_of_binaryChoiceEquilibrium hEq
+    lg21NoProfitableTestTakingDeviation takes testBenefitProb :=  AppliedModelingLib.noProfitableUnchosenDeviation_of_binaryChoiceEquilibrium hEq
 
 /--
 Binary test-taking equilibrium gives the full two-sided best-response condition:
@@ -2822,7 +2822,7 @@ theorem lg21NoProfitableBinaryChoiceDeviation_of_taking_equilibrium
       lg21Equilibrium
         (lg21TestTakingEquilibriumData takes testBenefitProb)) :
     lg21NoProfitableBinaryChoiceDeviation
-      takes testBenefitProb (fun _skill : ℝ => (1 / 2 : ℝ)) :=  EconCSLib.noProfitableBinaryChoiceDeviation_of_binaryChoiceEquilibrium hEq
+      takes testBenefitProb (fun _skill : ℝ => (1 / 2 : ℝ)) :=  AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_binaryChoiceEquilibrium hEq
 
 /--
 Source Definition 1 report-required projection: if deviating to
@@ -2856,7 +2856,7 @@ theorem lg21NoProfitableTestTakingDeviation_of_source_report_required_equilibriu
   let infoOf : ℝ → LG21AccessStudentInfo ℝ Base Test := fun skill =>
     { skill := skill, base := base, test := test }
   refine
-    EconCSLib.noProfitableUnchosenDeviation_of_choiceEquilibrium_payoff_projection
+    AppliedModelingLib.noProfitableUnchosenDeviation_of_choiceEquilibrium_payoff_projection
       (E := E.toEquilibriumData) hEq infoOf
       (fun _skill => LG21AccessAction.takeAndReport) ?_ ?_ ?_
   · intro skill
@@ -2938,7 +2938,7 @@ theorem lg21NoProfitableBinaryChoiceDeviation_of_report_required_source_model
   let infoOf : ℝ → LG21AccessStudentInfo ℝ Base Test := fun skill =>
       { skill := skill, base := base, test := test }
   refine
-    EconCSLib.noProfitableBinaryChoiceDeviation_of_choiceEquilibrium_payoff_projection
+    AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choiceEquilibrium_payoff_projection
       (E := sourceE.toEquilibriumData) hEq infoOf
       (fun _skill => LG21AccessAction.takeAndReport)
       (fun _skill => LG21AccessAction.noTake) ?_ ?_ ?_ ?_ ?_ ?_
@@ -3013,7 +3013,7 @@ theorem lg21NoProfitableBinaryChoiceDeviation_of_base_report_required_source_mod
   let infoOf : ℝ → LG21AccessStudentInfo ℝ Base Test := fun skill =>
       { skill := skill, base := base, test := test }
   refine
-    EconCSLib.noProfitableBinaryChoiceDeviation_of_choiceEquilibrium_payoff_projection
+    AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choiceEquilibrium_payoff_projection
       (E := sourceE.toEquilibriumData) hEq infoOf
       (fun _skill => LG21AccessAction.takeAndReport)
       (fun _skill => LG21AccessAction.noTake) ?_ ?_ ?_ ?_ ?_ ?_
@@ -4353,7 +4353,7 @@ This is the PMF-level version of the paper's Theorem 3.2 displayed mixture
 -/
 noncomputable abbrev lg21BinaryMixturePMF
     {Estimate : Type*} (p : NNReal) (hp : p ≤ 1)
-    (reporterPMF noReporterPMF : PMF Estimate) : PMF Estimate := EconCSLib.binaryMixturePMF p hp reporterPMF noReporterPMF
+    (reporterPMF noReporterPMF : PMF Estimate) : PMF Estimate := AppliedModelingLib.binaryMixturePMF p hp reporterPMF noReporterPMF
 
 /--
 Finite event share as an `NNReal`, for supplying the paper's positive reporter
@@ -4361,7 +4361,7 @@ or taker share in binary-mixture routes.
 -/
 noncomputable abbrev lg21PMFEventShare
     {α : Type*} [Fintype α] [DecidableEq α]
-    (μ : PMF α) (p : α → Prop) [DecidablePred p] : NNReal := EconCSLib.pmfEventShare μ p
+    (μ : PMF α) (p : α → Prop) [DecidablePred p] : NNReal := AppliedModelingLib.pmfEventShare μ p
 
 @[simp] theorem lg21PMFEventShare_toReal
     {α : Type*} [Fintype α] [DecidableEq α]
@@ -4372,14 +4372,14 @@ noncomputable abbrev lg21PMFEventShare
 theorem lg21PMFEventShare_le_one
     {α : Type*} [Fintype α] [DecidableEq α]
     (μ : PMF α) (p : α → Prop) [DecidablePred p] :
-    lg21PMFEventShare μ p ≤ 1 :=  EconCSLib.pmfEventShare_le_one μ p
+    lg21PMFEventShare μ p ≤ 1 :=  AppliedModelingLib.pmfEventShare_le_one μ p
 
 /-- A finite PMF event share is positive when the event contains a positive-mass atom. -/
 theorem lg21PMFEventShare_pos_of_mass
     {α : Type*} [Fintype α] [DecidableEq α]
     (μ : PMF α) (p : α → Prop) [DecidablePred p] (a₀ : α)
     (hp : p a₀) (hmass : 0 < (μ a₀).toReal) :
-    0 < (lg21PMFEventShare μ p).toReal :=  EconCSLib.pmfEventShare_pos_of_mass μ p a₀ hp hmass
+    0 < (lg21PMFEventShare μ p).toReal :=  AppliedModelingLib.pmfEventShare_pos_of_mass μ p a₀ hp hmass
 
 /--
 A finite event share is positive exactly when the event contains a
@@ -4389,7 +4389,7 @@ theorem lg21PMFEventShare_pos_iff_exists_pos_mass
     {α : Type*} [Fintype α] [DecidableEq α]
     (μ : PMF α) (p : α → Prop) [DecidablePred p] :
     0 < (lg21PMFEventShare μ p).toReal ↔
-      ∃ a, p a ∧ 0 < (μ a).toReal :=  EconCSLib.pmfEventShare_pos_iff_exists_pos_mass μ p
+      ∃ a, p a ∧ 0 < (μ a).toReal :=  AppliedModelingLib.pmfEventShare_pos_iff_exists_pos_mass μ p
 
 /--
 A finite PMF event share is strictly below one when the complement contains a
@@ -4399,7 +4399,7 @@ theorem lg21PMFEventShare_lt_one_of_mass_not
     {α : Type*} [Fintype α] [DecidableEq α]
     (μ : PMF α) (p : α → Prop) [DecidablePred p] (a₀ : α)
     (hp : ¬p a₀) (hmass : 0 < (μ a₀).toReal) :
-    lg21PMFEventShare μ p < 1 :=  EconCSLib.pmfEventShare_lt_one_of_mass_not μ p a₀ hp hmass
+    lg21PMFEventShare μ p < 1 :=  AppliedModelingLib.pmfEventShare_lt_one_of_mass_not μ p a₀ hp hmass
 
 /-- Base-indexed finite event shares for source reporter/taker groups. -/
 noncomputable abbrev lg21PMFEventShareFn
@@ -4407,7 +4407,7 @@ noncomputable abbrev lg21PMFEventShareFn
     (studentLaw : Equilibrium → Base → PMF Student)
     (event : Equilibrium → Base → Student → Prop)
     (decEvent : ∀ e base, DecidablePred (event e base)) :
-    Equilibrium → Base → NNReal := EconCSLib.indexedPMFEventShare studentLaw event decEvent
+    Equilibrium → Base → NNReal := AppliedModelingLib.indexedPMFEventShare studentLaw event decEvent
 
 /-- Base-indexed finite event shares are at most one. -/
 theorem lg21PMFEventShareFn_le_one
@@ -4415,7 +4415,7 @@ theorem lg21PMFEventShareFn_le_one
     (studentLaw : Equilibrium → Base → PMF Student)
     (event : Equilibrium → Base → Student → Prop)
     (decEvent : ∀ e base, DecidablePred (event e base)) :
-    ∀ e base, lg21PMFEventShareFn studentLaw event decEvent e base ≤ 1 :=  EconCSLib.indexedPMFEventShare_le_one studentLaw event decEvent
+    ∀ e base, lg21PMFEventShareFn studentLaw event decEvent e base ≤ 1 :=  AppliedModelingLib.indexedPMFEventShare_le_one studentLaw event decEvent
 
 /--
 Base-indexed finite event shares are positive whenever each indexed event
@@ -4430,7 +4430,7 @@ theorem lg21PMFEventShareFn_pos_of_mass
       ∀ e base, ∃ student, event e base student ∧
         0 < (studentLaw e base student).toReal) :
     ∀ e base, 0 < (lg21PMFEventShareFn studentLaw event decEvent e base).toReal :=
-    EconCSLib.indexedPMFEventShare_pos_of_mass
+    AppliedModelingLib.indexedPMFEventShare_pos_of_mass
       studentLaw event decEvent hwitness
 
 /--
@@ -4446,7 +4446,7 @@ theorem lg21PMFEventShareFn_event_mass_of_full_support_exists
     (hexists : ∀ e base, ∃ student, event e base student) :
     ∀ e base, ∃ student, event e base student ∧
       0 < (studentLaw e base student).toReal :=
-    EconCSLib.indexedPMFEventShare_event_mass_of_full_support_exists
+    AppliedModelingLib.indexedPMFEventShare_event_mass_of_full_support_exists
       studentLaw event hfull_support hexists
 
 /--
@@ -4462,7 +4462,7 @@ theorem lg21PMFEventShareFn_pos_of_full_support_exists
       ∀ e base student, 0 < (studentLaw e base student).toReal)
     (hexists : ∀ e base, ∃ student, event e base student) :
     ∀ e base, 0 < (lg21PMFEventShareFn studentLaw event decEvent e base).toReal :=
-    EconCSLib.indexedPMFEventShare_pos_of_full_support_exists
+    AppliedModelingLib.indexedPMFEventShare_pos_of_full_support_exists
       studentLaw event decEvent hfull_support hexists
 
 /--
@@ -4478,7 +4478,7 @@ theorem lg21PMFEventShareFn_pos_iff_exists_pos_mass
       0 < (lg21PMFEventShareFn studentLaw event decEvent e base).toReal ↔
         ∃ student, event e base student ∧
           0 < (studentLaw e base student).toReal :=
-    EconCSLib.indexedPMFEventShare_pos_iff_exists_pos_mass
+    AppliedModelingLib.indexedPMFEventShare_pos_iff_exists_pos_mass
       studentLaw event decEvent
 
 /--
@@ -4495,7 +4495,7 @@ theorem lg21PMFEventShareFn_eq_zero_of_no_positive_mass
       ¬ ∃ student, event e base student ∧
         0 < (studentLaw e base student).toReal) :
     (lg21PMFEventShareFn studentLaw event decEvent e base).toReal = 0 :=
-    EconCSLib.indexedPMFEventShare_eq_zero_of_no_positive_mass
+    AppliedModelingLib.indexedPMFEventShare_eq_zero_of_no_positive_mass
       studentLaw event decEvent e base hno_positive
 
 /--
@@ -4511,7 +4511,7 @@ theorem lg21PMFEventShareFn_eq_zero_iff_no_positive_mass
       (lg21PMFEventShareFn studentLaw event decEvent e base).toReal = 0 ↔
         ¬ ∃ student, event e base student ∧
           0 < (studentLaw e base student).toReal :=
-    EconCSLib.indexedPMFEventShare_eq_zero_iff_no_positive_mass
+    AppliedModelingLib.indexedPMFEventShare_eq_zero_iff_no_positive_mass
       studentLaw event decEvent
 
 /--
@@ -4527,7 +4527,7 @@ theorem lg21PMFEventShareFn_ne_zero_iff_exists_pos_mass
       (lg21PMFEventShareFn studentLaw event decEvent e base).toReal ≠ 0 ↔
         ∃ student, event e base student ∧
           0 < (studentLaw e base student).toReal :=
-    EconCSLib.indexedPMFEventShare_ne_zero_iff_exists_pos_mass
+    AppliedModelingLib.indexedPMFEventShare_ne_zero_iff_exists_pos_mass
       studentLaw event decEvent
 
 /--
@@ -4544,7 +4544,7 @@ theorem lg21PMFEventShareFn_all_zero_iff_no_positive_mass
         ∀ e base,
           ¬ ∃ student, event e base student ∧
             0 < (studentLaw e base student).toReal :=
-    EconCSLib.indexedPMFEventShare_all_zero_iff_no_positive_mass
+    AppliedModelingLib.indexedPMFEventShare_all_zero_iff_no_positive_mass
       studentLaw event decEvent
 
 /--
@@ -4588,7 +4588,7 @@ theorem lg21PMFEventShareFn_lt_one_of_mass_not
       ∀ e base, ∃ student, ¬ event e base student ∧
         0 < (studentLaw e base student).toReal) :
     ∀ e base, lg21PMFEventShareFn studentLaw event decEvent e base < 1 :=
-    EconCSLib.indexedPMFEventShare_lt_one_of_mass_not
+    AppliedModelingLib.indexedPMFEventShare_lt_one_of_mass_not
       studentLaw event decEvent hwitness
 
 /--
@@ -4604,7 +4604,7 @@ theorem lg21PMFEventShareFn_complement_mass_of_full_support_not_all
     (hnot_all : ∀ e base, ∃ student, ¬ event e base student) :
     ∀ e base, ∃ student, ¬ event e base student ∧
       0 < (studentLaw e base student).toReal :=
-    EconCSLib.indexedPMFEventShare_complement_mass_of_full_support_not_all
+    AppliedModelingLib.indexedPMFEventShare_complement_mass_of_full_support_not_all
       studentLaw event hfull_support hnot_all
 
 /--
@@ -4620,7 +4620,7 @@ theorem lg21PMFEventShareFn_lt_one_of_full_support_not_all
       ∀ e base student, 0 < (studentLaw e base student).toReal)
     (hnot_all : ∀ e base, ∃ student, ¬ event e base student) :
     ∀ e base, lg21PMFEventShareFn studentLaw event decEvent e base < 1 :=
-  EconCSLib.indexedPMFEventShare_lt_one_of_full_support_not_all
+  AppliedModelingLib.indexedPMFEventShare_lt_one_of_full_support_not_all
     studentLaw event decEvent hfull_support hnot_all
 
 /--
@@ -4641,7 +4641,7 @@ theorem lg21NoRelevance_of_noPositiveMassRelevance_of_fullSupport
           baseOnlyEstimate e base ≠ fullFeatureEstimate e base test) :
     ¬ ∃ e base test,
       baseOnlyEstimate e base ≠ fullFeatureEstimate e base test :=
-    EconCSLib.not_exists_of_not_exists_pos_mass_of_full_support testLaw
+    AppliedModelingLib.not_exists_of_not_exists_pos_mass_of_full_support testLaw
       (fun e base test =>
         baseOnlyEstimate e base ≠ fullFeatureEstimate e base test)
       hfull_support hno_positive
@@ -4654,7 +4654,7 @@ support facts for the abstract acting distribution.
 theorem lg21_pmf_map_apply_toReal_pos_of_pos
     {α β : Type*} (μ : PMF α) (f : α → β) (a : α)
     (hmass : 0 < (μ a).toReal) :
-    0 < ((μ.map f) (f a)).toReal :=  EconCSLib.pmf_map_apply_toReal_pos_of_pos μ f a hmass
+    0 < ((μ.map f) (f a)).toReal :=  AppliedModelingLib.pmf_map_apply_toReal_pos_of_pos μ f a hmass
 
 /--
 Every positive-mass atom of a pushforward PMF has a positive-mass preimage.
@@ -4662,7 +4662,7 @@ Every positive-mass atom of a pushforward PMF has a positive-mass preimage.
 theorem lg21_pmf_map_pos_exists_preimage
     {α β : Type*} (μ : PMF α) (f : α → β) (b : β)
     (hmass : 0 < ((μ.map f) b).toReal) :
-    ∃ a, f a = b ∧ 0 < (μ a).toReal :=  EconCSLib.pmf_map_pos_exists_preimage μ f b hmass
+    ∃ a, f a = b ∧ 0 < (μ a).toReal :=  AppliedModelingLib.pmf_map_pos_exists_preimage μ f b hmass
 
 /--
 Pointwise real-mass formula for `lg21BinaryMixturePMF`.
@@ -4673,7 +4673,7 @@ theorem lg21BinaryMixturePMF_apply_toReal
     (lg21BinaryMixturePMF p hp reporterPMF noReporterPMF estimate).toReal =
       p.toReal * (reporterPMF estimate).toReal +
         (1 - p.toReal) * (noReporterPMF estimate).toReal :=
-    EconCSLib.binaryMixturePMF_apply_toReal
+    AppliedModelingLib.binaryMixturePMF_apply_toReal
       p hp reporterPMF noReporterPMF estimate
 
 /--
@@ -4685,7 +4685,7 @@ theorem lg21BinaryMixturePMF_eq_noReporter_of_zero
     (reporterPMF noReporterPMF : PMF Estimate)
     (hzero : p.toReal = 0) :
     lg21BinaryMixturePMF p hp reporterPMF noReporterPMF = noReporterPMF :=
-  EconCSLib.binaryMixturePMF_eq_unselected_of_zero
+  AppliedModelingLib.binaryMixturePMF_eq_unselected_of_zero
     p hp reporterPMF noReporterPMF hzero
 
 /--
@@ -4697,7 +4697,7 @@ theorem lg21BinaryMixturePMF_eq_noReporter_of_eq
     (reporterPMF noReporterPMF : PMF Estimate)
     (heq : reporterPMF = noReporterPMF) :
     lg21BinaryMixturePMF p hp reporterPMF noReporterPMF = noReporterPMF :=
-  EconCSLib.binaryMixturePMF_eq_unselected_of_selected_eq_unselected
+  AppliedModelingLib.binaryMixturePMF_eq_unselected_of_selected_eq_unselected
     p hp reporterPMF noReporterPMF heq
 
 /--
@@ -4710,7 +4710,7 @@ theorem lg21BinaryMixturePMF_eq_noReporter_iff_of_pos
     (hpos : 0 < p.toReal) :
     lg21BinaryMixturePMF p hp reporterPMF noReporterPMF = noReporterPMF ↔
       reporterPMF = noReporterPMF :=
-  EconCSLib.binaryMixturePMF_eq_unselected_iff_of_pos
+  AppliedModelingLib.binaryMixturePMF_eq_unselected_iff_of_pos
     p hp reporterPMF noReporterPMF hpos
 
 /--
@@ -4723,7 +4723,7 @@ theorem lg21BinaryMixturePMF_ne_noReporter_of_pos_of_ne
     (hpos : 0 < p.toReal)
     (hne : reporterPMF ≠ noReporterPMF) :
     lg21BinaryMixturePMF p hp reporterPMF noReporterPMF ≠ noReporterPMF :=
-  EconCSLib.binaryMixturePMF_ne_unselected_of_pos_of_ne
+  AppliedModelingLib.binaryMixturePMF_ne_unselected_of_pos_of_ne
     p hp reporterPMF noReporterPMF hpos hne
 
 /--
@@ -4736,7 +4736,7 @@ theorem lg21NoReporter_ne_binaryMixturePMF_of_pos_of_ne
     (hpos : 0 < p.toReal)
     (hne : reporterPMF ≠ noReporterPMF) :
     noReporterPMF ≠ lg21BinaryMixturePMF p hp reporterPMF noReporterPMF :=
-  EconCSLib.unselected_ne_binaryMixturePMF_of_pos_of_ne
+  AppliedModelingLib.unselected_ne_binaryMixturePMF_of_pos_of_ne
     p hp reporterPMF noReporterPMF hpos hne
 
 /--
@@ -4891,7 +4891,7 @@ abbrev lg21EventSharePositiveOrBlank
     (event : Equilibrium → Base → Student → Prop)
     (baseOnlyEstimate : Equilibrium → Base → PMF Estimate)
     (fullFeatureEstimate : Equilibrium → Base → Test → PMF Estimate) : Prop :=
-  EconCSLib.indexedEventPositiveOrBlank
+  AppliedModelingLib.indexedEventPositiveOrBlank
     studentLaw event baseOnlyEstimate fullFeatureEstimate
 
 /--
@@ -4912,7 +4912,7 @@ theorem lg21EventSharePositiveOrBlank_of_no_positive_event_implies_blank
             fullFeatureEstimate e base test) :
     lg21EventSharePositiveOrBlank
       studentLaw event baseOnlyEstimate fullFeatureEstimate :=
-    EconCSLib.indexedEventPositiveOrBlank_of_no_positive_event_implies_blank
+    AppliedModelingLib.indexedEventPositiveOrBlank_of_no_positive_event_implies_blank
       hblank_of_no_positive
 
 /--
@@ -4936,7 +4936,7 @@ theorem lg21EventSharePositiveOrBlank_of_zero_event_share_implies_blank
             fullFeatureEstimate e base test) :
     lg21EventSharePositiveOrBlank
       studentLaw event baseOnlyEstimate fullFeatureEstimate :=
-    EconCSLib.indexedEventPositiveOrBlank_of_zero_event_share_implies_blank
+    AppliedModelingLib.indexedEventPositiveOrBlank_of_zero_event_share_implies_blank
       decEvent hblank_of_zero_share
 
 /--
@@ -4955,7 +4955,7 @@ theorem lg21EventSharePositiveOrBlank_of_full_support_exists
     (hexists : ∀ e base, ∃ student, event e base student) :
     lg21EventSharePositiveOrBlank
       studentLaw event baseOnlyEstimate fullFeatureEstimate :=
-  EconCSLib.indexedEventPositiveOrBlank_of_full_support_exists
+  AppliedModelingLib.indexedEventPositiveOrBlank_of_full_support_exists
     studentLaw event baseOnlyEstimate fullFeatureEstimate
     hfull_support hexists
 
@@ -4973,7 +4973,7 @@ abbrev lg21FullFeatureEstimateBlankOnZeroEventShare
     (baseOnlyEstimate : Equilibrium → Base → PMF Estimate)
     (rawFullFeatureEstimate : Equilibrium → Base → Test → PMF Estimate) :
     Equilibrium → Base → Test → PMF Estimate :=
-  EconCSLib.indexedValueBlankOnZeroEventShare
+  AppliedModelingLib.indexedValueBlankOnZeroEventShare
     studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
 
 /--
@@ -5025,7 +5025,7 @@ theorem lg21FullFeatureEstimateBlankOnZeroEventShare_eq_baseOnly_of_zero_share
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
       e base test =
         baseOnlyEstimate e base :=
-    EconCSLib.indexedValueBlankOnZeroEventShare_eq_base_of_zero_share
+    AppliedModelingLib.indexedValueBlankOnZeroEventShare_eq_base_of_zero_share
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
       e base hzero test
 
@@ -5048,7 +5048,7 @@ theorem lg21FullFeatureEstimateBlankOnZeroEventShare_nonzero_share_of_ne_baseOnl
           studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
           e base test) :
     (lg21PMFEventShareFn studentLaw event decEvent e base).toReal ≠ 0 :=
-    EconCSLib.indexedValueBlankOnZeroEventShare_nonzero_share_of_ne_base
+    AppliedModelingLib.indexedValueBlankOnZeroEventShare_nonzero_share_of_ne_base
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
       e base test hne
 
@@ -5072,7 +5072,7 @@ theorem lg21FullFeatureEstimateBlankOnZeroEventShare_positive_event_of_ne_baseOn
           e base test) :
     ∃ student, event e base student ∧
       0 < (studentLaw e base student).toReal :=
-    EconCSLib.indexedValueBlankOnZeroEventShare_positive_event_of_ne_base
+    AppliedModelingLib.indexedValueBlankOnZeroEventShare_positive_event_of_ne_base
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
       e base test hne
 
@@ -5096,7 +5096,7 @@ theorem lg21FullFeatureEstimateBlankOnZeroEventShare_eq_raw_of_nonzero_share
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
       e base test =
         rawFullFeatureEstimate e base test :=
-    EconCSLib.indexedValueBlankOnZeroEventShare_eq_raw_of_nonzero_share
+    AppliedModelingLib.indexedValueBlankOnZeroEventShare_eq_raw_of_nonzero_share
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
       e base hshare test
 
@@ -5119,7 +5119,7 @@ theorem lg21FullFeatureEstimateBlankOnZeroEventShare_ne_baseOnly_iff_nonzero_sha
           e base test ↔
       (lg21PMFEventShareFn studentLaw event decEvent e base).toReal ≠ 0 ∧
         baseOnlyEstimate e base ≠ rawFullFeatureEstimate e base test :=
-    EconCSLib.indexedValueBlankOnZeroEventShare_ne_base_iff_nonzero_share_and_raw_ne
+    AppliedModelingLib.indexedValueBlankOnZeroEventShare_ne_base_iff_nonzero_share_and_raw_ne
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
       e base test
 
@@ -5144,7 +5144,7 @@ theorem lg21FullFeatureEstimateBlankOnZeroEventShare_ne_baseOnly_iff_positive_ev
       (∃ student, event e base student ∧
           0 < (studentLaw e base student).toReal) ∧
         baseOnlyEstimate e base ≠ rawFullFeatureEstimate e base test :=
-    EconCSLib.indexedValueBlankOnZeroEventShare_ne_base_iff_positive_event_and_raw_ne
+    AppliedModelingLib.indexedValueBlankOnZeroEventShare_ne_base_iff_positive_event_and_raw_ne
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
       e base test
 
@@ -5170,7 +5170,7 @@ theorem lg21FullFeatureEstimateBlankOnZeroEventShare_exists_ne_baseOnly_iff_exis
         event e base student ∧
           0 < (studentLaw e base student).toReal ∧
             baseOnlyEstimate e base ≠ rawFullFeatureEstimate e base test :=
-    EconCSLib.indexedValueBlankOnZeroEventShare_exists_ne_base_iff_exists_positive_event_and_raw_ne
+    AppliedModelingLib.indexedValueBlankOnZeroEventShare_exists_ne_base_iff_exists_positive_event_and_raw_ne
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
 
 /--
@@ -5193,7 +5193,7 @@ theorem lg21FullFeatureEstimateBlankOnZeroEventShare_eq_raw_of_positive_event
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
       e base test =
         rawFullFeatureEstimate e base test :=
-    EconCSLib.indexedValueBlankOnZeroEventShare_eq_raw_of_positive_event
+    AppliedModelingLib.indexedValueBlankOnZeroEventShare_eq_raw_of_positive_event
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
       e base student hevent hmass test
 
@@ -5219,7 +5219,7 @@ theorem lg21FullFeatureEstimateBlankOnZeroEventShare_no_raw_relevance_of_no_norm
     ¬ ∃ e base test,
       (lg21PMFEventShareFn studentLaw event decEvent e base).toReal ≠ 0 ∧
         baseOnlyEstimate e base ≠ rawFullFeatureEstimate e base test :=
-    EconCSLib.indexedValueBlankOnZeroEventShare_no_raw_relevance_of_no_normalized_relevance
+    AppliedModelingLib.indexedValueBlankOnZeroEventShare_no_raw_relevance_of_no_normalized_relevance
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
       hnormalized
 
@@ -5246,7 +5246,7 @@ theorem lg21FullFeatureEstimateBlankOnZeroEventShare_no_raw_relevance_of_positiv
       event e base student ∧
         0 < (studentLaw e base student).toReal ∧
           baseOnlyEstimate e base ≠ rawFullFeatureEstimate e base test :=
-    EconCSLib.indexedValueBlankOnZeroEventShare_no_raw_relevance_of_positive_event
+    AppliedModelingLib.indexedValueBlankOnZeroEventShare_no_raw_relevance_of_positive_event
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
       hnormalized
 
@@ -5270,7 +5270,7 @@ theorem lg21FullFeatureEstimateBlankOnZeroEventShare_no_normalized_relevance_iff
       ¬ ∃ e base test,
         (lg21PMFEventShareFn studentLaw event decEvent e base).toReal ≠ 0 ∧
           baseOnlyEstimate e base ≠ rawFullFeatureEstimate e base test :=
-    EconCSLib.indexedValueBlankOnZeroEventShare_no_normalized_relevance_iff_no_raw_relevance_on_nonzero_share
+    AppliedModelingLib.indexedValueBlankOnZeroEventShare_no_normalized_relevance_iff_no_raw_relevance_on_nonzero_share
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
 
 /--
@@ -5294,7 +5294,7 @@ theorem lg21FullFeatureEstimateBlankOnZeroEventShare_no_normalized_relevance_iff
         event e base student ∧
           0 < (studentLaw e base student).toReal ∧
             baseOnlyEstimate e base ≠ rawFullFeatureEstimate e base test :=
-    EconCSLib.indexedValueBlankOnZeroEventShare_no_normalized_relevance_iff_no_raw_relevance_on_positive_event
+    AppliedModelingLib.indexedValueBlankOnZeroEventShare_no_normalized_relevance_iff_no_raw_relevance_on_positive_event
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
 
 /--
@@ -5313,7 +5313,7 @@ theorem lg21EventSharePositiveOrBlank_of_blankOnZeroEventShare
       studentLaw event baseOnlyEstimate
       (lg21FullFeatureEstimateBlankOnZeroEventShare
         studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate) :=
-    EconCSLib.indexedEventPositiveOrBlank_of_blankOnZeroEventShare
+    AppliedModelingLib.indexedEventPositiveOrBlank_of_blankOnZeroEventShare
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
 
 /--
@@ -5384,7 +5384,7 @@ theorem lg21FullFeatureEstimateBlankOnZeroEventShare_testBlank_of_zero_share
         lg21FullFeatureEstimateBlankOnZeroEventShare
           studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate
           e base test :=
-    EconCSLib.indexedValueBlankOnZeroEventShare_eq_base_of_all_zero_share
+    AppliedModelingLib.indexedValueBlankOnZeroEventShare_eq_base_of_all_zero_share
       studentLaw event decEvent baseOnlyEstimate rawFullFeatureEstimate hzero
 
 /--
@@ -8230,12 +8230,12 @@ noncomputable def lg21BinaryMixturePointEstimateSurface
 /-- Point-mass PMFs are equal exactly when their atoms are equal. -/
 theorem lg21_pmf_pure_eq_iff
     {Estimate : Type*} [DecidableEq Estimate] {x y : Estimate} :
-    PMF.pure x = PMF.pure y ↔ x = y :=  EconCSLib.pmf_pure_eq_iff
+    PMF.pure x = PMF.pure y ↔ x = y :=  AppliedModelingLib.pmf_pure_eq_iff
 
 /-- Distinct atoms give distinct point-mass PMFs. -/
 theorem lg21_pmf_pure_ne_of_ne
     {Estimate : Type*} {x y : Estimate} (hne : x ≠ y) :
-    PMF.pure x ≠ PMF.pure y :=  EconCSLib.pmf_pure_ne_of_ne hne
+    PMF.pure x ≠ PMF.pure y :=  AppliedModelingLib.pmf_pure_ne_of_ne hne
 
 /--
 Support-aware point-mass no-relevance implies support-aware value
@@ -8255,7 +8255,7 @@ theorem lg21NoPositiveMassValueRelevance_of_noPositiveMassPointMassRelevance
     ¬ ∃ e base test,
       0 < (testLaw e base test).toReal ∧
         baseValue e base ≠ fullValue e base test :=
-  EconCSLib.not_exists_pos_mass_value_ne_of_not_exists_pos_mass_pmf_pure_ne
+  AppliedModelingLib.not_exists_pos_mass_value_ne_of_not_exists_pos_mass_pmf_pure_ne
     testLaw baseValue fullValue hno_pure
 
 /--
@@ -8272,7 +8272,7 @@ theorem lg21NoValueRelevance_of_noPointMassRelevance
           PMF.pure (fullValue e base test)) :
     ¬ ∃ e base test,
       baseValue e base ≠ fullValue e base test :=
-  EconCSLib.not_exists_value_ne_of_not_exists_pmf_pure_ne
+  AppliedModelingLib.not_exists_value_ne_of_not_exists_pmf_pure_ne
     baseValue fullValue hno_pure
 
 /--
@@ -8325,7 +8325,7 @@ theorem lg21NoValueRelevance_of_noPositiveMassPointMassRelevance_of_fullSupport
             PMF.pure (fullValue e base test)) :
     ¬ ∃ e base test,
       baseValue e base ≠ fullValue e base test :=
-  EconCSLib.not_exists_value_ne_of_not_exists_pos_mass_pmf_pure_ne_of_full_support
+  AppliedModelingLib.not_exists_value_ne_of_not_exists_pos_mass_pmf_pure_ne_of_full_support
     testLaw baseValue fullValue hfull_support hno_pure
 
 /--
@@ -8593,7 +8593,7 @@ theorem lg21_pmf_mixture_cancel_right
         (noReporterLaw estimate).toReal =
           lambda * (reporterLaw estimate).toReal +
             (1 - lambda) * (noReporterLaw estimate).toReal) :
-    reporterLaw = noReporterLaw :=  EconCSLib.pmf_mixture_cancel_right hlambda hmix
+    reporterLaw = noReporterLaw :=  AppliedModelingLib.pmf_mixture_cancel_right hlambda hmix
 
 /--
 Theorem 3.2 mixture-cancellation algebra for abstract law objects.  A law is
@@ -8613,7 +8613,7 @@ theorem lg21_extensional_law_mixture_cancel_right
         mass noReporterLaw outcome =
           lambda * mass reporterLaw outcome +
             (1 - lambda) * mass noReporterLaw outcome) :
-    reporterLaw = noReporterLaw :=  EconCSLib.extensional_law_mixture_cancel_right hlambda mass law_ext hmix
+    reporterLaw = noReporterLaw :=  AppliedModelingLib.extensional_law_mixture_cancel_right hlambda mass law_ext hmix
 
 /--
 Theorem 3.2 observable-fairness resampling step for PMF laws.  If no-access
@@ -8743,7 +8743,7 @@ theorem paper_theorem3_2_affine_resampling_mean_payoff_le
     (hweight : 0 ≤ signalWeight) (hdenom : 0 < denom)
     (hactor : actor ≤ mean) :
     (baseTerm + signalWeight * actor) / denom ≤
-      (baseTerm + signalWeight * mean) / denom :=  EconCSLib.affine_div_le_affine_div_of_le hweight hdenom hactor
+      (baseTerm + signalWeight * mean) / denom :=  AppliedModelingLib.affine_div_le_affine_div_of_le hweight hdenom hactor
 
 /--
 Theorem 3.2 strict affine payoff comparison: a strictly below-mean
@@ -8755,7 +8755,7 @@ theorem paper_theorem3_2_affine_resampling_mean_payoff_lt
     (hweight : 0 < signalWeight) (hdenom : 0 < denom)
     (hactor : actor < mean) :
     (baseTerm + signalWeight * actor) / denom <
-      (baseTerm + signalWeight * mean) / denom :=  EconCSLib.affine_div_lt_affine_div_of_lt hweight hdenom hactor
+      (baseTerm + signalWeight * mean) / denom :=  AppliedModelingLib.affine_div_lt_affine_div_of_lt hweight hdenom hactor
 
 /--
 Report-required affine outside-payoff algebra: if the posterior numerator at
@@ -8769,7 +8769,7 @@ theorem paper_theorem3_2_affine_outside_payoff_eq_half_of_centered_numerator
       2 * (baseTerm + signalWeight * mean) = denom) :
     (1 / 2 : ℝ) =
       (baseTerm + signalWeight * mean) / denom :=
-    EconCSLib.half_eq_affine_div_of_two_mul_affine_eq_denom
+    AppliedModelingLib.half_eq_affine_div_of_two_mul_affine_eq_denom
       (ne_of_gt hdenom) hcenter
 
 /--
@@ -8783,7 +8783,7 @@ theorem paper_theorem3_2_centered_numerator_of_baseTerm_eq_half_denom_sub_signal
     (hbase :
       baseTerm = denom / 2 - signalWeight * mean) :
     2 * (baseTerm + signalWeight * mean) = denom :=
-    EconCSLib.two_mul_affine_eq_denom_of_intercept_eq_half_denom_sub_slope_mul
+    AppliedModelingLib.two_mul_affine_eq_denom_of_intercept_eq_half_denom_sub_slope_mul
       hbase
 
 /--
@@ -8797,7 +8797,7 @@ theorem paper_theorem3_2_affine_outside_payoff_eq_half_of_baseTerm_eq_half_denom
       baseTerm = denom / 2 - signalWeight * mean) :
     (1 / 2 : ℝ) =
       (baseTerm + signalWeight * mean) / denom :=
-  EconCSLib.half_eq_affine_div_of_intercept_eq_half_denom_sub_slope_mul
+  AppliedModelingLib.half_eq_affine_div_of_intercept_eq_half_denom_sub_slope_mul
     (ne_of_gt hdenom) hbase
 
 /--
@@ -8830,7 +8830,7 @@ theorem paper_theorem3_2_centered_upper_tail_fixed_point_of_threshold
             denom e base := by
   intro e base cutoff hcutoff
   have hcutoff_eq : cutoff = decisionThreshold e base :=
-    EconCSLib.lowerCutoffStrategy_cutoff_eq
+    AppliedModelingLib.lowerCutoffStrategy_cutoff_eq
       (choose := fun actor : ℝ => takeDecision e actor base = true)
       hcutoff (hthreshold e base)
   rw [hcutoff_eq]
@@ -8868,7 +8868,7 @@ theorem paper_theorem3_2_resampling_law_equality_unstable_of_below_mean_actor
         (baseTerm + signalWeight * mean) / denom :=
     paper_theorem3_2_affine_resampling_mean_payoff_lt
       hweight hdenom hactor
-  apply EconCSLib.not_noProfitableBinaryChoiceDeviation_of_chosen_other_better
+  apply AppliedModelingLib.not_noProfitableBinaryChoiceDeviation_of_chosen_other_better
     hchosen
   simpa [hchoosePayoff, hotherPayoff_of_law_eq hLawEq] using hstrict
 
@@ -9620,7 +9620,7 @@ theorem paper_theorem3_2_not_latent_or_observable_fair_of_optional_reporting_bas
     (hdenom : 0 < denom e base) :
     ¬ (lg21SourceLatentSkillFair S ∨ lg21SourceObservablyFair S) := by
   rcases
-    EconCSLib.exists_chosen_below_of_lowerCutoff_lt
+    AppliedModelingLib.exists_chosen_below_of_lowerCutoff_lt
       (choose := fun actor : ℝ => cutoff ≤ actor)
       (fun _actor => Iff.rfl) hcutoff with
     ⟨actor, hcutoff_le_actor, hbelow⟩
@@ -9686,7 +9686,7 @@ theorem paper_theorem3_2_not_latent_or_observable_fair_of_report_required_base_a
     (hdenom : 0 < denom e base) :
     ¬ (lg21SourceLatentSkillFair S ∨ lg21SourceObservablyFair S) := by
   rcases
-    EconCSLib.exists_chosen_below_of_lowerCutoff_lt
+    AppliedModelingLib.exists_chosen_below_of_lowerCutoff_lt
       (choose := fun actor : ℝ => cutoff ≤ actor)
       (fun _actor => Iff.rfl) hcutoff with
     ⟨actor, hcutoff_le_actor, hbelow⟩
@@ -10094,7 +10094,7 @@ theorem paper_theorem3_2_exists_support_actor_le_mean
     {Actor : Type*} [Fintype Actor] [DecidableEq Actor] [Nonempty Actor]
     (actorLaw : PMF Actor) (actorValue : Actor → ℝ) :
     ∃ actor, 0 < (actorLaw actor).toReal ∧
-      actorValue actor ≤ pmfExp actorLaw actorValue :=  EconCSLib.exists_support_value_le_pmfExp actorLaw actorValue
+      actorValue actor ≤ pmfExp actorLaw actorValue :=  AppliedModelingLib.exists_support_value_le_pmfExp actorLaw actorValue
 
 /--
 Theorem 3.2 finite cutoff support fact: if every acting value is weakly above a
@@ -10109,7 +10109,7 @@ theorem paper_theorem3_2_cutoff_lt_actor_mean_of_all_ge_exists_gt
       ∃ actor, 0 < (actorLaw actor).toReal ∧
         cutoff < actorValue actor) :
     cutoff < pmfExp actorLaw actorValue :=
-    EconCSLib.cutoff_lt_pmfExp_of_all_ge_exists_gt
+    AppliedModelingLib.cutoff_lt_pmfExp_of_all_ge_exists_gt
       actorLaw actorValue cutoff hge habove
 
 /--
@@ -10127,7 +10127,7 @@ theorem paper_theorem3_2_cutoff_lt_actor_mean_of_support_ge_exists_gt
       ∃ actor, 0 < (actorLaw actor).toReal ∧
         cutoff < actorValue actor) :
     cutoff < pmfExp actorLaw actorValue :=
-    EconCSLib.cutoff_lt_pmfExp_of_support_ge_exists_gt
+    AppliedModelingLib.cutoff_lt_pmfExp_of_support_ge_exists_gt
       actorLaw actorValue cutoff hge habove
 
 /--
@@ -10284,7 +10284,7 @@ theorem paper_theorem3_2_exists_support_actor_lt_mean_of_exists_mean_lt_actor
         pmfExp actorLaw actorValue < actorValue actor) :
     ∃ actor, 0 < (actorLaw actor).toReal ∧
       actorValue actor < pmfExp actorLaw actorValue :=
-    EconCSLib.exists_support_value_lt_pmfExp_of_exists_pmfExp_lt_value
+    AppliedModelingLib.exists_support_value_lt_pmfExp_of_exists_pmfExp_lt_value
       actorLaw actorValue habove
 
 /--
@@ -10512,7 +10512,7 @@ theorem paper_theorem3_2_exists_support_actor_gt_mean_of_exists_actor_lt_mean
         actorValue actor < pmfExp actorLaw actorValue) :
     ∃ actor, 0 < (actorLaw actor).toReal ∧
       pmfExp actorLaw actorValue < actorValue actor :=
-    EconCSLib.exists_support_value_gt_pmfExp_of_exists_value_lt_pmfExp
+    AppliedModelingLib.exists_support_value_gt_pmfExp_of_exists_value_lt_pmfExp
       actorLaw actorValue hbelow
 
 /--
@@ -10528,7 +10528,7 @@ theorem paper_theorem3_2_no_above_mean_actor_forces_support_at_mean
         pmfExp actorLaw actorValue < actorValue actor) :
     ∀ actor, 0 < (actorLaw actor).toReal →
       actorValue actor = pmfExp actorLaw actorValue :=
-    EconCSLib.no_support_value_gt_pmfExp_forces_support_at_pmfExp
+    AppliedModelingLib.no_support_value_gt_pmfExp_forces_support_at_pmfExp
       actorLaw actorValue hno_above
 
 /--
@@ -10645,7 +10645,7 @@ theorem paper_theorem3_2_support_at_mean_forces_no_distinct_positive_mass_actor_
         0 < (actorLaw actor₁).toReal ∧
           0 < (actorLaw actor₂).toReal ∧
             actorValue actor₁ ≠ actorValue actor₂ :=
-    EconCSLib.support_at_pmfExp_forces_no_distinct_positive_mass_values
+    AppliedModelingLib.support_at_pmfExp_forces_no_distinct_positive_mass_values
       actorLaw actorValue hsupport
 
 /--
@@ -14316,7 +14316,7 @@ theorem paper_theorem3_2_not_latent_or_observable_fair_of_concrete_optional_base
   have hreporter₁ : reporterEvent e base test₁ := by
     dsimp [reporterEvent, reportDecision]
     exact
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base)
         (value :=
           actorValue e base
@@ -14402,7 +14402,7 @@ theorem paper_theorem3_2_not_latent_or_observable_fair_of_concrete_optional_base
           ⟨test, htest_score, htestmass⟩
         rw [← hscore_actor, ← htest_score]
         exact
-          (EconCSLib.bool_lowerCutoff_if_true_iff
+          (AppliedModelingLib.bool_lowerCutoff_if_true_iff
             (cutoff := decisionThreshold e base)
             (value :=
               actorValue e base
@@ -14618,7 +14618,7 @@ theorem paper_theorem3_2_supported_test_estimate_eq_base_mean_of_fair_concrete_o
       decisionThreshold hsupport_above baseTerm signalWeight denom hEq
       hweight hdenom hfair
   exact
-    EconCSLib.pmfExp_eq_const_of_support_eq
+    AppliedModelingLib.pmfExp_eq_const_of_support_eq
       (((testLaw e base).map (scoreOfTest e base)).map (actorOfScore e base))
       (actorValue e base)
       (actorValue e base (actorOfScore e base (scoreOfTest e base test)))
@@ -15847,7 +15847,7 @@ theorem paper_theorem3_2_section3_fairness_implies_test_blank_of_concrete_option
       reporterPMF noReporterPMF testLaw scoreOfTest actorValue actorOfScore
       hfull_support
       (fun e base test hsupport =>
-        EconCSLib.bool_lowerCutoff_true_of_le (hthreshold e base)
+        AppliedModelingLib.bool_lowerCutoff_true_of_le (hthreshold e base)
           (hsupport_above e base test hsupport))
       baseTerm signalWeight denom hEq hweight hdenom hdistinct
 
@@ -15975,7 +15975,7 @@ theorem paper_theorem3_2_section3_no_test_relevance_of_concrete_optional_base_af
       reporterPMF noReporterPMF testLaw scoreOfTest actorValue actorOfScore
       hfull_support
       (fun e base test hsupport =>
-        EconCSLib.bool_lowerCutoff_true_of_le (hthreshold e base)
+        AppliedModelingLib.bool_lowerCutoff_true_of_le (hthreshold e base)
           (hsupport_above e base test hsupport))
       baseTerm signalWeight denom hEq hweight hdenom hdistinct hfair
 
@@ -16078,7 +16078,7 @@ theorem paper_theorem3_2_section3_fairness_implies_test_blank_of_concrete_option
       hfull_support decisionThreshold
       (fun e base actor => by
         simpa [reportDecision] using
-          (EconCSLib.bool_lowerCutoff_if_true_iff
+          (AppliedModelingLib.bool_lowerCutoff_if_true_iff
             (cutoff := decisionThreshold e base) (value := actor)))
       (fun e base test _hsupport => hsupport_above e base test)
       baseTerm signalWeight denom hEq hweight hdenom hdistinct)
@@ -16214,7 +16214,7 @@ theorem paper_theorem3_2_section3_no_test_relevance_of_concrete_optional_base_af
       hfull_support decisionThreshold
       (fun e base actor => by
         simpa [reportDecision] using
-          (EconCSLib.bool_lowerCutoff_if_true_iff
+          (AppliedModelingLib.bool_lowerCutoff_if_true_iff
             (cutoff := decisionThreshold e base) (value := actor)))
       (fun e base test _hsupport => hsupport_above e base test)
       baseTerm signalWeight denom hEq hweight hdenom hdistinct
@@ -17657,7 +17657,7 @@ theorem paper_theorem3_2_not_latent_or_observable_fair_of_concrete_report_requir
   have htaker₁ : takerEvent e base test₁ := by
     dsimp [takerEvent, takeDecision]
     exact
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base)
         (value := actorValue e base (actorOfTest e base test₁))).2
         (hsupport_above e base test₁ hmass₁)
@@ -17726,7 +17726,7 @@ theorem paper_theorem3_2_not_latent_or_observable_fair_of_concrete_report_requir
           ⟨test, htest_actor, htestmass⟩
         rw [← htest_actor]
         exact
-          (EconCSLib.bool_lowerCutoff_if_true_iff
+          (AppliedModelingLib.bool_lowerCutoff_if_true_iff
             (cutoff := decisionThreshold e base)
             (value := actorValue e base (actorOfTest e base test))).2
             (hsupport_above e base test htestmass))
@@ -17915,7 +17915,7 @@ theorem paper_theorem3_2_supported_test_estimate_eq_base_mean_of_fair_concrete_r
       noReporterPMF testLaw actorValue actorOfTest decisionThreshold
       hsupport_above signalWeight denom hEq hweight hdenom hfair
   exact
-    EconCSLib.pmfExp_eq_const_of_support_eq
+    AppliedModelingLib.pmfExp_eq_const_of_support_eq
       ((testLaw e base).map (actorOfTest e base))
       (actorValue e base)
       (actorValue e base (actorOfTest e base test))
@@ -18916,7 +18916,7 @@ theorem paper_theorem3_2_section3_fairness_implies_test_blank_of_concrete_report
       takeDecision reportDecision estimationConsistent referenceTest
       reporterPMF noReporterPMF testLaw hfull_support actorValue actorOfTest
       (fun e base test hsupport =>
-        EconCSLib.bool_lowerCutoff_true_of_le (hthreshold e base)
+        AppliedModelingLib.bool_lowerCutoff_true_of_le (hthreshold e base)
           (hsupport_above e base test hsupport))
       signalWeight denom hEq hweight hdenom hdistinct
 
@@ -19030,7 +19030,7 @@ theorem paper_theorem3_2_section3_no_test_relevance_of_concrete_report_required_
       takeDecision reportDecision estimationConsistent referenceTest
       reporterPMF noReporterPMF testLaw hfull_support actorValue actorOfTest
       (fun e base test hsupport =>
-        EconCSLib.bool_lowerCutoff_true_of_le (hthreshold e base)
+        AppliedModelingLib.bool_lowerCutoff_true_of_le (hthreshold e base)
           (hsupport_above e base test hsupport))
       signalWeight denom hEq hweight hdenom hdistinct hfair
 
@@ -19123,7 +19123,7 @@ theorem paper_theorem3_2_section3_fairness_implies_test_blank_of_concrete_report
       decisionThreshold
       (fun e base actor => by
         simpa [takeDecision] using
-          (EconCSLib.bool_lowerCutoff_if_true_iff
+          (AppliedModelingLib.bool_lowerCutoff_if_true_iff
             (cutoff := decisionThreshold e base) (value := actor)))
       (fun e base test _hsupport => hsupport_above e base test)
       signalWeight denom hEq hweight hdenom hdistinct)
@@ -19247,7 +19247,7 @@ theorem paper_theorem3_2_section3_no_test_relevance_of_concrete_report_required_
       decisionThreshold
       (fun e base actor => by
         simpa [takeDecision] using
-          (EconCSLib.bool_lowerCutoff_if_true_iff
+          (AppliedModelingLib.bool_lowerCutoff_if_true_iff
             (cutoff := decisionThreshold e base) (value := actor)))
       (fun e base test _hsupport => hsupport_above e base test)
       signalWeight denom hEq hweight hdenom hdistinct
@@ -19936,7 +19936,7 @@ theorem paper_theorem3_1_optional_reporting_no_report_at_each_base_of_source_wit
     ∀ base, ∃ score, ¬ W.reports base score := by
   intro base
   rcases W.reporting_threshold base with ⟨cutoff, hcutoff⟩
-  exact EconCSLib.exists_not_chosen_below_of_lowerCutoff hcutoff
+  exact AppliedModelingLib.exists_not_chosen_below_of_lowerCutoff hcutoff
 
 /--
 Theorem 3.1 optional-reporting strengthening: the finite reporting threshold
@@ -19948,7 +19948,7 @@ theorem paper_theorem3_1_optional_reporting_report_at_each_base_of_source_witnes
     ∀ base, ∃ score, W.reports base score := by
   intro base
   rcases W.reporting_threshold base with ⟨cutoff, hcutoff⟩
-  exact EconCSLib.exists_chosen_of_lowerCutoff hcutoff
+  exact AppliedModelingLib.exists_chosen_of_lowerCutoff hcutoff
 
 /--
 Theorem 3.1 optional-reporting threshold conclusions from a source-shaped
@@ -20128,7 +20128,7 @@ theorem paper_theorem3_1_optional_reporting_threshold_equilibrium_exists_of_cros
             (∀ score : ℝ,
               reportedEstimate score < noReportEstimateAtCutoff cutoff ↔
                 score < cutoff) :=
-    EconCSLib.exists_indifference_lower_cutoff_of_continuous_strictMono_crossing
+    AppliedModelingLib.exists_indifference_lower_cutoff_of_continuous_strictMono_crossing
       hcontReported hcontNoReport hmonoReported hlow_high hleft hright
 
 /--
@@ -20170,7 +20170,7 @@ theorem paper_theorem3_1_optional_reporting_threshold_cutoffs_of_base_crossings
                 noReportEstimateAtCutoff base (reportCutoff base) ≤
                     reportedEstimate base score ↔
                   cutoff ≤ score) :=
-    EconCSLib.exists_indexed_indifference_lower_cutoffs_of_continuous_strictMono_crossing
+    AppliedModelingLib.exists_indexed_indifference_lower_cutoffs_of_continuous_strictMono_crossing
       reportedEstimate noReportEstimateAtCutoff low high
       hcontReported hcontNoReport hmonoReported hlow_high hleft hright
 
@@ -20283,7 +20283,7 @@ theorem paper_theorem3_1_report_required_no_take_at_each_base_of_source_witness
     ∀ base, ∃ skill, ¬ W.takes base skill := by
   intro base
   rcases W.taking_threshold base with ⟨qBar, hthreshold⟩
-  exact EconCSLib.exists_not_chosen_below_of_lowerCutoff hthreshold
+  exact AppliedModelingLib.exists_not_chosen_below_of_lowerCutoff hthreshold
 
 /--
 Theorem 3.1 report-required strengthening: the finite taking threshold at
@@ -20295,7 +20295,7 @@ theorem paper_theorem3_1_report_required_take_at_each_base_of_source_witness
     ∀ base, ∃ skill, W.takes base skill := by
   intro base
   rcases W.taking_threshold base with ⟨qBar, hthreshold⟩
-  exact EconCSLib.exists_chosen_of_lowerCutoff hthreshold
+  exact AppliedModelingLib.exists_chosen_of_lowerCutoff hthreshold
 
 /--
 Theorem 3.1 report-required threshold conclusions from a source-shaped
@@ -20325,7 +20325,7 @@ theorem paper_theorem3_2_optional_reporting_threshold_witness_exists_below_mean_
     (hthreshold :
       ∀ score : ℝ, W.reports base score ↔ cutoff ≤ score)
     (hcutoff : cutoff < mean) :
-    ∃ score : ℝ, W.reports base score ∧ score < mean :=  EconCSLib.exists_chosen_below_of_lowerCutoff_lt hthreshold hcutoff
+    ∃ score : ℝ, W.reports base score ∧ score < mean :=  AppliedModelingLib.exists_chosen_below_of_lowerCutoff_lt hthreshold hcutoff
 
 /--
 Theorem 3.2 threshold-witness bridge for report-required testing: if a taking
@@ -20339,7 +20339,7 @@ theorem paper_theorem3_2_report_required_threshold_witness_exists_below_mean_tak
     (hthreshold :
       ∀ skill : ℝ, W.takes base skill ↔ cutoff ≤ skill)
     (hcutoff : cutoff < mean) :
-    ∃ skill : ℝ, W.takes base skill ∧ skill < mean :=  EconCSLib.exists_chosen_below_of_lowerCutoff_lt hthreshold hcutoff
+    ∃ skill : ℝ, W.takes base skill ∧ skill < mean :=  AppliedModelingLib.exists_chosen_below_of_lowerCutoff_lt hthreshold hcutoff
 
 /--
 Finite-support bridge for Theorem 3.2 optional reporting: if finite students'
@@ -20368,7 +20368,7 @@ theorem paper_theorem3_2_optional_reporting_finite_reporter_exists_of_threshold_
   refine ⟨student, ?_⟩
   exact
     (hEvent e base student).2
-      (EconCSLib.bool_lowerCutoff_true_of_le (hthreshold e base) hle)
+      (AppliedModelingLib.bool_lowerCutoff_true_of_le (hthreshold e base) hle)
 
 /--
 Finite-support bridge for Theorem 3.1/3.2 optional reporting: if finite
@@ -20398,7 +20398,7 @@ theorem paper_theorem3_2_optional_reporting_finite_nonreporter_exists_of_thresho
   intro hevent
   have hfalse :
       reportDecision e base (studentScore e base student) = false :=
-    EconCSLib.bool_lowerCutoff_false_of_lt (hthreshold e base) hlt
+    AppliedModelingLib.bool_lowerCutoff_false_of_lt (hthreshold e base) hlt
   have htrue := (hEvent e base student).1 hevent
   rw [hfalse] at htrue
   exact Bool.noConfusion htrue
@@ -20430,7 +20430,7 @@ theorem paper_theorem3_2_report_required_finite_taker_exists_of_threshold_and_st
   refine ⟨student, ?_⟩
   exact
     (hEvent e base student).2
-      (EconCSLib.bool_lowerCutoff_true_of_le (hthreshold e base) hle)
+      (AppliedModelingLib.bool_lowerCutoff_true_of_le (hthreshold e base) hle)
 
 /--
 Finite-support bridge for Theorem 3.1/3.2 report-required testing: if finite
@@ -20460,7 +20460,7 @@ theorem paper_theorem3_2_report_required_finite_nontaker_exists_of_threshold_and
   intro hevent
   have hfalse :
       takeDecision e (studentSkill e base student) base = false :=
-    EconCSLib.bool_lowerCutoff_false_of_lt (hthreshold e base) hlt
+    AppliedModelingLib.bool_lowerCutoff_false_of_lt (hthreshold e base) hlt
   have htrue := (hEvent e base student).1 hevent
   rw [hfalse] at htrue
   exact Bool.noConfusion htrue
@@ -21059,7 +21059,7 @@ theorem paper_theorem3_2_not_latent_or_observable_fair_of_optional_reporting_gau
       hNoAccess hAccessMixture
       (fun cutoff hcutoff => by
         have hsame : decisionThreshold e base = cutoff :=
-                      EconCSLib.lowerCutoffStrategy_cutoff_eq
+                      AppliedModelingLib.lowerCutoffStrategy_cutoff_eq
               (choose := fun actor : ℝ => reportDecision e base actor = true)
               hdecision_threshold hcutoff
         simp [hsame])
@@ -21383,7 +21383,7 @@ theorem paper_theorem3_2_not_latent_or_observable_fair_of_report_required_affine
       hNoAccess hAccessMixture houtsidePayoff_of_pmfEq
       (fun cutoff hcutoff => by
         have hsame : decisionThreshold e base = cutoff :=
-                      EconCSLib.lowerCutoffStrategy_cutoff_eq
+                      AppliedModelingLib.lowerCutoffStrategy_cutoff_eq
               (choose := fun actor : ℝ => takeDecision e actor base = true)
               hdecision_threshold hcutoff
         simp [hsame])
@@ -21577,7 +21577,7 @@ theorem LG21OptionalReportingGaussianUpperTailSourceEquilibriumCertificate.repor
         M theta k skillGivenBase S) :
     ∀ e base, ∃ score, C.reportDecision e base score = true := by
   intro e base
-  exact EconCSLib.exists_chosen_of_lowerCutoff (C.reporting_threshold e base)
+  exact AppliedModelingLib.exists_chosen_of_lowerCutoff (C.reporting_threshold e base)
 
 /--
 The optional-reporting source-equilibrium certificate contains a genuine
@@ -21596,7 +21596,7 @@ theorem LG21OptionalReportingGaussianUpperTailSourceEquilibriumCertificate.no_re
     ∀ e base, ∃ score, ¬ C.reportDecision e base score = true := by
   intro e base
   exact
-    EconCSLib.exists_not_chosen_below_of_lowerCutoff
+    AppliedModelingLib.exists_not_chosen_below_of_lowerCutoff
       (C.reporting_threshold e base)
 
 /--
@@ -21778,7 +21778,7 @@ theorem LG21OptionalReportingGaussianUpperTailSourceEquilibriumCertificate.sourc
     · simp [Epost, Eaff, upper, lg21OptionalReportingBaseSourceEquilibriumData,
         hreport, C.posterior_eq e info.base (upper info.base)]
   refine
-    EconCSLib.isChoiceEquilibrium_of_equiv
+    AppliedModelingLib.isChoiceEquilibrium_of_equiv
       (E := Eaff.toEquilibriumData) (F := Epost.toEquilibriumData)
       haff ?_ ?_ ?_ ?_ (fun hconsistent => hconsistent)
   · intro info action hfeasible
@@ -23058,7 +23058,7 @@ theorem paper_theorem3_2_optional_reporting_fairness_impossibility_of_gaussian_u
           (M info.base).posteriorMean_update_eq_base_add_weight_mul
             (theta info.base) k (upper info.base)]
     refine
-      EconCSLib.isChoiceEquilibrium_of_equiv
+      AppliedModelingLib.isChoiceEquilibrium_of_equiv
         (E := Epost.toEquilibriumData) (F := Eaff.toEquilibriumData)
         hpost ?_ ?_ ?_ ?_ (fun hconsistent => hconsistent)
     · intro info action hfeasible
@@ -23852,7 +23852,7 @@ def paper_theorem3_2_optional_reporting_gaussian_upper_tail_event_share_constant
           (M info.base).posteriorMean_update_eq_base_add_weight_mul
             (theta info.base) k (upper info.base)]
     refine
-      EconCSLib.isChoiceEquilibrium_of_equiv
+      AppliedModelingLib.isChoiceEquilibrium_of_equiv
         (E := Epost.toEquilibriumData) (F := Eaff.toEquilibriumData)
         hpost ?_ ?_ ?_ ?_ (fun hconsistent => hconsistent)
     · intro info action hfeasible
@@ -24041,7 +24041,7 @@ noncomputable def paper_theorem3_2_optional_reporting_gaussian_upper_tail_event_
       simp [Enew, Eold, upper, lg21OptionalReportingBaseSourceEquilibriumData,
         hreport, hfixed]
   refine
-    EconCSLib.isChoiceEquilibrium_of_equiv
+    AppliedModelingLib.isChoiceEquilibrium_of_equiv
       (E := Eold.toEquilibriumData) (F := Enew.toEquilibriumData)
       hold ?_ ?_ ?_ ?_ (fun hconsistent => hconsistent)
   · intro info action hfeasible
@@ -24281,7 +24281,7 @@ noncomputable def paper_theorem3_2_optional_reporting_gaussian_upper_tail_event_
       simpa [hscore_eq] using hupper_gt))
   · intro e base cutoff hcutoff
     have hcutoff_eq : cutoff = decisionThreshold e base :=
-      EconCSLib.lowerCutoffStrategy_cutoff_eq
+      AppliedModelingLib.lowerCutoffStrategy_cutoff_eq
         (choose := fun score : ℝ => reportDecision e base score = true)
         hcutoff (hthreshold e base)
     simpa [hcutoff_eq]
@@ -24987,7 +24987,7 @@ def paper_theorem3_2_optional_reporting_fairness_implies_test_blank_of_gaussian_
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [reportDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEvent :
       ∀ e base student,
@@ -25066,7 +25066,7 @@ def paper_theorem3_2_section3_optional_reporting_fairness_implies_test_blank_of_
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [reportDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEvent :
       ∀ e base student,
@@ -25169,7 +25169,7 @@ def paper_theorem3_2_optional_reporting_no_test_relevance_of_gaussian_upper_tail
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [reportDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEvent :
       ∀ e base student,
@@ -25274,7 +25274,7 @@ def paper_theorem3_2_section3_optional_reporting_no_test_relevance_of_gaussian_u
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [reportDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEvent :
       ∀ e base student,
@@ -26730,7 +26730,7 @@ theorem LG21ReportRequiredUpperTailSourceEquilibriumCertificate.take_at_each_bas
         skillGivenBase S) :
     ∀ e base, ∃ skill, C.takeDecision e skill base = true := by
   intro e base
-  exact EconCSLib.exists_chosen_of_lowerCutoff (C.taking_threshold e base)
+  exact AppliedModelingLib.exists_chosen_of_lowerCutoff (C.taking_threshold e base)
 
 /--
 The report-required source-equilibrium certificate contains a genuine
@@ -26746,7 +26746,7 @@ theorem LG21ReportRequiredUpperTailSourceEquilibriumCertificate.no_take_at_each_
     ∀ e base, ∃ skill, ¬ C.takeDecision e skill base = true := by
   intro e base
   exact
-    EconCSLib.exists_not_chosen_below_of_lowerCutoff
+    AppliedModelingLib.exists_not_chosen_below_of_lowerCutoff
       (C.taking_threshold e base)
 
 /--
@@ -28413,7 +28413,7 @@ theorem paper_theorem3_2_report_required_fairness_implies_test_blank_of_upper_ta
       (fun e base _hpmf => by
         have hcutoff_eq :
             C.decisionThreshold e base = decisionThreshold e base :=
-          EconCSLib.lowerCutoffStrategy_cutoff_eq
+          AppliedModelingLib.lowerCutoffStrategy_cutoff_eq
             (choose := fun actor : ℝ => takeDecision e actor base = true)
             (C.taking_threshold e base) (hthreshold e base)
         dsimp [C, Cdata,
@@ -28995,7 +28995,7 @@ def paper_theorem3_2_report_required_fairness_implies_test_blank_of_upper_tail_e
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEvent :
       ∀ e base student,
@@ -29067,7 +29067,7 @@ def paper_theorem3_2_section3_report_required_fairness_implies_test_blank_of_upp
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEvent :
       ∀ e base student,
@@ -29162,7 +29162,7 @@ def paper_theorem3_2_report_required_no_test_relevance_of_upper_tail_event_or_bl
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEvent :
       ∀ e base student,
@@ -29257,7 +29257,7 @@ def paper_theorem3_2_section3_report_required_no_test_relevance_of_upper_tail_ev
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEvent :
       ∀ e base student,
@@ -29775,7 +29775,7 @@ theorem paper_theorem3_2_section3_report_required_fairness_impossibility_of_none
       intro e base
       have hcutoff_eq :
           C.decisionThreshold e base = decisionThreshold e base :=
-        EconCSLib.lowerCutoffStrategy_cutoff_eq
+        AppliedModelingLib.lowerCutoffStrategy_cutoff_eq
           (choose := fun actor : ℝ => takeDecision e actor base = true)
           (C.taking_threshold e base) (hthreshold e base)
       dsimp [C, Cdata,
@@ -30699,7 +30699,7 @@ theorem paper_theorem3_2_section3_optional_reporting_fairness_impossibility_full
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [reportDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEventDecision :
       ∀ e base student,
@@ -30801,7 +30801,7 @@ theorem paper_theorem3_2_section3_optional_reporting_no_test_relevance_full_supp
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [reportDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEventDecision :
       ∀ e base student,
@@ -30894,7 +30894,7 @@ theorem paper_theorem3_2_section3_report_required_fairness_impossibility_full_su
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEventDecision :
       ∀ e base student,
@@ -30990,7 +30990,7 @@ theorem paper_theorem3_2_section3_report_required_no_test_relevance_full_support
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEventDecision :
       ∀ e base student,
@@ -37757,7 +37757,7 @@ theorem paper_theorem3_1_section3_optional_reporting_strategic_withholding_for_e
         cutoff e base ≤ score := by
     intro e base score
     simpa [reportDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := cutoff e base) (value := score))
   have hEventDecision :
       ∀ e base student,
@@ -37831,7 +37831,7 @@ theorem paper_theorem3_1_section3_report_required_strategic_withholding_for_ever
         cutoff e base ≤ skill := by
     intro e base skill
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := cutoff e base) (value := skill))
   have hEventDecision :
       ∀ e base student,
@@ -41432,7 +41432,7 @@ noncomputable def paper_theorem3_2_optional_reporting_fairness_impossibility_cer
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [reportDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEvent :
       ∀ e base student,
@@ -41937,7 +41937,7 @@ noncomputable def paper_theorem3_2_report_required_fairness_impossibility_certif
       (fun e base _hpmf => by
         have hcutoff_eq :
             C.decisionThreshold e base = decisionThreshold e base :=
-          EconCSLib.lowerCutoffStrategy_cutoff_eq
+          AppliedModelingLib.lowerCutoffStrategy_cutoff_eq
             (choose := fun actor : ℝ => takeDecision e actor base = true)
             (C.taking_threshold e base) (hthreshold e base)
         dsimp [C, Cdata,
@@ -42003,7 +42003,7 @@ noncomputable def paper_theorem3_2_report_required_fairness_impossibility_certif
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEvent :
       ∀ e base student,
@@ -44685,7 +44685,7 @@ theorem lg21RawBinaryMixture_positive_event_of_raw_relevance
           (reporterPMF e base) (baseOnlyEstimate e base)) :
     ∃ student, event e base student ∧
       0 < (studentLaw e base student).toReal :=
-  EconCSLib.indexedBinaryMixturePMF_positive_event_of_raw_relevance
+  AppliedModelingLib.indexedBinaryMixturePMF_positive_event_of_raw_relevance
     studentLaw event decEvent reporterPMF baseOnlyEstimate e base hraw
 
 /--
@@ -47997,7 +47997,7 @@ noncomputable abbrev paper_theorem3_2_section3_optional_reporting_skill_mixture_
       (by
         intro e base
         exact
-          EconCSLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
+          AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
             (fun score => hchoice e base score))
       hconsistent hchoose_actor_support hweight hdenom hfullPoint hmass
 
@@ -48082,7 +48082,7 @@ noncomputable abbrev paper_theorem3_2_section3_optional_reporting_skill_mixture_
               (baseTerm e base + signalWeight e base * mean) / denom e base ≤
                 (baseTerm e base + signalWeight e base * score) /
                   denom e base :=
-                      (EconCSLib.affine_div_le_affine_div_iff
+                      (AppliedModelingLib.affine_div_le_affine_div_iff
               (intercept := baseTerm e base)
               (slope := signalWeight e base)
               (denom := denom e base)
@@ -50805,7 +50805,7 @@ noncomputable abbrev paper_theorem3_2_section3_report_required_skill_mixture_raw
       (by
         intro e base
         exact
-          EconCSLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
+          AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
             (fun skill => hchoice e base skill))
       hchoose_actor_support hfull_support hweight hdenom hfullPoint
 
@@ -50875,7 +50875,7 @@ noncomputable abbrev paper_theorem3_2_section3_report_required_skill_mixture_raw
                     signalWeight e base * mean) +
                   signalWeight e base * mean) /
                 denom e base) :=
-                      EconCSLib.half_eq_affine_div_of_intercept_eq_half_denom_sub_slope_mul
+                      AppliedModelingLib.half_eq_affine_div_of_intercept_eq_half_denom_sub_slope_mul
               (ne_of_gt (hdenom e base))
               (rfl :
                 denom e base / 2 - signalWeight e base * mean =
@@ -50889,7 +50889,7 @@ noncomputable abbrev paper_theorem3_2_section3_report_required_skill_mixture_raw
                   denom e base) := by
           rw [hhalf]
           exact
-            (EconCSLib.affine_div_le_affine_div_iff
+            (AppliedModelingLib.affine_div_le_affine_div_iff
               (intercept := denom e base / 2 - signalWeight e base * mean)
               (slope := signalWeight e base)
               (denom := denom e base)
@@ -55534,7 +55534,7 @@ def paper_theorem3_2_section3_optional_reporting_fairness_iff_test_blank_of_gaus
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [reportDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEvent :
       ∀ e base student,
@@ -55631,7 +55631,7 @@ def paper_theorem3_2_section3_optional_reporting_fairness_iff_no_test_relevance_
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [reportDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEvent :
       ∀ e base student,
@@ -58190,7 +58190,7 @@ def paper_theorem3_2_section3_report_required_fairness_iff_test_blank_of_upper_t
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEvent :
       ∀ e base student,
@@ -58278,7 +58278,7 @@ def paper_theorem3_2_section3_report_required_fairness_iff_no_test_relevance_of_
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   have hEvent :
       ∀ e base student,
@@ -60998,7 +60998,7 @@ theorem paper_theorem3_2_section3_optional_reporting_skill_mixture_fairness_iff_
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [reportDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   exact
     paper_theorem3_2_section3_optional_reporting_skill_mixture_fairness_iff_test_blank_of_blank_on_zero_event_share_raw_mixture
@@ -61973,7 +61973,7 @@ def paper_theorem3_2_optional_reporting_gaussian_upper_tail_skill_mixture_blank_
           (M info.base).posteriorMean_update_eq_base_add_weight_mul
             (theta info.base) k (upper info.base)]
     refine
-      EconCSLib.isChoiceEquilibrium_of_equiv
+      AppliedModelingLib.isChoiceEquilibrium_of_equiv
         (E := Epost.toEquilibriumData) (F := Eaff.toEquilibriumData)
         hpost ?_ ?_ ?_ ?_ (fun hconsistent => hconsistent)
     · intro info action hfeasible
@@ -62016,13 +62016,13 @@ def paper_theorem3_2_optional_reporting_gaussian_upper_tail_skill_mixture_blank_
       paper_theorem3_2_standardGaussian_upper_tail_mean_gt_threshold
         (actorLaw e base) (decisionThreshold e base)
     exact
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := score)).2
         (le_of_lt (by simpa [hscore_eq] using hupper_gt))
   reporting_threshold := by
     intro e base actor
     exact
-      EconCSLib.bool_lowerCutoff_if_true_iff
+      AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor)
   signalWeight_pos := by
     intro _e base
@@ -66761,7 +66761,7 @@ theorem paper_theorem3_2_section3_report_required_skill_mixture_fairness_iff_tes
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   exact
     paper_theorem3_2_section3_report_required_skill_mixture_fairness_iff_test_blank_of_blank_on_zero_event_share_raw_mixture
@@ -67043,7 +67043,7 @@ theorem paper_theorem3_2_section3_report_required_skill_mixture_fairness_iff_tes
         decisionThreshold e base ≤ actor := by
     intro e base actor
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor))
   refine
     paper_theorem3_2_section3_report_required_skill_mixture_fairness_iff_test_blank_of_blank_on_zero_event_share_raw_mixture_of_best_response_tiebreak
@@ -67071,7 +67071,7 @@ theorem paper_theorem3_2_section3_report_required_skill_mixture_fairness_iff_tes
       simpa [hskill_eq] using hupper_gt))
   · intro e base cutoff hcutoff _hPMF
     have hcutoff_eq : cutoff = decisionThreshold e base :=
-      EconCSLib.lowerCutoffStrategy_cutoff_eq
+      AppliedModelingLib.lowerCutoffStrategy_cutoff_eq
         (choose := fun actor : ℝ => takeDecision e actor base = true)
         hcutoff (hthreshold e base)
     simpa [hcutoff_eq] using hupperTailFixedPoint e base
@@ -67721,13 +67721,13 @@ def paper_theorem3_2_report_required_upper_tail_skill_mixture_blank_on_zero_even
       paper_theorem3_2_standardGaussian_upper_tail_mean_gt_threshold
         (actorLaw e base) (decisionThreshold e base)
     exact
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := skill)).2
         (le_of_lt (by simpa [hskill_eq] using hupper_gt))
   taking_threshold := by
     intro e base actor
     exact
-      EconCSLib.bool_lowerCutoff_if_true_iff
+      AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := decisionThreshold e base) (value := actor)
   signalWeight_pos := hweight
   denom_pos := hdenom
@@ -74610,7 +74610,7 @@ def paper_theorem3_1_optional_reporting_strategic_withholding_certificate_for_ev
         cutoff e base ≤ score := by
     intro e base score
     simpa [reportDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := cutoff e base) (value := score))
   have hEventDecision :
       ∀ e base student,
@@ -74663,7 +74663,7 @@ def paper_theorem3_1_report_required_strategic_withholding_certificate_for_every
         cutoff e base ≤ skill := by
     intro e base skill
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := cutoff e base) (value := skill))
   have hEventDecision :
       ∀ e base student,
@@ -75223,7 +75223,7 @@ def paper_theorem3_1_optional_reporting_law_strategic_withholding_certificate_fo
         cutoff e base ≤ score := by
     intro e base score
     simpa [reportDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := cutoff e base) (value := score))
   have hEventDecision :
       ∀ e base student,
@@ -75276,7 +75276,7 @@ def paper_theorem3_1_report_required_law_strategic_withholding_certificate_for_e
         cutoff e base ≤ skill := by
     intro e base skill
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := cutoff e base) (value := skill))
   have hEventDecision :
       ∀ e base student,
@@ -76087,7 +76087,7 @@ theorem paper_theorem3_1_section3_optional_reporting_law_strategic_withholding_f
         cutoff e base ≤ score := by
     intro e base score
     simpa [reportDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := cutoff e base) (value := score))
   have hEventDecision :
       ∀ e base student,
@@ -76156,7 +76156,7 @@ theorem paper_theorem3_1_section3_report_required_law_strategic_withholding_for_
         cutoff e base ≤ skill := by
     intro e base skill
     simpa [takeDecision] using
-      (EconCSLib.bool_lowerCutoff_if_true_iff
+      (AppliedModelingLib.bool_lowerCutoff_if_true_iff
         (cutoff := cutoff e base) (value := skill))
   have hEventDecision :
       ∀ e base student,
@@ -77077,7 +77077,7 @@ theorem paper_theorem3_2_section3_optional_reporting_no_positive_mass_test_relev
       (by
         intro e base
         exact
-          EconCSLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
+          AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
             (fun score => hchoice e base score))
       hconsistent hweight hdenom hfair
 
@@ -77217,7 +77217,7 @@ theorem paper_theorem3_2_section3_optional_reporting_no_positive_mass_test_relev
               (baseTerm e base + signalWeight e base * mean) / denom e base ≤
                 (baseTerm e base + signalWeight e base * score) /
                   denom e base :=
-                      (EconCSLib.affine_div_le_affine_div_iff
+                      (AppliedModelingLib.affine_div_le_affine_div_iff
               (intercept := baseTerm e base)
               (slope := signalWeight e base)
               (denom := denom e base)
@@ -78283,7 +78283,7 @@ theorem paper_theorem3_2_section3_optional_reporting_value_no_test_relevance_of_
       (by
         intro e base
         exact
-          EconCSLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
+          AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
             (fun score => hchoice e base score))
       hconsistent hweight hdenom hfair
 
@@ -78427,7 +78427,7 @@ theorem paper_theorem3_2_section3_optional_reporting_value_no_test_relevance_of_
               (baseTerm e base + signalWeight e base * mean) / denom e base ≤
                 (baseTerm e base + signalWeight e base * score) /
                   denom e base :=
-                      (EconCSLib.affine_div_le_affine_div_iff
+                      (AppliedModelingLib.affine_div_le_affine_div_iff
               (intercept := baseTerm e base)
               (slope := signalWeight e base)
               (denom := denom e base)
@@ -79042,7 +79042,7 @@ theorem paper_theorem3_2_section3_report_required_value_no_test_relevance_of_aff
       (by
         intro e base
         exact
-          EconCSLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
+          AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
             (fun skill => hchoice e base skill))
       hconsistent hweight hdenom hfair
 
@@ -79163,7 +79163,7 @@ theorem paper_theorem3_2_section3_report_required_value_no_test_relevance_of_aff
                     signalWeight e base * mean) +
                   signalWeight e base * mean) /
                 denom e base) :=
-                      EconCSLib.half_eq_affine_div_of_intercept_eq_half_denom_sub_slope_mul
+                      AppliedModelingLib.half_eq_affine_div_of_intercept_eq_half_denom_sub_slope_mul
               (ne_of_gt (hdenom e base))
               (rfl :
                 denom e base / 2 - signalWeight e base * mean =
@@ -79177,7 +79177,7 @@ theorem paper_theorem3_2_section3_report_required_value_no_test_relevance_of_aff
                   denom e base) := by
           rw [hhalf]
           exact
-            (EconCSLib.affine_div_le_affine_div_iff
+            (AppliedModelingLib.affine_div_le_affine_div_iff
               (intercept := denom e base / 2 - signalWeight e base * mean)
               (slope := signalWeight e base)
               (denom := denom e base)
@@ -79889,7 +79889,7 @@ theorem paper_theorem3_2_section3_report_required_value_no_test_relevance_of_aff
       (by
         intro e base
         exact
-          EconCSLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
+          AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
             (fun skill => hchoice e base skill))
       hconsistent hweight hdenom hfair
 
@@ -80016,7 +80016,7 @@ theorem paper_theorem3_2_section3_report_required_value_no_test_relevance_of_aff
                     signalWeight e base * mean) +
                   signalWeight e base * mean) /
                 denom e base) :=
-                      EconCSLib.half_eq_affine_div_of_intercept_eq_half_denom_sub_slope_mul
+                      AppliedModelingLib.half_eq_affine_div_of_intercept_eq_half_denom_sub_slope_mul
               (ne_of_gt (hdenom e base))
               (rfl :
                 denom e base / 2 - signalWeight e base * mean =
@@ -80030,7 +80030,7 @@ theorem paper_theorem3_2_section3_report_required_value_no_test_relevance_of_aff
                   denom e base) := by
           rw [hhalf]
           exact
-            (EconCSLib.affine_div_le_affine_div_iff
+            (AppliedModelingLib.affine_div_le_affine_div_iff
               (intercept := denom e base / 2 - signalWeight e base * mean)
               (slope := signalWeight e base)
               (denom := denom e base)

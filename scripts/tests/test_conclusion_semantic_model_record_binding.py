@@ -1445,6 +1445,72 @@ class SemanticModelRecordBindingTests(unittest.TestCase):
                     },
                 )
 
+    def test_direct_domain_receipts_accept_authenticated_assumption_domains(
+        self,
+    ) -> None:
+        """An authenticated assumption parent can own its reviewed domains."""
+
+        payload, judgments, statement_map, component = self._direct_domain_fixture(
+            ("definition",)
+        )
+        semantic_item = payload["semantic_model_items"][0]
+        assert isinstance(semantic_item, dict)
+        parent = semantic_item["source_statement_association"]
+        assert isinstance(parent, dict)
+        parent["association_origin"] = GATE.SOURCE_ASSUMPTION_ASSOCIATION_ORIGIN
+        parent["role"] = GATE.SOURCE_ASSUMPTION_ASSOCIATION_ROLE
+        association = component["source_contract_association"]
+        assert isinstance(association, dict)
+        association["association_mode"] = GATE.SOURCE_ASSUMPTION_ASSOCIATION_ORIGIN
+        association["semantic_contract_member_role"] = (
+            GATE.SOURCE_ASSUMPTION_ASSOCIATION_ROLE
+        )
+        association["association_sha256"] = (
+            source_contract_association_record_digest(association)
+        )
+        with patch.object(
+            GATE,
+            "_current_direct_semantic_model_route",
+            return_value=(
+                parent,
+                str(parent[GATE.SEMANTIC_ASSOCIATION_SHA256_FIELD]),
+            ),
+        ):
+            receipts = self._direct_domain_receipts(
+                payload, judgments, statement_map
+            )
+        self.assertEqual(
+            receipts,
+            {
+                GATE.SourceDomainCorrespondenceReceipt(
+                    component_key=str(component["judgment_key"]),
+                    component_sha256=str(
+                        component["source_claim_component_sha256"]
+                    ),
+                    source_model_judgment_key="semantic-route::alpha",
+                )
+            },
+        )
+
+        association[GATE.SEMANTIC_ASSOCIATION_SHA256_FIELD] = sha(
+            "wrong assumption component semantics"
+        )
+        association["association_sha256"] = (
+            source_contract_association_record_digest(association)
+        )
+        with patch.object(
+            GATE,
+            "_current_direct_semantic_model_route",
+            return_value=(
+                parent,
+                str(parent[GATE.SEMANTIC_ASSOCIATION_SHA256_FIELD]),
+            ),
+        ):
+            self.assertEqual(
+                self._direct_domain_receipts(payload, judgments, statement_map),
+                set(),
+            )
+
     def test_direct_domain_receipts_reject_claim_assumption_and_mixed_routes(
         self,
     ) -> None:

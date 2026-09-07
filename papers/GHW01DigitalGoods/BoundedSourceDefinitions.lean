@@ -2,8 +2,8 @@ import GHW01DigitalGoods.BoundedSupply
 import GHW01DigitalGoods.RandomSamplingDirectional
 import GHW01DigitalGoods.SourceDefinitions
 import GHW01DigitalGoods.WeightedPairingSourceModel
-import EconCSLib.Foundations.Probability.FairCoin
-import EconCSLib.Foundations.Probability.IndependentProduct
+import AppliedModelingLib.Foundations.Probability.FairCoin
+import AppliedModelingLib.Foundations.Probability.IndependentProduct
 
 /-!
 # Source-facing auction definitions for GHW01
@@ -17,8 +17,8 @@ integer-capacity convention in the bounded-supply constructions.
 namespace GHW01DigitalGoods
 namespace SourceDefinitions
 
-open EconCSLib
-open EconCSLib.Auction
+open AppliedModelingLib
+open AppliedModelingLib.Auction
 open MeasureTheory
 
 noncomputable section
@@ -438,7 +438,7 @@ def weightedPairingOfferFunctionLaw
     {Agent : Type*} [Fintype Agent] [DecidableEq Agent]
     (bids : Agent → ℝ) (source : WeightedPairingSourceProfile bids) :
     PMF (Agent → Agent) :=
-  EconCSLib.pmfPi (fun i => weightedPairingOfferLaw bids source i)
+  AppliedModelingLib.pmfPi (fun i => weightedPairingOfferLaw bids source i)
 
 @[simp] theorem weightedPairingOfferFunctionLaw_apply_toReal
     {Agent : Type*} [Fintype Agent] [DecidableEq Agent]
@@ -492,7 +492,7 @@ theorem weightedPairingSourceProfile_exists_ne
     ext j
     simp [hall j]
   have hpositive := source.positive_other_bid_mass i
-  rw [EconCSLib.Auction.totalBidValue, huniv] at hpositive
+  rw [AppliedModelingLib.Auction.totalBidValue, huniv] at hpositive
   simp at hpositive
 
 /-- One coordinate of the independent offer vector has its declared source
@@ -502,11 +502,11 @@ theorem weightedPairingOfferFunctionLaw_coordinate_expectation
     {Agent : Type*} [Fintype Agent] [DecidableEq Agent]
     (bids : Agent → ℝ) (source : WeightedPairingSourceProfile bids)
     (i : Agent) (g : Agent → ℝ) :
-    EconCSLib.pmfExp (weightedPairingOfferFunctionLaw bids source)
+    AppliedModelingLib.pmfExp (weightedPairingOfferFunctionLaw bids source)
         (fun offer => g (offer i)) =
-      EconCSLib.pmfExp (weightedPairingOfferLaw bids source i) g := by
+      AppliedModelingLib.pmfExp (weightedPairingOfferLaw bids source i) g := by
   obtain ⟨j, hji⟩ := weightedPairingSourceProfile_exists_ne bids source i
-  have h := EconCSLib.pmfExp_pmfPi_twoCoord_eq_pairExp
+  have h := AppliedModelingLib.pmfExp_pmfPi_twoCoord_eq_pairExp
     (fun k : Agent => weightedPairingOfferLaw bids source k)
       (i := i) (j := j) (Ne.symm hji)
       (fun a _ => g a)
@@ -518,27 +518,27 @@ theorem weightedPairingOfferFunctionLaw_expectedPayment
     {Agent : Type*} [Fintype Agent] [DecidableEq Agent]
     (bids : Agent → ℝ) (source : WeightedPairingSourceProfile bids)
     (i : Agent) :
-    EconCSLib.pmfExp (weightedPairingOfferFunctionLaw bids source)
+    AppliedModelingLib.pmfExp (weightedPairingOfferFunctionLaw bids source)
         (fun offer =>
           if bids (offer i) ≤ bids i then bids (offer i) else 0) =
       weightedPairingSourceExpectedPayment bids source i := by
   calc
-    EconCSLib.pmfExp (weightedPairingOfferFunctionLaw bids source)
+    AppliedModelingLib.pmfExp (weightedPairingOfferFunctionLaw bids source)
         (fun offer =>
           if bids (offer i) ≤ bids i then bids (offer i) else 0) =
-        EconCSLib.pmfExp (weightedPairingOfferLaw bids source i)
+        AppliedModelingLib.pmfExp (weightedPairingOfferLaw bids source i)
           (fun j => if bids j ≤ bids i then bids j else 0) :=
       weightedPairingOfferFunctionLaw_coordinate_expectation bids source i
         (fun j => if bids j ≤ bids i then bids j else 0)
     _ = weightedPairingSourceExpectedPayment bids source i := by
-      simp [EconCSLib.pmfExp, weightedPairingSourceExpectedPayment]
+      simp [AppliedModelingLib.pmfExp, weightedPairingSourceExpectedPayment]
 
 /-- Finite expected revenue of the offer-vector realization underlying
 `weightedPairingOutcomeLaw`. -/
 def weightedPairingOutcomeExpectedRevenue
     {Agent : Type*} [Fintype Agent] [DecidableEq Agent]
     (bids : Agent → ℝ) (source : WeightedPairingSourceProfile bids) : ℝ :=
-  EconCSLib.pmfExp (weightedPairingOfferFunctionLaw bids source)
+  AppliedModelingLib.pmfExp (weightedPairingOfferFunctionLaw bids source)
     (fun offer => (weightedPairingOutcome bids offer).revenue)
 
 /-- The genuine outcome sampler has exactly the paper's expected revenue `W`.
@@ -553,19 +553,19 @@ theorem weightedPairingOutcomeExpectedRevenue_eq_W
   classical
   unfold weightedPairingOutcomeExpectedRevenue
   calc
-    EconCSLib.pmfExp (weightedPairingOfferFunctionLaw bids source)
+    AppliedModelingLib.pmfExp (weightedPairingOfferFunctionLaw bids source)
         (fun offer => (weightedPairingOutcome bids offer).revenue) =
-        EconCSLib.pmfExp (weightedPairingOfferFunctionLaw bids source)
+        AppliedModelingLib.pmfExp (weightedPairingOfferFunctionLaw bids source)
           (fun offer => ∑ i : Agent,
             if bids (offer i) ≤ bids i then bids (offer i) else 0) := by
-          apply EconCSLib.pmfExp_congr
+          apply AppliedModelingLib.pmfExp_congr
           intro offer
           exact weightedPairingOutcome_revenue bids offer
     _ = ∑ i : Agent,
-        EconCSLib.pmfExp (weightedPairingOfferFunctionLaw bids source)
+        AppliedModelingLib.pmfExp (weightedPairingOfferFunctionLaw bids source)
           (fun offer =>
             if bids (offer i) ≤ bids i then bids (offer i) else 0) := by
-          exact EconCSLib.pmfExp_univ_sum _ _
+          exact AppliedModelingLib.pmfExp_univ_sum _ _
     _ = ∑ i : Agent,
         weightedPairingSourceExpectedPayment bids source i := by
           apply Finset.sum_congr rfl

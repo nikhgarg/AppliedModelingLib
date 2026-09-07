@@ -15,7 +15,7 @@ facts consumed by the Lemma 5 variational argument.  They are not bundled in
 a certificate and they do not contain a policy-form or optimizer conclusion.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped ENNReal Topology
 
@@ -214,7 +214,10 @@ theorem gn21Theorem2_nonsurge_negative_affine_openOptimal_has_extended_middle_fo
     rcases exists_strictlyQuasiConcave_open_strict_improvement_of_not_form
         mu Rhat response hsigma_open hsigma_subset hsigma_nonempty hnot_form
         hreward_ae
-        hshape hinterval_upper_derivative hopen_split_lower_derivative with
+        hshape
+        (gn21Lemma5ComponentUpperDerivativeCondition_of_arbitraryContext
+          Rhat response hinterval_upper_derivative)
+        hopen_split_lower_derivative with
       ⟨improved, himproved_open, himproved_subset, himproved_reward⟩
     exact (not_lt_of_ge (hoptimal improved himproved_open himproved_subset))
       himproved_reward
@@ -296,7 +299,11 @@ theorem gn21Theorem2_surge_positive_affine_openOptimal_has_extended_twoTail_form
     rcases exists_strictlyQuasiConvex_open_strict_improvement_of_not_form
         mu Rhat response hsigma_open hsigma_subset hsigma_nonempty hnot_form
         hreward_ae
-        hshape hinterval_upper_derivative hinterval_lower_derivative
+        hshape
+        (gn21Lemma5ComponentUpperDerivativeCondition_of_arbitraryContext
+          Rhat response hinterval_upper_derivative)
+        (gn21Lemma5ComponentLowerDerivativeCondition_of_arbitraryContext
+          Rhat response hinterval_lower_derivative)
         hopen_split_lower_derivative with
       ⟨improved, himproved_open, himproved_subset, himproved_reward⟩
     exact (not_lt_of_ge (hoptimal improved himproved_open himproved_subset))

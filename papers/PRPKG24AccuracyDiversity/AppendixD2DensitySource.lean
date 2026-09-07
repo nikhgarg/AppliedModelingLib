@@ -38,7 +38,7 @@ theorem lemmaD2_reflected_cdf_power_sandwich_of_density_ratio
       Tendsto (fun u : ℝ => g u / (c * u ^ (beta - 1)))
         (nhdsWithin (0 : ℝ) (Set.Ioi (0 : ℝ))) (nhds (1 : ℝ))) :
     BoundedTailCDFPowerSandwich
-      (EconCSLib.Probability.reflectedCDFMass baseMeasure M) beta c :=
+      (AppliedModelingLib.Probability.reflectedCDFMass baseMeasure M) beta c :=
   BoundedTailCDFPowerSandwich.of_reflectedCDFMass_upper_endpoint_density_ratio_integral
     hbeta_pos hc_pos h_integrable hmass hratio
 
@@ -209,7 +209,7 @@ theorem lemmaD2_reflected_cdf_power_sandwich_of_pdf
       Tendsto (fun u : ℝ => f (M - u) / (c * u ^ (beta - 1)))
         (nhdsWithin (0 : ℝ) (Set.Ioi (0 : ℝ))) (nhds (1 : ℝ))) :
     BoundedTailCDFPowerSandwich
-      (EconCSLib.Probability.reflectedCDFMass baseMeasure M) beta c := by
+      (AppliedModelingLib.Probability.reflectedCDFMass baseMeasure M) beta c := by
   apply lemmaD2_reflected_cdf_power_sandwich_of_density_ratio
     (g := fun u => f (M - u)) hbeta_pos hc_pos
   · exact reflected_density_locally_integrable_of_pdf hf_integrable
@@ -243,24 +243,24 @@ theorem lemmaD2_bounded_fixed_rank_integral_asymptotic_of_density_ratio
     (hratio :
       Tendsto (fun u : ℝ => g u / (c * u ^ (beta - 1)))
         (nhdsWithin (0 : ℝ) (Set.Ioi (0 : ℝ))) (nhds (1 : ℝ))) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (boundedLemmaD2IntegralTerm
-        (EconCSLib.Probability.reflectedCDFMass baseMeasure M) j)
+        (AppliedModelingLib.Probability.reflectedCDFMass baseMeasure M) j)
       (fun a =>
         boundedLemmaD2LimitCoeff beta c j * boundedTailScale beta a) := by
   let tail : BoundedTailCDFPowerSandwich
-      (EconCSLib.Probability.reflectedCDFMass baseMeasure M) beta c :=
+      (AppliedModelingLib.Probability.reflectedCDFMass baseMeasure M) beta c :=
     lemmaD2_reflected_cdf_power_sandwich_of_density_ratio
       hbeta_pos hc_pos h_integrable hmass hratio
   exact
     (paper_lemmaD2_bounded_split_certificate_of_cdf_power_sandwich_monotone_bounded_support
       tail hwidth_pos
-      (EconCSLib.Probability.reflectedCDFMass_measurable baseMeasure M)
-      (EconCSLib.Probability.reflectedCDFMass_mono baseMeasure M)
-      (fun x => EconCSLib.Probability.reflectedCDFMass_nonneg baseMeasure M x)
-      (fun x => EconCSLib.Probability.reflectedCDFMass_le_one baseMeasure M x)
+      (AppliedModelingLib.Probability.reflectedCDFMass_measurable baseMeasure M)
+      (AppliedModelingLib.Probability.reflectedCDFMass_mono baseMeasure M)
+      (fun x => AppliedModelingLib.Probability.reflectedCDFMass_nonneg baseMeasure M x)
+      (fun x => AppliedModelingLib.Probability.reflectedCDFMass_le_one baseMeasure M x)
       (fun x hx =>
-        EconCSLib.Probability.reflectedCDFMass_eq_one_of_ae_bounds
+        AppliedModelingLib.Probability.reflectedCDFMass_eq_one_of_ae_bounds
           baseMeasure h_base_bounds hx)).integralTerm_asymptoticEquivalent
 
 /--
@@ -288,7 +288,7 @@ theorem lemma1_bounded_topk_loss_asymptotic_of_density_ratio
       Tendsto (fun u : ℝ => g u / (c * u ^ (beta - 1)))
         (nhdsWithin (0 : ℝ) (Set.Ioi (0 : ℝ))) (nhds (1 : ℝ)))
     (k_pos : 0 < k) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a =>
         (k : ℝ) * M -
           orderStatisticTopKSumFromMean
@@ -300,7 +300,7 @@ theorem lemma1_bounded_topk_loss_asymptotic_of_density_ratio
           boundedLemmaD2LimitCoeff beta c q.2.val) *
           boundedTailScale beta a) := by
   let tail : BoundedTailCDFPowerSandwich
-      (EconCSLib.Probability.reflectedCDFMass baseMeasure M) beta c :=
+      (AppliedModelingLib.Probability.reflectedCDFMass baseMeasure M) beta c :=
     lemmaD2_reflected_cdf_power_sandwich_of_density_ratio
       hbeta_pos hc_pos h_integrable hmass hratio
   exact
@@ -330,9 +330,9 @@ theorem lemmaD2_bounded_fixed_rank_integral_asymptotic_of_pdf
     (hratio :
       Tendsto (fun u : ℝ => f (M - u) / (c * u ^ (beta - 1)))
         (nhdsWithin (0 : ℝ) (Set.Ioi (0 : ℝ))) (nhds (1 : ℝ))) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (boundedLemmaD2IntegralTerm
-        (EconCSLib.Probability.reflectedCDFMass baseMeasure M) j)
+        (AppliedModelingLib.Probability.reflectedCDFMass baseMeasure M) j)
       (fun a =>
         boundedLemmaD2LimitCoeff beta c j * boundedTailScale beta a) := by
   have hf_zero_above :=
@@ -373,7 +373,7 @@ theorem lemma1_bounded_topk_loss_asymptotic_of_pdf
       Tendsto (fun u : ℝ => f (M - u) / (c * u ^ (beta - 1)))
         (nhdsWithin (0 : ℝ) (Set.Ioi (0 : ℝ))) (nhds (1 : ℝ)))
     (k_pos : 0 < k) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a =>
         (k : ℝ) * M -
           orderStatisticTopKSumFromMean

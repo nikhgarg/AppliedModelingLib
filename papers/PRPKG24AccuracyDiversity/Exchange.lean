@@ -1,5 +1,5 @@
 import PRPKG24AccuracyDiversity.Optimization
-import EconCSLib.Foundations.Math.FiniteRounding
+import AppliedModelingLib.Foundations.Math.FiniteRounding
 
 namespace PRPKG24AccuracyDiversity
 
@@ -7,7 +7,7 @@ namespace ConsumptionModel
 
 /-- Move one recommendation from type `src` to type `dst`. -/
 def moveOne {T : ℕ}
-    (a : CountAllocation T) (src dst : ItemType T) : CountAllocation T := EconCSLib.Allocation.moveOne a src dst
+    (a : CountAllocation T) (src dst : ItemType T) : CountAllocation T := AppliedModelingLib.Allocation.moveOne a src dst
 
 /-- Weighted forward marginal gain from adding one more item of type `t`. -/
 noncomputable def weightedForwardMarginal {T : ℕ}
@@ -33,7 +33,7 @@ if moving one count from `src` to `dst` loses no more than it gains, the objecti
 def ExchangeImprovementTarget {T : ℕ} (M : ConsumptionModel T) : Prop :=
   ∀ a src dst,
     src ≠ dst →
-    EconCSLib.Allocation.CanMoveOne a src →
+    AppliedModelingLib.Allocation.CanMoveOne a src →
     ExchangeCondition M a src dst →
     M.objective a ≤ M.objective (moveOne a src dst)
 
@@ -45,12 +45,12 @@ def NoProfitableExchangeAtOptimumTarget {T : ℕ} (M : ConsumptionModel T) (N : 
   ∀ a src dst,
     M.IsOptimalAtTotal N a →
     src ≠ dst →
-    EconCSLib.Allocation.CanMoveOne a src →
+    AppliedModelingLib.Allocation.CanMoveOne a src →
     M.objective (moveOne a src dst) ≤ M.objective a
 
 @[simp] theorem moveOne_eq_allocation_moveOne {T : ℕ}
     (a : CountAllocation T) (src dst : ItemType T) :
-    moveOne a src dst = EconCSLib.Allocation.moveOne a src dst := rfl
+    moveOne a src dst = AppliedModelingLib.Allocation.moveOne a src dst := rfl
 
 @[simp] theorem weightedForwardMarginal_apply {T : ℕ}
     (M : ConsumptionModel T) (t : ItemType T) (q : ℕ) :
@@ -59,11 +59,11 @@ def NoProfitableExchangeAtOptimumTarget {T : ℕ} (M : ConsumptionModel T) (N : 
 /-- Moving one item from a positive source to a distinct destination preserves total size. -/
 theorem total_moveOne_eq {T : ℕ} (a : CountAllocation T)
     {src dst : ItemType T} (hne : src ≠ dst)
-    (hcan : EconCSLib.Allocation.CanMoveOne a src) :
-    EconCSLib.Allocation.total (moveOne a src dst) =
-      EconCSLib.Allocation.total a := by
+    (hcan : AppliedModelingLib.Allocation.CanMoveOne a src) :
+    AppliedModelingLib.Allocation.total (moveOne a src dst) =
+      AppliedModelingLib.Allocation.total a := by
   simpa [moveOne] using
-    EconCSLib.Allocation.total_moveOne_eq
+    AppliedModelingLib.Allocation.total_moveOne_eq
       (a := a) (src := src) (dst := dst) hne hcan
 
 /--
@@ -72,14 +72,14 @@ forward marginal and the source loses its backward marginal.
 -/
 theorem objective_moveOne_eq {T : ℕ} (M : ConsumptionModel T) (a : CountAllocation T)
     {src dst : ItemType T} (hne : src ≠ dst)
-    (hcan : EconCSLib.Allocation.CanMoveOne a src) :
+    (hcan : AppliedModelingLib.Allocation.CanMoveOne a src) :
     M.objective (moveOne a src dst) =
       M.objective a - M.weightedBackwardMarginal src (a.count src) +
         M.weightedForwardMarginal dst (a.count dst) := by
   simpa [objective, moveOne, weightedBackwardMarginal, weightedForwardMarginal,
-    marginalValue, EconCSLib.Allocation.weightedBackwardMarginal,
-    EconCSLib.Allocation.weightedForwardMarginal, EconCSLib.Allocation.marginal] using
-      EconCSLib.Allocation.objective_moveOne_eq
+    marginalValue, AppliedModelingLib.Allocation.weightedBackwardMarginal,
+    AppliedModelingLib.Allocation.weightedForwardMarginal, AppliedModelingLib.Allocation.marginal] using
+      AppliedModelingLib.Allocation.objective_moveOne_eq
         (a := a) (weight := M.likelihood) (valueOfCount := M.valueOfCount)
         (src := src) (dst := dst) hne hcan
 
@@ -88,15 +88,15 @@ theorem exchangeImprovementTarget {T : ℕ} (M : ConsumptionModel T) :
     ExchangeImprovementTarget M := by
   intro a src dst hne hcan hcond
   have hcond' :
-      EconCSLib.Allocation.ExchangeCondition
+      AppliedModelingLib.Allocation.ExchangeCondition
         M.likelihood M.valueOfCount a src dst := by
     simpa [ExchangeCondition, weightedBackwardMarginal, weightedForwardMarginal,
-      marginalValue, EconCSLib.Allocation.ExchangeCondition,
-      EconCSLib.Allocation.weightedBackwardMarginal,
-      EconCSLib.Allocation.weightedForwardMarginal,
-      EconCSLib.Allocation.marginal] using hcond
+      marginalValue, AppliedModelingLib.Allocation.ExchangeCondition,
+      AppliedModelingLib.Allocation.weightedBackwardMarginal,
+      AppliedModelingLib.Allocation.weightedForwardMarginal,
+      AppliedModelingLib.Allocation.marginal] using hcond
   simpa [objective, moveOne] using
-    EconCSLib.Allocation.objective_le_objective_moveOne_of_exchangeCondition
+    AppliedModelingLib.Allocation.objective_le_objective_moveOne_of_exchangeCondition
       (a := a) (weight := M.likelihood) (valueOfCount := M.valueOfCount)
       (src := src) (dst := dst) hne hcan hcond'
 
@@ -108,12 +108,12 @@ theorem noProfitableExchangeAtOptimumTarget {T : ℕ} (M : ConsumptionModel T) (
     NoProfitableExchangeAtOptimumTarget M N := by
   intro a src dst hopt hne hcan
   have hopt' :
-      EconCSLib.Allocation.IsOptimalAtTotal
+      AppliedModelingLib.Allocation.IsOptimalAtTotal
         M.likelihood M.valueOfCount N a := by
-    simpa [EconCSLib.Allocation.IsOptimalAtTotal, IsOptimalAtTotal,
+    simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal, IsOptimalAtTotal,
       FeasibleAtTotal, objective] using hopt
   simpa [objective, moveOne] using
-    EconCSLib.Allocation.objective_moveOne_le_of_isOptimalAtTotal
+    AppliedModelingLib.Allocation.objective_moveOne_le_of_isOptimalAtTotal
       (a := a) (weight := M.likelihood) (valueOfCount := M.valueOfCount)
       (N := N) hopt' hne hcan
 
@@ -125,19 +125,19 @@ theorem weightedForwardMarginal_le_weightedBackwardMarginal_of_optimum {T : ℕ}
     (M : ConsumptionModel T) (N : ℕ) {a : CountAllocation T}
     {src dst : ItemType T}
     (hopt : M.IsOptimalAtTotal N a) (hne : src ≠ dst)
-    (hcan : EconCSLib.Allocation.CanMoveOne a src) :
+    (hcan : AppliedModelingLib.Allocation.CanMoveOne a src) :
     weightedForwardMarginal M dst (a.count dst) ≤
       weightedBackwardMarginal M src (a.count src) := by
   have hopt' :
-      EconCSLib.Allocation.IsOptimalAtTotal
+      AppliedModelingLib.Allocation.IsOptimalAtTotal
         M.likelihood M.valueOfCount N a := by
-    simpa [EconCSLib.Allocation.IsOptimalAtTotal, IsOptimalAtTotal,
+    simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal, IsOptimalAtTotal,
       FeasibleAtTotal, objective] using hopt
   simpa [weightedBackwardMarginal, weightedForwardMarginal, marginalValue,
-    EconCSLib.Allocation.weightedBackwardMarginal,
-    EconCSLib.Allocation.weightedForwardMarginal,
-    EconCSLib.Allocation.marginal] using
-      EconCSLib.Allocation.weightedForwardMarginal_le_weightedBackwardMarginal_of_optimum
+    AppliedModelingLib.Allocation.weightedBackwardMarginal,
+    AppliedModelingLib.Allocation.weightedForwardMarginal,
+    AppliedModelingLib.Allocation.marginal] using
+      AppliedModelingLib.Allocation.weightedForwardMarginal_le_weightedBackwardMarginal_of_optimum
         (a := a) (weight := M.likelihood) (valueOfCount := M.valueOfCount)
         (N := N) (src := src) (dst := dst) hopt' hne hcan
 
@@ -146,7 +146,7 @@ theorem marginalValue_antitone_of_diminishing {T : ℕ}
     (t : ItemType T) {q r : ℕ} (hqr : q ≤ r) :
     M.marginalValue t r ≤ M.marginalValue t q := by
   simpa [marginalValue, HasDiminishingReturns] using
-    EconCSLib.Allocation.marginal_antitone_of_diminishing
+    AppliedModelingLib.Allocation.marginal_antitone_of_diminishing
       (valueOfCount := M.valueOfCount) hDR t hqr
 
 theorem weightedForwardMarginal_antitone_of_diminishing {T : ℕ}
@@ -155,9 +155,9 @@ theorem weightedForwardMarginal_antitone_of_diminishing {T : ℕ}
     (t : ItemType T) {q r : ℕ} (hqr : q ≤ r) :
     M.weightedForwardMarginal t r ≤ M.weightedForwardMarginal t q := by
   simpa [weightedForwardMarginal, marginalValue, HasDiminishingReturns,
-    EconCSLib.Allocation.weightedForwardMarginal,
-    EconCSLib.Allocation.marginal] using
-      EconCSLib.Allocation.weightedForwardMarginal_antitone_of_diminishing
+    AppliedModelingLib.Allocation.weightedForwardMarginal,
+    AppliedModelingLib.Allocation.marginal] using
+      AppliedModelingLib.Allocation.weightedForwardMarginal_antitone_of_diminishing
         (weight := M.likelihood) (valueOfCount := M.valueOfCount)
         hDR hlike_nonneg t hqr
 
@@ -165,10 +165,10 @@ theorem weightedBackwardMarginal_eq_weightedForwardMarginal_pred {T : ℕ}
     (M : ConsumptionModel T) (t : ItemType T) {q : ℕ} (hq : 0 < q) :
     M.weightedBackwardMarginal t q = M.weightedForwardMarginal t (q - 1) := by
   simpa [weightedBackwardMarginal, weightedForwardMarginal, marginalValue,
-    EconCSLib.Allocation.weightedBackwardMarginal,
-    EconCSLib.Allocation.weightedForwardMarginal,
-    EconCSLib.Allocation.marginal] using
-      EconCSLib.Allocation.weightedBackwardMarginal_eq_weightedForwardMarginal_pred
+    AppliedModelingLib.Allocation.weightedBackwardMarginal,
+    AppliedModelingLib.Allocation.weightedForwardMarginal,
+    AppliedModelingLib.Allocation.marginal] using
+      AppliedModelingLib.Allocation.weightedBackwardMarginal_eq_weightedForwardMarginal_pred
         (weight := M.likelihood) (valueOfCount := M.valueOfCount) t hq
 
 theorem weightedBackwardMarginal_le_weightedForwardMarginal_of_diminishing
@@ -177,10 +177,10 @@ theorem weightedBackwardMarginal_le_weightedForwardMarginal_of_diminishing
     (t : ItemType T) {q r : ℕ} (hrq : r + 1 ≤ q) :
     M.weightedBackwardMarginal t q ≤ M.weightedForwardMarginal t r := by
   simpa [weightedBackwardMarginal, weightedForwardMarginal, marginalValue,
-    HasDiminishingReturns, EconCSLib.Allocation.weightedBackwardMarginal,
-    EconCSLib.Allocation.weightedForwardMarginal,
-    EconCSLib.Allocation.marginal] using
-      EconCSLib.Allocation.weightedBackwardMarginal_le_weightedForwardMarginal_of_diminishing
+    HasDiminishingReturns, AppliedModelingLib.Allocation.weightedBackwardMarginal,
+    AppliedModelingLib.Allocation.weightedForwardMarginal,
+    AppliedModelingLib.Allocation.marginal] using
+      AppliedModelingLib.Allocation.weightedBackwardMarginal_le_weightedForwardMarginal_of_diminishing
         (weight := M.likelihood) (valueOfCount := M.valueOfCount)
         hDR hlike_nonneg t hrq
 
@@ -200,27 +200,27 @@ theorem noRoundingCrossingBetween_of_strictExchangeCertificate {T : ℕ}
     (hlike_nonneg : ∀ t, 0 ≤ M.likelihood t)
     (horder : ∀ t, lower.count t ≤ upper.count t)
     (hcert : M.StrictRoundingExchangeCertificateBetween lower upper) :
-    EconCSLib.FiniteRounding.NoRoundingCrossingBetween
+    AppliedModelingLib.FiniteRounding.NoRoundingCrossingBetween
       (fun t : ItemType T => a.count t)
       (fun t : ItemType T => lower.count t)
       (fun t : ItemType T => upper.count t) := by
   have hopt' :
-      EconCSLib.Allocation.IsOptimalAtTotal
+      AppliedModelingLib.Allocation.IsOptimalAtTotal
         M.likelihood M.valueOfCount N a := by
-    simpa [EconCSLib.Allocation.IsOptimalAtTotal, IsOptimalAtTotal,
+    simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal, IsOptimalAtTotal,
       FeasibleAtTotal, objective] using hopt
   have hcert' :
-      EconCSLib.Allocation.StrictRoundingExchangeCertificateBetween
+      AppliedModelingLib.Allocation.StrictRoundingExchangeCertificateBetween
         M.likelihood M.valueOfCount lower upper := by
     intro high low hlow
     simpa [StrictRoundingExchangeCertificateBetween, weightedForwardMarginal,
       weightedBackwardMarginal, marginalValue,
-      EconCSLib.Allocation.StrictRoundingExchangeCertificateBetween,
-      EconCSLib.Allocation.weightedForwardMarginal,
-      EconCSLib.Allocation.weightedBackwardMarginal,
-      EconCSLib.Allocation.marginal] using hcert high low hlow
+      AppliedModelingLib.Allocation.StrictRoundingExchangeCertificateBetween,
+      AppliedModelingLib.Allocation.weightedForwardMarginal,
+      AppliedModelingLib.Allocation.weightedBackwardMarginal,
+      AppliedModelingLib.Allocation.marginal] using hcert high low hlow
   exact
-    EconCSLib.Allocation.noRoundingCrossingBetween_of_strictExchangeCertificate
+    AppliedModelingLib.Allocation.noRoundingCrossingBetween_of_strictExchangeCertificate
       (a := a) (lower := lower) (upper := upper)
       (weight := M.likelihood) (valueOfCount := M.valueOfCount)
       (N := N) hopt' hDR hlike_nonneg horder hcert'

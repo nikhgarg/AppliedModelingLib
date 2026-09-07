@@ -1,8 +1,8 @@
-import EconCSLib.SocialChoice.FairDivision.Mechanisms
+import AppliedModelingLib.SocialChoice.FairDivision.Mechanisms
 import Mathlib.Data.Fintype.Card
 import Mathlib.Tactic
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 namespace LMMS04FairDivision
 namespace Theorem31

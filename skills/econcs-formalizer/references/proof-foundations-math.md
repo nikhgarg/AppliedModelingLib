@@ -1,6 +1,6 @@
 # Foundations: Math
 
-Use for `EconCSLib/Foundations/Math/*`, graph/counting helpers, finite rounding,
+Use for `AppliedModelingLib/Foundations/Math/*`, graph/counting helpers, finite rounding,
 finite signs, asymptotics, and interval-crossing arguments.
 
 ## Proof Seams
@@ -34,7 +34,7 @@ finite signs, asymptotics, and interval-crossing arguments.
   rank-layer stochastic dominance, and many finite scoring-rule/rate
   comparisons.
 - For two-component pooled estimates over real values, use
-  `EconCSLib.Foundations.Math.ConvexCombination` instead of rebuilding
+  `AppliedModelingLib.Foundations.Math.ConvexCombination` instead of rebuilding
   denominator-cleared algebra. Define paper notation locally, then prove
   comparisons through `twoPointWeightedAverage` with
   `lt_twoPointWeightedAverage_of_lt_components`,
@@ -107,7 +107,7 @@ finite signs, asymptotics, and interval-crossing arguments.
   positive tail, simplify `sqrt n / n` using `Real.sq_sqrt`, and then combine
   the two zero limits with `TendsToZero_of_eventually_abs_le_tendsto_zero`.
 - For finite probability-product lower bounds of the form
-  `(1 - 1/d)^N`, use `EconCSLib.Foundations.Math.ExponentialBounds`:
+  `(1 - 1/d)^N`, use `AppliedModelingLib.Foundations.Math.ExponentialBounds`:
   `exp_neg_two_div_le_one_sub_inv_of_two_le` gives
   `exp(-(2/d)) <= 1 - 1/d` when `d >= 2`, and
   `exp_neg_two_mul_nat_div_le_one_sub_inv_pow_of_two_le` raises it to

@@ -20,7 +20,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-! ## Literal PBO predicates -/
@@ -332,9 +332,10 @@ theorem lg21HiddenAccessBaseScoreObservation_measurable
 
 /--
 The source-facing hidden-access equilibrium carrier shared by the two timing
-regimes.  It keeps the literal source population and public PBO equations, but
-reads the pre-score part of Definition 1 at the population level: changes on a
-null type set are immaterial.
+regimes.  It keeps the literal source population and public PBO equations and
+states the pre-score part of Definition 1 pointwise for every public base and
+latent skill.  The `AE` suffix is retained for compatibility with the actual
+conditional-PBO layers; it does not weaken the Section 3 action response.
 
 There is deliberately no score-stage report-versus-withhold best-response
 field here.  That comparison belongs to the optional-reporting regime only;
@@ -364,14 +365,16 @@ structure LG21HiddenAccessLiteralSourceEquilibriumAE
       if reportDecision base score then reportedPayoff base score else noReportPayoff base)
       (testLaw skill base)
   access_positive : 0 < M.accessLaw {true}
-  take_best_response_ae :
-    NoProfitableBinaryChoiceDeviationAE
-      (lg21HiddenAccessAccessLatentBaseLaw M testFeature)
-      (fun profile => takeDecision profile.1 profile.2 = true)
-      (fun profile => ∫ score,
-        if reportDecision profile.2 score then reportedPayoff profile.2 score
-        else noReportPayoff profile.2 ∂testLaw profile.1 profile.2)
-      (fun profile => noReportPayoff profile.2)
+  /-- Definition 1 is pointwise in every pre-score type `(skill, base)`.
+  This Section 3 field deliberately does not use the separate Section 4
+  almost-everywhere active-branch convention. -/
+  take_best_response : ∀ publicBase,
+    NoProfitableBinaryChoiceDeviation
+      (fun latentSkill => takeDecision latentSkill publicBase = true)
+      (fun latentSkill => ∫ score,
+        if reportDecision publicBase score then reportedPayoff publicBase score
+        else noReportPayoff publicBase ∂testLaw latentSkill publicBase)
+      (fun _latentSkill => noReportPayoff publicBase)
   raw_test_law : ∀ skill base,
     testLaw skill base = gaussianReal skill (M.noiseVariance testFeature)
   test_noise_nonzero : M.noiseVariance testFeature ≠ 0
@@ -382,19 +385,66 @@ structure LG21HiddenAccessLiteralSourceEquilibriumAE
 
 namespace LG21HiddenAccessLiteralSourceEquilibriumAE
 
+/-- The pointwise Definition-1 take response, viewed on the actual source law
+for measure-theoretic downstream arguments. -/
+theorem take_best_response_ae
+    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
+    {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
+    (E : LG21HiddenAccessLiteralSourceEquilibriumAE M testFeature) :
+    NoProfitableBinaryChoiceDeviationAE
+      (lg21HiddenAccessAccessLatentBaseLaw M testFeature)
+      (fun profile => E.takeDecision profile.1 profile.2 = true)
+      (fun profile => ∫ score,
+        if E.reportDecision profile.2 score then E.reportedPayoff profile.2 score
+        else E.noReportPayoff profile.2 ∂E.testLaw profile.1 profile.2)
+      (fun profile => E.noReportPayoff profile.2) := by
+  apply noProfitableBinaryChoiceDeviationAE_of_pointwise
+  constructor
+  · intro profile htake
+    exact (E.take_best_response profile.2).1 profile.1 htake
+  · intro profile hnoTake
+    exact (E.take_best_response profile.2).2 profile.1 hnoTake
+
 /-- The score-stage Definition-1 condition for the optional-reporting
 regime.  It is intentionally a separate proposition rather than a field of
 the shared carrier, because taking and withholding is infeasible when
 reporting is required after taking. -/
+abbrev OptionalReportBestResponse
+    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
+    {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
+    (E : LG21HiddenAccessLiteralSourceEquilibriumAE M testFeature) : Prop :=
+  ∀ publicBase,
+    NoProfitableBinaryChoiceDeviation
+      (fun score => E.reportDecision publicBase score = true)
+      (E.reportedPayoff publicBase)
+      (fun _score => E.noReportPayoff publicBase)
+
+/-- Compatibility spelling retained for existing Section 3 callers.  Its
+content is pointwise; the suffix records only that older proof layers consume
+the derived a.e. projection below. -/
 abbrev OptionalReportBestResponseAE
     {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
     {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
     (E : LG21HiddenAccessLiteralSourceEquilibriumAE M testFeature) : Prop :=
-  NoProfitableBinaryChoiceDeviationAE
-    (lg21HiddenAccessAccessBaseScoreLaw M testFeature)
-    (fun profile => E.reportDecision profile.1 profile.2 = true)
-    (fun profile => E.reportedPayoff profile.1 profile.2)
-    (fun profile => E.noReportPayoff profile.1)
+  E.OptionalReportBestResponse
+
+/-- Project the universal score-stage response onto the source law. -/
+theorem optionalReportBestResponse_ae
+    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
+    {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
+    (E : LG21HiddenAccessLiteralSourceEquilibriumAE M testFeature)
+    (hbest : E.OptionalReportBestResponseAE) :
+    NoProfitableBinaryChoiceDeviationAE
+      (lg21HiddenAccessAccessBaseScoreLaw M testFeature)
+      (fun profile => E.reportDecision profile.1 profile.2 = true)
+      (fun profile => E.reportedPayoff profile.1 profile.2)
+      (fun profile => E.noReportPayoff profile.1) := by
+  apply noProfitableBinaryChoiceDeviationAE_of_pointwise
+  constructor
+  · intro profile hreport
+    exact (hbest profile.1).1 profile.2 hreport
+  · intro profile hwithhold
+    exact (hbest profile.1).2 profile.2 hwithhold
 
 /-- The literal pre-score no-take event measured under the actual
 positive-access population. -/
@@ -425,8 +475,8 @@ theorem accessNoTakeEvent_measurable
     ((lg21HiddenAccessStudentTake_measurable testFeature E.takeDecision
       E.takeDecision_measurable).comp measurable_snd)
 
-/-- The unchosen side of Definition 1, projected from the a.e. source
-equilibrium semantics at the literal pre-score decision inputs. -/
+/-- The unchosen side of the pointwise Definition 1 response, projected onto
+the literal pre-score source law for the measure-theoretic closeout. -/
 theorem take_noTake_best_response_ae
     {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
     {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}

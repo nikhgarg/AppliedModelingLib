@@ -27,6 +27,27 @@ from pathlib import Path, PurePosixPath
 from typing import Any, Mapping, Sequence
 from urllib.parse import unquote
 
+try:
+    from corrected_target_identity import (
+        CORRECTED_TARGET_ORIGINAL_ARTIFACT_PATH_FIELD,
+        CORRECTED_TARGET_RECORD_SHA256_FIELD,
+        CORRECTED_TARGET_REVIEW_SHA256_FIELD,
+        corrected_target_approval_excerpt_material,
+        corrected_target_original_artifact_path_error,
+        corrected_target_record_digest,
+        corrected_target_review_digest,
+    )
+except ModuleNotFoundError:  # Module-style import.
+    from scripts.corrected_target_identity import (
+        CORRECTED_TARGET_ORIGINAL_ARTIFACT_PATH_FIELD,
+        CORRECTED_TARGET_RECORD_SHA256_FIELD,
+        CORRECTED_TARGET_REVIEW_SHA256_FIELD,
+        corrected_target_approval_excerpt_material,
+        corrected_target_original_artifact_path_error,
+        corrected_target_record_digest,
+        corrected_target_review_digest,
+    )
+
 
 PUBLIC_PROJECTION_GENERATOR = "python3 scripts/public_release_projection.py"
 PUBLICATION_LOCATOR = "cited publication"
@@ -34,6 +55,11 @@ PUBLIC_SOURCE_DISPLAY_PROJECTION_FIELD = "publication_source_display_projection"
 PUBLIC_SOURCE_DISPLAY_PROJECTION_SCHEMA = 1
 PUBLIC_SOURCE_DISPLAY_PROJECTION_MANIFEST = (
     "audit/public_source_display_projection.json"
+)
+PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD = "publication_corrected_target_projection"
+PUBLIC_CORRECTED_TARGET_PROJECTION_SCHEMA = 1
+PUBLIC_WITHHELD_APPROVAL_REFERENCE = (
+    "The underlying approval record is withheld from this public projection."
 )
 
 # These are deliberately public contributor instructions.  They explain how
@@ -44,22 +70,46 @@ PUBLIC_SOURCE_DISPLAY_PROJECTION_MANIFEST = (
 PUBLIC_CONTRIBUTOR_WORKFLOW_PATHS = frozenset(
     {
         "skills/econcs-session-insights/SKILL.md",
-        "skills/econcs-session-insights/references/user-feedback-course-corrections.md",
         "skills/econcs-formalizer/SKILL.md",
+        "skills/econcs-formalizer/references/audit-and-closeout.md",
+        "skills/econcs-formalizer/references/final-closure-receipt.md",
+        "skills/econcs-formalizer/references/formalization-architecture.md",
         "skills/econcs-formalizer/references/formalization-handbook.md",
+        "skills/econcs-formalizer/references/human-facing-artifacts.md",
+        "skills/econcs-formalizer/references/intake-and-source-surface.md",
         "skills/econcs-formalizer/references/post-formalization-closeout.md",
+        "skills/econcs-formalizer/references/proof-algorithms-complexity.md",
+        "skills/econcs-formalizer/references/proof-algorithms-online.md",
+        "skills/econcs-formalizer/references/proof-foundations-math.md",
+        "skills/econcs-formalizer/references/proof-foundations-optimization.md",
+        "skills/econcs-formalizer/references/proof-foundations-probability.md",
+        "skills/econcs-formalizer/references/proof-markets-social-choice.md",
+        "skills/econcs-formalizer/references/proof-mechanism-design.md",
+        "skills/econcs-formalizer/references/proof-recommender-systems.md",
+        "skills/econcs-formalizer/references/proof-strategies.md",
         "skills/econcs-formalizer/references/public-private-sync.md",
+        "skills/econcs-formalizer/references/release-and-sync.md",
+        "skills/econcs-formalizer/references/shared-library-development.md",
         "skills/econcs-formalizer/templates/FORMALIZATION_PLAN.md",
         "skills/econcs-prover/SKILL.md",
+        "skills/econcs-prover/references/proving-workflow-provenance.md",
+        "skills/econcs-shared-worktree/SKILL.md",
         "skills/lean-community-conventions/SKILL.md",
         "skills/lean-community-conventions/references/econcs-adoption-plan.md",
         "docs/AGENT_FORMALIZATION_WORKFLOW.md",
+        "docs/ARCHITECTURE.md",
         "docs/FORMALIZATION_AUDIT_PROCEDURE_OVERVIEW.tex",
         "docs/NEW_CONTRIBUTOR_WORKFLOW.md",
         "docs/INDEPENDENT_AUDIT_GUIDE.md",
+        "docs/PRIVATE_DEVELOPMENT_WORKFLOW.md",
+        "docs/PUBLIC_RELEASE_CHECKLIST.md",
+        "docs/PUBLIC_REPOSITORY_WORKFLOW.md",
+        "docs/REVIEW_DASHBOARD.md",
+        "docs/REPOSITORY_LAUNCH_PLAN.md",
         "docs/PAPER_STATUS.md",
         "docs/STATUS.md",
         "docs/VALIDATION_MODEL.md",
+        "docs/contributing/README.md",
         "config/formalization_engine_revisions.json",
     }
 )
@@ -74,6 +124,10 @@ _PUBLIC_SITE_PRIVATE_WORKFLOW_GUIDANCE = (
     "            proposed to enter the library through a pull request when ready."
 )
 _PUBLIC_SITE_PRIVATE_WORKFLOW_SENTINEL = "__APPROVED_PUBLIC_WORKFLOW_GUIDANCE__"
+PUBLIC_README_PRIVATE_WORKFLOW_GUIDANCE = (
+    "General lessons from private workflow examples are incorporated into the\n"
+    "  public skills; the underlying wiki and feedback history remain private."
+)
 
 
 class ProjectionError(ValueError):
@@ -94,6 +148,8 @@ _DROP_FIELDS = frozenset(
         "source_artifact_provisioning",
         "source_text_file",
         "source_text_companion",
+        "source_transcript",
+        "text_extraction",
         "companion_html_path",
     }
 )
@@ -119,9 +175,25 @@ _KEY_RENAMES = {
 # not become a blanket escape hatch for arbitrary local workflow content.
 _EXCERPT_FIELDS = frozenset({"quoted_text", "source_excerpt", "source_quote"})
 
+# Anchor handling is deliberately field-name based.  Source-map item IDs are
+# arbitrary semantic identifiers and may themselves end in ``_anchor``; they
+# must never acquire source-excerpt privileges or bypass the normal recursive
+# projection merely because of that suffix.
+_ANCHOR_FIELDS = frozenset(
+    {
+        "core_anchor",
+        "corrected_clause_anchor",
+        "source_anchor",
+        "source_restatement_evidence",
+        "source_term_use_anchor",
+    }
+)
+
 _CONTROLLED_TEXT_FIELDS = frozenset(
     {
+        "aliases",
         "artifact_kind",
+        "artifact_excerpt",
         "artifact_path",
         "archival_source_locator",
         "affected_source_locators",
@@ -130,6 +202,7 @@ _CONTROLLED_TEXT_FIELDS = frozenset(
         "llm_judge_prompt",
         "method",
         "policy",
+        "presentation_label",
         "provenance",
         "reference",
         "reason",
@@ -332,10 +405,6 @@ _WORKFLOW_KEY_RE = re.compile(r"(?:^|_)(?:handoff|remediation)(?:_|$)", re.IGNOR
 # review prose.  A public projection only rewrites those locators; it leaves
 # Lean syntax and mathematical content byte-for-byte unchanged otherwise.
 _TEXT_SUFFIXES = frozenset({".html", ".lean", ".md", ".tex", ".txt"})
-_PUBLIC_FORMALIZER_SKILL = PurePosixPath("skills/econcs-formalizer/SKILL.md")
-_PUBLIC_RELEASE_CHECKLIST = PurePosixPath("docs/PUBLIC_RELEASE_CHECKLIST.md")
-
-
 def _relative_path(value: str) -> PurePosixPath:
     if not isinstance(value, str) or not value.strip():
         raise ProjectionError("projection path must be a nonempty repository-relative path")
@@ -544,71 +613,6 @@ def _project_public_workflow_text(value: str) -> str:
     return result
 
 
-def _project_public_release_checklist_text(value: str) -> str:
-    """Keep the public checklist useful without exporting release internals."""
-
-    replacements = (
-        (
-            "- [ ] The candidate was created on a `release/` branch in a separate clean\n"
-            "      public clone from the recorded `origin/main` commit. No private `HEAD`,\n"
-            "      private branch, private Git directory, or filtered private history was\n"
-            "      pushed or merged into the public repository.",
-            "- [ ] The candidate was created on a `release/` branch in a separate clean\n"
-            "      worktree from the recorded public base. Only reviewed current-tree\n"
-            "      artifacts are included in the release.",
-        ),
-        (
-            "- [ ] The trusted private guard's non-authoritative `--preflight` passes for the\n"
-            "      clean one-commit candidate and exact allowlist. All reported problems were\n"
-            "      resolved before human approval was requested; preflight was not treated as\n"
-            "      publication authorization.",
-            "- [ ] The deterministic release preflight passes for the clean one-commit\n"
-            "      candidate and exact allowlist. All reported problems were resolved before\n"
-            "      human approval was requested; preflight is not publication authorization.",
-        ),
-        (
-            "- [ ] A human reviewer placed the schema-2 approval at the guard's fixed\n"
-            "      `~/.config/econcslib/public-release-approval.json` path outside both\n"
-            "      repositories. It pins the exact candidate and public-base commits,\n"
-            "      allowlist, guard, and deterministic private trusted-tooling bundle SHA256\n"
-            "      values, and sorted private source commits. The tooling digest covers all\n"
-            "      non-test production files under the executed private `scripts/` directory,\n"
-            "      including imported and executed guard helpers.\n"
-            "      Its directory/file modes are `0700`/`0600`, and neither is a symlink.",
-            "- [ ] A human reviewer records approval outside the candidate, binding the exact\n"
-            "      candidate and public-base commits, allowlist, guard, reviewed tooling\n"
-            "      provenance, and source-provenance commits. The approval is reviewer-owned\n"
-            "      and is not a repository artifact.",
-        ),
-        (
-            "- [ ] From the clean committed candidate, run the trusted private copy:\n"
-            "      `python3 <private-repo>/scripts/public_release_candidate_guard.py --repo \"$PWD\"\n"
-            "      --allowlist <reviewed-allowlist.json>` passes. Every copied candidate blob\n"
-            "      must byte-match its allowlisted path at the recorded private commit;\n"
-            "      deletions and public-generated aggregate files use their explicit\n"
-            "      non-copy provenance modes. Both repositories use their canonical\n"
-            "      `origin` fetch and push URLs, do not share a Git object store, and every\n"
-            "      private source commit is reachable from private `origin/main`.",
-            "- [ ] From the clean committed candidate, run the reviewed release guard with\n"
-            "      its reviewed allowlist. Every included candidate blob has its recorded\n"
-            "      provenance; deletions and generated aggregate files use their explicit\n"
-            "      non-copy provenance modes.",
-        ),
-        ("not the private\n      incubator.", "not a development\n      workspace."),
-        ("audit workspace/cache", "approved review inputs"),
-        ("private planning/handoff markdown", "internal planning markdown"),
-        ("remain private.", "are excluded from the public release."),
-        ("## Preparing A Completed Private Paper", "## Preparing A Completed Paper For Public Release"),
-        ("Do not export private development history.", "Do not export unreviewed development history."),
-        ("public `origin/main`.", "the recorded public base."),
-    )
-    result = value
-    for before, after in replacements:
-        if before in result:
-            result = result.replace(before, after, 1)
-    return result
-
-
 def _neutralize_text(value: str) -> str:
     """Rewrite only the known workflow phrases into paper-facing language."""
 
@@ -640,91 +644,6 @@ def _neutralize_text(value: str) -> str:
     )
     for index, url in enumerate(urls):
         result = result.replace(f"__PUBLIC_HTTP_URL_{index}__", url)
-    return _project_public_workflow_text(result)
-
-
-def _project_formalizer_skill_text(value: str) -> str:
-    """Produce the public form of the shared formalizer entrypoint.
-
-    The private skill deliberately contains links to the private checkout and
-    its long operational handbook.  The public skill retains the mathematical
-    protocol and release-safety rule, but must not advertise those local
-    workflow surfaces.  Keep this as a small exact projection rather than a
-    generic private-name substitution, so a source edit that changes the
-    boundary language fails visibly below.
-    """
-
-    private_repository_rule = (
-        "- Work in `EconCSLib-private` on `main` unless the user explicitly requests a\n"
-        "  branch. Do not edit, commit, push, or serve the public repository unless the\n"
-        "  user explicitly asks."
-    )
-    public_repository_rule = (
-        "- Work in the repository and branch the user has placed in scope. Do not\n"
-        "  edit, commit, push, or serve a public remote unless the user explicitly asks."
-    )
-    private_export_rule = (
-        "- For public/private export and history safety, read\n"
-        "  `skills/econcs-formalizer/references/public-private-sync.md`. Do not push a\n"
-        "  private commit graph directly to public."
-    )
-    public_export_rule = (
-        "- For a public release, follow `docs/PUBLIC_RELEASE_CHECKLIST.md`. Use an\n"
-        "  explicitly approved release branch; never push an unreviewed development\n"
-        "  commit graph to a public remote."
-    )
-    handbook_reference = (
-        "- `references/formalization-handbook.md`: searchable detailed legacy handbook;\n"
-        "  current policy overrides conflicts.\n"
-    )
-    private_sync_reference = (
-        "- `references/public-private-sync.md`: private/public export and history safety.\n"
-    )
-    # Public tests and local release tooling may pass the already-projected
-    # public skill through this deterministic function. Recognize that exact
-    # public form rather than treating a harmless second projection as a
-    # private-source mismatch; still fail closed if a private reference is
-    # present alongside it.
-    if public_repository_rule in value and public_export_rule in value:
-        if (
-            "EconCSLib-private" in value
-            or "references/formalization-handbook.md" in value
-            or "references/public-private-sync.md" in value
-        ):
-            raise ProjectionError(
-                "formalizer public-skill projection mixes public and private workflow references"
-            )
-        return _project_public_workflow_text(value)
-    result = value
-    # The private entrypoint may already use repository-neutral wording: that
-    # is a source-side hygiene improvement, not an ambiguous public boundary.
-    # Still require one of the two exact repository rules so an unrelated
-    # deletion cannot silently turn this into a generic text redactor.
-    if private_repository_rule in result:
-        result = result.replace(private_repository_rule, public_repository_rule, 1)
-    elif public_repository_rule not in result:
-        raise ProjectionError(
-            "formalizer public-skill projection no longer recognizes its repository rule"
-        )
-    if private_export_rule in result:
-        result = result.replace(private_export_rule, public_export_rule, 1)
-    elif public_export_rule not in result:
-        raise ProjectionError(
-            "formalizer public-skill projection no longer recognizes its release rule"
-        )
-    # These private-only detailed references can be removed only when they
-    # appear as their exact entrypoint bullets. Their absence is expected in a
-    # source that has already been made public-safe.
-    result = result.replace(handbook_reference, "", 1)
-    result = result.replace(private_sync_reference, "", 1)
-    if (
-        "EconCSLib-private" in result
-        or "references/formalization-handbook.md" in result
-        or "references/public-private-sync.md" in result
-    ):
-        raise ProjectionError(
-            "formalizer public-skill projection left a private workflow reference"
-        )
     return _project_public_workflow_text(result)
 
 
@@ -891,13 +810,26 @@ def _project_mapping(value: Mapping[str, Any], *, pointer: Sequence[str | int]) 
                 f"projection would collide at {_json_pointer((*pointer, public_key))}"
             )
         child_pointer = (*pointer, key)
-        if key in _EXCERPT_FIELDS and isinstance(child, str):
+        if key == "approval_reference":
+            if not isinstance(child, str) or not child.strip():
+                raise ProjectionError(f"malformed approval reference at {_json_pointer(child_pointer)}")
+            projected = PUBLIC_WITHHELD_APPROVAL_REFERENCE
+        elif key == "approval" and pointer and pointer[-1] == "deep_support_repair":
+            if not isinstance(child, Mapping):
+                raise ProjectionError(f"malformed repair approval at {_json_pointer(child_pointer)}")
+            projected = {
+                "publication_record": PUBLIC_WITHHELD_APPROVAL_REFERENCE,
+                "private_record_sha256": hashlib.sha256(
+                    json.dumps(child, sort_keys=True, separators=(",", ":")).encode("utf-8")
+                ).hexdigest(),
+            }
+        elif key in _EXCERPT_FIELDS and isinstance(child, str):
             if not source_excerpt_field_is_bound(value, key):
                 raise ProjectionError(
                     f"source excerpt at {_json_pointer(child_pointer)} is not a bound source record"
                 )
             projected = child
-        elif key in {"source_anchor", "source_restatement_evidence"} or key.endswith("_anchor"):
+        elif key in _ANCHOR_FIELDS:
             # Most audit schemas use an object with a byte-pinned path, but a
             # few older human-status records retain a compact string locator.
             # Both are publicable as a paper locator; only the object form has
@@ -910,10 +842,10 @@ def _project_mapping(value: Mapping[str, Any], *, pointer: Sequence[str | int]) 
                 raise ProjectionError(
                     f"source anchor at {_json_pointer(child_pointer)} must be an object or string"
                 )
-        elif key == "source_anchor_evidence":
+        elif key in {"source_anchor_evidence", "semantic_source_anchor_evidence"}:
             if not isinstance(child, list):
                 raise ProjectionError(
-                    f"source_anchor_evidence at {_json_pointer(child_pointer)} must be a list"
+                    f"source anchor evidence at {_json_pointer(child_pointer)} must be a list"
                 )
             projected = [
                 _project_anchor(anchor, pointer=(*child_pointer, index))
@@ -945,6 +877,9 @@ def _project_mapping(value: Mapping[str, Any], *, pointer: Sequence[str | int]) 
                     "source_archive",
                     "source_artifact_identity",
                     "source_artifact_identities",
+                    "source_artifact",
+                    "source_pdf_artifact",
+                    "cited_source_artifacts",
                 }
                 for component in pointer
                 if isinstance(component, str)
@@ -1127,6 +1062,188 @@ def _is_paper_statement_map_path(path: PurePosixPath) -> bool:
     )
 
 
+def _canonical_paper_relative_path(value: object) -> bool:
+    """Whether one private approval locator has an unambiguous relative form."""
+
+    if not isinstance(value, str) or not value or value != value.strip() or "\\" in value:
+        return False
+    components = value.split("/")
+    if any(component in {"", ".", ".."} for component in components):
+        return False
+    path = PurePosixPath(value)
+    return not path.is_absolute() and path.as_posix() == value
+
+
+def _normalized_text_sha256(value: object) -> str:
+    normalized = re.sub(r"\s+", " ", str(value or "").strip())
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
+def _prepare_public_corrected_target_projection(
+    payload: object, *, relative_path: str
+) -> tuple[object, dict[str, tuple[str, str, str]]]:
+    """Remove private approval records only after validating their identities.
+
+    The public map retains the exact mathematical statement, its stable review
+    digest, and the opaque digest of the full private correction record.  The
+    exact private blob and deterministic transformation are authenticated by
+    the release guard's ``private_projection`` provenance check.
+    """
+
+    if not isinstance(payload, Mapping):
+        return payload, {}
+    if PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD in payload:
+        raise ProjectionError(
+            f"{relative_path} private source map already declares "
+            f"{PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD}"
+        )
+    items = payload.get("items")
+    if not isinstance(items, Mapping):
+        return payload, {}
+
+    projected_items: dict[str, Any] = dict(items)
+    retained: dict[str, tuple[str, str, str]] = {}
+    for item_id, item in items.items():
+        if not isinstance(item_id, str):
+            raise ProjectionError(f"{relative_path} source-map items has a non-string key")
+        if not isinstance(item, Mapping) or "corrected_target" not in item:
+            continue
+        pointer = ("items", item_id, "corrected_target")
+        target = item.get("corrected_target")
+        if not isinstance(target, Mapping):
+            raise ProjectionError(
+                f"corrected target at {_json_pointer(pointer)} must be an object"
+            )
+        if target.get("schema") != 1:
+            raise ProjectionError(
+                f"corrected target at {_json_pointer(pointer)} must use schema 1"
+            )
+        if target.get("archival_equivalence_claimed") is not False:
+            raise ProjectionError(
+                f"corrected target at {_json_pointer(pointer)} must declare "
+                "archival_equivalence_claimed=false"
+            )
+        statement = target.get("statement")
+        if not isinstance(statement, str) or not statement.strip():
+            raise ProjectionError(
+                f"corrected target at {_json_pointer(pointer)} has no statement"
+            )
+
+        raw_record_digest = target.get(CORRECTED_TARGET_RECORD_SHA256_FIELD)
+        raw_review_digest = target.get(CORRECTED_TARGET_REVIEW_SHA256_FIELD)
+        record_digest = str(raw_record_digest or "").strip().lower()
+        review_digest = str(raw_review_digest or "").strip().lower()
+        if (
+            raw_record_digest != record_digest
+            or not re.fullmatch(r"[0-9a-f]{64}", record_digest)
+            or record_digest != corrected_target_record_digest(target)
+        ):
+            raise ProjectionError(
+                f"corrected target at {_json_pointer(pointer)} has a stale or malformed "
+                f"{CORRECTED_TARGET_RECORD_SHA256_FIELD}"
+            )
+        if (
+            raw_review_digest != review_digest
+            or not re.fullmatch(r"[0-9a-f]{64}", review_digest)
+            or review_digest != corrected_target_review_digest(target)
+        ):
+            raise ProjectionError(
+                f"corrected target at {_json_pointer(pointer)} has a stale or malformed "
+                f"{CORRECTED_TARGET_REVIEW_SHA256_FIELD}"
+            )
+
+        approval = target.get("approval")
+        if (
+            not isinstance(approval, Mapping)
+            or not isinstance(approval.get("artifact_excerpt"), str)
+            or corrected_target_approval_excerpt_material(approval) is None
+        ):
+            raise ProjectionError(
+                f"corrected target at {_json_pointer(pointer)} has malformed private "
+                "approval excerpt authority"
+            )
+        if not _canonical_paper_relative_path(approval.get("artifact_path")):
+            raise ProjectionError(
+                f"corrected target at {_json_pointer(pointer)} has a noncanonical "
+                "private approval artifact_path"
+            )
+        original_path_error = corrected_target_original_artifact_path_error(approval)
+        if original_path_error:
+            raise ProjectionError(
+                f"corrected target at {_json_pointer(pointer)} has invalid "
+                f"{CORRECTED_TARGET_ORIGINAL_ARTIFACT_PATH_FIELD}: {original_path_error}"
+            )
+        if str(
+            approval.get("target_statement_sha256") or ""
+        ).strip().lower() != _normalized_text_sha256(statement):
+            raise ProjectionError(
+                f"corrected target at {_json_pointer(pointer)} has a stale or malformed "
+                "approval target_statement_sha256"
+            )
+
+        public_target = dict(target)
+        public_target.pop("approval")
+        public_item = dict(item)
+        public_item["corrected_target"] = public_target
+        projected_items[item_id] = public_item
+        retained[item_id] = (statement, record_digest, review_digest)
+
+    if not retained:
+        return payload, {}
+    projected_payload = dict(payload)
+    projected_payload["items"] = projected_items
+    projected_payload[PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD] = {
+        "schema": PUBLIC_CORRECTED_TARGET_PROJECTION_SCHEMA,
+        "approval_material_included": False,
+    }
+    return projected_payload, retained
+
+
+def _assert_corrected_target_projection_preserved(
+    projected: object,
+    retained: Mapping[str, tuple[str, str, str]],
+    *,
+    relative_path: str,
+) -> None:
+    """Require the generic projection to leave mathematical identities exact."""
+
+    if not retained:
+        return
+    if not isinstance(projected, Mapping):
+        raise ProjectionError(f"{relative_path} projected source map must be an object")
+    marker = projected.get(PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD)
+    if marker != {
+        "schema": PUBLIC_CORRECTED_TARGET_PROJECTION_SCHEMA,
+        "approval_material_included": False,
+    }:
+        raise ProjectionError(f"{relative_path} corrected-target projection marker changed")
+    items = projected.get("items")
+    if not isinstance(items, Mapping):
+        raise ProjectionError(f"{relative_path} projected source-map items must be an object")
+    for item_id, (statement, record_digest, review_digest) in retained.items():
+        item = items.get(item_id)
+        target = item.get("corrected_target") if isinstance(item, Mapping) else None
+        if not isinstance(target, Mapping) or "approval" in target:
+            raise ProjectionError(
+                f"{relative_path} projected corrected target {item_id!r} retained approval material"
+            )
+        if target.get("statement") != statement:
+            raise ProjectionError(
+                f"{relative_path} public projection would change corrected target statement "
+                f"for {item_id!r}"
+            )
+        if target.get(CORRECTED_TARGET_RECORD_SHA256_FIELD) != record_digest:
+            raise ProjectionError(
+                f"{relative_path} public projection would change corrected target record "
+                f"identity for {item_id!r}"
+            )
+        if target.get(CORRECTED_TARGET_REVIEW_SHA256_FIELD) != review_digest:
+            raise ProjectionError(
+                f"{relative_path} public projection would change corrected target review "
+                f"identity for {item_id!r}"
+            )
+
+
 def public_source_excerpt_route_is_permitted(
     relative_path: str, pointer: Sequence[str | int]
 ) -> bool:
@@ -1157,15 +1274,12 @@ def public_source_excerpt_route_is_permitted(
     return any(
         isinstance(component, str)
         and (
-            component in {
-                "source_anchor",
+            component in _ANCHOR_FIELDS
+            or component in {
                 "source_anchor_evidence",
+                "semantic_source_anchor_evidence",
                 "source_anchors",
-                "source_restatement_evidence",
-                "source_term_use_anchor",
-                "core_anchor",
             }
-            or component.endswith("_anchor")
         )
         for component in pointer[:-1]
     )
@@ -1180,7 +1294,30 @@ def project_json_payload(
     """Project one parsed JSON payload and reject any unrecognized unsafe value."""
 
     path = _relative_path(relative_path)
-    projected = _project_value(payload, field=None, pointer=())
+    retained_corrected_targets: dict[str, tuple[str, str, str]] = {}
+    projection_input = payload
+    if _is_paper_statement_map_path(path):
+        projection_input, retained_corrected_targets = (
+            _prepare_public_corrected_target_projection(
+                payload, relative_path=relative_path
+            )
+        )
+    projected = _project_value(projection_input, field=None, pointer=())
+    if (
+        len(path.parts) == 3
+        and path.parts[0] == "papers"
+        and path.name == "status.json"
+        and isinstance(projected, dict)
+        and isinstance(projected.get("artifacts"), dict)
+    ):
+        # Superseded review surfaces are historical development artifacts;
+        # current public evidence is selected by the accepted closure graph.
+        projected["artifacts"].pop("legacy_review_surface", None)
+    _assert_corrected_target_projection_preserved(
+        projected,
+        retained_corrected_targets,
+        relative_path=relative_path,
+    )
     if include_source_display_marker and _is_paper_statement_map_path(path):
         if not isinstance(projected, dict):
             raise ProjectionError(f"{relative_path} source map must be a JSON object")
@@ -1205,6 +1342,11 @@ def _assert_public_safe_text(value: str, *, relative_path: str) -> None:
             _PUBLIC_SITE_PRIVATE_WORKFLOW_GUIDANCE,
             _PUBLIC_SITE_PRIVATE_WORKFLOW_SENTINEL,
         )
+    if str(path) == "README.md":
+        scan_value = scan_value.replace(
+            PUBLIC_README_PRIVATE_WORKFLOW_GUIDANCE,
+            _PUBLIC_SITE_PRIVATE_WORKFLOW_SENTINEL,
+        )
     issue = _text_safety_issue(scan_value)
     if issue is not None:
         raise ProjectionError(f"unsafe {issue} in public projection: {relative_path}")
@@ -1218,10 +1360,6 @@ def project_text(value: str, *, relative_path: str) -> str:
         return value
     if path.suffix not in _TEXT_SUFFIXES:
         raise ProjectionError(f"unsupported text artifact for public projection: {relative_path}")
-    if path == _PUBLIC_FORMALIZER_SKILL:
-        value = _project_formalizer_skill_text(value)
-    if path == _PUBLIC_RELEASE_CHECKLIST:
-        value = _project_public_release_checklist_text(value)
     # Preserve the literal, path-bound landing-page recommendation before the
     # ordinary text projector rewrites generic private-workflow wording.
     protected_value = value
@@ -1230,11 +1368,46 @@ def project_text(value: str, *, relative_path: str) -> str:
             _PUBLIC_SITE_PRIVATE_WORKFLOW_GUIDANCE,
             _PUBLIC_SITE_PRIVATE_WORKFLOW_SENTINEL,
         )
+    if str(path) == "README.md":
+        protected_value = protected_value.replace(
+            PUBLIC_README_PRIVATE_WORKFLOW_GUIDANCE,
+            _PUBLIC_SITE_PRIVATE_WORKFLOW_SENTINEL,
+        )
     projected = _neutralize_text(protected_value)
+    if len(path.parts) == 3 and path.parts[0] == "papers":
+        if path.name == "FINAL_VALIDATION_REPORT.md":
+            # Current closeouts retain these reviews inside the accepted graph.
+            # Their former standalone filenames are not public entrypoints.
+            for filename in (
+                "v11_raw_source_spec_screening.json",
+                "paper_semantic_prerequisites.json",
+                "library_semantic_review.json",
+                "paper_coverage_llm.json",
+                "LEAN_IMPORT_CLOSURE_RECEIPT.json",
+                "source_proof_fidelity.json",
+                "FOCUSED_BUILD_RECEIPT.json",
+                "statement_match_llm.json",
+                "assumption_match_llm.json",
+                "defect_support_match_llm.json",
+            ):
+                projected = projected.replace(
+                    f"](audit/{filename})", "](FINAL_CLOSURE_RECEIPT.md)"
+                )
+        elif path.name == "FINAL_CLOSURE_RECEIPT.md":
+            graph_path = "audit/obligation_evidence/current_accepted_graph.json"
+            declared_pointer = f'pointer = "papers/{path.parts[1]}/{graph_path}"'
+            reader_link = f"[Accepted review and proof record]({graph_path})"
+            if declared_pointer in projected and reader_link not in projected:
+                projected = projected.rstrip() + f"\n\n{reader_link}.\n"
     if str(path) == "site/index.html":
         projected = projected.replace(
             _PUBLIC_SITE_PRIVATE_WORKFLOW_SENTINEL,
             _PUBLIC_SITE_PRIVATE_WORKFLOW_GUIDANCE,
+        )
+    if str(path) == "README.md":
+        projected = projected.replace(
+            _PUBLIC_SITE_PRIVATE_WORKFLOW_SENTINEL,
+            PUBLIC_README_PRIVATE_WORKFLOW_GUIDANCE,
         )
     _assert_public_safe_text(projected, relative_path=relative_path)
     return projected

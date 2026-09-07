@@ -24,7 +24,7 @@ ordinary named-theory closeout blockers.
 
 namespace LG21TestOptionalPolicies
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 
 namespace PostPaperAudit
 

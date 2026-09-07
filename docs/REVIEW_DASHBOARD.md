@@ -11,7 +11,7 @@ separately Lean-checked endpoint of exactly that Spec type. If a legacy
 interface contains proof wrappers or helpers, migrate that paper before
 calling its semantic review current.
 
-A material paper-local model declaration or reusable `EconCSLib` definition is
+A material paper-local model declaration or reusable `AppliedModelingLib` definition is
 not a trusted name or a glossary entry. When Lean leaves a paper-local name in
 a Spec display, the packet first opens that declaration's own body/signature,
 then recursively reviews every remaining paper-local or library dependency.
@@ -123,7 +123,7 @@ machine-readable source of truth for curated review rows and slices.
 The Lean-to-TeX draft column can be overridden by a paper-local
 `audit/lean_to_tex_llm.json` file. Use this for stable,
 context-free drafts generated from `PaperInterface.lean` alone, without reading
-the source paper. The legacy paper-root and `reviewer-owned review storage/lean_to_tex_llm.json`
+the source paper. The legacy paper-root and `.review_traces/lean_to_tex_llm.json`
 locations are still read when no tracked `audit/` draft exists.
 
 Lean-to-TeX is a display aid only. It is never shown to, or used by, the
@@ -168,8 +168,8 @@ a paraphrase):
   "prompt_version": "library-statement-match-v1-verbatim-source-anchor-expanded-definition",
   "target_protocol": "expanded_library_definition_v1",
   "items": {
-    "EconCSLib.Namespace.LibraryDefinition": {
-      "library_declaration": "EconCSLib.Namespace.LibraryDefinition",
+    "AppliedModelingLib.Namespace.LibraryDefinition": {
+      "library_declaration": "AppliedModelingLib.Namespace.LibraryDefinition",
       "source_item": "source_map_item_key",
       "library_definition_sha256": "...",
       "source_input_bundle_sha256": "...",
@@ -696,7 +696,7 @@ rg -c '^(noncomputable\s+|private\s+|protected\s+)*(theorem|lemma|def|abbrev) ' 
 By default, reviews are written under each paper folder:
 
 ```text
-reviewer-owned review record
+papers/<PaperName>/.review_traces/paper_theorem_validations.jsonl
 ```
 
 Each row stores the reviewer handle, UTC timestamp, match decision, notes,
@@ -719,7 +719,7 @@ numbered-result summary as the source statement for multiple displayed
 formulas.
 
 The repository is configured so that `paper_theorem_validations.jsonl` is
-commit-eligible, while other `reviewer-owned review storage` files such as local dashboard
+commit-eligible, while other `.review_traces` files such as local dashboard
 logs, rendered statement caches, generated HTML, and parser caches remain
 ignored. After a human review pass, inspect and commit the paper-local
 `paper_theorem_validations.jsonl` file if those judgments should become part of
@@ -728,7 +728,7 @@ the repository history.
 The dashboard's `Reviewed` count means rows in this review log. Treat it as
 human review only when the rows were saved by a human reviewer. Agent source
 audits should be kept in tracked paper docs such as `SOURCE_AUDIT.md` and
-should not be written to `reviewer-owned review storage/paper_theorem_validations.jsonl` just
+should not be written to `.review_traces/paper_theorem_validations.jsonl` just
 to clear the dashboard counter.
 
 The reviewer field is editable in the browser. By default it is prefilled from

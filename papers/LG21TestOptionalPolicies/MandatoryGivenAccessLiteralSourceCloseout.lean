@@ -14,7 +14,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 open scoped ENNReal NNReal ProbabilityTheory
 
 /-- The direct literal-source endpoint for the mandatory-given-access
@@ -34,7 +34,7 @@ def LG21MandatoryGivenAccessLiteralSourceCloseout
     (baseLaw_isProbability : IsProbabilityMeasure baseLaw)
     (baseVariance_pos : 0 < baseVariance),
       lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature =
-        baseLaw ⊗ₘ EconCSLib.Probability.gaussianLocationKernel
+        baseLaw ⊗ₘ AppliedModelingLib.Probability.gaussianLocationKernel
           baseMean baseMean_measurable baseVariance.toNNReal ∧
       (letI : IsProbabilityMeasure baseLaw := baseLaw_isProbability
        let S : LG21GaussianPBOResamplingSource

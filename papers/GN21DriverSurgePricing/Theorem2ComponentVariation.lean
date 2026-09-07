@@ -17,7 +17,7 @@ integrability and local-continuity hypotheses; transporting it back to the
 policy path remains a separate obligation.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped ENNReal Topology
 

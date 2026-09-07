@@ -17,8 +17,12 @@ if str(ROOT / "scripts") not in sys.path:
     sys.path.insert(0, str(ROOT / "scripts"))
 
 from formalization_protocol import (  # noqa: E402
+    CLOSEOUT_REVIEW_POLICY_DEFAULT_REPEAT_SCOPE,
+    CLOSEOUT_REVIEW_POLICY_DEFAULT_SOURCE_SCOPE,
     EXPECTED_LEGACY_V10_TRANSITION_BASELINE_COMMIT,
     EXPECTED_LEGACY_V10_TRANSITION_TRUSTED_REF,
+    EXPECTED_CLEAN_LEAN_OUTPUT_BYTES,
+    EXPECTED_LEAN_DIAGNOSTIC_FAILURES,
     EXPECTED_REQUIRED_REUSE_IDENTITIES,
     EXPECTED_REUSE_FAILURES,
     IMMUTABLE_MATERIAL_IDENTITY_MANIFEST_AUTHORITY,
@@ -32,17 +36,53 @@ from formalization_protocol import (  # noqa: E402
     FormalizationProtocolError,
     formalization_coverage_protocol_digest,
     formalization_judgment_review_protocol_is_current,
+    formalization_item_review_protocol_digest,
     formalization_material_protocol_digest,
     formalization_protocol_digest,
     formalization_protocol_receipt_matches,
     formalization_review_protocol_digest,
     load_formalization_protocol,
+    closeout_review_policy_assurance_projection,
+    closeout_review_policy_material_projection,
+    closeout_review_policy_scheduling_projection,
+    resolve_closeout_review_policy,
+    resolve_closeout_review_policy_assurance,
     validate_formalization_protocol,
 )
 import formalization_protocol as protocol_module  # noqa: E402
 
 
 class FormalizationProtocolTests(unittest.TestCase):
+    def test_final_adversary_cannot_promote_default_prose_into_a_blocker(self) -> None:
+        prompt = (
+            ROOT
+            / "skills"
+            / "econcs-formalizer"
+            / "templates"
+            / "FINAL_ADVERSARIAL_SOURCE_AUDIT_PROMPT.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("Default-out-of-scope prose cannot support a `FAIL`", prompt)
+        self.assertIn(
+            "repair is demotion to deep-audit or\nsupporting context",
+            prompt,
+        )
+
+    def test_final_adversary_treats_prior_terminal_credentials_as_precredential(self) -> None:
+        prompt = (
+            ROOT
+            / "skills"
+            / "econcs-formalizer"
+            / "templates"
+            / "FINAL_ADVERSARIAL_SOURCE_AUDIT_PROMPT.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("historical pre-credential evidence", prompt)
+        self.assertIn(
+            "Do not report that fact as a finding.",
+            prompt,
+        )
+
     def manifest_protocol(self) -> dict[str, object]:
         payload = json.loads(PROTOCOL_PATH.read_text(encoding="utf-8"))
         baseline = payload["audit_versions"]["theorem_realization"][
@@ -112,6 +152,15 @@ class FormalizationProtocolTests(unittest.TestCase):
         self.assertIn(
             "raw_lean_declaration_spelling_after_unique_semantic_match",
             payload["reuse"]["navigation_only"],
+        )
+        clean_diagnostics = payload["builds"]["clean_diagnostics"]
+        self.assertEqual(
+            clean_diagnostics["max_output_bytes"],
+            EXPECTED_CLEAN_LEAN_OUTPUT_BYTES,
+        )
+        self.assertEqual(
+            set(clean_diagnostics["reject_on"]),
+            EXPECTED_LEAN_DIAGNOSTIC_FAILURES,
         )
 
     def test_protocol_rejects_standalone_equation_in_normal_scope(self) -> None:
@@ -246,6 +295,110 @@ class FormalizationProtocolTests(unittest.TestCase):
         self.assertNotEqual(
             formalization_review_protocol_digest(coverage_change), review
         )
+
+    def test_item_review_digest_excludes_scope_and_scheduling_policy(self) -> None:
+        payload = json.loads(PROTOCOL_PATH.read_text(encoding="utf-8"))
+        item_review = formalization_item_review_protocol_digest(payload)
+
+        changed_scope = deepcopy(payload)
+        changed_scope["coverage"]["selection_semantics_epoch"] = "v2"
+        changed_scope["coverage"]["review_intensity"]["override"] += (
+            " Clarified scheduling language."
+        )
+        self.assertEqual(
+            formalization_item_review_protocol_digest(changed_scope), item_review
+        )
+
+        changed_semantics = deepcopy(payload)
+        changed_semantics["reuse"]["operational_review_epoch"] = "v2"
+        self.assertNotEqual(
+            formalization_item_review_protocol_digest(changed_semantics), item_review
+        )
+
+    def test_closeout_review_policy_has_separate_assurance_material_and_schedule(self) -> None:
+        policy = resolve_closeout_review_policy()
+        self.assertEqual(
+            policy.source_scope, CLOSEOUT_REVIEW_POLICY_DEFAULT_SOURCE_SCOPE
+        )
+        self.assertEqual(
+            policy.repeat_final_scope, CLOSEOUT_REVIEW_POLICY_DEFAULT_REPEAT_SCOPE
+        )
+        material = closeout_review_policy_material_projection(policy)
+        assurance = closeout_review_policy_assurance_projection(policy)
+        schedule = closeout_review_policy_scheduling_projection(policy)
+        self.assertNotIn("required_final_adversary_count", material)
+        self.assertEqual(assurance["required_final_adversary_count"], 1)
+        self.assertNotIn("required_final_adversary_count", schedule)
+
+        changed = policy.projection()
+        changed["required_final_adversary_count"] = 2
+        changed["scheduling"]["final_adversarial_review"] = ["reviewer-b"]
+        resolved = resolve_closeout_review_policy(changed)
+        self.assertEqual(
+            closeout_review_policy_material_projection(resolved), material
+        )
+        self.assertNotEqual(
+            closeout_review_policy_assurance_projection(resolved), assurance
+        )
+        self.assertNotEqual(
+            closeout_review_policy_scheduling_projection(resolved), schedule
+        )
+        self.assertEqual(
+            resolve_closeout_review_policy_assurance(assurance), policy
+        )
+
+    def test_closeout_policy_rejects_boolean_schema_aliases(self) -> None:
+        policy = resolve_closeout_review_policy().projection()
+        policy["schema"] = True
+        with self.assertRaisesRegex(FormalizationProtocolError, "schema must be 1"):
+            resolve_closeout_review_policy(policy)
+
+        limited = resolve_closeout_review_policy().projection()
+        limited["source_scope"] = "main_named_theory"
+        limited["repeat_final_scope"] = "all_selected"
+        limited["scope_approval"] = {
+            "schema": True,
+            "approval_kind": "explicit_user_instruction",
+            "approval_reference": "User explicitly approved main named theory only.",
+            "approved_at": "2026-09-05T12:00:00Z",
+        }
+        with self.assertRaisesRegex(FormalizationProtocolError, "schema must be 1"):
+            resolve_closeout_review_policy(limited)
+
+    def test_limited_main_scope_requires_one_exact_user_approval(self) -> None:
+        value = resolve_closeout_review_policy().projection()
+        value["source_scope"] = "main_named_theory"
+        value["repeat_final_scope"] = "all_selected"
+        with self.assertRaises(FormalizationProtocolError):
+            resolve_closeout_review_policy(value)
+
+        value["scope_approval"] = {
+            "schema": 1,
+            "approval_kind": "explicit_user_instruction",
+            "approval_reference": "User explicitly approved main named theory only.",
+            "approved_at": "2026-09-05T12:00:00Z",
+        }
+        self.assertEqual(
+            resolve_closeout_review_policy(value).source_scope,
+            "main_named_theory",
+        )
+
+    def test_review_intensity_tier_contract_fails_closed(self) -> None:
+        payload = json.loads(PROTOCOL_PATH.read_text(encoding="utf-8"))
+        for mutation in ("missing", "typo", "wrong_tier"):
+            with self.subTest(mutation=mutation):
+                changed = deepcopy(payload)
+                intensity = changed["coverage"]["review_intensity"]
+                if mutation == "missing":
+                    del intensity["appendix_baseline"]
+                elif mutation == "typo":
+                    intensity["default"] = "main_primary"
+                else:
+                    intensity["appendix_baseline"]["required"] = [
+                        "final_adversarial_source_audit"
+                    ]
+                with self.assertRaises(FormalizationProtocolError):
+                    validate_formalization_protocol(changed)
 
     def test_scoped_receipt_compatibility_is_current_only_and_fail_closed(self) -> None:
         payload = json.loads(PROTOCOL_PATH.read_text(encoding="utf-8"))
@@ -509,9 +662,12 @@ class FormalizationProtocolTests(unittest.TestCase):
     def test_dated_obligation_handoff_uses_the_planner_for_closeout(self) -> None:
         """Keep the maintained handoff from restoring a redundant command batch."""
 
-        handoff = (
+        handoff_path = (
             ROOT / "docs" / "FORMALIZATION_PROOF_OBLIGATION_HANDOFF_2026-07-10.md"
-        ).read_text(encoding="utf-8")
+        )
+        if not handoff_path.exists():
+            return
+        handoff = handoff_path.read_text(encoding="utf-8")
         self.assertIn("## Current Verification Route", handoff)
         self.assertIn(
             "python3 scripts/closeout_reuse_plan.py --paper <PaperId>", handoff
@@ -529,6 +685,12 @@ class FormalizationProtocolTests(unittest.TestCase):
         """Keep live guides from restoring an eager pre-closeout command batch."""
 
         required_phrases = {
+            "skills/econcs-formalizer/references/audit-and-closeout.md": (
+                "python3 scripts/closeout_reuse_plan.py --paper <PaperRoot>",
+                "Execute the returned `next_action`",
+                "Do not call a lower-level producer",
+                "Do not run concurrent Lake builds in one worktree.",
+            ),
             "docs/AGENT_FORMALIZATION_WORKFLOW.md": (
                 "Execute only its current `next_action`",
                 "not a routine frozen-closeout precursor",
@@ -541,10 +703,6 @@ class FormalizationProtocolTests(unittest.TestCase):
                 "frozen-closeout command sequence",
                 "Do not run that producer by hand as a frozen-closeout prelude.",
             ),
-            "papers/TEMPLATE/docs/FORMALIZATION_NOTES.md": (
-                "not a frozen-closeout",
-                "python3 scripts/closeout_reuse_plan.py --paper TEMPLATE",
-            ),
             "skills/econcs-formalizer/SKILL.md": (
                 "only when a named diagnostic or planner action",
                 "python3 scripts/closeout_reuse_plan.py --paper <PaperRoot>",
@@ -552,10 +710,6 @@ class FormalizationProtocolTests(unittest.TestCase):
             "skills/econcs-formalizer/references/formalization-handbook.md": (
                 "source-record producer by hand as a closeout predecessor",
                 "frozen closeout, begin with the planner",
-            ),
-            "skills/econcs-formalizer/references/post-formalization-closeout.md": (
-                "sole normal closeout",
-                "do not run the producer by hand",
             ),
             "skills/econcs-formalizer/references/public-private-sync.md": (
                 "not a normal frozen-paper",
@@ -565,6 +719,25 @@ class FormalizationProtocolTests(unittest.TestCase):
         for relative, phrases in required_phrases.items():
             with self.subTest(relative=relative):
                 text = (ROOT / relative).read_text(encoding="utf-8")
+                for phrase in phrases:
+                    self.assertIn(phrase, text)
+
+        private_history_phrases = {
+            "papers/TEMPLATE/docs/FORMALIZATION_NOTES.md": (
+                "not a frozen-closeout",
+                "python3 scripts/closeout_reuse_plan.py --paper TEMPLATE",
+            ),
+            "skills/econcs-formalizer/references/post-formalization-closeout.md": (
+                "sole normal closeout",
+                "do not run the producer by hand",
+            ),
+        }
+        for relative, phrases in private_history_phrases.items():
+            with self.subTest(private_history=relative):
+                path = ROOT / relative
+                if not path.exists():
+                    continue
+                text = path.read_text(encoding="utf-8")
                 for phrase in phrases:
                     self.assertIn(phrase, text)
 

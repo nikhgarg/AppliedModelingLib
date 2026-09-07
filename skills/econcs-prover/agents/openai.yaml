@@ -1,4 +1,4 @@
 interface:
-  display_name: "EconCS Prover"
-  short_description: "Lean proof repair for EconCSLib papers"
-  default_prompt: "Use $econcs-prover to repair this failing EconCSLib theorem proof."
+  display_name: "AppliedModelingLib Prover"
+  short_description: "Lean proof repair for AppliedModelingLib papers"
+  default_prompt: "Use $econcs-prover to repair this failing AppliedModelingLib theorem proof."

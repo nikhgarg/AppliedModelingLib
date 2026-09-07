@@ -16,72 +16,66 @@
   {https://pubsonline.informs.org/doi/abs/10.1287/opre.2024.1167}
 
 \dagPaperLegendRightOfMetadata{
-\node[dag_result, dag_template_legend] (legDone) at (0,0) {formalized result};
-\node[dag_lemma, dag_template_legend] (legLemma) at (3.4,0) {formalized support};
-\node[dag_model, dag_template_legend] (legDef) at (6.8,0) {definition/model};
-\node[dag_unformalized, dag_template_legend] (legOpen) at (10.2,0) {data/code scope};
+\node[dag_result, dag_template_legend] (legDone) at (0,0) {proved result endpoint};
+\node[dag_lemma, dag_template_legend] (legLemma) at (4.1,0) {proved named lemma endpoint};
+\node[dag_model, dag_template_legend] (legDef) at (8.6,0) {source definition/model};
+\node[dag_unformalized, dag_template_legend] (legOpen) at (13.6,0) {excluded scope};
 }
 \daglegend{(legDone)(legLemma)(legDef)(legOpen)}{Legend}
 
 \begin{dagPaperBody}
 
-\node[dag_model] (PAVScore) at (0,-1.0) {
-  \textbf{PAV objective} \\
-  Harmonic two-party seat score
+\node[dag_model] (ThielePAV) at (0,-1.0) {
+  \textbf{Thiele and PAV rules} \\
+  Cumulative marginal weights, committee score,
+  fixed-size maximization, harmonic PAV weights
 };
 
-\node[dag_model] (PAVSelector) at (5.0,-1.0) {
-  \textbf{PAV selector} \\
-  Leftmost finite maximizing seat count
+\node[dag_model] (SolidCoalitions) at (8.5,-1.0) {
+  \textbf{Two-party solid-coalition model} \\
+  Voter partition, candidate rosters,
+  complete rankings, same-party priority
 };
 
-\node[dag_model] (BallotSTV) at (12.5,-1.0) {
-  \textbf{Reachable ballot-routed STV} \\
-  Droop quota, legal transfer policy,
-  minimum-tally elimination, terminal states
+\node[dag_model] (STVRule) at (17.0,-1.0) {
+  \textbf{STV iterative rule} \\
+  First-active tallies, floor-Droop quota,
+  surplus-preserving transfers, D-favoring ties,
+  election, elimination, and stopping
 };
 
-\node[dag_lemma] (LemmaC1) at (2.5,-4.8) {
+\node[dag_model] (PAVSelector) at (4.25,-5.0) {
+  \textbf{Two-party PAV seat selector} \\
+  Finite leftmost maximizer and
+  complementary party seat counts
+};
+
+\node[dag_lemma] (LemmaC1) at (4.25,-8.6) {
   \textbf{Lemma C.1} \\
-  Unique interval integer for selected PAV count
+  For $M\geq 1$, the selected PAV count is the
+  unique integer in the stated half-open interval
 };
 
-\node[dag_lemma] (Terminal) at (12.5,-4.8) {
-  \textbf{Terminal-execution construction} \\
-  A legal source execution cannot get stuck
+\node[dag_result] (P1) at (12.75,-10.8) {
+  \textbf{Proposition 1} \\
+  For $M\geq 1$, every admitted STV terminal outcome
+  and the selected PAV outcome have rounded seat counts
 };
 
-\node[dag_lemma] (Invariants) at (12.5,-8.3) {
-  \textbf{Party invariants and exact Droop arithmetic} \\
-  Solid-coalition isolation, party accounting,
-  full floor-Droop turnout domain
+\node[dag_unformalized] (Excluded) at (20.5,-7.0) {
+  \textbf{Excluded from selected theorem scope} \\
+  Redistricting maps and population tolerance; \\
+  simulations, figures, and runtime
 };
 
-\node[dag_lemma] (Fractional) at (18.5,-4.8) {
-  \textbf{Fractional transfer specialization} \\
-  Concrete formal operational support only
-};
-
-\node[dag_result] (P1) at (7.6,-12.2) {
-  \textbf{Direct Proposition 1} \\
-  Every legal terminal ballot-routed outcome and PAV
-  have rounded party seat shares
-};
-
-\node[dag_unformalized] (Empirical) at (14.5,-15.8) {
-  \textbf{Maps, simulations, and runtime} \\
-  Explicit empirical data/code scope
-};
-
-\draw[dag_arrow] (PAVScore.south) -- (LemmaC1.north west);
-\draw[dag_arrow] (PAVSelector.south) -- (LemmaC1.north east);
-\draw[dag_arrow] (BallotSTV.south) -- (Terminal.north);
-\draw[dag_arrow] (Terminal.south) -- (Invariants.north east);
+\draw[dag_arrow] (ThielePAV.south) -- (PAVSelector.north west);
+\draw[dag_arrow] (SolidCoalitions.south west) -- (PAVSelector.north east);
+\draw[dag_arrow] (PAVSelector.south) -- (LemmaC1.north);
 \draw[dag_arrow] (LemmaC1.south east) -- (P1.north west);
-\draw[dag_arrow] (Invariants.south west) -- (P1.north east);
-\draw[dag_dashed_arrow] (BallotSTV.south east)
-  to[out=-20,in=140,looseness=1.05] (Fractional.north west);
-\draw[dag_dashed_arrow] (P1.east) -- (Empirical.north west);
+\draw[dag_arrow] (SolidCoalitions.south east)
+  to[out=-45,in=150,looseness=1.05] (P1.north west);
+\draw[dag_arrow] (STVRule.south west)
+  to[out=-120,in=30,looseness=1.05] (P1.north east);
 
 \end{dagPaperBody}
 \end{tikzpicture}

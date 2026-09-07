@@ -16,7 +16,7 @@ namespace LG21TestOptionalPolicies
 noncomputable section
 
 open MeasureTheory ProbabilityTheory Set
-open EconCSLib Probability
+open AppliedModelingLib Probability
 open scoped ENNReal ProbabilityTheory
 
 theorem lg21_source_reportedPBO_eq_selectedPosteriorMean_ae

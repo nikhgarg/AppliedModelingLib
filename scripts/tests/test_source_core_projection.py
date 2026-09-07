@@ -3,14 +3,14 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 import importlib.util
+import hashlib
 import json
 import sys
 import tempfile
 import unittest
+from copy import deepcopy
 from pathlib import Path
-
 
 ROOT = Path(__file__).resolve().parents[2]
 GATE_PATH = ROOT / "scripts" / "audit_evidence_integrity.py"
@@ -85,7 +85,30 @@ class SourceCoreProjectionValidationTests(unittest.TestCase):
             any("sole lean_declarations entry" in error for error in errors), errors
         )
 
-    def test_source_core_split_requires_a_nonempty_strengthening_list(self) -> None:
+    def test_current_fully_qualified_map_references_are_accepted(self) -> None:
+        item = self.source_item()
+        projection = item["source_core_projection"]
+        assert isinstance(projection, dict)
+        direct = projection["direct_declaration"]
+        assert isinstance(direct, str)
+        item["lean_declarations"] = [direct]
+        strengthenings = item["checked_strengthening_declarations"]
+        assert isinstance(strengthenings, list) and strengthenings
+        strengthening = strengthenings[0]
+        assert isinstance(strengthening, dict)
+        declaration = strengthening["declaration"]
+        assert isinstance(declaration, str)
+        item["support_lean_declarations"] = [declaration]
+
+        self.assertEqual(GATE.source_core_projection_validation_errors(item), [])
+
+    def test_source_core_route_may_have_no_checked_strengthening(self) -> None:
+        item = self.source_item()
+        item.pop("checked_strengthening_declarations")
+
+        self.assertEqual(GATE.source_core_projection_validation_errors(item), [])
+
+    def test_present_strengthening_list_cannot_be_empty(self) -> None:
         item = self.source_item()
         item["checked_strengthening_declarations"] = []
 
@@ -155,13 +178,52 @@ class SourceCoreProjectionValidationTests(unittest.TestCase):
         )
 
     def test_inventory_lane_enforces_the_optional_split_when_present(self) -> None:
-        item = self.source_item()
-        strengthenings = item["checked_strengthening_declarations"]
-        assert isinstance(strengthenings, list) and strengthenings
-        strengthening = strengthenings[0]
-        assert isinstance(strengthening, dict)
-        strengthening["declaration"] = "Other.Namespace.strongerEndpoint"
-        item["support_lean_declarations"] = ["differentSupportEndpoint"]
+        quote = "Lemma 2. A literal source result."
+        item = {
+            "statement": quote,
+            "source_location": "source.txt:1",
+            "source_kind": "lemma",
+            "coverage_status": "covered",
+            "source_anchor_evidence": [
+                {
+                    "path": "source.txt",
+                    "line_start": 1,
+                    "line_end": 1,
+                    "quoted_text": quote,
+                    "quoted_text_sha256": hashlib.sha256(
+                        quote.encode("utf-8")
+                    ).hexdigest(),
+                }
+            ],
+            "claim_bearing": True,
+            "lean_declarations": ["Fixture.SourceCore"],
+            "support_lean_declarations": [
+                "Fixture.SourceCoreSpec",
+                "differentSupportEndpoint",
+            ],
+            "semantic_contract": {
+                "spec_declaration": "Fixture.SourceCoreSpec",
+                "evidence_declaration": "Fixture.SourceCore",
+                "evidence_mode": "proves",
+                "semantic_shape": "plain",
+            },
+            "source_core_projection": {
+                "classification": "literal_source_core",
+                "description": "The literal source result only.",
+                "direct_declaration": "Fixture.SourceCore",
+                "spec_declaration": "Fixture.SourceCoreSpec",
+            },
+            "checked_strengthening_declarations": [
+                {
+                    "classification": (
+                        "checked_strengthening_not_literal_source_coverage"
+                    ),
+                    "declaration": "Other.Namespace.strongerEndpoint",
+                    "spec_declaration": "Other.Namespace.strongerEndpointSpec",
+                    "description": "A separately checked strengthening.",
+                }
+            ],
+        }
 
         with tempfile.TemporaryDirectory() as temporary:
             paper = Path(temporary) / "FixturePaper"

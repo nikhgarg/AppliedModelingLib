@@ -30,8 +30,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 
 /-! ## An abstract finite randomized-policy diagnostic -/
 
@@ -75,8 +75,8 @@ theorem lg21_pmfExp_binaryMixture_eq_zero_of_component_means_zero
     (hunselected : pmfExp unselected value = 0) :
     pmfExp (lg21BinaryMixturePMF p hp selected unselected) value = 0 := by
   change
-    pmfExp (EconCSLib.binaryMixturePMF p hp selected unselected) value = 0
-  rw [EconCSLib.binaryMixturePMF, pmfExp_bind]
+    pmfExp (AppliedModelingLib.binaryMixturePMF p hp selected unselected) value = 0
+  rw [AppliedModelingLib.binaryMixturePMF, pmfExp_bind]
   have hconditional :
       (fun selectedDraw : Bool =>
           pmfExp (if selectedDraw then selected else unselected) value) =

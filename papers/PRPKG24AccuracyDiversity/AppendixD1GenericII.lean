@@ -21,7 +21,7 @@ open scoped BigOperators
 namespace PRPKG24AccuracyDiversity
 namespace AppendixD1GenericII
 
-open EconCSLib
+open AppliedModelingLib
 open AppendixD1GenericI
 
 /-- The positive saturation deficit used in corrected D.1(ii). -/
@@ -368,7 +368,7 @@ replacement for the invalid source ratio step in equations (55)--(61).
 theorem weighted_saturationGap_sum_le_of_optimal
     {m : ℕ} {A : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (N : ℕ) (b : CountAllocation m)
     (hb : ConsumptionModel.FeasibleAtTotal N b) :
@@ -379,7 +379,7 @@ theorem weighted_saturationGap_sum_le_of_optimal
   have hgap_eq (a : CountAllocation m) :
       (∑ i : ItemType m, p i * saturationGap A h (a.count i)) =
         (∑ i : ItemType m, p i * A) -
-          EconCSLib.Allocation.objective a p (fun _ : ItemType m => h) := by
+          AppliedModelingLib.Allocation.objective a p (fun _ : ItemType m => h) := by
     calc
       (∑ i : ItemType m, p i * saturationGap A h (a.count i)) =
           ∑ i : ItemType m, (p i * A - p i * h (a.count i)) := by
@@ -388,7 +388,7 @@ theorem weighted_saturationGap_sum_le_of_optimal
             simp only [saturationGap, AppendixD1GenericI.saturationGap]
             ring
       _ = (∑ i : ItemType m, p i * A) -
-          EconCSLib.Allocation.objective a p (fun _ : ItemType m => h) := by
+          AppliedModelingLib.Allocation.objective a p (fun _ : ItemType m => h) := by
             rw [Finset.sum_sub_distrib]
             rfl
   rw [hgap_eq (seq.allocation N), hgap_eq b]
@@ -400,7 +400,7 @@ paper-facing premise. -/
 private theorem eventually_optimalAllocation_count_gt_linear_of_power_tail_of_count_atTop
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)
@@ -503,7 +503,7 @@ is assumed.
 theorem tendsto_optimalAllocation_count_atTop_of_power_tail
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)
@@ -577,7 +577,7 @@ all-positive in this raw core.
 theorem source_tendsto_optimalAllocation_count_atTop_of_power_tail
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)
@@ -604,7 +604,7 @@ convergence certificate as a premise.
 theorem eventually_optimalAllocation_count_gt_linear_of_power_tail
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)
@@ -637,7 +637,7 @@ eventual-gap premise.  Positivity follows from the displayed tail bounds.
 theorem source_eventually_optimalAllocation_count_gt_linear_of_power_tail
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)
@@ -666,7 +666,7 @@ constructed from the primitive weights and tail exponent inside the proof.
 theorem exists_eventual_positive_linear_lower_bound_of_power_tail
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)
@@ -719,7 +719,7 @@ all-positive finite support explicit.
 theorem source_exists_eventual_positive_linear_lower_bound_of_power_tail
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)
@@ -746,7 +746,7 @@ turning a quotient of two vanishing deficits into an assumption.
 theorem tendsto_optimal_weighted_saturationGap_sum_nhds_zero_of_power_tail
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)

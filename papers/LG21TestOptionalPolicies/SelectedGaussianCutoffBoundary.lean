@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Probability.GaussianShiftHazardIntegral
+import AppliedModelingLib.Foundations.Probability.GaussianShiftHazardIntegral
 import LG21TestOptionalPolicies.SelectedGaussianUpperTailFormula
 
 /-!
@@ -16,7 +16,7 @@ noncomputable section
 
 open Filter MeasureTheory ProbabilityTheory Set
 open scoped ENNReal NNReal ProbabilityTheory Topology
-open EconCSLib Probability
+open AppliedModelingLib Probability
 
 /-- A standard-Gaussian hazard after an affine Gaussian input is integrable. -/
 theorem lg21_integrable_standardGaussianHazard_affine_gaussianReal

@@ -1,12 +1,12 @@
 import KR21Monoculture.Basic
-import EconCSLib.Foundations.Probability.FiniteExpectation
-import EconCSLib.SocialChoice.Ranking.Payoff
+import AppliedModelingLib.Foundations.Probability.FiniteExpectation
+import AppliedModelingLib.SocialChoice.Ranking.Payoff
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
-export EconCSLib.SocialChoice.Ranking
+export AppliedModelingLib.SocialChoice.Ranking
   (expectedFirstMoverUtility
     expectedSecondMoverShared
     secondChoiceProb

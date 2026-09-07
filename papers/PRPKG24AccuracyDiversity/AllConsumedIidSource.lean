@@ -117,7 +117,7 @@ theorem iidAllConsumedSourceModel_objective_eq_source_experiment
     {T : ℕ} (preferenceLaw : SourcePreferenceLaw T) (D : Measure ℝ)
     (a : CountAllocation T) :
     (iidAllConsumedSourceModel preferenceLaw D).objective a =
-      EconCSLib.pmfExp preferenceLaw
+      AppliedModelingLib.pmfExp preferenceLaw
         (fun t =>
           ∫ sample : Fin (a.count t) → ℝ,
             iidAllConsumedSampleValue sample

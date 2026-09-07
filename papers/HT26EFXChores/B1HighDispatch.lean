@@ -13,7 +13,7 @@ Source: EFXadditivechores.tex, lines 2241--2470.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- The complete fixed-label B.2.1(a) intersecting branch extended across
 the M34 pool. -/

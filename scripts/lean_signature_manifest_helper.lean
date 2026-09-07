@@ -14,7 +14,7 @@ runner may still inject this exact source into a temporary audit process.
 
 open Lean Meta Elab Command
 
-namespace EconCSLibAudit.SignatureManifest
+namespace AppliedModelingLibAudit.SignatureManifest
 
 private def obj (tag : String) (fields : List (String × Json) := []) : Json :=
   Json.mkObj (("tag", Json.str tag) :: fields)
@@ -496,6 +496,21 @@ private def conclusionMode : ConstantInfo → String
   | .defnInfo _ => "type_and_value"
   | _ => "type_only"
 
+/--
+Pretty-print a source-review expression without suppressing the domain of a
+lambda hidden by notation such as `∃ witness, ...`.  Lean's ordinary printer may
+infer that domain from the `Exists` application and omit it, even though the
+domain can carry a material source condition.  This uses Lean's own elaborated
+expression and delaborator; it does not reconstruct binders from source text.
+-/
+private def ppSemanticReviewExpr (expression : Expr) : MetaM String := do
+  let rendered ← withOptions (fun options =>
+    options.setBool `pp.funBinderTypes true |>
+      (fun options => options.setBool `pp.letVarTypes true |>
+        (fun options => options.setBool `pp.proofs true))) <|
+    ppExpr expression
+  pure rendered.pretty
+
 private def conclusionAtom
     (info : ConstantInfo) (params : Array Name) (typeBinders : Array Expr)
     (auditModulePrefixes : Array Name) (reviewedModule : Option ModuleIdx)
@@ -511,8 +526,8 @@ private def conclusionAtom
       let canonicalValue ←
         canonicalExprCompactWithMemo params (typeBinders.map Expr.fvarId!) #[]
           auditModulePrefixes reviewedModule recursiveNames #[] value memo
-      let typeDisplay := (← ppExpr resultType).pretty
-      let valueDisplay := (← ppExpr value).pretty
+      let typeDisplay ← ppSemanticReviewExpr resultType
+      let valueDisplay ← ppSemanticReviewExpr value
       pure (
         obj "definition" [
           ("type", canonicalType),
@@ -533,9 +548,9 @@ private def conclusionAtom
           ("num_params", Json.str (toString inductiveInfo.numParams)),
           ("num_indices", Json.str (toString inductiveInfo.numIndices)),
           ("constructors", Json.arr constructors)],
-        (← ppExpr resultType).pretty)
+        ← ppSemanticReviewExpr resultType)
   | _ =>
-      pure (canonicalType, (← ppExpr resultType).pretty)
+      pure (canonicalType, ← ppSemanticReviewExpr resultType)
 
 /--
 Zeta-reduce only result-type `let` bindings before serializing a reviewed
@@ -1289,28 +1304,25 @@ private def transparentValuePresentationTelescopeFor
                 ("binder_info", Json.str (binderInfoName localDecl.binderInfo)),
                 ("canonical", ← canonicalExprCompactWithMemo params fvarIds #[]
                   auditModules reviewedModule #[] #[] domain memo),
-                ("display", Json.str ((← ppExpr domain).pretty))]
+                ("display", Json.str (← ppSemanticReviewExpr domain))]
             let normalizedResult ← zetaResultType 128 valueResult
             atoms := atoms.push <| Json.mkObj [
               ("ref", Json.str "result"),
               ("role", Json.str "conclusion"),
               ("canonical", ← canonicalExprCompactWithMemo params fvarIds #[]
                 auditModules reviewedModule #[] #[] normalizedResult memo),
-              ("display", Json.str ((← ppExpr normalizedResult).pretty))]
+              ("display", Json.str (← ppSemanticReviewExpr normalizedResult))]
             pure <| Json.mkObj [
               ("schema", Json.str "1"),
               ("reduction", Json.str "definition_value_outer_telescope"),
               ("atoms", Json.arr atoms)]
   | _ => pure Json.null
 
-private def manifestFor
-    (declName : Name) (auditModulePrefixes : Array Name)
-    (hashToolPath : String) : MetaM Json := do
-  let info ← getConstInfo declName
-  let params := info.levelParams.toArray
-  let reviewedModule := (← getEnv).getModuleIdxFor? declName
-  let compactMemo ← IO.mkRef ({ hashToolPath } : CanonicalExprRopeMemo)
-  let buildManifest (binders : Array Expr) (result : Expr) : MetaM Json := do
+private def semanticSignatureAtomsFor
+    (info : ConstantInfo) (params : Array Name) (binders : Array Expr)
+    (auditModulePrefixes : Array Name) (reviewedModule : Option ModuleIdx)
+    (compactMemo : CanonicalExprRopeMemoRef) (result : Expr) :
+    MetaM (Array Json × Expr) := do
     let fvarIds := binders.map Expr.fvarId!
     let mut atoms : Array Json := #[]
     for h : index in [0:binders.size] do
@@ -1323,18 +1335,30 @@ private def manifestFor
         ("binder_info", Json.str (binderInfoName localDecl.binderInfo)),
         ("canonical", ← canonicalExprCompactWithMemo params fvarIds #[]
           auditModulePrefixes reviewedModule #[] #[] domain compactMemo),
-        ("display", Json.str ((← ppExpr domain).pretty))]
+        ("display", Json.str (← ppSemanticReviewExpr domain))]
     let normalizedResult ← zetaResultType 128 result
     let (resultCanonical, resultDisplay) ←
       conclusionAtom info params binders auditModulePrefixes reviewedModule
         compactMemo normalizedResult
-    let (semanticDependencyGraph, executionStateRefinementShape) ←
-      semanticDependencyGraphFor declName auditModulePrefixes compactMemo
     atoms := atoms.push <| Json.mkObj [
       ("ref", Json.str "result"),
       ("role", Json.str "conclusion"),
       ("canonical", resultCanonical),
       ("display", Json.str resultDisplay)]
+    pure (atoms, normalizedResult)
+
+private def manifestFor
+    (declName : Name) (auditModulePrefixes : Array Name)
+    (hashToolPath : String) : MetaM Json := do
+  let info ← getConstInfo declName
+  let params := info.levelParams.toArray
+  let reviewedModule := (← getEnv).getModuleIdxFor? declName
+  let compactMemo ← IO.mkRef ({ hashToolPath } : CanonicalExprRopeMemo)
+  let buildManifest (binders : Array Expr) (result : Expr) : MetaM Json := do
+    let (atoms, normalizedResult) ← semanticSignatureAtomsFor info params binders
+      auditModulePrefixes reviewedModule compactMemo result
+    let (semanticDependencyGraph, executionStateRefinementShape) ←
+      semanticDependencyGraphFor declName auditModulePrefixes compactMemo
     pure <| Json.mkObj [
       ("schema", Json.str "2"),
       ("declaration_kind", Json.str (declarationKind info)),
@@ -1366,6 +1390,86 @@ private def manifestFor
   withCanonicalHashWorker compactMemo action
 
 /--
+Return the canonical, spelling-independent semantic manifest for one exact
+declaration.  This is the shared native API used by the batched declaration
+graph.  The command wrappers below remain only as historical and fixture
+entrypoints; new closeout consumers should not launch them declaration by
+declaration.
+-/
+def declarationSemanticManifest
+    (declName : Name) (auditModules : Array Name)
+    (hashToolPath : String) : MetaM Json :=
+  manifestFor declName auditModules hashToolPath
+
+/--
+Return only the exact Lean-elaborated semantic target signature used by a
+declaration manifest.  Terminal migration of historical reviewed-target leaves
+needs this mathematical surface, not the retired manifest's dependency and
+proof-realization payloads.  This calls the same signature constructor as the
+full manifest, so accepted historical signature identities remain comparable.
+The caller separately checks every Lean-discovered paper and library
+prerequisite.
+-/
+def declarationSemanticTargetSignature
+    (declName : Name) (auditModules : Array Name)
+    (hashToolPath : String) : MetaM Json := do
+  let info ← getConstInfo declName
+  let params := info.levelParams.toArray
+  let reviewedModule := (← getEnv).getModuleIdxFor? declName
+  let compactMemo ← IO.mkRef ({ hashToolPath } : CanonicalExprRopeMemo)
+  let buildSignature (binders : Array Expr) (result : Expr) : MetaM Json := do
+    let (atoms, _) ← semanticSignatureAtomsFor info params binders auditModules
+      reviewedModule compactMemo result
+    pure <| Json.mkObj [
+      ("schema", Json.str "2"),
+      ("declaration_kind", Json.str (declarationKind info)),
+      ("conclusion_mode", Json.str (conclusionMode info)),
+      ("atoms", Json.arr atoms)]
+  let resultIsProposition ← forallTelescope info.type fun _ result => isProp result
+  let action :=
+    if resultIsProposition then
+      forallTelescopeReducing info.type buildSignature
+    else
+      forallTelescope info.type buildSignature
+  withCanonicalHashWorker compactMemo action
+
+/--
+Return exactly the two small Lean-owned surfaces needed by a source reviewer:
+the declaration's canonical outer semantic signature and the transparent
+definition-value telescope that exposes binders hidden inside a proposition
+wrapper.  Unlike `declarationSemanticManifest`, this does not construct the
+transitive dependency graph or proposition DAG.  Those obligations are owned
+by the declaration graph's recursive display/prerequisite closure, exact
+semantic contract, axiom closure, and byte-pinned import closure.
+-/
+def declarationSemanticReviewClaim
+    (declName : Name) (auditModules : Array Name)
+    (hashToolPath : String) : MetaM Json := do
+  let info ← getConstInfo declName
+  let params := info.levelParams.toArray
+  let reviewedModule := (← getEnv).getModuleIdxFor? declName
+  let compactMemo ← IO.mkRef ({ hashToolPath } : CanonicalExprRopeMemo)
+  let buildSignature (binders : Array Expr) (result : Expr) : MetaM Json := do
+    let (atoms, _) ← semanticSignatureAtomsFor info params binders auditModules
+      reviewedModule compactMemo result
+    pure <| Json.mkObj [
+      ("schema", Json.str "2"),
+      ("declaration_kind", Json.str (declarationKind info)),
+      ("conclusion_mode", Json.str (conclusionMode info)),
+      ("atoms", Json.arr atoms)]
+  withCanonicalHashWorker compactMemo do
+    let signature ← forallTelescopeReducing info.type buildSignature
+    let presentation ← transparentValuePresentationTelescopeFor info params
+      auditModules reviewedModule compactMemo
+    match presentation with
+    | .obj _ =>
+        pure <| Json.mkObj [
+          ("schema", Json.str "1"),
+          ("signature", signature),
+          ("transparent_value_presentation_telescope", presentation)]
+    | _ => throwError "semantic review claim has no transparent value telescope"
+
+/--
 Recompute the Lean-owned identities that can establish whether a persisted
 manifest remains valid after an unrelated declaration changes the containing
 module artifact.  This deliberately omits the large atom and proposition-DAG
@@ -1388,6 +1492,12 @@ private def signatureManifestRevalidationFor
       ("elaborated_execution_state_refinement_shape",
         executionStateRefinementShape),
       ("semantic_dependency_graph", semanticDependencyGraph)]
+
+/-- Recompute the compact current-artifact semantic identity for one root. -/
+def declarationSemanticRevalidation
+    (declName : Name) (auditModules : Array Name)
+    (hashToolPath : String) : MetaM Json :=
+  signatureManifestRevalidationFor declName auditModules hashToolPath
 
 private def propositionSpecProofMatches
     (specName proofName : Name) : MetaM Bool := do
@@ -1469,259 +1579,6 @@ private def semanticContractDefinitionallyRealizes
       return (← isDefEq left specBody) && (← isDefEq right specBody)
 
 /-- Return the direct constant head of an elaborated application, if any. -/
-private def operationalOutcomeDirectHead? (expression : Expr) : MetaM (Option Name) := do
-  let reduced ← withTransparency .reducible <| whnf expression
-  let (head, _) := reduced.getAppFnArgs
-  if head.isAnonymous then pure none else pure (some head)
-
--- Keep this exact standard-library declaration identity available when the
--- injected helper is run against an inline fixture that imports only `Lean`.
--- A name literal avoids making every generic signature check import Mathlib;
--- the actual operational bridge still compares the elaborated run head exactly.
-private def operationalOutcomeReflTransGenName : Name :=
-  Lean.Name.str (Lean.Name.str Lean.Name.anonymous "Relation") "ReflTransGen"
-
-/--
-Return whether a checked theorem is the exact nonvacuity bridge for one
-operational result domain.  Lean constructs the bridge type directly from the
-reviewed target telescope:
-
-```
-∀ header, ∃ outcome, Relation.ReflTransGen transition initial outcome ∧ terminal outcome
-```
-
-The bridge must have that entire elaborated header telescope, not a guessed
-subsequence, so no binder spelling or header-matching heuristic can affect the
-result.  The model and transition roots are exact declaration identities from
-the generated manifest receipt; they are checked against elaborated types,
-not classified from their names.
--/
-private def operationalOutcomeDomainBridgeMatches
-    (targetName bridgeName modelRoot transitionRoot : Name)
-    (modelIndex terminalIndex runIndex terminalPredicateIndex : Nat) : MetaM Bool :=
-  withNewMCtxDepth do
-    let targetInfo ← getConstInfo targetName
-    let .thmInfo _ := targetInfo
-      | return false
-    let bridgeInfo ← getConstInfo bridgeName
-    let .thmInfo _ := bridgeInfo
-      | return false
-    forallTelescopeReducing targetInfo.type fun targetBinders targetResult => do
-      if modelIndex >= targetBinders.size || terminalIndex >= targetBinders.size ||
-          runIndex >= targetBinders.size || terminalPredicateIndex >= targetBinders.size ||
-          !(modelIndex < terminalIndex) ||
-          !(terminalIndex < runIndex && runIndex < terminalPredicateIndex) then
-        return false
-      -- This bridge format intentionally admits exactly one result-local
-      -- outcome value before the legal-run and terminal predicates.  A more
-      -- complex result telescope needs its own explicit audited bridge shape.
-      if runIndex != terminalIndex + 1 ||
-          terminalPredicateIndex != runIndex + 1 then
-        return false
-      let model := targetBinders[modelIndex]!
-      let modelType ← inferType model
-      if (← isProp modelType) || (← operationalOutcomeDirectHead? modelType) != some modelRoot then
-        return false
-      let terminal := targetBinders[terminalIndex]!
-      let terminalType ← inferType terminal
-      let runProof := targetBinders[runIndex]!
-      let terminalProof := targetBinders[terminalPredicateIndex]!
-      let runType ← inferType runProof
-      let terminalPredicateType ← inferType terminalProof
-      if (← isProp terminalType) || !(← isProp runType) ||
-          !(← isProp terminalPredicateType) || !(← isProp targetResult) then
-        return false
-      -- The path receipt pins positions, but positions alone do not establish
-      -- a meaningful operational domain.  The endpoint must actually range
-      -- over this result-local state in the run premise, terminal predicate,
-      -- and advertised conclusion; a dummy `∀ state` is rejected.
-      let terminalFVarId := terminal.fvarId!
-      if !runType.containsFVar terminalFVarId ||
-          !terminalPredicateType.containsFVar terminalFVarId ||
-          !targetResult.containsFVar terminalFVarId then
-        return false
-      let reducedRun ← withTransparency .reducible <| whnf runType
-      let (runHead, runArguments) := reducedRun.getAppFnArgs
-      let relation :=
-        if runHead == operationalOutcomeReflTransGenName && runArguments.size == 4 &&
-            runArguments[3]! == terminal then
-          some runArguments[1]!
-        else
-          none
-      let some relation := relation | return false
-      if (← operationalOutcomeDirectHead? relation) != some transitionRoot ||
-          !relation.containsFVar model.fvarId! then
-        return false
-      withLocalDeclD `outcome terminalType fun outcome => do
-        let runAtOutcome := runType.replaceFVar terminal outcome
-        let terminalAtOutcome :=
-          terminalPredicateType.replaceFVar terminal outcome
-        let witnessBody := mkApp2 (mkConst ``And) runAtOutcome terminalAtOutcome
-        let witnessLambda ← mkLambdaFVars #[outcome] witnessBody
-        -- `mkAppM` inserts `Exists`' implicit carrier argument and infers it
-        -- from the witness lambda.  Raw `mkApp` cannot do that safely.
-        let expected ← mkAppM ``Exists #[witnessLambda]
-        let expectedBridgeType ←
-          mkForallFVars (targetBinders.extract 0 terminalIndex) expected
-        let bridgeType ← inferType (← mkConstWithFreshMVarLevels bridgeName)
-        let bridgeMatches ← withTransparency .all do
-          isDefEq bridgeType expectedBridgeType
-        return bridgeMatches
-
-/--
-Return whether a checked theorem is the exact nonvacuity bridge for a
-result-local operational state/transition domain.  Unlike the simpler outcome
-route, the starting state and its admissibility predicate are introduced in
-the reviewed conclusion itself:
-
-```
-∀ header, ∀ state : State, initial state → ∃ terminal,
-  Relation.ReflTransGen transition state terminal ∧ terminalPredicate terminal
-```
-
-All positions and roots arrive from a generated manifest receipt.  Lean checks
-the actual elaborated fvar occurrences and direct application heads, so binder
-and declaration spelling cannot manufacture the route.
--/
-private def operationalOutcomeStateTransitionInitialWitnessMatches
-    (targetName initialWitnessName stateRoot : Name)
-    (stateIndex initialPredicateIndex : Nat) : MetaM Bool :=
-  withNewMCtxDepth do
-    let targetInfo ← getConstInfo targetName
-    let .thmInfo _ := targetInfo
-      | return false
-    let initialWitnessInfo ← getConstInfo initialWitnessName
-    let .thmInfo _ := initialWitnessInfo
-      | return false
-    forallTelescopeReducing targetInfo.type fun targetBinders _ => do
-      if stateIndex >= targetBinders.size ||
-          initialPredicateIndex >= targetBinders.size ||
-          initialPredicateIndex != stateIndex + 1 then
-        return false
-      let state := targetBinders[stateIndex]!
-      let stateType ← inferType state
-      if (← isProp stateType) ||
-          (← operationalOutcomeDirectHead? stateType) != some stateRoot then
-        return false
-      let initialProof := targetBinders[initialPredicateIndex]!
-      let initialType ← inferType initialProof
-      if !(← isProp initialType) || !initialType.containsFVar state.fvarId! then
-        return false
-      withLocalDeclD `initial stateType fun initial => do
-        let initialAtState := initialType.replaceFVar state initial
-        let initialPredicate ← mkLambdaFVars #[initial] initialAtState
-        let witness ← mkAppM ``Exists #[initialPredicate]
-        let expectedWitnessType ←
-          mkForallFVars (targetBinders.extract 0 stateIndex) witness
-        let initialWitnessType ←
-          inferType (← mkConstWithFreshMVarLevels initialWitnessName)
-        withTransparency .all do isDefEq initialWitnessType expectedWitnessType
-
-/--
-Check a result-local state/transition bridge together with an exact-header
-initial-state witness.  The terminal bridge is conditional on the target's
-initial predicate; the separate witness proves that this predicate is not
-empty for any admissible target header.
--/
-private def operationalOutcomeStateTransitionBridgeMatches
-    (targetName bridgeName initialWitnessName modelRoot stateRoot transitionRoot : Name)
-    (modelIndex stateIndex initialPredicateIndex terminalIndex runIndex
-      terminalPredicateIndex : Nat) : MetaM Bool :=
-  withNewMCtxDepth do
-    let targetInfo ← getConstInfo targetName
-    let .thmInfo _ := targetInfo
-      | return false
-    let bridgeInfo ← getConstInfo bridgeName
-    let .thmInfo _ := bridgeInfo
-      | return false
-    forallTelescopeReducing targetInfo.type fun targetBinders targetResult => do
-      if modelIndex >= targetBinders.size || stateIndex >= targetBinders.size ||
-          initialPredicateIndex >= targetBinders.size ||
-          terminalIndex >= targetBinders.size || runIndex >= targetBinders.size ||
-          terminalPredicateIndex >= targetBinders.size ||
-          !(modelIndex < stateIndex && stateIndex < initialPredicateIndex &&
-            initialPredicateIndex < terminalIndex && terminalIndex < runIndex &&
-            runIndex < terminalPredicateIndex) then
-        return false
-      if initialPredicateIndex != stateIndex + 1 ||
-          terminalIndex != initialPredicateIndex + 1 ||
-          runIndex != terminalIndex + 1 ||
-          terminalPredicateIndex != runIndex + 1 then
-        return false
-      let model := targetBinders[modelIndex]!
-      let modelType ← inferType model
-      if (← isProp modelType) ||
-          (← operationalOutcomeDirectHead? modelType) != some modelRoot then
-        return false
-      let state := targetBinders[stateIndex]!
-      let stateType ← inferType state
-      if (← isProp stateType) ||
-          (← operationalOutcomeDirectHead? stateType) != some stateRoot then
-        return false
-      let initialProof := targetBinders[initialPredicateIndex]!
-      let terminal := targetBinders[terminalIndex]!
-      let runProof := targetBinders[runIndex]!
-      let terminalProof := targetBinders[terminalPredicateIndex]!
-      let initialType ← inferType initialProof
-      let terminalType ← inferType terminal
-      let runType ← inferType runProof
-      let terminalPredicateType ← inferType terminalProof
-      if !(← isProp initialType) || (← isProp terminalType) ||
-          !(← isProp runType) || !(← isProp terminalPredicateType) ||
-          !(← isProp targetResult) then
-        return false
-      let stateFVarId := state.fvarId!
-      let terminalFVarId := terminal.fvarId!
-      if !initialType.containsFVar stateFVarId ||
-          !runType.containsFVar stateFVarId ||
-          !runType.containsFVar terminalFVarId ||
-          !terminalPredicateType.containsFVar terminalFVarId ||
-          !targetResult.containsFVar terminalFVarId then
-        return false
-      let sameCarrier ← withTransparency .all do isDefEq terminalType stateType
-      if !sameCarrier then
-        return false
-      let reducedRun ← withTransparency .reducible <| whnf runType
-      let (runHead, runArguments) := reducedRun.getAppFnArgs
-      let relation :=
-        if runHead == operationalOutcomeReflTransGenName && runArguments.size == 4 &&
-            runArguments[2]! == state && runArguments[3]! == terminal then
-          some runArguments[1]!
-        else
-          none
-      let some relation := relation | return false
-      if (← operationalOutcomeDirectHead? relation) != some transitionRoot ||
-          !relation.containsFVar model.fvarId! then
-        return false
-      withLocalDeclD `outcome terminalType fun outcome => do
-        let runAtOutcome := runType.replaceFVar terminal outcome
-        let terminalAtOutcome :=
-          terminalPredicateType.replaceFVar terminal outcome
-        let witnessBody := mkApp2 (mkConst ``And) runAtOutcome terminalAtOutcome
-        let witnessLambda ← mkLambdaFVars #[outcome] witnessBody
-        let expected ← mkAppM ``Exists #[witnessLambda]
-        let expectedBridgeType ←
-          mkForallFVars (targetBinders.extract 0 terminalIndex) expected
-        let bridgeType ← inferType (← mkConstWithFreshMVarLevels bridgeName)
-        let bridgeMatches ← withTransparency .all do
-          isDefEq bridgeType expectedBridgeType
-        if !bridgeMatches then
-          return false
-        operationalOutcomeStateTransitionInitialWitnessMatches
-          targetName initialWitnessName stateRoot stateIndex initialPredicateIndex
-
-/--
-The semantic-contract type check establishes exactness, but it does not by
-itself establish that the proposition assigned to the source-facing `Spec` is
-transparent.  This bounded traversal follows only declarations owned by the
-paper's explicit module set.  Imported foundation declarations are terminals;
-paper-local definitions must be reducible all the way to those terminals.
-
-The output is intentionally a structural dependency verdict rather than a
-name-pattern heuristic.  A declaration name is reported only as a diagnostic
-after Lean has established that its module belongs to the supplied paper scope
-and that its `ConstantInfo` is opaque, an axiom, or a theorem.
--/
 /-
 One executable recursive terminal is an occurrence in the elaborated Spec
 body, not just a recursive definition name.  In particular, two calls to the
@@ -2117,6 +1974,8 @@ private structure SemanticContractClosureScope where
   paperModules : Array Name
   workspaceModules : Array Name
   foundationModules : Array Name
+  foreignModelDefinitions : Array Name
+  foreignModelModules : Array Name
   hashToolPath : String
   inlinePaperScope : Bool := false
 
@@ -2124,6 +1983,7 @@ private inductive SemanticContractClosureOrigin where
   | paper
   | workspace
   | foundation
+  | foreignModelDefinition
   | external
   | unresolved
 
@@ -2132,6 +1992,7 @@ private def semanticContractClosureOriginName :
   | .paper => "paper"
   | .workspace => "workspace"
   | .foundation => "foundation"
+  | .foreignModelDefinition => "foreign_model_definition"
   | .external => "external"
   | .unresolved => "unresolved"
 
@@ -2152,6 +2013,9 @@ private def semanticContractClosureOrigin
         -- duplicate module pins without changing the Lean-owned reachability
         -- result; library declarations have their own semantic-review lane.
         pure (.foundation, foundationRoot.toString)
+      else if scope.foreignModelDefinitions.contains name &&
+          scope.foreignModelModules.contains moduleName then
+        pure (.foreignModelDefinition, moduleOrigin)
       else if scope.workspaceModules.contains moduleName then
         pure (.workspace, moduleOrigin)
       else
@@ -2230,7 +2094,7 @@ private def semanticContractClosureRecordNode
   -- focused walker diagnostics.
   let retainTerminal :=
     match origin with
-    | .workspace | .external | .unresolved => true
+    | .workspace | .foreignModelDefinition | .external | .unresolved => true
     | _ => false
   if state.retainDiagnosticNodes || retainTerminal then
     { reached with nodes := reached.nodes.push <| Json.mkObj [
@@ -2261,6 +2125,16 @@ private partial def scanSemanticContractClosureExpr
       | .foundation =>
           pure <| semanticContractClosureRecordNode state path "terminal"
             origin moduleOrigin name info?
+      | .foreignModelDefinition =>
+          match info? with
+          | some (.defnInfo _) =>
+              pure <| semanticContractClosureRecordNode state path "terminal"
+                origin moduleOrigin name info?
+          | _ =>
+              let next := semanticContractClosureRecordNode state path "terminal"
+                origin moduleOrigin name info?
+              pure <| semanticContractClosureFailure
+                next "foreign_model_dependency_not_definition" name
       | .workspace =>
           let next := semanticContractClosureRecordNode state path "terminal"
             origin moduleOrigin name info?
@@ -2436,17 +2310,22 @@ private def parseSemanticContractClosureScope
   let paperRaw ← (value.getObjVal? "paper_modules").toOption
   let workspaceRaw ← (value.getObjVal? "workspace_modules").toOption
   let foundationRaw ← (value.getObjVal? "foundation_modules").toOption
+  let foreignDefinitionsRaw ← (value.getObjVal? "foreign_model_definitions").toOption
+  let foreignModulesRaw ← (value.getObjVal? "foreign_model_modules").toOption
   let hashToolRaw ← (value.getObjVal? "hash_tool_path").toOption
   let paperModules ← parseSemanticContractClosureNames paperRaw
   let workspaceModules ← parseSemanticContractClosureNames workspaceRaw
   let foundationModules ← parseSemanticContractClosureNames foundationRaw
+  let foreignModelDefinitions ← parseSemanticContractClosureNames foreignDefinitionsRaw
+  let foreignModelModules ← parseSemanticContractClosureNames foreignModulesRaw
   let hashToolPath ← hashToolRaw.getStr?.toOption
   guard !hashToolPath.isEmpty
   let inlinePaperScope :=
     ((value.getObjVal? "inline_paper_scope").toOption.bind fun inlineRaw =>
       inlineRaw.getBool?.toOption).getD false
   pure {
-    paperModules, workspaceModules, foundationModules, hashToolPath,
+    paperModules, workspaceModules, foundationModules, foreignModelDefinitions,
+    foreignModelModules, hashToolPath,
     inlinePaperScope }
 
 private def semanticContractClosureState
@@ -2490,36 +2369,6 @@ private def semanticContractClosureState
       pure <| semanticContractClosureFailure initial
         "specification_not_transparent_definition" specName
 
-private def semanticContractClosureSurfaceWithScope
-    (specName : Name) (auditModules : Array Name)
-    (reviewedModule : Option ModuleIdx) : MetaM (Option Json) := do
-  let surface? ← try
-    withNewMCtxDepth do
-      let info ← getConstInfo specName
-      let .defnInfo definition := info | throwError "Spec is not a definition"
-      let params := info.levelParams.toArray
-      forallTelescopeReducing info.type fun binders result => do
-        unless ← isDefEq result (mkSort .zero) do
-          throwError "Spec is not proposition-valued"
-        let fvarIds := binders.map Expr.fvarId!
-        let mut binderDomains : Array Json := #[]
-        for index in [0:binders.size] do
-          let localDecl ← binders[index]!.fvarId!.getDecl
-          binderDomains := binderDomains.push <| Json.mkObj [
-            ("index", Json.str (toString index)),
-            ("binder_info", Json.str (binderInfoName localDecl.binderInfo)),
-            ("domain_is_proposition", Json.bool (← isProp localDecl.type)),
-            ("canonical", ← canonicalExpr params fvarIds #[] auditModules reviewedModule
-              #[] #[] localDecl.type)]
-        let body ← whnf (mkAppN definition.value binders)
-        let canonicalBody ← canonicalExpr params fvarIds #[] auditModules reviewedModule
-          #[] #[] body
-        pure <| some <| obj "spec_surface" [
-          ("binder_domains", Json.arr binderDomains),
-          ("body", canonicalBody)]
-  catch _ => pure none
-  pure surface?
-
 /--
 Return a bounded, name-free receipt for one elaborated expression. Transparent
 paper dependencies are represented by the digest of their recursively compact
@@ -2542,7 +2391,7 @@ private def semanticContractClosureExprFingerprint
     ("canonical_bytes", Json.str (toString encoded.toUTF8.size))]
 
 /--
-Production Spec surface. This retains binder order/kind and independent
+Canonical Spec closure surface. This retains binder order/kind and independent
 fingerprints of the elaborated declaration type, value, binder domains, and
 reduced proposition body without emitting a recursively expanded JSON tree.
 -/
@@ -2580,40 +2429,24 @@ private def semanticContractClosureFingerprintSurfaceWithScope
   catch _ => pure none
   pure surface?
 
-private def semanticContractClosureSurface
+private def semanticContractClosureFingerprintSurface
     (specName : Name) (scope : SemanticContractClosureScope) :
     MetaM (String × Option Json) := do
   let rootModule := (← getEnv).getModuleIdxFor? specName
-  let expanded ←
-    if scope.inlinePaperScope then
-      semanticContractClosureSurfaceWithScope specName scope.paperModules rootModule
-    else
-      semanticContractClosureFingerprintSurfaceWithScope
-        specName scope.paperModules rootModule scope.hashToolPath
-  match expanded with
+  let surface ← semanticContractClosureFingerprintSurfaceWithScope
+    specName scope.paperModules rootModule scope.hashToolPath
+  match surface with
   | some surface =>
-      pure (
-        if scope.inlinePaperScope then "closure_expanded"
-        else "closure_fingerprints",
-        some surface)
+      pure ("closure_fingerprints", some surface)
   | none =>
-      -- A rejected closure must still expose the actual elaborated binder and
-      -- body shape.  Re-encode it with no paper module authorized for
-      -- expansion, using a known compiled module only to keep inline fixture
-      -- declarations terminal rather than recursively reopening an opaque
-      -- local value.  This fallback is diagnostic only; a passing receipt
-      -- always uses the fully expanded, name-invariant surface above.
+      -- A rejected closure still receives a bounded diagnostic identity. With
+      -- no paper module authorized for expansion, an opaque or otherwise
+      -- blocked local declaration remains a named terminal rather than being
+      -- reopened. Passing receipts always use the name-free compact surface.
       let fallbackModule := (← getEnv).getModuleIdxFor? ``Nat
-      let fallback ←
-        if scope.inlinePaperScope then
-          semanticContractClosureSurfaceWithScope specName #[] fallbackModule
-        else
-          semanticContractClosureFingerprintSurfaceWithScope
-            specName #[] fallbackModule scope.hashToolPath
-      pure (
-        if scope.inlinePaperScope then "terminal_fallback"
-        else "terminal_fingerprints",
-        fallback)
+      let fallback ← semanticContractClosureFingerprintSurfaceWithScope
+        specName #[] fallbackModule scope.hashToolPath
+      pure ("terminal_fingerprints", fallback)
 
 /-!
 Production source-to-Spec correspondence needs Lean to identify the recursive
@@ -2667,6 +2500,7 @@ private def semanticContractClosureLeanUtilityState
       state "statement_dependency_scan_failed" failedName
   let mut paperModules : Array String := #[]
   let mut foundationModules : Array String := #[]
+  let mut foreignModelModules : Array String := #[]
   -- Do not materialize one receipt node per traversed declaration. Lean has
   -- still visited every statement dependency in `names`; the compact receipt retains
   -- each reached paper module (byte-pinned by Python) and each approved
@@ -2681,6 +2515,22 @@ private def semanticContractClosureLeanUtilityState
     | .foundation =>
         if !foundationModules.contains moduleOrigin then
           foundationModules := foundationModules.push moduleOrigin
+    | .foreignModelDefinition =>
+        let currentInfo? ← try some <$> getConstInfo name catch _ => pure none
+        match currentInfo? with
+        | some (.defnInfo _) =>
+            let recorded := semanticContractClosureRecordNode state
+              "lean_statement_dependency/foreign_model_definition"
+              "lean_statement_terminal" origin moduleOrigin name currentInfo?
+            state := recorded
+            if !foreignModelModules.contains moduleOrigin then
+              foreignModelModules := foreignModelModules.push moduleOrigin
+        | _ =>
+            let recorded := semanticContractClosureRecordNode state
+              "lean_statement_dependency/foreign_model_definition"
+              "lean_statement_terminal" origin moduleOrigin name currentInfo?
+            state := semanticContractClosureFailure
+              recorded "foreign_model_dependency_not_definition" name
     | .workspace =>
         let currentInfo? ← try some <$> getConstInfo name catch _ => pure none
         let recorded := semanticContractClosureRecordNode state
@@ -2704,6 +2554,7 @@ private def semanticContractClosureLeanUtilityState
           recorded "unresolved_dependency_origin" name
   let sortedPaperModules := paperModules.qsort (· < ·)
   let sortedFoundationModules := foundationModules.qsort (· < ·)
+  let sortedForeignModelModules := foreignModelModules.qsort (· < ·)
   if sortedPaperModules.size > state.fuel then
     state := semanticContractClosureFailure state "fuel_exhausted" specName
   else
@@ -2717,65 +2568,21 @@ private def semanticContractClosureLeanUtilityState
   for moduleOrigin in sortedFoundationModules do
     state := { state with reachedModules := state.reachedModules.push (
       semanticContractClosureOriginName .foundation, moduleOrigin) }
+  for moduleOrigin in sortedForeignModelModules do
+    let entry := (semanticContractClosureOriginName .foreignModelDefinition, moduleOrigin)
+    if !state.reachedModules.contains entry then
+      state := { state with reachedModules := state.reachedModules.push entry }
   pure state
-
-private def semanticContractClosureLeanUtilitySurface
-    (specName : Name) (scope : SemanticContractClosureScope) : MetaM (Option Json) := do
-  try
-    let info ← getConstInfo specName
-    let .defnInfo definition := info | throwError "Spec is not a definition"
-    let typeDigest ← canonicalDigest scope.hashToolPath (toString info.type)
-    let valueDigest ← canonicalDigest scope.hashToolPath (toString definition.value)
-    unless typeDigest.length == 64 && valueDigest.length == 64 do
-      throwError "semantic Spec fingerprint is malformed"
-    pure <| some <| obj "lean_declaration_fingerprint" [
-      ("schema", Json.str "1"),
-      ("declaration_kind", Json.str (declarationKind info)),
-      ("declaration_type_sha256", Json.str typeDigest),
-      ("declaration_value_sha256", Json.str valueDigest)]
-  catch _ => pure none
 
 private def semanticContractClosureLeanUtilityManifest
     (specName : Name) (scope : SemanticContractClosureScope) (fuel : Nat) :
     MetaM Json := do
   let state ← semanticContractClosureLeanUtilityState specName scope fuel
-  let surface ← semanticContractClosureLeanUtilitySurface specName scope
+  let (surfaceMode, surface) ←
+    semanticContractClosureFingerprintSurface specName scope
   let state :=
     if surface.isSome then state
     else semanticContractClosureFailure state "specification_surface_unavailable" specName
-  let failures := state.failures.map fun failure => Json.mkObj [
-    ("tag", Json.str failure.1),
-    ("declaration", Json.str failure.2.toString)]
-  pure <| Json.mkObj [
-    ("schema", Json.str "1"),
-    ("spec", Json.str specName.toString),
-    ("passes", Json.bool state.failures.isEmpty),
-    ("expanded", Json.str (toString state.expanded)),
-    ("surface_mode", Json.str "lean_dependency_fingerprint"),
-    ("surface", surface.getD Json.null),
-    ("nodes", Json.arr state.nodes),
-    ("reached_modules", Json.arr (state.reachedModules.map fun entry => Json.mkObj [
-      ("origin_class", Json.str entry.1),
-      ("module_origin", Json.str entry.2)])),
-    ("failures", Json.arr failures),
-    ("scope", Json.mkObj [
-      ("paper_modules", Json.arr (scope.paperModules.map fun name => Json.str name.toString)),
-      ("workspace_modules", Json.arr (scope.workspaceModules.map fun name => Json.str name.toString)),
-      ("foundation_modules", Json.arr (scope.foundationModules.map fun name => Json.str name.toString)),
-      ("hash_tool_path", Json.str scope.hashToolPath),
-      ("inline_paper_scope", Json.bool scope.inlinePaperScope)])]
-
-private def semanticContractClosureManifest
-    (specName : Name) (scope : SemanticContractClosureScope) (fuel : Nat) :
-    MetaM Json := do
-  if !scope.inlinePaperScope then
-    return ← semanticContractClosureLeanUtilityManifest specName scope fuel
-  let knownVector ← canonicalDigest scope.hashToolPath "abc"
-  unless knownVector ==
-      "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad" do
-    throwError "semantic-contract SHA-256 tool failed its known vector"
-  let state ← semanticContractClosureState specName scope fuel
-  let (surfaceMode, surface) ← semanticContractClosureSurface specName scope
   let failures := state.failures.map fun failure => Json.mkObj [
     ("tag", Json.str failure.1),
     ("declaration", Json.str failure.2.toString)]
@@ -2795,6 +2602,48 @@ private def semanticContractClosureManifest
       ("paper_modules", Json.arr (scope.paperModules.map fun name => Json.str name.toString)),
       ("workspace_modules", Json.arr (scope.workspaceModules.map fun name => Json.str name.toString)),
       ("foundation_modules", Json.arr (scope.foundationModules.map fun name => Json.str name.toString)),
+      ("foreign_model_definitions", Json.arr
+        (scope.foreignModelDefinitions.map fun name => Json.str name.toString)),
+      ("foreign_model_modules", Json.arr
+        (scope.foreignModelModules.map fun name => Json.str name.toString)),
+      ("hash_tool_path", Json.str scope.hashToolPath),
+      ("inline_paper_scope", Json.bool scope.inlinePaperScope)])]
+
+private def semanticContractClosureManifest
+    (specName : Name) (scope : SemanticContractClosureScope) (fuel : Nat) :
+    MetaM Json := do
+  if !scope.inlinePaperScope then
+    return ← semanticContractClosureLeanUtilityManifest specName scope fuel
+  let knownVector ← canonicalDigest scope.hashToolPath "abc"
+  unless knownVector ==
+      "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad" do
+    throwError "semantic-contract SHA-256 tool failed its known vector"
+  let state ← semanticContractClosureState specName scope fuel
+  let (surfaceMode, surface) ←
+    semanticContractClosureFingerprintSurface specName scope
+  let failures := state.failures.map fun failure => Json.mkObj [
+    ("tag", Json.str failure.1),
+    ("declaration", Json.str failure.2.toString)]
+  pure <| Json.mkObj [
+    ("schema", Json.str "1"),
+    ("spec", Json.str specName.toString),
+    ("passes", Json.bool state.failures.isEmpty),
+    ("expanded", Json.str (toString state.expanded)),
+    ("surface_mode", Json.str surfaceMode),
+    ("surface", surface.getD Json.null),
+    ("nodes", Json.arr state.nodes),
+    ("reached_modules", Json.arr (state.reachedModules.map fun entry => Json.mkObj [
+      ("origin_class", Json.str entry.1),
+      ("module_origin", Json.str entry.2)])),
+    ("failures", Json.arr failures),
+    ("scope", Json.mkObj [
+      ("paper_modules", Json.arr (scope.paperModules.map fun name => Json.str name.toString)),
+      ("workspace_modules", Json.arr (scope.workspaceModules.map fun name => Json.str name.toString)),
+      ("foundation_modules", Json.arr (scope.foundationModules.map fun name => Json.str name.toString)),
+      ("foreign_model_definitions", Json.arr
+        (scope.foreignModelDefinitions.map fun name => Json.str name.toString)),
+      ("foreign_model_modules", Json.arr
+        (scope.foreignModelModules.map fun name => Json.str name.toString)),
       ("hash_tool_path", Json.str scope.hashToolPath),
       ("inline_paper_scope", Json.bool scope.inlinePaperScope)])]
 
@@ -3205,7 +3054,7 @@ private def canonicalFieldType
   -- head opaque for this identity calculation.
   let externalModule := env.getModuleIdxFor? `Nat
   let canonical ← canonicalExpr #[] (binders.map Expr.fvarId!) #[]
-    #[`EconCSLibAudit.NoFieldSafetyLocalExpansion] externalModule #[] #[] fieldType
+    #[`AppliedModelingLibAudit.NoFieldSafetyLocalExpansion] externalModule #[] #[] fieldType
   pure canonical.compress
 
 private def fieldReceiptForType
@@ -3532,459 +3381,6 @@ private def sourcePremiseFalseEliminators
   pure <| Json.mkObj [
     ("reviewed_inputs", Json.arr reviewedInputs)]
 
-/--
-Return the directly elaborated EconCSLib constants used by each source-facing
-Spec.  This deliberately inspects Lean's resolved declaration body, rather
-than its tokens: `open` declarations, notation, coercions, and synthesized
-arguments therefore cannot hide a reusable library primitive from the
-source-to-library review surface.
-
-The result is intentionally *direct* rather than transitive.  A paper reviewer
-checks the mathematical library object used in the Spec; Lean's ordinary
-signature/closure receipt separately pins the implementation dependencies of
-that object.
--/
-private def directLibraryDependencySurface
-    (requested : Array Name) : MetaM Json := do
-  let mut rows : Array Json := #[]
-  for declaration in requested do
-    let info ← getConstInfo declaration
-    let dependencies ← semanticDependencyDirectEdges info
-    let mut directNames : Array Name := #[]
-    for (_, dependency) in dependencies do
-      if dependency.toString.startsWith "EconCSLib." && !directNames.contains dependency then
-        directNames := directNames.push dependency
-    let sortedDirectNames := directNames.qsort (fun left right => left.toString < right.toString)
-    rows := rows.push <| Json.mkObj [
-      ("declaration", Json.str declaration.toString),
-      ("direct_library_declarations", Json.arr <| sortedDirectNames.map fun dependency =>
-        Json.str dependency.toString)]
-  pure <| Json.mkObj [
-    ("schema", Json.str "1"),
-    ("roots", Json.arr rows)]
-
-private def parseDirectLibraryDependencyRequests
-    (raw : String) : Option (Array Name) := do
-  match Json.parse raw with
-  | .ok (.arr values) =>
-      let mut requested : Array Name := #[]
-      for value in values do
-        let name ← value.getStr?.toOption
-        if name.isEmpty || requested.any (fun prior => prior.toString == name) then
-          failure
-        requested := requested.push name.toName
-      pure <| requested.qsort (fun left right => left.toString < right.toString)
-  | _ => none
-
-/--
-One Lean-owned, readable expansion of a source-facing `Spec`.  The review
-target unfolds transparent declarations owned by the paper, but deliberately
-leaves imported library declarations named: those are reviewed as their own
-source-connected prerequisites.  An opaque or theorem-valued paper-local
-dependency cannot silently become a black box; it is reported and makes this
-display incomplete.
-
-This is a presentation and source-review transport, not a custom semantic
-algorithm.  Lean resolves the declaration, controls the delta reduction, and
-pretty-prints the resulting elaborated expression.  Python only carries the
-result and pins its bytes in the screening ledger.
--/
-private structure TransparentSpecDisplayState where
-  remaining : Nat
-  expansionCount : Nat := 0
-  expandedDeclarations : Array Name := #[]
-  prerequisiteDeclarations : Array Name := #[]
-  blockedDeclarations : Array Name := #[]
-
-private def appendTransparentSpecDisplayName
-    (names : Array Name) (name : Name) : Array Name :=
-  if names.contains name then names else names.push name
-
-private def declarationIsOwnedByPaper
-    (paperModules : Array Name) (name : Name) : MetaM Bool := do
-  let env ← getEnv
-  match env.getModuleIdxFor? name with
-  | some moduleIdx =>
-      pure <| paperModules.contains (env.header.moduleNames[moduleIdx.toNat]!)
-  | none => pure false
-
-/-! A structure constructor or projection has no independent paper-facing
-presentation: its source meaning is the owning structure.  Keep the owner as
-one prerequisite card instead of manufacturing cards for `.mk` and each
-field.  Ordinary names nested below a structure (for example an explicitly
-written `State.initial`) are not projections and remain independent cards. -/
-private def paperDeclarationReviewOwner (declaration : Name) : MetaM Name := do
-  let env ← getEnv
-  match env.find? declaration with
-  | some (.ctorInfo constructorInfo) =>
-      pure constructorInfo.induct
-  | _ =>
-      match env.getProjectionFnInfo? declaration with
-      | some projectionInfo =>
-          match env.find? projectionInfo.ctorName with
-          | some (.ctorInfo constructorInfo) => pure constructorInfo.induct
-          | _ => pure declaration
-      | none => pure declaration
-
-private def recordTransparentPaperPrerequisite
-    (stateRef : IO.Ref TransparentSpecDisplayState) (declaration : Name) : MetaM Unit := do
-  if declaration.toString.contains ".match_" ||
-      declaration.toString.contains "._proof_" then
-    pure ()
-  else
-    let owner ← paperDeclarationReviewOwner declaration
-    let state ← stateRef.get
-    stateRef.set {
-      state with
-      prerequisiteDeclarations := appendTransparentSpecDisplayName
-        state.prerequisiteDeclarations owner }
-
-private def transparentPaperSpecDisplayStep
-    (paperModules : Array Name) (stateRef : IO.Ref TransparentSpecDisplayState)
-    (node : Expr) : MetaM TransformStep := do
-  -- Proof values inserted while a paper-local definition is elaborated do not
-  -- contribute mathematical data to the proposition being displayed.  The
-  -- proof endpoint and its build are checked separately; recursively opening
-  -- a theorem proof here would only turn implementation proof terms into fake
-  -- source-model prerequisites.
-  let (declaration, _) := node.getAppFnArgs
-  if declaration.isAnonymous then
-    return .done node
-  else
-      let paperOwned ← declarationIsOwnedByPaper paperModules declaration
-      unless paperOwned do
-        return .done node
-      -- The selected `Spec` was opened explicitly before this traversal.  Any
-      -- further paper-local name is an independently reviewable source-model,
-      -- state, policy, or construction declaration. Leave it visible and
-      -- create a prerequisite card instead of expanding implementation records
-      -- into the claim.
-      recordTransparentPaperPrerequisite stateRef declaration
-      return .done node
-
-private partial def normalizeTransparentPaperSpecDisplay
-    (paperModules : Array Name) (stateRef : IO.Ref TransparentSpecDisplayState)
-    (remainingPasses : Nat) (expression : Expr) : MetaM Expr := do
-  if remainingPasses == 0 then
-    return expression
-  let changedRef ← IO.mkRef false
-  let beforeState ← stateRef.get
-  let expandedBefore := beforeState.expansionCount
-  let transformed ← transform expression
-    (post := fun node => transparentPaperSpecDisplayStep paperModules stateRef node)
-    (skipConstInApp := true)
-  let afterState ← stateRef.get
-  let expandedAfter := afterState.expansionCount
-  if expandedAfter > expandedBefore then
-    changedRef.set true
-  if ← changedRef.get then
-    normalizeTransparentPaperSpecDisplay paperModules stateRef
-      (remainingPasses - 1) transformed
-  else
-    pure transformed
-
-private def directLibraryDeclarationsInTransparentDisplay
-    (expression : Expr) : MetaM (Array Name) := do
-  let foundRef ← IO.mkRef (#[] : Array Name)
-  let _ ← transform expression
-    (post := fun node => do
-      let (declaration, _) := node.getAppFnArgs
-      if declaration.toString.startsWith "EconCSLib." then
-        let found ← foundRef.get
-        foundRef.set (appendTransparentSpecDisplayName found declaration)
-      pure (.done node))
-    (skipConstInApp := true)
-  let found ← foundRef.get
-  pure <| (found.filter fun declaration =>
-    !declaration.toString.contains ".match_" &&
-      !declaration.toString.contains "._proof_").qsort
-        (fun left right => left.toString < right.toString)
-
-/--
-Lean's pretty printer renders an equation-compiler matcher as the actual
-`match` expression.  Once that has happened, retaining the generated
-`.match_N` helper in `blocked_declarations` would incorrectly claim that the
-semantic display hides a paper-local dependency.  Compiler-generated proof
-helpers likewise carry no data in a proposition. Other local definitions,
-opaque constants, and inductives still remain explicit prerequisites.
--/
-private def transparentPaperSpecDisplayBlocker (declaration : Name) : Bool :=
-  !declaration.toString.contains ".match_" &&
-    !declaration.toString.contains "._proof_"
-
-private def transparentPaperSpecDisplayFor
-    (specification : Name) (paperModules : Array Name) (maxExpansions : Nat) :
-    MetaM Json :=
-  withNewMCtxDepth do
-    let info ← getConstInfo specification
-    let .defnInfo definition := info | throwError "Spec is not a transparent definition"
-    forallTelescopeReducing info.type fun binders result => do
-      unless ← isDefEq result (mkSort .zero) do
-        throwError "Spec is not proposition-valued"
-      let stateRef ← IO.mkRef ({ remaining := maxExpansions } : TransparentSpecDisplayState)
-      -- `headBeta` exposes the Spec's own telescope without asking Lean to
-      -- unfold an imported library predicate at the root.  Re-wrap every
-      -- declaration binder as a forall before walking: source review must see
-      -- even an otherwise unused paper hypothesis, rather than only the
-      -- definition body after those inputs were instantiated as local fvars.
-      -- Every remaining paper-local declaration is retained as an explicit,
-      -- separately source-checked prerequisite rather than hidden by recursive
-      -- implementation expansion.
-      let initial ← mkForallFVars binders (mkAppN definition.value binders).headBeta
-      let normalized ← normalizeTransparentPaperSpecDisplay paperModules stateRef
-        (maxExpansions + 1) initial
-      let state ← stateRef.get
-      let display := (← ppExpr normalized).pretty
-      let libraryDeclarations ← directLibraryDeclarationsInTransparentDisplay normalized
-      let blockedDeclarations := state.blockedDeclarations.filter
-        transparentPaperSpecDisplayBlocker
-      pure <| Json.mkObj [
-        ("specification", Json.str specification.toString),
-        ("complete", Json.bool blockedDeclarations.isEmpty),
-        ("expansion_count", Json.str (toString state.expansionCount)),
-        ("expanded_declarations", Json.arr <|
-          state.expandedDeclarations.qsort (fun left right => left.toString < right.toString) |>.map
-            fun declaration => Json.str declaration.toString),
-        ("prerequisite_declarations", Json.arr <|
-          state.prerequisiteDeclarations.qsort (fun left right => left.toString < right.toString) |>.map
-            fun declaration => Json.str declaration.toString),
-        ("library_declarations", Json.arr <|
-          libraryDeclarations.map fun declaration => Json.str declaration.toString),
-        ("blocked_declarations", Json.arr <|
-          blockedDeclarations.qsort (fun left right => left.toString < right.toString) |>.map
-            fun declaration => Json.str declaration.toString),
-        ("display", Json.str display)]
-
-private def parseTransparentPaperSpecDisplayRequest
-    (raw : String) : Option (Array Name × Array Name) := do
-  let value ← (Json.parse raw).toOption
-  let specificationsRaw ← (value.getObjVal? "specifications").toOption
-  let paperModulesRaw ← (value.getObjVal? "paper_modules").toOption
-  let specifications ← parseSemanticContractClosureNames specificationsRaw
-  let paperModules ← parseSemanticContractClosureNames paperModulesRaw
-  if specifications.isEmpty || paperModules.isEmpty then
-    failure
-  let mut seen : Array Name := #[]
-  for specification in specifications do
-    guard !seen.contains specification
-    seen := seen.push specification
-  pure (
-    specifications.qsort (fun left right => left.toString < right.toString),
-    paperModules.qsort (fun left right => left.toString < right.toString))
-
-private def transparentPaperSpecDisplays
-    (specifications paperModules : Array Name) (maxExpansions : Nat) : MetaM Json := do
-  let items ← specifications.mapM fun specification =>
-    transparentPaperSpecDisplayFor specification paperModules maxExpansions
-  pure <| Json.mkObj [
-    ("schema", Json.str "1"),
-    ("items", Json.arr items)]
-
-/-- Return named paper-local dependencies that remain after one declaration's
-own body has been exposed.  This is a Lean elaboration walk; it deliberately
-does not infer dependencies from source tokens. -/
-private def directPaperDeclarationsInDisplay
-    (paperModules : Array Name) (expression : Expr) : MetaM (Array Name) := do
-  let foundRef ← IO.mkRef (#[] : Array Name)
-  let _ ← transform expression
-    (post := fun node => do
-      let (declaration, _) := node.getAppFnArgs
-      if !declaration.isAnonymous &&
-          !declaration.toString.contains ".match_" &&
-          !declaration.toString.contains "._proof_" &&
-          (← declarationIsOwnedByPaper paperModules declaration) then
-        let owner ← paperDeclarationReviewOwner declaration
-        let found ← foundRef.get
-        foundRef.set (appendTransparentSpecDisplayName found owner)
-      pure (.done node))
-    (skipConstInApp := true)
-  pure <| (← foundRef.get).qsort (fun left right => left.toString < right.toString)
-
-/-- Lean-owned own-body/sigature display for a retained paper-local semantic
-prerequisite.  A transparent definition exposes its body exactly once; its
-remaining paper and library names become separate cards in the recursive
-review packet. -/
-private def transparentPaperDeclarationDisplayFor
-    (declaration : Name) (paperModules : Array Name) : MetaM Json :=
-  withNewMCtxDepth do
-    let info ← getConstInfo declaration
-    let (kind, expression, rootExpanded) ←
-      match info with
-      | .defnInfo defInfo =>
-          forallTelescopeReducing info.type fun binders _ => do
-            let body := (mkAppN defInfo.value binders).headBeta
-            pure ("definition", ← mkForallFVars binders body, true)
-      | .opaqueInfo _ =>
-          pure ("opaque_definition", info.type, false)
-      | _ =>
-          pure ("non_definition", info.type, false)
-    let libraries ← directLibraryDeclarationsInTransparentDisplay expression
-    let paperDependencies ← directPaperDeclarationsInDisplay paperModules expression
-    let directPaperDependencies := paperDependencies.filter fun dependency =>
-      dependency != declaration
-    pure <| Json.mkObj [
-      ("declaration", Json.str declaration.toString),
-      ("declaration_kind", Json.str kind),
-      ("root_expanded", Json.bool rootExpanded),
-      ("direct_paper_declarations", Json.arr <|
-        directPaperDependencies.map fun dependency => Json.str dependency.toString),
-      ("direct_library_declarations", Json.arr <|
-        libraries.map fun dependency => Json.str dependency.toString),
-      ("display", Json.str ((← ppExpr expression).pretty))]
-
-private def paperDeclarationDisplayDependencies (item : Json) : Array Name :=
-  match (item.getObjVal? "direct_paper_declarations").toOption with
-  | some (.arr values) =>
-      values.foldl (init := #[]) fun dependencies value =>
-        match value.getStr?.toOption with
-        | some rawName =>
-            let name := rawName.toName
-            if !dependencies.contains name then dependencies.push name else dependencies
-        | none => dependencies
-  | _ => #[]
-
-private def transparentPaperDeclarationDisplayName (item : Json) : String :=
-  ((item.getObjVal? "declaration").toOption.bind (·.getStr?.toOption)).getD ""
-
-private def transparentPaperDeclarationDisplays
-    (declarations paperModules : Array Name) : MetaM Json := do
-  let mut pending := declarations
-  let mut visited : Array Name := #[]
-  let mut items : Array Json := #[]
-  while !pending.isEmpty && visited.size < 512 do
-    match pending.toList with
-    | [] => pure ()
-    | declaration :: rest =>
-        pending := rest.toArray
-        if !visited.contains declaration then
-          let item ← transparentPaperDeclarationDisplayFor declaration paperModules
-          visited := visited.push declaration
-          items := items.push item
-          for dependency in paperDeclarationDisplayDependencies item do
-            if !visited.contains dependency && !pending.contains dependency then
-              pending := pending.push dependency
-  unless pending.isEmpty do
-    throwError "paper semantic-prerequisite closure exceeds 512 declarations"
-  pure <| Json.mkObj [
-    ("schema", Json.str "1"),
-    ("items", Json.arr <| items.qsort fun left right =>
-      transparentPaperDeclarationDisplayName left < transparentPaperDeclarationDisplayName right)]
-
-/-- Expand compiler-generated helpers belonging to one library declaration.
-
-Recursive definitions often elaborate through generated names such as
-`foo._f`.  Those names have no independent paper/source presentation, so they
-must not turn into pretend library cards.  We open them only under their
-declared root and leave a recursive call back to the root visible.
--/
-private partial def normalizeTransparentLibraryRootDisplay
-    (root : Name) (remainingPasses : Nat) (expression : Expr) : MetaM Expr := do
-  if remainingPasses == 0 then
-    return expression
-  let changedRef ← IO.mkRef false
-  let transformed ← transform expression
-    (post := fun node => do
-      let (declaration, _) := node.getAppFnArgs
-      if declaration == root || !root.isPrefixOf declaration then
-        pure (.done node)
-      else
-        match ← getConstInfo declaration with
-        | .defnInfo _ =>
-            match ← unfoldDefinition? node with
-            | some unfolded =>
-                changedRef.set true
-                pure (.done unfolded)
-            | none => pure (.done node)
-        | _ => pure (.done node))
-    (skipConstInApp := true)
-  if ← changedRef.get then
-    normalizeTransparentLibraryRootDisplay root (remainingPasses - 1) transformed
-  else
-    pure transformed
-
-/--
-One Lean-owned readable target for a reusable library declaration.  A `def`
-is displayed after its own delta reduction, while the reusable declarations it
-uses remain named.  They are separate source-connected review cards, so a
-short wrapper cannot hide behind its declaration name.  Structures,
-inductives, theorems, and opaque declarations instead expose their
-elaborated type; their exact source declaration is still carried alongside
-this target by the packet/dashboard layer.
--/
-private def transparentLibraryDeclarationDisplayFor
-    (declaration : Name) : MetaM Json :=
-  withNewMCtxDepth do
-    let info ← getConstInfo declaration
-    let (kind, expression, rootExpanded) ←
-      match info with
-      | .defnInfo defInfo =>
-          forallTelescopeReducing info.type fun binders _ => do
-            let body := (mkAppN defInfo.value binders).headBeta
-            let expanded ← normalizeTransparentLibraryRootDisplay declaration 64 body
-            pure ("definition", ← mkForallFVars binders expanded, true)
-      | .opaqueInfo _ =>
-          pure ("opaque_definition", info.type, false)
-      | _ =>
-          pure ("non_definition", info.type, false)
-    let dependencies ← directLibraryDeclarationsInTransparentDisplay expression
-    let compilerHelperPrefix := declaration.toString ++ "."
-    let directDependencies := dependencies.filter fun dependency =>
-      dependency != declaration &&
-        !dependency.toString.startsWith compilerHelperPrefix
-    pure <| Json.mkObj [
-      ("declaration", Json.str declaration.toString),
-      ("declaration_kind", Json.str kind),
-      ("root_expanded", Json.bool rootExpanded),
-      ("direct_library_declarations", Json.arr <|
-        directDependencies.map fun dependency => Json.str dependency.toString),
-      ("display", Json.str ((← ppExpr expression).pretty))]
-
-private def parseTransparentLibraryDeclarationDisplayRequest
-    (raw : String) : Option (Array Name) := do
-  let value ← (Json.parse raw).toOption
-  parseSemanticContractClosureNames value
-
-private def libraryDeclarationDisplayDependencies (item : Json) : Array Name :=
-  match (item.getObjVal? "direct_library_declarations").toOption with
-  | some (.arr values) =>
-      values.foldl (init := #[]) fun dependencies value =>
-        match value.getStr?.toOption with
-        | some rawName =>
-            let name := rawName.toName
-            if rawName.startsWith "EconCSLib." && !dependencies.contains name then
-              dependencies.push name
-            else
-              dependencies
-        | none => dependencies
-  | _ => #[]
-
-private def libraryDeclarationDisplayName (item : Json) : String :=
-  ((item.getObjVal? "declaration").toOption.bind (·.getStr?.toOption)).getD ""
-
-private def transparentLibraryDeclarationDisplays
-    (declarations : Array Name) : MetaM Json := do
-  let mut pending := declarations
-  let mut visited : Array Name := #[]
-  let mut items : Array Json := #[]
-  while !pending.isEmpty && visited.size < 512 do
-    match pending.toList with
-    | [] => pure ()
-    | declaration :: rest =>
-        pending := rest.toArray
-        if !visited.contains declaration then
-          let item ← transparentLibraryDeclarationDisplayFor declaration
-          visited := visited.push declaration
-          items := items.push item
-          for dependency in libraryDeclarationDisplayDependencies item do
-            if !visited.contains dependency && !pending.contains dependency then
-              pending := pending.push dependency
-  unless pending.isEmpty do
-    throwError "library semantic-target closure exceeds 512 declarations"
-  pure <| Json.mkObj [
-    ("schema", Json.str "1"),
-    ("items", Json.arr <| items.qsort fun left right =>
-      libraryDeclarationDisplayName left < libraryDeclarationDisplayName right)]
-
 syntax (name := signatureManifestCmd) "#signature_manifest " str str str : command
 
 syntax (name := signatureManifestRevalidationCmd)
@@ -4047,12 +3443,6 @@ syntax (name := propositionSpecProofMatchCmd)
 syntax (name := semanticContractMatchCmd)
   "#semantic_contract_match " str str str : command
 
-syntax (name := operationalOutcomeDomainBridgeCmd)
-  "#operational_outcome_domain_bridge " str str str str str str str str : command
-
-syntax (name := operationalOutcomeStateTransitionBridgeCmd)
-  "#operational_outcome_state_transition_bridge " str str str str str str str str str str str str : command
-
 syntax (name := semanticContractTransparencyCmd)
   "#semantic_contract_transparency " str str str : command
 
@@ -4076,18 +3466,6 @@ syntax (name := inductiveConstructorFieldSlotCountCmd)
 
 syntax (name := typeWitnessPayloadSafetyCmd)
   "#type_witness_payload_safety " str : command
-
-syntax (name := directLibraryDependencySurfaceCmd)
-  "#direct_library_dependency_surface " str : command
-
-syntax (name := transparentPaperSpecDisplayCmd)
-  "#transparent_paper_spec_display " str str : command
-
-syntax (name := transparentPaperDeclarationDisplayCmd)
-  "#transparent_paper_declaration_display " str : command
-
-syntax (name := transparentLibraryDeclarationDisplayCmd)
-  "#transparent_library_declaration_display " str : command
 
 elab_rules : command
   | `(#proposition_spec_proof_match $spec:str $proof:str) => do
@@ -4126,82 +3504,6 @@ elab_rules : command
         ("mode", Json.str modeName),
         ("matches", Json.bool doesMatch)]
       IO.println s!"LEAN_SEMANTIC_CONTRACT_MATCH:{result.compress}"
-  | `(#operational_outcome_domain_bridge
-      $target:str $bridge:str $modelIndex:str $terminalIndex:str $runIndex:str
-      $terminalPredicateIndex:str $modelRoot:str $transitionRoot:str) => do
-      let targetName := target.getString.toName
-      let bridgeName := bridge.getString.toName
-      let modelRootName := modelRoot.getString.toName
-      let transitionRootName := transitionRoot.getString.toName
-      let modelIndex? := modelIndex.getString.toNat?
-      let terminalIndex? := terminalIndex.getString.toNat?
-      let runIndex? := runIndex.getString.toNat?
-      let terminalPredicateIndex? := terminalPredicateIndex.getString.toNat?
-      let doesMatch ←
-        match modelIndex?, terminalIndex?, runIndex?, terminalPredicateIndex? with
-        | some modelIndex, some terminalIndex, some runIndex, some terminalPredicateIndex =>
-            try
-              liftTermElabM <| operationalOutcomeDomainBridgeMatches
-                targetName bridgeName modelRootName transitionRootName modelIndex
-                terminalIndex runIndex terminalPredicateIndex
-            catch _ =>
-              pure false
-        | _, _, _, _ => pure false
-      let result := Json.mkObj [
-        ("target", Json.str targetName.toString),
-        ("bridge", Json.str bridgeName.toString),
-        ("model_index", Json.str modelIndex.getString),
-        ("terminal_index", Json.str terminalIndex.getString),
-        ("run_index", Json.str runIndex.getString),
-        ("terminal_predicate_index", Json.str terminalPredicateIndex.getString),
-        ("model_root", Json.str modelRootName.toString),
-        ("transition_root", Json.str transitionRootName.toString),
-        ("matches", Json.bool doesMatch)]
-      IO.println s!"LEAN_OPERATIONAL_OUTCOME_DOMAIN_BRIDGE:{result.compress}"
-  | `(#operational_outcome_state_transition_bridge
-      $target:str $bridge:str $initialWitness:str $modelIndex:str $stateIndex:str $initialPredicateIndex:str
-      $terminalIndex:str $runIndex:str $terminalPredicateIndex:str $modelRoot:str
-      $stateRoot:str $transitionRoot:str) => do
-      let targetName := target.getString.toName
-      let bridgeName := bridge.getString.toName
-      let initialWitnessName := initialWitness.getString.toName
-      let modelRootName := modelRoot.getString.toName
-      let stateRootName := stateRoot.getString.toName
-      let transitionRootName := transitionRoot.getString.toName
-      let modelIndex? := modelIndex.getString.toNat?
-      let stateIndex? := stateIndex.getString.toNat?
-      let initialPredicateIndex? := initialPredicateIndex.getString.toNat?
-      let terminalIndex? := terminalIndex.getString.toNat?
-      let runIndex? := runIndex.getString.toNat?
-      let terminalPredicateIndex? := terminalPredicateIndex.getString.toNat?
-      let doesMatch ←
-        match modelIndex?, stateIndex?, initialPredicateIndex?, terminalIndex?, runIndex?,
-            terminalPredicateIndex? with
-        | some modelIndex, some stateIndex, some initialPredicateIndex, some terminalIndex,
-            some runIndex, some terminalPredicateIndex =>
-            try
-              liftTermElabM <| operationalOutcomeStateTransitionBridgeMatches
-                targetName bridgeName initialWitnessName modelRootName stateRootName transitionRootName
-                modelIndex stateIndex initialPredicateIndex terminalIndex runIndex
-                terminalPredicateIndex
-            catch _ =>
-              pure false
-        | _, _, _, _, _, _ => pure false
-      let result := Json.mkObj [
-        ("target", Json.str targetName.toString),
-        ("bridge", Json.str bridgeName.toString),
-        ("initial_witness", Json.str initialWitnessName.toString),
-        ("model_index", Json.str modelIndex.getString),
-        ("state_index", Json.str stateIndex.getString),
-        ("initial_predicate_index", Json.str initialPredicateIndex.getString),
-        ("terminal_index", Json.str terminalIndex.getString),
-        ("run_index", Json.str runIndex.getString),
-        ("terminal_predicate_index", Json.str terminalPredicateIndex.getString),
-        ("model_root", Json.str modelRootName.toString),
-        ("state_root", Json.str stateRootName.toString),
-        ("transition_root", Json.str transitionRootName.toString),
-        ("matches", Json.bool doesMatch)]
-      IO.println s!"LEAN_OPERATIONAL_OUTCOME_STATE_TRANSITION_BRIDGE:{result.compress}"
   | `(#semantic_contract_transparency $spec:str $scope:str $fuel:str) => do
       let specName := spec.getString.toName
       let scope? := parseSemanticContractTransparencyScope scope.getString
@@ -4410,69 +3712,4 @@ elab_rules : command
           IO.println s!"LEAN_TYPE_WITNESS_PAYLOAD_SAFETY:{(Json.mkObj [("declarations", Json.arr results)]).compress}"
       | none =>
           IO.println "LEAN_TYPE_WITNESS_PAYLOAD_SAFETY_ERROR"
-  | `(#direct_library_dependency_surface $declarations:str) => do
-      let requested? := parseDirectLibraryDependencyRequests declarations.getString
-      let result? ← try
-        match requested? with
-        | some requested => some <$> liftTermElabM (directLibraryDependencySurface requested)
-        | none => pure none
-      catch _ =>
-        pure none
-      match result? with
-      | some result =>
-          IO.println s!"LEAN_DIRECT_LIBRARY_DEPENDENCY_SURFACE:{result.compress}"
-      | none =>
-          IO.println "LEAN_DIRECT_LIBRARY_DEPENDENCY_SURFACE_ERROR"
-  | `(#transparent_paper_spec_display $request:str $fuel:str) => do
-      let request? := parseTransparentPaperSpecDisplayRequest request.getString
-      let maxExpansions? := fuel.getString.toNat?
-      let result? ← try
-        match request?, maxExpansions? with
-        | some (specifications, paperModules), some maxExpansions =>
-            if maxExpansions == 0 then
-              pure none
-            else
-              some <$> liftTermElabM
-                (transparentPaperSpecDisplays specifications paperModules maxExpansions)
-        | _, _ => pure none
-      catch _ =>
-        pure none
-      match result? with
-      | some result =>
-          IO.println s!"LEAN_TRANSPARENT_PAPER_SPEC_DISPLAY:{result.compress}"
-      | none =>
-          IO.println "LEAN_TRANSPARENT_PAPER_SPEC_DISPLAY_ERROR"
-
-  | `(#transparent_paper_declaration_display $request:str) => do
-      let request? := parseTransparentPaperSpecDisplayRequest request.getString
-      let result? ← try
-        match request? with
-        | some (declarations, paperModules) =>
-            some <$> liftTermElabM
-              (transparentPaperDeclarationDisplays declarations paperModules)
-        | none => pure none
-      catch _ =>
-        pure none
-      match result? with
-      | some result =>
-          IO.println s!"LEAN_TRANSPARENT_PAPER_DECLARATION_DISPLAY:{result.compress}"
-      | none =>
-          IO.println "LEAN_TRANSPARENT_PAPER_DECLARATION_DISPLAY_ERROR"
-
-elab_rules : command
-  | `(#transparent_library_declaration_display $request:str) => do
-      let declarations? := parseTransparentLibraryDeclarationDisplayRequest request.getString
-      let result? ← try
-        match declarations? with
-        | some declarations =>
-            some <$> liftTermElabM (transparentLibraryDeclarationDisplays declarations)
-        | none => pure none
-      catch _ =>
-        pure none
-      match result? with
-      | some result =>
-          IO.println s!"LEAN_TRANSPARENT_LIBRARY_DECLARATION_DISPLAY:{result.compress}"
-      | none =>
-          IO.println "LEAN_TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_ERROR"
-
-end EconCSLibAudit.SignatureManifest
+end AppliedModelingLibAudit.SignatureManifest

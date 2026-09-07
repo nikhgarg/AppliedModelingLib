@@ -16,7 +16,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 /-- An a.e. output identity transports a proved `(base, score)`
 factorization to the output's regular conditional distribution given the

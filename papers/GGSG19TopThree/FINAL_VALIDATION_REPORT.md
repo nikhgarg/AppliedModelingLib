@@ -1,36 +1,28 @@
 # Final Validation Report: Who is in Your Top Three?
 
-Updated: 2026-07-31
+Updated: 2026-09-06
 
 ## 1. Human Verdict
 
-Formalized. The source verification now represents every one of the 66
-inventoried mathematical items. It removes a non-source no-tie premise from
-Proposition 1 by proving the exact-equality case under the paper's independent
-uniform tie breaking, and it implements the formerly missing efficient dynamic
-program for exact arbitrary-pair Mallows joint locations. No substantial
-source-paper error was found. Independent human source-to-Lean review has not
-been recorded.
+The formalization covers ordered-tier design invariance, pairwise and
+aggregate convergence results, randomized approval rules, the Mallows special
+case, and the exact dynamic program for two candidates' joint locations.
+The dynamic program has a degree-six bound on arithmetic operations in its
+stated unit-cost model.
+
+Propositions 2 and 4 include their finite-sample bounds. The source
+clarifications record the one-sided score-gap cases that make their rate
+conventions explicit.
 
 ## 2. Closeout Status
 
-The paper is plain `formalized`, not `formalized with caveat`. The source
-inventory contains 15 direct definition/result/algorithm targets, 12 model or
-formula items, 5 premise declarations, and 34 proof-support items. Direct rows
-or explicitly recorded collective support account for all 66 items; no
-mathematical target remains partial, conditional, missing, or excluded.
-
-The algorithm repair defines the repeated-insertion recurrence for any two
-tracked center ranks, proves every prefix and final table cell against
-independently represented `PMF.bind` semantics, proves normalization, and
-materializes an operational table runner with an exact dense unit-cost
-arithmetic-operation count and bound of at most `(N+1)^6`.
-Independent human dashboard review remains `0/30`; no independent human
-release certification is claimed.
-
-- Audit summary: source coverage has 28 covered, 38 support only; diagnostics: full inventory shown because paper_statement_map.json must explicitly set source_coverage_mode before a source-coverage closeout; statement LLM-as-judge has no rows; diagnostics: 30 orphan/stale statement-sidecar rows excluded, 5 orphan/stale source-condition sidecar rows excluded, 30 configured rows without unambiguous current receipts; Lean-to-TeX has 30 row translations; assumption provenance sidecar has no current configured source-condition receipts; diagnostics: 5 unconfigured, stale, or ambiguous source-condition sidecar rows excluded, 5 configured source conditions without unambiguous current receipts; source-record classification has 7 derived, 42 source condition; source-record audit reports 30 source-record review rows, 54 boundary inputs, 0 conclusion dependencies, 0 recursive fields, 0 source-record-only unresolved conclusion dependencies, 0 recursion failures; review-surface audit review surface passed over 30 review rows; holistic source-first audit status is not inferred by this generator; DAG/source-json audit status is not inferred (see `docs/PUBLIC_DAG_HOLISTIC_AUDIT_2026-07-02.md`).
-  routes, all 30 reviewed rows match, and the recursive audit has no unresolved
-  dependency or recursion failure.
+- Completion status: formalized.
+- Mathematical scope: the named definitions, theory, formulas, finite examples,
+  and Mallows joint-location algorithm summarized in Section 4.
+- The inventory contains 66 mathematical items. The technical evidence below
+  records the declaration-level source correspondence and proof checks.
+- The algorithm's complexity guarantee counts exact scalar arithmetic
+  operations; it is not a rational bit-complexity or compiled-runtime claim.
 
 ## 3. Source and Scope
 
@@ -53,77 +45,28 @@ mathematical claim.
 
 ## 4. Researcher Summary of Checked Results
 
-- Definition 1's common limiting outcome, Definition 2's negative normalized
-  log limit, and Definition 3's feasible-rate maximizer are exposed by proved
-  statement rows rather than unreviewed `Prop` attestations.
-- Proposition 1 covers arbitrary ordered-tier goals and characterizes design
-  invariance by strict cross-tier top-prefix separation under the paper's
-  independent uniform tie breaking. Its reverse implication includes both a
-  genuinely fluctuating zero-mean score gap and an identically tied gap; no
-  generic no-tie premise is assumed.
-- Propositions 2 and 3 give the finite-support pairwise Chernoff rate and the
-  closed ternary K-approval rate, with genuine one-sided/eventually-zero
-  boundaries separated explicitly.
-- Proposition 4 identifies the exact aggregate rate as the minimum relevant
-  pair rate and proves the finite-`N` bound `Q^N <= M^2 exp(-Nr)`.
-- Theorem 1 treats an arbitrary finite goal; Theorem 2 proves fixed-pair
-  non-improvement from randomizing K-approval cutoffs.
-- The Mallows no-randomization corollary covers both the deterministic
-  `phi=0` endpoint and the positive-parameter `phi<1` domain without pretending
-  that the existing positive-parameter record contains zero.
-- The constructed W-selection example and the printed Durham Ward 1 numbers
-  both show how different pivotal pairs let a randomized approval rule improve
-  the outcome rate.
-- The four-candidate high-noise example proves that W-approval need not be
-  approval-rate optimal.
-- The new arbitrary-pair dynamic program implements the source repeated-
-  insertion update through an operational materialized-table runner, is exact
-  at every prefix, returns a normalized final joint law, and has an exact
-  scalar-operation count plus an explicit degree-six bound.
+| Result | Comparison with source |
+| --- | --- |
+| Definitions 1–3 | **Exact.** |
+| Proposition 1 | **Exact.** |
+| [Proposition 2](docs/SOURCE_CLARIFICATIONS.md#proposition-2-pairwise-rate-and-finite-sample-bound) | **Exact.** |
+| Proposition 3 | **Exact.** |
+| [Proposition 4](docs/SOURCE_CLARIFICATIONS.md#proposition-4-outcome-rate-and-m2-bound) | **Exact.** |
+| Theorems 1–2; Mallows corollary | **Exact.** |
+| W-selection, Durham, and high-noise examples | **Exact.** |
+| Joint-location dynamic program | **Exact.** |
 
 ## 5. Remaining Boundaries and Gaps
 
-There is no remaining mathematical formalization boundary in the 66-item
-source inventory. The Lean theorem verifies exact real-arithmetic recurrence
-semantics and a unit-cost arithmetic-operation count; it does not claim a
-bit-complexity bound for arbitrary exact-real representations, reproduce the
-paper's plots, or identify a byte-for-byte historical program. The source
-makes none of those stronger mathematical claims.
-
-Human source-to-Lean review is still absent. That is a release-governance gate,
-not a reason to downgrade the mathematical status.
+None.
 
 ## 6. Additional Assumptions Beyond Paper
 
-No additional mathematical assumption is used beyond the paper's model and
-theorem conditions. The configured assumption rows expose:
-
-- the ternary score-gap law for K-approval;
-- nonnegative randomized-mechanism weights summing to one;
-- a nonempty winner tier and the positive-parameter `phi<1` domain; and
-- nontrivial proper K-approval cutoffs; and
-- the repeated-insertion kernel's closed `0 <= phi <= 1` domain.
-
-Proposition 1's strict prefix inequalities are the characterized conclusion's
-left-hand side, not an extra theorem premise. The source's equality boundary is
-proved using its explicit tie-breaking randomness.
-
-The dynamic-program record packages the source-cited repeated-insertion
-kernel: `0 <= phi <= 1`, independent stage kernels, and the printed normalized
-`phi^(i-j)` formula. Algorithm correctness is proved from those source-model
-primitives rather than assumed as a record field.
+None.
 
 ## 7. Proof-Strategy Deviations
 
-The source describes the joint-location computation informally. Lean separates
-it into two representations: a sequential PMF process and a dense real-valued
-dynamic-program table. Correctness is proved by induction over insertion
-prefixes, using a finite PMF-bind/matrix-multiplication identity. This makes the
-algorithm conclusion independent of its implementation recurrence.
-
-The source's deterministic Mallows endpoint is represented by a point-mass
-ranking law, while positive parameters use the existing normalized Mallows
-record. The separation is a faithful domain partition, not a source repair.
+None.
 
 ## 8. Proof Tricks Worth Reusing
 
@@ -153,127 +96,43 @@ that would be an engineering extension rather than an unproved paper endpoint.
 
 ## 10. Mathematical Typos or Other Fixes Suggested in the Source Paper
 
-None. The dynamic-program work closed missing formalization coverage; it did
-not correct a false printed theorem or formula.
+None.
 
 ## 11. Paper Issues or Caveats
 
-`audit/source_proof_fidelity.json` records a completed review with no source
-defects. The previous `GGSG19-MALLOWS-JOINT-DP-01` entry described missing Lean
-coverage, not an error in the paper, and is removed now that the recurrence,
-correctness, normalization, and operation bound are proved.
-
-The source's word “efficient” is informal. The formalization makes it precise
-as a degree-six dense arithmetic-operation bound in the standard unit-cost
-exact-real recurrence model. This clarification does not alter any central
-paper conclusion and is not a caveat.
+No source-theorem correction is claimed. The source's word “efficient” is
+made precise by a degree-six dense arithmetic-operation bound for the exact
+joint-location recurrence. Proposition 1 uses the source's uniform random tie
+rule, including equality cases; it does not add a generic no-ties condition.
 
 ## 12. Detailed Formalization Evidence
 
-### Source pin and inventory
+The source-curated inventory retains 66 mathematical items. The current
+selected source map retains 15 result contracts. Current review records cover
+the selected statements and their governing definitions. Definitions and
+algorithms are reviewed through their actual predicates, functions, and
+execution rules.
 
-`audit/paper_statement_map.json` is a source-curated 66-item inventory. The
-algorithm item is claim-bearing under semantic-contract schema 1, with a
-transparent specification and a separate theorem proving it. Every other item
-is explicitly classified as non-claim-bearing for that specialized contract
-gate while remaining covered by the ordinary source-to-dashboard audit.
-
-### Review surface
-
-The compact surface contains 25 configured paper-facing rows and 5 assumption rows.
-The three source definitions are reviewed through exact theorem-valued
-iff/formula rows; their underlying `Prop` definitions are auxiliary and require
-no fabricated human attestation. The Durham, repeated-insertion formula, and
-general dynamic-program specification, evidence, and result rows are now direct
-review targets.
-
-### Lean build and proof closure
-
-An earlier `lake build GGSG19TopThree` passed under Lean 4.30.0-rc2 with
-3,570 jobs. After the final named Proposition 1 and dynamic-program specification-row
-edits, `lake build GGSG19TopThree.PaperInterface` passed with 3,567 jobs. The focused
-interface dependency closure uses no `sorry`, `admit`, `axiom`, `opaque`,
-or `constant` shortcut to establish a source conclusion.
-<!-- BEGIN GENERATED LLM-AS-JUDGE RESULTS -->
-### LLM-as-Judge Results
-- Source coverage (`audit/paper_coverage_llm.json`): 28 covered, 38 support only; diagnostics: full inventory shown because paper_statement_map.json must explicitly set source_coverage_mode before a source-coverage closeout.
-- Statement match (`audit/statement_match_llm.json`): no rows; diagnostics: 30 orphan/stale statement-sidecar rows excluded, 5 orphan/stale source-condition sidecar rows excluded, 30 configured rows without unambiguous current receipts.
-- Lean-to-TeX translations (`audit/lean_to_tex_llm.json`): 30 row translations generated from Lean statements.
-- Assumption provenance (`audit/assumption_match_llm.json`): no current configured source-condition receipts; diagnostics: 5 unconfigured, stale, or ambiguous source-condition sidecar rows excluded, 5 configured source conditions without unambiguous current receipts.
-- Source-record classification (`audit/source_record_match_llm.json`): 7 derived, 42 source condition.
-- Source-record structural audit (`audit/source_record_audit.json`): 30 source-record review rows, 54 boundary inputs, 0 conclusion dependencies, 0 recursive fields, 0 source-record-only unresolved conclusion dependencies, 0 recursion failures.
-- Review-surface audit (`audit/review_surface_llm.json`): review surface passed over 30 review rows.
-- Holistic source-first audit (`docs/AGENT_SOURCE_AUDIT.md`): status not inferred by this generator.
-- DAG/source/source-json audit (`docs/PUBLIC_DAG_HOLISTIC_AUDIT_2026-07-02.md`): status not inferred by this generator.
-<!-- END GENERATED LLM-AS-JUDGE RESULTS -->
+The [source map](audit/paper_statement_map.json) connects the exact source
+passages to the expanded statements and models. Each selected result has a
+separate proof endpoint; the typed Lean graph checks its dependencies and
+axiom closure. Section 20 links the current review ledgers.
 
 ## 13. Paper Assumption Provenance
 
-The five configured premise rows are source conditions for score-gap laws,
-randomized weights, tier nonemptiness, Mallows parameters, and proper approval
-cutoffs. Their raw premise receipts do not bind the current cached semantic
-identities and remain diagnostic-only; no algorithm-correctness conclusion is
-assumed through the model record.
-
-<!-- BEGIN GENERATED ASSUMPTION PROVENANCE LEDGER -->
-### Current Canonical Evidence
-Generated from the configured source-condition surface and exact current statement digests in the canonical assumption-provenance sidecar. Model, agent, and automated checks are identified as such; no human review is inferred. Diagnostic-only evidence excluded from this ledger: 5 unconfigured, stale, or ambiguous source-condition sidecar rows.
-
-| Assumption declaration | Lean declaration | Source location / statement | Assumption validators | Comments |
-| --- | --- | --- | --- | --- |
-| Assumption pairwise approval ternary gap domain | `assumption_pairwise_approval_ternary_gap_domain` | - Proposition 3's K-approval pairwise row uses the ternary score-gap domain. | No completed assumption check recorded | None recorded |
-| Assumption randomized mechanism probability weights | `assumption_randomized_mechanism_probability_weights` | - Randomized scoring and randomized K-approval mechanisms use probability weights. | No completed assumption check recorded | None recorded |
-| Assumption mallows nontrivial winner and parameter domain | `assumption_mallows_nontrivial_winner_and_parameter_domain` | None recorded | No completed assumption check recorded | None recorded |
-| Assumption nontrivial k approval cutoffs | `assumption_nontrivial_k_approval_cutoffs` | - Randomized Mallows K-approval families range over nontrivial proper cutoffs. | No completed assumption check recorded | None recorded |
-| Assumption mallows repeated insertion parameter domain | `assumption_mallows_repeated_insertion_parameter_domain` | None recorded | No completed assumption check recorded | None recorded |
-<!-- END GENERATED ASSUMPTION PROVENANCE LEDGER -->
+The selected models expose score and probability laws, randomized weights,
+ordered nonempty tiers, Mallows parameters, and valid approval cutoffs.
+These source conditions are carried by the actual semantic prerequisites;
+no algorithm-correctness conclusion is assumed.
 
 ## 14. Displayed Formula Provenance
 
-The limiting rate formulas, Chernoff expressions, finite-`N` bound, Durham
-calculation, repeated-insertion kernel, and pair-location recurrence have direct
-formula or theorem routes.
-
-<!-- BEGIN GENERATED FORMULA PROVENANCE LEDGER -->
-### Current Canonical Evidence
-Rows are selected from semantic `formula` and `equation` source-kind metadata within the configured semantic source-coverage scope, never from declaration names. Coverage and statement checks remain separate evidence lanes. Scope metadata needs repair, so the full inventory is shown: paper_statement_map.json must explicitly set source_coverage_mode before a source-coverage closeout
-
-| Paper formula / subclaim | Lean declaration | Provenance | Validators | Comments |
-| --- | --- | --- | --- | --- |
-| Average scores converge to their F-expectations; a goal outcome can converge even when a complete ranking does not, provided equal expected scores stay within one tier. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This source model or displayed formula is instantiated explicitly by the listed reviewed theorem routes; it is collective semantic support rather than a separate named conclusion. The checked mathematical content is: Average scores converge to their F-expectations; a goal outcome can converge even when a complete ranking does not, provided equal expected... |
-| For K-approval, t^i_ij(K) is the probability that i is approved and j is not, and t^j_ij(K) is the reverse probability. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This source model or displayed formula is instantiated explicitly by the listed reviewed theorem routes; it is collective semantic support rather than a separate named conclusion. The checked mathematical content is: For K-approval, t^i_ij(K) is the probability that i is approved and j is not, and t^j_ij(K) is the reverse probability. |
-| Q^N is the sum, over all ordered candidate pairs in distinct correctly ordered tiers, of the probability that the empirical score ranking reverses the pair. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This source model or displayed formula is instantiated explicitly by the listed reviewed theorem routes; it is collective semantic support rather than a separate named conclusion. The checked mathematical content is: Q^N is the sum, over all ordered candidate pairs in distinct correctly ordered tiers, of the probability that the empirical score ranking re... |
-| The randomized pairwise and outcome rates are computed from the mixture MGF, or from mixture one-sided approval probabilities for K-approval, and are denoted r_ij(B,D) and r(B,D). | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This source model or displayed formula is instantiated explicitly by the listed reviewed theorem routes; it is collective semantic support rather than a separate named conclusion. The checked mathematical content is: The randomized pairwise and outcome rates are computed from the mixture MGF, or from mixture one-sided approval probabilities for K-approval... |
-| The expected positional score equals beta(M) plus the sum over proper prefixes of the adjacent score drop times the candidate's top-prefix probability. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The expected positional score equals beta(M) plus the sum over proper prefixes of the adjacent score drop times the candidate'... |
-| If a required strict prefix inequality fails at cut k, the K-approval step rule at that cut fails the alleged common tier outcome: a strict reverse gap persists by the strong law, while an exact zero-mean gap is rejected either by recurrent sign changes or by the source's independent uniform tie breaking with positive probability. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: If a required strict prefix inequality fails at cut k, the K-approval step rule at that cut fails the alleged common tier outc... |
-| Strict prefix dominance and at least one strict adjacent score drop imply a strict expected-score gap for every cross-tier pair; the strong law then gives almost-sure tier recovery. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Strict prefix dominance and at least one strict adjacent score drop imply a strict expected-score gap for every cross-tier pai... |
-| For each voter, A_v is the difference between i's and j's positional scores; an empirical reversal is controlled by the event that the summed gap is nonpositive. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: For each voter, A_v is the difference between i's and j's positional scores; an empirical reversal is controlled by the event... |
-| Lambda(z) is the log expectation of exp(z A_v), expanded over the joint candidate positions, and r_ij is minus its real infimum. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Lambda(z) is the log expectation of exp(z A_v), expanded over the joint candidate positions, and r_ij is minus its real infimum. |
-| The lower-tail probability of the summed score gap has exponential rate r_ij by the finite-support large-deviation principle. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The lower-tail probability of the summed score gap has exponential rate r_ij by the finite-support large-deviation principle. |
-| A Chernoff argument bounds the reversal event by the Nth power of the optimized gap MGF, equal to exp(-N r_ij). | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: A Chernoff argument bounds the reversal event by the Nth power of the optimized gap MGF, equal to exp(-N r_ij). |
-| The bound makes the correct pair order exceed probability one minus epsilon once N is larger than log(1/epsilon) divided by r_ij. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The bound makes the correct pair order exceed probability one minus epsilon once N is larger than log(1/epsilon) divided by r_ij. |
-| For K-approval, the pairwise score gap is one with probability t^i_ij, minus one with probability t^j_ij, and zero otherwise. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: For K-approval, the pairwise score gap is one with probability t^i_ij, minus one with probability t^j_ij, and zero otherwise. |
-| The ternary gap log-MGF is log(t^i exp(z) + t^j exp(-z) + 1 - t^i - t^j). | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The ternary gap log-MGF is log(t^i exp(z) + t^j exp(-z) + 1 - t^i - t^j). |
-| In the two-sided case, convexity gives the minimizing tilt z equal to one half log(t^j/t^i). | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: In the two-sided case, convexity gives the minimizing tilt z equal to one half log(t^j/t^i). |
-| Substituting the optimizing tilt yields the closed K-approval rate minus log(2 sqrt(t^i t^j) + 1 - t^i - t^j). | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Substituting the optimizing tilt yields the closed K-approval rate minus log(2 sqrt(t^i t^j) + 1 - t^i - t^j). |
-| The union bound sums pairwise Chernoff bounds and uses at most M squared relevant ordered pairs to obtain Q^N at most M squared exp(-N r). | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The union bound sums pairwise Chernoff bounds and uses at most M squared relevant ordered pairs to obtain Q^N at most M square... |
-| The exponential rate of a finite sum of nonnegative pair-error sequences is the minimum of their individual rates, yielding the exact Q^N rate. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The exponential rate of a finite sum of nonnegative pair-error sequences is the minimum of their individual rates, yielding th... |
-| For a static scoring rule, each pairwise rate is minus log of the infimum of the score-gap MGF. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: For a static scoring rule, each pairwise rate is minus log of the infimum of the score-gap MGF. |
-| For a randomized scoring family, the pairwise MGF is the probability-weighted sum of the component MGFs before optimizing the common tilt. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: For a randomized scoring family, the pairwise MGF is the probability-weighted sum of the component MGFs before optimizing the... |
-| Convexity of the exponential score-gap expectation in the score vector makes the mixture MGF at least the MGF of the probability-weighted static score vector for every tilt. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Convexity of the exponential score-gap expectation in the score vector makes the mixture MGF at least the MGF of the probabili... |
-| The same static convex combination dominates the randomized rate for every relevant candidate pair simultaneously, so taking the minimum over an arbitrary goal preserves the inequality. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The same static convex combination dominates the randomized rate for every relevant candidate pair simultaneously, so taking t... |
-| The appendix differentiates the finite score-gap exponential sum, obtains nonnegative diagonal and negative off-diagonal Hessian entries, and uses diagonal dominance and symmetry to establish positive semidefiniteness. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The appendix differentiates the finite score-gap exponential sum, obtains nonnegative diagonal and negative off-diagonal Hessi... |
-| The approval rate is the convex nonincreasing composition of minus log with the concave base 2 sqrt(ab) + 1 - a - b, interpreted as an extended-value function at the boundary. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The approval rate is the convex nonincreasing composition of minus log with the concave base 2 sqrt(ab) + 1 - a - b, interpret... |
-| Under randomization, each one-sided approval probability is the probability-weighted sum of its values under the static K-approval components. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Under randomization, each one-sided approval probability is the probability-weighted sum of its values under the static K-appr... |
-| Convexity bounds the randomized pair rate by the weighted average of static pair rates, which is at most their maximum. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Convexity bounds the randomized pair rate by the weighted average of static pair rates, which is at most their maximum. |
-| For Mallows W-selection, the cross-tier pair W,W+1 is pivotal for every K-approval cutoff, so the fixed-pair non-improvement theorem controls the overall outcome rate. | `source_proof_mallows_common_pivotal_pair` | covered. `source_proof_mallows_common_pivotal_pair`: no completed statement check | covered; Agent check by Codex GGSG19 direct-row v4 coverage refresh 2026-07-19; 2026-07-19 | The current reviewed theorem exposes and proves the complete displayed source proof formula directly, rather than relying on collective support from an enclosing result. Semantically, the audited item is: For Mallows W-selection, the cross-tier pair W,W+1 is pivotal for every K-approval cutoff, so the fixed-pair non-improvement theorem controls the overal... |
-| In repeated insertion, reference item i is inserted at position j at normalized weight phi^(i-j), independently of earlier insertion choices, and the resulting ranking has the Mallows law. | `source_mallows_repeated_insertion_probability_formula` | covered. `source_mallows_repeated_insertion_probability_formula`: no completed statement check | covered; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | The reviewed theorem exposes and proves the complete displayed source formula. Semantically, the audited item is: In repeated insertion, reference item i is inserted at position j at normalized weight phi^(i-j), independently of earlier insertion choices, and the resulting ranking has the Mallows law. |
-| For reference items three and four in the four-candidate example, the appendix gives the complete off-diagonal joint-position matrix with normalizer N_3 N_4. | `source_proof_mallows_four_candidate_joint_location_matrix` | covered. `source_proof_mallows_four_candidate_joint_location_matrix`: no completed statement check | covered; Agent check by Codex GGSG19 direct-row v4 coverage refresh 2026-07-19; 2026-07-19 | The current reviewed theorem exposes and proves the complete displayed source proof formula directly, rather than relying on collective support from an enclosing result. Semantically, the audited item is: For reference items three and four in the four-candidate example, the appendix gives the complete off-diagonal joint-position matrix with normalizer N_3... |
-| Explicit one-sided probabilities and conditions on Q show that every other cross-tier pair learns faster than one of the designated h-i or h-j pivotal pairs. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Explicit one-sided probabilities and conditions on Q show that every other cross-tier pair learns faster than one of the desig... |
-| K- and L-approval swap which designated pair has base rate r(T1,T2); every nontrivial mixture moves both pair probabilities apart and strictly improves the minimum rate. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: K- and L-approval swap which designated pair has base rate r(T1,T2); every nontrivial mixture moves both pair probabilities ap... |
-| The source separates K-prime below, adjacent to, and above K,L and chooses small parameters so every other static K-prime approval rule has a smaller pivotal rate. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The source separates K-prime below, adjacent to, and above K,L and chooses small parameters so every other static K-prime appr... |
-| Prefix-probability tables establish strict winner-versus-loser separation, and the listed inequalities admit feasible parameters with Q sufficiently large, T1 large, and T2 and epsilon small. | None recorded | support only. No linked paper-facing row recorded | support only; Agent check by Codex GGSG19 source-first v4 coverage audit 2026-07-19; 2026-07-19 | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Prefix-probability tables establish strict winner-versus-loser separation, and the listed inequalities admit feasible paramete... |
-<!-- END GENERATED FORMULA PROVENANCE LEDGER -->
+The selected rate results retain the Chernoff expressions and finite-sample
+bounds. The [source clarifications](docs/SOURCE_CLARIFICATIONS.md) state the
+one-sided score-gap readings. The example and algorithm routes include the
+printed Durham arithmetic, Mallows insertion probabilities, and pair-location
+recurrence. Supporting formula presentations remain source context rather than
+additional named result claims.
 
 ## 15. Library Lift Pass
 
@@ -292,18 +151,10 @@ after the update.
 
 ## 17. Validation Checks
 
-The final isolated-worktree closeout uses:
-
-```text
-lake build GGSG19TopThree
-python3 scripts/review_dashboard.py --paper GGSG19TopThree --refresh-cache
-python3 skills/econcs-formalizer/scripts/source_record_audit.py --paper GGSG19TopThree --root . --out papers/GGSG19TopThree/audit/source_record_audit.json
-python3 scripts/audit_conclusion_provenance.py --paper GGSG19TopThree
-python3 scripts/audit_evidence_integrity.py --paper GGSG19TopThree
-python3 scripts/audit_repository.py --paper GGSG19TopThree --paper-closeout --include-active --info-limit 0
-```
-
-Manifest-owning commands were serialized to prevent concurrent cache writes.
+The proof endpoints include the displayed rate and finite-sample clauses. The
+[closeout record](FINAL_CLOSURE_RECEIPT.md) records build and acceptance
+evidence for its pinned inputs. The targeted closeout command is
+`python3 scripts/run_paper_closeout.py --paper GGSG19TopThree --plan-identity <current-plan-identity>`.
 
 ## 18. Paper Definitions Checked
 
@@ -313,136 +164,27 @@ the repeated-insertion pair-location process and dynamic program.
 
 ## 19. Named Theorem Statements Checked
 
-Propositions 1--4, Theorems 1--2, the Mallows no-randomization corollary, both
-randomization examples, the high-noise counterexample, and the arbitrary-pair
-dynamic-program correctness and operation bound are checked.
+Propositions 1–4, Theorems 1–2, the Mallows no-randomization corollary, the
+selected randomization results and counterexample, and the arbitrary-pair
+dynamic-program correctness and operation bound have checked endpoints.
 
-## 20. Paper-Facing Statement Validator Ledger
+## 20. Statement Review Evidence
 
-The configured surface contains 30 rows: 25 statements and five source
-conditions. None of the saved statement or condition receipts binds the current
-cached semantic identities, so the raw rows remain diagnostic-only. Independent
-human dashboard review remains 0/30.
+The current source-to-statement assessment and exact review targets are recorded
+in the following artifacts. Mathematical scope and qualifications are explained
+with their named results above.
 
-<!-- BEGIN GENERATED STATEMENT VALIDATOR LEDGER -->
-### Current Canonical Evidence
-Independent human dashboard review: 0/30 rows. No human row-level approval is inferred. review surface passed; Agent check by Codex GGSG19 strict contract revalidation 2026-07-23; 2026-07-23 Diagnostic-only evidence excluded from this paper-facing ledger: 30 unconfigured, stale, or ambiguous statement-sidecar rows, 5 unconfigured, stale, or ambiguous source-condition sidecar rows.
-
-| Paper-facing statement | Lean declaration | Validators | Validator comments |
-| --- | --- | --- | --- |
-| Source model k ranking score | `source_model_k_ranking_score` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Source model k approval score | `source_model_k_approval_score` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Source model reasonable positional scoring rules | `source_model_reasonable_positional_scoring_rules` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Source model cumulative scores ranking and outcome | `source_model_cumulative_scores_ranking_and_outcome` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Paper definition large deviation rate statement | `paper_definition_large_deviation_rate_statement` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Paper definition design invariant statement | `paper_definition_design_invariant_statement` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Paper definition rate optimal statement | `paper_definition_rate_optimal_statement` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| tiered finite-ranking form. | `source_proposition1_thm_consistency_tiered` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| - Source Proposition `thm:pairwiselearning`, finite-support form. The ordinary two-sided case has the paper's displayed Chernoff exponent; the explicit one-sided branches record finite-candidate boundary cases where the finite real rate is a zero-gap rate or the error event is eventually empty. | `source_proposition2_thm_pairwiselearning_finite_support` | No completed statement check recorded. Lean translation recorded; Agent check by codex-gpt-5-ggsg19-current-signature-translation; 2026-07-19 | None recorded |
-| - Source Proposition `lem:pairwiselearning_approval`, finite ternary form for K-approval score gaps. The finite-rate branch is exactly the paper's closed form `approvalPairwiseRate`; the other branch is the strict boundary where the mistake event is eventually empty. | `source_proposition3_lem_pairwiselearning_approval_finite_ternary` | No completed statement check recorded. Lean translation recorded; Agent check by codex-gpt-5-ggsg19-current-signature-translation; 2026-07-19 | None recorded |
-| Source proposition4 thm goal learning exact minimum rate | `source_proposition4_thm_goal_learning_exact_minimum_rate` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Source proposition4 thm goal learning finite sample M sq bound | `source_proposition4_thm_goal_learning_finite_sample_M_sq_bound` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Source theorem1 lem randomizebetterscoring arbitrary goal | `source_theorem1_lem_randomizebetterscoring_arbitrary_goal` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| - Source Theorem `lem:randomizenotbetterapproval`, fixed-pair form. For any finite randomized K-approval rule, some static component weakly dominates the randomized pairwise rate; zero-base static boundaries are treated as top extended rates. | `source_theorem2_lem_randomizenotbetterapproval_pairwise` | No completed statement check recorded. Lean translation recorded; Agent check by codex-gpt-5-ggsg19-current-signature-translation; 2026-07-19 | None recorded |
-| - Source Theorem `lem:randomizebetterapproval_Wselection`, concrete finite constructed-law endpoint: the six-ranking law is design-invariant for W-selection and 50/50 randomized approval strictly beats every static K-approval cutoff in the finite family. | `source_theorem_lem_randomizebetterapproval_w_selection_constructed` | No completed statement check recorded. Lean translation recorded; Agent check by codex-gpt-5-ggsg19-current-signature-translation; 2026-07-19 | None recorded |
-| Source corollary lem mallowsnorando zero noise | `source_corollary_lem_mallowsnorando_zero_noise` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Source Corollary `lem:mallowsnorando`: under the finite Mallows model, an approval-rate-optimal static K-approval cutoff weakly dominates any finite randomized family of nontrivial K-approval rules. The current Lean wrapper is the positive-noise subcase `0 < q < 1`; the source model text allows `phi = 0`, so the degenerate endpoint is not claimed by this formal theorem. | `source_corollary_lem_mallowsnorando` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| - Source Theorem `lem:mallowsnotWK`: a four-candidate high-noise Mallows counterexample where W-approval is not approval-rate optimal. | `source_theorem_lem_mallowsnotWK_counterexample` | No completed statement check recorded. Lean translation recorded; Agent check by codex-gpt-5-ggsg19-current-signature-translation; 2026-07-19 | None recorded |
-| Source example durham ward1 randomized approval improves static3 static4 | `source_example_durham_ward1_randomized_approval_improves_static3_static4` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Source proof mallows common pivotal pair | `source_proof_mallows_common_pivotal_pair` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Source proof mallows four candidate joint location matrix | `source_proof_mallows_four_candidate_joint_location_matrix` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| MallowsArbitraryPairJointLocationDPOfQSpec | `MallowsArbitraryPairJointLocationDPOfQSpec` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Mallows arbitrary pair joint location dp ofQ spec | `mallows_arbitrary_pair_joint_location_dp_ofQ_spec` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Source mallows repeated insertion probability formula | `source_mallows_repeated_insertion_probability_formula` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Source mallows arbitrary pair joint location dynamic program | `source_mallows_arbitrary_pair_joint_location_dynamic_program` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| - Proposition 3's K-approval pairwise row uses the ternary score-gap domain. | `assumption_pairwise_approval_ternary_gap_domain` | No completed source-condition check recorded | None recorded |
-| - Randomized scoring and randomized K-approval mechanisms use probability weights. | `assumption_randomized_mechanism_probability_weights` | No completed source-condition check recorded | None recorded |
-| Assumption mallows nontrivial winner and parameter domain | `assumption_mallows_nontrivial_winner_and_parameter_domain` | No completed source-condition check recorded | None recorded |
-| - Randomized Mallows K-approval families range over nontrivial proper cutoffs. | `assumption_nontrivial_k_approval_cutoffs` | No completed source-condition check recorded | None recorded |
-| Assumption mallows repeated insertion parameter domain | `assumption_mallows_repeated_insertion_parameter_domain` | No completed source-condition check recorded | None recorded |
-<!-- END GENERATED STATEMENT VALIDATOR LEDGER -->
+- [Source statement inventory](audit/paper_statement_map.json)
+- [Source-to-statement review](FINAL_CLOSURE_RECEIPT.md)
+- [Model and definition review](FINAL_CLOSURE_RECEIPT.md)
+- [Reusable definitions review](FINAL_CLOSURE_RECEIPT.md)
+- [Canonical closeout record](FINAL_CLOSURE_RECEIPT.md)
+- [Review packet](docs/HUMAN_REVIEW_PACKET.pdf)
 
 ## 21. Source-Coverage Audit Ledger
 
-The source inventory has 66 selected items: 28 are covered directly and 38 are
-covered by explicit theorem support. Raw empirical data and plots are outside
-normal theorem scope; the printed Durham arithmetic is included because it
-supports a stated mathematical comparison.
-
-<!-- BEGIN GENERATED SOURCE COVERAGE LEDGER -->
-### Current Canonical Evidence
-- Coverage scope: full inventory shown because scope metadata needs repair (paper_statement_map.json must explicitly set source_coverage_mode before a source-coverage closeout).
-- Source inventory: 66 source statements from `cited publication`.
-- Coverage result: 28 covered, 38 support only.
-- Coverage review: coverage ledger recorded; Agent check by Codex GGSG19 strict contract revalidation 2026-07-23; 2026-07-23.
-- Row-local statement checks: 0/30 linked row references have a completed canonical statement check; repeated links are counted per source row.
-
-| Source statement | Linked Lean review rows | Coverage judgment | Row-local statement checks | Comments |
-| --- | --- | --- | --- | --- |
-| There are finitely many candidates and voters; each voter independently draws a strict candidate ranking from a common probability mass function F. | None recorded | support only | No linked paper-facing row recorded | This source model or displayed formula is instantiated explicitly by the listed reviewed theorem routes; it is collective semantic support rather than a separate named conclusion. The checked mathematical content is: There are finitely many candidates and voters; each voter independently draws a strict candidate ranking from a common probability mass func... |
-| In the Mallows special case, ranking mass is proportional to phi raised to Kendall-tau distance from a reference ranking. | None recorded | support only | No linked paper-facing row recorded | This source model or displayed formula is instantiated explicitly by the listed reviewed theorem routes; it is collective semantic support rather than a separate named conclusion. The checked mathematical content is: In the Mallows special case, ranking mass is proportional to phi raised to Kendall-tau distance from a reference ranking. |
-| The Mallows noise parameter phi lies in the closed interval from zero to one, including the deterministic and uniform endpoints. | `assumption_mallows_repeated_insertion_parameter_domain` | covered | `assumption_mallows_repeated_insertion_parameter_domain`: no completed statement check | The configured assumption row exposes this source/model condition and the current v3 premise audit checks every substantive component. Semantically, the audited item is: The Mallows noise parameter phi lies in the closed interval from zero to one, including the deterministic and uniform endpoints. |
-| A goal G partitions candidates into finitely many disjoint ordered tiers of prespecified sizes; full ranking and W-winner selection are special cases. | None recorded | support only | No linked paper-facing row recorded | This source model or displayed formula is instantiated explicitly by the listed reviewed theorem routes; it is collective semantic support rather than a separate named conclusion. The checked mathematical content is: A goal G partitions candidates into finitely many disjoint ordered tiers of prespecified sizes; full ranking and W-winner selection are spec... |
-| Under K-ranking, a voter reveals the positions of her top K candidates; a revealed candidate receives beta of its position and an unrevealed candidate receives zero. | `source_model_k_ranking_score` | covered | `source_model_k_ranking_score`: no completed statement check | The current theorem-valued review row exposes and proves the complete source model definition as a data-valued formula or exact semantic equivalence. Semantically, the audited item is: Under K-ranking, a voter reveals the positions of her top K candidates; a revealed candidate receives beta of its position and an unrevealed candidate receives zero. |
-| Under K-approval, a voter selects the top K candidates and each selected candidate receives one point while each other candidate receives zero. | `source_model_k_approval_score` | covered | `source_model_k_approval_score`: no completed statement check | The current theorem-valued review row exposes and proves the complete source model definition as a data-valued formula or exact semantic equivalence. Semantically, the audited item is: Under K-approval, a voter selects the top K candidates and each selected candidate receives one point while each other candidate receives zero. |
-| The design class B consists of nonconstant nonincreasing positional score functions, equivalently nonnegative adjacent prefix weights with at least one strict drop. | `source_model_reasonable_positional_scoring_rules` | covered | `source_model_reasonable_positional_scoring_rules`: no completed statement check | The current theorem-valued review row exposes and proves the complete source model definition as a data-valued formula or exact semantic equivalence. Semantically, the audited item is: The design class B consists of nonconstant nonincreasing positional score functions, equivalently nonnegative adjacent prefix weights with at least one strict drop. |
-| A candidate's N-voter score is the average of per-voter scores; candidates are ordered by this score with uniform random tie breaking, and the goal-specific outcome is the induced tier or winner selection. | `source_model_cumulative_scores_ranking_and_outcome` | covered | `source_model_cumulative_scores_ranking_and_outcome`: no completed statement check | The current theorem-valued review row exposes and proves the complete source model definition as a data-valued formula or exact semantic equivalence. Semantically, the audited item is: A candidate's N-voter score is the average of per-voter scores; candidates are ordered by this score with uniform random tie breaking, and the goal-specific outcome is the... |
-| Average scores converge to their F-expectations; a goal outcome can converge even when a complete ranking does not, provided equal expected scores stay within one tier. | None recorded | support only | No linked paper-facing row recorded | This source model or displayed formula is instantiated explicitly by the listed reviewed theorem routes; it is collective semantic support rather than a separate named conclusion. The checked mathematical content is: Average scores converge to their F-expectations; a goal outcome can converge even when a complete ranking does not, provided equal expected... |
-| Definition 1: a setting is asymptotically design-invariant for goal G when every reasonable scoring rule converges almost surely to the same goal-specific outcome. | `paper_definition_design_invariant_statement` | covered | `paper_definition_design_invariant_statement`: no completed statement check | The theorem-valued review row exposes the complete source definition as an exact formula or equivalence and proves that statement. Semantically, the audited item is: Definition 1: a setting is asymptotically design-invariant for goal G when every reasonable scoring rule converges almost surely to the same goal-specific outcome. |
-| Definition 2: for a nonnegative sequence A_N tending to zero, r is its large-deviation rate when r equals minus the limit of log A_N divided by N. | `paper_definition_large_deviation_rate_statement` | covered | `paper_definition_large_deviation_rate_statement`: no completed statement check | The theorem-valued review row exposes the complete source definition as an exact formula or equivalence and proves that statement. Semantically, the audited item is: Definition 2: for a nonnegative sequence A_N tending to zero, r is its large-deviation rate when r equals minus the limit of log A_N divided by N. |
-| Definition 3: a feasible scoring rule is rate-optimal when it maximizes the Proposition 4 outcome-learning rate; K-star approval is approval-rate-optimal when it maximizes that rate among K-approval mechanisms. | `paper_definition_rate_optimal_statement` | covered | `paper_definition_rate_optimal_statement`: no completed statement check | The theorem-valued review row exposes the complete source definition as an exact formula or equivalence and proves that statement. Semantically, the audited item is: Definition 3: a feasible scoring rule is rate-optimal when it maximizes the Proposition 4 outcome-learning rate; K-star approval is approval-rate-optimal when it maximizes that rate among K-a... |
-| Proposition 1: under independent uniform tie breaking, design invariance for an arbitrary ordered-tier goal holds exactly when every higher-tier candidate has strictly larger top-k probability than every lower-tier candidate for every proper prefix k; equality is part of the reverse implication, not an excluded premise. | `source_proposition1_thm_consistency_tiered` | covered | `source_proposition1_thm_consistency_tiered`: no completed statement check | The reviewed theorem exposes and proves the complete quantified source conclusion. Semantically, the audited item is: Proposition 1: under independent uniform tie breaking, design invariance for an arbitrary ordered-tier goal holds exactly when every higher-tier candidate has strictly larger top-k probability than every lower-tier candidate for every prop... |
-| Proposition 2: if candidate i has larger expected score than j, the probability of reversing them has Chernoff large-deviation rate minus the infimum over real z of the log score-gap MGF, and is at most exp(-N r_ij) for every N. | `source_proposition2_thm_pairwiselearning_finite_support` | covered | `source_proposition2_thm_pairwiselearning_finite_support`: no completed statement check | The reviewed theorem exposes and proves the complete quantified source conclusion. Semantically, the audited item is: Proposition 2: if candidate i has larger expected score than j, the probability of reversing them has Chernoff large-deviation rate minus the infimum over real z of the log score-gap MGF, and is at most exp(-N r_ij) for every N. |
-| Proposition 3: the K-approval pairwise rate equals minus the log of 2 times the geometric mean of the two one-sided approval probabilities plus the probability of a zero score gap. | `source_proposition3_lem_pairwiselearning_approval_finite_ternary` | covered | `source_proposition3_lem_pairwiselearning_approval_finite_ternary`: no completed statement check | The reviewed theorem exposes and proves the complete quantified source conclusion. Semantically, the audited item is: Proposition 3: the K-approval pairwise rate equals minus the log of 2 times the geometric mean of the two one-sided approval probabilities plus the probability of a zero score gap. |
-| Proposition 4: the expected number Q^N of cross-tier reversals has large-deviation rate equal to the minimum relevant pairwise rate. | `source_proposition4_thm_goal_learning_exact_minimum_rate` | covered | `source_proposition4_thm_goal_learning_exact_minimum_rate`: no completed statement check | The reviewed theorem exposes and proves the complete quantified source conclusion. Semantically, the audited item is: Proposition 4: the expected number Q^N of cross-tier reversals has large-deviation rate equal to the minimum relevant pairwise rate. |
-| Proposition 4: for every sample size N, Q^N is at most M squared times exp(-N r), where r is the minimum relevant pairwise rate. | `source_proposition4_thm_goal_learning_finite_sample_M_sq_bound` | covered | `source_proposition4_thm_goal_learning_finite_sample_M_sq_bound`: no completed statement check | The reviewed theorem exposes and proves the complete quantified source conclusion. Semantically, the audited item is: Proposition 4: for every sample size N, Q^N is at most M squared times exp(-N r), where r is the minimum relevant pairwise rate. |
-| Theorem 1: for every asymptotically design-invariant finite goal and randomized family of reasonable scoring rules, their probability-weighted static convex combination has outcome-learning rate at least that of the randomized mechanism. | `source_theorem1_lem_randomizebetterscoring_arbitrary_goal` | covered | `source_theorem1_lem_randomizebetterscoring_arbitrary_goal`: no completed statement check | The reviewed theorem exposes and proves the complete quantified source conclusion. Semantically, the audited item is: Theorem 1: for every asymptotically design-invariant finite goal and randomized family of reasonable scoring rules, their probability-weighted static convex combination has outcome-learning rate at least that of the randomized mechanism. |
-| Theorem 2: for any fixed candidate pair and randomized K-approval mechanism, some static K-approval component has pairwise learning rate at least the randomized rate. | `source_theorem2_lem_randomizenotbetterapproval_pairwise` | covered | `source_theorem2_lem_randomizenotbetterapproval_pairwise`: no completed statement check | The reviewed theorem exposes and proves the complete quantified source conclusion. Semantically, the audited item is: Theorem 2: for any fixed candidate pair and randomized K-approval mechanism, some static K-approval component has pairwise learning rate at least the randomized rate. |
-| Mallows corollary at phi=0: deterministic rankings make the static W-approval error eventually zero, so its extended rate is top and weakly dominates every randomized finite rate. | `source_corollary_lem_mallowsnorando_zero_noise` | covered | `source_corollary_lem_mallowsnorando_zero_noise`: no completed statement check | The reviewed theorem exposes and proves the complete quantified source conclusion. Semantically, the audited item is: Mallows corollary at phi=0: deterministic rankings make the static W-approval error eventually zero, so its extended rate is top and weakly dominates every randomized finite rate. |
-| Mallows corollary for 0<phi<1: for selecting W winners, an approval-rate-optimal static K-approval rule weakly dominates every finite randomized family of nontrivial K-approval rules. | `source_corollary_lem_mallowsnorando` | covered | `source_corollary_lem_mallowsnorando`: no completed statement check | The reviewed theorem exposes and proves the complete quantified source conclusion. Semantically, the audited item is: Mallows corollary for 0<phi<1: for selecting W winners, an approval-rate-optimal static K-approval rule weakly dominates every finite randomized family of nontrivial K-approval rules. |
-| There exist asymptotically design-invariant W-selection settings where a randomized K-approval mechanism has strictly larger outcome-learning rate than every static K-approval mechanism. | `source_theorem_lem_randomizebetterapproval_w_selection_constructed` | covered | `source_theorem_lem_randomizebetterapproval_w_selection_constructed`: no completed statement check | The reviewed theorem exposes and proves the complete quantified source conclusion. Semantically, the audited item is: There exist asymptotically design-invariant W-selection settings where a randomized K-approval mechanism has strictly larger outcome-learning rate than every static K-approval mechanism. |
-| Under the Mallows model for W-winner selection, W-approval need not be approval-rate-optimal; the source proves this with a four-candidate, three-winner high-noise example. | `source_theorem_lem_mallowsnotWK_counterexample` | covered | `source_theorem_lem_mallowsnotWK_counterexample`: no completed statement check | The reviewed theorem exposes and proves the complete quantified source conclusion. Semantically, the audited item is: Under the Mallows model for W-winner selection, W-approval need not be approval-rate-optimal; the source proves this with a four-candidate, three-winner high-noise example. |
-| For K-approval, t^i_ij(K) is the probability that i is approved and j is not, and t^j_ij(K) is the reverse probability. | None recorded | support only | No linked paper-facing row recorded | This source model or displayed formula is instantiated explicitly by the listed reviewed theorem routes; it is collective semantic support rather than a separate named conclusion. The checked mathematical content is: For K-approval, t^i_ij(K) is the probability that i is approved and j is not, and t^j_ij(K) is the reverse probability. |
-| Q^N is the sum, over all ordered candidate pairs in distinct correctly ordered tiers, of the probability that the empirical score ranking reverses the pair. | None recorded | support only | No linked paper-facing row recorded | This source model or displayed formula is instantiated explicitly by the listed reviewed theorem routes; it is collective semantic support rather than a separate named conclusion. The checked mathematical content is: Q^N is the sum, over all ordered candidate pairs in distinct correctly ordered tiers, of the probability that the empirical score ranking re... |
-| A randomized mechanism selects scoring rule beta_p independently for each voter with probability d_p from a finite family B. | None recorded | support only | No linked paper-facing row recorded | This source model or displayed formula is instantiated explicitly by the listed reviewed theorem routes; it is collective semantic support rather than a separate named conclusion. The checked mathematical content is: A randomized mechanism selects scoring rule beta_p independently for each voter with probability d_p from a finite family B. |
-| The randomized pairwise and outcome rates are computed from the mixture MGF, or from mixture one-sided approval probabilities for K-approval, and are denoted r_ij(B,D) and r(B,D). | None recorded | support only | No linked paper-facing row recorded | This source model or displayed formula is instantiated explicitly by the listed reviewed theorem routes; it is collective semantic support rather than a separate named conclusion. The checked mathematical content is: The randomized pairwise and outcome rates are computed from the mixture MGF, or from mixture one-sided approval probabilities for K-approval... |
-| A K-approval score difference for a fixed candidate pair takes only the values one, zero, and minus one. | `assumption_pairwise_approval_ternary_gap_domain` | covered | `assumption_pairwise_approval_ternary_gap_domain`: no completed statement check | The configured assumption row exposes this source/model condition and the current v3 premise audit checks every substantive component. Semantically, the audited item is: A K-approval score difference for a fixed candidate pair takes only the values one, zero, and minus one. |
-| The randomized mechanism weights are nonnegative and sum to one. | `assumption_randomized_mechanism_probability_weights` | covered | `assumption_randomized_mechanism_probability_weights`: no completed statement check | The configured assumption row exposes this source/model condition and the current v3 premise audit checks every substantive component. Semantically, the audited item is: The randomized mechanism weights are nonnegative and sum to one. |
-| The positive-parameter Mallows W-selection corollary uses a nonempty winner tier and phi below one; strict positivity is intrinsic to the positive-parameter Mallows record, while phi=0 is handled by a separate deterministic law. | `assumption_mallows_nontrivial_winner_and_parameter_domain` | covered | `assumption_mallows_nontrivial_winner_and_parameter_domain`: no completed statement check | The configured assumption row exposes this source/model condition and the current v3 premise audit checks every substantive component. Semantically, the audited item is: The positive-parameter Mallows W-selection corollary uses a nonempty winner tier and phi below one; strict positivity is intrinsic to the positive-parameter Mallows record, while phi=0 is... |
-| The randomized K-approval family ranges over nontrivial proper cutoffs, excluding the constant approve-none and approve-all rules from the reasonable design class. | `assumption_nontrivial_k_approval_cutoffs` | covered | `assumption_nontrivial_k_approval_cutoffs`: no completed statement check | The configured assumption row exposes this source/model condition and the current v3 premise audit checks every substantive component. Semantically, the audited item is: The randomized K-approval family ranges over nontrivial proper cutoffs, excluding the constant approve-none and approve-all rules from the reasonable design class. |
-| The expected positional score equals beta(M) plus the sum over proper prefixes of the adjacent score drop times the candidate's top-prefix probability. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The expected positional score equals beta(M) plus the sum over proper prefixes of the adjacent score drop times the candidate'... |
-| If a required strict prefix inequality fails at cut k, the K-approval step rule at that cut fails the alleged common tier outcome: a strict reverse gap persists by the strong law, while an exact zero-mean gap is rejected either by recurrent sign changes or by the source's independent uniform tie breaking with positive probability. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: If a required strict prefix inequality fails at cut k, the K-approval step rule at that cut fails the alleged common tier outc... |
-| Strict prefix dominance and at least one strict adjacent score drop imply a strict expected-score gap for every cross-tier pair; the strong law then gives almost-sure tier recovery. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Strict prefix dominance and at least one strict adjacent score drop imply a strict expected-score gap for every cross-tier pai... |
-| A five-voter, four-candidate ranking table selects A,D under one-approval and B,C under two-approval, illustrating failure of design invariance. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: A five-voter, four-candidate ranking table selects A,D under one-approval and B,C under two-approval, illustrating failure of... |
-| Within the relevant ordered-score domain, moving the favorable one-sided approval probability upward or the unfavorable one downward strictly increases the approval learning rate. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Within the relevant ordered-score domain, moving the favorable one-sided approval probability upward or the unfavorable one do... |
-| For each voter, A_v is the difference between i's and j's positional scores; an empirical reversal is controlled by the event that the summed gap is nonpositive. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: For each voter, A_v is the difference between i's and j's positional scores; an empirical reversal is controlled by the event... |
-| Lambda(z) is the log expectation of exp(z A_v), expanded over the joint candidate positions, and r_ij is minus its real infimum. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Lambda(z) is the log expectation of exp(z A_v), expanded over the joint candidate positions, and r_ij is minus its real infimum. |
-| The lower-tail probability of the summed score gap has exponential rate r_ij by the finite-support large-deviation principle. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The lower-tail probability of the summed score gap has exponential rate r_ij by the finite-support large-deviation principle. |
-| A Chernoff argument bounds the reversal event by the Nth power of the optimized gap MGF, equal to exp(-N r_ij). | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: A Chernoff argument bounds the reversal event by the Nth power of the optimized gap MGF, equal to exp(-N r_ij). |
-| The bound makes the correct pair order exceed probability one minus epsilon once N is larger than log(1/epsilon) divided by r_ij. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The bound makes the correct pair order exceed probability one minus epsilon once N is larger than log(1/epsilon) divided by r_ij. |
-| For K-approval, the pairwise score gap is one with probability t^i_ij, minus one with probability t^j_ij, and zero otherwise. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: For K-approval, the pairwise score gap is one with probability t^i_ij, minus one with probability t^j_ij, and zero otherwise. |
-| The ternary gap log-MGF is log(t^i exp(z) + t^j exp(-z) + 1 - t^i - t^j). | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The ternary gap log-MGF is log(t^i exp(z) + t^j exp(-z) + 1 - t^i - t^j). |
-| In the two-sided case, convexity gives the minimizing tilt z equal to one half log(t^j/t^i). | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: In the two-sided case, convexity gives the minimizing tilt z equal to one half log(t^j/t^i). |
-| Substituting the optimizing tilt yields the closed K-approval rate minus log(2 sqrt(t^i t^j) + 1 - t^i - t^j). | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Substituting the optimizing tilt yields the closed K-approval rate minus log(2 sqrt(t^i t^j) + 1 - t^i - t^j). |
-| The union bound sums pairwise Chernoff bounds and uses at most M squared relevant ordered pairs to obtain Q^N at most M squared exp(-N r). | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The union bound sums pairwise Chernoff bounds and uses at most M squared relevant ordered pairs to obtain Q^N at most M square... |
-| The exponential rate of a finite sum of nonnegative pair-error sequences is the minimum of their individual rates, yielding the exact Q^N rate. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The exponential rate of a finite sum of nonnegative pair-error sequences is the minimum of their individual rates, yielding th... |
-| For a static scoring rule, each pairwise rate is minus log of the infimum of the score-gap MGF. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: For a static scoring rule, each pairwise rate is minus log of the infimum of the score-gap MGF. |
-| For a randomized scoring family, the pairwise MGF is the probability-weighted sum of the component MGFs before optimizing the common tilt. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: For a randomized scoring family, the pairwise MGF is the probability-weighted sum of the component MGFs before optimizing the... |
-| Convexity of the exponential score-gap expectation in the score vector makes the mixture MGF at least the MGF of the probability-weighted static score vector for every tilt. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Convexity of the exponential score-gap expectation in the score vector makes the mixture MGF at least the MGF of the probabili... |
-| The same static convex combination dominates the randomized rate for every relevant candidate pair simultaneously, so taking the minimum over an arbitrary goal preserves the inequality. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The same static convex combination dominates the randomized rate for every relevant candidate pair simultaneously, so taking t... |
-| The appendix differentiates the finite score-gap exponential sum, obtains nonnegative diagonal and negative off-diagonal Hessian entries, and uses diagonal dominance and symmetry to establish positive semidefiniteness. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The appendix differentiates the finite score-gap exponential sum, obtains nonnegative diagonal and negative off-diagonal Hessi... |
-| The approval rate is the convex nonincreasing composition of minus log with the concave base 2 sqrt(ab) + 1 - a - b, interpreted as an extended-value function at the boundary. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The approval rate is the convex nonincreasing composition of minus log with the concave base 2 sqrt(ab) + 1 - a - b, interpret... |
-| Under randomization, each one-sided approval probability is the probability-weighted sum of its values under the static K-approval components. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Under randomization, each one-sided approval probability is the probability-weighted sum of its values under the static K-appr... |
-| Convexity bounds the randomized pair rate by the weighted average of static pair rates, which is at most their maximum. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Convexity bounds the randomized pair rate by the weighted average of static pair rates, which is at most their maximum. |
-| For Mallows W-selection, the cross-tier pair W,W+1 is pivotal for every K-approval cutoff, so the fixed-pair non-improvement theorem controls the overall outcome rate. | `source_proof_mallows_common_pivotal_pair` | covered | `source_proof_mallows_common_pivotal_pair`: no completed statement check | The current reviewed theorem exposes and proves the complete displayed source proof formula directly, rather than relying on collective support from an enclosing result. Semantically, the audited item is: For Mallows W-selection, the cross-tier pair W,W+1 is pivotal for every K-approval cutoff, so the fixed-pair non-improvement theorem controls the overal... |
-| In repeated insertion, reference item i is inserted at position j at normalized weight phi^(i-j), independently of earlier insertion choices, and the resulting ranking has the Mallows law. | `source_mallows_repeated_insertion_probability_formula` | covered | `source_mallows_repeated_insertion_probability_formula`: no completed statement check | The reviewed theorem exposes and proves the complete displayed source formula. Semantically, the audited item is: In repeated insertion, reference item i is inserted at position j at normalized weight phi^(i-j), independently of earlier insertion choices, and the resulting ranking has the Mallows law. |
-| For reference items three and four in the four-candidate example, the appendix gives the complete off-diagonal joint-position matrix with normalizer N_3 N_4. | `source_proof_mallows_four_candidate_joint_location_matrix` | covered | `source_proof_mallows_four_candidate_joint_location_matrix`: no completed statement check | The current reviewed theorem exposes and proves the complete displayed source proof formula directly, rather than relying on collective support from an enclosing result. Semantically, the audited item is: For reference items three and four in the four-candidate example, the appendix gives the complete off-diagonal joint-position matrix with normalizer N_3... |
-| The joint-position matrix yields explicit one-sided probabilities for two- and three-approval and shows three-approval is better at phi=.1 while two-approval is better at phi=.8. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The joint-position matrix yields explicit one-sided probabilities for two- and three-approval and shows three-approval is bett... |
-| A Durham Ward 1 numerical example reports two pivotal pairs and approval probabilities for three-, four-, and equal-mixture approval, with the mixture's minimum rate exceeding both static outcome rates. | `source_example_durham_ward1_randomized_approval_improves_static3_static4` | covered | `source_example_durham_ward1_randomized_approval_improves_static3_static4`: no completed statement check | The reviewed theorem checks the source example's fixed numerical or finite-law inequalities exactly. Semantically, the audited item is: A Durham Ward 1 numerical example reports two pivotal pairs and approval probabilities for three-, four-, and equal-mixture approval, with the mixture's minimum rate exceeding both static outcome rates. |
-| The source specifies a finite ranking-law table with parameters epsilon, a, T1, T2 and K,L positions, then fills the remaining candidates so the construction is a valid ranking distribution. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The source specifies a finite ranking-law table with parameters epsilon, a, T1, T2 and K,L positions, then fills the remaining... |
-| Explicit one-sided probabilities and conditions on Q show that every other cross-tier pair learns faster than one of the designated h-i or h-j pivotal pairs. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Explicit one-sided probabilities and conditions on Q show that every other cross-tier pair learns faster than one of the desig... |
-| K- and L-approval swap which designated pair has base rate r(T1,T2); every nontrivial mixture moves both pair probabilities apart and strictly improves the minimum rate. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: K- and L-approval swap which designated pair has base rate r(T1,T2); every nontrivial mixture moves both pair probabilities ap... |
-| The source separates K-prime below, adjacent to, and above K,L and chooses small parameters so every other static K-prime approval rule has a smaller pivotal rate. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: The source separates K-prime below, adjacent to, and above K,L and chooses small parameters so every other static K-prime appr... |
-| Prefix-probability tables establish strict winner-versus-loser separation, and the listed inequalities admit feasible parameters with Q sufficiently large, T1 large, and T2 and epsilon small. | None recorded | support only | No linked paper-facing row recorded | This appendix proof equation, local example, or derivation step is checked within the listed enclosing Lean proof routes; it is collective proof support rather than a separate named conclusion. The checked mathematical content is: Prefix-probability tables establish strict winner-versus-loser separation, and the listed inequalities admit feasible paramete... |
-| The paper advertises an efficient dynamic program that exactly computes the joint position distribution of any candidate pair under Mallows repeated insertion and says this program generated the numerical plots and located the counterexample. | `MallowsArbitraryPairJointLocationDPOfQSpec`<br>`mallows_arbitrary_pair_joint_location_dp_ofQ_spec`<br>`source_mallows_arbitrary_pair_joint_location_dynamic_program` | covered | `MallowsArbitraryPairJointLocationDPOfQSpec`: no completed statement check<br>`mallows_arbitrary_pair_joint_location_dp_ofQ_spec`: no completed statement check<br>`source_mallows_arbitrary_pair_joint_location_dynamic_program`: no completed statement check | The three reviewed algorithm rows collectively expose the exact repeated-insertion distribution contract, prove all-cell equality to an independent PMF-bind process and normalization, and instantiate the contract with exact work accounting and a degree-six bound. The exact scalar-operation formula is a concrete unit-cost realization of the paper's qualita... |
-<!-- END GENERATED SOURCE COVERAGE LEDGER -->
+The 66-item source inventory distinguishes selected result contracts, source
+models, repeated presentations, and proof support. The selected comparison
+surface has 15 direct result judgments and 20 prerequisite judgments. Raw
+empirical data and plots are outside normal theorem scope; the printed Durham
+arithmetic is retained as a mathematical example.

@@ -5,7 +5,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-- In a literal stable hidden-access optional equilibrium, no positive raw

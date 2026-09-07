@@ -1,11 +1,12 @@
 {
+  "approved_review_context_schema": 1,
   "generated_at": "2026-07-24T17:07:30Z",
   "items": {
     "source_claim_correctness_strict_dominance": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "quarantined_source_defect",
+      "scope_disposition": "documented_source_error_with_checked_lean_disposition",
+      "scope_disposition_note": "The printed strict claim fails at the half tie; Lean records both the counterexample and the corrected off-tie statement.",
       "source_anchor_evidence": [
         {
           "line_end": 94,
@@ -23,21 +24,14 @@
       "source_status": "quarantined_source_defect",
       "statement": "The source claims that one positive-mass point where i is correct and j incorrect makes the accuracy comparison strict; this fails at a half tie under the stated rounding convention.",
       "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_correctness_strict_gap_half_tie_counterexample",
-        "PKG25NoFreeLunch.source_correctness_strict_gap_corrected"
+        "PKG25NoFreeLunch.source_correctness_strict_gap_half_tie_counterexample"
       ]
     },
     "source_claim_lemma8_mass_and_accuracy_dominance": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_lemma8_bad_tuple_counterexample_setting"
-      ],
-      "proof_lean_declarations": [
-        "PKG25NoFreeLunch.source_lemma8_bad_tuple_counterexample_setting"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "supporting_derivation_for_lemma8",
+      "scope_disposition_note": "This calculation is the proof-local derivation of the separately routed Lemma 8 conclusion.",
       "source_anchor_evidence": [
         {
           "line_end": 233,
@@ -53,9 +47,9 @@
     },
     "source_claim_proposition6_sampling_index_typo": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "quarantined_source_defect",
+      "scope_disposition": "documented_source_error_with_checked_lean_disposition",
+      "scope_disposition_note": "The prose uses the free index lambda_ell where the construction requires lambda_m; the checked mixture uses the corrected index.",
       "source_anchor_evidence": [
         {
           "line_end": 119,
@@ -73,15 +67,14 @@
       "source_status": "quarantined_source_defect",
       "statement": "The Proposition 6 prose says to sample m with probability lambda_ell after the displayed component equations use lambda_m.",
       "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_mixture_components",
-        "PKG25NoFreeLunch.source_proposition6_linear_combination_settings"
+        "PKG25NoFreeLunch.source_formula_mixture_components"
       ]
     },
     "source_claim_proposition9_s1_positive_domain": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "quarantined_source_defect",
+      "scope_disposition": "documented_source_error_with_checked_lean_disposition",
+      "scope_disposition_note": "The printed construction omits the positive lower bound on epsilon needed for interior prediction profiles; Lean exposes and proves the corrected domain.",
       "source_anchor_evidence": [
         {
           "line_end": 256,
@@ -99,21 +92,15 @@
       "source_status": "quarantined_source_defect",
       "statement": "The S1 construction requires 0 < epsilon < 1/2 because it uses epsilon and 1-epsilon as probabilities and its profiles as elements of (0,1)^n, although the source prints only epsilon < 1/2.",
       "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_proposition9_s1_positive_parameter_validity",
-        "PKG25NoFreeLunch.source_proposition9_s1_parameterized_accuracy_gap"
+        "PKG25NoFreeLunch.source_proposition9_s1_positive_parameter_validity"
       ]
     },
     "source_definition_agree": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_agreeSpec_proof"
+        "PKG25NoFreeLunch.source_definition_agree_on"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_definition_agreeSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_definition_agreeSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 92,
@@ -126,7 +113,7 @@
       "source_claim_atoms": [
         {
           "id": "source.definition.agree",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_definition_agreeSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.source_definition_agree_on",
           "semantic_claim": "Two agents or strategies agree at x when their binary predictions are equal.",
           "source_locator": "audit/cited publication:83-92",
           "source_quote_sha256": "91eff8451998dd89ce55272f1bf47fb8b74180e36625e5036b0131c0031fd377"
@@ -134,22 +121,57 @@
       ],
       "source_kind": "predicate_vocabulary",
       "source_location": "audit/cited publication:83-92",
-      "statement": "Two agents or strategies agree at x when their binary predictions are equal.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_agreeSpec"
-      ]
+      "statement": "Two agents or strategies agree at x when their binary predictions are equal."
     },
     "source_definition_collaboration_setting": {
-      "claim_bearing": true,
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_collaboration_settingSpec_proof"
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The raw reliability predicate carries the strategy-expectation well-formedness premise; the source proof's finite witnesses discharge it directly.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "Predictors are measurable, and a strategy is used in an accuracy comparison only when its induced binary-correctness indicator is integrable under the joint law. On finite witnesses this condition is automatic.",
+          "id": "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "020702f793b3594026d02c47317a96663f074b36362c0ef40e60aca4b10511fb",
+          "source_locator": "audit/cited publication:2-35; audit/cited publication:109-120",
+          "why_needed": "The source uses P_i(X), calibration events, and expected strategy accuracy while allowing an arbitrary deterministic C. Those expressions need measurability and integrability on an arbitrary measurable input space."
+        },
+        {
+          "checked_scope": "The current source-facing model proves the individual-accuracy formula from this event identity and embeds each finite adversarial witness as an exact joint PMF with unchanged classifier accuracies.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "A collaboration setting is represented by one probability law on X x {0,1}, rather than by an input marginal plus a selected pointwise conditional-label function. Predictors are measurable [0,1]-valued functions and calibration means, for every measurable A, E[1_{P_i(X) in A,Y=1}] = E[P_i(X) 1_{P_i(X) in A}].",
+          "id": "PKG25-RAW-JOINT-LAW-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3501f1167bc4c3698c1f9d0ca8e40eea0e9c9519b43cde7767211da6486de678",
+          "source_locator": "audit/cited publication:2-19",
+          "why_needed": "The source writes conditioning on P_i(X)=p for every reported p, but a raw joint law does not canonically specify conditional probabilities on zero-probability prediction fibers. The event identity is meaningful for both atomic and atomless prediction laws."
+        }
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_definition_collaboration_settingSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_definition_collaboration_settingSpec"
-      },
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "PKG25NoFreeLunch.JointLawCollaborationSetting"
+      ],
+      "model_convention_ids": [
+        "PKG25-RAW-JOINT-LAW-01",
+        "PKG25-MEASURABILITY-AND-EXPECTATION-01"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 11,
+              "line_start": 7,
+              "publication_locator": "cited publication",
+              "quoted_text": "A \\vocab{predictor} is a function $P: \\XX\\rightarrow [0,1]$. A predictor $P$ is \\vocab{calibrated} on $\\DD$ if\n\\begin{equation}\n    \\Pr_{(X,Y)\\sim \\DD}[Y=1\\,|\\,P(X)=p] = p\n\\end{equation}\nfor all $p\\in [0,1]$ (more precisely, for all $p\\in \\text{Image}(P)$). ",
+              "quoted_text_sha256": "d5e1efbbeba7375dafb5d6f67b4b2360980958154c5fbab530926666a7101339"
+            }
+          ]
+        }
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 19,
@@ -162,7 +184,7 @@
       "source_claim_atoms": [
         {
           "id": "source.definition.collaboration.setting",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_definition_collaboration_settingSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.JointLawCollaborationSetting",
           "semantic_claim": "A collaboration setting is a probability distribution over inputs and binary labels together with n calibrated predictors.",
           "source_locator": "audit/cited publication:13-19",
           "source_quote_sha256": "8c678388c8c2fb76233378163dc027a5b016aae5d811219c67b76c83eb16fe7d"
@@ -182,22 +204,16 @@
         "validator": "Codex PKG25 prose-definition reconciliation reviewer",
         "validator_type": "agent"
       },
-      "statement": "A collaboration setting is a probability distribution over inputs and binary labels together with n calibrated predictors.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_collaboration_settingSpec"
-      ]
+      "statement": "A collaboration setting is a probability distribution over inputs and binary labels together with n calibrated predictors."
     },
     "source_definition_collaboration_strategy": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_collaboration_strategySpec_proof"
+        "PKG25NoFreeLunch.UnitCubeProfile",
+        "PKG25NoFreeLunch.SourceCollaborationStrategy",
+        "PKG25NoFreeLunch.extendSourceStrategy"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_definition_collaboration_strategySpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_definition_collaboration_strategySpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 35,
@@ -210,7 +226,7 @@
       "source_claim_atoms": [
         {
           "id": "source.definition.collaboration.strategy",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_definition_collaboration_strategySpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.UnitCubeProfile",
           "semantic_claim": "A collaboration strategy maps n reported probabilities to a binary label.",
           "source_locator": "audit/cited publication:27-35",
           "source_quote_sha256": "39408bb86ecb815294e145490039f0fa3af42f92f67dee7dc77b26c61bfa1632"
@@ -218,7 +234,7 @@
       ],
       "source_kind": "definition",
       "source_location": "audit/cited publication:27-35",
-      "source_note": "Lean totalizes C to (Fin n -> Real) -> Bool. Source-facing classifiers call it only on [0,1]^n profiles because predictor range is explicit; Definition 4 adds the interior restriction where the source does.",
+      "source_note": "The source-facing interface is exactly C : [0,1]^n -> {0,1}, represented by UnitCubeProfile. The legacy total extension to real profiles is an explicit proof-only bridge and is used only after a Lean proof that it agrees with C on every cube profile; no source-facing result quantifies over values outside the cube.",
       "source_prose_definition_reconciliation": {
         "judgment": "semantically_equivalent",
         "presentation_sha256": "da625268eab34c62b7f5acf5487a8ad67a1d9130f41f4df9f81560a803c5d811",
@@ -230,22 +246,14 @@
         "validator": "Codex PKG25 prose-definition reconciliation reviewer",
         "validator_type": "agent"
       },
-      "statement": "A collaboration strategy maps n reported probabilities to a binary label.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_collaboration_strategySpec"
-      ]
+      "statement": "A collaboration strategy maps n reported probabilities to a binary label."
     },
     "source_definition_correct": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_correctSpec_proof"
+        "PKG25NoFreeLunch.source_definition_correct_on"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_definition_correctSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_definition_correctSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 92,
@@ -258,7 +266,7 @@
       "source_claim_atoms": [
         {
           "id": "source.definition.correct",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_definition_correctSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.source_definition_correct_on",
           "semantic_claim": "A prediction is correct at x when it equals the rounded conditional label probability at x.",
           "source_locator": "audit/cited publication:83-92",
           "source_quote_sha256": "91eff8451998dd89ce55272f1bf47fb8b74180e36625e5036b0131c0031fd377"
@@ -268,22 +276,14 @@
       "source_location": "audit/cited publication:83-92",
       "source_note": "The raw joint law does not choose a pointwise Y|X=x version on arbitrary null input fibers. This vocabulary is used directly for the finite source witnesses, where eta is explicit.",
       "source_status": "finite_witness_vocabulary",
-      "statement": "A prediction is correct at x when it equals the rounded conditional label probability at x.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_correctSpec"
-      ]
+      "statement": "A prediction is correct at x when it equals the rounded conditional label probability at x."
     },
     "source_definition_disagree": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_disagreeSpec_proof"
+        "PKG25NoFreeLunch.source_definition_disagree_on"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_definition_disagreeSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_definition_disagreeSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 92,
@@ -296,7 +296,7 @@
       "source_claim_atoms": [
         {
           "id": "source.definition.disagree",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_definition_disagreeSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.source_definition_disagree_on",
           "semantic_claim": "Two agents or strategies disagree at x when their binary predictions differ.",
           "source_locator": "audit/cited publication:83-92",
           "source_quote_sha256": "91eff8451998dd89ce55272f1bf47fb8b74180e36625e5036b0131c0031fd377"
@@ -304,22 +304,14 @@
       ],
       "source_kind": "predicate_vocabulary",
       "source_location": "audit/cited publication:83-92",
-      "statement": "Two agents or strategies disagree at x when their binary predictions differ.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_disagreeSpec"
-      ]
+      "statement": "Two agents or strategies disagree at x when their binary predictions differ."
     },
     "source_definition_incorrect": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_incorrectSpec_proof"
+        "PKG25NoFreeLunch.source_definition_incorrect_on"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_definition_incorrectSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_definition_incorrectSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 92,
@@ -332,7 +324,7 @@
       "source_claim_atoms": [
         {
           "id": "source.definition.incorrect",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_definition_incorrectSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.source_definition_incorrect_on",
           "semantic_claim": "A prediction is incorrect at x when it differs from the rounded conditional label probability at x.",
           "source_locator": "audit/cited publication:83-92",
           "source_quote_sha256": "91eff8451998dd89ce55272f1bf47fb8b74180e36625e5036b0131c0031fd377"
@@ -341,20 +333,13 @@
       "source_kind": "predicate_vocabulary",
       "source_location": "audit/cited publication:83-92",
       "source_status": "finite_witness_vocabulary",
-      "statement": "A prediction is incorrect at x when it differs from the rounded conditional label probability at x.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_incorrectSpec"
-      ]
+      "statement": "A prediction is incorrect at x when it differs from the rounded conditional label probability at x."
     },
     "source_definition_lemma8_input_and_partitions": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_lemma8_labels_and_predictions",
-        "PKG25NoFreeLunch.source_lemma8_partition_realization"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "construction_component_of_lemma8",
+      "scope_disposition_note": "The finite support and partitions are implementation data for the separately routed Lemma 8 result.",
       "source_anchor_evidence": [
         {
           "line_end": 180,
@@ -370,16 +355,30 @@
       "statement": "The finite witness construction uses input points {0,...,n} and agent i's partition cell {0,i} with all remaining points singleton."
     },
     "source_definition_non_collaboration": {
-      "claim_bearing": true,
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_non_collaborationSpec_proof"
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "SourceReliableJointLaw and every source-facing Theorem 1, Proposition 7, and Proposition 9 endpoint carry [Nonempty (Fin n)]. The source-domain strategy bridge never presents the zero-agent false extension as part of the paper.",
+          "classification": "maintainer_approved_source_domain_convention",
+          "formal_meaning": "The source's use of min over i in [n] in reliability and its existential k in [n] in non-collaboration is read as requiring at least one agent: Nonempty (Fin n).",
+          "id": "PKG25-NONEMPTY-AGENT-DOMAIN-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "6ce5bf1ff7b43dcab5b434e9984014570a5cce964fe35101e42c6bacdb75a98f",
+          "source_locator": "audit/cited publication:37-54",
+          "why_needed": "The paper never defines a zero-agent semantics. The earlier totalized Lean predicate was false at n = 0 merely because no Fin 0 witness exists; that implementation behavior is not a source assertion."
+        }
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_definition_non_collaborationSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_definition_non_collaborationSpec"
-      },
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "PKG25NoFreeLunch.SourceNonCollaborative",
+        "PKG25NoFreeLunch.SourceDefersAwayFromHalf",
+        "PKG25NoFreeLunch.SourceConstantOnHalfSlice"
+      ],
+      "model_convention_ids": [
+        "PKG25-NONEMPTY-AGENT-DOMAIN-01"
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 54,
@@ -392,7 +391,7 @@
       "source_claim_atoms": [
         {
           "id": "source.definition.non.collaboration",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_definition_non_collaborationSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.SourceNonCollaborative",
           "semantic_claim": "On every interior profile, C follows one fixed agent away from p_k=1/2 and returns one fixed label on the p_k=1/2 slice.",
           "source_locator": "audit/cited publication:42-54",
           "source_quote_sha256": "22b99c90033bde8ad74b659b81910f46ba32598d6c68ae12b9d448115a7ea051"
@@ -400,22 +399,13 @@
       ],
       "source_kind": "definition",
       "source_location": "audit/cited publication:42-54",
-      "statement": "On every interior profile, C follows one fixed agent away from p_k=1/2 and returns one fixed label on the p_k=1/2 slice.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_non_collaborationSpec"
-      ]
+      "statement": "On every interior profile, C follows one fixed agent away from p_k=1/2 and returns one fixed label on the p_k=1/2 slice."
     },
     "source_definition_predictor": {
       "claim_bearing": true,
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_predictorSpec_proof"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_definition_predictorSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_definition_predictorSpec"
-      },
+      "inventory_role": "source_context_observation",
+      "scope_disposition": "semantic_context_component_of_collaboration_setting",
+      "scope_disposition_note": "The predictor clause is an exact semantic component of the separately routed collaboration-setting structure and is included in that declaration's mandatory source context.",
       "source_anchor_evidence": [
         {
           "line_end": 11,
@@ -428,7 +418,7 @@
       "source_claim_atoms": [
         {
           "id": "source.definition.predictor",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_definition_predictorSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.JointLawCollaborationSetting",
           "semantic_claim": "A predictor maps inputs to probabilities in [0,1].",
           "source_locator": "audit/cited publication:7-11",
           "source_quote_sha256": "d5e1efbbeba7375dafb5d6f67b4b2360980958154c5fbab530926666a7101339"
@@ -447,20 +437,13 @@
         "validator": "Codex PKG25 prose-definition reconciliation reviewer",
         "validator_type": "agent"
       },
-      "statement": "A predictor maps inputs to probabilities in [0,1].",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_predictorSpec"
-      ]
+      "statement": "A predictor maps inputs to probabilities in [0,1]."
     },
     "source_definition_proposition9_s2_input_space": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_proposition9_s2_construction",
-        "PKG25NoFreeLunch.source_proposition9_s2_partition_realization"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "construction_component_of_proposition9",
+      "scope_disposition_note": "The copied S2 input space and partitions are checked construction support for Proposition 9.",
       "source_anchor_evidence": [
         {
           "line_end": 266,
@@ -476,12 +459,9 @@
     },
     "source_definition_proposition9_s2_witness_profiles": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_proposition9_s2_strict_gap"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "construction_component_of_proposition9",
+      "scope_disposition_note": "The two S2 witness profiles are checked construction support for Proposition 9.",
       "source_anchor_evidence": [
         {
           "line_end": 262,
@@ -496,13 +476,52 @@
       "statement": "Failure of a constant half-slice label yields interior profiles p and q with p_k=q_k=1/2 and C(p)=1, C(q)=0."
     },
     "source_definition_reliability": {
-      "claim_bearing": true,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_reliable_probability_iff"
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The raw reliability predicate carries the strategy-expectation well-formedness premise; the source proof's finite witnesses discharge it directly.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "Predictors are measurable, and a strategy is used in an accuracy comparison only when its induced binary-correctness indicator is integrable under the joint law. On finite witnesses this condition is automatic.",
+          "id": "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "020702f793b3594026d02c47317a96663f074b36362c0ef40e60aca4b10511fb",
+          "source_locator": "audit/cited publication:2-35; audit/cited publication:109-120",
+          "why_needed": "The source uses P_i(X), calibration events, and expected strategy accuracy while allowing an arbitrary deterministic C. Those expressions need measurability and integrability on an arbitrary measurable input space."
+        },
+        {
+          "checked_scope": "SourceReliableJointLaw and every source-facing Theorem 1, Proposition 7, and Proposition 9 endpoint carry [Nonempty (Fin n)]. The source-domain strategy bridge never presents the zero-agent false extension as part of the paper.",
+          "classification": "maintainer_approved_source_domain_convention",
+          "formal_meaning": "The source's use of min over i in [n] in reliability and its existential k in [n] in non-collaboration is read as requiring at least one agent: Nonempty (Fin n).",
+          "id": "PKG25-NONEMPTY-AGENT-DOMAIN-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "6ce5bf1ff7b43dcab5b434e9984014570a5cce964fe35101e42c6bacdb75a98f",
+          "source_locator": "audit/cited publication:37-54",
+          "why_needed": "The paper never defines a zero-agent semantics. The earlier totalized Lean predicate was false at n = 0 merely because no Fin 0 witness exists; that implementation behavior is not a source assertion."
+        },
+        {
+          "checked_scope": "The current source-facing model proves the individual-accuracy formula from this event identity and embeds each finite adversarial witness as an exact joint PMF with unchanged classifier accuracies.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "A collaboration setting is represented by one probability law on X x {0,1}, rather than by an input marginal plus a selected pointwise conditional-label function. Predictors are measurable [0,1]-valued functions and calibration means, for every measurable A, E[1_{P_i(X) in A,Y=1}] = E[P_i(X) 1_{P_i(X) in A}].",
+          "id": "PKG25-RAW-JOINT-LAW-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3501f1167bc4c3698c1f9d0ca8e40eea0e9c9519b43cde7767211da6486de678",
+          "source_locator": "audit/cited publication:2-19",
+          "why_needed": "The source writes conditioning on P_i(X)=p for every reported p, but a raw joint law does not canonically specify conditional probabilities on zero-probability prediction fibers. The event identity is meaningful for both atomic and atomless prediction laws."
+        }
       ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "PKG25NoFreeLunch.SourceReliableJointLaw"
+      ],
+      "model_convention_ids": [
+        "PKG25-RAW-JOINT-LAW-01",
+        "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+        "PKG25-NONEMPTY-AGENT-DOMAIN-01"
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 40,
@@ -519,15 +538,11 @@
     },
     "source_definition_rounding_classifier": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_rounding_classifierSpec_proof"
+        "PKG25NoFreeLunch.roundProb",
+        "PKG25NoFreeLunch.JointLawCollaborationSetting.agentClassifier"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_definition_rounding_classifierSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_definition_rounding_classifierSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 24,
@@ -540,7 +555,7 @@
       "source_claim_atoms": [
         {
           "id": "source.definition.rounding.classifier",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_definition_rounding_classifierSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.roundProb",
           "semantic_claim": "Agent i's induced classifier rounds P_i(x), with round(1/2)=1.",
           "source_locator": "audit/cited publication:21-24",
           "source_quote_sha256": "25965b5d6528b879c9ef5bab7fbe7ec3f8737fbd8140c2887853c21b29e63ccf"
@@ -559,22 +574,32 @@
         "validator": "Codex PKG25 prose-definition reconciliation reviewer",
         "validator_type": "agent"
       },
-      "statement": "Agent i's induced classifier rounds P_i(x), with round(1/2)=1.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_rounding_classifierSpec"
-      ]
+      "statement": "Agent i's induced classifier rounds P_i(x), with round(1/2)=1."
     },
     "source_definition_strategy_accuracy": {
-      "claim_bearing": true,
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_strategy_accuracySpec_proof"
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The raw reliability predicate carries the strategy-expectation well-formedness premise; the source proof's finite witnesses discharge it directly.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "Predictors are measurable, and a strategy is used in an accuracy comparison only when its induced binary-correctness indicator is integrable under the joint law. On finite witnesses this condition is automatic.",
+          "id": "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "020702f793b3594026d02c47317a96663f074b36362c0ef40e60aca4b10511fb",
+          "source_locator": "audit/cited publication:2-35; audit/cited publication:109-120",
+          "why_needed": "The source uses P_i(X), calibration events, and expected strategy accuracy while allowing an arbitrary deterministic C. Those expressions need measurability and integrability on an arbitrary measurable input space."
+        }
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_definition_strategy_accuracySpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_definition_strategy_accuracySpec"
-      },
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "PKG25NoFreeLunch.JointLawCollaborationSetting.sourceStrategyAccuracy",
+        "PKG25NoFreeLunch.SourceStrategyWellFormed"
+      ],
+      "model_convention_ids": [
+        "PKG25-MEASURABILITY-AND-EXPECTATION-01"
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 35,
@@ -587,7 +612,7 @@
       "source_claim_atoms": [
         {
           "id": "source.definition.strategy.accuracy",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_definition_strategy_accuracySpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.JointLawCollaborationSetting.sourceStrategyAccuracy",
           "semantic_claim": "a_C(S) is expected binary correctness of the collaboration classifier on setting S.",
           "source_locator": "audit/cited publication:35-35",
           "source_quote_sha256": "fcf462465c0ba7e274145f073e800c99f590ea4fedb462bcd0fb80049030c5a4"
@@ -607,16 +632,13 @@
         "validator": "Codex PKG25 prose-definition reconciliation reviewer",
         "validator_type": "agent"
       },
-      "statement": "a_C(S) is expected binary correctness of the collaboration classifier on setting S.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_definition_strategy_accuracySpec"
-      ]
+      "statement": "a_C(S) is expected binary correctness of the collaboration classifier on setting S."
     },
     "source_formula_calibration": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "component_of_event_calibration_model",
+      "scope_disposition_note": "This display is the formula component of the separately routed event-calibration model, not a second semantic presentation.",
       "source_anchor_evidence": [
         {
           "line_end": 11,
@@ -633,23 +655,31 @@
       "source_location": "audit/cited publication:7-11",
       "source_note": "User-approved source reading: the checked interface uses explicit event calibration rather than selecting a pointwise conditional value on null fibers.",
       "source_status": "documented_source_model_convention",
-      "statement": "The paper writes Pr[Y=1 | P(X)=p]=p for each reported prediction value p.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_probability_calibration",
-        "PKG25NoFreeLunch.source_assumption_event_calibration"
-      ]
+      "statement": "The paper writes Pr[Y=1 | P(X)=p]=p for each reported prediction value p."
     },
     "source_formula_individual_accuracy": {
-      "claim_bearing": true,
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_individual_accuracySpec_proof"
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The current source-facing model proves the individual-accuracy formula from this event identity and embeds each finite adversarial witness as an exact joint PMF with unchanged classifier accuracies.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "A collaboration setting is represented by one probability law on X x {0,1}, rather than by an input marginal plus a selected pointwise conditional-label function. Predictors are measurable [0,1]-valued functions and calibration means, for every measurable A, E[1_{P_i(X) in A,Y=1}] = E[P_i(X) 1_{P_i(X) in A}].",
+          "id": "PKG25-RAW-JOINT-LAW-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3501f1167bc4c3698c1f9d0ca8e40eea0e9c9519b43cde7767211da6486de678",
+          "source_locator": "audit/cited publication:2-19",
+          "why_needed": "The source writes conditioning on P_i(X)=p for every reported p, but a raw joint law does not canonically specify conditional probabilities on zero-probability prediction fibers. The event identity is meaningful for both atomic and atomless prediction laws."
+        }
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_formula_individual_accuracySpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_formula_individual_accuracySpec"
-      },
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "PKG25NoFreeLunch.JointLawCollaborationSetting.agentAccuracy_eq_predictionCertainty"
+      ],
+      "model_convention_ids": [
+        "PKG25-RAW-JOINT-LAW-01"
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 24,
@@ -662,7 +692,7 @@
       "source_claim_atoms": [
         {
           "id": "source.formula.individual.accuracy",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_formula_individual_accuracySpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.JointLawCollaborationSetting.agentAccuracy_eq_predictionCertainty",
           "semantic_claim": "Agent i's accuracy is E[max{P_i(X),1-P_i(X)}].",
           "source_locator": "audit/cited publication:21-24",
           "source_quote_sha256": "25965b5d6528b879c9ef5bab7fbe7ec3f8737fbd8140c2887853c21b29e63ccf"
@@ -671,22 +701,15 @@
       "source_kind": "formula",
       "source_location": "audit/cited publication:21-24",
       "source_note": "The equality is proved from event calibration under the raw joint law, rather than assumed from a pointwise eta representation.",
-      "statement": "Agent i's accuracy is E[max{P_i(X),1-P_i(X)}].",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_individual_accuracySpec"
-      ]
+      "statement": "Agent i's accuracy is E[max{P_i(X),1-P_i(X)}]."
     },
     "source_formula_induced_collaboration_classifier": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_induced_collaboration_classifierSpec_proof"
+        "PKG25NoFreeLunch.JointLawCollaborationSetting.sourcePredictionProfile",
+        "PKG25NoFreeLunch.JointLawCollaborationSetting.sourceStrategyClassifier"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_formula_induced_collaboration_classifierSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_formula_induced_collaboration_classifierSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 35,
@@ -699,7 +722,7 @@
       "source_claim_atoms": [
         {
           "id": "source.formula.induced.collaboration.classifier",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_formula_induced_collaboration_classifierSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.JointLawCollaborationSetting.sourcePredictionProfile",
           "semantic_claim": "The induced classifier maps x to C(P_1(x),...,P_n(x)).",
           "source_locator": "audit/cited publication:31-35",
           "source_quote_sha256": "71b0ca7d2416e68cbdc4736bb6d7f305f34fca04182f72fa2c72839b0d027200"
@@ -707,20 +730,13 @@
       ],
       "source_kind": "formula",
       "source_location": "audit/cited publication:31-35",
-      "statement": "The induced classifier maps x to C(P_1(x),...,P_n(x)).",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_induced_collaboration_classifierSpec"
-      ]
+      "statement": "The induced classifier maps x to C(P_1(x),...,P_n(x))."
     },
     "source_formula_lemma8_calibration_cells": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_lemma8_partition_realization",
-        "PKG25NoFreeLunch.source_lemma8_witness_calibrated"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "construction_component_of_lemma8",
+      "scope_disposition_note": "The calibration-cell equations are checked construction support for Lemma 8.",
       "source_anchor_evidence": [
         {
           "line_end": 207,
@@ -736,12 +752,9 @@
     },
     "source_formula_lemma8_center_profile": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_lemma8_labels_and_predictions"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "construction_component_of_lemma8",
+      "scope_disposition_note": "The center-profile equation is checked construction support for Lemma 8.",
       "source_anchor_evidence": [
         {
           "line_end": 209,
@@ -757,12 +770,9 @@
     },
     "source_formula_lemma8_label_probabilities": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_lemma8_labels_and_predictions"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "construction_component_of_lemma8",
+      "scope_disposition_note": "The label probabilities are a checked component of the Lemma 8 witness.",
       "source_anchor_evidence": [
         {
           "line_end": 187,
@@ -778,12 +788,9 @@
     },
     "source_formula_lemma8_masses_output_one": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_lemma8_masses"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "construction_component_of_lemma8",
+      "scope_disposition_note": "The output-one mass formula is a checked component of the Lemma 8 witness.",
       "source_anchor_evidence": [
         {
           "line_end": 202,
@@ -799,12 +806,9 @@
     },
     "source_formula_lemma8_masses_output_zero": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_lemma8_masses"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "construction_component_of_lemma8",
+      "scope_disposition_note": "The output-zero mass formula is a checked component of the Lemma 8 witness.",
       "source_anchor_evidence": [
         {
           "line_end": 195,
@@ -820,12 +824,9 @@
     },
     "source_formula_mixture_conditional_label": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_mixture_components"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "construction_component_of_proposition6",
+      "scope_disposition_note": "The conditional-label clause is represented by the raw joint-law component embedding used by Proposition 6.",
       "source_anchor_evidence": [
         {
           "line_end": 117,
@@ -843,12 +844,9 @@
     },
     "source_formula_mixture_mass": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_mixture_components"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "construction_component_of_proposition6",
+      "scope_disposition_note": "The component-mass equation is part of Proposition 6's checked mixture construction.",
       "source_anchor_evidence": [
         {
           "line_end": 119,
@@ -865,12 +863,9 @@
     },
     "source_formula_mixture_predictors": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_mixture_components"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "construction_component_of_proposition6",
+      "scope_disposition_note": "The predictor-preservation equation is a component of Proposition 6's checked construction.",
       "source_anchor_evidence": [
         {
           "line_end": 119,
@@ -886,9 +881,9 @@
     },
     "source_formula_opening_zero_one_loss": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "quarantined_source_defect",
+      "scope_disposition": "documented_source_error_with_checked_lean_disposition",
+      "scope_disposition_note": "The printed display is zero-one loss while the prose calls it accuracy; the checked correction remains explicit defect evidence rather than a normal source claim.",
       "source_anchor_evidence": [
         {
           "line_end": 6,
@@ -911,9 +906,9 @@
     },
     "source_formula_partition_induced_predictor": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "component_of_partition_model",
+      "scope_disposition_note": "The conditional-cell formula is exposed by the separately routed partition predictor and dependent-partition constructor.",
       "source_anchor_evidence": [
         {
           "line_end": 132,
@@ -930,25 +925,13 @@
       "source_location": "audit/cited publication:127-132",
       "source_note": "User-approved source reading: use the finite measurable, zero-cell-totalized construction formalized below; this is recorded visibly rather than hidden in a theorem statement.",
       "source_status": "documented_source_model_convention",
-      "statement": "The source says a partition cell A induces P_i(x)=Pr[Y=1 | X in A] for x in A.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_probability_partition_induced_predictor",
-        "PKG25NoFreeLunch.source_convention_probability_partition_zero_mass_prediction",
-        "PKG25NoFreeLunch.source_probability_partition_predictor_calibrated_events",
-        "PKG25NoFreeLunch.source_probability_partition_collaboration_setting"
-      ]
+      "statement": "The source says a partition cell A induces P_i(x)=Pr[Y=1 | X in A] for x in A."
     },
     "source_formula_proposition7_average_mixture": {
       "claim_bearing": true,
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_proposition7_average_mixtureSpec_proof"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_formula_proposition7_average_mixtureSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_formula_proposition7_average_mixtureSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "supporting_derivation_for_proposition7",
+      "scope_disposition_note": "The uniform mixture is checked proof machinery for the separately routed Proposition 7 conclusion, not a second direct source target.",
       "source_anchor_evidence": [
         {
           "line_end": 160,
@@ -961,7 +944,7 @@
       "source_claim_atoms": [
         {
           "id": "source.formula.proposition7.average.mixture",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_formula_proposition7_average_mixtureSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.source_proposition7_uniform_mixture_strict_counterexample",
           "semantic_claim": "A uniform mixture of the n Lemma 8 settings makes the strategy strictly less accurate than every agent.",
           "source_locator": "audit/cited publication:156-160",
           "source_quote_sha256": "d951f4120ea48c337bc66b43b3fbd662adeaa6be6ce97f830e1711a603f0ef9b"
@@ -969,22 +952,13 @@
       ],
       "source_kind": "equation",
       "source_location": "audit/cited publication:156-160",
-      "statement": "A uniform mixture of the n Lemma 8 settings makes the strategy strictly less accurate than every agent.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_proposition7_average_mixtureSpec"
-      ]
+      "statement": "A uniform mixture of the n Lemma 8 settings makes the strategy strictly less accurate than every agent."
     },
     "source_formula_proposition9_final_mixture": {
       "claim_bearing": true,
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_proposition9_final_mixtureSpec_proof"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_formula_proposition9_final_mixtureSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_formula_proposition9_final_mixtureSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "supporting_derivation_for_proposition9",
+      "scope_disposition_note": "The final weighted mixture is proof support for Proposition 9's direct conclusion; its concrete strict witness remains a checked proof dependency rather than a source-semantic row.",
       "source_anchor_evidence": [
         {
           "line_end": 311,
@@ -997,7 +971,7 @@
       "source_claim_atoms": [
         {
           "id": "source.formula.proposition9.final.mixture",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_formula_proposition9_final_mixtureSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.source_formula_proposition9_weighted_mixture",
           "semantic_claim": "Mixing S1 with weight lambda and S2 with weight 1-lambda preserves the componentwise accuracy equations; a lambda close enough to one makes every agent strictly beat C.",
           "source_locator": "audit/cited publication:302-311",
           "source_quote_sha256": "f82b9686a776ba6877f83e06ba19669e7232638148e52a3e2b6e640c69caf7f4"
@@ -1006,22 +980,13 @@
       "source_kind": "equation",
       "source_location": "audit/cited publication:302-311",
       "source_note": "Lean proves the equations and the strict conclusion with the explicit rational weights 7/8 and 1/8, embedded as a raw joint-law setting.",
-      "statement": "Mixing S1 with weight lambda and S2 with weight 1-lambda preserves the componentwise accuracy equations; a lambda close enough to one makes every agent strictly beat C.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_proposition9_final_mixtureSpec"
-      ]
+      "statement": "Mixing S1 with weight lambda and S2 with weight 1-lambda preserves the componentwise accuracy equations; a lambda close enough to one makes every agent strictly beat C."
     },
     "source_formula_proposition9_s1_accuracies": {
       "claim_bearing": true,
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_proposition9_s1_accuraciesSpec_proof"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_formula_proposition9_s1_accuraciesSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_formula_proposition9_s1_accuraciesSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "supporting_derivation_for_proposition9",
+      "scope_disposition_note": "The S1 accuracy display is proof support for Proposition 9's fixed-tie conclusion, not an independent direct target.",
       "source_anchor_evidence": [
         {
           "line_end": 256,
@@ -1034,7 +999,7 @@
       "source_claim_atoms": [
         {
           "id": "source.formula.proposition9.s1.accuracies",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_formula_proposition9_s1_accuraciesSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.source_proposition9_s1_parameterized_accuracy_gap",
           "semantic_claim": "In S1, agent k and C have accuracy 2/3-epsilon/3, while all other agents have accuracy 1-epsilon and are strictly more accurate for 0 < epsilon < 1/2.",
           "source_locator": "audit/cited publication:255-256",
           "source_quote_sha256": "81c3e2c2e868ba5ad147512817475acd59913725cbae6e1b119409826e237582"
@@ -1042,20 +1007,13 @@
       ],
       "source_kind": "equation",
       "source_location": "audit/cited publication:255-256",
-      "statement": "In S1, agent k and C have accuracy 2/3-epsilon/3, while all other agents have accuracy 1-epsilon and are strictly more accurate for 0 < epsilon < 1/2.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_proposition9_s1_accuraciesSpec"
-      ]
+      "statement": "In S1, agent k and C have accuracy 2/3-epsilon/3, while all other agents have accuracy 1-epsilon and are strictly more accurate for 0 < epsilon < 1/2."
     },
     "source_formula_proposition9_s1_mass_and_labels": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_proposition9_s1_family",
-        "PKG25NoFreeLunch.source_proposition9_s1_partition_realization"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "construction_component_of_proposition9",
+      "scope_disposition_note": "The S1 mass and label formulas are checked construction support for Proposition 9.",
       "source_anchor_evidence": [
         {
           "line_end": 255,
@@ -1072,13 +1030,9 @@
     },
     "source_formula_proposition9_s1_predictions_and_calibration": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_proposition9_s1_family",
-        "PKG25NoFreeLunch.source_proposition9_s1_partition_realization"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "construction_component_of_proposition9",
+      "scope_disposition_note": "The S1 predictor and calibration formulas are checked construction support for Proposition 9.",
       "source_anchor_evidence": [
         {
           "line_end": 255,
@@ -1092,20 +1046,13 @@
       "source_location": "audit/cited publication:255",
       "source_note": "This is a finite source-witness formula and cell-level calibration claim, not an assertion of arbitrary pointwise conditional probabilities on null input fibers.",
       "source_status": "finite_source_witness",
-      "statement": "In S1, agent k uses the pooled prediction 2/3-epsilon/3 at both points, every other agent uses the corresponding conditional label probability, and the resulting finite prediction cells are calibrated.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_proposition9_s1_positive_parameter_validity"
-      ]
+      "statement": "In S1, agent k uses the pooled prediction 2/3-epsilon/3 at both points, every other agent uses the corresponding conditional label probability, and the resulting finite prediction cells are calibrated."
     },
     "source_formula_proposition9_s2_calibration_cells": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_proposition9_s2_partition_realization",
-        "PKG25NoFreeLunch.source_proposition9_s2_calibrated"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "construction_component_of_proposition9",
+      "scope_disposition_note": "The S2 calibration-cell equations are checked construction support for Proposition 9.",
       "source_anchor_evidence": [
         {
           "line_end": 290,
@@ -1122,9 +1069,9 @@
     },
     "source_formula_proposition9_s2_mass_and_labels": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "quarantined_source_defect",
+      "scope_disposition": "documented_source_error_with_checked_lean_disposition",
+      "scope_disposition_note": "The printed S2 normalizer leaves an index free; Lean records the repaired common normalizer, normalization proof, and resulting construction.",
       "source_anchor_evidence": [
         {
           "line_end": 285,
@@ -1142,22 +1089,14 @@
       "source_status": "quarantined_source_defect",
       "statement": "The printed S2 masses contain a free-index q-odds term in their common denominator and therefore do not literally specify one normalized distribution.",
       "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_proposition9_s2_repaired_normalizer",
-        "PKG25NoFreeLunch.source_proposition9_s2_repaired_mass_normalized",
-        "PKG25NoFreeLunch.source_formula_proposition9_s2_construction"
+        "PKG25NoFreeLunch.source_proposition9_s2_repaired_mass_normalized"
       ]
     },
     "source_formula_proposition9_s2_profiles_and_gap": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_proposition9_s2_strict_gap"
-      ],
-      "proof_lean_declarations": [
-        "PKG25NoFreeLunch.source_proposition9_s2_strict_gap"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "supporting_derivation_for_proposition9",
+      "scope_disposition_note": "The S2 profile identities and strict gap are proof support for the separately routed Proposition 9 conclusion.",
       "source_anchor_evidence": [
         {
           "line_end": 300,
@@ -1173,14 +1112,9 @@
     },
     "source_formula_proposition9_s2_repaired_mass_and_labels": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_proposition9_s2_repaired_normalizer",
-        "PKG25NoFreeLunch.source_proposition9_s2_repaired_mass_normalized",
-        "PKG25NoFreeLunch.source_formula_proposition9_s2_construction"
-      ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "corrected_construction_component_of_proposition9",
+      "scope_disposition_note": "The repaired normalized S2 mass and label formulas are checked construction support for Proposition 9.",
       "source_anchor_evidence": [
         {
           "line_end": 285,
@@ -1197,16 +1131,57 @@
       "statement": "The repaired S2 law uses D=2+sum_j(p_j/(1-p_j)+(1-q_j)/q_j), then the displayed p-copy and q-copy normalized masses and labels."
     },
     "source_lemma8_bad_tuple": {
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Every partition used by the source's Lemma 8 and Proposition 9 witnesses is finite and is covered by the raw joint-law construction, including agent-dependent finite cell types.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "The checked partition construction takes a finite measurable cell map for each agent. A positive-mass cell receives true-label mass divided by total cell mass; a null cell is assigned zero.",
+          "id": "PKG25-FINITE-MEASURABLE-PARTITION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "e63b919ee5031be0695143d2cf4712f5ae8a445c1603693fd3aaa41bbcd84713",
+          "source_locator": "audit/cited publication:127-132",
+          "why_needed": "The source says only 'partition'. Measurability is needed to form the events, and finiteness is needed for the checked zero-cell totalization to remain expectation-irrelevant and for the calibrated event identity to follow by a finite sum."
+        },
+        {
+          "checked_scope": "The raw reliability predicate carries the strategy-expectation well-formedness premise; the source proof's finite witnesses discharge it directly.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "Predictors are measurable, and a strategy is used in an accuracy comparison only when its induced binary-correctness indicator is integrable under the joint law. On finite witnesses this condition is automatic.",
+          "id": "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "020702f793b3594026d02c47317a96663f074b36362c0ef40e60aca4b10511fb",
+          "source_locator": "audit/cited publication:2-35; audit/cited publication:109-120",
+          "why_needed": "The source uses P_i(X), calibration events, and expected strategy accuracy while allowing an arbitrary deterministic C. Those expressions need measurability and integrability on an arbitrary measurable input space."
+        },
+        {
+          "checked_scope": "The current source-facing model proves the individual-accuracy formula from this event identity and embeds each finite adversarial witness as an exact joint PMF with unchanged classifier accuracies.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "A collaboration setting is represented by one probability law on X x {0,1}, rather than by an input marginal plus a selected pointwise conditional-label function. Predictors are measurable [0,1]-valued functions and calibration means, for every measurable A, E[1_{P_i(X) in A,Y=1}] = E[P_i(X) 1_{P_i(X) in A}].",
+          "id": "PKG25-RAW-JOINT-LAW-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3501f1167bc4c3698c1f9d0ca8e40eea0e9c9519b43cde7767211da6486de678",
+          "source_locator": "audit/cited publication:2-19",
+          "why_needed": "The source writes conditioning on P_i(X)=p for every reported p, but a raw joint law does not canonically specify conditional probabilities on zero-probability prediction fibers. The event identity is meaningful for both atomic and atomless prediction laws."
+        }
+      ],
       "claim_bearing": true,
-      "inventory_role": "pending_v11_surface_migration",
       "lean_declarations": [
-        "PKG25NoFreeLunch.source_lemma8_bad_tuple_counterexample_setting"
+        "PKG25NoFreeLunch.source_lemma8_bad_tuple_provesSpec"
       ],
-      "proof_lean_declarations": [
-        "PKG25NoFreeLunch.source_lemma8_bad_tuple_counterexample_setting"
+      "model_convention_ids": [
+        "PKG25-RAW-JOINT-LAW-01",
+        "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+        "PKG25-FINITE-MEASURABLE-PARTITION-01"
       ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "semantic_contract": {
+        "evidence_declaration": "PKG25NoFreeLunch.source_lemma8_bad_tuple_provesSpec",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "PKG25NoFreeLunch.source_lemma8_bad_tupleSpec"
+      },
       "source_anchor_evidence": [
         {
           "line_end": 169,
@@ -1216,21 +1191,45 @@
           "quoted_text_sha256": "6c20fe84362d7dff1d572a9f1d2b779779d9ff588c8604762aef0fffe2d5ce61"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.lemma8.bad.tuple",
+          "identity_schema": 2,
+          "reviewed_lean_route": "PKG25NoFreeLunch.source_lemma8_bad_tuple_provesSpec",
+          "semantic_claim": "A bad interior tuple away from agent k's half tie yields a collaboration setting where k strictly beats C and every other agent weakly beats C.",
+          "source_locator": "audit/cited publication:162-169",
+          "source_quote_sha256": "6c20fe84362d7dff1d572a9f1d2b779779d9ff588c8604762aef0fffe2d5ce61"
+        }
+      ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:162-169",
-      "statement": "A bad interior tuple away from agent k's half tie yields a collaboration setting where k strictly beats C and every other agent weakly beats C."
+      "statement": "A bad interior tuple away from agent k's half tie yields a collaboration setting where k strictly beats C and every other agent weakly beats C.",
+      "support_lean_declarations": [
+        "PKG25NoFreeLunch.source_lemma8_bad_tupleSpec"
+      ]
     },
     "source_model_event_calibration_convention": {
-      "claim_bearing": true,
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_model_event_calibration_conventionSpec_proof"
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The current source-facing model proves the individual-accuracy formula from this event identity and embeds each finite adversarial witness as an exact joint PMF with unchanged classifier accuracies.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "A collaboration setting is represented by one probability law on X x {0,1}, rather than by an input marginal plus a selected pointwise conditional-label function. Predictors are measurable [0,1]-valued functions and calibration means, for every measurable A, E[1_{P_i(X) in A,Y=1}] = E[P_i(X) 1_{P_i(X) in A}].",
+          "id": "PKG25-RAW-JOINT-LAW-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3501f1167bc4c3698c1f9d0ca8e40eea0e9c9519b43cde7767211da6486de678",
+          "source_locator": "audit/cited publication:2-19",
+          "why_needed": "The source writes conditioning on P_i(X)=p for every reported p, but a raw joint law does not canonically specify conditional probabilities on zero-probability prediction fibers. The event identity is meaningful for both atomic and atomless prediction laws."
+        }
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_model_event_calibration_conventionSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_model_event_calibration_conventionSpec"
-      },
+      "claim_bearing": true,
+      "inventory_role": "source_context_observation",
+      "model_convention_ids": [
+        "PKG25-RAW-JOINT-LAW-01"
+      ],
+      "scope_disposition": "semantic_context_component_of_collaboration_setting",
+      "scope_disposition_note": "The event-calibration convention is an exact semantic component of the separately routed collaboration-setting structure and is included in that declaration's mandatory source context.",
       "source_anchor_evidence": [
         {
           "line_end": 11,
@@ -1243,7 +1242,7 @@
       "source_claim_atoms": [
         {
           "id": "source.model.event.calibration.convention",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_model_event_calibration_conventionSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.JointLawCollaborationSetting",
           "semantic_claim": "For every measurable A in the reported-probability space, E[1_{P_i(X) in A,Y=1}]=E[P_i(X)1_{P_i(X) in A}] is the checked event-calibration interpretation of the source display.",
           "source_locator": "audit/cited publication:7-11",
           "source_quote_sha256": "d5e1efbbeba7375dafb5d6f67b4b2360980958154c5fbab530926666a7101339"
@@ -1253,21 +1252,30 @@
       "source_location": "audit/cited publication:7-11",
       "source_note": "This is the visible, user-approved formalization reading of the calibration display; it is not a claim to select a pointwise conditional-probability version on null fibers.",
       "source_status": "documented_source_model_convention",
-      "statement": "For every measurable A in the reported-probability space, E[1_{P_i(X) in A,Y=1}]=E[P_i(X)1_{P_i(X) in A}] is the checked event-calibration interpretation of the source display.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_model_event_calibration_conventionSpec"
-      ]
+      "statement": "For every measurable A in the reported-probability space, E[1_{P_i(X) in A,Y=1}]=E[P_i(X)1_{P_i(X) in A}] is the checked event-calibration interpretation of the source display."
     },
     "source_model_nonempty_agent_domain": {
-      "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_formula_reliable_probability_iff",
-        "PKG25NoFreeLunch.source_proposition7_reliability_forces_fixed_deferral",
-        "PKG25NoFreeLunch.source_proposition9_reliability_forces_fixed_tie_label"
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "SourceReliableJointLaw and every source-facing Theorem 1, Proposition 7, and Proposition 9 endpoint carry [Nonempty (Fin n)]. The source-domain strategy bridge never presents the zero-agent false extension as part of the paper.",
+          "classification": "maintainer_approved_source_domain_convention",
+          "formal_meaning": "The source's use of min over i in [n] in reliability and its existential k in [n] in non-collaboration is read as requiring at least one agent: Nonempty (Fin n).",
+          "id": "PKG25-NONEMPTY-AGENT-DOMAIN-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "6ce5bf1ff7b43dcab5b434e9984014570a5cce964fe35101e42c6bacdb75a98f",
+          "source_locator": "audit/cited publication:37-54",
+          "why_needed": "The paper never defines a zero-agent semantics. The earlier totalized Lean predicate was false at n = 0 merely because no Fin 0 witness exists; that implementation behavior is not a source assertion."
+        }
       ],
-      "scope_disposition": "separately_reviewed_assumption_surface",
-      "scope_disposition_note": "This pinned source premise remains on the separately audited Assumptions surface and is not a paper-interface theorem target.",
+      "claim_bearing": false,
+      "inventory_role": "proof_support",
+      "model_convention_ids": [
+        "PKG25-NONEMPTY-AGENT-DOMAIN-01"
+      ],
+      "scope_disposition": "separately_reviewed_model_definedness_condition",
+      "scope_disposition_note": "The nonempty-agent condition makes the source minimum and fixed-agent conclusions meaningful and is reviewed in the affected result binders.",
       "source_anchor_evidence": [
         {
           "line_end": 51,
@@ -1297,13 +1305,27 @@
       "statement": "The source's min over i in [n] and its existential fixed agent require n to be nonzero."
     },
     "source_model_predictor_measurability": {
-      "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_assumption_predictor_measurability"
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The raw reliability predicate carries the strategy-expectation well-formedness premise; the source proof's finite witnesses discharge it directly.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "Predictors are measurable, and a strategy is used in an accuracy comparison only when its induced binary-correctness indicator is integrable under the joint law. On finite witnesses this condition is automatic.",
+          "id": "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "020702f793b3594026d02c47317a96663f074b36362c0ef40e60aca4b10511fb",
+          "source_locator": "audit/cited publication:2-35; audit/cited publication:109-120",
+          "why_needed": "The source uses P_i(X), calibration events, and expected strategy accuracy while allowing an arbitrary deterministic C. Those expressions need measurability and integrability on an arbitrary measurable input space."
+        }
       ],
-      "scope_disposition": "separately_reviewed_assumption_surface",
-      "scope_disposition_note": "This pinned source premise remains on the separately audited Assumptions surface and is not a paper-interface theorem target.",
+      "claim_bearing": false,
+      "inventory_role": "proof_support",
+      "model_convention_ids": [
+        "PKG25-MEASURABILITY-AND-EXPECTATION-01"
+      ],
+      "scope_disposition": "separately_reviewed_model_definedness_condition",
+      "scope_disposition_note": "Predictor measurability is an explicit model-definedness condition reviewed on the Assumptions surface, not a separately stated paper result.",
       "source_anchor_evidence": [
         {
           "line_end": 19,
@@ -1319,13 +1341,27 @@
       "statement": "Predictors must be measurable for P_i(X), calibration events, and the displayed expectations to be defined on an arbitrary measurable input space."
     },
     "source_model_strategy_expectation_definedness": {
-      "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_assumption_strategy_expectation_well_formed"
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The raw reliability predicate carries the strategy-expectation well-formedness premise; the source proof's finite witnesses discharge it directly.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "Predictors are measurable, and a strategy is used in an accuracy comparison only when its induced binary-correctness indicator is integrable under the joint law. On finite witnesses this condition is automatic.",
+          "id": "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "020702f793b3594026d02c47317a96663f074b36362c0ef40e60aca4b10511fb",
+          "source_locator": "audit/cited publication:2-35; audit/cited publication:109-120",
+          "why_needed": "The source uses P_i(X), calibration events, and expected strategy accuracy while allowing an arbitrary deterministic C. Those expressions need measurability and integrability on an arbitrary measurable input space."
+        }
       ],
-      "scope_disposition": "separately_reviewed_assumption_surface",
-      "scope_disposition_note": "This pinned source premise remains on the separately audited Assumptions surface and is not a paper-interface theorem target.",
+      "claim_bearing": false,
+      "inventory_role": "proof_support",
+      "model_convention_ids": [
+        "PKG25-MEASURABILITY-AND-EXPECTATION-01"
+      ],
+      "scope_disposition": "separately_reviewed_model_definedness_condition",
+      "scope_disposition_note": "Strategy expectation definedness is reviewed on the Assumptions surface and remains visible in every affected result binder.",
       "source_anchor_evidence": [
         {
           "line_end": 35,
@@ -1349,9 +1385,9 @@
     },
     "source_observation_correctness_weak_dominance": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "supporting_accuracy_observation",
+      "scope_disposition_note": "The weak-dominance sentence is proof support for the Lemma 8 witness rather than a separate result row.",
       "source_anchor_evidence": [
         {
           "line_end": 94,
@@ -1365,22 +1401,32 @@
       "source_location": "audit/cited publication:94",
       "source_note": "The current Lean row is a finite/case-table witness, not a formalization of this prose universal implication. It remains explanatory support rather than a source result route.",
       "source_status": "support_only",
-      "statement": "If classifier i is correct whenever classifier j is correct, then i's accuracy is at least j's accuracy.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_lemma8_bad_tuple_counterexample_setting"
-      ]
+      "statement": "If classifier i is correct whenever classifier j is correct, then i's accuracy is at least j's accuracy."
     },
     "source_partition_finite_measurable_repair": {
-      "claim_bearing": true,
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_partition_finite_measurable_repairSpec_proof"
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Every partition used by the source's Lemma 8 and Proposition 9 witnesses is finite and is covered by the raw joint-law construction, including agent-dependent finite cell types.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "The checked partition construction takes a finite measurable cell map for each agent. A positive-mass cell receives true-label mass divided by total cell mass; a null cell is assigned zero.",
+          "id": "PKG25-FINITE-MEASURABLE-PARTITION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "e63b919ee5031be0695143d2cf4712f5ae8a445c1603693fd3aaa41bbcd84713",
+          "source_locator": "audit/cited publication:127-132",
+          "why_needed": "The source says only 'partition'. Measurability is needed to form the events, and finiteness is needed for the checked zero-cell totalization to remain expectation-irrelevant and for the calibrated event identity to follow by a finite sum."
+        }
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_partition_finite_measurable_repairSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_partition_finite_measurable_repairSpec"
-      },
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "PKG25NoFreeLunch.jointLawPartitionPredictor",
+        "PKG25NoFreeLunch.jointLawDependentPartitionSetting"
+      ],
+      "model_convention_ids": [
+        "PKG25-FINITE-MEASURABLE-PARTITION-01"
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 132,
@@ -1393,7 +1439,7 @@
       "source_claim_atoms": [
         {
           "id": "source.partition.finite.measurable.repair",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_partition_finite_measurable_repairSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.jointLawPartitionPredictor",
           "semantic_claim": "For a finite measurable partition, a positive-mass cell receives its true-label mass divided by cell mass; a null cell is explicitly assigned 0, and the resulting predictor is event-calibrated.",
           "source_locator": "audit/cited publication:127-132",
           "source_quote_sha256": "97bb55934b2f1993709c5a38e669173152eafec54c2724d1ac81b9574c077921"
@@ -1403,18 +1449,44 @@
       "source_location": "audit/cited publication:127-132",
       "source_note": "This checked construction, including zero on a null cell, is the user-approved formal source reading and covers every partition used by Lemma 8 and Proposition 9.",
       "source_status": "documented_source_model_convention",
-      "statement": "For a finite measurable partition, a positive-mass cell receives its true-label mass divided by cell mass; a null cell is explicitly assigned 0, and the resulting predictor is event-calibrated.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_partition_finite_measurable_repairSpec"
-      ]
+      "statement": "For a finite measurable partition, a positive-mass cell receives its true-label mass divided by cell mass; a null cell is explicitly assigned 0, and the resulting predictor is event-calibrated."
     },
     "source_proposition6_linear_combination": {
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The raw reliability predicate carries the strategy-expectation well-formedness premise; the source proof's finite witnesses discharge it directly.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "Predictors are measurable, and a strategy is used in an accuracy comparison only when its induced binary-correctness indicator is integrable under the joint law. On finite witnesses this condition is automatic.",
+          "id": "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "020702f793b3594026d02c47317a96663f074b36362c0ef40e60aca4b10511fb",
+          "source_locator": "audit/cited publication:2-35; audit/cited publication:109-120",
+          "why_needed": "The source uses P_i(X), calibration events, and expected strategy accuracy while allowing an arbitrary deterministic C. Those expressions need measurability and integrability on an arbitrary measurable input space."
+        },
+        {
+          "checked_scope": "The current source-facing model proves the individual-accuracy formula from this event identity and embeds each finite adversarial witness as an exact joint PMF with unchanged classifier accuracies.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "A collaboration setting is represented by one probability law on X x {0,1}, rather than by an input marginal plus a selected pointwise conditional-label function. Predictors are measurable [0,1]-valued functions and calibration means, for every measurable A, E[1_{P_i(X) in A,Y=1}] = E[P_i(X) 1_{P_i(X) in A}].",
+          "id": "PKG25-RAW-JOINT-LAW-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3501f1167bc4c3698c1f9d0ca8e40eea0e9c9519b43cde7767211da6486de678",
+          "source_locator": "audit/cited publication:2-19",
+          "why_needed": "The source writes conditioning on P_i(X)=p for every reported p, but a raw joint law does not canonically specify conditional probabilities on zero-probability prediction fibers. The event identity is meaningful for both atomic and atomless prediction laws."
+        }
+      ],
       "claim_bearing": true,
       "lean_declarations": [
-        "PKG25NoFreeLunch.source_proposition6_linear_combinationSpec_proof"
+        "PKG25NoFreeLunch.source_proposition6_linear_combination_provesSpec"
+      ],
+      "model_convention_ids": [
+        "PKG25-RAW-JOINT-LAW-01",
+        "PKG25-MEASURABILITY-AND-EXPECTATION-01"
       ],
       "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_proposition6_linear_combinationSpec_proof",
+        "evidence_declaration": "PKG25NoFreeLunch.source_proposition6_linear_combination_provesSpec",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
         "spec_declaration": "PKG25NoFreeLunch.source_proposition6_linear_combinationSpec"
@@ -1431,11 +1503,14 @@
       "source_claim_atoms": [
         {
           "id": "source.proposition6.linear.combination",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_proposition6_linear_combinationSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.source_proposition6_linear_combination_provesSpec",
           "semantic_claim": "For simplex weights over finitely many collaboration settings, a collaboration setting exists whose agent and strategy accuracies are the corresponding weighted sums.",
           "source_locator": "audit/cited publication:100-107",
           "source_quote_sha256": "0eb2f0b52e977c9987683b01f775c1208d9c8f93b5837b5a2064847e67758e9c"
         }
+      ],
+      "source_defect_ids": [
+        "PKG25-P6-MIXTURE-INDEX-01"
       ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:100-107",
@@ -1446,16 +1521,57 @@
       ]
     },
     "source_proposition7_fixed_deferral": {
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The raw reliability predicate carries the strategy-expectation well-formedness premise; the source proof's finite witnesses discharge it directly.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "Predictors are measurable, and a strategy is used in an accuracy comparison only when its induced binary-correctness indicator is integrable under the joint law. On finite witnesses this condition is automatic.",
+          "id": "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "020702f793b3594026d02c47317a96663f074b36362c0ef40e60aca4b10511fb",
+          "source_locator": "audit/cited publication:2-35; audit/cited publication:109-120",
+          "why_needed": "The source uses P_i(X), calibration events, and expected strategy accuracy while allowing an arbitrary deterministic C. Those expressions need measurability and integrability on an arbitrary measurable input space."
+        },
+        {
+          "checked_scope": "SourceReliableJointLaw and every source-facing Theorem 1, Proposition 7, and Proposition 9 endpoint carry [Nonempty (Fin n)]. The source-domain strategy bridge never presents the zero-agent false extension as part of the paper.",
+          "classification": "maintainer_approved_source_domain_convention",
+          "formal_meaning": "The source's use of min over i in [n] in reliability and its existential k in [n] in non-collaboration is read as requiring at least one agent: Nonempty (Fin n).",
+          "id": "PKG25-NONEMPTY-AGENT-DOMAIN-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "6ce5bf1ff7b43dcab5b434e9984014570a5cce964fe35101e42c6bacdb75a98f",
+          "source_locator": "audit/cited publication:37-54",
+          "why_needed": "The paper never defines a zero-agent semantics. The earlier totalized Lean predicate was false at n = 0 merely because no Fin 0 witness exists; that implementation behavior is not a source assertion."
+        },
+        {
+          "checked_scope": "The current source-facing model proves the individual-accuracy formula from this event identity and embeds each finite adversarial witness as an exact joint PMF with unchanged classifier accuracies.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "A collaboration setting is represented by one probability law on X x {0,1}, rather than by an input marginal plus a selected pointwise conditional-label function. Predictors are measurable [0,1]-valued functions and calibration means, for every measurable A, E[1_{P_i(X) in A,Y=1}] = E[P_i(X) 1_{P_i(X) in A}].",
+          "id": "PKG25-RAW-JOINT-LAW-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3501f1167bc4c3698c1f9d0ca8e40eea0e9c9519b43cde7767211da6486de678",
+          "source_locator": "audit/cited publication:2-19",
+          "why_needed": "The source writes conditioning on P_i(X)=p for every reported p, but a raw joint law does not canonically specify conditional probabilities on zero-probability prediction fibers. The event identity is meaningful for both atomic and atomless prediction laws."
+        }
+      ],
       "claim_bearing": true,
-      "inventory_role": "pending_v11_surface_migration",
       "lean_declarations": [
-        "PKG25NoFreeLunch.source_proposition7_reliability_forces_fixed_deferral"
+        "PKG25NoFreeLunch.source_proposition7_fixed_deferral_provesSpec"
       ],
-      "proof_lean_declarations": [
-        "PKG25NoFreeLunch.source_proposition7_reliability_forces_fixed_deferral"
+      "model_convention_ids": [
+        "PKG25-RAW-JOINT-LAW-01",
+        "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+        "PKG25-NONEMPTY-AGENT-DOMAIN-01"
       ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "semantic_contract": {
+        "evidence_declaration": "PKG25NoFreeLunch.source_proposition7_fixed_deferral_provesSpec",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "PKG25NoFreeLunch.source_proposition7_fixed_deferralSpec"
+      },
       "source_anchor_evidence": [
         {
           "line_end": 154,
@@ -1465,21 +1581,87 @@
           "quoted_text_sha256": "25d4ab78ee0ff24dfcd2a6d834fb7475866c7fe892bcc6005f387c3a871a3147"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.proposition7.fixed.deferral",
+          "identity_schema": 2,
+          "reviewed_lean_route": "PKG25NoFreeLunch.source_proposition7_fixed_deferral_provesSpec",
+          "semantic_claim": "Reliability forces one fixed agent k followed at every interior profile with p_k not equal to 1/2.",
+          "source_locator": "audit/cited publication:152-154",
+          "source_quote_sha256": "25d4ab78ee0ff24dfcd2a6d834fb7475866c7fe892bcc6005f387c3a871a3147"
+        }
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:152-154",
-      "statement": "Reliability forces one fixed agent k followed at every interior profile with p_k not equal to 1/2."
+      "statement": "Reliability forces one fixed agent k followed at every interior profile with p_k not equal to 1/2.",
+      "support_lean_declarations": [
+        "PKG25NoFreeLunch.source_proposition7_fixed_deferralSpec"
+      ]
     },
     "source_proposition9_constant_tie_label": {
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Every partition used by the source's Lemma 8 and Proposition 9 witnesses is finite and is covered by the raw joint-law construction, including agent-dependent finite cell types.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "The checked partition construction takes a finite measurable cell map for each agent. A positive-mass cell receives true-label mass divided by total cell mass; a null cell is assigned zero.",
+          "id": "PKG25-FINITE-MEASURABLE-PARTITION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "e63b919ee5031be0695143d2cf4712f5ae8a445c1603693fd3aaa41bbcd84713",
+          "source_locator": "audit/cited publication:127-132",
+          "why_needed": "The source says only 'partition'. Measurability is needed to form the events, and finiteness is needed for the checked zero-cell totalization to remain expectation-irrelevant and for the calibrated event identity to follow by a finite sum."
+        },
+        {
+          "checked_scope": "The raw reliability predicate carries the strategy-expectation well-formedness premise; the source proof's finite witnesses discharge it directly.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "Predictors are measurable, and a strategy is used in an accuracy comparison only when its induced binary-correctness indicator is integrable under the joint law. On finite witnesses this condition is automatic.",
+          "id": "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "020702f793b3594026d02c47317a96663f074b36362c0ef40e60aca4b10511fb",
+          "source_locator": "audit/cited publication:2-35; audit/cited publication:109-120",
+          "why_needed": "The source uses P_i(X), calibration events, and expected strategy accuracy while allowing an arbitrary deterministic C. Those expressions need measurability and integrability on an arbitrary measurable input space."
+        },
+        {
+          "checked_scope": "SourceReliableJointLaw and every source-facing Theorem 1, Proposition 7, and Proposition 9 endpoint carry [Nonempty (Fin n)]. The source-domain strategy bridge never presents the zero-agent false extension as part of the paper.",
+          "classification": "maintainer_approved_source_domain_convention",
+          "formal_meaning": "The source's use of min over i in [n] in reliability and its existential k in [n] in non-collaboration is read as requiring at least one agent: Nonempty (Fin n).",
+          "id": "PKG25-NONEMPTY-AGENT-DOMAIN-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "6ce5bf1ff7b43dcab5b434e9984014570a5cce964fe35101e42c6bacdb75a98f",
+          "source_locator": "audit/cited publication:37-54",
+          "why_needed": "The paper never defines a zero-agent semantics. The earlier totalized Lean predicate was false at n = 0 merely because no Fin 0 witness exists; that implementation behavior is not a source assertion."
+        },
+        {
+          "checked_scope": "The current source-facing model proves the individual-accuracy formula from this event identity and embeds each finite adversarial witness as an exact joint PMF with unchanged classifier accuracies.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "A collaboration setting is represented by one probability law on X x {0,1}, rather than by an input marginal plus a selected pointwise conditional-label function. Predictors are measurable [0,1]-valued functions and calibration means, for every measurable A, E[1_{P_i(X) in A,Y=1}] = E[P_i(X) 1_{P_i(X) in A}].",
+          "id": "PKG25-RAW-JOINT-LAW-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3501f1167bc4c3698c1f9d0ca8e40eea0e9c9519b43cde7767211da6486de678",
+          "source_locator": "audit/cited publication:2-19",
+          "why_needed": "The source writes conditioning on P_i(X)=p for every reported p, but a raw joint law does not canonically specify conditional probabilities on zero-probability prediction fibers. The event identity is meaningful for both atomic and atomless prediction laws."
+        }
+      ],
       "claim_bearing": true,
-      "inventory_role": "pending_v11_surface_migration",
       "lean_declarations": [
-        "PKG25NoFreeLunch.source_proposition9_reliability_forces_fixed_tie_label"
+        "PKG25NoFreeLunch.source_proposition9_constant_tie_label_provesSpec"
       ],
-      "proof_lean_declarations": [
-        "PKG25NoFreeLunch.source_proposition9_reliability_forces_fixed_tie_label"
+      "model_convention_ids": [
+        "PKG25-RAW-JOINT-LAW-01",
+        "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+        "PKG25-FINITE-MEASURABLE-PARTITION-01",
+        "PKG25-NONEMPTY-AGENT-DOMAIN-01"
       ],
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "semantic_contract": {
+        "evidence_declaration": "PKG25NoFreeLunch.source_proposition9_constant_tie_label_provesSpec",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "PKG25NoFreeLunch.source_proposition9_constant_tie_labelSpec"
+      },
       "source_anchor_evidence": [
         {
           "line_end": 246,
@@ -1489,15 +1671,32 @@
           "quoted_text_sha256": "b796a407c58d3d3d620a865d9686bb5644a06eccb40075d8db9dd0243cf1989e"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.proposition9.constant.tie.label",
+          "identity_schema": 2,
+          "reviewed_lean_route": "PKG25NoFreeLunch.source_proposition9_constant_tie_label_provesSpec",
+          "semantic_claim": "Given fixed off-half deferral to k, reliability forces one fixed output alpha on every interior p_k=1/2 profile.",
+          "source_locator": "audit/cited publication:241-246",
+          "source_quote_sha256": "b796a407c58d3d3d620a865d9686bb5644a06eccb40075d8db9dd0243cf1989e"
+        }
+      ],
+      "source_defect_ids": [
+        "PKG25-P9-S1-EPSILON-DOMAIN-01",
+        "PKG25-P9-S2-DENOMINATOR-01"
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:241-246",
-      "statement": "Given fixed off-half deferral to k, reliability forces one fixed output alpha on every interior p_k=1/2 profile."
+      "statement": "Given fixed off-half deferral to k, reliability forces one fixed output alpha on every interior p_k=1/2 profile.",
+      "support_lean_declarations": [
+        "PKG25NoFreeLunch.source_proposition9_constant_tie_labelSpec"
+      ]
     },
     "source_remark_boundary_certain_agent": {
       "claim_bearing": false,
-      "inventory_role": "pending_v11_surface_migration",
-      "scope_disposition": "requires_source_atomization_or_dedicated_spec",
-      "scope_disposition_note": "The older route is shared across distinct source presentations or lies outside PaperInterface; retain it explicitly pending a dedicated one-to-one v11 target.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "supporting_boundary_observation",
+      "scope_disposition_note": "The boundary observation explains the false reverse implication but is not an independent named theorem.",
       "source_anchor_evidence": [
         {
           "line_end": 54,
@@ -1518,18 +1717,56 @@
       "source_location": "audit/cited publication:54; audit/cited publication:69-71",
       "source_note": "This post-Theorem-1 explanatory prose is not a standalone formal claim, named result, or theorem premise. Its Definition 4 boundary observation and event-calibration ingredient are audited separately; the current Lean row is only support for the distinct false-iff counterexample. The event-level derivation is logged as nonblocking explanatory support.",
       "source_status": "support_only",
-      "statement": "The explanatory prose after the main theorem leaves boundary profiles unconstrained and notes that calibration makes a prediction of 0 or 1 certain on its reported-prediction event.",
-      "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_iff_converse_boundary_counterexample"
-      ]
+      "statement": "The explanatory prose after the main theorem leaves boundary profiles unconstrained and notes that calibration makes a prediction of 0 or 1 certain on its reported-prediction event."
     },
     "source_theorem1_no_free_lunch": {
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The raw reliability predicate carries the strategy-expectation well-formedness premise; the source proof's finite witnesses discharge it directly.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "Predictors are measurable, and a strategy is used in an accuracy comparison only when its induced binary-correctness indicator is integrable under the joint law. On finite witnesses this condition is automatic.",
+          "id": "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "020702f793b3594026d02c47317a96663f074b36362c0ef40e60aca4b10511fb",
+          "source_locator": "audit/cited publication:2-35; audit/cited publication:109-120",
+          "why_needed": "The source uses P_i(X), calibration events, and expected strategy accuracy while allowing an arbitrary deterministic C. Those expressions need measurability and integrability on an arbitrary measurable input space."
+        },
+        {
+          "checked_scope": "SourceReliableJointLaw and every source-facing Theorem 1, Proposition 7, and Proposition 9 endpoint carry [Nonempty (Fin n)]. The source-domain strategy bridge never presents the zero-agent false extension as part of the paper.",
+          "classification": "maintainer_approved_source_domain_convention",
+          "formal_meaning": "The source's use of min over i in [n] in reliability and its existential k in [n] in non-collaboration is read as requiring at least one agent: Nonempty (Fin n).",
+          "id": "PKG25-NONEMPTY-AGENT-DOMAIN-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "6ce5bf1ff7b43dcab5b434e9984014570a5cce964fe35101e42c6bacdb75a98f",
+          "source_locator": "audit/cited publication:37-54",
+          "why_needed": "The paper never defines a zero-agent semantics. The earlier totalized Lean predicate was false at n = 0 merely because no Fin 0 witness exists; that implementation behavior is not a source assertion."
+        },
+        {
+          "checked_scope": "The current source-facing model proves the individual-accuracy formula from this event identity and embeds each finite adversarial witness as an exact joint PMF with unchanged classifier accuracies.",
+          "classification": "explicit_formalization_convention",
+          "formal_meaning": "A collaboration setting is represented by one probability law on X x {0,1}, rather than by an input marginal plus a selected pointwise conditional-label function. Predictors are measurable [0,1]-valued functions and calibration means, for every measurable A, E[1_{P_i(X) in A,Y=1}] = E[P_i(X) 1_{P_i(X) in A}].",
+          "id": "PKG25-RAW-JOINT-LAW-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3501f1167bc4c3698c1f9d0ca8e40eea0e9c9519b43cde7767211da6486de678",
+          "source_locator": "audit/cited publication:2-19",
+          "why_needed": "The source writes conditioning on P_i(X)=p for every reported p, but a raw joint law does not canonically specify conditional probabilities on zero-probability prediction fibers. The event identity is meaningful for both atomic and atomless prediction laws."
+        }
+      ],
       "claim_bearing": true,
       "lean_declarations": [
-        "PKG25NoFreeLunch.source_theorem1_no_free_lunchSpec_proof"
+        "PKG25NoFreeLunch.source_theorem1_no_free_lunch_provesSpec"
+      ],
+      "model_convention_ids": [
+        "PKG25-RAW-JOINT-LAW-01",
+        "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+        "PKG25-NONEMPTY-AGENT-DOMAIN-01"
       ],
       "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_theorem1_no_free_lunchSpec_proof",
+        "evidence_declaration": "PKG25NoFreeLunch.source_theorem1_no_free_lunch_provesSpec",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
         "spec_declaration": "PKG25NoFreeLunch.source_theorem1_no_free_lunchSpec"
@@ -1546,7 +1783,7 @@
       "source_claim_atoms": [
         {
           "id": "source.theorem1.no.free.lunch",
-          "reviewed_lean_route": "PKG25NoFreeLunch.source_theorem1_no_free_lunchSpec_proof",
+          "reviewed_lean_route": "PKG25NoFreeLunch.source_theorem1_no_free_lunch_provesSpec",
           "semantic_claim": "Every reliable collaboration strategy is non-collaborative.",
           "source_locator": "audit/cited publication:56-63",
           "source_quote_sha256": "74007306dcbe99b42d704d9bcb2ee0fde4d11c0249645b35c53bc82b5342d08f"
@@ -1562,15 +1799,9 @@
     },
     "source_unnumbered_iff_restatement": {
       "claim_bearing": true,
-      "lean_declarations": [
-        "PKG25NoFreeLunch.source_unnumbered_iff_restatementSpec_proof"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "PKG25NoFreeLunch.source_unnumbered_iff_restatementSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PKG25NoFreeLunch.source_unnumbered_iff_restatementSpec"
-      },
+      "inventory_role": "quarantined_source_defect",
+      "scope_disposition": "documented_false_restatement_with_checked_refutation",
+      "scope_disposition_note": "Definition 4 leaves boundary profiles unconstrained, so the printed reverse implication is false; the main forward theorem remains proved and Lean supplies a checked boundary refutation.",
       "source_anchor_evidence": [
         {
           "line_end": 148,
@@ -1597,18 +1828,38 @@
       "source_status": "quarantined_source_defect",
       "statement": "The proof section restates reliability iff non-collaboration, but Definition 4 leaves boundary behavior unconstrained, so only the forward implication is valid.",
       "support_lean_declarations": [
-        "PKG25NoFreeLunch.source_unnumbered_iff_restatementSpec"
+        "PKG25NoFreeLunch.source_unnumbered_iff_restatement_refutesSpec"
       ]
     }
   },
   "paper": "PKG25NoFreeLunch",
-  "publication_source_display_projection": {
-    "manifest": "audit/public_source_display_projection.json",
-    "raw_source_bytes_included": false,
-    "schema": 1
+  "paper_interface_namespace": "PKG25NoFreeLunch",
+  "paper_semantic_prerequisite_sources": {
+    "PKG25NoFreeLunch.JointLawCollaborationSetting": "source_definition_collaboration_setting",
+    "PKG25NoFreeLunch.JointLawCollaborationSetting.agentAccuracy_eq_predictionCertainty": "source_formula_individual_accuracy",
+    "PKG25NoFreeLunch.JointLawCollaborationSetting.agentClassifier": "source_definition_rounding_classifier",
+    "PKG25NoFreeLunch.JointLawCollaborationSetting.sourcePredictionProfile": "source_formula_induced_collaboration_classifier",
+    "PKG25NoFreeLunch.JointLawCollaborationSetting.sourceStrategyAccuracy": "source_definition_strategy_accuracy",
+    "PKG25NoFreeLunch.JointLawCollaborationSetting.sourceStrategyClassifier": "source_formula_induced_collaboration_classifier",
+    "PKG25NoFreeLunch.SourceCollaborationStrategy": "source_definition_collaboration_strategy",
+    "PKG25NoFreeLunch.SourceConstantOnHalfSlice": "source_definition_non_collaboration",
+    "PKG25NoFreeLunch.SourceDefersAwayFromHalf": "source_definition_non_collaboration",
+    "PKG25NoFreeLunch.SourceNonCollaborative": "source_definition_non_collaboration",
+    "PKG25NoFreeLunch.SourceReliableJointLaw": "source_definition_reliability",
+    "PKG25NoFreeLunch.SourceStrategyWellFormed": "source_definition_strategy_accuracy",
+    "PKG25NoFreeLunch.UnitCubeProfile": "source_definition_collaboration_strategy",
+    "PKG25NoFreeLunch.extendSourceStrategy": "source_definition_collaboration_strategy",
+    "PKG25NoFreeLunch.jointLawDependentPartitionSetting": "source_partition_finite_measurable_repair",
+    "PKG25NoFreeLunch.jointLawPartitionPredictor": "source_partition_finite_measurable_repair",
+    "PKG25NoFreeLunch.roundProb": "source_definition_rounding_classifier",
+    "PKG25NoFreeLunch.source_definition_agree_on": "source_definition_agree",
+    "PKG25NoFreeLunch.source_definition_correct_on": "source_definition_correct",
+    "PKG25NoFreeLunch.source_definition_disagree_on": "source_definition_disagree",
+    "PKG25NoFreeLunch.source_definition_incorrect_on": "source_definition_incorrect"
   },
   "schema": 1,
   "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
   "source_anchor_evidence_required": true,
   "source_artifact_sha256": "50352a0df5c4722ad67ac01ec17d3fa4c9a79687453b8751587664092fe573cc",
   "source_claim_atoms_schema": 1,
@@ -1617,10 +1868,12 @@
   "source_inventory_kind": "source_curated",
   "source_inventory_policy": "Source-first atomic inventory of the pinned arXiv source archive's theorem and proof sections, cross-checked against the proceedings text. It separates literal source claims, checked finite witness steps, and visible model/repair conventions. Routing is by expanded mathematical content, never by Lean or function name. A source item marked quarantined_source_defect is not direct coverage; a user-approved model convention must be explicit in the report and never hidden in a theorem statement. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
   "source_named_result_inventory_review": {
+    "candidate_presentations": [],
     "complete": true,
+    "discovered_candidate_presentation_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
     "discovered_named_result_sha256": "01bd8c908b65957a8f2d0f1c042d3585c44b3e1798d2ce549d525c4876405bf3",
     "discovered_prose_definition_sha256": "5c8dd81f1d1132c036107eac6d417274e64ca6aa018081d5838c0a9a66c27c23",
-    "method": "Independent source-only scan of the canonical two-member arXiv source surface. It identifies each active Definition, Theorem, Proposition, and Lemma from the TeX presentation before any Lean route is considered; reconciliation is by byte-pinned source spans and exact quotes, not map keys or Lean declaration names.",
+    "method": "Complete source-only pass over the byte-pinned arXiv TeX archive before consulting Lean declaration names. The pass checked every definition, theorem, proposition, lemma, displayed construction, proof-level mathematical claim, and explanatory boundary statement against the existing source map. The map already accounts for every material presentation, including the opening loss-versus-accuracy typo, calibration conventions, finite-partition construction, invalid reverse implication in the unnumbered restatement, and the two repaired witness constructions; no additional candidate presentation was found.",
     "prose_definition_presentations": [
       {
         "defined_entity_kind": "object",
@@ -1700,8 +1953,8 @@
     ],
     "schema": 1,
     "source_artifact_sha256": "50352a0df5c4722ad67ac01ec17d3fa4c9a79687453b8751587664092fe573cc",
-    "validated_at": "2026-08-19T17:20:00Z",
-    "validator": "Codex PKG25 source-only named-result reconciliation"
+    "validated_at": "2026-08-31T16:56:49Z",
+    "validator": "Codex PKG25 source-only candidate review, 2026-08-31"
   },
   "source_spec_correspondence_schema": 1,
   "source_url": "https://ojs.aaai.org/index.php/AAAI/article/view/33574/35729; https://arxiv.org/abs/2411.15230",

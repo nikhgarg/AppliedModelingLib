@@ -1,0 +1,110 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+\begin{tikzpicture}[every node/.style={font=\sffamily\small}]
+
+\dagPaperMetadata{Fundamental Limits of Testing the Independence of Irrelevant Alternatives in Discrete Choice}{Arjun Seshadri and Johan Ugander}{arXiv}{2020}{https://arxiv.org/abs/2001.07042v1}
+\dagPaperLegendRightOfMetadata{
+  \node[dag_model, dag_template_legend] (legModel) at (0,0) {formalized\\model or definition};
+  \node[dag_lemma, dag_template_legend] (legLemma) at (4.7,0) {formalized\\lemma or Appendix support};
+  \node[dag_result, dag_template_legend] (legResult) at (9.4,0) {formalized\\main result};
+}
+\daglegend{(legModel)(legLemma)(legResult)}{Legend}
+
+\begin{dagPaperBody}
+\begin{scope}[xshift=-0.2cm,yshift=-0.5cm]
+
+\node[dag_model, text width=4.8cm] (Choice) at (0,0) {
+  \textbf{Choice-system model}\\finite observed item/set incidences and joint probabilities
+};
+\node[dag_model, text width=4.8cm] (IIA) at (6.8,0) {
+  \textbf{IIA model}\\Luce ratio representation and IIA projection
+};
+\node[dag_model, text width=4.8cm] (Testing) at (13.6,0) {
+  \textbf{Separated testing model}\\total variation, finite product tests, minimax risk
+};
+\node[dag_model, text width=4.8cm] (Graph) at (20.4,0) {
+  \textbf{Comparison-incidence model}\\bipartite graph, Eulerian balance
+};
+\node[dag_model, text width=4.8cm] (Cycles) at (27.2,0) {
+  \textbf{Cycle-decomposition model}\\orientations, mean length, dispersion
+};
+
+\node[dag_model, text width=4.8cm] (Perturb) at (0,-4.6) {
+  \textbf{Balanced perturbations}\\uniform null, signed alternatives, finite mixtures
+};
+\node[dag_lemma, text width=4.6cm] (Fact5) at (6.8,-4.6) {
+  \textbf{Appendix Fact 5}\\convex hull of IIA is dense
+};
+\node[dag_lemma, text width=4.6cm] (Fact7) at (13.6,-4.6) {
+  \textbf{Appendix Fact 7}\\entropy as minimum cross entropy
+};
+\node[dag_lemma, text width=4.6cm] (Lemma6) at (20.4,-4.6) {
+  \textbf{Appendix Lemma 6}\\marginals determine the IIA KL projection
+};
+\node[dag_lemma, text width=4.6cm] (Lemma9) at (27.2,-4.6) {
+  \textbf{Appendix Lemma 9}\\native bipartite short-cycle packing and residual bounds
+};
+
+\node[dag_lemma, text width=4.6cm] (Lemma2) at (0,-9.2) {
+  \textbf{Lemma 2}\\separated orientations and no-harder test reduction
+};
+\node[dag_lemma, text width=4.6cm] (Lemma3) at (6.8,-9.2) {
+  \textbf{Lemma 3}\\mixture chi-square bound
+};
+\node[dag_lemma, text width=4.6cm] (Lemma4) at (13.6,-9.2) {
+  \textbf{Lemma 4}\\cycle-orientation chi-square exponent
+};
+\node[dag_lemma, text width=4.6cm] (Lemma10) at (27.2,-9.2) {
+  \textbf{Appendix Lemma 10}\\two-tier Eulerian decomposition, mean and dispersion bounds
+};
+
+\node[dag_result, text width=5.2cm] (Theorem1) at (10.2,-14.2) {
+  \textbf{Theorem 1}\\minimax-risk, testing-radius, and sample-complexity lower bounds
+};
+\node[dag_result, text width=5.0cm] (Cor1) at (20.4,-14.2) {
+  \textbf{Corollary 1}\\global IIA-testing lower bound
+};
+\node[dag_lemma, text width=5.0cm] (Cor2) at (27.2,-14.2) {
+  \textbf{Appendix Corollary 2}\\all-even-subsets logarithmic cycle bounds
+};
+
+\node[dag_template_note, text width=17.5cm] (ChuNote) at (13.6,-19.2) {
+  \textbf{Chu et al. citation.} The source cites Chu et al. for standalone Appendix Lemma 8.
+  No theorem from that citation is assumed or imported. The bipartite construction used by
+  Appendix Lemma 10 and the corollaries is Appendix Lemma 9 and is proved natively in Lean.
+};
+
+\begin{scope}[on background layer]
+\draw[dag_arrow] (Choice) -- (IIA);
+\draw[dag_arrow] (Choice) -- (Perturb);
+\draw[dag_arrow] (IIA.south west) -- (Fact5.north east);
+\draw[dag_arrow] (Fact7) -- (Lemma6);
+\draw[dag_arrow] (Choice.south east) -- ++(0.8,-1.0) -| (Lemma6.north west);
+\draw[dag_arrow] (IIA.south) -- ++(0,-1.1) -| (Lemma6.north west);
+\draw[dag_arrow] (Graph) -- (Lemma9);
+\draw[dag_arrow] (Cycles.south) -- ++(0,-1.0) -| (Lemma9.north east);
+\draw[dag_arrow] (Lemma9) -- (Lemma10);
+\draw[dag_arrow] (Graph.south east) -- ++(1.0,-1.0) -| (Lemma10.north east);
+\draw[dag_arrow] (Cycles) -- (Lemma10);
+\draw[dag_arrow] (Perturb) -- (Lemma2);
+\draw[dag_arrow] (Graph.south west) -- ++(-1.0,-1.4) -| (Lemma2.north east);
+\draw[dag_arrow] (Cycles.south west) -- ++(-1.4,-1.8) -| (Lemma2.north east);
+\draw[dag_arrow] (Perturb.south east) -- ++(0.9,-1.0) -| (Lemma3.north west);
+\draw[dag_arrow] (Testing.south west) -- ++(-0.9,-1.0) -| (Lemma3.north east);
+\draw[dag_arrow] (Lemma3) -- (Lemma4);
+\draw[dag_arrow] (Cycles.south west) -- ++(-0.8,-2.0) -| (Lemma4.north east);
+\draw[dag_arrow] (Lemma2.south) -- ++(0,-1.0) -| (Theorem1.north west);
+\draw[dag_arrow] (Lemma3) -- (Theorem1);
+\draw[dag_arrow] (Lemma4) -- (Theorem1);
+\draw[dag_arrow] (Testing.south) -- ++(0,-1.3) -| (Theorem1.north east);
+\draw[dag_arrow] (Theorem1) -- (Cor1);
+\draw[dag_arrow] (Lemma10) -- (Cor1);
+\draw[dag_arrow] (Lemma10) -- (Cor2);
+\end{scope}
+
+\end{scope}
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

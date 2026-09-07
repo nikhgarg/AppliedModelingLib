@@ -2,20 +2,26 @@
   "audit_versions": {
     "source_record": {
       "current": "v10",
-      "meaning": "Current recursive boundary and conclusion-dependency audit.",
+      "meaning": "Legacy recursive boundary and conclusion-dependency audit for protocols that do not select the current v11 lane. V11 lane selection, not successful semantic judgment, makes Lean's retained claim atoms, declaration inventory, dependency graph, proof routes, and Assumptions-module inventory the sole structural authority. A v11 transaction does not acquire or represent raw source-record snapshots, coordinates, identity verdicts, corrected-scope projections, semantic replay, raw judgments, overlays, or mutation digests; the complete derived raw state exists only inside an optional typed legacy lane. Raw-only consumers must explicitly require that state and may not obtain legacy-looking defaults or compatibility projections from the outer evidence context. Absence of that lane can never count as a current raw identity or correction approval. A stale legacy receipt cannot be revived as structural-only input after its identity gate fails. A stale or failing v11 semantic leaf blocks with its own error while retaining that graph and never reactivates Python type parsing or a legacy source-record, statement, coverage, dashboard, provider, fingerprint, or live watch-path lane. Historical v10 receipts remain validated under their recorded protocol.",
       "prompt_version": "source-record-v10-semantic-conclusion-boundary-contract"
     },
     "statement_semantic_review": {
       "current": "v11",
       "interface_layout": {
-        "proof_declarations": "one exact-type theorem or lemma endpoint per Spec",
-        "proof_module": "ProofInterface.lean",
-        "rule": "PaperInterface contains no thin theorem/lemma wrapper declarations. Each source claim has exactly one direct def <name>Spec : Prop := declaration, which itself exposes every material source-side premise, construction, definition, and conclusion needed for semantic comparison. If Lean retains a paper-local state/model/policy name after opening the Spec root, it must show that declaration's own-body target and recursively inventory its remaining paper-local and library dependencies; every such paper-local prerequisite needs an exact byte-pinned source connection and a current matches judgment in audit/paper_semantic_prerequisites.json. The current audit/v11_raw_source_spec_screening.json must record one current matches verdict for each selected source claim against its exact raw source bundle and that direct Spec; a theorem/lemma endpoint, duplicate route, uncertain verdict, or stale hash cannot close the claim. The sole distinct correction disposition is matches_approved_corrected_target: it is permitted only for a source map item marked corrected_source_statement with a current, approval-pinned corrected target that explicitly disclaims equivalence to the archival source; that map row rejects ordinary matches. The dashboard and packet show the archival bytes first, then the full approved corrected target, archival anchor, and recorded basis, and label its human checkbox as matching that corrected target. A material reused EconCSLib definition, whether reached directly by the Spec or through a retained paper-local prerequisite, may remain reusable only when audit/library_semantic_review.json registers its bounded exact Lean declaration, a byte-pinned paper-source item, and a current raw-source-to-library-definition matches verdict; an unregistered reference blocks closeout. The dashboard and packet render every prerequisite before its dependent claim in dependency-first order across paper-local and reusable-library cards; the raw source connection precedes the Lean target on every card. A paper-local card shows one expanded semantic target, while a reusable-library card additionally shows its bounded declaration code as the independently screened implementation. A declaration name, docstring, or curator paraphrase is not semantic evidence. Paper-local/library prerequisites do not add paper-claim denominator rows. Foundational Lean/Mathlib terminals remain version-pinned closure bases, not paper source claims. The dashboard, packets, and review counts display one source claim/Spec row and name the proof endpoint only as separately Lean-checked evidence.",
-        "semantic_declarations": "one expanded transparent <name>Spec : Prop per source claim",
+        "proof_declarations": "one exact-type theorem or lemma endpoint per Spec anywhere in the tracked Lean import closure",
+        "proof_module": "optional tracked paper-owned proof-endpoint module for navigation",
+        "rule": "Under semantic_route_schema 2, each asserted source result has exactly one direct def <name>Spec : Prop := declaration and one distinct proof/refutation endpoint. The endpoint may be colocated in PaperInterface.lean or live in a tracked paper-owned proof module; its file location is navigation metadata, never semantic or acceptance authority. The typed source route and Lean graph must still find exactly one theorem/lemma endpoint, establish its exact relation to the Spec, and check its dependencies and axiom closure. A source definition, algorithm, model, assumption, or condition instead routes through source_semantic_declaration to the complete actual paper-local or reusable-library declaration; it must not use an A iff A, f equals f, alias-equivalence, or theorem-shaped restatement merely to satisfy the audit schema. Every declared semantic root must be the exact declaration bound to that source item in the prerequisite ledger. The result Spec itself exposes every material source-side premise, construction, and conclusion needed for comparison. If Lean retains a paper-local state/model/policy name after opening the Spec root, it must show that declaration's own-body target and recursively inventory its remaining paper-local and library dependencies; every explicitly source-mapped paper-local semantic root needs an exact byte-pinned source connection and a current matches judgment in audit/paper_semantic_prerequisites.json. A theorem proof constant appearing only as an elaborated proof argument is not a semantic prerequisite: Lean must keep it in the exact recursive proof/dependency closure, but the packet, dashboard, prerequisite ledger, and paper denominator must not turn it into a source-model card. Compiler-generated descendants such as recursive ._f declarations are unfolded beneath their owning root and never become source-review cards. The current audit/v11_raw_source_spec_screening.json must record one current matches verdict for each selected asserted result against its exact raw source bundle and direct Spec; definitions and premises receive their semantic judgments only in the prerequisite ledgers. A theorem/lemma endpoint, duplicate route, uncertain verdict, or stale semantic identity cannot close a result. The semantic identity of a v11 judgment binds the exact source-input bundle, expanded Lean proposition, canonical parameter/assumption/conclusion manifest and atoms, target declaration, and target protocol. source_review_target_sha256 retains the exact reviewer-facing worksheet bytes as trace evidence but is not an additional semantic key inside one unchanged target protocol; if a renderer change can alter what the reviewer semantically sees, the target protocol must advance. The sole distinct correction disposition is matches_approved_corrected_target: it is permitted only for a source map item marked corrected_source_statement with a current, approval-pinned corrected target that explicitly disclaims equivalence to the archival source; that map row rejects ordinary matches. The dashboard and packet show the archival bytes first, then the full approved corrected target, archival anchor, and recorded basis, and label its human checkbox as matching that corrected target. An explicitly source-mapped material reusable definition, whether reached directly by the Spec or through a retained paper-local prerequisite, may remain reusable only when audit/library_semantic_review.json registers its bounded exact Lean declaration, a byte-pinned paper-source item, and a current raw-source-to-library-definition matches verdict; an unregistered selected root blocks closeout. Lean retains the complete recursive reusable closure for proof, import, and axiom checks, but a helper lacking a direct paper-source connection is not a source-review row. The dashboard and packet render every semantic prerequisite before its dependent result in dependency-first order; the raw source connection precedes the Lean target on every card. A paper-local card shows one expanded semantic target, while a reusable-library card additionally shows its bounded declaration code as the independently screened implementation. A declaration name, docstring, map paraphrase, or non-certifying semantic-architecture pre-pass is not semantic evidence. Paper-local/library prerequisites do not add paper-result denominator rows. Foundational Lean/Mathlib terminals remain version-pinned closure bases, not paper source claims. The dashboard, packets, and review counts display one asserted result/Spec row and name the proof endpoint only as separately Lean-checked evidence.",
+        "semantic_declarations": "one expanded transparent <name>Spec : Prop per asserted source result; complete actual declarations for source definitions, algorithms, models, assumptions, and conditions",
         "semantic_module": "PaperInterface.lean"
       },
-      "meaning": "Current source-to-Lean statement judgment: only verbatim byte-pinned source-anchor bundles may be compared with Lean's own elaborated transparent Spec display; paired proof wrappers receive Lean-Meta proof credit, not a second semantic judgment. Every retained paper-local semantic prerequisite and reusable library prerequisite receives its own source-connected Lean target card before the dependent claim.",
-      "prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+      "meaning": "Current source-to-Lean semantic judgment is role-typed. Asserted results compare verbatim byte-pinned source-anchor bundles with Lean's elaborated transparent Spec display and Lean-emitted parameter, assumption, and terminal-conclusion atoms; the Lean-owned display forces lambda-bound witness and function domains to remain visible even when ordinary notation could infer and suppress them. The result-review queue also displays the exact graph-bound semantic targets and declaration code for every explicitly source-mapped paper-local or reusable-library prerequisite, so no opaque name stands in for mathematical content. Paired proof wrappers receive Lean-Meta proof credit rather than a second semantic judgment. Source definitions, algorithms, models, assumptions, and conditions compare their raw source bundles directly with the complete actual paper-local or reusable-library declarations used by the formalization. Every explicitly source-mapped paper-local semantic prerequisite and reusable library root receives its own source-connected Lean target card before the dependent result. Lean retains all recursive proof/import/axiom dependencies, but theorem proof terms and reusable proof helpers without explicit source connections are not semantic-prerequisite cards or paper claims.",
+      "prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
+      "source_claim_atom_identity": {
+        "compound_clause_schema": 3,
+        "current_schema": 3,
+        "rule": "A source presentation with one independently reviewed component uses the digest of its complete exact byte-pinned quotation. A presentation with multiple independently reviewed components gives every atom one exact verbatim_source_clause that occurs exactly once within its complete byte-pinned quotation; identity binds both the quotation digest and clause digest. Atom ids, source navigation locators after byte revalidation, curator semantic_claim wording, and Lean declaration names are navigation metadata and never distinguish two semantic atoms. Duplicate clause identities fail closed rather than allowing one source component to discharge two obligations.",
+        "single_clause_schema": 2
+      },
       "source_input": {
         "context_roles": [
           "definition",
@@ -42,7 +48,7 @@
         "rule": "The pinned commit must be an ancestor of the recorded source-provenance ref. A closeout absent from this reviewed tree is new and must pass v11. A legacy paper's material source/model/target/name-independent statement change requires current item-level v10 evidence; it does not silently manufacture a v11 migration. Explicit v11 status/map switches remain mandatory.",
         "trusted_ref": "refs/remotes/origin/main"
       },
-      "meaning": "Source-atom-to-transparent-Spec correspondence and elaborated semantic closure.",
+      "meaning": "For current v11, one byte-pinned source-to-expanded-Spec judgment plus the builder-issued Lean graph jointly authenticate theorem realization. The source judgment covers every source atom against the complete transparent Spec. The graph independently authenticates the exact Spec/proof relation, recursive paper and material-library semantic closure, endpoint safety, absence of sorry, and axiom closure. The verifier projects a portable content-addressed realization capability from those two authorities at runtime; a fresh graph-native closeout must not ask the reviewer for a second correspondence worksheet, atom-to-component bridge prose, or terminal-node disposition ledger. Historical persisted source_spec_correspondence records remain readable under their recorded protocol but are not required or newly issued for a current v11 graph. A missing, stale, ambiguous, mismatched, unsafe, sorry-bearing, or incomplete source judgment or graph fails closed and never falls back to names, paraphrases, a display cache, or a legacy parser.",
       "required_for": [
         "new_paper_closeout",
         "explicit_v11_upgrade"
@@ -55,10 +61,23 @@
     "scope": "Current operational defaults for paper formalization, semantic audit reuse, and closeout."
   },
   "builds": {
+    "clean_diagnostics": {
+      "applies_to": [
+        "proof_iteration",
+        "paper_closeout",
+        "integration_or_release"
+      ],
+      "max_output_bytes": 1048576,
+      "reject_on": [
+        "panic",
+        "internal_error",
+        "crash_backtrace"
+      ]
+    },
     "integration_or_release": "lake build",
-    "paper_closeout": "env LEAN_NUM_THREADS=1 lake build <PaperRoot>",
-    "proof_iteration": "lake build <PaperRoot>.PaperInterface",
-    "rule": "Use the focused interface during proof iteration, the complete paper target at paper closeout, and a repository-wide build only at integration or release milestones."
+    "paper_closeout": "env LEAN_NUM_THREADS=1 python3 scripts/private_paper_checkpoint.py <PaperRoot>",
+    "proof_iteration": "lake build +<TouchedPaperModule>",
+    "rule": "Use a forced `+` module target for the touched source module during proof iteration. At paper closeout, pass every tracked paper-owned `.lean` module to one dependency-aware `lake --rehash build` transaction through `private_paper_checkpoint.py`; a forced root module can still reuse a stale imported paper artifact. A bare `lake build <PaperRoot>` selects the library target and can reuse stale artifacts. Use a repository-wide build only at integration or release milestones."
   },
   "classification": {
     "additional_assumption": {
@@ -117,6 +136,50 @@
         "model"
       ],
       "rule": "Only independently source-presented named theoretical statements are normal obligations. A standalone display or algorithm is inspected only as a dependency of a selected named statement."
+    },
+    "review_intensity": {
+      "appendix_baseline": {
+        "applies_to": "A named appendix or supplement result that is not a governing dependency of a main-text primary result and has not been explicitly promoted by the maintainer.",
+        "required": [
+          "source_inventory_and_transparent_PaperInterface_Spec",
+          "one_initial_context_isolated_source_to_Lean_review"
+        ],
+        "rule": "Keep the result organized and source-pinned in the interface and human artifacts. Do not require routine repeat semantic review or final-adversarial rechecking solely because it is appendix material. A final validation report may describe any reader-relevant appendix finding narratively, but that disclosure does not create a separate review row, checklist item, blocker, or graph/receipt reissue. Omit minor non-reader-relevant findings. An issue changes primary closeout only when it changes a main-text primary result, a dependency governing one, or the maintainer explicitly promotes it."
+      },
+      "default": "main_text_primary",
+      "main_text_primary": {
+        "applies_to": "Every named main-text result and every material definition, model, assumption, condition, or library prerequisite on which such a result depends.",
+        "required": [
+          "initial_context_isolated_source_to_Lean_review",
+          "final_adversarial_source_audit"
+        ],
+        "rule": "A material repair to a primary item returns that item to its independent reviewer lineage before final closeout."
+      },
+      "override": "A paper may explicitly promote an appendix item to main_text_primary when it is central to the release claim or governs a main-text result. Record that decision with the paper's source inventory; do not infer promotion from a helper name or proof location.",
+      "supporting_proof_or_prose": {
+        "applies_to": "Unnumbered proof displays, derivations, and prose that support an owning selected result but are not independently selected source presentations.",
+        "required": [
+          "source_context_or_proof_route_attachment_to_the_owning_result"
+        ],
+        "rule": "Do not create a duplicate Spec, denominator row, repeated reviewer lane, or adversarial blocker merely because a supporting passage has mathematical content. A post-validation report may mention a reader-relevant proof or prose issue proportionately without turning it into a checked audit item; omit incidental issues. Escalate only when it demonstrates a material defect in the owning primary result or its governing dependency."
+      }
+    },
+    "semantic_routes": {
+      "result_claim": "A selected asserted result links to its current authenticated transparent Spec identity and the separately Lean-verified proof endpoint.",
+      "rule": "Every selected source presentation receives exactly one coverage disposition. Declaration names and source-map keys only locate a target. A changed source bundle, expanded Lean target, semantic protocol, judgment, or ambiguous route destroys the typed target identity and fails closed. A coverage ledger may compose current semantic evidence but may never convert a stale prerequisite, support declaration, alias, or name match into direct source coverage.",
+      "source_definition_or_model": "A selected source definition, model, algorithm, assumption, or condition links to the typed identity of its current paper-local or reusable-library semantic-prerequisite judgment. Coverage references that already-reviewed source bundle and exact Lean target; it does not issue a second semantic judgment or add another paper-claim denominator row.",
+      "user_approved_scope_exclusion": "An explicit user instruction may remove any source presentation, including a named result, from the selected formalization target surface. The item remains claim-bearing and byte-pinned with structured approval metadata, receives the dedicated zero-route coverage disposition, and is stated in the final validation report. Without that exact approval, ordinary source selection fails closed."
+    },
+    "source_inventory_review": {
+      "candidate_dispositions": [
+        "material_named_claim",
+        "deep_audit_material"
+      ],
+      "final_holistic_pass": "After the final Specs, proof endpoints, semantic prerequisites, assumptions, machine judgments, and compiled inputs have been frozen into an operational closeout plan identity, a distinct independent source-first agent audit must reread the complete source, treat the frozen inventory only as navigation, and challenge omissions, candidate dispositions, hidden strengthening or weakening, unmatched premises or conclusions, and source-to-Lean semantic mismatches. The audit records the exact reviewed closeout plan identity. It is not discharged by the intake pass, the first adversarial repair pass, or green item-level gates; a changed semantic or Lean plan makes it stale.",
+      "intake_holistic_pass": "Before consulting Lean declarations, PaperInterface rows, or source-map classifications, a reviewing agent must read the complete canonical source and add exact source spans for independently reviewable mathematical presentations missed by the mechanical floor. The agent returns source locators and source labels, never paraphrases or proposed Lean names.",
+      "mechanical_floor": "A source-only parser must enumerate every recognized named theoretical presentation and every labelled remark, observation, note, example, comment, or discussion candidate from the complete canonical text surface.",
+      "precertification_adversarial_pass": "After the complete source-facing interface has been drafted but before item-level semantic judgments or closeout receipts are issued, an agent must adversarially reread the complete source against the expanded Lean surface and repair omissions, candidate misclassifications, hidden strengthening or weakening, and unmatched premises or conclusions. This is the first adversarial source-to-interface audit. It is repair-oriented, grants no acceptance, and must inspect theorem-like claims embedded beside definitions or inside mixed prose blocks.",
+      "rule": "Mechanical and holistic intake candidates share one explicit candidate_presentations ledger and one classified source inventory. Every candidate receives exactly one source-only disposition. Material candidates enter the ordinary coverage, semantic-review, proof, and paper-row denominator; deep-audit material remains recorded without entering the normal denominator. Source-only intake, the first adversarial repair pass, and the final plan-bound adversarial audit are three ordered checks with different roles, not duplicate semantic-evidence authorities."
     }
   },
   "pacing": {
@@ -130,7 +193,7 @@
     "priority": "proof_first",
     "rule": "After the source-shaped statement and visible premises are honest, work on the proof. Do not interrupt an actionable proof campaign for routine documentation or broad audit regeneration."
   },
-  "protocol_id": "formalization-audit-protocol-2026-08-18",
+  "protocol_id": "formalization-audit-protocol-2026-09-01",
   "reuse": {
     "fail_closed_on": [
       "missing_identity",
@@ -143,7 +206,8 @@
       "source_map_key",
       "source_location_after_byte_revalidation",
       "lean_declaration_name",
-      "raw_lean_declaration_spelling_after_unique_semantic_match"
+      "raw_lean_declaration_spelling_after_unique_semantic_match",
+      "reviewer_worksheet_pretty_trace_within_unchanged_target_protocol"
     ],
     "required_unchanged_identities": [
       "source_semantics",

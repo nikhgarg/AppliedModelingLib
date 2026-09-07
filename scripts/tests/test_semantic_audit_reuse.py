@@ -11,18 +11,16 @@ from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[2]
-for import_root in (ROOT, ROOT / "scripts"):
-    text = str(import_root)
-    if text not in sys.path:
-        sys.path.insert(0, text)
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
-import review_dashboard  # noqa: E402
-import semantic_audit_reuse as REUSE  # noqa: E402
-from lean_signature_manifest import (  # noqa: E402
+from scripts import review_dashboard  # noqa: E402
+from scripts import semantic_audit_reuse as REUSE  # noqa: E402
+from scripts.lean_signature_manifest import (  # noqa: E402
     normalize_signature_manifest,
     semantic_dependency_manifest,
 )
-from semantic_audit_reuse import (  # noqa: E402
+from scripts.semantic_audit_reuse import (  # noqa: E402
     LEGACY_V4_COVERAGE_PROMPT_VERSION,
     RowSnapshot,
     _reuse_pin_from_embedded,
@@ -31,6 +29,9 @@ from semantic_audit_reuse import (  # noqa: E402
     migrate_sidecars,
     migrate_statement_items,
     source_reuse_pin,
+)
+from scripts.source_coverage_scope import (  # noqa: E402
+    SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
 )
 
 
@@ -542,7 +543,7 @@ class SemanticAuditReuseTests(unittest.TestCase):
         )
         self.assertEqual(
             migrated["source_item_coverage_digest_schema"],
-            review_dashboard.SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
+            SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
         )
         metadata = migrated["semantic_reuse_v1"]
         assert isinstance(metadata, dict)
@@ -780,6 +781,46 @@ class SemanticAuditReuseTests(unittest.TestCase):
                     "require_source_definition_semantics_review"
                 ]
             )
+
+    def test_reuse_validator_preserves_raw_source_target_contract(self) -> None:
+        """Reuse validates the literal source target, not map-summary navigation."""
+
+        entry = statement_entry(
+            self.current_manifest,
+            self.current_item,
+            source_key="semantic_source_item",
+        )
+        entry.update(
+            {
+                "prompt_version": (
+                    review_dashboard.REQUIRED_LLM_STATEMENT_PROMPT_VERSION
+                ),
+                "source_input_protocol": "verbatim_source_anchor_bundle_v1",
+            }
+        )
+        with (
+            mock.patch.object(
+                review_dashboard,
+                "semantic_obligation_ledger_error",
+                return_value="",
+            ),
+            mock.patch.object(
+                review_dashboard,
+                "source_route_pin_error",
+                return_value="",
+            ) as route_validator,
+        ):
+            self.assertEqual(
+                _statement_validator(
+                    entry,
+                    self.current_row,
+                    {"semantic_source_item": self.current_item},
+                ),
+                "",
+            )
+        self.assertTrue(
+            route_validator.call_args.kwargs["require_verbatim_source_inputs"]
+        )
 
     def test_migrates_serializer_refresh_only_after_full_content_identity(self) -> None:
         entry = statement_entry(
@@ -1336,6 +1377,52 @@ class SemanticAuditReuseTests(unittest.TestCase):
             renamed_decisions["source-navigation"]["reason"],
         )
 
+    def test_bootstrap_user_approved_scope_exclusion_has_exact_zero_row_surface(
+        self,
+    ) -> None:
+        item = copy.deepcopy(self.current_item)
+        item.update(
+            {
+                "coverage_status": review_dashboard.USER_APPROVED_SCOPE_EXCLUSION,
+                "source_kind": "prose_assertion",
+                "inventory_role": "deep_only",
+                "user_approved_scope_exclusion": {
+                    "schema": 1,
+                    "approval_kind": "explicit_user_instruction",
+                    "approval_reference": "Standing user instruction for this fixture.",
+                    "approved_at": "2026-08-25",
+                    "reason": "The unnumbered prose assertion remains visible but is outside the selected named-theory surface.",
+                    "source_locator": "source.txt:1-1",
+                    "source_evidence": "The pinned fixture sentence is the excluded unnumbered prose assertion.",
+                    "source_anchor_quote_sha256": item["source_anchor_evidence"][0][
+                        "quoted_text_sha256"
+                    ],
+                },
+            }
+        )
+        _statement, target_digest = source_target(item)
+        entry = {
+            "coverage": review_dashboard.USER_APPROVED_SCOPE_EXCLUSION,
+            "statement_sha256": target_digest,
+            "review_rows": [],
+            "review_row_signature_sha256": {},
+            "support_declarations": [],
+        }
+
+        output, decisions = REUSE.migrate_coverage_items(
+            {"scope-item": entry},
+            current_inventory={"scope-item": item},
+            current_mode="named_theoretical_statements",
+            current_anchor_errors={},
+            statement_bindings={},
+            bootstrap_current=True,
+        )
+
+        self.assertTrue(decisions["scope-item"]["accepted"])
+        self.assertEqual(output["scope-item"]["review_rows"], [])
+        self.assertEqual(output["scope-item"]["review_row_signature_sha256"], {})
+        self.assertIn(REUSE.REUSE_FIELD, output["scope-item"])
+
     def test_statement_navigation_disambiguates_but_never_overrides_drift(
         self,
     ) -> None:
@@ -1506,6 +1593,37 @@ class SemanticAuditReuseTests(unittest.TestCase):
         )
         self.assertEqual(
             inventory["source-navigation"]["source_presentation_alias"], alias
+        )
+
+    def test_inventory_projection_preserves_raw_semantic_context(self) -> None:
+        context = [
+            {
+                "semantic_role": "source_model",
+                "source_anchor_evidence": [
+                    {
+                        "quoted_text": "The source fixes the shared model.",
+                        "quoted_text_sha256": __import__("hashlib")
+                        .sha256(b"The source fixes the shared model.")
+                        .hexdigest(),
+                    }
+                ],
+            }
+        ]
+        payload = {
+            "items": {
+                "source-navigation": {
+                    "statement": "The endpoint holds.",
+                    "source_location": "source.txt:1-1",
+                    "semantic_context_requirements": context,
+                }
+            }
+        }
+
+        inventory = REUSE.inventory_from_source_map(ROOT, payload)
+
+        self.assertEqual(
+            inventory["source-navigation"]["semantic_context_requirements"],
+            context,
         )
 
     def test_validator_identity_drift_reopens_only_pinned_reuse(self) -> None:

@@ -1,4 +1,4 @@
-import EconCSLib.SocialChoice.FairDivision.Chores
+import AppliedModelingLib.SocialChoice.FairDivision.Chores
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Tactic
 
@@ -15,7 +15,7 @@ Source: `EFXadditivechores.tex`, lines 315--404.
 namespace HT26EFXChores
 
 open scoped BigOperators
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- The three item classes in the four-agent tri-valued example. -/
 def triA : Finset (Fin 13) := Finset.univ.filter fun item => item.val < 3

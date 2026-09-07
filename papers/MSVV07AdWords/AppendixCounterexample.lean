@@ -1,4 +1,4 @@
-import EconCSLib.Algorithms.Online.AdWords
+import AppliedModelingLib.Algorithms.Online.AdWords
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Complex.ExponentialBounds
 import Mathlib.Analysis.SpecificLimits.Basic
@@ -28,7 +28,7 @@ The appendix's later `κ > 1` sentence does not print its phase parameters.  A
 separate section below therefore labels its explicit family **derived**.
 -/
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Online
 namespace MSVV07Appendix
 
@@ -1839,4 +1839,4 @@ theorem derivedKappa_right_limit_ne_balance_factor :
 end
 end MSVV07Appendix
 end Online
-end EconCSLib
+end AppliedModelingLib

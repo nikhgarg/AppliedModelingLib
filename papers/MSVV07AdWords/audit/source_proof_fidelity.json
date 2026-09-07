@@ -50,6 +50,113 @@
       "statement_impact": "source_statement",
       "status_impact": "formalized_note",
       "status_impact_rationale": "In the small-bids fluid limit, a tail bidder spends log(9/5) in phase 1 and 2/5 in phase 2, leaving the positive residual 3/5-log(9/5). The algorithm therefore serves positive phase-3 mass and has true normalized value 9/10-(1/2)log(9/5), rather than either printed 0.62 or the zero-phase-3 bookkeeping total 0.6. Lean proves the corrected execution feasible, proves its allocation-derived state updates and optimal offline value one, and proves the true factor remains strictly below 1-1/e. The intended qualitative conclusion is unchanged, so this is an ordinary formalized note, not a substantial caveat."
+    },
+    {
+      "acceptance_condition": "The corrected target is approval-pinned, archival equivalence is false, and Lean proves the complete continuous witness result without using the witness as a literal discrete source family.",
+      "affected_source_locators": [
+        "cited publication:1221-1224"
+      ],
+      "defect_kind": "model_semantics",
+      "id": "MSVV07-APPENDIX-KAPPA-WITNESS-03",
+      "repair_obligation": "Keep the archival discrete family claim visible, bind the approved continuous witness target and its authorization, and prove the witness's feasibility, offline value, strict ratio, and stated one-sided limits.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "AppendixCounterexample.lean provides the normalized derived-kappa continuous execution and its feasibility, value, strict-ratio, and limit proofs; docs/CURRENT_PROTOCOL_CORRECTED_TARGET_APPROVAL_2026-09-04.md records the approved replacement.",
+      "source_claim": "For every kappa greater than one, the Appendix asserts an unspecified discrete {0,a,kappa a} counterexample family and gives its limiting factors.",
+      "source_locator": "cited publication:1221-1224",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The archival statement gives no phase parameters or finite family from which the asserted factor can be checked. The approved current-protocol target therefore uses a fully specified normalized continuous-limit witness and explicitly declines archival equivalence."
+    },
+    {
+      "acceptance_condition": "The corrected target visibly binds the typed family and vanishing error, is approval-pinned as non-equivalent, and its Lean theorem has no assumed competitive conclusion.",
+      "affected_source_locators": [
+        "cited publication:718-773"
+      ],
+      "defect_kind": "model_semantics",
+      "id": "MSVV07-T8-TYPED-LIMIT-REGIME-04",
+      "repair_obligation": "State the finite instance family, small-bids parameter, and precise accounting-error convergence openly, then prove the eventual competitive inequality from the finite error theorem.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "paperSmallBidsLimitFamily_fields and theorem8_balance_msvv_competitive_of_small_bids_limit_family expose the typed error regime; docs/CURRENT_PROTOCOL_CORRECTED_TARGET_APPROVAL_2026-09-04.md records the authorization.",
+      "source_claim": "Theorem 8 takes a finite discretization/small-bids parameter to infinity but does not state a typed sequence-of-instances and error-convergence regime.",
+      "source_locator": "cited publication:718-773",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "A source-facing Lean limit needs a typed family and its exact vanishing error. The approved target exposes those hypotheses and does not add OPT, revenue, or conclusion convergence assumptions."
+    },
+    {
+      "acceptance_condition": "The conventions are approval-pinned corrected targets with archival equivalence false and are independently reviewed as premises rather than hidden in theorem proofs.",
+      "affected_source_locators": [
+        "cited publication:198-210",
+        "cited publication:718-773"
+      ],
+      "defect_kind": "model_semantics",
+      "id": "MSVV07-FINITE-CONVENTIONS-05",
+      "repair_obligation": "Record the conventions in the source map and approval artifact, and keep them explicit in any theorem that uses them.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "Assumptions.lean keeps assumption_nonnegative_bids and assumption_epsilon_range explicit; docs/CURRENT_PROTOCOL_CORRECTED_TARGET_APPROVAL_2026-09-04.md records their approved non-equivalent use.",
+      "source_claim": "The recovered excerpts use the economic AdWords bid convention and a small-bids limit without spelling out the universal finite-real nonnegativity and closed parameter-range premises used by the finite formal theorem.",
+      "source_locator": "cited publication:198-210, 718-773",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The extra finite premises are visible formalization conventions rather than assertions that the archival excerpts state the same universal quantifiers."
+    },
+    {
+      "acceptance_condition": "The source map pins the approved fluid witness to this defect and approval record, while Lean proves every stated slab, LP-row, revenue, and limiting-ratio field without claiming a finite KP00 construction.",
+      "affected_source_locators": [
+        "cited publication:247-493"
+      ],
+      "defect_kind": "model_semantics",
+      "id": "MSVV07-S4-EXTERNAL-TIGHTNESS-WITNESS-06",
+      "repair_obligation": "Keep the external-source boundary visible, provide a complete internal witness model with its revenue identity and limiting ratio, and mark archival equivalence false.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "section4_balance_exact_tightness_instance and SourceRunner.factorLPTightFluidExecution give the explicit internal fluid witness and its unit-budget limiting ratio; docs/CURRENT_PROTOCOL_CORRECTED_TARGET_APPROVAL_2026-09-04.md records its non-equivalent approved use.",
+      "source_claim": "Section 4 states that a cited KP00 construction gives a BALANCE instance of exact factor 1-1/e, but does not print the finite instance or its equality proof.",
+      "source_locator": "cited publication:247-493",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The recovered MSVV text delegates the tight instance to an external citation. The approved endpoint is a fully specified fluid factor-LP realization with its limiting ratio and does not pretend to recover the omitted finite KP00 witness or its literal finite equality."
+    },
+    {
+      "acceptance_condition": "Both next-price targets are approval-pinned corrected statements, have no hidden equal-budget or distinct-query premise, and compile from the explicit effective-charge condition; the alive target also exposes its keep-all-alive reduction.",
+      "affected_source_locators": [
+        "cited publication:875-882"
+      ],
+      "defect_kind": "model_semantics",
+      "id": "MSVV07-S6-NEXTPRICE-EFFECTIVE-SMALL-BIDS-07",
+      "repair_obligation": "Expose the actual all-bidder charge bound relative to each possible winner's budget, formalize the source's keep-all-alive reduction for the alive case, and prove the finite guarantee on the occurrence-indexed model.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "section6_next_highest_bid_all_theorem8_finite_explicit_error uses Proof.section6_effective_bids_small_bids after occurrence indexing; section6_next_highest_bid_alive_theorem8_finite_explicit_error proves the keep-all-alive reduction and invokes that all-bidders result; docs/CURRENT_PROTOCOL_CORRECTED_TARGET_APPROVAL_2026-09-04.md records the approved explicit premise.",
+      "source_claim": "Section 6 says the next-highest-bid modifications achieve factor 1-1/e but does not state the finite effective-charge small-bids condition required when budgets differ.",
+      "source_locator": "cited publication:875-882",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "An opponent's bid can be small relative to that opponent's budget but not small relative to a smaller winning budget. The repaired theorem covers arbitrary budgets only under the explicit small-effective-charge premise, replacing the earlier equal-unit-budget shortcut."
+    },
+    {
+      "acceptance_condition": "The complete source Lemma 4 has a proved paper-facing endpoint without those two facts as caller-supplied premises, with independent source comparison.",
+      "affected_source_locators": [
+        "cited publication:541-549"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "MSVV07-L4-SOURCE-LP-BRIDGE-08",
+      "repair_obligation": "Instantiate the paper LP and fixed y*, and derive dual feasibility and objective equality from that construction.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "section5_lemma4_dual_optimal_from_primal_dual_match instantiates the actual run's type counts, while lemma4_paper_tradeoff_dual_candidate_optimal derives the fixed candidate's dual feasibility and optimality. The current v11 direct source-to-Spec review records a match for the named endpoint.",
+      "source_claim": "Lemma 4 says the fixed geometric y* is optimal for D(pi,psi) for every paper instance and monotone tradeoff function.",
+      "source_locator": "cited publication:509-549",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The prior public endpoint exposed dual feasibility and objective equality as caller-supplied facts. The current endpoint constructs the tradeoff LP from the actual AdWords run and derives the fixed candidate's feasibility and matching primal value from the factor-revealing LP. The named Lemma 4 conclusion is now checked on its source model."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "Section 5 Lemma 4 and the actual-run alpha construction only. This convention fixes the input domain; it supplies neither the monotonicity of psi, the LP feasibility/value identities, nor the dual optimality conclusion.",
+      "classification": "source_supported_representation_convention",
+      "formal_meaning": "The Section 5 AdWords input is represented by a PaperInstance with entrywise nonnegative bids and strictly positive daily budgets: I.NonnegativeBids and I.PositiveBudgets.",
+      "id": "MSVV07-ADWORDS-FINITE-DOMAIN-09",
+      "source_locator": "cited publication:198-210",
+      "why_needed": "The source speaks of bids, revenue, and daily budgets, then defines final type by spent budget fraction. PaperInstance totalizes those fields as arbitrary reals, so the ordinary AdWords domain must be explicit at the endpoint that constructs type counts from spent/budget fractions."
     }
   ],
   "paper": "MSVV07AdWords",
@@ -66,7 +173,7 @@
       "source_locator": "cited publication:247-819, Sections 4--5 LP analyses and Theorem 8"
     },
     {
-      "outcome": "no_defect",
+      "outcome": "defect_recorded",
       "semantic_scope": "Different budgets, nonexhaustive optimum, click-through rates, delayed availability, next-price variants, multiple slots, and the randomized-online lower-bound construction and conclusion.",
       "source_locator": "cited publication:825-938, Section 6 extensions and Theorem 9"
     },

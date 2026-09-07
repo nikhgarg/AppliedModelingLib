@@ -1,4 +1,4 @@
-import EconCSLib.SocialChoice.FairDivision.Chores
+import AppliedModelingLib.SocialChoice.FairDivision.Chores
 import HT26EFXChores.M01M2Combination
 import HT26EFXChores.M01Only
 import HT26EFXChores.LowRatioRoundRobin
@@ -18,7 +18,7 @@ Source: `EFXadditivechores.tex`, lines 294--296.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- An EFX allocation for the positive normalization is EFX for the original
 cost profile.  Feasibility is unchanged because rescaling changes only costs. -/

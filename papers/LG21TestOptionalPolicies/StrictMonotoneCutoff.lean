@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Optimization.BinaryChoiceAE
+import AppliedModelingLib.GameTheory.Choice.BinaryAE
 
 /-!
 # Strictly monotone binary cutoffs
@@ -15,7 +15,7 @@ namespace LG21TestOptionalPolicies
 noncomputable section
 
 open MeasureTheory Set
-open EconCSLib
+open AppliedModelingLib
 
 /-- A continuous strictly increasing gain with values weakly on both sides of
 zero has a unique zero. -/

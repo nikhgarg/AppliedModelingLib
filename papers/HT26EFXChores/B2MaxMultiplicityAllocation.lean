@@ -12,7 +12,7 @@ Source: `EFXadditivechores.tex`, lines 2552--2611.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- Two distinct type-`(0,1)` chores, one assigned to each short endpoint,
 make a canonical `a,a,a+1,a+1` prefix envy-free. -/

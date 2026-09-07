@@ -1,5 +1,5 @@
 import LBG24SpatialUnderreporting.KernelCausalObservationLaw
-import EconCSLib.Foundations.Probability.FiniteKernelProduct
+import AppliedModelingLib.Foundations.Probability.FiniteKernelProduct
 import Mathlib.Probability.Kernel.CompProdEqIff
 
 /-!
@@ -15,8 +15,8 @@ restricts to the races that generate the observed report sequence.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory ProbabilityTheory
-open EconCSLib.Probability
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped BigOperators ENNReal NNReal ProbabilityTheory
 
 noncomputable section

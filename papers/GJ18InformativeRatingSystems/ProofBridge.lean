@@ -22,7 +22,7 @@ namespace GJ18InformativeRatingSystems.ProofBridge
 
 noncomputable section
 
-open Filter EconCSLib.Probability
+open Filter AppliedModelingLib.Probability
 
 /-- Source object: the paper's single-rating log-MGF `Lambda(z | theta)`. -/
 abbrev sourcePaperLogMGF {Seller Rating : Type*} [Fintype Rating]
@@ -87,10 +87,10 @@ theorem source_definition_pairwise_objective_formula
     (mu : PMF Omega) (score : Omega -> Fin n -> Real)
     (p : finiteChainOrderedPair n) :
     sourceStatePairwisePk mu score p =
-      EconCSLib.pmfProb mu
+      AppliedModelingLib.pmfProb mu
         (fun omega => score omega (finiteChainOrderedPairHi p) >
           score omega (finiteChainOrderedPairLo p)) -
-        EconCSLib.pmfProb mu
+        AppliedModelingLib.pmfProb mu
           (fun omega => score omega (finiteChainOrderedPairHi p) <
             score omega (finiteChainOrderedPairLo p)) := by
   rfl

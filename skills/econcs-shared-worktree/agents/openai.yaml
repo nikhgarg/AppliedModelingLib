@@ -1,0 +1,4 @@
+interface:
+  display_name: "EconCS Shared Worktree"
+  short_description: "Safe shared-main coordination without lost work."
+  default_prompt: "Use $econcs-shared-worktree to coordinate shared EconCSLib work safely."

@@ -19,15 +19,58 @@ from urllib.parse import unquote
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 try:
-    from lean_import_closure import dependency_closure_issues
+    from lean_import_closure import ImportClosureIssue, dependency_closure_issues
 except ModuleNotFoundError:  # pragma: no cover - module-style import.
-    from scripts.lean_import_closure import dependency_closure_issues
+    from scripts.lean_import_closure import ImportClosureIssue, dependency_closure_issues
+try:
+    from tomllib_compat import tomllib
+except ModuleNotFoundError:  # pragma: no cover - module-style import.
+    from scripts.tomllib_compat import tomllib
+try:
+    from check_formalization_engine_revision import (
+        EngineRevisionError,
+        validate_revision_ledger,
+    )
+except ModuleNotFoundError:  # pragma: no cover - module-style import.
+    from scripts.check_formalization_engine_revision import (
+        EngineRevisionError,
+        validate_revision_ledger,
+    )
+try:
+    from strict_closeout_authority import (
+        StrictCloseoutAuthorityError,
+        recorded_strict_closeout_authority,
+    )
+except ModuleNotFoundError:  # pragma: no cover - module-style import.
+    from scripts.strict_closeout_authority import (
+        StrictCloseoutAuthorityError,
+        recorded_strict_closeout_authority,
+    )
+try:
+    from corrected_target_identity import (
+        CORRECTED_TARGET_RECORD_SHA256_FIELD,
+        CORRECTED_TARGET_REVIEW_SHA256_FIELD,
+        corrected_target_review_digest,
+        source_requires_approved_corrected_target,
+    )
+except ModuleNotFoundError:  # pragma: no cover - module-style import.
+    from scripts.corrected_target_identity import (
+        CORRECTED_TARGET_RECORD_SHA256_FIELD,
+        CORRECTED_TARGET_REVIEW_SHA256_FIELD,
+        corrected_target_review_digest,
+        source_requires_approved_corrected_target,
+    )
 try:
     from public_release_artifact_policy import public_release_artifact_issues
 except ModuleNotFoundError:  # pragma: no cover - module-style import.
     from scripts.public_release_artifact_policy import public_release_artifact_issues
 try:
     from public_release_projection import (
+        PUBLIC_CONTRIBUTOR_WORKFLOW_PATHS,
+        PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD,
+        PUBLIC_CORRECTED_TARGET_PROJECTION_SCHEMA,
+        PUBLIC_WITHHELD_APPROVAL_REFERENCE,
+        PUBLIC_README_PRIVATE_WORKFLOW_GUIDANCE,
         PUBLIC_PROJECTION_GENERATOR,
         PUBLIC_SOURCE_DISPLAY_PROJECTION_FIELD,
         PUBLIC_SOURCE_DISPLAY_PROJECTION_MANIFEST,
@@ -40,6 +83,11 @@ try:
     )
 except ModuleNotFoundError:  # pragma: no cover - module-style import.
     from scripts.public_release_projection import (
+        PUBLIC_CONTRIBUTOR_WORKFLOW_PATHS,
+        PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD,
+        PUBLIC_CORRECTED_TARGET_PROJECTION_SCHEMA,
+        PUBLIC_WITHHELD_APPROVAL_REFERENCE,
+        PUBLIC_README_PRIVATE_WORKFLOW_GUIDANCE,
         PUBLIC_PROJECTION_GENERATOR,
         PUBLIC_SOURCE_DISPLAY_PROJECTION_FIELD,
         PUBLIC_SOURCE_DISPLAY_PROJECTION_MANIFEST,
@@ -84,6 +132,16 @@ FORBIDDEN_PUBLIC_PATH_RE = re.compile(
     r"(?:^|/)(?:PRIVATE_[^/]*|[^/]*_HANDOFF_[^/]*)$",
     re.IGNORECASE,
 )
+# These exact public workflow tools contain ``private`` in their established
+# filenames.  They remain subject to ordinary byte provenance and content
+# checks; this exception applies only to the filename-level artifact filter.
+PUBLIC_PRIVATE_NAMED_WORKFLOW_PATHS = frozenset(
+    {
+        "docs/PRIVATE_DEVELOPMENT_WORKFLOW.md",
+        "scripts/private_paper_checkpoint.py",
+        "site/private_preview_server.py",
+    }
+)
 GENERATED_PUBLIC_STATUS_PATHS = frozenset(
     {
         "papers/status.json",
@@ -100,37 +158,16 @@ PUBLIC_SOURCE_DISPLAY_PROJECTION_MATERIAL = (
     "selected_byte_pinned_source_anchor_quotes"
 )
 SESSION_INSIGHTS_PREFIX = "skills/econcs-session-insights/"
-# The public entrypoint explains how to mine a local Codex history without
-# committing it.  The ledger records approved durable course corrections.  No
-# other session-derived material belongs in a public candidate without a new
-# explicit decision.
+# The public entrypoint explains the general maintenance workflow. Concrete
+# wiki evidence and feedback ledgers remain private, including inherited files.
 PUBLIC_SESSION_INSIGHTS_PATHS = frozenset(
     {
         "skills/econcs-session-insights/SKILL.md",
-        "skills/econcs-session-insights/references/user-feedback-course-corrections.md",
     }
 )
-PUBLIC_CONTRIBUTOR_WORKFLOW_PATHS = frozenset(
-    {
-        *PUBLIC_SESSION_INSIGHTS_PATHS,
-        "skills/econcs-formalizer/SKILL.md",
-        "skills/econcs-formalizer/references/formalization-handbook.md",
-        "skills/econcs-formalizer/references/post-formalization-closeout.md",
-        "skills/econcs-formalizer/references/public-private-sync.md",
-        "skills/econcs-formalizer/templates/FORMALIZATION_PLAN.md",
-        "skills/econcs-prover/SKILL.md",
-        "skills/lean-community-conventions/SKILL.md",
-        "skills/lean-community-conventions/references/econcs-adoption-plan.md",
-        "docs/AGENT_FORMALIZATION_WORKFLOW.md",
-        "docs/FORMALIZATION_AUDIT_PROCEDURE_OVERVIEW.tex",
-        "docs/NEW_CONTRIBUTOR_WORKFLOW.md",
-        "docs/INDEPENDENT_AUDIT_GUIDE.md",
-        "docs/PAPER_STATUS.md",
-        "docs/STATUS.md",
-        "docs/VALIDATION_MODEL.md",
-        "config/formalization_engine_revisions.json",
-    }
-)
+# The projector owns the exact reviewed contributor-document set. Sharing it
+# prevents a new public stage guide from being preserved by projection but
+# rejected by the candidate check under an older duplicate list.
 # The landing page may give this one concrete, contributor-facing recommendation
 # without exposing a private checkout, source cache, or session archive.  This
 # is deliberately an exact path-and-text exception, not a site-wide exemption.
@@ -148,7 +185,12 @@ PUBLIC_CONTRIBUTOR_WORKFLOW_PDF_PATHS = frozenset(
 PUBLICATION_LOCATOR = "cited publication"
 TRUSTED_STATUS_SYNC = Path(__file__).resolve().with_name("sync_paper_status.py")
 SOURCE_TEXT_COMPANION_PATH_FIELDS = frozenset(
-    {"canonical_text", "visual_primary_scan", "transcript_input_scan"}
+    {
+        "canonical_text",
+        "visual_primary_scan",
+        "transcript_input_scan",
+        "semantic_review_transcription",
+    }
 )
 PAPERS_NON_NAMESPACE_PATHS = frozenset(
     {
@@ -809,10 +851,20 @@ def unused_allowlist_issues(
     ]
 
 
-def status_visibility_issues(repo: Path, candidate_ref: str = "HEAD") -> list[str]:
-    """Require explicit public visibility for every candidate paper namespace."""
+def status_visibility_issues(
+    repo: Path,
+    candidate_ref: str = "HEAD",
+    *,
+    entries: list[AllowlistEntry] | None = None,
+) -> list[str]:
+    """Require public visibility and terminal artifacts for each paper namespace.
 
-    paths = _git(repo, ["ls-tree", "-r", "--name-only", candidate_ref]).splitlines()
+    Credential contents are checked by the existing accepted-graph transport
+    validator. This presence check prevents an absent pointer from skipping
+    that validation, including for a disclosed partial formalization.
+    """
+
+    paths = set(_git(repo, ["ls-tree", "-r", "--name-only", candidate_ref]).splitlines())
     paper_names: set[str] = set()
     status_paths: dict[str, str] = {}
     for path in paths:
@@ -833,7 +885,18 @@ def status_visibility_issues(repo: Path, candidate_ref: str = "HEAD") -> list[st
             status_paths[paper_name] = path
 
     issues: list[str] = []
+    support_namespaces: frozenset[str] = frozenset()
+    if entries is not None and paper_names - set(status_paths):
+        try:
+            from public_release_support_dependencies import select_public_support_dependencies
+        except ModuleNotFoundError:  # Module-style import.
+            from scripts.public_release_support_dependencies import select_public_support_dependencies
+        support = select_public_support_dependencies(repo, candidate_ref, paths, entries)
+        issues.extend(support.issues)
+        support_namespaces = support.eligible_namespaces
     for paper_name in sorted(paper_names):
+        if paper_name in support_namespaces:
+            continue
         path = status_paths.get(paper_name)
         if path is None:
             issues.append(
@@ -852,6 +915,17 @@ def status_visibility_issues(repo: Path, candidate_ref: str = "HEAD") -> list[st
                 f"{path}: public candidate requires repository_visibility=`public`, "
                 f"got {visibility!r}"
             )
+            continue
+        for artifact in (
+            "audit/obligation_evidence/current_accepted_graph.json",
+            "FINAL_CLOSURE_RECEIPT.md",
+        ):
+            expected = f"papers/{paper_name}/{artifact}"
+            if expected not in paths:
+                issues.append(
+                    f"papers/{paper_name}: public paper is missing terminal "
+                    f"credential artifact `{expected}`"
+                )
     return issues
 
 
@@ -883,6 +957,12 @@ def changed_formalized_packet_issues(
         for path in changed
         if re.fullmatch(r"papers/[^/]+/status\.json", path)
     ):
+        # A reviewed candidate may delete a paper that existed on the public
+        # base. Deletion authorization is checked by the ordinary exact-path
+        # allowlist and namespace gates; there is no candidate status or packet
+        # to validate after the deletion.
+        if status_path not in candidate_paths:
+            continue
         try:
             payload = json.loads(_git(repo, ["show", f"{candidate_ref}:{status_path}"]))
         except (RuntimeError, json.JSONDecodeError) as exc:
@@ -1502,27 +1582,32 @@ def forbidden_candidate_path_issues(
         for path in sorted(
             _git(repo, ["ls-tree", "-r", "--name-only", candidate_ref]).splitlines()
         )
-        if FORBIDDEN_PUBLIC_PATH_RE.search(path) and path not in approved_source_tex
+        if FORBIDDEN_PUBLIC_PATH_RE.search(path)
+        and path not in approved_source_tex
+        and path not in PUBLIC_PRIVATE_NAMED_WORKFLOW_PATHS
     ]
 
 
 def session_insights_path_issues(
     repo: Path, candidate_ref: str = "HEAD"
 ) -> list[str]:
-    """Reject unreviewed session-derived files outside the two approved guides.
+    """Reject private wiki evidence and session-derived maintenance records.
 
     This is intentionally a path allowlist rather than a content heuristic:
     a new trace export can be benign-looking while still disclosing a user's
-    private session history.  The entrypoint and its approved ledger remain
-    available as explicitly user-approved workflow guidance.
+    private session history. Only the self-contained general skill entrypoint
+    is public; the check covers the whole tree, not just newly added files.
     """
 
     paths = _git(repo, ["ls-tree", "-r", "--name-only", candidate_ref]).splitlines()
     return [
         "unapproved session-insights artifact in public candidate: " + path
         for path in sorted(paths)
-        if path.startswith(SESSION_INSIGHTS_PREFIX)
-        and path not in PUBLIC_SESSION_INSIGHTS_PATHS
+        if path.startswith("wiki/")
+        or (
+            path.startswith(SESSION_INSIGHTS_PREFIX)
+            and path not in PUBLIC_SESSION_INSIGHTS_PATHS
+        )
     ]
 
 
@@ -1801,6 +1886,11 @@ def _public_artifact_string_issues(
         return issues
     if not isinstance(value, str):
         return issues
+    if route and route[-1] == "approval_reference" and value != PUBLIC_WITHHELD_APPROVAL_REFERENCE:
+        issues.append((".".join(route), "private scope approval reference must be withheld"))
+    if "deep_support_repair" in route and "approval" in route:
+        if route[-1] not in {"publication_record", "private_record_sha256"}:
+            issues.append((".".join(route), "private repair approval material must be withheld"))
     if source_excerpt:
         issue = source_excerpt_safety_issue(value)
         if issue is not None:
@@ -1966,11 +2056,26 @@ def public_artifact_content_issues(
                 PUBLIC_SITE_PRIVATE_WORKFLOW_GUIDANCE,
                 PUBLIC_SITE_PRIVATE_WORKFLOW_SENTINEL,
             )
+        if path == "README.md":
+            scan_text = scan_text.replace(
+                PUBLIC_README_PRIVATE_WORKFLOW_GUIDANCE,
+                PUBLIC_SITE_PRIVATE_WORKFLOW_SENTINEL,
+            )
         url_issue = _private_public_url_issue(scan_text)
         if url_issue is not None:
             issues.append(f"{path}: {url_issue}")
         scan_text = _PUBLIC_HTTP_URL_RE.sub("PUBLIC_HTTP_URL", scan_text)
         for label, pattern in PUBLIC_ARTIFACT_CONTENT_PATTERNS:
+            if pure.suffix == ".lean" and label in {
+                "non-public source transcript locator",
+                "non-public source artifact locator",
+            }:
+                # Source filenames in checked Lean code are technical citation
+                # locators, not redistributed source bytes or session history.
+                # Preserve exact audited Lean blobs; actual source artifacts,
+                # absolute local paths and private workflow prose still fail
+                # their independent checks.
+                continue
             if pattern.search(scan_text):
                 issues.append(f"{path}: {label}")
     return issues
@@ -2157,6 +2262,320 @@ def _candidate_current_audit_artifacts(
     return current, issues
 
 
+def _candidate_corrected_target_artifacts(
+    repo: Path,
+    candidate_ref: str,
+    candidate_paths: set[str],
+) -> tuple[set[str], list[str]]:
+    """Validate public corrected targets while withholding approval records."""
+
+    current: set[str] = set()
+    issues: list[str] = []
+    map_paths = sorted(
+        path
+        for path in candidate_paths
+        if len(PurePosixPath(path).parts) == 4
+        and PurePosixPath(path).parts[0] == "papers"
+        and PurePosixPath(path).parts[2:] == ("audit", "paper_statement_map.json")
+    )
+    for map_path in map_paths:
+        try:
+            payload = json.loads(_git(repo, ["show", f"{candidate_ref}:{map_path}"]))
+        except (RuntimeError, json.JSONDecodeError) as exc:
+            issues.append(f"{map_path}: cannot read corrected-target artifacts: {exc}")
+            continue
+        items = payload.get("items", {}) if isinstance(payload, dict) else None
+        if not isinstance(items, dict):
+            issues.append(f"{map_path}: source-map items must be an object")
+            continue
+        corrected_targets: list[tuple[str, dict[str, object]]] = []
+        for item_id, item in items.items():
+            if not isinstance(item, dict):
+                continue
+            target = item.get("corrected_target")
+            if target is None:
+                if source_requires_approved_corrected_target(item):
+                    issues.append(
+                        f"{map_path}: {item_id} corrected_source_statement has no "
+                        "corrected_target"
+                    )
+                continue
+            if not isinstance(target, dict):
+                issues.append(f"{map_path}: {item_id} corrected_target is malformed")
+                continue
+            corrected_targets.append((str(item_id), target))
+
+        marker = payload.get(PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD)
+        if not corrected_targets:
+            if marker is not None:
+                issues.append(
+                    f"{map_path}: corrected-target projection marker has no corrected targets"
+                )
+            continue
+        expected_marker = {
+            "schema": PUBLIC_CORRECTED_TARGET_PROJECTION_SCHEMA,
+            "approval_material_included": False,
+        }
+        if marker != expected_marker:
+            issues.append(
+                f"{map_path}: corrected targets require the exact public projection marker"
+            )
+
+        for item_id, target in corrected_targets:
+            label = f"{map_path}: {item_id} corrected_target"
+            if "approval" in target:
+                issues.append(f"{label} exposes private approval material")
+                continue
+            if target.get("schema") != 1:
+                issues.append(f"{label} must use schema 1")
+                continue
+            if target.get("archival_equivalence_claimed") is not False:
+                issues.append(f"{label} must declare archival_equivalence_claimed=false")
+                continue
+            statement = target.get("statement")
+            if not isinstance(statement, str) or not statement.strip():
+                issues.append(f"{label} has no mathematical statement")
+                continue
+            record_digest = target.get(CORRECTED_TARGET_RECORD_SHA256_FIELD)
+            if not isinstance(record_digest, str) or not SHA256_RE.fullmatch(record_digest):
+                issues.append(
+                    f"{label} has no valid retained {CORRECTED_TARGET_RECORD_SHA256_FIELD}"
+                )
+            review_digest = target.get(CORRECTED_TARGET_REVIEW_SHA256_FIELD)
+            if (
+                not isinstance(review_digest, str)
+                or not SHA256_RE.fullmatch(review_digest)
+                or review_digest != corrected_target_review_digest(target)
+            ):
+                issues.append(
+                    f"{label} has a stale or malformed retained "
+                    f"{CORRECTED_TARGET_REVIEW_SHA256_FIELD}"
+                )
+    return current, issues
+
+
+def _candidate_accepted_graph_artifacts(
+    repo: Path,
+    candidate_ref: str,
+    candidate_paths: set[str],
+) -> tuple[set[str], list[str]]:
+    """Retain only the selected graph and its authenticated build-input preimage.
+
+    The store owner validates canonical graph/leaf identities from exact candidate
+    blobs. This selects transport artifacts; it does not grant paper acceptance.
+    """
+
+    try:
+        from scripts.final_closure_receipt import load_final_closure_receipt
+        from scripts.obligation_closure_credential import (
+            recorded_accepted_graph_lean_import_closure_sha256,
+        )
+        from scripts.obligation_evidence_store import load_lean_import_closure_preimage
+    except ModuleNotFoundError:  # Direct script execution.
+        from final_closure_receipt import load_final_closure_receipt
+        from obligation_closure_credential import recorded_accepted_graph_lean_import_closure_sha256
+        from obligation_evidence_store import load_lean_import_closure_preimage
+
+    selected: set[str] = set()
+    issues: list[str] = []
+    pointers = sorted(
+        path for path in candidate_paths
+        if len(PurePosixPath(path).parts) == 5
+        and PurePosixPath(path).parts[0] == "papers"
+        and PurePosixPath(path).parts[2:] == (
+            "audit", "obligation_evidence", "current_accepted_graph.json"
+        )
+    )
+    with tempfile.TemporaryDirectory(prefix="selected-graph-artifacts-") as temporary:
+        snapshot = Path(temporary)
+
+        def copy_exact(path: str) -> bytes:
+            if path not in candidate_paths:
+                raise ValueError("selected artifact is absent from the exact candidate tree: " + path)
+            raw = _git_bytes(repo, ["show", f"{candidate_ref}:{path}"])
+            target = snapshot / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(raw)
+            return raw
+
+        for pointer in pointers:
+            paper = PurePosixPath(pointer).parts[1]
+            try:
+                selection = json.loads(copy_exact(pointer))
+                if not isinstance(selection, dict) or selection.get("schema") != 2:
+                    raise ValueError("selected public graph must use the packed schema-2 pointer")
+                digest = selection.get("graph_sha256")
+                if not isinstance(digest, str) or not SHA256_RE.fullmatch(digest):
+                    raise ValueError("selected graph digest is malformed")
+                base = f"papers/{paper}/audit/obligation_evidence"
+                pack = f"{base}/accepted_graphs/sha256/{digest[:2]}/{digest}.json"
+                copy_exact(pack)
+                copy_exact(f"papers/{paper}/FINAL_CLOSURE_RECEIPT.md")
+                receipt = load_final_closure_receipt(snapshot, paper)
+                closure_digest = recorded_accepted_graph_lean_import_closure_sha256(
+                    snapshot, paper, receipt.payload
+                )
+                preimage = (
+                    f"{base}/lean_import_closures/sha256/"
+                    f"{closure_digest[:2]}/{closure_digest}.json"
+                )
+                copy_exact(preimage)
+                load_lean_import_closure_preimage(snapshot, paper, closure_digest)
+            except (ValueError, RuntimeError, OSError) as exc:
+                issues.append(f"{pointer}: cannot select current graph artifacts: {exc}")
+                continue
+            selected.update((pointer, pack, preimage))
+    return selected, issues
+
+
+def _candidate_registered_engine_protocols(
+    repo: Path,
+    candidate_ref: str,
+) -> dict[str, frozenset[str]]:
+    """Return the validated public engine-to-protocol registration relation."""
+
+    try:
+        payload = json.loads(
+            _git(
+                repo,
+                [
+                    "show",
+                    f"{candidate_ref}:config/formalization_engine_revisions.json",
+                ],
+            )
+        )
+    except (RuntimeError, json.JSONDecodeError) as exc:
+        raise EngineRevisionError(
+            f"public engine registration ledger is unreadable: {exc}"
+        ) from exc
+    revisions = payload.get("revisions") if isinstance(payload, dict) else None
+    tip = revisions[-1] if isinstance(revisions, list) and revisions else None
+    if not isinstance(tip, dict):
+        raise EngineRevisionError(
+            "public engine registration ledger has no recorded issuer"
+        )
+    validated = validate_revision_ledger(
+        payload,
+        current_engine_sha256=str(tip.get("engine_tree_sha256") or ""),
+        current_protocol_sha256=str(
+            tip.get("formalization_review_protocol_sha256") or ""
+        ),
+    )
+    relation: dict[str, set[str]] = {}
+    for revision in validated["revisions"]:
+        relation.setdefault(revision["engine_tree_sha256"], set()).add(
+            revision["formalization_review_protocol_sha256"]
+        )
+    return {
+        engine: frozenset(protocols)
+        for engine, protocols in relation.items()
+    }
+
+
+def selected_graph_authority_registration_issues(
+    repo: Path,
+    candidate_ref: str,
+) -> list[str]:
+    """Require every selected strict engine to have one public protocol row."""
+
+    candidate_paths = {
+        path
+        for path in _git(
+            repo,
+            ["ls-tree", "-r", "--name-only", "-z", candidate_ref],
+        ).split("\0")
+        if path
+    }
+    pointers = sorted(
+        path
+        for path in candidate_paths
+        if len(PurePosixPath(path).parts) == 5
+        and PurePosixPath(path).parts[0] == "papers"
+        and PurePosixPath(path).parts[2:] == (
+            "audit", "obligation_evidence", "current_accepted_graph.json"
+        )
+    )
+    if not pointers:
+        return []
+    try:
+        registrations = _candidate_registered_engine_protocols(
+            repo, candidate_ref
+        )
+    except EngineRevisionError as exc:
+        return [
+            "selected graph authority registrations cannot be validated: "
+            + str(exc)
+        ]
+    issues: list[str] = []
+    for pointer_path in pointers:
+        paper = PurePosixPath(pointer_path).parts[1]
+        try:
+            pointer = json.loads(
+                _git(repo, ["show", f"{candidate_ref}:{pointer_path}"])
+            )
+            if not isinstance(pointer, dict):
+                raise ValueError("selected graph pointer is malformed")
+            graph_sha256 = pointer.get("graph_sha256")
+            if (
+                pointer.get("schema") != 2
+                or not isinstance(graph_sha256, str)
+                or not SHA256_RE.fullmatch(graph_sha256)
+            ):
+                raise ValueError("selected graph pointer is malformed")
+            base = f"papers/{paper}/audit/obligation_evidence"
+            pack_path = (
+                f"{base}/accepted_graphs/sha256/{graph_sha256[:2]}/"
+                f"{graph_sha256}.json"
+            )
+            pack = json.loads(
+                _git(repo, ["show", f"{candidate_ref}:{pack_path}"])
+            )
+            leaves = pack.get("leaves") if isinstance(pack, dict) else None
+            closures = [
+                leaf
+                for leaf in (leaves.values() if isinstance(leaves, dict) else [])
+                if isinstance(leaf, dict) and leaf.get("kind") == "paper_closure"
+            ]
+            if len(closures) != 1:
+                raise ValueError(
+                    "selected graph has no unique paper-closure strict authority"
+                )
+            closure_payload = closures[0].get("semantic_payload")
+            authority = recorded_strict_closeout_authority(
+                closure_payload.get("strict_closeout_authority")
+                if isinstance(closure_payload, dict)
+                else None
+            )
+            if authority.paper != paper:
+                raise ValueError(
+                    "selected graph strict authority belongs to another paper"
+                )
+        except (
+            RuntimeError,
+            json.JSONDecodeError,
+            ValueError,
+            StrictCloseoutAuthorityError,
+        ) as exc:
+            issues.append(
+                f"{pointer_path}: cannot validate selected strict authority: {exc}"
+            )
+            continue
+        protocols = registrations.get(authority.engine_tree_sha256, frozenset())
+        if not protocols:
+            issues.append(
+                f"{pointer_path}: selected strict authority engine "
+                f"{authority.engine_tree_sha256} has no public engine/protocol "
+                "registration"
+            )
+        elif len(protocols) != 1:
+            issues.append(
+                f"{pointer_path}: selected strict authority engine "
+                f"{authority.engine_tree_sha256} has ambiguous public protocol "
+                "registrations"
+            )
+    return issues
+
+
 def _candidate_receipt_review_ledgers(
     repo: Path,
     candidate_ref: str,
@@ -2238,6 +2657,16 @@ def candidate_public_artifact_policy_issues(
     )
     current_audit_artifacts.update(receipt_ledgers)
     issues.extend(receipt_issues)
+    target_artifacts, target_issues = _candidate_corrected_target_artifacts(
+        repo, candidate_ref, candidate_paths
+    )
+    current_audit_artifacts.update(target_artifacts)
+    issues.extend(target_issues)
+    graph_artifacts, graph_issues = _candidate_accepted_graph_artifacts(
+        repo, candidate_ref, candidate_paths
+    )
+    current_audit_artifacts.update(graph_artifacts)
+    issues.extend(graph_issues)
     public_source_artifacts, public_source_issues = public_arxiv_tex_artifact_paths(
         repo, candidate_ref
     )
@@ -2377,6 +2806,26 @@ def _candidate_uses_public_source_display_marker(path: str, blob: bytes) -> bool
     return isinstance(payload, dict) and PUBLIC_SOURCE_DISPLAY_PROJECTION_FIELD in payload
 
 
+def _candidate_uses_corrected_target_projection_marker(path: str, blob: bytes) -> bool:
+    """Whether an exact public source map declares approval-material redaction."""
+
+    pure = PurePosixPath(path)
+    if not (
+        len(pure.parts) == 4
+        and pure.parts[0] == "papers"
+        and pure.parts[2:] == ("audit", "paper_statement_map.json")
+    ):
+        return False
+    try:
+        payload = json.loads(blob.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return False
+    return (
+        isinstance(payload, dict)
+        and PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD in payload
+    )
+
+
 def source_provenance_issues(
     candidate_repo: Path,
     private_repo: Path,
@@ -2391,6 +2840,26 @@ def source_provenance_issues(
     issues: list[str] = []
     for change in changes:
         entry = matching_allowlist_entry(change.path, entries)
+        pure_change_path = PurePosixPath(change.path)
+        is_statement_map = (
+            len(pure_change_path.parts) == 4
+            and pure_change_path.parts[0] == "papers"
+            and pure_change_path.parts[2:] == ("audit", "paper_statement_map.json")
+        )
+        if change.status != "D" and is_statement_map:
+            try:
+                candidate_blob_for_marker = _git_bytes(
+                    candidate_repo, ["show", f"{candidate_ref}:{change.path}"]
+                )
+            except RuntimeError:
+                candidate_blob_for_marker = b""
+            if _candidate_uses_corrected_target_projection_marker(
+                change.path, candidate_blob_for_marker
+            ) and (entry is None or entry.provenance != "private_projection"):
+                issues.append(
+                    f"{change.path}: changed corrected-target projection requires "
+                    "private_projection provenance"
+                )
         if entry is None:
             continue
         if change.status == "D":
@@ -2732,7 +3201,7 @@ def generated_status_freshness_issues(
             ]
         try:
             environment = _git_environment()
-            environment["ECONCSLIB_REPO_ROOT"] = str(tree_checkout.resolve())
+            environment["APPLIEDMODELINGLIB_REPO_ROOT"] = str(tree_checkout.resolve())
             trusted_status_sync = TRUSTED_STATUS_SYNC.resolve()
             isolated_bootstrap = (
                 "import runpy, sys; "
@@ -2774,11 +3243,129 @@ def generated_status_freshness_issues(
     ]
 
 
+def _candidate_explicit_lake_srcdir_modules(
+    repo: Path,
+    candidate_commit: str,
+) -> dict[str, str]:
+    """Resolve explicit Lake roots whose modules live below a custom srcDir.
+
+    The shared dependency scanner owns ordinary root and ``papers`` modules.
+    This projection adds only modules beneath an explicitly configured
+    non-root ``srcDir`` and an explicit ``roots`` entry. Missing, malformed,
+    or ambiguous configuration therefore grants no repository ownership.
+    """
+
+    try:
+        lake = tomllib.loads(
+            _git(repo, ["show", f"{candidate_commit}:lakefile.toml"])
+        )
+        candidate_paths = {
+            path
+            for path in _git(
+                repo,
+                ["ls-tree", "-r", "--name-only", "-z", candidate_commit],
+            ).split("\0")
+            if path
+        }
+    except (RuntimeError, UnicodeError, tomllib.TOMLDecodeError):
+        return {}
+    libraries = lake.get("lean_lib") if isinstance(lake, dict) else None
+    if not isinstance(libraries, list):
+        return {}
+
+    candidates: dict[str, list[str]] = {}
+    for library in libraries:
+        if not isinstance(library, dict):
+            continue
+        library_name = library.get("name")
+        src_dir = _safe_relative_path(library.get("srcDir"))
+        roots = library.get("roots")
+        if (
+            not isinstance(library_name, str)
+            or not re.fullmatch(
+                r"[A-Za-z_][A-Za-z0-9_']*", library_name.strip()
+            )
+            or src_dir is None
+            or not isinstance(roots, list)
+            or not roots
+        ):
+            continue
+        src_path = PurePosixPath(src_dir)
+        root_modules = [
+            root.strip() if isinstance(root, str) else ""
+            for root in roots
+        ]
+        if (
+            any(
+                not re.fullmatch(
+                    r"[A-Za-z_][A-Za-z0-9_']*"
+                    r"(?:\.[A-Za-z_][A-Za-z0-9_']*)*",
+                    root,
+                )
+                for root in root_modules
+            )
+            or len(root_modules) != len(set(root_modules))
+        ):
+            continue
+        for path in candidate_paths:
+            pure = PurePosixPath(path)
+            if pure.suffix != ".lean":
+                continue
+            try:
+                relative = pure.relative_to(src_path).with_suffix("")
+            except ValueError:
+                continue
+            module = ".".join(relative.parts)
+            if any(
+                module == root or module.startswith(root + ".")
+                for root in root_modules
+            ):
+                candidates.setdefault(module, []).append(path)
+    return {
+        module: paths[0]
+        for module, paths in candidates.items()
+        if len(paths) == 1
+    }
+
+
+def _public_candidate_dependency_closure_issues(
+    repo: Path,
+    candidate_commit: str,
+    *,
+    extra_entrypoints: set[str],
+) -> list[ImportClosureIssue]:
+    """Run the shared closure check with explicit custom-srcDir Lake roots."""
+
+    registered_modules = _candidate_explicit_lake_srcdir_modules(
+        repo, candidate_commit
+    )
+    issues = dependency_closure_issues(
+        repo,
+        candidate="tree",
+        treeish=candidate_commit,
+        extra_entrypoints={
+            *extra_entrypoints,
+            *registered_modules.values(),
+        },
+    )
+    return [
+        issue
+        for issue in issues
+        if not (
+            issue.imported_module in registered_modules
+            and not issue.dependency_path
+            and issue.reason
+            == "import prefix is neither repository-owned nor in the explicit "
+            "external-module registry"
+        )
+    ]
+
+
 def run_guard(
     repo: Path,
     *,
     allowlist_path: Path,
-    preflight: bool = False,
+    authoritative: bool = False,
 ) -> list[str]:
     repo = repo.resolve()
     private_repo = ROOT.resolve()
@@ -2793,7 +3380,7 @@ def run_guard(
             f"repository: {allowlist_path}"
         ]
     approval: ReleaseApproval | None = None
-    if not preflight:
+    if authoritative:
         if _path_is_within(approval_location, repo) or _path_is_within(
             approval_location, private_repo
         ):
@@ -2950,7 +3537,7 @@ def run_guard(
             )
         )
     issues.extend(unused_allowlist_issues(entries, used_entries))
-    issues.extend(status_visibility_issues(repo, candidate_commit))
+    issues.extend(status_visibility_issues(repo, candidate_commit, entries=entries))
     issues.extend(
         changed_formalized_packet_issues(
             repo,
@@ -2977,11 +3564,13 @@ def run_guard(
     )
     issues.extend(human_review_packet_pdf_content_issues(repo, candidate_commit))
     issues.extend(candidate_public_artifact_policy_issues(repo, candidate_commit))
+    issues.extend(
+        selected_graph_authority_registration_issues(repo, candidate_commit)
+    )
     issues.extend(generated_status_freshness_issues(repo, candidate_commit))
-    for issue in dependency_closure_issues(
+    for issue in _public_candidate_dependency_closure_issues(
         repo,
-        candidate="tree",
-        treeish=candidate_commit,
+        candidate_commit,
         extra_entrypoints=changed_lean_entrypoints,
     ):
         issues.append("Lean dependency closure: " + issue.format())
@@ -2997,11 +3586,11 @@ def main() -> int:
     parser.add_argument("--repo", type=Path, required=True)
     parser.add_argument("--allowlist", type=Path, required=True)
     parser.add_argument(
-        "--preflight",
+        "--authoritative",
         action="store_true",
         help=(
-            "run every candidate check except the fixed external reviewer-approval "
-            "pins; this result is non-authoritative"
+            "also require the fixed external reviewer-approval pins; use only "
+            "when a maintainer is ready to merge the reviewed candidate"
         ),
     )
     args = parser.parse_args()
@@ -3009,7 +3598,7 @@ def main() -> int:
         issues = run_guard(
             args.repo,
             allowlist_path=args.allowlist,
-            preflight=args.preflight,
+            authoritative=args.authoritative,
         )
     except RuntimeError as exc:
         parser.error(str(exc))
@@ -3018,14 +3607,14 @@ def main() -> int:
     if issues:
         print(f"Public release candidate guard: {len(issues)} error(s)", file=sys.stderr)
         return 1
-    if args.preflight:
+    if args.authoritative:
+        print("Public release candidate guard: OK (authoritative merge check)")
+    else:
         print(
-            "Public release candidate guard preflight: OK "
-            "(non-authoritative; external schema-2 reviewer approval is still required)"
+            "Public release candidate guard: OK "
+            "(candidate/PR check; maintainer approval is required only before merge)"
         )
         print(f"Trusted tooling bundle SHA256: {_trusted_tooling_sha256()}")
-    else:
-        print("Public release candidate guard: OK")
     return 0
 
 

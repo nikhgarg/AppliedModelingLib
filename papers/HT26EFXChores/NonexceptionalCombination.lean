@@ -13,7 +13,7 @@ Source: `EFXadditivechores.tex`, lines 1692--1700.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- An envy-free allocation of a pool disjoint from a nonexceptional M₂ pool
 extends to an EFX allocation of their union. -/

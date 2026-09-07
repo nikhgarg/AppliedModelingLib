@@ -185,26 +185,39 @@ class SourceRecordIdentityRuntimeTests(unittest.TestCase):
         def lane(key: str) -> dict[str, dict[str, object]]:
             return {key: {"classification": "fixture"}}
 
-        semantic = SimpleNamespace(
-            load_current_source_record_semantic_rebind_items=(
-                lambda *_args, **kwargs: (
-                    semantic_contexts.append(
-                        kwargs.get("source_record_identity_context")
-                    )
-                    or lane("semantic")
+        class OverlayError(ValueError):
+            pass
+
+        def load_lanes(
+            *_args: object,
+            lane_labels: object = (),
+            source_record_identity_context: object | None = None,
+            **_kwargs: object,
+        ) -> tuple[SimpleNamespace, ...]:
+            semantic_contexts.append(source_record_identity_context)
+            return tuple(
+                SimpleNamespace(
+                    label=label,
+                    items=lane(
+                        {
+                            "differential": "differential",
+                            "semantic_rebind": "semantic",
+                        }[label]
+                    ),
                 )
+                for label in lane_labels
             )
+
+        overlay_union = SimpleNamespace(
+            SourceRecordAuthenticatedOverlayUnionError=OverlayError,
+            load_authenticated_current_overlay_lanes=load_lanes,
         )
-        historical = SimpleNamespace(
-            load_current_source_record_historical_descriptor_migration_items=(
-                lambda *_args, **_kwargs: lane("historical")
-            )
-        )
-        scoped = SimpleNamespace(
-            load_current_source_record_scoped_receipt_rebind_items=(
-                lambda *_args, **_kwargs: lane("scoped")
-            )
-        )
+
+        def present_lanes(
+            _folder: object, *, lane_labels: object = ()
+        ) -> tuple[str, ...]:
+            return ("differential", "semantic_rebind")
+
         with (
             mock.patch.object(
                 evidence,
@@ -218,26 +231,12 @@ class SourceRecordIdentityRuntimeTests(unittest.TestCase):
             ),
             mock.patch.object(
                 evidence,
-                "load_current_source_record_schema4_to5_migration_items",
-                return_value=lane("schema4to5"),
+                "source_record_overlay_labels_with_artifacts",
+                side_effect=present_lanes,
             ),
             mock.patch.object(
-                evidence,
-                "load_current_source_record_differential_revalidation_items",
-                return_value=lane("differential"),
+                evidence, "_authenticated_overlay_union_module", return_value=overlay_union
             ),
-            mock.patch.object(
-                evidence,
-                "load_current_attested_selected_semantic_reuse_items",
-                return_value=lane("attested"),
-            ),
-            mock.patch.object(evidence, "_semantic_rebind_module", return_value=semantic),
-            mock.patch.object(
-                evidence,
-                "_historical_descriptor_migration_module",
-                return_value=historical,
-            ),
-            mock.patch.object(evidence, "_scoped_receipt_rebind_module", return_value=scoped),
             mock.patch.object(
                 evidence,
                 "_project_current_source_record_response_association_pins",
@@ -254,23 +253,18 @@ class SourceRecordIdentityRuntimeTests(unittest.TestCase):
                 {"items": {}},
                 folder=self.paper,
                 expected_paper_statement_map_sha256=str(map_digest),
-                allow_component_projection=False,
             )
 
         self.assertEqual(strict_gate.call_count, 1)
-        self.assertGreaterEqual(len(prevalidated), 7)
+        self.assertEqual(len(prevalidated), 3)
         self.assertEqual(set(prevalidated), {""})
         self.assertEqual(len(semantic_contexts), 1)
         self.assertIsNotNone(semantic_contexts[0])
         self.assertEqual(
             set(loaded),
             {
-                "schema4to5",
                 "differential",
-                "attested",
                 "semantic",
-                "historical",
-                "scoped",
             },
         )
 

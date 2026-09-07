@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "GJ19OptimalBinaryRatingSystems",
-  "private_source_map_sha256": "4744d432fce2fa41930eb8f55d39178c0ccf963768b55aafdeb9bef573413101",
+  "private_source_map_sha256": "414134bc480d3debb06804b2a5f34210bf168778a4ee9195df227b8cc3b2ab28",
   "public_manifest_path": "papers/GJ19OptimalBinaryRatingSystems/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "396d98efef8f22b23b2b9968b01f3131d5f814dad58e034ca1454469de8e5ff1",
+  "public_source_map_sha256": "5be1ee56b28b65cc4a250ca4bf202703c65627591875e5ce3b59b5ee7faa2361",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
@@ -160,6 +160,32 @@
       "source_kind": "corollary"
     },
     "definitionC1_kendall_spearman": {
+      "semantic_context": [
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 3615,
+              "line_start": 3614,
+              "publication_locator": "cited publication",
+              "quoted_text": "Lemma C.10. Spearman’s ρ can also be written as being proportional to\ni.e. with w(θ1 , θ2 ) = (θ1 − θ2 ).",
+              "quoted_text_sha256": "a94208d2a8bf5def0d7936a04f568e47dcac968c4b18743f5fb459cc65c56f6a"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 3631,
+              "line_start": 3629,
+              "publication_locator": "cited publication",
+              "quoted_text": "R\n\nθ1 >θ2 (θ1 −θ2 )Pk (θ1 , θ2 )dθ1 dθ2 ,",
+              "quoted_text_sha256": "dd79d7f515f3c1b941a92343351cd4264a946ae1059a0eea050c31b17f8028f5"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 3614,
@@ -179,6 +205,32 @@
       "source_kind": "definition"
     },
     "definition_bernoulli_kl": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 2408,
+              "line_start": 2404,
+              "publication_locator": "cited publication",
+              "quoted_text": "Remark C.2. The KL divergence for two Bernoulli random variables is continuous and strictly\nconvex, with minima at a = b, when a, b ∈ (0, 1). Note that inf a {gi KL(a||ti ) + g(i + 1)KL(a||ti+1 )},\nfor all feasible g, is also continuous and strictly convex in ti , ti+1 , with minima at ti = ti+1 .\nOne consequence of the above fact is that fixing either ti or ti+1 and moving the other farther\naway monotonically increases KL, while moving it closer decreases KL.",
+              "quoted_text_sha256": "5681fe3b2579c4c7a81031b321cef5a014b7106d4987e3ac9f1900cecbf96222"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 2489,
+              "line_start": 2452,
+              "publication_locator": "cited publication",
+              "quoted_text": "Proof. Recall r(t) , − limk→∞ k1 log(W −Wk ) = min0≤i≤M −2 inf a∈R {gi+1 KL(a||ti+1 ) + gi KL(a||ti )}.\nWe show the following:\nr(t) =\nmin\n\nlog(1 − t1 )−g1 ,\n\"\nlog (1 − ti−1 )\n\ngi−1\ngi−1 +gi\n\n(1 − ti )\n\ngi\ngi−1 +gi\n\ngi−1\ngi−1 +gi\n\n+ ti−1\n\ngi\ngi−1 +gi\n\nti\n\n#−gi−1 −gi\nfor 1 < i < M − 1,\n\n!\nlog(tM −2 )−gM −2\nand t∗ maximizes rw (t) ⇐⇒ all the terms inside the minimization rw (t∗ ) are equal. Further, the\noptimal levels t∗ are unique. The result immediately follows, that {ti } is the unique solution that\nequalizes the rates inside the minimization, by noting that the optimal r has t0 = 0, tM −1 = 1.\nWe first prove the alternative form for r. Note that {gi−1 KL(a||ti−1 ) + gi KL(a||ti )} is convex\nin a, and so we can find an analytic form for the infinum over a.\n",
+              "quoted_text_sha256": "fc0274c94aaac112bf83d7fdc2c318f3540a2efb4b684a97d0e2d28d2832bbfc"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 526,
@@ -227,6 +279,32 @@
       "source_kind": "definition"
     },
     "definition_step_rule_partition_levels": {
+      "semantic_context": [
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 541,
+              "line_start": 529,
+              "publication_locator": "cited publication",
+              "quoted_text": "\nAlgorithm to find the optimal levels We now\ndescribe how to find t∗ , the maximizer of r(t).\nThe following lemma describes a system of equations\nto find the t∗ that maximizes r. It states that t∗\nequalizes the rates at which each interval i is separated from its neighbors. The proof involves manipulation of r and convexity, and is in the appendix.\nLemma 3.1. The unique solution t∗ to the following\nsystem of equations maximizes r(t):\nr(t0 , t1 ) = r(t1 , t2 ) = · · · = r(tM −2 , tM −1 )\n\n(4)\n\nt0 = 0, tM −1 = 1",
+              "quoted_text_sha256": "8bb83d12680c1e99fbbf0c46772a402d3bc1ec7d2997bddee72c3ca704798f10"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 2487,
+              "line_start": 2483,
+              "publication_locator": "cited publication",
+              "quoted_text": "log(tM −2 )−gM −2\nand t∗ maximizes rw (t) ⇐⇒ all the terms inside the minimization rw (t∗ ) are equal. Further, the\noptimal levels t∗ are unique. The result immediately follows, that {ti } is the unique solution that\nequalizes the rates inside the minimization, by noting that the optimal r has t0 = 0, tM −1 = 1.\nWe first prove the alternative form for r. Note that {gi−1 KL(a||ti−1 ) + gi KL(a||ti )} is convex",
+              "quoted_text_sha256": "174d519122614641c1b5180975d38cc2b2be4998fde39f7d4318a54c44a4b680"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 368,

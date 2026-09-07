@@ -13,7 +13,7 @@ assume a precomputed party trace or a caller-supplied outcome.
 
 namespace GGRS26CombattingGerrymanderingRCV
 
-open EconCSLib.SocialChoice.Voting
+open AppliedModelingLib.SocialChoice.Voting
 
 variable {Voter Candidate : Type*} [DecidableEq Voter] [DecidableEq Candidate]
 

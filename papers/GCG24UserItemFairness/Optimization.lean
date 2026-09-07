@@ -2,7 +2,7 @@ import GCG24UserItemFairness.Basic
 import Mathlib.Analysis.Convex.StdSimplex
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace GCG24UserItemFairness
 
@@ -74,12 +74,12 @@ theorem itemFairnessLPFeasible_iff_le_itemFairness
     itemFairnessLPFeasible W ρ ell ↔ ell ≤ itemFairness W ρ := by
   constructor
   · intro h
-    unfold itemFairness EconCSLib.finiteMin
+    unfold itemFairness AppliedModelingLib.finiteMin
     apply Finset.le_inf'
     intro j _hj
     exact h j
   · intro h j
-    exact h.trans (EconCSLib.finiteMin_le (normalizedItemUtility W ρ) j)
+    exact h.trans (AppliedModelingLib.finiteMin_le (normalizedItemUtility W ρ) j)
 
 /-- Equality-form LP feasibility pins `ell` to the policy's item-fairness value. -/
 theorem itemFairness_eq_of_itemFairnessEqualityLPFeasible
@@ -88,7 +88,7 @@ theorem itemFairness_eq_of_itemFairnessEqualityLPFeasible
     (h : itemFairnessEqualityLPFeasible W ρ ell) :
     itemFairness W ρ = ell := by
   unfold itemFairness
-  exact EconCSLib.finiteMin_eq_of_forall
+  exact AppliedModelingLib.finiteMin_eq_of_forall
     (normalizedItemUtility W ρ) ell h
 
 /-- Equality-form LP feasibility implies the epigraph LP constraints. -/
@@ -244,7 +244,7 @@ theorem item_coverage_of_itemFairness_pos {m n : ℕ} [NeZero n]
     by_cases hden : itemNormalizer W j = 0
     · simp [hden]
     · simp [hden]
-  have hle := EconCSLib.finiteMin_le (normalizedItemUtility W ρ) j
+  have hle := AppliedModelingLib.finiteMin_le (normalizedItemUtility W ρ) j
   have hnorm_pos : 0 < normalizedItemUtility W ρ j := lt_of_lt_of_le hpos hle
   rw [hnorm_zero] at hnorm_pos
   exact (lt_irrefl (0 : ℝ)) hnorm_pos
@@ -269,7 +269,7 @@ theorem itemFairnessMinimizerSet_nonempty {m n : ℕ} [NeZero n]
   classical
   obtain ⟨j, hj⟩ : ∃ j : Item n,
       itemFairness W ρ = normalizedItemUtility W ρ j := by
-    unfold itemFairness EconCSLib.finiteMin
+    unfold itemFairness AppliedModelingLib.finiteMin
     obtain ⟨j, _hjmem, hj⟩ :=
       Finset.exists_mem_eq_inf'
         (s := (Finset.univ : Finset (Item n)))
@@ -342,7 +342,7 @@ noncomputable def simplexVectorOfPolicy {m n : ℕ}
   fun u =>
     ⟨fun j => (ρ u j).toReal,
       ⟨fun j => ENNReal.toReal_nonneg,
-        EconCSLib.pmfToRealSum (ρ u)⟩⟩
+        AppliedModelingLib.pmfToRealSum (ρ u)⟩⟩
 
 /-- Raw item utility evaluated on the real simplex-vector presentation. -/
 noncomputable def rawItemUtilityVector {m n : ℕ}
@@ -361,7 +361,7 @@ noncomputable def normalizedItemUtilityVector {m n : ℕ}
 /-- Minimum item fairness evaluated on the real simplex-vector presentation. -/
 noncomputable def itemFairnessVector {m n : ℕ} [NeZero n]
     (W : RecommendationModel m n) (x : PolicySimplexVector m n) : ℝ :=
-  EconCSLib.finiteMin (normalizedItemUtilityVector W x)
+  AppliedModelingLib.finiteMin (normalizedItemUtilityVector W x)
 
 theorem rawItemUtility_policyOfSimplexVector_eq {m n : ℕ}
     (W : RecommendationModel m n) (x : PolicySimplexVector m n)
@@ -440,7 +440,7 @@ theorem itemFairnessVector_continuous {m n : ℕ} [NeZero n]
       Continuous (fun x : PolicySimplexVector m n =>
         normalizedItemUtilityVector W x j) :=
     fun j => normalizedItemUtilityVector_continuous W j
-  unfold itemFairnessVector EconCSLib.finiteMin
+  unfold itemFairnessVector AppliedModelingLib.finiteMin
   fun_prop
 
 /-- Raw user utility evaluated on the real simplex-vector presentation. -/
@@ -459,15 +459,15 @@ noncomputable def normalizedUserUtilityVector {m n : ℕ} [NeZero n]
 /-- Minimum user fairness evaluated on the real simplex-vector presentation. -/
 noncomputable def userFairnessVector {m n : ℕ} [NeZero m] [NeZero n]
     (W : RecommendationModel m n) (x : PolicySimplexVector m n) : ℝ :=
-  EconCSLib.finiteMin (normalizedUserUtilityVector W x)
+  AppliedModelingLib.finiteMin (normalizedUserUtilityVector W x)
 
 theorem rawUserUtility_policyOfSimplexVector_eq {m n : ℕ}
     (W : RecommendationModel m n) (x : PolicySimplexVector m n)
     (u : User m) :
     rawUserUtility W (policyOfSimplexVector x) u =
       rawUserUtilityVector W x u := by
-  unfold rawUserUtility rawUserUtilityVector EconCSLib.Policy.agentScore
-    EconCSLib.pmfExp
+  unfold rawUserUtility rawUserUtilityVector AppliedModelingLib.Policy.agentScore
+    AppliedModelingLib.pmfExp
   simp [mul_comm]
 
 theorem normalizedUserUtility_policyOfSimplexVector_eq {m n : ℕ} [NeZero n]
@@ -492,7 +492,7 @@ theorem rawUserUtilityVector_simplexVectorOfPolicy_eq {m n : ℕ}
     rawUserUtilityVector W (simplexVectorOfPolicy ρ) u =
       rawUserUtility W ρ u := by
   unfold rawUserUtilityVector rawUserUtility simplexVectorOfPolicy
-    EconCSLib.Policy.agentScore EconCSLib.pmfExp
+    AppliedModelingLib.Policy.agentScore AppliedModelingLib.pmfExp
   change (∑ x : Item n, ((ρ u) x).toReal * W.utility u x) =
     ∑ x : Item n, ((ρ u) x).toReal * W.utility u x
   rfl
@@ -544,7 +544,7 @@ theorem userFairnessVector_continuous {m n : ℕ} [NeZero m] [NeZero n]
       Continuous (fun x : PolicySimplexVector m n =>
         normalizedUserUtilityVector W x u) :=
     fun u => normalizedUserUtilityVector_continuous W u
-  unfold userFairnessVector EconCSLib.finiteMin
+  unfold userFairnessVector AppliedModelingLib.finiteMin
   fun_prop
 
 /--
@@ -610,7 +610,7 @@ theorem shiftedRowVector_sum_eq_one {m n : ℕ}
   classical
   unfold shiftedRowVector
   have hpmf : (∑ j : Item n, (ρ u j).toReal) = 1 :=
-    EconCSLib.pmfToRealSum (ρ u)
+    AppliedModelingLib.pmfToRealSum (ρ u)
   have hsource :
       (∑ j : Item n, (if j = source then eps * (targets.card : ℝ) else 0)) =
         eps * (targets.card : ℝ) := by
@@ -859,8 +859,8 @@ theorem itemFairness_lt_policyShiftRowToTargets_of_eps
     policyShiftRowToTargets ρ u source targets eps hnonneg hsum
   refine ⟨ρ', ?_⟩
   change itemFairness W ρ <
-    EconCSLib.finiteMin (normalizedItemUtility W ρ')
-  unfold EconCSLib.finiteMin
+    AppliedModelingLib.finiteMin (normalizedItemUtility W ρ')
+  unfold AppliedModelingLib.finiteMin
   rw [Finset.lt_inf'_iff]
   intro j _hj
   have hden : 0 < itemNormalizer W j :=
@@ -895,7 +895,7 @@ theorem itemFairness_lt_policyShiftRowToTargets_of_eps
           itemFairness W ρ < normalizedItemUtility W ρ j := by
         have hle :
             itemFairness W ρ ≤ normalizedItemUtility W ρ j :=
-          EconCSLib.finiteMin_le (normalizedItemUtility W ρ) j
+          AppliedModelingLib.finiteMin_le (normalizedItemUtility W ρ) j
         exact lt_of_le_of_ne hle (Ne.symm hj_not_min)
       dsimp [ρ', targets]
       rw [normalizedItemUtility_policyShiftRowToTargets_unchanged
@@ -1037,29 +1037,29 @@ theorem itemFairness_noStrictPointwiseImprovement_of_optimal
   intro hbad
   obtain ⟨ρ', hstrict⟩ := hbad
   let delta : ℝ :=
-    EconCSLib.finiteMin (fun j : Item n =>
+    AppliedModelingLib.finiteMin (fun j : Item n =>
       normalizedItemUtility W ρ' j - normalizedItemUtility W ρ j)
   have hdelta_pos : 0 < delta := by
     dsimp [delta]
-    apply EconCSLib.finiteMin_pos
+    apply AppliedModelingLib.finiteMin_pos
     intro j
     exact sub_pos.mpr (hstrict j)
   have hle_all :
       itemFairness W ρ + delta ≤ itemFairness W ρ' := by
     unfold itemFairness
-    apply EconCSLib.le_finiteMin
+    apply AppliedModelingLib.le_finiteMin
     intro j
     have hdelta_le :
         delta ≤ normalizedItemUtility W ρ' j -
           normalizedItemUtility W ρ j := by
       dsimp [delta]
-      exact EconCSLib.finiteMin_le
+      exact AppliedModelingLib.finiteMin_le
         (fun l : Item n =>
           normalizedItemUtility W ρ' l - normalizedItemUtility W ρ l) j
     have hmin_le :
-        EconCSLib.finiteMin (normalizedItemUtility W ρ) ≤
+        AppliedModelingLib.finiteMin (normalizedItemUtility W ρ) ≤
           normalizedItemUtility W ρ j :=
-      EconCSLib.finiteMin_le (normalizedItemUtility W ρ) j
+      AppliedModelingLib.finiteMin_le (normalizedItemUtility W ρ) j
     linarith
   have hbdd := attainableItemFairnessSet_bddAbove_of_nonnegative W hNonneg
   have hρ'_mem :
@@ -1087,7 +1087,7 @@ theorem itemFairnessEqualityLPFeasible_of_optimal_of_slackImprovement
   · by_contra hnot
     have hmin_le :
         itemFairness W ρ ≤ normalizedItemUtility W ρ j :=
-      EconCSLib.finiteMin_le (normalizedItemUtility W ρ) j
+      AppliedModelingLib.finiteMin_le (normalizedItemUtility W ρ) j
     have hlt : itemFairness W ρ < normalizedItemUtility W ρ j :=
       lt_of_le_not_ge hmin_le hnot
     obtain ⟨ρ', himprove⟩ := hslack j hlt
@@ -1096,7 +1096,7 @@ theorem itemFairnessEqualityLPFeasible_of_optimal_of_slackImprovement
       exact le_csSup hbdd ⟨ρ', rfl⟩
     rw [hopt] at himprove
     exact not_lt_of_ge hρ'_le_opt himprove
-  · exact EconCSLib.finiteMin_le (normalizedItemUtility W ρ) j
+  · exact AppliedModelingLib.finiteMin_le (normalizedItemUtility W ρ) j
 
 /--
 Appendix C, Lemma 2 in the paper's equality-form LP interface, conditional
@@ -1210,24 +1210,24 @@ theorem attainableUserFairnessAtLevel_bddAbove_of_rowHasPositiveItem
 
 /-- A canonical policy used only to witness nonempty finite feasible sets. -/
 noncomputable def defaultPolicy {m n : ℕ} [NeZero n] : Policy m n :=
-  EconCSLib.Policy.pure
+  AppliedModelingLib.Policy.pure
     (fun _ : User m => Classical.choice (inferInstance : Nonempty (Item n)))
 
 /-- The deterministic policy that recommends each user an item attaining their finite row maximum. -/
 noncomputable def bestItemPolicy {m n : ℕ} [NeZero n]
     (W : RecommendationModel m n) : Policy m n :=
-  EconCSLib.Policy.pure
+  AppliedModelingLib.Policy.pure
     (fun u : User m =>
-      Classical.choose (EconCSLib.exists_finiteMax_eq (W.utility u)))
+      Classical.choose (AppliedModelingLib.exists_finiteMax_eq (W.utility u)))
 
 theorem bestItemPolicy_utility_eq_bestItemUtility
     {m n : ℕ} [NeZero n]
     (W : RecommendationModel m n) (u : User m) :
     W.utility u
-        (Classical.choose (EconCSLib.exists_finiteMax_eq (W.utility u))) =
+        (Classical.choose (AppliedModelingLib.exists_finiteMax_eq (W.utility u))) =
       bestItemUtility W u := by
   exact (Classical.choose_spec
-    (EconCSLib.exists_finiteMax_eq (W.utility u))).symm
+    (AppliedModelingLib.exists_finiteMax_eq (W.utility u))).symm
 
 /-- The best-item policy gives each user their row maximum in raw utility. -/
 theorem rawUserUtility_bestItemPolicy_eq_bestItemUtility
@@ -1235,7 +1235,7 @@ theorem rawUserUtility_bestItemPolicy_eq_bestItemUtility
     (W : RecommendationModel m n) (u : User m) :
     rawUserUtility W (bestItemPolicy W) u = bestItemUtility W u := by
   unfold rawUserUtility bestItemPolicy
-  rw [EconCSLib.Policy.agentScore_pure]
+  rw [AppliedModelingLib.Policy.agentScore_pure]
   exact bestItemPolicy_utility_eq_bestItemUtility W u
 
 /-- Under positive row normalizers, the best-item policy gives every user normalized utility `1`. -/
@@ -1256,7 +1256,7 @@ theorem userFairness_bestItemPolicy_eq_one
     (W : RecommendationModel m n) (hRow : W.RowHasPositiveItem) :
     userFairness W (bestItemPolicy W) = 1 := by
   unfold userFairness
-  exact EconCSLib.finiteMin_eq_of_forall
+  exact AppliedModelingLib.finiteMin_eq_of_forall
     (normalizedUserUtility W (bestItemPolicy W)) 1
     (normalizedUserUtility_bestItemPolicy_eq_one W hRow)
 

@@ -1,4 +1,5 @@
 import GN21DriverSurgePricing.RawMarkedStoppedPathBridge
+import AppliedModelingLib.Foundations.Probability.IidFirstHitRestart
 
 /-!
 # First accepted trip mark on a literal IID stream
@@ -34,6 +35,46 @@ noncomputable def firstAcceptedIndex (sigma : TripPolicy) :
 noncomputable def firstAcceptedTripMark (sigma : TripPolicy) :
     (Nat -> TripLength) -> TripLength :=
   fun marks => marks (firstAcceptedIndex sigma marks)
+
+/-- The complete uninspected raw-mark stream after the first accepted trip.
+Unlike the older Boolean-mark tail, this retains continuous trip marks and is
+therefore suitable for renewal-cycle regeneration. -/
+noncomputable def firstAcceptedTripTail (sigma : TripPolicy) :
+    (Nat -> TripLength) -> Nat -> TripLength :=
+  AppliedModelingLib.Probability.IIDStream.postFirstHitTail sigma
+
+theorem measurable_firstAcceptedTripTail
+    (sigma : TripPolicy) (hsigma : MeasurableSet sigma) :
+    Measurable (firstAcceptedTripTail sigma) := by
+  simpa only [firstAcceptedTripTail] using
+    AppliedModelingLib.Probability.IIDStream.measurable_postFirstHitTail sigma hsigma
+
+theorem firstAcceptedIndex_eq_firstHit
+    (sigma : TripPolicy) (marks : Nat -> TripLength) :
+    firstAcceptedIndex sigma marks =
+      AppliedModelingLib.Probability.IIDStream.firstHit sigma marks := by
+  classical
+  unfold firstAcceptedIndex MarkedRestart.firstSuccess acceptancePairStream
+    AppliedModelingLib.Probability.IIDStream.firstHit
+  by_cases h : ∃ n, marks n ∈ sigma
+  · have hacc : ∃ n, MarkedRestart.accepted
+        (fun n => (0, gn21AcceptanceMark sigma (marks n))) n := by
+        simpa [MarkedRestart.accepted, gn21AcceptanceMark] using h
+    simp only [Function.comp_apply, dif_pos hacc, dif_pos h]
+    apply Nat.le_antisymm
+    · exact Nat.find_min' hacc (by
+        simpa [MarkedRestart.accepted, gn21AcceptanceMark] using Nat.find_spec h)
+    · exact Nat.find_min' h (by
+        simpa [MarkedRestart.accepted, gn21AcceptanceMark] using Nat.find_spec hacc)
+  · simp [MarkedRestart.accepted, gn21AcceptanceMark, h]
+
+theorem firstAcceptedTripMark_eq_firstHitValue
+    (sigma : TripPolicy) (marks : Nat -> TripLength) :
+    firstAcceptedTripMark sigma marks =
+      AppliedModelingLib.Probability.IIDStream.firstHitValue sigma marks := by
+  simp only [firstAcceptedTripMark,
+    AppliedModelingLib.Probability.IIDStream.firstHitValue]
+  rw [firstAcceptedIndex_eq_firstHit]
 
 theorem measurable_acceptancePairStream
     (sigma : TripPolicy) (hsigma : MeasurableSet sigma) :
@@ -109,7 +150,7 @@ def neverAccepted (sigma : TripPolicy) : Set (Nat -> TripLength) :=
 /-- The finite prefix event that all raw request marks are rejected. -/
 def noAcceptedPrefix (sigma : TripPolicy) (count : Nat) : Set (Nat -> TripLength) :=
   {marks | ∀ i : Fin count,
-    IIDStream.block (alpha := TripLength) 0 count marks i ∈ sigmaᶜ}
+    IIDStream.block (α := TripLength) 0 count marks i ∈ sigmaᶜ}
 
 theorem measurableSet_firstAcceptedEvent
     (sigma : TripPolicy) (hsigma : MeasurableSet sigma) (n : Nat) :
@@ -195,7 +236,7 @@ theorem measure_firstAcceptedEvent_inter_coordinate_preimage
   have hrect :
       firstAcceptedEvent sigma n ∩ {marks | marks n ∈ s} =
         {marks | forall i : Fin (n + 1),
-          IIDStream.block (alpha := TripLength) 0 (n + 1) marks i ∈ sets i} := by
+          IIDStream.block (α := TripLength) 0 (n + 1) marks i ∈ sets i} := by
     ext marks
     simp only [Set.mem_inter_iff, Set.mem_setOf_eq]
     constructor
@@ -419,11 +460,225 @@ theorem firstAcceptedTripMark_hasLaw
   rw [Measure.map_apply (measurable_firstAcceptedTripMark sigma hsigma) hs]
   exact measure_firstAcceptedTripMark_preimage_eq_cond mu sigma hsigma hmass s hs
 
+/-- The actual first accepted index and continuous selected trip mark are
+jointly independent of the complete future raw-mark tail.  This derives the
+marked regeneration fact from the iid source stream; it is not a renewal
+certificate supplied by a caller. -/
+theorem indepFun_firstAcceptedIndex_firstAcceptedTripMark_postTail
+    (mu : Measure TripLength) [IsProbabilityMeasure mu]
+    (sigma : TripPolicy) (hsigma : MeasurableSet sigma)
+    (hmass : 0 < singleStateTripMass mu sigma) :
+    ProbabilityTheory.IndepFun
+      (fun marks : Nat -> TripLength =>
+        (firstAcceptedIndex sigma marks, firstAcceptedTripMark sigma marks))
+      (firstAcceptedTripTail sigma)
+      (IIDStream.measure mu) := by
+  have hmass' : 0 < mu sigma :=
+    measure_pos_of_singleStateTripMass_pos mu sigma hmass
+  have hindep :=
+    AppliedModelingLib.Probability.IIDStream.indepFun_firstHit_index_value_postFirstHitTail
+      mu sigma hsigma hmass'
+  simpa only [firstAcceptedTripTail, firstAcceptedIndex_eq_firstHit,
+    firstAcceptedTripMark_eq_firstHitValue] using hindep
+
+/-- The full continuous mark stream after the first accepted request has the
+original iid source law. -/
+theorem firstAcceptedTripTail_hasLaw
+    (mu : Measure TripLength) [IsProbabilityMeasure mu]
+    (sigma : TripPolicy) (hsigma : MeasurableSet sigma)
+    (hmass : 0 < singleStateTripMass mu sigma) :
+    HasLaw (firstAcceptedTripTail sigma) (IIDStream.measure mu)
+      (IIDStream.measure mu) := by
+  have hmass' : 0 < mu sigma :=
+    measure_pos_of_singleStateTripMass_pos mu sigma hmass
+  simpa only [firstAcceptedTripTail] using
+    AppliedModelingLib.Probability.IIDStream.postFirstHitTail_hasLaw
+      mu sigma hsigma hmass'
+
+/-- The first accepted request's raw index is independent of the trip mark
+selected at that index.  This is the marked-renewal fact needed to combine
+the geometrically stopped request count with a conditional accepted-trip law:
+the stopping index depends on which earlier marks were rejected, whereas the
+value of the successful mark has the source law conditioned on acceptance. -/
+theorem indepFun_firstAcceptedIndex_firstAcceptedTripMark
+    (mu : Measure TripLength) [IsProbabilityMeasure mu]
+    (sigma : TripPolicy) (hsigma : MeasurableSet sigma)
+    (hmass : 0 < singleStateTripMass mu sigma) :
+    ProbabilityTheory.IndepFun (firstAcceptedIndex sigma)
+      (firstAcceptedTripMark sigma) (IIDStream.measure mu) := by
+  classical
+  let nu : Measure (Nat -> TripLength) := IIDStream.measure mu
+  let good : Set (Nat -> TripLength) := {marks | ∃ n, marks n ∈ sigma}
+  let acceptedLaw : Measure TripLength := gn21AcceptedTripLaw mu sigma
+  letI : IsProbabilityMeasure nu := by
+    dsimp [nu, IIDStream.measure]
+    infer_instance
+  letI : IsProbabilityMeasure acceptedLaw := by
+    dsimp [acceptedLaw]
+    exact gn21AcceptedTripLaw_isProbability mu sigma hmass
+  apply (ProbabilityTheory.indepFun_iff_measure_inter_preimage_eq_mul).mpr
+  intro indexSet markSet hindexSet hmarkSet
+  let indices := {n : Nat // n ∈ indexSet}
+  let indexPieces : indices -> Set (Nat -> TripLength) := fun n =>
+    firstAcceptedEvent sigma n.1
+  let jointPieces : indices -> Set (Nat -> TripLength) := fun n =>
+    firstAcceptedEvent sigma n.1 ∩ {marks | marks n.1 ∈ markSet}
+  have hgood_ae : ∀ᵐ marks ∂nu, marks ∈ good := by
+    simpa [nu, good] using ae_exists_accepted mu sigma hsigma hmass
+  have hindex_ae : ∀ᵐ marks ∂nu,
+      (marks ∈ (firstAcceptedIndex sigma) ⁻¹' indexSet) =
+        (marks ∈ ((firstAcceptedIndex sigma) ⁻¹' indexSet ∩ good)) := by
+    filter_upwards [hgood_ae] with marks hmarks
+    simp [hmarks]
+  have hjoint_ae : ∀ᵐ marks ∂nu,
+      (marks ∈ ((firstAcceptedIndex sigma) ⁻¹' indexSet ∩
+        (firstAcceptedTripMark sigma) ⁻¹' markSet)) =
+        (marks ∈ (((firstAcceptedIndex sigma) ⁻¹' indexSet ∩
+          (firstAcceptedTripMark sigma) ⁻¹' markSet) ∩ good)) := by
+    filter_upwards [hgood_ae] with marks hmarks
+    simp [hmarks]
+  have hindexPieces_meas : ∀ n : indices, MeasurableSet (indexPieces n) := by
+    intro n
+    exact measurableSet_firstAcceptedEvent sigma hsigma n.1
+  have hjointPieces_meas : ∀ n : indices, MeasurableSet (jointPieces n) := by
+    intro n
+    exact (measurableSet_firstAcceptedEvent sigma hsigma n.1).inter
+      ((measurable_pi_apply n.1) hmarkSet)
+  have hindexPieces_disjoint : Pairwise (Function.onFun Disjoint indexPieces) := by
+    intro n m hnm
+    exact firstAcceptedEvent_pairwiseDisjoint sigma (fun h => hnm (Subtype.ext h))
+  have hjointPieces_disjoint : Pairwise (Function.onFun Disjoint jointPieces) := by
+    intro n m hnm
+    refine Set.disjoint_left.2 ?_
+    intro marks hn hm
+    exact (Set.disjoint_left.1
+      (hindexPieces_disjoint hnm)) hn.1 hm.1
+  have hindexPieces_union :
+      ⋃ n : indices, indexPieces n =
+        (firstAcceptedIndex sigma) ⁻¹' indexSet ∩ good := by
+    ext marks
+    simp only [Set.mem_iUnion, Set.mem_inter_iff, indexPieces, good,
+      Set.mem_preimage, Set.mem_setOf_eq]
+    constructor
+    · rintro ⟨n, hfirst⟩
+      refine ⟨?_, ⟨n.1, (mem_firstAcceptedEvent_iff sigma marks n.1).mp hfirst |>.1⟩⟩
+      rw [firstAcceptedIndex_eq_of_firstSuccessEvent sigma hfirst]
+      exact n.2
+    · rintro ⟨hindex, ⟨n, hn⟩⟩
+      let h : ∃ m, marks m ∈ sigma := ⟨n, hn⟩
+      let k := Nat.find h
+      have hfirst : marks ∈ firstAcceptedEvent sigma k := by
+        rw [mem_firstAcceptedEvent_iff]
+        refine ⟨Nat.find_spec h, ?_⟩
+        intro m hm
+        exact Nat.find_min h hm
+      have hk : k ∈ indexSet := by
+        rw [← firstAcceptedIndex_eq_of_firstSuccessEvent sigma hfirst]
+        exact hindex
+      exact ⟨⟨k, hk⟩, hfirst⟩
+  have hjointPieces_union :
+      ⋃ n : indices, jointPieces n =
+        ((firstAcceptedIndex sigma) ⁻¹' indexSet ∩
+          (firstAcceptedTripMark sigma) ⁻¹' markSet) ∩ good := by
+    ext marks
+    simp only [Set.mem_iUnion, Set.mem_inter_iff, jointPieces, good,
+      Set.mem_preimage, Set.mem_setOf_eq]
+    constructor
+    · rintro ⟨n, hfirst, hmark⟩
+      have hindex := firstAcceptedIndex_eq_of_firstSuccessEvent sigma hfirst
+      refine ⟨⟨?_, ?_⟩, ⟨n.1, (mem_firstAcceptedEvent_iff sigma marks n.1).mp hfirst |>.1⟩⟩
+      · rw [hindex]
+        exact n.2
+      · change marks (firstAcceptedIndex sigma marks) ∈ markSet
+        simpa [hindex] using hmark
+    · rintro ⟨⟨hindex, hmark⟩, ⟨n, hn⟩⟩
+      let h : ∃ m, marks m ∈ sigma := ⟨n, hn⟩
+      let k := Nat.find h
+      have hfirst : marks ∈ firstAcceptedEvent sigma k := by
+        rw [mem_firstAcceptedEvent_iff]
+        refine ⟨Nat.find_spec h, ?_⟩
+        intro m hm
+        exact Nat.find_min h hm
+      have hk : k ∈ indexSet := by
+        rw [← firstAcceptedIndex_eq_of_firstSuccessEvent sigma hfirst]
+        exact hindex
+      refine ⟨⟨k, hk⟩, hfirst, ?_⟩
+      change marks k ∈ markSet
+      change marks (firstAcceptedIndex sigma marks) ∈ markSet at hmark
+      simpa [firstAcceptedIndex_eq_of_firstSuccessEvent sigma hfirst] using hmark
+  have hpiece_factor (n : indices) :
+      nu (jointPieces n) = nu (indexPieces n) * acceptedLaw markSet := by
+    have hfirst : nu (indexPieces n) = (mu sigmaᶜ) ^ n.1 * mu sigma := by
+      simpa [nu, indexPieces] using measure_firstAcceptedEvent mu sigma hsigma n.1
+    calc
+      nu (jointPieces n) = (mu sigmaᶜ) ^ n.1 * mu (sigma ∩ markSet) := by
+        simpa [nu, jointPieces] using
+          measure_firstAcceptedEvent_inter_coordinate_preimage
+            mu sigma hsigma n.1 markSet hmarkSet
+      _ = ((mu sigmaᶜ) ^ n.1 * mu sigma) * acceptedLaw markSet := by
+        unfold acceptedLaw gn21AcceptedTripLaw
+        rw [ProbabilityTheory.cond_apply hsigma mu markSet]
+        have hmass' : mu sigma ≠ 0 := by
+          exact ne_of_gt (measure_pos_of_singleStateTripMass_pos mu sigma hmass)
+        have hmass_ne_top : mu sigma ≠ ∞ := measure_ne_top mu sigma
+        calc
+          (mu sigmaᶜ) ^ n.1 * mu (sigma ∩ markSet) =
+              (mu sigmaᶜ) ^ n.1 * (1 * mu (sigma ∩ markSet)) := by simp
+          _ = (mu sigmaᶜ) ^ n.1 * (mu sigma * (mu sigma)⁻¹) *
+              mu (sigma ∩ markSet) := by
+            rw [ENNReal.mul_inv_cancel hmass' hmass_ne_top]
+            simp
+          _ = ((mu sigmaᶜ) ^ n.1 * mu sigma) *
+              ((mu sigma)⁻¹ * mu (sigma ∩ markSet)) := by ac_rfl
+      _ = nu (indexPieces n) * acceptedLaw markSet := by rw [hfirst]
+  have hindex_measure :
+      nu ((firstAcceptedIndex sigma) ⁻¹' indexSet) =
+        ∑' n : indices, nu (indexPieces n) := by
+    calc
+      nu ((firstAcceptedIndex sigma) ⁻¹' indexSet) =
+          nu ((firstAcceptedIndex sigma) ⁻¹' indexSet ∩ good) :=
+        measure_congr hindex_ae
+      _ = nu (⋃ n : indices, indexPieces n) := by rw [hindexPieces_union]
+      _ = ∑' n : indices, nu (indexPieces n) :=
+        measure_iUnion hindexPieces_disjoint hindexPieces_meas
+  calc
+    nu ((firstAcceptedIndex sigma) ⁻¹' indexSet ∩
+        (firstAcceptedTripMark sigma) ⁻¹' markSet) =
+        nu (((firstAcceptedIndex sigma) ⁻¹' indexSet ∩
+          (firstAcceptedTripMark sigma) ⁻¹' markSet) ∩ good) :=
+      measure_congr hjoint_ae
+    _ = nu (⋃ n : indices, jointPieces n) := by rw [hjointPieces_union]
+    _ = ∑' n : indices, nu (jointPieces n) :=
+      measure_iUnion hjointPieces_disjoint hjointPieces_meas
+    _ = ∑' n : indices, nu (indexPieces n) * acceptedLaw markSet := by
+      apply tsum_congr
+      exact hpiece_factor
+    _ = (∑' n : indices, nu (indexPieces n)) * acceptedLaw markSet := by
+      exact ENNReal.tsum_mul_right
+    _ = nu ((firstAcceptedIndex sigma) ⁻¹' indexSet) * acceptedLaw markSet := by
+      rw [hindex_measure]
+    _ = nu ((firstAcceptedIndex sigma) ⁻¹' indexSet) *
+        nu ((firstAcceptedTripMark sigma) ⁻¹' markSet) := by
+      rw [measure_firstAcceptedTripMark_preimage_eq_cond mu sigma hsigma hmass markSet hmarkSet]
+
+
+/-- The first accepted raw request index is a literal observable of a GN21
+raw cycle seed. -/
+noncomputable def gn21RawFirstAcceptedIndex
+    (state : Fin 2) (sigma : TripPolicy) : GN21RawCycleSeed -> Nat :=
+  fun seed => firstAcceptedIndex sigma (fun n => gn21RawCycleMark state n seed)
+
 /-- The first accepted raw trip mark is a literal observable of a GN21 raw
 cycle seed. -/
 noncomputable def gn21RawFirstAcceptedTripMark
     (state : Fin 2) (sigma : TripPolicy) : GN21RawCycleSeed -> TripLength :=
   fun seed => firstAcceptedTripMark sigma (fun n => gn21RawCycleMark state n seed)
+
+/-- The uninspected continuous raw-mark tail after the literal first accepted
+GN21 request. -/
+noncomputable def gn21RawFirstAcceptedTripTail
+    (state : Fin 2) (sigma : TripPolicy) : GN21RawCycleSeed -> Nat -> TripLength :=
+  fun seed => firstAcceptedTripTail sigma (fun n => gn21RawCycleMark state n seed)
 
 /-- Transport the raw IID first-accepted-mark result through the actual GN21
 raw cycle-seed product measure.  This removes the conditional accepted-mark
@@ -455,6 +710,171 @@ theorem gn21RawFirstAcceptedTripMark_hasLaw
     (gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI)
   simpa [M, gn21RawFirstAcceptedTripMark, gn21RawCycleMark, Function.comp_def] using
     hselected.comp hraw
+
+/-- The literal continuous mark tail after the first accepted GN21 request
+has the original source iid mark-stream law. -/
+theorem gn21RawFirstAcceptedTripTail_hasLaw
+    (muI muJ : Measure TripLength)
+    (arrivalI arrivalJ switchIJ switchJI : Real)
+    [IsProbabilityMeasure muI] [IsProbabilityMeasure muJ]
+    (harrivalI : 0 < arrivalI) (harrivalJ : 0 < arrivalJ)
+    (hswitchIJ : 0 < switchIJ) (hswitchJI : 0 < switchJI)
+    (state : Fin 2) (sigma : TripPolicy) (hsigma : MeasurableSet sigma)
+    (hmass : 0 < singleStateTripMass (gn21CycleMarkLaw muI muJ state) sigma) :
+    HasLaw (gn21RawFirstAcceptedTripTail state sigma)
+      (IIDStream.measure (gn21CycleMarkLaw muI muJ state))
+      (gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI) := by
+  let M := gn21CycleMarkLaw muI muJ state
+  have hM_prob : IsProbabilityMeasure M := by
+    dsimp [M, gn21CycleMarkLaw]
+    fin_cases state <;> infer_instance
+  letI : IsProbabilityMeasure M := hM_prob
+  have htail : HasLaw (firstAcceptedTripTail sigma) (IIDStream.measure M)
+      (IIDStream.measure M) :=
+    firstAcceptedTripTail_hasLaw M sigma hsigma (by simpa [M] using hmass)
+  have hraw := gn21RawCycleMarkStream_hasLaw muI muJ arrivalI arrivalJ
+    switchIJ switchJI harrivalI harrivalJ hswitchIJ hswitchJI state
+  change HasLaw
+    (firstAcceptedTripTail sigma ∘ fun seed : GN21RawCycleSeed => seed.2 state)
+    (IIDStream.measure M)
+    (gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI)
+  simpa [M, gn21RawFirstAcceptedTripTail, gn21RawCycleMark, Function.comp_def] using
+    htail.comp hraw
+
+/-- The literal GN21 stopped index and continuous selected mark factor from
+the complete uninspected continuous mark tail.  The first factor remains its
+actual pushforward law, so this theorem does not hide a resampled trip mark. -/
+theorem gn21RawFirstAcceptedIndexTripMarkTail_hasLaw
+    (muI muJ : Measure TripLength)
+    (arrivalI arrivalJ switchIJ switchJI : Real)
+    [IsProbabilityMeasure muI] [IsProbabilityMeasure muJ]
+    (harrivalI : 0 < arrivalI) (harrivalJ : 0 < arrivalJ)
+    (hswitchIJ : 0 < switchIJ) (hswitchJI : 0 < switchJI)
+    (state : Fin 2) (sigma : TripPolicy) (hsigma : MeasurableSet sigma)
+    (hmass : 0 < singleStateTripMass (gn21CycleMarkLaw muI muJ state) sigma) :
+    HasLaw
+      (fun seed =>
+        ((gn21RawFirstAcceptedIndex state sigma seed,
+          gn21RawFirstAcceptedTripMark state sigma seed),
+          gn21RawFirstAcceptedTripTail state sigma seed))
+      ((Measure.map
+        (fun marks : Nat -> TripLength =>
+          (firstAcceptedIndex sigma marks, firstAcceptedTripMark sigma marks))
+        (IIDStream.measure (gn21CycleMarkLaw muI muJ state))).prod
+        (IIDStream.measure (gn21CycleMarkLaw muI muJ state)))
+      (gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI) := by
+  let M := gn21CycleMarkLaw muI muJ state
+  let P := gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI
+  let rawMarks : GN21RawCycleSeed -> Nat -> TripLength :=
+    fun seed n => gn21RawCycleMark state n seed
+  let f : (Nat -> TripLength) -> Nat × TripLength := fun marks =>
+    (firstAcceptedIndex sigma marks, firstAcceptedTripMark sigma marks)
+  let tail : (Nat -> TripLength) -> Nat -> TripLength := firstAcceptedTripTail sigma
+  have hM_prob : IsProbabilityMeasure M := by
+    dsimp [M, gn21CycleMarkLaw]
+    fin_cases state <;> infer_instance
+  letI : IsProbabilityMeasure M := hM_prob
+  letI : IsProbabilityMeasure (IIDStream.measure M) := by
+    dsimp [IIDStream.measure]
+    infer_instance
+  have hraw : HasLaw rawMarks (IIDStream.measure M) P := by
+    simpa [rawMarks, P, M, gn21RawCycleMark] using
+      (gn21RawCycleMarkStream_hasLaw muI muJ arrivalI arrivalJ switchIJ switchJI
+        harrivalI harrivalJ hswitchIJ hswitchJI state)
+  have hf : Measurable f := by
+    exact (measurable_firstAcceptedIndex sigma hsigma).prodMk
+      (measurable_firstAcceptedTripMark sigma hsigma)
+  have htail : HasLaw tail (IIDStream.measure M) (IIDStream.measure M) := by
+    simpa [tail] using firstAcceptedTripTail_hasLaw M sigma hsigma
+      (by simpa [M] using hmass)
+  have hindep : IndepFun f tail (IIDStream.measure M) := by
+    simpa [f, tail] using indepFun_firstAcceptedIndex_firstAcceptedTripMark_postTail
+      M sigma hsigma (by simpa [M] using hmass)
+  have hpair : HasLaw (fun marks => (f marks, tail marks))
+      ((Measure.map f (IIDStream.measure M)).prod (IIDStream.measure M))
+      (IIDStream.measure M) := by
+    refine ⟨(hf.prodMk (measurable_firstAcceptedTripTail sigma hsigma)).aemeasurable, ?_⟩
+    rw [(indepFun_iff_map_prod_eq_prod_map_map hf.aemeasurable
+      (measurable_firstAcceptedTripTail sigma hsigma).aemeasurable).mp hindep,
+      htail.map_eq]
+  change HasLaw (fun seed => (f (rawMarks seed), tail (rawMarks seed)))
+    ((Measure.map f (IIDStream.measure M)).prod (IIDStream.measure M)) P
+  simpa [P, M, rawMarks, f, tail, gn21RawFirstAcceptedIndex,
+    gn21RawFirstAcceptedTripMark, gn21RawFirstAcceptedTripTail, gn21RawCycleMark,
+    Function.comp_def] using hpair.comp hraw
+
+/-- On the literal GN21 raw product seed, the first accepted request index is
+independent of the selected conditional trip mark.  The proof transports the
+IID marked-selection theorem through the actual source mark-stream map; it
+does not introduce a separately sampled accepted-trip mark. -/
+theorem indepFun_gn21RawFirstAcceptedIndex_firstAcceptedTripMark
+    (muI muJ : Measure TripLength)
+    (arrivalI arrivalJ switchIJ switchJI : Real)
+    [IsProbabilityMeasure muI] [IsProbabilityMeasure muJ]
+    (harrivalI : 0 < arrivalI) (harrivalJ : 0 < arrivalJ)
+    (hswitchIJ : 0 < switchIJ) (hswitchJI : 0 < switchJI)
+    (state : Fin 2) (sigma : TripPolicy) (hsigma : MeasurableSet sigma)
+    (hmass : 0 < singleStateTripMass (gn21CycleMarkLaw muI muJ state) sigma) :
+    ProbabilityTheory.IndepFun (gn21RawFirstAcceptedIndex state sigma)
+      (gn21RawFirstAcceptedTripMark state sigma)
+      (gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI) := by
+  let M := gn21CycleMarkLaw muI muJ state
+  let P := gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI
+  let rawMarks : GN21RawCycleSeed -> Nat -> TripLength :=
+    fun seed n => gn21RawCycleMark state n seed
+  let index := firstAcceptedIndex sigma
+  let mark := firstAcceptedTripMark sigma
+  have hM_prob : IsProbabilityMeasure M := by
+    dsimp [M, gn21CycleMarkLaw]
+    fin_cases state <;> infer_instance
+  letI : IsProbabilityMeasure M := hM_prob
+  letI : IsProbabilityMeasure P := by
+    simpa [P] using isProbabilityMeasure_gn21RawCycleSeedMeasure
+      muI muJ arrivalI arrivalJ switchIJ switchJI
+      harrivalI harrivalJ hswitchIJ hswitchJI
+  letI : IsProbabilityMeasure (IIDStream.measure M) := by
+    dsimp [IIDStream.measure]
+    infer_instance
+  have hrawMeas : Measurable rawMarks := by
+    apply measurable_pi_lambda
+    intro n
+    exact ((measurable_pi_apply n).comp
+      ((measurable_pi_apply state).comp measurable_snd))
+  have hraw : HasLaw rawMarks (IIDStream.measure M) P := by
+    simpa [rawMarks, P, M, gn21RawCycleMark] using
+      (gn21RawCycleMarkStream_hasLaw muI muJ arrivalI arrivalJ switchIJ switchJI
+        harrivalI harrivalJ hswitchIJ hswitchJI state)
+  have hindex : Measurable index := by
+    simpa [index] using measurable_firstAcceptedIndex sigma hsigma
+  have hmark : Measurable mark := by
+    simpa [mark] using measurable_firstAcceptedTripMark sigma hsigma
+  have hindep : ProbabilityTheory.IndepFun index mark (IIDStream.measure M) := by
+    simpa [index, mark, M] using
+      (indepFun_firstAcceptedIndex_firstAcceptedTripMark M sigma hsigma
+        (by simpa [M] using hmass))
+  apply (ProbabilityTheory.indepFun_iff_map_prod_eq_prod_map_map
+    (hindex.comp hrawMeas).aemeasurable
+    (hmark.comp hrawMeas).aemeasurable).mpr
+  change P.map (fun seed => (index (rawMarks seed), mark (rawMarks seed))) =
+    (P.map (fun seed => index (rawMarks seed))).prod
+      (P.map (fun seed => mark (rawMarks seed)))
+  calc
+    P.map (fun seed => (index (rawMarks seed), mark (rawMarks seed))) =
+        (P.map rawMarks).map (fun marks => (index marks, mark marks)) := by
+          rw [Measure.map_map (hindex.prodMk hmark) hrawMeas]
+          rfl
+    _ = (IIDStream.measure M).map (fun marks => (index marks, mark marks)) := by
+      rw [hraw.map_eq]
+    _ = ((IIDStream.measure M).map index).prod ((IIDStream.measure M).map mark) := by
+      exact (ProbabilityTheory.indepFun_iff_map_prod_eq_prod_map_map
+        hindex.aemeasurable hmark.aemeasurable).mp hindep
+    _ = ((P.map rawMarks).map index).prod ((P.map rawMarks).map mark) := by
+      rw [hraw.map_eq]
+    _ = (P.map (fun seed => index (rawMarks seed))).prod
+        (P.map (fun seed => mark (rawMarks seed))) := by
+      rw [Measure.map_map hindex hrawMeas,
+        Measure.map_map hmark hrawMeas]
+      rfl
 
 end AcceptedTripSelection
 

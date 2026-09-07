@@ -1,5 +1,5 @@
 import MSVV07AdWords.MainTheorems
-import EconCSLib.Foundations.Optimization.LinearProgram
+import AppliedModelingLib.Foundations.Optimization.LinearProgram
 import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
 import Mathlib.Topology.MetricSpace.Basic
 
@@ -16,7 +16,7 @@ and tradeoff-revealing proof steps importable and checkable in Lean.
 open scoped BigOperators Topology
 open Filter
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Online
 namespace MSVV07SourceLemmas
 
@@ -975,6 +975,69 @@ theorem lemma4_dual_feasible_of_same_A_c
   simpa [Optimization.StandardMaxLP.DualFeasible] using hystar
 
 /--
+Lemma 4 for the paper's factor-revealing matrix.  For each realized
+nonnegative type-count vector `a`, the tradeoff-revealing LP has right-hand
+side `A a`; the fixed geometric dual candidate is optimal for its dual.
+-/
+theorem lemma4_paper_tradeoff_dual_candidate_optimal
+    {m : ℕ} (a : Fin m → ℝ) (ha : ∀ i, 0 ≤ a i) :
+    Optimization.IsMinimizerOn
+      (tradeoffRevealingLP (m := m) paperRoutePrimalObjectiveCoeff
+        (fun row => ∑ i : Fin m, paperRouteMatrixCoeff row i * a i)).DualFeasible
+      (tradeoffRevealingLP (m := m) paperRoutePrimalObjectiveCoeff
+        (fun row => ∑ i : Fin m, paperRouteMatrixCoeff row i * a i)).dualObjective
+      paperRouteDualCandidate := by
+  let l : Fin m → ℝ := fun row => ∑ i : Fin m, paperRouteMatrixCoeff row i * a i
+  let P : Optimization.StandardMaxLP (Fin m) (Fin m) :=
+    tradeoffRevealingLP paperRoutePrimalObjectiveCoeff l
+  have hprimal : P.PrimalFeasible a := by
+    constructor
+    · exact ha
+    · intro row
+      change (∑ i : Fin m, paperRouteMatrixCoeff row i * a i) ≤
+        ∑ i : Fin m, paperRouteMatrixCoeff row i * a i
+      exact le_rfl
+  have hcolumn : ∀ i : Fin m,
+      (∑ row : Fin m, paperRouteMatrixCoeff row i * paperRouteDualCandidate row) =
+        paperRoutePrimalObjectiveCoeff i := by
+    intro i
+    simpa [paperRouteDualRow, paperRouteSuffix, paperRouteMatrixCoeff,
+      Finset.sum_filter, mul_comm] using paperRouteDualCandidate_row_tight i
+  have hdual : P.DualFeasible paperRouteDualCandidate := by
+    constructor
+    · exact paperRouteDualCandidate_nonnegative
+    · intro i
+      change paperRoutePrimalObjectiveCoeff i ≤
+        ∑ row : Fin m, paperRouteMatrixCoeff row i * paperRouteDualCandidate row
+      exact le_of_eq (hcolumn i).symm
+  apply lemma4_standardMaxLP_dual_yStar_optimal P hprimal hdual
+  calc
+    P.primalObjective a = ∑ i : Fin m, paperRoutePrimalObjectiveCoeff i * a i := by
+      rfl
+    _ = ∑ i : Fin m,
+        (∑ row : Fin m, paperRouteMatrixCoeff row i * paperRouteDualCandidate row) * a i := by
+      apply Finset.sum_congr rfl
+      intro i _
+      rw [hcolumn i]
+    _ = ∑ i : Fin m, ∑ row : Fin m,
+        paperRouteMatrixCoeff row i * paperRouteDualCandidate row * a i := by
+      simp_rw [Finset.sum_mul]
+    _ = ∑ row : Fin m, ∑ i : Fin m,
+        paperRouteMatrixCoeff row i * paperRouteDualCandidate row * a i := by
+      exact Finset.sum_comm
+    _ = ∑ row : Fin m,
+        (∑ i : Fin m, paperRouteMatrixCoeff row i * a i) * paperRouteDualCandidate row := by
+      apply Finset.sum_congr rfl
+      intro row _
+      rw [Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro i _
+      ring
+    _ = P.dualObjective paperRouteDualCandidate := by
+      simp [P, l, tradeoffRevealingLP, Optimization.StandardMaxLP.dualObjective,
+        mul_comm]
+
+/--
 Lemma 5. The right-hand side of the tradeoff-revealing LP is the original
 factor-revealing right-hand side plus the perturbation vector `Δ(π, ψ)`.
 -/
@@ -1448,4 +1511,4 @@ theorem theorem8_source_route_tradeoff_lp_upper_bound_from_query_accounting
 
 end MSVV07SourceLemmas
 end Online
-end EconCSLib
+end AppliedModelingLib

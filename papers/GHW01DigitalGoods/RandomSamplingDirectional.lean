@@ -11,8 +11,8 @@ auction distinct from the later dual-price variant, which prices both sides.
 
 namespace GHW01DigitalGoods
 
-open EconCSLib
-open EconCSLib.Auction
+open AppliedModelingLib
+open AppliedModelingLib.Auction
 open MeasureTheory
 open ProbabilityTheory
 open scoped BigOperators
@@ -111,7 +111,7 @@ theorem uniformFixedSizeSampleLaw_complement_event_probability_eq
     Finset.nonempty_coe_sort.mpr
       (Finset.powersetCard_nonempty.mpr (by simpa using hsize))
   simpa [pmfEventProbability, uniformFixedSizeSampleLaw] using
-    (EconCSLib.pmfProb_uniformPMF_eq_of_comp_equiv
+    (AppliedModelingLib.pmfProb_uniformPMF_eq_of_comp_equiv
       (fixedHalfSampleComplementEquiv sampleSize hhalf) event
       (fun sample => event (fixedHalfSampleComplementEquiv sampleSize hhalf sample))
       (fun _ => Iff.rfl)).symm
@@ -187,7 +187,7 @@ theorem uniformFixedHalf_hitCount_ge_third_probability
                 (eligible.card : ℝ) / 3) := by
     unfold pmfEventProbability
     simpa only [not_lt] using
-      (EconCSLib.pmfProb_compl
+      (AppliedModelingLib.pmfProb_compl
         (uniformFixedSizeSampleLaw sampleSize
           (by omega : sampleSize ≤ Fintype.card Agent))
         (fun sample =>
@@ -222,7 +222,7 @@ theorem uniformFixedHalf_complement_hitCount_lt_third_probability
         1 - pmfEventProbability law bad := by
     unfold pmfEventProbability
     simpa only [bad, not_lt] using
-      (EconCSLib.pmfProb_compl law bad)
+      (AppliedModelingLib.pmfProb_compl law bad)
   have hbad : pmfEventProbability law bad ≤
       Real.exp (-(eligible.card : ℝ) / 36) := by
     change 1 - Real.exp (-(eligible.card : ℝ) / 36) ≤
@@ -311,7 +311,7 @@ theorem pmfEventProbability_exists_mem_le_sum
       ∑ i ∈ indices, pmfEventProbability law (event i) := by
   classical
   unfold pmfEventProbability
-  exact @EconCSLib.pmfProb_exists_mem_le_sum Ω ι _ _ law indices event
+  exact @AppliedModelingLib.pmfProb_exists_mem_le_sum Ω ι _ _ law indices event
     (Classical.decPred _) (fun i => Classical.decPred _)
 
 /-- Finite PMF probabilities do not depend on a computational choice of the
@@ -320,10 +320,10 @@ theorem pmfProb_decidable_pred_irrel
     {Ω : Type*} [Fintype Ω] [DecidableEq Ω]
     (law : PMF Ω) (event : Ω → Prop)
     (d₁ d₂ : DecidablePred event) :
-    @EconCSLib.pmfProb Ω _ _ law event d₁ =
-      @EconCSLib.pmfProb Ω _ _ law event d₂ := by
-  unfold EconCSLib.pmfProb
-  apply EconCSLib.pmfExp_congr
+    @AppliedModelingLib.pmfProb Ω _ law event d₁ =
+      @AppliedModelingLib.pmfProb Ω _ law event d₂ := by
+  unfold AppliedModelingLib.pmfProb
+  apply AppliedModelingLib.pmfExp_congr
   intro ω
   by_cases h : event ω <;> simp [h]
 
@@ -334,7 +334,7 @@ theorem pmfEventProbability_nonneg
     0 ≤ pmfEventProbability law event := by
   classical
   unfold pmfEventProbability
-  exact EconCSLib.pmfProb_nonneg law event
+  exact AppliedModelingLib.pmfProb_nonneg law event
 
 /-- For a fixed exact-half sample, sample-side winners are precisely the
 fixed-size hits in the winner set. -/
@@ -877,14 +877,14 @@ theorem theorem6_2_directional_fixed_half_revenue_bound_top_prefix_of_selected_l
   have hbad_compl :
       pmfEventProbability law (fun sample => ¬ badLarge sample) =
         1 - pmfEventProbability law badLarge := by
-    have hraw := @EconCSLib.pmfProb_compl _ _ _ law badLarge
+    have hraw := @AppliedModelingLib.pmfProb_compl _ _ _ law badLarge
       (Classical.decPred badLarge)
     unfold pmfEventProbability
     calc
-      @EconCSLib.pmfProb _ _ _ law (fun sample => ¬ badLarge sample)
+      @AppliedModelingLib.pmfProb _ _ law (fun sample => ¬ badLarge sample)
           (Classical.decPred _) = _ :=
         pmfProb_decidable_pred_irrel law _ _ _
-      _ = 1 - @EconCSLib.pmfProb _ _ _ law badLarge
+      _ = 1 - @AppliedModelingLib.pmfProb _ _ law badLarge
           (Classical.decPred _) := hraw
   have hnot_bad :
       1 - 40 * Real.exp (-(a : ℝ) / 72) ≤
@@ -899,7 +899,7 @@ theorem theorem6_2_directional_fixed_half_revenue_bound_top_prefix_of_selected_l
         pmfEventProbability law target := by
     change 1 - Real.exp (-(a : ℝ) / 36) -
           40 * Real.exp (-(a : ℝ) / 72) ≤
-        @EconCSLib.pmfProb _ _ _ law target (Classical.decPred target)
+        @AppliedModelingLib.pmfProb _ _ law target (Classical.decPred target)
     exact @paper_theorem6_2_random_sampling_union_bound _ _ _ law sampleGood
       (fun sample => ¬ badLarge sample) target
       (Classical.decPred sampleGood)

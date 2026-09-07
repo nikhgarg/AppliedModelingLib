@@ -1,6 +1,6 @@
 import KR21Monoculture.RUM
 
-open EconCSLib Filter MeasureTheory ProbabilityTheory
+open AppliedModelingLib Filter MeasureTheory ProbabilityTheory
 open scoped ENNReal NNReal Topology
 
 namespace KR21Monoculture
@@ -142,6 +142,221 @@ theorem equationC5_gaussian_density_cdf_ratio_eq_erf_integral
         ((1 + theorem8Erf (a - xi)) * (1 + theorem8Erf (a - xj))) := by
   simpa [theorem8GaussianDensityCDFIntegralRatioAt] using
     theorem8GaussianPDFCDFRatioAt_eq_densityCDF xi xj a
+
+/--
+Appendix C (C.5), exact quotient-rule factorization in the source cutoff
+coordinate.  The derivative of the actual strict-event conditional ratio is
+a positive factor times the literal displayed C.5 expression.
+-/
+theorem equationC5_gaussian_strict_conditional_ratio_hasDerivAt_factorization
+    (xi xj a : ℝ) :
+    HasDerivAt
+      (fun u => theorem8GaussianProductStrictConditionalRatioAt xi xj u)
+      ((2 / Real.sqrt Real.pi) /
+        ((1 + theorem8Erf (a - xi)) * (1 + theorem8Erf (a - xj))) ^ 2 *
+        ((1 + theorem8Erf (a - xi)) * (1 + theorem8Erf (a - xj)) *
+            Real.exp (-((a - xi) ^ 2)) * (1 + theorem8Erf (a - xj)) -
+          (∫ x : ℝ in Set.Iic a,
+            Real.exp (-((x - xi) ^ 2)) * (1 + theorem8Erf (x - xj))) *
+            (2 / Real.sqrt Real.pi) *
+            ((1 + theorem8Erf (a - xi)) * Real.exp (-((a - xj) ^ 2)) +
+              (1 + theorem8Erf (a - xj)) *
+                Real.exp (-((a - xi) ^ 2))))) a := by
+  let delta : ℝ := xi - xj
+  let t : ℝ := a - xi
+  let c : ℝ := 2 / Real.sqrt Real.pi
+  let A : ℝ := 1 + theorem8Erf t
+  let B : ℝ := 1 + theorem8Erf (t + delta)
+  let p : ℝ := Real.exp (-(t ^ 2))
+  let q : ℝ := Real.exp (-((t + delta) ^ 2))
+  let J : ℝ := theorem8GaussianJ theorem8Erf delta t
+  let I : ℝ := ∫ x : ℝ in Set.Iic a,
+    Real.exp (-((x - xi) ^ 2)) * (1 + theorem8Erf (x - xj))
+  have hA : 0 < A := by
+    dsimp [A]
+    exact theorem8Erf_one_add_pos t
+  have hB : 0 < B := by
+    dsimp [B]
+    exact theorem8Erf_one_add_pos (t + delta)
+  have hden_prod_ne : A * B ≠ 0 :=
+    (mul_pos hA hB).ne'
+  have hA_deriv :
+      HasDerivAt (fun u => 1 + theorem8Erf u) (c * p) t := by
+    dsimp [c, p]
+    simpa using (theorem8Erf_hasDerivAt t).const_add (1 : ℝ)
+  have hshift_fun : HasDerivAt (fun u : ℝ => u + delta) 1 t := by
+    simpa using (hasDerivAt_id t).add_const delta
+  have hB_deriv :
+      HasDerivAt (fun u => 1 + theorem8Erf (u + delta)) (c * q) t := by
+    dsimp [c, q]
+    simpa [one_mul] using
+      ((theorem8Erf_hasDerivAt (t + delta)).comp t hshift_fun).const_add (1 : ℝ)
+  have hJ_deriv :
+      HasDerivAt
+        (fun u => theorem8GaussianJ theorem8Erf delta u)
+        (p * theorem8Erf (t + delta)) t := by
+    dsimp [p]
+    exact theorem8GaussianJ_hasDerivAt_concrete delta t
+  have hnum_deriv :
+      HasDerivAt
+        (fun u =>
+          (1 + theorem8Erf u) +
+            c * theorem8GaussianJ theorem8Erf delta u)
+        (c * p * B) t := by
+    have hraw := hA_deriv.add (hJ_deriv.const_mul c)
+    convert hraw using 1
+    dsimp [B]
+    ring
+  have hden_deriv :
+      HasDerivAt
+        (fun u => (1 + theorem8Erf u) * (1 + theorem8Erf (u + delta)))
+        (c * p * B + A * (c * q)) t := by
+    have hraw := hA_deriv.mul hB_deriv
+    simpa [A, B] using hraw
+  have hratio :
+      HasDerivAt
+        (fun u =>
+          theorem8GaussianConditionalIntegralRatio theorem8Erf
+            (theorem8GaussianJ theorem8Erf delta) delta u)
+        (((c * p * B) * (A * B) -
+            (A + c * J) * (c * p * B + A * (c * q))) /
+          (A * B) ^ 2) t := by
+    have hdiv := hnum_deriv.div hden_deriv hden_prod_ne
+    simpa [theorem8GaussianConditionalIntegralRatio, A, B, J] using hdiv
+  have hlinear : HasDerivAt (fun u : ℝ => u - xi) 1 a := by
+    simpa using (hasDerivAt_id a).sub_const xi
+  have hratioAt :
+      HasDerivAt (fun u => theorem8GaussianConditionalIntegralRatioAt xi xj u)
+        (((c * p * B) * (A * B) -
+            (A + c * J) * (c * p * B + A * (c * q))) /
+          (A * B) ^ 2) a := by
+    simpa [theorem8GaussianConditionalIntegralRatioAt, delta] using
+      hratio.comp a hlinear
+  have hstrict :
+      HasDerivAt
+        (fun u => theorem8GaussianProductStrictConditionalRatioAt xi xj u)
+        (((c * p * B) * (A * B) -
+            (A + c * J) * (c * p * B + A * (c * q))) /
+          (A * B) ^ 2) a :=
+    hratioAt.congr_of_eventuallyEq (Filter.Eventually.of_forall fun u => by
+      exact (theorem8GaussianProductStrictConditionalRatioAt_eq_pdf_cdf xi xj u).trans
+        ((theorem8GaussianPDFCDFRatioAt_eq_densityCDF xi xj u).trans
+          (theorem8GaussianDensityCDFIntegralRatioAt_eq_conditional xi xj u)))
+  have hI : I = Real.sqrt Real.pi / 2 * A + J := by
+    dsimp [I, A, J, t, delta]
+    simpa using theorem8Gaussian_integral_shift_split xi xj a
+  have hIc : I * c = A + c * J := by
+    rw [hI]
+    dsimp [c]
+    have hsqrt : Real.sqrt Real.pi ≠ 0 :=
+      Real.sqrt_ne_zero'.mpr Real.pi_pos
+    field_simp [hsqrt]
+  have hderiv_eq :
+      (((c * p * B) * (A * B) -
+          (A + c * J) * (c * p * B + A * (c * q))) /
+        (A * B) ^ 2) =
+        c / (A * B) ^ 2 *
+          (A * B ^ 2 * p - I * c * (A * q + B * p)) := by
+    rw [hIc]
+    ring
+  have hshift_arg : a - xi + (xi - xj) = a - xj := by ring
+  convert hstrict.congr_deriv hderiv_eq using 1
+  dsimp [c, A, B, p, q, I, t, delta, J]
+  rw [hshift_arg]
+  ring
+
+/--
+Appendix C (C.5), the derivative sign of the actual strict-event conditional
+ratio is equivalent to the literal displayed inequality.  The equivalence is
+obtained from the preceding positive-factor formula.
+-/
+theorem equationC5_gaussian_strict_conditional_ratio_derivative_pos_iff
+    (xi xj a : ℝ) :
+    ∃ d,
+      HasDerivAt
+        (fun u => theorem8GaussianProductStrictConditionalRatioAt xi xj u) d a ∧
+      (0 < d ↔
+        0 <
+          (1 + theorem8Erf (a - xi)) * (1 + theorem8Erf (a - xj)) *
+              Real.exp (-((a - xi) ^ 2)) * (1 + theorem8Erf (a - xj)) -
+            (∫ x : ℝ in Set.Iic a,
+              Real.exp (-((x - xi) ^ 2)) * (1 + theorem8Erf (x - xj))) *
+              (2 / Real.sqrt Real.pi) *
+              ((1 + theorem8Erf (a - xi)) * Real.exp (-((a - xj) ^ 2)) +
+                (1 + theorem8Erf (a - xj)) *
+                  Real.exp (-((a - xi) ^ 2)))) := by
+  let K : ℝ :=
+    (2 / Real.sqrt Real.pi) /
+      ((1 + theorem8Erf (a - xi)) * (1 + theorem8Erf (a - xj))) ^ 2
+  let S : ℝ :=
+    (1 + theorem8Erf (a - xi)) * (1 + theorem8Erf (a - xj)) *
+        Real.exp (-((a - xi) ^ 2)) * (1 + theorem8Erf (a - xj)) -
+      (∫ x : ℝ in Set.Iic a,
+        Real.exp (-((x - xi) ^ 2)) * (1 + theorem8Erf (x - xj))) *
+        (2 / Real.sqrt Real.pi) *
+        ((1 + theorem8Erf (a - xi)) * Real.exp (-((a - xj) ^ 2)) +
+          (1 + theorem8Erf (a - xj)) * Real.exp (-((a - xi) ^ 2)))
+  have hA : 0 < 1 + theorem8Erf (a - xi) :=
+    theorem8Erf_one_add_pos (a - xi)
+  have hB : 0 < 1 + theorem8Erf (a - xj) :=
+    theorem8Erf_one_add_pos (a - xj)
+  have hK : 0 < K := by
+    dsimp [K]
+    exact div_pos (by positivity)
+      (sq_pos_of_pos (mul_pos hA hB))
+  refine ⟨K * S, ?_, ?_⟩
+  · simpa [K, S] using
+      equationC5_gaussian_strict_conditional_ratio_hasDerivAt_factorization xi xj a
+  · constructor
+    · intro h
+      rcases (mul_pos_iff.mp h) with hpos | hneg
+      · exact hpos.2
+      · linarith [hK, hneg.1]
+    · intro h
+      exact mul_pos hK h
+
+/--
+Appendix C (C.5), the same derivative-sign equivalence written directly for
+the displayed Gaussian `erf` integral ratio.  This removes the named
+conditional-ratio wrapper from the source-facing formula surface.
+-/
+theorem equationC5_gaussian_erf_ratio_derivative_pos_iff
+    (xi xj a : ℝ) :
+    ∃ d,
+      HasDerivAt
+        (fun u =>
+          (2 / Real.sqrt Real.pi) *
+            (∫ x : ℝ in Set.Iic u,
+              Real.exp (-((x - xi) ^ 2)) * (1 + theorem8Erf (x - xj))) /
+            ((1 + theorem8Erf (u - xi)) * (1 + theorem8Erf (u - xj)))) d a ∧
+      (0 < d ↔
+        0 <
+          (1 + theorem8Erf (a - xi)) * (1 + theorem8Erf (a - xj)) *
+              Real.exp (-((a - xi) ^ 2)) * (1 + theorem8Erf (a - xj)) -
+            (∫ x : ℝ in Set.Iic a,
+              Real.exp (-((x - xi) ^ 2)) * (1 + theorem8Erf (x - xj))) *
+              (2 / Real.sqrt Real.pi) *
+              ((1 + theorem8Erf (a - xi)) * Real.exp (-((a - xj) ^ 2)) +
+                (1 + theorem8Erf (a - xj)) *
+                  Real.exp (-((a - xi) ^ 2)))) := by
+  obtain ⟨d, hd, hsign⟩ :=
+    equationC5_gaussian_strict_conditional_ratio_derivative_pos_iff xi xj a
+  refine ⟨d, ?_, hsign⟩
+  have hfun :
+      (fun u => theorem8GaussianProductStrictConditionalRatioAt xi xj u) =
+        (fun u =>
+          (2 / Real.sqrt Real.pi) *
+            (∫ x : ℝ in Set.Iic u,
+              Real.exp (-((x - xi) ^ 2)) * (1 + theorem8Erf (x - xj))) /
+            ((1 + theorem8Erf (u - xi)) * (1 + theorem8Erf (u - xj)))) := by
+    funext u
+    calc
+      theorem8GaussianProductStrictConditionalRatioAt xi xj u =
+          theorem8GaussianPDFCDFRatioAt xi xj u :=
+        theorem8GaussianProductStrictConditionalRatioAt_eq_pdf_cdf xi xj u
+      _ = _ := equationC5_gaussian_density_cdf_ratio_eq_erf_integral xi xj u
+  rw [← hfun]
+  exact hd
 
 /--
 Appendix C (C.5), literal derivative-sign inequality after the substitution to

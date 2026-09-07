@@ -1,0 +1,609 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "JGS23SupplySideRecommenderSystems",
+  "private_source_map_sha256": "e58cd31b4212f08a9ff21f1e0b2efd2ea5de6441bf4d69e21a204dbe63efbe08",
+  "public_manifest_path": "papers/JGS23SupplySideRecommenderSystems/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "48751038f5ec0469ab6028d95a444c210a75990b46510fd769aadc142db3fb3d",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "beta_star_definition",
+    "claim_equivalence",
+    "claim_necessarysuff",
+    "corollary_beta",
+    "corollary_betaone",
+    "corollary_betap",
+    "corollary_onepopulation",
+    "corollary_singlegenrestructure",
+    "corollary_twousers",
+    "corollary_twousersprofit",
+    "definition_infinitegenre",
+    "equilibrium_profit_model",
+    "example_one_dimensional_setup",
+    "infinite_producer_model",
+    "lemma_cdf",
+    "lemma_conditiongen",
+    "lemma_foc",
+    "lemma_inducedcost",
+    "lemma_nonzero",
+    "lemma_optimizationprogram",
+    "lemma_optimizationprogramrestated",
+    "lemma_optsingledirection",
+    "lemma_regionscolor",
+    "lemma_secondderiv",
+    "lemma_standardbasismax",
+    "lemma_supinf",
+    "powered_score_geometry",
+    "proposition_atom",
+    "proposition_existence",
+    "proposition_finitegenre",
+    "proposition_finitep",
+    "proposition_ptwo",
+    "proposition_pure",
+    "proposition_supportrestriction",
+    "proposition_uniqueness",
+    "proposition_utility",
+    "proposition_zeroutilitysinglegenre",
+    "quality_and_genre_model",
+    "reparameterized_equilibrium_model",
+    "single_and_multi_genre_regimes",
+    "theorem_infinitegenre",
+    "theorem_infinitegenreformal",
+    "theorem_phasetransition",
+    "theorem_singlegenre"
+  ],
+  "selected_source_items": {
+    "beta_star_definition": {
+      "source_anchors": [
+        {
+          "line_end": 438,
+          "line_start": 436,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem \\ref{thm:singlegenre} further shows that the boundary between the single-genre and multi-genre regimes can be represented by a \\textit{threshold} defined as follows\n\\[\\beta^* := \\sup \\left\\{\\beta \\ge 1 \\mid \\max_{y \\in \\Set^{\\beta}} \\prod_{i=1}^{N} y_i  = \\max_{y \\in \\bar{\\Set}^{\\beta}} \\prod_{i=1}^{N} y_i \\right\\}. \\]\nwhere single-genre equilibria exist exactly when $\\beta \\leq \\beta^*$. Conceptually, larger $\\beta$ make producer costs more superlinear, which eventually discentivizes producers from attempting to perform well on all dimensions at once. ",
+          "quoted_text_sha256": "5130f9403bbf3717e7f39ddd6a3e4f668432598f5f0b0e33b23127f595a26c58"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "claim_equivalence": {
+      "source_anchors": [
+        {
+          "line_end": 1282,
+          "line_start": 1279,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{claim}\n\\label{claim:equivalence} \nA distribution $\\mu$ is an equilibria for a marketplace with 2 populations of users of size $N/2$ located at vectors $u_1$ and $u_2$ and with producer cost function $c(\\p) = \\|p\\|_2^{\\beta}$ if and only if $\\mu$ is an equilibria for a marketplace with 2 users located at vectors $\\frac{u_1}{\\|u_1\\|}$ and $\\frac{u_2}{\\|u_2\\|}$ and with producer cost function $c(\\p) = \\frac{2}{N} \\|p\\|_2^{\\beta}$. \n\\end{claim}",
+          "quoted_text_sha256": "698f62fcbbaf5015ce78ca6806eecd6628311df97d517098c9a0805b0872c1fe"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "claim_necessarysuff": {
+      "source_anchors": [
+        {
+          "line_end": 693,
+          "line_start": 679,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{lemma}{necessarysuff}\n\\label{claim:necessarysuff}\nLet $\\UMatrix = [u_1; u_2; \\ldots; u_N]$ be the $N \\times D$ matrix of users vectors. Given a set $S \\subseteq \\mathbb{R}_{\\ge 0}^N$ and distributions $H_1, \\ldots, H_N$ over $\\mathbb{R}_{\\ge 0}$, suppose that the following conditions hold:   \n\\begin{description}\n    \\item{(C1)} Every $z^* \\in S$ is a maximizer of the equation:\n    \\begin{equation}\n\\label{eq:reparam}\n \\max_{z \\in \\mathbb{R}_{\\ge 0}^D} \\sum_{i=1}^N H_i(z_i) - c_{\\UMatrix}(z),\n\\end{equation}\nwhere $c_{\\UMatrix}(z) := \\min \\left\\{c(\\p) \\mid \\p \\in \\mathbb{R}_{\\ge 0}^D, \\UMatrix p=z  \\right\\}$.\n    \\item{(C2)} There exists a random variable $Z$ with support $S$, such that the marginal distribution $Z_i$ has cdf equal to $H_i(z)^{1/(P-1)}$.\n    \\item{(C3)} $Z$ is distributed as $\\UMatrix Y$ with $Y \\sim \\mu$, for some distribution $\\mu$ over $\\mathbb{R}_{\\ge 0}^D$.  \n\\end{description} \nThen, the distribution $\\mu$ from (C3) is a symmetric mixed Nash equilibrium. Moreover, every symmetric mixed Nash equilibrium $\\mu$ is associated with some $(H_1, \\ldots, H_N, S)$ that satisfy (C1)-(C3). \n\\end{restatable}",
+          "quoted_text_sha256": "8101c934487ef97fbfed65833588ad3e49a70e7fea46e651aee26a72c955b38f"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "corollary_beta": {
+      "source_anchors": [
+        {
+          "line_end": 493,
+          "line_start": 486,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{corollary}{betageneral}\n\\label{cor:beta}\nLet $\\|\\cdot\\|_{*}$ denote the dual norm of $\\|\\cdot\\|$, defined to be $\\|\\p\\|_{*} = \\max_{\\|\\p\\| = 1, \\p \\in \\bR_{\\ge 0}^D} \\langle q, \\p \\rangle$. Let $Z:= \\|\\sum_{n=1}^{N} \\frac{u_n}{\\|u_n\\|_{*}} \\|_{*}$. Then, \n\\begin{equation}\n\\label{eq:betacondition}\n\\beta^* \\le \\frac{\\log (N)}{\\log(N) - \\log(Z)}.\n\\end{equation}\n\\end{restatable}",
+          "quoted_text_sha256": "bafea91c3a29e052cf0119ce32c93e79e6035255b60ca6934015004c1beb2bc7"
+        }
+      ],
+      "source_kind": "corollary"
+    },
+    "corollary_betaone": {
+      "source_anchors": [
+        {
+          "line_end": 462,
+          "line_start": 459,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{corollary}{betaone}\n\\label{cor:beta1}\nThe threshold $\\beta^*$ is always at least $1$. That is, if $\\beta = 1$, there exists a single-genre equilibrium. \n\\end{restatable}",
+          "quoted_text_sha256": "3a2dfed152547dd6ead7f97bc64dd7401b479fdbae15987fc846da8e5bbabd4b"
+        }
+      ],
+      "source_kind": "corollary"
+    },
+    "corollary_betap": {
+      "source_anchors": [
+        {
+          "line_end": 473,
+          "line_start": 470,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{corollary}{betap}\n\\label{cor:betap}\nLet the cost function be $c(\\p) = \\|\\p\\|_{q}^{\\beta}$. For any set of user vectors, it holds that $\\beta^* \\ge q$. If the user vectors are equal to the standard basis vectors $\\left\\{e_1, \\ldots, e_D \\right\\}$, then $\\beta^*$ is equal to $q$. \n\\end{restatable}",
+          "quoted_text_sha256": "5d6e342e308799cd53f6e7df305d9f28c7b940ac141599a355e236cf6aa7591d"
+        }
+      ],
+      "source_kind": "corollary"
+    },
+    "corollary_onepopulation": {
+      "source_anchors": [
+        {
+          "line_end": 361,
+          "line_start": 358,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{corollary}\n\\label{cor:onepopulation}\nSuppose that there is a single population of $N$ users, all of whose embeddings are at the same vector $u$. Then, there is a symmetric mixed Nash equilibrium $\\mu$ supported on $\\left\\{ q p^* \\mid q \\in [0, N^{\\frac{1}{\\beta}}] \\right\\}$ where $p^* \\in \\argmax_{\\|p \\| = 1 } \\langle p, u \\rangle$. The cumulative distribution function of $q = \\|p\\| \\sim \\mu$ is $F(q) = \\left(q/N\\right)^{\\beta / (P-1)}$. \n\\end{corollary}",
+          "quoted_text_sha256": "860fc243f6cda2ac3297fbc6fb05b8df0cd12dfb0cac10a1c1508a47f624fcac"
+        }
+      ],
+      "source_kind": "corollary"
+    },
+    "corollary_singlegenrestructure": {
+      "source_anchors": [
+        {
+          "line_end": 508,
+          "line_start": 501,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{corollary}{singlegenrestructure}\n\\label{cor:singlegenrestructure}\nIf there exists $\\mu$ with $|\\Genre(\\mu)| = 1$, then the corresponding producer direction maximizes Nash social welfare of the users:\n\\begin{equation}\n\\label{eq:direction}\n \\Genre(\\mu) = \\argmax_{\\|\\p\\|=1 \\mid \\p \\in \\bR_{\\ge 0}^D} \\sum_{i=1}^N \\log(\\langle \\p, u_i\\rangle).    \n\\end{equation}\n\\end{restatable}",
+          "quoted_text_sha256": "598f6f5abbb260692e9d1159c22b9c4a92c7b66785c7ca37c3758ccba27706a6"
+        }
+      ],
+      "source_kind": "corollary"
+    },
+    "corollary_twousers": {
+      "source_anchors": [
+        {
+          "line_end": 481,
+          "line_start": 477,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{corollary}{twousers}\n\\label{cor:2users}\nSuppose that there are $N$ users split equally between two linearly independently vectors $u_1, u_2 \\in \\mathbb{R}_{\\ge 0}^D$, and let $\\theta^* := \\cos^{-1}\\left( \\frac{\\langle u_1, u_2\\rangle}{\\|u_1\\|_2 \\|u_2\\|} \\right)$. Let the cost function be $c(\\p) = \\|\\p\\|_{2}^{\\beta}$. Then it holds that: \n\\[\\beta^*  = \\frac{2}{1 - \\cos(\\theta^*)}. \\]\n\\end{restatable}",
+          "quoted_text_sha256": "54ea556bbf91d52a5b487c3bcadbf16b3c8125727070a4d5e52c6f06f63ce0f4"
+        }
+      ],
+      "source_kind": "corollary"
+    },
+    "corollary_twousersprofit": {
+      "source_anchors": [
+        {
+          "line_end": 730,
+          "line_start": 727,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{corollary}\n\\label{cor:2usersprofit}\nSuppose that there are 2 users located at the standard basis vectors $e_1, e_2 \\in \\mathbb{R}^2$, and the cost function is $c(\\p) = \\|p\\|_2^{\\beta}$. For $P = 2$ and $\\beta \\ge \\beta^* = 2$, there is an equilibrium $\\mu$ where $\\ProfitEq(\\mu) = 1 - \\frac{2}{\\beta}$.\n\\end{corollary}",
+          "quoted_text_sha256": "8af5856e2cbb183512effa55903aa35cf902142609af9d2314f11ceb2b45ed69"
+        }
+      ],
+      "source_kind": "corollary"
+    },
+    "definition_infinitegenre": {
+      "source_anchors": [
+        {
+          "line_end": 1754,
+          "line_start": 1747,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}[Finite-genre equilibria for $P = \\infty$]\n\\label{def:infinitegenre}\nLet $u_1, \\ldots, u_N \\in \\mathbb{R}_{\\ge 0}^D$ be a set of users and let $c(\\p) = \\|p\\|_2^{\\beta}$ be the cost function. A set of \\textit{genres} $d_1, \\ldots, d_G \\in \\mathbb{R}_{\\ge 0}^D$ such that $\\|d_i\\|_2 = 1$ for all $1 \\le g \\le G$, a set of \\textit{conditional quality distributions} $F_1, F_2, \\ldots, F_G$ over $\\mathbb{R}_{\\ge 0}$, and a set of weights $\\alpha_1, \\ldots, \\alpha_G \\ge 0$ such that $\\sum_{g=1}^G \\alpha_g = 1$ forms a finite-genre equilibrium if the following condition holds for \n\\begin{equation}\n\\label{eq:infinitecondition}\n\\p^* \\in \\argmax_{\\p \\in \\mathbb{R}_{\\ge 0}^D} \\left(\\sum_{i=1}^N \\left(\\prod_{g=1}^G \\left(\\FMax_g \\left(\\frac{\\langle u_i, \\p \\rangle}{\\langle u_i, d_g \\rangle} \\right)\\right)^{\\alpha_i} \\right) - c(\\p) \\right)    \n\\end{equation}\nfor any $\\p^* = q_i d_i$ such that $1 \\le i \\le G$ and $q_i \\in \\text{supp}(F_i)$. ",
+          "quoted_text_sha256": "e9073d6e0be6dba8bfac5f16a885999304226b2643a7f8167020fcc115b3d546"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "equilibrium_profit_model": {
+      "source_anchors": [
+        {
+          "line_end": 716,
+          "line_start": 713,
+          "publication_locator": "cited publication",
+          "quoted_text": "More formally, we can quantify the producer profit at equilibrium as follows. At a symmetric equilibria $\\mu$, all producers receive the same expected profit given by: \n\\begin{equation}\n   \\ProfitEq(\\mu) := \\mathbb{E}_{\\p_1, \\ldots, \\p_P \\sim \\mu} [\\Profit(\\p_1; \\p_{-1})] =  \\mathbb{E} \\Big[ \\Big(\\sum_{i=1}^N \\Indicator[j^*(\\u_i;\\;\\p_{1:P}) = 1]\\Big) - \\|\\p_1\\|^{\\beta}  \\Big],\n\\end{equation}",
+          "quoted_text_sha256": "d8c0a92d915eea44121266efd2c626d2283f6c0a4f4b45736ffee501e89ebe3d"
+        },
+        {
+          "line_end": 744,
+          "line_start": 744,
+          "publication_locator": "cited publication",
+          "quoted_text": "Proposition \\ref{thm:utility} provides insight into how the geometry of the users and structure of producer costs impact whether producers can achieve positive profit. To interpret Proposition \\ref{thm:utility}, let us examine the quantity $Q := \\max_{\\|\\p\\| \\le 1} \\min_{i=1}^N  \\langle \\p, \\frac{u_i}{||u_i||} \\rangle$ that appears on the left-hand side of \\eqref{eq:positiveprofit}. Intuitively, $Q$ captures how easy it is to produce content that appeals simultaneously to all users. It is larger when the users are close together and smaller when they are spread out. For any set of vectors we see that $Q \\le 1$, with strict inequality if the set of vectors is non-degenerate. The right-hand side of \\eqref{eq:positiveprofit}, on the other hand, goes to $1$ as $\\beta \\rightarrow \\infty$. Thus, for any non-degenerate set of users, if $\\beta$ is sufficiently large, the condition in Proposition~\\ref{thm:utility} is met and producer profit is strictly positive. The value of $\\beta$ at which positive profit is guaranteed by Proposition \\ref{thm:utility} decreases as the user vectors become more spread out. ",
+          "quoted_text_sha256": "e03984dbb0ffb0b6034840f250e4e7817faa6f9ec949aeefdebeae3c267ab2bf"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "example_one_dimensional_setup": {
+      "source_anchors": [
+        {
+          "line_end": 349,
+          "line_start": 345,
+          "publication_locator": "cited publication",
+          "quoted_text": "\n\\begin{example}[1-dimensional setup]\n\\label{example:1d} \nLet $D = 1$, and suppose that there is a single user $\\u_1 =1$. Suppose the cost function is $c(\\p) = |\\p|^{\\beta}$. The unique symmetric mixed equilibrium $\\mu$ is supported on the full interval $[0, 1]$ and has cumulative distribution function $F(\\p) = \\left(\\p /N\\right)^{\\beta / (P-1)}$. We defer the derivation to Appendix \\ref{sec:derivationexample1d}.\n\\end{example}",
+          "quoted_text_sha256": "c5ad8361012ec62b1958449bfee68d74ff0b70ae7b69ef12a67354a836a3ed61"
+        }
+      ],
+      "source_kind": "example"
+    },
+    "infinite_producer_model": {
+      "source_anchors": [
+        {
+          "line_end": 1745,
+          "line_start": 1725,
+          "publication_locator": "cited publication",
+          "quoted_text": "Since our characterization result (Theorem \\ref{thm:infinitegenre}) focuses on finite-genre equilibria,  we restrict our formal definition of the infinite-producer limit to case of finite genres for technical convenience.\n\nWe arrive at a formalism by taking a limit of the conditions  in Lemma \\ref{claim:necessarysuff} as $P \\rightarrow \\infty$. Let $\\mu$ be a finite-genre distribution over $\\mathbb{R}_{\\ge 0}^D$. We can specify $\\mu$ by the three attributes: the genres $d_1, \\ldots, d_G$, the distributions $F_g$ over $\\mathbb{R}_{\\ge 0}$ corresponding to the distribution of $\\|p\\|$ for $p$ drawn from $\\mu$ conditioned on $\\p$ pointing in the direction of $d_g$, and the weights $\\alpha_g$ corresponding to the probability that $\\p \\sim \\mu$ points in the direction of $d_g$. In particular, $\\mu$ can be described as follows: with probability $\\alpha_g$, choose the vector $q_g d_g$ where $q_g$ is drawn from a distribution with cdf $F_g$. We see that the corresponding function $H_i$ from Lemma \\ref{claim:necessarysuff} will be equal to:\n\\[H_i(z_i) = \\left(\\sum_{g=1}^G \\alpha_g F_g\\left(\\frac{\\langle u_i, \\p \\rangle}{\\langle u_i, d_g \\rangle} \\right) \\right)^{P-1}. \\]\nNote that the conditions (C2) and (C3) are essentially satisfied by construction; condition (C1) requires that \n\\[\\max_{\\p \\in \\mathbb{R}_{\\ge 0}^D} \\left(\\sum_{i=1}^N H_i(\\langle u_i, \\p\\rangle) - c(\\p) \\right)\\] is maximized for any $\\p \\in \\text{supp}(\\mu)$. This can be rewritten as requiring that any $\\p^* \\in \\text{supp}(\\mu)$ satisfies:\n\\[\n  \\p^* \\in \\argmax_{\\p \\in \\mathbb{R}_{\\ge 0}^D} \\left(\\sum_{i=1}^N \\left(\\sum_{g=1}^G \\alpha_g F_g\\left(\\frac{\\langle u_i, \\p \\rangle}{\\langle u_i, d_g \\rangle} \\right) \\right)^{P-1} - c(\\p) \\right).\\]\nLet's rewrite this in terms of winning producers: more formally, let $\\FMax_g(\\cdot) = (F_g(\\cdot))^{P-1}$ denote the cumulative distribution function of the \\textit{maximum} quality in a genre, conditioned on all producers choosing that genre. We call the distributions $\\FMax_1, \\ldots, \\FMax_G$ the \\textit{conditional quality distributions}. Then we obtain the following:\n\\begin{equation}\n\\label{eq:finitegenrep}\n  \\p^* \\in \\argmax_{\\p \\in \\mathbb{R}_{\\ge 0}^D} \\left(\\sum_{i=1}^N \\left(\\sum_{g=1}^G \\alpha_g \\left(\\FMax_g\\left(\\frac{\\langle u_i, \\p \\rangle}{\\langle u_i, d_g \\rangle} \\right)\\right)^{1/(P-1)} \\right)^{P-1} - c(\\p) \\right).\n\\end{equation}\nTaking a limit as $P \\rightarrow \\infty$, we see that \n\\[\\left(\\sum_{g=1}^G \\alpha_g F_g\\left(\\frac{\\langle u_i, \\p \\rangle}{\\langle u_i, d_g \\rangle} \\right)^{1/(P-1)}\\right)^{P-1} \\rightarrow \\prod_{g=1}^G \\left(F_g\\left(\\frac{\\langle u_i, \\p \\rangle}{\\langle u_i, d_g \\rangle} \\right)\\right)^{\\alpha_i}.\\]\nThus, equation \\ref{eq:finitegenrep} (informally speaking) approaches the following condition in the limit:  \n\\begin{equation}\n\\label{eq:infinitegenrecondition}\n   \\p^* \\in \\argmax_{\\p \\in \\mathbb{R}_{\\ge 0}^D} \\left(\\sum_{i=1}^N \\left(\\sum_{g=1}^G \\alpha_g F_g\\left(\\frac{\\langle u_i, \\p \\rangle}{\\langle u_i, d_g \\rangle} \\right)^{1/(P-1)} \\right)^{P-1} - c(\\p) \\right).\n\\end{equation}\n",
+          "quoted_text_sha256": "90f4b745817d2b73035e067660249077ad90f589a28e3626bb39802aa1dcaaa3"
+        }
+      ],
+      "source_kind": "model"
+    },
+    "lemma_cdf": {
+      "source_anchors": [
+        {
+          "line_end": 937,
+          "line_start": 931,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{lemma}{cdf}\n\\label{lemma:cdf}\nSuppose that $\\mu$ is a symmetric equilibrium such that $\\Genre(\\mu)$ contains a single vector. Let $F$ be the cdf of the distribution over $\\|\\p\\|$ where $\\p \\sim \\mu$. Then, it holds that:\n\\begin{equation}\nF(r) = \\min\\left(1, \\left(\\frac{r^{\\beta}}{N}\\right)^{1/(P-1)}\\right). \n\\end{equation}\n\\end{restatable}",
+          "quoted_text_sha256": "d5e9ad2028b0f8e90ef0678c6dd45d65652d2165dd5ff3b4a6521653cf9962ed"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma_conditiongen": {
+      "source_anchors": [
+        {
+          "line_end": 1019,
+          "line_start": 1012,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}\n\\label{lemma:conditiongen}\nThere exists a symmetric equilibrium $\\mu$ with $|\\Genre(\\mu)| = 1$ if and only if: \n\\begin{equation}\n\\label{eq:conditioninter}    \n\\inf_{p^* \\in \\Ballm} \\sup_{y' \\in \\Set^{\\beta}} \\sum_{i=1}^N  \\frac{y'_i}{(\\langle \\p^*, u_i \\rangle)^{\\beta}} \\le N.\n\\end{equation}\n\\end{lemma}",
+          "quoted_text_sha256": "2f91b421c21bbe4c5180932b67071e2c7c83d226cc95e85b64c445d046d9420b"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma_foc": {
+      "source_anchors": [
+        {
+          "line_end": 1343,
+          "line_start": 1318,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}\n\\label{lemma:FOC} \nLet there be 2 users located at $u_1, u_2 \\in \\mathbb{R}_{\\ge 0}^D$ such that  $\\|u_1\\| = \\|u_2\\| = 1$, and let $\\theta^* := \\cos^{-1}\\left( \\langle u_1, u_2\\rangle \\right) > 0$ be the angle between the user vectors. Let the cost function be $c(\\p) = \\alpha \\|p\\|_2^{\\beta}$ for $\\alpha > 0$. For any $z \\in \\left\\{\\UMatrix p \\mid p \\in \\mathbb{R}_{\\ge 0}^D \\right\\}$, the first-order condition of equation \\eqref{eq:reparam} can be written as: \n\\[\\begin{bmatrix}\nh_1(z_1) \\\\\nh_2(z_2)\n\\end{bmatrix} \n= \\nabla_{z}(c_{\\UMatrix}(z)).\\]\nMore specifically, it holds that: \n\\[\\begin{bmatrix}\nh_1(z_1) \\\\\nh_2(z_2)\n\\end{bmatrix} = \\beta \\alpha \\sin^{-\\beta}(\\theta^*) \\left(z_1^2 + z_2^2 - 2 z_1 z_2 \\cos(\\theta^*) \\right)^{\\frac{\\beta}{2} - 1} \\begin{bmatrix}\nz_1 - z_2 \\cos(\\theta^*) \\\\\nz_2 - z_1 \\cos(\\theta^*)\n\\end{bmatrix},\n\\]\nand if we represent $z = \\UMatrix [r\\cos(\\theta), r \\sin(\\theta)]$, then it also holds that:\n\\[\\begin{bmatrix}\nh_1(z_1) \\\\\nh_2(z_2)\n\\end{bmatrix}  = \\beta \\alpha r^{\\beta - 1} \\begin{bmatrix}\n\\frac{\\sin(\\theta^* - \\theta)}{\\sin(\\theta^*)} \\\\\n\\frac{\\sin(\\theta)}{\\sin(\\theta^*)} \n\\end{bmatrix}.   \\]\n\\end{lemma}",
+          "quoted_text_sha256": "0a313c938b50d21499ad8ff4e80b5b96ce0a4f3a260e61db7c35878496a27687"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma_inducedcost": {
+      "source_anchors": [
+        {
+          "line_end": 1315,
+          "line_start": 1311,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}\n\\label{lemma:inducedcost}\nLet there be 2 users located at $u_1, u_2 \\in \\mathbb{R}_{\\ge 0}^D$ such that  $\\|u_1\\| = \\|u_2\\| = 1$, and let $\\theta^* := \\cos^{-1}\\left( \\langle u_1, u_2\\rangle \\right) > 0$ be the angle between the user vectors. Let the cost function be $c(\\p) = \\alpha \\|p\\|_2^{\\beta}$ for $\\alpha > 0$. For any $z \\in \\left\\{\\UMatrix p \\mid p \\in \\mathbb{R}_{\\ge 0}^D \\right\\}$, the induced cost function is given by:\n\\[c_{\\UMatrix}(z) = \\alpha \\sin^{-\\beta}(\\theta^*) \\left(z_1^2 + z_2^2 - 2 z_1 z_2 \\cos(\\theta^*) \\right)^{\\frac{\\beta}{2}}.\\]\n\\end{lemma}",
+          "quoted_text_sha256": "db80588a620b451473015af05ab2e5cb40647a216233082336f648ee57d6d5ac"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma_nonzero": {
+      "source_anchors": [
+        {
+          "line_end": 963,
+          "line_start": 958,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}\n\\label{lemma:nonzero} \nSuppose that $\\mu$ is a symmetric equilibrium such that $\\Genre(\\mu)$ contains a single vector $\\p^*$. Then $p^* \\in \\text{span}(u_1, \\ldots, u_N)$ (which also means that $\\langle \\p^*, u_i \\rangle > 0$ for all $i$.) \n\\end{lemma}\n\\begin{proof}\nAssume for sake of contradiction that $\\langle p^*, u_i \\rangle = 0$ for some $i$. Suppose that $p' \\in \\text{supp}(\\mu)$, and consider the vector $\\p' + \\epsilon \\frac{u_i}{||u_i||}$. We see that $\\p' + \\epsilon \\frac{u_i}{||u_i||}$ wins user $u_i$ with probability 1 whereas $\\p'$ wins user $u_i$ with probability $1/P$. The probability that $\\p + \\epsilon u_i$ wins any other user is also at least the probability that $\\p'$ wins $u_i$. By leveraging this discontinuity, we see there exists $\\epsilon$ such that $\\Profit(\\p' + \\epsilon \\frac{u_i}{||u_i||}; [\\mu, \\ldots, \\mu]) > \\Profit(\\p'; [\\mu, \\ldots, \\mu]) + (1 - \\frac{1}{P})$ which is a contradiction.",
+          "quoted_text_sha256": "a7f36a3a3e5ba9938dfd736dd02aae4e821abfa35690b02c7adc3057eadd3f9c"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma_optimizationprogram": {
+      "source_anchors": [
+        {
+          "line_end": 449,
+          "line_start": 442,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}[Informal]{lemma}{optimization}\n\\label{lemma:optimizationprogram}\nThere exists a symmetric equilibrium $\\mu$ with $|\\Genre(\\mu)| = 1$ if and only if: \n\\begin{equation}\n    \\label{eq:optimizationprogrammain}\n    \\inf_{y \\in \\Set^{\\beta}} \\left(\\sup_{y' \\in \\Set^{\\beta}}   \\sum_{i=1}^N  \\frac{y'_i}{y_i} \\right) = \\sup_{y' \\in \\Set^{\\beta}} \\left(\\inf_{y \\in \\Set^{\\beta}} \\sum_{i=1}^N  \\frac{y'_i}{y_i}\\right).\n\\end{equation}\n\\end{restatable}",
+          "quoted_text_sha256": "3b31380feb67acb2e03c3def4b388086c6efc905d1f435f5bd80b211d7c0acba"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma_optimizationprogramrestated": {
+      "source_anchors": [
+        {
+          "line_end": 1009,
+          "line_start": 1002,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}[Formalization of Lemma \\ref{lemma:optimizationprogram}]\n\\label{lemma:optimizationprogramrestated}\nThere exists a symmetric equilibrium $\\mu$ with $|\\Genre(\\mu)| = 1$ if and only if: \n\\begin{equation}\n    \\label{eq:optimizationprogramrestated}\n\\inf_{p^* \\in \\Ballm} \\sup_{y' \\in \\Set^{\\beta}} \\sum_{i=1}^N  \\frac{y'_i}{(\\langle \\p^*, u_i \\rangle)^{\\beta}} = \\sup_{y' \\in \\Set^{\\beta}}\\inf_{p^* \\in \\Ballm}  \\sum_{i=1}^N  \\frac{y'_i}{(\\langle \\p^*, u_i \\rangle)^{\\beta}}.\n\\end{equation}\n\\end{lemma}",
+          "quoted_text_sha256": "57b523eee65891922ccbb4928ff907e41780f6cd586c520409572eef6c8ca4a2"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma_optsingledirection": {
+      "source_anchors": [
+        {
+          "line_end": 1030,
+          "line_start": 1023,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}\n\\label{lemma:optsingledirection}\nThere is a symmetric equilibrium $\\mu$ with $\\Genre(\\mu) = \\left\\{p^*\\right\\}$ if and only if:\n\\begin{equation}\n\\label{eq:optsingle}\n  \\sup_{y' \\in \\Set^{\\beta}} \\sum_{i=1}^N  \\frac{y'_i}{(\\langle \\p^*, u_i \\rangle)^{\\beta}} \\le N. \n\\end{equation}\n\\end{lemma}",
+          "quoted_text_sha256": "339669b28b9710338d6c2bcd133747b1997eaee52675018b6f96c1f954f8ce7b"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma_regionscolor": {
+      "source_anchors": [
+        {
+          "line_end": 1355,
+          "line_start": 1351,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}\n\\label{lemma:regionscolor}\nLet there be 2 users located at $u_1, u_2 \\in \\mathbb{R}_{\\ge 0}^D$ such that  $\\|u_1\\| = \\|u_2\\| = 1$, and let $\\theta^* := \\cos^{-1}\\left( \\langle u_1, u_2\\rangle \\right) > 0$ be the angle between the user vectors. Let the cost function be $c(\\p) = \\alpha \\|p\\|_2^{\\beta}$ for $\\alpha > 0$. Suppose that condition (C1) is satisfied for $(H_1, H_2, S)$. If $S$ contains a curve of the form $\\left\\{(z_1, g(z_1)) \\mid x \\in I \\right\\}$ for any open interval $I$ and any differentiable function $g$, then for any $z_1 \\in I$, it holds that: \n\\[g'(z_1) \\cdot \\left(\\frac{\\beta - 2}{\\beta} \\cos(\\theta^* - 2 \\theta) - \\cos(\\theta^*) \\right) \\le 0.\\]\n\\end{lemma}",
+          "quoted_text_sha256": "0786d4303495481a3eae65c18c1e26c46d0c90c80582e4c10ab5d0f42d849c60"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma_secondderiv": {
+      "source_anchors": [
+        {
+          "line_end": 1350,
+          "line_start": 1346,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}\n\\label{lemma:secondderiv} \nLet there be 2 users located at $u_1, u_2 \\in \\mathbb{R}_{\\ge 0}^D$ such that  $\\|u_1\\| = \\|u_2\\| = 1$, and let $\\theta^* := \\cos^{-1}\\left( \\langle u_1, u_2\\rangle \\right) > 0$ be the angle between the user vectors. Let the cost function be $c(\\p) = \\alpha \\|p\\|_2^{\\beta}$ for $\\alpha > 0$. If $z$ is of the form $[r \\cos(\\theta), r \\cos(\\theta^* - \\theta)]$ for $\\theta \\in [0, \\theta^*]$, then the sign of $\\frac{\\partial^2  c_{\\UMatrix}(z)}{\\partial z_1 \\partial z_2}$ is equal to the sign of:\n\\[\\frac{\\beta - 2}{\\beta} \\cos(\\theta^* - 2 \\theta) - \\cos(\\theta^*).\\]\n\\end{lemma}",
+          "quoted_text_sha256": "dc4f3db7a6bdf175d9ece3f4dd854bda400e068c02fb11bfa13ba6cf3a767bc1"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma_standardbasismax": {
+      "source_anchors": [
+        {
+          "line_end": 1911,
+          "line_start": 1906,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}\n\\label{lemma:standardbasismax}\nFor any $\\beta \\ge 2$, the expression\n\\[\\max_{z_1, z_2 \\ge 0} \\left(\\left(\\min\\left(\\left(\\frac{2}{\\beta} \\right)^{-2/\\beta} z_1^2, 1\\right) + \\min\\left(\\left(\\frac{2}{\\beta} \\right)^{-2/\\beta} z_2^2, 1\\right)\\right) - (z_1^2 + z_2^2)^{\\beta / 2}\\right)\\]\nis maximized for any $(z_1, z_2)$ such that $z_1^2 + z_2^2 = \\left(\\frac{2}{\\beta}\\right)^{2/\\beta}$. \n\\end{lemma}",
+          "quoted_text_sha256": "3353b4e14a122fba06efd067c63fcb2b0106aff206c282dc8f9ff194a3aeafef"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma_supinf": {
+      "source_anchors": [
+        {
+          "line_end": 1093,
+          "line_start": 1083,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}\n\\label{lemma:supinf}\nFor any set $\\mathcal{R} \\subseteq \\bR_{> 0}^N$, it holds that:\n\\[\\sup_{y' \\in \\mathcal{R}} \\inf_{y \\in \\mathcal{R}}  \\sum_{i=1}^N  \\frac{y'_i}{y_i} = N. \\] \n\\end{lemma}\n\\begin{proof}\nBy taking $y' = y$, we see that:\n\\[\\sup_{y' \\in \\mathcal{R}} \\inf_{y \\in \\mathcal{R}}  \\sum_{i=1}^N  \\frac{y'_i}{y_i} \\le N. \\]\nTo show equality, notice by AM-GM that:\n\\[\\sum_{i=1}^N  \\frac{y'_i}{y_i} \\ge N \\left(\\prod_{i=1}^n \\frac{y'_i}{y_i}\\right)^{1/N} = N \\left(\\frac{\\prod_{i=1}^n y'_i}{\\prod_{i=1}^N y_i}\\right)^{1/N}. \\]\nWe can take $y' = \\argmax_{y'' \\in \\mathcal{R}} \\prod_{i=1}^n y''_i$, and obtain a lower bound of $N$ as desired. (If the $\\argmax$ does not exist, then note that if we take $y'$ where $\\prod_{i=1}^n y'_i$ is sufficiently close to the optimum $\\sup_{y'' \\in \\mathcal{R}} \\prod_{i=1}^n y''_i$, we have that $\\inf_{y \\in \\mathcal{R}}  \\left(\\frac{\\prod_{i=1}^n y'_i}{\\prod_{i=1}^N y_i}\\right)^{1/N}$ is sufficiently close to $1$ as desired.) ",
+          "quoted_text_sha256": "665dcebd2ace939ad9394e4e2d016e8e465aa16c6b8badc7ede1d8909fedfad0"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "powered_score_geometry": {
+      "source_anchors": [
+        {
+          "line_end": 414,
+          "line_start": 409,
+          "publication_locator": "cited publication",
+          "quoted_text": "We first provide a tight geometric characterization of when a marketplace is in the single-genre regime versus in the multi-genre regime. More formally, let $\\UMatrix = [\\u_1; \\cdots; \\u_N]$ be the $N \\times D$ matrix of user vectors, and let $\\Set$ denote the image of the unit ball under $\\UMatrix$: \n\\begin{equation}\n  \\Set := \\left\\{\\UMatrix\\p \\mid \\|\\p\\| \\le 1, \\p \\in \\bR_{\\ge 0}^D  \\right\\}  \n\\end{equation}\nEach element of $\\Set$ is an $N$-dimensional vector, which represents the inferred user values for some unit-norm producer $\\p$. Additionally, let $\\Set^{\\beta}$ be the image of $\\Set$ under coordinate-wise powers, i.e.~if $(z_1, \\ldots, z_N) \\in \\Set$ then $(z_1^{\\beta}, \\ldots, z_N^{\\beta}) \\in \\Set^{\\beta}$.\nWe show that genres emerge when $\\Set^{\\beta}$ is sufficiently different from its convex hull $\\bar{\\Set}^{\\beta}$:",
+          "quoted_text_sha256": "c02695089ec794adc21288ce2fd5ecc213c5ba8f9d266923ea750f53ecd25506"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "proposition_atom": {
+      "source_anchors": [
+        {
+          "line_end": 314,
+          "line_start": 311,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\n\\label{prop:atom}\nFor any set of users and any $\\beta \\ge 1$, every symmetric mixed equilibrium is atomless.\n\\end{proposition}",
+          "quoted_text_sha256": "9ba88a82859aa0ad38bb6d0ad9d5c16fb20fd4017246a1ca1928bc3f7bec6898"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "proposition_existence": {
+      "source_anchors": [
+        {
+          "line_end": 308,
+          "line_start": 305,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{proposition}{existence}\n\\label{prop:existence}\nFor any set of users and any $\\beta \\ge 1$, a symmetric mixed equilibrium exists. \n\\end{restatable}",
+          "quoted_text_sha256": "ba1fd647da11bc0f2e640b784e3d015a6e6bd19a559e8365f68adab8683d3d40"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "proposition_finitegenre": {
+      "source_anchors": [
+        {
+          "line_end": 1465,
+          "line_start": 1462,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{proposition}{finitegenre}\n\\label{prop:finitegenre}\nConsider the setup in Theorem \\ref{thm:phasetransitionformal}. If $\\beta > \\beta^* = \\frac{2}{1 - \\cos(\\theta^*)}$, if $|\\Genre(\\mu)| < \\infty$, and if the conditional distribution of $\\|p\\|$ along each genre is continuous differentiable, then $\\mu$ is not an equilibrium.\n\\end{restatable}",
+          "quoted_text_sha256": "7c9a68b60e0531fa293cdd47489b1d81bc017300ba0e7c725f17124c9f6fe0d2"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "proposition_finitep": {
+      "source_anchors": [
+        {
+          "line_end": 642,
+          "line_start": 635,
+          "publication_locator": "cited publication",
+          "quoted_text": "We next vary the number of producers $P$ while fixing $\\beta = 2$ (see Figure \\ref{fig:equilibriaP}). \\begin{restatable}{proposition}{finiteP}\n\\label{prop:finiteP}\nSuppose that there are 2 users located at the standard basis vectors $e_1, e_2 \\in \\mathbb{R}^2$, with cost function $c(\\p) = \\|p\\|_2^{\\beta}$. For $\\beta = 2$, there is a multi-genre equilibrium $\\mu$ with support equal to\n\\begin{equation}\n\\big\\{\\big(x, (1 -  x^{\\frac{2}{P-1}})^{\\frac{P-1}{2}}\\big) \\mid x \\in [0,1] \\big\\},\n\\end{equation}\nand where the distribution of $x$ has cdf equal to $\\min(1, x^{2/(P-1)})$. \n\\end{restatable}",
+          "quoted_text_sha256": "82968d52c5ee60b799e5de48084d764015d885c2bdaf8848a5058b351a5f0711"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "proposition_ptwo": {
+      "source_anchors": [
+        {
+          "line_end": 619,
+          "line_start": 616,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{proposition}{Ptwo}\n\\label{prop:P2}\nSuppose that there are 2 users located at the standard basis vectors $e_1, e_2 \\in \\mathbb{R}^2$, and the cost function is $c(\\p) = \\|p\\|_2^{\\beta}$. For $P = 2$ and $\\beta \\ge \\beta^* = 2$, there is an equilibrium $\\mu$ supported on the quarter-circle of radius $(2 \\beta^{-1})^{1/\\beta}$, where the angle $\\theta \\in [0, \\pi/2]$ has density $f(\\theta) = 2 \\cos(\\theta) \\sin(\\theta)$. \n\\end{restatable}",
+          "quoted_text_sha256": "1eb12c5c5599e558b470380dbfc610c877cd46deb422b64fdc1691ff332dfb87"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "proposition_pure": {
+      "source_anchors": [
+        {
+          "line_end": 299,
+          "line_start": 296,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{proposition}{pure}\n\\label{prop:pure}\nFor any set of users and any $\\beta \\ge 1$, a pure strategy equilibrium does not exist.\n\\end{restatable}",
+          "quoted_text_sha256": "3412f2306ade17c31cb6f52902d3eac1ed7cac05c8f8c9b48b0b8b4161cba02f"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "proposition_supportrestriction": {
+      "source_anchors": [
+        {
+          "line_end": 584,
+          "line_start": 581,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{proposition}{supportrestriction}\n\\label{prop:supportrestriction}\nSuppose that there are $N$ users split equally between two linearly independently vectors $u_1, u_2 \\in \\mathbb{R}_{\\ge 0}^2$, and let $\\theta^* := \\cos^{-1}\\left( \\frac{\\langle u_1, u_2\\rangle}{\\|u_1\\|_2 \\|u_2\\|} \\right)$ be the angle between the user vectors. Let the cost function be $c(\\p) = \\|p\\|_2^{\\beta}$, and let $P \\ge 2$. Let $\\mu$ be a symmetric Nash equilibrium such that the distributions $\\langle u_1, \\p\\rangle$ and $\\langle u_2, \\p\\rangle$ over $\\mathbb{R}_{\\ge 0}$ are absolutely continuous. As long as $\\beta \\neq 2$ or $\\theta^* \\neq \\pi /2$, the support of $\\mu$ does not contain an $\\ell_2$-ball of radius $\\epsilon$ for any $\\epsilon > 0$.\\footnote{The case of $\\beta = 2$ and $\\theta^* = \\pi/2$ is degenerate and permits a range of possible equilibria.} \n\\end{restatable}",
+          "quoted_text_sha256": "582c4c69b7668fe7712a4424d84109cb2590884cdaa4a64e2b60d4cd61d71fcd"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "proposition_uniqueness": {
+      "source_anchors": [
+        {
+          "line_end": 1461,
+          "line_start": 1458,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{proposition}{uniqueness}\n\\label{prop:uniqueness}\nConsider the setup in Theorem \\ref{thm:phasetransitionformal}. If $\\beta < \\beta^* = \\frac{2}{1 - \\cos(\\theta^*)}$ and $\\mu$ is a symmetric mixed equilibrium, then $\\mu$ satisfies $|\\Genre(\\mu)| = 1$. \n\\end{restatable}",
+          "quoted_text_sha256": "b1d302f86e05313374439b059d533b83f86c9c03188c6719b93a7de8bd4cb0a8"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "proposition_utility": {
+      "source_anchors": [
+        {
+          "line_end": 742,
+          "line_start": 734,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{proposition}{utility}\n\\label{thm:utility}\nSuppose that \n\\begin{equation}\n\\label{eq:positiveprofit}\n\\max_{\\|\\p\\| \\le 1} \\min_{1 \\le i \\le N} \\Big\\langle \\p, \\frac{u_i}{||u_i||}\\Big\\rangle < N^{-P/\\beta}.    \n\\end{equation}\nThen for any symmetric equilibrium $\\mu$, the profit $\\ProfitEq(\\mu)$ is strictly positive. \n\\end{restatable}",
+          "quoted_text_sha256": "5fad0c90ee88dea18ea7c95833befa622886fd560081d4eb58e8381bd615e276"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "proposition_zeroutilitysinglegenre": {
+      "source_anchors": [
+        {
+          "line_end": 752,
+          "line_start": 749,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{proposition}{zeroutilitysinglegenre}\n\\label{prop:zeroutilitysinglegenre}\nIf $\\mu$ is a single-genre equilibrium, then the profit $\\ProfitEq(\\mu)$ is equal to $0$. \n\\end{restatable}",
+          "quoted_text_sha256": "c67cdcfa39d578aedeb5a147fb3611b46d7029ec87ec9bfea775d34ec4af7462"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "quality_and_genre_model": {
+      "source_anchors": [
+        {
+          "line_end": 275,
+          "line_start": 274,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\paragraph{Producer cost function.} Each producer faces a \\textit{fixed (one-time) cost} for producing content $\\p$, which depends on the magnitude of $\\p$. Since the good is digital and thus cheap to replicate, the production cost does not scale with the number of users. \nWe assume that the cost function $c(\\p)$ takes the form $\\|\\p\\|^{\\beta}$, where $\\|\\cdot\\|$ is any norm and the exponent $\\beta$ is at least $1$. The magnitude $\\|\\p\\|$ captures the \\textit{quality} of the content: in particular, if a producer chooses content $\\lambda \\p$, they win at least as many users as if they choose $\\lambda' \\p$ for $\\lambda' < \\lambda$. (This relies on the fact that all vectors are in the positive orthant.) The norm and $\\beta$ together encode the cost of producing a content vector $v$, and reflect cost tradeoffs for excelling in different dimensions (for example, producing a movie that is both a drama and a comedy). Large $\\beta$, for instance, means that this cost grows superlinearly. In Section \\ref{sec:specialization}, we will see that these tradeoffs capture the extent to which producers are incentivized to specialize. ",
+          "quoted_text_sha256": "61cd110413b5117512ddaa35ee03bffc668571118fb1b90d87578176a05e739f"
+        },
+        {
+          "line_end": 378,
+          "line_start": 369,
+          "publication_locator": "cited publication",
+          "quoted_text": "To formalize specialization, we need to disentangle two forms of differentiation: (1) differentiation along direction (genre), and (2) differentiation along magnitude (quality). We define specialization as differentiation along genres, and not as differentiation along quality. To focus on the former, we define \\textit{genres} as the set of \\textit{directions} that arise at a symmetric mixed Nash equilibrium $\\mu$: \n\\begin{equation}\n\\label{eq:genredef}\n \\Genre(\\mu) := \\Big\\{\\frac{\\p}{\\|\\p\\|} \\mid \\p \\in \\text{supp}(\\mu) \\Big\\},  \n\\end{equation}\nwhere we normalize by $\\|p\\|$ to separate out the quality (norm) from the genre (direction). The set of genres $ \\Genre(\\mu)$ captures the set of content that may arise on the platform in some realization of randomness of the producers' strategies. When an equilibrium has a single genre, all producers cater to an average user, and only a single type of content appears  on the platform. On the other hand, when an equilibrium has multiple genres, many types of digital content are likely to appear on the platform. \n\n\n\nWe thus say that \\textit{specialization} occurs at an equilibrium $\\mu$ if and only if $\\mu$ has more than one \\textit{genre} (i.e., if and only if $|\\Genre(\\mu)| > 1$). When specialization does occur at $\\mu$, the form of specialization is further captured by the number of genres $|\\Genre(\\mu)|$ and other properties of the set of genres $\\Genre(\\mu)$. Note that we define specialization in terms of the \\textit{support} of a symmetric mixed equilibrium distribution. In this definition, we implicitly interpret the randomness in the producer strategies as differentiation between producers; this formalization of specialization obviates the need to reason about asymmetric equilibria, thus making the model much more tractable to analyze. ",
+          "quoted_text_sha256": "dbf567dcbc2c2b6783121cc14b07b463095a8001d7877714ecbbe92173a4ccec"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "reparameterized_equilibrium_model": {
+      "source_anchors": [
+        {
+          "line_end": 693,
+          "line_start": 677,
+          "publication_locator": "cited publication",
+          "quoted_text": "To prove our results in this section, our first step is establish a useful characterization of equilibria that enables us to separately account for the geometry of the users and the number of producers. This takes the form of necessary and sufficient conditions that decouple in terms of two quantities: a set of \\textit{marginal distributions} $H_i$,\nand the \\textit{support} $S \\subseteq \\mathbb{R}_{\\ge 0}^N$. \n\\begin{restatable}{lemma}{necessarysuff}\n\\label{claim:necessarysuff}\nLet $\\UMatrix = [u_1; u_2; \\ldots; u_N]$ be the $N \\times D$ matrix of users vectors. Given a set $S \\subseteq \\mathbb{R}_{\\ge 0}^N$ and distributions $H_1, \\ldots, H_N$ over $\\mathbb{R}_{\\ge 0}$, suppose that the following conditions hold:   \n\\begin{description}\n    \\item{(C1)} Every $z^* \\in S$ is a maximizer of the equation:\n    \\begin{equation}\n\\label{eq:reparam}\n \\max_{z \\in \\mathbb{R}_{\\ge 0}^D} \\sum_{i=1}^N H_i(z_i) - c_{\\UMatrix}(z),\n\\end{equation}\nwhere $c_{\\UMatrix}(z) := \\min \\left\\{c(\\p) \\mid \\p \\in \\mathbb{R}_{\\ge 0}^D, \\UMatrix p=z  \\right\\}$.\n    \\item{(C2)} There exists a random variable $Z$ with support $S$, such that the marginal distribution $Z_i$ has cdf equal to $H_i(z)^{1/(P-1)}$.\n    \\item{(C3)} $Z$ is distributed as $\\UMatrix Y$ with $Y \\sim \\mu$, for some distribution $\\mu$ over $\\mathbb{R}_{\\ge 0}^D$.  \n\\end{description} \nThen, the distribution $\\mu$ from (C3) is a symmetric mixed Nash equilibrium. Moreover, every symmetric mixed Nash equilibrium $\\mu$ is associated with some $(H_1, \\ldots, H_N, S)$ that satisfy (C1)-(C3). \n\\end{restatable}",
+          "quoted_text_sha256": "825b9632450b0465f28aa9e605088d075c9794adc931684439c9cbea103983b0"
+        },
+        {
+          "line_end": 1301,
+          "line_start": 1289,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proof}[Proof of Lemma \\ref{claim:necessarysuff}] \nThe intuition is that the the set $S$ captures the support of the realized inferred user values $[\\langle u_1, \\p \\rangle, \\ldots, \\langle u_N, \\p \\rangle]$ for $\\p \\sim \\mu$ and the distribution $H_i$ captures the distribution of the maximum inferred user value$\\max_{1 \\le j \\le P -1} \\langle u_i, \\p_j\\rangle$ for user $u_i$. \n\nTo formalize this, we reparameterize from content vectors in $\\mathbb{R}_{\\ge 0}^D$ to realized inferred user values in $\\mathbb{R}_{\\ge 0}^N$. That is, we transform the content vector $\\p \\in \\mathbb{R}_{\\ge 0}^D$ into the vector of realized inferred user values given by $z = \\UMatrix p$. This reparameterization allows us to cleanly reason about the number of users that a producer wins: a producer wins a user $u_i$ if and only if they have the highest value in the $i$th coordinate of $z$. In this parametrization, the cost of production can be computed through an induced function $c_{\\UMatrix}$ given by $c_{\\UMatrix}(z) := \\min \\left\\{c(\\p) \\mid \\p \\in \\mathbb{R}_{\\ge 0}^D, z = \\UMatrix p  \\right\\}$ if $z \\in \\left\\{\\UMatrix p \\mid \\p \\in \\mathbb{R}_{\\ge 0}^D\\right\\}$. \n\nIn this reparameterization, the producer profit takes a clean form. If producer $1$ chooses $z \\in \\mathbb{R}^N$, and other producers follow a distribution $\\mu_Z$ over $\\mathbb{R}^N$, then the expected profit of producer $1$ is:  \n\\[\n \\sum_{i=1}^N H_i(z_i) - c_{\\UMatrix}(z),\n\\]\nwhere $H_i(\\cdot)$ is the cumulative distribution function of the {maximum realized inferred user value} over the other $P-1$ producers, i.e.~of the random variable $\\max_{2 \\le j \\le P} (z_j)_i$ where $z_2, \\ldots, z_{P} \\sim \\mu_Z$.  \n\n\nRecall that a distribution $\\mu$ corresponds to a symmetric mixed Nash equilibrium if and only if every $z$ in the support $S:= \\text{supp}(\\mu_Z)$ is a maximizer of equation \\eqref{eq:reparam} (where $\\mu_Z$ is the distribution over $\\UMatrix p$ for $p \\sim \\mu$). ",
+          "quoted_text_sha256": "561e6cf33322de78378b8b37a5d1ce9795dc33497c80dc7bb58e300c18223862"
+        }
+      ],
+      "source_kind": "model"
+    },
+    "single_and_multi_genre_regimes": {
+      "source_anchors": [
+        {
+          "line_end": 402,
+          "line_start": 395,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\section{When does specialization occur?}\\label{sec:specialization}\n\nIn order to investigate whether specialization occurs in a given marketplace, we investigate when the set of genres $\\Genre(\\mu)$ of an equilibrium $\\mu$ contains more than one direction. We distinguish between two regimes of marketplaces based on whether or not a single-genre equilibrium exists: \n\\begin{enumerate}\n    \\item A marketplace is in the \\textit{single-genre regime} if there exists an equilibrium $\\mu$ such that $|\\Genre(\\mu)| = 1$. All producers thus create content of the same genre.\n    \\item A marketplace is in the \\textit{multi-genre regime} if all equilibria $\\mu$ satisfy $|\\Genre(\\mu)| > 1$. Producers thus necessarily differentiate in the genre of content that they produce. \n\\end{enumerate}\nTo understand these regimes, we ask: \\textit{what conditions on the user vectors $u_1, \\ldots, u_N$ and the cost function parameters $\\|\\cdot \\|$ and $\\beta$ determine which regime the marketplace is in?} ",
+          "quoted_text_sha256": "2dbf1e3fcc4c167ccb8f6d3d9eca565609ccbd11632990aaeb0aa893118ffc53"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "theorem_infinitegenre": {
+      "source_anchors": [
+        {
+          "line_end": 666,
+          "line_start": 659,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{infinitegenre}[Informal version of Theorem \\ref{thm:infinitegenreformal}]\n\\label{thm:infinitegenre}\nSuppose that there are 2 users located at two linearly independently vectors $u_1, u_2 \\in \\mathbb{R}_{\\ge 0}^D$, let $\\theta^* := \\cos^{-1}\\Big( \\frac{\\langle u_1, u_2\\rangle}{\\|u_1\\|_2 \\|u_2\\|} \\Big)$ be the angle between them.  Suppose we have cost function $c(\\p) = \\|p\\|_2^{\\beta}$, $\\beta > \\beta^* = \\frac{2}{1 - \\cos(\\theta^*)}$, and $P = \\infty$ producers. Then, there exists an equilibrium with two genres:\n\\[\\left\\{[\\cos(\\theta^G + \\theta_{\\text{min}}), \\sin(\\theta^G + \\theta_{\\text{min}})], [\\cos(\\theta^* - \\theta^G + \\theta_{\\text{min}}), \\sin(\\theta^* - \\theta^G + \\theta_{\\text{min}})] \\right\\} \\]\nwhere $\\theta^G := \\argmax_{\\theta \\le \\theta^*/2} \\left(\\cos^{\\beta}(\\theta) + \\cos^{\\beta}(\\theta^* - \\theta)\\right)$ and $\\theta_{\\text{min}} := \\min\\big(\\cos^{-1}\\big(\\frac{\\langle u_1, e_1\\rangle}{\\|u_1\\|} \\big) , \\cos^{-1}\\big(\\frac{\\langle u_2, e_1\\rangle}{\\|u_2\\|} \\big) \\big)$. \n\nFor each genre, the conditional quality distribution (i.e.~the distribution of the maximum quality $\\|p\\|$ along a genre, conditional on all of the producers choosing that genre) has cdf given by a countably-infinite piecewise function, where each piece is either constant or grows proportionally to $\\|p\\|^{2\\beta}$.\n\\end{restatable}",
+          "quoted_text_sha256": "afe932ba44d9dbf4c229673c9878f6895932048199b5dcc3b51263144f1085a5"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem_infinitegenreformal": {
+      "source_anchors": [
+        {
+          "line_end": 1771,
+          "line_start": 1759,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{infinitegenreformal}[Formal version of Theorem \\ref{thm:infinitegenre}]\n\\label{thm:infinitegenreformal}\nSuppose that there are 2 users located at two linearly independently vectors $u_1, u_2 \\in \\mathbb{R}_{\\ge 0}^D$, let $\\theta^* := \\cos^{-1}\\Big( \\frac{\\langle u_1, u_2\\rangle}{\\|u_1\\|_2 \\|u_2\\|} \\Big) < 0$ be the angle between them.  Suppose we have cost function $c(\\p) = \\|p\\|_2^{\\beta}$, $\\beta > \\beta^* = \\frac{2}{1 - \\cos(\\theta^*)}$, and $P = \\infty$ producers. Then, the genres $d_1, d_2$, conditional quality distributions $\\FMax_1 = \\FMax$ and $\\FMax_2 = \\FMax$, and weights $\\alpha_1 = \\alpha_2 = 2$ form an equilibrium (as per  Definition \\ref{def:infinitegenre}), where\n\\[\\left\\{d_1, d_2 \\right\\} := \\left\\{[\\cos(\\theta^G + \\theta_{\\text{min}}), \\sin(\\theta^G + \\theta_{\\text{min}})], [\\cos(\\theta^* - \\theta^G + \\theta_{\\text{min}}), \\sin(\\theta^* - \\theta^G + \\theta_{\\text{min}})] \\right\\} \\]\nsuch that $\\theta^G := \\argmax_{\\theta \\le \\theta^*/2} \\left(\\cos^{\\beta}(\\theta) + \\cos^{\\beta}(\\theta^* - \\theta)\\right)$ and $\\theta_{\\text{min}} := \\min\\left(\\cos^{-1}\\left(\\frac{\\langle u_1, e_1\\rangle}{\\|u_1\\|} \\right) , \\cos^{-1}\\left(\\frac{\\langle u_2, e_1\\rangle}{\\|u_2\\|} \\right) \\right)$, and where \n\\[\\FMax(q) :=  \n\\begin{cases}\nC_2^{(2n+2) \\beta} & \\text{ if } q \\in C_1^{1/\\beta} C_2^{2n+1}  \\left[C_2, 1 \\right] \\text{ for } n \\ge 0 \\\\\n C_1^{-2}C_2^{-2 n\\beta} q^{2 \\beta}  & \\text{ if } q \\in C_1^{1/\\beta} C_2^{2n}  \\left[C_2, 1 \\right] \\text{ for } n \\ge 0 \\\\\n1 & \\text{ if } q \\ge C_1^{1/\\beta},\n\\end{cases},\\]\nsuch that the constants are defined by $C_1  := \\frac{\\sin(\\theta^*) \\cos(\\theta^G)}{\\sin(\\theta^* - \\theta_G)}$ and $C_2 := \\frac{\\cos(\\theta^* - \\theta^G)}{\\cos(\\theta^G)}$. \n\\end{restatable}",
+          "quoted_text_sha256": "f17496cdffa6c5fb99532d3411f314c172405af119f669683b4bf27e0697db8c"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem_phasetransition": {
+      "source_anchors": [
+        {
+          "line_end": 597,
+          "line_start": 590,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{phasetransitionformal}\n\\label{thm:phasetransitionformal}\nSuppose that there are $N$ users split equally between two linearly independently vectors $u_1, u_2 \\in \\mathbb{R}_{\\ge 0}^D$, and let $\\theta^* := \\cos^{-1}\\left( \\frac{\\langle u_1, u_2\\rangle}{\\|u_1\\|_2 \\|u_2\\|} \\right)$ be the angle between the user vectors. Let the cost function be $c(\\p) = \\|p\\|_2^{\\beta}$. Let $\\mu$ be a a distribution on $\\mathbb{R}^d$ such that the distributions $\\langle u_1, \\p\\rangle$ and $\\langle u_2, \\p\\rangle$ over $\\mathbb{R}_{\\ge 0}$ over $\\mathbb{R}_{\\ge 0}$ for $p \\sim \\mu$ are absolutely continuous and twice continuously differentiable within their supports. There are two regimes based on $\\beta$ and $\\theta^*$: \n\\begin{enumerate}\n    \\item If $\\beta < \\beta^* = \\frac{2}{1 - \\cos(\\theta^*)}$ and if $\\mu$ is a symmetric mixed equilibrium, then $\\mu$ satisfies $|\\Genre(\\mu)| = 1$. \n    \\item If $\\beta > \\beta^* = \\frac{2}{1 - \\cos(\\theta^*)}$, if $|\\Genre(\\mu)| < \\infty$, and if the conditional distribution of $\\|p\\|$ along each genre is continuously differentiable, then $\\mu$ is not an equilibrium. \n\\end{enumerate}\n\\end{restatable}",
+          "quoted_text_sha256": "2a29fcb22c8d56781d8d50ca2a3e8b73d86fb085f84d6b8c27fda884e96248e1"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem_singlegenre": {
+      "source_anchors": [
+        {
+          "line_end": 423,
+          "line_start": 415,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{singlegenre}\n\\label{thm:singlegenre} \nLet $\\UMatrix := [\\u_1; \\cdots; \\u_N]$, let $\\Set$ be $\\left\\{\\UMatrix\\p \\mid \\|\\p\\| \\le 1, \\p \\in \\bR_{\\ge 0}^D  \\right\\}$, and let $\\Set^{\\beta}$ be the image of $\\Set$ under coordinate-wise powers. Then, there is a symmetric equilibrium $\\mu$ with $|\\Genre(\\mu)| = 1$ if and only if \n\\begin{equation}\n\\label{eq:maxcondition}\n  \\max_{y \\in \\Set^{\\beta}} \\prod_{i=1}^{N} y_i  = \\max_{y \\in \\bar{\\Set}^{\\beta}} \\prod_{i=1}^{N} y_i.\n\\end{equation}\nOtherwise, all symmetric equilibria have multiple genres. Moreover, if \\eqref{eq:maxcondition} holds for some $\\beta$, it also holds for every $\\beta' \\leq \\beta$. \n\\end{restatable}",
+          "quoted_text_sha256": "963d8e8c350238e01d52d97526b93ced204946b5e110e31d62ed54bf2477cbf4"
+        }
+      ],
+      "source_kind": "theorem"
+    }
+  },
+  "source_artifact_sha256": "45345cf8797d89765df4c45c0b33b36c87ef8b095f753e6408a7a416f137180a",
+  "source_coverage_mode": "named_theoretical_statements"
+}

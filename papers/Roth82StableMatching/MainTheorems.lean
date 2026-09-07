@@ -3,8 +3,8 @@ import Mathlib.Data.Fintype.Perm
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
-import EconCSLib.Markets.Matching.Basic
-import EconCSLib.Markets.Matching.DeferredAcceptance
+import AppliedModelingLib.Markets.Matching.Basic
+import AppliedModelingLib.Markets.Matching.DeferredAcceptance
 
 /-!
 # Paper-Facing Theorems: The Economics of Matching: Stability and Incentives (Roth 1982)
@@ -17,7 +17,7 @@ one-sided incentive statement in Theorem 5, not to source Theorem 3.
 -/
 
 namespace Roth82StableMatching
-open EconCSLib.Matching
+open AppliedModelingLib.Matching
 
 
 /-! ## 1) Paper-Facing Definitions: 2023 Matching -/
@@ -689,7 +689,7 @@ theorem paper_da_is_men_optimal_on_strict_marriage_domain
     paper_is_men_optimal val_m val_w (deferredAcceptance val_m val_w) := by
   rcases hdomain with ⟨hstrictM, hstrictW, hposM, hposW⟩
   exact paper_da_is_men_optimal val_m val_w
-    (EconCSLib.Matching.da_is_men_optimal_of_strict_preferences
+    (AppliedModelingLib.Matching.da_is_men_optimal_of_strict_preferences
       val_m val_w hstrictM hstrictW ⟨hposM, hposW⟩)
 
 /--
@@ -704,7 +704,7 @@ theorem paper_da_is_women_optimal_on_strict_marriage_domain
       (paper_women_deferredAcceptance val_m val_w) := by
   rcases hdomain with ⟨hstrictM, hstrictW, hposM, hposW⟩
   exact paper_da_is_women_optimal val_m val_w
-    (EconCSLib.Matching.da_is_men_optimal_of_strict_preferences
+    (AppliedModelingLib.Matching.da_is_men_optimal_of_strict_preferences
       val_w val_m hstrictW hstrictM ⟨hposW, hposM⟩)
 
 /--

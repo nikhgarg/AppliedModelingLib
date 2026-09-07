@@ -1,0 +1,323 @@
+{
+  "defects": [
+    {
+      "acceptance_condition": "A transparent corrected target with the exact CDF equality and a checked Lean endpoint for the one-population law.",
+      "affected_source_locators": [
+        "audit/cited publication:346-349",
+        "audit/cited publication:358-361",
+        "audit/cited publication:931-937"
+      ],
+      "defect_kind": "algebra_or_sign",
+      "id": "JGS23-ONEPOPULATION-CDF-EXPONENT-01",
+      "repair_obligation": "Retain the archival formula and anchor, and state the corrected radial CDF in every source-facing endpoint that uses it.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`corollaryOnePopulationSpec` and `corollaryOnePopulation` check the law through `paper_single_genre_cdf`; the archived incompatibility and corrected formula are documented in `docs/ONEPOPULATION_SOURCE_REVIEW_2026-08-27.md`.",
+      "source_claim": "The one-population corollary gives support through N^(1/beta) but prints F(q) = (q/N)^(beta/(P-1)).",
+      "source_locator": "audit/cited publication:358-361",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The printed CDF is inconsistent with the printed support endpoint except in special parameter cases. The checked endpoint uses the radial law F(q) = ((q^beta)/N)^(1/(P-1)), clipped as a CDF, and does not claim literal archival equivalence."
+    },
+    {
+      "acceptance_condition": "A transparent one-dimensional construction Spec, an explicit note that uniqueness is not realized by that endpoint, and a checked Lean endpoint for the construction.",
+      "affected_source_locators": [
+        "audit/cited publication:346-349",
+        "audit/cited publication:358-361"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "JGS23-ONE-DIMENSIONAL-UNIQUENESS-01",
+      "repair_obligation": "Either prove uniqueness of every one-dimensional source symmetric mixed equilibrium under a fully specified norm and user normalization, or keep the construction-only replacement and preserve the archival uniqueness claim as uncredited.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`exampleOneDimensionalSetupSpec` and `exampleOneDimensionalSetup` specialize the checked homogeneous ray-law construction to `Content 1`; their source note explicitly excludes unproved uniqueness credit.",
+      "source_claim": "The labelled one-dimensional example asserts that its displayed power-law distribution is the unique symmetric equilibrium.",
+      "source_locator": "audit/cited publication:346-349",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The checked one-dimensional route establishes the explicit homogeneous ray-law equilibrium and corrected CDF, but does not prove uniqueness among all symmetric mixed laws. No counterexample is asserted; the omitted uniqueness requires a separate characterization argument rather than being silently inherited from the construction theorem."
+    },
+    {
+      "acceptance_condition": "A transparent target explicitly naming the nonzero-support convention and checked endpoints for the affected genre conclusions.",
+      "affected_source_locators": [
+        "audit/cited publication:369-402",
+        "audit/cited publication:415-423",
+        "audit/cited publication:586-602"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "JGS23-ZERO-GENRE-NORMALIZATION-01",
+      "repair_obligation": "Use a zero-safe nonzero-support genre set in source-facing single-genre and phase-transition targets, retaining the archival display as context.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`nonzeroSupportGenresSpec`, `theoremSingleGenreSpec`, `corollaryTwoUsersSpec`, and `theoremPhaseTransitionSpec` expose the convention; the source issue is documented in `docs/FORMALIZATION_WORKING_MEMO.md`.",
+      "source_claim": "Genre is defined as p / ||p|| for every p in topological support, without excluding zero.",
+      "source_locator": "audit/cited publication:369-378",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The normalized direction is undefined at zero, and the source's radial laws can place zero in topological support. The checked target uses the set of nonzero support directions, preserving the economic specialization concept while making the domain defined."
+    },
+    {
+      "acceptance_condition": "A checked bidirectional Lean theorem with the tie-null premise and no assertion of archival equivalence.",
+      "affected_source_locators": [
+        "audit/cited publication:679-693",
+        "audit/cited publication:1289-1310"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "JGS23-NECESSARYSUFF-TIE-NULLNESS-01",
+      "repair_obligation": "Expose score-level nullness and a tie-aware expected-winner objective in the formal source-facing characterization.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`claimNecessarySufficientSpec` and `claimNecessarySufficient` prove the tie-aware iff; `paper_necessarysuff_tie_aware_iff` supplies the checked implementation.",
+      "source_claim": "The necessary-and-sufficient characterization replaces expected winner mass by marginal maximum CDFs without a score-tie nullness condition.",
+      "source_locator": "audit/cited publication:679-693",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Uniform tie sharing changes the payoff at score atoms. The checked iff makes score-level nullness explicit and uses the tie-aware objective, so it is a corrected target rather than a literal realization of the source display."
+    },
+    {
+      "acceptance_condition": "A transparent corrected phase-transition target with checked lower and upper implications and a pinned archival theorem anchor.",
+      "affected_source_locators": [
+        "audit/cited publication:586-602",
+        "audit/cited publication:1458-1465"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "JGS23-PHASE-TRANSITION-REGULARITY-01",
+      "repair_obligation": "State the regularity and finite-genre representation required by the checked lower and upper phase arguments.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`theoremPhaseTransitionSpec` and `theoremPhaseTransition` realize the two implications through `paper_canonical_two_user_corrected_phase_transition`; the proof corrections are described in `docs/PHASE_TRANSITION_AUTHOR_CLARIFICATION_MEMO_2026-08-28.md`.",
+      "source_claim": "The phase-transition theorem gives below-threshold single-genre structure and above-threshold finite-genre exclusion without stating the regularity and conditional-law hypotheses used in the proof route.",
+      "source_locator": "audit/cited publication:586-602",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The checked result retains the source's below/above-threshold economic content but makes absolute continuity, CDF differentiability, and the finite conditional norm-law premise explicit. It is therefore recorded as a corrected source target."
+    },
+    {
+      "acceptance_condition": "A pinned archival anchor, explicit non-equivalence, a user-authorized corrected target, and checked Lean witnesses for the corrected equilibrium construction.",
+      "affected_source_locators": [
+        "audit/cited publication:1725-1745",
+        "audit/cited publication:1747-1754",
+        "audit/cited publication:1759-1771"
+      ],
+      "defect_kind": "model_semantics",
+      "id": "JGS23-INFINITE-GENRE-LIMIT-MODEL-01",
+      "repair_obligation": "Retain the source definition and theorem verbatim in the map, but route their formal credit only through an explicit corrected target that states the coherent equilibrium object and all changed domain data.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`paper_infinite_genre_false_of_arccos_angle_neg` and `paper_infinite_genre_false_of_two_weights_eq_two_and_sum_one` formally refute the literal hypotheses. `theoremInfiniteGenreSpec` and `theoremInfiniteGenre` check the coherent replacement via `CorrectedInfiniteTwoGenreContentEquilibrium`.",
+      "source_claim": "The infinite-producer limiting discussion uses inconsistent indices and the named theorem assumes an angle arccos(...) < 0 and weights alpha_1 = alpha_2 = 2 while requiring weights to sum to one.",
+      "source_locator": "audit/cited publication:1725-1771",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The archival theorem cannot hold as written: the displayed angle condition is impossible for an arccosine and its displayed weights are not probability weights. The checked theorem is a coherent strictly-acute, above-threshold two-genre equilibrium construction with normalized half weights and a corrected limit-equilibrium predicate."
+    },
+    {
+      "acceptance_condition": "A checked counterexample to the broad reading and a checked corrected induced-cost endpoint before this source row is marked formalized.",
+      "affected_source_locators": [
+        "audit/cited publication:1311-1315",
+        "audit/cited publication:1318-1355"
+      ],
+      "defect_kind": "model_semantics",
+      "id": "JGS23-INDUCED-COST-GENERAL-DIMENSION-01",
+      "repair_obligation": "State a canonical two-dimensional or nonnegative-fibre-minimizing induced-cost target whenever the appendix argument needs an exact score-cost identity.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`paper_lemma_inducedcost_general_dimension_counterexample` and `paper_lemma_inducedcost_general_dimension_exact_counterexample` record the failure; the canonical two-user route is used by the phase proofs.",
+      "source_claim": "The induced-cost display is stated for two linearly independent users in arbitrary dimension as though the score pair determines the Euclidean production cost.",
+      "source_locator": "audit/cited publication:1311-1315",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "In dimensions above the two-user score span, score fibres need not have a unique norm. The formal development keeps the canonical or fibre-minimizing induced-cost route rather than crediting the displayed arbitrary-dimensional identity."
+    },
+    {
+      "acceptance_condition": "A transparent corrected target with the positive-score conclusion and a checked Lean endpoint that does not rely on the span parenthetical.",
+      "affected_source_locators": [
+        "audit/cited publication:958-963",
+        "audit/cited publication:1007-1007"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "JGS23-NONZERO-SPAN-IMPLICATION-01",
+      "repair_obligation": "Do not use span membership as a positive-score proof. State the positive-score conclusion and the source-Nash regularity assumptions required to establish it.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`lemmaNonzeroSpec` and `lemmaNonzero` realize the repair through `paper_lemma_singlegenre_genre_scores_positive_of_nonzero_users`.",
+      "source_claim": "Lemma nonzero says that a singleton genre lies in the span of the users, parenthetically treating that as implying strictly positive score against every user.",
+      "source_locator": "audit/cited publication:958-963",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Linear-span membership alone does not imply positive inner product with each user. The checked replacement retains the economically used positive-score conclusion, deriving it from source-Nash score-level perturbations under visible nonzero-user and cost-continuity premises rather than asserting the invalid parenthetical."
+    },
+    {
+      "acceptance_condition": "A transparent corrected source target with a checked support-payoff-zero endpoint and a pinned archival proposition anchor.",
+      "affected_source_locators": [
+        "audit/cited publication:748-752",
+        "audit/cited publication:968-990"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "JGS23-SINGLE-GENRE-PROFIT-REGULARITY-01",
+      "repair_obligation": "Expose the equilibrium, atomlessness, nonzero-genre, positive-score, norm regularity, and support-action premises; retain expected-profit equality only when its measure-theoretic bridge is separately established.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`propositionZeroUtilitySingleGenreSpec` and `propositionZeroUtilitySingleGenre` realize the support-action route through `paper_proposition_zeroutilitysinglegenre_source_nash_of_compact_sublevels_without_zero_support_premise`.",
+      "source_claim": "Proposition zeroutilitysinglegenre states that every single-genre equilibrium has zero expected profit.",
+      "source_locator": "audit/cited publication:748-752",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The source proof invokes atomlessness, the zero support action, positive genre scores, and norm-topology arguments without all hypotheses being present in the proposition. It also passes from support-action payoff to expected profit without an explicit integrability bridge. The checked endpoint gives the zero support-action payoff under the full stated regularity domain."
+    },
+    {
+      "acceptance_condition": "A transparent corrected target whose exact normalization premises and support-ball conclusion are checked against the source-Nash endpoint.",
+      "affected_source_locators": [
+        "audit/cited publication:571-584",
+        "audit/cited publication:1289-1430"
+      ],
+      "defect_kind": "normalization_or_scaling",
+      "id": "JGS23-SUPPORT-RESTRICTION-NORMALIZATION-01",
+      "repair_obligation": "State the per-user normalization, its unit-score/angle equalities, and the probability-law status of the mixed strategy at the source-facing theorem boundary, or separately prove the full ranking-game normalization transport from arbitrary nonzero user magnitudes.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`propositionSupportRestrictionSpec` and `propositionSupportRestriction` expose and realize the normalized original-coordinate result through `paper_supportrestriction_no_l2_content_support_ball_of_original_two_user_source_nash`.",
+      "source_claim": "Proposition supportrestriction is stated for arbitrary linearly independent nonnegative two-user vectors, with the angle defined from their normalized inner product.",
+      "source_locator": "audit/cited publication:581-584",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The checked original-coordinate endpoint represents the same ranking game after explicit positive per-user score normalization, but its theorem boundary assumes unit self-scores, an explicit score-angle equation, and that the mixed law is a probability measure. That directional normalization preserves winner and tie comparisons but is not definitionally the literal printed coordinate statement."
+    },
+    {
+      "acceptance_condition": "A transparent corrected target with the support-payoff conclusion and a checked endpoint, retaining the archival profit wording and anchor.",
+      "affected_source_locators": [
+        "audit/cited publication:713-716",
+        "audit/cited publication:734-742"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "JGS23-UTILITY-PROFIT-BRIDGE-01",
+      "repair_obligation": "Expose the L2, nonzero-user, normalized-direction Q bound, and direct support-payoff conclusion; add an integrability bridge only when the expected-profit definition is instantiated.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`propositionUtilitySpec` and `propositionUtility` realize the direct common-payoff result through `paper_proposition_utility_source_symmetric_mixed_nash_support_payoff_pos`.",
+      "source_claim": "Proposition utility concludes that every symmetric equilibrium has strictly positive profit from the displayed geometric condition.",
+      "source_locator": "audit/cited publication:734-742",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The available checked route is for normalized Euclidean users and gives strict positivity of each support action's common source-Nash payoff. Translating this direct payoff conclusion into the source's expected-profit notation requires an explicit integrability/expectation equality not stated in the proposition."
+    },
+    {
+      "acceptance_condition": "Transparent corrected Specs for the two partial derivatives, the parameterized mixed-partial identity, and the local slope/bracket implication, each with a checked Lean endpoint.",
+      "affected_source_locators": [
+        "audit/cited publication:1318-1355",
+        "audit/cited publication:1389-1430"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "JGS23-TWO-USER-CALCULUS-DOMAIN-01",
+      "repair_obligation": "State the canonical induced-cost domain, local derivative-base or positive-radius conditions, and the supplied graph/SOC/FOC hypotheses before claiming the corresponding analytic conclusion.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`lemmaFocSpec`, `lemmaSecondDerivativeSpec`, and `lemmaRegionsColorSpec` are realized by their corresponding checked endpoints in `ProofInterface.lean`.",
+      "source_claim": "The FOC, secondderiv, and regionscolor lemmas state derivative, sign, and support-curve conclusions for arbitrary-dimensional nonnegative users using C1--C3 without stating derivative-base, graph, density, or SOC hypotheses.",
+      "source_locator": "audit/cited publication:1318-1355",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The cost derivatives are only available at their stated power bases, the source reuses an angle variable inconsistently, and C1--C3 do not alone yield a differentiable support graph, marginal density derivatives, or a negative-semidefinite graph Hessian. The checked targets retain the local calculus and slope inequality with each missing condition explicit."
+    },
+    {
+      "acceptance_condition": "A transparent corrected target giving the minimizer and value under an attained positive product maximum, with a checked Lean endpoint.",
+      "affected_source_locators": [
+        "audit/cited publication:1083-1093",
+        "audit/cited publication:1097-1107"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "JGS23-SUPINF-ATTAINMENT-01",
+      "repair_obligation": "Require a positive feasible set and an attained coordinate-product maximizer, or separately prove the necessary compactness/approximation theorem before asserting the source sup-inf identity.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`lemmaSupInfSpec` and `lemmaSupInf` realize the attained-maximizer form through `paper_lemma_supinf_argmax_attains_inf`.",
+      "source_claim": "Lemma supinf claims the ratio sup-inf identity for every subset of the strictly positive orthant, including a proof sketch that treats a product argmax as available or approximable without compactness.",
+      "source_locator": "audit/cited publication:1083-1093",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "An arbitrary positive set need not have a product maximizer or the uniform boundedness needed by the displayed approximation argument; for example, a noncompact positive ray defeats the asserted minimax value. The checked theorem is the exact attained-maximizer AM--GM statement needed on compact score images."
+    },
+    {
+      "acceptance_condition": "Transparent corrected Specs for both optimization-program presentations, a pinned source note distinguishing the certificate from the literal equality, and checked Lean endpoints under compact source-norm sublevels.",
+      "affected_source_locators": [
+        "audit/cited publication:442-449",
+        "audit/cited publication:1002-1009",
+        "audit/cited publication:1083-1107"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "JGS23-OPTIMIZATION-MINIMAX-DOMAIN-01",
+      "repair_obligation": "Restrict the ratio objective to strictly positive denominators and prove the necessary compactness/attainment minimax bridge before restoring the literal equality; otherwise retain the operational positive-ray certificate.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`optimizationProgramCertificate`, `lemmaOptimizationProgramSpec`, and `lemmaOptimizationProgramRestatedSpec` are realized by the compact positive-ray iff `paper_theorem_singlegenre_concrete_source_symmetric_mixed_nash_iff_product_sup_condition_of_compact_sublevels`.",
+      "source_claim": "The informal optimization-program lemma equates a single-genre equilibrium condition with an inf-sup equals sup-inf ratio expression; its appendix restatement parameterizes the same display by Ball_m.",
+      "source_locator": "audit/cited publication:442-449",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The printed ratio is undefined on zero score coordinates and the stated unrestricted supinf identity is false without compactness or attainment. The checked endpoints retain the positive Ball_m witness and compact source image, but use an attained feasible-ray source-Nash certificate instead of claiming a literal extended-real minimax equality."
+    },
+    {
+      "acceptance_condition": "A transparent corrected existential singleton-nonzero-genre iff, a checked ray-law identification bridge, and a checked Lean endpoint for both directions.",
+      "affected_source_locators": [
+        "audit/cited publication:942-956",
+        "audit/cited publication:957-1040"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "JGS23-OPT-SINGLE-DIRECTION-IDENTIFICATION-01",
+      "repair_obligation": "State the positive unit-direction and finite-dimensional regularity hypotheses before transferring the ray-law ratio criterion to an arbitrary singleton-genre equilibrium.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`singleRayNashRatioSpec` retains the reusable ray criterion; `lemmaOptSingleDirectionSpec` and `lemmaOptSingleDirection` realize the source-shaped existential iff via `sourceSymmetricMixedNash_eq_singleGenreContentLaw_of_compactSublevels_of_singleton_nonzeroSupportGenres_of_nonzero_users`.",
+      "source_claim": "Lemma optsingledirection identifies the existence of a symmetric equilibrium with genre {p*} with a ratio bound, then argues through the CDF that the equilibrium must be the canonical ray law.",
+      "source_locator": "audit/cited publication:1023-1040",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The printed result suppresses the positive unit-direction domain for p* and the perturbation, compactness, and norm-continuity conditions used to identify an arbitrary singleton-genre equilibrium with the canonical ray law. The checked endpoint makes these conditions explicit and uses the zero-safe nonzero-support genre set."
+    },
+    {
+      "acceptance_condition": "A transparent corrected witness-form iff with the full regularity package and a checked Lean endpoint using the source-shaped fixed-direction theorem.",
+      "affected_source_locators": [
+        "audit/cited publication:942-956",
+        "audit/cited publication:1012-1040"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "JGS23-CONDITIONGEN-INFIMUM-ATTAINMENT-01",
+      "repair_obligation": "Either establish attainment for the printed Ball_m infimum or state the positive feasible witness and the compactness/continuity package that supplies it.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`lemmaConditionGenSpec` and `lemmaConditionGen` state and prove the positive-witness form; their forward direction obtains the witness from the compact product condition and their reverse direction constructs the canonical source-Nash ray law.",
+      "source_claim": "Lemma conditiongen states an infimum-over-Ball_m ratio condition for single-genre equilibrium existence without separately stating a minimizer or the regularity used by its fixed-direction and CDF arguments.",
+      "source_locator": "audit/cited publication:1012-1019",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The source's open positive-score domain does not itself supply the needed infimum witness. The checked endpoint gives the equivalent explicit positive feasible witness under compact source-norm sublevels, continuity, and perturbation regularity, retaining the economically operative ratio condition."
+    },
+    {
+      "acceptance_condition": "A transparent corrected target for each beta-star corollary that states the fixed exponent conclusion and is realized by a checked Lean endpoint.",
+      "affected_source_locators": [
+        "audit/cited publication:436-438",
+        "audit/cited publication:456-568"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "JGS23-BETASTAR-COROLLARY-ENDPOINT-01",
+      "repair_obligation": "Replace every beta-star shorthand used for an endpoint conclusion with an explicit fixed-exponent source-facing result and its actual regularity assumptions.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`corollaryBetaOneSpec` and `corollaryBetaPSpec` expose fixed-exponent constructions; the further beta exclusion route is retained pending its own transparent target.",
+      "source_claim": "The beta-one, beta-p, and beta corollaries package their conclusions through beta-star even though the source defines beta-star only as a supremum and does not separately establish endpoint attainment or the regularity used by the single-genre route.",
+      "source_locator": "audit/cited publication:456-568",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The checked corollaries state the actual finite-exponent equilibrium or exclusion result, with compactness, convexity, and nonzero-user assumptions visible, rather than asserting an unproved property of a supremum endpoint."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "The source conclusions on their stated finite-dimensional norm domain; this convention does not alter any payoff, equilibrium, or product-maximization conclusion.",
+      "classification": "source_proof_domain_clarification",
+      "formal_meaning": "The source's finite-dimensional norm is represented by a `SourceNorm` together with the compact and convex sublevel, measurability, continuity, and perturbation-continuity hypotheses used by the existence and single-genre proofs.",
+      "id": "JGS23-FINITE-DIMENSIONAL-NORM-REGULARITY-01",
+      "source_locator": "audit/cited publication:265-285",
+      "why_needed": "The reusable formal API permits norm-like cost functions more general than a mathematical norm, so the finite-dimensional regularity used implicitly by the source must be explicit at the relevant proof endpoints."
+    }
+  ],
+  "paper": "JGS23SupplySideRecommenderSystems",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The finite-producer market model, the equilibrium concept, homogeneous and single-genre results, and the two-user main-text results.",
+      "source_locator": "audit/cited publication:265-752"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The appendix single-genre, two-user, and infinite-producer-limit constructions, including their displayed definitions and named results.",
+      "source_locator": "audit/cited publication:931-1911"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "45345cf8797d89765df4c45c0b33b36c87ef8b095f753e6408a7a416f137180a"
+}

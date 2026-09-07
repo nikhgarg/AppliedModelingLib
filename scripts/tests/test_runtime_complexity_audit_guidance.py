@@ -4,11 +4,11 @@
 from __future__ import annotations
 
 import importlib.util
-import json
 import sys
 import unittest
 from pathlib import Path
 
+from scripts import semantic_obligation_review as obligation_review
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location(
@@ -21,48 +21,13 @@ SPEC.loader.exec_module(NEW_PAPER)
 
 
 class RuntimeComplexityAuditGuidanceTests(unittest.TestCase):
-    def test_generated_audit_prompts_require_operational_evidence(self) -> None:
-        for payload_text in (
-            NEW_PAPER.statement_match_llm_text("EX00Example"),
-            NEW_PAPER.source_record_match_llm_text("EX00Example"),
-        ):
-            prompt = " ".join(json.loads(payload_text)["prompt_summary"])
-            self.assertIn("transitive semantic operational dependency graph", prompt)
-            self.assertIn("every reachable branch", prompt)
-            self.assertIn("old semantic closure or oracle", prompt)
-            self.assertIn("names", prompt.lower())
-            self.assertIn("duplicates", prompt)
-            self.assertIn("materialization", prompt)
-            self.assertIn("representation/container primitives", prompt)
-            self.assertIn("exact-rational bit growth", prompt)
-            self.assertIn("worst-case recurrence", prompt)
-            self.assertIn("missing or excluded_by_claim", prompt.lower())
-            self.assertIn("SHA-256", prompt)
-            self.assertIn("generated IR/C", prompt)
-            self.assertIn("cost-threaded executor", prompt)
-
-    def test_statement_scaffold_has_independently_versioned_runtime_schema(self) -> None:
-        payload = json.loads(NEW_PAPER.statement_match_llm_text("EX00Example"))
+    def test_current_runtime_validator_retains_every_strict_work_category(self) -> None:
         self.assertEqual(
-            payload["prompt_version"],
-            "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
-        )
-        schema = payload["operational_complexity_review_schema"]
-        self.assertEqual(
-            schema["version"],
-            NEW_PAPER.OPERATIONAL_COMPLEXITY_REVIEW_VERSION,
-        )
-        self.assertIn("judgment=matches", schema["required_when"])
-        self.assertIn("polynomial_time", schema["required_when"])
-        self.assertIn("dependency_graph", schema["required"])
-        self.assertIn("worst_case_recurrence", schema["required"])
-        self.assertIn("worst_case_bound", schema["required"])
-        self.assertIn(
-            "all_reachable_branches_complete",
-            schema["dependency_graph_required"],
+            obligation_review.OPERATIONAL_COMPLEXITY_REVIEW_VERSION,
+            "operational-complexity-review-v1-transitive-work-accounting",
         )
         self.assertEqual(
-            set(schema["work_accounting_required_categories"]),
+            obligation_review.OPERATIONAL_WORK_CATEGORIES,
             {
                 "traversal_enumeration_length",
                 "duplicate_multiplicity",
@@ -71,15 +36,17 @@ class RuntimeComplexityAuditGuidanceTests(unittest.TestCase):
                 "exact_rational_bit_growth",
             },
         )
-        self.assertNotIn("missing", schema["full_runtime_match_status_values"])
         self.assertNotIn(
-            "excluded_by_claim", schema["full_runtime_match_status_values"]
+            "missing", obligation_review.FULL_RUNTIME_MATCH_WORK_STATUSES
         )
-        self.assertIn(
-            "symbol_names_used_as_evidence",
-            schema["material_closure_elimination_required"],
+        self.assertNotIn(
+            "excluded_by_claim",
+            obligation_review.FULL_RUNTIME_MATCH_WORK_STATUSES,
         )
-        self.assertIn("dependency node", schema["charged_category_rule"])
+        self.assertEqual(
+            obligation_review.CLOSURE_ELIMINATION_EVIDENCE_KINDS,
+            {"generated_ir_call_graph", "cost_threaded_executor"},
+        )
 
     def test_generated_plan_records_runtime_evidence_and_exclusions(self) -> None:
         plan = NEW_PAPER.formalization_plan_text("Example", "EX00Example")
@@ -94,51 +61,53 @@ class RuntimeComplexityAuditGuidanceTests(unittest.TestCase):
         self.assertIn("refinement alone is not cost evidence", plan)
 
     def test_skill_and_workflow_reject_name_based_runtime_evidence(self) -> None:
-        skill = (ROOT / "skills" / "econcs-formalizer" / "SKILL.md").read_text(
-            encoding="utf-8"
-        )
+        skill = (ROOT / "skills" / "econcs-formalizer" / "SKILL.md").read_text(encoding="utf-8")
+        architecture = (
+            ROOT
+            / "skills"
+            / "econcs-formalizer"
+            / "references"
+            / "formalization-architecture.md"
+        ).read_text(encoding="utf-8")
         workflow = (ROOT / "docs" / "AGENT_FORMALIZATION_WORKFLOW.md").read_text(
             encoding="utf-8"
         )
-        for raw_guidance in (skill, workflow):
-            guidance = " ".join(raw_guidance.split())
-            self.assertIn("transitive semantic operational", guidance)
-            self.assertIn("every branch reachable", guidance)
-            self.assertIn("old semantic closure or oracle", guidance)
-            self.assertIn("function and declaration names", guidance)
-            self.assertIn("generated IR/C", guidance)
-            self.assertIn("pinned by source and artifact digests", guidance)
-            self.assertIn("cost-threaded executor", guidance)
+        self.assertIn("references/formalization-architecture.md", skill)
+        guidance = " ".join(architecture.split())
+        self.assertIn("transitive semantic operational", guidance)
+        self.assertIn("every branch reachable", guidance)
+        self.assertIn("old semantic closure or oracle", guidance)
+        self.assertIn("function and declaration names", guidance)
+        self.assertIn("generated IR/C", guidance)
+        self.assertIn("pinned by source and artifact digests", guidance)
+        self.assertIn("cost-threaded executor", guidance)
+        workflow_guidance = " ".join(workflow.split())
+        self.assertIn("fully expanded transparent Spec", workflow_guidance)
+        self.assertIn("Never interpose a Lean-to-TeX", workflow_guidance)
 
     def test_skills_and_workflow_cover_semantic_fidelity_hazards(self) -> None:
-        paths = (
-            ROOT / "skills" / "econcs-formalizer" / "SKILL.md",
-            ROOT / "skills" / "econcs-prover" / "SKILL.md",
-            ROOT / "docs" / "AGENT_FORMALIZATION_WORKFLOW.md",
+        path = (
+            ROOT
+            / "skills"
+            / "econcs-formalizer"
+            / "references"
+            / "formalization-architecture.md"
         )
-        for path in paths:
-            guidance = " ".join(path.read_text(encoding="utf-8").split()).lower()
-            self.assertIn("terminal", guidance, path)
-            self.assertIn("nonvacu", guidance, path)
-            self.assertIn("coherent", guidance, path)
-            self.assertIn("nonempty", guidance, path)
-            self.assertIn("surject", guidance, path)
-
-        # The formalizer workflow owns cross-domain execution auditing.  The
-        # prover skill remains focused on establishing individual obligations.
-        for path in (paths[0], paths[2]):
-            guidance = " ".join(path.read_text(encoding="utf-8").split()).lower()
-            guidance = guidance.replace("-", " ")
-            self.assertIn("input domain", guidance, path)
-            self.assertIn("state transition", guidance, path)
-            self.assertIn("termination", guidance, path)
-            self.assertIn("numeric representation", guidance, path)
-            self.assertIn("global bridge", guidance, path)
-
-            # Names are routing only in the workflow that compares source and
-            # Lean semantics; they are not a proof-level requirement.
-            self.assertIn("names", guidance, path)
-            self.assertIn("routing", guidance, path)
+        guidance = " ".join(path.read_text(encoding="utf-8").split()).lower()
+        for phrase in (
+            "terminal",
+            "nonvacu",
+            "coherent",
+            "nonempty",
+            "surject",
+            "input domain",
+            "state transition",
+            "termination",
+            "numeric representation",
+            "global bridge",
+            "names are routing only",
+        ):
+            self.assertIn(phrase, guidance, path)
 
 
 if __name__ == "__main__":

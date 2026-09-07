@@ -1,4 +1,6 @@
-import EconCSLib
+import AppliedModelingLib.Foundations.Graph.Cycle
+import AppliedModelingLib.SocialChoice.FairDivision.Chores
+import Mathlib
 import HT26EFXChores.BalancedOrientation
 import HT26EFXChores.M2Orientation
 
@@ -21,7 +23,7 @@ is never evidence for that correspondence.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /--
 Source-faithful implementation of He--Tao's M34 insertion lemma.
@@ -34,15 +36,17 @@ this theorem composes them in the paper's four-agent setting.
 
 Source: `EFXadditivechores.tex`, Lemma (M34 insertion), lines 577--580.
 -/
-theorem m34InsertionProof
-    (Item : Type) [DecidableEq Item] (r : ℝ) (cost : ChoreCost (Fin 4) Item)
+theorem m34InsertionOfAllOtherSmallProof
+    (Agent Item : Type) [Fintype Agent] [Nonempty Agent] [DecidableEq Agent]
+    [DecidableEq Item] (r : ℝ) (cost : ChoreCost Agent Item)
     (chores : Finset Item) (item : Item)
     (hr : 2 < r) (hcost : IsOneOrRChoreCost cost r) (hitem : item ∉ chores)
-    (hsmallThree : IsSmallForAtLeastThree cost item)
-    (allocation : Allocation (Fin 4) Item)
+    (hsmallOther : ∀ sink, cost sink item ≠ 1 →
+      ∀ agent, agent ≠ sink → cost agent item = 1)
+    (allocation : Allocation Agent Item)
     (halloc : IsAllocationOf allocation chores)
     (hefx : EFXForChores (additiveChoreCost cost) allocation) :
-    ∃ extended : Allocation (Fin 4) Item,
+    ∃ extended : Allocation Agent Item,
       IsAllocationOf extended (insert item chores) ∧
         EFXForChores (additiveChoreCost cost) extended := by
   have hnonneg : ∀ agent chore, 0 ≤ cost agent chore :=
@@ -52,26 +56,32 @@ theorem m34InsertionProof
   obtain ⟨reduced, hReducedAlloc, hReducedEFX, hNoCycle, sink, hSinkMin⟩ :=
     exists_reduced_efx_allocation_with_cost_sink_and_no_mostEnvyCycle
       cost chores hnonneg allocation halloc hefx
-  by_cases hhasSmallSink : ∃ agent : Fin 4,
+  by_cases hhasSmallSink : ∃ agent : Agent,
       (∀ comparison, additiveChoreCost cost agent (reduced agent) ≤
         additiveChoreCost cost agent (reduced comparison)) ∧ IsSmallChore cost agent item
   · obtain ⟨agent, hminimum, hsmall⟩ := hhasSmallSink
-    exact exists_efx_allocation_addItem_of_small_cost_sink cost chores item hlower hitem
-      reduced hReducedAlloc hReducedEFX agent hsmall hminimum
+    refine ⟨addItem reduced agent item,
+      isAllocationOf_addItem_insert reduced chores agent item hReducedAlloc hitem, ?_⟩
+    exact efxForChores_addItem_of_envyFree_owner cost reduced agent item hlower
+      (by
+        intro hmem
+        exact hitem (hReducedAlloc.1 agent item hmem))
+      (by simpa [IsSmallChore] using hsmall) hminimum hReducedEFX
   · have hsmallSink : ¬ IsSmallChore cost sink item := by
       intro hsmall
       exact hhasSmallSink ⟨sink, hSinkMin, hsmall⟩
-    have hsmallOther := small_for_all_other_agents_of_atLeastThree cost item hsmallThree
-      sink hsmallSink
+    have hsmallOtherSink := hsmallOther sink (by
+      simpa [IsSmallChore] using hsmallSink)
     have hunique : ∀ agent,
         (∀ comparison,
           ¬ StrictMostEnvyEdgeForChores cost reduced agent comparison) → agent = sink := by
       intro agent hno
       have hminimum := no_strictMostEnvyEdge_implies_envyFreeForChores cost reduced agent hno
       by_contra hne
-      exact hhasSmallSink ⟨agent, hminimum, hsmallOther agent hne⟩
+      exact hhasSmallSink ⟨agent, hminimum, by
+        simpa [IsSmallChore] using hsmallOtherSink agent hne⟩
     let tentative := addItem reduced sink item
-    obtain ⟨cheapest, _, hcheapest⟩ := Finset.exists_min_image (Finset.univ : Finset (Fin 4))
+    obtain ⟨cheapest, _, hcheapest⟩ := Finset.exists_min_image (Finset.univ : Finset Agent)
       (fun agent => additiveChoreCost cost sink (tentative agent)) Finset.univ_nonempty
     by_cases hcheapestSink : cheapest = sink
     · refine ⟨tentative,
@@ -81,34 +91,34 @@ theorem m34InsertionProof
       simpa [tentative, hcheapestSink] using hcheapest comparison (Finset.mem_univ _)
     · have hpath : Relation.ReflTransGen (StrictMostEnvyEdgeForChores cost reduced)
           cheapest sink :=
-        EconCSLib.Foundations.Graph.reaches_unique_sink_of_no_cycle hNoCycle sink hunique cheapest
+        AppliedModelingLib.Foundations.Graph.reaches_unique_sink_of_no_cycle hNoCycle sink hunique cheapest
       have hpathTrans : Relation.TransGen (StrictMostEnvyEdgeForChores cost reduced)
           cheapest sink := by
         rcases Relation.reflTransGen_iff_eq_or_transGen.mp hpath with hEq | hTrans
         · exact (hcheapestSink hEq.symm).elim
         · exact hTrans
       obtain ⟨path, hpathNodup, hpathLength, hpathHead, hpathLast, hpathChain⟩ :=
-        EconCSLib.Foundations.Graph.exists_nodup_chain_list_of_transGen_of_no_cycle hNoCycle
+        AppliedModelingLib.Foundations.Graph.exists_nodup_chain_list_of_transGen_of_no_cycle hNoCycle
           hpathTrans
       have hpathNe : path ≠ [] := List.ne_nil_of_length_pos (by omega)
       have hlast : path.getLast hpathNe = sink := by
         simpa [List.getLast?_eq_getLast_of_ne_nil hpathNe] using hpathLast
       let owner := path[path.length - 2]
-      let next : Fin 4 → Fin 4 := path.formPerm
+      let next : Agent → Agent := path.formPerm
       have hnextOwner : next owner = sink := by
         dsimp [next, owner]
-        rw [EconCSLib.Foundations.Graph.formPerm_penultimate_eq_getLast path hpathNodup hpathLength]
+        rw [AppliedModelingLib.Foundations.Graph.formPerm_penultimate_eq_getLast path hpathNodup hpathLength]
         exact hlast
       have hownerNe : owner ≠ sink := by
         intro hEq
-        apply EconCSLib.Foundations.Graph.penultimate_ne_getLast_of_nodup path hpathNodup
+        apply AppliedModelingLib.Foundations.Graph.penultimate_ne_getLast_of_nodup path hpathNodup
           hpathLength
         simpa [owner, hlast] using hEq
-      have hownerSmall : cost owner item = 1 := hsmallOther owner hownerNe
+      have hownerSmall : cost owner item = 1 := hsmallOtherSink owner hownerNe
       have hownerMin : ∀ comparison,
           additiveChoreCost cost owner (reduced sink) ≤
             additiveChoreCost cost owner (reduced comparison) := by
-        have hedge := EconCSLib.Foundations.Graph.isChain_edge_formPerm_of_ne_getLast
+        have hedge := AppliedModelingLib.Foundations.Graph.isChain_edge_formPerm_of_ne_getLast
           hpathNodup hpathChain hpathNe
           (vertex := owner)
           (by
@@ -125,12 +135,12 @@ theorem m34InsertionProof
         have hmem : agent ∈ path := by
           exact List.mem_of_formPerm_apply_ne (by simpa [next] using hchanged)
         have hnotLast : agent ≠ path.getLast hpathNe := by simpa [hlast] using hagentSink
-        exact (EconCSLib.Foundations.Graph.isChain_edge_formPerm_of_ne_getLast
+        exact (AppliedModelingLib.Foundations.Graph.isChain_edge_formPerm_of_ne_getLast
           hpathNodup hpathChain hpathNe hmem hnotLast).2
       have hnextSink : next sink = cheapest := by
         dsimp [next]
         rw [← hlast]
-        exact EconCSLib.Foundations.Graph.formPerm_getLast_eq_head_of_head?_eq
+        exact AppliedModelingLib.Foundations.Graph.formPerm_getLast_eq_head_of_head?_eq
           path hpathNe hpathHead
       have hnextInjective : Function.Injective next := by
         exact path.formPerm.injective
@@ -173,6 +183,100 @@ theorem m34InsertionProof
             intro hmem
             exact hitem (hReducedAlloc.1 sink item hmem))
           hownerSmall hReducedEFX hownerMin hpathMin hsinkMin
+
+/-- Remark 3's arbitrary-agent insertion statement.  The source condition is
+that at most one agent values the inserted chore at the large cost `r`; the
+paper's one-or-`r` model therefore makes it small for every other agent. -/
+theorem m34InsertionGeneralAgentsProof
+    (Agent Item : Type) [Fintype Agent] [Nonempty Agent] [DecidableEq Agent]
+    [DecidableEq Item] (r : ℝ) (cost : ChoreCost Agent Item)
+    (chores : Finset Item) (item : Item)
+    (hr : 2 < r) (hcost : IsOneOrRChoreCost cost r) (hitem : item ∉ chores)
+    (hlargeAtMostOne : ∀ first second,
+      cost first item = r → cost second item = r → first = second)
+    (allocation : Allocation Agent Item)
+    (halloc : IsAllocationOf allocation chores)
+    (hefx : EFXForChores (additiveChoreCost cost) allocation) :
+    ∃ extended : Allocation Agent Item,
+      IsAllocationOf extended (insert item chores) ∧
+        EFXForChores (additiveChoreCost cost) extended := by
+  refine m34InsertionOfAllOtherSmallProof Agent Item r cost chores item hr hcost hitem ?_
+    allocation halloc hefx
+  intro sink hsink agent hne
+  have hsinkLarge : cost sink item = r := (hcost sink item).resolve_left hsink
+  rcases hcost agent item with hsmall | hlarge
+  · exact hsmall
+  · exact (hne (hlargeAtMostOne agent sink hlarge hsinkLarge)).elim
+
+/-- Iterating the arbitrary-agent insertion step allocates every remaining
+item that is large for at most one agent, exactly as stated in Remark 3. -/
+theorem m34InsertAllRemainingGeneralAgentsProof
+    (Agent Item : Type) [Fintype Agent] [Nonempty Agent] [DecidableEq Agent]
+    [DecidableEq Item] (r : ℝ) (cost : ChoreCost Agent Item)
+    (hr : 2 < r) (hcost : IsOneOrRChoreCost cost r) :
+    ∀ (remaining chores : Finset Item),
+      Disjoint remaining chores →
+        (∀ item ∈ remaining, ∀ first second,
+          cost first item = r → cost second item = r → first = second) →
+          ∀ allocation : Allocation Agent Item,
+            IsAllocationOf allocation chores →
+              EFXForChores (additiveChoreCost cost) allocation →
+                ∃ extended : Allocation Agent Item,
+                  IsAllocationOf extended (chores ∪ remaining) ∧
+                    EFXForChores (additiveChoreCost cost) extended := by
+  intro remaining
+  induction remaining using Finset.induction_on with
+  | empty =>
+      intro chores _hdisjoint _hlarge allocation halloc hefx
+      exact ⟨allocation, by simpa using halloc, hefx⟩
+  | @insert item remaining hitem ih =>
+      intro chores hdisjoint hlarge allocation halloc hefx
+      have hitemNotChores : item ∉ chores := by
+        intro hmem
+        exact Finset.disjoint_left.mp hdisjoint (Finset.mem_insert_self item remaining) hmem
+      have hitemLarge : ∀ first second,
+          cost first item = r → cost second item = r → first = second :=
+        hlarge item (Finset.mem_insert_self item remaining)
+      obtain ⟨withItem, hwithItemAlloc, hwithItemEfx⟩ :=
+        m34InsertionGeneralAgentsProof Agent Item r cost chores item hr hcost
+          hitemNotChores hitemLarge allocation halloc hefx
+      have hremainingDisjoint : Disjoint remaining (insert item chores) := by
+        rw [Finset.disjoint_left]
+        intro candidate hcandidate hinsert
+        rcases Finset.mem_insert.mp hinsert with hcandidateItem | hcandidateChores
+        · exact hitem (hcandidateItem ▸ hcandidate)
+        · exact Finset.disjoint_left.mp hdisjoint
+            (Finset.mem_insert_of_mem hcandidate) hcandidateChores
+      have hremainingLarge : ∀ candidate ∈ remaining, ∀ first second,
+          cost first candidate = r → cost second candidate = r → first = second := by
+        intro candidate hcandidate
+        exact hlarge candidate (Finset.mem_insert_of_mem hcandidate)
+      obtain ⟨extended, hextendedAlloc, hextendedEfx⟩ :=
+        ih (insert item chores) hremainingDisjoint hremainingLarge withItem
+          hwithItemAlloc hwithItemEfx
+      refine ⟨extended, ?_, hextendedEfx⟩
+      simpa [Finset.union_insert, Finset.insert_union] using hextendedAlloc
+
+/-- Source-faithful four-agent specialization of the paper's named M34
+insertion lemma. -/
+theorem m34InsertionProof
+    (Item : Type) [DecidableEq Item] (r : ℝ) (cost : ChoreCost (Fin 4) Item)
+    (chores : Finset Item) (item : Item)
+    (hr : 2 < r) (hcost : IsOneOrRChoreCost cost r) (hitem : item ∉ chores)
+    (hsmallThree : IsSmallForAtLeastThree cost item)
+    (allocation : Allocation (Fin 4) Item)
+    (halloc : IsAllocationOf allocation chores)
+    (hefx : EFXForChores (additiveChoreCost cost) allocation) :
+    ∃ extended : Allocation (Fin 4) Item,
+      IsAllocationOf extended (insert item chores) ∧
+        EFXForChores (additiveChoreCost cost) extended := by
+  refine m34InsertionOfAllOtherSmallProof (Fin 4) Item r cost chores item hr hcost hitem ?_
+    allocation halloc hefx
+  intro sink hsink agent hne
+  have hnotSmall : ¬ IsSmallChore cost sink item := by
+    simpa [IsSmallChore] using hsink
+  simpa [IsSmallChore] using
+    small_for_all_other_agents_of_atLeastThree cost item hsmallThree sink hnotSmall agent hne
 
 /-- Source-faithful implementation of the paper's balanced-orientation lemma. -/
 theorem balancedOrientationProof

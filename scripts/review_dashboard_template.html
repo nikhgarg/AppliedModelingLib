@@ -1,0 +1,2584 @@
+<!doctype html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1' />
+  <title>Paper Interface Review Dashboard</title>
+    <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --line: #e5e8ee;
+      --line-strong: #ccd4e0;
+      --muted: #5d6678;
+      --text: #172039;
+      --accent: #1f6feb;
+      --accent-soft: #e8f1ff;
+      --ok: #0b8043;
+      --ok-soft: #e7f4ed;
+      --bad: #aa2e2e;
+      --bad-soft: #fae8e8;
+      --warn: #a35f00;
+      --warn-soft: #fff3dd;
+      --neutral-soft: #f2f5f9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.35;
+    }
+    .page {
+      width: min(1800px, calc(100% - 16px));
+      margin: 0 auto;
+      padding: 18px 0 30px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+    .subtitle { color: var(--muted); margin: 0 0 14px; }
+    .toolbar {
+      margin: 14px 0 16px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      background: var(--panel);
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      box-shadow: 0 1px 2px rgba(25, 33, 58, 0.06);
+    }
+    .toolbar label { font-size: 13px; color: #334155; }
+    .toolbar input, .toolbar select {
+      margin-left: 8px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 8px 10px;
+      min-width: 170px;
+      font: inherit;
+      background: #fff;
+    }
+    .toolbar select { min-width: 150px; }
+    .toolbar-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #334155;
+      font-size: 13px;
+    }
+    .toolbar-toggle input {
+      min-width: 0;
+      margin-left: 0;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 10px;
+      margin: 0 0 12px;
+    }
+    .summary-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 2px rgba(25, 33, 58, 0.04);
+    }
+    .summary-card .label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+    .summary-card .value {
+      color: var(--text);
+      font-weight: 700;
+      font-size: 20px;
+    }
+    .muted { color: var(--muted); }
+    .small { font-size: 12px; }
+    .paper-block {
+      margin: 16px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--panel);
+      box-shadow: 0 1px 2px rgba(25, 33, 58, 0.04);
+    }
+    .paper-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .paper-block h2 { margin: 0; font-size: 22px; }
+    .paper-progress {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+      min-width: 180px;
+    }
+    .paper-source-panel {
+      border: 1px solid #e5ecff;
+      border-radius: 8px;
+      padding: 7px 10px;
+      background: #f7faff;
+      margin-bottom: 10px;
+    }
+    .paper-source-heading { margin: 0 0 8px; font-size: 14px; }
+    .review-contents ul { margin: 0; padding-left: 22px; columns: 2; column-gap: 28px; }
+    .review-contents li { break-inside: avoid; margin: 2px 0; font-size: 12px; }
+    .review-contents-nested { margin-left: 12px !important; list-style-type: circle; }
+    .paper-source-subtle {
+      color: #334155;
+      margin-bottom: 6px;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .surface-audit-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 10px;
+      background: #fff;
+      margin-bottom: 10px;
+      display: grid;
+      gap: 5px;
+    }
+    .surface-audit-panel.ok {
+      border-color: #b8dec8;
+      background: var(--ok-soft);
+    }
+    .surface-audit-panel.warn {
+      border-color: #f0cf91;
+      background: var(--warn-soft);
+    }
+    .surface-audit-panel.bad {
+      border-color: #efb6b6;
+      background: var(--bad-soft);
+    }
+    .surface-audit-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      font-weight: 650;
+      font-size: 13px;
+    }
+    .surface-audit-body {
+      color: #334155;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .source-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0 4px;
+    }
+    .source-link {
+      border: 1px solid #cad3e5;
+      border-radius: 7px;
+      padding: 6px 9px;
+      text-decoration: none;
+      color: #1e293b;
+      background: #fff;
+      font-size: 12px;
+      transition: border-color 0.15s ease;
+    }
+    .source-link:hover {
+      border-color: #9fb0d8;
+      background: #fbfdff;
+    }
+    .table-wrap { overflow-x: auto; }
+    .paper-details {
+      border: 0;
+    }
+    .paper-details > summary {
+      list-style: none;
+      cursor: pointer;
+    }
+    .paper-details > summary::-webkit-details-marker { display: none; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0;
+      min-width: 0;
+      table-layout: auto;
+    }
+    th, td { border: 1px solid var(--line); padding: 10px; vertical-align: top; }
+    thead th {
+      background: #f8f9fc;
+      text-align: left;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tbody tr { background: #ffffff; }
+    tbody tr:hover { background: #fbfcff; }
+    tbody tr:nth-child(odd) { background: #fcfdff; }
+    tbody tr.is-hidden { display: none; }
+    body.hide-agent .agent-column { display: none; }
+    .review-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+      gap: 12px;
+      align-items: start;
+    }
+    .review-main {
+      min-width: 0;
+      display: grid;
+      gap: 10px;
+    }
+    .review-controls {
+      min-width: 0;
+      border-left: 1px solid var(--line);
+      padding-left: 12px;
+    }
+    .review-section {
+      min-width: 0;
+    }
+    .review-section-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 5px;
+      font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .col-paper, .col-lean, .col-agent { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; line-height: 1.35; }
+    .col-agent { white-space: normal; }
+    .col-paper, .col-lean, .col-agent { width: 100%; }
+    .statement-box {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+    }
+    .statement-box[open] {
+      background: #fcfdff;
+    }
+    .statement-box summary {
+      cursor: pointer;
+      color: #334155;
+      background: #f8f9fc;
+      padding: 7px 9px;
+      border-radius: 7px;
+      font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 12px;
+    }
+    .statement-box[open] summary {
+      border-bottom: 1px solid var(--line);
+      border-radius: 7px 7px 0 0;
+    }
+    .statement-body {
+      padding: 9px;
+      max-height: 520px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .col-lean .statement-body {
+      white-space: pre-wrap;
+      overflow-x: hidden;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .col-lean .statement-body code {
+      display: block;
+      max-width: 100%;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .statement-body code {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .paper-statement-image {
+      display: block;
+      width: 100%;
+      max-width: none;
+      height: auto;
+      background: #fff;
+      border: 1px solid #d8e0ec;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    .agent-statement {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .agent-statement code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .llm-judge-panel {
+      margin-top: 9px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      padding: 8px 9px;
+    }
+    .llm-judge-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .llm-judge-reason {
+      color: #334155;
+      font-size: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .col-review { width: 18%; min-width: 220px; }
+    .paper-title { font-weight: 600; margin-bottom: 8px; }
+    .slice-meta {
+      margin: -4px 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+    .source-provenance {
+      border: 1px solid #f0cf91;
+      border-radius: 7px;
+      background: var(--warn-soft);
+      color: #6f4e07;
+      padding: 7px 9px;
+      font-size: 12px;
+      line-height: 1.35;
+      font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .source-provenance.direct {
+      border-color: #b8dec8;
+      background: var(--ok-soft);
+      color: var(--ok);
+    }
+    .source-provenance-label {
+      font-weight: 650;
+      margin-right: 4px;
+    }
+    .row-note {
+      width: 100%;
+      min-height: 72px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 8px;
+      font: inherit;
+      resize: vertical;
+    }
+    .review-decision {
+      border: 0;
+      padding: 0;
+      margin: 8px 0 8px;
+      display: grid;
+      gap: 6px;
+    }
+    .review-decision legend {
+      padding: 0;
+      margin-bottom: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .review-decision-option {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+    .history { margin-top: 10px; font-size: 12px; color: #334155; }
+    .history-entry { border-top: 1px dashed #d6dce6; padding-top: 8px; margin-top: 8px; }
+    .history-entry + .history-entry { border-top: 1px dashed #d6dce6; }
+    .ok { color: var(--ok); }
+    .bad { color: var(--bad); }
+    .warn { color: var(--warn); }
+    .btn {
+      margin-top: 8px;
+      border: 1px solid #2f3d5f;
+      border-radius: 7px;
+      background: var(--accent);
+      color: #fff;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: filter 0.12s ease;
+    }
+    .btn:hover { filter: brightness(0.96); }
+    .btn:active { transform: translateY(1px); }
+    .btn[disabled] {
+      cursor: wait;
+      opacity: 0.72;
+    }
+    .toolbar .btn {
+      margin-top: 0;
+      padding: 7px 10px;
+    }
+    .status-pill {
+      display: inline-block;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 12px;
+      background: var(--neutral-soft);
+      color: #334155;
+      line-height: 1.2;
+    }
+    .status-pill.ok {
+      background: var(--ok-soft);
+      border-color: #b8dec8;
+      color: var(--ok);
+    }
+    .status-pill.warn {
+      background: var(--warn-soft);
+      border-color: #f0cf91;
+      color: var(--warn);
+    }
+    .status-pill.bad {
+      background: var(--bad-soft);
+      border-color: #efb6b6;
+      color: var(--bad);
+    }
+    .status-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin: 0 0 8px;
+    }
+    .save-status {
+      display: inline-block;
+      min-height: 16px;
+      margin-left: 8px;
+    }
+    .summary-pill { margin-left: 8px; }
+    .summary { margin-left: auto; display: inline-flex; gap: 10px; }
+    .empty-filter {
+      display: none;
+      background: var(--panel);
+      border: 1px dashed var(--line-strong);
+      border-radius: 8px;
+      padding: 16px;
+      color: var(--muted);
+      text-align: center;
+    }
+    @media (max-width: 860px) {
+      .summary-grid { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+      .paper-header { display: block; }
+      .paper-progress { text-align: left; margin-top: 4px; }
+      .toolbar input, .toolbar select { min-width: 130px; }
+      .review-item { grid-template-columns: 1fr; }
+      .review-controls {
+        border-left: 0;
+        border-top: 1px solid var(--line);
+        padding-left: 0;
+        padding-top: 10px;
+      }
+    }
+
+  </style>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["\\\\(", "\\\\)"], ["$", "$"]],
+        processEscapes: true,
+        tags: "none",
+      },
+      // Exact source excerpts are review evidence, not MathJax input.  In
+      // particular, a source may legitimately contain LaTex environments
+      // such as `\\begin{definition}` that are not standalone math. This is
+      // a global MathJax option rather than a TeX-input option.
+      options: {
+        ignoreHtmlClass: "verbatim-source-input",
+      },
+      startup: {
+        typeset: false,
+      },
+    };
+  </script>
+  <script async id="mathjax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <div class='page'>
+    <h1>Paper Interface Review Dashboard</h1>
+    <p class='subtitle'>Trace-backed validator for Lean paper-interface theorem statements.</p>
+    <div id='summaryCards' class='summary-grid' aria-live='polite'>
+      <div class='summary-card'><div class='label'>Reviewed</div><div class='value' id='cardReviewed'>0/0</div></div>
+      <div class='summary-card'><div class='label'>Need Action</div><div class='value' id='cardAttention'>0</div></div>
+      <div class='summary-card'><div class='label'>Stale</div><div class='value' id='cardStale'>0</div></div>
+      <div class='summary-card'><div class='label'>Mismatch</div><div class='value' id='cardMismatch'>0</div></div>
+    </div>
+    <div class='toolbar'>
+      <label>
+        GitHub/user handle:
+        <input id='userHandle' type='text' value='{user}' />
+      </label>
+      <label>
+        Search:
+        <input id='searchBox' type='search' placeholder='Paper or theorem' />
+      </label>
+      <label>
+        View:
+        <select id='statusFilter'>
+          <option value='all'>All rows</option>
+          <option value='attention'>Needs action</option>
+          <option value='unreviewed'>Unreviewed</option>
+          <option value='stale'>Stale</option>
+          <option value='mismatch'>Marked mismatch</option>
+          <option value='uncertain'>Marked uncertain</option>
+          <option value='reviewed'>Reviewed</option>
+        </select>
+      </label>
+      <label>
+        Slice:
+        <select id='sliceFilter'>
+          <option value='all'>All slices</option>
+        </select>
+      </label>
+      <label class='toolbar-toggle'>
+        <input id='hideAgentDraft' type='checkbox' />
+        Hide LLM checks
+      </label>
+      <button id='saveAllReviews' class='btn' type='button'>Save all review</button>
+      <span id='saveAllStatus' class='save-status small muted'></span>
+      <span id='summary' class='summary small muted'></span>
+      <span id='count' class='small muted'></span>
+      <span id='logPath' class='small muted'></span>
+    </div>
+    <div id='emptyFilter' class='empty-filter'>No rows match the current filters.</div>
+    <div id='containers'>Loading…</div>
+  </div>
+
+  <script>
+    window.addEventListener("error", (event) => {
+      const container = document.getElementById("containers");
+      if (container) {
+        container.textContent = `Dashboard render error: ${event.message || "unknown error"}`;
+      }
+    });
+    window.addEventListener("unhandledrejection", (event) => {
+      const container = document.getElementById("containers");
+      if (container) {
+        container.textContent = `Dashboard render error: ${event.reason || "unknown promise rejection"}`;
+      }
+    });
+    const state = {
+      papers: __PAPERS__,
+      logPath: __LOG_PATH__,
+      user: __USER__,
+      reviews: [],
+      libraryReviews: [],
+      statusRows: [],
+    };
+
+    function byLatest(entries) {
+      entries.sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
+    }
+
+    function safeId(value) {
+      return String(value).replace(/[^a-zA-Z0-9_-]/g, "_");
+    }
+
+    function normalizeStatement(value) {
+      return String(value || "").replace(/\\s+/g, " ").trim();
+    }
+
+    function escapeHtml(value) {
+      const span = document.createElement("span");
+      span.textContent = String(value);
+      return span.innerHTML;
+    }
+
+    function isLongProse(value) {
+      const text = value.replace(/[^A-Za-z]/g, " ").trim();
+      if (!text) {
+        return false;
+      }
+      const words = text.split(/\\s+/);
+      const longWords = words.filter((word) => word.length >= 4);
+      return longWords.length > 12;
+    }
+
+    function looksLikeLatex(value) {
+      return /\\\\[a-zA-Z]+/.test(value)
+        || /[∀∃→↔≤≥≠∞∈∉∑∏ℝℕ]/.test(value)
+        || /\\\\/.test(value);
+    }
+
+    function isFormulaValue(value) {
+      if (!value) {
+        return false;
+      }
+      if (isLongProse(value)) {
+        return false;
+      }
+      if (/[`$]/.test(value)) {
+        return false;
+      }
+      return looksLikeLatex(value) && value.length < 1800;
+    }
+
+    function renderVerbatimSourceInput(value) {
+      // A v11 source input is an exact byte-pinned excerpt, not dashboard TeX.
+      // Keep raw `\\begin{lemma}` and `\\begin{definition}` visible instead
+      // of passing unsupported environments to MathJax.
+      const text = escapeHtml(value || "No source input recorded.");
+      return `<div class="verbatim-source-input">${text.replace(/\\n/g, "<br/>")}</div>`;
+    }
+
+    function renderTexDraft(value) {
+      const text = escapeHtml(value || "No auto-generated preview available.");
+      return text.replace(/\\n/g, "<br/>");
+    }
+
+    function llmJudgmentLabel(item) {
+      const value = String(item.llm_match_judgment || "").toLowerCase();
+      const resolution = String(item.llm_match_resolution || "").toLowerCase();
+      if (item.llm_match_stale) {
+        return "Stale LLM judgment";
+      }
+      if (value === "matches") {
+        return "LLM: matches";
+      }
+      if (value === "mismatch" && resolution === "conditional_boundary") {
+        return "LLM: visible-premise boundary";
+      }
+      if (value === "mismatch") {
+        return "LLM: mismatch";
+      }
+      if (value === "uncertain") {
+        return "LLM: uncertain";
+      }
+      return "No LLM judgment";
+    }
+
+    function llmJudgmentClass(item) {
+      const value = String(item.llm_match_judgment || "").toLowerCase();
+      const resolution = String(item.llm_match_resolution || "").toLowerCase();
+      if (item.llm_match_stale) {
+        return "warn";
+      }
+      if (value === "matches") {
+        return "ok";
+      }
+      if (value === "mismatch" && resolution === "conditional_boundary") {
+        return "warn";
+      }
+      if (value === "mismatch") {
+        return "bad";
+      }
+      if (value === "uncertain") {
+        return "warn";
+      }
+      return "";
+    }
+
+    function makeLlmJudgePanel(item) {
+      const panel = document.createElement("div");
+      panel.className = "llm-judge-panel";
+      const heading = document.createElement("div");
+      heading.className = "llm-judge-heading";
+      const title = document.createElement("span");
+      title.className = "small muted";
+      title.textContent = "LLM raw-source / expanded-Spec assessment";
+      const badge = document.createElement("span");
+      badge.className = `status-pill ${llmJudgmentClass(item)}`.trim();
+      badge.textContent = llmJudgmentLabel(item);
+      heading.appendChild(title);
+      heading.appendChild(badge);
+      panel.appendChild(heading);
+      const reason = document.createElement("div");
+      reason.className = "llm-judge-reason";
+      const bits = [];
+      if (item.llm_match_reason) {
+        bits.push(String(item.llm_match_reason));
+      }
+      if (item.llm_match_stale) {
+        bits.push("The saved judgment does not bind the current verbatim source input and expanded Spec.");
+      }
+      if (item.llm_match_resolution) {
+        bits.push(`Resolution: ${item.llm_match_resolution}`);
+      }
+      if (Array.isArray(item.llm_match_boundary_names) && item.llm_match_boundary_names.length) {
+        bits.push(`Boundary: ${item.llm_match_boundary_names.join(", ")}`);
+      }
+      if (
+        Array.isArray(item.llm_match_conditional_premises)
+        && item.llm_match_conditional_premises.length
+      ) {
+        bits.push(`Visible extra Lean premises: ${item.llm_match_conditional_premises.join(", ")}`);
+      }
+      if (item.llm_match_resolution_reason) {
+        bits.push(String(item.llm_match_resolution_reason));
+      }
+      if (!bits.length) {
+        bits.push(item.llm_match_judgment
+          ? "No reason recorded."
+          : "Run the independent semantic raw-source-to-expanded-Spec check and save statement_match_llm.json.");
+      }
+      if (item.llm_match_source) {
+        bits.push(`Source: ${item.llm_match_source}`);
+      }
+      reason.textContent = bits.join("\\n");
+      panel.appendChild(reason);
+      return panel;
+    }
+
+    function assumptionJudgmentLabel(item) {
+      const value = String(item.llm_assumption_judgment || "").toLowerCase();
+      if (item.llm_assumption_stale) {
+        return "Stale assumption judgment";
+      }
+      if (value === "paper_assumption") {
+        return "Assumption: in paper";
+      }
+      if (value === "paper_condition") {
+        return "Condition: in paper";
+      }
+      if (value === "documented_additional_assumption") {
+        return "Additional assumption";
+      }
+      if (value === "documented_caveat") {
+        return "Documented caveat";
+      }
+      if (value === "partial_boundary") {
+        return "Partial boundary";
+      }
+      if (value === "not_paper_assumption") {
+        return "Assumption: not in paper";
+      }
+      if (value === "uncertain") {
+        return "Assumption: uncertain";
+      }
+      return "No assumption judgment";
+    }
+
+    function assumptionJudgmentClass(item) {
+      const value = String(item.llm_assumption_judgment || "").toLowerCase();
+      if (item.llm_assumption_stale) {
+        return "warn";
+      }
+      if (
+        value === "paper_assumption" ||
+        value === "paper_condition" ||
+        value === "documented_additional_assumption" ||
+        value === "documented_caveat"
+      ) {
+        return "ok";
+      }
+      if (value === "partial_boundary") {
+        return "warn";
+      }
+      if (value === "not_paper_assumption") {
+        return "bad";
+      }
+      if (value === "uncertain") {
+        return "warn";
+      }
+      return "";
+    }
+
+    function makeAssumptionJudgePanel(item) {
+      const panel = document.createElement("div");
+      panel.className = "llm-judge-panel";
+      const heading = document.createElement("div");
+      heading.className = "llm-judge-heading";
+      const title = document.createElement("span");
+      title.className = "small muted";
+      title.textContent = "LLM assumption-provenance note";
+      const badge = document.createElement("span");
+      badge.className = `status-pill ${assumptionJudgmentClass(item)}`.trim();
+      badge.textContent = assumptionJudgmentLabel(item);
+      heading.appendChild(title);
+      heading.appendChild(badge);
+      panel.appendChild(heading);
+      const reason = document.createElement("div");
+      reason.className = "llm-judge-reason";
+      const bits = [];
+      if (item.llm_assumption_reason) {
+        bits.push(String(item.llm_assumption_reason));
+      }
+      if (item.llm_assumption_stale) {
+        bits.push("The saved assumption judgment predates the current Lean or paper statement.");
+      }
+      if (!bits.length) {
+        bits.push(item.llm_assumption_judgment
+          ? "No reason recorded."
+          : "Run the source-assumption judge and save assumption_match_llm.json.");
+      }
+      if (item.llm_assumption_source) {
+        bits.push(`Source: ${item.llm_assumption_source}`);
+      }
+      reason.textContent = bits.join("\\n");
+      panel.appendChild(reason);
+      return panel;
+    }
+
+    function softWrapLeanSegment(segment) {
+      if (segment.length < 24) {
+        return segment;
+      }
+      return segment.replace(/_/g, "_\\u200b");
+    }
+
+    function prettyLeanIdentifier(identifier, indent = "      ") {
+      const softDot = ".\\u200b";
+      const parts = identifier.split(".");
+      if (parts.length <= 1) {
+        return softWrapLeanSegment(identifier);
+      }
+
+      const wrappedParts = parts.map(softWrapLeanSegment);
+      const softWrapped = wrappedParts.join(softDot);
+      if (identifier.length <= 54) {
+        return softWrapped;
+      }
+
+      const namespace = wrappedParts.slice(0, -1).join(softDot);
+      const last = wrappedParts[wrappedParts.length - 1];
+      if (namespace.length <= 64) {
+        return `${namespace}.${softDot}\\n${indent}${last}`;
+      }
+
+      return wrappedParts
+        .map((part, index) => (index < wrappedParts.length - 1 ? `${part}.` : part))
+        .join(`\\n${indent}`);
+    }
+
+    function prettyLeanIdentifiers(text) {
+      return text.replace(
+        /[A-Za-z_][A-Za-z0-9_']*(?:\\.[A-Za-z_][A-Za-z0-9_']*)+/g,
+        (identifier) => prettyLeanIdentifier(identifier)
+      );
+    }
+
+    function wrapLeanLine(line, maxWidth = 98) {
+      if (line.length <= maxWidth) {
+        return line;
+      }
+      const indent = (line.match(/^\\s*/) || [""])[0];
+      const continuation = `${indent}  `;
+      const out = [];
+      let rest = line.trimEnd();
+
+      while (rest.length > maxWidth) {
+        const windowText = rest.slice(0, maxWidth);
+        const breakpoints = [" (", " {", " [", "), ", ", ", " "]
+          .map((marker) => windowText.lastIndexOf(marker))
+          .filter((index) => index > indent.length + 18);
+        const breakAt = breakpoints.length ? Math.max(...breakpoints) : -1;
+        if (breakAt <= 0) {
+          break;
+        }
+        out.push(rest.slice(0, breakAt).trimEnd());
+        rest = continuation + rest.slice(breakAt).trimStart();
+      }
+      out.push(rest);
+      return out.join("\\n");
+    }
+
+    function wrapLeanLines(text) {
+      return text
+        .split("\\n")
+        .map((line) => wrapLeanLine(line))
+        .join("\\n");
+    }
+
+    function prettyLeanStatement(value) {
+      let text = String(value || "No statement text.").replace(/\\r\\n/g, "\\n");
+      text = text.replace(/ :\\n\\s*/g, " :\\n  ");
+      text = text.replace(/\\} \\{/g, "}\\n  {");
+      text = text.replace(/\\} \\(/g, "}\\n  (");
+      text = text.replace(/\\] \\[/g, "]\\n  [");
+      text = text.replace(/\\] \\(/g, "]\\n  (");
+      text = text.replace(/\\) \\[/g, ")\\n  [");
+      text = text.replace(/\\), /g, "),\\n  ");
+      text = text.replace(/, ∀ /g, ",\\n  ∀ ");
+      text = text.replace(/, \\(/g, ",\\n  (");
+      text = text.replace(/, ([A-Za-z_][A-Za-z0-9_']* : Type u_[0-9]+)/g, ",\\n  $1");
+      text = text.replace(/, ([A-Za-z_][A-Za-z0-9_']* : Type\\*)/g, ",\\n  $1");
+      text = text.replace(/, (\\[[^\\]]+\\] : [^,]+)/g, ",\\n  $1");
+      text = text.replace(/ → /g, "\\n    → ");
+      text = text.replace(/ ↔ /g, "\\n    ↔ ");
+      text = text.replace(/ ∧ /g, "\\n    ∧ ");
+      text = text.replace(/\\) \\(/g, ")\\n  (");
+      return wrapLeanLines(prettyLeanIdentifiers(text));
+    }
+
+    function makeStatementBox(label, value, options = {}) {
+      const details = document.createElement("details");
+      details.className = "statement-box";
+      if (options.open) {
+        details.open = true;
+      }
+      const summary = document.createElement("summary");
+      summary.textContent = label;
+      const body = document.createElement("div");
+      body.className = "statement-body";
+      if (options.html) {
+        body.innerHTML = options.html;
+      } else {
+        body.textContent = value || "No statement text.";
+      }
+      details.appendChild(summary);
+      details.appendChild(body);
+      return details;
+    }
+
+    function makeReviewSectionLabel(text) {
+      const label = document.createElement("div");
+      label.className = "review-section-label";
+      label.textContent = text;
+      return label;
+    }
+
+    function typesetMath() {
+      if (typeof window.MathJax === "undefined") {
+        return;
+      }
+      if (window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise().catch(() => {});
+        return;
+      }
+      if (window.MathJax.Hub && window.MathJax.Hub.Queue) {
+        window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
+      }
+    }
+
+    function findCurrentItem(paper, theorem) {
+      for (const p of state.papers) {
+        if (p.name !== paper) continue;
+        for (const item of displayItems(p)) {
+          if (item.name === theorem) return item;
+        }
+      }
+      return null;
+    }
+
+    function displayItems(paper) {
+      const claims = Array.isArray(paper.human_claims) ? paper.human_claims : [];
+      return claims.length ? claims : (paper.items || []);
+    }
+
+    function isSourceModelAssumption(item) {
+      return Boolean(item && item.is_assumption);
+    }
+
+    function reviewSurfaceCounts(paper) {
+      const sections = claimPresentationSections(paper);
+      const sourceClaims = sections
+        .filter((section) => presentationSectionKind(section) === "source_claims")
+        .reduce((count, section) => count + section.items.length, 0);
+      const sourceModelAssumptions = sections
+        .filter((section) => presentationSectionKind(section) === "source_model_assumptions")
+        .reduce((count, section) => count + section.items.length, 0);
+      return {
+        reviewCards: sourceClaims + sourceModelAssumptions,
+        sourceClaims,
+        sourceModelAssumptions,
+      };
+    }
+
+    function reviewSurfaceCountLabel(counts) {
+      const claims = `${counts.sourceClaims} paper source claim${counts.sourceClaims === 1 ? "" : "s"}`;
+      if (!counts.sourceModelAssumptions) {
+        return claims;
+      }
+      return `${claims} + ${counts.sourceModelAssumptions} source-model assumption${counts.sourceModelAssumptions === 1 ? "" : "s"}`;
+    }
+
+    function presentationSectionKind(section) {
+      return section && section.kind === "source_model_assumptions"
+        ? "source_model_assumptions"
+        : "source_claims";
+    }
+
+    function presentationSectionItemNoun(section) {
+      return presentationSectionKind(section) === "source_model_assumptions"
+        ? "source-model assumption"
+        : "source claim";
+    }
+
+    function reviewAnchorId(paper, kind, name) {
+      return `review-${safeId(paper)}-${safeId(kind)}-${safeId(name)}`;
+    }
+
+    function claimPresentationSections(paper) {
+      const claims = displayItems(paper);
+      const byName = new Map(claims.map((claim) => [claim.full_name || claim.name, claim]));
+      const configured = Array.isArray(paper.presentation_sections)
+        ? paper.presentation_sections
+        : [];
+      const sections = [];
+      const seen = new Set();
+      for (const section of configured) {
+        const selected = (section.names || [])
+          .map((name) => byName.get(name))
+          .filter(Boolean);
+        if (selected.length) {
+          selected.forEach((claim) => seen.add(claim.full_name || claim.name));
+          const kind = presentationSectionKind(section);
+          sections.push({
+            title: section.title || (kind === "source_model_assumptions" ? "Source-model assumptions" : "Source claims"),
+            kind,
+            items: selected,
+          });
+        }
+      }
+      const remaining = claims.filter((claim) => !seen.has(claim.full_name || claim.name));
+      const remainingSourceClaims = remaining.filter((claim) => !isSourceModelAssumption(claim));
+      const remainingAssumptions = remaining.filter(isSourceModelAssumption);
+      if (remainingSourceClaims.length) {
+        sections.push({
+          title: configured.length ? "Other source claims" : "Source claims",
+          kind: "source_claims",
+          items: remainingSourceClaims,
+        });
+      }
+      if (remainingAssumptions.length) {
+        sections.push({
+          title: "Source-model assumptions",
+          kind: "source_model_assumptions",
+          items: remainingAssumptions,
+        });
+      }
+      return sections;
+    }
+
+    function statusKey(paper, theorem) {
+      return `${paper}::${theorem}`;
+    }
+
+    function allItemsCount() {
+      return state.papers.reduce((acc, paper) => acc + displayItems(paper).length, 0);
+    }
+
+    function sliceKey(paper, sliceId) {
+      return `${paper}::${sliceId || "all"}`;
+    }
+
+    function populateSliceFilter() {
+      const select = document.getElementById("sliceFilter");
+      const current = select.value || "all";
+      select.textContent = "";
+      const allOption = document.createElement("option");
+      allOption.value = "all";
+      allOption.textContent = "All slices";
+      select.appendChild(allOption);
+      for (const paper of state.papers) {
+        const slices = paper.slices || [];
+        if (slices.length <= 1 && slices[0] && slices[0].id === "all") {
+          continue;
+        }
+        for (const slice of slices) {
+          const option = document.createElement("option");
+          option.value = sliceKey(paper.name, slice.id);
+          const count = typeof slice.count === "number" ? ` (${slice.count})` : "";
+          option.textContent = `${paper.name}: ${slice.title}${count}`;
+          select.appendChild(option);
+        }
+      }
+      select.value = Array.from(select.options).some((option) => option.value === current)
+        ? current
+        : "all";
+    }
+
+    function buildStatusMap(rows) {
+      const out = new Map();
+      for (const row of rows || []) {
+        out.set(statusKey(row.paper, row.theorem), row);
+      }
+      return out;
+    }
+
+    function statusFor(paper, theorem) {
+      return buildStatusMap(state.statusRows).get(statusKey(paper, theorem)) || null;
+    }
+
+    function reviewJudgment(entry) {
+      if (!entry) {
+        return "";
+      }
+      const explicit = String(entry.judgment || entry.latest_judgment || "").toLowerCase();
+      if (["matches", "mismatch", "uncertain"].includes(explicit)) {
+        return explicit;
+      }
+      if (entry.matches === true || entry.latest_matches === true) {
+        return "matches";
+      }
+      if (entry.matches === false || entry.latest_matches === false) {
+        return "mismatch";
+      }
+      return "";
+    }
+
+    function statusLabel(row) {
+      if (!row || !row.has_review) {
+        return "Unreviewed";
+      }
+      if (row.lean_stale || row.paper_stale || row.source_stale) {
+        return "Stale";
+      }
+      const judgment = reviewJudgment(row);
+      if (judgment === "mismatch") {
+        return "Mismatch";
+      }
+      if (judgment === "uncertain") {
+        return "Uncertain";
+      }
+      return "Reviewed";
+    }
+
+    function statusClass(row) {
+      const label = statusLabel(row);
+      if (label === "Reviewed") {
+        return "ok";
+      }
+      if (label === "Mismatch") {
+        return "bad";
+      }
+      if (label === "Stale" || label === "Uncertain") {
+        return "warn";
+      }
+      return "";
+    }
+
+    function staleReason(row) {
+      if (!row) {
+        return "";
+      }
+      const reasons = [];
+      if (row.lean_stale) reasons.push("Lean changed");
+      if (row.paper_stale) reasons.push("paper text changed");
+      if (row.source_stale) reasons.push("source provenance changed");
+      return reasons.join(", ");
+    }
+
+    function sourceMetadataDigestInput(itemOrEntry) {
+      if (!itemOrEntry) {
+        return "";
+      }
+      const status = normalizeStatement(itemOrEntry.source_status || "");
+      const note = normalizeStatement(itemOrEntry.source_note || "");
+      if (!status && !note) {
+        return "";
+      }
+      const directStatuses = new Set([
+        "direct paper definition",
+        "direct paper statement",
+        "direct paper formula",
+        "direct source text",
+        "direct source formula",
+      ]);
+      if (directStatuses.has(status.toLowerCase()) && !note) {
+        return "";
+      }
+      return `${status}\n${note}`;
+    }
+
+    function isOutdated(entry, paper, theorem) {
+      const current = findCurrentItem(paper, theorem);
+      if (!current) {
+        return false;
+      }
+      const reviewed = normalizeStatement(entry.lean_statement || "");
+      const currentLean = normalizeStatement(current.lean_statement || "");
+      const reviewedPaper = normalizeStatement(entry.paper_statement || "");
+      const currentPaper = normalizeStatement(current.paper_statement || "");
+      const leanOutdated = reviewed && currentLean && reviewed !== currentLean;
+      const paperOutdated = reviewedPaper && currentPaper && reviewedPaper !== currentPaper;
+      const sourceOutdated =
+        sourceMetadataDigestInput(current) &&
+        sourceMetadataDigestInput(current) !== sourceMetadataDigestInput(entry);
+      return leanOutdated || paperOutdated || sourceOutdated;
+    }
+
+    function latestEntryForItem(entries, paper, theorem) {
+      const related = entries.filter((entry) => entry.paper === paper && entry.theorem === theorem);
+      if (!related.length) {
+        return null;
+      }
+      byLatest(related);
+      return related[0];
+    }
+
+    function sourceFileButtons(assets) {
+      if (!assets || !Object.keys(assets).length) {
+        return null;
+      }
+      const list = document.createElement("div");
+      list.className = "source-actions";
+      for (const key of ["pdf", "text"]) {
+        const asset = assets[key];
+        if (!asset || !asset.url || !asset.name) {
+          continue;
+        }
+        const a = document.createElement("a");
+        a.className = "source-link";
+        a.href = asset.url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = `${key === "pdf" ? "Open PDF" : "Open text"}: ${asset.name}`;
+        list.appendChild(a);
+      }
+      return list;
+    }
+
+    function makeSourcePanel(paper) {
+      const assets = paper.assets || {};
+      const links = sourceFileButtons(assets);
+      if (!links) {
+        const empty = document.createElement("div");
+        empty.style.display = "none";
+        return empty;
+      }
+      const panel = document.createElement("section");
+      panel.className = "paper-source-panel";
+
+      const heading = document.createElement("h3");
+      heading.className = "paper-source-heading";
+      heading.textContent = "Paper source";
+      panel.appendChild(heading);
+
+      const hint = document.createElement("div");
+      hint.className = "paper-source-subtle";
+      hint.textContent = "Open source:";
+      panel.appendChild(hint);
+      panel.appendChild(links);
+      return panel;
+    }
+
+    function appendPrerequisiteReviewSection(panel, paper, prerequisites, config) {
+      if (!prerequisites.length) return;
+      const sectionHeading = document.createElement("h4");
+      sectionHeading.className = "paper-source-heading";
+      sectionHeading.id = reviewAnchorId(paper.name, config.sectionKind, "section");
+      sectionHeading.textContent = `${config.sectionTitle} (${prerequisites.length}; excluded from the paper-claim count)`;
+      panel.appendChild(sectionHeading);
+      for (const prerequisite of prerequisites) {
+        const card = document.createElement("details");
+        card.className = "review-statement-box";
+        card.id = reviewAnchorId(paper.name, config.itemKind, prerequisite.lean_name || prerequisite.label || "item");
+        const summary = document.createElement("summary");
+        const verdict = prerequisite.semantic_judgment || "not recorded";
+        const status = prerequisite.semantic_current ? "current" : prerequisite.semantic_status || "needs review";
+        summary.textContent = `${prerequisite.label || prerequisite.lean_name} — ${config.screeningLabel}: ${verdict} (${status})`;
+        card.appendChild(summary);
+        const body = document.createElement("div");
+        body.className = "statement-full";
+        const sourceInput = String(prerequisite.verbatim_source_input || "").trim();
+        if (sourceInput) {
+          const locator = document.createElement("div");
+          locator.className = "small muted";
+          locator.textContent = `Source locator: ${prerequisite.source_locator || "not recorded"}`;
+          body.appendChild(locator);
+          if (prerequisite.source_connection_display_only) {
+            const connection = document.createElement("div");
+            connection.className = "small muted";
+            connection.textContent = `Source connection: ${prerequisite.source_connection_state || "release_projected_excerpt"}`;
+            body.appendChild(connection);
+          }
+          body.appendChild(
+            makeStatementBox("Verbatim paper-source connection", sourceInput, {
+              html: renderVerbatimSourceInput(sourceInput),
+              previewLength: sourceInput.length > 650 ? 180 : 220,
+              open: true,
+            })
+          );
+        } else {
+          const missing = document.createElement("div");
+          missing.className = "small warn";
+          missing.textContent = `Source connection: ${prerequisite.source_connection_error || "not recorded"}.`;
+          body.appendChild(missing);
+        }
+        const semanticTarget = prerequisite[config.semanticTargetField] || prerequisite[config.semanticTargetErrorField] || "[Lean semantic target unavailable.]";
+        const semanticKind = prerequisite[config.semanticTargetKindField] || "";
+        const semanticTitle = ["definition", "abbrev"].includes(semanticKind)
+          ? config.expandedTargetTitle
+          : config.signatureTitle;
+        body.appendChild(
+          makeStatementBox(semanticTitle, semanticTarget, {
+            html: `<code>${escapeHtml(prettyLeanStatement(semanticTarget))}</code>`,
+            previewLength: 170,
+            open: true,
+          })
+        );
+        if (config.declarationField) {
+          const declaration = prerequisite[config.declarationField] || prerequisite[config.declarationErrorField] || "[Declaration unavailable.]";
+          body.appendChild(
+            makeStatementBox(config.declarationTitle, declaration, {
+              html: `<code>${escapeHtml(prettyLeanStatement(declaration))}</code>`,
+              previewLength: 170,
+              open: true,
+            })
+          );
+        }
+        const diagnostic = document.createElement("div");
+        diagnostic.className = prerequisite.semantic_current ? "small ok" : "small warn";
+        diagnostic.textContent = `${config.diagnosticLabel}: ${verdict}. ${prerequisite.semantic_status || "not recorded"}${prerequisite.semantic_reason ? ` Reason: ${prerequisite.semantic_reason}` : ""}`;
+        body.appendChild(diagnostic);
+        body.appendChild(makePrerequisiteReviewControls(paper, prerequisite, config.reviewScope));
+        card.appendChild(body);
+        panel.appendChild(card);
+      }
+    }
+
+    function makeHumanReviewSurfacePanel(paper) {
+      const counts = reviewSurfaceCounts(paper);
+      const publicSourceDisplay = paper.public_source_display_surface || {};
+      const libraryPrerequisites = Array.isArray(paper.human_review_prerequisites)
+        ? paper.human_review_prerequisites
+        : [];
+      const paperPrerequisites = Array.isArray(paper.human_review_paper_prerequisites)
+        ? paper.human_review_paper_prerequisites
+        : [];
+      const prerequisites = [...libraryPrerequisites, ...paperPrerequisites];
+      const currentPrerequisites = prerequisites.filter((entry) => entry.semantic_current).length;
+      const panel = document.createElement("section");
+      panel.className = "paper-source-panel";
+      const heading = document.createElement("h3");
+      heading.className = "paper-source-heading";
+      const prerequisiteSuffix = prerequisites.length
+        ? ` · ${currentPrerequisites}/${prerequisites.length} prerequisite checks current`
+        : "";
+      heading.textContent = `Review surface: ${reviewSurfaceCountLabel(counts)}${prerequisiteSuffix}`;
+      panel.appendChild(heading);
+      const text = document.createElement("div");
+      text.className = "paper-source-subtle";
+      const frozenSourceSurface = publicSourceDisplay.available
+        ? ` Source-coverage denominator: ${publicSourceDisplay.source_item_count || 0} frozen source item${(publicSourceDisplay.source_item_count || 0) === 1 ? "" : "s"} (${publicSourceDisplay.state || "release_projected_excerpt"}; display only, raw source is not locally revalidated).`
+        : "";
+      text.textContent = "The paper-claim denominator is the source-claim count above. Review the semantic prerequisites first, then the counted source-claim cards below." + (counts.sourceModelAssumptions ? ` ${counts.sourceModelAssumptions} source-model assumption${counts.sourceModelAssumptions === 1 ? "" : "s"} appear in their own separately audited section and are not part of that denominator.` : "") + frozenSourceSurface;
+      panel.appendChild(text);
+      appendPrerequisiteReviewSection(panel, paper, libraryPrerequisites, {
+        sectionKind: "library-prerequisites",
+        sectionTitle: "Material library prerequisites",
+        itemKind: "library-prerequisite",
+        screeningLabel: "library screening",
+        semanticTargetField: "library_semantic_target",
+        semanticTargetErrorField: "library_semantic_target_error",
+        semanticTargetKindField: "library_semantic_target_kind",
+        expandedTargetTitle: "Lean-expanded library semantic target",
+        signatureTitle: "Lean declaration type (metadata)",
+        declarationField: "library_definition",
+        declarationErrorField: "library_definition_error",
+        declarationTitle: "Exact Lean library declaration",
+        diagnosticLabel: "Raw-source-to-library-definition screening",
+        reviewScope: "library_prerequisite",
+      });
+      appendPrerequisiteReviewSection(panel, paper, paperPrerequisites, {
+        sectionKind: "paper-prerequisites",
+        sectionTitle: "Paper-specific semantic prerequisites",
+        itemKind: "paper-prerequisite",
+        screeningLabel: "paper-declaration screening",
+        semanticTargetField: "paper_semantic_target",
+        semanticTargetErrorField: "paper_semantic_target_error",
+        semanticTargetKindField: "paper_semantic_target_kind",
+        expandedTargetTitle: "Lean-expanded paper semantic target",
+        signatureTitle: "Lean-elaborated paper signature",
+        declarationField: "",
+        declarationErrorField: "",
+        declarationTitle: "",
+        diagnosticLabel: "Raw-source-to-paper-declaration screening",
+        reviewScope: "paper_prerequisite",
+      });
+      const claimsHeading = document.createElement("h4");
+      claimsHeading.className = "paper-source-heading";
+      claimsHeading.id = reviewAnchorId(paper.name, "source-claims", "section");
+      claimsHeading.textContent = `Paper source claims (${counts.sourceClaims}; counted below)`;
+      panel.appendChild(claimsHeading);
+      return panel;
+    }
+
+    function makeReviewContents(paper) {
+      const panel = document.createElement("nav");
+      panel.className = "paper-source-panel review-contents";
+      panel.setAttribute("aria-label", "Review packet contents");
+      const heading = document.createElement("h3");
+      heading.className = "paper-source-heading";
+      heading.textContent = "Contents";
+      panel.appendChild(heading);
+
+      const list = document.createElement("ul");
+      const addLink = (label, id, nested) => {
+        const entry = document.createElement("li");
+        if (nested) entry.className = "review-contents-nested";
+        const link = document.createElement("a");
+        link.href = `#${id}`;
+        link.dataset.reviewAnchor = id;
+        link.textContent = label;
+        entry.appendChild(link);
+        list.appendChild(entry);
+      };
+      const library = Array.isArray(paper.human_review_prerequisites)
+        ? paper.human_review_prerequisites
+        : [];
+      if (library.length) {
+        addLink(
+          `Semantic library prerequisites (${library.length}; not paper claims)`,
+          reviewAnchorId(paper.name, "library-prerequisites", "section"),
+          false
+        );
+        for (const prerequisite of library) {
+          const label = prerequisite.label || prerequisite.lean_name || "Library prerequisite";
+          addLink(
+            label,
+            reviewAnchorId(paper.name, "library-prerequisite", prerequisite.lean_name || label),
+            true
+          );
+        }
+      }
+      const paperPrerequisites = Array.isArray(paper.human_review_paper_prerequisites)
+        ? paper.human_review_paper_prerequisites
+        : [];
+      if (paperPrerequisites.length) {
+        addLink(
+          `Paper-specific semantic prerequisites (${paperPrerequisites.length}; not paper claims)`,
+          reviewAnchorId(paper.name, "paper-prerequisites", "section"),
+          false
+        );
+        for (const prerequisite of paperPrerequisites) {
+          const label = prerequisite.label || prerequisite.lean_name || "Paper prerequisite";
+          addLink(
+            label,
+            reviewAnchorId(paper.name, "paper-prerequisite", prerequisite.lean_name || label),
+            true
+          );
+        }
+      }
+      for (const section of claimPresentationSections(paper)) {
+        const sectionId = reviewAnchorId(paper.name, "source-section", section.title);
+        addLink(`${section.title} (${section.items.length})`, sectionId, false);
+        for (const claim of section.items) {
+          const itemNoun = presentationSectionItemNoun(section);
+          const label = claim.human_claim_title || claim.name || itemNoun;
+          addLink(
+            label,
+            reviewAnchorId(paper.name, itemNoun, claim.name),
+            true
+          );
+        }
+      }
+      panel.appendChild(list);
+      return panel;
+    }
+
+    function surfaceAuditClass(audit) {
+      if (!audit || !audit.audit_required) {
+        return "";
+      }
+      if (audit.judgment === "needs_curation") {
+        return "bad";
+      }
+      if (audit.needs_attention || audit.oversize) {
+        return "warn";
+      }
+      return "ok";
+    }
+
+    function surfaceAuditLabel(audit) {
+      if (!audit || !audit.audit_required) {
+        return "";
+      }
+      if (audit.judgment === "needs_curation") {
+        return "Needs curation";
+      }
+      if (audit.missing_required) {
+        return "LLM audit required";
+      }
+      if (audit.stale) {
+        return "LLM audit stale";
+      }
+      if (audit.judgment === "uncertain") {
+        return "LLM audit uncertain";
+      }
+      if (audit.oversize) {
+        return "50+ row warning";
+      }
+      return "LLM audit current";
+    }
+
+    function makeSurfaceAuditPanel(paper) {
+      const audit = paper.surface_audit || {};
+      // A legacy declaration-level review-surface sidecar is not useful on a
+      // compact source-claim dashboard.  Only show this exceptional panel
+      // when the current claim surface is actually large enough to require
+      // separate curation.
+      if (!audit.audit_required && !audit.oversize) {
+        const empty = document.createElement("div");
+        empty.style.display = "none";
+        return empty;
+      }
+      const panel = document.createElement("section");
+      const cls = surfaceAuditClass(audit);
+      panel.className = `surface-audit-panel ${cls}`.trim();
+
+      const heading = document.createElement("div");
+      heading.className = "surface-audit-heading";
+      const title = document.createElement("span");
+      title.textContent = `Machine audit surface: ${audit.row_count || paper.items.length} Lean declarations`;
+      const badge = document.createElement("span");
+      badge.className = `status-pill ${cls}`.trim();
+      badge.textContent = surfaceAuditLabel(audit);
+      heading.appendChild(title);
+      heading.appendChild(badge);
+      panel.appendChild(heading);
+
+      const body = document.createElement("div");
+      body.className = "surface-audit-body";
+      const notes = [];
+      if (audit.oversize) {
+        notes.push(`At or above ${audit.warn_threshold} rows, so this surface should be curated before broad human review.`);
+      }
+      if (audit.missing_required) {
+        notes.push(`Above ${audit.llm_threshold} rows, so run an independent LLM pass checking that every dashboard row is paper-facing and save review_surface_llm.json.`);
+      } else if (audit.stale) {
+        notes.push("The saved review_surface_llm.json no longer matches the current dashboard rows.");
+      } else if (audit.judgment === "needs_curation") {
+        notes.push("The saved LLM audit says helper or non-paper-facing rows may be present.");
+      } else if (audit.judgment === "uncertain") {
+        notes.push("The saved LLM audit could not determine whether the surface is fully paper-facing.");
+      } else if (audit.audit_required && audit.source) {
+        notes.push(`Current surface audit loaded from ${audit.source}.`);
+      }
+      if (audit.reason) {
+        notes.push(audit.reason);
+      }
+      body.textContent = notes.join(" ");
+      panel.appendChild(body);
+      return panel;
+    }
+
+    function assumptionAuditClass(audit) {
+      if (!audit || !audit.row_count) {
+        return "";
+      }
+      if (audit.not_paper_assumption_count) {
+        return "bad";
+      }
+      if (audit.needs_attention) {
+        return "warn";
+      }
+      return "ok";
+    }
+
+    function assumptionAuditLabel(audit) {
+      if (!audit || !audit.row_count) {
+        return "";
+      }
+      if (audit.not_paper_assumption_count) {
+        return "Assumption mismatch";
+      }
+      if (audit.missing_judgment_count) {
+        return "Assumption judge required";
+      }
+      if (audit.stale_judgment_count) {
+        return "Assumption judge stale";
+      }
+      if (audit.uncertain_count || audit.unknown_count || audit.unlisted_rows_count || audit.missing_rows_count) {
+        return "Assumptions need review";
+      }
+      return "Assumptions current";
+    }
+
+    function makeAssumptionAuditPanel(paper) {
+      const audit = paper.assumption_audit || {};
+      if (!audit.row_count && !audit.configured_count && !audit.needs_attention) {
+        const empty = document.createElement("div");
+        empty.style.display = "none";
+        return empty;
+      }
+      const panel = document.createElement("section");
+      const cls = assumptionAuditClass(audit);
+      panel.className = `surface-audit-panel ${cls}`.trim();
+
+      const heading = document.createElement("div");
+      heading.className = "surface-audit-heading";
+      const title = document.createElement("span");
+      title.textContent = `Paper assumptions: ${audit.row_count || 0} row${audit.row_count === 1 ? "" : "s"}`;
+      const badge = document.createElement("span");
+      badge.className = `status-pill ${cls}`.trim();
+      badge.textContent = assumptionAuditLabel(audit);
+      heading.appendChild(title);
+      heading.appendChild(badge);
+      panel.appendChild(heading);
+
+      const body = document.createElement("div");
+      body.className = "surface-audit-body";
+      const notes = [];
+      if (audit.unlisted_rows_count) {
+        notes.push("Some assumption-like declarations are not listed in status.json review_surface.assumption_names.");
+      }
+      if (audit.missing_rows_count) {
+        notes.push("Some configured assumptions are missing from the dashboard rows.");
+      }
+      if (audit.missing_judgment_count) {
+        notes.push("Run the source-assumption judge and save assumption_match_llm.json.");
+      } else if (audit.stale_judgment_count) {
+        notes.push("The saved assumption_match_llm.json no longer matches the current assumptions.");
+      } else if (audit.not_paper_assumption_count) {
+        notes.push("The assumption judge says at least one row is a proof assumption rather than a paper/source model assumption.");
+      } else if (audit.uncertain_count || audit.unknown_count) {
+        notes.push("The assumption judge could not confirm every listed assumption.");
+      } else if (audit.row_count) {
+        notes.push("Every listed assumption has a current source-assumption judgment.");
+      }
+      body.textContent = notes.join(" ");
+      panel.appendChild(body);
+      return panel;
+    }
+
+    function refreshSummary(entries, statusRows) {
+      const summary = document.getElementById("summary");
+      if (!state.papers.length) {
+        summary.textContent = "No theorem rows.";
+        return;
+      }
+
+      const allItems = allItemsCount();
+      let reviewed = 0;
+      let stale = 0;
+      let mismatch = 0;
+      let needsAttention = 0;
+
+      if (statusRows && statusRows.length) {
+        const claimKeys = new Set(
+          state.papers.flatMap((paper) =>
+            displayItems(paper).map((item) => statusKey(paper.name, item.name))
+          )
+        );
+        const claimStatusRows = statusRows.filter((row) =>
+          claimKeys.has(statusKey(row.paper, row.theorem))
+        );
+        reviewed = claimStatusRows.filter((row) => row.has_review).length;
+        stale = claimStatusRows.filter((row) => row.lean_stale || row.paper_stale || row.source_stale).length;
+        mismatch = claimStatusRows.filter((row) => row.has_review && reviewJudgment(row) === "mismatch").length;
+        needsAttention = claimStatusRows.filter((row) => row.needs_attention || reviewJudgment(row) === "mismatch").length;
+      } else {
+        for (const paper of state.papers) {
+          for (const item of displayItems(paper)) {
+            const latest = latestEntryForItem(entries, paper.name, item.name);
+            if (!latest) {
+              continue;
+            }
+            reviewed++;
+            if (isOutdated(latest, paper.name, item.name)) {
+              stale++;
+            }
+            const judgment = reviewJudgment(latest);
+            if (judgment === "mismatch") {
+              mismatch++;
+            }
+            if (judgment === "mismatch" || judgment === "uncertain") {
+              needsAttention++;
+            }
+          }
+        }
+        const unreviewed = allItems - reviewed;
+        needsAttention = stale + unreviewed + needsAttention;
+      }
+
+      const unreviewed = allItems - reviewed;
+      summary.textContent = `${reviewed}/${allItems} items reviewed · ${stale} stale snapshot · ${needsAttention} need action`;
+      document.getElementById("cardReviewed").textContent = `${reviewed}/${allItems}`;
+      document.getElementById("cardAttention").textContent = String(needsAttention);
+      document.getElementById("cardStale").textContent = String(stale);
+      document.getElementById("cardMismatch").textContent = String(mismatch);
+    }
+
+    function reviewHistory(entries, paper, theorem) {
+      const related = entries.filter((entry) => entry.paper === paper && entry.theorem === theorem);
+      if (!related.length) return "<div class='small muted'>No reviews yet.</div>";
+      byLatest(related);
+      const lines = [];
+      for (const e of related.slice(0, 5)) {
+        const judgment = reviewJudgment(e);
+        const cls = judgment === "matches" ? "ok" : judgment === "mismatch" ? "bad" : "warn";
+        const status = judgment === "matches"
+          ? "matches"
+          : judgment === "mismatch"
+            ? "does not match"
+            : "uncertain";
+        const outdated = isOutdated(e, paper, theorem);
+        const outdatedMark = outdated
+          ? " <span class='warn'>(statement snapshot is out of date)</span>"
+          : "";
+        const note = e.notes ? ` — ${escapeHtml(e.notes)}` : "";
+        lines.push(
+          `<div class='history-entry'><span class='small'><span class='${cls}'>${status}</span> by ${escapeHtml(e.user || "")} (${escapeHtml(e.timestamp || "")})${outdatedMark}${note}</span></div>`
+        );
+      }
+      return `<div class='history'><div class='small'><strong>Latest checks</strong></div>${lines.join("")}</div>`;
+    }
+
+    function validatorLabel(entry) {
+      if (!entry || !entry.validator) return "";
+      const type = entry.validator_type ? ` (${entry.validator_type})` : "";
+      return `${entry.validator}${type}`;
+    }
+
+    function validatorSummary(rowStatus) {
+      const validators = rowStatus && Array.isArray(rowStatus.validators) ? rowStatus.validators : [];
+      if (!validators.length) return "Validators: none recorded";
+      const labels = [];
+      const seen = new Set();
+      for (const entry of validators) {
+        const label = validatorLabel(entry);
+        if (!label || seen.has(label)) continue;
+        seen.add(label);
+        labels.push(label);
+      }
+      return `Validators: ${labels.join(", ")}`;
+    }
+
+    function validatorDetails(rowStatus) {
+      const validators = rowStatus && Array.isArray(rowStatus.validators) ? rowStatus.validators : [];
+      if (!validators.length) return "";
+      return validators.map((entry) => {
+        const label = validatorLabel(entry);
+        const judgment = entry.judgment ? ` ${entry.judgment}` : "";
+        const timestamp = entry.validated_at ? ` @ ${entry.validated_at}` : "";
+        const stale = entry.stale ? " (stale)" : "";
+        const comment = entry.comment ? `: ${entry.comment}` : "";
+        return `${label}${judgment}${timestamp}${stale}${comment}`.trim();
+      }).join("\\n");
+    }
+
+    function rowElementId(paper, theorem) {
+      return `${safeId(paper)}_${safeId(theorem)}`;
+    }
+
+    function selectedReviewJudgment(rowId) {
+      const match = document.getElementById(`match-${rowId}`);
+      const mismatch = document.getElementById(`mismatch-${rowId}`);
+      const uncertain = document.getElementById(`uncertain-${rowId}`);
+      if (match && match.checked) {
+        return "matches";
+      }
+      if (mismatch && mismatch.checked) {
+        return "mismatch";
+      }
+      if (uncertain && uncertain.checked) {
+        return "uncertain";
+      }
+      return "";
+    }
+
+    function matchesValueForJudgment(judgment) {
+      if (judgment === "matches") {
+        return true;
+      }
+      if (judgment === "mismatch") {
+        return false;
+      }
+      return null;
+    }
+
+    function reviewPayload(paper, item, judgment) {
+      const rowId = rowElementId(paper, item.name);
+      const note = document.getElementById(`note-${rowId}`);
+      const user = document.getElementById("userHandle").value.trim() || state.user;
+      return {
+        paper: paper,
+        theorem: item.name,
+        user: user,
+        judgment: judgment,
+        matches: matchesValueForJudgment(judgment),
+        notes: note ? note.value.trim() : "",
+        lean_statement: item.lean_statement,
+        paper_statement: item.paper_statement,
+        // Human review compares the raw source input to the expanded Lean
+        // specification.  Lean-to-TeX drafts are intentionally not part of
+        // this v11 review record.
+        agent_statement: "",
+        source_status: item.source_status || "",
+        source_note: item.source_note || "",
+      };
+    }
+
+    async function postReviewPayload(payload) {
+      const response = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to save.");
+      }
+      return data;
+    }
+
+    function prerequisiteReviewKey(paper, scope, prerequisite) {
+      return `${paper}::${scope}::${prerequisite.lean_name || prerequisite.label || "unnamed"}`;
+    }
+
+    function latestPrerequisiteReview(key) {
+      const matching = (state.libraryReviews || []).filter((entry) => entry.prerequisite_key === key);
+      if (!matching.length) return null;
+      byLatest(matching);
+      return matching[0];
+    }
+
+    async function postPrerequisiteReviewPayload(payload) {
+      const response = await fetch("/api/library-reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to save prerequisite review.");
+      }
+      return data;
+    }
+
+    function makePrerequisiteReviewControls(paper, prerequisite, scope) {
+      const key = prerequisiteReviewKey(paper.name, scope, prerequisite);
+      const id = safeId(key);
+      const shell = document.createElement("div");
+      shell.className = "review-controls prerequisite-review-controls";
+      shell.dataset.prerequisiteReviewKey = key;
+      const heading = document.createElement("div");
+      heading.className = "small muted";
+      heading.textContent = "Human review of this prerequisite (not counted as a paper claim)";
+      shell.appendChild(heading);
+      const status = document.createElement("div");
+      status.id = `prerequisite-status-${id}`;
+      status.className = "status-pill";
+      status.textContent = "Unreviewed";
+      shell.appendChild(status);
+      const fieldset = document.createElement("fieldset");
+      fieldset.className = "review-decision";
+      const legend = document.createElement("legend");
+      legend.textContent = "Review decision";
+      fieldset.appendChild(legend);
+      for (const [value, label] of [["matches", "Matches source input"], ["mismatch", "Does not match"], ["uncertain", "Uncertain"]]) {
+        const option = document.createElement("label");
+        option.className = "review-decision-option";
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = `prerequisite-decision-${id}`;
+        input.value = value;
+        input.id = `prerequisite-${value}-${id}`;
+        option.appendChild(input);
+        option.appendChild(document.createTextNode(label));
+        fieldset.appendChild(option);
+      }
+      shell.appendChild(fieldset);
+      const note = document.createElement("textarea");
+      note.id = `prerequisite-note-${id}`;
+      note.rows = 2;
+      note.placeholder = "Reviewer notes (optional)";
+      shell.appendChild(note);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "btn";
+      button.textContent = "Save prerequisite review";
+      const saveStatus = document.createElement("span");
+      saveStatus.className = "save-status small muted";
+      button.addEventListener("click", async () => {
+        const selected = shell.querySelector(`input[name='prerequisite-decision-${id}']:checked`);
+        if (!selected) {
+          saveStatus.textContent = "Choose a review decision first.";
+          saveStatus.className = "save-status small warn";
+          return;
+        }
+        button.disabled = true;
+        saveStatus.textContent = "Saving…";
+        saveStatus.className = "save-status small muted";
+        const sourceInput = String(prerequisite.verbatim_source_input || "").trim();
+        const leanTarget = String(
+          prerequisite.library_semantic_target
+          || prerequisite.paper_semantic_target
+          || prerequisite.library_definition
+          || prerequisite.paper_declaration_source
+          || ""
+        ).trim();
+        try {
+          const response = await postPrerequisiteReviewPayload({
+            paper: paper.name,
+            theorem: prerequisite.lean_name || prerequisite.label,
+            prerequisite_key: key,
+            review_scope: scope,
+            user: document.getElementById("userHandle").value.trim() || state.user,
+            judgment: selected.value,
+            notes: note.value.trim(),
+            lean_statement: leanTarget,
+            paper_statement: sourceInput,
+            agent_statement: "",
+            source_status: "byte-pinned prerequisite source connection",
+            source_note: String(prerequisite.source_locator || "").trim(),
+          });
+          state.libraryReviews.push(response.entry);
+          refreshPrerequisiteReviewControls();
+          saveStatus.textContent = "Saved";
+          saveStatus.className = "save-status small ok";
+        } catch (err) {
+          saveStatus.textContent = err.message || "Save failed";
+          saveStatus.className = "save-status small bad";
+        } finally {
+          button.disabled = false;
+        }
+      });
+      shell.appendChild(button);
+      shell.appendChild(saveStatus);
+      return shell;
+    }
+
+    function refreshPrerequisiteReviewControls() {
+      for (const shell of document.querySelectorAll("[data-prerequisite-review-key]")) {
+        const key = shell.dataset.prerequisiteReviewKey;
+        const entry = latestPrerequisiteReview(key);
+        const id = safeId(key);
+        const status = document.getElementById(`prerequisite-status-${id}`);
+        if (!entry) {
+          if (status) {
+            status.textContent = "Unreviewed";
+            status.className = "status-pill";
+          }
+          continue;
+        }
+        const judgment = reviewJudgment(entry);
+        if (status) {
+          status.textContent = judgment === "matches" ? "Reviewed: matches" : judgment || "Reviewed";
+          status.className = `status-pill ${judgment === "matches" ? "ok" : judgment === "mismatch" ? "bad" : "warn"}`;
+          status.title = `${entry.user || "reviewer"} @ ${entry.timestamp || ""}`;
+        }
+        const selected = document.getElementById(`prerequisite-${judgment}-${id}`);
+        if (selected) selected.checked = true;
+        const note = document.getElementById(`prerequisite-note-${id}`);
+        if (note && document.activeElement !== note) note.value = entry.notes || "";
+      }
+    }
+
+    async function saveAllSelectedReviews() {
+      const btn = document.getElementById("saveAllReviews");
+      const status = document.getElementById("saveAllStatus");
+      const selected = [];
+      for (const row of document.querySelectorAll("tr[data-paper][data-theorem]")) {
+        const paper = row.dataset.paper;
+        const theorem = row.dataset.theorem;
+        const rowId = rowElementId(paper, theorem);
+        const judgment = selectedReviewJudgment(rowId);
+        if (!judgment) {
+          continue;
+        }
+        const item = findCurrentItem(paper, theorem);
+        if (!item) {
+          continue;
+        }
+        selected.push({ paper, theorem, item, judgment, rowId });
+      }
+      if (!selected.length) {
+        status.textContent = "No selected review decisions.";
+        status.className = "save-status small warn";
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = "Saving...";
+      status.textContent = `Saving ${selected.length} review${selected.length === 1 ? "" : "s"}...`;
+      status.className = "save-status small muted";
+      let saved = 0;
+      let failed = 0;
+      for (const entry of selected) {
+        const rowStatus = document.getElementById(`save-status-${entry.rowId}`);
+        if (rowStatus) {
+          rowStatus.textContent = "";
+          rowStatus.className = "save-status small muted";
+        }
+        try {
+          await postReviewPayload(reviewPayload(entry.paper, entry.item, entry.judgment));
+          saved++;
+          if (rowStatus) {
+            rowStatus.textContent = "Saved";
+            rowStatus.className = "save-status small ok";
+          }
+        } catch (err) {
+          failed++;
+          if (rowStatus) {
+            rowStatus.textContent = err.message || "Save failed";
+            rowStatus.className = "save-status small bad";
+          }
+        }
+      }
+      await refreshReviews();
+      status.textContent = failed
+        ? `Saved ${saved}; ${failed} failed.`
+        : `Saved ${saved} review${saved === 1 ? "" : "s"}.`;
+      status.className = failed ? "save-status small bad" : "save-status small ok";
+      btn.disabled = false;
+      btn.textContent = "Save all review";
+    }
+
+    function isDirectSourceStatus(status) {
+      const normalized = String(status || "").trim().toLowerCase();
+      return [
+        "direct paper definition",
+        "direct paper statement",
+        "direct paper formula",
+        "direct source text",
+        "direct source formula",
+      ].includes(normalized);
+    }
+
+    function makeSourceProvenancePanel(item) {
+      const status = String(item.source_status || "").trim();
+      const note = String(item.source_note || "").trim();
+      if (!status && !note) {
+        return null;
+      }
+      const panel = document.createElement("div");
+      panel.className = `source-provenance${isDirectSourceStatus(status) && !note ? " direct" : ""}`;
+      const label = document.createElement("span");
+      label.className = "source-provenance-label";
+      label.textContent = status || "Source note";
+      panel.appendChild(label);
+      if (note) {
+        panel.appendChild(document.createTextNode(note));
+      }
+      return panel;
+    }
+
+    function makeRow(paper, item) {
+      const row = document.createElement("tr");
+      row.dataset.paper = paper;
+      row.dataset.theorem = item.name;
+      row.dataset.kind = item.kind || "";
+      row.dataset.isAssumption = item.is_assumption ? "true" : "false";
+      row.dataset.sliceKey = sliceKey(paper, item.slice_id || "all");
+      row.dataset.sliceId = item.slice_id || "all";
+      row.dataset.sliceTitle = item.slice_title || "All statements";
+      const contextPresentation = item.approved_review_context_presentation || {};
+      const contextSummaries = contextPresentation.summaries_by_id || {};
+      const omittedConventionIds = new Set(contextPresentation.omitted_convention_ids || []);
+      row.dataset.searchText = `${paper} ${item.kind || ""} ${item.name} ${item.paper_statement || ""} ${item.lean_statement || ""} ${item.source_status || ""} ${item.source_note || ""} ${JSON.stringify(contextSummaries)}`.toLowerCase();
+      const itemCell = document.createElement("td");
+      const itemShell = document.createElement("div");
+      itemShell.className = "review-item";
+      const mainCell = document.createElement("div");
+      mainCell.className = "review-main";
+
+      const paperCell = document.createElement("section");
+      paperCell.className = "review-section col-paper";
+      const paperHtml = renderVerbatimSourceInput(item.paper_statement);
+      if (item.paper_statement_image_url) {
+        paperCell.appendChild(makeReviewSectionLabel("Paper source image"));
+        const image = document.createElement("img");
+        image.className = "paper-statement-image";
+        image.src = item.paper_statement_image_url;
+        image.alt = `Rendered source statement for ${paper}.${item.name}`;
+        image.loading = "lazy";
+        paperCell.appendChild(image);
+        paperCell.appendChild(
+          makeStatementBox("Extracted text fallback", item.paper_statement || "", {
+            html: paperHtml,
+            previewLength: 160,
+          })
+        );
+      } else {
+        paperCell.appendChild(
+          makeStatementBox("Verbatim source input", item.paper_statement, {
+            html: paperHtml,
+            previewLength: (item.paper_statement || "").length > 650 ? 180 : 220,
+            open: true,
+          })
+        );
+      }
+      const approvedContexts = Array.isArray(item.approved_review_contexts)
+        ? item.approved_review_contexts
+        : [];
+      approvedContexts.forEach((context) => {
+        const isConvention = context.kind === "source_model_convention";
+        if (isConvention && omittedConventionIds.has(context.id)) return;
+        const statement = isConvention
+          ? String(contextSummaries[context.id] || context.report_summary || context.formal_meaning || "").trim()
+          : Array.isArray(context.conditions)
+            ? context.conditions.join("; ")
+            : "";
+        if (statement) {
+          paperCell.appendChild(
+            makeStatementBox(
+              isConvention ? "Settled source reading" : "Approved additional assumptions",
+              statement,
+              { html: `<span>${escapeHtml(statement)}</span>`, open: true }
+            )
+          );
+        }
+      });
+
+      const leanCell = document.createElement("section");
+      leanCell.className = "review-section col-lean";
+      const interfaceSource = String(item.interface_source || "").trim();
+      const leanStatement = String(item.lean_statement || "").trim();
+      const semanticExpanded = String(item.semantic_expanded_statement || "").trim();
+      const displayedLean = semanticExpanded || leanStatement || interfaceSource;
+      leanCell.appendChild(
+        makeStatementBox("Expanded PaperInterface specification", displayedLean, {
+          html: `<code>${escapeHtml(prettyLeanStatement(displayedLean))}</code>`,
+          previewLength: 170,
+          open: true,
+        })
+      );
+      const claimAtoms = Array.isArray(item.review_claim_atoms)
+        ? item.review_claim_atoms
+        : [];
+      if (claimAtoms.length) {
+        const claimRoles = claimAtoms
+          .map((atom, index) => `${index + 1}. ${String(atom.role || "")}: ${String(atom.display || "")}`)
+          .join("\n");
+        leanCell.appendChild(
+          makeStatementBox("Lean-elaborated claim roles", claimRoles, {
+            html: `<code>${escapeHtml(claimRoles)}</code>`,
+            previewLength: 170,
+            open: true,
+          })
+        );
+      }
+      if (item.semantic_expansion_error) {
+        const expansionWarning = document.createElement("div");
+        expansionWarning.className = "small warn";
+        expansionWarning.textContent = `Lean semantic expansion unavailable: ${item.semantic_expansion_error}`;
+        leanCell.appendChild(expansionWarning);
+      }
+
+      const agentCell = document.createElement("section");
+      agentCell.className = "review-section col-agent agent-column";
+      const agentHeader = document.createElement("div");
+      agentHeader.className = "small muted";
+      agentHeader.textContent =
+        "LLM assessment of these exact inputs";
+      agentCell.appendChild(agentHeader);
+      agentCell.appendChild(makeLlmJudgePanel(item));
+      if (item.is_assumption || item.llm_assumption_judgment) {
+        agentCell.appendChild(makeAssumptionJudgePanel(item));
+      }
+
+      const reviewCell = document.createElement("aside");
+      reviewCell.className = "review-controls col-review";
+      const rowId = rowElementId(paper, item.name);
+
+      const statusLine = document.createElement("div");
+      statusLine.className = "status-line";
+      const statusBadge = document.createElement("span");
+      statusBadge.className = "status-pill";
+      statusBadge.id = `status-${rowId}`;
+      statusBadge.textContent = "Unreviewed";
+      const staleBadge = document.createElement("span");
+      staleBadge.className = "status-pill warn";
+      staleBadge.id = `stale-${rowId}`;
+      staleBadge.style.display = "none";
+      statusLine.appendChild(statusBadge);
+      statusLine.appendChild(staleBadge);
+
+      const validatorsLine = document.createElement("div");
+      validatorsLine.className = "small muted";
+      validatorsLine.id = `validators-${rowId}`;
+      validatorsLine.textContent = "Validators: none recorded";
+
+      const decision = document.createElement("fieldset");
+      decision.className = "review-decision";
+      const decisionLegend = document.createElement("legend");
+      decisionLegend.textContent = "Review decision";
+      decision.appendChild(decisionLegend);
+
+      const decisionName = `decision-${rowId}`;
+      const matchLabel = document.createElement("label");
+      matchLabel.className = "review-decision-option";
+      const matchRadio = document.createElement("input");
+      matchRadio.type = "radio";
+      matchRadio.name = decisionName;
+      matchRadio.value = "match";
+      matchRadio.dataset.paper = paper;
+      matchRadio.dataset.theorem = item.name;
+      matchRadio.id = `match-${rowId}`;
+      matchLabel.appendChild(matchRadio);
+      matchLabel.appendChild(document.createTextNode("Matches source input"));
+      decision.appendChild(matchLabel);
+
+      const mismatchLabel = document.createElement("label");
+      mismatchLabel.className = "review-decision-option";
+      const mismatchRadio = document.createElement("input");
+      mismatchRadio.type = "radio";
+      mismatchRadio.name = decisionName;
+      mismatchRadio.value = "mismatch";
+      mismatchRadio.dataset.paper = paper;
+      mismatchRadio.dataset.theorem = item.name;
+      mismatchRadio.id = `mismatch-${rowId}`;
+      mismatchLabel.appendChild(mismatchRadio);
+      mismatchLabel.appendChild(document.createTextNode("Mismatch"));
+      decision.appendChild(mismatchLabel);
+
+      const uncertainLabel = document.createElement("label");
+      uncertainLabel.className = "review-decision-option";
+      const uncertainRadio = document.createElement("input");
+      uncertainRadio.type = "radio";
+      uncertainRadio.name = decisionName;
+      uncertainRadio.value = "uncertain";
+      uncertainRadio.dataset.paper = paper;
+      uncertainRadio.dataset.theorem = item.name;
+      uncertainRadio.id = `uncertain-${rowId}`;
+      uncertainLabel.appendChild(uncertainRadio);
+      uncertainLabel.appendChild(document.createTextNode("Uncertain"));
+      decision.appendChild(uncertainLabel);
+
+      const text = document.createElement("textarea");
+      text.className = "row-note";
+      text.placeholder = "Reviewer notes";
+      text.dataset.paper = paper;
+      text.dataset.theorem = item.name;
+      text.id = `note-${rowId}`;
+
+      const btn = document.createElement("button");
+      btn.className = "btn";
+      btn.type = "button";
+      btn.textContent = "Save review";
+      const saveStatus = document.createElement("span");
+      saveStatus.className = "save-status small muted";
+      saveStatus.id = `save-status-${rowId}`;
+      btn.addEventListener("click", async () => {
+        const judgment = selectedReviewJudgment(rowId);
+        if (!judgment) {
+          saveStatus.textContent = "Choose Matches, Mismatch, or Uncertain.";
+          saveStatus.className = "save-status small bad";
+          return;
+        }
+        btn.disabled = true;
+        btn.textContent = "Saving...";
+        saveStatus.textContent = "";
+        try {
+          await postReviewPayload(reviewPayload(paper, item, judgment));
+          saveStatus.textContent = "Saved";
+          saveStatus.className = "save-status small ok";
+          await refreshReviews();
+        } catch (err) {
+          saveStatus.textContent = err.message || "Save failed";
+          saveStatus.className = "save-status small bad";
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Save review";
+        }
+      });
+
+      const status = document.createElement("div");
+      status.className = "history";
+      status.dataset.paper = paper;
+      status.dataset.theorem = item.name;
+
+      const header = document.createElement("div");
+      header.className = "paper-title";
+      const propSpecLabel = item.is_proposition_spec
+        ? item.proposition_spec_role === "source_definition"
+          ? " · source proposition definition (not a proof)"
+          : item.proposition_spec_role === "source_assumption"
+            ? " · proposition assumption (not a proof)"
+            : item.proposition_spec_role === "proof_routed"
+              ? ` · proposition specification; proof row ${item.proposition_spec_proof || "missing"}`
+              : " · unproved proposition specification"
+        : "";
+      header.textContent = item.human_claim_title || `${item.kind} ${item.name}${propSpecLabel}`;
+      const sliceMeta = document.createElement("div");
+      sliceMeta.className = "slice-meta";
+      const lineText = item.line_number ? `line ${item.line_number}` : "line unavailable";
+      sliceMeta.textContent = `${item.slice_title || "All statements"} · ${lineText}`;
+
+      const sourceBadge = document.createElement("span");
+      sourceBadge.className = `status-pill ${isDirectSourceStatus(item.source_status) && !item.source_note ? "ok" : item.source_status || item.source_note ? "warn" : ""}`;
+      sourceBadge.textContent = item.is_proposition_spec && item.proposition_spec_role === "unproved_spec"
+        ? "Unproved specification"
+        : item.is_assumption
+        ? "Paper assumption"
+        : item.source_status || "Source status not labeled";
+
+      reviewCell.appendChild(header);
+      if (item.human_claim_proof_endpoint) {
+        const proofEndpoint = document.createElement("div");
+        proofEndpoint.className = "small muted";
+        proofEndpoint.textContent = `Verified proof endpoint: ${item.human_claim_proof_endpoint}`;
+        reviewCell.appendChild(proofEndpoint);
+      }
+      reviewCell.appendChild(sliceMeta);
+      reviewCell.appendChild(sourceBadge);
+      reviewCell.appendChild(statusLine);
+      reviewCell.appendChild(validatorsLine);
+      reviewCell.appendChild(decision);
+      reviewCell.appendChild(text);
+      reviewCell.appendChild(document.createElement("br"));
+      reviewCell.appendChild(btn);
+      reviewCell.appendChild(saveStatus);
+      reviewCell.appendChild(status);
+
+      // Populate with existing review history
+      const sourcePanel = makeSourceProvenancePanel(item);
+      if (sourcePanel) {
+        mainCell.appendChild(sourcePanel);
+      }
+      mainCell.appendChild(paperCell);
+      mainCell.appendChild(leanCell);
+      mainCell.appendChild(agentCell);
+      itemShell.appendChild(mainCell);
+      itemShell.appendChild(reviewCell);
+      itemCell.appendChild(itemShell);
+      row.appendChild(itemCell);
+      return { row, status };
+    }
+
+    function updateStatusBadges() {
+      for (const row of document.querySelectorAll("tr[data-paper][data-theorem]")) {
+        const paper = row.dataset.paper;
+        const theorem = row.dataset.theorem;
+        const rowStatus = statusFor(paper, theorem);
+        const rowId = `${safeId(paper)}_${safeId(theorem)}`;
+        const badge = document.getElementById(`status-${rowId}`);
+        const stale = document.getElementById(`stale-${rowId}`);
+        const label = statusLabel(rowStatus);
+        const judgment = reviewJudgment(rowStatus);
+        row.dataset.status = label.toLowerCase();
+        row.dataset.needsAttention = rowStatus && rowStatus.needs_attention ? "true" : "false";
+        row.dataset.latestJudgment = judgment;
+        row.dataset.latestMatches = judgment === "mismatch" ? "false" : "true";
+        row.dataset.hasReview = rowStatus && rowStatus.has_review ? "true" : "false";
+        row.dataset.isStale = rowStatus && (rowStatus.lean_stale || rowStatus.paper_stale || rowStatus.source_stale) ? "true" : "false";
+        if (badge) {
+          badge.textContent = label;
+          badge.className = `status-pill ${statusClass(rowStatus)}`.trim();
+        }
+        if (stale) {
+          const reason = staleReason(rowStatus);
+          stale.textContent = reason;
+          stale.style.display = reason ? "" : "none";
+        }
+        const validators = document.getElementById(`validators-${rowId}`);
+        if (validators) {
+          validators.textContent = validatorSummary(rowStatus);
+          validators.title = validatorDetails(rowStatus);
+        }
+      }
+    }
+
+    function updatePaperProgress() {
+      const statusRows = state.statusRows || [];
+      for (const paper of state.papers) {
+        const visibleNames = new Set(displayItems(paper).map((item) => item.name));
+        const paperRows = statusRows.filter(
+          (row) => row.paper === paper.name && visibleNames.has(row.theorem)
+        );
+        const counts = reviewSurfaceCounts(paper);
+        const total = counts.reviewCards;
+        const reviewed = paperRows.filter((row) => row.has_review).length;
+        const attention = paperRows.filter((row) => row.needs_attention || row.latest_matches === false).length;
+        const node = document.querySelector(`[data-paper-progress="${paper.name}"]`);
+        if (node) {
+          node.textContent = `${reviewed}/${total} review card${total === 1 ? "" : "s"} reviewed; ${reviewSurfaceCountLabel(counts)}; ${attention} need action`;
+        }
+      }
+    }
+
+    function applyFilters() {
+      const query = (document.getElementById("searchBox").value || "").trim().toLowerCase();
+      const statusFilter = document.getElementById("statusFilter").value;
+      const sliceFilter = document.getElementById("sliceFilter").value || "all";
+      let visibleRows = 0;
+      for (const block of document.querySelectorAll(".paper-block")) {
+        let visibleInBlock = 0;
+        for (const row of block.querySelectorAll("tr[data-paper][data-theorem]")) {
+          const matchesSearch = !query || (row.dataset.searchText || "").includes(query);
+          const matchesSlice = sliceFilter === "all" || row.dataset.sliceKey === sliceFilter;
+          let matchesStatus = true;
+          if (statusFilter === "attention") {
+            matchesStatus = row.dataset.needsAttention === "true" || row.dataset.latestMatches === "false";
+          } else if (statusFilter === "unreviewed") {
+            matchesStatus = row.dataset.hasReview !== "true";
+          } else if (statusFilter === "stale") {
+            matchesStatus = row.dataset.isStale === "true";
+          } else if (statusFilter === "mismatch") {
+            matchesStatus = row.dataset.latestJudgment === "mismatch";
+          } else if (statusFilter === "uncertain") {
+            matchesStatus = row.dataset.latestJudgment === "uncertain";
+          } else if (statusFilter === "reviewed") {
+            matchesStatus = row.dataset.hasReview === "true";
+          }
+          const visible = matchesSearch && matchesSlice && matchesStatus;
+          row.classList.toggle("is-hidden", !visible);
+          if (visible) {
+            visibleInBlock++;
+            visibleRows++;
+          }
+        }
+        block.style.display = visibleInBlock ? "" : "none";
+      }
+      document.getElementById("emptyFilter").style.display = visibleRows ? "none" : "block";
+    }
+
+    async function refreshReviews() {
+      let entries = [];
+      let statusRows = [];
+      let libraryEntries = [];
+      try {
+        const [reviewResponse, statusResponse, libraryResponse] = await Promise.all([
+          fetch("/api/reviews"),
+          fetch("/api/status"),
+          fetch("/api/library-reviews"),
+        ]);
+        if (reviewResponse.ok) {
+          const payload = await reviewResponse.json();
+          entries = payload.reviews || [];
+        }
+        if (statusResponse.ok) {
+          const statusPayload = await statusResponse.json();
+          statusRows = statusPayload.status || [];
+        }
+        if (libraryResponse.ok) {
+          const libraryPayload = await libraryResponse.json();
+          libraryEntries = libraryPayload.reviews || [];
+        }
+      } catch (_err) {
+        entries = state.reviews || [];
+        statusRows = state.statusRows || [];
+        libraryEntries = state.libraryReviews || [];
+      }
+      state.reviews = entries;
+      state.statusRows = statusRows;
+      state.libraryReviews = libraryEntries;
+      refreshSummary(entries, statusRows);
+      const total = entries.length;
+      document.getElementById("count").textContent = `Reviews logged: ${total}`;
+      updateStatusBadges();
+      updatePaperProgress();
+      refreshPrerequisiteReviewControls();
+
+      const statusNodes = document.querySelectorAll(".history[data-paper][data-theorem]");
+      for (const node of statusNodes) {
+        const theorem = node.dataset.theorem;
+        const paper = node.dataset.paper;
+        node.innerHTML = reviewHistory(entries, paper, theorem);
+        // Prefill for current user if there is a latest entry
+        const user = document.getElementById("userHandle").value.trim() || state.user;
+        const mine = entries.filter(
+          (entry) => entry.paper === paper && entry.theorem === theorem && entry.user === user
+        );
+        if (mine.length) {
+          mine.sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
+          const latest = mine[0];
+          const rowId = `${safeId(paper)}_${safeId(theorem)}`;
+          const match = document.getElementById(`match-${rowId}`);
+          const mismatch = document.getElementById(`mismatch-${rowId}`);
+          const uncertain = document.getElementById(`uncertain-${rowId}`);
+          const ta = document.getElementById(`note-${rowId}`);
+          const judgment = reviewJudgment(latest);
+          if (match) {
+            match.checked = judgment === "matches";
+          }
+          if (mismatch) {
+            mismatch.checked = judgment === "mismatch";
+          }
+          if (uncertain) {
+            uncertain.checked = judgment === "uncertain";
+          }
+          if (ta) {
+            ta.value = latest.notes || "";
+          }
+        }
+      }
+      applyFilters();
+    }
+
+    function render() {
+      const container = document.getElementById("containers");
+      document.getElementById("logPath").textContent = `Log file: ${state.logPath}`;
+      container.textContent = "";
+      const data = state.papers;
+      if (!data.length) {
+        container.textContent = "No paper interfaces found.";
+        return;
+      }
+      populateSliceFilter();
+      for (const paper of data) {
+        const block = document.createElement("details");
+        block.className = "paper-block";
+        const visibleItems = displayItems(paper);
+        block.open = data.length === 1 || visibleItems.length <= 80;
+        block.classList.add("paper-details");
+        const summary = document.createElement("summary");
+        const header = document.createElement("div");
+        header.className = "paper-header";
+        const heading = document.createElement("h2");
+        heading.textContent = `${paper.name} — ${paper.title}`;
+        const progress = document.createElement("div");
+        progress.className = "paper-progress";
+        progress.dataset.paperProgress = paper.name;
+        const counts = reviewSurfaceCounts(paper);
+        progress.textContent = `0/${counts.reviewCards} review card${counts.reviewCards === 1 ? "" : "s"} reviewed; ${reviewSurfaceCountLabel(counts)}`;
+        header.appendChild(heading);
+        header.appendChild(progress);
+        summary.appendChild(header);
+        block.appendChild(summary);
+        block.appendChild(makeSurfaceAuditPanel(paper));
+        block.appendChild(makeAssumptionAuditPanel(paper));
+        block.appendChild(makeSourcePanel(paper));
+        block.appendChild(makeReviewContents(paper));
+        block.appendChild(makeHumanReviewSurfacePanel(paper));
+        const table = document.createElement("table");
+        const head = document.createElement("thead");
+        head.innerHTML =
+          "<tr><th>Paper statement, expanded Lean statement, LLM checks, and review</th></tr>";
+        table.appendChild(head);
+        const body = document.createElement("tbody");
+        for (const section of claimPresentationSections(paper)) {
+          const sectionRow = document.createElement("tr");
+          sectionRow.id = reviewAnchorId(paper.name, "source-section", section.title);
+          const sectionCell = document.createElement("th");
+          sectionCell.colSpan = 1;
+          sectionCell.className = "review-section-label";
+          const itemNoun = presentationSectionItemNoun(section);
+          sectionCell.textContent = `${section.title} (${section.items.length} ${itemNoun}${section.items.length === 1 ? "" : "s"})`;
+          sectionRow.appendChild(sectionCell);
+          body.appendChild(sectionRow);
+          for (const item of section.items) {
+            const rowInfo = makeRow(paper.name, item);
+            rowInfo.row.id = reviewAnchorId(paper.name, itemNoun, item.name);
+            body.appendChild(rowInfo.row);
+          }
+        }
+        table.appendChild(body);
+        const tableWrap = document.createElement("div");
+        tableWrap.className = "table-wrap";
+        tableWrap.appendChild(table);
+        block.appendChild(tableWrap);
+        container.appendChild(block);
+      }
+      refreshReviews();
+      typesetMath();
+    }
+
+    document.getElementById("userHandle").addEventListener("change", refreshReviews);
+    document.getElementById("searchBox").addEventListener("input", applyFilters);
+    document.getElementById("statusFilter").addEventListener("change", applyFilters);
+    document.getElementById("sliceFilter").addEventListener("change", applyFilters);
+    document.getElementById("hideAgentDraft").addEventListener("change", (event) => {
+      document.body.classList.toggle("hide-agent", event.target.checked);
+    });
+    document.addEventListener("click", (event) => {
+      const link = event.target.closest("a[data-review-anchor]");
+      if (!link) return;
+      const target = document.getElementById(link.dataset.reviewAnchor);
+      if (!target) return;
+      const paperBlock = target.closest("details.paper-block");
+      if (paperBlock) paperBlock.open = true;
+      event.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      history.replaceState(null, "", `#${link.dataset.reviewAnchor}`);
+    });
+    document.getElementById("saveAllReviews").addEventListener("click", saveAllSelectedReviews);
+    const mathjaxTag = document.getElementById("mathjax-script");
+    if (mathjaxTag) {
+      mathjaxTag.addEventListener("load", typesetMath);
+    }
+    document.addEventListener("DOMContentLoaded", render);
+  </script>
+</body>
+</html>

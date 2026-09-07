@@ -9,7 +9,7 @@ actual open-optimum comparison without importing the Theorem 4 attainment
 assembly.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 
 namespace GN21DriverSurgePricing

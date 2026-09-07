@@ -1,6 +1,8 @@
-import GKGMM19IterativeLocalVoting.ProofInterface
+import GKGMM19IterativeLocalVoting.AppendixLemmaBounds
+import GKGMM19IterativeLocalVoting.PopulationTheorem3
 
 open MeasureTheory
+open AppliedModelingLib
 open scoped BigOperators ENNReal
 
 /-!
@@ -29,7 +31,13 @@ Rules for completing this file:
 
 ## Paper Definitions
 
-- `conditions_c123_formula`: source assumptions C1, C2, C3.
+- `ConditionsC123`: source assumptions C1, C2, C3.
+- `IsLpNormedUtilities`: Definition 1's utility family.
+- `IsWeightedEuclideanUtilitiesWith`: Definition 2's utility family.
+- `IsDecomposableUtilitiesWith`: Definition 3's utility family.
+- `Algorithm1ILVFormulaData`: Algorithm 1's sampling, initialization, update,
+  stopping, and return semantics.
+- `ModelBFiniteResponseAt`: Model B's finite-coordinate normalized movement.
 - `c1_convex_solution_space_source_formula`: source interpretation of C1 as
   the direct `Convex` fact used by projection arguments.
 - `theorem1_norm_pair_l2_l2`, `theorem1_norm_pair_l1_linf`, and
@@ -54,12 +62,17 @@ Rules for completing this file:
   Algorithm 1 trajectories remain feasible.
 - `algorithm1_window_stable_formula` and `algorithm1_stop_condition_formula`:
   the stopping-window and terminal-time stopping conditions.
-- `modelA_response_formula`: local utility maximization.
-- `modelA_response_isMaxOn_formula`: mathlib extrema formulation of Model A.
-- `modelA_response_lp_normed_cost_minimizer_formula`: utility maximization as
-  distance minimization for Definition 1 utilities.
-- `modelB_finite_response_formula`: finite-coordinate normalized movement formula
-  for Model B with a supplied subgradient vector.
+- `modelA_raw_response_formula`: source Model A maximization over the raw
+  query ball before projection.
+- `modelA_raw_response_isMaxOn_formula`: mathlib extrema formulation of that
+  source raw response.
+- `modelA_raw_response_lp_normed_cost_minimizer_formula`: source raw utility
+  maximization as distance minimization for Definition 1 utilities.
+- `modelA_response_formula`, `_isMaxOn_formula`, and
+  `_lp_normed_cost_minimizer_formula`: retained feasible-query variants used
+  by earlier downstream interfaces.
+- `modelB_finite_response_formula`: a derived characterization of
+  `ModelBFiniteResponseAt` for a supplied subgradient vector.
 - `modelB_finite_response_neg_lp_cost_gradient_formula`: sign-correct finite
   Model B movement for the Theorem 2 `Lp` cost-gradient candidate.
 - `modelB_finite_algorithm1_trace_source_formula`: primitive raw Model B
@@ -101,10 +114,10 @@ Rules for completing this file:
   product-measure instance using atomless one-dimensional marginals.
 - `lemma3_coordinate_noncollision_ae_from_productMeasure`: the corresponding
   almost-everywhere coordinate noncollision condition.
-- `c3_product_density_coordinate_noncollision_ae`: a structured finite-coordinate
+- `c3_bounded_density_coordinate_noncollision_ae`: a structured finite-coordinate
   C3 density carrier implies that noncollision condition.
 - `finite_coordinate_ideal_distribution_data_formula` and
-  `finite_coordinate_c3_carrier_formula`: product-density C3 data and its
+  `finite_coordinate_c3_carrier_formula`: full-space bounded-density C3 data and its
   source-facing carrier.
 - `definition2_weighted_euclidean_utilities_formula`: weighted-Euclidean
   utilities.
@@ -202,6 +215,35 @@ Rules for completing this file:
   projected from theorem-specific source semantics and the approved SSGM
   convergence bundle. Proposition 2 uses the finite-coordinate/product-box
   reading exposed by `Proposition2FiniteCoordinateSourceSemantics`.
+- `theorem1_modelB_linf_l1_finite_c3_convergence`: the fully concrete
+  finite-coordinate `(∞,1)` Model B branch, with a bounded-density C3 ideal
+  process, compact C1 projection geometry, and an explicit social-objective
+  identity, converges almost surely to the social-optimum set.
+- `theorem1_modelA_linf_l1_finite_c3_convergence`: the fully concrete
+  finite-coordinate `(∞,1)` Model A branch, using the Borel exact water-filled
+  local minimizer and the corrected crossing-or-near-tie perturbation budget,
+  converges almost surely to the social-optimum set.
+- `theorem1_modelA_l2_l2_finite_c3_convergence`,
+  `theorem1_modelB_l2_l2_finite_c3_convergence`,
+  `theorem1_modelA_l1_linf_finite_c3_convergence`, and
+  `theorem1_modelB_l1_linf_finite_c3_convergence`: the other four concrete
+  finite-coordinate branches of Theorem 1, with their displayed Algorithm 1
+  trajectories and the corresponding expected-cost/social-objective identity.
+- `theorem2_modelB_finite_holder_dual_c3_convergence`: the concrete
+  finite-exponent Hölder-dual Model B execution used by Theorem 2.
+- `proposition1_weighted_euclidean_l2_finite_execution_convergence`: the
+  checked finite-coordinate weighted-Euclidean `L2` outcome-indexed execution
+  reaches the source social-optimum set.  Its exact sampled-process
+  construction remains a visible source-model obligation.
+- `proposition1_weighted_euclidean_l2_modelA_joint_execution_convergence`:
+  the concrete joint-law Model A execution, with a measurable exact source
+  response and its C3 rare-event correction, reaches the identified
+  social-optimal set.
+- `proposition2_coordinatewise_boundary_finite_c3_median`: Proposition 2 under
+  the coordinatewise-boundary Model B reading used in its proof.  The visible
+  `Spec` retains the decomposable-utility scope, checks the concrete response
+  trace, and proves Model A and Model B convergence to the transparent
+  feasible expected-absolute-deviation median target.
 - `theorem3_convergent_l2_modelB_is_directional_equilibrium_global_projected_trace`:
   paper-faithful projected-trace endpoint using the original global Algorithm 1
   radius schedule along each tail.
@@ -214,6 +256,8 @@ Rules for completing this file:
 - `theorem3_statement_of_full_sampled_projected_source_semantics_univ`: exact
   `theorem3Statement` recovery from the sampled projected source package under
   the explicit full-space condition `E.solutionSpace = Set.univ`.
+- `theorem3_full_space_and_restricted_space`: the full-space recovery of the
+  printed conclusion together with the approved restricted-space alternative.
 - `finite_coordinate_source_semantics_ssgm_consequences`: the four
   SSGM-backed endpoint statements from separate theorem source semantics plus
   an explicit SSGM theorem bundle.
@@ -234,12 +278,18 @@ structure ILVGeometryFormulaData (Point : Type*) where
   solutionSpace : Set Point
   normDistance : SourceNorm → Point → Point → ℝ
 
-/-- Data-only local-neighborhood formula used by Algorithm 1 review rows. -/
+/-- Data-only feasible local-neighborhood variant retained for prior review rows. -/
 def localNeighborhoodFormulaData {Point : Type*}
     (G : ILVGeometryFormulaData Point) (q : SourceNorm)
     (center : Point) (r : ℝ) : Set Point :=
   {candidate | candidate ∈ G.solutionSpace ∧
     G.normDistance q candidate center ≤ r}
+
+/-- The source Model A raw query ball before Algorithm 1 performs its projection. -/
+def rawLocalNeighborhoodFormulaData {Point : Type*}
+    (G : ILVGeometryFormulaData Point) (q : SourceNorm)
+    (center : Point) (r : ℝ) : Set Point :=
+  {candidate | G.normDistance q candidate center ≤ r}
 
 /-- Data-only projection formula for the source notation `[y]_X`. -/
 def isNormProjectionOntoFormulaData {Point : Type*}
@@ -271,12 +321,20 @@ structure ILVUtilityFormulaData (Voter Point : Type*) where
   solutionSpace : Set Point
   utility : Voter → Point → ℝ
   normDistance : SourceNorm → Point → Point → ℝ
+  /-- The governing model says each voter's utility is bounded on the feasible set. -/
+  utility_bounded_on_solutionSpace : ∀ voter, ∃ bound : ℝ, ∀ x,
+    x ∈ solutionSpace → |utility voter x| ≤ bound
 
 def ILVUtilityFormulaData.geometry {Voter Point : Type*}
     (U : ILVUtilityFormulaData Voter Point) :
     ILVGeometryFormulaData Point where
   solutionSpace := U.solutionSpace
   normDistance := U.normDistance
+
+/-- Transparent governing-model clause that every voter utility is bounded on `X`. -/
+def utilityBoundedOnSolutionSpaceFormulaData {Voter Point : Type*}
+    (U : ILVUtilityFormulaData Voter Point) : Prop :=
+  ∀ voter, ∃ bound : ℝ, ∀ x, x ∈ U.solutionSpace → |U.utility voter x| ≤ bound
 
 def modelAResponseFormulaData {Voter Point : Type*}
     (U : ILVUtilityFormulaData Voter Point) (q : SourceNorm)
@@ -285,10 +343,198 @@ def modelAResponseFormulaData {Voter Point : Type*}
     ∀ candidate, candidate ∈ localNeighborhoodFormulaData U.geometry q center r →
       U.utility voter candidate ≤ U.utility voter response
 
+/-- Source-faithful Model A response over the raw query ball. -/
+def modelARawResponseFormulaData {Voter Point : Type*}
+    (U : ILVUtilityFormulaData Voter Point) (q : SourceNorm)
+    (center : Point) (r : ℝ) (voter : Voter) (response : Point) : Prop :=
+  response ∈ rawLocalNeighborhoodFormulaData U.geometry q center r ∧
+    ∀ candidate, candidate ∈ rawLocalNeighborhoodFormulaData U.geometry q center r →
+      U.utility voter candidate ≤ U.utility voter response
+
+/--
+Complete finite-coordinate source formula for a Model B response.  Unlike the
+implementation carrier, this review target exposes both the printed
+subgradient inequality and the normalized full-radius update in one place.  It
+also records the approved source-definedness convention for the otherwise
+unstated zero-gradient case: the voter stays at the current point.
+-/
+/- The source's admissible norm parameters: `L1`, `L2`, `L∞`, or `Lp` with `p > 0`. -/
+def sourceNormFormulaData : SourceNorm → Prop
+  | SourceNorm.l1 => True
+  | SourceNorm.l2 => True
+  | SourceNorm.linfty => True
+  | SourceNorm.lp p => 0 < p
+
+def modelBFiniteResponseFormulaData
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (utility : (Coord → ℝ) → ℝ) (q : SourceNorm)
+    (center : Coord → ℝ) (r : ℝ) (response : Coord → ℝ) : Prop :=
+  sourceNormFormulaData q ∧
+    ∃ gradient : Coord → ℝ,
+      (∀ y,
+        utility y - utility center ≥
+          AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
+            gradient (fun i => y i - center i)) ∧
+        ((gradient = 0 ∧ response = center) ∨
+          (gradient ≠ 0 ∧ response = fun i =>
+            center i + r * (gradient i / finiteCoordinateNorm q gradient)))
+
 def isLpNormedUtilitiesFormulaData {Voter Point : Type*}
     (U : ILVUtilityFormulaData Voter Point) (ideal : Voter → Point)
     (p : SourceNorm) : Prop :=
   ∀ v x, U.utility v x = -U.normDistance p x (ideal v)
+
+/--
+The printed Definition 1 formula on the feasible solution space.  Algorithm 1
+queries raw local candidates before projection; the separately reviewed
+raw-query-domain convention supplies `isLpNormedUtilitiesFormulaData` at those
+points.
+-/
+def isLpNormedUtilitiesOnSolutionSpaceFormulaData {Voter Point : Type*}
+    (U : ILVUtilityFormulaData Voter Point) (ideal : Voter → Point)
+    (p : SourceNorm) : Prop :=
+  ∀ v x, x ∈ U.solutionSpace → U.utility v x = -U.normDistance p x (ideal v)
+
+/--
+Exact finite-coordinate Definition 1 formula on the paper's feasible solution
+space.  This is the source-facing review target; the generic utility carrier
+above remains proof support only.
+-/
+def finiteCoordinateLpNormedUtilitiesOnSolutionSpaceFormulaData
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (E : ILVEnvironment Voter (Coord → ℝ)) (p : SourceNorm) : Prop :=
+  sourceNormFormulaData p ∧
+    ∀ voter x, x ∈ E.solutionSpace →
+      E.utility voter x = -finiteCoordinateDistance p x (E.ideal voter)
+
+/--
+Approved raw-query-domain extension of Definition 1.  Algorithm 1 maximizes
+the displayed utility before projection, so the same finite-coordinate formula
+is available at every raw candidate in that query.
+-/
+def finiteCoordinateLpNormedUtilitiesRawQueryFormulaData
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (E : ILVEnvironment Voter (Coord → ℝ)) (p : SourceNorm) : Prop :=
+  sourceNormFormulaData p ∧
+    ∀ voter x,
+      E.utility voter x = -finiteCoordinateDistance p x (E.ideal voter)
+
+/--
+Exact finite-coordinate Model A response: an arbitrary utility maximizer in
+the raw `Lq` ball, before the algorithm's later projection onto `X`.
+-/
+def finiteCoordinateModelARawResponseFormulaData
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (E : ILVEnvironment Voter (Coord → ℝ)) (q : SourceNorm)
+    (center : Coord → ℝ) (radius : ℝ) (voter : Voter)
+    (response : Coord → ℝ) : Prop :=
+  sourceNormFormulaData q ∧
+    finiteCoordinateDistance q response center ≤ radius ∧
+      ∀ candidate,
+        finiteCoordinateDistance q candidate center ≤ radius →
+          E.utility voter candidate ≤ E.utility voter response
+
+/--
+Exact finite-coordinate Algorithm 1 source surface.  The paper's unqualified
+projection and stopping-vector magnitude are represented by the standard
+Euclidean interpretation on its ambient `R^M` decision space.
+-/
+def finiteCoordinateAlgorithm1ILVFormulaData
+    {Voter Coord : Type*} [MeasurableSpace Voter] [Fintype Coord] [Nonempty Coord]
+    (population : Measure Voter) (executionLaw : Measure (ℕ → Voter))
+    (E : ILVEnvironment Voter (Coord → ℝ)) (q : SourceNorm)
+    (initial : Coord → ℝ) (epsilon : ℝ) (N : ℕ) (r0 : ℝ) (T : ℕ)
+    (project : (Coord → ℝ) → Coord → ℝ)
+    (rawResponse trajectory : (ℕ → Voter) → ℕ → Coord → ℝ)
+    (stopTime : (ℕ → Voter) → ℕ) (output : (ℕ → Voter) → Coord → ℝ) : Prop :=
+  sourceNormFormulaData q ∧
+    IsProbabilityMeasure population ∧
+      executionLaw = (Measure.infinitePi fun _ : ℕ => population) ∧
+        initial ∈ E.solutionSpace ∧
+          0 < epsilon ∧ 0 < r0 ∧ 0 < T ∧
+            AppliedModelingLib.Optimization.EuclideanProjectionOnto
+              E.solutionSpace project ∧
+              ((∀ (omega : ℕ → Voter) (t : ℕ),
+                  finiteCoordinateModelARawResponseFormulaData E q
+                    (trajectory omega t) (ilvRadius r0 (t + 1))
+                    (omega (t + 1)) (rawResponse omega (t + 1))) ∨
+                (∀ (omega : ℕ → Voter) (t : ℕ),
+                  modelBFiniteResponseFormulaData
+                    (E.utility (omega (t + 1))) q
+                    (trajectory omega t) (ilvRadius r0 (t + 1))
+                    (rawResponse omega (t + 1)))) ∧
+              ∀ omega : ℕ → Voter,
+                trajectory omega 0 = initial ∧
+                  (∀ t : ℕ,
+                    trajectory omega (t + 1) = project (rawResponse omega (t + 1))) ∧
+                  0 < stopTime omega ∧ stopTime omega ≤ T ∧
+                  (stopTime omega = T ∨
+                    ∀ l m,
+                      l ∈ Finset.Icc (stopTime omega - N) (stopTime omega) →
+                        m ∈ Finset.Icc (stopTime omega - N) (stopTime omega) →
+                          finiteCoordinateDistance SourceNorm.l2
+                            (trajectory omega l) (trajectory omega m) ≤ epsilon) ∧
+                  (∀ t : ℕ, 0 < t → t < stopTime omega →
+                    ¬ ∀ l m,
+                      l ∈ Finset.Icc (t - N) t →
+                        m ∈ Finset.Icc (t - N) t →
+                          finiteCoordinateDistance SourceNorm.l2
+                            (trajectory omega l) (trajectory omega m) ≤ epsilon) ∧
+                  output omega = trajectory omega (stopTime omega)
+
+/--
+Exact finite-coordinate Definition 3 formula.  The sum ranges over all `M`
+ambient coordinates and evaluates each component utility at that coordinate.
+-/
+def finiteCoordinateDecomposableUtilityFamilyFormulaData
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (E : ILVEnvironment Voter (Coord → ℝ))
+    (componentUtility : Coord → Voter → ℝ → ℝ) : Prop :=
+  (∀ coordinate voter, ConcaveOn ℝ Set.univ (componentUtility coordinate voter)) ∧
+    ∀ voter x,
+      E.utility voter x =
+        Finset.univ.sum (fun coordinate => componentUtility coordinate voter (x coordinate))
+
+/-- The independent population-sampling law used by Algorithm 1. -/
+noncomputable def algorithm1SampleLaw {Voter : Type*} [MeasurableSpace Voter]
+    (population : Measure Voter) : Measure (ℕ → Voter) :=
+  Measure.infinitePi fun _ : ℕ => population
+
+/--
+Complete source semantics of Algorithm 1.
+
+The outcome `omega` supplies the independently sampled voter at source time
+`t + 1`. The relation records every displayed input, the raw favorite-point
+query, projection, first stopping time, and returned solution.
+-/
+def Algorithm1ILVFormulaData {Voter Point : Type*} [MeasurableSpace Voter]
+    (population : Measure Voter) (executionLaw : Measure (ℕ → Voter))
+    (U : ILVUtilityFormulaData Voter Point) (q : SourceNorm)
+    (initial : Point) (epsilon : ℝ) (N : ℕ) (r0 : ℝ) (T : ℕ)
+    (project : Point → Point)
+    (rawResponse trajectory : (ℕ → Voter) → ℕ → Point)
+    (stopTime : (ℕ → Voter) → ℕ) (output : (ℕ → Voter) → Point) : Prop :=
+  IsProbabilityMeasure population ∧
+    executionLaw = algorithm1SampleLaw population ∧
+      initial ∈ U.solutionSpace ∧
+        0 < epsilon ∧ 0 < r0 ∧ 0 < T ∧
+          isNormProjectionOntoFormulaData U.geometry SourceNorm.l2 project ∧
+          ∀ omega : ℕ → Voter,
+            trajectory omega 0 = initial ∧
+              (∀ t : ℕ,
+                modelARawResponseFormulaData U q (trajectory omega t)
+                  (ilvRadius r0 (t + 1)) (omega (t + 1))
+                  (rawResponse omega (t + 1)) ∧
+                trajectory omega (t + 1) =
+                  project (rawResponse omega (t + 1))) ∧
+              0 < stopTime omega ∧ stopTime omega ≤ T ∧
+              (stopTime omega = T ∨
+                algorithm1WindowStableFormulaData U.geometry SourceNorm.l2
+                  (trajectory omega) (stopTime omega) N epsilon) ∧
+              (∀ t : ℕ, 0 < t → t < stopTime omega →
+                ¬ algorithm1WindowStableFormulaData U.geometry SourceNorm.l2
+                    (trajectory omega) t N epsilon) ∧
+              output omega = trajectory omega (stopTime omega)
 
 def normDistanceMinimizerFormulaData {Voter Point : Type*}
     (U : ILVUtilityFormulaData Voter Point) (p : SourceNorm)
@@ -296,23 +542,6 @@ def normDistanceMinimizerFormulaData {Voter Point : Type*}
   response ∈ feasible ∧
     ∀ candidate, candidate ∈ feasible →
       U.normDistance p response target ≤ U.normDistance p candidate target
-
-/--
-Section 3 assumptions C1, C2, and C3.
-
-Source status: source assumption package.
--/
-theorem conditions_c123_formula
-    (solutionSpace_nonempty_bounded_closed_convex
-      uniqueIdealSolutions
-      idealDistribution_bounded_measurable_density : Prop) :
-    (solutionSpace_nonempty_bounded_closed_convex ∧
-        uniqueIdealSolutions ∧
-          idealDistribution_bounded_measurable_density) ↔
-      solutionSpace_nonempty_bounded_closed_convex ∧
-        uniqueIdealSolutions ∧
-          idealDistribution_bounded_measurable_density := by
-  rfl
 
 /--
 C1 convexity source interpretation: the abstract paper C1 clause gives the
@@ -499,9 +728,9 @@ theorem algorithm1_stop_condition_formula {Point : Type*}
   rfl
 
 /--
-Model A response formula: the voter returns a favorite feasible point in the
-queried local neighborhood.
-Source status: direct source formula
+Feasible-query Model A variant retained for downstream interfaces that require
+the raw response itself to lie in the solution space.  The paper's direct
+Model A query is instead exposed by `modelA_raw_response_formula`.
 -/
 theorem modelA_response_formula {Voter Point : Type*}
     (U : ILVUtilityFormulaData Voter Point) (q : SourceNorm)
@@ -512,10 +741,7 @@ theorem modelA_response_formula {Voter Point : Type*}
           U.utility voter candidate ≤ U.utility voter response := by
   rfl
 
-/--
-Model A response as mathlib `IsMaxOn` over the queried local neighborhood.
-Source status: direct source formula
--/
+/-- Feasible-query Model A variant as mathlib `IsMaxOn`. -/
 theorem modelA_response_isMaxOn_formula {Voter Point : Type*}
     (U : ILVUtilityFormulaData Voter Point) (q : SourceNorm)
     (center : Point) (r : ℝ) (voter : Voter) (response : Point) :
@@ -526,22 +752,28 @@ theorem modelA_response_isMaxOn_formula {Voter Point : Type*}
   rfl
 
 /--
-Model B finite-coordinate response formula:
-`x' = x + r * g / ||g||_q`, with the subgradient vector `g` supplied
-explicitly.
-
-Source status: direct source formula for the movement rule; the subgradient
-membership and stochastic recurrence are separate proof boundaries.
+Model A source formula: the voter returns a favorite point in the raw queried
+norm ball, and Algorithm 1 projects that response onto the feasible set later.
+Source status: direct source formula
 -/
-theorem modelB_finite_response_formula
-    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
-    (q : SourceNorm) (center : Coord → ℝ) (r : ℝ)
-    (gradient response : Coord → ℝ) :
-    ModelBFiniteResponseAt q center r gradient response ↔
-      response =
-        fun i => center i + r *
-          (gradient i / finiteCoordinateNorm q gradient) := by
-  exact modelBFiniteResponseAt_formula q center r gradient response
+theorem modelA_raw_response_formula {Voter Point : Type*}
+    (U : ILVUtilityFormulaData Voter Point) (q : SourceNorm)
+    (center : Point) (r : ℝ) (voter : Voter) (response : Point) :
+    modelARawResponseFormulaData U q center r voter response ↔
+      response ∈ rawLocalNeighborhoodFormulaData U.geometry q center r ∧
+        ∀ candidate, candidate ∈ rawLocalNeighborhoodFormulaData U.geometry q center r →
+          U.utility voter candidate ≤ U.utility voter response := by
+  rfl
+
+/-- Model A source formula as mathlib `IsMaxOn` over the raw query ball. -/
+theorem modelA_raw_response_isMaxOn_formula {Voter Point : Type*}
+    (U : ILVUtilityFormulaData Voter Point) (q : SourceNorm)
+    (center : Point) (r : ℝ) (voter : Voter) (response : Point) :
+    modelARawResponseFormulaData U q center r voter response ↔
+      response ∈ rawLocalNeighborhoodFormulaData U.geometry q center r ∧
+        IsMaxOn (U.utility voter)
+          (rawLocalNeighborhoodFormulaData U.geometry q center r) response := by
+  rfl
 
 /--
 Finite-coordinate Theorem 2 Model B response formula after Lemma 3 removes the
@@ -677,9 +909,9 @@ theorem modelB_finite_trace_selected_voter_cost_formula
     (T : FiniteModelBILVTrace E p q r0) :
     (∀ t : ℕ, T.ideal t = E.ideal (T.voter t)) ∧
       (∀ t : ℕ, ∀ y : Coord → ℝ,
-        EconCSLib.FiniteDimensionalNorms.lp p
+        AppliedModelingLib.FiniteDimensionalNorms.lp p
             (fun i => y i - T.ideal t i) =
-          EconCSLib.FiniteDimensionalNorms.lp p
+          AppliedModelingLib.FiniteDimensionalNorms.lp p
             (fun i => y i - E.ideal (T.voter t) i)) := by
   exact ⟨T.ideal_eq_selectedVoter, T.lpCost_eq_selectedVoter_lpCost⟩
 
@@ -693,9 +925,9 @@ theorem theorem2_finite_ssgm_bridge_selected_voter_cost_formula
     {E : ILVEnvironment Voter (Coord → ℝ)} {p q : ℝ}
     (B : Theorem2FiniteSSGMBridge E p q) :
     ∀ t : ℕ, ∀ y : Coord → ℝ,
-      EconCSLib.FiniteDimensionalNorms.lp p
+      AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun i => y i - B.trace.ideal t i) =
-        EconCSLib.FiniteDimensionalNorms.lp p
+        AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun i => y i - E.ideal (B.trace.voter t) i) :=
   B.lpCost_eq_selectedVoter_lpCost
 
@@ -717,9 +949,9 @@ theorem theorem2_source_semantics_selected_voter_cost_formula
       proof_theorem2SourceSemantics_finite_bridge
         (theorem2SourceSemantics_of_primitive S) hC hUtil hResponse hdual
     ∀ t : ℕ, ∀ y : Coord → ℝ,
-      EconCSLib.FiniteDimensionalNorms.lp p
+      AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun i => y i - B.trace.ideal t i) =
-        EconCSLib.FiniteDimensionalNorms.lp p
+        AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun i => y i - E.ideal (B.trace.voter t) i) := by
   exact
     proof_theorem2SourceSemantics_finite_bridge_selected_voter_cost_formula
@@ -777,15 +1009,6 @@ def theorem2_source_semantics_finite_bridge_formula
   proof_theorem2SourceSemantics_finite_bridge
     (theorem2SourceSemantics_of_primitive S) hC hUtil hResponse hdual
 
-/-- Definition 1: Lp-normed utilities, `f_v(x) = -||x - x_v||_p`. -/
-theorem definition1_lp_normed_utilities_formula
-    {Voter Point : Type*}
-    (U : ILVUtilityFormulaData Voter Point) (ideal : Voter → Point)
-    (p : SourceNorm) :
-    isLpNormedUtilitiesFormulaData U ideal p ↔
-      ∀ v x, U.utility v x = -U.normDistance p x (ideal v) := by
-  rfl
-
 /--
 Finite-coordinate source norm-distance formula: the abstract environment
 distance field is interpreted as the concrete finite-coordinate source norm.
@@ -828,6 +1051,37 @@ theorem modelA_response_lp_normed_cost_minimizer_formula
     rw [hUtil voter candidate, hUtil voter response]
     exact neg_le_neg hle
 
+/--
+Under Definition 1, the source Model A raw response minimizes distance to the
+voter's ideal point over the raw query ball.
+Source status: derived sign bridge from Definition 1
+-/
+theorem modelA_raw_response_lp_normed_cost_minimizer_formula
+    {Voter Point : Type*}
+    (U : ILVUtilityFormulaData Voter Point) (p q : SourceNorm)
+    (ideal : Voter → Point)
+    (center : Point) (r : ℝ) (voter : Voter) (response : Point)
+    (hUtil : isLpNormedUtilitiesFormulaData U ideal p) :
+    modelARawResponseFormulaData U q center r voter response ↔
+      response ∈ rawLocalNeighborhoodFormulaData U.geometry q center r ∧
+        IsMinOn (fun candidate => U.normDistance p candidate (ideal voter))
+          (rawLocalNeighborhoodFormulaData U.geometry q center r) response := by
+  constructor
+  · intro h
+    rcases h with ⟨hmem, hmax⟩
+    refine ⟨hmem, ?_⟩
+    intro candidate hcandidate
+    have hle := hmax candidate hcandidate
+    rw [hUtil voter candidate, hUtil voter response] at hle
+    exact neg_le_neg_iff.mp hle
+  · intro h
+    rcases h with ⟨hmem, hmin⟩
+    refine ⟨hmem, ?_⟩
+    intro candidate hcandidate
+    have hle := hmin hcandidate
+    rw [hUtil voter candidate, hUtil voter response]
+    exact neg_le_neg hle
+
 /-- Definition 1 specialized to concrete finite-coordinate `L1`. -/
 theorem definition1_finite_coordinate_l1_formula
     {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
@@ -835,7 +1089,7 @@ theorem definition1_finite_coordinate_l1_formula
     (∀ v x, utility v x =
         -finiteCoordinateDistance SourceNorm.l1 x (ideal v)) ↔
       ∀ v x, utility v x =
-        -EconCSLib.FiniteDimensionalNorms.l1
+        -AppliedModelingLib.FiniteDimensionalNorms.l1
           (fun m => x m - ideal v m) := by
   rfl
 
@@ -846,7 +1100,7 @@ theorem definition1_finite_coordinate_l2_formula
     (∀ v x, utility v x =
         -finiteCoordinateDistance SourceNorm.l2 x (ideal v)) ↔
       ∀ v x, utility v x =
-        -EconCSLib.FiniteDimensionalNorms.l2
+        -AppliedModelingLib.FiniteDimensionalNorms.l2
           (fun m => x m - ideal v m) := by
   rfl
 
@@ -857,7 +1111,7 @@ theorem definition1_finite_coordinate_linf_formula
     (∀ v x, utility v x =
         -finiteCoordinateDistance SourceNorm.linfty x (ideal v)) ↔
       ∀ v x, utility v x =
-        -EconCSLib.FiniteDimensionalNorms.linf
+        -AppliedModelingLib.FiniteDimensionalNorms.linf
           (fun m => x m - ideal v m) := by
   rfl
 
@@ -869,7 +1123,7 @@ theorem definition1_finite_coordinate_lp_formula
     (∀ v x, utility v x =
         -finiteCoordinateDistance (SourceNorm.lp p) x (ideal v)) ↔
       ∀ v x, utility v x =
-        -EconCSLib.FiniteDimensionalNorms.lp p
+        -AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun m => x m - ideal v m) := by
   rfl
 
@@ -884,7 +1138,7 @@ theorem lemma3_gradient_candidate_source_formula
     {p : ℝ} (hp : 0 < p) (d : Coord → ℝ) :
     lpCostGradientCandidate p d =
       fun i => (|d i| ^ (p - 1) * (d i / |d i|)) /
-        (EconCSLib.FiniteDimensionalNorms.lp p d) ^ (p - 1) := by
+        (AppliedModelingLib.FiniteDimensionalNorms.lp p d) ^ (p - 1) := by
   exact lpCostGradientCandidate_eq_source_formula hp d
 
 /--
@@ -916,24 +1170,24 @@ theorem lemma3_gradient_candidate_hasFDerivAt_formula
     {x ideal : Coord → ℝ} (hcoord : ∀ i, x i ≠ ideal i) :
     HasFDerivAt
       (fun y : Coord → ℝ =>
-        EconCSLib.FiniteDimensionalNorms.lp p
+        AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun i => y i - ideal i))
-      (EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+      (AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
         (lpCostGradientCandidate p (fun i => x i - ideal i))) x := by
   have hd : ∀ i, (fun j => x j - ideal j) i ≠ 0 := by
     intro i
     exact sub_ne_zero.mpr (hcoord i)
   have hbase :
       HasFDerivAt
-        (fun y : Coord → ℝ => EconCSLib.FiniteDimensionalNorms.lp p y)
-        (EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+        (fun y : Coord → ℝ => AppliedModelingLib.FiniteDimensionalNorms.lp p y)
+        (AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
           (lpCostGradientCandidate p (fun i => x i - ideal i)))
         (fun i => x i - ideal i) :=
     hasFDerivAt_lpCostGradientCandidate hp hd
   simpa [Function.comp_def] using
     (hasFDerivAt_comp_sub (𝕜 := ℝ)
-      (f := fun y : Coord → ℝ => EconCSLib.FiniteDimensionalNorms.lp p y)
-      (f' := EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+      (f := fun y : Coord → ℝ => AppliedModelingLib.FiniteDimensionalNorms.lp p y)
+      (f' := AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
         (lpCostGradientCandidate p (fun i => x i - ideal i)))
       (x := x) ideal).mpr hbase
 
@@ -947,7 +1201,7 @@ Source status: formalized finite-union and absolute-continuity reduction.
 theorem lemma3_coordinate_equality_bad_event_null_from_boundedDensity
     {Coord : Type*} [Fintype Coord] [MeasurableSpace (Coord → ℝ)]
     {ν μ : Measure (Coord → ℝ)} {C : ℝ≥0∞}
-    (hbd : EconCSLib.Probability.HasBoundedDensity ν μ C)
+    (hbd : AppliedModelingLib.Probability.HasBoundedDensity ν μ C)
     (x : Coord → ℝ)
     (hcoord : ∀ i, ν (coordinateEqualityHyperplane x i) = 0) :
     μ (coordinateEqualityBadEvent x) = 0 := by
@@ -966,7 +1220,7 @@ theorem lemma3_coordinate_equality_bad_event_null_from_productMeasure
     (ρ : Measure ℝ) [SigmaFinite ρ] [NoAtoms ρ]
     {μ : Measure (Coord → ℝ)} {C : ℝ≥0∞}
     (hbd :
-      EconCSLib.Probability.HasBoundedDensity
+      AppliedModelingLib.Probability.HasBoundedDensity
         (Measure.pi (fun _ : Coord => ρ)) μ C)
     (x : Coord → ℝ) :
     μ (coordinateEqualityBadEvent x) = 0 := by
@@ -984,89 +1238,89 @@ theorem lemma3_coordinate_noncollision_ae_from_productMeasure
     (ρ : Measure ℝ) [SigmaFinite ρ] [NoAtoms ρ]
     {μ : Measure (Coord → ℝ)} {C : ℝ≥0∞}
     (hbd :
-      EconCSLib.Probability.HasBoundedDensity
+      AppliedModelingLib.Probability.HasBoundedDensity
         (Measure.pi (fun _ : Coord => ρ)) μ C)
     (x : Coord → ℝ) :
     ∀ᵐ ideal ∂μ, ∀ i, x i ≠ ideal i := by
   exact ae_forall_coordinate_ne_of_productMeasure_boundedDensity ρ hbd x
 
 /--
-Structured finite-coordinate C3 bridge: a product bounded-density ideal-point
-distribution supplies the almost-everywhere coordinate noncollision condition
-used by Appendix C.4 Lemma 3.
+Structured finite-coordinate C3 bridge: a bounded density with respect to the
+full finite-dimensional Lebesgue measure supplies the almost-everywhere
+coordinate noncollision condition used by Appendix C.4 Lemma 3.  This is the
+C3 condition stated in the paper; it imposes no coordinate-independence
+assumption.
 
 Source status: formalized proof-seam target for replacing the abstract C3 field.
 -/
-theorem c3_product_density_coordinate_noncollision_ae
+theorem c3_bounded_density_coordinate_noncollision_ae
     {Coord : Type*} [Fintype Coord]
     (D : FiniteCoordinateIdealDistributionData Coord) (x : Coord → ℝ) :
     ∀ᵐ ideal ∂D.idealMeasure, ∀ i, x i ≠ ideal i := by
   exact D.coordinate_noncollision_ae x
 
 /--
-Concrete finite-coordinate C3 product-density data formula: the sampled ideal
-distribution has bounded density with respect to a finite product of atomless
-one-dimensional marginals.
+Exact source-facing finite-dimensional C3 data: a probability law on ideal
+points with a bounded **measurable** density relative to Lebesgue measure.
+The measurable witness is displayed here rather than inferred from the
+implementation-level bounded-density helper.
+-/
+def finiteCoordinateIdealDistributionFormulaData
+    {Coord : Type*} [Fintype Coord]
+    (D : FiniteCoordinateIdealDistributionData Coord) : Prop :=
+  IsProbabilityMeasure D.idealMeasure ∧
+    D.densityBound ≠ ⊤ ∧
+      ∃ density : (Coord → ℝ) → ℝ≥0∞,
+        Measurable density ∧
+          D.idealMeasure = (volume : Measure (Coord → ℝ)).withDensity density ∧
+            ∀ᵐ ideal ∂(volume : Measure (Coord → ℝ)), density ideal ≤ D.densityBound
+
+/--
+Concrete finite-coordinate C3 density data formula: the sampled ideal
+distribution is a probability measure with bounded density with respect to
+full finite-dimensional Lebesgue measure.
 -/
 theorem finite_coordinate_ideal_distribution_data_formula
     {Coord : Type*} [Fintype Coord] :
     Nonempty (FiniteCoordinateIdealDistributionData Coord) ↔
       ∃ idealMeasure : Measure (Coord → ℝ),
-        ∃ baseMarginal : Measure ℝ,
-          ∃ densityBound : ℝ≥0∞,
-            SigmaFinite baseMarginal ∧
-              NoAtoms baseMarginal ∧
-                EconCSLib.Probability.HasBoundedDensity
-                  (Measure.pi (fun _ : Coord => baseMarginal))
-                  idealMeasure densityBound := by
+        ∃ densityBound : ℝ≥0∞,
+          densityBound ≠ ⊤ ∧
+            IsProbabilityMeasure idealMeasure ∧
+              AppliedModelingLib.Probability.HasBoundedDensity
+                (volume : Measure (Coord → ℝ)) idealMeasure densityBound ∧
+                ∃ density : (Coord → ℝ) → ℝ≥0∞,
+                  Measurable density ∧
+                    idealMeasure = (volume : Measure (Coord → ℝ)).withDensity density ∧
+                      ∀ᵐ ideal ∂(volume : Measure (Coord → ℝ)), density ideal ≤ densityBound := by
   constructor
   · rintro ⟨D⟩
-    exact ⟨D.idealMeasure, D.baseMarginal, D.densityBound,
-      D.baseSigmaFinite, D.baseNoAtoms, D.hasBoundedDensity⟩
-  · rintro ⟨idealMeasure, baseMarginal, densityBound, hSigmaFinite,
-      hNoAtoms, hBoundedDensity⟩
+    exact ⟨D.idealMeasure, D.densityBound, D.densityBound_ne_top,
+      D.probability, D.hasBoundedDensity, D.density_measurable⟩
+  · rintro ⟨idealMeasure, densityBound, hFinite, hProbability, hBoundedDensity,
+      hMeasurableDensity⟩
     exact
       ⟨{ idealMeasure := idealMeasure
-         baseMarginal := baseMarginal
+         probability := hProbability
          densityBound := densityBound
-         baseSigmaFinite := hSigmaFinite
-         baseNoAtoms := hNoAtoms
-         hasBoundedDensity := hBoundedDensity }⟩
+         densityBound_ne_top := hFinite
+         hasBoundedDensity := hBoundedDensity
+         density_measurable := hMeasurableDensity }⟩
 
 /--
-Source-facing finite C3 carrier formula: concrete product-density data plus
-the abstract C3 field of the environment are exactly the deterministic data
-used by the finite-coordinate noncollision bridge.
+Source-facing finite C3 carrier formula: concrete full-space bounded-density
+data are exactly the data used by the finite-coordinate noncollision bridge.
 -/
 theorem finite_coordinate_c3_carrier_formula
     {Voter Coord : Type*} [Fintype Coord]
     (E : ILVEnvironment Voter (Coord → ℝ)) :
     Nonempty (FiniteCoordinateC3Carrier E) ↔
-      Nonempty (FiniteCoordinateIdealDistributionData Coord) ∧
-        E.idealDistribution_bounded_measurable_density := by
+      Nonempty (FiniteCoordinateIdealDistributionData Coord) := by
   constructor
   · rintro ⟨C⟩
-    exact ⟨⟨C.data⟩, C.source_c3⟩
-  · rintro ⟨⟨data⟩, hC3⟩
-    exact
-      ⟨{ data := data
-         source_c3 := hC3 }⟩
-
-/--
-Definition 2: weighted-Euclidean utilities,
-`f_v(x) = - sum_k (w_v^k / ||w_v||_2) ||x^k - x_v^k||_2`.
--/
-theorem definition2_weighted_euclidean_utilities_formula
-    {Voter Point Component : Type*}
-    (utility : Voter → Point → ℝ)
-    (W : WeightedEuclideanStructure Voter Point Component) :
-    (W.weightsAndIdealsDistributionCondition ∧
-      ∀ v x, utility v x = -W.components.sum
-        (fun k => (W.weight v k / W.weightNorm2 v) * W.componentDistance k x v)) ↔
-      W.weightsAndIdealsDistributionCondition ∧
-        ∀ v x, utility v x = -W.components.sum
-          (fun k => (W.weight v k / W.weightNorm2 v) * W.componentDistance k x v) := by
-  rfl
+    exact ⟨C.data⟩
+  · rintro ⟨data⟩
+    exact ⟨{ data := data }⟩
 
 /--
 Weighted-Euclidean `L2` raw source trace used by Proposition 1 before invoking
@@ -1393,20 +1647,6 @@ noncomputable def proposition1_source_semantics_finite_bridge_formula
   proof_proposition1SourceSemantics_finite_bridge
     S hC hWeighted model hmodel hResponse
 
-/-- Definition 3: decomposable utilities, `f_v(x) = sum_m f_v^m(x^m)`. -/
-theorem definition3_decomposable_utilities_formula
-    {Voter Point Coord : Type*}
-    (utility : Voter → Point → ℝ)
-    (D : DecomposableStructure Voter Point Coord) :
-    (D.coordinateUtilitiesConcave ∧
-      ∀ v x, utility v x =
-        D.coords.sum (fun m => D.coordinateUtility m v (D.coordinate m x))) ↔
-      D.coordinateUtilitiesConcave ∧
-        ∀ v x, utility v x =
-          D.coords.sum (fun m => D.coordinateUtility m v (D.coordinate m x)) := by
-  rfl
-
-
 /--
 Definition 4: DLCD finite-budget utility formula.
 
@@ -1436,12 +1676,53 @@ def paper_definition4_dlcd_formula
     (∀ m : Dim, ConcaveOn ℝ Set.univ (componentUtility m)) ∧
       ∀ x : Dim → ℝ,
         utility x =
-          dlcdBudgetUtility isExpense componentUtility deficitWeight x
+          (∑ m : Dim, componentUtility m (x m)) -
+            deficitWeight *
+              ((∑ m : Dim, if isExpense m then x m else 0) -
+                (∑ m : Dim, if isExpense m then 0 else x m))
 
 /--
-Appendix Theorem 4 boundary: expected selected subgradients are subgradients
-of the expected objective.
+Transparent source-facing target for Appendix Theorem 4.  The neighborhood
+premise records the source's local finite-valued continuity condition directly;
+the conclusion is written as the finite-coordinate subgradient inequality
+rather than through a statement alias.
 -/
+def appendix_theorem4_expected_subgradient_boundarySpec
+    {Theta Coord : Type*} [MeasurableSpace Theta] [Fintype Coord]
+    (mu : Measure Theta) [IsProbabilityMeasure mu]
+    (solutionSpace : Set (Coord → ℝ))
+    (sampleCost : Theta → (Coord → ℝ) → ℝ)
+    (x : Coord → ℝ) (sampleGradient : Theta → Coord → ℝ)
+    (hX_nonempty : solutionSpace.Nonempty)
+    (hX_bounded : Bornology.IsBounded solutionSpace)
+    (hX_closed : IsClosed solutionSpace)
+    (hX_convex : Convex ℝ solutionSpace)
+    (hx : x ∈ solutionSpace)
+    (hcost_integrable :
+      ∀ y, y ∈ solutionSpace →
+        Integrable (fun theta => sampleCost theta y) mu)
+    (hgradient_integrable :
+      ∀ i, Integrable (fun theta => sampleGradient theta i) mu)
+    (hsample_convex :
+      ∀ theta, ConvexOn ℝ solutionSpace (sampleCost theta))
+    (hfinite_continuous_neighborhood :
+      ∃ epsilon : ℝ, 0 < epsilon ∧ ∀ y,
+        dist y x < epsilon →
+          Integrable (fun theta => sampleCost theta y) mu ∧
+            ContinuousAt (fun z => ∫ theta, sampleCost theta z ∂mu) y)
+    (hsample :
+      ∀ theta,
+        FiniteSubgradientWithinAt
+          (sampleCost theta) solutionSpace x (sampleGradient theta)) : Prop :=
+  ∀ y, y ∈ solutionSpace →
+    (∫ theta, sampleCost theta x ∂mu) +
+        AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
+          (fun i => ∫ theta, sampleGradient theta i ∂mu)
+          (fun i => y i - x i) ≤
+      ∫ theta, sampleCost theta y ∂mu
+
+/-- Appendix Theorem 4: expected selected subgradients are subgradients of
+the expected objective. -/
 theorem appendix_theorem4_expected_subgradient_boundary
     {Theta Coord : Type*} [MeasurableSpace Theta] [Fintype Coord]
     (mu : Measure Theta) [IsProbabilityMeasure mu]
@@ -1460,23 +1741,122 @@ theorem appendix_theorem4_expected_subgradient_boundary
       ∀ i, Integrable (fun theta => sampleGradient theta i) mu)
     (hsample_convex :
       ∀ theta, ConvexOn ℝ solutionSpace (sampleCost theta))
-    (hexpected_continuous :
-      ContinuousAt (fun y => ∫ theta, sampleCost theta y ∂mu) x)
+    (hfinite_continuous_neighborhood :
+      ∃ epsilon : ℝ, 0 < epsilon ∧ ∀ y,
+        dist y x < epsilon →
+          Integrable (fun theta => sampleCost theta y) mu ∧
+            ContinuousAt (fun z => ∫ theta, sampleCost theta z ∂mu) y)
     (hsample :
       ∀ theta,
         FiniteSubgradientWithinAt
           (sampleCost theta) solutionSpace x (sampleGradient theta)) :
-    ExpectedSubgradientTheoremStatement
-      mu solutionSpace sampleCost x sampleGradient :=
-  assumption_expected_subgradient_theorem
+    appendix_theorem4_expected_subgradient_boundarySpec
+      mu solutionSpace sampleCost x sampleGradient hX_nonempty hX_bounded
+      hX_closed hX_convex hx hcost_integrable hgradient_integrable
+      hsample_convex hfinite_continuous_neighborhood hsample := by
+  rcases hfinite_continuous_neighborhood with ⟨epsilon, hepsilon, hlocal⟩
+  have hexpected_continuous :
+      ContinuousAt (fun y => ∫ theta, sampleCost theta y ∂mu) x :=
+    (hlocal x (by simpa using hepsilon)).2
+  exact assumption_expected_subgradient_theorem
     mu solutionSpace sampleCost x sampleGradient hX_nonempty hX_bounded
       hX_closed hX_convex hx hcost_integrable hgradient_integrable
       hsample_convex hexpected_continuous hsample
 
 /--
-Appendix Theorem 5 boundary: the stochastic subgradient method convergence
-bundle quoted by the paper.
+Transparent source-facing target for Appendix Theorem 5.  The source-shaped
+hypothesis bundle is paired with the explicit measurability and integrability
+data needed to interpret the paper's conditional expectations, and concludes
+with the displayed almost-sure convergence proposition.
 -/
+def appendix_theorem5_ssgm_convergence_boundarySpec
+    {Omega Coord : Type*} {mOmega : MeasurableSpace Omega}
+    [Fintype Coord] [Nonempty Coord]
+    (mu : Measure Omega) [IsProbabilityMeasure mu]
+    (filtration : Filtration (Ω := Omega) ℕ mOmega)
+    (solutionSpace : Set (Coord → ℝ))
+    (objective : (Coord → ℝ) → ℝ)
+    (project : (Coord → ℝ) → Coord → ℝ)
+    (trajectory meanSubgradient noise : ℕ → Omega → Coord → ℝ)
+    (bias : ℕ → Coord → ℝ)
+    (radius : ℕ → ℝ) (xstar : Coord → ℝ) : Prop :=
+  solutionSpace.Nonempty →
+    Bornology.IsBounded solutionSpace →
+      IsClosed solutionSpace →
+        Convex ℝ solutionSpace →
+          ConvexOn ℝ solutionSpace objective →
+            xstar ∈ solutionSpace →
+              IsMinOn objective solutionSpace xstar →
+                (∀ y, y ∈ solutionSpace → objective y = objective xstar → y = xstar) →
+                  (∀ t : ℕ, 0 < t → 0 < radius t) →
+                    Summable (fun t : ℕ => (radius (t + 1)) ^ 2) →
+                      Filter.Tendsto
+                        (fun n : ℕ => ∑ t ∈ Finset.range n, radius (t + 1))
+                        Filter.atTop Filter.atTop →
+                        (∀ y,
+                          project y ∈ solutionSpace ∧
+                            IsMinOn
+                              (fun z => finiteCoordinateDistance SourceNorm.l2 z y)
+                              solutionSpace (project y)) →
+                          (∀ t, ∀ᵐ omega ∂mu,
+                            trajectory (t + 1) omega =
+                              project (fun i =>
+                                trajectory t omega i -
+                                  radius (t + 1) *
+                                    (meanSubgradient t omega i + noise t omega i + bias t i))) →
+                            (∀ i,
+                              StronglyAdapted filtration (fun t omega => trajectory t omega i)) →
+                              (∀ i,
+                                StronglyAdapted filtration (fun t omega => meanSubgradient t omega i)) →
+                                (∀ t, ∀ᵐ omega ∂mu,
+                                  trajectory t omega ∈ solutionSpace ∧
+                                    FiniteSubgradientWithinAt objective solutionSpace
+                                      (trajectory t omega) (meanSubgradient t omega)) →
+                                  (∃ C1 : ℝ, 0 ≤ C1 ∧
+                                    ∀ y, y ∈ solutionSpace → ∀ g,
+                                      FiniteSubgradientWithinAt objective solutionSpace y g →
+                                        finiteCoordinateNorm SourceNorm.l2 g ≤ C1) →
+                                    (∀ t i, Integrable (fun omega => noise t omega i) mu) →
+                                      (∀ t i,
+                                        mu[fun omega => noise t omega i | filtration t] =ᵐ[mu] 0) →
+                                        (∀ t, Integrable (fun omega =>
+                                          finiteCoordinateNorm SourceNorm.l2 (noise t omega) ^ 2) mu) →
+                                          (∃ C2 : ℝ, 0 ≤ C2 ∧ ∀ t,
+                                            mu[fun omega =>
+                                              finiteCoordinateNorm SourceNorm.l2 (noise t omega) ^ 2
+                                              | filtration t] ≤ᵐ[mu] fun _ => C2) →
+                                            (∃ C3 : ℝ, 0 ≤ C3 ∧ ∀ t,
+                                              finiteCoordinateNorm SourceNorm.l2 (bias t) ≤ C3) →
+                                              Summable (fun t =>
+                                                radius (t + 1) *
+                                                  finiteCoordinateNorm SourceNorm.l2 (bias t)) →
+                                                StronglyAdapted filtration
+                                                  (fun t omega =>
+                                                    objective (trajectory t omega) - objective xstar) →
+                                                  (∀ t, Integrable
+                                                    (fun omega =>
+                                                      AppliedModelingLib.FiniteDimensionalNorms.l2Sq
+                                                        (fun i => trajectory t omega i - xstar i)) mu) →
+                                                    (∀ t, Integrable
+                                                      (fun omega =>
+                                                        objective (trajectory t omega) - objective xstar) mu) →
+                                                      (∀ t i, Integrable
+                                                        (fun omega =>
+                                                          (trajectory t omega i - xstar i) * noise t omega i) mu) →
+                                                        (∃ distanceBound : ℝ, 0 ≤ distanceBound ∧ ∀ t,
+                                                          ∀ᵐ omega ∂mu,
+                                                            AppliedModelingLib.FiniteDimensionalNorms.l2
+                                                              (fun i => trajectory t omega i - xstar i) ≤
+                                                                distanceBound) →
+                                                          (∀ y, y ∈ solutionSpace → ∃ g,
+                                                            FiniteSubgradientWithinAt objective solutionSpace y g) →
+                                                            ∀ᵐ omega ∂mu,
+                                                              Filter.Tendsto
+                                                                (fun t => trajectory t omega)
+                                                                Filter.atTop (nhds xstar)
+
+/-- Appendix Theorem 5: source-shaped stochastic-subgradient assumptions,
+plus explicit probability-space regularity, imply almost-sure convergence. -/
 theorem appendix_theorem5_ssgm_convergence_boundary
     {Omega Coord : Type*} {mOmega : MeasurableSpace Omega}
     [Fintype Coord] [Nonempty Coord]
@@ -1488,9 +1868,77 @@ theorem appendix_theorem5_ssgm_convergence_boundary
     (trajectory meanSubgradient noise : ℕ → Omega → Coord → ℝ)
     (bias : ℕ → Coord → ℝ)
     (radius : ℕ → ℝ) (xstar : Coord → ℝ) :
-    AppendixTheorem5Statement mu filtration solutionSpace objective project
-      trajectory meanSubgradient noise bias radius xstar := by
-  sorry
+    appendix_theorem5_ssgm_convergence_boundarySpec
+      mu filtration solutionSpace objective project trajectory meanSubgradient
+      noise bias radius xstar := by
+  intro hnonempty hbounded hclosed hconvex hobjective_convex htarget
+    htarget_minimizes htarget_unique hstep_pos hstep_sq hstep_diverges
+    hclosest_projection hupdate htrajectory_adapted hmean_subgradient_adapted
+    htrajectory_subgradient hbounded_subgradients hnoise_coordinate_integrable
+    hnoise_mean_zero hnoise_energy_integrable hbounded_noise_energy hbounded_bias
+    hstep_bias_summable hobjective_gap_adapted hpotential_integrable
+    hobjective_gap_integrable hnoise_product_integrable hdistance hsubgradient_exists
+  rcases hdistance with ⟨distanceBound, hdistance_nonneg, hdistance_bound⟩
+  let hsource :
+      AppendixTheorem5Hypotheses mu filtration solutionSpace objective project
+        trajectory meanSubgradient noise bias radius xstar :=
+    { solutionSpace_nonempty := hnonempty
+      solutionSpace_bounded := hbounded
+      solutionSpace_closed := hclosed
+      solutionSpace_convex := hconvex
+      objective_convex := hobjective_convex
+      target_mem_solutionSpace := htarget
+      target_minimizes := htarget_minimizes
+      target_unique := htarget_unique
+      step_sizes := ⟨hstep_pos, hstep_sq, hstep_diverges⟩
+      closest_point_projection := hclosest_projection
+      update := hupdate
+      trajectory_adapted := htrajectory_adapted
+      mean_subgradient_adapted := hmean_subgradient_adapted
+      trajectory_subgradient := htrajectory_subgradient
+      bounded_subgradients := hbounded_subgradients
+      noise_coordinate_integrable := hnoise_coordinate_integrable
+      noise_mean_zero := hnoise_mean_zero
+      noise_energy_integrable := hnoise_energy_integrable
+      bounded_noise_energy := hbounded_noise_energy
+      bounded_bias := hbounded_bias
+      step_bias_summable := hstep_bias_summable }
+  let hregular :
+      AppendixTheorem5ExecutionRegularity mu filtration solutionSpace objective project
+        trajectory meanSubgradient noise bias radius xstar :=
+    { objective_gap_adapted := hobjective_gap_adapted
+      potential_integrable := hpotential_integrable
+      objective_gap_integrable := hobjective_gap_integrable
+      noise_product_integrable := hnoise_product_integrable
+      distanceBound := distanceBound
+      distanceBound_nonneg := hdistance_nonneg
+      distance_bound := hdistance_bound
+      subgradient_exists := hsubgradient_exists }
+  exact hregular.ae_tendsto mu filtration solutionSpace objective project
+    trajectory meanSubgradient noise bias radius xstar hsource
+
+/--
+Corrected set-valued replacement for Appendix Theorem 5.  This is the route
+for the main-text branches whose social optimum can be nonunique under C1--C3;
+it proves convergence to the minimizer set rather than adding a uniqueness
+premise absent from those branches.
+-/
+theorem appendix_theorem5_minimizer_set_replacement
+    {Omega Coord : Type*} {mOmega : MeasurableSpace Omega}
+    [Fintype Coord] [Nonempty Coord]
+    (mu : Measure Omega) [IsProbabilityMeasure mu]
+    (filtration : Filtration (Ω := Omega) ℕ mOmega)
+    (solutionSpace targetSet : Set (Coord → ℝ))
+    (objective : (Coord → ℝ) → ℝ)
+    (project : (Coord → ℝ) → Coord → ℝ)
+    (trajectory meanSubgradient noise : ℕ → Omega → Coord → ℝ)
+    (bias : ℕ → Coord → ℝ)
+    (radius : ℕ → ℝ) (reference : Coord → ℝ) :
+    AppendixTheorem5MinimizerSetStatement mu filtration solutionSpace targetSet
+      objective project trajectory meanSubgradient noise bias radius reference := by
+  intro hsource hregular
+  exact hregular.outcomeIndexed_convergesToSet mu filtration solutionSpace targetSet
+    objective project trajectory meanSubgradient noise bias radius reference hsource
 
 /--
 Proposition 2 median-set source formula: the paper's median target is the set
@@ -1742,6 +2190,143 @@ theorem theorem3_finite_directional_field_model_formula
          directionalField_eq := hDirectionalField
          zeroDirection_eq := hZeroDirection
          normDistance_l2_zero_eq := hNormDistance }⟩
+
+/--
+Theorem 3's source-facing population field.  Unlike the legacy finite-support
+helper above, this is the literal measure/population reading of the paper's
+expectation `E_v`.  Every coordinate integral is required to be integrable,
+and the zero-gradient contribution is explicitly zero.
+-/
+theorem theorem3_population_directional_field_model_formula
+    {Voter Coord : Type*} [MeasurableSpace Voter] [Fintype Coord] [Nonempty Coord]
+    (E : ILVEnvironment Voter (Coord → ℝ)) :
+    Nonempty (PopulationTheorem3DirectionalFieldModel E) ↔
+      ∃ population : Measure Voter,
+        IsProbabilityMeasure population ∧
+          ∃ utilityGradient : Voter → (Coord → ℝ) → Coord → ℝ,
+            E.utilityGradient = utilityGradient ∧
+              (∀ voter x,
+                FiniteSourceSubgradientAt (E.utility voter) x
+                  (utilityGradient voter x)) ∧
+                E.scalarDirection = finiteScalarDirection ∧
+                  E.zeroDirection = (fun _ : Coord => (0 : ℝ)) ∧
+                    (∀ g : Coord → ℝ,
+                      E.normDistance SourceNorm.l2 g E.zeroDirection =
+                        finiteCoordinateNorm SourceNorm.l2 g) ∧
+                      (∀ x i,
+                        Integrable
+                          (fun voter =>
+                            modelBFiniteNormalizedDirection SourceNorm.l2
+                              (utilityGradient voter x) i)
+                          population) ∧
+                        E.directionalField =
+                          populationTheorem3DirectionalField
+                            population utilityGradient ∧
+                          (∀ x,
+                            E.voterExpectation
+                                (fun voter =>
+                                  theorem3NormalizedGradientDirection E voter x) =
+                              populationTheorem3DirectionalField
+                                population utilityGradient x) := by
+  constructor
+  · rintro ⟨M⟩
+    exact
+      ⟨M.population, M.population_probability, M.utilityGradient,
+        M.utilityGradient_eq, M.utilityGradient_source_subgradient,
+        M.scalarDirection_eq, M.zeroDirection_eq,
+        M.normDistance_l2_zero_eq, M.normalized_gradient_integrable,
+        M.directionalField_eq, M.voterExpectation_normalized_eq⟩
+  · rintro
+      ⟨population, hprobability, utilityGradient, hUtilityGradient, hSubgradient,
+        hScalarDirection, hZeroDirection, hNormDistance, hIntegrable,
+        hDirectionalField, hExpectation⟩
+    exact
+      ⟨{ population := population
+         population_probability := hprobability
+         utilityGradient := utilityGradient
+         utilityGradient_eq := hUtilityGradient
+         utilityGradient_source_subgradient := hSubgradient
+         scalarDirection_eq := hScalarDirection
+         zeroDirection_eq := hZeroDirection
+         normDistance_l2_zero_eq := hNormDistance
+         normalized_gradient_integrable := hIntegrable
+         directionalField_eq := hDirectionalField
+         voterExpectation_normalized_eq := hExpectation }⟩
+
+/--
+Transparent source view of the general-population iid trace used for Theorem
+3.  At time `n`, the state is a function of the finite history through `n`;
+the update then uses the independent `(n+1)`st population draw.  The remaining
+analytic clauses make explicit the standard probability well-definedness
+implicit in that iid, probability-one source formulation: the displayed
+recursion is measurable, adapted, and integrable enough for its conditional
+expectations.  In particular, no martingale conclusion is listed as a source
+premise.
+-/
+theorem theorem3_population_iid_trace_source_formula
+    {Voter Coord : Type*} [MetricSpace Voter] [SecondCountableTopology Voter]
+    [MeasurableSpace Voter] [BorelSpace Voter] [StandardBorelSpace Voter]
+    [Nonempty Voter] [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (M : PopulationTheorem3DirectionalFieldModel E) :
+    Nonempty (PopulationTheorem3IidTraceSource M) ↔
+      ∃ initial : Coord → ℝ,
+        ∃ trajectory : ℕ → (ℕ → Voter) → Coord → ℝ,
+          ∃ state : ∀ n, (Fin (n + 1) → Voter) → Coord → ℝ,
+            ∃ r0 : ℝ,
+              0 < r0 ∧
+                E.solutionSpace = Set.univ ∧
+                  PopulationTheorem3DirectionalFieldUniformContinuity M ∧
+                    (∀ omega, trajectory 0 omega = initial) ∧
+                    (∀ n omega,
+                        trajectory n omega = state n (iidSequencePastPrefix n omega)) ∧
+                        (∀ n omega,
+                          trajectory (n + 1) omega =
+                            fun i => trajectory n omega i +
+                              ilvRadius r0 (n + 1) *
+                                modelBFiniteNormalizedDirection SourceNorm.l2
+                                  (M.utilityGradient (iidSequenceSample n omega)
+                                    (trajectory n omega)) i) ∧
+                        (∀ (a : Coord → ℝ) n,
+                          Integrable (fun z : (Fin (n + 1) → Voter) × Voter =>
+                            populationTheorem3PastCenteredTest M
+                              (ilvRadius r0 (n + 1)) a (state n z.1) z.2)
+                            (Measure.map (fun omega =>
+                              (iidSequencePastPrefix n omega, iidSequenceSample n omega))
+                              (iidSequenceMeasure M.population))) ∧
+                          (∀ a : Coord → ℝ,
+                            StronglyAdapted (iidSequenceNaturalFiltration (α := Voter))
+                              (fun n omega => ∑ i ∈ Finset.range n,
+                                populationTheorem3CenteredIncrement M r0 trajectory
+                                  iidSequenceSample a i omega)) ∧
+                            (∀ (a : Coord → ℝ) (n : ℕ),
+                              AEStronglyMeasurable
+                                (populationTheorem3CenteredIncrement M r0 trajectory
+                                  iidSequenceSample a n)
+                                (iidSequenceMeasure M.population)) := by
+  constructor
+  · rintro ⟨S⟩
+    exact ⟨S.initial, S.trajectory, S.state, S.r0, S.r0_pos,
+      S.solutionSpace_univ, S.field_continuity, S.initial_eq, S.trajectory_from_past,
+      S.raw_update,
+      S.centered_test_integrable, S.centered_partial_sum_adapted,
+      S.centered_aestronglyMeasurable⟩
+  · rintro ⟨initial, trajectory, state, r0, hr0, hfullspace, hcontinuity,
+      hinitial, hpast, hupdate, hintegrable, hadapted, hmeasurable⟩
+    exact
+      ⟨{ initial := initial
+         trajectory := trajectory
+         state := state
+         r0 := r0
+         r0_pos := hr0
+         solutionSpace_univ := hfullspace
+         field_continuity := hcontinuity
+         initial_eq := hinitial
+         trajectory_from_past := hpast
+         raw_update := hupdate
+         centered_test_integrable := hintegrable
+         centered_partial_sum_adapted := hadapted
+         centered_aestronglyMeasurable := hmeasurable }⟩
 
 /--
 Theorem 3 finite-dot expectation identity: averaging raw Model B increments
@@ -2071,16 +2656,11 @@ theorem theorem3_global_projected_algorithm1_trace_source_formula
                                           VoterResponseModel.modelB
                                           (t + N) i +
                                         ilvTailRadius r0 N t *
-                                          (M.utilityGradient (sampledVoter t)
-                                            (E.trajectory SourceNorm.l2
-                                              VoterResponseModel.modelB
-                                              (t + N)) i /
-                                            finiteCoordinateNorm SourceNorm.l2
-                                              (M.utilityGradient
-                                                (sampledVoter t)
-                                                (E.trajectory SourceNorm.l2
-                                                  VoterResponseModel.modelB
-                                                  (t + N)))))
+                                          (modelBFiniteNormalizedDirection SourceNorm.l2
+                                            (M.utilityGradient (sampledVoter t)
+                                              (E.trajectory SourceNorm.l2
+                                                VoterResponseModel.modelB
+                                                (t + N))) i))
                                     (E.trajectory SourceNorm.l2
                                       VoterResponseModel.modelB
                                       (t + 1 + N))) ∧
@@ -2156,16 +2736,11 @@ theorem theorem3_global_projected_algorithm1_update_source_formula
                             VoterResponseModel.modelB
                             (t + N) i +
                           ilvTailRadius r0 N t *
-                            (M.utilityGradient (sampledVoter t)
-                              (E.trajectory SourceNorm.l2
-                                VoterResponseModel.modelB
-                                (t + N)) i /
-                              finiteCoordinateNorm SourceNorm.l2
-                                (M.utilityGradient
-                                  (sampledVoter t)
-                                  (E.trajectory SourceNorm.l2
-                                    VoterResponseModel.modelB
-                                    (t + N)))))
+                            (modelBFiniteNormalizedDirection SourceNorm.l2
+                              (M.utilityGradient (sampledVoter t)
+                                (E.trajectory SourceNorm.l2
+                                  VoterResponseModel.modelB
+                                  (t + N))) i))
                       (E.trajectory SourceNorm.l2
                         VoterResponseModel.modelB
                         (t + 1 + N))) := by
@@ -2262,15 +2837,11 @@ theorem theorem3_global_projected_trace_deterministic_trace_core_formula
                                       VoterResponseModel.modelB
                                       (t + N) i +
                                     ilvTailRadius r0 N t *
-                                      (M.utilityGradient voter
-                                        (E.trajectory SourceNorm.l2
-                                          VoterResponseModel.modelB
-                                          (t + N)) i /
-                                        finiteCoordinateNorm SourceNorm.l2
-                                          (M.utilityGradient voter
-                                            (E.trajectory SourceNorm.l2
-                                              VoterResponseModel.modelB
-                                              (t + N))))) ∧
+                                      (modelBFiniteNormalizedDirection SourceNorm.l2
+                                        (M.utilityGradient voter
+                                          (E.trajectory SourceNorm.l2
+                                            VoterResponseModel.modelB
+                                            (t + N))) i)) ∧
                             ∀ sampledVoter : ℕ → Voter,
                               ∃ raw : ℕ → Coord → ℝ,
                               ∃ project : (Coord → ℝ) → Coord → ℝ,
@@ -2350,15 +2921,11 @@ theorem theorem3_global_projected_trace_deterministic_trace_source_formula
                                       VoterResponseModel.modelB
                                       (t + N) i +
                                     ilvTailRadius r0 N t *
-                                      (M.utilityGradient voter
-                                        (E.trajectory SourceNorm.l2
-                                          VoterResponseModel.modelB
-                                          (t + N)) i /
-                                        finiteCoordinateNorm SourceNorm.l2
-                                          (M.utilityGradient voter
-                                            (E.trajectory SourceNorm.l2
-                                              VoterResponseModel.modelB
-                                              (t + N))))) ∧
+                                      (modelBFiniteNormalizedDirection SourceNorm.l2
+                                        (M.utilityGradient voter
+                                          (E.trajectory SourceNorm.l2
+                                            VoterResponseModel.modelB
+                                            (t + N))) i)) ∧
                             ∀ sampledVoter : ℕ → Voter,
                               ∃ raw : ℕ → Coord → ℝ,
                               ∃ project : (Coord → ℝ) → Coord → ℝ,
@@ -2534,6 +3101,114 @@ theorem finite_coordinate_full_sampled_projected_source_semantics_formula
          theorem3_continuity := hContinuity
          theorem3_algorithm1_update := algorithm1Update }⟩
 
+/-- The C1 convexity premise used by the finite-coordinate Theorem 3 route. -/
+def c1ConvexSolutionSpaceSourceFormula
+    {Voter Coord : Type*} [Fintype Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (S : C1ConvexSolutionSpaceSource E) : Prop :=
+  Convex ℝ E.solutionSpace
+
+/--
+The finite directional-field data used by Theorem 3, written as one bounded
+semantic prerequisite rather than a record name.
+-/
+def finiteTheorem3DirectionalFieldModelFormula
+    {Voter Coord : Type*} [Fintype Voter] [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (M : FiniteTheorem3DirectionalFieldModel E) : Prop :=
+  (∀ voter, 0 ≤ M.weight voter) ∧
+    (∑ voter : Voter, M.weight voter) = 1 ∧
+      E.utilityGradient = M.utilityGradient ∧
+        E.scalarDirection = finiteScalarDirection ∧
+          E.voterExpectation = finiteVoterExpectation M.weight ∧
+            E.directionalField =
+              finiteTheorem3DirectionalField M.weight M.utilityGradient ∧
+              (E.zeroDirection = fun _ => (0 : ℝ)) ∧
+                ∀ gradient : Coord → ℝ,
+                  E.normDistance SourceNorm.l2 gradient E.zeroDirection =
+                    finiteCoordinateNorm SourceNorm.l2 gradient
+
+/-- The concrete coordinatewise convergence reading used by Theorem 3. -/
+def finiteCoordinateConvergenceSourceFormula
+    {Voter Coord : Type*}
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C : FiniteCoordinateConvergenceSource E) : Prop :=
+  ∀ {q : SourceNorm} {model : VoterResponseModel} {xstar : Coord → ℝ},
+    ILVTrajectoryConvergesTo E q model xstar →
+      ∀ coordinate : Coord,
+        Filter.Tendsto
+          (fun n : ℕ => E.trajectory q model n coordinate)
+          Filter.atTop (nhds (xstar coordinate))
+
+/-- The displayed uniform-continuity reading for the finite Theorem 3 field. -/
+def finiteTheorem3ConcreteFieldContinuitySourceFormula
+    {Voter Coord : Type*} [Fintype Voter] [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (M : FiniteTheorem3DirectionalFieldModel E)
+    (C : FiniteTheorem3ConcreteFieldContinuitySource M) : Prop :=
+  E.directionalFieldUniformlyContinuous →
+    ∀ xstar coordinate epsilon, 0 < epsilon →
+      ∃ delta, 0 < delta ∧
+        ∀ x : Coord → ℝ,
+          finiteCoordinateDistance SourceNorm.l2 x xstar < delta →
+            |finiteTheorem3DirectionalField M.weight M.utilityGradient x coordinate -
+              finiteTheorem3DirectionalField M.weight M.utilityGradient
+                xstar coordinate| < epsilon
+
+/--
+The projected Algorithm 1 update source used by the finite Theorem 3 route.
+It exposes the full normalized selected-voter update and its projection.
+-/
+def finiteTheorem3GlobalProjectedAlgorithm1UpdateSourceFormula
+    {Voter Coord : Type*} [Fintype Voter] [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (M : FiniteTheorem3DirectionalFieldModel E)
+    (A : FiniteTheorem3GlobalProjectedAlgorithm1UpdateSource M) : Prop :=
+  0 < A.r0 ∧
+    UsesFiniteCoordinateNormDistance E ∧
+      (∀ sampledVoter : ℕ → Voter,
+        IsNormProjectionOnto E SourceNorm.l2 (A.project sampledVoter)) ∧
+        ∀ {N : ℕ} (sampledVoter : ℕ → Voter) (t : ℕ),
+          Algorithm1ProjectedUpdate (A.project sampledVoter)
+            (fun coordinate =>
+              E.trajectory SourceNorm.l2 VoterResponseModel.modelB (t + N) coordinate +
+                ilvTailRadius A.r0 N t *
+                  modelBFiniteNormalizedDirection SourceNorm.l2
+                    (M.utilityGradient (sampledVoter t)
+                      (E.trajectory SourceNorm.l2
+                        VoterResponseModel.modelB (t + N))) coordinate)
+            (E.trajectory SourceNorm.l2 VoterResponseModel.modelB (t + 1 + N))
+
+/--
+Theorem 3's narrow sampled/projected source package, displayed without the
+unrelated Theorem 2 and Proposition 1 records.  It contains exactly the
+finite directional-field realization, C1 convexity, the source convergence
+reading, field-continuity reading, and the projected Algorithm 1 update used
+by the two-part Theorem 3 endpoint.
+-/
+theorem finite_coordinate_theorem3_sampled_projected_source_semantics_formula
+    {Voter Coord : Type*} [Fintype Voter]
+    [MeasurableSpace Voter] [MeasurableSingletonClass Voter]
+    [Fintype Coord] [Nonempty Coord]
+    (E : ILVEnvironment Voter (Coord → ℝ)) :
+    Nonempty (FiniteCoordinateTheorem3SampledProjectedSourceSemantics E) ↔
+      ∃ field : FiniteTheorem3DirectionalFieldModel E,
+        ∃ hConvex : C1ConvexSolutionSpaceSource E,
+          ∃ hConvergence : FiniteCoordinateConvergenceSource E,
+            ∃ hContinuity : FiniteTheorem3ConcreteFieldContinuitySource field,
+              Nonempty (FiniteTheorem3GlobalProjectedAlgorithm1UpdateSource field) := by
+  constructor
+  · rintro ⟨M⟩
+    exact ⟨M.theorem3_field, M.theorem3_convex_solutionSpace,
+      M.theorem3_convergence, M.theorem3_continuity, ⟨M.theorem3_algorithm1_update⟩⟩
+  · rintro ⟨field, hConvex, hConvergence, hContinuity, ⟨algorithm1Update⟩⟩
+    exact
+      ⟨{ theorem3_field := field
+         theorem3_convex_solutionSpace := hConvex
+         theorem3_convergence := hConvergence
+         theorem3_continuity := hContinuity
+         theorem3_algorithm1_update := algorithm1Update }⟩
+
 /--
 Theorem 2 source-semantics interface: exact expansion of the deterministic
 non-SSGM data still needed before invoking the SSGM convergence theorem.  The
@@ -2696,6 +3371,171 @@ def theorem1_lp_normed_dual_cases
   theorem1Statement E
 
 /--
+Concrete Theorem 1 Model B `(∞,1)` endpoint: the symmetric active-coordinate
+subgradient gives a Borel, conditionally centered finite C3 recursion.  Under
+the visible C1/C2/C3 finite-coordinate data and the stated social-objective
+identity, it converges almost surely to the paper's social-optimum set.
+-/
+theorem theorem1_modelB_linf_l1_finite_c3_convergence
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (hinitial : initial ∈ E.solutionSpace)
+    (T : FiniteModelBLinfSocialObjectiveSource E C3.data) :
+    @OutcomeIndexedILVConvergesToSocietalOptimal
+      Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+      (finiteModelBIdealSequenceMeasure C3.data)
+      (finiteModelBLinfOutcomeTrajectory C3.data r0 project initial) := by
+  exact finiteModelBLinfCanonicalMinimizerSetExecution_outcomeIndexedConvergesToSocialOptimal
+    C3 S hr0 initial hinitial T
+
+/--
+Concrete Theorem 1 Model A `(∞,1)` endpoint: the Borel water-filled exact
+local response is a projected symmetric-subgradient update outside the
+corrected crossing-or-near-tie envelope, whose C3 moment budget is summable.
+It therefore converges almost surely to the stated social-optimum set.
+-/
+theorem theorem1_modelA_linf_l1_finite_c3_convergence
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (hinitial : initial ∈ E.solutionSpace)
+    (T : FiniteModelBLinfSocialObjectiveSource E C3.data) :
+    @OutcomeIndexedILVConvergesToSocietalOptimal
+      Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+      (finiteModelBIdealSequenceMeasure C3.data)
+      (finiteModelALinfL1OutcomeTrajectory C3.data r0 project initial) := by
+  exact finiteModelALinfL1CanonicalPerturbedMinimizerSetExecution_outcomeIndexedConvergesToSocialOptimal
+    C3 S hr0 initial hinitial T
+
+/-- Concrete Theorem 1 Model B `(2,2)` endpoint. -/
+theorem theorem1_modelB_l2_l2_finite_c3_convergence
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (hinitial : initial ∈ E.solutionSpace)
+    (T : FiniteModelBLpSocialObjectiveSource E C3.data 2) :
+    @OutcomeIndexedILVConvergesToSocietalOptimal
+      Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+      (finiteModelBIdealSequenceMeasure C3.data)
+      (finiteModelBOutcomeTrajectory C3.data 2 r0 project initial) := by
+  exact finiteModelBCanonicalMinimizerSetExecution_outcomeIndexedConvergesToSocialOptimal
+    C3 S HolderDualFinite.two_two hr0 initial hinitial T
+
+/-- Concrete Theorem 1 Model A `(2,2)` endpoint. -/
+theorem theorem1_modelA_l2_l2_finite_c3_convergence
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (hinitial : initial ∈ E.solutionSpace)
+    (T : FiniteModelBLpSocialObjectiveSource E C3.data 2) :
+    @OutcomeIndexedILVConvergesToSocietalOptimal
+      Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+      (finiteModelBIdealSequenceMeasure C3.data)
+      (finiteModelAL2OutcomeTrajectory C3.data r0 project initial) := by
+  exact finiteModelAL2CanonicalPerturbedMinimizerSetExecution_outcomeIndexedConvergesToSocialOptimal
+    C3 S hr0 initial hinitial T
+
+/-- Concrete Theorem 1 Model B `(1,∞)` endpoint. -/
+theorem theorem1_modelB_l1_linf_finite_c3_convergence
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (hinitial : initial ∈ E.solutionSpace)
+    (T : FiniteModelBLpSocialObjectiveSource E C3.data 1) :
+    @OutcomeIndexedILVConvergesToSocietalOptimal
+      Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+      (finiteModelBIdealSequenceMeasure C3.data)
+      (finiteModelBOutcomeTrajectory C3.data 1 r0 project initial) := by
+  exact finiteModelBCanonicalLpOneMinimizerSetExecution_outcomeIndexedConvergesToSocialOptimal
+    C3 S hr0 initial hinitial T
+
+/-- Concrete Theorem 1 Model A `(1,∞)` endpoint. -/
+theorem theorem1_modelA_l1_linf_finite_c3_convergence
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (hinitial : initial ∈ E.solutionSpace)
+    (T : FiniteModelBLpSocialObjectiveSource E C3.data 1) :
+    @OutcomeIndexedILVConvergesToSocietalOptimal
+      Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+      (finiteModelBIdealSequenceMeasure C3.data)
+      (finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial) := by
+  exact finiteModelAL1LinfCanonicalPerturbedMinimizerSetExecution_outcomeIndexedConvergesToSocialOptimal
+    C3 S hr0 initial hinitial T
+
+/--
+Concrete Theorem 2 Model B endpoint for finite Hölder-dual exponents.  The
+displayed iid Algorithm 1 recursion is a direct instance of the reusable
+projected stochastic-subgradient minimizer-set convergence theorem.
+-/
+theorem theorem2_modelB_finite_holder_dual_c3_convergence
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project)
+    {p q r0 : ℝ} (hdual : HolderDualFinite p q) (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (hinitial : initial ∈ E.solutionSpace)
+    (T : FiniteModelBLpSocialObjectiveSource E C3.data p) :
+    @OutcomeIndexedILVConvergesToSocietalOptimal
+      Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+      (finiteModelBIdealSequenceMeasure C3.data)
+      (finiteModelBOutcomeTrajectory C3.data p r0 project initial) := by
+  exact finiteModelBCanonicalMinimizerSetExecution_outcomeIndexedConvergesToSocialOptimal
+    C3 S hdual hr0 initial hinitial T
+
+/--
+Reusable Proposition 2 convergence lemma for the concrete coordinate-sign
+process. Model A and the `p = 1` Model B `L∞` executions converge to the median
+set whenever the source median target contains the corresponding
+social-optimum set.
+-/
+theorem proposition2_l1_linf_finite_c3_median_convergence
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (hinitial : initial ∈ E.solutionSpace)
+    (T : FiniteModelBLpSocialObjectiveSource E C3.data 1)
+    (hmedian : E.socialOptimal ⊆ E.medianSet) :
+    @OutcomeIndexedILVConvergesToMedianSet
+      Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+      (finiteModelBIdealSequenceMeasure C3.data)
+      (finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial) ∧
+    @OutcomeIndexedILVConvergesToMedianSet
+      Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+      (finiteModelBIdealSequenceMeasure C3.data)
+      (finiteModelBOutcomeTrajectory C3.data 1 r0 project initial) := by
+  constructor
+  · exact AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet.mono
+      (theorem1_modelA_l1_linf_finite_c3_convergence C3 S hr0 initial hinitial T)
+      hmedian
+  · exact AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet.mono
+      (theorem1_modelB_l1_linf_finite_c3_convergence C3 S hr0 initial hinitial T)
+      hmedian
+
+/--
 Unproved source specification for Theorem 2.  The deterministic
 `Theorem2PrimitiveSourceSemantics` and an explicit
 `Theorem2SSGMConvergenceTheorem` remain available as the checked route to this
@@ -2718,9 +3558,170 @@ def proposition1_weighted_euclidean_l2
   proposition1Statement E
 
 /--
-Unproved finite-coordinate source specification for Proposition 2.  The
-checked conditional theorem below requires both the deterministic source
-semantics and the explicit SSGM convergence theorem.
+Proposition 1's finite-coordinate outcome-indexed route.  This is a proved
+stochastic convergence result once the displayed weighted-Euclidean Algorithm
+1 execution (including its sample law, moments, target identification, and
+response update) has been constructed.  Those source-process fields are kept
+in `WeightedEuclideanL2OutcomeIndexedMinimizerSetSource`; no convergence field
+is assumed there.
+-/
+theorem proposition1_weighted_euclidean_l2_finite_execution_convergence
+    {Voter Coord Component : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {W : WeightedEuclideanStructure Voter (Coord → ℝ) Component}
+    {model : VoterResponseModel} {r0 : ℝ}
+    (S : WeightedEuclideanL2OutcomeIndexedMinimizerSetSource E W model r0) :
+    @OutcomeIndexedILVConvergesToSocietalOptimal
+      Voter S.Ω (Coord → ℝ) S.measurableSpace inferInstance E S.μ S.trajectory := by
+  exact S.outcomeIndexed_convergesToSocialOptimal
+
+/--
+Concrete joint-law Model A route for Proposition 1.  The selected raw response
+is required only to be a measurable exact source response; the proof controls
+its rare block-crossing deviations directly under C1--C3.
+-/
+theorem proposition1_weighted_euclidean_l2_modelA_joint_execution_convergence
+    {Voter Coord Component : Type*} [Fintype Coord] [Fintype Component] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (D : WeightedEuclideanJointSampleData Coord Component)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E D.idealDistribution project)
+    (A : WeightedEuclideanJointSampleModelAResponseSource D)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (hinitial : initial ∈ E.solutionSpace)
+    (T : WeightedEuclideanJointSampleSocialObjectiveSource E D) :
+    @OutcomeIndexedILVConvergesToSocietalOptimal
+      Voter (ℕ → (Component → ℝ) × (Coord → ℝ)) (Coord → ℝ)
+      inferInstance inferInstance E (AppliedModelingLib.iidSequenceMeasure D.jointMeasure)
+      (weightedEuclideanJointSampleModelAOutcomeTrajectory A r0 project initial) := by
+  exact weightedEuclideanJointSampleModelACanonicalPerturbedMinimizerSetExecution_outcomeIndexedConvergesToSocialOptimal
+    D S A hr0 initial hinitial T
+
+/--
+Definition 2's direct social-objective formulation of Proposition 1.  The
+target set here maximizes the expected sampled weighted-Euclidean utility,
+defined from the joint voter law itself; equivalently, it is the exact
+population-cost minimizer set used by the stochastic proof.  This avoids an
+additional equality witness for an ambient environment's opaque social-utility
+field, while retaining the same concrete C1/C2 and measurable Model A inputs.
+-/
+theorem proposition1_weighted_euclidean_l2_modelA_joint_execution_population_social_optimal_convergence
+    {Voter Coord Component : Type*} [Fintype Coord] [Fintype Component] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (D : WeightedEuclideanJointSampleData Coord Component)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E D.idealDistribution project)
+    (A : WeightedEuclideanJointSampleModelAResponseSource D)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (hinitial : initial ∈ E.solutionSpace) :
+    @AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
+      (ℕ → (Component → ℝ) × (Coord → ℝ)) (Coord → ℝ)
+      inferInstance inferInstance (AppliedModelingLib.iidSequenceMeasure D.jointMeasure)
+      (weightedEuclideanJointSampleModelAOutcomeTrajectory A r0 project initial)
+      (weightedEuclideanJointSamplePopulationSocialOptimalSet D E.solutionSpace) := by
+  simpa only [weightedEuclideanJointSamplePopulationSocialOptimalSet_eq_minimizerSet] using
+    weightedEuclideanJointSampleModelACanonicalPerturbedMinimizerSetExecution_outcomeIndexedConverges
+      D S A hr0 initial hinitial
+
+/--
+Concrete-C1 specialization of the joint-law Model A route.  The projection is
+the canonical Euclidean closest-point map generated by the closed, bounded,
+convex, nonempty feasible set, so no separate projection-existence or Borel
+measurability witness is needed.  The remaining arguments state the concrete
+C1/C2 facts and the exact measurable Model A response process.
+-/
+theorem proposition1_weighted_euclidean_l2_modelA_joint_execution_canonical_projection_convergence
+    {Voter Coord Component : Type*} [Fintype Coord] [Fintype Component] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (D : WeightedEuclideanJointSampleData Coord Component)
+    (hnonempty : E.solutionSpace.Nonempty)
+    (hclosed : IsClosed E.solutionSpace)
+    (hbounded : Bornology.IsBounded E.solutionSpace)
+    (hconvex : Convex ℝ E.solutionSpace)
+    (hunique : HasUniqueIdealSolution E)
+    (hideal : ∀ᵐ ideal ∂D.idealDistribution.idealMeasure, ideal ∈ E.solutionSpace)
+    (A : WeightedEuclideanJointSampleModelAResponseSource D)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (hinitial : initial ∈ E.solutionSpace)
+    (T : WeightedEuclideanJointSampleSocialObjectiveSource E D) :
+    @OutcomeIndexedILVConvergesToSocietalOptimal
+      Voter (ℕ → (Component → ℝ) × (Coord → ℝ)) (Coord → ℝ)
+      inferInstance inferInstance E (AppliedModelingLib.iidSequenceMeasure D.jointMeasure)
+      (weightedEuclideanJointSampleModelAOutcomeTrajectory A r0
+        (finiteModelBC1C2CanonicalProjection hclosed hbounded hnonempty) initial) := by
+  exact proposition1_weighted_euclidean_l2_modelA_joint_execution_convergence D
+    (FiniteModelBC1C2Source.canonical D.idealDistribution hnonempty hclosed hbounded hconvex
+      hunique hideal)
+    A hr0 initial hinitial T
+
+/--
+Concrete-C1, direct-social-objective specialization of Proposition 1's Model A
+route.  Both the Euclidean projection and the Definition 2 social objective
+are constructed from their mathematical formulas.  The remaining Model A
+input is the paper's unspecified measurable tie-breaking between raw local
+maximizers.
+-/
+theorem proposition1_weighted_euclidean_l2_modelA_joint_execution_canonical_projection_population_social_optimal_convergence
+    {Voter Coord Component : Type*} [Fintype Coord] [Fintype Component] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (D : WeightedEuclideanJointSampleData Coord Component)
+    (hnonempty : E.solutionSpace.Nonempty)
+    (hclosed : IsClosed E.solutionSpace)
+    (hbounded : Bornology.IsBounded E.solutionSpace)
+    (hconvex : Convex ℝ E.solutionSpace)
+    (hunique : HasUniqueIdealSolution E)
+    (hideal : ∀ᵐ ideal ∂D.idealDistribution.idealMeasure, ideal ∈ E.solutionSpace)
+    (A : WeightedEuclideanJointSampleModelAResponseSource D)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (hinitial : initial ∈ E.solutionSpace) :
+    @AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
+      (ℕ → (Component → ℝ) × (Coord → ℝ)) (Coord → ℝ)
+      inferInstance inferInstance (AppliedModelingLib.iidSequenceMeasure D.jointMeasure)
+      (weightedEuclideanJointSampleModelAOutcomeTrajectory A r0
+        (finiteModelBC1C2CanonicalProjection hclosed hbounded hnonempty) initial)
+      (weightedEuclideanJointSamplePopulationSocialOptimalSet D E.solutionSpace) := by
+  exact proposition1_weighted_euclidean_l2_modelA_joint_execution_population_social_optimal_convergence
+    D
+    (FiniteModelBC1C2Source.canonical D.idealDistribution hnonempty hclosed hbounded hconvex
+      hunique hideal)
+    A hr0 initial hinitial
+
+/--
+Fully concrete Definition 2 / Model A Proposition 1 route.  The source's
+previously unspecified measurable tie-breaking is instantiated by the Borel
+finite weighted block water-filling response, which has been proved to be an
+exact raw local maximizer for every valid joint sample.
+-/
+theorem proposition1_weighted_euclidean_l2_modelA_joint_execution_canonical_waterfill_population_social_optimal_convergence
+    {Voter Coord Component : Type*} [Fintype Coord] [Fintype Component] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (D : WeightedEuclideanJointSampleData Coord Component)
+    (hnonempty : E.solutionSpace.Nonempty)
+    (hclosed : IsClosed E.solutionSpace)
+    (hbounded : Bornology.IsBounded E.solutionSpace)
+    (hconvex : Convex ℝ E.solutionSpace)
+    (hunique : HasUniqueIdealSolution E)
+    (hideal : ∀ᵐ ideal ∂D.idealDistribution.idealMeasure, ideal ∈ E.solutionSpace)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (hinitial : initial ∈ E.solutionSpace) :
+    @AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
+      (ℕ → (Component → ℝ) × (Coord → ℝ)) (Coord → ℝ)
+      inferInstance inferInstance (AppliedModelingLib.iidSequenceMeasure D.jointMeasure)
+      (weightedEuclideanJointSampleModelAOutcomeTrajectory
+        (weightedEuclideanJointSampleWaterfillModelAResponseSource D) r0
+        (finiteModelBC1C2CanonicalProjection hclosed hbounded hnonempty) initial)
+      (weightedEuclideanJointSamplePopulationSocialOptimalSet D E.solutionSpace) := by
+  exact proposition1_weighted_euclidean_l2_modelA_joint_execution_canonical_projection_population_social_optimal_convergence
+    D hnonempty hclosed hbounded hconvex hunique hideal
+    (weightedEuclideanJointSampleWaterfillModelAResponseSource D) hr0 initial hinitial
+
+/--
+Exact printed Proposition 2 statement, kept as a source specification. For
+this proposition, the paper's proof reads Model B coordinatewise: every active
+coordinate moves the full `L∞` radius toward the sampled ideal. The checked
+paper-facing endpoint makes that convention explicit. The general normalized
+gradient-ray formula is a distinct process when derivative magnitudes differ;
+see `docs/PROPOSITION2_MODEL_B_SOURCE_NOTE.md`.
 -/
 def proposition2_decomposable_linf_medians
     {Voter : Type} {Coord : Type} [Fintype Coord] [Nonempty Coord]
@@ -2834,12 +3835,144 @@ theorem theorem3_statement_of_full_sampled_projected_source_semantics_univ
     [MeasurableSpace Voter] [MeasurableSingletonClass Voter]
     [Fintype Coord] [Nonempty Coord]
     (E : ILVEnvironment Voter (Coord → ℝ))
-    (M : FiniteCoordinateTheorem3SampledProjectedSourceSemantics E)
+    (M : FiniteCoordinateILVFullSampledProjectedSourceSemantics E)
     (hUniv : E.solutionSpace = (Set.univ : Set (Coord → ℝ))) :
     theorem3Statement E := by
   exact
-    proof_theorem3Statement_of_theorem3SampledProjectedSourceSemantics_univ_solutionSpace
+    proof_theorem3Statement_of_fullSampledProjectedSourceSemantics_univ_solutionSpace
       M hUniv
+
+/--
+Theorem 3 under its approved two-part reading: first the paper's zero-direction
+result in full space, then the exact alternative for a restricted projected
+space.  In the latter, feasibility can block a nonzero aggregate direction.
+-/
+theorem theorem3_full_space_and_restricted_space
+    {Voter Coord : Type*} [Fintype Voter]
+    [MeasurableSpace Voter] [MeasurableSingletonClass Voter]
+    [Fintype Coord] [Nonempty Coord]
+    (E : ILVEnvironment Voter (Coord → ℝ))
+    (M : FiniteCoordinateTheorem3SampledProjectedSourceSemantics E) :
+    (ConditionsC123 E →
+      E.directionalFieldUniformlyContinuous →
+        E.respondsAccordingTo VoterResponseModel.modelB →
+          ∀ xstar,
+            FiniteCoordinateILVTrajectoryConvergesTo E SourceNorm.l2
+              VoterResponseModel.modelB xstar →
+              (finiteTheorem3DirectionalField M.theorem3_field.weight
+                  M.theorem3_field.utilityGradient xstar =
+                  fun _ => (0 : ℝ)) ∨
+                ¬ FiniteTheorem3AggregateFeasibleDirectionFormula
+                  M.theorem3_field) ∧
+      (E.solutionSpace = (Set.univ : Set (Coord → ℝ)) →
+        Theorem3DirectionalFieldFormula E →
+          ConditionsC123 E →
+            E.directionalFieldUniformlyContinuous →
+              E.respondsAccordingTo VoterResponseModel.modelB →
+                ∀ xstar,
+                  ILVTrajectoryConvergesTo E SourceNorm.l2
+                    VoterResponseModel.modelB xstar →
+                    IsDirectionalEquilibrium E xstar) := by
+  constructor
+  · intro hC hContinuous hResponse xstar hConverges
+    exact
+      proof_theorem3_finite_zero_or_no_aggregateFeasibleDirectionFormula_of_convergent_projectedUpdate
+        M.theorem3_field M.theorem3_continuity M.theorem3_algorithm1_update
+        (fun _ => M.theorem3_convex_solutionSpace.convex_solutionSpace)
+        hC hContinuous hResponse hConverges
+  · intro hUniv
+    simpa only [theorem3Statement] using
+      proof_theorem3Statement_of_theorem3SampledProjectedSourceSemantics_univ_solutionSpace
+        M hUniv
+
+universe u v
+
+/--
+The literal general-population, full-space reading of Theorem 3.  The source
+states an expectation over voters and a convergent iid Model B execution; this
+contract keeps both at the paper boundary rather than replacing them with a
+fixed finite trajectory.
+-/
+def theorem3_population_fullspaceSpec : Prop :=
+  ∀ {Voter : Type u} {Coord : Type v}
+    [MetricSpace Voter] [SecondCountableTopology Voter]
+    [MeasurableSpace Voter] [BorelSpace Voter] [StandardBorelSpace Voter]
+    [Nonempty Voter] [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (M : PopulationTheorem3DirectionalFieldModel E)
+    (S : PopulationTheorem3IidTraceSource M)
+    (xstar : Coord → ℝ),
+    (∀ᵐ omega ∂iidSequenceMeasure M.population,
+      PopulationTheorem3OutcomeConvergesTo S.trajectory omega xstar) →
+      ∀ᵐ omega ∂iidSequenceMeasure M.population,
+        IsDirectionalEquilibrium E xstar
+
+/-- Proof endpoint for the literal population/full-space Theorem 3 contract. -/
+theorem theorem3_population_fullspace : theorem3_population_fullspaceSpec := by
+  intro Voter Coord _ _ _ _ _ _ _ _ E M S xstar hconverges
+  exact populationTheorem3_iid_fullspace_directional_equilibrium M S xstar hconverges
+
+/--
+An explicitly supplementary finite projected-space alternative.  A boundary
+can block a nonzero aggregate direction, so this theorem is not presented as a
+literal restatement of the paper's full-space Theorem 3.
+-/
+def theorem3_restricted_space_alternativeSpec : Prop :=
+  ∀ {Voter : Type u} {Coord : Type v} [Fintype Voter]
+      [MeasurableSpace Voter] [MeasurableSingletonClass Voter]
+      [Fintype Coord] [Nonempty Coord]
+      (E : ILVEnvironment Voter (Coord → ℝ))
+      (M : FiniteCoordinateTheorem3SampledProjectedSourceSemantics E),
+      ConditionsC123 E →
+        E.directionalFieldUniformlyContinuous →
+          E.respondsAccordingTo VoterResponseModel.modelB →
+            ∀ xstar,
+              FiniteCoordinateILVTrajectoryConvergesTo E SourceNorm.l2
+                VoterResponseModel.modelB xstar →
+                (finiteTheorem3DirectionalField M.theorem3_field.weight
+                    M.theorem3_field.utilityGradient xstar =
+                    fun _ => (0 : ℝ)) ∨
+                  ¬ FiniteTheorem3AggregateFeasibleDirectionFormula
+                    M.theorem3_field
+
+/-- Proof endpoint for the supplementary restricted-space alternative. -/
+theorem theorem3_restricted_space_alternative :
+    theorem3_restricted_space_alternativeSpec := by
+  intro Voter Coord _ _ _ _ _ E M hC hContinuous hResponse xstar hconverges
+  exact (theorem3_full_space_and_restricted_space E M).1
+    hC hContinuous hResponse xstar hconverges
+
+/--
+Compatibility bundle retaining the formerly published two-part presentation.
+The first conjunct is the source-facing Theorem 3 contract; the second is the
+separately labelled finite projected-space alternative.
+-/
+def theorem3_population_full_space_and_restricted_spaceSpec : Prop :=
+  theorem3_population_fullspaceSpec.{u, v} ∧
+    (∀ {Voter : Type u} {Coord : Type v} [Fintype Voter]
+      [MeasurableSpace Voter] [MeasurableSingletonClass Voter]
+      [Fintype Coord] [Nonempty Coord]
+      (E : ILVEnvironment Voter (Coord → ℝ))
+      (M : FiniteCoordinateTheorem3SampledProjectedSourceSemantics E),
+      ConditionsC123 E →
+        E.directionalFieldUniformlyContinuous →
+          E.respondsAccordingTo VoterResponseModel.modelB →
+            ∀ xstar,
+              FiniteCoordinateILVTrajectoryConvergesTo E SourceNorm.l2
+                VoterResponseModel.modelB xstar →
+                (finiteTheorem3DirectionalField M.theorem3_field.weight
+                    M.theorem3_field.utilityGradient xstar =
+                    fun _ => (0 : ℝ)) ∨
+                  ¬ FiniteTheorem3AggregateFeasibleDirectionFormula
+                    M.theorem3_field)
+
+/-- Proof endpoint for the general-population full-space conclusion and the
+explicit restricted-space alternative. -/
+theorem theorem3_population_full_space_and_restricted_space :
+    theorem3_population_full_space_and_restricted_spaceSpec := by
+  constructor
+  · exact theorem3_population_fullspace
+  · exact theorem3_restricted_space_alternative
 
 /--
 No-hidden-premise sampled projected finite-coordinate paper closeout with an
@@ -2872,18 +4005,6 @@ theorem finite_coordinate_full_sampled_projected_paper_consequences
   exact
     proof_finiteCoordinateILVFullProjectedPaperConsequences_of_fullSampledProjectedSourceSemantics_ssgmConvergence
       M S
-
-/-- Transparent v11 semantic target for `conditions_c123_formula`. -/
-def conditions_c123_formulaSpec
-    (solutionSpace_nonempty_bounded_closed_convex
-      uniqueIdealSolutions
-      idealDistribution_bounded_measurable_density : Prop) : Prop :=
-  (solutionSpace_nonempty_bounded_closed_convex ∧
-      uniqueIdealSolutions ∧
-        idealDistribution_bounded_measurable_density) ↔
-    solutionSpace_nonempty_bounded_closed_convex ∧
-      uniqueIdealSolutions ∧
-        idealDistribution_bounded_measurable_density
 
 /-- Transparent v11 semantic target for `theorem1_norm_pair_l2_l2`. -/
 def theorem1_norm_pair_l2_l2Spec : Prop :=
@@ -2989,15 +4110,23 @@ def modelA_response_isMaxOn_formulaSpec {Voter Point : Type*}
       IsMaxOn (U.utility voter)
         (localNeighborhoodFormulaData U.geometry q center r) response
 
-/-- Transparent v11 semantic target for `modelB_finite_response_formula`. -/
-def modelB_finite_response_formulaSpec
-    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
-    (q : SourceNorm) (center : Coord → ℝ) (r : ℝ)
-    (gradient response : Coord → ℝ) : Prop :=
-  ModelBFiniteResponseAt q center r gradient response ↔
-    response =
-      fun i => center i + r *
-        (gradient i / finiteCoordinateNorm q gradient)
+/-- Transparent v11 semantic target for `modelA_raw_response_formula`. -/
+def modelA_raw_response_formulaSpec {Voter Point : Type*}
+    (U : ILVUtilityFormulaData Voter Point) (q : SourceNorm)
+    (center : Point) (r : ℝ) (voter : Voter) (response : Point) : Prop :=
+  modelARawResponseFormulaData U q center r voter response ↔
+    response ∈ rawLocalNeighborhoodFormulaData U.geometry q center r ∧
+      ∀ candidate, candidate ∈ rawLocalNeighborhoodFormulaData U.geometry q center r →
+        U.utility voter candidate ≤ U.utility voter response
+
+/-- Transparent v11 semantic target for `modelA_raw_response_isMaxOn_formula`. -/
+def modelA_raw_response_isMaxOn_formulaSpec {Voter Point : Type*}
+    (U : ILVUtilityFormulaData Voter Point) (q : SourceNorm)
+    (center : Point) (r : ℝ) (voter : Voter) (response : Point) : Prop :=
+  modelARawResponseFormulaData U q center r voter response ↔
+    response ∈ rawLocalNeighborhoodFormulaData U.geometry q center r ∧
+      IsMaxOn (U.utility voter)
+        (rawLocalNeighborhoodFormulaData U.geometry q center r) response
 
 /-- Transparent v11 semantic target for `modelB_finite_response_neg_lp_cost_gradient_formula`. -/
 def modelB_finite_response_neg_lp_cost_gradient_formulaSpec
@@ -3012,14 +4141,6 @@ def modelB_finite_response_neg_lp_cost_gradient_formulaSpec
       fun i => center i - r *
         lpCostGradientCandidate p (fun j => center j - ideal j) i
 
-/-- Transparent v11 semantic target for `definition1_lp_normed_utilities_formula`. -/
-def definition1_lp_normed_utilities_formulaSpec
-    {Voter Point : Type*}
-    (U : ILVUtilityFormulaData Voter Point) (ideal : Voter → Point)
-    (p : SourceNorm) : Prop :=
-  isLpNormedUtilitiesFormulaData U ideal p ↔
-    ∀ v x, U.utility v x = -U.normDistance p x (ideal v)
-
 /-- Transparent v11 semantic target for `modelA_response_lp_normed_cost_minimizer_formula`. -/
 def modelA_response_lp_normed_cost_minimizer_formulaSpec
     {Voter Point : Type*}
@@ -3028,9 +4149,21 @@ def modelA_response_lp_normed_cost_minimizer_formulaSpec
     (center : Point) (r : ℝ) (voter : Voter) (response : Point)
     (hUtil : isLpNormedUtilitiesFormulaData U ideal p) : Prop :=
   modelAResponseFormulaData U q center r voter response ↔
-    response ∈ localNeighborhoodFormulaData U.geometry q center r ∧
+      response ∈ localNeighborhoodFormulaData U.geometry q center r ∧
+        IsMinOn (fun candidate => U.normDistance p candidate (ideal voter))
+          (localNeighborhoodFormulaData U.geometry q center r) response
+
+/-- Transparent v11 semantic target for `modelA_raw_response_lp_normed_cost_minimizer_formula`. -/
+def modelA_raw_response_lp_normed_cost_minimizer_formulaSpec
+    {Voter Point : Type*}
+    (U : ILVUtilityFormulaData Voter Point) (p q : SourceNorm)
+    (ideal : Voter → Point)
+    (center : Point) (r : ℝ) (voter : Voter) (response : Point)
+    (hUtil : isLpNormedUtilitiesFormulaData U ideal p) : Prop :=
+  modelARawResponseFormulaData U q center r voter response ↔
+    response ∈ rawLocalNeighborhoodFormulaData U.geometry q center r ∧
       IsMinOn (fun candidate => U.normDistance p candidate (ideal voter))
-        (localNeighborhoodFormulaData U.geometry q center r) response
+        (rawLocalNeighborhoodFormulaData U.geometry q center r) response
 
 /-- Transparent v11 semantic target for `definition1_finite_coordinate_l1_formula`. -/
 def definition1_finite_coordinate_l1_formulaSpec
@@ -3039,7 +4172,7 @@ def definition1_finite_coordinate_l1_formulaSpec
   (∀ v x, utility v x =
       -finiteCoordinateDistance SourceNorm.l1 x (ideal v)) ↔
     ∀ v x, utility v x =
-      -EconCSLib.FiniteDimensionalNorms.l1
+      -AppliedModelingLib.FiniteDimensionalNorms.l1
         (fun m => x m - ideal v m)
 
 /-- Transparent v11 semantic target for `definition1_finite_coordinate_l2_formula`. -/
@@ -3049,7 +4182,7 @@ def definition1_finite_coordinate_l2_formulaSpec
   (∀ v x, utility v x =
       -finiteCoordinateDistance SourceNorm.l2 x (ideal v)) ↔
     ∀ v x, utility v x =
-      -EconCSLib.FiniteDimensionalNorms.l2
+      -AppliedModelingLib.FiniteDimensionalNorms.l2
         (fun m => x m - ideal v m)
 
 /-- Transparent v11 semantic target for `definition1_finite_coordinate_linf_formula`. -/
@@ -3059,7 +4192,7 @@ def definition1_finite_coordinate_linf_formulaSpec
   (∀ v x, utility v x =
       -finiteCoordinateDistance SourceNorm.linfty x (ideal v)) ↔
     ∀ v x, utility v x =
-      -EconCSLib.FiniteDimensionalNorms.linf
+      -AppliedModelingLib.FiniteDimensionalNorms.linf
         (fun m => x m - ideal v m)
 
 /-- Transparent v11 semantic target for `definition1_finite_coordinate_lp_formula`. -/
@@ -3070,7 +4203,7 @@ def definition1_finite_coordinate_lp_formulaSpec
   (∀ v x, utility v x =
       -finiteCoordinateDistance (SourceNorm.lp p) x (ideal v)) ↔
     ∀ v x, utility v x =
-      -EconCSLib.FiniteDimensionalNorms.lp p
+      -AppliedModelingLib.FiniteDimensionalNorms.lp p
         (fun m => x m - ideal v m)
 
 /-- Transparent v11 semantic target for `lemma3_gradient_candidate_source_formula`. -/
@@ -3079,7 +4212,7 @@ def lemma3_gradient_candidate_source_formulaSpec
     {p : ℝ} (hp : 0 < p) (d : Coord → ℝ) : Prop :=
   lpCostGradientCandidate p d =
     fun i => (|d i| ^ (p - 1) * (d i / |d i|)) /
-      (EconCSLib.FiniteDimensionalNorms.lp p d) ^ (p - 1)
+      (AppliedModelingLib.FiniteDimensionalNorms.lp p d) ^ (p - 1)
 
 /-- Transparent v11 semantic target for `lemma3_finite_holder_dual_gradient_candidate_norm_formula`. -/
 def lemma3_finite_holder_dual_gradient_candidate_norm_formulaSpec
@@ -3096,16 +4229,16 @@ def lemma3_gradient_candidate_hasFDerivAt_formulaSpec
     {x ideal : Coord → ℝ} (hcoord : ∀ i, x i ≠ ideal i) : Prop :=
   HasFDerivAt
     (fun y : Coord → ℝ =>
-      EconCSLib.FiniteDimensionalNorms.lp p
+      AppliedModelingLib.FiniteDimensionalNorms.lp p
         (fun i => y i - ideal i))
-    (EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+    (AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
       (lpCostGradientCandidate p (fun i => x i - ideal i))) x
 
 /-- Transparent v11 semantic target for `lemma3_coordinate_equality_bad_event_null_from_boundedDensity`. -/
 def lemma3_coordinate_equality_bad_event_null_from_boundedDensitySpec
     {Coord : Type*} [Fintype Coord] [MeasurableSpace (Coord → ℝ)]
     {ν μ : Measure (Coord → ℝ)} {C : ℝ≥0∞}
-    (hbd : EconCSLib.Probability.HasBoundedDensity ν μ C)
+    (hbd : AppliedModelingLib.Probability.HasBoundedDensity ν μ C)
     (x : Coord → ℝ)
     (hcoord : ∀ i, ν (coordinateEqualityHyperplane x i) = 0) : Prop :=
   μ (coordinateEqualityBadEvent x) = 0
@@ -3116,7 +4249,7 @@ def lemma3_coordinate_equality_bad_event_null_from_productMeasureSpec
     (ρ : Measure ℝ) [SigmaFinite ρ] [NoAtoms ρ]
     {μ : Measure (Coord → ℝ)} {C : ℝ≥0∞}
     (hbd :
-      EconCSLib.Probability.HasBoundedDensity
+      AppliedModelingLib.Probability.HasBoundedDensity
         (Measure.pi (fun _ : Coord => ρ)) μ C)
     (x : Coord → ℝ) : Prop :=
   μ (coordinateEqualityBadEvent x) = 0
@@ -3127,40 +4260,16 @@ def lemma3_coordinate_noncollision_ae_from_productMeasureSpec
     (ρ : Measure ℝ) [SigmaFinite ρ] [NoAtoms ρ]
     {μ : Measure (Coord → ℝ)} {C : ℝ≥0∞}
     (hbd :
-      EconCSLib.Probability.HasBoundedDensity
+      AppliedModelingLib.Probability.HasBoundedDensity
         (Measure.pi (fun _ : Coord => ρ)) μ C)
     (x : Coord → ℝ) : Prop :=
   ∀ᵐ ideal ∂μ, ∀ i, x i ≠ ideal i
 
-/-- Transparent v11 semantic target for `c3_product_density_coordinate_noncollision_ae`. -/
-def c3_product_density_coordinate_noncollision_aeSpec
+/-- Transparent v11 semantic target for `c3_bounded_density_coordinate_noncollision_ae`. -/
+def c3_bounded_density_coordinate_noncollision_aeSpec
     {Coord : Type*} [Fintype Coord]
     (D : FiniteCoordinateIdealDistributionData Coord) (x : Coord → ℝ) : Prop :=
   ∀ᵐ ideal ∂D.idealMeasure, ∀ i, x i ≠ ideal i
-
-/-- Transparent v11 semantic target for `definition2_weighted_euclidean_utilities_formula`. -/
-def definition2_weighted_euclidean_utilities_formulaSpec
-    {Voter Point Component : Type*}
-    (utility : Voter → Point → ℝ)
-    (W : WeightedEuclideanStructure Voter Point Component) : Prop :=
-  (W.weightsAndIdealsDistributionCondition ∧
-    ∀ v x, utility v x = -W.components.sum
-      (fun k => (W.weight v k / W.weightNorm2 v) * W.componentDistance k x v)) ↔
-    W.weightsAndIdealsDistributionCondition ∧
-      ∀ v x, utility v x = -W.components.sum
-        (fun k => (W.weight v k / W.weightNorm2 v) * W.componentDistance k x v)
-
-/-- Transparent v11 semantic target for `definition3_decomposable_utilities_formula`. -/
-def definition3_decomposable_utilities_formulaSpec
-    {Voter Point Coord : Type*}
-    (utility : Voter → Point → ℝ)
-    (D : DecomposableStructure Voter Point Coord) : Prop :=
-  (D.coordinateUtilitiesConcave ∧
-    ∀ v x, utility v x =
-      D.coords.sum (fun m => D.coordinateUtility m v (D.coordinate m x))) ↔
-    D.coordinateUtilitiesConcave ∧
-      ∀ v x, utility v x =
-        D.coords.sum (fun m => D.coordinateUtility m v (D.coordinate m x))
 
 /-- Transparent v11 semantic target for the source definition `dlcdBudgetUtility`. -/
 def dlcdBudgetUtilitySpec
@@ -3208,57 +4317,1207 @@ def proposition2_decomposable_linf_mediansSpec
     (E : ILVEnvironment Voter (Coord → ℝ)) : Prop :=
   proposition2_decomposable_linf_medians E = (proposition2Statement E)
 
-/-- Transparent v11 semantic target for `theorem3_statement_of_full_sampled_projected_source_semantics_univ`. -/
-def theorem3_statement_of_full_sampled_projected_source_semantics_univSpec
-    {Voter Coord : Type*} [Fintype Voter]
-    [MeasurableSpace Voter] [MeasurableSingletonClass Voter]
-    [Fintype Coord] [Nonempty Coord]
-    (E : ILVEnvironment Voter (Coord → ℝ))
-    (M : FiniteCoordinateTheorem3SampledProjectedSourceSemantics E)
-    (hUniv : E.solutionSpace = (Set.univ : Set (Coord → ℝ))) : Prop :=
-  theorem3Statement E
-
-/-- Transparent v11 semantic target for `appendix_theorem4_expected_subgradient_boundary`. -/
-def appendix_theorem4_expected_subgradient_boundarySpec
-    {Theta Coord : Type*} [MeasurableSpace Theta] [Fintype Coord]
-    (mu : Measure Theta) [IsProbabilityMeasure mu]
-    (solutionSpace : Set (Coord → ℝ))
-    (sampleCost : Theta → (Coord → ℝ) → ℝ)
-    (x : Coord → ℝ) (sampleGradient : Theta → Coord → ℝ)
-    (hX_nonempty : solutionSpace.Nonempty)
-    (hX_bounded : Bornology.IsBounded solutionSpace)
-    (hX_closed : IsClosed solutionSpace)
-    (hX_convex : Convex ℝ solutionSpace)
-    (hx : x ∈ solutionSpace)
-    (hcost_integrable :
-      ∀ y, y ∈ solutionSpace →
-        Integrable (fun theta => sampleCost theta y) mu)
-    (hgradient_integrable :
-      ∀ i, Integrable (fun theta => sampleGradient theta i) mu)
-    (hsample_convex :
-      ∀ theta, ConvexOn ℝ solutionSpace (sampleCost theta))
-    (hexpected_continuous :
-      ContinuousAt (fun y => ∫ theta, sampleCost theta y ∂mu) x)
-    (hsample :
-      ∀ theta,
-        FiniteSubgradientWithinAt
-          (sampleCost theta) solutionSpace x (sampleGradient theta)) : Prop :=
-  ExpectedSubgradientTheoremStatement
-    mu solutionSpace sampleCost x sampleGradient
-
-/-- Transparent v11 semantic target for `appendix_theorem5_ssgm_convergence_boundary`. -/
-def appendix_theorem5_ssgm_convergence_boundarySpec
+/-- Semantic target for the corrected minimizer-set replacement of Appendix Theorem 5. -/
+def appendix_theorem5_minimizer_set_replacementSpec
     {Omega Coord : Type*} {mOmega : MeasurableSpace Omega}
     [Fintype Coord] [Nonempty Coord]
     (mu : Measure Omega) [IsProbabilityMeasure mu]
     (filtration : Filtration (Ω := Omega) ℕ mOmega)
-    (solutionSpace : Set (Coord → ℝ))
+    (solutionSpace targetSet : Set (Coord → ℝ))
     (objective : (Coord → ℝ) → ℝ)
     (project : (Coord → ℝ) → Coord → ℝ)
     (trajectory meanSubgradient noise : ℕ → Omega → Coord → ℝ)
     (bias : ℕ → Coord → ℝ)
-    (radius : ℕ → ℝ) (xstar : Coord → ℝ) : Prop :=
-  AppendixTheorem5Statement mu filtration solutionSpace objective project
-    trajectory meanSubgradient noise bias radius xstar
+    (radius : ℕ → ℝ) (reference : Coord → ℝ) : Prop :=
+  AppendixTheorem5MinimizerSetStatement mu filtration solutionSpace targetSet
+    objective project trajectory meanSubgradient noise bias radius reference
+
+/--
+Transparent semantic target for Appendix Lemma 1.  It retains the source's
+universal quantifier over every sampled-cost subgradient, rather than fixing a
+convenient candidate.  The explicit finite constant is `2 * card Coord`.
+-/
+def appendix_lemma1_uniform_direction_errorSpec : Prop := by
+  classical
+  exact
+  (∀ {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+      {center ideal : Coord → ℝ} {r : ℝ} (g : Coord → ℝ),
+      0 < r →
+      FiniteSubgradientAt
+        (fun y : Coord → ℝ =>
+          AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => y i - ideal i)) center g →
+      AppliedModelingLib.FiniteDimensionalNorms.l2
+        (fun i => l2BallDirection center ideal r i - g i) ≤ 2 * Fintype.card Coord) ∧
+  (∀ {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+      {center ideal : Coord → ℝ} {r : ℝ} (g : Coord → ℝ),
+      0 < r →
+      FiniteSubgradientAt
+        (fun y : Coord → ℝ =>
+          AppliedModelingLib.FiniteDimensionalNorms.l1 (fun i => y i - ideal i)) center g →
+      AppliedModelingLib.FiniteDimensionalNorms.l2
+        (fun i => l1LinfBallDirection center ideal r i - g i) ≤ 2 * Fintype.card Coord) ∧
+  (∀ {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+      {center ideal raw : Coord → ℝ} {r : ℝ} (g : Coord → ℝ),
+      0 < r →
+      finiteCoordinateDistance SourceNorm.l1 raw center ≤ r →
+      FiniteSubgradientAt
+        (fun y : Coord → ℝ =>
+          AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => y i - ideal i)) center g →
+      AppliedModelingLib.FiniteDimensionalNorms.l2
+        (fun i => linfL1RawDirection center raw r i - g i) ≤ 2 * Fintype.card Coord)
+
+/-- Appendix Lemma 1's finite uniform error bound for all three norm pairs. -/
+theorem appendix_lemma1_uniform_direction_error :
+    appendix_lemma1_uniform_direction_errorSpec := by
+  classical
+  refine ⟨?_, ?_, ?_⟩
+  · intro Coord _ _ center ideal r g hr hsub
+    exact appendixLemma1_l2BallDirection_uniform_norm_gap_all_subgradients hr g hsub
+  · intro Coord _ _ center ideal r g hr hsub
+    exact appendixLemma1_l1LinfBallDirection_uniform_norm_gap_all_subgradients hr g hsub
+  · intro Coord _ _ center ideal raw r g hr hraw hsub
+    exact appendixLemma1_linfL1RawDirection_uniform_norm_gap_all_subgradients hr hraw g hsub
+
+/--
+Proof-support envelope statement for Appendix Lemma 2.  The source-facing
+`Spec` below instead names the paper's actual subgradient-failure event.
+-/
+private def appendixLemma2BadEventEnvelopeLinearRate : Prop := by
+  classical
+  exact
+  (∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+      {E : ILVEnvironment Voter (Coord → ℝ)}
+      {D : FiniteCoordinateIdealDistributionData Coord}
+      {project : (Coord → ℝ) → Coord → ℝ}
+      (S : FiniteModelBC1C2Source E D project)
+      {r0 : ℝ} (hr0 : 0 < r0) (initial : Coord → ℝ) (n : ℕ),
+      (∀ omega,
+        ¬ FiniteSubgradientAt
+            (fun y : Coord → ℝ =>
+              AppliedModelingLib.FiniteDimensionalNorms.l2
+                (fun i => y i - finiteModelBIdealSample n omega i))
+            (finiteModelAL2OutcomeTrajectory D r0 project initial n omega)
+            (l2BallDirection
+              (finiteModelAL2OutcomeTrajectory D r0 project initial n omega)
+              (finiteModelBIdealSample n omega) (ilvRadius r0 (n + 1))) →
+          finiteModelBIdealSample n omega ∈
+            l2BallBadEvent
+              (finiteModelAL2OutcomeTrajectory D r0 project initial n omega)
+              (ilvRadius r0 (n + 1))) ∧
+        (finiteModelBIdealSequenceMeasure D)[
+          fun omega =>
+            (l2BallBadEvent
+              (finiteModelAL2OutcomeTrajectory D r0 project initial n omega)
+              (ilvRadius r0 (n + 1))).indicator (fun _ => (1 : ℝ))
+              (finiteModelBIdealSample n omega) |
+          finiteModelBIdealNaturalFiltration (Coord := Coord) n] ≤ᵐ[
+            finiteModelBIdealSequenceMeasure D]
+          fun _ => ilvRadius r0 (n + 1) *
+            finiteModelBC1C2CoordinateSlabRealConstant S) ∧
+  (∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+      {E : ILVEnvironment Voter (Coord → ℝ)}
+      {D : FiniteCoordinateIdealDistributionData Coord}
+      {project : (Coord → ℝ) → Coord → ℝ}
+      (S : FiniteModelBC1C2Source E D project)
+      {r0 : ℝ} (hr0 : 0 < r0) (initial : Coord → ℝ) (n : ℕ),
+      (∀ omega,
+        ¬ FiniteSubgradientAt
+            (fun y : Coord → ℝ =>
+              AppliedModelingLib.FiniteDimensionalNorms.l1
+                (fun i => y i - finiteModelBIdealSample n omega i))
+            (finiteModelAL1LinfOutcomeTrajectory D r0 project initial n omega)
+            (l1LinfBallDirection
+              (finiteModelAL1LinfOutcomeTrajectory D r0 project initial n omega)
+              (finiteModelBIdealSample n omega) (ilvRadius r0 (n + 1))) →
+          finiteModelBIdealSample n omega ∈
+            l1LinfSlabBadEvent
+              (finiteModelAL1LinfOutcomeTrajectory D r0 project initial n omega)
+              (ilvRadius r0 (n + 1))) ∧
+        (finiteModelBIdealSequenceMeasure D)[
+          fun omega =>
+            (l1LinfSlabBadEvent
+              (finiteModelAL1LinfOutcomeTrajectory D r0 project initial n omega)
+              (ilvRadius r0 (n + 1))).indicator (fun _ => (1 : ℝ))
+              (finiteModelBIdealSample n omega) |
+          finiteModelBIdealNaturalFiltration (Coord := Coord) n] ≤ᵐ[
+            finiteModelBIdealSequenceMeasure D]
+          fun _ => ilvRadius r0 (n + 1) *
+            finiteModelBC1C2CoordinateSlabRealConstant S) ∧
+  (∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+      {E : ILVEnvironment Voter (Coord → ℝ)}
+      {D : FiniteCoordinateIdealDistributionData Coord}
+      {project : (Coord → ℝ) → Coord → ℝ}
+      (S : FiniteModelBC1C2Source E D project)
+      {r0 : ℝ} (hr0 : 0 < r0) (initial : Coord → ℝ) (n : ℕ),
+      (∀ omega,
+        ¬ FiniteSubgradientAt
+            (fun y : Coord → ℝ =>
+              AppliedModelingLib.FiniteDimensionalNorms.linf
+                (fun i => y i - finiteModelBIdealSample n omega i))
+            (finiteModelALinfL1OutcomeTrajectory D r0 project initial n omega)
+            (linfL1RawDirection
+              (finiteModelALinfL1OutcomeTrajectory D r0 project initial n omega)
+              (finiteModelALinfL1OutcomeRawResponse r0
+                (finiteModelALinfL1OutcomeTrajectory D r0 project initial)
+                finiteModelBIdealSample n omega)
+              (ilvRadius r0 (n + 1))) →
+          finiteModelBIdealSample n omega ∈
+            l1LinfSlabBadEvent
+              (finiteModelALinfL1OutcomeTrajectory D r0 project initial n omega)
+              (ilvRadius r0 (n + 1)) ∪
+            linfL1NearTieBadEvent
+              (finiteModelALinfL1OutcomeTrajectory D r0 project initial n omega)
+              (ilvRadius r0 (n + 1))) ∧
+        (finiteModelBIdealSequenceMeasure D)[
+          fun omega =>
+            (l1LinfSlabBadEvent
+              (finiteModelALinfL1OutcomeTrajectory D r0 project initial n omega)
+              (ilvRadius r0 (n + 1)) ∪
+              linfL1NearTieBadEvent
+                (finiteModelALinfL1OutcomeTrajectory D r0 project initial n omega)
+                (ilvRadius r0 (n + 1))).indicator (fun _ => (1 : ℝ))
+              (finiteModelBIdealSample n omega) |
+          finiteModelBIdealNaturalFiltration (Coord := Coord) n] ≤ᵐ[
+            finiteModelBIdealSequenceMeasure D]
+          fun _ => ilvRadius r0 (n + 1) *
+            (finiteModelBC1C2CoordinateSlabRealConstant S +
+              finiteModelBC1C2LinearTieSlabRealConstant S))
+
+/-- Envelope proof route for Appendix Lemma 2's direct source statement. -/
+private theorem appendixLemma2_badEventEnvelopeLinearRate :
+    appendixLemma2BadEventEnvelopeLinearRate := by
+  classical
+  refine ⟨?_, ?_, ?_⟩
+  · intro Voter Coord _ _ E D project S r0 hr0 initial n
+    refine ⟨?_, finiteModelAL2Outcome_l2BallBadEvent_condExp_le S hr0 initial n⟩
+    intro omega hfailure
+    by_contra hbad
+    exact hfailure (l2BallDirection_subgradient_of_notMem_badEvent
+      (ilvRadius_succ_pos hr0 n) hbad)
+  · intro Voter Coord _ _ E D project S r0 hr0 initial n
+    refine ⟨?_, finiteModelAL1LinfOutcome_slabBadEvent_condExp_le S hr0 initial n⟩
+    intro omega hfailure
+    by_contra hbad
+    exact hfailure (l1LinfBallDirection_subgradient_of_notMem_slabBadEvent
+      (ilvRadius_succ_pos hr0 n) hbad)
+  · intro Voter Coord _ _ E D project S r0 hr0 initial n
+    refine ⟨?_, finiteModelALinfL1Outcome_correctedEnvelope_condExp_le S hr0 initial n⟩
+    intro omega hfailure
+    by_contra hbad
+    exact hfailure (by
+      simpa only [finiteModelALinfL1OutcomeRawResponse] using
+        linfL1WaterfillRawDirection_subgradient_of_notMem_correctedEnvelope
+          (ilvRadius_succ_pos hr0 n) hbad)
+
+/--
+The actual source failure event in Appendix Lemma 2 at `(2,2)` inherits the
+conditional envelope bound.  Measurability is explicit because the source
+conditions its indicator on the realized history.
+-/
+private theorem appendixLemma2_l2_sourceFailureEvent_condExp_le
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {D : FiniteCoordinateIdealDistributionData Coord}
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E D project)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (n : ℕ) (A : Set (ℕ → Coord → ℝ))
+    (hAmeas : MeasurableSet A)
+    (hAfailure : ∀ omega, omega ∈ A ↔
+      ¬ FiniteSubgradientAt
+        (fun y : Coord → ℝ =>
+          AppliedModelingLib.FiniteDimensionalNorms.l2
+            (fun i => y i - finiteModelBIdealSample n omega i))
+        (finiteModelAL2OutcomeTrajectory D r0 project initial n omega)
+        (l2BallDirection
+          (finiteModelAL2OutcomeTrajectory D r0 project initial n omega)
+          (finiteModelBIdealSample n omega) (ilvRadius r0 (n + 1)))) :
+    (finiteModelBIdealSequenceMeasure D)[
+      A.indicator (fun _ => (1 : ℝ)) |
+      finiteModelBIdealNaturalFiltration (Coord := Coord) n] ≤ᵐ[
+        finiteModelBIdealSequenceMeasure D]
+      fun _ => ilvRadius r0 (n + 1) *
+        finiteModelBC1C2CoordinateSlabRealConstant S := by
+  classical
+  letI : IsProbabilityMeasure (finiteModelBIdealSequenceMeasure D) :=
+    finiteModelBIdealSequenceMeasure_isProbabilityMeasure D
+  let radius : ℝ := ilvRadius r0 (n + 1)
+  let B : Set (ℕ → Coord → ℝ) := {omega |
+    finiteModelBIdealSample n omega ∈ l2BallBadEvent
+      (finiteModelAL2OutcomeTrajectory D r0 project initial n omega) radius}
+  have htrajectory : Measurable (finiteModelAL2OutcomeTrajectory D r0 project initial n) :=
+    (stronglyMeasurable_finiteModelAL2OutcomeTrajectory_natural D r0 project initial
+      S.project_measurable n).measurable.mono
+      ((finiteModelBIdealNaturalFiltration (Coord := Coord)).le n) le_rfl
+  have hpair : Measurable (fun omega : ℕ → Coord → ℝ =>
+      (finiteModelAL2OutcomeTrajectory D r0 project initial n omega,
+        finiteModelBIdealSample n omega)) :=
+    htrajectory.prodMk (measurable_finiteModelBIdealSample n)
+  have hBmeas : MeasurableSet B := by
+    let event : Set ((Coord → ℝ) × (Coord → ℝ)) :=
+      {z | z.2 ∈ l2BallBadEvent z.1 radius}
+    have hevent : MeasurableSet event :=
+      measurableSet_l2BallBadEvent_state_ideal radius
+    simpa only [B, event] using hevent.preimage hpair
+  have hsubset : ∀ᵐ omega ∂finiteModelBIdealSequenceMeasure D, omega ∈ A → omega ∈ B := by
+    filter_upwards [] with omega hAomega
+    by_contra hBomega
+    exact (hAfailure omega).mp hAomega
+      (l2BallDirection_subgradient_of_notMem_badEvent
+        (ilvRadius_succ_pos hr0 n) hBomega)
+  calc
+    (finiteModelBIdealSequenceMeasure D)[A.indicator (fun _ => (1 : ℝ)) |
+        finiteModelBIdealNaturalFiltration (Coord := Coord) n] ≤ᵐ[
+          finiteModelBIdealSequenceMeasure D]
+        (finiteModelBIdealSequenceMeasure D)[B.indicator (fun _ => (1 : ℝ)) |
+          finiteModelBIdealNaturalFiltration (Coord := Coord) n] :=
+      condExp_indicator_le_of_ae_subset (finiteModelBIdealSequenceMeasure D)
+        (finiteModelBIdealNaturalFiltration (Coord := Coord) n) hAmeas hBmeas hsubset
+    _ ≤ᵐ[finiteModelBIdealSequenceMeasure D] fun _ =>
+        ilvRadius r0 (n + 1) * finiteModelBC1C2CoordinateSlabRealConstant S := by
+      simpa only [B, radius] using
+        finiteModelAL2Outcome_l2BallBadEvent_condExp_le S hr0 initial n
+
+/-- Proof bridge from the source `(1,∞)` failure event to its envelope. -/
+private theorem appendixLemma2_l1Linf_sourceFailureEvent_condExp_le
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {D : FiniteCoordinateIdealDistributionData Coord}
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E D project)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (n : ℕ) (A : Set (ℕ → Coord → ℝ))
+    (hAmeas : MeasurableSet A)
+    (hAfailure : ∀ omega, omega ∈ A ↔
+      ¬ FiniteSubgradientAt
+        (fun y : Coord → ℝ =>
+          AppliedModelingLib.FiniteDimensionalNorms.l1
+            (fun i => y i - finiteModelBIdealSample n omega i))
+        (finiteModelAL1LinfOutcomeTrajectory D r0 project initial n omega)
+        (l1LinfBallDirection
+          (finiteModelAL1LinfOutcomeTrajectory D r0 project initial n omega)
+          (finiteModelBIdealSample n omega) (ilvRadius r0 (n + 1)))) :
+    (finiteModelBIdealSequenceMeasure D)[
+      A.indicator (fun _ => (1 : ℝ)) |
+      finiteModelBIdealNaturalFiltration (Coord := Coord) n] ≤ᵐ[
+        finiteModelBIdealSequenceMeasure D]
+      fun _ => ilvRadius r0 (n + 1) *
+        finiteModelBC1C2CoordinateSlabRealConstant S := by
+  classical
+  letI : IsProbabilityMeasure (finiteModelBIdealSequenceMeasure D) :=
+    finiteModelBIdealSequenceMeasure_isProbabilityMeasure D
+  let radius : ℝ := ilvRadius r0 (n + 1)
+  let B : Set (ℕ → Coord → ℝ) := {omega |
+    finiteModelBIdealSample n omega ∈ l1LinfSlabBadEvent
+      (finiteModelAL1LinfOutcomeTrajectory D r0 project initial n omega) radius}
+  have htrajectory : Measurable (finiteModelAL1LinfOutcomeTrajectory D r0 project initial n) :=
+    (stronglyMeasurable_finiteModelAL1LinfOutcomeTrajectory_natural D r0 project initial
+      S.project_measurable n).measurable.mono
+      ((finiteModelBIdealNaturalFiltration (Coord := Coord)).le n) le_rfl
+  have hpair : Measurable (fun omega : ℕ → Coord → ℝ =>
+      (finiteModelAL1LinfOutcomeTrajectory D r0 project initial n omega,
+        finiteModelBIdealSample n omega)) :=
+    htrajectory.prodMk (measurable_finiteModelBIdealSample n)
+  have hBmeas : MeasurableSet B := by
+    let event : Set ((Coord → ℝ) × (Coord → ℝ)) :=
+      {z | z.2 ∈ l1LinfSlabBadEvent z.1 radius}
+    have hevent : MeasurableSet event :=
+      measurableSet_l1LinfSlabBadEvent_state_ideal radius
+    simpa only [B, event] using hevent.preimage hpair
+  have hsubset : ∀ᵐ omega ∂finiteModelBIdealSequenceMeasure D, omega ∈ A → omega ∈ B := by
+    filter_upwards [] with omega hAomega
+    by_contra hBomega
+    exact (hAfailure omega).mp hAomega
+      (l1LinfBallDirection_subgradient_of_notMem_slabBadEvent
+        (ilvRadius_succ_pos hr0 n) hBomega)
+  calc
+    (finiteModelBIdealSequenceMeasure D)[A.indicator (fun _ => (1 : ℝ)) |
+        finiteModelBIdealNaturalFiltration (Coord := Coord) n] ≤ᵐ[
+          finiteModelBIdealSequenceMeasure D]
+        (finiteModelBIdealSequenceMeasure D)[B.indicator (fun _ => (1 : ℝ)) |
+          finiteModelBIdealNaturalFiltration (Coord := Coord) n] :=
+      condExp_indicator_le_of_ae_subset (finiteModelBIdealSequenceMeasure D)
+        (finiteModelBIdealNaturalFiltration (Coord := Coord) n) hAmeas hBmeas hsubset
+    _ ≤ᵐ[finiteModelBIdealSequenceMeasure D] fun _ =>
+        ilvRadius r0 (n + 1) * finiteModelBC1C2CoordinateSlabRealConstant S := by
+      simpa only [B, radius] using
+        finiteModelAL1LinfOutcome_slabBadEvent_condExp_le S hr0 initial n
+
+/-- Proof bridge from the source `(∞,1)` failure event to its envelope. -/
+private theorem appendixLemma2_linfL1_sourceFailureEvent_condExp_le
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {D : FiniteCoordinateIdealDistributionData Coord}
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E D project)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (n : ℕ) (A : Set (ℕ → Coord → ℝ))
+    (hAmeas : MeasurableSet A)
+    (hAfailure : ∀ omega, omega ∈ A ↔
+      ¬ FiniteSubgradientAt
+        (fun y : Coord → ℝ =>
+          AppliedModelingLib.FiniteDimensionalNorms.linf
+            (fun i => y i - finiteModelBIdealSample n omega i))
+        (finiteModelALinfL1OutcomeTrajectory D r0 project initial n omega)
+        (linfL1RawDirection
+          (finiteModelALinfL1OutcomeTrajectory D r0 project initial n omega)
+          (finiteModelALinfL1OutcomeRawResponse r0
+            (finiteModelALinfL1OutcomeTrajectory D r0 project initial)
+            finiteModelBIdealSample n omega)
+          (ilvRadius r0 (n + 1)))) :
+    (finiteModelBIdealSequenceMeasure D)[
+      A.indicator (fun _ => (1 : ℝ)) |
+      finiteModelBIdealNaturalFiltration (Coord := Coord) n] ≤ᵐ[
+        finiteModelBIdealSequenceMeasure D]
+      fun _ => ilvRadius r0 (n + 1) *
+        (finiteModelBC1C2CoordinateSlabRealConstant S +
+          finiteModelBC1C2LinearTieSlabRealConstant S) := by
+  classical
+  letI : IsProbabilityMeasure (finiteModelBIdealSequenceMeasure D) :=
+    finiteModelBIdealSequenceMeasure_isProbabilityMeasure D
+  let radius : ℝ := ilvRadius r0 (n + 1)
+  let B : Set (ℕ → Coord → ℝ) := {omega |
+    finiteModelBIdealSample n omega ∈ l1LinfSlabBadEvent
+      (finiteModelALinfL1OutcomeTrajectory D r0 project initial n omega) radius ∪
+      linfL1NearTieBadEvent
+        (finiteModelALinfL1OutcomeTrajectory D r0 project initial n omega) radius}
+  have htrajectory : Measurable (finiteModelALinfL1OutcomeTrajectory D r0 project initial n) :=
+    (stronglyMeasurable_finiteModelALinfL1OutcomeTrajectory_natural D r0 project initial
+      S.project_measurable n).measurable.mono
+      ((finiteModelBIdealNaturalFiltration (Coord := Coord)).le n) le_rfl
+  have hpair : Measurable (fun omega : ℕ → Coord → ℝ =>
+      (finiteModelALinfL1OutcomeTrajectory D r0 project initial n omega,
+        finiteModelBIdealSample n omega)) :=
+    htrajectory.prodMk (measurable_finiteModelBIdealSample n)
+  have hBmeas : MeasurableSet B := by
+    let event : Set ((Coord → ℝ) × (Coord → ℝ)) :=
+      {z | z.2 ∈ l1LinfSlabBadEvent z.1 radius ∪ linfL1NearTieBadEvent z.1 radius}
+    have hevent : MeasurableSet event :=
+      (measurableSet_l1LinfSlabBadEvent_state_ideal radius).union
+        (measurableSet_linfL1NearTieBadEvent_state_ideal radius)
+    simpa only [B, event] using hevent.preimage hpair
+  have hsubset : ∀ᵐ omega ∂finiteModelBIdealSequenceMeasure D, omega ∈ A → omega ∈ B := by
+    filter_upwards [] with omega hAomega
+    by_contra hBomega
+    exact (hAfailure omega).mp hAomega (by
+      simpa only [finiteModelALinfL1OutcomeRawResponse] using
+        linfL1WaterfillRawDirection_subgradient_of_notMem_correctedEnvelope
+          (ilvRadius_succ_pos hr0 n) hBomega)
+  calc
+    (finiteModelBIdealSequenceMeasure D)[A.indicator (fun _ => (1 : ℝ)) |
+        finiteModelBIdealNaturalFiltration (Coord := Coord) n] ≤ᵐ[
+          finiteModelBIdealSequenceMeasure D]
+        (finiteModelBIdealSequenceMeasure D)[B.indicator (fun _ => (1 : ℝ)) |
+          finiteModelBIdealNaturalFiltration (Coord := Coord) n] :=
+      condExp_indicator_le_of_ae_subset (finiteModelBIdealSequenceMeasure D)
+        (finiteModelBIdealNaturalFiltration (Coord := Coord) n) hAmeas hBmeas hsubset
+    _ ≤ᵐ[finiteModelBIdealSequenceMeasure D] fun _ =>
+        ilvRadius r0 (n + 1) *
+          (finiteModelBC1C2CoordinateSlabRealConstant S +
+            finiteModelBC1C2LinearTieSlabRealConstant S) := by
+      simpa only [B, radius] using
+        finiteModelALinfL1Outcome_correctedEnvelope_condExp_le S hr0 initial n
+
+/--
+Transparent semantic target for Appendix Lemma 2.  For each source norm pair,
+`A n` is the paper's actual subgradient-failure event at step `n`; the
+conclusion is the printed conditional `O(r_t)` indicator bound, not the
+larger measurable envelope used in the proof.
+-/
+def appendix_lemma2_bad_event_linear_rateSpec : Prop := by
+  classical
+  exact
+    (∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+        {E : ILVEnvironment Voter (Coord → ℝ)}
+        {D : FiniteCoordinateIdealDistributionData Coord}
+        {project : (Coord → ℝ) → Coord → ℝ}
+        (S : FiniteModelBC1C2Source E D project)
+        {r0 : ℝ} (hr0 : 0 < r0) (initial : Coord → ℝ)
+        (A : ℕ → Set (ℕ → Coord → ℝ)),
+        (∀ n, MeasurableSet (A n)) →
+        (∀ n omega, omega ∈ A n ↔
+          ¬ FiniteSubgradientAt
+              (fun y : Coord → ℝ =>
+                AppliedModelingLib.FiniteDimensionalNorms.l2
+                  (fun i => y i - finiteModelBIdealSample n omega i))
+              (finiteModelAL2OutcomeTrajectory D r0 project initial n omega)
+              (l2BallDirection
+                (finiteModelAL2OutcomeTrajectory D r0 project initial n omega)
+                (finiteModelBIdealSample n omega) (ilvRadius r0 (n + 1)))) →
+        ∃ C : ℝ, ∀ n,
+          (finiteModelBIdealSequenceMeasure D)[
+            (A n).indicator (fun _ => (1 : ℝ)) |
+            finiteModelBIdealNaturalFiltration (Coord := Coord) n] ≤ᵐ[
+              finiteModelBIdealSequenceMeasure D]
+            fun _ => C * ilvRadius r0 (n + 1)) ∧
+    (∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+        {E : ILVEnvironment Voter (Coord → ℝ)}
+        {D : FiniteCoordinateIdealDistributionData Coord}
+        {project : (Coord → ℝ) → Coord → ℝ}
+        (S : FiniteModelBC1C2Source E D project)
+        {r0 : ℝ} (hr0 : 0 < r0) (initial : Coord → ℝ)
+        (A : ℕ → Set (ℕ → Coord → ℝ)),
+        (∀ n, MeasurableSet (A n)) →
+        (∀ n omega, omega ∈ A n ↔
+          ¬ FiniteSubgradientAt
+              (fun y : Coord → ℝ =>
+                AppliedModelingLib.FiniteDimensionalNorms.l1
+                  (fun i => y i - finiteModelBIdealSample n omega i))
+              (finiteModelAL1LinfOutcomeTrajectory D r0 project initial n omega)
+              (l1LinfBallDirection
+                (finiteModelAL1LinfOutcomeTrajectory D r0 project initial n omega)
+                (finiteModelBIdealSample n omega) (ilvRadius r0 (n + 1)))) →
+        ∃ C : ℝ, ∀ n,
+          (finiteModelBIdealSequenceMeasure D)[
+            (A n).indicator (fun _ => (1 : ℝ)) |
+            finiteModelBIdealNaturalFiltration (Coord := Coord) n] ≤ᵐ[
+              finiteModelBIdealSequenceMeasure D]
+            fun _ => C * ilvRadius r0 (n + 1)) ∧
+    (∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+        {E : ILVEnvironment Voter (Coord → ℝ)}
+        {D : FiniteCoordinateIdealDistributionData Coord}
+        {project : (Coord → ℝ) → Coord → ℝ}
+        (S : FiniteModelBC1C2Source E D project)
+        {r0 : ℝ} (hr0 : 0 < r0) (initial : Coord → ℝ)
+        (A : ℕ → Set (ℕ → Coord → ℝ)),
+        (∀ n, MeasurableSet (A n)) →
+        (∀ n omega, omega ∈ A n ↔
+          ¬ FiniteSubgradientAt
+              (fun y : Coord → ℝ =>
+                AppliedModelingLib.FiniteDimensionalNorms.linf
+                  (fun i => y i - finiteModelBIdealSample n omega i))
+              (finiteModelALinfL1OutcomeTrajectory D r0 project initial n omega)
+              (linfL1RawDirection
+                (finiteModelALinfL1OutcomeTrajectory D r0 project initial n omega)
+                (finiteModelALinfL1OutcomeRawResponse r0
+                  (finiteModelALinfL1OutcomeTrajectory D r0 project initial)
+                  finiteModelBIdealSample n omega)
+                (ilvRadius r0 (n + 1)))) →
+        ∃ C : ℝ, ∀ n,
+          (finiteModelBIdealSequenceMeasure D)[
+            (A n).indicator (fun _ => (1 : ℝ)) |
+            finiteModelBIdealNaturalFiltration (Coord := Coord) n] ≤ᵐ[
+              finiteModelBIdealSequenceMeasure D]
+            fun _ => C * ilvRadius r0 (n + 1))
+
+/-- Appendix Lemma 2's direct conditional linear-in-radius source bound. -/
+theorem appendix_lemma2_bad_event_linear_rate :
+    appendix_lemma2_bad_event_linear_rateSpec := by
+  classical
+  refine ⟨?_, ?_, ?_⟩
+  · intro Voter Coord _ _ E D project S r0 hr0 initial A hAmeas hAfailure
+    refine ⟨finiteModelBC1C2CoordinateSlabRealConstant S, ?_⟩
+    intro n
+    simpa only [mul_comm] using
+      appendixLemma2_l2_sourceFailureEvent_condExp_le S hr0 initial n (A n)
+        (hAmeas n) (hAfailure n)
+  · intro Voter Coord _ _ E D project S r0 hr0 initial A hAmeas hAfailure
+    refine ⟨finiteModelBC1C2CoordinateSlabRealConstant S, ?_⟩
+    intro n
+    simpa only [mul_comm] using
+      appendixLemma2_l1Linf_sourceFailureEvent_condExp_le S hr0 initial n (A n)
+        (hAmeas n) (hAfailure n)
+  · intro Voter Coord _ _ E D project S r0 hr0 initial A hAmeas hAfailure
+    refine ⟨finiteModelBC1C2CoordinateSlabRealConstant S +
+      finiteModelBC1C2LinearTieSlabRealConstant S, ?_⟩
+    intro n
+    simpa only [mul_comm] using
+      appendixLemma2_linfL1_sourceFailureEvent_condExp_le S hr0 initial n (A n)
+        (hAmeas n) (hAfailure n)
+
+/--
+Proof-support envelope statement for Appendix Lemma 4.  The source-facing
+`Spec` below names its actual weighted subgradient-failure event.
+-/
+private def appendixLemma4WeightedBadEventEnvelopeLinearRate : Prop :=
+  ∀ {Voter Coord Component : Type*} [Fintype Coord] [Fintype Component] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {D : WeightedEuclideanJointSampleData Coord Component}
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E D.idealDistribution project)
+    (A : WeightedEuclideanJointSampleModelAResponseSource D)
+    {r0 : ℝ} (hr0 : 0 < r0) (initial : Coord → ℝ) (n : ℕ),
+    (∀ omega,
+      (∀ k, 0 ≤ D.sampleWeight (AppliedModelingLib.iidSequenceSample n omega) k) →
+        0 < D.sampleWeightNorm2 (AppliedModelingLib.iidSequenceSample n omega) →
+          ¬ FiniteSubgradientAt
+              (weightedEuclideanJointSampleCost D
+                (AppliedModelingLib.iidSequenceSample n omega))
+              (weightedEuclideanJointSampleModelAOutcomeTrajectory
+                A r0 project initial n omega)
+              (weightedEuclideanJointSampleModelARawDirection A
+                (weightedEuclideanJointSampleModelAOutcomeTrajectory
+                  A r0 project initial n omega)
+                (ilvRadius r0 (n + 1))
+                (AppliedModelingLib.iidSequenceSample n omega)) →
+            AppliedModelingLib.iidSequenceSample n omega ∈
+              weightedEuclideanJointSampleBlockBadEvent D
+                (weightedEuclideanJointSampleModelAOutcomeTrajectory
+                  A r0 project initial n omega)
+                (ilvRadius r0 (n + 1))) ∧
+      (AppliedModelingLib.iidSequenceMeasure D.jointMeasure)[
+        fun omega =>
+          (weightedEuclideanJointSampleBlockBadEvent D
+            (weightedEuclideanJointSampleModelAOutcomeTrajectory A r0 project initial n omega)
+            (ilvRadius r0 (n + 1))).indicator (fun _ => (1 : ℝ))
+            (AppliedModelingLib.iidSequenceSample n omega) |
+        AppliedModelingLib.iidSequenceNaturalFiltration
+          (α := (Component → ℝ) × (Coord → ℝ)) n] ≤ᵐ[
+            AppliedModelingLib.iidSequenceMeasure D.jointMeasure]
+        fun _ => ilvRadius r0 (n + 1) *
+          finiteModelBC1C2CoordinateSlabRealConstant S
+
+/-- Envelope proof route for Appendix Lemma 4's direct source statement. -/
+private theorem appendixLemma4_weightedBadEventEnvelopeLinearRate :
+    appendixLemma4WeightedBadEventEnvelopeLinearRate := by
+  intro Voter Coord Component _ _ _ E D project S A r0 hr0 initial n
+  refine ⟨?_, weightedEuclideanJointSampleModelAOutcome_blockBadEvent_condExp_le
+    S A hr0 initial n⟩
+  intro omega hweight hweightNorm hfailure
+  by_contra hbad
+  exact hfailure
+    (weightedEuclideanJointSampleModelARawDirection_subgradient_of_valid_of_notMem_blockBadEvent
+      A (ilvRadius_succ_pos hr0 n) (AppliedModelingLib.iidSequenceSample n omega)
+      hweight hweightNorm hbad)
+
+/-- Proof bridge from Appendix Lemma 4's actual failure event to its envelope. -/
+private theorem appendixLemma4_sourceFailureEvent_condExp_le
+    {Voter Coord Component : Type*} [Fintype Coord] [Fintype Component] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {D : WeightedEuclideanJointSampleData Coord Component}
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E D.idealDistribution project)
+    (Aresponse : WeightedEuclideanJointSampleModelAResponseSource D)
+    {r0 : ℝ} (hr0 : 0 < r0)
+    (initial : Coord → ℝ) (n : ℕ)
+    (A : Set (ℕ → (Component → ℝ) × (Coord → ℝ)))
+    (hAmeas : MeasurableSet A)
+    (hAfailure : ∀ omega, omega ∈ A ↔
+      ¬ FiniteSubgradientAt
+          (weightedEuclideanJointSampleCost D
+            (AppliedModelingLib.iidSequenceSample n omega))
+          (weightedEuclideanJointSampleModelAOutcomeTrajectory
+            Aresponse r0 project initial n omega)
+          (weightedEuclideanJointSampleModelARawDirection Aresponse
+            (weightedEuclideanJointSampleModelAOutcomeTrajectory
+              Aresponse r0 project initial n omega)
+            (ilvRadius r0 (n + 1))
+            (AppliedModelingLib.iidSequenceSample n omega))) :
+    (AppliedModelingLib.iidSequenceMeasure D.jointMeasure)[
+      A.indicator (fun _ => (1 : ℝ)) |
+      AppliedModelingLib.iidSequenceNaturalFiltration
+        (α := (Component → ℝ) × (Coord → ℝ)) n] ≤ᵐ[
+        AppliedModelingLib.iidSequenceMeasure D.jointMeasure]
+      fun _ => ilvRadius r0 (n + 1) *
+        finiteModelBC1C2CoordinateSlabRealConstant S := by
+  classical
+  letI : IsProbabilityMeasure D.jointMeasure := D.probability
+  letI : IsProbabilityMeasure (AppliedModelingLib.iidSequenceMeasure D.jointMeasure) :=
+    AppliedModelingLib.iidSequenceMeasure_isProbabilityMeasure D.jointMeasure
+  let radius : ℝ := ilvRadius r0 (n + 1)
+  let B : Set (ℕ → (Component → ℝ) × (Coord → ℝ)) := {omega |
+    AppliedModelingLib.iidSequenceSample n omega ∈
+      weightedEuclideanJointSampleBlockBadEvent D
+        (weightedEuclideanJointSampleModelAOutcomeTrajectory
+          Aresponse r0 project initial n omega) radius}
+  have htrajectory : Measurable
+      (weightedEuclideanJointSampleModelAOutcomeTrajectory Aresponse r0 project initial n) :=
+    (stronglyMeasurable_weightedEuclideanJointSampleModelAOutcomeTrajectory_natural
+      Aresponse r0 project initial S.project_measurable n).measurable.mono
+      ((AppliedModelingLib.iidSequenceNaturalFiltration
+        (α := (Component → ℝ) × (Coord → ℝ))).le n) le_rfl
+  have hpair : Measurable (fun omega : ℕ → (Component → ℝ) × (Coord → ℝ) =>
+      (weightedEuclideanJointSampleModelAOutcomeTrajectory
+        Aresponse r0 project initial n omega,
+        AppliedModelingLib.iidSequenceSample n omega)) :=
+    htrajectory.prodMk (AppliedModelingLib.measurable_iidSequenceSample n)
+  have hBmeas : MeasurableSet B := by
+    let event : Set ((Coord → ℝ) × ((Component → ℝ) × (Coord → ℝ))) :=
+      {z | z.2 ∈ weightedEuclideanJointSampleBlockBadEvent D z.1 radius}
+    have hevent : MeasurableSet event :=
+      measurableSet_weightedEuclideanJointSampleBlockBadEvent_state_sample D radius
+    simpa only [B, event] using hevent.preimage hpair
+  have hweight : ∀ᵐ omega ∂AppliedModelingLib.iidSequenceMeasure D.jointMeasure,
+      ∀ k, 0 ≤ D.sampleWeight (AppliedModelingLib.iidSequenceSample n omega) k := by
+    have hmap : ∀ᵐ sample ∂Measure.map (AppliedModelingLib.iidSequenceSample n)
+        (AppliedModelingLib.iidSequenceMeasure D.jointMeasure),
+        ∀ k, 0 ≤ D.sampleWeight sample k := by
+      rw [AppliedModelingLib.iidSequenceSample_law D.jointMeasure n]
+      exact D.sampleWeight_nonnegative_ae
+    exact MeasureTheory.ae_of_ae_map
+      (AppliedModelingLib.measurable_iidSequenceSample n).aemeasurable hmap
+  have hweightNorm : ∀ᵐ omega ∂AppliedModelingLib.iidSequenceMeasure D.jointMeasure,
+      0 < D.sampleWeightNorm2 (AppliedModelingLib.iidSequenceSample n omega) := by
+    have hmap : ∀ᵐ sample ∂Measure.map (AppliedModelingLib.iidSequenceSample n)
+        (AppliedModelingLib.iidSequenceMeasure D.jointMeasure),
+        0 < D.sampleWeightNorm2 sample := by
+      rw [AppliedModelingLib.iidSequenceSample_law D.jointMeasure n]
+      exact D.sampleWeightNorm2_pos_ae
+    exact MeasureTheory.ae_of_ae_map
+      (AppliedModelingLib.measurable_iidSequenceSample n).aemeasurable hmap
+  have hsubset : ∀ᵐ omega ∂AppliedModelingLib.iidSequenceMeasure D.jointMeasure,
+      omega ∈ A → omega ∈ B := by
+    filter_upwards [hweight, hweightNorm] with omega hweightomega hnormomega hAomega
+    by_contra hBomega
+    exact (hAfailure omega).mp hAomega
+      (weightedEuclideanJointSampleModelARawDirection_subgradient_of_valid_of_notMem_blockBadEvent
+        Aresponse (ilvRadius_succ_pos hr0 n)
+        (AppliedModelingLib.iidSequenceSample n omega) hweightomega hnormomega hBomega)
+  calc
+    (AppliedModelingLib.iidSequenceMeasure D.jointMeasure)[
+        A.indicator (fun _ => (1 : ℝ)) |
+        AppliedModelingLib.iidSequenceNaturalFiltration
+          (α := (Component → ℝ) × (Coord → ℝ)) n] ≤ᵐ[
+          AppliedModelingLib.iidSequenceMeasure D.jointMeasure]
+        (AppliedModelingLib.iidSequenceMeasure D.jointMeasure)[
+          B.indicator (fun _ => (1 : ℝ)) |
+          AppliedModelingLib.iidSequenceNaturalFiltration
+            (α := (Component → ℝ) × (Coord → ℝ)) n] :=
+      condExp_indicator_le_of_ae_subset
+        (AppliedModelingLib.iidSequenceMeasure D.jointMeasure)
+        (AppliedModelingLib.iidSequenceNaturalFiltration
+          (α := (Component → ℝ) × (Coord → ℝ)) n) hAmeas hBmeas hsubset
+    _ ≤ᵐ[AppliedModelingLib.iidSequenceMeasure D.jointMeasure] fun _ =>
+        ilvRadius r0 (n + 1) * finiteModelBC1C2CoordinateSlabRealConstant S := by
+      simpa only [B, radius] using
+        weightedEuclideanJointSampleModelAOutcome_blockBadEvent_condExp_le
+          S Aresponse hr0 initial n
+
+/--
+Transparent semantic target for Appendix Lemma 4: its actual Definition-2
+subgradient-failure event has a conditional probability of order `r_t`.
+-/
+def appendix_lemma4_weighted_bad_event_linear_rateSpec : Prop :=
+  ∀ {Voter Coord Component : Type*} [Fintype Coord] [Fintype Component] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {D : WeightedEuclideanJointSampleData Coord Component}
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E D.idealDistribution project)
+    (Aresponse : WeightedEuclideanJointSampleModelAResponseSource D)
+    {r0 : ℝ} (hr0 : 0 < r0) (initial : Coord → ℝ)
+    (A : ℕ → Set (ℕ → (Component → ℝ) × (Coord → ℝ))),
+    (∀ n, MeasurableSet (A n)) →
+    (∀ n omega, omega ∈ A n ↔
+      ¬ FiniteSubgradientAt
+          (weightedEuclideanJointSampleCost D
+            (AppliedModelingLib.iidSequenceSample n omega))
+          (weightedEuclideanJointSampleModelAOutcomeTrajectory
+            Aresponse r0 project initial n omega)
+          (weightedEuclideanJointSampleModelARawDirection Aresponse
+            (weightedEuclideanJointSampleModelAOutcomeTrajectory
+              Aresponse r0 project initial n omega)
+            (ilvRadius r0 (n + 1))
+            (AppliedModelingLib.iidSequenceSample n omega))) →
+    ∃ C : ℝ, ∀ n,
+      (AppliedModelingLib.iidSequenceMeasure D.jointMeasure)[
+        (A n).indicator (fun _ => (1 : ℝ)) |
+        AppliedModelingLib.iidSequenceNaturalFiltration
+          (α := (Component → ℝ) × (Coord → ℝ)) n] ≤ᵐ[
+            AppliedModelingLib.iidSequenceMeasure D.jointMeasure]
+        fun _ => C * ilvRadius r0 (n + 1)
+
+/-- Appendix Lemma 4's direct conditional linear-in-radius source bound. -/
+theorem appendix_lemma4_weighted_bad_event_linear_rate :
+    appendix_lemma4_weighted_bad_event_linear_rateSpec := by
+  intro Voter Coord Component _ _ _ E D project S Aresponse r0 hr0 initial A hAmeas hAfailure
+  refine ⟨finiteModelBC1C2CoordinateSlabRealConstant S, ?_⟩
+  intro n
+  simpa only [mul_comm] using
+    appendixLemma4_sourceFailureEvent_condExp_le S Aresponse hr0 initial n (A n)
+      (hAmeas n) (hAfailure n)
+
+/-- Source-facing finite-coordinate C3 formula for a concrete ideal-point law. -/
+def finiteCoordinateC3CarrierFormula
+    {Voter Coord : Type*} [Fintype Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E) : Prop :=
+  finiteCoordinateIdealDistributionFormulaData C3.data
+
+/--
+Exact source-facing C1--C2 surface for a concrete finite-coordinate run.
+Euclidean projection and measurability are retained in the proof carrier, but
+not presented here as if they were additional printed C1/C2 clauses.
+-/
+def finiteCoordinateC1C2SourceFormula
+    {Voter Coord : Type*} [Fintype Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {D : FiniteCoordinateIdealDistributionData Coord}
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E D project) : Prop :=
+  E.solutionSpace.Nonempty ∧
+    IsClosed E.solutionSpace ∧
+      Bornology.IsBounded E.solutionSpace ∧
+        Convex ℝ E.solutionSpace ∧
+          ∀ voter,
+            E.ideal voter ∈ E.solutionSpace ∧
+              (∀ x, x ∈ E.solutionSpace →
+                E.utility voter x ≤ E.utility voter (E.ideal voter)) ∧
+              ∀ x, x ∈ E.solutionSpace →
+                E.utility voter x = E.utility voter (E.ideal voter) →
+                  x = E.ideal voter
+
+/-- The proof carrier supplies the exact C1--C2 source-facing surface. -/
+theorem finiteCoordinateC1C2SourceFormula_of_source
+    {Voter Coord : Type*} [Fintype Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {D : FiniteCoordinateIdealDistributionData Coord}
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E D project) :
+    finiteCoordinateC1C2SourceFormula S :=
+  ⟨S.solutionSpace_nonempty, S.geometry.closed_solutionSpace,
+    S.geometry.bounded_solutionSpace, S.geometry.convex_solutionSpace,
+    S.ideal_is_unique_utility_maximizer⟩
+
+/--
+Complete source-facing Definition 2 data: the joint voter law, block
+decomposition, and the displayed normalized weighted-Euclidean utility.
+`weightedEuclideanJointSampleUtility` is the concrete one-voter formula used
+by the Proposition 1 execution, rather than the older generic helper route.
+-/
+def weightedEuclideanJointSampleFormulaData
+    {Coord Component : Type*} [Fintype Coord] [Fintype Component]
+    (D : WeightedEuclideanJointSampleData Coord Component) : Prop :=
+  IsProbabilityMeasure D.jointMeasure ∧
+    D.densityBound ≠ ⊤ ∧
+      (∃ density : ((Component → ℝ) × (Coord → ℝ)) → ℝ≥0∞,
+        Measurable density ∧
+          D.jointMeasure =
+            ((volume : Measure (Component → ℝ)).prod (volume : Measure (Coord → ℝ))).withDensity
+              density ∧
+            ∀ᵐ sample ∂((volume : Measure (Component → ℝ)).prod
+              (volume : Measure (Coord → ℝ))), density sample ≤ D.densityBound) ∧
+        Measure.map Prod.snd D.jointMeasure = D.idealDistribution.idealMeasure ∧
+          D.weightSet.Nonempty ∧
+            Bornology.IsBounded D.weightSet ∧
+              IsClosed D.weightSet ∧
+                Convex ℝ D.weightSet ∧
+                  (∀ weight, weight ∈ D.weightSet → ∀ k, 0 ≤ weight k) ∧
+                    (∀ᵐ sample ∂D.jointMeasure, sample.1 ∈ D.weightSet) ∧
+                      (∀ᵐ sample ∂D.jointMeasure, sample.1 ≠ 0) ∧
+                        (∀ k, (D.componentBlock k).Nonempty) ∧
+                          (∀ k l, k ≠ l → Disjoint (D.componentBlock k) (D.componentBlock l)) ∧
+                            (∀ i, ∃ k, i ∈ D.componentBlock k) ∧
+                              ∀ sample state,
+                                weightedEuclideanJointSampleUtility D sample state =
+                                  -Finset.univ.sum (fun k =>
+                                    (D.sampleWeight sample k / D.sampleWeightNorm2 sample) *
+                                      finiteCoordinateBlockL2Distance
+                                        (D.componentBlock k) state (D.sampleIdeal sample k))
+
+/--
+Complete source-facing Definition 3 formula for one utility family: every
+coordinate utility is concave and their sum is the voter's utility.
+-/
+def decomposableUtilityFamilyFormulaData
+    {Voter Point Coord : Type*}
+    (E : ILVEnvironment Voter Point)
+    (D : DecomposableStructure Voter Point Coord) : Prop :=
+  (∀ coordinate voter, ConcaveOn ℝ Set.univ (D.coordinateUtility coordinate voter)) ∧
+    ∀ voter x,
+      E.utility voter x =
+        D.coords.sum (fun coordinate =>
+          D.coordinateUtility coordinate voter (D.coordinate coordinate x))
+
+/-- Source-facing identification of the finite `Lp` population objective. -/
+def finiteModelBLpSocialObjectiveSourceFormula
+    {Voter Coord : Type*} [Fintype Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {D : FiniteCoordinateIdealDistributionData Coord} {p : ℝ}
+    (T : FiniteModelBLpSocialObjectiveSource E D p) : Prop :=
+  (∀ x, E.societalUtility x = -finiteModelBExpectedLpCost D p x) ∧
+    ∀ x, x ∈ E.socialOptimal ↔ x ∈ E.solutionSpace ∧
+      IsMaxOn E.societalUtility E.solutionSpace x
+
+/-- Source-facing identification of the finite `L∞` population objective. -/
+def finiteModelBLinfSocialObjectiveSourceFormula
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {D : FiniteCoordinateIdealDistributionData Coord}
+    (T : FiniteModelBLinfSocialObjectiveSource E D) : Prop :=
+  (∀ x, E.societalUtility x = -finiteModelBExpectedLinfCost D x) ∧
+    ∀ x, x ∈ E.socialOptimal ↔ x ∈ E.solutionSpace ∧
+      IsMaxOn E.societalUtility E.solutionSpace x
+
+/-- The direct C1--C3 and social-objective source premises for a finite `Lp` run. -/
+def finiteModelBLpSourceInputsFormula
+    {Voter Coord : Type*} [Fintype Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project) {p : ℝ}
+    (T : FiniteModelBLpSocialObjectiveSource E C3.data p) : Prop :=
+  finiteCoordinateC3CarrierFormula C3 ∧
+    finiteModelBC1C2SourceFormula S ∧
+      finiteModelBLpSocialObjectiveSourceFormula T
+
+/-- The direct C1--C3 and social-objective source premises for a finite `L∞` run. -/
+def finiteModelBLinfSourceInputsFormula
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project)
+    (T : FiniteModelBLinfSocialObjectiveSource E C3.data) : Prop :=
+  finiteCoordinateC3CarrierFormula C3 ∧
+    finiteModelBC1C2SourceFormula S ∧
+      finiteModelBLinfSocialObjectiveSourceFormula T
+
+theorem finiteModelBLpSourceInputsFormula_of_sources
+    {Voter Coord : Type*} [Fintype Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project) {p : ℝ}
+    (T : FiniteModelBLpSocialObjectiveSource E C3.data p) :
+    finiteModelBLpSourceInputsFormula C3 S T :=
+  ⟨⟨C3.data.probability, C3.data.densityBound_ne_top, C3.data.density_measurable⟩,
+    S.finiteModelBC1C2SourceFormula,
+    ⟨T.societalUtility_eq_neg_expectedLpCost,
+      T.mem_socialOptimal_iff_societalUtility_isMaxOn⟩⟩
+
+theorem finiteModelBLinfSourceInputsFormula_of_sources
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project)
+    (T : FiniteModelBLinfSocialObjectiveSource E C3.data) :
+    finiteModelBLinfSourceInputsFormula C3 S T :=
+  ⟨⟨C3.data.probability, C3.data.densityBound_ne_top, C3.data.density_measurable⟩,
+    S.finiteModelBC1C2SourceFormula,
+    ⟨T.societalUtility_eq_neg_expectedLinfCost,
+      T.mem_socialOptimal_iff_societalUtility_isMaxOn⟩⟩
+
+/-- The six finite-coordinate C1--C3 branches stated by Theorem 1. -/
+def theorem1_finite_c3_six_casesSpec : Prop := by
+  classical
+  exact
+  (∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+      {E : ILVEnvironment Voter (Coord → ℝ)}
+      (C3 : FiniteCoordinateC3Carrier E)
+      {project : (Coord → ℝ) → Coord → ℝ}
+      (S : FiniteModelBC1C2Source E C3.data project)
+      {r0 : ℝ}, 0 < r0 →
+      ∀ initial : Coord → ℝ, initial ∈ E.solutionSpace →
+      ∀ T : FiniteModelBLpSocialObjectiveSource E C3.data 2,
+        finiteModelBLpSourceInputsFormula C3 S T ∧
+          @OutcomeIndexedILVConvergesToSocietalOptimal
+            Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+            (finiteModelBIdealSequenceMeasure C3.data)
+            (finiteModelAL2OutcomeTrajectory C3.data r0 project initial)) ∧
+  (∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+      {E : ILVEnvironment Voter (Coord → ℝ)}
+      (C3 : FiniteCoordinateC3Carrier E)
+      {project : (Coord → ℝ) → Coord → ℝ}
+      (S : FiniteModelBC1C2Source E C3.data project)
+      {r0 : ℝ}, 0 < r0 →
+      ∀ initial : Coord → ℝ, initial ∈ E.solutionSpace →
+      ∀ T : FiniteModelBLpSocialObjectiveSource E C3.data 2,
+        finiteModelBLpSourceInputsFormula C3 S T ∧
+          @OutcomeIndexedILVConvergesToSocietalOptimal
+            Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+            (finiteModelBIdealSequenceMeasure C3.data)
+            (finiteModelBOutcomeTrajectory C3.data 2 r0 project initial)) ∧
+  (∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+      {E : ILVEnvironment Voter (Coord → ℝ)}
+      (C3 : FiniteCoordinateC3Carrier E)
+      {project : (Coord → ℝ) → Coord → ℝ}
+      (S : FiniteModelBC1C2Source E C3.data project)
+      {r0 : ℝ}, 0 < r0 →
+      ∀ initial : Coord → ℝ, initial ∈ E.solutionSpace →
+      ∀ T : FiniteModelBLpSocialObjectiveSource E C3.data 1,
+        finiteModelBLpSourceInputsFormula C3 S T ∧
+          @OutcomeIndexedILVConvergesToSocietalOptimal
+            Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+            (finiteModelBIdealSequenceMeasure C3.data)
+            (finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial)) ∧
+  (∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+      {E : ILVEnvironment Voter (Coord → ℝ)}
+      (C3 : FiniteCoordinateC3Carrier E)
+      {project : (Coord → ℝ) → Coord → ℝ}
+      (S : FiniteModelBC1C2Source E C3.data project)
+      {r0 : ℝ}, 0 < r0 →
+      ∀ initial : Coord → ℝ, initial ∈ E.solutionSpace →
+      ∀ T : FiniteModelBLpSocialObjectiveSource E C3.data 1,
+        finiteModelBLpSourceInputsFormula C3 S T ∧
+          @OutcomeIndexedILVConvergesToSocietalOptimal
+            Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+            (finiteModelBIdealSequenceMeasure C3.data)
+            (finiteModelBOutcomeTrajectory C3.data 1 r0 project initial)) ∧
+  (∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+      {E : ILVEnvironment Voter (Coord → ℝ)}
+      (C3 : FiniteCoordinateC3Carrier E)
+      {project : (Coord → ℝ) → Coord → ℝ}
+      (S : FiniteModelBC1C2Source E C3.data project)
+      {r0 : ℝ}, 0 < r0 →
+      ∀ initial : Coord → ℝ, initial ∈ E.solutionSpace →
+      ∀ T : FiniteModelBLinfSocialObjectiveSource E C3.data,
+        finiteModelBLinfSourceInputsFormula C3 S T ∧
+          @OutcomeIndexedILVConvergesToSocietalOptimal
+            Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+            (finiteModelBIdealSequenceMeasure C3.data)
+            (finiteModelALinfL1OutcomeTrajectory C3.data r0 project initial)) ∧
+  (∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+      {E : ILVEnvironment Voter (Coord → ℝ)}
+      (C3 : FiniteCoordinateC3Carrier E)
+      {project : (Coord → ℝ) → Coord → ℝ}
+      (S : FiniteModelBC1C2Source E C3.data project)
+      {r0 : ℝ}, 0 < r0 →
+      ∀ initial : Coord → ℝ, initial ∈ E.solutionSpace →
+      ∀ T : FiniteModelBLinfSocialObjectiveSource E C3.data,
+        finiteModelBLinfSourceInputsFormula C3 S T ∧
+          @OutcomeIndexedILVConvergesToSocietalOptimal
+            Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+            (finiteModelBIdealSequenceMeasure C3.data)
+            (finiteModelBLinfOutcomeTrajectory C3.data r0 project initial))
+
+/-- Proof endpoint for the six concrete Theorem 1 branches. -/
+theorem theorem1_finite_c3_six_cases : theorem1_finite_c3_six_casesSpec := by
+  classical
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro Voter Coord _ _ E C3 project S r0 hr0 initial hinitial T
+    exact ⟨finiteModelBLpSourceInputsFormula_of_sources C3 S T,
+      theorem1_modelA_l2_l2_finite_c3_convergence C3 S hr0 initial hinitial T⟩
+  · intro Voter Coord _ _ E C3 project S r0 hr0 initial hinitial T
+    exact ⟨finiteModelBLpSourceInputsFormula_of_sources C3 S T,
+      theorem1_modelB_l2_l2_finite_c3_convergence C3 S hr0 initial hinitial T⟩
+  · intro Voter Coord _ _ E C3 project S r0 hr0 initial hinitial T
+    exact ⟨finiteModelBLpSourceInputsFormula_of_sources C3 S T,
+      theorem1_modelA_l1_linf_finite_c3_convergence C3 S hr0 initial hinitial T⟩
+  · intro Voter Coord _ _ E C3 project S r0 hr0 initial hinitial T
+    exact ⟨finiteModelBLpSourceInputsFormula_of_sources C3 S T,
+      theorem1_modelB_l1_linf_finite_c3_convergence C3 S hr0 initial hinitial T⟩
+  · intro Voter Coord _ _ E C3 project S r0 hr0 initial hinitial T
+    exact ⟨finiteModelBLinfSourceInputsFormula_of_sources C3 S T,
+      theorem1_modelA_linf_l1_finite_c3_convergence C3 S hr0 initial hinitial T⟩
+  · intro Voter Coord _ _ E C3 project S r0 hr0 initial hinitial T
+    exact ⟨finiteModelBLinfSourceInputsFormula_of_sources C3 S T,
+      theorem1_modelB_linf_l1_finite_c3_convergence C3 S hr0 initial hinitial T⟩
+
+/-- The finite-exponent Holder-dual Model B endpoint stated by Theorem 2. -/
+def theorem2_modelB_finite_holder_dual_c3Spec : Prop :=
+  ∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project)
+    {p q r0 : ℝ}, HolderDualFinite p q → 0 < r0 →
+    ∀ initial : Coord → ℝ, initial ∈ E.solutionSpace →
+    ∀ T : FiniteModelBLpSocialObjectiveSource E C3.data p,
+      finiteModelBLpSourceInputsFormula C3 S T ∧
+        (∀ᵐ omega ∂finiteModelBIdealSequenceMeasure C3.data, ∀ n,
+          ModelBFiniteResponseAt (SourceNorm.lp q)
+            (finiteModelBOutcomeTrajectory C3.data p r0 project initial n omega)
+            (ilvRadius r0 (n + 1))
+            (fun i => -lpCostGradientCandidate p
+              (fun j => finiteModelBOutcomeTrajectory C3.data p r0 project initial n omega j -
+                finiteModelBIdealSample n omega j) i)
+            (finiteModelBOutcomeRawResponse p r0
+              (finiteModelBOutcomeTrajectory C3.data p r0 project initial)
+              finiteModelBIdealSample n omega)) ∧
+          @OutcomeIndexedILVConvergesToSocietalOptimal
+            Voter (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance E
+            (finiteModelBIdealSequenceMeasure C3.data)
+            (finiteModelBOutcomeTrajectory C3.data p r0 project initial)
+
+/-- Proof endpoint for the finite Holder-dual Theorem 2 contract. -/
+theorem theorem2_modelB_finite_holder_dual_c3 :
+    theorem2_modelB_finite_holder_dual_c3Spec := by
+  intro Voter Coord _ _ E C3 project S p q r0 hdual hr0 initial hinitial T
+  refine ⟨finiteModelBLpSourceInputsFormula_of_sources C3 S T, ?_,
+    theorem2_modelB_finite_holder_dual_c3_convergence C3 S hdual hr0 initial hinitial T⟩
+  exact finiteModelBOutcomeRawResponse_is_modelBResponse_ae_all
+    C3.data hdual project initial S.project_measurable
+
+/--
+The source-facing behavior of a selected Model A response for one weighted
+Euclidean sample.  The raw response is measurable and, for every valid
+nonnegative nonzero weight vector, is a favorite point in the displayed raw
+Euclidean query ball.  This keeps the selected tie-breaking rule visible in
+Proposition 1 rather than treating its record name as a semantic premise.
+-/
+def weightedEuclideanJointSampleModelAResponseSourceFormula
+    {Coord Component : Type*} [Fintype Coord] [Fintype Component] [Nonempty Coord]
+    (D : WeightedEuclideanJointSampleData Coord Component)
+    (A : WeightedEuclideanJointSampleModelAResponseSource D) : Prop :=
+  (∀ radius, Measurable (fun z :
+      (Coord → ℝ) × ((Component → ℝ) × (Coord → ℝ)) =>
+      A.rawResponse z.1 z.2 radius)) ∧
+    ∀ state radius sample, 0 < radius →
+      (∀ k, 0 ≤ D.sampleWeight sample k) →
+        0 < D.sampleWeightNorm2 sample →
+          WeightedEuclideanJointSampleModelARawResponseAt D state radius sample
+            (A.rawResponse state sample radius)
+
+/-- The concrete Definition 2 joint-law Model A and Model B Proposition 1 endpoints. -/
+def proposition1_weighted_euclidean_joint_c3Spec : Prop :=
+  (∀ {Voter Coord Component : Type*}
+      [Fintype Coord] [Fintype Component] [Nonempty Coord]
+      {E : ILVEnvironment Voter (Coord → ℝ)}
+      (D : WeightedEuclideanJointSampleData Coord Component)
+      {project : (Coord → ℝ) → Coord → ℝ}
+      (S : FiniteModelBC1C2Source E D.idealDistribution project)
+      (A : WeightedEuclideanJointSampleModelAResponseSource D)
+      {r0 : ℝ}, 0 < r0 →
+      ∀ initial : Coord → ℝ, initial ∈ E.solutionSpace →
+      ∀ T : WeightedEuclideanJointSampleSocialObjectiveSource E D,
+        finiteModelBC1C2SourceFormula S ∧
+          weightedEuclideanJointSampleModelAResponseSourceFormula D A ∧
+            weightedEuclideanJointSamplePopulationMinimizerSet D E.solutionSpace =
+              E.socialOptimal ∧
+              @OutcomeIndexedILVConvergesToSocietalOptimal
+                Voter (ℕ → (Component → ℝ) × (Coord → ℝ)) (Coord → ℝ)
+                inferInstance inferInstance E (AppliedModelingLib.iidSequenceMeasure D.jointMeasure)
+                (weightedEuclideanJointSampleModelAOutcomeTrajectory A r0 project initial)) ∧
+  (∀ {Voter Coord Component : Type*}
+      [Fintype Coord] [Fintype Component] [Nonempty Coord]
+      {E : ILVEnvironment Voter (Coord → ℝ)}
+      (D : WeightedEuclideanJointSampleData Coord Component)
+      {project : (Coord → ℝ) → Coord → ℝ}
+      (S : FiniteModelBC1C2Source E D.idealDistribution project)
+      {r0 : ℝ}, 0 < r0 →
+      ∀ initial : Coord → ℝ, initial ∈ E.solutionSpace →
+      ∀ T : WeightedEuclideanJointSampleSocialObjectiveSource E D,
+        finiteModelBC1C2SourceFormula S ∧
+          weightedEuclideanJointSamplePopulationMinimizerSet D E.solutionSpace =
+            E.socialOptimal ∧
+            @OutcomeIndexedILVConvergesToSocietalOptimal
+              Voter (ℕ → (Component → ℝ) × (Coord → ℝ)) (Coord → ℝ)
+              inferInstance inferInstance E (AppliedModelingLib.iidSequenceMeasure D.jointMeasure)
+              (weightedEuclideanJointSampleOutcomeTrajectory D r0 project initial))
+
+/-- Proof endpoint for both concrete Proposition 1 response models. -/
+theorem proposition1_weighted_euclidean_joint_c3 :
+    proposition1_weighted_euclidean_joint_c3Spec := by
+  constructor
+  · intro Voter Coord Component _ _ _ E D project S A r0 hr0 initial hinitial T
+    refine ⟨S.finiteModelBC1C2SourceFormula,
+      ⟨A.rawResponse_measurable, A.rawResponse_exact_of_valid⟩,
+      T.minimizerSet_eq_socialOptimal, ?_⟩
+    exact proposition1_weighted_euclidean_l2_modelA_joint_execution_convergence
+      D S A hr0 initial hinitial T
+  · intro Voter Coord Component _ _ _ E D project S r0 hr0 initial hinitial T
+    refine ⟨S.finiteModelBC1C2SourceFormula, T.minimizerSet_eq_socialOptimal, ?_⟩
+    exact weightedEuclideanJointSampleCanonicalMinimizerSetExecution_outcomeIndexedConvergesToSocialOptimal
+      D S hr0 initial hinitial T
+
+/--
+Proposition 2 under the coordinatewise-boundary Model B clarification used by
+its proof.  The displayed Model B trace moves every active coordinate by the
+full `L∞` radius toward that coordinate of the sampled voter's ideal.  The
+expected-`L1` minimizer set is the transparent feasible coordinatewise-median
+target for this sign process, not a restriction that the paper's decomposable
+utilities be spatial `L1`.  The proof's coordinatewise comparison is justified
+by an explicit product-coordinate feasible-set condition; arbitrary convex
+feasible sets do not suffice.  The canonical iid traces are also explicitly
+identified as raw Model A responses for the sampled voters; this prevents the
+convergence proof for the ideal-sampled sign process from floating separately
+from the decomposable-utility execution stated in the proposition.
+-/
+def proposition2_coordinatewise_boundary_finite_c3_medianSpec : Prop :=
+  ∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    (D : DecomposableStructure Voter (Coord → ℝ) Coord)
+    (hdecomposable : IsDecomposableUtilitiesWith E D)
+    (hcoords : D.coords = Finset.univ)
+    (hcoordinate : ∀ m x, D.coordinate m x = x m)
+    (hnorm : UsesFiniteCoordinateNormDistance E)
+    (hproductBox : ∀ {x y : Coord → ℝ},
+      x ∈ E.solutionSpace → y ∈ E.solutionSpace →
+        ∀ m : Coord, ∃ replacement : Coord → ℝ,
+          replacement ∈ E.solutionSpace ∧ replacement m = y m ∧
+            ∀ l : Coord, l ≠ m → replacement l = x l)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project)
+    {r0 : ℝ}, 0 < r0 →
+    ∀ initial : Coord → ℝ, initial ∈ E.solutionSpace →
+      (∃ sampledVoter : (Coord → ℝ) → Voter,
+        (∀ᵐ ideal ∂C3.data.idealMeasure,
+          E.ideal (sampledVoter ideal) = ideal) ∧
+          (∀ᵐ omega ∂finiteModelBIdealSequenceMeasure C3.data, ∀ n,
+            ModelARawResponseAt E SourceNorm.linfty
+              (finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial n omega)
+              (ilvRadius r0 (n + 1))
+              (sampledVoter (finiteModelBIdealSample n omega))
+              (finiteModelAL1LinfOutcomeRawResponse r0
+                (finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial)
+                finiteModelBIdealSample n omega))) →
+      finiteCoordinateC3CarrierFormula C3 ∧
+        finiteModelBC1C2SourceFormula S ∧
+          (∃ sampledVoter : (Coord → ℝ) → Voter,
+            (∀ᵐ ideal ∂C3.data.idealMeasure,
+              E.ideal (sampledVoter ideal) = ideal) ∧
+              (∀ᵐ omega ∂finiteModelBIdealSequenceMeasure C3.data, ∀ n,
+                ModelARawResponseAt E SourceNorm.linfty
+                  (finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial n omega)
+                  (ilvRadius r0 (n + 1))
+                  (sampledVoter (finiteModelBIdealSample n omega))
+                  (finiteModelAL1LinfOutcomeRawResponse r0
+                    (finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial)
+                    finiteModelBIdealSample n omega))) ∧
+          (∀ {center response : Coord → ℝ} {r : ℝ} {voter : Voter},
+            ModelAResponseAt E SourceNorm.linfty center r voter response →
+              ∀ m : Coord,
+                IsMaxOn (fun z : ℝ => D.coordinateUtility m voter z)
+                  {z | ∃ candidate,
+                    candidate ∈ LocalNeighborhood E SourceNorm.linfty center r ∧
+                      D.coordinate m candidate = z}
+                  (D.coordinate m response)) ∧
+          (∀ n omega,
+            ModelBCoordinatewiseBoundaryResponseAt
+              (finiteModelBOutcomeTrajectory C3.data 1 r0 project initial n omega)
+              (finiteModelBIdealSample n omega) (ilvRadius r0 (n + 1))
+              (finiteModelBOutcomeRawResponse 1 r0
+                (finiteModelBOutcomeTrajectory C3.data 1 r0 project initial)
+                finiteModelBIdealSample n omega)) ∧
+            @AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
+              (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance
+              (finiteModelBIdealSequenceMeasure C3.data)
+              (finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial)
+              (finiteModelBExpectedLpMinimizerSet C3.data 1 E.solutionSpace) ∧
+            @AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
+              (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance
+              (finiteModelBIdealSequenceMeasure C3.data)
+              (finiteModelBOutcomeTrajectory C3.data 1 r0 project initial)
+              (finiteModelBExpectedLpMinimizerSet C3.data 1 E.solutionSpace)
+
+/-- Proof endpoint for Proposition 2 under its coordinatewise Model B reading. -/
+theorem proposition2_coordinatewise_boundary_finite_c3_median :
+    proposition2_coordinatewise_boundary_finite_c3_medianSpec := by
+  intro Voter Coord _ _ E C3 D hdecomposable hcoords hcoordinate hnorm hproductBox
+    project S r0 hr0 initial hinitial hexecution
+  refine ⟨⟨C3.data.probability, C3.data.densityBound_ne_top,
+    C3.data.density_measurable⟩, S.finiteModelBC1C2SourceFormula, hexecution, ?_, ?_, ?_, ?_⟩
+  · classical
+    let R : FiniteCoordinateLinfCoordinateReplacementSource E D :=
+      { normDistance := hnorm
+        productBox :=
+          { coordinate_update_mem_solutionSpace := by
+              intro x y hx hy m
+              obtain ⟨replacement, hmem, hm, hother⟩ := hproductBox hx hy m
+              have hupdate : Function.update x m (y m) = replacement := by
+                funext l
+                by_cases hl : l = m
+                · subst l
+                  simp [hm]
+                · simp [Function.update, hl, hother l hl]
+              simpa [hupdate] using hmem }
+        coordinate_eq := by
+          intro m _ x
+          exact hcoordinate m x }
+    let B : DecomposableLinfLocalResponseBridge E D :=
+      decomposableLinfLocalResponseBridge_of_coordinateReplacement hdecomposable
+        (decomposableLinfCoordinateReplacement_of_finiteCoordinate R)
+    intro center response r voter hresponse m
+    exact B.coordinate_response_isMaxOn hresponse m (by simp [hcoords])
+  · intro n omega
+    exact finiteModelBOutcomeRawResponse_one_is_coordinatewiseBoundary
+      r0 (finiteModelBOutcomeTrajectory C3.data 1 r0 project initial)
+      finiteModelBIdealSample n omega
+  · exact finiteModelAL1LinfCanonicalPerturbedMinimizerSetExecution_outcomeIndexedConverges
+      C3 S hr0 initial hinitial
+  · exact finiteModelBCanonicalLpOneMinimizerSetExecution_outcomeIndexedConverges
+      C3 S hr0 initial hinitial
 
 end GKGMM19IterativeLocalVoting

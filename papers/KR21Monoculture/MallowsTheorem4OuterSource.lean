@@ -23,7 +23,7 @@ strict half additionally uses almost-everywhere strict value order, exactly
 where strict uniqueness needs it.
 -/
 
-open EconCSLib MeasureTheory ProbabilityTheory Filter
+open AppliedModelingLib MeasureTheory ProbabilityTheory Filter
 
 namespace KR21Monoculture
 

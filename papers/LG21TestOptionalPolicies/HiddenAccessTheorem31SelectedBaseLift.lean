@@ -13,7 +13,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-- Transport an a.e. selected-base fact to the original base law when every

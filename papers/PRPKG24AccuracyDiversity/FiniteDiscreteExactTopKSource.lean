@@ -14,7 +14,7 @@ open scoped BigOperators
 
 namespace PRPKG24AccuracyDiversity
 
-open EconCSLib
+open AppliedModelingLib
 
 /--
 For a nonnegative finite iid value law, the optimizer's at-most-`k` count
@@ -25,16 +25,16 @@ theorem finiteDiscreteIidTopKExpected_eq_expected_exactTopK
     (itemLaw : PMF Omega) (k : ℕ) (value : Omega → ℝ) (a : ℕ)
     (hvalue_nonneg : ∀ omega, 0 ≤ value omega) :
     finiteDiscreteIidTopKExpected Omega itemLaw k value a =
-      EconCSLib.pmfExp (EconCSLib.pmfProduct (Fin a) Omega itemLaw)
+      AppliedModelingLib.pmfExp (AppliedModelingLib.pmfProduct (Fin a) Omega itemLaw)
         (fun sample : Fin a → Omega =>
-          EconCSLib.Probability.sampleTopKSum
+          AppliedModelingLib.Probability.sampleTopKSum
             (fun i => value (sample i)) k) := by
   unfold finiteDiscreteIidTopKExpected iidTopKExpectedOn
-  refine EconCSLib.pmfExp_congr _ ?_
+  refine AppliedModelingLib.pmfExp_congr _ ?_
   intro sample
-  simpa [topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets] using
-    (EconCSLib.Probability.topKSumOn_eq_sampleTopKSum_of_forall_nonneg
+  simpa [topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets] using
+    (AppliedModelingLib.Probability.topKSumOn_eq_sampleTopKSum_of_forall_nonneg
       (fun i => value (sample i)) k (fun i => hvalue_nonneg (sample i)))
 
 /--
@@ -51,12 +51,12 @@ theorem finiteDiscreteIidTopKModel_objective_eq_source_experiment
     ((TopKValueOracle.common T
       (finiteDiscreteIidTopKExpected Omega itemLaw k value)).toConsumptionModel
         (fun t => (preferenceLaw t).toReal) k).objective a =
-      EconCSLib.pmfExp preferenceLaw
+      AppliedModelingLib.pmfExp preferenceLaw
         (fun _t =>
-          EconCSLib.pmfExp
-            (EconCSLib.pmfProduct (Fin (a.count _t)) Omega itemLaw)
+          AppliedModelingLib.pmfExp
+            (AppliedModelingLib.pmfProduct (Fin (a.count _t)) Omega itemLaw)
             (fun sample : Fin (a.count _t) → Omega =>
-              EconCSLib.Probability.sampleTopKSum
+              AppliedModelingLib.Probability.sampleTopKSum
                 (fun i => value (sample i)) k)) := by
   let M : ConsumptionModel T :=
     (TopKValueOracle.common T
@@ -64,19 +64,19 @@ theorem finiteDiscreteIidTopKModel_objective_eq_source_experiment
         (fun t => (preferenceLaw t).toReal) k
   calc
     M.objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t => M.valueOfCount t (a.count t)) :=
       ConsumptionModel.objective_eq_sourcePreferenceLaw_pmfExp M a
         preferenceLaw (by intro t; rfl)
     _ =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
-              (EconCSLib.pmfProduct (Fin (a.count t)) Omega itemLaw)
+            AppliedModelingLib.pmfExp
+              (AppliedModelingLib.pmfProduct (Fin (a.count t)) Omega itemLaw)
               (fun sample : Fin (a.count t) → Omega =>
-                EconCSLib.Probability.sampleTopKSum
+                AppliedModelingLib.Probability.sampleTopKSum
                   (fun i => value (sample i)) k)) := by
-      refine EconCSLib.pmfExp_congr preferenceLaw ?_
+      refine AppliedModelingLib.pmfExp_congr preferenceLaw ?_
       intro t
       simpa [M, TopKValueOracle.toConsumptionModel,
         TopKValueOracle.common_expectedTopSum] using
@@ -108,20 +108,20 @@ theorem theorem1_i_finiteDiscrete_iid_exact_source_formula
     (hvalue_le : ∀ omega, value omega ≤ xTop)
     (hvalue_split : ∀ omega, value omega = xTop ∨ value omega ≤ xSecond)
     (htop_mass_pos :
-      0 < EconCSLib.pmfProb itemLaw (fun omega => value omega = xTop))
+      0 < AppliedModelingLib.pmfProb itemLaw (fun omega => value omega = xTop))
     (hnontop_mass_pos :
-      0 < EconCSLib.pmfProb itemLaw (fun omega => ¬ value omega = xTop))
+      0 < AppliedModelingLib.pmfProb itemLaw (fun omega => ¬ value omega = xTop))
     (hpreference_pos : ∀ t : ItemType T, 0 < (preferenceLaw t).toReal) :
     (∀ a : CountAllocation T,
       ((TopKValueOracle.common T
         (finiteDiscreteIidTopKExpected Omega itemLaw k value)).toConsumptionModel
           (fun t => (preferenceLaw t).toReal) k).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun _t =>
-            EconCSLib.pmfExp
-              (EconCSLib.pmfProduct (Fin (a.count _t)) Omega itemLaw)
+            AppliedModelingLib.pmfExp
+              (AppliedModelingLib.pmfProduct (Fin (a.count _t)) Omega itemLaw)
               (fun sample : Fin (a.count _t) → Omega =>
-                EconCSLib.Probability.sampleTopKSum
+                AppliedModelingLib.Probability.sampleTopKSum
                   (fun i => value (sample i)) k))) ∧
       ∀ t : ItemType T,
         Filter.Tendsto

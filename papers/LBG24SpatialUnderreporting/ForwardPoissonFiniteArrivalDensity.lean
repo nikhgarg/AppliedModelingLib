@@ -1,6 +1,6 @@
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalFiniteTerminalDensity
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalUnboundedStopping
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalRenewalCountMarginal
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalFiniteTerminalDensity
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalUnboundedStopping
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalRenewalCountMarginal
 
 /-!
 # Finite forward-Poisson arrival density for LBG
@@ -14,7 +14,7 @@ a predictable stopping clock.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal ProbabilityTheory
 
 noncomputable section

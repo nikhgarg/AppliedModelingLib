@@ -23,8 +23,12 @@ open MeasureTheory Set
 
 /-! ## Ordered continuation game -/
 
-/-- A bidder's complete continuation plan.  It may depend on the remaining
-rank, the entire public dropout-price history, and own value. -/
+/-- A common (symmetric) complete continuation plan.  It may depend on the
+remaining rank, the entire public dropout-price history, and own value, but
+has no bidder-identity coordinate.  Applying `historyStrategy` below yields a
+bidder-indexed profile that uses this same plan at every identity.  This is a
+deliberate finite formalization scope restriction, not a representation of
+arbitrary bidder-indexed source strategy profiles. -/
 abbrev Theorem8ContinuationPlan :=
   ℕ → Theorem8SourcePriceHistory → ℝ → ℝ
 
@@ -879,8 +883,8 @@ theorem theorem8_named_plan_ordered_ex_post_best_response
 
 /-! ## Legal-history ex-post PBE -/
 
-/-- Regard one anonymous continuation plan as a bidder-indexed full-history
-strategy profile. -/
+/-- Regard one common continuation plan as a bidder-indexed full-history
+strategy profile by applying the same plan at every bidder identity. -/
 def Theorem8ContinuationPlan.historyStrategy
     (plan : Theorem8ContinuationPlan) (Bidder : Type*) :
     Theorem8ContinuousHistoryStrategy Bidder where

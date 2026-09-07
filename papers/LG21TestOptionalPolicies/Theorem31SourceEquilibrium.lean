@@ -12,8 +12,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 
 /--
 Optional-reporting Theorem 3.1 source-equilibrium bridge.  The closed
@@ -106,7 +106,7 @@ theorem paper_theorem3_1_optional_reporting_source_equilibrium_of_no_report_mixt
           (reportedEstimate base) (fun _score : ℝ => noReportEstimate base) := by
     intro base
     exact
-      EconCSLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
+      AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
         (fun score => hdecision_payoff base score)
   have hEq :
       lg21SourceEquilibrium

@@ -1,0 +1,1420 @@
+{
+  "approved_review_context_schema": 1,
+  "curated_at": "2026-08-25T00:00:00Z",
+  "curator": "Codex Freund--Schapire source-first inventory",
+  "items": {
+    "equation21_adaboost_binary_kl": {
+      "aliases": [
+        "Eq. (21)",
+        "equation21_adaBoost_binaryKLSpec",
+        "equation21_adaBoost_binaryKL"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FreundSchapire1997Hedge.equation21_adaBoost_binaryKL"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "prior_result",
+          "source_anchor_evidence": [
+            {
+              "line_end": 1108,
+              "line_start": 1099,
+              "publication_locator": "cited publication",
+              "quoted_text": "Theorem 6. Suppose the weak learning algorithm\nWeakLearn, when called by AdaBoost, generates hypotheses\nwith errors =1 , ..., =T (as defined in Step 3 of Fig. 2.) Then the\nerror ==PritD[hf (xi){ yi] of the final hypothesis hf output\nby AdaBoost is bounded above by\n=\u001d2T\n`\nT\nt=1\n- =t(1&=t). (14)",
+              "quoted_text_sha256": "3c36b5be1d516b5daff970ff89c4507a8b1714b0f583fd5f419ec7870556fcc7"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FreundSchapire1997Hedge.equation21_adaBoost_binaryKL",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FreundSchapire1997Hedge.equation21_adaBoost_binaryKLSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 406,
+          "line_start": 396,
+          "publication_locator": "cited publication",
+          "quoted_text": "Write each observed weak-hypothesis error as\n$\\epsilon_t=1/2-\\gamma_t$. Theorem 6's bound can also be written as\n$$\n\\epsilon\\leq\n\\prod_{t=1}^T\\sqrt{1-4\\gamma_t^2}\n=\\exp\\left(-\\sum_{t=1}^T\n  \\operatorname{KL}(1/2\\,\\|\\,1/2-\\gamma_t)\\right)\n\\leq\\exp\\left(-2\\sum_{t=1}^T\\gamma_t^2\\right), \\tag{21}\n$$\nwhere\n$\\operatorname{KL}(a\\,\\|\\,b)=a\\ln(a/b)+(1-a)\\ln((1-a)/(1-b))$.",
+          "quoted_text_sha256": "c7877903d8a812d5ad148154683d3df952607522710f54baf3aab85f3d8136cb"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "equation21.binary.kl.and.squared.edges",
+          "reviewed_lean_route": "FreundSchapire1997Hedge.equation21_adaBoost_binaryKL",
+          "semantic_claim": "Theorem 6's product equals the exponential of minus the summed binary KL divergences and is at most the exponential of minus twice the summed squared edges.",
+          "source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:396-406",
+          "source_quote_sha256": "c7877903d8a812d5ad148154683d3df952607522710f54baf3aab85f3d8136cb"
+        }
+      ],
+      "source_kind": "equation",
+      "source_location": "cited publication:1214-1230",
+      "source_note": "This displayed consequence is promoted to its own review row because it is a substantive advertised rate bound.",
+      "source_status": "direct byte-pinned source result",
+      "statement": "Theorem 6's product equals the exponential of minus the summed binary KL divergences and is at most the exponential of minus twice the summed squared edges.",
+      "support_lean_declarations": [
+        "FreundSchapire1997Hedge.equation21_adaBoost_binaryKLSpec"
+      ]
+    },
+    "equation22_adaboost_uniform_edge": {
+      "aliases": [
+        "Eq. (22)",
+        "equation22_adaBoost_uniform_edgeSpec",
+        "equation22_adaBoost_uniform_edge"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FreundSchapire1997Hedge.equation22_adaBoost_uniform_edge"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FreundSchapire1997Hedge.equation22_adaBoost_uniform_edge",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FreundSchapire1997Hedge.equation22_adaBoost_uniform_edgeSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 413,
+          "line_start": 408,
+          "publication_locator": "cited publication",
+          "quoted_text": "If every weak hypothesis has the same error $1/2-\\gamma$, this becomes\n$$\n\\epsilon\\leq(1-4\\gamma^2)^{T/2}\n=\\exp\\left(-T\\operatorname{KL}(1/2\\,\\|\\,1/2-\\gamma)\\right)\n\\leq\\exp(-2T\\gamma^2). \\tag{22}\n$$",
+          "quoted_text_sha256": "c58d543e575cdff67aa168cb4b5321cd6eab2384254771cefd46a5be35cc13c7"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "equation22.uniform.edge.rate",
+          "reviewed_lean_route": "FreundSchapire1997Hedge.equation22_adaBoost_uniform_edge",
+          "semantic_claim": "For a uniform edge gamma, the training error is bounded by the equal-edge power, the corresponding repeated binary-KL exponential, and exp(-2 T gamma^2).",
+          "source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:408-413",
+          "source_quote_sha256": "c58d543e575cdff67aa168cb4b5321cd6eab2384254771cefd46a5be35cc13c7"
+        }
+      ],
+      "source_kind": "equation",
+      "source_location": "cited publication:1238-1243",
+      "source_note": "This displayed consequence is promoted to its own review row because it gives the paper's uniform-edge rate.",
+      "source_status": "direct byte-pinned source result",
+      "statement": "For a uniform edge gamma, the training error is bounded by the equal-edge power, the corresponding repeated binary-KL exponential, and exp(-2 T gamma^2).",
+      "support_lean_declarations": [
+        "FreundSchapire1997Hedge.equation22_adaBoost_uniform_edgeSpec"
+      ]
+    },
+    "equation23_adaboost_iteration_budget": {
+      "aliases": [
+        "Eq. (23)",
+        "equation23_adaBoost_quadratic_iterationsSpec",
+        "equation23_adaBoost_quadratic_iterations"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FreundSchapire1997Hedge.equation23_adaBoost_quadratic_iterations"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "prior_result",
+          "source_anchor_evidence": [
+            {
+              "line_end": 1243,
+              "line_start": 1238,
+              "publication_locator": "cited publication",
+              "quoted_text": "hypotheses are equal to 1\u00122&#, Eq. (21) simplifies to\n=\u001d(1&4#2\n)T\u00122\n=exp(&T } KL(1\u00122 & 1\u00122&#))\n\u001dexp(&2T#2\n). (22)",
+              "quoted_text_sha256": "89888ca448f13bce12bfe0ed4e72a084b670c6195908a713f15b9283443704e8"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FreundSchapire1997Hedge.equation23_adaBoost_quadratic_iterations",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FreundSchapire1997Hedge.equation23_adaBoost_quadratic_iterationsSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 424,
+          "line_start": 415,
+          "publication_locator": "cited publication",
+          "quoted_text": "Consequently, a sufficient number of boosting iterations for final error at\nmost $\\epsilon$ is\n$$\nT=\\left\\lceil\n  \\frac{1}{\\operatorname{KL}(1/2\\,\\|\\,1/2-\\gamma)}\n  \\ln\\frac1\\epsilon\n\\right\\rceil\n\\leq\n\\left\\lceil\\frac{1}{2\\gamma^2}\\ln\\frac1\\epsilon\\right\\rceil. \\tag{23}\n$$",
+          "quoted_text_sha256": "9ed83d86f4ce478b02ba872e5a7cacd4b2da8bdc73e2bc54c5844e23f192de60"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "equation23.iteration.budget",
+          "reviewed_lean_route": "FreundSchapire1997Hedge.equation23_adaBoost_quadratic_iterations",
+          "semantic_claim": "The ceiling of the exact binary-KL iteration threshold is no larger than the ceiling of the quadratic threshold, and the exact threshold suffices for the target training error.",
+          "source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:415-424",
+          "source_quote_sha256": "9ed83d86f4ce478b02ba872e5a7cacd4b2da8bdc73e2bc54c5844e23f192de60"
+        }
+      ],
+      "source_kind": "equation",
+      "source_location": "cited publication:1249-1264",
+      "source_note": "The transparent target preserves both integer ceilings and proves the stated sufficiency interpretation.",
+      "source_status": "direct byte-pinned source result",
+      "statement": "The ceiling of the exact binary-KL iteration threshold is no larger than the ceiling of the quadratic threshold, and the exact threshold suffices for the target training error.",
+      "support_lean_declarations": [
+        "FreundSchapire1997Hedge.equation23_adaBoost_quadratic_iterationsSpec"
+      ]
+    },
+    "lemma1_weight_potential": {
+      "aliases": [
+        "Lemma 1",
+        "lemma1_finite_weight_potentialSpec",
+        "lemma1_finite_weight_potential"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:46-65",
+        "archival_source_quote_sha256": "64a202cc6bb03d86b042aaf68ab00c28c6a25bb6e8c1b3ccf0e6b4adee21a660",
+        "corrected_target_review_sha256": "8d02d0e9c4258a3ec44336dd4503024d13ace9ae251d3a2878812977bc0a96d7",
+        "corrected_target_sha256": "5c78131c4e10f6c8a7013c968a673c0a8af883b68b0bdda4ff1a56112403d6dc",
+        "governing_defect_ids": [
+          "FS97-HEDGE-ENDPOINT-DOMAIN-01"
+        ],
+        "schema": 1,
+        "statement": "For a finite nonempty strategy family, normalized initial weights, losses in [0,1], and 0 < beta <= 1, the logarithm of total final Hedge weight is at most -(1-beta) times Hedge's cumulative mixture loss."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "FreundSchapire1997Hedge.lemma1_finite_weight_potential"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 99,
+              "line_start": 49,
+              "publication_locator": "cited publication",
+              "quoted_text": "We formalize our on-line allocation model as follows. The\nallocation agent A has N options or strategies to choose\nfrom; we number these using the integers 1, ..., N. At each\ntime step t=1, 2, ..., T, the allocator A decides on a distribu-\ntion pt\nover the strategies; that is pt\ni \u001e0 is the amount\nallocated to strategy i, and \u001dN\ni=1 pt\ni =1. Each strategy i then\nsuffers some loss lt\ni which is determined by the (possibly\nadversarial) ``environment.'' The loss suffered by A is then\n\u001dn\ni=1 pt\ni lt\ni =pt\n} lt\n, i.e., the average loss of the strategies with\nrespect to A's chosen allocation rule. We call this loss func-\ntion the mixture loss.\nIn this paper, we always assume that the loss suffered by\nany strategy is bounded so that, without loss of generality,\nlt\ni # [0, 1]. Besides this condition, we make no assumptions\nabout the form of the loss vectors lt\n, or about the manner\nin which they are generated; indeed, the adversary's choice\nfor lt\nmay even depend on the allocator's chosen mixture pt\n.\nThe goal of the algorithm A is to minimize its cumulative\nloss relative to the loss suffered by the best strategy. That is,\nA attempts to minimize its net loss\nLA&min\ni\nLi\nwhere\nLA= :\nT\nt=1\npt\n} lt\nis the total cumulative loss suffered by algorithm A on the\nfirst T trials, and\nLi= :\nT\nt=1\nlt\ni\nis strategy i's cumulative loss.",
+              "quoted_text_sha256": "a0dd40247ef3cc34e907f5dcfb92f2909099f9f33e78990410280deeb001daba"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 330,
+              "line_start": 260,
+              "publication_locator": "cited publication",
+              "quoted_text": "is updated using the multiplicative rule\nwt+1\ni =wt\ni } ;li\nt\n. (2)\nMore generally, it can be shown that our analysis is\napplicable with only minor modification to an alternative\nupdate rule of the form\nwt+1\ni =wt\ni } U;(lt\ni )\nwhere U; : [0, 1] \u0014 [0, 1] is any function, parameterized\nby ; # [0, 1] satisfying\n;r\n\u001dU;(r)\u001d1&(1&;) r\nfor all r # [0, 1].\n2.1. Analysis\nThe analysis of Hedge(;) mimics directly that given by\nLittlestone and Warmuth [20]. The main idea is to derive\nupper and lower bounds on \u001dN\ni=1 wT+1\ni which, together,\nimply an upper bound on the loss of the algorithm. We\nbegin with an upper bound.\nLemma 1. For any sequence of loss vectors l1\n, ..., lT\n,\nln\n\\:\nN\ni=1\nwT+1\ni\n+\u001d&(1&;) LHedge(;) .\nAlgorithm Hedge(;)\nParameters: ; # [0, 1]\ninitial weight vector w1\n# [0, 1]N\nwith \u001dN\ni=1 w1\ni =1\nnumber of trials T\nDo for t=1, 2, ..., T\n1. Choose allocation\npt\n=\nwt\n\u001dN\ni=1 wt\ni\n2. Receive loss vector lt\n# [0, 1]N\nfrom environment.\n3. Suffer loss pt\n} lt\n.\n4. Set the new weights vector to be\nwt+1\ni =wt\ni ;li\nt\nFIG. 1. The on-line allocation algorithm.\nProof. By a convexity argument, it can be shown that\n:r\n\u001d1&(1&:) r (3)\nfor :\u001e0 and r # [0, 1]. Combined with Eqs. (1) and (2),\nthis implies\n:\nN",
+              "quoted_text_sha256": "199e64ea2dd57b12198330c8cfc9b67f0552e246ea3d1ce0526c8db54ee62845"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FreundSchapire1997Hedge.lemma1_finite_weight_potential",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FreundSchapire1997Hedge.lemma1_finite_weight_potentialSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 65,
+          "line_start": 60,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 1. For any sequence of loss vectors\n$\\boldsymbol\\ell^1,\\ldots,\\boldsymbol\\ell^T$,\n$$\n\\ln\\!\\left(\\sum_{i=1}^N w_i^{T+1}\\right)\n\\leq -(1-\\beta)L_{\\operatorname{Hedge}(\\beta)}.\n$$",
+          "quoted_text_sha256": "e52672419958e1d5c932d7d5e0564faf9b3aa9a5ba26066cf3013ecc9fd0b0c4"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma1.weight.potential",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FreundSchapire1997Hedge.lemma1_finite_weight_potential",
+          "semantic_claim": "For every loss sequence, the logarithm of total final Hedge weight is at most -(1-beta) times Hedge's cumulative mixture loss.",
+          "source_locator": "cited publication:286-304",
+          "source_quote_sha256": "03bc465b90565b7e3345de72fea675f9d11d33bcfe8c9aaaa96970a7514e56a5"
+        }
+      ],
+      "source_defect_ids": [
+        "FS97-HEDGE-ENDPOINT-DOMAIN-01"
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:286-304",
+      "source_note": "The checked target excludes beta=0 because the printed normalized Hedge execution need not remain defined there; beta=1 remains included for Lemma 1.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "complete_indexed_presentation",
+        "core_anchor": {
+          "line_end": 304,
+          "line_start": 286,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 1. For any sequence of loss vectors l1\n, ..., lT\n,\nln\n\\:\nN\ni=1\nwT+1\ni\n+\u001d&(1&;) LHedge(;) .\nAlgorithm Hedge(;)\nParameters: ; # [0, 1]\ninitial weight vector w1\n# [0, 1]N\nwith \u001dN\ni=1 w1\ni =1\nnumber of trials T\nDo for t=1, 2, ..., T",
+          "quoted_text_sha256": "03bc465b90565b7e3345de72fea675f9d11d33bcfe8c9aaaa96970a7514e56a5"
+        },
+        "presentation_kind": "lemma",
+        "presentation_label": "Lemma 1",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The raw official transcript's independently indexed Lemma 1 span is exactly lines 286--304. The separately pinned visual transcript remains the readable mathematical excerpt for source-to-Spec comparison.",
+        "validated_at": "2026-09-03T22:18:14Z",
+        "validator": "Codex Hedge raw-to-visual source inventory reconciliation"
+      },
+      "source_status": "corrected",
+      "statement": "For every loss sequence under the algorithm's printed beta in [0,1], the logarithm of total final Hedge weight is at most -(1-beta) times Hedge's cumulative mixture loss.",
+      "support_lean_declarations": [
+        "FreundSchapire1997Hedge.lemma1_finite_weight_potentialSpec"
+      ]
+    },
+    "lemma4_learning_rate_bound": {
+      "aliases": [
+        "Lemma 4",
+        "lemma4_learning_rate_boundSpec",
+        "lemma4_learning_rate_bound"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:107-114",
+        "archival_source_quote_sha256": "498e2d7d85902a3f0a5ea895378be7d49ad9b6cff6d64065c2b6b603bde711a6",
+        "corrected_target_review_sha256": "0f80c67be5693f7869ae2d3bdd365cd220a8ccad250cd9bd915e915cc5fe72c1",
+        "corrected_target_sha256": "c9f92d37dfb9135cbf0f087004c21602670755ce0881617547f607892868ebd2",
+        "governing_defect_ids": [
+          "FS97-LEMMA4-ZERO-LOSS-BOUND-05"
+        ],
+        "schema": 1,
+        "statement": "For nonnegative loss L no larger than lossBound and positive reward R no larger than rewardBound, use the continuous extension of beta = g(lossBound/rewardBound) that sets beta to zero when lossBound is zero; then (-L log beta + R)/(1-beta) is at most L + sqrt(2 lossBound rewardBound) + R."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "FreundSchapire1997Hedge.lemma4_learning_rate_bound"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FreundSchapire1997Hedge.lemma4_learning_rate_bound",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FreundSchapire1997Hedge.lemma4_learning_rate_boundSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 114,
+          "line_start": 107,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 4. Suppose $0\\leq L\\leq\\widetilde L$ and\n$0<R\\leq\\widetilde R$. Let\n$\\beta=g(\\widetilde L/\\widetilde R)$ where\n$g(z)=1/(1+\\sqrt{2/z})$. Then\n$$\n\\frac{-L\\ln\\beta+R}{1-\\beta}\n\\leq L+\\sqrt{2\\widetilde L\\widetilde R}+R.\n$$",
+          "quoted_text_sha256": "498e2d7d85902a3f0a5ea895378be7d49ad9b6cff6d64065c2b6b603bde711a6"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma4.learning.rate.bound",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FreundSchapire1997Hedge.lemma4_learning_rate_bound",
+          "semantic_claim": "If 0 <= L <= Lbar and 0 < R <= Rbar, then choosing beta = 1/(1+sqrt(2 Rbar/Lbar)) gives (-L log beta + R)/(1-beta) <= L + sqrt(2 Lbar Rbar) + R.",
+          "source_locator": "cited publication:488-498",
+          "source_quote_sha256": "708962dd880e6fa61876e08f2579b26b663761fc84457c731f32f28c63b2fa0a"
+        }
+      ],
+      "source_defect_ids": [
+        "FS97-LEMMA4-ZERO-LOSS-BOUND-05"
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:488-498",
+      "source_note": "The checked target explicitly supplies the natural continuous extension at lossBound=0, where the printed finite-real tuning formula has no stated value and the conclusion reduces to equality.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "complete_indexed_presentation",
+        "core_anchor": {
+          "line_end": 498,
+          "line_start": 488,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 4. Suppose 0\u001dL\u001dL\n\u0019 and 0<R\u001dR\n\u0019 . Let ;=\ng(L\n\u0019 \u0012R\n\u0019 ) where g(z)=1\u0012(1+- 2\u0012z). Then\n&L ln ;+R\n1&;\n\u001dL+- 2L\n\u0019 R\n\u0019 +R.",
+          "quoted_text_sha256": "708962dd880e6fa61876e08f2579b26b663761fc84457c731f32f28c63b2fa0a"
+        },
+        "presentation_kind": "lemma",
+        "presentation_label": "Lemma 4",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The raw official transcript's independently indexed Lemma 4 span is exactly lines 488--498. The separately pinned visual transcript remains the readable mathematical excerpt for source-to-Spec comparison.",
+        "validated_at": "2026-09-03T22:18:14Z",
+        "validator": "Codex Hedge raw-to-visual source inventory reconciliation"
+      },
+      "source_status": "corrected",
+      "statement": "For 0 <= L <= lossBound and 0 < R <= rewardBound, Lemma 4 prescribes beta = g(lossBound/rewardBound) and gives the displayed learning-rate inequality.",
+      "support_lean_declarations": [
+        "FreundSchapire1997Hedge.lemma4_learning_rate_boundSpec"
+      ]
+    },
+    "theorem10_adaboost_m1_error": {
+      "aliases": [
+        "Theorem 10",
+        "theorem10_adaBoostM1_errorSpec",
+        "theorem10_adaBoostM1_error"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:242-261",
+        "archival_source_quote_sha256": "94496c0423ad0fb9072f1e40b358b7e9f866bd80cc08d3d60b3816969d32ff01",
+        "corrected_target_review_sha256": "349008d8cdc426216a1b913e1ce1854ed88f9c8c86dda17681a0fe539dfe3510",
+        "corrected_target_sha256": "c517e9cd4b401f8a7c9961142404c99324cbb462a7cfb0c451f937c695f86741",
+        "governing_defect_ids": [
+          "FS97-ADABOOST-VARIANTS-ENDPOINT-DOMAIN-06"
+        ],
+        "schema": 1,
+        "statement": "For the finite Figure-3 AdaBoost.M1 execution with every observed mistake error positive and at most one half, the final argmax-vote classifier has training error at most 2^T times the product of sqrt(epsilon_t(1-epsilon_t))."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "FreundSchapire1997Hedge.theorem10_adaBoostM1_error"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 1734,
+              "line_start": 1680,
+              "publication_locator": "cited publication",
+              "quoted_text": "a given instance x, now outputs the label y that maximizes\nthe sum of the weights of the weak hypotheses predicting\nthat label.\nIn the case of binary classification (k=2), a weak\nhypothesis h with error significantly larger than 1\u00122 is of\nequal value to one with error significantly less than 1\u00122 since\nh can be replaced by 1&h. However, for k>2, a hypothesis\nht with error =t\u001e1\u00122 is useless to the boosting algorithm. If\nAlgorithm AdaBoost.M1\nInput: sequence of N examples ((x1 , y1)..., (xN , yN)) with labels\nyi # Y=[1, ..., k]\ndistribution D over the N examples\nweak learning algorithm WeakLearn\ninteger T specifying number of iterations\nInitialize the weight vector: w1\ni =D(i) for i=1, ..., N.\nDo for t=1, 2, ..., T\n1. Set\npt\n=\nwt\n\u001dN\ni=1 wt\ni\n2. Call WeakLearn, providing it with the distribution pt\n; get back a\nhypothesis ht : X \u0014 Y.\n3. Calculate the error of ht: =t=\u001dN\ni=1 pt\ni \u001aht(xi){ yi\u0019.\nIf =t>1\u00122, then set T=t&1 and abort loop.\n4. Set ;t==t \u0012(1&=t).\n5. Set the new weights vector to be\nwt+1\ni =wt\ni ;1&\u001aht(xi){y\n% i\u0019\nt\nOutput the hypothesis\nhf (x)=arg max\ny # Y\n:\nT\nt=1\n\\log\n1\n;t+\u001aht(x)= y\u0019.\nFIG. 3. A first multi-class extension of AdaBoost.\n131\nA DECISION THEORETIC GENERALIZATION\n\fFile: 571J 150414 . By:CV . Date:28:07:01 . Time:05:54 LOP8M. V8.0. Page 01:01\nCodes: 5566 Signs: 4204 . Length: 56 pic 0 pts, 236 mm\nsuch a weak hypothesis is returned by the weak learner, our\nalgorithm simply halts, using only the weak hypotheses that\nwere already computed.",
+              "quoted_text_sha256": "31588d5f668ae69253f48a9ff2f7c76014f1fa0fb89594d4877749d18addd104"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FreundSchapire1997Hedge.theorem10_adaBoostM1_error",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FreundSchapire1997Hedge.theorem10_adaBoostM1_errorSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 261,
+          "line_start": 255,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 10. Suppose WeakLearn, when called by AdaBoost.M1, generates\nhypotheses with errors $\\epsilon_1,\\ldots,\\epsilon_T$, where $\\epsilon_t$ is\nas defined in Fig. 3. Assume each $\\epsilon_t\\leq1/2$. Then the error\n$\\epsilon=\\Pr_{i\\sim D}[h_f(x_i)\\neq y_i]$ is bounded above by\n$$\n\\epsilon\\leq2^T\\prod_{t=1}^T\\sqrt{\\epsilon_t(1-\\epsilon_t)}.\n$$",
+          "quoted_text_sha256": "62165656a5a8e0d3ef868d5421f67d12ce9c2e00863b5b904fc426223b148051"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem10.adaboost.m1.error",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FreundSchapire1997Hedge.theorem10_adaBoostM1_error",
+          "semantic_claim": "If every Figure 3 AdaBoost.M1 round error epsilon_t is at most 1/2, then its final multiclass training error is at most 2^T times the product of sqrt(epsilon_t(1-epsilon_t)).",
+          "source_locator": "cited publication:1735-1745",
+          "source_quote_sha256": "98404a6a9ea7e905bc1b05388e7f04d48332475197b8e9d97efae37c8f9c150b"
+        }
+      ],
+      "source_defect_ids": [
+        "FS97-ADABOOST-VARIANTS-ENDPOINT-DOMAIN-06"
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:1735-1745",
+      "source_note": "The checked target excludes a zero-error executed round because Figure 3 supplies no finite logarithmic-vote or subsequent positive-mass execution convention there.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "complete_indexed_presentation",
+        "core_anchor": {
+          "line_end": 1745,
+          "line_start": 1735,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 10. Suppose the weak learning algorithm\nWeakLearn, when called by AdaBoost.M1, generates\nhypotheses with errors =1 , ..., =T , where =t is as defined\nin Fig. 3. Assume each =t\u001d1\u00122. Then the error ==\nPritD[hf (xi){ yi] of the final hypothesis hf output by\nAdaBoost.M1 is bounded above by\n=\u001d2T\n`\nT\nt=1\n- =t(1&=t).",
+          "quoted_text_sha256": "98404a6a9ea7e905bc1b05388e7f04d48332475197b8e9d97efae37c8f9c150b"
+        },
+        "presentation_kind": "theorem",
+        "presentation_label": "Theorem 10",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The raw official transcript's independently indexed Theorem 10 span is exactly lines 1735--1745. The separately pinned visual transcript remains the readable mathematical excerpt for source-to-Spec comparison.",
+        "validated_at": "2026-09-03T22:18:14Z",
+        "validator": "Codex Hedge raw-to-visual source inventory reconciliation"
+      },
+      "source_status": "corrected",
+      "statement": "Theorem 10 assumes every Figure-3 mistake error is at most one half and gives the displayed argmax-vote training-error product bound.",
+      "support_lean_declarations": [
+        "FreundSchapire1997Hedge.theorem10_adaBoostM1_errorSpec"
+      ]
+    },
+    "theorem11_adaboost_m2_error": {
+      "aliases": [
+        "Theorem 11",
+        "theorem11_adaBoostM2_errorSpec",
+        "theorem11_adaBoostM2_error"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:265-311",
+        "archival_source_quote_sha256": "adba301c579059fb202b0593e79b2772426254f7ebc6ff13dce7a700261d698e",
+        "corrected_target_review_sha256": "3241e3a357a870af107ba4efb2e9c2d225b085dc94d82958e8012db3245887fb",
+        "corrected_target_sha256": "af51dd5510d7eada862fce094b75966f5c31923c6db3b4f19b816a142478342e",
+        "governing_defect_ids": [
+          "FS97-ADABOOST-VARIANTS-ENDPOINT-DOMAIN-06"
+        ],
+        "schema": 1,
+        "statement": "For the finite Figure-4 AdaBoost.M2 execution with every observed pseudo-loss strictly between zero and one, the final argmax-vote classifier has training error at most (k-1) 2^T times the product of sqrt(epsilon_t(1-epsilon_t))."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "FreundSchapire1997Hedge.theorem11_adaBoostM2_error"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model_construction",
+          "source_anchor_evidence": [
+            {
+              "line_end": 2027,
+              "line_start": 1810,
+              "publication_locator": "cited publication",
+              "quoted_text": "PritD[hf (xi){ yi]\u001dPritD[h\n\u0019 f (i)=1].\nSince each AdaBoost instance has a 0-label, PritD[h\n\u0019 f (i)\n=1] is exactly the error of h\n\u0019 f . Applying Theorem 6, we can\nobtain a bound on this error, completing the proof. K\nIt is possible, for this version of the boosting algorithm, to\nallow hypotheses which generate for each x, not only a\npredicted class label h(x) # Y, but also a ``confidence''\n}(x) # [0, 1]. The learner then suffers loss 1\u00122&}(x)\u00122 if its\nprediction is correct and 1\u00122+}(x)\u00122 otherwise. (Details\nomitted.)\n5.2. Second Multi-class Extension\nIn this section we describe a second alternative extension\nof AdaBoost to the case where the label space Y is finite. This\nextension requires more elaborate communication between\nthe boosting algorithm and the weak learning algorithm.\nThe advantage of doing this is that it gives the weak learner\nmore flexibility in making its predictions. In particular, it\nsometimes enables the weak learner to make useful con-\ntributions to the accuracy of the final hypothesis even when\nthe weak hypothesis does not predict the correct label with\nprobability greater than 1\u00122.\nAs described above, the weak learner generates\nhypotheses which have the form h: X_Y \u0014 [0, 1]. Roughly\nspeaking, h(x, y) measures the degree to which it is believed\nthat y is the correct label associated with instance x. If, for\na given x, h(x, y) attains the same value for all y then we say\nthat the hypothesis is uninformative on instance x. On the\nother hand, any deviation from strict equality is potentially\ninformative, because it predicts some labels to be more\nplausible than others. As will be seen, any such information\nis potentially useful for the boosting algorithm.\nBelow, we formalize the goal of the weak learner by\ndefining a pseudo-loss which measures the goodness of the\nweak hypotheses. To motivate our definition, we first\nconsider the following setup. For a fixed training example\n(xi , yi), we use a given hypothesis h to answer k&1 binary\nquestions. For each of the incorrect labels y{ yi we ask the\nquestion:\n``Which is the label of xi : yi or y?''\nIn other words, we ask that the correct label yi be\ndiscriminated from the incorrect label y.\nAssume momentarily that h only takes values in [0, 1].\nThen if h(xi , y)=0 and h(xi , yi)=1, we interpret h's\nanswer to the question above to be yi (since h deems yi to\nbe a plausible label for xi , but y is considered implausible).\nLikewise, if h(xi , y)=1 and h(xi , yi)=0 then the answer is\ny. If h(xi , y)=h(xi , yi), then one of the two answers is\nchosen uniformly at random.\n132 FREUND AND SCHAPIRE\n\fFile: 571J 150415 . By:CV . Date:28:07:01 . Time:05:54 LOP8M. V8.0. Page 01:01\nCodes: 5466 Signs: 4208 . Length: 56 pic 0 pts, 236 mm\nIn the more general case that h takes values in [0, 1], we\ninterpret h(x, y) as a randomized decision for the procedure\nabove. That is, we first choose a random bit b(x, y) which\nis 1 with probability h(x, y) and 0 otherwise. We then apply\nthe above procedure to the stochastically chosen binary\nfunction b. The probability of choosing the incorrect answer\ny to the question above is\nPr[b(xi , yi)=07b(xi , y)=1]+1\n2 Pr[b(xi , yi)=b(xi , y)]\n=1\n2 (1&h(xi , yi)+h(xi , y)).\nIf the answers to all k&1 questions are considered\nequally important, then it is natural to define the loss of the\nhypothesis to be the average, over all k&1 questions, of the\nprobability of an incorrect answer:\n1\nk&1\n:\ny{ yi\n1\n2\n(1&h(xi , yi)+h(xi , y))\n=\n1\n2 \\1&h(xi , yi)+\n1\nk&1\n:\ny{ yi\nh(xi , y)\n+. (24)\nHowever, as was discussed in the introduction to Section 5,\ndifferent discrimination questions are likely to have different\nimportance in different situations. For example, considering\nthe OCR problem described earlier, it might be that at some\npoint during the boosting process, some example of the digit\n``7'' has been recognized as being either a ``7'' or a ``9''. At this\nstage the question that discriminates between ``7'' (the\ncorrect label) and ``9'' is clearly much more important than\nthe other eight questions that discriminate ``7'' from the\nother digits.\nA natural way of attaching different degrees of impor-\ntance to the different questions is to assign a weight to each\nquestion. So, for each instance xi and incorrect label y{ yi ,\nwe assign a weight q(i, y) which we associate with the ques-\ntion that discriminates label y from the correct label yi . We\nthen replace the average used in Eq. (24) with an average\nweighted according to q(i, y); the resulting formula is called\nthe pseudo-loss of h on training instance i with respect to q:\nplossq(h, i).1\n2\n\\1&h(xi , yi)+ :\ny{ yi\nq(i, y) h(xi , y)\n+.\nThe function q=[1, ..., N]_Y \u0014 [0, 1], called the label\nweighting function, assigns to each example i in the training\nset a probability distribution over the k&1 discrimination\nproblems defined above. So, for all i,\n:\ny{ yi\nq(i, y)=1.\nThe weak learner's goal is to minimize the expected pseudo-\nloss for given distribution D and weighting function q:\nplossD, q(h) :=EitD [plossq(h, i)].\nAs we have seen, by manipulating both the distribution\non instances, and the label weighting function q, our\nboosting algorithm effectively forces the weak learner to\nfocus not only on the hard instances, but also on the\nincorrect class labels that are hardest to eliminate. Con-\nversely, this pseudo-loss measure may make it easier for the\nweak learner to get a weak advantage. For instance, if the\nweak learner can simply determine that a particular\ninstance does not belong to a certain class (even if it has no\nidea which of the remaining classes is the correct one), then,\ndepending on q, this may be enough to gain a weak advan-\ntage.\nTheorem 11, the main result of this section, shows that a\nweak learner can be boosted if it can consistently produce\nweak hypotheses with pseudo-losses smaller than 1\u00122. Note\nthat pseudo-loss 1\u00122 can be achieved trivially by any unin-\nformative hypothesis. Furthermore, a weak hypothesis h\nwith pseudo-loss =>1\u00122 is also beneficial to boosting since\nit can be replaced by the hypothesis 1&h whose pseudo-loss\nis 1&=<1\u00122.\nExample 5. As a simple example illustrating the use of\npseudo-loss, suppose we seek an oblivious weak hypothesis,\ni.e., a weak hypothesis whose value depends only on the\nclass label y so that h(x, y)=h( y) for all x. Although\noblivious hypotheses per se are generally too weak to be of\ninterest, it may often be appropriate to find the best\noblivious hypothesis on a part of the instance space (such as\nthe set of instances covered by a leaf of a decision tree).\nLet D be the target distribution, and q the label weighting\nfunction. For notational convenience, let us define q(i, yi)\n=&1 for all i so that\nplossq(h, i)=1\n2\n\\1+ :\ny # Y\nq(i, y) h(xi , y)\n+.\nSetting $( y)=\u001di D(i) q(i, y), it can be verified that for an\noblivious hypothesis h,\nplossD, q(h)=1\n2\n\\1+ :\ny # Y\nh(y) $( y)\n+,\nwhich is clearly minimized by the choice\nh(y)=\n{\n1 if $( y)<0\n0 otherwise.\nSuppose now that q(i, y)=1\u0012(k&1) for y{ yi , and let\nd(y)=PritD[ yi= y] be the proportion of examples with\n133\nA DECISION THEORETIC GENERALIZATION\n\fFile: 571J 150416 . By:CV . Date:28:07:01 . Time:05:54 LOP8M. V8.0. Page 01:01\nCodes: 5640 Signs: 4166 . Length: 56 pic 0 pts, 236 mm\nlabel y. Then it can be verified that h will always have\npseudo-loss strictly smaller than 1\u00122 except in the case of a\nuniform distribution of labels (d(y)=1\u0012k for all y). In\ncontrast, when the weak learner's goal is minimization of\nprediction error (as in Section 5.1), it can be shown that an\noblivious hypothesis with prediction error strictly less than\n1\u00122 can only be found when one label y covers more than 1\u00122\nthe distribution (d( y)>1\u00122). So in this case, it is much\neasier to find a hypothesis with small pseudo-loss rather\nthan small prediction error.\nOn the other hand, if q(i, y)=0 for some values of y, then\nthe quality of prediction on these labels is of no conse-\nquence. In particular, if q(i, y)=0 for all but one incorrect\nlabel for each instance i, then in order to make the pseudo-\nloss smaller than 1\u00122 the hypothesis has to predict the\ncorrect label with probability larger than 1\u00122, which means\nthat in this case the pseudo-loss criterion is as stringent as\nthe usual prediction error. However, as discussed above,\nthis case is unavoidable because a hard binary classification\nproblem can always be embedded in a multi-class problem.\nThis example suggests that it may often be significantly\neasier to find weak hypotheses with small pseudo-loss rather\nthan hypotheses whose prediction error is small. On the\nother hand, our theoretical bound for boosting using the\nprediction error (Theorem 10) is stronger than the bound\nfor ploss (Theorem 11). Empirical tests [12] have shown\nthat pseudo-loss is generally more successful when the weak\nlearners use very restricted hypotheses. However, for more\npowerful weak learners, such as decision-tree learning algo-\nrithms, there is little difference between using pseudo-loss\nand prediction error.\nOur algorithm called AdaBoost.M2, is shown in Fig. 4.\nHere, we maintain weights wt\ni, y for each instance i and each\nlabel y # Y&[ yi]. The weak learner must be provided both\nwith a distribution Dt and a label weight function qt . Both\nof these are computed using the weight vector wt\nas shown\nin Step 1. The weak learner's goal then is to minimize the\npseudo-loss =t , as defined in Step 3. The weights are updated\nas shown in Step 5. The final hypothesis hf outputs, for a\ngiven instance x, the label y that maximizes a weighted\naverage of the weak hypothesis values ht(x, y).",
+              "quoted_text_sha256": "d270a9c5da6739c833a8d9360133dee5b83da8d37bf58bccbe7bc5e3188fb174"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 2110,
+              "line_start": 2040,
+              "publication_locator": "cited publication",
+              "quoted_text": "mark AdaBoost variables with a tilde.\nAlgorithm AdaBoost.M2\nInput: sequence of N examples ((x1 , y1)..., (xN , yN)) with labels\nyi # Y=[1, ..., k]\ndistribution D over the N examples\nweak learning algorithm WeakLearn\ninteger T specifying number of iterations\nInitialize the weight vector: w1\ni, y=D(i)\u0012(k&1) for i=1, ..., N, y # Y&[ yi].\nDo for t=1, 2, ..., T\n1. Set Wt\ni =\u001dy{ yi\nwt\ni, y ;\nqt(i, y)=\nwt\ni, y\nWt\ni\nfor y{ yi ; and set\nDt(i)=\nWt\ni\n\u001dN\ni=1 Wt\ni\n.\n2. Call WeakLearn, providing it with the distribution Dt and label\nweighting function qt ; get back a hypothesis ht: X_Y \u0014 [0, 1].\n3. Calculate the pseudo-loss of ht :\n=t=\n1\n2\n:\nN\ni=1\nDt(i)\n\\1&ht(xi , yi)+ :\ny{ yi\nqt(i, y) ht(xi , y)\n+.\n4. Set ;t==t \u0012(1&=t).\n5. Set the new weights vector to be\nwt+1\ni, y =wt\ni, y ;(1\u00122)(1+ht(xi , yi)&ht(xi , y))\nt\nfor i=1, ..., N, y # Y&[ yi].\nOutput the hypothesis\nhf (x)=arg max\ny # Y\n:\nT\nt=1\n\\log\n1\n;t+ht(x, y).\nFIG. 4. A second multi-class extension of AdaBoost.\nFor each training instance (xi , yi) and for each incorrect\nlabel y # Y&[ yi], we define one AdaBoost instance x\n~ i, y=\n(i, y) with associated label y\n~ i, y=0. Thus, there are N\n\u0019 =\nN(k&1) AdaBoost instances, each indexed by a pair (i, y).\nThe distribution over these instances is defined to be D\n\u0019 (i, y)\n=D(i)\u0012(k&1). The tth hypothesis h\n\u0019 t provided to AdaBoost\nfor this reduction is defined by the rule\nh",
+              "quoted_text_sha256": "f6f13fcf8321f5f3bd37d4e0c9a99752cb7eeeb0c11a258e20529b72b286e4a1"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FreundSchapire1997Hedge.theorem11_adaBoostM2_error",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FreundSchapire1997Hedge.theorem11_adaBoostM2_errorSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 311,
+          "line_start": 305,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 11. Suppose WeakLearn, when called by AdaBoost.M2, generates\nhypotheses with pseudo-losses $\\epsilon_1,\\ldots,\\epsilon_T$, where\n$\\epsilon_t$ is as defined in Fig. 4. Then the error\n$\\epsilon=\\Pr_{i\\sim D}[h_f(x_i)\\neq y_i]$ is bounded above by\n$$\n\\epsilon\\leq(k-1)2^T\\prod_{t=1}^T\\sqrt{\\epsilon_t(1-\\epsilon_t)}.\n$$",
+          "quoted_text_sha256": "c16c9102c20924fa34f7f3f69d6781c9c0e90c305858b7801131b2347303e56b"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem11.adaboost.m2.error",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FreundSchapire1997Hedge.theorem11_adaBoostM2_error",
+          "semantic_claim": "AdaBoost.M2's final multiclass training error is at most (k-1) 2^T times the product of sqrt(epsilon_t(1-epsilon_t)), where epsilon_t is Figure 4's pseudo-loss.",
+          "source_locator": "cited publication:2028-2037",
+          "source_quote_sha256": "2240ef363df15bed1ac004b11f8c990aaa0c8ce2730f72373a794a8fca18f81d"
+        }
+      ],
+      "source_defect_ids": [
+        "FS97-ADABOOST-VARIANTS-ENDPOINT-DOMAIN-06"
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:2028-2037",
+      "source_note": "The checked target states the strict pseudo-loss domain required by Figure 4's quotient, logarithmic vote, and positive-mass recursive execution.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "complete_indexed_presentation",
+        "core_anchor": {
+          "line_end": 2037,
+          "line_start": 2028,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 11. Suppose the weak learning algorithm\nWeakLearn, when called by AdaBoost.M2 generates\nhypotheses with pseudo-losses =1 , ..., =T , where =t is as defined\nin Fig. 4. Then the error ==PritD[hf (xi){ yi] of the final\nhypothesis hf output by AdaBoost.M2 is bounded above by\n=\u001d(k&1) 2T\n`\nT\nt=1\n- =t(1&=t).",
+          "quoted_text_sha256": "2240ef363df15bed1ac004b11f8c990aaa0c8ce2730f72373a794a8fca18f81d"
+        },
+        "presentation_kind": "theorem",
+        "presentation_label": "Theorem 11",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The raw official transcript's independently indexed Theorem 11 span is exactly lines 2028--2037. The separately pinned visual transcript remains the readable mathematical excerpt for source-to-Spec comparison.",
+        "validated_at": "2026-09-03T22:18:14Z",
+        "validator": "Codex Hedge raw-to-visual source inventory reconciliation"
+      },
+      "source_status": "corrected",
+      "statement": "Theorem 11 gives the Figure-4 AdaBoost.M2 argmax-vote training-error product bound without stating endpoint execution conventions for its pseudo-losses.",
+      "support_lean_declarations": [
+        "FreundSchapire1997Hedge.theorem11_adaBoostM2_errorSpec"
+      ]
+    },
+    "theorem12_adaboost_r_error": {
+      "aliases": [
+        "Theorem 12",
+        "theorem12_adaBoostR_errorSpec",
+        "theorem12_adaBoostR_error"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:315-363",
+        "archival_source_quote_sha256": "d67bd991ef269e65be4f6f5c74bc55cb3385095c2551d97dc9dcae50b52732e1",
+        "corrected_target_review_sha256": "cdde9de54c6da330cc4cb7dd761c0d1845d287f6622fbb063c3d2796332789b7",
+        "corrected_target_sha256": "aa0a48f0eeef4fe1cbbebb807f28f12add804fc93368d790a511fb7eb1f2e356",
+        "governing_defect_ids": [
+          "FS97-ADABOOST-VARIANTS-ENDPOINT-DOMAIN-06"
+        ],
+        "schema": 1,
+        "statement": "For the finite Figure-5 AdaBoost.R execution with every observed reduced error positive and at most one half, the final weighted-median regressor has mean squared error at most 2^T times the product of sqrt(epsilon_t(1-epsilon_t))."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "FreundSchapire1997Hedge.theorem12_adaBoostR_error"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model_construction",
+          "source_anchor_evidence": [
+            {
+              "line_end": 2347,
+              "line_start": 2174,
+              "publication_locator": "cited publication",
+              "quoted_text": "5.3. Boosting Regression Algorithms\nIn this section we show how boosting can be used for a\nregression problem. In this setting, the label space is\nY=[0, 1]. As before, the learner receives examples (x, y)\nchosen at random according to some distribution P, and its\ngoal is to find a hypothesis h: X \u0014 Y which, given some x\nvalue, predicts approximately the value y that is likely to be\nseen. More precisely, the learner attempts to find an h with\nsmall mean squared error (MSE):\nE(x, y)t P[(h(x)& y)2\n]. (25)\nOur methods can be applied to any reasonable bounded\nerror measure, but, for the sake of concreteness, we concen-\ntrate here on the squared error measure.\nFollowing our approach for classification problems, we\nassume that the leaner has been provided with a training set\n(x1 , y1), ..., (xN , yN) of examples distributed according to\nP, and we focus only on the minimization of the empirical\nMSE:\n1\nN\n:\nN\ni=1\n(h(xi)& yi)2\n.\nUsing techniques similar to those outlined in Section 4.3,\nthe true MSE given in Eq. (25) can be related to the empiri-\ncal MSE.\nTo derive a boosting algorithm in this context, we reduce\nthe given regression problem to a binary classification\nproblem, and then apply AdaBoost. As was done for the\nreductions used in the proofs of Theorems 10 and 11, we\nmark with tildes all variables in the reduced (AdaBoost)\nspace. For each example (xi , yi) in the training set, we\ndefine a continuum of examples indexed by pairs (i, y) for\nall y # [0, 1]: the associated instance is x\n~ i, y=(xi , y), and\nthe label is y\n~ i, y=\u001ay\u001e yi\u0019. (Recall that \u001a?\u0019 is 1 if predicate\n? holds and 0 otherwise.) Although it is obviously infeasible\nto explicitly maintain an infinitely large training set, we will\nsee later how this method can be implemented efficiently.\nAlso, although the results of Section 4 only dealt with\nfinitely large training sets, the extension to infinite training\nsets is straightforward.\nThus, informally, each instance (xi , yi) is mapped to an\ninfinite set of binary questions, one for each y # Y, and each\nof the form: ``Is the correct label yi bigger or smaller than y?''\nIn a similar manner, each hypothesis h: X \u0014 Y is reduced\nto a binary-valued hypothesis h\n\u0019 : X_Y\u0014 [0, 1] defined by\nthe rule\nh\n\u0019 (x, y)=\u001ay\u001eh(x)\u0019.\nThus, h\n\u0019 attempts to answer these binary questions in a\nnatural way using the estimated value h(x).\nFinally, as was done for classification problems, we\nassume we are given a distribution D over the training set;\nordinarily, this will be uniform so that D(i)=1\u0012N. In our\nreduction, this distribution is mapped to a density D\n\u0019 over\npairs (i, y) in such a way that minimization of classification\nerror in the reduced space is equivalent to minimization of\nMSE for the original problem. To do this, we define\nD\n\u0019 (i, y)=\nD(i) | y& yi |\nZ\nwhere Z is a normalization constant:\nZ= :\nN\ni=1\nD(i) |\n1\n0\n| y& yi | dy.\nIt is straightforward to show that 1\u00124\u001dZ\u001d1\u00122.\n135\nA DECISION THEORETIC GENERALIZATION\n\fFile: 571J 150418 . By:CV . Date:28:07:01 . Time:05:54 LOP8M. V8.0. Page 01:01\nCodes: 5416 Signs: 3774 . Length: 56 pic 0 pts, 236 mm\nIf we calculate the binary error of h\n\u0019 with respect to the\ndensity D\n\u0019 , we find that, as desired, it is directly proportional\nto the mean squared error:\n:\nN\ni=1\n|\n1\n0\n| y\n~ i, y&h\n\u0019 (x\n~ i, y)| D\n\u0019 (i, y) dy\n=\n1\nZ\n:\nN\ni=1\nD(i)\n}|\nh(xi)\nyi\n| y& yi | dy\n}\n=\n1\n2Z\n:\nN\ni=1\nD(i)(h(xi)& yi)2\n.\nThe constant of proportionality is 1\u0012(2Z) # [1, 2].\nUnravelling this reduction, we obtain the regression\nboosting procedure AdaBoost.R shown in Fig. 5. As\nprescribed by the reduction, AdaBoost.R maintains a weight\nwt\ni, y for each instance i and label y # Y. The initial weight\nfunction w1\nis exactly the density D\n\u0019 defined above. By nor-\nmalizing the weights wt\n, a density pt\nis defined at Step 1 and\nprovided to the weak learner at Step 2. The goal of the weak\nlearner is to find a hypothesis ht : X\u0014 Y that minimizes the\nloss =t defined in Step 3. Finally, at Step 5, the weights are\nupdated as prescribed by the reduction.\nThe definition of =t at Step 3 follows directly from the\nreduction above; it is exactly the classification error of h\n\u0019 f in\nthe reduced space. Note that, similar to AdaBoost.M2,\nAdaBoost.R not only varies the distribution over the\nexamples (xi , yi), but also modifies from round to round the\ndefinition of the loss suffered by a hypothesis on each\nexample. Thus, although our ultimate goal is minimization\nof the squared error, the weak learner must be able to\nhandle loss functions that are more complicated than MSE.\nThe final hypothesis hf also is consistent with the reduc-\ntion. Each reduced weak hypothesis h\n\u0019 f (x, y) is non-\ndecreasing as a function of y. Thus, the final hypothesis h\n\u0019 f\ngenerated by AdaBoost in the reduced space, being the\nthreshold of a weighted sum of these hypotheses, also is\nnon-decreasing as a function of y. As the output of h\n\u0019 f is\nbinary, this implies that for every x there is one value of y\nfor which h\n\u0019 f (x, y$)=0 for all y$< y and h\n\u0019 f (x, y$)=1 for all\ny$> y. This is exactly the value of y given by hf (x) as defined\nin the figure. Note that hf is actually computing a weighted\nmedian of the weak hypotheses.\nAt first, it might seem impossible to maintain weights wt\ni, y\nover an uncountable set of points. However, on closer\ninspection, it can be seen that, when viewed as a function of\ny, wt\ni, y is a piece-wise linear function. For t=1, w1\ni, y has two\nlinear pieces, and each update at Step 5 potentially breaks\none of the pieces in two at the point ht(xi). Initializing,\nstoring and updating such piece-wise linear functions are\nall straightforward operations. Also, the integrals which\nappear in the figure can be evaluated explicitly since these\nonly involve integration of piece-wise linear functions.",
+              "quoted_text_sha256": "9cdbfd3a1f48ae623e2d4ec43ed4eb66897a1d6d49b76ab6e3b70fafcfef51e1"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 2417,
+              "line_start": 2348,
+              "publication_locator": "cited publication",
+              "quoted_text": "Algorithm AdaBoost.R\nInput: sequence of N examples ((x1 , y1)..., (xN , yN)) with labels\nyi # Y=[0, 1]\ndistribution D over the examples\nweak learning algorithm WeakLearn\ninteger T specifying number of iterations\nInitialize the weight vector:\nw1\ni, y=\nD(i) | y& yi |\nZ\nfor i=1, ..., N, y # Y, where\nZ= :\nN\ni=1\nD(i)\n|\n1\n0\n|y& yi | dy.\nDo for t=1, 2, ..., T\n1. Set\npt\n=\nwt\n\u001dN\ni=1 \u001e1\n0 wt\ni, y dy\n.\n2. Call WeakLearn, providing it with the density pt\n; get back a\nhypothesis ht : X_Y.\n3. Calculate the loss of ht :\n=t= :\nN\ni=1\n}|\nht(xi)\nyi\npt\ni, y dy\n}.\nIf =t>1\u00122, then set T=t&1 and abort the loop.\n4. Set ;t==t \u0012(1&=t).\n5. Set the new weights vector to be\nwt+1\ni, y =\n{\nwt\ni, y\nwt\ni, y ;t\nif yi\u001d y\u001dht(xi) or ht(xi)\u001d y\u001d yi\notherwise.\nfor i=1, ..., N, y # Y.\nOutput the hypothesis\nhf (x)=inf\n{y # Y: :\nt: ht(x)\u001d y\nlog(1\u0012;t)\u001e1\n2 :\nt\nlog(1\u0012;t)\n=.\nFIG. 5. An extension of AdaBoost to regression problems.\nThe following theorem describes our performance\nguarantee for AdaBoost.R. The proof follows from the\nreduction described above coupled with a direct application\nof Theorem 6.",
+              "quoted_text_sha256": "ed95c765224a06be59283ce41a8f23cb5954615d7a7e80ba50f37dc08f0c53cc"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FreundSchapire1997Hedge.theorem12_adaBoostR_error",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FreundSchapire1997Hedge.theorem12_adaBoostR_errorSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 363,
+          "line_start": 357,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 12. Suppose WeakLearn, when called by AdaBoost.R, generates\nhypotheses with errors $\\epsilon_1,\\ldots,\\epsilon_T$, where $\\epsilon_t$ is\nas defined in Fig. 5. Then the mean squared error\n$\\epsilon=\\mathbb E_{i\\sim D}[(h_f(x_i)-y_i)^2]$ is bounded above by\n$$\n\\epsilon\\leq2^T\\prod_{t=1}^T\\sqrt{\\epsilon_t(1-\\epsilon_t)}. \\tag{26}\n$$",
+          "quoted_text_sha256": "fffb4f1f142a3e900cb48150dee2e887636f20d60935d0c67dbc96c699c6b65b"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem12.adaboost.r.error",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FreundSchapire1997Hedge.theorem12_adaBoostR_error",
+          "semantic_claim": "AdaBoost.R's final mean squared error is at most 2^T times the product of sqrt(epsilon_t(1-epsilon_t)), where epsilon_t is Figure 5's integral loss.",
+          "source_locator": "cited publication:2418-2422",
+          "source_quote_sha256": "89f30f039d7d90e8bbd2d6bf55b876fbbc983173b7b19ca1f509f1f7001534d9"
+        }
+      ],
+      "source_defect_ids": [
+        "FS97-ADABOOST-VARIANTS-ENDPOINT-DOMAIN-06"
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:2418-2422",
+      "source_note": "The checked target excludes a zero-error executed round because Figure 5 supplies no finite logarithmic-vote or subsequent positive-density execution convention there.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "complete_indexed_presentation",
+        "core_anchor": {
+          "line_end": 2422,
+          "line_start": 2418,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 12. Suppose the weak learning algorithm\nWeakLearn, when called by AdaBoost.R, generates hypo-\ntheses with errors =1 , ..., =T , where =t is as defined in Fig. 5.\nThen the mean squared error ==EitD[(hf (xi)& yi)2\n] of",
+          "quoted_text_sha256": "89f30f039d7d90e8bbd2d6bf55b876fbbc983173b7b19ca1f509f1f7001534d9"
+        },
+        "presentation_kind": "theorem",
+        "presentation_label": "Theorem 12",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The raw official transcript's independently indexed Theorem 12 span is exactly lines 2418--2422. The separately pinned visual transcript remains the readable mathematical excerpt for source-to-Spec comparison.",
+        "validated_at": "2026-09-03T22:18:14Z",
+        "validator": "Codex Hedge raw-to-visual source inventory reconciliation"
+      },
+      "source_status": "corrected",
+      "statement": "Theorem 12 gives the Figure-5 AdaBoost.R weighted-median mean-squared-error product bound without stating a zero-error execution convention.",
+      "support_lean_declarations": [
+        "FreundSchapire1997Hedge.theorem12_adaBoostR_errorSpec"
+      ]
+    },
+    "theorem13_vovk_boundedness_characterization": {
+      "aliases": [
+        "Theorem 13"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "proof_support",
+      "scope_disposition": "source_cited_theorem_used_by_displayed_proof_route",
+      "scope_disposition_note": "This source-visible external theorem is retained as proof support. The paper's Theorem 3 endpoint is proved through a checked finite Vovk-game construction, so no non-equivalent paper-facing wrapper is manufactured for the more general external theorem.",
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 2535,
+              "line_start": 2480,
+              "publication_locator": "cited publication",
+              "quoted_text": "algorithm receives the decisions =t\n1 , ..., =t\nN # 2 of N experts,\nand then generates its own decision $t\n# 2. Upon receiving\nan outcome |t\n# 0, the learner and each expert i incur loss\n*($t\n, |t\n) and *(=t\ni , |t\n), respectively. The goal of the learning\nalgorithm is to generate decisions in such a way that its\ncumulative loss will not be much larger than the cumulative\nloss of the best expert. The following four properties are\nassumed to hold:\n1. 2 is a compact topological space.\n2. For each |, the function $ \u0014 *($, |) is continuous.\n3. There exists $ such that, for all |, *($, |)<\u001f.\n4. There exists no $ such that, for all |, *($, |)=0.\nWe now give Vovk's main result [24]. Let a decision\nproblem defined by 0, 2 and * obey Assumptions 1\u00154. Let\nc and a be positive real numbers. We say that the decision\nproblem is (c, a)-bounded if there exists an algorithm A such\nthat for any finite set of experts and for any finite sequence\nof trials, the cumulative loss of the algorithm is bounded by\n:\nT\nt=1\n*($t\n, |t\n)\u001dc min\ni\n:\nT\nt=1\n*(=t\ni , |t\n)+a ln N,\nwhere N is the number of experts.\nWe say that a distribution D is simple if it is non-zero on\na finite set denoted dom(D). Let S be the set of simple dis-\ntributions over 2. Vovk defines the following function\nc: (0, 1) \u0014 [0, \u001f] which characterizes the hardness of any\ndecision problem:\nc(;)= sup\nD # S\ninf\n$ # 2\nsup\n| # 0\n*($, |)\nlog; \u001d= # dom(D) ;*(=, |)\nD(=)\n. (27)\nHe then proves the following powerful theorem:",
+              "quoted_text_sha256": "0aa529cca990c80f6a817910587be85e7ecd689afdea179d46fd54f7c0b3806c"
+            }
+          ]
+        }
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 392,
+          "line_start": 390,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 13 (Vovk). A decision problem is $(c,a)$-bounded if and only if for\nall $\\beta\\in(0,1)$, $c\\geq c(\\beta)$ or\n$a\\geq c(\\beta)/\\ln(1/\\beta)$.",
+          "quoted_text_sha256": "8c2ba74d204709948a700335dae9a1e17dad0a1d65a2bd692ecd003c82636b8e"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:2536-2538",
+      "source_note": "This source-visible external theorem is retained as proof support. The paper's Theorem 3 endpoint is proved through a checked finite Vovk-game construction, so no non-equivalent paper-facing wrapper is manufactured for the more general external theorem.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "complete_indexed_presentation",
+        "core_anchor": {
+          "line_end": 2538,
+          "line_start": 2536,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 13 (Vovk). A decision problem is (c, a)-\nbounded if and only if for all ; # (0, 1), c\u001ec(;) or\na\u001ec(;)\u0012ln(1\u0012;).",
+          "quoted_text_sha256": "eab4c352d2b9471301e1a00d869321b3305c70ab067a462e9e4ba185dbc3f4ea"
+        },
+        "presentation_kind": "theorem",
+        "presentation_label": "Theorem 13",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The raw official transcript's independently indexed Theorem 13 span is exactly lines 2536--2538. The separately pinned visual transcript remains the readable mathematical excerpt for its explicit support-only route.",
+        "validated_at": "2026-09-03T22:18:14Z",
+        "validator": "Codex Hedge raw-to-visual source inventory reconciliation"
+      },
+      "source_status": "support_only",
+      "statement": "Vovk's cited theorem characterizes when a decision problem is (c,a)-bounded by the disjunction c >= c(beta) or a >= c(beta)/ln(1/beta) for every beta in (0,1)."
+    },
+    "theorem2_hedge_comparator_bounds": {
+      "aliases": [
+        "Theorem 2",
+        "theorem2_hedge_comparator_boundsSpec",
+        "theorem2_hedge_comparator_bounds"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:67-80",
+        "archival_source_quote_sha256": "342648e726e93c4f30f8b5779cb80c8e082c76ea9694c2f16762456ef547db59",
+        "corrected_target_review_sha256": "57eeb876fcf1063caa74fc950422d3ba4c4573cd094ddff2f0e25163823872ba",
+        "corrected_target_sha256": "817bfe0c3efe86835c8353323a1f535d6f08ea01db89eeb13e629849beb8f279",
+        "governing_defect_ids": [
+          "FS97-HEDGE-ENDPOINT-DOMAIN-01"
+        ],
+        "schema": 1,
+        "statement": "For a finite nonempty strategy family, normalized initial weights, losses in [0,1], and 0 < beta < 1, Hedge's cumulative loss satisfies the printed single-strategy and nonempty-subset bounds, with zero initial comparator mass represented by positive infinity."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "FreundSchapire1997Hedge.theorem2_hedge_comparator_bounds"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 99,
+              "line_start": 49,
+              "publication_locator": "cited publication",
+              "quoted_text": "We formalize our on-line allocation model as follows. The\nallocation agent A has N options or strategies to choose\nfrom; we number these using the integers 1, ..., N. At each\ntime step t=1, 2, ..., T, the allocator A decides on a distribu-\ntion pt\nover the strategies; that is pt\ni \u001e0 is the amount\nallocated to strategy i, and \u001dN\ni=1 pt\ni =1. Each strategy i then\nsuffers some loss lt\ni which is determined by the (possibly\nadversarial) ``environment.'' The loss suffered by A is then\n\u001dn\ni=1 pt\ni lt\ni =pt\n} lt\n, i.e., the average loss of the strategies with\nrespect to A's chosen allocation rule. We call this loss func-\ntion the mixture loss.\nIn this paper, we always assume that the loss suffered by\nany strategy is bounded so that, without loss of generality,\nlt\ni # [0, 1]. Besides this condition, we make no assumptions\nabout the form of the loss vectors lt\n, or about the manner\nin which they are generated; indeed, the adversary's choice\nfor lt\nmay even depend on the allocator's chosen mixture pt\n.\nThe goal of the algorithm A is to minimize its cumulative\nloss relative to the loss suffered by the best strategy. That is,\nA attempts to minimize its net loss\nLA&min\ni\nLi\nwhere\nLA= :\nT\nt=1\npt\n} lt\nis the total cumulative loss suffered by algorithm A on the\nfirst T trials, and\nLi= :\nT\nt=1\nlt\ni\nis strategy i's cumulative loss.",
+              "quoted_text_sha256": "a0dd40247ef3cc34e907f5dcfb92f2909099f9f33e78990410280deeb001daba"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 330,
+              "line_start": 260,
+              "publication_locator": "cited publication",
+              "quoted_text": "is updated using the multiplicative rule\nwt+1\ni =wt\ni } ;li\nt\n. (2)\nMore generally, it can be shown that our analysis is\napplicable with only minor modification to an alternative\nupdate rule of the form\nwt+1\ni =wt\ni } U;(lt\ni )\nwhere U; : [0, 1] \u0014 [0, 1] is any function, parameterized\nby ; # [0, 1] satisfying\n;r\n\u001dU;(r)\u001d1&(1&;) r\nfor all r # [0, 1].\n2.1. Analysis\nThe analysis of Hedge(;) mimics directly that given by\nLittlestone and Warmuth [20]. The main idea is to derive\nupper and lower bounds on \u001dN\ni=1 wT+1\ni which, together,\nimply an upper bound on the loss of the algorithm. We\nbegin with an upper bound.\nLemma 1. For any sequence of loss vectors l1\n, ..., lT\n,\nln\n\\:\nN\ni=1\nwT+1\ni\n+\u001d&(1&;) LHedge(;) .\nAlgorithm Hedge(;)\nParameters: ; # [0, 1]\ninitial weight vector w1\n# [0, 1]N\nwith \u001dN\ni=1 w1\ni =1\nnumber of trials T\nDo for t=1, 2, ..., T\n1. Choose allocation\npt\n=\nwt\n\u001dN\ni=1 wt\ni\n2. Receive loss vector lt\n# [0, 1]N\nfrom environment.\n3. Suffer loss pt\n} lt\n.\n4. Set the new weights vector to be\nwt+1\ni =wt\ni ;li\nt\nFIG. 1. The on-line allocation algorithm.\nProof. By a convexity argument, it can be shown that\n:r\n\u001d1&(1&:) r (3)\nfor :\u001e0 and r # [0, 1]. Combined with Eqs. (1) and (2),\nthis implies\n:\nN",
+              "quoted_text_sha256": "199e64ea2dd57b12198330c8cfc9b67f0552e246ea3d1ce0526c8db54ee62845"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FreundSchapire1997Hedge.theorem2_hedge_comparator_bounds",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FreundSchapire1997Hedge.theorem2_hedge_comparator_boundsSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 81,
+          "line_start": 69,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 2. For any sequence of loss vectors\n$\\boldsymbol\\ell^1,\\ldots,\\boldsymbol\\ell^T$, and for any\n$i\\in\\{1,\\ldots,N\\}$, we have\n$$\nL_{\\operatorname{Hedge}(\\beta)}\n\\leq \\frac{-\\ln(w_i^1)-L_i\\ln\\beta}{1-\\beta}. \\tag{7}\n$$\nMore generally, for any nonempty set $S\\subseteq\\{1,\\ldots,N\\}$, we have\n$$\nL_{\\operatorname{Hedge}(\\beta)}\n\\leq\n\\frac{-\\ln(\\sum_{i\\in S}w_i^1)-(\\ln\\beta)\\max_{i\\in S}L_i}{1-\\beta}. \\tag{8}\n$$",
+          "quoted_text_sha256": "80f5ef94a96ecb374c092a0e88ca64a79aa675b0365c30af06894e27753f3d1c"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem2.hedge.comparator.bounds",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FreundSchapire1997Hedge.theorem2_hedge_comparator_bounds",
+          "semantic_claim": "Hedge's cumulative loss satisfies both the printed single-strategy bound (7) and the more general nonempty-subset bound (8), including the initial-weight logarithm and worst comparator loss in the subset.",
+          "source_locator": "cited publication:398-412",
+          "source_quote_sha256": "ce5a3f6b246d505bcb13edc1b8b19aa34bcd4db1242199294716387064f98fd1"
+        }
+      ],
+      "source_defect_ids": [
+        "FS97-HEDGE-ENDPOINT-DOMAIN-01"
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:398-412",
+      "source_note": "The checked target states the strict beta domain of the displayed logarithms and denominator and uses an extended-real branch for zero initial comparator mass.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "complete_indexed_presentation",
+        "core_anchor": {
+          "line_end": 412,
+          "line_start": 398,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 2. For any sequence of loss vectors l1\n, ..., lT\n,\nand for any i # [1, ..., N], we have\nLHedge(;)\u001d\n&ln(w1\ni )&Li ln ;\n1&;\n. (7)\nMore generally, for any nonempty set S\u001f[1, ..., N], we have\nLHedge(;)\u001d\n&ln(\u001di # S w1\ni )&(ln ;) maxi # S Li\n1&;\n. (8)",
+          "quoted_text_sha256": "ce5a3f6b246d505bcb13edc1b8b19aa34bcd4db1242199294716387064f98fd1"
+        },
+        "presentation_kind": "theorem",
+        "presentation_label": "Theorem 2",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The raw official transcript's independently indexed Theorem 2 span is exactly lines 398--412. The separately pinned visual transcript remains the readable mathematical excerpt for source-to-Spec comparison.",
+        "validated_at": "2026-09-03T22:18:14Z",
+        "validator": "Codex Hedge raw-to-visual source inventory reconciliation"
+      },
+      "source_status": "corrected",
+      "statement": "Under the Hedge algorithm's printed beta in [0,1], the cumulative loss satisfies the single-strategy bound (7) and the nonempty-subset bound (8).",
+      "support_lean_declarations": [
+        "FreundSchapire1997Hedge.theorem2_hedge_comparator_boundsSpec"
+      ]
+    },
+    "theorem3_global_allocation_lower_tradeoff": {
+      "aliases": [
+        "Theorem 3",
+        "theorem3_global_allocation_lower_tradeoffSpec",
+        "theorem3_global_allocation_lower_tradeoff_checked"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FreundSchapire1997Hedge.theorem3_global_allocation_lower_tradeoff_checked"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 99,
+              "line_start": 49,
+              "publication_locator": "cited publication",
+              "quoted_text": "We formalize our on-line allocation model as follows. The\nallocation agent A has N options or strategies to choose\nfrom; we number these using the integers 1, ..., N. At each\ntime step t=1, 2, ..., T, the allocator A decides on a distribu-\ntion pt\nover the strategies; that is pt\ni \u001e0 is the amount\nallocated to strategy i, and \u001dN\ni=1 pt\ni =1. Each strategy i then\nsuffers some loss lt\ni which is determined by the (possibly\nadversarial) ``environment.'' The loss suffered by A is then\n\u001dn\ni=1 pt\ni lt\ni =pt\n} lt\n, i.e., the average loss of the strategies with\nrespect to A's chosen allocation rule. We call this loss func-\ntion the mixture loss.\nIn this paper, we always assume that the loss suffered by\nany strategy is bounded so that, without loss of generality,\nlt\ni # [0, 1]. Besides this condition, we make no assumptions\nabout the form of the loss vectors lt\n, or about the manner\nin which they are generated; indeed, the adversary's choice\nfor lt\nmay even depend on the allocator's chosen mixture pt\n.\nThe goal of the algorithm A is to minimize its cumulative\nloss relative to the loss suffered by the best strategy. That is,\nA attempts to minimize its net loss\nLA&min\ni\nLi\nwhere\nLA= :\nT\nt=1\npt\n} lt\nis the total cumulative loss suffered by algorithm A on the\nfirst T trials, and\nLi= :\nT\nt=1\nlt\ni\nis strategy i's cumulative loss.",
+              "quoted_text_sha256": "a0dd40247ef3cc34e907f5dcfb92f2909099f9f33e78990410280deeb001daba"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchor_evidence": [
+            {
+              "line_end": 461,
+              "line_start": 451,
+              "publication_locator": "cited publication",
+              "quoted_text": "replaced by an integral, and the maximum by a supremum.\nThe bound given in Eq. (9) can be written as\nLHedge(;)\u001dc min\ni\nLi+a ln N, (10)\nwhere c=ln(1\u0012;)\u0012(1&;) and a=1\u0012(1&;). Vovk [24]\nanalyzes prediction algorithms that have performance\nbounds of this form, and proves tight upper and lower\nbounds for the achievable values of c and a. Using Vovk's\nresults, we can show that the constants a and c achieved by\nHedge(;) are optimal.",
+              "quoted_text_sha256": "9c1983aff8907f494461edcf0e4293cb1bf50e1f366647b8f3cfc01ac23a0fda"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FreundSchapire1997Hedge.theorem3_global_allocation_lower_tradeoff_checked",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FreundSchapire1997Hedge.theorem3_global_allocation_lower_tradeoffSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 103,
+          "line_start": 91,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 3. Let $B$ be an algorithm for the on-line allocation problem with an\narbitrary number of strategies. Suppose that there exist positive real numbers\n$a$ and $c$ such that for any number of strategies $N$ and for any sequence\nof loss vectors $\\boldsymbol\\ell^1,\\ldots,\\boldsymbol\\ell^T$,\n$$\nL_B\\leq c\\min_i L_i+a\\ln N.\n$$\nThen for all $\\beta\\in(0,1)$, either\n$$\nc\\geq\\frac{\\ln(1/\\beta)}{1-\\beta}\n\\qquad\\text{or}\\qquad\na\\geq\\frac{1}{1-\\beta}.\n$$",
+          "quoted_text_sha256": "98669d98d7bb50a88d3bdb00891220f7a4ebfd081746f45d3070b7e12f4b8e0b"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem3.global.allocation.lower.tradeoff",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FreundSchapire1997Hedge.theorem3_global_allocation_lower_tradeoff_checked",
+          "semantic_claim": "Any online allocation algorithm admitting a uniform bound L_B <= c min_i L_i + a ln N for every finite strategy count and loss sequence must, for every beta in (0,1), have c at least ln(1/beta)/(1-beta) or a at least 1/(1-beta).",
+          "source_locator": "cited publication:462-487",
+          "source_quote_sha256": "d04c7277c6f458755c4c6ba32852d875f0ff54e53617ff3588e08297dc537a8b"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:462-487",
+      "source_note": "The endpoint proves the source's necessary tradeoff through the checked finite Vovk-game construction used in the appendix proof.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "complete_indexed_presentation",
+        "core_anchor": {
+          "line_end": 487,
+          "line_start": 462,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 3. Let B be an algorithm for the on-line alloca-\ntion problem with an arbitrary number of strategies. Suppose\nthat there exists positive real numbers a and c such that for\nany number of strategies N and for any sequence of loss\nvectors l1\n, ..., lT\nLB\u001dc min\ni\nLi+a ln N.\nThen for all ; # (0, 1), either\nc\u001e\nln(1\u0012;)\n1&;\nor a\u001e\n1\n(1&;)\n.\nThe proof is given in the appendix.\n2.2. How to Choose ;\nSo far, we have analyzed Hedge(;) for a given choice of\n;, and we have proved reasonable bounds for any choice of\n;. In practice, we will often want to choose ; so as to maxi-\nmally exploit any prior knowledge we may have about the\nspecific problem at hand.\nThe following lemma will be helpful for choosing ; using\nthe bounds derived above.",
+          "quoted_text_sha256": "d04c7277c6f458755c4c6ba32852d875f0ff54e53617ff3588e08297dc537a8b"
+        },
+        "presentation_kind": "theorem",
+        "presentation_label": "Theorem 3",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The raw official transcript's independently indexed Theorem 3 span is exactly lines 462--487. The separately pinned visual transcript remains the readable mathematical excerpt for source-to-Spec comparison.",
+        "validated_at": "2026-09-03T22:18:14Z",
+        "validator": "Codex Hedge raw-to-visual source inventory reconciliation"
+      },
+      "source_status": "direct byte-pinned source result",
+      "statement": "Any online allocation algorithm admitting a uniform bound L_B <= c min_i L_i + a ln N for every finite strategy count and loss sequence must, for every beta in (0,1), have c at least ln(1/beta)/(1-beta) or a at least 1/(1-beta).",
+      "support_lean_declarations": [
+        "FreundSchapire1997Hedge.theorem3_global_allocation_lower_tradeoffSpec"
+      ]
+    },
+    "theorem5_decision_prediction_general": {
+      "aliases": [
+        "Theorem 5",
+        "theorem5_decision_prediction_generalSpec",
+        "theorem5_decision_prediction_general"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:143-152",
+        "archival_source_quote_sha256": "883a11bce4ff9ace99720d68cf6aa5a692fa2590d728f9f83bf7c13bd3a7d5c5",
+        "corrected_target_review_sha256": "2c0a6c3c76663b26b1276477b0d9f5920fb9160aa071891e7e7db833dacb1e0c",
+        "corrected_target_sha256": "8a814ce4393ce39b98d4cdee2c5122fa0afe76efeb823e2f929a076b09be0feb",
+        "governing_defect_ids": [
+          "FS97-THEOREM5-TUNING-DOMAIN-02"
+        ],
+        "schema": 1,
+        "statement": "For a finite expert family of size N >= 2, a positive best-expert loss bound L-tilde no larger than the horizon, and the general decision-prediction mixture model, Hedge with beta = g(L-tilde/log N) has cumulative expected loss at most the best expert loss plus sqrt(2 L-tilde log N) + log N."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "FreundSchapire1997Hedge.theorem5_decision_prediction_general"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 624,
+              "line_start": 540,
+              "publication_locator": "cited publication",
+              "quoted_text": "O(- (ln N)\u0012T). However, if L\n\u0019 is close to zero, then the rate\nof convergence will be much faster, roughly, O((ln N)\u0012T).\nLemma 4 can also be applied to the other bounds given in\nTheorem 2 to obtain analogous results.\nThe bound given in Eq. (11) can be improved in special\ncases in which the loss is a function of a prediction and an\noutcome and this function is of a special form (see Example 4\nbelow). However, for the general case, one cannot improve\nthe square-root term - 2L\n\u0019 ln N, by more than a constant\nfactor. This is a corollary of the lower bound given by Cesa-\nBianchi et al. ([4], Theorem 7) who analyze an on-line\nprediction problem that can be seen as a special case of the\non-line allocation model.\n3. APPLICATIONS\nThe framework described up to this point is quite general\nand can be applied in a wide variety of learning problems.\nConsider the following set-up used by Chung [5]. We are\ngiven a decision space 2, a space of outcomes 0, and a\nbounded loss function *: 2_0 \u0014 [0, 1]. (Actually, our\nresults require only that * be bounded, but, by rescaling, we\ncan assume that its range is [0, 1].) At every time step t, the\nlearning algorithm selects a decision $t\n# 2, receives an out-\ncome |t\n# 0, and suffers loss *($t\n, |t\n). More generally, we\nmay allow the learner to select a distribution Dt\nover the\nspace of decisions, in which case it suffers the expected loss\nof a decision randomly selected according to Dt\n; that is, its\nexpected loss is 4(Dt\n, |t\n) where\n4(D, |)=E$t D[*($, |)].\nTo decide on distribution Dt\n, we assume that the learner\nhas access to a set of N experts. At every time step t, expert\ni produces its own distribution Et\ni on 2, and suffers loss\n4(Et\ni , |t\n).\nThe goal of the learner is to combine the distributions\nproduced by the experts so as to suffer expected loss ``not\nmuch worse'' than that of the best expert.\nThe results of Section 2 provide a method for solving this\nproblem. Specifically, we run algorithm Hedge(;), treating\neach expert as a strategy. At every time step, Hedge(;)\nproduces a distribution pt\non the set of experts which is used\nto construct the mixture distribution\nDt\n= :\nN\ni=1\npt\ni Et\ni .\nFor any outcome |t\n, the loss suffered by Hedge(;) will\nthen be\n4(Dt\n, |t\n)= :\nN\ni=1\npt\ni 4(Et\ni , |t\n).\nThus, if we define lt\ni =4(Et\ni , |t\n) then the loss suffered by the\nlearner is pt\n} lt\n, i.e., exactly the mixture loss that was\nanalyzed in Section 2.\nHence, the bounds of Section 2 can be applied to our\ncurrent framework. For instance, applying Eq. (11), we\nobtain the following:",
+              "quoted_text_sha256": "14927a5aa441b4ae15c8ca703ec84998f6a25cd1c53ff23108afa384889b760a"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FreundSchapire1997Hedge.theorem5_decision_prediction_general",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FreundSchapire1997Hedge.theorem5_decision_prediction_generalSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 152,
+          "line_start": 143,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 5. For any loss function $\\lambda$, for any set of experts, and for\nany sequence of outcomes, the expected loss of $\\operatorname{Hedge}(\\beta)$\nif used as described above is at most\n$$\n\\sum_{t=1}^T\\Lambda(\\mathcal D^t,\\omega^t)\n\\leq \\min_i\\sum_{t=1}^T\\Lambda(\\mathcal E_i^t,\\omega^t)\n+\\sqrt{2\\widetilde L\\ln N}+\\ln N,\n$$\nwhere $\\widetilde L\\leq T$ is an assumed bound on the expected loss of the\nbest expert, and $\\beta=g(\\widetilde L/\\ln N)$.",
+          "quoted_text_sha256": "883a11bce4ff9ace99720d68cf6aa5a692fa2590d728f9f83bf7c13bd3a7d5c5"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem5.decision.prediction.general",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FreundSchapire1997Hedge.theorem5_decision_prediction_general",
+          "semantic_claim": "For the decision-prediction mixture construction, Hedge with beta = g(Lbar/ln N) has cumulative expected loss at most the best expert's cumulative expected loss plus sqrt(2 Lbar ln N) + ln N, where Lbar <= T bounds the best expert.",
+          "source_locator": "cited publication:625-645",
+          "source_quote_sha256": "9829ac96f9a62f79341f91491635f5a679d96751f3fa7713e0791d8bf2b6bb8b"
+        }
+      ],
+      "source_defect_ids": [
+        "FS97-THEOREM5-TUNING-DOMAIN-02"
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:625-645",
+      "source_note": "The checked target exposes the nondegenerate N and L-tilde conditions needed to define the paper's displayed tuned beta as a finite real.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "complete_indexed_presentation",
+        "core_anchor": {
+          "line_end": 645,
+          "line_start": 625,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 5. For any loss function *, for any set of\nexperts, and for any sequence of outcomes, the expected loss\nof Hedge(;) if used as described above is at most\n:\nT\nt=1\n4(Dt\n, |t\n)\u001dmin\ni\n:\nT\nt=1\n4(Et\ni , |t\n)+- 2L\n\u0019 ln N+ln N\nwhere L\n\u0019 \u001dT is an assumed bound on the expected loss of the\nbest expert, and ;= g(L\n\u0019 \u0012ln N).",
+          "quoted_text_sha256": "9829ac96f9a62f79341f91491635f5a679d96751f3fa7713e0791d8bf2b6bb8b"
+        },
+        "presentation_kind": "theorem",
+        "presentation_label": "Theorem 5",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The raw official transcript's independently indexed Theorem 5 span is exactly lines 625--645. The separately pinned visual transcript remains the readable mathematical excerpt for source-to-Spec comparison.",
+        "validated_at": "2026-09-03T22:18:14Z",
+        "validator": "Codex Hedge raw-to-visual source inventory reconciliation"
+      },
+      "source_status": "corrected",
+      "statement": "For any loss function, any expert set, and any outcome sequence, Theorem 5 uses beta = g(L-tilde/log N) and gives the displayed best-expert expected-loss bound whenever L-tilde <= T.",
+      "support_lean_declarations": [
+        "FreundSchapire1997Hedge.theorem5_decision_prediction_generalSpec"
+      ]
+    },
+    "theorem6_adaboost_error": {
+      "aliases": [
+        "Theorem 6",
+        "theorem6_adaBoost_finiteSpec",
+        "theorem6_adaBoost_finite"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:178-186",
+        "archival_source_quote_sha256": "de8029a8b31cc8ac3cdca09243dd3297f17653e752b801606f8bfecad4c2294a",
+        "corrected_target_review_sha256": "98466866173c84416cd3bb53ebdb49ec4311300e3ecd83d2acefe4aa0066d20f",
+        "corrected_target_sha256": "84c0a94a1a1396ca286f3f2fbcac3d7499535a914932c22bb28e9b919940898f",
+        "governing_defect_ids": [
+          "FS97-ADABOOST-ENDPOINT-DOMAIN-03"
+        ],
+        "schema": 1,
+        "statement": "For the finite Figure-2 AdaBoost execution with every observed error strictly between zero and one, the final hypothesis's training error is at most 2^T times the product of sqrt(epsilon_t(1-epsilon_t)); errors may lie on either side of one half."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "FreundSchapire1997Hedge.theorem6_adaBoost_finite"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 1000,
+              "line_start": 900,
+              "publication_locator": "cited publication",
+              "quoted_text": "D(i)=1\u0012N. The algorithm maintains a set of weights wt\nover\nthe training examples. On iteration t a distribution pt\nis\ncomputed by normalizing these weights. This distribution is\nfed to the weak learner WeakLearn which generates a\nhypothesis ht that (we hope) has small error with respect to\nthe distribution.1\nUsing the new hypothesis ht , the boosting\n125\nA DECISION THEORETIC GENERALIZATION\n1\nSome learning algorithms can be generalized to use a given distribution\ndirectly. For instance, gradient based algorithms can use the probability\nassociated with each example to scale the update step size which is based\non the example. If the algorithm cannot be generalized in this way, the\ntraining sample can be re-sampled to generate a new set of training exam-\nples that is distributed according to the given distribution. The computa-\ntion required to generate each re-sampled example takes O(log N) time.\n\fFile: 571J 150408 . By:CV . Date:28:07:01 . Time:05:54 LOP8M. V8.0. Page 01:01\nCodes: 6184 Signs: 4760 . Length: 56 pic 0 pts, 236 mm\nAlgorithm AdaBoost\nInput: sequence of N labeled examples ((x1 , y1), ..., (xN , yN))\ndistribution D over the N examples\nweak learning algorithm WeakLearn\ninteger T specifying number of iterations\nInitialize the weight vector: w1\ni =D(i) for i=1, ..., N.\nDo for t=1, 2, ..., T\n1. Set\npt\n=\nwt\n\u001dN\ni=1 wt\ni\n2. Call WeakLearn, providing it with the distribution pt\n; get back a\nhypothesis ht : X\u0014 [0, 1].\n3. Calculate the error of ht: =t=\u001dN\ni=1 pt\ni |ht(xi)& yi |.\n4. Set ;t==t \u0012(1&=t).\n5. Set the new weights vector to be\nwt+1\ni =wt\ni ;1&|ht(xi)& yi |\nt\nOutput the hypothesis\nhf (x)=\n{\n1 if \u001dT\nt=1 (log 1\u0012;t) ht(x)\u001e1\n2 \u001dT\nt=1 log 1\u0012;t\n0 otherwise.\nFIG. 2. The adaptive boosting algorithm.\nalgorithm generates the next weight vector wt+1\n, and the\nprocess repeats. After T such iterations, the final hypothesis\nhf is output. The hypothesis hf combines the outputs of the\nT weak hypotheses using a weighted majority vote.\nWe call the algorithm AdaBoost because, unlike previous\nalgorithms, it adjusts adaptively to the errors of the weak\nhypotheses returned by WeakLearn. If WeakLearn is a PAC\nweak learning algorithm in the sense defined above, then\n=t\u001d1\u00122&# for all t (assuming the examples have been\ngenerated appropriately with yi=c(xi) for some c # C).\nHowever, such a bound on the error need not be known\nahead of time. Our results hold for any =t # [0, 1], and\ndepend only on the performance of the weak learner on\nthose distributions that are actually generated during the\nboosting process.\nThe parameter ;t is chosen as a function of =t and is used\nfor updating the weight vector. The update rule reduces\nthe probability assigned to those examples on which the\nhypothesis makes a good prediction and increases the prob-\nability of the examples on which the prediction is poor.2\nNote that AdaBoost, unlike boost-by-majority, combines\nthe weak hypotheses by summing their probabilistic predic-\ntions. Drucker, Schapire and Simard [9], in experiments\nthey performed using boosting to improve the performance\nof a real-valued neural network, observed that summing the\noutcomes of the networks and then selecting the best predic-\ntion performs better than selecting the best prediction of\neach network and then combining them with a majority\nrule. It is interesting that the new boosting algorithm's\nfinal hypothesis uses the same combination rule that was\nobserved to be better in practice, but which previously\nlacked theoretical justification.\nSince it was first introduced, several successful experi-\nments have been conducted using AdaBoost, including work\nby the authors [12], Drucker and Cortes [8], Jackson and\nCraven [16], Quinlan [21], and Breiman [3].\n4.2. Analysis\nComparing Figs. 1 and 2, there is an obvious similarity\nbetween the algorithms Hedge(;) and AdaBoost. This\nsimilarity reflects a surprising ``dual'' relationship between\nthe on-line allocation model and the problem of boosting.\nPut another way, there is a direct mapping or reduction of\nthe boosting problem to the on-line allocation problem. In",
+              "quoted_text_sha256": "ad927c4d4222d585d3f086f45f14d2409f8c721ac151bff4ac0ae9b17fda22ed"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FreundSchapire1997Hedge.theorem6_adaBoost_finite",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FreundSchapire1997Hedge.theorem6_adaBoost_finiteSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 187,
+          "line_start": 180,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 6. Suppose the weak learning algorithm WeakLearn, when called by\nAdaBoost, generates hypotheses with errors $\\epsilon_1,\\ldots,\\epsilon_T$\n(as defined in Step 3 of Fig. 2). Then the error\n$\\epsilon=\\Pr_{i\\sim D}[h_f(x_i)\\neq y_i]$ of the final hypothesis $h_f$\noutput by AdaBoost is bounded above by\n$$\n\\epsilon\\leq 2^T\\prod_{t=1}^T\\sqrt{\\epsilon_t(1-\\epsilon_t)}. \\tag{14}\n$$",
+          "quoted_text_sha256": "8ad9d3cfea5e87e48c390d5c6801e22e5abe5f8091da7837ce00e5760a6d02fe"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem6.adaboost.error",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FreundSchapire1997Hedge.theorem6_adaBoost_finite",
+          "semantic_claim": "The final AdaBoost hypothesis has training error at most 2^T times the product over rounds of sqrt(epsilon_t(1-epsilon_t)), where epsilon_t is Figure 2's round error.",
+          "source_locator": "cited publication:1099-1108",
+          "source_quote_sha256": "3c36b5be1d516b5daff970ff89c4507a8b1714b0f583fd5f419ec7870556fcc7"
+        }
+      ],
+      "source_defect_ids": [
+        "FS97-ADABOOST-ENDPOINT-DOMAIN-03"
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:1099-1108",
+      "source_note": "The checked target retains arbitrary interior errors but excludes endpoints at which Figure 2's quotient, logarithmic vote, or later normalization has no specified finite-real execution.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "complete_indexed_presentation",
+        "core_anchor": {
+          "line_end": 1108,
+          "line_start": 1099,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 6. Suppose the weak learning algorithm\nWeakLearn, when called by AdaBoost, generates hypotheses\nwith errors =1 , ..., =T (as defined in Step 3 of Fig. 2.) Then the\nerror ==PritD[hf (xi){ yi] of the final hypothesis hf output\nby AdaBoost is bounded above by\n=\u001d2T\n`\nT\nt=1\n- =t(1&=t). (14)",
+          "quoted_text_sha256": "3c36b5be1d516b5daff970ff89c4507a8b1714b0f583fd5f419ec7870556fcc7"
+        },
+        "presentation_kind": "theorem",
+        "presentation_label": "Theorem 6",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The raw official transcript's independently indexed Theorem 6 span is exactly lines 1099--1108. The separately pinned visual transcript remains the readable mathematical excerpt for source-to-Spec comparison.",
+        "validated_at": "2026-09-03T22:18:14Z",
+        "validator": "Codex Hedge raw-to-visual source inventory reconciliation"
+      },
+      "source_status": "corrected",
+      "statement": "Theorem 6 gives the displayed AdaBoost training-error product bound, while the surrounding prose says the results hold for every observed error epsilon_t in [0,1].",
+      "support_lean_declarations": [
+        "FreundSchapire1997Hedge.theorem6_adaBoost_finiteSpec"
+      ]
+    },
+    "theorem7_vapnik_generalization_bound": {
+      "aliases": [
+        "Theorem 7"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "proof_support",
+      "scope_disposition": "source_cited_theorem_used_by_displayed_proof_route",
+      "scope_disposition_note": "This result is explicitly quoted from Vapnik as statistical proof support. Its finite-iid statement is separately proved in the reusable Statistics library and is not a second Freund--Schapire paper-claim row.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 202,
+          "line_start": 191,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 7 (Vapnik). Let $H$ be a class of binary functions over some domain\n$X$. Let $d$ be the VC-dimension of $H$. Let $\\mathcal P$ be a distribution\nover the pairs $X\\times\\{0,1\\}$. For $h\\in H$, define\n$\\epsilon_g(h)=\\Pr_{(x,y)\\sim\\mathcal P}[h(x)\\neq y]$.\nLet $S=\\{(x_1,y_1),\\ldots,(x_N,y_N)\\}$ be a sample of $N$ independent random\nexamples drawn according to $\\mathcal P$, and define\n$\\widehat\\epsilon(h)=|\\{i:h(x_i)\\neq y_i\\}|/N$. Then, for any $\\delta>0$,\n$$\n\\Pr\\!\\left[\\exists h\\in H:\n|\\widehat\\epsilon(h)-\\epsilon_g(h)|\n>2\\sqrt{\\frac{d(\\ln(2N/d)+1)+\\ln(9/\\delta)}{N}}\\right]\\leq\\delta.\n$$",
+          "quoted_text_sha256": "757c7e5e95334cd8046d59f483e67f253d93b167b8bfe720e291bb94bd23047a"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:1299-1343",
+      "source_note": "This result is explicitly quoted from Vapnik as statistical proof support. Its finite-iid statement is separately proved in the reusable Statistics library and is not a second Freund--Schapire paper-claim row.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "complete_indexed_presentation",
+        "core_anchor": {
+          "line_end": 1343,
+          "line_start": 1299,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 7 (Vapnik). Let H be a class of binary func-\ntions over some domain X. Let d be the VC-dimension of H.\nLet P be a distribution over the pairs X_[0, 1]. For h # H,\ndefine the (generalization) error of h with respect to P to be\n=g(h).Pr(x, y)t P [h(x){ y].\nLet S=[(x1 , y1), ..., (xN , yN)] be a sample (training set) of\nN independent random examples drawn from X_[0, 1]\naccording to P. Define the empirical error of h with respect\nto the sample S to be\n=^ (h).\n|[i: h(xi){ yi]|\nN\n.\nThen, for any $>0 we have that\nPr\n__h # H: |=^ (h)&=g(h)|\n>2\n\u001c\nd(ln 2N\u0012d+1)+ln 9\u0012$\nN &\u001d$\nwhere the probability is computed with respect to the random\nchoice of the sample S.\nLet %: R \u0014 [0, 1] be defined by\n%(x)=\n{\n1 if x\u001e0\n0 otherwise\nand, for any class H of functions, let 3T (H) be the class of\nall functions defined as a linear threshold of T functions\nin H:\n3T (H)=\n{%\n\\:\nT\nt=1\nat ht&b\n+: b, a1 , ..., aT # R;\nh1 , ..., hT # H\n=.\nClearly, if all hypotheses generated by WeakLearn belong to\nsome class H, then the final hypothesis of AdaBoost, after T\nrounds of boosting, belongs to 3T (H). Thus, the next\ntheorem provides an upper bound on the VC-dimension of\nthe class of final hypotheses generated by AdaBoost in terms\nof the weak hypothesis class.",
+          "quoted_text_sha256": "08a1443996e2a4e7a0be899fe8f2ea3cd147a155128f02ffd0c19351ff1aac1d"
+        },
+        "presentation_kind": "theorem",
+        "presentation_label": "Theorem 7",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The raw official transcript's independently indexed Theorem 7 span is exactly lines 1299--1343. The separately pinned visual transcript remains the readable mathematical excerpt for its explicit support-only route.",
+        "validated_at": "2026-09-03T22:18:14Z",
+        "validator": "Codex Hedge raw-to-visual source inventory reconciliation"
+      },
+      "source_status": "support_only",
+      "statement": "Vapnik's cited theorem bounds the probability of a uniform empirical-versus-generalization error deviation for a binary class of VC dimension d.",
+      "support_lean_declarations": [
+        "AppliedModelingLib.Statistics.finiteIID_vc_generalization_theorem7"
+      ]
+    },
+    "theorem8_weighted_threshold_vc": {
+      "aliases": [
+        "Theorem 8",
+        "theorem8_weighted_threshold_vcSpec",
+        "theorem8_weighted_threshold_vc"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FreundSchapire1997Hedge.theorem8_weighted_threshold_vc"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 1346,
+              "line_start": 1260,
+              "publication_locator": "cited publication",
+              "quoted_text": "1\n2#2\nln\n1\n=|. (23)\nNote, however, that when the errors of the hypotheses\ngenerated by WeakLearn are not uniform, Theorem 6\nimplies that the final error depends on the error of all of the\nweak hypotheses. Previous bounds on the errors of boosting\nalgorithms depended only on the maximal error of the\nweakest hypothesis and ignored the advantage that can be\ngained from the hypotheses whose errors are smaller. This\nadvantage seems to be very relevant to practical applica-\ntions of boosting, because there one expects the error of the\nlearning algorithm to increase as the distributions fed to\nWeakLearn shift more and more away from the target\ndistribution.\n4.3. Generalization Error\nWe now come back to discussing the error of the final\nhypothesis outside the training set. Theorem 6 guarantees\nthat the error of hf on the sample is small; however, the\nquantity that interests us is the generalization error of hf ,\nwhich is the error of hf over the whole instance space X; that\nis, =g=Pr(x, y)t P[hf (x){ y]. In order to make =g close to\nthe empirical error =^ on the training set, we have to restrict\nthe choice of hf in some way. One natural way of doing this\nin the context of boosting is to restrict the weak learner to\nchoose its hypotheses from some simple class of functions\nand restrict T, the number of weak hypotheses that are com-\nbined to make hf . The choice of the class of weak hypotheses\nis specific to the learning problem at hand and should reflect\nour knowledge about the properties of the unknown con-\ncept. As for the choice of T, various general methods can be\ndevised. One popular method is to use an upper bound\non the VC-dimension of the concept class. This method\nis sometimes called ``structural risk minimization.'' See\nVapnik's book [23] for an extensive discussion of the\ntheory of structural risk minimization. For our purposes, we\nquote Vapnik's Theorem 6.7:\nTheorem 7 (Vapnik). Let H be a class of binary func-\ntions over some domain X. Let d be the VC-dimension of H.\nLet P be a distribution over the pairs X_[0, 1]. For h # H,\ndefine the (generalization) error of h with respect to P to be\n=g(h).Pr(x, y)t P [h(x){ y].\nLet S=[(x1 , y1), ..., (xN , yN)] be a sample (training set) of\nN independent random examples drawn from X_[0, 1]\naccording to P. Define the empirical error of h with respect\nto the sample S to be\n=^ (h).\n|[i: h(xi){ yi]|\nN\n.\nThen, for any $>0 we have that\nPr\n__h # H: |=^ (h)&=g(h)|\n>2\n\u001c\nd(ln 2N\u0012d+1)+ln 9\u0012$\nN &\u001d$\nwhere the probability is computed with respect to the random\nchoice of the sample S.\nLet %: R \u0014 [0, 1] be defined by\n%(x)=\n{\n1 if x\u001e0\n0 otherwise\nand, for any class H of functions, let 3T (H) be the class of\nall functions defined as a linear threshold of T functions\nin H:\n3T (H)=\n{%\n\\:\nT\nt=1\nat ht&b\n+: b, a1 , ..., aT # R;\nh1 , ..., hT # H\n=.\nClearly, if all hypotheses generated by WeakLearn belong to\nsome class H, then the final hypothesis of AdaBoost, after T\nrounds of boosting, belongs to 3T (H). Thus, the next\ntheorem provides an upper bound on the VC-dimension of\nthe class of final hypotheses generated by AdaBoost in terms\nof the weak hypothesis class.\n128 FREUND AND SCHAPIRE\n\fFile: 571J 150411 . By:CV . Date:28:07:01 . Time:05:54 LOP8M. V8.0. Page 01:01\nCodes: 6095 Signs: 5147 . Length: 56 pic 0 pts, 236 mm",
+              "quoted_text_sha256": "3956433b5bee62a6730e6dcaf719c6b57ced254377f83fe94c06557b72158f81"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FreundSchapire1997Hedge.theorem8_weighted_threshold_vc",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FreundSchapire1997Hedge.theorem8_weighted_threshold_vcSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 216,
+          "line_start": 214,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 8. Let $H$ be a class of binary functions of VC-dimension $d\\geq2$.\nThen the VC-dimension of $\\Theta_T(H)$ is at most\n$2(d+1)(T+1)\\log_2(e(T+1))$.",
+          "quoted_text_sha256": "02f3f76fb2e23e6f568774bd6b6255e9d742f135214db392e10805552d1848a7"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem8.weighted.threshold.vc",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FreundSchapire1997Hedge.theorem8_weighted_threshold_vc",
+          "semantic_claim": "If a binary hypothesis class H has VC dimension d >= 2, then the class of affine thresholds of T hypotheses from H has VC dimension at most 2(d+1)(T+1) log_2(e(T+1)); hence the T-round AdaBoost outputs lie in a class with that bound.",
+          "source_locator": "cited publication:1347-1355",
+          "source_quote_sha256": "cbe2346529f75bf1c6a3932085a589deb51de9efc2b3daa15fa8c6564e5926fc"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:1347-1355",
+      "source_note": "The all-finite-traces Lean formulation is the library's finite characterization of the printed VC-dimension upper bound.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "complete_indexed_presentation",
+        "core_anchor": {
+          "line_end": 1355,
+          "line_start": 1347,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 8. Let H be a class of binary functions of\nVC-dimension d\u001e2. Then the VC-dimension of 3T (H) is at\nmost 2(d+1)(T+1) log2(e(T+1)) (where e is the base of\nthe natural logarithm).\nTherefore, if the hypotheses generated by WeakLearn are\nchosen from a class of VC-dimension d\u001e2, then the final\nhypotheses generated by AdaBoost after T iterations\nbelong to a class of VC-dimension at most 2(d+1)(T+1)\nlog2[e(T+1)].",
+          "quoted_text_sha256": "cbe2346529f75bf1c6a3932085a589deb51de9efc2b3daa15fa8c6564e5926fc"
+        },
+        "presentation_kind": "theorem",
+        "presentation_label": "Theorem 8",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The raw official transcript's independently indexed Theorem 8 span is exactly lines 1347--1355. The separately pinned visual transcript remains the readable mathematical excerpt for source-to-Spec comparison.",
+        "validated_at": "2026-09-03T22:18:14Z",
+        "validator": "Codex Hedge raw-to-visual source inventory reconciliation"
+      },
+      "source_status": "direct byte-pinned source result",
+      "statement": "If a binary hypothesis class H has VC dimension d >= 2, then the class of affine thresholds of T hypotheses from H has VC dimension at most 2(d+1)(T+1) log_2(e(T+1)); hence the T-round AdaBoost outputs lie in a class with that bound.",
+      "support_lean_declarations": [
+        "FreundSchapire1997Hedge.theorem8_weighted_threshold_vcSpec"
+      ]
+    },
+    "theorem9_soft_adaboost_error": {
+      "aliases": [
+        "Theorem 9",
+        "theorem9_soft_adaBoost_errorSpec",
+        "theorem9_soft_adaBoost_error"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FreundSchapire1997Hedge.theorem9_soft_adaBoost_error"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 1000,
+              "line_start": 900,
+              "publication_locator": "cited publication",
+              "quoted_text": "D(i)=1\u0012N. The algorithm maintains a set of weights wt\nover\nthe training examples. On iteration t a distribution pt\nis\ncomputed by normalizing these weights. This distribution is\nfed to the weak learner WeakLearn which generates a\nhypothesis ht that (we hope) has small error with respect to\nthe distribution.1\nUsing the new hypothesis ht , the boosting\n125\nA DECISION THEORETIC GENERALIZATION\n1\nSome learning algorithms can be generalized to use a given distribution\ndirectly. For instance, gradient based algorithms can use the probability\nassociated with each example to scale the update step size which is based\non the example. If the algorithm cannot be generalized in this way, the\ntraining sample can be re-sampled to generate a new set of training exam-\nples that is distributed according to the given distribution. The computa-\ntion required to generate each re-sampled example takes O(log N) time.\n\fFile: 571J 150408 . By:CV . Date:28:07:01 . Time:05:54 LOP8M. V8.0. Page 01:01\nCodes: 6184 Signs: 4760 . Length: 56 pic 0 pts, 236 mm\nAlgorithm AdaBoost\nInput: sequence of N labeled examples ((x1 , y1), ..., (xN , yN))\ndistribution D over the N examples\nweak learning algorithm WeakLearn\ninteger T specifying number of iterations\nInitialize the weight vector: w1\ni =D(i) for i=1, ..., N.\nDo for t=1, 2, ..., T\n1. Set\npt\n=\nwt\n\u001dN\ni=1 wt\ni\n2. Call WeakLearn, providing it with the distribution pt\n; get back a\nhypothesis ht : X\u0014 [0, 1].\n3. Calculate the error of ht: =t=\u001dN\ni=1 pt\ni |ht(xi)& yi |.\n4. Set ;t==t \u0012(1&=t).\n5. Set the new weights vector to be\nwt+1\ni =wt\ni ;1&|ht(xi)& yi |\nt\nOutput the hypothesis\nhf (x)=\n{\n1 if \u001dT\nt=1 (log 1\u0012;t) ht(x)\u001e1\n2 \u001dT\nt=1 log 1\u0012;t\n0 otherwise.\nFIG. 2. The adaptive boosting algorithm.\nalgorithm generates the next weight vector wt+1\n, and the\nprocess repeats. After T such iterations, the final hypothesis\nhf is output. The hypothesis hf combines the outputs of the\nT weak hypotheses using a weighted majority vote.\nWe call the algorithm AdaBoost because, unlike previous\nalgorithms, it adjusts adaptively to the errors of the weak\nhypotheses returned by WeakLearn. If WeakLearn is a PAC\nweak learning algorithm in the sense defined above, then\n=t\u001d1\u00122&# for all t (assuming the examples have been\ngenerated appropriately with yi=c(xi) for some c # C).\nHowever, such a bound on the error need not be known\nahead of time. Our results hold for any =t # [0, 1], and\ndepend only on the performance of the weak learner on\nthose distributions that are actually generated during the\nboosting process.\nThe parameter ;t is chosen as a function of =t and is used\nfor updating the weight vector. The update rule reduces\nthe probability assigned to those examples on which the\nhypothesis makes a good prediction and increases the prob-\nability of the examples on which the prediction is poor.2\nNote that AdaBoost, unlike boost-by-majority, combines\nthe weak hypotheses by summing their probabilistic predic-\ntions. Drucker, Schapire and Simard [9], in experiments\nthey performed using boosting to improve the performance\nof a real-valued neural network, observed that summing the\noutcomes of the networks and then selecting the best predic-\ntion performs better than selecting the best prediction of\neach network and then combining them with a majority\nrule. It is interesting that the new boosting algorithm's\nfinal hypothesis uses the same combination rule that was\nobserved to be better in practice, but which previously\nlacked theoretical justification.\nSince it was first introduced, several successful experi-\nments have been conducted using AdaBoost, including work\nby the authors [12], Drucker and Cortes [8], Jackson and\nCraven [16], Quinlan [21], and Breiman [3].\n4.2. Analysis\nComparing Figs. 1 and 2, there is an obvious similarity\nbetween the algorithms Hedge(;) and AdaBoost. This\nsimilarity reflects a surprising ``dual'' relationship between\nthe on-line allocation model and the problem of boosting.\nPut another way, there is a direct mapping or reduction of\nthe boosting problem to the on-line allocation problem. In",
+              "quoted_text_sha256": "ad927c4d4222d585d3f086f45f14d2409f8c721ac151bff4ac0ae9b17fda22ed"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchor_evidence": [
+            {
+              "line_end": 1108,
+              "line_start": 1099,
+              "publication_locator": "cited publication",
+              "quoted_text": "Theorem 6. Suppose the weak learning algorithm\nWeakLearn, when called by AdaBoost, generates hypotheses\nwith errors =1 , ..., =T (as defined in Step 3 of Fig. 2.) Then the\nerror ==PritD[hf (xi){ yi] of the final hypothesis hf output\nby AdaBoost is bounded above by\n=\u001d2T\n`\nT\nt=1\n- =t(1&=t). (14)",
+              "quoted_text_sha256": "3c36b5be1d516b5daff970ff89c4507a8b1714b0f583fd5f419ec7870556fcc7"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 1485,
+              "line_start": 1418,
+              "publication_locator": "cited publication",
+              "quoted_text": "optimal decision rule says that we should predict the label\nwith the highest likelihood, given the hypothesis values, i.e.,\nwe should predict 1 if\nPr[ y=1 | h1(x), ..., hT (x)]>Pr[ y=0 | h1(x), ..., hT (x)],\nand otherwise we should predict 0.\nThis rule is especially easy to compute if we assume that\nthe errors of the different hypotheses are independent of one\nanother and of the target concept, that is, if we assume that\nthe event ht(x){ y is conditionally independent of the\nactual label y and the predictions of all the other hypotheses\nh1(x), ..., ht&1(x), ht+1(x), ..., hT (x). In this case, by\napplying Bayes rule, we can rewrite the Bayes optimal deci-\nsion rule in a particularly simple form in which we predict\n1 if\nPr[ y=1] `\nt: ht(x)=0\n=t `\nt: ht(x)=1\n(1&=t)\n>Pr[ y=0] `\nt: ht(x)=0\n(1&=t) `\nt: ht(x)=1\n=t ,\nand 0 otherwise. Here =t=Pr[ht(x){ y]. We add to the set\nof hypotheses the trivial hypothesis h0 which always\npredicts the value 1. We can then replace Pr[ y=0] by =0 .\nTaking the logarithm of both sides in this inequality and\nrearranging the terms, we find that the Bayes optimal\ndecision rule is identical to the combination rule that is\ngenerated by AdaBoost.\nIf the errors of the different hypotheses are dependent,\nthen the Bayes optimal decision rule becomes much more\ncomplicated. However, in practice, it is common to use the\nsimple rule described above even when there is no justifica-\ntion for assuming independence. (This is sometimes called\n``naive Bayes.'') An interesting and more principled alter-\nnative to this practice would be to use the algorithm\nAdaBoost to find a combination rule which, by Theorem 6,\nhas a guaranteed non-trivial accuracy.\n129\nA DECISION THEORETIC GENERALIZATION\n\fFile: 571J 150412 . By:CV . Date:28:07:01 . Time:05:54 LOP8M. V8.0. Page 01:01\nCodes: 5125 Signs: 3769 . Length: 56 pic 0 pts, 236 mm\n4.5. Improving the Error Bound\nWe show in this section how the bound given in\nTheorem 6 can be improved by a factor of two. The main\nidea of this improvement is to replace the ``hard'' [0, 1]-\nvalued decision used by hf by a ``soft'' threshold.\nTo be more precise, let\nr(x)=\n\u001dT\nt=1 (log 1\n;t\n) ht(x)\n\u001dT\nt=1 log 1\n;t\nbe a weighted average of the weak hypotheses ht . We will\nhere consider final hypotheses of the form hf (x)=F(r(x))\nwhere F: [0, 1] \u0014 [0, 1]. For the version of AdaBoost given\nin Fig. 2, F(r) is the hard threshold that equals 1 if r\u001e1\u00122\nand 0 otherwise. In this section, we will instead use soft\nthreshold functions that take values in [0, 1]. As mentioned\nabove, when hf (x) # [0, 1], we can interpret hf as a\nrandomized hypothesis and hf (x) as the probability of\npredicting 1. Then the error EitD[|hf (xi)& yi |] is simply\nthe probability of an incorrect prediction.",
+              "quoted_text_sha256": "98c16f41a6198498980b6916da51ca2739c1ffa56b598331413ef9d958d5b725"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FreundSchapire1997Hedge.theorem9_soft_adaBoost_error",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FreundSchapire1997Hedge.theorem9_soft_adaBoost_errorSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 238,
+          "line_start": 228,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 9. Let $\\epsilon_1,\\ldots,\\epsilon_T$ be as in Theorem 6, and let\n$r(x_i)$ be as defined above. Let the modified final hypothesis be defined by\n$h_f(x)=F(r(x))$, where for $r\\in[0,1]$,\n$$\nF(1-r)=1-F(r),\\qquad\nF(r)\\leq\\frac12\\left(\\prod_{t=1}^T\\beta_t\\right)^{1/2-r}.\n$$\nThen the error $\\epsilon$ of $h_f$ is bounded above by\n$$\n\\epsilon\\leq 2^{T-1}\\prod_{t=1}^T\\sqrt{\\epsilon_t(1-\\epsilon_t)}.\n$$",
+          "quoted_text_sha256": "a76ee9ce481b27fbbdbe27932d1b4e066f4f0fd4923084032e78551cb3649f8d"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem9.soft.adaboost.error",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FreundSchapire1997Hedge.theorem9_soft_adaBoost_error",
+          "semantic_claim": "For the normalized AdaBoost vote r and a soft threshold F on [0,1] satisfying the printed symmetry and pointwise upper bound, the final error is at most 2^(T-1) times the product of sqrt(epsilon_t(1-epsilon_t)).",
+          "source_locator": "cited publication:1486-1510",
+          "source_quote_sha256": "132f16986c2a986421faad1bacce0f8cb1b5681390f45e612c0f3ecc963f039a"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:1486-1510",
+      "source_note": "The normalized vote has nonzero denominator and lies in the stated domain of F at each training example. These formula-domain conditions do not require each individual logarithmic weight to be positive.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "complete_indexed_presentation",
+        "core_anchor": {
+          "line_end": 1510,
+          "line_start": 1486,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 9. Let =1 , ..., =T be as in Theorem 6, and let\nr(xi) be as defined above. Let the modified final hypothesis be\ndefined by hf (x)=F(r(x)) where F satisfies the following for\nr # [0, 1]:\nF(1&r)=1&F(r); and F(r)\u001d\n1\n2 \\`\nT\nt=1\n;t\n+\n1\u00122&r\n.\nThen the error = of hf is bounded above by\n=\u001d2T&1\n`\nT\nt=1\n- =t(1&=t).\nFor instance, it can be shown that the sigmoid function\nF(r)=(1+>T\nt=1 ;2r&1\nt )&1\nsatisfies the conditions of the\ntheorem.",
+          "quoted_text_sha256": "132f16986c2a986421faad1bacce0f8cb1b5681390f45e612c0f3ecc963f039a"
+        },
+        "presentation_kind": "theorem",
+        "presentation_label": "Theorem 9",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The raw official transcript's independently indexed Theorem 9 span is exactly lines 1486--1510. The separately pinned visual transcript remains the readable mathematical excerpt for source-to-Spec comparison.",
+        "validated_at": "2026-09-03T22:18:14Z",
+        "validator": "Codex Hedge raw-to-visual source inventory reconciliation"
+      },
+      "source_status": "direct byte-pinned source result",
+      "statement": "For the normalized AdaBoost vote r and a soft threshold F on [0,1] satisfying the printed symmetry and pointwise upper bound, the final error is at most 2^(T-1) times the product of sqrt(epsilon_t(1-epsilon_t)).",
+      "support_lean_declarations": [
+        "FreundSchapire1997Hedge.theorem9_soft_adaBoost_errorSpec"
+      ]
+    }
+  },
+  "library_semantic_prerequisite_sources": {
+    "AppliedModelingLib.Learning.Online.AdaBoostAdmissible": "theorem6_adaboost_error",
+    "AppliedModelingLib.Learning.Online.AdaBoostRAdmissible": "theorem12_adaboost_r_error",
+    "AppliedModelingLib.Learning.Online.AdaBoostRDensityState": "theorem12_adaboost_r_error",
+    "AppliedModelingLib.Learning.Online.GeneralDecisionHedgeGame": "theorem5_decision_prediction_general",
+    "AppliedModelingLib.Learning.Online.GeneralDecisionHedgeRound": "theorem5_decision_prediction_general",
+    "AppliedModelingLib.Learning.Online.GeneralDecisionHedgeRound.hedgeCumulativeDecisionLoss": "theorem5_decision_prediction_general",
+    "AppliedModelingLib.Learning.Online.HedgeWeightState": "lemma1_weight_potential",
+    "AppliedModelingLib.Learning.Online.adaBoostDiscountPowerFactor": "theorem9_soft_adaboost_error",
+    "AppliedModelingLib.Learning.Online.adaBoostErrors": "theorem9_soft_adaboost_error",
+    "AppliedModelingLib.Learning.Online.adaBoostM1LabelScore": "theorem10_adaboost_m1_error",
+    "AppliedModelingLib.Learning.Online.adaBoostM2LabelScore": "theorem11_adaboost_m2_error",
+    "AppliedModelingLib.Learning.Online.adaBoostRErrors": "theorem12_adaboost_r_error",
+    "AppliedModelingLib.Learning.Online.adaBoostRVote": "theorem12_adaboost_r_error",
+    "AppliedModelingLib.Learning.Online.adaBoostRVoteWeightSum": "theorem12_adaboost_r_error",
+    "AppliedModelingLib.Learning.Online.adaBoostTheorem6Factor": "theorem6_adaboost_error",
+    "AppliedModelingLib.Learning.Online.adaBoostVote": "theorem6_adaboost_error",
+    "AppliedModelingLib.Learning.Online.adaBoostVoteWeightSum": "theorem6_adaboost_error",
+    "AppliedModelingLib.Learning.Online.allocationPolicyCumulativeLossFrom": "theorem3_global_allocation_lower_tradeoff",
+    "AppliedModelingLib.Learning.Online.hedgeWeightStateCumulativeLoss": "lemma1_weight_potential",
+    "AppliedModelingLib.Learning.Online.hedgeWeightStateRun": "lemma1_weight_potential"
+  },
+  "paper": "FreundSchapire1997Hedge",
+  "paper_interface_namespace": "FreundSchapire1997Hedge",
+  "publication_corrected_target_projection": {
+    "approval_material_included": false,
+    "schema": 1
+  },
+  "schema": 1,
+  "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
+  "source_anchor_evidence_required": true,
+  "source_artifact_sha256": "bd40f3e513c8a5b099ab06c9b66dca1ec1543694c40acce970e6122b491a0afc",
+  "source_claim_atoms_schema": 1,
+  "source_coverage_mode": "named_theoretical_statements",
+  "source_curated": true,
+  "source_inventory_kind": "theoretical_model_and_results",
+  "source_inventory_policy": "This source-first inventory contains sixteen independently discovered result presentations. Fourteen Freund--Schapire claims have one transparent PaperInterface Spec and one exact proof endpoint, including the three material formula claims in Eqs. (21)--(23). The cited Vapnik Theorem 7 and Vovk Theorem 13 remain source-visible proof support rather than duplicate paper claims. Algorithm displays are supplied as exact byte-pinned semantic context and are separately subject to reusable-library semantic review. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
+  "source_named_result_inventory_review": {
+    "candidate_presentations": [
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_001",
+        "presentation_label": "Example 1",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "Example 1 is the k-ary 0--1-loss instantiation of the already inventoried expert-mixture result (Theorem 5, ultimately Theorem 2). It illustrates that theorem's mistake-bound interpretation and adds no independent hypothesis or endpoint.",
+        "source_anchor": {
+          "line_end": 664,
+          "line_start": 646,
+          "publication_locator": "cited publication",
+          "quoted_text": "Example 1. In the k-ary prediction problem, 2=0=\n[1, 2, ..., k], and *($, |) is 1 if ${| and 0 otherwise. In\nother words, the problem is to predict a sequence of letters\nover an alphabet of size k. The loss function * is 1 if a\nmistake was made, and 0 otherwise. Thus, 4(D, |) is the\nprobability (with respect to D) of a prediction that disagrees\nwith |. The cumulative loss of the learner, or of any expert,\nis therefore the expected number of mistakes on the entire\nsequence. So, in this case, Theorem 2 states that the expec-\nted number of mistakes of the learning algorithm will exceed\nthe expected number of mistakes of the best expert by at\nmost O(- T ln N), or possibly much less if the loss of the\nbest expert can be bounded ahead of time.\nBounds of this type were previously proved in the binary\ncase (k=2) by Littlestone and Warmuth [20] using the\nsame algorithm. Their algorithm was later improved by\nVovk [25] and Cesa-Bianchi et al. [4]. The main result of\nthis section is a proof that such bounds can be shown to\nhold for any bounded loss function.",
+          "quoted_text_sha256": "72e4719d1ca510629a21d53b243e613f9d894919238275e28fe00656063345fa"
+        },
+        "visible_kind": "example"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_002",
+        "presentation_label": "Example 2",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "Example 2 instantiates the already inventoried expert-mixture theorem with the rock-paper-scissors loss matrix. Its repeated-play interpretation is illustrative and adds no independent mathematical endpoint beyond Theorem 5.",
+        "source_anchor": {
+          "line_end": 682,
+          "line_start": 665,
+          "publication_locator": "cited publication",
+          "quoted_text": "Example 2. The loss function * may represent an\narbitrary matrix game, such as ``rock, paper, scissors.'' Here,\n2=0=[R, P, S], and the loss function is defined by the\nmatrix:\n|\nR P S\nR 1\n2 1 0\n$ P 0 1\n2 1\nS 1 0 1\n2\nThe decision $ represents the learner's play, and the out-\ncome | is the adversary's play; then *($, |), the learner's\nloss, is 1 if the learner loses the round, 0 if it wins the round,\nand 1\u00122 if the round is tied. (For instance, *(S, P)=0 since\n``scissors cut paper.'') So the cumulative loss of the learner\n123",
+          "quoted_text_sha256": "8a742956bcd8757cbc523ef37e9d1958c14825cea4727e56c7ed7e2fe371d2f7"
+        },
+        "visible_kind": "example"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_003",
+        "presentation_label": "Example 3",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "Example 3 combines the already inventoried Hedge guarantee with the classical minimax theorem to explain a repeated-game application. It is an application of the reviewed comparator bound, not a separate Freund--Schapire theorem used by another paper result.",
+        "source_anchor": {
+          "line_end": 727,
+          "line_start": 693,
+          "publication_locator": "cited publication",
+          "quoted_text": "Example 3. Suppose that 2 and 0 are finite, and that *\nrepresents a game matrix as in the last example. Suppose\nfurther that we create one expert for each decision $ # 2 and\nthat expert always recommends playing $. In game-\ntheoretic terminology such experts would be identified with\npure strategies. Von Neumann's classical min-max theorem\nstates that for any fixed game matrix there exists a distribu-\ntion over the actions, also called a mixed strategy, which\nachieves the min-max optimal value of the expected loss\nagainst any adversarial strategy. This min-max value is also\ncalled the value of the game.\nSuppose that we use algorithm Hedge(;) to choose dis-\ntributions over the actions when playing a matrix game\nrepeatedly. In this case, Theorem 2 implies that the gap\nbetween the learner's average per-round loss can never be\nmuch larger than that of the best pure strategy, and that the\nmaximal gap decreases to zero at the rate O(1- T log |2|).\nHowever, the expected loss of the optimal mixed strategy is\na fixed convex combination of the losses of the pure\nstrategies, thus it can never be smaller than the loss of the\nbest pure strategy for a particular sequence of events.\nWe conclude that the expected per-trial loss of Hedge(;)\nis upper bounded by the value of the game plus\nO(1\u0012- T log |2|). In other words, the algorithm can never\nperform much worse that an algorithm that uses the optimal\nmixed strategy for the game, and it can be better if the\nadversary does not play optimally. Moreover, this holds\ntrue even if the learner knows nothing at all about the game\nthat is being played (so that * is unknown to the learner),\nand even if the adversarial opponent has complete\nknowledge both of the game that is being played and the\nalgorithm that is being used by the learner. Algorithms with\nsimilar properties (but weaker convergence bounds) were\nfirst devised by Blackwell [2] and Hannan [14]. For more\ndetails see our related paper [13].",
+          "quoted_text_sha256": "90b05a6d6dcd03b1ff60e6dc14ff0e175527c384f62636a08f1c19fc10ce1b8b"
+        },
+        "visible_kind": "example"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_004",
+        "presentation_label": "Example 4",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "Example 4 specializes the reviewed mixture guarantee to convex distance losses and observes that the weighted average of expert predictions is deterministic. The displayed convexity step is the ordinary bridge for this example and does not add an independent paper theorem.",
+        "source_anchor": {
+          "line_end": 792,
+          "line_start": 728,
+          "publication_locator": "cited publication",
+          "quoted_text": "Example 4. Suppose that 2=0 is the unit ball in Rn\n,\nand that *($, |)=&$&|&. Thus, the problem here is to\npredict the location of a point |, and the loss suffered is the\nEuclidean distance between the predicted point $ and the\nactual outcome |. Theorem 2 can be applied if probabilistic\npredictions are allowed. However, in this setting it is more\nnatural to require that the learner and each expert predict a\nsingle point (rather than a measure on the space of possible\npoints). Essentially, this is the problem of ``tracking'' a\nsequence of points |1\n, ..., |T\nwhere the loss function\nmeasures the distance to the predicted point.\nTo see how to handle the problem of finding deterministic\npredictions, notice that the loss function *($, |) is convex\nwith respect to $:\n&(a$1+(1&a) $2)&|&\u001da &$1&|&+(1&a) &$2&|&\n(13)\nfor any a # [0, 1] and any | # 0. Thus we can do as follows.\nAt time t, the learner predicts with the weighted average of\nthe experts' predictions: $t\n=\u001dN\ni=1 pt\ni =t\ni where =t\ni # Rn\nis the\nprediction of the ith expert at time t. Regardless of the\noutcome |t\n, Eq. (13) implies that\n&$t\n&|t\n&\u001d :\nN\ni=1\npt\ni &=t\ni &|t\n&.\nSince Theorem 2 provides an upper bound on the right\nhand side of this inequality, we also obtain upper bounds\nfor the left hand side. Thus, our results in this case give\nexplicit bounds on the total error (i.e., distance between\npredicted and observed points) for the learner relative to the\nbest of a team of experts.\nIn the one-dimensional case (n=1), this case was\npreviously analyzed by Littlestone and Warmuth [20], and\nlater improved upon by Kivinen and Warmuth [19].\nThis result depends only on the convexity and the\nbounded range of the loss function *($, |) with respect to $.\nThus, it can also be applied, for example, to the squared-\ndistance loss function *($, |)=&$&|&2\n, as well as the log\nloss function *($, |)=&ln($ } |) used by Cover [6] for the\ndesign of ``universal'' investment portfolios. (In this last\ncase, 2 is the set of probability vectors on n points, and\n0=[1\u0012B, B]n\nfor some constant B>1.)\nIn many of the cases listed above, superior algorithms or\nanalyses are known. Although weaker in specific cases, it\nshould be emphasized that our results are far more general,\nand can be applied in settings that exhibit considerably less\nstructure, such as the horse-racing example described in the\nintroduction.",
+          "quoted_text_sha256": "48a7c20d3597e5377d2e2bd3ff55c1fd90017c8a4003c0f9f0a9a0abc0295dcc"
+        },
+        "visible_kind": "example"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_005",
+        "presentation_label": "Example 5",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "Example 5 solves the best oblivious-hypothesis subproblem to motivate pseudo-loss before Theorem 11. The calculation is illustrative support for the inventoried AdaBoost.M2 result and is not used as a separate named theorem endpoint.",
+        "source_anchor": {
+          "line_end": 1981,
+          "line_start": 1949,
+          "publication_locator": "cited publication",
+          "quoted_text": "Example 5. As a simple example illustrating the use of\npseudo-loss, suppose we seek an oblivious weak hypothesis,\ni.e., a weak hypothesis whose value depends only on the\nclass label y so that h(x, y)=h( y) for all x. Although\noblivious hypotheses per se are generally too weak to be of\ninterest, it may often be appropriate to find the best\noblivious hypothesis on a part of the instance space (such as\nthe set of instances covered by a leaf of a decision tree).\nLet D be the target distribution, and q the label weighting\nfunction. For notational convenience, let us define q(i, yi)\n=&1 for all i so that\nplossq(h, i)=1\n2\n\\1+ :\ny # Y\nq(i, y) h(xi , y)\n+.\nSetting $( y)=\u001di D(i) q(i, y), it can be verified that for an\noblivious hypothesis h,\nplossD, q(h)=1\n2\n\\1+ :\ny # Y\nh(y) $( y)\n+,\nwhich is clearly minimized by the choice\nh(y)=\n{\n1 if $( y)<0\n0 otherwise.\nSuppose now that q(i, y)=1\u0012(k&1) for y{ yi , and let\nd(y)=PritD[ yi= y] be the proportion of examples with\n133",
+          "quoted_text_sha256": "93ecf011c31ad8b5ff5afcb0fc955dff32c9cda8fe26f213dc452f9a76bc03fb"
+        },
+        "visible_kind": "example"
+      }
+    ],
+    "complete": true,
+    "discovered_candidate_presentation_sha256": "73e105712acca100637a6cd502d4b5608e748434c81dee82729762a472d66d4a",
+    "discovered_named_result_sha256": "e98f841f43d865fc2d5fed6f8f3d16ceaad0948724e0576b6b2ebb6c2d1da989",
+    "discovered_prose_definition_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "method": "Complete source-only reread of the byte-pinned official JCSS transcript from the title through the appendix and references, performed without using Lean declaration names to select candidates. The reread checked the online-allocation model, Hedge and AdaBoost algorithms, every numbered lemma and theorem, all five labelled examples, unnumbered displayed consequences, the Bayesian interpretation, multiclass and regression extensions, and the Vovk appendix proof. The thirteen numbered results remain the complete normal theorem surface. Examples 1--5 are recorded as deep-audit applications of those results rather than duplicate source claims; the previously reviewed raw semantic context already accounts for the algorithms and unnumbered model definitions. No additional independent material presentation was found.",
+    "prose_definition_presentations": [],
+    "schema": 1,
+    "source_artifact_sha256": "bd40f3e513c8a5b099ab06c9b66dca1ec1543694c40acce970e6122b491a0afc",
+    "validated_at": "2026-09-01T00:14:45Z",
+    "validator": "Codex source-only holistic review 2026-08-31"
+  },
+  "source_spec_correspondence_schema": 1,
+  "source_url": "https://doi.org/10.1006/jcss.1997.1504",
+  "source_version": "Journal of Computer and System Sciences 55(1):119-139 (1997); byte-pinned official PDF transcript",
+  "title": "A Decision-Theoretic Generalization of On-Line Learning and an Application to Boosting"
+}

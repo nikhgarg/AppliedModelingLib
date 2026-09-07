@@ -1,4 +1,5 @@
 {
+  "approved_review_context_schema": 1,
   "author_confirmed_clarifications": [
     {
       "claim": "For every seller type theta, 0 < g(theta) <= 1.",
@@ -62,24 +63,47 @@
   ],
   "generated_at": "2026-07-26T22:16:10Z",
   "items": {
+    "author_approved_corrected_finite_chain_model": {
+      "aliases": [
+        "ClarifiedSourceModel"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GJ18InformativeRatingSystems.ClarifiedSourceModel"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 26,
+          "line_start": 19,
+          "publication_locator": "cited publication",
+          "quoted_text": "| `GJ18-CORR-SELLER-CARRIER-2026-07-24` | `adjectivesmodel.tex:22-24,85-90,111-125` | Seller types are `theta_0 < ... < theta_{M-1}` with `M >= 2` and a uniform prior. | Makes the objective's nonzero denominator and adjacent-pair carrier explicit. |\n| `GJ18-CORR-MATCH-RATES-2026-07-24` | `adjectivesmodel.tex:26-29` | For every type, `0 < g(theta) <= 1`; `n_k(theta) = floor(k g(theta))`. | Strengthens the displayed nondecreasing rate condition so every comparison has diverging sample size while preserving at most one match per period. |\n| `GJ18-CORR-AGGREGATE-INDEX-2026-07-24` | `adjectivesmodel.tex:54-59` | The aggregate is the average of exactly `n_k(theta)` ratings, indexed for example by `ell = 1, ..., n_k(theta)`, with the stated zero-sample convention. | Corrects the displayed off-by-one summation endpoint. |\n| `GJ18-CORR-RATING-CARRIER-2026-07-24` | `adjectivesmodel.tex:32-51` | The ordered rating scale has at least two levels; scores are strictly increasing; within-type tails decrease at displayed cutoffs; cross-type upper tails are strict only above the bottom cutoff. | Excludes the vacuous singleton scale and the impossible strict bottom-tail condition. No terminal full-support clause is added. |\n| `GJ18-CORR-IID-STATE-LAW-2026-07-24` | `adjectivesmodel.tex:40,67-73` | Conditional on seller type, rating draws are iid with law `rho(theta, . | Y)` and histories are independent across sellers. At horizon `k`, the state law is the induced finite product law. | Replaces the archive's informal/ill-typed `mu_k` recurrence as the governing state-evolution clause. |\n| `GJ18-CORR-ADJACENT-INDEX-2026-07-24` | `adjectivesmodel.tex:111-125; appendix_theory.tex:77-95` | The Theorem 1 minimum ranges over `0 <= i <= M-2`, exactly the valid adjacent pairs. | Corrects the endpoint that can name nonexistent `theta_M`. |\n| `GJ18-CORR-EXTENDED-RATE-2026-07-24` | `adjectivesmodel.tex:111-125; appendix_theory.tex:7-8,44-53` | `I(a | theta) = sup_z {z a - Lambda(z | theta)}` is extended-real valued. The pairwise and adjacent minima use extended-real arithmetic; the final corrected-model rate is proved finite and then identified with its real representative. | Corrects the codomain required for out-of-support thresholds. |\n| `GJ18-CORR-APPENDIX-DISCRETE-PROOF-2026-07-24` | `appendix_theory.tex:7-69` | The weak-inversion and `1-P_k` rate are proved directly for finite iid product laws, including the fixed-constant comparison. | Replaces the unsupported continuum-integral/Laplace transfer. |",
+          "quoted_text_sha256": "5e22929f4d74f63216dba4c6062b76cb8d14c246b6c440a52a045f313c22e0af"
+        },
+        {
+          "line_end": 60,
+          "line_start": 49,
+          "publication_locator": "cited publication",
+          "quoted_text": "## Checked Realization\n\n`ClarifiedSourceModel` is the complete Lean model record for these clauses.\nIt visibly contains the seller-count, uniform-prior, match-rate, rating-scale,\nordinal-tail, and iid-state-law fields. `PaperInterface.lean` exposes both the\nstate-level extended-rate theorem and the finite-real-rate theorem for the\ncorrected `W_k` objective.\n\nThe archived `mu_k` recurrence and unrestricted real-valued rate display are\nretained only as explicitly recorded archival deltas and diagnostics. No\nchecked theorem claims to derive the corrected iid state law or corrected rate\ncodomain from those archived expressions.",
+          "quoted_text_sha256": "7c29a0bc91e79d02c7a54d2209e8c58a421b0f41790b5c1e009a7786cf43c01a"
+        }
+      ],
+      "source_kind": "model",
+      "source_location": "docs/GOVERNING_CORRECTED_MODEL_2026-07-24.md:19-26; docs/GOVERNING_CORRECTED_MODEL_2026-07-24.md:49-60",
+      "source_note": "This is the user-and-author-approved governing corrected model. It supplies the complete actual Lean model declaration consumed by the corrected Theorem 1 Spec and does not claim archival equivalence.",
+      "statement": "The author-approved governing target is the complete finite-chain model with at least two uniformly distributed ordered seller types, positive at-most-one-per-period match rates, a nontrivial ordinal rating scale with the stated tail conditions, and the iid finite product state law; it is not a derivation from the archival population-state recurrence."
+    },
     "author_approved_corrected_model_theorem1_finite_real_rate": {
       "aliases": [
         "author_approved_corrected_model_theorem1_finite_real_rate"
       ],
       "claim_bearing": true,
       "corrected_target": {
-        "approval": {
-          "artifact_path": "docs/GOVERNING_CORRECTED_MODEL_2026-07-24.md",
-          "artifact_sha256": "d54f259b5fc723cf2e2884c3784dea29226af1dd8166c8e9998d096c7af356e9",
-          "kind": "documented_author_correction",
-          "recorded_at": "2026-07-24",
-          "reference": "Author-approved corrected finite-chain model recorded in docs/GOVERNING_CORRECTED_MODEL_2026-07-24.md.",
-          "target_statement_sha256": "8340a74a9c1fa01f097381146a9805f97ff51d39e26949b9e0ef765c3573c0be"
-        },
         "archival_equivalence_claimed": false,
         "archival_source_locator": "cited publication:754-764",
         "archival_source_quote_sha256": "e63468dac3b2c6a9547d94fdf512af4589b7a6b4475db2e65edc08ff9a6e1c3f",
-        "corrected_target_sha256": "b52295f9d1e7d578942d474bd6cdd081de18daa2f1ad90653742531d07738a33",
+        "corrected_target_review_sha256": "e58a0f8655f6057645bdbcbc53cee9d1a246fd0f64e4b96efd6dd3c3b511d201",
+        "corrected_target_sha256": "98ddba1551d209b726cc269b49c0a823f19d74d1a68199740a050474eaf6ccdb",
         "governing_defect_ids": [
           "GJ18-THEOREM1-ADJACENT-INDEX-01",
           "GJ18-QUALITY-TAIL-BOTTOM-01",
@@ -94,7 +118,6 @@
         "statement": "For the author-approved corrected finite ordinal IID model with at least two uniformly distributed seller types, positive at-most-one-per-period match rates, a nontrivial ordinal rating scale, and valid adjacent pairs 0 <= i <= M-2, one minus the state-level W_k objective has a finite real exponential rate equal to the finite representative of the support-safe adjacent-pair rate."
       },
       "coverage_status": "corrected_source_statement",
-      "inventory_role": "corrected_source_target",
       "lean_declarations": [
         "GJ18InformativeRatingSystems.PaperInterface.author_approved_corrected_model_theorem1_finite_real_rate"
       ],
@@ -111,6 +134,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "\\begin{restatable}{theorem}{lemhatW}\n\t\\label{lem:hatW}\n\t\\begin{equation}\n\t\\label{eq:rW}\n\tr \\triangleq - \\lim_{k \\to \\infty} \\frac{1}{k} \\log (1- {W}_k) = \\min_{0 \\leq i < M} \\inf_{a \\in \\bbR} \\left \\{ g(\\theta_{i+1}) I(a|\\theta_{i+1}) + g(\\theta_i) I(a|\\theta_i)\\right\\}\n\t\\end{equation}\n\twhere\n\t$I(a|\\theta) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, and $\\Lambda(z|\\theta) = \\log \\sum_{y \\in Y} {\\rho(\\theta, y | Y)} \\exp( z \\phi(y))$ is the log moment generating function of a single rating given to seller of type $\\theta$.\n%\n%\n\\end{restatable}",
           "quoted_text_sha256": "e63468dac3b2c6a9547d94fdf512af4589b7a6b4475db2e65edc08ff9a6e1c3f"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "author.approved.corrected.model.theorem1.finite.real.rate",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ18InformativeRatingSystems.PaperInterface.author_approved_corrected_model_theorem1_finite_real_rate",
+          "semantic_claim": "Theorem 1: the archival display sets r = -lim_k (1/k) log(1-W_k) equal to the minimum over adjacent types of the real-valued rate-function expression shown in the source.",
+          "source_locator": "cited publication:754-764",
+          "source_quote_sha256": "e63468dac3b2c6a9547d94fdf512af4589b7a6b4475db2e65edc08ff9a6e1c3f"
         }
       ],
       "source_defect_ids": [
@@ -143,15 +176,9 @@
         "author_confirmed_clarified_iid_state_law"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.author_confirmed_clarified_iid_state_law"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.author_confirmed_clarified_iid_state_law",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.author_confirmed_clarified_iid_state_lawSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "subsumed_by_corrected_model",
+      "scope_disposition_note": "The iid product-law equality is a field of the complete author-approved ClarifiedSourceModel route, so its wrapper theorem is proof support rather than a second semantic source target.",
       "source_anchor_evidence": [
         {
           "line_end": 683,
@@ -176,27 +203,17 @@
       "source_kind": "prose_assertion",
       "source_location": "cited publication:683; cited publication:710-716",
       "source_note": "ClarifiedSourceModel records stateLaw k = iidFloorSourceStateLaw M sampleRate k. The checked equality formalizes the author-confirmed IID model, while leaving the archive's mu_k transition and conditioning derivation explicitly partial.",
-      "source_status": "author-confirmed governing clarification; not a theorem of the archive recurrence",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "Author-confirmed clarified-model row: at every horizon k, the recorded state law equals the finite product law of conditionally IID ratings given seller type and independent seller histories.",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.author_confirmed_clarified_iid_state_lawSpec"
-      ]
+      "statement": "Author-confirmed clarified-model row: at every horizon k, the recorded state law equals the finite product law of conditionally IID ratings given seller type and independent seller histories."
     },
     "author_confirmed_clarified_model_theorem1_state_rate": {
       "aliases": [
         "author_confirmed_clarified_model_theorem1_state_rate"
       ],
       "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
-      "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.author_confirmed_clarified_model_theorem1_state_rate"
-      ],
-      "proof_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.author_confirmed_clarified_model_theorem1_state_rate"
-      ],
-      "scope_disposition": "corrected_model_prerequisite",
-      "scope_disposition_note": "This author-confirmed model condition is a prerequisite for the selected corrected Theorem 1 endpoint, not a separate source presentation.",
+      "inventory_role": "proof_support",
+      "scope_disposition": "subsumed_by_corrected_theorem1",
+      "scope_disposition_note": "This state-level wrapper theorem supports the selected finite-real corrected Theorem 1 endpoint and does not add an independently presented source claim.",
       "source_anchor_evidence": [
         {
           "line_end": 764,
@@ -223,7 +240,6 @@
       "source_kind": "prose_assertion",
       "source_location": "cited publication:754-764",
       "source_note": "ClarifiedSourceModel visibly supplies at least two seller types, the explicit uniform type prior, 0<g(theta)<=1, nontrivial scale, ordinal source primitives, and stateLaw equality to the IID product law. The conclusion is a WithTop support-safe rate for literal sourceStateWk, not the archive's unrestricted legacy Real infimum and not a derivation from the printed mu_k recurrence.",
-      "source_status": "supporting corrected theorem variant; not a separately source-presented target",
       "source_url": "https://arxiv.org/pdf/1810.13028",
       "statement": "Author-approved corrected-model Theorem 1, extended-rate form: the literal finite state-level W_k under the record's IID state law has the exact support-safe extended exponential rate given by the minimum adjacent threshold rate."
     },
@@ -232,15 +248,9 @@
         "author_confirmed_clarified_uniform_type_prior"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.author_confirmed_clarified_uniform_type_prior"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.author_confirmed_clarified_uniform_type_prior",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.author_confirmed_clarified_uniform_type_priorSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "subsumed_by_corrected_model",
+      "scope_disposition_note": "The uniform prior is a field of the complete author-approved ClarifiedSourceModel route, so its wrapper theorem is proof support rather than a second semantic source target.",
       "source_anchor_evidence": [
         {
           "line_end": 665,
@@ -256,12 +266,8 @@
       "source_kind": "prose_assertion",
       "source_location": "cited publication:665",
       "source_note": "The archive says types are independently and uniformly drawn. This row checks the explicit PMF field in ClarifiedSourceModel, but does not claim the archive's later joint state formulas derive the field or its conditional score laws.",
-      "source_status": "author-confirmed governing clarification; not an archive recurrence derivation",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "Author-confirmed clarified-model row: the record's finite seller-type prior equals the explicit uniform PMF on the nonempty ordered carrier Fin n.",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.author_confirmed_clarified_uniform_type_priorSpec"
-      ]
+      "statement": "Author-confirmed clarified-model row: the record's finite seller-type prior equals the explicit uniform PMF on the nonempty ordered carrier Fin n."
     },
     "source_appendix_pk_ld_complement_rate_iid_completion": {
       "aliases": [
@@ -269,18 +275,11 @@
       ],
       "claim_bearing": true,
       "corrected_target": {
-        "approval": {
-          "artifact_path": "docs/GOVERNING_CORRECTED_MODEL_2026-07-24.md",
-          "artifact_sha256": "d54f259b5fc723cf2e2884c3784dea29226af1dd8166c8e9998d096c7af356e9",
-          "kind": "documented_author_correction",
-          "recorded_at": "2026-07-24",
-          "reference": "Author-approved corrected finite-chain model recorded in docs/GOVERNING_CORRECTED_MODEL_2026-07-24.md.",
-          "target_statement_sha256": "5f257a64fac6a0c1bf23030f17d195f5da1b9366503a88838bace033af0a907b"
-        },
         "archival_equivalence_claimed": false,
         "archival_source_locator": "cited publication:1670-1681",
         "archival_source_quote_sha256": "3d6ec04a845188543d635ce597a39cdace93315ebcbf3c4b9861d771e794a122",
-        "corrected_target_sha256": "890731639c45c984073f1deb931734ab578904c2f10cabc81972bb029b505901",
+        "corrected_target_review_sha256": "a08ed804021cc7dc87d843df1f09a64e0bc7b7acffd7521efe552b9850ef4a24",
+        "corrected_target_sha256": "7e5529c0d48e5762dda5ca8d6487e742341b9f2d32de94eb4f644e8bfcaf81d6",
         "governing_defect_ids": [
           "GJ18-QUALITY-TAIL-BOTTOM-01",
           "GJ18-POSITIVE-MATCH-RATE-01",
@@ -293,7 +292,6 @@
         "statement": "For every ordered high/low seller pair in the author-approved finite ordinal IID model, with positive match rates, a nontrivial rating scale, corrected ordinal tails, and an extended-real rate convention, one minus the source-state P_k objective has an exponential-rate certificate with the same finite real representative of the support-safe pairwise threshold rate."
       },
       "coverage_status": "corrected_source_statement",
-      "inventory_role": "corrected_source_target",
       "lean_declarations": [
         "GJ18InformativeRatingSystems.PaperInterface.source_appendix_pk_ld_complement_rate_iid_completion"
       ],
@@ -301,6 +299,7 @@
         {
           "explanation": "The source orders its finite seller-type carrier as theta_i, then defines P_k only given theta_1 > theta_2 and sums only those pairs in W_k; its proof rewrites that aggregate as i < j with P_k(theta_j, theta_i). Review a Lean restricted pair carrier as exactly one finite high/low pair with strict low < high, not as a theorem for arbitrary, equal, or reversed seller pairs and not as an unrecorded model assumption.",
           "kind": "restricted_subtype_domain",
+          "semantic_role": "scope",
           "source_anchor_evidence": [
             {
               "line_end": 665,
@@ -342,6 +341,16 @@
           "quoted_text_sha256": "3d6ec04a845188543d635ce597a39cdace93315ebcbf3c4b9861d771e794a122"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.appendix.pk.ld.complement.rate.iid.completion",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ18InformativeRatingSystems.PaperInterface.source_appendix_pk_ld_complement_rate_iid_completion",
+          "semantic_claim": "Appendix Lemma P_k-LD: in the paper's ordered seller-pair scope theta_1 > theta_2, Pbar_k = 1 - P_k has the displayed real-valued exponential rate equal to the same infimum of the two sellers' match-rate-weighted rate functions.",
+          "source_locator": "cited publication:1670-1681",
+          "source_quote_sha256": "3d6ec04a845188543d635ce597a39cdace93315ebcbf3c4b9861d771e794a122"
+        }
+      ],
       "source_defect_ids": [
         "GJ18-QUALITY-TAIL-BOTTOM-01",
         "GJ18-POSITIVE-MATCH-RATE-01",
@@ -368,18 +377,11 @@
       ],
       "claim_bearing": true,
       "corrected_target": {
-        "approval": {
-          "artifact_path": "docs/GOVERNING_CORRECTED_MODEL_2026-07-24.md",
-          "artifact_sha256": "d54f259b5fc723cf2e2884c3784dea29226af1dd8166c8e9998d096c7af356e9",
-          "kind": "documented_author_correction",
-          "recorded_at": "2026-07-24",
-          "reference": "Author-approved corrected finite-chain model recorded in docs/GOVERNING_CORRECTED_MODEL_2026-07-24.md.",
-          "target_statement_sha256": "0f68b491501a30e2e10c887ed2a00c53ae6dbdf0060e9f202a1f4d6230f99ee3"
-        },
         "archival_equivalence_claimed": false,
         "archival_source_locator": "cited publication:1633-1635",
         "archival_source_quote_sha256": "82007966668f2c65d91a6d2c3b2afa92da2dd4b3d4cec280ba3d3fbc25c0e10c",
-        "corrected_target_sha256": "6619134e7e5a1fe2be1ae8d6ebc232c6de3cf5efe69736492bb3bd02f1806e2c",
+        "corrected_target_review_sha256": "e13adaacf84620fb6be5b72ea35d51cda87024997e07bcf7755d3101e70cf893",
+        "corrected_target_sha256": "2510c49faf6061314737bd657e120feaf769de2ed1d8402d9098d6a43324b31b",
         "governing_defect_ids": [
           "GJ18-QUALITY-TAIL-BOTTOM-01",
           "GJ18-POSITIVE-MATCH-RATE-01",
@@ -392,7 +394,6 @@
         "statement": "For every ordered high/low seller pair in the author-approved finite ordinal IID model, with positive match rates, a nontrivial rating scale, corrected ordinal tails, and an extended-real rate convention, the source-state weak-inversion probability has an exponential-rate certificate with a finite real representative of the support-safe pairwise threshold rate."
       },
       "coverage_status": "corrected_source_statement",
-      "inventory_role": "corrected_source_target",
       "lean_declarations": [
         "GJ18InformativeRatingSystems.PaperInterface.source_appendix_problessthan_score_gap_rate_iid_completion"
       ],
@@ -400,6 +401,7 @@
         {
           "explanation": "The source orders its finite seller-type carrier as theta_i, then defines P_k only given theta_1 > theta_2 and sums only those pairs in W_k; its proof rewrites that aggregate as i < j with P_k(theta_j, theta_i). Review a Lean restricted pair carrier as exactly one finite high/low pair with strict low < high, not as a theorem for arbitrary, equal, or reversed seller pairs and not as an unrecorded model assumption.",
           "kind": "restricted_subtype_domain",
+          "semantic_role": "scope",
           "source_anchor_evidence": [
             {
               "line_end": 665,
@@ -441,6 +443,16 @@
           "quoted_text_sha256": "82007966668f2c65d91a6d2c3b2afa92da2dd4b3d4cec280ba3d3fbc25c0e10c"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.appendix.problessthan.score.gap.rate.iid.completion",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ18InformativeRatingSystems.PaperInterface.source_appendix_problessthan_score_gap_rate_iid_completion",
+          "semantic_claim": "Appendix Lemma problessthan: in the paper's ordered seller-pair scope theta_1 > theta_2, the weak score-gap event has the displayed real-valued rate infimum over a in R of the two sampled sellers' match-rate-weighted rate functions.",
+          "source_locator": "cited publication:1633-1635",
+          "source_quote_sha256": "82007966668f2c65d91a6d2c3b2afa92da2dd4b3d4cec280ba3d3fbc25c0e10c"
+        }
+      ],
       "source_defect_ids": [
         "GJ18-QUALITY-TAIL-BOTTOM-01",
         "GJ18-POSITIVE-MATCH-RATE-01",
@@ -466,18 +478,11 @@
       ],
       "claim_bearing": true,
       "corrected_target": {
-        "approval": {
-          "artifact_path": "docs/GOVERNING_CORRECTED_MODEL_2026-07-24.md",
-          "artifact_sha256": "d54f259b5fc723cf2e2884c3784dea29226af1dd8166c8e9998d096c7af356e9",
-          "kind": "documented_author_correction",
-          "recorded_at": "2026-07-24",
-          "reference": "Author-approved corrected finite-chain model recorded in docs/GOVERNING_CORRECTED_MODEL_2026-07-24.md.",
-          "target_statement_sha256": "f86fe14564a5c059385b082313735a85bd321444630928126f09718265deb8dc"
-        },
         "archival_equivalence_claimed": false,
         "archival_source_locator": "cited publication:697-702",
         "archival_source_quote_sha256": "e20467c150ddd3f7fdb08f7c10067af63a1ab5264cb479ed26db90c25c008d66",
-        "corrected_target_sha256": "b4017f07a068624d3f5774f19ea9dc9de36ca21f0b946e72db2da848b08435a0",
+        "corrected_target_review_sha256": "ae2a48b5acf95d5d294441f05c2975728a7035f8c845ab5587f47b1f6af790f0",
+        "corrected_target_sha256": "fd62e0249a7d93136cb1db068dbe89509f6c1720e7928d45521580f355caf72c",
         "governing_defect_ids": [
           "GJ18-AGGREGATE-INDEX-01"
         ],
@@ -485,16 +490,10 @@
         "statement": "For each seller type theta and horizon k, if n_k(theta) = floor(k g(theta)), the aggregate score averages exactly n_k(theta) rating scores over a finite family indexed by Fin n_k(theta); the zero-sample convention remains explicit."
       },
       "coverage_status": "corrected_source_statement",
-      "inventory_role": "corrected_source_target",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_aggregate_score_formula"
+        "AppliedModelingLib.Probability.finiteChainJointFloorAverageScore"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_aggregate_score_formula",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_aggregate_score_formulaSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 702,
@@ -507,30 +506,22 @@
       "source_defect_ids": [
         "GJ18-AGGREGATE-INDEX-01"
       ],
-      "source_kind": "prose_assertion",
+      "source_kind": "formula",
       "source_location": "cited publication:697-702",
       "source_note": "Lean indexes the exactly n_k(theta) observations by Fin (n_k(theta)); this corrects GJ18-AGGREGATE-INDEX-01 and does not establish the source state evolution.",
       "source_status": "corrected",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "The archival aggregate-score display divides by n_k(theta) while summing from ell = 0 through n_k(theta), although the surrounding prose calls it the average of ratings received by time k.",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_aggregate_score_formulaSpec"
-      ]
+      "statement": "The archival aggregate-score display divides by n_k(theta) while summing from ell = 0 through n_k(theta), although the surrounding prose calls it the average of ratings received by time k."
     },
     "source_definition_extended_rate_function_formula": {
       "aliases": [
         "source_definition_extended_rate_function_formula"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_extended_rate_function_formula"
+        "AppliedModelingLib.Probability.ratingRateFunctionTop"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_extended_rate_function_formula",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_extended_rate_function_formulaSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 761,
@@ -557,30 +548,22 @@
       "source_defect_ids": [
         "GJ18-EXTENDED-RATE-CODOMAIN-01"
       ],
-      "source_kind": "prose_assertion",
+      "source_kind": "formula",
       "source_location": "cited publication:754-761; cited publication:1633-1635; cited publication:1670-1679",
       "source_note": "This row repairs GJ18-EXTENDED-RATE-CODOMAIN-01 by using WithTop Real. The support-safe rate has a checked positive finite representative under the clarified model; it must not be read as an equality to the source's unrestricted real infimum formula, which is diagnostically zero in the legacy API.",
       "source_status": "corrected codomain; not a literal source display",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "The corrected support-safe rate is the extended-real supremum of z a minus Lambda(z|theta), so thresholds outside finite score support may have infinite cost.",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_extended_rate_function_formulaSpec"
-      ]
+      "statement": "The corrected support-safe rate is the extended-real supremum of z a minus Lambda(z|theta), so thresholds outside finite score support may have infinite cost."
     },
     "source_definition_floor_sample_count_formula": {
       "aliases": [
         "source_definition_floor_sample_count_formula"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_floor_sample_count_formula"
+        "AppliedModelingLib.Probability.floorSampleCount"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_floor_sample_count_formula",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_floor_sample_count_formulaSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 670,
@@ -590,30 +573,22 @@
           "quoted_text_sha256": "5f6f56f076ca80a84303c588e41f1f1c0a5dbe7eda1ea1fbb2a9ddfb8e0325a9"
         }
       ],
-      "source_kind": "prose_assertion",
+      "source_kind": "formula",
       "source_location": "cited publication:669-670",
       "source_note": "This row checks the floor-count syntax only. The governing corrected model also has the author-confirmed condition 0<g(theta)<=1, but that addition is not asserted by this pinned source line and is not hidden in the formula row.",
       "source_status": "literal finite formula",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "The source defines the number of matches/ratings received by seller type theta by time k as n_k(theta)=floor(k g(theta)).",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_floor_sample_count_formulaSpec"
-      ]
+      "statement": "The source defines the number of matches/ratings received by seller type theta by time k as n_k(theta)=floor(k g(theta))."
     },
     "source_definition_log_mgf_formula": {
       "aliases": [
         "source_definition_log_mgf_formula"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_log_mgf_formula"
+        "AppliedModelingLib.Probability.ratingLogMGF"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_log_mgf_formula",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_log_mgf_formulaSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 761,
@@ -637,30 +612,22 @@
           "quoted_text_sha256": "c0893d181d49ead93669af0c9430494a2d848dd2b24fafee7d2020332b4b7db6"
         }
       ],
-      "source_kind": "prose_assertion",
+      "source_kind": "formula",
       "source_location": "cited publication:754-761; cited publication:1633-1635; cited publication:1670-1679",
       "source_note": "This row unfolds the single-rating finite PMF formula. It makes no claim that the source state recurrence supplies independent copies of that PMF.",
       "source_status": "literal finite formula",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "Lambda(z|theta) is the logarithm of the finite sum over rating levels of rho(theta,y|Y) exp(z phi(y)).",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_log_mgf_formulaSpec"
-      ]
+      "statement": "Lambda(z|theta) is the logarithm of the finite sum over rating levels of rho(theta,y|Y) exp(z phi(y))."
     },
     "source_definition_pairwise_objective_formula": {
       "aliases": [
         "source_definition_pairwise_objective_formula"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_pairwise_objective_formula"
+        "GJ18InformativeRatingSystems.sourceStatePairwisePk"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_pairwise_objective_formula",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_pairwise_objective_formulaSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 725,
@@ -675,30 +642,22 @@
         "GJ18-STATE-RECURRENCE-INDEX-01",
         "GJ18-UNIFORM-TYPE-PRIOR-01"
       ],
-      "source_kind": "prose_assertion",
+      "source_kind": "formula",
       "source_location": "cited publication:721-725",
       "source_note": "The reviewed row represents the formula over an arbitrary finite score-state PMF and selected ordered seller pair. It deliberately does not identify that PMF with the source recurrence or a product law.",
       "source_status": "literal state-level formula only",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "For theta_hi>theta_lo, P_k(theta_hi,theta_lo) is the conditional probability of a strict correct aggregate-score ordering minus the conditional probability of a strict reversed ordering.",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_pairwise_objective_formulaSpec"
-      ]
+      "statement": "For theta_hi>theta_lo, P_k(theta_hi,theta_lo) is the conditional probability of a strict correct aggregate-score ordering minus the conditional probability of a strict reversed ordering."
     },
     "source_definition_rate_function_formula": {
       "aliases": [
         "source_definition_rate_function_formula"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_rate_function_formula"
+        "AppliedModelingLib.Probability.ratingRateFunction"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_rate_function_formula",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_rate_function_formulaSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 761,
@@ -725,30 +684,21 @@
       "source_defect_ids": [
         "GJ18-EXTENDED-RATE-CODOMAIN-01"
       ],
-      "source_kind": "prose_assertion",
+      "source_kind": "formula",
       "source_location": "cited publication:754-761; cited publication:1633-1635; cited publication:1670-1679",
       "source_note": "The row records the printed real expression syntactically. In the checked finite [0,1]-score model, the unrestricted legacy Real pairwise infimum is diagnostically zero because off-support Real.sSup values default to zero; it is not the intended exponent. The corrected theorem uses WithTop Real.",
       "source_status": "literal real-valued display only",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "The paper displays I(a|theta) as the real supremum over z of z a minus Lambda(z|theta).",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_rate_function_formulaSpec"
-      ]
+      "statement": "The paper displays I(a|theta) as the real supremum over z of z a minus Lambda(z|theta)."
     },
     "source_definition_uniform_ranking_normalization": {
       "aliases": [
         "source_definition_uniform_ranking_normalization"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_uniform_ranking_normalization"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_uniform_ranking_normalization",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_uniform_ranking_normalizationSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "finite_carrier_normalization_support",
+      "scope_disposition_note": "The displayed W_k formula is separately routed to sourceStateWk. The alternate uniform-carrier equality is a checked finite-cardinality proof normalization, not a second source presentation.",
       "source_anchor_evidence": [
         {
           "line_end": 733,
@@ -764,27 +714,18 @@
       "source_kind": "prose_assertion",
       "source_location": "cited publication:729-733",
       "source_note": "This is the exact finite normalization bridge for M>=2, not a generic-pair approximation. The source's displayed denominator is zero for a singleton seller set, so the premise is visible.",
-      "source_status": "checked finite normalization",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "For at least two seller types, the source coefficient 2/(M(M-1)) equals the inverse cardinality of the strict ordered comparison-pair carrier.",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_uniform_ranking_normalizationSpec"
-      ]
+      "statement": "For at least two seller types, the source coefficient 2/(M(M-1)) equals the inverse cardinality of the strict ordered comparison-pair carrier."
     },
     "source_definition_uniform_ranking_objective_formula": {
       "aliases": [
         "source_definition_uniform_ranking_objective_formula"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_uniform_ranking_objective_formula"
+        "GJ18InformativeRatingSystems.sourceStateWk"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_uniform_ranking_objective_formula",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_definition_uniform_ranking_objective_formulaSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 733,
@@ -799,15 +740,12 @@
         "GJ18-IID-STATE-COMPLETION-01",
         "GJ18-UNIFORM-TYPE-PRIOR-01"
       ],
-      "source_kind": "prose_assertion",
+      "source_kind": "formula",
       "source_location": "cited publication:728-733",
       "source_note": "The row preserves the displayed coefficient and strict ordered-pair carrier. It is not a derivation of W_k from the source's joint type-score recurrence.",
       "source_status": "literal state-level formula only",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "W_k is 2/(M(M-1)) times the sum of P_k over strict ordered seller-quality pairs.",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_definition_uniform_ranking_objective_formulaSpec"
-      ]
+      "statement": "W_k is 2/(M(M-1)) times the sum of P_k over strict ordered seller-quality pairs."
     },
     "source_fidelity_diagnostic_unrestricted_real_pairwise_rate_mismatch": {
       "aliases": [
@@ -815,14 +753,8 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_fidelity_diagnostic_unrestricted_real_pairwise_rate_mismatch"
-      ],
-      "proof_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_fidelity_diagnostic_unrestricted_real_pairwise_rate_mismatch"
-      ],
-      "scope_disposition": "deep_only_source_fidelity_diagnostic",
-      "scope_disposition_note": "This checked discrepancy explains the extended-rate correction but is not a source presentation or a normal paper-claim card.",
+      "scope_disposition": "archival_rate_diagnostic",
+      "scope_disposition_note": "This checked discrepancy explains the approved extended-rate correction but is neither a source presentation nor an additional normal-scope paper result.",
       "source_anchor_evidence": [
         {
           "line_end": 683,
@@ -859,7 +791,6 @@
       "source_kind": "prose_assertion",
       "source_location": "cited publication:679-683; cited publication:754-761; cited publication:1633-1635; cited publication:1670-1679",
       "source_note": "This row is the direct checked reason the literal unrestricted real infimum cannot be used as the paper's exponent in the finite [0,1]-score model. It proves zero for the legacy Real wrapper and strict positivity for the corrected WithTop rate without attributing either conclusion to the archive's prose.",
-      "source_status": "checked source-fidelity diagnostic; not a literal source theorem",
       "source_url": "https://arxiv.org/pdf/1810.13028",
       "statement": "Source-fidelity diagnostic, not an advertised source theorem: under the finite ordinal source primitives, positive match rates, and a nontrivial scale, the legacy unrestricted Real pairwise threshold rate is zero while the support-safe WithTop pairwise threshold rate is strictly positive."
     },
@@ -868,15 +799,9 @@
         "source_iid_completion_pairwise_objective_bridge"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_iid_completion_pairwise_objective_bridge"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_iid_completion_pairwise_objective_bridge",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_iid_completion_pairwise_objective_bridgeSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "corrected_model_bridge_support",
+      "scope_disposition_note": "This is a proved bridge from the author-approved product state law to the literal P_k formula; it supports, but is not a separately presented source claim beyond the governing model and corrected results.",
       "source_anchor_evidence": [
         {
           "line_end": 683,
@@ -901,27 +826,17 @@
       "source_kind": "prose_assertion",
       "source_location": "cited publication:683; cited publication:710-725",
       "source_note": "The bridge is a direct product-law theorem for iidFloorSourceStateLaw and implements the author-confirmed conditional-IID/cross-seller-independence clarification. The source's rating description and mu_k recurrence do not prove this law; see GJ18-IID-STATE-COMPLETION-01 and GJ18-STATE-RECURRENCE-INDEX-01.",
-      "source_status": "corrected IID completion, not a consequence of the source recurrence",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "Under an explicitly defined finite IID completion at horizon k, the literal state-level P_k equals the existing two-seller floor-sample P_k objective for the same ordered pair.",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_iid_completion_pairwise_objective_bridgeSpec"
-      ]
+      "statement": "Under an explicitly defined finite IID completion at horizon k, the literal state-level P_k equals the existing two-seller floor-sample P_k objective for the same ordered pair."
     },
     "source_iid_completion_uniform_ranking_objective_bridge": {
       "aliases": [
         "source_iid_completion_uniform_ranking_objective_bridge"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_iid_completion_uniform_ranking_objective_bridge"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_iid_completion_uniform_ranking_objective_bridge",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_iid_completion_uniform_ranking_objective_bridgeSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "corrected_model_bridge_support",
+      "scope_disposition_note": "This is a proved bridge from the author-approved product state law to W_k and is support for the corrected theorem, not a separate source result.",
       "source_anchor_evidence": [
         {
           "line_end": 665,
@@ -954,27 +869,17 @@
       "source_kind": "prose_assertion",
       "source_location": "cited publication:665; cited publication:683; cited publication:710-733",
       "source_note": "This bridge combines the direct IID product calculation implementing the author clarification with the exact strict-pair normalization. It does not derive an IID state or the uniform source type prior from mu_k.",
-      "source_status": "corrected IID completion, not a consequence of the source recurrence",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "Under the explicit finite IID completion and at least two seller types, the literal state-level W_k equals the finite uniform floor-count ranking objective.",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_iid_completion_uniform_ranking_objective_bridgeSpec"
-      ]
+      "statement": "Under the explicit finite IID completion and at least two seller types, the literal state-level W_k equals the finite uniform floor-count ranking objective."
     },
     "source_iid_completion_weak_inversion_bridge": {
       "aliases": [
         "source_iid_completion_weak_inversion_bridge"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_iid_completion_weak_inversion_bridge"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_iid_completion_weak_inversion_bridge",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_iid_completion_weak_inversion_bridgeSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "corrected_model_bridge_support",
+      "scope_disposition_note": "This is a proved finite-IID weak-inversion bridge supporting the corrected Appendix lemma rather than an independent source result.",
       "source_anchor_evidence": [
         {
           "line_end": 683,
@@ -1006,27 +911,17 @@
       "source_kind": "prose_assertion",
       "source_location": "cited publication:683; cited publication:721-725; cited publication:1633-1646",
       "source_note": "This theorem connects the actual non-strict Appendix event to the product model implementing the author-confirmed IID clarification. It does not validate the source's continuum-integral proof step or derive IID from mu_k.",
-      "source_status": "corrected IID completion, not a consequence of the source recurrence",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "Under the explicit finite IID completion, the source-state non-strict score-gap event equals the two-seller floor-sample weak-inversion probability used in the Appendix rate argument.",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_iid_completion_weak_inversion_bridgeSpec"
-      ]
+      "statement": "Under the explicit finite IID completion, the source-state non-strict score-gap event equals the two-seller floor-sample weak-inversion probability used in the Appendix rate argument."
     },
     "source_pairwise_objective_tendsto_one_iid_completion": {
       "aliases": [
         "source_pairwise_objective_tendsto_one_iid_completion"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_pairwise_objective_tendsto_one_iid_completion"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_pairwise_objective_tendsto_one_iid_completion",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_pairwise_objective_tendsto_one_iid_completionSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "corrected_model_convergence_support",
+      "scope_disposition_note": "The unnumbered convergence observation supports the corrected model proof; the normal source result is the selected Theorem 1 rate.",
       "source_anchor_evidence": [
         {
           "line_end": 745,
@@ -1047,12 +942,8 @@
       "source_kind": "prose_assertion",
       "source_location": "cited publication:744-745",
       "source_note": "The source states convergence from strict phi and strict R alone. The reviewed proof uses the author-confirmed 0<g(theta)<=1 and IID additions, makes the nontrivial scale explicit, and does not infer IID from mu_k.",
-      "source_status": "corrected IID-completion convergence result",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "Corrected form of the source convergence prose: under the explicit finite IID completion, literal ordinal-tail primitives, positive match rates, and at least two rating levels, P_k for every ordered seller pair tends to one.",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_pairwise_objective_tendsto_one_iid_completionSpec"
-      ]
+      "statement": "Corrected form of the source convergence prose: under the explicit finite IID completion, literal ordinal-tail primitives, positive match rates, and at least two rating levels, P_k for every ordered seller pair tends to one."
     },
     "source_theorem1_informative_rating_system_rate_iid_completion": {
       "aliases": [
@@ -1060,14 +951,8 @@
       ],
       "claim_bearing": false,
       "inventory_role": "proof_support",
-      "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_theorem1_informative_rating_system_rate_iid_completion"
-      ],
-      "proof_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_theorem1_informative_rating_system_rate_iid_completion"
-      ],
-      "scope_disposition": "supporting_corrected_variant",
-      "scope_disposition_note": "This supporting IID-completion variant is subsumed by the selected finite-real corrected Theorem 1 endpoint.",
+      "scope_disposition": "subsumed_by_corrected_theorem1",
+      "scope_disposition_note": "This supporting iid-completion theorem variant is subsumed by the selected finite-real author-approved corrected Theorem 1 endpoint.",
       "source_anchor_evidence": [
         {
           "line_end": 764,
@@ -1094,7 +979,6 @@
       "source_kind": "prose_assertion",
       "source_location": "cited publication:754-764",
       "source_note": "This checked endpoint implements the author-confirmed 0<g(theta)<=1 and IID additions, repairs the finite adjacent-index range, and avoids terminal-full-support assumptions, including the binary low-terminal-zero case. It intentionally does not claim the printed mu_k recurrence, source uniform-prior conditioning, or unrestricted Real infimum formula implies the theorem.",
-      "source_status": "supporting corrected theorem variant; the final finite-real endpoint is the sole normal source target",
       "source_url": "https://arxiv.org/pdf/1810.13028",
       "statement": "Corrected Theorem 1: for the explicit finite IID completion of the finite ordinal source model, with positive match rates, at least two rating levels, and at least one adjacent seller pair, one minus the finite uniform ranking objective has the exact support-safe extended exponential rate given by the minimum adjacent threshold rate."
     },
@@ -1103,15 +987,9 @@
         "source_uniform_ranking_objective_tendsto_one_iid_completion"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_uniform_ranking_objective_tendsto_one_iid_completion"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_uniform_ranking_objective_tendsto_one_iid_completion",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ18InformativeRatingSystems.PaperInterface.source_uniform_ranking_objective_tendsto_one_iid_completionSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "corrected_model_convergence_support",
+      "scope_disposition_note": "The unnumbered convergence observation supports the corrected model proof; the normal source result is the selected Theorem 1 rate.",
       "source_anchor_evidence": [
         {
           "line_end": 745,
@@ -1132,38 +1010,55 @@
       "source_kind": "prose_assertion",
       "source_location": "cited publication:744-745",
       "source_note": "The checked result averages the proved pairwise limits over the exact strict-pair carrier under the author-confirmed corrected IID/rate model. It does not use bounded convergence on an unformalized source mu_k process.",
-      "source_status": "corrected IID-completion convergence result",
       "source_url": "https://arxiv.org/pdf/1810.13028",
-      "statement": "Corrected form of the source convergence prose: under the explicit finite IID completion, literal ordinal-tail primitives, positive match rates, at least two rating levels, and a nonempty adjacent seller carrier, W_k tends to one.",
-      "support_lean_declarations": [
-        "GJ18InformativeRatingSystems.PaperInterface.source_uniform_ranking_objective_tendsto_one_iid_completionSpec"
-      ]
+      "statement": "Corrected form of the source convergence prose: under the explicit finite IID completion, literal ordinal-tail primitives, positive match rates, at least two rating levels, and a nonempty adjacent seller carrier, W_k tends to one."
     }
   },
+  "library_semantic_prerequisite_sources": {
+    "AppliedModelingLib.Probability.finiteChainJointFloorAverageScore": "source_definition_aggregate_score_formula",
+    "AppliedModelingLib.Probability.floorSampleCount": "source_definition_floor_sample_count_formula",
+    "AppliedModelingLib.Probability.ratingLogMGF": "source_definition_log_mgf_formula",
+    "AppliedModelingLib.Probability.ratingRateFunction": "source_definition_rate_function_formula",
+    "AppliedModelingLib.Probability.ratingRateFunctionTop": "source_definition_extended_rate_function_formula"
+  },
   "paper": "GJ18InformativeRatingSystems",
+  "paper_interface_namespace": "GJ18InformativeRatingSystems",
+  "paper_semantic_prerequisite_sources": {
+    "GJ18InformativeRatingSystems.ClarifiedSourceModel": "author_approved_corrected_finite_chain_model",
+    "GJ18InformativeRatingSystems.sourceStatePairwisePk": "source_definition_pairwise_objective_formula",
+    "GJ18InformativeRatingSystems.sourceStateWk": "source_definition_uniform_ranking_objective_formula"
+  },
+  "publication_corrected_target_projection": {
+    "approval_material_included": false,
+    "schema": 1
+  },
   "schema": 1,
   "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
   "source_anchor_evidence_required": true,
   "source_archive_path": "cited publication",
   "source_archive_sha256": "b5378ae6f1ada1674d9f07dd4c1405655a9109e89a9977debab1b89d599f19de",
   "source_artifact_sha256": "5b813bc9f600735f17fd6061c9d9ce0814b47c07f22f12273e7b21d22d547da5",
+  "source_claim_atoms_schema": 1,
   "source_coverage_mode": "named_theoretical_statements",
   "source_curated": true,
   "source_inventory_kind": "source_curated",
   "source_inventory_policy": "Source-first inventory of the exact flattened arXiv TeX entry cited publication, mechanically extracted from the separately pinned cited publication. Independent source-presentation inspection finds three active named mathematical results: Theorem 1 and the Appendix problessthan and P_k-LD lemmas. The 21 PaperInterface rows remain the semantic review surface, but only those three source-presented results receive ordinary named-theory coverage credit. Literal formulas, corrected-model bridges, and the legacy-rate diagnostic remain support/deep material. The author-approved additions govern corrected targets but are never represented as derivations of the archival recurrence or unrestricted real-valued rate display. Lean identifiers are routing only, never semantic evidence. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
   "source_named_result_inventory_review": {
+    "candidate_presentations": [],
     "complete": true,
+    "discovered_candidate_presentation_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
     "discovered_named_result_sha256": "a56d546f6c540508b402b16cc3347dd8a8ce96b4c8d2efaebf6cce926b9d7cf0",
     "discovered_prose_definition_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-    "method": "Independent source-only scan of the exact flattened archival TeX. It recognizes active theorem and lemma presentations, including thmtools restatable environments, and excludes commented-out material, ordinary equation numbering, figures, captions, and prose. Mapping is by exact canonical source spans and bytes, not source-map keys or Lean declaration names.",
+    "method": "Complete source-first read of the exact pinned flattened archival TeX (cited publication, lines 1-1880) on 2026-09-04. The labelled-presentation scan adds no candidates beyond the independently inventoried Theorem 1 and two Appendix lemmas; the full-text pass found no additional material mathematical presentation outside that inventory. Empirical, simulation, calibration, and explanatory material remains deep-only rather than normal named-theory scope.",
     "prose_definition_presentations": [],
     "schema": 1,
     "source_artifact_sha256": "5b813bc9f600735f17fd6061c9d9ce0814b47c07f22f12273e7b21d22d547da5",
-    "validated_at": "2026-07-26T22:32:27Z",
-    "validator": "Codex GJ18 source-only named-result reconciliation"
+    "validated_at": "2026-09-04T07:17:01Z",
+    "validator": "Codex Agent 1 GJ18 source-inventory candidate review"
   },
   "source_spec_correspondence_schema": 1,
   "source_url": "https://arxiv.org/pdf/1810.13028",
-  "source_version": "GJ18 byte-pinned source and author-confirmed clarification inventory",
+  "source_version": "Byte-pinned arXiv 1810.13028 TeX plus the author-approved finite-chain corrected model recorded 2026-07-24",
   "title": "Designing Informative Rating Systems: Evidence from an Online Labor Market"
 }

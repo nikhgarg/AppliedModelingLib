@@ -4,10 +4,17 @@
 % Do not hand-edit generated packets; annotate the PDF or reconcile notes into
 % the paper-local human-review log.
 \documentclass[10pt]{article}
-\usepackage[margin=0.43in]{geometry}
+\usepackage[margin=0.43in,footskip=0.2in]{geometry}
 \usepackage{fontspec}
-\setmainfont{Latin Modern Roman}
-\setmonofont{DejaVu Sans Mono}
+% Use a Unicode-complete main face as well as a Unicode-complete code face.
+% Reviewer reasons and source labels can contain exact Greek symbols outside
+% verbatim blocks; silently dropping one would corrupt the review packet.
+\setmainfont{DejaVu Serif}
+% The broad DejaVu Sans Unicode coverage preserves Lean's mathematical glyphs
+% (including U+2216 set difference and superscript identifiers) in verbatim
+% review blocks.  Its proportional metrics are preferable to silently missing
+% exact semantic text from a narrower monospace font.
+\setmonofont{DejaVu Sans}
 \usepackage{hyperref}
 \usepackage{amssymb}
 \usepackage{fvextra}
@@ -15,7 +22,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.15em}
 \linespread{0.92}
-\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,breaklinks=true}
 \DefineVerbatimEnvironment{ReviewVerbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\scriptsize}
 \newcommand{\reviewerbox}{%
   \par\noindent\fbox{\parbox{0.96\linewidth}{\rule{0pt}{0.38in}}}\par
@@ -36,10 +43,10 @@ specifications, and hash-bound raw-source-to-Spec screening records.
 
 \noindent\textbf{Paper:} HT26EFXChores\\
 \textbf{Paper id:} \texttt{HT26EFXChores}\\
-\textbf{Source version:} arXiv v2 (2026-07-09)\\
+\textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright arXiv v2 (2026-07-09)}\\
 \textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
-\textbf{Rows:} 22\\
-\textbf{Generated:} 2026-08-18\\
+\textbf{Rows:} 18\\
+\textbf{Generated:} 2026-09-06\\
 \textbf{Source URL:} \href{https://arxiv.org/abs/2606.08872v2}{official source}
 
 
@@ -55,64 +62,43 @@ log.
 \section*{Open the interactive dashboard}
 The interactive dashboard is an optional alternative to using this PDF; it
 presents the same review surface rather than an additional review requirement.
-After forking and cloning (or pulling) EconCSLib, run the following from the
+After forking and cloning (or pulling) AppliedModelingLib, run the following from the
 repository root. The cache command is needed only the first time in a new clone.
 \begin{ReviewVerbatim}
-cd <your-EconCSLib-checkout>
+cd <your-repository-checkout>
 lake exe cache get
 python3 scripts/review_dashboard.py --paper HT26EFXChores --serve
 \end{ReviewVerbatim}
 Open \url{http://127.0.0.1:8765/} in a browser and keep that terminal running
-while reviewing. The dashboard records saved annotations in this paper's
+while reviewing. The dashboard records saved annotations in this paper's local
 reviewer-owned review record.
 
 \section*{Contents}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{library-section-de5e5601682a1524}{Semantic library prerequisites (26; not paper claims)}
+\item \hyperlink{library-section-de5e5601682a1524}{Semantic library prerequisites (3; not paper claims)}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{library-prerequisite-5a2d10cb5db86b3a}{AdditiveChoreInstance}
-\item \hyperlink{library-prerequisite-3240074e96589b21}{Bundle Item}
-\item \hyperlink{library-prerequisite-9933ac127bcc0808}{Allocation Agent Item}
-\item \hyperlink{library-prerequisite-0f08bb302d29f5c6}{EFXForChores}
-\item \hyperlink{library-prerequisite-4249211ce100f713}{ChoreCost Agent Item}
-\item \hyperlink{library-prerequisite-7bff1a0ffca2fbc8}{additiveChoreCost}
-\item \hyperlink{library-prerequisite-de6ce80db7947acf}{EconCSLib.FairDivision.AdditiveChoreInstance.IsEFX}
-\item \hyperlink{library-prerequisite-272962efb2ddede6}{IsAllocationOf allocation chores}
-\item \hyperlink{library-prerequisite-c86819508edcb6d0}{EconCSLib.FairDivision.AdditiveChoreInstance.IsFeasible}
-\item \hyperlink{library-prerequisite-53807d5ecfc91999}{ParetoDominatesForChores}
-\item \hyperlink{library-prerequisite-e50910ae4c5f1487}{ParetoOptimalForChores}
-\item \hyperlink{library-prerequisite-9a8054c4d16718aa}{EconCSLib.FairDivision.AdditiveChoreInstance.IsParetoOptimal}
-\item \hyperlink{library-prerequisite-0988b156f88eab26}{EconCSLib.FairDivision.DoesNotStronglyEnvyForChores}
-\item \hyperlink{library-prerequisite-a6835599374e9c61}{EnvyFreeForChores}
-\item \hyperlink{library-prerequisite-bff109e0f31c867f}{EconCSLib.FairDivision.IsBiValuedChoreCost}
-\item \hyperlink{library-prerequisite-d5b3a13495d92097}{EconCSLib.FairDivision.IsSmallChore}
-\item \hyperlink{library-prerequisite-cc7147176e4228f0}{ownSmallChoreSet}
-\item \hyperlink{library-prerequisite-b5fb7421a7b0fa8f}{IsCanonicalSmallChoreAllocation}
-\item \hyperlink{library-prerequisite-7104bc1ed9b2997f}{EconCSLib.FairDivision.IsLargeChore}
-\item \hyperlink{library-prerequisite-4ec5c5b788db5478}{IsOneOrRChoreCost}
-\item \hyperlink{library-prerequisite-126791b7110fcec9}{EconCSLib.FairDivision.smallAgentSet}
-\item \hyperlink{library-prerequisite-dd10cc5d5fbc610c}{EconCSLib.FairDivision.IsSmallForAtLeastThree}
-\item \hyperlink{library-prerequisite-7d30866fb5725e8b}{IsSmallForAtMostOne}
-\item \hyperlink{library-prerequisite-ae44c6bc90159d5e}{EconCSLib.FairDivision.IsSmallForExactlyTwo}
-\item \hyperlink{library-prerequisite-9936f1893dc14aa4}{IsSuperCanonicalSmallChoreAllocation}
-\item \hyperlink{library-prerequisite-62a40b20b9512854}{EconCSLib.FairDivision.IsTriValuedChoreCost}
+\item \hyperlink{library-prerequisite-cc4bb81e3f6310d6}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Fair\allowbreak{}Division.\allowbreak{}EFX\allowbreak{}For\allowbreak{}Chores}
+\item \hyperlink{library-prerequisite-283bac4b270e431c}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Fair\allowbreak{}Division.\allowbreak{}Envy\allowbreak{}Free\allowbreak{}For\allowbreak{}Chores}
+\item \hyperlink{library-prerequisite-95d7f6c33ea68817}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Fair\allowbreak{}Division.\allowbreak{}Pareto\allowbreak{}Optimal\allowbreak{}For\allowbreak{}Chores}
 \end{itemize}
-\item \hyperlink{source-section-0c7af8265958a9ea}{Main-text source claims (20)}
+\item \hyperlink{paper-prerequisite-section-5ef5ef0364b6939c}{Paper-specific semantic prerequisites (3; not paper claims)}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{source-claim-86903902a11cb58c}{Definition (EF for chores)}
-\item \hyperlink{source-claim-dc1c37ece7fbf653}{Definition (EFX for chores)}
-\item \hyperlink{source-claim-a1cc8eae6630de31}{Definition (Pareto-Optimality)}
-\item \hyperlink{source-claim-28f223907b1b4b26}{Definition (canonical allocation)}
-\item \hyperlink{source-claim-1250d6810504d818}{Definition (canonical short/long labels)}
-\item \hyperlink{source-claim-b7fd18b85f877d97}{Definition (super-canonical allocation)}
+\item \hyperlink{paper-prerequisite-fd04b7b4fbc6f835}{HT26\allowbreak{}EFX\allowbreak{}Chores.\allowbreak{}canonical\allowbreak{}Short\allowbreak{}Long\allowbreak{}Labels\allowbreak{}Source\allowbreak{}Definition}
+\item \hyperlink{paper-prerequisite-efb704bbc61ee065}{HT26\allowbreak{}EFX\allowbreak{}Chores.\allowbreak{}canonical\allowbreak{}Small\allowbreak{}Chore\allowbreak{}Allocation\allowbreak{}Source\allowbreak{}Definition}
+\item \hyperlink{paper-prerequisite-b0f133a4a33c9a55}{HT26\allowbreak{}EFX\allowbreak{}Chores.\allowbreak{}super\allowbreak{}Canonical\allowbreak{}Small\allowbreak{}Chore\allowbreak{}Allocation\allowbreak{}Source\allowbreak{}Definition}
+\end{itemize}
+\item \hyperlink{source-section-0c7af8265958a9ea}{Main-text source claims (16)}
+\begin{itemize}[leftmargin=1.2em]
 \item \hyperlink{source-claim-707062c38758c055}{Theorem 1 (tri-valued EFX nonexistence)}
 \item \hyperlink{source-claim-2321d8010acce683}{Four-agent construction proposition: at most one A item per bundle}
 \item \hyperlink{source-claim-120f295a37ffc0ce}{Four-agent construction proposition: no-A bundle is expensive}
 \item \hyperlink{source-claim-8bed2d2e9152e71d}{Theorem 2 (EFX and Pareto-optimality incompatibility)}
+\item \hyperlink{source-claim-6906c411c024867a}{Theorem 2 explicit EFX construction}
 \item \hyperlink{source-claim-5145ed0daed8afc6}{Theorem 2 proposition: every EFX agent receives a large item}
 \item \hyperlink{source-claim-8a3c68dd9df286a5}{Theorem 2 proposition: EFX cost lower bounds}
 \item \hyperlink{source-claim-03ed4c5388a9d78f}{Theorem 3 (four-agent bi-valued EFX existence)}
 \item \hyperlink{source-claim-e126eba4635c1cd5}{Lemma (M34 insertion)}
+\item \hyperlink{source-claim-5fbcb5b015031605}{Remark (general-agent insertion)}
 \item \hyperlink{source-claim-58fb9c46acb21eca}{Lemma (composition)}
 \item \hyperlink{source-claim-1b77c29da35b62c2}{Lemma (canonical allocation properties)}
 \item \hyperlink{source-claim-0869bc0832b92b55}{Lemma (balanced orientation)}
@@ -130,108 +116,8 @@ reviewer-owned review record.
 \clearpage
 \hypertarget{library-section-de5e5601682a1524}{}
 \section*{Material library prerequisites}
-\hypertarget{library-prerequisite-5a2d10cb5db86b3a}{}
-\subsection*{\small\ttfamily\raggedright AdditiveChoreInstance}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 244-\allowbreak{}248\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\section{Preliminaries}
-A set $M$ of $m$ chores $g_1,\ldots,g_m$ is allocated to a set $N$ of $n$ agents $1,\ldots,n$.
-We will use ``item'' and ``chore'' interchangeably in this paper to refer to an element in $M$.
-Each agent $i$'s cost function $c_i:2^M\to\mathbb{R}_{\geq0}$ is additive:
-$$c_i(S)=\sum_{g\in S}c_i(\{g\}).$$
-\end{ReviewVerbatim}
-
-\paragraph{Lean declaration type (metadata)}
-\begin{ReviewVerbatim}
-Type u_3 → Type u_4 → Type (max u_3 u_4)
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-/-- An additive indivisible-chore instance: a finite chore set with nonnegative
-per-agent item costs. -/
-structure AdditiveChoreInstance (Agent Item : Type*) where
-  /-- The chores that must be allocated. -/
-  chores : Finset Item
-  /-- The cost of each individual chore for each agent. -/
-  cost : ChoreCost Agent Item
-  /-- Source-model nonnegativity of individual chore costs. -/
-  nonneg : ∀ agent item, 0 ≤ cost agent item
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The structure packages the source's finite chore set and nonnegative pointwise costs. The separate additiveChoreCost review checks the displayed finite-sum extension.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-3240074e96589b21}{}
-\subsection*{\small\ttfamily\raggedright Bundle Item}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 244-\allowbreak{}248\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\section{Preliminaries}
-A set $M$ of $m$ chores $g_1,\ldots,g_m$ is allocated to a set $N$ of $n$ agents $1,\ldots,n$.
-We will use ``item'' and ``chore'' interchangeably in this paper to refer to an element in $M$.
-Each agent $i$'s cost function $c_i:2^M\to\mathbb{R}_{\geq0}$ is additive:
-$$c_i(S)=\sum_{g\in S}c_i(\{g\}).$$
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-(Item : Type u_1) → Finset Item
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-/-- A bundle of indivisible goods. -/
-abbrev Bundle (Item : Type*) := Finset Item
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source introduces a finite chore set and identifies an item or chore with an element of that set. The Lean abbreviation is the corresponding finite bundle representation.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-9933ac127bcc0808}{}
-\subsection*{\small\ttfamily\raggedright Allocation Agent Item}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 244-\allowbreak{}248\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\section{Preliminaries}
-A set $M$ of $m$ chores $g_1,\ldots,g_m$ is allocated to a set $N$ of $n$ agents $1,\ldots,n$.
-We will use ``item'' and ``chore'' interchangeably in this paper to refer to an element in $M$.
-Each agent $i$'s cost function $c_i:2^M\to\mathbb{R}_{\geq0}$ is additive:
-$$c_i(S)=\sum_{g\in S}c_i(\{g\}).$$
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-(Agent : Type u_1) → (Item : Type u_2) → Agent → EconCSLib.FairDivision.Bundle Item
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-/-- An allocation assigns each agent a bundle. -/
-abbrev Allocation (Agent Item : Type*) := Agent → Bundle Item
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source writes an allocation as a tuple of one bundle for each agent. The Lean definition is that agent-indexed tuple; complete allocation is reviewed separately.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-0f08bb302d29f5c6}{}
-\subsection*{\small\ttfamily\raggedright EFXForChores}
+\hypertarget{library-prerequisite-cc4bb81e3f6310d6}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Fair\allowbreak{}Division.\allowbreak{}EFX\allowbreak{}For\allowbreak{}Chores}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 260-\allowbreak{}275\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
@@ -251,13 +137,32 @@ Equivalently, if
 \]
 then $X$ is EFX if and only if $\tau_i(X)\le c_i(X_j)$ for all $i,j$.
 \end{definition}
+
+[Next verbatim source excerpt]
+
+We will use ``item'' and ``chore'' interchangeably in this paper to refer to an element in $M$.
+Each agent $i$'s cost function $c_i:2^M\to\mathbb{R}_{\geq0}$ is additive:
+$$c_i(S)=\sum_{g\in S}c_i(\{g\}).$$
+We write $c_i(g_j)$ in short for $c_i(\{g_j\})$ for notation simplicity.
+We will use ``cost function'' and ``disutility function'' interchangeably in this paper.
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean-expanded library semantic target}
 \begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} [inst : DecidableEq Item] (cost : Agent → EconCSLib.FairDivision.Bundle Item → ℝ)
-  (allocation : EconCSLib.FairDivision.Allocation Agent Item) (i j : Agent),
-  allocation i = ∅ ∨ ∀ item ∈ allocation i, cost i (allocation i \ {item}) ≤ cost i (allocation j)
+type:
+{Agent : Type u_1} →
+  {Item : Type u_2} →
+    [DecidableEq Item] →
+      (Agent → AppliedModelingLib.FairDivision.Bundle Item → ℝ) →
+        AppliedModelingLib.FairDivision.Allocation Agent Item → Prop
+
+value:
+fun {Agent : Type u_1} {Item : Type u_2} [DecidableEq Item]
+    (cost : Agent → AppliedModelingLib.FairDivision.Bundle Item → ℝ)
+    (allocation : AppliedModelingLib.FairDivision.Allocation Agent Item) =>
+  ∀ (i j : Agent), allocation i = ∅ ∨ ∀ item ∈ allocation i, cost i (allocation i \ {item}) ≤ cost i (allocation j)
 \end{ReviewVerbatim}
 
 \paragraph{Exact Lean library declaration}
@@ -273,378 +178,15 @@ def EFXForChores [DecidableEq Item] (cost : Agent → Bundle Item → ℝ)
 \paragraph{Recorded source-to-library screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The Lean declaration has the same empty-own-bundle alternative and universal one-item-removal inequality as the displayed EFX definition.
+{\raggedright
+\textbf{Reason:} The target states that every agent pair either has an empty own bundle or satisfies the source all-\allowbreak{}item removal inequality.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{library-prerequisite-4249211ce100f713}{}
-\subsection*{\small\ttfamily\raggedright ChoreCost Agent Item}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 244-\allowbreak{}248\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\section{Preliminaries}
-A set $M$ of $m$ chores $g_1,\ldots,g_m$ is allocated to a set $N$ of $n$ agents $1,\ldots,n$.
-We will use ``item'' and ``chore'' interchangeably in this paper to refer to an element in $M$.
-Each agent $i$'s cost function $c_i:2^M\to\mathbb{R}_{\geq0}$ is additive:
-$$c_i(S)=\sum_{g\in S}c_i(\{g\}).$$
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-(Agent : Type u_3) → (Item : Type u_4) → Agent → Item → ℝ
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-/-- Per-agent costs of individual chores. -/
-abbrev ChoreCost (Agent Item : Type*) := Agent → Item → ℝ
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} This is the source's pointwise component c\_i(g) of the displayed additive cost function. Nonnegativity and finite-sum extension are reviewed by the corresponding instance and additive-cost definitions.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-7bff1a0ffca2fbc8}{}
-\subsection*{\small\ttfamily\raggedright additiveChoreCost}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 244-\allowbreak{}248\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\section{Preliminaries}
-A set $M$ of $m$ chores $g_1,\ldots,g_m$ is allocated to a set $N$ of $n$ agents $1,\ldots,n$.
-We will use ``item'' and ``chore'' interchangeably in this paper to refer to an element in $M$.
-Each agent $i$'s cost function $c_i:2^M\to\mathbb{R}_{\geq0}$ is additive:
-$$c_i(S)=\sum_{g\in S}c_i(\{g\}).$$
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-{Agent : Type u_1} →
-  {Item : Type u_2} →
-    (cost : EconCSLib.FairDivision.ChoreCost Agent Item) →
-      (agent : Agent) → (bundle : EconCSLib.FairDivision.Bundle Item) → ∑ item ∈ bundle, cost agent item
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-/-- The additive cost of a finite bundle of chores. -/
-noncomputable def additiveChoreCost (cost : ChoreCost Agent Item)
-    (agent : Agent) (bundle : Bundle Item) : ℝ :=
-  bundle.sum fun item => cost agent item
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The Lean definition sums the source's singleton costs over the finite bundle, exactly as the displayed additive-cost equation.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-de6ce80db7947acf}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}FairDivision.\allowbreak{}AdditiveChoreInstance.\allowbreak{}IsEFX}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 260-\allowbreak{}275\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\begin{definition}[EFX for chores]
-An allocation $X=(X_1,\ldots,X_n)$ is \emph{EFX} if for every pair of agents $i,j$ we have either
-\begin{itemize}
-    \item $X_i=\emptyset$, or
-    \item for every item $g\in X_i$, $c_i(X_i\setminus\{g\})\le c_i(X_j).$
-\end{itemize}
-Equivalently, if
-\[
-    \tau_i(X):=\tau_i(X_i):=
-    \begin{cases}
-        0, & X_i=\emptyset,\\
-        c_i(X_i)-\min_{g\in X_i}c_i(g), & X_i\ne\emptyset,
-    \end{cases}
-\]
-then $X$ is EFX if and only if $\tau_i(X)\le c_i(X_j)$ for all $i,j$.
-\end{definition}
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_3} {Item : Type u_4} [inst : DecidableEq Item]
-  (choreInstance : EconCSLib.FairDivision.AdditiveChoreInstance Agent Item)
-  (allocation : EconCSLib.FairDivision.Allocation Agent Item),
-  EconCSLib.FairDivision.EFXForChores (EconCSLib.FairDivision.additiveChoreCost choreInstance.cost) allocation
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def IsEFX {Agent Item : Type*} [DecidableEq Item]
-    (choreInstance : AdditiveChoreInstance Agent Item)
-    (allocation : Allocation Agent Item) : Prop :=
-  EFXForChores (additiveChoreCost choreInstance.cost) allocation
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} This is the source EFX predicate applied to the instance's additive cost function. The exact empty-bundle alternative and one-item-removal inequality are independently exposed by EFXForChores.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-272962efb2ddede6}{}
-\subsection*{\small\ttfamily\raggedright IsAllocationOf allocation chores}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 244-\allowbreak{}248\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\section{Preliminaries}
-A set $M$ of $m$ chores $g_1,\ldots,g_m$ is allocated to a set $N$ of $n$ agents $1,\ldots,n$.
-We will use ``item'' and ``chore'' interchangeably in this paper to refer to an element in $M$.
-Each agent $i$'s cost function $c_i:2^M\to\mathbb{R}_{\geq0}$ is additive:
-$$c_i(S)=\sum_{g\in S}c_i(\{g\}).$$
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} [DecidableEq Item] (A : EconCSLib.FairDivision.Allocation Agent Item)
-  (goods : Finset Item), (∀ (i : Agent), ∀ g ∈ A i, g ∈ goods) ∧ ∀ g ∈ goods, ∃! i, g ∈ A i
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-/-- `A` allocates exactly the goods in `goods`, with no duplicates and no outsiders. -/
-def IsAllocationOf [DecidableEq Item] (A : Allocation Agent Item) (goods : Finset Item) : Prop :=
-  (∀ i g, g ∈ A i → g ∈ goods) ∧
-    ∀ g, g ∈ goods → ∃! i, g ∈ A i
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source allocation convention assigns the finite chore set to the agents. The Lean predicate makes that convention explicit by requiring every chore exactly once and no outside item.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-c86819508edcb6d0}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}FairDivision.\allowbreak{}AdditiveChoreInstance.\allowbreak{}IsFeasible}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 260-\allowbreak{}275\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\begin{definition}[EFX for chores]
-An allocation $X=(X_1,\ldots,X_n)$ is \emph{EFX} if for every pair of agents $i,j$ we have either
-\begin{itemize}
-    \item $X_i=\emptyset$, or
-    \item for every item $g\in X_i$, $c_i(X_i\setminus\{g\})\le c_i(X_j).$
-\end{itemize}
-Equivalently, if
-\[
-    \tau_i(X):=\tau_i(X_i):=
-    \begin{cases}
-        0, & X_i=\emptyset,\\
-        c_i(X_i)-\min_{g\in X_i}c_i(g), & X_i\ne\emptyset,
-    \end{cases}
-\]
-then $X$ is EFX if and only if $\tau_i(X)\le c_i(X_j)$ for all $i,j$.
-\end{definition}
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_3} {Item : Type u_4} [inst : DecidableEq Item]
-  (choreInstance : EconCSLib.FairDivision.AdditiveChoreInstance Agent Item)
-  (allocation : EconCSLib.FairDivision.Allocation Agent Item),
-  EconCSLib.FairDivision.IsAllocationOf allocation choreInstance.chores
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def IsFeasible {Agent Item : Type*} [DecidableEq Item]
-    (choreInstance : AdditiveChoreInstance Agent Item)
-    (allocation : Allocation Agent Item) : Prop :=
-  IsAllocationOf allocation choreInstance.chores
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The paper's allocation convention allocates the chore set among agents. This predicate specializes the separately reviewed complete-allocation condition to the instance's declared chore set; it adds no source-side feasibility condition.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-53807d5ecfc91999}{}
-\subsection*{\small\ttfamily\raggedright ParetoDominatesForChores}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 280-\allowbreak{}287\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\begin{definition}[Pareto-Optimality]
-    An allocation $Y=(Y_1,\ldots,Y_n)$ \emph{Pareto-dominates} an allocation $X=(X_1,\ldots,X_n)$ if
-    \begin{itemize}
-        \item $c_i(Y_i)\leq c_i(X_i)$ holds for all $i\in\{1,\ldots,n\}$, and
-        \item there exists $i\in\{1,\ldots,n\},\;$ $c_i(Y_i)<c_i(X_i)$.
-    \end{itemize}
-    An allocation $X=(X_1,\ldots,X_n)$ is \emph{Pareto-optimal} if it is not Pareto-dominated by any allocation.
-\end{definition}
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} (cost : Agent → EconCSLib.FairDivision.Bundle Item → ℝ)
-  (allocation improvement : EconCSLib.FairDivision.Allocation Agent Item),
-  (∀ (i : Agent), cost i (improvement i) ≤ cost i (allocation i)) ∧ ∃ i, cost i (improvement i) < cost i (allocation i)
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-/-- Allocation `improvement` Pareto-dominates `allocation` for chores when it
-weakly decreases every cost and strictly decreases one cost. -/
-def ParetoDominatesForChores (cost : Agent → Bundle Item → ℝ)
-    (allocation improvement : Allocation Agent Item) : Prop :=
-  (∀ i, cost i (improvement i) ≤ cost i (allocation i)) ∧
-    ∃ i, cost i (improvement i) < cost i (allocation i)
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The displayed Pareto-dominance definition says that an improvement weakly decreases every agent's cost and strictly decreases one cost. The Lean declaration is exactly that two-part condition for an improvement and a current allocation.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-e50910ae4c5f1487}{}
-\subsection*{\small\ttfamily\raggedright ParetoOptimalForChores}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 280-\allowbreak{}287\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\begin{definition}[Pareto-Optimality]
-    An allocation $Y=(Y_1,\ldots,Y_n)$ \emph{Pareto-dominates} an allocation $X=(X_1,\ldots,X_n)$ if
-    \begin{itemize}
-        \item $c_i(Y_i)\leq c_i(X_i)$ holds for all $i\in\{1,\ldots,n\}$, and
-        \item there exists $i\in\{1,\ldots,n\},\;$ $c_i(Y_i)<c_i(X_i)$.
-    \end{itemize}
-    An allocation $X=(X_1,\ldots,X_n)$ is \emph{Pareto-optimal} if it is not Pareto-dominated by any allocation.
-\end{definition}
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} [inst : DecidableEq Item] (cost : Agent → EconCSLib.FairDivision.Bundle Item → ℝ)
-  (chores : Finset Item) (allocation : EconCSLib.FairDivision.Allocation Agent Item),
-  ¬∃ improvement,
-      EconCSLib.FairDivision.IsAllocationOf improvement chores ∧
-        EconCSLib.FairDivision.ParetoDominatesForChores cost allocation improvement
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-/-- A complete chore allocation is Pareto-optimal if no other complete
-allocation Pareto-dominates it in the cost direction. -/
-def ParetoOptimalForChores [DecidableEq Item] (cost : Agent → Bundle Item → ℝ)
-    (chores : Finset Item) (allocation : Allocation Agent Item) : Prop :=
-  ¬ ∃ improvement : Allocation Agent Item,
-    IsAllocationOf improvement chores ∧
-      ParetoDominatesForChores cost allocation improvement
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source forbids an allocation that weakly decreases every agent's cost and strictly decreases one. The Lean definition states that condition over the complete-allocation convention.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-9a8054c4d16718aa}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}FairDivision.\allowbreak{}AdditiveChoreInstance.\allowbreak{}IsParetoOptimal}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 280-\allowbreak{}287\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\begin{definition}[Pareto-Optimality]
-    An allocation $Y=(Y_1,\ldots,Y_n)$ \emph{Pareto-dominates} an allocation $X=(X_1,\ldots,X_n)$ if
-    \begin{itemize}
-        \item $c_i(Y_i)\leq c_i(X_i)$ holds for all $i\in\{1,\ldots,n\}$, and
-        \item there exists $i\in\{1,\ldots,n\},\;$ $c_i(Y_i)<c_i(X_i)$.
-    \end{itemize}
-    An allocation $X=(X_1,\ldots,X_n)$ is \emph{Pareto-optimal} if it is not Pareto-dominated by any allocation.
-\end{definition}
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_3} {Item : Type u_4} [inst : DecidableEq Item]
-  (choreInstance : EconCSLib.FairDivision.AdditiveChoreInstance Agent Item)
-  (allocation : EconCSLib.FairDivision.Allocation Agent Item),
-  EconCSLib.FairDivision.ParetoOptimalForChores (EconCSLib.FairDivision.additiveChoreCost choreInstance.cost)
-    choreInstance.chores allocation
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def IsParetoOptimal {Agent Item : Type*} [DecidableEq Item]
-    (choreInstance : AdditiveChoreInstance Agent Item)
-    (allocation : Allocation Agent Item) : Prop :=
-  ParetoOptimalForChores (additiveChoreCost choreInstance.cost) choreInstance.chores allocation
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} This specializes the source Pareto-optimality definition to all chores and the instance's additive cost. It is exactly the source notion, with feasibility supplied by the allocation convention.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-0988b156f88eab26}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}FairDivision.\allowbreak{}DoesNotStronglyEnvyForChores}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 260-\allowbreak{}275\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\begin{definition}[EFX for chores]
-An allocation $X=(X_1,\ldots,X_n)$ is \emph{EFX} if for every pair of agents $i,j$ we have either
-\begin{itemize}
-    \item $X_i=\emptyset$, or
-    \item for every item $g\in X_i$, $c_i(X_i\setminus\{g\})\le c_i(X_j).$
-\end{itemize}
-Equivalently, if
-\[
-    \tau_i(X):=\tau_i(X_i):=
-    \begin{cases}
-        0, & X_i=\emptyset,\\
-        c_i(X_i)-\min_{g\in X_i}c_i(g), & X_i\ne\emptyset,
-    \end{cases}
-\]
-then $X$ is EFX if and only if $\tau_i(X)\le c_i(X_j)$ for all $i,j$.
-\end{definition}
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} [inst : DecidableEq Item] (cost : Agent → EconCSLib.FairDivision.Bundle Item → ℝ)
-  (allocation : EconCSLib.FairDivision.Allocation Agent Item) (i j : Agent),
-  allocation i = ∅ ∨ ∀ item ∈ allocation i, cost i (allocation i \ {item}) ≤ cost i (allocation j)
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def DoesNotStronglyEnvyForChores [DecidableEq Item]
-    (cost : Agent → Bundle Item → ℝ) (allocation : Allocation Agent Item)
-    (i j : Agent) : Prop :=
-  allocation i = ∅ ∨
-    ∀ item ∈ allocation i, cost i (allocation i \ {item}) ≤ cost i (allocation j)
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The displayed EFX definition gives exactly the ordered-pair alternative used here: an empty own bundle, or the universal one-item-removal cost inequality.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-a6835599374e9c61}{}
-\subsection*{\small\ttfamily\raggedright EnvyFreeForChores}
+\hypertarget{library-prerequisite-283bac4b270e431c}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Fair\allowbreak{}Division.\allowbreak{}Envy\allowbreak{}Free\allowbreak{}For\allowbreak{}Chores}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 253-\allowbreak{}255\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
@@ -653,11 +195,20 @@ An allocation $X=(X_1,\ldots,X_n)$ is \emph{envy-free} if for every pair of agen
 \end{definition}
 \end{ReviewVerbatim}
 
+
+
 \paragraph{Lean-expanded library semantic target}
 \begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} (cost : Agent → EconCSLib.FairDivision.Bundle Item → ℝ)
-  (allocation : EconCSLib.FairDivision.Allocation Agent Item) (i j : Agent),
-  cost i (allocation i) ≤ cost i (allocation j)
+type:
+{Agent : Type u_1} →
+  {Item : Type u_2} →
+    (Agent → AppliedModelingLib.FairDivision.Bundle Item → ℝ) →
+      AppliedModelingLib.FairDivision.Allocation Agent Item → Prop
+
+value:
+fun {Agent : Type u_1} {Item : Type u_2} (cost : Agent → AppliedModelingLib.FairDivision.Bundle Item → ℝ)
+    (allocation : AppliedModelingLib.FairDivision.Allocation Agent Item) =>
+  ∀ (i j : Agent), cost i (allocation i) ≤ cost i (allocation j)
 \end{ReviewVerbatim}
 
 \paragraph{Exact Lean library declaration}
@@ -672,762 +223,17 @@ def EnvyFreeForChores (cost : Agent → Bundle Item → ℝ)
 \paragraph{Recorded source-to-library screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} Both the source definition and Lean declaration require every agent's own bundle to cost no more than every comparison bundle under that agent's cost function.
+{\raggedright
+\textbf{Reason:} The target states exactly that every agent's own bundle cost is at most that agent's cost for every other bundle.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{library-prerequisite-bff109e0f31c867f}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}FairDivision.\allowbreak{}IsBiValuedChoreCost}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 532-\allowbreak{}534\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\begin{theorem}\label{thm:four}
-    For four agents, there exists an EFX allocation in every bi-valued instance.
-\end{theorem}
-
-[Next verbatim source excerpt]
-
-We say that the cost function is tri-valued if there exist constants $p,q,r\geq 0$ such that $c_i(g_j)\in\{p,q,r\}$ for any $i\in N$ and $g_j\in M$.
-The cost function is bi-valued if there exist constants $p,q\geq 0$ such that $c_i(g_j)\in\{p,q\}$ for any $i\in N$ and $g_j\in M$.
-For bi-valued cost functions, we will focus on the case $0<p<q$ (the case $0=p<q$ corresponds to the setting with binary cost functions and we know an allocation that is EFX and Pareto-optimal always exists), and we will assume $c_i(g_j)\in\{1,r\}$ (for any $i\in N$ and $g_j\in M$) instead.
-We say that the item $g_j$ is ``large'' for agent $i$ if $c_i(g_j)=r$ and it is ``small'' for agent $i$ if $c_i(g_j)=1$.
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} (cost : EconCSLib.FairDivision.ChoreCost Agent Item),
-  ∃ p q, 0 ≤ p ∧ 0 ≤ q ∧ ∀ (agent : Agent) (item : Item), cost agent item = p ∨ cost agent item = q
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def IsBiValuedChoreCost (cost : ChoreCost Agent Item) : Prop :=
-  ∃ p q : ℝ, 0 ≤ p ∧ 0 ≤ q ∧
-    ∀ agent item, cost agent item = p ∨ cost agent item = q
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source defines bi-valued costs by two nonnegative constants with every pointwise item cost equal to one of them. The Lean predicate is that exact quantified condition.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-d5b3a13495d92097}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}FairDivision.\allowbreak{}IsSmallChore}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 532-\allowbreak{}534\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\begin{theorem}\label{thm:four}
-    For four agents, there exists an EFX allocation in every bi-valued instance.
-\end{theorem}
-
-[Next verbatim source excerpt]
-
-We say that the cost function is tri-valued if there exist constants $p,q,r\geq 0$ such that $c_i(g_j)\in\{p,q,r\}$ for any $i\in N$ and $g_j\in M$.
-The cost function is bi-valued if there exist constants $p,q\geq 0$ such that $c_i(g_j)\in\{p,q\}$ for any $i\in N$ and $g_j\in M$.
-For bi-valued cost functions, we will focus on the case $0<p<q$ (the case $0=p<q$ corresponds to the setting with binary cost functions and we know an allocation that is EFX and Pareto-optimal always exists), and we will assume $c_i(g_j)\in\{1,r\}$ (for any $i\in N$ and $g_j\in M$) instead.
-We say that the item $g_j$ is ``large'' for agent $i$ if $c_i(g_j)=r$ and it is ``small'' for agent $i$ if $c_i(g_j)=1$.
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} (cost : EconCSLib.FairDivision.ChoreCost Agent Item) (agent : Agent)
-  (item : Item), cost agent item = 1
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def IsSmallChore (cost : ChoreCost Agent Item)
-    (agent : Agent) (item : Item) : Prop :=
-  cost agent item = 1
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source says a chore is small for an agent exactly when its cost is 1. The Lean predicate is that equality.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-cc7147176e4228f0}{}
-\subsection*{\small\ttfamily\raggedright ownSmallChoreSet}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 752\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-An allocation $P=(P_1,P_2,P_3,P_4)$ of $M_{01}$ is \emph{canonical} if, for each agent $i$, $|P_i|\in\{a,a+1\}$ and $P_i$ contains $\min\{|P_i|, n_i\}$ items that are small for agent $i$.
-
-[Next verbatim source excerpt]
-
-We will assume $r>2$ in the remaining part of this section.
-For a chore $g$, let
-\[
- S(g)=\{i\in N:c_i(g)=1\}
-\]
-be the set of agents for whom $g$ is small.  We partition the chores into
-\[
-M_{01}=\{g:|S(g)|\le 1\},\qquad
-M_2=\{g:|S(g)|=2\},\qquad
-M_{34}=\{g:|S(g)|\ge 3\}.
-\]
-For an item in $M_2$, we write $(i,j)$ for an item small exactly for agents
-$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set
-$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.
-
-[Next verbatim source excerpt]
-
-For each agent $i$, let
-\[
- n_i=\left|\{g\in M_{01}:S(g)=\{i\}\}\right|
-\]
-be the number of $M_{01}$ items uniquely small for $i$.  Items in $M_{01}$
-with $S(g)=\emptyset$ are all-large items.
-Let $|M_{01}|=4a+b$ with $b\in\{0,1,2,3\}$.
-As mentioned before, we will make sure each agent receives either $a$ items or $a+1$ items.
-
-Fix quotas $q_i\in\{a,a+1\}$ with $\sum_i q_i=|M_{01}|$.
-We consider allocations of $M_{01}$ with quotas $q=(q_1,q_2,q_3,q_4)$ in which each agent $i$ first receives as many of her uniquely-small items as possible, up to quota $q_i$, and the remaining slots are filled with the remaining items.
-We will show that all such allocations satisfy EFX.
-It is also important that we have the freedom to choose which agents receive $a$ items and which agents receive $a+1$ items.
-This freedom enables us to append the allocation of $M_2$ after the allocation of $M_{01}$.
-
-We begin by defining this type of allocations.
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-{Agent : Type u_1} →
-  {Item : Type u_2} →
-    (cost : EconCSLib.FairDivision.ChoreCost Agent Item) →
-      (chores : Finset Item) → (agent : Agent) → {item ∈ chores | EconCSLib.FairDivision.IsSmallChore cost agent item}
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-noncomputable def ownSmallChoreSet (cost : ChoreCost Agent Item)
-    (chores : Finset Item) (agent : Agent) : Finset Item := by
-  classical
-  exact chores.filter fun item => IsSmallChore cost agent item
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source n\_i counts M01 chores uniquely small for agent i. Applied to an allocated bundle, the Lean finite filter is exactly the set whose cardinality the canonical definition uses.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-b5fb7421a7b0fa8f}{}
-\subsection*{\small\ttfamily\raggedright IsCanonicalSmallChoreAllocation}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 752\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-An allocation $P=(P_1,P_2,P_3,P_4)$ of $M_{01}$ is \emph{canonical} if, for each agent $i$, $|P_i|\in\{a,a+1\}$ and $P_i$ contains $\min\{|P_i|, n_i\}$ items that are small for agent $i$.
-
-[Next verbatim source excerpt]
-
-We will assume $r>2$ in the remaining part of this section.
-For a chore $g$, let
-\[
- S(g)=\{i\in N:c_i(g)=1\}
-\]
-be the set of agents for whom $g$ is small.  We partition the chores into
-\[
-M_{01}=\{g:|S(g)|\le 1\},\qquad
-M_2=\{g:|S(g)|=2\},\qquad
-M_{34}=\{g:|S(g)|\ge 3\}.
-\]
-For an item in $M_2$, we write $(i,j)$ for an item small exactly for agents
-$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set
-$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.
-
-[Next verbatim source excerpt]
-
-For each agent $i$, let
-\[
- n_i=\left|\{g\in M_{01}:S(g)=\{i\}\}\right|
-\]
-be the number of $M_{01}$ items uniquely small for $i$.  Items in $M_{01}$
-with $S(g)=\emptyset$ are all-large items.
-Let $|M_{01}|=4a+b$ with $b\in\{0,1,2,3\}$.
-As mentioned before, we will make sure each agent receives either $a$ items or $a+1$ items.
-
-Fix quotas $q_i\in\{a,a+1\}$ with $\sum_i q_i=|M_{01}|$.
-We consider allocations of $M_{01}$ with quotas $q=(q_1,q_2,q_3,q_4)$ in which each agent $i$ first receives as many of her uniquely-small items as possible, up to quota $q_i$, and the remaining slots are filled with the remaining items.
-We will show that all such allocations satisfy EFX.
-It is also important that we have the freedom to choose which agents receive $a$ items and which agents receive $a+1$ items.
-This freedom enables us to append the allocation of $M_2$ after the allocation of $M_{01}$.
-
-We begin by defining this type of allocations.
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} [inst : DecidableEq Item] (cost : EconCSLib.FairDivision.ChoreCost Agent Item)
-  (chores : Finset Item) (quota : Agent → ℕ) (allocation : EconCSLib.FairDivision.Allocation Agent Item),
-  EconCSLib.FairDivision.IsAllocationOf allocation chores ∧
-    ∀ (agent : Agent),
-      Finset.card (allocation agent) = quota agent ∧
-        (EconCSLib.FairDivision.ownSmallChoreSet cost (allocation agent) agent).card =
-          min (quota agent) (EconCSLib.FairDivision.ownSmallChoreSet cost chores agent).card
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-noncomputable def IsCanonicalSmallChoreAllocation [DecidableEq Item]
-    (cost : ChoreCost Agent Item) (chores : Finset Item) (quota : Agent → ℕ)
-    (allocation : Allocation Agent Item) : Prop :=
-  IsAllocationOf allocation chores ∧
-    ∀ agent,
-      (allocation agent).card = quota agent ∧
-        (ownSmallChoreSet cost (allocation agent) agent).card =
-          min (quota agent) (ownSmallChoreSet cost chores agent).card
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The definition requires a complete allocation, exact quotas, and exactly min(quota, own-small-count) own-small chores for every agent, matching the source canonical-allocation definition.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-7104bc1ed9b2997f}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}FairDivision.\allowbreak{}IsLargeChore}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 532-\allowbreak{}534\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\begin{theorem}\label{thm:four}
-    For four agents, there exists an EFX allocation in every bi-valued instance.
-\end{theorem}
-
-[Next verbatim source excerpt]
-
-We say that the cost function is tri-valued if there exist constants $p,q,r\geq 0$ such that $c_i(g_j)\in\{p,q,r\}$ for any $i\in N$ and $g_j\in M$.
-The cost function is bi-valued if there exist constants $p,q\geq 0$ such that $c_i(g_j)\in\{p,q\}$ for any $i\in N$ and $g_j\in M$.
-For bi-valued cost functions, we will focus on the case $0<p<q$ (the case $0=p<q$ corresponds to the setting with binary cost functions and we know an allocation that is EFX and Pareto-optimal always exists), and we will assume $c_i(g_j)\in\{1,r\}$ (for any $i\in N$ and $g_j\in M$) instead.
-We say that the item $g_j$ is ``large'' for agent $i$ if $c_i(g_j)=r$ and it is ``small'' for agent $i$ if $c_i(g_j)=1$.
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} (cost : EconCSLib.FairDivision.ChoreCost Agent Item) (r : ℝ) (agent : Agent)
-  (item : Item), cost agent item = r
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def IsLargeChore (cost : ChoreCost Agent Item) (r : ℝ)
-    (agent : Agent) (item : Item) : Prop :=
-  cost agent item = r
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source says a chore is large for an agent exactly when its cost is r. The Lean predicate is that equality.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-4ec5c5b788db5478}{}
-\subsection*{\small\ttfamily\raggedright IsOneOrRChoreCost}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 532-\allowbreak{}534\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\begin{theorem}\label{thm:four}
-    For four agents, there exists an EFX allocation in every bi-valued instance.
-\end{theorem}
-
-[Next verbatim source excerpt]
-
-We say that the cost function is tri-valued if there exist constants $p,q,r\geq 0$ such that $c_i(g_j)\in\{p,q,r\}$ for any $i\in N$ and $g_j\in M$.
-The cost function is bi-valued if there exist constants $p,q\geq 0$ such that $c_i(g_j)\in\{p,q\}$ for any $i\in N$ and $g_j\in M$.
-For bi-valued cost functions, we will focus on the case $0<p<q$ (the case $0=p<q$ corresponds to the setting with binary cost functions and we know an allocation that is EFX and Pareto-optimal always exists), and we will assume $c_i(g_j)\in\{1,r\}$ (for any $i\in N$ and $g_j\in M$) instead.
-We say that the item $g_j$ is ``large'' for agent $i$ if $c_i(g_j)=r$ and it is ``small'' for agent $i$ if $c_i(g_j)=1$.
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} (cost : EconCSLib.FairDivision.ChoreCost Agent Item) (r : ℝ) (agent : Agent)
-  (item : Item), cost agent item = 1 ∨ cost agent item = r
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def IsOneOrRChoreCost (cost : ChoreCost Agent Item) (r : ℝ) : Prop :=
-  ∀ agent item, cost agent item = 1 ∨ cost agent item = r
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source's normalized bi-valued model says every individual chore cost is either 1 or r. The Lean predicate is exactly that pointwise disjunction.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-126791b7110fcec9}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}FairDivision.\allowbreak{}smallAgentSet}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 577-\allowbreak{}581\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\begin{lemma}[Insertion of an $M_{34}$ item]\label{lem:insertion}
-Let $X$ be an EFX allocation of a set of chores $T$.  Let $g\in M_{34}$ be a
-chore that is small for at least three agents.  Then there is an EFX
-allocation of $T\cup\{g\}$.
-\end{lemma}
-
-[Next verbatim source excerpt]
-
-We say that the cost function is tri-valued if there exist constants $p,q,r\geq 0$ such that $c_i(g_j)\in\{p,q,r\}$ for any $i\in N$ and $g_j\in M$.
-The cost function is bi-valued if there exist constants $p,q\geq 0$ such that $c_i(g_j)\in\{p,q\}$ for any $i\in N$ and $g_j\in M$.
-For bi-valued cost functions, we will focus on the case $0<p<q$ (the case $0=p<q$ corresponds to the setting with binary cost functions and we know an allocation that is EFX and Pareto-optimal always exists), and we will assume $c_i(g_j)\in\{1,r\}$ (for any $i\in N$ and $g_j\in M$) instead.
-We say that the item $g_j$ is ``large'' for agent $i$ if $c_i(g_j)=r$ and it is ``small'' for agent $i$ if $c_i(g_j)=1$.
-
-[Next verbatim source excerpt]
-
-We will assume $r>2$ in the remaining part of this section.
-For a chore $g$, let
-\[
- S(g)=\{i\in N:c_i(g)=1\}
-\]
-be the set of agents for whom $g$ is small.  We partition the chores into
-\[
-M_{01}=\{g:|S(g)|\le 1\},\qquad
-M_2=\{g:|S(g)|=2\},\qquad
-M_{34}=\{g:|S(g)|\ge 3\}.
-\]
-For an item in $M_2$, we write $(i,j)$ for an item small exactly for agents
-$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set
-$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-{Agent : Type u_1} →
-  {Item : Type u_2} →
-    [inst : Fintype Agent] →
-      [DecidableEq Agent] →
-        (cost : EconCSLib.FairDivision.ChoreCost Agent Item) →
-          (item : Item) → {agent | EconCSLib.FairDivision.IsSmallChore cost agent item}
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-noncomputable def smallAgentSet [Fintype Agent] [DecidableEq Agent]
-    (cost : ChoreCost Agent Item) (item : Item) : Finset Agent := by
-  classical
-  exact Finset.univ.filter fun agent => IsSmallChore cost agent item
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source defines S(g) as the set of agents for whom g is small. The Lean finite filter over all agents is exactly that set.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-dd10cc5d5fbc610c}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}FairDivision.\allowbreak{}IsSmallForAtLeastThree}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 577-\allowbreak{}581\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\begin{lemma}[Insertion of an $M_{34}$ item]\label{lem:insertion}
-Let $X$ be an EFX allocation of a set of chores $T$.  Let $g\in M_{34}$ be a
-chore that is small for at least three agents.  Then there is an EFX
-allocation of $T\cup\{g\}$.
-\end{lemma}
-
-[Next verbatim source excerpt]
-
-We say that the cost function is tri-valued if there exist constants $p,q,r\geq 0$ such that $c_i(g_j)\in\{p,q,r\}$ for any $i\in N$ and $g_j\in M$.
-The cost function is bi-valued if there exist constants $p,q\geq 0$ such that $c_i(g_j)\in\{p,q\}$ for any $i\in N$ and $g_j\in M$.
-For bi-valued cost functions, we will focus on the case $0<p<q$ (the case $0=p<q$ corresponds to the setting with binary cost functions and we know an allocation that is EFX and Pareto-optimal always exists), and we will assume $c_i(g_j)\in\{1,r\}$ (for any $i\in N$ and $g_j\in M$) instead.
-We say that the item $g_j$ is ``large'' for agent $i$ if $c_i(g_j)=r$ and it is ``small'' for agent $i$ if $c_i(g_j)=1$.
-
-[Next verbatim source excerpt]
-
-We will assume $r>2$ in the remaining part of this section.
-For a chore $g$, let
-\[
- S(g)=\{i\in N:c_i(g)=1\}
-\]
-be the set of agents for whom $g$ is small.  We partition the chores into
-\[
-M_{01}=\{g:|S(g)|\le 1\},\qquad
-M_2=\{g:|S(g)|=2\},\qquad
-M_{34}=\{g:|S(g)|\ge 3\}.
-\]
-For an item in $M_2$, we write $(i,j)$ for an item small exactly for agents
-$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set
-$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} [inst : Fintype Agent] [inst_1 : DecidableEq Agent]
-  (cost : EconCSLib.FairDivision.ChoreCost Agent Item) (item : Item),
-  3 ≤ (EconCSLib.FairDivision.smallAgentSet cost item).card
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def IsSmallForAtLeastThree [Fintype Agent] [DecidableEq Agent]
-    (cost : ChoreCost Agent Item) (item : Item) : Prop :=
-  3 ≤ (smallAgentSet cost item).card
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source defines M34 as chores whose small-agent set has cardinality at least three. The Lean predicate is exactly that cardinality condition.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-7d30866fb5725e8b}{}
-\subsection*{\small\ttfamily\raggedright IsSmallForAtMostOne}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 752\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-An allocation $P=(P_1,P_2,P_3,P_4)$ of $M_{01}$ is \emph{canonical} if, for each agent $i$, $|P_i|\in\{a,a+1\}$ and $P_i$ contains $\min\{|P_i|, n_i\}$ items that are small for agent $i$.
-
-[Next verbatim source excerpt]
-
-We will assume $r>2$ in the remaining part of this section.
-For a chore $g$, let
-\[
- S(g)=\{i\in N:c_i(g)=1\}
-\]
-be the set of agents for whom $g$ is small.  We partition the chores into
-\[
-M_{01}=\{g:|S(g)|\le 1\},\qquad
-M_2=\{g:|S(g)|=2\},\qquad
-M_{34}=\{g:|S(g)|\ge 3\}.
-\]
-For an item in $M_2$, we write $(i,j)$ for an item small exactly for agents
-$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set
-$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.
-
-[Next verbatim source excerpt]
-
-For each agent $i$, let
-\[
- n_i=\left|\{g\in M_{01}:S(g)=\{i\}\}\right|
-\]
-be the number of $M_{01}$ items uniquely small for $i$.  Items in $M_{01}$
-with $S(g)=\emptyset$ are all-large items.
-Let $|M_{01}|=4a+b$ with $b\in\{0,1,2,3\}$.
-As mentioned before, we will make sure each agent receives either $a$ items or $a+1$ items.
-
-Fix quotas $q_i\in\{a,a+1\}$ with $\sum_i q_i=|M_{01}|$.
-We consider allocations of $M_{01}$ with quotas $q=(q_1,q_2,q_3,q_4)$ in which each agent $i$ first receives as many of her uniquely-small items as possible, up to quota $q_i$, and the remaining slots are filled with the remaining items.
-We will show that all such allocations satisfy EFX.
-It is also important that we have the freedom to choose which agents receive $a$ items and which agents receive $a+1$ items.
-This freedom enables us to append the allocation of $M_2$ after the allocation of $M_{01}$.
-
-We begin by defining this type of allocations.
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} [inst : Fintype Agent] [inst_1 : DecidableEq Agent]
-  (cost : EconCSLib.FairDivision.ChoreCost Agent Item) (item : Item),
-  (EconCSLib.FairDivision.smallAgentSet cost item).card ≤ 1
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def IsSmallForAtMostOne [Fintype Agent] [DecidableEq Agent]
-    (cost : ChoreCost Agent Item) (item : Item) : Prop :=
-  (smallAgentSet cost item).card ≤ 1
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} For an M01 chore, the source defines the small-agent set to have cardinality at most one. The Lean predicate states that same finite-cardinality condition.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-ae44c6bc90159d5e}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}FairDivision.\allowbreak{}IsSmallForExactlyTwo}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1045-\allowbreak{}1047\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\begin{lemma}[EFX Allocation of $M_2$]\label{lem:M2}
-There is an EFX allocation of $M_2$.
-\end{lemma}
-
-[Next verbatim source excerpt]
-
-We will assume $r>2$ in the remaining part of this section.
-For a chore $g$, let
-\[
- S(g)=\{i\in N:c_i(g)=1\}
-\]
-be the set of agents for whom $g$ is small.  We partition the chores into
-\[
-M_{01}=\{g:|S(g)|\le 1\},\qquad
-M_2=\{g:|S(g)|=2\},\qquad
-M_{34}=\{g:|S(g)|\ge 3\}.
-\]
-For an item in $M_2$, we write $(i,j)$ for an item small exactly for agents
-$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set
-$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.
-
-[Next verbatim source excerpt]
-
-\subsection{The $M_2$ Multigraph Algorithm}
-\label{subsec:2}
-We now give a complete allocation procedure for the items in $M_2$.
-Each item is small for some agents $i$ and $j$ and
-large for the other two agents, and we say that the type of this item is $(i,j)$, or $ij$ for short.
-In this section, we consider the case where the instance only has $M_{2}$ items.
-We represent the instance by a
-multigraph $R$ on $N=\{1,2,3,4\}$, where an item of type $(i,j)$ is an edge $(i,j)$.
-We slightly abuse the notation by letting $R$ also represent the edge set, i.e., $R$ exactly corresponds to items in $M_2$.
-Let $x_{ij}$ denote the multiplicity of edge $(i,j)$ and let $m_R=|R|$.
-
-For $U\subseteq N$, define
-\[
- \operatorname{inc}_R(U)=\left|\{e\in R:e\cap U\neq\emptyset\}\right|
-\]
-and
-\[
- \Delta_R(U)=\frac{|U|m_R}{4}-\operatorname{inc}_R(U).
-\]
-We call $U$ \emph{deficient} if $\Delta_R(U)>0$.
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} [inst : Fintype Agent] [inst_1 : DecidableEq Agent]
-  (cost : EconCSLib.FairDivision.ChoreCost Agent Item) (item : Item),
-  (EconCSLib.FairDivision.smallAgentSet cost item).card = 2
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def IsSmallForExactlyTwo [Fintype Agent] [DecidableEq Agent]
-    (cost : ChoreCost Agent Item) (item : Item) : Prop :=
-  (smallAgentSet cost item).card = 2
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source defines M2 as chores whose small-agent set has cardinality exactly two. The Lean predicate is that exact cardinality condition.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-9936f1893dc14aa4}{}
-\subsection*{\small\ttfamily\raggedright IsSuperCanonicalSmallChoreAllocation}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 755\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-For $b>0$, an allocation $P=(P_1,P_2,P_3,P_4)$ is \emph{super-canonical} if it is canonical and satisfies $c_i(P_i)\leq c_i(P_j)-r$ for every short agent $i$ and every long agent $j$.
-
-[Next verbatim source excerpt]
-
-We will assume $r>2$ in the remaining part of this section.
-For a chore $g$, let
-\[
- S(g)=\{i\in N:c_i(g)=1\}
-\]
-be the set of agents for whom $g$ is small.  We partition the chores into
-\[
-M_{01}=\{g:|S(g)|\le 1\},\qquad
-M_2=\{g:|S(g)|=2\},\qquad
-M_{34}=\{g:|S(g)|\ge 3\}.
-\]
-For an item in $M_2$, we write $(i,j)$ for an item small exactly for agents
-$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set
-$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.
-
-[Next verbatim source excerpt]
-
-For each agent $i$, let
-\[
- n_i=\left|\{g\in M_{01}:S(g)=\{i\}\}\right|
-\]
-be the number of $M_{01}$ items uniquely small for $i$.  Items in $M_{01}$
-with $S(g)=\emptyset$ are all-large items.
-Let $|M_{01}|=4a+b$ with $b\in\{0,1,2,3\}$.
-As mentioned before, we will make sure each agent receives either $a$ items or $a+1$ items.
-
-Fix quotas $q_i\in\{a,a+1\}$ with $\sum_i q_i=|M_{01}|$.
-We consider allocations of $M_{01}$ with quotas $q=(q_1,q_2,q_3,q_4)$ in which each agent $i$ first receives as many of her uniquely-small items as possible, up to quota $q_i$, and the remaining slots are filled with the remaining items.
-We will show that all such allocations satisfy EFX.
-It is also important that we have the freedom to choose which agents receive $a$ items and which agents receive $a+1$ items.
-This freedom enables us to append the allocation of $M_2$ after the allocation of $M_{01}$.
-
-We begin by defining this type of allocations.
-
-
-[Next verbatim source excerpt]
-
-\begin{definition}
-    An allocation $P=(P_1,P_2,P_3,P_4)$ of $M_{01}$ is \emph{canonical} if, for each agent $i$, $|P_i|\in\{a,a+1\}$ and $P_i$ contains $\min\{|P_i|, n_i\}$ items that are small for agent $i$.
-    In a canonical allocation with $b>0$, agents receiving $a$ items are called \emph{short} agents, and agents receiving $a+1$ items are called \emph{long} agents.
-    For $b=0$ and $a>0$, every agent in a canonical is both long and short.
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} [inst : DecidableEq Item] (r : ℝ)
-  (cost : EconCSLib.FairDivision.ChoreCost Agent Item) (chores : Finset Item) (shortAgents longAgents : Finset Agent)
-  (quota : Agent → ℕ) (allocation : EconCSLib.FairDivision.Allocation Agent Item),
-  EconCSLib.FairDivision.IsCanonicalSmallChoreAllocation cost chores quota allocation ∧
-    ∀ shortAgent ∈ shortAgents,
-      ∀ longAgent ∈ longAgents,
-        EconCSLib.FairDivision.additiveChoreCost cost shortAgent (allocation shortAgent) ≤
-          EconCSLib.FairDivision.additiveChoreCost cost shortAgent (allocation longAgent) - r
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-noncomputable def IsSuperCanonicalSmallChoreAllocation [DecidableEq Item]
-    (r : ℝ) (cost : ChoreCost Agent Item) (chores : Finset Item)
-    (shortAgents longAgents : Finset Agent) (quota : Agent → ℕ)
-    (allocation : Allocation Agent Item) : Prop :=
-  IsCanonicalSmallChoreAllocation cost chores quota allocation ∧
-    ∀ shortAgent ∈ shortAgents, ∀ longAgent ∈ longAgents,
-      additiveChoreCost cost shortAgent (allocation shortAgent) ≤
-        additiveChoreCost cost shortAgent (allocation longAgent) - r
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The library definition combines canonicality with the source short-agent versus long-agent cost gap. The paper interface supplies the source's cardinality-based short and long sets.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-62a40b20b9512854}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}FairDivision.\allowbreak{}IsTriValuedChoreCost}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 304-\allowbreak{}306\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-\begin{theorem}\label{thm:tri}
-    For any $n\geq 4$, there exists a tri-valued instance with $n$ agents where no EFX allocation exists.
-\end{theorem}
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Item : Type u_2} (cost : EconCSLib.FairDivision.ChoreCost Agent Item),
-  ∃ p q r,
-    0 ≤ p ∧
-      0 ≤ q ∧ 0 ≤ r ∧ ∀ (agent : Agent) (item : Item), cost agent item = p ∨ cost agent item = q ∨ cost agent item = r
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def IsTriValuedChoreCost (cost : ChoreCost Agent Item) : Prop :=
-  ∃ p q r : ℝ, 0 ≤ p ∧ 0 ≤ q ∧ 0 ≤ r ∧
-    ∀ agent item, cost agent item = p ∨ cost agent item = q ∨ cost agent item = r
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source defines tri-valued costs by three nonnegative constants with every pointwise item cost in their set. The Lean predicate is that exact condition.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-
-\clearpage
-\hypertarget{source-claim-86903902a11cb58c}{}
-\hypertarget{source-section-0c7af8265958a9ea}{}
-\section*{Main-text source claims}
-\subsection*{Review row 1}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 253-\allowbreak{}255\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-\begin{definition}[EF for chores]
-An allocation $X=(X_1,\ldots,X_n)$ is \emph{envy-free} if for every pair of agents $i,j$ we have $c_i(X_i)\leq c_i(X_j)$.
-\end{definition}
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (Agent Item : Type) (cost : Agent → EconCSLib.FairDivision.Bundle Item → ℝ)
-  (allocation : EconCSLib.FairDivision.Allocation Agent Item),
-  EconCSLib.FairDivision.EnvyFreeForChores cost allocation ↔
-    ∀ (i j : Agent), cost i (allocation i) ≤ cost i (allocation j)
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-HT26EFXChores.envyFreeForChores_iff_source_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The displayed EF condition is the same all-agent, all-comparison bundle-cost inequality as the transparent Spec.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-dc1c37ece7fbf653}{}
-\section*{Review row 2}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 260-\allowbreak{}275\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-\begin{definition}[EFX for chores]
-An allocation $X=(X_1,\ldots,X_n)$ is \emph{EFX} if for every pair of agents $i,j$ we have either
-\begin{itemize}
-    \item $X_i=\emptyset$, or
-    \item for every item $g\in X_i$, $c_i(X_i\setminus\{g\})\le c_i(X_j).$
-\end{itemize}
-Equivalently, if
-\[
-    \tau_i(X):=\tau_i(X_i):=
-    \begin{cases}
-        0, & X_i=\emptyset,\\
-        c_i(X_i)-\min_{g\in X_i}c_i(g), & X_i\ne\emptyset,
-    \end{cases}
-\]
-then $X$ is EFX if and only if $\tau_i(X)\le c_i(X_j)$ for all $i,j$.
-\end{definition}
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (Agent Item : Type) (cost : Agent → EconCSLib.FairDivision.Bundle Item → ℝ)
-  (allocation : EconCSLib.FairDivision.Allocation Agent Item),
-  EconCSLib.FairDivision.EFXForChores cost allocation ↔
-    ∀ (i j : Agent), allocation i = ∅ ∨ ∀ item ∈ allocation i, cost i (allocation i \ {item}) ≤ cost i (allocation j)
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-HT26EFXChores.efxForChores_iff_source_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source's empty-own-bundle alternative and universal one-item-removal inequality are both present in the transparent Spec.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-a1cc8eae6630de31}{}
-\section*{Review row 3}
+\hypertarget{library-prerequisite-95d7f6c33ea68817}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Fair\allowbreak{}Division.\allowbreak{}Pareto\allowbreak{}Optimal\allowbreak{}For\allowbreak{}Chores}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 280-\allowbreak{}287\par}
-\paragraph{Verbatim source input}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 \begin{definition}[Pareto-Optimality]
     An allocation $Y=(Y_1,\ldots,Y_n)$ \emph{Pareto-dominates} an allocation $X=(X_1,\ldots,X_n)$ if
@@ -1440,111 +246,56 @@ HT26EFXChores.efxForChores_iff_source_definition
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
+
+\paragraph{Lean-expanded library semantic target}
 \begin{ReviewVerbatim}
-∀ (Agent Item : Type) (cost : Agent → EconCSLib.FairDivision.Bundle Item → ℝ) (chores : Finset Item)
-  (allocation : EconCSLib.FairDivision.Allocation Agent Item),
-  EconCSLib.FairDivision.IsAllocationOf allocation chores →
-    (EconCSLib.FairDivision.ParetoOptimalForChores cost chores allocation ↔
-      ¬∃ improvement,
-          EconCSLib.FairDivision.IsAllocationOf improvement chores ∧
-            (∀ (i : Agent), cost i (improvement i) ≤ cost i (allocation i)) ∧
-              ∃ i, cost i (improvement i) < cost i (allocation i))
+type:
+{Agent : Type u_1} →
+  {Item : Type u_2} →
+    [DecidableEq Item] →
+      (Agent → AppliedModelingLib.FairDivision.Bundle Item → ℝ) →
+        Finset Item → AppliedModelingLib.FairDivision.Allocation Agent Item → Prop
+
+value:
+fun {Agent : Type u_1} {Item : Type u_2} [DecidableEq Item]
+    (cost : Agent → AppliedModelingLib.FairDivision.Bundle Item → ℝ) (chores : Finset Item)
+    (allocation : AppliedModelingLib.FairDivision.Allocation Agent Item) =>
+  AppliedModelingLib.FairDivision.IsAllocationOf allocation chores ∧
+    ¬∃ (improvement : AppliedModelingLib.FairDivision.Allocation Agent Item),
+        AppliedModelingLib.FairDivision.IsAllocationOf improvement chores ∧
+          AppliedModelingLib.FairDivision.ParetoDominatesForChores cost allocation improvement
 \end{ReviewVerbatim}
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-HT26EFXChores.paretoOptimalForChores_iff_source_definition
+\paragraph{Exact Lean library declaration}
+\begin{ReviewVerbatim}
+/-- A complete chore allocation is Pareto-optimal if no other complete
+allocation Pareto-dominates it in the cost direction. -/
+def ParetoOptimalForChores [DecidableEq Item] (cost : Agent → Bundle Item → ℝ)
+    (chores : Finset Item) (allocation : Allocation Agent Item) : Prop :=
+  IsAllocationOf allocation chores ∧
+    ¬ ∃ improvement : Allocation Agent Item,
+      IsAllocationOf improvement chores ∧
+        ParetoDominatesForChores cost allocation improvement
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-Spec screening}
+\paragraph{Recorded source-to-library screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The Spec states exactly the source's no-complete-allocation Pareto-dominates condition, including weak improvement for all agents and strict improvement for one.
+{\raggedright
+\textbf{Reason:} The surrounding preliminaries fix a chore set allocated to the agents, so the source's candidate and comparator allocations are complete allocations of that same chore set, as encoded by IsAllocationOf.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-28f223907b1b4b26}{}
-\section*{Review row 4}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 752\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-An allocation $P=(P_1,P_2,P_3,P_4)$ of $M_{01}$ is \emph{canonical} if, for each agent $i$, $|P_i|\in\{a,a+1\}$ and $P_i$ contains $\min\{|P_i|, n_i\}$ items that are small for agent $i$.
-
-[Next verbatim source excerpt]
-
-We will assume $r>2$ in the remaining part of this section.
-For a chore $g$, let
-\[
- S(g)=\{i\in N:c_i(g)=1\}
-\]
-be the set of agents for whom $g$ is small.  We partition the chores into
-\[
-M_{01}=\{g:|S(g)|\le 1\},\qquad
-M_2=\{g:|S(g)|=2\},\qquad
-M_{34}=\{g:|S(g)|\ge 3\}.
-\]
-For an item in $M_2$, we write $(i,j)$ for an item small exactly for agents
-$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set
-$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.
-
-[Next verbatim source excerpt]
-
-For each agent $i$, let
-\[
- n_i=\left|\{g\in M_{01}:S(g)=\{i\}\}\right|
-\]
-be the number of $M_{01}$ items uniquely small for $i$.  Items in $M_{01}$
-with $S(g)=\emptyset$ are all-large items.
-Let $|M_{01}|=4a+b$ with $b\in\{0,1,2,3\}$.
-As mentioned before, we will make sure each agent receives either $a$ items or $a+1$ items.
-
-Fix quotas $q_i\in\{a,a+1\}$ with $\sum_i q_i=|M_{01}|$.
-We consider allocations of $M_{01}$ with quotas $q=(q_1,q_2,q_3,q_4)$ in which each agent $i$ first receives as many of her uniquely-small items as possible, up to quota $q_i$, and the remaining slots are filled with the remaining items.
-We will show that all such allocations satisfy EFX.
-It is also important that we have the freedom to choose which agents receive $a$ items and which agents receive $a+1$ items.
-This freedom enables us to append the allocation of $M_2$ after the allocation of $M_{01}$.
-
-We begin by defining this type of allocations.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (Item : Type) (r : ℝ) (cost : EconCSLib.FairDivision.ChoreCost (Fin 4) Item) (chores : Finset Item) (a b : ℕ)
-  (allocation : EconCSLib.FairDivision.Allocation (Fin 4) Item),
-  2 < r →
-    EconCSLib.FairDivision.IsOneOrRChoreCost cost r →
-      b ≤ 3 →
-        chores.card = 4 * a + b →
-          (∀ item ∈ chores, EconCSLib.FairDivision.IsSmallForAtMostOne cost item) →
-            ((∃ quota,
-                (∀ (agent : Fin 4), quota agent = a ∨ quota agent = a + 1) ∧
-                  EconCSLib.FairDivision.IsCanonicalSmallChoreAllocation cost chores quota allocation) ↔
-              EconCSLib.FairDivision.IsAllocationOf allocation chores ∧
-                ∀ (agent : Fin 4),
-                  (Finset.card (allocation agent) = a ∨ Finset.card (allocation agent) = a + 1) ∧
-                    (EconCSLib.FairDivision.ownSmallChoreSet cost (allocation agent) agent).card =
-                      min (Finset.card (allocation agent))
-                        (EconCSLib.FairDivision.ownSmallChoreSet cost chores agent).card)
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-HT26EFXChores.canonicalSmallChoreAllocation_iff_source_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The expanded canonical Spec states the complete four-agent M01 allocation condition directly: adjacent bundle sizes and the exact own-small maximum. The source's separate short/long-label convention and its super-canonical definition have their own Specs and review rows.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-1250d6810504d818}{}
-\section*{Review row 5}
+\hypertarget{paper-prerequisite-section-5ef5ef0364b6939c}{}
+\section*{Paper-specific semantic prerequisites}
+\hypertarget{paper-prerequisite-fd04b7b4fbc6f835}{}
+\subsection*{\small\ttfamily\raggedright HT26\allowbreak{}EFX\allowbreak{}Chores.\allowbreak{}canonical\allowbreak{}Short\allowbreak{}Long\allowbreak{}Labels\allowbreak{}Source\allowbreak{}Definition}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright HT26\allowbreak{}EFX\allowbreak{}Chores.\allowbreak{}canonical\allowbreak{}Short\allowbreak{}Long\allowbreak{}Labels\allowbreak{}Source\allowbreak{}Definition\par}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 753-\allowbreak{}754\par}
-\paragraph{Verbatim source input}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 In a canonical allocation with $b>0$, agents receiving $a$ items are called \emph{short} agents, and agents receiving $a+1$ items are called \emph{long} agents.
     For $b=0$ and $a>0$, every agent in a canonical is both long and short.
@@ -1587,47 +338,154 @@ We begin by defining this type of allocations.
 
 \begin{definition}
     An allocation $P=(P_1,P_2,P_3,P_4)$ of $M_{01}$ is \emph{canonical} if, for each agent $i$, $|P_i|\in\{a,a+1\}$ and $P_i$ contains $\min\{|P_i|, n_i\}$ items that are small for agent $i$.
+
+[Next verbatim source excerpt]
+
+be the set of agents for whom $g$ is small.  We partition the chores into
+\[
+M_{01}=\{g:|S(g)|\le 1\},\qquad
+M_2=\{g:|S(g)|=2\},\qquad
+M_{34}=\{g:|S(g)|\ge 3\}.
+\]
+For an item in $M_2$, we write $(i,j)$ for an item small exactly for agents
+$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set
+$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
+
+\paragraph{Lean-elaborated paper signature}
 \begin{ReviewVerbatim}
-∀ (Item : Type) (r : ℝ) (cost : EconCSLib.FairDivision.ChoreCost (Fin 4) Item) (chores : Finset Item) (a b : ℕ)
-  (allocation : EconCSLib.FairDivision.Allocation (Fin 4) Item),
-  2 < r →
-    EconCSLib.FairDivision.IsOneOrRChoreCost cost r →
-      b ≤ 3 →
-        chores.card = 4 * a + b →
-          (∀ item ∈ chores, EconCSLib.FairDivision.IsSmallForAtMostOne cost item) →
-            (EconCSLib.FairDivision.IsAllocationOf allocation chores ∧
-                ∀ (agent : Fin 4),
-                  (Finset.card (allocation agent) = a ∨ Finset.card (allocation agent) = a + 1) ∧
-                    (EconCSLib.FairDivision.ownSmallChoreSet cost (allocation agent) agent).card =
-                      min (Finset.card (allocation agent))
-                        (EconCSLib.FairDivision.ownSmallChoreSet cost chores agent).card) →
-              ∃ shortAgents longAgents,
-                (0 < b →
-                    (∀ (agent : Fin 4), agent ∈ shortAgents ↔ Finset.card (allocation agent) = a) ∧
-                      ∀ (agent : Fin 4), agent ∈ longAgents ↔ Finset.card (allocation agent) = a + 1) ∧
-                  (b = 0 → 0 < a → shortAgents = Finset.univ ∧ longAgents = Finset.univ)
+type:
+(Item : Type) →
+  AppliedModelingLib.FairDivision.ChoreCost (Fin 4) Item →
+    Finset Item →
+      ℕ →
+        ℕ →
+          (Fin 4 → ℕ) → AppliedModelingLib.FairDivision.Allocation (Fin 4) Item → Finset (Fin 4) → Finset (Fin 4) → Prop
+
+value:
+fun (Item : Type) (cost : AppliedModelingLib.FairDivision.ChoreCost (Fin 4) Item) (chores : Finset Item) (a b : ℕ)
+    (quota : Fin 4 → ℕ) (allocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item)
+    (shortAgents longAgents : Finset (Fin 4)) =>
+  HT26EFXChores.canonicalSmallChoreAllocationSourceDefinition Item cost chores a b quota allocation ∧
+    (0 < b →
+        (∀ (agent : Fin 4), agent ∈ shortAgents ↔ quota agent = a) ∧
+          ∀ (agent : Fin 4), agent ∈ longAgents ↔ quota agent = a + 1) ∧
+      (b = 0 → 0 < a → shortAgents = Finset.univ ∧ longAgents = Finset.univ)
 \end{ReviewVerbatim}
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-HT26EFXChores.canonicalShortLongLabels_iff_source_definition
-\end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-Spec screening}
+\paragraph{Recorded source-to-declaration screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The expanded Spec gives separate short and long agent sets in a canonical allocation: for b positive they are exactly the a-item and (a+1)-item agents, while for b zero and a positive both sets are all four agents. The raw bundle includes the canonical-allocation definition that fixes the convention's scope.
+{\raggedright
+\textbf{Reason:} The target identifies short and long agents by the source quota convention, including the b=0, a>0 convention and the source-\allowbreak{}undefined b=0, a=0 case.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-b7fd18b85f877d97}{}
-\section*{Review row 6}
+\hypertarget{paper-prerequisite-efb704bbc61ee065}{}
+\subsection*{\small\ttfamily\raggedright HT26\allowbreak{}EFX\allowbreak{}Chores.\allowbreak{}canonical\allowbreak{}Small\allowbreak{}Chore\allowbreak{}Allocation\allowbreak{}Source\allowbreak{}Definition}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright HT26\allowbreak{}EFX\allowbreak{}Chores.\allowbreak{}canonical\allowbreak{}Small\allowbreak{}Chore\allowbreak{}Allocation\allowbreak{}Source\allowbreak{}Definition\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 752\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+An allocation $P=(P_1,P_2,P_3,P_4)$ of $M_{01}$ is \emph{canonical} if, for each agent $i$, $|P_i|\in\{a,a+1\}$ and $P_i$ contains $\min\{|P_i|, n_i\}$ items that are small for agent $i$.
+
+[Next verbatim source excerpt]
+
+We will assume $r>2$ in the remaining part of this section.
+For a chore $g$, let
+\[
+ S(g)=\{i\in N:c_i(g)=1\}
+\]
+be the set of agents for whom $g$ is small.  We partition the chores into
+\[
+M_{01}=\{g:|S(g)|\le 1\},\qquad
+M_2=\{g:|S(g)|=2\},\qquad
+M_{34}=\{g:|S(g)|\ge 3\}.
+\]
+For an item in $M_2$, we write $(i,j)$ for an item small exactly for agents
+$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set
+$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.
+
+[Next verbatim source excerpt]
+
+For each agent $i$, let
+\[
+ n_i=\left|\{g\in M_{01}:S(g)=\{i\}\}\right|
+\]
+be the number of $M_{01}$ items uniquely small for $i$.  Items in $M_{01}$
+with $S(g)=\emptyset$ are all-large items.
+Let $|M_{01}|=4a+b$ with $b\in\{0,1,2,3\}$.
+As mentioned before, we will make sure each agent receives either $a$ items or $a+1$ items.
+
+Fix quotas $q_i\in\{a,a+1\}$ with $\sum_i q_i=|M_{01}|$.
+We consider allocations of $M_{01}$ with quotas $q=(q_1,q_2,q_3,q_4)$ in which each agent $i$ first receives as many of her uniquely-small items as possible, up to quota $q_i$, and the remaining slots are filled with the remaining items.
+We will show that all such allocations satisfy EFX.
+It is also important that we have the freedom to choose which agents receive $a$ items and which agents receive $a+1$ items.
+This freedom enables us to append the allocation of $M_2$ after the allocation of $M_{01}$.
+
+We begin by defining this type of allocations.
+
+
+[Next verbatim source excerpt]
+
+be the set of agents for whom $g$ is small.  We partition the chores into
+\[
+M_{01}=\{g:|S(g)|\le 1\},\qquad
+M_2=\{g:|S(g)|=2\},\qquad
+M_{34}=\{g:|S(g)|\ge 3\}.
+\]
+For an item in $M_2$, we write $(i,j)$ for an item small exactly for agents
+$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set
+$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+(Item : Type) →
+  AppliedModelingLib.FairDivision.ChoreCost (Fin 4) Item →
+    Finset Item → ℕ → ℕ → (Fin 4 → ℕ) → AppliedModelingLib.FairDivision.Allocation (Fin 4) Item → Prop
+
+value:
+fun (Item : Type) (cost : AppliedModelingLib.FairDivision.ChoreCost (Fin 4) Item) (chores : Finset Item) (a b : ℕ)
+    (quota : Fin 4 → ℕ) (allocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item) =>
+  b ≤ 3 ∧
+    chores.card = 4 * a + b ∧
+      (∀ item ∈ chores, AppliedModelingLib.FairDivision.IsSmallForAtMostOne cost item) ∧
+        (∀ (agent : Fin 4), quota agent = a ∨ quota agent = a + 1) ∧
+          Finset.univ.sum quota = chores.card ∧
+            AppliedModelingLib.FairDivision.IsAllocationOf allocation chores ∧
+              ∀ (agent : Fin 4),
+                Finset.card (allocation agent) = quota agent ∧
+                  (AppliedModelingLib.FairDivision.ownSmallChoreSet cost (allocation agent) agent).card =
+                    min (quota agent) (AppliedModelingLib.FairDivision.ownSmallChoreSet cost chores agent).card
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The target encodes b at most three, the 4a+b chore count, balanced quotas, complete allocation, and exactly the source maximum number of own-\allowbreak{}small chores per bundle.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-b0f133a4a33c9a55}{}
+\subsection*{\small\ttfamily\raggedright HT26\allowbreak{}EFX\allowbreak{}Chores.\allowbreak{}super\allowbreak{}Canonical\allowbreak{}Small\allowbreak{}Chore\allowbreak{}Allocation\allowbreak{}Source\allowbreak{}Definition}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright HT26\allowbreak{}EFX\allowbreak{}Chores.\allowbreak{}super\allowbreak{}Canonical\allowbreak{}Small\allowbreak{}Chore\allowbreak{}Allocation\allowbreak{}Source\allowbreak{}Definition\par}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 755\par}
-\paragraph{Verbatim source input}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 For $b>0$, an allocation $P=(P_1,P_2,P_3,P_4)$ is \emph{super-canonical} if it is canonical and satisfies $c_i(P_i)\leq c_i(P_j)-r$ for every short agent $i$ and every long agent $j$.
 
@@ -1674,68 +532,97 @@ We begin by defining this type of allocations.
     An allocation $P=(P_1,P_2,P_3,P_4)$ of $M_{01}$ is \emph{canonical} if, for each agent $i$, $|P_i|\in\{a,a+1\}$ and $P_i$ contains $\min\{|P_i|, n_i\}$ items that are small for agent $i$.
     In a canonical allocation with $b>0$, agents receiving $a$ items are called \emph{short} agents, and agents receiving $a+1$ items are called \emph{long} agents.
     For $b=0$ and $a>0$, every agent in a canonical is both long and short.
+
+[Next verbatim source excerpt]
+
+be the set of agents for whom $g$ is small.  We partition the chores into
+\[
+M_{01}=\{g:|S(g)|\le 1\},\qquad
+M_2=\{g:|S(g)|=2\},\qquad
+M_{34}=\{g:|S(g)|\ge 3\}.
+\]
+For an item in $M_2$, we write $(i,j)$ for an item small exactly for agents
+$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set
+$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
+
+\paragraph{Lean-elaborated paper signature}
 \begin{ReviewVerbatim}
-∀ (Item : Type) (r : ℝ) (cost : EconCSLib.FairDivision.ChoreCost (Fin 4) Item) (chores : Finset Item) (a b : ℕ)
-  (allocation : EconCSLib.FairDivision.Allocation (Fin 4) Item),
-  2 < r →
-    EconCSLib.FairDivision.IsOneOrRChoreCost cost r →
-      0 < b →
-        b ≤ 3 →
-          chores.card = 4 * a + b →
-            (∀ item ∈ chores, EconCSLib.FairDivision.IsSmallForAtMostOne cost item) →
-              ((∃ quota,
-                  (∀ (agent : Fin 4), quota agent = a ∨ quota agent = a + 1) ∧
-                    EconCSLib.FairDivision.IsSuperCanonicalSmallChoreAllocation r cost chores {agent | quota agent = a}
-                      {agent | quota agent = a + 1} quota allocation) ↔
-                EconCSLib.FairDivision.IsAllocationOf allocation chores ∧
-                  (∀ (agent : Fin 4),
-                      (Finset.card (allocation agent) = a ∨ Finset.card (allocation agent) = a + 1) ∧
-                        (EconCSLib.FairDivision.ownSmallChoreSet cost (allocation agent) agent).card =
-                          min (Finset.card (allocation agent))
-                            (EconCSLib.FairDivision.ownSmallChoreSet cost chores agent).card) ∧
-                    ∀ (shortAgent longAgent : Fin 4),
-                      Finset.card (allocation shortAgent) = a →
-                        Finset.card (allocation longAgent) = a + 1 →
-                          EconCSLib.FairDivision.additiveChoreCost cost shortAgent (allocation shortAgent) ≤
-                            EconCSLib.FairDivision.additiveChoreCost cost shortAgent (allocation longAgent) - r)
+type:
+(Item : Type) →
+  ℝ →
+    AppliedModelingLib.FairDivision.ChoreCost (Fin 4) Item →
+      Finset Item → ℕ → ℕ → (Fin 4 → ℕ) → AppliedModelingLib.FairDivision.Allocation (Fin 4) Item → Prop
+
+value:
+fun (Item : Type) (r : ℝ) (cost : AppliedModelingLib.FairDivision.ChoreCost (Fin 4) Item) (chores : Finset Item)
+    (a b : ℕ) (quota : Fin 4 → ℕ) (allocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item) =>
+  0 < b ∧
+    ∃ (shortAgents : Finset (Fin 4)) (longAgents : Finset (Fin 4)),
+      HT26EFXChores.canonicalShortLongLabelsSourceDefinition Item cost chores a b quota allocation shortAgents
+          longAgents ∧
+        ∀ shortAgent ∈ shortAgents,
+          ∀ longAgent ∈ longAgents,
+            AppliedModelingLib.FairDivision.additiveChoreCost cost shortAgent (allocation shortAgent) ≤
+              AppliedModelingLib.FairDivision.additiveChoreCost cost shortAgent (allocation longAgent) - r
 \end{ReviewVerbatim}
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-HT26EFXChores.superCanonicalSmallChoreAllocation_iff_source_definition
-\end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-Spec screening}
+\paragraph{Recorded source-to-declaration screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The expanded Spec separately states the source's b-positive super-canonical definition: canonicality plus the cost gap from every short agent to every long agent. Its raw source bundle includes the preceding definitions that determine M01, canonicality, and short/long labels.
+{\raggedright
+\textbf{Reason:} The target requires b positive, canonicality with the source short/\allowbreak{}long convention, and exactly the stated r cost gap from every short agent to every long agent.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
+
 \clearpage
 \hypertarget{source-claim-707062c38758c055}{}
-\section*{Review row 7}
+\hypertarget{source-section-0c7af8265958a9ea}{}
+\section*{Main-text source claims}
+\subsection*{Review row 1}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 304-\allowbreak{}306\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
 \begin{theorem}\label{thm:tri}
     For any $n\geq 4$, there exists a tri-valued instance with $n$ agents where no EFX allocation exists.
 \end{theorem}
+
+[Next verbatim source excerpt]
+
+\section{Preliminaries}
+A set $M$ of $m$ chores $g_1,\ldots,g_m$ is allocated to a set $N$ of $n$ agents $1,\ldots,n$.
+We will use ``item'' and ``chore'' interchangeably in this paper to refer to an element in $M$.
+Each agent $i$'s cost function $c_i:2^M\to\mathbb{R}_{\geq0}$ is additive:
+$$c_i(S)=\sum_{g\in S}c_i(\{g\}).$$
+We write $c_i(g_j)$ in short for $c_i(\{g_j\})$ for notation simplicity.
+We will use ``cost function'' and ``disutility function'' interchangeably in this paper.
+
+[Next verbatim source excerpt]
+
+We say that the cost function is tri-valued if there exist constants $p,q,r\geq 0$ such that $c_i(g_j)\in\{p,q,r\}$ for any $i\in N$ and $g_j\in M$.
+The cost function is bi-valued if there exist constants $p,q\geq 0$ such that $c_i(g_j)\in\{p,q\}$ for any $i\in N$ and $g_j\in M$.
+For bi-valued cost functions, we will focus on the case $0<p<q$ (the case $0=p<q$ corresponds to the setting with binary cost functions and we know an allocation that is EFX and Pareto-optimal always exists), and we will assume $c_i(g_j)\in\{1,r\}$ (for any $i\in N$ and $g_j\in M$) instead.
+We say that the item $g_j$ is ``large'' for agent $i$ if $c_i(g_j)=r$ and it is ``small'' for agent $i$ if $c_i(g_j)=1$.
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ (n : ℕ),
   4 ≤ n →
-    ∃ Item itemDecidableEq choreInstance,
-      EconCSLib.FairDivision.IsTriValuedChoreCost choreInstance.cost ∧
-        ∀ (allocation : EconCSLib.FairDivision.Allocation (Fin n) Item),
+    ∃ (m : ℕ) (choreInstance : AppliedModelingLib.FairDivision.AdditiveChoreInstance (Fin n) (Fin m)),
+      AppliedModelingLib.FairDivision.IsTriValuedChoreCost choreInstance.cost ∧
+        ∀ (allocation : AppliedModelingLib.FairDivision.Allocation (Fin n) (Fin m)),
           choreInstance.IsFeasible allocation → ¬choreInstance.IsEFX allocation
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.tri_valued_nonexistence
@@ -1744,13 +631,15 @@ HT26EFXChores.tri_valued_nonexistence
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The source theorem's quantification over n at least four and existence of a tri-valued n-agent instance with no EFX allocation are represented directly. The finite-item equality instance is Lean representation support, not an additional paper premise.
+{\raggedright
+\textbf{Reason:} Exact n-\allowbreak{}at-\allowbreak{}least-\allowbreak{}four existential tri-\allowbreak{}valued additive nonnegative instance with no feasible EFX allocation.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-2321d8010acce683}{}
-\section*{Review row 8}
+\section*{Review row 2}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 340-\allowbreak{}342\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -1794,16 +683,19 @@ then $X$ is EFX if and only if $\tau_i(X)\le c_i(X_j)$ for all $i,j$.
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ (allocation : EconCSLib.FairDivision.Allocation (Fin 4) (Fin 13)),
-  EconCSLib.FairDivision.IsAllocationOf allocation Finset.univ →
-    EconCSLib.FairDivision.EFXForChores
-        (EconCSLib.FairDivision.additiveChoreCost fun agent item =>
+∀ (allocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) (Fin 13)),
+  AppliedModelingLib.FairDivision.IsAllocationOf allocation Finset.univ →
+    AppliedModelingLib.FairDivision.EFXForChores
+        (AppliedModelingLib.FairDivision.additiveChoreCost fun (agent : Fin 4) (item : Fin 13) =>
           if ↑item < 3 then 20 else if ↑agent < 2 then if ↑item < 8 then 1 else 7 else if ↑item < 8 then 7 else 1)
         allocation →
       ∀ (agent : Fin 4), {item ∈ allocation agent | ↑item < 3}.card ≤ 1
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.tri_four_no_two_large
@@ -1812,13 +704,15 @@ HT26EFXChores.tri_four_no_two_large
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The raw bundle includes the displayed four-agent construction and the EFX contradiction setup. The Spec states that each bundle contains at most one A item under precisely that construction and EFX premise.
+{\raggedright
+\textbf{Reason:} Exact concrete four-\allowbreak{}agent, 13-\allowbreak{}item instance and at-\allowbreak{}most-\allowbreak{}one-\allowbreak{}A-\allowbreak{}item EFX consequence.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-120f295a37ffc0ce}{}
-\section*{Review row 9}
+\section*{Review row 3}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 363-\allowbreak{}365\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -1867,24 +761,27 @@ then $X$ is EFX if and only if $\tau_i(X)\le c_i(X_j)$ for all $i,j$.
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ (allocation : EconCSLib.FairDivision.Allocation (Fin 4) (Fin 13)),
-  EconCSLib.FairDivision.IsAllocationOf allocation Finset.univ →
-    EconCSLib.FairDivision.EFXForChores
-        (EconCSLib.FairDivision.additiveChoreCost fun agent item =>
+∀ (allocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) (Fin 13)),
+  AppliedModelingLib.FairDivision.IsAllocationOf allocation Finset.univ →
+    AppliedModelingLib.FairDivision.EFXForChores
+        (AppliedModelingLib.FairDivision.additiveChoreCost fun (agent : Fin 4) (item : Fin 13) =>
           if ↑item < 3 then 20 else if ↑agent < 2 then if ↑item < 8 then 1 else 7 else if ↑item < 8 then 7 else 1)
         allocation →
       {item ∈ allocation 0 | ↑item < 3}.card = 0 →
         (∀ (agent : Fin 4), agent ≠ 0 → {item ∈ allocation agent | ↑item < 3}.card = 1) →
           ∀ (agent : Fin 4),
             20 ≤
-              EconCSLib.FairDivision.additiveChoreCost
-                (fun agent item =>
+              AppliedModelingLib.FairDivision.additiveChoreCost
+                (fun (agent : Fin 4) (item : Fin 13) =>
                   if ↑item < 3 then 20
                   else if ↑agent < 2 then if ↑item < 8 then 1 else 7 else if ↑item < 8 then 7 else 1)
                 agent (allocation 0)
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.tri_four_no_a_bundle_expensive
@@ -1893,20 +790,40 @@ HT26EFXChores.tri_four_no_a_bundle_expensive
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The raw bundle includes the construction, the EFX setting, and the stated one-no-A/three-one-A distribution after the source's without-loss-of-generality choice. The Spec expresses that chosen case and the resulting cost-at-least-20 conclusion.
+{\raggedright
+\textbf{Reason:} Under the supplied WLOG distribution of the three A-\allowbreak{}items, asserts every agent values agent 1's A-\allowbreak{}free bundle at least 20.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-8bed2d2e9152e71d}{}
-\section*{Review row 10}
+\section*{Review row 4}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 416-\allowbreak{}418\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
 \begin{theorem}\label{thm:EFXPO}
     For every $n\geq 4$ and $r>\lceil n/2\rceil+1$, there exists a $(1,r)$-bi-valued instance with $n$ agents where every EFX allocation is not Pareto-optimal.
 \end{theorem}
+
+[Next verbatim source excerpt]
+
+\section{Preliminaries}
+A set $M$ of $m$ chores $g_1,\ldots,g_m$ is allocated to a set $N$ of $n$ agents $1,\ldots,n$.
+We will use ``item'' and ``chore'' interchangeably in this paper to refer to an element in $M$.
+Each agent $i$'s cost function $c_i:2^M\to\mathbb{R}_{\geq0}$ is additive:
+$$c_i(S)=\sum_{g\in S}c_i(\{g\}).$$
+We write $c_i(g_j)$ in short for $c_i(\{g_j\})$ for notation simplicity.
+We will use ``cost function'' and ``disutility function'' interchangeably in this paper.
+
+[Next verbatim source excerpt]
+
+We say that the cost function is tri-valued if there exist constants $p,q,r\geq 0$ such that $c_i(g_j)\in\{p,q,r\}$ for any $i\in N$ and $g_j\in M$.
+The cost function is bi-valued if there exist constants $p,q\geq 0$ such that $c_i(g_j)\in\{p,q\}$ for any $i\in N$ and $g_j\in M$.
+For bi-valued cost functions, we will focus on the case $0<p<q$ (the case $0=p<q$ corresponds to the setting with binary cost functions and we know an allocation that is EFX and Pareto-optimal always exists), and we will assume $c_i(g_j)\in\{1,r\}$ (for any $i\in N$ and $g_j\in M$) instead.
+We say that the item $g_j$ is ``large'' for agent $i$ if $c_i(g_j)=r$ and it is ``small'' for agent $i$ if $c_i(g_j)=1$.
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
@@ -1915,12 +832,14 @@ HT26EFXChores.tri_four_no_a_bundle_expensive
   4 ≤ n →
     ∀ (r : ℝ),
       ↑((n + 1) / 2) + 1 < r →
-        ∃ Item itemDecidableEq choreInstance,
-          EconCSLib.FairDivision.IsOneOrRChoreCost choreInstance.cost r ∧
-            ∀ (allocation : EconCSLib.FairDivision.Allocation (Fin n) Item),
+        ∃ (m : ℕ) (choreInstance : AppliedModelingLib.FairDivision.AdditiveChoreInstance (Fin n) (Fin m)),
+          AppliedModelingLib.FairDivision.IsOneOrRChoreCost choreInstance.cost r ∧
+            ∀ (allocation : AppliedModelingLib.FairDivision.Allocation (Fin n) (Fin m)),
               choreInstance.IsFeasible allocation →
                 choreInstance.IsEFX allocation → ¬choreInstance.IsParetoOptimal allocation
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.efx_pareto_incompatibility
@@ -1929,13 +848,87 @@ HT26EFXChores.efx_pareto_incompatibility
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The source theorem's n, r threshold, existence of a (1,r)-bi-valued instance, and universal EFX-implies-not-Pareto-optimal conclusion are represented directly. The Spec no longer strengthens the source theorem by fixing a particular item carrier size.
+{\raggedright
+\textbf{Reason:} Exact existence of a normalized one-\allowbreak{}or-\allowbreak{}r bi-\allowbreak{}valued feasible instance whose EFX allocations are not Pareto-\allowbreak{}optimal.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-6906c411c024867a}{}
+\section*{Review row 5}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 448-\allowbreak{}452\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+Notice that an EFX allocation exists in this instance.
+For each agent $i\in T_1$, she receives a large item from $A$ and a small item from $B$.
+For all but one agent in $T_2$, each of them receives a large item from $A$ and a small item from $C$.
+The remaining agent in $T_2$ receives one item from $B$ and two items from $C$.
+The readers can easily verify this is an EFX allocation.
+
+[Next verbatim source excerpt]
+
+Agents are partitioned into two groups $T_1$ and $T_2$ with $|T_1|=t_1$ and $|T_2|=t_2$.
+There are $m=2n+1$ items which are partitioned into three groups $A,B$, and $C$.
+$A$ is the set of large items containing $n-1$ items which have cost $r$ to every agent.
+$B$ contains $t_1+1$ items.
+Each agent in $T_1$ values each item in $B$ at $1$ and each item in $C$ at $r$.
+$C$ contains $t_2+1$ items.
+Each agent in $T_2$ values each item in $B$ at $r$ and each item in $C$ at $1$.
+Recall that $r$ can be any real number greater than $t_2+1$.
+Table~\ref{tab:po} illustrates the instance.
+
+\begin{table}[h]
+    \centering
+    \caption{A bi-valued instance where every EFX allocation fails to be Pareto-optimal.  Each entry is the cost of every item in the corresponding item class.}
+    \begin{tabular}{cccc}
+    \hline
+         & $A=\{a_1,\ldots,a_{n-1}\}$ & $B=\{b_1,\ldots,b_{t_1+1}\}$ & $C=\{c_1,\ldots,c_{t_2+1}\}$\\
+    \hline
+       Agents in $T_1$ & $r$ & $1$ & $r$\\
+       Agents in $T_2$ & $r$ & $r$ & $1$\\
+    \hline
+    \end{tabular}
+
+    \label{tab:po}
+\end{table}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (n : ℕ),
+  4 ≤ n →
+    ∀ (r : ℝ),
+      ↑((n + 1) / 2) + 1 < r →
+        ∃ (allocation : AppliedModelingLib.FairDivision.Allocation (Fin n) (Fin (2 * n + 1))),
+          AppliedModelingLib.FairDivision.IsAllocationOf allocation Finset.univ ∧
+            AppliedModelingLib.FairDivision.EFXForChores
+              (AppliedModelingLib.FairDivision.additiveChoreCost fun (agent : Fin n) (item : Fin (2 * n + 1)) =>
+                if ↑item < n - 1 then r
+                else if ↑agent < n / 2 then if ↑item < n + n / 2 then 1 else r else if ↑item < n + n / 2 then r else 1)
+              allocation
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+HT26EFXChores.efx_pareto_construction_has_efx
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Finite encoding has the stated group sizes, A/\allowbreak{}B/\allowbreak{}C costs, r threshold, and EFX existence.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-5145ed0daed8afc6}{}
-\section*{Review row 11}
+\section*{Review row 6}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 461-\allowbreak{}463\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -1963,16 +956,17 @@ Recall that $r$ can be any real number greater than $t_2+1$.
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ (n : ℕ),
   4 ≤ n →
     ∀ (r : ℝ),
       ↑((n + 1) / 2) + 1 < r →
-        ∀ (allocation : EconCSLib.FairDivision.Allocation (Fin n) (Fin (2 * n + 1))),
-          EconCSLib.FairDivision.IsAllocationOf allocation Finset.univ →
-            EconCSLib.FairDivision.EFXForChores
-                (EconCSLib.FairDivision.additiveChoreCost fun agent item =>
+        ∀ (allocation : AppliedModelingLib.FairDivision.Allocation (Fin n) (Fin (2 * n + 1))),
+          AppliedModelingLib.FairDivision.IsAllocationOf allocation Finset.univ →
+            AppliedModelingLib.FairDivision.EFXForChores
+                (AppliedModelingLib.FairDivision.additiveChoreCost fun (agent : Fin n) (item : Fin (2 * n + 1)) =>
                   if ↑item < n - 1 then r
                   else
                     if ↑agent < n / 2 then if ↑item < n + n / 2 then 1 else r else if ↑item < n + n / 2 then r else 1)
@@ -1986,6 +980,8 @@ Recall that $r$ can be any real number greater than $t_2+1$.
                     r
 \end{ReviewVerbatim}
 
+
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.efx_po_every_agent_large
 \end{ReviewVerbatim}
@@ -1993,13 +989,15 @@ HT26EFXChores.efx_po_every_agent_large
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The raw bundle gives the Theorem 2 threshold, the two agent groups, all three item classes, their cardinalities, and their (1,r) costs. The transparent Spec uses Fin n and Fin (2n+1), identifies the floor/ceiling groups by index, and states exactly that every EFX bundle contains an r-cost item.
+{\raggedright
+\textbf{Reason:} Uses the stated instance and asserts every agent's bundle contains an item of own cost r.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-8a3c68dd9df286a5}{}
-\section*{Review row 12}
+\section*{Review row 7}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 502-\allowbreak{}504\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -2027,39 +1025,42 @@ Recall that $r$ can be any real number greater than $t_2+1$.
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ (n : ℕ),
   4 ≤ n →
     ∀ (r : ℝ),
       ↑((n + 1) / 2) + 1 < r →
-        ∀ (allocation : EconCSLib.FairDivision.Allocation (Fin n) (Fin (2 * n + 1))),
-          EconCSLib.FairDivision.IsAllocationOf allocation Finset.univ →
-            EconCSLib.FairDivision.EFXForChores
-                (EconCSLib.FairDivision.additiveChoreCost fun agent item =>
+        ∀ (allocation : AppliedModelingLib.FairDivision.Allocation (Fin n) (Fin (2 * n + 1))),
+          AppliedModelingLib.FairDivision.IsAllocationOf allocation Finset.univ →
+            AppliedModelingLib.FairDivision.EFXForChores
+                (AppliedModelingLib.FairDivision.additiveChoreCost fun (agent : Fin n) (item : Fin (2 * n + 1)) =>
                   if ↑item < n - 1 then r
                   else
                     if ↑agent < n / 2 then if ↑item < n + n / 2 then 1 else r else if ↑item < n + n / 2 then r else 1)
                 allocation →
               (∀ (agent : Fin n),
                   r + 1 ≤
-                    EconCSLib.FairDivision.additiveChoreCost
-                      (fun agent item =>
+                    AppliedModelingLib.FairDivision.additiveChoreCost
+                      (fun (agent : Fin n) (item : Fin (2 * n + 1)) =>
                         if ↑item < n - 1 then r
                         else
                           if ↑agent < n / 2 then if ↑item < n + n / 2 then 1 else r
                           else if ↑item < n + n / 2 then r else 1)
                       agent (allocation agent)) ∧
-                ∃ agent,
+                ∃ (agent : Fin n),
                   r + 2 ≤
-                    EconCSLib.FairDivision.additiveChoreCost
-                      (fun agent item =>
+                    AppliedModelingLib.FairDivision.additiveChoreCost
+                      (fun (agent : Fin n) (item : Fin (2 * n + 1)) =>
                         if ↑item < n - 1 then r
                         else
                           if ↑agent < n / 2 then if ↑item < n + n / 2 then 1 else r
                           else if ↑item < n + n / 2 then r else 1)
                       agent (allocation agent)
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.efx_po_cost_lower_bounds
@@ -2068,19 +1069,31 @@ HT26EFXChores.efx_po_cost_lower_bounds
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The raw bundle gives the same Theorem 2 construction and the proposition's two lower bounds. The transparent Spec has the same n and r threshold, the same finite cost table, EFX feasibility premise, every-agent r+1 bound, and one-agent r+2 bound.
+{\raggedright
+\textbf{Reason:} Uses the specified EFXPO instance and concludes every own cost is at least r+1, with one at least r+2.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-03ed4c5388a9d78f}{}
-\section*{Review row 13}
+\section*{Review row 8}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 532-\allowbreak{}534\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
 \begin{theorem}\label{thm:four}
     For four agents, there exists an EFX allocation in every bi-valued instance.
 \end{theorem}
+
+[Next verbatim source excerpt]
+
+\section{Preliminaries}
+A set $M$ of $m$ chores $g_1,\ldots,g_m$ is allocated to a set $N$ of $n$ agents $1,\ldots,n$.
+We will use ``item'' and ``chore'' interchangeably in this paper to refer to an element in $M$.
+Each agent $i$'s cost function $c_i:2^M\to\mathbb{R}_{\geq0}$ is additive:
+$$c_i(S)=\sum_{g\in S}c_i(\{g\}).$$
+We write $c_i(g_j)$ in short for $c_i(\{g_j\})$ for notation simplicity.
+We will use ``cost function'' and ``disutility function'' interchangeably in this paper.
 
 [Next verbatim source excerpt]
 
@@ -2091,12 +1104,16 @@ We say that the item $g_j$ is ``large'' for agent $i$ if $c_i(g_j)=r$ and it is 
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ (Item : Type) (choreInstance : EconCSLib.FairDivision.AdditiveChoreInstance (Fin 4) Item),
-  EconCSLib.FairDivision.IsBiValuedChoreCost choreInstance.cost →
-    ∃ allocation, choreInstance.IsFeasible allocation ∧ choreInstance.IsEFX allocation
+∀ (Item : Type) (choreInstance : AppliedModelingLib.FairDivision.AdditiveChoreInstance (Fin 4) Item),
+  AppliedModelingLib.FairDivision.IsBiValuedChoreCost choreInstance.cost →
+    ∃ (allocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item),
+      choreInstance.IsFeasible allocation ∧ choreInstance.IsEFX allocation
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.four_agent_bi_valued_efx_exists
@@ -2105,13 +1122,15 @@ HT26EFXChores.four_agent_bi_valued_efx_exists
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The source theorem asserts EFX existence for every four-agent bi-valued instance. Its pinned definition gives two nonnegative cost values; the transparent Spec quantifies over exactly a four-agent finite additive-chore instance satisfying that bi-valued condition and concludes a feasible EFX allocation.
+{\raggedright
+\textbf{Reason:} Exact four-\allowbreak{}agent bi-\allowbreak{}valued EFX-\allowbreak{}existence claim;\allowbreak{} instance nonnegativity is carried by AdditiveChoreInstance.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-e126eba4635c1cd5}{}
-\section*{Review row 14}
+\section*{Review row 9}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 577-\allowbreak{}581\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -2147,20 +1166,26 @@ $N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ (Item : Type) (r : ℝ) (cost : EconCSLib.FairDivision.ChoreCost (Fin 4) Item) (chores : Finset Item) (item : Item),
+∀ (Item : Type) (r : ℝ) (cost : AppliedModelingLib.FairDivision.ChoreCost (Fin 4) Item) (chores : Finset Item)
+  (item : Item),
   2 < r →
-    EconCSLib.FairDivision.IsOneOrRChoreCost cost r →
+    AppliedModelingLib.FairDivision.IsOneOrRChoreCost cost r →
       item ∉ chores →
-        EconCSLib.FairDivision.IsSmallForAtLeastThree cost item →
-          ∀ (allocation : EconCSLib.FairDivision.Allocation (Fin 4) Item),
-            EconCSLib.FairDivision.IsAllocationOf allocation chores →
-              EconCSLib.FairDivision.EFXForChores (EconCSLib.FairDivision.additiveChoreCost cost) allocation →
-                ∃ extended,
-                  EconCSLib.FairDivision.IsAllocationOf extended (insert item chores) ∧
-                    EconCSLib.FairDivision.EFXForChores (EconCSLib.FairDivision.additiveChoreCost cost) extended
+        AppliedModelingLib.FairDivision.IsSmallForAtLeastThree cost item →
+          ∀ (allocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item),
+            AppliedModelingLib.FairDivision.IsAllocationOf allocation chores →
+              AppliedModelingLib.FairDivision.EFXForChores (AppliedModelingLib.FairDivision.additiveChoreCost cost)
+                  allocation →
+                ∃ (extended : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item),
+                  AppliedModelingLib.FairDivision.IsAllocationOf extended (insert item chores) ∧
+                    AppliedModelingLib.FairDivision.EFXForChores
+                      (AppliedModelingLib.FairDivision.additiveChoreCost cost) extended
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.m34_insertion
@@ -2169,13 +1194,111 @@ HT26EFXChores.m34_insertion
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The raw lemma and pinned normalization/M34 definitions state an EFX allocation of T, a new item outside T that is small for at least three agents, and an EFX allocation after insertion. The transparent Spec expands those same 1,r, r>2, feasibility, EFX, freshness, and small-agent conditions.
+{\raggedright
+\textbf{Reason:} Exact four-\allowbreak{}agent M34 insertion result;\allowbreak{} the explicit freshness condition is standard nonsemantic insertion presentation.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-5fbcb5b015031605}{}
+\section*{Review row 10}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 673-\allowbreak{}677\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{remark}
+    This idea also works for general numbers of agents.
+    If we have a partial EFX allocation such that each of the remaining unallocated items is valued as large for at most one agent, then we can always allocate the remaining items one by one until we get a complete EFX allocation.
+    Therefore, under bi-valued setting, items valued as large by at most one agent are never a real obstacle for EFX allocations.
+\end{remark}
+
+[Next verbatim source excerpt]
+
+We say that the cost function is tri-valued if there exist constants $p,q,r\geq 0$ such that $c_i(g_j)\in\{p,q,r\}$ for any $i\in N$ and $g_j\in M$.
+The cost function is bi-valued if there exist constants $p,q\geq 0$ such that $c_i(g_j)\in\{p,q\}$ for any $i\in N$ and $g_j\in M$.
+For bi-valued cost functions, we will focus on the case $0<p<q$ (the case $0=p<q$ corresponds to the setting with binary cost functions and we know an allocation that is EFX and Pareto-optimal always exists), and we will assume $c_i(g_j)\in\{1,r\}$ (for any $i\in N$ and $g_j\in M$) instead.
+We say that the item $g_j$ is ``large'' for agent $i$ if $c_i(g_j)=r$ and it is ``small'' for agent $i$ if $c_i(g_j)=1$.
+
+[Next verbatim source excerpt]
+
+\section{EFX Allocations for Four Agents with Bi-Valued Disutilities}
+We continue to study bi-valued instances.
+In this section, we show that an EFX allocation always exists for four agents.
+
+\begin{theorem}\label{thm:four}
+    For four agents, there exists an EFX allocation in every bi-valued instance.
+\end{theorem}
+
+For $r=2$, \citet{lin2025approximately} shows that EFX is compatible with Pareto-optimality for any number of agents.
+If we only consider EFX, the case with $r\leq 2$ can be handled by the following simple variant of the round-robin algorithm for any number of agents.
+Let $m=an+b$ for $b<n$.
+If $b=0$, the standard round-robin algorithm outputs an EFX allocation $X=(X_1,\ldots,X_n)$: for any pair of agents $i,j$ with $i<j$, $i$ will not envy $j$ as $i$ always picks first; we also have $c_j(X_j)-c_j(X_i)\leq r-1$ (if in a round agent $j$ begins to receive an large item whereas agent $i$'s item in this round is small for agent $j$, then every item in the remaining process of this algorithm is large for agent $j$), $j$ will not envy $i$ up to removing any item from $j$'s bundle since $r-1\leq1$.
+If $b>0$, we introduce a special ``first reverse round'' of the round-robin algorithm where agents $b,b-1,\ldots,1$ iteratively pick favorite items in the order.
+After that, we perform the standard round-robin algorithm in the standard order $1,\ldots,n$.
+For each pair of agents $i,j$ with $i<j$, agent $i$ will not envy agent $j$ after removing the item picked in the first special round. If this item is a small item for agent $i$, EFX condition holds; if this item is a large item, then $X_i$ only contains large items, and EFX condition also holds.
+The reason agent $j$ will not strongly envy agent $i$ is similar as the $b=0$ case: agent $j$ has an advantage to agent $i$ in the first round, and after that the disadvantage is at most $r-1$.
+
+We will assume $r>2$ in the remaining part of this section.
+For a chore $g$, let
+\[
+ S(g)=\{i\in N:c_i(g)=1\}
+\]
+be the set of agents for whom $g$ is small.  We partition the chores into
+\[
+M_{01}=\{g:|S(g)|\le 1\},\qquad
+M_2=\{g:|S(g)|=2\},\qquad
+M_{34}=\{g:|S(g)|\ge 3\}.
+\]
+For an item in $M_2$, we write $(i,j)$ for an item small exactly for agents
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (Agent Item : Type) [Fintype Agent] [Nonempty Agent] [DecidableEq Agent] [inst : DecidableEq Item] (r : ℝ)
+  (cost : AppliedModelingLib.FairDivision.ChoreCost Agent Item) (remaining chores : Finset Item),
+  2 < r →
+    AppliedModelingLib.FairDivision.IsOneOrRChoreCost cost r →
+      Disjoint remaining chores →
+        (∀ item ∈ remaining, ∀ (first second : Agent), cost first item = r → cost second item = r → first = second) →
+          (∀ item ∈ remaining,
+              ∀ (allocation : AppliedModelingLib.FairDivision.Allocation Agent Item),
+                AppliedModelingLib.FairDivision.IsAllocationOf allocation chores →
+                  AppliedModelingLib.FairDivision.EFXForChores (AppliedModelingLib.FairDivision.additiveChoreCost cost)
+                      allocation →
+                    ∃ (extended : AppliedModelingLib.FairDivision.Allocation Agent Item),
+                      AppliedModelingLib.FairDivision.IsAllocationOf extended (insert item chores) ∧
+                        AppliedModelingLib.FairDivision.EFXForChores
+                          (AppliedModelingLib.FairDivision.additiveChoreCost cost) extended) ∧
+            ∀ (allocation : AppliedModelingLib.FairDivision.Allocation Agent Item),
+              AppliedModelingLib.FairDivision.IsAllocationOf allocation chores →
+                AppliedModelingLib.FairDivision.EFXForChores (AppliedModelingLib.FairDivision.additiveChoreCost cost)
+                    allocation →
+                  ∃ (extended : AppliedModelingLib.FairDivision.Allocation Agent Item),
+                    AppliedModelingLib.FairDivision.IsAllocationOf extended (chores ∪ remaining) ∧
+                      AppliedModelingLib.FairDivision.EFXForChores
+                        (AppliedModelingLib.FairDivision.additiveChoreCost cost) extended
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+HT26EFXChores.m34_insertion_general_agents
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Exact general finite-\allowbreak{}agent sequential insertion claim for remaining items large for at most one agent, including final EFX completion.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-58fb9c46acb21eca}{}
-\section*{Review row 15}
+\section*{Review row 11}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 706-\allowbreak{}724\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -2205,42 +1328,58 @@ We say that the cost function is tri-valued if there exist constants $p,q,r\geq 
 The cost function is bi-valued if there exist constants $p,q\geq 0$ such that $c_i(g_j)\in\{p,q\}$ for any $i\in N$ and $g_j\in M$.
 For bi-valued cost functions, we will focus on the case $0<p<q$ (the case $0=p<q$ corresponds to the setting with binary cost functions and we know an allocation that is EFX and Pareto-optimal always exists), and we will assume $c_i(g_j)\in\{1,r\}$ (for any $i\in N$ and $g_j\in M$) instead.
 We say that the item $g_j$ is ``large'' for agent $i$ if $c_i(g_j)=r$ and it is ``small'' for agent $i$ if $c_i(g_j)=1$.
+
+[Next verbatim source excerpt]
+
+We will assume $r>2$ in the remaining part of this section.
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ (Agent Item : Type) (cost : EconCSLib.FairDivision.ChoreCost Agent Item) (leftChores rightChores : Finset Item)
-  (leftAllocation rightAllocation : EconCSLib.FairDivision.Allocation Agent Item),
-  Disjoint leftChores rightChores →
-    EconCSLib.FairDivision.IsAllocationOf leftAllocation leftChores →
-      EconCSLib.FairDivision.IsAllocationOf rightAllocation rightChores →
-        (∀ (agent : Agent) (item : Item), 1 ≤ cost agent item) →
-          EconCSLib.FairDivision.IsAllocationOf (fun agent => leftAllocation agent ∪ rightAllocation agent)
-              (leftChores ∪ rightChores) ∧
-            ((EconCSLib.FairDivision.EnvyFreeForChores (EconCSLib.FairDivision.additiveChoreCost cost) leftAllocation ∧
-                  ∀ (i j : Agent),
-                    EconCSLib.FairDivision.additiveChoreCost cost i (rightAllocation i) - 1 ≤
-                      EconCSLib.FairDivision.additiveChoreCost cost i (rightAllocation j)) →
-                EconCSLib.FairDivision.EFXForChores (EconCSLib.FairDivision.additiveChoreCost cost) fun agent =>
-                  leftAllocation agent ∪ rightAllocation agent) ∧
-              ((∀ (i j : Agent) (hnonempty : Finset.Nonempty (leftAllocation i ∪ rightAllocation i)),
-                    EconCSLib.FairDivision.additiveChoreCost cost i (leftAllocation i) -
-                        EconCSLib.FairDivision.additiveChoreCost cost i (leftAllocation j) ≤
-                      EconCSLib.FairDivision.additiveChoreCost cost i (rightAllocation j) -
-                          EconCSLib.FairDivision.additiveChoreCost cost i (rightAllocation i) +
-                        (Finset.image (cost i) (leftAllocation i ∪ rightAllocation i)).min' ⋯) →
-                  EconCSLib.FairDivision.EFXForChores (EconCSLib.FairDivision.additiveChoreCost cost) fun agent =>
-                    leftAllocation agent ∪ rightAllocation agent) ∧
-                ∀ (i j : Agent) (hnonempty : Finset.Nonempty (leftAllocation i ∪ rightAllocation i)),
-                  EconCSLib.FairDivision.additiveChoreCost cost i (leftAllocation i) -
-                        EconCSLib.FairDivision.additiveChoreCost cost i (leftAllocation j) ≤
-                      EconCSLib.FairDivision.additiveChoreCost cost i (rightAllocation j) -
-                          EconCSLib.FairDivision.additiveChoreCost cost i (rightAllocation i) +
-                        (Finset.image (cost i) (leftAllocation i ∪ rightAllocation i)).min' ⋯ →
-                    EconCSLib.FairDivision.DoesNotStronglyEnvyForChores (EconCSLib.FairDivision.additiveChoreCost cost)
-                      (fun agent => leftAllocation agent ∪ rightAllocation agent) i j
+∀ (Agent Item : Type) (r : ℝ) (cost : AppliedModelingLib.FairDivision.ChoreCost Agent Item)
+  (leftChores rightChores : Finset Item)
+  (leftAllocation rightAllocation : AppliedModelingLib.FairDivision.Allocation Agent Item),
+  2 < r →
+    AppliedModelingLib.FairDivision.IsOneOrRChoreCost cost r →
+      Disjoint leftChores rightChores →
+        AppliedModelingLib.FairDivision.IsAllocationOf leftAllocation leftChores →
+          AppliedModelingLib.FairDivision.IsAllocationOf rightAllocation rightChores →
+            AppliedModelingLib.FairDivision.IsAllocationOf
+                (fun (agent : Agent) => leftAllocation agent ∪ rightAllocation agent) (leftChores ∪ rightChores) ∧
+              ((AppliedModelingLib.FairDivision.EnvyFreeForChores
+                      (AppliedModelingLib.FairDivision.additiveChoreCost cost) leftAllocation ∧
+                    ∀ (i j : Agent),
+                      AppliedModelingLib.FairDivision.additiveChoreCost cost i (rightAllocation i) - 1 ≤
+                        AppliedModelingLib.FairDivision.additiveChoreCost cost i (rightAllocation j)) →
+                  AppliedModelingLib.FairDivision.EFXForChores (AppliedModelingLib.FairDivision.additiveChoreCost cost)
+                    fun (agent : Agent) => leftAllocation agent ∪ rightAllocation agent) ∧
+                ((∀ (i j : Agent) (hnonempty : Finset.Nonempty (leftAllocation i ∪ rightAllocation i)),
+                      AppliedModelingLib.FairDivision.additiveChoreCost cost i (leftAllocation i) -
+                          AppliedModelingLib.FairDivision.additiveChoreCost cost i (leftAllocation j) ≤
+                        AppliedModelingLib.FairDivision.additiveChoreCost cost i (rightAllocation j) -
+                            AppliedModelingLib.FairDivision.additiveChoreCost cost i (rightAllocation i) +
+                          (Finset.image (cost i) (leftAllocation i ∪ rightAllocation i)).min'
+                            (HT26EFXChores.compositionSpec._proof_1 Agent Item cost leftAllocation rightAllocation i
+                              hnonempty)) →
+                    AppliedModelingLib.FairDivision.EFXForChores
+                      (AppliedModelingLib.FairDivision.additiveChoreCost cost) fun (agent : Agent) =>
+                      leftAllocation agent ∪ rightAllocation agent) ∧
+                  ∀ (i j : Agent) (hnonempty : Finset.Nonempty (leftAllocation i ∪ rightAllocation i)),
+                    AppliedModelingLib.FairDivision.additiveChoreCost cost i (leftAllocation i) -
+                          AppliedModelingLib.FairDivision.additiveChoreCost cost i (leftAllocation j) ≤
+                        AppliedModelingLib.FairDivision.additiveChoreCost cost i (rightAllocation j) -
+                            AppliedModelingLib.FairDivision.additiveChoreCost cost i (rightAllocation i) +
+                          (Finset.image (cost i) (leftAllocation i ∪ rightAllocation i)).min'
+                            (HT26EFXChores.compositionSpec._proof_1 Agent Item cost leftAllocation rightAllocation i
+                              hnonempty) →
+                      AppliedModelingLib.FairDivision.DoesNotStronglyEnvyForChores
+                        (AppliedModelingLib.FairDivision.additiveChoreCost cost)
+                        (fun (agent : Agent) => leftAllocation agent ∪ rightAllocation agent) i j
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.composition
@@ -2249,13 +1388,15 @@ HT26EFXChores.composition
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The displayed source lemma states disjoint allocations, the first and second cost-gap alternatives, the combined EFX conclusion, and the single-pair no-strong-envy conclusion. The transparent Spec gives those alternatives and conclusions explicitly, with the pinned normalized nonnegative-cost convention supplying the visible lower-bound fact used in the first alternative.
+{\raggedright
+\textbf{Reason:} Exact disjoint-\allowbreak{}allocation composition, envy-\allowbreak{}free-\allowbreak{}plus-\allowbreak{}minus-\allowbreak{}one clause, minimum-\allowbreak{}item clause, and no-\allowbreak{}strong-\allowbreak{}envy consequence.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-1b77c29da35b62c2}{}
-\section*{Review row 16}
+\section*{Review row 12}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 760-\allowbreak{}767\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -2303,36 +1444,61 @@ It is also important that we have the freedom to choose which agents receive $a$
 This freedom enables us to append the allocation of $M_2$ after the allocation of $M_{01}$.
 
 We begin by defining this type of allocations.
+
+
+[Next verbatim source excerpt]
+
+be the set of agents for whom $g$ is small.  We partition the chores into
+\[
+M_{01}=\{g:|S(g)|\le 1\},\qquad
+M_2=\{g:|S(g)|=2\},\qquad
+M_{34}=\{g:|S(g)|\ge 3\}.
+\]
+For an item in $M_2$, we write $(i,j)$ for an item small exactly for agents
+$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set
+$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.
+
+[Next verbatim source excerpt]
+
+\begin{definition}
+    An allocation $P=(P_1,P_2,P_3,P_4)$ of $M_{01}$ is \emph{canonical} if, for each agent $i$, $|P_i|\in\{a,a+1\}$ and $P_i$ contains $\min\{|P_i|, n_i\}$ items that are small for agent $i$.
+    In a canonical allocation with $b>0$, agents receiving $a$ items are called \emph{short} agents, and agents receiving $a+1$ items are called \emph{long} agents.
+    For $b=0$ and $a>0$, every agent in a canonical is both long and short.
+    For $b>0$, an allocation $P=(P_1,P_2,P_3,P_4)$ is \emph{super-canonical} if it is canonical and satisfies $c_i(P_i)\leq c_i(P_j)-r$ for every short agent $i$ and every long agent $j$.
+\end{definition}
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ (Item : Type) (r : ℝ) (cost : EconCSLib.FairDivision.ChoreCost (Fin 4) Item) (chores : Finset Item) (a b : ℕ),
+∀ (Item : Type) (r : ℝ) (cost : AppliedModelingLib.FairDivision.ChoreCost (Fin 4) Item) (chores : Finset Item)
+  (a b : ℕ),
   2 < r →
-    EconCSLib.FairDivision.IsOneOrRChoreCost cost r →
+    AppliedModelingLib.FairDivision.IsOneOrRChoreCost cost r →
       b ≤ 3 →
         chores.card = 4 * a + b →
-          (∀ item ∈ chores, EconCSLib.FairDivision.IsSmallForAtMostOne cost item) →
-            (∀ (quota : Fin 4 → ℕ) (allocation : EconCSLib.FairDivision.Allocation (Fin 4) Item),
+          (∀ item ∈ chores, AppliedModelingLib.FairDivision.IsSmallForAtMostOne cost item) →
+            (∀ (quota : Fin 4 → ℕ) (allocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item),
                 (∀ (agent : Fin 4), quota agent = a ∨ quota agent = a + 1) →
-                  EconCSLib.FairDivision.IsCanonicalSmallChoreAllocation cost chores quota allocation →
-                    EconCSLib.FairDivision.EFXForChores (EconCSLib.FairDivision.additiveChoreCost cost) allocation) ∧
+                  AppliedModelingLib.FairDivision.IsCanonicalSmallChoreAllocation cost chores quota allocation →
+                    AppliedModelingLib.FairDivision.EFXForChores
+                      (AppliedModelingLib.FairDivision.additiveChoreCost cost) allocation) ∧
               (b = 0 →
-                  ∀ (quota : Fin 4 → ℕ) (allocation : EconCSLib.FairDivision.Allocation (Fin 4) Item),
+                  ∀ (quota : Fin 4 → ℕ) (allocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item),
                     (∀ (agent : Fin 4), quota agent = a) →
-                      EconCSLib.FairDivision.IsCanonicalSmallChoreAllocation cost chores quota allocation →
-                        EconCSLib.FairDivision.EnvyFreeForChores (EconCSLib.FairDivision.additiveChoreCost cost)
-                          allocation) ∧
+                      AppliedModelingLib.FairDivision.IsCanonicalSmallChoreAllocation cost chores quota allocation →
+                        AppliedModelingLib.FairDivision.EnvyFreeForChores
+                          (AppliedModelingLib.FairDivision.additiveChoreCost cost) allocation) ∧
                 (0 < b →
-                    ∃ quota allocation,
+                    ∃ (quota : Fin 4 → ℕ) (allocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item),
                       (∀ (agent : Fin 4), quota agent = a ∨ quota agent = a + 1) ∧
-                        EconCSLib.FairDivision.IsCanonicalSmallChoreAllocation cost chores quota allocation ∧
+                        AppliedModelingLib.FairDivision.IsCanonicalSmallChoreAllocation cost chores quota allocation ∧
                           ∀ (i j : Fin 4),
                             quota i = a →
                               quota j = a + 1 →
-                                EconCSLib.FairDivision.additiveChoreCost cost i (allocation i) ≤
-                                  EconCSLib.FairDivision.additiveChoreCost cost i (allocation j) - r) ∧
+                                AppliedModelingLib.FairDivision.additiveChoreCost cost i (allocation i) ≤
+                                  AppliedModelingLib.FairDivision.additiveChoreCost cost i (allocation j) - r) ∧
                   (0 < a →
                     b = 2 →
                       ∀ (N1 N2 : Finset (Fin 4)),
@@ -2342,18 +1508,23 @@ We begin by defining this type of allocations.
                               N2.card = 2 →
                                 ∃ i ∈ N1,
                                   ∃ j ∈ N2,
-                                    ∃ quota allocation,
+                                    ∃ (quota : Fin 4 → ℕ) (allocation :
+                                      AppliedModelingLib.FairDivision.Allocation (Fin 4) Item),
                                       (∀ (agent : Fin 4), quota agent = a ∨ quota agent = a + 1) ∧
-                                        EconCSLib.FairDivision.IsCanonicalSmallChoreAllocation cost chores quota
-                                            allocation ∧
+                                        AppliedModelingLib.FairDivision.IsCanonicalSmallChoreAllocation cost chores
+                                            quota allocation ∧
                                           (∀ (x y : Fin 4),
                                               quota x = a →
                                                 quota y = a + 1 →
-                                                  EconCSLib.FairDivision.additiveChoreCost cost x (allocation x) ≤
-                                                    EconCSLib.FairDivision.additiveChoreCost cost x (allocation y) -
+                                                  AppliedModelingLib.FairDivision.additiveChoreCost cost x
+                                                      (allocation x) ≤
+                                                    AppliedModelingLib.FairDivision.additiveChoreCost cost x
+                                                        (allocation y) -
                                                       r) ∧
                                             quota i = a ∧ quota j = a)
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.canonical_allocation_properties
@@ -2362,13 +1533,15 @@ HT26EFXChores.canonical_allocation_properties
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The raw bundle includes the M01 and canonical-allocation definitions as well as the three displayed lemma clauses. The transparent Spec spells out their four-agent, adjacent-quota, canonicality, EFX/envy-free, super-canonical-existence, and selected-pair conclusions without changing a clause.
+{\raggedright
+\textbf{Reason:} Captures all canonical and super-\allowbreak{}canonical clauses;\allowbreak{} feasibility and quota-\allowbreak{}cardinality are within the expanded canonical predicate.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-0869bc0832b92b55}{}
-\section*{Review row 17}
+\section*{Review row 13}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1019-\allowbreak{}1031\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -2388,24 +1561,27 @@ receives exactly \(b_i\) edges, leaving the remaining edges unassigned.
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ (Vertex Edge : Type) [inst : Fintype Vertex] (edges : Finset Edge) (endpoints : Edge → Finset Vertex)
   (quota : Vertex → ℕ),
   (∀ edge ∈ edges, (endpoints edge).card = 2) →
     (Finset.univ.sum quota = edges.card →
-        ((∃ owner,
-            (∀ edge ∈ edges, ∃ vertex, owner edge = some vertex ∧ vertex ∈ endpoints edge) ∧
+        ((∃ (owner : Edge → Option Vertex),
+            (∀ edge ∈ edges, ∃ (vertex : Vertex), owner edge = some vertex ∧ vertex ∈ endpoints edge) ∧
               ∀ (vertex : Vertex), {edge ∈ edges | owner edge = some vertex}.card = quota vertex) ↔
           ∀ (vertices : Finset Vertex),
             vertices.sum quota ≤ {edge ∈ edges | (endpoints edge ∩ vertices).Nonempty}.card)) ∧
       (Finset.univ.sum quota ≤ edges.card →
         (∀ (vertices : Finset Vertex),
             vertices.sum quota ≤ {edge ∈ edges | (endpoints edge ∩ vertices).Nonempty}.card) →
-          ∃ owner,
+          ∃ (owner : Edge → Option Vertex),
             (∀ edge ∈ edges, ∀ (vertex : Vertex), owner edge = some vertex → vertex ∈ endpoints edge) ∧
               ∀ (vertex : Vertex), {edge ∈ edges | owner edge = some vertex}.card = quota vertex)
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.balanced_orientation
@@ -2414,13 +1590,15 @@ HT26EFXChores.balanced_orientation
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The full displayed lemma is sufficient: the Spec gives the exact all-edges endpoint-assignment equivalence at equality and the partial Option-valued assignment conclusion when total demand is at most the number of edges.
+{\raggedright
+\textbf{Reason:} The expanded Spec gives the exact all-\allowbreak{}edges endpoint-\allowbreak{}assignment equivalence when total demand equals the edge count and the partial endpoint-\allowbreak{}assignment conclusion when demand is at most the edge count, with the same incident-\allowbreak{}edge inequalities for every vertex subset.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-6263bf063357fb29}{}
-\section*{Review row 18}
+\section*{Review row 14}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1045-\allowbreak{}1047\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -2470,16 +1648,20 @@ We call $U$ \emph{deficient} if $\Delta_R(U)>0$.
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ (Item : Type) (r : ℝ) (cost : EconCSLib.FairDivision.ChoreCost (Fin 4) Item) (chores : Finset Item),
+∀ (Item : Type) (r : ℝ) (cost : AppliedModelingLib.FairDivision.ChoreCost (Fin 4) Item) (chores : Finset Item),
   2 < r →
-    EconCSLib.FairDivision.IsOneOrRChoreCost cost r →
-      (∀ item ∈ chores, EconCSLib.FairDivision.IsSmallForExactlyTwo cost item) →
-        ∃ allocation,
-          EconCSLib.FairDivision.IsAllocationOf allocation chores ∧
-            EconCSLib.FairDivision.EFXForChores (EconCSLib.FairDivision.additiveChoreCost cost) allocation
+    AppliedModelingLib.FairDivision.IsOneOrRChoreCost cost r →
+      (∀ item ∈ chores, AppliedModelingLib.FairDivision.IsSmallForExactlyTwo cost item) →
+        ∃ (allocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item),
+          AppliedModelingLib.FairDivision.IsAllocationOf allocation chores ∧
+            AppliedModelingLib.FairDivision.EFXForChores (AppliedModelingLib.FairDivision.additiveChoreCost cost)
+              allocation
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.m2_efx_allocation
@@ -2488,13 +1670,15 @@ HT26EFXChores.m2_efx_allocation
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The raw lemma asserts an EFX allocation of M2, and its pinned definition identifies M2 as items small for exactly two agents in the normalized four-agent model. The transparent Spec has exactly those hypotheses and a feasible EFX allocation conclusion.
+{\raggedright
+\textbf{Reason:} Exact four-\allowbreak{}agent one-\allowbreak{}or-\allowbreak{}r, r-\allowbreak{}greater-\allowbreak{}than-\allowbreak{}two, exactly-\allowbreak{}two-\allowbreak{}small-\allowbreak{}agent M2 premise and EFX allocation conclusion.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-687ed4b91a799ce3}{}
-\section*{Review row 19}
+\section*{Review row 15}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1419-\allowbreak{}1462\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -2585,54 +1769,58 @@ We call $U$ \emph{deficient} if $\Delta_R(U)>0$.
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ (Item : Type) (r : ℝ) (cost : EconCSLib.FairDivision.ChoreCost (Fin 4) Item) (chores : Finset Item),
+∀ (Item : Type) (r : ℝ) (cost : AppliedModelingLib.FairDivision.ChoreCost (Fin 4) Item) (chores : Finset Item),
   2 < r →
-    EconCSLib.FairDivision.IsOneOrRChoreCost cost r →
-      (∀ item ∈ chores, EconCSLib.FairDivision.IsSmallForExactlyTwo cost item) →
-        ∃ allocation,
-          EconCSLib.FairDivision.IsAllocationOf allocation chores ∧
-            EconCSLib.FairDivision.EFXForChores (EconCSLib.FairDivision.additiveChoreCost cost) allocation ∧
-              ((¬∃ dominant auxiliary q,
+    AppliedModelingLib.FairDivision.IsOneOrRChoreCost cost r →
+      (∀ item ∈ chores, AppliedModelingLib.FairDivision.IsSmallForExactlyTwo cost item) →
+        ∃ (allocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item),
+          AppliedModelingLib.FairDivision.IsAllocationOf allocation chores ∧
+            AppliedModelingLib.FairDivision.EFXForChores (AppliedModelingLib.FairDivision.additiveChoreCost cost)
+                allocation ∧
+              ((¬∃ (dominant : Finset (Fin 4)) (auxiliary : Finset (Fin 4)) (q : ℕ),
                       dominant.card = 2 ∧
                         auxiliary.card = 2 ∧
                           Disjoint dominant auxiliary ∧
-                            ((∀ item ∈ chores, EconCSLib.FairDivision.smallAgentSet cost item = dominant) ∧
+                            ((∀ item ∈ chores, AppliedModelingLib.FairDivision.smallAgentSet cost item = dominant) ∧
                                 chores.card = 4 * q + 3 ∨
                               ∃ exceptionalItem ∈ chores,
-                                EconCSLib.FairDivision.smallAgentSet cost exceptionalItem = auxiliary ∧
+                                AppliedModelingLib.FairDivision.smallAgentSet cost exceptionalItem = auxiliary ∧
                                   (∀ item ∈ chores.erase exceptionalItem,
-                                      EconCSLib.FairDivision.smallAgentSet cost item = dominant) ∧
+                                      AppliedModelingLib.FairDivision.smallAgentSet cost item = dominant) ∧
                                     (chores.erase exceptionalItem).card = 4 * q + 3)) →
                   (∀ (i : Fin 4),
-                      (∃ item ∈ allocation i, EconCSLib.FairDivision.IsSmallChore cost i item) →
+                      (∃ item ∈ allocation i, AppliedModelingLib.FairDivision.IsSmallChore cost i item) →
                         ∀ (j : Fin 4),
-                          EconCSLib.FairDivision.additiveChoreCost cost i (allocation i) - 1 ≤
-                            EconCSLib.FairDivision.additiveChoreCost cost i (allocation j)) ∧
+                          AppliedModelingLib.FairDivision.additiveChoreCost cost i (allocation i) - 1 ≤
+                            AppliedModelingLib.FairDivision.additiveChoreCost cost i (allocation j)) ∧
                     ∀ (i : Fin 4),
-                      (∀ item ∈ allocation i, EconCSLib.FairDivision.IsLargeChore cost r i item) →
+                      (∀ item ∈ allocation i, AppliedModelingLib.FairDivision.IsLargeChore cost r i item) →
                         ∀ (j : Fin 4),
-                          EconCSLib.FairDivision.additiveChoreCost cost i (allocation i) ≤
-                            EconCSLib.FairDivision.additiveChoreCost cost i (allocation j)) ∧
+                          AppliedModelingLib.FairDivision.additiveChoreCost cost i (allocation i) ≤
+                            AppliedModelingLib.FairDivision.additiveChoreCost cost i (allocation j)) ∧
                 (∀ (firstType secondType : Finset (Fin 4)),
                     firstType.card = 2 →
                       secondType.card = 2 →
                         Disjoint firstType secondType →
                           (∀ item ∈ chores,
-                              EconCSLib.FairDivision.smallAgentSet cost item = firstType ∨
-                                EconCSLib.FairDivision.smallAgentSet cost item = secondType) →
-                            {item ∈ chores | EconCSLib.FairDivision.smallAgentSet cost item = secondType}.card ≥
-                                {item ∈ chores | EconCSLib.FairDivision.smallAgentSet cost item = firstType}.card →
+                              AppliedModelingLib.FairDivision.smallAgentSet cost item = firstType ∨
+                                AppliedModelingLib.FairDivision.smallAgentSet cost item = secondType) →
+                            {item ∈ chores |
+                                    AppliedModelingLib.FairDivision.smallAgentSet cost item = secondType}.card ≥
+                                {item ∈ chores |
+                                    AppliedModelingLib.FairDivision.smallAgentSet cost item = firstType}.card →
                               ∀ agent ∈ firstType,
-                                ∃ preferredAllocation,
-                                  EconCSLib.FairDivision.IsAllocationOf preferredAllocation chores ∧
-                                    EconCSLib.FairDivision.EFXForChores (EconCSLib.FairDivision.additiveChoreCost cost)
-                                        preferredAllocation ∧
+                                ∃ (preferredAllocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item),
+                                  AppliedModelingLib.FairDivision.IsAllocationOf preferredAllocation chores ∧
+                                    AppliedModelingLib.FairDivision.EFXForChores
+                                        (AppliedModelingLib.FairDivision.additiveChoreCost cost) preferredAllocation ∧
                                       ∀ (other : Fin 4),
-                                        EconCSLib.FairDivision.additiveChoreCost cost agent
+                                        AppliedModelingLib.FairDivision.additiveChoreCost cost agent
                                             (preferredAllocation agent) ≤
-                                          EconCSLib.FairDivision.additiveChoreCost cost agent
+                                          AppliedModelingLib.FairDivision.additiveChoreCost cost agent
                                             (preferredAllocation other)) ∧
                   ∀ (dominant auxiliary : Finset (Fin 4)) (q : ℕ),
                     dominant.card = 2 →
@@ -2641,54 +1829,59 @@ We call $U$ \emph{deficient} if $\Delta_R(U)>0$.
                           ∀ special ∈ auxiliary,
                             ∀ companion ∈ auxiliary,
                               special ≠ companion →
-                                ((∀ item ∈ chores, EconCSLib.FairDivision.smallAgentSet cost item = dominant) ∧
+                                ((∀ item ∈ chores, AppliedModelingLib.FairDivision.smallAgentSet cost item = dominant) ∧
                                       chores.card = 4 * q + 3 ∨
                                     ∃ exceptionalItem ∈ chores,
-                                      EconCSLib.FairDivision.smallAgentSet cost exceptionalItem = auxiliary ∧
+                                      AppliedModelingLib.FairDivision.smallAgentSet cost exceptionalItem = auxiliary ∧
                                         (∀ item ∈ chores.erase exceptionalItem,
-                                            EconCSLib.FairDivision.smallAgentSet cost item = dominant) ∧
+                                            AppliedModelingLib.FairDivision.smallAgentSet cost item = dominant) ∧
                                           (chores.erase exceptionalItem).card = 4 * q + 3) →
-                                  ∃ exceptionalAllocation,
-                                    EconCSLib.FairDivision.IsAllocationOf exceptionalAllocation chores ∧
-                                      EconCSLib.FairDivision.EFXForChores
-                                          (EconCSLib.FairDivision.additiveChoreCost cost) exceptionalAllocation ∧
+                                  ∃ (exceptionalAllocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item),
+                                    AppliedModelingLib.FairDivision.IsAllocationOf exceptionalAllocation chores ∧
+                                      AppliedModelingLib.FairDivision.EFXForChores
+                                          (AppliedModelingLib.FairDivision.additiveChoreCost cost)
+                                          exceptionalAllocation ∧
                                         (∀ (agent : Fin 4),
                                             agent ≠ special →
                                               ∀ (other : Fin 4),
-                                                EconCSLib.FairDivision.additiveChoreCost cost agent
+                                                AppliedModelingLib.FairDivision.additiveChoreCost cost agent
                                                       (exceptionalAllocation agent) -
                                                     1 ≤
-                                                  EconCSLib.FairDivision.additiveChoreCost cost agent
+                                                  AppliedModelingLib.FairDivision.additiveChoreCost cost agent
                                                     (exceptionalAllocation other)) ∧
                                           (∀ item ∈ exceptionalAllocation special,
-                                              EconCSLib.FairDivision.IsLargeChore cost r special item) ∧
+                                              AppliedModelingLib.FairDivision.IsLargeChore cost r special item) ∧
                                             (∀ (other : Fin 4),
                                                 other ≠ companion →
-                                                  EconCSLib.FairDivision.additiveChoreCost cost special
+                                                  AppliedModelingLib.FairDivision.additiveChoreCost cost special
                                                       (exceptionalAllocation special) ≤
-                                                    EconCSLib.FairDivision.additiveChoreCost cost special
+                                                    AppliedModelingLib.FairDivision.additiveChoreCost cost special
                                                       (exceptionalAllocation other)) ∧
-                                              EconCSLib.FairDivision.additiveChoreCost cost special
+                                              AppliedModelingLib.FairDivision.additiveChoreCost cost special
                                                       (exceptionalAllocation special) -
                                                     r ≤
-                                                  EconCSLib.FairDivision.additiveChoreCost cost special
+                                                  AppliedModelingLib.FairDivision.additiveChoreCost cost special
                                                     (exceptionalAllocation companion) ∧
                                                 (((∀ item ∈ chores,
-                                                      EconCSLib.FairDivision.smallAgentSet cost item = dominant) ∧
+                                                      AppliedModelingLib.FairDivision.smallAgentSet cost item =
+                                                        dominant) ∧
                                                     chores.card = 4 * q + 3 ∧
                                                       ∀ (agent : Fin 4),
                                                         Finset.card (exceptionalAllocation agent) =
                                                           if agent = companion then q else q + 1) ∨
                                                   ∃ exceptionalItem ∈ chores,
-                                                    EconCSLib.FairDivision.smallAgentSet cost exceptionalItem =
+                                                    AppliedModelingLib.FairDivision.smallAgentSet cost exceptionalItem =
                                                         auxiliary ∧
                                                       (∀ item ∈ chores.erase exceptionalItem,
-                                                          EconCSLib.FairDivision.smallAgentSet cost item = dominant) ∧
+                                                          AppliedModelingLib.FairDivision.smallAgentSet cost item =
+                                                            dominant) ∧
                                                         (chores.erase exceptionalItem).card = 4 * q + 3 ∧
                                                           exceptionalItem ∈ exceptionalAllocation companion ∧
                                                             ∀ (agent : Fin 4),
                                                               Finset.card (exceptionalAllocation agent) = q + 1)
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.m2_efx_allocation_properties
@@ -2697,13 +1890,15 @@ HT26EFXChores.m2_efx_allocation_properties
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The raw long lemma and pinned M2/type definitions enumerate the ordinary envy certificates, exceptional configurations, preferred-agent branch, and exceptional allocation branch. The transparent Spec expands each of those alternatives on the same normalized four-agent M2 domain.
+{\raggedright
+\textbf{Reason:} Encodes the ordinary-\allowbreak{}case small-\allowbreak{}removal/\allowbreak{}envy-\allowbreak{}free guarantees, both relabelled exceptional forms, selectable exceptional agent, and two-\allowbreak{}type preferred-\allowbreak{}agent clause.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-c475426ec81f3892}{}
-\section*{Review row 20}
+\section*{Review row 16}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1709-\allowbreak{}1712\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -2780,50 +1975,106 @@ We will call the two agents $i',j'$ \emph{exceptional agents}.
 By Lemma~\ref{lem:M2properties}(ii), for the two exceptional agents $i',j'$, one of them receives only large item in the residual of $M_2$ and envies the other by a large item.
 We call this agent the \emph{disadvantageous agent}.
 Lemma~\ref{lem:M2properties}(ii) tells us we are free to choose the disadvantageous agent from the two exceptional agents.
+
+[Next verbatim source excerpt]
+
+\begin{lemma}[Properties of the EFX allocations in Lemma~\ref{lem:M2}]\label{lem:M2properties}
+The EFX allocation $B=(B_1,\ldots,B_4)$ ensured by Lemma~\ref{lem:M2} can be chosen to satisfy the
+following additional properties.
+\begin{enumerate}[label=(\roman*)]
+\item Except in the two configurations described in~(ii), every possible envy is certified by removing a small item.  More precisely,
+whenever $B_i$ contains an item that is small for agent $i$,
+\[
+ c_i(B_i)-1\le c_i(B_j)\qquad\forall j\in N,
+\]
+whereas every agent whose bundle contains only large items is envy-free:
+\[
+ c_i(B_i)\le c_i(B_j)\qquad\forall j\in N.
+\]
+
+\item Up to relabeling, the only configurations in which an agent whose
+bundle contains only large items may fail to be envy-free, and hence
+must use a large item as the EFX-removal item, are the following.
+\begin{enumerate}[label=(\alph*)]
+\item All items have type $(3,4)$ and
+\[
+ |R|=4q+3.
+\]
+Then agents $1,2$ receive $q$ and $q+1$ items, respectively, in either
+order, while agents $3,4$ receive $q+1$ items each.  We are free to choose
+which of agents $1,2$ receives $q+1$ items, and this agent is the unique agent who use a large item as the EFX-removal item.
+
+\item The multiset $R$ consists of one item of type $(1,2)$ and
+$4q+3$ items of type $(3,4)$.  One of agents $1,2$ receives the unique
+type-$(1,2)$ item together with $q$ type-$(3,4)$ items, the other receives
+$q+1$ type-$(3,4)$ items, and agents $3,4$ receive $q+1$ type-$(3,4)$
+items each.  We are free to choose which of agents $1,2$ receives the unique
+type-$(1,2)$ item.  The other agent is the unique agent who must use a large
+item as the EFX-removal item.
+\end{enumerate}
+
+\item If every edge of $R$ has type $(1,2)$ or $(3,4)$, with
+
+[Next verbatim source excerpt]
+
+
+If, after the gap-filling, the residual $M_2$ items form one of the two configurations in Lemma~\ref{lem:M2properties}(ii), we will call this configuration \emph{exceptional}.
+In an exceptional configuration, one edge $(i,j)$ has multiplicity at least $3$, and, other than those $(i,j)$-items, there can be at most one other item of type $(i',j')$ where $(i',j')$ is disjoint from $(i,j)$.
+We will call the two agents $i',j'$ \emph{exceptional agents}.
+By Lemma~\ref{lem:M2properties}(ii), for the two exceptional agents $i',j'$, one of them receives only large item in the residual of $M_2$ and envies the other by a large item.
+We call this agent the \emph{disadvantageous agent}.
+Lemma~\ref{lem:M2properties}(ii) tells us we are free to choose the disadvantageous agent from the two exceptional agents.
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ (Item : Type) (r : ℝ) (cost : EconCSLib.FairDivision.ChoreCost (Fin 4) Item)
+∀ (Item : Type) (r : ℝ) (cost : AppliedModelingLib.FairDivision.ChoreCost (Fin 4) Item)
   (prefixChores m2Chores gapChores residueChores : Finset Item) (a : ℕ) (quota : Fin 4 → ℕ)
-  (prefixAllocation gap : EconCSLib.FairDivision.Allocation (Fin 4) Item),
+  (prefixAllocation gap : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item),
   2 < r →
-    EconCSLib.FairDivision.IsOneOrRChoreCost cost r →
+    AppliedModelingLib.FairDivision.IsOneOrRChoreCost cost r →
       Disjoint prefixChores m2Chores →
-        (∀ item ∈ m2Chores, EconCSLib.FairDivision.IsSmallForExactlyTwo cost item) →
+        (∀ item ∈ m2Chores, AppliedModelingLib.FairDivision.IsSmallForExactlyTwo cost item) →
           Disjoint gapChores residueChores →
             gapChores ∪ residueChores = m2Chores →
-              EconCSLib.FairDivision.IsCanonicalSmallChoreAllocation cost prefixChores quota prefixAllocation →
-                (∀ item ∈ prefixChores, EconCSLib.FairDivision.IsSmallForAtMostOne cost item) →
+              AppliedModelingLib.FairDivision.IsCanonicalSmallChoreAllocation cost prefixChores quota prefixAllocation →
+                (∀ item ∈ prefixChores, AppliedModelingLib.FairDivision.IsSmallForAtMostOne cost item) →
                   (∀ (agent : Fin 4), quota agent = a ∨ quota agent = a + 1) →
-                    EconCSLib.FairDivision.IsAllocationOf gap gapChores →
+                    AppliedModelingLib.FairDivision.IsAllocationOf gap gapChores →
                       (∀ (agent : Fin 4), quota agent ≠ a → gap agent = ∅) →
-                        (EconCSLib.FairDivision.EnvyFreeForChores (EconCSLib.FairDivision.additiveChoreCost cost)
-                            fun agent => prefixAllocation agent ∪ gap agent) →
+                        (AppliedModelingLib.FairDivision.EnvyFreeForChores
+                            (AppliedModelingLib.FairDivision.additiveChoreCost cost) fun (agent : Fin 4) =>
+                            prefixAllocation agent ∪ gap agent) →
                           ∀ (exceptionalI exceptionalJ : Fin 4),
-                            (∃ dominant auxiliary q,
+                            (∃ (dominant : Finset (Fin 4)) (auxiliary : Finset (Fin 4)) (q : ℕ),
                                 dominant.card = 2 ∧
                                   auxiliary.card = 2 ∧
                                     Disjoint dominant auxiliary ∧
                                       exceptionalI ∈ auxiliary ∧
                                         exceptionalJ ∈ auxiliary ∧
                                           ((∀ item ∈ residueChores,
-                                                EconCSLib.FairDivision.smallAgentSet cost item = dominant) ∧
+                                                AppliedModelingLib.FairDivision.smallAgentSet cost item = dominant) ∧
                                               residueChores.card = 4 * q + 3 ∨
                                             ∃ exceptionalItem ∈ residueChores,
-                                              EconCSLib.FairDivision.smallAgentSet cost exceptionalItem = auxiliary ∧
+                                              AppliedModelingLib.FairDivision.smallAgentSet cost exceptionalItem =
+                                                  auxiliary ∧
                                                 (∀ item ∈ residueChores.erase exceptionalItem,
-                                                    EconCSLib.FairDivision.smallAgentSet cost item = dominant) ∧
+                                                    AppliedModelingLib.FairDivision.smallAgentSet cost item =
+                                                      dominant) ∧
                                                   (residueChores.erase exceptionalItem).card = 4 * q + 3)) →
                               exceptionalI ≠ exceptionalJ →
                                 quota exceptionalI = a + 1 →
                                   quota exceptionalJ = a + 1 →
-                                    ∃ allocation,
-                                      EconCSLib.FairDivision.IsAllocationOf allocation (prefixChores ∪ m2Chores) ∧
-                                        EconCSLib.FairDivision.EFXForChores
-                                          (EconCSLib.FairDivision.additiveChoreCost cost) allocation
+                                    ∃ (allocation : AppliedModelingLib.FairDivision.Allocation (Fin 4) Item),
+                                      AppliedModelingLib.FairDivision.IsAllocationOf allocation
+                                          (prefixChores ∪ m2Chores) ∧
+                                        AppliedModelingLib.FairDivision.EFXForChores
+                                          (AppliedModelingLib.FairDivision.additiveChoreCost cost) allocation
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.exceptional_residue_combination
@@ -2832,7 +2083,9 @@ HT26EFXChores.exceptional_residue_combination
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The raw lemma, canonical-definition context, M2 definition, and exceptional/gap-filling construction describe a canonical M01 prefix extended to envy-freeness and an exceptional M2 residue with two long exceptional agents. The transparent Spec makes precisely those pool, allocation, quota, exceptional-agent, and EFX conclusion conditions explicit.
+{\raggedright
+\textbf{Reason:} Formalizes the canonical prefix, short-\allowbreak{}only envy-\allowbreak{}free gap filling, the two exceptional residual forms, two long exceptional agents, and EFX completion.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
@@ -2840,7 +2093,7 @@ HT26EFXChores.exceptional_residue_combination
 \hypertarget{source-claim-bf31a0d3fb856868}{}
 \hypertarget{source-section-1743f0a28d68d6cc}{}
 \section*{Appendix and supplement source claims}
-\subsection*{Review row 21}
+\subsection*{Review row 17}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 2074-\allowbreak{}2076\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -2913,10 +2166,11 @@ Define
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ (n : ℕ) (Item : Type) (r q : ℝ) (cost : EconCSLib.FairDivision.ChoreCost (Fin n) Item) (chores A B C : Finset Item)
-  (allocation : EconCSLib.FairDivision.Allocation (Fin n) Item),
+∀ (n : ℕ) (Item : Type) (r q : ℝ) (cost : AppliedModelingLib.FairDivision.ChoreCost (Fin n) Item)
+  (chores A B C : Finset Item) (allocation : AppliedModelingLib.FairDivision.Allocation (Fin n) Item),
   4 ≤ n →
     q = ↑(2 * ((n + 1) / 2) + 1) + 2 →
       r = ↑(2 * ((n + 1) / 2) + 1) * (q + 1) / 2 →
@@ -2931,11 +2185,13 @@ Define
                           (item ∈ A → cost agent item = r) ∧
                             (item ∈ B → cost agent item = if ↑agent < n / 2 then 1 else q) ∧
                               (item ∈ C → cost agent item = if ↑agent < n / 2 then q else 1)) →
-                        EconCSLib.FairDivision.IsAllocationOf allocation chores →
-                          EconCSLib.FairDivision.EFXForChores (EconCSLib.FairDivision.additiveChoreCost cost)
-                              allocation →
+                        AppliedModelingLib.FairDivision.IsAllocationOf allocation chores →
+                          AppliedModelingLib.FairDivision.EFXForChores
+                              (AppliedModelingLib.FairDivision.additiveChoreCost cost) allocation →
                             ∀ (agent : Fin n), Finset.card (allocation agent ∩ A) ≤ 1
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.appendix_no_two_a_items
@@ -2944,13 +2200,15 @@ HT26EFXChores.appendix_no_two_a_items
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The raw Appendix-A construction fixes n, the two groups, the A/B/C cardinalities, p=1, q, r, and the complete cost table; the proposition says no EFX bundle has two A items. The transparent Spec encodes that same finite construction and concludes that every bundle has at most one A item.
+{\raggedright
+\textbf{Reason:} Exact Appendix construction, EFX allocation, and at-\allowbreak{}most-\allowbreak{}one-\allowbreak{}A-\allowbreak{}item conclusion.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-18b6e05d84d21367}{}
-\section*{Review row 22}
+\section*{Review row 18}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 2104-\allowbreak{}2106\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -3023,11 +2281,12 @@ Define
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ (n : ℕ) (Item : Type) (r q : ℝ) (cost : EconCSLib.FairDivision.ChoreCost (Fin n) Item) (chores A B C : Finset Item)
-  (allocation : EconCSLib.FairDivision.Allocation (Fin n) Item) (P1 P2 : EconCSLib.FairDivision.Bundle Item → ℝ)
-  (p1 p2 : ℝ),
+∀ (n : ℕ) (Item : Type) (r q : ℝ) (cost : AppliedModelingLib.FairDivision.ChoreCost (Fin n) Item)
+  (chores A B C : Finset Item) (allocation : AppliedModelingLib.FairDivision.Allocation (Fin n) Item)
+  (P1 P2 : AppliedModelingLib.FairDivision.Bundle Item → ℝ) (p1 p2 : ℝ),
   4 ≤ n →
     q = ↑(2 * ((n + 1) / 2) + 1) + 2 →
       r = ↑(2 * ((n + 1) / 2) + 1) * (q + 1) / 2 →
@@ -3042,26 +2301,30 @@ Define
                           (item ∈ A → cost agent item = r) ∧
                             (item ∈ B → cost agent item = if ↑agent < n / 2 then 1 else q) ∧
                               (item ∈ C → cost agent item = if ↑agent < n / 2 then q else 1)) →
-                        EconCSLib.FairDivision.IsAllocationOf allocation chores →
-                          EconCSLib.FairDivision.EFXForChores (EconCSLib.FairDivision.additiveChoreCost cost)
-                              allocation →
-                            (∀ (bundle : EconCSLib.FairDivision.Bundle Item),
+                        AppliedModelingLib.FairDivision.IsAllocationOf allocation chores →
+                          AppliedModelingLib.FairDivision.EFXForChores
+                              (AppliedModelingLib.FairDivision.additiveChoreCost cost) allocation →
+                            (∀ (bundle : AppliedModelingLib.FairDivision.Bundle Item),
                                 P1 bundle =
                                   r * ↑(Finset.card (bundle ∩ A)) + ↑(Finset.card (bundle ∩ B)) +
                                     q * ↑(Finset.card (bundle ∩ C))) →
-                              (∀ (bundle : EconCSLib.FairDivision.Bundle Item),
+                              (∀ (bundle : AppliedModelingLib.FairDivision.Bundle Item),
                                   P2 bundle =
                                     r * ↑(Finset.card (bundle ∩ A)) + q * ↑(Finset.card (bundle ∩ B)) +
                                       ↑(Finset.card (bundle ∩ C))) →
                                 (∀ (agent : Fin n),
-                                    ↑agent < n / 2 → EconCSLib.FairDivision.additiveChoreCost cost agent = P1) →
+                                    ↑agent < n / 2 →
+                                      AppliedModelingLib.FairDivision.additiveChoreCost cost agent = P1) →
                                   (∀ (agent : Fin n),
-                                      n / 2 ≤ ↑agent → EconCSLib.FairDivision.additiveChoreCost cost agent = P2) →
-                                    (∃ agent, P1 (allocation agent) = p1) →
+                                      n / 2 ≤ ↑agent →
+                                        AppliedModelingLib.FairDivision.additiveChoreCost cost agent = P2) →
+                                    (∃ (agent : Fin n), P1 (allocation agent) = p1) →
                                       (∀ (agent : Fin n), p1 ≤ P1 (allocation agent)) →
-                                        (∃ agent, P2 (allocation agent) = p2) →
+                                        (∃ (agent : Fin n), P2 (allocation agent) = p2) →
                                           (∀ (agent : Fin n), p2 ≤ P2 (allocation agent)) → p1 ≥ r ∧ p2 ≥ r
 \end{ReviewVerbatim}
+
+
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 HT26EFXChores.appendix_p1_p2_lower_bounds
@@ -3070,7 +2333,9 @@ HT26EFXChores.appendix_p1_p2_lower_bounds
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The raw Appendix-A construction and notation define P1, P2, p1, and p2 before the proposition p1,p2 at least r. The transparent Spec uses those same construction equations, P1/P2 definitions, group-specific costs, and minimum witnesses to conclude both lower bounds.
+{\raggedright
+\textbf{Reason:} Encodes the stated P1/\allowbreak{}P2 definitions and concludes p1,p2 are each at least r.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox

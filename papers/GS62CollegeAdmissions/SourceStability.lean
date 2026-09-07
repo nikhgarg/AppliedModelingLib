@@ -17,7 +17,7 @@ from the later deferred-acceptance construction.
 
 namespace GS62CollegeAdmissions
 
-open EconCSLib.Matching
+open AppliedModelingLib.Matching
 
 /--
 The replacement-pair condition displayed in the first definition on printed

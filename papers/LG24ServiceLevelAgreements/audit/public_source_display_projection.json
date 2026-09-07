@@ -1,0 +1,81 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "LG24ServiceLevelAgreements",
+  "private_source_map_sha256": "fdbc4d5420378eeb7686b6b8ce9f7afb4f3527de8831124b833fc825dedcb621",
+  "public_manifest_path": "papers/LG24ServiceLevelAgreements/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "d9e6853f43302aaacf5445d4a7b964f0eddfc13a7f14298e61e05039bf47fe6c",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "prop_centralization_gain",
+    "prop_extreme_efficiency",
+    "prop_extreme_equity",
+    "prop_opt_reformulation",
+    "prop_price_of_equity"
+  ],
+  "selected_source_items": {
+    "prop_centralization_gain": {
+      "source_anchors": [
+        {
+          "line_end": 1155,
+          "line_start": 1136,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{prop}{propcentralized}[Centralization gain]\n\\label{prop:strict_improvements_from_centralization}\nAssume $|\\mathcal B|\\geq2$.\nFor any $k\\in \\mathcal{S}, b\\in \\mathcal{B}$, the inspection-delay SLA under the extreme efficiency prioritizing city-budget policy is strictly better (shorter) than under the extreme efficiency prioritizing Borough-budget policy:\n\\begin{equation}\nz^{city}_{k} < z^{\\mathrm{eff}}_{k,b}.\n\\label{eq:pooling-sla-dominance}\n\\end{equation}\nFurthermore, the centralization gain in efficiency can be compared to the price of equity as follows\n\\begin{equation}\n\\begin{aligned}\n  &{\\textnormal{centralization gain}\n    \\geq\\textnormal{price of equity}}\\\\[-2pt]\n  &{\\qquad\\Longleftrightarrow\\qquad\n    1-\\frac{A^{\\mathrm{city}}(s)^2}{A_{\\mathrm{eff}}(s)^2}\n    \\geq\\chi^2\\!\\left(\n    q^{\\mathrm{eff}}\\middle\\|q^{\\mathrm{eq}}\\right).}\n\\end{aligned}\n\\end{equation}\n\\end{restatable}",
+          "quoted_text_sha256": "76bdedf2094699a92e70187ff502605dddc5627813b24b8881716a986cb52fb5"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "prop_extreme_efficiency": {
+      "source_anchors": [
+        {
+          "line_end": 832,
+          "line_start": 823,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{prop}{propextremeefficiency}[Extreme efficiency]\n\\label{prop:extremeeff}\nWhen $\\gamma=1$, the optimal efficiency maximizing solution to Problem \\eqref{opt-reformulated} {is given by}\n\\begin{equation}\n    {z^{\\mathrm{eff}}_{k,b}\n      =\\frac{{A_{\\mathrm{eff}}(s)}}{E(s)}\n      \\sqrt{\\frac{a}{s_{k,b}r_{k,b}}}.}\n      \\label{eq:fixed-load-efficient-endpoint}\n\\end{equation}\n\\end{restatable}",
+          "quoted_text_sha256": "ba5e3b01e337aa85a46df627803e010c5e0f2c065cea18d244787440edb31d54"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "prop_extreme_equity": {
+      "source_anchors": [
+        {
+          "line_end": 858,
+          "line_start": 842,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{prop}{propextremeequity}[Extreme equity]\n\\label{prop:extremefair}\nWhen $\\gamma=0$, {the efficiency-best equitable solution $z^{\\mathrm{eq}}$ satisfies}\n\n\n\n\n\n\n\n\\begin{equation}\n    {\\operatorname{Cost}_{k,b}(s,z^{\\mathrm{eq}})=M_k,\n      \\qquad k\\in\\mathcal S,\\ b\\in\\mathcal B.}\n\\end{equation}\n\n\n\\end{restatable}",
+          "quoted_text_sha256": "4f074340baef1f6c4ebcadbacce19ecbfd90a0a7fcf77df882a7ad07aad979f5"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "prop_opt_reformulation": {
+      "source_anchors": [
+        {
+          "line_end": 698,
+          "line_start": 686,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{prop}{reformulation}[Equivalent reciprocal-capacity representation]\n\\label{prop:opt-reformulation}\n{Fix $s$ with $E(s)>0$ and a convex loss $L$. The fixed-load design\nproblem is equivalent to the tail-threshold-only problem}\n\\begin{equation}\n  \\min_{z>0}\\ L(z)\n  \\quad\\textnormal{subject to}\\quad\n  \\sum_{k,b}\\frac{a}{z_{k,b}}\\leq E(s).\n  \\label{opt-reformulated}\n\\end{equation}\n\\end{restatable}\nWe use this representation in the analysis below. In \\Cref{app:fixed-load-theory-proofs}, we detail the transformation, the construction of supporting Borough capacities and GPS\nweights, and establish uniqueness when the reciprocal-capacity constraint is binding. ",
+          "quoted_text_sha256": "a97ec6c62ee6e5985d212fa2197ca291d8ba26a0bc7f84585455be613b66d3ae"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "prop_price_of_equity": {
+      "source_anchors": [
+        {
+          "line_end": 959,
+          "line_start": 926,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{prop}{fixedloadalignment}[Price of equity]\n\\label{prop:costofequity}\nThe price of equity is\n\\begin{align}\n\\operatorname{PoE}_C(s)\n&:=\\frac{G(s,z^{\\mathrm{eq}})}{G(s,z^{\\mathrm{eff}})}-1\\notag\\\\[-2pt]\n&=\\frac{A_{\\mathrm{eff}}(s)^2}{E(s)G(s,z^{\\mathrm{eff}})}\\notag\\\\[-2pt]\n&\\quad\\times \\chi^2\\!\\left(q^{\\mathrm{eff}}\\middle\\|q^{\\mathrm{eq}}\\right)\n \\label{eq:price-of-equity-chi-square}\\\\[-2pt]\n&\\leq \\frac{1}{G(s,z^{\\mathrm{eff}})}\\sum_{k,b}\\lambda_{k,b}\\notag\\\\[-2pt]\n&\\quad\\times\\left[\n \\begin{gathered}\n \\max_{b'\\in\\mathcal B}\\operatorname{Cost}_{k,b'}(s,z^{\\mathrm{eff}})\\\\[-2pt]\n {}-\\operatorname{Cost}_{k,b}(s,z^{\\mathrm{eff}})\n \\end{gathered}\\right].\\notag\n\\end{align}\nThe price is zero if and only if\n$q^{\\mathrm{eq}}=q^{\\mathrm{eff}}$, equivalently if and only if\n$\\operatorname{Cost}_{k,b}(s,z^{\\mathrm{eff}})$ is constant across Boroughs for each  category $k$.  Moreover, suppose the fixed noninspection burden\n$r_{k,b}D_{k,b}\\left(1-s_{k,b}/\\lambda_{k,b}\\right)$ is constant across\nBoroughs within each category.\nThen, writing $z^{\\mathrm{eff}}(C)$ for the efficient solution at capacity $C$,\n\\begin{equation}\n\\operatorname{PoE}_{C'}(s)\n=\\frac{C-\\sum_{k,b}s_{k,b}}\n       {C'-\\sum_{k,b}s_{k,b}}\n \\frac{G(s,z^{\\mathrm{eff}}(C))}{G(s,z^{\\mathrm{eff}}(C'))}\n \\operatorname{PoE}_{C}(s)\n\\label{eq:poe-capacity-scaling}\n\\end{equation}\nfor all $C'>C>\\sum_{k,b}s_{k,b}$.\nThe multiplicative factor in Eq.~\\eqref{eq:poe-capacity-scaling} is less than one whenever\n$\\sum_{k,b}(\\lambda_{k,b}-s_{k,b})r_{k,b}D_{k,b}>0$; it equals one when this fixed noninspection component is zero.\n\\end{restatable}",
+          "quoted_text_sha256": "9f5ebac95ee2b24ef078741c136aaa25d3ffced5b6061532737c83b184d95dac"
+        }
+      ],
+      "source_kind": "proposition"
+    }
+  },
+  "source_artifact_sha256": "eda9c8c9688a350b6d7696bb8e456ea0ce0ffe4b1f33e70636e24f82bb052b35",
+  "source_coverage_mode": "named_theoretical_statements"
+}

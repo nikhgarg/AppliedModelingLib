@@ -16,7 +16,7 @@ alias.
 
 namespace LG21TestOptionalPolicies
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory ProbabilityTheory
 
 /-- The source Gaussian prior and every observed signal have nonzero variance. -/

@@ -43,9 +43,9 @@ theorem lemmaD1_i_finiteDiscrete_iid_source_uniform_homogeneity
     (hvalue_le : ∀ omega, value omega ≤ xTop)
     (hvalue_split : ∀ omega, value omega = xTop ∨ value omega ≤ xSecond)
     (htop_mass_pos :
-      0 < EconCSLib.pmfProb itemLaw (fun omega => value omega = xTop))
+      0 < AppliedModelingLib.pmfProb itemLaw (fun omega => value omega = xTop))
     (hnontop_mass_pos :
-      0 < EconCSLib.pmfProb itemLaw (fun omega => ¬ value omega = xTop))
+      0 < AppliedModelingLib.pmfProb itemLaw (fun omega => ¬ value omega = xTop))
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t) :
     seq.toAllocationSequence.ConvergesToProfile (uniformProfile T) :=
   paper_theorem1_i_finite_discrete_sequence_homogeneity_of_iid_top_split
@@ -76,9 +76,9 @@ theorem lemmaD1_i_finiteDiscrete_iid_source_uniform_formula
     (hvalue_le : ∀ omega, value omega ≤ xTop)
     (hvalue_split : ∀ omega, value omega = xTop ∨ value omega ≤ xSecond)
     (htop_mass_pos :
-      0 < EconCSLib.pmfProb itemLaw (fun omega => value omega = xTop))
+      0 < AppliedModelingLib.pmfProb itemLaw (fun omega => value omega = xTop))
     (hnontop_mass_pos :
-      0 < EconCSLib.pmfProb itemLaw (fun omega => ¬ value omega = xTop))
+      0 < AppliedModelingLib.pmfProb itemLaw (fun omega => ¬ value omega = xTop))
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t) :
     ∀ t : ItemType T,
       Filter.Tendsto

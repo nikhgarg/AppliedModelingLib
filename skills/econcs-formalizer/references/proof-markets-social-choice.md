@@ -1,12 +1,12 @@
 # Markets and Social Choice
 
-Use for `EconCSLib/Markets/*`, `EconCSLib/SocialChoice/*`, matching, fair
+Use for `AppliedModelingLib/Markets/*`, `AppliedModelingLib/SocialChoice/*`, matching, fair
 division, rankings, Mallows models, and social-choice/ranking papers.
 
 ## STV/RCV and Voting Rules
 
 - For ranked-choice voting papers, build reusable semantics under
-  `EconCSLib.SocialChoice.Voting` before paper-local theorem work. Keep ballot
+  `AppliedModelingLib.SocialChoice.Voting` before paper-local theorem work. Keep ballot
   primitives, active-set updates, tallies, winners, eliminations, transfers,
   tie-breakers, and replay/process predicates in the shared layer when they are
   paper-neutral.
@@ -82,44 +82,32 @@ division, rankings, Mallows models, and social-choice/ranking papers.
   with optional hospital/resident acceptability; rural-hospitals statements
   usually need unmatched/underfilled-set invariance and should advertise those
   assumptions explicitly.
-- For IM05-style random matching papers, keep three layers separate:
-  deterministic matching facts (`X_mu(g) >= Y_g`), the Algorithm 4.2
-  fresh-list probability law, and the Chebyshev/variance bridge. A false
-  stochastic lemma should not contaminate the matching layer. If the printed
-  unrestricted variance lemma fails, patch the probability statement and leave
-  Theorem 4.1/Algorithm 4.1 trace work independent.
-- In IM05 Lemma 4.4, the source conditioning/deletion step is false for
-  arbitrary nonuniform `D^k`. The tempting one-sided repair by comparing to the
-  deleted process is also false: in the two-draw Plackett--Luce law, weights
-  `i=2, j=1, a=1, b=1` make `Pr[omit i | omit j]` larger than the
-  deleted-`j` process' `Pr[omit i]`. The `k = 2` negative-correlation route
-  can be closed by proving hit-event negative correlation first, using exact
-  ordered-atom/one-target formulas, splitting outside hazard sums, proving the
-  scalar Plackett--Luce inequality, and complementing via
+- For random matching arguments, keep three layers separate: deterministic
+  matching facts such as `X_mu(g) >= Y_g`, the concrete fresh-list probability
+  law, and the Chebyshev/variance bridge. A defect in a stochastic lemma should
+  not contaminate the matching layer. State any restricted variance theorem
+  with its exact sampling-law hypotheses and keep the deterministic trace proof
+  independent.
+- Do not infer a conditional deletion identity for a nonuniform
+  without-replacement law. Before using a comparison such as
+  `Pr[omit i | omit j] <= Pr[omit i]`, enumerate the smallest supported laws
+  and verify the inequality on exact ordered atoms. When it holds under the
+  required draw regime, a robust route is to prove hit-event negative
+  correlation first, split the outside hazard sums, prove the resulting scalar
+  inequality, and complement via
   `pmfProb_not_and_not_le_mul_of_inter_le_mul`.
-- Do not generalize that IM05 `k = 2` route blindly. Exact enumeration at
-  `k = 3` with weights `[30, 1, 1, 1, 30, 1]` gives positive covariance for
-  omission of targets `0` and `4`, and weights `[50, 50, 1, 1, 1]` with five
-  men give a finite variance violation for the unrestricted
-  `Var(Y_g) <= E[Y_g]` statement. The current repaired bridge is the tail-count
-  route:
-  `paper_im05_lemma4_4_tail_variance_le_expectation_of_pairwise_negative_correlation`
-  and `paper_im05_lemma4_1_from_tail_negative_correlation_and_lemma4_3`.
-  Instantiate the rank tail used by Lemma 4.3's lower-bound sum and prove the
-  concrete tail negative-correlation or direct tail variance input.
-- For Algorithm 4.1 resumed DA traces, the useful interface is target divorce
-  plus arbitrary-start DA with target-exception invariants. In IM05, the
-  corrected source-facing endpoint is the target-divorcing accepted-men trace
-  `im05_algorithm41SourceDivorceTargetAcceptedMen`; the older non-divorcing
-  source-held-men trace is scaffold/proof infrastructure only. Prove accepted
-  list nodup/order and final stable-except-target facts separately, then target
-  the compact remaining certificate
-  `im05_Algorithm41SourcePairWitnessCompletionCertificate` and paper wrapper
-  `paper_im05_theorem4_1_from_algorithm41_sourceDivorceTargetAcceptedMen_of_pairWitnessCompletionCertificate_of_card_eq`.
-  Its real obligations are the non-target blocking-pair witness preference
-  condition and final target-removal for non-initial stable husbands. Do not
-  rebuild the trace or revert to the stale held-men/stable-husbands membership
-  equality description.
+- Do not generalize a fixed-draw negative-correlation calculation without
+  checking the next draw and support sizes. If exact enumeration finds positive
+  covariance or a variance-bound failure, retain the valid restricted theorem
+  and switch the paper endpoint to a tail-count route: instantiate the rank tail
+  used by the lower-bound sum and prove either its pairwise negative correlation
+  or its variance bound directly.
+- For resumed deferred-acceptance traces, use target divorce plus arbitrary-start
+  DA with target-exception invariants. Prove accepted-list nodup/order and final
+  stable-except-target facts separately, then package the blocking-pair witness
+  preference condition and final target-removal property in one compact
+  completion certificate. Avoid replacing the target-divorcing trace with a
+  non-divorcing held-set equality that does not model the source transition.
 - For Algorithm 4.2 fresh-list/deferred-decision arguments, prefer concrete
   prefix-set laws for the recursive weighted-without-replacement PMF over
   opaque "conditional law equals filtered draw" hypotheses. Build expectation
@@ -175,17 +163,17 @@ division, rankings, Mallows models, and social-choice/ranking papers.
 - For rank-weight monotonicity, first prove the PMF/fiber decomposition, convert
   to a pure rank-only weight formula, then prove a generic cleared
   weighted-average lemma from pairwise cross-ratio or prefix dominance.
-- Use `EconCSLib.SocialChoice.Ranking.Basic` for paper-independent finite
+- Use `AppliedModelingLib.SocialChoice.Ranking.Basic` for paper-independent finite
   ranking primitives before adding paper-local notation. It provides
   `Candidate`, `Ranking`, `firstChoice`, `secondChoice`, `rankOf`,
   `swapTopTwo`, `bestRemainingAfter`, and the standard top-two/rank simp
   lemmas. Paper-local ranking modules should usually be compatibility layers
   over these shared primitives.
-- Use `EconCSLib.SocialChoice.Ranking.Kendall` for inversion predicates,
+- Use `AppliedModelingLib.SocialChoice.Ranking.Kendall` for inversion predicates,
   inversion finsets, `kendallTau`, deletion/relabeling formulas through
   `cycleRange` and `cycleIcc`, and center-transposition invariance. Keep
   paper-local Kendall modules as naming wrappers around these shared facts.
-- Use `EconCSLib.SocialChoice.Ranking.Probability` when a continuous random
+- Use `AppliedModelingLib.SocialChoice.Ranking.Probability` when a continuous random
   ranking map must be turned into a finite ranking law. It provides the
   discrete measurable-space instance, `firstChoiceProb`,
   `rankingPMFOfMeasure`, `rankingPMFOfMeasure_eventProb`,
@@ -193,7 +181,7 @@ division, rankings, Mallows models, and social-choice/ranking papers.
   `firstChoiceProb_rankingPMFOfMeasure`. In paper files, keep theorem-number
   names such as `rumRankingPMFOfMeasure`, but implement them as wrappers around
   the shared pushforward and event-probability bridge.
-- Use `EconCSLib.SocialChoice.Ranking.Approval` before adding local K-approval
+- Use `AppliedModelingLib.SocialChoice.Ranking.Approval` before adding local K-approval
   or top-tier scoring notation. It owns `approvedByK`, pair-up/down
   probabilities, score-gap equivalences, `lastRank`,
   `approvedByK_allButOne_iff_rankOf_ne_lastRank`,
@@ -208,13 +196,13 @@ division, rankings, Mallows models, and social-choice/ranking papers.
   reduce to a pivotal pair plus a last-rank probability formula; make those
   library wrappers reusable when a second paper needs the same fact, but keep
   paper-specific top-window or goal-language wrappers local.
-- Use `EconCSLib.SocialChoice.Ranking.Mallows` for the paper-independent
+- Use `AppliedModelingLib.SocialChoice.Ranking.Mallows` for the paper-independent
   finite Mallows law/weight layer: `mallowsWeight`, `mallowsPartition`,
   `MallowsSpec`, first/first-second/pair-correct/pair-wrong weights and
   probabilities, and finite normalization identities. If a paper already has a
   source-facing local Mallows structure, prefer an explicit adapter to the
   shared structure over a broad rewrite that breaks existing field projections.
-- Use `EconCSLib.SocialChoice.Ranking.MallowsSequential` for Mallows laws over
+- Use `AppliedModelingLib.SocialChoice.Ranking.MallowsSequential` for Mallows laws over
   a feasible remaining set before copying paper-local sequential finite sums. It owns
   `MallowsSpec.bestInSetWeight`, pair best-in-set/correct-wrong fiber
   identities, swap-reindexed best-in-set fiber sums, nonnegativity/zero-mass
@@ -222,7 +210,7 @@ division, rankings, Mallows models, and social-choice/ranking papers.
   `expectedBestInSet_le_of_bestInSetWeight_cross`. Bridge paper-local
   definitions with small `[simp]` adapter lemmas rather than importing a paper
   module from the shared library.
-- Use `EconCSLib.SocialChoice.Ranking.RankPower` before copying finite
+- Use `AppliedModelingLib.SocialChoice.Ranking.RankPower` before copying finite
   geometric rank-sum algebra from a paper file. It owns `candidateRankPowerSum`,
   `candidateRankReversePowerSum`, `candidateRankPrefixPowerSum`,
   `candidateRankRemovalPowerSum`, `candidateRankBestAfterRemovalWeight`,
@@ -231,14 +219,14 @@ division, rankings, Mallows models, and social-choice/ranking papers.
   the inner nonnegativity/strictness helpers used in Mallows
   rank-factorization proofs. Keep paper-facing theorem names as wrappers around
   this module when they are source-facing.
-- Use `EconCSLib.SocialChoice.Ranking.MallowsRankFactorization` when a paper
+- Use `AppliedModelingLib.SocialChoice.Ranking.MallowsRankFactorization` when a paper
   has already established first/top-two Mallows fiber factorization. It owns
   the assumption package `MallowsSpec.RankFactorization`, the first-tail versus
   removal-sum identity, and first-weight prefix algebra. Keep paper-facing
   factorization structures stable and call shared lemmas through adapters;
   leave concrete fiber-decomposition constructors paper-local until a second
   paper needs the same decomposition.
-- Use `EconCSLib.SocialChoice.Ranking.Payoff` for paper-neutral finite
+- Use `AppliedModelingLib.SocialChoice.Ranking.Payoff` for paper-neutral finite
   ranking-law payoff algebra before proving paper-local versions. It
   provides `firstChoiceMissProb`, `valueGap`, `expectedFirstMoverUtility`,
   `expectedSecondMoverShared`, `secondMoverUtility`,
@@ -257,7 +245,7 @@ division, rankings, Mallows models, and social-choice/ranking papers.
   `secondMoverFirstLawSwitchGain_eq_expected_collision_loss_diff`. Preserve
   paper-facing names, but delegate generic finite-sum proofs to this shared
   module.
-- Use `EconCSLib.SocialChoice.Ranking.Score` for three-score ranking
+- Use `AppliedModelingLib.SocialChoice.Ranking.Score` for three-score ranking
   maps before writing paper-local case splits. It provides `rum3RankByScores`,
   `rum3RankByScoreFns`, the six concrete three-candidate rankings, no-tie and
   top/middle/bottom score predicates, first/second-choice simp lemmas,
@@ -265,7 +253,7 @@ division, rankings, Mallows models, and social-choice/ranking papers.
   consequences from first-choice or best-remaining outcomes. Keep measurability
   of score functions in the RUM/probability file; the score module is pure
   finite social-choice code.
-- Use `EconCSLib.SocialChoice.Ranking.Sequential` for probability-free
+- Use `AppliedModelingLib.SocialChoice.Ranking.Sequential` for probability-free
   sequential choice primitives before adding paper-local definitions. It owns
   `bestInSet`, rank-minimality and membership lemmas, full-set/
   removed-singleton/singleton/pair simplifications, center-rank relabeling,
@@ -279,16 +267,16 @@ division, rankings, Mallows models, and social-choice/ranking papers.
   `adjacentSwapImproves_bestInSetPrefixCutIndicator`. Keep theorem-facing
   definitions reducible when later proofs unfold them, but prove generic lemmas
   by delegating to the shared module.
-- Use `EconCSLib.SocialChoice.Ranking.SequentialPayoff` for PMF expectations of
+- Use `AppliedModelingLib.SocialChoice.Ranking.SequentialPayoff` for PMF expectations of
   the best feasible candidate. It provides `expectedBestInSet`,
   `expectedBestAfterRemoval`, and full-set/singleton/removed-singleton
   simplifications. Paper-local expected-best-after-removal names should be
   wrappers around this shared definition when possible.
 - Use the library finite-sum layer before writing Mallows-local algebra:
-  `EconCSLib.FiniteSum.pair_sum_eq_ordered_swap_sum_of_injective_key`
+  `AppliedModelingLib.FiniteSum.pair_sum_eq_ordered_swap_sum_of_injective_key`
   performs the `(i,j)`/`(j,i)` regrouping by a reference rank key, and
-  `EconCSLib.FiniteSum.weighted_average_cross_nonneg_of_pairwise` /
-  `EconCSLib.FiniteSum.weighted_average_cross_pos_of_pairwise` discharge the
+  `AppliedModelingLib.FiniteSum.weighted_average_cross_nonneg_of_pairwise` /
+  `AppliedModelingLib.FiniteSum.weighted_average_cross_pos_of_pairwise` discharge the
   weak/strict pairwise-cross-ratio weighted-average comparison. Paper-local
   ordered-pair regrouping lemmas should usually be compatibility wrappers
   around these shared lemmas.
@@ -300,7 +288,7 @@ division, rankings, Mallows models, and social-choice/ranking papers.
   define ordered-pair terms, then prove antisymmetric swap identities.
 - Use the shared adjacent-order and bounded prefix-cut APIs before
   recursive prefix-cut proofs. The generic declarations now live in
-  `EconCSLib.SocialChoice.Ranking.Sequential`; keep the recursive
+  `AppliedModelingLib.SocialChoice.Ranking.Sequential`; keep the recursive
   identity-center Mallows dominance stack paper-local until a second paper
   needs the same subset-marginal recursion.
 - Keep three Mallows layers separate: denominator-cleared paper sum, top-two

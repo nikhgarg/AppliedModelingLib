@@ -21,7 +21,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 
 /-- Weak first-order dominance, expressed by every strict upper tail. -/

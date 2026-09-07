@@ -25,6 +25,7 @@ import LG21TestOptionalPolicies.ObservedAccessVoluntaryActiveBranchCloseout
 import LG21TestOptionalPolicies.ObservedAccessVoluntaryActiveBranchModels
 import LG21TestOptionalPolicies.ObservedAccessOptionalActiveBranchSection4Bridge
 import LG21TestOptionalPolicies.ObservedAccessReportRequiredActiveBranchSection4
+import LG21TestOptionalPolicies.SourceExactSemanticLayer
 
 /-!
 # Paper Interface: LG21 Test-Optional Policies
@@ -49,8 +50,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 open MeasureTheory
 open ProbabilityTheory
 
@@ -74,20 +75,6 @@ The no-report equality is guarded by its attained positive-mass event.
 abbrev definition1_hidden_access_optional_pbo_contract :=
   @LG21HiddenAccessOptionalPBODefinition1AE
 
-/--
-The literal hidden-access source carrier, with its score-stage response
-obligation, realizes Definition 1's explicit PBO contract.  This is the
-Definition 1 route used by the Section 3 theorems; it does not use the legacy
-generic `estimationConsistent : Prop` field.
--/
-theorem definition1_hidden_access_optional_source_timed
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
-    (equilibrium : LG21HiddenAccessLiteralSourceEquilibriumAE M testFeature)
-    (hreport : equilibrium.OptionalReportBestResponseAE) :
-    definition1_hidden_access_optional_pbo_contract equilibrium :=
-  lg21HiddenAccessLiteralSourceEquilibriumAE_satisfies_definition1PBO
-    equilibrium hreport
 
 /--
 Definition 1 for observed-access optional reporting under the documented
@@ -98,22 +85,6 @@ on positive mass, and keeps the two student decision times distinct.
 abbrev definition1_observed_access_optional_operational_pbo_contract :=
   @LG21ObservedAccessOptionalPBODefinition1Operational
 
-/--
-Every selected observed-access optional candidate used in the Section 4
-closeout realizes the explicit operational Definition 1 contract.  The
-contract contains feasibility, a.e. attained-branch responses, and actual
-conditional-expectation PBO equations rather than an opaque consistency
-placeholder.
--/
-theorem definition1_observed_access_optional_operational_source_timed
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    {M : LG21ContinuousGaussianPopulation Feature}
-    {haccess : 0 < M.accessLaw {true}} {testFeature : Feature}
-    (candidate : LG21OptionalSourceTimedPositiveMassSelfEnforcingCandidate
-      M haccess testFeature) :
-    definition1_observed_access_optional_operational_pbo_contract candidate :=
-  lg21OptionalSourceTimedPositiveMassSelfEnforcingCandidate_satisfies_definition1PBO
-    candidate
 
 /--
 Definition 1 for observed-access reporting-required-after-taking under the
@@ -209,60 +180,59 @@ abbrev fairness_implication_chain :=
 /-! ## Theorem 3.1: hidden access and strategic withholding -/
 
 /--
-The optional-reporting source endpoint. Its explicit inputs are one literal
-Gaussian population, source-timed taking/reporting actions, their on-path
-PBO/best-response semantics, and positive-mass local-entry stability. It
-concludes all taking, the finite score cutoff a.e., and positive withholding.
+The optional-reporting branch of Theorem 3.1 in the source's pointwise
+quantifier order.  Taking is evaluated before a nondegenerate Gaussian score,
+reporting afterward, and the supplied actions are pointwise best responses to
+the displayed estimates.  The conclusion is pointwise for every skill, base,
+and score and includes positive Gaussian mass below the finite cutoff.
 -/
 def theorem3_1_optional_reporting_source_timedSpec : Prop :=
-  ∀ {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (M : LG21ContinuousGaussianPopulation Feature)
-    (haccess : 0 < M.accessLaw {true})
-    (hnoAccess : 0 < M.accessLaw {false}) (testFeature : Feature)
-    (hpriorVariance : 0 < (M.priorVariance : ℝ))
-    (hnonTestNoiseVariance : ∀ feature : LG21NonTestFeature Feature testFeature,
-      0 < (M.noiseVariance feature.1 : ℝ))
-    (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
-    (baseLaw : Measure (LG21NonTestFeature Feature testFeature -> ℝ))
-    [IsProbabilityMeasure baseLaw]
-    (baseMean : (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ)
-    (hbaseMean : Measurable baseMean) (baseVariance : ℝ)
-    (hbaseVariance : 0 < baseVariance)
-    (hsourceFactor :
-      (lg21ContinuousGaussianPopulationLaw M).map
-        (lg21HiddenAccessBaseScoreSkillObservation testFeature) =
-        baseLaw ⊗ₘ gaussianSignalJointKernel
-          baseMean hbaseMean baseVariance (M.noiseVariance testFeature : ℝ))
-    (E : LG21HiddenAccessLiteralSourceEquilibriumAE M testFeature)
-    (hreportBest : E.OptionalReportBestResponseAE)
-    (hstable : LG21HiddenAccessSourceStableAgainstLocalCandidateEntry E hnoAccess),
-    lg21ContinuousGaussianPopulationLaw M E.activeNoTakeEvent = 0 ∧
-      (∀ᵐ publicScore ∂lg21HiddenAccessAccessBaseScoreLaw M testFeature,
-        E.reportDecision publicScore.1 publicScore.2 =
-          decide (affineCutoff
-            (gaussianSignalPriorWeight baseVariance
-              (M.noiseVariance testFeature : ℝ) * baseMean publicScore.1)
-            (gaussianSignalWeight baseVariance
-              (M.noiseVariance testFeature : ℝ))
-            (E.noReportPayoff publicScore.1) ≤ publicScore.2)) ∧
-      0 < lg21ContinuousGaussianPopulationLaw M
-        (lg21HiddenAccessAccessNoReportEvent testFeature E.reportDecision)
+  ∀ {Base : Type*}
+    (testLaw : ℝ -> Base -> Measure ℝ)
+    (testLaw_isProbability :
+      ∀ skill base, IsProbabilityMeasure (testLaw skill base))
+    (takeDecision : ℝ -> Base -> Bool)
+    (reportDecision : Base -> ℝ -> Bool)
+    (reportedPayoff : Base -> ℝ -> ℝ)
+    (noReportPayoff : Base -> ℝ)
+    (continuationPayoff_integrable : ∀ skill base,
+      Integrable
+        (fun score => lg21OptionalSourceContinuationPayoff
+          reportDecision reportedPayoff noReportPayoff base score)
+        (testLaw skill base))
+    (hbest : LG21OptionalPointwiseBestResponses testLaw takeDecision
+      reportDecision reportedPayoff noReportPayoff)
+    (scoreVariance : NNReal) (hvariance : scoreVariance ≠ 0)
+    (htestLaw : ∀ skill base,
+      testLaw skill base = gaussianReal skill scoreVariance)
+    (intercept slope : Base -> ℝ)
+    (hslope : ∀ base, 0 < slope base)
+    (hreported : ∀ base score,
+      reportedPayoff base score = intercept base + slope base * score)
+    (htie : ∀ base score,
+      reportedPayoff base score = noReportPayoff base ->
+        reportDecision base score = true),
+    (∀ skill base, takeDecision skill base = true) ∧
+      ∀ base,
+        ∃ cutoff : ℝ,
+          (∀ score,
+            reportDecision base score = true ↔ cutoff ≤ score) ∧
+          ∀ skill,
+            0 < testLaw skill base
+              {score | reportDecision base score = false}
 
-theorem theorem3_1_optional_reporting_source_timed :
-    theorem3_1_optional_reporting_source_timedSpec :=
-  @lg21HiddenAccess_optional_sourceCloseout_of_literalSourceStability
 
 /-- The same literal optional source equilibrium fails latent-skill fairness. -/
 abbrev theorem3_1_optional_reporting_not_latent_skill_fair :=
-  @lg21HiddenAccessOptionalLiteralOutputLawSurface_not_latentSkillFair_of_literalSourceStability
+  @lg21HiddenAccessOptionalLiteralOutputLawSurface_not_latentSkillFairAt_of_literalSourceStability
 
 /-- The same literal optional source equilibrium fails observable fairness. -/
 abbrev theorem3_1_optional_reporting_not_observably_fair :=
-  @lg21HiddenAccessOptionalLiteralOutputLawSurface_not_observablyFair_of_literalSourceStability
+  @lg21HiddenAccessOptionalLiteralOutputLawSurface_not_observablyFairAt_of_literalSourceStability
 
 /-- The same literal optional source equilibrium fails demographic fairness. -/
 abbrev theorem3_1_optional_reporting_not_demographically_fair :=
-  @lg21HiddenAccessOptionalLiteralOutputLawSurface_not_demographicallyFair_of_literalSourceStability
+  @lg21HiddenAccessOptionalLiteralOutputLawSurface_not_demographicallyFairAt_of_literalSourceStability
 
 /--
 The report-required source equilibrium has positive access/no-take mass under
@@ -281,172 +251,105 @@ abbrev theorem3_1_report_required_finite_take_cutoff_ae :=
   @LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE.exists_finite_takeCutoff_ae_of_localTailStability
 
 /--
-The report-required branch of Theorem 3.1 under the literal source timing.
-For every reviewed literal source equilibrium satisfying the source's
-positive-mass local-tail stability condition, it derives both advertised
-consequences: positive withholding and a finite latent-skill taking cutoff
-almost everywhere on the original public-base law.
+The report-required branch of Theorem 3.1.  Its taking action is a pointwise
+pre-score best response and the expected reported estimate is positive-slope
+affine in skill.  The source's take-at-indifference convention yields the
+finite cutoff iff for every base and skill, with positive Gaussian mass below
+the cutoff.
 -/
 def theorem3_1_report_required_source_timedSpec : Prop :=
-  ∀ {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
-    (equilibrium : LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE
-      M testFeature)
-    (hnoAccess : 0 < M.accessLaw {false})
-    (hstable : LG21ReportRequiredStableAgainstLocalTailEntry
-      (M := M) (testFeature := testFeature) equilibrium.source.takeDecision)
-    (hpriorVariance : 0 < (M.priorVariance : ℝ))
-    (hnonTestNoiseVariance : ∀ feature : LG21NonTestFeature Feature testFeature,
-      0 < (M.noiseVariance feature.1 : ℝ))
-    (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
-    (baseLaw : Measure (LG21NonTestFeature Feature testFeature -> ℝ))
-    [IsProbabilityMeasure baseLaw]
-    (baseMean : (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ)
-    (hbaseMean : Measurable baseMean) (baseVariance : ℝ)
-    (hbaseVariance : 0 < baseVariance)
-    (hsourceFactor :
-      (lg21ContinuousGaussianPopulationLaw M).map
-        (lg21HiddenAccessBaseScoreSkillObservation testFeature) =
-        baseLaw ⊗ₘ gaussianSignalJointKernel
-          baseMean hbaseMean baseVariance (M.noiseVariance testFeature : ℝ)),
-    (0 < lg21ContinuousGaussianPopulationLaw M
-      (lg21HiddenAccessOptionalNoReportEvent testFeature
-        equilibrium.source.takeDecision equilibrium.source.reportDecision)) ∧
-      (let skillKernel := gaussianLocationKernel
-        baseMean hbaseMean baseVariance.toNNReal
-       letI : IsMarkovKernel skillKernel := gaussianLocationKernel_isMarkov
-        baseMean hbaseMean baseVariance.toNNReal
-       ∀ᵐ publicBase ∂baseLaw,
-        ∃ cutoff : ℝ,
-          ∀ᵐ latentSkill ∂skillKernel publicBase,
-            equilibrium.source.takeDecision latentSkill publicBase =
-              decide (cutoff ≤ latentSkill))
+  ∀ {Base Test : Type*} [MeasurableSpace Test]
+    (testLaw : ℝ -> Base -> Measure Test)
+    (testLaw_isProbability :
+      ∀ skill base, IsProbabilityMeasure (testLaw skill base))
+    (takeDecision : ℝ -> Base -> Bool)
+    (reportedPayoff : Base -> Test -> ℝ)
+    (noReportPayoff : Base -> ℝ)
+    (reportedPayoff_integrable : ∀ skill base,
+      Integrable (reportedPayoff base) (testLaw skill base))
+    (hbest : LG21ReportRequiredPointwiseBestResponse testLaw takeDecision
+      reportedPayoff noReportPayoff)
+    (intercept slope : Base -> ℝ)
+    (hslope : ∀ base, 0 < slope base)
+    (htakePayoff : ∀ skill base,
+      lg21ReportRequiredSourceTakeExpectedPayoff testLaw reportedPayoff
+          skill base =
+        intercept base + slope base * skill)
+    (htie : ∀ skill base,
+      lg21ReportRequiredSourceTakeExpectedPayoff testLaw reportedPayoff
+          skill base = noReportPayoff base ->
+        takeDecision skill base = true)
+    (skillMean : Base -> ℝ) (skillVariance : NNReal)
+    (hskillVariance : skillVariance ≠ 0),
+    ∀ base,
+      ∃ cutoff : ℝ,
+        (∀ skill,
+          takeDecision skill base = true ↔ cutoff ≤ skill) ∧
+        0 < gaussianReal (skillMean base) skillVariance
+          {skill | takeDecision skill base = false}
 
-theorem theorem3_1_report_required_source_timed :
-    theorem3_1_report_required_source_timedSpec := by
-  dsimp only [theorem3_1_report_required_source_timedSpec]
-  intro Feature instFintype instDecidableEq M testFeature equilibrium hnoAccess
-    hstable hpriorVariance hnonTestNoiseVariance htestNoiseVariance baseLaw
-    instProbability baseMean hbaseMean baseVariance hbaseVariance hsourceFactor
-  constructor
-  · exact theorem3_1_report_required_positive_withholding equilibrium hnoAccess
-      baseLaw baseMean hbaseMean baseVariance hbaseVariance htestNoiseVariance
-      hsourceFactor
-  · exact theorem3_1_report_required_finite_take_cutoff_ae equilibrium hnoAccess
-      hstable hpriorVariance hnonTestNoiseVariance htestNoiseVariance baseLaw
-      baseMean hbaseMean baseVariance hbaseVariance hsourceFactor
 
 /-- The forced-report literal actual-output surface fails Definition 2. -/
 abbrev theorem3_1_report_required_not_latent_skill_fair :=
-  @lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_latentSkillFair_of_sourceGaussianFactor
+  @lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_latentSkillFairAt_of_sourceGaussianFactor
 
 /-- The forced-report literal actual-output surface fails Definition 3. -/
 abbrev theorem3_1_report_required_not_observably_fair :=
-  @lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_observablyFair_of_sourceGaussianFactor
+  @lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_observablyFairAt_of_sourceGaussianFactor
 
 /-- The forced-report literal actual-output surface fails Definition 4. -/
 abbrev theorem3_1_report_required_not_demographically_fair :=
-  @lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_demographicallyFair_of_sourceGaussianFactor
+  @lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_demographicallyFairAt_of_sourceGaussianFactor
 
 /-- Combined actual-output-law closeout for the three source fairness notions. -/
 abbrev theorem3_1_report_required_not_fair :=
   @lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_fair_of_sourceGaussianFactor
 
-/--
-The fairness-failure conclusion of Theorem 3.1, stated once for the two
-source requirement regimes. The optional and report-required equilibrium
-records are independently quantified literal source equilibria for their
-respective timing rules. Each schedule-local implication is derived from its
-own actual public-output laws; no fairness inequality or companion schedule
-is supplied as an input.
--/
+/-- Theorem 3.1's fairness conclusion on the actual public-output laws of
+the two hidden-access strategic-withholding equilibria.  The quantified
+equilibrium records determine the take/report decisions and the realized
+access/no-access laws; the three failures are not asserted for a caller-made
+Gaussian/point-law surface. -/
 def theorem3_1_hidden_access_pbo_fails_all_fairness_definitionsSpec : Prop :=
   ∀ {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
     (M : LG21ContinuousGaussianPopulation Feature)
-    (haccess : 0 < M.accessLaw {true})
-    (hnoAccess : 0 < M.accessLaw {false}) (testFeature : Feature)
-    (hpriorVariance : 0 < (M.priorVariance : ℝ))
+    (haccess : 0 < M.accessLaw {true}) (hnoAccess : 0 < M.accessLaw {false})
+    (testFeature : Feature) (hpriorVariance : 0 < (M.priorVariance : ℝ))
     (hnonTestNoiseVariance : ∀ feature : LG21NonTestFeature Feature testFeature,
       0 < (M.noiseVariance feature.1 : ℝ))
     (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
-    (baseLaw : Measure (LG21NonTestFeature Feature testFeature -> ℝ))
+    (baseLaw : Measure (LG21NonTestFeature Feature testFeature → ℝ))
     [IsProbabilityMeasure baseLaw]
-    (baseMean : (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ)
+    (baseMean : (LG21NonTestFeature Feature testFeature → ℝ) → ℝ)
     (hbaseMean : Measurable baseMean) (baseVariance : ℝ)
     (hbaseVariance : 0 < baseVariance)
     (hsourceFactor :
       (lg21ContinuousGaussianPopulationLaw M).map
-        (lg21HiddenAccessBaseScoreSkillObservation testFeature) =
-        baseLaw ⊗ₘ gaussianSignalJointKernel
-          baseMean hbaseMean baseVariance (M.noiseVariance testFeature : ℝ)),
-    (∀ (optional : LG21HiddenAccessLiteralSourceEquilibriumAE M testFeature),
-      optional.OptionalReportBestResponseAE →
-        LG21HiddenAccessSourceStableAgainstLocalCandidateEntry optional hnoAccess →
-        ¬ lg21SourceLawLatentSkillFair
-        (lg21HiddenAccessOptionalLiteralOutputLawSurface
-          M testFeature baseMean hbaseMean baseVariance) ∧
-        ¬ lg21SourceLawObservablyFair
-          (lg21HiddenAccessOptionalLiteralOutputLawSurface
-            M testFeature baseMean hbaseMean baseVariance) ∧
-        ¬ lg21SourceLawDemographicallyFair
-          (lg21HiddenAccessOptionalLiteralOutputLawSurface
-            M testFeature baseMean hbaseMean baseVariance)) ∧
-      (∀ (reportRequired :
-          LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE M testFeature),
-        LG21ReportRequiredStableAgainstLocalTailEntry
-            (M := M) (testFeature := testFeature) reportRequired.source.takeDecision →
-        ¬ lg21SourceLawLatentSkillFair
-          (lg21HiddenAccessReportRequiredLiteralOutputLawSurface
-            M testFeature baseMean hbaseMean baseVariance) ∧
-        ¬ lg21SourceLawObservablyFair
-          (lg21HiddenAccessReportRequiredLiteralOutputLawSurface
-            M testFeature baseMean hbaseMean baseVariance) ∧
-        ¬ lg21SourceLawDemographicallyFair
-          (lg21HiddenAccessReportRequiredLiteralOutputLawSurface
-            M testFeature baseMean hbaseMean baseVariance))
+          (lg21HiddenAccessBaseScoreSkillObservation testFeature) =
+        baseLaw ⊗ₘ gaussianSignalJointKernel baseMean hbaseMean baseVariance
+          (M.noiseVariance testFeature : ℝ))
+    (optionalEquilibrium :
+      LG21HiddenAccessLiteralSourceEquilibriumAE M testFeature)
+    (hoptionalReportBest : optionalEquilibrium.OptionalReportBestResponseAE)
+    (hoptionalStable :
+      LG21HiddenAccessSourceStableAgainstLocalCandidateEntry
+        optionalEquilibrium hnoAccess)
+    (requiredEquilibrium :
+      LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE M testFeature)
+    (hrequiredStable : LG21ReportRequiredStableAgainstLocalTailEntry
+      (M := M) (testFeature := testFeature)
+      requiredEquilibrium.source.takeDecision),
+    (¬ lg21HiddenAccessOptionalLatentSkillFairAt optionalEquilibrium ∧
+      ¬ lg21HiddenAccessOptionalObservablyFairAt optionalEquilibrium
+        baseMean hbaseMean baseVariance ∧
+      ¬ lg21HiddenAccessOptionalDemographicallyFairAt optionalEquilibrium) ∧
+    (¬ lg21HiddenAccessReportRequiredLatentSkillFair requiredEquilibrium ∧
+      ¬ lg21HiddenAccessReportRequiredObservablyFairAt requiredEquilibrium
+        baseMean hbaseMean baseVariance ∧
+      ¬ lg21HiddenAccessReportRequiredDemographicallyFairAt
+        requiredEquilibrium)
 
-theorem theorem3_1_hidden_access_pbo_fails_all_fairness_definitions :
-    theorem3_1_hidden_access_pbo_fails_all_fairness_definitionsSpec := by
-  dsimp only [theorem3_1_hidden_access_pbo_fails_all_fairness_definitionsSpec]
-  intro Feature instFintype instDecidableEq M haccess hnoAccess testFeature
-    hpriorVariance hnonTestNoiseVariance htestNoiseVariance baseLaw instProbability
-    baseMean hbaseMean baseVariance hbaseVariance hsourceFactor
-  refine ⟨?_, ?_⟩
-  · intro optional hoptionalReportBest hoptionalStable
-    exact ⟨
-      theorem3_1_optional_reporting_not_latent_skill_fair M haccess hnoAccess
-        testFeature hpriorVariance hnonTestNoiseVariance htestNoiseVariance
-        baseLaw baseMean hbaseMean baseVariance hbaseVariance hsourceFactor optional
-        hoptionalReportBest hoptionalStable,
-      theorem3_1_optional_reporting_not_observably_fair M haccess hnoAccess
-        testFeature hpriorVariance hnonTestNoiseVariance htestNoiseVariance
-        baseLaw baseMean hbaseMean baseVariance hbaseVariance hsourceFactor optional
-        hoptionalReportBest hoptionalStable,
-      theorem3_1_optional_reporting_not_demographically_fair M haccess hnoAccess
-        testFeature hpriorVariance hnonTestNoiseVariance htestNoiseVariance
-        baseLaw baseMean hbaseMean baseVariance hbaseVariance hsourceFactor optional
-        hoptionalReportBest hoptionalStable⟩
-  · intro reportRequired hreportRequiredStable
-    exact theorem3_1_report_required_not_fair reportRequired hnoAccess
-      hreportRequiredStable hpriorVariance hnonTestNoiseVariance
-      htestNoiseVariance baseLaw baseMean hbaseMean baseVariance hbaseVariance
-      hsourceFactor
 
-/--
-Corrected support formula for the source's no-report mixture bookkeeping. It
-is auxiliary correction evidence, not an additional named Theorem 3.1 target.
--/
-theorem theorem3_1_corrected_no_report_mixture_formula
-    (accessFraction baseOnlyEstimate : ℝ)
-    (scoreLaw : GaussianScaleLaw)
-    (accessLowerTailEstimate : ℝ → ℝ) (cutoff : ℝ) :
-    lg21OptionalNoReportMixtureEstimate accessFraction baseOnlyEstimate
-        scoreLaw accessLowerTailEstimate cutoff =
-      ((1 - accessFraction) * baseOnlyEstimate +
-          accessFraction * standardGaussianCDFAPI.normalCDF scoreLaw cutoff *
-            accessLowerTailEstimate cutoff) /
-        ((1 - accessFraction) +
-          accessFraction * standardGaussianCDFAPI.normalCDF scoreLaw cutoff) := rfl
 
 /-! ## Theorem 3.2: clarified deterministic-reporter theorem -/
 
@@ -458,50 +361,53 @@ abbrev theorem3_2_gaussian_randomized_policy_counterexample :=
   @paper_theorem3_2_gaussian_randomized_policy_counterexample
 
 /--
-Clarified optional-reporting Theorem 3.2. Deterministic reported-score output
-and latent-skill or observable fairness imply operational test blankness.
+Clarified optional-reporting Theorem 3.2 for every supplied source-model
+equilibrium/fibre. The model makes the reported branch deterministic and keeps
+the no-report law arbitrary; the source's latent-skill-or-observable fairness
+alternative is explicit, with the model's checked implication reducing the
+latent branch to the operational observable-law comparison used by the proof.
 -/
 def theorem3_2_optional_reporting_clarified_modelSpec : Prop :=
   ∀ {Base : Type*} [MeasurableSpace Base]
     (model : LG21ClarifiedOptionalReportingModel Base)
     (hFair : lg21SourceLawLatentSkillFair model.policy \/
-      lg21SourceLawObservablyFair model.policy),
-    ∀ e base,
-      LG21OptionalOperationalTestBlank
-        (model.scoreLaw e base)
-        (model.policy.baseOnlyLaw e base)
+      lg21SourceLawObservablyFair model.policy)
+    (e : model.policy.Equilibrium) (base : Base),
+    LG21OptionalOperationalTestBlank
+      (model.scoreLaw e base)
+      (model.policy.baseOnlyLaw e base)
+      (model.reporterSet e base)
+      (lg21OptionalDeterministicReporterKernel
         (model.reporterSet e base)
-        (lg21OptionalDeterministicReporterKernel
-          (model.reporterSet e base)
-          (model.reporterSet_measurable e base)
-          (model.reporterOutput e base)
-          (model.reporterOutput_measurable e base)
-          (model.policy.baseOnlyLaw e base))
+        (model.reporterSet_measurable e base)
+        (model.reporterOutput e base)
+        (model.reporterOutput_measurable e base)
+        (model.policy.baseOnlyLaw e base))
 
-theorem theorem3_2_optional_reporting_clarified_model :
-    theorem3_2_optional_reporting_clarified_modelSpec := by
-  dsimp only [theorem3_2_optional_reporting_clarified_modelSpec]
-  intro Base instMeasurableSpace model hFair e base
-  exact LG21ClarifiedOptionalReportingModel.operationalTestBlank_of_latent_or_observable
-    model hFair e base
 
 /--
-Clarified report-required Theorem 3.2. Its Gaussian analytic step is proved;
-the no-take output law remains arbitrary.
+Clarified report-required Theorem 3.2 for every supplied source-model
+equilibrium/fibre. The reported branch is a deterministic transform of the
+noisy score, the no-take law is arbitrary, and the source's latent-skill-or-
+observable fairness alternative is retained before the checked implication to
+the observable output-law comparison.
 -/
 def theorem3_2_report_required_clarified_modelSpec : Prop :=
   ∀ {Base : Type*} [MeasurableSpace Base]
     (model : LG21ClarifiedReportRequiredModel Base)
     (hFair : lg21SourceLawLatentSkillFair model.policy \/
-      lg21SourceLawObservablyFair model.policy),
-    ∀ e base, model.operationalTestBlank e base
+      lg21SourceLawObservablyFair model.policy)
+    (e : model.policy.Equilibrium) (base : Base),
+    gaussianReal (model.populationMean e base) (model.populationVariance e base)
+        (model.takerSet e base) = 0 \/
+      ∀ᵐ skill ∂gaussianReal (model.populationMean e base)
+        (model.populationVariance e base),
+        lg21ReportRequiredOperationalKernel
+          (model.takerSet e base)
+          (model.takerSet_measurable e base)
+          (model.reportedKernel e base)
+          (model.policy.baseOnlyLaw e base) skill = model.policy.baseOnlyLaw e base
 
-theorem theorem3_2_report_required_clarified_model :
-    theorem3_2_report_required_clarified_modelSpec := by
-  dsimp only [theorem3_2_report_required_clarified_modelSpec]
-  intro Base instMeasurableSpace model hFair e base
-  exact LG21ClarifiedReportRequiredModel.operationalTestBlank_of_latent_or_observable
-    model hFair e base
 
 /-! ## Lemma 4.1: observed-access strategy-proofness -/
 
@@ -523,116 +429,11 @@ local analytic diagnostic while that source bridge is repaired.
 abbrev lemma4_1_all_observed_access_protocols_conditional_unraveling :=
   @lg21ContinuousGaussianAccessPopulation_lemma4_1_all_protocols_of_sourceTimed
 
-/-- Lemma 4.1's mandatory-given-access branch. Feasibility itself forces the
-attained access action, independently of either voluntary protocol. -/
-theorem lemma4_1_mandatory_given_access_active_branch_selection
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (mandatory : LG21MandatoryGivenAccessLiteralSourceEquilibrium source.population) :
-    ∀ᵐ student ∂lg21ContinuousGaussianAccessPopulationLaw source.population,
-      mandatory.action student = LG21AccessAction.takeAndReport := by
-  exact lg21MandatoryGivenAccess_accessPopulation_ae_takeAndReport
-    source.population source.access_positive mandatory.action mandatory.feasible
 
-/-- Lemma 4.1's optional-reporting branch under the declared fibrewise
-active-branch convention. Its conclusion is only almost everywhere, and the
-selection is not claimed to follow from literal static-RCD Definition 1. -/
-theorem lemma4_1_optional_active_branch_selection
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (profile : LG21OptionalActiveBranchProfile source) :
-    ∀ᵐ student ∂lg21ContinuousGaussianAccessPopulationLaw source.population,
-      profile.selected.actions.takeDecision
-          (lg21ContinuousPopulationSkill student)
-          (lg21ContinuousPopulationBase source.test_feature student) = true ∧
-        profile.selected.actions.reportDecision
-          (lg21ContinuousPopulationBase source.test_feature student)
-          (lg21ContinuousPopulationFeature source.test_feature student) = true := by
-  exact
-    lg21ContinuousGaussianAccessPopulation_optional_allTakeAllReport_of_fibrewiseActiveBranchSelection
-      source.population source.access_positive source.test_feature
-      source.prior_variance_positive source.non_test_noise_variance_positive
-      source.test_noise_variance_positive profile.selected
-      profile.active_branch_selection
 
-/-- Lemma 4.1's report-required-after-taking branch under the declared
-fibrewise active-branch convention and its coupled positive-branch PBO record.
-No payoff is defined for the null no-take branch. -/
-theorem lemma4_1_report_required_active_branch_selection
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (profile : LG21ReportRequiredActiveBranchProfile source) :
-    ∀ᵐ student ∂lg21ContinuousGaussianAccessPopulationLaw source.population,
-      profile.selected.takeDecision
-        (lg21ContinuousPopulationSkill student)
-        (lg21ContinuousPopulationBase source.test_feature student) = true := by
-  exact
-    lg21ContinuousGaussianAccessPopulation_reportRequired_allTake_of_fibrewiseActiveBranchSelection
-      source.population source.access_positive source.test_feature
-      source.prior_variance_positive source.non_test_noise_variance_positive
-      source.test_noise_variance_positive profile.selected
-      profile.positive_branch_pbo profile.active_branch_selection
 
-/-- The mandatory protocol's source-relevant action is unique on the access
-population. This is action-profile uniqueness, not a claim about arbitrary
-off-path conditional distributions. -/
-theorem lemma4_1_mandatory_action_unique_ae
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (left right : LG21MandatoryGivenAccessLiteralSourceEquilibrium source.population) :
-    ∀ᵐ student ∂lg21ContinuousGaussianAccessPopulationLaw source.population,
-      left.action student = right.action student := by
-  filter_upwards [
-    lemma4_1_mandatory_given_access_active_branch_selection source left,
-    lemma4_1_mandatory_given_access_active_branch_selection source right] with
-      student hleft hright
-  rw [hleft, hright]
 
-/-- Under the declared selection, two optional profiles agree on the displayed
-take/report actions almost everywhere. This is the precise continuous-model
-reading of the source's displayed strategy uniqueness; it does not identify
-null-branch PBO versions or unrelated policy values. -/
-theorem lemma4_1_optional_actions_unique_ae
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (left right : LG21OptionalActiveBranchProfile source) :
-    ∀ᵐ student ∂lg21ContinuousGaussianAccessPopulationLaw source.population,
-      left.selected.actions.takeDecision
-          (lg21ContinuousPopulationSkill student)
-          (lg21ContinuousPopulationBase source.test_feature student) =
-        right.selected.actions.takeDecision
-          (lg21ContinuousPopulationSkill student)
-          (lg21ContinuousPopulationBase source.test_feature student) ∧
-      left.selected.actions.reportDecision
-          (lg21ContinuousPopulationBase source.test_feature student)
-          (lg21ContinuousPopulationFeature source.test_feature student) =
-        right.selected.actions.reportDecision
-          (lg21ContinuousPopulationBase source.test_feature student)
-          (lg21ContinuousPopulationFeature source.test_feature student) := by
-  filter_upwards [
-    lemma4_1_optional_active_branch_selection source left,
-    lemma4_1_optional_active_branch_selection source right] with student hleft hright
-  exact ⟨by rw [hleft.1, hright.1], by rw [hleft.2, hright.2]⟩
 
-/-- Under the declared selection, two report-required profiles agree on the
-source-relevant taking action almost everywhere. As with the optional route,
-this deliberately does not assert equality of null-branch PBO versions. -/
-theorem lemma4_1_report_required_actions_unique_ae
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (left right : LG21ReportRequiredActiveBranchProfile source) :
-    ∀ᵐ student ∂lg21ContinuousGaussianAccessPopulationLaw source.population,
-      left.selected.takeDecision
-          (lg21ContinuousPopulationSkill student)
-          (lg21ContinuousPopulationBase source.test_feature student) =
-        right.selected.takeDecision
-          (lg21ContinuousPopulationSkill student)
-          (lg21ContinuousPopulationBase source.test_feature student) := by
-  filter_upwards [
-    lemma4_1_report_required_active_branch_selection source left,
-    lemma4_1_report_required_active_branch_selection source right] with
-      student hleft hright
-  rw [hleft, hright]
 
 /--
 Lemma 4.1 under the declared Section 4 operational convention. The three
@@ -687,82 +488,17 @@ def lemma4_1_observed_access_strategy_proofnessSpec : Prop :=
               (lg21ContinuousPopulationSkill student)
               (lg21ContinuousPopulationBase source.test_feature student)
 
-theorem lemma4_1_observed_access_strategy_proofness :
-    lemma4_1_observed_access_strategy_proofnessSpec := by
-  dsimp only [lemma4_1_observed_access_strategy_proofnessSpec]
-  intro Feature instFintype instDecidableEq source
-  exact ⟨
-    lg21ObservedAccessGaussianSource_optionalActiveBranchProfile_nonempty source,
-    lg21ObservedAccessGaussianSource_reportRequiredActiveBranchProfile_nonempty source,
-    fun mandatory =>
-      lemma4_1_mandatory_given_access_active_branch_selection source mandatory,
-    fun optionalProfile =>
-      lemma4_1_optional_active_branch_selection source optionalProfile,
-    fun reportRequiredProfile =>
-      lemma4_1_report_required_active_branch_selection source reportRequiredProfile,
-    fun left right => lemma4_1_optional_actions_unique_ae source left right,
-    fun left right => lemma4_1_report_required_actions_unique_ae source left right⟩
 
-/--
-The paper-facing core of Lemma 4.1. This retains every universal action and
-almost-everywhere uniqueness conclusion while leaving profile construction to
-the stronger aggregate theorem above.
--/
+universe uLemma41
+
+/-- Lemma 4.1 on the actual observed-access Gaussian source and the governing
+positive-mass active-branch profiles.  This is the approved Section 4 a.e.
+interpretation; it introduces no generic affine/cutoff/tail assumptions and no
+off-path pointwise PBO completion. -/
 def lemma4_1_observed_access_strategy_proofness_source_coreSpec : Prop :=
-  ∀ {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature),
-    (∀ mandatory : LG21MandatoryGivenAccessLiteralSourceEquilibrium source.population,
-      ∀ᵐ student ∂lg21ContinuousGaussianAccessPopulationLaw source.population,
-        mandatory.action student = LG21AccessAction.takeAndReport) ∧
-      (∀ optionalProfile : LG21OptionalActiveBranchProfile source,
-        ∀ᵐ student ∂lg21ContinuousGaussianAccessPopulationLaw source.population,
-          optionalProfile.selected.actions.takeDecision
-              (lg21ContinuousPopulationSkill student)
-              (lg21ContinuousPopulationBase source.test_feature student) = true ∧
-            optionalProfile.selected.actions.reportDecision
-              (lg21ContinuousPopulationBase source.test_feature student)
-              (lg21ContinuousPopulationFeature source.test_feature student) = true) ∧
-      (∀ reportRequiredProfile : LG21ReportRequiredActiveBranchProfile source,
-        ∀ᵐ student ∂lg21ContinuousGaussianAccessPopulationLaw source.population,
-          reportRequiredProfile.selected.takeDecision
-              (lg21ContinuousPopulationSkill student)
-              (lg21ContinuousPopulationBase source.test_feature student) = true) ∧
-      (∀ left right : LG21OptionalActiveBranchProfile source,
-        ∀ᵐ student ∂lg21ContinuousGaussianAccessPopulationLaw source.population,
-          left.selected.actions.takeDecision
-              (lg21ContinuousPopulationSkill student)
-              (lg21ContinuousPopulationBase source.test_feature student) =
-            right.selected.actions.takeDecision
-              (lg21ContinuousPopulationSkill student)
-              (lg21ContinuousPopulationBase source.test_feature student) ∧
-          left.selected.actions.reportDecision
-              (lg21ContinuousPopulationBase source.test_feature student)
-              (lg21ContinuousPopulationFeature source.test_feature student) =
-            right.selected.actions.reportDecision
-              (lg21ContinuousPopulationBase source.test_feature student)
-              (lg21ContinuousPopulationFeature source.test_feature student)) ∧
-      ∀ left right : LG21ReportRequiredActiveBranchProfile source,
-        ∀ᵐ student ∂lg21ContinuousGaussianAccessPopulationLaw source.population,
-          left.selected.takeDecision
-              (lg21ContinuousPopulationSkill student)
-              (lg21ContinuousPopulationBase source.test_feature student) =
-            right.selected.takeDecision
-              (lg21ContinuousPopulationSkill student)
-              (lg21ContinuousPopulationBase source.test_feature student)
+  lemma4_1_observed_access_strategy_proofnessSpec.{uLemma41}
 
-theorem lemma4_1_observed_access_strategy_proofness_source_core :
-    lemma4_1_observed_access_strategy_proofness_source_coreSpec := by
-  dsimp only [lemma4_1_observed_access_strategy_proofness_source_coreSpec]
-  intro Feature instFintype instDecidableEq source
-  exact ⟨
-    fun mandatory =>
-      lemma4_1_mandatory_given_access_active_branch_selection source mandatory,
-    fun optionalProfile =>
-      lemma4_1_optional_active_branch_selection source optionalProfile,
-    fun reportRequiredProfile =>
-      lemma4_1_report_required_active_branch_selection source reportRequiredProfile,
-    fun left right => lemma4_1_optional_actions_unique_ae source left right,
-    fun left right => lemma4_1_report_required_actions_unique_ae source left right⟩
+
 
 /-- Corrected local raw-score indifference equation used in the Lemma 4.1 proof. -/
 abbrev lemma4_1_taking_indifference_affine_inverse :=
@@ -770,65 +506,7 @@ abbrev lemma4_1_taking_indifference_affine_inverse :=
 
 /-! ## Propositions 4.2--4.3: observed-access information gaps -/
 
-/--
-Proposition 4.2 under the declared voluntary active-branch convention. The
-policy is arbitrary on no-access applicants but performs the source's Gaussian
-PBO estimation after an observed score. For every selected voluntary profile,
-the witness records that its source output realizes that PBO output almost
-everywhere and that the canonical total representative fails Definition 2's
-fixed-fibre equality. The two universal fields expose the optional and
-report-required versions of the source's claim that the argument does not
-depend on the students' strategy space. This is the continuous/RCD
-interpretation of the source conditional laws; it does not claim pointwise
-equality for an arbitrary null-fibre PBO version.
--/
-theorem proposition4_2_observed_access_pbo_policy_not_latent_skill_fair
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (noAccessEstimateKernel : Kernel
-      (LG21NonTestFeature Feature source.test_feature -> ℝ) ℝ)
-    [IsMarkovKernel noAccessEstimateKernel]
-    : Nonempty (LG21OptionalActiveBranchProfile source) ∧
-      Nonempty (LG21ReportRequiredActiveBranchProfile source) ∧
-      (∀ optionalProfile : LG21OptionalActiveBranchProfile source,
-        LG21P42OptionalActiveBranchCanonicalPolicyWitness source optionalProfile
-          noAccessEstimateKernel) ∧
-      ∀ reportRequiredProfile : LG21ReportRequiredActiveBranchProfile source,
-        LG21P42ReportRequiredActiveBranchCanonicalPolicyWitness source
-          reportRequiredProfile noAccessEstimateKernel := by
-  exact ⟨
-    lg21ObservedAccessGaussianSource_optionalActiveBranchProfile_nonempty source,
-    lg21ObservedAccessGaussianSource_reportRequiredActiveBranchProfile_nonempty source,
-    fun optionalProfile =>
-      lg21P42_optionalActiveBranchCanonicalPolicy_not_latent_skill_fair source
-        optionalProfile noAccessEstimateKernel,
-    fun reportRequiredProfile =>
-      lg21P42_reportRequiredActiveBranchCanonicalPolicy_not_latent_skill_fair
-        source reportRequiredProfile noAccessEstimateKernel⟩
 
-/--
-Proposition 4.2 for reporting required given access, the third observed-access
-protocol. The profile contains the literal mandatory action and the actual
-all-report PBO condition. For every arbitrary base-only no-access policy, the
-source-derived full-base Gaussian experiment supplies an a.e. realization of
-the canonical fixed-fibre policy whose exact Definition 2 conclusion is not
-latent-skill fairness. No access/output-law equality is a premise.
--/
-theorem proposition4_2_mandatory_given_access_pbo_policy_not_latent_skill_fair
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (noAccessEstimateKernel : Kernel
-      (LG21NonTestFeature Feature source.test_feature -> ℝ) ℝ)
-    [IsMarkovKernel noAccessEstimateKernel] :
-    Nonempty (LG21P42MandatoryGivenAccessPBOProfile source) ∧
-      ∀ mandatoryProfile : LG21P42MandatoryGivenAccessPBOProfile source,
-        LG21P42MandatoryGivenAccessCanonicalPolicyWitness source
-          mandatoryProfile noAccessEstimateKernel := by
-  exact ⟨
-    lg21P42MandatoryGivenAccessPBOProfile_nonempty source,
-    fun mandatoryProfile =>
-      lg21P42_mandatoryGivenAccessCanonicalPolicy_not_latent_skill_fair source
-        mandatoryProfile noAccessEstimateKernel⟩
 
 /--
 Proposition 4.2 across the three requirement policies advertised by the source.
@@ -855,50 +533,22 @@ def proposition4_2_all_observed_access_requirement_protocolsSpec : Prop :=
         LG21P42MandatoryGivenAccessCanonicalPolicyWitness source
           mandatoryProfile noAccessEstimateKernel)
 
-theorem proposition4_2_all_observed_access_requirement_protocols :
-    proposition4_2_all_observed_access_requirement_protocolsSpec := by
-  dsimp only [proposition4_2_all_observed_access_requirement_protocolsSpec]
-  intro Feature instFintype instDecidableEq source noAccessEstimateKernel
-    instMarkovKernel
-  exact ⟨
-    proposition4_2_observed_access_pbo_policy_not_latent_skill_fair source
-      noAccessEstimateKernel,
-    proposition4_2_mandatory_given_access_pbo_policy_not_latent_skill_fair source
-      noAccessEstimateKernel⟩
 
 /--
-The paper-facing core of Proposition 4.2. It quantifies over every profile in
-each requirement regime and retains each latent-skill-fairness failure, without
-packaging separate profile-existence witnesses into the claimed conclusion.
+The paper-facing core of Proposition 4.2.  The source says that the students'
+requirement-policy strategy space is irrelevant once the school observes an
+actual score and applies the Bayesian posterior.  Accordingly this statement
+quantifies directly over the source Gaussian observed-score model and over an
+arbitrary base-only no-access policy; no equilibrium-branch selector or
+protocol-specific profile is part of the proposition.
 -/
 def proposition4_2_all_observed_access_requirement_protocols_source_coreSpec : Prop :=
-  ∀ {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (noAccessEstimateKernel : Kernel
-      (LG21NonTestFeature Feature source.test_feature -> ℝ) ℝ)
-    [IsMarkovKernel noAccessEstimateKernel],
-    ((∀ optionalProfile : LG21OptionalActiveBranchProfile source,
-        LG21P42OptionalActiveBranchCanonicalPolicyWitness source optionalProfile
-          noAccessEstimateKernel) ∧
-      ∀ reportRequiredProfile : LG21ReportRequiredActiveBranchProfile source,
-        LG21P42ReportRequiredActiveBranchCanonicalPolicyWitness source
-          reportRequiredProfile noAccessEstimateKernel) ∧
-    ∀ mandatoryProfile : LG21P42MandatoryGivenAccessPBOProfile source,
-      LG21P42MandatoryGivenAccessCanonicalPolicyWitness source
-        mandatoryProfile noAccessEstimateKernel
+  ∀ {Base : Type*} [MeasurableSpace Base]
+    (model : LG21P42ObservedScoreGaussianPBOModel Base)
+    (base : Base) {skillLow skillHigh : ℝ},
+    skillLow < skillHigh →
+      ¬ lg21P42ObservedScoreLatentSkillFair model
 
-theorem proposition4_2_all_observed_access_requirement_protocols_source_core :
-    proposition4_2_all_observed_access_requirement_protocols_source_coreSpec := by
-  dsimp only [proposition4_2_all_observed_access_requirement_protocols_source_coreSpec]
-  intro Feature instFintype instDecidableEq source noAccessEstimateKernel
-    instMarkovKernel
-  have voluntary :=
-    proposition4_2_observed_access_pbo_policy_not_latent_skill_fair source
-      noAccessEstimateKernel
-  have mandatory :=
-    proposition4_2_mandatory_given_access_pbo_policy_not_latent_skill_fair source
-      noAccessEstimateKernel
-  exact ⟨voluntary.2.2, mandatory.2⟩
 
 /--
 Conditional optional actual-output gaps for the Proposition 4.3 calculation.
@@ -920,240 +570,17 @@ null-branch equilibrium convention.
 abbrev proposition4_3_mandatory_given_access_nonvacuity :=
   @lg21ContinuousGaussianPopulation_mandatory_actualPBO_not_fair_exists_literalSource
 
-/--
-Proposition 4.3 for reporting required given access.  The actual Gaussian
-source has a mandatory Definition 1 PBO profile, and every such profile fails
-both paper fairness predicates.  The unreachable access/no-report output is
-universally quantified, not supplied as an equilibrium assumption.
--/
-theorem proposition4_3_mandatory_given_access_pbo_not_observable_or_demographic_fair
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (hnoAccess : 0 < source.population.accessLaw {false}) :
-    Nonempty (LG21P43MandatoryGivenAccessPBOProfile source hnoAccess) ∧
-      ∀ (profile : LG21P43MandatoryGivenAccessPBOProfile source hnoAccess)
-        (noReportPayoff :
-          (LG21NonTestFeature Feature source.test_feature -> ℝ) -> ℝ),
-        LG21P43MandatoryGivenAccessFairnessFailure source hnoAccess profile
-          noReportPayoff := by
-  exact lg21P43_mandatoryGivenAccess_actualPBO_nonempty_and_not_fair source hnoAccess
+
+
+
 
 /--
-Optional-reporting Proposition 4.3 route under the declared active-branch
-selection. It packages the attained access PBO output and literal no-access
-PBO output as one access-dispatched policy, and refutes both fairness
-definitions for that policy.
--/
-theorem proposition4_3_optional_active_branch_selection
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (profile : LG21OptionalActiveBranchProfile source)
-    (hnoAccess : 0 < source.population.accessLaw {false})
-    (noAccessOutput : Bool × (ℝ × (Feature -> ℝ)) -> ℝ)
-    (hnoAccessPBO : LG21ContinuousGaussianNoAccessPopulationPBO
-      source.population hnoAccess source.test_feature noAccessOutput) :
-    letI : IsProbabilityMeasure
-        (lg21ContinuousGaussianAccessPopulationLaw source.population) :=
-      lg21ContinuousGaussianAccessPopulationLaw_isProbability source.population
-        source.access_positive
-    letI : IsFiniteMeasure
-        (lg21ContinuousGaussianAccessPopulationLaw source.population) := ⟨by simp⟩
-    letI : IsProbabilityMeasure
-        (lg21ContinuousGaussianNoAccessPopulationLaw source.population) :=
-      lg21ContinuousGaussianNoAccessPopulationLaw_isProbability source.population
-        hnoAccess
-    letI : IsFiniteMeasure
-        (lg21ContinuousGaussianNoAccessPopulationLaw source.population) := ⟨by simp⟩
-    ∃ (baseLaw : Measure (LG21NonTestFeature Feature source.test_feature -> ℝ))
-        (baseMean : (LG21NonTestFeature Feature source.test_feature -> ℝ) -> ℝ)
-        (baseVariance baseMeanVariance : ℝ)
-        (hbaseLaw : IsProbabilityMeasure baseLaw)
-        (hbaseMean : Measurable baseMean)
-        (hbaseVariance : 0 < baseVariance),
-      lg21ContinuousGaussianFullBaseLatentPrimitiveLaw source.population
-          source.test_feature =
-          baseLaw ⊗ₘ gaussianLocationKernel
-            baseMean hbaseMean baseVariance.toNNReal ∧
-        0 ≤ baseMeanVariance ∧
-        (¬ LG21ObservedAccessDeterministicObservableFairAE baseLaw
-            (lg21ContinuousPopulationBase source.test_feature)
-            (lg21ContinuousGaussianAccessPopulationLaw source.population)
-            (lg21ContinuousGaussianNoAccessPopulationLaw source.population)
-            (lg21ObservedAccessDeterministicTwoBranchOutput
-              lg21ContinuousPopulationAccess
-              (lg21OptionalSourceTimedActualOutput
-                (lg21ContinuousPopulationBase source.test_feature)
-                (lg21ContinuousPopulationFeature source.test_feature)
-                (lg21ContinuousPopulationSkill (Feature := Feature))
-                profile.selected.actions)
-              noAccessOutput)) ∧
-          (¬ LG21ObservedAccessDeterministicDemographicallyFair
-            (lg21ContinuousGaussianAccessPopulationLaw source.population)
-            (lg21ContinuousGaussianNoAccessPopulationLaw source.population)
-            (lg21ObservedAccessDeterministicTwoBranchOutput
-              lg21ContinuousPopulationAccess
-              (lg21OptionalSourceTimedActualOutput
-                (lg21ContinuousPopulationBase source.test_feature)
-                (lg21ContinuousPopulationFeature source.test_feature)
-                (lg21ContinuousPopulationSkill (Feature := Feature))
-                profile.selected.actions)
-              noAccessOutput)) := by
-  exact
-    lg21ContinuousGaussianPopulation_optional_activeBranchSelection_actualPBO_not_fair
-      source.population source.access_positive hnoAccess source.test_feature
-      source.prior_variance_positive source.non_test_noise_variance_positive
-      source.test_noise_variance_positive profile.selected
-      profile.active_branch_selection noAccessOutput hnoAccessPBO
-
-/--
-Report-required Proposition 4.3 route under the declared active-branch
-selection and its coupled positive-branch source-PBO record. It makes the
-same one-policy fairness refutations as the optional route without assigning
-a null no-take payoff.
--/
-theorem proposition4_3_report_required_active_branch_selection
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (profile : LG21ReportRequiredActiveBranchProfile source)
-    (hnoAccess : 0 < source.population.accessLaw {false})
-    (noAccessOutput : Bool × (ℝ × (Feature -> ℝ)) -> ℝ)
-    (hnoAccessPBO : LG21ContinuousGaussianNoAccessPopulationPBO
-      source.population hnoAccess source.test_feature noAccessOutput) :
-    letI : IsProbabilityMeasure
-        (lg21ContinuousGaussianAccessPopulationLaw source.population) :=
-      lg21ContinuousGaussianAccessPopulationLaw_isProbability source.population
-        source.access_positive
-    letI : IsFiniteMeasure
-        (lg21ContinuousGaussianAccessPopulationLaw source.population) := ⟨by simp⟩
-    letI : IsProbabilityMeasure
-        (lg21ContinuousGaussianNoAccessPopulationLaw source.population) :=
-      lg21ContinuousGaussianNoAccessPopulationLaw_isProbability source.population
-        hnoAccess
-    letI : IsFiniteMeasure
-        (lg21ContinuousGaussianNoAccessPopulationLaw source.population) := ⟨by simp⟩
-    ∃ (baseLaw : Measure (LG21NonTestFeature Feature source.test_feature -> ℝ))
-        (baseMean : (LG21NonTestFeature Feature source.test_feature -> ℝ) -> ℝ)
-        (baseVariance baseMeanVariance : ℝ)
-        (hbaseLaw : IsProbabilityMeasure baseLaw)
-        (hbaseMean : Measurable baseMean)
-        (hbaseVariance : 0 < baseVariance),
-      lg21ContinuousGaussianFullBaseLatentPrimitiveLaw source.population
-          source.test_feature =
-          baseLaw ⊗ₘ gaussianLocationKernel
-            baseMean hbaseMean baseVariance.toNNReal ∧
-        0 ≤ baseMeanVariance ∧
-        (¬ LG21ObservedAccessDeterministicObservableFairAE baseLaw
-            (lg21ContinuousPopulationBase source.test_feature)
-            (lg21ContinuousGaussianAccessPopulationLaw source.population)
-            (lg21ContinuousGaussianNoAccessPopulationLaw source.population)
-            (lg21ObservedAccessDeterministicTwoBranchOutput
-              lg21ContinuousPopulationAccess
-              (lg21ReportRequiredSequentialActualOutput
-                (lg21ContinuousPopulationBase source.test_feature)
-                (lg21ContinuousPopulationFeature source.test_feature)
-                (lg21ContinuousPopulationSkill (Feature := Feature)) profile.selected)
-              noAccessOutput)) ∧
-          (¬ LG21ObservedAccessDeterministicDemographicallyFair
-            (lg21ContinuousGaussianAccessPopulationLaw source.population)
-            (lg21ContinuousGaussianNoAccessPopulationLaw source.population)
-            (lg21ObservedAccessDeterministicTwoBranchOutput
-              lg21ContinuousPopulationAccess
-              (lg21ReportRequiredSequentialActualOutput
-                (lg21ContinuousPopulationBase source.test_feature)
-                (lg21ContinuousPopulationFeature source.test_feature)
-                (lg21ContinuousPopulationSkill (Feature := Feature)) profile.selected)
-              noAccessOutput)) := by
-  exact
-    lg21ContinuousGaussianPopulation_reportRequired_activeBranchSelection_actualPBO_not_fair
-      source.population source.access_positive hnoAccess source.test_feature
-      source.prior_variance_positive source.non_test_noise_variance_positive
-      source.test_noise_variance_positive profile.selected
-      profile.positive_branch_pbo profile.active_branch_selection
-      noAccessOutput hnoAccessPBO
-
-/--
-Proposition 4.3 under the declared voluntary active-branch convention. For
-every selected optional or report-required profile, this packages the attained
-access PBO and the literal no-access PBO as one access-dispatched policy and
-refutes both paper fairness predicates for that policy. The two protocol
-fields are independent rather than a simultaneous-profile premise; the
-selected output laws are used only at their RCD-almost-everywhere scope.
--/
-theorem proposition4_3_observed_access_pbo_not_observable_or_demographic_fair
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (hnoAccess : 0 < source.population.accessLaw {false})
-    (noAccessOutput : Bool × (ℝ × (Feature -> ℝ)) -> ℝ)
-    (hnoAccessPBO : LG21ContinuousGaussianNoAccessPopulationPBO
-      source.population hnoAccess source.test_feature noAccessOutput) :
-    let claim : (Bool × (ℝ × (Feature -> ℝ)) -> ℝ) -> Prop :=
-      fun actualOutput =>
-        letI : IsProbabilityMeasure
-            (lg21ContinuousGaussianAccessPopulationLaw source.population) :=
-          lg21ContinuousGaussianAccessPopulationLaw_isProbability source.population
-            source.access_positive
-        letI : IsFiniteMeasure
-            (lg21ContinuousGaussianAccessPopulationLaw source.population) := ⟨by simp⟩
-        letI : IsProbabilityMeasure
-            (lg21ContinuousGaussianNoAccessPopulationLaw source.population) :=
-          lg21ContinuousGaussianNoAccessPopulationLaw_isProbability source.population
-            hnoAccess
-        letI : IsFiniteMeasure
-            (lg21ContinuousGaussianNoAccessPopulationLaw source.population) := ⟨by simp⟩
-        ∃ (baseLaw : Measure (LG21NonTestFeature Feature source.test_feature -> ℝ))
-            (baseMean : (LG21NonTestFeature Feature source.test_feature -> ℝ) -> ℝ)
-            (baseVariance baseMeanVariance : ℝ)
-            (hbaseLaw : IsProbabilityMeasure baseLaw)
-            (hbaseMean : Measurable baseMean)
-            (hbaseVariance : 0 < baseVariance),
-          lg21ContinuousGaussianFullBaseLatentPrimitiveLaw source.population
-              source.test_feature =
-              baseLaw ⊗ₘ gaussianLocationKernel
-                baseMean hbaseMean baseVariance.toNNReal ∧
-            0 ≤ baseMeanVariance ∧
-            (¬ LG21ObservedAccessDeterministicObservableFairAE baseLaw
-                (lg21ContinuousPopulationBase source.test_feature)
-                (lg21ContinuousGaussianAccessPopulationLaw source.population)
-                (lg21ContinuousGaussianNoAccessPopulationLaw source.population)
-                (lg21ObservedAccessDeterministicTwoBranchOutput
-                  lg21ContinuousPopulationAccess actualOutput noAccessOutput)) ∧
-              (¬ LG21ObservedAccessDeterministicDemographicallyFair
-                (lg21ContinuousGaussianAccessPopulationLaw source.population)
-                (lg21ContinuousGaussianNoAccessPopulationLaw source.population)
-                (lg21ObservedAccessDeterministicTwoBranchOutput
-                  lg21ContinuousPopulationAccess actualOutput noAccessOutput))
-    Nonempty (LG21OptionalActiveBranchProfile source) ∧
-      Nonempty (LG21ReportRequiredActiveBranchProfile source) ∧
-      (∀ optionalProfile : LG21OptionalActiveBranchProfile source,
-        claim
-          (lg21OptionalSourceTimedActualOutput
-            (lg21ContinuousPopulationBase source.test_feature)
-            (lg21ContinuousPopulationFeature source.test_feature)
-            (lg21ContinuousPopulationSkill (Feature := Feature))
-            optionalProfile.selected.actions)) ∧
-      ∀ reportRequiredProfile : LG21ReportRequiredActiveBranchProfile source,
-        claim
-          (lg21ReportRequiredSequentialActualOutput
-            (lg21ContinuousPopulationBase source.test_feature)
-            (lg21ContinuousPopulationFeature source.test_feature)
-            (lg21ContinuousPopulationSkill (Feature := Feature))
-            reportRequiredProfile.selected) := by
-  dsimp
-  exact ⟨
-    lg21ObservedAccessGaussianSource_optionalActiveBranchProfile_nonempty source,
-    lg21ObservedAccessGaussianSource_reportRequiredActiveBranchProfile_nonempty source,
-    fun optionalProfile =>
-      proposition4_3_optional_active_branch_selection source optionalProfile
-        hnoAccess noAccessOutput hnoAccessPBO,
-    fun reportRequiredProfile =>
-      proposition4_3_report_required_active_branch_selection source
-        reportRequiredProfile hnoAccess noAccessOutput hnoAccessPBO⟩
-
-/--
-Proposition 4.3 across the three requirement policies advertised by the source.
-The voluntary and mandatory PBOs remain independently quantified because their
-attained information branches differ. In particular, this does not impose one
-shared no-report output or an off-path completion across protocols.
+Analytic strengthening for Proposition 4.3: every selected PBO profile in
+each requirement regime fails both fairness predicates.  The source-facing
+claim below retains the existential equilibrium quantifier dictated by
+Definitions 3 and 4.  The voluntary and mandatory PBOs remain independently
+quantified because their attained information branches differ; this does not
+impose one shared no-report output or an off-path completion across protocols.
 -/
 def proposition4_3_all_observed_access_requirement_protocolsSpec : Prop :=
   ∀ {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
@@ -1221,23 +648,16 @@ def proposition4_3_all_observed_access_requirement_protocolsSpec : Prop :=
         LG21P43MandatoryGivenAccessFairnessFailure source hnoAccess profile
           mandatoryNoReportPayoff)
 
-theorem proposition4_3_all_observed_access_requirement_protocols :
-    proposition4_3_all_observed_access_requirement_protocolsSpec := by
-  dsimp only [proposition4_3_all_observed_access_requirement_protocolsSpec]
-  intro Feature instFintype instDecidableEq source hnoAccess noAccessOutput
-    hnoAccessPBO
-  exact ⟨
-    proposition4_3_observed_access_pbo_not_observable_or_demographic_fair source
-      hnoAccess noAccessOutput hnoAccessPBO,
-    proposition4_3_mandatory_given_access_pbo_not_observable_or_demographic_fair
-      source hnoAccess⟩
 
 /--
-The paper-facing core of Proposition 4.3. It retains the observable- and
-demographic-fairness failures for every voluntary and mandatory profile while
-omitting only the stronger aggregate theorem's profile-existence packages.
+Proposition 4.3 at the quantifier strength stated by Definitions 3 and 4.
+Those definitions call a policy fair only when its distributional comparison
+holds in every equilibrium.  Thus, for each of the three requirement regimes,
+this result supplies one PBO equilibrium whose induced estimates fail both
+observable and demographic fairness.  The stronger result that every selected
+profile fails remains available separately as analytic support.
 -/
-def proposition4_3_all_observed_access_requirement_protocols_source_coreSpec : Prop :=
+def proposition4_3_each_requirement_protocol_has_unfair_pbo_equilibriumSpec : Prop :=
   ∀ {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
     (source : LG21ObservedAccessGaussianSource Feature)
     (hnoAccess : 0 < source.population.accessLaw {false})
@@ -1280,311 +700,139 @@ def proposition4_3_all_observed_access_requirement_protocols_source_coreSpec : P
                 (lg21ContinuousGaussianNoAccessPopulationLaw source.population)
                 (lg21ObservedAccessDeterministicTwoBranchOutput
                   lg21ContinuousPopulationAccess actualOutput noAccessOutput))
-     (∀ optionalProfile : LG21OptionalActiveBranchProfile source,
+     (∃ optionalProfile : LG21OptionalActiveBranchProfile source,
         claim
           (lg21OptionalSourceTimedActualOutput
             (lg21ContinuousPopulationBase source.test_feature)
             (lg21ContinuousPopulationFeature source.test_feature)
             (lg21ContinuousPopulationSkill (Feature := Feature))
             optionalProfile.selected.actions)) ∧
-      ∀ reportRequiredProfile : LG21ReportRequiredActiveBranchProfile source,
+     (∃ reportRequiredProfile : LG21ReportRequiredActiveBranchProfile source,
         claim
           (lg21ReportRequiredSequentialActualOutput
             (lg21ContinuousPopulationBase source.test_feature)
             (lg21ContinuousPopulationFeature source.test_feature)
             (lg21ContinuousPopulationSkill (Feature := Feature))
             reportRequiredProfile.selected)) ∧
-    ∀ (profile : LG21P43MandatoryGivenAccessPBOProfile source hnoAccess)
-      (mandatoryNoReportPayoff :
-        (LG21NonTestFeature Feature source.test_feature -> ℝ) -> ℝ),
-      LG21P43MandatoryGivenAccessFairnessFailure source hnoAccess profile
-        mandatoryNoReportPayoff
+     ∃ (profile : LG21P43MandatoryGivenAccessPBOProfile source hnoAccess)
+        (mandatoryNoReportPayoff :
+          (LG21NonTestFeature Feature source.test_feature -> ℝ) -> ℝ),
+        letI : IsProbabilityMeasure
+            (lg21ContinuousGaussianAccessPopulationLaw source.population) :=
+          lg21ContinuousGaussianAccessPopulationLaw_isProbability source.population
+            source.access_positive
+        letI : IsFiniteMeasure
+            (lg21ContinuousGaussianAccessPopulationLaw source.population) := ⟨by simp⟩
+        letI : IsProbabilityMeasure
+            (lg21ContinuousGaussianNoAccessPopulationLaw source.population) :=
+          lg21ContinuousGaussianNoAccessPopulationLaw_isProbability source.population
+            hnoAccess
+        letI : IsFiniteMeasure
+            (lg21ContinuousGaussianNoAccessPopulationLaw source.population) := ⟨by simp⟩
+        ∃ (baseLaw : Measure (LG21NonTestFeature Feature source.test_feature -> ℝ))
+            (baseMean : (LG21NonTestFeature Feature source.test_feature -> ℝ) -> ℝ)
+            (baseVariance baseMeanVariance : ℝ)
+            (hbaseLaw : IsProbabilityMeasure baseLaw)
+            (hbaseMean : Measurable baseMean)
+            (hbaseVariance : 0 < baseVariance),
+          lg21ContinuousGaussianFullBaseLatentPrimitiveLaw source.population
+              source.test_feature =
+              baseLaw ⊗ₘ gaussianLocationKernel
+                baseMean hbaseMean baseVariance.toNNReal ∧
+            0 ≤ baseMeanVariance ∧
+            (¬ LG21ObservedAccessDeterministicObservableFairAE baseLaw
+                (lg21ContinuousPopulationBase source.test_feature)
+                (lg21ContinuousGaussianAccessPopulationLaw source.population)
+                (lg21ContinuousGaussianNoAccessPopulationLaw source.population)
+                (lg21ObservedAccessDeterministicTwoBranchOutput
+                  lg21ContinuousPopulationAccess
+                  (lg21ObservedAccessActualOutput
+                    (lg21ContinuousPopulationBase source.test_feature)
+                    (lg21ContinuousPopulationFeature source.test_feature)
+                    profile.mandatory.action profile.reportedPayoff mandatoryNoReportPayoff)
+                  profile.noAccessOutput)) ∧
+              (¬ LG21ObservedAccessDeterministicDemographicallyFair
+                (lg21ContinuousGaussianAccessPopulationLaw source.population)
+                (lg21ContinuousGaussianNoAccessPopulationLaw source.population)
+                (lg21ObservedAccessDeterministicTwoBranchOutput
+                  lg21ContinuousPopulationAccess
+                  (lg21ObservedAccessActualOutput
+                    (lg21ContinuousPopulationBase source.test_feature)
+                    (lg21ContinuousPopulationFeature source.test_feature)
+                    profile.mandatory.action profile.reportedPayoff mandatoryNoReportPayoff)
+                  profile.noAccessOutput)))
 
-theorem proposition4_3_all_observed_access_requirement_protocols_source_core :
-    proposition4_3_all_observed_access_requirement_protocols_source_coreSpec := by
-  dsimp only [proposition4_3_all_observed_access_requirement_protocols_source_coreSpec]
-  intro Feature instFintype instDecidableEq source hnoAccess noAccessOutput
-    hnoAccessPBO
-  have voluntary :=
-    proposition4_3_observed_access_pbo_not_observable_or_demographic_fair source
-      hnoAccess noAccessOutput hnoAccessPBO
-  have mandatory :=
-    proposition4_3_mandatory_given_access_pbo_not_observable_or_demographic_fair
-      source hnoAccess
-  exact ⟨voluntary.2.2, mandatory.2⟩
+
+/-- The source's zero-mean Gaussian signal model after adjoining the test as
+one additional independent signal. The new coordinate has noise law
+`N(0, testNoiseVariance)`; there is no free noise-offset parameter. -/
+def lg21GaussianSignalFamilyWithTest
+    {Feature : Type*} [Fintype Feature]
+    (baseSignals : GaussianSignalFamily Feature)
+    (testNoiseVariance : ℝ) (testNoiseVariance_pos : 0 < testNoiseVariance) :
+    GaussianSignalFamily (Option Feature) where
+  priorMean := baseSignals.priorMean
+  priorVar := baseSignals.priorVar
+  noiseVar
+    | none => testNoiseVariance
+    | some feature => baseSignals.noiseVar feature
+  priorVar_pos := baseSignals.priorVar_pos
+  noiseVar_pos
+    | none => testNoiseVariance_pos
+    | some feature => baseSignals.noiseVar_pos feature
+
+
+/-- Proposition 4.3's direct source-model comparison. Access students' PBO
+uses the common base signals and the additional zero-mean test signal;
+no-access students' PBO uses the common base signals only. -/
+def lg21CenteredExtraTestPosteriorLawSurface
+    {Feature : Type*} [Fintype Feature] [Nonempty Feature]
+    (baseSignals : GaussianSignalFamily Feature)
+    (testNoiseVariance : ℝ) (testNoiseVariance_pos : 0 < testNoiseVariance) :
+    LG21SourceLawPolicySurface ℝ PUnit ℝ GaussianScaleLaw where
+  Equilibrium := PUnit
+  latentAccessLaw := fun _ _ _ =>
+    (lg21GaussianSignalFamilyWithTest baseSignals testNoiseVariance
+      testNoiseVariance_pos).posteriorMeanScaleLaw
+  latentNoAccessLaw := fun _ _ _ => baseSignals.posteriorMeanScaleLaw
+  observableAccessLaw := fun _ _ =>
+    (lg21GaussianSignalFamilyWithTest baseSignals testNoiseVariance
+      testNoiseVariance_pos).posteriorMeanScaleLaw
+  observableNoAccessLaw := fun _ _ => baseSignals.posteriorMeanScaleLaw
+  demographicAccessLaw := fun _ =>
+    (lg21GaussianSignalFamilyWithTest baseSignals testNoiseVariance
+      testNoiseVariance_pos).posteriorMeanScaleLaw
+  demographicNoAccessLaw := fun _ => baseSignals.posteriorMeanScaleLaw
+  baseOnlyLaw := fun _ _ => baseSignals.posteriorMeanScaleLaw
+  fullFeatureLaw := fun _ _ _ =>
+    (lg21GaussianSignalFamilyWithTest baseSignals testNoiseVariance
+      testNoiseVariance_pos).posteriorMeanScaleLaw
+
+/--
+The paper-facing core of Proposition 4.3.  It states the two policy-law
+comparisons directly for the source Gaussian signal family: access students'
+Bayesian estimate uses the extra test signal, while no-access students'
+Bayesian estimate uses the common non-test signals.  Strategic profile and
+active-branch implementation records are not premises of this information-gap
+claim.
+-/
+def proposition4_3_all_observed_access_requirement_protocols_source_coreSpec : Prop :=
+  ∀ {Feature : Type*} [Fintype Feature] [Nonempty Feature]
+    (baseSignals : GaussianSignalFamily Feature)
+    (testNoiseVariance : ℝ) (testNoiseVariance_pos : 0 < testNoiseVariance),
+    let policy : LG21SourceLawPolicySurface.{0, 0, 0, 0, 0}
+        ℝ PUnit.{1} ℝ GaussianScaleLaw :=
+      lg21CenteredExtraTestPosteriorLawSurface.{_, 0, 0} baseSignals
+        testNoiseVariance testNoiseVariance_pos
+    ¬ lg21SourceLawObservablyFair policy ∧
+      ¬ lg21SourceLawDemographicallyFair policy
+
 
 /-- Corrected local direct marginal Gaussian comparison supporting Proposition 4.3. -/
 abbrev proposition4_3_actual_gaussian_measure_repair :=
   @paper_proposition4_3_actual_gaussian_measure_observable_and_demographic_gaps
 
-/--
-Internal simultaneous aggregation of the three independently useful
-Proposition 4.3 routes.  It is not the paper-facing route: requiring all
-three protocol carriers together would weaken the source's per-protocol
-claim.  The direct independent endpoints follow below.
--/
-theorem proposition4_3_simultaneous_protocols_auxiliary
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (M : LG21ContinuousGaussianPopulation Feature)
-    (haccess : 0 < M.accessLaw {true})
-    (hnoAccess : 0 < M.accessLaw {false}) (testFeature : Feature)
-    (hpriorVariance : 0 < (M.priorVariance : ℝ))
-    (hnonTestNoiseVariance : ∀ feature : LG21NonTestFeature Feature testFeature,
-      0 < (M.noiseVariance feature.1 : ℝ))
-    (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
-    (mandatory : LG21MandatoryGivenAccessLiteralSourceEquilibrium M)
-    (mandatoryReportedPayoff :
-      (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ -> ℝ)
-    (mandatoryNoReportPayoff :
-      (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ)
-    (hmandatoryReportedPBO : LG21ObservedAccessAllReportPBO
-      (lg21ContinuousGaussianAccessPopulationLaw M)
-      (lg21ContinuousPopulationBase testFeature)
-      (lg21ContinuousPopulationFeature testFeature)
-      (lg21ContinuousPopulationSkill (Feature := Feature)) mandatoryReportedPayoff)
-    (optional : LG21ObservedAccessOptionalSourceTimedEquilibrium
-      M haccess testFeature)
-    (reportRequired : LG21ReportRequiredSequentialEquilibriumData ℝ
-      (LG21NonTestFeature Feature testFeature -> ℝ) ℝ)
-    (hreportRequiredTestLaw : ∀ latentSkill publicBase,
-      reportRequired.testLaw latentSkill publicBase = gaussianReal latentSkill
-        ((M.noiseVariance testFeature : ℝ).toNNReal))
-    (noAccessOutput : Bool × (ℝ × (Feature -> ℝ)) -> ℝ)
-    (hnoAccessPBO : LG21ContinuousGaussianNoAccessPopulationPBO
-      M hnoAccess testFeature noAccessOutput) :
-    letI : IsProbabilityMeasure (lg21ContinuousGaussianAccessPopulationLaw M) :=
-      lg21ContinuousGaussianAccessPopulationLaw_isProbability M haccess
-    letI : IsFiniteMeasure (lg21ContinuousGaussianAccessPopulationLaw M) := ⟨by simp⟩
-    letI : IsProbabilityMeasure (lg21ContinuousGaussianNoAccessPopulationLaw M) :=
-      lg21ContinuousGaussianNoAccessPopulationLaw_isProbability M hnoAccess
-    letI : IsFiniteMeasure (lg21ContinuousGaussianNoAccessPopulationLaw M) := ⟨by simp⟩
-    ∀ (reportRequiredSource : LG21FullPublicReportRequiredSourceEquilibrium
-      (lg21ContinuousGaussianAccessPopulationLaw M)
-      (lg21ContinuousPopulationBase testFeature)
-      (lg21ContinuousPopulationFeature testFeature)
-      (lg21ContinuousPopulationSkill (Feature := Feature)) reportRequired),
-      LG21ReportRequiredSourceStableAgainstPositiveMassLocalRecalibratedEntry
-        (lg21ContinuousGaussianAccessPopulationLaw M)
-        (lg21ContinuousPopulationBase testFeature)
-        (lg21ContinuousPopulationFeature testFeature)
-        (lg21ContinuousPopulationSkill (Feature := Feature))
-        (reportRequiredSource.base_measurable.prodMk
-          (reportRequiredSource.score_measurable.prodMk
-            reportRequiredSource.skill_measurable))
-        (fun latentSkill publicBase =>
-          reportRequired.takeDecision latentSkill publicBase) →
-    ∃ (baseLaw : Measure (LG21NonTestFeature Feature testFeature -> ℝ))
-        (baseMean : (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ)
-        (baseVariance baseMeanVariance : ℝ)
-        (hbaseLaw : IsProbabilityMeasure baseLaw)
-        (hbaseMean : Measurable baseMean)
-        (hbaseVariance : 0 < baseVariance),
-      lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature =
-          baseLaw ⊗ₘ gaussianLocationKernel
-            baseMean hbaseMean baseVariance.toNNReal ∧
-        0 ≤ baseMeanVariance ∧
-        ((∀ᵐ publicBase ∂baseLaw,
-           condDistrib
-               (lg21ObservedAccessActualOutput
-                 (lg21ContinuousPopulationBase testFeature)
-                 (lg21ContinuousPopulationFeature testFeature)
-                 mandatory.action mandatoryReportedPayoff mandatoryNoReportPayoff)
-               (lg21ContinuousPopulationBase testFeature)
-               (lg21ContinuousGaussianAccessPopulationLaw M) publicBase ≠
-             condDistrib noAccessOutput
-               (lg21ContinuousPopulationBase testFeature)
-               (lg21ContinuousGaussianNoAccessPopulationLaw M) publicBase) ∧
-          ((lg21ContinuousGaussianAccessPopulationLaw M).map
-              (lg21ObservedAccessActualOutput
-                (lg21ContinuousPopulationBase testFeature)
-                (lg21ContinuousPopulationFeature testFeature)
-                mandatory.action mandatoryReportedPayoff mandatoryNoReportPayoff) ≠
-            (lg21ContinuousGaussianNoAccessPopulationLaw M).map noAccessOutput) ∧
-          (∀ᵐ publicBase ∂baseLaw,
-           condDistrib
-               (lg21OptionalSourceTimedActualOutput
-                 (lg21ContinuousPopulationBase testFeature)
-                 (lg21ContinuousPopulationFeature testFeature)
-                 (lg21ContinuousPopulationSkill (Feature := Feature)) optional.actions)
-               (lg21ContinuousPopulationBase testFeature)
-               (lg21ContinuousGaussianAccessPopulationLaw M) publicBase ≠
-             condDistrib noAccessOutput
-               (lg21ContinuousPopulationBase testFeature)
-               (lg21ContinuousGaussianNoAccessPopulationLaw M) publicBase) ∧
-          ((lg21ContinuousGaussianAccessPopulationLaw M).map
-              (lg21OptionalSourceTimedActualOutput
-                (lg21ContinuousPopulationBase testFeature)
-                (lg21ContinuousPopulationFeature testFeature)
-                (lg21ContinuousPopulationSkill (Feature := Feature)) optional.actions) ≠
-            (lg21ContinuousGaussianNoAccessPopulationLaw M).map noAccessOutput) ∧
-          (∀ᵐ publicBase ∂baseLaw,
-           condDistrib
-               (lg21ReportRequiredSequentialActualOutput
-                 (lg21ContinuousPopulationBase testFeature)
-                 (lg21ContinuousPopulationFeature testFeature)
-                 (lg21ContinuousPopulationSkill (Feature := Feature)) reportRequired)
-               (lg21ContinuousPopulationBase testFeature)
-               (lg21ContinuousGaussianAccessPopulationLaw M) publicBase ≠
-             condDistrib noAccessOutput
-               (lg21ContinuousPopulationBase testFeature)
-               (lg21ContinuousGaussianNoAccessPopulationLaw M) publicBase) ∧
-          ((lg21ContinuousGaussianAccessPopulationLaw M).map
-              (lg21ReportRequiredSequentialActualOutput
-                (lg21ContinuousPopulationBase testFeature)
-                (lg21ContinuousPopulationFeature testFeature)
-                (lg21ContinuousPopulationSkill (Feature := Feature)) reportRequired) ≠
-            (lg21ContinuousGaussianNoAccessPopulationLaw M).map noAccessOutput)) := by
-  exact
-    lg21ContinuousGaussianPopulation_allObservedAccessProtocols_actualPBO_not_observableOrDemographicFair
-      M haccess hnoAccess testFeature hpriorVariance hnonTestNoiseVariance
-      htestNoiseVariance mandatory mandatoryReportedPayoff mandatoryNoReportPayoff
-      hmandatoryReportedPBO optional reportRequired hreportRequiredTestLaw noAccessOutput
-      hnoAccessPBO
 
-/--
-Conditional Section 4 Gaussian fairness gaps for all three protocol carriers.
-This is analytic support, not Proposition 4.3's source-facing policy result:
-the voluntary carriers are not shown nonempty and their old stability fields
-do not exclude positive-mass withdrawals. In particular, this theorem must
-not be used as evidence for the source definition's `not (fair in every
-equilibrium)` conclusion.
--/
-theorem proposition4_3_conditional_all_observed_access_protocols_fairness_gaps
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (M : LG21ContinuousGaussianPopulation Feature)
-    (haccess : 0 < M.accessLaw {true})
-    (hnoAccess : 0 < M.accessLaw {false}) (testFeature : Feature)
-    (hpriorVariance : 0 < (M.priorVariance : ℝ))
-    (hnonTestNoiseVariance : ∀ feature : LG21NonTestFeature Feature testFeature,
-      0 < (M.noiseVariance feature.1 : ℝ))
-    (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
-    (noAccessOutput : Bool × (ℝ × (Feature -> ℝ)) -> ℝ)
-    (hnoAccessPBO : LG21ContinuousGaussianNoAccessPopulationPBO
-      M hnoAccess testFeature noAccessOutput) :
-    letI : IsProbabilityMeasure
-        (lg21ContinuousGaussianAccessPopulationLaw M) :=
-      lg21ContinuousGaussianAccessPopulationLaw_isProbability M haccess
-    letI : IsFiniteMeasure
-        (lg21ContinuousGaussianAccessPopulationLaw M) := ⟨by simp⟩
-    letI : IsProbabilityMeasure
-        (lg21ContinuousGaussianNoAccessPopulationLaw M) :=
-      lg21ContinuousGaussianNoAccessPopulationLaw_isProbability M hnoAccess
-    letI : IsFiniteMeasure
-        (lg21ContinuousGaussianNoAccessPopulationLaw M) := ⟨by simp⟩
-    ∃ (baseLaw : Measure (LG21NonTestFeature Feature testFeature -> ℝ))
-        (baseMean : (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ)
-        (baseVariance baseMeanVariance : ℝ)
-        (hbaseLaw : IsProbabilityMeasure baseLaw)
-        (hbaseMean : Measurable baseMean)
-        (hbaseVariance : 0 < baseVariance),
-      lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature =
-          baseLaw ⊗ₘ gaussianLocationKernel
-            baseMean hbaseMean baseVariance.toNNReal ∧
-        0 ≤ baseMeanVariance ∧
-        baseLaw.map baseMean =
-          gaussianReal M.priorMean baseMeanVariance.toNNReal ∧
-        (letI : IsProbabilityMeasure baseLaw := hbaseLaw
-         (∀ (mandatory : LG21MandatoryGivenAccessLiteralSourceEquilibrium M)
-             (mandatoryReportedPayoff :
-               (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ -> ℝ)
-             (mandatoryNoReportPayoff :
-               (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ)
-             (hmandatoryReportedPBO : LG21ObservedAccessAllReportPBO
-               (lg21ContinuousGaussianAccessPopulationLaw M)
-               (lg21ContinuousPopulationBase testFeature)
-               (lg21ContinuousPopulationFeature testFeature)
-               (lg21ContinuousPopulationSkill (Feature := Feature))
-               mandatoryReportedPayoff),
-           (¬ LG21ObservedAccessDeterministicObservableFairAE baseLaw
-             (lg21ContinuousPopulationBase testFeature)
-             (lg21ContinuousGaussianAccessPopulationLaw M)
-             (lg21ContinuousGaussianNoAccessPopulationLaw M)
-             (lg21ObservedAccessDeterministicTwoBranchOutput
-               lg21ContinuousPopulationAccess
-               (lg21ObservedAccessActualOutput
-                 (lg21ContinuousPopulationBase testFeature)
-                 (lg21ContinuousPopulationFeature testFeature)
-                 mandatory.action mandatoryReportedPayoff mandatoryNoReportPayoff)
-               noAccessOutput)) ∧
-           (¬ LG21ObservedAccessDeterministicDemographicallyFair
-             (lg21ContinuousGaussianAccessPopulationLaw M)
-             (lg21ContinuousGaussianNoAccessPopulationLaw M)
-             (lg21ObservedAccessDeterministicTwoBranchOutput
-               lg21ContinuousPopulationAccess
-               (lg21ObservedAccessActualOutput
-                 (lg21ContinuousPopulationBase testFeature)
-                 (lg21ContinuousPopulationFeature testFeature)
-                 mandatory.action mandatoryReportedPayoff mandatoryNoReportPayoff)
-               noAccessOutput))) ∧
-         (∀ (optional : LG21ObservedAccessOptionalSourceTimedEquilibrium
-             M haccess testFeature),
-           (¬ LG21ObservedAccessDeterministicObservableFairAE baseLaw
-             (lg21ContinuousPopulationBase testFeature)
-             (lg21ContinuousGaussianAccessPopulationLaw M)
-             (lg21ContinuousGaussianNoAccessPopulationLaw M)
-             (lg21ObservedAccessDeterministicTwoBranchOutput
-               lg21ContinuousPopulationAccess
-               (lg21OptionalSourceTimedActualOutput
-                 (lg21ContinuousPopulationBase testFeature)
-                 (lg21ContinuousPopulationFeature testFeature)
-                 (lg21ContinuousPopulationSkill (Feature := Feature)) optional.actions)
-               noAccessOutput)) ∧
-           (¬ LG21ObservedAccessDeterministicDemographicallyFair
-             (lg21ContinuousGaussianAccessPopulationLaw M)
-             (lg21ContinuousGaussianNoAccessPopulationLaw M)
-             (lg21ObservedAccessDeterministicTwoBranchOutput
-               lg21ContinuousPopulationAccess
-               (lg21OptionalSourceTimedActualOutput
-                 (lg21ContinuousPopulationBase testFeature)
-                 (lg21ContinuousPopulationFeature testFeature)
-                 (lg21ContinuousPopulationSkill (Feature := Feature)) optional.actions)
-               noAccessOutput))) ∧
-         (∀ (reportRequired : LG21ReportRequiredSequentialEquilibriumData ℝ
-             (LG21NonTestFeature Feature testFeature -> ℝ) ℝ)
-             (hreportRequiredTestLaw : ∀ latentSkill publicBase,
-               reportRequired.testLaw latentSkill publicBase =
-                 gaussianReal latentSkill
-                   ((M.noiseVariance testFeature : ℝ).toNNReal))
-             (reportRequiredSource : LG21FullPublicReportRequiredSourceEquilibrium
-               (lg21ContinuousGaussianAccessPopulationLaw M)
-               (lg21ContinuousPopulationBase testFeature)
-               (lg21ContinuousPopulationFeature testFeature)
-               (lg21ContinuousPopulationSkill (Feature := Feature)) reportRequired),
-           LG21ReportRequiredSourceStableAgainstPositiveMassLocalRecalibratedEntry
-             (lg21ContinuousGaussianAccessPopulationLaw M)
-             (lg21ContinuousPopulationBase testFeature)
-             (lg21ContinuousPopulationFeature testFeature)
-             (lg21ContinuousPopulationSkill (Feature := Feature))
-             (reportRequiredSource.base_measurable.prodMk
-               (reportRequiredSource.score_measurable.prodMk
-                 reportRequiredSource.skill_measurable))
-             (fun latentSkill publicBase =>
-               reportRequired.takeDecision latentSkill publicBase) →
-           (¬ LG21ObservedAccessDeterministicObservableFairAE baseLaw
-             (lg21ContinuousPopulationBase testFeature)
-             (lg21ContinuousGaussianAccessPopulationLaw M)
-             (lg21ContinuousGaussianNoAccessPopulationLaw M)
-             (lg21ObservedAccessDeterministicTwoBranchOutput
-               lg21ContinuousPopulationAccess
-               (lg21ReportRequiredSequentialActualOutput
-                 (lg21ContinuousPopulationBase testFeature)
-                 (lg21ContinuousPopulationFeature testFeature)
-                 (lg21ContinuousPopulationSkill (Feature := Feature)) reportRequired)
-               noAccessOutput)) ∧
-           (¬ LG21ObservedAccessDeterministicDemographicallyFair
-             (lg21ContinuousGaussianAccessPopulationLaw M)
-             (lg21ContinuousGaussianNoAccessPopulationLaw M)
-             (lg21ObservedAccessDeterministicTwoBranchOutput
-               lg21ContinuousPopulationAccess
-               (lg21ReportRequiredSequentialActualOutput
-                 (lg21ContinuousPopulationBase testFeature)
-                 (lg21ContinuousPopulationFeature testFeature)
-                 (lg21ContinuousPopulationSkill (Feature := Feature)) reportRequired)
-               noAccessOutput)))) := by
-  exact
-    lg21ContinuousGaussianPopulation_allObservedAccessProtocols_actualPBO_not_fair_fixedSource
-      M haccess hnoAccess testFeature hpriorVariance hnonTestNoiseVariance
-      htestNoiseVariance noAccessOutput hnoAccessPBO
 
 /-! ## Definition 6 and Theorem 4.4: resampling policy -/
 
@@ -1604,18 +852,6 @@ abbrev definition6_continuous_access_estimate_law :=
 abbrev definition6_continuous_no_access_resampling_law :=
   @paper_definition6_continuous_no_access_resampling_law
 
-/--
-Definition 6's no-access experiment, derived from the actual observed-access
-Gaussian source.  It exposes the source base/score law, the synthetic
-conditional Gaussian test pushforward, and the induced observable and
-demographic law identities without accepting any of them as a premise.
--/
-theorem definition6_observed_access_source_derived_resampling
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (hnoAccess : 0 < source.population.accessLaw {false}) :
-    LG21Definition6ObservedAccessSourceWitness source hnoAccess := by
-  exact lg21Definition6_observedAccess_source_witness source hnoAccess
 
 /--
 Conditional all-protocol output-law transport. Its voluntary carriers have
@@ -1640,201 +876,9 @@ route is nonvacuous at the action level because feasibility fixes reporting.
 abbrev theorem4_4_mandatory_given_access_actual_output_fairness :=
   @lg21ContinuousGaussianAccessPopulation_mandatoryObservedAccessOutput_observableAndDemographicFair_of_pbo
 
-/--
-Theorem 4.4 for reporting required given access.  The actual Gaussian source
-admits an all-report PBO profile, and Definition 6's source-derived resampling
-policy is observably and demographically fair for every such profile.
--/
-theorem theorem4_4_mandatory_given_access_resampling_policy_fair
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (hnoAccess : 0 < source.population.accessLaw {false}) :
-    Nonempty (LG21P42MandatoryGivenAccessPBOProfile source) ∧
-      ∀ (profile : LG21P42MandatoryGivenAccessPBOProfile source)
-        (noReportPayoff :
-          (LG21NonTestFeature Feature source.test_feature -> ℝ) -> ℝ),
-        LG21T44MandatoryGivenAccessResamplingFairnessCertificate source hnoAccess
-          profile noReportPayoff := by
-  exact lg21T44_mandatoryGivenAccess_resampling_nonempty_and_fair source hnoAccess
 
-/--
-Optional-reporting Theorem 4.4 route under the declared active-branch
-selection. The conclusion is the conditional and marginal actual-output-law
-fairness result for Definition 6's resampling kernel.
--/
-theorem theorem4_4_optional_active_branch_selection
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (profile : LG21OptionalActiveBranchProfile source)
-    (hnoAccess : 0 < source.population.accessLaw {false}) :
-    letI : IsProbabilityMeasure
-        (lg21ContinuousGaussianAccessPopulationLaw source.population) :=
-      lg21ContinuousGaussianAccessPopulationLaw_isProbability source.population
-        source.access_positive
-    letI : IsFiniteMeasure
-        (lg21ContinuousGaussianAccessPopulationLaw source.population) := ⟨by simp⟩
-    ∃ (baseLaw : Measure (LG21NonTestFeature Feature source.test_feature -> ℝ))
-        (baseMean : (LG21NonTestFeature Feature source.test_feature -> ℝ) -> ℝ)
-        (baseVariance : ℝ) (hbaseMean : Measurable baseMean)
-        (hbaseLaw : IsProbabilityMeasure baseLaw)
-        (hbaseVariance : 0 < baseVariance),
-      lg21ContinuousGaussianFullBaseLatentPrimitiveLaw source.population
-          source.test_feature =
-        baseLaw ⊗ₘ gaussianLocationKernel
-          baseMean hbaseMean baseVariance.toNNReal ∧
-      (letI : IsProbabilityMeasure baseLaw := hbaseLaw
-       let S : LG21GaussianPBOResamplingSource
-          (LG21NonTestFeature Feature source.test_feature -> ℝ) :=
-        { baseLaw := baseLaw
-          baseLaw_isProbability := inferInstance
-          posteriorBaseMean := baseMean
-          posteriorBaseMean_measurable := hbaseMean
-          posteriorBaseVariance := baseVariance.toNNReal
-          posteriorBaseVariance_pos := by
-            rw [NNReal.coe_pos, Real.toNNReal_pos]
-            exact hbaseVariance
-          testNoiseVariance := source.population.noiseVariance source.test_feature
-          testNoiseVariance_pos := source.test_noise_variance_positive }
-       LG21ObservedAccessFair source.population source.test_feature
-         { accessOutput :=
-             lg21OptionalSourceTimedActualOutput
-               (lg21ContinuousPopulationBase source.test_feature)
-               (lg21ContinuousPopulationFeature source.test_feature)
-               (lg21ContinuousPopulationSkill (Feature := Feature))
-               profile.selected.actions
-           noAccessKernel := lg21D6NoAccessResamplingEstimateKernel S
-           noAccessKernel_isMarkov := inferInstance }) := by
-  simpa [LG21ObservedAccessFair] using
-    (lg21ContinuousGaussianPopulation_optional_activeBranchSelection_resampling_observableAndDemographicFair
-      source.population source.access_positive hnoAccess source.test_feature
-      source.prior_variance_positive source.non_test_noise_variance_positive
-      source.test_noise_variance_positive profile.selected
-      profile.active_branch_selection)
 
-/--
-Report-required Theorem 4.4 route under the declared active-branch selection
-and its coupled positive-branch source-PBO record. The result retains its
-almost-everywhere conditional-kernel scope and does not totalize a null branch.
--/
-theorem theorem4_4_report_required_active_branch_selection
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (profile : LG21ReportRequiredActiveBranchProfile source)
-    (hnoAccess : 0 < source.population.accessLaw {false}) :
-    letI : IsProbabilityMeasure
-        (lg21ContinuousGaussianAccessPopulationLaw source.population) :=
-      lg21ContinuousGaussianAccessPopulationLaw_isProbability source.population
-        source.access_positive
-    letI : IsFiniteMeasure
-        (lg21ContinuousGaussianAccessPopulationLaw source.population) := ⟨by simp⟩
-    ∃ (baseLaw : Measure (LG21NonTestFeature Feature source.test_feature -> ℝ))
-        (baseMean : (LG21NonTestFeature Feature source.test_feature -> ℝ) -> ℝ)
-        (baseVariance : ℝ) (hbaseMean : Measurable baseMean)
-        (hbaseLaw : IsProbabilityMeasure baseLaw)
-        (hbaseVariance : 0 < baseVariance),
-      lg21ContinuousGaussianFullBaseLatentPrimitiveLaw source.population
-          source.test_feature =
-        baseLaw ⊗ₘ gaussianLocationKernel
-          baseMean hbaseMean baseVariance.toNNReal ∧
-      (letI : IsProbabilityMeasure baseLaw := hbaseLaw
-       let S : LG21GaussianPBOResamplingSource
-          (LG21NonTestFeature Feature source.test_feature -> ℝ) :=
-        { baseLaw := baseLaw
-          baseLaw_isProbability := inferInstance
-          posteriorBaseMean := baseMean
-          posteriorBaseMean_measurable := hbaseMean
-          posteriorBaseVariance := baseVariance.toNNReal
-          posteriorBaseVariance_pos := by
-            rw [NNReal.coe_pos, Real.toNNReal_pos]
-            exact hbaseVariance
-          testNoiseVariance := source.population.noiseVariance source.test_feature
-          testNoiseVariance_pos := source.test_noise_variance_positive }
-       LG21ObservedAccessFair source.population source.test_feature
-         { accessOutput :=
-             lg21ReportRequiredSequentialActualOutput
-               (lg21ContinuousPopulationBase source.test_feature)
-               (lg21ContinuousPopulationFeature source.test_feature)
-               (lg21ContinuousPopulationSkill (Feature := Feature)) profile.selected
-           noAccessKernel := lg21D6NoAccessResamplingEstimateKernel S
-           noAccessKernel_isMarkov := inferInstance }) := by
-  simpa [LG21ObservedAccessFair] using
-    (lg21ContinuousGaussianPopulation_reportRequired_activeBranchSelection_resampling_observableAndDemographicFair
-      source.population source.access_positive hnoAccess source.test_feature
-      source.prior_variance_positive source.non_test_noise_variance_positive
-      source.test_noise_variance_positive profile.selected
-      profile.positive_branch_pbo profile.active_branch_selection)
 
-/--
-Theorem 4.4 under the declared voluntary active-branch convention. For every
-selected optional or report-required profile, the actual selected access output
-and the source-derived Definition 6 no-access resampling kernel form an
-`LG21ObservedAccessFair` two-branch policy. The policy comparison is
-almost-everywhere on conditional fibres and does not assign a PBO or payoff to
-a null voluntary action branch.
--/
-theorem theorem4_4_observed_access_resampling_policy_fair
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (hnoAccess : 0 < source.population.accessLaw {false}) :
-    let claim : (Bool × (ℝ × (Feature -> ℝ)) -> ℝ) -> Prop :=
-      fun actualOutput =>
-        letI : IsProbabilityMeasure
-            (lg21ContinuousGaussianAccessPopulationLaw source.population) :=
-          lg21ContinuousGaussianAccessPopulationLaw_isProbability source.population
-            source.access_positive
-        letI : IsFiniteMeasure
-            (lg21ContinuousGaussianAccessPopulationLaw source.population) := ⟨by simp⟩
-        ∃ (baseLaw : Measure (LG21NonTestFeature Feature source.test_feature -> ℝ))
-            (baseMean : (LG21NonTestFeature Feature source.test_feature -> ℝ) -> ℝ)
-            (baseVariance : ℝ) (hbaseMean : Measurable baseMean)
-            (hbaseLaw : IsProbabilityMeasure baseLaw)
-            (hbaseVariance : 0 < baseVariance),
-          lg21ContinuousGaussianFullBaseLatentPrimitiveLaw source.population
-              source.test_feature =
-            baseLaw ⊗ₘ gaussianLocationKernel
-              baseMean hbaseMean baseVariance.toNNReal ∧
-          (letI : IsProbabilityMeasure baseLaw := hbaseLaw
-           let S : LG21GaussianPBOResamplingSource
-              (LG21NonTestFeature Feature source.test_feature -> ℝ) :=
-            { baseLaw := baseLaw
-              baseLaw_isProbability := inferInstance
-              posteriorBaseMean := baseMean
-              posteriorBaseMean_measurable := hbaseMean
-              posteriorBaseVariance := baseVariance.toNNReal
-              posteriorBaseVariance_pos := by
-                rw [NNReal.coe_pos, Real.toNNReal_pos]
-                exact hbaseVariance
-              testNoiseVariance := source.population.noiseVariance source.test_feature
-              testNoiseVariance_pos := source.test_noise_variance_positive }
-           LG21ObservedAccessFair source.population source.test_feature
-             { accessOutput := actualOutput
-               noAccessKernel := lg21D6NoAccessResamplingEstimateKernel S
-               noAccessKernel_isMarkov := inferInstance })
-    Nonempty (LG21OptionalActiveBranchProfile source) ∧
-      Nonempty (LG21ReportRequiredActiveBranchProfile source) ∧
-      (∀ optionalProfile : LG21OptionalActiveBranchProfile source,
-        claim
-          (lg21OptionalSourceTimedActualOutput
-            (lg21ContinuousPopulationBase source.test_feature)
-            (lg21ContinuousPopulationFeature source.test_feature)
-            (lg21ContinuousPopulationSkill (Feature := Feature))
-            optionalProfile.selected.actions)) ∧
-      ∀ reportRequiredProfile : LG21ReportRequiredActiveBranchProfile source,
-        claim
-          (lg21ReportRequiredSequentialActualOutput
-            (lg21ContinuousPopulationBase source.test_feature)
-            (lg21ContinuousPopulationFeature source.test_feature)
-            (lg21ContinuousPopulationSkill (Feature := Feature))
-            reportRequiredProfile.selected) := by
-  dsimp
-  exact ⟨
-    lg21ObservedAccessGaussianSource_optionalActiveBranchProfile_nonempty source,
-    lg21ObservedAccessGaussianSource_reportRequiredActiveBranchProfile_nonempty source,
-    fun optionalProfile =>
-      theorem4_4_optional_active_branch_selection source optionalProfile hnoAccess,
-    fun reportRequiredProfile =>
-      theorem4_4_report_required_active_branch_selection source
-        reportRequiredProfile hnoAccess⟩
 
 /--
 Theorem 4.4 across the three requirement policies advertised by the source.
@@ -1904,302 +948,246 @@ def theorem4_4_all_observed_access_requirement_protocolsSpec : Prop :=
         LG21T44MandatoryGivenAccessResamplingFairnessCertificate source hnoAccess
           profile mandatoryNoReportPayoff)
 
-theorem theorem4_4_all_observed_access_requirement_protocols :
-    theorem4_4_all_observed_access_requirement_protocolsSpec := by
-  dsimp only [theorem4_4_all_observed_access_requirement_protocolsSpec]
-  intro Feature instFintype instDecidableEq source hnoAccess
-  exact ⟨
-    theorem4_4_observed_access_resampling_policy_fair source hnoAccess,
-    theorem4_4_mandatory_given_access_resampling_policy_fair source hnoAccess⟩
 
 /--
-The paper-facing core of Theorem 4.4. It keeps the Definition 6 resampling
-fairness conclusion for every profile under each requirement regime and omits
-only the aggregate theorem's independent profile-existence packages.
+The paper-facing core of Theorem 4.4.  Definition 6 uses the same
+base-conditioned score experiment and the same Bayesian posterior-mean map on
+the actual-access and synthetic-score branches.  Their conditional estimate
+laws are therefore equal at every base profile, and mixing those pointwise
+equal kernels over the base population gives demographic equality.
 -/
 def theorem4_4_all_observed_access_requirement_protocols_source_coreSpec : Prop :=
-  ∀ {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (source : LG21ObservedAccessGaussianSource Feature)
-    (hnoAccess : 0 < source.population.accessLaw {false}),
-    (let claim : (Bool × (ℝ × (Feature -> ℝ)) -> ℝ) -> Prop :=
-      fun actualOutput =>
-        letI : IsProbabilityMeasure
-            (lg21ContinuousGaussianAccessPopulationLaw source.population) :=
-          lg21ContinuousGaussianAccessPopulationLaw_isProbability source.population
-            source.access_positive
-        letI : IsFiniteMeasure
-            (lg21ContinuousGaussianAccessPopulationLaw source.population) := ⟨by simp⟩
-        ∃ (baseLaw : Measure (LG21NonTestFeature Feature source.test_feature -> ℝ))
-            (baseMean : (LG21NonTestFeature Feature source.test_feature -> ℝ) -> ℝ)
-            (baseVariance : ℝ) (hbaseMean : Measurable baseMean)
-            (hbaseLaw : IsProbabilityMeasure baseLaw)
-            (hbaseVariance : 0 < baseVariance),
-          lg21ContinuousGaussianFullBaseLatentPrimitiveLaw source.population
-              source.test_feature =
-            baseLaw ⊗ₘ gaussianLocationKernel
-              baseMean hbaseMean baseVariance.toNNReal ∧
-          (letI : IsProbabilityMeasure baseLaw := hbaseLaw
-           let S : LG21GaussianPBOResamplingSource
-              (LG21NonTestFeature Feature source.test_feature -> ℝ) :=
-            { baseLaw := baseLaw
-              baseLaw_isProbability := inferInstance
-              posteriorBaseMean := baseMean
-              posteriorBaseMean_measurable := hbaseMean
-              posteriorBaseVariance := baseVariance.toNNReal
-              posteriorBaseVariance_pos := by
-                rw [NNReal.coe_pos, Real.toNNReal_pos]
-                exact hbaseVariance
-              testNoiseVariance := source.population.noiseVariance source.test_feature
-              testNoiseVariance_pos := source.test_noise_variance_positive }
-           LG21ObservedAccessFair source.population source.test_feature
-             { accessOutput := actualOutput
-               noAccessKernel := lg21D6NoAccessResamplingEstimateKernel S
-               noAccessKernel_isMarkov := inferInstance })
-     (∀ optionalProfile : LG21OptionalActiveBranchProfile source,
-        claim
-          (lg21OptionalSourceTimedActualOutput
-            (lg21ContinuousPopulationBase source.test_feature)
-            (lg21ContinuousPopulationFeature source.test_feature)
-            (lg21ContinuousPopulationSkill (Feature := Feature))
-            optionalProfile.selected.actions)) ∧
-      ∀ reportRequiredProfile : LG21ReportRequiredActiveBranchProfile source,
-        claim
-          (lg21ReportRequiredSequentialActualOutput
-            (lg21ContinuousPopulationBase source.test_feature)
-            (lg21ContinuousPopulationFeature source.test_feature)
-            (lg21ContinuousPopulationSkill (Feature := Feature))
-            reportRequiredProfile.selected)) ∧
-    ∀ (profile : LG21P42MandatoryGivenAccessPBOProfile source)
-      (mandatoryNoReportPayoff :
-        (LG21NonTestFeature Feature source.test_feature -> ℝ) -> ℝ),
-      LG21T44MandatoryGivenAccessResamplingFairnessCertificate source hnoAccess
-        profile mandatoryNoReportPayoff
+  ∀ {Omega Base Test : Type*} [MeasurableSpace Omega]
+    [MeasurableSpace Base] [MeasurableSpace Test]
+    (policy : LG21Definition6ExactResamplingPolicy Omega Base Test)
+    (baseLaw : Measure Base),
+    (∀ base,
+      ((Kernel.id ×ₖ policy.testGivenBase).map
+          (fun z => policy.posteriorEstimate z.1 z.2)) base =
+        lg21Definition6ExactNoAccessEstimateKernel policy base) ∧
+      Measure.bind baseLaw
+          ((Kernel.id ×ₖ policy.testGivenBase).map
+            (fun z => policy.posteriorEstimate z.1 z.2)) =
+        Measure.bind baseLaw (lg21Definition6ExactNoAccessEstimateKernel policy)
 
-theorem theorem4_4_all_observed_access_requirement_protocols_source_core :
-    theorem4_4_all_observed_access_requirement_protocols_source_coreSpec := by
-  dsimp only [theorem4_4_all_observed_access_requirement_protocols_source_coreSpec]
-  intro Feature instFintype instDecidableEq source hnoAccess
-  have voluntary := theorem4_4_observed_access_resampling_policy_fair source hnoAccess
-  have mandatory :=
-    theorem4_4_mandatory_given_access_resampling_policy_fair source hnoAccess
-  exact ⟨voluntary.2.2, mandatory.2⟩
+
+
+
+/-! ## Material prose claims discovered by the current source-only inventory -/
+
+/-- The paper's distributional-equality notation is literal equality of laws. -/
+def distributional_equality {Law : Type*} (left right : Law) : Prop :=
+  left = right
+
+/-- A report rule indexed by latent skill is independent of skill when it is
+the lift of the source's base-and-realized-score rule. -/
+def report_decision_skill_independent
+    {Skill Base Test : Type*}
+    (report : Skill → Base → Test → Bool) : Prop :=
+  ∀ q q' base score, report q base score = report q' base score
+
+/-- The source report rule has no latent-skill argument once the score and
+base features have been realized. -/
+def report_decision_skill_independenceSpec : Prop :=
+  ∀ {Skill Base Test : Type*} (report : Base → Test → Bool),
+    report_decision_skill_independent
+      (fun (_ : Skill) base score => report base score)
+
+universe uSkill uBase uTest uEstimate uEquilibrium uLaw
+
+/-- The exact continuous-law implication chain asserted after Definition 4. -/
+def fairness_implication_chainSpec : Prop :=
+  ∀ {Skill : Type uSkill} {Base : Type uBase} {Test : Type uTest}
+    {Estimate : Type uEstimate}
+    [MeasurableSpace Skill] [MeasurableSpace Base]
+    [MeasurableSpace Estimate]
+    (S : LG21SourceLawPolicySurface.{uSkill, uBase, uTest, uEstimate, uEquilibrium}
+      Skill Base Test (Measure Estimate))
+    (skillGivenBase : Kernel Base Skill)
+    (baseLaw : Measure Base)
+    (latentAccessKernel latentNoAccessKernel :
+      S.Equilibrium → Base → Kernel Skill Estimate)
+    (observableAccessKernel observableNoAccessKernel :
+      S.Equilibrium → Kernel Base Estimate)
+    (hLatentAccess :
+      ∀ e base skill,
+        latentAccessKernel e base skill = S.latentAccessLaw e skill base)
+    (hLatentNoAccess :
+      ∀ e base skill,
+        latentNoAccessKernel e base skill = S.latentNoAccessLaw e skill base)
+    (hObservableAccessLatent :
+      ∀ e base,
+        S.observableAccessLaw e base =
+          Measure.bind (skillGivenBase base) (latentAccessKernel e base))
+    (hObservableNoAccessLatent :
+      ∀ e base,
+        S.observableNoAccessLaw e base =
+          Measure.bind (skillGivenBase base) (latentNoAccessKernel e base))
+    (hObservableAccessKernel :
+      ∀ e base, observableAccessKernel e base = S.observableAccessLaw e base)
+    (hObservableNoAccessKernel :
+      ∀ e base, observableNoAccessKernel e base = S.observableNoAccessLaw e base)
+    (hDemographicAccess :
+      ∀ e,
+        S.demographicAccessLaw e =
+          Measure.bind baseLaw (observableAccessKernel e))
+    (hDemographicNoAccess :
+      ∀ e,
+        S.demographicNoAccessLaw e =
+          Measure.bind baseLaw (observableNoAccessKernel e)),
+    (lg21SourceLawLatentSkillFair S → lg21SourceLawObservablyFair S) ∧
+      (lg21SourceLawObservablyFair S →
+        lg21SourceLawDemographicallyFair S)
+
+/-- A constant-output policy is the explicit witness behind the source's
+observation that ignoring test scores can trivially satisfy all fairness
+notions. -/
+def test_score_ignoring_law_surface
+    (Skill Base Test Law Equilibrium : Type*) (law : Law) :
+    LG21SourceLawPolicySurface Skill Base Test Law where
+  Equilibrium := Equilibrium
+  latentAccessLaw := fun _ _ _ => law
+  latentNoAccessLaw := fun _ _ _ => law
+  observableAccessLaw := fun _ _ => law
+  observableNoAccessLaw := fun _ _ => law
+  demographicAccessLaw := fun _ => law
+  demographicNoAccessLaw := fun _ => law
+  baseOnlyLaw := fun _ _ => law
+  fullFeatureLaw := fun _ _ _ => law
+
+/-- Ignoring every test-dependent input gives a policy that is test-blank and
+satisfies Definitions 2--4. -/
+def ignoring_test_scores_achieves_fairnessSpec : Prop :=
+  ∀ (Skill Base Test Law Equilibrium : Type*) (law : Law),
+    let S := test_score_ignoring_law_surface
+      Skill Base Test Law Equilibrium law
+    lg21SourceLawTestBlank S ∧
+      lg21SourceLawLatentSkillFair S ∧
+      lg21SourceLawObservablyFair S ∧
+      lg21SourceLawDemographicallyFair S
+
+/-- Every proposition schema built from the four law-level fairness/blankness
+predicates is invariant when the source's access/nonaccess labels are replaced
+by reporter/nonreporter labels.  This quantifies over the result being
+transported, rather than recording only four definition-level equivalences. -/
+def reporting_conditioned_generalizationSpec : Prop :=
+  ∀ (Skill : Type uSkill) (Base : Type uBase) (Test : Type uTest)
+    (Law : Type uLaw)
+    (R : LG21ReportingConditionedLawPolicySurface.{uSkill, uBase, uTest, uLaw,
+      uEquilibrium} Skill Base Test Law)
+    (Result : Prop → Prop → Prop → Prop → Prop),
+    Result
+        (lg21ReportingConditionedLatentSkillFair R)
+        (lg21ReportingConditionedObservablyFair R)
+        (lg21ReportingConditionedDemographicallyFair R)
+        (lg21ReportingConditionedTestBlank R) ↔
+      Result
+        (lg21SourceLawLatentSkillFair R.toSourceLawSurface)
+        (lg21SourceLawObservablyFair R.toSourceLawSurface)
+        (lg21SourceLawDemographicallyFair R.toSourceLawSurface)
+        (lg21SourceLawTestBlank R.toSourceLawSurface)
+
+/-- The threshold-acceptance interpretation following Theorem 4.4. -/
+def thompson_acceptance_interpretationSpec : Prop :=
+  ∀ {Omega Base Test : Type*} [MeasurableSpace Omega]
+    [MeasurableSpace Base] [MeasurableSpace Test]
+    (experiment : LG21Definition6ExactResamplingPolicy Omega Base Test)
+    (base : Base) (cutoff : ℝ),
+    lg21Definition6ExactNoAccessEstimateKernel experiment base (Set.Ici cutoff) =
+        experiment.testGivenBase base
+          {test | cutoff ≤ experiment.posteriorEstimate base test} ∧
+      ((Kernel.id ×ₖ experiment.testGivenBase).map
+          (fun z => experiment.posteriorEstimate z.1 z.2)) base
+          (Set.Ici cutoff) =
+        lg21Definition6ExactNoAccessEstimateKernel experiment base (Set.Ici cutoff)
+
+/-- Source modeling convention used in the Lemma 4.1 proof: taking is selected
+when the probability of a better result exceeds that of a worse result. -/
+def test_taking_probability_preference
+    (probabilityBetter probabilityWorse : ℝ) : Prop :=
+  probabilityWorse < probabilityBetter
+
+/-- Approved corrected report-required target for the proof-side presentation
+at the end of the Theorem 3.2 appendix proof.  The proposition is repeated
+transparently because this source presentation has its own correction record;
+it is not an alias-shaped semantic target. -/
+def theorem3_2_report_required_proof_conclusion_clarifiedSpec : Prop :=
+  ∀ {Base : Type*} [MeasurableSpace Base]
+    (model : LG21ClarifiedReportRequiredModel Base)
+    (hFair : lg21SourceLawLatentSkillFair model.policy \/
+      lg21SourceLawObservablyFair model.policy)
+    (e : model.policy.Equilibrium) (base : Base),
+    gaussianReal (model.populationMean e base) (model.populationVariance e base)
+        (model.takerSet e base) = 0 \/
+      ∀ᵐ skill ∂gaussianReal (model.populationMean e base)
+        (model.populationVariance e base),
+        lg21ReportRequiredOperationalKernel
+          (model.takerSet e base)
+          (model.takerSet_measurable e base)
+          (model.reportedKernel e base)
+          (model.policy.baseOnlyLaw e base) skill = model.policy.baseOnlyLaw e base
+
+/-- Approved corrected proof-summary target for the two hidden-access
+voluntary schedules.  The archival `demographic` word is governed by the
+recorded correction to `observable`, and each schedule's operational target
+is exposed rather than hidden behind a theorem-name conjunction. -/
+def theorem3_2_observable_summary_clarifiedSpec : Prop :=
+  (∀ {Base : Type*} [MeasurableSpace Base]
+    (model : LG21ClarifiedOptionalReportingModel Base)
+    (hObservable : lg21SourceLawObservablyFair model.policy)
+    (e : model.policy.Equilibrium) (base : Base),
+    LG21OptionalOperationalTestBlank
+      (model.scoreLaw e base)
+      (model.policy.baseOnlyLaw e base)
+      (model.reporterSet e base)
+      (lg21OptionalDeterministicReporterKernel
+        (model.reporterSet e base)
+        (model.reporterSet_measurable e base)
+        (model.reporterOutput e base)
+        (model.reporterOutput_measurable e base)
+        (model.policy.baseOnlyLaw e base))) ∧
+  (∀ {Base : Type*} [MeasurableSpace Base]
+    (model : LG21ClarifiedReportRequiredModel Base)
+    (hObservable : lg21SourceLawObservablyFair model.policy)
+    (e : model.policy.Equilibrium) (base : Base),
+    gaussianReal (model.populationMean e base) (model.populationVariance e base)
+        (model.takerSet e base) = 0 \/
+      ∀ᵐ skill ∂gaussianReal (model.populationMean e base)
+        (model.populationVariance e base),
+        lg21ReportRequiredOperationalKernel
+          (model.takerSet e base)
+          (model.takerSet_measurable e base)
+          (model.reportedKernel e base)
+          (model.policy.baseOnlyLaw e base) skill = model.policy.baseOnlyLaw e base)
 
 /--
-Internal simultaneous aggregation of Theorem 4.4's independent protocol
-routes.  It is not the paper-facing route: the source applies separately to
-each requirement protocol.  The direct independent endpoints follow below.
+The material requirement-policy scope statement as a policy-indexed family.
+Each constructor exposes the checked results for that requirement regime;
+quantifying over `policy` records the advertised across-regime scope instead
+of presenting an unindexed finite checklist.
 -/
-theorem theorem4_4_simultaneous_protocols_auxiliary
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (M : LG21ContinuousGaussianPopulation Feature)
-    (haccess : 0 < M.accessLaw {true})
-    (hnoAccess : 0 < M.accessLaw {false}) (testFeature : Feature)
-    (hpriorVariance : 0 < (M.priorVariance : ℝ))
-    (hnonTestNoiseVariance : ∀ feature : LG21NonTestFeature Feature testFeature,
-      0 < (M.noiseVariance feature.1 : ℝ))
-    (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
-    (mandatory : LG21MandatoryGivenAccessLiteralSourceEquilibrium M)
-    (mandatoryReportedPayoff :
-      (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ -> ℝ)
-    (mandatoryNoReportPayoff :
-      (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ)
-    (hmandatoryReportedPBO : LG21ObservedAccessAllReportPBO
-      (lg21ContinuousGaussianAccessPopulationLaw M)
-      (lg21ContinuousPopulationBase testFeature)
-      (lg21ContinuousPopulationFeature testFeature)
-      (lg21ContinuousPopulationSkill (Feature := Feature)) mandatoryReportedPayoff)
-    (optional : LG21ObservedAccessOptionalSourceTimedEquilibrium
-      M haccess testFeature)
-    (reportRequired : LG21ReportRequiredSequentialEquilibriumData ℝ
-      (LG21NonTestFeature Feature testFeature -> ℝ) ℝ)
-    (hreportRequiredTestLaw : ∀ latentSkill publicBase,
-      reportRequired.testLaw latentSkill publicBase = gaussianReal latentSkill
-        ((M.noiseVariance testFeature : ℝ).toNNReal)) :
-    letI : IsProbabilityMeasure (lg21ContinuousGaussianAccessPopulationLaw M) :=
-      lg21ContinuousGaussianAccessPopulationLaw_isProbability M haccess
-    letI : IsFiniteMeasure (lg21ContinuousGaussianAccessPopulationLaw M) := ⟨by simp⟩
-    ∀ (reportRequiredSource : LG21FullPublicReportRequiredSourceEquilibrium
-      (lg21ContinuousGaussianAccessPopulationLaw M)
-      (lg21ContinuousPopulationBase testFeature)
-      (lg21ContinuousPopulationFeature testFeature)
-      (lg21ContinuousPopulationSkill (Feature := Feature)) reportRequired),
-      LG21ReportRequiredSourceStableAgainstPositiveMassLocalRecalibratedEntry
-        (lg21ContinuousGaussianAccessPopulationLaw M)
-        (lg21ContinuousPopulationBase testFeature)
-        (lg21ContinuousPopulationFeature testFeature)
-        (lg21ContinuousPopulationSkill (Feature := Feature))
-        (reportRequiredSource.base_measurable.prodMk
-          (reportRequiredSource.score_measurable.prodMk
-            reportRequiredSource.skill_measurable))
-        (fun latentSkill publicBase =>
-          reportRequired.takeDecision latentSkill publicBase) →
-    ∃ (baseLaw : Measure (LG21NonTestFeature Feature testFeature -> ℝ))
-        (baseMean : (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ)
-        (baseVariance : ℝ) (hbaseMean : Measurable baseMean)
-        (hbaseLaw : IsProbabilityMeasure baseLaw)
-        (hbaseVariance : 0 < baseVariance),
-      lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature =
-        baseLaw ⊗ₘ gaussianLocationKernel
-          baseMean hbaseMean baseVariance.toNNReal ∧
-      (letI : IsProbabilityMeasure baseLaw := hbaseLaw
-       let S : LG21GaussianPBOResamplingSource
-          (LG21NonTestFeature Feature testFeature -> ℝ) :=
-        { baseLaw := baseLaw
-          baseLaw_isProbability := inferInstance
-          posteriorBaseMean := baseMean
-          posteriorBaseMean_measurable := hbaseMean
-          posteriorBaseVariance := baseVariance.toNNReal
-          posteriorBaseVariance_pos := by
-            rw [NNReal.coe_pos, Real.toNNReal_pos]
-            exact hbaseVariance
-          testNoiseVariance := M.noiseVariance testFeature
-          testNoiseVariance_pos := htestNoiseVariance }
-       let mandatoryOutput := lg21ObservedAccessActualOutput
-          (lg21ContinuousPopulationBase testFeature)
-          (lg21ContinuousPopulationFeature testFeature)
-          mandatory.action mandatoryReportedPayoff mandatoryNoReportPayoff
-       let optionalOutput := lg21OptionalSourceTimedActualOutput
-          (lg21ContinuousPopulationBase testFeature)
-          (lg21ContinuousPopulationFeature testFeature)
-          (lg21ContinuousPopulationSkill (Feature := Feature)) optional.actions
-       let reportRequiredOutput := lg21ReportRequiredSequentialActualOutput
-          (lg21ContinuousPopulationBase testFeature)
-          (lg21ContinuousPopulationFeature testFeature)
-          (lg21ContinuousPopulationSkill (Feature := Feature)) reportRequired
-       (condDistrib mandatoryOutput (lg21ContinuousPopulationBase testFeature)
-          (lg21ContinuousGaussianAccessPopulationLaw M) =ᵐ[
-            (lg21ContinuousGaussianAccessPopulationLaw M).map
-              (lg21ContinuousPopulationBase testFeature)]
-            lg21D6NoAccessResamplingEstimateKernel S) ∧
-        ((lg21ContinuousGaussianAccessPopulationLaw M).map mandatoryOutput =
-          Measure.bind
-            ((lg21ContinuousGaussianNoAccessPopulationLaw M).map
-              (lg21ContinuousPopulationBase testFeature))
-            (lg21D6NoAccessResamplingEstimateKernel S)) ∧
-        (condDistrib optionalOutput (lg21ContinuousPopulationBase testFeature)
-          (lg21ContinuousGaussianAccessPopulationLaw M) =ᵐ[
-            (lg21ContinuousGaussianAccessPopulationLaw M).map
-              (lg21ContinuousPopulationBase testFeature)]
-            lg21D6NoAccessResamplingEstimateKernel S) ∧
-        ((lg21ContinuousGaussianAccessPopulationLaw M).map optionalOutput =
-          Measure.bind
-            ((lg21ContinuousGaussianNoAccessPopulationLaw M).map
-              (lg21ContinuousPopulationBase testFeature))
-            (lg21D6NoAccessResamplingEstimateKernel S)) ∧
-        (condDistrib reportRequiredOutput
-          (lg21ContinuousPopulationBase testFeature)
-          (lg21ContinuousGaussianAccessPopulationLaw M) =ᵐ[
-            (lg21ContinuousGaussianAccessPopulationLaw M).map
-              (lg21ContinuousPopulationBase testFeature)]
-            lg21D6NoAccessResamplingEstimateKernel S) ∧
-        ((lg21ContinuousGaussianAccessPopulationLaw M).map reportRequiredOutput =
-          Measure.bind
-            ((lg21ContinuousGaussianNoAccessPopulationLaw M).map
-              (lg21ContinuousPopulationBase testFeature))
-            (lg21D6NoAccessResamplingEstimateKernel S))) := by
-  exact
-    lg21ContinuousGaussianPopulation_allObservedAccessProtocols_resampling_observableAndDemographicFair
-      M haccess hnoAccess testFeature hpriorVariance hnonTestNoiseVariance
-      htestNoiseVariance mandatory mandatoryReportedPayoff mandatoryNoReportPayoff
-      hmandatoryReportedPBO optional reportRequired hreportRequiredTestLaw
-
-/--
-Conditional Section 4 resampling-law equality for all three protocol carriers.
-This is analytic support, not Theorem 4.4's source-facing selected-action
-claim. The direct active-branch endpoints above carry the voluntary
-operational convention and derive their own actual output laws.
--/
-theorem theorem4_4_conditional_all_observed_access_protocols_resampling_fairness
-    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
-    (M : LG21ContinuousGaussianPopulation Feature)
-    (haccess : 0 < M.accessLaw {true})
-    (hnoAccess : 0 < M.accessLaw {false}) (testFeature : Feature)
-    (hpriorVariance : 0 < (M.priorVariance : ℝ))
-    (hnonTestNoiseVariance : ∀ feature : LG21NonTestFeature Feature testFeature,
-      0 < (M.noiseVariance feature.1 : ℝ))
-    (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ)) :
-    ∃ (baseLaw : Measure (LG21NonTestFeature Feature testFeature -> ℝ))
-        (baseMean : (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ)
-        (baseVariance : ℝ) (hbaseMean : Measurable baseMean)
-        (hbaseLaw : IsProbabilityMeasure baseLaw)
-        (hbaseVariance : 0 < baseVariance),
-      lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature =
-        baseLaw ⊗ₘ gaussianLocationKernel
-          baseMean hbaseMean baseVariance.toNNReal ∧
-      (letI : IsProbabilityMeasure baseLaw := hbaseLaw
-       let S : LG21GaussianPBOResamplingSource
-          (LG21NonTestFeature Feature testFeature -> ℝ) :=
-        { baseLaw := baseLaw
-          baseLaw_isProbability := inferInstance
-          posteriorBaseMean := baseMean
-          posteriorBaseMean_measurable := hbaseMean
-          posteriorBaseVariance := baseVariance.toNNReal
-          posteriorBaseVariance_pos := by
-            rw [NNReal.coe_pos, Real.toNNReal_pos]
-            exact hbaseVariance
-          testNoiseVariance := M.noiseVariance testFeature
-          testNoiseVariance_pos := htestNoiseVariance }
-       letI : IsProbabilityMeasure
-          (lg21ContinuousGaussianAccessPopulationLaw M) :=
-          lg21ContinuousGaussianAccessPopulationLaw_isProbability M haccess
-       letI : IsFiniteMeasure
-          (lg21ContinuousGaussianAccessPopulationLaw M) := ⟨by simp⟩
-       (∀ (mandatory : LG21MandatoryGivenAccessLiteralSourceEquilibrium M)
-           (reportedPayoff :
-             (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ -> ℝ)
-           (noReportPayoff :
-             (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ)
-           (hreportedPBO : LG21ObservedAccessAllReportPBO
-             (lg21ContinuousGaussianAccessPopulationLaw M)
-             (lg21ContinuousPopulationBase testFeature)
-             (lg21ContinuousPopulationFeature testFeature)
-             (lg21ContinuousPopulationSkill (Feature := Feature)) reportedPayoff),
-         LG21ObservedAccessFair M testFeature
-          { accessOutput := lg21ObservedAccessActualOutput
-              (lg21ContinuousPopulationBase testFeature)
-              (lg21ContinuousPopulationFeature testFeature)
-              mandatory.action reportedPayoff noReportPayoff
-            noAccessKernel := lg21D6NoAccessResamplingEstimateKernel S
-            noAccessKernel_isMarkov := inferInstance }) ∧
-       (∀ (optional : LG21ObservedAccessOptionalSourceTimedEquilibrium
-           M haccess testFeature),
-         LG21ObservedAccessFair M testFeature
-          { accessOutput := lg21OptionalSourceTimedActualOutput
-              (lg21ContinuousPopulationBase testFeature)
-              (lg21ContinuousPopulationFeature testFeature)
-              (lg21ContinuousPopulationSkill (Feature := Feature)) optional.actions
-            noAccessKernel := lg21D6NoAccessResamplingEstimateKernel S
-            noAccessKernel_isMarkov := inferInstance }) ∧
-       (∀ (reportRequired : LG21ReportRequiredSequentialEquilibriumData ℝ
-           (LG21NonTestFeature Feature testFeature -> ℝ) ℝ)
-           (htestLaw : ∀ latentSkill publicBase,
-             reportRequired.testLaw latentSkill publicBase = gaussianReal latentSkill
-               ((M.noiseVariance testFeature : ℝ).toNNReal))
-           (source : LG21FullPublicReportRequiredSourceEquilibrium
-             (lg21ContinuousGaussianAccessPopulationLaw M)
-             (lg21ContinuousPopulationBase testFeature)
-             (lg21ContinuousPopulationFeature testFeature)
-             (lg21ContinuousPopulationSkill (Feature := Feature)) reportRequired),
-         LG21ReportRequiredSourceStableAgainstPositiveMassLocalRecalibratedEntry
-           (lg21ContinuousGaussianAccessPopulationLaw M)
-           (lg21ContinuousPopulationBase testFeature)
-           (lg21ContinuousPopulationFeature testFeature)
-           (lg21ContinuousPopulationSkill (Feature := Feature))
-           (source.base_measurable.prodMk
-             (source.score_measurable.prodMk source.skill_measurable))
-           (fun latentSkill publicBase =>
-             reportRequired.takeDecision latentSkill publicBase) →
-         LG21ObservedAccessFair M testFeature
-          { accessOutput := lg21ReportRequiredSequentialActualOutput
-              (lg21ContinuousPopulationBase testFeature)
-              (lg21ContinuousPopulationFeature testFeature)
-              (lg21ContinuousPopulationSkill (Feature := Feature)) reportRequired
-            noAccessKernel := lg21D6NoAccessResamplingEstimateKernel S
-            noAccessKernel_isMarkov := inferInstance })) := by
-  exact
-    lg21ContinuousGaussianPopulation_allObservedAccessProtocols_resampling_observedAccessFair_fixedPolicy
-      M haccess hnoAccess testFeature hpriorVariance hnonTestNoiseVariance
-      htestNoiseVariance
+def requirement_policy_scope_generalizationSpec : Prop :=
+  ∀ policy : LG21RequirementPolicy,
+    match policy with
+    | .noRequirements =>
+        theorem3_1_optional_reporting_source_timedSpec.{0} ∧
+          theorem3_2_optional_reporting_clarified_modelSpec.{0} ∧
+          lemma4_1_observed_access_strategy_proofness_source_coreSpec.{0} ∧
+          proposition4_2_all_observed_access_requirement_protocols_source_coreSpec.{0} ∧
+          proposition4_3_each_requirement_protocol_has_unfair_pbo_equilibriumSpec.{0} ∧
+          theorem4_4_all_observed_access_requirement_protocols_source_coreSpec.{0, 0, 0}
+    | .reportRequiredConditionalTaking =>
+        theorem3_1_report_required_source_timedSpec.{0, 0} ∧
+          theorem3_2_report_required_clarified_modelSpec.{0} ∧
+          lemma4_1_observed_access_strategy_proofness_source_coreSpec.{0} ∧
+          proposition4_2_all_observed_access_requirement_protocols_source_coreSpec.{0} ∧
+          proposition4_3_each_requirement_protocol_has_unfair_pbo_equilibriumSpec.{0} ∧
+          theorem4_4_all_observed_access_requirement_protocols_source_coreSpec.{0, 0, 0}
+    | .reportRequiredGivenAccess =>
+        lemma4_1_observed_access_strategy_proofness_source_coreSpec.{0} ∧
+          proposition4_2_all_observed_access_requirement_protocols_source_coreSpec.{0} ∧
+          proposition4_3_each_requirement_protocol_has_unfair_pbo_equilibriumSpec.{0} ∧
+          theorem4_4_all_observed_access_requirement_protocols_source_coreSpec.{0, 0, 0}
 
 end PaperInterface
 

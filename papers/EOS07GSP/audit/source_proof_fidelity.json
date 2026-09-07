@@ -1,20 +1,74 @@
 {
-  "defects": [],
+  "defects": [
+    {
+      "acceptance_condition": "Lean proves the finite counterexample and then proves the repository-owner-approved clarified static endpoint, with the source map, status, and formalization notes recording the exact relation to the archival Definition 4, Lemmas 5--6, and Theorem 7.",
+      "affected_source_locators": [
+        "cited publication:443-467",
+        "cited publication:655-714",
+        "cited publication:716-798"
+      ],
+      "defect_kind": "model_semantics",
+      "id": "EOS07-STATIC-UNASSIGNED-LEF-BOUNDARY-01",
+      "repair_obligation": "Repository-owner approval on 2026-09-04 authorizes an explicit amended Definition 4: retain the printed allocated-rank condition and require every unassigned bidder not to profitably rematch to the bottom allocated slot at its recorded payment. The corrected full-K>N Lemma 5 and direct finite Theorem 7 seller-comparison endpoints must be proved without treating the stronger Lean SlotEnvyFree predicate as the printed definition.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "The numerical counterexample and approved strengthened bottom-slot condition are recorded in audit/STATIC_GSP_SOURCE_DEFECT_MEMO.md. Implementation.lean separately exposes correctedDefinition4LocallyEnvyFree. FiniteLemma5MoreBiddersBridge.lean directly proves the corrected full-K>N Lemma 5 stable-assignment endpoint through ordinary sorted GSP, including low-report individual rationality, concrete adjacent undercuts, and a separate bottom comparison for each unassigned bidder. FiniteTheorem7ComparisonBridge.lean then proves the source appendix's backward total-payment induction from the first unassigned bidder, exact actual-revenue decompositions for B-star and the arbitrary GSP tail, and the corrected finite seller-minimal-revenue inequality. The comparison exposes the source footnote's no-tie convention as an explicit strict ranked-bid premise; no random-tie expectation calculation is silently substituted. Lemma 6 also has the separate strict-bid correction recorded below.",
+      "source_claim": "Definition 4 defines locally envy-free only through the allocated ranks, while Lemma 5 says every locally envy-free GSP equilibrium yields a stable assignment and Theorem 7 says every other locally envy-free equilibrium has seller revenue at least that of B-star.",
+      "source_locator": "cited publication:443-467; cited publication:655-714",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "For one positive-CTR slot and two bidders with values 10 and 9, the no-tie GSP bids (10,0) form a Nash equilibrium and satisfy the printed allocated-rank local condition vacuously, yet the unassigned bidder profitably rematches with the slot at its recorded zero payment. The governing owner-approved formalization clarification adds the omitted bottom condition and is fully proved on the finite strict-ranked GSP domain. The archival delta remains explicit in the source record and validation report."
+    },
+    {
+      "acceptance_condition": "Lean proves the owner-approved strict-surplus amended full-K>N Lemma 6 endpoint from visible source-model assumptions, with the source map, validation report, and review surface stating its relation to the archival random-tie claim and the assigned-bidder outcome convention.",
+      "affected_source_locators": [
+        "cited publication:351-357",
+        "cited publication:460-467",
+        "cited publication:685-714"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "EOS07-LEMMA6-STRICT-IMPLEMENTABILITY-02",
+      "repair_obligation": "Keep the approved Definition 4 correction separate. Repository-owner approval on 2026-09-04 authorizes an amended Lemma 6 domain: retain stable assignment and require every assigned bidder to have strictly positive realized utility. Prove the full K>N construction without silently substituting deterministic tie breaking or treating unassigned tail-payment records as source-level payments.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "Lemma6Counterexample.lean proves lemma6_zero_surplus_outcome_stable, lemma6_zero_surplus_outcome_not_realizable_by_strict_tiebreak_gsp, and lemma6_zero_surplus_outcome_not_corrected_lemma6_stable. Implementation.lean separately exposes correctedLemma6StableAssignment. FiniteLemma6Bridge.lean proves corrected_lemma6_ranked_more_bidders_constructs_tiebreak_equilibrium_bridge: the Appendix bids through the first unassigned rank are strict by the stable-assignment algebra, the remaining tail is strictly lower, every bidder's allocation and every allocated bidder's payment agree through lemma6AssignedOutcomeEq, and the tie-broken GSP profile is locally envy-free. The formal static report domain is real-valued because the source does not state a lower bound; the auxiliary tail may be negative, so no nonnegative-bid interpretation is claimed absent a separate positivity condition. The archival universal wording remains marked as corrected rather than equivalent.",
+      "source_claim": "Lemma 6 says every stable assignment is an outcome of a locally envy-free GSP equilibrium when bidders outnumber positions; its Appendix proof says the constructed bids are strictly decreasing, so allocations and payments coincide with the stable assignment.",
+      "source_locator": "cited publication:351-357; cited publication:460-467; cited publication:685-714",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "For CTRs (2,1), values (10,9,8), and the stable outcome assigning the first two bidders to the two slots at per-click prices (9,9), exact GSP next-price realization forces the second and third bids both to equal 9. Thus no strictly ordered GSP profile realizes that exact outcome. The governing owner-approved formalization clarification makes strict assigned surplus explicit; its full target is proved. The archival delta remains explicit in the source record and validation report."
+    },
+    {
+      "acceptance_condition": "Lean proves the approved symmetric-continuation finite endpoint and all generated audit surfaces state its exact relation to the archival bidder-indexed statement.",
+      "affected_source_locators": [
+        "cited publication:528-546",
+        "cited publication:800-940"
+      ],
+      "defect_kind": "model_semantics",
+      "id": "EOS07-THEOREM8-BIDDER-INDEXED-STRATEGY-SCOPE-03",
+      "repair_obligation": "Repository-owner instruction on 2026-09-04 authorizes an explicit definition-level scope clarification and validation-report disclosure. The selected target must state the symmetric-continuation restriction, retain bidder-indexed induced history strategies and beliefs, and not relabel the result as archival arbitrary-profile uniqueness.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "audit/THEOREM8_SYMMETRIC_CONTINUATION_SCOPE_MEMO.md records the source/interface distinction and the owner-approved scope. FiniteLegalHistory.lean labels Theorem8FiniteLegalHistoryExPostPBE and its uniqueness theorem as symmetric-continuation endpoints; PaperInterface.lean labels the selected finite theorem as an owner-approved corrected target.",
+      "source_claim": "Theorem 8 describes bidder-indexed continuous strategies p_i(k,h,s_i) and asserts unique perfect Bayesian equilibrium among those continuous strategy profiles.",
+      "source_locator": "cited publication:528-546; cited publication:800-940",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The finite carrier Theorem8ContinuationPlan has no bidder coordinate. Its historyStrategy instantiates one common continuation plan across bidders, so its existence, ex-post best response, and uniqueness theorem quantify common/symmetric plans rather than arbitrary bidder-indexed profiles. The governing owner-approved formalization clarification states that scope explicitly; the archival delta remains explicit in the source record and validation report."
+    }
+  ],
   "paper": "EOS07GSP",
-  "review_status": "reviewed_no_defects",
+  "review_status": "defects_recorded",
   "reviewed_proof_scopes": [
     {
-      "outcome": "no_defect",
+      "outcome": "defect_recorded",
       "semantic_scope": "The first-price and GSP/VCG running examples, truthful and nontruthful bidding claims, displayed payments, utilities, and revenue comparisons.",
       "source_locator": "cited publication:94-275, Sections 2.2-2.3 and Remarks 1-3"
     },
     {
-      "outcome": "no_defect",
+      "outcome": "defect_recorded",
       "semantic_scope": "Locally envy-free GSP outcomes, stable assignments, the converse implementation, the B-star equilibrium, VCG-equivalent positions and payments, and seller-revenue minimality.",
       "source_locator": "cited publication:276-518 and 672-800, Definition 4, Lemmas 5-6, Theorem 7 and appendix proofs"
     },
     {
-      "outcome": "no_defect",
+      "outcome": "defect_recorded",
       "semantic_scope": "Continuous positive-density private values, the full public dropout-price history, stopped-clock tie handling, the displayed indifference threshold, legal surviving histories, continuous-strategy PBE existence and effective-action uniqueness, arbitrary-continuation ex-post optimality, and the VCG-equivalent outcome.",
       "source_locator": "cited publication:519-607 and 801-933, Theorem 8 and proof"
     }

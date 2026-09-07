@@ -1,8 +1,8 @@
 import KR21Monoculture.MainTheorems
 
 open scoped BigOperators
-open EconCSLib
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib
+open AppliedModelingLib.SocialChoice.Ranking
 
 namespace KR21Monoculture
 

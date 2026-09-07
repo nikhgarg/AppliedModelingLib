@@ -21,15 +21,15 @@ def twoTypeAllocation (a b : ℕ) : CountAllocation 2 where
 
 /-- Total size of the two-type allocation helper. -/
 @[simp] theorem twoTypeAllocation_total (a b : ℕ) :
-    EconCSLib.Allocation.total (twoTypeAllocation a b) = a + b := by
-  simp [EconCSLib.Allocation.total, twoTypeAllocation, Fin.sum_univ_two]
+    AppliedModelingLib.Allocation.total (twoTypeAllocation a b) = a + b := by
+  simp [AppliedModelingLib.Allocation.total, twoTypeAllocation, Fin.sum_univ_two]
 
 /-- Objective expansion for two-type allocations. -/
 theorem twoTypeAllocation_objective (M : ConsumptionModel 2) (a b : ℕ) :
     M.objective (twoTypeAllocation a b) =
       M.likelihood 0 * M.valueOfCount 0 a +
         M.likelihood 1 * M.valueOfCount 1 b := by
-  simp [ConsumptionModel.objective, EconCSLib.Allocation.objective,
+  simp [ConsumptionModel.objective, AppliedModelingLib.Allocation.objective,
     twoTypeAllocation, Fin.sum_univ_two]
 
 /-! ## Source Example 1: recovering calibration -/
@@ -262,12 +262,12 @@ theorem twoTypeAllocation_representation_zero
     (a b : ℕ) (hpos : 0 < a + b) :
     CountAllocation.representation (twoTypeAllocation a b) (0 : ItemType 2) =
       (a : ℝ) / (a + b : ℝ) := by
-  have htotal : EconCSLib.Allocation.total (twoTypeAllocation a b) ≠ 0 := by
+  have htotal : AppliedModelingLib.Allocation.total (twoTypeAllocation a b) ≠ 0 := by
     intro hzero
     have hab : a + b = 0 := by simpa using hzero
     exact hpos.ne' hab
   rw [CountAllocation.representation_eq_share]
-  rw [EconCSLib.Allocation.share_eq_div_of_total_ne_zero
+  rw [AppliedModelingLib.Allocation.share_eq_div_of_total_ne_zero
     (a := twoTypeAllocation a b) (k := (0 : ItemType 2)) htotal]
   simp
 
@@ -276,12 +276,12 @@ theorem twoTypeAllocation_representation_one
     (a b : ℕ) (hpos : 0 < a + b) :
     CountAllocation.representation (twoTypeAllocation a b) (1 : ItemType 2) =
       (b : ℝ) / (a + b : ℝ) := by
-  have htotal : EconCSLib.Allocation.total (twoTypeAllocation a b) ≠ 0 := by
+  have htotal : AppliedModelingLib.Allocation.total (twoTypeAllocation a b) ≠ 0 := by
     intro hzero
     have hab : a + b = 0 := by simpa using hzero
     exact hpos.ne' hab
   rw [CountAllocation.representation_eq_share]
-  rw [EconCSLib.Allocation.share_eq_div_of_total_ne_zero
+  rw [AppliedModelingLib.Allocation.share_eq_div_of_total_ne_zero
     (a := twoTypeAllocation a b) (k := (1 : ItemType 2)) htotal]
   simp
 

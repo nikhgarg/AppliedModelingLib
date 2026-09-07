@@ -8,107 +8,55 @@
   every node/.append style={outer sep=4pt}
 ]
 
-\dagPaperMetadata{Balancing Producer Fairness and Efficiency via Prior-Weighted Rating System Design}{Thomas Ma, Michael S. Bernstein, Ramesh Johari, and Nikhil Garg}{Proceedings of the International AAAI Conference on Web and Social Media 19(1)}{2025}{https://doi.org/10.1609/icwsm.v19i1.35854}
+\dagPaperMetadata{Balancing Producer Fairness and Efficiency via Prior-Weighted Rating System Design}{Thomas Ma, Michael S. Bernstein, Ramesh Johari, and Nikhil Garg}{Proceedings of the International AAAI Conference on Web and Social Media 19(1)}{2025}{https://doi.org/10.1609/icwsm.v19i1.35865}
 
 \dagPaperLegendRightOfMetadata{
-\node[dag_model, dag_template_legend] (legDef) at (0,0) {source\\definition or domain};
-\node[dag_result, dag_template_legend] (legResult) at (3.7,0) {formalized\\paper result};
-\node[dag_template_note, dag_template_legend, text width=3.0cm] (legNote) at (7.4,0) {formalized\\source note};
+\node[dag_model, dag_template_legend] (legDef) at (0,0) {source model\\or domain};
+\node[dag_result, dag_template_legend] (legResult) at (3.7,0) {formalized\\named result};
+\node[dag_template_note, dag_template_legend, text width=3.0cm] (legNote) at (7.4,0) {formalized\\source correction};
 }
 \daglegend{(legDef)(legResult)(legNote)}{Legend}
 
 \begin{dagPaperBody}
 
-\node[dag_model, text width=5.2cm] (FixedDefs) at (0,0) {
+\node[dag_model, text width=5.4cm] (FixedModel) at (0,0) {
   \textbf{Fixed binary-rating model} \\
-  Equation 1 posterior rating; posterior mean, \\
-  bias, variance, squared bias; Equation 2 MSE
+  positive discrete review count; Beta shape and nonnegative strength; \\
+  conditional posterior mean, bias, variance, and squared bias
 };
 
-\node[dag_model, text width=5.2cm] (Domains) at (0,-4.3) {
-  \textbf{Source domains} \\
-  positive prior mass and elapsed reviews; \\
-  $q\in[0,1]$; nonnegative and ordered strength
+\node[dag_model, text width=5.4cm] (Domains) at (0,-4.1) {
+  \textbf{Source theorem domains} \\
+  positive Beta-shape parameters; $q\in[0,1]$; \\
+  nonnegative and ordered prior strength
 };
 
-\node[dag_result, text width=5.4cm] (Thm31) at (7.0,0) {
+\node[dag_result, text width=5.6cm] (Thm31) at (7.4,0) {
   \textbf{Theorem 3.1} \\
-  squared bias nondecreasing; variance weakly \\
-  decreasing on $[0,1]$ and strictly on $(0,1)$
+  squared bias nondecreasing; variance weakly decreasing on $[0,1]$ and strictly decreasing on $(0,1)$
 };
 
-\node[dag_result, text width=5.4cm] (Thm32) at (7.0,-4.3) {
+\node[dag_result, text width=5.6cm] (Thm32) at (7.4,-4.1) {
   \textbf{Theorem 3.2} \\
-  squared-bias convexity and prior-mean minimum; \\
-  variance concavity and maximum at $q=1/2$
+  squared-bias convexity and prior-mean minimum; variance concavity and maximum at $q=1/2$
 };
 
-\node[dag_template_note, text width=5.3cm] (EndpointNote) at (14.0,0) {
-  \textbf{Formalized source note: Theorem 3.1} \\
-  Weak monotonicity holds on $[0,1]$, strict \\
-  monotonicity on $(0,1)$, and the endpoint \\
-  behavior at $q=0,1$ is stated separately.
+\node[dag_template_note, text width=5.2cm] (EndpointCorrection) at (14.6,0) {
+  \textbf{Theorem 3.1 correction} \\
+  The printed universal strict claim fails at $q=0,1$. The formalized target records weak closed-interval and strict interior conclusions.
 };
 
-\node[dag_model, text width=5.2cm] (ResponsiveDefs) at (0,-9.0) {
-  \textbf{Responsive-market metrics} \\
-  selection rate; individual and marketplace \\
-  unfairness; Equation 4 expected regret
+\node[dag_template_note, text width=9.9cm] (AppendixCorrections) at (7.3,-8.0) {
+  \textbf{Supplementary Appendix corrections} \\
+  Equation 20 uses $\mathrm{Beta}(C,1-C)$, compatible with $(k+mC)/(n+m)$. Equation 21 includes Dirichlet prior pseudo-counts in both sums; its printed display is the zero-prior special case.
 };
 
-\node[dag_model, text width=5.2cm] (Thompson) at (7.0,-9.0) {
-  \textbf{Thompson-sampling choice law} \\
-  one joint posterior-profile draw followed by \\
-  argmax selection in the current finite market
-};
-
-\node[dag_result, text width=5.4cm] (AppendixC) at (14.0,-9.0) {
-  \textbf{Appendix C} \\
-  finite conditional bias--variance identity and \\
-  responsive MSE decomposition over review counts
-};
-
-\node[dag_result, text width=5.2cm] (AppendixD) at (0,-13.7) {
-  \textbf{Appendix D, Equation 20} \\
-  weighted-average simplification and equality to \\
-  the binary posterior with $(mC,m(1-C))$
-};
-
-\node[dag_result, text width=5.2cm] (AppendixE) at (7.0,-13.7) {
-  \textbf{Appendix E, Equation 21} \\
-  finite Dirichlet posterior rating and \\
-  exact zero-prior formula comparison
-};
-
-\node[dag_result, text width=5.4cm] (AppendixF) at (14.0,-13.7) {
-  \textbf{Appendix F: $k$-sampling} \\
-  construct a dominating size-$k$ set, then choose uniformly; \\
-  proved $k=1$ argmax and full-market endpoints
-};
-
-\node[dag_template_note, text width=12.4cm] (FormulaNotes) at (7.0,-18.0) {
-  \textbf{Formalized source notes: Appendices D--E.}
-  Equation 20 uses $\mathrm{Beta}(C,1-C)$. Equation 21 includes the prior
-  pseudo-counts in both sums, with the zero-prior display as its special case.
-};
-
-\draw[dag_arrow] (FixedDefs) -- (Thm31);
+\draw[dag_arrow] (FixedModel) -- (Thm31);
 \draw[dag_arrow] (Domains) -- (Thm31);
-\draw[dag_arrow] (FixedDefs) -- (Thm32);
+\draw[dag_arrow] (FixedModel) -- (Thm32);
 \draw[dag_arrow] (Domains) -- (Thm32);
-\draw[dag_dashed_arrow] (Thm31) -- (EndpointNote);
-
-\draw[dag_arrow] (ResponsiveDefs) -- (Thompson);
-\draw[dag_arrow] (FixedDefs.south east) to[out=-30,in=150] (AppendixC.north west);
-\draw[dag_arrow] (ResponsiveDefs.south east)
-  to[out=-55,in=-125,looseness=1.15] (AppendixC.south west);
-
-\draw[dag_arrow] (FixedDefs.south west) to[out=-120,in=90] (AppendixD.north);
-\draw[dag_arrow] (AppendixD.east) -- (AppendixE.west);
-\draw[dag_arrow] (Thompson.south east) to[out=-35,in=90] (AppendixF.north);
-
-\draw[dag_dashed_arrow] (AppendixD.south) to[out=-90,in=165] (FormulaNotes.west);
-\draw[dag_dashed_arrow] (AppendixE.south) -- (FormulaNotes.north);
+\draw[dag_dashed_arrow] (Thm31) -- (EndpointCorrection);
+\draw[dag_dashed_arrow] (FixedModel.south east) to[out=-45,in=110] (AppendixCorrections.north west);
 
 \end{dagPaperBody}
 \end{tikzpicture}

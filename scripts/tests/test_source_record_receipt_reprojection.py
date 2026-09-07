@@ -139,9 +139,6 @@ class SourceRecordReceiptReprojectionTests(unittest.TestCase):
             unconfigured_review_surface_rows=(),
             unconfigured_assumption_support_rows=(),
             quarantined_auxiliary_review_rows=(),
-            judge_prompt=lambda paper, items, fidelity, context: (
-                f"{paper}:{len(items)}:{len(context or [])}"
-            ),
         )
 
     def raw(self) -> dict[str, object]:

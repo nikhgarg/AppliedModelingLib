@@ -1,6 +1,6 @@
 import PRPKG24AccuracyDiversity.SeparableAsymptotic
 import PRPKG24AccuracyDiversity.FiniteDiscreteOrderStats
-import EconCSLib.Foundations.Probability.Exponential
+import AppliedModelingLib.Foundations.Probability.Exponential
 
 namespace PRPKG24AccuracyDiversity
 
@@ -13,28 +13,28 @@ For a rate-`lambda` exponential distribution, the expected maximum of `q`
 i.i.d. draws is `harmonicReal q / lambda`; this file formalizes the exact
 top-one oracle used by the exponential branch of Theorem 1.
 -/
-noncomputable def harmonicReal (q : ℕ) : ℝ := EconCSLib.Probability.Exponential.harmonicReal q
+noncomputable def harmonicReal (q : ℕ) : ℝ := AppliedModelingLib.Probability.Exponential.harmonicReal q
 
 theorem harmonicReal_zero : harmonicReal 0 = 0 := by
   simpa [harmonicReal] using
-    EconCSLib.Probability.Exponential.harmonicReal_zero
+    AppliedModelingLib.Probability.Exponential.harmonicReal_zero
 
 theorem harmonicReal_succ (q : ℕ) :
     harmonicReal (q + 1) = harmonicReal q + (1 : ℝ) / ((q + 1 : ℕ) : ℝ) := by
   simpa [harmonicReal] using
-    EconCSLib.Probability.Exponential.harmonicReal_succ q
+    AppliedModelingLib.Probability.Exponential.harmonicReal_succ q
 
 theorem harmonicReal_eq_harmonic (q : ℕ) :
     harmonicReal q = (harmonic q : ℝ) := by
   simpa [harmonicReal] using
-    EconCSLib.Probability.Exponential.harmonicReal_eq_harmonic q
+    AppliedModelingLib.Probability.Exponential.harmonicReal_eq_harmonic q
 
 /--
 Analytic survival function for the maximum of `q` rate-`lambda` exponential
 draws, after substituting the exponential CDF on the nonnegative line.
 -/
 noncomputable def exponentialMaxSurvival
-    (lambda : ℝ) (q : ℕ) (x : ℝ) : ℝ := EconCSLib.Probability.Exponential.maxSurvivalOfRate lambda q x
+    (lambda : ℝ) (q : ℕ) (x : ℝ) : ℝ := AppliedModelingLib.Probability.Exponential.maxSurvivalOfRate lambda q x
 
 theorem exponentialMaxSurvival_eq_formula
     (lambda : ℝ) (q : ℕ) (x : ℝ) :
@@ -53,7 +53,7 @@ theorem exponentialMaxSurvival_expansion
             (Real.exp (-(lambda * x))) ^ (q - m) *
             (q.choose m : ℝ) := by
   simpa [exponentialMaxSurvival] using
-    EconCSLib.Probability.Exponential.maxSurvivalOfRate_expansion
+    AppliedModelingLib.Probability.Exponential.maxSurvivalOfRate_expansion
       lambda q x
 
 theorem exponentialMaxSurvival_one
@@ -61,7 +61,7 @@ theorem exponentialMaxSurvival_one
     exponentialMaxSurvival lambda 1 x =
       Real.exp (-(lambda * x)) := by
   simpa [exponentialMaxSurvival] using
-    EconCSLib.Probability.Exponential.maxSurvivalOfRate_one
+    AppliedModelingLib.Probability.Exponential.maxSurvivalOfRate_one
       lambda x
 
 /--
@@ -73,7 +73,7 @@ theorem exponentialSurvivalPower_integral
     {n : ℕ} (hn : 0 < n) :
     ∫ x in Set.Ioi (0 : ℝ), (Real.exp (-(lambda * x))) ^ n =
       1 / ((n : ℝ) * lambda) :=
-  EconCSLib.Probability.Exponential.integral_exp_neg_mul_pow_Ioi
+  AppliedModelingLib.Probability.Exponential.integral_exp_neg_mul_pow_Ioi
     lambda hlambda_pos hn
 
 /--
@@ -88,7 +88,7 @@ theorem exponentialMaxSurvival_integral_eq_finite_sum
           ((-1 : ℝ) ^ (m + q) * (q.choose m : ℝ)) *
             (1 / (((q - m : ℕ) : ℝ) * lambda)) := by
   simpa [exponentialMaxSurvival] using
-    EconCSLib.Probability.Exponential.maxSurvivalOfRate_integral_eq_finite_sum
+    AppliedModelingLib.Probability.Exponential.maxSurvivalOfRate_integral_eq_finite_sum
       lambda hlambda_pos q
 
 /--
@@ -100,8 +100,8 @@ theorem exponentialMaxSurvival_finite_sum_eq_harmonicValue
     - ∑ m ∈ Finset.range q,
         ((-1 : ℝ) ^ (m + q) * (q.choose m : ℝ)) *
           (1 / (((q - m : ℕ) : ℝ) * lambda)) =
-      EconCSLib.Probability.Exponential.expectedMaxValueOfRate lambda q :=
-  EconCSLib.Probability.Exponential.maxSurvivalOfRate_finite_sum_eq_expectedMaxValueOfRate
+      AppliedModelingLib.Probability.Exponential.expectedMaxValueOfRate lambda q :=
+  AppliedModelingLib.Probability.Exponential.maxSurvivalOfRate_finite_sum_eq_expectedMaxValueOfRate
     lambda hlambda_pos q
 
 /--
@@ -112,15 +112,15 @@ exact harmonic value `H_q/lambda`.
 theorem exponentialMaxSurvival_integral_eq_harmonicValue
     (lambda : ℝ) (hlambda_pos : 0 < lambda) (q : ℕ) :
     ∫ x in Set.Ioi (0 : ℝ), exponentialMaxSurvival lambda q x =
-      EconCSLib.Probability.Exponential.expectedMaxValueOfRate lambda q := by
+      AppliedModelingLib.Probability.Exponential.expectedMaxValueOfRate lambda q := by
   simpa [exponentialMaxSurvival] using
-    EconCSLib.Probability.Exponential.maxSurvivalOfRate_integral_eq_expectedMaxValueOfRate
+    AppliedModelingLib.Probability.Exponential.maxSurvivalOfRate_integral_eq_expectedMaxValueOfRate
       lambda hlambda_pos q
 
 /-- Positive-rate exponential model used by the top-one harmonic checkpoint. -/
 def exponentialDistributionModel
     (lambda : ℝ) (hlambda_pos : 0 < lambda) :
-    EconCSLib.Probability.Exponential.Model where
+    AppliedModelingLib.Probability.Exponential.Model where
   rate := lambda
   rate_pos := hlambda_pos
 
@@ -134,7 +134,7 @@ theorem exponentialProductMaxSurvival_eq_formula
     {q : ℕ} [NeZero q] {x : ℝ} (hx : 0 ≤ x) :
     1 - (((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q)
         {sample : Fin q → ℝ |
-          EconCSLib.Probability.Exponential.finiteSampleMax sample ≤ x}).toReal =
+          AppliedModelingLib.Probability.Exponential.finiteSampleMax sample ≤ x}).toReal =
       exponentialMaxSurvival lambda q x := by
   let M := exponentialDistributionModel lambda hlambda_pos
   have h := M.iidMaxSurvival_eq_maxSurvivalOfRate (q := q) hx
@@ -142,7 +142,7 @@ theorem exponentialProductMaxSurvival_eq_formula
 
 /-- Expected maximum of `q` rate-`lambda` exponential draws. -/
 noncomputable def exponentialTopOneHarmonicValue (lambda : ℝ) (q : ℕ) : ℝ :=
-  EconCSLib.Probability.Exponential.expectedMaxValueOfRate lambda q
+  AppliedModelingLib.Probability.Exponential.expectedMaxValueOfRate lambda q
 
 /--
 Survival-integral form of the iid product-measure maximum checkpoint.  The
@@ -155,13 +155,13 @@ theorem exponentialProductMaxSurvival_integral_eq_harmonicValue
     ∫ x in Set.Ioi (0 : ℝ),
         (1 - (((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q)
           {sample : Fin q → ℝ |
-            EconCSLib.Probability.Exponential.finiteSampleMax sample ≤ x}).toReal) =
+            AppliedModelingLib.Probability.Exponential.finiteSampleMax sample ≤ x}).toReal) =
       exponentialTopOneHarmonicValue lambda q := by
   calc
     ∫ x in Set.Ioi (0 : ℝ),
         (1 - (((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q)
           {sample : Fin q → ℝ |
-            EconCSLib.Probability.Exponential.finiteSampleMax sample ≤ x}).toReal)
+            AppliedModelingLib.Probability.Exponential.finiteSampleMax sample ≤ x}).toReal)
         = ∫ x in Set.Ioi (0 : ℝ), exponentialMaxSurvival lambda q x := by
           refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi ?_
           intro x hx
@@ -183,13 +183,13 @@ theorem exponentialProductMaxTailIntegral_eq_harmonicValue
     ∫ x in Set.Ioi (0 : ℝ),
         ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q).real
           {sample : Fin q → ℝ |
-            x < EconCSLib.Probability.Exponential.finiteSampleMax sample} =
+            x < AppliedModelingLib.Probability.Exponential.finiteSampleMax sample} =
       exponentialTopOneHarmonicValue lambda q := by
   let M := exponentialDistributionModel lambda hlambda_pos
   have h := M.iidProductMeasure_finiteSampleMax_tailIntegral_eq_expectedMaxValue
     (q := q)
   simpa [M, exponentialDistributionModel, exponentialTopOneHarmonicValue,
-    EconCSLib.Probability.Exponential.Model.expectedMaxValue] using h
+    AppliedModelingLib.Probability.Exponential.Model.expectedMaxValue] using h
 
 /--
 Conditional layer-cake bridge to the literal Bochner expectation of the finite
@@ -201,10 +201,10 @@ theorem exponentialProductMaxIntegral_eq_harmonicValue_of_integrable
     (lambda : ℝ) (hlambda_pos : 0 < lambda)
     {q : ℕ} [NeZero q]
     (h_int : MeasureTheory.Integrable
-      (EconCSLib.Probability.Exponential.finiteSampleMax (q := q))
+      (AppliedModelingLib.Probability.Exponential.finiteSampleMax (q := q))
       ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q)) :
     ∫ sample,
-        EconCSLib.Probability.Exponential.finiteSampleMax sample
+        AppliedModelingLib.Probability.Exponential.finiteSampleMax sample
           ∂(exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q =
       exponentialTopOneHarmonicValue lambda q := by
   let M := exponentialDistributionModel lambda hlambda_pos
@@ -212,7 +212,7 @@ theorem exponentialProductMaxIntegral_eq_harmonicValue_of_integrable
     M.iidProductMeasure_finiteSampleMax_integral_eq_expectedMaxValue_of_integrable
       (q := q) h_int
   simpa [M, exponentialDistributionModel, exponentialTopOneHarmonicValue,
-    EconCSLib.Probability.Exponential.Model.expectedMaxValue] using h
+    AppliedModelingLib.Probability.Exponential.Model.expectedMaxValue] using h
 
 /--
 Literal Bochner expectation of the maximum of `q` iid rate-`lambda`
@@ -222,7 +222,7 @@ theorem exponentialProductMaxIntegral_eq_harmonicValue
     (lambda : ℝ) (hlambda_pos : 0 < lambda)
     {q : ℕ} [NeZero q] :
     ∫ sample,
-        EconCSLib.Probability.Exponential.finiteSampleMax sample
+        AppliedModelingLib.Probability.Exponential.finiteSampleMax sample
           ∂(exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q =
       exponentialTopOneHarmonicValue lambda q := by
   let M := exponentialDistributionModel lambda hlambda_pos
@@ -230,12 +230,12 @@ theorem exponentialProductMaxIntegral_eq_harmonicValue
     M.iidProductMeasure_finiteSampleMax_integral_eq_expectedMaxValue
       (q := q)
   simpa [M, exponentialDistributionModel, exponentialTopOneHarmonicValue,
-    EconCSLib.Probability.Exponential.Model.expectedMaxValue] using h
+    AppliedModelingLib.Probability.Exponential.Model.expectedMaxValue] using h
 
 theorem exponentialTopOneHarmonicValue_one (lambda : ℝ) :
     exponentialTopOneHarmonicValue lambda 1 = 1 / lambda := by
   simpa [exponentialTopOneHarmonicValue] using
-    EconCSLib.Probability.Exponential.expectedMaxValueOfRate_one lambda
+    AppliedModelingLib.Probability.Exponential.expectedMaxValueOfRate_one lambda
 
 /--
 Measure-facing base case for the exponential top-one branch: for one draw from
@@ -251,7 +251,7 @@ theorem exponentialTopOneHarmonic_singleDraw_survival_integral
   let M := exponentialDistributionModel lambda hlambda_pos
   have h := M.singleDrawSurvivalIntegral_eq_expectedMaxValue
   simpa [M, exponentialDistributionModel, exponentialTopOneHarmonicValue,
-    EconCSLib.Probability.Exponential.Model.expectedMaxValue] using h
+    AppliedModelingLib.Probability.Exponential.Model.expectedMaxValue] using h
 
 /-- Common top-one oracle with the exact exponential maximum formula. -/
 noncomputable def exponentialTopOneHarmonicOracle (T : ℕ) (lambda : ℝ) :
@@ -263,7 +263,7 @@ theorem exponentialTopOneHarmonic_forward_marginal
         exponentialTopOneHarmonicValue lambda q =
       (1 / lambda) * ((1 : ℝ) / ((q + 1 : ℕ) : ℝ)) := by
   simpa [exponentialTopOneHarmonicValue] using
-    EconCSLib.Probability.Exponential.expectedMaxValueOfRate_forward_marginal
+    AppliedModelingLib.Probability.Exponential.expectedMaxValueOfRate_forward_marginal
       lambda q
 
 theorem exponentialTopOneHarmonic_backward_marginal
@@ -272,7 +272,7 @@ theorem exponentialTopOneHarmonic_backward_marginal
         exponentialTopOneHarmonicValue lambda (q - 1) =
       (1 / lambda) * ((1 : ℝ) / (q : ℝ)) := by
   simpa [exponentialTopOneHarmonicValue] using
-    EconCSLib.Probability.Exponential.expectedMaxValueOfRate_backward_marginal
+    AppliedModelingLib.Probability.Exponential.expectedMaxValueOfRate_backward_marginal
       lambda hq
 
 /--
@@ -291,7 +291,7 @@ theorem exponentialTopOneHarmonicValue_sub_log_tendsto
       Filter.atTop
       (nhds ((1 / lambda) * Real.eulerMascheroniConstant)) := by
   simpa [exponentialTopOneHarmonicValue] using
-    EconCSLib.Probability.Exponential.expectedMaxValueOfRate_sub_log_tendsto
+    AppliedModelingLib.Probability.Exponential.expectedMaxValueOfRate_sub_log_tendsto
       lambda
 
 theorem reciprocal_ratio_lt_of_scaled_ratio_lt
@@ -345,7 +345,7 @@ theorem exponentialTopOneHarmonicError_nonneg {T : ℕ}
 theorem exponentialTopOneHarmonicError_tends_to_zero {T : ℕ}
     (likelihood : ItemType T → ℝ)
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t) :
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (exponentialTopOneHarmonicError likelihood) := by
   let S : ℝ := (∑ t : ItemType T, 1 / (likelihood t ^ (1 : ℝ))) + 1
   have hsum_nonneg :
@@ -357,7 +357,7 @@ theorem exponentialTopOneHarmonicError_tends_to_zero {T : ℕ}
   have hS_pos : 0 < S := by
     dsimp [S]
     linarith
-  refine EconCSLib.Math.TendsToZero_of_nonneg_le_const_div
+  refine AppliedModelingLib.Math.TendsToZero_of_nonneg_le_const_div
     (exponentialTopOneHarmonicError likelihood) hS_pos
     (exponentialTopOneHarmonicError_nonneg likelihood hlike_pos) ?_
   intro N hN
@@ -486,7 +486,7 @@ noncomputable def exponentialTopOneHarmonicSublinearFOCCertificate
               ring
     unfold ConsumptionModel.weightedBackwardMarginal
       ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-      EconCSLib.Allocation.marginal TopKValueOracle.toConsumptionModel
+      AppliedModelingLib.Allocation.marginal TopKValueOracle.toConsumptionModel
     rw [dif_neg hsrc_pos.ne']
     simp only [exponentialTopOneHarmonicOracle, TopKValueOracle.common_expectedTopSum]
     rw [exponentialTopOneHarmonic_backward_marginal lambda hsrc_pos,
@@ -966,25 +966,25 @@ theorem exponentialFiniteSampleTopKSum_nonneg {q : ℕ}
 
 theorem sample_le_finiteSampleMax {q : ℕ} [NeZero q]
     (sample : Fin q → ℝ) (i : Fin q) :
-    sample i ≤ EconCSLib.Probability.Exponential.finiteSampleMax sample := by
-  unfold EconCSLib.Probability.Exponential.finiteSampleMax
+    sample i ≤ AppliedModelingLib.Probability.Exponential.finiteSampleMax sample := by
+  unfold AppliedModelingLib.Probability.Exponential.finiteSampleMax
   exact Finset.le_sup' sample (Finset.mem_univ i)
 
 theorem exponentialFiniteSampleTopKSum_le_k_mul_finiteSampleMax
     {q : ℕ} [NeZero q] (k : ℕ) (sample : Fin q → ℝ)
     (hmax_nonneg :
-      0 ≤ EconCSLib.Probability.Exponential.finiteSampleMax sample) :
+      0 ≤ AppliedModelingLib.Probability.Exponential.finiteSampleMax sample) :
     exponentialFiniteSampleTopKSum k sample ≤
-      (k : ℝ) * EconCSLib.Probability.Exponential.finiteSampleMax sample :=
+      (k : ℝ) * AppliedModelingLib.Probability.Exponential.finiteSampleMax sample :=
    topKSumOn_le_card_mul_of_forall_le
     k sample hmax_nonneg (sample_le_finiteSampleMax sample)
 
 theorem exponentialFiniteSampleTopKSum_one_eq_finiteSampleMax
     {q : ℕ} [NeZero q] (sample : Fin q → ℝ)
     (hmax_nonneg :
-      0 ≤ EconCSLib.Probability.Exponential.finiteSampleMax sample) :
+      0 ≤ AppliedModelingLib.Probability.Exponential.finiteSampleMax sample) :
     exponentialFiniteSampleTopKSum 1 sample =
-      EconCSLib.Probability.Exponential.finiteSampleMax sample := by
+      AppliedModelingLib.Probability.Exponential.finiteSampleMax sample := by
   apply le_antisymm
   · simpa using
       exponentialFiniteSampleTopKSum_le_k_mul_finiteSampleMax
@@ -1001,7 +1001,7 @@ theorem exponentialFiniteSampleTopKSum_one_eq_finiteSampleMax
         sum_le_topKSumOn (ι := Fin q) 1 sample ({i} : Finset (Fin q))
           hsingle_card
       simpa [exponentialFiniteSampleTopKSum] using h
-    rw [EconCSLib.Probability.Exponential.finiteSampleMax, hmax_eq]
+    rw [AppliedModelingLib.Probability.Exponential.finiteSampleMax, hmax_eq]
     exact hcandidate
 
 theorem exponentialFiniteSampleTopKSum_eq_sum_of_card_le
@@ -1045,7 +1045,7 @@ theorem exponentialFiniteSampleTopKSum_pred_card_eq_sum_sub_min
     (h_nonneg : ∀ i, 0 ≤ sample i) :
     exponentialFiniteSampleTopKSum (q - 1) sample =
       (∑ i : Fin q, sample i) -
-        EconCSLib.Probability.Exponential.finiteSampleMin sample := by
+        AppliedModelingLib.Probability.Exponential.finiteSampleMin sample := by
   apply le_antisymm
   · unfold exponentialFiniteSampleTopKSum topKSumOn
     refine Finset.sup'_le (topKCandidateSets_nonempty (Fin q) (q - 1))
@@ -1065,8 +1065,8 @@ theorem exponentialFiniteSampleTopKSum_pred_card_eq_sum_sub_min
       omega
     obtain ⟨j, hj_not_mem⟩ := hmissing
     have hmin_le :
-        EconCSLib.Probability.Exponential.finiteSampleMin sample ≤ sample j :=
-      EconCSLib.Probability.Exponential.finiteSampleMin_le_sample sample j
+        AppliedModelingLib.Probability.Exponential.finiteSampleMin sample ≤ sample j :=
+      AppliedModelingLib.Probability.Exponential.finiteSampleMin_le_sample sample j
     have hinsert_subset :
         insert j s ⊆ (Finset.univ : Finset (Fin q)) := by
       intro i _hi
@@ -1077,11 +1077,11 @@ theorem exponentialFiniteSampleTopKSum_pred_card_eq_sum_sub_min
         (fun i _hi_univ _hi_not_insert => h_nonneg i)
     have hsum_add_le :
         (∑ i ∈ s, sample i) +
-            EconCSLib.Probability.Exponential.finiteSampleMin sample ≤
+            AppliedModelingLib.Probability.Exponential.finiteSampleMin sample ≤
           ∑ i : Fin q, sample i := by
       calc
         (∑ i ∈ s, sample i) +
-            EconCSLib.Probability.Exponential.finiteSampleMin sample ≤
+            AppliedModelingLib.Probability.Exponential.finiteSampleMin sample ≤
             (∑ i ∈ s, sample i) + sample j := by
               linarith
         _ = ∑ i ∈ insert j s, sample i := by
@@ -1104,12 +1104,12 @@ theorem exponentialFiniteSampleTopKSum_pred_card_eq_sum_sub_min
       simpa [exponentialFiniteSampleTopKSum, sDrop] using
         sum_le_topKSumOn (ι := Fin q) (q - 1) sample sDrop hsDrop_card
     have hmin_eq' :
-        EconCSLib.Probability.Exponential.finiteSampleMin sample = sample iMin := by
-      simpa [EconCSLib.Probability.Exponential.finiteSampleMin] using hmin_eq
+        AppliedModelingLib.Probability.Exponential.finiteSampleMin sample = sample iMin := by
+      simpa [AppliedModelingLib.Probability.Exponential.finiteSampleMin] using hmin_eq
     have hsum_drop :
         (∑ i ∈ sDrop, sample i) =
           (∑ i : Fin q, sample i) -
-            EconCSLib.Probability.Exponential.finiteSampleMin sample := by
+            AppliedModelingLib.Probability.Exponential.finiteSampleMin sample := by
       have htotal :
           sample iMin + (∑ i ∈ sDrop, sample i) =
             ∑ i : Fin q, sample i := by
@@ -1303,7 +1303,7 @@ theorem exponentialProductMeasure_successIndexSet_eq_real
             successIndexSet (fun y : ℝ => x < y) sample = s} =
         ∏ i : Fin q,
           M.measure (if i ∈ s then Set.Ioi x else Set.Iic x) := by
-    rw [EconCSLib.Probability.Exponential.Model.iidProductMeasure, hset,
+    rw [AppliedModelingLib.Probability.Exponential.Model.iidProductMeasure, hset,
       MeasureTheory.Measure.pi_pi]
   rw [MeasureTheory.Measure.real, hmeasure, ENNReal.toReal_prod]
   calc
@@ -1757,7 +1757,7 @@ theorem exponentialBinomialMass_integral_eq_alternating_sum
       _ =
           (c * ((-1 : ℝ) ^ (m + n) * (n.choose m : ℝ))) *
             (1 / (((q - m : ℕ) : ℝ) * lambda)) := by
-            rw [EconCSLib.Probability.Exponential.integral_exp_neg_mul_pow_Ioi
+            rw [AppliedModelingLib.Probability.Exponential.integral_exp_neg_mul_pow_Ioi
               lambda hlambda_pos hqm_pos]
       _ =
           c *
@@ -1773,7 +1773,7 @@ theorem exponentialBinomialMass_integral_eq_alternating_sum
           (fun x : ℝ => e x ^ (q - m))
           (MeasureTheory.volume.restrict (Set.Ioi (0 : ℝ))) := by
       simpa [e] using
-        EconCSLib.Probability.Exponential.integrableOn_exp_neg_mul_pow_Ioi
+        AppliedModelingLib.Probability.Exponential.integrableOn_exp_neg_mul_pow_Ioi
           lambda hlambda_pos hqm_pos
     have hterm :
         MeasureTheory.Integrable
@@ -2083,7 +2083,7 @@ theorem exponentialBinomialMass_integrable_Ioi
           (fun x : ℝ => e x ^ (q - m))
           (MeasureTheory.volume.restrict (Set.Ioi (0 : ℝ))) := by
       simpa [e] using
-        EconCSLib.Probability.Exponential.integrableOn_exp_neg_mul_pow_Ioi
+        AppliedModelingLib.Probability.Exponential.integrableOn_exp_neg_mul_pow_Ioi
           lambda hlambda_pos hqm_pos
     exact hbase.const_mul _
   refine hsum_integrable.congr ?_
@@ -2751,14 +2751,14 @@ theorem exponentialFiniteSampleTopKSum_measurable {q : ℕ} (k : ℕ) :
   rw [Finset.sup'_apply]
 
 theorem exponentialFiniteSampleTopKSum_integrable
-    (M : EconCSLib.Probability.Exponential.Model)
+    (M : AppliedModelingLib.Probability.Exponential.Model)
     {q : ℕ} [NeZero q] (k : ℕ) :
     MeasureTheory.Integrable
       (exponentialFiniteSampleTopKSum (q := q) k)
       (M.iidProductMeasure q) := by
   let μ := M.iidProductMeasure q
   let maxFun : (Fin q → ℝ) → ℝ :=
-    EconCSLib.Probability.Exponential.finiteSampleMax
+    AppliedModelingLib.Probability.Exponential.finiteSampleMax
   have hmax_int :
       MeasureTheory.Integrable maxFun μ := by
     simpa [μ, maxFun] using
@@ -3038,7 +3038,7 @@ theorem exponentialFiniteSampleTopKSum_one_integral_eq_harmonicValue
         exponentialFiniteSampleTopKSum (q := q) 1 sample
           ∂M.iidProductMeasure q =
         ∫ sample,
-          EconCSLib.Probability.Exponential.finiteSampleMax sample
+          AppliedModelingLib.Probability.Exponential.finiteSampleMax sample
             ∂M.iidProductMeasure q := by
       refine MeasureTheory.integral_congr_ae ?_
       filter_upwards [M.iidProductMeasure_finiteSampleMax_nonnegative_ae (q := q)]
@@ -3079,7 +3079,7 @@ theorem exponentialFiniteSampleTopKSum_card_le_integral_eq_orderStatisticValue
         (fun _ => inferInstance) μ hsigma (fun _ : Fin q => ℝ)
         (fun _ => inferInstance) (fun _ (_ : ℝ) => (0 : ℝ))
         (fun _ x => x) hcoord_nonneg
-    simpa [EconCSLib.Probability.Exponential.Model.iidProductMeasure, M, μ]
+    simpa [AppliedModelingLib.Probability.Exponential.Model.iidProductMeasure, M, μ]
       using hpi
   have htop_eq_sum :
       (fun sample : Fin q → ℝ => exponentialFiniteSampleTopKSum k sample) =ᵐ[
@@ -3091,8 +3091,8 @@ theorem exponentialFiniteSampleTopKSum_card_le_integral_eq_orderStatisticValue
   have hmean :
       M.expectedMaxValue 1 = 1 / lambda := by
     simpa [M, exponentialDistributionModel,
-      EconCSLib.Probability.Exponential.Model.expectedMaxValue] using
-      EconCSLib.Probability.Exponential.expectedMaxValueOfRate_one lambda
+      AppliedModelingLib.Probability.Exponential.Model.expectedMaxValue] using
+      AppliedModelingLib.Probability.Exponential.expectedMaxValueOfRate_one lambda
   calc
     ∫ sample,
         exponentialFiniteSampleTopKSum (q := q) k sample
@@ -3122,7 +3122,7 @@ theorem exponentialFiniteSampleTopPredCard_integral_eq_orderStatisticValue
           M.iidProductMeasure q]
         fun sample =>
           (∑ i : Fin q, sample i) -
-            EconCSLib.Probability.Exponential.finiteSampleMin sample := by
+            AppliedModelingLib.Probability.Exponential.finiteSampleMin sample := by
     filter_upwards [M.iidProductMeasure_all_nonnegative_ae q] with sample h_nonneg
     exact exponentialFiniteSampleTopKSum_pred_card_eq_sum_sub_min
       sample (fun i => h_nonneg i)
@@ -3135,27 +3135,27 @@ theorem exponentialFiniteSampleTopPredCard_integral_eq_orderStatisticValue
     exact M.iidProductMeasure_eval_integrable i
   have hmin_int :
       MeasureTheory.Integrable
-        (EconCSLib.Probability.Exponential.finiteSampleMin (q := q))
+        (AppliedModelingLib.Probability.Exponential.finiteSampleMin (q := q))
         (M.iidProductMeasure q) :=
     M.iidProductMeasure_finiteSampleMin_integrable
   have hmean :
       M.expectedMaxValue 1 = 1 / lambda := by
     simpa [M, exponentialDistributionModel,
-      EconCSLib.Probability.Exponential.Model.expectedMaxValue] using
-      EconCSLib.Probability.Exponential.expectedMaxValueOfRate_one lambda
+      AppliedModelingLib.Probability.Exponential.Model.expectedMaxValue] using
+      AppliedModelingLib.Probability.Exponential.expectedMaxValueOfRate_one lambda
   calc
     ∫ sample,
         exponentialFiniteSampleTopKSum (q := q) (q - 1) sample
           ∂M.iidProductMeasure q =
         ∫ sample,
           ((∑ i : Fin q, sample i) -
-            EconCSLib.Probability.Exponential.finiteSampleMin sample)
+            AppliedModelingLib.Probability.Exponential.finiteSampleMin sample)
           ∂M.iidProductMeasure q :=
       MeasureTheory.integral_congr_ae htop_eq
     _ = ∫ sample,
           (∑ i : Fin q, sample i) ∂M.iidProductMeasure q -
         ∫ sample,
-          EconCSLib.Probability.Exponential.finiteSampleMin sample
+          AppliedModelingLib.Probability.Exponential.finiteSampleMin sample
             ∂M.iidProductMeasure q :=
       MeasureTheory.integral_sub hsum_int hmin_int
     _ = (q : ℝ) * M.expectedMaxValue 1 -
@@ -3226,7 +3226,7 @@ noncomputable def exponentialTopKOrderStatisticScaledMarginalLimitCertificate
         (lambda⁻¹ * ((k : ℝ) / ((q : ℝ) + 1))) ≠ 0 := by
       simpa [exponentialTopKOrderStatisticScale, Nat.cast_add, Nat.cast_one]
         using hscale_ne
-    simp [EconCSLib.Probability.TopKExpectationOracle.marginalTopK,
+    simp [AppliedModelingLib.Probability.TopKExpectationOracle.marginalTopK,
       topKExpectationOracleOfTopKValueOracle,
       exponentialTopKOrderStatisticOracle,
       exponentialTopKOrderStatisticScale,
@@ -3263,7 +3263,7 @@ theorem exponentialTopKOrderStatisticError_nonneg {T : ℕ}
 theorem exponentialTopKOrderStatisticError_tends_to_zero {T : ℕ}
     (likelihood : ItemType T → ℝ) (k : ℕ)
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t) :
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (exponentialTopKOrderStatisticError likelihood k) := by
   let S : ℝ :=
     (∑ t : ItemType T, (k : ℝ) / (likelihood t ^ (1 : ℝ))) + 1
@@ -3276,7 +3276,7 @@ theorem exponentialTopKOrderStatisticError_tends_to_zero {T : ℕ}
   have hS_pos : 0 < S := by
     dsimp [S]
     linarith
-  refine EconCSLib.Math.TendsToZero_of_nonneg_le_const_div
+  refine AppliedModelingLib.Math.TendsToZero_of_nonneg_le_const_div
     (exponentialTopKOrderStatisticError likelihood k) hS_pos
     (exponentialTopKOrderStatisticError_nonneg likelihood k hlike_pos) ?_
   intro N hN
@@ -3463,7 +3463,7 @@ noncomputable def exponentialTopKOrderStatisticSublinearFOCCertificate
               ring
     unfold ConsumptionModel.weightedBackwardMarginal
       ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-      EconCSLib.Allocation.marginal TopKValueOracle.toConsumptionModel
+      AppliedModelingLib.Allocation.marginal TopKValueOracle.toConsumptionModel
     rw [dif_neg hsrc_pos.ne']
     simp only [exponentialTopKOrderStatisticOracle,
       TopKValueOracle.common_expectedTopSum]

@@ -11,7 +11,7 @@ rate-free endpoint-clock kernels and exponential report gaps.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal ProbabilityTheory
 
 noncomputable section
@@ -237,7 +237,7 @@ theorem expMeasure_Ioi_eq_terminalNoArrivalTail
     expMeasure rate (Set.Ioi tail) = terminalNoArrivalTail rate tail := by
   unfold terminalNoArrivalTail
   rw [Set.indicator_of_mem (show tail ∈ Set.Ici (0 : ℝ) from h_tail)]
-  let model : EconCSLib.Probability.Exponential.Model := ⟨rate, h_rate⟩
+  let model : AppliedModelingLib.Probability.Exponential.Model := ⟨rate, h_rate⟩
   letI : IsProbabilityMeasure (expMeasure rate) :=
     isProbabilityMeasure_expMeasure h_rate
   apply (ENNReal.toReal_eq_toReal_iff'

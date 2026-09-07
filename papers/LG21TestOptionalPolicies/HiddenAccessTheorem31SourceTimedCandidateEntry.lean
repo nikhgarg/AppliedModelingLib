@@ -21,7 +21,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-! ## Literal source-timed candidate PBOs -/
@@ -178,6 +178,11 @@ structure LG21HiddenAccessSourceLocalCandidateEntry
   candidateReport : (LG21NonTestFeature Feature testFeature -> ℝ) → ℝ → Bool
   candidate : LG21OptionalCandidateBranchData ℝ
     (LG21NonTestFeature Feature testFeature -> ℝ) ℝ
+  /-- A local deviation changes actions and the induced action-branch PBOs,
+  not the paper's exogenous score technology.  In particular, every candidate
+  is evaluated under the same Gaussian score law as the source equilibrium. -/
+  candidate_test_law : ∀ latentSkill publicBase,
+    candidate.testLaw latentSkill publicBase = E.testLaw latentSkill publicBase
   candidate_report_action : candidate.reportDecision = candidateReport
   candidate_take_measurable : Measurable (fun pair : ℝ ×
     (LG21NonTestFeature Feature testFeature -> ℝ) => candidateTake pair.1 pair.2)

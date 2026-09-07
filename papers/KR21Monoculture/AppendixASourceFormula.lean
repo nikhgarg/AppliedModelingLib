@@ -1,8 +1,8 @@
 import KR21Monoculture.W11ScoreTransport
-import EconCSLib.Foundations.Probability.MeasureInequalities
+import AppliedModelingLib.Foundations.Probability.MeasureInequalities
 
-open EconCSLib MeasureTheory ProbabilityTheory
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib.SocialChoice.Ranking
 
 namespace KR21Monoculture
 
@@ -96,11 +96,11 @@ theorem source_appendixA_top_event_probability_eq_tail_probability
     (c : Candidate n)
     (hnoTie : ∀ᵐ noise ∂μ, ∀ i j : Candidate n, i ≠ j →
       value i + noise i / theta ≠ value j + noise j / theta) :
-    EconCSLib.measureProb μ
+    AppliedModelingLib.measureProb μ
         (fun noise => SourceAppendixATopEvent value noise theta c) =
-      EconCSLib.measureProb μ
+      AppliedModelingLib.measureProb μ
         (fun noise => SourceAppendixATailEvent value noise theta c) := by
-  unfold EconCSLib.measureProb
+  unfold AppliedModelingLib.measureProb
   apply congrArg ENNReal.toReal
   apply measure_congr
   filter_upwards [hnoTie] with noise hnoise

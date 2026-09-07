@@ -1,5 +1,5 @@
-import EconCSLib.Foundations.Probability.FiniteGaussianSignalKernelRCD
-import EconCSLib.Foundations.Probability.KernelCompProdDensity
+import AppliedModelingLib.Foundations.Probability.FiniteGaussianSignalKernelRCD
+import AppliedModelingLib.Foundations.Probability.KernelCompProdDensity
 import LG21TestOptionalPolicies.OptionalZeroReporterActiveEntry
 import LG21TestOptionalPolicies.PositiveMassDeviation
 
@@ -28,8 +28,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
-open EconCSLib.Probability
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib.Probability
 
 /-! ## Candidate actions and continuation law -/
 

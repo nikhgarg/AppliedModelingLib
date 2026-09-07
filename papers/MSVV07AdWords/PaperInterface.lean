@@ -12,7 +12,7 @@ paper-facing declaration is written directly here for dashboard and human review
 
 open scoped BigOperators
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Online
 namespace MSVV07PaperFacing
 namespace PaperInterface
@@ -76,6 +76,22 @@ theorem paperFeasible_iff
     (I : PaperInstance Advertiser Query)
     (A : PaperAssignment Advertiser Query) :
     paperFeasible I A ↔ ∀ a, paperSpend I A a ≤ I.budget a := by
+  rfl
+
+/--
+Section 2's chronological allocation model: every arrival has an assignee and
+the resulting occurrence-level spend respects every daily budget.  This is the
+literal source model; it is deliberately separate from the identifier-indexed
+library feasibility predicate.
+Source status: direct paper definition
+-/
+theorem section2_occurrence_assignment_feasibility_definition
+    {Advertiser Query : Type*} [DecidableEq Advertiser]
+    (I : PaperInstance Advertiser Query) (history : List Query)
+    (A : Fin history.length → Option Advertiser) :
+    SourceRunner.occurrenceAssignmentFeasible I history A ↔
+      (∀ t, ∃ a, A t = some a) ∧
+        ∀ a, SourceRunner.occurrenceSpend I history A a ≤ I.budget a := by
   rfl
 
 /--
@@ -162,6 +178,36 @@ theorem paperBalanceScore_formula
     paperBalanceScore I A a q =
       I.bid a q * paperTradeoff (paperSpend I A a / I.budget a) := by
   rfl
+
+/--
+Section 3's finite Balance score at one arriving occurrence: the bid times
+`psi_k` of the bidder's active slab.
+Source status: direct paper formula
+-/
+theorem section3_discrete_balance_score_formula
+    {Advertiser Query : Type*}
+    (k : ℕ) (hk : 0 < k) (I : PaperInstance Advertiser Query)
+    (S : SourceRunner.OccurrenceState Advertiser Query)
+    (q : Query) (a : Advertiser) :
+    SourceRunner.occurrenceDiscreteScore k hk I S q a =
+      I.bid a q * paperDiscreteTradeoff k
+        (SourceRunner.activeBudgetSlab k hk (S.spent a) (I.budget a)) := by
+  rfl
+
+/--
+Section 3's discrete allocation rule: a scan winner is feasible and maximizes
+the finite `psi_k`-scaled bid over all feasible advertisers.
+Source status: direct paper algorithm rule
+-/
+theorem section3_discrete_balance_choice_rule
+    {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
+    (k : ℕ) (hk : 0 < k) (I : PaperInstance Advertiser Query)
+    (S : SourceRunner.OccurrenceState Advertiser Query)
+    (q : Query) (a : Advertiser)
+    (hchoice : (SourceRunner.discreteBalanceScan k hk I S q).winner = some a) :
+    SourceRunner.occurrenceDiscreteBalanceChoice k hk I S q a := by
+  exact SourceRunner.discreteBalanceScan_winner_is_discrete_choice
+    k hk I S q a hchoice
 
 /--
 - Paper feasibility for assigning query `q` next to advertiser `a`.
@@ -412,26 +458,33 @@ theorem theorem8_unspent_fraction_ne_printed_at_k2 :
 
 /--
 -
-Section 5 Lemma 4: matching feasible primal and dual objective values certify
-optimality for the tradeoff-revealing LP.
+Section 5 Lemma 4: for every AdWords instance and monotonically decreasing
+tradeoff, the realized preterminal type-count vector gives the right side
+`A a` for the factor-revealing matrix.  The fixed geometric dual point is
+optimal for the resulting tradeoff-revealing dual.
 -/
 theorem section5_lemma4_dual_optimal_from_primal_dual_match
-    {Primal Dual : Type*}
-    (primalFeasible : Primal → Prop) (dualFeasible : Dual → Prop)
-    (primalObjective : Primal → ℝ) (dualObjective : Dual → ℝ)
-    (hweak :
-      ∀ primal dual,
-        primalFeasible primal → dualFeasible dual →
-          primalObjective primal ≤ dualObjective dual)
-    {a : Primal} {ystar : Dual}
-    (ha : primalFeasible a)
-    (hystar : dualFeasible ystar)
-    (hvalue : primalObjective a = dualObjective ystar) :
-    ∀ y, dualFeasible y → dualObjective ystar ≤ dualObjective y := by
+    {Advertiser Query : Type*} [Fintype Advertiser]
+    (m : ℕ) (I : Proof.PaperInstance Advertiser Query) (history : List Query)
+    (psi : ℝ → ℝ) (_hpsi : Antitone psi)
+    (_hbid : I.NonnegativeBids) (_hbudget : I.PositiveBudgets) :
+    Optimization.IsMinimizerOn
+      (MSVV07SourceLemmas.tradeoffRevealingLP (m := m)
+        MSVV07SourceLemmas.paperRoutePrimalObjectiveCoeff
+        (fun row => ∑ i : Fin m, MSVV07SourceLemmas.paperRouteMatrixCoeff row i *
+          SourceRunner.section5PreterminalAlphaTypeCountOfTradeoffRun
+            m psi I history i)).DualFeasible
+      (MSVV07SourceLemmas.tradeoffRevealingLP (m := m)
+        MSVV07SourceLemmas.paperRoutePrimalObjectiveCoeff
+        (fun row => ∑ i : Fin m, MSVV07SourceLemmas.paperRouteMatrixCoeff row i *
+          SourceRunner.section5PreterminalAlphaTypeCountOfTradeoffRun
+            m psi I history i)).dualObjective
+      MSVV07SourceLemmas.paperRouteDualCandidate := by
   exact
-    Proof.proof_section5_lemma4_dual_optimal_from_primal_dual_match
-      primalFeasible dualFeasible primalObjective dualObjective hweak
-      ha hystar hvalue
+    Proof.proof_section5_lemma4_paper_tradeoff_dual_candidate_optimal
+      (SourceRunner.section5PreterminalAlphaTypeCountOfTradeoffRun m psi I history)
+      (SourceRunner.section5PreterminalAlphaTypeCountOfTradeoffRun_nonnegative
+        m psi I history)
 
 /--
 -
@@ -472,29 +525,32 @@ theorem section5_lemma6_per_query_tradeoff
 
 /--
 -
-Section 5 Lemma 7: summing the pointwise tradeoff yields the perturbation bound.
-
-Source status: direct paper-facing summation row for Lemma 7's weighted
-perturbation bound.
+Section 5 Lemma 7: the paper's pointwise tradeoff and its type/slab accounting
+give the displayed `N/k` weighted-perturbation bound.  The final-slab term is
+not an unconstrained interface parameter.
 -/
 theorem section5_lemma7_weighted_perturbation_bound
-    {m Query : Type*} [Fintype m] [Fintype Query]
+    {m Query : Type*} [Fintype m] [Fintype Query] [DecidableEq m]
     (psi alpha beta : m → ℝ) (opt alg : Query → ℝ)
-    (queryType querySlab : Query → m) (finalSlabError : ℝ)
-    (htradeoff_sum :
-      (∑ q : Query,
-        (opt q * psi (queryType q) - alg q * psi (querySlab q))) ≤ 0)
-    (hopt_accounting :
-      (∑ q : Query, opt q * psi (queryType q)) =
-        ∑ i : m, psi i * alpha i)
-    (halg_accounting :
-      (∑ q : Query, alg q * psi (querySlab q)) ≤
-        (∑ i : m, psi i * beta i) + finalSlabError) :
-    (∑ i : m, psi i * (alpha i - beta i)) ≤ finalSlabError := by
+    (queryType querySlab : Query → m) (N : ℝ) (k : ℕ)
+    (hpointwise :
+      ∀ q : Query, opt q * psi (queryType q) -
+        alg q * psi (querySlab q) ≤ 0)
+    (hα :
+      ∀ i : m,
+        (∑ q ∈ (Finset.univ : Finset Query).filter
+          (fun q => queryType q = i), opt q) = alpha i)
+    (hpsi_nonneg : ∀ i, 0 ≤ psi i)
+    (hβ :
+      ∀ i : m,
+        (∑ q ∈ (Finset.univ : Finset Query).filter
+          (fun q => querySlab q = i), alg q) ≤ beta i)
+    (hfinal_nonneg : 0 ≤ N / (k : ℝ)) :
+    (∑ i : m, psi i * (alpha i - beta i)) ≤ N / (k : ℝ) := by
   exact
-    Proof.proof_section5_lemma7_weighted_perturbation_bound
-      psi alpha beta opt alg queryType querySlab finalSlabError
-      htradeoff_sum hopt_accounting halg_accounting
+    Proof.proof_section5_lemma7_weighted_perturbation_bound_exact_N_div_k_from_pointwise_fibers
+      psi alpha beta opt alg queryType querySlab N k hpointwise hα hpsi_nonneg hβ
+      hfinal_nonneg
 
 /--
 -
@@ -536,32 +592,40 @@ theorem theorem8_balance_msvv_competitive_of_small_bids_limit_family
 
 /--
 -
-Section 6 items 1--2. Different advertiser budgets and nonexhaustive optima are
-already part of the base AdWords model, so the finite explicit Theorem 8
-guarantee applies without changing the instance.
+Section 6 items 1--2. Different advertiser budgets and nonexhaustive optima
+are already part of the base model.  The arrival list is re-indexed by its
+positions, so repeated query words are distinct online occurrences rather than
+a hidden `Nodup` hypothesis.
 -/
 theorem section6_different_budgets_and_nonexhaustive_optimum_theorem8_finite_explicit_error
     {Advertiser Query : Type*}
     [Fintype Advertiser] [Nonempty Advertiser]
-    [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]
+    [DecidableEq Advertiser]
     (I : PaperInstance Advertiser Query)
     (hbid : I.NonnegativeBids)
     (hbudget : I.PositiveBudgets)
     (history : List Query)
-    (hnodup : history.Nodup)
-    (hcover : AdWordsInstance.historyFinset history = Finset.univ)
     {epsilon : ℝ}
     (hepsilon : 0 ≤ epsilon)
     (hepsilon_le_one : epsilon ≤ 1)
     (hsmall : paperSmallBids I epsilon) :
     paperMsvvRatio *
-        I.offlineOptimumValue (fun a => (hbudget a).le) ≤
-      paperRevenue I (I.runAssignment I.balanceChoiceRule history) +
+        (SourceRunner.occurrenceIndexedInstance I history).offlineOptimumValue
+          (fun a => (hbudget a).le) ≤
+      paperRevenue (SourceRunner.occurrenceIndexedInstance I history)
+        ((SourceRunner.occurrenceIndexedInstance I history).runAssignment
+          (SourceRunner.occurrenceIndexedInstance I history).balanceChoiceRule
+          (List.finRange history.length)) +
         epsilon * (Real.exp 1 + 1) *
-          (∑ q : Query, I.maxBidForQuery q) := by
+          (∑ t : Fin history.length,
+            (SourceRunner.occurrenceIndexedInstance I history).maxBidForQuery t) := by
   exact
-    Proof.proof_section6_different_budgets_and_nonexhaustive_optimum_theorem8_finite_explicit_error
-      I hbid hbudget history hnodup hcover hepsilon hepsilon_le_one hsmall
+    paper_adwords_balance_msvv_finRange_approx_competitive_with_query_sum_error_bound
+      (SourceRunner.occurrenceIndexedInstance I history)
+      (SourceRunner.occurrenceIndexedInstance_nonnegativeBids I history hbid)
+      (SourceRunner.occurrenceIndexedInstance_positiveBudgets I history hbudget)
+      hepsilon hepsilon_le_one
+      (SourceRunner.occurrenceIndexedInstance_smallBids I history hsmall)
 
 /--
 -
@@ -608,83 +672,96 @@ theorem section6_next_highest_bid_alive_formula
 
 /--
 Section 6's all-bidders next-price algorithm inherits the finite Theorem 8
-guarantee in the paper's equal-unit-budget, small-bids regime.  In this regime
-the next-highest charge is itself small relative to every possible winner's
-budget, so no separate effective-charge assumption is required.
+guarantee when its actual effective charges satisfy the small-bids condition.
+This is the precise arbitrary-budget condition; equal budgets are only one
+sufficient special case.
 -/
 theorem section6_next_highest_bid_all_theorem8_finite_explicit_error
     {Advertiser Query : Type*}
     [Fintype Advertiser] [Nonempty Advertiser]
-    [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]
+    [DecidableEq Advertiser]
     (I : PaperInstance Advertiser Query)
     (hbudget : I.PositiveBudgets)
     (history : List Query)
-    (hnodup : history.Nodup)
-    (hcover :
-      AdWordsInstance.historyFinset history = Finset.univ)
     {epsilon : ℝ}
     (hepsilon : 0 ≤ epsilon)
     (hepsilon_le_one : epsilon ≤ 1)
-    (hunit : SourceRunner.EqualUnitBudgets I)
-    (hsmall : paperSmallBids I epsilon) :
+    (hnext_small : ∀ a q,
+      section6_next_highest_bid_all I a q ≤ epsilon * I.budget a) :
     paperMsvvRatio *
-        (I.withEffectiveBids (section6_next_highest_bid_all I)).offlineOptimumValue
+        (SourceRunner.occurrenceIndexedInstance
+          (I.withEffectiveBids (section6_next_highest_bid_all I)) history).offlineOptimumValue
           (fun a => (hbudget a).le) ≤
-      paperRevenue (I.withEffectiveBids (section6_next_highest_bid_all I))
-        ((I.withEffectiveBids (section6_next_highest_bid_all I)).runAssignment
-          (I.withEffectiveBids
-            (section6_next_highest_bid_all I)).balanceChoiceRule history) +
+      paperRevenue
+        (SourceRunner.occurrenceIndexedInstance
+          (I.withEffectiveBids (section6_next_highest_bid_all I)) history)
+        ((SourceRunner.occurrenceIndexedInstance
+          (I.withEffectiveBids (section6_next_highest_bid_all I)) history).runAssignment
+          (SourceRunner.occurrenceIndexedInstance
+            (I.withEffectiveBids (section6_next_highest_bid_all I)) history).balanceChoiceRule
+          (List.finRange history.length)) +
         epsilon * (Real.exp 1 + 1) *
-          (∑ q : Query,
-            (I.withEffectiveBids
-              (section6_next_highest_bid_all I)).maxBidForQuery q) := by
+          (∑ t : Fin history.length,
+            (SourceRunner.occurrenceIndexedInstance
+              (I.withEffectiveBids (section6_next_highest_bid_all I)) history).maxBidForQuery t) := by
   exact
-    Proof.proof_section6_next_highest_bid_all_theorem8_finite_explicit_error
-      I hbudget history hnodup hcover hepsilon hepsilon_le_one
-      (SourceRunner.section6_next_highest_bid_all_small_bids_of_equal_unit_budgets
-        I hepsilon hunit hsmall)
+    paper_adwords_balance_msvv_finRange_approx_competitive_with_query_sum_error_bound
+      (SourceRunner.occurrenceIndexedInstance
+        (I.withEffectiveBids (section6_next_highest_bid_all I)) history)
+      (SourceRunner.occurrenceIndexedInstance_nonnegativeBids _ _
+        (AdWordsInstance.withEffectiveBids_nonnegativeBids I _
+          (Proof.section6_next_highest_bid_all_nonnegative I)))
+      (SourceRunner.occurrenceIndexedInstance_positiveBudgets _ _
+        (AdWordsInstance.withEffectiveBids_positiveBudgets I _ hbudget))
+      hepsilon hepsilon_le_one
+      (SourceRunner.occurrenceIndexedInstance_smallBids _ _
+        (Proof.section6_effective_bids_small_bids I
+          (section6_next_highest_bid_all I) hnext_small))
 
 /--
-Section 6's alive-bidders next-price algorithm has the same finite guarantee in
-the equal-unit-budget, small-bids regime.  Restricting the competing bids to
-alive bidders cannot enlarge the next-highest charge, so the source small-bids
-condition supplies the effective-charge bound.
+For the Section 6 alive-bidders next-price case, MSVV07 permits the online
+algorithm to keep every bidder alive. The alive charge rule then reduces
+pointwise to the all-bidders rule, so its finite occurrence-indexed guarantee
+is exactly the all-bidders one under the same effective-charge small-bids
+condition.
 -/
 theorem section6_next_highest_bid_alive_theorem8_finite_explicit_error
     {Advertiser Query : Type*}
     [Fintype Advertiser] [Nonempty Advertiser]
-    [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]
+    [DecidableEq Advertiser]
     (I : PaperInstance Advertiser Query)
-    (alive : Advertiser → Query → Prop) [∀ a q, Decidable (alive a q)]
     (hbudget : I.PositiveBudgets)
     (history : List Query)
-    (hnodup : history.Nodup)
-    (hcover :
-      AdWordsInstance.historyFinset history = Finset.univ)
     {epsilon : ℝ}
     (hepsilon : 0 ≤ epsilon)
     (hepsilon_le_one : epsilon ≤ 1)
-    (hunit : SourceRunner.EqualUnitBudgets I)
-    (hsmall : paperSmallBids I epsilon) :
+    (hnext_small : ∀ a q,
+      section6_next_highest_bid_all I a q ≤ epsilon * I.budget a) :
+    (∀ a q,
+      Proof.section6_next_highest_bid_alive I (fun _ _ => True) a q =
+        Proof.section6_next_highest_bid_all I a q) ∧
     paperMsvvRatio *
-        (I.withEffectiveBids
-          (section6_next_highest_bid_alive I alive)).offlineOptimumValue
+        (SourceRunner.occurrenceIndexedInstance
+          (I.withEffectiveBids (section6_next_highest_bid_all I)) history).offlineOptimumValue
           (fun a => (hbudget a).le) ≤
       paperRevenue
-        (I.withEffectiveBids (section6_next_highest_bid_alive I alive))
-        ((I.withEffectiveBids
-          (section6_next_highest_bid_alive I alive)).runAssignment
-          (I.withEffectiveBids
-            (section6_next_highest_bid_alive I alive)).balanceChoiceRule history) +
+        (SourceRunner.occurrenceIndexedInstance
+          (I.withEffectiveBids (section6_next_highest_bid_all I)) history)
+        ((SourceRunner.occurrenceIndexedInstance
+          (I.withEffectiveBids (section6_next_highest_bid_all I)) history).runAssignment
+          (SourceRunner.occurrenceIndexedInstance
+            (I.withEffectiveBids (section6_next_highest_bid_all I)) history).balanceChoiceRule
+          (List.finRange history.length)) +
         epsilon * (Real.exp 1 + 1) *
-          (∑ q : Query,
-            (I.withEffectiveBids
-              (section6_next_highest_bid_alive I alive)).maxBidForQuery q) := by
-  exact
-    Proof.proof_section6_next_highest_bid_alive_theorem8_finite_explicit_error
-      I alive hbudget history hnodup hcover hepsilon hepsilon_le_one
-      (SourceRunner.section6_next_highest_bid_alive_small_bids_of_equal_unit_budgets
-        I alive hepsilon hunit hsmall)
+          (∑ t : Fin history.length,
+            (SourceRunner.occurrenceIndexedInstance
+              (I.withEffectiveBids (section6_next_highest_bid_all I)) history).maxBidForQuery t) := by
+  refine ⟨?_, ?_⟩
+  · intro a q
+    exact SourceRunner.section6_all_alive_next_price_reduces_to_all_bidders I a q
+  · exact
+      section6_next_highest_bid_all_theorem8_finite_explicit_error
+        I hbudget history hepsilon hepsilon_le_one hnext_small
 
 /--
 Section 6's click-through-rate reduction replaces each bid by the expected
@@ -698,13 +775,11 @@ theorem section6_click_through_rates_effective_bid_formula
     (I.withClickThroughRates ctr).bid a q = ctr a q * I.bid a q := by
   rfl
 
-/--
-- Section 6 click-through rates: finite explicit Theorem 8 guarantee.
--/
+/-- Section 6 CTR guarantee on the occurrence-indexed arrival model. -/
 theorem section6_click_through_rates_theorem8_finite_explicit_error
     {Advertiser Query : Type*}
     [Fintype Advertiser] [Nonempty Advertiser]
-    [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]
+    [DecidableEq Advertiser]
     (I : PaperInstance Advertiser Query)
     (ctr : Advertiser → Query → ℝ)
     (hctr_nonneg : ∀ a q, 0 ≤ ctr a q)
@@ -712,55 +787,80 @@ theorem section6_click_through_rates_theorem8_finite_explicit_error
     (hbid : I.NonnegativeBids)
     (hbudget : I.PositiveBudgets)
     (history : List Query)
-    (hnodup : history.Nodup)
-    (hcover : AdWordsInstance.historyFinset history = Finset.univ)
     {epsilon : ℝ}
     (hepsilon : 0 ≤ epsilon)
     (hepsilon_le_one : epsilon ≤ 1)
     (hsmall : paperSmallBids I epsilon) :
     paperMsvvRatio *
-        (I.withClickThroughRates ctr).offlineOptimumValue
+        (SourceRunner.occurrenceIndexedInstance
+          (I.withClickThroughRates ctr) history).offlineOptimumValue
           (fun a => (hbudget a).le) ≤
-      (I.withClickThroughRates ctr).revenue
-        ((I.withClickThroughRates ctr).runAssignment
-          (I.withClickThroughRates ctr).balanceChoiceRule history) +
+      paperRevenue (SourceRunner.occurrenceIndexedInstance
+        (I.withClickThroughRates ctr) history)
+        ((SourceRunner.occurrenceIndexedInstance
+          (I.withClickThroughRates ctr) history).runAssignment
+          (SourceRunner.occurrenceIndexedInstance
+            (I.withClickThroughRates ctr) history).balanceChoiceRule
+          (List.finRange history.length)) +
         epsilon * (Real.exp 1 + 1) *
-          (∑ q : Query, (I.withClickThroughRates ctr).maxBidForQuery q) := by
+          (∑ t : Fin history.length,
+            (SourceRunner.occurrenceIndexedInstance
+              (I.withClickThroughRates ctr) history).maxBidForQuery t) := by
   exact
-    Proof.proof_section6_click_through_rates_theorem8_finite_explicit_error
-      I ctr hctr_nonneg hctr_le_one hbid hbudget history hnodup hcover
-      hepsilon hepsilon_le_one hsmall
+    paper_adwords_balance_msvv_finRange_approx_competitive_with_query_sum_error_bound
+      (SourceRunner.occurrenceIndexedInstance (I.withClickThroughRates ctr) history)
+      (SourceRunner.occurrenceIndexedInstance_nonnegativeBids _ _
+        (AdWordsInstance.withClickThroughRates_nonnegativeBids I ctr hctr_nonneg hbid))
+      (SourceRunner.occurrenceIndexedInstance_positiveBudgets _ _
+        (AdWordsInstance.withClickThroughRates_positiveBudgets I ctr hbudget))
+      hepsilon hepsilon_le_one
+      (SourceRunner.occurrenceIndexedInstance_smallBids _ _
+        (Proof.section6_click_through_rates_small_bids I ctr hbid hctr_le_one hsmall))
 
 /--
-- Section 6 delayed-entry availability: finite explicit Theorem 8 guarantee.
+Section 6 delayed-entry guarantee on the occurrence-indexed arrival model.
+Each advertiser has one entry time, so it is unavailable before that occurrence
+and remains available afterwards, as the source's "enter at any time" model
+requires.
 -/
 theorem section6_availability_theorem8_finite_explicit_error
     {Advertiser Query : Type*}
     [Fintype Advertiser] [Nonempty Advertiser]
-    [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]
+    [DecidableEq Advertiser]
     (I : PaperInstance Advertiser Query)
-    (available : Advertiser → Query → Prop)
-    [∀ a q, Decidable (available a q)]
     (hbid : I.NonnegativeBids)
     (hbudget : I.PositiveBudgets)
     (history : List Query)
-    (hnodup : history.Nodup)
-    (hcover : AdWordsInstance.historyFinset history = Finset.univ)
+    (entryTime : Advertiser → Fin (history.length + 1))
     {epsilon : ℝ}
     (hepsilon : 0 ≤ epsilon)
     (hepsilon_le_one : epsilon ≤ 1)
     (hsmall : paperSmallBids I epsilon) :
+    let J0 := SourceRunner.occurrenceIndexedInstance I history
+    let J := J0.withAvailability (SourceRunner.availableFromEntry entryTime)
     paperMsvvRatio *
-        (I.withAvailability available).offlineOptimumValue
+        J.offlineOptimumValue
           (fun a => (hbudget a).le) ≤
-      (I.withAvailability available).revenue
-        ((I.withAvailability available).runAssignment
-          (I.withAvailability available).balanceChoiceRule history) +
+      paperRevenue J
+        (J.runAssignment J.balanceChoiceRule
+          (List.finRange history.length)) +
         epsilon * (Real.exp 1 + 1) *
-          (∑ q : Query, (I.withAvailability available).maxBidForQuery q) := by
+          (∑ t : Fin history.length,
+            J.maxBidForQuery t) := by
   exact
-    Proof.proof_section6_availability_theorem8_finite_explicit_error
-      I available hbid hbudget history hnodup hcover hepsilon hepsilon_le_one hsmall
+    paper_adwords_balance_msvv_finRange_approx_competitive_with_query_sum_error_bound
+      ((SourceRunner.occurrenceIndexedInstance I history).withAvailability
+        (SourceRunner.availableFromEntry entryTime))
+      (AdWordsInstance.withAvailability_nonnegativeBids _ _
+        (SourceRunner.occurrenceIndexedInstance_nonnegativeBids I history hbid))
+      (AdWordsInstance.withAvailability_positiveBudgets _ _
+        (SourceRunner.occurrenceIndexedInstance_positiveBudgets I history hbudget))
+      hepsilon hepsilon_le_one
+      (Proof.section6_availability_small_bids
+        (SourceRunner.occurrenceIndexedInstance I history)
+        (SourceRunner.availableFromEntry entryTime) hepsilon
+        (SourceRunner.occurrenceIndexedInstance_positiveBudgets I history hbudget)
+        (SourceRunner.occurrenceIndexedInstance_smallBids I history hsmall))
 
 /--
 -
@@ -1128,8 +1228,10 @@ theorem appendix_kappa_ratio_limit_infinity :
     exact MSVV07Appendix.derivedKappaRatio_tendsto_atTop
 
 /--
-The derived factor tends to one half from the right at `kappa=1`; its endpoint
-value is one half, which is distinct from the separate BALANCE factor.
+The derived factor tends to one half from the right at `kappa=1`, whereas the
+separate `kappa = 1` BALANCE instance has factor `1 - 1/e`.  The continuous
+extension of the auxiliary formula is deliberately not identified with that
+source instance.
 Source status: derived witness for a source existence claim; the source omits phase parameters
 -/
 theorem appendix_kappa_ratio_limit_one :
@@ -1139,10 +1241,9 @@ theorem appendix_kappa_ratio_limit_one :
         MSVV07Appendix.derivedKappaRatio κ) ∧
     Filter.Tendsto MSVV07Appendix.derivedKappaRatio
         (nhdsWithin (1 : ℝ) (Set.Ioi 1)) (nhds (1 / 2 : ℝ)) ∧
-    MSVV07Appendix.derivedKappaRatio 1 = 1 / 2 ∧
     (1 / 2 : ℝ) ≠ paperMsvvRatio := by
   refine ⟨?_, MSVV07Appendix.derivedKappaRatio_tendsto_one_right,
-    MSVV07Appendix.derivedKappaRatio_at_one, ?_⟩
+    ?_⟩
   · intro κ hκ
     rw [MSVV07Appendix.derivedKappaContinuousOnlineValue_eq hκ,
       MSVV07Appendix.derivedKappaContinuousOfflineValue_eq_one hκ, div_one]
@@ -1157,10 +1258,9 @@ theorem theorem9HardDistribution_uniform (N : ℕ) :
   rfl
 
 /--
--
-Theorem 9 capped normalized revenue is the average capped prefix spend across
-all bidders.
-Source status: direct paper proof formula
+Implementation identity for capped revenue on one realized permutation.  It is
+kept as support for the final averaging argument, but is not itself the
+source-facing Theorem 9 q_ij expectation claim.
 -/
 theorem theorem9CappedNormalizedRevenue_formula
     (N : ℕ)
@@ -1179,6 +1279,28 @@ theorem theorem9CappedNormalizedRevenue_formula
   exact theorem9_capped_normalized_revenue_eq_prefix_spend N algorithm permutation
 
 /--
+Theorem 9's source-facing `q_ij` claim: for a fixed deterministic algorithm,
+the expected fraction of round-`i` queries allocated to bidder `j` under a
+uniform random bidder permutation is at most `1/(N-i+1)` when that bidder is
+eligible, and is zero otherwise.
+-/
+theorem theorem9_qij_expected_allocation_bound
+    (N : ℕ) (algorithm : BMatchingIntegralPrefixAlgorithm N)
+    (round bidder : Fin N) :
+    (SourceRunner.theorem9ExpectedRoundAllocation N algorithm round bidder ≤
+      if (round : ℕ) ≤ (bidder : ℕ) then
+        1 / ((N - (round : ℕ) : ℕ) : ℝ)
+      else 0) ∧
+      (¬ (round : ℕ) ≤ (bidder : ℕ) →
+        SourceRunner.theorem9ExpectedRoundAllocation
+          N algorithm round bidder = 0) := by
+  exact
+    ⟨SourceRunner.theorem9_expected_round_allocation_bound
+        N algorithm round bidder,
+      SourceRunner.theorem9_expected_round_allocation_zero_of_ineligible
+        N algorithm round bidder⟩
+
+/--
 -
 Theorem 9, paper-facing randomized online algorithm endpoint in the finite
 prefix model.
@@ -1190,7 +1312,7 @@ theorem theorem9_no_randomized_online_algorithm_beats_msvv_ratio :
         ∀ randomizedAlgorithm : theorem9RandomizedOnlineAlgorithm N,
           ¬ ∀ permutation,
             paperMsvvRatio + delta <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm =>
                   theorem9CappedNormalizedRevenue N algorithm permutation) := by
   exact Proof.proof_theorem9_no_randomized_online_algorithm_beats_msvv_ratio
@@ -1243,13 +1365,17 @@ theorem section2_equal_unit_budgets_simplifying_assumption
     SourceRunner.EqualUnitBudgets I ↔ ∀ a, I.budget a = 1 := by
   rfl
 
-/-- The temporary assumption that the displayed offline witness exhausts every budget. -/
+/--
+The temporary Section 2 simplifying assumption: a best offline allocation
+exhausts every bidder budget.  Both the optimality qualifier and the
+exhaustion condition are part of the source statement.
+-/
 theorem section2_exhaustive_optimum_simplifying_assumption
     {Advertiser Query : Type*} [Fintype Query] [DecidableEq Advertiser]
     (I : PaperInstance Advertiser Query)
     (opt : PaperAssignment Advertiser Query) :
-    SourceRunner.ExhaustsEveryBudget I opt ↔
-      ∀ a, paperSpend I opt a = I.budget a := by
+    (I.IsOptimalAssignment opt ∧ SourceRunner.ExhaustsEveryBudget I opt) ↔
+      (I.IsOptimalAssignment opt ∧ ∀ a, paperSpend I opt a = I.budget a) := by
   rfl
 
 /-- The displayed finite `psi_k` is decreasing over source slabs `1,...,k`. -/
@@ -1285,12 +1411,11 @@ theorem section3_discrete_tradeoff_convergence
 theorem section3_discrete_balance_algorithm
     {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
     (k : ℕ) (hk : 0 < k) (I : PaperInstance Advertiser Query)
-    (history : List Query) :
-    SourceRunner.runDiscreteBalanceOccurrences k hk I history =
-      SourceRunner.runOccurrencesFrom
-        (SourceRunner.discreteBalanceStep k hk I)
-        SourceRunner.initialOccurrenceState history := by
-  rfl
+    (S : SourceRunner.OccurrenceState Advertiser Query)
+    (q : Query) (a : Advertiser)
+    (hchoice : (SourceRunner.discreteBalanceScan k hk I S q).winner = some a) :
+    SourceRunner.occurrenceDiscreteBalanceChoice k hk I S q a := by
+  exact section3_discrete_balance_choice_rule k hk I S q a hchoice
 
 /-- Equal positive bids make a discrete-score winner the earliest feasible slab (BALANCE). -/
 theorem section3_equal_bid_discrete_msvv_is_balance
@@ -1446,9 +1571,10 @@ The Section 4 geometric witness is realized by one cohort-fluid BALANCE
 execution: its active-mass drops are the final-type counts, every active bidder
 has the same slab state and increment, every slab is work-conserving, all LP
 rows are tight for those realized counts, and revenue is total budget minus the
-realized unspent-budget objective.  This replaces the former juxtaposition with
-the unrelated Section 7 fluid bound.
-Source status: cited KP00 construction support; MSVV07 does not print the external instance
+realized unspent-budget objective.  Its unit-budget execution tends to
+`1 - 1/e`.  This is a corrected, internal limiting witness: MSVV07 itself
+cites an external KP00 exact finite instance rather than printing it.
+Source status: corrected source target; external exact witness not reconstructed
 -/
 theorem section4_balance_exact_tightness_instance
     (m : ℕ) (N : ℝ) (hN : 0 ≤ N) :
@@ -1480,12 +1606,15 @@ theorem section4_balance_exact_tightness_instance
     E.revenue =
       ∑ stage ∈ Finset.range (m + 1),
         E.activeMassBeforeSlab stage * E.allocationPerActiveBidder stage ∧
-    E.revenue = N - MSVV07SourceLemmas.factorRevealingLPValue m N := by
+    E.revenue = N - MSVV07SourceLemmas.factorRevealingLPValue m N ∧
+    Sequence.SeqTendsTo
+      (fun r : ℕ => (SourceRunner.factorLPTightFluidExecution r 1).revenue)
+      paperMsvvRatio := by
   let E := SourceRunner.factorLPTightFluidExecution m N
   refine ⟨?_, E.active_mass_drop_eq_typeMass, ?_, E.type_mass_partition,
     E.lp_rows_realized_tight, E.revenue_from_final_types,
     E.revenue_from_slab_allocations,
-    E.revenue_eq_N_sub_lpValue⟩
+    E.revenue_eq_N_sub_lpValue, ?_⟩
   · intro i
     rw [E.typeMass_eq_candidate]
     exact MSVV07SourceLemmas.paperRoutePrimalCandidate_nonnegative hN i
@@ -1496,6 +1625,7 @@ theorem section4_balance_exact_tightness_instance
       fun hlt => E.state_update stage hlt,
       E.budget_feasible stage hstage,
       E.slab_work_conservation stage hstage⟩
+  · exact SourceRunner.factorLPTightFluidRevenue_tendsTo_msvvRatio
 
 /-! ### Section 5 definitions and intermediate formulas -/
 
@@ -1654,15 +1784,22 @@ theorem section6_current_type_definition
       SourceRunner.activeBudgetSlab k hk spent budget := by
   rfl
 
+/-
+The source's generalized Section 6 rule is an occurrence-level rule: on each
+arrival it selects a feasible advertiser maximizing `bid * psi_k(current
+type)`.  Stating the scan expansion, rather than merely its recursive runner,
+keeps repeated occurrences in scope.
+Source status: direct paper algorithm definition
+-/
 theorem section6_generalized_current_type_balance_algorithm
     {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
     (k : ℕ) (hk : 0 < k) (I : PaperInstance Advertiser Query)
-    (history : List Query) :
-    SourceRunner.runDiscreteBalanceOccurrences k hk I history =
-      SourceRunner.runOccurrencesFrom
-        (SourceRunner.discreteBalanceStep k hk I)
-        SourceRunner.initialOccurrenceState history := by
-  rfl
+    (S : SourceRunner.OccurrenceState Advertiser Query) (q : Query)
+    (a : Advertiser)
+    (hchoice : (SourceRunner.discreteBalanceScan k hk I S q).winner = some a) :
+    SourceRunner.occurrenceDiscreteBalanceChoice k hk I S q a := by
+  exact SourceRunner.discreteBalanceScan_winner_is_discrete_choice
+    k hk I S q a hchoice
 
 theorem section6_beta_ij_definition
     {Advertiser Query : Type*}
@@ -1763,10 +1900,23 @@ theorem section6_next_highest_alive_keep_alive_reduction
 
 theorem section8_switching_query_distribution_model
     (M : SourceRunner.SwitchingQueryDistribution Time Regime Query)
-    (time : Time) :
-    M.queryDistributionAt time = M.queryDistribution (M.regimeAt time) ∧
-      M = ⟨M.regimeAt, M.queryDistribution⟩ := by
-  exact ⟨rfl, by cases M; rfl⟩
+    (switchCount : ℕ) (periodAt : Time → Fin (switchCount + 1))
+    (regimeForPeriod : Fin (switchCount + 1) → Regime)
+    (hadversarial_schedule :
+      ∀ time, M.regimeAt time = regimeForPeriod (periodAt time)) :
+    (∀ time,
+      M.queryDistributionAt time =
+        M.queryDistribution (regimeForPeriod (periodAt time))) ∧
+      (∀ time₁ time₂, periodAt time₁ = periodAt time₂ →
+        M.queryDistributionAt time₁ = M.queryDistributionAt time₂) := by
+  constructor
+  · intro time
+    simp only [SourceRunner.SwitchingQueryDistribution.queryDistributionAt,
+      hadversarial_schedule]
+  · intro time₁ time₂ hperiod
+    simp only [SourceRunner.SwitchingQueryDistribution.queryDistributionAt,
+      hadversarial_schedule]
+    rw [hperiod]
 
 theorem section8_weighted_bid_algorithm_proposal
     {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
@@ -1798,20 +1948,25 @@ theorem section8_online_weight_adjustment_heuristic_exists
 theorem section8_replicated_ranking_algorithm_proposal
     {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
     (m : ℕ) (hm : 0 < m) (I : PaperInstance Advertiser Query)
+    (rank : SourceRunner.Representative Advertiser m → ℕ)
+    (rankScale : ℕ → ℝ)
     (rankWeight : SourceRunner.Representative Advertiser m → ℝ)
-    (history : List Query) :
+    (history : List Query)
+    (hrank_injective : Function.Injective rank)
+    (hrank_weight : ∀ r, rankWeight r = rankScale (rank r)) :
     (∀ r : SourceRunner.Representative Advertiser m,
         (SourceRunner.replicatedInstance m I).budget r =
           I.budget r.1 / (m : ℝ)) ∧
       (∀ (r : SourceRunner.Representative Advertiser m) (q : Query),
         (SourceRunner.replicatedInstance m I).bid r q = I.bid r.1 q ∧
           SourceRunner.replicatedRankingScore I rankWeight r q =
-            I.bid r.1 q * rankWeight r) ∧
+            I.bid r.1 q * rankScale (rank r)) ∧
       SourceRunner.runReplicatedRankingProposal m I rankWeight history =
         SourceRunner.runOccurrencesFrom
           (SourceRunner.replicatedRankingStep m I rankWeight)
           SourceRunner.initialOccurrenceState history := by
-  exact ⟨fun _ => rfl, fun _ _ => ⟨rfl, rfl⟩, rfl⟩
+  exact ⟨fun _ => rfl, fun r q => ⟨rfl, by simp [SourceRunner.replicatedRankingScore,
+      hrank_weight r]⟩, rfl⟩
 
 /-! ### Theorem 9's intermediate source formulas -/
 
@@ -2184,18 +2339,22 @@ def theorem8_unspent_fraction_ne_printed_at_k2Spec : Prop :=
 
 /-- Transparent v11 semantic target for `section5_lemma4_dual_optimal_from_primal_dual_match`. -/
 def section5_lemma4_dual_optimal_from_primal_dual_matchSpec
-    {Primal Dual : Type*}
-    (primalFeasible : Primal → Prop) (dualFeasible : Dual → Prop)
-    (primalObjective : Primal → ℝ) (dualObjective : Dual → ℝ)
-    (hweak :
-      ∀ primal dual,
-        primalFeasible primal → dualFeasible dual →
-          primalObjective primal ≤ dualObjective dual)
-    {a : Primal} {ystar : Dual}
-    (ha : primalFeasible a)
-    (hystar : dualFeasible ystar)
-    (hvalue : primalObjective a = dualObjective ystar) : Prop :=
-  ∀ y, dualFeasible y → dualObjective ystar ≤ dualObjective y
+    {Advertiser Query : Type*} [Fintype Advertiser]
+    (m : ℕ) (I : Proof.PaperInstance Advertiser Query) (history : List Query)
+    (psi : ℝ → ℝ) (_hpsi : Antitone psi)
+    (_hbid : I.NonnegativeBids) (_hbudget : I.PositiveBudgets) : Prop :=
+  Optimization.IsMinimizerOn
+    (MSVV07SourceLemmas.tradeoffRevealingLP (m := m)
+      MSVV07SourceLemmas.paperRoutePrimalObjectiveCoeff
+      (fun row => ∑ i : Fin m, MSVV07SourceLemmas.paperRouteMatrixCoeff row i *
+        SourceRunner.section5PreterminalAlphaTypeCountOfTradeoffRun
+          m psi I history i)).DualFeasible
+    (MSVV07SourceLemmas.tradeoffRevealingLP (m := m)
+      MSVV07SourceLemmas.paperRoutePrimalObjectiveCoeff
+      (fun row => ∑ i : Fin m, MSVV07SourceLemmas.paperRouteMatrixCoeff row i *
+        SourceRunner.section5PreterminalAlphaTypeCountOfTradeoffRun
+          m psi I history i)).dualObjective
+    MSVV07SourceLemmas.paperRouteDualCandidate
 
 /-- Transparent v11 semantic target for `section5_lemma5_tradeoff_rhs_eq_base_add_delta`. -/
 def section5_lemma5_tradeoff_rhs_eq_base_add_deltaSpec
@@ -2222,19 +2381,23 @@ def section5_lemma6_per_query_tradeoffSpec
 
 /-- Transparent v11 semantic target for `section5_lemma7_weighted_perturbation_bound`. -/
 def section5_lemma7_weighted_perturbation_boundSpec
-    {m Query : Type*} [Fintype m] [Fintype Query]
+    {m Query : Type*} [Fintype m] [Fintype Query] [DecidableEq m]
     (psi alpha beta : m → ℝ) (opt alg : Query → ℝ)
-    (queryType querySlab : Query → m) (finalSlabError : ℝ)
-    (htradeoff_sum :
-      (∑ q : Query,
-        (opt q * psi (queryType q) - alg q * psi (querySlab q))) ≤ 0)
-    (hopt_accounting :
-      (∑ q : Query, opt q * psi (queryType q)) =
-        ∑ i : m, psi i * alpha i)
-    (halg_accounting :
-      (∑ q : Query, alg q * psi (querySlab q)) ≤
-        (∑ i : m, psi i * beta i) + finalSlabError) : Prop :=
-  (∑ i : m, psi i * (alpha i - beta i)) ≤ finalSlabError
+    (queryType querySlab : Query → m) (N : ℝ) (k : ℕ)
+    (hpointwise :
+      ∀ q : Query, opt q * psi (queryType q) -
+        alg q * psi (querySlab q) ≤ 0)
+    (hα :
+      ∀ i : m,
+        (∑ q ∈ (Finset.univ : Finset Query).filter
+          (fun q => queryType q = i), opt q) = alpha i)
+    (hpsi_nonneg : ∀ i, 0 ≤ psi i)
+    (hβ :
+      ∀ i : m,
+        (∑ q ∈ (Finset.univ : Finset Query).filter
+          (fun q => querySlab q = i), alg q) ≤ beta i)
+    (hfinal_nonneg : 0 ≤ N / (k : ℝ)) : Prop :=
+  (∑ i : m, psi i * (alpha i - beta i)) ≤ N / (k : ℝ)
 
 /-- Transparent v11 semantic target for `theorem8_balance_msvv_competitive_of_small_bids_limit_family`. -/
 def theorem8_balance_msvv_competitive_of_small_bids_limit_familySpec
@@ -2267,22 +2430,25 @@ def theorem8_balance_msvv_competitive_of_small_bids_limit_familySpec
 def section6_different_budgets_and_nonexhaustive_optimum_theorem8_finite_explicit_errorSpec
     {Advertiser Query : Type*}
     [Fintype Advertiser] [Nonempty Advertiser]
-    [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]
+    [DecidableEq Advertiser]
     (I : PaperInstance Advertiser Query)
     (hbid : I.NonnegativeBids)
     (hbudget : I.PositiveBudgets)
     (history : List Query)
-    (hnodup : history.Nodup)
-    (hcover : AdWordsInstance.historyFinset history = Finset.univ)
     {epsilon : ℝ}
     (hepsilon : 0 ≤ epsilon)
     (hepsilon_le_one : epsilon ≤ 1)
     (hsmall : paperSmallBids I epsilon) : Prop :=
   paperMsvvRatio *
-      I.offlineOptimumValue (fun a => (hbudget a).le) ≤
-    paperRevenue I (I.runAssignment I.balanceChoiceRule history) +
+      (SourceRunner.occurrenceIndexedInstance I history).offlineOptimumValue
+        (fun a => (hbudget a).le) ≤
+    paperRevenue (SourceRunner.occurrenceIndexedInstance I history)
+      ((SourceRunner.occurrenceIndexedInstance I history).runAssignment
+        (SourceRunner.occurrenceIndexedInstance I history).balanceChoiceRule
+        (List.finRange history.length)) +
       epsilon * (Real.exp 1 + 1) *
-        (∑ q : Query, I.maxBidForQuery q)
+        (∑ t : Fin history.length,
+          (SourceRunner.occurrenceIndexedInstance I history).maxBidForQuery t)
 
 /-- Transparent v11 semantic target for `section6_next_highest_bid_all_formula`. -/
 def section6_next_highest_bid_all_formulaSpec
@@ -2313,61 +2479,48 @@ def section6_next_highest_bid_alive_formulaSpec
 def section6_next_highest_bid_all_theorem8_finite_explicit_errorSpec
     {Advertiser Query : Type*}
     [Fintype Advertiser] [Nonempty Advertiser]
-    [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]
+    [DecidableEq Advertiser]
     (I : PaperInstance Advertiser Query)
     (hbudget : I.PositiveBudgets)
     (history : List Query)
-    (hnodup : history.Nodup)
-    (hcover :
-      AdWordsInstance.historyFinset history = Finset.univ)
     {epsilon : ℝ}
     (hepsilon : 0 ≤ epsilon)
     (hepsilon_le_one : epsilon ≤ 1)
-    (hunit : SourceRunner.EqualUnitBudgets I)
-    (hsmall : paperSmallBids I epsilon) : Prop :=
+    (hnext_small : ∀ a q,
+      section6_next_highest_bid_all I a q ≤ epsilon * I.budget a) : Prop :=
+  let J := SourceRunner.occurrenceIndexedInstance
+    (I.withEffectiveBids (section6_next_highest_bid_all I)) history
   paperMsvvRatio *
-      (I.withEffectiveBids (section6_next_highest_bid_all I)).offlineOptimumValue
-        (fun a => (hbudget a).le) ≤
-    paperRevenue (I.withEffectiveBids (section6_next_highest_bid_all I))
-      ((I.withEffectiveBids (section6_next_highest_bid_all I)).runAssignment
-        (I.withEffectiveBids
-          (section6_next_highest_bid_all I)).balanceChoiceRule history) +
+      J.offlineOptimumValue (fun a => (hbudget a).le) ≤
+    paperRevenue J
+      (J.runAssignment J.balanceChoiceRule (List.finRange history.length)) +
       epsilon * (Real.exp 1 + 1) *
-        (∑ q : Query,
-          (I.withEffectiveBids
-            (section6_next_highest_bid_all I)).maxBidForQuery q)
+        (∑ t : Fin history.length, J.maxBidForQuery t)
 
 /-- Transparent v11 semantic target for `section6_next_highest_bid_alive_theorem8_finite_explicit_error`. -/
 def section6_next_highest_bid_alive_theorem8_finite_explicit_errorSpec
     {Advertiser Query : Type*}
     [Fintype Advertiser] [Nonempty Advertiser]
-    [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]
+    [DecidableEq Advertiser]
     (I : PaperInstance Advertiser Query)
-    (alive : Advertiser → Query → Prop) [∀ a q, Decidable (alive a q)]
     (hbudget : I.PositiveBudgets)
     (history : List Query)
-    (hnodup : history.Nodup)
-    (hcover :
-      AdWordsInstance.historyFinset history = Finset.univ)
     {epsilon : ℝ}
     (hepsilon : 0 ≤ epsilon)
     (hepsilon_le_one : epsilon ≤ 1)
-    (hunit : SourceRunner.EqualUnitBudgets I)
-    (hsmall : paperSmallBids I epsilon) : Prop :=
+    (hnext_small : ∀ a q,
+      section6_next_highest_bid_all I a q ≤ epsilon * I.budget a) : Prop :=
+  let J := SourceRunner.occurrenceIndexedInstance
+    (I.withEffectiveBids (section6_next_highest_bid_all I)) history
+  (∀ a q,
+    Proof.section6_next_highest_bid_alive I (fun _ _ => True) a q =
+      Proof.section6_next_highest_bid_all I a q) ∧
   paperMsvvRatio *
-      (I.withEffectiveBids
-        (section6_next_highest_bid_alive I alive)).offlineOptimumValue
-        (fun a => (hbudget a).le) ≤
-    paperRevenue
-      (I.withEffectiveBids (section6_next_highest_bid_alive I alive))
-      ((I.withEffectiveBids
-        (section6_next_highest_bid_alive I alive)).runAssignment
-        (I.withEffectiveBids
-          (section6_next_highest_bid_alive I alive)).balanceChoiceRule history) +
+      J.offlineOptimumValue (fun a => (hbudget a).le) ≤
+    paperRevenue J
+      (J.runAssignment J.balanceChoiceRule (List.finRange history.length)) +
       epsilon * (Real.exp 1 + 1) *
-        (∑ q : Query,
-          (I.withEffectiveBids
-            (section6_next_highest_bid_alive I alive)).maxBidForQuery q)
+        (∑ t : Fin history.length, J.maxBidForQuery t)
 
 /-- Transparent v11 semantic target for `section6_click_through_rates_effective_bid_formula`. -/
 def section6_click_through_rates_effective_bid_formulaSpec
@@ -2380,7 +2533,7 @@ def section6_click_through_rates_effective_bid_formulaSpec
 def section6_click_through_rates_theorem8_finite_explicit_errorSpec
     {Advertiser Query : Type*}
     [Fintype Advertiser] [Nonempty Advertiser]
-    [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]
+    [DecidableEq Advertiser]
     (I : PaperInstance Advertiser Query)
     (ctr : Advertiser → Query → ℝ)
     (hctr_nonneg : ∀ a q, 0 ≤ ctr a q)
@@ -2388,46 +2541,38 @@ def section6_click_through_rates_theorem8_finite_explicit_errorSpec
     (hbid : I.NonnegativeBids)
     (hbudget : I.PositiveBudgets)
     (history : List Query)
-    (hnodup : history.Nodup)
-    (hcover : AdWordsInstance.historyFinset history = Finset.univ)
     {epsilon : ℝ}
     (hepsilon : 0 ≤ epsilon)
     (hepsilon_le_one : epsilon ≤ 1)
     (hsmall : paperSmallBids I epsilon) : Prop :=
+  let J := SourceRunner.occurrenceIndexedInstance (I.withClickThroughRates ctr) history
   paperMsvvRatio *
-      (I.withClickThroughRates ctr).offlineOptimumValue
-        (fun a => (hbudget a).le) ≤
-    (I.withClickThroughRates ctr).revenue
-      ((I.withClickThroughRates ctr).runAssignment
-        (I.withClickThroughRates ctr).balanceChoiceRule history) +
+      J.offlineOptimumValue (fun a => (hbudget a).le) ≤
+    paperRevenue J (J.runAssignment J.balanceChoiceRule (List.finRange history.length)) +
       epsilon * (Real.exp 1 + 1) *
-        (∑ q : Query, (I.withClickThroughRates ctr).maxBidForQuery q)
+        (∑ t : Fin history.length, J.maxBidForQuery t)
 
 /-- Transparent v11 semantic target for `section6_availability_theorem8_finite_explicit_error`. -/
 def section6_availability_theorem8_finite_explicit_errorSpec
     {Advertiser Query : Type*}
     [Fintype Advertiser] [Nonempty Advertiser]
-    [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]
+    [DecidableEq Advertiser]
     (I : PaperInstance Advertiser Query)
-    (available : Advertiser → Query → Prop)
-    [∀ a q, Decidable (available a q)]
     (hbid : I.NonnegativeBids)
     (hbudget : I.PositiveBudgets)
     (history : List Query)
-    (hnodup : history.Nodup)
-    (hcover : AdWordsInstance.historyFinset history = Finset.univ)
+    (entryTime : Advertiser → Fin (history.length + 1))
     {epsilon : ℝ}
     (hepsilon : 0 ≤ epsilon)
     (hepsilon_le_one : epsilon ≤ 1)
     (hsmall : paperSmallBids I epsilon) : Prop :=
+  let J0 := SourceRunner.occurrenceIndexedInstance I history
+  let J := J0.withAvailability (SourceRunner.availableFromEntry entryTime)
   paperMsvvRatio *
-      (I.withAvailability available).offlineOptimumValue
-        (fun a => (hbudget a).le) ≤
-    (I.withAvailability available).revenue
-      ((I.withAvailability available).runAssignment
-        (I.withAvailability available).balanceChoiceRule history) +
+      J.offlineOptimumValue (fun a => (hbudget a).le) ≤
+    paperRevenue J (J.runAssignment J.balanceChoiceRule (List.finRange history.length)) +
       epsilon * (Real.exp 1 + 1) *
-        (∑ q : Query, (I.withAvailability available).maxBidForQuery q)
+        (∑ t : Fin history.length, J.maxBidForQuery t)
 
 /-- Transparent v11 semantic target for `section6_page_top_balance_theorem8_finite_explicit_error`. -/
 def section6_page_top_balance_theorem8_finite_explicit_errorSpec
@@ -2498,6 +2643,18 @@ def theorem9CappedNormalizedRevenue_formulaSpec
             round (permutation bidder))) /
       (N : ℝ)
 
+/-- Transparent v11 semantic target for `theorem9_qij_expected_allocation_bound`. -/
+def theorem9_qij_expected_allocation_boundSpec
+    (N : ℕ) (algorithm : BMatchingIntegralPrefixAlgorithm N)
+    (round bidder : Fin N) : Prop :=
+  (SourceRunner.theorem9ExpectedRoundAllocation N algorithm round bidder ≤
+    if (round : ℕ) ≤ (bidder : ℕ) then
+      1 / ((N - (round : ℕ) : ℕ) : ℝ)
+    else 0) ∧
+    (¬ (round : ℕ) ≤ (bidder : ℕ) →
+      SourceRunner.theorem9ExpectedRoundAllocation
+        N algorithm round bidder = 0)
+
 /-- Transparent v11 semantic target for `theorem9_no_randomized_online_algorithm_beats_msvv_ratio`. -/
 def theorem9_no_randomized_online_algorithm_beats_msvv_ratioSpec : Prop :=
   ∀ delta : ℝ, 0 < delta →
@@ -2505,7 +2662,7 @@ def theorem9_no_randomized_online_algorithm_beats_msvv_ratioSpec : Prop :=
       ∀ randomizedAlgorithm : theorem9RandomizedOnlineAlgorithm N,
         ¬ ∀ permutation,
           paperMsvvRatio + delta <
-            EconCSLib.pmfExp randomizedAlgorithm
+            AppliedModelingLib.pmfExp randomizedAlgorithm
               (fun algorithm =>
                 theorem9CappedNormalizedRevenue N algorithm permutation)
 
@@ -2591,7 +2748,6 @@ def appendix_kappa_ratio_limit_oneSpec : Prop :=
       MSVV07Appendix.derivedKappaRatio κ) ∧
   Filter.Tendsto MSVV07Appendix.derivedKappaRatio
       (nhdsWithin (1 : ℝ) (Set.Ioi 1)) (nhds (1 / 2 : ℝ)) ∧
-  MSVV07Appendix.derivedKappaRatio 1 = 1 / 2 ∧
   (1 / 2 : ℝ) ≠ paperMsvvRatio
 
 /-- Transparent v11 semantic target for `appendix_naive_algorithm_true_revenue_formula`. -/
@@ -2682,6 +2838,34 @@ def section2_competitive_ratio_definitionSpec
   SourceRunner.IsAlphaCompetitive onlineRevenue offlineRevenue α ↔
     ∀ I, α ≤ onlineRevenue I / offlineRevenue I
 
+/-- Transparent v11 semantic target for the occurrence-level Section 2 model. -/
+def section2_occurrence_assignment_feasibility_definitionSpec
+    {Advertiser Query : Type*} [DecidableEq Advertiser]
+    (I : PaperInstance Advertiser Query) (history : List Query)
+    (A : Fin history.length → Option Advertiser) : Prop :=
+  SourceRunner.occurrenceAssignmentFeasible I history A ↔
+    (∀ t, ∃ a, A t = some a) ∧
+      ∀ a, SourceRunner.occurrenceSpend I history A a ≤ I.budget a
+
+/-- Transparent v11 semantic target for Section 3's finite score formula. -/
+def section3_discrete_balance_score_formulaSpec
+    {Advertiser Query : Type*}
+    (k : ℕ) (hk : 0 < k) (I : PaperInstance Advertiser Query)
+    (S : SourceRunner.OccurrenceState Advertiser Query)
+    (q : Query) (a : Advertiser) : Prop :=
+  SourceRunner.occurrenceDiscreteScore k hk I S q a =
+    I.bid a q * paperDiscreteTradeoff k
+      (SourceRunner.activeBudgetSlab k hk (S.spent a) (I.budget a))
+
+/-- Transparent v11 semantic target for Section 3's finite argmax rule. -/
+def section3_discrete_balance_choice_ruleSpec
+    {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
+    (k : ℕ) (hk : 0 < k) (I : PaperInstance Advertiser Query)
+    (S : SourceRunner.OccurrenceState Advertiser Query)
+    (q : Query) (a : Advertiser)
+    (hchoice : (SourceRunner.discreteBalanceScan k hk I S q).winner = some a) : Prop :=
+  SourceRunner.occurrenceDiscreteBalanceChoice k hk I S q a
+
 /-- Transparent v11 semantic target for `section3_balance_occurrence_runner_cost`. -/
 def section3_balance_occurrence_runner_costSpec
     {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
@@ -2695,11 +2879,10 @@ def section3_balance_occurrence_runner_costSpec
 def section3_discrete_balance_algorithmSpec
     {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
     (k : ℕ) (hk : 0 < k) (I : PaperInstance Advertiser Query)
-    (history : List Query) : Prop :=
-  SourceRunner.runDiscreteBalanceOccurrences k hk I history =
-    SourceRunner.runOccurrencesFrom
-      (SourceRunner.discreteBalanceStep k hk I)
-      SourceRunner.initialOccurrenceState history
+    (S : SourceRunner.OccurrenceState Advertiser Query)
+    (q : Query) (a : Advertiser)
+    (hchoice : (SourceRunner.discreteBalanceScan k hk I S q).winner = some a) : Prop :=
+  SourceRunner.occurrenceDiscreteBalanceChoice k hk I S q a
 
 /-- Transparent v11 semantic target for `section3_discrete_tradeoff_convergence`. -/
 def section3_discrete_tradeoff_convergenceSpec
@@ -2786,7 +2969,10 @@ def section4_balance_exact_tightness_instanceSpec
   E.revenue =
     ∑ stage ∈ Finset.range (m + 1),
       E.activeMassBeforeSlab stage * E.allocationPerActiveBidder stage ∧
-  E.revenue = N - MSVV07SourceLemmas.factorRevealingLPValue m N
+  E.revenue = N - MSVV07SourceLemmas.factorRevealingLPValue m N ∧
+  Sequence.SeqTendsTo
+    (fun r : ℕ => (SourceRunner.factorLPTightFluidExecution r 1).revenue)
+    paperMsvvRatio
 
 /-- Transparent v11 semantic target for `section4_balance_revenue_factor_lp_bridge_formula`. -/
 def section4_balance_revenue_factor_lp_bridge_formulaSpec
@@ -2975,11 +3161,10 @@ def section6_current_type_definitionSpec
 def section6_generalized_current_type_balance_algorithmSpec
     {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
     (k : ℕ) (hk : 0 < k) (I : PaperInstance Advertiser Query)
-    (history : List Query) : Prop :=
-  SourceRunner.runDiscreteBalanceOccurrences k hk I history =
-    SourceRunner.runOccurrencesFrom
-      (SourceRunner.discreteBalanceStep k hk I)
-      SourceRunner.initialOccurrenceState history
+    (S : SourceRunner.OccurrenceState Advertiser Query) (q : Query)
+    (a : Advertiser)
+    (hchoice : (SourceRunner.discreteBalanceScan k hk I S q).winner = some a) : Prop :=
+  SourceRunner.occurrenceDiscreteBalanceChoice k hk I S q a
 
 /-- Transparent v11 semantic target for `section6_next_highest_alive_keep_alive_reduction`. -/
 def section6_next_highest_alive_keep_alive_reductionSpec
@@ -3021,15 +3206,19 @@ def section8_online_weight_adjustment_heuristicSpec
 def section8_replicated_ranking_algorithm_proposalSpec
     {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
     (m : ℕ) (hm : 0 < m) (I : PaperInstance Advertiser Query)
+    (rank : SourceRunner.Representative Advertiser m → ℕ)
+    (rankScale : ℕ → ℝ)
     (rankWeight : SourceRunner.Representative Advertiser m → ℝ)
-    (history : List Query) : Prop :=
+    (history : List Query)
+    (hrank_injective : Function.Injective rank)
+    (hrank_weight : ∀ r, rankWeight r = rankScale (rank r)) : Prop :=
   (∀ r : SourceRunner.Representative Advertiser m,
       (SourceRunner.replicatedInstance m I).budget r =
         I.budget r.1 / (m : ℝ)) ∧
     (∀ (r : SourceRunner.Representative Advertiser m) (q : Query),
       (SourceRunner.replicatedInstance m I).bid r q = I.bid r.1 q ∧
         SourceRunner.replicatedRankingScore I rankWeight r q =
-          I.bid r.1 q * rankWeight r) ∧
+          I.bid r.1 q * rankScale (rank r)) ∧
     SourceRunner.runReplicatedRankingProposal m I rankWeight history =
       SourceRunner.runOccurrencesFrom
         (SourceRunner.replicatedRankingStep m I rankWeight)
@@ -3038,9 +3227,15 @@ def section8_replicated_ranking_algorithm_proposalSpec
 /-- Transparent v11 semantic target for `section8_switching_query_distribution_model`. -/
 def section8_switching_query_distribution_modelSpec
     (M : SourceRunner.SwitchingQueryDistribution Time Regime Query)
-    (time : Time) : Prop :=
-  M.queryDistributionAt time = M.queryDistribution (M.regimeAt time) ∧
-    M = ⟨M.regimeAt, M.queryDistribution⟩
+    (switchCount : ℕ) (periodAt : Time → Fin (switchCount + 1))
+    (regimeForPeriod : Fin (switchCount + 1) → Regime)
+    (hadversarial_schedule :
+      ∀ time, M.regimeAt time = regimeForPeriod (periodAt time)) : Prop :=
+  (∀ time,
+    M.queryDistributionAt time =
+      M.queryDistribution (regimeForPeriod (periodAt time))) ∧
+    (∀ time₁ time₂, periodAt time₁ = periodAt time₂ →
+      M.queryDistributionAt time₁ = M.queryDistributionAt time₂)
 
 /-- Transparent v11 semantic target for `section8_weighted_bid_algorithm_proposal`. -/
 def section8_weighted_bid_algorithm_proposalSpec
@@ -3235,4 +3430,4 @@ end
 end PaperInterface
 end MSVV07PaperFacing
 end Online
-end EconCSLib
+end AppliedModelingLib

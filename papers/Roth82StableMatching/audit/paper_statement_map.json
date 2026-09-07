@@ -1,4 +1,5 @@
 {
+  "approved_review_context_schema": 1,
   "declared_scope_exclusions": [
     "The repeated-proposal stage descriptions, finite-termination sentence, role-reversed construction, quota footnote, dummy-agent observation, and serial-dictatorship trace are support or ordinary prose rather than independent normal-scope named results.",
     "The Section 6 numerical example, displayed profiles, and computed matchings are outside normal named-theory coverage under the standing user instruction for computational examples.",
@@ -9,15 +10,10 @@
   "items": {
     "complete_marriage_outcome_definition": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "Roth82StableMatching.PaperInterface.completeMarriageOutcome_iff_source_definition"
+        "Roth82StableMatching.PaperInterface.completeMarriageOutcome"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "Roth82StableMatching.PaperInterface.completeMarriageOutcome_iff_source_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "Roth82StableMatching.PaperInterface.completeMarriageOutcome_iff_source_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 145,
@@ -30,7 +26,7 @@
       "source_claim_atoms": [
         {
           "id": "marriage_outcome.complete_bijection",
-          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.completeMarriageOutcome_iff_source_definition",
+          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.completeMarriageOutcome",
           "semantic_claim": "Every man and every woman has exactly one mutually consistent partner in a marriage outcome.",
           "source_locator": "cited publication:140-145",
           "source_quote_sha256": "e49220fe8da85d1a90ae1694002816d85906e4996b281d6a658ca09f7b19452d"
@@ -49,108 +45,9 @@
         "validator": "Independent Codex Roth82 source-definition correspondence judge",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "439a7e350267f0ca4a8b42cc555111f0fc2e2f4354dd75987de5ce01019467ce",
-        "closure_node_dispositions": [
-          {
-            "closure_component_sha256": "042cf208fed799c8a3cb5507b1bf04a08727a716bbaa4085dc230d08d74b3ba9",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:140-145"
-            },
-            "source_atom_sha256": "314c269926c0142b14331eac842dede59b4747371827b257cff7c85d2f553eb1"
-          },
-          {
-            "closure_component_sha256": "5a0e92bc07b2f7000a4c7d3820b4500e860c9b131e561d428cad93248993de1f",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:140-145"
-            },
-            "source_atom_sha256": "314c269926c0142b14331eac842dede59b4747371827b257cff7c85d2f553eb1"
-          },
-          {
-            "closure_component_sha256": "6308b82889e73c98b134a3b8c3304f14f7d81b41a211f36c0b753885962e2166",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:140-145"
-            },
-            "source_atom_sha256": "314c269926c0142b14331eac842dede59b4747371827b257cff7c85d2f553eb1"
-          },
-          {
-            "closure_component_sha256": "8a82e5dbecf5d5041443550fc1fcbcfb7a3c6002c7991b888d8dfb2bef9506da",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:140-145"
-            },
-            "source_atom_sha256": "314c269926c0142b14331eac842dede59b4747371827b257cff7c85d2f553eb1"
-          },
-          {
-            "closure_component_sha256": "d49c24a74a382461a3e8c3e0e2a3068b306be2892bfcdb4511e1d141cd491f66",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:140-145"
-            },
-            "source_atom_sha256": "314c269926c0142b14331eac842dede59b4747371827b257cff7c85d2f553eb1"
-          },
-          {
-            "closure_component_sha256": "e30b212b5ab41819028f2c577ab7a5289e4703a2c34edb17a956aaa539c921c4",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:140-145"
-            },
-            "source_atom_sha256": "314c269926c0142b14331eac842dede59b4747371827b257cff7c85d2f553eb1"
-          },
-          {
-            "closure_component_sha256": "f5ad5e921aa9840eb8966cee963e4d3bb3fb3b613764c1843e51063e9e669391",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:140-145"
-            },
-            "source_atom_sha256": "314c269926c0142b14331eac842dede59b4747371827b257cff7c85d2f553eb1"
-          }
-        ],
-        "item_identity_sha256": "01628b7a4e9840d35a8dff5b15ba78bf0b4e5b49e49aac8d852d61306affd06e",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The complete canonical Spec surface retains the source clause: Every man and every woman has exactly one mutually consistent partner in a marriage outcome.",
-            "source_atom_sha256": "314c269926c0142b14331eac842dede59b4747371827b257cff7c85d2f553eb1",
-            "spec_component_sha256s": [
-              "267deb835ce5c1dde077d17e8552866ebc1b94fefc3235706cc7a840f48f7856"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "187a2f4e15682b60d04e734a68919d59916cd409bdaf9b839838498b649ab80f",
-        "spec_closure_sha256": "4025f85ee8c4b0ee848997989d5ec4d590f14f1a8a2799c589de7c16e70fbfd2",
-        "spec_surface_sha256": "267deb835ce5c1dde077d17e8552866ebc1b94fefc3235706cc7a840f48f7856"
-      },
       "source_status": "direct_source_definition",
       "source_url": "https://doi.org/10.1287/moor.7.4.617",
-      "statement": "Section 2 Definition: a marriage outcome is a complete one-to-one matching between the two equal sides.",
-      "support_lean_declarations": [
-        "Roth82StableMatching.PaperInterface.completeMarriageOutcome_iff_source_definitionSpec"
-      ]
+      "statement": "Section 2 Definition: a marriage outcome is a complete one-to-one matching between the two equal sides."
     },
     "corollary5_1": {
       "claim_bearing": true,
@@ -508,15 +405,10 @@
     },
     "dominant_truthfulness_definition": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "Roth82StableMatching.PaperInterface.truthfulForAllAgents_iff_source_definition"
+        "Roth82StableMatching.PaperInterface.truthfulForAllAgents"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "Roth82StableMatching.PaperInterface.truthfulForAllAgents_iff_source_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "Roth82StableMatching.PaperInterface.truthfulForAllAgents_iff_source_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 351,
@@ -529,7 +421,7 @@
       "source_claim_atoms": [
         {
           "id": "truthfulness.unilateral_dominance",
-          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.truthfulForAllAgents_iff_source_definition",
+          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.truthfulForAllAgents",
           "semantic_claim": "For either side, no legal unilateral report yields an outcome strictly preferred under the agent's true ranking to truthful reporting.",
           "source_locator": "cited publication:340-351",
           "source_quote_sha256": "1111f7f610ef89a5d85d802e37052acf15c4b2e3ae4d607d5df85f89136bcc16"
@@ -548,164 +440,16 @@
         "validator": "Independent Codex Roth82 source-definition correspondence judge",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "590aae62b5ba02278c3cc7429d57c7f4dfa4a8e4795e88bc4b8954ba2e6bf2bd",
-        "closure_node_dispositions": [
-          {
-            "closure_component_sha256": "34f2f65bb24b7c0f3571db9c50776a5154f202553c74e16b0dd6afee39cf9cd1",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:340-351"
-            },
-            "source_atom_sha256": "c16b5f0767f86e710a9a036c7d82c3e2ea6cc4c02d870d5d5c3a840c8719fc6a"
-          },
-          {
-            "closure_component_sha256": "6ce02d91cd5be14ca77983dacf82a246c662c6ef69df3b8de736566e539a896b",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:340-351"
-            },
-            "source_atom_sha256": "c16b5f0767f86e710a9a036c7d82c3e2ea6cc4c02d870d5d5c3a840c8719fc6a"
-          },
-          {
-            "closure_component_sha256": "7028abd071daaf7511466991ec453a9eda854e4ad46fd5badd4a1a212de4fac7",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:340-351"
-            },
-            "source_atom_sha256": "c16b5f0767f86e710a9a036c7d82c3e2ea6cc4c02d870d5d5c3a840c8719fc6a"
-          },
-          {
-            "closure_component_sha256": "80338edf1cbd4f9e79bedd898f6bbb2397308ff6d3e0902fcaeecc445eb5ca46",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:340-351"
-            },
-            "source_atom_sha256": "c16b5f0767f86e710a9a036c7d82c3e2ea6cc4c02d870d5d5c3a840c8719fc6a"
-          },
-          {
-            "closure_component_sha256": "976cc003e71e5f3a58de799368758ccc1c4bafa54ec1f66c48e1879ceb861bde",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:340-351"
-            },
-            "source_atom_sha256": "c16b5f0767f86e710a9a036c7d82c3e2ea6cc4c02d870d5d5c3a840c8719fc6a"
-          },
-          {
-            "closure_component_sha256": "c19898fdf77fea0875b3938ae84d15512af9c24ca199069f3e8a219698130b5d",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:340-351"
-            },
-            "source_atom_sha256": "c16b5f0767f86e710a9a036c7d82c3e2ea6cc4c02d870d5d5c3a840c8719fc6a"
-          },
-          {
-            "closure_component_sha256": "cda1c2ae722ead2d07ebbdb316c1d37c42137341fa225feffc42ad84810dd4d2",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:340-351"
-            },
-            "source_atom_sha256": "c16b5f0767f86e710a9a036c7d82c3e2ea6cc4c02d870d5d5c3a840c8719fc6a"
-          },
-          {
-            "closure_component_sha256": "d199959f3215d49d3a26df100638c21bc73c8a31ae9aa25efee866a48cbaddbf",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:340-351"
-            },
-            "source_atom_sha256": "c16b5f0767f86e710a9a036c7d82c3e2ea6cc4c02d870d5d5c3a840c8719fc6a"
-          },
-          {
-            "closure_component_sha256": "d971f6ec669c1e3dafc832c25fd781d91c6db2eb19d13290618a95731b72f514",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:340-351"
-            },
-            "source_atom_sha256": "c16b5f0767f86e710a9a036c7d82c3e2ea6cc4c02d870d5d5c3a840c8719fc6a"
-          },
-          {
-            "closure_component_sha256": "f3adc61d2a563c73de3ca622a46b5712fc2f269cfb6e6c8b5e74622c62cc0047",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:340-351"
-            },
-            "source_atom_sha256": "c16b5f0767f86e710a9a036c7d82c3e2ea6cc4c02d870d5d5c3a840c8719fc6a"
-          },
-          {
-            "closure_component_sha256": "f7b4e4e47eeb15ff5552993e09d4cfbc270f2429c095224cb24e1be418b03d2c",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:340-351"
-            },
-            "source_atom_sha256": "c16b5f0767f86e710a9a036c7d82c3e2ea6cc4c02d870d5d5c3a840c8719fc6a"
-          }
-        ],
-        "item_identity_sha256": "0fbc1871fe0f272ede8b59412aacb18eff0cf8ffde4fdb89f7224a63d88f664f",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The complete canonical Spec surface retains the source clause: For either side, no legal unilateral report yields an outcome strictly preferred under the agent's true ranking to truthful reporting.",
-            "source_atom_sha256": "c16b5f0767f86e710a9a036c7d82c3e2ea6cc4c02d870d5d5c3a840c8719fc6a",
-            "spec_component_sha256s": [
-              "7be2194f9dfafa5d8badfca6793b39bad3a51a648fdca492ac3f6ed053992276"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "46f66d846bf4cea88dbab9261723324650082e5e51615f8190420fd8650604e4",
-        "spec_closure_sha256": "699dec69d5f14251170f55c2db2151bdebbf794d657863f8fb802d5b1b4fb5f6",
-        "spec_surface_sha256": "7be2194f9dfafa5d8badfca6793b39bad3a51a648fdca492ac3f6ed053992276"
-      },
       "source_status": "direct_source_definition",
       "source_url": "https://doi.org/10.1287/moor.7.4.617",
-      "statement": "Section 4 Definition: truthful revelation is dominant when no unilateral misreport can give an agent a better outcome under that agent's true preferences, regardless of the other reports.",
-      "support_lean_declarations": [
-        "Roth82StableMatching.PaperInterface.truthfulForAllAgents_iff_source_definitionSpec"
-      ]
+      "statement": "Section 4 Definition: truthful revelation is dominant when no unilateral misreport can give an agent a better outcome under that agent's true preferences, regardless of the other reports."
     },
     "efficient_matching_procedure_definition": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "Roth82StableMatching.PaperInterface.efficientMatchingProcedure_iff_source_definition"
+        "Roth82StableMatching.PaperInterface.efficientMatchingProcedure"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "Roth82StableMatching.PaperInterface.efficientMatchingProcedure_iff_source_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "Roth82StableMatching.PaperInterface.efficientMatchingProcedure_iff_source_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 435,
@@ -718,7 +462,7 @@
       "source_claim_atoms": [
         {
           "id": "efficiency.always_pareto_optimal",
-          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.efficientMatchingProcedure_iff_source_definition",
+          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.efficientMatchingProcedure",
           "semantic_claim": "An efficient matching procedure returns a Pareto-optimal outcome for every reported preference profile.",
           "source_locator": "cited publication:433-435",
           "source_quote_sha256": "ab4c20e26a01c98c49a0daeece53336f06cb9cafb8e8116832a94348c9614b74"
@@ -737,252 +481,16 @@
         "validator": "Independent Codex Roth82 source-definition correspondence judge",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "970cc24cb7721f75717a4e9d6cbcda804e1fb4196fd66085dbffd1a5b955c55a",
-        "closure_node_dispositions": [
-          {
-            "closure_component_sha256": "04c8ea37d6a4efd1700d339d548fc6833e750aaa4a75f747ccaf979e0b508bb2",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "25aeca307b5844e542a56c3132e38a0b60044de718a15f0fa04dd581c70256a2",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "2f0f58454d346b15589b54aacd9a04b04d4ba11ec38d6ab0459ab7b3e4983d7e",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "3212501a9177d962e932e51fe55440a535c5b2c360e028466d8f5f72c2ef2afe",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "378e62ef1f32324d26efb4be108c15f42d67e1dcb2eaa87ba30aa4f318d555c6",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "6bb7344c1d2521c7dc49167c27af71c282ca5c3e21dd6f8e50d3a46f057b2075",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "7ee8c7e8563e60f11ef27a0d8256c57aa308db9b76800bbb9934f14ccb4bde11",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "8d952103663893699be2b1367e52fefbbc55eba9e017f65c71c9b31a06891e02",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "90382a9479d46dcba68d082a9381435512d7547774816811d7a6a7d85e72139c",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "9b1f34e62e4ec93510e95d4388103a38d0e9f2875efa2b470665fa71d6398a7e",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "ab11644245deb23d742d9086adfa028bb5569d17790dc2ab561685711f04af53",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "aedca28f82bf5760923a3b53f4b8f2a08945aa36726b1d0bfac000496e5452ff",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "b90aa511cc535f03bb0a4efbecd03dc588573859f97018bc01ed4bf4771c395f",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "c8482ddc3b81a2c1de993c7ad53ec1cdec087ea096211000b9677cc9cba64325",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "cd0ee22cbd9af9e7c7fb5d9ecdc9a3fe7398604a478df06290cdf11befa03be5",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "cdbca44ce9953e09b3ab41c56330b4389f92477ec318238e84deab9c052a6699",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "d0b278abf675968d92fe4f68c0fd18bfcb5066aa4ba31b0734f02eea5ee49f42",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "ed8dbfa7db06a146248c10375acee8b1ad6b4cd87b4cbfd34b5df0aede29d113",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          },
-          {
-            "closure_component_sha256": "fd1366e07ff50780284e34d65614010949f7fb6e85b822a33b48f7912036938e",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:433-435"
-            },
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989"
-          }
-        ],
-        "item_identity_sha256": "16e4e4b8d60613b91b3c67e87786d8c0d3384ebfcf2efcc89627c0ec9e35b0ed",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The complete canonical Spec surface retains the source clause: An efficient matching procedure returns a Pareto-optimal outcome for every reported preference profile.",
-            "source_atom_sha256": "e1ded33edd5c9f78dcdfd71b77171207fd40bd4f7098211d5bf86602c836a989",
-            "spec_component_sha256s": [
-              "a8b95e8421a62e996af04a36d412b55d7a5e33287a64e156f6166a3df9dcf84e"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "f3fa6af83e60998256b65f94655b67dcf5c193aaec40622c2999f36cce31d049",
-        "spec_closure_sha256": "a430b54cd15f67a9b841c8ac8f81dab56e983e35d43ad04a79c2eb43d8c9c864",
-        "spec_surface_sha256": "a8b95e8421a62e996af04a36d412b55d7a5e33287a64e156f6166a3df9dcf84e"
-      },
       "source_status": "direct_source_definition",
       "source_url": "https://doi.org/10.1287/moor.7.4.617",
-      "statement": "Section 4 Definition: an efficient matching procedure always returns a Pareto-optimal complete outcome.",
-      "support_lean_declarations": [
-        "Roth82StableMatching.PaperInterface.efficientMatchingProcedure_iff_source_definitionSpec"
-      ]
+      "statement": "Section 4 Definition: an efficient matching procedure always returns a Pareto-optimal complete outcome."
     },
     "general_quota_outcome_definition": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "Roth82StableMatching.PaperInterface.fillsIndividualQuotas_iff_source_definition"
+        "Roth82StableMatching.PaperInterface.fillsIndividualQuotas"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "Roth82StableMatching.PaperInterface.fillsIndividualQuotas_iff_source_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "Roth82StableMatching.PaperInterface.fillsIndividualQuotas_iff_source_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 175,
@@ -995,7 +503,7 @@
       "source_claim_atoms": [
         {
           "id": "general_quota.individual_partner_sets",
-          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.fillsIndividualQuotas_iff_source_definition",
+          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.fillsIndividualQuotas",
           "semantic_claim": "Each agent has an individual quota and an outcome gives that agent exactly the stated number of partners.",
           "source_locator": "cited publication:167-175",
           "source_quote_sha256": "6e77ff39cbab944c485ac6c2ef54afe626e9c3f43759b08da0bf187a15c8fb02"
@@ -1014,30 +522,9 @@
         "validator": "Independent Codex Roth82 source-definition correspondence judge",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "8a1c7d7c1f82a3462816ab73a113e8b7e66cfd4cafba29f909625952065bc3ff",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "8f726d6aecf12e06fca04fc513083b107c0879e31ce7120abc6293889b80a77e",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The complete canonical Spec surface retains the source clause: Each agent has an individual quota and an outcome gives that agent exactly the stated number of partners.",
-            "source_atom_sha256": "7b1d4e3d36c8f9ec08f0c1e55e4a33244424c70f6e53ec47b1be7156264beafa",
-            "spec_component_sha256s": [
-              "df59dc6b1f645bc91b15a5452c8b4324650d31b2660e9b5c9eed52f85be1a8a3"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "b4b1803739202d5a2fc7ea8d62cad4b085269b36468f2966856219ae4aacbbeb",
-        "spec_closure_sha256": "f0999ef3aafec6ebea86415e024f6a547484351867a377d06ea80941828a6ddd",
-        "spec_surface_sha256": "df59dc6b1f645bc91b15a5452c8b4324650d31b2660e9b5c9eed52f85be1a8a3"
-      },
       "source_status": "direct_source_definition",
       "source_url": "https://doi.org/10.1287/moor.7.4.617",
-      "statement": "Section 2 Definition: in the broad general matching model, each agent has an individual quota and is matched with exactly that many partners, with mutually consistent pair membership.",
-      "support_lean_declarations": [
-        "Roth82StableMatching.PaperInterface.fillsIndividualQuotas_iff_source_definitionSpec"
-      ]
+      "statement": "Section 2 Definition: in the broad general matching model, each agent has an individual quota and is matched with exactly that many partners, with mutually consistent pair membership."
     },
     "lemma1": {
       "claim_bearing": true,
@@ -1265,15 +752,10 @@
     },
     "marriage_model_definition": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "Roth82StableMatching.PaperInterface.sourceMarriageModel_iff_source_definition"
+        "Roth82StableMatching.PaperInterface.sourceMarriageModel"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "Roth82StableMatching.PaperInterface.sourceMarriageModel_iff_source_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "Roth82StableMatching.PaperInterface.sourceMarriageModel_iff_source_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 197,
@@ -1286,7 +768,7 @@
       "source_claim_atoms": [
         {
           "id": "marriage_model.balanced_strict_domain",
-          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.sourceMarriageModel_iff_source_definition",
+          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.sourceMarriageModel",
           "semantic_claim": "The marriage model has equal finite sides and each agent has a complete strict ordering without ties over the opposite side.",
           "source_locator": "cited publication:176-197",
           "source_quote_sha256": "2123d65bf25a071b4a6b9aa3edfec487a86e7f1a19041fb732c3d18cb254d01f"
@@ -1305,42 +787,16 @@
         "validator": "Independent Codex Roth82 source-definition correspondence judge",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "2dc0fd17ab14766743386bcbe77018cdae523ad99af9feddc24861c171ace881",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "42c0f6098e88866ee8070f61a9769057fc9c185fc973f6d69f286514a9b8591d",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The complete canonical Spec surface retains the source clause: The marriage model has equal finite sides and each agent has a complete strict ordering without ties over the opposite side.",
-            "source_atom_sha256": "c5610a61c3e3bfaffc97ff126a4931385c4f96f8741c260409fb4d72ac746472",
-            "spec_component_sha256s": [
-              "1e9506f58ee79e43d6cb9003b3e68dece116d10e76bfb3a6a881b2a777325be1"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "50db306e6584d1aaa5ca18a3ccb0ed758a7e3b042584dd89f563a36ad35417db",
-        "spec_closure_sha256": "58e67c3d95a594179a9c9ace0881e6e8229dfbfe6b15b5981579e8ed2aa9db2f",
-        "spec_surface_sha256": "1e9506f58ee79e43d6cb9003b3e68dece116d10e76bfb3a6a881b2a777325be1"
-      },
       "source_status": "direct_source_definition",
       "source_url": "https://doi.org/10.1287/moor.7.4.617",
-      "statement": "Section 2 model-domain definition: the marriage problem has equal finite sides and every agent has a complete transitive strict preference ordering, with no indifference between distinct potential partners.",
-      "support_lean_declarations": [
-        "Roth82StableMatching.PaperInterface.sourceMarriageModel_iff_source_definitionSpec"
-      ]
+      "statement": "Section 2 model-domain definition: the marriage problem has equal finite sides and every agent has a complete transitive strict preference ordering, with no indifference between distinct potential partners."
     },
     "matching_procedure_definition": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "Roth82StableMatching.PaperInterface.matchingProcedure_eq_source_definition"
+        "Roth82StableMatching.PaperInterface.matchingProcedure"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "Roth82StableMatching.PaperInterface.matchingProcedure_eq_source_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "Roth82StableMatching.PaperInterface.matchingProcedure_eq_source_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 303,
@@ -1353,7 +809,7 @@
       "source_claim_atoms": [
         {
           "id": "matching_procedure.profile_to_outcome",
-          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.matchingProcedure_eq_source_definition",
+          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.matchingProcedure",
           "semantic_claim": "A matching procedure elicits the agents reported preferences and aggregates the reported two-sided profile into an outcome.",
           "source_locator": "cited publication:300-303",
           "source_quote_sha256": "63e113f7b30d0353dae5367908f91bc3f7077bf0fe7482eb257c85eeec190c66"
@@ -1372,131 +828,16 @@
         "validator": "Independent Codex Roth82 source-definition correspondence judge",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "91147dbab4c74df7839c8e0b7c0077f455d61bb224372d2c48579badc9783288",
-        "closure_node_dispositions": [
-          {
-            "closure_component_sha256": "86fa72c0fee8e997be2711cd55c77fac0a6e965babb2c61a5ad12df362367361",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:300-303"
-            },
-            "source_atom_sha256": "c7817c5625e837fc01848b59600b11a20b6ddf60c1e5a358c8248bdec319d019"
-          },
-          {
-            "closure_component_sha256": "886dc3247e74a4b7dd53180ce3ad7cdc6c7090530f3df714b1ab324e6c7792ba",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:300-303"
-            },
-            "source_atom_sha256": "c7817c5625e837fc01848b59600b11a20b6ddf60c1e5a358c8248bdec319d019"
-          },
-          {
-            "closure_component_sha256": "90f003be33b8c5062bc66035aee28e85b175f68c9f8a684e7d4be16ce0ce63b0",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:300-303"
-            },
-            "source_atom_sha256": "c7817c5625e837fc01848b59600b11a20b6ddf60c1e5a358c8248bdec319d019"
-          },
-          {
-            "closure_component_sha256": "9980d0b7d45a1e8f468728213aa75dbc6441792408d661056e47221f925abc1d",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:300-303"
-            },
-            "source_atom_sha256": "c7817c5625e837fc01848b59600b11a20b6ddf60c1e5a358c8248bdec319d019"
-          },
-          {
-            "closure_component_sha256": "a2df86655bca41333c1795758ef6b11b11acc85bcc21db797e9f4ef1689a7610",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:300-303"
-            },
-            "source_atom_sha256": "c7817c5625e837fc01848b59600b11a20b6ddf60c1e5a358c8248bdec319d019"
-          },
-          {
-            "closure_component_sha256": "d738807249e7c19dc8b93b0bafd12139f57d244c3af5a0e882aee7c4c10e1d06",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:300-303"
-            },
-            "source_atom_sha256": "c7817c5625e837fc01848b59600b11a20b6ddf60c1e5a358c8248bdec319d019"
-          },
-          {
-            "closure_component_sha256": "e6480ec8f709446c584fac74fde4fc5a2da9458ac747ada503289ca3c193c870",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:300-303"
-            },
-            "source_atom_sha256": "c7817c5625e837fc01848b59600b11a20b6ddf60c1e5a358c8248bdec319d019"
-          },
-          {
-            "closure_component_sha256": "ee2a01bd0d249c816dd147604b8d7f4f0e12275f49ff802abf3dbe71ad316862",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:300-303"
-            },
-            "source_atom_sha256": "c7817c5625e837fc01848b59600b11a20b6ddf60c1e5a358c8248bdec319d019"
-          }
-        ],
-        "item_identity_sha256": "ea983b4c8158abab0b915c30bfc271869feec1cff43e8dfb21bce0869c9a0d84",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The complete canonical Spec surface retains the source clause: A matching procedure elicits the agents reported preferences and aggregates the reported two-sided profile into an outcome.",
-            "source_atom_sha256": "c7817c5625e837fc01848b59600b11a20b6ddf60c1e5a358c8248bdec319d019",
-            "spec_component_sha256s": [
-              "de425f7100dadcbd3941ca9ffe6578058fa589574c6e51103dd30148175aa334"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "d14ed1bb6f5fc2f443ca5f8a0c1f7bbff7754577c2120636478d56dba251a63d",
-        "spec_closure_sha256": "942970baa0ef33e199f90d21b1929aae9b9ccb344a11ff80ec378f36fe1d3e1c",
-        "spec_surface_sha256": "de425f7100dadcbd3941ca9ffe6578058fa589574c6e51103dd30148175aa334"
-      },
       "source_status": "direct_source_definition",
       "source_url": "https://doi.org/10.1287/moor.7.4.617",
-      "statement": "Section 4 Definition: a matching procedure elicits the agents reported preference profile and aggregates it to determine a matching outcome.",
-      "support_lean_declarations": [
-        "Roth82StableMatching.PaperInterface.matchingProcedure_eq_source_definitionSpec"
-      ]
+      "statement": "Section 4 Definition: a matching procedure elicits the agents reported preference profile and aggregates it to determine a matching outcome."
     },
     "preference_profile_definition": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "Roth82StableMatching.PaperInterface.preferenceProfile_eq_source_definition"
+        "Roth82StableMatching.PaperInterface.preferenceProfile"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "Roth82StableMatching.PaperInterface.preferenceProfile_eq_source_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "Roth82StableMatching.PaperInterface.preferenceProfile_eq_source_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 138,
@@ -1509,7 +850,7 @@
       "source_claim_atoms": [
         {
           "id": "preference_profile.two_sided_vector",
-          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.preferenceProfile_eq_source_definition",
+          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.preferenceProfile",
           "semantic_claim": "A preference profile contains one preference ordering for each member of both disjoint sides.",
           "source_locator": "cited publication:130-138",
           "source_quote_sha256": "97c8c5c207a9697be53470790905b4f445b421625087f43fc0cb224baab27d54"
@@ -1528,42 +869,17 @@
         "validator": "Independent Codex Roth82 source-definition correspondence judge",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "dd84b3ec2037418226a4ef971b24a9bcb83005d3c09aa69ee2c4780d81ceb10c",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "ab18b1ccbc38d006326d6c6b8851bed3c8394f59773f2c5bf4c6c6757ea54a92",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The complete canonical Spec surface retains the source clause: A preference profile contains one preference ordering for each member of both disjoint sides.",
-            "source_atom_sha256": "79882192fde39449bff42851c7327a005c66f4e86b0c15b7d4cf4d119c986df8",
-            "spec_component_sha256s": [
-              "a6afa1d31c906e51a25378c5ccf6cac9369493d7abd29cc82bd1e1e6e051c057"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "75868169c062e758727196dedfeaea29e9403b30df935633bc6fd495f50b2a67",
-        "spec_closure_sha256": "c776e46fcdcf623d8849642e3e7e3319e4a5924e5a80f68767388e24a583f597",
-        "spec_surface_sha256": "a6afa1d31c906e51a25378c5ccf6cac9369493d7abd29cc82bd1e1e6e051c057"
-      },
       "source_status": "direct_source_definition",
       "source_url": "https://doi.org/10.1287/moor.7.4.617",
-      "statement": "Section 2 Definition: the preference profile is the vector of strict preferences reported by every agent on both sides.",
-      "support_lean_declarations": [
-        "Roth82StableMatching.PaperInterface.preferenceProfile_eq_source_definitionSpec"
-      ]
+      "statement": "Section 2 Definition: the preference profile is the vector of strict preferences reported by every agent on both sides."
     },
     "side_optimal_stable_outcome_definition": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "Roth82StableMatching.PaperInterface.sideOptimalStableOutcome_iff_source_definition"
+        "Roth82StableMatching.PaperInterface.sourceMenOptimal",
+        "Roth82StableMatching.PaperInterface.sourceWomenOptimal"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "Roth82StableMatching.PaperInterface.sideOptimalStableOutcome_iff_source_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "Roth82StableMatching.PaperInterface.sideOptimalStableOutcome_iff_source_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 466,
@@ -1576,7 +892,7 @@
       "source_claim_atoms": [
         {
           "id": "side_optimal_stable_outcome.weakly_best_for_side",
-          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.sideOptimalStableOutcome_iff_source_definition",
+          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.sourceMenOptimal",
           "semantic_claim": "A side-optimal stable outcome is stable and is weakly preferred to every other stable outcome by every agent on that selected side.",
           "source_locator": "cited publication:463-466",
           "source_quote_sha256": "09747a4564c0c2ac4835865bfaf1072e77d591b62a958f985c0dc82f1e2a38fc"
@@ -1595,340 +911,16 @@
         "validator": "Independent Codex Roth82 source-definition correspondence judge",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "970cc24cb7721f75717a4e9d6cbcda804e1fb4196fd66085dbffd1a5b955c55a",
-        "closure_node_dispositions": [
-          {
-            "closure_component_sha256": "01bbcf3a489f6fac329e2af3d8bdb93a6f4c04829ca0a825d99f130b946c4c71",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "0ae89b2791f9154cf7323b31ec0279d46109923f3909a1db39b3751f4fbf7d1b",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "0e3763dfae1ae796e4c03b532f8194b8745f2e6b506620d00e773d8371caaff6",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "1768585b6e485b0a6928503418f5377e8b2c210c821743e4b4614db2dba8cb54",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "3715447046d1d15ca53f7f62d86c8753e5f3398c8e5a23d1989be7964502459c",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "37e698d5bd91e86c3e224823dee6695efea25d3eecd7c3b2054f6424c834b5d1",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "3ea349723356d349fd4bd55c3efe768d7cb3540a48a08435e0e898dd9e25d0ad",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "557e1e30cca03e993ed45d51261c508b6061a820036f31f78c37a33b724ce917",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "5b6dce69298c686438c12fd8a113f70b5f93cbeca9e9a070fbffa7379cf83ff5",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "5ec53c444d94fce53808a7cca916687e42e6a88e7fc13f0cb981c0950b5fc76d",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "62aa32759ac2beb78dc80c4946f17cddb07176f78bb683364d764654df59a78e",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "641c2ff8c7939e1f8e9b33b155e106ba5e9ef396ad1896bf70dd6c537d02019e",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "67d5c440af326cb2ec88560201ea38095d30dbd6a9fbe3e3e9551ed0e2a997a5",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "6dad2196d7bcd4122401acf548138371217bda172a53f69afbbe6125db19c52a",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "81423c99be9c070c21fddddbc9fb9700f657f834f54c9906727e36b0dbdfdd54",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "8708d226e428cb1e1d969e1c46812a3bb405f8826bbab7ecba1b2a41e76f4058",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "93e241d29296f023be20a364d50c399dac180549f4a5048b7052d91dee1ce155",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "9d0d922924801ba348274bcda385e29a47c6b09fb032d7fbad2beef7406f2d11",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "9f1d96b55df2b9084d0c0f858d04e72b78544d8966ad395ed5c6799743a3435a",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "b7d7e46c889d3a147c524aee7a2ad0c673a925fb546ca7630491476fdb608885",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "bb727b7c39f80632cb8d132dff06d5717c22e569e89156f74f95ab23eec04411",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "c924193fe2e0e4a3d1c2739898f56cb0fb3cb065df33c48b86c8216d18e08cbd",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "caf02e0453fb1b30bd1e343820c8aa2c2ac09c222df8ec0bd480d254cc6c0898",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "d59a583064a2df386a2a230d7336112db9bfe1ed1982fa7bf8d1f6e6a90ee9d1",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "da2e175df9172f7fdd01b657e5db2ec01aabafd56571711a3c0538908156ae27",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "f4c4540ee55ec234c7fdd5151c2950af61e3ec0820a9e0a5226ea7398055e6e0",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          },
-          {
-            "closure_component_sha256": "f9e040085eaec742ae2547a058f7d8a0d27591580a41d1c4601115a485739e34",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:463-466"
-            },
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35"
-          }
-        ],
-        "item_identity_sha256": "94d2fbdeaccd2cc8dc680b739989e69d203cad4f6513b871b8e06ebcc58b05f2",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The complete canonical Spec surface retains the source clause: A side-optimal stable outcome is stable and is weakly preferred to every other stable outcome by every agent on that selected side.",
-            "source_atom_sha256": "75dfd08cdb4bf33e9dc40cb7c7e0ce3a9065343b26eea42c5e295ba967298b35",
-            "spec_component_sha256s": [
-              "8cee9838246f32985b4d0b2b7540d0d7fbbaef5b94cc91f943a37c85a74fa2c9"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "8565c41f5054cf41838427040ec250110d237fb0b2cd4ed616bac76fa3232169",
-        "spec_closure_sha256": "dfa816e651207728b72e8a736e79f03fa886fe1b9ef265f821af0fad0733dd73",
-        "spec_surface_sha256": "8cee9838246f32985b4d0b2b7540d0d7fbbaef5b94cc91f943a37c85a74fa2c9"
-      },
       "source_status": "direct_source_definition",
       "source_url": "https://doi.org/10.1287/moor.7.4.617",
-      "statement": "Section 4 Definition: an outcome is side-optimal stable when it is stable and every member of the selected side weakly prefers it to every other stable outcome.",
-      "support_lean_declarations": [
-        "Roth82StableMatching.PaperInterface.sideOptimalStableOutcome_iff_source_definitionSpec"
-      ]
+      "statement": "Section 4 Definition: an outcome is side-optimal stable when it is stable and every member of the selected side weakly prefers it to every other stable outcome."
     },
     "simple_misrepresentation_definition": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "Roth82StableMatching.PaperInterface.manReportStrictlyRanksPartnerFirst_iff_source_definition"
+        "Roth82StableMatching.PaperInterface.manReportStrictlyRanksPartnerFirst"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "Roth82StableMatching.PaperInterface.manReportStrictlyRanksPartnerFirst_iff_source_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "Roth82StableMatching.PaperInterface.manReportStrictlyRanksPartnerFirst_iff_source_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 529,
@@ -1941,7 +933,7 @@
       "source_claim_atoms": [
         {
           "id": "simple_misrepresentation.obtained_partner_first",
-          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.manReportStrictlyRanksPartnerFirst_iff_source_definition",
+          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.manReportStrictlyRanksPartnerFirst",
           "semantic_claim": "The associated simple misrepresentation ranks the partner obtained under the original misreport strictly above every alternative partner.",
           "source_locator": "cited publication:522-529",
           "source_quote_sha256": "4a72e487b27f3bc8ba95cfcd080897ec726a5dfe93664aa8e816b50bb4577fba"
@@ -1960,42 +952,16 @@
         "validator": "Independent Codex Roth82 source-definition correspondence judge",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "d22006265285a35b1d6fe07727edf103479e0f817c3126716aba3a076650990e",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "849f002706963b8c9fc401b2ccdb13b2ce6d7702a3cc2120299a840c21c61f8c",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The complete canonical Spec surface retains the source clause: The associated simple misrepresentation ranks the partner obtained under the original misreport strictly above every alternative partner.",
-            "source_atom_sha256": "6600856de82219b7755f15ba49e53e17f4d0d4b67d19bd2d5d169a2073895a81",
-            "spec_component_sha256s": [
-              "832095b0de5d9f92f0f48edf663048ad8938f52a4469dd937c80a5cf87db48ba"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "4b25faf2e8eef1dabe0a0fa09f0aa541ef00d279d8af338a872f31b7bde55a83",
-        "spec_closure_sha256": "f52de60d142282e6b0aa319d82979743d6d37d25807ec8cf78f9df0396d3c9dc",
-        "spec_surface_sha256": "832095b0de5d9f92f0f48edf663048ad8938f52a4469dd937c80a5cf87db48ba"
-      },
       "source_status": "direct_source_definition",
       "source_url": "https://doi.org/10.1287/moor.7.4.617",
-      "statement": "Section 5 Definition: the simple report associated with a unilateral misrepresentation ranks the partner obtained from that misrepresentation strictly above every other possible partner.",
-      "support_lean_declarations": [
-        "Roth82StableMatching.PaperInterface.manReportStrictlyRanksPartnerFirst_iff_source_definitionSpec"
-      ]
+      "statement": "Section 5 Definition: the simple report associated with a unilateral misrepresentation ranks the partner obtained from that misrepresentation strictly above every other possible partner."
     },
     "stable_marriage_definition": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "Roth82StableMatching.PaperInterface.sourceStableMarriage_iff_source_definition"
+        "Roth82StableMatching.PaperInterface.sourceStableMarriage"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "Roth82StableMatching.PaperInterface.sourceStableMarriage_iff_source_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "Roth82StableMatching.PaperInterface.sourceStableMarriage_iff_source_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 165,
@@ -2008,7 +974,7 @@
       "source_claim_atoms": [
         {
           "id": "stable_marriage.no_blocking_pair",
-          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.sourceStableMarriage_iff_source_definition",
+          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.sourceStableMarriage",
           "semantic_claim": "A complete marriage outcome is stable when there is no man and woman who both strictly prefer each other to their current partners.",
           "source_locator": "cited publication:145-165",
           "source_quote_sha256": "bbccd76cebc990c571a8b00596f851b845067c0b4bdef299c73a6fa4d1850505"
@@ -2027,186 +993,16 @@
         "validator": "Independent Codex Roth82 source-definition correspondence judge",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "970cc24cb7721f75717a4e9d6cbcda804e1fb4196fd66085dbffd1a5b955c55a",
-        "closure_node_dispositions": [
-          {
-            "closure_component_sha256": "19e679a32454d74f236827af133ee36784797952edde6c775bb58b363201a221",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:145-165"
-            },
-            "source_atom_sha256": "f38e75e0e586ae3f96f0a8e2238cf124fa997689c99961f3a8a8a4ffaa94f2e0"
-          },
-          {
-            "closure_component_sha256": "34b4e08d88378f0aa76705823ddb4dc71f629397e33e836f2b1f63e446b3f08c",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:145-165"
-            },
-            "source_atom_sha256": "f38e75e0e586ae3f96f0a8e2238cf124fa997689c99961f3a8a8a4ffaa94f2e0"
-          },
-          {
-            "closure_component_sha256": "36bc29ec9f32488cc8575182a81bbee00ca9311ac9ee742e34534122b0de0b64",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:145-165"
-            },
-            "source_atom_sha256": "f38e75e0e586ae3f96f0a8e2238cf124fa997689c99961f3a8a8a4ffaa94f2e0"
-          },
-          {
-            "closure_component_sha256": "6ab39dfe819a524195364b8e1d782f9d571d9364c1d1b8ba01cba8de08137bc6",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:145-165"
-            },
-            "source_atom_sha256": "f38e75e0e586ae3f96f0a8e2238cf124fa997689c99961f3a8a8a4ffaa94f2e0"
-          },
-          {
-            "closure_component_sha256": "727cbc0fb5606413f84501543eb088e7545a9a5c7f4d19d75c7f1e5f97f80267",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:145-165"
-            },
-            "source_atom_sha256": "f38e75e0e586ae3f96f0a8e2238cf124fa997689c99961f3a8a8a4ffaa94f2e0"
-          },
-          {
-            "closure_component_sha256": "8f935b81ba161f0f9d601a13933e726ae0329359e28dd7c53e6d6c748ada14be",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:145-165"
-            },
-            "source_atom_sha256": "f38e75e0e586ae3f96f0a8e2238cf124fa997689c99961f3a8a8a4ffaa94f2e0"
-          },
-          {
-            "closure_component_sha256": "c85b16c1950a3c5f9f7f5ce7a585d7de340c0aba012e1c15422c4468cbf69d41",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:145-165"
-            },
-            "source_atom_sha256": "f38e75e0e586ae3f96f0a8e2238cf124fa997689c99961f3a8a8a4ffaa94f2e0"
-          },
-          {
-            "closure_component_sha256": "c8b5b898b3f882bd3d161da7d151b33622d5adb59a372a6cb4e732277605f841",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:145-165"
-            },
-            "source_atom_sha256": "f38e75e0e586ae3f96f0a8e2238cf124fa997689c99961f3a8a8a4ffaa94f2e0"
-          },
-          {
-            "closure_component_sha256": "f0943f4ac19e8dcd8cfaba14e409fa87e334cf5f3dd871e0531e3356fef36e0b",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:145-165"
-            },
-            "source_atom_sha256": "f38e75e0e586ae3f96f0a8e2238cf124fa997689c99961f3a8a8a4ffaa94f2e0"
-          },
-          {
-            "closure_component_sha256": "f36be1f5e1452b003bd32e83fe10d57000da84c3843685921f8846fa8cc49556",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:145-165"
-            },
-            "source_atom_sha256": "f38e75e0e586ae3f96f0a8e2238cf124fa997689c99961f3a8a8a4ffaa94f2e0"
-          },
-          {
-            "closure_component_sha256": "f4c4540ee55ec234c7fdd5151c2950af61e3ec0820a9e0a5226ea7398055e6e0",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:145-165"
-            },
-            "source_atom_sha256": "f38e75e0e586ae3f96f0a8e2238cf124fa997689c99961f3a8a8a4ffaa94f2e0"
-          },
-          {
-            "closure_component_sha256": "f6cf7229075b3855fbefe549182c62b0e3032d6b781f6539208851d7e6bdb625",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:145-165"
-            },
-            "source_atom_sha256": "f38e75e0e586ae3f96f0a8e2238cf124fa997689c99961f3a8a8a4ffaa94f2e0"
-          },
-          {
-            "closure_component_sha256": "ff9c737d93120f7fde5e2b9ee55752b6344ea15c430edd2202ab80249d94cc73",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:145-165"
-            },
-            "source_atom_sha256": "f38e75e0e586ae3f96f0a8e2238cf124fa997689c99961f3a8a8a4ffaa94f2e0"
-          }
-        ],
-        "item_identity_sha256": "1a6e9d4793ee81eef9ba355459a5296961853bc7d5106f775353ef0a88bfa9be",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The complete canonical Spec surface retains the source clause: A complete marriage outcome is stable when there is no man and woman who both strictly prefer each other to their current partners.",
-            "source_atom_sha256": "f38e75e0e586ae3f96f0a8e2238cf124fa997689c99961f3a8a8a4ffaa94f2e0",
-            "spec_component_sha256s": [
-              "bdaaaca5c99f15d51acd3f67663115fc5925f3de0bf9b55eec90d4686af4014b"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "bb67effed53abbeb308b4b19f777a7cf76d716e42a59d4f1a15b69da745ce921",
-        "spec_closure_sha256": "a536dc949a0b40ac28e63b30237589eeb25c1a6332a0c89500bae7a5e8fb517d",
-        "spec_surface_sha256": "bdaaaca5c99f15d51acd3f67663115fc5925f3de0bf9b55eec90d4686af4014b"
-      },
       "source_status": "direct_source_definition",
       "source_url": "https://doi.org/10.1287/moor.7.4.617",
-      "statement": "Section 2 Definition: a complete marriage outcome is stable exactly when no unmatched man-woman pair both strictly prefer one another to their assigned partners.",
-      "support_lean_declarations": [
-        "Roth82StableMatching.PaperInterface.sourceStableMarriage_iff_source_definitionSpec"
-      ]
+      "statement": "Section 2 Definition: a complete marriage outcome is stable exactly when no unmatched man-woman pair both strictly prefer one another to their assigned partners."
     },
     "stable_matching_procedure_definition": {
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "Roth82StableMatching.PaperInterface.sourceStableMatchingProcedure_iff_source_definition"
+        "Roth82StableMatching.PaperInterface.sourceStableMatchingProcedure"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "Roth82StableMatching.PaperInterface.sourceStableMatchingProcedure_iff_source_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "Roth82StableMatching.PaperInterface.sourceStableMatchingProcedure_iff_source_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 323,
@@ -2219,7 +1015,7 @@
       "source_claim_atoms": [
         {
           "id": "stable_procedure.every_reported_profile",
-          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.sourceStableMatchingProcedure_iff_source_definition",
+          "reviewed_lean_route": "Roth82StableMatching.PaperInterface.sourceStableMatchingProcedure",
           "semantic_claim": "For every reported preference profile, a stable matching procedure returns an outcome stable for those reports.",
           "source_locator": "cited publication:313-323",
           "source_quote_sha256": "1823bc6b49d139faa68db29f72fb0c8a457a704784764d94aa4d635892d0ff69"
@@ -2238,174 +1034,9 @@
         "validator": "Independent Codex Roth82 source-definition correspondence judge",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "970cc24cb7721f75717a4e9d6cbcda804e1fb4196fd66085dbffd1a5b955c55a",
-        "closure_node_dispositions": [
-          {
-            "closure_component_sha256": "04c8ea37d6a4efd1700d339d548fc6833e750aaa4a75f747ccaf979e0b508bb2",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:313-323"
-            },
-            "source_atom_sha256": "143307e8f5096f540dfcab478bc03c631c400fa200628a5e6e51698aec12a441"
-          },
-          {
-            "closure_component_sha256": "177330487d2e046f4b97bc114fb851809948906312d8d99f5dcb12cda25ada9a",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:313-323"
-            },
-            "source_atom_sha256": "143307e8f5096f540dfcab478bc03c631c400fa200628a5e6e51698aec12a441"
-          },
-          {
-            "closure_component_sha256": "25aeca307b5844e542a56c3132e38a0b60044de718a15f0fa04dd581c70256a2",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:313-323"
-            },
-            "source_atom_sha256": "143307e8f5096f540dfcab478bc03c631c400fa200628a5e6e51698aec12a441"
-          },
-          {
-            "closure_component_sha256": "3212501a9177d962e932e51fe55440a535c5b2c360e028466d8f5f72c2ef2afe",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:313-323"
-            },
-            "source_atom_sha256": "143307e8f5096f540dfcab478bc03c631c400fa200628a5e6e51698aec12a441"
-          },
-          {
-            "closure_component_sha256": "378e62ef1f32324d26efb4be108c15f42d67e1dcb2eaa87ba30aa4f318d555c6",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:313-323"
-            },
-            "source_atom_sha256": "143307e8f5096f540dfcab478bc03c631c400fa200628a5e6e51698aec12a441"
-          },
-          {
-            "closure_component_sha256": "8d952103663893699be2b1367e52fefbbc55eba9e017f65c71c9b31a06891e02",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:313-323"
-            },
-            "source_atom_sha256": "143307e8f5096f540dfcab478bc03c631c400fa200628a5e6e51698aec12a441"
-          },
-          {
-            "closure_component_sha256": "90382a9479d46dcba68d082a9381435512d7547774816811d7a6a7d85e72139c",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:313-323"
-            },
-            "source_atom_sha256": "143307e8f5096f540dfcab478bc03c631c400fa200628a5e6e51698aec12a441"
-          },
-          {
-            "closure_component_sha256": "aedca28f82bf5760923a3b53f4b8f2a08945aa36726b1d0bfac000496e5452ff",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:313-323"
-            },
-            "source_atom_sha256": "143307e8f5096f540dfcab478bc03c631c400fa200628a5e6e51698aec12a441"
-          },
-          {
-            "closure_component_sha256": "b435cef5a52829f596a667b78f9f1326ebec0531ce3b590be18f40420648ecc5",
-            "pinned_declaration_identity_sha256": "bea3e70fbcf43a5321443366bd71a7f9532b73aa38cb73862afd5b26e71c38d8",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a woman-side participant s assigned man and therefore realizes the source claim s female-partner observation.",
-              "source_locator": "cited publication:313-323"
-            },
-            "source_atom_sha256": "143307e8f5096f540dfcab478bc03c631c400fa200628a5e6e51698aec12a441"
-          },
-          {
-            "closure_component_sha256": "b90aa511cc535f03bb0a4efbecd03dc588573859f97018bc01ed4bf4771c395f",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:313-323"
-            },
-            "source_atom_sha256": "143307e8f5096f540dfcab478bc03c631c400fa200628a5e6e51698aec12a441"
-          },
-          {
-            "closure_component_sha256": "d3ce9d16d0b7faa003479d6e89ca0345f139c4dca3bd92c14da6b7e5b260dd1c",
-            "pinned_declaration_identity_sha256": "5cb9b5e46b29cb2df5c9c7c4961ab826846fa5d9fd62e6102599ceff43e38342",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported projection returns a man-side participant s assigned woman and therefore realizes the source claim s male-partner observation.",
-              "source_locator": "cited publication:313-323"
-            },
-            "source_atom_sha256": "143307e8f5096f540dfcab478bc03c631c400fa200628a5e6e51698aec12a441"
-          },
-          {
-            "closure_component_sha256": "d50d106fca852479078e9382fd9590119350e3d8850553264f8ab99382ffd5e5",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:313-323"
-            },
-            "source_atom_sha256": "143307e8f5096f540dfcab478bc03c631c400fa200628a5e6e51698aec12a441"
-          },
-          {
-            "closure_component_sha256": "ed8dbfa7db06a146248c10375acee8b1ad6b4cd87b4cbfd34b5df0aede29d113",
-            "pinned_declaration_identity_sha256": "dc02091416c01a060cb5a859a704cf4f5fe5b48f822f7472dd7d94bdc52574e2",
-            "semantic_basis": {
-              "artifact_path": "cited publication",
-              "artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-              "semantic_statement": "This imported structure is exactly the internally consistent two-sided one-to-one assignment object quantified or constructed by the source claim.",
-              "source_locator": "cited publication:313-323"
-            },
-            "source_atom_sha256": "143307e8f5096f540dfcab478bc03c631c400fa200628a5e6e51698aec12a441"
-          }
-        ],
-        "item_identity_sha256": "527936f657f5a550ac0034726807ea33e5b46108e05e581cf9a1148eb8466550",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The complete canonical Spec surface retains the source clause: For every reported preference profile, a stable matching procedure returns an outcome stable for those reports.",
-            "source_atom_sha256": "143307e8f5096f540dfcab478bc03c631c400fa200628a5e6e51698aec12a441",
-            "spec_component_sha256s": [
-              "22384c04ce3b8b80b215d9d24c50517033f49d1e40d8b6b01aad5b4e7f43e5d7"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "e1697f2d3263d6dd828de7f1bdf99f24f96795c097dd4cbddaa2c51ea18a67a6",
-        "spec_closure_sha256": "679a3bf52e4847aa26faf1361ffaf2cc9bd2ff9cebaf6fa9a4d30621d1a50f2c",
-        "spec_surface_sha256": "22384c04ce3b8b80b215d9d24c50517033f49d1e40d8b6b01aad5b4e7f43e5d7"
-      },
       "source_status": "direct_source_definition",
       "source_url": "https://doi.org/10.1287/moor.7.4.617",
-      "statement": "Section 4 Definition: a stable matching procedure returns an outcome stable with respect to every reported preference profile.",
-      "support_lean_declarations": [
-        "Roth82StableMatching.PaperInterface.sourceStableMatchingProcedure_iff_source_definitionSpec"
-      ]
+      "statement": "Section 4 Definition: a stable matching procedure returns an outcome stable with respect to every reported preference profile."
     },
     "theorem1": {
       "claim_bearing": true,
@@ -4324,13 +2955,24 @@
     "successful-misrepresentation shorthand and untargeted proof narration": "cited publication:505-535"
   },
   "paper": "Roth82StableMatching",
-  "publication_source_display_projection": {
-    "manifest": "audit/public_source_display_projection.json",
-    "raw_source_bytes_included": false,
-    "schema": 1
+  "paper_interface_namespace": "Roth82StableMatching",
+  "paper_semantic_prerequisite_sources": {
+    "Roth82StableMatching.PaperInterface.completeMarriageOutcome": "complete_marriage_outcome_definition",
+    "Roth82StableMatching.PaperInterface.efficientMatchingProcedure": "efficient_matching_procedure_definition",
+    "Roth82StableMatching.PaperInterface.fillsIndividualQuotas": "general_quota_outcome_definition",
+    "Roth82StableMatching.PaperInterface.manReportStrictlyRanksPartnerFirst": "simple_misrepresentation_definition",
+    "Roth82StableMatching.PaperInterface.matchingProcedure": "matching_procedure_definition",
+    "Roth82StableMatching.PaperInterface.preferenceProfile": "preference_profile_definition",
+    "Roth82StableMatching.PaperInterface.sourceMarriageModel": "marriage_model_definition",
+    "Roth82StableMatching.PaperInterface.sourceMenOptimal": "side_optimal_stable_outcome_definition",
+    "Roth82StableMatching.PaperInterface.sourceStableMarriage": "stable_marriage_definition",
+    "Roth82StableMatching.PaperInterface.sourceStableMatchingProcedure": "stable_matching_procedure_definition",
+    "Roth82StableMatching.PaperInterface.sourceWomenOptimal": "side_optimal_stable_outcome_definition",
+    "Roth82StableMatching.PaperInterface.truthfulForAllAgents": "dominant_truthfulness_definition"
   },
   "schema": 1,
   "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
   "source_access_status": {
     "article_pages_inspected": "printed pages 617-628",
     "artifact_kind": "canonical local transcript of the published article",
@@ -4346,13 +2988,15 @@
   "source_curated_at": "2026-08-04T00:00:00Z",
   "source_curator": "source curation record",
   "source_inventory_kind": "source_curated_named_theory",
-  "source_inventory_policy": "Normal coverage is source-first and contains the seven paper-facing mathematical definitions plus Theorems 1-7, Corollary 5.1, and Lemmas 1-2. Source spans and mathematical content determine the inventory; map keys and Lean declaration names are routing only.",
+  "source_inventory_policy": "Normal coverage is source-first and contains the seven paper-facing mathematical definitions plus Theorems 1-7, Corollary 5.1, and Lemmas 1-2. Source spans and mathematical content determine the inventory; map keys and Lean declaration names are routing only. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
   "source_kind_policy": "Normal named-theory scope contains paper-facing mathematical definitions and explicitly named theorems, lemmas, and corollaries. Numerical examples, proof-local notation, proof steps, algorithm descriptions, termination remarks, and ordinary prose extensions are deep-audit or support material unless the user requests deep all-prose review.",
   "source_named_result_inventory_review": {
+    "candidate_presentations": [],
     "complete": true,
+    "discovered_candidate_presentation_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
     "discovered_named_result_sha256": "40c5528df62749a9fcf16866705cee04567ec6725d4c219c78c44cebeb139494",
     "discovered_prose_definition_sha256": "b8fe35b77c72410bef95eaf3e781249896b0a1d89eed5dae98c63afea9717fe6",
-    "method": "Independently indexed the canonical transcript before consulting Lean names. The visible named-result index contains Theorems 1-7, Corollary 5.1, and Lemmas 1-2. A separate complete prose-definition pass retains eleven paper-facing definitions, records two repeated presentations, and classifies institutional prose, algorithm-output notation, examples, and proof-local notation outside normal scope.",
+    "method": "Current-protocol source-only reviewer read the full pinned transcript (lines 1-813). The source's eleven retained mathematical definitions and ten named results (Theorems 1-7, Corollary 5.1, and Lemmas 1-2) are already individually represented in the completed legacy inventory. The mechanical candidate extractor found no additional labelled presentation in this OCR transcript, and the full-text pass found no additional material mathematical presentation requiring a new inventory row; introduction, discussion, examples, proof constructions, and references remain deep context rather than new normal-scope claims.",
     "prose_definition_presentations": [
       {
         "defined_entity_kind": "object",
@@ -4569,7 +3213,7 @@
         "definitional_clause": "1. Introduction. The purpose of this paper is to explore the underlying economic\nstructure common to matching problems and procedures. By matching problems, I refer\n\nto any of the pervasive class of problems which involve matching the members of one\ngroup of agents with one or more members of a second, disjoint group of agents, all of\nwhom have preferences over the possible resulting matches. Thus the problems arising\nfrom the need to match, e.g., students with educational institutions, athletes with\nteams, adoptive children with adoptive parents, men with women (in marriage, mixed\ndoubles, or computer dating), civil servants with civil service positions, and authors\n(via their papers) with scholarly journals, are all, in many of their most important\naspects, matching problems.1",
         "normal_scope_exclusion_approval": {
           "approval_kind": "explicit_user_instruction",
-          "approval_reference": "2026-08-04 standing user instruction: normal coverage includes paper-facing mathematical definitions and named theoretical statements; ordinary prose, examples, algorithms, and proof constructions belong only to deep all-prose review.",
+          "approval_reference": "The underlying approval record is withheld from this public projection.",
           "approved_at": "2026-08-04T16:30:00Z",
           "schema": 1
         },
@@ -4596,7 +3240,7 @@
         "definitional_clause": "By matching procedures, I refer to the institutional arrangements by which the\nmatching is accomplished. These institutional arrangements may range from completely decentralized procedures, in which agents negotiate directly with one another\n(as in marriage in contemporary Western societies), all the way to completely centralized procedures, in which all agents state their preferences for possible matches, which",
         "normal_scope_exclusion_approval": {
           "approval_kind": "explicit_user_instruction",
-          "approval_reference": "2026-08-04 standing user instruction: normal coverage includes paper-facing mathematical definitions and named theoretical statements; ordinary prose, examples, algorithms, and proof constructions belong only to deep all-prose review.",
+          "approval_reference": "The underlying approval record is withheld from this public projection.",
           "approved_at": "2026-08-04T16:30:00Z",
           "schema": 1
         },
@@ -4749,7 +3393,7 @@
         "definitional_clause": "interests disappear, and all students have a common interest in the \"student-optimal\"\nstable outcome, while all colleges prefer the \"college-optimal\" stable outcome. Theorem 6 shows that this common interest is not in conflict with the requirement of\nstability, i.e., even if stability were not required, students could not all do better than\nthe student optimal stable outcome.",
         "normal_scope_exclusion_approval": {
           "approval_kind": "explicit_user_instruction",
-          "approval_reference": "2026-08-04 standing user instruction: normal coverage includes paper-facing mathematical definitions and named theoretical statements; ordinary prose, examples, algorithms, and proof constructions belong only to deep all-prose review.",
+          "approval_reference": "The underlying approval record is withheld from this public projection.",
           "approved_at": "2026-08-04T16:30:00Z",
           "schema": 1
         },
@@ -4773,8 +3417,8 @@
     ],
     "schema": 1,
     "source_artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
-    "validated_at": "2026-08-04T00:00:00Z",
-    "validator": "Codex Roth82 source-only prose-definition extractor"
+    "validated_at": "2026-09-04T01:03:32Z",
+    "validator": "Codex Roth82 current-protocol source reviewer"
   },
   "source_spec_correspondence_schema": 1,
   "source_url": "https://doi.org/10.1287/moor.7.4.617",

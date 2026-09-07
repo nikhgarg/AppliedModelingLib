@@ -1,24 +1,24 @@
 # Foundations: Optimization
 
-Use for `EconCSLib/Foundations/Optimization/*`, argmax existence, objective
+Use for `AppliedModelingLib/Foundations/Optimization/*`, argmax existence, objective
 comparison wrappers, finite rule optimization, and paper-facing optimality
 statements.
 
 Start with `docs/OPTIMIZATION_LIBRARY_ROADMAP.md` when deciding whether an
-optimization proof seam should stay paper-local or move to `EconCSLib`.
+optimization proof seam should stay paper-local or move to `AppliedModelingLib`.
 
 ## Proof Seams
 
 - Before adding a paper-local equilibrium, optimizer, threshold, cutoff,
   certificate, or a.e. exception wrapper, write the shared-library reuse
   checkpoint in the paper plan. The checkpoint should name the relevant
-  `EconCSLib` modules/declarations inspected and the shared API being used, or
+  `AppliedModelingLib` modules/declarations inspected and the shared API being used, or
   state the source-specific obstruction. If the code starts accumulating local
   wrappers for a standard concept, stop and refresh this checkpoint before
   adding another wrapper.
 - For "candidate plus universal bound" proofs, use
-  `EconCSLib.Optimization.UpperBoundCertificate` for maximization and
-  `EconCSLib.Optimization.LowerBoundCertificate` for minimization. These are
+  `AppliedModelingLib.Optimization.UpperBoundCertificate` for maximization and
+  `AppliedModelingLib.Optimization.LowerBoundCertificate` for minimization. These are
   the preferred wrappers for paper LP certificates, exchange upper bounds,
   endpoint/current-bound certificates, and finite lower-bound arguments.
 - Use `StrictUpperBoundCertificate` / `StrictLowerBoundCertificate` when the
@@ -50,7 +50,7 @@ optimization proof seam should stay paper-local or move to `EconCSLib`.
   in an opaque certificate. Prove the argmax/existence theorem in the generic
   library and make the paper theorem a thin wrapper with exact assumptions.
 - For static action-rule papers, use
-  `EconCSLib.Foundations.Optimization.ChoiceEquilibrium` before creating a
+  `AppliedModelingLib.Foundations.Optimization.ChoiceEquilibrium` before creating a
   paper-local equilibrium record. Package chosen action, feasibility,
   best-response, and consistency once, then project with
   `isChoiceEquilibrium_feasible`, `isChoiceEquilibrium_best_response`, and
@@ -72,12 +72,12 @@ optimization proof seam should stay paper-local or move to `EconCSLib`.
 - If a continuous equilibrium proof starts accumulating paper-local wrappers
   for ranks, endogenous cutoffs, tie-breaking, or effort-allocation best
   responses, pause before adding the next wrapper and search both
-  `EconCSLib.Foundations.Optimization` and the relevant probability/ranking
+  `AppliedModelingLib.Foundations.Optimization` and the relevant probability/ranking
   modules for an existing bridge. A missed shared API is a workflow bug: update
   the outside-of-Lean plan with the declarations inspected and either use the
   shared theorem or record the source-specific obstruction.
 - For two-action best-response/cutoff proofs, use
-  `EconCSLib.Foundations.Optimization.BinaryChoice`:
+  `AppliedModelingLib.Foundations.Optimization.BinaryChoice`:
   `NoProfitableBinaryChoiceDeviation`,
   `not_all_choose_of_noProfitableBinaryChoiceDeviation_exists_other_better`,
   `not_no_choose_of_noProfitableBinaryChoiceDeviation_exists_choose_better`,
@@ -110,7 +110,7 @@ optimization proof seam should stay paper-local or move to `EconCSLib`.
   `UpperBoundApproximationWithErrorCertificate` for small-bids or finite-error
   variants.
 - For auction lower bounds by hard input distributions, prefer the generic Yao
-  certificate `EconCSLib.Decision.RandomizedUpperPayoffCertificate`; keep
+  certificate `AppliedModelingLib.Decision.RandomizedUpperPayoffCertificate`; keep
   source-specific permutation, layer-count, or benchmark-normalization fields
   in the paper folder.
 - For normalized objective values, prove boundedness before compactness or
@@ -134,7 +134,7 @@ optimization proof seam should stay paper-local or move to `EconCSLib`.
   Keep the paper-specific work in the one-step move certificate; this avoids
   token-heavy rewrites of the same termination and epsilon/maximizer argument.
 - For one-dimensional cutoff or interval-endpoint moves, start from
-  `EconCSLib.Foundations.Optimization.Endpoint`.  It contains derivative-sign
+  `AppliedModelingLib.Foundations.Optimization.Endpoint`.  It contains derivative-sign
   to endpoint-monotonicity lemmas, first/last-zero stopping dichotomies, and
   one-sided local improvement/decrease lemmas.  Keep paper-local wrappers when
   the source names the endpoint claim, but do not duplicate the generic

@@ -14,7 +14,7 @@ connected component.  The later analytic layer will connect a locally
 separated component path to the Appendix-D quotient calculus.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped ENNReal Topology symmDiff
 
@@ -1428,7 +1428,7 @@ theorem gn21SymmDiff_union_Ioo_subset_Icc
       Set.Icc (y - radius) (y + radius) := by
   intro z hz
   have hz' : z ∈ Set.Ioo lower x ∆ Set.Ioo lower y :=
-    EconCSLib.symmDiff_union_left_subset hz
+    AppliedModelingLib.symmDiff_union_left_subset hz
   simp only [Set.mem_symmDiff, Set.mem_Ioo, not_and_or] at hz'
   rcases hz' with hz' | hz'
   · rcases hz' with ⟨⟨hzlower, hz_x⟩, hznot⟩

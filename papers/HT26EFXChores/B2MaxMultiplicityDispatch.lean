@@ -14,7 +14,7 @@ Source: `EFXadditivechores.tex`, lines 2615--2640.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- In the parallel-edge branch, an exceptional residual has auxiliary
 endpoints either at the gap-filled short pair or at the complementary long

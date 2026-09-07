@@ -19,7 +19,7 @@ noncomputable section
 
 open Filter MeasureTheory ProbabilityTheory Set
 open scoped ENNReal NNReal ProbabilityTheory Topology
-open EconCSLib Probability
+open AppliedModelingLib Probability
 
 /--
 The scalar no-report posterior mean for the literal hidden-access

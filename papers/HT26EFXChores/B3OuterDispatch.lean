@@ -14,7 +14,7 @@ Source: `EFXadditivechores.tex`, lines 3200--3214.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- Deleting one chore from each of two disjoint M₂ types preserves their
 weak multiplicity order.  This is the cardinal bookkeeping used before the

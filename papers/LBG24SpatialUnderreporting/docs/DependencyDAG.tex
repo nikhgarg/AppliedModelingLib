@@ -22,96 +22,112 @@
   {arXiv:2204.08620 v4 / DOI 10.1038/s43588-023-00572-6}
 
 \dagPaperLegendRightOfMetadata{
-\node[dag_result, dag_template_legend] (legRes) at (0,0) {Lean-checked\\result};
-\node[source_premise, dag_template_legend] (legModel) at (3.35,0) {Source-model\\premise};
+\node[dag_result, dag_template_legend] (legRes) at (0,0) {Lean-checked\\paper claim};
+\node[source_premise, dag_template_legend] (legModel) at (3.35,0) {Source model,\\definition, or condition};
+\node[dag_unformalized, dag_template_legend] (legScope) at (6.70,0) {Outside the\\checked scope};
 }
-\daglegend{(legRes)(legModel)}{Legend}
+\daglegend{(legRes)(legModel)(legScope)}{Legend}
 
 \begin{dagPaperBody}
+\begin{scope}[yshift=-1.2cm]
 
-\node[source_premise] (ReportingModel) at (0,0) {
-  \textbf{Incident/reporting model} \\
-  stationary homogeneous incident births; \\
-  reports while an incident is active
+\node[source_premise] (IncidentModel) at (0,0) {
+  \textbf{Incident and first-report model} \\
+  stationary Poisson incident births; duration density; \\
+  nonnegative locally integrable report intensity
 };
 
-\node[source_premise] (ForwardModel) at (6.5,0) {
-  \textbf{Calendar-time first reports} \\
-  observed incidents are first reports in \\
-  the calendar window; pre-first-report survival
+\node[source_premise] (ReportingModel) at (7,0) {
+  \textbf{Homogeneous Poisson reports} \\
+  positive reporting rate and exponential \\
+  interarrival times
 };
 
-\node[dag_result] (PMF) at (13,0) {
-  \textbf{Lemma 2 + Condition 1} \\
-  selected start is rate-free given the \\
-  first report and visible prior history
+\node[source_premise] (StartCondition) at (14,0) {
+  \textbf{Condition 1: selected start} \\
+  after the first report; conditionally rate-free \\
+  and independent of the future report path
 };
 
-\node[source_premise] (PalmEndpoint) at (19.5,0) {
+\node[source_premise] (EndpointCondition) at (21,0) {
   \textbf{Condition 2: causal endpoint} \\
-  one rate-free endpoint policy may use \\
-  visible reports, not future report gaps
+  one rate-free policy uses only visible history; \\
+  window and ordered jump timeline
 };
 
-\node[dag_result] (Lemma1) at (0,-3.5) {
+\node[source_premise] (LikelihoodModels) at (28,0) {
+  \textbf{Likelihood definitions} \\
+  Eq.~(2) Poisson mass; Eqs.~(4)--(5) log link; \\
+  structural-zero class with $0\leq\gamma\leq1$
+};
+
+\node[dag_result] (Lemma1) at (0,-4) {
   \textbf{Lemma 1} \\
-  duration-mixture first-report probability; \\
-  calendar-time first reports are Poisson \\
-  at the displayed observed rate
+  duration-mixture detection probability; \\
+  calendar-time first reports form a Poisson process, \\
+  including the zero-detection case
 };
 
-\node[dag_result] (Lemma2) at (6.5,-3.5) {
-  \textbf{Lemma 2} \\
-  wait from the selected start to the next report \\
+\node[dag_result] (MeanDelay) at (7,-4) {
+  \textbf{Homogeneous reporting delay} \\
+  expected first-report delay is $1/\lambda$
+};
+
+\node[dag_unformalized] (ShiftedProcess) at (11.5,-8) {
+  \textbf{Appendix shifted-process claim (uncredited)} \\
+  after the first jump, the remaining gaps are \\
+  iid exponential at the original rate
+};
+
+\node[dag_unformalized] (Lemma2) at (17.5,-8) {
+  \textbf{Lemma 2 (uncredited)} \\
+  the wait from the selected start to the next report \\
   has the exponential tail at rate $\lambda$
 };
 
-\node[dag_result] (Theorem) at (16.25,-3.5) {
+\node[dag_result] (Theorem) at (21,-4) {
   \textbf{Theorem 1 / Appendix Theorem 2} \\
-  $L_\lambda=F\,p(M\mid\lambda(e-s))$; \\
-  selected-start likelihood with a causal endpoint
+  $L_\lambda=F\,p(M\mid\lambda(e-s))$ under the full \\
+  selected-start and causal-endpoint conditions
 };
 
-\node[dag_result] (Prop1) at (0,-7) {
+\node[dag_result] (LikelihoodConsequences) at (28,-4) {
+  \textbf{Eqs.~(3), (6), and (7)} \\
+  global rate MLE; regression likelihood; \\
+  zero-inflated incident and family likelihoods
+};
+
+\node[dag_result] (Prop1) at (0,-8) {
   \textbf{Proposition 1} \\
-  calendar-window counts satisfy the rate limit; \\
-  distinct reporting rates can have the same \\
-  observed first-report process
+  long-run calendar-window count rate; fixed-duration-law \\
+  nonidentifiability of latent incident and reporting rates
 };
 
-\node[dag_result] (NYC) at (6.5,-7) {
-  \textbf{NYC Eq. (33)} \\
-  raw minimum endpoint formula; \\
-  stopping-time/no-future property
+\node[dag_result] (CityEndpoints) at (28,-8) {
+  \textbf{Eqs.~(33) and (34)} \\
+  NYC and Chicago three-way minimum \\
+  observation-end formulas
 };
 
-\node[dag_result] (MLE) at (13,-7) {
-  \textbf{Eq. (3)} \\
-  count/exposure quotient and global MLE, \\
-  including the zero-count boundary
+\node[dag_unformalized, text width=12.5cm] (Boundary) at (14,-12) {
+  \textbf{Scope boundary} \\
+  empirical fit, dataset reconstruction, simulations, causal validity of the city policies,
+  and reported numerical estimates are not mathematical theorem targets
 };
 
-\node[dag_result] (Chicago) at (19.5,-7) {
-  \textbf{Chicago Eq. (34)} \\
-  raw minimum of 100-day, closed-time, \\
-  and retrieval-time endpoints
-};
-
-\node[dag_result] (Regression) at (13,-10.5) {
-  \textbf{Eqs. (5)--(7)} \\
-  regression log link, proportional likelihood, \\
-  and both zero-inflated count branches
-};
-
-\draw[dag_arrow] (ReportingModel) -- (Lemma1);
-\draw[dag_arrow] (ForwardModel) -- (Lemma1);
+\draw[dag_arrow] (IncidentModel) -- (Lemma1);
 \draw[dag_arrow] (Lemma1) -- (Prop1);
-\draw[dag_arrow] (PMF) -- (Lemma2);
-\draw[dag_arrow] (Lemma2) -- (Theorem);
-\draw[dag_arrow] (PalmEndpoint) -- (Theorem);
-\draw[dag_arrow] (Theorem) -- (MLE);
-\draw[dag_arrow] (MLE) -- (Regression);
+\draw[dag_arrow] (ReportingModel) -- (MeanDelay);
+\draw[dag_dashed_arrow] (ReportingModel.east) -- ++(1.0,0) |- ([yshift=0.7cm]ShiftedProcess.north) -- (ShiftedProcess.north);
+\draw[dag_dashed_arrow] (StartCondition.south) to[out=-90,in=90] (Lemma2.north);
+\draw[dag_dashed_arrow] (ShiftedProcess) -- (Lemma2);
+\draw[dag_dashed_arrow] (Lemma2.north east) -- (Theorem.south west);
+\draw[dag_arrow] (StartCondition.south east) to[out=-45,in=180] (Theorem.west);
+\draw[dag_arrow] (EndpointCondition) -- (Theorem);
+\draw[dag_arrow] (Theorem) -- (LikelihoodConsequences);
+\draw[dag_arrow] (LikelihoodModels) -- (LikelihoodConsequences);
 
+\end{scope}
 \end{dagPaperBody}
 \end{tikzpicture}
 \end{document}

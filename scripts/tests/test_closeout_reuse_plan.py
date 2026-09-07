@@ -4,21 +4,1298 @@
 from __future__ import annotations
 
 import contextlib
-import hashlib
 import io
 import json
-import os
+import subprocess
 import sys
 import tempfile
 import types
 import unittest
+from collections.abc import Mapping
 from pathlib import Path
 from unittest import mock
 
-from scripts import closeout_reuse_plan as planner
+from scripts import audit_evidence_integrity as integrity
+from scripts import closeout_intake_freeze as intake_freeze
+from scripts import source_manifest_validation as source_validation
+from scripts import closeout_reuse_plan as planner_cli
+from scripts import reissue_v11_raw_source_spec_screening as screening_reissue
+from scripts.current_closeout import (
+    evidence_transaction,
+    graph_preparation,
+    lean_review_graph,
+    plan_publication,
+    planner,
+    primary_gate_transaction,
+)
+from scripts.evidence_run_context import (
+    CommonEvidenceRunContextInputs,
+    V11EvidenceRunContext,
+    load_json_snapshot,
+)
+from scripts.v11_screening_contract import V11_SCREENING_PROMPT_VERSION
 
 
 class CloseoutReusePlanTests(unittest.TestCase):
+    def _issued_v11_context(
+        self,
+        folder: Path,
+        *,
+        sidecar_paths: tuple[Path, ...] = (),
+    ) -> V11EvidenceRunContext:
+        """Issue the nominal current context required by planner boundaries."""
+
+        status_path = folder / "status.json"
+        statement_map_path = folder / "audit" / "paper_statement_map.json"
+        audit_config_path = folder.parent / "audit_config.json"
+        statement_map_path.parent.mkdir(parents=True, exist_ok=True)
+        if not statement_map_path.exists():
+            statement_map_path.write_text('{"items": {}}\n', encoding="utf-8")
+        if not audit_config_path.exists():
+            audit_config_path.write_text("{}\n", encoding="utf-8")
+        status_snapshot = load_json_snapshot(status_path)
+        status_payload = status_snapshot.payload or {}
+        inputs = CommonEvidenceRunContextInputs(
+            folder=folder,
+            status=str(status_payload.get("status") or ""),
+            audit_config_snapshot=load_json_snapshot(audit_config_path),
+            status_snapshot=status_snapshot,
+            statement_map_snapshot=load_json_snapshot(statement_map_path),
+            source_proof_fidelity_snapshot=None,
+            sidecar_snapshots=tuple(
+                load_json_snapshot(path) for path in sidecar_paths
+            ),
+            source_proof_fidelity_path_error="",
+        )
+        return inputs.issue_v11(None)
+
+    def test_stable_cli_uses_package_planner_service(self) -> None:
+        self.assertIs(planner_cli.main, planner.main)
+
+    def test_document_semantic_basis_reuses_current_checkpoint_without_writes(self) -> None:
+        folder = Path("/tmp/papers/Fixture")
+        context = types.SimpleNamespace(
+            v11_lean_review_graph_payload={"paper": "Fixture"}
+        )
+        result = mock.sentinel.semantic_result
+        output = io.StringIO()
+        with (
+            mock.patch(
+                "scripts.current_closeout.evidence_transaction."
+                "build_current_v11_context_with_graph_checkpoint",
+                return_value=context,
+            ) as build_context,
+            mock.patch(
+                "scripts.current_closeout.semantic_review."
+                "current_v11_semantic_review_result",
+                return_value=result,
+            ) as current_review,
+            mock.patch(
+                "scripts.current_closeout.semantic_review."
+                "all_selected_semantic_review_material_sha256",
+                return_value="d" * 64,
+            ) as project,
+            mock.patch(
+                "scripts.current_closeout.semantic_review."
+                "accepted_graph_all_selected_semantic_review_material_sha256",
+                side_effect=AssertionError("accepted-graph fallback was unnecessary"),
+            ) as accepted_project,
+            contextlib.redirect_stdout(output),
+        ):
+            code = planner.execute_document_semantic_basis(folder)
+
+        self.assertEqual(code, 0)
+        payload = json.loads(output.getvalue())
+        self.assertEqual(payload["all_selected_semantic_review_sha256"], "d" * 64)
+        self.assertFalse(payload["acceptance_credential"])
+        self.assertTrue(payload["document_basis_only"])
+        build_context.assert_called_once_with(folder, repository_root=planner.ROOT)
+        current_review.assert_called_once_with(
+            planner.ROOT,
+            folder,
+            context=context,
+            require_graph_checkpoint=True,
+        )
+        project.assert_called_once_with(result)
+        accepted_project.assert_not_called()
+
+    def test_document_semantic_basis_missing_checkpoint_reuses_accepted_graph(self) -> None:
+        folder = Path("/tmp/papers/Fixture")
+        context = types.SimpleNamespace(v11_lean_review_graph_payload=None)
+        snapshot_root = mock.Mock(v11_selected=True)
+        snapshot_root.build_v11.return_value = context
+        snapshot_root.build_v11_with_graph_checkpoint.side_effect = lambda: (
+            evidence_transaction.CurrentV11EvidenceSnapshotRoot.build_v11_with_graph_checkpoint(
+                snapshot_root
+            )
+        )
+        output = io.StringIO()
+        with (
+            mock.patch.object(
+                evidence_transaction.CurrentV11EvidenceSnapshotRoot,
+                "acquire",
+                return_value=snapshot_root,
+            ) as acquire,
+            mock.patch.object(
+                lean_review_graph,
+                "current_v11_lean_review_graph_checkpoint_reference",
+                return_value=None,
+            ) as checkpoint,
+            mock.patch.object(
+                lean_review_graph,
+                "build_v11_lean_review_graph_material",
+                side_effect=AssertionError("native Lean graph acquisition attempted"),
+            ) as graph_builder,
+            mock.patch(
+                "scripts.current_closeout.semantic_review."
+                "current_v11_semantic_review_result",
+                side_effect=AssertionError("semantic graph acquisition attempted"),
+            ) as current_review,
+            mock.patch(
+                "scripts.current_closeout.semantic_review."
+                "accepted_graph_all_selected_semantic_review_material_sha256",
+                return_value="e" * 64,
+            ) as accepted_project,
+            contextlib.redirect_stdout(output),
+        ):
+            code = planner.execute_document_semantic_basis(folder)
+
+        self.assertEqual(code, 0)
+        payload = json.loads(output.getvalue())
+        self.assertTrue(payload["current"])
+        self.assertEqual(payload["all_selected_semantic_review_sha256"], "e" * 64)
+        self.assertFalse(payload["acceptance_credential"])
+        self.assertTrue(payload["document_basis_only"])
+        acquire.assert_called_once_with(folder, repository_root=planner.ROOT)
+        checkpoint.assert_called_once_with(
+            snapshot_root.folder,
+            context,
+            repository_root=snapshot_root.repository_root,
+        )
+        graph_builder.assert_not_called()
+        current_review.assert_not_called()
+        accepted_project.assert_called_once_with(
+            planner.ROOT,
+            folder,
+            context=context,
+        )
+
+    def test_document_semantic_basis_accepted_graph_failure_does_not_run_lean(
+        self,
+    ) -> None:
+        folder = Path("/tmp/papers/Fixture")
+        context = types.SimpleNamespace(v11_lean_review_graph_payload=None)
+        output = io.StringIO()
+        with (
+            mock.patch(
+                "scripts.current_closeout.evidence_transaction."
+                "build_current_v11_context_with_graph_checkpoint",
+                return_value=context,
+            ),
+            mock.patch(
+                "scripts.current_closeout.semantic_review."
+                "accepted_graph_all_selected_semantic_review_material_sha256",
+                side_effect=ValueError(
+                    "current accepted graph cannot supply document semantics: "
+                    "build leaf Lean import closure is stale"
+                ),
+            ),
+            mock.patch.object(
+                lean_review_graph,
+                "build_v11_lean_review_graph_material",
+                side_effect=AssertionError("native Lean graph acquisition attempted"),
+            ) as graph_builder,
+            mock.patch(
+                "scripts.current_closeout.semantic_review."
+                "current_v11_semantic_review_result",
+                side_effect=AssertionError("semantic graph acquisition attempted"),
+            ) as current_review,
+            contextlib.redirect_stdout(output),
+        ):
+            code = planner.execute_document_semantic_basis(folder)
+
+        self.assertEqual(code, 2)
+        payload = json.loads(output.getvalue())
+        self.assertFalse(payload["current"])
+        self.assertIn("Lean import closure is stale", payload["error"])
+        graph_builder.assert_not_called()
+        current_review.assert_not_called()
+
+    def test_closeout_schedules_settled_review_context_projection_first(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            config_path = audit / "v11_source_map_preparation_config.json"
+            config_path.write_text('{"paper": "Fixture"}\n', encoding="utf-8")
+            current = {
+                "paper": "Fixture",
+                "items": {
+                    "claim": {
+                        "model_convention_ids": ["decision-1"],
+                    }
+                },
+            }
+            prepared = {
+                "approved_review_context_schema": 1,
+                "items": {
+                    "claim": {
+                        "model_convention_ids": ["decision-1"],
+                        "approved_review_context_schema": 1,
+                        "approved_review_contexts": [
+                            {
+                                "kind": "source_model_convention",
+                                "id": "decision-1",
+                                "record_sha256": "a" * 64,
+                            }
+                        ],
+                    }
+                },
+            }
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner,
+                    "expected_approved_review_context_projection",
+                    return_value=(prepared, ""),
+                ),
+            ):
+                action = planner.current_approved_review_context_projection_action(
+                    folder,
+                    current,
+                )
+
+            self.assertIsNotNone(action)
+            assert action is not None
+            self.assertEqual(action["id"], "sync_approved_review_contexts")
+            self.assertEqual(
+                action["commands"],
+                [
+                    (
+                        "python3 scripts/sync_approved_review_contexts.py --paper "
+                        "Fixture --write"
+                    )
+                ],
+            )
+
+    def test_closeout_accepts_current_settled_review_context_projection(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            (audit / "v11_source_map_preparation_config.json").write_text(
+                '{"paper": "Fixture"}\n', encoding="utf-8"
+            )
+            current = {
+                "paper": "Fixture",
+                "approved_review_context_schema": 1,
+                "items": {},
+            }
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner,
+                    "expected_approved_review_context_projection",
+                    return_value=(
+                        {
+                            "approved_review_context_schema": 1,
+                            "items": {},
+                        },
+                        "",
+                    ),
+                ),
+            ):
+                action = planner.current_approved_review_context_projection_action(
+                    folder,
+                    current,
+                )
+
+            self.assertIsNone(action)
+
+    def test_closeout_checks_embedded_authority_without_preparation_config(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            current = {
+                "paper": "Fixture",
+                "items": {
+                    "claim": {"model_convention_ids": ["decision-1"]}
+                },
+            }
+            expected = {
+                "approved_review_context_schema": 1,
+                "items": {
+                    "claim": {
+                        "model_convention_ids": ["decision-1"],
+                        "approved_review_context_schema": 1,
+                        "approved_review_contexts": [{"id": "decision-1"}],
+                    }
+                },
+            }
+            with mock.patch.object(
+                planner,
+                "expected_approved_review_context_projection",
+                return_value=(expected, ""),
+            ):
+                action = planner.current_approved_review_context_projection_action(
+                    folder,
+                    current,
+                )
+
+            self.assertIsNotNone(action)
+            assert action is not None
+            self.assertEqual(action["id"], "sync_approved_review_contexts")
+
+    def test_import_closure_currentness_uses_nonaccepting_source_projection(
+        self,
+    ) -> None:
+        """A stale-source probe never adopts build or external-artifact authority."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            folder.mkdir(parents=True)
+            closure = {
+                "entry_module": "Fixture.ProofInterface",
+                "repository_sources": [{"module": "Fixture.ProofInterface"}],
+            }
+            receipt = {"lean_import_closure": closure}
+            provider = mock.Mock()
+            provider.validated_repository_source_snapshot.return_value = (
+                ("Fixture.ProofInterface", folder / "ProofInterface.lean", b"x", "a"),
+            )
+            provider_type = mock.Mock(return_value=provider)
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch(
+                    "scripts.lean_import_closure.validated_lean_import_closure_receipt_payload",
+                    return_value=receipt,
+                ),
+                mock.patch(
+                    "scripts.lean_signature_manifest.RepositoryBuildInputSnapshotProvider",
+                    provider_type,
+                ),
+            ):
+                error = planner._v11_lean_import_closure_current_error(
+                    folder, receipt
+                )
+
+            self.assertEqual(error, "")
+            provider_type.assert_called_once_with(root)
+            provider.validated_repository_source_snapshot.assert_called_once_with(
+                closure
+            )
+            provider.adopt_lean_import_closure_payload.assert_not_called()
+            provider.finalize_unchanged.assert_not_called()
+
+    def test_canonical_validator_owns_semantic_recovery_before_replanning(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            folder.mkdir(parents=True)
+            output = io.StringIO()
+            terminal_plan = {
+                "schema": 2,
+                "paper": "Fixture",
+                "canonical_receipt_current": True,
+            }
+            with (
+                mock.patch.object(
+                    sys, "argv", ["closeout_reuse_plan.py", "--paper", "Fixture"]
+                ),
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(planner, "resolve_paper_folder", return_value=folder),
+                mock.patch.object(planner, "running_execution_summary", return_value=None),
+                mock.patch.object(
+                    planner,
+                    "effective_closeout_execution_state",
+                    return_value=(None, "", "worker", folder / "state.json"),
+                ),
+                mock.patch.object(
+                    planner,
+                    "current_canonical_receipt_terminal_plan",
+                    return_value=terminal_plan,
+                ) as terminal,
+                contextlib.redirect_stdout(output),
+            ):
+                result = planner.main()
+
+            self.assertEqual(result, 0)
+            terminal.assert_called_once_with(folder)
+            self.assertEqual(json.loads(output.getvalue()), terminal_plan)
+
+    def test_import_avoids_presentation_and_historical_scheduler_modules(
+        self,
+    ) -> None:
+        root = Path(__file__).resolve().parents[2]
+        process = subprocess.run(
+            [
+                sys.executable,
+                "-c",
+                (
+                    "import json, sys; "
+                    "import scripts.closeout_reuse_plan; "
+                    "print(json.dumps([name for name in ("
+                    "'scripts.lean_signature_manifest', "
+                    "'scripts.review_dashboard', "
+                    "'scripts.review_dashboard_packet', "
+                    "'scripts.semantic_audit_reuse', "
+                    "'scripts.closeout_legacy_adoption', "
+                    "'scripts.closeout_wave_engine') if name in sys.modules]))"
+                ),
+            ],
+            cwd=root,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        self.assertEqual(process.returncode, 0, process.stderr)
+        self.assertEqual(json.loads(process.stdout), [])
+
+    def test_v11_preplan_adapter_schedules_only_typed_reducer_actions(self) -> None:
+        build = planner._v11_preplan_action_schedule(
+            "Fixture",
+            semantic_review_current=True,
+            compiled_inputs_current=False,
+        )
+        self.assertEqual(
+            [action["id"] for action in build["actions"]],
+            ["paper_build", "replan_after_build"],
+        )
+        self.assertFalse(build["v11_reducer"]["legacy_scheduler_consulted"])
+
+        realization_repair = planner._v11_preplan_action_schedule(
+            "Fixture",
+            semantic_review_current=True,
+            compiled_inputs_current=True,
+            realization_receipt_preflight={
+                "state": "blocked",
+                "current": False,
+                "errors": ["the graph omitted theorem_one"],
+            },
+        )
+        self.assertEqual(
+            [action["id"] for action in realization_repair["actions"]],
+            ["resolve_realization_receipt_preflight"],
+        )
+
+        repair = planner._v11_preplan_action_schedule(
+            "Fixture",
+            semantic_review_current=False,
+            compiled_inputs_current=True,
+            semantic_errors=["one source claim needs review"],
+        )
+        self.assertEqual(repair["next_action"]["id"], "repair_current_v11_audit")
+
+    def test_unclosed_legacy_paper_has_one_current_protocol_migration(self) -> None:
+        plan = planner.current_protocol_migration_plan(
+            "Fixture", {"ready": True, "blockers": []}
+        )
+        self.assertEqual(plan["next_action"]["id"], "upgrade_to_current_protocol")
+        self.assertFalse(plan["historical_runtime_consulted"])
+        self.assertFalse(plan["acceptance_credential"])
+        self.assertTrue(
+            plan["next_action"]["migration_preserves_historical_status"]
+        )
+
+    @staticmethod
+    def _write_current_v11_screening(audit: Path, paper: str) -> None:
+        (audit / "v11_raw_source_spec_screening.json").write_text(
+            json.dumps(
+                {
+                    "schema": 3,
+                    "paper": paper,
+                    "prompt_version": V11_SCREENING_PROMPT_VERSION,
+                    "validator": "fixture-reviewer",
+                    "validated_at": "2026-08-27T00:00:00Z",
+                    "items": {},
+                }
+            ),
+            encoding="utf-8",
+        )
+
+    @staticmethod
+    def _graph_projection(
+        target_material: Mapping[str, object],
+        *,
+        context: object | None = None,
+    ) -> object:
+        retained_context = context or types.SimpleNamespace(
+            v11_lean_claim_graph_selected=True
+        )
+        return types.SimpleNamespace(
+            context=retained_context,
+            target_material=lambda: target_material,
+        )
+
+    def test_fresh_v11_planner_records_lean_closure_before_review(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "review_surface": {
+                            "require_v11_raw_source_spec_screening": True
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            action = planner.current_v11_prerequisite_stage(folder).action
+
+            self.assertIsNotNone(action)
+            assert action is not None
+            self.assertEqual(action["id"], "record_current_lean_import_closure")
+            self.assertIn("not an acceptance credential", action["reason"])
+            self.assertEqual(
+                action["commands"],
+                [
+                    "python3 scripts/final_closure_receipt.py --paper Fixture "
+                    "--record-current-lean-import-closure"
+                ],
+            )
+
+    def test_fresh_v11_planner_replaces_review_only_closure_before_plan(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "review_surface": {
+                            "require_v11_raw_source_spec_screening": True
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (folder / "audit" / "LEAN_IMPORT_CLOSURE_RECEIPT.json").write_text(
+                json.dumps(
+                    {"entrypoint": "papers/Fixture/ProofInterface.lean"}
+                ),
+                encoding="utf-8",
+            )
+
+            action = planner.current_v11_prerequisite_stage(folder).action
+
+            self.assertIsNotNone(action)
+            assert action is not None
+            self.assertEqual(action["id"], "record_current_lean_import_closure")
+            self.assertIn("paper-build closure", action["reason"])
+
+    def test_fresh_v11_planner_replaces_stale_paper_closure_before_graph(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "review_surface": {
+                            "require_v11_raw_source_spec_screening": True
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (folder / "audit" / "LEAN_IMPORT_CLOSURE_RECEIPT.json").write_text(
+                json.dumps({"entrypoint": "papers/Fixture.lean"}) + "\n",
+                encoding="utf-8",
+            )
+
+            with mock.patch.object(
+                planner,
+                "_v11_lean_import_closure_current_error",
+                return_value="papers/Fixture.lean changed",
+            ):
+                action = planner.current_v11_prerequisite_stage(folder).action
+
+            self.assertIsNotNone(action)
+            assert action is not None
+            self.assertEqual(action["id"], "record_current_lean_import_closure")
+            self.assertIn("saved carrier is not current", action["reason"])
+            self.assertIn("papers/Fixture.lean changed", action["reason"])
+
+    def test_fresh_v11_planner_stops_before_missing_prerequisite_ledgers(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "review_surface": {
+                            "require_v11_raw_source_spec_screening": True
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (folder / "audit" / "library_semantic_review.json").write_text(
+                "{}\n", encoding="utf-8"
+            )
+            (folder / "audit" / "paper_statement_map.json").write_text(
+                json.dumps({"items": {}}) + "\n", encoding="utf-8"
+            )
+            (folder / "audit" / "LEAN_IMPORT_CLOSURE_RECEIPT.json").write_text(
+                json.dumps({"entrypoint": "papers/Fixture.lean"}) + "\n",
+                encoding="utf-8",
+            )
+
+            with (
+                mock.patch.object(
+                    planner,
+                    "_v11_lean_import_closure_current_error",
+                    return_value="",
+                ),
+                mock.patch.object(
+                    planner,
+                    "load_current_v11_review_graph_projection",
+                    return_value=None,
+                ),
+            ):
+                action = planner.current_v11_prerequisite_stage(folder).action
+
+            self.assertIsNotNone(action)
+            assert action is not None
+            self.assertEqual(
+                action["id"], "prepare_v11_lean_review_graph"
+            )
+            self.assertIn("claim and prerequisite surfaces", action["reason"])
+            self.assertEqual(len(action["commands"]), 1)
+            self.assertIn(
+                "--prepare-v11-lean-review-graph",
+                action["commands"][0],
+            )
+
+            (folder / "audit" / "paper_semantic_prerequisites.json").write_text(
+                "{}\n", encoding="utf-8"
+            )
+            with (
+                mock.patch.object(
+                    planner,
+                    "_v11_lean_import_closure_current_error",
+                    return_value="",
+                ),
+                mock.patch.object(
+                    planner,
+                    "load_current_v11_review_graph_projection",
+                    return_value=self._graph_projection(
+                        {"paper_prerequisite_targets": {}}
+                    ),
+                ),
+                mock.patch(
+                    "scripts.reissue_paper_semantic_prerequisites.current_changed_decision_template_and_path",
+                    return_value=None,
+                ),
+                mock.patch(
+                    "scripts.reissue_library_semantic_review.current_changed_decision_template_and_path",
+                    return_value=None,
+                ),
+                mock.patch(
+                    "scripts.reissue_paper_semantic_prerequisites.current_structural_refresh_required",
+                    return_value=False,
+                ),
+                mock.patch(
+                    "scripts.reissue_library_semantic_review.current_structural_refresh_required",
+                    return_value=False,
+                ),
+            ):
+                self.assertIsNone(
+                    planner.current_v11_prerequisite_stage(folder).action
+                )
+
+    def test_fresh_v11_planner_separates_cache_from_reviewer_queues(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "review_surface": {
+                            "require_v11_raw_source_spec_screening": True
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            source_map = {"items": {}}
+            (folder / "audit" / "paper_statement_map.json").write_text(
+                json.dumps(source_map), encoding="utf-8"
+            )
+            (folder / "audit" / "LEAN_IMPORT_CLOSURE_RECEIPT.json").write_text(
+                json.dumps({"entrypoint": "papers/Fixture.lean"}) + "\n",
+                encoding="utf-8",
+            )
+            cache = {"paper_prerequisite_targets": {"Fixture.Model": {}}}
+            paper_queue = folder / "audit" / "paper_delta.json"
+            library_queue = folder / "audit" / "library_delta.json"
+            with (
+                mock.patch.object(
+                    planner,
+                    "load_current_v11_review_graph_projection",
+                    return_value=self._graph_projection(cache),
+                ),
+                mock.patch.object(
+                    planner,
+                    "_v11_lean_import_closure_current_error",
+                    return_value="",
+                ),
+                mock.patch(
+                    "scripts.reissue_paper_semantic_prerequisites.current_changed_decision_template_and_path",
+                    return_value=({"items": {"Fixture.Model": {}}}, paper_queue),
+                ),
+                mock.patch(
+                    "scripts.reissue_library_semantic_review.current_changed_decision_template_and_path",
+                    return_value=(
+                        {"items": {"AppliedModelingLib.Model": {}}},
+                        library_queue,
+                    ),
+                ),
+            ):
+                action = planner.current_v11_prerequisite_stage(folder).action
+
+            self.assertIsNotNone(action)
+            assert action is not None
+            self.assertEqual(
+                action["id"], "emit_semantic_prerequisite_review_queues"
+            )
+            self.assertEqual(len(action["commands"]), 2)
+            self.assertTrue(
+                all("--emit-template" in command for command in action["commands"])
+            )
+            self.assertTrue(
+                all("--changed-only" in command for command in action["commands"])
+            )
+
+    def test_existing_ledgers_do_not_bypass_changed_unified_graph(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "review_surface": {
+                            "require_v11_raw_source_spec_screening": True
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (audit / "paper_statement_map.json").write_text(
+                json.dumps({"items": {}}),
+                encoding="utf-8",
+            )
+            (audit / "LEAN_IMPORT_CLOSURE_RECEIPT.json").write_text(
+                json.dumps({"entrypoint": "papers/Fixture.lean"}),
+                encoding="utf-8",
+            )
+            for name in (
+                "paper_semantic_prerequisites.json",
+                "library_semantic_review.json",
+            ):
+                (audit / name).write_text("{}\n", encoding="utf-8")
+
+            with (
+                mock.patch.object(
+                    planner,
+                    "_v11_lean_import_closure_current_error",
+                    return_value="",
+                ),
+                mock.patch.object(
+                    planner,
+                    "load_current_v11_review_graph_projection",
+                    return_value=None,
+                ),
+            ):
+                action = planner.current_v11_prerequisite_stage(folder).action
+
+            self.assertIsNotNone(action)
+            assert action is not None
+            self.assertEqual(action["id"], "prepare_v11_lean_review_graph")
+            self.assertEqual(len(action["commands"]), 1)
+
+    def test_changed_graph_schedules_content_addressed_prerequisite_delta(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "review_surface": {
+                            "require_v11_raw_source_spec_screening": True
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (audit / "paper_statement_map.json").write_text(
+                json.dumps({"items": {}}), encoding="utf-8"
+            )
+            (audit / "LEAN_IMPORT_CLOSURE_RECEIPT.json").write_text(
+                json.dumps({"entrypoint": "papers/Fixture.lean"}),
+                encoding="utf-8",
+            )
+            for name in (
+                "paper_semantic_prerequisites.json",
+                "library_semantic_review.json",
+            ):
+                (audit / name).write_text('{"items": {}}\n', encoding="utf-8")
+            cache = {"paper_prerequisite_targets": {"Fixture.NewRoot": {}}}
+            queue = audit / ("paper_semantic_prerequisite_reissue_decisions_" + "a" * 64 + ".json")
+
+            def action() -> dict[str, object] | None:
+                with (
+                    mock.patch.object(
+                        planner,
+                        "_v11_lean_import_closure_current_error",
+                        return_value="",
+                    ),
+                    mock.patch.object(
+                        planner,
+                        "load_current_v11_review_graph_projection",
+                        return_value=self._graph_projection(cache),
+                    ),
+                    mock.patch(
+                        "scripts.reissue_paper_semantic_prerequisites.current_changed_decision_template_and_path",
+                        return_value=({"items": {"Fixture.NewRoot": {}}}, queue),
+                    ),
+                    mock.patch(
+                        "scripts.reissue_library_semantic_review.current_changed_decision_template_and_path",
+                        return_value=None,
+                    ),
+                    mock.patch(
+                        "scripts.reissue_library_semantic_review.current_structural_refresh_required",
+                        return_value=False,
+                    ),
+                ):
+                    return planner.current_v11_prerequisite_stage(folder).action
+
+            emitted = action()
+            self.assertIsNotNone(emitted)
+            assert emitted is not None
+            self.assertEqual(emitted["id"], "emit_semantic_prerequisite_review_queues")
+            self.assertEqual(len(emitted["commands"]), 1)
+            self.assertIn(queue.name, emitted["commands"][0])
+            self.assertIn("--changed-only", emitted["commands"][0])
+
+            queue.write_text('{"items": {}}\n', encoding="utf-8")
+            review = action()
+            self.assertIsNotNone(review)
+            assert review is not None
+            self.assertEqual(review["id"], "review_semantic_prerequisites")
+            self.assertEqual(len(review["commands"]), 1)
+            self.assertIn(queue.name, review["commands"][0])
+
+    def test_nonempty_dependency_closure_with_no_selected_paper_prerequisites_records_empty_ledger(
+        self,
+    ) -> None:
+        """A zero selected source surface must not fall through to no-op review."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "review_surface": {
+                            "require_v11_raw_source_spec_screening": True
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (audit / "paper_statement_map.json").write_text(
+                json.dumps({"items": {}}), encoding="utf-8"
+            )
+            (audit / "LEAN_IMPORT_CLOSURE_RECEIPT.json").write_text(
+                json.dumps({"entrypoint": "papers/Fixture.lean"}),
+                encoding="utf-8",
+            )
+            (audit / "library_semantic_review.json").write_text(
+                '{"items": {}}\n', encoding="utf-8"
+            )
+
+            with (
+                mock.patch.object(
+                    planner,
+                    "_v11_lean_import_closure_current_error",
+                    return_value="",
+                ),
+                mock.patch.object(
+                    planner,
+                    "load_current_v11_review_graph_projection",
+                    return_value=self._graph_projection(
+                        {"paper_prerequisite_targets": {"Fixture.Internal": {}}}
+                    ),
+                ),
+                mock.patch(
+                    "scripts.reissue_paper_semantic_prerequisites.current_changed_decision_template_and_path",
+                    return_value=None,
+                ),
+                mock.patch(
+                    "scripts.reissue_library_semantic_review.current_changed_decision_template_and_path",
+                    return_value=None,
+                ),
+                mock.patch(
+                    "scripts.reissue_library_semantic_review.current_structural_refresh_required",
+                    return_value=False,
+                ),
+            ):
+                action = planner.current_v11_prerequisite_stage(folder).action
+
+            self.assertIsNotNone(action)
+            assert action is not None
+            self.assertEqual(action["id"], "record_empty_paper_prerequisite_surface")
+            self.assertEqual(action["state"], "ready_now")
+            self.assertEqual(len(action["commands"]), 1)
+            self.assertIn("--refresh-current", action["commands"][0])
+
+    def test_unchanged_prerequisite_rename_schedules_only_structural_refresh(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "review_surface": {
+                            "require_v11_raw_source_spec_screening": True
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (audit / "paper_statement_map.json").write_text(
+                json.dumps({"items": {}}), encoding="utf-8"
+            )
+            (audit / "LEAN_IMPORT_CLOSURE_RECEIPT.json").write_text(
+                json.dumps({"entrypoint": "papers/Fixture.lean"}),
+                encoding="utf-8",
+            )
+            for name in (
+                "paper_semantic_prerequisites.json",
+                "library_semantic_review.json",
+            ):
+                (audit / name).write_text('{"items": {}}\n', encoding="utf-8")
+            with (
+                mock.patch.object(
+                    planner,
+                    "_v11_lean_import_closure_current_error",
+                    return_value="",
+                ),
+                mock.patch.object(
+                    planner,
+                    "load_current_v11_review_graph_projection",
+                    return_value=self._graph_projection({}),
+                ),
+                mock.patch(
+                    "scripts.reissue_paper_semantic_prerequisites.current_changed_decision_template_and_path",
+                    return_value=None,
+                ),
+                mock.patch(
+                    "scripts.reissue_library_semantic_review.current_changed_decision_template_and_path",
+                    return_value=None,
+                ),
+                mock.patch(
+                    "scripts.reissue_paper_semantic_prerequisites.current_structural_refresh_required",
+                    return_value=True,
+                ),
+                mock.patch(
+                    "scripts.reissue_library_semantic_review.current_structural_refresh_required",
+                    return_value=False,
+                ),
+            ):
+                action = planner.current_v11_prerequisite_stage(folder).action
+
+            self.assertIsNotNone(action)
+            assert action is not None
+            self.assertEqual(action["id"], "refresh_semantic_prerequisite_metadata")
+            self.assertEqual(action["state"], "ready_now")
+            self.assertEqual(len(action["commands"]), 1)
+            self.assertIn(
+                "reissue_paper_semantic_prerequisites.py", action["commands"][0]
+            )
+            self.assertIn("--refresh-current", action["commands"][0])
+
+    def test_screening_repair_emits_content_addressed_queue_without_lean(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            folder.mkdir(parents=True)
+            queue = folder / "audit" / ("v11_queue_" + "a" * 64 + ".json")
+            template = {"review_material_sha256": "a" * 64, "items": {}}
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    screening_reissue,
+                    "current_changed_decision_template_and_path",
+                    return_value=(template, queue),
+                ),
+                mock.patch.object(
+                    planner,
+                    "load_current_v11_review_graph_projection",
+                    return_value=self._graph_projection({"semantic_targets": {}}),
+                ),
+            ):
+                action = planner.current_v11_screening_repair_action(
+                    folder,
+                    ["missing screening"],
+                )
+
+            self.assertEqual(
+                action["id"], "emit_current_v11_source_spec_review_queue"
+            )
+            self.assertEqual(len(action["commands"]), 1)
+            self.assertIn("--emit-current-template", action["commands"][0])
+            self.assertIn("--v11-review-graph", action["commands"][0])
+
+    def test_screening_repair_runs_draft_preflight_before_graph_acquisition(
+        self,
+    ) -> None:
+        """A missing graph cannot justify skipping source/interface preflight."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            folder.mkdir(parents=True)
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner,
+                    "load_current_v11_review_graph_projection",
+                    return_value=None,
+                ),
+            ):
+                action = planner.current_v11_screening_repair_action(
+                    folder,
+                    ["missing raw-source prompt version"],
+                )
+
+        self.assertEqual(action["id"], "run_draft_semantic_preflight")
+        self.assertEqual(action["state"], "review_required")
+        self.assertEqual(len(action["commands"]), 1)
+        self.assertIn("draft_semantic_preflight.py", action["commands"][0])
+        self.assertNotIn("prepare-v11-lean-review-graph", action["commands"][0])
+
+    def test_screening_repair_uses_existing_current_queue_for_review(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            queue = folder / "audit" / ("v11_queue_" + "a" * 64 + ".json")
+            queue.parent.mkdir(parents=True)
+            queue.write_text("{}\n", encoding="utf-8")
+            template = {"review_material_sha256": "a" * 64, "items": {}}
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    screening_reissue,
+                    "current_changed_decision_template_and_path",
+                    return_value=(template, queue),
+                ),
+                mock.patch.object(
+                    screening_reissue,
+                    "current_decision_queue_error",
+                    return_value="",
+                ),
+                mock.patch.object(
+                    planner,
+                    "load_current_v11_review_graph_projection",
+                    return_value=self._graph_projection({"semantic_targets": {}}),
+                ),
+            ):
+                action = planner.current_v11_screening_repair_action(
+                    folder,
+                    ["stale screening"],
+                )
+
+            self.assertEqual(
+                action["id"], "review_current_v11_source_spec_matches"
+            )
+            self.assertEqual(action["state"], "review_required")
+            self.assertIn(queue.name, action["commands"][0])
+            self.assertNotIn("--replace-current-surface", action["commands"][0])
+            self.assertIn("--v11-review-graph", action["commands"][0])
+
+    def test_screening_repair_refreshes_only_structural_metadata_when_reusable(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            folder.mkdir(parents=True)
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    screening_reissue,
+                    "current_changed_decision_template_and_path",
+                    return_value=None,
+                ),
+                mock.patch.object(
+                    planner,
+                    "load_current_v11_review_graph_projection",
+                    return_value=self._graph_projection({"semantic_targets": {}}),
+                ),
+            ):
+                action = planner.current_v11_screening_repair_action(
+                    folder,
+                    ["stale declaration routing"],
+                )
+
+            self.assertEqual(action["id"], "repair_current_v11_screening_metadata")
+            self.assertEqual(action["state"], "ready_now")
+            self.assertEqual(len(action["commands"]), 1)
+            self.assertIn("--refresh-current", action["commands"][0])
+            self.assertIn("--v11-review-graph", action["commands"][0])
+
+    def test_prepare_graph_command_stops_before_producer_on_failed_preflight(
+        self,
+    ) -> None:
+        folder = Path("/tmp/papers/Fixture")
+        with (
+            mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
+            mock.patch.object(
+                planner,
+                "v11_structural_graph_input_preflight",
+                return_value={"current": False, "errors": ["bad route"]},
+            ),
+            mock.patch.object(
+                planner,
+                "prepare_v11_lean_review_graph",
+            ) as prepare,
+            contextlib.redirect_stdout(io.StringIO()) as output,
+        ):
+            result = planner.execute_prepare_v11_lean_review_graph(folder)
+
+        self.assertEqual(result, 2)
+        prepare.assert_not_called()
+        payload = json.loads(output.getvalue())
+        self.assertFalse(payload["prepared"])
+        self.assertIn("not ready", payload["error"])
+
+    def test_v11_graph_preflight_requires_role_typed_source_routes(self) -> None:
+        """A legacy map must stop before it can invent closure-wide review rows."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            (audit / "paper_statement_map.json").write_text(
+                json.dumps({"semantic_route_schema": None}), encoding="utf-8"
+            )
+            with mock.patch.object(
+                planner,
+                "structural_obligation_preflight",
+                return_value=types.SimpleNamespace(
+                    projection=lambda: {
+                        "acceptance_credential": False,
+                        "current": True,
+                        "errors": [],
+                    }
+                ),
+            ):
+                result = planner.v11_structural_graph_input_preflight(folder)
+
+        self.assertIsNotNone(result)
+        assert result is not None
+        self.assertFalse(result["current"])
+        self.assertIn("semantic_route_schema 2", result["errors"][0])
+
+    def test_v11_graph_preflight_preserves_a_role_typed_route_surface(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            (audit / "paper_statement_map.json").write_text(
+                json.dumps({"semantic_route_schema": 2}), encoding="utf-8"
+            )
+            with mock.patch.object(
+                planner,
+                "structural_obligation_preflight",
+                return_value=types.SimpleNamespace(
+                    projection=lambda: {
+                        "acceptance_credential": False,
+                        "current": True,
+                        "errors": [],
+                    }
+                ),
+            ):
+                result = planner.v11_structural_graph_input_preflight(folder)
+
+        self.assertIsNotNone(result)
+        assert result is not None
+        self.assertTrue(result["current"])
+        self.assertEqual(result["errors"], [])
+
+    def test_prepare_graph_command_invokes_one_producer_after_preflight(self) -> None:
+        folder = Path("/tmp/papers/Fixture")
+        prepared = {
+            "schema": 1,
+            "paper": "Fixture",
+            "acceptance_credential": False,
+            "semantic_judgments_issued": False,
+        }
+        with (
+            mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
+            mock.patch.object(
+                planner,
+                "v11_structural_graph_input_preflight",
+                return_value={"current": True, "errors": []},
+            ),
+            mock.patch.object(
+                planner,
+                "prepare_v11_lean_review_graph",
+                return_value=prepared,
+            ) as prepare,
+            contextlib.redirect_stdout(io.StringIO()) as output,
+        ):
+            result = planner.execute_prepare_v11_lean_review_graph(folder)
+
+        self.assertEqual(result, 0)
+        prepare.assert_called_once_with(planner.ROOT, folder)
+        payload = json.loads(output.getvalue())
+        self.assertTrue(payload["prepared"])
+        self.assertFalse(payload["acceptance_credential"])
+
+    def test_correspondence_activation_uses_the_same_v11_planner_path(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "review_surface": {
+                            "require_source_spec_correspondence": True
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            source_map = {"source_spec_correspondence_schema": 1, "items": {}}
+            (folder / "audit" / "paper_statement_map.json").write_text(
+                json.dumps(source_map), encoding="utf-8"
+            )
+
+            action = planner.current_v11_prerequisite_stage(folder).action
+
+            self.assertIsNotNone(action)
+            assert action is not None
+            self.assertEqual(action["id"], "record_current_lean_import_closure")
+
+
     @staticmethod
     def wave_snapshot() -> dict[str, object]:
         return {
@@ -100,7 +1377,9 @@ class CloseoutReusePlanTests(unittest.TestCase):
         if schema == 3:
             context.update(
                 {
-                    "canonical_representation": "lean_compact_canonical_v2",
+                    "canonical_representation": (
+                        planner.lean_manifest.CANONICAL_REPRESENTATION
+                    ),
                     "semantic_hash_tool_identity": {
                         "schema": "1",
                         "resolved_path": "/usr/bin/sha256sum",
@@ -110,747 +1389,20 @@ class CloseoutReusePlanTests(unittest.TestCase):
             )
         return context
 
-    def test_signature_context_checks_complete_exact_artifact_closure(self) -> None:
-        context = self.signature_context()
-        with (
-            mock.patch.object(
-                planner.lean_manifest,
-                "_file_content_fingerprint",
-                return_value=("b" * 64, 20),
-            ),
-            mock.patch.object(
-                planner.lean_manifest,
-                "_built_olean_fingerprint",
-                side_effect=lambda _root, module: {
-                    "Fixture.Dependency": ("c" * 64, 30),
-                    "Fixture.PaperInterface": ("a" * 64, 10),
-                }[module],
-            ),
-        ):
-            digest, errors = planner._signature_context_snapshot(
-                Path("/fixture"), {"PaperInterface.lean": context}
-            )
-        self.assertRegex(digest, r"^[0-9a-f]{64}$")
-        self.assertEqual(errors, [])
 
-        with (
-            mock.patch.object(
-                planner.lean_manifest,
-                "_file_content_fingerprint",
-                return_value=("b" * 64, 20),
-            ),
-            mock.patch.object(
-                planner.lean_manifest,
-                "_built_olean_fingerprint",
-                side_effect=lambda _root, module: (
-                    ("d" * 64, 30) if module == "Fixture.Dependency" else ("a" * 64, 10)
-                ),
-            ),
-        ):
-            digest, errors = planner._signature_context_snapshot(
-                Path("/fixture"), {"PaperInterface.lean": context}
-            )
-        self.assertEqual(digest, "")
-        self.assertIn("Fixture.Dependency", errors[0])
 
-    def test_signature_context_schema_three_revalidates_hash_tool_and_format(
-        self,
-    ) -> None:
-        context = self.signature_context(schema=3)
-        hash_tool_identity = dict(context["semantic_hash_tool_identity"])
-        with (
-            mock.patch.object(
-                planner.lean_manifest,
-                "_semantic_contract_closure_hash_tool_identity",
-                return_value=hash_tool_identity,
-            ),
-            mock.patch.object(
-                planner.lean_manifest,
-                "_file_content_fingerprint",
-                return_value=("b" * 64, 20),
-            ),
-            mock.patch.object(
-                planner.lean_manifest,
-                "_built_olean_fingerprint",
-                side_effect=lambda _root, module: {
-                    "Fixture.Dependency": ("c" * 64, 30),
-                    "Fixture.PaperInterface": ("a" * 64, 10),
-                }[module],
-            ),
-        ):
-            digest, errors = planner._signature_context_snapshot(
-                Path("/fixture"), {"PaperInterface.lean": context}
-            )
-        self.assertRegex(digest, r"^[0-9a-f]{64}$")
-        self.assertEqual(errors, [])
 
-        stale_tool = dict(context)
-        stale_tool["semantic_hash_tool_identity"] = {
-            **hash_tool_identity,
-            "executable_sha256": "e" * 64,
-        }
-        with mock.patch.object(
-            planner.lean_manifest,
-            "_semantic_contract_closure_hash_tool_identity",
-            return_value=hash_tool_identity,
-        ):
-            digest, errors = planner._signature_context_snapshot(
-                Path("/fixture"), {"PaperInterface.lean": stale_tool}
-            )
-        self.assertEqual(digest, "")
-        self.assertIn("SHA-256 tool identity changed", errors[0])
 
-        stale_format = dict(context)
-        stale_format["canonical_representation"] = "lean_compact_canonical_v1"
-        digest, errors = planner._signature_context_snapshot(
-            Path("/fixture"), {"PaperInterface.lean": stale_format}
-        )
-        self.assertEqual(digest, "")
-        self.assertIn("canonical representation", errors[0])
 
-    def test_operational_compiled_ledger_partitions_only_declared_tool_guard(
-        self,
-    ) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir) / "repository"
-            root.mkdir()
-            compiled = root / "Artifact.olean"
-            compiled.write_bytes(b"olean")
-            tool = Path(temp_dir) / "sha256sum"
-            tool.write_bytes(b"tool")
-            stat = compiled.stat()
-            identity = (
-                stat.st_dev,
-                stat.st_ino,
-                stat.st_size,
-                stat.st_mtime_ns,
-                stat.st_ctime_ns,
-            )
-            contexts = self.signature_context(schema=3)
-            contexts["semantic_hash_tool_identity"] = {
-                "schema": "1",
-                "resolved_path": str(tool),
-                "executable_sha256": "d" * 64,
-            }
-            repository, external, error = planner._partition_operational_compiled_ledger(
-                root,
-                {str(compiled): identity, str(tool): identity},
-                signature_contexts={"PaperInterface.lean": contexts},
-            )
 
-            self.assertEqual(error, "")
-            self.assertEqual(set(repository), {str(compiled.resolve())})
-            self.assertEqual(set(external), {str(tool.resolve())})
 
-            _repository, _external, error = (
-                planner._partition_operational_compiled_ledger(
-                    root,
-                    {str(Path(temp_dir) / "undeclared"): identity},
-                    signature_contexts={"PaperInterface.lean": contexts},
-                )
-            )
-            self.assertIn("undeclared external path", error)
 
-            _repository, _external, error = (
-                planner._partition_operational_compiled_ledger(
-                    root,
-                    {str(root / "nested" / ".." / "Artifact.olean"): identity},
-                    signature_contexts={"PaperInterface.lean": contexts},
-                )
-            )
-            self.assertIn("noncanonical path key", error)
 
-    def test_signature_context_hashes_shared_artifacts_once(self) -> None:
-        context = self.signature_context()
-        with (
-            mock.patch.object(
-                planner.lean_manifest,
-                "_file_content_fingerprint",
-                return_value=("b" * 64, 20),
-            ) as helper_hash,
-            mock.patch.object(
-                planner.lean_manifest,
-                "_built_olean_fingerprint",
-                side_effect=lambda _root, module: {
-                    "Fixture.Dependency": ("c" * 64, 30),
-                    "Fixture.PaperInterface": ("a" * 64, 10),
-                }[module],
-            ) as module_hash,
-        ):
-            digest, errors = planner._signature_context_snapshot(
-                Path("/fixture"),
-                {"first": context, "second": dict(context)},
-            )
-        self.assertRegex(digest, r"^[0-9a-f]{64}$")
-        self.assertEqual(errors, [])
-        self.assertEqual(helper_hash.call_count, 1)
-        self.assertEqual(module_hash.call_count, 2)
 
-    def test_cached_snapshot_is_read_only_and_mutation_guarded(self) -> None:
-        context = self.signature_context()
-        payload = {
-            "schema": 20,
-            "paper": "Fixture",
-            "signature_contexts": {"PaperInterface.lean": context},
-        }
-        with tempfile.TemporaryDirectory() as temp_dir:
-            folder = Path(temp_dir) / "Fixture"
-            folder.mkdir()
-            cache = folder / "paper_interface_cache.json"
-            cache.write_text(json.dumps(payload), encoding="utf-8")
-            before = cache.read_bytes()
-            with (
-                mock.patch.object(
-                    planner.review_dashboard,
-                    "paper_interface_cache_file",
-                    return_value=cache,
-                ),
-                mock.patch.object(
-                    planner.review_dashboard,
-                    "_cache_source_hashes",
-                    return_value={"material": "a"},
-                ) as source_hashes,
-                mock.patch.object(
-                    planner.review_dashboard,
-                    "load_cached_review_rows",
-                    return_value=[object()],
-                ) as load_rows,
-                mock.patch.object(
-                    planner,
-                    "_signature_context_snapshot",
-                    return_value=("f" * 64, []),
-                ),
-                mock.patch.object(
-                    planner,
-                    "_root_import_closure_mutation_snapshots",
-                    return_value=({}, {}, [], {"schema": "fixture"}),
-                ),
-                mock.patch.object(
-                    planner,
-                    "build_lean_closure_operational_projection",
-                    return_value={"state": "present"},
-                ),
-            ):
-                snapshot, errors = planner.cached_review_snapshot(
-                    folder, verify_compiled_content=True
-                )
 
-            self.assertIsNotNone(snapshot)
-            self.assertEqual(errors, [])
-            self.assertEqual(cache.read_bytes(), before)
-            self.assertEqual(source_hashes.call_count, 1)
-            self.assertFalse(load_rows.call_args.kwargs["persist_rebind"])
 
-            assert snapshot is not None
-            snapshot.compiled_artifact_mutation_snapshot["artifact"] = (
-                1,
-                2,
-                3,
-                4,
-                5,
-            )
-            errors = planner.cached_snapshot_invalidation_reasons(folder, snapshot)
-            self.assertIn("compiled Lean material changed", errors[0])
 
-    def test_cache_guard_skips_reread_when_dashboard_stat_is_unchanged(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            folder = Path(temp_dir) / "Fixture"
-            folder.mkdir()
-            cache = folder / "paper_interface_cache.json"
-            cache.write_bytes(b'{"cached": true}')
-            snapshot = planner.CachedReviewSnapshot(
-                rows=[],
-                source_material_sha256="a" * 64,
-                compiled_material_sha256="b" * 64,
-                compiled_artifacts_ready=True,
-                compiled_validation_mode="metadata_preflight",
-                compiled_invalidation_reasons=(),
-                source_hashes={},
-                signature_contexts={},
-                source_artifact_mutation_snapshot={},
-                compiled_artifact_mutation_snapshot={},
-                lean_import_closure_projection={"state": "present"},
-                cache_path=cache,
-                cache_mutation_snapshot=planner._stat_identity(cache.stat()),
-                cache_sha256=hashlib.sha256(cache.read_bytes()).hexdigest(),
-            )
-            with mock.patch.object(
-                Path,
-                "read_bytes",
-                side_effect=AssertionError("unchanged dashboard cache was reread"),
-            ):
-                errors = planner.cached_snapshot_invalidation_reasons(folder, snapshot)
 
-        self.assertEqual(errors, [])
-
-    def test_cache_guard_rehashes_when_dashboard_stat_changes(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            folder = Path(temp_dir) / "Fixture"
-            folder.mkdir()
-            cache = folder / "paper_interface_cache.json"
-            cache.write_bytes(b'{"cached": true}')
-            snapshot = planner.CachedReviewSnapshot(
-                rows=[],
-                source_material_sha256="a" * 64,
-                compiled_material_sha256="b" * 64,
-                compiled_artifacts_ready=True,
-                compiled_validation_mode="metadata_preflight",
-                compiled_invalidation_reasons=(),
-                source_hashes={},
-                signature_contexts={},
-                source_artifact_mutation_snapshot={},
-                compiled_artifact_mutation_snapshot={},
-                lean_import_closure_projection={"state": "present"},
-                cache_path=cache,
-                cache_mutation_snapshot=planner._stat_identity(cache.stat()),
-                cache_sha256=hashlib.sha256(cache.read_bytes()).hexdigest(),
-            )
-            cache.write_bytes(b'{"cached": false}')
-            errors = planner.cached_snapshot_invalidation_reasons(folder, snapshot)
-
-        self.assertEqual(errors, ["dashboard cache changed during planning"])
-
-    def test_advisory_graph_loader_never_requests_a_build(self) -> None:
-        with mock.patch.object(
-            planner,
-            "lean_loaded_module_closure",
-            return_value=(("Fixture",), ""),
-        ) as graph:
-            modules, error = planner._advisory_lean_graph_loader(
-                Path("/fixture"), "Fixture", 19
-            )
-
-        self.assertEqual(modules, ("Fixture",))
-        self.assertEqual(error, "")
-        graph.assert_called_once_with(
-            Path("/fixture"),
-            "Fixture",
-            19,
-            build_entry_module=False,
-        )
-
-    def test_item_plan_reports_missing_and_malformed_decisions(self) -> None:
-        plan = planner._item_plan(
-            {
-                "reusable": {"judgment": "matches"},
-                "rejected": {"judgment": "matches"},
-                "malformed": None,
-            },
-            {
-                "reusable": {"accepted": True, "current_row": "renamed"},
-                "rejected": {"accepted": False, "reason": "ambiguous identity"},
-            },
-            reusable_action="reuse",
-            invalid_action="review",
-        )
-
-        self.assertTrue(plan["reusable"]["reusable"])
-        self.assertEqual(plan["reusable"]["current_row"], "renamed")
-        self.assertFalse(plan["rejected"]["reusable"])
-        self.assertIn("ambiguous", plan["rejected"]["reason"])
-        self.assertFalse(plan["malformed"]["reusable"])
-        self.assertIn("not an object", plan["malformed"]["reason"])
-
-    def test_compact_output_keeps_only_repair_obligations(self) -> None:
-        compact = planner.compact_plan_for_output(
-            {
-                "statement": {
-                    "ready": {"reusable": True},
-                    "repair": {"reusable": False, "reason": "changed"},
-                },
-                "coverage": {"ready": {"reusable": True}},
-                "summary": {"statement_requires_review": 1},
-            },
-            "Fixture",
-        )
-
-        self.assertEqual(
-            compact["statement"], {"repair": {"reusable": False, "reason": "changed"}}
-        )
-        self.assertEqual(compact["coverage"], {})
-        self.assertEqual(
-            compact["reusable_items_omitted_from_output"],
-            {"statement": 1, "coverage": 1},
-        )
-        self.assertIn("--all-items", compact["full_item_plan_command"])
-
-    def test_item_plan_exposes_new_and_retired_obligations(self) -> None:
-        plan = planner._item_plan(
-            {
-                "unchanged": {"judgment": "matches"},
-                "removed": {"judgment": "matches"},
-            },
-            {
-                "unchanged": {
-                    "accepted": True,
-                    "current_row": "renamed-current",
-                },
-                "removed": {
-                    "accepted": False,
-                    "reason": "no current semantic candidate",
-                },
-            },
-            reusable_action="reuse",
-            invalid_action="fresh",
-            current_keys={"renamed-current", "brand-new"},
-            current_navigation_field="current_row",
-        )
-
-        self.assertTrue(plan["unchanged"]["reusable"])
-        self.assertTrue(plan["removed"]["retirement_candidate"])
-        self.assertEqual(
-            plan["removed"]["action"],
-            "retire_or_rebind_obsolete_review_item",
-        )
-        self.assertTrue(plan["brand-new"]["new_current_obligation"])
-        self.assertEqual(plan["brand-new"]["action"], "fresh")
-
-    def test_item_plan_keeps_unsealed_current_review_closeout_reusable(self) -> None:
-        plan = planner._item_plan(
-            {"legacy-key": {"judgment": "matches"}},
-            {
-                "legacy-key": {
-                    "accepted": True,
-                    "current_row": "current-row",
-                    "bootstrap_current": True,
-                }
-            },
-            reusable_action="reuse",
-            invalid_action="fresh",
-            current_keys={"current-row"},
-            current_navigation_field="current_row",
-        )
-
-        self.assertTrue(plan["legacy-key"]["reusable"])
-        self.assertTrue(plan["legacy-key"]["future_reuse_pin_missing"])
-        self.assertEqual(plan["legacy-key"]["action"], "reuse")
-
-    def test_cache_miss_schedules_manifest_without_erasing_human_review(self) -> None:
-        schedule = planner.closeout_action_schedule(
-            "Fixture",
-            cache_reusable=False,
-        )
-
-        self.assertFalse(schedule["semantic_review_reuse_ready"])
-        self.assertEqual(
-            [action["id"] for action in schedule["actions"]],
-            ["paper_build", "fresh_manifest_batch", "replan_after_manifest"],
-        )
-        self.assertEqual(
-            schedule["actions"][1]["argv"],
-            [
-                "python3",
-                "scripts/refresh_closeout_manifest_cache.py",
-                "--paper",
-                "Fixture",
-            ],
-        )
-        self.assertIn(
-            "exact roots reuse the raw batch", schedule["actions"][1]["reason"]
-        )
-        self.assertEqual(schedule["next_action"]["id"], "paper_build")
-        self.assertEqual(schedule["actions"][1]["state"], "after_paper_build")
-
-    def test_cache_miss_main_path_emits_executable_dependency_chain(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            paths = [
-                audit / "statement_match_llm.json",
-                audit / "paper_coverage_llm.json",
-                audit / "paper_statement_map.json",
-                audit / "source_proof_fidelity.json",
-            ]
-            payloads = {path: {} for path in paths}
-            material = {
-                str(path): {"state": "present", "sha256": "a" * 64} for path in paths
-            }
-            output = io.StringIO()
-            with (
-                mock.patch.object(
-                    sys, "argv", ["closeout_reuse_plan.py", "--paper", "Fixture"]
-                ),
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(planner, "resolve_paper_folder", return_value=folder),
-                mock.patch.object(
-                    planner, "running_execution_summary", return_value=None
-                ),
-                mock.patch.object(
-                    planner, "runtime_engine_registration_error", return_value=""
-                ),
-                mock.patch.object(
-                    planner,
-                    "static_closeout_readiness",
-                    return_value={"ready": True, "blockers": []},
-                ) as readiness,
-                mock.patch.object(
-                    planner,
-                    "_paper_closeout_status_preflight",
-                    return_value=("formalized", ""),
-                ),
-                mock.patch.object(
-                    planner,
-                    "fast_saved_source_record_preflight",
-                    return_value={"state": "current_raw_judgment_bound"},
-                ),
-                mock.patch.object(
-                    planner,
-                    "_captured_json_payloads",
-                    return_value=(payloads, material, []),
-                ),
-                mock.patch.object(
-                    planner,
-                    "source_coverage_mode_from_map",
-                    return_value=("named_theoretical_statements", ""),
-                ),
-                mock.patch.object(
-                    planner, "inventory_from_source_map", return_value={}
-                ),
-                mock.patch.object(
-                    planner,
-                    "canonical_coverage_inventory_projection",
-                    return_value=({}, ""),
-                ),
-                mock.patch.object(
-                    planner,
-                    "_advisory_plan_input_identity",
-                    return_value=("b" * 64, {}),
-                ),
-                mock.patch.object(
-                    planner, "_read_advisory_plan_cache", return_value=None
-                ),
-                mock.patch.object(
-                    planner,
-                    "cached_review_snapshot",
-                    return_value=(None, ["dashboard cache is unavailable"]),
-                ),
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.main()
-            self.assertEqual(result, 0)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(emitted["next_action"]["id"], "paper_build")
-            self.assertEqual(
-                [action["id"] for action in emitted["actions"]],
-                ["paper_build", "fresh_manifest_batch", "replan_after_manifest"],
-            )
-            readiness.assert_called_once_with(folder)
-
-    def test_invalid_fresh_semantic_plan_stops_before_strict_snapshot_or_receipt(
-        self,
-    ) -> None:
-        """An unresolved item is a worklist, not a strict-closeout candidate."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            paths = [
-                audit / "statement_match_llm.json",
-                audit / "paper_coverage_llm.json",
-                audit / "paper_statement_map.json",
-                audit / "source_proof_fidelity.json",
-            ]
-            payloads = {path: {} for path in paths}
-            material = {
-                str(path): {"state": "present", "sha256": "a" * 64}
-                for path in paths
-            }
-            cached = planner.CachedReviewSnapshot(
-                rows=[],
-                source_material_sha256="a" * 64,
-                compiled_material_sha256="b" * 64,
-                compiled_artifacts_ready=True,
-                compiled_validation_mode="metadata_preflight",
-                compiled_invalidation_reasons=(),
-                source_hashes={},
-                signature_contexts={},
-                source_artifact_mutation_snapshot={},
-                compiled_artifact_mutation_snapshot={},
-                lean_import_closure_projection={"state": "present"},
-                cache_path=root / "dashboard.json",
-                cache_mutation_snapshot=(1, 2, 3, 4, 5),
-                cache_sha256="c" * 64,
-            )
-            semantic_plan = {
-                "acceptance_credential": False,
-                "requires_fresh_strict_closeout": True,
-                "statement": {
-                    "source-result": {
-                        "reusable": False,
-                        "action": "fresh_human_semantic_review",
-                    }
-                },
-                "coverage": {},
-                "summary": {
-                    "statement_requires_review": 1,
-                    "coverage_requires_review": 0,
-                },
-                "validator_identity_errors": {"statement": [], "coverage": []},
-            }
-            output = io.StringIO()
-            with contextlib.ExitStack() as stack:
-                stack.enter_context(
-                    mock.patch.object(
-                        sys,
-                        "argv",
-                        ["closeout_reuse_plan.py", "--paper", "Fixture"],
-                    )
-                )
-                stack.enter_context(mock.patch.object(planner, "ROOT", root))
-                stack.enter_context(
-                    mock.patch.object(
-                        planner, "resolve_paper_folder", return_value=folder
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner, "running_execution_summary", return_value=None
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner,
-                        "effective_closeout_execution_state",
-                        return_value=(None, "", "worker", folder / "state.json"),
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner, "runtime_engine_registration_error", return_value=""
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner,
-                        "static_closeout_readiness",
-                        return_value={"ready": True, "blockers": []},
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner,
-                        "_paper_closeout_status_preflight",
-                        return_value=("formalized", ""),
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner,
-                        "fast_saved_source_record_preflight",
-                        return_value={"state": "current_raw_judgment_bound"},
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner,
-                        "_captured_json_payloads",
-                        return_value=(payloads, material, []),
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner,
-                        "source_coverage_mode_from_map",
-                        return_value=("named_theoretical_statements", ""),
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(planner, "inventory_from_source_map", return_value={})
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner,
-                        "canonical_coverage_inventory_projection",
-                        return_value=({}, ""),
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner,
-                        "_advisory_plan_input_identity",
-                        return_value=("d" * 64, {"_mutation_snapshot": {}}),
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner, "_read_advisory_plan_cache", return_value=None
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(planner, "cached_review_snapshot", return_value=(cached, []))
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner.review_dashboard,
-                        "paper_source_component_route_inventory",
-                        return_value={},
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner.review_dashboard,
-                        "paper_source_definition_component_route_inventory",
-                        return_value={},
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(planner, "_current_anchor_errors", return_value={})
-                )
-                stack.enter_context(
-                    mock.patch.object(planner, "row_snapshots_from_dashboard", return_value=[])
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner, "_direct_expression_review_required", return_value=False
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(planner, "semantic_reuse_plan", return_value=semantic_plan)
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner, "cached_snapshot_invalidation_reasons", return_value=[]
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner, "_file_material_snapshot", return_value=material
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner.review_dashboard,
-                        "review_surface_digest",
-                        return_value="e" * 64,
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        planner, "_advisory_input_material_is_current", return_value=True
-                    )
-                )
-                strict_snapshot = stack.enter_context(
-                    mock.patch.object(planner, "_strict_transaction_content_snapshot")
-                )
-                write_cache = stack.enter_context(
-                    mock.patch.object(planner, "_write_advisory_plan_cache")
-                )
-                write_receipt = stack.enter_context(
-                    mock.patch.object(planner, "_write_current_closeout_plan_receipt")
-                )
-                stack.enter_context(contextlib.redirect_stdout(output))
-                result = planner.main()
-
-            self.assertEqual(result, 0)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(emitted["next_action"]["id"], "inspect_invalid_semantic_items")
-            strict_snapshot.assert_not_called()
-            write_cache.assert_not_called()
-            write_receipt.assert_not_called()
 
     def test_semantic_ready_compiled_miss_stops_before_operational_receipt(
         self,
@@ -892,6 +1444,180 @@ class CloseoutReusePlanTests(unittest.TestCase):
             self.assertNotIn("plan_identity_sha256", finalized)
             write_receipt.assert_not_called()
 
+    def test_source_only_acceptance_is_not_duplicated_in_the_planner(self) -> None:
+        """Exact source gates stay mandatory in the strict worker, not here."""
+
+        self.assertFalse(
+            hasattr(planner, "_deterministic_source_closeout_preflight")
+        )
+
+    def test_terminal_documents_are_checked_only_after_build_and_correspondence(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            folder.mkdir(parents=True)
+            context = types.SimpleNamespace(status_payload={"status": "formalized"})
+            base_plan = {
+                "acceptance_credential": False,
+                "requires_fresh_strict_closeout": True,
+                "cache_reusable": True,
+                "summary": {
+                    "statement_requires_review": 0,
+                    "coverage_requires_review": 0,
+                },
+                "validator_identity_errors": {"statement": [], "coverage": []},
+            }
+            terminal_blocked = {
+                "ready": False,
+                "errors": [
+                    {
+                        "path": "papers/Fixture/FINAL_VALIDATION_REPORT.md",
+                        "message": "missing terminal closeout presentation artifact",
+                    }
+                ],
+                "acceptance_credential": False,
+            }
+
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner,
+                    "_terminal_presentation_closeout_preflight",
+                    side_effect=AssertionError(
+                        "terminal presentation must wait for a current build"
+                    ),
+                ) as terminal_before_build,
+            ):
+                before_build = planner.finalize_operational_plan(
+                    {**base_plan, "compiled_artifacts_ready": False},
+                    folder=folder,
+                    source_coverage_mode="named_theoretical_statements",
+                    execution_path=folder / ".review_traces" / "worker.json",
+                    static_readiness={"ready": True, "blockers": []},
+                    evidence_context=context,
+                )
+            self.assertEqual(before_build["next_action"]["id"], "paper_build")
+            terminal_before_build.assert_not_called()
+
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner,
+                    "current_graph_realization_preflight",
+                    return_value={
+                        "state": "blocked",
+                        "current": False,
+                        "required": True,
+                        "errors": ["the current graph omitted one realization"],
+                    },
+                ),
+                mock.patch.object(
+                    planner,
+                    "_terminal_presentation_closeout_preflight",
+                    side_effect=AssertionError(
+                        "terminal presentation must wait for correspondence"
+                    ),
+                ) as terminal_before_correspondence,
+            ):
+                before_correspondence = planner.finalize_operational_plan(
+                    {**base_plan, "compiled_artifacts_ready": True},
+                    folder=folder,
+                    source_coverage_mode="named_theoretical_statements",
+                    execution_path=folder / ".review_traces" / "worker.json",
+                    static_readiness={"ready": True, "blockers": []},
+                    evidence_context=context,
+                )
+            self.assertNotEqual(
+                before_correspondence["next_action"]["id"],
+                "complete_terminal_closeout_documents",
+            )
+            terminal_before_correspondence.assert_not_called()
+
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner,
+                    "current_graph_realization_preflight",
+                    return_value={
+                        "state": "current_graph_authority",
+                        "current": True,
+                        "required": True,
+                    },
+                ),
+                mock.patch.object(
+                    planner,
+                    "_terminal_presentation_closeout_preflight",
+                    return_value=terminal_blocked,
+                ) as terminal_after_correspondence,
+                mock.patch.object(
+                    planner,
+                    "_write_current_closeout_plan_receipt",
+                    side_effect=AssertionError(
+                        "terminal document failure cannot publish a plan"
+                    ),
+                ) as write_receipt,
+            ):
+                terminal = planner.finalize_operational_plan(
+                    {**base_plan, "compiled_artifacts_ready": True},
+                    folder=folder,
+                    source_coverage_mode="named_theoretical_statements",
+                    execution_path=folder / ".review_traces" / "worker.json",
+                    static_readiness={"ready": True, "blockers": []},
+                    evidence_context=context,
+                )
+            self.assertEqual(
+                terminal["next_action"]["id"],
+                "complete_terminal_closeout_documents",
+            )
+            self.assertTrue(terminal["next_action"]["after_semantic_review"])
+            terminal_after_correspondence.assert_called_once_with(
+                folder,
+                context.status_payload,
+            )
+            write_receipt.assert_not_called()
+
+    def test_terminal_documents_require_the_human_review_packet(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            docs = folder / "docs"
+            audit = folder / "audit"
+            docs.mkdir(parents=True)
+            audit.mkdir(parents=True)
+            (folder / "FINAL_VALIDATION_REPORT.md").write_text(
+                "# Final Validation Report\n", encoding="utf-8"
+            )
+            (docs / "DependencyDAG.tex").write_text("dag", encoding="utf-8")
+            (docs / "DependencyDAG.pdf").write_bytes(b"%PDF-dag\n")
+            (docs / "HUMAN_REVIEW_PACKET.pdf").write_bytes(b"%PDF-packet\n")
+            (audit / "human_review_packet_lean_cache.json").write_text(
+                "{}\n", encoding="utf-8"
+            )
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner, "report_status_alignment_errors", return_value=[]
+                ),
+                mock.patch.object(
+                    planner, "closeout_document_hard_errors", return_value=[]
+                ),
+            ):
+                result = planner._terminal_presentation_closeout_preflight(
+                    folder, {"status": "formalized"}
+                )
+
+        self.assertFalse(result["ready"])
+        self.assertTrue(
+            any(
+                "HUMAN_REVIEW_PACKET.tex" in error
+                and "missing terminal" in error
+                for error in result["errors"]
+            ),
+            result,
+        )
+
     def test_receipt_publication_disposition_controls_replan_retryability(
         self,
     ) -> None:
@@ -919,10 +1645,21 @@ class CloseoutReusePlanTests(unittest.TestCase):
                         disposition=disposition,
                         input_identity_sha256="a" * 64,
                     )
-                    with mock.patch.object(
-                        planner,
-                        "_write_current_closeout_plan_receipt",
-                        return_value=publication,
+                    with (
+                        mock.patch.object(
+                            planner,
+                            "current_graph_realization_preflight",
+                            return_value={
+                                "state": "not_applicable",
+                                "current": True,
+                                "required": False,
+                            },
+                        ),
+                        mock.patch.object(
+                            planner,
+                            "_write_current_closeout_plan_receipt",
+                            return_value=publication,
+                        ),
                     ):
                         finalized = planner.finalize_operational_plan(
                             dict(base_plan),
@@ -938,41 +1675,727 @@ class CloseoutReusePlanTests(unittest.TestCase):
                     self.assertEqual(action["retryable"], retryable)
                     self.assertEqual(action["input_identity_sha256"], "a" * 64)
 
-    def test_invalid_advisory_plan_stops_before_operational_receipt(self) -> None:
-        """A cached semantic worklist must not freeze a strict receipt either."""
+    def test_v11_plan_publication_revalidates_only_the_exact_transaction(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            folder.mkdir(parents=True)
+            strict_snapshot = {
+                "papers/Fixture/audit/paper_statement_map.json": {
+                    "state": "present",
+                    "sha256": "a" * 64,
+                }
+            }
+            publication_inputs = (
+                planner.CloseoutPlanPublicationInputs.capture(
+                    folder=folder,
+                    source_ledger={},
+                    compiled_ledger={},
+                    strict_transaction_snapshot=strict_snapshot,
+                    lean_closure_projection={"state": "present"},
+                ).with_review_surfaces(
+                    v11_lean_review_graph={"schema": 2},
+                    final_holistic_audit_surface={
+                    "identity_schema": "final-holistic-source-and-lean-semantic-surface-v1",
+                    "paper": "Fixture",
+                    },
+                    all_selected_semantic_review_sha256="d" * 64,
+                )
+            )
+            plan = {
+                "audit_material_identity": publication_inputs.audit_material_identity,
+                "audit_material_sha256": publication_inputs.audit_material_sha256,
+            }
+            original_plan = dict(plan)
+            receipt = {"plan_identity_sha256": "b" * 64}
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    plan_publication,
+                    "validate_content_input_snapshot",
+                    return_value=(strict_snapshot, ""),
+                ) as validate_transaction,
+                mock.patch.object(
+                    plan_publication,
+                    "closeout_plan_input_paths",
+                    return_value=([], []),
+                ),
+                mock.patch.object(
+                    plan_publication,
+                    "build_closeout_plan_receipt",
+                    return_value=receipt,
+                ),
+                mock.patch.object(
+                    plan_publication,
+                    "validated_closeout_plan_receipt",
+                    return_value=receipt,
+                ),
+            ):
+                publication = planner._write_current_closeout_plan_receipt(
+                    plan,
+                    folder=folder,
+                    deep_paper_prose=False,
+                    publication_inputs=publication_inputs,
+                )
 
+            self.assertEqual(publication.disposition, "published")
+            self.assertEqual(publication.receipt, receipt)
+            self.assertEqual(plan, original_plan)
+            validate_transaction.assert_called_once_with(root, strict_snapshot)
+
+    def test_v11_plan_publication_rejects_a_legacy_material_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            publication_inputs = (
+                planner.CloseoutPlanPublicationInputs.capture(
+                    folder=folder,
+                    source_ledger={},
+                    compiled_ledger={},
+                    strict_transaction_snapshot={},
+                    lean_closure_projection={"state": "present"},
+                ).with_review_surfaces(
+                    v11_lean_review_graph={"schema": 2},
+                    final_holistic_audit_surface={"paper": "Fixture"},
+                    all_selected_semantic_review_sha256="d" * 64,
+                )
+            )
+            plan = {
+                "audit_material_identity": "legacy_sidecar_snapshot",
+                "audit_material_sha256": publication_inputs.audit_material_sha256,
+            }
+
+            publication = planner._write_current_closeout_plan_receipt(
+                plan,
+                folder=folder,
+                deep_paper_prose=False,
+                publication_inputs=publication_inputs,
+            )
+
+        self.assertIsNone(publication.receipt)
+        self.assertEqual(publication.disposition, "deterministic_input")
+        self.assertIn("no selected semantic-transaction identity", publication.error)
+
+    def test_publication_inputs_are_deeply_frozen_and_paper_bound(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            other = root / "papers" / "Other"
+            source_ledger = {"/source.lean": [1, 2, 3, 4, 5]}
+            strict_snapshot = {
+                "papers/Fixture/status.json": {
+                    "state": "present",
+                    "sha256": "a" * 64,
+                }
+            }
+            inputs = planner.CloseoutPlanPublicationInputs.capture(
+                folder=folder,
+                source_ledger=source_ledger,
+                compiled_ledger={},
+                strict_transaction_snapshot=strict_snapshot,
+                lean_closure_projection={"state": "present"},
+            ).with_review_surfaces(
+                v11_lean_review_graph={"schema": 2, "paper": "Fixture"},
+                final_holistic_audit_surface={"paper": "Fixture"},
+                all_selected_semantic_review_sha256="d" * 64,
+            )
+            frozen_identity = planner._closeout_plan_publication_input_identity(
+                folder=folder,
+                publication_inputs=inputs,
+            )
+
+            source_ledger["/source.lean"][0] = 99
+            strict_snapshot["papers/Fixture/status.json"]["sha256"] = "b" * 64
+            decoded = inputs.payload["source_ledger"]
+            decoded["/source.lean"][1] = 88
+
+            self.assertEqual(
+                inputs.payload["source_ledger"]["/source.lean"],
+                [1, 2, 3, 4, 5],
+            )
+            self.assertEqual(
+                planner._closeout_plan_publication_input_identity(
+                    folder=folder,
+                    publication_inputs=inputs,
+                ),
+                frozen_identity,
+            )
+
+            publication = planner._write_current_closeout_plan_receipt(
+                {
+                    "audit_material_identity": inputs.audit_material_identity,
+                    "audit_material_sha256": inputs.audit_material_sha256,
+                },
+                folder=other,
+                deep_paper_prose=False,
+                publication_inputs=inputs,
+            )
+
+        self.assertIsNone(publication.receipt)
+        self.assertEqual(publication.disposition, "deterministic_input")
+        self.assertIn("another paper", publication.error)
+
+    def test_publication_requires_the_separate_immutable_snapshot(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            publication = planner._write_current_closeout_plan_receipt(
+                {
+                    "audit_material_identity": "strict_transaction_content_snapshot",
+                    "audit_material_sha256": "a" * 64,
+                },
+                folder=folder,
+                deep_paper_prose=False,
+                publication_inputs=None,
+            )
+
+        self.assertIsNone(publication.receipt)
+        self.assertEqual(publication.disposition, "deterministic_input")
+        self.assertIn("immutable publication input snapshot", publication.error)
+
+    def test_prospective_plan_does_not_repeat_terminal_receipt_validation(
+        self,
+    ) -> None:
+        """A terminal miss remains false throughout one immutable plan."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            folder.mkdir(parents=True)
+            plan = {
+                "cache_reusable": True,
+                "compiled_artifacts_ready": True,
+                "semantic_review_authoritative_lane": {
+                    "required": True,
+                    "ready": True,
+                    "errors": [],
+                    "lane": "current_v11_raw_source_to_expanded_spec",
+                },
+                "summary": {
+                    "statement_requires_review": 0,
+                    "coverage_requires_review": 0,
+                },
+                "validator_identity_errors": {"statement": [], "coverage": []},
+            }
+            receipt = {
+                "plan_identity_sha256": "a" * 64,
+                "final_holistic_audit_surface_sha256": "c" * 64,
+                "all_selected_semantic_review_sha256": "d" * 64,
+                "content_inputs": {},
+                "compiled_inputs": {},
+            }
+            publication = planner.CloseoutPlanReceiptPublication(
+                receipt=receipt,
+                error="",
+                disposition="published",
+                input_identity_sha256="b" * 64,
+            )
+            with (
+                mock.patch.object(
+                    planner,
+                    "_terminal_presentation_closeout_preflight",
+                    return_value={"ready": True, "errors": []},
+                ),
+                mock.patch.object(
+                    planner,
+                    "current_graph_realization_preflight",
+                    return_value={
+                        "state": "not_applicable",
+                        "current": True,
+                        "required": False,
+                    },
+                ),
+                mock.patch.object(
+                    planner,
+                    "effective_closeout_execution_state",
+                    return_value=(None, "", "worker", folder / "state.json"),
+                ),
+                mock.patch.object(
+                    planner,
+                    "_write_current_closeout_plan_receipt",
+                    return_value=publication,
+                ),
+                mock.patch.object(
+                    planner,
+                    "resolved_plan_final_holistic_audit_surface",
+                    return_value={
+                        "review_policy_assurance": {
+                            "schema": 1,
+                            "source_scope": "all_named_theory",
+                            "repeat_final_scope": "main_primary",
+                            "required_final_adversary_count": 2,
+                        }
+                    },
+                ),
+                mock.patch.object(
+                    planner,
+                    "builder_issued_v11_lean_review_graph_carrier",
+                    return_value={"schema": 2},
+                ),
+                mock.patch(
+                    "scripts.current_closeout.semantic_review.current_v11_semantic_review_result",
+                    return_value=mock.sentinel.semantic_review,
+                ),
+                mock.patch(
+                    "scripts.current_closeout.semantic_review.all_selected_semantic_review_material_sha256",
+                    return_value="d" * 64,
+                ),
+                mock.patch.object(
+                    planner,
+                    "build_final_holistic_audit_surface_from_repository",
+                    return_value={
+                        "identity_schema": (
+                            "final-holistic-source-and-lean-semantic-surface-v1"
+                        ),
+                        "paper": "Fixture",
+                    },
+                ),
+                mock.patch.object(
+                    planner,
+                    "paper_status_acceptance_projection",
+                    return_value={"paper": "Fixture", "status": "formalized"},
+                ),
+                mock.patch.object(
+                    planner,
+                    "final_holistic_audit_hard_errors",
+                    return_value=[],
+                ) as holistic_gate,
+                mock.patch.object(
+                    planner,
+                    "_current_closeout_stage_projection",
+                    return_value={},
+                ),
+                mock.patch.object(
+                    planner,
+                    "validate_final_closure_receipt",
+                    side_effect=AssertionError(
+                        "prospective planning repeated terminal validation"
+                    ),
+                ) as validate_receipt,
+                mock.patch.object(
+                    planner,
+                    "final_closure_receipt_error",
+                    create=True,
+                    side_effect=AssertionError(
+                        "prospective planning restored a second receipt probe"
+                    ),
+                ) as receipt_error,
+            ):
+                finalized = planner.finalize_operational_plan(
+                    plan,
+                    folder=folder,
+                    source_coverage_mode="named_theoretical_statements",
+                    execution_path=folder / ".review_traces" / "worker.json",
+                    static_readiness={"ready": True, "blockers": []},
+                    evidence_context=types.SimpleNamespace(
+                        source_semantic_lane=(
+                            integrity.V11_LEAN_CLAIM_GRAPH_EVIDENCE_LANE
+                        ),
+                        status_payload={"status": "formalized"},
+                    ),
+                )
+
+            self.assertFalse(finalized["closeout_complete"])
+            self.assertEqual(finalized["next_action"]["id"], "strict_closeout")
+            self.assertEqual(
+                holistic_gate.call_args.kwargs["review_policy_assurance"]
+                ["required_final_adversary_count"],
+                2,
+            )
+            validate_receipt.assert_not_called()
+            receipt_error.assert_not_called()
+
+    def test_current_v11_plan_publishes_retained_lean_graph_carrier(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            carrier = {
+                "schema": 2,
+                "acceptance_credential": False,
+                "operational_scheduling_only": True,
+                "paper": "Fixture",
+            }
+            plan = {
+                "cache_reusable": True,
+                "compiled_artifacts_ready": True,
+                "semantic_review_authoritative_lane": {
+                    "required": True,
+                    "ready": True,
+                    "errors": [],
+                    "lane": "current_v11_raw_source_to_expanded_spec",
+                },
+                "summary": {
+                    "statement_requires_review": 0,
+                    "coverage_requires_review": 0,
+                },
+                "validator_identity_errors": {"statement": [], "coverage": []},
+            }
+            captured: dict[str, object] = {}
+            publication_inputs = planner.CloseoutPlanPublicationInputs.capture(
+                folder=folder,
+                source_ledger={},
+                compiled_ledger={},
+                strict_transaction_snapshot={},
+                lean_closure_projection={"state": "present"},
+            )
+
+            def publish(
+                candidate: dict[str, object],
+                **kwargs: object,
+            ) -> object:
+                captured["plan"] = dict(candidate)
+                captured["publication_inputs"] = kwargs["publication_inputs"]
+                return planner.CloseoutPlanReceiptPublication(
+                    receipt=None,
+                    error="fixture stop after graph handoff",
+                    disposition="deterministic_input",
+                    input_identity_sha256="a" * 64,
+                )
+
+            with (
+                mock.patch.object(
+                    planner,
+                    "_terminal_presentation_closeout_preflight",
+                    return_value={"ready": True, "errors": []},
+                ),
+                mock.patch.object(
+                    planner,
+                    "current_graph_realization_preflight",
+                    return_value={
+                        "state": "not_applicable",
+                        "current": True,
+                        "required": False,
+                    },
+                ),
+                mock.patch.object(
+                    planner,
+                    "effective_closeout_execution_state",
+                    return_value=(None, "", "worker", folder / "state.json"),
+                ),
+                mock.patch.object(
+                    planner,
+                    "builder_issued_v11_lean_review_graph_carrier",
+                    return_value=carrier,
+                ) as graph_builder,
+                mock.patch(
+                    "scripts.current_closeout.semantic_review.current_v11_semantic_review_result",
+                    return_value=mock.sentinel.semantic_review,
+                ),
+                mock.patch(
+                    "scripts.current_closeout.semantic_review.all_selected_semantic_review_material_sha256",
+                    return_value="d" * 64,
+                ),
+                mock.patch.object(
+                    planner,
+                    "build_final_holistic_audit_surface_from_repository",
+                    return_value={
+                        "identity_schema": (
+                            "final-holistic-source-and-lean-semantic-surface-v1"
+                        ),
+                        "paper": "Fixture",
+                    },
+                ) as surface_builder,
+                mock.patch.object(
+                    planner,
+                    "paper_status_acceptance_projection",
+                    return_value={"paper": "Fixture", "status": "formalized"},
+                ),
+                mock.patch.object(
+                    planner,
+                    "_write_current_closeout_plan_receipt",
+                    side_effect=publish,
+                ),
+            ):
+                result = planner.finalize_operational_plan(
+                    plan,
+                    folder=folder,
+                    source_coverage_mode="named_theoretical_statements",
+                    execution_path=folder / ".review_traces" / "worker.json",
+                    static_readiness={"ready": True, "blockers": []},
+                    publication_inputs=publication_inputs,
+                    evidence_context=types.SimpleNamespace(
+                        source_semantic_lane=(
+                            integrity.V11_LEAN_CLAIM_GRAPH_EVIDENCE_LANE
+                        ),
+                        status_payload={"status": "formalized"},
+                    ),
+                )
+
+            graph_builder.assert_called_once()
+            surface_builder.assert_called_once()
+            published_inputs = captured["publication_inputs"]
+            self.assertIsInstance(
+                published_inputs,
+                planner.CloseoutPlanPublicationInputs,
+            )
+            self.assertEqual(
+                published_inputs.payload["v11_lean_review_graph"],
+                carrier,
+            )
+            self.assertEqual(
+                published_inputs.payload["final_holistic_audit_surface"]["paper"],
+                "Fixture",
+            )
+            self.assertEqual(
+                published_inputs.payload["all_selected_semantic_review_sha256"],
+                "d" * 64,
+            )
+            self.assertFalse(
+                any(
+                    key.startswith("_execution_")
+                    for key in captured["plan"]
+                )
+            )
+            self.assertEqual(result["next_action"]["id"], "replan_current_inputs")
+
+    def test_current_v11_final_schedule_never_consults_legacy_adoption(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            folder.mkdir(parents=True)
+            plan_identity = "a" * 64
+            plan = {
+                "cache_reusable": True,
+                "compiled_artifacts_ready": True,
+                "semantic_review_authoritative_lane": {
+                    "required": True,
+                    "ready": True,
+                    "errors": [],
+                    "lane": "current_v11_raw_source_to_expanded_spec",
+                },
+                "summary": {
+                    "statement_requires_review": 0,
+                    "coverage_requires_review": 0,
+                },
+                "validator_identity_errors": {"statement": [], "coverage": []},
+            }
+            receipt = {
+                "plan_identity_sha256": plan_identity,
+                "final_holistic_audit_surface_sha256": "c" * 64,
+                "all_selected_semantic_review_sha256": "d" * 64,
+                "content_inputs": {},
+                "compiled_inputs": {},
+            }
+            publication = planner.CloseoutPlanReceiptPublication(
+                receipt=receipt,
+                error="",
+                disposition="published",
+                input_identity_sha256="b" * 64,
+            )
+            context = types.SimpleNamespace(
+                source_semantic_lane=integrity.V11_LEAN_CLAIM_GRAPH_EVIDENCE_LANE,
+                status_payload={"status": "formalized"},
+            )
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner,
+                    "_terminal_presentation_closeout_preflight",
+                    return_value={"ready": True, "errors": []},
+                ),
+                mock.patch.object(
+                    planner,
+                    "current_graph_realization_preflight",
+                    return_value={
+                        "state": "current_graph_authority",
+                        "current": True,
+                        "required": True,
+                    },
+                ),
+                mock.patch.object(
+                    planner,
+                    "effective_closeout_execution_state",
+                    return_value=(None, "", "worker", folder / "state.json"),
+                ),
+                mock.patch.object(
+                    planner,
+                    "builder_issued_v11_lean_review_graph_carrier",
+                    return_value={"schema": 2},
+                ),
+                mock.patch(
+                    "scripts.current_closeout.semantic_review.current_v11_semantic_review_result",
+                    return_value=mock.sentinel.semantic_review,
+                ),
+                mock.patch(
+                    "scripts.current_closeout.semantic_review.all_selected_semantic_review_material_sha256",
+                    return_value="d" * 64,
+                ),
+                mock.patch.object(
+                    planner,
+                    "build_final_holistic_audit_surface_from_repository",
+                    return_value={
+                        "identity_schema": (
+                            "final-holistic-source-and-lean-semantic-surface-v1"
+                        ),
+                        "paper": "Fixture",
+                    },
+                ),
+                mock.patch.object(
+                    planner,
+                    "paper_status_acceptance_projection",
+                    return_value={"paper": "Fixture", "status": "formalized"},
+                ),
+                mock.patch.object(
+                    planner,
+                    "_write_current_closeout_plan_receipt",
+                    return_value=publication,
+                ),
+                mock.patch.object(
+                    planner,
+                    "final_holistic_audit_hard_errors",
+                    return_value=[],
+                ),
+                mock.patch.object(
+                    planner,
+                    "_current_closeout_stage_projection",
+                    return_value={},
+                ),
+            ):
+                result = planner.finalize_operational_plan(
+                    plan,
+                    folder=folder,
+                    source_coverage_mode="named_theoretical_statements",
+                    execution_path=folder / ".review_traces" / "worker.json",
+                    static_readiness={"ready": True, "blockers": []},
+                    evidence_context=context,
+                )
+
+            self.assertEqual(result["next_action"]["id"], "strict_closeout")
+            self.assertEqual(
+                result["v11_reducer"],
+                {
+                    "action": "run_strict_closeout",
+                    "worker_disposition": "absent",
+                    "legacy_adoption_consulted": False,
+                    "acceptance_credential": False,
+                },
+            )
+
+    def test_completed_v11_graph_is_persisted_before_later_planner_stops(self) -> None:
+        """A stale ledger cannot discard a graph acquisition that already passed."""
+
+        folder = Path("/tmp") / "papers" / "Fixture"
+        context = types.SimpleNamespace(
+            source_semantic_lane=integrity.V11_LEAN_CLAIM_GRAPH_EVIDENCE_LANE
+        )
+        with (
+            mock.patch.object(
+                graph_preparation, "checkpoint_builder_issued_v11_lean_review_graph"
+            ) as checkpoint,
+        ):
+            error = planner.persist_v11_operational_lean_graph(folder, context)
+
+        self.assertEqual(error, "")
+        checkpoint.assert_called_once_with(
+            folder,
+            context,
+            repository_root=planner.ROOT,
+        )
+
+    def test_main_selects_v11_before_one_prerequisite_graph_stage(self) -> None:
+        """The selected protocol and exact inputs feed one retained graph stage."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            status = {"status": "formalized", "review_surface": {}}
+            source_map = {"semantic_contract_schema": 1, "items": {}}
+            (folder / "status.json").write_text(
+                json.dumps(status), encoding="utf-8"
+            )
+            (folder / "audit" / "paper_statement_map.json").write_text(
+                json.dumps(source_map), encoding="utf-8"
+            )
+            self._write_current_v11_screening(folder / "audit", "Fixture")
+            output = io.StringIO()
+            with (
+                mock.patch.object(
+                    sys, "argv", ["closeout_reuse_plan.py", "--paper", "Fixture"]
+                ),
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(planner, "resolve_paper_folder", return_value=folder),
+                mock.patch.object(planner, "running_execution_summary", return_value=None),
+                mock.patch.object(
+                    planner,
+                    "effective_closeout_execution_state",
+                    return_value=(None, "", "worker", folder / "worker.json"),
+                ),
+                mock.patch.object(
+                    planner, "runtime_engine_registration_error", return_value=""
+                ),
+                mock.patch.object(
+                    planner,
+                    "_paper_closeout_status_preflight",
+                    return_value=("formalized", ""),
+                ),
+                mock.patch.object(
+                    planner,
+                    "static_closeout_readiness",
+                    return_value={"ready": True, "blockers": []},
+                ),
+                mock.patch.object(
+                    planner, "current_canonical_receipt_terminal_plan", return_value=None
+                ),
+                mock.patch.object(
+                    planner,
+                    "current_v11_prerequisite_stage",
+                    return_value=planner.CurrentV11PrerequisiteStage(
+                        {
+                            "id": "repair_current_v11_context",
+                            "state": "ready_now",
+                            "required": True,
+                            "reason": "fixture graph acquisition failed",
+                        },
+                        None,
+                    ),
+                ) as graph_stage,
+                mock.patch.object(
+                    planner, "v11_structural_graph_input_preflight", return_value=None
+                ),
+                mock.patch.object(
+                    planner, "_raw_source_spec_screening_requested", return_value=True
+                ) as selected,
+                mock.patch.object(
+                    planner, "persist_v11_operational_lean_graph", return_value=""
+                ) as persist,
+                contextlib.redirect_stdout(output),
+            ):
+                result = planner.main()
+
+        self.assertEqual(result, 0)
+        selected.assert_called_once_with(folder, status, source_map)
+        graph_stage.assert_called_once_with(
+            folder,
+            status_payload=status,
+            source_map_payload=source_map,
+        )
+        persist.assert_not_called()
+        emitted = json.loads(output.getvalue())
+        self.assertEqual(emitted["next_action"]["id"], "repair_current_v11_context")
+        self.assertFalse(emitted["legacy_planner_consulted"])
+        self.assertIn("fixture graph acquisition failed", emitted["next_action"]["reason"])
+
+    def test_missing_screening_records_import_closure_before_graph_acquisition(
+        self,
+    ) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             folder = root / "papers" / "Fixture"
             audit = folder / "audit"
             audit.mkdir(parents=True)
-            paths = [
-                audit / "statement_match_llm.json",
-                audit / "paper_coverage_llm.json",
-                audit / "paper_statement_map.json",
-                audit / "source_proof_fidelity.json",
-            ]
-            payloads = {path: {} for path in paths}
-            material = {
-                str(path): {"state": "present", "sha256": "a" * 64}
-                for path in paths
-            }
-            advisory_plan = {
-                "acceptance_credential": False,
-                "requires_fresh_strict_closeout": True,
-                "cache_reusable": True,
-                "statement": {
-                    "source-result": {
-                        "reusable": False,
-                        "action": "fresh_human_semantic_review",
-                    }
-                },
-                "coverage": {},
-                "summary": {
-                    "statement_requires_review": 1,
-                    "coverage_requires_review": 0,
-                },
-                "validator_identity_errors": {"statement": [], "coverage": []},
+            status = {"status": "formalized", "review_surface": {}}
+            source_map = {"semantic_contract_schema": 1, "items": {}}
+            (folder / "status.json").write_text(
+                json.dumps(status), encoding="utf-8"
+            )
+            (audit / "paper_statement_map.json").write_text(
+                json.dumps(source_map), encoding="utf-8"
+            )
+            closure_action = {
+                "id": "record_current_lean_import_closure",
+                "state": "ready_now",
+                "required": True,
+                "reason": "record the portable Lean import closure first",
+                "commands": ["record-closure"],
             }
             output = io.StringIO()
             with (
@@ -985,15 +2408,10 @@ class CloseoutReusePlanTests(unittest.TestCase):
                 mock.patch.object(
                     planner,
                     "effective_closeout_execution_state",
-                    return_value=(None, "", "worker", folder / "state.json"),
+                    return_value=(None, "", "worker", folder / "worker.json"),
                 ),
                 mock.patch.object(
                     planner, "runtime_engine_registration_error", return_value=""
-                ),
-                mock.patch.object(
-                    planner,
-                    "static_closeout_readiness",
-                    return_value={"ready": True, "blockers": []},
                 ),
                 mock.patch.object(
                     planner,
@@ -1002,216 +2420,355 @@ class CloseoutReusePlanTests(unittest.TestCase):
                 ),
                 mock.patch.object(
                     planner,
-                    "fast_saved_source_record_preflight",
-                    return_value={"state": "current_raw_judgment_bound"},
+                    "static_closeout_readiness",
+                    return_value={"ready": True, "blockers": []},
+                ),
+                mock.patch.object(
+                    planner, "current_canonical_receipt_terminal_plan", return_value=None
+                ),
+                mock.patch.object(
+                    planner, "v11_structural_graph_input_preflight", return_value=None
+                ),
+                mock.patch.object(
+                    planner, "_raw_source_spec_screening_requested", return_value=True
                 ),
                 mock.patch.object(
                     planner,
-                    "_captured_json_payloads",
-                    return_value=(payloads, material, []),
-                ),
+                    "current_v11_import_closure_action",
+                    return_value=closure_action,
+                ) as closure_stage,
                 mock.patch.object(
                     planner,
-                    "source_coverage_mode_from_map",
-                    return_value=("named_theoretical_statements", ""),
-                ),
-                mock.patch.object(planner, "inventory_from_source_map", return_value={}),
+                    "current_v11_screening_repair_action",
+                    side_effect=AssertionError("screening queue opened before closure"),
+                ) as repair,
                 mock.patch.object(
                     planner,
-                    "canonical_coverage_inventory_projection",
-                    return_value=({}, ""),
-                ),
-                mock.patch.object(
-                    planner,
-                    "_advisory_plan_input_identity",
-                    return_value=("d" * 64, {"_mutation_snapshot": {}}),
-                ),
-                mock.patch.object(
-                    planner, "_read_advisory_plan_cache", return_value=advisory_plan
-                ),
-                mock.patch.object(
-                    planner, "_advisory_input_material_is_current", return_value=True
-                ),
-                mock.patch.object(planner, "cached_review_snapshot") as cached_snapshot,
-                mock.patch.object(
-                    planner, "_write_current_closeout_plan_receipt"
-                ) as write_receipt,
+                    "current_v11_prerequisite_stage",
+                    side_effect=AssertionError("graph stage opened before closure"),
+                ) as graph_stage,
                 contextlib.redirect_stdout(output),
             ):
                 result = planner.main()
 
-            self.assertEqual(result, 0)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(emitted["next_action"]["id"], "inspect_invalid_semantic_items")
-            cached_snapshot.assert_not_called()
+        self.assertEqual(result, 0)
+        closure_stage.assert_called_once_with(folder)
+        repair.assert_not_called()
+        graph_stage.assert_not_called()
+        emitted = json.loads(output.getvalue())
+        self.assertEqual(
+            emitted["next_action"]["id"], "record_current_lean_import_closure"
+        )
+        self.assertEqual(emitted["next_action"]["commands"], ["record-closure"])
+
+    def test_invalid_v11_screening_uses_current_queue_before_graph_reacquisition(
+        self,
+    ) -> None:
+        """A saved-container error uses the prepared graph and exact queue."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            status = {"status": "formalized", "review_surface": {}}
+            source_map = {"semantic_contract_schema": 1, "items": {}}
+            (folder / "status.json").write_text(
+                json.dumps(status), encoding="utf-8"
+            )
+            (audit / "paper_statement_map.json").write_text(
+                json.dumps(source_map), encoding="utf-8"
+            )
+            (audit / "v11_raw_source_spec_screening.json").write_text(
+                json.dumps({"schema": 2, "paper": "Fixture"}),
+                encoding="utf-8",
+            )
+            output = io.StringIO()
+            with (
+                mock.patch.object(
+                    sys, "argv", ["closeout_reuse_plan.py", "--paper", "Fixture"]
+                ),
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(planner, "resolve_paper_folder", return_value=folder),
+                mock.patch.object(planner, "running_execution_summary", return_value=None),
+                mock.patch.object(
+                    planner,
+                    "effective_closeout_execution_state",
+                    return_value=(None, "", "worker", folder / "worker.json"),
+                ),
+                mock.patch.object(
+                    planner, "runtime_engine_registration_error", return_value=""
+                ),
+                mock.patch.object(
+                    planner,
+                    "_paper_closeout_status_preflight",
+                    return_value=("formalized", ""),
+                ),
+                mock.patch.object(
+                    planner,
+                    "static_closeout_readiness",
+                    return_value={"ready": True, "blockers": []},
+                ),
+                mock.patch.object(
+                    planner, "current_canonical_receipt_terminal_plan", return_value=None
+                ),
+                mock.patch.object(
+                    planner,
+                    "current_v11_prerequisite_stage",
+                    side_effect=AssertionError("review graph stage ran"),
+                ) as graph_stage,
+                mock.patch.object(
+                    planner, "v11_structural_graph_input_preflight", return_value=None
+                ),
+                mock.patch.object(
+                    planner, "_raw_source_spec_screening_requested", return_value=True
+                ),
+                mock.patch.object(
+                    planner,
+                    "current_v11_import_closure_action",
+                    return_value=None,
+                ) as closure_stage,
+                mock.patch.object(
+                    planner,
+                    "current_v11_screening_repair_action",
+                    return_value={
+                        "id": "emit_current_v11_source_spec_review_queue",
+                        "state": "ready_now",
+                        "required": True,
+                        "reason": "unsupported schema or paper identity",
+                        "commands": ["emit-current-queue"],
+                    },
+                ) as repair,
+                contextlib.redirect_stdout(output),
+            ):
+                result = planner.main()
+
+        self.assertEqual(result, 0)
+        closure_stage.assert_called_once_with(folder)
+        graph_stage.assert_not_called()
+        repair.assert_called_once()
+        emitted = json.loads(output.getvalue())
+        self.assertEqual(
+            emitted["next_action"]["id"],
+            "emit_current_v11_source_spec_review_queue",
+        )
+        self.assertFalse(emitted["legacy_planner_consulted"])
+        self.assertFalse(emitted["screening_container_preflight"]["current"])
+        self.assertIn(
+            "unsupported schema or paper identity",
+            emitted["next_action"]["reason"],
+        )
+
+    def test_selected_v11_failure_never_enters_legacy_dashboard_planner(self) -> None:
+        """The current protocol reports its own repair boundary and stops."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            status = {"status": "formalized", "review_surface": {}}
+            source_map = {"semantic_contract_schema": 1, "items": {}}
+            (folder / "status.json").write_text(
+                json.dumps(status), encoding="utf-8"
+            )
+            (audit / "paper_statement_map.json").write_text(
+                json.dumps(source_map), encoding="utf-8"
+            )
+            self._write_current_v11_screening(audit, "Fixture")
+            context = types.SimpleNamespace(
+                source_semantic_lane=integrity.V11_LEAN_CLAIM_GRAPH_EVIDENCE_LANE,
+                v11_lean_claim_graph_selected=True,
+            )
+            output = io.StringIO()
+            with contextlib.ExitStack() as stack:
+                stack.enter_context(
+                    mock.patch.object(
+                        sys,
+                        "argv",
+                        ["closeout_reuse_plan.py", "--paper", "Fixture"],
+                    )
+                )
+                stack.enter_context(mock.patch.object(planner, "ROOT", root))
+                stack.enter_context(
+                    mock.patch.object(
+                        planner, "resolve_paper_folder", return_value=folder
+                    )
+                )
+                stack.enter_context(
+                    mock.patch.object(
+                        planner, "running_execution_summary", return_value=None
+                    )
+                )
+                stack.enter_context(
+                    mock.patch.object(
+                        planner,
+                        "effective_closeout_execution_state",
+                        return_value=(None, "", "worker", folder / "worker.json"),
+                    )
+                )
+                for name, value in {
+                    "runtime_engine_registration_error": "",
+                    "_paper_closeout_status_preflight": ("formalized", ""),
+                    "static_closeout_readiness": {"ready": True, "blockers": []},
+                    "current_canonical_receipt_terminal_plan": None,
+                    "current_v11_prerequisite_stage": (
+                        planner.CurrentV11PrerequisiteStage(None, context)
+                    ),
+                    "v11_structural_graph_input_preflight": None,
+                    "_raw_source_spec_screening_requested": True,
+                    "source_coverage_mode_from_map": (
+                        "named_theoretical_statements",
+                        "",
+                    ),
+                }.items():
+                    stack.enter_context(
+                        mock.patch.object(planner, name, return_value=value)
+                    )
+                migration = stack.enter_context(
+                    mock.patch.object(
+                        planner,
+                        "current_protocol_migration_plan",
+                        side_effect=AssertionError(
+                            "selected v11 planning entered the migration path"
+                        ),
+                    )
+                )
+                operation_order: list[str] = []
+                live_plan = stack.enter_context(
+                    mock.patch.object(
+                        planner,
+                        "current_v11_live_lean_operational_plan",
+                        side_effect=lambda *args, **kwargs: (
+                            operation_order.append("audit")
+                            or (
+                                None,
+                                ["library prerequisite judgment is stale"],
+                            )
+                        ),
+                    )
+                )
+                persist = stack.enter_context(
+                    mock.patch.object(
+                        planner,
+                        "persist_v11_operational_lean_graph",
+                        side_effect=lambda *args, **kwargs: (
+                            operation_order.append("persist") or ""
+                        ),
+                    )
+                )
+                stack.enter_context(
+                    mock.patch.object(
+                        planner,
+                        "current_v11_raw_source_spec_screening_findings",
+                        return_value=[],
+                    )
+                )
+                stack.enter_context(contextlib.redirect_stdout(output))
+                result = planner.main()
+
+        self.assertEqual(result, 0)
+        emitted = json.loads(output.getvalue())
+        self.assertEqual(emitted["current_protocol"], "v11_graph_native")
+        self.assertFalse(emitted["legacy_planner_consulted"])
+        self.assertEqual(emitted["next_action"]["id"], "repair_current_v11_audit")
+        self.assertEqual(
+            emitted["invalidation_reasons"],
+            ["library prerequisite judgment is stale"],
+        )
+        migration.assert_not_called()
+        live_plan.assert_called_once()
+        persist.assert_called_once_with(folder, context)
+        self.assertEqual(operation_order, ["audit", "persist"])
+
+    def test_v11_graph_persistence_failure_is_visible_but_nonaccepting(self) -> None:
+        folder = Path("/tmp") / "papers" / "Fixture"
+        context = types.SimpleNamespace(
+            source_semantic_lane=integrity.V11_LEAN_CLAIM_GRAPH_EVIDENCE_LANE
+        )
+        with mock.patch.object(
+            graph_preparation,
+            "checkpoint_builder_issued_v11_lean_review_graph",
+            side_effect=ValueError("fixture checkpoint failure"),
+        ):
+            error = planner.persist_v11_operational_lean_graph(folder, context)
+
+        self.assertEqual(error, "fixture checkpoint failure")
+
+    def test_current_v11_plan_stops_instead_of_repeating_missing_graph(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            plan = {
+                "cache_reusable": True,
+                "compiled_artifacts_ready": True,
+                "semantic_review_authoritative_lane": {
+                    "required": True,
+                    "ready": True,
+                    "errors": [],
+                    "lane": "current_v11_raw_source_to_expanded_spec",
+                },
+                "summary": {
+                    "statement_requires_review": 0,
+                    "coverage_requires_review": 0,
+                },
+                "validator_identity_errors": {"statement": [], "coverage": []},
+            }
+            with (
+                mock.patch.object(
+                    planner,
+                    "_terminal_presentation_closeout_preflight",
+                    return_value={"ready": True, "errors": []},
+                ),
+                mock.patch.object(
+                    planner,
+                    "current_graph_realization_preflight",
+                    return_value={
+                        "state": "not_applicable",
+                        "current": True,
+                        "required": False,
+                    },
+                ),
+                mock.patch.object(
+                    planner,
+                    "effective_closeout_execution_state",
+                    return_value=(None, "", "worker", folder / "state.json"),
+                ),
+                mock.patch.object(
+                    planner,
+                    "builder_issued_v11_lean_review_graph_carrier",
+                    side_effect=ValueError("fixture missing retained graph"),
+                ),
+                mock.patch.object(
+                    planner,
+                    "_write_current_closeout_plan_receipt",
+                ) as write_receipt,
+            ):
+                result = planner.finalize_operational_plan(
+                    plan,
+                    folder=folder,
+                    source_coverage_mode="named_theoretical_statements",
+                    execution_path=folder / ".review_traces" / "worker.json",
+                    static_readiness={"ready": True, "blockers": []},
+                    evidence_context=types.SimpleNamespace(
+                        source_semantic_lane=(
+                            integrity.V11_LEAN_CLAIM_GRAPH_EVIDENCE_LANE
+                        ),
+                        status_payload={"status": "formalized"},
+                    ),
+                )
+
+            self.assertEqual(
+                result["next_action"]["id"],
+                "resolve_current_v11_lean_review_graph",
+            )
+            self.assertIn("fixture missing retained graph", result["next_action"]["reason"])
+            self.assertEqual(result["plan_identity_sha256"], "")
             write_receipt.assert_not_called()
 
-    def test_invalid_advisory_cache_skips_strict_snapshot_validation(self) -> None:
-        """Legacy cached worklists do not reopen their strict input bundle."""
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            trace = folder / ".review_traces"
-            trace.mkdir(parents=True)
-            cache_path = trace / planner.ADVISORY_PLAN_CACHE_FILE
-            cache_path.write_text(
-                json.dumps(
-                    {
-                        "schema": planner.ADVISORY_PLAN_CACHE_SCHEMA,
-                        "acceptance_credential": False,
-                        "decision_contract": planner.ADVISORY_PLAN_DECISION_CONTRACT,
-                        "input_identity_sha256": "a" * 64,
-                        "semantic_plan": {
-                            "acceptance_credential": False,
-                            "requires_fresh_strict_closeout": True,
-                            "statement": {
-                                "unresolved-item": {"reusable": False}
-                            },
-                            "coverage": {},
-                            "summary": {
-                                "statement_requires_review": 1,
-                                "coverage_requires_review": 0,
-                            },
-                            "validator_identity_errors": {
-                                "statement": [],
-                                "coverage": [],
-                            },
-                        },
-                        # This intentionally cannot validate.  A semantic
-                        # worklist must return before it becomes relevant.
-                        "strict_transaction_content_snapshot": None,
-                    }
-                ),
-                encoding="utf-8",
-            )
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "validate_content_input_snapshot",
-                    side_effect=AssertionError("strict snapshot must not be read"),
-                ) as strict_snapshot,
-            ):
-                loaded = planner._read_advisory_plan_cache(folder, "a" * 64)
 
-            self.assertIsNotNone(loaded)
-            assert loaded is not None
-            self.assertTrue(loaded["cache_reusable"])
-            self.assertTrue(
-                loaded["advisory_plan_cache"]
-                ["strict_input_validation_deferred_for_semantic_repair"]
-            )
-            strict_snapshot.assert_not_called()
 
-    def test_malformed_advisory_semantic_plan_is_not_an_empty_worklist(self) -> None:
-        """A truncated cache cannot default missing review items to zero."""
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            trace = folder / ".review_traces"
-            trace.mkdir(parents=True)
-            cache_path = trace / planner.ADVISORY_PLAN_CACHE_FILE
-            cache_path.write_text(
-                json.dumps(
-                    {
-                        "schema": planner.ADVISORY_PLAN_CACHE_SCHEMA,
-                        "acceptance_credential": False,
-                        "decision_contract": planner.ADVISORY_PLAN_DECISION_CONTRACT,
-                        "input_identity_sha256": "a" * 64,
-                        "semantic_plan": {
-                            "acceptance_credential": False,
-                            "requires_fresh_strict_closeout": True,
-                            "statement": {
-                                "opaque-cache-entry": {"reusable": False}
-                            },
-                            "coverage": {},
-                            # This lies about the structural worklist.  It
-                            # must be a cache miss before strict state is read.
-                            "summary": {
-                                "statement_requires_review": 0,
-                                "coverage_requires_review": 0,
-                            },
-                            "validator_identity_errors": {
-                                "statement": [],
-                                "coverage": [],
-                            },
-                        },
-                        "strict_transaction_content_snapshot": None,
-                    }
-                ),
-                encoding="utf-8",
-            )
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "validate_content_input_snapshot",
-                    side_effect=AssertionError("strict snapshot must not be read"),
-                ) as strict_snapshot,
-            ):
-                loaded = planner._read_advisory_plan_cache(folder, "a" * 64)
-
-            self.assertIsNone(loaded)
-            strict_snapshot.assert_not_called()
-
-    def test_prebuild_advisory_cache_skips_strict_snapshot_validation(self) -> None:
-        """A cached pre-build plan must rebuild before it can validate strict state."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            trace = folder / ".review_traces"
-            trace.mkdir(parents=True)
-            cache_path = trace / planner.ADVISORY_PLAN_CACHE_FILE
-            cache_path.write_text(
-                json.dumps(
-                    {
-                        "schema": planner.ADVISORY_PLAN_CACHE_SCHEMA,
-                        "acceptance_credential": False,
-                        "decision_contract": planner.ADVISORY_PLAN_DECISION_CONTRACT,
-                        "input_identity_sha256": "a" * 64,
-                        "semantic_plan": {
-                            "acceptance_credential": False,
-                            "requires_fresh_strict_closeout": True,
-                            "compiled_artifacts_ready": False,
-                            "statement": {},
-                            "coverage": {},
-                            "summary": {
-                                "statement_requires_review": 0,
-                                "coverage_requires_review": 0,
-                            },
-                            "validator_identity_errors": {
-                                "statement": [],
-                                "coverage": [],
-                            },
-                        },
-                        # A pre-build cache must not need a historical strict
-                        # snapshot merely to issue its build/replan action.
-                        "strict_transaction_content_snapshot": None,
-                    }
-                ),
-                encoding="utf-8",
-            )
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "validate_content_input_snapshot",
-                    side_effect=AssertionError("strict snapshot must not be read"),
-                ) as strict_snapshot,
-            ):
-                loaded = planner._read_advisory_plan_cache(folder, "a" * 64)
-
-            self.assertIsNotNone(loaded)
-            assert loaded is not None
-            self.assertTrue(loaded["cache_reusable"])
-            self.assertTrue(
-                loaded["advisory_plan_cache"]
-                ["strict_input_validation_deferred_for_compiled_rebuild"]
-            )
-            strict_snapshot.assert_not_called()
 
     def test_recovery_error_stops_before_static_or_manifest_planning(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -1240,7 +2797,9 @@ class CloseoutReusePlanTests(unittest.TestCase):
                     ),
                 ),
                 mock.patch.object(planner, "static_closeout_readiness") as readiness,
-                mock.patch.object(planner, "cached_review_snapshot") as cached,
+                mock.patch.object(
+                    planner, "current_protocol_migration_plan"
+                ) as migration,
                 contextlib.redirect_stdout(output),
             ):
                 result = planner.main()
@@ -1249,7 +2808,7 @@ class CloseoutReusePlanTests(unittest.TestCase):
             self.assertTrue(emitted["expensive_planning_deferred"])
             self.assertEqual(emitted["next_action"]["id"], "inspect_closeout_recovery")
             readiness.assert_not_called()
-            cached.assert_not_called()
+            migration.assert_not_called()
 
     def test_unregistered_engine_stops_before_static_or_manifest_planning(
         self,
@@ -1279,7 +2838,9 @@ class CloseoutReusePlanTests(unittest.TestCase):
                     return_value="engine source differs from clean HEAD",
                 ),
                 mock.patch.object(planner, "static_closeout_readiness") as readiness,
-                mock.patch.object(planner, "cached_review_snapshot") as cached,
+                mock.patch.object(
+                    planner, "current_protocol_migration_plan"
+                ) as migration,
                 contextlib.redirect_stdout(output),
             ):
                 result = planner.main()
@@ -1290,10 +2851,407 @@ class CloseoutReusePlanTests(unittest.TestCase):
                 emitted["next_action"]["id"], "inspect_engine_registration"
             )
             readiness.assert_not_called()
-            cached.assert_not_called()
+            migration.assert_not_called()
+
+    def test_current_canonical_receipt_stops_before_semantic_replanning(self) -> None:
+        """A closed paper validates its receipt and has no planner work."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            folder.mkdir(parents=True)
+            receipt_path = folder / "FINAL_CLOSURE_RECEIPT.md"
+            receipt_path.write_text("current canonical receipt\n", encoding="utf-8")
+            closure = types.SimpleNamespace(
+                path=receipt_path,
+                payload={
+                    "evidence_lane": "raw-source-record",
+                    "closed_at": "2026-08-23",
+                },
+            )
+            readiness_payload = {"ready": True, "blockers": []}
+            output = io.StringIO()
+            with (
+                mock.patch.object(
+                    sys, "argv", ["closeout_reuse_plan.py", "--paper", "Fixture"]
+                ),
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(planner, "resolve_paper_folder", return_value=folder),
+                mock.patch.object(planner, "running_execution_summary", return_value=None),
+                mock.patch.object(
+                    planner,
+                    "effective_closeout_execution_state",
+                    return_value=(None, "", "worker", folder / "state.json"),
+                ),
+                mock.patch.object(
+                    planner, "runtime_engine_registration_error", return_value=""
+                ) as engine_preflight,
+                mock.patch.object(
+                    planner,
+                    "_paper_closeout_status_preflight",
+                    return_value=("formalized", ""),
+                ),
+                mock.patch.object(
+                    planner, "static_closeout_readiness", return_value=readiness_payload
+                ) as readiness,
+                mock.patch.object(
+                    planner, "validate_final_closure_receipt", return_value=closure
+                ) as validate_receipt,
+                mock.patch.object(
+                    planner, "load_final_closure_receipt", return_value=closure
+                ),
+                mock.patch.object(
+                    planner, "_terminal_presentation_closeout_preflight",
+                    return_value={"ready": True, "errors": []},
+                ),
+                mock.patch.object(
+                    planner, "current_protocol_migration_plan"
+                ) as migration,
+                contextlib.redirect_stdout(output),
+            ):
+                result = planner.main()
+
+            self.assertEqual(result, 0)
+            emitted = json.loads(output.getvalue())
+            self.assertTrue(emitted["canonical_receipt_current"])
+            self.assertTrue(emitted["closeout_complete"])
+            self.assertFalse(emitted["requires_fresh_strict_closeout"])
+            self.assertFalse(
+                emitted["terminal_receipt_fast_path"]
+                ["semantic_planner_reconstructed"]
+            )
+            self.assertIsNone(emitted["next_action"])
+            self.assertEqual(emitted["actions"], [])
+            validate_receipt.assert_called_once_with(root, "Fixture")
+            engine_preflight.assert_not_called()
+            readiness.assert_not_called()
+            migration.assert_not_called()
+
+    def test_current_receipt_preserves_acceptance_but_schedules_missing_documents(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            folder.mkdir(parents=True)
+            receipt = folder / "FINAL_CLOSURE_RECEIPT.md"
+            receipt.write_text("accepted\n", encoding="utf-8")
+            (folder / "status.json").write_text('{"status":"formalized"}', encoding="utf-8")
+            closure = types.SimpleNamespace(path=receipt, payload={"schema": 6})
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner, "load_final_closure_receipt", return_value=closure
+                ),
+                mock.patch.object(planner, "validate_final_closure_receipt", return_value=closure),
+                mock.patch.object(
+                    planner,
+                    "current_document_semantic_basis_sha256",
+                    return_value="d" * 64,
+                ) as semantic_basis,
+                mock.patch.object(
+                    planner, "_terminal_presentation_closeout_preflight",
+                    return_value={"ready": False, "errors": ["missing clarification memo"]},
+                ) as documents,
+                mock.patch.object(planner, "static_closeout_readiness") as semantic_planner,
+            ):
+                plan = planner.current_canonical_receipt_terminal_plan(folder)
+            self.assertEqual(semantic_basis.call_count, 2)
+            semantic_basis.assert_has_calls(
+                [
+                    mock.call(folder, accepted_graph_only=True),
+                    mock.call(folder, accepted_graph_only=True),
+                ]
+            )
+            documents.assert_called_once_with(
+                folder,
+                {"status": "formalized"},
+                all_selected_semantic_review_sha256="d" * 64,
+            )
+            semantic_planner.assert_not_called()
+            self.assertTrue(plan["canonical_receipt_current"])
+            self.assertFalse(plan["closeout_complete"])
+            self.assertFalse(plan["requires_fresh_strict_closeout"])
+            self.assertFalse(plan["readiness_matrix"]["ready"])
+            action = plan["next_action"]
+            self.assertEqual(action["id"], "complete_terminal_closeout_documents")
+            self.assertTrue(action["preserves_current_lean_graph"])
+            self.assertTrue(action["preserves_current_semantic_review"])
+            self.assertEqual(plan["actions"], [action])
+
+    def test_accepted_fast_path_compares_current_document_semantic_basis(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            docs = folder / "docs"
+            audit = folder / "audit"
+            docs.mkdir(parents=True)
+            audit.mkdir(parents=True)
+            receipt = folder / "FINAL_CLOSURE_RECEIPT.md"
+            receipt.write_text("accepted\n", encoding="utf-8")
+            (folder / "status.json").write_text(
+                '{"status":"formalized"}', encoding="utf-8"
+            )
+            (folder / "FINAL_VALIDATION_REPORT.md").write_text(
+                "## 9. DAG Audit\n"
+                "The rendered PDF was visually inspected for readability and overlap.\n",
+                encoding="utf-8",
+            )
+            for path in (
+                docs / "DependencyDAG.tex",
+                docs / "HUMAN_REVIEW_PACKET.tex",
+            ):
+                path.write_text("reader artifact\n", encoding="utf-8")
+            for path in (
+                docs / "DependencyDAG.pdf",
+                docs / "HUMAN_REVIEW_PACKET.pdf",
+            ):
+                path.write_bytes(b"%PDF-reader\n")
+            (audit / "human_review_packet_lean_cache.json").write_text(
+                "{}\n", encoding="utf-8"
+            )
+            closure = types.SimpleNamespace(path=receipt, payload={"schema": 6})
+            recorded_basis = "d" * 64
+
+            def coverage_errors(_folder, *, expected_all_selected_semantic_review_sha256):
+                if expected_all_selected_semantic_review_sha256 == recorded_basis:
+                    return ()
+                return (
+                    "report clarification inventory is stale for the current "
+                    "all-selected semantic review",
+                )
+
+            for current_basis, expected_complete in (
+                (recorded_basis, True),
+                ("e" * 64, False),
+            ):
+                with (
+                    self.subTest(current_basis=current_basis),
+                    mock.patch.object(planner, "ROOT", root),
+                    mock.patch.object(
+                        planner, "load_final_closure_receipt", return_value=closure
+                    ),
+                    mock.patch.object(
+                        planner, "validate_final_closure_receipt", return_value=closure
+                    ),
+                    mock.patch.object(
+                        planner,
+                        "current_document_semantic_basis_sha256",
+                        return_value=current_basis,
+                    ),
+                    mock.patch.object(
+                        planner, "report_status_alignment_errors", return_value=[]
+                    ),
+                    mock.patch(
+                        "scripts.closeout_document_gates.final_report_section_errors",
+                        return_value=(),
+                    ),
+                    mock.patch(
+                        "scripts.closeout_document_gates."
+                        "reader_facing_result_label_errors",
+                        return_value=(),
+                    ),
+                    mock.patch(
+                        "scripts.closeout_document_gates."
+                        "current_approved_review_context_report_errors",
+                        return_value=(),
+                    ),
+                    mock.patch(
+                        "scripts.closeout_document_gates.report_memo_coverage_errors",
+                        side_effect=coverage_errors,
+                    ) as coverage,
+                    mock.patch(
+                        "scripts.closeout_document_gates."
+                        "current_human_review_packet_errors",
+                        return_value=(),
+                    ),
+                    mock.patch.object(
+                        lean_review_graph,
+                        "build_v11_lean_review_graph_material",
+                        side_effect=AssertionError("native Lean graph acquisition attempted"),
+                    ) as graph_builder,
+                    mock.patch(
+                        "scripts.obligation_closure_credential."
+                        "revalidate_terminal_lean_semantics",
+                        side_effect=AssertionError("native Lean recovery attempted"),
+                    ) as recovery,
+                ):
+                    plan = planner.current_canonical_receipt_terminal_plan(folder)
+
+                self.assertEqual(plan["closeout_complete"], expected_complete)
+                self.assertEqual(
+                    plan["readiness_matrix"]["ready"], expected_complete
+                )
+                coverage.assert_called_once_with(
+                    folder,
+                    expected_all_selected_semantic_review_sha256=current_basis,
+                )
+                graph_builder.assert_not_called()
+                recovery.assert_not_called()
+                if expected_complete:
+                    self.assertIsNone(plan["next_action"])
+                else:
+                    self.assertEqual(
+                        plan["next_action"]["id"],
+                        "complete_terminal_closeout_documents",
+                    )
+
+    def test_stale_canonical_receipt_falls_through_to_normal_planning(self) -> None:
+        """Receipt errors are never converted into terminal acceptance."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            folder.mkdir(parents=True)
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner,
+                    "load_final_closure_receipt",
+                    return_value=types.SimpleNamespace(
+                        path=folder / "FINAL_CLOSURE_RECEIPT.md",
+                        payload={"schema": 4},
+                    ),
+                ),
+                mock.patch.object(
+                    planner,
+                    "validate_final_closure_receipt",
+                    side_effect=planner.FinalClosureReceiptError("stale map"),
+                ),
+            ):
+                terminal = planner.current_canonical_receipt_terminal_plan(
+                    folder,
+                )
+            self.assertIsNone(terminal)
+
+    def test_accepted_fast_path_stale_exact_closure_cannot_enter_recovery(
+        self,
+    ) -> None:
+        folder = Path("/tmp/papers/Fixture")
+        candidate = types.SimpleNamespace(
+            path=folder / "FINAL_CLOSURE_RECEIPT.md",
+            payload={"schema": 6},
+        )
+        with (
+            mock.patch.object(
+                planner,
+                "load_final_closure_receipt",
+                return_value=candidate,
+            ),
+            mock.patch.object(
+                planner,
+                "current_document_semantic_basis_sha256",
+                side_effect=ValueError("build leaf Lean import closure is stale"),
+            ) as semantic_basis,
+            mock.patch.object(
+                planner,
+                "validate_final_closure_receipt",
+                side_effect=AssertionError("receipt recovery path was reached"),
+            ) as validate_receipt,
+            mock.patch(
+                "scripts.obligation_closure_credential."
+                "revalidate_terminal_lean_semantics",
+                side_effect=AssertionError("native Lean recovery was reached"),
+            ) as recovery,
+        ):
+            result = planner.current_canonical_receipt_terminal_plan(folder)
+
+        self.assertIsNone(result)
+        semantic_basis.assert_called_once_with(
+            folder,
+            accepted_graph_only=True,
+        )
+        validate_receipt.assert_not_called()
+        recovery.assert_not_called()
+
+    def test_receipt_schema_change_cannot_bypass_document_basis(self) -> None:
+        folder = Path("/tmp/papers/Fixture")
+        path = folder / "FINAL_CLOSURE_RECEIPT.md"
+        candidate = types.SimpleNamespace(path=path, payload={"schema": 4})
+        validated = types.SimpleNamespace(path=path, payload={"schema": 6})
+        with (
+            mock.patch.object(
+                planner,
+                "load_final_closure_receipt",
+                return_value=candidate,
+            ),
+            mock.patch.object(
+                planner,
+                "validate_final_closure_receipt",
+                return_value=validated,
+            ),
+            mock.patch.object(
+                planner,
+                "current_document_semantic_basis_sha256",
+                side_effect=AssertionError("schema-4 candidate requested graph basis"),
+            ) as semantic_basis,
+            mock.patch.object(
+                planner,
+                "_terminal_presentation_closeout_preflight",
+                side_effect=AssertionError("changed receipt reached document fast path"),
+            ) as documents,
+        ):
+            result = planner.current_canonical_receipt_terminal_plan(folder)
+
+        self.assertIsNone(result)
+        semantic_basis.assert_not_called()
+        documents.assert_not_called()
+
+    def test_semantic_basis_change_during_document_check_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            path = folder / "FINAL_CLOSURE_RECEIPT.md"
+            closure = types.SimpleNamespace(path=path, payload={"schema": 6})
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("accepted\n", encoding="utf-8")
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner,
+                    "load_final_closure_receipt",
+                    return_value=closure,
+                ),
+                mock.patch.object(
+                    planner,
+                    "validate_final_closure_receipt",
+                    return_value=closure,
+                ),
+                mock.patch.object(
+                    planner,
+                    "current_document_semantic_basis_sha256",
+                    side_effect=("d" * 64, "e" * 64),
+                ) as semantic_basis,
+                mock.patch.object(
+                    planner,
+                    "_terminal_presentation_closeout_preflight",
+                    return_value={"ready": True, "errors": []},
+                ) as documents,
+                mock.patch.object(
+                    lean_review_graph,
+                    "build_v11_lean_review_graph_material",
+                    side_effect=AssertionError(
+                        "native Lean graph acquisition attempted"
+                    ),
+                ) as graph_builder,
+                mock.patch(
+                    "scripts.obligation_closure_credential."
+                    "revalidate_terminal_lean_semantics",
+                    side_effect=AssertionError("native Lean recovery attempted"),
+                ) as recovery,
+            ):
+                result = planner.current_canonical_receipt_terminal_plan(folder)
+
+            self.assertIsNone(result)
+            self.assertEqual(semantic_basis.call_count, 2)
+            documents.assert_called_once_with(
+                folder,
+                None,
+                all_selected_semantic_review_sha256="d" * 64,
+            )
+            graph_builder.assert_not_called()
+            recovery.assert_not_called()
 
     def test_ineligible_status_stops_before_exact_intake_readiness(self) -> None:
-        """Partial papers do not pay a source-artifact scan before the stop."""
+        """An unclosed conditional disposition stops before an intake scan."""
 
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -1320,9 +3278,8 @@ class CloseoutReusePlanTests(unittest.TestCase):
                 mock.patch.object(
                     planner,
                     "_paper_closeout_status_preflight",
-                    return_value=("partially formalized", "not eligible"),
+                    return_value=("conditional", "not eligible"),
                 ),
-                mock.patch.object(planner, "fast_saved_source_record_preflight") as raw,
                 contextlib.redirect_stdout(output),
             ):
                 result = planner.main()
@@ -1332,8 +3289,11 @@ class CloseoutReusePlanTests(unittest.TestCase):
             self.assertEqual(
                 emitted["next_action"]["id"], "resolve_paper_closeout_eligibility"
             )
-            readiness.assert_called_once_with(folder, include_intake=False)
-            raw.assert_not_called()
+            readiness.assert_called_once_with(
+                folder,
+                include_intake=False,
+                require_terminal_documents=False,
+            )
 
     def test_diagnose_reports_static_readiness_for_unregistered_engine(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -1364,7 +3324,9 @@ class CloseoutReusePlanTests(unittest.TestCase):
                 mock.patch.object(
                     planner, "static_closeout_readiness", return_value=readiness_payload
                 ) as readiness,
-                mock.patch.object(planner, "cached_review_snapshot") as cached,
+                mock.patch.object(
+                    planner, "current_protocol_migration_plan"
+                ) as migration,
                 contextlib.redirect_stdout(output),
             ):
                 result = planner.main()
@@ -1375,8 +3337,12 @@ class CloseoutReusePlanTests(unittest.TestCase):
                 emitted["next_action"]["id"], "commit_registered_engine_transition"
             )
             self.assertEqual(emitted["readiness_matrix"], readiness_payload)
-            readiness.assert_called_once_with(folder, include_intake=False)
-            cached.assert_not_called()
+            readiness.assert_called_once_with(
+                folder,
+                include_intake=False,
+                require_terminal_documents=False,
+            )
+            migration.assert_not_called()
 
     def test_diagnose_aggregates_engine_and_status_blockers(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -1411,8 +3377,9 @@ class CloseoutReusePlanTests(unittest.TestCase):
                     "static_closeout_readiness",
                     return_value={"ready": True, "blockers": []},
                 ),
-                mock.patch.object(planner, "fast_saved_source_record_preflight") as raw,
-                mock.patch.object(planner, "cached_review_snapshot") as cached,
+                mock.patch.object(
+                    planner, "current_protocol_migration_plan"
+                ) as migration,
                 contextlib.redirect_stdout(output),
             ):
                 result = planner.main()
@@ -1425,11 +3392,9 @@ class CloseoutReusePlanTests(unittest.TestCase):
                 [action["id"] for action in emitted["actions"]],
                 [
                     "commit_registered_engine_transition",
-                    "resolve_paper_closeout_eligibility",
                 ],
             )
-            raw.assert_not_called()
-            cached.assert_not_called()
+            migration.assert_not_called()
 
     def test_diagnose_keeps_execution_disposition_and_static_blockers(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -1473,8 +3438,9 @@ class CloseoutReusePlanTests(unittest.TestCase):
                     "static_closeout_readiness",
                     return_value={"ready": True, "blockers": []},
                 ),
-                mock.patch.object(planner, "fast_saved_source_record_preflight") as raw,
-                mock.patch.object(planner, "cached_review_snapshot") as cached,
+                mock.patch.object(
+                    planner, "current_protocol_migration_plan"
+                ) as migration,
                 contextlib.redirect_stdout(output),
             ):
                 result = planner.main()
@@ -1489,11 +3455,9 @@ class CloseoutReusePlanTests(unittest.TestCase):
                     "inspect_active_closeout",
                     "inspect_closeout_recovery",
                     "commit_registered_engine_transition",
-                    "resolve_paper_closeout_eligibility",
                 ],
             )
-            raw.assert_not_called()
-            cached.assert_not_called()
+            migration.assert_not_called()
 
     def test_diagnose_never_falls_through_to_semantic_planning(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -1525,8 +3489,9 @@ class CloseoutReusePlanTests(unittest.TestCase):
                     "_paper_closeout_status_preflight",
                     return_value=("formalized", ""),
                 ),
-                mock.patch.object(planner, "fast_saved_source_record_preflight") as raw,
-                mock.patch.object(planner, "cached_review_snapshot") as cached,
+                mock.patch.object(
+                    planner, "current_protocol_migration_plan"
+                ) as migration,
                 contextlib.redirect_stdout(output),
             ):
                 result = planner.main()
@@ -1534,1421 +3499,75 @@ class CloseoutReusePlanTests(unittest.TestCase):
             emitted = json.loads(output.getvalue())
             self.assertTrue(emitted["diagnostic_only"])
             self.assertEqual(emitted["next_action"]["id"], "run_frozen_closeout_planner")
-            readiness.assert_called_once_with(folder, include_intake=False)
-            raw.assert_not_called()
-            cached.assert_not_called()
-
-    def test_current_v11_lane_suppresses_legacy_source_record_judgment_rebind(
-        self,
-    ) -> None:
-        """A direct raw-source/Spec ledger replaces the historical v10 sidecar."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            (folder / "status.json").write_text(
-                json.dumps({"status": "formalized"}), encoding="utf-8"
+            readiness.assert_called_once_with(
+                folder,
+                include_intake=False,
+                require_terminal_documents=False,
             )
-            (audit / "source_record_audit.json").write_text(
-                "{}\n", encoding="utf-8"
-            )
-            (audit / "source_record_match_llm.json").write_text(
-                json.dumps({"source_record_audit_sha256": "b" * 64}),
-                encoding="utf-8",
-            )
-            helper = root / "fast_saved_identity_helper.py"
-            helper.write_text("# fixture\n", encoding="utf-8")
-            proc = types.SimpleNamespace(
-                returncode=0,
-                stdout=json.dumps(
-                    {
-                        "current": True,
-                        "source_record_audit_sha256": "a" * 64,
-                    }
-                ),
-                stderr="",
-            )
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
-                ),
-                mock.patch.object(planner.subprocess, "run", return_value=proc),
-                mock.patch(
-                    "scripts.audit_evidence_integrity.v11_direct_semantic_review_state",
-                    return_value=(True, ""),
-                ) as v11_state,
-            ):
-                preflight = planner.fast_saved_source_record_preflight(folder)
+            migration.assert_not_called()
 
-        self.assertEqual(preflight["state"], "current_v11_direct_semantic_review")
-        self.assertEqual(preflight["v11_direct_semantic_review"], "current")
-        self.assertIsNone(planner.source_record_preflight_action("Fixture", preflight))
-        v11_state.assert_called_once_with(folder, "formalized")
 
-    def test_source_record_preflight_actions_are_dependency_ordered(self) -> None:
-        self.assertIsNone(
-            planner.source_record_preflight_action(
-                "Fixture", {"state": "current_v11_direct_semantic_review"}
-            )
-        )
-        current_delta = planner.source_record_preflight_action(
-            "Fixture",
-            {"state": "current_raw_judgment_delta", "reason": "different digest"},
-        )
-        assert current_delta is not None
-        self.assertEqual(current_delta["id"], "review_current_source_record_delta")
 
-        rebuild = planner.source_record_preflight_action(
-            "Fixture",
-            {
-                "state": "current_raw_judgment_rebuild_required",
-                "reason": "judgment sidecar is malformed",
-            },
-        )
-        assert rebuild is not None
-        self.assertEqual(rebuild["id"], "rebuild_current_source_record_judgments")
-        self.assertNotIn("argv", rebuild)
 
-        semantic_repair = planner.source_record_preflight_action(
-            "Fixture",
-            {
-                "state": "current_raw_semantic_repair_required",
-                "reason": "current generated semantic surface is invalid",
-            },
-        )
-        assert semantic_repair is not None
-        self.assertEqual(
-            semantic_repair["id"], "repair_current_source_record_semantic_surface"
-        )
-        self.assertNotIn("argv", semantic_repair)
 
-        with (
-            mock.patch.object(
-                planner, "closeout_wave_engine_action", return_value=None
-            ),
-            mock.patch.object(
-                planner, "source_record_reissue_lock_action", return_value=None
-            ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def test_current_planner_exposes_no_legacy_raw_producer_route(self) -> None:
+        retired = (
+            "fast_saved_source_record_preflight",
+            "source_record_preflight_action",
+            "execute_freeze_then_raw_reissue",
+            "reset_closeout_wave_engine_snapshot_for_paper",
+            "raw_reissue_operation_status",
+            "acknowledge_stale_raw_reissue_operation",
+        )
+        for name in retired:
+            with self.subTest(name=name):
+                self.assertFalse(hasattr(planner, name))
+
+        root = Path(__file__).resolve().parents[2]
+        process = subprocess.run(
+            [sys.executable, "scripts/closeout_reuse_plan.py", "--help"],
+            cwd=root,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        self.assertEqual(process.returncode, 0, process.stderr)
+        for option in (
+            "--execute-freeze-raw-reissue",
+            "--reset-closeout-wave-engine-snapshot",
+            "--raw-reissue-status",
+            "--acknowledge-stale-raw-reissue-operation",
         ):
-            stale_raw = planner.source_record_preflight_action(
-                "Fixture",
-                {"state": "raw_reissue_required", "reason": "source changed"},
-            )
-        assert stale_raw is not None
-        self.assertEqual(stale_raw["id"], "freeze_then_raw_reissue")
-        self.assertIn("freeze", stale_raw["reason"])
-        self.assertEqual(
-            stale_raw["argv"],
-            [
-                "python3",
-                "scripts/closeout_reuse_plan.py",
-                "--paper",
-                "Fixture",
-                "--execute-freeze-raw-reissue",
-            ],
-        )
-        self.assertEqual(stale_raw["after_success"]["id"], "replan_after_raw_reissue")
-
-        inspection = planner.source_record_preflight_action(
-            "Fixture",
-            {"state": "identity_inspection_required", "reason": "structural replay"},
-        )
-        assert inspection is not None
-        self.assertEqual(inspection["id"], "inspect_saved_source_record_identity")
-
-    def test_semantic_repair_state_requires_complete_structured_dimensions(
-        self,
-    ) -> None:
-        identity = {
-            "current": False,
-            "identity_scope": "repository_sources_and_configuration_only",
-            "observed_source_record_fingerprint_schema": 10,
-            "validation_dimensions": {
-                "raw_receipt_integrity": {"state": "valid"},
-                "generated_semantic_surface": {
-                    "state": "invalid",
-                    "reason": "a semantic graph mismatch",
-                },
-                "raw_scan_completeness": {"state": "valid"},
-                "reusable_item_metadata": {"state": "valid"},
-                "raw_bytes": {"state": "stable"},
-                "source_configuration_identity": {"state": "current"},
-            },
-        }
-        self.assertTrue(planner.current_raw_semantic_repair_required(identity))
-
-        text_lookalike = {
-            "current": False,
-            "identity_scope": "repository_sources_and_configuration_only",
-            "observed_source_record_fingerprint_schema": 10,
-            "reason": "source/configuration identity differs",
-        }
-        self.assertFalse(planner.current_raw_semantic_repair_required(text_lookalike))
-
-        invalid_transport = dict(identity)
-        invalid_transport["validation_dimensions"] = {
-            **identity["validation_dimensions"],
-            "raw_scan_completeness": {"state": "invalid", "reason": "missing"},
-        }
-        self.assertFalse(planner.current_raw_semantic_repair_required(invalid_transport))
-
-    def test_source_record_reissue_action_waits_for_active_scan(self) -> None:
-        wait_action = {
-            "id": "wait_for_source_record_scan",
-            "state": "waiting",
-            "required": True,
-        }
-        with (
-            mock.patch.object(
-                planner, "closeout_wave_engine_action", return_value=None
-            ),
-            mock.patch.object(
-                planner, "source_record_reissue_lock_action", return_value=wait_action
-            ),
-        ):
-            action = planner.source_record_preflight_action(
-                "Fixture",
-                {"state": "raw_reissue_required", "reason": "source changed"},
-            )
-
-        self.assertEqual(action, wait_action)
-
-    def test_source_record_preflight_waits_for_wrapper_before_producer_scan(
-        self,
-    ) -> None:
-        """A normal wrapper lease is the first raw-reissue dependency."""
-
-        wait_action = {
-            "id": "wait_for_closeout_raw_reissue",
-            "state": "waiting",
-            "required": True,
-        }
-        with (
-            mock.patch.object(
-                planner, "closeout_wave_engine_action", return_value=None
-            ),
-            mock.patch.object(
-                planner, "closeout_raw_reissue_lock_action", return_value=wait_action
-            ),
-            mock.patch.object(planner, "source_record_reissue_lock_action") as producer,
-        ):
-            action = planner.source_record_preflight_action(
-                "Fixture",
-                {"state": "raw_reissue_required", "reason": "source changed"},
-            )
-
-        self.assertEqual(action, wait_action)
-        producer.assert_not_called()
-
-    def test_source_record_preflight_stops_at_engine_wave_before_raw_locks(self) -> None:
-        reset_action = {
-            "id": "reset_closeout_wave_engine_snapshot",
-            "state": "ready_now",
-            "required": True,
-        }
-        with (
-            mock.patch.object(
-                planner, "closeout_wave_engine_action", return_value=reset_action
-            ),
-            mock.patch.object(planner, "raw_reissue_transition_lock_action") as locks,
-        ):
-            action = planner.source_record_preflight_action(
-                "Fixture", {"state": "raw_reissue_required", "reason": "stale raw"}
-            )
-
-        self.assertEqual(action, reset_action)
-        locks.assert_not_called()
-
-    def test_closeout_raw_reissue_lock_action_waits_for_active_wrapper(self) -> None:
-        """The advisory lease prevents a second wrapper transition, not evidence."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            with mock.patch.object(planner, "ROOT", root):
-                handle, error = planner._try_acquire_closeout_raw_reissue_lock("Other")
-                self.assertEqual(error, "")
-                assert handle is not None
-                try:
-                    action = planner.closeout_raw_reissue_lock_action("Fixture")
-                finally:
-                    planner._release_closeout_raw_reissue_lock(handle)
-
-        assert action is not None
-        self.assertEqual(action["id"], "wait_for_closeout_raw_reissue")
-        self.assertEqual(action["closeout_raw_reissue_lock"]["state"], "held")
-        self.assertEqual(
-            action["closeout_raw_reissue_lock"]["owner"]["paper"], "Other"
-        )
-
-    def test_source_record_reissue_lock_action_inspects_unreadable_observer(self) -> None:
-        with mock.patch.object(
-            planner,
-            "source_record_scan_lock_observation",
-            return_value=(None, "source-record lock observer returned invalid JSON"),
-        ):
-            action = planner.source_record_reissue_lock_action("Fixture")
-
-        assert action is not None
-        self.assertEqual(action["id"], "inspect_source_record_scan_lock")
-        self.assertIn("invalid JSON", action["reason"])
-
-    def test_source_record_scan_lock_observation_rejects_unavailable_state(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            helper = root / "source_record_audit.py"
-            helper.write_text("# fixture\n", encoding="utf-8")
-            proc = types.SimpleNamespace(
-                returncode=0,
-                stdout=json.dumps(
-                    {"schema": 1, "held": False, "state": "unreadable"}
-                ),
-                stderr="",
-            )
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
-                ),
-                mock.patch.object(planner.subprocess, "run", return_value=proc),
-            ):
-                observation, error = planner.source_record_scan_lock_observation()
-
-        self.assertIsNone(observation)
-        self.assertIn("unavailable lock state", error)
-
-    def test_raw_reissue_wrapper_is_idempotent_when_raw_is_already_current(
-        self,
-    ) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            folder.mkdir(parents=True)
-            output = io.StringIO()
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(planner, "running_execution_summary", return_value=None),
-                mock.patch.object(
-                    planner,
-                    "effective_closeout_execution_state",
-                    return_value=(None, "", "worker", folder / "state.json"),
-                ),
-                mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
-                mock.patch.object(
-                    planner,
-                    "_paper_closeout_status_preflight",
-                    return_value=("formalized", ""),
-                ),
-                mock.patch.object(
-                    planner, "static_closeout_readiness", return_value={"ready": True}
-                ),
-                mock.patch.object(planner, "_raw_reissue_material_errors", return_value=[]),
-                mock.patch.object(
-                    planner,
-                    "fast_saved_source_record_preflight",
-                    return_value={"state": "current_raw_judgment_bound"},
-                ),
-                mock.patch.object(planner.subprocess, "run") as run,
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.execute_freeze_then_raw_reissue(folder)
-
-            self.assertEqual(result, 0)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(emitted["state"], "already_current")
-            self.assertFalse(emitted["raw_scan_started"])
-            run.assert_not_called()
-
-    def test_raw_reissue_wrapper_preserves_predecessor_then_stops_at_delta(
-        self,
-    ) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            raw = audit / "source_record_audit.json"
-            judgment = audit / "source_record_match_llm.json"
-            raw.write_text('{"old": "raw"}\n', encoding="utf-8")
-            judgment.write_text('{"old": "judgment"}\n', encoding="utf-8")
-            preflight = {
-                "state": "raw_reissue_required",
-                "reason": "legacy fingerprint",
-                "raw_path": str(raw.relative_to(root)),
-                "judgment_path": str(judgment.relative_to(root)),
-            }
-            postflight = {
-                "state": "current_raw_judgment_delta",
-                "reason": "new raw requires semantic delta",
-            }
-            output = io.StringIO()
-            proc = types.SimpleNamespace(returncode=0, stdout='{"scanned": true}\n', stderr="")
-            helper = root / "source_record_audit.py"
-            helper.write_text("# fixture\n", encoding="utf-8")
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
-                ),
-                mock.patch.object(planner, "running_execution_summary", return_value=None),
-                mock.patch.object(
-                    planner,
-                    "effective_closeout_execution_state",
-                    return_value=(None, "", "worker", folder / "state.json"),
-                ),
-                mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
-                mock.patch.object(
-                    planner,
-                    "_paper_closeout_status_preflight",
-                    return_value=("formalized", ""),
-                ),
-                mock.patch.object(
-                    planner, "static_closeout_readiness", return_value={"ready": True}
-                ),
-                mock.patch.object(planner, "_raw_reissue_material_errors", return_value=[]),
-                mock.patch.object(
-                    planner,
-                    "fast_saved_source_record_preflight",
-                    side_effect=[preflight, preflight, postflight],
-                ),
-                mock.patch.object(
-                    planner, "source_record_reissue_lock_action", return_value=None
-                ),
-                mock.patch.object(
-                    planner,
-                    "ensure_closeout_wave_engine_snapshot",
-                    return_value=(self.wave_snapshot(), True, ""),
-                ),
-                mock.patch.object(
-                    planner,
-                    "closeout_wave_engine_snapshot_state",
-                    return_value={"state": "current", "snapshot": self.wave_snapshot()},
-                ),
-                mock.patch.object(planner.subprocess, "run", return_value=proc) as run,
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.execute_freeze_then_raw_reissue(folder)
-
-            self.assertEqual(result, 0)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(emitted["state"], "raw_reissue_completed")
-            self.assertEqual(
-                emitted["next_action"]["id"], "review_current_source_record_delta"
-            )
-            command = run.call_args.args[0]
-            self.assertIn("--closeout-raw-reissue", command)
-            self.assertIn("--closeout-raw-reissue-operation-id", command)
-            snapshot = root / emitted["predecessor_snapshot"]
-            self.assertTrue(snapshot.is_file())
-            self.assertEqual(raw.read_text(encoding="utf-8"), '{"old": "raw"}\n')
-            operation_path = root / emitted["operation_receipt"]
-            operation = json.loads(operation_path.read_text(encoding="utf-8"))
-            self.assertEqual(operation["state"], "completed")
-            self.assertFalse(operation["acceptance_credential"])
-            self.assertTrue(operation["operational_recovery_only"])
-            self.assertEqual(
-                operation["operation_id"],
-                command[command.index("--closeout-raw-reissue-operation-id") + 1],
-            )
-            self.assertEqual(
-                operation["next_action"]["id"],
-                "review_current_source_record_delta",
-            )
-            self.assertNotIn("scanned", json.dumps(operation))
-
-    def test_raw_reissue_checks_helper_before_binding_an_engine_wave(self) -> None:
-        """An unavailable producer cannot create an otherwise empty wave."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            folder.mkdir(parents=True)
-            preflight = {"state": "raw_reissue_required", "reason": "stale raw"}
-            output = io.StringIO()
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(planner, "running_execution_summary", return_value=None),
-                mock.patch.object(
-                    planner,
-                    "effective_closeout_execution_state",
-                    return_value=(None, "", "worker", folder / "state.json"),
-                ),
-                mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
-                mock.patch.object(
-                    planner,
-                    "_paper_closeout_status_preflight",
-                    return_value=("formalized", ""),
-                ),
-                mock.patch.object(
-                    planner, "static_closeout_readiness", return_value={"ready": True}
-                ),
-                mock.patch.object(planner, "_raw_reissue_material_errors", return_value=[]),
-                mock.patch.object(
-                    planner, "fast_saved_source_record_preflight", return_value=preflight
-                ),
-                mock.patch.object(
-                    planner, "closeout_wave_engine_snapshot_state", return_value={"state": "not_started"}
-                ),
-                mock.patch.object(
-                    planner, "source_record_reissue_lock_action", return_value=None
-                ),
-                mock.patch.object(
-                    planner, "ensure_closeout_wave_engine_snapshot"
-                ) as ensure,
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.execute_freeze_then_raw_reissue(folder)
-
-            self.assertEqual(result, 2)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(emitted["state"], "raw_reissue_helper_unavailable")
-            ensure.assert_not_called()
-
-    def test_raw_reissue_replans_when_preflight_changes_under_lease(self) -> None:
-        """A stale decision never archives its predecessor after the lease race."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            folder.mkdir(parents=True)
-            helper = root / "source_record_audit.py"
-            helper.write_text("# fixture\n", encoding="utf-8")
-            preflight = {"state": "raw_reissue_required", "identity": {"source": "old"}}
-            changed = {"state": "raw_reissue_required", "identity": {"source": "new"}}
-            output = io.StringIO()
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
-                ),
-                mock.patch.object(planner, "running_execution_summary", return_value=None),
-                mock.patch.object(
-                    planner,
-                    "effective_closeout_execution_state",
-                    return_value=(None, "", "worker", folder / "state.json"),
-                ),
-                mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
-                mock.patch.object(
-                    planner,
-                    "_paper_closeout_status_preflight",
-                    return_value=("formalized", ""),
-                ),
-                mock.patch.object(
-                    planner, "static_closeout_readiness", return_value={"ready": True}
-                ),
-                mock.patch.object(planner, "_raw_reissue_material_errors", return_value=[]),
-                mock.patch.object(
-                    planner,
-                    "fast_saved_source_record_preflight",
-                    side_effect=[preflight, changed],
-                ),
-                mock.patch.object(
-                    planner, "closeout_wave_engine_snapshot_state", return_value={"state": "not_started"}
-                ),
-                mock.patch.object(
-                    planner, "source_record_reissue_lock_action", return_value=None
-                ),
-                mock.patch.object(
-                    planner, "ensure_closeout_wave_engine_snapshot"
-                ) as ensure,
-                mock.patch.object(planner, "_archive_raw_reissue_predecessors") as archive,
-                mock.patch.object(planner.subprocess, "run") as run,
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.execute_freeze_then_raw_reissue(folder)
-
-            self.assertEqual(result, 2)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(emitted["state"], "raw_reissue_preflight_changed")
-            self.assertEqual(
-                emitted["next_action"]["id"], "replan_after_closeout_raw_reissue"
-            )
-            ensure.assert_not_called()
-            archive.assert_not_called()
-            run.assert_not_called()
-
-    def test_raw_reissue_requires_recovery_for_prior_running_receipt(self) -> None:
-        """A lost terminal stream cannot be silently overwritten by a new wave."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            folder.mkdir(parents=True)
-            helper = root / "source_record_audit.py"
-            helper.write_text("# fixture\n", encoding="utf-8")
-            preflight = {"state": "raw_reissue_required", "identity": {"source": "old"}}
-            output = io.StringIO()
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
-                ),
-                mock.patch.object(planner, "running_execution_summary", return_value=None),
-                mock.patch.object(
-                    planner,
-                    "effective_closeout_execution_state",
-                    return_value=(None, "", "worker", folder / "state.json"),
-                ),
-                mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
-                mock.patch.object(
-                    planner,
-                    "_paper_closeout_status_preflight",
-                    return_value=("formalized", ""),
-                ),
-                mock.patch.object(
-                    planner, "static_closeout_readiness", return_value={"ready": True}
-                ),
-                mock.patch.object(planner, "_raw_reissue_material_errors", return_value=[]),
-                mock.patch.object(
-                    planner, "fast_saved_source_record_preflight", return_value=preflight
-                ),
-                mock.patch.object(
-                    planner, "closeout_wave_engine_snapshot_state", return_value={"state": "not_started"}
-                ),
-                mock.patch.object(
-                    planner, "source_record_reissue_lock_action", return_value=None
-                ),
-                mock.patch.object(
-                    planner,
-                    "closeout_raw_reissue_operation_receipt_state",
-                    return_value={"state": "running", "receipt": {"operation_id": "old"}},
-                ),
-                mock.patch.object(
-                    planner, "ensure_closeout_wave_engine_snapshot"
-                ) as ensure,
-                mock.patch.object(planner, "_archive_raw_reissue_predecessors") as archive,
-                mock.patch.object(planner.subprocess, "run") as run,
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.execute_freeze_then_raw_reissue(folder)
-
-            self.assertEqual(result, 2)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(
-                emitted["state"], "raw_reissue_operation_recovery_required"
-            )
-            self.assertEqual(
-                emitted["next_action"]["id"], "recover_raw_reissue_operation"
-            )
-            ensure.assert_not_called()
-            archive.assert_not_called()
-            run.assert_not_called()
-
-    def test_raw_reissue_status_distinguishes_an_orphaned_running_receipt(self) -> None:
-        """Status exposes the lock observations needed for lost-stream recovery."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            folder = Path(temp_dir) / "papers" / "Fixture"
-            folder.mkdir(parents=True)
-            output = io.StringIO()
-            with (
-                mock.patch.object(
-                    planner,
-                    "closeout_raw_reissue_operation_receipt_state",
-                    return_value={"state": "running", "receipt": {"operation_id": "old"}},
-                ),
-                mock.patch.object(
-                    planner,
-                    "closeout_raw_reissue_lock_observation",
-                    return_value=({"held": False, "state": "available"}, ""),
-                ),
-                mock.patch.object(
-                    planner,
-                    "source_record_scan_lock_observation",
-                    return_value=({"held": False, "state": "available"}, ""),
-                ),
-                mock.patch.object(
-                    planner,
-                    "closeout_wave_engine_snapshot_state",
-                    return_value={"state": "current"},
-                ),
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.raw_reissue_operation_status(folder)
-
-            self.assertEqual(result, 2)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(
-                emitted["state"], "raw_reissue_operation_recovery_required"
-            )
-            self.assertEqual(
-                emitted["wrapper_lease"]["state"], "available"
-            )
-            self.assertEqual(
-                emitted["source_record_lock"]["state"], "available"
-            )
-
-    def test_wave_reset_defers_while_the_source_record_lock_is_held(self) -> None:
-        """An explicit reset cannot cut across a repository-wide raw scan."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            folder.mkdir(parents=True)
-            wait_action = {"id": "wait_for_source_record_scan", "required": True}
-            output = io.StringIO()
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(planner, "running_execution_summary", return_value=None),
-                mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
-                mock.patch.object(
-                    planner, "closeout_raw_reissue_lock_action", return_value=None
-                ),
-                mock.patch.object(
-                    planner, "_try_acquire_closeout_raw_reissue_lock", return_value=(object(), "")
-                ),
-                mock.patch.object(
-                    planner, "source_record_reissue_lock_action", return_value=wait_action
-                ),
-                mock.patch.object(
-                    planner, "reset_closeout_wave_engine_snapshot"
-                ) as reset,
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.reset_closeout_wave_engine_snapshot_for_paper(folder)
-
-            self.assertEqual(result, 2)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(emitted["state"], "closeout_wave_engine_reset_deferred")
-            self.assertEqual(emitted["next_action"], wait_action)
-            reset.assert_not_called()
-
-    def test_explicit_recovery_terminalizes_only_an_idle_running_receipt(self) -> None:
-        """Recovery never reissues raw work and leaves a durable stopped record."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            folder.mkdir(parents=True)
-            with mock.patch.object(planner, "ROOT", root):
-                receipt_path = planner.raw_reissue_operation_receipt_path(folder)
-                receipt_path.parent.mkdir(parents=True)
-                receipt_path.write_text(
-                    json.dumps(
-                        {
-                            "schema": planner.RAW_REISSUE_OPERATION_TRACE_SCHEMA,
-                            "kind": "source_record_raw_reissue_operation",
-                            "acceptance_credential": False,
-                            "operational_recovery_only": True,
-                            "state": "running",
-                            "paper": "Fixture",
-                            "operation_id": "old-operation",
-                        }
-                    ),
-                    encoding="utf-8",
-                )
-                output = io.StringIO()
-                with (
-                    mock.patch.object(
-                        planner, "closeout_raw_reissue_lock_action", return_value=None
-                    ),
-                    mock.patch.object(
-                        planner, "source_record_reissue_lock_action", return_value=None
-                    ),
-                    mock.patch.object(
-                        planner,
-                        "fast_saved_source_record_preflight",
-                        return_value={"state": "raw_reissue_required"},
-                    ),
-                    contextlib.redirect_stdout(output),
-                ):
-                    result = planner.acknowledge_stale_raw_reissue_operation(folder)
-
-                self.assertEqual(result, 0)
-                emitted = json.loads(output.getvalue())
-                self.assertEqual(
-                    emitted["state"], "raw_reissue_operation_recovery_acknowledged"
-                )
-                recovered = json.loads(receipt_path.read_text(encoding="utf-8"))
-                self.assertEqual(recovered["state"], "stopped")
-                self.assertEqual(
-                    recovered["wrapper_state"],
-                    "raw_reissue_recovery_acknowledged",
-                )
-                self.assertIn("recovery_preflight", recovered)
-
-    def test_terminal_operation_receipt_bounds_failure_detail(self) -> None:
-        """Operational recovery receipts cannot duplicate multi-megabyte logs."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            path = Path(temp_dir) / "operation.json"
-            payload = {
-                "schema": planner.RAW_REISSUE_OPERATION_TRACE_SCHEMA,
-                "state": "running",
-            }
-            planner._finish_raw_reissue_operation_receipt(
-                path,
-                payload,
-                {
-                    "state": "raw_reissue_failed",
-                    "raw_scan_started": True,
-                    "producer_detail": "x" * 10000,
-                },
-            )
-            terminal = json.loads(path.read_text(encoding="utf-8"))
-            self.assertEqual(terminal["state"], "failed")
-            self.assertLessEqual(len(terminal["producer_detail"]), 4096)
-            self.assertTrue(terminal["producer_detail"].endswith("[truncated]"))
-
-    def test_raw_reissue_wrapper_completes_at_current_semantic_repair(self) -> None:
-        """A successful producer is not a failure when only repair remains."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            folder.mkdir(parents=True)
-            helper = root / "source_record_audit.py"
-            helper.write_text("# fixture\n", encoding="utf-8")
-            preflight = {"state": "raw_reissue_required", "reason": "stale raw"}
-            postflight = {
-                "state": "current_raw_semantic_repair_required",
-                "reason": "current semantic surface needs a graph repair",
-            }
-            proc = types.SimpleNamespace(returncode=0, stdout='{"scanned": true}\n', stderr="")
-            output = io.StringIO()
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
-                ),
-                mock.patch.object(planner, "running_execution_summary", return_value=None),
-                mock.patch.object(
-                    planner,
-                    "effective_closeout_execution_state",
-                    return_value=(None, "", "worker", folder / "state.json"),
-                ),
-                mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
-                mock.patch.object(
-                    planner,
-                    "_paper_closeout_status_preflight",
-                    return_value=("formalized", ""),
-                ),
-                mock.patch.object(
-                    planner, "static_closeout_readiness", return_value={"ready": True}
-                ),
-                mock.patch.object(planner, "_raw_reissue_material_errors", return_value=[]),
-                mock.patch.object(
-                    planner,
-                    "fast_saved_source_record_preflight",
-                    side_effect=[preflight, preflight, postflight],
-                ),
-                mock.patch.object(
-                    planner, "source_record_reissue_lock_action", return_value=None
-                ),
-                mock.patch.object(
-                    planner,
-                    "ensure_closeout_wave_engine_snapshot",
-                    return_value=(self.wave_snapshot(), True, ""),
-                ),
-                mock.patch.object(
-                    planner,
-                    "closeout_wave_engine_snapshot_state",
-                    return_value={"state": "current", "snapshot": self.wave_snapshot()},
-                ),
-                mock.patch.object(
-                    planner,
-                    "_archive_raw_reissue_predecessors",
-                    return_value=(folder / "trace.json", {"entries": []}),
-                ),
-                mock.patch.object(planner.subprocess, "run", return_value=proc),
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.execute_freeze_then_raw_reissue(folder)
-
-            self.assertEqual(result, 0)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(emitted["state"], "raw_reissue_completed")
-            self.assertEqual(
-                emitted["next_action"]["id"],
-                "repair_current_source_record_semantic_surface",
-            )
-
-    def test_raw_reissue_replans_when_same_engine_wave_is_replaced(self) -> None:
-        """A manual same-engine reset cannot hide a crossed raw-reissue wave."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            folder.mkdir(parents=True)
-            helper = root / "source_record_audit.py"
-            helper.write_text("# fixture\n", encoding="utf-8")
-            preflight = {"state": "raw_reissue_required", "identity": {"source": "old"}}
-            captured = self.wave_snapshot()
-            replaced = self.wave_snapshot()
-            replaced["wave_id"] = "replacement-wave"
-            proc = types.SimpleNamespace(returncode=0, stdout="ok\n", stderr="")
-            output = io.StringIO()
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
-                ),
-                mock.patch.object(planner, "running_execution_summary", return_value=None),
-                mock.patch.object(
-                    planner,
-                    "effective_closeout_execution_state",
-                    return_value=(None, "", "worker", folder / "state.json"),
-                ),
-                mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
-                mock.patch.object(
-                    planner,
-                    "_paper_closeout_status_preflight",
-                    return_value=("formalized", ""),
-                ),
-                mock.patch.object(
-                    planner, "static_closeout_readiness", return_value={"ready": True}
-                ),
-                mock.patch.object(planner, "_raw_reissue_material_errors", return_value=[]),
-                mock.patch.object(
-                    planner,
-                    "fast_saved_source_record_preflight",
-                    side_effect=[preflight, preflight],
-                ),
-                mock.patch.object(
-                    planner, "source_record_reissue_lock_action", return_value=None
-                ),
-                mock.patch.object(
-                    planner,
-                    "ensure_closeout_wave_engine_snapshot",
-                    return_value=(captured, True, ""),
-                ),
-                mock.patch.object(
-                    planner,
-                    "closeout_wave_engine_snapshot_state",
-                    side_effect=[
-                        {"state": "not_started"},
-                        {"state": "current", "snapshot": replaced},
-                        {"state": "current", "snapshot": replaced},
-                    ],
-                ),
-                mock.patch.object(
-                    planner,
-                    "_archive_raw_reissue_predecessors",
-                    return_value=(folder / "trace.json", {"entries": []}),
-                ),
-                mock.patch.object(planner.subprocess, "run", return_value=proc) as run,
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.execute_freeze_then_raw_reissue(folder)
-
-            self.assertEqual(result, 2)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(
-                emitted["state"], "raw_reissue_engine_transitioned_during_scan"
-            )
-            self.assertEqual(
-                emitted["next_action"]["id"], "replan_after_closeout_raw_reissue"
-            )
-            run.assert_called_once()
-
-    def test_raw_reissue_wrapper_stops_after_engine_transition_without_retry(self) -> None:
-        """A producer success is non-accepting when its engine wave changed."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            raw = audit / "source_record_audit.json"
-            judgment = audit / "source_record_match_llm.json"
-            raw.write_text('{"old": "raw"}\n', encoding="utf-8")
-            judgment.write_text('{"old": "judgment"}\n', encoding="utf-8")
-            helper = root / "source_record_audit.py"
-            helper.write_text("# fixture\n", encoding="utf-8")
-            preflight = {
-                "state": "raw_reissue_required",
-                "reason": "stale raw",
-                "raw_path": str(raw.relative_to(root)),
-                "judgment_path": str(judgment.relative_to(root)),
-            }
-            reset_state = {
-                "state": "reset_required",
-                "reason": "registered engine changed",
-            }
-            proc = types.SimpleNamespace(returncode=0, stdout="ok\n", stderr="")
-            output = io.StringIO()
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
-                ),
-                mock.patch.object(planner, "running_execution_summary", return_value=None),
-                mock.patch.object(
-                    planner,
-                    "effective_closeout_execution_state",
-                    return_value=(None, "", "worker", folder / "state.json"),
-                ),
-                mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
-                mock.patch.object(
-                    planner,
-                    "_paper_closeout_status_preflight",
-                    return_value=("formalized", ""),
-                ),
-                mock.patch.object(
-                    planner, "static_closeout_readiness", return_value={"ready": True}
-                ),
-                mock.patch.object(planner, "_raw_reissue_material_errors", return_value=[]),
-                mock.patch.object(
-                    planner,
-                    "fast_saved_source_record_preflight",
-                    return_value=preflight,
-                ) as preflight_check,
-                mock.patch.object(
-                    planner, "source_record_reissue_lock_action", return_value=None
-                ),
-                mock.patch.object(
-                    planner,
-                    "ensure_closeout_wave_engine_snapshot",
-                    return_value=(self.wave_snapshot(), True, ""),
-                ),
-                mock.patch.object(
-                    planner,
-                    "closeout_wave_engine_snapshot_state",
-                    side_effect=[{"state": "not_started"}, reset_state, reset_state],
-                ),
-                mock.patch.object(planner.subprocess, "run", return_value=proc) as run,
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.execute_freeze_then_raw_reissue(folder)
-
-            self.assertEqual(result, 2)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(
-                emitted["state"], "raw_reissue_engine_transitioned_during_scan"
-            )
-            self.assertEqual(
-                emitted["next_action"]["id"], "reset_closeout_wave_engine_snapshot"
-            )
-            run.assert_called_once()
-            self.assertEqual(preflight_check.call_count, 2)
-            self.assertEqual(preflight_check.call_args.args, (folder,))
-            operation = json.loads(
-                (root / emitted["operation_receipt"]).read_text(encoding="utf-8")
-            )
-            self.assertEqual(operation["state"], "failed")
-            self.assertTrue(operation["raw_scan_started"])
-
-    def test_predecessor_archive_normalizes_relative_paper_folder(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            raw = audit / "source_record_audit.json"
-            judgment = audit / "source_record_match_llm.json"
-            raw.write_text('{"raw": true}\n', encoding="utf-8")
-            judgment.write_text('{"judgment": true}\n', encoding="utf-8")
-            preflight = {
-                "raw_path": str(raw.relative_to(root)),
-                "judgment_path": str(judgment.relative_to(root)),
-            }
-            with mock.patch.object(planner, "ROOT", root):
-                receipt_path, receipt = planner._archive_raw_reissue_predecessors(
-                    Path("papers/Fixture"), preflight
-                )
-
-            self.assertTrue(receipt_path.is_file())
-            self.assertEqual(len(receipt["entries"]), 2)
-            self.assertTrue(
-                all(entry["state"] == "preserved" for entry in receipt["entries"])
-            )
-
-    def test_predecessor_archive_removes_new_snapshots_when_receipt_write_fails(
-        self,
-    ) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            raw = audit / "source_record_audit.json"
-            raw.write_text('{"raw": true}\n', encoding="utf-8")
-            preflight = {"raw_path": str(raw.relative_to(root))}
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(planner, "atomic_write_json", side_effect=OSError("disk")),
-            ):
-                with self.assertRaises(OSError):
-                    planner._archive_raw_reissue_predecessors(
-                        Path("papers/Fixture"), preflight
-                    )
-
-            trace_dir = folder / ".review_traces" / planner.RAW_REISSUE_TRACE_DIRECTORY
-            self.assertEqual(list(trace_dir.glob("raw-*.json")), [])
-            self.assertEqual(list(trace_dir.glob("predecessor-*.json")), [])
-
-    def test_predecessor_archive_removes_partial_copy_after_link_fallback_failure(
-        self,
-    ) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            raw = audit / "source_record_audit.json"
-            raw.write_text('{"raw": true}\n', encoding="utf-8")
-            preflight = {"raw_path": str(raw.relative_to(root))}
-
-            def partial_copy(_source: Path, destination: Path) -> None:
-                destination.write_text("partial\n", encoding="utf-8")
-                raise OSError("copy interrupted")
-
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(planner.os, "link", side_effect=OSError("cross device")),
-                mock.patch.object(planner.shutil, "copyfile", side_effect=partial_copy),
-            ):
-                with self.assertRaisesRegex(OSError, "copy interrupted"):
-                    planner._archive_raw_reissue_predecessors(
-                        Path("papers/Fixture"), preflight
-                    )
-
-            trace_dir = folder / ".review_traces" / planner.RAW_REISSUE_TRACE_DIRECTORY
-            self.assertEqual(list(trace_dir.glob("raw-*.json")), [])
-            self.assertEqual(list(trace_dir.glob("predecessor-*.json")), [])
-
-    def test_raw_reissue_wrapper_waits_without_preserving_or_starting_scan(
-        self,
-    ) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            folder.mkdir(parents=True)
-            preflight = {"state": "raw_reissue_required", "reason": "stale raw"}
-            wait_action = {
-                "id": "wait_for_source_record_scan",
-                "state": "waiting",
-                "required": True,
-            }
-            output = io.StringIO()
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(planner, "running_execution_summary", return_value=None),
-                mock.patch.object(
-                    planner,
-                    "effective_closeout_execution_state",
-                    return_value=(None, "", "worker", folder / "state.json"),
-                ),
-                mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
-                mock.patch.object(
-                    planner,
-                    "_paper_closeout_status_preflight",
-                    return_value=("formalized", ""),
-                ),
-                mock.patch.object(
-                    planner, "static_closeout_readiness", return_value={"ready": True}
-                ),
-                mock.patch.object(planner, "_raw_reissue_material_errors", return_value=[]),
-                mock.patch.object(
-                    planner,
-                    "fast_saved_source_record_preflight",
-                    return_value=preflight,
-                ),
-                mock.patch.object(
-                    planner,
-                    "source_record_reissue_lock_action",
-                    return_value=wait_action,
-                ),
-                mock.patch.object(planner, "_archive_raw_reissue_predecessors") as archive,
-                mock.patch.object(planner.subprocess, "run") as run,
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.execute_freeze_then_raw_reissue(folder)
-
-            self.assertEqual(result, 2)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(
-                emitted["state"], "raw_reissue_deferred_by_source_record_scan"
-            )
-            self.assertFalse(emitted["raw_scan_started"])
-            self.assertEqual(emitted["next_action"], wait_action)
-            archive.assert_not_called()
-            run.assert_not_called()
-
-    def test_raw_reissue_wrapper_waits_for_another_wrapper_without_archiving(
-        self,
-    ) -> None:
-        """A concurrent normal wrapper cannot create a redundant predecessor."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            folder.mkdir(parents=True)
-            preflight = {"state": "raw_reissue_required", "reason": "stale raw"}
-            output = io.StringIO()
-            with mock.patch.object(planner, "ROOT", root):
-                handle, error = planner._try_acquire_closeout_raw_reissue_lock("Other")
-                self.assertEqual(error, "")
-                assert handle is not None
-                try:
-                    with (
-                        mock.patch.object(
-                            planner, "running_execution_summary", return_value=None
-                        ),
-                        mock.patch.object(
-                            planner,
-                            "effective_closeout_execution_state",
-                            return_value=(None, "", "worker", folder / "state.json"),
-                        ),
-                        mock.patch.object(
-                            planner, "runtime_engine_registration_error", return_value=""
-                        ),
-                        mock.patch.object(
-                            planner,
-                            "_paper_closeout_status_preflight",
-                            return_value=("formalized", ""),
-                        ),
-                        mock.patch.object(
-                            planner, "static_closeout_readiness", return_value={"ready": True}
-                        ),
-                        mock.patch.object(
-                            planner, "_raw_reissue_material_errors", return_value=[]
-                        ),
-                        mock.patch.object(
-                            planner,
-                            "fast_saved_source_record_preflight",
-                            return_value=preflight,
-                        ),
-                        mock.patch.object(
-                            planner, "_archive_raw_reissue_predecessors"
-                        ) as archive,
-                        mock.patch.object(planner.subprocess, "run") as run,
-                        contextlib.redirect_stdout(output),
-                    ):
-                        result = planner.execute_freeze_then_raw_reissue(folder)
-                finally:
-                    planner._release_closeout_raw_reissue_lock(handle)
-
-            self.assertEqual(result, 2)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(
-                emitted["state"], "raw_reissue_deferred_by_closeout_raw_reissue"
-            )
-            self.assertFalse(emitted["raw_scan_started"])
-            self.assertEqual(
-                emitted["next_action"]["id"], "wait_for_closeout_raw_reissue"
-            )
-            archive.assert_not_called()
-            run.assert_not_called()
-
-    def test_raw_reissue_wrapper_replans_when_lease_releases_during_race(
-        self,
-    ) -> None:
-        """A raced wrapper lease never leaves an actionless deferred result."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            folder.mkdir(parents=True)
-            preflight = {"state": "raw_reissue_required", "reason": "stale raw"}
-            output = io.StringIO()
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(planner, "running_execution_summary", return_value=None),
-                mock.patch.object(
-                    planner,
-                    "effective_closeout_execution_state",
-                    return_value=(None, "", "worker", folder / "state.json"),
-                ),
-                mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
-                mock.patch.object(
-                    planner,
-                    "_paper_closeout_status_preflight",
-                    return_value=("formalized", ""),
-                ),
-                mock.patch.object(
-                    planner, "static_closeout_readiness", return_value={"ready": True}
-                ),
-                mock.patch.object(planner, "_raw_reissue_material_errors", return_value=[]),
-                mock.patch.object(
-                    planner,
-                    "fast_saved_source_record_preflight",
-                    return_value=preflight,
-                ),
-                mock.patch.object(
-                    planner,
-                    "closeout_raw_reissue_lock_action",
-                    side_effect=[None, None],
-                ),
-                mock.patch.object(
-                    planner,
-                    "_try_acquire_closeout_raw_reissue_lock",
-                    return_value=(None, ""),
-                ),
-                mock.patch.object(planner, "_archive_raw_reissue_predecessors") as archive,
-                mock.patch.object(planner.subprocess, "run") as run,
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.execute_freeze_then_raw_reissue(folder)
-
-            self.assertEqual(result, 2)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(
-                emitted["state"], "raw_reissue_deferred_by_closeout_raw_reissue"
-            )
-            self.assertEqual(
-                emitted["next_action"]["id"], "replan_after_closeout_raw_reissue"
-            )
-            archive.assert_not_called()
-            run.assert_not_called()
-
-    def test_raw_reissue_wrapper_inspects_unavailable_transition_lease(
-        self,
-    ) -> None:
-        """A broken wrapper lease is an explicit stop before any snapshot."""
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            folder.mkdir(parents=True)
-            preflight = {"state": "raw_reissue_required", "reason": "stale raw"}
-            output = io.StringIO()
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(planner, "running_execution_summary", return_value=None),
-                mock.patch.object(
-                    planner,
-                    "effective_closeout_execution_state",
-                    return_value=(None, "", "worker", folder / "state.json"),
-                ),
-                mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
-                mock.patch.object(
-                    planner,
-                    "_paper_closeout_status_preflight",
-                    return_value=("formalized", ""),
-                ),
-                mock.patch.object(
-                    planner, "static_closeout_readiness", return_value={"ready": True}
-                ),
-                mock.patch.object(planner, "_raw_reissue_material_errors", return_value=[]),
-                mock.patch.object(
-                    planner,
-                    "fast_saved_source_record_preflight",
-                    return_value=preflight,
-                ),
-                mock.patch.object(
-                    planner, "closeout_raw_reissue_lock_action", return_value=None
-                ),
-                mock.patch.object(
-                    planner,
-                    "_try_acquire_closeout_raw_reissue_lock",
-                    return_value=(None, "transition lock unreadable"),
-                ),
-                mock.patch.object(planner, "_archive_raw_reissue_predecessors") as archive,
-                mock.patch.object(planner.subprocess, "run") as run,
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.execute_freeze_then_raw_reissue(folder)
-
-            self.assertEqual(result, 2)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(
-                emitted["state"], "closeout_raw_reissue_lock_inspection_required"
-            )
-            self.assertEqual(
-                emitted["next_action"]["id"],
-                "inspect_closeout_raw_reissue_transition_lock",
-            )
-            archive.assert_not_called()
-            run.assert_not_called()
-
-    def test_raw_reissue_wrapper_reclassifies_lock_race_after_launch(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            raw = audit / "source_record_audit.json"
-            judgment = audit / "source_record_match_llm.json"
-            raw.write_text('{"old": "raw"}\n', encoding="utf-8")
-            judgment.write_text('{"old": "judgment"}\n', encoding="utf-8")
-            preflight = {
-                "state": "raw_reissue_required",
-                "reason": "stale raw",
-                "raw_path": str(raw.relative_to(root)),
-                "judgment_path": str(judgment.relative_to(root)),
-            }
-            helper = root / "source_record_audit.py"
-            helper.write_text("# fixture\n", encoding="utf-8")
-            wait_action = {
-                "id": "wait_for_source_record_scan",
-                "state": "waiting",
-                "required": True,
-            }
-            proc = types.SimpleNamespace(
-                returncode=4,
-                stdout="",
-                stderr="another source-record audit is already running",
-            )
-            output = io.StringIO()
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
-                ),
-                mock.patch.object(planner, "running_execution_summary", return_value=None),
-                mock.patch.object(
-                    planner,
-                    "effective_closeout_execution_state",
-                    return_value=(None, "", "worker", folder / "state.json"),
-                ),
-                mock.patch.object(planner, "runtime_engine_registration_error", return_value=""),
-                mock.patch.object(
-                    planner,
-                    "_paper_closeout_status_preflight",
-                    return_value=("formalized", ""),
-                ),
-                mock.patch.object(
-                    planner, "static_closeout_readiness", return_value={"ready": True}
-                ),
-                mock.patch.object(planner, "_raw_reissue_material_errors", return_value=[]),
-                mock.patch.object(
-                    planner,
-                    "fast_saved_source_record_preflight",
-                    return_value=preflight,
-                ),
-                mock.patch.object(
-                    planner,
-                    "source_record_reissue_lock_action",
-                    side_effect=[None, wait_action],
-                ),
-                mock.patch.object(
-                    planner,
-                    "ensure_closeout_wave_engine_snapshot",
-                    return_value=(self.wave_snapshot(), True, ""),
-                ),
-                mock.patch.object(planner.subprocess, "run", return_value=proc),
-                contextlib.redirect_stdout(output),
-            ):
-                result = planner.execute_freeze_then_raw_reissue(folder)
-
-            self.assertEqual(result, 2)
-            emitted = json.loads(output.getvalue())
-            self.assertEqual(
-                emitted["state"], "raw_reissue_deferred_by_source_record_scan"
-            )
-            self.assertFalse(emitted["raw_scan_started"])
-            self.assertEqual(emitted["next_action"], wait_action)
+            with self.subTest(option=option):
+                self.assertNotIn(option, process.stdout)
 
     def test_closeout_status_preflight_rejects_unrecognized_favorable_prefix(
         self,
@@ -2962,620 +3581,306 @@ class CloseoutReusePlanTests(unittest.TestCase):
         self.assertEqual(status, "formalized-but-unverified")
         self.assertIn("not eligible", error)
 
-    def test_source_record_preflight_does_not_apply_canonical_helper_to_configured_raw(
-        self,
-    ) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            (folder / "status.json").write_text("{}\n", encoding="utf-8")
-            raw = audit / "noncanonical_raw.json"
-            judgment = audit / "configured_judgment.json"
-            raw.write_text(
-                json.dumps({"source_record_audit_sha256": "a" * 64}),
-                encoding="utf-8",
-            )
-            judgment.write_text(
-                json.dumps({"source_record_audit_sha256": "a" * 64}),
-                encoding="utf-8",
-            )
+    def test_closeout_status_preflight_accepts_partial_boundary(self) -> None:
+        """A partial proof boundary closes its reviewed scope honestly."""
 
-            def resolve_sidecar(
-                _folder: Path,
-                _status: dict[str, object],
-                *,
-                config_field: str,
-                default_basename: str,
-            ) -> tuple[Path, str]:
-                del default_basename
-                return (
-                    raw if config_field == "source_record_audit_file" else judgment,
-                    "",
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir)
+            (folder / "status.json").write_text(
+                '{"status": "partially formalized"}\n', encoding="utf-8"
+            )
+            status, error = planner._paper_closeout_status_preflight(folder)
+
+        self.assertEqual(status, "partially formalized")
+        self.assertEqual(error, "")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def test_all_items_output_never_receives_execution_snapshots(self) -> None:
+        plan = {
+            "paper": "Fixture",
+            "statement": {"row": {"reusable": False}},
+        }
+
+        output = planner.operator_plan_for_output(
+            plan, "Fixture", all_items=True
+        )
+
+        self.assertEqual(output, plan)
+        self.assertFalse(any(key.startswith("_execution_") for key in plan))
+
+
+
+
+    def test_current_v11_lane_requires_the_selected_transaction_verdict(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "Fixture"
+            folder.mkdir()
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "status": "formalized",
+                        "review_surface": {
+                            "require_source_spec_correspondence": True,
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            context = object()
+            with mock.patch.object(
+                planner,
+                "current_v11_direct_semantic_review_state",
+                return_value=(False, "one exact source-to-Spec row is stale"),
+            ) as v11_state:
+                lane = planner.current_v11_source_spec_semantic_lane(
+                    folder,
+                    source_map={},
+                    evidence_context=context,
                 )
 
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch(
-                    "scripts.audit_evidence_integrity.source_record_review_sidecar_path",
-                    side_effect=resolve_sidecar,
-                ),
-                mock.patch.object(planner.subprocess, "run") as run,
-            ):
-                preflight = planner.fast_saved_source_record_preflight(folder)
-
-            self.assertEqual(preflight["state"], "identity_inspection_required")
-            self.assertFalse(preflight["configured_raw_is_canonical"])
-            self.assertIn("noncanonical", preflight["reason"])
-            run.assert_not_called()
-
-    def test_source_record_preflight_does_not_parse_current_canonical_raw(self) -> None:
+        self.assertTrue(lane["required"])
+        self.assertFalse(lane["ready"])
+        self.assertEqual(lane["validation_lane"], "shared_evidence_run_context")
+        self.assertEqual(lane["errors"], ["one exact source-to-Spec row is stale"])
+        v11_state.assert_called_once_with(planner.ROOT, folder, context=context)
+    def test_current_v11_lane_reuses_strict_context_without_card_rebuild(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            (folder / "status.json").write_text("{}\n", encoding="utf-8")
-            # The helper owns canonical raw validation. Invalid JSON here proves
-            # the planner does not redundantly parse it after helper success.
-            (audit / "source_record_audit.json").write_text(
-                "this is not planner JSON\n", encoding="utf-8"
-            )
-            (audit / "source_record_match_llm.json").write_text(
-                json.dumps({"source_record_audit_sha256": "a" * 64}),
-                encoding="utf-8",
-            )
-            helper = root / "fast_saved_identity_helper.py"
-            helper.write_text("# mocked subprocess target\n", encoding="utf-8")
-            proc = types.SimpleNamespace(
-                returncode=0,
-                stdout=json.dumps(
+            folder = Path(temp_dir) / "Fixture"
+            folder.mkdir()
+            (folder / "status.json").write_text(
+                json.dumps(
                     {
-                        "current": True,
-                        "source_record_audit_sha256": "a" * 64,
-                    }
-                ),
-                stderr="",
-            )
-
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
-                ),
-                mock.patch.object(planner.subprocess, "run", return_value=proc) as run,
-            ):
-                preflight = planner.fast_saved_source_record_preflight(folder)
-
-            self.assertEqual(preflight["state"], "current_raw_judgment_bound")
-            self.assertEqual(preflight["raw_audit_sha256"], "a" * 64)
-            self.assertEqual(preflight["judgment_audit_sha256"], "a" * 64)
-            self.assertEqual(preflight["raw_fingerprint_schema"], 10)
-            run.assert_called_once()
-
-    def test_stale_helper_observation_avoids_a_second_raw_json_parse(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            (folder / "status.json").write_text("{}\n", encoding="utf-8")
-            # The helper is authoritative for this observed stale raw.  If the
-            # planner rereads it, JSON parsing would fail and the test fails.
-            (audit / "source_record_audit.json").write_text(
-                "not planner JSON\n", encoding="utf-8"
-            )
-            (audit / "source_record_match_llm.json").write_text(
-                json.dumps({"source_record_audit_sha256": "a" * 64}),
-                encoding="utf-8",
-            )
-            helper = root / "fast_saved_identity_helper.py"
-            helper.write_text("# mocked subprocess target\n", encoding="utf-8")
-            proc = types.SimpleNamespace(
-                returncode=1,
-                stdout=json.dumps(
-                    {
-                        "current": False,
-                        "identity_scope": "repository_sources_and_configuration_only",
-                        "reason": "saved source-record source/configuration identity differs from the current repository",
-                        "observed_source_record_audit_sha256": "a" * 64,
-                        "observed_source_record_fingerprint_schema": 10,
-                        "validation_dimensions": {
-                            "source_configuration_identity": {
-                                "state": "stale",
-                                "reason": "fixture source changed",
-                            }
+                        "status": "formalized",
+                        "review_surface": {
+                            "require_source_spec_correspondence": True,
                         },
                     }
                 ),
-                stderr="",
+                encoding="utf-8",
             )
+            context = object()
+            with mock.patch.object(
+                planner,
+                "current_v11_direct_semantic_review_state",
+                return_value=(True, ""),
+            ) as v11_state:
+                lane = planner.current_v11_source_spec_semantic_lane(
+                    folder,
+                    source_map={},
+                    evidence_context=context,
+                )
 
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
-                ),
-                mock.patch.object(planner.subprocess, "run", return_value=proc),
-            ):
-                preflight = planner.fast_saved_source_record_preflight(folder)
+        self.assertTrue(lane["ready"])
+        self.assertEqual(lane["validation_lane"], "shared_evidence_run_context")
+        v11_state.assert_called_once_with(planner.ROOT, folder, context=context)
 
-            self.assertEqual(preflight["state"], "raw_reissue_required")
-            self.assertEqual(preflight["raw_audit_sha256"], "a" * 64)
-            self.assertEqual(preflight["raw_fingerprint_schema"], 10)
-
-    def test_changed_saved_lean_closure_routes_to_raw_reissue(self) -> None:
+    def test_current_v11_live_plan_does_not_require_dashboard_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            (folder / "status.json").write_text("{}\n", encoding="utf-8")
-            (audit / "source_record_audit.json").write_text(
-                "not planner JSON\n", encoding="utf-8"
-            )
-            (audit / "source_record_match_llm.json").write_text(
-                json.dumps({"source_record_audit_sha256": "a" * 64}),
-                encoding="utf-8",
-            )
-            helper = root / "fast_saved_identity_helper.py"
-            helper.write_text("# mocked subprocess target\n", encoding="utf-8")
-            proc = types.SimpleNamespace(
-                returncode=1,
-                stdout=json.dumps(
-                    {
-                        "current": False,
-                        "identity_scope": "repository_sources_and_configuration_only",
-                        "reason": (
-                            "saved Lean import closure is not current: "
-                            "Lean import-closure source bytes changed: "
-                            "papers/Fixture/PaperInterface.lean"
-                        ),
-                        "observed_source_record_audit_sha256": "a" * 64,
-                        "observed_source_record_fingerprint_schema": 10,
-                        "validation_dimensions": {
-                            "raw_receipt_integrity": {"state": "valid"},
-                            "generated_semantic_surface": {"state": "valid"},
-                            "raw_scan_completeness": {"state": "valid"},
-                            "reusable_item_metadata": {"state": "valid"},
-                            "raw_bytes": {"state": "unavailable"},
-                            "source_configuration_identity": {
-                                "state": "stale",
-                                "reason": "Lean import-closure source bytes changed",
-                            },
-                        },
-                    }
-                ),
-                stderr="",
-            )
-
+            folder.mkdir(parents=True)
+            provider = mock.Mock()
+            provider.finalize_unchanged.return_value = True
+            source = root / "papers" / "Fixture.lean"
+            compiled = root / ".lake" / "Fixture.olean"
+            source_guard = (1, 2, 3, 4, 5)
+            compiled_guard = (6, 7, 8, 9, 10)
+            lane = {
+                "required": True,
+                "ready": True,
+                "lane": planner.V11_SOURCE_SPEC_SEMANTIC_LANE,
+                "errors": [],
+            }
             with (
                 mock.patch.object(planner, "ROOT", root),
                 mock.patch.object(
                     planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
-                ),
-                mock.patch.object(planner.subprocess, "run", return_value=proc),
-            ):
-                preflight = planner.fast_saved_source_record_preflight(folder)
-
-            self.assertEqual(preflight["state"], "raw_reissue_required")
-            with (
-                mock.patch.object(
-                    planner, "closeout_wave_engine_action", return_value=None
+                    "current_v11_source_spec_semantic_lane",
+                    return_value=lane,
                 ),
                 mock.patch.object(
-                    planner, "raw_reissue_transition_lock_action", return_value=None
+                    primary_gate_transaction,
+                    "current_route_schema_preflight_findings",
+                    return_value=[],
+                ),
+                mock.patch.object(
+                    planner,
+                    "_strict_transaction_content_snapshot",
+                    return_value=({}, ""),
+                ),
+                mock.patch.object(
+                    planner,
+                    "builder_issued_v11_lean_operational_provider",
+                    return_value=provider,
+                ),
+                mock.patch.object(
+                    planner,
+                    "_root_import_closure_mutation_snapshots",
+                    return_value=(
+                        {str(source): source_guard},
+                        {str(compiled): compiled_guard},
+                        [],
+                        {"schema": 1},
+                    ),
+                ),
+                mock.patch.object(
+                    planner,
+                    "build_lean_closure_operational_projection",
+                    return_value={"state": "present"},
                 ),
             ):
-                action = planner.source_record_preflight_action("Fixture", preflight)
-            assert action is not None
-            self.assertEqual(action["id"], "freeze_then_raw_reissue")
+                acquisition, errors = planner.current_v11_live_lean_operational_plan(
+                    folder,
+                    source_map={},
+                    evidence_context=object(),
+                )
 
-    def test_authenticated_semantic_contract_replay_matches_evidence_gate_identity(
+        self.assertEqual(errors, [])
+        assert acquisition is not None
+        assert acquisition.publication_inputs is not None
+        plan = acquisition.plan
+        self.assertTrue(plan["compiled_artifacts_ready"])
+        self.assertTrue(planner._semantic_review_is_authoritatively_covered(plan))
+        self.assertFalse(
+            plan["planner_compatibility"]["dashboard_manifest_required"]
+        )
+        self.assertEqual(
+            plan["audit_material_identity"],
+            "strict_transaction_content_snapshot",
+        )
+        self.assertEqual(
+            acquisition.publication_inputs.payload["source_ledger"],
+            {str(source): list(source_guard)},
+        )
+        self.assertEqual(
+            acquisition.publication_inputs.payload["compiled_ledger"],
+            {str(compiled): list(compiled_guard)},
+        )
+        self.assertFalse(any(key.startswith("_execution_") for key in plan))
+
+    def test_current_v11_live_plan_stops_before_closure_for_frozen_configuration(
         self,
     ) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder, proc = self.semantic_contract_replay_fixture(
-                root, match_digest="b" * 64
-            )
-            helper = root / "fast_saved_identity_helper.py"
-            helper.write_text("# mocked subprocess target\n", encoding="utf-8")
-            projection = object()
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
-                ),
-                mock.patch.object(planner.subprocess, "run", return_value=proc),
-                mock.patch(
-                    "scripts.audit_evidence_integrity.source_record_semantic_contract_revalidation_context",
-                    return_value=(projection, ""),
-                ) as replay_context,
-                mock.patch(
-                    "scripts.audit_evidence_integrity.source_record_audit_identity_error",
-                    return_value="",
-                ) as identity_error,
-            ):
-                preflight = planner.fast_saved_source_record_preflight(folder)
+        """Routing/configuration defects cannot consume a build or terminal audit."""
 
-            self.assertEqual(preflight["state"], "current_raw_judgment_delta")
-            self.assertEqual(
-                preflight["semantic_contract_revalidation"]["state"], "validated"
-            )
-            replay_context.assert_called_once()
-            identity_error.assert_called_once()
-            self.assertIs(
-                identity_error.call_args.kwargs["semantic_contract_revalidation"],
-                projection,
-            )
-            self.assertEqual(
-                identity_error.call_args.kwargs["expected_paper_statement_map_sha256"],
-                hashlib.sha256(b"{}\n").hexdigest(),
-            )
-
-    def test_semantic_contract_replay_keeps_stale_identity_fail_closed(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder, proc = self.semantic_contract_replay_fixture(
-                root, match_digest="a" * 64
-            )
-            proc.stdout = json.dumps(
-                {
-                    "current": False,
-                    "identity_scope": "repository_sources_and_configuration_only",
-                    "reason": "saved source-record source/configuration identity differs from the current repository",
-                    "observed_source_record_audit_sha256": "a" * 64,
-                    "observed_source_record_fingerprint_schema": 10,
-                    "validation_dimensions": {
-                        "source_configuration_identity": {
-                            "state": "stale",
-                            "reason": "fixture source changed",
-                        }
-                    },
-                }
-            )
-            helper = root / "fast_saved_identity_helper.py"
-            helper.write_text("# mocked subprocess target\n", encoding="utf-8")
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
-                ),
-                mock.patch.object(planner.subprocess, "run", return_value=proc),
-                mock.patch(
-                    "scripts.audit_evidence_integrity.source_record_semantic_contract_revalidation_context",
-                    return_value=(object(), ""),
-                ),
-                mock.patch(
-                    "scripts.audit_evidence_integrity.source_record_audit_identity_error",
-                    return_value="source_record_input_fingerprint is stale for current source or audit-engine inputs",
-                ),
-            ):
-                preflight = planner.fast_saved_source_record_preflight(folder)
-
-            self.assertEqual(preflight["state"], "raw_reissue_required")
-            self.assertEqual(
-                preflight["semantic_contract_revalidation"]["state"], "rejected"
-            )
-            self.assertIn(
-                "source_record_input_fingerprint is stale",
-                preflight["semantic_contract_revalidation"]["reason"],
-            )
-
-    def test_current_raw_with_unreadable_judgment_never_reissues_raw(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            (folder / "status.json").write_text("{}\n", encoding="utf-8")
-            (audit / "source_record_audit.json").write_text(
-                "this raw is deliberately not read by the planner\n", encoding="utf-8"
+            folder.mkdir(parents=True)
+            lane = {
+                "required": True,
+                "ready": True,
+                "lane": planner.V11_SOURCE_SPEC_SEMANTIC_LANE,
+                "errors": [],
+            }
+            finding = types.SimpleNamespace(
+                severity="ERROR",
+                message="`Fixture` frozen closeout configuration preflight: stale row",
             )
-            (audit / "source_record_match_llm.json").write_text(
-                "not JSON\n", encoding="utf-8"
-            )
-            helper = root / "fast_saved_identity_helper.py"
-            helper.write_text("# mocked subprocess target\n", encoding="utf-8")
-            proc = types.SimpleNamespace(
-                returncode=0,
-                stdout=json.dumps(
-                    {
-                        "current": True,
-                        "source_record_audit_sha256": "a" * 64,
-                    }
-                ),
-                stderr="",
-            )
-
             with (
                 mock.patch.object(planner, "ROOT", root),
                 mock.patch.object(
                     planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
+                    "current_v11_source_spec_semantic_lane",
+                    return_value=lane,
                 ),
-                mock.patch.object(planner.subprocess, "run", return_value=proc),
+                mock.patch.object(
+                    primary_gate_transaction,
+                    "current_route_schema_preflight_findings",
+                    return_value=[finding],
+                ),
+                mock.patch.object(
+                    planner,
+                    "builder_issued_v11_lean_operational_provider",
+                    side_effect=AssertionError("closure must not be read"),
+                ),
             ):
-                first = planner.fast_saved_source_record_preflight(folder)
-                second = planner.fast_saved_source_record_preflight(folder)
+                acquisition, errors = planner.current_v11_live_lean_operational_plan(
+                    folder,
+                    source_map={},
+                    evidence_context=object(),
+                )
 
-            self.assertEqual(first["state"], "current_raw_judgment_rebuild_required")
-            self.assertEqual(second, first)
-            action = planner.source_record_preflight_action("Fixture", first)
-            assert action is not None
-            self.assertEqual(action["id"], "rebuild_current_source_record_judgments")
-            self.assertNotIn("argv", action)
+        self.assertIsNone(acquisition)
+        self.assertEqual(errors, [finding.message])
 
-    def test_current_raw_with_nonobject_judgment_never_reissues_raw(self) -> None:
+    def test_frozen_configuration_preflight_includes_source_fidelity_schema(
+        self,
+    ) -> None:
+        """A malformed fidelity ledger stops planning before the build lane."""
+
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            (folder / "status.json").write_text("{}\n", encoding="utf-8")
-            (audit / "source_record_audit.json").write_text(
-                "this raw is deliberately not read by the planner\n", encoding="utf-8"
+            folder.mkdir(parents=True)
+            (folder / "status.json").write_text(
+                '{"status": "formalized"}\n', encoding="utf-8"
             )
-            (audit / "source_record_match_llm.json").write_text(
-                "[]\n", encoding="utf-8"
+            context = self._issued_v11_context(folder)
+            schema_finding = types.SimpleNamespace(
+                severity="ERROR",
+                path=folder / "audit" / "source_proof_fidelity.json",
+                message="defects[0].defect_kind must use the controlled vocabulary",
             )
-            helper = root / "fast_saved_identity_helper.py"
-            helper.write_text("# mocked subprocess target\n", encoding="utf-8")
-            proc = types.SimpleNamespace(
-                returncode=0,
-                stdout=json.dumps(
-                    {
-                        "current": True,
-                        "source_record_audit_sha256": "a" * 64,
-                    }
-                ),
-                stderr="",
-            )
-
             with (
-                mock.patch.object(planner, "ROOT", root),
                 mock.patch.object(
-                    planner,
-                    "FAST_SAVED_SOURCE_RECORD_HELPER_RELATIVE",
-                    helper.relative_to(root),
+                    primary_gate_transaction,
+                    "current_source_spec_correspondence_inventory_findings",
+                    return_value=[],
                 ),
-                mock.patch.object(planner.subprocess, "run", return_value=proc),
+                mock.patch.object(
+                    source_validation,
+                    "repaired_source_defect_route_preflight_findings",
+                    return_value=[],
+                ),
+                mock.patch.object(
+                    source_validation,
+                    "source_proof_fidelity_findings",
+                    return_value=[schema_finding],
+                ) as fidelity,
+                mock.patch.object(
+                    primary_gate_transaction,
+                    "current_v11_primary_gate_result",
+                    return_value=types.SimpleNamespace(
+                        configuration_errors=(), structure_errors=()
+                    ),
+                ),
             ):
-                preflight = planner.fast_saved_source_record_preflight(folder)
+                findings = primary_gate_transaction.current_route_schema_preflight_findings(
+                    root, folder, context=context
+                )
 
-            self.assertEqual(preflight["state"], "current_raw_judgment_rebuild_required")
-            action = planner.source_record_preflight_action("Fixture", preflight)
-            assert action is not None
-            self.assertEqual(action["id"], "rebuild_current_source_record_judgments")
-            self.assertNotIn("argv", action)
-
-    def test_all_reuse_schedule_skips_redundant_build_then_runs_closeout(self) -> None:
-        schedule = planner.closeout_action_schedule(
-            "Fixture",
-            cache_reusable=True,
-            summary={
-                "statement_requires_review": 0,
-                "coverage_requires_review": 0,
-            },
-            validator_identity_errors={"statement": [], "coverage": []},
+        self.assertEqual(len(findings), 1)
+        self.assertIn("controlled vocabulary", findings[0].message)
+        fidelity.assert_called_once_with(
+            folder,
+            "formalized",
+            context.status_payload,
+            require_source_bytes=False,
+            context=context,
         )
 
-        self.assertTrue(schedule["semantic_review_reuse_ready"])
-        self.assertEqual(
-            [action["id"] for action in schedule["actions"]],
-            ["strict_closeout"],
-        )
-        self.assertTrue(all(action["required"] for action in schedule["actions"]))
-        self.assertEqual(schedule["next_action"]["id"], "strict_closeout")
-        self.assertIn("run_paper_closeout.py", schedule["actions"][-1]["command"])
 
-    def test_unsealed_current_items_do_not_block_existing_paper_closeout(self) -> None:
-        schedule = planner.closeout_action_schedule(
-            "Fixture",
-            cache_reusable=True,
-            summary={
-                "statement_requires_review": 0,
-                "coverage_requires_review": 0,
-                "statement_future_reuse_pin_missing": 3,
-                "coverage_future_reuse_pin_missing": 1,
-            },
-            validator_identity_errors={"statement": [], "coverage": []},
-        )
-
-        self.assertTrue(schedule["semantic_review_reuse_ready"])
-        self.assertFalse(
-            schedule["future_reuse_pin_maintenance"]["required_for_this_closeout"]
-        )
-        self.assertEqual(schedule["future_reuse_pin_maintenance"]["statement_items"], 3)
-        self.assertNotIn(
-            "refresh_invalid_semantic_items",
-            [action["id"] for action in schedule["actions"]],
-        )
-
-    def test_same_operational_plan_is_inspected_instead_of_rerun(self) -> None:
-        plan_identity = "f" * 64
-        prior = {
-            "state": "complete",
-            "exit_code": 0,
-            "result": {
-                "operational_plan_identity": plan_identity,
-                "operational_plan_identity_schema": (
-                    planner.OPERATIONAL_PLAN_IDENTITY_SCHEMA
-                ),
-                "semantic_closeout_passed": True,
-            },
-        }
-        schedule = planner.closeout_action_schedule(
-            "Fixture",
-            cache_reusable=True,
-            summary={"statement_requires_review": 0, "coverage_requires_review": 0},
-            validator_identity_errors={"statement": [], "coverage": []},
-            plan_identity=plan_identity,
-            prior_execution=prior,
-        )
-        self.assertEqual(schedule["next_action"]["id"], "inspect_existing_closeout")
-        self.assertIn("--status", schedule["next_action"]["argv"])
-        self.assertEqual(
-            [action["id"] for action in schedule["actions"]],
-            ["inspect_existing_closeout"],
-        )
-
-        failed_prior = {
-            **prior,
-            "exit_code": 1,
-            "result": {**prior["result"], "semantic_closeout_passed": False},
-        }
-        failed = planner.closeout_action_schedule(
-            "Fixture",
-            cache_reusable=True,
-            summary={"statement_requires_review": 0, "coverage_requires_review": 0},
-            validator_identity_errors={"statement": [], "coverage": []},
-            plan_identity=plan_identity,
-            prior_execution=failed_prior,
-        )
-        self.assertEqual(
-            [action["id"] for action in failed["actions"]],
-            [
-                "inspect_existing_closeout",
-                "strict_closeout_after_failure_confirmation",
-            ],
-        )
-        self.assertEqual(
-            failed["actions"][1]["state"],
-            "after_operator_confirms_retry_required",
-        )
-        self.assertIn("--new-run", failed["actions"][1]["argv"])
-
-        changed = planner.closeout_action_schedule(
-            "Fixture",
-            cache_reusable=True,
-            summary={"statement_requires_review": 0, "coverage_requires_review": 0},
-            validator_identity_errors={"statement": [], "coverage": []},
-            plan_identity="e" * 64,
-            prior_execution=prior,
-        )
-        self.assertEqual(changed["next_action"]["id"], "strict_closeout")
-        self.assertIn("--new-run", changed["next_action"]["argv"])
-
-        recovered = {
-            **prior,
-            "recovered_from_worker_state": True,
-            "request": {
-                "operational_plan_identity": plan_identity,
-                "operational_plan_identity_schema": (
-                    planner.OPERATIONAL_PLAN_IDENTITY_SCHEMA
-                ),
-            },
-        }
-        recovered_same = planner.closeout_action_schedule(
-            "Fixture",
-            cache_reusable=True,
-            summary={"statement_requires_review": 0, "coverage_requires_review": 0},
-            validator_identity_errors={"statement": [], "coverage": []},
-            plan_identity=plan_identity,
-            prior_execution=recovered,
-        )
-        self.assertEqual(
-            recovered_same["next_action"]["id"], "inspect_existing_closeout"
-        )
-        recovered_changed = planner.closeout_action_schedule(
-            "Fixture",
-            cache_reusable=True,
-            summary={"statement_requires_review": 0, "coverage_requires_review": 0},
-            validator_identity_errors={"statement": [], "coverage": []},
-            plan_identity="d" * 64,
-            prior_execution=recovered,
-        )
-        self.assertEqual(recovered_changed["next_action"]["id"], "strict_closeout")
-        self.assertIn("--new-run", recovered_changed["next_action"]["argv"])
-
-        legacy = planner.closeout_action_schedule(
-            "Fixture",
-            cache_reusable=True,
-            summary={"statement_requires_review": 0, "coverage_requires_review": 0},
-            validator_identity_errors={"statement": [], "coverage": []},
-            plan_identity=plan_identity,
-            prior_execution={
-                "state": "complete",
-                "result": {"operational_plan_identity": plan_identity},
-            },
-        )
-        self.assertEqual(legacy["next_action"]["id"], "inspect_legacy_closeout")
-        self.assertNotIn("--new-run", legacy["next_action"]["argv"])
-
-        adopted_change = planner.closeout_action_schedule(
-            "Fixture",
-            cache_reusable=True,
-            summary={"statement_requires_review": 0, "coverage_requires_review": 0},
-            validator_identity_errors={"statement": [], "coverage": []},
-            plan_identity="e" * 64,
-            prior_execution={
-                "state": "complete",
-                "exit_code": 0,
-                "result": {"semantic_closeout_passed": True},
-            },
-            legacy_adoption={"state": "material_changed"},
-        )
-        self.assertEqual(adopted_change["next_action"]["id"], "strict_closeout")
-        self.assertIn("--new-run", adopted_change["next_action"]["argv"])
-
-        adopted_current = planner.closeout_action_schedule(
-            "Fixture",
-            cache_reusable=True,
-            summary={"statement_requires_review": 0, "coverage_requires_review": 0},
-            validator_identity_errors={"statement": [], "coverage": []},
-            plan_identity=plan_identity,
-            prior_execution={
-                "state": "complete",
-                "exit_code": 0,
-                "result": {"semantic_closeout_passed": True},
-            },
-            legacy_adoption={"state": "current"},
-        )
-        self.assertEqual(
-            [action["id"] for action in adopted_current["actions"]],
-            ["inspect_legacy_closeout"],
-        )
-
-    def test_compiled_rebuild_requires_replan_before_closeout(self) -> None:
-        schedule = planner.closeout_action_schedule(
-            "Fixture",
-            cache_reusable=True,
-            compiled_artifacts_ready=False,
-            summary={"statement_requires_review": 0, "coverage_requires_review": 0},
-            validator_identity_errors={"statement": [], "coverage": []},
-        )
-        self.assertEqual(
-            [action["id"] for action in schedule["actions"]],
-            ["paper_build", "replan_after_build"],
-        )
-        self.assertEqual(schedule["next_action"]["id"], "paper_build")
-
-    def test_deep_mode_is_preserved_in_strict_closeout_argv(self) -> None:
-        schedule = planner.closeout_action_schedule(
-            "Fixture",
-            cache_reusable=True,
-            compiled_artifacts_ready=True,
-            summary={"statement_requires_review": 0, "coverage_requires_review": 0},
-            validator_identity_errors={"statement": [], "coverage": []},
-            deep_paper_prose=True,
-        )
-        self.assertIn("--deep-paper-prose", schedule["next_action"]["argv"])
-
-    def test_static_readiness_stops_before_expensive_work_and_is_legacy_safe(
+    def test_current_planner_has_no_legacy_semantic_material_selector(self) -> None:
+        self.assertFalse(hasattr(planner, "legacy_semantic_audit_material_paths"))
+        self.assertFalse(hasattr(planner, "_file_material_snapshot"))
+        self.assertFalse(hasattr(planner, "_review_dashboard_module"))
+        self.assertFalse(hasattr(planner, "_review_dashboard_packet_module"))
+    def test_static_readiness_never_lexes_lean_placeholders(
         self,
     ) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -3610,15 +3915,18 @@ class CloseoutReusePlanTests(unittest.TestCase):
             with (
                 mock.patch.object(planner, "ROOT", root),
                 mock.patch.object(
-                    planner,
+                    intake_freeze,
                     "_paper_predates_intake_freeze_baseline",
                     return_value=True,
                 ),
             ):
-                readiness = planner.static_closeout_readiness(folder)
+                readiness = planner.static_closeout_readiness(
+                    folder,
+                    require_terminal_documents=False,
+                )
             self.assertTrue(readiness["ready"])
             self.assertEqual(
-                readiness["lanes"]["prospective_intake_freeze"]["state"],
+                readiness["lanes"]["source_intake_boundary"]["state"],
                 "legacy_not_configured",
             )
 
@@ -3628,16 +3936,332 @@ class CloseoutReusePlanTests(unittest.TestCase):
             with (
                 mock.patch.object(planner, "ROOT", root),
                 mock.patch.object(
-                    planner,
+                    intake_freeze,
                     "_paper_predates_intake_freeze_baseline",
                     return_value=True,
                 ),
             ):
                 readiness = planner.static_closeout_readiness(folder)
-            self.assertFalse(readiness["ready"])
-            self.assertTrue(
-                any("Lean placeholder" in blocker for blocker in readiness["blockers"])
+            self.assertTrue(readiness["ready"])
+            self.assertEqual(
+                readiness["lanes"]["paper_local_proof_surface"]["state"],
+                "deferred_to_lean_graph_and_focused_build",
             )
+            self.assertFalse(
+                readiness["lanes"]["paper_local_proof_surface"][
+                    "python_lean_source_parsing"
+                ]
+            )
+
+    def test_evidence_readiness_defers_terminal_report_and_dag_products(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            (folder / "status.json").write_text(
+                '{"status": "formalized"}\n', encoding="utf-8"
+            )
+            (folder / "audit" / "paper_statement_map.json").write_text(
+                '{"items": {}}\n', encoding="utf-8"
+            )
+            (folder / "PaperInterface.lean").write_text(
+                "theorem ready : True := by trivial\n", encoding="utf-8"
+            )
+            (root / "papers" / "Fixture.lean").write_text(
+                "import Fixture.PaperInterface\n", encoding="utf-8"
+            )
+            intake_result = {
+                "ready": True,
+                "state": "current",
+                "errors": [],
+                "acceptance_credential": False,
+            }
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner,
+                    "source_intake_readiness",
+                    return_value=intake_result,
+                ) as intake,
+                mock.patch.object(
+                    planner, "_static_closeout_document_hard_errors"
+                ) as document_gate,
+            ):
+                evidence_readiness = planner.static_closeout_readiness(
+                    folder,
+                    require_terminal_documents=False,
+                )
+
+            self.assertTrue(evidence_readiness["ready"])
+            self.assertEqual(
+                evidence_readiness["lanes"]["required_artifacts"]["missing"], []
+            )
+            terminal = evidence_readiness["lanes"][
+                "terminal_presentation_artifacts"
+            ]
+            self.assertFalse(terminal["ready"])
+            self.assertFalse(terminal["required_now"])
+            self.assertEqual(
+                terminal["state"], "deferred_until_terminal_closeout"
+            )
+            self.assertEqual(len(terminal["missing"]), 3)
+            self.assertEqual(
+                evidence_readiness["lanes"]["strict_closeout_documents"]["state"],
+                "deferred_until_terminal_closeout",
+            )
+            intake.assert_called_once_with(folder, repository_root=root)
+            document_gate.assert_not_called()
+
+            with (
+                mock.patch.object(planner, "ROOT", root),
+            ):
+                terminal_readiness = planner.static_closeout_readiness(folder)
+            self.assertFalse(terminal_readiness["ready"])
+            self.assertTrue(
+                any(
+                    "missing required closeout artifact" in blocker
+                    for blocker in terminal_readiness["blockers"]
+                )
+            )
+
+    def test_static_named_support_triage_is_bounded_noncertifying_and_producer_free(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            (folder / "status.json").write_text('{"status": "formalized"}')
+            (folder / "PaperInterface.lean").write_text("-- no Lean inspection\n")
+            (root / "papers" / "Fixture.lean").write_text("-- fixture\n")
+            items = {}
+            for item_id, statement in (
+                ("own_claim", "Lemma 1. Every feasible input has a witness."),
+                ("citation", "Lemma 2 (External Author). Every input has a bound."),
+                ("component", "Theorem 3. The selected result has this component."),
+                ("partial_boundary", "Theorem 4. An explicitly unproved boundary."),
+            ):
+                items[item_id] = {
+                    "source_kind": "lemma" if item_id in {"own_claim", "citation"} else "theorem",
+                    "statement": statement,
+                    "claim_bearing": True,
+                    "inventory_role": "proof_support",
+                    "scope_disposition": item_id,
+                    "support_lean_declarations": ["Fixture.downstream"],
+                    "source_claim_atoms": [{"reviewed_lean_route": "Fixture.recordedAtomRoute"}],
+                    "source_component_of": "direct",
+                    "source_anchor_evidence": [{
+                        "path": "source.txt", "line_start": 10, "line_end": 12,
+                        "quoted_text": "DO_NOT_DUMP_THE_SOURCE_CORPUS" * 1000,
+                        "quoted_text_sha256": "a" * 64,
+                    }],
+                }
+            items["direct"] = {
+                "source_kind": "theorem", "statement": "Theorem 5. A direct claim.",
+                "claim_bearing": True,
+                "semantic_contract": {
+                    "spec_declaration": "Fixture.directSpec",
+                    "evidence_declaration": "Fixture.direct",
+                },
+            }
+            items["unnumbered"] = {
+                "source_kind": "equation", "claim_bearing": False,
+                "inventory_role": "proof_support", "statement": "An intermediate equality.",
+            }
+            map_path = folder / "audit" / "paper_statement_map.json"
+            map_path.write_text(json.dumps({"items": items}))
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(planner, "prepare_v11_lean_review_graph", side_effect=AssertionError("producer")) as producer,
+                mock.patch.object(planner, "source_intake_readiness", side_effect=AssertionError("intake not requested")),
+                mock.patch.object(subprocess, "Popen", side_effect=AssertionError("subprocess")) as process,
+            ):
+                readiness = planner.static_closeout_readiness(
+                    folder, include_intake=False, require_terminal_documents=False,
+                )
+            self.assertTrue(readiness["ready"])
+            self.assertFalse(readiness["acceptance_credential"])
+            self.assertEqual(readiness["blockers"], [])
+            lane = readiness["lanes"]["review_surface_structure"]
+            self.assertIsNone(lane["ready"])
+            self.assertEqual(lane["state"], "deferred_to_typed_route_and_lean_graph_preflight")
+            self.assertEqual(lane["errors"], [])
+            self.assertEqual(len(lane["findings"]), 4)
+            for item_id, finding in zip(sorted(items.keys() - {"direct", "unnumbered"}), lane["findings"]):
+                self.assertEqual(finding["severity"], "WARN")
+                self.assertEqual(finding["path"], "papers/Fixture/audit/paper_statement_map.json")
+                self.assertIn(f"items.{item_id}:", finding["message"])
+                self.assertIn("source.txt:10-12", finding["message"])
+                self.assertIn("Fixture.downstream", finding["message"])
+                self.assertIn("Fixture.recordedAtomRoute", finding["message"])
+                self.assertIn("not validated coverage or an automatic exemption", finding["message"])
+                self.assertNotIn("DO_NOT_DUMP", finding["message"])
+                self.assertLess(len(finding["message"]), 1500)
+            producer.assert_not_called()
+            process.assert_not_called()
+
+    def test_static_readiness_delegates_review_membership_to_lean(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            (folder / "docs").mkdir()
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "status": "formalized",
+                        "review_surface": {
+                            "include_names": ["missingSpec"],
+                            "auxiliary_names": ["missingHelper"],
+                            "quarantined_auxiliary_names": ["notAuxiliary"],
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (folder / "audit" / "paper_statement_map.json").write_text(
+                "{}\n", encoding="utf-8"
+            )
+            (folder / "FINAL_VALIDATION_REPORT.md").write_text(
+                "## Closeout Status\n- Completion status: formalized.\n",
+                encoding="utf-8",
+            )
+            (folder / "docs" / "DependencyDAG.tex").write_text(
+                "% fixture\n", encoding="utf-8"
+            )
+            (folder / "docs" / "DependencyDAG.pdf").write_bytes(b"fixture")
+            (folder / "PaperInterface.lean").write_text(
+                "def actualSpec : Prop := True\n", encoding="utf-8"
+            )
+            (root / "papers" / "Fixture.lean").write_text(
+                "import Fixture.PaperInterface\n", encoding="utf-8"
+            )
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner,
+                    "source_intake_readiness",
+                    return_value={"ready": True, "errors": []},
+                ),
+                mock.patch.object(
+                    planner, "_static_closeout_document_hard_errors", return_value=[]
+                ),
+            ):
+                readiness = planner.static_closeout_readiness(folder)
+
+            lane = readiness["lanes"]["review_surface_structure"]
+            self.assertTrue(readiness["ready"])
+            self.assertEqual(
+                lane["state"],
+                "deferred_to_typed_route_and_lean_graph_preflight",
+            )
+            self.assertEqual(lane["errors"], [])
+            self.assertFalse(lane["python_lean_source_parsing"])
+
+    def test_static_readiness_uses_one_source_intake_boundary(self) -> None:
+        """A malformed reviewed inventory blocks without a dashboard preflight."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            (folder / "docs").mkdir()
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "status": "formalized",
+                        "source_inventory_review_required": True,
+                        "build_target": "lake build Fixture",
+                        "review_surface": {
+                            "require_v11_raw_source_spec_screening": True,
+                            "include_names": ["readySpec"],
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (folder / "audit" / "paper_statement_map.json").write_text(
+                json.dumps({"items": {}}), encoding="utf-8"
+            )
+            (folder / "FINAL_VALIDATION_REPORT.md").write_text(
+                "## Closeout Status\n- Completion status: formalized.\n",
+                encoding="utf-8",
+            )
+            (folder / "docs" / "DependencyDAG.tex").write_text(
+                "% fixture\n", encoding="utf-8"
+            )
+            (folder / "docs" / "DependencyDAG.pdf").write_bytes(b"fixture")
+            (folder / "PaperInterface.lean").write_text(
+                "def readySpec : Prop := True\n", encoding="utf-8"
+            )
+            (root / "papers" / "Fixture.lean").write_text(
+                "import Fixture.PaperInterface\n", encoding="utf-8"
+            )
+            intake_result = {
+                "ready": False,
+                "state": "incomplete",
+                "errors": ["candidate presentation ledger is incomplete"],
+                "acceptance_credential": False,
+            }
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner, "_static_closeout_document_hard_errors", return_value=[]
+                ),
+                mock.patch.object(
+                    planner,
+                    "source_intake_readiness",
+                    return_value=intake_result,
+                ) as intake,
+            ):
+                readiness = planner.static_closeout_readiness(folder)
+
+            self.assertFalse(readiness["ready"])
+            self.assertEqual(
+                readiness["lanes"]["source_intake_boundary"], intake_result
+            )
+            self.assertTrue(
+                any("source intake" in blocker for blocker in readiness["blockers"])
+            )
+            self.assertNotIn("source_inventory_preflight", readiness["lanes"])
+            intake.assert_called_once_with(folder, repository_root=root)
+    def test_static_readiness_never_parses_lean_imports(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            (folder / "docs").mkdir()
+            for relative in (
+                "status.json",
+                "audit/paper_statement_map.json",
+                "FINAL_VALIDATION_REPORT.md",
+                "docs/DependencyDAG.tex",
+                "docs/DependencyDAG.pdf",
+            ):
+                (folder / relative).write_text("{}", encoding="utf-8")
+            (folder / "PaperInterface.lean").write_text(
+                "import AppliedModelingLib.Missing\n", encoding="utf-8"
+            )
+            (root / "papers" / "Fixture.lean").write_text(
+                "import Fixture.PaperInterface\n", encoding="utf-8"
+            )
+            with (
+                mock.patch.object(planner, "ROOT", root),
+                mock.patch.object(
+                    planner,
+                    "source_intake_readiness",
+                    return_value={"ready": True, "errors": []},
+                ) as intake,
+            ):
+                readiness = planner.static_closeout_readiness(
+                    folder,
+                    require_terminal_documents=False,
+                )
+
+            lane = readiness["lanes"]["tracked_lean_import_closure"]
+            self.assertTrue(readiness["ready"])
+            self.assertEqual(lane["state"], "deferred_to_lean_owned_import_closure")
+            self.assertFalse(lane["python_lean_source_parsing"])
+            self.assertFalse(hasattr(planner, "_tracked_lean_import_preflight"))
+            intake.assert_called_once_with(folder, repository_root=root)
 
     def test_static_readiness_stops_before_intake_for_strict_document_error(
         self,
@@ -3665,7 +4289,7 @@ class CloseoutReusePlanTests(unittest.TestCase):
                 mock.patch.object(planner, "ROOT", root),
                 mock.patch.object(
                     planner,
-                    "intake_freeze_readiness",
+                    "source_intake_readiness",
                     return_value={"ready": True, "errors": []},
                 ) as intake,
             ):
@@ -3673,7 +4297,7 @@ class CloseoutReusePlanTests(unittest.TestCase):
 
             self.assertFalse(readiness["ready"])
             self.assertEqual(
-                readiness["lanes"]["prospective_intake_freeze"]["state"],
+                readiness["lanes"]["source_intake_boundary"]["state"],
                 "deferred_due_to_static_blocker",
             )
             self.assertTrue(
@@ -3681,47 +4305,26 @@ class CloseoutReusePlanTests(unittest.TestCase):
             )
             intake.assert_not_called()
 
-    def test_static_readiness_uses_corrected_scope_only_for_source_audit_exception(
-        self,
-    ) -> None:
+    def test_current_v11_static_preflight_defers_final_adversarial_audit(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            (folder / "audit").mkdir(parents=True)
-            (folder / "docs").mkdir()
-            for relative, contents in (
-                ("status.json", '{"status": "formalized"}\n'),
-                ("audit/paper_statement_map.json", "{}\n"),
-                (
-                    "FINAL_VALIDATION_REPORT.md",
-                    "## Closeout Status\n- Completion status: formalized.\n",
-                ),
-                ("docs/DependencyDAG.tex", "% fixture\n"),
-            ):
-                (folder / relative).write_text(contents, encoding="utf-8")
-            (folder / "docs" / "DependencyDAG.pdf").write_bytes(b"fixture")
-            (folder / "PaperInterface.lean").write_text(
-                "theorem ready : True := by trivial\n", encoding="utf-8"
-            )
-            (root / "papers" / "Fixture.lean").write_text(
-                "import Fixture.PaperInterface\n", encoding="utf-8"
-            )
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner, "_planner_corrected_scope_current", return_value=True
-                ) as corrected_scope,
-                mock.patch.object(
-                    planner,
-                    "intake_freeze_readiness",
-                    return_value={"ready": True, "errors": []},
-                ) as intake,
-            ):
-                readiness = planner.static_closeout_readiness(folder)
+            folder = Path(temp_dir) / "papers" / "Fixture"
+            folder.mkdir(parents=True)
+            status = {
+                "status": "formalized",
+                "review_surface": {
+                    "require_v11_raw_source_spec_screening": True,
+                },
+            }
 
-            self.assertTrue(readiness["ready"])
-            corrected_scope.assert_called_once()
-            intake.assert_called_once_with(folder)
+            errors = planner._static_closeout_document_hard_errors(folder, status)
+
+        self.assertEqual(errors, [])
+
+    def test_current_planner_has_no_legacy_source_configuration_lanes(self) -> None:
+        self.assertFalse(
+            hasattr(planner, "_semantic_source_configuration_errors")
+        )
+        self.assertFalse(hasattr(planner, "_planner_corrected_scope_current"))
 
     def test_static_readiness_blocks_controlled_report_status_mismatch(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -3753,7 +4356,7 @@ class CloseoutReusePlanTests(unittest.TestCase):
             with (
                 mock.patch.object(planner, "ROOT", root),
                 mock.patch.object(
-                    planner, "intake_freeze_readiness", return_value={"errors": []}
+                    planner, "source_intake_readiness", return_value={"errors": []}
                 ) as intake,
             ):
                 readiness = planner.static_closeout_readiness(folder)
@@ -3770,776 +4373,161 @@ class CloseoutReusePlanTests(unittest.TestCase):
             )
             intake.assert_not_called()
 
-    def test_intake_marker_grandfathers_only_status_files_without_the_field(
+
+
+
+
+
+    def test_closeout_input_selection_excludes_ambient_and_presentation_files(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            (root / "AppliedModelingLib").mkdir()
+            (folder / "audit").mkdir(parents=True)
+            (folder / "docs").mkdir()
+            (folder / "status.json").write_text("{}")
+            (folder / "audit" / "paper_statement_map.json").write_text('{"items": {}}')
+            (folder / "audit" / "source_record_audit.json").write_text("{}")
+            (folder / "FINAL_VALIDATION_REPORT.md").write_text("ready\n")
+            (folder / "docs" / "DependencyDAG.tex").write_text("derived\n")
+            (folder / ".review_traces").mkdir()
+            (folder / ".review_traces" / "paper_theorem_validations.jsonl").write_text(
+                "historical\n"
+            )
+            unrelated = root / "AppliedModelingLib" / "Unrelated.lean"
+            unrelated.write_text("def unrelated := 1\n")
+            with mock.patch.object(planner, "ROOT", root):
+                content_paths, stat_paths = planner._closeout_plan_input_paths(
+                    folder,
+                    strict_transaction_content_snapshot={
+                        "papers/Fixture/audit/paper_statement_map.json": {
+                            "sha256": "a" * 64
+                        }
+                    },
+                )
+            self.assertIn(folder / "status.json", content_paths)
+            self.assertIn(
+                folder / "audit" / "paper_statement_map.json", content_paths
+            )
+            self.assertNotIn(folder / "FINAL_VALIDATION_REPORT.md", content_paths)
+            self.assertNotIn(folder / "docs" / "DependencyDAG.tex", content_paths)
+            self.assertNotIn(
+                folder / ".review_traces" / "paper_theorem_validations.jsonl",
+                content_paths,
+            )
+            self.assertNotIn(
+                folder / "audit" / "source_record_audit.json", content_paths
+            )
+            self.assertNotIn(unrelated, content_paths)
+            self.assertNotIn(unrelated, stat_paths)
+
+    def test_strict_input_inventory_rejects_a_legacy_shaped_context(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            folder.mkdir(parents=True)
+            with mock.patch.object(planner, "ROOT", root):
+                snapshot, error = planner._strict_transaction_content_snapshot(
+                    folder,
+                    evidence_context=types.SimpleNamespace(
+                        v11_lean_claim_graph_selected=False
+                    ),
+                )
+
+        self.assertIsNone(snapshot)
+        self.assertIn("nominal v11 evidence context", error)
+
+    def test_v11_strict_input_inventory_never_reopens_legacy_watch_resolvers(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            source = folder / "source.txt"
+            source.write_text("source bytes\n", encoding="utf-8")
+            statement_map = audit / "paper_statement_map.json"
+            statement_map.write_text('{"items": {}}', encoding="utf-8")
+            status_payload = {"id": "Fixture", "status": "formalized"}
+            (folder / "status.json").write_text(
+                json.dumps(status_payload), encoding="utf-8"
+            )
+            context = self._issued_v11_context(
+                folder,
+                sidecar_paths=(source,),
+            )
+            with mock.patch.object(planner, "ROOT", root):
+                snapshot, error = planner._strict_transaction_content_snapshot(
+                    folder,
+                    evidence_context=context,
+                )
+                source.write_text("changed source bytes\n", encoding="utf-8")
+                stale_snapshot, stale_error = (
+                    planner._strict_transaction_content_snapshot(
+                        folder,
+                        evidence_context=context,
+                    )
+                )
+
+            self.assertEqual(error, "")
+            assert snapshot is not None
+            self.assertIn("papers/Fixture/source.txt", snapshot)
+            self.assertIn("papers/Fixture/audit/paper_statement_map.json", snapshot)
+            self.assertIsNone(stale_snapshot)
+            self.assertIn("source.txt", stale_error)
+
+    def test_strict_input_inventory_compares_only_acceptance_status_fields(
         self,
     ) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             folder = root / "papers" / "Fixture"
             folder.mkdir(parents=True)
-            status = folder / "status.json"
-            status.write_text("{}", encoding="utf-8")
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "_paper_predates_intake_freeze_baseline",
-                    return_value=True,
-                ),
-            ):
-                legacy = planner._intake_freeze_readiness(folder)
-            self.assertTrue(legacy["ready"])
-            self.assertEqual(legacy["state"], "legacy_not_configured")
-
-            status.write_text(
-                json.dumps({"intake_freeze_required": True}), encoding="utf-8"
-            )
-            with mock.patch.object(planner, "ROOT", root):
-                missing = planner._intake_freeze_readiness(folder)
-            self.assertFalse(missing["ready"])
-            self.assertEqual(missing["state"], "missing")
-
-            status.write_text(
-                json.dumps({"intake_freeze_required": False}), encoding="utf-8"
-            )
-            with mock.patch.object(planner, "ROOT", root):
-                disabled = planner._intake_freeze_readiness(folder)
-            self.assertFalse(disabled["ready"])
-            self.assertTrue(
-                any("exactly true" in error for error in disabled["errors"])
-            )
-
-    def test_new_scaffold_cannot_downgrade_by_deleting_its_intake_seal(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            (folder / "status.json").write_text("{}", encoding="utf-8")
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "_paper_predates_intake_freeze_baseline",
-                    return_value=False,
-                ),
-            ):
-                readiness = planner._intake_freeze_readiness(folder)
-            self.assertFalse(readiness["ready"])
-            self.assertEqual(readiness["state"], "prospective_marker_missing")
-
-    def test_prospective_intake_atoms_are_bound_to_current_source_bytes(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            artifact = folder / "source.txt"
-            artifact_bytes = b"prefix Theorem X. suffix"
-            artifact.write_bytes(artifact_bytes)
-            statement = "Theorem X."
-            mapped_statement = "Theorem   X.\n"
-            artifact_digest = hashlib.sha256(artifact_bytes).hexdigest()
-            (folder / "status.json").write_text(
-                json.dumps({"intake_freeze_required": True}), encoding="utf-8"
-            )
-            (audit / "paper_statement_map.json").write_text(
-                json.dumps(
-                    {
-                        "source_artifact_path": "papers/Fixture/source.txt",
-                        "source_artifact_sha256": artifact_digest,
-                        "items": {
-                            "opaque_map_key": {
-                                "source_item": "A label that need not match",
-                                "source_location": "line 1",
-                                "statement": mapped_statement,
-                            }
-                        },
-                    }
-                )
-            )
-            start = artifact_bytes.index(statement.encode())
-            payload = {
-                "schema": 1,
-                "paper": "Fixture",
-                "state": "sealed",
-                "inventory_complete": True,
-                "source_item_identity": planner.INTAKE_SOURCE_IDENTITY,
-                "source_artifact_path": "papers/Fixture/source.txt",
-                "source_artifact_sha256": artifact_digest,
-                "items": [
-                    {
-                        "source_item": "Unrelated navigation label",
-                        "source_location": "line 1",
-                        "source_statement_sha256": hashlib.sha256(
-                            statement.encode()
-                        ).hexdigest(),
-                        "dependency_order": 1,
-                        "owner": "proof-agent",
-                        "acceptance_conditions": ["prove the exact target"],
-                        "source_atoms": [
-                            {
-                                "source_location": "line 1",
-                                "quoted_text": "invented",
-                                "quoted_text_sha256": hashlib.sha256(
-                                    b"invented"
-                                ).hexdigest(),
-                                "byte_start": start,
-                                "byte_end": start + len(statement),
-                            }
-                        ],
-                    }
-                ],
+            status_payload = {
+                "id": "Fixture",
+                "status": "formalized",
+                "review_surface": {"include_names": ["Fixture.resultSpec"]},
             }
-            freeze = audit / "intake_freeze.json"
-            freeze.write_text(json.dumps(payload))
+            status_path = folder / "status.json"
+            status_path.write_text(json.dumps(status_payload), encoding="utf-8")
+            context = self._issued_v11_context(folder)
             with mock.patch.object(planner, "ROOT", root):
-                rejected = planner._intake_freeze_readiness(folder)
-            self.assertFalse(rejected["ready"])
-
-            payload["items"][0]["source_atoms"][0].update(
-                {
-                    "quoted_text": statement,
-                    "quoted_text_sha256": hashlib.sha256(
-                        statement.encode()
-                    ).hexdigest(),
-                }
-            )
-            freeze.write_text(json.dumps(payload))
-            with mock.patch.object(planner, "ROOT", root):
-                accepted = planner._intake_freeze_readiness(folder)
-            self.assertTrue(accepted["ready"], accepted["errors"])
-
-            payload["items"][0]["acceptance_conditions"] = []
-            freeze.write_text(json.dumps(payload))
-            with mock.patch.object(planner, "ROOT", root):
-                empty_acceptance = planner._intake_freeze_readiness(folder)
-            self.assertFalse(empty_acceptance["ready"])
-            self.assertTrue(
-                any(
-                    "incomplete acceptance conditions" in error
-                    for error in empty_acceptance["errors"]
-                )
-            )
-            payload["items"][0]["acceptance_conditions"] = ["prove the exact target"]
-            freeze.write_text(json.dumps(payload))
-
-            source_map_path = audit / "paper_statement_map.json"
-            current_map = json.loads(source_map_path.read_text(encoding="utf-8"))
-            current_map["items"]["second"] = {
-                "source_item": "Theorem Y",
-                "source_location": "line 2",
-                "statement": "Theorem Y.",
-            }
-            source_map_path.write_text(json.dumps(current_map), encoding="utf-8")
-            with mock.patch.object(planner, "ROOT", root):
-                incomplete_inventory = planner._intake_freeze_readiness(folder)
-            self.assertFalse(incomplete_inventory["ready"])
-            self.assertTrue(
-                any(
-                    "exactly equal the current source-map inventory" in error
-                    for error in incomplete_inventory["errors"]
-                )
-            )
-            del current_map["items"]["second"]
-            source_map_path.write_text(json.dumps(current_map), encoding="utf-8")
-
-            payload["source_artifact_path"] = "papers/Fixture/not-canonical.txt"
-            freeze.write_text(json.dumps(payload))
-            with mock.patch.object(planner, "ROOT", root):
-                wrong_artifact = planner._intake_freeze_readiness(folder)
-            self.assertFalse(wrong_artifact["ready"])
-            self.assertTrue(
-                any(
-                    "canonical source-map identity" in error
-                    for error in wrong_artifact["errors"]
-                )
-            )
-
-            payload["source_artifact_path"] = "papers/Fixture/source.txt"
-            payload["items"][0]["source_location"] = "line 2"
-            freeze.write_text(json.dumps(payload))
-            with mock.patch.object(planner, "ROOT", root):
-                wrong_location = planner._intake_freeze_readiness(folder)
-            self.assertFalse(wrong_location["ready"])
-            self.assertTrue(
-                any(
-                    "location and normalized statement" in error
-                    for error in wrong_location["errors"]
-                )
-            )
-
-    def test_pdf_intake_atoms_use_bound_normalized_text_not_pdf_bytes(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            pdf_bytes = b"%PDF-1.7 compressed bytes without the theorem"
-            text_bytes = b"prefix Theorem X. suffix\n"
-            pdf = folder / "source.pdf"
-            text_artifact = folder / "source.txt"
-            pdf.write_bytes(pdf_bytes)
-            text_artifact.write_bytes(text_bytes)
-            pdf_digest = hashlib.sha256(pdf_bytes).hexdigest()
-            text_digest = hashlib.sha256(text_bytes).hexdigest()
-            statement = "Theorem X."
-            statement_digest = planner.review_dashboard.statement_digest(statement)
-            (folder / "status.json").write_text(
-                json.dumps({"intake_freeze_required": True}), encoding="utf-8"
-            )
-            (audit / "paper_statement_map.json").write_text(
-                json.dumps(
-                    {
-                        "source_artifact_path": "papers/Fixture/source.pdf",
-                        "source_artifact_sha256": pdf_digest,
-                        "items": {
-                            "x": {
-                                "source_location": "Theorem 1, p. 2",
-                                "statement": statement,
-                            }
-                        },
-                    }
-                ),
-                encoding="utf-8",
-            )
-            start = text_bytes.index(statement.encode("utf-8"))
-            payload = {
-                "schema": 1,
-                "paper": "Fixture",
-                "state": "sealed",
-                "inventory_complete": True,
-                "source_item_identity": planner.INTAKE_SOURCE_IDENTITY,
-                "source_artifact_path": "papers/Fixture/source.pdf",
-                "source_artifact_sha256": pdf_digest,
-                "source_text_artifact": {
-                    "schema": 1,
-                    "path": "papers/Fixture/source.txt",
-                    "sha256": text_digest,
-                    "normalization": "utf8-lf-v1",
-                    "extraction": {
-                        "schema": 1,
-                        "source_artifact_path": "papers/Fixture/source.pdf",
-                        "source_artifact_sha256": pdf_digest,
-                        "tool": "pdftotext",
-                        "options": [],
-                    },
-                },
-                "items": [
-                    {
-                        "source_item": "navigation-only label",
-                        "source_location": "Theorem 1, p. 2",
-                        "source_statement_sha256": statement_digest,
-                        "dependency_order": 1,
-                        "owner": "proof-agent",
-                        "acceptance_conditions": ["prove the exact target"],
-                        "source_atoms": [
-                            {
-                                "source_location": "Theorem 1, p. 2",
-                                "quoted_text": statement,
-                                "quoted_text_sha256": hashlib.sha256(
-                                    statement.encode("utf-8")
-                                ).hexdigest(),
-                                "byte_start": start,
-                                "byte_end": start + len(statement.encode("utf-8")),
-                            }
-                        ],
-                    }
-                ],
-            }
-            freeze = audit / "intake_freeze.json"
-            freeze.write_text(json.dumps(payload), encoding="utf-8")
-            with mock.patch.object(planner, "ROOT", root):
-                accepted = planner._intake_freeze_readiness(folder)
-            self.assertTrue(accepted["ready"], accepted["errors"])
-
-            del payload["source_text_artifact"]
-            freeze.write_text(json.dumps(payload), encoding="utf-8")
-            with mock.patch.object(planner, "ROOT", root):
-                missing_receipt = planner._intake_freeze_readiness(folder)
-            self.assertFalse(missing_receipt["ready"])
-            self.assertTrue(
-                any(
-                    "normalized source-text" in error
-                    for error in missing_receipt["errors"]
-                )
-            )
-
-    def test_advisory_plan_cache_is_non_authoritative_and_mutation_guarded(
-        self,
-    ) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            trace = folder / ".review_traces"
-            artifact = root / "Fixture.olean"
-            trace.mkdir(parents=True)
-            artifact.write_bytes(b"olean")
-            stat = artifact.stat()
-            artifact_identity = (
-                stat.st_dev,
-                stat.st_ino,
-                stat.st_size,
-                stat.st_mtime_ns,
-                stat.st_ctime_ns,
-            )
-            semantic_plan = {
-                "acceptance_credential": False,
-                "requires_fresh_strict_closeout": True,
-                "cache_reusable": True,
-                "compiled_artifacts_ready": True,
-                "statement": {},
-                "coverage": {},
-                "summary": {
-                    "statement_requires_review": 0,
-                    "coverage_requires_review": 0,
-                },
-                "validator_identity_errors": {"statement": [], "coverage": []},
-            }
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "validate_lean_closure_operational_projection",
-                    return_value={"state": "present"},
-                ),
-            ):
-                planner._write_advisory_plan_cache(
-                    folder,
-                    input_identity_sha256="a" * 64,
-                    input_material={"schema": 1},
-                    semantic_plan=semantic_plan,
-                    source_artifact_mutation_snapshot={
-                        str(folder / "PaperInterface.lean"): None
-                    },
-                    compiled_artifact_mutation_snapshot={
-                        str(artifact): artifact_identity
-                    },
-                    strict_transaction_content_snapshot={},
-                    lean_import_closure_projection={"state": "present"},
-                )
-                planner._write_compiled_input_cache(
-                    folder,
-                    planner.compiled_input_snapshot(root, [artifact]),
-                )
-                loaded = planner._read_advisory_plan_cache(folder, "a" * 64)
-            self.assertIsNotNone(loaded)
-            assert loaded is not None
-            self.assertTrue(loaded["compiled_artifacts_ready"])
-            self.assertFalse(loaded["acceptance_credential"])
-
-            artifact.unlink()
-            artifact.write_bytes(b"olean")
-            os.utime(
-                artifact,
-                ns=(artifact.stat().st_atime_ns, artifact_identity[3] + 1_000_000_000),
-            )
-            with mock.patch.object(planner, "ROOT", root):
-                prior_compiled = planner._load_compiled_input_cache(folder)
-            self.assertIsNotNone(prior_compiled)
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "compiled_input_snapshot",
-                    wraps=planner.compiled_input_snapshot,
-                ) as refresh,
-                mock.patch.object(
-                    planner,
-                    "validate_lean_closure_operational_projection",
-                    return_value={"state": "present"},
-                ),
-            ):
-                rebuilt_same = planner._read_advisory_plan_cache(folder, "a" * 64)
-            refresh.assert_called_once()
-            self.assertIsNotNone(rebuilt_same)
-
-            artifact.write_bytes(b"changed")
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "validate_lean_closure_operational_projection",
-                    return_value={"state": "present"},
-                ),
-            ):
-                changed = planner._read_advisory_plan_cache(folder, "a" * 64)
-            self.assertIsNone(changed)
-
-    def test_advisory_cache_persists_refreshed_external_artifact_guards(
-        self,
-    ) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            (folder / ".review_traces").mkdir(parents=True)
-            semantic_plan = {
-                "acceptance_credential": False,
-                "requires_fresh_strict_closeout": True,
-                "compiled_artifacts_ready": True,
-                "statement": {},
-                "coverage": {},
-                "summary": {
-                    "statement_requires_review": 0,
-                    "coverage_requires_review": 0,
-                },
-                "validator_identity_errors": {"statement": [], "coverage": []},
-            }
-            old_projection = {
-                "state": "present",
-                "external_artifact_stats": {"guard": "old"},
-            }
-            refreshed_projection = {
-                "state": "present",
-                "external_artifact_stats": {"guard": "current"},
-            }
-            with mock.patch.object(planner, "ROOT", root):
-                planner._write_advisory_plan_cache(
-                    folder,
-                    input_identity_sha256="a" * 64,
-                    input_material={"schema": 1},
-                    semantic_plan=semantic_plan,
-                    source_artifact_mutation_snapshot={},
-                    compiled_artifact_mutation_snapshot={},
-                    strict_transaction_content_snapshot={},
-                    lean_import_closure_projection=old_projection,
-                )
-
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "validate_lean_closure_operational_projection",
-                    return_value=refreshed_projection,
-                ),
-            ):
-                first = planner._read_advisory_plan_cache(folder, "a" * 64)
-            self.assertIsNotNone(first)
-            cache_path = planner._advisory_plan_cache_path(folder)
-            persisted = json.loads(cache_path.read_text(encoding="utf-8"))
-            self.assertEqual(
-                persisted["lean_import_closure_projection"], refreshed_projection
-            )
-
-            def validate_persisted(_root: Path, recorded: object) -> object:
-                self.assertEqual(recorded, refreshed_projection)
-                return recorded
-
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "validate_lean_closure_operational_projection",
-                    side_effect=validate_persisted,
-                ) as validate,
-            ):
-                second = planner._read_advisory_plan_cache(folder, "a" * 64)
-            self.assertIsNotNone(second)
-            validate.assert_called_once()
-
-    def test_advisory_cache_uses_small_external_tool_projection(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir) / "repository"
-            root.mkdir()
-            folder = root / "papers" / "Fixture"
-            (folder / ".review_traces").mkdir(parents=True)
-            tool = Path(temp_dir) / "sha256sum"
-            tool.write_bytes(b"tool")
-            stat = tool.stat()
-            identity = (
-                stat.st_dev,
-                stat.st_ino,
-                stat.st_size,
-                stat.st_mtime_ns,
-                stat.st_ctime_ns,
-            )
-            contexts = self.signature_context(schema=3)
-            contexts["semantic_hash_tool_identity"] = {
-                "schema": "1",
-                "resolved_path": str(tool.resolve()),
-                "executable_sha256": "d" * 64,
-            }
-            projection = planner._declared_semantic_hash_tool_projection(
-                {"PaperInterface.lean": contexts}
-            )
-            semantic_plan = {
-                "acceptance_credential": False,
-                "requires_fresh_strict_closeout": True,
-                "compiled_artifacts_ready": True,
-                "statement": {},
-                "coverage": {},
-                "summary": {
-                    "statement_requires_review": 0,
-                    "coverage_requires_review": 0,
-                },
-                "validator_identity_errors": {"statement": [], "coverage": []},
-            }
-            with mock.patch.object(planner, "ROOT", root):
-                planner._write_advisory_plan_cache(
-                    folder,
-                    input_identity_sha256="a" * 64,
-                    input_material={"schema": 1},
-                    semantic_plan=semantic_plan,
-                    source_artifact_mutation_snapshot={},
-                    compiled_artifact_mutation_snapshot={str(tool.resolve()): identity},
-                    strict_transaction_content_snapshot={},
-                    lean_import_closure_projection={"state": "present"},
-                    declared_external_tool_projection=projection,
-                )
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "validate_lean_closure_operational_projection",
-                    return_value={"state": "present"},
-                ),
-                mock.patch.object(
-                    planner,
-                    "_dashboard_signature_contexts",
-                    side_effect=AssertionError("dashboard body must not be read"),
-                ),
-            ):
-                loaded = planner._read_advisory_plan_cache(folder, "a" * 64)
-            self.assertIsNotNone(loaded)
-            assert loaded is not None
-            self.assertEqual(loaded["_execution_compiled_artifact_mutation_snapshot"], {})
-
-    def test_advisory_cache_persists_current_input_guards_after_same_bytes(
-        self,
-    ) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            (folder / ".review_traces").mkdir(parents=True)
-            dashboard = root / "dashboard.json"
-            dashboard.write_bytes(b"large-cache-fixture")
-            original_guard = planner._stat_identity(dashboard.stat())
-            dashboard_digest = hashlib.sha256(dashboard.read_bytes()).hexdigest()
-            input_material = {
-                "schema": 1,
-                "dashboard_cache": {
-                    str(dashboard): {
-                        "state": "present",
-                        "sha256": dashboard_digest,
-                    }
-                },
-                "_mutation_snapshot": {str(dashboard): original_guard},
-            }
-            semantic_plan = {
-                "acceptance_credential": False,
-                "requires_fresh_strict_closeout": True,
-                "compiled_artifacts_ready": True,
-                "statement": {},
-                "coverage": {},
-                "summary": {
-                    "statement_requires_review": 0,
-                    "coverage_requires_review": 0,
-                },
-                "validator_identity_errors": {"statement": [], "coverage": []},
-            }
-            with mock.patch.object(planner, "ROOT", root):
-                planner._write_advisory_plan_cache(
-                    folder,
-                    input_identity_sha256="a" * 64,
-                    input_material=input_material,
-                    semantic_plan=semantic_plan,
-                    source_artifact_mutation_snapshot={},
-                    compiled_artifact_mutation_snapshot={},
-                    strict_transaction_content_snapshot={},
-                    lean_import_closure_projection={"state": "present"},
-                )
-
-            os.utime(
-                dashboard,
-                ns=(
-                    dashboard.stat().st_atime_ns,
-                    original_guard[3] + 1_000_000_000,
-                ),
-            )
-            current_guard = planner._stat_identity(dashboard.stat())
-            self.assertNotEqual(current_guard, original_guard)
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner,
-                    "validate_lean_closure_operational_projection",
-                    return_value={"state": "present"},
-                ),
-            ):
-                loaded = planner._read_advisory_plan_cache(
-                    folder,
-                    "a" * 64,
-                    current_input_mutation_snapshot={str(dashboard): current_guard},
-                )
-                reused = planner._reusable_dashboard_material_snapshot(
-                    folder, dashboard
-                )
-            self.assertIsNotNone(loaded)
-            self.assertIsNotNone(reused)
-            cache_path = planner._advisory_plan_cache_path(folder)
-            persisted = json.loads(cache_path.read_text(encoding="utf-8"))
-            self.assertEqual(
-                persisted["input_mutation_snapshot"][str(dashboard)],
-                list(current_guard),
-            )
-
-    def test_unchanged_large_dashboard_digest_is_reused_by_stat_guard(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            trace = folder / ".review_traces"
-            trace.mkdir(parents=True)
-            dashboard = root / "dashboard.json"
-            dashboard.write_bytes(b"large-cache-fixture")
-            stat = planner._stat_identity(dashboard.stat())
-            payload = {
-                "schema": planner.ADVISORY_PLAN_CACHE_SCHEMA,
-                "decision_contract": planner.ADVISORY_PLAN_DECISION_CONTRACT,
-                "input_material": {
-                    "dashboard_cache": {
-                        str(dashboard): {
-                            "state": "present",
-                            "sha256": hashlib.sha256(
-                                dashboard.read_bytes()
-                            ).hexdigest(),
-                        }
-                    }
-                },
-                "input_mutation_snapshot": {str(dashboard): list(stat)},
-            }
-            with mock.patch.object(planner, "ROOT", root):
-                planner.atomic_write_json(
-                    planner._advisory_plan_cache_path(folder), payload
-                )
-                reused = planner._reusable_dashboard_material_snapshot(
-                    folder, dashboard
-                )
-            self.assertIsNotNone(reused)
-            assert reused is not None
-            self.assertEqual(reused[str(dashboard)]["stat"], list(stat))
-
-            dashboard.write_bytes(b"changed-cache")
-            with mock.patch.object(planner, "ROOT", root):
-                self.assertIsNone(
-                    planner._reusable_dashboard_material_snapshot(folder, dashboard)
-                )
-
-    def test_closeout_input_selection_does_not_walk_ambient_files(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            (root / "EconCSLib").mkdir()
-            (folder / "audit").mkdir(parents=True)
-            (folder / "docs").mkdir()
-            (folder / "status.json").write_text("{}")
-            (folder / "audit" / "paper_statement_map.json").write_text('{"items": {}}')
-            (folder / "FINAL_VALIDATION_REPORT.md").write_text("ready\n")
-            unrelated = root / "EconCSLib" / "Unrelated.lean"
-            unrelated.write_text("def unrelated := 1\n")
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    planner.review_dashboard,
-                    "required_dashboard_audit_input_paths",
-                    return_value=(),
-                ),
-            ):
-                content_paths, stat_paths = planner._closeout_plan_input_paths(
-                    folder,
-                    strict_transaction_content_snapshot={},
-                )
-            self.assertIn(folder / "FINAL_VALIDATION_REPORT.md", content_paths)
-            self.assertNotIn(unrelated, content_paths)
-            self.assertNotIn(unrelated, stat_paths)
-
-    def test_strict_input_inventory_uses_evidence_roles_for_engine_code(
-        self,
-    ) -> None:
-        from scripts import audit_evidence_integrity
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            folder = root / "papers" / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            selected = audit / "source_record_audit.json"
-            selected.write_text("{}", encoding="utf-8")
-            missing_candidate = folder / "source.pdf"
-            operational_py = root / "scripts" / "operational.py"
-            operational_lean = root / "scripts" / "operational.lean"
-            operational_sh = root / "scripts" / "operational.sh"
-            raw_producer = (
-                root
-                / "skills"
-                / "econcs-formalizer"
-                / "scripts"
-                / "raw_producer.py"
-            )
-            paper_lean = folder / "MainTheorems.lean"
-            for candidate in (
-                operational_py,
-                operational_lean,
-                operational_sh,
-                raw_producer,
-                paper_lean,
-            ):
-                candidate.parent.mkdir(parents=True, exist_ok=True)
-                candidate.write_text("-- fixture\n", encoding="utf-8")
-            context = types.SimpleNamespace(
-                input_snapshots=(types.SimpleNamespace(path=selected),),
-                audit_payload={
-                    "source_record_input_fingerprint": {
-                        "raw_producer_code_identities": [
-                            {
-                                "path": (
-                                    "skills/econcs-formalizer/scripts/"
-                                    "raw_producer.py#fresh-surface"
-                                ),
-                                "sha256": "a" * 64,
-                                "status": "present",
-                            }
-                        ]
-                    }
-                },
-            )
-            with (
-                mock.patch.object(planner, "ROOT", root),
-                mock.patch.object(
-                    audit_evidence_integrity,
-                    "build_evidence_run_context",
-                    return_value=context,
-                ),
-                mock.patch.object(
-                    audit_evidence_integrity,
-                    "_fingerprint_identity_watch_paths",
-                    return_value=(
+                status_path.write_text(
+                    json.dumps(
                         {
-                            operational_py,
-                            operational_lean,
-                            operational_sh,
-                            raw_producer,
-                            paper_lean,
-                        },
-                        [],
+                            **status_payload,
+                            "paper_interface": {"review_rows": 1},
+                            "human_review": {"completed_rows": 0},
+                        }
                     ),
-                ),
-                mock.patch.object(
-                    audit_evidence_integrity,
-                    "_source_record_identity_declared_watch_paths",
-                    return_value=({missing_candidate}, []),
-                ),
-            ):
-                snapshot, error = planner._strict_transaction_content_snapshot(folder)
+                    encoding="utf-8",
+                )
+                snapshot, error = planner._strict_transaction_content_snapshot(
+                    folder,
+                    evidence_context=context,
+                )
+                status_path.write_text(
+                    json.dumps({**status_payload, "status": "partial"}),
+                    encoding="utf-8",
+                )
+                changed_snapshot, changed_error = (
+                    planner._strict_transaction_content_snapshot(
+                        folder,
+                        evidence_context=context,
+                    )
+                )
+
             self.assertEqual(error, "")
             assert snapshot is not None
-            self.assertIn("papers/Fixture/source.pdf", snapshot)
-            self.assertIn(
-                "skills/econcs-formalizer/scripts/raw_producer.py", snapshot
+            self.assertEqual(
+                set(snapshot),
+                {"papers/Fixture/audit/paper_statement_map.json"},
             )
-            self.assertIn("papers/Fixture/MainTheorems.lean", snapshot)
-            self.assertNotIn("scripts/operational.py", snapshot)
-            self.assertNotIn("scripts/operational.lean", snapshot)
-            self.assertNotIn("scripts/operational.sh", snapshot)
+            self.assertIsNone(changed_snapshot)
+            self.assertIn("acceptance configuration changed", changed_error)
 
 
 if __name__ == "__main__":

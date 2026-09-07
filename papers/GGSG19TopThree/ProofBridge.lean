@@ -13,8 +13,8 @@ wrappers around the detailed proof surface in `ProofInterface.lean`.
 
 namespace GGSG19TopThree.ProofBridge
 
-open EconCSLib.SocialChoice.Ranking
-open EconCSLib.Probability
+open AppliedModelingLib.SocialChoice.Ranking
+open AppliedModelingLib.Probability
 open MeasureTheory
 open scoped ProbabilityTheory
 
@@ -55,7 +55,7 @@ Source `K`-approval formula: top-`K` candidates get one, all others zero.
 -/
 theorem source_model_k_approval_score {n : ℕ} (K : ℕ)
     (ranking : Ranking n) (candidate : Candidate n) :
-    EconCSLib.SocialChoice.Ranking.kApprovalScore K ranking candidate =
+    AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K ranking candidate =
       if (rankOf ranking candidate).val < K then 1 else 0 := by
   rfl
 
@@ -272,23 +272,28 @@ theorem source_proposition2_thm_pairwiselearning_finite_support
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal)) :
-    ExponentialRateCertificate
-        (pairwiseScoringErrorProb law hiScore loScore)
-        (pairwiseScoringRate law hiScore loScore) ∨
-      (∃ pZero : ℝ,
-        EconCSLib.pmfProb law
-            (fun signal => hiScore signal - loScore signal = 0) =
-          pZero ∧
-        0 < pZero ∧
-        ExponentialRateCertificate
+    (ExponentialRateCertificate
           (pairwiseScoringErrorProb law hiScore loScore)
-          (-Real.log pZero)) ∨
-      (∀ᶠ n in Filter.atTop,
-        pairwiseScoringErrorProb law hiScore loScore n = 0) :=
-  proposition2_pairwise_exact_rate_or_boundary_from_finite_support_mean_nonneg
-    law hiScore loScore hmean
+          (pairwiseScoringRate law hiScore loScore) ∨
+        (∃ pZero : ℝ,
+          AppliedModelingLib.pmfProb law
+              (fun signal => hiScore signal - loScore signal = 0) =
+            pZero ∧
+          0 < pZero ∧
+          ExponentialRateCertificate
+            (pairwiseScoringErrorProb law hiScore loScore)
+            (-Real.log pZero)) ∨
+        (∀ᶠ n in Filter.atTop,
+          pairwiseScoringErrorProb law hiScore loScore n = 0)) ∧
+      ∀ n,
+        pairwiseScoringErrorProb law hiScore loScore n ≤
+          Real.exp (-(n : ℝ) * pairwiseScoringRate law hiScore loScore) :=
+  ⟨proposition2_pairwise_exact_rate_or_boundary_from_finite_support_mean_nonneg
+      law hiScore loScore hmean,
+    pairwiseScoringErrorProb_le_exp_neg_pairwiseScoringRate_of_mean_nonneg
+      law hiScore loScore hmean⟩
 
 /--
 Source Proposition `lem:pairwiselearning_approval`, finite ternary form for
@@ -307,15 +312,15 @@ theorem source_proposition3_lem_pairwiselearning_approval_finite_ternary
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown)
     (hZeroProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         pZero) :
     ExponentialRateCertificate
@@ -338,7 +343,7 @@ theorem source_proposition4_thm_goal_learning_finite_support
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal =>
             score (hi pair) signal - score (lo pair) signal)) :
     ∃ rate : WithTop ℝ,
@@ -357,12 +362,9 @@ theorem source_proposition4_thm_goal_learning_finite_support
 
 /--
 Source Proposition `thm:goal_learning`, exact minimum-rate endpoint.  The
-unit-weight aggregate below is exactly the source quantity `Q^N`: the sum of
-the relevant pairwise error probabilities.  Its rate is the minimum of the
-same relevant pairwise Chernoff rates.
-
-Source status: direct source theorem clause.
-Source note: Exact source TeX lines 524--531 and proof lines 1332--1371.
+unit-weight aggregate is the source quantity `Q^N`.  A pair with no positive-
+sample errors has extended rate `⊤`, so it does not lower a finite aggregate
+minimum.
 -/
 theorem source_proposition4_thm_goal_learning_exact_minimum_rate
     {Pair Candidate Signal : Type*} [Fintype Pair] [Nonempty Pair]
@@ -371,27 +373,24 @@ theorem source_proposition4_thm_goal_learning_exact_minimum_rate
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
-          (fun signal => score (hi pair) signal - score (lo pair) signal))
-    (aPos aNeg : Pair → Signal)
-    (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
-    (hgapPos :
-      ∀ pair, 0 < score (hi pair) (aPos pair) - score (lo pair) (aPos pair))
-    (hmassNeg : ∀ pair, 0 < (law (aNeg pair)).toReal)
-    (hgapNeg :
-      ∀ pair, score (hi pair) (aNeg pair) - score (lo pair) (aNeg pair) < 0) :
-    HasExponentialRate
-      ((proposition4_relevant_pair_rate_certificate_from_stationary_tilted_modal_log_support_of_mean_nonneg_pos_neg_atoms
-          law score hi lo hmean aPos aNeg hmassPos hgapPos hmassNeg hgapNeg)
-        |>.aggregateError (fun _ => (1 : ℝ)))
-      (finiteOutcomeLearningRate
+        0 ≤ AppliedModelingLib.pmfExp law
+          (fun signal => score (hi pair) signal - score (lo pair) signal)) :
+    HasExtendedExponentialRate
+      (fun sampleSize =>
+        ∑ pair : Pair,
+          finiteScoreGapPairwiseErrorProb law score
+            (hi pair) (lo pair) sampleSize)
+      (finiteOutcomeLearningExtendedRate
         (fun pair : Pair =>
-          finiteIidPairwiseScoreGapChernoffRate law score
-            (hi pair) (lo pair))) :=
-  proposition4_outcome_error_exact_rate_from_stationary_tilted_modal_log_support_of_mean_nonneg_pos_neg_atoms_at_finiteOutcomeLearningRate_relevant_pairs
-    law score hi lo hmean aPos aNeg hmassPos hgapPos hmassNeg hgapNeg
-    (by intro pair; exact zero_le_one)
-    (by intro pair; exact zero_lt_one)
+          pairwiseScoringExtendedRate law
+            (score (hi pair)) (score (lo pair)))) :=
+  by
+    convert
+      outcomeError_hasExtendedExponentialRate_at_finiteOutcomeLearningExtendedRate_of_relevant_pairs_finite_support
+        law score hi lo hmean
+        (by intro pair; exact zero_le_one)
+        (by intro pair; exact zero_lt_one)
+      using 1 ; simp
 
 /--
 Source Proposition `thm:goal_learning`, finite-`N` clause.  `Pair` indexes the
@@ -408,15 +407,8 @@ theorem source_proposition4_thm_goal_learning_finite_sample_M_sq_bound
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score (hi pair) signal - score (lo pair) signal))
-    {aPos aNeg : Pair → Signal}
-    (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
-    (hgapPos :
-      ∀ pair, 0 < score (hi pair) (aPos pair) - score (lo pair) (aPos pair))
-    (hmassNeg : ∀ pair, 0 < (law (aNeg pair)).toReal)
-    (hgapNeg :
-      ∀ pair, score (hi pair) (aNeg pair) - score (lo pair) (aNeg pair) < 0)
     (hcard : Fintype.card Pair ≤ Fintype.card Candidate ^ 2)
     (n : ℕ) :
     (∑ pair : Pair,
@@ -436,8 +428,8 @@ theorem source_proposition4_thm_goal_learning_finite_sample_M_sq_bound
               (fun pair : Pair =>
                 pairwiseScoringRate law
                   (score (hi pair)) (score (lo pair)))) :=
-      proposition4_relevant_score_gap_error_sum_pointwise_upper_bound_at_finiteOutcomeLearningRate_of_mean_nonneg_pos_neg_atoms
-        law score hi lo hmean hmassPos hgapPos hmassNeg hgapNeg n
+      finiteRelevantScoreGapErrorSum_le_card_mul_exp_at_finiteOutcomeLearningRate_of_mean_nonneg
+        law score hi lo hmean n
     _ ≤ (Fintype.card Candidate : ℝ) ^ 2 *
           Real.exp (-(n : ℝ) *
             finiteOutcomeLearningRate
@@ -597,7 +589,7 @@ def zeroNoiseTopWApprovalError {n : ℕ}
   ∑ pair : TopWSelectionPair center W,
     finiteScoreGapPairwiseErrorProb (PMF.pure center)
       (fun candidate ranking =>
-        EconCSLib.SocialChoice.Ranking.kApprovalScore W.val ranking candidate)
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalScore W.val ranking candidate)
       pair.hi pair.lo sampleSize
 
 /--
@@ -621,8 +613,8 @@ theorem source_corollary_lem_mallowsnorando_zero_noise
         ∀ ranking : Ranking n,
           0 < ((PMF.pure center : PMF (Ranking n)) ranking).toReal →
             0 <
-              EconCSLib.SocialChoice.Ranking.kApprovalScore W.val ranking pair.hi -
-                EconCSLib.SocialChoice.Ranking.kApprovalScore W.val ranking pair.lo := by
+              AppliedModelingLib.SocialChoice.Ranking.kApprovalScore W.val ranking pair.hi -
+                AppliedModelingLib.SocialChoice.Ranking.kApprovalScore W.val ranking pair.lo := by
     intro pair ranking hmass
     have hranking : ranking = center := by
       by_contra hne
@@ -633,14 +625,14 @@ theorem source_corollary_lem_mallowsnorando_zero_noise
       exact (lt_irrefl 0) hmass
     subst ranking
     have hhi :
-        EconCSLib.SocialChoice.Ranking.approvedByK W.val center pair.hi := by
+        AppliedModelingLib.SocialChoice.Ranking.approvedByK W.val center pair.hi := by
       change (rankOf center pair.hi).val < W.val
       exact pair.rank_hi_lt_cut
     have hlo :
-        ¬ EconCSLib.SocialChoice.Ranking.approvedByK W.val center pair.lo := by
+        ¬ AppliedModelingLib.SocialChoice.Ranking.approvedByK W.val center pair.lo := by
       change ¬ (rankOf center pair.lo).val < W.val
       exact Nat.not_lt.mpr pair.cut_le_rank_lo
-    simp [EconCSLib.SocialChoice.Ranking.kApprovalScore, hhi, hlo]
+    simp [AppliedModelingLib.SocialChoice.Ranking.kApprovalScore, hhi, hlo]
   have hzero :
       ∀ᶠ sampleSize in Filter.atTop,
         zeroNoiseTopWApprovalError center W sampleSize = 0 := by
@@ -648,7 +640,7 @@ theorem source_corollary_lem_mallowsnorando_zero_noise
       (proposition4_relevant_score_gap_aggregate_eventually_zero_from_support_pos
         (PMF.pure center)
         (fun candidate ranking =>
-          EconCSLib.SocialChoice.Ranking.kApprovalScore W.val ranking candidate)
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalScore W.val ranking candidate)
         (fun pair : TopWSelectionPair center W => pair.hi)
         (fun pair : TopWSelectionPair center W => pair.lo)
         (pairWeight := fun _ => (1 : ℝ)) hsupport)

@@ -1,0 +1,1 @@
+import GHKR22BiasBounties.ProofInterface

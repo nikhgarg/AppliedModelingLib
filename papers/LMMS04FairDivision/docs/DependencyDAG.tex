@@ -2,70 +2,71 @@
 \input{../../../docs/tikz/dag_preamble.tex}
 
 \begin{document}
-\begin{tikzpicture}[node distance=1.05cm and 1.7cm,
+\begin{tikzpicture}[node distance=0.95cm and 1.25cm,
   every node/.style={font=\sffamily\small}]
 
-% Legend
-  \dagPaperMetadata{On Approximately Fair Allocations of Indivisible Goods}{Richard J. Lipton, Evangelos Markakis, Elchanan Mossel, and Amin Saberi}{EC 2004}{2004}{https://dl.acm.org/doi/pdf/10.1145/988772.988792}
+\dagPaperMetadata{On Approximately Fair Allocations of Indivisible Goods}{Richard J. Lipton, Evangelos Markakis, Elchanan Mossel, and Amin Saberi}{EC 2004}{2004}{https://dl.acm.org/doi/pdf/10.1145/988772.988792}
 \dagPaperLegendRightOfMetadata{
-\node[dag_result, dag_template_legend] (legRes) {\textbf{Closed}\\formalized};
-\node[dag_lemma, right=0.35cm of legRes, dag_template_legend] (legLem) {\textbf{Closed Lemma}\\supporting};
-\node[dag_model, right=0.35cm of legLem, dag_template_legend] (legDef) {\textbf{Definition}\\model/interface};
-\node[dag_conditional, right=0.35cm of legDef, dag_template_legend] (legCond) {\textbf{Source Interface}\\conditional};
-\node[dag_partial, right=0.35cm of legCond, dag_template_legend] (legPart) {\textbf{Partial}\\support};
-\node[dag_unformalized, right=0.35cm of legPart, dag_template_legend] (legOpen) {\textbf{Open}\\not formalized};
-
-
+\node[dag_result, dag_template_legend] (legRes) {\textbf{Checked result}\\selected source contract};
+\node[dag_lemma, right=0.35cm of legRes, dag_template_legend] (legLem) {\textbf{Checked support}\\source proof route};
+\node[dag_model, right=0.35cm of legLem, dag_template_legend] (legDef) {\textbf{Model}\\interface vocabulary};
+\node[dag_partial, right=0.35cm of legDef, dag_template_legend] (legPart) {\textbf{Zero-proof boundary}\\visible, not credited};
 }
-\daglegend{(legRes)(legLem)(legDef)(legCond)(legPart)(legOpen)}{Legend}
+\daglegend{(legRes)(legLem)(legDef)(legPart)}{Legend}
 
 \begin{dagPaperBody}
 
-% Section 2
+% Selected Section 2 surface
 \node[dag_model] (Defs)
-  {\textbf{Section 2}\\valuations, allocations, envy, max marginal $\alpha$};
+  {\textbf{Section 2 model}\\valuations, allocations, envy, max marginal $\alpha$};
 \node[dag_lemma, below=of Defs] (Lemma22)
-  {\textbf{Lemma 2.2}\\cycle elimination makes envy graph acyclic};
+  {\textbf{Lemma 2.2}\\acyclic envy-graph reduction};
 \node[dag_result, below=of Lemma22] (Thm21Exist)
   {\textbf{Theorem 2.1}\\bounded-envy allocation exists};
-\node[dag_conditional, below=of Thm21Exist] (Thm21Alg)
-  {\textbf{Theorem 2.1}\\algorithm correctness closed; runtime omitted};
+\node[dag_partial, below=of Thm21Exist] (Thm21Runtime)
+  {\textbf{Theorem 2.1 runtime}\\$O(mn^3)$ zero-proof boundary};
 
-% Divisible/mixed extension
-\node[dag_lemma, right=of Lemma22] (Lemma24)
-  {\textbf{Lemma 2.4}\\finite low-mass interval partition};
-\node[dag_result, below=of Lemma24] (Thm23)
-  {\textbf{Theorem 2.3}\\real-supported atom-bounded construction};
+\node[dag_partial, right=of Lemma22] (Lemma24)
+  {\textbf{Lemma 2.4}\\$O(n/\alpha)$ cardinality boundary};
+\node[dag_result, below=of Lemma24] (Thm23Positive)
+  {\textbf{Theorem 2.3}\\positive-$\alpha$ finite-partition branch};
+\node[dag_partial, right=of Thm23Positive] (Thm23Zero)
+  {\textbf{Theorem 2.3, $\alpha=0$}\\external cake-cutting boundary};
 
-% Section 3 and 4 source statements
-\node[dag_partial, right=of Thm21Alg] (Thm31)
-  {\textbf{Theorem 3.1}\\hard family, adaptive asymptotic query bound};
-\node[dag_conditional, below=of Thm31] (Thm32)
-  {\textbf{Theorem 3.2}\\Graham 1.4 citation wrapper};
+% Retained but uncredited Section 3 source claims
+\node[dag_partial, right=of Thm21Runtime] (Thm31)
+  {\textbf{Theorem 3.1}\\exponential-query boundary};
+\node[dag_partial, below=of Thm31] (Thm32)
+  {\textbf{Theorem 3.2}\\external Graham boundary};
 \node[dag_partial, below=of Thm32] (Thm33)
-  {\textbf{Theorem 3.3}\\value-pair/IP search; rounded-good construction};
-\node[dag_result, below=of Thm33] (Claim34)
-  {\textbf{Claim 3.4}\\exact/all-goods finite descent wrappers};
+  {\textbf{Theorem 3.3}\\PTAS/FPTAS runtime boundary};
+\node[dag_partial, below=of Thm33] (Claim34)
+  {\textbf{Claim 3.4}\\visible Section 3 support boundary};
 \node[dag_partial, below=of Claim34] (Lemma35)
-  {\textbf{Lemma 3.5}\\additive rounding-transfer algebra};
-\node[dag_result, right=of Claim34] (Thm41)
-  {\textbf{Theorem 4.1}\\finite source counterexample not truthful};
-\node[dag_result, below=of Thm41] (Thm42)
-  {\textbf{Theorem 4.2}\\truthful uniform random allocation; finite concentration bound};
+  {\textbf{Lemma 3.5}\\visible transfer-support boundary};
 
-% Edges
+% Selected Section 4 surface
+\node[dag_result, right=of Claim34] (Thm41)
+  {\textbf{Theorem 4.1}\\finite counterexample: not truthful};
+\node[dag_result, below=of Thm41] (Thm42Truthful)
+  {\textbf{Theorem 4.2 component}\\uniform random mechanism truthful};
+\node[dag_partial, below=of Thm42Truthful] (Thm42Rate)
+  {\textbf{Theorem 4.2 rate}\\asymptotic zero-proof boundary};
+
 \draw[dag_arrow] (Defs.south) -- (Lemma22.north);
 \draw[dag_arrow] (Lemma22.south) -- (Thm21Exist.north);
-\draw[dag_dashed_arrow] (Thm21Exist.south) -- (Thm21Alg.north);
+\draw[dag_dashed_arrow] (Thm21Exist.south) -- (Thm21Runtime.north);
 \draw[dag_dashed_arrow] (Defs.east) -- (Lemma24.west);
-\draw[dag_dashed_arrow] (Lemma24.south) -- (Thm23.north);
-\draw[dag_dashed_arrow] (Thm21Exist.east) -- (Thm23.west);
-\draw[dag_dashed_arrow] (Thm21Alg.east) -- (Thm31.west);
+\draw[dag_dashed_arrow] (Lemma24.south) -- (Thm23Positive.north);
+\draw[dag_dashed_arrow] (Thm21Exist.east) -- (Thm23Positive.west);
+\draw[dag_dashed_arrow] (Thm23Positive.east) -- (Thm23Zero.west);
+\draw[dag_dashed_arrow] (Thm21Runtime.east) -- (Thm31.west);
 \draw[dag_dashed_arrow] (Thm31.south) -- (Thm32.north);
 \draw[dag_dashed_arrow] (Thm32.south) -- (Thm33.north);
 \draw[dag_dashed_arrow] (Claim34.north) -- (Thm33.south);
 \draw[dag_dashed_arrow] (Lemma35.west) -- ++(-0.45,0) |- (Thm33.west);
-\draw[dag_dashed_arrow] (Thm41.south) -- (Thm42.north);
+\draw[dag_dashed_arrow] (Thm41.south) -- (Thm42Truthful.north);
+\draw[dag_dashed_arrow] (Thm42Truthful.south) -- (Thm42Rate.north);
 \end{dagPaperBody}
 \end{tikzpicture}
 \end{document}

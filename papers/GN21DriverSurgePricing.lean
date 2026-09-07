@@ -1,5 +1,5 @@
 import GN21DriverSurgePricing.PostPaperAudit
-import GN21DriverSurgePricing.PaperInterface
+import GN21DriverSurgePricing.ProofInterface
 import GN21DriverSurgePricing.MainTheorems
 import GN21DriverSurgePricing.Lemma5Frontier
 import GN21DriverSurgePricing.Theorem4Frontier
@@ -7,3 +7,5 @@ import GN21DriverSurgePricing.Theorem3Frontier
 import GN21DriverSurgePricing.FiniteSupport
 import GN21DriverSurgePricing.ZeroDensityBridge
 import GN21DriverSurgePricing.RenewalCycleSeeds
+import GN21DriverSurgePricing.RawRenewalCycleConstruction
+import GN21DriverSurgePricing.RawCalendarCycleConstruction

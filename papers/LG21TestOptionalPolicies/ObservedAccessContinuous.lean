@@ -1,4 +1,5 @@
 import LG21TestOptionalPolicies.SequentialEquilibrium
+import AppliedModelingLib.Foundations.Probability.GaussianSignalKernelRCD
 import Mathlib.Probability.Kernel.Composition.MeasureComp
 import Mathlib.Probability.ConditionalProbability
 
@@ -20,8 +21,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 open MeasureTheory
 open ProbabilityTheory
 
@@ -428,28 +429,60 @@ theorem lg21NormalizedRestriction_isProbability
   change IsProbabilityMeasure (ProbabilityTheory.cond law event)
   exact cond_isProbabilityMeasure_of_finite hpositive hfinite
 
-/-- Posterior skill law conditional on the proposed upper-tail taking event. -/
+/--
+The source parameters of the upper-tail observed-score law in the proof of
+Lemma 4.1.  Positive posterior variance is part of the Gaussian model, and
+positive mass above the finite taking cutoff makes the displayed normalized
+restriction an actual conditional probability law.  The optional test has
+independent positive Gaussian noise conditional on latent skill.
+-/
+structure LG21ObservedAccessUpperTailGaussianModel where
+  posteriorMean : ℝ
+  posteriorVariance : NNReal
+  posteriorVariance_pos : 0 < (posteriorVariance : ℝ)
+  takingCutoff : ℝ
+  upperTailMass_pos :
+    0 < gaussianReal posteriorMean posteriorVariance (Set.Ioi takingCutoff)
+  testNoiseVariance : NNReal
+  testNoiseVariance_pos : 0 < (testNoiseVariance : ℝ)
+
+/-- Posterior skill law conditional on the source's upper-tail taking event. -/
 def lg21ObservedAccessUpperTailSkillLaw
-    (posteriorMean : ℝ) (posteriorVariance : NNReal)
-    (takingCutoff : ℝ) : Measure ℝ :=
+    (model : LG21ObservedAccessUpperTailGaussianModel) : Measure ℝ :=
   lg21NormalizedRestriction
-    (gaussianReal posteriorMean posteriorVariance)
-    (Set.Ioi takingCutoff)
+    (gaussianReal model.posteriorMean model.posteriorVariance)
+    (Set.Ioi model.takingCutoff)
 
 /-- The normalized upper-tail posterior is a probability law when nonempty. -/
 theorem lg21ObservedAccessUpperTailSkillLaw_isProbability
-    (posteriorMean : ℝ) (posteriorVariance : NNReal)
-    (takingCutoff : ℝ)
-    (hpositive :
-      gaussianReal posteriorMean posteriorVariance
-        (Set.Ioi takingCutoff) ≠ 0) :
-    IsProbabilityMeasure
-      (lg21ObservedAccessUpperTailSkillLaw
-        posteriorMean posteriorVariance takingCutoff) := by
+    (model : LG21ObservedAccessUpperTailGaussianModel) :
+    IsProbabilityMeasure (lg21ObservedAccessUpperTailSkillLaw model) := by
   exact
     lg21NormalizedRestriction_isProbability
-      (gaussianReal posteriorMean posteriorVariance)
-      (Set.Ioi takingCutoff) hpositive (measure_ne_top _ _)
+      (gaussianReal model.posteriorMean model.posteriorVariance)
+      (Set.Ioi model.takingCutoff) model.upperTailMass_pos.ne'
+      (measure_ne_top _ _)
+
+/-- The source conditional test law `theta_K | q = N(q, sigma_K^2)`. -/
+def lg21ObservedAccessGaussianTestGivenSkill
+    (model : LG21ObservedAccessUpperTailGaussianModel) : Kernel ℝ ℝ :=
+  gaussianLocationKernel id measurable_id model.testNoiseVariance
+
+/-- The source conditional test law is a Markov kernel. -/
+theorem lg21ObservedAccessGaussianTestGivenSkill_isMarkov
+    (model : LG21ObservedAccessUpperTailGaussianModel) :
+    IsMarkovKernel (lg21ObservedAccessGaussianTestGivenSkill model) := by
+  unfold lg21ObservedAccessGaussianTestGivenSkill
+  exact gaussianLocationKernel_isMarkov id measurable_id model.testNoiseVariance
+
+/-- Pointwise Gaussian form of the source conditional test law. -/
+theorem lg21ObservedAccessGaussianTestGivenSkill_apply
+    (model : LG21ObservedAccessUpperTailGaussianModel) (skill : ℝ) :
+    lg21ObservedAccessGaussianTestGivenSkill model skill =
+      gaussianReal skill model.testNoiseVariance := by
+  unfold lg21ObservedAccessGaussianTestGivenSkill
+  simpa using
+    gaussianLocationKernel_apply id measurable_id model.testNoiseVariance skill
 
 /--
 Exact measure form of the source's observed test-score mixture: first draw
@@ -457,50 +490,38 @@ skill from the upper-truncated posterior skill law, then draw the noisy test
 from its skill-indexed conditional kernel.
 -/
 def lg21ObservedAccessTestLawOfUpperTailTakers
-    (posteriorMean : ℝ) (posteriorVariance : NNReal)
-    (takingCutoff : ℝ) (testGivenSkill : Kernel ℝ ℝ) : Measure ℝ :=
+    (model : LG21ObservedAccessUpperTailGaussianModel) : Measure ℝ :=
   Measure.bind
-    (lg21ObservedAccessUpperTailSkillLaw
-      posteriorMean posteriorVariance takingCutoff)
-    testGivenSkill
+    (lg21ObservedAccessUpperTailSkillLaw model)
+    (lg21ObservedAccessGaussianTestGivenSkill model)
 
 /-- The observed-test mixture is itself a probability law. -/
 theorem lg21ObservedAccessTestLawOfUpperTailTakers_isProbability
-    (posteriorMean : ℝ) (posteriorVariance : NNReal)
-    (takingCutoff : ℝ) (testGivenSkill : Kernel ℝ ℝ)
-    [IsMarkovKernel testGivenSkill]
-    (hpositive :
-      gaussianReal posteriorMean posteriorVariance
-        (Set.Ioi takingCutoff) ≠ 0) :
-    IsProbabilityMeasure
-      (lg21ObservedAccessTestLawOfUpperTailTakers
-        posteriorMean posteriorVariance takingCutoff testGivenSkill) := by
+    (model : LG21ObservedAccessUpperTailGaussianModel) :
+    IsProbabilityMeasure (lg21ObservedAccessTestLawOfUpperTailTakers model) := by
   letI : IsProbabilityMeasure
-      (lg21ObservedAccessUpperTailSkillLaw
-        posteriorMean posteriorVariance takingCutoff) :=
-    lg21ObservedAccessUpperTailSkillLaw_isProbability
-      posteriorMean posteriorVariance takingCutoff hpositive
+      (lg21ObservedAccessUpperTailSkillLaw model) :=
+    lg21ObservedAccessUpperTailSkillLaw_isProbability model
+  letI : IsMarkovKernel (lg21ObservedAccessGaussianTestGivenSkill model) :=
+    lg21ObservedAccessGaussianTestGivenSkill_isMarkov model
   change IsProbabilityMeasure
     (Measure.bind
-      (lg21ObservedAccessUpperTailSkillLaw
-        posteriorMean posteriorVariance takingCutoff)
-      testGivenSkill)
+      (lg21ObservedAccessUpperTailSkillLaw model)
+      (lg21ObservedAccessGaussianTestGivenSkill model))
   infer_instance
 
 /-- The mixture law evaluated on an arbitrary measurable test-score event. -/
 theorem paper_lemma4_1_observed_test_law_upper_truncated_mixture_apply
-    (posteriorMean : ℝ) (posteriorVariance : NNReal)
-    (takingCutoff : ℝ) (testGivenSkill : Kernel ℝ ℝ)
+    (model : LG21ObservedAccessUpperTailGaussianModel)
     {testEvent : Set ℝ} (htestEvent : MeasurableSet testEvent) :
-    lg21ObservedAccessTestLawOfUpperTailTakers
-        posteriorMean posteriorVariance takingCutoff testGivenSkill
-        testEvent =
+    lg21ObservedAccessTestLawOfUpperTailTakers model testEvent =
       ∫⁻ skill,
-        testGivenSkill skill testEvent
-          ∂lg21ObservedAccessUpperTailSkillLaw
-            posteriorMean posteriorVariance takingCutoff := by
+        gaussianReal skill model.testNoiseVariance testEvent
+          ∂lg21ObservedAccessUpperTailSkillLaw model := by
   rw [lg21ObservedAccessTestLawOfUpperTailTakers,
-    Measure.bind_apply htestEvent (Kernel.aemeasurable testGivenSkill)]
+    Measure.bind_apply htestEvent
+      (Kernel.aemeasurable (lg21ObservedAccessGaussianTestGivenSkill model))]
+  simp_rw [lg21ObservedAccessGaussianTestGivenSkill_apply]
 
 /--
 Gaussian specialization of the preceding identity.  The right side is the
@@ -508,22 +529,13 @@ source's integral of `N(skill, testVariance)` against the explicitly
 parameterized upper-truncated `N(posteriorMean, posteriorVariance)` law.
 -/
 theorem paper_lemma4_1_observed_test_law_gaussian_upper_truncated_mixture_apply
-    (posteriorMean : ℝ) (posteriorVariance : NNReal)
-    (takingCutoff : ℝ) (testVariance : NNReal)
-    (testGivenSkill : Kernel ℝ ℝ)
-    (hGaussian :
-      ∀ skill, testGivenSkill skill = gaussianReal skill testVariance)
+    (model : LG21ObservedAccessUpperTailGaussianModel)
     {testEvent : Set ℝ} (htestEvent : MeasurableSet testEvent) :
-    lg21ObservedAccessTestLawOfUpperTailTakers
-        posteriorMean posteriorVariance takingCutoff testGivenSkill
-        testEvent =
+    lg21ObservedAccessTestLawOfUpperTailTakers model testEvent =
       ∫⁻ skill,
-        gaussianReal skill testVariance testEvent
-          ∂lg21ObservedAccessUpperTailSkillLaw
-            posteriorMean posteriorVariance takingCutoff := by
-  rw [paper_lemma4_1_observed_test_law_upper_truncated_mixture_apply
-    posteriorMean posteriorVariance takingCutoff testGivenSkill htestEvent]
-  simp_rw [hGaussian]
+        gaussianReal skill model.testNoiseVariance testEvent
+          ∂lg21ObservedAccessUpperTailSkillLaw model :=
+  paper_lemma4_1_observed_test_law_upper_truncated_mixture_apply model htestEvent
 
 /-! ## Null affine ties for nondegenerate Gaussian laws -/
 

@@ -1,0 +1,61 @@
+{
+  "defects": [
+    {
+      "acceptance_condition": "The transparent Main Lemma 5 and Supplement Lemma 15 Specs retain their respective archival premises, state at most 2n' rather than strict inequality, include ceiling-aware realizations of the source comparison rate, and prove their complete probability conclusions without caller-supplied execution witnesses.",
+      "affected_source_locators": [
+        "cited publication:288-336",
+        "cited publication:943-962",
+        "cited publication:974-984",
+        "cited publication:1046"
+      ],
+      "defect_kind": "other",
+      "id": "FMR17-LEMMA5-CARDINALITY-TYPO-03",
+      "repair_obligation": "Retain both archival strict wordings in provenance, bind structured corrected targets to the cited source evidence, and prove the at-most-2n' output events together with each result's probability and resource clauses on the canonical stopped Prune execution.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "FINAL_VALIDATION_REPORT.md notes the shared source typo; the source-map preparation config binds corrected targets for Main Lemma 5 and Supplement Lemma 15; PaperInterface.lean and ProofInterface.lean expose and prove both complete corrected targets.",
+      "source_claim": "Main Lemma 5 and Supplement Lemma 15 say that Prune outputs a set of size less than 2n'; Main Lemma 5 also retains its weak cutoff, confidence, comparison-rate, and conditional absolute-maximum clauses.",
+      "source_locator": "cited publication:330-336; cited publication:974-984",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The strict phrase in both results conflicts with the preceding at-most-2n' Prune specification, Algorithm 2's while-|S_t|>2n' stopping rule, and Appendix Lemma 14's at-most-2n' statement and weak-inequality proof. The algorithm may stop at equality, so the intended endpoint is at most 2n'."
+    },
+    {
+      "acceptance_condition": "The concrete Algorithm 7 execution uses one unordered batch per pair, complementary reverse entries, and the epsilon/2 empirical threshold, and its Lemma 20 proof establishes the published 1-delta epsilon-ranking conclusion and comparison-rate bound.",
+      "affected_source_locators": [
+        "cited publication:1182-1198",
+        "cited publication:1202-1212"
+      ],
+      "defect_kind": "other",
+      "id": "FMR17-ALGORITHM7-DISPLAY-TYPOS-02",
+      "repair_obligation": "Construct the reverse estimate as the complement of the sampled forward estimate and use the proof's one-half-minus-epsilon/2 selection threshold; then derive the printed epsilon-ranking endpoint and resource rate.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "StrongTransitivityRanking.lean implements the proof-consistent complementary estimate and epsilon/2 threshold; PaperInterface.lean and ProofInterface.lean expose and prove lemma20_strongTransitivityRankingSpec; SOURCE_RECORD.md and the final validation report record the display correction.",
+      "source_claim": "Algorithm 7 fills the reverse pair entry from the forward estimate and selects an arm whose estimated pairwise probabilities are at least one half minus the accuracy threshold; Lemma 20 concludes that the resulting procedure returns an epsilon-ranking with probability at least 1-delta.",
+      "source_locator": "cited publication:1182-1203",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The PDF display drops the hat from the forward estimate on Algorithm 7 line 5 and prints epsilon instead of epsilon/2 in the selection threshold on line 9. The surrounding proof uses estimation error epsilon/2 and the threshold one half minus epsilon/2, which yields the stated epsilon-ranking conclusion. Lean implements those proof-consistent quantities, so Lemma 20's statement and constants are unchanged."
+    }
+  ],
+  "paper": "FalahatgarEtAl2017MaxingRanking",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Main Theorem 6, Algorithm 3, and Supplement Lemma 17 in the OPT-Maximize correctness and resource chain.",
+      "source_locator": "cited publication:363-406; cited publication:1071-1077"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Algorithm 7 and Supplement Lemma 20 in the Strong-Transitivity-Ranking correctness argument.",
+      "source_locator": "cited publication:1182-1203"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Main Lemma 5 and Supplement Lemma 15 output-cardinality wording against the preceding Prune specification, Algorithm 2, and the Appendix A.6 proof route.",
+      "source_locator": "cited publication:288-336; cited publication:943-984; cited publication:1046"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "22407a45267c62e11b46ea3a6c7c392099d91dae0c469274936b6a3461c59e09"
+}

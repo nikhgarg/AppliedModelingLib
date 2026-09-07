@@ -1,0 +1,17 @@
+import AppliedModelingLib.Foundations.Probability.BivariateGaussian
+import AppliedModelingLib.Foundations.Probability.FiniteGaussianProfileMeanLaw
+import AppliedModelingLib.Foundations.Probability.FiniteGaussianSignalKernelRCD
+import AppliedModelingLib.Foundations.Probability.FiniteGaussianWeightedSum
+import AppliedModelingLib.Foundations.Probability.GaussianMathlib
+import AppliedModelingLib.Foundations.Probability.GaussianShiftHazardIntegral
+import AppliedModelingLib.Foundations.Probability.GaussianSignalKernelRCD
+import AppliedModelingLib.Foundations.Probability.GaussianSignalRCD
+import AppliedModelingLib.Foundations.Probability.GaussianTilt
+import AppliedModelingLib.Foundations.Probability.GaussianTranslationAC
+
+/-!
+# Gaussian models
+
+Curated entrypoint for the shared Gaussian analytic interface, finite Gaussian
+models, signal kernels, changes of measure, and hazard/quantile calculations.
+-/

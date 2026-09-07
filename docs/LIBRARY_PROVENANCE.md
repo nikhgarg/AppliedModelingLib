@@ -1,13 +1,13 @@
 # Shared Library Provenance
 
-`EconCSLib/` may expose reusable theorems that take explicit certificates,
+`AppliedModelingLib/` may expose reusable theorems that take explicit certificates,
 witnesses, external-boundary hypotheses, or source-shaped row packages. These
 are valid library APIs: they force every caller to provide the missing evidence
 as an argument.
 
 The intended reusable-library shape is:
 
-1. Generic definitions and theorems live in `EconCSLib/`.
+1. Generic definitions and theorems live in `AppliedModelingLib/`.
 2. Any formula, row package, or certificate that comes from a paper source is an
    explicit theorem argument or certificate field, not a hidden library constant.
 3. Paper code either constructs that argument from source primitives in Lean or
@@ -63,16 +63,16 @@ Use `--info-limit -1` for the full direct certificate-boundary inventory, or
 The library-only audit checks more than theorem names:
 
 - It scans theorem, lemma, def, abbrev, structure, class, and inductive
-  declarations in `EconCSLib/`.
+  declarations in `AppliedModelingLib/`.
 - It rejects source-shaped reusable API names such as paper/displayed/source
   formula, source row, threshold, branch, or window declarations. Rename these
   to a paper-neutral abstraction, make the source formula an explicit argument,
   or move the source-specific definition into the paper folder.
 - It rejects reusable `Assumption`/`Hypothesis` declarations and paper/source
-  provenance wording in `EconCSLib/*.lean`. Paper-source provenance belongs in
+  provenance wording in `AppliedModelingLib/*.lean`. Paper-source provenance belongs in
   paper-local `Assumptions.lean`, validation reports, and source-audit notes;
   shared modules should describe generic mathematical APIs.
-- It requires `EconCSLib.LibraryDefinitionAudit` to be imported by the root
+- It requires `AppliedModelingLib.LibraryDefinitionAudit` to be imported by the root
   library target. That module contains build-checked equivalence lemmas for
   standard-name wrappers, so a drift such as an incorrectly stated Jensen
   convexity definition fails at Lean build time rather than relying on prose.

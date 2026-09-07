@@ -13,7 +13,7 @@ namespace GGSG19TopThree
 
 noncomputable section
 
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib.SocialChoice.Ranking
 
 private theorem topWSelectionPair_lo_rank_eq_oneLoserLastRank {n : ℕ}
     {ρ : Ranking n} (pair : TopWSelectionPair ρ (oneLoserLastRank n)) :

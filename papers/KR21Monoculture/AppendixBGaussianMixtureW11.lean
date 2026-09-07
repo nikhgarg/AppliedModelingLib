@@ -10,8 +10,8 @@ law is the actual Appendix-B latent experiment, and the corrected Definition
 1 package is instantiated at the paper's concrete value order.
 -/
 
-open EconCSLib MeasureTheory Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory Filter
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal NNReal Topology BigOperators
 
 namespace KR21Monoculture
@@ -133,7 +133,7 @@ def appendixB1SourceGaussianMixtureRank
     (s theta : ℝ) :
     (AppendixB1NoiseTriple × AppendixBGaussianTriple) → Ranking 1 :=
   fun omega =>
-    EconCSLib.SocialChoice.Ranking.rankByScore
+    AppliedModelingLib.SocialChoice.Ranking.rankByScore
       (fun c => appendixB1Value c +
         appendixB1SourceGaussianMixtureNoise s omega c / theta)
 
@@ -247,14 +247,14 @@ theorem appendixB1GaussianMixtureW11Family_dist_one_eq_latentRankingPMF
         (appendixB1GaussianMixtureRank s)
         (appendixB1GaussianMixtureRank_measurable s)
   symm
-  refine EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+  refine AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
     appendixB1GaussianLatentMeasure
     (w11CandidateNoiseLaw (appendixB1GaussianMixtureDensity s))
     (fun omega => fun c => appendixB1SourceGaussianMixtureNoise s omega c)
     (appendixB1SourceGaussianMixtureNoise_measurePreserving s hs)
     (appendixB1GaussianMixtureRank s)
     (appendixB1GaussianMixtureRank_measurable s)
-    (fun noise => EconCSLib.SocialChoice.Ranking.rankByScore
+    (fun noise => AppliedModelingLib.SocialChoice.Ranking.rankByScore
       (fun c => appendixB1Value c + noise c / 1))
     (paper_appendixA_scaledNoise_rankByScore_measurable
       (fun noise : Candidate 1 → ℝ => fun c => noise c)
@@ -286,14 +286,14 @@ theorem appendixB1GaussianMixtureW11Family_dist_eq_sourceLatentRankingPMF
         (appendixB1SourceGaussianMixtureRank s theta)
         (appendixB1SourceGaussianMixtureRank_measurable s theta)
   symm
-  refine EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+  refine AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
     appendixB1GaussianLatentMeasure
     (w11CandidateNoiseLaw (appendixB1GaussianMixtureDensity s))
     (fun omega => fun c => appendixB1SourceGaussianMixtureNoise s omega c)
     (appendixB1SourceGaussianMixtureNoise_measurePreserving s hs)
     (appendixB1SourceGaussianMixtureRank s theta)
     (appendixB1SourceGaussianMixtureRank_measurable s theta)
-    (fun noise => EconCSLib.SocialChoice.Ranking.rankByScore
+    (fun noise => AppliedModelingLib.SocialChoice.Ranking.rankByScore
       (fun c => appendixB1Value c + noise c / theta))
     (paper_appendixA_scaledNoise_rankByScore_measurable
       (fun noise : Candidate 1 → ℝ => fun c => noise c)
@@ -321,14 +321,14 @@ theorem appendixB2GaussianMixtureW11Family_dist_eq_sourceLatentRankingPMF
         (appendixB2SourceGaussianMixtureRank s theta)
         (appendixB2SourceGaussianMixtureRank_measurable s theta)
   symm
-  refine EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+  refine AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
     appendixB2GaussianLatentMeasure
     (w11CandidateNoiseLaw (appendixB2GaussianMixtureDensity s))
     (fun omega => fun c => appendixB2SourceGaussianMixtureNoise s omega c)
     (appendixB2SourceGaussianMixtureNoise_measurePreserving s hs)
     (appendixB2SourceGaussianMixtureRank s theta)
     (appendixB2SourceGaussianMixtureRank_measurable s theta)
-    (fun noise => EconCSLib.SocialChoice.Ranking.rankByScore
+    (fun noise => AppliedModelingLib.SocialChoice.Ranking.rankByScore
       (fun c => appendixB2Value c + noise c / theta))
     (paper_appendixA_scaledNoise_rankByScore_measurable
       (fun noise : Candidate 1 → ℝ => fun c => noise c)

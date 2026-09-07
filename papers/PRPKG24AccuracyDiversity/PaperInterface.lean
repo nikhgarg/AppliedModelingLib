@@ -63,6 +63,31 @@ theorem definition1_source_preference_law
 
 abbrev definition1 := @definition1_source_preference_law
 
+/--
+Definition 1 / Equation (5), exposed as a transparent source-facing Spec.
+Finite real `gamma` gives the displayed normalized-power profile; the source's
+`gamma = infinity` case selects one PMF maximizer, with ties left selectable.
+-/
+def definition1_eq5_gamma_homogeneitySpec : Prop :=
+  ∀
+    {T : ℕ} (a : CountAllocation T) (preferenceLaw : SourcePreferenceLaw T)
+    (gamma : ℝ) (best : ItemType T)
+    (hbest : ∀ t : ItemType T,
+      (preferenceLaw t).toReal ≤ (preferenceLaw best).toReal),
+    ((gammaLikelihoodProfile (fun t => (preferenceLaw t).toReal) gamma).Exact a ↔
+      ∀ t : ItemType T,
+        CountAllocation.representation a t =
+          ((preferenceLaw t).toReal) ^ gamma /
+            ∑ i : ItemType T, ((preferenceLaw i).toReal) ^ gamma) ∧
+    ((infiniteLikelihoodProfile (fun t => (preferenceLaw t).toReal) best hbest).Exact a ↔
+      CountAllocation.representation a best = 1 ∧
+        ∀ t : ItemType T, t ≠ best →
+          CountAllocation.representation a t = 0)
+
+theorem definition1_eq5_gamma_homogeneitySpec_proof :
+    definition1_eq5_gamma_homogeneitySpec := by
+  exact definition1_source_preference_law
+
 /-- Definition 2 with the source preferred-type PMF in equation (6). -/
 theorem definition2_source_preference_law
     {T : ℕ} (seq : AllocationSequence T) (preferenceLaw : SourcePreferenceLaw T)
@@ -83,6 +108,28 @@ theorem definition2_source_preference_law
 abbrev definition2 := @definition2_source_preference_law
 
 /--
+Definition 2 / Equation (6), exposed as a transparent source-facing Spec for
+convergence of every type's representation to the normalized-power profile.
+-/
+def definition2_eq6_sequence_homogeneitySpec : Prop :=
+  ∀
+    {T : ℕ} (seq : AllocationSequence T) (preferenceLaw : SourcePreferenceLaw T)
+    (gamma : ℝ),
+    seq.ConvergesToProfile
+      (gammaLikelihoodProfile (fun t => (preferenceLaw t).toReal) gamma) ↔
+      ∀ t : ItemType T,
+        Filter.Tendsto
+          (fun N => CountAllocation.representation (seq.allocation N) t)
+          Filter.atTop
+          (nhds
+            (((preferenceLaw t).toReal) ^ gamma /
+              ∑ i : ItemType T, ((preferenceLaw i).toReal) ^ gamma))
+
+theorem definition2_eq6_sequence_homogeneitySpec_proof :
+    definition2_eq6_sequence_homogeneitySpec := by
+  exact definition2_source_preference_law
+
+/--
 Definition 3: the top-`k` oracle from one common iid base distribution with a
 finite first moment, as required by Theorem 1's source model.
 -/
@@ -100,9 +147,30 @@ Source status: direct source definition
 theorem definition3_iid_order_statistic_mean_formula
     (D : Measure ℝ) (i a : ℕ) :
     definition3IidOrderStatisticMean D i a =
-      EconCSLib.Probability.expectedOrderStatisticMeanSeq
+      AppliedModelingLib.Probability.expectedOrderStatisticMeanSeq
         (fun b : ℕ => Measure.pi (fun _ : Fin b => D)) i a := by
   rfl
+
+/--
+Definition 3, exposed as a transparent source-facing Spec: under one
+probability law with the source finite-mean condition and the source-domain
+rank convention `1 ≤ i ≤ a`, `mu_D(i,a)` is the expected `i`th order statistic
+of `a` iid draws from that same law.  The valid-rank premise deliberately
+excludes Lean's totalized values outside the paper's order-statistic domain.
+-/
+def definition3_order_statistic_meanSpec : Prop :=
+  ∀
+    (D : Measure ℝ) [IsProbabilityMeasure D]
+    (hfinite_mean : Integrable (fun x : ℝ => x) D) (i a : ℕ)
+    (hvalid_rank : 1 ≤ i ∧ i ≤ a),
+    definition3IidOrderStatisticMean D i a =
+      AppliedModelingLib.Probability.expectedOrderStatisticMeanSeq
+        (fun b : ℕ => Measure.pi (fun _ : Fin b => D)) i a
+
+theorem definition3_order_statistic_meanSpec_proof :
+    definition3_order_statistic_meanSpec := by
+  intro D _ hfinite_mean i a hvalid_rank
+  exact definition3_iid_order_statistic_mean_formula D i a
 
 /-- Generic order-statistic oracle retained only for support computations. -/
 noncomputable abbrev definition3_raw_order_statistic_oracle :=
@@ -130,9 +198,9 @@ order-statistic integrability obligation is derived from it.
 theorem definition3_iid_order_statistic_topk_identity
     (D : Measure ℝ) [IsProbabilityMeasure D]
     (hfinite_mean : Integrable (fun x : ℝ => x) D) (k a : ℕ) :
-    EconCSLib.Probability.orderStatisticTopKSumFromMean
+    AppliedModelingLib.Probability.orderStatisticTopKSumFromMean
         (definition3IidOrderStatisticMean D) k a =
-      EconCSLib.Probability.expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedSampleTopKSum
         (definition3IidSampleMeasure D a) k :=
   definition3_iid_orderStatisticTopKSum_eq_expectedSampleTopKSum
     D hfinite_mean k a
@@ -159,7 +227,7 @@ theorem equation3_sourcePreferenceLaw_pmfExp
     (preferenceLaw : SourcePreferenceLaw T)
     (hlaw : M.RealizesSourcePreferenceLaw preferenceLaw) :
     M.objective a =
-      EconCSLib.pmfExp preferenceLaw
+      AppliedModelingLib.pmfExp preferenceLaw
         (fun t => M.valueOfCount t (a.count t)) :=
   ConsumptionModel.objective_eq_sourcePreferenceLaw_pmfExp
     M a preferenceLaw hlaw
@@ -171,13 +239,27 @@ Source status: direct paper formula
 -/
 theorem equation4_representation_formula
     {T : ℕ} (a : CountAllocation T) (t : ItemType T)
-    (htotal : EconCSLib.Allocation.total a ≠ 0) :
+    (htotal : AppliedModelingLib.Allocation.total a ≠ 0) :
     CountAllocation.representation a t =
-      (a.count t : ℝ) / (EconCSLib.Allocation.total a : ℝ) := by
+      (a.count t : ℝ) / (AppliedModelingLib.Allocation.total a : ℝ) := by
   rw [CountAllocation.representation_eq_share]
   exact
-    EconCSLib.Allocation.share_eq_div_of_total_ne_zero
+    AppliedModelingLib.Allocation.share_eq_div_of_total_ne_zero
       (a := a) (k := t) htotal
+
+/--
+Equation (4), exposed as a transparent source-facing Spec for representation
+of a type in a nonempty finite slate.
+-/
+def equation4_representationSpec : Prop :=
+  ∀
+    {T : ℕ} (a : CountAllocation T) (t : ItemType T)
+    (htotal : AppliedModelingLib.Allocation.total a ≠ 0),
+    CountAllocation.representation a t =
+      (a.count t : ℝ) / (AppliedModelingLib.Allocation.total a : ℝ)
+
+theorem equation4_representationSpec_proof : equation4_representationSpec := by
+  exact equation4_representation_formula
 
 /--
 Equation (10): along a sequence of `N`-item slates, representation is
@@ -189,20 +271,20 @@ Source status: direct paper formula
 theorem equation10_representation_sequence_eventuallyEq_count_div
     {T : ℕ} (seq : AllocationSequence T)
     (htotal : ∀ N : ℕ,
-      EconCSLib.Allocation.total (seq.allocation N) = N)
+      AppliedModelingLib.Allocation.total (seq.allocation N) = N)
     (t : ItemType T) :
     (fun N : ℕ =>
         CountAllocation.representation (seq.allocation N) t) =ᶠ[Filter.atTop]
       (fun N : ℕ => ((seq.allocation N).count t : ℝ) / (N : ℝ)) := by
   filter_upwards [Filter.eventually_gt_atTop 0] with N hN
   have htotal_ne :
-      EconCSLib.Allocation.total (seq.allocation N) ≠ 0 := by
+      AppliedModelingLib.Allocation.total (seq.allocation N) ≠ 0 := by
     rw [htotal N]
     exact Nat.ne_of_gt hN
   calc
     CountAllocation.representation (seq.allocation N) t =
         ((seq.allocation N).count t : ℝ) /
-          (EconCSLib.Allocation.total (seq.allocation N) : ℝ) :=
+          (AppliedModelingLib.Allocation.total (seq.allocation N) : ℝ) :=
       equation4_representation_formula (seq.allocation N) t htotal_ne
     _ = ((seq.allocation N).count t : ℝ) / (N : ℝ) := by
       rw [htotal N]
@@ -252,6 +334,25 @@ Source status: direct paper statement
 -/
 abbrev example1_calibrated_sequence_formula :=
   @example1_top_one_exponential_harmonic_sequence_formula
+
+/--
+Example 1's displayed continuous log-relaxation: positive two-genre
+probabilities summing to one and a positive exponential rate make the
+calibrated split maximize the displayed relaxed top-one objective.  This is
+the source's `≈` relaxation, not a claim about a finite integer optimizer.
+-/
+def example1_calibrated_log_relaxationSpec : Prop :=
+  ∀ {p1 p2 lambda n x y : ℝ},
+    0 < p1 → 0 < p2 → 0 < lambda → 0 < n → 0 < x → 0 < y →
+      p1 + p2 = 1 → x + y = n →
+        example1TopOneLogObjective p1 p2 lambda x y ≤
+          example1TopOneLogObjective p1 p2 lambda (p1 * n) (p2 * n)
+
+theorem example1_calibrated_log_relaxationSpec_proof :
+    example1_calibrated_log_relaxationSpec := by
+  intro p1 p2 lambda n x y hp1 hp2 hlambda hn hx hy hp_sum hxy_sum
+  exact example1_top_one_log_relaxation_calibrated
+    hp1 hp2 hlambda hn hx hy hp_sum hxy_sum
 
 /--
 Equation (1): conditional on the two preference classes, the expected best
@@ -307,20 +408,20 @@ theorem theorem1_i_formula
     (hvalue_le : ∀ omega, value omega ≤ xTop)
     (hvalue_split : ∀ omega, value omega = xTop ∨ value omega ≤ xSecond)
     (htop_mass_pos :
-      0 < EconCSLib.pmfProb itemLaw (fun omega => value omega = xTop))
+      0 < AppliedModelingLib.pmfProb itemLaw (fun omega => value omega = xTop))
     (hnontop_mass_pos :
-      0 < EconCSLib.pmfProb itemLaw (fun omega => ¬ value omega = xTop))
+      0 < AppliedModelingLib.pmfProb itemLaw (fun omega => ¬ value omega = xTop))
     (hpreference_pos : ∀ t : ItemType T, 0 < (preferenceLaw t).toReal) :
     (∀ a : CountAllocation T,
       ((TopKValueOracle.common T
         (finiteDiscreteIidTopKExpected Omega itemLaw k value)).toConsumptionModel
           (fun t => (preferenceLaw t).toReal) k).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
-              (EconCSLib.pmfProduct (Fin (a.count t)) Omega itemLaw)
+            AppliedModelingLib.pmfExp
+              (AppliedModelingLib.pmfProduct (Fin (a.count t)) Omega itemLaw)
               (fun sample : Fin (a.count t) → Omega =>
-                EconCSLib.Probability.sampleTopKSum
+                AppliedModelingLib.Probability.sampleTopKSum
                   (fun i => value (sample i)) k))) ∧
       ∀ t : ItemType T,
         Filter.Tendsto
@@ -393,9 +494,9 @@ theorem theorem1_ii_formula
     (∀ a : CountAllocation T,
       (boundedIidOrderStatisticConsumptionModel
           (fun t => (preferenceLaw t).toReal) k baseMeasure).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.Probability.expectedSampleTopKSum
+            AppliedModelingLib.Probability.expectedSampleTopKSum
               (definition3IidSampleMeasure baseMeasure (a.count t)) k)) ∧
       ∀ t : ItemType T,
         Tendsto
@@ -435,9 +536,9 @@ theorem theorem1_iii_formula
     (∀ a : CountAllocation T,
       ((exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
           (fun t => (preferenceLaw t).toReal) k).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.Probability.expectedSampleTopKSum
+            AppliedModelingLib.Probability.expectedSampleTopKSum
               ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure
                 (a.count t)) k)) ∧
       ∀ t : ItemType T,
@@ -474,9 +575,9 @@ theorem theorem1_iv_formula
     (∀ a : CountAllocation T,
       (paretoIidOrderStatisticConsumptionModel
           (fun t => (preferenceLaw t).toReal) k alpha).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.Probability.expectedSampleTopKSum
+            AppliedModelingLib.Probability.expectedSampleTopKSum
               (paretoIidSampleMeasure alpha (a.count t)) k)) ∧
       ∀ t : ItemType T,
         Tendsto
@@ -499,7 +600,7 @@ theorem theorem1_v_source_experiment_formula
     {T : ℕ} (preferenceLaw : SourcePreferenceLaw T) (D : Measure ℝ)
     [IsProbabilityMeasure D] (a : CountAllocation T) :
     (iidAllConsumedSourceModel preferenceLaw D).objective a =
-      EconCSLib.pmfExp preferenceLaw
+      AppliedModelingLib.pmfExp preferenceLaw
         (fun t =>
           ∫ sample : Fin (a.count t) → ℝ,
             iidAllConsumedSampleValue sample
@@ -541,7 +642,7 @@ theorem theorem1_v_source_model_endpoint
       (preferenceLaw t).toReal ≤ (preferenceLaw best).toReal) :
     (∀ a : CountAllocation T,
       (iidAllConsumedSourceModel preferenceLaw D).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
             ∫ sample : Fin (a.count t) → ℝ,
               iidAllConsumedSampleValue sample
@@ -595,7 +696,7 @@ theorem theorem2_top_one_rank_varying_independent_bernoulli_source
     (hfirst_lt_one : decayingBernoulliSuccess c d alpha 0 < 1)
     (t : ItemType T) :
     (decayingBernoulliTopOneConsumptionModel likelihood c d alpha).valueOfCount t q =
-      EconCSLib.pmfExp
+      AppliedModelingLib.pmfExp
         (decayingBernoulliFiniteLaw c d alpha q hc_nonneg hd_nonneg
           halpha_nonneg hfirst_lt_one.le)
         rankBernoulliFiniteTopOneSampleValue := by
@@ -613,7 +714,7 @@ theorem theorem2_all_consumed_rank_varying_independent_bernoulli_source
     (hfirst_le_one : decayingBernoulliSuccess c d alpha 0 ≤ 1)
     (t : ItemType T) :
     (decayingBernoulliAllConsumedConsumptionModel likelihood c d alpha).valueOfCount t q =
-      EconCSLib.pmfExp
+      AppliedModelingLib.pmfExp
         (decayingBernoulliFiniteLaw c d alpha q hc_nonneg hd_nonneg
           halpha_nonneg hfirst_le_one)
         rankBernoulliFiniteAllConsumedSampleValue := by
@@ -680,7 +781,7 @@ theorem theorem2_i_corrected_source_model_endpoint
         (fun _ => decayingBernoulliTopOneConsumptionModel likelihood c d alpha)) :
     (∀ t : ItemType T, ∀ q : ℕ,
       (decayingBernoulliTopOneConsumptionModel likelihood c d alpha).valueOfCount t q =
-        EconCSLib.pmfExp
+        AppliedModelingLib.pmfExp
           (decayingBernoulliFiniteLaw c d alpha q hc_pos.le hd_nonneg
             halpha_nonneg hfirst_lt_one.le)
           rankBernoulliFiniteTopOneSampleValue) ∧
@@ -712,7 +813,7 @@ theorem theorem2_ii_corrected_source_model_endpoint
         (fun _ => decayingBernoulliTopOneConsumptionModel likelihood c d 1)) :
     (∀ t : ItemType T, ∀ q : ℕ,
       (decayingBernoulliTopOneConsumptionModel likelihood c d 1).valueOfCount t q =
-        EconCSLib.pmfExp
+        AppliedModelingLib.pmfExp
           (decayingBernoulliFiniteLaw c d 1 q hc_pos.le hd_nonneg
             (by norm_num) hfirst_lt_one.le)
           rankBernoulliFiniteTopOneSampleValue) ∧
@@ -746,7 +847,7 @@ theorem theorem2_iii_corrected_source_model_endpoint
         (fun _ => decayingBernoulliTopOneConsumptionModel likelihood c d alpha)) :
     (∀ t : ItemType T, ∀ q : ℕ,
       (decayingBernoulliTopOneConsumptionModel likelihood c d alpha).valueOfCount t q =
-        EconCSLib.pmfExp
+        AppliedModelingLib.pmfExp
           (decayingBernoulliFiniteLaw c d alpha q hc_pos.le hd_nonneg
             (le_of_lt (lt_trans zero_lt_one halpha_gt_one)) hfirst_lt_one.le)
           rankBernoulliFiniteTopOneSampleValue) ∧
@@ -784,7 +885,7 @@ theorem theorem2_iv_positive_alpha_corrected_source_model_endpoint
         (fun _ => decayingBernoulliAllConsumedConsumptionModel likelihood c d alpha)) :
     (∀ t : ItemType T, ∀ q : ℕ,
       (decayingBernoulliAllConsumedConsumptionModel likelihood c d alpha).valueOfCount t q =
-        EconCSLib.pmfExp
+        AppliedModelingLib.pmfExp
           (decayingBernoulliFiniteLaw c d alpha q hc_pos.le hd_nonneg
             halpha_pos.le hfirst_le_one)
           rankBernoulliFiniteAllConsumedSampleValue) ∧
@@ -821,7 +922,7 @@ theorem theorem2_iv_corrected_source_model_endpoint
           (fun _ => decayingBernoulliAllConsumedConsumptionModel likelihood c d alpha),
         (∀ t : ItemType T, ∀ q : ℕ,
           (decayingBernoulliAllConsumedConsumptionModel likelihood c d alpha).valueOfCount t q =
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (decayingBernoulliFiniteLaw c d alpha q hc_pos.le hd_nonneg
                 halpha_nonneg hfirst_le_one)
               rankBernoulliFiniteAllConsumedSampleValue) ∧
@@ -837,7 +938,7 @@ theorem theorem2_iv_corrected_source_model_endpoint
           (∀ t : ItemType T, likelihood t ≤ likelihood best) →
           (∀ t : ItemType T, ∀ q : ℕ,
             (decayingBernoulliAllConsumedConsumptionModel likelihood c d alpha).valueOfCount t q =
-              EconCSLib.pmfExp
+              AppliedModelingLib.pmfExp
                 (decayingBernoulliFiniteLaw c d alpha q hc_nonneg hd_nonneg
                   halpha_nonneg hfirst_le_one)
                 rankBernoulliFiniteAllConsumedSampleValue) ∧
@@ -879,9 +980,9 @@ theorem theorem2_i_corrected_pmf_source_model_endpoint
     (∀ a : CountAllocation T,
       (decayingBernoulliTopOneConsumptionModel
         (fun t => (preferenceLaw t).toReal) c d alpha).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (decayingBernoulliFiniteLaw c d alpha (a.count t) hc_pos.le
                 hd_nonneg halpha_nonneg hfirst_lt_one.le)
               rankBernoulliFiniteTopOneSampleValue)) ∧
@@ -914,9 +1015,9 @@ theorem theorem2_ii_corrected_pmf_source_model_endpoint
     (∀ a : CountAllocation T,
       (decayingBernoulliTopOneConsumptionModel
         (fun t => (preferenceLaw t).toReal) c d 1).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (decayingBernoulliFiniteLaw c d 1 (a.count t) hc_pos.le hd_nonneg
                 (by norm_num) hfirst_lt_one.le)
               rankBernoulliFiniteTopOneSampleValue)) ∧
@@ -952,9 +1053,9 @@ theorem theorem2_iii_corrected_pmf_source_model_endpoint
     (∀ a : CountAllocation T,
       (decayingBernoulliTopOneConsumptionModel
         (fun t => (preferenceLaw t).toReal) c d alpha).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (decayingBernoulliFiniteLaw c d alpha (a.count t) hc_pos.le
                 hd_nonneg (le_of_lt (lt_trans zero_lt_one halpha_gt_one))
                 hfirst_lt_one.le)
@@ -989,9 +1090,9 @@ theorem theorem2_iv_positive_alpha_corrected_pmf_source_model_endpoint
     (∀ a : CountAllocation T,
       (decayingBernoulliAllConsumedConsumptionModel
         (fun t => (preferenceLaw t).toReal) c d alpha).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (decayingBernoulliFiniteLaw c d alpha (a.count t) hc_pos.le
                 hd_nonneg halpha_pos.le hfirst_le_one)
               rankBernoulliFiniteAllConsumedSampleValue)) ∧
@@ -1021,9 +1122,9 @@ theorem theorem2_iv_alpha_zero_pmf_source_model_endpoint
     (∀ a : CountAllocation T,
       (decayingBernoulliAllConsumedConsumptionModel
         (fun t => (preferenceLaw t).toReal) c d 0).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (decayingBernoulliFiniteLaw c d 0 (a.count t) hc_nonneg hd_nonneg
                 (by norm_num) hfirst_le_one)
               rankBernoulliFiniteAllConsumedSampleValue)) ∧
@@ -1059,9 +1160,9 @@ theorem theorem2_iv_corrected_pmf_source_model_endpoint
         (∀ a : CountAllocation T,
           (decayingBernoulliAllConsumedConsumptionModel
             (fun t => (preferenceLaw t).toReal) c d alpha).objective a =
-              EconCSLib.pmfExp preferenceLaw
+              AppliedModelingLib.pmfExp preferenceLaw
                 (fun t =>
-                  EconCSLib.pmfExp
+                  AppliedModelingLib.pmfExp
                     (decayingBernoulliFiniteLaw c d alpha (a.count t) hc_pos.le
                       hd_nonneg halpha_nonneg hfirst_le_one)
                     rankBernoulliFiniteAllConsumedSampleValue)) ∧
@@ -1079,9 +1180,9 @@ theorem theorem2_iv_corrected_pmf_source_model_endpoint
           (∀ a : CountAllocation T,
             (decayingBernoulliAllConsumedConsumptionModel
               (fun t => (preferenceLaw t).toReal) c d alpha).objective a =
-                EconCSLib.pmfExp preferenceLaw
+                AppliedModelingLib.pmfExp preferenceLaw
                   (fun t =>
-                    EconCSLib.pmfExp
+                    AppliedModelingLib.pmfExp
                       (decayingBernoulliFiniteLaw c d alpha (a.count t) hc_nonneg
                         hd_nonneg halpha_nonneg hfirst_le_one)
                       rankBernoulliFiniteAllConsumedSampleValue)) ∧
@@ -1139,9 +1240,9 @@ theorem theorem3_top_one_source_experiment_formula
     (hprob_lt_one : ∀ t, B.successProb t < 1) :
     ∀ a : CountAllocation T,
       B.toConsumptionModel.objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (iidBernoulliFiniteLaw (B.successProb t) (a.count t)
                 (hprob_pos t).le (hprob_lt_one t).le)
               rankBernoulliFiniteTopOneSampleValue) := by
@@ -1194,9 +1295,9 @@ theorem theorem3_source_model_endpoint
     (seq : OptimalAllocationSequence (fun _ => B.toConsumptionModel)) :
     (∀ a : CountAllocation T,
       B.toConsumptionModel.objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (iidBernoulliFiniteLaw (B.successProb t) (a.count t)
                 (hprob_pos t).le (hprob_lt_one t).le)
               rankBernoulliFiniteTopOneSampleValue)) ∧
@@ -1234,9 +1335,9 @@ theorem theorem3_all_consumed_source_experiment_formula
     (hprob_valid : assumption_bernoulli_success_probability_range B) :
     ∀ a : CountAllocation T,
       (bernoulliAllConsumedModel B).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (iidBernoulliFiniteLaw (B.successProb t) (a.count t)
                 (hprob_valid t).1 (hprob_valid t).2)
               rankBernoulliFiniteAllConsumedSampleValue) := by
@@ -1280,9 +1381,9 @@ theorem theorem3_all_consumed_argmax_source_model
         B.likelihood best * B.successProb best) :
     (∀ a : CountAllocation T,
       (bernoulliAllConsumedModel B).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (iidBernoulliFiniteLaw (B.successProb t) (a.count t)
                 (hprob_valid t).1 (hprob_valid t).2)
               rankBernoulliFiniteAllConsumedSampleValue)) ∧
@@ -1335,9 +1436,9 @@ theorem corollary3_source_model_endpoint
     (hprob_eq : ∀ i j : ItemType T, B.successProb i = B.successProb j) :
     (∀ a : CountAllocation T,
       B.toConsumptionModel.objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (iidBernoulliFiniteLaw (B.successProb t) (a.count t)
                 (hprob_pos t).le (hprob_lt_one t).le)
               rankBernoulliFiniteTopOneSampleValue)) ∧
@@ -1784,9 +1885,9 @@ Source status: approved source proposition with explicit iid finite-mean domain
 theorem proposition5_iid_topk_identity
     (D : Measure ℝ) [IsProbabilityMeasure D]
     (hfinite_mean : Integrable (fun x : ℝ => x) D) (k a : ℕ) :
-    EconCSLib.Probability.orderStatisticTopKSumFromMean
+    AppliedModelingLib.Probability.orderStatisticTopKSumFromMean
         (definition3IidOrderStatisticMean D) k a =
-      EconCSLib.Probability.expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedSampleTopKSum
         (definition3IidSampleMeasure D a) k :=
   proposition5_iid_orderStatisticTopKSum_eq_expectedSampleTopKSum
     D hfinite_mean k a
@@ -1818,7 +1919,7 @@ Source status: approved corrected lemma target
 theorem lemmaD1_i_corrected_uniform_optimizer_shares_source
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)
@@ -1854,7 +1955,7 @@ Source status: approved corrected lemma target
 theorem lemmaD1_ii_corrected_powerTail_optimizer_shares_source
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i, 0 < p i)
     (hmono : Monotone h)
@@ -1881,7 +1982,7 @@ Source status: approved corrected lemma target
 theorem lemmaD1_iii_corrected_probability_optimizer_shares_source
     {m : ℕ} [NeZero m] {B C : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hsum : (∑ i : ItemType m, p i) = 1)
@@ -1906,7 +2007,7 @@ Source status: approved corrected lemma target
 theorem lemmaD1_iv_corrected_powerTail_optimizer_shares_source
     {m : ℕ} [NeZero m] {B sigma : ℝ} {h : ℕ → ℝ}
     (p : Fin m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : Fin m => h))
     (hp_pos : ∀ i, 0 < p i)
     (hB_pos : 0 < B) (hsigma_pos : 0 < sigma) (hsigma_lt_one : sigma < 1)
@@ -1986,9 +2087,9 @@ theorem lemmaD2_bounded_fixed_rank_integral_asymptotic_of_pdf_source
     (hratio :
       Tendsto (fun u : ℝ => f (M - u) / (c * u ^ (beta - 1)))
         (nhdsWithin (0 : ℝ) (Set.Ioi (0 : ℝ))) (nhds (1 : ℝ))) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (boundedLemmaD2IntegralTerm
-        (EconCSLib.Probability.reflectedCDFMass baseMeasure M) j)
+        (AppliedModelingLib.Probability.reflectedCDFMass baseMeasure M) j)
       (fun a =>
         boundedLemmaD2LimitCoeff beta c j * boundedTailScale beta a) := by
   exact lemmaD2_bounded_fixed_rank_integral_asymptotic_of_pdf
@@ -2019,7 +2120,7 @@ theorem lemma1_bounded_topk_loss_asymptotic_of_pdf_source
       Tendsto (fun u : ℝ => f (M - u) / (c * u ^ (beta - 1)))
         (nhdsWithin (0 : ℝ) (Set.Ioi (0 : ℝ))) (nhds (1 : ℝ)))
     (k_pos : 0 < k) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a =>
         (k : ℝ) * M -
           orderStatisticTopKSumFromMean
@@ -2138,7 +2239,7 @@ on the valid eventual-rank domain, avoiding the source's totalized-rank claim.
 -/
 theorem lemmaD4_corrected_pareto_fixed_rank_source
     {alpha : ℝ} (halpha : 1 < alpha) (r : ℕ) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun q : ℕ =>
         expectedOrderStatisticMeanSeq (paretoIidSampleMeasure alpha) (q - r) q)
       (fun q : ℕ =>
@@ -2230,20 +2331,20 @@ def theorem1_i_formulaSpec : Prop :=
     (hvalue_le : ∀ omega, value omega ≤ xTop)
     (hvalue_split : ∀ omega, value omega = xTop ∨ value omega ≤ xSecond)
     (htop_mass_pos :
-      0 < EconCSLib.pmfProb itemLaw (fun omega => value omega = xTop))
+      0 < AppliedModelingLib.pmfProb itemLaw (fun omega => value omega = xTop))
     (hnontop_mass_pos :
-      0 < EconCSLib.pmfProb itemLaw (fun omega => ¬ value omega = xTop))
+      0 < AppliedModelingLib.pmfProb itemLaw (fun omega => ¬ value omega = xTop))
     (hpreference_pos : ∀ t : ItemType T, 0 < (preferenceLaw t).toReal),
     (∀ a : CountAllocation T,
       ((TopKValueOracle.common T
         (finiteDiscreteIidTopKExpected Omega itemLaw k value)).toConsumptionModel
           (fun t => (preferenceLaw t).toReal) k).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
-              (EconCSLib.pmfProduct (Fin (a.count t)) Omega itemLaw)
+            AppliedModelingLib.pmfExp
+              (AppliedModelingLib.pmfProduct (Fin (a.count t)) Omega itemLaw)
               (fun sample : Fin (a.count t) → Omega =>
-                EconCSLib.Probability.sampleTopKSum
+                AppliedModelingLib.Probability.sampleTopKSum
                   (fun i => value (sample i)) k))) ∧
       ∀ t : ItemType T,
         Filter.Tendsto
@@ -2285,9 +2386,9 @@ def theorem1_ii_formulaSpec : Prop :=
     (∀ a : CountAllocation T,
       (boundedIidOrderStatisticConsumptionModel
           (fun t => (preferenceLaw t).toReal) k baseMeasure).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.Probability.expectedSampleTopKSum
+            AppliedModelingLib.Probability.expectedSampleTopKSum
               (definition3IidSampleMeasure baseMeasure (a.count t)) k)) ∧
       ∀ t : ItemType T,
         Tendsto
@@ -2317,9 +2418,9 @@ def theorem1_iii_formulaSpec : Prop :=
     (∀ a : CountAllocation T,
       ((exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
           (fun t => (preferenceLaw t).toReal) k).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.Probability.expectedSampleTopKSum
+            AppliedModelingLib.Probability.expectedSampleTopKSum
               ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure
                 (a.count t)) k)) ∧
       ∀ t : ItemType T,
@@ -2348,9 +2449,9 @@ def theorem1_iv_formulaSpec : Prop :=
     (∀ a : CountAllocation T,
       (paretoIidOrderStatisticConsumptionModel
           (fun t => (preferenceLaw t).toReal) k alpha).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.Probability.expectedSampleTopKSum
+            AppliedModelingLib.Probability.expectedSampleTopKSum
               (paretoIidSampleMeasure alpha (a.count t)) k)) ∧
       ∀ t : ItemType T,
         Tendsto
@@ -2456,9 +2557,9 @@ def theorem2_i_corrected_pmf_source_model_endpointSpec : Prop :=
     (∀ a : CountAllocation T,
       (decayingBernoulliTopOneConsumptionModel
         (fun t => (preferenceLaw t).toReal) c d alpha).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (decayingBernoulliFiniteLaw c d alpha (a.count t) hc_pos.le
                 hd_nonneg halpha_nonneg hfirst_lt_one.le)
               rankBernoulliFiniteTopOneSampleValue)) ∧
@@ -2484,9 +2585,9 @@ def theorem2_ii_corrected_pmf_source_model_endpointSpec : Prop :=
     (∀ a : CountAllocation T,
       (decayingBernoulliTopOneConsumptionModel
         (fun t => (preferenceLaw t).toReal) c d 1).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (decayingBernoulliFiniteLaw c d 1 (a.count t) hc_pos.le hd_nonneg
                 (by norm_num) hfirst_lt_one.le)
               rankBernoulliFiniteTopOneSampleValue)) ∧
@@ -2515,9 +2616,9 @@ def theorem2_iii_corrected_pmf_source_model_endpointSpec : Prop :=
     (∀ a : CountAllocation T,
       (decayingBernoulliTopOneConsumptionModel
         (fun t => (preferenceLaw t).toReal) c d alpha).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (decayingBernoulliFiniteLaw c d alpha (a.count t) hc_pos.le
                 hd_nonneg (le_of_lt (lt_trans zero_lt_one halpha_gt_one))
                 hfirst_lt_one.le)
@@ -2549,9 +2650,9 @@ def theorem2_iv_corrected_pmf_source_model_endpointSpec : Prop :=
         (∀ a : CountAllocation T,
           (decayingBernoulliAllConsumedConsumptionModel
             (fun t => (preferenceLaw t).toReal) c d alpha).objective a =
-              EconCSLib.pmfExp preferenceLaw
+              AppliedModelingLib.pmfExp preferenceLaw
                 (fun t =>
-                  EconCSLib.pmfExp
+                  AppliedModelingLib.pmfExp
                     (decayingBernoulliFiniteLaw c d alpha (a.count t) hc_pos.le
                       hd_nonneg halpha_nonneg hfirst_le_one)
                     rankBernoulliFiniteAllConsumedSampleValue)) ∧
@@ -2569,9 +2670,9 @@ def theorem2_iv_corrected_pmf_source_model_endpointSpec : Prop :=
           (∀ a : CountAllocation T,
             (decayingBernoulliAllConsumedConsumptionModel
               (fun t => (preferenceLaw t).toReal) c d alpha).objective a =
-                EconCSLib.pmfExp preferenceLaw
+                AppliedModelingLib.pmfExp preferenceLaw
                   (fun t =>
-                    EconCSLib.pmfExp
+                    AppliedModelingLib.pmfExp
                       (decayingBernoulliFiniteLaw c d alpha (a.count t) hc_nonneg
                         hd_nonneg halpha_nonneg hfirst_le_one)
                       rankBernoulliFiniteAllConsumedSampleValue)) ∧
@@ -2625,7 +2726,7 @@ def lemmaD1_ii_corrected_powerTail_optimizer_shares_sourceSpec : Prop :=
   ∀
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i, 0 < p i)
     (hmono : Monotone h)
@@ -2659,7 +2760,7 @@ def lemma1_bounded_topk_loss_asymptotic_of_pdf_sourceSpec : Prop :=
       Tendsto (fun u : ℝ => f (M - u) / (c * u ^ (beta - 1)))
         (nhdsWithin (0 : ℝ) (Set.Ioi (0 : ℝ))) (nhds (1 : ℝ)))
     (k_pos : 0 < k),
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a =>
         (k : ℝ) * M -
           orderStatisticTopKSumFromMean
@@ -2719,9 +2820,9 @@ def lemmaD2_bounded_fixed_rank_integral_asymptotic_of_pdf_sourceSpec : Prop :=
     (hratio :
       Tendsto (fun u : ℝ => f (M - u) / (c * u ^ (beta - 1)))
         (nhdsWithin (0 : ℝ) (Set.Ioi (0 : ℝ))) (nhds (1 : ℝ))),
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (boundedLemmaD2IntegralTerm
-        (EconCSLib.Probability.reflectedCDFMass baseMeasure M) j)
+        (AppliedModelingLib.Probability.reflectedCDFMass baseMeasure M) j)
       (fun a =>
         boundedLemmaD2LimitCoeff beta c j * boundedTailScale beta a)
 
@@ -2774,7 +2875,7 @@ theorem lemmaD3_corrected_exponential_fixed_rank_sourceSpec_proof : lemmaD3_corr
 def lemmaD4_corrected_pareto_fixed_rank_sourceSpec : Prop :=
   ∀
     {alpha : ℝ} (halpha : 1 < alpha) (r : ℕ),
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun q : ℕ =>
         expectedOrderStatisticMeanSeq (paretoIidSampleMeasure alpha) (q - r) q)
       (fun q : ℕ =>
@@ -2815,9 +2916,9 @@ def proposition5_iid_topk_identitySpec : Prop :=
   ∀
     (D : Measure ℝ) [IsProbabilityMeasure D]
     (hfinite_mean : Integrable (fun x : ℝ => x) D) (k a : ℕ),
-    EconCSLib.Probability.orderStatisticTopKSumFromMean
+    AppliedModelingLib.Probability.orderStatisticTopKSumFromMean
         (definition3IidOrderStatisticMean D) k a =
-      EconCSLib.Probability.expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedSampleTopKSum
         (definition3IidSampleMeasure D a) k
 
 theorem proposition5_iid_topk_identitySpec_proof : proposition5_iid_topk_identitySpec := by
@@ -2828,7 +2929,7 @@ def lemmaD1_i_corrected_uniform_optimizer_shares_sourceSpec : Prop :=
   ∀
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)
@@ -2853,7 +2954,7 @@ def lemmaD1_iii_corrected_probability_optimizer_shares_sourceSpec : Prop :=
   ∀
     {m : ℕ} [NeZero m] {B C : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hsum : (∑ i : ItemType m, p i) = 1)
@@ -2871,7 +2972,7 @@ def lemmaD1_iv_corrected_powerTail_optimizer_shares_sourceSpec : Prop :=
   ∀
     {m : ℕ} [NeZero m] {B sigma : ℝ} {h : ℕ → ℝ}
     (p : Fin m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : Fin m => h))
     (hp_pos : ∀ i, 0 < p i)
     (hB_pos : 0 < B) (hsigma_pos : 0 < sigma) (hsigma_lt_one : sigma < 1)

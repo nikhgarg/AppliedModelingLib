@@ -45,14 +45,17 @@ None yet. After the source theorem chain is stable, record trivial or
 near-trivial weakened assumptions, immediate corollaries, stronger conclusions,
 source conjectures that can now be proved cheaply, or extension ideas to defer.
 
-## 10. Mathematical Typos or Other Fixes Suggested in the Source Paper
+## 10. Source Clarifications and Exact Readings
 None found.
-Use this section for likely mathematical typos, sign errors, missing constants,
-source-version corrections, or theorem-statement repairs suggested by the
-formalization. Do not use this section for ordinary proof engineering choices
-or open Lean/library work. Minor or resolved corrections with an unchanged
-substantive advertised endpoint remain compatible with `formalized` and use
-`status_impact: formalized_note` in a schema-2 source-proof fidelity ledger.
+Use this section for exact source readings, likely mathematical typos, sign
+errors, missing constants, source-version corrections, or theorem-statement
+repairs suggested by the formalization. Prefer `clarification` when the Lean
+statement makes the source's intended meaning explicit without changing its
+substantive advertised endpoint. Do not use this section for ordinary proof
+engineering choices or open Lean/library work. Minor or resolved source fixes
+with an unchanged substantive endpoint remain compatible with `formalized`
+and use `status_impact: formalized_note` in a schema-2 source-proof fidelity
+ledger.
 
 ## 11. Paper Issues or Caveats
 None found.

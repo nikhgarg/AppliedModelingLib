@@ -13,7 +13,7 @@ Source: `EFXadditivechores.tex`, Appendix A, lines 2011--2034.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- The source construction has `n - 1 + 2s` chores. -/
 def appendixItemCount (n : ℕ) : ℕ := n - 1 + 2 * appendixS n

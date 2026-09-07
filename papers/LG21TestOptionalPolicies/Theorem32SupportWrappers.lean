@@ -12,8 +12,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 
 /--
 Full-support value-level optional-reporting Gaussian `P_BO` endpoint with the

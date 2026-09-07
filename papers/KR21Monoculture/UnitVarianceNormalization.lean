@@ -1,7 +1,7 @@
 import KR21Monoculture.MainTheorems
 
-open EconCSLib MeasureTheory ProbabilityTheory
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib.SocialChoice.Ranking
 
 /-!
 # Scale Reparameterization for the KR21 Scaled-Noise Model

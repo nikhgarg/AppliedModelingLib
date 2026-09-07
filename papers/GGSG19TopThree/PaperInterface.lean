@@ -4,8 +4,8 @@ namespace GGSG19TopThree
 
 namespace PaperInterface
 
-open EconCSLib.SocialChoice.Ranking
-open EconCSLib.Probability
+open AppliedModelingLib.SocialChoice.Ranking
+open AppliedModelingLib.Probability
 open MeasureTheory
 open scoped ProbabilityTheory
 open GGSG19TopThree.ProofBridge
@@ -23,7 +23,7 @@ def source_model_k_ranking_scoreSpec {n : ℕ} (K : ℕ)
 /-- Source-facing semantic target for `source_model_k_approval_score`. -/
 def source_model_k_approval_scoreSpec {n : ℕ} (K : ℕ)
     (ranking : Ranking n) (candidate : Candidate n) : Prop :=
-  EconCSLib.SocialChoice.Ranking.kApprovalScore K ranking candidate =
+  AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K ranking candidate =
     if (rankOf ranking candidate).val < K then 1 else 0
 
 /-- Source-facing semantic target for `source_model_reasonable_positional_scoring_rules`. -/
@@ -109,21 +109,24 @@ def source_proposition2_thm_pairwiselearning_finite_supportSpec
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal)) : Prop :=
-  ExponentialRateCertificate
-      (pairwiseScoringErrorProb law hiScore loScore)
-      (pairwiseScoringRate law hiScore loScore) ∨
-    (∃ pZero : ℝ,
-      EconCSLib.pmfProb law
-          (fun signal => hiScore signal - loScore signal = 0) =
-        pZero ∧
-      0 < pZero ∧
-      ExponentialRateCertificate
+  (ExponentialRateCertificate
         (pairwiseScoringErrorProb law hiScore loScore)
-        (-Real.log pZero)) ∨
-    (∀ᶠ n in Filter.atTop,
-      pairwiseScoringErrorProb law hiScore loScore n = 0)
+        (pairwiseScoringRate law hiScore loScore) ∨
+      (∃ pZero : ℝ,
+        AppliedModelingLib.pmfProb law
+            (fun signal => hiScore signal - loScore signal = 0) =
+          pZero ∧
+        0 < pZero ∧
+        ExponentialRateCertificate
+          (pairwiseScoringErrorProb law hiScore loScore)
+          (-Real.log pZero)) ∨
+      (∀ᶠ n in Filter.atTop,
+        pairwiseScoringErrorProb law hiScore loScore n = 0)) ∧
+    ∀ n,
+      pairwiseScoringErrorProb law hiScore loScore n ≤
+        Real.exp (-(n : ℝ) * pairwiseScoringRate law hiScore loScore)
 
 /-- Source-facing semantic target for `source_proposition3_lem_pairwiselearning_approval_finite_ternary`. -/
 def source_proposition3_lem_pairwiselearning_approval_finite_ternarySpec
@@ -137,15 +140,15 @@ def source_proposition3_lem_pairwiselearning_approval_finite_ternarySpec
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown)
     (hZeroProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         pZero) : Prop :=
   ExponentialRateCertificate
@@ -162,23 +165,17 @@ def source_proposition4_thm_goal_learning_exact_minimum_rateSpec
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
-          (fun signal => score (hi pair) signal - score (lo pair) signal))
-    (aPos aNeg : Pair → Signal)
-    (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
-    (hgapPos :
-      ∀ pair, 0 < score (hi pair) (aPos pair) - score (lo pair) (aPos pair))
-    (hmassNeg : ∀ pair, 0 < (law (aNeg pair)).toReal)
-    (hgapNeg :
-      ∀ pair, score (hi pair) (aNeg pair) - score (lo pair) (aNeg pair) < 0) : Prop :=
-  HasExponentialRate
-    ((proposition4_relevant_pair_rate_certificate_from_stationary_tilted_modal_log_support_of_mean_nonneg_pos_neg_atoms
-        law score hi lo hmean aPos aNeg hmassPos hgapPos hmassNeg hgapNeg)
-      |>.aggregateError (fun _ => (1 : ℝ)))
-    (finiteOutcomeLearningRate
+        0 ≤ AppliedModelingLib.pmfExp law
+          (fun signal => score (hi pair) signal - score (lo pair) signal)) : Prop :=
+  HasExtendedExponentialRate
+    (fun sampleSize =>
+      ∑ pair : Pair,
+        finiteScoreGapPairwiseErrorProb law score
+          (hi pair) (lo pair) sampleSize)
+    (finiteOutcomeLearningExtendedRate
       (fun pair : Pair =>
-        finiteIidPairwiseScoreGapChernoffRate law score
-          (hi pair) (lo pair)))
+        pairwiseScoringExtendedRate law
+          (score (hi pair)) (score (lo pair))))
 
 /-- Source-facing semantic target for `source_proposition4_thm_goal_learning_finite_sample_M_sq_bound`. -/
 def source_proposition4_thm_goal_learning_finite_sample_M_sq_boundSpec
@@ -188,15 +185,8 @@ def source_proposition4_thm_goal_learning_finite_sample_M_sq_boundSpec
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score (hi pair) signal - score (lo pair) signal))
-    {aPos aNeg : Pair → Signal}
-    (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
-    (hgapPos :
-      ∀ pair, 0 < score (hi pair) (aPos pair) - score (lo pair) (aPos pair))
-    (hmassNeg : ∀ pair, 0 < (law (aNeg pair)).toReal)
-    (hgapNeg :
-      ∀ pair, score (hi pair) (aNeg pair) - score (lo pair) (aNeg pair) < 0)
     (hcard : Fintype.card Pair ≤ Fintype.card Candidate ^ 2)
     (n : ℕ) : Prop :=
   (∑ pair : Pair,

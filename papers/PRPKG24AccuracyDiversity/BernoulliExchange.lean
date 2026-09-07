@@ -11,7 +11,7 @@ theorem weightedForwardMarginal_toConsumptionModel {T : ℕ}
     (B.toConsumptionModel).weightedForwardMarginal t q =
       B.likelihood t * B.successProb t * (1 - B.successProb t) ^ q := by
   unfold ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-    EconCSLib.Allocation.marginal toConsumptionModel
+    AppliedModelingLib.Allocation.marginal toConsumptionModel
   rw [bernoulliAtLeastOneValue_succ_sub]
   ring
 
@@ -36,7 +36,7 @@ theorem forwardMarginal_le_backwardMarginal_of_optimum {T : ℕ}
     (B : BernoulliSatisfactionModel T) (N : ℕ)
     {a : CountAllocation T} {src dst : ItemType T}
     (hopt : B.toConsumptionModel.IsOptimalAtTotal N a) (hne : src ≠ dst)
-    (hcan : EconCSLib.Allocation.CanMoveOne a src) :
+    (hcan : AppliedModelingLib.Allocation.CanMoveOne a src) :
     B.likelihood dst * B.successProb dst *
         (1 - B.successProb dst) ^ (a.count dst) ≤
       B.likelihood src * B.successProb src *
@@ -67,12 +67,12 @@ theorem pairwise_count_le_succ_of_symmetric_optimum {T : ℕ}
     (hprob_lt_one : ∀ i : ItemType T, B.successProb i < 1) :
     ∀ src dst : ItemType T, a.count src ≤ a.count dst + 1 := by
   have hopt' :
-      EconCSLib.Allocation.IsOptimalAtTotal
+      AppliedModelingLib.Allocation.IsOptimalAtTotal
         B.likelihood B.toConsumptionModel.valueOfCount N a := by
-    simpa [EconCSLib.Allocation.IsOptimalAtTotal, ConsumptionModel.IsOptimalAtTotal,
+    simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal, ConsumptionModel.IsOptimalAtTotal,
       ConsumptionModel.FeasibleAtTotal, ConsumptionModel.objective, toConsumptionModel] using hopt
   refine
-    EconCSLib.Allocation.count_le_succ_of_cross_strict_antitone_forwardMarginal
+    AppliedModelingLib.Allocation.count_le_succ_of_cross_strict_antitone_forwardMarginal
       (a := a) (weight := B.likelihood)
       (valueOfCount := B.toConsumptionModel.valueOfCount) (N := N) hopt' ?_
   intro src dst q r hqr
@@ -86,22 +86,22 @@ theorem pairwise_count_le_succ_of_symmetric_optimum {T : ℕ}
       (1 - B.successProb dst) ^ r < (1 - B.successProb dst) ^ q :=
     pow_lt_pow_right_of_lt_one₀ hbase_pos hbase_lt_one hqr
   calc
-    EconCSLib.Allocation.weightedForwardMarginal
+    AppliedModelingLib.Allocation.weightedForwardMarginal
         B.likelihood B.toConsumptionModel.valueOfCount src r
         = B.likelihood src * B.successProb src *
             (1 - B.successProb src) ^ r := by
-          unfold EconCSLib.Allocation.weightedForwardMarginal
-            EconCSLib.Allocation.marginal toConsumptionModel
+          unfold AppliedModelingLib.Allocation.weightedForwardMarginal
+            AppliedModelingLib.Allocation.marginal toConsumptionModel
           rw [bernoulliAtLeastOneValue_succ_sub]
           ring
     _ = B.likelihood dst * B.successProb dst * (1 - B.successProb dst) ^ r := by
           simp [hlike src dst, hprob src dst]
     _ < B.likelihood dst * B.successProb dst * (1 - B.successProb dst) ^ q :=
           mul_lt_mul_of_pos_left hpow_lt hcoef_pos
-    _ = EconCSLib.Allocation.weightedForwardMarginal
+    _ = AppliedModelingLib.Allocation.weightedForwardMarginal
         B.likelihood B.toConsumptionModel.valueOfCount dst q := by
-          unfold EconCSLib.Allocation.weightedForwardMarginal
-            EconCSLib.Allocation.marginal toConsumptionModel
+          unfold AppliedModelingLib.Allocation.weightedForwardMarginal
+            AppliedModelingLib.Allocation.marginal toConsumptionModel
           rw [bernoulliAtLeastOneValue_succ_sub]
           ring
 

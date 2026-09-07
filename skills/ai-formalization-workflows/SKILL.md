@@ -1,11 +1,11 @@
 ---
 name: ai-formalization-workflows
-description: Apply workflow lessons from recent AI-assisted formalization systems to EconCSLib paper formalization. Use when planning or reviewing autoformalization pipelines, proof-DAG or blueprint workflows, retrieval-grounded statement translation, compiler-guided repair loops, semantic-alignment checks, multi-agent scheduling, or human-in-the-loop validation for Lean formalization.
+description: Apply workflow lessons from recent AI-assisted formalization systems to AppliedModelingLib paper formalization. Use when planning or reviewing autoformalization pipelines, proof-DAG or blueprint workflows, retrieval-grounded statement translation, compiler-guided repair loops, semantic-alignment checks, multi-agent scheduling, or human-in-the-loop validation for Lean formalization.
 ---
 
 # AI Formalization Workflows
 
-Use this skill when improving an EconCSLib paper-formalization workflow or
+Use this skill when improving an AppliedModelingLib paper-formalization workflow or
 planning automation around statement extraction, dependency ordering,
 proof repair, semantic validation, or multi-agent formalization.
 
@@ -37,7 +37,7 @@ the observation that dependency depth is itself a difficulty signal.
 
 Before inventing definitions, retrieve and inspect existing formal concepts:
 
-- search Mathlib, CSLib, and EconCSLib by concept and theorem role;
+- search Mathlib, CSLib, and AppliedModelingLib by concept and theorem role;
 - prefer source-compatible library definitions over new local encodings;
 - if a new definition is needed, give it a local paper-facing equivalence test
   before relying on it downstream;
@@ -108,15 +108,14 @@ layer for paper-facing statements:
   polynomial claims; explicitly compare the seat count used by the quota with
   the seat count and stopping rule used by the runner.
 
-Credits: MerLean and EconCSLib for Lean-to-LaTeX review loops; FormalScience for
+Credits: MerLean and the AppliedModelingLib workflow for Lean-to-LaTeX review loops; FormalScience for
 multi-stage human review and proof-boundary extraction; FormalAlign and cycle
 consistency work for automated semantic-alignment checks.
 
 ### 6. Schedule Multi-Agent Work By Dependencies
 
-EconCSLib formalization has standing user authorization for subagents. Use them
-without stopping for a separate permission check when the task has a stable
-interface:
+When the current environment and authorization permit delegation, use
+subagents only for work with a stable independent interface:
 
 - assign read-only source/API scouting before proof edits;
 - split proof work along independent DAG regions or separate files;
@@ -140,20 +139,22 @@ At real proof boundaries, update artifacts that let humans review the result:
 
 Do not turn active proof loops into constant status churn.
 
-Credits: EconCSLib for paper-facing interfaces, DAGs, validation reports, and
+Credits: AppliedModelingLib for paper-facing interfaces, DAGs, validation reports, and
 review dashboards; LeanArchitect for synchronized blueprint metadata; FormalScience
 for explicit audit trails through generated intermediate artifacts.
 
-## EconCSLib Application Checklist
+## AppliedModelingLib Application Checklist
 
 When starting or rescuing a paper formalization:
 
 1. Cache the source PDF/TeX once.
 2. Build a named-result inventory and dependency DAG.
 3. Compile paper-facing declarations and placeholders before proof closure.
-4. Run a retrieval pass over Mathlib, CSLib, and EconCSLib for every nontrivial
+4. Run a retrieval pass over Mathlib, CSLib, and AppliedModelingLib for every nontrivial
    concept.
-5. Close proofs in dependency order, using compiler-guided repair.
+5. Close proofs in dependency order, using compiler-guided repair. Treat Lean
+   panic/internal-error output as a failed check even if the process exits zero;
+   refactor the triggering tactic and require a clean diagnostic stream.
 6. Preserve source proof structure unless a documented deviation is faster and
    still proves the source claim.
 7. Back-translate and review paper-facing statements at start and closeout.
@@ -163,4 +164,4 @@ When starting or rescuing a paper formalization:
 
 This skill complements `skills/econcs-formalizer/SKILL.md`; it supplies external
 workflow patterns, while the formalizer skill remains the source of truth for
-EconCSLib-specific paper status, audit, and repository rules.
+AppliedModelingLib-specific paper status, audit, and repository rules.

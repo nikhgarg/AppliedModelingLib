@@ -8,7 +8,7 @@ low-ratio proof.  In particular, it does not treat a policy-dependent Lemma 9
 interval as a uniform certificate.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped Function ProbabilityTheory Topology ENNReal
 
@@ -724,10 +724,9 @@ theorem theorem3_low_bellman_condition_of_ratio_le
           (switch12 * T0 - Q0) := by ring
 
 /--
-The first clause of GN21 Theorem 3 with the source's economically implicit
-nonnegative target-rate convention made explicit.  The proof partitions the
-target ratio at the actual Bellman threshold: the low side uses the literal
-zero cutoff and the high side uses accept-all.
+The internal real-valued construction for the first clause of GN21 Theorem 3.
+The proof partitions the target ratio at the actual Bellman threshold: the low
+side uses the literal zero cutoff and the high side uses accept-all.
 -/
 theorem gn21_theorem3_structured_open_optimal_of_nonnegative_target_rates
     (mu : Fin 2 → Measure TripLength) (arrival : Fin 2 → ℝ)

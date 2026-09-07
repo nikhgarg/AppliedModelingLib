@@ -1,6 +1,6 @@
 import KR21Monoculture.QuantitativeWitnesses
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 

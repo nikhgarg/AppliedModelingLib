@@ -197,23 +197,6 @@
       "status_impact_rationale": "The missing route is fully proved. Any added positivity, nontriviality, tie-free, or well-posedness condition is the explicit mathematical reading of the source model rather than a caveat-worthy paper error."
     },
     {
-      "acceptance_condition": "Lean proves 1-instability for all four classes and exact variability 1,2,3,6 with explicit witnesses.",
-      "affected_source_locators": [
-        "cited publication:337-357",
-        "cited publication:687-695"
-      ],
-      "defect_kind": "logical_dependency",
-      "id": "DGD26-PROGRAM-WITNESSES-01",
-      "repair_obligation": "Define all four program choice rules and construct applicant-pool witnesses attaining each claimed variability.",
-      "resolution": "repaired_in_lean",
-      "resolution_evidence": "the four paper_*_program_properties_statement rows",
-      "source_claim": "Proposition 2's four concrete program classes and exact variability witnesses are not instantiated in Lean.",
-      "source_locator": "cited publication:346-357; cited publication:687-695",
-      "statement_impact": "proof_only",
-      "status_impact": "formalized_note",
-      "status_impact_rationale": "The missing route is fully proved. Any added positivity, nontriviality, tie-free, or well-posedness condition is the explicit mathematical reading of the source model rather than a caveat-worthy paper error."
-    },
-    {
       "acceptance_condition": "The forward q-representative theorem proves exact variability one on the source domain without an unexplained Lean premise.",
       "affected_source_locators": [
         "cited publication:447-460"
@@ -279,20 +262,102 @@
       "status_impact_rationale": "The missing route is fully proved. Any added positivity, nontriviality, tie-free, or well-posedness condition is the explicit mathematical reading of the source model rather than a caveat-worthy paper error."
     },
     {
-      "acceptance_condition": "The LAP instability and distinct-order variability theorems are proved from the source model without unique-selector or one-way-classifier assumptions.",
+      "acceptance_condition": "The direct LAP model and local ordering interfaces expose real weights, feasibility against every feasible matching, exact slot-order equality, and the fixed generic tie-break required for a single-valued choice rule.",
       "affected_source_locators": [
         "cited publication:610-666"
       ],
       "defect_kind": "domain_or_endpoint",
       "id": "DGD26-LAP-SEMANTIC-WORLD-01",
-      "repair_obligation": "Formalize the source real-weight assignment model, construct or quotient optimizers appropriately, derive local ordering from objective optimality, and count exact induced-order classes.",
+      "repair_obligation": "Formalize the source real-weight assignment model, derive local ordering from objective optimality, and count exact induced-order classes without an integer-weight or one-way-classifier substitution.",
       "resolution": "repaired_in_lean",
-      "resolution_evidence": "the LAP model and canonical instability/variability rows now use real weights and exact quotient classes",
-      "source_claim": "The source LAP uses real weights, per-slot no ties, objective-optimal assignments, and exact equality of induced orders; Lean uses integer weights, a supplied unique optimizer selector, and a noncanonical one-way class map.",
+      "resolution_evidence": "paper_lap_model_definition_statement, paper_lap_slot_below_definition_statement, paper_lap_same_slot_order_definition_statement, and the local LAP ordering rows",
+      "source_claim": "The source LAP uses real weights, per-slot no ties, objective-optimal assignments, and exact equality of induced orders; earlier Lean routes did not expose that real-weight all-feasible model or exact slot-order quotient directly.",
       "source_locator": "cited publication:610-666",
       "statement_impact": "proof_only",
       "status_impact": "formalized_note",
-      "status_impact_rationale": "The missing route is fully proved. Any added positivity, nontriviality, tie-free, or well-posedness condition is the explicit mathematical reading of the source model rather than a caveat-worthy paper error."
+      "status_impact_rationale": "The direct LAP definition and local ordering results now use the source real-weight all-feasible model and exact slot-order relation. The single-valued choice rule is completed by the explicit fixed generic tie-break recorded as DGD26-LAP-DETERMINATE-TIEFREE-01."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "`paper_ml_representation_definition_statementSpec`, the fixed- and rank-threshold predictor interfaces, and the ML representation results in `PaperInterface.lean`.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "For representation of a cohort-dependent choice function, the predictor is evaluated on an offered applicant together with its applicant pool, as `PaperPoolPredictor α := Finset α → α → Prop`. The source's displayed `f(x_i)` is read in the ambient pool `X`; the fixed-threshold subclass remains pool-independent because it ignores that argument.",
+      "id": "DGD26-ML-POOL-CONTEXT-01",
+      "source_locator": "cited publication:247-257",
+      "why_needed": "The source writes applicant-only notation in its general representation sentence and explicitly writes `f(x; X)` for the immediately following cohort-dependent rank model. A single all-pools representation relation is needed to state both source formulas without treating the rank model as an exception."
+    },
+    {
+      "checked_scope": "`paper_fixed_threshold_formula_statementSpec`, `paper_rank_threshold_formula_statementSpec`, and the source-facing ML threshold results.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "Scores are represented as real-valued functions `α → ℝ`. The fixed-threshold source-facing contract explicitly requires every score to lie in `[0,1]`; rank-threshold results depend only on the induced real order, so the source normalization is an order-preserving coordinate convention rather than a further rank-model premise.",
+      "id": "DGD26-ML-REAL-SCORE-NORMALIZATION-01",
+      "source_locator": "cited publication:161-168; cited publication:253-257",
+      "why_needed": "The source presents the usual normalized score range `[0,1]`, whereas the reusable Lean threshold and order-statistic constructions operate over `ℝ`."
+    },
+    {
+      "checked_scope": "`paperRankThresholdPredictor_order_statistic_formula` and `paper_rank_threshold_formula_statementSpec`, plus the rank-threshold representation results that consume this formula.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "The displayed cohort threshold `t_q(X)` is used only on pools with positive capacity `0 < q` and `q ≤ |X|`. Equal raw scores are resolved by a fixed generic ex-ante order; Lean's injective `operationalScore` represents that refinement, so exactly `q` offered applicants weakly exceed the q-th operational score.",
+      "id": "DGD26-RANK-ORDER-STATISTIC-01",
+      "source_locator": "cited publication:253-257",
+      "why_needed": "A q-th ranked applicant is not defined for zero capacity or for a pool with fewer than q applicants, and the source's weak threshold display does not specify what happens at an equal-score boundary. The fixed order makes the displayed rank rule single-valued without treating raw-score injectivity as an economic premise."
+    },
+    {
+      "checked_scope": "`paper_lap_model_definition_statementSpec`, `paper_lap_slot_below_definition_statementSpec`, `paper_lap_same_slot_order_definition_statementSpec`, the local fixed-slot LAP ordering contracts, `paper_lap_assignment_one_instability_statementSpec`, and `paper_lap_assignment_slot_order_class_variability_of_unique_global_optima_statementSpec`.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "The source LAP model is a feasible maximum-real-weight matching, with its objective compared against every feasible matching, and its slot orders are real-weight orders with no within-slot ties. Its q-acceptant assignment convention selects every offered applicant below slot capacity and one applicant per slot at or above capacity; Lean's `CapacityFilling` states exactly those two cases. The displayed choice rule uses a fixed generic objective refinement for primary-score ties. Lean's `operationalWeight` is that refined score, and its unique globally optimal chosen set is asserted only for that operational objective—not for the unrepresented raw-primary optimum correspondence.",
+      "id": "DGD26-LAP-DETERMINATE-TIEFREE-01",
+      "source_locator": "cited publication:610-646; cited publication:648-666",
+      "why_needed": "The source defines matching by at-most-one incidence and maximum weight, describes the assignment as one applicant per available slot, and separately assumes that each slot's weights have no ties. The fixed generic refinement is the technical completion needed to make the displayed choice rule single-valued; it preserves feasibility, the q-acceptant capacity convention, and strict primary-score comparisons, and does not impose raw-primary uniqueness or any economic restriction."
+    },
+    {
+      "checked_scope": "`paper_q_representative_forward_exact_statementSpec` and `paper_q_representative_converse_exact_statementSpec`; the already documented Theorem 2 corrected targets use the same nondegenerate queue domain.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "The exact-variability-one q-representative equivalence is scoped to positive, nontrivial capacity: `0 < q` and `q < Fintype.card α`. The zero-capacity and capacity-at-least-universe cases are excluded because no displacement witness exists there.",
+      "id": "DGD26-QREP-NONDEGENERATE-DOMAIN-01",
+      "source_locator": "cited publication:447-540",
+      "why_needed": "The source proof of exact variability one reasons through candidates displaced by a fresh applicant, which is impossible on the degenerate domains. The maintainer delegated this choice and selected exclusion of the degenerate cases."
+    },
+    {
+      "checked_scope": "`paper_tight_d_instability_definition_statementSpec` and all paper results whose source premises explicitly require positive d.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "The phrase 'not (d-1)-unstable' is interpreted only for positive integer d. The source-facing tight-instability contract therefore states the defining equivalence under `0 < d`; the reusable predicate remains available at zero but is not asserted to be the paper's tightly-zero notion.",
+      "id": "DGD26-TIGHT-POSITIVE-DOMAIN-01",
+      "source_locator": "cited publication:104-110",
+      "why_needed": "At d=0 the displayed predecessor expression is outside the nonnegative-index convention and does not determine a substantive tightness condition. Every source theorem that uses tight instability has a positive d premise."
+    },
+    {
+      "checked_scope": "`paper_definition_sequential_compositionSpec` and the sequential-composition, sequential-substitutability, additive-variability, and queue-range result contracts.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "`sequentialCompositionSource` is the source's recursive residual-pool rule: the empty list chooses nothing, and a head stage chooses `C X` then the tail is evaluated on `X \\ C X`, with all stage choices unioned. `paper_definition_sequential_composition` is proved extensionally equal to that recursion.",
+      "id": "DGD26-SEQUENTIAL-RECURSIVE-MODEL-01",
+      "source_locator": "cited publication:187-197; cited publication:550-563",
+      "why_needed": "The source writes a finite displayed union together with recursively defined residual pools, while Lean represents arbitrary-length sequences with one structural recursion. The source-facing target must bind that recursion explicitly rather than treating the helper name as an unconstrained implementation detail."
+    },
+    {
+      "checked_scope": "The five Proposition 2 Specs and their proof endpoints. Empirical implementation and program-by-program replication are outside this mathematical procedure model.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "`ProgramClasses.choice n` is the abstract finite `n`-queue priority procedure used for the source classes. Each queue has fixed capacity one and a strict queue-specific priority; at its reference pool, inserting the queue's designated priority applicant displaces that queue's designated reference applicant. The source class results instantiate this procedure at n=1 (Screened/Open), n=2 (Screened/Open with DIA), n=3 (Educational Option), and n=6 (Educational Option with DIA).",
+      "id": "DGD26-PROGRAM-QUEUE-PROCEDURES-01",
+      "source_locator": "audit/cited publication:337-358; audit/cited publication:1150-1158",
+      "why_needed": "The source proof establishes tightness by these queue-specific displacement constructions. Formalizing the abstract procedure and its witnesses proves the stated mathematical queue claims without asserting anything about a real-program roster, a simulator, or unpublished empirical inputs."
+    },
+    {
+      "checked_scope": "`paper_definition_borderline_setSpec`, `paper_definition_waitlisted_setSpec`, `paper_variability_exactly_definition_statementSpec`, and `paper_general_variability_exactly_definition_statementSpec`.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "The applicant universe `\\calX` is finite whenever a source definition takes a union or maximum over all applicant pools. Lean therefore uses `[Fintype α]` for borderline sets, waitlisted sets, and the exact variability definitions, while pointwise choice-function properties remain available over arbitrary applicant types.",
+      "id": "DGD26-FINITE-UNIVERSE-01",
+      "source_locator": "cited publication:179-183; cited publication:233-244; cited publication:356-371",
+      "why_needed": "The source says it considers finite applicant sets, and its global variability displays range over all subsets of `\\calX`; a finite universe makes those displayed maxima and all-pool unions literal finite objects."
+    },
+    {
+      "checked_scope": "`paper_substitutability_one_instability_equivalence_statementSpec` and the separately labelled `paper_qacceptant_substitutable_iff_one_statementSpec`.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "Theorem 1's phrase 'exactly 1-unstable' is stated on positive, nontrivial capacity: `0 < q` and some offered pool has cardinality greater than `q`. Its direct target is the conjunction of the one-step `1` bound and non-zero instability, so the source's separate no-zero bullet supplies the exactness component.",
+      "id": "DGD26-THEOREM1-NONDEGENERATE-EXACT-01",
+      "source_locator": "cited publication:280-289; cited publication:241-244",
+      "why_needed": "The printed theorem omits the same nondegeneracy conditions already necessary for its no-zero bullet; at zero or saturated capacity, a 1-bound alone does not establish exact instability."
     }
   ],
   "paper": "DGD26AdmissionsPredictability",

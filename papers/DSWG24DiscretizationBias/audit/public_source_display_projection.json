@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "DSWG24DiscretizationBias",
-  "private_source_map_sha256": "ec3c2d9b2b961e4bbe5af91e52067ee789144c5058bcee49982a1216539dbe32",
+  "private_source_map_sha256": "e8ae7dfb703a07f19e31d29d918caf79535ca37810e9b48709207968ea437962",
   "public_manifest_path": "papers/DSWG24DiscretizationBias/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "3252802396141bc8fd48ee6084d3cb9670e4798a3fd640d29a10ca549603d46b",
+  "public_source_map_sha256": "c4b16584e9dddb354e8a0fe89ed69ed2f04b927fa07009118e0d512aefc9a9f3",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
@@ -69,6 +69,20 @@
       "source_kind": "definition"
     },
     "datasetMostLikelyClass": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 205,
+              "line_start": 198,
+              "publication_locator": "cited publication",
+              "quoted_text": "Aggregate posterior reference distribution What is an appropriate reference distribution pref ? Of\ncourse, if we knew the true distribution of labels (e.g., the true fraction of each group in the voter file), we\ncould measure and optimize fidelity with respect to it. However, this information is not often known. In this\npaper, we will thus primarily compare to the aggregate posterior: for a given set {xi }, what would the\ndecision distribution be if we could make continuous decisions corresponding to the continuous classifier q,\n                                                                  1 X\n                                            pqagg (y, {xi }) =        q(y, xi ).\n                                                                  N i",
+              "quoted_text_sha256": "932b0ae3d35fb498ca0c796df78b930df505f37b70c89c1ea3c352a6cfc1027f"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 755,
@@ -93,6 +107,20 @@
       "source_kind": "definition"
     },
     "isArgmaxRule": {
+      "semantic_context": [
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 231,
+              "line_start": 229,
+              "publication_locator": "cited publication",
+              "quoted_text": "   2 Suppose ties are broken according to some consistent ordering over the classes.      In the event of ties, we will use\narg maxy q(y, x) to denote the single class that is in the argmax set and is first in the consistent ordering among classes\nin the argmax set.",
+              "quoted_text_sha256": "a6dc4680ce05165102e5d8eebef4418c0a494fe075416ddcc09760d9f8abe08f"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 218,
@@ -162,6 +190,20 @@
       "source_kind": "definition"
     },
     "maximizesEquation1": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 194,
+              "line_start": 177,
+              "publication_locator": "cited publication",
+              "quoted_text": "\f    (2a) To measure bias, we use the distance between the marginal distribution of labels and a reference\ndistribution pref . Let p̂marg (y) denote the fraction of datapoints with the label y:\n                                                                     N\n                                                                 1 X\n                                          p̂marg (y, ŷ1:N ) =         1[ŷi = y].\n                                                                 N i=1\n\nThen, bias is how much a class y is amplified by labels relative to the reference:\n\n                                    bias(y, ŷ1:N , pref ) ≜ p̂marg (y, ŷ1:N ) − pref (y).\n\n    (2b) As a summary statistic, we will further consider distributional fidelity, the negative sum of the\nabsolute value of bias across classes (equivalently, the negative of the ℓ1 distance between the label and\nreference distributions).\n                                                        X\n                                 fid(pref , ŷ1:N ) ≜ −   bias(y, ŷ1:N , pref ) .\n                                                            y∈Y\n",
+              "quoted_text_sha256": "a3802c4f98479734dc08ce2ddb101274cfb8df13287949ff906688c384642729"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 264,
@@ -241,13 +283,6 @@
           "publication_locator": "cited publication",
           "quoted_text": "Theorem 1. Argmax bias depends on predictive uncertainty, i.e., how much information features x provide\nabout the true class label. Consider calibrated classifier q and the argmax decision rule Dargmax . Let N > K\nand consider a reference distribution of either the aggregate posterior or the prior. Then,\n  (i). Suppose x provides no information and q(y, x) = Pr(y) for all x, y. Then, amplification bias is\n       maximized and all data points are classified as a plurality class:\n                                                  (\n                                                    1 − Pr(y), if y = arg maxw p(w),\n                            BIAS(y, Dargmax ) =\n                                                    − Pr(y),      otherwise.\n   9 Note that, though related, mean average error of the continuous predictor q(y, x) is not equivalent to expected zero-one\n\nloss of the discrete decisions. The latter, our measure of decision accuracy, also depends on how the continuous predictor is\ndiscretized.                                n                                           o\n  10 For all c of non-zero measure: ∀c ∈\n                                                 R\n                                             c : (x,y) I[q(y, x) = c]f (x, y)d(y, x) > 0 . Further note that calibration implies\nBayesian consistency, i.e., the continuous model cumulatively assigns the proper mass to each class y: EX [q(y, x)] = Pr(y).\n\n\n                                                              11\n\f                                                                                   (\n                                                                                    1,                                                                        if z = y,\n  (ii). Suppose the classifier is perfect, i.e., ∀(x, y) ∼ FXY , we have q(z, x) =                                                                                       Then, there\n                                                                                    0,                                                                        otherwise.\n        is no amplification bias, BIAS(y, Dargmax ) = 0.",
           "quoted_text_sha256": "c0307970d6f62640531898383138c5e542aa3943e07a1adb7c7306651f849c81"
-        },
-        {
-          "line_end": 666,
-          "line_start": 642,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 1. Argmax bias depends on predictive uncertainty, i.e., how much information features x provide\nabout the true class label. Consider calibrated classifier q and the argmax decision rule Dargmax . Let N > K\nand consider a reference distribution of either the aggregate posterior or the prior. Then,\n  (i). Suppose x provides no information and q(y, x) = Pr(y) for all x, y. Then, amplification bias is\n       maximized and all data points are classified as a plurality class:\n                                                  (\n                                                    1 − Pr(y), if y = arg maxw p(w),\n                            BIAS(y, Dargmax ) =\n                                                    − Pr(y),      otherwise.\n   9 Note that, though related, mean average error of the continuous predictor q(y, x) is not equivalent to expected zero-one\n\nloss of the discrete decisions. The latter, our measure of decision accuracy, also depends on how the continuous predictor is\ndiscretized.                                n                                           o\n  10 For all c of non-zero measure: ∀c ∈\n                                                 R\n                                             c : (x,y) I[q(y, x) = c]f (x, y)d(y, x) > 0 . Further note that calibration implies\nBayesian consistency, i.e., the continuous model cumulatively assigns the proper mass to each class y: EX [q(y, x)] = Pr(y).\n\n\n                                                              11\n\f                                                                                   (\n                                                                                    1,                                                                        if z = y,\n  (ii). Suppose the classifier is perfect, i.e., ∀(x, y) ∼ FXY , we have q(z, x) =                                                                                       Then, there\n                                                                                    0,                                                                        otherwise.\n        is no amplification bias, BIAS(y, Dargmax ) = 0.",
-          "quoted_text_sha256": "c0307970d6f62640531898383138c5e542aa3943e07a1adb7c7306651f849c81"
         }
       ],
       "source_kind": "theorem"
@@ -277,6 +312,20 @@
       "source_kind": "theorem"
     },
     "theorem2i_joint_rule_exists": {
+      "semantic_context": [
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 1606,
+              "line_start": 1584,
+              "publication_locator": "cited publication",
+              "quoted_text": "   Now, note that the objective can be decomposed using the tower property, as follows:\n γ\nON (D, q, pref ) = γACCN (D, q) + (1 − γ)FIDN (D, q, pref )\n                        \u0002                                                                                     \u0003\n                 = EF{X} EF{Y }|{X} [γacc(yi , D({q(xi )})) + (1 − γ)fid(pref , D({q(xi )})) | {Xi } = {xi }]\n                        \"            \"     N\n                                                                                                                      ##\n                                        1 X\n                 = EF{X} EF{Y }|{X} γ          I [D({q(xi )}) = yi ] + (1 − γ)fid(pref , D({q(xi )})) | {Xi } = {xi }\n                                       N i\n                        \"            \"     N\n                                                                                                                     ##\n                                        1 X\n                 = EF{X} EF{Y }|{X} γ          q(D({q(xj )})i , xi ) + (1 − γ)fid(pref , D({q(xi )})) | {Xi } = {xi }\n                                       N i\n\n   Where the last line follows from, given Bayes optimal q, we have for all ŷi\n\n                                            q(ŷi , xi ) = EFY |X [Y = ŷi |X = xi ].\n\nThus, the optimization decision rule maximizes the inner expectation in the final line, for each given dataset\n                                                γ\n{xi }. Thus, the corresponding rule maximizes ON  (D, q, pref ), as desired.",
+              "quoted_text_sha256": "c4db66610cf686624ea8ed2547bba8f03fbe1b624bca9566c72bc066e86ded4a"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 758,
@@ -289,6 +338,20 @@
       "source_kind": "theorem"
     },
     "theorem2ii_argmax_accuracy_maximizing": {
+      "semantic_context": [
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 1647,
+              "line_start": 1608,
+              "publication_locator": "cited publication",
+              "quoted_text": "Proof for Part (ii)\n    The result follows directly from the classifier being Bayes optimal – for each row, you cannot do better\nthan picking the most likely class for that row.\n    Recall that D({q(xi )}) refers to the set of decisions ŷ1:N with dataset x1:N , where the decisions can be\njointly made across data points. Note that, for the Bayes optimal classifier q ∗ , we have\n\n                                            EFY |X [I [Y = y] | X = x] = q ∗ (y, x)\n\nThus, we have:\n  1\n ON (D, q ∗ , ·) = ACCN (D, q ∗ )                                                                                          (26)\n                                        ∗\n               = EF [acc(y1:N , D({q (xi )}))]                                                                             (27)\n                    \"                    #\n                      1 X\n               = EF          I [ŷi = y]                                                          let ŷi ≜ D({q ∗ (xj )}N\n                                                                                                                         j=1 )i\n                      N i\n                                                                                                                           (28)\n                         \"             \"                                       ##\n                                           1 X\n               = EF{X} EF{Y }|{X}              I [Yi = ŷi ] | {Xi } = {xi }                                 tower property\n                                           N i\n                                                                                                                           (29)\n                         \"                                          #\n                             1 X\n               = EF{X}           EFY |X [I [Y = ŷi ] | X = xi ]                        independent sampling of datapoints\n                             N i\n                                                                                                                           (30)\n                         \"                     #\n                             1 X ∗\n               = EF{X}           q (ŷi , xi )                                                                             (31)\n                             N i\n                         \"                                  #\n                             1 X ∗           ∗\n               ≤ EF{X}           q (arg max q (y, xi ), xi )                                                               (32)\n                             N i         y\n\n                  1\n               ≜ ON (Dargmax , q ∗ , ·).                                                                                   (33)",
+              "quoted_text_sha256": "687ce41e2ab0ef213621172faab61af5f8871294dbd40b9f1685b0cde31e7f08"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 760,

@@ -19,9 +19,9 @@ acceptances.
 
 namespace GHW01DigitalGoods
 
-open EconCSLib
-open EconCSLib.Auction
-open EconCSLib.FiniteRanking
+open AppliedModelingLib
+open AppliedModelingLib.Auction
+open AppliedModelingLib.FiniteRanking
 open scoped BigOperators
 
 noncomputable section
@@ -693,7 +693,7 @@ theorem rankedBoundedWinnerSet_univ_value_sum_le_topK
     (values : Agent → ℝ) (price : ℝ) (capacity : ℕ) :
     (∑ i ∈ rankedBoundedWinnerSet (Finset.univ : Finset Agent)
       values price capacity, values i) ≤ boundedSupplyTopKTotal values capacity := by
-  apply EconCSLib.Probability.sum_le_topKSumOn capacity values
+  apply AppliedModelingLib.Probability.sum_le_topKSumOn capacity values
   exact rankedBoundedWinnerSet_card_le_capacity _ values price capacity
 
 /-- The ranked realization of `opt_k` has no more than `k` acceptances. -/

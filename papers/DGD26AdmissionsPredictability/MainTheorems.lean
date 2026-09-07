@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Math.FiniteChoice
+import AppliedModelingLib.Foundations.Math.FiniteChoice
 import DGD26AdmissionsPredictability.LAP
 import DGD26AdmissionsPredictability.QRepresentativeConverseWork
 import DGD26AdmissionsPredictability.TightExamples
@@ -18,7 +18,7 @@ capacity constraints.
 
 namespace DGD26AdmissionsPredictability
 
-open EconCSLib.FiniteChoice
+open AppliedModelingLib.FiniteChoice
 
 variable {α : Type*} [DecidableEq α]
 
@@ -764,7 +764,7 @@ theorem paper_q_representative_of_q_acceptant_one_instability_variability
     (hvar : paper_variability_at_most 1 C) :
     paper_q_representative q C := by
   exact
-    EconCSLib.FiniteChoice.QRepresentativeConverseWork.qRepresentative_of_feasible_qAcceptant_dUnstable_one_variabilityAtMost_one
+    AppliedModelingLib.FiniteChoice.QRepresentativeConverseWork.qRepresentative_of_feasible_qAcceptant_dUnstable_one_variabilityAtMost_one
       (C := C) hfeasible haccept hunstable hvar
 
 /--
@@ -1334,6 +1334,72 @@ theorem paperRankThresholdPredictor_threshold_formula
     exact False.elim (hX ⟨x, hxX⟩)
 
 /--
+Source-facing order-statistic form of the cohort-dependent rank model.  On a
+nonempty pool large enough for capacity `q`, the threshold is an offered score
+and exactly `q` offered scores weakly exceed it.
+-/
+theorem paperRankThresholdPredictor_order_statistic_formula
+    (q : ℕ) (score : α → ℝ) (hinjective : Function.Injective score)
+    (hqpos : 0 < q) (X : Finset α) (hqcard : q ≤ X.card) :
+    ∃ threshold : ℝ,
+      threshold ∈ X.image score ∧
+        (X.filter (fun x => threshold ≤ score x)).card = q ∧
+          ∀ x ∈ X,
+            (paperRankThresholdPredictor q score hinjective X x ↔
+              threshold ≤ score x) := by
+  classical
+  let C := paperRankThresholdChoice q score hinjective
+  have hXcard : 0 < X.card := lt_of_lt_of_le hqpos hqcard
+  have hX : X.Nonempty := Finset.card_pos.mp hXcard
+  have hchoiceNonempty : (C X).Nonempty := by
+    apply Finset.card_pos.mp
+    rw [(paperRankThresholdChoice_q_representative
+      q score hinjective).qAcceptant X]
+    omega
+  let chosenScores := (C X).image score
+  have hscores : chosenScores.Nonempty := hchoiceNonempty.image _
+  let threshold := chosenScores.min' hscores
+  have hthresholdMem : threshold ∈ chosenScores :=
+    chosenScores.min'_mem hscores
+  rcases Finset.mem_image.mp hthresholdMem with ⟨y, hyChosen, hyScore⟩
+  have hyX : y ∈ X :=
+    paperRankThresholdChoice_feasible q score hinjective X hyChosen
+  have hformula : ∀ x ∈ X,
+      (x ∈ C X ↔ threshold ≤ score x) := by
+    intro x hxX
+    constructor
+    · intro hxChosen
+      exact chosenScores.min'_le _
+        (Finset.mem_image.mpr ⟨x, hxChosen, rfl⟩)
+    · intro hscoreAtLeast
+      by_contra hxNot
+      letI : LinearOrder α := paperOrderByScore score hinjective
+      have hyPriority : y < x := by
+        dsimp [C] at hyChosen hxNot
+        unfold paperRankThresholdChoice at hyChosen hxNot
+        exact linearTopQChoice_priority q hyChosen hxX hxNot
+      have hscoreStrict : score x < score y := by
+        simpa [paperOrderByScore] using hyPriority
+      rw [hyScore] at hscoreStrict
+      exact (not_lt_of_ge hscoreAtLeast) hscoreStrict
+  refine ⟨threshold, Finset.mem_image.mpr ⟨y, hyX, hyScore⟩, ?_, ?_⟩
+  · have hfilter : X.filter (fun x => threshold ≤ score x) = C X := by
+      ext x
+      simp only [Finset.mem_filter]
+      constructor
+      · intro hx
+        exact (hformula x hx.1).mpr hx.2
+      · intro hx
+        have hxX : x ∈ X :=
+          paperRankThresholdChoice_feasible q score hinjective X hx
+        exact ⟨hxX, (hformula x hxX).mp hx⟩
+    rw [hfilter, (paperRankThresholdChoice_q_representative
+      q score hinjective).qAcceptant X]
+    exact Nat.min_eq_left hqcard
+  · intro x hxX
+    exact hformula x hxX
+
+/--
 ML-representation proposition, rank-threshold side: a feasible q-representative
 rule is 1-unstable and has variability at most one.
 -/
@@ -1675,25 +1741,25 @@ theorem paper_sequential_q_representative_variability_range
     exact hprops.2.2.2 Y
   exact ⟨m, hmpos, hmle, hexact⟩
 
-/-! ## Concrete NYC program-class representatives -/
+/-! ## Abstract source queue procedures -/
 
-/-- Canonical one-queue representative of a Screened/Open program. -/
+/-- Abstract one-queue procedure for the Screened/Open source class. -/
 abbrev paperScreenedOpenProgramChoice : PaperChoiceRule (Fin 2) :=
   ProgramClasses.choice 1
 
-/-- Canonical two-queue representative of a Screened/Open with DIA program. -/
+/-- Abstract two-queue procedure for the Screened/Open-with-DIA source class. -/
 abbrev paperScreenedOpenDIAProgramChoice : PaperChoiceRule (Fin 4) :=
   ProgramClasses.choice 2
 
-/-- Canonical three-queue representative of an Educational Option program. -/
+/-- Abstract three-queue procedure for the Educational Option source class. -/
 abbrev paperEducationalOptionProgramChoice : PaperChoiceRule (Fin 6) :=
   ProgramClasses.choice 3
 
-/-- Canonical six-queue representative of an Educational Option with DIA program. -/
+/-- Abstract six-queue procedure for the Educational Option-with-DIA source class. -/
 abbrev paperEducationalOptionDIAProgramChoice : PaperChoiceRule (Fin 12) :=
   ProgramClasses.choice 6
 
-/-- The modeled Screened/Open program is 1-unstable and exactly 1-variable. -/
+/-- The abstract Screened/Open procedure is 1-unstable and exactly 1-variable. -/
 theorem paper_screened_open_program_properties :
     paper_feasible paperScreenedOpenProgramChoice ∧
       paper_q_acceptant 1 paperScreenedOpenProgramChoice ∧
@@ -1701,7 +1767,7 @@ theorem paper_screened_open_program_properties :
       paper_variability_exactly 1 paperScreenedOpenProgramChoice := by
   exact ProgramClasses.one_queue_properties
 
-/-- The modeled Screened/Open with DIA program is 1-unstable and exactly 2-variable. -/
+/-- The abstract Screened/Open-with-DIA procedure is 1-unstable and exactly 2-variable. -/
 theorem paper_screened_open_dia_program_properties :
     paper_feasible paperScreenedOpenDIAProgramChoice ∧
       paper_q_acceptant 2 paperScreenedOpenDIAProgramChoice ∧
@@ -1709,7 +1775,7 @@ theorem paper_screened_open_dia_program_properties :
       paper_variability_exactly 2 paperScreenedOpenDIAProgramChoice := by
   exact ProgramClasses.two_queue_properties
 
-/-- The modeled Educational Option program is 1-unstable and exactly 3-variable. -/
+/-- The abstract Educational Option procedure is 1-unstable and exactly 3-variable. -/
 theorem paper_educational_option_program_properties :
     paper_feasible paperEducationalOptionProgramChoice ∧
       paper_q_acceptant 3 paperEducationalOptionProgramChoice ∧
@@ -1717,7 +1783,7 @@ theorem paper_educational_option_program_properties :
       paper_variability_exactly 3 paperEducationalOptionProgramChoice := by
   exact ProgramClasses.three_queue_properties
 
-/-- The modeled Educational Option with DIA program is 1-unstable and exactly 6-variable. -/
+/-- The abstract Educational Option-with-DIA procedure is 1-unstable and exactly 6-variable. -/
 theorem paper_educational_option_dia_program_properties :
     paper_feasible paperEducationalOptionDIAProgramChoice ∧
       paper_q_acceptant 6 paperEducationalOptionDIAProgramChoice ∧
@@ -1725,7 +1791,7 @@ theorem paper_educational_option_dia_program_properties :
       paper_variability_exactly 6 paperEducationalOptionDIAProgramChoice := by
   exact ProgramClasses.six_queue_properties
 
-/-- All four explicit program-class representatives satisfy 1-instability. -/
+/-- All four abstract source queue procedures satisfy 1-instability. -/
 theorem paper_program_classes_one_instability :
     paper_d_unstable 1 paperScreenedOpenProgramChoice ∧
       paper_d_unstable 1 paperScreenedOpenDIAProgramChoice ∧
@@ -1804,7 +1870,8 @@ theorem paper_lap_assignment_selector_one_instability
     LAP.Assignment.dUnstable_one_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima
       hselect
 
-/-- Choice rule canonically induced by well-posed LAP weights. -/
+/-- Choice rule induced by an operational LAP score. Its `w` argument is the
+fixed generic refinement after raw-primary ties have been resolved. -/
 noncomputable def paperLAPChoiceRule
     {σ : Type*} [DecidableEq σ] [Fintype σ]
     (w : α → σ → ℝ) (hwell : LAP.Assignment.WellPosedObjective w) :
@@ -1812,7 +1879,9 @@ noncomputable def paperLAPChoiceRule
   LAP.Assignment.choiceRuleOfAssignment
     (LAP.Assignment.canonicalOptimalAssignment w hwell)
 
-/-- A well-posed finite LAP canonically induces a 1-unstable choice rule. -/
+/-- An operationally tie-broken finite LAP induces a 1-unstable choice rule.
+The well-posedness premise is about the operational score, not raw-primary
+uniqueness. -/
 theorem paper_lap_well_posed_choice_one_instability
     {σ : Type*} [DecidableEq σ] [Fintype σ]
     {w : α → σ → ℝ} (hwell : LAP.Assignment.WellPosedObjective w) :
@@ -1955,8 +2024,8 @@ theorem paper_lap_assignment_selector_variability_at_most_distinct_slot_orders
       (fun h => LAP.Assignment.sameSlotOrder_of_slotOrderClass_eq h)
 
 /--
-A well-posed finite LAP has variability bounded by its canonical number of
-distinct slot-induced applicant orders.
+An operationally tie-broken finite LAP has variability bounded by its canonical
+number of distinct slot-induced applicant orders.
 -/
 theorem paper_lap_well_posed_choice_variability_at_most_distinct_slot_orders
     [Fintype α] {σ : Type*} [DecidableEq σ] [Fintype σ]

@@ -1,31 +1,44 @@
-name = "EconCSLib"
+name = "AppliedModelingLib"
 version = "0.1.0"
 keywords = ["math"]
 defaultTargets = [
-  "EconCSLib",
-  "GCG24UserItemFairness",
+  "AppliedModelingLib",
+  "DGD26AdmissionsPredictability",
   "DSWG24DiscretizationBias",
-  "MBJG25ProducerFairness",
-  "LG21TestOptionalPolicies",
-  "GN21DriverSurgePricing",
-  "Roth82StableMatching",
-  "GS62CollegeAdmissions",
-  "GHW01DigitalGoods",
   "EOS07GSP",
-  "MSVV07AdWords",
-  "PRPKG24AccuracyDiversity",
+  "FalahatgarEtAl2017MaxingRanking",
+  "FreundSchapire1997Hedge",
+  "GCG24UserItemFairness",
+  "GGRS26CombattingGerrymanderingRCV",
+  "GGSG19TopThree",
+  "GHKR22BiasBounties",
+  "GHW01DigitalGoods",
   "GJ18InformativeRatingSystems",
   "GJ19OptimalBinaryRatingSystems",
-  "GGSG19TopThree",
-  "PKG25NoFreeLunch",
+  "GKGMM19IterativeLocalVoting",
+  "GN21DriverSurgePricing",
+  "GS62CollegeAdmissions",
+  "GeEtAl2024AlignmentAxioms",
+  "HT26EFXChores",
+  "JGS23SupplySideRecommenderSystems",
+  "KR21Monoculture",
+  "LBG24SpatialUnderreporting",
+  "LG21TestOptionalPolicies",
+  "LG24ServiceLevelAgreements",
   "LMMS04FairDivision",
   "LOS02CombinatorialAuctions",
-  "LBG24SpatialUnderreporting",
-  "GKGMM19IterativeLocalVoting",
-  "GGRS26CombattingGerrymanderingRCV",
-  "DGD26AdmissionsPredictability",
-  "KR21Monoculture",
-  "HT26EFXChores",
+  "MBJG25ProducerFairness",
+  "MSVV07AdWords",
+  "MendelsonWhang1990PriorityPricing",
+  "Naor1969QueueTolls",
+  "NoothigattuEtAl2020PairwiseComparisons",
+  "PG23MonocultureMatching",
+  "PG24NoisyMatchingMarkets",
+  "PKG25NoFreeLunch",
+  "PRPKG24AccuracyDiversity",
+  "PZMH20PerformativePrediction",
+  "Roth82StableMatching",
+  "SeshadriUgander2020IIATesting",
 ]
 
 [leanOptions]
@@ -52,11 +65,24 @@ name = "cslib"
 scope = "leanprover"
 rev = "v4.30.0-rc2"
 
-[[lean_lib]]
-name = "EconCSLib"
+# Full Kantorovich--Rubinstein duality for W₁.  Pinned immutably; see
+# docs/UPSTREAM_LEAN_SOURCES.md for provenance, compatibility, and license audit.
+[[require]]
+name = "Vlasov"
+git = "https://github.com/Hydrodynamical/Vlasov_Meanfield_Formalization.git"
+rev = "b2eda09e58ceebad6cf23b8a7a6839001d4e7c15"
+subDir = "Vlasov"
 
 [[lean_lib]]
-name = "GCG24UserItemFairness"
+name = "AppliedModelingLib"
+
+[[lean_lib]]
+name = "AppliedModelingLibAuditScripts"
+srcDir = "scripts"
+roots = ["lean_signature_manifest_helper"]
+
+[[lean_lib]]
+name = "DGD26AdmissionsPredictability"
 srcDir = "papers"
 
 [[lean_lib]]
@@ -64,51 +90,35 @@ name = "DSWG24DiscretizationBias"
 srcDir = "papers"
 
 [[lean_lib]]
-name = "MBJG25ProducerFairness"
-srcDir = "papers"
-
-[[lean_lib]]
-name = "LG21TestOptionalPolicies"
-srcDir = "papers"
-
-[[lean_lib]]
-name = "GN21DriverSurgePricing"
-srcDir = "papers"
-
-[[lean_lib]]
-name = "Roth82StableMatching"
-srcDir = "papers"
-
-[[lean_lib]]
-name = "GS62CollegeAdmissions"
-srcDir = "papers"
-
-[[lean_lib]]
-name = "GHW01DigitalGoods"
-srcDir = "papers"
-
-[[lean_lib]]
 name = "EOS07GSP"
 srcDir = "papers"
 
 [[lean_lib]]
-name = "MSVV07AdWords"
+name = "FalahatgarEtAl2017MaxingRanking"
 srcDir = "papers"
 
 [[lean_lib]]
-name = "PRPKG24AccuracyDiversity"
+name = "FreundSchapire1997Hedge"
 srcDir = "papers"
 
 [[lean_lib]]
-name = "LMMS04FairDivision"
+name = "GCG24UserItemFairness"
 srcDir = "papers"
 
 [[lean_lib]]
-name = "LOS02CombinatorialAuctions"
+name = "GGRS26CombattingGerrymanderingRCV"
 srcDir = "papers"
 
 [[lean_lib]]
-name = "LBG24SpatialUnderreporting"
+name = "GGSG19TopThree"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "GHKR22BiasBounties"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "GHW01DigitalGoods"
 srcDir = "papers"
 
 [[lean_lib]]
@@ -120,23 +130,27 @@ name = "GJ19OptimalBinaryRatingSystems"
 srcDir = "papers"
 
 [[lean_lib]]
-name = "GGSG19TopThree"
-srcDir = "papers"
-
-[[lean_lib]]
-name = "PKG25NoFreeLunch"
-srcDir = "papers"
-
-[[lean_lib]]
 name = "GKGMM19IterativeLocalVoting"
 srcDir = "papers"
 
 [[lean_lib]]
-name = "GGRS26CombattingGerrymanderingRCV"
+name = "GN21DriverSurgePricing"
 srcDir = "papers"
 
 [[lean_lib]]
-name = "DGD26AdmissionsPredictability"
+name = "GS62CollegeAdmissions"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "GeEtAl2024AlignmentAxioms"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "HT26EFXChores"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "JGS23SupplySideRecommenderSystems"
 srcDir = "papers"
 
 [[lean_lib]]
@@ -144,5 +158,78 @@ name = "KR21Monoculture"
 srcDir = "papers"
 
 [[lean_lib]]
-name = "HT26EFXChores"
+name = "LBG24SpatialUnderreporting"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "LG21TestOptionalPolicies"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "LG24ServiceLevelAgreements"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "LMMS04FairDivision"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "LOS02CombinatorialAuctions"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "MBJG25ProducerFairness"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "MSVV07AdWords"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "MendelsonWhang1990PriorityPricing"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "Naor1969QueueTolls"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "NoothigattuEtAl2020PairwiseComparisons"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "PG23MonocultureMatching"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "PG24NoisyMatchingMarkets"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "PKG25NoFreeLunch"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "PRPKG24AccuracyDiversity"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "PZMH20PerformativePrediction"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "Roth82StableMatching"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "SeshadriUgander2020IIATesting"
+srcDir = "papers"
+
+
+[[lean_lib]]
+name = "AL16SupplyDemandMatching"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "ZhouChenLi2014OptimalPACMultipleArm"
 srcDir = "papers"

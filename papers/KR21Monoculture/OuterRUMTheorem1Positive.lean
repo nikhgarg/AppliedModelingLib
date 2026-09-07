@@ -1,6 +1,6 @@
 import KR21Monoculture.OuterRUMTheorem1Lift
 
-open EconCSLib MeasureTheory ProbabilityTheory Filter
+open AppliedModelingLib MeasureTheory ProbabilityTheory Filter
 open scoped Topology
 
 namespace KR21Monoculture

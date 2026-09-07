@@ -4,11 +4,7 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - "skills/**"
   pull_request:
-    paths-ignore:
-      - "skills/**"
   workflow_dispatch:
 
 permissions:
@@ -21,18 +17,197 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Bounds Lake's runtime pool and every Lean subprocess it launches.
+      LEAN_NUM_THREADS: "1"
 
     steps:
-      - uses: actions/checkout@v5
+      - name: Check out repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          # Pull requests must be classified at their actual head commit.  The
+          # default synthetic merge commit would make an otherwise linear paper
+          # branch look like it contains a forbidden merge commit.
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          # No contributor-controlled build or Lean code should inherit a token
+          # capable of writing back to the repository.
+          persist-credentials: false
+          # The append-only engine ledger is checked against the trusted event
+          # base, including multi-commit pushes and pull requests.
+          fetch-depth: 0
+      - name: Configure trusted CI workspace
+        if: github.event_name == 'pull_request'
+        run: >-
+          echo "TRUSTED_CI_ROOT=$RUNNER_TEMP/econcslib-trusted-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          >> "$GITHUB_ENV"
+      - name: Materialize trusted CI implementation
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          mkdir -p "$TRUSTED_CI_ROOT"
+          git archive "$BASE_SHA" scripts | tar -x -C "$TRUSTED_CI_ROOT"
+      - name: Classify pull request scope
+        id: contribution-scope
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [[ -f "$TRUSTED_CI_ROOT/scripts/paper_contribution.py" ]]; then
+            python3 "$TRUSTED_CI_ROOT/scripts/paper_contribution.py" scope \
+              --repo "$GITHUB_WORKSPACE" \
+              --base "$BASE_SHA" \
+              --head HEAD \
+              --github-output "$GITHUB_OUTPUT"
+          else
+            # The one-time rollout PR predates the trusted classifier.  It may
+            # use only the broad integration lane, never a narrowed paper lane.
+            {
+              echo "mode=integration"
+              echo "paper="
+              echo "new_paper=false"
+              echo "profile=none"
+            } >> "$GITHUB_OUTPUT"
+          fi
+      - name: Check formalization engine revision (pull request)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          SCOPE_MODE: ${{ steps.contribution-scope.outputs.mode }}
+        run: |
+          TRUSTED_CHECKER="$TRUSTED_CI_ROOT/scripts/check_formalization_engine_revision.py"
+          if [[ -f "$TRUSTED_CHECKER" ]] && \
+              python3 "$TRUSTED_CHECKER" --help | grep -q -- "--repo"; then
+            python3 "$TRUSTED_CHECKER" \
+              --repo "$GITHUB_WORKSPACE" \
+              --tree HEAD \
+              --base-tree "$BASE_SHA"
+          elif [[ -f "$TRUSTED_CHECKER" ]]; then
+            # Compatibility for the rollout base: the older trusted checker
+            # discovers its repository from cwd and still reads exact trees.
+            cd "$GITHUB_WORKSPACE"
+            python3 "$TRUSTED_CHECKER" \
+              --tree HEAD \
+              --base-tree "$BASE_SHA"
+          elif [[ "$SCOPE_MODE" == "integration" ]]; then
+            # A repository predating the engine guard may bootstrap it only in
+            # the broad lane. No candidate-controlled narrowed lane is allowed.
+            python3 scripts/check_formalization_engine_revision.py \
+              --repo "$GITHUB_WORKSPACE" \
+              --tree HEAD \
+              --base-tree "$BASE_SHA"
+          else
+            echo "trusted base has no formalization engine checker" >&2
+            exit 1
+          fi
+      - name: Check formalization engine revision (push)
+        if: github.event_name == 'push'
+        run: >-
+          python3 scripts/check_formalization_engine_revision.py
+          --tree HEAD --base-tree ${{ github.event.before }}
+      - name: Check aggregate projection after main push
+        if: github.event_name == 'push'
+        run: |
+          set +e
+          python3 scripts/sync_paper_status.py --aggregate-only --check
+          status=$?
+          set -e
+          if [[ "$status" -eq 1 ]]; then
+            echo "::warning::paper aggregates need a mechanical aggregate-only follow-up PR"
+          elif [[ "$status" -ne 0 ]]; then
+            exit "$status"
+          fi
+      - name: Check committed pull request formatting
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: git diff --check "$BASE_SHA" HEAD --
+      - name: Check aggregate-only contribution
+        if: >-
+          github.event_name == 'pull_request' &&
+          steps.contribution-scope.outputs.mode == 'aggregate'
+        run: >-
+          python3 "$TRUSTED_CI_ROOT/scripts/sync_paper_status.py"
+          --repo "$GITHUB_WORKSPACE" --aggregate-only --check
+      - name: Check formalization engine revision (manual)
+        if: github.event_name == 'workflow_dispatch'
+        run: >-
+          python3 scripts/check_formalization_engine_revision.py
+          --tree HEAD --base-tree HEAD^
+      - name: Set up Lean dependencies
+        if: >-
+          github.event_name != 'pull_request' ||
+          (steps.contribution-scope.outputs.mode != 'docs' &&
+          steps.contribution-scope.outputs.mode != 'aggregate')
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1
+        with:
+          # The private workspace expands beyond the hosted runner's free disk
+          # when lean-action restores its compressed whole-.lake cache.  Keep
+          # the separate Mathlib cache, but build project artifacts fresh.
+          auto-config: "false"
+          build: "false"
+          test: "false"
+          lint: "false"
+          use-github-cache: "false"
+          use-mathlib-cache: "true"
+      - name: Check isolated paper contribution
+        if: >-
+          github.event_name == 'pull_request' &&
+          steps.contribution-scope.outputs.mode == 'paper'
+        env:
+          PAPER: ${{ steps.contribution-scope.outputs.paper }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: >-
+          python3 "$TRUSTED_CI_ROOT/scripts/paper_contribution.py" check "$PAPER"
+          --repo "$GITHUB_WORKSPACE"
+          --base "$BASE_SHA"
+          --allow-missing-source-bytes
+      - name: Build Lean targets
+        if: >-
+          github.event_name != 'pull_request' ||
+          steps.contribution-scope.outputs.mode == 'integration'
+        # defaultTargets intentionally excludes some private/new paper targets.
+        # Integration must still compile every registered lean_lib.
+        run: python3 scripts/paper_target_registration.py build-all
+      - name: Test semantic provenance audits
+        if: >-
+          github.event_name != 'pull_request' ||
+          steps.contribution-scope.outputs.mode == 'integration'
+        run: python3 scripts/run_isolated_audit_tests.py
+      - name: Audit conclusion-bearing theorem inputs
+        if: >-
+          github.event_name != 'pull_request' ||
+          steps.contribution-scope.outputs.mode == 'integration'
+        run: python3 scripts/audit_conclusion_provenance.py
       - name: Check paper status aggregate
+        if: >-
+          github.event_name == 'workflow_dispatch' ||
+          (github.event_name == 'pull_request' &&
+          steps.contribution-scope.outputs.mode == 'integration')
         run: python3 scripts/sync_paper_status.py --check
+      - name: Audit source-evidence integrity
+        if: >-
+          github.event_name != 'pull_request' ||
+          steps.contribution-scope.outputs.mode == 'integration'
+        run: python3 scripts/audit_evidence_integrity.py
       - name: Audit reusable library provenance
+        if: >-
+          github.event_name != 'pull_request' ||
+          steps.contribution-scope.outputs.mode == 'integration'
         run: python3 scripts/audit_repository.py --library-only --library-premise-audit --info-limit 0
       - name: Audit statement translations
+        if: >-
+          github.event_name != 'pull_request' ||
+          steps.contribution-scope.outputs.mode == 'integration'
         run: python3 scripts/review_dashboard.py --statement-check
       - name: Audit paper coverage
+        if: >-
+          github.event_name != 'pull_request' ||
+          steps.contribution-scope.outputs.mode == 'integration'
         run: python3 scripts/review_dashboard.py --paper-coverage-check
       - name: Full repository closeout audit
-        if: github.event_name == 'workflow_dispatch'
+        if: >-
+          github.event_name == 'workflow_dispatch' ||
+          (github.event_name == 'pull_request' &&
+          steps.contribution-scope.outputs.mode == 'integration')
         run: python3 scripts/audit_repository.py --include-active --library-premise-audit --info-limit 0
-      - uses: leanprover/lean-action@v1

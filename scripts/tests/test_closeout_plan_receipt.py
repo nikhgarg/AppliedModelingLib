@@ -13,11 +13,19 @@ from unittest import mock
 
 from scripts.closeout_plan_receipt import (
     CloseoutPlanReceiptError,
+    PREVIOUS_OPERATIONAL_PLAN_IDENTITY_SCHEMA,
+    _default_external_artifact_stat_projection,
+    _plan_identity_material,
+    _stable_digest,
     build_lean_closure_operational_projection,
     build_closeout_plan_receipt,
     closeout_plan_receipt_path,
     compiled_input_snapshot,
     content_input_snapshot,
+    resolved_plan_lean_closure_projection,
+    resolved_plan_final_holistic_audit_surface,
+    resolved_plan_v11_lean_review_graph,
+    validate_lean_closure_operational_projection,
     validated_closeout_plan_receipt,
 )
 from scripts.python_import_closure import repository_python_import_closure
@@ -89,6 +97,21 @@ class CloseoutPlanReceiptTests(unittest.TestCase):
         artifact = root / ".lake" / "build" / "Fixture.olean"
         report.write_text("ready\n", encoding="utf-8")
         source.write_text("theorem ready : True := by trivial\n", encoding="utf-8")
+        (folder / "status.json").write_text(
+            json.dumps(
+                {
+                    "id": "Fixture",
+                    "paper_interface": {
+                        "line_count": 1,
+                        "declaration_rows": 1,
+                        "review_rows": 1,
+                    },
+                    "review_surface": {"include_names": ["ready"]},
+                }
+            )
+            + "\n",
+            encoding="utf-8",
+        )
         artifact.parent.mkdir(parents=True)
         artifact.write_bytes(b"olean")
         return report, source, artifact
@@ -113,7 +136,16 @@ class CloseoutPlanReceiptTests(unittest.TestCase):
                 routing_projection_loader=routing_v1,
             )
             identity = receipt["plan_identity_sha256"]
-            unrelated = root / "EconCSLib" / "Unrelated.lean"
+            self.assertEqual(receipt["schema"], 7)
+            self.assertEqual(
+                receipt["lean_import_closure_projection"]["kind"],
+                "lean_import_closure_projection",
+            )
+            self.assertEqual(
+                resolved_plan_lean_closure_projection(root, receipt),
+                {"state": "not_bound"},
+            )
+            unrelated = root / "AppliedModelingLib" / "Unrelated.lean"
             unrelated.parent.mkdir()
             unrelated.write_text("def unrelated := 1\n", encoding="utf-8")
             audit_config.write_text(
@@ -159,6 +191,212 @@ class CloseoutPlanReceiptTests(unittest.TestCase):
                     paper="Fixture",
                     deep_paper_prose=False,
                     expected_plan_identity=identity,
+                    routing_projection_loader=routing_v1,
+                )
+
+    def test_generated_status_counts_do_not_reopen_plan_but_membership_does(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            report, source, artifact = self._fixture(root)
+            status_path = root / "papers" / "Fixture" / "status.json"
+            receipt = build_closeout_plan_receipt(
+                root,
+                paper="Fixture",
+                deep_paper_prose=False,
+                content_paths=[report, status_path],
+                stat_paths=[],
+                source_ledger={str(source): list(source.stat())},
+                compiled_ledger={str(artifact): list(artifact.stat())},
+                routing_projection_loader=routing_v1,
+            )
+            identity = str(receipt["plan_identity_sha256"])
+            self.assertNotIn("papers/Fixture/status.json", receipt["content_inputs"])
+
+            status = json.loads(status_path.read_text(encoding="utf-8"))
+            status["paper_interface"]["line_count"] = 10_000
+            status["paper_interface"]["declaration_rows"] = 10_000
+            status["paper_interface"]["review_rows"] = 10_000
+            status_path.write_text(
+                json.dumps(status, indent=2) + "\n", encoding="utf-8"
+            )
+            validated_closeout_plan_receipt(
+                root,
+                receipt,
+                paper="Fixture",
+                deep_paper_prose=False,
+                expected_plan_identity=identity,
+                routing_projection_loader=routing_v1,
+            )
+
+            status["review_surface"]["include_names"] = ["differentSpec"]
+            status_path.write_text(
+                json.dumps(status, indent=2) + "\n", encoding="utf-8"
+            )
+            with self.assertRaisesRegex(
+                CloseoutPlanReceiptError, "status acceptance configuration changed"
+            ):
+                validated_closeout_plan_receipt(
+                    root,
+                    receipt,
+                    paper="Fixture",
+                    deep_paper_prose=False,
+                    expected_plan_identity=identity,
+                    routing_projection_loader=routing_v1,
+                )
+
+    def test_v11_graph_carrier_round_trips_and_is_content_bound(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            report, source, artifact = self._fixture(root)
+            carrier = {
+                "schema": 1,
+                "acceptance_credential": False,
+                "operational_scheduling_only": True,
+                "paper": "Fixture",
+                "payload": {"lean_owned": True},
+            }
+            receipt = build_closeout_plan_receipt(
+                root,
+                paper="Fixture",
+                deep_paper_prose=False,
+                content_paths=[report],
+                stat_paths=[],
+                source_ledger={str(source): list(source.stat())},
+                compiled_ledger={str(artifact): list(artifact.stat())},
+                v11_lean_review_graph=carrier,
+                all_selected_semantic_review_sha256="c" * 64,
+                routing_projection_loader=routing_v1,
+            )
+            self.assertEqual(
+                resolved_plan_v11_lean_review_graph(root, receipt), carrier
+            )
+            reference = receipt["v11_lean_review_graph"]
+            self.assertIsInstance(reference, dict)
+            object_path = root / str(reference["path"])
+            object_path.write_text("{}\n", encoding="utf-8")
+            with self.assertRaisesRegex(
+                CloseoutPlanReceiptError, "object bytes do not match"
+            ):
+                resolved_plan_v11_lean_review_graph(root, receipt)
+
+    def test_new_v11_receipt_requires_all_selected_semantic_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            report, source, artifact = self._fixture(root)
+            with self.assertRaisesRegex(
+                CloseoutPlanReceiptError,
+                "all-selected semantic-review identity",
+            ):
+                build_closeout_plan_receipt(
+                    root,
+                    paper="Fixture",
+                    deep_paper_prose=False,
+                    content_paths=[report],
+                    stat_paths=[],
+                    source_ledger={str(source): list(source.stat())},
+                    compiled_ledger={str(artifact): list(artifact.stat())},
+                    v11_lean_review_graph={"schema": 2},
+                    routing_projection_loader=routing_v1,
+                )
+
+    def test_final_audit_surface_is_content_addressed_and_revalidated(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            report, source, artifact = self._fixture(root)
+            carrier = {
+                "schema": 2,
+                "acceptance_credential": False,
+                "operational_scheduling_only": True,
+                "paper": "Fixture",
+            }
+            surface = {
+                "schema": 2,
+                "identity_schema": (
+                    "final-holistic-source-and-lean-semantic-surface-v2"
+                ),
+                "paper": "Fixture",
+                "source_corpus": {"canonical_source_sha256": "a" * 64},
+                "source_coverage_mode": "named_theoretical_statements",
+                "source_inventory": {},
+                "semantic_review_rows": [],
+                "status_semantics": {},
+                "source_proof_fidelity_semantics": None,
+            }
+            receipt = build_closeout_plan_receipt(
+                root,
+                paper="Fixture",
+                deep_paper_prose=False,
+                content_paths=[report],
+                stat_paths=[],
+                source_ledger={str(source): list(source.stat())},
+                compiled_ledger={str(artifact): list(artifact.stat())},
+                v11_lean_review_graph=carrier,
+                final_holistic_audit_surface=surface,
+                all_selected_semantic_review_sha256="c" * 64,
+                routing_projection_loader=routing_v1,
+            )
+            self.assertEqual(
+                resolved_plan_final_holistic_audit_surface(root, receipt), surface
+            )
+            with mock.patch(
+                "scripts.closeout_plan_receipt."
+                "build_final_holistic_audit_surface_from_repository",
+                return_value=surface,
+            ):
+                validated_closeout_plan_receipt(
+                    root,
+                    receipt,
+                    paper="Fixture",
+                    deep_paper_prose=False,
+                    expected_plan_identity=receipt["plan_identity_sha256"],
+                    routing_projection_loader=routing_v1,
+                )
+
+            legacy_v6 = copy.deepcopy(receipt)
+            legacy_v6["schema"] = 6
+            legacy_v6["plan_identity_schema"] = (
+                PREVIOUS_OPERATIONAL_PLAN_IDENTITY_SCHEMA
+            )
+            legacy_v6.pop("all_selected_semantic_review_sha256")
+            legacy_v6["plan_identity_sha256"] = _stable_digest(
+                _plan_identity_material(legacy_v6)
+            )
+            legacy_v6.pop("receipt_integrity_sha256")
+            legacy_v6["receipt_integrity_sha256"] = _stable_digest(legacy_v6)
+            with mock.patch(
+                "scripts.closeout_plan_receipt."
+                "build_final_holistic_audit_surface_from_repository",
+                return_value=surface,
+            ):
+                validated_closeout_plan_receipt(
+                    root,
+                    legacy_v6,
+                    paper="Fixture",
+                    deep_paper_prose=False,
+                    expected_plan_identity=legacy_v6["plan_identity_sha256"],
+                    routing_projection_loader=routing_v1,
+                )
+
+            semantically_changed = copy.deepcopy(surface)
+            semantically_changed["semantic_review_rows"] = [
+                {"lean_semantic_identity_sha256": "b" * 64}
+            ]
+            with (
+                mock.patch(
+                    "scripts.closeout_plan_receipt."
+                    "build_final_holistic_audit_surface_from_repository",
+                    return_value=semantically_changed,
+                ),
+                self.assertRaisesRegex(
+                    CloseoutPlanReceiptError, "final holistic audit surface changed"
+                ),
+            ):
+                validated_closeout_plan_receipt(
+                    root,
+                    receipt,
+                    paper="Fixture",
+                    deep_paper_prose=False,
+                    expected_plan_identity=receipt["plan_identity_sha256"],
                     routing_projection_loader=routing_v1,
                 )
 
@@ -469,6 +707,144 @@ class CloseoutPlanReceiptTests(unittest.TestCase):
                     external_content_identity_loader=lambda *_args: ("b" * 64, ""),
                 )
 
+    def test_external_stat_projection_contains_no_machine_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            artifact_root = root / "external-artifacts"
+            artifact = artifact_root / "Init.olean"
+            artifact.parent.mkdir(parents=True)
+            artifact.write_bytes(b"olean")
+            with mock.patch(
+                "scripts.lean_import_closure.external_module_artifact_search_roots",
+                return_value=([("toolchain", artifact_root)], ""),
+            ):
+                projection, error = _default_external_artifact_stat_projection(
+                    root, ("Init",)
+                )
+
+            self.assertEqual(error, "")
+            self.assertIsNotNone(projection)
+            assert projection is not None
+            encoded = json.dumps(projection, sort_keys=True)
+            self.assertNotIn(str(root), encoded)
+            self.assertEqual(projection["schema"], 2)
+            self.assertEqual(projection["search_root_roles"], ["toolchain"])
+            self.assertEqual(
+                projection["modules"][0]["candidates"][0]["root_role"],
+                "toolchain",
+            )
+
+    def test_legacy_absolute_stat_projection_survives_checkout_move(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            payload = self._lean_closure_payload(root)
+
+            def external(path: str):
+                def load(
+                    _root: Path, modules: tuple[str, ...]
+                ) -> tuple[object, str]:
+                    return {
+                        "lean_path_roots": [path],
+                        "modules": [
+                            {
+                                "module": module,
+                                "candidates": [
+                                    {
+                                        "absolute_path": f"{path}/{module}.olean",
+                                        "state": "present",
+                                        "target_stat": [1] * 5,
+                                    }
+                                ],
+                            }
+                            for module in modules
+                        ],
+                    }, ""
+
+                return load
+
+            recorded = build_lean_closure_operational_projection(
+                root,
+                payload,
+                external_projection_loader=external("/old/checkout"),
+            )
+            current = validate_lean_closure_operational_projection(
+                root,
+                recorded,
+                external_projection_loader=external("/new/checkout"),
+                external_content_identity_loader=lambda *_args: ("a" * 64, ""),
+            )
+            self.assertEqual(
+                current["external_artifact_stats"]["lean_path_roots"],
+                ["/new/checkout"],
+            )
+
+    def test_plan_identity_survives_checkout_and_lean_path_relocation(self) -> None:
+        """Machine-local closure guards cannot reopen an unchanged plan."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base = Path(temp_dir)
+            receipts = []
+            for index, name in enumerate(("machine-one", "machine-two"), start=1):
+                root = base / name
+                report, source, artifact = self._fixture(root)
+                payload = self._lean_closure_payload(root)
+
+                def external_stat(
+                    _root: Path,
+                    modules: tuple[str, ...],
+                    *,
+                    generation: int = index,
+                ) -> tuple[object, str]:
+                    return {
+                        "lean_path_roots": [str(_root / ".lake" / "packages")],
+                        "modules": [
+                            {
+                                "module": module,
+                                "candidates": [
+                                    {
+                                        "absolute_path": str(
+                                            _root / "external" / f"{module}.olean"
+                                        ),
+                                        "state": "present",
+                                        "target_stat": [generation] * 5,
+                                    }
+                                ],
+                            }
+                            for module in modules
+                        ],
+                    }, ""
+
+                projection = build_lean_closure_operational_projection(
+                    root, payload, external_projection_loader=external_stat
+                )
+                receipts.append(
+                    build_closeout_plan_receipt(
+                        root,
+                        paper="Fixture",
+                        deep_paper_prose=False,
+                        content_paths=[report],
+                        stat_paths=[],
+                        source_ledger={str(source): None},
+                        compiled_ledger={str(artifact): None},
+                        lean_import_closure_projection=projection,
+                        lean_import_closure_projection_validated=True,
+                        routing_projection_loader=routing_v1,
+                    )
+                )
+
+            first, second = receipts
+            self.assertEqual(
+                first["lean_import_closure_identity_sha256"],
+                second["lean_import_closure_identity_sha256"],
+            )
+            self.assertEqual(
+                first["plan_identity_sha256"], second["plan_identity_sha256"]
+            )
+            self.assertNotEqual(
+                first["lean_import_closure_projection"]["sha256"],
+                second["lean_import_closure_projection"]["sha256"],
+            )
+
     def test_new_target_lean_file_invalidates_inventory(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -603,7 +979,7 @@ class CloseoutPlanReceiptTests(unittest.TestCase):
             (root / "Init.lean").unlink()
             (root / "papers" / "Init.lean").unlink()
             with self.assertRaisesRegex(
-                CloseoutPlanReceiptError, "external artifacts changed"
+                CloseoutPlanReceiptError, "external artifact bytes changed"
             ):
                 validated_closeout_plan_receipt(
                     root,
@@ -613,6 +989,7 @@ class CloseoutPlanReceiptTests(unittest.TestCase):
                     expected_plan_identity=identity,
                     routing_projection_loader=routing_v1,
                     external_projection_loader=external_v2,
+                    external_content_identity_loader=lambda *_args: ("b" * 64, ""),
                 )
 
     def test_legacy_graph_helper_control_is_not_a_plan_input(self) -> None:

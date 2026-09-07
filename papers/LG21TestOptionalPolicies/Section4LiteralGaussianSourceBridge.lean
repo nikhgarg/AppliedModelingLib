@@ -14,7 +14,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 open scoped ENNReal NNReal ProbabilityTheory
 
 /-- The literal source population conditional on not having test access. -/
@@ -156,7 +156,7 @@ theorem lg21ContinuousGaussianPopulation_exists_d6ResamplingSource
         (baseVariance : ℝ) (hbaseMean : Measurable baseMean),
       IsProbabilityMeasure baseLaw ∧ 0 < baseVariance ∧
         lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature =
-          baseLaw ⊗ₘ EconCSLib.Probability.gaussianLocationKernel
+          baseLaw ⊗ₘ AppliedModelingLib.Probability.gaussianLocationKernel
             baseMean hbaseMean baseVariance.toNNReal ∧
         ∃ S : LG21GaussianPBOResamplingSource
             (LG21NonTestFeature Feature testFeature → ℝ),
@@ -203,7 +203,7 @@ theorem lg21ContinuousGaussianAccessPopulation_fullBaseScoreLaw_eq_d6
     (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
     (hfullBaseFactorization :
       lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature =
-        baseLaw ⊗ₘ EconCSLib.Probability.gaussianLocationKernel
+        baseLaw ⊗ₘ AppliedModelingLib.Probability.gaussianLocationKernel
           baseMean hbaseMean baseVariance.toNNReal) :
     let S : LG21GaussianPBOResamplingSource
         (LG21NonTestFeature Feature testFeature → ℝ) :=
@@ -226,17 +226,17 @@ theorem lg21ContinuousGaussianAccessPopulation_fullBaseScoreLaw_eq_d6
     law.map observation = lg21D6ActualAccessTestLaw S := by
   intro S law observation
   let scoreKernel : Kernel (LG21NonTestFeature Feature testFeature → ℝ) ℝ :=
-    EconCSLib.Probability.gaussianLocationKernel baseMean hbaseMean
+    AppliedModelingLib.Probability.gaussianLocationKernel baseMean hbaseMean
       (baseVariance + (M.noiseVariance testFeature : ℝ)).toNNReal
   let posteriorKernel : Kernel
       ((LG21NonTestFeature Feature testFeature → ℝ) × ℝ) ℝ :=
-    EconCSLib.Probability.gaussianSignalPosteriorBaseKernel
+    AppliedModelingLib.Probability.gaussianSignalPosteriorBaseKernel
       baseMean hbaseMean baseVariance (M.noiseVariance testFeature : ℝ)
   letI : IsMarkovKernel scoreKernel :=
-    EconCSLib.Probability.gaussianLocationKernel_isMarkov baseMean hbaseMean
+    AppliedModelingLib.Probability.gaussianLocationKernel_isMarkov baseMean hbaseMean
       (baseVariance + (M.noiseVariance testFeature : ℝ)).toNNReal
   letI : IsMarkovKernel posteriorKernel :=
-    EconCSLib.Probability.gaussianSignalPosteriorBaseKernel_isMarkov
+    AppliedModelingLib.Probability.gaussianSignalPosteriorBaseKernel_isMarkov
       baseMean hbaseMean baseVariance (M.noiseVariance testFeature : ℝ)
   have hskill : Measurable (lg21ContinuousPopulationSkill (Feature := Feature)) := by
     change Measurable fun student : Bool × (ℝ × (Feature → ℝ)) => student.2.1
@@ -254,19 +254,19 @@ theorem lg21ContinuousGaussianAccessPopulation_fullBaseScoreLaw_eq_d6
         (fun primitive =>
           (lg21ContinuousGaussianFullProfileObservation testFeature primitive,
             primitive.1)) =
-        EconCSLib.Probability.gaussianSignalExtendBaseLatentLaw
+        AppliedModelingLib.Probability.gaussianSignalExtendBaseLatentLaw
           (lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature)
           (M.noiseVariance testFeature : ℝ) :=
     lg21ContinuousGaussianFullProfilePrimitiveLaw_eq_extend_fullBaseLatent
       M testFeature
   have hupdate :
-      EconCSLib.Probability.gaussianSignalExtendBaseLatentLaw
+      AppliedModelingLib.Probability.gaussianSignalExtendBaseLatentLaw
           (lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature)
           (M.noiseVariance testFeature : ℝ) =
-        EconCSLib.Probability.gaussianSignalBaseScoreLatentLaw
+        AppliedModelingLib.Probability.gaussianSignalBaseScoreLatentLaw
           baseLaw baseMean hbaseMean baseVariance
           (M.noiseVariance testFeature : ℝ) :=
-    EconCSLib.Probability.gaussianSignalExtendBaseLatentLaw_eq_baseScoreLatentLaw
+    AppliedModelingLib.Probability.gaussianSignalExtendBaseLatentLaw_eq_baseScoreLatentLaw
       baseLaw baseMean hbaseMean baseVariance
       (M.noiseVariance testFeature : ℝ)
       (lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature)
@@ -284,14 +284,14 @@ theorem lg21ContinuousGaussianAccessPopulation_fullBaseScoreLaw_eq_d6
             simpa [law, observation] using
               (lg21ContinuousGaussianAccessPopulation_full_base_score_skill_law
                 M haccess testFeature)
-      _ = EconCSLib.Probability.gaussianSignalExtendBaseLatentLaw
+      _ = AppliedModelingLib.Probability.gaussianSignalExtendBaseLatentLaw
           (lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature)
           (M.noiseVariance testFeature : ℝ) := hprimitiveExtend
-      _ = EconCSLib.Probability.gaussianSignalBaseScoreLatentLaw
+      _ = AppliedModelingLib.Probability.gaussianSignalBaseScoreLatentLaw
           baseLaw baseMean hbaseMean baseVariance
           (M.noiseVariance testFeature : ℝ) := hupdate
       _ = baseLaw ⊗ₘ scoreKernel ⊗ₘ posteriorKernel := by
-        exact EconCSLib.Probability.gaussianSignalBaseScoreLatentLaw_factorization
+        exact AppliedModelingLib.Probability.gaussianSignalBaseScoreLatentLaw_factorization
           baseLaw baseMean hbaseMean baseVariance
           (M.noiseVariance testFeature : ℝ)
           hbaseVariance htestNoiseVariance
@@ -316,7 +316,7 @@ theorem lg21ContinuousGaussianAccessPopulation_fullBaseScoreLaw_eq_d6
     ext base target htarget
     rw [show scoreKernel base = gaussianReal (baseMean base)
       (baseVariance + (M.noiseVariance testFeature : ℝ)).toNNReal by
-        exact EconCSLib.Probability.gaussianLocationKernel_apply _ _ _ _]
+        exact AppliedModelingLib.Probability.gaussianLocationKernel_apply _ _ _ _]
     rw [lg21D6ConditionalGaussianTestKernel_apply]
     change
       gaussianReal (baseMean base)
@@ -338,13 +338,13 @@ theorem lg21D6GaussianPBOEstimate_eq_gaussianPosteriorMean
     {Base : Type*} [MeasurableSpace Base]
     (S : LG21GaussianPBOResamplingSource Base) (observation : Base × ℝ) :
     lg21D6GaussianPBOEstimate S observation =
-      ∫ skill, skill ∂EconCSLib.Probability.gaussianSignalPosteriorBaseKernel
+      ∫ skill, skill ∂AppliedModelingLib.Probability.gaussianSignalPosteriorBaseKernel
         S.posteriorBaseMean S.posteriorBaseMean_measurable
         (S.posteriorBaseVariance : ℝ) (S.testNoiseVariance : ℝ) observation := by
-  rw [EconCSLib.Probability.gaussianSignalPosteriorBaseKernel_integral_id]
+  rw [AppliedModelingLib.Probability.gaussianSignalPosteriorBaseKernel_integral_id]
   dsimp [lg21D6GaussianPBOEstimate, lg21D6PosteriorTestWeight,
-    EconCSLib.Probability.gaussianSignalWeight,
-    EconCSLib.Probability.gaussianSignalPriorWeight]
+    AppliedModelingLib.Probability.gaussianSignalWeight,
+    AppliedModelingLib.Probability.gaussianSignalPriorWeight]
   have hsum : (S.posteriorBaseVariance : ℝ) + (S.testNoiseVariance : ℝ) ≠ 0 :=
     ne_of_gt (lg21D6PosteriorVarianceSum_pos S)
   field_simp
@@ -369,7 +369,7 @@ theorem lg21ContinuousGaussianAccessPopulation_d6Estimate_eq_condDistribMean_ae
     (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
     (hfullBaseFactorization :
       lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature =
-        baseLaw ⊗ₘ EconCSLib.Probability.gaussianLocationKernel
+        baseLaw ⊗ₘ AppliedModelingLib.Probability.gaussianLocationKernel
           baseMean hbaseMean baseVariance.toNNReal) :
     let S : LG21GaussianPBOResamplingSource
         (LG21NonTestFeature Feature testFeature → ℝ) :=
@@ -429,7 +429,7 @@ theorem lg21ContinuousGaussianAccessPopulation_d6OutputLaw_eq_resampling
     (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
     (hfullBaseFactorization :
       lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature =
-        baseLaw ⊗ₘ EconCSLib.Probability.gaussianLocationKernel
+        baseLaw ⊗ₘ AppliedModelingLib.Probability.gaussianLocationKernel
           baseMean hbaseMean baseVariance.toNNReal) :
     let S : LG21GaussianPBOResamplingSource
         (LG21NonTestFeature Feature testFeature → ℝ) :=
@@ -481,7 +481,7 @@ theorem lg21ContinuousGaussianAccessPopulation_baseLaw_eq_of_factorization
     (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
     (hfullBaseFactorization :
       lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature =
-        baseLaw ⊗ₘ EconCSLib.Probability.gaussianLocationKernel
+        baseLaw ⊗ₘ AppliedModelingLib.Probability.gaussianLocationKernel
           baseMean hbaseMean baseVariance.toNNReal) :
     (lg21ContinuousGaussianAccessPopulationLaw M).map
       (lg21ContinuousPopulationBase testFeature) = baseLaw := by
@@ -552,7 +552,7 @@ theorem lg21ContinuousGaussianPopulation_d6AccessOutput_eq_noAccessResampling
     (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
     (hfullBaseFactorization :
       lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature =
-        baseLaw ⊗ₘ EconCSLib.Probability.gaussianLocationKernel
+        baseLaw ⊗ₘ AppliedModelingLib.Probability.gaussianLocationKernel
           baseMean hbaseMean baseVariance.toNNReal) :
     let S : LG21GaussianPBOResamplingSource
         (LG21NonTestFeature Feature testFeature → ℝ) :=
@@ -620,7 +620,7 @@ theorem lg21ContinuousGaussianPopulation_d6SourceExperiment_fair
     (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
     (hfullBaseFactorization :
       lg21ContinuousGaussianFullBaseLatentPrimitiveLaw M testFeature =
-        baseLaw ⊗ₘ EconCSLib.Probability.gaussianLocationKernel
+        baseLaw ⊗ₘ AppliedModelingLib.Probability.gaussianLocationKernel
           baseMean hbaseMean baseVariance.toNNReal) :
     let S : LG21GaussianPBOResamplingSource
         (LG21NonTestFeature Feature testFeature → ℝ) :=

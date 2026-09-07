@@ -536,7 +536,7 @@ theorem
           uniformValue := by
     intro x
     exact
-      EconCSLib.Probability.integral_kernel_eq_anchor_of_transitive_diagonal_invariance
+      AppliedModelingLib.Probability.integral_kernel_eq_anchor_of_transitive_diagonal_invariance
         (sphereUniformMeasure ambientMeasure)
         (fun g : E ≃ₗᵢ[ℝ] E => linearIsometrySphereAction g)
         (fun g : E ≃ₗᵢ[ℝ] E => linearIsometrySphereAction g)
@@ -733,7 +733,7 @@ theorem logRadialDistanceKernel_sphereVolumeUniform_integral_eq_anchor
       ∫ u, logRadialDistanceKernel p anchor u
         ∂sphereUniformMeasure (MeasureTheory.volume : MeasureTheory.Measure E) := by
   exact
-    EconCSLib.Probability.integral_kernel_eq_anchor_of_transitive_diagonal_invariance
+    AppliedModelingLib.Probability.integral_kernel_eq_anchor_of_transitive_diagonal_invariance
       (sphereUniformMeasure (MeasureTheory.volume : MeasureTheory.Measure E))
       (fun g : E ≃ₗᵢ[ℝ] E => linearIsometrySphereAction g)
       (fun g : E ≃ₗᵢ[ℝ] E => linearIsometrySphereAction g)
@@ -1082,9 +1082,9 @@ theorem logRadialDistanceProfile_failureIntegral_normalizedLog_tendsto_supValue
       (fun beta => (hpayoff_cont beta).continuousAt)
       alpha
   have hrate := hcert.has_rate
-  rw [EconCSLib.Probability.HasExponentialRate] at hrate
+  rw [AppliedModelingLib.Probability.HasExponentialRate] at hrate
   have hrate_neg := hrate.neg
-  simpa [EconCSLib.Probability.logDecay] using hrate_neg
+  simpa [AppliedModelingLib.Probability.logDecay] using hrate_neg
 
 /--
 Concrete Proposition 4 endpoint where the profile objective is the actual

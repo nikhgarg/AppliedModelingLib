@@ -1,11 +1,11 @@
 ---
 name: econcs-prover
-description: Prove or repair Lean theorems in EconCSLib. Use when asked to close sorry/admit gaps, fix failing theorem proofs, repair broken Lean files after API or statement changes, derive paper-facing results from existing paper assumptions, or run compiler-guided proof search for EconCSLib paper or shared-library lemmas. Focuses on proof construction, tactic/API search, source-faithful theorem repair, and targeted Lean validation.
+description: Prove or repair Lean theorems in AppliedModelingLib. Use when asked to close sorry/admit gaps, fix failing theorem proofs, repair broken Lean files after API or statement changes, derive paper-facing results from existing paper assumptions, or run compiler-guided proof search for AppliedModelingLib paper or shared-library lemmas. Focuses on proof construction, tactic/API search, source-faithful theorem repair, and targeted Lean validation.
 ---
 
-# EconCS Prover
+# AppliedModelingLib Prover
 
-This is the proof-production skill for EconCSLib. Use it after the paper
+This is the proof-production skill for AppliedModelingLib. Use it after the paper
 statement target is known, or when an existing theorem proof fails and needs to
 be repaired.
 
@@ -33,6 +33,17 @@ changed. While an actionable proof obligation remains, defer routine
 documentation work; the default unit of progress is a checked proof, not a
 status update.
 
+## Active-Closure Boundary
+
+Count a declaration as a proof endpoint only after a forced Lean check of the
+module that imports it. Text inside a block comment, an unimported experiment,
+or a stale generated artifact is not evidence of a closed theorem. When a
+quarantined continuation looks promising, test it once in an isolated overlay
+to classify it; do not uncomment it in the active paper root merely to probe
+it. If the overlay fails, record it as experimental proof debt and repair or
+rewrite it in a dedicated module before exposing any endpoint through the
+paper interface or a closeout plan.
+
 ## Strategic-Model Proof Boundary
 
 For a strategic, deviation, or equilibrium theorem, prove the whole semantic
@@ -46,6 +57,14 @@ it does not prove candidate-wide closure, existence, uniqueness, or the source
 outcome. Likewise, a universal conditional theorem does not establish a
 nonvacuous or existential source conclusion until a valid witness/action family
 is constructed and checked.
+
+Hold every source-exogenous primitive fixed across a strategic comparison.
+Unless the source explicitly makes it a choice variable, a deviating action or
+candidate policy must not choose its own population, type distribution, signal
+or noise law, technology, metric, or experiment. Put equality to the fixed
+environment at the shared candidate/stability boundary so every downstream
+theorem inherits it; do not patch the same condition independently into result
+wrappers.
 
 ## Command Invocation
 
@@ -109,13 +128,34 @@ conditional, expose the source condition. If the source is false or
 underspecified, stop treating the issue as proof search and write a source note
 or corrected conditional theorem.
 
+For a missing hypothesis exposed by the proof, distinguish three layers before
+changing the target: the paper's model primitives, a structural condition on
+those primitives, and the auxiliary witness consumed by the proof. Prefer the
+weakest natural structural condition expressible in the model primitives and
+prove a named bridge that constructs the witness. A witness-level hypothesis
+may still be the mathematically weakest proved theorem, but it must remain
+identified as such. Do not rename a chosen support family, cover, matching,
+certificate, coupling, or optimizer as “consistency” or “regularity” and present
+it as though it were primitive. Record the implication hierarchy when a clean
+primitive condition is stronger than the proof-minimal one, and do not claim
+equivalence unless both directions are checked.
+
+Before settling for an added structural premise, ask whether the original
+model proves a stronger universal repair of the form “intended conclusion, or
+the proposed alternative loses a desirable source-defined property.” Express
+the adverse branch using the paper's existing conceptual vocabulary and
+primitive objects whenever possible. For example, a collision between two
+admissible coefficient vectors is naturally a failure of sparse
+identifiability; it should not be headlined as a failure of a chosen support
+family. Prove the bridge to the auxiliary witness formulation afterward.
+
 Useful commands:
 
 ```bash
 lake env lean papers/<Paper>/<File>.lean
 lake build <known-module-or-target>
-rg -n "theorem_name|key_definition|source_phrase" EconCSLib papers Mathlib Cslib
-rg -n "sorry|admit|axiom" papers/<Paper> EconCSLib
+rg -n "theorem_name|key_definition|source_phrase" AppliedModelingLib papers Mathlib Cslib
+rg -n "sorry|admit|axiom" papers/<Paper> AppliedModelingLib
 ```
 
 ### 2. Retrieve Before Inventing
@@ -123,7 +163,7 @@ rg -n "sorry|admit|axiom" papers/<Paper> EconCSLib
 Before writing a new definition or long helper proof, search existing APIs:
 
 - Search local paper files for already-proved source steps.
-- Search `EconCSLib/` for reusable math, probability, optimization, matching,
+- Search `AppliedModelingLib/` for reusable math, probability, optimization, matching,
   social-choice, auction, and graph lemmas.
 - Search `Mathlib/`, `Cslib/`, and `Optlib/` if they are present in the Lake
   dependency tree.
@@ -146,7 +186,7 @@ Use the source proof and Lean goal state together:
 - Keep helper statements stronger only when the stronger form is reusable or
   materially simplifies the proof.
 - Prefer source-shaped paper-local wrappers over opaque certificate records.
-- Move a helper into `EconCSLib/` only if it is genuinely reusable outside the
+- Move a helper into `AppliedModelingLib/` only if it is genuinely reusable outside the
   current paper.
 - If a conjecture, stronger theorem, or extension looks trivial, leave it until
   the source theorem chain is stable. Then either prove it as explicitly
@@ -183,6 +223,55 @@ After a suggestion works, simplify it into a readable proof when possible. Do
 not leave diagnostic `#check`, `#print`, `set_option pp.all true`, or tactic
 probe blocks in committed code unless they are intentionally documented tests.
 
+### 4a. Prevent runaway elaboration and diagnostic output
+
+Do not accept or repeatedly rerun a proof tactic that makes Lean emit a panic,
+internal error, crash backtrace, or an enormous repeated diagnostic—even when
+the theorem appears to compile and Lean exits zero. Stop on the first such run;
+the output is evidence that the tactic/elaborator path is unstable, not harmless
+noise. Do not solve it by piping away stderr, showing only `tail`, raising an
+output cap, or recording the zero exit code.
+
+Anticipate this problem when a proof repeatedly asks `simp` or `norm_num` to
+unfold a large vector, matrix, finite lookup table, nested `Fin` term, or broad
+model definition inside many local hypotheses. Prefer this pattern:
+
+1. Define one small, transparent symbolic/evaluation function for the table.
+2. Prove once that the original computation equals that function, using a
+   bounded `fin_cases`/`norm_num`/`ring` calculation.
+3. In downstream proofs, use `rw` with that lemma and `change` each fixed lookup
+   into the intended scalar expression.
+4. Finish with the narrow arithmetic tactic (`linarith`, `nlinarith`, `ring_nf`,
+   or `norm_num`) rather than unfolding the original table again.
+
+Also prefer `simp only` with an explicit short lemma list, named coordinate or
+lookup lemmas, and separate normalization steps over a broad `simp [largeDef]`
+at many hypotheses. If a one-time evaluation theorem itself stresses the
+simplifier, split it into per-coordinate lemmas or prove index equalities
+explicitly; never trade a readable kernel proof for megabytes of diagnostics.
+
+During the proof loop, inspect the complete diagnostic stream with a bounded
+operator-facing summary. A repeated stack trace or output above the repository's
+clean-diagnostic limit is a proof-engineering failure that must be refactored
+before proceeding to later theorems. The final focused build checks this again,
+but it is a backstop rather than the first time the issue should be noticed.
+
+Treat elapsed time, peak memory, and diagnostic volume as proof-engineering
+signals. When a proof or build is unexpectedly slow, memory-heavy, or verbose,
+stop after enough evidence to classify the cause and prefer a smaller
+mathematical certificate, a reusable bridge lemma, narrower unfolding, or a
+better shared runner over larger recursion, heartbeat, memory, or output caps.
+Optimize when the cost is material, likely to recur, or blocks reliable work;
+do not spend more human/agent time hyperoptimizing a harmless one-off than the
+optimization can plausibly save.
+
+Put a recurring remedy in its durable owner: a shared Lean lemma, audit/build
+utility, stage skill, or regression test. Keep a genuinely paper-specific
+proof decomposition in the paper. A local workaround or hidden shell filter is
+not a workflow improvement. Record the concise general rule and a negative or
+performance regression when one can be tested robustly without brittle timing
+thresholds.
+
 ### 5. Classify Failures
 
 When proof search loops, classify the obstruction before continuing:
@@ -191,7 +280,9 @@ When proof search loops, classify the obstruction before continuing:
 - **Typeclass/instance gap:** add the missing local instance, `classical`, or
   explicit finite/decidable hypothesis.
 - **Hypothesis mismatch:** prove a bridge lemma from existing assumptions
-  instead of changing the theorem.
+  instead of changing the theorem. If an additional premise is unavoidable,
+  seek a model-primitive formulation and prove that it supplies the proof
+  witness before exposing the repaired paper-facing statement.
 - **Side condition:** isolate nonzero, positivity, finite-support,
   measurability, integrability, or boundedness obligations.
 - **Wrong formal target:** the Lean statement does not match the paper claim;
@@ -221,6 +312,16 @@ Use these as first-pass tactics before broader redesign.
   The audit evidence must be an explicit equality/iff conclusion tied to the
   reviewed operator obligations; an unrelated theorem conclusion is not a
   formula bridge.
+- When a proof rescales an object more than once, track every normalization
+  factor and sign through the finite identity before taking an asymptotic or
+  big-O wrapper. Recheck that every side condition used by the asymptotic proof
+  covers the theorem's full finite parameter range; add a complementary finite
+  argument rather than silently dropping the uncovered regime.
+- Compare proof-lemma and theorem quantifiers before reusing the lemma. A
+  witness chosen after fixing one deviation (`∀ deviation, ∃ witness`) cannot
+  establish one source policy or price that works uniformly
+  (`∃ witness, ∀ deviation`); seek a direct uniform proof or expose the real
+  source boundary.
 - For strict inequalities, check whether the source has an interior condition
   such as `0 < p` and `p < 1`; if so, expose it as an assumption rather than a
   caveat.
@@ -229,7 +330,10 @@ Use these as first-pass tactics before broader redesign.
 
 - Start with extensionality and membership normal forms:
   `ext x`, `simp [Finset.mem_filter]`, `by_cases h : x = y`.
-- Keep `DecidableEq`, `Fintype`, nonempty, and finiteness assumptions visible.
+- Keep source-relevant `Fintype`, nonempty, and finiteness assumptions visible.
+  Keep `DecidableEq` visible in internal theorem/module signatures when Lean
+  needs it, but do not expose it in a source-facing `Spec` unless the source
+  semantics genuinely require decidable equality.
 - For sums/products, reduce to pointwise equalities before invoking `simp`,
   `sum_congr`, or induction.
 - Keep syntax-family cardinality separate from the number of nonempty semantic
@@ -241,8 +345,20 @@ Use these as first-pass tactics before broader redesign.
 
 - Decide whether the source claim is pointwise or almost-everywhere. Many
   continuous EconCS arguments are naturally `ae` statements.
+- Preserve that choice at the source-claim boundary. Derive an `ae` projection
+  inside the proof when needed, but do not weaken a pointwise or universal
+  paper statement because another section uses a null-history convention.
 - Separate measurability, integrability, nonnegativity, and finiteness before
   proving the main inequality or convergence claim.
+- A strict probability or CDF comparison at a threshold needs the relevant
+  boundary event to have zero mass. Connected support alone does not imply
+  atomlessness or nondegeneracy. Keep weak clearing inequalities separate from
+  the extra regularity used to make them strict.
+- In arrival, incident, delay, or reporting models, distinguish birth time,
+  report delay, first-report time, and the calendar observation window. An
+  event first observed in a window may have been born before the window; do not
+  replace a stationary or two-sided process by same-window cohort thinning
+  unless the source model makes that restriction.
 - Prefer reusable probability lemmas for expectation, variance, distributions,
   CTMCs, and renewal/reward arguments over paper-local re-encodings.
 
@@ -250,6 +366,15 @@ Use these as first-pass tactics before broader redesign.
 
 - Separate feasibility, objective comparison, optimality, uniqueness, and
   certificate soundness into distinct lemmas.
+- Quantify every optimum, infimum, best response, and loss-minimizing condition
+  over the source-feasible domain. If the source permits any fixed consistent
+  tie convention, parameterize that convention and prove the result for every
+  permitted fixed choice; one convenient concrete tie rule is not equivalent.
+- A reusable mathematical helper may be more general than one paper's model,
+  but its paper-facing semantic owner must reinstate every material source
+  restriction. Keep that use-site bridge explicit and reviewable; do not ask a
+  reviewer to certify an arbitrary-real, unrestricted, or convention-free
+  helper as though it were itself the paper's restricted definition.
 - Do not let an `isMax`, `isOptimal`, `certificate`, `bridge`, or `replay`
   field be the whole proof unless another checked row derives that field from
   source primitives.
@@ -284,11 +409,11 @@ Use these as first-pass tactics before broader redesign.
   bound as separate bridges. In particular, a runner hardcoded to stop after one
   seat must not use a quota computed from an unconstrained multi-seat election.
 - Before crediting a paper theorem whose proof consumes feasibility, cost,
-  runtime, or optimality propositions, apply the
-  `source-record-v10-semantic-conclusion-boundary-contract`: compare each premise
-  structurally with the advertised result. A caller-supplied logical component
-  of that result is proof debt and cannot itself establish source coverage,
-  regardless of declaration or binder names.
+  runtime, or optimality propositions, inspect the current Lean-owned recursive
+  closure and premise-provenance surface. Compare every premise semantically
+  with the advertised result. A caller-supplied logical component of that
+  result is proof debt and cannot itself establish source coverage, regardless
+  of declaration or binder names.
 - Unfold result-bearing definitions before using them. An iff that expands to
   winner membership, feasibility, or optimality of an independently supplied
   object only characterizes that object; it does not prove that the algorithm
@@ -328,6 +453,15 @@ Use these as first-pass tactics before broader redesign.
   runner or a checked refinement instead of rebuilding a smaller model whose
   stopping, quota, or transfer semantics may differ.
 - Keep tie-breaking, strictness, support, and feasibility assumptions explicit.
+- Separate three different randomized-algorithm claims: the probability law on
+  executions, the support relation listing possible executions, and a pathwise
+  theorem that holds for every supported execution. Never call unrestricted
+  nondeterminism or a support relation an exact probability-law formalization;
+  a pathwise theorem may deliberately need only support and should say so.
+- Keep every iteration's dataset, fresh block, transcript, accepted repair,
+  restart point, and terminal test explicit in the state transition. A proof
+  about an unpartitioned sample or a reset history does not certify pseudocode
+  that uses fresh blocks or retains prior queries, and conversely.
 - Prove equivalence to the paper's algorithmic step before proving downstream
   welfare, stability, monotonicity, or strategyproofness claims.
 - In ordinary RCV/STV input semantics, all added ballots are present before the
@@ -352,6 +486,12 @@ Use these as first-pass tactics before broader redesign.
   explicit structural/arithmetic proof.
 - Do not make a paper `formalized` by assuming an intermediate theorem that the
   paper expects to prove.
+- When a source proof lemma is false, first determine whether the selected
+  theorem is false or only that route fails. A checked independent proof may
+  recover the unchanged theorem and should be recorded as a proof deviation;
+  it does not make the false lemma true. A false selected theorem requires an
+  explicit corrected target, caveat, or partial boundary and cannot be repaired
+  by proving a nearby result.
 - Do not hide theorem-level conditions inside opaque records merely to shorten
   a paper-facing statement.
 - Do not update DAGs, validation reports, dashboards, or website metadata
@@ -365,13 +505,22 @@ Use these as first-pass tactics before broader redesign.
 After closing or repairing a theorem:
 
 1. Run the targeted Lean check for the edited file.
-2. Run the narrowest relevant module or paper build if imports changed.
-3. Scan the touched files for `sorry`, `admit`, temporary `axiom`, `opaque`, and
+2. Inspect the complete Lean diagnostic stream, not only the process exit code.
+   Any `PANIC`, `internal error`, crash backtrace, or pathologically repeated
+   diagnostic output is a failed validation even when Lean exits zero. Refactor
+   the triggering proof—usually by replacing repeated broad unfolding or
+   simplification with one proved symbolic/computational lemma—and rerun until
+   the same check is both successful and diagnostically clean. Do not suppress,
+   truncate away, or receipt-bind the bad output.
+3. Run the narrowest relevant module or paper build if imports changed, applying
+   the same clean-diagnostic requirement.
+4. Scan the touched files for `sorry`, `admit`, temporary `axiom`, `opaque`, and
    `native_decide`.
-4. Inspect the diff for accidental statement weakening or unrelated churn.
-5. If the proof changes a paper-facing statement or assumption, update only the
+5. Inspect the diff for accidental statement weakening or unrelated churn.
+6. If the proof changes a paper-facing statement or assumption, update only the
    required source-facing artifacts and defer full closeout unless requested.
 
-At closeout, hand off to
-`skills/econcs-formalizer/references/post-formalization-closeout.md`; this
-skill stops at proof repair and Lean validation.
+At closeout, return to `skills/econcs-formalizer/SKILL.md` and follow its current
+`audit-and-closeout.md` and `human-facing-artifacts.md` routes. This skill stops
+at proof repair and Lean validation; historical closeout examples are not
+current workflow authority.

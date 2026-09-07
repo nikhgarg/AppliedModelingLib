@@ -1,6 +1,6 @@
 import KR21Monoculture.RUM
 
-open EconCSLib Filter MeasureTheory
+open AppliedModelingLib Filter MeasureTheory
 open scoped ENNReal NNReal Topology
 
 namespace KR21Monoculture

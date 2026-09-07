@@ -1,7 +1,7 @@
 import KR21Monoculture.LaplaceSourceNormalization
-import EconCSLib.Foundations.Probability.NormalizedKernelDensity
+import AppliedModelingLib.Foundations.Probability.NormalizedKernelDensity
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 open scoped ENNReal NNReal Topology
 
 namespace KR21Monoculture
@@ -42,13 +42,13 @@ theorem measurable_gaussianCanonicalScoreDensity :
       ((rum3Score3_measurable.comp measurable_snd).sub
         ((measurable_pi_apply (2 : Candidate 1)).comp measurable_fst))
   simpa only [Function.uncurry, rum3ScoreDensityENN,
-    EconCSLib.Probability.rum3ScoreDensityENN] using
+    AppliedModelingLib.Probability.rum3ScoreDensityENN] using
     (h1.mul h2 |>.mul h3).ennreal_ofReal
 
 /-- The canonical Gaussian score law, viewed as a Markov kernel over value
 profiles. -/
 noncomputable def gaussianCanonicalScoreKernelDensity :
-    EconCSLib.Probability.NormalizedKernelDensity (ValueProfile 1)
+    AppliedModelingLib.Probability.NormalizedKernelDensity (ValueProfile 1)
       RUM3ScoreSpace (volume : Measure RUM3ScoreSpace) where
   density := fun value =>
     rum3ScoreDensityENN (theorem8GaussianPDF 0)
@@ -90,7 +90,7 @@ theorem gaussianCanonicalScoreKernelDensity_toKernel_apply
           (value (0 : Candidate 1)) (value (1 : Candidate 1))
           (value (2 : Candidate 1))
           rum3Score1 rum3Score2 rum3Score3) := by
-  rw [EconCSLib.Probability.NormalizedKernelDensity.toKernel_eq_withDensity,
+  rw [AppliedModelingLib.Probability.NormalizedKernelDensity.toKernel_eq_withDensity,
     Kernel.withDensity_apply (Kernel.const (ValueProfile 1)
       (volume : Measure RUM3ScoreSpace))
       gaussianCanonicalScoreKernelDensity.density_measurable]
@@ -153,7 +153,7 @@ theorem gaussianCanonicalScoreRankingLaw_eq_definition2
         (value (0 : Candidate 1)) (value (1 : Candidate 1))
         (value (2 : Candidate 1)))
   unfold gaussianCanonicalScoreRankingLaw
-  refine EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+  refine AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
     (gaussianCanonicalScoreKernelDensity.toKernel value)
     (theorem8GaussianDefinition2ScoreMeasure
       (value (0 : Candidate 1)) (value (1 : Candidate 1))
@@ -285,14 +285,14 @@ theorem measurable_laplaceScoreDensity (lam : ℝ) :
       ((rum3Score3_measurable.comp measurable_snd).sub
         ((measurable_pi_apply (2 : Candidate 1)).comp measurable_fst))
   simpa only [Function.uncurry, rum3ScoreDensityENN,
-    EconCSLib.Probability.rum3ScoreDensityENN] using
+    AppliedModelingLib.Probability.rum3ScoreDensityENN] using
     (h1.mul h2 |>.mul h3).ennreal_ofReal
 
 /-- A positive-rate Laplace score density, normalized as a Markov kernel over
 outer value profiles. -/
 noncomputable def laplaceScoreKernelDensity
     (lam : ℝ) (hlam : 0 < lam) :
-    EconCSLib.Probability.NormalizedKernelDensity (ValueProfile 1)
+    AppliedModelingLib.Probability.NormalizedKernelDensity (ValueProfile 1)
       RUM3ScoreSpace (volume : Measure RUM3ScoreSpace) where
   density := fun value =>
     rum3ScoreDensityENN (theorem7LaplacePDF lam 0)
@@ -326,7 +326,7 @@ theorem laplaceScoreKernelDensity_toKernel_apply
           (value (0 : Candidate 1)) (value (1 : Candidate 1))
           (value (2 : Candidate 1))
           rum3Score1 rum3Score2 rum3Score3) := by
-  rw [EconCSLib.Probability.NormalizedKernelDensity.toKernel_eq_withDensity,
+  rw [AppliedModelingLib.Probability.NormalizedKernelDensity.toKernel_eq_withDensity,
     Kernel.withDensity_apply (Kernel.const (ValueProfile 1)
       (volume : Measure RUM3ScoreSpace))
       (laplaceScoreKernelDensity lam hlam).density_measurable]
@@ -387,7 +387,7 @@ theorem laplaceScoreRankingLaw_eq_definition2
         (value (2 : Candidate 1))) :=
     theorem7LaplacianDefinition2ScoreMeasure_isProbabilityMeasure hlam
   unfold laplaceScoreRankingLaw theorem7LaplacianDefinition2RankingPMF
-  exact EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+  exact AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
     ((laplaceScoreKernelDensity lam hlam).toKernel value)
     (theorem7LaplacianDefinition2ScoreMeasure lam
       (value (0 : Candidate 1)) (value (1 : Candidate 1))

@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Math.FiniteChoice
+import AppliedModelingLib.Foundations.Math.FiniteChoice
 import Mathlib.Order.Extension.Linear
 
 /-!
@@ -9,7 +9,7 @@ nested namespace so it can coexist with older scratch files that experimented
 with the same names.
 -/
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace FiniteChoice
 namespace QRepresentativeConverseWork
 
@@ -1002,7 +1002,7 @@ order.
 -/
 theorem qRepresentative_of_revealedAbove_trans
     {q : ℕ} {C : ChoiceRule α}
-    (haccept : QAcceptant q C)
+    (hfeasible : Feasible C) (haccept : QAcceptant q C)
     (htrans :
       ∀ {x y z}, RevealedAbove C x y → RevealedAbove C y z →
         RevealedAbove C x z) :
@@ -1012,7 +1012,7 @@ theorem qRepresentative_of_revealedAbove_trans
       (fun x => RevealedAbove.irrefl (C := C) x)
       (by intro x y z hxy hyz; exact htrans hxy hyz) with
     ⟨r, hstrict, hext⟩
-  refine ⟨r, hstrict, haccept, ?_⟩
+  refine ⟨r, hstrict, hfeasible, haccept, ?_⟩
   intro X x y hxCX hyX hyNotCX
   exact hext ⟨X, hxCX, hyX, hyNotCX⟩
 
@@ -1028,7 +1028,7 @@ theorem qRepresentative_of_revealedAbove_asymm
   have hsub : Substitutable C :=
     substitutable_of_dUnstable_one_of_feasible_of_qAcceptant
       (C := C) hfeasible haccept hunstable
-  apply qRepresentative_of_revealedAbove_trans (C := C) haccept
+  apply qRepresentative_of_revealedAbove_trans (C := C) hfeasible haccept
   intro x y z hxy hyz
   exact RevealedAbove.trans_of_asymm
     (C := C) hfeasible haccept hsub hasymm hxy hyz
@@ -1133,4 +1133,4 @@ theorem qRepresentative_of_feasible_qAcceptant_dUnstable_one_variabilityAtMost_o
 
 end QRepresentativeConverseWork
 end FiniteChoice
-end EconCSLib
+end AppliedModelingLib

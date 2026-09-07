@@ -6,12 +6,12 @@ formalization library.
 ## Module organization
 
 - Use `UpperCamelCase.lean` file names for Lean modules.
-- Put reusable results under `EconCSLib/`; put source-faithful paper wrappers
+- Put reusable results under `AppliedModelingLib/`; put source-faithful paper wrappers
   under `papers/[Paper]/`.
 - Keep imports narrow. Library modules and paper proof files should import the
   leaf modules that own the declarations they use, not aggregate roots such as
-  `EconCSLib` unless the file is itself an aggregate import file.
-- Every new reusable `EconCSLib` module should start with a module docstring
+  `AppliedModelingLib` unless the file is itself an aggregate import file.
+- Every new reusable `AppliedModelingLib` module should start with a module docstring
   containing a title, a short summary, and a `## Main declarations` list.
 - Paper-facing ledgers should also have a module docstring, but the content
   should describe the source paper interface rather than internal helper code.
@@ -34,7 +34,7 @@ checklist before any status updates.
   using Mathlib-style suffixes such as `_eq`, `_le`, `_lt`, `_iff`, `_of_...`,
   and `_mono`.
 - Paper-facing declarations may include paper identifiers or theorem numbers
-  when that improves auditability, but reusable `EconCSLib` declarations should
+  when that improves auditability, but reusable `AppliedModelingLib` declarations should
   not carry paper-specific names.
 
 ## API shape

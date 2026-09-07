@@ -1,0 +1,83 @@
+{
+  "checked_proof_steps": [
+    {
+      "checked_conclusion": "At the stated optimal flow, the PTD expected charges support every marginal-user demand equality, equal the externality prices, and make every distinct priority report strictly more costly, so the induced equilibrium flow is the welfare optimum in the source's defined sense.",
+      "id": "MW90-THEOREM3-OPTIMALITY-DEFINITION-01",
+      "scope": "The complete Theorem 3 endpoint, including the optimal-flow clause rather than only the expected-charge identity.",
+      "source_locator": "cited publication:692-731; cited publication:757-846",
+      "source_step": "Equations (14)--(15) define PTD optimality and incentive compatibility by correct priority choice and an induced arrival vector equal to the welfare optimum; Theorem 3 proves the expected PTD charge equals Theorem 1's price and establishes the local and transitive priority comparisons."
+    },
+    {
+      "checked_conclusion": "The stationary selected-arrival mean queueing time of the source M/M/1 priority model equals the Appendix expression, and its homogeneous specialization supplies the waiting and sojourn formulas used by Theorem 2.",
+      "id": "MW90-APPENDIX-A1-STATIONARY-FORMULA-02",
+      "scope": "Appendix (A-1) and the queueing-formula dependency of Theorem 2.",
+      "source_locator": "cited publication:383-422; cited publication:1085-1130",
+      "source_step": "The main text specializes the Appendix (A-1) stationary nonpreemptive-priority queueing-time expression to homogeneous service for Equations (8)--(9)."
+    }
+  ],
+  "defects": [
+    {
+      "acceptance_condition": "Each affected current source route must be reviewed as an author-approved corrected target that names this defect, preserves the archival source statement and anchor, exposes the positive-flow premises in Lean, and separately validates its exact proof endpoint.",
+      "affected_source_locators": [
+        "cited publication:272-305",
+        "cited publication:550-559",
+        "cited publication:806-846",
+        "cited publication:940-985"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "MW90-APPROVED-INTERIOR-FULL-SUPPORT-01",
+      "repair_obligation": "State the selected positive optimal-flow coordinate for Theorem 1 and full-positive stationary class flows for the strict conclusions of Theorems 2--4 in the transparent paper-facing targets; retain the original source wording, anchors, and zero-flow boundary as archival context.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "`docs/AUTHOR_APPROVED_CORRECTED_TARGETS.md` records the author decision. `theoremOneExternalityPricingSpec` makes the selected positive coordinate explicit; `theoremTwoPriorityIncentiveCompatibilitySpec`, `theoremThreePriorityTimeDependentPricingSpec`, and `theoremFourCheatingPenaltyMonotonicitySpec` make the full-positive-flow strict domain explicit. The zero-flow boundary is retained in `docs/CURRENT_PROTOCOL_REPAIR_TRIAGE.md` and is not credited as a strict source conclusion.",
+      "source_claim": "Theorem 1 states its price identity under the preceding nonnegative-flow assumptions, and Theorems 2--4 print strict priority and cheating-penalty conclusions without separately restricting every equilibrium class flow to be positive.",
+      "source_locator": "cited publication:272-305; cited publication:550-559; cited publication:806-846; cited publication:940-985",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "At a zero selected flow, the constrained first-order condition can be one-sided; at a zero neighboring flow, an adjacent strict priority gap can be weak. The author approved a corrected interior/full-support target rather than attributing the missing restrictions to the archival statements. The corrected targets retain every stated conclusion on that explicit domain and do not claim archival equivalence."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "Theorem 1's externality-price conclusion for a selected positive-flow class. The convention supplies only the source proof's interior domain and no maximum, demand equality, waiting-time derivative, or price conclusion.",
+      "classification": "source_proof_domain_clarification",
+      "formal_meaning": "Theorem 1's displayed ordinary first-order equality is applied to a class whose welfare-maximizing arrival rate is positive. The feasible flow domain is nonnegative, so a zero-flow coordinate instead has a one-sided optimality condition.",
+      "id": "MW90-THEOREM1-POSITIVE-FLOW-INTERIOR-01",
+      "source_locator": "cited publication:244-316",
+      "why_needed": "The source proof differentiates the constrained net-value program as an equality without separately spelling out the selected coordinate's interior condition. Making positivity visible prevents an unconstrained derivative equality from being inferred at a boundary point."
+    },
+    {
+      "checked_scope": "The strict conclusions of Theorems 2--4. A separate homogeneous theorem proves the weak boundary comparison; this convention supplies no price identity, equilibrium, transitivity, or penalty conclusion as a premise.",
+      "classification": "source_proof_domain_clarification",
+      "formal_meaning": "The strict self-selection and strict cheating-penalty comparisons in Theorems 2--4 are the positive-flow interior statements. Each adjacent strict gap contains the neighboring equilibrium arrival rate as a factor; if that rate is zero, the corresponding comparison can be weak instead of strict.",
+      "id": "MW90-STRICT-SELF-SELECTION-POSITIVE-FLOW-02",
+      "source_locator": "cited publication:514-594; cited publication:780-846; cited publication:921-984",
+      "why_needed": "The printed theorem prose uses strict and unique-minimum language while the displayed adjacent calculations do not separately state full support. Exposing positive class flows preserves the intended interior conclusion without silently claiming strictness at an unused priority level."
+    }
+  ],
+  "paper": "MendelsonWhang1990PriorityPricing",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Assumptions A1--A5, the net-value and individual-demand equations, Theorem 1's first-order argument, and the marginal-externality price conclusion.",
+      "source_locator": "cited publication:220-366"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The stationary nonpreemptive-priority queue formula, its homogeneous specialization, the priority-dependent price, and Theorem 2's local and transitive incentive comparisons.",
+      "source_locator": "cited publication:383-620; cited publication:1085-1130"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The PTD equilibrium criterion, the quadratic PTD schedule, Theorem 3's optimality and incentive-compatibility proof, the cheating-penalty decomposition, and both monotonicity directions in Theorem 4.",
+      "source_locator": "cited publication:680-984"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Theorem 1's ordinary first-order equality at a nonnegative-flow optimum and Theorems 2--4's strict adjacent priority comparisons. The selected Lean proofs require a positive selected coordinate for Theorem 1 and full-positive stationary class flows for the strict conclusions.",
+      "source_locator": "cited publication:272-305; cited publication:550-559; cited publication:806-846; cited publication:940-985"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "48eec2a13fea8cbfcf732cd1f31fc7d7828d2af25f403589ec4f96d2f9d3c06f"
+}

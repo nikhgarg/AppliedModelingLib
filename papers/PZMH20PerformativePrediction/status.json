@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "id": "PZMH20PerformativePrediction",
+  "title": "Performative Prediction",
+  "authors": "Juan C. Perdomo, Tijana Zrnic, Celestine Mendler-Dünner, and Moritz Hardt",
+  "source_version": "ICML 2020 / PMLR 119",
+  "source_inventory_review_required": true,
+  "repository_visibility": "public",
+  "build_target": "lake build +PZMH20PerformativePrediction",
+  "status": "formalized",
+  "corrected_formalization_status": "formalized",
+  "corrected_formalization_scope": "The completed corrected target uses a compact-convex domain and explicit decoupled-risk continuity in Proposition 4.1, adds |mu| <= 1/2 to the Proposition 4.2 witness, requires gamma <= beta in Proposition 3.6(c), and proves Theorem 3.10 through dimension > 2 concrete RERM/RGD concentration schedules with explicit bounded-moment, measurability, loss/integrability, numerical-budget, and entry premises.",
+  "infinite_adaptive_trace_scope": "The reusable `adaptiveFreshHeterogeneousInfiniteTraceLaw` now constructs one dependent-coordinate Ionescu--Tulcea probability law for all adaptive finite-PMF batches (dummy coordinate 0, then round t at coordinate t+1). Its history-conditional event theorem and the full inverse-square union bound yield literal all-rounds <= p results for PZ's RERM uniform-loss, RGD empirical-gradient-mass, and finite-alphabet primal-W1 events, and the finite-PMF schedule constructors instantiate all three. Measurable event cylinders plus the reusable prefix-complement bridge lift the finite-alphabet W1 complement to an all-rounds RGD absorbing-ball theorem. This does not identify the older fixed-horizon PMF types by marginal equality, nor does it prove the source's general empirical-Wasserstein/Fournier--Guillin theorem or its exact constants.",
+  "infinite_adaptive_trace_upstream": "Mathlib Ionescu--Tulcea trajectory implementation reused directly: https://leanprover-community.github.io/mathlib4_docs/Mathlib/Probability/Kernel/IonescuTulcea/Traj.html and https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Probability/Kernel/IonescuTulcea/Traj.lean.",
+  "finite_wasserstein_concentration_scope": "An explicit maximal finite coupling proves W₁(empirical, law) ≤ diameter * card(Data) * epsilon from coordinatewise empirical mass deviations. The corresponding finite-IID W₁ failure event is bounded by the existing mass-deviation event and its Hoeffding bound; the heterogeneous conditionally-IID Ionescu--Tulcea trace lifts that literal event to a countable-union inverse-square confidence bound. A selected positive finite batch schedule meets that bound for the literal W₁ event itself, uniformly over every history-dependent deployment rule. Measurable round cylinders and the direct no-W₁-bad-trace recurrence then give the RGD absorbing ball at every iteration with probability at least 1-p. This is a genuine primal-W₁ finite-alphabet specialization, not the source's Fournier--Guillin theorem or its constants/rate.",
+  "main_caveat": "",
+  "hilbert_projection_scope": "The reusable `hilbertProjection` selects the nearest point on every nonempty closed convex subset of a complete real inner-product space, proves the variational characterization required by projected-gradient fixed-point arguments, and proves 1-Lipschitzness. It directly reuses Mathlib's Hilbert projection theorem: https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/Projection/Minimal.html and https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/InnerProductSpace/Projection/Minimal.lean. Theorem 3.8's arbitrary-law A1/A2 endpoint instantiates it; this does not discharge the theorem's separate analytic or empirical-concentration boundaries.",
+  "latest_verified_progress": "The general measure layer formalizes Theorems 3.5(a)--(b) and 3.8(a)--(b) on a nonempty closed convex parameter domain, including arbitrary-law W1 sensitivity, frozen-risk interpolation, Appendix E.3's T2/T3 estimates, the projected-RGD Banach fixed point, and its geometric rate. The selected Euclidean projection is now constructed extensionally by direct reuse of Mathlib's Hilbert projection theorem and instantiated in the A1/A2 Theorem 3.8 endpoint. The reusable Mathlib-backed dominated parametric-integral bridge derives frozen-risk gradients from A1 together with explicit local loss measurability, integrable domination, and pointwise differentiability. That same bridge now supplies arbitrary-law W1 endpoints for Theorem 4.3's `2 Lz epsilon / gamma` distance bound and Corollary 5.1's `2 Lz epsilon (Ltheta + Lz epsilon) / gamma` objective gap. Proposition 3.6(a) now formalizes the source's arbitrary-positive-epsilon/beta real linear-loss/Dirac model, its exact decoupled risk and domain RRM update, W1 sensitivity via reusable Dirac transport, actual gradient, convexity, beta-joint smoothness, absence of positive strong convexity, unique stable point, and nonconvergent selected endpoint trajectory. Proposition 3.6(b) now formalizes its real regularized-hinge/Dirac model, exact frozen risk, W1 sensitivity, pointwise gamma-strong convexity, and hinge nondifferentiability, with the two source RRM steps certified on their divergent orbit. Proposition 3.6(c) now formalizes the source's real squared-loss/Dirac model, its exact decoupled risk and RRM update, W1 sensitivity via a reusable Dirac coupling, A1/A2 constants, fixed-point characterization, and the stated no-stability/divergence regimes. Proposition 4.1 has an arbitrary-law compact-convex best-response/Kakutani endpoint under explicit joint-risk continuity and pointwise loss convexity; a finite compact nonconvex counterexample proves that the source's compact-only statement needs this convex-domain correction. The general-law empirical interface realizes a nonempty finite sample as a probability measure and proves the deterministic W1 event-to-gradient/update step of Theorem 3.10. General empirical-Wasserstein concentration and the source Wasserstein/Berge continuity bridge remain open.",
+  "human_summary": "The shared game-theory library now formalizes finite performative risk, decoupled risk, stability, selected repeated-risk minimization over a domain, finite argmin existence, strategic induced laws, finite transport-coupling and finite-W₁ Lipschitz-test bounds, frozen-risk strong convexity, finite expected-loss differentiation, source-shaped primal and finite-W₁ convex-domain RRM and projected-RGD contraction/geometric-convergence theorems, finite-W₁ versions of Theorem 4.3 and Corollary 5.1, the finite-PMF compact-convex Proposition 4.1 route, and finite-IID support plus finite-horizon deterministic/union-bound bridges for Theorem 3.10. The arbitrary-measure Theorems 3.5 and 3.8 now match their W₁ contraction and Banach conclusions under explicit finite-first-moment coupling, integrability, and local analytic-differentiation premises. The source's Euclidean projection is constructed extensionally for the arbitrary-law Theorem 3.8 route by direct reuse of Mathlib's Hilbert projection theorem. Proposition 3.6(a) is now an exact real linear-loss/Dirac counterexample for all positive epsilon and beta: its decoupled risk, domain RRM update, W₁ sensitivity, actual gradient, convexity, beta-joint smoothness, lack of strong convexity, unique stable point, and selected nonconvergent cycle are compiled; its interface also retains the source proposition’s otherwise vacuous positive gamma quantifier. Proposition 3.6(b) is now an exact real regularized-hinge/Dirac counterexample: its frozen risk, W₁ sensitivity, pointwise gamma-strong convexity, hinge nondifferentiability, and the two domain-constrained RRM steps on the divergent orbit are compiled. Proposition 3.6(c) is likewise an exact real squared-loss/Dirac counterexample: its decoupled risk, RRM update, W₁ sensitivity, A1/A2 constants, stability fixed point, and the source’s equality/no-stability and divergence regimes are compiled. Proposition 4.1 derives compact nonempty and convex frozen-law argmin values plus a closed graph from a visible joint-risk-continuity bridge, then applies a source-attributed local Kakutani port; the printed compact-only statement is false, as a compiled compact nonconvex counterexample shows, and the source's arbitrary-distribution Wasserstein/Berge bridge remains open. Theorem 3.10 includes recursively defined deployed-state PMFs, including a heterogeneous batch-history law that uses a separate `n_t` at each round, with conditional IID event factorization and an exact finite-prefix inverse-square confidence bridge for both its RERM uniform-loss and RGD empirical-mass events. In the finite-PMF model, vanishing parameter-uniform failures now construct positive roundwise batch counts satisfying that bridge, whose no-bad-event consequences give the corresponding RERM/RGD absorbing-ball conclusion with probability at least `1-p` for every fixed horizon. A reused finite-family Hoeffding result gives a direct RERM budget condition when losses are `[0,1]`; neither finite route reproduces the source's quantitative Fournier--Guillin bound. Fournier--Guillin's official and arXiv sources are pinned; their theorem’s dimension/tail-dependent concentration assumptions and constants remain separate formal work. The library also constructs a corrected finite-PMF form of Proposition 4.2's Bernoulli example, checks its exact quadratic risk, concavity algebra, full loss-side joint-smoothness/strong-convexity calculation, and finite W₁ sensitivity by an explicit coupling, while identifying the source appendix's missing endpoint condition. The source paper's general Wasserstein concentration, exact empirical-Wasserstein/source-constant bridge, and arbitrary-distribution/primal-dual bridge are not yet formalized.",
+  "human_summary_review": {
+    "status": "draft",
+    "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+  },
+  "review_entrypoint": "papers/PZMH20PerformativePrediction/FINAL_VALIDATION_REPORT.md",
+  "human_review": {
+    "reviewed_rows": 0,
+    "total_rows": 11,
+    "stale_rows": 0,
+    "mismatch_rows": 0,
+    "uncertain_rows": 0,
+    "source": "v11 PaperInterface claim surface; human entries are recorded after direct review"
+  },
+  "paper_interface": {
+    "path": "papers/PZMH20PerformativePrediction/PaperInterface.lean",
+    "line_count": 1568,
+    "declaration_rows": 11,
+    "review_rows": 11,
+    "oversized": false,
+    "maintainability_issue": null
+  },
+  "artifacts": {
+    "paper_interface": "papers/PZMH20PerformativePrediction/PaperInterface.lean",
+    "proof_interface": "papers/PZMH20PerformativePrediction/ProofInterface.lean",
+    "assumptions": "papers/PZMH20PerformativePrediction/Assumptions.lean",
+    "final_validation_report": "papers/PZMH20PerformativePrediction/FINAL_VALIDATION_REPORT.md",
+    "dependency_dag_tex": "papers/PZMH20PerformativePrediction/docs/DependencyDAG.tex",
+    "dependency_dag_pdf": "papers/PZMH20PerformativePrediction/docs/DependencyDAG.pdf",
+    "source_proof_fidelity": "papers/PZMH20PerformativePrediction/audit/source_proof_fidelity.json",
+    "defect_support_match": "papers/PZMH20PerformativePrediction/audit/defect_support_match_llm.json",
+    "library_semantic_review": "papers/PZMH20PerformativePrediction/audit/library_semantic_review.json",
+    "v11_raw_source_spec_screening": "papers/PZMH20PerformativePrediction/audit/v11_raw_source_spec_screening.json",
+    "human_review_packet_pdf": "papers/PZMH20PerformativePrediction/docs/HUMAN_REVIEW_PACKET.pdf",
+    "human_review_packet_tex": "papers/PZMH20PerformativePrediction/docs/HUMAN_REVIEW_PACKET.tex"
+  },
+  "review_surface": {
+    "source_file": "papers/PZMH20PerformativePrediction/PaperInterface.lean",
+    "proof_module": "PZMH20PerformativePrediction.ProofInterface",
+    "proof_file": "papers/PZMH20PerformativePrediction/ProofInterface.lean",
+    "assumption_source_file": "papers/PZMH20PerformativePrediction/Assumptions.lean",
+    "require_source_spec_correspondence": true,
+    "llm_statement_review": {
+      "lean_to_tex_file": "papers/PZMH20PerformativePrediction/audit/lean_to_tex_llm.json",
+      "match_judgment_file": "papers/PZMH20PerformativePrediction/audit/statement_match_llm.json",
+      "library_semantic_review_file": "papers/PZMH20PerformativePrediction/audit/library_semantic_review.json",
+      "v11_screening_file": "papers/PZMH20PerformativePrediction/audit/v11_raw_source_spec_screening.json",
+      "review_surface_audit_file": "papers/PZMH20PerformativePrediction/audit/review_surface_llm.json",
+      "paper_coverage_audit_file": "papers/PZMH20PerformativePrediction/audit/paper_coverage_llm.json",
+      "defect_support_judgment_file": "papers/PZMH20PerformativePrediction/audit/defect_support_match_llm.json",
+      "assumption_judgment_file": "papers/PZMH20PerformativePrediction/audit/assumption_match_llm.json",
+      "surface_audit_threshold": 30,
+      "surface_warning_threshold": 120,
+      "require_explicit_source_routes": true,
+      "require_source_claim_atoms": true,
+      "require_direct_expression_semantics_review": "v1",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
+      "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim."
+    },
+    "llm_paper_coverage_review": {
+      "paper_coverage_audit_file": "papers/PZMH20PerformativePrediction/audit/paper_coverage_llm.json",
+      "defect_support_judgment_file": "papers/PZMH20PerformativePrediction/audit/defect_support_match_llm.json",
+      "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more dashboard rows. If coverage uses a reusable library declaration, it must route through an audited paper-local semantic bridge/equivalence row; matching by Lean/library/source names is not semantic evidence. Quarantined source defects require a separate exact-hash semantic judgment binding each candidate counterexample/refutation theorem to the validated defect record and every elaborated signature atom. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
+    },
+    "llm_assumption_review": {
+      "assumption_judgment_file": "papers/PZMH20PerformativePrediction/audit/assumption_match_llm.json",
+      "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
+    },
+    "llm_source_record_review": {
+      "source_record_audit_file": "papers/PZMH20PerformativePrediction/audit/source_record_audit.json",
+      "source_record_judgment_file": "papers/PZMH20PerformativePrediction/audit/source_record_match_llm.json",
+      "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt."
+    },
+    "semantic_model_review": {
+      "schema": 2,
+      "required_dimensions": [
+        "expanded_binders_and_domain",
+        "carrier_and_domain",
+        "probability_support_endpoints",
+        "joint_law_and_state_evolution",
+        "conditioning_and_calibration_semantics",
+        "expectation_definedness",
+        "null_cell_totalization_and_partition_scope",
+        "extended_rate_codomain"
+      ],
+      "policy": "For every reviewed row, preserve an alpha-normalized expanded binder/domain surface, including transparent local type aliases, record parameter domains, and model records reached only in result quantifiers. An unexpanded local opaque/constant type requires a checked carrier/refinement bridge rather than being silently treated as an ordinary carrier. When an expanded finite carrier uses index arithmetic such as Fin (n + c), record the source cardinal parameter, the expanded Lean expression, and a proved parameter translation; then explicitly compare it with pinned source text. Review endpoint support/cutoffs, product or iid laws versus source state evolution, conditioning/calibration semantics, expectation definedness, null-cell totalization and finite/countable/arbitrary partition scope, and Real versus extended-rate codomains when the expanded model makes them relevant. For a probability-law surface, state whether conditioning is pointwise, a.e., positive-fiber, or event-calibrated; state measurability/integrability or extended-value conventions for every expectation; and expose every zero-mass-cell branch. Local declaration and binder names are routing only; detected probability/rate shapes need a checked bridge from source primitives. Because this scaffold enables explicit v10 source routes, every full closeout requires current source-record semantic-model judgments for every generated row; an unresolved model dimension blocks both full statuses."
+    },
+    "source_proof_fidelity_review": {
+      "ledger_file": "papers/PZMH20PerformativePrediction/audit/source_proof_fidelity.json",
+      "policy": "Audit source proof steps by source locator and mathematical claim, not by Lean declaration name. Completed papers use ledger schema 2. Every defect records status_impact as formalized_note, formalized_with_caveat, or partially_formalized plus a semantic rationale. Minor repairs with an unchanged substantive endpoint are notes; formalized with caveat is reserved for a substantial central source-paper error with a fully proved corrected endpoint; weaker Lean targets and added non-source assumptions are partial. Keep this configured ledger whenever explicit source routes or source-defect links are present; a formalized note cannot waive an added non-source assumption or a partial boundary."
+    },
+    "assumption_policy": "strict",
+    "assumption_names": [],
+    "source_definition_names": [],
+    "proposition_spec_proofs": {
+      "measureWassersteinConvexRRMConvergesLinearlySpec": "measureWassersteinConvexRRMConvergesLinearlyProof",
+      "measureWassersteinConvexRGDConvergesLinearlySpec": "measureWassersteinConvexRGDConvergesLinearlyProof",
+      "measureCompactConvexStablePointExistsSpec": "measureCompactConvexStablePointExistsProof",
+      "proposition42CorrectedFiniteWitnessSpec": "proposition42CorrectedFiniteWitness",
+      "measureWassersteinOptimumStableDistanceSpec": "measureWassersteinOptimumStableDistanceProof",
+      "measureWassersteinStableObjectiveGapSpec": "measureWassersteinStableObjectiveGapProof",
+      "proposition36aExactDiracCounterexampleSpec": "proposition36aExactDiracCounterexample",
+      "proposition36bSourceUniformCounterexampleSpec": "proposition36bSourceUniformCounterexample",
+      "proposition36cFeasibleUniformCounterexampleSpec": "proposition36cFeasibleUniformCounterexample",
+      "theorem310CorrectedRERMAllRoundTrajectoryReviewSpec": "theorem310CorrectedRERMAllRoundTrajectoryReview",
+      "theorem310CorrectedRGDAllRoundTrajectoryReviewSpec": "theorem310CorrectedRGDAllRoundTrajectoryReview"
+    },
+    "paper_coverage_required": true,
+    "require_v11_raw_source_spec_screening": true,
+    "include_names": [
+      "measureWassersteinConvexRRMConvergesLinearlySpec",
+      "measureWassersteinConvexRGDConvergesLinearlySpec",
+      "measureCompactConvexStablePointExistsSpec",
+      "proposition42CorrectedFiniteWitnessSpec",
+      "measureWassersteinOptimumStableDistanceSpec",
+      "measureWassersteinStableObjectiveGapSpec",
+      "proposition36aExactDiracCounterexampleSpec",
+      "proposition36bSourceUniformCounterexampleSpec",
+      "proposition36cFeasibleUniformCounterexampleSpec",
+      "theorem310CorrectedRERMAllRoundTrajectoryReviewSpec",
+      "theorem310CorrectedRGDAllRoundTrajectoryReviewSpec"
+    ],
+    "slices": [
+      {
+        "id": "main_text",
+        "title": "Main-text source claims",
+        "names": [
+          "measureWassersteinConvexRRMConvergesLinearlySpec",
+          "measureWassersteinConvexRGDConvergesLinearlySpec",
+          "proposition36aExactDiracCounterexampleSpec",
+          "proposition36bSourceUniformCounterexampleSpec",
+          "proposition36cFeasibleUniformCounterexampleSpec",
+          "measureCompactConvexStablePointExistsSpec",
+          "proposition42CorrectedFiniteWitnessSpec",
+          "measureWassersteinOptimumStableDistanceSpec",
+          "measureWassersteinStableObjectiveGapSpec"
+        ]
+      },
+      {
+        "id": "additional_source_results",
+        "title": "Additional source results",
+        "names": [
+          "theorem310CorrectedRERMAllRoundTrajectoryReviewSpec",
+          "theorem310CorrectedRGDAllRoundTrajectoryReviewSpec"
+        ]
+      }
+    ],
+    "presentation_sections": [
+      {
+        "title": "Main-text source claims",
+        "names": [
+          "measureWassersteinConvexRRMConvergesLinearlySpec",
+          "measureWassersteinConvexRGDConvergesLinearlySpec",
+          "proposition36aExactDiracCounterexampleSpec",
+          "proposition36bSourceUniformCounterexampleSpec",
+          "proposition36cFeasibleUniformCounterexampleSpec",
+          "theorem310CorrectedRERMAllRoundTrajectoryReviewSpec",
+          "theorem310CorrectedRGDAllRoundTrajectoryReviewSpec",
+          "measureCompactConvexStablePointExistsSpec",
+          "proposition42CorrectedFiniteWitnessSpec",
+          "measureWassersteinOptimumStableDistanceSpec",
+          "measureWassersteinStableObjectiveGapSpec"
+        ]
+      }
+    ]
+  }
+}

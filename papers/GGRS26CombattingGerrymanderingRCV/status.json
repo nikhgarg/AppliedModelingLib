@@ -16,12 +16,12 @@
   "human_review": {
     "mismatch_rows": 0,
     "reviewed_rows": 0,
-    "source": "paper-local status.json counts the two normal source endpoints, Lemma C.1 and Proposition 1. Their specification/proof pairs and the appendix alias remain agent/audit evidence; reviewed_rows remains zero because no independent human-review certification is claimed",
+    "source": "The human denominator contains the two selected named results, Lemma C.1 and Proposition 1. Material PAV, STV, voter-model, and selector declarations appear as prerequisite cards, not additional paper-result rows; Section 2.1 redistricting and population-tolerance prose is deep-audit context only.",
     "stale_rows": 0,
-    "surface": "normal_source_presentations_v1",
+    "surface": "selected_named_results_v1",
     "total_rows": 2
   },
-  "human_summary": "",
+  "human_summary": "Reviewer-ready repair surface for the paper's two selected named results: Lemma C.1's harmonic PAV seat selector and Proposition 1's rounded two-party STV/PAV seat formula. The STV theorem covers every admitted surplus-preserving transfer policy and every outcome in the support of the source's random within-party tie rule, without claiming a probability distribution.",
   "human_summary_review": {
     "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction.",
     "status": "draft"
@@ -31,7 +31,7 @@
   "open_source_boundaries": [],
   "paper_interface": {
     "declaration_rows": 45,
-    "line_count": 1278,
+    "line_count": 1706,
     "maintainability_issue": null,
     "oversized": false,
     "path": "papers/GGRS26CombattingGerrymanderingRCV/PaperInterface.lean",
@@ -88,37 +88,16 @@
     ],
     "include_names": [
       "paper_lemma_c1_pav_selector_eq_unique_integer_intervalSpec",
-      "paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_pavSpec"
+      "paper_proposition1_source_selected_stv_and_pavSpec"
     ],
-    "llm_assumption_review": {
-      "assumption_judgment_file": "papers/GGRS26CombattingGerrymanderingRCV/audit/assumption_match_llm.json",
-      "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
-    },
-    "llm_paper_coverage_review": {
-      "defect_support_judgment_file": "papers/GGRS26CombattingGerrymanderingRCV/audit/defect_support_match_llm.json",
-      "paper_coverage_audit_file": "papers/GGRS26CombattingGerrymanderingRCV/audit/paper_coverage_llm.json",
-      "policy": "Use the byte-pinned source-only named-theory inventory. Lemma C.1 and Proposition 1 must be covered by their exact current review rows; the appendix Proposition 1 presentation is a source-pinned alias. Algorithms, standalone formulas, proof steps, simulations, and ordinary prose require a separate deep-paper audit before becoming independent coverage targets.",
-      "required_prompt_version": "paper-coverage-v5-semantic-proof-row-signature-pins"
-    },
-    "llm_source_record_review": {
-      "policy": "Classify every boundary-shaped input and recursive record field from its expanded semantic content. Bare carrier data are witness data; proposition-valued fields require exact source evidence or a checked Lean derivation. Do not infer a source model from record, field, theorem, or function names.",
-      "required_prompt_version": "source-record-v10-semantic-conclusion-boundary-contract",
-      "source_record_audit_file": "papers/GGRS26CombattingGerrymanderingRCV/audit/source_record_audit.json",
-      "source_record_judgment_file": "papers/GGRS26CombattingGerrymanderingRCV/audit/source_record_match_llm.json"
-    },
     "llm_statement_review": {
-      "assumption_judgment_file": "papers/GGRS26CombattingGerrymanderingRCV/audit/assumption_match_llm.json",
-      "defect_support_judgment_file": "papers/GGRS26CombattingGerrymanderingRCV/audit/defect_support_match_llm.json",
       "lean_to_tex_file": "papers/GGRS26CombattingGerrymanderingRCV/audit/lean_to_tex_llm.json",
       "library_semantic_review_file": "papers/GGRS26CombattingGerrymanderingRCV/audit/library_semantic_review.json",
-      "match_judgment_file": "papers/GGRS26CombattingGerrymanderingRCV/audit/statement_match_llm.json",
-      "paper_coverage_audit_file": "papers/GGRS26CombattingGerrymanderingRCV/audit/paper_coverage_llm.json",
       "paper_semantic_prerequisites_file": "papers/GGRS26CombattingGerrymanderingRCV/audit/paper_semantic_prerequisites.json",
       "policy": "Compare raw byte-pinned source-anchor bundles only with Lean-produced paper-local semantic targets. The paired ProofInterface endpoint is proof evidence, not a duplicate source judgment. Every library definition left in a target receives a source-linked library card with its Lean target and exact declaration code; those cards and paper-local state cards do not add normal source-claim denominator rows.",
       "require_explicit_source_routes": true,
       "require_source_claim_atoms": true,
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
-      "review_surface_audit_file": "papers/GGRS26CombattingGerrymanderingRCV/audit/review_surface_llm.json",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
       "surface_audit_threshold": 30,
       "surface_warning_threshold": 120,
       "v11_screening_file": "papers/GGRS26CombattingGerrymanderingRCV/audit/v11_raw_source_spec_screening.json"
@@ -128,7 +107,7 @@
     "proof_module": "GGRS26CombattingGerrymanderingRCV.ProofInterface",
     "proposition_spec_proofs": {
       "paper_lemma_c1_pav_selector_eq_unique_integer_intervalSpec": "paper_lemma_c1_pav_selector_eq_unique_integer_interval",
-      "paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_pavSpec": "paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_pav"
+      "paper_proposition1_source_selected_stv_and_pavSpec": "paper_proposition1_source_selected_stv_and_pav"
     },
     "quarantined_auxiliary_names": [
       "paper_unit_weight_initial_state",
@@ -139,30 +118,17 @@
       "GGRS26CombattingGerrymanderingRCV.paper_unit_weight_initial_state": "Transparent operational representation of the source's unit-weight initial count on its finite electorate. Values of the total Lean weight function outside that electorate are representation-only. This is a Proposition 1 state-model premise, not an independently named source result and receives no source-claim credit."
     },
     "require_v11_raw_source_spec_screening": true,
-    "semantic_model_review": {
-      "policy": "Review the expanded named-result model surfaces against the pinned source. Record not-applicable only after inspecting carrier, state evolution, probability, conditioning, expectation, partition, and rate semantics; names are routing only.",
-      "required_dimensions": [
-        "expanded_binders_and_domain",
-        "carrier_and_domain",
-        "probability_support_endpoints",
-        "joint_law_and_state_evolution",
-        "conditioning_and_calibration_semantics",
-        "expectation_definedness",
-        "null_cell_totalization_and_partition_scope",
-        "extended_rate_codomain"
-      ],
-      "schema": 2
-    },
     "slices": [
       {
-        "id": "all",
+        "id": "main_text",
         "names": [
-          "paper_lemma_c1_pav_selector_eq_unique_integer_interval",
-          "paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_pav"
+          "paper_lemma_c1_pav_selector_eq_unique_integer_intervalSpec",
+          "paper_proposition1_source_selected_stv_and_pavSpec"
         ],
-        "title": "Source-presented named results"
+        "title": "Main-text source claims"
       }
     ],
+    "source_condition_items": [],
     "source_definition_names": [],
     "source_file": "papers/GGRS26CombattingGerrymanderingRCV/PaperInterface.lean",
     "source_proof_fidelity_review": {
@@ -172,12 +138,12 @@
   },
   "schema": 1,
   "source_inventory": {
-    "deep_audit_items": 1,
-    "item_count": 4,
-    "map_sha256": "4e4555385e111a37cb46c102b4ee04aeac0002e26a8a8536bbdf22e0efeea2e2",
-    "normal_definition_items": 0,
+    "deep_audit_items": 5,
+    "item_count": 12,
+    "map_sha256": "0f0d15490d03b70c5fc0c80a16a29880ab581a7b64abb514a3f3f0e1678f60d8",
+    "normal_definition_items": 4,
     "normal_named_result_items": 2,
-    "normal_named_theory_items": 2,
+    "normal_named_theory_items": 6,
     "path": "papers/GGRS26CombattingGerrymanderingRCV/audit/paper_statement_map.json",
     "source_artifact_sha256": "57762234dc7b4a41d10b7f05110551853ab717136eca7b9216da9425cfb8bce5",
     "support_only_items": 1
@@ -188,10 +154,10 @@
   "v10_audit_state": {
     "assumption_prompt_version": "assumption-provenance-v3-semantic-exact-premise-source",
     "paper_coverage_prompt_version": "paper-coverage-v5-semantic-proof-row-signature-pins",
-    "reason": "2026-07-30 closeout: the four current PaperInterface rows have fresh v10 source/Lean obligation ledgers, source-grounded named-theory coverage, and a current source-record receipt (SHA256 69a4560085372c924922a6cfb4a92c1466940e8036c6c17ede082875714313a5). Proposition 1 visibly begins from the constructed finite-electorate unit-weight state and ranges over relational PAV maximizers; the legacy raw-run API remains quarantined and receives no source credit. This is automated semantic-audit evidence, not human or independent-review release certification.",
+    "reason": "Historical v10 statement, coverage, source-record, and assumption files are quarantined provenance only. They are not configured current evidence and cannot support the reopened v12 graph-native review. The current reviewer-ready surface is the two selected result Specs plus their graph-discovered prerequisite cards.",
     "semantic_model_schema": 2,
     "source_record_prompt_version": "source-record-v10-semantic-conclusion-boundary-contract",
     "statement_prompt_version": "statement-match-v10-semantic-fidelity-seat-stopping",
-    "status": "current_complete"
+    "status": "historical_superseded"
   }
 }

@@ -12,7 +12,7 @@ import KR21Monoculture.Simulation
 import KR21Monoculture.AppendixB
 import KR21Monoculture.QuantitativeWitnesses
 
-open EconCSLib MeasureTheory
+open AppliedModelingLib MeasureTheory
 open scoped ENNReal NNReal
 
 /-!
@@ -39,7 +39,7 @@ Lean uses the finite epsilon-delta interface required by the Theorem 1 proof.
 theorem paper_definition1_concreteMallowsSpec_atom_continuity
     {n : ℕ} (center : Ranking n) {θ : ℝ} (hθ : 0 < θ)
     (π : Ranking n) :
-    EconCSLib.EpsilonContinuousAt
+    AppliedModelingLib.EpsilonContinuousAt
       (fun θ' => (((concreteMallowsSpec center θ').law) π).toReal) θ := concreteMallowsSpec_atom_continuity center hθ π
 
 /--
@@ -1552,12 +1552,12 @@ theorem paper_appendixA_bestInSet_monotonicity_of_score_ordered_contraction
     (ht0 : 0 ≤ t) (htlt1 : t < 1)
     (hremaining : remaining.Nonempty)
     (hhuman :
-      EconCSLib.SocialChoice.Ranking.RankingWeaklyOrdersScores human raw)
+      AppliedModelingLib.SocialChoice.Ranking.RankingWeaklyOrdersScores human raw)
     (halgorithm :
-      EconCSLib.SocialChoice.Ranking.RankingWeaklyOrdersScores algorithm
+      AppliedModelingLib.SocialChoice.Ranking.RankingWeaklyOrdersScores algorithm
         (fun i => paper_appendixC_contractedScore t (value i) (raw i))) :
     value (bestInSet human remaining) ≤ value (bestInSet algorithm remaining) :=
-  EconCSLib.SocialChoice.Ranking.value_bestInSet_le_of_rumContractScore_ordered_rankings
+  AppliedModelingLib.SocialChoice.Ranking.value_bestInSet_le_of_rumContractScore_ordered_rankings
     ht0 htlt1 hremaining hhuman halgorithm
 
 /--
@@ -1575,13 +1575,13 @@ theorem paper_appendixA_bestInSet_monotonicity_of_rankByScore_contraction
     (hremaining : remaining.Nonempty) :
     value
         (bestInSet
-          (EconCSLib.SocialChoice.Ranking.rankByScore raw) remaining) ≤
+          (AppliedModelingLib.SocialChoice.Ranking.rankByScore raw) remaining) ≤
       value
         (bestInSet
-          (EconCSLib.SocialChoice.Ranking.rankByScore
+          (AppliedModelingLib.SocialChoice.Ranking.rankByScore
             (fun i => paper_appendixC_contractedScore t (value i) (raw i)))
           remaining) :=
-  EconCSLib.SocialChoice.Ranking.value_bestInSet_le_of_rankByScore_rumContractScore
+  AppliedModelingLib.SocialChoice.Ranking.value_bestInSet_le_of_rankByScore_rumContractScore
     ht0 htlt1 hremaining
 
 /--
@@ -1597,16 +1597,16 @@ theorem paper_appendixA_expectedBestInSet_monotonicity_of_finite_rankByScore_con
     {remaining : Finset (Candidate n)}
     {t : ℝ} (ht0 : 0 ≤ t) (htlt1 : t < 1)
     (hremaining : remaining.Nonempty) :
-    EconCSLib.SocialChoice.Ranking.expectedBestInSet
+    AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet
         (μ.map (fun ω =>
-          EconCSLib.SocialChoice.Ranking.rankByScore (raw ω)))
+          AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw ω)))
         value remaining ≤
-      EconCSLib.SocialChoice.Ranking.expectedBestInSet
+      AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet
         (μ.map (fun ω =>
-          EconCSLib.SocialChoice.Ranking.rankByScore
+          AppliedModelingLib.SocialChoice.Ranking.rankByScore
             (fun i => paper_appendixC_contractedScore t (value i) (raw ω i))))
         value remaining :=
-  EconCSLib.SocialChoice.Ranking.expectedBestInSet_map_rankByScore_le_map_contractRankByScore
+  AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet_map_rankByScore_le_map_contractRankByScore
     μ value raw ht0 htlt1 hremaining
 
 /--
@@ -1625,27 +1625,27 @@ theorem paper_appendixA_expectedBestInSet_monotonicity_of_measure_rankByScore_co
     {t : ℝ}
     (hrawRank :
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore (raw ω)))
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw ω)))
     (hcontractRank :
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => paper_appendixC_contractedScore t (value i) (raw ω i))))
     (ht0 : 0 ≤ t) (htlt1 : t < 1)
     (hremaining : remaining.Nonempty) :
-    EconCSLib.SocialChoice.Ranking.expectedBestInSet
-        (EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
-          (fun ω => EconCSLib.SocialChoice.Ranking.rankByScore (raw ω))
+    AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet
+        (AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
+          (fun ω => AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw ω))
           hrawRank)
         value remaining ≤
-      EconCSLib.SocialChoice.Ranking.expectedBestInSet
-        (EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
+      AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet
+        (AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
           (fun ω =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (value i) (raw ω i)))
           hcontractRank)
         value remaining := by
   simpa [paper_appendixC_contractedScore] using
-    (EconCSLib.SocialChoice.Ranking.expectedBestInSet_rankingPMFOfMeasure_rankByScore_le_contract
+    (AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet_rankingPMFOfMeasure_rankByScore_le_contract
         (μ := μ) (value := value) (raw := raw) (t := t)
         hrawRank
         (by simpa [paper_appendixC_contractedScore] using hcontractRank)
@@ -1668,10 +1668,10 @@ theorem paper_appendixA_expectedBestInSet_strict_of_measure_rankByScore_contract
     {t : ℝ}
     (hrawRank :
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore (raw ω)))
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw ω)))
     (hcontractRank :
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => paper_appendixC_contractedScore t (value i) (raw ω i))))
     (ht0 : 0 ≤ t) (htlt1 : t < 1)
     (hremaining : remaining.Nonempty)
@@ -1679,27 +1679,27 @@ theorem paper_appendixA_expectedBestInSet_strict_of_measure_rankByScore_contract
       0 < μ {ω |
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore (raw ω))
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw ω))
             remaining) <
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (value i) (raw ω i)))
             remaining)}) :
-    EconCSLib.SocialChoice.Ranking.expectedBestInSet
-        (EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
-          (fun ω => EconCSLib.SocialChoice.Ranking.rankByScore (raw ω))
+    AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet
+        (AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
+          (fun ω => AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw ω))
           hrawRank)
         value remaining <
-      EconCSLib.SocialChoice.Ranking.expectedBestInSet
-        (EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
+      AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet
+        (AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
           (fun ω =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (value i) (raw ω i)))
           hcontractRank)
         value remaining := by
   simpa [paper_appendixC_contractedScore] using
-    (EconCSLib.SocialChoice.Ranking.expectedBestInSet_rankingPMFOfMeasure_rankByScore_lt_contract_of_strict_improvement_pos
+    (AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet_rankingPMFOfMeasure_rankByScore_lt_contract_of_strict_improvement_pos
         (μ := μ) (value := value) (raw := raw) (t := t)
         hrawRank
         (by simpa [paper_appendixC_contractedScore] using hcontractRank)
@@ -1730,17 +1730,17 @@ theorem paper_appendixA_strict_fullset_improvement_pos_of_top_switch_set
     0 < μ {ω |
       value
         (bestInSet
-          (EconCSLib.SocialChoice.Ranking.rankByScore (raw ω))
+          (AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw ω))
           Finset.univ) <
       value
         (bestInSet
-          (EconCSLib.SocialChoice.Ranking.rankByScore
+          (AppliedModelingLib.SocialChoice.Ranking.rankByScore
             (fun i => paper_appendixC_contractedScore t (value i) (raw ω i)))
           Finset.univ)} := by
   refine lt_of_lt_of_le hSpos (MeasureTheory.measure_mono ?_)
   intro ω hω
   simpa [paper_appendixC_contractedScore] using
-    (EconCSLib.SocialChoice.Ranking.value_bestInSet_rankByScore_contract_strict_of_top_switch
+    (AppliedModelingLib.SocialChoice.Ranking.value_bestInSet_rankByScore_contract_strict_of_top_switch
       (t := t) (value := value) (raw := raw ω)
       (low := low) (high := high)
       hvalue (hrawTop ω hω)
@@ -1783,11 +1783,11 @@ theorem paper_appendixA_strict_fullset_improvement_pos_of_scoreSpace_top_switch_
       {score |
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore score)
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore score)
             Finset.univ) <
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (value i) (score i)))
             Finset.univ)} := by
   let box : Set (Candidate n → ℝ) :=
@@ -1796,11 +1796,11 @@ theorem paper_appendixA_strict_fullset_improvement_pos_of_scoreSpace_top_switch_
     {score |
       value
         (bestInSet
-          (EconCSLib.SocialChoice.Ranking.rankByScore score)
+          (AppliedModelingLib.SocialChoice.Ranking.rankByScore score)
           Finset.univ) <
       value
         (bestInSet
-          (EconCSLib.SocialChoice.Ranking.rankByScore
+          (AppliedModelingLib.SocialChoice.Ranking.rankByScore
             (fun i => paper_appendixC_contractedScore t (value i) (score i)))
           Finset.univ)}
   have hne :
@@ -1812,7 +1812,7 @@ theorem paper_appendixA_strict_fullset_improvement_pos_of_scoreSpace_top_switch_
         intro score hscore
         dsimp [strictEvent]
         simpa [paper_appendixC_contractedScore] using
-          (EconCSLib.SocialChoice.Ranking.value_bestInSet_rankByScore_contract_strict_of_top_switch
+          (AppliedModelingLib.SocialChoice.Ranking.value_bestInSet_rankByScore_contract_strict_of_top_switch
             (t := t) (value := value) (raw := score)
             (low := low) (high := high)
             hvalue
@@ -1857,11 +1857,11 @@ theorem paper_appendixA_strict_fullset_improvement_pos_of_scoreSpace_topSwitch_p
       {score |
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore score)
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore score)
             Finset.univ) <
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (value i) (score i)))
             Finset.univ)} := by
   have hlowhigh : low ≠ high := by
@@ -1869,7 +1869,7 @@ theorem paper_appendixA_strict_fullset_improvement_pos_of_scoreSpace_topSwitch_p
     subst high
     exact (lt_irrefl (value low)) hvalue
   rcases
-    EconCSLib.Probability.rumContractScore_topSwitch_openBox_of_parameters
+    AppliedModelingLib.Probability.rumContractScore_topSwitch_openBox_of_parameters
       (ι := Candidate n) (t := t) (eps := eps) (K := K)
       (value := value) (low := low) (high := high)
       ht0 hlowhigh heps hKpos
@@ -1911,15 +1911,15 @@ theorem paper_appendixA_strict_fullset_improvement_pos_of_scoreSpace_fullSupport
       {score |
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore score)
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore score)
             Finset.univ) <
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (value i) (score i)))
             Finset.univ)} := by
   rcases
-    EconCSLib.Probability.exists_rumContractScore_topSwitch_parameters
+    AppliedModelingLib.Probability.exists_rumContractScore_topSwitch_parameters
       (ι := Candidate n) (t := t) (value := value)
       (low := low) (high := high) htpos htlt1 hvalue with
     ⟨eps, K, heps, hKpos, hhigh_low, hhigh_other⟩
@@ -1945,10 +1945,10 @@ theorem paper_appendixA_scaledNoise_rankByScore_measurable
     (hnoise : ∀ c : Candidate n, Measurable (fun ω => noise ω c))
     (value : Candidate n → ℝ) (θ : ℝ) :
     Measurable (fun ω =>
-      EconCSLib.SocialChoice.Ranking.rankByScore
+      AppliedModelingLib.SocialChoice.Ranking.rankByScore
         (fun c => value c + noise ω c / θ)) := by
   exact
-    EconCSLib.SocialChoice.Ranking.measurable_rankByScore
+    AppliedModelingLib.SocialChoice.Ranking.measurable_rankByScore
       (fun ω c => value c + noise ω c / θ)
       (by
         intro c
@@ -1966,7 +1966,7 @@ noncomputable def paper_appendixA_scaledNoiseRankingPMF
     fun eps c => eps c
   let rank : (Candidate n → ℝ) → Ranking n :=
     fun eps =>
-      EconCSLib.SocialChoice.Ranking.rankByScore
+      AppliedModelingLib.SocialChoice.Ranking.rankByScore
         (fun i => value i + noise eps i / θ)
   have hnoise :
       ∀ c : Candidate n, Measurable (fun eps : Candidate n → ℝ => noise eps c) :=
@@ -1977,7 +1977,7 @@ noncomputable def paper_appendixA_scaledNoiseRankingPMF
       paper_appendixA_scaledNoise_rankByScore_measurable
         (Ω := Candidate n → ℝ)
         noise hnoise value θ
-  exact EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure μ rank hrank
+  exact AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure μ rank hrank
 
 /--
 Appendix A / Theorem 5 source atom continuity from a no-tie scaled-noise law.
@@ -1997,13 +1997,13 @@ theorem paper_appendixA_scaledNoiseRankingPMF_atom_epsilonContinuousAt_of_ae_noT
         ∀ i j : Candidate n, i ≠ j →
           value i + noise i / θ ≠ value j + noise j / θ)
     (π : Ranking n) :
-    EconCSLib.EpsilonContinuousAt
+    AppliedModelingLib.EpsilonContinuousAt
       (fun θ' => ((paper_appendixA_scaledNoiseRankingPMF μ value θ') π).toReal)
       θ := by
   classical
   let rank : ℝ → (Candidate n → ℝ) → Ranking n :=
     fun θ' noise =>
-      EconCSLib.SocialChoice.Ranking.rankByScore
+      AppliedModelingLib.SocialChoice.Ranking.rankByScore
         (fun c => value c + noise c / θ')
   have hrank : ∀ θ', Measurable (rank θ') := by
     intro θ'
@@ -2017,7 +2017,7 @@ theorem paper_appendixA_scaledNoiseRankingPMF_atom_epsilonContinuousAt_of_ae_noT
       ∀ᵐ noise ∂μ, ∀ᶠ θ' in nhds θ, rank θ' noise = rank θ noise := by
     filter_upwards [hnoTie] with noise hnoise
     exact
-      EconCSLib.SocialChoice.Ranking.eventually_rankByScore_eq_of_continuousAt_of_noTies
+      AppliedModelingLib.SocialChoice.Ranking.eventually_rankByScore_eq_of_continuousAt_of_noTies
         (score := fun θ' c => value c + noise c / θ')
         (x := θ)
         (by
@@ -2032,11 +2032,11 @@ theorem paper_appendixA_scaledNoiseRankingPMF_atom_epsilonContinuousAt_of_ae_noT
           intro i j hij
           exact hnoise i j hij)
   have hsource :=
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_atom_epsilonContinuousAt_of_ae_eventually_eq
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_atom_epsilonContinuousAt_of_ae_eventually_eq
       μ rank hrank hstable π
   have hpoint :
       (fun θ' => ((paper_appendixA_scaledNoiseRankingPMF μ value θ') π).toReal) =
-        fun θ' => ((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+        fun θ' => ((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
           μ (rank θ') (hrank θ')) π).toReal := by
     funext θ'
     rfl
@@ -2109,12 +2109,12 @@ theorem paper_appendixA_scaledNoise_strict_fullset_improvement_pos_of_noise_full
       {noise |
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => value i + noise i / θH))
             Finset.univ) <
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => value i + noise i / θA))
             Finset.univ)} := by
   classical
@@ -2125,12 +2125,12 @@ theorem paper_appendixA_scaledNoise_strict_fullset_improvement_pos_of_noise_full
     dsimp [t]
     exact (div_lt_one hθA).mpr hθHA
   rcases
-    EconCSLib.Probability.exists_rumContractScore_topSwitch_parameters
+    AppliedModelingLib.Probability.exists_rumContractScore_topSwitch_parameters
       (ι := Candidate n) (t := t) (value := value)
       (low := low) (high := high) htpos htlt1 hvalue with
     ⟨eps, K, heps, hKpos, hhigh_low, hhigh_other⟩
   rcases
-    EconCSLib.Probability.rumContractScore_topSwitch_openBox_of_parameters
+    AppliedModelingLib.Probability.rumContractScore_topSwitch_openBox_of_parameters
       (ι := Candidate n) (t := t) (eps := eps) (K := K)
       (value := value) (low := low) (high := high)
       (le_of_lt htpos)
@@ -2146,12 +2146,12 @@ theorem paper_appendixA_scaledNoise_strict_fullset_improvement_pos_of_noise_full
     {noise |
       value
         (bestInSet
-          (EconCSLib.SocialChoice.Ranking.rankByScore
+          (AppliedModelingLib.SocialChoice.Ranking.rankByScore
             (fun i => value i + noise i / θH))
           Finset.univ) <
       value
         (bestInSet
-          (EconCSLib.SocialChoice.Ranking.rankByScore
+          (AppliedModelingLib.SocialChoice.Ranking.rankByScore
             (fun i => value i + noise i / θA))
           Finset.univ)}
   have habNoise : ∀ i, aNoise i < bNoise i := by
@@ -2182,21 +2182,21 @@ theorem paper_appendixA_scaledNoise_strict_fullset_improvement_pos_of_noise_full
         have hdiv := (div_lt_iff₀ hθH).mpr hlt'
         linarith
     have hscore_eq : ∀ i,
-        EconCSLib.Probability.rumContractScore t (value i) (raw i) =
+        AppliedModelingLib.Probability.rumContractScore t (value i) (raw i) =
           value i + noise i / θA := by
       intro i
       dsimp [raw, t,
-        EconCSLib.Probability.rumContractScore]
+        AppliedModelingLib.Probability.rumContractScore]
       field_simp [ne_of_gt hθH, ne_of_gt hθA]
       ring
     have hcontract_fun :
-        (fun i => EconCSLib.Probability.rumContractScore t (value i) (raw i)) =
+        (fun i => AppliedModelingLib.Probability.rumContractScore t (value i) (raw i)) =
           (fun i => value i + noise i / θA) := by
       funext i
       exact hscore_eq i
     dsimp [strictEvent]
     simpa [raw, hcontract_fun] using
-      (EconCSLib.SocialChoice.Ranking.value_bestInSet_rankByScore_contract_strict_of_top_switch
+      (AppliedModelingLib.SocialChoice.Ranking.value_bestInSet_rankByScore_contract_strict_of_top_switch
         (t := t) (value := value) (raw := raw)
         (low := low) (high := high)
         hvalue
@@ -2231,21 +2231,21 @@ theorem paper_appendixA_theorem1RemovalMonotonicityAt_of_measure_rankByScore_con
     (raw : Ω → Candidate n → ℝ) {t : ℝ}
     (hrawRank :
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore (raw ω)))
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw ω)))
     (hcontractRank :
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => paper_appendixC_contractedScore t (F.value i) (raw ω i))))
     (hdistH :
       F.dist θH =
-        EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
-          (fun ω => EconCSLib.SocialChoice.Ranking.rankByScore (raw ω))
+        AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
+          (fun ω => AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw ω))
           hrawRank)
     (hdistA :
       F.dist θA =
-        EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
+        AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
           (fun ω =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (F.value i) (raw ω i)))
           hcontractRank)
     (ht0 : 0 ≤ t) (htlt1 : t < 1)
@@ -2253,11 +2253,11 @@ theorem paper_appendixA_theorem1RemovalMonotonicityAt_of_measure_rankByScore_con
       0 < μ {ω |
         F.value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore (raw ω))
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw ω))
             Finset.univ) <
         F.value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (F.value i) (raw ω i)))
             Finset.univ)}) :
     AccuracyFamily.Theorem1RemovalMonotonicityAt F θA θH := by
@@ -2269,7 +2269,7 @@ theorem paper_appendixA_theorem1RemovalMonotonicityAt_of_measure_rankByScore_con
     have hstrict :=
       paper_appendixA_expectedBestInSet_strict_of_measure_rankByScore_contraction
         μ F.value raw hrawRank hcontractRank ht0 htlt1 hremaining hstrict_univ
-    simpa [EconCSLib.SocialChoice.Ranking.expectedBestInSet_univ] using hstrict
+    simpa [AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet_univ] using hstrict
   · intro c
     rw [hdistH, hdistA]
     let remaining : Finset (Candidate n) :=
@@ -2285,9 +2285,9 @@ theorem paper_appendixA_theorem1RemovalMonotonicityAt_of_measure_rankByScore_con
       paper_appendixA_expectedBestInSet_monotonicity_of_measure_rankByScore_contraction
         μ F.value raw hrawRank hcontractRank ht0 htlt1 hremaining
     simpa [remaining,
-      EconCSLib.SocialChoice.Ranking.expectedBestInSet_univ_sdiff_singleton,
+      AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet_univ_sdiff_singleton,
       AccuracyFamily.expectedBestAfterRemoval,
-      EconCSLib.SocialChoice.Ranking.expectedBestAfterRemoval] using hweak
+      AppliedModelingLib.SocialChoice.Ranking.expectedBestAfterRemoval] using hweak
 
 /--
 Appendix A / Theorem 5 monotonicity for the paper's native scaled-noise RUM
@@ -2307,36 +2307,36 @@ theorem paper_appendixA_theorem1RemovalMonotonicityAt_of_scaledNoise_rankByScore
     (hθH : 0 < θH) (hθHA : θH < θA)
     (hrawRank :
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => F.value i + noise ω i / θH)))
     (haccurateRank :
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => F.value i + noise ω i / θA)))
     (hdistH :
       F.dist θH =
-        EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
+        AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
           (fun ω =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise ω i / θH))
           hrawRank)
     (hdistA :
       F.dist θA =
-        EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
+        AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
           (fun ω =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise ω i / θA))
           haccurateRank)
     (hstrict_univ :
       0 < μ {ω |
         F.value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise ω i / θH))
             Finset.univ) <
         F.value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise ω i / θA))
             Finset.univ)}) :
     AccuracyFamily.Theorem1RemovalMonotonicityAt F θA θH := by
@@ -2351,20 +2351,20 @@ theorem paper_appendixA_theorem1RemovalMonotonicityAt_of_scaledNoise_rankByScore
     exact (div_lt_one hθA).mpr hθHA
   have hcontract_eq :
       (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => paper_appendixC_contractedScore t (F.value i) (raw ω i))) =
       (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => F.value i + noise ω i / θA)) := by
     funext ω
     congr 1
     funext i
     simp [t, raw, paper_appendixC_contractedScore, rumContractScore,
-      EconCSLib.Probability.rumContractScore]
+      AppliedModelingLib.Probability.rumContractScore]
     field_simp [ne_of_gt hθH, ne_of_gt hθA]
   have hcontractRank :
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => paper_appendixC_contractedScore t (F.value i) (raw ω i))) := by
     rw [hcontract_eq]
     exact haccurateRank
@@ -2378,22 +2378,22 @@ theorem paper_appendixA_theorem1RemovalMonotonicityAt_of_scaledNoise_rankByScore
         {ω |
           F.value
             (bestInSet
-              (EconCSLib.SocialChoice.Ranking.rankByScore (raw ω))
+              (AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw ω))
               Finset.univ) <
           F.value
             (bestInSet
-              (EconCSLib.SocialChoice.Ranking.rankByScore
+              (AppliedModelingLib.SocialChoice.Ranking.rankByScore
                 (fun i => paper_appendixC_contractedScore t (F.value i) (raw ω i)))
               Finset.univ)} =
         {ω |
           F.value
             (bestInSet
-              (EconCSLib.SocialChoice.Ranking.rankByScore
+              (AppliedModelingLib.SocialChoice.Ranking.rankByScore
                 (fun i => F.value i + noise ω i / θH))
               Finset.univ) <
           F.value
             (bestInSet
-              (EconCSLib.SocialChoice.Ranking.rankByScore
+              (AppliedModelingLib.SocialChoice.Ranking.rankByScore
                 (fun i => F.value i + noise ω i / θA))
               Finset.univ)} := by
       ext ω
@@ -2418,24 +2418,24 @@ theorem paper_appendixA_theorem1RemovalMonotonicityAt_of_scaledNoise_top_switch_
     (hθH : 0 < θH) (hθHA : θH < θA)
     (hrawRank :
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => F.value i + noise ω i / θH)))
     (haccurateRank :
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => F.value i + noise ω i / θA)))
     (hdistH :
       F.dist θH =
-        EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
+        AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
           (fun ω =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise ω i / θH))
           hrawRank)
     (hdistA :
       F.dist θA =
-        EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
+        AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
           (fun ω =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise ω i / θA))
           haccurateRank)
     {low high : Candidate n} {S : Set Ω}
@@ -2464,14 +2464,14 @@ theorem paper_appendixA_theorem1RemovalMonotonicityAt_of_scaledNoise_top_switch_
         F.value i + noise ω i / θA := by
     intro ω i
     simp [t, raw, paper_appendixC_contractedScore, rumContractScore,
-      EconCSLib.Probability.rumContractScore]
+      AppliedModelingLib.Probability.rumContractScore]
     field_simp [ne_of_gt hθH, ne_of_gt hθA]
   have hcontract_eq :
       (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => paper_appendixC_contractedScore t (F.value i) (raw ω i))) =
       (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => F.value i + noise ω i / θA)) := by
     funext ω
     congr 1
@@ -2479,7 +2479,7 @@ theorem paper_appendixA_theorem1RemovalMonotonicityAt_of_scaledNoise_top_switch_
     exact hscore_eq ω i
   have hcontractRank :
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => paper_appendixC_contractedScore t (F.value i) (raw ω i))) := by
     rw [hcontract_eq]
     exact haccurateRank
@@ -2487,11 +2487,11 @@ theorem paper_appendixA_theorem1RemovalMonotonicityAt_of_scaledNoise_top_switch_
       0 < μ {ω |
         F.value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore (raw ω))
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw ω))
             Finset.univ) <
         F.value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (F.value i) (raw ω i)))
             Finset.univ)} :=
     paper_appendixA_strict_fullset_improvement_pos_of_top_switch_set
@@ -2531,24 +2531,24 @@ theorem paper_appendixA_theorem1RemovalMonotonicityAt_of_scaledNoise_fullSupport
     (hθH : 0 < θH) (hθHA : θH < θA)
     (hrawRank :
       Measurable (fun noise : Candidate n → ℝ =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => F.value i + noise i / θH)))
     (haccurateRank :
       Measurable (fun noise : Candidate n → ℝ =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => F.value i + noise i / θA)))
     (hdistH :
       F.dist θH =
-        EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
+        AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
           (fun noise =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise i / θH))
           hrawRank)
     (hdistA :
       F.dist θA =
-        EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
+        AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure μ
           (fun noise =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise i / θA))
           haccurateRank)
     {low high : Candidate n}
@@ -2559,12 +2559,12 @@ theorem paper_appendixA_theorem1RemovalMonotonicityAt_of_scaledNoise_fullSupport
       0 < μ {noise |
         F.value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise i / θH))
             Finset.univ) <
         F.value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise i / θA))
             Finset.univ)} := by
     rw [hμ]
@@ -2596,19 +2596,19 @@ theorem paper_appendixA_atomwise_concentration_of_sum_inversion_probs
       ∀ lower δ, 0 < δ →
         ∃ hi, lower < hi ∧
           (∑ ab : Candidate n × Candidate n,
-            EconCSLib.measureProb (μ hi)
+            AppliedModelingLib.measureProb (μ hi)
               (fun ω => invertedPair center (rank hi ω) ab)) < δ) :
     ∀ lower δ, 0 < δ →
       ∃ hi, lower < hi ∧
         ∀ π : Ranking n,
-          |((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          |((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
                 (μ hi) (rank hi) (hrank hi)) π).toReal -
             (((PMF.pure center : PMF (Ranking n)) π).toReal)| < δ := by
   intro lower δ hδ
   rcases hinv lower δ hδ with ⟨hi, hlower_hi, hsum⟩
   refine ⟨hi, hlower_hi, ?_⟩
   exact
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_atomwise_close_to_pure_of_sum_inversion_probs_lt
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_atomwise_close_to_pure_of_sum_inversion_probs_lt
       (μ hi) (rank hi) (hrank hi) center hδ hsum
 
 /--
@@ -2628,20 +2628,20 @@ theorem paper_appendixA_atomwise_concentration_of_sum_adjacent_inversion_probs
       ∀ lower δ, 0 < δ →
         ∃ hi, lower < hi ∧
           (∑ i : Fin (n + 1),
-            EconCSLib.measureProb (μ hi)
+            AppliedModelingLib.measureProb (μ hi)
               (fun ω => invertedPair center (rank hi ω)
                 (center i.castSucc, center i.succ))) < δ) :
     ∀ lower δ, 0 < δ →
       ∃ hi, lower < hi ∧
         ∀ π : Ranking n,
-          |((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          |((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
                 (μ hi) (rank hi) (hrank hi)) π).toReal -
             (((PMF.pure center : PMF (Ranking n)) π).toReal)| < δ := by
   intro lower δ hδ
   rcases hinv lower δ hδ with ⟨hi, hlower_hi, hsum⟩
   refine ⟨hi, hlower_hi, ?_⟩
   exact
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_atomwise_close_to_pure_of_sum_adjacent_inversion_probs_lt
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_atomwise_close_to_pure_of_sum_adjacent_inversion_probs_lt
       (μ hi) (rank hi) (hrank hi) center hδ hsum
 
 /--
@@ -2658,30 +2658,30 @@ theorem paper_appendixA_atomwise_concentration_of_sum_adjacent_score_misorder_pr
     (score : ℝ → Ω → Candidate n → ℝ)
     (hrank : ∀ θ,
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore (score θ ω)))
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore (score θ ω)))
     (center : Ranking n)
     (hmisorder :
       ∀ lower δ, 0 < δ →
         ∃ hi, lower < hi ∧
           (∑ i : Fin (n + 1),
-            EconCSLib.measureProb (μ hi)
+            AppliedModelingLib.measureProb (μ hi)
               (fun ω =>
                 score hi ω (center i.castSucc) ≤
                   score hi ω (center i.succ))) < δ) :
     ∀ lower δ, 0 < δ →
       ∃ hi, lower < hi ∧
         ∀ π : Ranking n,
-          |((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          |((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
                 (μ hi)
                 (fun ω =>
-                  EconCSLib.SocialChoice.Ranking.rankByScore (score hi ω))
+                  AppliedModelingLib.SocialChoice.Ranking.rankByScore (score hi ω))
                 (hrank hi)) π).toReal -
             (((PMF.pure center : PMF (Ranking n)) π).toReal)| < δ := by
   intro lower δ hδ
   rcases hmisorder lower δ hδ with ⟨hi, hlower_hi, hsum⟩
   refine ⟨hi, hlower_hi, ?_⟩
   exact
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_rankByScore_atomwise_close_to_pure_of_sum_adjacent_score_misorder_probs_lt
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_rankByScore_atomwise_close_to_pure_of_sum_adjacent_score_misorder_probs_lt
       (μ hi) (score hi) (hrank hi) center hδ hsum
 
 /--
@@ -2701,16 +2701,16 @@ theorem paper_appendixA_atomwise_concentration_of_sum_inversion_probs_tendsto
       Filter.Tendsto
         (fun θ : ℝ =>
           ∑ ab : Candidate n × Candidate n,
-            EconCSLib.measureProb (μ θ)
+            AppliedModelingLib.measureProb (μ θ)
               (fun ω => invertedPair center (rank θ ω) ab))
         Filter.atTop (nhds 0)) :
     ∀ lower δ, 0 < δ →
       ∃ hi, lower < hi ∧
         ∀ π : Ranking n,
-          |((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          |((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
                 (μ hi) (rank hi) (hrank hi)) π).toReal -
             (((PMF.pure center : PMF (Ranking n)) π).toReal)| < δ :=
-  EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_atomwise_concentration_of_sum_inversion_probs_tendsto
+  AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_atomwise_concentration_of_sum_inversion_probs_tendsto
     μ rank hrank center hsum
 
 /--
@@ -2731,17 +2731,17 @@ theorem paper_appendixA_atomwise_concentration_of_sum_adjacent_inversion_probs_t
       Filter.Tendsto
         (fun θ : ℝ =>
           ∑ i : Fin (n + 1),
-            EconCSLib.measureProb (μ θ)
+            AppliedModelingLib.measureProb (μ θ)
               (fun ω => invertedPair center (rank θ ω)
                 (center i.castSucc, center i.succ)))
         Filter.atTop (nhds 0)) :
     ∀ lower δ, 0 < δ →
       ∃ hi, lower < hi ∧
         ∀ π : Ranking n,
-          |((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          |((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
                 (μ hi) (rank hi) (hrank hi)) π).toReal -
             (((PMF.pure center : PMF (Ranking n)) π).toReal)| < δ :=
-  EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_atomwise_concentration_of_sum_adjacent_inversion_probs_tendsto
+  AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_atomwise_concentration_of_sum_adjacent_inversion_probs_tendsto
     μ rank hrank center hsum
 
 /--
@@ -2757,13 +2757,13 @@ theorem paper_appendixA_atomwise_concentration_of_sum_adjacent_score_misorder_pr
     (score : ℝ → Ω → Candidate n → ℝ)
     (hrank : ∀ θ,
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore (score θ ω)))
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore (score θ ω)))
     (center : Ranking n)
     (hsum :
       Filter.Tendsto
         (fun θ : ℝ =>
           ∑ i : Fin (n + 1),
-            EconCSLib.measureProb (μ θ)
+            AppliedModelingLib.measureProb (μ θ)
               (fun ω =>
                 score θ ω (center i.castSucc) ≤
                   score θ ω (center i.succ)))
@@ -2771,13 +2771,13 @@ theorem paper_appendixA_atomwise_concentration_of_sum_adjacent_score_misorder_pr
     ∀ lower δ, 0 < δ →
       ∃ hi, lower < hi ∧
         ∀ π : Ranking n,
-          |((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          |((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
                 (μ hi)
                 (fun ω =>
-                  EconCSLib.SocialChoice.Ranking.rankByScore (score hi ω))
+                  AppliedModelingLib.SocialChoice.Ranking.rankByScore (score hi ω))
                 (hrank hi)) π).toReal -
             (((PMF.pure center : PMF (Ranking n)) π).toReal)| < δ :=
-  EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_rankByScore_atomwise_concentration_of_sum_adjacent_score_misorder_probs_tendsto
+  AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_rankByScore_atomwise_concentration_of_sum_adjacent_score_misorder_probs_tendsto
     μ score hrank center hsum
 
 /--
@@ -2799,7 +2799,7 @@ theorem paper_appendixA_scaledNoise_adjacent_score_misorder_sum_tendsto
     Filter.Tendsto
       (fun θ : ℝ =>
         ∑ i : Fin (n + 1),
-          EconCSLib.measureProb μ
+          AppliedModelingLib.measureProb μ
             (fun ω =>
               value (center i.castSucc) +
                   noise ω (center i.castSucc) / θ ≤
@@ -2811,7 +2811,7 @@ theorem paper_appendixA_scaledNoise_adjacent_score_misorder_sum_tendsto
       Filter.Tendsto
         (fun θ : ℝ =>
           ∑ i : Fin (n + 1),
-            EconCSLib.measureProb μ
+            AppliedModelingLib.measureProb μ
               (fun ω =>
                 value (center i.castSucc) +
                     noise ω (center i.castSucc) / θ ≤
@@ -2833,18 +2833,18 @@ theorem paper_appendixA_scaledNoise_adjacent_score_misorder_sum_tendsto
       exact (hnoise high).sub (hnoise low)
     have htail :
         Filter.Tendsto
-          (fun θ : ℝ => EconCSLib.measureProb μ (fun ω => z ω ≤ -θ * gap))
+          (fun θ : ℝ => AppliedModelingLib.measureProb μ (fun ω => z ω ≤ -θ * gap))
           Filter.atTop (nhds 0) :=
-      EconCSLib.measureProb_le_neg_mul_tendsto_atTop_zero μ z hz hgap
+      AppliedModelingLib.measureProb_le_neg_mul_tendsto_atTop_zero μ z hz hgap
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
       (show Filter.Tendsto (fun _ : ℝ => (0 : ℝ)) Filter.atTop (nhds 0) from
         tendsto_const_nhds)
       htail ?_ ?_
     · exact Filter.Eventually.of_forall fun θ => by
-        unfold EconCSLib.measureProb
+        unfold AppliedModelingLib.measureProb
         exact ENNReal.toReal_nonneg
     · filter_upwards [Filter.eventually_gt_atTop (0 : ℝ)] with θ hθ
-      exact EconCSLib.measureProb_mono μ
+      exact AppliedModelingLib.measureProb_mono μ
         (fun ω =>
           value (center i.castSucc) +
               noise ω (center i.castSucc) / θ ≤
@@ -2883,10 +2883,10 @@ theorem paper_appendixA_scaledNoise_atomwise_concentration
     ∀ lower δ, 0 < δ →
       ∃ hi, lower < hi ∧
         ∀ π : Ranking n,
-          |((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          |((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
                 μ
                 (fun ω =>
-                  EconCSLib.SocialChoice.Ranking.rankByScore
+                  AppliedModelingLib.SocialChoice.Ranking.rankByScore
                     (fun c => value c + noise ω c / hi))
                 (paper_appendixA_scaledNoise_rankByScore_measurable
                   noise hnoise value hi)) π).toReal -
@@ -2895,7 +2895,7 @@ theorem paper_appendixA_scaledNoise_atomwise_concentration
   haveI : ∀ θ : ℝ, IsProbabilityMeasure ((fun _ : ℝ => μ) θ) := fun _ => inferInstance
   have hrank : ∀ θ : ℝ,
       Measurable (fun ω =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun c => value c + noise ω c / θ)) :=
     fun θ => paper_appendixA_scaledNoise_rankByScore_measurable
       noise hnoise value θ
@@ -2903,7 +2903,7 @@ theorem paper_appendixA_scaledNoise_atomwise_concentration
       Filter.Tendsto
         (fun θ : ℝ =>
           ∑ i : Fin (n + 1),
-            EconCSLib.measureProb μ
+            AppliedModelingLib.measureProb μ
               (fun ω =>
                 value (center i.castSucc) +
                     noise ω (center i.castSucc) / θ ≤
@@ -2932,7 +2932,7 @@ structure PaperAppendixAScaledNoiseDefinition1Consequence
     {n : ℕ} (F : AccuracyFamily n) (center : Ranking n) : Type where
   dist_atom_continuity :
     ∀ θ, 0 < θ →
-      ∀ π : Ranking n, EconCSLib.EpsilonContinuousAt
+      ∀ π : Ranking n, AppliedModelingLib.EpsilonContinuousAt
         (fun θ' => ((F.dist θ') π).toReal) θ
   atomwise_concentration :
     ∀ lower δ, 0 < δ →
@@ -2968,10 +2968,10 @@ noncomputable def paper_appendixA_scaledNoise_definition1_consequence_of_fullSup
     (hdist :
       ∀ θ, 0 < θ →
         F.dist θ =
-          EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
             μ
             (fun noise =>
-              EconCSLib.SocialChoice.Ranking.rankByScore
+              AppliedModelingLib.SocialChoice.Ranking.rankByScore
                 (fun c => F.value c + noise c / θ))
             (paper_appendixA_scaledNoise_rankByScore_measurable
               (Ω := Candidate n → ℝ)
@@ -2982,7 +2982,7 @@ noncomputable def paper_appendixA_scaledNoise_definition1_consequence_of_fullSup
   dist_atom_continuity := by
     intro θ hθ π
     have hsource :
-        EconCSLib.EpsilonContinuousAt
+        AppliedModelingLib.EpsilonContinuousAt
           (fun θ' =>
             ((paper_appendixA_scaledNoiseRankingPMF μ F.value θ') π).toReal)
           θ :=
@@ -2991,7 +2991,7 @@ noncomputable def paper_appendixA_scaledNoise_definition1_consequence_of_fullSup
         (paper_appendixA_scaledNoise_noTie_ae_of_fullSupport_density
           μ D hμ F.value hθ)
         π
-    refine EconCSLib.epsilonContinuousAt_congr_eventually hsource ?_ ?_
+    refine AppliedModelingLib.epsilonContinuousAt_congr_eventually hsource ?_ ?_
     · have hpos_eventually : ∀ᶠ θ' in nhds θ, 0 < θ' :=
         isOpen_Ioi.mem_nhds hθ
       filter_upwards [hpos_eventually] with θ' hθ'
@@ -3026,7 +3026,7 @@ noncomputable def paper_appendixA_scaledNoise_definition1_consequence_of_fullSup
       hcenter i0
     have hrawRank :
         Measurable (fun noise : Candidate n → ℝ =>
-          EconCSLib.SocialChoice.Ranking.rankByScore
+          AppliedModelingLib.SocialChoice.Ranking.rankByScore
             (fun i => F.value i + noise i / θH)) :=
       paper_appendixA_scaledNoise_rankByScore_measurable
         (Ω := Candidate n → ℝ)
@@ -3035,7 +3035,7 @@ noncomputable def paper_appendixA_scaledNoise_definition1_consequence_of_fullSup
         F.value θH
     have haccurateRank :
         Measurable (fun noise : Candidate n → ℝ =>
-          EconCSLib.SocialChoice.Ranking.rankByScore
+          AppliedModelingLib.SocialChoice.Ranking.rankByScore
             (fun i => F.value i + noise i / θA)) :=
       paper_appendixA_scaledNoise_rankByScore_measurable
         (Ω := Candidate n → ℝ)
@@ -4572,32 +4572,32 @@ theorem paper_definition1_threeCandidate_removalMonotonicity_of_score_contractio
       worse ω = rum3RankByScores (r1 ω) (r2 ω) (r3 ω))
     (hbetter0 :
       rum3Lambda1 μBetter =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (better ω) (0 : Candidate 1) =
             (1 : Candidate 1)))
     (hworse0 :
       rum3Lambda1 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (0 : Candidate 1) =
             (1 : Candidate 1)))
     (hbetter1 :
       rum3Lambda2 μBetter =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (better ω) (1 : Candidate 1) =
             (0 : Candidate 1)))
     (hworse1 :
       rum3Lambda2 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (1 : Candidate 1) =
             (0 : Candidate 1)))
     (hbetter2 :
       rum3Lambda3 μBetter =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (better ω) (2 : Candidate 1) =
             (0 : Candidate 1)))
     (hworse2 :
       rum3Lambda3 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (2 : Candidate 1) =
             (0 : Candidate 1))) :
     AccuracyFamily.Theorem1RemovalMonotonicityAt F θA θH :=
@@ -5946,7 +5946,7 @@ theorem paper_theorem6_gaussian_scoreSpace_rawRankingPMF_eq_definition2
   unfold paper_theorem6_normalizedScoreRankingPMF
     paper_theorem6_rankingPMFOfMeasure
   refine
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
       ((volume : Measure paper_theorem6_scoreSpace).withDensity
         (rum3ScoreDensityENN (theorem8GaussianPDF 0) x1 x2 x3
           paper_theorem6_score1 paper_theorem6_score2 paper_theorem6_score3))
@@ -6012,7 +6012,7 @@ theorem paper_theorem6_gaussian_scoreSpace_contractRankingPMF_eq_definition2
   unfold paper_theorem6_normalizedScoreRankingPMF
     paper_theorem6_rankingPMFOfMeasure
   refine
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
       ((volume : Measure paper_theorem6_scoreSpace).withDensity
         (rum3ScoreDensityENN (theorem8GaussianPDF 0) x1 x2 x3
           paper_theorem6_score1 paper_theorem6_score2 paper_theorem6_score3))
@@ -6076,7 +6076,7 @@ theorem paper_theorem6_laplacian_scoreSpace_rawRankingPMF_eq_definition2
     paper_theorem6_rankingPMFOfMeasure
     theorem7LaplacianDefinition2RankingPMF
   refine
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
       ((volume : Measure paper_theorem6_scoreSpace).withDensity
         (rum3ScoreDensityENN (theorem7LaplacePDF lam 0) x1 x2 x3
           paper_theorem6_score1 paper_theorem6_score2 paper_theorem6_score3))
@@ -6139,7 +6139,7 @@ theorem paper_theorem6_laplacian_scoreSpace_contractRankingPMF_eq_definition2
     paper_theorem6_rankingPMFOfMeasure
     theorem7LaplacianDefinition2ContractRankingPMF
   refine
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
       ((volume : Measure paper_theorem6_scoreSpace).withDensity
         (rum3ScoreDensityENN (theorem7LaplacePDF lam 0) x1 x2 x3
           paper_theorem6_score1 paper_theorem6_score2 paper_theorem6_score3))
@@ -6842,7 +6842,7 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_gaussian_defin
       (σ := σ) (x1 := x1) (x2 := x2) (x3 := x3) hσ]
     simpa [c] using hcanonical
   simpa [Model.PrefersWeakerCompetition] using
-    (EconCSLib.SocialChoice.Ranking.prefersWeakerCompetition_mul_value_iff
+    (AppliedModelingLib.SocialChoice.Ranking.prefersWeakerCompetition_mul_value_iff
       (μBetter :=
         rumRankingPMFOfMeasure
           (theorem8GaussianDefinition2ScoreMeasureStd σ x1 x2 x3)
@@ -7276,10 +7276,10 @@ theorem paper_lemma2_bottom_of_coupling
     (better worse : Ω → Ranking 1)
     (hbetter :
       firstChoiceProb μBetter (2 : Candidate 1) =
-        EconCSLib.pmfProb ν (fun ω => (2 : Candidate 1) = firstChoice (better ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => (2 : Candidate 1) = firstChoice (better ω)))
     (hworse :
       firstChoiceProb μWorse (2 : Candidate 1) =
-        EconCSLib.pmfProb ν (fun ω => (2 : Candidate 1) = firstChoice (worse ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => (2 : Candidate 1) = firstChoice (worse ω)))
     (himp : ∀ ω,
       (2 : Candidate 1) = firstChoice (better ω) →
         (2 : Candidate 1) = firstChoice (worse ω)) :
@@ -7307,18 +7307,18 @@ theorem paper_lemma3_middle_of_transition_mass
     (better worse : Ω → Ranking 1)
     (hbetter : ∀ c : Candidate 1,
       firstChoiceProb μBetter c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
     (hworse : ∀ c : Candidate 1,
       firstChoiceProb μWorse c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
     (hnoTopOut : ∀ ω,
       (0 : Candidate 1) = firstChoice (worse ω) →
         (0 : Candidate 1) = firstChoice (better ω))
     (hbottomMiddle_le_bottomTop :
-      EconCSLib.pmfProb ν (fun ω =>
+      AppliedModelingLib.pmfProb ν (fun ω =>
           (2 : Candidate 1) = firstChoice (worse ω) ∧
             (1 : Candidate 1) = firstChoice (better ω)) ≤
-        EconCSLib.pmfProb ν (fun ω =>
+        AppliedModelingLib.pmfProb ν (fun ω =>
           (2 : Candidate 1) = firstChoice (worse ω) ∧
             (0 : Candidate 1) = firstChoice (better ω))) :
     firstChoiceProb μBetter (1 : Candidate 1) -
@@ -7344,10 +7344,10 @@ theorem paper_monotonicity_top_of_coupling
     (better worse : Ω → Ranking 1)
     (hbetter : ∀ c : Candidate 1,
       firstChoiceProb μBetter c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
     (hworse : ∀ c : Candidate 1,
       firstChoiceProb μWorse c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
     (hnoTopOut : ∀ ω,
       (0 : Candidate 1) = firstChoice (worse ω) →
         (0 : Candidate 1) = firstChoice (better ω))
@@ -7374,10 +7374,10 @@ theorem paper_theorem6_deltaCertificate_of_finite_contraction_facts
     (better worse : Ω → Ranking 1)
     (hbetter : ∀ c : Candidate 1,
       firstChoiceProb μBetter c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
     (hworse : ∀ c : Candidate 1,
       firstChoiceProb μWorse c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
     (hnoTopOut : ∀ ω,
       (0 : Candidate 1) = firstChoice (worse ω) →
         (0 : Candidate 1) = firstChoice (better ω))
@@ -7389,10 +7389,10 @@ theorem paper_theorem6_deltaCertificate_of_finite_contraction_facts
       (2 : Candidate 1) = firstChoice (better ω) →
         (2 : Candidate 1) = firstChoice (worse ω))
     (hbottomMiddle_le_bottomTop :
-      EconCSLib.pmfProb ν (fun ω =>
+      AppliedModelingLib.pmfProb ν (fun ω =>
           (2 : Candidate 1) = firstChoice (worse ω) ∧
             (1 : Candidate 1) = firstChoice (better ω)) ≤
-        EconCSLib.pmfProb ν (fun ω =>
+        AppliedModelingLib.pmfProb ν (fun ω =>
           (2 : Candidate 1) = firstChoice (worse ω) ∧
             (0 : Candidate 1) = firstChoice (better ω))) :
     RUM3DeltaCertificate μBetter μWorse :=
@@ -7419,10 +7419,10 @@ theorem paper_lemma3_bottomMiddle_transition_le_bottomTop_of_swap_equiv
       (2 : Candidate 1) = firstChoice (worse ω) ∧
           (1 : Candidate 1) = firstChoice (better ω) →
         (ν ω).toReal ≤ (ν (swap ω)).toReal) :
-    EconCSLib.pmfProb ν (fun ω =>
+    AppliedModelingLib.pmfProb ν (fun ω =>
         (2 : Candidate 1) = firstChoice (worse ω) ∧
           (1 : Candidate 1) = firstChoice (better ω)) ≤
-      EconCSLib.pmfProb ν (fun ω =>
+      AppliedModelingLib.pmfProb ν (fun ω =>
         (2 : Candidate 1) = firstChoice (worse ω) ∧
           (0 : Candidate 1) = firstChoice (better ω)) :=
   rum3_bottomMiddle_transition_le_bottomTop_of_swap_equiv
@@ -7437,10 +7437,10 @@ theorem paper_theorem6_deltaCertificate_of_finite_contraction_swap_facts
     (better worse : Ω → Ranking 1) (swap : Ω ≃ Ω)
     (hbetter : ∀ c : Candidate 1,
       firstChoiceProb μBetter c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
     (hworse : ∀ c : Candidate 1,
       firstChoiceProb μWorse c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
     (hnoTopOut : ∀ ω,
       (0 : Candidate 1) = firstChoice (worse ω) →
         (0 : Candidate 1) = firstChoice (better ω))
@@ -7481,10 +7481,10 @@ theorem paper_theorem6_deltaCertificate_of_finite_score_contraction_swap_facts
     (hx12 : x2 < x1) (hx23 : x3 < x2)
     (hbetter : ∀ c : Candidate 1,
       firstChoiceProb μBetter c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
     (hworse : ∀ c : Candidate 1,
       firstChoiceProb μWorse c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
     (hbetterTop_of_scores : ∀ ω,
       rum3TopFirstByScores
           (rumContractScore t x1 (r1 ω))
@@ -7552,10 +7552,10 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_lambda_and_fin
     (lambda : RUM3LambdaCertificate μWorse)
     (hbetter : ∀ c : Candidate 1,
       firstChoiceProb μBetter c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
     (hworse : ∀ c : Candidate 1,
       firstChoiceProb μWorse c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
     (hnoTopOut : ∀ ω,
       (0 : Candidate 1) = firstChoice (worse ω) →
         (0 : Candidate 1) = firstChoice (better ω))
@@ -7567,10 +7567,10 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_lambda_and_fin
       (2 : Candidate 1) = firstChoice (better ω) →
         (2 : Candidate 1) = firstChoice (worse ω))
     (hbottomMiddle_le_bottomTop :
-      EconCSLib.pmfProb ν (fun ω =>
+      AppliedModelingLib.pmfProb ν (fun ω =>
           (2 : Candidate 1) = firstChoice (worse ω) ∧
             (1 : Candidate 1) = firstChoice (better ω)) ≤
-        EconCSLib.pmfProb ν (fun ω =>
+        AppliedModelingLib.pmfProb ν (fun ω =>
           (2 : Candidate 1) = firstChoice (worse ω) ∧
             (0 : Candidate 1) = firstChoice (better ω))) :
     Model.PrefersWeakerCompetition μBetter μWorse value :=
@@ -7629,7 +7629,7 @@ theorem paper_theorem6_fullSupport_of_sample_preimages
     {Ω : Type*} [Fintype Ω] [DecidableEq Ω]
     (μ : PMF (Ranking 1)) (ν : PMF Ω) (rank : Ω → Ranking 1)
     (hpreimage : ∀ π : Ranking 1,
-      (μ π).toReal = EconCSLib.pmfProb ν (fun ω => rank ω = π))
+      (μ π).toReal = AppliedModelingLib.pmfProb ν (fun ω => rank ω = π))
     (hsupport : ∀ π : Ranking 1,
       ∃ ω : Ω, rank ω = π ∧ 0 < (ν ω).toReal) :
     ∀ π : Ranking 1, 0 < (μ π).toReal := rum3_fullSupport_of_sample_preimages μ ν rank hpreimage hsupport
@@ -7646,11 +7646,11 @@ theorem paper_theorem6_eventProb_of_sample_preimages
     {Ω : Type*} [Fintype Ω] [DecidableEq Ω]
     (μ : PMF (Ranking 1)) (ν : PMF Ω) (rank : Ω → Ranking 1)
     (hpreimage : ∀ π : Ranking 1,
-      (μ π).toReal = EconCSLib.pmfProb ν (fun ω => rank ω = π))
+      (μ π).toReal = AppliedModelingLib.pmfProb ν (fun ω => rank ω = π))
     (p : Ranking 1 → Prop) [DecidablePred p] :
-    EconCSLib.pmfProb μ p =
-      EconCSLib.pmfProb ν (fun ω => p (rank ω)) :=
-  EconCSLib.pmfProb_eq_pmfProb_preimage_of_atom_eq
+    AppliedModelingLib.pmfProb μ p =
+      AppliedModelingLib.pmfProb ν (fun ω => p (rank ω)) :=
+  AppliedModelingLib.pmfProb_eq_pmfProb_preimage_of_atom_eq
     μ ν rank hpreimage p
 
 /--
@@ -7663,7 +7663,7 @@ theorem paper_theorem6_map_atom_preimage
     {Ω : Type*} [Fintype Ω] [DecidableEq Ω]
     (ν : PMF Ω) (rank : Ω → Ranking 1) (π : Ranking 1) :
     (((ν.map rank) π).toReal) =
-      EconCSLib.pmfProb ν (fun ω => rank ω = π) := EconCSLib.pmf_map_apply_toReal_eq_pmfProb_preimage ν rank π
+      AppliedModelingLib.pmfProb ν (fun ω => rank ω = π) := AppliedModelingLib.pmf_map_apply_toReal_eq_pmfProb_preimage ν rank π
 
 /--
 Appendix C / lambda certificate from pairwise facts plus support.
@@ -7687,7 +7687,7 @@ theorem paper_theorem6_lambdaCertificate_of_pairwise_facts_and_support
 Appendix C / lambda complement identity for the `x₂` vs `x₃` subproblem.
 -/
 theorem paper_theorem6_lambda1_wrong_eq_one_sub (μ : PMF (Ranking 1)) :
-    EconCSLib.pmfProb μ
+    AppliedModelingLib.pmfProb μ
         (fun π => bestRemainingAfter π (0 : Candidate 1) = (2 : Candidate 1)) =
       1 - rum3Lambda1 μ := rum3Lambda1_wrong_eq_one_sub μ
 
@@ -7695,7 +7695,7 @@ theorem paper_theorem6_lambda1_wrong_eq_one_sub (μ : PMF (Ranking 1)) :
 Appendix C / lambda complement identity for the `x₁` vs `x₂` subproblem.
 -/
 theorem paper_theorem6_lambda3_wrong_eq_one_sub (μ : PMF (Ranking 1)) :
-    EconCSLib.pmfProb μ
+    AppliedModelingLib.pmfProb μ
         (fun π => bestRemainingAfter π (2 : Candidate 1) = (1 : Candidate 1)) =
       1 - rum3Lambda3 μ := rum3Lambda3_wrong_eq_one_sub μ
 
@@ -7705,7 +7705,7 @@ Appendix C / pairwise correctness implies `λ₁ > 1/2`.
 theorem paper_theorem6_lambda1_half_of_wrong_lt_correct
     {μ : PMF (Ranking 1)}
     (hwrong :
-      EconCSLib.pmfProb μ
+      AppliedModelingLib.pmfProb μ
           (fun π => bestRemainingAfter π (0 : Candidate 1) = (2 : Candidate 1)) <
         rum3Lambda1 μ) :
     (1 : ℝ) / 2 < rum3Lambda1 μ := rum3Lambda1_half_of_wrong_lt_correct hwrong
@@ -7716,7 +7716,7 @@ Appendix C / pairwise correctness implies `λ₃ > 1/2`.
 theorem paper_theorem6_lambda3_half_of_wrong_lt_correct
     {μ : PMF (Ranking 1)}
     (hwrong :
-      EconCSLib.pmfProb μ
+      AppliedModelingLib.pmfProb μ
           (fun π => bestRemainingAfter π (2 : Candidate 1) = (1 : Candidate 1)) <
         rum3Lambda3 μ) :
     (1 : ℝ) / 2 < rum3Lambda3 μ := rum3Lambda3_half_of_wrong_lt_correct hwrong
@@ -7732,14 +7732,14 @@ theorem paper_theorem6_lambdaCertificate_of_pairwise_wrong_facts_and_support
     {μWorse : PMF (Ranking 1)} {π₀ : Ranking 1}
     (h13_gt_23 : rum3Lambda1 μWorse < rum3Lambda2 μWorse)
     (h23_wrong_lt_correct :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (0 : Candidate 1) = (2 : Candidate 1)) <
         rum3Lambda1 μWorse)
     (hchoose :
       bestRemainingAfter π₀ (0 : Candidate 1) = (2 : Candidate 1))
     (hmass : 0 < (μWorse π₀).toReal)
     (h12_wrong_lt_correct :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (2 : Candidate 1) = (1 : Candidate 1)) <
         rum3Lambda3 μWorse) :
     RUM3LambdaCertificate μWorse :=
@@ -7754,12 +7754,12 @@ theorem paper_theorem6_lambdaCertificate_of_pairwise_wrong_facts_and_full_suppor
     {μWorse : PMF (Ranking 1)}
     (h13_gt_23 : rum3Lambda1 μWorse < rum3Lambda2 μWorse)
     (h23_wrong_lt_correct :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (0 : Candidate 1) = (2 : Candidate 1)) <
         rum3Lambda1 μWorse)
     (hfull : ∀ π : Ranking 1, 0 < (μWorse π).toReal)
     (h12_wrong_lt_correct :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (2 : Candidate 1) = (1 : Candidate 1)) <
         rum3Lambda3 μWorse) :
     RUM3LambdaCertificate μWorse :=
@@ -7784,7 +7784,7 @@ theorem paper_theorem6_lambda1_wrong_lt_correct_of_pairwise_equiv
     {π₀ : Ranking 1}
     (hwrong : bestRemainingAfter π₀ (0 : Candidate 1) = (2 : Candidate 1))
     (hstrict : (μ π₀).toReal < (μ (swap π₀)).toReal) :
-    EconCSLib.pmfProb μ
+    AppliedModelingLib.pmfProb μ
         (fun π => bestRemainingAfter π (0 : Candidate 1) = (2 : Candidate 1)) <
       rum3Lambda1 μ :=
   rum3Lambda1_wrong_lt_correct_of_equiv
@@ -7804,7 +7804,7 @@ theorem paper_theorem6_lambda3_wrong_lt_correct_of_pairwise_equiv
     {π₀ : Ranking 1}
     (hwrong : bestRemainingAfter π₀ (2 : Candidate 1) = (1 : Candidate 1))
     (hstrict : (μ π₀).toReal < (μ (swap π₀)).toReal) :
-    EconCSLib.pmfProb μ
+    AppliedModelingLib.pmfProb μ
         (fun π => bestRemainingAfter π (2 : Candidate 1) = (1 : Candidate 1)) <
       rum3Lambda3 μ :=
   rum3Lambda3_wrong_lt_correct_of_equiv
@@ -7972,29 +7972,29 @@ theorem paper_theorem6_lambdaCertificate_of_sample_swap_facts_and_full_support
     (hfull : ∀ π : Ranking 1, 0 < (μWorse π).toReal)
     (hlambda1μ :
       rum3Lambda1 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (rank ω) (0 : Candidate 1) =
             (1 : Candidate 1)))
     (hlambda2μ :
       rum3Lambda2 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (rank ω) (1 : Candidate 1) =
             (0 : Candidate 1)))
     (hwrong23μ :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (0 : Candidate 1) = (2 : Candidate 1)) =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (rank ω) (0 : Candidate 1) =
             (2 : Candidate 1)))
     (hlambda3μ :
       rum3Lambda3 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (rank ω) (2 : Candidate 1) =
             (0 : Candidate 1)))
     (hwrong12μ :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (2 : Candidate 1) = (1 : Candidate 1)) =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (rank ω) (2 : Candidate 1) =
             (1 : Candidate 1)))
     (swap13gap : Ω ≃ Ω)
@@ -8052,29 +8052,29 @@ theorem paper_theorem6_lambdaCertificate_of_sample_cross_gap_and_wrong_swap_fact
     (hfull : ∀ π : Ranking 1, 0 < (μWorse π).toReal)
     (hlambda1μ :
       rum3Lambda1 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (rank ω) (0 : Candidate 1) =
             (1 : Candidate 1)))
     (hlambda2μ :
       rum3Lambda2 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (rank ω) (1 : Candidate 1) =
             (0 : Candidate 1)))
     (hwrong23μ :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (0 : Candidate 1) = (2 : Candidate 1)) =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (rank ω) (0 : Candidate 1) =
             (2 : Candidate 1)))
     (hlambda3μ :
       rum3Lambda3 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (rank ω) (2 : Candidate 1) =
             (0 : Candidate 1)))
     (hwrong12μ :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (2 : Candidate 1) = (1 : Candidate 1)) =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (rank ω) (2 : Candidate 1) =
             (1 : Candidate 1)))
     (swap13gap : Ω ≃ Ω)
@@ -8242,7 +8242,7 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_pairwise_wrong
     (hx12 : x2 < x1) (hx23 : x3 < x2)
     (h13_gt_23 : rum3Lambda1 μWorse < rum3Lambda2 μWorse)
     (h23_wrong_lt_correct :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (0 : Candidate 1) = (2 : Candidate 1)) <
         rum3Lambda1 μWorse)
     {π₀ : Ranking 1}
@@ -8250,15 +8250,15 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_pairwise_wrong
       bestRemainingAfter π₀ (0 : Candidate 1) = (2 : Candidate 1))
     (hmassLambda : 0 < (μWorse π₀).toReal)
     (h12_wrong_lt_correct :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (2 : Candidate 1) = (1 : Candidate 1)) <
         rum3Lambda3 μWorse)
     (hbetter : ∀ c : Candidate 1,
       firstChoiceProb μBetter c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
     (hworse : ∀ c : Candidate 1,
       firstChoiceProb μWorse c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
     (hnoTopOut : ∀ ω,
       (0 : Candidate 1) = firstChoice (worse ω) →
         (0 : Candidate 1) = firstChoice (better ω))
@@ -8336,10 +8336,10 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_finite_pairwis
       (μWorse π12).toReal < (μWorse (lambdaSwap12 π12)).toReal)
     (hbetter : ∀ c : Candidate 1,
       firstChoiceProb μBetter c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
     (hworse : ∀ c : Candidate 1,
       firstChoiceProb μWorse c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
     (hnoTopOut : ∀ ω,
       (0 : Candidate 1) = firstChoice (worse ω) →
         (0 : Candidate 1) = firstChoice (better ω))
@@ -8434,10 +8434,10 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_all_finite_swa
       (μWorse π12).toReal < (μWorse (lambdaSwap12 π12)).toReal)
     (hbetter : ∀ c : Candidate 1,
       firstChoiceProb μBetter c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
     (hworse : ∀ c : Candidate 1,
       firstChoiceProb μWorse c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
     (hnoTopOut : ∀ ω,
       (0 : Candidate 1) = firstChoice (worse ω) →
         (0 : Candidate 1) = firstChoice (better ω))
@@ -8526,10 +8526,10 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_all_finite_swa
       (μWorse π12).toReal < (μWorse (lambdaSwap12 π12)).toReal)
     (hbetter : ∀ c : Candidate 1,
       firstChoiceProb μBetter c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
     (hworse : ∀ c : Candidate 1,
       firstChoiceProb μWorse c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
     (hnoTopOut : ∀ ω,
       (0 : Candidate 1) = firstChoice (worse ω) →
         (0 : Candidate 1) = firstChoice (better ω))
@@ -8623,10 +8623,10 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_all_finite_swa
       (μWorse π12).toReal < (μWorse (lambdaSwap12 π12)).toReal)
     (hbetter : ∀ c : Candidate 1,
       firstChoiceProb μBetter c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
     (hworse : ∀ c : Candidate 1,
       firstChoiceProb μWorse c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
     (hbetterTop_of_scores : ∀ ω,
       rum3TopFirstByScores
           (rumContractScore t x1 (r1 ω))
@@ -8705,29 +8705,29 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_sample_swaps_a
     (hfull : ∀ π : Ranking 1, 0 < (μWorse π).toReal)
     (hlambda1μ :
       rum3Lambda1 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (0 : Candidate 1) =
             (1 : Candidate 1)))
     (hlambda2μ :
       rum3Lambda2 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (1 : Candidate 1) =
             (0 : Candidate 1)))
     (hwrong23μ :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (0 : Candidate 1) = (2 : Candidate 1)) =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (0 : Candidate 1) =
             (2 : Candidate 1)))
     (hlambda3μ :
       rum3Lambda3 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (2 : Candidate 1) =
             (0 : Candidate 1)))
     (hwrong12μ :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (2 : Candidate 1) = (1 : Candidate 1)) =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (2 : Candidate 1) =
             (1 : Candidate 1)))
     (lambdaSwap13gap : Ω ≃ Ω)
@@ -8771,10 +8771,10 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_sample_swaps_a
       (ν ω12).toReal < (ν (lambdaSwap12 ω12)).toReal)
     (hbetter : ∀ c : Candidate 1,
       firstChoiceProb μBetter c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (better ω)))
     (hworse : ∀ c : Candidate 1,
       firstChoiceProb μWorse c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (worse ω)))
     (hbetterTop_of_scores : ∀ ω,
       rum3TopFirstByScores
           (rumContractScore t x1 (r1 ω))
@@ -8855,9 +8855,9 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_sample_preimag
     (hx12 : x2 < x1) (hx23 : x3 < x2)
     (ht0 : 0 ≤ t) (ht1 : t ≤ 1)
     (hbetterPreimage : ∀ π : Ranking 1,
-      (μBetter π).toReal = EconCSLib.pmfProb ν (fun ω => better ω = π))
+      (μBetter π).toReal = AppliedModelingLib.pmfProb ν (fun ω => better ω = π))
     (hworsePreimage : ∀ π : Ranking 1,
-      (μWorse π).toReal = EconCSLib.pmfProb ν (fun ω => worse ω = π))
+      (μWorse π).toReal = AppliedModelingLib.pmfProb ν (fun ω => worse ω = π))
     (hworseSupport : ∀ π : Ranking 1,
       ∃ ω : Ω, worse ω = π ∧ 0 < (ν ω).toReal)
     (lambdaSwap13gap : Ω ≃ Ω)
@@ -8943,7 +8943,7 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_sample_preimag
       μWorse ν worse hworsePreimage hworseSupport
   have hlambda1μ :
       rum3Lambda1 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (0 : Candidate 1) =
             (1 : Candidate 1)) := by
     unfold rum3Lambda1
@@ -8952,7 +8952,7 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_sample_preimag
       (fun π => bestRemainingAfter π (0 : Candidate 1) = (1 : Candidate 1))
   have hlambda2μ :
       rum3Lambda2 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (1 : Candidate 1) =
             (0 : Candidate 1)) := by
     unfold rum3Lambda2
@@ -8960,9 +8960,9 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_sample_preimag
       μWorse ν worse hworsePreimage
       (fun π => bestRemainingAfter π (1 : Candidate 1) = (0 : Candidate 1))
   have hwrong23μ :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (0 : Candidate 1) = (2 : Candidate 1)) =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (0 : Candidate 1) =
             (2 : Candidate 1)) :=
     paper_theorem6_eventProb_of_sample_preimages
@@ -8970,7 +8970,7 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_sample_preimag
       (fun π => bestRemainingAfter π (0 : Candidate 1) = (2 : Candidate 1))
   have hlambda3μ :
       rum3Lambda3 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (2 : Candidate 1) =
             (0 : Candidate 1)) := by
     unfold rum3Lambda3
@@ -8978,9 +8978,9 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_sample_preimag
       μWorse ν worse hworsePreimage
       (fun π => bestRemainingAfter π (2 : Candidate 1) = (0 : Candidate 1))
   have hwrong12μ :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (2 : Candidate 1) = (1 : Candidate 1)) =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (2 : Candidate 1) =
             (1 : Candidate 1)) :=
     paper_theorem6_eventProb_of_sample_preimages
@@ -8988,7 +8988,7 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_sample_preimag
       (fun π => bestRemainingAfter π (2 : Candidate 1) = (1 : Candidate 1))
   have hbetter : ∀ c : Candidate 1,
       firstChoiceProb μBetter c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (better ω)) := by
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (better ω)) := by
     intro c
     unfold firstChoiceProb
     exact paper_theorem6_eventProb_of_sample_preimages
@@ -8996,7 +8996,7 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_sample_preimag
       (fun π => c = firstChoice π)
   have hworse : ∀ c : Candidate 1,
       firstChoiceProb μWorse c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (worse ω)) := by
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (worse ω)) := by
     intro c
     unfold firstChoiceProb
     exact paper_theorem6_eventProb_of_sample_preimages
@@ -9673,11 +9673,11 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_mapped_density
   let μWorse : PMF (Ranking 1) := ν.map worse
   have hfWeak : WeaklyWellOrderedNoise f := hf.weak
   have hbetterPreimage : ∀ π : Ranking 1,
-      (μBetter π).toReal = EconCSLib.pmfProb ν (fun ω => better ω = π) := by
+      (μBetter π).toReal = AppliedModelingLib.pmfProb ν (fun ω => better ω = π) := by
     intro π
     exact paper_theorem6_map_atom_preimage ν better π
   have hworsePreimage : ∀ π : Ranking 1,
-      (μWorse π).toReal = EconCSLib.pmfProb ν (fun ω => worse ω = π) := by
+      (μWorse π).toReal = AppliedModelingLib.pmfProb ν (fun ω => worse ω = π) := by
     intro π
     exact paper_theorem6_map_atom_preimage ν worse π
   have hfull : ∀ π : Ranking 1, 0 < (μWorse π).toReal :=
@@ -9685,7 +9685,7 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_mapped_density
       μWorse ν worse hworsePreimage hworseSupport
   have hlambda1μ :
       rum3Lambda1 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (0 : Candidate 1) =
             (1 : Candidate 1)) := by
     unfold rum3Lambda1
@@ -9694,7 +9694,7 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_mapped_density
       (fun π => bestRemainingAfter π (0 : Candidate 1) = (1 : Candidate 1))
   have hlambda2μ :
       rum3Lambda2 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (1 : Candidate 1) =
             (0 : Candidate 1)) := by
     unfold rum3Lambda2
@@ -9702,9 +9702,9 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_mapped_density
       μWorse ν worse hworsePreimage
       (fun π => bestRemainingAfter π (1 : Candidate 1) = (0 : Candidate 1))
   have hwrong23μ :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (0 : Candidate 1) = (2 : Candidate 1)) =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (0 : Candidate 1) =
             (2 : Candidate 1)) :=
     paper_theorem6_eventProb_of_sample_preimages
@@ -9712,7 +9712,7 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_mapped_density
       (fun π => bestRemainingAfter π (0 : Candidate 1) = (2 : Candidate 1))
   have hlambda3μ :
       rum3Lambda3 μWorse =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (2 : Candidate 1) =
             (0 : Candidate 1)) := by
     unfold rum3Lambda3
@@ -9720,9 +9720,9 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_mapped_density
       μWorse ν worse hworsePreimage
       (fun π => bestRemainingAfter π (2 : Candidate 1) = (0 : Candidate 1))
   have hwrong12μ :
-      EconCSLib.pmfProb μWorse
+      AppliedModelingLib.pmfProb μWorse
           (fun π => bestRemainingAfter π (2 : Candidate 1) = (1 : Candidate 1)) =
-        EconCSLib.pmfProb ν
+        AppliedModelingLib.pmfProb ν
           (fun ω => bestRemainingAfter (worse ω) (2 : Candidate 1) =
             (1 : Candidate 1)) :=
     paper_theorem6_eventProb_of_sample_preimages
@@ -9730,7 +9730,7 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_mapped_density
       (fun π => bestRemainingAfter π (2 : Candidate 1) = (1 : Candidate 1))
   have hbetter : ∀ c : Candidate 1,
       firstChoiceProb μBetter c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (better ω)) := by
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (better ω)) := by
     intro c
     unfold firstChoiceProb
     exact paper_theorem6_eventProb_of_sample_preimages
@@ -9738,7 +9738,7 @@ theorem paper_theorem6_threeCandidate_prefersWeakerCompetition_of_mapped_density
       (fun π => c = firstChoice π)
   have hworse : ∀ c : Candidate 1,
       firstChoiceProb μWorse c =
-        EconCSLib.pmfProb ν (fun ω => c = firstChoice (worse ω)) := by
+        AppliedModelingLib.pmfProb ν (fun ω => c = firstChoice (worse ω)) := by
     intro c
     unfold firstChoiceProb
     exact paper_theorem6_eventProb_of_sample_preimages
@@ -12072,9 +12072,9 @@ epsilon-delta continuity of the finite ranking law `F_θ`.
 theorem paper_theorem1_f_continuous_from_atom_continuity
     {n : ℕ} (F : AccuracyFamily n) (θH θstar : ℝ)
     (hdist :
-      ∀ π : Ranking n, EconCSLib.EpsilonContinuousAt
+      ∀ π : Ranking n, AppliedModelingLib.EpsilonContinuousAt
         (fun θA => ((F.dist θA) π).toReal) θstar) :
-    EconCSLib.EpsilonContinuousAt
+    AppliedModelingLib.EpsilonContinuousAt
       (fun θA => AccuracyFamily.theorem1_f F θA θH) θstar :=
   AccuracyFamily.theorem1_f_epsilonContinuousAt_of_atom_continuity
     F θH θstar hdist
@@ -12088,9 +12088,9 @@ finite ranking law is atomwise epsilon-delta continuous.
 theorem paper_theorem1_g_continuous_from_atom_continuity
     {n : ℕ} (F : AccuracyFamily n) (θH θstar : ℝ)
     (hdist :
-      ∀ π : Ranking n, EconCSLib.EpsilonContinuousAt
+      ∀ π : Ranking n, AppliedModelingLib.EpsilonContinuousAt
         (fun θA => ((F.dist θA) π).toReal) θstar) :
-    EconCSLib.EpsilonContinuousAt
+    AppliedModelingLib.EpsilonContinuousAt
       (fun θA => AccuracyFamily.theorem1_g F θA θH) θstar :=
   AccuracyFamily.theorem1_g_epsilonContinuousAt_of_atom_continuity
     F θH θstar hdist
@@ -12105,7 +12105,7 @@ theorem paper_theorem1_f_sub_g_continuousOn_from_atom_continuity
     {n : ℕ} (F : AccuracyFamily n) (θH lo hi : ℝ)
     (hdist :
       ∀ θA, θA ∈ Set.Icc lo hi →
-        ∀ π : Ranking n, EconCSLib.EpsilonContinuousAt
+        ∀ π : Ranking n, AppliedModelingLib.EpsilonContinuousAt
           (fun θ => ((F.dist θ) π).toReal) θA) :
     ContinuousOn
       (fun θA =>
@@ -12126,7 +12126,7 @@ the ranking law.
 theorem paper_theorem1_f_lt_h_persists_right_from_atom_continuity
     {n : ℕ} (F : AccuracyFamily n) (θH θstar : ℝ)
     (hdist :
-      ∀ π : Ranking n, EconCSLib.EpsilonContinuousAt
+      ∀ π : Ranking n, AppliedModelingLib.EpsilonContinuousAt
         (fun θA => ((F.dist θA) π).toReal) θstar)
     (hgap :
       AccuracyFamily.theorem1_f F θstar θH <
@@ -12165,7 +12165,7 @@ theorem paper_theorem1_exists_right_initial_f_lt_g_from_definition2_and_continui
     {n : ℕ} (F : AccuracyFamily n) (θH : ℝ)
     (hpaper : Model.PaperHypotheses (F.modelAt θH θH))
     (hdist :
-      ∀ π : Ranking n, EconCSLib.EpsilonContinuousAt
+      ∀ π : Ranking n, AppliedModelingLib.EpsilonContinuousAt
         (fun θ => ((F.dist θ) π).toReal) θH) :
     ∃ lo : ℝ, θH < lo ∧
       AccuracyFamily.theorem1_f F lo θH <
@@ -12184,7 +12184,7 @@ theorem paper_theorem1_exists_right_initial_f_lt_g_from_independent_reranking_an
     {n : ℕ} (F : AccuracyFamily n) (θH : ℝ)
     (hind : Model.PrefersIndependentReranking (F.dist θH) F.value)
     (hdist :
-      ∀ π : Ranking n, EconCSLib.EpsilonContinuousAt
+      ∀ π : Ranking n, AppliedModelingLib.EpsilonContinuousAt
         (fun θ => ((F.dist θ) π).toReal) θH) :
     ∃ lo : ℝ, θH < lo ∧
       AccuracyFamily.theorem1_f F lo θH <
@@ -12345,7 +12345,7 @@ structure PaperTheorem2RUMFamilyBoundary (F : AccuracyFamily 1) : Type where
       Model.PrefersWeakerCompetition (F.dist θA) (F.dist θH) F.value
   dist_atom_continuity :
     ∀ θ, 0 < θ →
-      ∀ π : Ranking 1, EconCSLib.EpsilonContinuousAt
+      ∀ π : Ranking 1, AppliedModelingLib.EpsilonContinuousAt
         (fun θ' => ((F.dist θ') π).toReal) θ
   asymptotic_first_dominance :
     ∀ θH lower, 0 < θH → θH < lower →
@@ -12363,7 +12363,7 @@ Gaussian/Laplace source-model proofs discharge Definition 3.
 structure PaperTheorem2RUMAnalyticBoundary (F : AccuracyFamily 1) : Type where
   dist_atom_continuity :
     ∀ θ, 0 < θ →
-      ∀ π : Ranking 1, EconCSLib.EpsilonContinuousAt
+      ∀ π : Ranking 1, AppliedModelingLib.EpsilonContinuousAt
         (fun θ' => ((F.dist θ') π).toReal) θ
   asymptotic_first_dominance :
     ∀ θH lower, 0 < θH → θH < lower →
@@ -12382,7 +12382,7 @@ monotonicity.
 structure PaperTheorem2RUMLimitBoundary (F : AccuracyFamily 1) : Type where
   dist_atom_continuity :
     ∀ θ, 0 < θ →
-      ∀ π : Ranking 1, EconCSLib.EpsilonContinuousAt
+      ∀ π : Ranking 1, AppliedModelingLib.EpsilonContinuousAt
         (fun θ' => ((F.dist θ') π).toReal) θ
   asymptotic_first_dominance :
     ∀ θH lower, 0 < θH → θH < lower →
@@ -12403,7 +12403,7 @@ structure PaperTheorem2RUMConcentrationBoundary
     (F : AccuracyFamily 1) (center : Ranking 1) : Type where
   dist_atom_continuity :
     ∀ θ, 0 < θ →
-      ∀ π : Ranking 1, EconCSLib.EpsilonContinuousAt
+      ∀ π : Ranking 1, AppliedModelingLib.EpsilonContinuousAt
         (fun θ' => ((F.dist θ') π).toReal) θ
   algorithm_atomwise_concentration :
     ∀ lower δ, 0 < δ →
@@ -13184,7 +13184,7 @@ noncomputable def paper_theorem2_gaussianStd_concentrationBoundary_of_rum_source
     have hsource :=
       theorem8GaussianDefinition2RankingPMFStd_atom_epsilonContinuousAt
         (θ := θ) (x1 := x1) (x2 := x2) (x3 := x3) hθ π
-    refine EconCSLib.epsilonContinuousAt_congr_eventually hsource ?_ ?_
+    refine AppliedModelingLib.epsilonContinuousAt_congr_eventually hsource ?_ ?_
     · filter_upwards [Ioi_mem_nhds hθ] with θ' hθ'
       rw [hdist θ' hθ']
     · rw [hdist θ hθ]
@@ -13218,7 +13218,7 @@ noncomputable def paper_theorem2_laplacianCanonical_concentrationBoundary_of_rum
     have hsource :=
       theorem7LaplacianDefinition2RankingPMF_canonical_atom_epsilonContinuousAt
         (θ := θ) (x1 := x1) (x2 := x2) (x3 := x3) hθ π
-    refine EconCSLib.epsilonContinuousAt_congr_eventually hsource ?_ ?_
+    refine AppliedModelingLib.epsilonContinuousAt_congr_eventually hsource ?_ ?_
     · filter_upwards [Ioi_mem_nhds hθ] with θ' hθ'_mem
       have hθ' : 0 < θ' := hθ'_mem
       rw [hdist θ' hθ']
@@ -13258,7 +13258,7 @@ noncomputable def paper_theorem2_laplacianRate_concentrationBoundary_of_rum_sour
     (hx12 : x2 < x1) (hx23 : x3 < x2)
     (hdist_atom_continuity :
       ∀ θ, 0 < θ →
-        ∀ π : Ranking 1, EconCSLib.EpsilonContinuousAt
+        ∀ π : Ranking 1, AppliedModelingLib.EpsilonContinuousAt
           (fun θ' => ((F.dist θ') π).toReal) θ)
     (hdist :
       ∀ θ (hθ : 0 < θ),
@@ -13322,15 +13322,15 @@ noncomputable def paper_theorem2_laplacianRate_concentrationBoundary_of_continuo
           ((theorem7LaplacianDefinition2RankingPMF
               (lam θ) x1 x2 x3 hlamθ) π).toReal
       have hsource :
-          EconCSLib.EpsilonContinuousAt source (lam θ) := by
+          AppliedModelingLib.EpsilonContinuousAt source (lam θ) := by
         simpa [source] using
           theorem7LaplacianDefinition2RankingPMF_canonical_atom_epsilonContinuousAt
             (θ := lam θ) (x1 := x1) (x2 := x2) (x3 := x3) hlamθ π
       have hcomp :
-          EconCSLib.EpsilonContinuousAt (fun θ' : ℝ => source (lam θ')) θ :=
-        EconCSLib.epsilonContinuousAt_comp_of_continuousAt hsource
+          AppliedModelingLib.EpsilonContinuousAt (fun θ' : ℝ => source (lam θ')) θ :=
+        AppliedModelingLib.epsilonContinuousAt_comp_of_continuousAt hsource
           (hlam_cont θ hθ)
-      refine EconCSLib.epsilonContinuousAt_congr_eventually hcomp ?_ ?_
+      refine AppliedModelingLib.epsilonContinuousAt_congr_eventually hcomp ?_ ?_
       · have hpos_lam :
             ∀ᶠ θ' in nhds θ, 0 < lam θ' :=
           (hlam_cont θ hθ).tendsto.eventually (Ioi_mem_nhds hlamθ)
@@ -13476,7 +13476,7 @@ theorem paper_theorem2_gaussianStd_target_from_rum_source_and_atom_continuity
     (hx12 : x2 < x1) (hx23 : x3 < x2)
     (_hdist_atom_continuity :
       ∀ θ, 0 < θ →
-        ∀ π : Ranking 1, EconCSLib.EpsilonContinuousAt
+        ∀ π : Ranking 1, AppliedModelingLib.EpsilonContinuousAt
           (fun θ' => ((F.dist θ') π).toReal) θ)
     (hdist :
       ∀ θ, 0 < θ →
@@ -13545,7 +13545,7 @@ theorem paper_theorem2_laplacianRate_target_from_rum_source_and_atom_continuity
     (hx12 : x2 < x1) (hx23 : x3 < x2)
     (hdist_atom_continuity :
       ∀ θ, 0 < θ →
-        ∀ π : Ranking 1, EconCSLib.EpsilonContinuousAt
+        ∀ π : Ranking 1, AppliedModelingLib.EpsilonContinuousAt
           (fun θ' => ((F.dist θ') π).toReal) θ)
     (hdist :
       ∀ θ (hθ : 0 < θ),

@@ -36,7 +36,7 @@ The corresponding README rows and DAG nodes are checked in
 
 namespace GHW01DigitalGoods
 
-open EconCSLib.Auction
+open AppliedModelingLib.Auction
 open scoped BigOperators
 
 /-- Audit endpoint for the repaired exact GHW Theorem 4.1 domain. -/
@@ -92,7 +92,7 @@ theorem audit_lemma6_1_fixed_size
 /-- Independent fair-coin lower-tail support for the fixed-size Lemma 6.1 proof. -/
 theorem audit_lemma6_1_fair_coin_support
     {Index : Type*} (s : Finset Index) (keep : Bool) :
-    (EconCSLib.FairCoin.productMeasure Index).real
+    (AppliedModelingLib.FairCoin.productMeasure Index).real
         {side | (∑ i ∈ s, if side i = keep then (1 : ℝ) else 0) ≤
           (s.card : ℝ) / 3} ≤
       Real.exp (-(s.card : ℝ) / 36) := by
@@ -140,7 +140,7 @@ theorem audit_theorem6_2_random_sampling_fair_coin_support
         finiteCandidateFixedPriceBenchmark values 1) :
     1 - Real.exp (-(alpha : ℝ) / 36) -
         40 * Real.exp (-(alpha : ℝ) / 72) ≤
-      (EconCSLib.FairCoin.productMeasure (Fin n)).real
+      (AppliedModelingLib.FairCoin.productMeasure (Fin n)).real
         {side |
           finiteCandidateFixedPriceBenchmark values 1 ≤
             6 *

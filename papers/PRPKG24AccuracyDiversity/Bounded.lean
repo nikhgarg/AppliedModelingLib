@@ -1,7 +1,7 @@
 import PRPKG24AccuracyDiversity.SeparableAsymptotic
 import PRPKG24AccuracyDiversity.Uniform
-import EconCSLib.Foundations.Math.GammaAsymptotics
-import EconCSLib.Foundations.Probability.RealDistribution
+import AppliedModelingLib.Foundations.Math.GammaAsymptotics
+import AppliedModelingLib.Foundations.Probability.RealDistribution
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
@@ -163,7 +163,7 @@ noncomputable def boundedPowerMarginalScaledMarginalLimitCertificate
     have hpow_ne :
         (((q : ℝ) + 1) ^ (-(boundedMarginalExponent beta))) ≠ 0 :=
       (Real.rpow_pos_of_pos (by positivity) _).ne'
-    simp [EconCSLib.Probability.TopKExpectationOracle.marginalTopK,
+    simp [AppliedModelingLib.Probability.TopKExpectationOracle.marginalTopK,
       topKExpectationOracleOfTopKValueOracle, boundedPowerMarginalOracle,
       TopKValueOracle.common, boundedPowerMarginalScale,
       boundedPowerMarginalValue_forward_marginal, hpow_ne]
@@ -217,12 +217,12 @@ theorem finite_sum_asymptoticEquivalent_common_scale
     (hscale_ne : ∀ᶠ n in atTop, scale n ≠ 0)
     (hterm :
       ∀ i,
-        EconCSLib.Math.AsymptoticEquivalent (term i)
+        AppliedModelingLib.Math.AsymptoticEquivalent (term i)
           (fun n => coeff i * scale n)) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun n => ∑ i : ι, term i n)
       (fun n => (∑ i : ι, coeff i) * scale n) :=
-  EconCSLib.Math.finite_sum_asymptoticEquivalent_common_scale
+  AppliedModelingLib.Math.finite_sum_asymptoticEquivalent_common_scale
     term coeff scale hcoeff_ne htotal_ne hscale_ne hterm
 
 /--
@@ -234,14 +234,14 @@ theorem asymptoticEquivalent_add_negligible_common_scale
     (hcoeff_ne : coeff ≠ 0)
     (hscale_ne : ∀ᶠ n in atTop, scale n ≠ 0)
     (hmain :
-      EconCSLib.Math.AsymptoticEquivalent main
+      AppliedModelingLib.Math.AsymptoticEquivalent main
         (fun n => coeff * scale n))
     (hremainder :
       Tendsto (fun n => remainder n / scale n) atTop (nhds 0)) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun n => main n + remainder n)
       (fun n => coeff * scale n) :=
-  EconCSLib.Math.asymptoticEquivalent_add_negligible_common_scale
+  AppliedModelingLib.Math.asymptoticEquivalent_add_negligible_common_scale
     main remainder scale coeff hcoeff_ne hscale_ne hmain hremainder
 
 /-- The bounded branch's common scale, `a^(-1 / beta)`. -/
@@ -343,7 +343,7 @@ theorem bounded_source_forward_marginal_asymptotic_of_loss_ae_and_scaled_drop
     {h : ℕ → ℝ} {A C beta : ℝ}
     (hbeta_pos : 0 < beta) (hC_pos : 0 < C)
     (hloss :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun q => A - h q)
         (fun q => C * boundedTailScale beta q))
     (hdrop :
@@ -352,10 +352,10 @@ theorem bounded_source_forward_marginal_asymptotic_of_loss_ae_and_scaled_drop
           (((q + 1 : ℕ) : ℝ) *
             (((A - h q) - (A - h (q + 1))) / (A - h q))))
         atTop (nhds (1 / beta))) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun q => h (q + 1) - h q)
       (fun q => (C / beta) * boundedPowerMarginalScale beta q) := by
-  rw [EconCSLib.Math.AsymptoticEquivalent] at hloss ⊢
+  rw [AppliedModelingLib.Math.AsymptoticEquivalent] at hloss ⊢
   have hbeta_ne : beta ≠ 0 := ne_of_gt hbeta_pos
   have hC_ne : C ≠ 0 := ne_of_gt hC_pos
   have hcoeff_ne : C / beta ≠ 0 := div_ne_zero hC_ne hbeta_ne
@@ -415,13 +415,13 @@ the source forward marginal is just algebra:
 theorem bounded_source_forward_marginal_asymptotic_of_loss_adjacent_drop
     {h : ℕ → ℝ} {A D beta : ℝ}
     (hdrop :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun q : ℕ => (A - h q) - (A - h (q + 1)))
         (fun q : ℕ => D * boundedPowerMarginalScale beta q)) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun q : ℕ => h (q + 1) - h q)
       (fun q : ℕ => D * boundedPowerMarginalScale beta q) := by
-  exact EconCSLib.Math.AsymptoticEquivalent.congr_left_eventually
+  exact AppliedModelingLib.Math.AsymptoticEquivalent.congr_left_eventually
     (by
       filter_upwards with q
       ring)
@@ -452,7 +452,7 @@ namespace BoundedOrderStatisticScaledMarginalCertificate
 def toOrderStatisticScaledMarginalCertificate
     {μ : ℕ → ℕ → ℝ} {k : ℕ} {beta limitCoeff : ℝ}
     (C : BoundedOrderStatisticScaledMarginalCertificate μ k beta limitCoeff) :
-    EconCSLib.Probability.OrderStatisticScaledMarginalCertificate μ k
+    AppliedModelingLib.Probability.OrderStatisticScaledMarginalCertificate μ k
       (boundedPowerMarginalScale beta) limitCoeff where
   k_pos := C.k_pos
   coeff_pos := C.coeff_pos
@@ -464,7 +464,7 @@ def toOrderStatisticScaledMarginalCertificate
 theorem marginal_asymptoticEquivalent
     {μ : ℕ → ℕ → ℝ} {k : ℕ} {beta limitCoeff : ℝ}
     (C : BoundedOrderStatisticScaledMarginalCertificate μ k beta limitCoeff) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun q : ℕ =>
         orderStatisticTopKSumFromMean μ k (q + 1) -
           orderStatisticTopKSumFromMean μ k q)
@@ -475,7 +475,7 @@ def ofMarginalAsymptoticEquivalent
     {μ : ℕ → ℕ → ℝ} {k : ℕ} {beta limitCoeff : ℝ}
     (hbeta : 0 < beta) (hk : 0 < k) (hcoeff : 0 < limitCoeff)
     (hmargin :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun q : ℕ =>
           orderStatisticTopKSumFromMean μ k (q + 1) -
             orderStatisticTopKSumFromMean μ k q)
@@ -490,14 +490,14 @@ def ofConstMulScaleAsymptoticEquivalent
     {μ : ℕ → ℕ → ℝ} {k : ℕ} {beta limitCoeff : ℝ}
     (hbeta : 0 < beta) (hk : 0 < k) (hcoeff : 0 < limitCoeff)
     (hmargin :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun q : ℕ =>
           orderStatisticTopKSumFromMean μ k (q + 1) -
             orderStatisticTopKSumFromMean μ k q)
         (fun q : ℕ => limitCoeff * boundedPowerMarginalScale beta q)) :
     BoundedOrderStatisticScaledMarginalCertificate μ k beta limitCoeff :=
   ofMarginalAsymptoticEquivalent hbeta hk hcoeff <| by
-    rw [EconCSLib.Math.AsymptoticEquivalent] at hmargin ⊢
+    rw [AppliedModelingLib.Math.AsymptoticEquivalent] at hmargin ⊢
     refine Filter.Tendsto.congr' ?_ hmargin
     filter_upwards with q
     rw [mul_comm]
@@ -506,7 +506,7 @@ def ofLossAsymptoticAndScaledDrop
     {μ : ℕ → ℕ → ℝ} {k : ℕ} {A C beta : ℝ}
     (hbeta : 0 < beta) (hk : 0 < k) (hC : 0 < C)
     (hloss :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun q : ℕ => A - orderStatisticTopKSumFromMean μ k q)
         (fun q : ℕ => C * boundedTailScale beta q))
     (hdrop :
@@ -526,7 +526,7 @@ def ofLossAdjacentDropAsymptotic
     {μ : ℕ → ℕ → ℝ} {k : ℕ} {A beta limitCoeff : ℝ}
     (hbeta : 0 < beta) (hk : 0 < k) (hcoeff : 0 < limitCoeff)
     (hdrop :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun q : ℕ =>
           (A - orderStatisticTopKSumFromMean μ k q) -
             (A - orderStatisticTopKSumFromMean μ k (q + 1)))
@@ -543,7 +543,7 @@ noncomputable def toTopKScaledMarginalLimitCertificate
       (boundedPowerMarginalScale beta)
       (fun _ : ItemType T => limitCoeff) := by
   simpa [topKExpectationOracleOfTopKValueOracle,
-      EconCSLib.Probability.TopKExpectationOracle.orderStatisticTopKExpectationOracle,
+      AppliedModelingLib.Probability.TopKExpectationOracle.orderStatisticTopKExpectationOracle,
       TopKValueOracle.ofOrderStatisticMean]
     using
       C.toOrderStatisticScaledMarginalCertificate
@@ -585,9 +585,9 @@ theorem boundedIidOrderStatisticOracle_marginalTopK_eq_expectedSampleTopKSum_sub
     (h_base_bounds : ∀ᵐ y ∂baseMeasure, L ≤ y ∧ y ≤ M)
     {k q : ℕ} (t : ItemType T) :
     (boundedIidOrderStatisticOracle T baseMeasure).marginalTopK k t q =
-      EconCSLib.Probability.expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedSampleTopKSum
           (MeasureTheory.Measure.pi (fun _ : Fin (q + 1) => baseMeasure)) k -
-        EconCSLib.Probability.expectedSampleTopKSum
+        AppliedModelingLib.Probability.expectedSampleTopKSum
           (MeasureTheory.Measure.pi (fun _ : Fin q => baseMeasure)) k := by
   classical
   let sampleMeasure : (a : ℕ) → MeasureTheory.Measure (Fin a → ℝ) :=
@@ -595,29 +595,29 @@ theorem boundedIidOrderStatisticOracle_marginalTopK_eq_expectedSampleTopKSum_sub
   have htop_succ :
       orderStatisticTopKSumFromMean
           (expectedOrderStatisticMeanSeq sampleMeasure) k (q + 1) =
-        EconCSLib.Probability.expectedSampleTopKSum
+        AppliedModelingLib.Probability.expectedSampleTopKSum
           (MeasureTheory.Measure.pi (fun _ : Fin (q + 1) => baseMeasure)) k := by
     refine
-      EconCSLib.Probability.expectedOrderStatisticMeanSeq_topKSum_eq_expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedOrderStatisticMeanSeq_topKSum_eq_expectedSampleTopKSum
         sampleMeasure k (q + 1) ?_
     exact
-      EconCSLib.Probability.sampleOrderStatisticValue_topKRange_integrable_of_ae_bounds
+      AppliedModelingLib.Probability.sampleOrderStatisticValue_topKRange_integrable_of_ae_bounds
         L M (MeasureTheory.Measure.pi (fun _ : Fin (q + 1) => baseMeasure))
         k
-        (EconCSLib.Probability.iidProductMeasure_forall_bounds_ae
+        (AppliedModelingLib.Probability.iidProductMeasure_forall_bounds_ae
           baseMeasure h_base_bounds)
   have htop_q :
       orderStatisticTopKSumFromMean
           (expectedOrderStatisticMeanSeq sampleMeasure) k q =
-        EconCSLib.Probability.expectedSampleTopKSum
+        AppliedModelingLib.Probability.expectedSampleTopKSum
           (MeasureTheory.Measure.pi (fun _ : Fin q => baseMeasure)) k := by
     refine
-      EconCSLib.Probability.expectedOrderStatisticMeanSeq_topKSum_eq_expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedOrderStatisticMeanSeq_topKSum_eq_expectedSampleTopKSum
         sampleMeasure k q ?_
     exact
-      EconCSLib.Probability.sampleOrderStatisticValue_topKRange_integrable_of_ae_bounds
+      AppliedModelingLib.Probability.sampleOrderStatisticValue_topKRange_integrable_of_ae_bounds
         L M (MeasureTheory.Measure.pi (fun _ : Fin q => baseMeasure)) k
-        (EconCSLib.Probability.iidProductMeasure_forall_bounds_ae
+        (AppliedModelingLib.Probability.iidProductMeasure_forall_bounds_ae
           baseMeasure h_base_bounds)
   simp [boundedIidOrderStatisticOracle, boundedIidOrderStatisticMeanSeq,
     TopKValueOracle.marginalTopK, TopKValueOracle.ofOrderStatisticMean,
@@ -645,42 +645,42 @@ theorem boundedIidOrderStatisticOracle_marginalTopK_eq_integral_before_capacity
   have htop_succ :
       orderStatisticTopKSumFromMean
           (expectedOrderStatisticMeanSeq sampleMeasure) k (q + 1) =
-        EconCSLib.Probability.expectedSampleTopKSum
+        AppliedModelingLib.Probability.expectedSampleTopKSum
           (MeasureTheory.Measure.pi (fun _ : Fin (q + 1) => baseMeasure)) k := by
     refine
-      EconCSLib.Probability.expectedOrderStatisticMeanSeq_topKSum_eq_expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedOrderStatisticMeanSeq_topKSum_eq_expectedSampleTopKSum
         sampleMeasure k (q + 1) ?_
     exact
-      EconCSLib.Probability.sampleOrderStatisticValue_topKRange_integrable_of_ae_bounds
+      AppliedModelingLib.Probability.sampleOrderStatisticValue_topKRange_integrable_of_ae_bounds
         L M (MeasureTheory.Measure.pi (fun _ : Fin (q + 1) => baseMeasure))
         k
-        (EconCSLib.Probability.iidProductMeasure_forall_bounds_ae
+        (AppliedModelingLib.Probability.iidProductMeasure_forall_bounds_ae
           baseMeasure h_base_bounds)
   have htop_q :
       orderStatisticTopKSumFromMean
           (expectedOrderStatisticMeanSeq sampleMeasure) k q =
-        EconCSLib.Probability.expectedSampleTopKSum
+        AppliedModelingLib.Probability.expectedSampleTopKSum
           (MeasureTheory.Measure.pi (fun _ : Fin q => baseMeasure)) k := by
     refine
-      EconCSLib.Probability.expectedOrderStatisticMeanSeq_topKSum_eq_expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedOrderStatisticMeanSeq_topKSum_eq_expectedSampleTopKSum
         sampleMeasure k q ?_
     exact
-      EconCSLib.Probability.sampleOrderStatisticValue_topKRange_integrable_of_ae_bounds
+      AppliedModelingLib.Probability.sampleOrderStatisticValue_topKRange_integrable_of_ae_bounds
         L M (MeasureTheory.Measure.pi (fun _ : Fin q => baseMeasure)) k
-        (EconCSLib.Probability.iidProductMeasure_forall_bounds_ae
+        (AppliedModelingLib.Probability.iidProductMeasure_forall_bounds_ae
           baseMeasure h_base_bounds)
   have hsucc_eval :
-      EconCSLib.Probability.expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedSampleTopKSum
           (MeasureTheory.Measure.pi (fun _ : Fin (q + 1) => baseMeasure)) k =
         ((q + 1 : ℕ) : ℝ) * ∫ x, x ∂baseMeasure :=
-    EconCSLib.Probability.expectedSampleTopKSum_pi_eq_card_mul_integral_of_card_le
+    AppliedModelingLib.Probability.expectedSampleTopKSum_pi_eq_card_mul_integral_of_card_le
       baseMeasure h_base_int k hq
   have hq_le : q ≤ k := Nat.le_trans (Nat.le_succ q) hq
   have hq_eval :
-      EconCSLib.Probability.expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedSampleTopKSum
           (MeasureTheory.Measure.pi (fun _ : Fin q => baseMeasure)) k =
         (q : ℝ) * ∫ x, x ∂baseMeasure :=
-    EconCSLib.Probability.expectedSampleTopKSum_pi_eq_card_mul_integral_of_card_le
+    AppliedModelingLib.Probability.expectedSampleTopKSum_pi_eq_card_mul_integral_of_card_le
       baseMeasure h_base_int k hq_le
   simp [boundedIidOrderStatisticOracle, boundedIidOrderStatisticMeanSeq,
     TopKValueOracle.marginalTopK, TopKValueOracle.ofOrderStatisticMean,
@@ -721,7 +721,7 @@ theorem
     {k q : ℕ} (hq : q + 1 ≤ k) (t : ItemType T) :
     0 < (boundedIidOrderStatisticOracle T baseMeasure).marginalTopK k t q := by
   have hmean_pos : 0 < ∫ x, x ∂baseMeasure :=
-    EconCSLib.Probability.integral_id_pos_of_ae_nonneg_of_measure_Ici_pos_of_ae_bounds
+    AppliedModelingLib.Probability.integral_id_pos_of_ae_nonneg_of_measure_Ici_pos_of_ae_bounds
       baseMeasure h_base_bounds h_nonneg ha_pos hmass
   exact
     boundedIidOrderStatisticOracle_low_forward_pos_before_capacity_of_positive_mean
@@ -744,12 +744,12 @@ theorem
     (h_nonneg : ∀ᵐ y ∂baseMeasure, 0 ≤ y)
     (hM_pos : 0 < M)
     (tail :
-      EconCSLib.Probability.CDFPowerTailSandwich
-        (EconCSLib.Probability.reflectedCDFMass baseMeasure M) β c)
+      AppliedModelingLib.Probability.CDFPowerTailSandwich
+        (AppliedModelingLib.Probability.reflectedCDFMass baseMeasure M) β c)
     {k q : ℕ} (hk_pos : 0 < k) (t : ItemType T) :
     0 < (boundedIidOrderStatisticOracle T baseMeasure).marginalTopK k t q := by
   rcases
-      EconCSLib.Probability.CDFPowerTailSandwich.exists_positive_Iio_Ici_mass_gap_of_reflectedCDFMass_tail
+      AppliedModelingLib.Probability.CDFPowerTailSandwich.exists_positive_Iio_Ici_mass_gap_of_reflectedCDFMass_tail
         tail hM_pos with
     ⟨b, a, hb_pos, hba, hlow, hhigh⟩
   have h_bounds_0M :
@@ -759,7 +759,7 @@ theorem
   rw [boundedIidOrderStatisticOracle_marginalTopK_eq_expectedSampleTopKSum_sub
     baseMeasure h_base_bounds t]
   exact
-    EconCSLib.Probability.expectedSampleTopKSum_pi_succ_sub_pos_of_mass_gap
+    AppliedModelingLib.Probability.expectedSampleTopKSum_pi_succ_sub_pos_of_mass_gap
       baseMeasure h_bounds_0M hM_pos.le hb_pos.le hba hlow hhigh hk_pos
 
 /--
@@ -775,12 +775,12 @@ theorem
     (h_nonneg : ∀ᵐ y ∂baseMeasure, 0 ≤ y)
     (hM_pos : 0 < M)
     (tail :
-      EconCSLib.Probability.CDFPowerTailSandwich
-        (EconCSLib.Probability.reflectedCDFMass baseMeasure M) β c)
+      AppliedModelingLib.Probability.CDFPowerTailSandwich
+        (AppliedModelingLib.Probability.reflectedCDFMass baseMeasure M) β c)
     {k q : ℕ} (hq : q + 1 ≤ k) (t : ItemType T) :
     0 < (boundedIidOrderStatisticOracle T baseMeasure).marginalTopK k t q := by
   rcases
-      EconCSLib.Probability.CDFPowerTailSandwich.exists_positive_Ici_mass_of_reflectedCDFMass_tail
+      AppliedModelingLib.Probability.CDFPowerTailSandwich.exists_positive_Ici_mass_of_reflectedCDFMass_tail
         tail hM_pos with
     ⟨a, ha_pos, hmass⟩
   exact
@@ -836,8 +836,8 @@ gamma-ratio rank-loss table used by the bounded branch.
 theorem boundedReflectedPowerProductMeasure_expectedReflectedAscendingOrderStatistic_eq_rankLossMean
     {beta : ℝ} (hbeta_pos : 0 < beta) {q : ℕ} (rank : Fin q) :
     (∫ sample : Fin q → ℝ,
-        EconCSLib.Probability.ascendingOrderStatistic
-          (EconCSLib.Probability.reflectedSample 1 sample) rank
+        AppliedModelingLib.Probability.ascendingOrderStatistic
+          (AppliedModelingLib.Probability.reflectedSample 1 sample) rank
         ∂MeasureTheory.Measure.pi
           (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta)) =
       boundedReflectedPowerRankLossMean beta rank.val q := by
@@ -848,28 +848,28 @@ theorem boundedReflectedPowerProductMeasure_expectedReflectedAscendingOrderStati
   let tail : ℝ → ℝ := fun x =>
     μ.real
       {sample : Fin q → ℝ |
-        x < EconCSLib.Probability.ascendingOrderStatistic
-          (EconCSLib.Probability.reflectedSample 1 sample) rank}
+        x < AppliedModelingLib.Probability.ascendingOrderStatistic
+          (AppliedModelingLib.Probability.reflectedSample 1 sample) rank}
   have h_nonneg :
       (fun _sample : Fin q → ℝ => (0 : ℝ)) ≤ᵐ[μ]
         fun sample =>
-          EconCSLib.Probability.ascendingOrderStatistic
-            (EconCSLib.Probability.reflectedSample 1 sample) rank := by
+          AppliedModelingLib.Probability.ascendingOrderStatistic
+            (AppliedModelingLib.Probability.reflectedSample 1 sample) rank := by
     simpa [μ] using
       boundedReflectedPowerProductMeasure_reflectedAscendingOrderStatistic_nonnegative_ae
         hbeta_pos rank
   have h_int :
       MeasureTheory.Integrable
         (fun sample : Fin q → ℝ =>
-          EconCSLib.Probability.ascendingOrderStatistic
-            (EconCSLib.Probability.reflectedSample 1 sample) rank) μ := by
+          AppliedModelingLib.Probability.ascendingOrderStatistic
+            (AppliedModelingLib.Probability.reflectedSample 1 sample) rank) μ := by
     simpa [μ] using
       boundedReflectedPowerProductMeasure_reflectedAscendingOrderStatistic_integrable
         hbeta_pos rank
   have hlayer :
       (∫ sample : Fin q → ℝ,
-          EconCSLib.Probability.ascendingOrderStatistic
-            (EconCSLib.Probability.reflectedSample 1 sample) rank ∂μ) =
+          AppliedModelingLib.Probability.ascendingOrderStatistic
+            (AppliedModelingLib.Probability.reflectedSample 1 sample) rank ∂μ) =
         ∫ x in Set.Ioi (0 : ℝ), tail x := by
     simpa [tail] using h_int.integral_eq_integral_meas_lt h_nonneg
   have hbelow_Ioo : MeasureTheory.IntegrableOn tail (Set.Ioo (0 : ℝ) 1) := by
@@ -911,7 +911,7 @@ theorem boundedReflectedPowerProductMeasure_expectedReflectedAscendingOrderStati
       _ = boundedReflectedPowerRankLossMean beta rank.val q := by
             have hinv_pos : 0 < 1 / beta := one_div_pos.mpr hbeta_pos
             have hsum :=
-              EconCSLib.Math.sum_choose_mul_s_mul_beta_add_eq_gamma_ratio
+              AppliedModelingLib.Math.sum_choose_mul_s_mul_beta_add_eq_gamma_ratio
                 (s := 1 / beta) hinv_pos
                 (r := rank.val) (q := q) (Nat.le_of_lt rank.isLt)
             simpa [boundedReflectedPowerRankLossMean,
@@ -932,14 +932,14 @@ theorem boundedReflectedPowerProductMeasure_expectedReflectedAscendingOrderStati
       _ = 0 := by simp
   calc
     (∫ sample : Fin q → ℝ,
-        EconCSLib.Probability.ascendingOrderStatistic
-          (EconCSLib.Probability.reflectedSample 1 sample) rank
+        AppliedModelingLib.Probability.ascendingOrderStatistic
+          (AppliedModelingLib.Probability.reflectedSample 1 sample) rank
         ∂MeasureTheory.Measure.pi
           (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta))
         =
         ∫ sample : Fin q → ℝ,
-          EconCSLib.Probability.ascendingOrderStatistic
-            (EconCSLib.Probability.reflectedSample 1 sample) rank ∂μ := by
+          AppliedModelingLib.Probability.ascendingOrderStatistic
+            (AppliedModelingLib.Probability.reflectedSample 1 sample) rank ∂μ := by
           rfl
     _ = ∫ x in Set.Ioi (0 : ℝ), tail x := hlayer
     _ = (∫ x in Set.Ioc (0 : ℝ) 1, tail x) +
@@ -951,7 +951,7 @@ theorem boundedReflectedPowerProductMeasure_expectedReflectedAscendingOrderStati
 theorem boundedReflectedPowerProductMeasure_expectedUpperOrderStatistic_eq
     {beta : ℝ} (hbeta_pos : 0 < beta)
     {q : ℕ} (rankFromTop : Fin q) :
-    EconCSLib.Probability.expectedUpperOrderStatistic
+    AppliedModelingLib.Probability.expectedUpperOrderStatistic
         (MeasureTheory.Measure.pi
           (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta))
         rankFromTop =
@@ -963,26 +963,26 @@ theorem boundedReflectedPowerProductMeasure_expectedUpperOrderStatistic_eq
   have h_int :
       MeasureTheory.Integrable
         (fun sample : Fin q → ℝ =>
-          EconCSLib.Probability.ascendingOrderStatistic
-            (EconCSLib.Probability.reflectedSample 1 sample) rankFromTop) μ := by
+          AppliedModelingLib.Probability.ascendingOrderStatistic
+            (AppliedModelingLib.Probability.reflectedSample 1 sample) rankFromTop) μ := by
     simpa [μ] using
       boundedReflectedPowerProductMeasure_reflectedAscendingOrderStatistic_integrable
         hbeta_pos rankFromTop
   calc
-    EconCSLib.Probability.expectedUpperOrderStatistic
+    AppliedModelingLib.Probability.expectedUpperOrderStatistic
         (MeasureTheory.Measure.pi
           (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta))
         rankFromTop
         =
-        EconCSLib.Probability.expectedUpperOrderStatistic μ rankFromTop := by
+        AppliedModelingLib.Probability.expectedUpperOrderStatistic μ rankFromTop := by
           rfl
     _ =
         1 -
           ∫ sample : Fin q → ℝ,
-            EconCSLib.Probability.ascendingOrderStatistic
-              (EconCSLib.Probability.reflectedSample 1 sample) rankFromTop ∂μ := by
+            AppliedModelingLib.Probability.ascendingOrderStatistic
+              (AppliedModelingLib.Probability.reflectedSample 1 sample) rankFromTop ∂μ := by
           exact
-            EconCSLib.Probability.expectedUpperOrderStatistic_eq_endpoint_sub_expectedReflectedAscending
+            AppliedModelingLib.Probability.expectedUpperOrderStatistic_eq_endpoint_sub_expectedReflectedAscending
               1 μ rankFromTop h_int
     _ = 1 - boundedReflectedPowerRankLossMean beta rankFromTop.val q := by
           rw [boundedReflectedPowerProductMeasure_expectedReflectedAscendingOrderStatistic_eq_rankLossMean
@@ -997,7 +997,7 @@ theorem boundedReflectedPowerProductMeasure_expectedUpperOrderStatistic_eq
 /-- Concrete Definition-3 mean table induced by iid reflected-power bounded samples. -/
 noncomputable def boundedReflectedPowerSourceIidOrderStatisticMeanSeq
     (beta : ℝ) (rank sampleSize : ℕ) : ℝ :=
-  EconCSLib.Probability.expectedOrderStatisticMeanSeq
+  AppliedModelingLib.Probability.expectedOrderStatisticMeanSeq
     (fun a => MeasureTheory.Measure.pi
       (fun _ : Fin a => boundedReflectedPowerSourceMeasure beta))
     rank sampleSize
@@ -1014,13 +1014,13 @@ theorem
   calc
     boundedReflectedPowerSourceIidOrderStatisticMeanSeq beta (q - r) q
         =
-        EconCSLib.Probability.expectedUpperOrderStatistic
+        AppliedModelingLib.Probability.expectedUpperOrderStatistic
           (MeasureTheory.Measure.pi
             (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta))
           ⟨r, hrq⟩ := by
           simpa [boundedReflectedPowerSourceIidOrderStatisticMeanSeq,
-            EconCSLib.Probability.expectedOrderStatisticMeanSeq] using
-            EconCSLib.Probability.expectedSampleOrderStatisticMean_eq_expectedUpperOrderStatistic_of_rank_from_top
+            AppliedModelingLib.Probability.expectedOrderStatisticMeanSeq] using
+            AppliedModelingLib.Probability.expectedSampleOrderStatisticMean_eq_expectedUpperOrderStatistic_of_rank_from_top
               (μ := MeasureTheory.Measure.pi
                 (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta))
               (a := q) (r := r) hrq
@@ -1120,18 +1120,18 @@ theorem boundedReflectedPowerCommonLossFactor_succ_div_self
 /-- The common reflected-power loss factor has the bounded-tail scale. -/
 theorem boundedReflectedPowerCommonLossFactor_asymptoticEquivalent
     {beta : ℝ} (hbeta_pos : 0 < beta) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (boundedReflectedPowerCommonLossFactor beta)
       (boundedTailScale beta) := by
   have hinv_pos : 0 < 1 / beta := one_div_pos.mpr hbeta_pos
   change
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun q : ℕ =>
         Real.Gamma ((q : ℝ) + 1) /
           Real.Gamma ((q : ℝ) + 1 + 1 / beta))
       (fun q : ℕ => (q : ℝ) ^ (-(1 / beta)))
   simpa [one_div] using
-    EconCSLib.Math.gamma_ratio_nat_add_one_add_asymptoticEquivalent hinv_pos
+    AppliedModelingLib.Math.gamma_ratio_nat_add_one_add_asymptoticEquivalent hinv_pos
 
 /--
 For valid sample counts, the reflected-power top-`k` endpoint loss is exactly
@@ -1318,7 +1318,7 @@ theorem boundedReflectedPowerCommonMarginalFactor_le_pred_rpow_neg
     exact boundedMarginalExponent_pos hbeta_pos
   have hinv_nonneg : 0 ≤ 1 / beta := (one_div_pos.mpr hbeta_pos).le
   have hratio :=
-    EconCSLib.Math.gamma_div_gamma_add_le_pred_rpow_neg_of_pos
+    AppliedModelingLib.Math.gamma_div_gamma_add_le_pred_rpow_neg_of_pos
       (x := x) (s := η) hx_gt_one hη_pos
   calc
     boundedReflectedPowerCommonMarginalFactor beta q =
@@ -1349,7 +1349,7 @@ theorem boundedReflectedPowerCommonMarginalFactor_shift_rpow_neg_le
     exact boundedMarginalExponent_pos hbeta_pos
   have hinv_nonneg : 0 ≤ 1 / beta := (one_div_pos.mpr hbeta_pos).le
   have hratio :=
-    EconCSLib.Math.rpow_neg_add_shift_le_gamma_div_gamma_add
+    AppliedModelingLib.Math.rpow_neg_add_shift_le_gamma_div_gamma_add
       (x := x) (s := η) hx_pos hη_pos
   calc
       (1 / beta) *
@@ -1537,7 +1537,7 @@ theorem boundedReflectedPowerOrderStatistic_power_bound_le_weightedForwardMargin
       T hbeta_pos hk hq t
   unfold boundedReflectedPowerOrderStatisticConsumptionModel
     ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-    TopKValueOracle.toConsumptionModel EconCSLib.Allocation.marginal
+    TopKValueOracle.toConsumptionModel AppliedModelingLib.Allocation.marginal
   exact mul_le_mul_of_nonneg_left hbase (hlike_pos t).le
 
 theorem boundedReflectedPowerCommonLossFactor_mul_rankLossCoeff_self
@@ -1720,7 +1720,7 @@ Reflected-power bounded order-statistic large-gap marginal comparison for
 
 This is the bounded analogue of the Pareto finite large-gap comparison.  The
 finite gamma-ratio envelopes now use the arbitrary-positive-shift Wendel
-wrappers in `EconCSLib.Foundations.Math.GammaAsymptotics`.
+wrappers in `AppliedModelingLib.Foundations.Math.GammaAsymptotics`.
 -/
 theorem boundedReflectedPowerOrderStatistic_large_gap_count_eventually
     {T : ℕ} [NeZero T]
@@ -1733,7 +1733,7 @@ theorem boundedReflectedPowerOrderStatistic_large_gap_count_eventually
         qdst ≤ N →
         k < qsrc →
         k < qdst →
-        EconCSLib.Math.invSqrtSuccError N * (N : ℝ) <
+        AppliedModelingLib.Math.invSqrtSuccError N * (N : ℝ) <
           (qsrc : ℝ) / likelihood src ^ (beta / (beta + 1)) -
             (qdst : ℝ) / likelihood dst ^ (beta / (beta + 1)) →
         (boundedReflectedPowerOrderStatisticConsumptionModel likelihood k beta).weightedBackwardMarginal
@@ -1754,7 +1754,7 @@ theorem boundedReflectedPowerOrderStatistic_large_gap_count_eventually
     div_pos (boundedReflectedPowerTopKLossCoeff_pos hbeta_pos hk)
       hbeta_pos
   exact
-    EconCSLib.Allocation.powerLawEnvelope_large_gap_count_eventually
+    AppliedModelingLib.Allocation.powerLawEnvelope_large_gap_count_eventually
       likelihood
       (boundedReflectedPowerOrderStatisticConsumptionModel likelihood k beta).valueOfCount
       (η := η) (γ := γ)
@@ -1808,7 +1808,7 @@ structure BoundedReflectedPowerOrderStatisticEventualFOCCertificate {T : ℕ}
     (likelihood : ItemType T → ℝ) (k : ℕ) (beta : ℝ) where
   base_error : ℕ → ℝ
   base_error_nonneg : ∀ N, 0 ≤ base_error N
-  base_error_tends_to_zero : EconCSLib.Math.TendsToZero base_error
+  base_error_tends_to_zero : AppliedModelingLib.Math.TendsToZero base_error
   floor : ℕ
   count_floor_eventually :
     ∀ᶠ N in Filter.atTop,
@@ -1873,9 +1873,9 @@ noncomputable def boundedReflectedPowerOrderStatistic_eventualFOCCertificate
     (hbeta_pos : 0 < beta) (hk : 0 < k)
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t) :
     BoundedReflectedPowerOrderStatisticEventualFOCCertificate likelihood k beta where
-  base_error := EconCSLib.Math.invSqrtSuccError
-  base_error_nonneg := EconCSLib.Math.invSqrtSuccError_nonneg
-  base_error_tends_to_zero := EconCSLib.Math.invSqrtSuccError_tendsToZero
+  base_error := AppliedModelingLib.Math.invSqrtSuccError
+  base_error_nonneg := AppliedModelingLib.Math.invSqrtSuccError_nonneg
+  base_error_tends_to_zero := AppliedModelingLib.Math.invSqrtSuccError_tendsToZero
   floor := k
   count_floor_eventually :=
     boundedReflectedPowerOrderStatistic_count_floor_eventually
@@ -1905,7 +1905,7 @@ noncomputable def
 /-- Loss asymptotic for the exact reflected-power bounded order-statistic table. -/
 theorem boundedReflectedPowerOrderStatistic_loss_asymptoticEquivalent
     {beta : ℝ} (hbeta_pos : 0 < beta) {k : ℕ} (hk : 0 < k) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun q : ℕ =>
         (k : ℝ) -
           orderStatisticTopKSumFromMean
@@ -1915,7 +1915,7 @@ theorem boundedReflectedPowerOrderStatistic_loss_asymptoticEquivalent
   have hcoeff_ne :
       boundedReflectedPowerTopKLossCoeff beta k ≠ 0 :=
     (boundedReflectedPowerTopKLossCoeff_pos hbeta_pos hk).ne'
-  refine EconCSLib.Math.AsymptoticEquivalent.congr_left_eventually
+  refine AppliedModelingLib.Math.AsymptoticEquivalent.congr_left_eventually
     (x' := fun q : ℕ =>
       boundedReflectedPowerTopKLossCoeff beta k *
         boundedReflectedPowerCommonLossFactor beta q) ?_ ?_
@@ -1923,8 +1923,8 @@ theorem boundedReflectedPowerOrderStatistic_loss_asymptoticEquivalent
     exact boundedReflectedPowerOrderStatistic_topK_loss_eq beta hq
   · have hfactor :=
       boundedReflectedPowerCommonLossFactor_asymptoticEquivalent hbeta_pos
-    rw [EconCSLib.Math.AsymptoticEquivalent] at hfactor
-    rw [EconCSLib.Math.AsymptoticEquivalent]
+    rw [AppliedModelingLib.Math.AsymptoticEquivalent] at hfactor
+    rw [AppliedModelingLib.Math.AsymptoticEquivalent]
     refine Tendsto.congr' ?_ hfactor
     filter_upwards [boundedTailScale_eventually_ne_zero beta] with q hscale_ne
     field_simp [hcoeff_ne, hscale_ne]
@@ -2019,7 +2019,7 @@ noncomputable def boundedReflectedPowerOrderStatisticScaledMarginalCertificate
 theorem boundedTailScale_delta_div_tendsto_atTop
     {beta delta : ℝ} (hbeta_pos : 0 < beta) (hdelta_pos : 0 < delta) :
     Tendsto (fun a : ℕ => delta / boundedTailScale beta a) atTop atTop :=
-  EconCSLib.Math.tendsto_const_div_atTop_of_pos_tendsto_zero
+  AppliedModelingLib.Math.tendsto_const_div_atTop_of_pos_tendsto_zero
     hdelta_pos (boundedTailScale_tendsto_zero hbeta_pos)
     (boundedTailScale_eventually_pos beta)
 
@@ -2046,7 +2046,7 @@ theorem boundedTailScale_polynomial_geometric_ratio_tendsto_zero
           C * ((a : ℝ) ^ ((degree : ℝ) + 1 / beta) * rho ^ a))
         atTop (nhds 0) := by
     simpa [mul_assoc] using
-      (EconCSLib.Math.rpow_mul_geometric_tendsto_zero
+      (AppliedModelingLib.Math.rpow_mul_geometric_tendsto_zero
         ((degree : ℝ) + 1 / beta) hrho_pos hrho_lt_one).const_mul C
   refine Tendsto.congr' ?_ hbase
   filter_upwards [eventually_gt_atTop 0] with a ha
@@ -2087,7 +2087,7 @@ theorem boundedPowerMarginalScale_succ_polynomial_geometric_ratio_tendsto_zero
               rho ^ (a + 1 : ℕ)))
         atTop (nhds 0) := by
     have h :=
-      (EconCSLib.Math.rpow_mul_geometric_tendsto_zero
+      (AppliedModelingLib.Math.rpow_mul_geometric_tendsto_zero
         ((degree : ℝ) + eta) hrho_pos hrho_lt_one).comp
         (tendsto_add_atTop_nat 1)
     simpa [mul_assoc] using h.const_mul (C * rho⁻¹)
@@ -2634,7 +2634,7 @@ For the reflected CDF `G`, the source proof derives this from the density
 asymptotic `g(x) ~ c*x^(β-1)` by integrating near zero.
 -/
 abbrev BoundedTailCDFPowerSandwich :=
-  EconCSLib.Probability.CDFPowerTailSandwich
+  AppliedModelingLib.Probability.CDFPowerTailSandwich
 
 namespace BoundedTailCDFPowerSandwich
 
@@ -2645,7 +2645,7 @@ theorem of_eventually_eq_const_mul_power
       ∀ᶠ x in 𝓝[>] (0 : ℝ),
         G x = (c / beta) * x ^ beta) :
     BoundedTailCDFPowerSandwich G beta c :=
-  EconCSLib.Probability.CDFPowerTailSandwich.of_eventually_eq_const_mul_power
+  AppliedModelingLib.Probability.CDFPowerTailSandwich.of_eventually_eq_const_mul_power
     hbeta_pos hc_pos hG
 
 theorem of_reflectedCDFMass_upper_endpoint_tail_sandwich
@@ -2659,8 +2659,8 @@ theorem of_reflectedCDFMass_upper_endpoint_tail_sandwich
             μ.real (Set.Ici (M - x)) ≤
               (1 + ε) * (c / beta) * x ^ beta) :
     BoundedTailCDFPowerSandwich
-      (EconCSLib.Probability.reflectedCDFMass μ M) beta c :=
-  EconCSLib.Probability.CDFPowerTailSandwich.of_reflectedCDFMass_upper_endpoint_tail_sandwich
+      (AppliedModelingLib.Probability.reflectedCDFMass μ M) beta c :=
+  AppliedModelingLib.Probability.CDFPowerTailSandwich.of_reflectedCDFMass_upper_endpoint_tail_sandwich
     hbeta_pos hc_pos htail
 
 theorem of_reflectedCDFMass_upper_endpoint_eventually_eq_power
@@ -2670,13 +2670,13 @@ theorem of_reflectedCDFMass_upper_endpoint_eventually_eq_power
       ∀ᶠ x in 𝓝[>] (0 : ℝ),
         μ.real (Set.Ici (M - x)) = (c / beta) * x ^ beta) :
     BoundedTailCDFPowerSandwich
-      (EconCSLib.Probability.reflectedCDFMass μ M) beta c :=
-  EconCSLib.Probability.CDFPowerTailSandwich.of_reflectedCDFMass_upper_endpoint_eventually_eq_power
+      (AppliedModelingLib.Probability.reflectedCDFMass μ M) beta c :=
+  AppliedModelingLib.Probability.CDFPowerTailSandwich.of_reflectedCDFMass_upper_endpoint_eventually_eq_power
     hbeta_pos hc_pos htail
 
 theorem identity_beta_one :
     BoundedTailCDFPowerSandwich (fun x : ℝ => x) 1 1 :=
-  EconCSLib.Probability.CDFPowerTailSandwich.identity_beta_one
+  AppliedModelingLib.Probability.CDFPowerTailSandwich.identity_beta_one
 
 /--
 Power integral used by the bounded-density bridge:
@@ -2891,7 +2891,7 @@ theorem of_reflectedCDFMass_upper_endpoint_density_ratio_integral
       Tendsto (fun u : ℝ => g u / (c * u ^ (beta - 1)))
         (𝓝[>] (0 : ℝ)) (𝓝 (1 : ℝ))) :
     BoundedTailCDFPowerSandwich
-      (EconCSLib.Probability.reflectedCDFMass μ M) beta c :=
+      (AppliedModelingLib.Probability.reflectedCDFMass μ M) beta c :=
   of_reflectedCDFMass_upper_endpoint_tail_sandwich hbeta_pos hc_pos
     (upper_tail_mass_sandwich_of_density_ratio_integral
       hbeta_pos hc_pos h_integrable hmass hratio)
@@ -2903,7 +2903,7 @@ theorem exists_local_cdf_power_bounds
       0 < delta ∧ 0 < A ∧ 0 ≤ B ∧
         (∀ x : ℝ, 0 < x → x < delta → A * x ^ beta ≤ G x) ∧
         (∀ x : ℝ, 0 < x → x < delta → G x ≤ B * x ^ beta) :=
-  EconCSLib.Probability.CDFPowerTailSandwich.exists_local_cdf_power_bounds C
+  AppliedModelingLib.Probability.CDFPowerTailSandwich.exists_local_cdf_power_bounds C
 
 /--
 After the source change of variables `x = y * a^(-1/β)`, the near-zero CDF
@@ -4761,7 +4761,7 @@ theorem boundedLemmaD2IntegralTerm_forward_difference_asymptotic_of_rescaled_int
             boundedLemmaD2ForwardDifferenceRescaledKernel G beta j a y)
         atTop
         (nhds (boundedLemmaD2ForwardDifferenceLimitCoeff beta c j))) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a =>
         boundedLemmaD2IntegralTerm G j a -
           boundedLemmaD2IntegralTerm G j (a + 1))
@@ -4779,7 +4779,7 @@ theorem boundedLemmaD2IntegralTerm_forward_difference_asymptotic_of_rescaled_int
       hrescaled.div_const
         (boundedLemmaD2ForwardDifferenceLimitCoeff beta c j)
     simpa [hcoeff_ne] using h
-  rw [EconCSLib.Math.AsymptoticEquivalent]
+  rw [AppliedModelingLib.Math.AsymptoticEquivalent]
   refine Tendsto.congr' ?_ hratio
   filter_upwards
     [boundedLemmaD2IntegralTerm_forward_difference_eventually_changeOfVariables
@@ -4809,7 +4809,7 @@ theorem boundedLemmaD2IntegralTerm_forward_difference_asymptotic_of_rescaled_int
             boundedLemmaD2ForwardDifferenceRescaledKernel G beta j a y)
         atTop
         (nhds (boundedLemmaD2ForwardDifferenceLimitCoeff beta c j))) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a =>
         boundedLemmaD2IntegralTerm G j a -
           boundedLemmaD2IntegralTerm G j (a + 1))
@@ -4834,7 +4834,7 @@ theorem boundedLemmaD2IntegralTerm_forward_difference_asymptotic_of_rescaled_int
       (G := G) (beta := beta) (c := c) j hcoeff_ne h_integrable
       hrescaled
   have hscale := boundedTailScale_div_succ_ratio_tendsto_one hbeta_pos
-  rw [EconCSLib.Math.AsymptoticEquivalent] at hdrop ⊢
+  rw [AppliedModelingLib.Math.AsymptoticEquivalent] at hdrop ⊢
   have hprod := hdrop.mul hscale
   refine Tendsto.congr' ?_ (by simpa using hprod)
   filter_upwards
@@ -5148,7 +5148,7 @@ theorem boundedLemmaD2IntegralTermBelow_asymptotic_of_growing_rescaled_integral
           ∫ y in Set.Ioo (0 : ℝ) (delta / boundedTailScale beta a),
             boundedLemmaD2RescaledKernel G beta j a y)
         atTop (nhds (boundedLemmaD2LimitCoeff beta c j))) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a => boundedLemmaD2IntegralTermBelow G j a delta)
       (fun a => boundedLemmaD2LimitCoeff beta c j *
         boundedTailScale beta a) := by
@@ -5165,7 +5165,7 @@ theorem boundedLemmaD2IntegralTermBelow_asymptotic_of_growing_rescaled_integral
     have h :=
       hgrowing.div_const (boundedLemmaD2LimitCoeff beta c j)
     simpa [hcoeff_ne] using h
-  rw [EconCSLib.Math.AsymptoticEquivalent]
+  rw [AppliedModelingLib.Math.AsymptoticEquivalent]
   refine Tendsto.congr' ?_ hratio
   filter_upwards
     [boundedLemmaD2IntegralTermBelow_eventually_changeOfVariables
@@ -5489,7 +5489,7 @@ theorem boundedLemmaD2IntegralTermBelow_forward_difference_asymptotic_of_local_c
         MeasureTheory.IntegrableOn
           (boundedLemmaD2IntegralKernel G j a)
           (Set.Ioi (0 : ℝ))) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a =>
         boundedLemmaD2IntegralTermBelow G j a delta -
           boundedLemmaD2IntegralTermBelow G j (a + 1) delta)
@@ -5517,7 +5517,7 @@ theorem boundedLemmaD2IntegralTermBelow_forward_difference_asymptotic_of_local_c
     have h := hgrowing.div_const
       (boundedLemmaD2ForwardDifferenceLimitCoeff beta c j)
     simpa [hcoeff_ne] using h
-  rw [EconCSLib.Math.AsymptoticEquivalent]
+  rw [AppliedModelingLib.Math.AsymptoticEquivalent]
   refine Tendsto.congr' ?_ hratio
   filter_upwards
     [boundedLemmaD2IntegralTermBelow_forward_difference_eventually_changeOfVariables
@@ -5550,7 +5550,7 @@ theorem boundedLemmaD2IntegralTermBelow_forward_difference_asymptotic_paper_scal
         MeasureTheory.IntegrableOn
           (boundedLemmaD2IntegralKernel G j a)
           (Set.Ioi (0 : ℝ))) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a =>
         boundedLemmaD2IntegralTermBelow G j a delta -
           boundedLemmaD2IntegralTermBelow G j (a + 1) delta)
@@ -5572,7 +5572,7 @@ theorem boundedLemmaD2IntegralTermBelow_forward_difference_asymptotic_paper_scal
       (ne_of_gt (boundedLemmaD2LimitCoeff_pos tail.beta_pos tail.c_pos j))
       (ne_of_gt tail.beta_pos)
   have hscale := boundedTailScale_div_succ_ratio_tendsto_one tail.beta_pos
-  rw [EconCSLib.Math.AsymptoticEquivalent] at hnear ⊢
+  rw [AppliedModelingLib.Math.AsymptoticEquivalent] at hnear ⊢
   have hprod := hnear.mul hscale
   refine Tendsto.congr' ?_ (by simpa using hprod)
   filter_upwards [boundedTailScale_eventually_ne_zero beta] with a htail_ne
@@ -5605,7 +5605,7 @@ theorem boundedLemmaD2IntegralTerm_forward_difference_asymptotic_paper_scale_of_
     (hG_upper :
       ∀ x : ℝ, 0 < x → x < delta → G x ≤ B * x ^ beta)
     (j : ℕ) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a =>
         boundedLemmaD2IntegralTerm G j a -
           boundedLemmaD2IntegralTerm G j (a + 1))
@@ -5646,7 +5646,7 @@ theorem boundedLemmaD2IntegralTerm_forward_difference_asymptotic_paper_scale_of_
     have hscale_ne : boundedPowerMarginalScale beta a ≠ 0 :=
       (boundedPowerMarginalScale_pos beta a).ne'
     field_simp [hcoeff_ne, hscale_ne]
-  rw [EconCSLib.Math.AsymptoticEquivalent] at hbelow ⊢
+  rw [AppliedModelingLib.Math.AsymptoticEquivalent] at hbelow ⊢
   have hsum := hbelow.add habove_coeff
   refine Tendsto.congr' ?_ (by simpa using hsum)
   have hsplit :=
@@ -5680,7 +5680,7 @@ theorem boundedLemmaD2IntegralTermBelow_asymptotic_of_local_cdf_power_bounds
     (hG_upper :
       ∀ x : ℝ, 0 < x → x < delta → G x ≤ B * x ^ beta)
     (j : ℕ) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a => boundedLemmaD2IntegralTermBelow G j a delta)
       (fun a => boundedLemmaD2LimitCoeff beta c j *
         boundedTailScale beta a) :=
@@ -5803,10 +5803,10 @@ theorem boundedLemmaD2TopKLoss_forward_difference_asymptotic
     (hscale_ne : ∀ᶠ a in atTop, scale a ≠ 0)
     (hterm :
       ∀ p : BoundedLemmaD2Index k,
-        EconCSLib.Math.AsymptoticEquivalent
+        AppliedModelingLib.Math.AsymptoticEquivalent
           (fun a => term p a - term p (a + 1))
           (fun a => coeff p * scale a)) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a =>
         boundedLemmaD2TopKLoss k term a -
           boundedLemmaD2TopKLoss k term (a + 1))
@@ -5815,9 +5815,9 @@ theorem boundedLemmaD2TopKLoss_forward_difference_asymptotic
   let termDrop : BoundedLemmaD2Index k → ℕ → ℝ :=
     fun p a => term p a - term p (a + 1)
   have hsum :=
-    EconCSLib.Math.finite_sum_asymptoticEquivalent_common_scale
+    AppliedModelingLib.Math.finite_sum_asymptoticEquivalent_common_scale
       termDrop coeff scale hcoeff_ne htotal_ne hscale_ne hterm
-  refine EconCSLib.Math.AsymptoticEquivalent.congr_left_eventually ?_ hsum
+  refine AppliedModelingLib.Math.AsymptoticEquivalent.congr_left_eventually ?_ hsum
   filter_upwards with a
   unfold boundedLemmaD2TopKLoss termDrop
   rw [Finset.sum_sub_distrib]
@@ -5842,7 +5842,7 @@ theorem boundedLemmaD2TopKLoss_forward_difference_asymptotic_of_local_cdf_power_
       ∀ x : ℝ, 0 < x → x < delta → A * x ^ beta ≤ G x)
     (hG_upper :
       ∀ x : ℝ, 0 < x → x < delta → G x ≤ B * x ^ beta) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a =>
         boundedLemmaD2TopKLoss k (boundedLemmaD2IndexedIntegralTerm G) a -
           boundedLemmaD2TopKLoss k (boundedLemmaD2IndexedIntegralTerm G)
@@ -5869,7 +5869,7 @@ theorem boundedLemmaD2TopKLoss_forward_difference_asymptotic_of_local_cdf_power_
       Finset.univ_nonempty
   have hterm :
       ∀ q : BoundedLemmaD2Index k,
-        EconCSLib.Math.AsymptoticEquivalent
+        AppliedModelingLib.Math.AsymptoticEquivalent
           (fun a =>
             boundedLemmaD2IndexedIntegralTerm G q a -
               boundedLemmaD2IndexedIntegralTerm G q (a + 1))
@@ -5908,7 +5908,7 @@ theorem boundedLemmaD2TopKLoss_forward_difference_asymptotic_of_cdf_power_sandwi
     (hG_nonneg : ∀ x : ℝ, 0 ≤ G x)
     (hG_le_one : ∀ x : ℝ, G x ≤ 1)
     (hG_eq_one_of_support : ∀ x : ℝ, M ≤ x → G x = 1) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a =>
         boundedLemmaD2TopKLoss k (boundedLemmaD2IndexedIntegralTerm G) a -
           boundedLemmaD2TopKLoss k (boundedLemmaD2IndexedIntegralTerm G)
@@ -5983,7 +5983,7 @@ theorem boundedLemmaD2TopKLoss_forward_difference_asymptotic_of_cdf_power_sandwi
       tail hG_measurable hk_pos hdelta_pos hdeltaM hA_pos hB_nonneg
       hp_pos hp_lt_one hG_nonneg hG_le_one hG_eq_one_of_support
       hp_le_G_on_tail hG_lower hG_upper
-  exact EconCSLib.Math.AsymptoticEquivalent.congr_right_eventually
+  exact AppliedModelingLib.Math.AsymptoticEquivalent.congr_right_eventually
     (by
       filter_upwards with a
       rw [Finset.sum_div])
@@ -6009,7 +6009,7 @@ theorem boundedOrderStatistic_forward_marginal_asymptotic_of_eventual_loss_eq_to
     (hG_nonneg : ∀ x : ℝ, 0 ≤ G x)
     (hG_le_one : ∀ x : ℝ, G x ≤ 1)
     (hG_eq_one_of_support : ∀ x : ℝ, M₀ ≤ x → G x = 1) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a =>
         orderStatisticTopKSumFromMean μ k (a + 1) -
           orderStatisticTopKSumFromMean μ k a)
@@ -6031,7 +6031,7 @@ theorem boundedOrderStatistic_forward_marginal_asymptotic_of_eventual_loss_eq_to
       tail hG_measurable hk_pos hM₀_pos hG_mono hG_nonneg hG_le_one
       hG_eq_one_of_support
   have hloss_drop :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun a : ℕ =>
           ((k : ℝ) * M - orderStatisticTopKSumFromMean μ k a) -
             ((k : ℝ) * M - orderStatisticTopKSumFromMean μ k (a + 1)))
@@ -6039,7 +6039,7 @@ theorem boundedOrderStatistic_forward_marginal_asymptotic_of_eventual_loss_eq_to
           ((∑ p : BoundedLemmaD2Index k,
             boundedLemmaD2LimitCoeff beta c p.2.val) / beta) *
             boundedPowerMarginalScale beta a) :=
-    EconCSLib.Math.AsymptoticEquivalent.congr_left_eventually
+    AppliedModelingLib.Math.AsymptoticEquivalent.congr_left_eventually
       (by
         filter_upwards [h_loss_eq, h_loss_eq_succ] with a ha ha_succ
         rw [ha, ha_succ])
@@ -6062,9 +6062,9 @@ theorem boundedLemmaD2_reflection_loss_eq_nested_sum
           M - ∑ j : Fin (i.val + 1), term ⟨i, j⟩) :
     (k : ℝ) * M - ∑ i : Fin k, sourceMean i =
       ∑ i : Fin k, ∑ j : Fin (i.val + 1), term ⟨i, j⟩ := by
-  simpa [EconCSLib.Probability.topKEndpointLoss,
-    EconCSLib.Probability.reflectedTopKMeanSum] using
-    EconCSLib.Probability.topKEndpointLoss_eq_reflectedTopKMeanSum
+  simpa [AppliedModelingLib.Probability.topKEndpointLoss,
+    AppliedModelingLib.Probability.reflectedTopKMeanSum] using
+    AppliedModelingLib.Probability.topKEndpointLoss_eq_reflectedTopKMeanSum
       M sourceMean
       (fun i : Fin k => ∑ j : Fin (i.val + 1), term ⟨i, j⟩)
       hsource
@@ -6085,11 +6085,11 @@ theorem boundedLemmaD2_reflection_loss_eq_topKLoss
     (k : ℝ) * M - ∑ i : Fin k, sourceMean i a =
       boundedLemmaD2TopKLoss k term a := by
   rw [boundedLemmaD2TopKLoss_eq_nested_sum]
-  simpa [EconCSLib.Probability.topKEndpointLossSeq,
-    EconCSLib.Probability.reflectedTopKMeanSumSeq,
-    EconCSLib.Probability.topKEndpointLoss,
-    EconCSLib.Probability.reflectedTopKMeanSum] using
-    EconCSLib.Probability.topKEndpointLossSeq_eq_reflectedTopKMeanSumSeq
+  simpa [AppliedModelingLib.Probability.topKEndpointLossSeq,
+    AppliedModelingLib.Probability.reflectedTopKMeanSumSeq,
+    AppliedModelingLib.Probability.topKEndpointLoss,
+    AppliedModelingLib.Probability.reflectedTopKMeanSum] using
+    AppliedModelingLib.Probability.topKEndpointLossSeq_eq_reflectedTopKMeanSumSeq
       M sourceMean
       (fun i a => ∑ j : Fin (i.val + 1), term ⟨i, j⟩ a)
       hsource a
@@ -6112,7 +6112,7 @@ structure BoundedLemmaD2FiniteSumCertificate
   totalCoeff_pos : 0 < ∑ p : BoundedLemmaD2Index k, coeff p
   term_asymptotic :
     ∀ p,
-      EconCSLib.Math.AsymptoticEquivalent (term p)
+      AppliedModelingLib.Math.AsymptoticEquivalent (term p)
         (fun a => coeff p * boundedTailScale beta a)
 
 namespace BoundedLemmaD2FiniteSumCertificate
@@ -6132,7 +6132,7 @@ theorem eventually_term_sandwich
         term p a ≤
           (1 + ε) * (C.coeff p * boundedTailScale beta a) := by
   refine
-    EconCSLib.Math.AsymptoticEquivalent.eventually_sandwich_of_pos_right
+    AppliedModelingLib.Math.AsymptoticEquivalent.eventually_sandwich_of_pos_right
       (C.term_asymptotic p) ?_ hε
   filter_upwards [boundedTailScale_eventually_pos beta] with a hscale
   exact mul_pos (C.coeff_pos p) hscale
@@ -6182,7 +6182,7 @@ structure BoundedLemmaD2LimitIntegralAsymptoticCertificate
   k_pos : 0 < k
   term_asymptotic :
     ∀ p : BoundedLemmaD2Index k,
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (boundedLemmaD2IndexedIntegralTerm G p)
         (fun a =>
           boundedLemmaD2LimitCoeff beta c p.2.val *
@@ -6398,7 +6398,7 @@ theorem integralTermBelow_asymptoticEquivalent
     {beta c : ℝ} {G : ℝ → ℝ} {j : ℕ}
     (C : BoundedLemmaD2DominatedKernelCertificate beta c G j)
     {delta : ℝ} (hdelta_pos : 0 < delta) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a => boundedLemmaD2IntegralTermBelow G j a delta)
       (fun a => boundedLemmaD2LimitCoeff beta c j *
         boundedTailScale beta a) :=
@@ -6443,7 +6443,7 @@ theorem integralTermBelow_asymptoticEquivalent_of_source_tail
           boundedLemmaD2IntegralTermAbove G j a delta /
             boundedTailScale beta a)
         atTop (nhds 0)) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a => boundedLemmaD2IntegralTermBelow G j a delta)
       (fun a => boundedLemmaD2LimitCoeff beta c j *
         boundedTailScale beta a) :=
@@ -6459,7 +6459,7 @@ A per-rank dominated-convergence certificate supplies the exact
 theorem integralTerm_asymptoticEquivalent
     {beta c : ℝ} {G : ℝ → ℝ} {j : ℕ}
     (C : BoundedLemmaD2DominatedKernelCertificate beta c G j) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (boundedLemmaD2IntegralTerm G j)
       (fun a => boundedLemmaD2LimitCoeff beta c j *
         boundedTailScale beta a) := by
@@ -6478,7 +6478,7 @@ theorem integralTerm_asymptoticEquivalent
       C.rescaled_integral_tendsto.div_const
         (boundedLemmaD2LimitCoeff beta c j)
     simpa [hcoeff_ne] using h
-  rw [EconCSLib.Math.AsymptoticEquivalent]
+  rw [AppliedModelingLib.Math.AsymptoticEquivalent]
   refine Tendsto.congr' ?_ hratio
   filter_upwards
     [C.change_of_variables, boundedTailScale_eventually_ne_zero beta] with
@@ -6507,7 +6507,7 @@ structure BoundedLemmaD2SplitIntegralAsymptoticCertificate
         boundedLemmaD2IntegralTermBelow G j a delta +
           boundedLemmaD2IntegralTermAbove G j a delta
   below_asymptotic :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a => boundedLemmaD2IntegralTermBelow G j a delta)
       (fun a => boundedLemmaD2LimitCoeff beta c j *
         boundedTailScale beta a)
@@ -6533,7 +6533,7 @@ noncomputable def ofAsymptotics
           (boundedLemmaD2IntegralKernel G j a)
           (Set.Ioi (0 : ℝ)))
     (below_asymptotic :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun a => boundedLemmaD2IntegralTermBelow G j a delta)
         (fun a => boundedLemmaD2LimitCoeff beta c j *
           boundedTailScale beta a))
@@ -6569,7 +6569,7 @@ noncomputable def ofFullAsymptoticAndTail
           (boundedLemmaD2IntegralKernel G j a)
           (Set.Ioi (0 : ℝ)))
     (full_asymptotic :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (boundedLemmaD2IntegralTerm G j)
         (fun a => boundedLemmaD2LimitCoeff beta c j *
           boundedTailScale beta a))
@@ -6605,7 +6605,7 @@ noncomputable def ofFullAsymptoticAndTail
       refine Tendsto.congr' ?_ (by simpa [hcoeff_ne] using h)
       filter_upwards [boundedTailScale_eventually_ne_zero beta] with a hscale_ne
       field_simp [hcoeff_ne, hscale_ne]
-    rw [EconCSLib.Math.AsymptoticEquivalent] at full_asymptotic ⊢
+    rw [AppliedModelingLib.Math.AsymptoticEquivalent] at full_asymptotic ⊢
     have hdiff := full_asymptotic.sub htail_coeff
     refine Tendsto.congr' ?_ (by simpa using hdiff)
     filter_upwards
@@ -6629,7 +6629,7 @@ noncomputable def ofBoundedSupportAsymptotics
     (hG_le_one : ∀ x : ℝ, G x ≤ 1)
     (hG_eq_one_of_support : ∀ x : ℝ, M ≤ x → G x = 1)
     (below_asymptotic :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun a => boundedLemmaD2IntegralTermBelow G j a delta)
         (fun a => boundedLemmaD2LimitCoeff beta c j *
           boundedTailScale beta a))
@@ -6660,7 +6660,7 @@ noncomputable def ofBoundedSupportNearZeroAsymptotic
     (hG_eq_one_of_support : ∀ x : ℝ, M ≤ x → G x = 1)
     (hp_le_G_on_tail : ∀ x : ℝ, delta < x → p ≤ G x)
     (below_asymptotic :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun a => boundedLemmaD2IntegralTermBelow G j a delta)
         (fun a => boundedLemmaD2LimitCoeff beta c j *
           boundedTailScale beta a)) :
@@ -6852,7 +6852,7 @@ asymptotic.
 theorem integralTerm_asymptoticEquivalent
     {beta c : ℝ} {G : ℝ → ℝ} {j : ℕ}
     (C : BoundedLemmaD2SplitIntegralAsymptoticCertificate beta c G j) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (boundedLemmaD2IntegralTerm G j)
       (fun a => boundedLemmaD2LimitCoeff beta c j *
         boundedTailScale beta a) := by
@@ -6869,7 +6869,7 @@ theorem integralTerm_asymptoticEquivalent
       (boundedTailScale_eventually_ne_zero beta)
       C.below_asymptotic
       C.above_negligible
-  rw [EconCSLib.Math.AsymptoticEquivalent] at hsum ⊢
+  rw [AppliedModelingLib.Math.AsymptoticEquivalent] at hsum ⊢
   refine Tendsto.congr' ?_ hsum
   filter_upwards [C.split] with a hsplit
   rw [hsplit]
@@ -7116,7 +7116,7 @@ theorem boundedLemmaD2TopKLoss_asymptoticEquivalent
     {beta : ℝ} {k : ℕ}
     (term : BoundedLemmaD2Index k → ℕ → ℝ)
     (C : BoundedLemmaD2FiniteSumCertificate beta k term) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (boundedLemmaD2TopKLoss k term)
       (fun a => (∑ p : BoundedLemmaD2Index k, C.coeff p) *
         boundedTailScale beta a) :=
@@ -7144,13 +7144,13 @@ theorem boundedLemmaD2NestedTopKLoss_asymptoticEquivalent
     {beta : ℝ} {k : ℕ}
     (term : BoundedLemmaD2Index k → ℕ → ℝ)
     (C : BoundedLemmaD2FiniteSumCertificate beta k term) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a => ∑ i : Fin k, ∑ j : Fin (i.val + 1), term ⟨i, j⟩ a)
       (fun a =>
         (∑ i : Fin k, ∑ j : Fin (i.val + 1), C.coeff ⟨i, j⟩) *
           boundedTailScale beta a) := by
   have h := boundedLemmaD2TopKLoss_asymptoticEquivalent term C
-  rw [EconCSLib.Math.AsymptoticEquivalent] at h ⊢
+  rw [AppliedModelingLib.Math.AsymptoticEquivalent] at h ⊢
   refine Tendsto.congr' ?_ h
   filter_upwards with a
   rw [boundedLemmaD2TopKLoss_eq_nested_sum,
@@ -7170,12 +7170,12 @@ theorem boundedLemmaD2_reflected_source_loss_asymptoticEquivalent
         sourceMean i a =
           M - ∑ j : Fin (i.val + 1), term ⟨i, j⟩ a)
     (C : BoundedLemmaD2FiniteSumCertificate beta k term) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a => (k : ℝ) * M - ∑ i : Fin k, sourceMean i a)
       (fun a => (∑ p : BoundedLemmaD2Index k, C.coeff p) *
         boundedTailScale beta a) := by
   have h := boundedLemmaD2TopKLoss_asymptoticEquivalent term C
-  rw [EconCSLib.Math.AsymptoticEquivalent] at h ⊢
+  rw [AppliedModelingLib.Math.AsymptoticEquivalent] at h ⊢
   refine Tendsto.congr' ?_ h
   filter_upwards with a
   rw [boundedLemmaD2_reflection_loss_eq_topKLoss M sourceMean term hsource a]
@@ -7187,7 +7187,7 @@ the source integral terms yields the top-`k` bounded-loss asymptotic.
 theorem boundedLemmaD2IntegralTopKLoss_asymptoticEquivalent
     {beta : ℝ} {k : ℕ} (G : ℝ → ℝ)
     (C : BoundedLemmaD2IntegralAsymptoticCertificate beta k G) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (boundedLemmaD2TopKLoss k (boundedLemmaD2IndexedIntegralTerm G))
       (fun a => (∑ p : BoundedLemmaD2Index k, C.coeff p) *
         boundedTailScale beta a) :=
@@ -7208,7 +7208,7 @@ theorem boundedLemmaD2_reflected_integral_source_loss_asymptoticEquivalent
           M - ∑ j : Fin (i.val + 1),
             boundedLemmaD2IntegralTerm G j.val a)
     (C : BoundedLemmaD2IntegralAsymptoticCertificate beta k G) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a => (k : ℝ) * M - ∑ i : Fin k, sourceMean i a)
       (fun a => (∑ p : BoundedLemmaD2Index k, C.coeff p) *
         boundedTailScale beta a) :=
@@ -7226,7 +7226,7 @@ fixed-`j` integral asymptotics.
 theorem boundedLemmaD2IntegralTopKLoss_asymptoticEquivalent_of_limit_coeff_certificate
     {beta c : ℝ} {k : ℕ} (G : ℝ → ℝ)
     (C : BoundedLemmaD2LimitIntegralAsymptoticCertificate beta c k G) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (boundedLemmaD2TopKLoss k (boundedLemmaD2IndexedIntegralTerm G))
       (fun a =>
         (∑ p : BoundedLemmaD2Index k,
@@ -7248,7 +7248,7 @@ theorem
           M - ∑ j : Fin (i.val + 1),
             boundedLemmaD2IntegralTerm G j.val a)
     (C : BoundedLemmaD2LimitIntegralAsymptoticCertificate beta c k G) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a => (k : ℝ) * M - ∑ i : Fin k, sourceMean i a)
       (fun a =>
         (∑ p : BoundedLemmaD2Index k,
@@ -7264,7 +7264,7 @@ change-of-variables certificate.
 theorem boundedLemmaD2IntegralTopKLoss_asymptoticEquivalent_of_dominated_certificate
     {beta c : ℝ} {k : ℕ} (G : ℝ → ℝ)
     (C : BoundedLemmaD2DominatedIntegralAsymptoticCertificate beta c k G) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (boundedLemmaD2TopKLoss k (boundedLemmaD2IndexedIntegralTerm G))
       (fun a =>
         (∑ p : BoundedLemmaD2Index k,
@@ -7287,7 +7287,7 @@ theorem
           M - ∑ j : Fin (i.val + 1),
             boundedLemmaD2IntegralTerm G j.val a)
     (C : BoundedLemmaD2DominatedIntegralAsymptoticCertificate beta c k G) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a => (k : ℝ) * M - ∑ i : Fin k, sourceMean i a)
       (fun a =>
         (∑ p : BoundedLemmaD2Index k,
@@ -7302,7 +7302,7 @@ Actual-integral finite assembly from the paper-style split certificate.
 theorem boundedLemmaD2IntegralTopKLoss_asymptoticEquivalent_of_split_certificate
     {beta c : ℝ} {k : ℕ} (G : ℝ → ℝ)
     (C : BoundedLemmaD2SplitIntegralFiniteCertificate beta c k G) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (boundedLemmaD2TopKLoss k (boundedLemmaD2IndexedIntegralTerm G))
       (fun a =>
         (∑ p : BoundedLemmaD2Index k,
@@ -7324,7 +7324,7 @@ theorem
           M - ∑ j : Fin (i.val + 1),
             boundedLemmaD2IntegralTerm G j.val a)
     (C : BoundedLemmaD2SplitIntegralFiniteCertificate beta c k G) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun a => (k : ℝ) * M - ∑ i : Fin k, sourceMean i a)
       (fun a =>
         (∑ p : BoundedLemmaD2Index k,
@@ -7361,7 +7361,7 @@ theorem boundedPowerMarginalError_nonneg {T : ℕ}
 theorem boundedPowerMarginalError_tends_to_zero {T : ℕ}
     (likelihood : ItemType T → ℝ) (beta : ℝ)
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t) :
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (boundedPowerMarginalError likelihood beta) :=
   powerLawSublinearFOCError_tends_to_zero likelihood (beta / (beta + 1))
     hlike_pos

@@ -3,7 +3,7 @@ import Mathlib.Probability.Moments.Variance
 import Mathlib.Probability.Moments.MGFAnalytic
 import Mathlib.NumberTheory.Harmonic.GammaDeriv
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 open scoped ProbabilityTheory Topology
 
 /-!

@@ -18,8 +18,8 @@ normalization, and pointwise full support are explicit.  No fact is inferred
 from a declaration name or a witness type.
 -/
 
-open EconCSLib MeasureTheory Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory Filter
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal Topology
 
 namespace KR21Monoculture

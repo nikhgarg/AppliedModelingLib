@@ -1,8 +1,8 @@
 import KR21Monoculture.AppendixCSourcePairwise
 import KR21Monoculture.MallowsSourceSurface
 
-open EconCSLib Filter MeasureTheory ProbabilityTheory
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib Filter MeasureTheory ProbabilityTheory
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal NNReal Topology BigOperators
 
 namespace KR21Monoculture
@@ -230,9 +230,9 @@ theorem source_lemma8_mallows_phi_pairwise_correct_probability_lt
     {n : ℕ} (center : Ranking n) {phiMore phiLess : ℝ}
     (hphiLess : 1 < phiLess) (hphiOrder : phiLess < phiMore)
     {c d : Candidate n} (hcd : rankOf center c < rankOf center d) :
-    EconCSLib.pmfProb (concreteMallowsSpec center (phiLess - 1)).law
+    AppliedModelingLib.pmfProb (concreteMallowsSpec center (phiLess - 1)).law
       (fun pi => rankOf center c < rankOf center d ∧ rankOf pi c < rankOf pi d) <
-      EconCSLib.pmfProb (concreteMallowsSpec center (phiMore - 1)).law
+      AppliedModelingLib.pmfProb (concreteMallowsSpec center (phiMore - 1)).law
         (fun pi => rankOf center c < rankOf center d ∧ rankOf pi c < rankOf pi d) := by
   simpa [MallowsSpec.pairCorrectProb] using
     source_lemma8_mallows_phi_pairCorrectProb_lt center hphiLess hphiOrder hcd

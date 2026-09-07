@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Applied Modeling Lib favicon</title>
+  <rect width="64" height="64" rx="7" fill="#008080"/>
+  <text
+    x="32"
+    y="21"
+    fill="#ffffff"
+    font-family="Helvetica, Arial, sans-serif"
+    font-size="15"
+    font-weight="300"
+    text-anchor="middle"
+  >Applied</text>
+  <text
+    x="32"
+    y="38"
+    fill="#ffffff"
+    font-family="Helvetica, Arial, sans-serif"
+    font-size="15"
+    font-weight="300"
+    text-anchor="middle"
+  >Modeling</text>
+  <text
+    x="32"
+    y="55"
+    fill="#ffffff"
+    font-family="Helvetica, Arial, sans-serif"
+    font-size="15"
+    font-weight="300"
+    text-anchor="middle"
+  >Lib</text>
+</svg>

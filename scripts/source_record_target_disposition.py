@@ -26,6 +26,34 @@ from dataclasses import dataclass
 from pathlib import Path
 
 try:
+    from corrected_target_identity import (
+        corrected_target_record_digest as _shared_corrected_target_record_digest,
+    )
+except ModuleNotFoundError:  # pragma: no cover - supports package imports.
+    from scripts.corrected_target_identity import (
+        corrected_target_record_digest as _shared_corrected_target_record_digest,
+    )
+
+try:
+    from source_record_legacy_contract import (
+        EXPLICIT_DIRECT_SOURCE_ROUTE_ORIGIN,
+        EXPLICIT_DIRECT_SOURCE_ROUTE_ROLE,
+        SOURCE_CLAIM_ATOM_ASSOCIATION_FIELD,
+        SOURCE_CLAIM_ATOM_ROUTE_ORIGIN,
+        SOURCE_CLAIM_ATOM_ROUTE_ROLE,
+        SOURCE_RECORD_ADMINISTRATIVE_PROJECTION_REBIND_BASENAME,
+    )
+except ModuleNotFoundError:  # pragma: no cover - supports package imports.
+    from scripts.source_record_legacy_contract import (
+        EXPLICIT_DIRECT_SOURCE_ROUTE_ORIGIN,
+        EXPLICIT_DIRECT_SOURCE_ROUTE_ROLE,
+        SOURCE_CLAIM_ATOM_ASSOCIATION_FIELD,
+        SOURCE_CLAIM_ATOM_ROUTE_ORIGIN,
+        SOURCE_CLAIM_ATOM_ROUTE_ROLE,
+        SOURCE_RECORD_ADMINISTRATIVE_PROJECTION_REBIND_BASENAME,
+    )
+
+try:
     from configured_assumption_formalization_regularities import (
         ConfiguredAssumptionFormalizationRegularityContext,
         configured_assumption_formalization_regularity_response_errors,
@@ -147,16 +175,11 @@ INPUT_SOURCE_CREDIT_CLASSIFICATIONS = frozenset(
 FULL_CLOSEOUT_STATUSES = frozenset({"formalized", "formalized with caveat"})
 CORRECTED_SOURCE_STATEMENT_STATUS = "corrected_source_statement"
 CORRECTED_SOURCE_STATEMENT_RESOLUTION = "corrected_source_statement"
-EXPLICIT_DIRECT_SOURCE_ROUTE_ORIGIN = "explicit_source_map_direct_route"
-EXPLICIT_DIRECT_SOURCE_ROUTE_ROLE = "direct_source_route"
 EXPLICIT_DIRECT_SOURCE_ROUTE_FIELDS = (
     "lean_declarations",
     "proof_lean_declarations",
     "spec_lean_declarations",
 )
-SOURCE_CLAIM_ATOM_ROUTE_ORIGIN = "source_claim_atom_route"
-SOURCE_CLAIM_ATOM_ROUTE_ROLE = "source_claim_atom_route"
-SOURCE_CLAIM_ATOM_ASSOCIATION_FIELD = "source_claim_atom_association"
 STATEMENT_SOURCE_COMPONENT_ASSOCIATION_FIELD = (
     "statement_source_component_association"
 )
@@ -196,9 +219,6 @@ SOURCE_RECORD_ADMINISTRATIVE_PROJECTION_REBIND_POLICY_VERSION = (
 )
 SOURCE_RECORD_ADMINISTRATIVE_PROJECTION_REBIND_ARTIFACT_KIND = (
     "source_record_v10_direct_source_status_projection_rebind"
-)
-SOURCE_RECORD_ADMINISTRATIVE_PROJECTION_REBIND_BASENAME = (
-    "source_record_administrative_projection_rebind.json"
 )
 _STATUS_INCLUDED_TO_EXCLUDED_TRANSITION = (
     "schema4_direct_source_status_included_to_schema5_excluded"
@@ -574,7 +594,7 @@ def source_record_response_association_projection(
     """Reconstruct the sole current source-association projection for a group.
 
     The caller supplies the exact current members from
-    ``source_record_differential_revalidation._raw_item_groups``.  Every
+    ``source_record_obligation_groups.raw_source_record_obligation_groups``.  Every
     member is checked against the target response key.  Source associations
     are selected solely by their generated structural role: semantic-model
     associations use the established explicit precedence, while theorem-facing,
@@ -1748,16 +1768,7 @@ def corrected_target_record_digest(raw: object) -> str:
     immutable target identity.
     """
 
-    payload: object = dict(raw) if isinstance(raw, Mapping) else raw
-    if isinstance(payload, dict):
-        payload.pop("corrected_target_sha256", None)
-    encoded = json.dumps(
-        payload,
-        ensure_ascii=True,
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode("utf-8")
-    return hashlib.sha256(encoded).hexdigest()
+    return _shared_corrected_target_record_digest(raw)
 
 
 def model_convention_record_digest(raw: object) -> str:

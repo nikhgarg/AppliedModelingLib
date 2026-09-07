@@ -18,73 +18,35 @@
     "reviewed_rows": 0,
     "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     "stale_rows": 0,
-    "total_rows": 28,
+    "total_rows": 2,
     "uncertain_rows": 0
   },
-  "human_summary": "Strict variance decrease is formalized with the explicit interior-quality assumption 0 < q_v < 1.",
+  "human_summary": "",
   "human_summary_review": {
-    "note": "Do not rewrite this summary without explicit human instruction.",
+    "note": "The maintainer requested removal of the website note on 2026-09-05.",
     "status": "human_approved"
   },
   "id": "MBJG25ProducerFairness",
   "main_caveat": "",
   "paper_interface": {
     "declaration_rows": 39,
-    "line_count": 584,
+    "line_count": 135,
     "maintainability_issue": null,
     "oversized": false,
     "path": "papers/MBJG25ProducerFairness/PaperInterface.lean",
     "proof_interface_line_count": 37,
     "proof_interface_path": "papers/MBJG25ProducerFairness/ProofInterface.lean",
-    "review_rows": 28
+    "review_rows": 2
   },
   "repository_visibility": "public",
   "review_entrypoint": "papers/MBJG25ProducerFairness/FINAL_VALIDATION_REPORT.md",
   "review_surface": {
-    "assumption_names": [
-      "assumption_positive_prior_shape",
-      "assumption_positive_time",
-      "assumption_positive_rating_count",
-      "assumption_nonnegative_time",
-      "assumption_quality_nonnegative",
-      "assumption_quality_at_most_one",
-      "assumption_quality_positive",
-      "assumption_quality_lt_one",
-      "assumption_prior_strength_nonnegative",
-      "assumption_prior_strength_weak_order",
-      "assumption_prior_strength_strict_order"
-    ],
+    "assumption_names": [],
     "assumption_policy": "strict",
     "assumption_source_file": "papers/MBJG25ProducerFairness/Assumptions.lean",
     "include_names": [
-      "paper_posterior_ratingSpec",
-      "paper_posterior_meanSpec",
-      "paper_biasSpec",
-      "paper_varianceSpec",
-      "paper_squared_biasSpec",
-      "paper_fixed_market_mseSpec",
-      "paper_facing_fixed_mse_decompositionSpec",
-      "paper_facing_theorem3_1_variance_weak_decreaseSpec",
-      "paper_facing_theorem3_1_variance_strict_decrease_interiorSpec",
-      "paper_facing_theorem3_1_squared_bias_nondecreasingSpec",
-      "paper_facing_theorem3_2_squared_bias_convex_in_qualitySpec",
-      "paper_facing_theorem3_2_squared_bias_global_min_at_prior_meanSpec",
-      "paper_facing_theorem3_2_variance_concave_in_qualitySpec",
-      "paper_facing_theorem3_2_variance_global_max_at_halfSpec",
-      "paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_zeroSpec",
-      "paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_oneSpec",
-      "paper_facing_selection_rateSpec",
-      "paper_facing_individual_producer_unfairnessSpec",
-      "paper_facing_marketplace_producer_unfairnessSpec",
-      "paper_facing_thompson_sampling_mechanismSpec",
-      "paper_facing_expected_regretSpec",
-      "paper_facing_responsive_mse_decompositionSpec",
-      "paper_facing_eq20_bayesian_rating_equivalenceSpec",
-      "paper_ordinal_posterior_ratingSpec",
-      "paper_facing_eq21_zero_prior_comparisonSpec",
-      "paper_facing_k_sampling_mechanismSpec",
-      "paper_facing_k_sampling_one_is_argmaxSpec",
-      "paper_facing_k_sampling_market_size_is_uniformSpec"
+      "paper_theorem3_1Spec",
+      "paper_theorem3_2Spec"
     ],
     "llm_assumption_review": {
       "assumption_judgment_file": "papers/MBJG25ProducerFairness/audit/assumption_match_llm.json",
@@ -92,92 +54,22 @@
     },
     "llm_statement_review": {
       "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2"
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
     },
     "proposition_spec_proofs": {
-      "paper_biasSpec": "paper_bias",
-      "paper_facing_eq20_bayesian_rating_equivalenceSpec": "paper_facing_eq20_bayesian_rating_equivalence",
-      "paper_facing_eq21_zero_prior_comparisonSpec": "paper_facing_eq21_zero_prior_comparison",
-      "paper_facing_expected_regretSpec": "paper_facing_expected_regret",
-      "paper_facing_fixed_mse_decompositionSpec": "paper_facing_fixed_mse_decomposition",
-      "paper_facing_individual_producer_unfairnessSpec": "paper_facing_individual_producer_unfairness",
-      "paper_facing_k_sampling_market_size_is_uniformSpec": "paper_facing_k_sampling_market_size_is_uniform",
-      "paper_facing_k_sampling_mechanismSpec": "paper_facing_k_sampling_mechanism",
-      "paper_facing_k_sampling_one_is_argmaxSpec": "paper_facing_k_sampling_one_is_argmax",
-      "paper_facing_marketplace_producer_unfairnessSpec": "paper_facing_marketplace_producer_unfairness",
-      "paper_facing_responsive_mse_decompositionSpec": "paper_facing_responsive_mse_decomposition",
-      "paper_facing_selection_rateSpec": "paper_facing_selection_rate",
-      "paper_facing_theorem3_1_squared_bias_nondecreasingSpec": "paper_facing_theorem3_1_squared_bias_nondecreasing",
-      "paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_oneSpec": "paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_one",
-      "paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_zeroSpec": "paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_zero",
-      "paper_facing_theorem3_1_variance_strict_decrease_interiorSpec": "paper_facing_theorem3_1_variance_strict_decrease_interior",
-      "paper_facing_theorem3_1_variance_weak_decreaseSpec": "paper_facing_theorem3_1_variance_weak_decrease",
-      "paper_facing_theorem3_2_squared_bias_convex_in_qualitySpec": "paper_facing_theorem3_2_squared_bias_convex_in_quality",
-      "paper_facing_theorem3_2_squared_bias_global_min_at_prior_meanSpec": "paper_facing_theorem3_2_squared_bias_global_min_at_prior_mean",
-      "paper_facing_theorem3_2_variance_concave_in_qualitySpec": "paper_facing_theorem3_2_variance_concave_in_quality",
-      "paper_facing_theorem3_2_variance_global_max_at_halfSpec": "paper_facing_theorem3_2_variance_global_max_at_half",
-      "paper_facing_thompson_sampling_mechanismSpec": "paper_facing_thompson_sampling_mechanism",
-      "paper_fixed_market_mseSpec": "paper_fixed_market_mse",
-      "paper_ordinal_posterior_ratingSpec": "paper_ordinal_posterior_rating",
-      "paper_posterior_meanSpec": "paper_posterior_mean",
-      "paper_posterior_ratingSpec": "paper_posterior_rating",
-      "paper_squared_biasSpec": "paper_squared_bias",
-      "paper_varianceSpec": "paper_variance"
+      "paper_theorem3_1Spec": "paper_theorem3_1_proof",
+      "paper_theorem3_2Spec": "paper_theorem3_2_proof"
     },
     "require_source_spec_correspondence": true,
     "require_v11_raw_source_spec_screening": true,
     "slices": [
       {
-        "id": "fixed_model",
+        "id": "additional_source_results",
         "names": [
-          "paper_posterior_rating",
-          "paper_posterior_mean",
-          "paper_bias",
-          "paper_variance",
-          "paper_squared_bias",
-          "paper_fixed_market_mse",
-          "paper_facing_fixed_mse_decomposition",
-          "paper_facing_theorem3_1_variance_weak_decrease",
-          "paper_facing_theorem3_1_variance_strict_decrease_interior",
-          "paper_facing_theorem3_1_squared_bias_nondecreasing",
-          "paper_facing_theorem3_2_squared_bias_convex_in_quality",
-          "paper_facing_theorem3_2_squared_bias_global_min_at_prior_mean",
-          "paper_facing_theorem3_2_variance_concave_in_quality",
-          "paper_facing_theorem3_2_variance_global_max_at_half"
+          "paper_theorem3_1Spec",
+          "paper_theorem3_2Spec"
         ],
-        "title": "Fixed-model formulas and named results"
-      },
-      {
-        "id": "source_note",
-        "names": [
-          "paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_zero",
-          "paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_one"
-        ],
-        "title": "Theorem 3.1 endpoint correction evidence"
-      },
-      {
-        "id": "responsive_model",
-        "names": [
-          "paper_facing_selection_rate",
-          "paper_facing_individual_producer_unfairness",
-          "paper_facing_marketplace_producer_unfairness",
-          "paper_facing_thompson_sampling_mechanism",
-          "paper_facing_expected_regret",
-          "paper_facing_responsive_mse_decomposition"
-        ],
-        "title": "Responsive-market metrics and Appendix C"
-      },
-      {
-        "id": "appendix_extensions",
-        "names": [
-          "paper_facing_eq20_bayesian_rating_equivalence",
-          "paper_ordinal_posterior_rating",
-          "paper_facing_eq21_zero_prior_comparison",
-          "paper_facing_k_sampling_mechanism",
-          "paper_facing_k_sampling_one_is_argmax",
-          "paper_facing_k_sampling_market_size_is_uniform"
-        ],
-        "title": "Appendix D--F formulas and sampling variants"
+        "title": "Additional source results"
       }
     ],
     "source_definition_names": [],

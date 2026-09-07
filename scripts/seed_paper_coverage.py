@@ -32,8 +32,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 PAPERS_DIR = ROOT / "papers"
 
-sys.path.insert(0, str(ROOT / "scripts"))
-from review_dashboard import (  # noqa: E402
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from scripts.review_dashboard import (  # noqa: E402
     DEFAULT_LLM_PAPER_COVERAGE_FILE,
     PAPER_INTERFACE_CACHE_SCHEMA,
     REQUIRED_LLM_PAPER_COVERAGE_PROMPT_VERSION,
@@ -47,7 +48,7 @@ from review_dashboard import (  # noqa: E402
     review_surface_digest,
     statement_digest,
 )
-from source_coverage_scope import (  # noqa: E402
+from scripts.source_coverage_scope import (  # noqa: E402
     SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
     source_item_coverage_sha256,
     source_item_effective_route_policy,

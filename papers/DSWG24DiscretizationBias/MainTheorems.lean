@@ -1,6 +1,7 @@
-import EconCSLib.Foundations.Optimization.Argmax
-import EconCSLib.Foundations.Math.FiniteSum
-import EconCSLib.Foundations.Probability.FiniteExpectation
+import AppliedModelingLib.Foundations.Optimization.Argmax
+import AppliedModelingLib.Foundations.Math.FiniteSum
+import AppliedModelingLib.Foundations.Probability.FiniteExpectation
+import AppliedModelingLib.Learning.Prediction
 import Mathlib.MeasureTheory.Function.ConditionalExpectation.Real
 import Mathlib.MeasureTheory.Constructions.Pi
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
@@ -59,14 +60,14 @@ variable {Ω σ X Y : Type*}
 /-- Finite PMF expectations satisfy the abstract finite-linearity interface used by the optimizer layer. -/
 theorem pmfExp_finiteLinearExpectation
     [Fintype Ω] [DecidableEq Ω] (μ : PMF Ω) :
-    EconCSLib.Decision.FiniteLinearExpectation (EconCSLib.pmfExp μ) := by
+    AppliedModelingLib.Decision.FiniteLinearExpectation (AppliedModelingLib.pmfExp μ) := by
   refine ⟨?_, ?_, ?_⟩
   · intro f g h
-    exact EconCSLib.pmfExp_le_pmfExp_of_forall_le μ f g h
+    exact AppliedModelingLib.pmfExp_le_pmfExp_of_forall_le μ f g h
   · intro c f
-    exact EconCSLib.pmfExp_const_mul μ c f
+    exact AppliedModelingLib.pmfExp_const_mul μ c f
   · intro f g
-    exact EconCSLib.pmfExp_add μ f g
+    exact AppliedModelingLib.pmfExp_add μ f g
 
 /-- Marginal law of features under a finite joint law. -/
 noncomputable def featureMarginal [Fintype X] [DecidableEq X]
@@ -82,7 +83,7 @@ noncomputable def labelMarginal [Fintype X] [DecidableEq X]
 noncomputable def paperMarginalLabelShare [Fintype X] [DecidableEq X]
     [Fintype Y] [DecidableEq Y]
     (μ : PMF (X × Y)) (rule : X → Y) (y : Y) : ℝ :=
-  EconCSLib.pmfProb (featureMarginal μ) (fun x => rule x = y)
+  AppliedModelingLib.pmfProb (featureMarginal μ) (fun x => rule x = y)
 
 /-- Prior class probability `Pr(y)`. -/
 noncomputable def paperPrior [Fintype X] [DecidableEq X]
@@ -93,7 +94,7 @@ noncomputable def paperPrior [Fintype X] [DecidableEq X]
 noncomputable def paperAggregatePosterior [Fintype X] [DecidableEq X]
     [Fintype Y] [DecidableEq Y]
     (μ : PMF (X × Y)) (q : X → Y → ℝ) (y : Y) : ℝ :=
-  EconCSLib.pmfExp (featureMarginal μ) (fun x => q x y)
+  AppliedModelingLib.pmfExp (featureMarginal μ) (fun x => q x y)
 
 /-- Source bias formula: label share minus a supplied reference distribution. -/
 noncomputable def paperBias [Fintype X] [DecidableEq X]
@@ -165,7 +166,7 @@ theorem pointwise_argmax_bias_le_conditionalMAE
 noncomputable def paperClassifierMAE [Fintype X] [DecidableEq X]
     [Fintype Y] [DecidableEq Y]
     (μ : PMF (X × Y)) (q : X → Y → ℝ) : ℝ :=
-  EconCSLib.pmfExp (featureMarginal μ) (paperConditionalMAE q)
+  AppliedModelingLib.pmfExp (featureMarginal μ) (paperConditionalMAE q)
 
 /-- Bias to the aggregate-posterior reference. -/
 noncomputable def paperAggregateBias [Fintype X] [DecidableEq X]
@@ -180,11 +181,11 @@ theorem paperMarginalLabelShare_const [Fintype X] [DecidableEq X] [Nonempty X]
       if z = y then 1 else 0 := by
   classical
   by_cases hzy : z = y
-  · simp [paperMarginalLabelShare, EconCSLib.pmfProb, hzy]
+  · simp [paperMarginalLabelShare, AppliedModelingLib.pmfProb, hzy]
   · have hfalse : (fun _ : X => z = y) = fun _ : X => False := by
       funext x
       simp [hzy]
-    simp [paperMarginalLabelShare, EconCSLib.pmfProb, hzy]
+    simp [paperMarginalLabelShare, AppliedModelingLib.pmfProb, hzy]
 
 /--
 Theorem 1(i), finite prior-reference form.
@@ -208,10 +209,10 @@ theorem paperMarginalLabelShare_eq_truth_share_of_rule_eq_truth
     paperMarginalLabelShare μ rule y = paperPrior μ y := by
   classical
   unfold paperMarginalLabelShare paperPrior featureMarginal labelMarginal
-  rw [EconCSLib.pmf_map_apply_toReal_eq_pmfProb_preimage]
-  unfold EconCSLib.pmfProb
-  rw [EconCSLib.pmfExp_map]
-  refine EconCSLib.pmfExp_congr μ ?_
+  rw [AppliedModelingLib.pmf_map_apply_toReal_eq_pmfProb_preimage]
+  unfold AppliedModelingLib.pmfProb
+  rw [AppliedModelingLib.pmfExp_map]
+  refine AppliedModelingLib.pmfExp_congr μ ?_
   intro xy
   simp [htruth xy]
 
@@ -242,10 +243,10 @@ theorem paperMarginalLabelShare_eq_truth_share_of_rule_eq_truth_on_support
     paperMarginalLabelShare μ rule y = paperPrior μ y := by
   classical
   unfold paperMarginalLabelShare paperPrior featureMarginal labelMarginal
-  rw [EconCSLib.pmf_map_apply_toReal_eq_pmfProb_preimage]
-  unfold EconCSLib.pmfProb
-  rw [EconCSLib.pmfExp_map]
-  unfold EconCSLib.pmfExp
+  rw [AppliedModelingLib.pmf_map_apply_toReal_eq_pmfProb_preimage]
+  unfold AppliedModelingLib.pmfProb
+  rw [AppliedModelingLib.pmfExp_map]
+  unfold AppliedModelingLib.pmfExp
   refine Finset.sum_congr rfl ?_
   intro xy _
   by_cases hmass : μ xy = 0
@@ -281,10 +282,10 @@ theorem paperAggregatePosterior_eq_prior_of_perfect_classifier_on_support
     paperAggregatePosterior μ q y = paperPrior μ y := by
   classical
   unfold paperAggregatePosterior paperPrior featureMarginal labelMarginal
-  rw [EconCSLib.pmf_map_apply_toReal_eq_pmfProb_preimage]
-  unfold EconCSLib.pmfProb
-  rw [EconCSLib.pmfExp_map]
-  unfold EconCSLib.pmfExp
+  rw [AppliedModelingLib.pmf_map_apply_toReal_eq_pmfProb_preimage]
+  unfold AppliedModelingLib.pmfProb
+  rw [AppliedModelingLib.pmfExp_map]
+  unfold AppliedModelingLib.pmfExp
   refine Finset.sum_congr rfl ?_
   intro xy _
   by_cases hmass : μ xy = 0
@@ -318,12 +319,12 @@ theorem paperAggregateBias_eq_pmfExp_pointwise
     [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
     (μ : PMF (X × Y)) (q : X → Y → ℝ) (rule : X → Y) (y : Y) :
     paperAggregateBias μ q rule y =
-      EconCSLib.pmfExp (featureMarginal μ)
+      AppliedModelingLib.pmfExp (featureMarginal μ)
         (fun x => (if rule x = y then (1 : ℝ) else 0) - q x y) := by
   classical
   unfold paperAggregateBias paperBias paperMarginalLabelShare paperAggregatePosterior
-  unfold EconCSLib.pmfProb
-  rw [← EconCSLib.pmfExp_sub]
+  unfold AppliedModelingLib.pmfProb
+  rw [← AppliedModelingLib.pmfExp_sub]
 
 /--
 Theorem 1(iii), finite Bayes-posterior aggregate-reference form.
@@ -343,7 +344,7 @@ theorem paper_theorem1iii_argmax_bias_le_mae_of_pointwise
     paperAggregateBias μ q argmaxRule y ≤ paperClassifierMAE μ q := by
   rw [paperAggregateBias_eq_pmfExp_pointwise]
   unfold paperClassifierMAE
-  exact EconCSLib.pmfExp_le_pmfExp_of_forall_le
+  exact AppliedModelingLib.pmfExp_le_pmfExp_of_forall_le
     (featureMarginal μ)
     (fun x => (if argmaxRule x = y then (1 : ℝ) else 0) - q x y)
     (paperConditionalMAE q) hpoint
@@ -382,7 +383,7 @@ theorem paper_theorem1iii_argmax_bias_le_mae_of_simplex
 
 /-- The binary one-feature witness used for Theorem 1(iii) tightness. -/
 noncomputable def paperTheorem1TightMu : PMF (Unit × Fin 2) :=
-  PMF.pure ((), (0 : Fin 2))
+  AppliedModelingLib.uniformPMF (Unit × Fin 2)
 
 /-- Uniform binary posterior in the Theorem 1(iii) tightness witness. -/
 noncomputable def paperTheorem1TightQ (_ : Unit) (_ : Fin 2) : ℝ :=
@@ -397,12 +398,12 @@ theorem paper_theorem1iii_tight_binary_uniform_bias :
       paperTheorem1TightArgmax 0 = 1 / 2 := by
   norm_num [paperAggregateBias, paperBias, paperMarginalLabelShare,
     paperAggregatePosterior, paperTheorem1TightMu, paperTheorem1TightQ,
-    paperTheorem1TightArgmax, featureMarginal, EconCSLib.pmfProb]
+    paperTheorem1TightArgmax, featureMarginal, AppliedModelingLib.pmfProb]
 
 theorem paper_theorem1iii_tight_binary_uniform_mae :
     paperClassifierMAE paperTheorem1TightMu paperTheorem1TightQ = 1 / 2 := by
   unfold paperClassifierMAE featureMarginal
-  rw [EconCSLib.pmfExp_map]
+  rw [AppliedModelingLib.pmfExp_map]
   simp [paperTheorem1TightMu, paperConditionalMAE, paperTheorem1TightQ]
   norm_num
 
@@ -435,10 +436,10 @@ structure FiniteBayesDatasetModel
   trueLabels : Ω → Fin N → Fin K
   posterior : σ → Fin N → Fin K → ℝ
   bayes_atom : ∀ xs i y,
-    EconCSLib.pmfProb μ
+    AppliedModelingLib.pmfProb μ
         (fun w => observedDataset w = xs ∧ trueLabels w i = y) =
       posterior xs i y *
-        EconCSLib.pmfProb μ (fun w => observedDataset w = xs)
+        AppliedModelingLib.pmfProb μ (fun w => observedDataset w = xs)
 
 namespace FiniteBayesDatasetModel
 
@@ -446,9 +447,9 @@ variable [Fintype Ω] [DecidableEq Ω] [Fintype σ] [DecidableEq σ]
 variable {N K : ℕ} (M : FiniteBayesDatasetModel Ω σ N K)
 
 theorem row_bayes (i : Fin N) (choose : σ → Fin K) :
-    EconCSLib.pmfExp M.μ (fun w =>
+    AppliedModelingLib.pmfExp M.μ (fun w =>
         if choose (M.observedDataset w) = M.trueLabels w i then (1 : ℝ) else 0) =
-      EconCSLib.pmfExp M.μ (fun w =>
+      AppliedModelingLib.pmfExp M.μ (fun w =>
         M.posterior (M.observedDataset w) i (choose (M.observedDataset w))) := by
   classical
   have hpartition :
@@ -479,36 +480,36 @@ theorem row_bayes (i : Fin N) (choose : σ → Fin K) :
         simp [hobs, hlabel]
       · simp [hobs]
   calc
-    EconCSLib.pmfExp M.μ (fun w =>
+    AppliedModelingLib.pmfExp M.μ (fun w =>
         if choose (M.observedDataset w) = M.trueLabels w i then (1 : ℝ) else 0)
         =
-      EconCSLib.pmfExp M.μ (fun w =>
+      AppliedModelingLib.pmfExp M.μ (fun w =>
         ∑ xs : σ,
           if M.observedDataset w = xs ∧ M.trueLabels w i = choose xs then
             (1 : ℝ) else 0) := by
-        exact EconCSLib.pmfExp_congr M.μ (fun w => congrFun hpartition w)
+        exact AppliedModelingLib.pmfExp_congr M.μ (fun w => congrFun hpartition w)
     _ = ∑ xs : σ,
-        EconCSLib.pmfExp M.μ (fun w =>
+        AppliedModelingLib.pmfExp M.μ (fun w =>
           if M.observedDataset w = xs ∧ M.trueLabels w i = choose xs then
             (1 : ℝ) else 0) := by
-        rw [EconCSLib.pmfExp_finset_sum]
+        rw [AppliedModelingLib.pmfExp_finset_sum]
     _ = ∑ xs : σ,
-        EconCSLib.pmfProb M.μ
+        AppliedModelingLib.pmfProb M.μ
           (fun w => M.observedDataset w = xs ∧ M.trueLabels w i = choose xs) := by
         rfl
     _ = ∑ xs : σ,
         M.posterior xs i (choose xs) *
-          EconCSLib.pmfProb M.μ (fun w => M.observedDataset w = xs) := by
+          AppliedModelingLib.pmfProb M.μ (fun w => M.observedDataset w = xs) := by
         refine Finset.sum_congr rfl ?_
         intro xs _
         exact M.bayes_atom xs i (choose xs)
     _ = ∑ xs : σ,
-        EconCSLib.pmfExp M.μ (fun w =>
+        AppliedModelingLib.pmfExp M.μ (fun w =>
           if M.observedDataset w = xs then
             M.posterior xs i (choose xs) else 0) := by
         refine Finset.sum_congr rfl ?_
         intro xs _
-        rw [EconCSLib.pmfExp_eq_prob_mul_add_one_sub_prob_mul_of_forall_eq_if
+        rw [AppliedModelingLib.pmfExp_eq_prob_mul_add_one_sub_prob_mul_of_forall_eq_if
           M.μ (fun w => M.observedDataset w = xs)
           (fun w => if M.observedDataset w = xs then
             M.posterior xs i (choose xs) else 0)
@@ -516,14 +517,14 @@ theorem row_bayes (i : Fin N) (choose : σ → Fin K) :
         · ring
         · intro w
           rfl
-    _ = EconCSLib.pmfExp M.μ (fun w =>
+    _ = AppliedModelingLib.pmfExp M.μ (fun w =>
         ∑ xs : σ,
           if M.observedDataset w = xs then
             M.posterior xs i (choose xs) else 0) := by
-        rw [EconCSLib.pmfExp_finset_sum]
-    _ = EconCSLib.pmfExp M.μ (fun w =>
+        rw [AppliedModelingLib.pmfExp_finset_sum]
+    _ = AppliedModelingLib.pmfExp M.μ (fun w =>
         M.posterior (M.observedDataset w) i (choose (M.observedDataset w))) := by
-        refine EconCSLib.pmfExp_congr M.μ ?_
+        refine AppliedModelingLib.pmfExp_congr M.μ ?_
         intro w
         rw [Finset.sum_eq_single (M.observedDataset w)]
         · simp
@@ -540,6 +541,12 @@ end Finite
 namespace ContinuousTheorem1
 
 variable {X Y : Type*} [MeasurableSpace X] [Fintype Y] [DecidableEq Y]
+
+export AppliedModelingLib.Learning.Prediction.Calibration.Measure
+  (scoreSigma ConditionalExpectationCalibration
+    ConditionalExpectationKernelCalibration ContinuousCalibration
+    scoreFiberMass scoreFiberLabelMass ScoreFiberConditionalCalibration
+    FiniteScoreCalibrationAt FiniteScoreCalibration)
 
 /-- Continuous feature-space version of the paper marginal share `\hat p_marg(y)`. -/
 noncomputable def continuousMarginalLabelShare
@@ -567,10 +574,8 @@ noncomputable def continuousClassifierMAE
   ∫ x, Finite.paperConditionalMAE q x ∂μ
 
 /-- Pointwise posterior-simplex assumptions for a continuous classifier. -/
-def PosteriorSimplex (q : X → Y → ℝ) : Prop :=
-  (∀ x, (∑ a : Y, q x a) = 1) ∧
-    (∀ x a, 0 ≤ q x a) ∧
-      (∀ x a, q x a ≤ 1)
+abbrev PosteriorSimplex (q : X → Y → ℝ) : Prop :=
+  AppliedModelingLib.Learning.Prediction.IsSimplexValued q
 
 theorem posterior_coord_le_one_of_sum_nonneg
     {X Y : Type*} [Fintype Y] (q : X → Y → ℝ) (x : X) (y : Y)
@@ -998,7 +1003,7 @@ theorem posteriorMAESum_twoCoordinate_raise_focal_to_one
   have hsum :
       (∑ a : Y, fnew a) =
         (∑ a : Y, fold a) + (fnew z - fold z) + (fnew w - fold w) := by
-    exact EconCSLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
+    exact AppliedModelingLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
       (f := fnew) (g := fold) (a := z) (b := w) hzw
       (by
         intro a haz haw
@@ -1040,7 +1045,7 @@ theorem posteriorMAESum_twoCoordinate_lower_focal_to_uniform
   have hsum :
       (∑ a : Y, fnew a) =
         (∑ a : Y, fold a) + (fnew z - fold z) + (fnew w - fold w) := by
-    exact EconCSLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
+    exact AppliedModelingLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
       (f := fnew) (g := fold) (a := z) (b := w) hzw
       (by
         intro a haz haw
@@ -1081,7 +1086,7 @@ theorem posteriorMAESum_twoCoordinate_raise_focal_to_uniform
   have hsum :
       (∑ a : Y, fnew a) =
         (∑ a : Y, fold a) + (fnew z - fold z) + (fnew w - fold w) := by
-    exact EconCSLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
+    exact AppliedModelingLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
       (f := fnew) (g := fold) (a := z) (b := w) hzw
       (by
         intro a haz haw
@@ -1122,7 +1127,7 @@ theorem posteriorMAESum_twoCoordinate_lower_focal_to_zero
   have hsum :
       (∑ a : Y, fnew a) =
         (∑ a : Y, fold a) + (fnew z - fold z) + (fnew w - fold w) := by
-    exact EconCSLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
+    exact AppliedModelingLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
       (f := fnew) (g := fold) (a := z) (b := w) hzw
       (by
         intro a haz haw
@@ -2419,7 +2424,7 @@ theorem posteriorSum_twoCoordinate_raise_focal_to_one
   have hsum' :
       (∑ a : Y, q' a) =
         (∑ a : Y, q a) + (q' z - q z) + (q' w - q w) := by
-    exact EconCSLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
+    exact AppliedModelingLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
       (f := q') (g := q) (a := z) (b := w) hzw
       (by
         intro a haz haw
@@ -2465,7 +2470,7 @@ theorem posteriorSum_twoCoordinate_lower_focal_to_uniform
   have hsum' :
       (∑ a : Y, q' a) =
         (∑ a : Y, q a) + (q' z - q z) + (q' w - q w) := by
-    exact EconCSLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
+    exact AppliedModelingLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
       (f := q') (g := q) (a := z) (b := w) hzw
       (by
         intro a haz haw
@@ -2511,7 +2516,7 @@ theorem posteriorSum_twoCoordinate_raise_focal_to_uniform
   have hsum' :
       (∑ a : Y, q' a) =
         (∑ a : Y, q a) + (q' z - q z) + (q' w - q w) := by
-    exact EconCSLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
+    exact AppliedModelingLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
       (f := q') (g := q) (a := z) (b := w) hzw
       (by
         intro a haz haw
@@ -2558,7 +2563,7 @@ theorem posteriorSum_twoCoordinate_lower_focal_to_zero
   have hsum' :
       (∑ a : Y, q' a) =
         (∑ a : Y, q a) + (q' z - q z) + (q' w - q w) := by
-    exact EconCSLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
+    exact AppliedModelingLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
       (f := q') (g := q) (a := z) (b := w) hzw
       (by
         intro a haz haw
@@ -4273,46 +4278,6 @@ theorem exists_source_Sd_balancing_subset_interval_cut_of_region_subset_uniform_
     (uniform_inverse_card_nonneg (Y := Y))
     (uniform_inverse_card_le_one (Y := Y) z) hregion
 
-/-- Sigma-algebra generated by the score coordinate `q_y(X)`. -/
-@[reducible] noncomputable def scoreSigma
-    {X Y : Type*} [MeasurableSpace (X × Y)]
-    (q : X → Y → ℝ) (y : Y) : MeasurableSpace (X × Y) :=
-  MeasurableSpace.comap (fun xy : X × Y => q xy.1 y) (borel ℝ)
-
-/--
-Conditional-expectation calibration for a continuous score.
-
-This is the Mathlib conditional-expectation version of the paper's display
-`Pr(Y = y | q_y(X)) = q_y(X)`: for each label, the conditional expectation of
-the true label indicator with respect to the sigma-algebra generated by the
-score coordinate is almost surely the score itself.
--/
-noncomputable def ConditionalExpectationCalibration
-    {X Y : Type*} [MeasurableSpace (X × Y)] [DecidableEq Y]
-    (μ : Measure (X × Y)) (q : X → Y → ℝ) : Prop :=
-  ∀ y : Y,
-    μ[(fun xy : X × Y => if xy.2 = y then (1 : ℝ) else 0) | scoreSigma q y] =ᵐ[μ]
-      fun xy => q xy.1 y
-
-/--
-Kernel calibration using Mathlib's standard-Borel conditional-expectation
-kernel.
-
-For each label, integrating the true label indicator against
-`condExpKernel μ (scoreSigma q y)` recovers the score almost surely.  This is a
-regular-kernel version of the same calibration bridge used by
-`ConditionalExpectationCalibration`.
--/
-noncomputable def ConditionalExpectationKernelCalibration
-    {X Y : Type*} [MeasurableSpace (X × Y)] [StandardBorelSpace (X × Y)]
-    [DecidableEq Y]
-    (μ : Measure (X × Y)) [IsFiniteMeasure μ] (q : X → Y → ℝ) : Prop :=
-  ∀ y : Y,
-    (fun xy : X × Y =>
-      ∫ z, (if z.2 = y then (1 : ℝ) else 0) ∂
-        ProbabilityTheory.condExpKernel μ (scoreSigma q y) xy) =ᵐ[μ]
-      fun xy => q xy.1 y
-
 theorem conditionalExpectationCalibration_of_condExpKernelCalibration
     {X Y : Type*} [MeasurableSpace (X × Y)] [StandardBorelSpace (X × Y)]
     [DecidableEq Y]
@@ -4331,52 +4296,6 @@ theorem conditionalExpectationCalibration_of_condExpKernelCalibration
         fun xy => ∫ z, f z ∂ProbabilityTheory.condExpKernel μ (scoreSigma q y) xy := by
     exact ProbabilityTheory.condExp_ae_eq_integral_condExpKernel hhm (hlabelInt y)
   exact hkernel.trans (hcal y)
-
-/--
-Measure-theoretic calibration for a continuous score.
-
-For every label `y` and every measurable score event `s`, the true label-`y`
-mass among observations whose score falls in `s` equals the aggregate score
-mass on that same event.  This is the event-preimage form of
-`E[1{Y = y} | q_y(X)] = q_y(X)`.
--/
-noncomputable def ContinuousCalibration
-    {X Y : Type*} [MeasurableSpace (X × Y)] [DecidableEq Y]
-    (μ : Measure (X × Y)) (q : X → Y → ℝ) : Prop := by
-  classical
-  exact
-    ∀ (y : Y) (s : Set ℝ), MeasurableSet s →
-      (∫ xy, (if q xy.1 y ∈ s then
-          if xy.2 = y then (1 : ℝ) else 0
-        else 0) ∂μ) =
-        ∫ xy, (if q xy.1 y ∈ s then q xy.1 y else 0) ∂μ
-
-/-- Mass of the score fiber `{q_y(X)=c}` under the joint distribution. -/
-noncomputable def scoreFiberMass
-    {X Y : Type*} [MeasurableSpace (X × Y)]
-    (μ : Measure (X × Y)) (q : X → Y → ℝ) (y : Y) (c : ℝ) : ℝ :=
-  ∫ xy, (if q xy.1 y = c then (1 : ℝ) else 0) ∂μ
-
-/-- True label-`y` mass on the score fiber `{q_y(X)=c}`. -/
-noncomputable def scoreFiberLabelMass
-    {X Y : Type*} [MeasurableSpace (X × Y)] [DecidableEq Y]
-    (μ : Measure (X × Y)) (q : X → Y → ℝ) (y : Y) (c : ℝ) : ℝ :=
-  ∫ xy, (if q xy.1 y = c then
-      if xy.2 = y then (1 : ℝ) else 0
-    else 0) ∂μ
-
-/--
-Positive-mass score-fiber calibration.
-
-This is a literal finite-mass reading of the source notation
-`Pr(Y = y | q_y(X)=c) = c`: on every score fiber with positive mass, the true
-label-`y` mass divided by the fiber mass equals the score value.
--/
-def ScoreFiberConditionalCalibration
-    {X Y : Type*} [MeasurableSpace (X × Y)] [DecidableEq Y]
-    (μ : Measure (X × Y)) (q : X → Y → ℝ) : Prop :=
-  ∀ (y : Y) (c : ℝ), 0 < scoreFiberMass μ q y c →
-    scoreFiberLabelMass μ q y c / scoreFiberMass μ q y c = c
 
 /--
 Event-preimage calibration implies the literal positive-mass score-fiber
@@ -20078,29 +19997,6 @@ theorem continuousJointPrior_eq_jointAggregatePosterior_of_condExpKernelCalibrat
       (conditionalExpectationCalibration_of_condExpKernelCalibration
         μ q hscore hlabelInt hcal)
 
-/--
-Finite-score level-set calibration for one target label.
-
-The source definition of calibration says that on each score level
-`q(y, x) = c`, the fraction of true label-`y` mass is `c`.  This formalized
-version represents the realized score levels by a finite index type `C`, with
-`bin x y` selecting the score cell and `score y c` giving the cell score.
--/
-def FiniteScoreCalibrationAt
-    {X Y C : Type*} [MeasurableSpace (X × Y)] [DecidableEq Y] [DecidableEq C]
-    (μ : Measure (X × Y)) (score : Y → C → ℝ) (bin : X → Y → C) (y : Y) : Prop :=
-  ∀ c : C,
-    (∫ xy, (if bin xy.1 y = c then
-        if xy.2 = y then (1 : ℝ) else 0
-      else 0) ∂μ) =
-      score y c * ∫ xy, (if bin xy.1 y = c then (1 : ℝ) else 0) ∂μ
-
-/-- Finite-score level-set calibration for every label. -/
-def FiniteScoreCalibration
-    {X Y C : Type*} [MeasurableSpace (X × Y)] [DecidableEq Y] [DecidableEq C]
-    (μ : Measure (X × Y)) (score : Y → C → ℝ) (bin : X → Y → C) : Prop :=
-  ∀ y : Y, FiniteScoreCalibrationAt μ score bin y
-
 theorem continuousJointPrior_eq_jointAggregatePosterior_of_finiteScoreCalibrationAt
     {X Y C : Type*} [MeasurableSpace (X × Y)] [DecidableEq Y]
     [Fintype C] [DecidableEq C]
@@ -21071,7 +20967,7 @@ noncomputable def datasetFidelity {N K : ℕ}
 /-- Per-dataset posterior-score accuracy term. -/
 noncomputable def datasetAccuracyScore {N K : ℕ}
     (posterior : Fin N → Fin K → ℝ) (decision : Fin N → Fin K) : ℝ :=
-  EconCSLib.Decision.averageScore posterior decision
+  AppliedModelingLib.Decision.averageScore posterior decision
 
 /-- Replace one row's decision by a new label. -/
 def switchDecision {N K : ℕ}
@@ -21125,7 +21021,7 @@ theorem datasetAccuracyScore_lt_of_switch_to_better_label {N K : ℕ}
     (hbetter : posterior i (decision i) < posterior i newLabel) :
     datasetAccuracyScore posterior decision <
       datasetAccuracyScore posterior (switchDecision decision i newLabel) := by
-  unfold datasetAccuracyScore EconCSLib.Decision.averageScore
+  unfold datasetAccuracyScore AppliedModelingLib.Decision.averageScore
   rw [sum_switchDecision_score_eq_sub_add]
   have hNpos : 0 < (Fintype.card (Fin N) : ℝ) := by
     exact_mod_cast Fintype.card_pos_iff.mpr ⟨i⟩
@@ -21142,7 +21038,7 @@ theorem datasetAccuracyScore_le_of_switch_to_weakly_better_label {N K : ℕ}
     (hbetter : posterior i (decision i) ≤ posterior i newLabel) :
     datasetAccuracyScore posterior decision ≤
       datasetAccuracyScore posterior (switchDecision decision i newLabel) := by
-  unfold datasetAccuracyScore EconCSLib.Decision.averageScore
+  unfold datasetAccuracyScore AppliedModelingLib.Decision.averageScore
   rw [sum_switchDecision_score_eq_sub_add]
   have hNnonneg : 0 ≤ (Fintype.card (Fin N) : ℝ) :=
     Nat.cast_nonneg (Fintype.card (Fin N))
@@ -21742,7 +21638,7 @@ noncomputable def expectedDatasetAccuracy {Sample : Type*} [Fintype Sample]
     [DecidableEq Sample] {N K : ℕ}
     (sampleLaw : PMF Sample) (posterior : Sample → Fin N → Fin K → ℝ)
     (policy : Sample → Fin N → Fin K) : ℝ :=
-  EconCSLib.pmfExp sampleLaw
+  AppliedModelingLib.pmfExp sampleLaw
     (fun sample => datasetAccuracyScore (posterior sample) (policy sample))
 
 /-- Expected distributional fidelity of a dataset-to-decision policy. -/
@@ -21750,7 +21646,7 @@ noncomputable def expectedDatasetFidelity {Sample : Type*} [Fintype Sample]
     [DecidableEq Sample] {N K : ℕ}
     (sampleLaw : PMF Sample) (pref : Fin K → ℝ)
     (policy : Sample → Fin N → Fin K) : ℝ :=
-  EconCSLib.pmfExp sampleLaw
+  AppliedModelingLib.pmfExp sampleLaw
     (fun sample => datasetFidelity pref (policy sample))
 
 /-- Expected distributional fidelity for a dataset-dependent reference family. -/
@@ -21758,7 +21654,7 @@ noncomputable def expectedDatasetFidelityAt {Sample : Type*} [Fintype Sample]
     [DecidableEq Sample] {N K : ℕ}
     (sampleLaw : PMF Sample) (prefAt : Sample → Fin K → ℝ)
     (policy : Sample → Fin N → Fin K) : ℝ :=
-  EconCSLib.pmfExp sampleLaw
+  AppliedModelingLib.pmfExp sampleLaw
     (fun sample => datasetFidelity (prefAt sample) (policy sample))
 
 /-- Measure-integral expected dataset accuracy for measurable sample spaces. -/
@@ -22041,9 +21937,9 @@ theorem pmfExp_lt_pmfExp_of_forall_le_exists_lt
     (μ : PMF α) (f g : α → ℝ)
     (hle : ∀ a, f a ≤ g a)
     (hex : ∃ a, 0 < (μ a).toReal ∧ f a < g a) :
-    EconCSLib.pmfExp μ f < EconCSLib.pmfExp μ g := by
+    AppliedModelingLib.pmfExp μ f < AppliedModelingLib.pmfExp μ g := by
   classical
-  unfold EconCSLib.pmfExp
+  unfold AppliedModelingLib.pmfExp
   refine Finset.sum_lt_sum ?_ ?_
   · intro a _
     exact mul_le_mul_of_nonneg_left (hle a) ENNReal.toReal_nonneg
@@ -22054,9 +21950,9 @@ theorem pmfExp_eq_of_forall_eq_of_pos_mass
     {α : Type*} [Fintype α] [DecidableEq α]
     (μ : PMF α) {f g : α → ℝ}
     (h : ∀ a, 0 < (μ a).toReal → f a = g a) :
-    EconCSLib.pmfExp μ f = EconCSLib.pmfExp μ g := by
+    AppliedModelingLib.pmfExp μ f = AppliedModelingLib.pmfExp μ g := by
   classical
-  unfold EconCSLib.pmfExp
+  unfold AppliedModelingLib.pmfExp
   refine Finset.sum_congr rfl ?_
   intro a _
   by_cases hmass : 0 < (μ a).toReal
@@ -22068,16 +21964,16 @@ theorem pmfExp_eq_of_forall_eq_of_pos_mass
 theorem pmfExp_eq_of_zero_prob_ne
     {α β : Type*} [Fintype α] [DecidableEq α] [DecidableEq β]
     (μ : PMF α) (f g : α → β) (score : α → β → ℝ)
-    (hzero : EconCSLib.pmfProb μ (fun a => f a ≠ g a) = 0) :
-    EconCSLib.pmfExp μ (fun a => score a (f a)) =
-      EconCSLib.pmfExp μ (fun a => score a (g a)) := by
+    (hzero : AppliedModelingLib.pmfProb μ (fun a => f a ≠ g a) = 0) :
+    AppliedModelingLib.pmfExp μ (fun a => score a (f a)) =
+      AppliedModelingLib.pmfExp μ (fun a => score a (g a)) := by
   classical
   refine pmfExp_eq_of_forall_eq_of_pos_mass μ ?_
   intro a hmass
   have hfg : f a = g a := by
     by_contra hne
-    have hpos : 0 < EconCSLib.pmfProb μ (fun a => f a ≠ g a) :=
-      EconCSLib.pmfProb_pos_of_mass μ (fun a => f a ≠ g a) a hne hmass
+    have hpos : 0 < AppliedModelingLib.pmfProb μ (fun a => f a ≠ g a) :=
+      AppliedModelingLib.pmfProb_pos_of_mass μ (fun a => f a ≠ g a) a hne hmass
     rw [hzero] at hpos
     exact (lt_irrefl (0 : ℝ)) hpos
   rw [hfg]
@@ -22086,7 +21982,7 @@ theorem expectedDatasetAccuracy_eq_of_policy_eq_zero_prob
     {Sample : Type*} [Fintype Sample] [DecidableEq Sample] {N K : ℕ}
     (sampleLaw : PMF Sample) (posterior : Sample → Fin N → Fin K → ℝ)
     (policy benchmark : Sample → Fin N → Fin K)
-    (hzero : EconCSLib.pmfProb sampleLaw (fun s => policy s ≠ benchmark s) = 0) :
+    (hzero : AppliedModelingLib.pmfProb sampleLaw (fun s => policy s ≠ benchmark s) = 0) :
     expectedDatasetAccuracy sampleLaw posterior policy =
       expectedDatasetAccuracy sampleLaw posterior benchmark := by
   classical
@@ -22098,7 +21994,7 @@ theorem expectedDatasetFidelity_eq_of_policy_eq_zero_prob
     {Sample : Type*} [Fintype Sample] [DecidableEq Sample] {N K : ℕ}
     (sampleLaw : PMF Sample) (pref : Fin K → ℝ)
     (policy benchmark : Sample → Fin N → Fin K)
-    (hzero : EconCSLib.pmfProb sampleLaw (fun s => policy s ≠ benchmark s) = 0) :
+    (hzero : AppliedModelingLib.pmfProb sampleLaw (fun s => policy s ≠ benchmark s) = 0) :
     expectedDatasetFidelity sampleLaw pref policy =
       expectedDatasetFidelity sampleLaw pref benchmark := by
   classical
@@ -22110,7 +22006,7 @@ theorem expectedDataset_weightedObjective_eq_of_policy_eq_zero_prob
     {Sample : Type*} [Fintype Sample] [DecidableEq Sample] {N K : ℕ}
     (sampleLaw : PMF Sample) (posterior : Sample → Fin N → Fin K → ℝ)
     (pref : Fin K → ℝ) (policy benchmark : Sample → Fin N → Fin K) (γ : ℝ)
-    (hzero : EconCSLib.pmfProb sampleLaw (fun s => policy s ≠ benchmark s) = 0) :
+    (hzero : AppliedModelingLib.pmfProb sampleLaw (fun s => policy s ≠ benchmark s) = 0) :
     Pareto.weightedObjective γ
         (expectedDatasetAccuracy sampleLaw posterior)
         (expectedDatasetFidelity sampleLaw pref) policy =
@@ -22144,7 +22040,7 @@ theorem not_expectedDataset_pareto_of_positive_mass_sample_dominated
       expectedDatasetAccuracy sampleLaw posterior policy ≤
         expectedDatasetAccuracy sampleLaw posterior betterPolicy := by
     unfold expectedDatasetAccuracy
-    refine EconCSLib.pmfExp_le_pmfExp_of_forall_le sampleLaw _ _ ?_
+    refine AppliedModelingLib.pmfExp_le_pmfExp_of_forall_le sampleLaw _ _ ?_
     intro s
     by_cases hs : s = sample
     · subst s
@@ -22196,7 +22092,7 @@ theorem not_expectedDatasetAt_pareto_of_positive_mass_sample_dominated
       expectedDatasetAccuracy sampleLaw posterior policy ≤
         expectedDatasetAccuracy sampleLaw posterior betterPolicy := by
     unfold expectedDatasetAccuracy
-    refine EconCSLib.pmfExp_le_pmfExp_of_forall_le sampleLaw _ _ ?_
+    refine AppliedModelingLib.pmfExp_le_pmfExp_of_forall_le sampleLaw _ _ ?_
     intro s
     by_cases hs : s = sample
     · subst s
@@ -22249,7 +22145,7 @@ theorem not_expectedDataset_weightedObjective_maximizer_of_positive_mass_sample_
       expectedDatasetAccuracy sampleLaw posterior policy ≤
         expectedDatasetAccuracy sampleLaw posterior betterPolicy := by
     unfold expectedDatasetAccuracy
-    refine EconCSLib.pmfExp_le_pmfExp_of_forall_le sampleLaw _ _ ?_
+    refine AppliedModelingLib.pmfExp_le_pmfExp_of_forall_le sampleLaw _ _ ?_
     intro s
     by_cases hs : s = sample
     · subst s
@@ -22304,7 +22200,7 @@ theorem not_expectedDatasetAt_weightedObjective_maximizer_of_positive_mass_sampl
       expectedDatasetAccuracy sampleLaw posterior policy ≤
         expectedDatasetAccuracy sampleLaw posterior betterPolicy := by
     unfold expectedDatasetAccuracy
-    refine EconCSLib.pmfExp_le_pmfExp_of_forall_le sampleLaw _ _ ?_
+    refine AppliedModelingLib.pmfExp_le_pmfExp_of_forall_le sampleLaw _ _ ?_
     intro s
     by_cases hs : s = sample
     · subst s
@@ -22645,14 +22541,14 @@ theorem iidSamplePMF_coordinate_mass_pos_of_sample_mass_pos
 theorem iidSamplePMF_allRowsEvent_pos_of_event_pos
     {X : Type*} [Fintype X] [DecidableEq X]
     (μ : PMF X) (N : ℕ) (event : X → Prop) [DecidablePred event]
-    (hpos : 0 < EconCSLib.pmfProb μ event) :
-    0 < EconCSLib.pmfProb (iidSamplePMF μ N)
+    (hpos : 0 < AppliedModelingLib.pmfProb μ event) :
+    0 < AppliedModelingLib.pmfProb (iidSamplePMF μ N)
       (fun sample : Fin N → X => ∀ i : Fin N, event (sample i)) := by
   classical
-  rcases (EconCSLib.pmfProb_pos_iff_exists_pos_mass
+  rcases (AppliedModelingLib.pmfProb_pos_iff_exists_pos_mass
     (μ := μ) (p := event)).mp hpos with
     ⟨x, hx, hmass⟩
-  exact EconCSLib.pmfProb_pos_of_mass
+  exact AppliedModelingLib.pmfProb_pos_of_mass
     (iidSamplePMF μ N)
     (fun sample : Fin N → X => ∀ i : Fin N, event (sample i))
     (constantSample (N := N) x)
@@ -22662,12 +22558,12 @@ theorem iidSamplePMF_allRowsEvent_pos_of_event_pos
 theorem exists_positive_mass_allRowsEvent_sample_of_event_pos
     {X : Type*} [Fintype X] [DecidableEq X]
     (μ : PMF X) (N : ℕ) (event : X → Prop) [DecidablePred event]
-    (hpos : 0 < EconCSLib.pmfProb μ event) :
+    (hpos : 0 < AppliedModelingLib.pmfProb μ event) :
     ∃ sample : Fin N → X,
       (∀ i : Fin N, event (sample i)) ∧
         0 < ((iidSamplePMF μ N) sample).toReal := by
   classical
-  rcases (EconCSLib.pmfProb_pos_iff_exists_pos_mass
+  rcases (AppliedModelingLib.pmfProb_pos_iff_exists_pos_mass
     (μ := μ) (p := event)).mp hpos with
     ⟨x, hx, hmass⟩
   exact ⟨constantSample (N := N) x, (by intro i; exact hx),
@@ -22676,12 +22572,12 @@ theorem exists_positive_mass_allRowsEvent_sample_of_event_pos
 theorem iidSamplePMF_sampledDecision_ne_eq_zero_of_rule_ne_eq_zero
     {X : Type*} [Fintype X] [DecidableEq X] {N K : ℕ}
     (μ : PMF X) (rule argmaxRule : X → Fin K)
-    (hzero : EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0) :
-    EconCSLib.pmfProb (iidSamplePMF μ N)
+    (hzero : AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0) :
+    AppliedModelingLib.pmfProb (iidSamplePMF μ N)
       (fun sample : Fin N → X =>
         sampledDecision rule sample ≠ sampledDecision argmaxRule sample) = 0 := by
   classical
-  refine EconCSLib.pmfProb_eq_zero_of_no_mass
+  refine AppliedModelingLib.pmfProb_eq_zero_of_no_mass
     (iidSamplePMF μ N)
     (fun sample : Fin N → X =>
       sampledDecision rule sample ≠ sampledDecision argmaxRule sample) ?_
@@ -22699,8 +22595,8 @@ theorem iidSamplePMF_sampledDecision_ne_eq_zero_of_rule_ne_eq_zero
   rcases hrow with ⟨i, hi⟩
   have hcoord : 0 < (μ (sample i)).toReal :=
     iidSamplePMF_coordinate_mass_pos_of_sample_mass_pos μ N sample i hmass_pos
-  have hbase_pos : 0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) :=
-    EconCSLib.pmfProb_pos_of_mass μ (fun x : X => rule x ≠ argmaxRule x)
+  have hbase_pos : 0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) :=
+    AppliedModelingLib.pmfProb_pos_of_mass μ (fun x : X => rule x ≠ argmaxRule x)
       (sample i) hi hcoord
   rw [hzero] at hbase_pos
   exact (lt_irrefl (0 : ℝ)) hbase_pos
@@ -22709,7 +22605,7 @@ theorem paper_theorem2iii_expected_accuracy_eq_of_independent_rule_agrees_ae
     {X : Type*} [Fintype X] [DecidableEq X] {N K : ℕ}
     (μ : PMF X) (posterior : X → Fin K → ℝ)
     (rule argmaxRule : X → Fin K)
-    (hzero : EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0) :
+    (hzero : AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0) :
     expectedDatasetAccuracy (iidSamplePMF μ N)
         (fun sample => sampledPosterior posterior sample)
         (fun sample => sampledDecision rule sample) =
@@ -22727,7 +22623,7 @@ theorem paper_theorem2iii_expected_fidelity_eq_of_independent_rule_agrees_ae
     {X : Type*} [Fintype X] [DecidableEq X] {N K : ℕ}
     (μ : PMF X) (pref : Fin K → ℝ)
     (rule argmaxRule : X → Fin K)
-    (hzero : EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0) :
+    (hzero : AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0) :
     expectedDatasetFidelity (iidSamplePMF μ N) pref
         (fun sample => sampledDecision rule sample) =
       expectedDatasetFidelity (iidSamplePMF μ N) pref
@@ -22743,7 +22639,7 @@ theorem paper_theorem2iii_expected_weightedObjective_eq_of_independent_rule_agre
     {X : Type*} [Fintype X] [DecidableEq X] {N K : ℕ}
     (μ : PMF X) (posterior : X → Fin K → ℝ) (pref : Fin K → ℝ)
     (rule argmaxRule : X → Fin K) (γ : ℝ)
-    (hzero : EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0) :
+    (hzero : AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0) :
     Pareto.weightedObjective γ
         (expectedDatasetAccuracy (iidSamplePMF μ N)
           (fun sample => sampledPosterior posterior sample))
@@ -23743,8 +23639,8 @@ theorem iidSamplePMF_allDisagreement_pos_of_event_pos
     {X : Type*} [Fintype X] [DecidableEq X] {N K : ℕ}
     (μ : PMF X) (rule argmaxRule : X → Fin K) (target : Fin K)
     (hpos :
-      0 < EconCSLib.pmfProb μ (allDisagreementAtom rule argmaxRule target)) :
-    0 < EconCSLib.pmfProb (iidSamplePMF μ N)
+      0 < AppliedModelingLib.pmfProb μ (allDisagreementAtom rule argmaxRule target)) :
+    0 < AppliedModelingLib.pmfProb (iidSamplePMF μ N)
       (fun sample : Fin N → X =>
         ∀ i : Fin N, allDisagreementAtom rule argmaxRule target (sample i)) := by
   classical
@@ -23755,7 +23651,7 @@ theorem exists_positive_mass_allDisagreement_sample_of_event_pos
     {X : Type*} [Fintype X] [DecidableEq X] {N K : ℕ}
     (μ : PMF X) (rule argmaxRule : X → Fin K) (target : Fin K)
     (hpos :
-      0 < EconCSLib.pmfProb μ (allDisagreementAtom rule argmaxRule target)) :
+      0 < AppliedModelingLib.pmfProb μ (allDisagreementAtom rule argmaxRule target)) :
     ∃ sample : Fin N → X,
       (∀ i : Fin N, allDisagreementAtom rule argmaxRule target (sample i)) ∧
         0 < ((iidSamplePMF μ N) sample).toReal := by
@@ -23767,16 +23663,16 @@ theorem exists_target_allDisagreement_event_pos_of_disagreement_event_pos
     {X : Type*} [Fintype X] [DecidableEq X] {K : ℕ}
     (μ : PMF X) (rule argmaxRule : X → Fin K)
     (hpos :
-      0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x)) :
+      0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x)) :
     ∃ target : Fin K,
-      0 < EconCSLib.pmfProb μ
+      0 < AppliedModelingLib.pmfProb μ
         (allDisagreementAtom rule argmaxRule target) := by
   classical
-  rcases (EconCSLib.pmfProb_pos_iff_exists_pos_mass
+  rcases (AppliedModelingLib.pmfProb_pos_iff_exists_pos_mass
     (μ := μ) (p := fun x : X => rule x ≠ argmaxRule x)).mp hpos with
     ⟨x, hne, hmass⟩
   refine ⟨argmaxRule x, ?_⟩
-  exact EconCSLib.pmfProb_pos_of_mass μ
+  exact AppliedModelingLib.pmfProb_pos_of_mass μ
     (allDisagreementAtom rule argmaxRule (argmaxRule x)) x
     ⟨rfl, hne⟩ hmass
 
@@ -23935,7 +23831,7 @@ theorem paper_theorem2iii_exists_positive_mass_sample_not_pareto_of_disagreement
     (μ : PMF X) (posterior : X → Fin K → ℝ) (pref : Fin K → ℝ)
     (rule argmaxRule : X → Fin K) (target : Fin K)
     (hpos :
-      0 < EconCSLib.pmfProb μ (allDisagreementAtom rule argmaxRule target))
+      0 < AppliedModelingLib.pmfProb μ (allDisagreementAtom rule argmaxRule target))
     (hNpos : 0 < N)
     (hpref_nonneg : ∀ y, 0 ≤ pref y)
     (hpref_sum : (∑ y : Fin K, pref y) = 1)
@@ -23967,7 +23863,7 @@ theorem paper_theorem2iii_exists_positive_mass_sample_not_pareto_of_independent_
     (μ : PMF X) (posterior : X → Fin K → ℝ) (pref : Fin K → ℝ)
     (rule argmaxRule : X → Fin K)
     (hdisagree :
-      0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
+      0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
     (hNpos : 0 < N)
     (hpref_nonneg : ∀ y, 0 ≤ pref y)
     (hpref_sum : (∑ y : Fin K, pref y) = 1)
@@ -23994,7 +23890,7 @@ theorem paper_theorem2iii_not_expected_pareto_of_independent_rule_disagrees_pos
     (μ : PMF X) (posterior : X → Fin K → ℝ) (pref : Fin K → ℝ)
     (rule argmaxRule : X → Fin K)
     (hdisagree :
-      0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
+      0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
     (hNpos : 0 < N)
     (hpref_nonneg : ∀ y, 0 ≤ pref y)
     (hpref_sum : (∑ y : Fin K, pref y) = 1)
@@ -24120,7 +24016,7 @@ theorem paper_theorem2iii_exists_positive_mass_sample_not_weightedObjective_maxi
     (rule argmaxRule : X → Fin K) (target : Fin K)
     {γ : ℝ} (hγnonneg : 0 ≤ γ) (hγlt : γ < 1)
     (hpos :
-      0 < EconCSLib.pmfProb μ (allDisagreementAtom rule argmaxRule target))
+      0 < AppliedModelingLib.pmfProb μ (allDisagreementAtom rule argmaxRule target))
     (hNpos : 0 < N)
     (hpref_nonneg : ∀ y, 0 ≤ pref y)
     (hpref_sum : (∑ y : Fin K, pref y) = 1)
@@ -24150,7 +24046,7 @@ theorem paper_theorem2iii_exists_positive_mass_sample_not_weightedObjective_maxi
     (rule argmaxRule : X → Fin K)
     {γ : ℝ} (hγnonneg : 0 ≤ γ) (hγlt : γ < 1)
     (hdisagree :
-      0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
+      0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
     (hNpos : 0 < N)
     (hpref_nonneg : ∀ y, 0 ≤ pref y)
     (hpref_sum : (∑ y : Fin K, pref y) = 1)
@@ -24182,7 +24078,7 @@ theorem paper_theorem2iii_not_expected_weightedObjective_maximizer_of_independen
     (rule argmaxRule : X → Fin K)
     {γ : ℝ} (hγnonneg : 0 ≤ γ) (hγlt : γ < 1)
     (hdisagree :
-      0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
+      0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
     (hNpos : 0 < N)
     (hpref_nonneg : ∀ y, 0 ≤ pref y)
     (hpref_sum : (∑ y : Fin K, pref y) = 1)
@@ -24242,17 +24138,17 @@ theorem paper_theorem2iii_expected_weightedObjective_maximizer_iff_independent_r
               (fun s => sampledPosterior posterior s))
             (expectedDatasetFidelity (iidSamplePMF μ N) pref)
             (fun s => sampledDecision rule s)) ↔
-      EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0 := by
+      AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0 := by
   classical
   constructor
   · intro hmax
     by_contra hzero
-    have hp_ne : EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) ≠ 0 :=
+    have hp_ne : AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) ≠ 0 :=
       hzero
     have hnonneg :
-        0 ≤ EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) :=
-      EconCSLib.pmfProb_nonneg μ (fun x : X => rule x ≠ argmaxRule x)
-    have hpos : 0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) :=
+        0 ≤ AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) :=
+      AppliedModelingLib.pmfProb_nonneg μ (fun x : X => rule x ≠ argmaxRule x)
+    have hpos : 0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) :=
       lt_of_le_of_ne hnonneg hp_ne.symm
     exact
       (paper_theorem2iii_not_expected_weightedObjective_maximizer_of_independent_rule_disagrees_pos
@@ -24272,7 +24168,7 @@ theorem paper_theorem2iii_not_expected_weightedObjective_maximizer_of_independen
     (rule argmaxRule : X → Fin K)
     {γ : ℝ} (hγpos : 0 < γ) (hγle : γ ≤ 1)
     (hdisagree :
-      0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
+      0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
     (hNpos : 0 < N)
     (hpref_nonneg : ∀ y, 0 ≤ pref y)
     (hpref_sum : (∑ y : Fin K, pref y) = 1)
@@ -24323,7 +24219,7 @@ theorem paper_theorem2iii_exists_positive_mass_sample_not_pareto_of_augmented_ru
     (posterior : X → Fin K → ℝ) (pref : Fin K → ℝ)
     (rule : Z → Fin K) (argmaxRule : X → Fin K)
     (hdisagree :
-      0 < EconCSLib.pmfProb ν
+      0 < AppliedModelingLib.pmfProb ν
         (fun z : Z => rule z ≠ argmaxRule (feature z)))
     (hNpos : 0 < N)
     (hpref_nonneg : ∀ y, 0 ≤ pref y)
@@ -24352,7 +24248,7 @@ theorem paper_theorem2iii_not_expected_pareto_of_augmented_rule_disagrees_pos
     (posterior : X → Fin K → ℝ) (pref : Fin K → ℝ)
     (rule : Z → Fin K) (argmaxRule : X → Fin K)
     (hdisagree :
-      0 < EconCSLib.pmfProb ν
+      0 < AppliedModelingLib.pmfProb ν
         (fun z : Z => rule z ≠ argmaxRule (feature z)))
     (hNpos : 0 < N)
     (hpref_nonneg : ∀ y, 0 ≤ pref y)
@@ -24381,7 +24277,7 @@ theorem paper_theorem2iii_exists_positive_mass_sample_not_weightedObjective_maxi
     (rule : Z → Fin K) (argmaxRule : X → Fin K)
     {γ : ℝ} (hγnonneg : 0 ≤ γ) (hγlt : γ < 1)
     (hdisagree :
-      0 < EconCSLib.pmfProb ν
+      0 < AppliedModelingLib.pmfProb ν
         (fun z : Z => rule z ≠ argmaxRule (feature z)))
     (hNpos : 0 < N)
     (hpref_nonneg : ∀ y, 0 ≤ pref y)
@@ -24418,7 +24314,7 @@ theorem paper_theorem2iii_not_expected_weightedObjective_maximizer_of_augmented_
     (rule : Z → Fin K) (argmaxRule : X → Fin K)
     {γ : ℝ} (hγnonneg : 0 ≤ γ) (hγlt : γ < 1)
     (hdisagree :
-      0 < EconCSLib.pmfProb ν
+      0 < AppliedModelingLib.pmfProb ν
         (fun z : Z => rule z ≠ argmaxRule (feature z)))
     (hNpos : 0 < N)
     (hpref_nonneg : ∀ y, 0 ≤ pref y)
@@ -24453,7 +24349,7 @@ theorem paper_theorem2iii_not_expected_weightedObjective_maximizer_of_augmented_
     (rule : Z → Fin K) (argmaxRule : X → Fin K)
     {γ : ℝ} (hγpos : 0 < γ) (hγle : γ ≤ 1)
     (hdisagree :
-      0 < EconCSLib.pmfProb ν
+      0 < AppliedModelingLib.pmfProb ν
         (fun z : Z => rule z ≠ argmaxRule (feature z)))
     (hNpos : 0 < N)
     (hpref_nonneg : ∀ y, 0 ≤ pref y)
@@ -24551,7 +24447,7 @@ noncomputable def paperONObjective
     (γ : ℝ) (posterior : σ → Fin N → Fin K → ℝ)
     (fidelity : σ → (Fin N → Fin K) → ℝ)
     (xs : σ) (decision : Fin N → Fin K) : ℝ :=
-  γ * EconCSLib.Decision.averageScore (posterior xs) decision +
+  γ * AppliedModelingLib.Decision.averageScore (posterior xs) decision +
     (1 - γ) * fidelity xs decision
 
 /--
@@ -24564,9 +24460,9 @@ noncomputable def paperExpectedONObjective
     (trueLabels : ω → Fin N → Fin K)
     (γ : ℝ) (fidelity : σ → (Fin N → Fin K) → ℝ)
     (rule : σ → Fin N → Fin K) : ℝ :=
-  γ * EconCSLib.Decision.expectedDecisionAccuracy
+  γ * AppliedModelingLib.Decision.expectedDecisionAccuracy
       expect observedDataset trueLabels rule +
-    (1 - γ) * EconCSLib.Decision.expectedObjective
+    (1 - γ) * AppliedModelingLib.Decision.expectedObjective
       expect observedDataset fidelity rule
 
 /--
@@ -24576,7 +24472,7 @@ to the posterior-score objective optimized pointwise in Equation (1).
 theorem paperExpectedONObjective_eq_expected_paperONObjective
     {ω σ : Type*} {N K : ℕ} [NeZero K]
     (expect : (ω → ℝ) → ℝ)
-    (hlin : EconCSLib.Decision.FiniteLinearExpectation expect)
+    (hlin : AppliedModelingLib.Decision.FiniteLinearExpectation expect)
     (observedDataset : ω → σ)
     (trueLabels : ω → Fin N → Fin K)
     (γ : ℝ) (posterior : σ → Fin N → Fin K → ℝ)
@@ -24587,27 +24483,27 @@ theorem paperExpectedONObjective_eq_expected_paperONObjective
         expect (fun x => posterior (observedDataset x) i (choose (observedDataset x))))
     (rule : σ → Fin N → Fin K) :
     paperExpectedONObjective expect observedDataset trueLabels γ fidelity rule =
-      EconCSLib.Decision.expectedObjective
+      AppliedModelingLib.Decision.expectedObjective
         expect observedDataset (paperONObjective γ posterior fidelity) rule := by
   symm
   calc
-    EconCSLib.Decision.expectedObjective
+    AppliedModelingLib.Decision.expectedObjective
         expect observedDataset (paperONObjective γ posterior fidelity) rule =
-      γ * EconCSLib.Decision.expectedDecisionScore
+      γ * AppliedModelingLib.Decision.expectedDecisionScore
           expect observedDataset posterior rule +
-        (1 - γ) * EconCSLib.Decision.expectedObjective
+        (1 - γ) * AppliedModelingLib.Decision.expectedObjective
           expect observedDataset fidelity rule := by
-        simpa [paperONObjective, EconCSLib.Decision.expectedDecisionScore] using
-          EconCSLib.Decision.expectedObjective_linear_combination
+        simpa [paperONObjective, AppliedModelingLib.Decision.expectedDecisionScore] using
+          AppliedModelingLib.Decision.expectedObjective_linear_combination
             expect hlin observedDataset
             (fun xs decision =>
-              EconCSLib.Decision.averageScore (posterior xs) decision)
+              AppliedModelingLib.Decision.averageScore (posterior xs) decision)
             fidelity γ (1 - γ) rule
-    _ = γ * EconCSLib.Decision.expectedDecisionAccuracy
+    _ = γ * AppliedModelingLib.Decision.expectedDecisionAccuracy
           expect observedDataset trueLabels rule +
-        (1 - γ) * EconCSLib.Decision.expectedObjective
+        (1 - γ) * AppliedModelingLib.Decision.expectedObjective
           expect observedDataset fidelity rule := by
-        rw [← EconCSLib.Decision.expectedDecisionAccuracy_eq_expectedDecisionScore_of_row_bayes
+        rw [← AppliedModelingLib.Decision.expectedDecisionAccuracy_eq_expectedDecisionScore_of_row_bayes
           expect hlin observedDataset trueLabels posterior hbayesRow rule]
     _ = paperExpectedONObjective expect observedDataset trueLabels γ fidelity rule := by
         rfl
@@ -24624,7 +24520,7 @@ theorem paper_theorem2i_joint_optimization_rule_exists
     {ω σ : Type*} {N K : ℕ} [NeZero K]
     (hK : 2 ≤ K) (hNK : K < N)
     (expect : (ω → ℝ) → ℝ)
-    (hlin : EconCSLib.Decision.FiniteLinearExpectation expect)
+    (hlin : AppliedModelingLib.Decision.FiniteLinearExpectation expect)
     (observedDataset : ω → σ)
     (trueLabels : ω → Fin N → Fin K)
     (γ : ℝ) (posterior : σ → Fin N → Fin K → ℝ)
@@ -24639,11 +24535,11 @@ theorem paper_theorem2i_joint_optimization_rule_exists
           paperExpectedONObjective expect observedDataset trueLabels γ fidelity optRule := by
   classical
   obtain ⟨optRule, hopt⟩ :=
-    EconCSLib.Decision.exists_rule_maximizing_expectedObjective_of_pointwise_exists
+    AppliedModelingLib.Decision.exists_rule_maximizing_expectedObjective_of_pointwise_exists
       expect hlin.monotone observedDataset (paperONObjective γ posterior fidelity)
       (by
         intro xs
-        exact EconCSLib.Decision.exists_maximizingDecisionRule
+        exact AppliedModelingLib.Decision.exists_maximizingDecisionRule
           (paperONObjective γ posterior fidelity xs))
   refine ⟨optRule, ?_⟩
   intro rule
@@ -24664,10 +24560,10 @@ decision rules.
 theorem paper_theorem2ii_argmax_accuracy_maximizing
     {ι α : Type*} [Fintype ι]
     (posterior : ι → α → ℝ) {decisionRule argmaxRule : ι → α}
-    (hargmax : EconCSLib.Decision.IsPointwiseMax posterior argmaxRule) :
-    EconCSLib.Decision.averageScore posterior decisionRule ≤
-      EconCSLib.Decision.averageScore posterior argmaxRule := by
-  exact EconCSLib.Decision.averageScore_le_of_isPointwiseMax posterior hargmax
+    (hargmax : AppliedModelingLib.Decision.IsPointwiseMax posterior argmaxRule) :
+    AppliedModelingLib.Decision.averageScore posterior decisionRule ≤
+      AppliedModelingLib.Decision.averageScore posterior argmaxRule := by
+  exact AppliedModelingLib.Decision.averageScore_le_of_isPointwiseMax posterior hargmax
 
 /--
 Source-facing Theorem 2(ii), expected-accuracy form.
@@ -24681,29 +24577,29 @@ theorem paper_theorem2ii_argmax_expected_accuracy_maximizing
     {ω σ : Type*} {N K : ℕ} [NeZero K]
     (hK : 2 ≤ K) (hNK : K < N)
     (expect : (ω → ℝ) → ℝ)
-    (hlin : EconCSLib.Decision.FiniteLinearExpectation expect)
+    (hlin : AppliedModelingLib.Decision.FiniteLinearExpectation expect)
     (observedDataset : ω → σ)
     (trueLabels : ω → Fin N → Fin K)
     (posterior : σ → Fin N → Fin K → ℝ)
     {decisionRule argmaxRule : σ → Fin N → Fin K}
     (hargmax :
-      ∀ xs, EconCSLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs))
+      ∀ xs, AppliedModelingLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs))
     (hbayesRow : ∀ i (choose : σ → Fin K),
       expect (fun x =>
           if choose (observedDataset x) = trueLabels x i then (1 : ℝ) else 0) =
         expect (fun x => posterior (observedDataset x) i (choose (observedDataset x)))) :
-    EconCSLib.Decision.expectedDecisionAccuracy
+    AppliedModelingLib.Decision.expectedDecisionAccuracy
         expect observedDataset trueLabels decisionRule ≤
-      EconCSLib.Decision.expectedDecisionAccuracy
+      AppliedModelingLib.Decision.expectedDecisionAccuracy
         expect observedDataset trueLabels argmaxRule := by
   have hbayes : ∀ rule : σ → Fin N → Fin K,
-      EconCSLib.Decision.expectedDecisionAccuracy
+      AppliedModelingLib.Decision.expectedDecisionAccuracy
           expect observedDataset trueLabels rule =
-        EconCSLib.Decision.expectedDecisionScore
+        AppliedModelingLib.Decision.expectedDecisionScore
           expect observedDataset posterior rule :=
-    EconCSLib.Decision.expectedDecisionAccuracy_eq_expectedDecisionScore_of_row_bayes
+    AppliedModelingLib.Decision.expectedDecisionAccuracy_eq_expectedDecisionScore_of_row_bayes
       expect hlin observedDataset trueLabels posterior hbayesRow
-  exact EconCSLib.Decision.expectedDecisionAccuracy_le_of_bayesScore_pointwiseMax
+  exact AppliedModelingLib.Decision.expectedDecisionAccuracy_le_of_bayesScore_pointwiseMax
     expect hlin.monotone observedDataset trueLabels posterior hargmax hbayes
 
 /--
@@ -24722,11 +24618,11 @@ theorem paper_theorem2i_joint_optimization_rule_exists_finite_bayes
     ∃ optRule : σ → Fin N → Fin K,
       ∀ rule : σ → Fin N → Fin K,
         paperExpectedONObjective
-            (EconCSLib.pmfExp M.μ) M.observedDataset M.trueLabels γ fidelity rule ≤
+            (AppliedModelingLib.pmfExp M.μ) M.observedDataset M.trueLabels γ fidelity rule ≤
           paperExpectedONObjective
-            (EconCSLib.pmfExp M.μ) M.observedDataset M.trueLabels γ fidelity optRule := by
+            (AppliedModelingLib.pmfExp M.μ) M.observedDataset M.trueLabels γ fidelity optRule := by
   exact paper_theorem2i_joint_optimization_rule_exists
-    hK hNK (EconCSLib.pmfExp M.μ)
+    hK hNK (AppliedModelingLib.pmfExp M.μ)
     (Finite.pmfExp_finiteLinearExpectation M.μ)
     M.observedDataset M.trueLabels γ M.posterior fidelity
     (fun i choose => Finite.FiniteBayesDatasetModel.row_bayes M i choose)
@@ -24745,13 +24641,13 @@ theorem paper_theorem2ii_argmax_expected_accuracy_maximizing_finite_bayes
     (M : Finite.FiniteBayesDatasetModel Ω σ N K)
     {decisionRule argmaxRule : σ → Fin N → Fin K}
     (hargmax :
-      ∀ xs, EconCSLib.Decision.IsPointwiseMax (M.posterior xs) (argmaxRule xs)) :
-    EconCSLib.Decision.expectedDecisionAccuracy
-        (EconCSLib.pmfExp M.μ) M.observedDataset M.trueLabels decisionRule ≤
-      EconCSLib.Decision.expectedDecisionAccuracy
-        (EconCSLib.pmfExp M.μ) M.observedDataset M.trueLabels argmaxRule := by
+      ∀ xs, AppliedModelingLib.Decision.IsPointwiseMax (M.posterior xs) (argmaxRule xs)) :
+    AppliedModelingLib.Decision.expectedDecisionAccuracy
+        (AppliedModelingLib.pmfExp M.μ) M.observedDataset M.trueLabels decisionRule ≤
+      AppliedModelingLib.Decision.expectedDecisionAccuracy
+        (AppliedModelingLib.pmfExp M.μ) M.observedDataset M.trueLabels argmaxRule := by
   exact paper_theorem2ii_argmax_expected_accuracy_maximizing
-    hK hNK (EconCSLib.pmfExp M.μ)
+    hK hNK (AppliedModelingLib.pmfExp M.μ)
     (Finite.pmfExp_finiteLinearExpectation M.μ)
     M.observedDataset M.trueLabels M.posterior hargmax
     (fun i choose => Finite.FiniteBayesDatasetModel.row_bayes M i choose)

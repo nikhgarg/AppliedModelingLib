@@ -1,6 +1,6 @@
-# Contributing to EconCSLib
+# Contributing to AppliedModelingLib
 
-EconCSLib accepts focused paper formalizations and reusable library, tooling,
+AppliedModelingLib accepts focused paper formalizations and reusable library, tooling,
 and documentation improvements. Start with the contributor landing page:
 [`docs/NEW_CONTRIBUTOR_WORKFLOW.md`](docs/NEW_CONTRIBUTOR_WORKFLOW.md).
 
@@ -132,7 +132,7 @@ initializing Lean or rerunning semantic audits for unchanged papers. A stale
 projection is only a warning on the intervening `main` push; malformed inputs
 still fail, and manual/release validation remains strict.
 
-Changes under `EconCSLib/`, `scripts/`, `skills/`, `config/`, or `.github/`,
+Changes under `AppliedModelingLib/`, `scripts/`, `skills/`, `config/`, or `.github/`,
 changes to multiple paper folders, and non-additive Lake changes use the
 integration lane. They may require broader builds or dependency audits because
 their effects are shared. Keep them out of a one-paper pull request whenever
@@ -210,11 +210,19 @@ In the pull-request description, identify:
 
 ## Other Contributions
 
-Reusable library contributions belong under `EconCSLib/` and should be
+Reusable library contributions belong under `AppliedModelingLib/` and should be
 paper-independent. Tooling and protocol contributions belong in their existing
 `scripts/`, `skills/`, `config/`, or `.github/` owners. These are integration
 changes because they can affect more than one paper; document the targeted and
 broader checks run in the pull request.
+
+Audit-tooling contributions must follow the repository-organization boundary
+in
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md#audit-tooling-ownership-lean-is-the-lean-authority):
+Lean owns every fact about Lean programs. Do not add a Python or shell parser,
+regular-expression fallback, name/type heuristic, or line-number reconstruction
+of Lean semantics. Extend a compiled Lean Meta query over the elaborated
+environment, or fail with a typed error when the required fact is unavailable.
 
 Unless explicitly marked otherwise, submitted Lean code, scripts,
 documentation, and site source are contributed under the Apache License,

@@ -1,0 +1,118 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+
+\title{Theorem 5: A Density-Regularity Clarification}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Statement and sufficient replacement}
+
+Theorem 5 of Kleinberg and Raghavan's \emph{Algorithmic Monoculture and Social
+Welfare} (arXiv:2101.05853, version 2, Appendix A)
+claims that a differentiable density $f$ with positive support on all of
+$\mathbb R$ makes every scaled-noise ranking atom differentiable in the
+positive accuracy parameter $\theta$.  The printed proof differentiates an
+integrand pointwise and moves that derivative through an unbounded integral.
+
+A smooth positive density can have increasingly narrow peaks that prevent
+ranking probabilities from being differentiable. The construction below has
+finite variance and can be normalized to mean zero and variance one. A
+sufficient replacement is global absolute continuity of the density with
+an integrable derivative, $f\in W^{1,1}(\mathbb R)$. This condition covers
+Gaussian and Laplace noise; its necessity is not asserted.
+
+\section*{Construction}
+
+Fix $a=1$, and choose a nonnegative nonzero
+$\psi\in C_c^\infty((-1,1))$.  For $k\geq 2$, let
+\[
+  c_k=4k,\qquad h_k=k^6,\qquad w_k=\frac{1}{100k^{12}},
+\]
+and define the paired bumps
+\[
+  b_k(x)=h_k\psi\left(\frac{x-c_k}{w_k}\right),\qquad
+  b'_k(x)=h_k\psi\left(\frac{x-(c_k+a)}{w_k}\right).
+\]
+Their supports are pairwise disjoint. Put
+\[
+  q(x)=e^{-x^2}+\sum_{k\geq2}(b_k(x)+b'_k(x)),
+  \qquad f(x)=\frac{q(x)}{\int_{\mathbb R}q(u)\,du}.
+\]
+
+The sum is locally finite, hence $q$ and $f$ are $C^\infty$.  The Gaussian
+summand makes $f(x)>0$ for every real $x$.  Moreover,
+\[
+  \int b_k = h_kw_k\int\psi=O(k^{-6}),
+  \qquad
+  \int x^2b_k(x)\,dx=O(k^2h_kw_k)=O(k^{-4}),
+\]
+and the same bounds hold for $b'_k$.  Thus $f$ is a positive smooth probability
+density with finite second moment.  Centering and rescaling it to unit variance
+preserves all of these properties and only rescales the positive gap $a$.
+
+\section*{Failure of ranking-atom differentiability}
+
+Let $\epsilon_1,\epsilon_2$ be iid with density $f$, and let
+$Z=\epsilon_2-\epsilon_1$.  Its density is
+\[
+  g(t)=\int_{\mathbb R}f(x)f(x+t)\,dx.
+\]
+At $t=a$, the nonnegative paired-bump terms give
+\[
+  g(a)\ \geq\ C\sum_{k\geq2}
+    h_k^2w_k\int\psi(u)^2\,du
+  = C'\sum_{k\geq2}1=+\infty,
+\]
+where $C,C'>0$ include the normalization factor.  More strongly, if
+$\kappa(r)=\int\psi(u)\psi(u+r)\,du$, then $\kappa$ is continuous and
+$\kappa(0)>0$.  Hence there are $\eta,\gamma>0$ such that
+$\kappa(r)\geq\gamma$ for $|r|\leq\eta$.  For $0<r$ sufficiently small,
+every $k$ with $w_k\geq r/\eta$ contributes at least a fixed positive
+constant throughout $[a,a+r]$.  Therefore
+\[
+  \frac{\Pr[a<Z\leq a+r]}{r}
+  =\frac1r\int_a^{a+r}g(t)\,dt
+  \ \longrightarrow\ +\infty.
+\]
+The distribution function of $Z$ consequently has no finite right derivative
+at $a$.
+
+Now take two candidate values $x_1>x_2$ and a positive $\theta_0$ with
+$\theta_0(x_1-x_2)=a$.  Under the source RUM convention, the atom that ranks
+candidate $1$ first is
+\[
+  p(\theta)=
+    \Pr\left[x_1+\frac{\epsilon_1}{\theta}>
+               x_2+\frac{\epsilon_2}{\theta}\right]
+    =\Pr[Z<\theta(x_1-x_2)].
+\]
+Its right difference quotient at $\theta_0$ is the divergent quotient above,
+multiplied by the positive constant $x_1-x_2$.  Thus $p$ is not differentiable
+at a positive accuracy, although $f$ satisfies the printed density hypotheses.
+
+\section*{Why the sufficient condition works}
+
+The formalized statement uses $f\in W^{1,1}(\mathbb R)$ together with the
+source's normalization and positive-support conditions. For $\theta>0$,
+\[
+  \operatorname{rank}\left(x_i+\frac{\epsilon_i}{\theta}\right)
+  =\operatorname{rank}(\theta x_i+\epsilon_i).
+\]
+For a fixed ranking cell $C_\pi$, this gives
+\[
+  p_\pi(\theta)=\int_{C_\pi}\prod_i f(r_i-\theta x_i)\,dr.
+\]
+Translation is differentiable in $L^1$ under $W^{1,1}$, with derivative
+$-x_i f'(r_i-\theta x_i)$.  A finite telescoping product argument gives an
+$L^1$ derivative of the joint density, and integration over $C_\pi$ is a
+bounded linear functional on $L^1$.  This yields differentiability of every
+ranking atom without a pointwise common envelope.
+
+The $W^{1,1}$ ranking result is proved in Lean. The counterexample above is a
+mathematical argument supplied in this note, rather than a Lean-checked theorem.
+
+\end{document}

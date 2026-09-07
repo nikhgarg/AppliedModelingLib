@@ -1,0 +1,128 @@
+{
+  "defects": [
+    {
+      "acceptance_condition": "The source-facing targets state the formula-defined beta domains and the public report identifies the printed endpoint ambiguity.",
+      "affected_source_locators": [
+        "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:46-80"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "FS97-HEDGE-ENDPOINT-DOMAIN-01",
+      "repair_obligation": "Use 0 < beta <= 1 for Lemma 1 and 0 < beta < 1 for Theorem 2 unless a separate endpoint execution and extended-real convention is supplied.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "lemma1_finite_weight_potentialSpec and theorem2_hedge_comparator_boundsSpec expose the respective defined domains, and the source-domain memo records why the printed endpoints do not define the same finite-real execution.",
+      "source_claim": "The Hedge algorithm admits beta in [0,1], while Lemma 1 and Theorem 2 are presented under that algorithmic parameterization.",
+      "source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:46-80",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The Lean targets expose the exact finite-real domains of the displayed normalization and logarithmic formulas; all conclusions on those domains are proved."
+    },
+    {
+      "acceptance_condition": "The source-facing Theorem 5 target exposes both domain conditions and proves the displayed conclusion for general measurable decision spaces.",
+      "affected_source_locators": [
+        "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:143-152"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "FS97-THEOREM5-TUNING-DOMAIN-02",
+      "repair_obligation": "State N >= 2 and L-tilde > 0 for the displayed finite-real tuning formula, or separately define and prove its degenerate branches.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "theorem5_decision_prediction_generalSpec states the two tuning-domain conditions and its endpoint is proved by the general probability-measure Hedge construction.",
+      "source_claim": "Theorem 5 chooses beta = g(L-tilde / log N) for any expert set and a nonnegative best-expert loss bound.",
+      "source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:143-152",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "N >= 2 and positive L-tilde are the formula-defined domain of the displayed tuned parameter; the unrestricted decision and outcome model and the advertised regret bound are otherwise proved."
+    },
+    {
+      "acceptance_condition": "The source-facing AdaBoost targets expose the strict formula-defined domain and do not silently totalize the endpoint formulas.",
+      "affected_source_locators": [
+        "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:154-186",
+        "cited publication:965-970"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "FS97-ADABOOST-ENDPOINT-DOMAIN-03",
+      "repair_obligation": "Use 0 < epsilon_t < 1 for the displayed real-valued Figure 2 execution, or define and prove separate early-stopping or limiting endpoint semantics.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "AdaBoostAdmissible records 0 < epsilon_t < 1 recursively, theorem6_adaBoost_finiteSpec proves the bound without a positive-edge premise, and the source-domain memo records the omitted endpoint convention.",
+      "source_claim": "The prose says the AdaBoost results hold for every observed error epsilon_t in [0,1].",
+      "source_locator": "cited publication:965-970",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The checked target keeps arbitrary errors above or below one half but requires the strict interior needed by Figure 2's quotient, logarithmic vote, and subsequent normalization."
+    },
+    {
+      "acceptance_condition": "The source-facing target identifies the continuous extension, proves both branches, and the report and correction memo distinguish it from literal archival identity.",
+      "affected_source_locators": [
+        "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:107-114"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "FS97-LEMMA4-ZERO-LOSS-BOUND-05",
+      "repair_obligation": "Either require a positive loss bound for the printed tuning formula or explicitly define and prove its zero-bound continuous extension.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "lemma4_learning_rate_boundSpec uses hedgeDiscountFromBoundsClosed and its exact endpoint theorem proves the displayed inequality, including the zero-bound branch; the correction memo records the added endpoint convention.",
+      "source_claim": "Lemma 4 permits a zero loss bound while prescribing beta = g(lossBound/rewardBound), whose displayed finite-real formula has no stated value at that endpoint.",
+      "source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:107-114",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The Lean target proves the natural continuous extension at the sole undefined endpoint, where the claimed inequality reduces to equality R <= R; the substantive bound is unchanged."
+    },
+    {
+      "acceptance_condition": "The three source-facing targets expose their formula-defined execution domains and the public report and correction memo record the omitted endpoint conventions.",
+      "affected_source_locators": [
+        "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:242-261",
+        "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:265-311",
+        "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:315-363"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "FS97-ADABOOST-VARIANTS-ENDPOINT-DOMAIN-06",
+      "repair_obligation": "Require positive executed-round errors for M1 and AdaBoost.R and errors strictly between zero and one for M2, or define and prove separate endpoint execution semantics.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "theorem10_adaBoostM1_errorSpec, theorem11_adaBoostM2_errorSpec, and theorem12_adaBoostR_errorSpec use recursively admissible displayed executions and their exact endpoints prove the full printed argmax or weighted-median conclusions and product bounds.",
+      "source_claim": "Figures 3--5 and Theorems 10--12 use beta_t = epsilon_t/(1-epsilon_t) and logarithmic final votes without separately specifying zero-error execution or limiting conventions.",
+      "source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:242-362",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The Lean targets retain the displayed algorithms and conclusions on their finite-real execution domains; the excluded endpoints require an unstated early-stop or limiting convention rather than a different substantive guarantee."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "theorem9_soft_adaBoost_errorSpec states the exact vote-domain conditions and theorem9_soft_adaBoost_error derives the same displayed product bound through adaBoost_softTrainingError_le_theorem9Factor.",
+      "classification": "source_definedness_condition",
+      "formal_meaning": "The displayed normalized vote has a nonzero sum of logarithmic weights and belongs to [0,1] at each training example, so the source F:[0,1]->[0,1] can be evaluated. Individual weights may be positive, zero, or negative.",
+      "id": "FS97-THEOREM9-VOTE-DOMAIN-04",
+      "source_locator": "sources/hedge_freundschapire1997_jcss_visual_review_transcript.md:218-238",
+      "why_needed": "These are the domains of the displayed quotient and of F. Requiring every error to be below one half was a stronger sufficient condition in the earlier formalization, not a necessary source correction."
+    }
+  ],
+  "paper": "FreundSchapire1997Hedge",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The Hedge weight-potential and comparator proofs, the learning-rate substitution, and the allocation lower tradeoff through the cited Vovk-game construction.",
+      "source_locator": "cited publication:221-535, Lemma 1, Theorems 2-3, Lemma 4, and Appendix Theorem-3 route at 2480-2669"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The general decision/outcome-space mixture construction, finite expert reduction, best-expert loss bound, and displayed learning-rate choice.",
+      "source_locator": "cited publication:536-683, Theorem 5 and its decision-prediction construction"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The binary AdaBoost multiplicative-weight argument, round-factor training-error bound, normalized logarithmic vote, and soft-threshold extension.",
+      "source_locator": "cited publication:919-1232 and 1460-1605, Theorems 6 and 9 with Figures 2 and the soft-vote construction"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The finite-iid VC generalization support route, weighted affine-threshold class, and stated finite VC-dimension upper bound.",
+      "source_locator": "cited publication:1233-1459, attributed Theorem 7 and Theorem 8"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The AdaBoost.M1 mistake reduction, AdaBoost.M2 pseudo-loss reduction, AdaBoost.R density/integral reduction, their state updates, final predictors, and product error bounds.",
+      "source_locator": "cited publication:1606-2432, Theorems 10-12 and Figures 3-5"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "bd40f3e513c8a5b099ab06c9b66dca1ec1543694c40acce970e6122b491a0afc"
+}

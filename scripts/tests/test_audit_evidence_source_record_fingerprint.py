@@ -12,9 +12,6 @@ from types import SimpleNamespace
 from unittest import mock
 
 from scripts import audit_evidence_integrity as evidence
-from scripts.source_record_raw_producer_compatibility import (
-    RAW_PRODUCER_COMPATIBILITY_INVARIANT,
-)
 
 
 class SourceRecordFingerprintValidationTests(unittest.TestCase):
@@ -73,13 +70,6 @@ class SourceRecordFingerprintValidationTests(unittest.TestCase):
                     returncode=0, stdout=json.dumps(identity), stderr=""
                 ),
             ) as run,
-            mock.patch.object(
-                evidence,
-                "validate_source_record_partial_to_formalized_transition",
-                side_effect=AssertionError(
-                    "exact schema-10 identity must not transition"
-                ),
-            ),
         ):
             error = evidence.source_record_current_input_fingerprint_error(
                 self.paper, raw
@@ -138,21 +128,6 @@ class SourceRecordFingerprintValidationTests(unittest.TestCase):
             "paper_statement_map_semantic_sha256": "c" * 64,
             "source_record_input_fingerprint": current,
         }
-        ledger = {
-            "revisions": [
-                {
-                    "relation_to_previous": "review_compatible",
-                    "raw_producer_compatibility": {
-                        "schema": 1,
-                        "invariant": RAW_PRODUCER_COMPATIBILITY_INVARIANT,
-                        "predecessor_raw_producer_code_identity_sets": [
-                            identities("1")
-                        ],
-                        "successor_raw_producer_code_identities": identities("2"),
-                    },
-                }
-            ]
-        }
         with (
             mock.patch.object(evidence, "ROOT", self.root),
             mock.patch.object(
@@ -169,8 +144,8 @@ class SourceRecordFingerprintValidationTests(unittest.TestCase):
             ),
             mock.patch.object(
                 evidence,
-                "validated_runtime_raw_producer_compatibility_ledger",
-                return_value=ledger,
+                "validate_runtime_engine_registration",
+                return_value=object(),
             ),
         ):
             self.assertEqual(
@@ -207,18 +182,8 @@ class SourceRecordFingerprintValidationTests(unittest.TestCase):
             ),
             mock.patch.object(
                 evidence,
-                "validated_runtime_raw_producer_compatibility_ledger",
-                return_value=ledger,
-            ),
-            mock.patch.object(
-                evidence,
-                "validate_source_record_partial_to_formalized_transition",
-                return_value="not a status-only transition",
-            ),
-            mock.patch.object(
-                evidence,
-                "selected_surface_rebind_context",
-                return_value=(None, None, "not installed"),
+                "validate_runtime_engine_registration",
+                return_value=object(),
             ),
         ):
             self.assertIn(
@@ -265,13 +230,6 @@ class SourceRecordFingerprintValidationTests(unittest.TestCase):
                     returncode=0, stdout=json.dumps(identity), stderr=""
                 ),
             ) as run,
-            mock.patch.object(
-                evidence,
-                "validate_source_record_partial_to_formalized_transition",
-                side_effect=AssertionError(
-                    "exact schema-9 replay must not transition"
-                ),
-            ),
         ):
             error = evidence.source_record_current_input_fingerprint_error(
                 self.paper, raw
@@ -280,7 +238,7 @@ class SourceRecordFingerprintValidationTests(unittest.TestCase):
         self.assertEqual(error, "")
         self.assertIn("--include-legacy-fingerprint", run.call_args.args[0])
 
-    def test_schema9_replay_mismatch_falls_through_to_transition_checks(self) -> None:
+    def test_schema9_replay_mismatch_fails_directly(self) -> None:
         current = self._fingerprint(10)
         emitted_legacy_v9 = self._fingerprint(
             9, formalization_protocol_sha256="d" * 64
@@ -298,7 +256,6 @@ class SourceRecordFingerprintValidationTests(unittest.TestCase):
             "source_record_input_fingerprint": current,
             "legacy_v9_source_record_input_fingerprint": emitted_legacy_v9,
         }
-        transition = mock.Mock(return_value="not an authorized transition")
         with (
             mock.patch.object(evidence, "ROOT", self.root),
             mock.patch.object(
@@ -313,23 +270,12 @@ class SourceRecordFingerprintValidationTests(unittest.TestCase):
                     returncode=0, stdout=json.dumps(identity), stderr=""
                 ),
             ),
-            mock.patch.object(
-                evidence,
-                "validate_source_record_partial_to_formalized_transition",
-                transition,
-            ),
-            mock.patch.object(
-                evidence,
-                "selected_surface_rebind_context",
-                return_value=(None, None, "not installed"),
-            ),
         ):
             error = evidence.source_record_current_input_fingerprint_error(
                 self.paper, raw
             )
 
         self.assertIn("source_record_input_fingerprint is stale", error)
-        transition.assert_called_once()
 
     def test_legacy_v6_replay_via_v7_identity_remains_available(self) -> None:
         current_v7 = self._fingerprint(7)
@@ -359,13 +305,6 @@ class SourceRecordFingerprintValidationTests(unittest.TestCase):
                 "run",
                 return_value=SimpleNamespace(
                     returncode=0, stdout=json.dumps(identity), stderr=""
-                ),
-            ),
-            mock.patch.object(
-                evidence,
-                "validate_source_record_partial_to_formalized_transition",
-                side_effect=AssertionError(
-                    "exact v6 compatibility must not transition"
                 ),
             ),
         ):

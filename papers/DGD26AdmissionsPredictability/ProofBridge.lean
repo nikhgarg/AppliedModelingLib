@@ -10,7 +10,7 @@ proof interface. The semantic review surface is `PaperInterface.lean`.
 namespace DGD26AdmissionsPredictability
 namespace ProofBridge
 
-open EconCSLib.FiniteChoice
+open AppliedModelingLib.FiniteChoice
 
 variable {α : Type*} [DecidableEq α]
 
@@ -92,11 +92,14 @@ abbrev paper_definition_q_representativeness
 /-- Source status: audited one-total-order q-representativeness definition. -/
 theorem paper_q_representativeness_definition_statement
     (q : ℕ) (C : PaperChoiceRule α) :
-    paper_definition_q_representativeness q C ↔
-      ∃ r : α → α → Prop,
-        paper_definition_total_order r ∧
-          paper_definition_q_acceptance q C ∧
-            ∀ {X x y}, x ∈ C X → y ∈ X → y ∉ C X → r x y := by
+    paper_choice_function_feasible C ∧
+        paper_definition_q_representativeness q C ↔
+      paper_choice_function_feasible C ∧
+        ∃ r : α → α → Prop,
+          paper_definition_total_order r ∧
+            paper_choice_function_feasible C ∧
+              paper_definition_q_acceptance q C ∧
+                ∀ {X x y}, x ∈ C X → y ∈ X → y ∉ C X → r x y := by
   rfl
 
 /-- Source status: audited PaperInterface row `paper_definition_choice_distance`. -/
@@ -173,7 +176,9 @@ theorem paper_choice_label_formula_statement
 
 /-- Source status: audited fixed-threshold displayed formula row. -/
 theorem paper_fixed_threshold_formula_statement
-    (score : α → ℝ) (threshold : ℝ) (X : Finset α) (x : α) :
+    (score : α → ℝ) (threshold : ℝ)
+    (hscore : ∀ x, 0 ≤ score x ∧ score x ≤ 1)
+    (X : Finset α) (x : α) :
     x ∈ paperFixedThresholdChoice score threshold X ↔
       x ∈ X ∧ paper_definition_fixed_threshold_predictor
         score threshold X x := by
@@ -207,12 +212,15 @@ theorem paper_ml_fixed_threshold_representation_zero_unstable_statement
 /-- Source status: audited rank-threshold order-statistic formula. -/
 theorem paper_rank_threshold_formula_statement
     (q : ℕ) (score : α → ℝ) (hinjective : Function.Injective score)
-    (hqpos : 0 < q) (X : Finset α) :
-    ∃ threshold : ℝ, ∀ x ∈ X,
-      (paper_definition_rank_threshold_predictor
-          q score hinjective X x ↔ threshold ≤ score x) := by
-  exact paperRankThresholdPredictor_threshold_formula
-    q score hinjective hqpos X
+    (hqpos : 0 < q) (X : Finset α) (hqcard : q ≤ X.card) :
+    ∃ threshold : ℝ,
+      threshold ∈ X.image score ∧
+        (X.filter (fun x => threshold ≤ score x)).card = q ∧
+          ∀ x ∈ X,
+            (paper_definition_rank_threshold_predictor
+                q score hinjective X x ↔ threshold ≤ score x) := by
+  exact paperRankThresholdPredictor_order_statistic_formula
+    q score hinjective hqpos X hqcard
 
 /-- Source status: audited rank-threshold representation row. -/
 theorem paper_rank_threshold_represents_induced_choice_statement
@@ -405,10 +413,20 @@ theorem paper_no_zero_instability_under_capacity_statement
 theorem paper_substitutability_one_instability_equivalence_statement
     {q : ℕ} {C : PaperChoiceRule α}
     (hfeasible : paper_choice_function_feasible C)
-    (haccept : paper_definition_q_acceptance q C) :
-    paper_definition_substitutability C ↔ paper_definition_d_instability 1 C := by
-  exact paper_substitutability_iff_one_instability_of_q_acceptant
-    (C := C) hfeasible haccept
+    (haccept : paper_definition_q_acceptance q C)
+    (hqpos : 0 < q)
+    {U : Finset α} (hUcard : q < U.card) :
+    paper_definition_substitutability C ↔
+      paper_definition_d_instability 1 C ∧ ¬ paper_definition_zero_instability C := by
+  constructor
+  · intro hsub
+    exact ⟨(DGD26AdmissionsPredictability.paper_substitutability_iff_one_instability_of_q_acceptant
+        (C := C) hfeasible haccept).mp hsub,
+      DGD26AdmissionsPredictability.paper_no_zero_unstable_of_q_acceptant_nontrivial
+        hfeasible haccept hqpos hUcard⟩
+  · rintro ⟨hone, _⟩
+    exact (DGD26AdmissionsPredictability.paper_substitutability_iff_one_instability_of_q_acceptant
+      (C := C) hfeasible haccept).mpr hone
 
 /-- Source status: audited PaperInterface row `paper_q_acceptant_two_q_instability_bound_statement`. -/
 theorem paper_q_acceptant_two_q_instability_bound_statement
@@ -504,7 +522,7 @@ theorem paper_screened_open_program_properties_statement :
         paper_definition_screened_open_program_choice := by
   exact paper_screened_open_program_properties
 
-/-- Source status: audited Screened/Open exact-variability endpoint. -/
+/-- Source status: Proposition 2 abstract Screened/Open procedure. -/
 theorem paper_screened_open_variability_one_statement :
     paper_definition_variability_exactly 1
       paper_definition_screened_open_program_choice := by
@@ -519,7 +537,7 @@ theorem paper_screened_open_dia_program_properties_statement :
         paper_definition_screened_open_dia_program_choice := by
   exact paper_screened_open_dia_program_properties
 
-/-- Source status: audited Screened/Open with DIA exact-variability endpoint. -/
+/-- Source status: Proposition 2 abstract Screened/Open-with-DIA procedure. -/
 theorem paper_screened_open_dia_variability_two_statement :
     paper_definition_variability_exactly 2
       paper_definition_screened_open_dia_program_choice := by
@@ -534,7 +552,7 @@ theorem paper_educational_option_program_properties_statement :
         paper_definition_educational_option_program_choice := by
   exact paper_educational_option_program_properties
 
-/-- Source status: audited Educational Option exact-variability endpoint. -/
+/-- Source status: Proposition 2 abstract Educational Option procedure. -/
 theorem paper_educational_option_variability_three_statement :
     paper_definition_variability_exactly 3
       paper_definition_educational_option_program_choice := by
@@ -549,13 +567,13 @@ theorem paper_educational_option_dia_program_properties_statement :
         paper_definition_educational_option_dia_program_choice := by
   exact paper_educational_option_dia_program_properties
 
-/-- Source status: audited Educational Option with DIA exact-variability endpoint. -/
+/-- Source status: Proposition 2 abstract Educational Option-with-DIA procedure. -/
 theorem paper_educational_option_dia_variability_six_statement :
     paper_definition_variability_exactly 6
       paper_definition_educational_option_dia_program_choice := by
   exact paper_educational_option_dia_program_properties_statement.2.2.2
 
-/-- Source status: audited Proposition 2 aggregate 1-instability row. -/
+/-- Source status: Proposition 2 aggregate for the four abstract procedures. -/
 theorem paper_program_classes_one_instability_statement :
     paper_definition_d_instability 1 paper_definition_screened_open_program_choice ∧
       paper_definition_d_instability 1 paper_definition_screened_open_dia_program_choice ∧
@@ -695,6 +713,7 @@ theorem paper_one_instability_of_substitutability_statement
 /-- Source status: audited PaperInterface row `paper_q_acceptant_substitutable_consistent_statement`. -/
 theorem paper_q_acceptant_substitutable_consistent_statement
     {q : ℕ} {C : PaperChoiceRule α}
+    (hfeasible : paper_choice_function_feasible C)
     (haccept : paper_definition_q_acceptance q C)
     (hsub : paper_definition_substitutability C) :
     paper_definition_consistency C := by
@@ -845,7 +864,8 @@ theorem paper_append_remove_variability_exact_equivalence_statement
     [Fintype α] {m q : ℕ} {C : PaperChoiceRule α}
     (hfeasible : paper_choice_function_feasible C)
     (haccept : paper_definition_q_acceptance q C)
-    (hunstable : paper_definition_d_instability 1 C) :
+    (hunstable : paper_definition_d_instability 1 C)
+    (hcard : 2 * q ≤ Fintype.card α) :
     paper_definition_general_variability_exactly m C ↔
       paper_definition_variability_exactly m C := by
   exact paper_append_remove_variability_exact_equivalence
@@ -980,7 +1000,7 @@ abbrev paper_definition_lap_capacity_filling
     (X : Finset α) (A : LAP.Assignment α σ) : Prop :=
   A.CapacityFilling X
 
-/-- Source status: audited real-weight maximum-sum assignment predicate. -/
+/-- Source status: capacity-filling real-weight optimum used by fixed-slot results. -/
 abbrev paper_definition_lap_objective_optimal
     {σ : Type*} [DecidableEq σ] [Fintype σ]
     (X : Finset α) (w : α → σ → ℝ) (A : LAP.Assignment α σ) : Prop :=
@@ -1025,22 +1045,24 @@ noncomputable abbrev paper_definition_lap_distinct_slot_order_count
     (w : α → σ → ℝ) : ℕ :=
   LAP.Assignment.distinctSlotOrderCount w
 
-/-- Source status: audited complete real-weight maximum-assignment model. -/
+/-- Source status: audited all-feasible real-weight maximum-assignment model. -/
 abbrev paper_definition_lap_model
     {σ : Type*} [DecidableEq σ] [Fintype σ]
     (X : Finset α) (w : α → σ → ℝ) (A : LAP.Assignment α σ) : Prop :=
   paper_definition_lap_assignment_feasible X A ∧
-    paper_definition_lap_capacity_filling X A ∧
-      paper_definition_lap_objective_optimal X w A
+    ∀ B : LAP.Assignment α σ,
+      paper_definition_lap_assignment_feasible X B →
+        LAP.Assignment.objective w B ≤ LAP.Assignment.objective w A
 
-/-- Source status: audited complete real-weight LAP model formula. -/
+/-- Source status: audited all-feasible real-weight LAP model formula. -/
 theorem paper_lap_model_definition_statement
     {σ : Type*} [DecidableEq σ] [Fintype σ]
     (X : Finset α) (w : α → σ → ℝ) (A : LAP.Assignment α σ) :
     paper_definition_lap_model X w A ↔
       paper_definition_lap_assignment_feasible X A ∧
-        paper_definition_lap_capacity_filling X A ∧
-          paper_definition_lap_objective_optimal X w A := by
+        ∀ B : LAP.Assignment α σ,
+          paper_definition_lap_assignment_feasible X B →
+            LAP.Assignment.objective w B ≤ LAP.Assignment.objective w A := by
   rfl
 
 /-- Source status: audited formula relating assignment incidence and induced choice. -/
@@ -1131,7 +1153,12 @@ theorem paper_lap_no_profitable_one_slot_swap_of_objective_optimal_statement
 theorem paper_lap_assignment_one_instability_statement
     {σ : Type*} [DecidableEq σ] [Fintype σ]
     {w : α → σ → ℝ}
-    (hwell : LAP.Assignment.WellPosedObjective w) :
+    (hwell : ∀ X : Finset α, ∃ A : LAP.Assignment α σ,
+      LAP.Assignment.Feasible X A ∧ LAP.Assignment.CapacityFilling X A ∧
+        LAP.Assignment.ObjectiveOptimal X w A ∧ ∀ B : LAP.Assignment α σ,
+          LAP.Assignment.Feasible X B → LAP.Assignment.CapacityFilling X B →
+            LAP.Assignment.ObjectiveOptimal X w B → B.chosenSet = A.chosenSet)
+    (hnoTies : ∀ s : σ, LAP.Assignment.SlotNoTies w s) :
     paper_definition_d_instability 1
       (paperLAPChoiceRule w hwell) := by
   exact paper_lap_well_posed_choice_one_instability hwell
@@ -1159,7 +1186,11 @@ theorem paper_lap_assignment_selector_q_acceptant_statement
 theorem paper_lap_assignment_slot_order_class_variability_of_unique_global_optima_statement
     [Fintype α] {σ : Type*} [DecidableEq σ] [Fintype σ]
     {w : α → σ → ℝ}
-    (hwell : LAP.Assignment.WellPosedObjective w)
+    (hwell : ∀ X : Finset α, ∃ A : LAP.Assignment α σ,
+      LAP.Assignment.Feasible X A ∧ LAP.Assignment.CapacityFilling X A ∧
+        LAP.Assignment.ObjectiveOptimal X w A ∧ ∀ B : LAP.Assignment α σ,
+          LAP.Assignment.Feasible X B → LAP.Assignment.CapacityFilling X B →
+            LAP.Assignment.ObjectiveOptimal X w B → B.chosenSet = A.chosenSet)
     (hnoTies : ∀ s : σ, LAP.Assignment.SlotNoTies w s) :
     paper_definition_variability_at_most
       (LAP.Assignment.distinctSlotOrderCount w)

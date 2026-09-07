@@ -1,4 +1,12 @@
 import HT26EFXChores.PaperInterface
+import HT26EFXChores.MainTheorems
+import HT26EFXChores.Assumptions
+import HT26EFXChores.Canonical
+import HT26EFXChores.TriConstruction
+import HT26EFXChores.ExceptionalCombination
+import HT26EFXChores.AppendixTriInstance
+import HT26EFXChores.ParetoConstruction
+import HT26EFXChores.FullBiValuedDispatch
 
 /-!
 # Proof Interface: EFX for Additive Chores
@@ -11,112 +19,13 @@ semantic review surface: each source claim is compared only with its expanded
 
 namespace HT26EFXChores
 
-theorem envyFreeForChores_iff_source_definition :
-  envyFreeForChores_iff_source_definitionSpec := by
-  intro Agent Item cost allocation
-  rfl
-
-theorem efxForChores_iff_source_definition :
-  efxForChores_iff_source_definitionSpec := by
-  intro Agent Item cost allocation
-  classical
-  rfl
-
-theorem paretoOptimalForChores_iff_source_definition :
-  paretoOptimalForChores_iff_source_definitionSpec := by
-  intro Agent Item cost chores allocation hallocation
-  classical
-  rfl
-
-theorem canonicalSmallChoreAllocation_iff_source_definition :
-  canonicalSmallChoreAllocation_iff_source_definitionSpec := by
-  intro Item r cost chores a b allocation _hr _cost _hb _hcard _hm01
-  classical
-  constructor
-  · rintro ⟨quota, hquota, hcanonical⟩
-    refine ⟨hcanonical.1, ?_⟩
-    intro agent
-    rcases hcanonical.2 agent with ⟨hsize, hsmall⟩
-    rcases hquota agent with hshort | hlong
-    · refine ⟨Or.inl (hsize.trans hshort), ?_⟩
-      simpa [hsize] using hsmall
-    · refine ⟨Or.inr (hsize.trans hlong), ?_⟩
-      simpa [hsize] using hsmall
-  · rintro ⟨hallocation, hsource⟩
-    let quota : Fin 4 → ℕ := fun agent => (allocation agent).card
-    refine ⟨quota, ?_, hallocation, ?_⟩
-    · intro agent
-      exact (hsource agent).1
-    · intro agent
-      exact ⟨rfl, by simpa [quota] using (hsource agent).2⟩
-
-theorem canonicalShortLongLabels_iff_source_definition :
-  canonicalShortLongLabels_iff_source_definitionSpec := by
-  intro Item r cost chores a b allocation _hr _cost _hb _hcard _hm01 _hcanonical
-  classical
-  let shortAgents : Finset (Fin 4) :=
-    if 0 < b then Finset.univ.filter fun agent => (allocation agent).card = a
-    else Finset.univ
-  let longAgents : Finset (Fin 4) :=
-    if 0 < b then Finset.univ.filter fun agent => (allocation agent).card = a + 1
-    else Finset.univ
-  refine ⟨shortAgents, longAgents, ?_, ?_⟩
-  · intro hbpos
-    constructor <;> intro agent
-    · simp [shortAgents, hbpos]
-    · simp [longAgents, hbpos]
-  · intro hbzero _ha
-    simp [shortAgents, longAgents, hbzero]
-
-theorem superCanonicalSmallChoreAllocation_iff_source_definition :
-  superCanonicalSmallChoreAllocation_iff_source_definitionSpec := by
-  intro Item r cost chores a b allocation _hr _cost _hbpos _hb _hcard _hm01
-  classical
-  constructor
-  · rintro ⟨quota, hquota, hsuper⟩
-    refine ⟨hsuper.1.1, ?_, ?_⟩
-    · intro agent
-      rcases hsuper.1.2 agent with ⟨hsize, hsmall⟩
-      rcases hquota agent with hshort | hlong
-      · exact ⟨Or.inl (hsize.trans hshort), by simpa [hsize] using hsmall⟩
-      · exact ⟨Or.inr (hsize.trans hlong), by simpa [hsize] using hsmall⟩
-    · intro shortAgent longAgent hshort hlong
-      have hshortQuota : quota shortAgent = a := by
-        calc
-          quota shortAgent = (allocation shortAgent).card :=
-            (hsuper.1.2 shortAgent).1.symm
-          _ = a := hshort
-      have hlongQuota : quota longAgent = a + 1 := by
-        calc
-          quota longAgent = (allocation longAgent).card :=
-            (hsuper.1.2 longAgent).1.symm
-          _ = a + 1 := hlong
-      exact hsuper.2 shortAgent (by simp [hshortQuota]) longAgent
-        (by simp [hlongQuota])
-  · rintro ⟨hallocation, hsource, hgap⟩
-    let quota : Fin 4 → ℕ := fun agent => (allocation agent).card
-    refine ⟨quota, ?_, ?_⟩
-    · intro agent
-      exact (hsource agent).1
-    · constructor
-      · refine ⟨hallocation, ?_⟩
-        intro agent
-        exact ⟨rfl, by simpa [quota] using (hsource agent).2⟩
-      · intro shortAgent hshort longAgent hlong
-        have hshortCard : (allocation shortAgent).card = a := by
-          simpa [quota] using (Finset.mem_filter.mp hshort).2
-        have hlongCard : (allocation longAgent).card = a + 1 := by
-          simpa [quota] using (Finset.mem_filter.mp hlong).2
-        exact hgap shortAgent longAgent hshortCard hlongCard
-
 theorem tri_valued_nonexistence :
   tri_valued_nonexistenceSpec := by
   intro n hn
-  let choreInstance : EconCSLib.FairDivision.AdditiveChoreInstance (Fin n)
+  let choreInstance : AppliedModelingLib.FairDivision.AdditiveChoreInstance (Fin n)
       (Fin (n - 1 + 2 * (2 * ((n + 1) / 2) + 1))) := by
     simpa [appendixItemCount, appendixS, appendixT] using appendixTriInstance n
-  refine ⟨Fin (n - 1 + 2 * (2 * ((n + 1) / 2) + 1)), by infer_instance,
-    choreInstance, ?_, ?_⟩
+  refine ⟨n - 1 + 2 * (2 * ((n + 1) / 2) + 1), choreInstance, ?_, ?_⟩
   · simpa [choreInstance] using appendixTriInstance_tri_valued n
   · intro allocation halloc
     simpa [choreInstance, appendixItemCount, appendixS, appendixT] using
@@ -142,10 +51,15 @@ theorem efx_pareto_incompatibility :
   have hrnonneg : 0 ≤ r := by
     have hrTwo := po_r_gt_two n hn r hr
     linarith
-  refine ⟨Fin (2 * n + 1), by infer_instance, poChoreInstance n r hrnonneg,
-    poCost_is_one_or_r n r, ?_⟩
+  refine ⟨2 * n + 1, poChoreInstance n r hrnonneg, poCost_is_one_or_r n r, ?_⟩
   intro allocation hfeasible hefx hoptimal
   exact po_efx_not_pareto_optimal n hn r hr allocation hfeasible hefx hoptimal
+
+theorem efx_pareto_construction_has_efx :
+  efx_pareto_construction_has_efxSpec := by
+  intro n hn r hr
+  refine ⟨poEfxWitness n (by omega), poEfxWitness_feasible n (by omega), ?_⟩
+  simpa [poCost] using poEfxWitness_is_efx n hn r (po_r_gt_two n hn r hr)
 
 theorem efx_po_every_agent_large :
   efx_po_every_agent_largeSpec := by
@@ -174,29 +88,47 @@ theorem m34_insertion :
   classical
   exact m34InsertionProof Item r cost chores item hr hcost hitem hsmallThree allocation halloc hefx
 
+theorem m34_insertion_general_agents :
+  m34_insertion_general_agentsSpec := by
+  intro Agent Item _ _ _ _ r cost remaining chores hr hcost hdisjoint hlarge
+  constructor
+  · intro item hitem allocation halloc hefx
+    exact m34InsertionGeneralAgentsProof Agent Item r cost chores item hr hcost
+      (by
+        intro hitemChores
+        exact Finset.disjoint_left.mp hdisjoint hitem hitemChores)
+      (hlarge item hitem) allocation halloc hefx
+  · intro allocation halloc hefx
+    exact m34InsertAllRemainingGeneralAgentsProof Agent Item r cost hr hcost remaining chores
+      hdisjoint hlarge allocation halloc hefx
+
 theorem composition :
   compositionSpec := by
-  intro Agent Item cost leftChores rightChores leftAllocation rightAllocation hchores hleftAllocation
-    hrightAllocation hcostLower
+  intro Agent Item r cost leftChores rightChores leftAllocation rightAllocation hr hcost hchores
+    hleftAllocation hrightAllocation
   classical
+  have hcostLower : ∀ agent item, 1 ≤ cost agent item :=
+    fun agent item =>
+      AppliedModelingLib.FairDivision.IsOneOrRChoreCost.one_le cost r hcost (by linarith)
+        agent item
   have hdisjoint : ∀ agent, Disjoint (leftAllocation agent) (rightAllocation agent) := by
     intro agent
     rw [Finset.disjoint_left]
     intro item hleft hright
     exact (Finset.disjoint_left.mp hchores
       (hleftAllocation.1 agent item hleft) (hrightAllocation.1 agent item hright)).elim
-  refine ⟨EconCSLib.FairDivision.isAllocationOf_union leftAllocation rightAllocation leftChores
+  refine ⟨AppliedModelingLib.FairDivision.isAllocationOf_union leftAllocation rightAllocation leftChores
     rightChores hchores hleftAllocation hrightAllocation, ?_⟩
   constructor
   · rintro ⟨hleft, hright⟩
-    exact EconCSLib.FairDivision.efxForChores_union_of_envyFree_of_unit_slack
+    exact AppliedModelingLib.FairDivision.efxForChores_union_of_envyFree_of_unit_slack
       cost leftAllocation rightAllocation hdisjoint hcostLower hleft hright
   constructor
   · intro hgap
-    exact EconCSLib.FairDivision.efxForChores_union_of_cost_gap
+    exact AppliedModelingLib.FairDivision.efxForChores_union_of_cost_gap
       cost leftAllocation rightAllocation hdisjoint hgap
   · intro i j hnonempty hgap
-    exact EconCSLib.FairDivision.doesNotStronglyEnvyForChores_union_of_cost_gap
+    exact AppliedModelingLib.FairDivision.doesNotStronglyEnvyForChores_union_of_cost_gap
       cost leftAllocation rightAllocation hdisjoint i j hnonempty hgap
 
 theorem canonical_allocation_properties :

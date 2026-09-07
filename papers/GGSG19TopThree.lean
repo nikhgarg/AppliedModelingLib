@@ -1,2 +1,2 @@
-import GGSG19TopThree.PaperInterface
+import GGSG19TopThree.ProofInterface
 import GGSG19TopThree.SourceTheorems

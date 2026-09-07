@@ -1,0 +1,276 @@
+{
+  "checked_proof_step_entry_schema": {
+    "required": [
+      "id",
+      "source_locator",
+      "source_step",
+      "checked_conclusion",
+      "scope"
+    ]
+  },
+  "checked_proof_steps": [
+    {
+      "checked_conclusion": "theorem9_listUpdate_progress and theorem9_measure_listUpdate_progress prove exact group replacement and the claimed total-loss decrease.",
+      "id": "list-update-loss-drop",
+      "scope": "Arbitrary bounded loss and arbitrary probability law, with explicit measurability in the measure endpoint.",
+      "source_locator": "cited publication:426-445",
+      "source_step": "ListUpdate agrees with the replacement on the submitted group and with the old model off that group, so total loss drops by the group mass times the conditional improvement."
+    },
+    {
+      "checked_conclusion": "theorem10_update_count_le_loss_div and theorem10_measure_update_count prove both the initial-loss and unit-loss bounds.",
+      "id": "update-potential-runtime",
+      "scope": "Finite-support and arbitrary measurable population laws.",
+      "source_locator": "cited publication:461-468",
+      "source_step": "Each accepted update decreases a loss in [0,1] by at least epsilon, so at most the initial loss divided by epsilon updates occur."
+    },
+    {
+      "checked_conclusion": "theorem20_costSensitive_minimizer_is_certificate_maximizer and its measure analogue prove the exact reduction.",
+      "id": "ternary-cost-identity",
+      "scope": "Binary labels, ternary predictors, and arbitrary measurable population laws.",
+      "source_locator": "cited publication:893-910",
+      "source_step": "Expected induced ternary cost is the negative of the derived pair's certificate objective, so a cost minimizer is a certificate-objective maximizer."
+    },
+    {
+      "checked_conclusion": "theorem23_coordinate_update_bound and measureTheorem23_coordinate_update_bound prove the exact strict-update inequality and runtime bound for the repaired loop.",
+      "id": "two-gap-coordinate-potential",
+      "scope": "Finite-support and arbitrary measurable population laws; syntactic oracle-call accounting is recorded separately from the mathematical strict-update count.",
+      "source_locator": "cited publication:991-1020",
+      "source_step": "Every strict coordinate update raises an objective contained in [-1,1] by more than epsilon, giving a 2/epsilon bound."
+    }
+  ],
+  "defect_entry_schema": {
+    "defect_kind_values": [
+      "algebra_or_sign",
+      "inequality_direction",
+      "quantifier_or_uniformity",
+      "domain_or_endpoint",
+      "index_or_integrality",
+      "event_or_measure",
+      "normalization_or_scaling",
+      "logical_dependency",
+      "other"
+    ],
+    "required": [
+      "id",
+      "source_locator",
+      "source_claim",
+      "defect_kind",
+      "affected_source_locators",
+      "statement_impact",
+      "repair_obligation",
+      "acceptance_condition",
+      "resolution",
+      "resolution_evidence"
+    ],
+    "resolution_values": [
+      "repaired_in_lean",
+      "open_proof_obligation",
+      "corrected_source_statement",
+      "resolved_in_current_source"
+    ],
+    "statement_impact_values": [
+      "proof_only",
+      "source_statement",
+      "uncertain"
+    ],
+    "status_impact_values": [
+      "formalized_note",
+      "formalized_with_caveat",
+      "partially_formalized"
+    ]
+  },
+  "defects": [
+    {
+      "acceptance_condition": "Prove the exact finite-support statement, give a checked atomless counterexample to the literal arbitrary-law statement, prove the arbitrary-label modelwise almost-everywhere replacement, and recover the common-null-set actionwise form for countable labels.",
+      "affected_source_locators": [
+        "cited publication:333-348"
+      ],
+      "defect_kind": "event_or_measure",
+      "id": "observation-4-pointwise-null-set",
+      "repair_obligation": "Replace the pointwise arbitrary-law equivalence by an almost-everywhere equivalence, or restrict to an atomic setting in which every support point has positive mass.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "observation4_bayesOptimal_iff_groupwiseOptimal proves the finite-support statement; observation4_arbitraryDistribution_pointwise_iff_counterexample gives the atomless witness; observation4_kernelAEModelwiseOptimal_iff_groupwiseOptimal proves the arbitrary-label modelwise almost-everywhere equivalence; observation4_kernelAEBayesOptimal_iff_groupwiseOptimal proves the common-null-set actionwise form for countable labels.",
+      "source_claim": "Bayes optimality, defined through pointwise conditional risk on the support, is equivalent to optimality against every alternative model on every subgroup.",
+      "source_locator": "cited publication:333-348",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The correction changes only null-set representatives. The arbitrary-label modelwise theorem preserves every distributional loss and group-integral conclusion, the countable-label bridge recovers actionwise Bayes optimality, and the literal pointwise statement is correctly rejected."
+    },
+    {
+      "acceptance_condition": "Prove an explicit failure-probability tail for the exact sparse transcript family, then derive the complete FalsifyAndUpdate and monotone-process guarantees from the same checker event.",
+      "affected_source_locators": [
+        "cited publication:549-603",
+        "cited publication:633-645",
+        "cited publication:717-726"
+      ],
+      "defect_kind": "inequality_direction",
+      "id": "adaptive-checker-confidence-and-transcript-count",
+      "repair_obligation": "Eliminate the undefined confidence symbol delta-prime and replace the invalid transcript-count inequality by an exact count that supports the same adaptive accept/reject semantics.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "theorem11_adaptive_certificateCheckerRun and its measure analogue use the exact family U*(U+1)^floor(2/epsilon) and prove the tail 2*N*exp(-n*epsilon^2/32); Theorems 12 and 14 propagate that event through their complete state machines.",
+      "source_claim": "The adaptive certificate checker and its downstream update processes satisfy the stated accept/reject guarantees at the displayed logarithmic sample size.",
+      "source_locator": "cited publication:549-603",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The accept/reject guarantees and logarithmic dependence on the submission horizon are preserved; only the undefined symbol and defective finite counting step are replaced by an exact bound."
+    },
+    {
+      "acceptance_condition": "Define one transcript-driven process and prove completion, checker soundness, accepted-update bounds, and the advertised groupwise monotonicity conclusion.",
+      "affected_source_locators": [
+        "cited publication:669-713",
+        "cited publication:717-739"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "algorithm-4-shared-state-and-restart",
+      "repair_obligation": "Give the external and repair proposals one shared adaptive checker state and restart the protected-history scan after every accepted repair so that no newly introduced regression is skipped.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "monotoneBountyStateFromTranscript, monotoneBountyStepFromDecision, restartMonotoneRepairScan, and theorem14_monotoneBounty formalize and verify the shared-state restarting process.",
+      "source_claim": "MonotoneFalsifyAndUpdate feeds external proposals and repair proposals through CertificateChecker and recursively repairs losses on protected historical groups.",
+      "source_locator": "cited publication:669-713",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "This makes the intended recursive repair semantics precise and proves the advertised monotonicity result without changing its population guarantee."
+    },
+    {
+      "acceptance_condition": "Retain the literal non-strict guard, prove that every queried prefix fits the floor(2/epsilon) sparse code, and prove that the complete output contains at most one additional acceptance.",
+      "affected_source_locators": [
+        "cited publication:524-547",
+        "cited publication:564-595"
+      ],
+      "defect_kind": "index_or_integrality",
+      "id": "algorithm-2-nonstrict-guard-final-acceptance",
+      "repair_obligation": "Distinguish the acceptance count in queried transcript prefixes from the count in the final transcript after the last issued query.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "numberAccepted_le_checkerAcceptanceBudget supplies the queried-prefix bound used by checkerRunAuxGuaranteed_of_sparseFamilyAccuracy. certificateCheckerRun_numberAccepted_le_budget_add_one proves the exact final-transcript bound for the literal source runner.",
+      "source_claim": "The printed non-strict guard processes a proposal while NumberAccepted is at most 2/epsilon, while the proof says the transcript contains at most 2/epsilon acceptances.",
+      "source_locator": "cited publication:524-603",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "No adaptive query is generated from the possible final extra acceptance, so the exact sparse-family confidence theorem and every accept/reject guarantee remain valid."
+    },
+    {
+      "acceptance_condition": "Prove the per-round transition on D_t and the full high-probability theorem with a rounded horizon, exact optimization-call bound, and exact total sample count.",
+      "affected_source_locators": [
+        "cited publication:786-822"
+      ],
+      "defect_kind": "index_or_integrality",
+      "id": "algorithm-5-fresh-block-and-integer-horizon",
+      "repair_obligation": "Use the fresh round block D_t in both the optimization and stopping test, and give the nonintegral quantity 2/epsilon an integer-safe loop interpretation.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "trainByOptStep uses its TrainingRound sample, trainByOptRoundBudget is ceil(2/epsilon), and theorem16_trainByOpt_sourceRounded plus measureTheorem16_trainByOpt_sourceRounded prove the full guarantee and resource bounds.",
+      "source_claim": "TrainByOpt partitions the sample into T=2/epsilon blocks and optimizes and tests one certificate at every round before either halting or applying ListUpdate.",
+      "source_locator": "cited publication:786-811",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The source proof already requires independent round blocks. The repair is a pseudocode subscript and rounding correction with unchanged asymptotic sample and oracle complexity."
+    },
+    {
+      "acceptance_condition": "Prove the stated uniform deviation with the same group in the population and empirical terms and preserve the source VC dependence.",
+      "affected_source_locators": [
+        "cited publication:773-779"
+      ],
+      "defect_kind": "index_or_integrality",
+      "id": "lemma-15-undefined-gp",
+      "repair_obligation": "Replace the undefined empirical group symbol g_p by the quantified group g.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "lemma15_vc_uniform_convergence and measureLemma15_vc_uniform_convergence prove the corrected same-group objective bound with an explicit VC radius.",
+      "source_claim": "Uniform convergence bounds the difference between the population and empirical certificate objectives for every quantified g in G and h in H.",
+      "source_locator": "cited publication:773-779",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The source quantifiers and proof make g the only intended group; g_p is an undefined typographical substitution and the corrected theorem has the advertised content."
+    },
+    {
+      "acceptance_condition": "Prove that disagreement loss equals a constant minus the certificate objective and deduce the same ERM argmin-to-objective-argmax conclusion.",
+      "affected_source_locators": [
+        "cited publication:968-984"
+      ],
+      "defect_kind": "normalization_or_scaling",
+      "id": "lemma-22-disagreement-normalization",
+      "repair_obligation": "Replace the proof's use of disagreement-normalized proportions as population masses by an identity with a group-independent offset.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "disagreementLoss_eq_constant_sub_binaryCertificateObjective and its measure analogue establish the exact identity; lemma22_disagreementERM_maximizes_fixed_model and measureLemma22_disagreementERM_maximizes_fixed_model derive the printed lemma unchanged.",
+      "source_claim": "An empirical-risk minimizer on the disagreement-labelled sample maximizes the fixed-model certificate objective over the group class.",
+      "source_locator": "cited publication:957-987",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The theorem statement, assumptions, and optimizer are unchanged; only the printed normalization argument is replaced."
+    },
+    {
+      "acceptance_condition": "Prove two-sided epsilon local optimality, the 2/epsilon strict-update bound, the exact ceil(2/epsilon) best-response-round bound, a counterexample to arbitrary-start positivity, and recovery of a genuine positive certificate from positive initialization.",
+      "affected_source_locators": [
+        "cited publication:991-1020"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "algorithm-6-two-gap-and-positive-initialization",
+      "repair_obligation": "Test the two coordinate gaps separately so stopping certifies both final-coordinate inequalities, add exactly the premise needed to ensure the returned locally optimal pair has positive certificate value, and include the terminal stopping test in the integer oracle-call accounting.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "coordinateAscentStep and measureCoordinateAscentStep implement two-gap updates; theorem23_coordinate_update_bound and its measure analogue prove the strict-update rate; measureCoordinateAscentFuel_rounds proves the exact ceil(2/epsilon) loop-round and per-class oracle-call envelope; theorem23_local_optimum_without_positive_certificate is the one-point counterexample; theorem23_coordinateAscentLoop_positive_certificate and measureTheorem23_coordinateAscent_sourceRounded_positive_certificate prove the positive-initialization repair.",
+      "source_claim": "From an arbitrary initial pair, alternating ERM returns after at most 2/epsilon ERM calls over each class with a positive certificate that is epsilon-locally optimal in both coordinates.",
+      "source_locator": "cited publication:991-1020",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The same alternating-ERM method retains the local-optimality, O(1/epsilon) convergence, oracle, and model-class guarantees. The pseudocode tests the two final-coordinate gaps separately, and only the positive-certificate clause needs an explicit positive-start premise."
+    }
+  ],
+  "model_convention_entry_schema": {
+    "optional": [
+      "unresolved_relation_to_literal_source"
+    ],
+    "required": [
+      "id",
+      "source_locator",
+      "classification",
+      "formal_meaning",
+      "why_needed",
+      "checked_scope"
+    ]
+  },
+  "model_conventions": [
+    {
+      "checked_scope": "The arbitrary-population interfaces for Definitions 1--7, Observation 4, Theorems 8--16, and the optimization reductions through Theorem 23.",
+      "classification": "source_definedness_conditions",
+      "formal_meaning": "Population expectations are taken under an arbitrary probability measure; losses, models, groups, adaptive submissions, and bad events carry the measurability or integrability premises needed for those expectations and probabilities to exist.",
+      "id": "measurable-arbitrary-population-law",
+      "source_locator": "cited publication:310-1022",
+      "unresolved_relation_to_literal_source": "These premises do not impose finite support, parametric classes, or densities; they expose the standard definedness conditions implicit in the source notation.",
+      "why_needed": "The paper writes expectations and conditional/group losses without spelling out their measure-theoretic definedness conditions."
+    },
+    {
+      "checked_scope": "Definitions 2 and 5 and all certificate objectives, in both finite-PMF and arbitrary-measure developments.",
+      "classification": "null_event_totalization",
+      "formal_meaning": "The mass-weighted group-loss numerator is the total primitive; conditional group loss is totalized to zero at mass zero, and every divided source display is recovered on positive-mass groups.",
+      "id": "zero-mass-group-totalization",
+      "source_locator": "cited publication:321-361",
+      "unresolved_relation_to_literal_source": "No theorem depends on the chosen zero value; source divided formulas are claimed only under positive group mass.",
+      "why_needed": "Conditional loss on a null group is undefined in ordinary probability notation, while the paper permits arbitrary subgroups."
+    }
+  ],
+  "paper": "GHKR22BiasBounties",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "id": "named-results-and-algorithms-1-through-23",
+      "outcome": "defect_recorded",
+      "semantic_scope": "All numbered definitions, observations, theorems, lemmas, theorem-like remarks, and Algorithms 1--6 in the governing arXiv v4 mathematical development.",
+      "source_locator": "cited publication:312-1022"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "138f9031c66f3688e484aec30eee2152ed3e3f6ea002d1b31f3ea786b15cd155",
+  "supporting_source_artifacts": [
+    {
+      "pdf_sha256": "0b5f72a1f42dace056a9d98c13a8a78c21a351169c7bbf3b5e1ba2a0063277d7",
+      "role": "Publication metadata and proceedings numbering; its first-page note identifies the arXiv version as the most up-to-date mathematical source.",
+      "text_sha256": "2dafa3331a4494c1190b6154676131c0cd67235926e5f3d9fcf6b7387b843976",
+      "title": "FAccT 2022 proceedings paper",
+      "url": "https://facctconference.org/static/pdfs_2022/facct22-3533172.pdf"
+    },
+    {
+      "archive_sha256": "6de92b7e9b7e0d687220f21192d7b7d38d1b87377f56a21b69850ef03f1ed7f5",
+      "role": "Governing mathematical source, including the main and appendix theorem presentations.",
+      "title": "arXiv 2201.10408v4 source archive",
+      "url": "https://arxiv.org/abs/2201.10408v4"
+    }
+  ]
+}

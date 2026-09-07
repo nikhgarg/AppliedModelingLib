@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -76,6 +77,273 @@ class LeanImportClosureTests(unittest.TestCase):
         self.assertIsNone(problem)
         self.assertIsNotNone(digest)
         return str(digest)
+
+    def test_portable_receipt_round_trip_is_exact_and_non_accepting(self) -> None:
+        record, problem = self.provider().record_for_entrypoint(
+            "papers/Fixture/PaperInterface.lean"
+        )
+        self.assertIsNone(problem)
+        assert record is not None
+
+        payload = closure.lean_import_closure_receipt_payload("Fixture", record)
+        self.assertFalse(payload["acceptance_credential"])
+        self.assertEqual(
+            closure.validated_lean_import_closure_receipt_payload(
+                payload, paper="Fixture"
+            ),
+            payload,
+        )
+
+        mutated = dict(payload)
+        mutated["paper"] = "Other"
+        with self.assertRaisesRegex(ValueError, "identity is invalid"):
+            closure.validated_lean_import_closure_receipt_payload(
+                mutated, paper="Fixture"
+            )
+
+    def test_portable_receipt_accepts_complete_proof_interface_root(self) -> None:
+        proof = self.repo / "papers" / "Fixture" / "ProofInterface.lean"
+        proof.write_text("import Fixture.PaperInterface\n", encoding="utf-8")
+        self.git("add", "papers/Fixture/ProofInterface.lean")
+        self.git("commit", "-qm", "add proof interface")
+        self.loaded_modules = (
+            "Fixture.Base",
+            "Fixture.PaperInterface",
+            "Fixture.ProofInterface",
+            "Init",
+        )
+        record, problem = self.provider().record_for_entrypoint(
+            "papers/Fixture/ProofInterface.lean"
+        )
+        self.assertIsNone(problem)
+        assert record is not None
+
+        payload = closure.lean_import_closure_receipt_payload("Fixture", record)
+        self.assertEqual(
+            payload["entrypoint"], "papers/Fixture/ProofInterface.lean"
+        )
+        self.assertEqual(
+            closure.validated_lean_import_closure_receipt_payload(
+                payload, paper="Fixture"
+            ),
+            payload,
+        )
+
+    def test_portable_receipt_accepts_exact_paper_build_target_root(self) -> None:
+        paper_target = self.repo / "papers" / "Fixture.lean"
+        paper_target.write_text("import Fixture.PaperInterface\n", encoding="utf-8")
+        self.git("add", "papers/Fixture.lean")
+        self.git("commit", "-qm", "add paper build target")
+        self.loaded_modules = (
+            "Fixture",
+            "Fixture.Base",
+            "Fixture.PaperInterface",
+            "Init",
+        )
+        record, problem = self.provider().record_for_entrypoint(
+            "papers/Fixture.lean"
+        )
+        self.assertIsNone(problem)
+        assert record is not None
+
+        payload = closure.lean_import_closure_receipt_payload("Fixture", record)
+        self.assertEqual(payload["entrypoint"], "papers/Fixture.lean")
+        self.assertEqual(
+            closure.validated_lean_import_closure_receipt_payload(
+                payload, paper="Fixture"
+            ),
+            payload,
+        )
+
+        with self.assertRaisesRegex(ValueError, "entrypoint is for another paper"):
+            closure.lean_import_closure_receipt_payload("Other", record)
+
+    def test_external_artifact_lookup_avoids_lake_env_and_streams_exact_bytes(
+        self,
+    ) -> None:
+        manifest = {
+            "packages": [{"name": "Dependency"}],
+        }
+        (self.repo / "lake-manifest.json").write_text(json.dumps(manifest))
+        artifact = (
+            self.repo
+            / ".lake"
+            / "packages"
+            / "Dependency"
+            / ".lake"
+            / "build"
+            / "lib"
+            / "lean"
+            / "Example"
+            / "Module.olean"
+        )
+        artifact.parent.mkdir(parents=True)
+        artifact.write_bytes(b"portable artifact bytes")
+        prefix = self.repo / "toolchain"
+        (prefix / "lib" / "lean").mkdir(parents=True)
+        process = subprocess.CompletedProcess(
+            ["lean", "--print-prefix"],
+            0,
+            stdout=(str(prefix) + "\n").encode(),
+            stderr=b"",
+        )
+        with mock.patch.object(closure.subprocess, "run", return_value=process) as run:
+            records, problem = closure.external_module_artifact_records(
+                self.repo, ["Example.Module"]
+            )
+        self.assertEqual(problem, "")
+        self.assertEqual(
+            records,
+            [
+                {
+                    "module": "Example.Module",
+                    "byte_length": len(b"portable artifact bytes"),
+                    "sha256": hashlib.sha256(b"portable artifact bytes").hexdigest(),
+                }
+            ],
+        )
+        self.assertEqual(run.call_args.args[0], ["lean", "--print-prefix"])
+
+    def test_external_artifact_lookup_rejects_conflicting_candidates(self) -> None:
+        (self.repo / "lake-manifest.json").write_text(
+            json.dumps({"packages": [{"name": "Dependency"}]})
+        )
+        roots = (
+            self.repo
+            / ".lake"
+            / "packages"
+            / "Dependency"
+            / ".lake"
+            / "build"
+            / "lib"
+            / "lean",
+            self.repo / ".lake" / "build" / "lib" / "lean",
+        )
+        for index, root in enumerate(roots):
+            artifact = root / "Example" / "Module.olean"
+            artifact.parent.mkdir(parents=True)
+            artifact.write_bytes(f"candidate {index}".encode())
+        prefix = self.repo / "toolchain"
+        (prefix / "lib" / "lean").mkdir(parents=True)
+        process = subprocess.CompletedProcess(
+            ["lean", "--print-prefix"],
+            0,
+            stdout=(str(prefix) + "\n").encode(),
+            stderr=b"",
+        )
+        with mock.patch.object(closure.subprocess, "run", return_value=process):
+            records, problem = closure.external_module_artifact_records(
+                self.repo, ["Example.Module"]
+            )
+        self.assertIsNone(records)
+        self.assertIn("conflicting .olean artifacts", problem)
+
+    def test_external_artifact_snapshot_rejects_timestamp_restored_mutation(
+        self,
+    ) -> None:
+        (self.repo / "lake-manifest.json").write_text(
+            json.dumps({"packages": [{"name": "Dependency"}]})
+        )
+        artifact = (
+            self.repo
+            / ".lake"
+            / "packages"
+            / "Dependency"
+            / ".lake"
+            / "build"
+            / "lib"
+            / "lean"
+            / "Example"
+            / "Module.olean"
+        )
+        artifact.parent.mkdir(parents=True)
+        artifact.write_bytes(b"portable artifact bytes")
+        original_stat = artifact.stat()
+        prefix = self.repo / "toolchain"
+        (prefix / "lib" / "lean").mkdir(parents=True)
+        process = subprocess.CompletedProcess(
+            ["lean", "--print-prefix"],
+            0,
+            stdout=(str(prefix) + "\n").encode(),
+            stderr=b"",
+        )
+        with mock.patch.object(closure.subprocess, "run", return_value=process):
+            snapshot, problem = closure.external_module_artifact_snapshot(
+                self.repo, ["Example.Module"]
+            )
+        self.assertEqual(problem, "")
+        assert snapshot is not None
+
+        artifact.write_bytes(b"x" * len(b"portable artifact bytes"))
+        os.utime(
+            artifact,
+            ns=(original_stat.st_atime_ns, original_stat.st_mtime_ns),
+        )
+
+        self.assertIn("changed after exact hashing", snapshot.current_problem())
+
+    def test_external_artifact_finalization_rejects_a_new_candidate(self) -> None:
+        (self.repo / "lake-manifest.json").write_text(
+            json.dumps({"packages": [{"name": "Dependency"}]})
+        )
+        package_artifact = (
+            self.repo
+            / ".lake"
+            / "packages"
+            / "Dependency"
+            / ".lake"
+            / "build"
+            / "lib"
+            / "lean"
+            / "Example"
+            / "Module.olean"
+        )
+        package_artifact.parent.mkdir(parents=True)
+        package_artifact.write_bytes(b"same artifact bytes")
+        prefix = self.repo / "toolchain"
+        (prefix / "lib" / "lean").mkdir(parents=True)
+        process = subprocess.CompletedProcess(
+            ["lean", "--print-prefix"],
+            0,
+            stdout=(str(prefix) + "\n").encode(),
+            stderr=b"",
+        )
+        with mock.patch.object(closure.subprocess, "run", return_value=process):
+            snapshot, problem = closure.external_module_artifact_snapshot(
+                self.repo, ["Example.Module"]
+            )
+            self.assertEqual(problem, "")
+            assert snapshot is not None
+            unchanged_search, problem = closure.external_artifact_search_snapshot(
+                self.repo
+            )
+            self.assertEqual(problem, "")
+            assert unchanged_search is not None
+            self.assertEqual(
+                snapshot.current_problem(search_snapshot=unchanged_search), ""
+            )
+
+            duplicate = (
+                self.repo
+                / ".lake"
+                / "build"
+                / "lib"
+                / "lean"
+                / "Example"
+                / "Module.olean"
+            )
+            duplicate.parent.mkdir(parents=True)
+            duplicate.write_bytes(b"same artifact bytes")
+            changed_search, problem = closure.external_artifact_search_snapshot(
+                self.repo
+            )
+
+        self.assertEqual(problem, "")
+        assert changed_search is not None
+        self.assertIn(
+            "candidate set changed",
+            snapshot.current_problem(search_snapshot=changed_search),
+        )
 
     def test_non_git_root_returns_structured_fail_closed_problem(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -1085,8 +1353,8 @@ class LeanImportClosureTests(unittest.TestCase):
             stderr=b"",
         )
         with mock.patch.object(
-            closure.subprocess,
-            "run",
+            closure,
+            "run_owned_lean_process",
             return_value=graph_result,
         ) as run:
             modules, error = closure.lean_loaded_module_closure(
@@ -1125,8 +1393,8 @@ class LeanImportClosureTests(unittest.TestCase):
             stderr=b"",
         )
         with mock.patch.object(
-            closure.subprocess,
-            "run",
+            closure,
+            "run_owned_lean_process",
             side_effect=(build_result, graph_result),
         ) as run:
             modules, error = closure.lean_loaded_module_closure(
@@ -1147,7 +1415,91 @@ class LeanImportClosureTests(unittest.TestCase):
         )
         self.assertEqual(run.call_args_list[0].kwargs["cwd"], self.repo)
         self.assertEqual(run.call_args_list[0].kwargs["timeout"], 23)
+        self.assertEqual(run.call_args_list[0].kwargs["env"]["LEAN_NUM_THREADS"], "1")
         self.assertEqual(run.call_args_list[1].args[0][:3], ["lake", "env", "lean"])
+
+    def test_build_environment_caps_threads_without_mutating_parent(self) -> None:
+        with mock.patch.dict(closure.os.environ, {
+            "LEAN_NUM_THREADS": "24", "BUILD_ENV_TEST_SENTINEL": "preserved",
+        }):
+            environment = closure.single_threaded_lean_build_environment()
+            self.assertEqual(environment["LEAN_NUM_THREADS"], "1")
+            self.assertEqual(environment["BUILD_ENV_TEST_SENTINEL"], "preserved")
+            self.assertEqual(closure.os.environ["LEAN_NUM_THREADS"], "24")
+
+    def test_native_closure_timeouts_kill_owned_group_and_preserve_cause(self) -> None:
+        for build_entry_module in (True, False):
+            with self.subTest(build=build_entry_module):
+                process = mock.Mock(pid=123456)
+                process.communicate.side_effect = [
+                    subprocess.TimeoutExpired("native fixture", 600), (b"last output", b""),
+                ]
+                with (
+                    mock.patch.object(closure.subprocess, "Popen", return_value=process) as popen,
+                    mock.patch.object(closure.os, "killpg") as killpg,
+                ):
+                    modules, error = closure.lean_loaded_module_closure(
+                        self.repo, "Fixture.PaperInterface", 600,
+                        build_entry_module=build_entry_module,
+                    )
+                self.assertIsNone(modules)
+                self.assertIn("timed out after 600 seconds", error)
+                self.assertIn("Lake could not build" if build_entry_module else "Lean import-graph command failed", error)
+                self.assertIs(popen.call_args.kwargs["start_new_session"], True)
+                self.assertEqual(popen.call_args.kwargs["cwd"], self.repo)
+                killpg.assert_called_once_with(process.pid, closure.signal.SIGKILL)
+                self.assertEqual(process.communicate.call_args_list, [
+                    mock.call(timeout=600), mock.call(timeout=1),
+                ])
+
+    def test_owned_native_process_cancellation_cleans_and_reraises(self) -> None:
+        for interruption in (KeyboardInterrupt(), SystemExit(3)):
+            with self.subTest(interruption=type(interruption).__name__):
+                process = mock.Mock(pid=123456)
+                process.communicate.side_effect = [interruption, (b"", b"")]
+                with (
+                    mock.patch.object(closure.subprocess, "Popen", return_value=process),
+                    mock.patch.object(closure.os, "killpg") as killpg,
+                    self.assertRaises(type(interruption)) as raised,
+                ):
+                    closure.run_owned_lean_process(["lake", "build"], cwd=self.repo, timeout=17)
+                self.assertIs(raised.exception, interruption)
+                killpg.assert_called_once_with(process.pid, closure.signal.SIGKILL)
+                self.assertEqual(process.communicate.call_args_list, [
+                    mock.call(timeout=17), mock.call(timeout=1),
+                ])
+
+    def test_owned_native_process_cleanup_error_preserves_original_failure(self) -> None:
+        original = subprocess.TimeoutExpired("native fixture", 17)
+        process = mock.Mock(pid=123456)
+        process.communicate.side_effect = [original, OSError("drain failed")]
+        process.kill.side_effect = ProcessLookupError()
+        with (
+            mock.patch.object(closure.subprocess, "Popen", return_value=process),
+            mock.patch.object(closure.os, "killpg", side_effect=PermissionError()),
+            self.assertRaises(subprocess.TimeoutExpired) as raised,
+        ):
+            closure.run_owned_lean_process(["lake", "build"], cwd=self.repo, timeout=17)
+        self.assertIs(raised.exception, original)
+        process.kill.assert_called_once_with()
+        self.assertEqual(process.communicate.call_args_list, [
+            mock.call(timeout=17), mock.call(timeout=1),
+        ])
+
+    def test_owned_native_process_preserves_output_and_nonzero_status(self) -> None:
+        process = mock.Mock(returncode=7)
+        process.communicate.return_value = (b"stdout", b"stderr")
+        with (
+            mock.patch.object(closure.subprocess, "Popen", return_value=process) as popen,
+            mock.patch.object(closure.os, "killpg") as killpg,
+        ):
+            result = closure.run_owned_lean_process(
+                ["lake", "build", "+Fixture.PaperInterface:olean"], cwd=self.repo,
+                timeout=17, env={"LEAN_NUM_THREADS": "1"},
+            )
+        self.assertEqual((result.returncode, result.stdout, result.stderr), (7, b"stdout", b"stderr"))
+        self.assertEqual(popen.call_args.kwargs["env"], {"LEAN_NUM_THREADS": "1"})
+        killpg.assert_not_called()
 
     def test_real_lean_graph_observes_dependency_only_import_change(self) -> None:
         baseline, error = closure.lean_loaded_module_closure(

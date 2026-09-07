@@ -17,7 +17,7 @@
     "reviewed_rows": 0,
     "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     "stale_rows": 0,
-    "total_rows": 37,
+    "total_rows": 23,
     "uncertain_rows": 0
   },
   "human_summary": "",
@@ -25,11 +25,11 @@
   "main_caveat": "",
   "paper_interface": {
     "declaration_rows": 51,
-    "line_count": 1625,
+    "line_count": 495,
     "maintainability_issue": null,
     "oversized": false,
     "path": "papers/GCG24UserItemFairness/PaperInterface.lean",
-    "review_rows": 37
+    "review_rows": 23
   },
   "repository_visibility": "public",
   "review_entrypoint": "papers/GCG24UserItemFairness/FINAL_VALIDATION_REPORT.md",
@@ -64,20 +64,8 @@
       "proposition2_user_symmetric_lp_eq_source_problem5"
     ],
     "include_names": [
-      "itemFairnessSpec",
-      "itemNormalizerSpec",
-      "normalizedItemUtilitySpec",
-      "normalizedUserUtilitySpec",
-      "priceOfFairnessSpec",
-      "priceOfMisestimationSpec",
-      "problem11BasicFeasibleSpec",
-      "problem11EqualityFeasibleSetSpec",
       "proposition1_symmetric_lp_reductionSpec",
       "proposition2_symmetric_optimum_existsSpec",
-      "rawItemUtilitySpec",
-      "rawUserUtilitySpec",
-      "recommendationUtilitySpec",
-      "solvesProblemOne_iffSpec",
       "appendix_c_lemma1_item_fairness_positiveSpec",
       "appendix_d_lemma10_active_optimizer_pivot_at_or_before_midpointSpec",
       "appendix_d_lemma11_optimal_item_fairness_mono_on_active_pivot_intervalSpec",
@@ -96,11 +84,9 @@
       "appendix_e_lemma17_every_optimal_solution_has_no_right_half_supportSpec",
       "theorem3_price_decreases_first_halfSpec",
       "theorem3_price_increases_second_halfSpec",
-      "theorem4_misestimation_tradeoff_typeOneSpec",
-      "theorem4_misestimation_tradeoff_typeZeroSpec",
       "theorem4_misestimation_without_fairness_universalSpec",
-      "userFairnessSpec",
-      "appendix_c_lemma2_item_fairness_equality_lp_solution_setSpec"
+      "appendix_c_lemma2_item_fairness_equality_lp_solution_setSpec",
+      "theorem4_misestimation_tradeoffSpec"
     ],
     "llm_assumption_review": {
       "assumption_judgment_file": "papers/GCG24UserItemFairness/audit/assumption_match_llm.json",
@@ -127,12 +113,47 @@
       "paper_coverage_audit_file": "papers/GCG24UserItemFairness/audit/paper_coverage_llm.json",
       "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
       "require_explicit_source_routes": true,
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
       "review_surface_audit_file": "papers/GCG24UserItemFairness/audit/review_surface_llm.json",
       "surface_audit_threshold": 30,
       "surface_warning_threshold": 120
     },
     "paper_coverage_required": true,
+    "presentation_sections": [
+      {
+        "names": [
+          "proposition1_symmetric_lp_reductionSpec",
+          "proposition2_symmetric_optimum_existsSpec",
+          "theorem3_price_decreases_first_halfSpec",
+          "theorem3_price_increases_second_halfSpec",
+          "theorem4_misestimation_without_fairness_universalSpec",
+          "theorem4_misestimation_tradeoffSpec"
+        ],
+        "title": "Main-text source claims"
+      },
+      {
+        "names": [
+          "appendix_c_lemma1_item_fairness_positiveSpec",
+          "appendix_c_lemma2_item_fairness_equality_lp_solution_setSpec",
+          "appendix_d_lemma3_unconstrained_baselineSpec",
+          "appendix_d_lemma4_problem6_unique_sparse_solutionSpec",
+          "appendix_d_lemma5_problem6_active_optimizer_closed_formSpec",
+          "appendix_d_lemma6_optimal_policy_type_utility_orderSpec",
+          "appendix_d_lemma7_active_optimizer_pivot_monotonicitySpec",
+          "appendix_d_lemma8_selected_pivot_stitchingSpec",
+          "appendix_d_lemma9_pair_share_algebraSpec",
+          "appendix_d_lemma10_active_optimizer_pivot_at_or_before_midpointSpec",
+          "appendix_d_lemma11_optimal_item_fairness_mono_on_active_pivot_intervalSpec",
+          "appendix_e_lemma12_symmetrized_policySpec",
+          "appendix_e_lemma13_every_optimal_basic_solution_has_pivot_supportSpec",
+          "appendix_e_lemma14_problem11_has_unique_optimal_solutionSpec",
+          "appendix_e_lemma15_optimal_solution_full_closed_formSpec",
+          "appendix_e_lemma16_midpoint_order_algebraSpec",
+          "appendix_e_lemma17_every_optimal_solution_has_no_right_half_supportSpec"
+        ],
+        "title": "Appendix and supplement source claims"
+      }
+    ],
     "proposition_spec_proofs": {
       "appendix_c_lemma1_item_fairness_positiveSpec": "appendix_c_lemma1_item_fairness_positive",
       "appendix_c_lemma2_item_fairness_equality_lp_solution_setSpec": "appendix_c_lemma2_item_fairness_equality_lp_solution_set",
@@ -151,26 +172,12 @@
       "appendix_e_lemma15_optimal_solution_full_closed_formSpec": "appendix_e_lemma15_optimal_solution_full_closed_form",
       "appendix_e_lemma16_midpoint_order_algebraSpec": "appendix_e_lemma16_midpoint_order_algebra",
       "appendix_e_lemma17_every_optimal_solution_has_no_right_half_supportSpec": "appendix_e_lemma17_every_optimal_solution_has_no_right_half_support",
-      "itemFairnessSpec": "itemFairness",
-      "itemNormalizerSpec": "itemNormalizer",
-      "normalizedItemUtilitySpec": "normalizedItemUtility",
-      "normalizedUserUtilitySpec": "normalizedUserUtility",
-      "priceOfFairnessSpec": "priceOfFairness",
-      "priceOfMisestimationSpec": "priceOfMisestimation",
-      "problem11BasicFeasibleSpec": "problem11BasicFeasible",
-      "problem11EqualityFeasibleSetSpec": "problem11EqualityFeasibleSet",
       "proposition1_symmetric_lp_reductionSpec": "proposition1_symmetric_lp_reduction",
       "proposition2_symmetric_optimum_existsSpec": "proposition2_symmetric_optimum_exists",
-      "rawItemUtilitySpec": "rawItemUtility",
-      "rawUserUtilitySpec": "rawUserUtility",
-      "recommendationUtilitySpec": "recommendationUtility",
-      "solvesProblemOne_iffSpec": "solvesProblemOne_iff",
       "theorem3_price_decreases_first_halfSpec": "theorem3_price_decreases_first_half",
       "theorem3_price_increases_second_halfSpec": "theorem3_price_increases_second_half",
-      "theorem4_misestimation_tradeoff_typeOneSpec": "theorem4_misestimation_tradeoff_typeOne",
-      "theorem4_misestimation_tradeoff_typeZeroSpec": "theorem4_misestimation_tradeoff_typeZero",
-      "theorem4_misestimation_without_fairness_universalSpec": "theorem4_misestimation_without_fairness_universal",
-      "userFairnessSpec": "userFairness"
+      "theorem4_misestimation_tradeoffSpec": "theorem4_misestimation_tradeoff",
+      "theorem4_misestimation_without_fairness_universalSpec": "theorem4_misestimation_without_fairness_universal"
     },
     "require_source_spec_correspondence": true,
     "require_v11_raw_source_spec_screening": true,
@@ -190,30 +197,33 @@
     },
     "slices": [
       {
-        "id": "all",
+        "id": "additional_source_results",
         "names": [
-          "recommendationUtility",
-          "rawUserUtility",
-          "normalizedUserUtility",
-          "userFairness",
-          "rawItemUtility",
-          "itemNormalizer",
-          "normalizedItemUtility",
-          "itemFairness",
-          "priceOfFairness",
-          "solvesProblemOne_iff",
-          "priceOfMisestimation",
-          "problem11EqualityFeasibleSet",
-          "problem11BasicFeasible",
-          "proposition1_symmetric_lp_reduction",
-          "proposition2_symmetric_optimum_exists",
-          "theorem3_price_decreases_first_half",
-          "theorem3_price_increases_second_half",
-          "theorem4_misestimation_without_fairness_universal",
-          "theorem4_misestimation_tradeoff_typeZero",
-          "theorem4_misestimation_tradeoff_typeOne"
+          "proposition1_symmetric_lp_reductionSpec",
+          "proposition2_symmetric_optimum_existsSpec",
+          "appendix_c_lemma1_item_fairness_positiveSpec",
+          "appendix_d_lemma10_active_optimizer_pivot_at_or_before_midpointSpec",
+          "appendix_d_lemma11_optimal_item_fairness_mono_on_active_pivot_intervalSpec",
+          "appendix_d_lemma3_unconstrained_baselineSpec",
+          "appendix_d_lemma4_problem6_unique_sparse_solutionSpec",
+          "appendix_d_lemma5_problem6_active_optimizer_closed_formSpec",
+          "appendix_d_lemma6_optimal_policy_type_utility_orderSpec",
+          "appendix_d_lemma7_active_optimizer_pivot_monotonicitySpec",
+          "appendix_d_lemma8_selected_pivot_stitchingSpec",
+          "appendix_d_lemma9_pair_share_algebraSpec",
+          "appendix_e_lemma12_symmetrized_policySpec",
+          "appendix_e_lemma13_every_optimal_basic_solution_has_pivot_supportSpec",
+          "appendix_e_lemma14_problem11_has_unique_optimal_solutionSpec",
+          "appendix_e_lemma15_optimal_solution_full_closed_formSpec",
+          "appendix_e_lemma16_midpoint_order_algebraSpec",
+          "appendix_e_lemma17_every_optimal_solution_has_no_right_half_supportSpec",
+          "theorem3_price_decreases_first_halfSpec",
+          "theorem3_price_increases_second_halfSpec",
+          "theorem4_misestimation_without_fairness_universalSpec",
+          "appendix_c_lemma2_item_fairness_equality_lp_solution_setSpec",
+          "theorem4_misestimation_tradeoffSpec"
         ],
-        "title": "All source-facing review rows"
+        "title": "Additional source results"
       }
     ],
     "source_definition_names": [

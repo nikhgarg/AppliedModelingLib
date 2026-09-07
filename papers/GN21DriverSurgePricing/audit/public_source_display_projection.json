@@ -1,13 +1,14 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "GN21DriverSurgePricing",
-  "private_source_map_sha256": "f37b6f60e8d063b1d284faf6bc35dd8b87f8ecde3bd3b333708428f79694a620",
+  "private_source_map_sha256": "8533e36ee10f0eadc60ef0d110fa512f80f730a99cbf4c373c1004e6a9e9b765",
   "public_manifest_path": "papers/GN21DriverSurgePricing/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "6b416d032b8dfb1e1d9396decf3666b8af689c762e9d447b8a7bdd081f758d20",
+  "public_source_map_sha256": "1c445d55a863421d362e5973dc9232a198af1ffc5d9930587fef77f0913d733b",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
   "selected_source_item_ids": [
+    "condition_lemma6_endpoint_derivative_data",
     "model_policy_equalities_modulo_null_sets",
     "review_lemma10_nonsurge_derivative_positive_of_acceptAll_bounds",
     "review_lemma1_measured_dynamic_reward_decomposition",
@@ -29,6 +30,25 @@
     "source_theorem4_full_structural_policy_forms"
   ],
   "selected_source_items": {
+    "condition_lemma6_endpoint_derivative_data": {
+      "source_anchors": [
+        {
+          "line_end": 3680,
+          "line_start": 3652,
+          "publication_locator": "cited publication",
+          "quoted_text": "These lemmas primarily involve properties of derivatives of the reward function R(w, σ) and its\ncomponents in the dynamic model, as a function of the pricing.\n55\n\n\fD.3.1\n\nNotation and assumptions\n\nRecall in the dynamic model that we constrain σi to be measurable, open, subsets of the R+ . Then,\nσi can be written as a countable union of disjoint subsets of R+ , i.e. σi = ∪∞\nk=0 (`k , uk ). We further\nassume that uk 6= `m , for any k, m; we can do so without loss of generality by making a measure 0\nchange to σi , by adding uk = `m to σi .\n∂\nSuppose u is an upper-endpoint of σi , ie. ∃k such that u = uk . Then, we use ∂u\nH(σi ) to denote\n∂\nthe derivative of the set function H with respect to u at σi . Similarly, ∂` H(σi ) is the derivative of\nH at σi with respect to a lower-endpoint of σi .\n∂\n∂\nWe derive ∂u\nR(w, {σ1 , σ2 }), ∂`\nR(w, {σ1 , σ2 }). We will make it clear in each instance whether u\n∂\nrefers to the derivative\nor ` is an endpoint of σ1 or σ2 . For all the derivatives in this subsection ∂u\n∂\nwith respect to an upper endpoint in σi , and ∂` refers to a derivative at a lower endpoint of σi .",
+          "quoted_text_sha256": "848f49e90c49c8b05d3800ed004297428fa62aa9b4d9d629d5f1fb78b89a1bf6"
+        },
+        {
+          "line_end": 4152,
+          "line_start": 4105,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 6. Let R(w, σ) be as defined in Lemma 1. Then, ∂u\n\u0013\n\u0012\n\u0013 \u0012\nqi→j (u)\nQj\nQi\nwi (u) Qi Qj\nr(u, i, w, σ) ,\n+\n−\nRj +\nRi\n∆ji +\nu\nu\nTi\nTj\nTi\nTj\n\nProof. Proof.\nµi ({σj , σ2 }) =\n\nQj Ti\nQj Ti + Qi Tj\n\nR(w, σ) = µ1 (σ)R1 (w1 , σ1 ) + µ2 (σ)R2 (w2 , σ2 )\n\u0015\n\u0014\n1\n[Q2 W1 + Q1 W2 ]\n=\nQ2 T1 + Q1 T2\nWi\nRi (σi ) =\nTi\n\u0014\n\u0015\nZ\n∂\n∂\nQi =\nλi→j + λi\nqi→j (τ )dFi (τ ) = λi qi→j (u)fi (u)\n∂u\n∂u\nτ ∈σi",
+          "quoted_text_sha256": "793af4f4959ea93651a1cba0f90ff6cdd769433dddac9653c06d3c08cd6b147b"
+        }
+      ],
+      "source_kind": "condition"
+    },
     "model_policy_equalities_modulo_null_sets": {
       "source_anchors": [
         {

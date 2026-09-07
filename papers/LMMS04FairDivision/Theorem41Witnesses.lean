@@ -1,6 +1,6 @@
 import LMMS04FairDivision.Theorem41SourceCertificate
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 namespace LMMS04FairDivision
 namespace Theorem41

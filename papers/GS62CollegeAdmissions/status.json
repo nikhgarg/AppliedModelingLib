@@ -19,10 +19,10 @@
   "human_review": {
     "mismatch_rows": 0,
     "reviewed_rows": 0,
-    "source": "paper-local status.json counts the five normal source presentations: three definitions and two theorems. The paired specification/proof interface remains agent/audit evidence; reviewed_rows remains zero because no independent human-review certification is claimed",
+    "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     "stale_rows": 0,
-    "surface": "normal_source_presentations_v1",
-    "total_rows": 5
+    "total_rows": 6,
+    "uncertain_rows": 0
   },
   "human_summary": "",
   "human_summary_review": {
@@ -34,11 +34,11 @@
   "open_source_boundaries": [],
   "paper_interface": {
     "declaration_rows": 44,
-    "line_count": 698,
+    "line_count": 176,
     "maintainability_issue": null,
     "oversized": false,
     "path": "papers/GS62CollegeAdmissions/PaperInterface.lean",
-    "review_rows": 5
+    "review_rows": 6
   },
   "repository_visibility": "public",
   "review_entrypoint": "papers/GS62CollegeAdmissions/FINAL_VALIDATION_REPORT.md",
@@ -90,7 +90,8 @@
       "literalApplicantOptimalCollegeAssignment_iff_source_definitionSpec",
       "unstableMarriage_iff_source_definitionSpec",
       "theorem1_stable_marriage_existsSpec",
-      "theorem2_applicant_optimalitySpec"
+      "theorem2_applicant_optimalitySpec",
+      "section4_waiting_list_terminal_stabilitySpec"
     ],
     "llm_assumption_review": {
       "assumption_judgment_file": "papers/GS62CollegeAdmissions/audit/assumption_match_llm.json",
@@ -116,10 +117,10 @@
       "match_judgment_file": "papers/GS62CollegeAdmissions/audit/statement_match_llm.json",
       "paper_coverage_audit_file": "papers/GS62CollegeAdmissions/audit/paper_coverage_llm.json",
       "paper_semantic_prerequisites_file": "papers/GS62CollegeAdmissions/audit/paper_semantic_prerequisites.json",
-      "policy": "Compare only raw byte-pinned source-anchor bundles with one transparent PaperInterface Spec per source claim. Lean opens that Spec and retains each material paper-local model/procedure declaration and reusable EconCSLib declaration as its own exact-code, source-anchored prerequisite card. Paired theorem endpoints live in ProofInterface.lean and supply proof evidence, not a duplicate semantic judgment. The canonical v11 screening ledger is the source-to-Spec evidence bound by a direct final closure receipt; Lean elaboration separately checks the paired proof endpoint and its transitive dependencies.",
+      "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
       "require_explicit_source_routes": true,
       "require_source_claim_atoms": true,
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
       "review_surface_audit_file": "papers/GS62CollegeAdmissions/audit/review_surface_llm.json",
       "surface_audit_threshold": 30,
       "surface_warning_threshold": 120,
@@ -133,6 +134,7 @@
           "literalApplicantOptimalCollegeAssignment_iff_source_definitionSpec",
           "unstableMarriage_iff_source_definitionSpec",
           "theorem1_stable_marriage_existsSpec",
+          "section4_waiting_list_terminal_stabilitySpec",
           "theorem2_applicant_optimalitySpec"
         ],
         "title": "Main-text source claims"
@@ -142,6 +144,7 @@
     "proof_module": "GS62CollegeAdmissions.ProofInterface",
     "proposition_spec_proofs": {
       "literalApplicantOptimalCollegeAssignment_iff_source_definitionSpec": "literalApplicantOptimalCollegeAssignment_iff_source_definition",
+      "section4_waiting_list_terminal_stabilitySpec": "section4_waiting_list_terminal_stability",
       "theorem1_stable_marriage_existsSpec": "theorem1_stable_marriage_exists",
       "theorem2_applicant_optimalitySpec": "theorem2_applicant_optimality",
       "unstableCollegeAssignment_iff_source_definitionSpec": "unstableCollegeAssignment_iff_source_definition",
@@ -195,9 +198,17 @@
           "literalApplicantOptimalCollegeAssignment_iff_source_definitionSpec",
           "unstableMarriage_iff_source_definitionSpec",
           "theorem1_stable_marriage_existsSpec",
+          "section4_waiting_list_terminal_stabilitySpec",
           "theorem2_applicant_optimalitySpec"
         ],
-        "title": "Five normal source items as one semantic Spec each"
+        "title": "Main-text source claims"
+      },
+      {
+        "id": "additional_source_results",
+        "names": [
+          "section4_waiting_list_terminal_stabilitySpec"
+        ],
+        "title": "Selected Section 4 source result"
       }
     ],
     "source_definition_names": [],
@@ -210,14 +221,14 @@
   "schema": 1,
   "source_inventory": {
     "deep_audit_items": 0,
-    "item_count": 5,
+    "item_count": 7,
     "map_sha256": "583de2606736c14e43c91ea220045e7ddb8da850e6e9d613e5c4ce9d2fc85ba6",
     "normal_definition_items": 3,
     "normal_named_result_items": 2,
     "normal_named_theory_items": 5,
     "path": "papers/GS62CollegeAdmissions/audit/paper_statement_map.json",
     "source_artifact_sha256": "953a8123e8120a86b17ae3de92cb51abb5aed420fe11b97fe2a666a8e637d09b",
-    "support_only_items": 0
+    "support_only_items": 1
   },
   "source_version": "American Mathematical Monthly, 1962",
   "status": "formalized",

@@ -161,7 +161,7 @@ examples, and empirical results enter only an explicitly requested deep
 all-prose review.
 
 If reusable library work becomes necessary, put it in a separate integration
-pull request when practical. Adding `EconCSLib/`, tooling, workflow, protocol,
+pull request when practical. Adding `AppliedModelingLib/`, tooling, workflow, protocol,
 or another paper path to this branch intentionally escalates validation beyond
 the one-paper lane.
 

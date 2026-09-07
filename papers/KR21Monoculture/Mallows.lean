@@ -1,10 +1,10 @@
 import KR21Monoculture.WeakCompetition
 import KR21Monoculture.Kendall
-import EconCSLib.SocialChoice.Ranking.Mallows
+import AppliedModelingLib.SocialChoice.Ranking.Mallows
 import Mathlib.Algebra.BigOperators.Field
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -61,7 +61,7 @@ The KR file keeps its local structure so downstream paper proofs can continue
 rewriting with fields such as `M.partition_eq_sum`.  This adapter is the
 preferred route when a proof only needs reusable Mallows law facts.
 -/
-def toShared : EconCSLib.SocialChoice.Ranking.MallowsSpec n where
+def toShared : AppliedModelingLib.SocialChoice.Ranking.MallowsSpec n where
   center := M.center
   q := M.q
   law := M.law
@@ -69,14 +69,14 @@ def toShared : EconCSLib.SocialChoice.Ranking.MallowsSpec n where
   q_pos := M.q_pos
   partition_pos := M.partition_pos
   partition_eq_sum := by
-    simpa [EconCSLib.SocialChoice.Ranking.mallowsPartition,
-      EconCSLib.SocialChoice.Ranking.mallowsWeight, mallowsPartition,
-      mallowsWeight, EconCSLib.SocialChoice.Ranking.kendallTau, kendallTau]
+    simpa [AppliedModelingLib.SocialChoice.Ranking.mallowsPartition,
+      AppliedModelingLib.SocialChoice.Ranking.mallowsWeight, mallowsPartition,
+      mallowsWeight, AppliedModelingLib.SocialChoice.Ranking.kendallTau, kendallTau]
       using M.partition_eq_sum
   law_apply_toReal := by
     intro π
-    simpa [EconCSLib.SocialChoice.Ranking.mallowsWeight, mallowsWeight,
-      EconCSLib.SocialChoice.Ranking.kendallTau, kendallTau]
+    simpa [AppliedModelingLib.SocialChoice.Ranking.mallowsWeight, mallowsWeight,
+      AppliedModelingLib.SocialChoice.Ranking.kendallTau, kendallTau]
       using M.law_apply_toReal π
 
 /-- The unnormalised mass of rankings whose first choice is `c`. -/
@@ -94,7 +94,7 @@ noncomputable def firstSecondWeight (c d : Candidate n) : ℝ :=
 /-- First-choice probabilities reduce to finite Mallows weights. -/
 theorem firstChoiceProb_eq_firstWeight_div_partition (c : Candidate n) :
     firstChoiceProb M.law c = M.firstWeight c / M.partition := by
-  simpa [firstChoiceProb, EconCSLib.SocialChoice.Ranking.firstChoiceProb]
+  simpa [firstChoiceProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb]
     using (M.toShared).firstChoiceProb_eq_firstWeight_div_partition c
 
 /-- Probability that a Mallows draw begins with the ordered pair `(c,d)`. -/
@@ -152,7 +152,7 @@ theorem firstSecondChoiceProb_eq_firstSecondWeight_div_partition
     (c d : Candidate n) :
     M.firstSecondChoiceProb c d = M.firstSecondWeight c d / M.partition := by
   simpa [firstSecondChoiceProb,
-    EconCSLib.SocialChoice.Ranking.MallowsSpec.firstSecondChoiceProb]
+    AppliedModelingLib.SocialChoice.Ranking.MallowsSpec.firstSecondChoiceProb]
     using (M.toShared).firstSecondChoiceProb_eq_firstSecondWeight_div_partition c d
 
 /-- Pair-correct probabilities reduce to finite Mallows weights. -/
@@ -160,7 +160,7 @@ theorem pairCorrectProb_eq_pairCorrectWeight_div_partition
     (c d : Candidate n) :
     M.pairCorrectProb c d = M.pairCorrectWeight c d / M.partition := by
   simpa [pairCorrectProb,
-    EconCSLib.SocialChoice.Ranking.MallowsSpec.pairCorrectProb]
+    AppliedModelingLib.SocialChoice.Ranking.MallowsSpec.pairCorrectProb]
     using (M.toShared).pairCorrectProb_eq_pairCorrectWeight_div_partition c d
 
 /-- Pair-wrong probabilities reduce to finite Mallows weights. -/
@@ -168,7 +168,7 @@ theorem pairWrongProb_eq_pairWrongWeight_div_partition
     (c d : Candidate n) :
     M.pairWrongProb c d = M.pairWrongWeight c d / M.partition := by
   simpa [pairWrongProb,
-    EconCSLib.SocialChoice.Ranking.MallowsSpec.pairWrongProb]
+    AppliedModelingLib.SocialChoice.Ranking.MallowsSpec.pairWrongProb]
     using (M.toShared).pairWrongProb_eq_pairWrongWeight_div_partition c d
 
 /-- Correct and wrong pair-order weights partition the Mallows mass for a
@@ -200,9 +200,9 @@ theorem sum_firstSecondWeight_right_eq_firstWeight (c : Candidate n) :
 /-- The probability version of `sum_firstSecondWeight_right_eq_firstWeight`. -/
 theorem sum_firstSecondChoiceProb_right_eq_firstChoiceProb (c : Candidate n) :
     (∑ d : Candidate n, M.firstSecondChoiceProb c d) = firstChoiceProb M.law c := by
-  simpa [firstChoiceProb, EconCSLib.SocialChoice.Ranking.firstChoiceProb,
+  simpa [firstChoiceProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb,
     firstSecondChoiceProb,
-    EconCSLib.SocialChoice.Ranking.MallowsSpec.firstSecondChoiceProb]
+    AppliedModelingLib.SocialChoice.Ranking.MallowsSpec.firstSecondChoiceProb]
     using (M.toShared).sum_firstSecondChoiceProb_right_eq_firstChoiceProb c
 
 /-- First-choice probability of the center's first candidate in weight form. -/

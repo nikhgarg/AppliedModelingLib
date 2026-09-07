@@ -1,0 +1,1 @@
+import Naor1969QueueTolls.ProofInterface

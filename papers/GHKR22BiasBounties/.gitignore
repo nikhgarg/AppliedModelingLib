@@ -1,0 +1,10 @@
+source-audited*
+*.pdf
+!source.pdf
+!sources/facct22-3533172.pdf
+!docs/DependencyDAG.pdf
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.synctex.gz

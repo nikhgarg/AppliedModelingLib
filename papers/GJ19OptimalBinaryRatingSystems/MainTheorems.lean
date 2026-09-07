@@ -1,15 +1,15 @@
-import EconCSLib.Foundations.Math.FiniteOptimization
-import EconCSLib.Foundations.Math.ExponentialBounds
-import EconCSLib.Foundations.Math.Asymptotics
-import EconCSLib.Foundations.Math.IntegralConvergence
-import EconCSLib.Foundations.Math.MonotoneContinuity
-import EconCSLib.Foundations.Math.OrderedPairs
-import EconCSLib.Foundations.Math.UniformConvergence
-import EconCSLib.Foundations.Optimization.Bisection
-import EconCSLib.Foundations.Optimization.Certificate
-import EconCSLib.Foundations.Probability.BinaryRatingLDP
-import EconCSLib.Foundations.Probability.FiniteMeasurablePartition
-import EconCSLib.Foundations.Probability.IntegralLargeDeviations
+import AppliedModelingLib.Foundations.Math.FiniteOptimization
+import AppliedModelingLib.Foundations.Math.ExponentialBounds
+import AppliedModelingLib.Foundations.Math.Asymptotics
+import AppliedModelingLib.Foundations.Math.IntegralConvergence
+import AppliedModelingLib.Foundations.Math.MonotoneContinuity
+import AppliedModelingLib.Foundations.Math.OrderedPairs
+import AppliedModelingLib.Foundations.Math.UniformConvergence
+import AppliedModelingLib.Foundations.Optimization.Bisection
+import AppliedModelingLib.Foundations.Optimization.Certificate
+import AppliedModelingLib.Applications.RatingSystems.BinaryLargeDeviations
+import AppliedModelingLib.Foundations.Probability.FiniteMeasurablePartition
+import AppliedModelingLib.Foundations.Probability.IntegralLargeDeviations
 
 /-!
 # Implementation Theorems: Designing Optimal Binary Rating Systems
@@ -26,7 +26,7 @@ namespace GJ19OptimalBinaryRatingSystems
 
 noncomputable section
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 open Filter Topology
 open MeasureTheory
 
@@ -247,7 +247,7 @@ theorem BinaryEndpointLevelVector_pos_of_not_first {m : ℕ}
   have hi_pos : 0 < i.val := Nat.pos_of_ne_zero hi
   have hi_le_last : i.val ≤ m + 1 := Nat.le_of_lt_succ i.isLt
   have hchain : x 0 < x i.val := by
-    refine EconCSLib.lt_of_adjacent_lt_chain x (i := 0) (j := i.val) hi_pos ?_
+    refine AppliedModelingLib.lt_of_adjacent_lt_chain x (i := 0) (j := i.val) hi_pos ?_
     intro k _hk0 hki
     exact hstep k (lt_of_lt_of_le hki hi_le_last)
   have hfirst : x 0 = 0 := by
@@ -273,7 +273,7 @@ theorem BinaryEndpointLevelVector_lt_one_of_not_last {m : ℕ}
   have hi_lt_last : i.val < m + 1 := lt_of_le_of_ne hi_le_last hi
   have hchain : x i.val < x (m + 1) := by
     refine
-      EconCSLib.lt_of_adjacent_lt_chain x (i := i.val) (j := m + 1)
+      AppliedModelingLib.lt_of_adjacent_lt_chain x (i := i.val) (j := m + 1)
         hi_lt_last ?_
     intro k _hik hklast
     exact hstep k hklast
@@ -338,7 +338,7 @@ theorem BinaryEndpointLevelVector_mono {m : ℕ}
       have h := ht.2.2 ⟨k, hk⟩
       simpa [x, adjacentLowIndex, adjacentHighIndex, hk_low, hk_high] using h
     have hchain : x a.val < x b.val :=
-      EconCSLib.lt_of_adjacent_lt_chain x hlt hstep
+      AppliedModelingLib.lt_of_adjacent_lt_chain x hlt hstep
     have ha_x : x a.val = t a := by
       simpa [x, a.isLt]
     have hb_x : x b.val = t b := by
@@ -403,7 +403,7 @@ theorem BinaryEndpointLevelVector_last_width_le_inv_of_last_width_le_all
     simpa [x, hk_low, hk_high, hm_low, hm_high,
       lastAdjacentIndex, adjacentLowIndex, adjacentHighIndex] using h
   have h :=
-    EconCSLib.last_gap_le_inv_of_last_gap_le_all
+    AppliedModelingLib.last_gap_le_inv_of_last_gap_le_all
       x (n := m + 1) (by omega) hx0 hxN hgap
   have hm_low : m < m + 2 := by omega
   have hm_high : m + 1 < m + 2 := by omega
@@ -466,7 +466,7 @@ theorem BinaryEndpointLevelVector_first_high_lt_one {m : ℕ} (hm : 0 < m)
     have h := ht.2.2 ⟨k, hk⟩
     simpa [x, adjacentLowIndex, adjacentHighIndex, hk_low, hk_high] using h
   have hchain : x 1 < x (m + 1) := by
-    refine EconCSLib.lt_of_adjacent_lt_chain x (i := 1) (j := m + 1) (by omega) ?_
+    refine AppliedModelingLib.lt_of_adjacent_lt_chain x (i := 1) (j := m + 1) (by omega) ?_
     intro k _hk1 hkj
     exact hstep k (by omega)
   have hlast : x (m + 1) = 1 := by
@@ -490,7 +490,7 @@ theorem BinaryEndpointLevelVector_last_low_pos {m : ℕ} (hm : 0 < m)
     have h := ht.2.2 ⟨k, hk⟩
     simpa [x, adjacentLowIndex, adjacentHighIndex, hk_low, hk_high] using h
   have hchain : x 0 < x m := by
-    refine EconCSLib.lt_of_adjacent_lt_chain x (i := 0) (j := m) (by omega) ?_
+    refine AppliedModelingLib.lt_of_adjacent_lt_chain x (i := 0) (j := m) (by omega) ?_
     intro k _hk0 hkm
     exact hstep k (by omega)
   have hfirst : x 0 = 0 := by
@@ -661,7 +661,7 @@ theorem binaryEndpointAwareAdjacentRate_interior_ge_target_sub_low_shift_log_of_
           (successProb (adjacentHighIndex i)) root =
         target)
     (B :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         root lower (successProb (adjacentLowIndex i)) delta) :
     target -
         sampleRate (adjacentLowIndex i) *
@@ -716,7 +716,7 @@ theorem binaryEndpointAwareAdjacentRate_interior_ge_target_sub_first_log_of_bise
           (successProb (adjacentHighIndex i)) root =
         target)
     (B :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         root lower (successProb (adjacentLowIndex i)) delta) :
     target -
         sampleRate (adjacentLowIndex i) *
@@ -733,7 +733,7 @@ theorem binaryEndpointAwareAdjacentRate_interior_ge_target_sub_first_log_of_bise
   have hlog :
       Real.log ((root + delta) / root) ≤
         Real.log ((tFirst + delta) / tFirst) :=
-    EconCSLib.Math.log_add_div_self_le_log_add_div_self_of_le
+    AppliedModelingLib.Math.log_add_div_self_le_log_add_div_self_of_le
       htFirst0 htFirst_le_root hdelta
   have hscaled :
       sampleRate (adjacentLowIndex i) *
@@ -1049,7 +1049,7 @@ theorem binaryEndpointAwareAdjacentRate_last_lt_of_low_lt
 /-- Finite worst-adjacent endpoint-aware rate for a binary level chain. -/
 def binaryEndpointAwareAdjacentRateObjective {m : ℕ}
     (successProb sampleRate : Fin (m + 2) → ℝ) : ℝ :=
-  EconCSLib.finiteMin (binaryEndpointAwareAdjacentRate successProb sampleRate)
+  AppliedModelingLib.finiteMin (binaryEndpointAwareAdjacentRate successProb sampleRate)
 
 /-- Endpoint-aware adjacent rates equalize to one common value. -/
 def BinaryEndpointAwareAdjacentRatesEqualize {m : ℕ}
@@ -1327,7 +1327,7 @@ theorem binaryEndpointAwareAdjacentRate_uniform_ge_neg_log_one_sub_width_sq
         BinaryEndpointLevelVector_lt_one_of_not_last
           hlevels (adjacentHighIndex i) hnot_last
     have hlog :=
-      EconCSLib.Math.neg_log_one_sub_sq_le_neg_log_one_sub
+      AppliedModelingLib.Math.neg_log_one_sub_sq_le_neg_log_one_sub
         hhigh_nonneg hhigh_lt_one
     have hrate :=
       binaryEndpointAwareAdjacentRate_first
@@ -1356,7 +1356,7 @@ theorem binaryEndpointAwareAdjacentRate_uniform_ge_neg_log_one_sub_width_sq
           1 - levels (adjacentLowIndex i) < 1 := by
         linarith
       have hlog :=
-        EconCSLib.Math.neg_log_one_sub_sq_le_neg_log_one_sub
+        AppliedModelingLib.Math.neg_log_one_sub_sq_le_neg_log_one_sub
           hwidth_nonneg hwidth_lt_one
       have hrate :=
         binaryEndpointAwareAdjacentRate_last
@@ -1471,7 +1471,7 @@ theorem binaryEndpointAwareAdjacentRate_uniform_gap_ge_neg_log_one_sub_sq
           (1 -
             (levels (adjacentHighIndex i) -
               levels (adjacentLowIndex i)) ^ 2) :=
-    EconCSLib.Math.neg_log_one_sub_sq_mono hε.le hgap hwidth_lt
+    AppliedModelingLib.Math.neg_log_one_sub_sq_mono hε.le hgap hwidth_lt
   exact
     hmono.trans
       (binaryEndpointAwareAdjacentRate_uniform_ge_neg_log_one_sub_width_sq
@@ -1501,7 +1501,7 @@ theorem uniformEndpointLevels_objective_ge_inv_adjacent_count_sq
   have hε_sq_lt_one : ε ^ 2 < 1 := by
     exact (sq_lt_one_iff₀ hε_pos.le).mpr hε_lt_one
   have hlog_lower : ε ^ 2 ≤ -Real.log (1 - ε ^ 2) :=
-    EconCSLib.Math.le_neg_log_one_sub (sq_nonneg ε) hε_sq_lt_one
+    AppliedModelingLib.Math.le_neg_log_one_sub (sq_nonneg ε) hε_sq_lt_one
   have hpoint :
       ∀ i : Fin (m + 1),
         -Real.log (1 - ε ^ 2) ≤
@@ -1520,7 +1520,7 @@ theorem uniformEndpointLevels_objective_ge_inv_adjacent_count_sq
         binaryEndpointAwareAdjacentRateObjective (uniformEndpointLevels m)
           (fun _ : Fin (m + 2) => (1 : ℝ)) := by
         unfold binaryEndpointAwareAdjacentRateObjective
-        exact EconCSLib.le_finiteMin
+        exact AppliedModelingLib.le_finiteMin
           (binaryEndpointAwareAdjacentRate (uniformEndpointLevels m)
             (fun _ : Fin (m + 2) => (1 : ℝ))) hpoint
 
@@ -2099,7 +2099,7 @@ theorem BinaryEndpointLevelVector_uniform_equalized_last_rate_le_neg_log_one_sub
   have hmono :
       -Real.log (1 - width) ≤
         -Real.log (1 - 1 / ((m + 1 : ℕ) : ℝ)) :=
-    EconCSLib.Math.neg_log_one_sub_mono hwidth_le hinv_lt_one
+    AppliedModelingLib.Math.neg_log_one_sub_mono hwidth_le hinv_lt_one
   have hrate :
       binaryEndpointAwareAdjacentRate levels
           (fun _ : Fin (m + 2) => (1 : ℝ))
@@ -2199,7 +2199,7 @@ theorem neg_log_one_sub_inv_adjacent_count_le_one {m : ℕ} (hm : 0 < m) :
     simpa using h
   have hlog :
       -Real.log (1 - x) ≤ x / (1 - x) :=
-    EconCSLib.Math.neg_log_one_sub_le_div_self hx0 hx1
+    AppliedModelingLib.Math.neg_log_one_sub_le_div_self hx0 hx1
   have hx_div_le_one : x / (1 - x) ≤ 1 := by
     have hm_pos : (0 : ℝ) < m := by exact_mod_cast hm
     have hm_ge_one : (1 : ℝ) ≤ m := by exact_mod_cast (Nat.succ_le_iff.mp hm)
@@ -2238,7 +2238,7 @@ theorem BinaryEndpointLevelVector_uniform_equalized_one_fifth_objective_le_one
     by
       unfold binaryEndpointAwareAdjacentRateObjective
       exact
-        EconCSLib.finiteMin_eq_of_forall
+        AppliedModelingLib.finiteMin_eq_of_forall
           (binaryEndpointAwareAdjacentRate levels
             (fun _ : Fin (m + 2) => (1 : ℝ)))
           (binaryEndpointAwareAdjacentRate levels
@@ -2303,7 +2303,7 @@ theorem corollaryC2_uniform_equalized_last_rate_tendsto_zero
           -Real.log (1 - 1 / ((((N + 1) + 1 : ℕ) : ℝ))))
         atTop (nhds 0) := by
     have hcomp :=
-      EconCSLib.Math.tendsto_neg_log_one_sub_inv_nat_succ_nhds_zero.comp
+      AppliedModelingLib.Math.tendsto_neg_log_one_sub_inv_nat_succ_nhds_zero.comp
         (tendsto_add_atTop_nat 1)
     refine Tendsto.congr' ?_ hcomp
     filter_upwards with N
@@ -2332,7 +2332,7 @@ theorem corollaryC2_uniform_equalized_last_rate_tendsto_zero
 /-- Maximum adjacent width of an endpoint-normalized binary-rating grid. -/
 noncomputable def binaryEndpointAdjacentMaxWidth
     {m : ℕ} (levels : Fin (m + 2) → ℝ) : ℝ :=
-  EconCSLib.finiteMax
+  AppliedModelingLib.finiteMax
     (fun i : Fin (m + 1) =>
       levels (adjacentHighIndex i) - levels (adjacentLowIndex i))
 
@@ -2344,7 +2344,7 @@ theorem binaryEndpointAdjacentMaxWidth_nonneg
   let i0 : Fin (m + 1) := ⟨0, by omega⟩
   exact
     (BinaryEndpointLevelVector_adjacent_width_nonneg hlevels i0).trans
-      (EconCSLib.le_finiteMax
+      (AppliedModelingLib.le_finiteMax
         (fun i : Fin (m + 1) =>
           levels (adjacentHighIndex i) - levels (adjacentLowIndex i))
         i0)
@@ -2363,7 +2363,7 @@ theorem binaryEndpointAdjacentMaxWidth_sq_le_inv_of_uniform_equalized
     (binaryEndpointAdjacentMaxWidth levels) ^ 2 ≤
       1 / ((m + 1 : ℕ) : ℝ) := by
   obtain ⟨i, hmax_eq⟩ :=
-    EconCSLib.exists_finiteMax_eq
+    AppliedModelingLib.exists_finiteMax_eq
       (fun i : Fin (m + 1) =>
         levels (adjacentHighIndex i) - levels (adjacentLowIndex i))
   simpa [binaryEndpointAdjacentMaxWidth, hmax_eq] using
@@ -2408,7 +2408,7 @@ theorem corollaryC2_uniform_equalized_adjacent_mesh_tendsto_zero
     let η : ℝ := -Real.log (1 - ε ^ 2)
     have hη_pos : 0 < η := by
       dsimp [η]
-      exact EconCSLib.Math.neg_log_one_sub_sq_pos hε_pos hε_lt_one
+      exact AppliedModelingLib.Math.neg_log_one_sub_sq_pos hε_pos hε_lt_one
     have hevent :
         ∀ᶠ N : ℕ in atTop,
           binaryEndpointAwareAdjacentRate (levels N)
@@ -2421,7 +2421,7 @@ theorem corollaryC2_uniform_equalized_adjacent_mesh_tendsto_zero
         b ≤ binaryEndpointAdjacentMaxWidth (m := N + 1) (levels N) :=
       le_of_not_gt hnot
     obtain ⟨i, hmax_eq⟩ :=
-      EconCSLib.exists_finiteMax_eq
+      AppliedModelingLib.exists_finiteMax_eq
         (fun i : Fin ((N + 1) + 1) =>
           levels N (adjacentHighIndex i) -
             levels N (adjacentLowIndex i))
@@ -2514,7 +2514,7 @@ theorem BinaryEndpointLevelVector_uniform_refined_last_rate_ge_one_fifth
   have hlog :
       (1 / 5 : ℝ) * (-Real.log t) ≤
         -Real.log ((1 + Real.sqrt t) / 2) :=
-    EconCSLib.Math.neg_log_one_add_sqrt_div_two_ge_one_fifth_neg_log
+    AppliedModelingLib.Math.neg_log_one_add_sqrt_div_two_ge_one_fifth_neg_log
       ht_half ht_le_one
   have hrate :
       binaryEndpointAwareAdjacentRate levels
@@ -2578,7 +2578,7 @@ theorem BinaryEndpointLevelVector_uniform_first_level_ge_half_of_first_rate_lowe
   have hlower_le_r : lower ≤ r := by
     simpa [r] using hlower_le_first
   have hbound :=
-    EconCSLib.Math.half_lower_le_one_sub_exp_neg_of_lower_le_rate
+    AppliedModelingLib.Math.half_lower_le_one_sub_exp_neg_of_lower_le_rate
       hlower0 hlower1 hlower_le_r
   rwa [htail] at hbound
 
@@ -2651,7 +2651,7 @@ theorem BinaryEndpointLevelVector_uniform_first_level_ge_half_of_equalized_objec
     by
       unfold binaryEndpointAwareAdjacentRateObjective
       exact
-        EconCSLib.finiteMin_eq_of_forall
+        AppliedModelingLib.finiteMin_eq_of_forall
           (binaryEndpointAwareAdjacentRate levels
             (fun _ : Fin (m + 2) => (1 : ℝ)))
           (binaryEndpointAwareAdjacentRate levels
@@ -3479,7 +3479,7 @@ theorem uniformDoubledEndpointLevels_even_adjacent_rate_eq_transform
       have harg : -(-Real.log (1 - pHi)) / 2 =
           Real.log (1 - pHi) / 2 := by ring
       rw [harg]
-      exact EconCSLib.Math.exp_log_div_two_eq_sqrt (by linarith : 0 < 1 - pHi)
+      exact AppliedModelingLib.Math.exp_log_div_two_eq_sqrt (by linarith : 0 < 1 - pHi)
     rw [hnew, holdRate, uniformDoubledEndpointRateTransform, hexp]
     congr 1
     dsimp [bernoulliFirstEndpointEqualSplit]
@@ -3522,7 +3522,7 @@ theorem uniformDoubledEndpointLevels_even_adjacent_rate_eq_transform
           Real.exp (-(-Real.log pLo) / 2) = Real.sqrt pLo := by
         have harg : -(-Real.log pLo) / 2 = Real.log pLo / 2 := by ring
         rw [harg]
-        exact EconCSLib.Math.exp_log_div_two_eq_sqrt hpLo0
+        exact AppliedModelingLib.Math.exp_log_div_two_eq_sqrt hpLo0
       rw [hnew, holdRate, uniformDoubledEndpointRateTransform, hexp]
       congr 1
     · have hkpos : 0 < k := Nat.pos_of_ne_zero hk0
@@ -4354,7 +4354,7 @@ theorem binaryEndpointInverseGap_existsUnique_zero_and_nonneg_iff
     refine ⟨0, ?_⟩
     simp
   exact
-    EconCSLib.existsUnique_zero_and_nonneg_iff_of_continuous_strictMono_crossing
+    AppliedModelingLib.existsUnique_zero_and_nonneg_iff_of_continuous_strictMono_crossing
       (binaryEndpointInverseGap_continuous gFirst gLast)
       (binaryEndpointInverseGap_strictMono hgFirst hgLast)
       hneg (binaryEndpointInverseGap_exists_pos hgFirst hgLast)
@@ -6794,7 +6794,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_eq_common_of_all_eq {m : ℕ}
     binaryEndpointAwareAdjacentRateObjective successProb sampleRate = r := by
   unfold binaryEndpointAwareAdjacentRateObjective
   exact
-    EconCSLib.finiteMin_eq_of_forall
+    AppliedModelingLib.finiteMin_eq_of_forall
       (binaryEndpointAwareAdjacentRate successProb sampleRate) r h
 
 /--
@@ -6827,7 +6827,7 @@ theorem binaryEndpointAdjacentMaxWidth_sq_le_objective_of_uniform_equalized
       binaryEndpointAwareAdjacentRateObjective levels
         (fun _ : Fin (m + 2) => (1 : ℝ)) := by
   obtain ⟨i, hmax_eq⟩ :=
-    EconCSLib.exists_finiteMax_eq
+    AppliedModelingLib.exists_finiteMax_eq
       (fun i : Fin (m + 1) =>
         levels (adjacentHighIndex i) - levels (adjacentLowIndex i))
   let width : ℝ :=
@@ -6842,7 +6842,7 @@ theorem binaryEndpointAdjacentMaxWidth_sq_le_objective_of_uniform_equalized
     (sq_lt_one_iff₀ hwidth_nonneg).mpr hwidth_lt_one
   have hlog_lower :
       width ^ 2 ≤ -Real.log (1 - width ^ 2) :=
-    EconCSLib.Math.le_neg_log_one_sub (sq_nonneg width) hwidth_sq_lt_one
+    AppliedModelingLib.Math.le_neg_log_one_sub (sq_nonneg width) hwidth_sq_lt_one
   have hrate_lower :
       -Real.log (1 - width ^ 2) ≤
         binaryEndpointAwareAdjacentRate levels
@@ -7233,7 +7233,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_maximal_of_equalized_and_no_sim
       binaryEndpointAwareAdjacentRateObjective alt sampleRate ≤
         binaryEndpointAwareAdjacentRateObjective candidate sampleRate := by
   simpa [binaryEndpointAwareAdjacentRateObjective] using
-    EconCSLib.finiteMin_maximal_of_equalized_and_exists_component_le
+    AppliedModelingLib.finiteMin_maximal_of_equalized_and_exists_component_le
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRate levels sampleRate)
       feasible candidate heq hno_improve
@@ -7254,7 +7254,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_isMaximizerOn_of_equalized_and_
       ∀ alt : Fin (m + 2) → ℝ, feasible alt →
         ∃ i : Fin (m + 1),
           binaryEndpointAwareAdjacentRate alt sampleRate i ≤ r) :
-    EconCSLib.Optimization.IsMaximizerOn feasible
+    AppliedModelingLib.Optimization.IsMaximizerOn feasible
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
       candidate := by
@@ -7297,7 +7297,7 @@ theorem binaryEndpointAwareAdjacentRate_exists_rate_le_of_cascade
       binaryEndpointAwareAdjacentRate alternative sampleRate ⟨n, h⟩
     else 0
   have hcascade :=
-    EconCSLib.exists_index_le_of_endpoint_cascade
+    AppliedModelingLib.exists_index_le_of_endpoint_cascade
       (m := m) hm
       (candidate := candidateNat) (alternative := alternativeNat)
       (rate := rateNat) (r := r)
@@ -7389,7 +7389,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_isMaximizerOn_of_equalized_and_
             alt (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))) →
           binaryEndpointAwareAdjacentRate alt sampleRate
             (lastAdjacentIndex : Fin (m + 1)) ≤ r) :
-    EconCSLib.Optimization.IsMaximizerOn feasible
+    AppliedModelingLib.Optimization.IsMaximizerOn feasible
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
       candidate := by
@@ -7430,7 +7430,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_isMaximizerOn_of_equalized_and_
           candidate (adjacentLowIndex i) < alt (adjacentLowIndex i) →
           r < binaryEndpointAwareAdjacentRate alt sampleRate i →
           candidate (adjacentHighIndex i) < alt (adjacentHighIndex i)) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -7477,7 +7477,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_isMaximizerOn_of_equalized_and_
           candidate (adjacentLowIndex i) < alt (adjacentLowIndex i) →
           alt (adjacentHighIndex i) ≤ candidate (adjacentHighIndex i) →
           binaryEndpointAwareAdjacentRate alt sampleRate i ≤ r) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -7530,7 +7530,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_isMaximizerOn_of_equalized_and_
               (sampleRate (adjacentLowIndex i))
               (alt (adjacentHighIndex i))
               (alt (adjacentLowIndex i))) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -7772,7 +7772,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_isMaximizerOn_of_equalized
     (heq :
       ∀ i : Fin (m + 1),
         binaryEndpointAwareAdjacentRate candidate sampleRate i = r) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -7817,7 +7817,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_isMaximizerOn_of_pairwise_equal
     (hsample_low :
       ∀ i : Fin (m + 1), 0 < sampleRate (adjacentLowIndex i))
     (heq : BinaryEndpointAwareAdjacentRatesEqualize candidate sampleRate) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -7905,10 +7905,10 @@ theorem BinaryEndpointAwareAdjacentRatesEqualize_monotone_scaled_first_level_ge_
         binaryEndpointAwareAdjacentRateObjective (uniformEndpointLevels m)
           sampleRate := by
     unfold binaryEndpointAwareAdjacentRateObjective
-    refine EconCSLib.le_finiteMin _ ?_
+    refine AppliedModelingLib.le_finiteMin _ ?_
     intro i
     exact
-      (EconCSLib.finiteMin_le
+      (AppliedModelingLib.finiteMin_le
         (binaryEndpointAwareAdjacentRate (uniformEndpointLevels m)
           (fun _ : Fin (m + 2) => (1 : ℝ))) i).trans
         (binaryEndpointAwareAdjacentRate_uniformEndpointLevels_le_of_sampleRate_mono_first_eq_one
@@ -8015,7 +8015,7 @@ theorem binaryEndpointAwareAdjacentRatesEqualize_unique
   rcases heq_candidate.exists_common_rate with ⟨rc, hrc⟩
   rcases heq_alt.exists_common_rate with ⟨ra, hra⟩
   have hmax_candidate :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun levels : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -8023,7 +8023,7 @@ theorem binaryEndpointAwareAdjacentRatesEqualize_unique
     binaryEndpointAwareAdjacentRateObjective_isMaximizerOn_of_equalized
       hm sampleRate candidate hcandidate hsample_high hsample_low hrc
   have hmax_alt :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun levels : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -8033,7 +8033,7 @@ theorem binaryEndpointAwareAdjacentRatesEqualize_unique
   have hobj_eq :
       binaryEndpointAwareAdjacentRateObjective candidate sampleRate =
         binaryEndpointAwareAdjacentRateObjective alt sampleRate :=
-    EconCSLib.Optimization.IsMaximizerOn.objective_eq_of_isMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn.objective_eq_of_isMaximizerOn
       hmax_candidate hmax_alt
   have hobj_candidate :
       binaryEndpointAwareAdjacentRateObjective candidate sampleRate = rc :=
@@ -8789,7 +8789,7 @@ theorem theoremB1SourceDoubledIndexIterate_floor_window
     refined ≤ 2 ^ q * old + 2 ^ q ∧
       2 ^ q * old ≤ refined + 2 ^ q := by
   have h :=
-    EconCSLib.Math.nat_floor_dyadic_pred_add_one_mul_window
+    AppliedModelingLib.Math.nat_floor_dyadic_pred_add_one_mul_window
       (M := M) (q := q) hM hθ0 hθ1
   simpa [theoremB1SourceDoubledIndexIterate_eq hM q] using h
 
@@ -9482,7 +9482,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_isStrictMaximizerOn_of_equalize
     (heq :
       ∀ i : Fin (m + 1),
         binaryEndpointAwareAdjacentRate candidate sampleRate i = r) :
-    EconCSLib.Optimization.IsStrictMaximizerOn
+    AppliedModelingLib.Optimization.IsStrictMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -9509,7 +9509,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_isStrictMaximizerOn_of_equalize
       exact hobj_ge.trans
         (by
           unfold binaryEndpointAwareAdjacentRateObjective
-          exact EconCSLib.finiteMin_le
+          exact AppliedModelingLib.finiteMin_le
             (binaryEndpointAwareAdjacentRate alt sampleRate) i)
     let c : ℕ → ℝ := fun n =>
       if h : n < m + 2 then candidate ⟨n, h⟩ else 0
@@ -9706,7 +9706,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_isMaximizerOn_iff_pairwise_equa
       ∀ i : Fin (m + 1), 0 < sampleRate (adjacentLowIndex i))
     (heq_candidate :
       BinaryEndpointAwareAdjacentRatesEqualize candidate sampleRate) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun levels : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -9714,7 +9714,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_isMaximizerOn_iff_pairwise_equa
       BinaryEndpointAwareAdjacentRatesEqualize alt sampleRate := by
   rcases heq_candidate.exists_common_rate with ⟨r, hr⟩
   have hstrict :
-      EconCSLib.Optimization.IsStrictMaximizerOn
+      AppliedModelingLib.Optimization.IsStrictMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun levels : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -9725,7 +9725,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_isMaximizerOn_iff_pairwise_equa
   · intro hmax_alt
     have halt_eq_candidate :
         alt = candidate :=
-      EconCSLib.Optimization.IsStrictMaximizerOn.eq_of_isMaximizerOn
+      AppliedModelingLib.Optimization.IsStrictMaximizerOn.eq_of_isMaximizerOn
         hstrict hmax_alt
     subst alt
     exact heq_candidate
@@ -10187,7 +10187,7 @@ theorem theorem31_asymptotic_value_integral_tendsto_of_success_prob_tendsto_one
     (hP_lim : ∀ᵐ x ∂μ, Tendsto (fun k => P k x) atTop (𝓝 1)) :
     Tendsto (fun k => ∫ x, w x * P k x ∂μ)
       atTop (𝓝 (∫ x, w x ∂μ)) :=
-  EconCSLib.Math.tendsto_integral_mul_tendsto_one_of_nonneg_le_const
+  AppliedModelingLib.Math.tendsto_integral_mul_tendsto_one_of_nonneg_le_const
     μ w P hprod_meas hprod_bound hP_lim
 
 /--
@@ -10225,7 +10225,7 @@ theorem theorem31_asymptotic_value_integral_tendsto_of_floorPkObjectiveProb_tend
       atTop (𝓝 (∫ q, w q ∂μ)) := by
   let M := binaryRatingModel successProb hprob0 hprob1
   refine
-    EconCSLib.Math.tendsto_integral_mul_tendsto_one_of_weight_norm_bound_of_factor_norm_le_one
+    AppliedModelingLib.Math.tendsto_integral_mul_tendsto_one_of_weight_norm_bound_of_factor_norm_le_one
       μ w
       (fun k : ℕ => fun q : ℝ × ℝ =>
         twoSampleFloorPkObjectiveProb M sampleRate q.1 q.2 k)
@@ -10401,14 +10401,14 @@ theorem theorem31_two_stage_lexicographic_optimality
     {Design : Type*} (feasible : Design → Prop)
     (limitingValue rate : Design → ℝ) (candidate : Design)
     (hvalue :
-      EconCSLib.Optimization.IsMaximizerOn feasible limitingValue candidate)
+      AppliedModelingLib.Optimization.IsMaximizerOn feasible limitingValue candidate)
     (hrate :
       ∀ alternative, feasible alternative →
         limitingValue alternative = limitingValue candidate →
           rate alternative ≤ rate candidate) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       feasible limitingValue rate candidate :=
-  EconCSLib.Optimization.isLexicographicMaximizerOn_of_primary_and_secondary_on_tie
+  AppliedModelingLib.Optimization.isLexicographicMaximizerOn_of_primary_and_secondary_on_tie
     hvalue hrate
 
 /--
@@ -10421,16 +10421,16 @@ theorem theorem31_two_stage_lexicographic_optimality_of_rate_maximizer_on_value_
     {Design : Type*} (feasible : Design → Prop)
     (limitingValue rate : Design → ℝ) (candidate : Design)
     (hvalue :
-      EconCSLib.Optimization.IsMaximizerOn feasible limitingValue candidate)
+      AppliedModelingLib.Optimization.IsMaximizerOn feasible limitingValue candidate)
     (hrate :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (fun alternative =>
           feasible alternative ∧
             limitingValue alternative = limitingValue candidate)
         rate candidate) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       feasible limitingValue rate candidate :=
-  EconCSLib.Optimization.isLexicographicMaximizerOn_of_primary_and_secondary_maximizer_on_tie
+  AppliedModelingLib.Optimization.isLexicographicMaximizerOn_of_primary_and_secondary_maximizer_on_tie
     hvalue hrate
 
 /--
@@ -10449,14 +10449,14 @@ theorem theorem31_partition_endpoint_two_stage_lexicographic_optimality
     (rate : Partition → Endpoint → ℝ)
     (Sstar : Partition) (tstar : Endpoint)
     (hvalue :
-      EconCSLib.Optimization.IsMaximizerOn partitionFeasible limitingValue
+      AppliedModelingLib.Optimization.IsMaximizerOn partitionFeasible limitingValue
         Sstar)
     (htstar : endpointFeasible Sstar tstar)
     (hrate :
       ∀ S t, partitionFeasible S → endpointFeasible S t →
         limitingValue S = limitingValue Sstar →
           rate S t ≤ rate Sstar tstar) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       (fun design : Partition × Endpoint =>
         partitionFeasible design.1 ∧ endpointFeasible design.1 design.2)
       (fun design : Partition × Endpoint => limitingValue design.1)
@@ -10489,15 +10489,15 @@ theorem theorem31_partition_endpoint_two_stage_lexicographic_optimality_of_uniqu
     (rate : Partition → Endpoint → ℝ)
     (Sstar : Partition) (tstar : Endpoint)
     (hvalue :
-      EconCSLib.Optimization.IsMaximizerOn partitionFeasible limitingValue
+      AppliedModelingLib.Optimization.IsMaximizerOn partitionFeasible limitingValue
         Sstar)
     (hvalue_unique :
       ∀ S, partitionFeasible S →
         limitingValue S = limitingValue Sstar → S = Sstar)
     (htstar :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (endpointFeasible Sstar) (rate Sstar) tstar) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       (fun design : Partition × Endpoint =>
         partitionFeasible design.1 ∧ endpointFeasible design.1 design.2)
       (fun design : Partition × Endpoint => limitingValue design.1)
@@ -10536,14 +10536,14 @@ theorem theorem31_exists_partition_endpoint_two_stage_lexicographic_optimality_o
               limitingValue S = limitingValue Sstar →
                 rate S t ≤ rate Sstar tstar) :
     ∃ design : Partition × Endpoint,
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : Partition × Endpoint =>
           design.1 ∈ partitionSet ∧ endpointFeasible design.1 design.2)
         (fun design : Partition × Endpoint => limitingValue design.1)
         (fun design : Partition × Endpoint => rate design.1 design.2)
         design := by
   rcases
-    EconCSLib.Optimization.exists_isMaximizerOn_of_isCompact_continuousOn
+    AppliedModelingLib.Optimization.exists_isMaximizerOn_of_isCompact_continuousOn
       hcompact hnonempty limitingValue hcontinuous with
     ⟨Sstar, hSstar⟩
   rcases hendpoint Sstar hSstar.isFeasible with
@@ -10568,29 +10568,29 @@ theorem theorem31_exists_gap_partition_endpoint_two_stage_lexicographic_optimali
     (rate : (Fin M → ℝ) → Endpoint → ℝ)
     (hcontinuous :
       ContinuousOn limitingValue
-        {gap : Fin M → ℝ | EconCSLib.FiniteProbabilitySimplex gap})
+        {gap : Fin M → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap})
     (hendpoint :
-      ∀ gap : Fin M → ℝ, EconCSLib.FiniteProbabilitySimplex gap →
+      ∀ gap : Fin M → ℝ, AppliedModelingLib.FiniteProbabilitySimplex gap →
         ∃ tstar : Endpoint,
           endpointFeasible gap tstar ∧
-            ∀ otherGap t, EconCSLib.FiniteProbabilitySimplex otherGap →
+            ∀ otherGap t, AppliedModelingLib.FiniteProbabilitySimplex otherGap →
               endpointFeasible otherGap t →
                 limitingValue otherGap = limitingValue gap →
                   rate otherGap t ≤ rate gap tstar) :
     ∃ design : (Fin M → ℝ) × Endpoint,
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (Fin M → ℝ) × Endpoint =>
-          EconCSLib.FiniteProbabilitySimplex design.1 ∧
+          AppliedModelingLib.FiniteProbabilitySimplex design.1 ∧
             endpointFeasible design.1 design.2)
         (fun design : (Fin M → ℝ) × Endpoint => limitingValue design.1)
         (fun design : (Fin M → ℝ) × Endpoint => rate design.1 design.2)
         design := by
   exact
     theorem31_exists_partition_endpoint_two_stage_lexicographic_optimality_of_isCompact_continuousOn
-      ({gap : Fin M → ℝ | EconCSLib.FiniteProbabilitySimplex gap})
+      ({gap : Fin M → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap})
       endpointFeasible limitingValue rate
-      EconCSLib.finiteProbabilitySimplex_isCompact
-      EconCSLib.finiteProbabilitySimplex_nonempty
+      AppliedModelingLib.finiteProbabilitySimplex_isCompact
+      AppliedModelingLib.finiteProbabilitySimplex_nonempty
       hcontinuous
       (by
         intro gap hgap
@@ -14411,7 +14411,7 @@ theorem theorem31_forward_clipped_endpoint_piecewiseConstKernel_rate_optimal
     ∃ levels : Fin (m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun candidate : Fin (m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -14659,7 +14659,7 @@ theorem theorem31_sourceDefinedWbar_forward_clipped_endpoint_piecewiseConstKerne
     ∃ levels : Fin (m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun candidate : Fin (m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -14719,7 +14719,7 @@ theorem theorem31_sourceDefinedWbar_forward_clipped_endpoint_piecewiseConstKerne
     ∃ levels : Fin (m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun candidate : Fin (m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -14792,7 +14792,7 @@ theorem theorem31_sourceDefinedWbar_forward_clipped_endpoint_piecewiseConstKerne
           ExponentialRateCertificate
             (theorem31SourceWbar μ cut hmono sampleRate levels hlevels weight)
             (binaryEndpointAwareAdjacentRateObjective levels sampleRate) ∧
-          EconCSLib.Optimization.IsLexicographicMaximizerOn
+          AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun _candidate : Fin (m + 2) → ℝ => limitingValue)
             (fun candidate : Fin (m + 2) → ℝ =>
@@ -14876,7 +14876,7 @@ theorem theorem31_sourceWbar_forward_clipped_endpoint_piecewiseConstKernel_rate_
     ∃ levels : Fin (m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun candidate : Fin (m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -14930,7 +14930,7 @@ theorem theorem31_forward_clipped_endpoint_piecewiseConstKernel_rate_optimal_of_
     ∃ levels : Fin (m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun candidate : Fin (m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -15001,7 +15001,7 @@ theorem theorem31_sourceDefinedWbar_forward_clipped_endpoint_piecewiseConstKerne
     ∃ levels : Fin (m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun candidate : Fin (m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -15057,7 +15057,7 @@ theorem theorem31_sourceDefinedWbar_forward_clipped_endpoint_piecewiseConstKerne
     ∃ levels : Fin (m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun candidate : Fin (m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -15119,7 +15119,7 @@ theorem theorem31_sourceDefinedWbar_forward_clipped_endpoint_piecewiseConstKerne
           ExponentialRateCertificate
             (theorem31SourceWbar μ cut hmono sampleRate levels hlevels weight)
             (binaryEndpointAwareAdjacentRateObjective levels sampleRate) ∧
-          EconCSLib.Optimization.IsLexicographicMaximizerOn
+          AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun _candidate : Fin (m + 2) → ℝ => limitingValue)
             (fun candidate : Fin (m + 2) → ℝ =>
@@ -15194,7 +15194,7 @@ theorem theorem31_sourceWbar_forward_clipped_endpoint_piecewiseConstKernel_rate_
     ∃ levels : Fin (m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun candidate : Fin (m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -15232,7 +15232,7 @@ theorem theorem31_forward_clipped_endpoint_piecewiseConstKernel_rate_optimal_con
     ∃ levels : Fin (m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun candidate : Fin (m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -15292,7 +15292,7 @@ theorem theorem31_sourceDefinedWbar_forward_clipped_endpoint_piecewiseConstKerne
     ∃ levels : Fin (m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun candidate : Fin (m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -15339,7 +15339,7 @@ theorem theorem31_sourceDefinedWbar_forward_clipped_endpoint_piecewiseConstKerne
     ∃ levels : Fin (m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun candidate : Fin (m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -15395,7 +15395,7 @@ theorem theorem31_sourceDefinedWbar_forward_clipped_endpoint_piecewiseConstKerne
             (theorem31SourceWbar μ cut hmono sampleRate levels hlevels
               (fun _ : ℝ × ℝ => (1 : ℝ)))
             (binaryEndpointAwareAdjacentRateObjective levels sampleRate) ∧
-          EconCSLib.Optimization.IsLexicographicMaximizerOn
+          AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun _candidate : Fin (m + 2) → ℝ => limitingValue)
             (fun candidate : Fin (m + 2) → ℝ =>
@@ -15466,7 +15466,7 @@ theorem theorem31_sourceWbar_forward_clipped_endpoint_piecewiseConstKernel_rate_
     ∃ levels : Fin (m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun candidate : Fin (m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)

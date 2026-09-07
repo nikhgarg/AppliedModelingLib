@@ -40,24 +40,30 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 try:  # Supports direct execution and package imports in focused tests.
-    from scripts.source_coverage_scope import source_item_coverage_sha256
+    from scripts.formalization_protocol import CURRENT_SOURCE_RECORD_PROMPT_VERSION
+    from scripts.source_coverage_scope import (
+        source_record_source_item_record_sha256,
+        source_record_source_item_semantic_sha256,
+    )
     from scripts.source_record_integrity import (
         canonical_digest_payload,
         source_record_audit_receipt_error,
     )
     from scripts.source_record_target_disposition import (
         source_contract_association_record_digest,
-        source_map_item_record_digest,
     )
 except ModuleNotFoundError:  # pragma: no cover - direct-script fallback.
-    from source_coverage_scope import source_item_coverage_sha256
+    from formalization_protocol import CURRENT_SOURCE_RECORD_PROMPT_VERSION
+    from source_coverage_scope import (
+        source_record_source_item_record_sha256,
+        source_record_source_item_semantic_sha256,
+    )
     from source_record_integrity import (
         canonical_digest_payload,
         source_record_audit_receipt_error,
     )
     from source_record_target_disposition import (
         source_contract_association_record_digest,
-        source_map_item_record_digest,
     )
 
 
@@ -270,10 +276,9 @@ def _raw_audit_error(raw: object, *, paper: str) -> str:
     if raw.get("paper") != paper:
         return "archived raw audit records a different paper"
     if (
-        raw.get("prompt_version")
-        != "source-record-v10-semantic-conclusion-boundary-contract"
+        raw.get("prompt_version") != CURRENT_SOURCE_RECORD_PROMPT_VERSION
         or raw.get("source_record_policy_version")
-        != "source-record-v10-semantic-conclusion-boundary-contract"
+        != CURRENT_SOURCE_RECORD_PROMPT_VERSION
     ):
         return "archived raw audit does not use the supported v10 source-record policy"
     if not _sha256(raw.get("paper_statement_map_sha256")):
@@ -507,7 +512,11 @@ def _witness_items_by_full_digest(
     index: dict[str, list[Mapping[str, Any]]] = {}
     for item in items.values():
         assert isinstance(item, Mapping)  # Checked by `_witness_map_items`.
-        digest = source_map_item_record_digest(item)
+        # Raw source-record associations pin the source-record projection of a
+        # map item.  The generic map-record digest also includes refreshable
+        # Lean closure receipts, so it cannot resolve a raw association after
+        # a valid correspondence receipt refresh.
+        digest = source_record_source_item_record_sha256(item)
         if not _sha256(digest):
             raise SourceRecordHistoricalAssociationSnapshotReconciliationError(
                 "witness paper statement map has an undigestible item"
@@ -570,7 +579,9 @@ def _source_identity_ledger_row(
         raise SourceRecordHistoricalAssociationSnapshotReconciliationError(
             f"{'.'.join(association_path)} semantic contract differs from witness item"
         )
-    witness_semantic_digest = source_item_coverage_sha256(dict(witness), "")
+    witness_semantic_digest = source_record_source_item_semantic_sha256(
+        dict(witness), ""
+    )
     if not _sha256(witness_semantic_digest):
         raise SourceRecordHistoricalAssociationSnapshotReconciliationError(
             "selected witness item has no canonical source semantic digest"
@@ -582,7 +593,7 @@ def _source_identity_ledger_row(
         raise SourceRecordHistoricalAssociationSnapshotReconciliationError(
             f"{'.'.join(association_path)} source semantic digest differs from witness item"
         )
-    if source_map_item_record_digest(witness) != map_item_digest:
+    if source_record_source_item_record_sha256(witness) != map_item_digest:
         # This should be impossible after index lookup, but retaining the
         # assertion makes this row self-contained under future index changes.
         raise SourceRecordHistoricalAssociationSnapshotReconciliationError(

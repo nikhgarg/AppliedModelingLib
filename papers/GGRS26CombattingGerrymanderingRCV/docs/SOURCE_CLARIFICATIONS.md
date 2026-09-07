@@ -2,10 +2,4 @@
 
 ## Proposition 1: floor-Droop arithmetic
 
-The Appendix C proof temporarily makes a turnout-divisibility simplification
-by `M + 1`. Proposition 1 itself does not assume that divisibility. Its stated
-turnout bound is sufficient for the floor-Droop calculation used in the rounded
-seat-share conclusion, so the proposition retains its stated scope.
-
-This is a proof-level clarification only: it neither changes the two-party
-model nor weakens the result.
+- Appendix C's temporary assumption that turnout `V` is divisible by `M+1` → exact floor-Droop arithmetic for every turnout in Proposition 1, where `M` is the seat count. With `Q=floor(V/(M+1))+1`, use `(M+1)(Q-1) <= V < (M+1)Q` and the source bound `V >= M(M+1)`. This supplies the nondivisible cases of the same rounded-seat conclusion without adding a turnout assumption.

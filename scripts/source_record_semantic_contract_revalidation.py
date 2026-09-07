@@ -60,7 +60,9 @@ try:  # Supports package imports and direct focused CLI execution.
         source_coverage_mode_from_map,
         source_record_source_item_record_sha256,
         source_record_source_item_semantic_sha256,
+        source_record_source_item_supported_identity_sha256s,
     )
+    from scripts.obligation_preflight import structural_obligation_preflight
 except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
     from authenticated_manifest_store import (  # type: ignore
         AUTHENTICATED_MANIFEST_AUTHORITY_SCHEMA,
@@ -76,12 +78,14 @@ except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
         source_coverage_mode_from_map,
         source_record_source_item_record_sha256,
         source_record_source_item_semantic_sha256,
+        source_record_source_item_supported_identity_sha256s,
     )
+    from obligation_preflight import structural_obligation_preflight  # type: ignore
 
 
-SOURCE_RECORD_SEMANTIC_CONTRACT_REVALIDATION_SCHEMA = 1
+SOURCE_RECORD_SEMANTIC_CONTRACT_REVALIDATION_SCHEMA = 3
 SOURCE_RECORD_SEMANTIC_CONTRACT_REVALIDATION_POLICY_VERSION = (
-    "source-record-semantic-contract-revalidation-v1"
+    "source-record-semantic-contract-revalidation-v3"
 )
 SOURCE_RECORD_SEMANTIC_CONTRACT_REVALIDATION_ARTIFACT_KIND = (
     "source_record_semantic_contract_revalidation"
@@ -102,6 +106,12 @@ _COMPANION_ERROR_TEMPLATE = (
     "semantic-contract companion is not an exact transparent evidence/Spec "
     "structural pair: {evidence} / {spec}"
 )
+_SOURCE_DECLARED_OPEN_NONRESULT_ERROR_PREFIX = (
+    "selected source-coverage item has no explicit direct/Spec Lean route: "
+)
+_SOURCE_DECLARED_OPEN_NONRESULT_CLASSIFICATION = (
+    "source_declared_open_nonresult_observation"
+)
 _AUTHORITY_ENTRY_FIELDS = frozenset(
     {
         "qualified_declaration",
@@ -121,6 +131,31 @@ _AUTHORITY_CONTEXT_FIELDS = frozenset(
         "manifest_cache_context_sha256",
     }
 )
+_V10_DIRECT_ROUTE_RE = re.compile(
+    r"^current v10 direct source-map route for fully-qualified declaration "
+    r"`([^`]+)` has no generated semantic-contract member identity$"
+)
+_V10_SELECTED_ITEM_MISSING_RE = re.compile(
+    r"^selected source item `([^`]+)` has no exact explicit direct-route declaration$"
+)
+_V10_SELECTED_ITEM_ROUTE_RE = re.compile(
+    r"^selected source item `([^`]+)` routes to `([^`]+)`, which is not an "
+    r"exact configured review declaration$"
+)
+_V10_COVERAGE_ITEM_RE = re.compile(
+    r"^selected source-coverage item '([^']+)' (?:routes .+ to '[^']+', which "
+    r"is not an exact configured PaperInterface review declaration|atom contract "
+    r"companion requires every source-claim atom to route to its one exact evidence "
+    r"declaration)$"
+)
+_V10_SOURCE_ATOM_RE = re.compile(
+    r"^source atom `([^`]+)` route `[^`]+` is not an exact configured review "
+    r"declaration$"
+)
+_V10_COMPANION_RE = re.compile(
+    r"^semantic-contract companion is not an exact transparent evidence/Spec "
+    r"structural pair: (\S+) / (\S+)$"
+)
 
 
 @dataclass(frozen=True, eq=False)
@@ -130,6 +165,7 @@ class SemanticContractRevalidationProjection:
     suppressed_source_contract_association_errors: frozenset[str]
     suppressed_source_coverage_route_errors: frozenset[str]
     suppressed_expected_input_keys: frozenset[str]
+    typed_route_reconciliation_sha256: str = ""
 
 
 def _sha256(value: object) -> str:
@@ -162,6 +198,172 @@ def _json_bytes_match_payload(raw_bytes: bytes | None, payload: object) -> bool:
         return json.loads(raw_bytes) == payload
     except (UnicodeDecodeError, json.JSONDecodeError):
         return False
+
+
+def _typed_route_reconciliation_projection(
+    *,
+    paper: str,
+    raw_audit: Mapping[str, Any],
+    statement_map: object,
+    paper_prerequisites: object,
+    library_semantic_review: object,
+    status_payload: object,
+) -> tuple[set[str], set[str], str, str]:
+    """Project obsolete v10 route errors through the current typed graph.
+
+    This is deliberately an engine-pair-agnostic reconstruction, not a bridge
+    between two named audit versions.  It grants credit only when the current
+    schema-2 route graph is structurally complete, every source definition or
+    premise is bound by the current semantic-prerequisite ledgers, every result
+    atom routes to its explicit proof endpoint, and the raw receipt carries the
+    same byte-pinned source artifact.  All semantic judgments and Lean proof
+    checks remain independent closeout obligations.
+    """
+
+    if not isinstance(statement_map, Mapping) or statement_map.get(
+        "semantic_route_schema"
+    ) != 2:
+        return set(), set(), "", ""
+    if raw_audit.get("paper") != paper:
+        return set(), set(), "", "typed route reconciliation raw receipt belongs to another paper"
+    preflight = structural_obligation_preflight(
+        statement_map,
+        paper=paper,
+        paper_prerequisites=paper_prerequisites,
+        library_semantic_review=library_semantic_review,
+        require_theorem_endpoints=True,
+        require_source_spec_correspondence=False,
+    )
+    if not preflight.current or preflight.route_set is None:
+        detail = "; ".join(preflight.errors[:8])
+        if len(preflight.errors) > 8:
+            detail += f"; ... ({len(preflight.errors) - 8} more)"
+        return set(), set(), "", "typed route reconciliation preflight failed: " + detail
+    fingerprint = raw_audit.get("source_record_input_fingerprint")
+    source_identities = (
+        fingerprint.get("source_artifact_identities")
+        if isinstance(fingerprint, Mapping)
+        else None
+    )
+    raw_source_sha256s = {
+        _sha256(identity.get("sha256"))
+        for identity in source_identities
+        if isinstance(identity, Mapping)
+        and str(identity.get("status") or "present").strip() == "present"
+    } if isinstance(source_identities, list) else set()
+    if preflight.source_artifact_sha256 not in raw_source_sha256s:
+        return set(), set(), "", (
+            "typed route reconciliation source artifact disagrees with the raw receipt"
+        )
+
+    source_item_ids = {
+        route.source_item_id for route in preflight.route_set.routes
+    }
+    declarations: set[str] = set()
+    semantic_pairs: set[tuple[str, str]] = set()
+    for route in preflight.route_set.routes:
+        declarations.update(route.semantic_declarations)
+        declarations.update(
+            value
+            for value in (
+                route.spec_declaration,
+                route.evidence_declaration,
+                route.semantic_review_declaration,
+            )
+            if value
+        )
+        if route.evidence_declaration and route.spec_declaration:
+            semantic_pairs.add(
+                (route.evidence_declaration, route.spec_declaration)
+            )
+    review_surface = (
+        status_payload.get("review_surface")
+        if isinstance(status_payload, Mapping)
+        else None
+    )
+    proof_pairs = (
+        review_surface.get("proposition_spec_proofs")
+        if isinstance(review_surface, Mapping)
+        else None
+    )
+    if not isinstance(proof_pairs, Mapping):
+        return set(), set(), "", (
+            "typed route reconciliation status has no proposition_spec_proofs map"
+        )
+    for route in preflight.route_set.routes:
+        if not route.spec_declaration or not route.evidence_declaration:
+            continue
+        spec_short = route.spec_declaration.rsplit(".", maxsplit=1)[-1]
+        evidence_short = route.evidence_declaration.rsplit(".", maxsplit=1)[-1]
+        if str(proof_pairs.get(spec_short) or "").strip() != evidence_short:
+            return set(), set(), "", (
+                "typed route reconciliation status does not bind "
+                f"{route.spec_declaration} to {route.evidence_declaration}"
+            )
+    atom_coordinates: set[str] = set()
+    raw_items = statement_map.get("items")
+    if isinstance(raw_items, Mapping):
+        for source_item_id, raw_item in raw_items.items():
+            atoms = raw_item.get("source_claim_atoms") if isinstance(raw_item, Mapping) else None
+            if not isinstance(atoms, list):
+                continue
+            for atom in atoms:
+                atom_id = str(atom.get("id") or "").strip() if isinstance(atom, Mapping) else ""
+                if atom_id:
+                    atom_coordinates.add(f"{source_item_id}:{atom_id}")
+
+    def is_obsolete_v10_route_error(error: object) -> bool:
+        if not isinstance(error, str):
+            return False
+        match = _V10_DIRECT_ROUTE_RE.fullmatch(error)
+        if match:
+            return match.group(1) in declarations
+        match = _V10_SELECTED_ITEM_MISSING_RE.fullmatch(error)
+        if match:
+            return match.group(1) in source_item_ids
+        match = _V10_SELECTED_ITEM_ROUTE_RE.fullmatch(error)
+        if match:
+            return match.group(1) in source_item_ids
+        match = _V10_COVERAGE_ITEM_RE.fullmatch(error)
+        if match:
+            return match.group(1) in source_item_ids
+        prefix = _SOURCE_DECLARED_OPEN_NONRESULT_ERROR_PREFIX
+        if error.startswith(prefix):
+            return error[len(prefix):] in source_item_ids
+        match = _V10_SOURCE_ATOM_RE.fullmatch(error)
+        if match:
+            return match.group(1) in atom_coordinates
+        match = _V10_COMPANION_RE.fullmatch(error)
+        return bool(match and (match.group(1), match.group(2)) in semantic_pairs)
+
+    association_errors = {
+        error
+        for error in raw_audit.get("source_contract_association_errors") or []
+        if is_obsolete_v10_route_error(error)
+    }
+    coverage_errors = {
+        error
+        for error in raw_audit.get("source_coverage_route_errors") or []
+        if is_obsolete_v10_route_error(error)
+    }
+    reconciliation_sha256 = _canonical_json_sha256(
+        {
+            "schema": 1,
+            "paper": paper,
+            "source_artifact_sha256": preflight.source_artifact_sha256,
+            "structural_preflight_sha256": preflight.structural_preflight_sha256,
+            "paper_semantic_prerequisites_sha256": _canonical_json_sha256(
+                paper_prerequisites
+            ),
+            "library_semantic_review_sha256": _canonical_json_sha256(
+                library_semantic_review
+            ),
+            "proposition_spec_proofs": dict(
+                sorted((str(key), str(value)) for key, value in proof_pairs.items())
+            ),
+        }
+    )
+    return association_errors, coverage_errors, reconciliation_sha256, ""
 
 
 def semantic_contract_revalidation_artifact_path(paper_dir: Path) -> Path:
@@ -249,7 +451,7 @@ def _item_signature_identity(
 
 
 def _source_contract_identities(
-    value: object, *, evidence: str, spec: str
+    value: object, *, evidence: str, spec: str, evidence_mode: str = "proves"
 ) -> tuple[list[dict[str, Any]], list[str]] | None:
     """Validate exact current source-contract records without route heuristics."""
 
@@ -275,7 +477,7 @@ def _source_contract_identities(
             or not isinstance(contract, Mapping)
             or str(contract.get("evidence_declaration") or "").strip() != evidence
             or str(contract.get("spec_declaration") or "").strip() != spec
-            or str(contract.get("evidence_mode") or "").strip() != "proves"
+            or str(contract.get("evidence_mode") or "").strip() != evidence_mode
             or not str(contract.get("semantic_shape") or "").strip()
         ):
             return None
@@ -308,6 +510,7 @@ def _association_matches_item(
     signature: tuple[str, str, str],
     role: str,
     paired: str,
+    evidence_mode: str = "proves",
     expected_source_identities: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]] | None:
     if not isinstance(association, Mapping) or association.get("schema") != 2:
@@ -331,7 +534,10 @@ def _association_matches_item(
     if association_signature[2]:
         return None
     source_identity_result = _source_contract_identities(
-        association.get("source_item_identities"), evidence=(identity[0] if role == "direct_evidence" else paired), spec=(paired if role == "direct_evidence" else identity[0])
+        association.get("source_item_identities"),
+        evidence=(identity[0] if role == "direct_evidence" else paired),
+        spec=(paired if role == "direct_evidence" else identity[0]),
+        evidence_mode=evidence_mode,
     )
     if source_identity_result is None:
         return None
@@ -892,6 +1098,7 @@ def _source_map_declares_exact_pair(
     *,
     evidence: str,
     spec: str,
+    evidence_mode: str = "proves",
     source_identities: list[dict[str, Any]],
 ) -> bool:
     """Require the current selected source map to declare this exact route."""
@@ -922,12 +1129,19 @@ def _source_map_declares_exact_pair(
             and isinstance(contract, Mapping)
             and str(contract.get("evidence_declaration") or "").strip() == evidence
             and str(contract.get("spec_declaration") or "").strip() == spec
-            and str(contract.get("evidence_mode") or "").strip() == "proves"
+            and str(contract.get("evidence_mode") or "").strip() == evidence_mode
             and str(contract.get("semantic_shape") or "").strip()
-            and source_record_source_item_record_sha256(raw_item)
-            == _sha256(expected_by_key[source_key].get("source_map_item_sha256"))
-            and source_record_source_item_semantic_sha256(raw_item, mode)
-            == _sha256(expected_by_key[source_key].get("source_semantic_sha256"))
+            and (
+                _sha256(
+                    expected_by_key[source_key].get("source_map_item_sha256")
+                ),
+                _sha256(
+                    expected_by_key[source_key].get("source_semantic_sha256")
+                ),
+            )
+            in source_record_source_item_supported_identity_sha256s(
+                raw_item, mode
+            )
         ):
             matches.add(source_key)
     return matches == expected_keys
@@ -939,6 +1153,7 @@ def _raw_pair(
     statement_map: object,
     evidence: str,
     spec: str,
+    evidence_mode: str,
 ) -> tuple[
     Mapping[str, Any],
     Mapping[str, Any],
@@ -979,6 +1194,7 @@ def _raw_pair(
         signature=evidence_signature,
         role="direct_evidence",
         paired=spec,
+        evidence_mode=evidence_mode,
     )
     spec_sources = _association_matches_item(
         spec_association,
@@ -986,6 +1202,7 @@ def _raw_pair(
         signature=spec_signature,
         role="transparent_spec",
         paired=evidence,
+        evidence_mode=evidence_mode,
         expected_source_identities=evidence_sources,
     )
     if evidence_sources is None or spec_sources is None:
@@ -994,6 +1211,7 @@ def _raw_pair(
         statement_map,
         evidence=evidence,
         spec=spec,
+        evidence_mode=evidence_mode,
         source_identities=evidence_sources,
     ):
         return None
@@ -1011,26 +1229,69 @@ def _raw_pair(
     )
 
 
+def _expanded_body_reaches_semantic_root(
+    *,
+    start: str,
+    nodes: Mapping[str, Mapping[str, Any]],
+    edges: list[Mapping[str, Any]],
+    target_sha256: str,
+) -> bool:
+    """Follow only transparent unfolding edges to one authenticated root."""
+
+    current = start
+    seen: set[str] = set()
+    expanded = False
+    while current not in seen:
+        seen.add(current)
+        node = nodes.get(current)
+        if node is None:
+            return False
+        if expanded and _sha256(node.get("semantic_sha256")) == target_sha256:
+            return True
+        if str(node.get("kind") or "").strip() != "transparent_wrapper":
+            return False
+        outgoing = [edge for edge in edges if edge.get("source") == current]
+        if (
+            len(outgoing) != 1
+            or str(outgoing[0].get("role") or "").strip() != "expanded_body"
+        ):
+            return False
+        current = str(outgoing[0].get("target") or "").strip()
+        expanded = True
+    return False
+
+
 def _pair_witness_is_valid(
     witness: object,
     *,
     raw: Mapping[str, Any],
     statement_map: object,
     authority_entries: Mapping[str, Mapping[str, Any]],
-) -> tuple[str, str] | None:
+) -> tuple[str, str, str] | None:
     if not isinstance(witness, Mapping) or set(witness) != {
         "evidence_declaration",
         "spec_declaration",
+        "evidence_mode",
         "evidence_manifest",
         "spec_manifest",
     }:
         return None
     evidence = str(witness.get("evidence_declaration") or "").strip()
     spec = str(witness.get("spec_declaration") or "").strip()
-    if not evidence or not spec or evidence == spec:
+    evidence_mode = str(witness.get("evidence_mode") or "").strip()
+    if (
+        not evidence
+        or not spec
+        or evidence == spec
+        or evidence_mode not in {"proves", "definitionally_realizes"}
+    ):
         return None
     raw_pair = _raw_pair(
-        raw, statement_map=statement_map, evidence=evidence, spec=spec
+        raw,
+        statement_map=statement_map,
+        evidence=evidence,
+        spec=spec,
+        evidence_mode=evidence_mode,
     )
     if raw_pair is None:
         return None
@@ -1082,26 +1343,50 @@ def _pair_witness_is_valid(
         return None
     evidence_nodes, evidence_edges = evidence_graph
     spec_nodes, _spec_edges = spec_graph
+    spec_root = spec_nodes.get("result")
+    spec_root_sha256 = (
+        _sha256(spec_root.get("semantic_sha256"))
+        if isinstance(spec_root, Mapping)
+        else ""
+    )
     result_node = evidence_nodes.get("result")
-    if (
-        result_node is None
-        or str(result_node.get("kind") or "").strip() != "transparent_wrapper"
-    ):
+    if result_node is None or not spec_root_sha256:
         return None
     result_edges = [edge for edge in evidence_edges if edge.get("source") == "result"]
-    if len(result_edges) != 1 or str(result_edges[0].get("role") or "").strip() != "expanded_body":
-        return None
-    expanded_path = str(result_edges[0].get("target") or "").strip()
-    expanded_node = evidence_nodes.get(expanded_path)
-    spec_root = spec_nodes.get("result")
-    if (
-        expanded_node is None
-        or spec_root is None
-        or _sha256(expanded_node.get("semantic_sha256"))
-        != _sha256(spec_root.get("semantic_sha256"))
-    ):
-        return None
-    return evidence, spec
+    if evidence_mode == "proves":
+        if (
+            str(result_node.get("kind") or "").strip() != "transparent_wrapper"
+            or len(result_edges) != 1
+            or str(result_edges[0].get("role") or "").strip() != "expanded_body"
+        ):
+            return None
+        expanded_path = str(result_edges[0].get("target") or "").strip()
+        expanded_node = evidence_nodes.get(expanded_path)
+        if (
+            expanded_node is None
+            or _sha256(expanded_node.get("semantic_sha256")) != spec_root_sha256
+        ):
+            return None
+    else:
+        if str(result_node.get("kind") or "").strip() != "iff":
+            return None
+        by_role = {
+            str(edge.get("role") or "").strip(): str(edge.get("target") or "").strip()
+            for edge in result_edges
+        }
+        if set(by_role) != {"left", "right"} or len(result_edges) != 2:
+            return None
+        if not all(
+            _expanded_body_reaches_semantic_root(
+                start=by_role[role],
+                nodes=evidence_nodes,
+                edges=evidence_edges,
+                target_sha256=spec_root_sha256,
+            )
+            for role in ("left", "right")
+        ):
+            return None
+    return evidence, spec, evidence_mode
 
 
 def _artifact_error(
@@ -1127,6 +1412,7 @@ def _artifact_error(
         "paper_statement_map_file_sha256",
         "paper_statement_map_sha256",
         "transparent_spec_pair_witnesses",
+        "source_declared_open_nonresult_witnesses",
         SOURCE_RECORD_SEMANTIC_CONTRACT_REVALIDATION_RECEIPT_FIELD,
     }
     if set(artifact) != expected_fields:
@@ -1176,12 +1462,12 @@ def _artifact_error(
     witnesses = artifact.get("transparent_spec_pair_witnesses")
     if not isinstance(witnesses, list):
         return set(), "semantic-contract revalidation artifact has malformed pair witnesses"
-    if not witnesses:
-        return set(), ""
-    authority_entries, authority_error = _authority_entries(authority, paper=paper)
-    if authority_error:
-        return set(), authority_error
-    accepted_pairs: set[tuple[str, str]] = set()
+    authority_entries: Mapping[str, Mapping[str, Any]] = {}
+    if witnesses:
+        authority_entries, authority_error = _authority_entries(authority, paper=paper)
+        if authority_error:
+            return set(), authority_error
+    accepted_pairs: set[tuple[str, str, str]] = set()
     corrected_errors: set[str] = set()
     for witness in witnesses:
         pair = _pair_witness_is_valid(
@@ -1193,18 +1479,85 @@ def _artifact_error(
         if pair is None or pair in accepted_pairs:
             return set(), "semantic-contract revalidation artifact has an invalid or duplicate pair witness"
         accepted_pairs.add(pair)
-        corrected_errors.add(_companion_error(*pair))
+        corrected_errors.add(_companion_error(pair[0], pair[1]))
     canonical_pairs = sorted(accepted_pairs)
     serialized_pairs = [
         (
             str(witness.get("evidence_declaration") or "").strip(),
             str(witness.get("spec_declaration") or "").strip(),
+            str(witness.get("evidence_mode") or "").strip(),
         )
         for witness in witnesses
         if isinstance(witness, Mapping)
     ]
     if serialized_pairs != canonical_pairs:
         return set(), "semantic-contract revalidation pair witnesses are not in canonical order"
+    open_witnesses = artifact.get("source_declared_open_nonresult_witnesses")
+    if not isinstance(open_witnesses, list):
+        return set(), "semantic-contract revalidation artifact has malformed open-nonresult witnesses"
+    open_corrections: set[str] = set()
+    open_source_keys: set[str] = set()
+    raw_selected = raw.get("source_coverage_selected_source_items")
+    raw_unrouted = raw.get("source_coverage_unrouted_source_items")
+    selected = {
+        str(value).strip()
+        for value in raw_selected
+        if isinstance(value, str) and value.strip()
+    } if isinstance(raw_selected, list) else set()
+    unrouted = {
+        str(value).strip()
+        for value in raw_unrouted
+        if isinstance(value, str) and value.strip()
+    } if isinstance(raw_unrouted, list) else set()
+    map_items = statement_map.get("items") if isinstance(statement_map, Mapping) else None
+    for witness in open_witnesses:
+        if not isinstance(witness, Mapping) or set(witness) != {
+            "source_item",
+            "source_item_record_sha256",
+        }:
+            return set(), "semantic-contract revalidation artifact has malformed open-nonresult witness"
+        source_key = str(witness.get("source_item") or "").strip()
+        source_item = map_items.get(source_key) if isinstance(map_items, Mapping) else None
+        anchors = source_item.get("source_anchor_evidence") if isinstance(source_item, Mapping) else None
+        if (
+            not source_key
+            or source_key in open_source_keys
+            or source_key not in selected
+            or source_key not in unrouted
+            or not isinstance(source_item, Mapping)
+            or str(source_item.get("source_kind") or "").strip().lower() != "open_problem"
+            or source_item.get("claim_bearing") is not False
+            or str(source_item.get("source_scope_classification") or "").strip().lower()
+            != _SOURCE_DECLARED_OPEN_NONRESULT_CLASSIFICATION
+            or str(source_item.get("coverage_status") or "").strip().lower()
+            != "source_declared_open"
+            or str(source_item.get("protocol_role") or "").strip().lower()
+            != "source_declared_open"
+            or source_item.get("semantic_contract") is not None
+            or source_item.get("source_claim_atoms") is not None
+            or not isinstance(anchors, list)
+            or not anchors
+            or any(
+                not isinstance(anchor, Mapping)
+                or not str(anchor.get("path") or "").strip()
+                or not isinstance(anchor.get("line_start"), int)
+                or not isinstance(anchor.get("line_end"), int)
+                or int(anchor.get("line_start")) < 1
+                or int(anchor.get("line_end")) < int(anchor.get("line_start"))
+                or not str(anchor.get("quoted_text") or "")
+                or _sha256(anchor.get("quoted_text_sha256"))
+                != hashlib.sha256(
+                    str(anchor.get("quoted_text") or "").encode("utf-8")
+                ).hexdigest()
+                for anchor in anchors
+            )
+            or _sha256(witness.get("source_item_record_sha256"))
+            != source_record_source_item_record_sha256(dict(source_item))
+        ):
+            return set(), "semantic-contract revalidation artifact has an invalid open-nonresult witness"
+        open_source_keys.add(source_key)
+        open_corrections.add(_SOURCE_DECLARED_OPEN_NONRESULT_ERROR_PREFIX + source_key)
+
     raw_association_errors = raw.get("source_contract_association_errors")
     raw_coverage_errors = raw.get("source_coverage_route_errors")
     all_raw_errors = set(
@@ -1214,6 +1567,7 @@ def _artifact_error(
         for value in values
         if isinstance(value, str)
     )
+    corrected_errors |= open_corrections
     if not corrected_errors <= all_raw_errors:
         return set(), "semantic-contract revalidation witness has no exact current raw companion error"
     return corrected_errors, ""
@@ -1227,6 +1581,12 @@ def _semantic_contract_revalidation_projection_impl(
     raw_audit_raw_bytes: bytes | None = None,
     statement_map_payload: object | None = None,
     statement_map_raw_bytes: bytes | None = None,
+    paper_prerequisites_payload: object | None = None,
+    paper_prerequisites_raw_bytes: bytes | None = None,
+    library_semantic_review_payload: object | None = None,
+    library_semantic_review_raw_bytes: bytes | None = None,
+    status_payload: object | None = None,
+    status_raw_bytes: bytes | None = None,
     artifact_payload: object | None = None,
     artifact_raw_bytes: bytes | None = None,
     authority_payload: object | None = None,
@@ -1236,6 +1596,7 @@ def _semantic_contract_revalidation_projection_impl(
             set[str] | frozenset[str],
             set[str] | frozenset[str],
             set[str] | frozenset[str],
+            str,
         ],
         SemanticContractRevalidationProjection,
     ],
@@ -1245,8 +1606,9 @@ def _semantic_contract_revalidation_projection_impl(
     Supplying raw/map bytes and payloads is intended for an evidence
     transaction that has already snapshotted every input. Omitting them loads
     the fixed paper-local files for standalone diagnostics. An absent
-    correction artifact grants no credit; the unmodified raw errors remain
-    fatal in the ordinary evidence consumer.
+    correction artifact grants no historical pair-repair credit. A complete
+    current typed route graph can independently project obsolete v10 routing
+    diagnostics; all other raw errors remain fatal.
     """
 
     def empty_projection() -> SemanticContractRevalidationProjection:
@@ -1256,29 +1618,9 @@ def _semantic_contract_revalidation_projection_impl(
     authority_path = paper_dir / "audit" / "lean_signature_manifest_cache_authority.json"
     raw_path = paper_dir / "audit" / "source_record_audit.json"
     statement_map_path = paper_dir / "audit" / "paper_statement_map.json"
-    if artifact_payload is None and artifact_raw_bytes is None:
-        loaded_artifact, loaded_artifact_bytes, artifact_load_error = _read_json_bytes(
-            artifact_path
-        )
-        if artifact_load_error:
-            return empty_projection(), artifact_load_error
-        artifact_payload = loaded_artifact
-        artifact_raw_bytes = loaded_artifact_bytes
-    if artifact_raw_bytes is None:
-        if artifact_payload is not None:
-            return empty_projection(), (
-                "semantic-contract revalidation artifact has no exact bytes"
-            )
-        # No optional artifact means no replay, not an additional source-map
-        # requirement. The ordinary raw identity consumer still validates the
-        # receipt and map pin under its established policy.
-        return empty_projection(), ""
-    if not isinstance(artifact_payload, Mapping) or not _json_bytes_match_payload(
-        artifact_raw_bytes, artifact_payload
-    ):
-        return empty_projection(), (
-            "semantic-contract revalidation artifact is unreadable or malformed"
-        )
+    paper_prerequisites_path = paper_dir / "audit" / "paper_semantic_prerequisites.json"
+    library_semantic_review_path = paper_dir / "audit" / "library_semantic_review.json"
+    status_path = paper_dir / "status.json"
     if raw_audit_raw_bytes is None:
         loaded_raw, loaded_raw_bytes, raw_load_error = _read_json_bytes(raw_path)
         if raw_load_error or not isinstance(loaded_raw, Mapping):
@@ -1306,14 +1648,127 @@ def _semantic_contract_revalidation_projection_impl(
         return empty_projection(), (
             "paper-statement-map snapshot bytes are malformed or disagree with its payload"
         )
-    assert isinstance(raw_audit_raw_bytes, bytes)
-    assert isinstance(statement_map_raw_bytes, bytes)
-    if _source_record_digest(raw_audit, "paper_statement_map_sha256") != _bytes_sha256(
-        statement_map_raw_bytes
+    if (
+        isinstance(statement_map_payload, Mapping)
+        and statement_map_payload.get("semantic_route_schema") == 2
+    ):
+        if paper_prerequisites_payload is None and paper_prerequisites_raw_bytes is None:
+            (
+                paper_prerequisites_payload,
+                paper_prerequisites_raw_bytes,
+                prerequisites_load_error,
+            ) = _read_json_bytes(paper_prerequisites_path)
+            if prerequisites_load_error:
+                return empty_projection(), prerequisites_load_error
+        if library_semantic_review_payload is None and library_semantic_review_raw_bytes is None:
+            (
+                library_semantic_review_payload,
+                library_semantic_review_raw_bytes,
+                library_review_load_error,
+            ) = _read_json_bytes(library_semantic_review_path)
+            if library_review_load_error:
+                return empty_projection(), library_review_load_error
+        if not _json_bytes_match_payload(
+            paper_prerequisites_raw_bytes, paper_prerequisites_payload
+        ):
+            return empty_projection(), (
+                "paper semantic-prerequisite snapshot bytes are malformed or disagree "
+                "with its payload"
+            )
+        if not _json_bytes_match_payload(
+            library_semantic_review_raw_bytes, library_semantic_review_payload
+        ):
+            return empty_projection(), (
+                "library semantic-review snapshot bytes are malformed or disagree with "
+                "its payload"
+            )
+        if status_payload is None and status_raw_bytes is None:
+            status_payload, status_raw_bytes, status_load_error = _read_json_bytes(
+                status_path
+            )
+            if status_load_error:
+                return empty_projection(), status_load_error
+        if not _json_bytes_match_payload(status_raw_bytes, status_payload):
+            return empty_projection(), (
+                "status snapshot bytes are malformed or disagree with its payload"
+            )
+    (
+        typed_association_errors,
+        typed_coverage_errors,
+        typed_route_reconciliation_sha256,
+        typed_error,
+    ) = (
+        _typed_route_reconciliation_projection(
+            paper=paper,
+            raw_audit=raw_audit,
+            statement_map=statement_map_payload,
+            paper_prerequisites=paper_prerequisites_payload,
+            library_semantic_review=library_semantic_review_payload,
+            status_payload=status_payload,
+        )
+    )
+    if typed_error:
+        return empty_projection(), typed_error
+    raw_association_errors = raw_audit.get("source_contract_association_errors")
+    raw_coverage_errors = raw_audit.get("source_coverage_route_errors")
+    typed_graph_accounts_for_every_raw_error = (
+        isinstance(raw_association_errors, list)
+        and isinstance(raw_coverage_errors, list)
+        and all(isinstance(error, str) for error in raw_association_errors)
+        and all(isinstance(error, str) for error in raw_coverage_errors)
+        and set(raw_association_errors).issubset(typed_association_errors)
+        and set(raw_coverage_errors).issubset(typed_coverage_errors)
+    )
+    if typed_graph_accounts_for_every_raw_error:
+        # A complete current typed route graph is the structural authority for
+        # these exact historical diagnostics.  Do not let an optional legacy
+        # evidence/Spec-pair witness veto it merely because current map bytes
+        # changed.  Any unmatched raw error still falls through to the narrow
+        # historical revalidation path below and remains fail-closed.
+        return _issue_projection(
+            typed_association_errors,
+            typed_coverage_errors,
+            set(),
+            typed_route_reconciliation_sha256,
+        ), ""
+    if artifact_payload is None and artifact_raw_bytes is None:
+        loaded_artifact, loaded_artifact_bytes, artifact_load_error = _read_json_bytes(
+            artifact_path
+        )
+        if artifact_load_error:
+            return empty_projection(), artifact_load_error
+        artifact_payload = loaded_artifact
+        artifact_raw_bytes = loaded_artifact_bytes
+    if artifact_raw_bytes is None:
+        if artifact_payload is not None:
+            return empty_projection(), (
+                "semantic-contract revalidation artifact has no exact bytes"
+            )
+        # The typed obligation graph is itself the current route authority.
+        # The older optional artifact remains available only for its two narrow
+        # historical structural repairs.
+        return _issue_projection(
+            typed_association_errors,
+            typed_coverage_errors,
+            set(),
+            typed_route_reconciliation_sha256,
+        ), ""
+    if not isinstance(artifact_payload, Mapping) or not _json_bytes_match_payload(
+        artifact_raw_bytes, artifact_payload
     ):
         return empty_projection(), (
-            "source-record audit does not bind the supplied paper-statement-map bytes"
+            "semantic-contract revalidation artifact is unreadable or malformed"
         )
+    assert isinstance(raw_audit_raw_bytes, bytes)
+    assert isinstance(statement_map_raw_bytes, bytes)
+    # The artifact deliberately binds both immutable inputs: the canonical raw
+    # receipt (including its historical map-file coordinate) and the exact
+    # current statement-map bytes. Requiring those two map hashes to be equal
+    # here would defeat the purpose of structural revalidation after a
+    # machine-only correspondence refresh. Every accepted correction below
+    # still reconstructs its source item and semantic contract from the current
+    # map and matches the raw association through a supported identity normal
+    # form; arbitrary map drift therefore remains a fail-closed pair miss.
     witnesses = artifact_payload.get("transparent_spec_pair_witnesses")
     if isinstance(witnesses, list) and witnesses and authority_payload is None and authority_raw_bytes is None:
         loaded_authority, loaded_authority_bytes, authority_load_error = _read_json_bytes(
@@ -1331,7 +1786,7 @@ def _semantic_contract_revalidation_projection_impl(
         return empty_projection(), (
             "semantic-contract revalidation requires a readable manifest authority"
         )
-    companion_errors, error = _artifact_error(
+    structural_errors, error = _artifact_error(
         artifact_payload,
         paper=paper,
         raw=raw_audit,
@@ -1345,15 +1800,21 @@ def _semantic_contract_revalidation_projection_impl(
     group_errors, suppressed_keys = _group_member_projection(
         raw_audit, statement_map=statement_map_payload
     )
-    if not group_errors and not companion_errors:
+    if (
+        not group_errors
+        and not structural_errors
+        and not typed_association_errors
+        and not typed_coverage_errors
+    ):
         return empty_projection(), (
             "semantic-contract revalidation artifact has no exact current raw correction"
         )
     return (
         _issue_projection(
-            group_errors | companion_errors,
-            companion_errors,
+            group_errors | structural_errors | typed_association_errors,
+            structural_errors | typed_coverage_errors,
             suppressed_keys,
+            typed_route_reconciliation_sha256,
         ),
         "",
     )
@@ -1376,11 +1837,13 @@ def _make_semantic_contract_revalidation_api() -> tuple[
         suppressed_source_contract_association_errors: set[str] | frozenset[str],
         suppressed_source_coverage_route_errors: set[str] | frozenset[str],
         suppressed_expected_input_keys: set[str] | frozenset[str],
+        typed_route_reconciliation_sha256: str = "",
     ) -> SemanticContractRevalidationProjection:
         projection = SemanticContractRevalidationProjection(
             frozenset(suppressed_source_contract_association_errors),
             frozenset(suppressed_source_coverage_route_errors),
             frozenset(suppressed_expected_input_keys),
+            _sha256(typed_route_reconciliation_sha256),
         )
         issued.add(projection)
         return projection
@@ -1393,6 +1856,12 @@ def _make_semantic_contract_revalidation_api() -> tuple[
         raw_audit_raw_bytes: bytes | None = None,
         statement_map_payload: object | None = None,
         statement_map_raw_bytes: bytes | None = None,
+        paper_prerequisites_payload: object | None = None,
+        paper_prerequisites_raw_bytes: bytes | None = None,
+        library_semantic_review_payload: object | None = None,
+        library_semantic_review_raw_bytes: bytes | None = None,
+        status_payload: object | None = None,
+        status_raw_bytes: bytes | None = None,
         artifact_payload: object | None = None,
         artifact_raw_bytes: bytes | None = None,
         authority_payload: object | None = None,
@@ -1405,6 +1874,12 @@ def _make_semantic_contract_revalidation_api() -> tuple[
             raw_audit_raw_bytes=raw_audit_raw_bytes,
             statement_map_payload=statement_map_payload,
             statement_map_raw_bytes=statement_map_raw_bytes,
+            paper_prerequisites_payload=paper_prerequisites_payload,
+            paper_prerequisites_raw_bytes=paper_prerequisites_raw_bytes,
+            library_semantic_review_payload=library_semantic_review_payload,
+            library_semantic_review_raw_bytes=library_semantic_review_raw_bytes,
+            status_payload=status_payload,
+            status_raw_bytes=status_raw_bytes,
             artifact_payload=artifact_payload,
             artifact_raw_bytes=artifact_raw_bytes,
             authority_payload=authority_payload,
@@ -1504,7 +1979,36 @@ def issue_semantic_contract_revalidation_artifact(
         for error in values
         if isinstance(error, str)
     }
-    candidate_pairs: list[tuple[str, str]] = []
+    candidate_pairs: list[tuple[str, str, str]] = []
+    raw_unrouted = raw_payload.get("source_coverage_unrouted_source_items")
+    open_witnesses: list[dict[str, str]] = []
+    map_items = statement_map.get("items")
+    if isinstance(raw_unrouted, list) and isinstance(map_items, Mapping):
+        for raw_source_key in raw_unrouted:
+            source_key = str(raw_source_key or "").strip()
+            source_item = map_items.get(source_key)
+            error = _SOURCE_DECLARED_OPEN_NONRESULT_ERROR_PREFIX + source_key
+            if not source_key or error not in present_errors or not isinstance(source_item, Mapping):
+                continue
+            route_policy_open = bool(
+                str(source_item.get("source_kind") or "").strip().lower() == "open_problem"
+                and source_item.get("claim_bearing") is False
+                and str(source_item.get("source_scope_classification") or "").strip().lower()
+                == _SOURCE_DECLARED_OPEN_NONRESULT_CLASSIFICATION
+                and str(source_item.get("coverage_status") or "").strip().lower()
+                == "source_declared_open"
+                and str(source_item.get("protocol_role") or "").strip().lower()
+                == "source_declared_open"
+            )
+            if route_policy_open:
+                open_witnesses.append(
+                    {
+                        "source_item": source_key,
+                        "source_item_record_sha256": source_record_source_item_record_sha256(
+                            dict(source_item)
+                        ),
+                    }
+                )
     semantic_items = raw_payload.get("semantic_model_items")
     if not isinstance(semantic_items, list):
         return None, "source-record raw audit has no semantic-model items"
@@ -1518,20 +2022,35 @@ def issue_semantic_contract_revalidation_artifact(
         spec = str(association.get("paired_qualified_declaration") or "").strip()
         if not evidence or not spec or _companion_error(evidence, spec) not in present_errors:
             continue
+        source_identities = association.get("source_item_identities")
+        modes = {
+            str(contract.get("evidence_mode") or "").strip()
+            for source_identity in (
+                source_identities if isinstance(source_identities, list) else []
+            )
+            if isinstance(source_identity, Mapping)
+            and isinstance((contract := source_identity.get("semantic_contract")), Mapping)
+        }
+        if len(modes) != 1:
+            continue
+        evidence_mode = next(iter(modes))
+        if evidence_mode not in {"proves", "definitionally_realizes"}:
+            continue
         raw_pair = _raw_pair(
             raw_payload,
             statement_map=statement_map,
             evidence=evidence,
             spec=spec,
+            evidence_mode=evidence_mode,
         )
         if raw_pair is None:
             continue
-        candidate_pairs.append((evidence, spec))
+        candidate_pairs.append((evidence, spec, evidence_mode))
     candidate_pairs = sorted(set(candidate_pairs))
     group_errors, _suppressed_keys = _group_member_projection(
         raw_payload, statement_map=statement_map
     )
-    if not candidate_pairs and not group_errors:
+    if not candidate_pairs and not group_errors and not open_witnesses:
         return None, "no current raw semantic-contract error has a structural correction"
     entries: Mapping[str, tuple[Mapping[str, Any], Mapping[str, Any]]] = {}
     if candidate_pairs:
@@ -1539,7 +2058,7 @@ def issue_semantic_contract_revalidation_artifact(
         if stored_paper != paper:
             return None, "authenticated manifest store is unavailable or invalid"
     witnesses: list[dict[str, Any]] = []
-    for evidence, spec in candidate_pairs:
+    for evidence, spec, evidence_mode in candidate_pairs:
         evidence_entry = entries.get(evidence)
         spec_entry = entries.get(spec)
         if evidence_entry is None or spec_entry is None:
@@ -1550,6 +2069,7 @@ def issue_semantic_contract_revalidation_artifact(
             {
                 "evidence_declaration": evidence,
                 "spec_declaration": spec,
+                "evidence_mode": evidence_mode,
                 "evidence_manifest": evidence_manifest,
                 "spec_manifest": spec_manifest,
             }
@@ -1567,14 +2087,28 @@ def issue_semantic_contract_revalidation_artifact(
         "paper_statement_map_file_sha256": _bytes_sha256(statement_map_bytes),
         "paper_statement_map_sha256": raw_payload.get("paper_statement_map_sha256"),
         "transparent_spec_pair_witnesses": witnesses,
+        "source_declared_open_nonresult_witnesses": sorted(
+            open_witnesses, key=lambda witness: witness["source_item"]
+        ),
     }
     payload[SOURCE_RECORD_SEMANTIC_CONTRACT_REVALIDATION_RECEIPT_FIELD] = (
         _canonical_json_sha256(payload)
     )
-    authority_path = paper_dir / "audit" / "lean_signature_manifest_cache_authority.json"
-    authority_payload, authority_bytes, authority_error = _read_json_bytes(authority_path)
-    if authority_error or authority_bytes is None or not isinstance(authority_payload, Mapping):
-        return None, authority_error or "manifest authority is unavailable"
+    authority_payload: Mapping[str, Any] | None = None
+    authority_bytes: bytes | None = None
+    if candidate_pairs:
+        authority_path = paper_dir / "audit" / "lean_signature_manifest_cache_authority.json"
+        loaded_authority, loaded_authority_bytes, authority_error = _read_json_bytes(
+            authority_path
+        )
+        if (
+            authority_error
+            or loaded_authority_bytes is None
+            or not isinstance(loaded_authority, Mapping)
+        ):
+            return None, authority_error or "manifest authority is unavailable"
+        authority_payload = loaded_authority
+        authority_bytes = loaded_authority_bytes
     _projection, validation_error = semantic_contract_revalidation_projection(
         paper_dir=paper_dir,
         paper=paper,

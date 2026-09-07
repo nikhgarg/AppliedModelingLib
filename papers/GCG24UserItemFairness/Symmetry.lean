@@ -1,13 +1,13 @@
 import GCG24UserItemFairness.Optimization
-import EconCSLib.Applications.RecommenderSystems.Classwise
+import AppliedModelingLib.Applications.RecommenderSystems.Classwise
 import Mathlib.Data.Finset.Sum
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace GCG24UserItemFairness
 
 abbrev UserType (K : ℕ) := Fin K
-abbrev TypePolicy (K n : ℕ) := EconCSLib.Policy (UserType K) (Item n)
+abbrev TypePolicy (K n : ℕ) := AppliedModelingLib.Policy (UserType K) (Item n)
 
 namespace RecommendationModel
 
@@ -27,12 +27,12 @@ namespace UserTypeAssignment
 /-- Lift a type-level policy to a user-level policy by composition with the type map. -/
 def liftTypePolicy {m n K : ℕ}
     (τ : RecommendationModel.UserTypeAssignment m K) (ρ : TypePolicy K n) : Policy m n :=
-  EconCSLib.Policy.liftAlong τ.toType ρ
+  AppliedModelingLib.Policy.liftAlong τ.toType ρ
 
 /-- A user-level policy is type-symmetric if equal types receive equal PMFs. -/
 def IsTypeSymmetric {m n K : ℕ}
     (τ : RecommendationModel.UserTypeAssignment m K) (ρ : Policy m n) : Prop :=
-  EconCSLib.Policy.IsClasswise τ.toType ρ
+  AppliedModelingLib.Policy.IsClasswise τ.toType ρ
 
 /--
 When declared types are exactly utility-row classes, the source definition of
@@ -99,7 +99,7 @@ theorem satisfiesTypeSymmetryLinearConstraints_iff_isTypeSymmetric
 /-- The set `S_symm` of type-symmetric user-level policies. -/
 def SymmetricPolicies {m n K : ℕ}
     (τ : RecommendationModel.UserTypeAssignment m K) : Set (Policy m n) :=
-  EconCSLib.Policy.ClasswisePolicies τ.toType
+  AppliedModelingLib.Policy.ClasswisePolicies τ.toType
 
 /-- Coefficients realizing a type-symmetry coordinate equality as a linear
 expression over all policy coordinates. -/
@@ -168,12 +168,12 @@ theorem liftTypePolicy_isTypeSymmetric {m n K : ℕ}
     (τ : RecommendationModel.UserTypeAssignment m K) (ρ : TypePolicy K n) :
     IsTypeSymmetric τ (liftTypePolicy τ ρ) := by
   simpa [IsTypeSymmetric, liftTypePolicy] using
-    (EconCSLib.Policy.liftAlong_isClasswise (τ := τ.toType) (ρ := ρ))
+    (AppliedModelingLib.Policy.liftAlong_isClasswise (τ := τ.toType) (ρ := ρ))
 
 /-- Chosen representative user for each declared user type. -/
 abbrev TypeRepresentatives {m K : ℕ}
     (τ : RecommendationModel.UserTypeAssignment m K) :=
-  EconCSLib.Policy.FiberRepresentatives τ.toType
+  AppliedModelingLib.Policy.FiberRepresentatives τ.toType
 
 /--
 Descend a user-level policy to the type level by evaluating it on one chosen
@@ -182,7 +182,7 @@ representative user from each type.
 def descendTypePolicy {m n K : ℕ}
     (τ : RecommendationModel.UserTypeAssignment m K)
     (reps : TypeRepresentatives τ) (ρ : Policy m n) : TypePolicy K n :=
-  EconCSLib.Policy.descendAlong reps ρ
+  AppliedModelingLib.Policy.descendAlong reps ρ
 
 @[simp] theorem descendTypePolicy_apply {m n K : ℕ}
     (τ : RecommendationModel.UserTypeAssignment m K)
@@ -194,7 +194,7 @@ def descendTypePolicy {m n K : ℕ}
     (reps : TypeRepresentatives τ) (ρ : TypePolicy K n) :
     descendTypePolicy τ reps (liftTypePolicy τ ρ) = ρ := by
   simpa [descendTypePolicy, liftTypePolicy] using
-    (EconCSLib.Policy.descendAlong_liftAlong (τ := τ.toType) reps ρ)
+    (AppliedModelingLib.Policy.descendAlong_liftAlong (τ := τ.toType) reps ρ)
 
 /-- Descending a type-symmetric user-level policy does not depend on the
 chosen representative users. -/
@@ -217,7 +217,7 @@ theorem liftTypePolicy_descendTypePolicy_eq_of_isTypeSymmetric {m n K : ℕ}
     (hρ : IsTypeSymmetric τ ρ) :
     liftTypePolicy τ (descendTypePolicy τ reps ρ) = ρ := by
   simpa [IsTypeSymmetric, descendTypePolicy, liftTypePolicy] using
-    (EconCSLib.Policy.liftAlong_descendAlong_eq_of_isClasswise
+    (AppliedModelingLib.Policy.liftAlong_descendAlong_eq_of_isClasswise
       (τ := τ.toType) reps ρ hρ)
 
 /--
@@ -229,7 +229,7 @@ theorem isTypeSymmetric_iff_exists_liftTypePolicy {m n K : ℕ}
     (reps : TypeRepresentatives τ) (ρ : Policy m n) :
     IsTypeSymmetric τ ρ ↔ ∃ ρK : TypePolicy K n, liftTypePolicy τ ρK = ρ := by
   simpa [IsTypeSymmetric, liftTypePolicy] using
-    (EconCSLib.Policy.isClasswise_iff_exists_liftAlong (τ := τ.toType) reps ρ)
+    (AppliedModelingLib.Policy.isClasswise_iff_exists_liftAlong (τ := τ.toType) reps ρ)
 
 end UserTypeAssignment
 
@@ -238,16 +238,16 @@ namespace TypePolicy
 /-- Positive-support type-item pairs `(k, j)`. -/
 noncomputable def activeTypeItemPairs {K n : ℕ}
     (ρ : TypePolicy K n) : Finset (UserType K × Item n) :=
-  EconCSLib.Policy.activePairs ρ
+  AppliedModelingLib.Policy.activePairs ρ
 
 /-- Number of positive-support type-item pairs. -/
 noncomputable def activeTypeItemPairsCard {K n : ℕ} (ρ : TypePolicy K n) : ℕ :=
-  EconCSLib.Policy.activePairsCard ρ
+  AppliedModelingLib.Policy.activePairsCard ρ
 
 /-- Zero-support type-item pairs `(k, j)`. -/
 noncomputable def inactiveTypeItemPairs {K n : ℕ}
     (ρ : TypePolicy K n) : Finset (UserType K × Item n) :=
-  EconCSLib.Policy.inactivePairs ρ
+  AppliedModelingLib.Policy.inactivePairs ρ
 
 @[simp] theorem mem_inactiveTypeItemPairs {K n : ℕ}
     (ρ : TypePolicy K n) (p : UserType K × Item n) :
@@ -256,11 +256,11 @@ noncomputable def inactiveTypeItemPairs {K n : ℕ}
 
 /-- Number of zero-support type-item pairs. -/
 noncomputable def inactiveTypeItemPairsCard {K n : ℕ} (ρ : TypePolicy K n) : ℕ :=
-  EconCSLib.Policy.inactivePairsCard ρ
+  AppliedModelingLib.Policy.inactivePairsCard ρ
 
 /-- Items recommended to more than one user type. -/
 noncomputable def sharedItems {K n : ℕ} (ρ : TypePolicy K n) : Finset (Item n) :=
-  EconCSLib.Policy.multiAssignedActions ρ
+  AppliedModelingLib.Policy.multiAssignedActions ρ
 
 /-- Target shape of the first sparsity conclusion in Proposition 2. -/
 def ActivePairsBound {K n : ℕ} (ρ : TypePolicy K n) : Prop :=
@@ -303,7 +303,7 @@ theorem exists_active_item_for_type {K n : ℕ} [NeZero n]
     ∃ j : Item n, ρ k j ≠ 0 := by
   by_contra hnone
   push Not at hnone
-  have hsum := EconCSLib.pmfToRealSum (ρ k)
+  have hsum := AppliedModelingLib.pmfToRealSum (ρ k)
   have hzero : (∑ j : Item n, (ρ k j).toReal) = 0 := by
     simp [hnone]
   linarith
@@ -543,7 +543,7 @@ theorem nonnegativityBasis_card_le_inactive {K n : ℕ}
     (h : ReducedEqualityLPActiveBasis itemNormal ρ ell) :
     (nonnegativityBasis h).card ≤ inactiveTypeItemPairsCard ρ := by
   classical
-  unfold inactiveTypeItemPairsCard EconCSLib.Policy.inactivePairsCard
+  unfold inactiveTypeItemPairsCard AppliedModelingLib.Policy.inactivePairsCard
   change (nonnegativityBasis h).card ≤ (inactiveTypeItemPairs ρ).card
   apply Finset.card_le_card
   intro p hp
@@ -586,7 +586,7 @@ theorem activeTypeItemPairsCard_add_inactiveTypeItemPairsCard_eq {K n : ℕ}
     (ρ : TypePolicy K n) :
     activeTypeItemPairsCard ρ + inactiveTypeItemPairsCard ρ = K * n := by
   simpa [activeTypeItemPairsCard, inactiveTypeItemPairsCard, UserType, Item]
-    using (EconCSLib.Policy.activePairsCard_add_inactivePairsCard_eq_card
+    using (AppliedModelingLib.Policy.activePairsCard_add_inactivePairsCard_eq_card
       (ρ := ρ))
 
 /--
@@ -601,7 +601,7 @@ theorem activePairsBound_of_basicFeasibleSupportCertificate {K n : ℕ}
   unfold ActivePairsBound activeTypeItemPairsCard
     BasicFeasibleSupportCertificate inactiveTypeItemPairsCard at *
   have hsupport :=
-    EconCSLib.Policy.activePairsCard_le_card_sub_of_inactivePairsCard_ge
+    AppliedModelingLib.Policy.activePairsCard_le_card_sub_of_inactivePairsCard_ge
       (ρ := ρ) hcert
   simp [UserType, Item, Nat.mul_comm] at hsupport
   exact le_trans hsupport (by omega)
@@ -734,7 +734,7 @@ theorem exists_activeType_ne_primary_of_shared {K n : ℕ}
     (ρ : TypePolicy K n) (hcover : ∀ j : Item n, ∃ k, ρ k j ≠ 0)
     {j : Item n} (hj : j ∈ sharedItems ρ) :
     ∃ k, k ≠ primaryActiveType ρ hcover j ∧ ρ k j ≠ 0 := by
-  rcases (EconCSLib.Policy.mem_multiAssignedActions ρ j).mp hj with
+  rcases (AppliedModelingLib.Policy.mem_multiAssignedActions ρ j).mp hj with
     ⟨k, k', hne, hk, hk'⟩
   by_cases hp : primaryActiveType ρ hcover j = k
   · refine ⟨k', ?_, hk'⟩

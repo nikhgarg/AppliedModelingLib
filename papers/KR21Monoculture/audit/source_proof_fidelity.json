@@ -106,7 +106,7 @@
       "status_impact_rationale": "The source-visible universal efficiency assertion remains underspecified: it gives no sampling oracle, input or bit model, parameter domain, confidence target, boundedness or tail condition, strict margin, or uniformity argument. The user explicitly excluded this separate assertion from the KR21 theorem-formalization scope while retaining it in the source audit. This is a scope disposition, not a claim that the source made no mathematical assertion.",
       "user_approved_scope_exclusion": {
         "approval_kind": "explicit_user_instruction",
-        "approval_reference": "User instruction on 2026-07-25: the simulation-efficiency claim is not required for formalization; close KR21 after recording the scope decision.",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
         "approved_at": "2026-07-25",
         "reason": "The user explicitly excluded the source-visible universal simulation-efficiency assertion from the required KR21 theorem-formalization target while retaining it as an audited source statement.",
         "schema": 1,
@@ -134,7 +134,7 @@
       "status_impact_rationale": "The finite-support remark remains an underspecified source-visible mathematical assertion: it does not identify the affected results, noise model, tie rule, parameter domain, altered clauses, or conclusion. Literal strict-to-weak replacement is false for ordinary finite-support scaled RUMs. The user explicitly excluded this separate assertion from the KR21 theorem-formalization scope while preserving the obstruction and source record.",
       "user_approved_scope_exclusion": {
         "approval_kind": "explicit_user_instruction",
-        "approval_reference": "User instruction on 2026-07-25: item 5 is not required; close KR21 as formalized after recording the source correction and exclusions.",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
         "approved_at": "2026-07-25",
         "reason": "The user explicitly excluded the source-visible, underspecified finite-support weakening remark from the required KR21 theorem-formalization target while retaining it as an audited mathematical assertion.",
         "schema": 1,
@@ -282,7 +282,7 @@
       "status_impact_rationale": "The source-visible computed conclusion remains catalogued, but the user expressly excluded non-named numerical/computational results from KR21's required theorem target. The existing finite three-firm Lean certificate is retained as auxiliary evidence and is not used to claim coverage of the reported calculation.",
       "user_approved_scope_exclusion": {
         "approval_kind": "explicit_user_instruction",
-        "approval_reference": "User instruction on 2026-07-25: numerical examples not presented as named statements are outside the KR21 formalization target; retain them in the source audit rather than treating them as covered.",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
         "approved_at": "2026-07-25",
         "reason": "The source passage is a non-named computational result and the user explicitly excluded that category from required theorem formalization.",
         "schema": 1,
@@ -304,7 +304,7 @@
     {
       "approval": {
         "approval_kind": "explicit_user_instruction",
-        "approval_reference": "User instruction on 2026-07-25: assume whatever convention makes the result true, provided it is visible rather than smuggled into a statement.",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
         "approved_at": "2026-07-25",
         "conditions": [
           "exactly two labelled firms",
@@ -354,7 +354,7 @@
     {
       "approval": {
         "approval_kind": "explicit_user_instruction",
-        "approval_reference": "User instruction on 2026-07-25: assume whatever convention makes the result true, provided it is visible rather than smuggled into a statement.",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
         "approved_at": "2026-07-25",
         "conditions": [
           "one deterministic total ranking rule for equal scores",
@@ -404,7 +404,7 @@
     {
       "approval": {
         "approval_kind": "explicit_user_instruction",
-        "approval_reference": "User instruction on 2026-07-25: assume whatever convention makes the result true, provided it is visible rather than smuggled into a statement.",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
         "approved_at": "2026-07-25",
         "conditions": [
           "iid scalar density is measurable, nonnegative, and normalized",
@@ -424,7 +424,7 @@
     {
       "approval": {
         "approval_kind": "explicit_user_instruction",
-        "approval_reference": "User instruction on 2026-07-25: record source-compatible implicit regularity conditions visibly rather than smuggling them into statements.",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
         "approved_at": "2026-07-25",
         "conditions": [
           "x_i > x_j for the strict pairwise conclusion",
@@ -441,7 +441,7 @@
     {
       "approval": {
         "approval_kind": "explicit_user_instruction",
-        "approval_reference": "User instruction on 2026-07-25: assume the minimal source-compatible convention that makes the result true.",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
         "approved_at": "2026-07-25",
         "conditions": [
           "fixed rank-labelled Mallows center",

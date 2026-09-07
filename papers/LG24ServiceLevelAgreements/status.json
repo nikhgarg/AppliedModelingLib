@@ -1,0 +1,206 @@
+{
+  "additional_assumption_notes": [
+    {
+      "condition": "For the standalone stationary GPS replay, Lean makes explicit the implicit full-system well-definedness regularity that every positive-arrival SLA class has positive GPS weight and aggregate SLA admitted load is strictly below capacity; the source prints the total-weight bound and target-local margin but not this full condition as a separate premise.",
+      "disposition": "Source-implied steady-operation regularity, recorded for fidelity. It is not an all-class target-margin assumption and is necessary to avoid a zero-weight positive-arrival class with no service or defined full GPS replay.",
+      "source_location": "cited publication:530-543; cited publication:558-565; cited publication:628-639"
+    },
+    {
+      "condition": "Lean represents the source's finite incident-category and Borough domains with nonempty finite types when an endpoint requires an index witness.",
+      "disposition": "Ordinary structural convention. It is visible in the proposition specifications and does not alter the paper's intended incident model.",
+      "source_location": "cited publication:2686-2688"
+    }
+  ],
+  "artifacts": {
+    "draft_version_map": "papers/LG24ServiceLevelAgreements/DRAFT_VERSION_MAP.md",
+    "final_validation_report": "papers/LG24ServiceLevelAgreements/FINAL_VALIDATION_REPORT.md",
+    "gps_tail_assessment": "docs/GPS_TAIL_CONSTRUCTION_ASSESSMENT_2026-08-08.md",
+    "human_review_packet_pdf": "papers/LG24ServiceLevelAgreements/docs/HUMAN_REVIEW_PACKET.pdf",
+    "human_review_packet_tex": "papers/LG24ServiceLevelAgreements/docs/HUMAN_REVIEW_PACKET.tex",
+    "paper_interface": "papers/LG24ServiceLevelAgreements/PaperInterface.lean",
+    "readme": "papers/LG24ServiceLevelAgreements/README.md",
+    "source_inventory": "papers/LG24ServiceLevelAgreements/audit/paper_statement_map.json",
+    "source_manifest": "papers/LG24ServiceLevelAgreements/sources/main_msom_intended_transcript.manifest.json",
+    "source_proof_fidelity": "papers/LG24ServiceLevelAgreements/audit/source_proof_fidelity.json"
+  },
+  "authors": "Zhi Liu and Nikhil Garg",
+  "build_target": "lake build LG24ServiceLevelAgreements",
+  "formalization_progress": {
+    "completed": [
+      "source graph and redline-policy transcript",
+      "five named proposition specifications and direct proofs",
+      "literal stationary selected-Palm GPS/FCFS tail construction",
+      "direct rate-fraction SLA consequence",
+      "compact PaperInterface review surface",
+      "schema-2 source-proof fidelity ledger with five source-anchored proof scopes",
+      "V11 source-atom to elaborated-Spec closure receipts for all five named propositions",
+      "Current source-record evidence materializes all 115 required groups as ordinary canonical items bound to the current raw audit, exact semantic descriptors, source locations, and Lean statement digests; no external snapshot, selected-current sidecar, or differential overlay is required.",
+      "source coverage, named-statement, and focused-build review of the direct stationary-tail interface",
+      "2026-08-13 strict paper closeout completed with zero errors; its only warning is the governance-only 0/36 independent-human-review status."
+    ],
+    "next_target": "No active proof obligation. Reopen only if the compiled source, selected source anchor, or elaborated PaperInterface signature changes; then re-audit changed items and recursive dependencies. Do not reuse LegacyReviewSurface.lean as evidence for the direct construction.",
+    "stage": "complete: direct stationary-tail interface, current source-record evidence union, focused build, and strict paper closeout verified"
+  },
+  "human_review": {
+    "mismatch_rows": 0,
+    "reviewed_rows": 0,
+    "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
+    "stale_rows": 0,
+    "total_rows": 10,
+    "uncertain_rows": 0
+  },
+  "human_summary": "The active Overleaf draft's five named analytic propositions and two selected GPS/SLA displays have direct source-facing Lean proofs. The stationary selected-Palm Poisson/GPS/FCFS tail uses the source-stated post-thinning admitted-Poisson/iid-service normal form, an explicitly exposed full-system well-definedness regularity implicit in the source's GPS/steady-operation language, and the source's separate target-local margin; it does not claim a raw-arrival empirical-frequency coupling.",
+  "human_summary_review": {
+    "note": "The summary is an agent-authored current-source checkpoint. It has no independent human dashboard approval.",
+    "status": "agent_draft"
+  },
+  "id": "LG24ServiceLevelAgreements",
+  "last_status_checkpoint": "2026-08-13: The current raw source-record audit and its complete required judgment union were revalidated against the active PaperInterface after the audit-engine refresh. The focused PaperInterface build and final strict paper closeout passed with no errors; the only remaining warning is governance-only 0/36 independent-human-review rows. Formalized status is reasserted; reopen if the compiled source, selected source anchor, or elaborated PaperInterface signature changes.",
+  "main_caveat": "",
+  "open_source_boundaries": [],
+  "paper_interface": {
+    "declaration_rows": 45,
+    "line_count": 740,
+    "maintainability_issue": null,
+    "oversized": false,
+    "path": "papers/LG24ServiceLevelAgreements/PaperInterface.lean",
+    "review_rows": 10
+  },
+  "repository_visibility": "public",
+  "review_entrypoint": "papers/LG24ServiceLevelAgreements/FINAL_VALIDATION_REPORT.md",
+  "review_surface": {
+    "assumption_names": [],
+    "assumption_policy": "strict",
+    "assumption_source_file": "papers/LG24ServiceLevelAgreements/Assumptions.lean",
+    "auxiliary_names": [
+      "paperOriginalFixedLoadFeasible",
+      "paperFixedLoadFeasible",
+      "paperEfficiencyBestEquitable",
+      "paperCityFeasible",
+      "paperCategorywiseFixedNoninspection",
+      "paperStationaryGPSResponseTail",
+      "paperGlobalSteadyGPSCondition",
+      "paperTargetGuaranteedSlack",
+      "paperSufficientSLAConstraint",
+      "paper_assumption_gps_response_tail_bound"
+    ],
+    "include_names": [
+      "paper_stationary_gps_response_tailSpec",
+      "paper_sla_from_stationary_gps_tailSpec",
+      "paper_city_extreme_efficiencySpec",
+      "paper_relative_price_of_equity_nonnegativeSpec",
+      "paper_prop_opt_reformulationSpec",
+      "paper_prop_extreme_efficiencySpec",
+      "paper_prop_extreme_equitySpec",
+      "paper_prop_price_of_equitySpec",
+      "paper_relative_centralization_gain_identitySpec",
+      "paper_prop_centralizationSpec"
+    ],
+    "llm_assumption_review": {
+      "assumption_judgment_file": "papers/LG24ServiceLevelAgreements/audit/assumption_match_llm.json",
+      "policy": "Every source-facing premise must be derived from preceding Lean results or visibly identified as a literal source condition. The stationary GPS tail is a direct construction, not a paper assumption or an axiom smuggled into a proposition.",
+      "required_prompt_version": "assumption-provenance-v3-semantic-exact-premise-source"
+    },
+    "llm_paper_coverage_review": {
+      "paper_coverage_audit_file": "papers/LG24ServiceLevelAgreements/audit/paper_coverage_llm.json",
+      "policy": "Use the byte-pinned source-first normal named-theory inventory. The five Proposition environments are required. The separately labelled relative-centralization equation remains independently exposed and audited because it supports the adjacent proposition, but it is not a sixth normal-scope proposition. Figures, captions, simulations, empirical analyses, algorithms, and ordinary prose are deep-mode material unless explicitly selected. The two unnumbered GPS/SLA displays are explicitly selected semantic targets, not named propositions and not normal-scope coverage.",
+      "required_prompt_version": "paper-coverage-v5-semantic-proof-row-signature-pins"
+    },
+    "llm_source_record_review": {
+      "policy": "Classify model and boundary inputs from expanded semantics. Bare carrier data are not conclusions; Proposition-valued path, tail, or stationarity assertions need exact source evidence, a checked derivation, or an explicit partial boundary. Never infer adequacy from record, field, function, or theorem names.",
+      "required_prompt_version": "source-record-v10-semantic-conclusion-boundary-contract",
+      "source_record_audit_file": "papers/LG24ServiceLevelAgreements/audit/source_record_audit.json",
+      "source_record_judgment_file": "papers/LG24ServiceLevelAgreements/audit/source_record_match_llm.json"
+    },
+    "llm_statement_review": {
+      "assumption_judgment_file": "papers/LG24ServiceLevelAgreements/audit/assumption_match_llm.json",
+      "lean_to_tex_file": "papers/LG24ServiceLevelAgreements/audit/lean_to_tex_llm.json",
+      "match_judgment_file": "papers/LG24ServiceLevelAgreements/audit/statement_match_llm.json",
+      "paper_coverage_audit_file": "papers/LG24ServiceLevelAgreements/audit/paper_coverage_llm.json",
+      "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
+      "require_direct_expression_semantics_review": "v1",
+      "require_explicit_source_routes": true,
+      "require_source_claim_atoms": true,
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
+      "review_surface_audit_file": "papers/LG24ServiceLevelAgreements/audit/review_surface_llm.json",
+      "surface_audit_threshold": 30,
+      "surface_warning_threshold": 120
+    },
+    "paper_coverage_required": true,
+    "proposition_spec_proofs": {
+      "paper_city_extreme_efficiencySpec": "paper_city_extreme_efficiency",
+      "paper_prop_centralizationSpec": "paper_prop_centralization",
+      "paper_prop_extreme_efficiencySpec": "paper_prop_extreme_efficiency",
+      "paper_prop_extreme_equitySpec": "paper_prop_extreme_equity",
+      "paper_prop_opt_reformulationSpec": "paper_prop_opt_reformulation",
+      "paper_prop_price_of_equitySpec": "paper_prop_price_of_equity",
+      "paper_relative_centralization_gain_identitySpec": "paper_relative_centralization_gain_identity",
+      "paper_relative_price_of_equity_nonnegativeSpec": "paper_relative_price_of_equity_nonnegative",
+      "paper_sla_from_stationary_gps_tailSpec": "paper_sla_from_stationary_gps_tail",
+      "paper_stationary_gps_response_tailSpec": "paper_stationary_gps_response_tail"
+    },
+    "quarantined_auxiliary_names": [
+      "paper_assumption_gps_response_tail_bound"
+    ],
+    "require_source_spec_correspondence": true,
+    "require_v11_raw_source_spec_screening": true,
+    "semantic_model_review": {
+      "explicit_source_target_declarations": [
+        "LG24ServiceLevelAgreements.paper_stationary_gps_response_tail",
+        "LG24ServiceLevelAgreements.paper_sla_from_stationary_gps_tail"
+      ],
+      "policy": "Review the fixed-load analytic model and the queueing boundary as mathematical objects. For the queueing boundary, check arrivals, thinning, workload evolution, GPS allocation, FCFS response semantics, stationarity, and Palm conditioning rather than trusting any construction name.",
+      "required_dimensions": [
+        "expanded_binders_and_domain",
+        "carrier_and_domain",
+        "probability_support_endpoints",
+        "joint_law_and_state_evolution",
+        "conditioning_and_calibration_semantics",
+        "expectation_definedness",
+        "null_cell_totalization_and_partition_scope",
+        "extended_rate_codomain"
+      ],
+      "schema": 2
+    },
+    "slices": [
+      {
+        "id": "source-model",
+        "names": [
+          "paper_stationary_gps_response_tailSpec",
+          "paper_sla_from_stationary_gps_tailSpec",
+          "paper_relative_price_of_equity_nonnegativeSpec"
+        ],
+        "title": "Source-facing model vocabulary and direct stationary tail"
+      },
+      {
+        "id": "displayed-relative-identity",
+        "names": [
+          "paper_city_extreme_efficiencySpec",
+          "paper_relative_centralization_gain_identitySpec"
+        ],
+        "title": "City-budget optimizer and relative centralization identity"
+      },
+      {
+        "id": "named-propositions",
+        "names": [
+          "paper_prop_opt_reformulationSpec",
+          "paper_prop_extreme_efficiencySpec",
+          "paper_prop_extreme_equitySpec",
+          "paper_prop_price_of_equitySpec",
+          "paper_prop_centralizationSpec"
+        ],
+        "title": "Five active source propositions"
+      }
+    ],
+    "source_definition_names": [],
+    "source_file": "papers/LG24ServiceLevelAgreements/PaperInterface.lean",
+    "source_proof_fidelity_review": {
+      "ledger_file": "papers/LG24ServiceLevelAgreements/audit/source_proof_fidelity.json",
+      "policy": "Audit source proof steps by source locator and mathematical claim, not Lean declaration names. The queue/tail-to-SLA derivation and each named analytic proposition are reviewed against the byte-pinned source. A repaired source defect must be explicit in the ledger; a direct Lean proof never silently converts a source-proof issue into an assumption."
+    }
+  },
+  "schema": 1,
+  "source_version": "Private Overleaf cited publication at 887a5ccdb076b6e811d8cbc34d3b0eed9b5bdb1a (2026-08-08); entrypoint SHA-256 8243d88d752e5ae5bffc6ddb05a7f6e36e949ddcdc6dbd881586c3fc1f67d425; intended compiled transcript SHA-256 eda9c8c9688a350b6d7696bb8e456ea0ce0ffe4b1f33e70636e24f82bb052b35; transcript manifest SHA-256 e3320a6aa47e1397ab0cdbeb362ad1d4cfa5c2eed506bcc8c255b0c1e1587961",
+  "status": "formalized",
+  "title": "Redesigning Service Level Agreements: Equity and Efficiency in City Government Operations"
+}

@@ -6,7 +6,7 @@ open scoped BigOperators
 
 namespace KR21Monoculture
 
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib.SocialChoice.Ranking
 
 /-!
 # Candidate-identity bridge for the KR21 three-firm example
@@ -38,7 +38,7 @@ exactly the reusable upper order statistic. -/
 theorem sourceTrueRankOfValues_value_eq_upperOrderStatistic
     (values : SourceFourCandidate -> ℝ) (rank : SourceFourCandidate) :
     values (sourceTrueRankOfValues values rank) =
-      EconCSLib.Probability.upperOrderStatistic values rank := by
+      AppliedModelingLib.Probability.upperOrderStatistic values rank := by
   rfl
 
 /-- Transport a canonical relative ranking through a realized true-rank order.
@@ -299,7 +299,7 @@ theorem sourceIdentityFocalUtility_eq_canonical_upperOrderStatistic
     (human : SourceThreeFirm -> SourceFourRanking)
     (order : SourceFirmOrder) :
     sourceIdentityFocalUtility values usesAlgorithm algorithm human order =
-      EconCSLib.Probability.upperOrderStatistic values
+      AppliedModelingLib.Probability.upperOrderStatistic values
         (sourceFocalSelectedCandidate usesAlgorithm algorithm human order) := by
   unfold sourceIdentityFocalUtility
   rw [sourceIdentityFocalSelectedCandidate_eq_relabel]

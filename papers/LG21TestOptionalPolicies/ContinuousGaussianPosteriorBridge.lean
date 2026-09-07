@@ -25,7 +25,7 @@ noncomputable section
 
 open MeasureTheory
 open ProbabilityTheory
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 
 /--
 The one-score conjugate-Gaussian parameter record constructed directly from a

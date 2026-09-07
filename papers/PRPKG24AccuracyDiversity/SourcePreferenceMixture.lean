@@ -1,5 +1,5 @@
 import PRPKG24AccuracyDiversity.Basic
-import EconCSLib.Foundations.Probability.FiniteExpectation
+import AppliedModelingLib.Foundations.Probability.FiniteExpectation
 
 /-!
 # Source-selected type mixture
@@ -13,7 +13,7 @@ open scoped BigOperators
 
 namespace PRPKG24AccuracyDiversity
 
-open EconCSLib
+open AppliedModelingLib
 
 /-- The finite law used for the paper's initial draw of a preferred item type. -/
 abbrev SourcePreferenceLaw (T : ℕ) := PMF (ItemType T)
@@ -60,10 +60,10 @@ theorem ConsumptionModel.objective_eq_sourcePreferenceLaw_pmfExp {T : ℕ}
     (preferenceLaw : SourcePreferenceLaw T)
     (hlaw : M.RealizesSourcePreferenceLaw preferenceLaw) :
     M.objective a =
-      EconCSLib.pmfExp preferenceLaw
+      AppliedModelingLib.pmfExp preferenceLaw
         (fun t => M.valueOfCount t (a.count t)) := by
   rw [ConsumptionModel.objective_eq_allocation_objective]
-  unfold EconCSLib.Allocation.objective EconCSLib.pmfExp
+  unfold AppliedModelingLib.Allocation.objective AppliedModelingLib.pmfExp
   refine Finset.sum_congr rfl ?_
   intro t _
   rw [hlaw t]

@@ -8,7 +8,7 @@ namespace DGD26AdmissionsPredictability
 
 namespace PaperInterface
 
-open EconCSLib.FiniteChoice
+open AppliedModelingLib.FiniteChoice
 variable {α : Type*} [DecidableEq α]
 
 theorem paper_choice_function_model_definition_statement
@@ -17,8 +17,8 @@ theorem paper_choice_function_model_definition_statement
   rfl
 
 theorem paper_definition_choice_label
-    (C : PaperChoiceRule α) (X : Finset α) (x : α) :
-    paper_definition_choice_labelSpec (C := C) (X := X) (x := x) := by
+    (C : PaperChoiceRule α) (X : Finset α) (x : α) (hx : x ∈ X) :
+    paper_definition_choice_labelSpec (C := C) (X := X) (x := x) hx := by
   rfl
 
 theorem paper_ml_representation_definition_statement
@@ -29,17 +29,21 @@ theorem paper_q_acceptance_definition_statement
     (q : ℕ) (C : PaperChoiceRule α)  : paper_q_acceptance_definition_statementSpec (q := q) (C := C) := by
   exact DGD26AdmissionsPredictability.ProofBridge.paper_q_acceptance_definition_statement (q := q) (C := C)
 
+-- The source-facing `Spec` does not use decidable equality.  Keep this
+-- direct definitional bridge parameter-for-parameter identical to it.
+omit [DecidableEq α] in
 theorem paper_total_order_definition_statement
     (r : α → α → Prop)  : paper_total_order_definition_statementSpec (r := r) := by
-  exact DGD26AdmissionsPredictability.ProofBridge.paper_total_order_definition_statement (r := r)
+  rfl
 
 theorem paper_q_representativeness_definition_statement
     (q : ℕ) (C : PaperChoiceRule α)  : paper_q_representativeness_definition_statementSpec (q := q) (C := C) := by
   exact DGD26AdmissionsPredictability.ProofBridge.paper_q_representativeness_definition_statement (q := q) (C := C)
 
 theorem paper_definition_choice_distance
-    (C : PaperChoiceRule α) (X₁ X₂ : Finset α) :
-    paper_definition_choice_distanceSpec (C := C) (X₁ := X₁) (X₂ := X₂) := by
+    (C : PaperChoiceRule α) (X₁ X₂ : Finset α) (hsubset : X₁ ⊆ X₂) :
+    paper_definition_choice_distanceSpec (C := C) (X₁ := X₁) (X₂ := X₂)
+      hsubset := by
   rfl
 
 theorem paper_d_instability_definition_statement
@@ -48,6 +52,7 @@ theorem paper_d_instability_definition_statement
 
 theorem paper_tight_d_instability_definition_statement
     (d : ℕ) (C : PaperChoiceRule α)  : paper_tight_d_instability_definition_statementSpec (d := d) (C := C) := by
+  intro _
   exact DGD26AdmissionsPredictability.ProofBridge.paper_tight_d_instability_definition_statement (d := d) (C := C)
 
 theorem paper_definition_borderline_set [Fintype α]
@@ -56,40 +61,53 @@ theorem paper_definition_borderline_set [Fintype α]
   rfl
 
 theorem paper_variability_exactly_definition_statement [Fintype α]
-    (m : ℕ) (C : PaperChoiceRule α)  : paper_variability_exactly_definition_statementSpec (m := m) (C := C) := by
+    {q : ℕ} (m : ℕ) (C : PaperChoiceRule α)
+    (hfeasible : paper_choice_function_feasible C)
+    (haccept : paper_definition_q_acceptance q C)
+    (hunstable : paper_definition_d_instability 1 C) :
+    paper_variability_exactly_definition_statementSpec (q := q) (m := m)
+      (C := C) hfeasible haccept hunstable := by
   exact DGD26AdmissionsPredictability.ProofBridge.paper_variability_exactly_definition_statement (m := m) (C := C)
 
 theorem paper_fixed_threshold_formula_statement
-    (score : α → ℝ) (threshold : ℝ) (X : Finset α) (x : α)  : paper_fixed_threshold_formula_statementSpec (score := score) (threshold := threshold) (X := X) (x := x) := by
-  exact DGD26AdmissionsPredictability.ProofBridge.paper_fixed_threshold_formula_statement (score := score) (threshold := threshold) (X := X) (x := x)
+    (score : α → ℝ) (threshold : ℝ)
+    (hscore : ∀ x, 0 ≤ score x ∧ score x ≤ 1)
+    (X : Finset α) (x : α)  : paper_fixed_threshold_formula_statementSpec (score := score) (threshold := threshold) (hscore := hscore) (X := X) (x := x) := by
+  exact DGD26AdmissionsPredictability.ProofBridge.paper_fixed_threshold_formula_statement (score := score) (threshold := threshold) (hscore := hscore) (X := X) (x := x)
 
 theorem paper_ml_fixed_threshold_representation_zero_unstable_statement
     {C : PaperChoiceRule α} (score : α → ℝ) (threshold : ℝ)
+    (hscore : ∀ x, 0 ≤ score x ∧ score x ≤ 1)
     (hfeasible : paper_choice_function_feasible C)
     (hrep : paper_definition_ml_representation
-      (paper_definition_fixed_threshold_predictor score threshold) C)  : paper_ml_fixed_threshold_representation_zero_unstable_statementSpec (C := C) (score := score) (threshold := threshold) (hfeasible := hfeasible) (hrep := hrep) := by
+      (paper_definition_fixed_threshold_predictor score threshold) C)  : paper_ml_fixed_threshold_representation_zero_unstable_statementSpec (C := C) (score := score) (threshold := threshold) (hscore := hscore) (hfeasible := hfeasible) (hrep := hrep) := by
   exact DGD26AdmissionsPredictability.ProofBridge.paper_ml_fixed_threshold_representation_zero_unstable_statement (C := C) (score := score) (threshold := threshold) (hfeasible := hfeasible) (hrep := hrep)
 
 theorem paper_rank_threshold_formula_statement
-    (q : ℕ) (score : α → ℝ) (hinjective : Function.Injective score)
-    (hqpos : 0 < q) (X : Finset α)  : paper_rank_threshold_formula_statementSpec (q := q) (score := score) (hinjective := hinjective) (hqpos := hqpos) (X := X) := by
-  exact DGD26AdmissionsPredictability.ProofBridge.paper_rank_threshold_formula_statement (q := q) (score := score) (hinjective := hinjective) (hqpos := hqpos) (X := X)
+    (q : ℕ) (operationalScore : α → ℝ)
+    (hinjective : Function.Injective operationalScore)
+    (hqpos : 0 < q) (X : Finset α) (hqcard : q ≤ X.card)  : paper_rank_threshold_formula_statementSpec (q := q) (operationalScore := operationalScore) (hinjective := hinjective) (hqpos := hqpos) (X := X) (hqcard := hqcard) := by
+  exact DGD26AdmissionsPredictability.ProofBridge.paper_rank_threshold_formula_statement (q := q) (score := operationalScore) (hinjective := hinjective) (hqpos := hqpos) (X := X) (hqcard := hqcard)
 
 theorem paper_ml_rank_threshold_representation_instability_bound_statement
     [Fintype α] {C : PaperChoiceRule α}
-    (q : ℕ) (score : α → ℝ) (hinjective : Function.Injective score)
+    (q : ℕ) (operationalScore : α → ℝ)
+    (hinjective : Function.Injective operationalScore)
+    (hqpos : 0 < q)
     (hfeasible : paper_choice_function_feasible C)
     (hrep : paper_definition_ml_representation
-      (paper_definition_rank_threshold_predictor q score hinjective) C)  : paper_ml_rank_threshold_representation_instability_bound_statementSpec (C := C) (q := q) (score := score) (hinjective := hinjective) (hfeasible := hfeasible) (hrep := hrep) := by
-  exact DGD26AdmissionsPredictability.ProofBridge.paper_ml_rank_threshold_representation_instability_bound_statement (C := C) (q := q) (score := score) (hinjective := hinjective) (hfeasible := hfeasible) (hrep := hrep)
+      (paper_definition_rank_threshold_predictor q operationalScore hinjective) C)  : paper_ml_rank_threshold_representation_instability_bound_statementSpec (C := C) (q := q) (operationalScore := operationalScore) (hinjective := hinjective) (hqpos := hqpos) (hfeasible := hfeasible) (hrep := hrep) := by
+  exact DGD26AdmissionsPredictability.ProofBridge.paper_ml_rank_threshold_representation_instability_bound_statement (C := C) (q := q) (score := operationalScore) (hinjective := hinjective) (hfeasible := hfeasible) (hrep := hrep)
 
 theorem paper_ml_rank_threshold_representation_variability_bound_statement
     [Fintype α] {C : PaperChoiceRule α}
-    (q : ℕ) (score : α → ℝ) (hinjective : Function.Injective score)
+    (q : ℕ) (operationalScore : α → ℝ)
+    (hinjective : Function.Injective operationalScore)
+    (hqpos : 0 < q)
     (hfeasible : paper_choice_function_feasible C)
     (hrep : paper_definition_ml_representation
-      (paper_definition_rank_threshold_predictor q score hinjective) C)  : paper_ml_rank_threshold_representation_variability_bound_statementSpec (C := C) (q := q) (score := score) (hinjective := hinjective) (hfeasible := hfeasible) (hrep := hrep) := by
-  exact DGD26AdmissionsPredictability.ProofBridge.paper_ml_rank_threshold_representation_variability_bound_statement (C := C) (q := q) (score := score) (hinjective := hinjective) (hfeasible := hfeasible) (hrep := hrep)
+      (paper_definition_rank_threshold_predictor q operationalScore hinjective) C)  : paper_ml_rank_threshold_representation_variability_bound_statementSpec (C := C) (q := q) (operationalScore := operationalScore) (hinjective := hinjective) (hqpos := hqpos) (hfeasible := hfeasible) (hrep := hrep) := by
+  exact DGD26AdmissionsPredictability.ProofBridge.paper_ml_rank_threshold_representation_variability_bound_statement (C := C) (q := q) (score := operationalScore) (hinjective := hinjective) (hfeasible := hfeasible) (hrep := hrep)
 
 theorem paper_ml_rank_threshold_can_represent_exact_one_statement
     (q : ℕ) (hqpos : 0 < q)  : paper_ml_rank_threshold_can_represent_exact_one_statementSpec (q := q) (hqpos := hqpos) := by
@@ -147,8 +165,27 @@ theorem paper_independent_zero_unstable_corollary_statement
 theorem paper_substitutability_one_instability_equivalence_statement
     {q : ℕ} {C : PaperChoiceRule α}
     (hfeasible : paper_choice_function_feasible C)
-    (haccept : paper_definition_q_acceptance q C)  : paper_substitutability_one_instability_equivalence_statementSpec (q := q) (C := C) (hfeasible := hfeasible) (haccept := haccept) := by
-  exact DGD26AdmissionsPredictability.ProofBridge.paper_substitutability_one_instability_equivalence_statement (q := q) (C := C) (hfeasible := hfeasible) (haccept := haccept)
+    (haccept : paper_definition_q_acceptance q C)
+    (hqpos : 0 < q)
+    {U : Finset α} (hUcard : q < U.card) :
+    paper_substitutability_one_instability_equivalence_statementSpec
+      (q := q) (C := C) (hfeasible := hfeasible) (haccept := haccept)
+      hqpos hUcard := by
+  exact DGD26AdmissionsPredictability.ProofBridge.paper_substitutability_one_instability_equivalence_statement
+    (q := q) (C := C) (hfeasible := hfeasible) (haccept := haccept) hqpos hUcard
+
+theorem paper_qacceptant_substitutable_iff_one_statement
+    {q : ℕ} {C : PaperChoiceRule α}
+    (hfeasible : paper_choice_function_feasible C)
+    (haccept : paper_definition_q_acceptance q C)
+    (hqpos : 0 < q)
+    {U : Finset α} (hUcard : q < U.card) :
+    paper_qacceptant_substitutable_iff_one_statementSpec
+      (q := q) (C := C) (hfeasible := hfeasible) (haccept := haccept)
+      hqpos hUcard := by
+  exact (DGD26AdmissionsPredictability.ProofBridge.paper_substitutability_one_instability_equivalence_statement
+    (q := q) (C := C) (hfeasible := hfeasible) (haccept := haccept)
+    hqpos hUcard).symm
 
 theorem paper_theorem1_tight_all_d_statement
     (q d : ℕ) : paper_theorem1_tight_all_d_statementSpec q d := by
@@ -257,9 +294,13 @@ theorem paper_independent_zero_unstable_statement
 
 theorem paper_q_acceptant_substitutable_consistent_statement
     {q : ℕ} {C : PaperChoiceRule α}
+    (hfeasible : paper_choice_function_feasible C)
     (haccept : paper_definition_q_acceptance q C)
-    (hsub : paper_definition_substitutability C)  : paper_q_acceptant_substitutable_consistent_statementSpec (q := q) (C := C) (haccept := haccept) (hsub := hsub) := by
-  exact DGD26AdmissionsPredictability.ProofBridge.paper_q_acceptant_substitutable_consistent_statement (q := q) (C := C) (haccept := haccept) (hsub := hsub)
+    (hsub : paper_definition_substitutability C) :
+    paper_q_acceptant_substitutable_consistent_statementSpec (q := q) (C := C)
+      hfeasible haccept hsub := by
+  exact DGD26AdmissionsPredictability.ProofBridge.paper_q_acceptant_substitutable_consistent_statement
+    (q := q) (C := C) (hfeasible := hfeasible) (haccept := haccept) (hsub := hsub)
 
 theorem paper_calculating_instability_statement
     {q : ℕ} {C : PaperChoiceRule α}
@@ -295,8 +336,13 @@ theorem paper_append_remove_variability_exact_equivalence_statement
     [Fintype α] {m q : ℕ} {C : PaperChoiceRule α}
     (hfeasible : paper_choice_function_feasible C)
     (haccept : paper_definition_q_acceptance q C)
-    (hunstable : paper_definition_d_instability 1 C)  : paper_append_remove_variability_exact_equivalence_statementSpec (m := m) (q := q) (C := C) (hfeasible := hfeasible) (haccept := haccept) (hunstable := hunstable) := by
-  exact DGD26AdmissionsPredictability.ProofBridge.paper_append_remove_variability_exact_equivalence_statement (m := m) (q := q) (C := C) (hfeasible := hfeasible) (haccept := haccept) (hunstable := hunstable)
+    (hunstable : paper_definition_d_instability 1 C)
+    (hcard : 2 * q ≤ Fintype.card α) :
+    paper_append_remove_variability_exact_equivalence_statementSpec (m := m)
+      (q := q) (C := C) hfeasible haccept hunstable hcard := by
+  exact DGD26AdmissionsPredictability.ProofBridge.paper_append_remove_variability_exact_equivalence_statement
+    (m := m) (q := q) (C := C) (hfeasible := hfeasible) (haccept := haccept)
+    (hunstable := hunstable) (hcard := hcard)
 
 theorem paper_corrected_consistency_of_removable_sets_statement
     [Fintype α] {q : ℕ} {C : PaperChoiceRule α}
@@ -312,11 +358,11 @@ theorem paper_acceptant_one_instability_variability_borderline_eq_waitlisted_aft
     (hfeasible : paper_choice_function_feasible C)
     (haccept : paper_definition_q_acceptance q C)
     (hunstable : paper_definition_d_instability 1 C)
-    (hvar : paper_definition_variability_at_most 1 C)
+    (hvar : paper_definition_variability_exactly 1 C)
     {X : Finset α} {x : α}
     (hx : x ∉ X)
     (hchange : C (insert x X) ≠ C X)  : paper_acceptant_one_instability_variability_borderline_eq_waitlisted_after_changing_insert_statementSpec (q := q) (C := C) (hfeasible := hfeasible) (haccept := haccept) (hunstable := hunstable) (hvar := hvar) (X := X) (x := x) (hx := hx) (hchange := hchange) := by
-  exact DGD26AdmissionsPredictability.ProofBridge.paper_acceptant_one_instability_variability_borderline_eq_waitlisted_after_changing_insert_statement (q := q) (C := C) (hfeasible := hfeasible) (haccept := haccept) (hunstable := hunstable) (hvar := hvar) (X := X) (x := x) (hx := hx) (hchange := hchange)
+  exact DGD26AdmissionsPredictability.ProofBridge.paper_acceptant_one_instability_variability_borderline_eq_waitlisted_after_changing_insert_statement (q := q) (C := C) (hfeasible := hfeasible) (haccept := haccept) (hunstable := hunstable) (hvar := hvar.1) (X := X) (x := x) (hx := hx) (hchange := hchange)
 
 theorem paper_sequential_composition_substitutable_statement
     {Cs : List (PaperChoiceRule α)}
@@ -333,21 +379,33 @@ theorem paper_sequential_additive_variability_bound_statement
             paper_definition_d_instability 1 C)
       qs Cs)
     (hvariability : List.Forall₂
-      (fun m C => paper_definition_variability_at_most m C)
+      (fun m C => paper_definition_variability_exactly m C)
       ms Cs)  : paper_sequential_additive_variability_bound_statementSpec (qs := qs) (ms := ms) (Cs := Cs) (hcapacity := hcapacity) (hvariability := hvariability) := by
-  exact DGD26AdmissionsPredictability.ProofBridge.paper_sequential_additive_variability_bound_statement (qs := qs) (ms := ms) (Cs := Cs) (hcapacity := hcapacity) (hvariability := hvariability)
+  have hvariabilityAtMost : List.Forall₂
+      (fun m C => paper_definition_variability_at_most m C) ms Cs := by
+    clear hcapacity
+    induction hvariability with
+    | nil => exact .nil
+    | cons h _ ih => exact .cons h.1 ih
+  exact DGD26AdmissionsPredictability.ProofBridge.paper_sequential_additive_variability_bound_statement
+    (qs := qs) (ms := ms) (Cs := Cs) hcapacity hvariabilityAtMost
 
+-- These definition bridges deliberately omit the ambient applicant equality
+-- instance: the source-facing Specs quantify only the data they use.
+omit [DecidableEq α] in
 theorem paper_lap_slot_below_definition_statement
     {σ : Type*} [DecidableEq σ] [Fintype σ]
     (w : α → σ → ℝ) (s : σ) (x y : α)  : paper_lap_slot_below_definition_statementSpec (σ := σ) (w := w) (s := s) (x := x) (y := y) := by
-  exact DGD26AdmissionsPredictability.ProofBridge.paper_lap_slot_below_definition_statement (σ := σ) (w := w) (s := s) (x := x) (y := y)
+  rfl
 
+omit [DecidableEq α] in
 theorem paper_lap_same_slot_order_definition_statement
     {σ : Type*} [DecidableEq σ] [Fintype σ]
     (w : α → σ → ℝ) (s t : σ) :
     paper_lap_same_slot_order_definition_statementSpec (w := w) (s := s) (t := t) := by
-  exact DGD26AdmissionsPredictability.ProofBridge.paper_lap_same_slot_order_definition_statement (w := w) (s := s) (t := t)
+  rfl
 
+omit [DecidableEq α] in
 theorem paper_lap_model_definition_statement
     {σ : Type*} [DecidableEq σ] [Fintype σ]
     (X : Finset α) (w : α → σ → ℝ) (A : LAP.Assignment α σ) :
@@ -385,16 +443,25 @@ theorem paper_lap_strictly_higher_slot_applicant_assigned_statement
 
 theorem paper_lap_assignment_one_instability_statement
     {σ : Type*} [DecidableEq σ] [Fintype σ]
-    {w : α → σ → ℝ}
-    (hwell : LAP.Assignment.WellPosedObjective w)  : paper_lap_assignment_one_instability_statementSpec (σ := σ) (w := w) (hwell := hwell) := by
-  exact DGD26AdmissionsPredictability.ProofBridge.paper_lap_assignment_one_instability_statement (σ := σ) (w := w) (hwell := hwell)
+    {operationalWeight : α → σ → ℝ}
+    (hwell : ∀ X : Finset α, ∃ A : LAP.Assignment α σ,
+      LAP.Assignment.Feasible X A ∧ LAP.Assignment.CapacityFilling X A ∧
+        LAP.Assignment.ObjectiveOptimal X operationalWeight A ∧ ∀ B : LAP.Assignment α σ,
+          LAP.Assignment.Feasible X B → LAP.Assignment.CapacityFilling X B →
+            LAP.Assignment.ObjectiveOptimal X operationalWeight B → B.chosenSet = A.chosenSet)
+    (hnoTies : ∀ s : σ, LAP.Assignment.SlotNoTies operationalWeight s)  : paper_lap_assignment_one_instability_statementSpec (σ := σ) (operationalWeight := operationalWeight) (hwell := hwell) (hnoTies := hnoTies) := by
+  exact DGD26AdmissionsPredictability.ProofBridge.paper_lap_assignment_one_instability_statement (σ := σ) (w := operationalWeight) (hwell := hwell) (hnoTies := hnoTies)
 
 theorem paper_lap_assignment_slot_order_class_variability_of_unique_global_optima_statement
     [Fintype α] {σ : Type*} [DecidableEq σ] [Fintype σ]
-    {w : α → σ → ℝ}
-    (hwell : LAP.Assignment.WellPosedObjective w)
-    (hnoTies : ∀ s : σ, LAP.Assignment.SlotNoTies w s)  : paper_lap_assignment_slot_order_class_variability_of_unique_global_optima_statementSpec (σ := σ) (w := w) (hwell := hwell) (hnoTies := hnoTies) := by
-  exact DGD26AdmissionsPredictability.ProofBridge.paper_lap_assignment_slot_order_class_variability_of_unique_global_optima_statement (σ := σ) (w := w) (hwell := hwell) (hnoTies := hnoTies)
+    {operationalWeight : α → σ → ℝ}
+    (hwell : ∀ X : Finset α, ∃ A : LAP.Assignment α σ,
+      LAP.Assignment.Feasible X A ∧ LAP.Assignment.CapacityFilling X A ∧
+        LAP.Assignment.ObjectiveOptimal X operationalWeight A ∧ ∀ B : LAP.Assignment α σ,
+          LAP.Assignment.Feasible X B → LAP.Assignment.CapacityFilling X B →
+            LAP.Assignment.ObjectiveOptimal X operationalWeight B → B.chosenSet = A.chosenSet)
+    (hnoTies : ∀ s : σ, LAP.Assignment.SlotNoTies operationalWeight s)  : paper_lap_assignment_slot_order_class_variability_of_unique_global_optima_statementSpec (σ := σ) (operationalWeight := operationalWeight) (hwell := hwell) (hnoTies := hnoTies) := by
+  exact DGD26AdmissionsPredictability.ProofBridge.paper_lap_assignment_slot_order_class_variability_of_unique_global_optima_statement (σ := σ) (w := operationalWeight) (hwell := hwell) (hnoTies := hnoTies)
 
 end PaperInterface
 end DGD26AdmissionsPredictability

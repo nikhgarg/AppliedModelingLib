@@ -15,8 +15,8 @@ probability comparison is obtained from the literal same-noise coupling,
 rather than from an input whose conclusion is the desired event inclusion.
 -/
 
-open EconCSLib Filter MeasureTheory ProbabilityTheory
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib Filter MeasureTheory ProbabilityTheory
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal Topology
 
 namespace KR21Monoculture
@@ -41,7 +41,7 @@ theorem appendixC_source_score_eq_contract_score
     appendixCSourceScore value noise thetaA i =
       rumContractScore (thetaH / thetaA) (value i)
         (appendixCSourceScore value noise thetaH i) := by
-  unfold appendixCSourceScore rumContractScore EconCSLib.Probability.rumContractScore
+  unfold appendixCSourceScore rumContractScore AppliedModelingLib.Probability.rumContractScore
   field_simp [ne_of_gt hthetaA, ne_of_gt hthetaH]
   ring
 
@@ -163,12 +163,12 @@ theorem appendixC_source_lemma2_bottom_first_probability
     firstChoiceProb
       (rankingPMFOfMeasure mu rankH hrankH)
       (2 : Candidate 1)
-  change EconCSLib.SocialChoice.Ranking.firstChoiceProb
+  change AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb
       (rankingPMFOfMeasure mu rankA hrankA) (2 : Candidate 1) <=
-    EconCSLib.SocialChoice.Ranking.firstChoiceProb
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb
       (rankingPMFOfMeasure mu rankH hrankH) (2 : Candidate 1)
-  rw [EconCSLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure,
-    EconCSLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure]
+  rw [AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure,
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure]
   refine measureProb_le_of_measure_le mu _ _ (measure_mono ?_)
   intro noise hnoise
   exact (appendixC_source_bottom_first_high_accuracy_imp_low_accuracy

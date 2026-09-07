@@ -11,7 +11,7 @@ top-`n_q` sentence is naturally a batch/page-level statement.
 
 open scoped BigOperators
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Online
 
 namespace AdWordsInstance
@@ -2168,4 +2168,4 @@ theorem page_top_balance_msvv_approx_competitive_with_error_bound
 end AdWordsInstance
 
 end Online
-end EconCSLib
+end AppliedModelingLib

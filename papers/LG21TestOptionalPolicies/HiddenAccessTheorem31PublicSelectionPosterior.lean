@@ -15,7 +15,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib.Probability MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib.Probability MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-- Lift a selection on the public `(base, score)` record to the complete

@@ -19,7 +19,7 @@ noncomputable section
 
 open MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
-open EconCSLib Probability
+open AppliedModelingLib Probability
 
 /-- The upper candidate branch is the nonnegative latent-skill tail. -/
 def lg21ReportRequiredUpperTailTake (skill : ℝ) : Bool := decide (0 ≤ skill)
@@ -1022,11 +1022,11 @@ private theorem lg21ReportRequiredUpperTail_selectedTake_fibre_positive
     ext latentSkill
     simp [selectedFiber]
   have hkernelEq : gaussianReal
-      (EconCSLib.Probability.gaussianSignalWeight priorVariance noiseVariance *
+      (AppliedModelingLib.Probability.gaussianSignalWeight priorVariance noiseVariance *
           publicObservation.2 +
-        EconCSLib.Probability.gaussianSignalPriorWeight priorVariance noiseVariance *
+        AppliedModelingLib.Probability.gaussianSignalPriorWeight priorVariance noiseVariance *
           baseMean publicObservation.1)
-      (EconCSLib.Probability.gaussianSignalPosteriorVariance
+      (AppliedModelingLib.Probability.gaussianSignalPosteriorVariance
         priorVariance noiseVariance)
       (selectedFiber (Set.univ ×ˢ Set.Ici 0) publicObservation) =
       gaussianSignalPosteriorKernel
@@ -1428,6 +1428,22 @@ def LG21ReportRequiredSourceStableAgainstPositiveMassLocalRecalibratedEntry
     (hpublic : Measurable (fun omega => (base omega, (score omega, skill omega))))
     (currentTake : ℝ → Base → Bool) : Prop :=
   ∀ region candidate,
+    ¬ LG21ReportRequiredSourcePositiveMassLocalRecalibratedEntry
+      sourceLaw base score skill hpublic currentTake region candidate
+
+/-- Report-required local stability restricted to deviations that preserve
+the fixed score law of the source equilibrium. -/
+def LG21ReportRequiredSourceStableAgainstPositiveMassLocalRecalibratedEntryForTestLaw
+    {Omega Base : Type*} [MeasurableSpace Omega] [MeasurableSpace Base]
+    (sourceLaw : Measure Omega) [IsProbabilityMeasure sourceLaw]
+    (base : Omega → Base) (score skill : Omega → ℝ)
+    (hpublic : Measurable (fun omega => (base omega, (score omega, skill omega))))
+    (fixedTestLaw : ℝ → Base → Measure ℝ)
+    (currentTake : ℝ → Base → Bool) : Prop :=
+  ∀ region candidate,
+    (∀ latentSkill publicBase,
+      candidate.testLaw latentSkill publicBase =
+        fixedTestLaw latentSkill publicBase) ->
     ¬ LG21ReportRequiredSourcePositiveMassLocalRecalibratedEntry
       sourceLaw base score skill hpublic currentTake region candidate
 

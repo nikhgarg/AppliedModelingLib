@@ -28,7 +28,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
 open scoped ProbabilityTheory
 
 /--
@@ -96,9 +96,10 @@ structure LG21ReportRequiredPositiveMassRefinedSourceEquilibrium
   zero-taker region after both of its action branches are recalibrated from
   the candidate's own selected population. -/
   positive_mass_recalibrated_stable :
-    LG21ReportRequiredSourceStableAgainstPositiveMassLocalRecalibratedEntry
+    LG21ReportRequiredSourceStableAgainstPositiveMassLocalRecalibratedEntryForTestLaw
       rawLaw base score skill
       (base_measurable.prodMk (score_measurable.prodMk skill_measurable))
+      E.testLaw
       (fun latentSkill publicBase => E.takeDecision latentSkill publicBase)
 
 namespace LG21ReportRequiredPositiveMassRefinedSourceEquilibrium
@@ -179,9 +180,10 @@ theorem stable_against_positive_mass_local_recalibrated_entry
     {testNoiseVariance : NNReal}
     (S : LG21ReportRequiredPositiveMassRefinedSourceEquilibrium
       rawLaw base score skill E testNoiseVariance) :
-    LG21ReportRequiredSourceStableAgainstPositiveMassLocalRecalibratedEntry
+    LG21ReportRequiredSourceStableAgainstPositiveMassLocalRecalibratedEntryForTestLaw
       rawLaw base score skill
       (S.base_measurable.prodMk (S.score_measurable.prodMk S.skill_measurable))
+      E.testLaw
       (fun latentSkill publicBase => E.takeDecision latentSkill publicBase) :=
   S.positive_mass_recalibrated_stable
 

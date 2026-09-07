@@ -1,6 +1,6 @@
 import GGSG19TopThree.MainTheorems
-import EconCSLib.Foundations.Probability.Weighted
-import EconCSLib.SocialChoice.Ranking.MallowsRankFactorization
+import AppliedModelingLib.Foundations.Probability.Weighted
+import AppliedModelingLib.SocialChoice.Ranking.MallowsRankFactorization
 
 /-!
 # Mallows Boundary Pairs
@@ -17,8 +17,8 @@ namespace GGSG19TopThree
 
 noncomputable section
 
-open EconCSLib.Probability
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib.Probability
+open AppliedModelingLib.SocialChoice.Ranking
 
 /-- Cross-tier ordered pairs for selecting the center top `W` candidates. -/
 def TopWSelectionPair {n : ℕ}
@@ -453,7 +453,7 @@ noncomputable def randomizedKApprovalSamplingLaw {n : ℕ}
     (hsum : (∑ rule : Rule, weight rule) = 1) :
     PMF (Rule × Ranking n) :=
   let ruleLaw : PMF Rule :=
-    EconCSLib.finiteWeightedPMF weight hweight
+    AppliedModelingLib.finiteWeightedPMF weight hweight
       (by simpa [hsum] using zero_lt_one)
   ruleLaw.bind (fun rule => law.map (fun ranking => (rule, ranking)))
 
@@ -463,7 +463,7 @@ theorem randomizedKApprovalSamplingLaw_upProb {n : ℕ}
     (hweight : ∀ rule, 0 ≤ weight rule)
     (hsum : (∑ rule : Rule, weight rule) = 1)
     (hi lo : Candidate n) :
-    EconCSLib.pmfProb
+    AppliedModelingLib.pmfProb
         (randomizedKApprovalSamplingLaw law weight hweight hsum)
         (fun signal : Rule × Ranking n =>
           kApprovalScore (K signal.1) signal.2 hi -
@@ -473,10 +473,10 @@ theorem randomizedKApprovalSamplingLaw_upProb {n : ℕ}
         weight rule * kApprovalPairUpProb law (K rule) hi lo := by
   classical
   unfold randomizedKApprovalSamplingLaw
-  rw [EconCSLib.pmfProb_bind]
+  rw [AppliedModelingLib.pmfProb_bind]
   have hpoint :
       ∀ rule : Rule,
-        EconCSLib.pmfProb
+        AppliedModelingLib.pmfProb
             (law.map (fun ranking => (rule, ranking)))
             (fun signal : Rule × Ranking n =>
               kApprovalScore (K signal.1) signal.2 hi -
@@ -484,33 +484,33 @@ theorem randomizedKApprovalSamplingLaw_upProb {n : ℕ}
                 1) =
           kApprovalPairUpProb law (K rule) hi lo := by
     intro rule
-    rw [EconCSLib.pmfProb_map]
+    rw [AppliedModelingLib.pmfProb_map]
     exact (kApprovalPairUpProb_eq_score_gap_one law (K rule) hi lo).symm
   calc
-    EconCSLib.pmfExp
-        (EconCSLib.finiteWeightedPMF weight hweight
+    AppliedModelingLib.pmfExp
+        (AppliedModelingLib.finiteWeightedPMF weight hweight
           (by simpa [hsum] using zero_lt_one))
         (fun rule =>
-          EconCSLib.pmfProb
+          AppliedModelingLib.pmfProb
             (law.map (fun ranking => (rule, ranking)))
             (fun signal : Rule × Ranking n =>
               kApprovalScore (K signal.1) signal.2 hi -
                   kApprovalScore (K signal.1) signal.2 lo =
                 1))
         =
-        EconCSLib.pmfExp
-          (EconCSLib.finiteWeightedPMF weight hweight
+        AppliedModelingLib.pmfExp
+          (AppliedModelingLib.finiteWeightedPMF weight hweight
             (by simpa [hsum] using zero_lt_one))
           (fun rule => kApprovalPairUpProb law (K rule) hi lo) := by
           exact
-            EconCSLib.pmfExp_congr
-              (EconCSLib.finiteWeightedPMF weight hweight
+            AppliedModelingLib.pmfExp_congr
+              (AppliedModelingLib.finiteWeightedPMF weight hweight
                 (by simpa [hsum] using zero_lt_one))
               hpoint
     _ = ∑ rule : Rule,
         weight rule * kApprovalPairUpProb law (K rule) hi lo := by
-          unfold EconCSLib.pmfExp
-          simp [EconCSLib.finiteWeightedPMF_apply_toReal, hsum]
+          unfold AppliedModelingLib.pmfExp
+          simp [AppliedModelingLib.finiteWeightedPMF_apply_toReal, hsum]
 
 theorem randomizedKApprovalSamplingLaw_downProb {n : ℕ}
     {Rule : Type*} [Fintype Rule] [DecidableEq Rule]
@@ -518,7 +518,7 @@ theorem randomizedKApprovalSamplingLaw_downProb {n : ℕ}
     (hweight : ∀ rule, 0 ≤ weight rule)
     (hsum : (∑ rule : Rule, weight rule) = 1)
     (hi lo : Candidate n) :
-    EconCSLib.pmfProb
+    AppliedModelingLib.pmfProb
         (randomizedKApprovalSamplingLaw law weight hweight hsum)
         (fun signal : Rule × Ranking n =>
           kApprovalScore (K signal.1) signal.2 hi -
@@ -528,10 +528,10 @@ theorem randomizedKApprovalSamplingLaw_downProb {n : ℕ}
         weight rule * kApprovalPairDownProb law (K rule) hi lo := by
   classical
   unfold randomizedKApprovalSamplingLaw
-  rw [EconCSLib.pmfProb_bind]
+  rw [AppliedModelingLib.pmfProb_bind]
   have hpoint :
       ∀ rule : Rule,
-        EconCSLib.pmfProb
+        AppliedModelingLib.pmfProb
             (law.map (fun ranking => (rule, ranking)))
             (fun signal : Rule × Ranking n =>
               kApprovalScore (K signal.1) signal.2 hi -
@@ -539,33 +539,33 @@ theorem randomizedKApprovalSamplingLaw_downProb {n : ℕ}
                 -1) =
           kApprovalPairDownProb law (K rule) hi lo := by
     intro rule
-    rw [EconCSLib.pmfProb_map]
+    rw [AppliedModelingLib.pmfProb_map]
     exact (kApprovalPairDownProb_eq_score_gap_neg_one law (K rule) hi lo).symm
   calc
-    EconCSLib.pmfExp
-        (EconCSLib.finiteWeightedPMF weight hweight
+    AppliedModelingLib.pmfExp
+        (AppliedModelingLib.finiteWeightedPMF weight hweight
           (by simpa [hsum] using zero_lt_one))
         (fun rule =>
-          EconCSLib.pmfProb
+          AppliedModelingLib.pmfProb
             (law.map (fun ranking => (rule, ranking)))
             (fun signal : Rule × Ranking n =>
               kApprovalScore (K signal.1) signal.2 hi -
                   kApprovalScore (K signal.1) signal.2 lo =
                 -1))
         =
-        EconCSLib.pmfExp
-          (EconCSLib.finiteWeightedPMF weight hweight
+        AppliedModelingLib.pmfExp
+          (AppliedModelingLib.finiteWeightedPMF weight hweight
             (by simpa [hsum] using zero_lt_one))
           (fun rule => kApprovalPairDownProb law (K rule) hi lo) := by
           exact
-            EconCSLib.pmfExp_congr
-              (EconCSLib.finiteWeightedPMF weight hweight
+            AppliedModelingLib.pmfExp_congr
+              (AppliedModelingLib.finiteWeightedPMF weight hweight
                 (by simpa [hsum] using zero_lt_one))
               hpoint
     _ = ∑ rule : Rule,
         weight rule * kApprovalPairDownProb law (K rule) hi lo := by
-          unfold EconCSLib.pmfExp
-          simp [EconCSLib.finiteWeightedPMF_apply_toReal, hsum]
+          unfold AppliedModelingLib.pmfExp
+          simp [AppliedModelingLib.finiteWeightedPMF_apply_toReal, hsum]
 
 theorem randomizedKApprovalPairwiseError_exponentialRateCertificate
     {n : ℕ}

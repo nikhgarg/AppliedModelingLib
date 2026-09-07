@@ -16,7 +16,7 @@ proof.  They are predicates and ordinary policies, not records carrying a
 theorem conclusion.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open Filter
 open scoped Topology ENNReal symmDiff
@@ -197,7 +197,7 @@ theorem gn21ExtendedTwoTailPolicy_measurable (lower upper : ℝ≥0∞) :
 
 /--
 The five endpoint-complete policy forms in the printed Lemma 5 table at
-`cited publication:3370-3386`.  The strictly increasing branch has a finite
+`source.txt:3370-3386`.  The strictly increasing branch has a finite
 nonnegative lower endpoint, exactly as printed; the other branches retain the
 paper's explicit infinity endpoints.
 -/
@@ -498,6 +498,238 @@ theorem exists_bounded_connectedComponent_of_not_strictlyIncreasing_form
           (hcomponents_eq.symm ▸ mem_connectedComponentIn hother_sigma)
 
 /--
+The legal upper-endpoint path of one selected bounded component.  The
+background is the complement of that *actual* component of `policy`, rather
+than an arbitrary set supplied independently of the policy being varied.
+-/
+def gn21Lemma5ComponentUpperPath
+    (policy : TripPolicy) (lower upper x : TripLength) : TripPolicy :=
+  (policy \ Set.Ioo lower upper) ∪ Set.Ioo lower x
+
+/-- The legal lower-endpoint path of one selected bounded component. -/
+def gn21Lemma5ComponentLowerPath
+    (policy : TripPolicy) (lower upper x : TripLength) : TripPolicy :=
+  (policy \ Set.Ioo lower upper) ∪ Set.Ioo x upper
+
+/-- The legal lower-endpoint path of one selected right-tail component. -/
+def gn21Lemma5ComponentTailLowerPath
+    (policy : TripPolicy) (lower x : TripLength) : TripPolicy :=
+  (policy \ Set.Ioi lower) ∪ Set.Ioi x
+
+/--
+The Appendix-D upper-endpoint clarification.  Its derivative is required only
+for a bounded connected component of the current open feasible policy.  The
+component equality and the endpoint inequalities make the mutation legal and
+rule out the former arbitrary-background union premise.
+-/
+abbrev GN21Lemma5ComponentUpperDerivativeCondition
+    (Rhat : SingleStateReward)
+    (response : TripPolicy → TripLength → ℝ) : Prop :=
+  ∀ {policy : TripPolicy} {point lower upper : TripLength},
+    IsOpen policy → policy ⊆ acceptAllPolicy → point ∈ policy →
+      connectedComponentIn policy point = Set.Ioo lower upper →
+        0 ≤ lower → lower < upper →
+          ∃ derivativeValue : ℝ,
+            HasDerivAt
+              (fun x => Rhat (gn21Lemma5ComponentUpperPath policy lower upper x))
+              derivativeValue upper ∧
+              sameStrictSign derivativeValue (response policy upper)
+
+/-- The component-local lower-endpoint clarification for bounded components. -/
+abbrev GN21Lemma5ComponentLowerDerivativeCondition
+    (Rhat : SingleStateReward)
+    (response : TripPolicy → TripLength → ℝ) : Prop :=
+  ∀ {policy : TripPolicy} {point lower upper : TripLength},
+    IsOpen policy → policy ⊆ acceptAllPolicy → point ∈ policy →
+      connectedComponentIn policy point = Set.Ioo lower upper →
+        0 < lower → lower < upper →
+          ∃ derivativeValue : ℝ,
+            HasDerivAt
+              (fun x => Rhat (gn21Lemma5ComponentLowerPath policy lower upper x))
+              derivativeValue lower ∧
+              sameStrictSign derivativeValue (-response policy lower)
+
+/-- The one-sided component-local lower-endpoint clarification at zero. -/
+abbrev GN21Lemma5ComponentLowerRightDerivativeCondition
+    (Rhat : SingleStateReward)
+    (response : TripPolicy → TripLength → ℝ) : Prop :=
+  ∀ {policy : TripPolicy} {point upper : TripLength},
+    IsOpen policy → policy ⊆ acceptAllPolicy → point ∈ policy →
+      connectedComponentIn policy point = Set.Ioo 0 upper →
+        0 < upper →
+          ∃ derivativeValue : ℝ,
+            HasDerivWithinAt
+              (fun x => Rhat (gn21Lemma5ComponentLowerPath policy 0 upper x))
+              derivativeValue (Set.Ici 0) 0 ∧
+              sameStrictSign derivativeValue (-response policy 0)
+
+/-- The component-local lower-endpoint clarification for a right tail. -/
+abbrev GN21Lemma5ComponentTailLowerDerivativeCondition
+    (Rhat : SingleStateReward)
+    (response : TripPolicy → TripLength → ℝ) : Prop :=
+  ∀ {policy : TripPolicy} {point lower : TripLength},
+    IsOpen policy → policy ⊆ acceptAllPolicy → point ∈ policy →
+      connectedComponentIn policy point = Set.Ioi lower →
+        0 < lower →
+          ∃ derivativeValue : ℝ,
+            HasDerivAt
+              (fun x => Rhat (gn21Lemma5ComponentTailLowerPath policy lower x))
+              derivativeValue lower ∧
+              sameStrictSign derivativeValue (-response policy lower)
+
+/--
+The former arbitrary-context interface is strictly stronger than the approved
+component-local interface.  This adapter is retained only for legacy callers:
+it specializes an arbitrary union path to the complement of an actual bounded
+component.  Source-facing Lemma 5 routes use the component-local field
+directly and do not invoke this adapter.
+-/
+theorem gn21Lemma5ComponentUpperDerivativeCondition_of_arbitraryContext
+    (Rhat : SingleStateReward)
+    (response : TripPolicy → TripLength → ℝ)
+    (hderivative :
+      ∀ (context : TripPolicy) (lower upper : ℝ),
+        0 ≤ lower → lower < upper →
+          ∃ derivativeValue : ℝ,
+            HasDerivAt
+              (fun x => Rhat (context ∪ Set.Ioo lower x))
+              derivativeValue upper ∧
+            sameStrictSign derivativeValue
+              (response (context ∪ Set.Ioo lower upper) upper)) :
+    GN21Lemma5ComponentUpperDerivativeCondition Rhat response := by
+  intro policy point lower upper _hopen _hsubset _hpoint hcomponent
+    hlower_nonneg hlower_upper
+  let context : TripPolicy := policy \ Set.Ioo lower upper
+  have hcomponent_subset : Set.Ioo lower upper ⊆ policy := by
+    rw [← hcomponent]
+    exact connectedComponentIn_subset policy point
+  have hpolicy_eq : policy = context ∪ Set.Ioo lower upper := by
+    ext x
+    constructor
+    · intro hx
+      by_cases hx_interval : x ∈ Set.Ioo lower upper
+      · exact Or.inr hx_interval
+      · exact Or.inl ⟨hx, hx_interval⟩
+    · rintro (hx | hx)
+      · exact hx.1
+      · exact hcomponent_subset hx
+  rcases hderivative context lower upper hlower_nonneg hlower_upper with
+    ⟨derivativeValue, hderiv, hsign⟩
+  refine ⟨derivativeValue, ?_, ?_⟩
+  · simpa [gn21Lemma5ComponentUpperPath, context] using hderiv
+  · rw [hpolicy_eq]
+    exact hsign
+
+/-- Legacy-to-local adapter for a bounded component's lower endpoint. -/
+theorem gn21Lemma5ComponentLowerDerivativeCondition_of_arbitraryContext
+    (Rhat : SingleStateReward)
+    (response : TripPolicy → TripLength → ℝ)
+    (hderivative :
+      ∀ (context : TripPolicy) (lower upper : ℝ),
+        0 < lower → lower < upper →
+          ∃ derivativeValue : ℝ,
+            HasDerivAt
+              (fun x => Rhat (context ∪ Set.Ioo x upper))
+              derivativeValue lower ∧
+            sameStrictSign derivativeValue
+              (-response (context ∪ Set.Ioo lower upper) lower)) :
+    GN21Lemma5ComponentLowerDerivativeCondition Rhat response := by
+  intro policy point lower upper _hopen _hsubset _hpoint hcomponent
+    hlower_pos hlower_upper
+  let context : TripPolicy := policy \ Set.Ioo lower upper
+  have hcomponent_subset : Set.Ioo lower upper ⊆ policy := by
+    rw [← hcomponent]
+    exact connectedComponentIn_subset policy point
+  have hpolicy_eq : policy = context ∪ Set.Ioo lower upper := by
+    ext x
+    constructor
+    · intro hx
+      by_cases hx_interval : x ∈ Set.Ioo lower upper
+      · exact Or.inr hx_interval
+      · exact Or.inl ⟨hx, hx_interval⟩
+    · rintro (hx | hx)
+      · exact hx.1
+      · exact hcomponent_subset hx
+  rcases hderivative context lower upper hlower_pos hlower_upper with
+    ⟨derivativeValue, hderiv, hsign⟩
+  refine ⟨derivativeValue, ?_, ?_⟩
+  · simpa [gn21Lemma5ComponentLowerPath, context] using hderiv
+  · rw [hpolicy_eq]
+    exact hsign
+
+/-- Legacy-to-local adapter for the bounded component whose lower endpoint is zero. -/
+theorem gn21Lemma5ComponentLowerRightDerivativeCondition_of_arbitraryContext
+    (Rhat : SingleStateReward)
+    (response : TripPolicy → TripLength → ℝ)
+    (hderivative :
+      ∀ (context : TripPolicy) (upper : ℝ),
+        0 < upper →
+          ∃ derivativeValue : ℝ,
+            HasDerivWithinAt
+              (fun x => Rhat (context ∪ Set.Ioo x upper))
+              derivativeValue (Set.Ici 0) 0 ∧
+            sameStrictSign derivativeValue
+              (-response (context ∪ Set.Ioo 0 upper) 0)) :
+    GN21Lemma5ComponentLowerRightDerivativeCondition Rhat response := by
+  intro policy point upper _hopen _hsubset _hpoint hcomponent hupper_pos
+  let context : TripPolicy := policy \ Set.Ioo 0 upper
+  have hcomponent_subset : Set.Ioo 0 upper ⊆ policy := by
+    rw [← hcomponent]
+    exact connectedComponentIn_subset policy point
+  have hpolicy_eq : policy = context ∪ Set.Ioo 0 upper := by
+    ext x
+    constructor
+    · intro hx
+      by_cases hx_interval : x ∈ Set.Ioo 0 upper
+      · exact Or.inr hx_interval
+      · exact Or.inl ⟨hx, hx_interval⟩
+    · rintro (hx | hx)
+      · exact hx.1
+      · exact hcomponent_subset hx
+  rcases hderivative context upper hupper_pos with
+    ⟨derivativeValue, hderiv, hsign⟩
+  refine ⟨derivativeValue, ?_, ?_⟩
+  · simpa [gn21Lemma5ComponentLowerPath, context] using hderiv
+  · rw [hpolicy_eq]
+    exact hsign
+
+/-- Legacy-to-local adapter for a selected right-tail component. -/
+theorem gn21Lemma5ComponentTailLowerDerivativeCondition_of_arbitraryContext
+    (Rhat : SingleStateReward)
+    (response : TripPolicy → TripLength → ℝ)
+    (hderivative :
+      ∀ (context : TripPolicy) (lower : ℝ),
+        0 < lower →
+          ∃ derivativeValue : ℝ,
+            HasDerivAt
+              (fun x => Rhat (context ∪ Set.Ioi x))
+              derivativeValue lower ∧
+            sameStrictSign derivativeValue
+              (-response (context ∪ Set.Ioi lower) lower)) :
+    GN21Lemma5ComponentTailLowerDerivativeCondition Rhat response := by
+  intro policy point lower _hopen _hsubset _hpoint hcomponent hlower_pos
+  let context : TripPolicy := policy \ Set.Ioi lower
+  have hcomponent_subset : Set.Ioi lower ⊆ policy := by
+    rw [← hcomponent]
+    exact connectedComponentIn_subset policy point
+  have hpolicy_eq : policy = context ∪ Set.Ioi lower := by
+    ext x
+    constructor
+    · intro hx
+      by_cases hx_tail : x ∈ Set.Ioi lower
+      · exact Or.inr hx_tail
+      · exact Or.inl ⟨hx, hx_tail⟩
+    · rintro (hx | hx)
+      · exact hx.1
+      · exact hcomponent_subset hx
+  rcases hderivative context lower hlower_pos with
+    ⟨derivativeValue, hderiv, hsign⟩
+  refine ⟨derivativeValue, ?_, ?_⟩
+  · simpa [gn21Lemma5ComponentTailLowerPath, context] using hderiv
+  · rw [hpolicy_eq]
+    exact hsign
+
+/--
 A positive right derivative within the feasible half-line gives a bounded
 strict right improvement.  This is the one-sided calculus needed when an open
 interval starts at the source endpoint `0`.
@@ -541,8 +773,9 @@ theorem exists_pos_right_improvement_of_hasDerivWithinAt_Ici_zero_pos_lt
 /--
 An open feasible policy that is not a right cutoff has a strict local
 improvement when its endpoint response is strictly increasing.  The endpoint
-calculus is quantified over ordinary interval paths, so no improvement or
-policy-form conclusion is assumed as input.
+calculus is restricted to actual connected components of that policy; no
+arbitrary-background union path, improvement, or policy-form conclusion is
+assumed as input.
 -/
 theorem exists_strictlyIncreasing_open_strict_improvement_of_not_form
     (Rhat : SingleStateReward)
@@ -554,32 +787,11 @@ theorem exists_strictlyIncreasing_open_strict_improvement_of_not_form
     (hnot_form : ¬ lemma5SourcePolicyForm .strictlyIncreasing sigma)
     (hresponse_increasing : StrictMonoOn (response sigma) (Set.Ici 0))
     (hupper_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 ≤ lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo lower x))
-              derivativeValue upper ∧
-            sameStrictSign derivativeValue
-              (response (context ∪ Set.Ioo lower upper) upper))
+      GN21Lemma5ComponentUpperDerivativeCondition Rhat response)
     (hlower_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 < lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo x upper))
-              derivativeValue lower ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioo lower upper) lower))
+      GN21Lemma5ComponentLowerDerivativeCondition Rhat response)
     (hlower_right_derivative :
-      ∀ (context : TripPolicy) (upper : ℝ),
-        0 < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivWithinAt
-              (fun x => Rhat (context ∪ Set.Ioo x upper))
-              derivativeValue (Set.Ici 0) 0 ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioo 0 upper) 0)) :
+      GN21Lemma5ComponentLowerRightDerivativeCondition Rhat response) :
     ∃ improved : TripPolicy,
       IsOpen improved ∧ improved ⊆ acceptAllPolicy ∧
         Rhat sigma < Rhat improved := by
@@ -619,15 +831,11 @@ theorem exists_strictlyIncreasing_open_strict_improvement_of_not_form
         hresponse_increasing hlower_nonneg hupper_nonneg hlower_upper
       linarith
   rcases hresponse_dichotomy with hupper_response_pos | hlower_response_pos
-  · rcases hupper_derivative context lower upper hlower_nonneg
-        hlower_upper with
+  · rcases hupper_derivative hsigma_open hsigma_subset hpoint hcomponent_eq
+        hlower_nonneg hlower_upper with
       ⟨derivativeValue, hderiv, hsign⟩
-    have hsign_sigma :
-        sameStrictSign derivativeValue (response sigma upper) := by
-      rw [hsigma_eq]
-      exact hsign
     have hderivative_pos : 0 < derivativeValue :=
-      sameStrictSign_pos_left hsign_sigma hupper_response_pos
+      sameStrictSign_pos_left hsign hupper_response_pos
     rcases exists_pos_right_improvement_of_hasDerivAt_pos
         hderiv hderivative_pos with
       ⟨epsilon, hepsilon_pos, himprovement⟩
@@ -637,18 +845,19 @@ theorem exists_strictlyIncreasing_open_strict_improvement_of_not_form
     · exact
         union_ioo_subset_acceptAllPolicy_of_subset_of_left_nonneg
           hcontext_subset hlower_nonneg
-    · rw [hsigma_eq]
-      exact himprovement
+    · have hpath_at_upper :
+          gn21Lemma5ComponentUpperPath sigma lower upper upper = sigma := by
+        simpa [gn21Lemma5ComponentUpperPath, context] using hsigma_eq.symm
+      change Rhat sigma < Rhat
+        (gn21Lemma5ComponentUpperPath sigma lower upper (upper + epsilon))
+      simpa [hpath_at_upper] using himprovement
   · by_cases hlower_zero : lower = 0
     · subst lower
-      rcases hlower_right_derivative context upper hlower_upper with
+      rcases hlower_right_derivative hsigma_open hsigma_subset hpoint
+          hcomponent_eq hlower_upper with
         ⟨derivativeValue, hderiv, hsign⟩
-      have hsign_sigma :
-          sameStrictSign derivativeValue (-response sigma 0) := by
-        rw [hsigma_eq]
-        exact hsign
       have hderivative_pos : 0 < derivativeValue :=
-        sameStrictSign_pos_left hsign_sigma hlower_response_pos
+        sameStrictSign_pos_left hsign hlower_response_pos
       rcases
           exists_pos_right_improvement_of_hasDerivWithinAt_Ici_zero_pos_lt
             hderiv hderivative_pos hlower_upper with
@@ -659,19 +868,19 @@ theorem exists_strictlyIncreasing_open_strict_improvement_of_not_form
       · exact
           union_ioo_subset_acceptAllPolicy_of_subset_of_left_nonneg
             hcontext_subset (le_of_lt hepsilon_pos)
-      · rw [hsigma_eq]
-        simpa using himprovement
+      · have hpath_at_lower :
+            gn21Lemma5ComponentLowerPath sigma 0 upper 0 = sigma := by
+          simpa [gn21Lemma5ComponentLowerPath, context] using hsigma_eq.symm
+        change Rhat sigma < Rhat
+          (gn21Lemma5ComponentLowerPath sigma 0 upper epsilon)
+        simpa [hpath_at_lower] using himprovement
     · have hlower_pos : 0 < lower :=
         lt_of_le_of_ne hlower_nonneg (Ne.symm hlower_zero)
-      rcases hlower_derivative context lower upper hlower_pos
-          hlower_upper with
+      rcases hlower_derivative hsigma_open hsigma_subset hpoint hcomponent_eq
+          hlower_pos hlower_upper with
         ⟨derivativeValue, hderiv, hsign⟩
-      have hsign_sigma :
-          sameStrictSign derivativeValue (-response sigma lower) := by
-        rw [hsigma_eq]
-        exact hsign
       have hderivative_pos : 0 < derivativeValue :=
-        sameStrictSign_pos_left hsign_sigma hlower_response_pos
+        sameStrictSign_pos_left hsign hlower_response_pos
       rcases exists_pos_right_improvement_of_hasDerivAt_pos_lt
           hderiv hderivative_pos (sub_pos.mpr hlower_upper) with
         ⟨epsilon, hepsilon_pos, hepsilon_lt, himprovement⟩
@@ -681,8 +890,12 @@ theorem exists_strictlyIncreasing_open_strict_improvement_of_not_form
       · exact
           union_ioo_subset_acceptAllPolicy_of_subset_of_left_nonneg
             hcontext_subset (by linarith)
-      · rw [hsigma_eq]
-        exact himprovement
+      · have hpath_at_lower :
+            gn21Lemma5ComponentLowerPath sigma lower upper lower = sigma := by
+          simpa [gn21Lemma5ComponentLowerPath, context] using hsigma_eq.symm
+        change Rhat sigma < Rhat
+          (gn21Lemma5ComponentLowerPath sigma lower upper (lower + epsilon))
+        simpa [hpath_at_lower] using himprovement
 
 /--
 Split an open policy at `pivot` and move the lower endpoint of its right-hand
@@ -784,32 +997,11 @@ theorem exists_strictlyDecreasing_open_strict_improvement_of_not_form
         policyAlmostEverywhereEq mu left right → Rhat left = Rhat right)
     (hresponse_decreasing : StrictAntiOn (response sigma) (Set.Ici 0))
     (hinterval_upper_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 ≤ lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo lower x))
-              derivativeValue upper ∧
-            sameStrictSign derivativeValue
-              (response (context ∪ Set.Ioo lower upper) upper))
+      GN21Lemma5ComponentUpperDerivativeCondition Rhat response)
     (hinterval_lower_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 < lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo x upper))
-              derivativeValue lower ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioo lower upper) lower))
+      GN21Lemma5ComponentLowerDerivativeCondition Rhat response)
     (htail_lower_derivative :
-      ∀ (context : TripPolicy) (lower : ℝ),
-        0 < lower →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioi x))
-              derivativeValue lower ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioi lower) lower))
+      GN21Lemma5ComponentTailLowerDerivativeCondition Rhat response)
     (hsplit_lower_derivative :
       ∀ (policy : TripPolicy) (pivot : ℝ),
         IsOpen policy → policy ⊆ acceptAllPolicy →
@@ -906,9 +1098,18 @@ theorem exists_strictlyDecreasing_open_strict_improvement_of_not_form
           hresponse_decreasing (le_of_lt hlower_upper) hpivot_nonneg
             hupper_pivot
         by_cases hupper_response_pos : 0 < response sigma upper
-        · rcases hinterval_upper_derivative context 0 upper
-              (by simp) hlower_upper with
-            ⟨derivativeValue, hderiv, hsign⟩
+        · rcases hinterval_upper_derivative hsigma_open hsigma_subset hpoint
+              hcomponent_eq (by simp) hlower_upper with
+            ⟨derivativeValue, hderiv_local, hsign_local⟩
+          have hderiv :
+              HasDerivAt (fun x => Rhat (context ∪ Set.Ioo 0 x))
+                derivativeValue upper := by
+            simpa [gn21Lemma5ComponentUpperPath, context] using hderiv_local
+          have hsign :
+              sameStrictSign derivativeValue
+                (response (context ∪ Set.Ioo 0 upper) upper) := by
+            rw [← hsigma_eq]
+            exact hsign_local
           have hsign_sigma :
               sameStrictSign derivativeValue (response sigma upper) := by
             rw [hsigma_eq]
@@ -943,9 +1144,18 @@ theorem exists_strictlyDecreasing_open_strict_improvement_of_not_form
         hresponse_decreasing (le_of_lt hlower_pos) hupper_nonneg
           hlower_upper
       by_cases hlower_response_pos : 0 < response sigma lower
-      · rcases hinterval_lower_derivative context lower upper
-            hlower_pos hlower_upper with
-          ⟨derivativeValue, hderiv, hsign⟩
+      · rcases hinterval_lower_derivative hsigma_open hsigma_subset hpoint
+            hcomponent_eq hlower_pos hlower_upper with
+          ⟨derivativeValue, hderiv_local, hsign_local⟩
+        have hderiv :
+            HasDerivAt (fun x => Rhat (context ∪ Set.Ioo x upper))
+              derivativeValue lower := by
+          simpa [gn21Lemma5ComponentLowerPath, context] using hderiv_local
+        have hsign :
+            sameStrictSign derivativeValue
+              (-response (context ∪ Set.Ioo lower upper) lower) := by
+          rw [← hsigma_eq]
+          exact hsign_local
         have hsign_sigma :
             sameStrictSign derivativeValue (-response sigma lower) := by
           rw [hsigma_eq]
@@ -964,9 +1174,18 @@ theorem exists_strictlyDecreasing_open_strict_improvement_of_not_form
           exact himprovement
       · have hupper_response_neg : response sigma upper < 0 := by
           linarith
-        rcases hinterval_upper_derivative context lower upper
-            hlower_nonneg hlower_upper with
-          ⟨derivativeValue, hderiv, hsign⟩
+        rcases hinterval_upper_derivative hsigma_open hsigma_subset hpoint
+            hcomponent_eq hlower_nonneg hlower_upper with
+          ⟨derivativeValue, hderiv_local, hsign_local⟩
+        have hderiv :
+            HasDerivAt (fun x => Rhat (context ∪ Set.Ioo lower x))
+              derivativeValue upper := by
+          simpa [gn21Lemma5ComponentUpperPath, context] using hderiv_local
+        have hsign :
+            sameStrictSign derivativeValue
+              (response (context ∪ Set.Ioo lower upper) upper) := by
+          rw [← hsigma_eq]
+          exact hsign_local
         have hsign_sigma :
             sameStrictSign derivativeValue (response sigma upper) := by
           rw [hsigma_eq]
@@ -1017,8 +1236,18 @@ theorem exists_strictlyDecreasing_open_strict_improvement_of_not_form
           · exact hx.1
           · exact hcomponent_subset hx
       by_cases hlower_response_pos : 0 < response sigma lower
-      · rcases htail_lower_derivative context lower hlower_pos with
-          ⟨derivativeValue, hderiv, hsign⟩
+      · rcases htail_lower_derivative hsigma_open hsigma_subset hpoint hrightRay
+            hlower_pos with
+          ⟨derivativeValue, hderiv_local, hsign_local⟩
+        have hderiv :
+            HasDerivAt (fun x => Rhat (context ∪ Set.Ioi x))
+              derivativeValue lower := by
+          simpa [gn21Lemma5ComponentTailLowerPath, context] using hderiv_local
+        have hsign :
+            sameStrictSign derivativeValue
+              (-response (context ∪ Set.Ioi lower) lower) := by
+          rw [← hsigma_eq]
+          exact hsign_local
         have hsign_sigma :
             sameStrictSign derivativeValue (-response sigma lower) := by
           rw [hsigma_eq]
@@ -1075,23 +1304,9 @@ theorem exists_positive_open_strict_improvement_of_not_form
     (hresponse_positive :
       ∀ u : TripLength, 0 < u → 0 < response sigma u)
     (hinterval_upper_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 ≤ lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo lower x))
-              derivativeValue upper ∧
-            sameStrictSign derivativeValue
-              (response (context ∪ Set.Ioo lower upper) upper))
+      GN21Lemma5ComponentUpperDerivativeCondition Rhat response)
     (htail_lower_derivative :
-      ∀ (context : TripPolicy) (lower : ℝ),
-        0 < lower →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioi x))
-              derivativeValue lower ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioi lower) lower)) :
+      GN21Lemma5ComponentTailLowerDerivativeCondition Rhat response) :
     ∃ improved : TripPolicy,
       IsOpen improved ∧ improved ⊆ acceptAllPolicy ∧
         Rhat sigma < Rhat improved := by
@@ -1123,15 +1338,11 @@ theorem exists_positive_open_strict_improvement_of_not_form
         · exact hinterval_subset hx
     have hupper_pos : 0 < upper :=
       lt_of_le_of_lt hlower_nonneg hlower_upper
-    rcases hinterval_upper_derivative context lower upper
-        hlower_nonneg hlower_upper with
+    rcases hinterval_upper_derivative hsigma_open hsigma_subset hpoint
+        hcomponent_eq hlower_nonneg hlower_upper with
       ⟨derivativeValue, hderiv, hsign⟩
-    have hsign_sigma :
-        sameStrictSign derivativeValue (response sigma upper) := by
-      rw [hsigma_eq]
-      exact hsign
     have hderivative_pos : 0 < derivativeValue :=
-      sameStrictSign_pos_left hsign_sigma
+      sameStrictSign_pos_left hsign
         (hresponse_positive upper hupper_pos)
     rcases exists_pos_right_improvement_of_hasDerivAt_pos
         hderiv hderivative_pos with
@@ -1141,8 +1352,12 @@ theorem exists_positive_open_strict_improvement_of_not_form
     · exact
         union_ioo_subset_acceptAllPolicy_of_subset_of_left_nonneg
           hcontext_subset hlower_nonneg
-    · rw [hsigma_eq]
-      exact himprovement
+    · have hpath_at_upper :
+          gn21Lemma5ComponentUpperPath sigma lower upper upper = sigma := by
+        simpa [gn21Lemma5ComponentUpperPath, context] using hsigma_eq.symm
+      change Rhat sigma < Rhat
+        (gn21Lemma5ComponentUpperPath sigma lower upper (upper + epsilon))
+      simpa [hpath_at_upper] using himprovement
   · have hcomponent_subset : Set.Ioi lower ⊆ sigma := by
       rw [← hrightRay]
       exact connectedComponentIn_subset sigma point
@@ -1174,14 +1389,11 @@ theorem exists_positive_open_strict_improvement_of_not_form
         · rintro (hx | hx)
           · exact hx.1
           · exact hcomponent_subset hx
-      rcases htail_lower_derivative context lower hlower_pos with
+      rcases htail_lower_derivative hsigma_open hsigma_subset hpoint hrightRay
+          hlower_pos with
         ⟨derivativeValue, hderiv, hsign⟩
-      have hsign_sigma :
-          sameStrictSign derivativeValue (-response sigma lower) := by
-        rw [hsigma_eq]
-        exact hsign
       have hderivative_neg : derivativeValue < 0 :=
-        sameStrictSign_neg_left hsign_sigma
+        sameStrictSign_neg_left hsign
           (by linarith [hresponse_positive lower hlower_pos])
       rcases exists_pos_left_improvement_of_hasDerivAt_neg_lt
           hderiv hderivative_neg hlower_pos with
@@ -1193,8 +1405,12 @@ theorem exists_positive_open_strict_improvement_of_not_form
         have hcutoff_pos : 0 < lower - epsilon := by linarith
         simpa [acceptAllPolicy, positiveTripLengths,
           positiveRealAcceptAll] using hcutoff_pos.trans hx
-      · rw [hsigma_eq]
-        exact himprovement
+      · have hpath_at_lower :
+            gn21Lemma5ComponentTailLowerPath sigma lower lower = sigma := by
+          simpa [gn21Lemma5ComponentTailLowerPath, context] using hsigma_eq.symm
+        change Rhat sigma < Rhat
+          (gn21Lemma5ComponentTailLowerPath sigma lower (lower - epsilon))
+        simpa [hpath_at_lower] using himprovement
 
 /-- Strict local improvement for a non-single-interval open policy under a
 strictly quasi-concave response. -/
@@ -1213,14 +1429,7 @@ theorem exists_strictlyQuasiConcave_open_strict_improvement_of_not_form
     (hresponse_quasiConcave :
       strictQuasiConcaveOnPositive (response sigma))
     (hinterval_upper_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 ≤ lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo lower x))
-              derivativeValue upper ∧
-            sameStrictSign derivativeValue
-              (response (context ∪ Set.Ioo lower upper) upper))
+      GN21Lemma5ComponentUpperDerivativeCondition Rhat response)
     (hsplit_lower_derivative :
       ∀ (policy : TripPolicy) (pivot : ℝ),
         IsOpen policy → policy ⊆ acceptAllPolicy →
@@ -1359,9 +1568,18 @@ theorem exists_strictlyQuasiConcave_open_strict_improvement_of_not_form
         · exact hx.1
         · exact hinterval_subset hx
     rcases hsign_trichotomy with hupper_pos | hleft_neg | hpivot_neg
-    · rcases hinterval_upper_derivative context lower upper
-          hlower_nonneg hlower_upper with
-        ⟨derivativeValue, hderiv, hsign⟩
+    · rcases hinterval_upper_derivative hsigma_open hsigma_subset hleft_sigma
+          hcomponent_eq hlower_nonneg hlower_upper with
+        ⟨derivativeValue, hderiv_local, hsign_local⟩
+      have hderiv :
+          HasDerivAt (fun x => Rhat (context ∪ Set.Ioo lower x))
+            derivativeValue upper := by
+        simpa [gn21Lemma5ComponentUpperPath, context] using hderiv_local
+      have hsign :
+          sameStrictSign derivativeValue
+            (response (context ∪ Set.Ioo lower upper) upper) := by
+        rw [← hsigma_eq]
+        exact hsign_local
       have hsign_sigma :
           sameStrictSign derivativeValue (response sigma upper) := by
         rw [hsigma_eq]
@@ -1694,23 +1912,9 @@ theorem exists_strictlyQuasiConvex_open_strict_improvement_of_not_form
     (hresponse_quasiConvex :
       strictQuasiConvexOnPositive (response sigma))
     (hinterval_upper_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 ≤ lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo lower x))
-              derivativeValue upper ∧
-            sameStrictSign derivativeValue
-              (response (context ∪ Set.Ioo lower upper) upper))
+      GN21Lemma5ComponentUpperDerivativeCondition Rhat response)
     (hinterval_lower_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 < lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo x upper))
-              derivativeValue lower ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioo lower upper) lower))
+      GN21Lemma5ComponentLowerDerivativeCondition Rhat response)
     (hsplit_lower_derivative :
       ∀ (policy : TripPolicy) (pivot : ℝ),
         IsOpen policy → policy ⊆ acceptAllPolicy →
@@ -1751,9 +1955,18 @@ theorem exists_strictlyQuasiConvex_open_strict_improvement_of_not_form
       · exact hinterval_subset hx
   have hlower_nonneg : 0 ≤ lower := le_of_lt hlower_pos
   by_cases hlower_response_pos : 0 < response sigma lower
-  · rcases hinterval_lower_derivative context lower upper
-        hlower_pos hlower_upper with
-      ⟨derivativeValue, hderiv, hsign⟩
+  · rcases hinterval_lower_derivative hsigma_open hsigma_subset hpoint
+        hcomponent_eq hlower_pos hlower_upper with
+      ⟨derivativeValue, hderiv_local, hsign_local⟩
+    have hderiv :
+        HasDerivAt (fun x => Rhat (context ∪ Set.Ioo x upper))
+          derivativeValue lower := by
+      simpa [gn21Lemma5ComponentLowerPath, context] using hderiv_local
+    have hsign :
+        sameStrictSign derivativeValue
+          (-response (context ∪ Set.Ioo lower upper) lower) := by
+      rw [← hsigma_eq]
+      exact hsign_local
     have hsign_sigma :
         sameStrictSign derivativeValue (-response sigma lower) := by
       rw [hsigma_eq]
@@ -1771,9 +1984,18 @@ theorem exists_strictlyQuasiConvex_open_strict_improvement_of_not_form
     · rw [hsigma_eq]
       exact himprovement
   · by_cases hupper_response_pos : 0 < response sigma upper
-    · rcases hinterval_upper_derivative context lower upper
-          hlower_nonneg hlower_upper with
-        ⟨derivativeValue, hderiv, hsign⟩
+    · rcases hinterval_upper_derivative hsigma_open hsigma_subset hpoint
+          hcomponent_eq hlower_nonneg hlower_upper with
+        ⟨derivativeValue, hderiv_local, hsign_local⟩
+      have hderiv :
+          HasDerivAt (fun x => Rhat (context ∪ Set.Ioo lower x))
+            derivativeValue upper := by
+        simpa [gn21Lemma5ComponentUpperPath, context] using hderiv_local
+      have hsign :
+          sameStrictSign derivativeValue
+            (response (context ∪ Set.Ioo lower upper) upper) := by
+        rw [← hsigma_eq]
+        exact hsign_local
       have hsign_sigma :
           sameStrictSign derivativeValue (response sigma upper) := by
         rw [hsigma_eq]
@@ -1791,9 +2013,18 @@ theorem exists_strictlyQuasiConvex_open_strict_improvement_of_not_form
       · rw [hsigma_eq]
         exact himprovement
     · by_cases hlower_response_neg : response sigma lower < 0
-      · rcases hinterval_lower_derivative context lower upper
-            hlower_pos hlower_upper with
-          ⟨derivativeValue, hderiv, hsign⟩
+      · rcases hinterval_lower_derivative hsigma_open hsigma_subset hpoint
+            hcomponent_eq hlower_pos hlower_upper with
+          ⟨derivativeValue, hderiv_local, hsign_local⟩
+        have hderiv :
+            HasDerivAt (fun x => Rhat (context ∪ Set.Ioo x upper))
+              derivativeValue lower := by
+          simpa [gn21Lemma5ComponentLowerPath, context] using hderiv_local
+        have hsign :
+            sameStrictSign derivativeValue
+              (-response (context ∪ Set.Ioo lower upper) lower) := by
+          rw [← hsigma_eq]
+          exact hsign_local
         have hsign_sigma :
             sameStrictSign derivativeValue (-response sigma lower) := by
           rw [hsigma_eq]
@@ -1811,9 +2042,18 @@ theorem exists_strictlyQuasiConvex_open_strict_improvement_of_not_form
         · rw [hsigma_eq]
           exact himprovement
       · by_cases hupper_response_neg : response sigma upper < 0
-        · rcases hinterval_upper_derivative context lower upper
-              hlower_nonneg hlower_upper with
-            ⟨derivativeValue, hderiv, hsign⟩
+        · rcases hinterval_upper_derivative hsigma_open hsigma_subset hpoint
+              hcomponent_eq hlower_nonneg hlower_upper with
+            ⟨derivativeValue, hderiv_local, hsign_local⟩
+          have hderiv :
+              HasDerivAt (fun x => Rhat (context ∪ Set.Ioo lower x))
+                derivativeValue upper := by
+            simpa [gn21Lemma5ComponentUpperPath, context] using hderiv_local
+          have hsign :
+              sameStrictSign derivativeValue
+                (response (context ∪ Set.Ioo lower upper) upper) := by
+            rw [← hsigma_eq]
+            exact hsign_local
           have hsign_sigma :
               sameStrictSign derivativeValue (response sigma upper) := by
             rw [hsigma_eq]
@@ -8419,23 +8659,9 @@ theorem exists_positive_source_form_reward_ge_and_gt_unless_ae_open
                   (gn21UpdateEndpoint endpoints
                     (gn21Lemma5GapUpperIndex i) x)) x))
     (hopen_interval_upper_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 ≤ lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo lower x))
-              derivativeValue upper ∧
-            sameStrictSign derivativeValue
-              (response (context ∪ Set.Ioo lower upper) upper))
+      GN21Lemma5ComponentUpperDerivativeCondition Rhat response)
     (hopen_tail_lower_derivative :
-      ∀ (context : TripPolicy) (lower : ℝ),
-        0 < lower →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioi x))
-              derivativeValue lower ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioi lower) lower)) :
+      GN21Lemma5ComponentTailLowerDerivativeCondition Rhat response) :
     ∃ policy : TripPolicy,
       lemma5SourcePolicyForm .positive policy ∧
         Rhat sigma ≤ Rhat policy ∧
@@ -8706,32 +8932,11 @@ theorem exists_strictlyIncreasing_source_form_reward_ge_and_gt_unless_ae_open
               sameStrictSign derivativeValue
                 (-response (gn21EndpointVectorPolicy endpoints) 0))
     (hopen_upper_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 ≤ lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo lower x))
-              derivativeValue upper ∧
-            sameStrictSign derivativeValue
-              (response (context ∪ Set.Ioo lower upper) upper))
+      GN21Lemma5ComponentUpperDerivativeCondition Rhat response)
     (hopen_lower_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 < lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo x upper))
-              derivativeValue lower ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioo lower upper) lower))
+      GN21Lemma5ComponentLowerDerivativeCondition Rhat response)
     (hopen_lower_right_derivative :
-      ∀ (context : TripPolicy) (upper : ℝ),
-        0 < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivWithinAt
-              (fun x => Rhat (context ∪ Set.Ioo x upper))
-              derivativeValue (Set.Ici 0) 0 ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioo 0 upper) 0)) :
+      GN21Lemma5ComponentLowerRightDerivativeCondition Rhat response) :
     ∃ policy : TripPolicy,
       lemma5SourcePolicyForm .strictlyIncreasing policy ∧
         Rhat sigma ≤ Rhat policy ∧
@@ -8974,32 +9179,11 @@ theorem exists_strictlyDecreasing_source_form_reward_ge_and_gt_unless_ae_open
               sameStrictSign derivativeValue
                 (response (gn21EndpointVectorPolicy endpoints) 0))
     (hopen_interval_upper_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 ≤ lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo lower x))
-              derivativeValue upper ∧
-            sameStrictSign derivativeValue
-              (response (context ∪ Set.Ioo lower upper) upper))
+      GN21Lemma5ComponentUpperDerivativeCondition Rhat response)
     (hopen_interval_lower_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 < lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo x upper))
-              derivativeValue lower ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioo lower upper) lower))
+      GN21Lemma5ComponentLowerDerivativeCondition Rhat response)
     (hopen_tail_lower_derivative :
-      ∀ (context : TripPolicy) (lower : ℝ),
-        0 < lower →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioi x))
-              derivativeValue lower ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioi lower) lower))
+      GN21Lemma5ComponentTailLowerDerivativeCondition Rhat response)
     (hopen_split_lower_derivative :
       ∀ (policy : TripPolicy) (pivot : ℝ),
         IsOpen policy → policy ⊆ acceptAllPolicy →
@@ -9278,14 +9462,7 @@ theorem exists_strictlyQuasiConcave_source_form_reward_ge_and_gt_unless_ae_open
               sameStrictSign derivativeValue
                 (-response (gn21EndpointVectorPolicy endpoints) 0))
     (hopen_interval_upper_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 ≤ lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo lower x))
-              derivativeValue upper ∧
-            sameStrictSign derivativeValue
-              (response (context ∪ Set.Ioo lower upper) upper))
+      GN21Lemma5ComponentUpperDerivativeCondition Rhat response)
     (hopen_split_lower_derivative :
       ∀ (policy : TripPolicy) (pivot : ℝ),
         IsOpen policy → policy ⊆ acceptAllPolicy →
@@ -9602,23 +9779,9 @@ theorem exists_strictlyQuasiConvex_source_form_reward_ge_and_gt_unless_ae_open
                     ENNReal.ofReal rightValue ∧
                   response (gn21EndpointVectorPolicy endpoints) rightValue ≤ 0)
     (hopen_interval_upper_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 ≤ lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo lower x))
-              derivativeValue upper ∧
-            sameStrictSign derivativeValue
-              (response (context ∪ Set.Ioo lower upper) upper))
+      GN21Lemma5ComponentUpperDerivativeCondition Rhat response)
     (hopen_interval_lower_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 < lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo x upper))
-              derivativeValue lower ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioo lower upper) lower))
+      GN21Lemma5ComponentLowerDerivativeCondition Rhat response)
     (hopen_split_lower_derivative :
       ∀ (policy : TripPolicy) (pivot : ℝ),
         IsOpen policy → policy ⊆ acceptAllPolicy →
@@ -9723,8 +9886,8 @@ theorem exists_strictlyQuasiConvex_source_form_reward_ge_and_gt_unless_ae_open
     exact ⟨policy, hpolicy_form, hreward, fun h => False.elim (hnot_ae h)⟩
 
 /--
-Direct source-facing form of Lemma 5 (`cited publication:3343-3404`, with the five
-policy forms in the table at `cited publication:3370-3386`).  No optimizer or policy
+Direct source-facing form of Lemma 5 (`source.txt:3343-3404`, with the five
+policy forms in the table at `source.txt:3370-3386`).  No optimizer or policy
 form conclusion is supplied as a premise.
 
 The endpoint hypotheses deliberately state the derivative/response sign
@@ -9886,41 +10049,13 @@ theorem paper_lemma5_source_policy_replacement_open
                     response
                       (gn21EndpointVectorPolicy endpoints) rightValue ≤ 0)
     (hopen_interval_upper_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 ≤ lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo lower x))
-              derivativeValue upper ∧
-            sameStrictSign derivativeValue
-              (response (context ∪ Set.Ioo lower upper) upper))
+      GN21Lemma5ComponentUpperDerivativeCondition Rhat response)
     (hopen_interval_lower_derivative :
-      ∀ (context : TripPolicy) (lower upper : ℝ),
-        0 < lower → lower < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioo x upper))
-              derivativeValue lower ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioo lower upper) lower))
+      GN21Lemma5ComponentLowerDerivativeCondition Rhat response)
     (hopen_interval_lower_right_derivative :
-      ∀ (context : TripPolicy) (upper : ℝ),
-        0 < upper →
-          ∃ derivativeValue : ℝ,
-            HasDerivWithinAt
-              (fun x => Rhat (context ∪ Set.Ioo x upper))
-              derivativeValue (Set.Ici 0) 0 ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioo 0 upper) 0))
+      GN21Lemma5ComponentLowerRightDerivativeCondition Rhat response)
     (hopen_tail_lower_derivative :
-      ∀ (context : TripPolicy) (lower : ℝ),
-        0 < lower →
-          ∃ derivativeValue : ℝ,
-            HasDerivAt
-              (fun x => Rhat (context ∪ Set.Ioi x))
-              derivativeValue lower ∧
-            sameStrictSign derivativeValue
-              (-response (context ∪ Set.Ioi lower) lower))
+      GN21Lemma5ComponentTailLowerDerivativeCondition Rhat response)
     (hopen_split_lower_derivative :
       ∀ (policy : TripPolicy) (pivot : ℝ),
         IsOpen policy → policy ⊆ acceptAllPolicy →
@@ -10332,7 +10467,7 @@ theorem exists_dynamicOpenOptimal_and_all_optima_source_forms_of_replacements
     exact False.elim ((not_lt_of_ge (hrho.2 tau htau_feasible)) hrho_lt_tau)
 
 /--
-Audited Theorem 4 statement (`cited publication:3859-3943`) on the source open-policy
+Audited Theorem 4 statement (`source.txt:3859-3943`) on the source open-policy
 domain.  The two displayed price-case disjunctions preserve all six printed
 case-to-form correspondences; the conclusion uses the endpoint-complete Lemma
 5 forms, so infinite endpoints occur exactly in the rows where the source
@@ -10775,10 +10910,30 @@ theorem paper_theorem4_source_structural_policy_forms_open_corrected
         (hpositive_path_continuous rho hrho 0)
         (hpositive_path_derivative rho hrho 0)
         (hright_top_witness rho hrho 0 source)
-        (hopen_interval_upper_derivative rho hrho 0)
-        (hopen_interval_lower_derivative rho hrho 0)
-        (hopen_interval_lower_right_derivative rho hrho 0)
-        (hopen_tail_lower_derivative rho hrho 0)
+        (gn21Lemma5ComponentUpperDerivativeCondition_of_arbitraryContext
+          (fun policy =>
+            gn21AggregateDynamicRewardFunctional
+              mu arrival switch12 switch21 w (Function.update rho 0 policy))
+          (fun policy => response 0 (Function.update rho 0 policy))
+          (hopen_interval_upper_derivative rho hrho 0))
+        (gn21Lemma5ComponentLowerDerivativeCondition_of_arbitraryContext
+          (fun policy =>
+            gn21AggregateDynamicRewardFunctional
+              mu arrival switch12 switch21 w (Function.update rho 0 policy))
+          (fun policy => response 0 (Function.update rho 0 policy))
+          (hopen_interval_lower_derivative rho hrho 0))
+        (gn21Lemma5ComponentLowerRightDerivativeCondition_of_arbitraryContext
+          (fun policy =>
+            gn21AggregateDynamicRewardFunctional
+              mu arrival switch12 switch21 w (Function.update rho 0 policy))
+          (fun policy => response 0 (Function.update rho 0 policy))
+          (hopen_interval_lower_right_derivative rho hrho 0))
+        (gn21Lemma5ComponentTailLowerDerivativeCondition_of_arbitraryContext
+          (fun policy =>
+            gn21AggregateDynamicRewardFunctional
+              mu arrival switch12 switch21 w (Function.update rho 0 policy))
+          (fun policy => response 0 (Function.update rho 0 policy))
+          (hopen_tail_lower_derivative rho hrho 0))
         (hopen_split_lower_derivative rho hrho 0)
     · exact paper_lemma5_source_policy_replacement_open
         (mu 1)
@@ -10804,10 +10959,30 @@ theorem paper_theorem4_source_structural_policy_forms_open_corrected
         (hpositive_path_continuous rho hrho 1)
         (hpositive_path_derivative rho hrho 1)
         (hright_top_witness rho hrho 1 source)
-        (hopen_interval_upper_derivative rho hrho 1)
-        (hopen_interval_lower_derivative rho hrho 1)
-        (hopen_interval_lower_right_derivative rho hrho 1)
-        (hopen_tail_lower_derivative rho hrho 1)
+        (gn21Lemma5ComponentUpperDerivativeCondition_of_arbitraryContext
+          (fun policy =>
+            gn21AggregateDynamicRewardFunctional
+              mu arrival switch12 switch21 w (Function.update rho 1 policy))
+          (fun policy => response 1 (Function.update rho 1 policy))
+          (hopen_interval_upper_derivative rho hrho 1))
+        (gn21Lemma5ComponentLowerDerivativeCondition_of_arbitraryContext
+          (fun policy =>
+            gn21AggregateDynamicRewardFunctional
+              mu arrival switch12 switch21 w (Function.update rho 1 policy))
+          (fun policy => response 1 (Function.update rho 1 policy))
+          (hopen_interval_lower_derivative rho hrho 1))
+        (gn21Lemma5ComponentLowerRightDerivativeCondition_of_arbitraryContext
+          (fun policy =>
+            gn21AggregateDynamicRewardFunctional
+              mu arrival switch12 switch21 w (Function.update rho 1 policy))
+          (fun policy => response 1 (Function.update rho 1 policy))
+          (hopen_interval_lower_right_derivative rho hrho 1))
+        (gn21Lemma5ComponentTailLowerDerivativeCondition_of_arbitraryContext
+          (fun policy =>
+            gn21AggregateDynamicRewardFunctional
+              mu arrival switch12 switch21 w (Function.update rho 1 policy))
+          (fun policy => response 1 (Function.update rho 1 policy))
+          (hopen_tail_lower_derivative rho hrho 1))
         (hopen_split_lower_derivative rho hrho 1)
   have hreplace :=
     exists_two_state_source_form_replacement_of_statewise_lemma5

@@ -10,7 +10,7 @@ ordered by the paper's definitions and early appendix results.
 
 namespace DGD26AdmissionsPredictability
 
-open EconCSLib.FiniteChoice
+open AppliedModelingLib.FiniteChoice
 
 variable {α : Type*} [DecidableEq α]
 
@@ -275,7 +275,8 @@ abbrev paper_definition_lap_no_profitable_one_slot_swap
   A.NoProfitableOneSlotSwap X w
 
 /--
-Global objective optimality in the finite linear assignment model.
+Capacity-filling objective optimality used by the paper's fixed-slot LAP
+results.
 Source status: paper-facing source definition/result; row-local LLM validation pending.
 -/
 abbrev paper_definition_lap_objective_optimal
@@ -579,17 +580,26 @@ theorem paper_one_instability_of_substitutability_statement
     (C := C) hfeasible haccept hsub
 
 /--
-Under feasibility and q-acceptance, substitutability is equivalent to
-1-instability.
+On the positive, nontrivial capacity domain, substitutability is equivalent
+to exact one-instability: a one-step bound together with non-zero instability.
 Source status: paper-facing source definition/result; row-local LLM validation pending.
 -/
 theorem paper_substitutability_one_instability_equivalence_statement
     {q : ℕ} {C : PaperChoiceRule α}
     (hfeasible : paper_choice_function_feasible C)
-    (haccept : paper_definition_q_acceptance q C) :
-    paper_definition_substitutability C ↔ paper_definition_d_instability 1 C := by
-  exact paper_substitutability_iff_one_instability_of_q_acceptant
-    (C := C) hfeasible haccept
+    (haccept : paper_definition_q_acceptance q C)
+    (hqpos : 0 < q)
+    {U : Finset α} (hUcard : q < U.card) :
+    paper_definition_substitutability C ↔
+      paper_definition_d_instability 1 C ∧ ¬ paper_definition_zero_instability C := by
+  constructor
+  · intro hsub
+    exact ⟨(paper_substitutability_iff_one_instability_of_q_acceptant
+        (C := C) hfeasible haccept).mp hsub,
+      paper_no_zero_unstable_of_q_acceptant_nontrivial hfeasible haccept hqpos hUcard⟩
+  · rintro ⟨hone, _⟩
+    exact (paper_substitutability_iff_one_instability_of_q_acceptant
+      (C := C) hfeasible haccept).mpr hone
 
 /--
 When `X` is already at capacity, adding a fresh applicant gives choice distance
@@ -1025,7 +1035,7 @@ theorem paper_q_representative_borderline_eq_waitlisted_after_changing_insert_st
 
 /--
 Ranking-m bridge under the paper's one-queue characterization hypotheses: if a
-feasible q-acceptant rule is 1-unstable and has variability at most one, then
+feasible q-acceptant rule is 1-unstable and has exact variability one, then
 a changing fresh insertion has the same previous borderline set as the new
 waitlisted set.
 Source status: paper-facing source definition/result; row-local LLM validation pending.
@@ -1035,7 +1045,7 @@ theorem paper_acceptant_one_instability_variability_borderline_eq_waitlisted_aft
     (hfeasible : paper_choice_function_feasible C)
     (haccept : paper_definition_q_acceptance q C)
     (hunstable : paper_definition_d_instability 1 C)
-    (hvar : paper_definition_variability_at_most 1 C)
+    (hvar : paper_definition_variability_exactly 1 C)
     {X : Finset α} {x : α}
     (hx : x ∉ X)
     (hchange : C (insert x X) ≠ C X) :
@@ -1043,11 +1053,11 @@ theorem paper_acceptant_one_instability_variability_borderline_eq_waitlisted_aft
       paper_definition_waitlisted_set C (insert x X) := by
   exact
     paper_acceptant_one_instability_variability_borderline_eq_waitlisted_after_changing_insert
-      (C := C) hfeasible haccept hunstable hvar hx hchange
+      (C := C) hfeasible haccept hunstable hvar.1 hx hchange
 
-/-- The binary source label is one exactly when `x` belongs to `C(X)`. -/
+/-- For an offered applicant, the binary source label is one exactly when `x` belongs to `C(X)`. -/
 theorem paper_choice_label_formula_statement
-    (C : PaperChoiceRule α) (X : Finset α) (x : α) :
+    (C : PaperChoiceRule α) (X : Finset α) (x : α) (hx : x ∈ X) :
     paper_definition_choice_label C X x = 1 ↔ x ∈ C X := by
   exact paperChoiceLabel_eq_one_iff C X x
 
@@ -1282,23 +1292,23 @@ theorem paper_sequential_q_representative_variability_range_statement
   exact paper_sequential_q_representative_variability_range
     hqueues hqpos hqlt
 
-/-- Canonical Screened/Open program choice rule used to discharge Proposition 2. -/
+/-- Abstract Screened/Open procedure used for the Proposition 2 source class. -/
 abbrev paper_definition_screened_open_program_choice : PaperChoiceRule (Fin 2) :=
   paperScreenedOpenProgramChoice
 
-/-- Canonical Screened/Open with DIA program choice rule. -/
+/-- Abstract Screened/Open-with-DIA procedure used for the Proposition 2 source class. -/
 abbrev paper_definition_screened_open_dia_program_choice : PaperChoiceRule (Fin 4) :=
   paperScreenedOpenDIAProgramChoice
 
-/-- Canonical Educational Option program choice rule. -/
+/-- Abstract Educational Option procedure used for the Proposition 2 source class. -/
 abbrev paper_definition_educational_option_program_choice : PaperChoiceRule (Fin 6) :=
   paperEducationalOptionProgramChoice
 
-/-- Canonical Educational Option with DIA program choice rule. -/
+/-- Abstract Educational Option-with-DIA procedure used for the Proposition 2 source class. -/
 abbrev paper_definition_educational_option_dia_program_choice : PaperChoiceRule (Fin 12) :=
   paperEducationalOptionDIAProgramChoice
 
-/-- Proposition 2: modeled Screened/Open programs are 1-unstable and exactly 1-variable. -/
+/-- Source-facing Screened/Open procedure properties for Proposition 2. -/
 theorem paper_screened_open_program_properties_statement :
     paper_choice_function_feasible paper_definition_screened_open_program_choice ∧
       paper_definition_q_acceptance 1 paper_definition_screened_open_program_choice ∧
@@ -1307,7 +1317,7 @@ theorem paper_screened_open_program_properties_statement :
         paper_definition_screened_open_program_choice := by
   exact paper_screened_open_program_properties
 
-/-- Proposition 2: modeled Screened/Open with DIA programs are exactly 2-variable. -/
+/-- Source-facing Screened/Open-with-DIA procedure properties for Proposition 2. -/
 theorem paper_screened_open_dia_program_properties_statement :
     paper_choice_function_feasible paper_definition_screened_open_dia_program_choice ∧
       paper_definition_q_acceptance 2 paper_definition_screened_open_dia_program_choice ∧
@@ -1316,7 +1326,7 @@ theorem paper_screened_open_dia_program_properties_statement :
         paper_definition_screened_open_dia_program_choice := by
   exact paper_screened_open_dia_program_properties
 
-/-- Proposition 2: modeled Educational Option programs are exactly 3-variable. -/
+/-- Source-facing Educational Option procedure properties for Proposition 2. -/
 theorem paper_educational_option_program_properties_statement :
     paper_choice_function_feasible paper_definition_educational_option_program_choice ∧
       paper_definition_q_acceptance 3 paper_definition_educational_option_program_choice ∧
@@ -1325,7 +1335,7 @@ theorem paper_educational_option_program_properties_statement :
         paper_definition_educational_option_program_choice := by
   exact paper_educational_option_program_properties
 
-/-- Proposition 2: modeled Educational Option with DIA programs are exactly 6-variable. -/
+/-- Source-facing Educational Option-with-DIA procedure properties for Proposition 2. -/
 theorem paper_educational_option_dia_program_properties_statement :
     paper_choice_function_feasible paper_definition_educational_option_dia_program_choice ∧
       paper_definition_q_acceptance 6 paper_definition_educational_option_dia_program_choice ∧
@@ -1334,7 +1344,7 @@ theorem paper_educational_option_dia_program_properties_statement :
         paper_definition_educational_option_dia_program_choice := by
   exact paper_educational_option_dia_program_properties
 
-/-- Proposition 2 aggregate: all four modeled program classes are 1-unstable. -/
+/-- Source-facing aggregate for the four Proposition 2 queue procedures. -/
 theorem paper_program_classes_one_instability_statement :
     paper_definition_d_instability 1 paper_definition_screened_open_program_choice ∧
       paper_definition_d_instability 1 paper_definition_screened_open_dia_program_choice ∧

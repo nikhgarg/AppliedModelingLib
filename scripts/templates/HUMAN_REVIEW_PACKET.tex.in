@@ -4,10 +4,17 @@
 % Do not hand-edit generated packets; annotate the PDF or reconcile notes into
 % the paper-local human-review log.
 \documentclass[10pt]{article}
-\usepackage[margin=0.43in]{geometry}
+\usepackage[margin=0.43in,footskip=0.2in]{geometry}
 \usepackage{fontspec}
-\setmainfont{Latin Modern Roman}
-\setmonofont{DejaVu Sans Mono}
+% Use a Unicode-complete main face as well as a Unicode-complete code face.
+% Reviewer reasons and source labels can contain exact Greek symbols outside
+% verbatim blocks; silently dropping one would corrupt the review packet.
+\setmainfont{DejaVu Serif}
+% The broad DejaVu Sans Unicode coverage preserves Lean's mathematical glyphs
+% (including U+2216 set difference and superscript identifiers) in verbatim
+% review blocks.  Its proportional metrics are preferable to silently missing
+% exact semantic text from a narrower monospace font.
+\setmonofont{DejaVu Sans}
 \usepackage{hyperref}
 \usepackage{amssymb}
 \usepackage{fvextra}
@@ -15,7 +22,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.15em}
 \linespread{0.92}
-\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,breaklinks=true}
 \DefineVerbatimEnvironment{ReviewVerbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\scriptsize}
 \newcommand{\reviewerbox}{%
   \par\noindent\fbox{\parbox{0.96\linewidth}{\rule{0pt}{0.38in}}}\par
@@ -49,10 +56,10 @@ log.
 \section*{Open the interactive dashboard}
 The interactive dashboard is an optional alternative to using this PDF; it
 presents the same review surface rather than an additional review requirement.
-After forking and cloning (or pulling) EconCSLib, run the following from the
+After forking and cloning (or pulling) AppliedModelingLib, run the following from the
 repository root. The cache command is needed only the first time in a new clone.
 \begin{ReviewVerbatim}
-cd <your-EconCSLib-checkout>
+cd <your-repository-checkout>
 lake exe cache get
 python3 scripts/review_dashboard.py --paper @@PAPER_ID@@ --serve
 \end{ReviewVerbatim}

@@ -10,7 +10,7 @@ This module closes that gap by adjoining the two source endpoints explicitly:
 surge cutoff.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped Function ProbabilityTheory Topology ENNReal symmDiff
 

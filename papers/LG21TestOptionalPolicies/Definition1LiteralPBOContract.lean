@@ -27,7 +27,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-! ## Section 3: hidden access -/
@@ -151,7 +151,7 @@ theorem lg21HiddenAccessLiteralSourceEquilibriumAE_satisfies_definition1PBO
   refine ⟨E.access_positive, E.takeDecision_measurable,
     E.reportDecision_measurable, E.testLaw_isProbability,
     E.continuationPayoff_integrable, ?_, E.take_best_response_ae,
-    hreport, E.public_pbo, E.noReport_pbo⟩
+    E.optionalReportBestResponse_ae hreport, E.public_pbo, E.noReport_pbo⟩
   intro student
   exact lg21HiddenAccessOptionalActualAction_feasible E student
 
@@ -479,7 +479,7 @@ def LG21ObservedAccessOptionalPBODefinition1Operational
           (lg21ContinuousPopulationSkill (Feature := Feature)) C.source_timed.actions) ∧
         LG21ObservedAccessOptionalActualBranchPBOs C.source_timed ∧
           LG21ObservedAccessOptionalPositiveMassMemberResponses C ∧
-            LG21OptionalSourceStableAgainstPositiveMassLocalRecalibratedEntry
+            LG21OptionalSourceStableAgainstPositiveMassLocalRecalibratedEntryForTestLaw
               (lg21ContinuousGaussianAccessPopulationLaw M)
               (lg21ContinuousPopulationBase testFeature)
               (lg21ContinuousPopulationFeature testFeature)
@@ -487,8 +487,9 @@ def LG21ObservedAccessOptionalPBODefinition1Operational
               ((lg21ContinuousPopulationBase_measurable testFeature).prodMk
                 ((lg21ContinuousPopulationFeature_measurable testFeature).prodMk
                   lg21ContinuousPopulationSkill_measurable))
+              C.source_timed.actions.testLaw
               C.source_timed.actions.takeDecision C.source_timed.actions.reportDecision ∧
-              LG21OptionalSourceStableAgainstPositiveMassRecalibratedReportEntry
+              LG21OptionalSourceStableAgainstPositiveMassRecalibratedReportEntryForTestLaw
                 (lg21ContinuousGaussianAccessPopulationLaw M)
                 (lg21ContinuousPopulationBase testFeature)
                 (lg21ContinuousPopulationFeature testFeature)
@@ -496,6 +497,7 @@ def LG21ObservedAccessOptionalPBODefinition1Operational
                 ((lg21ContinuousPopulationBase_measurable testFeature).prodMk
                   ((lg21ContinuousPopulationFeature_measurable testFeature).prodMk
                     lg21ContinuousPopulationSkill_measurable))
+                C.source_timed.actions.testLaw
                 C.source_timed.actions.takeDecision C.source_timed.actions.reportDecision
 
 /-- Every observed-access self-enforcing positive-mass candidate supplies the
@@ -810,7 +812,7 @@ def LG21ObservedAccessReportRequiredPBODefinition1Operational
           (lg21ContinuousPopulationBase testFeature student) = true} ∧
         LG21ObservedAccessReportRequiredActualBranchPBOs C ∧
           LG21ObservedAccessReportRequiredPositiveMassMemberResponses C ∧
-            LG21ReportRequiredSourceStableAgainstPositiveMassLocalRecalibratedEntry
+            LG21ReportRequiredSourceStableAgainstPositiveMassLocalRecalibratedEntryForTestLaw
               (lg21ContinuousGaussianAccessPopulationLaw M)
               (lg21ContinuousPopulationBase testFeature)
               (lg21ContinuousPopulationFeature testFeature)
@@ -818,6 +820,7 @@ def LG21ObservedAccessReportRequiredPBODefinition1Operational
               ((lg21ContinuousPopulationBase_measurable testFeature).prodMk
                 ((lg21ContinuousPopulationFeature_measurable testFeature).prodMk
                   lg21ContinuousPopulationSkill_measurable))
+              C.selected.testLaw
               (fun latentSkill publicBase =>
                 C.selected.takeDecision latentSkill publicBase)
 

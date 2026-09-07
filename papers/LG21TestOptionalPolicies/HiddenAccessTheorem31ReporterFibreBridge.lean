@@ -1,7 +1,7 @@
 import LG21TestOptionalPolicies.HiddenAccessTheorem31ReporterPBOBridge
 import LG21TestOptionalPolicies.ReportRequiredLiteralSelectedGaussianBridge
 import LG21TestOptionalPolicies.HiddenAccessTheorem31PositiveReporterClosure
-import EconCSLib.Foundations.Probability.GaussianTranslationAC
+import AppliedModelingLib.Foundations.Probability.GaussianTranslationAC
 
 /-!
 # Hidden-access reporter-fibre source bridge
@@ -17,7 +17,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /--
@@ -204,7 +204,7 @@ theorem lg21HiddenAccess_reportBestResponse_ae_by_base_of_factorization
       ∀ᵐ score ∂scoreKernel publicBase,
         E.reportDecision publicBase score = true ->
           E.noReportPayoff publicBase ≤ E.reportedPayoff publicBase score := by
-  have hbest := hreportBest.1
+  have hbest := (E.optionalReportBestResponse_ae hreportBest).1
   rw [hfactor] at hbest
   exact Measure.ae_ae_of_ae_compProd hbest
 
@@ -254,8 +254,8 @@ theorem lg21HiddenAccess_reportBestResponse_ae_under_eachGaussianTestLaw_of_fact
         E.noReportPayoff publicBase ≤ E.reportedPayoff publicBase score := by
     simpa [hscoreLaw] using hscore
   rw [htestLaw skill publicBase]
-  exact EconCSLib.Probability.ae_of_absolutelyContinuous
-    (EconCSLib.Probability.gaussianReal_absolutelyContinuous_of_positive_variances
+  exact AppliedModelingLib.Probability.ae_of_absolutelyContinuous
+    (AppliedModelingLib.Probability.gaussianReal_absolutelyContinuous_of_positive_variances
       skill (baseMean publicBase)
       (Real.toNNReal_pos.mpr hnoiseVariance)
       (Real.toNNReal_pos.mpr (add_pos hbaseVariance hnoiseVariance))) hraw

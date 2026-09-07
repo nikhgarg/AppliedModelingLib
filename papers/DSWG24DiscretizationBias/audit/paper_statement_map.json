@@ -1,4 +1,5 @@
 {
+  "approved_review_context_schema": 1,
   "generated_at": "2026-07-18T00:00:00Z",
   "inventory_roles": {
     "direct_source_target_ids": [
@@ -119,9 +120,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.accuracy"
-      ],
       "scope_disposition": "deep_only_standalone_formula",
       "scope_disposition_note": "The displayed finite-sample accuracy formula is reviewed as model context for selected definitions and results, not as an independently named theorem or definition.",
       "source_anchor_evidence": [
@@ -144,9 +142,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.aggregatePosterior"
-      ],
       "scope_disposition": "deep_only_standalone_formula",
       "scope_disposition_note": "The aggregate-posterior display is model context, not an independently named source definition.",
       "source_anchor_evidence": [
@@ -168,7 +163,9 @@
         "assumption_theorem1_argmax_rule_measurable"
       ],
       "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
+      "inventory_role": "source_context_observation",
+      "scope_disposition": "embedded_result_premise",
+      "scope_disposition_note": "Measurability is a formal model condition in the selected continuous Theorem 1(iii) Spec, not a separately presented source theorem or definition.",
       "source_anchor_evidence": [
         {
           "line_end": 673,
@@ -188,7 +185,9 @@
         "assumption_theorem1_calibrated_classifier"
       ],
       "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
+      "inventory_role": "source_context_observation",
+      "scope_disposition": "embedded_result_premise",
+      "scope_disposition_note": "Calibration is a stated antecedent of the selected Theorem 1 clauses and is checked within their source-to-Spec comparison.",
       "source_anchor_evidence": [
         {
           "line_end": 658,
@@ -208,7 +207,9 @@
         "assumption_theorem1_no_information_case"
       ],
       "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
+      "inventory_role": "source_context_observation",
+      "scope_disposition": "embedded_result_premise",
+      "scope_disposition_note": "This is the stated antecedent of the selected Theorem 1(i) result, whose transparent Spec retains the condition; it is not a second source claim.",
       "source_anchor_evidence": [
         {
           "line_end": 650,
@@ -228,10 +229,9 @@
         "assumption_theorem1_perfect_classifier"
       ],
       "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.assumption_theorem1_perfect_classifier"
-      ],
+      "inventory_role": "source_context_observation",
+      "scope_disposition": "embedded_result_premise",
+      "scope_disposition_note": "This is the stated perfect-classifier antecedent of selected Theorem 1(ii), whose transparent Spec retains the condition.",
       "source_anchor_evidence": [
         {
           "line_end": 666,
@@ -251,7 +251,9 @@
         "assumption_theorem1_plurality_argmax_class"
       ],
       "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
+      "inventory_role": "source_context_observation",
+      "scope_disposition": "embedded_result_premise",
+      "scope_disposition_note": "This is the plurality-class antecedent inside the selected Theorem 1(i) result, not an independent paper claim.",
       "source_anchor_evidence": [
         {
           "line_end": 231,
@@ -271,7 +273,9 @@
         "assumption_theorem2_at_least_two_classes"
       ],
       "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
+      "inventory_role": "source_context_observation",
+      "scope_disposition": "embedded_result_premise",
+      "scope_disposition_note": "The class-cardinality condition is a theorem premise retained in the selected Theorem 2 Specs, not a separate source claim.",
       "source_anchor_evidence": [
         {
           "line_end": 595,
@@ -284,14 +288,16 @@
       "source_kind": "assumption",
       "source_location": "Source model and Theorem 2 multiclass setting; publication text:590-595 and 756-763",
       "source_url": "https://arxiv.org/pdf/2405.16762",
-      "statement": "- Theorem 2 assumes at least two classes in the finite Lean wrapper."
+      "statement": "- The source model assumes at least two classes (`K ≥ 2`), and Theorem 2 is stated within that model."
     },
     "assumption_theorem2_more_rows_than_classes": {
       "aliases": [
         "assumption_theorem2_more_rows_than_classes"
       ],
       "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
+      "inventory_role": "source_context_observation",
+      "scope_disposition": "embedded_result_premise",
+      "scope_disposition_note": "The source condition N > K is a premise of the selected Theorem 2 clauses, not a separately reviewable result.",
       "source_anchor_evidence": [
         {
           "line_end": 644,
@@ -311,7 +317,9 @@
         "assumption_theorem2_positive_sample_count"
       ],
       "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
+      "inventory_role": "source_context_observation",
+      "scope_disposition": "embedded_result_premise",
+      "scope_disposition_note": "Positive sample size is an internal consequence of the selected Theorem 2 premise N > K and is not a separate source presentation.",
       "source_anchor_evidence": [
         {
           "line_end": 595,
@@ -331,7 +339,9 @@
         "assumption_theorem2_reference_nonnegative"
       ],
       "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
+      "inventory_role": "source_context_observation",
+      "scope_disposition": "embedded_result_premise",
+      "scope_disposition_note": "Probability nonnegativity belongs to the selected non-trivial-reference and Theorem 2 conditions; it is not an independent source claim.",
       "source_anchor_evidence": [
         {
           "line_end": 755,
@@ -351,16 +361,10 @@
         "bayesOptimal_formula"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.bayes_optimal_definition"
+        "DSWG24DiscretizationBias.ProofBridge.bayesOptimal"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.bayes_optimal_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "DSWG24DiscretizationBias.PaperInterface.bayes_optimal_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 607,
@@ -368,6 +372,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "3.1.1    Continuous classifier and discretization rules\nSuppose we have a machine learning classifier q (e.g., trained on some other dataset) that makes continuous\nprobability predictions for each class, given the data. Let q(y, x) denote the probability placed on class y\n\n\n\n                                                       10\n\fgiven data x. For example, the Bayes optimal classifier is\n                                               q ∗ (y, x) ≜ Pr(Y = y|X = x).\nWe will refer to p as the prior and q as our learned posterior. Let the simplex of possible probability vectors\nover the support Y be △Y , and let q(x) ∈ △Y be the vector of probabilities (q(y, x))y .",
           "quoted_text_sha256": "a4118b4e4ac147b126002764fd2b55faf37383a2fbc324ea7e5d4fcb4aac05d2"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "bayesOptimal",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.ProofBridge.bayesOptimal",
+          "semantic_claim": "The Bayes-optimal posterior satisfies `q*(y,x) = Pr(Y=y | X=x)`; the finite interface uses the equivalent atom factorization on nonzero and zero observation atoms.",
+          "source_locator": "publication text:597-607",
+          "source_quote_sha256": "a4118b4e4ac147b126002764fd2b55faf37383a2fbc324ea7e5d4fcb4aac05d2"
         }
       ],
       "source_kind": "definition",
@@ -384,10 +398,7 @@
         "validator_type": "agent"
       },
       "source_url": "https://arxiv.org/pdf/2405.16762",
-      "statement": "The Bayes-optimal posterior satisfies `q*(y,x) = Pr(Y=y | X=x)`; the finite interface uses the equivalent atom factorization on nonzero and zero observation atoms.",
-      "support_lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.bayes_optimal_definitionSpec"
-      ]
+      "statement": "The Bayes-optimal posterior satisfies `q*(y,x) = Pr(Y=y | X=x)`; the finite interface uses the equivalent atom factorization on nonzero and zero observation atoms."
     },
     "bias": {
       "aliases": [
@@ -395,9 +406,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.bias"
-      ],
       "scope_disposition": "deep_only_standalone_formula",
       "scope_disposition_note": "The bias display is model context, not an independently named source definition.",
       "source_anchor_evidence": [
@@ -418,17 +426,29 @@
       "aliases": [
         "calibrated_formula"
       ],
-      "claim_bearing": true,
-      "inventory_role": "direct_source_target",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.calibration_definition"
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only the calibrated source-semantic prerequisite and the selected Theorem 1(iii) argmax-bias-by-MAE bound cite this reading.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "For each label y and every measurable set A of score values, E[1_{Y=y} 1_{q_y in A}] = E[q_y 1_{q_y in A}], equivalently E[1_{Y=y} | sigma(q_y)] = q_y almost surely. This is the governing meaning of the source display Pr(Y=y | q(y,x)=c)=c.",
+          "id": "DSWG24-CALIBRATION-EVENT-READING-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3360e282316d3f211dacc362d96a514b89b96501ebfac2046887abc9d7f23043",
+          "report_summary": "Calibration uses the standard conditional-expectation event identity intended by the source proof.",
+          "source_locator": "publication text:635-658; publication text:1291-1293",
+          "why_needed": "The printed footnote discusses score values of positive measure, while the proof uses calibration through score-event expectation identities. The maintainer resolved the intended reading exactly: \"yes intend the usual definition, as in the proof\"."
+        }
       ],
-      "semantic_contract": {
-        "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.calibration_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "DSWG24DiscretizationBias.PaperInterface.calibration_definitionSpec"
-      },
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "DSWG24DiscretizationBias.ProofBridge.calibrated"
+      ],
+      "model_convention_ids": [
+        "DSWG24-CALIBRATION-EVENT-READING-01"
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 658,
@@ -436,6 +456,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "3.2     Theoretical Results: Argmax bias and continuous classifier\nWe first study the relationship between argmax bias and the properties of the continuous classifier. We show\nthat discretization bias can occur even with unbiased (calibrated) continuous classifiers q, as long as it is\nuncertain (has non-zero error).\n    The following result holds for all calibrated classifiers. A given classifier q is calibrated when its contin-\nuous predictions are correct on average, Pr(Y = y|q(y, x) = c) = c.10 Note that the Bayes optimal classifier\nis calibrated.\nTheorem 1. Argmax bias depends on predictive uncertainty, i.e., how much information features x provide\nabout the true class label. Consider calibrated classifier q and the argmax decision rule Dargmax . Let N > K\nand consider a reference distribution of either the aggregate posterior or the prior. Then,\n  (i). Suppose x provides no information and q(y, x) = Pr(y) for all x, y. Then, amplification bias is\n       maximized and all data points are classified as a plurality class:\n                                                  (\n                                                    1 − Pr(y), if y = arg maxw p(w),\n                            BIAS(y, Dargmax ) =\n                                                    − Pr(y),      otherwise.\n   9 Note that, though related, mean average error of the continuous predictor q(y, x) is not equivalent to expected zero-one\n\nloss of the discrete decisions. The latter, our measure of decision accuracy, also depends on how the continuous predictor is\ndiscretized.                                n                                           o\n  10 For all c of non-zero measure: ∀c ∈\n                                                 R\n                                             c : (x,y) I[q(y, x) = c]f (x, y)d(y, x) > 0 . Further note that calibration implies\nBayesian consistency, i.e., the continuous model cumulatively assigns the proper mass to each class y: EX [q(y, x)] = Pr(y).",
           "quoted_text_sha256": "8f09518bf0e46f9fd26158aec040d20d553a6a74dbb912c5cfe1d4a4c7943590"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "calibrated",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.ProofBridge.calibrated",
+          "semantic_claim": "-\nCalibration: for every label and every measurable score event, the true label\nmass on that score event equals the aggregate posterior score mass on the same\nevent.  This is the paper's `Pr(Y=y | q(y,x)=c)=c` condition in\nevent-preimage form.",
+          "source_locator": "publication text:635-658",
+          "source_quote_sha256": "8f09518bf0e46f9fd26158aec040d20d553a6a74dbb912c5cfe1d4a4c7943590"
         }
       ],
       "source_kind": "definition",
@@ -452,10 +482,7 @@
         "validator_type": "agent"
       },
       "source_url": "https://arxiv.org/pdf/2405.16762",
-      "statement": "-\nCalibration: for every label and every measurable score event, the true label\nmass on that score event equals the aggregate posterior score mass on the same\nevent.  This is the paper's `Pr(Y=y | q(y,x)=c)=c` condition in\nevent-preimage form.",
-      "support_lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.calibration_definitionSpec"
-      ]
+      "statement": "-\nCalibration: for every label and every measurable score event, the true label\nmass on that score event equals the aggregate posterior score mass on the same\nevent.  This is the paper's `Pr(Y=y | q(y,x)=c)=c` condition in\nevent-preimage form."
     },
     "classifierMAE": {
       "aliases": [
@@ -463,9 +490,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.classifierMAE"
-      ],
       "scope_disposition": "deep_only_standalone_formula",
       "scope_disposition_note": "The predictive-error display is reviewed as context for Theorem 1(iii), not as an independently named source definition.",
       "source_anchor_evidence": [
@@ -624,9 +648,24 @@
     },
     "datasetMostLikelyClass": {
       "claim_bearing": true,
-      "inventory_role": "pending_v11_surface_migration",
-      "scope_disposition": "requires_dedicated_v11_spec",
-      "scope_disposition_note": "The source's aggregate-most-likely-class component remains claim-bearing until it has its own transparent PaperInterface Spec.",
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "DSWG24DiscretizationBias.ProofBridge.isAggregateFirstArgmax"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 205,
+              "line_start": 198,
+              "publication_locator": "cited publication",
+              "quoted_text": "Aggregate posterior reference distribution What is an appropriate reference distribution pref ? Of\ncourse, if we knew the true distribution of labels (e.g., the true fraction of each group in the voter file), we\ncould measure and optimize fidelity with respect to it. However, this information is not often known. In this\npaper, we will thus primarily compare to the aggregate posterior: for a given set {xi }, what would the\ndecision distribution be if we could make continuous decisions corresponding to the continuous classifier q,\n                                                                  1 X\n                                            pqagg (y, {xi }) =        q(y, xi ).\n                                                                  N i",
+              "quoted_text_sha256": "932b0ae3d35fb498ca0c796df78b930df505f37b70c89c1ea3c352a6cfc1027f"
+            }
+          ]
+        }
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 755,
@@ -636,9 +675,19 @@
           "quoted_text_sha256": "48016c59a05e17b2de877c61c84ccf12311aa20c4ce16624db4dc7c832bc1c66"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "datasetMostLikelyClass",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.ProofBridge.isAggregateFirstArgmax",
+          "semantic_claim": "In the P_N^q definition, the lower mass bound is evaluated at the class most likely for that dataset under the aggregate posterior.",
+          "source_locator": "publication text:749-755",
+          "source_quote_sha256": "48016c59a05e17b2de877c61c84ccf12311aa20c4ce16624db4dc7c832bc1c66"
+        }
+      ],
       "source_kind": "definition",
       "source_location": "publication text:749-755",
-      "source_note": "This source-presented component remains a pending source-to-Spec obligation. The listed Lean declaration is navigation to relevant existing code, not a semantic contract.",
+      "source_note": "The source component is represented by the fixed-order aggregate-posterior maximizer for each observed dataset.",
       "source_prose_definition_reconciliation": {
         "judgment": "semantically_equivalent",
         "presentation_sha256": "0e113c6d6099e22a01a12fd39ef3b90c3313d9aa0a92eff1a255c2393d445767",
@@ -650,10 +699,7 @@
         "validator": "DSWG24 prose-definition semantic reviewer",
         "validator_type": "agent"
       },
-      "statement": "In the P_N^q definition, the lower mass bound is evaluated at the class most likely for that dataset under the aggregate posterior.",
-      "support_lean_declarations": [
-        "DSWG24DiscretizationBias.ProofBridge.isAggregateFirstArgmax_formula"
-      ]
+      "statement": "In the P_N^q definition, the lower mass bound is evaluated at the class most likely for that dataset under the aggregate posterior."
     },
     "equation1Objective": {
       "aliases": [
@@ -661,9 +707,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.equation1Objective"
-      ],
       "scope_disposition": "deep_only_standalone_formula",
       "scope_disposition_note": "Equation (1) is reviewed as the visible semantic content of the selected optimization-rule definition, not as a second paper claim.",
       "source_anchor_evidence": [
@@ -686,9 +729,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.equation2ExpectedAccuracy"
-      ],
       "scope_disposition": "deep_only_standalone_formula",
       "scope_disposition_note": "Equation (2) is reviewed as context for Theorem 2, not as a second paper claim.",
       "source_anchor_evidence": [
@@ -711,9 +751,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.equation3ExpectedObjective"
-      ],
       "scope_disposition": "deep_only_standalone_formula",
       "scope_disposition_note": "Equation (3) is reviewed as context for the selected Pareto and theorem statements, not as a second paper claim.",
       "source_anchor_evidence": [
@@ -736,9 +773,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.expectedBiasAt"
-      ],
       "scope_disposition": "deep_only_standalone_formula",
       "scope_disposition_note": "The expected-bias formula is supporting model context, not an independently named theoretical statement.",
       "source_anchor_evidence": [
@@ -761,9 +795,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.expectedFidelityAt"
-      ],
       "scope_disposition": "deep_only_standalone_formula",
       "scope_disposition_note": "The expected-fidelity formula is reviewed as context for the selected Pareto and weighted-objective results.",
       "source_anchor_evidence": [
@@ -786,9 +817,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.expectedObjective"
-      ],
       "scope_disposition": "deep_only_standalone_formula",
       "scope_disposition_note": "The expected-objective display is supporting context for Theorem 2, not an independently named source definition.",
       "source_anchor_evidence": [
@@ -811,9 +839,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.fidelity"
-      ],
       "scope_disposition": "deep_only_standalone_formula",
       "scope_disposition_note": "The fidelity display is model context, not an independently named source definition.",
       "source_anchor_evidence": [
@@ -832,9 +857,10 @@
     },
     "formalIndependentRule": {
       "claim_bearing": true,
-      "inventory_role": "pending_v11_surface_migration",
-      "scope_disposition": "requires_dedicated_v11_spec",
-      "scope_disposition_note": "The source's formal potentially randomized independence definition remains claim-bearing until it has its own transparent PaperInterface Spec.",
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "DSWG24DiscretizationBias.ProofBridge.isIndependentRandomizedRule"
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 618,
@@ -844,9 +870,19 @@
           "quoted_text_sha256": "1b0f25ba091f45e480457b3a62f9e5232b6b9a5b889b84782ee626ed65b92b9b"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "formalIndependentRule",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.ProofBridge.isIndependentRandomizedRule",
+          "semantic_claim": "An independent decision rule has a potentially randomized common row function d: each label is produced from that row's posterior vector alone.",
+          "source_locator": "publication text:615-618",
+          "source_quote_sha256": "1b0f25ba091f45e480457b3a62f9e5232b6b9a5b889b84782ee626ed65b92b9b"
+        }
+      ],
       "source_kind": "definition",
       "source_location": "publication text:615-618",
-      "source_note": "This source-presented definition remains a pending source-to-Spec obligation. The listed Lean declaration is navigation to relevant existing code, not a semantic contract.",
+      "source_note": "The randomized rule is represented by conditional factorization into a common normalized row-level decision kernel.",
       "source_prose_definition_reconciliation": {
         "judgment": "semantically_equivalent",
         "presentation_sha256": "ced6571bce2707e0febaf7217ee1ce48f6e4b7f9ffe80a5d6f036b7122698ef9",
@@ -858,16 +894,28 @@
         "validator": "DSWG24 prose-definition semantic reviewer",
         "validator_type": "agent"
       },
-      "statement": "An independent decision rule has a potentially randomized common row function d: each label is produced from that row's posterior vector alone.",
-      "support_lean_declarations": [
-        "DSWG24DiscretizationBias.ProofBridge.isIndependentRandomizedRule_formula"
-      ]
+      "statement": "An independent decision rule has a potentially randomized common row function d: each label is produced from that row's posterior vector alone."
     },
     "isArgmaxRule": {
       "claim_bearing": true,
-      "inventory_role": "pending_v11_surface_migration",
-      "scope_disposition": "requires_dedicated_v11_spec",
-      "scope_disposition_note": "The source's weak maximum-posterior assignment definition remains a claim-bearing source presentation until it has its own transparent PaperInterface Spec.",
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "DSWG24DiscretizationBias.ProofBridge.isArgmaxRule"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "scope",
+          "source_anchor_evidence": [
+            {
+              "line_end": 231,
+              "line_start": 229,
+              "publication_locator": "cited publication",
+              "quoted_text": "   2 Suppose ties are broken according to some consistent ordering over the classes.      In the event of ties, we will use\narg maxy q(y, x) to denote the single class that is in the argmax set and is first in the consistent ordering among classes\nin the argmax set.",
+              "quoted_text_sha256": "a6dc4680ce05165102e5d8eebef4418c0a494fe075416ddcc09760d9f8abe08f"
+            }
+          ]
+        }
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 218,
@@ -875,6 +923,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Argmax rule assigns, for each data point, the most likely2 class: Dargmax ({q(xi }) ≜ {ŷi = arg maxy q(y, xi )}.",
           "quoted_text_sha256": "362862c72ceb75798643d67974a656c68180d4c282bb2ed2a8129085701077a9"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "isArgmaxRule",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.ProofBridge.isArgmaxRule",
+          "semantic_claim": "The argmax rule assigns each data point a class with maximum posterior score.",
+          "source_locator": "publication text:218",
+          "source_quote_sha256": "362862c72ceb75798643d67974a656c68180d4c282bb2ed2a8129085701077a9"
         }
       ],
       "source_kind": "definition",
@@ -898,16 +956,10 @@
         "isIndependentRule_formula"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.independent_rule_definition"
+        "DSWG24DiscretizationBias.ProofBridge.isIndependentRule"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.independent_rule_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "DSWG24DiscretizationBias.PaperInterface.independent_rule_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 228,
@@ -931,6 +983,16 @@
           "quoted_text_sha256": "1b0f25ba091f45e480457b3a62f9e5232b6b9a5b889b84782ee626ed65b92b9b"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "isIndependentRule.source",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.ProofBridge.isIndependentRule",
+          "semantic_claim": "For a deterministic independent rule, the decision at row i is one common function d of q(x_i), independent of the other dataset rows.",
+          "source_locator": "publication text:615-618",
+          "source_quote_sha256": "1b0f25ba091f45e480457b3a62f9e5232b6b9a5b889b84782ee626ed65b92b9b"
+        }
+      ],
       "source_kind": "definition",
       "source_location": "publication text:225-228 and 615-618; publication text:158-162 and publication text:615-618",
       "source_note": "The raw source bundle also includes the explicitly merged source presentation(s) needed to interpret this one canonical claim.",
@@ -946,26 +1008,17 @@
         "validator_type": "agent"
       },
       "source_url": "https://arxiv.org/pdf/2405.16762",
-      "statement": "For a deterministic independent rule, the decision at row i is one common function d of q(x_i), independent of the other dataset rows.",
-      "support_lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.independent_rule_definitionSpec"
-      ]
+      "statement": "For a deterministic independent rule, the decision at row i is one common function d of q(x_i), independent of the other dataset rows."
     },
     "isThompsonSamplingRule": {
       "aliases": [
         "isThompsonSamplingRule_formula"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.thompson_sampling_definition"
+        "DSWG24DiscretizationBias.ProofBridge.isThompsonSamplingRule"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.thompson_sampling_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "DSWG24DiscretizationBias.PaperInterface.thompson_sampling_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 223,
@@ -973,6 +1026,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Thompson sampling for each data point i, samples a class y based on the probabilities q(y, xi ), i.e., ŷi = y\n    with probability q(y, xi ), and so in expectation will have labels matching the aggregate posterior.",
           "quoted_text_sha256": "aee172aeb5cfb838ec3e165a129242bca6c8d8f6ffb3f072c1e36d378026e64d"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "isThompsonSamplingRule",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.ProofBridge.isThompsonSamplingRule",
+          "semantic_claim": "Under Thompson sampling, row i receives class y with probability q(y,x_i).",
+          "source_locator": "publication text:222-223",
+          "source_quote_sha256": "aee172aeb5cfb838ec3e165a129242bca6c8d8f6ffb3f072c1e36d378026e64d"
         }
       ],
       "source_kind": "definition",
@@ -989,26 +1052,17 @@
         "validator_type": "agent"
       },
       "source_url": "https://arxiv.org/pdf/2405.16762",
-      "statement": "Under Thompson sampling, row i receives class y with probability q(y,x_i).",
-      "support_lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.thompson_sampling_definitionSpec"
-      ]
+      "statement": "Under Thompson sampling, row i receives class y with probability q(y,x_i)."
     },
     "isTieBrokenArgmaxRule": {
       "aliases": [
         "isTieBrokenArgmaxRule_formula"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.tie_broken_argmax_definition"
+        "DSWG24DiscretizationBias.ProofBridge.isTieBrokenArgmaxRule"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.tie_broken_argmax_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "DSWG24DiscretizationBias.PaperInterface.tie_broken_argmax_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 231,
@@ -1023,6 +1077,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Argmax rule assigns, for each data point, the most likely2 class: Dargmax ({q(xi }) ≜ {ŷi = arg maxy q(y, xi )}.\nThreshold at t rule assigns a label only if the argmax class has a probability of at least t, i.e., ŷi =\n    arg maxy q(y, xi ) if maxy q(y, xi ) ≥ t, otherwise i is left uncoded.\n\nThompson sampling for each data point i, samples a class y based on the probabilities q(y, xi ), i.e., ŷi = y\n    with probability q(y, xi ), and so in expectation will have labels matching the aggregate posterior.\n\n    These rules are all independent: the assigned label for a data point i depends on q(xi ) but not on other\ndata points or their probability vectors {q(xj )}j̸=i .\n    In contrast, our proposed approach also includes joint decision optimization rules, which depend on the\nentire set of data points, as a solution to discretization bias.\n   2 Suppose ties are broken according to some consistent ordering over the classes.      In the event of ties, we will use\narg maxy q(y, x) to denote the single class that is in the argmax set and is first in the consistent ordering among classes\nin the argmax set.",
           "quoted_text_sha256": "374d195b8603d903100f02c9c464cd4a20700c4cc6e4d4c23a2a4fe17ba6aa35"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "isTieBrokenArgmaxRule.source",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.ProofBridge.isTieBrokenArgmaxRule",
+          "semantic_claim": "The argmax rule assigns each row its posterior-maximizing class using the source's fixed tie order.",
+          "source_locator": "publication text:218-231",
+          "source_quote_sha256": "374d195b8603d903100f02c9c464cd4a20700c4cc6e4d4c23a2a4fe17ba6aa35"
         }
       ],
       "source_kind": "definition",
@@ -1040,10 +1104,7 @@
         "validator_type": "agent"
       },
       "source_url": "https://arxiv.org/pdf/2405.16762",
-      "statement": "The argmax rule assigns each row its posterior-maximizing class using the source's fixed tie order.",
-      "support_lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.tie_broken_argmax_definitionSpec"
-      ]
+      "statement": "The argmax rule assigns each row its posterior-maximizing class using the source's fixed tie order."
     },
     "marginalLabelShare": {
       "aliases": [
@@ -1051,9 +1112,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.marginalLabelShare"
-      ],
       "scope_disposition": "deep_only_standalone_formula",
       "scope_disposition_note": "The marginal-share display is model context, not an independently named source definition.",
       "source_anchor_evidence": [
@@ -1075,16 +1133,24 @@
         "maximizesEquation1_formula"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.integer_optimization_rule_definition"
+        "DSWG24DiscretizationBias.ProofBridge.maximizesEquation1"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.integer_optimization_rule_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "DSWG24DiscretizationBias.PaperInterface.integer_optimization_rule_definitionSpec"
-      },
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 194,
+              "line_start": 177,
+              "publication_locator": "cited publication",
+              "quoted_text": "\f    (2a) To measure bias, we use the distance between the marginal distribution of labels and a reference\ndistribution pref . Let p̂marg (y) denote the fraction of datapoints with the label y:\n                                                                     N\n                                                                 1 X\n                                          p̂marg (y, ŷ1:N ) =         1[ŷi = y].\n                                                                 N i=1\n\nThen, bias is how much a class y is amplified by labels relative to the reference:\n\n                                    bias(y, ŷ1:N , pref ) ≜ p̂marg (y, ŷ1:N ) − pref (y).\n\n    (2b) As a summary statistic, we will further consider distributional fidelity, the negative sum of the\nabsolute value of bias across classes (equivalently, the negative of the ℓ1 distance between the label and\nreference distributions).\n                                                        X\n                                 fid(pref , ŷ1:N ) ≜ −   bias(y, ŷ1:N , pref ) .\n                                                            y∈Y\n",
+              "quoted_text_sha256": "a3802c4f98479734dc08ce2ddb101274cfb8df13287949ff906688c384642729"
+            }
+          ]
+        }
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 264,
@@ -1092,6 +1158,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Integer optimization rules directly optimize given objectives. We consider the rule that corresponds to\n     solving the following optimization problem, for a given γ, data points {xi }, and reference pref :\n                                                            N\n                                                                           !\n                      γ                                  1 X\n                   D ({q(xi )}, pref ) = arg max{ŷi } γ       q(ŷi , xi ) + (1 − γ)fid(pref , ŷ1:N ). (1)\n                                                         N i=1\n\n     The rule balances, parameterized by γ ∈ [0, 1], row-level scores (accuracy as measured by q) and\n     distributional fidelity.\nAggregate posterior matching A special case of the joint optimization decision rules defined in Equa-\n    tion (1) is as γ → 0, leading to a rule that maximizes accuracy subject to the constraint that distri-\n    butional fidelity be as high as possible. We call such rules matching solutions, e.g., aggregate posterior",
           "quoted_text_sha256": "ef2be0d6378c52aa1b4d8a181ffa749cbace4782c9d4bbee41b574234d12a08b"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "maximizesEquation1",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.ProofBridge.maximizesEquation1",
+          "semantic_claim": "The Equation (1) joint rule returns a decision vector maximizing the per-dataset weighted score over all label assignments.",
+          "source_locator": "publication text:252-264",
+          "source_quote_sha256": "ef2be0d6378c52aa1b4d8a181ffa749cbace4782c9d4bbee41b574234d12a08b"
         }
       ],
       "source_kind": "definition",
@@ -1108,10 +1184,7 @@
         "validator_type": "agent"
       },
       "source_url": "https://arxiv.org/pdf/2405.16762",
-      "statement": "The Equation (1) joint rule returns a decision vector maximizing the per-dataset weighted score over all label assignments.",
-      "support_lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.integer_optimization_rule_definitionSpec"
-      ]
+      "statement": "The Equation (1) joint rule returns a decision vector maximizing the per-dataset weighted score over all label assignments."
     },
     "objective": {
       "aliases": [
@@ -1119,9 +1192,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.objective"
-      ],
       "scope_disposition": "deep_only_standalone_formula",
       "scope_disposition_note": "The per-dataset objective display is supporting context for the selected optimization-rule definition.",
       "source_anchor_evidence": [
@@ -1143,16 +1213,10 @@
         "paretoOptimal_formula"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.pareto_optimality_definition"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.pareto_optimality_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "DSWG24DiscretizationBias.PaperInterface.pareto_optimality_definitionSpec"
-      },
+      "coverage_status": "user_approved_scope_exclusion",
+      "inventory_role": "source_scope_exclusion",
+      "scope_disposition": "user_approved_scope_exclusion",
+      "scope_disposition_note": "The source defines its Pareto-optimal terminology through maximization of a weighted objective for some weight in (0,1]. The retained wrapper instead denotes nondominance, and their general equivalence is unproved. This definition correspondence is uncredited; the selected Theorem 2(iii) independently proves domination and its separate weighted-objective conclusion.",
       "source_anchor_evidence": [
         {
           "line_end": 633,
@@ -1161,6 +1225,19 @@
           "quoted_text": "3.1.2    Formal metrics and Pareto optimal decision-making\nFor our theoretical results, we consider the expectations of our accuracy, fidelity, and bias metrics, calculated\nover the joint distribution of the data FXY over datasets of size N (and any randomness in the decision\nrule). The expected accuracy of a decision rule D together with continuous predictor q is thus\n                                     ACCN (D, q) = EFXY [acc(y1:N , D({q(xi )}))] .                                            (2)\nAnalogously FIDN (D, q, pref ) is the expectation of fidelity and BIASN (y, D, q, pref ) is the expectation of bias.\n   For a given data distribution F , continuous classifier q, reference distribution pref , and dataset size, we\nwant to make effective decisions. Given the multiple desiderata, we thus want Pareto optimal decision-\nmaking, i.e., to adopt a rule D that maximizes, for some γ ∈ (0, 1],\n                              γ\n                             ON (D, q, pref ) = γACCN (D, q) + (1 − γ)FIDN (D, q, pref ).                                      (3)\nThe weight γ is task-dependent, set by a practitioner’s expertise for whether accuracy or distributional\nfidelity is more important.\n    When clear from context, we omit q, pref , and N from the arguments for BIAS, Oγ , ACC, and FID.",
           "quoted_text_sha256": "8bbda6afd40457d8383a1fd20048adea79c624b54a109b39b404aa3c48e2749c"
         }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paretoOptimal",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.ProofBridge.paretoOptimal",
+          "semantic_claim": "A decision rule is Pareto optimal for expected accuracy and expected fidelity; equivalently in the paper, it maximizes the weighted objective for some gamma in (0,1].",
+          "source_locator": "publication text:620-633",
+          "source_quote_sha256": "8bbda6afd40457d8383a1fd20048adea79c624b54a109b39b404aa3c48e2749c"
+        }
+      ],
+      "source_defect_ids": [
+        "DSWG24-PARETO-VOCABULARY-03"
       ],
       "source_kind": "definition",
       "source_location": "publication text:620-633",
@@ -1177,9 +1254,16 @@
       },
       "source_url": "https://arxiv.org/pdf/2405.16762",
       "statement": "A decision rule is Pareto optimal for expected accuracy and expected fidelity; equivalently in the paper, it maximizes the weighted objective for some gamma in (0,1].",
-      "support_lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.pareto_optimality_definitionSpec"
-      ]
+      "user_approved_scope_exclusion": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-06",
+        "reason": "The source defines its Pareto-optimal terminology through maximization of a weighted objective for some weight in (0,1]. The retained wrapper instead denotes nondominance, and their general equivalence is unproved. This definition correspondence is uncredited; the selected Theorem 2(iii) independently proves domination and its separate weighted-objective conclusion.",
+        "schema": 1,
+        "source_anchor_quote_sha256": "8bbda6afd40457d8383a1fd20048adea79c624b54a109b39b404aa3c48e2749c",
+        "source_evidence": "The source defines its Pareto-optimal terminology through maximization of a weighted objective for some weight in (0,1]. The retained wrapper instead denotes nondominance, and their general equivalence is unproved. This definition correspondence is uncredited; the selected Theorem 2(iii) independently proves domination and its separate weighted-objective conclusion.",
+        "source_locator": "publication text:620-633"
+      }
     },
     "perfectClassifierOnSupport": {
       "aliases": [
@@ -1187,9 +1271,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.perfectClassifierOnSupport_formula"
-      ],
       "scope_disposition": "deep_only_named_result_context",
       "scope_disposition_note": "The perfect-classifier condition is reviewed as the stated antecedent of Theorem 1(ii), not as an independently presented definition.",
       "source_anchor_evidence": [
@@ -1211,16 +1292,10 @@
         "posteriorSimplex_formula"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.posterior_simplex_definition"
+        "DSWG24DiscretizationBias.ProofBridge.posteriorSimplex"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.posterior_simplex_definition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "DSWG24DiscretizationBias.PaperInterface.posterior_simplex_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 607,
@@ -1228,6 +1303,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "3.1.1    Continuous classifier and discretization rules\nSuppose we have a machine learning classifier q (e.g., trained on some other dataset) that makes continuous\nprobability predictions for each class, given the data. Let q(y, x) denote the probability placed on class y\n\n\n\n                                                       10\n\fgiven data x. For example, the Bayes optimal classifier is\n                                               q ∗ (y, x) ≜ Pr(Y = y|X = x).\nWe will refer to p as the prior and q as our learned posterior. Let the simplex of possible probability vectors\nover the support Y be △Y , and let q(x) ∈ △Y be the vector of probabilities (q(y, x))y .",
           "quoted_text_sha256": "a4118b4e4ac147b126002764fd2b55faf37383a2fbc324ea7e5d4fcb4aac05d2"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "posteriorSimplex",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.ProofBridge.posteriorSimplex",
+          "semantic_claim": "-\nPosterior-simplex condition: each `q(x)` is a probability vector.",
+          "source_locator": "publication text:597-607",
+          "source_quote_sha256": "a4118b4e4ac147b126002764fd2b55faf37383a2fbc324ea7e5d4fcb4aac05d2"
         }
       ],
       "source_kind": "definition",
@@ -1244,10 +1329,7 @@
         "validator_type": "agent"
       },
       "source_url": "https://arxiv.org/pdf/2405.16762",
-      "statement": "-\nPosterior-simplex condition: each `q(x)` is a probability vector.",
-      "support_lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.posterior_simplex_definitionSpec"
-      ]
+      "statement": "-\nPosterior-simplex condition: each `q(x)` is a probability vector."
     },
     "prior": {
       "aliases": [
@@ -1255,9 +1337,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.prior"
-      ],
       "scope_disposition": "deep_only_standalone_formula",
       "scope_disposition_note": "The prior formula is model context for the named theorem clauses and is not an independently named source definition.",
       "source_anchor_evidence": [
@@ -1828,9 +1907,10 @@
     },
     "referenceDistribution": {
       "claim_bearing": true,
-      "inventory_role": "pending_v11_surface_migration",
-      "scope_disposition": "requires_dedicated_v11_spec",
-      "scope_disposition_note": "The source's dataset-indexed reference-distribution component remains claim-bearing until it has its own transparent PaperInterface Spec.",
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "DSWG24DiscretizationBias.ProofBridge.referenceSimplexAt"
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 755,
@@ -1840,9 +1920,19 @@
           "quoted_text_sha256": "48016c59a05e17b2de877c61c84ccf12311aa20c4ce16624db4dc7c832bc1c66"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "referenceDistribution",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.ProofBridge.referenceSimplexAt",
+          "semantic_claim": "In the P_N^q definition, a reference distribution maps each observed dataset to a probability vector over the classes.",
+          "source_locator": "publication text:749-755",
+          "source_quote_sha256": "48016c59a05e17b2de877c61c84ccf12311aa20c4ce16624db4dc7c832bc1c66"
+        }
+      ],
       "source_kind": "definition",
       "source_location": "publication text:749-755",
-      "source_note": "This source-presented component remains a pending source-to-Spec obligation. The listed Lean declaration is navigation to relevant existing code, not a semantic contract.",
+      "source_note": "The source component is represented as a dataset-indexed simplex-valued reference family.",
       "source_prose_definition_reconciliation": {
         "judgment": "semantically_equivalent",
         "presentation_sha256": "6a3eac0683e4423caba037061ac497b437ab6ed7f2040ef311e6087f80fe9032",
@@ -1854,17 +1944,13 @@
         "validator": "DSWG24 prose-definition semantic reviewer",
         "validator_type": "agent"
       },
-      "statement": "In the P_N^q definition, a reference distribution maps each observed dataset to a probability vector over the classes.",
-      "support_lean_declarations": [
-        "DSWG24DiscretizationBias.ProofBridge.referenceSimplexAt_formula"
-      ]
+      "statement": "In the P_N^q definition, a reference distribution maps each observed dataset to a probability vector over the classes."
     },
     "sourcePNq": {
       "aliases": [
         "sourcePNq_formula"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "DSWG24DiscretizationBias.PaperInterface.nontrivial_reference_family_definition"
       ],
@@ -1884,17 +1970,20 @@
         },
         {
           "line_end": 755,
-          "line_start": 744,
-          "publication_locator": "cited publication",
-          "quoted_text": "3.3     Results: Individual discretization versus joint optimization\nAbove, we study how the continuous classifier’s properties induce discretization bias, when using the argmax\nrule. We now study discrete decision-making: given an imperfect but Bayes optimal classifier, how can\nwe make unbiased decisions? We show that joint decision-making, as in the program in Equation (1), is\nnecessary for Pareto optimality.\n                                                                                     q\n    For the result, we define the notion of non-trivial reference distributions PN     : a reference distribution\n                                                       1\npq : {xi } → △NY is in P N if it assigns mass at least N to the most likely class in the  dataset, i.e., at least 1\ndata point would be discretized to the most likely class arg maxy i q(y, xi ).13\n                                                                   P\n",
-          "quoted_text_sha256": "2b080574265c92ce6cc0a51486d6ac7395ace7cd9b191cc6ee5fccd8cbc56029"
-        },
-        {
-          "line_end": 755,
           "line_start": 749,
           "publication_locator": "cited publication",
           "quoted_text": "                                                                                     q\n    For the result, we define the notion of non-trivial reference distributions PN     : a reference distribution\n                                                       1\npq : {xi } → △NY is in P N if it assigns mass at least N to the most likely class in the  dataset, i.e., at least 1\ndata point would be discretized to the most likely class arg maxy i q(y, xi ).13\n                                                                   P\n",
           "quoted_text_sha256": "48016c59a05e17b2de877c61c84ccf12311aa20c4ce16624db4dc7c832bc1c66"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "sourcePNq.source",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.PaperInterface.nontrivial_reference_family_definition",
+          "semantic_claim": "The exact P_N^q family is dataset-indexed and simplex-valued, and requires mass at least 1/N only at that dataset's selected aggregate-max class.",
+          "source_locator": "publication text:744-755",
+          "source_quote_sha256": "2b080574265c92ce6cc0a51486d6ac7395ace7cd9b191cc6ee5fccd8cbc56029"
         }
       ],
       "source_kind": "formula",
@@ -2053,7 +2142,6 @@
         "theorem1i_no_information_bias"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "DSWG24DiscretizationBias.PaperInterface.theorem1i_no_information_bias"
       ],
@@ -2070,6 +2158,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Theorem 1. Argmax bias depends on predictive uncertainty, i.e., how much information features x provide\nabout the true class label. Consider calibrated classifier q and the argmax decision rule Dargmax . Let N > K\nand consider a reference distribution of either the aggregate posterior or the prior. Then,\n  (i). Suppose x provides no information and q(y, x) = Pr(y) for all x, y. Then, amplification bias is\n       maximized and all data points are classified as a plurality class:\n                                                  (\n                                                    1 − Pr(y), if y = arg maxw p(w),\n                            BIAS(y, Dargmax ) =\n                                                    − Pr(y),      otherwise.",
           "quoted_text_sha256": "c32dfce72aacba36c61938fb30025708892bc0afa61ad37653366d09e40949f6"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem1i.no.information.bias",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.PaperInterface.theorem1i_no_information_bias",
+          "semantic_claim": "states the no-information plurality-class and non-plurality-class bias formulas for both prior and aggregate-posterior references.",
+          "source_locator": "publication text:642-650",
+          "source_quote_sha256": "c32dfce72aacba36c61938fb30025708892bc0afa61ad37653366d09e40949f6"
         }
       ],
       "source_kind": "theorem",
@@ -2187,7 +2285,6 @@
     },
     "theorem1ii_prior_reference_zero_bias": {
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "DSWG24DiscretizationBias.PaperInterface.theorem1ii_perfect_classifier_zero_bias"
       ],
@@ -2204,20 +2301,23 @@
           "publication_locator": "cited publication",
           "quoted_text": "Theorem 1. Argmax bias depends on predictive uncertainty, i.e., how much information features x provide\nabout the true class label. Consider calibrated classifier q and the argmax decision rule Dargmax . Let N > K\nand consider a reference distribution of either the aggregate posterior or the prior. Then,\n  (i). Suppose x provides no information and q(y, x) = Pr(y) for all x, y. Then, amplification bias is\n       maximized and all data points are classified as a plurality class:\n                                                  (\n                                                    1 − Pr(y), if y = arg maxw p(w),\n                            BIAS(y, Dargmax ) =\n                                                    − Pr(y),      otherwise.\n   9 Note that, though related, mean average error of the continuous predictor q(y, x) is not equivalent to expected zero-one\n\nloss of the discrete decisions. The latter, our measure of decision accuracy, also depends on how the continuous predictor is\ndiscretized.                                n                                           o\n  10 For all c of non-zero measure: ∀c ∈\n                                                 R\n                                             c : (x,y) I[q(y, x) = c]f (x, y)d(y, x) > 0 . Further note that calibration implies\nBayesian consistency, i.e., the continuous model cumulatively assigns the proper mass to each class y: EX [q(y, x)] = Pr(y).\n\n\n                                                              11\n\f                                                                                   (\n                                                                                    1,                                                                        if z = y,\n  (ii). Suppose the classifier is perfect, i.e., ∀(x, y) ∼ FXY , we have q(z, x) =                                                                                       Then, there\n                                                                                    0,                                                                        otherwise.\n        is no amplification bias, BIAS(y, Dargmax ) = 0.",
           "quoted_text_sha256": "c0307970d6f62640531898383138c5e542aa3943e07a1adb7c7306651f849c81"
-        },
+        }
+      ],
+      "source_claim_atoms": [
         {
-          "line_end": 666,
-          "line_start": 642,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 1. Argmax bias depends on predictive uncertainty, i.e., how much information features x provide\nabout the true class label. Consider calibrated classifier q and the argmax decision rule Dargmax . Let N > K\nand consider a reference distribution of either the aggregate posterior or the prior. Then,\n  (i). Suppose x provides no information and q(y, x) = Pr(y) for all x, y. Then, amplification bias is\n       maximized and all data points are classified as a plurality class:\n                                                  (\n                                                    1 − Pr(y), if y = arg maxw p(w),\n                            BIAS(y, Dargmax ) =\n                                                    − Pr(y),      otherwise.\n   9 Note that, though related, mean average error of the continuous predictor q(y, x) is not equivalent to expected zero-one\n\nloss of the discrete decisions. The latter, our measure of decision accuracy, also depends on how the continuous predictor is\ndiscretized.                                n                                           o\n  10 For all c of non-zero measure: ∀c ∈\n                                                 R\n                                             c : (x,y) I[q(y, x) = c]f (x, y)d(y, x) > 0 . Further note that calibration implies\nBayesian consistency, i.e., the continuous model cumulatively assigns the proper mass to each class y: EX [q(y, x)] = Pr(y).\n\n\n                                                              11\n\f                                                                                   (\n                                                                                    1,                                                                        if z = y,\n  (ii). Suppose the classifier is perfect, i.e., ∀(x, y) ∼ FXY , we have q(z, x) =                                                                                       Then, there\n                                                                                    0,                                                                        otherwise.\n        is no amplification bias, BIAS(y, Dargmax ) = 0.",
-          "quoted_text_sha256": "c0307970d6f62640531898383138c5e542aa3943e07a1adb7c7306651f849c81"
+          "id": "theorem1ii_prior_reference_zero_bias.source",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.PaperInterface.theorem1ii_perfect_classifier_zero_bias",
+          "semantic_claim": "Theorem 1(ii) gives zero expected bias for a perfect classifier when the reference is the prior.",
+          "source_locator": "publication text:642-666",
+          "source_quote_sha256": "c0307970d6f62640531898383138c5e542aa3943e07a1adb7c7306651f849c81"
         }
       ],
       "source_defect_ids": [
         "DSWG24-T1II-SUPPORT-01"
       ],
       "source_kind": "theorem",
-      "source_location": "publication text:642-666 and 1305-1327; publication text:642-666 and 1305-1327",
+      "source_location": "publication text:642-666 and 1305-1327",
       "source_note": "The raw source bundle also includes the explicitly merged source presentation(s) needed to interpret this one canonical claim.",
       "source_presentation_reconciliation": {
         "boundary_reason": "completed_statement_then_explanation",
@@ -2288,10 +2388,27 @@
       "aliases": [
         "theorem1iii_argmax_bias_le_mae"
       ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only the calibrated source-semantic prerequisite and the selected Theorem 1(iii) argmax-bias-by-MAE bound cite this reading.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "For each label y and every measurable set A of score values, E[1_{Y=y} 1_{q_y in A}] = E[q_y 1_{q_y in A}], equivalently E[1_{Y=y} | sigma(q_y)] = q_y almost surely. This is the governing meaning of the source display Pr(Y=y | q(y,x)=c)=c.",
+          "id": "DSWG24-CALIBRATION-EVENT-READING-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3360e282316d3f211dacc362d96a514b89b96501ebfac2046887abc9d7f23043",
+          "report_summary": "Calibration uses the standard conditional-expectation event identity intended by the source proof.",
+          "source_locator": "publication text:635-658; publication text:1291-1293",
+          "why_needed": "The printed footnote discusses score values of positive measure, while the proof uses calibration through score-event expectation identities. The maintainer resolved the intended reading exactly: \"yes intend the usual definition, as in the proof\"."
+        }
+      ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "DSWG24DiscretizationBias.PaperInterface.theorem1iii_argmax_bias_le_mae"
+      ],
+      "model_convention_ids": [
+        "DSWG24-CALIBRATION-EVENT-READING-01"
       ],
       "semantic_contract": {
         "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.theorem1iii_argmax_bias_le_mae",
@@ -2306,6 +2423,16 @@
           "publication_locator": "cited publication",
           "quoted_text": " (iii). More generally, in the intermediate regime, argmax bias is upper bounded by the predictive error of\n        the classifier q:\n\n                                                                                                   BIAS(y, Dargmax ) ≤ MAE(q).                                                         (4)\n\n       The bound is tight: there exist FXY and q such that Equation (4) holds with equality for the plurality\n       class.",
           "quoted_text_sha256": "5558f4fcc12583b185c50c08b34e751417c35cfc598b3c4ef122ab79b54ac336"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem1iii.argmax.bias.le.mae",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.PaperInterface.theorem1iii_argmax_bias_le_mae",
+          "semantic_claim": "states the calibrated argmax bias bound by predictive MAE for both the aggregate-posterior and prior reference distributions.",
+          "source_locator": "publication text:667-673",
+          "source_quote_sha256": "5558f4fcc12583b185c50c08b34e751417c35cfc598b3c4ef122ab79b54ac336"
         }
       ],
       "source_kind": "theorem",
@@ -2328,7 +2455,7 @@
         "validator": "DSWG24 source-only named-result reconciliation"
       },
       "source_url": "https://arxiv.org/pdf/2405.16762",
-      "statement": "states the calibrated argmax bias bound by predictive MAE.",
+      "statement": "states the calibrated argmax bias bound by predictive MAE for both the aggregate-posterior and prior reference distributions.",
       "support_lean_declarations": [
         "DSWG24DiscretizationBias.PaperInterface.theorem1iii_argmax_bias_le_maeSpec"
       ]
@@ -2338,7 +2465,6 @@
         "theorem1iii_tight_binary_example"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "DSWG24DiscretizationBias.PaperInterface.theorem1iii_tight_binary_example"
       ],
@@ -2355,6 +2481,16 @@
           "publication_locator": "cited publication",
           "quoted_text": " (iii). More generally, in the intermediate regime, argmax bias is upper bounded by the predictive error of\n        the classifier q:\n\n                                                                                                   BIAS(y, Dargmax ) ≤ MAE(q).                                                         (4)\n\n       The bound is tight: there exist FXY and q such that Equation (4) holds with equality for the plurality\n       class.",
           "quoted_text_sha256": "5558f4fcc12583b185c50c08b34e751417c35cfc598b3c4ef122ab79b54ac336"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem1iii.tight.binary.example",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.PaperInterface.theorem1iii_tight_binary_example",
+          "semantic_claim": "states the tight binary example where argmax bias equals MAE.",
+          "source_locator": "publication text:667-673",
+          "source_quote_sha256": "5558f4fcc12583b185c50c08b34e751417c35cfc598b3c4ef122ab79b54ac336"
         }
       ],
       "source_kind": "theorem",
@@ -2429,9 +2565,22 @@
         "theorem2i_joint_rule_exists"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "DSWG24DiscretizationBias.PaperInterface.theorem2i_joint_rule_exists"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchor_evidence": [
+            {
+              "line_end": 1606,
+              "line_start": 1584,
+              "publication_locator": "cited publication",
+              "quoted_text": "   Now, note that the objective can be decomposed using the tower property, as follows:\n γ\nON (D, q, pref ) = γACCN (D, q) + (1 − γ)FIDN (D, q, pref )\n                        \u0002                                                                                     \u0003\n                 = EF{X} EF{Y }|{X} [γacc(yi , D({q(xi )})) + (1 − γ)fid(pref , D({q(xi )})) | {Xi } = {xi }]\n                        \"            \"     N\n                                                                                                                      ##\n                                        1 X\n                 = EF{X} EF{Y }|{X} γ          I [D({q(xi )}) = yi ] + (1 − γ)fid(pref , D({q(xi )})) | {Xi } = {xi }\n                                       N i\n                        \"            \"     N\n                                                                                                                     ##\n                                        1 X\n                 = EF{X} EF{Y }|{X} γ          q(D({q(xj )})i , xi ) + (1 − γ)fid(pref , D({q(xi )})) | {Xi } = {xi }\n                                       N i\n\n   Where the last line follows from, given Bayes optimal q, we have for all ŷi\n\n                                            q(ŷi , xi ) = EFY |X [Y = ŷi |X = xi ].\n\nThus, the optimization decision rule maximizes the inner expectation in the final line, for each given dataset\n                                                γ\n{xi }. Thus, the corresponding rule maximizes ON  (D, q, pref ), as desired.",
+              "quoted_text_sha256": "c4db66610cf686624ea8ed2547bba8f03fbe1b624bca9566c72bc066e86ded4a"
+            }
+          ]
+        }
       ],
       "semantic_contract": {
         "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.theorem2i_joint_rule_exists",
@@ -2446,6 +2595,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Theorem 2. Consider Bayes optimal q, and N > K. For all F :\n   (i). For every γ, pref there exists a joint decision-making rule that maximizes Oγ (D, q, pref ) in Equa-\n        tion (3).",
           "quoted_text_sha256": "cdefd90ee3f45b2076adbe8ace27e5b5a044a657970b25db4c4c755ce497ed9f"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem2i.joint.rule.exists",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.PaperInterface.theorem2i_joint_rule_exists",
+          "semantic_claim": "states existence of a joint expected-objective maximizer.",
+          "source_locator": "publication text:756-758",
+          "source_quote_sha256": "cdefd90ee3f45b2076adbe8ace27e5b5a044a657970b25db4c4c755ce497ed9f"
         }
       ],
       "source_kind": "theorem",
@@ -2503,9 +2662,22 @@
         "theorem2ii_argmax_accuracy_maximizing"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "DSWG24DiscretizationBias.PaperInterface.theorem2ii_argmax_accuracy_maximizing"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchor_evidence": [
+            {
+              "line_end": 1647,
+              "line_start": 1608,
+              "publication_locator": "cited publication",
+              "quoted_text": "Proof for Part (ii)\n    The result follows directly from the classifier being Bayes optimal – for each row, you cannot do better\nthan picking the most likely class for that row.\n    Recall that D({q(xi )}) refers to the set of decisions ŷ1:N with dataset x1:N , where the decisions can be\njointly made across data points. Note that, for the Bayes optimal classifier q ∗ , we have\n\n                                            EFY |X [I [Y = y] | X = x] = q ∗ (y, x)\n\nThus, we have:\n  1\n ON (D, q ∗ , ·) = ACCN (D, q ∗ )                                                                                          (26)\n                                        ∗\n               = EF [acc(y1:N , D({q (xi )}))]                                                                             (27)\n                    \"                    #\n                      1 X\n               = EF          I [ŷi = y]                                                          let ŷi ≜ D({q ∗ (xj )}N\n                                                                                                                         j=1 )i\n                      N i\n                                                                                                                           (28)\n                         \"             \"                                       ##\n                                           1 X\n               = EF{X} EF{Y }|{X}              I [Yi = ŷi ] | {Xi } = {xi }                                 tower property\n                                           N i\n                                                                                                                           (29)\n                         \"                                          #\n                             1 X\n               = EF{X}           EFY |X [I [Y = ŷi ] | X = xi ]                        independent sampling of datapoints\n                             N i\n                                                                                                                           (30)\n                         \"                     #\n                             1 X ∗\n               = EF{X}           q (ŷi , xi )                                                                             (31)\n                             N i\n                         \"                                  #\n                             1 X ∗           ∗\n               ≤ EF{X}           q (arg max q (y, xi ), xi )                                                               (32)\n                             N i         y\n\n                  1\n               ≜ ON (Dargmax , q ∗ , ·).                                                                                   (33)",
+              "quoted_text_sha256": "687ce41e2ab0ef213621172faab61af5f8871294dbd40b9f1685b0cde31e7f08"
+            }
+          ]
+        }
       ],
       "semantic_contract": {
         "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.theorem2ii_argmax_accuracy_maximizing",
@@ -2520,6 +2692,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "  (ii). The argmax decision rule Dargmax maximizes O1 (D, q, pref ), i.e., is accuracy maximizing.",
           "quoted_text_sha256": "2f931f2b62700232c45b3d5353839127c8e641a2208605d6eff48c0216890a32"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem2ii.argmax.accuracy.maximizing",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.PaperInterface.theorem2ii_argmax_accuracy_maximizing",
+          "semantic_claim": "states argmax expected-accuracy optimality for Bayes-optimal scores.",
+          "source_locator": "publication text:760-760",
+          "source_quote_sha256": "2f931f2b62700232c45b3d5353839127c8e641a2208605d6eff48c0216890a32"
         }
       ],
       "source_kind": "theorem",
@@ -2574,15 +2756,14 @@
     },
     "theorem2iii_non_argmax_not_pareto": {
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.theorem2iii_non_argmax_not_pareto"
+        "DSWG24DiscretizationBias.PaperInterface.theorem2iii_randomized_non_argmax_not_pareto"
       ],
       "semantic_contract": {
-        "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.theorem2iii_non_argmax_not_pareto",
+        "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.theorem2iii_randomized_non_argmax_not_pareto",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "DSWG24DiscretizationBias.PaperInterface.theorem2iii_non_argmax_not_paretoSpec"
+        "spec_declaration": "DSWG24DiscretizationBias.PaperInterface.theorem2iii_randomized_non_argmax_not_paretoSpec"
       },
       "source_anchor_evidence": [
         {
@@ -2591,6 +2772,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Theorem 2. Consider Bayes optimal q, and N > K. For all F :\n   (i). For every γ, pref there exists a joint decision-making rule that maximizes Oγ (D, q, pref ) in Equa-\n        tion (3).\n\n  (ii). The argmax decision rule Dargmax maximizes O1 (D, q, pref ), i.e., is accuracy maximizing.\n (iii). Dargmax is the only Pareto optimal independent decision rule for non-trivial pref ∈ P. No independent\n        decision rule D maximizes objective Oγ for any γ, unless γ = 1 and D agrees with Dargmax with\n        probability 1.",
           "quoted_text_sha256": "07c585148344eac5db82e91f6540ad438890463610edb399fbd60f0c3fc9eed0"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem2iii.non.argmax.not.pareto",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.PaperInterface.theorem2iii_randomized_non_argmax_not_pareto",
+          "semantic_claim": "For the exact dataset-dependent P_N^q reference family, argmax is the only Pareto-optimal independent rule; a positively disagreeing independent rule is not Pareto optimal.",
+          "source_locator": "publication text:756-763",
+          "source_quote_sha256": "07c585148344eac5db82e91f6540ad438890463610edb399fbd60f0c3fc9eed0"
         }
       ],
       "source_defect_ids": [
@@ -2618,7 +2809,7 @@
       "source_url": "https://arxiv.org/pdf/2405.16762",
       "statement": "For the exact dataset-dependent P_N^q reference family, argmax is the only Pareto-optimal independent rule; a positively disagreeing independent rule is not Pareto optimal.",
       "support_lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.theorem2iii_non_argmax_not_paretoSpec"
+        "DSWG24DiscretizationBias.PaperInterface.theorem2iii_randomized_non_argmax_not_paretoSpec"
       ]
     },
     "theorem2iii_source_dataset_reference_bridge": {
@@ -2689,15 +2880,14 @@
     },
     "theorem2iii_weighted_objective_maximizer_agrees_argmax": {
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.theorem2iii_weighted_objective_maximizer_agrees_argmax"
+        "DSWG24DiscretizationBias.PaperInterface.theorem2iii_randomized_weighted_objective_maximizer_agrees_argmax"
       ],
       "semantic_contract": {
-        "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.theorem2iii_weighted_objective_maximizer_agrees_argmax",
+        "evidence_declaration": "DSWG24DiscretizationBias.PaperInterface.theorem2iii_randomized_weighted_objective_maximizer_agrees_argmax",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "DSWG24DiscretizationBias.PaperInterface.theorem2iii_weighted_objective_maximizer_agrees_argmaxSpec"
+        "spec_declaration": "DSWG24DiscretizationBias.PaperInterface.theorem2iii_randomized_weighted_objective_maximizer_agrees_argmaxSpec"
       },
       "source_anchor_evidence": [
         {
@@ -2706,6 +2896,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Theorem 2. Consider Bayes optimal q, and N > K. For all F :\n   (i). For every γ, pref there exists a joint decision-making rule that maximizes Oγ (D, q, pref ) in Equa-\n        tion (3).\n\n  (ii). The argmax decision rule Dargmax maximizes O1 (D, q, pref ), i.e., is accuracy maximizing.\n (iii). Dargmax is the only Pareto optimal independent decision rule for non-trivial pref ∈ P. No independent\n        decision rule D maximizes objective Oγ for any γ, unless γ = 1 and D agrees with Dargmax with\n        probability 1.",
           "quoted_text_sha256": "07c585148344eac5db82e91f6540ad438890463610edb399fbd60f0c3fc9eed0"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem2iii.weighted.objective.maximizer.agrees.argmax",
+          "identity_schema": 2,
+          "reviewed_lean_route": "DSWG24DiscretizationBias.PaperInterface.theorem2iii_randomized_weighted_objective_maximizer_agrees_argmax",
+          "semantic_claim": "For the exact dataset-dependent P_N^q reference family and 0 <= gamma < 1, every independent rule that maximizes O_N^gamma agrees with argmax almost surely.",
+          "source_locator": "publication text:756-763",
+          "source_quote_sha256": "07c585148344eac5db82e91f6540ad438890463610edb399fbd60f0c3fc9eed0"
         }
       ],
       "source_defect_ids": [
@@ -2734,7 +2934,7 @@
       "source_url": "https://arxiv.org/pdf/2405.16762",
       "statement": "For the exact dataset-dependent P_N^q reference family and 0 <= gamma < 1, every independent rule that maximizes O_N^gamma agrees with argmax almost surely.",
       "support_lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.theorem2iii_weighted_objective_maximizer_agrees_argmaxSpec"
+        "DSWG24DiscretizationBias.PaperInterface.theorem2iii_randomized_weighted_objective_maximizer_agrees_argmaxSpec"
       ]
     },
     "thresholdRule": {
@@ -2743,9 +2943,6 @@
       ],
       "claim_bearing": false,
       "inventory_role": "deep_only",
-      "lean_declarations": [
-        "DSWG24DiscretizationBias.PaperInterface.thresholdRule"
-      ],
       "scope_disposition": "deep_only_standalone_algorithm",
       "scope_disposition_note": "Thresholding is a concrete algorithmic example rather than a selected named theoretical statement in the normal review mode.",
       "source_anchor_evidence": [
@@ -2765,16 +2962,26 @@
   },
   "paper": "DSWG24DiscretizationBias",
   "paper_interface_namespace": "DSWG24DiscretizationBias",
-  "publication_source_display_projection": {
-    "manifest": "audit/public_source_display_projection.json",
-    "raw_source_bytes_included": false,
-    "schema": 1
+  "paper_semantic_prerequisite_sources": {
+    "DSWG24DiscretizationBias.ProofBridge.bayesOptimal": "bayesOptimal",
+    "DSWG24DiscretizationBias.ProofBridge.calibrated": "calibrated",
+    "DSWG24DiscretizationBias.ProofBridge.isAggregateFirstArgmax": "datasetMostLikelyClass",
+    "DSWG24DiscretizationBias.ProofBridge.isArgmaxRule": "isArgmaxRule",
+    "DSWG24DiscretizationBias.ProofBridge.isIndependentRandomizedRule": "formalIndependentRule",
+    "DSWG24DiscretizationBias.ProofBridge.isIndependentRule": "isIndependentRule",
+    "DSWG24DiscretizationBias.ProofBridge.isThompsonSamplingRule": "isThompsonSamplingRule",
+    "DSWG24DiscretizationBias.ProofBridge.isTieBrokenArgmaxRule": "isTieBrokenArgmaxRule",
+    "DSWG24DiscretizationBias.ProofBridge.maximizesEquation1": "maximizesEquation1",
+    "DSWG24DiscretizationBias.ProofBridge.posteriorSimplex": "posteriorSimplex",
+    "DSWG24DiscretizationBias.ProofBridge.referenceSimplexAt": "referenceDistribution"
   },
   "schema": 1,
   "seed_scaffold": false,
   "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
   "source_anchor_evidence_required": true,
   "source_artifact_sha256": "2370832850d19fc3e0b74c5471316b099bcab9f958c268ffcd9de9d38ef55295",
+  "source_claim_atoms_schema": 1,
   "source_coverage_mode": "named_theoretical_statements",
   "source_curated": true,
   "source_curated_at": "2026-07-18T23:45:00Z",
@@ -2782,10 +2989,93 @@
   "source_inventory_kind": "source_curated",
   "source_inventory_policy": "Source-first static inventory against the exact 2379-line extraction publication text (SHA256 2370832850d19fc3e0b74c5471316b099bcab9f958c268ffcd9de9d38ef55295). Main-text formulas, rule semantics, named theorem clauses, assumptions, and Appendix proof Equations (4)-(33) are inventoried atomically. Proof equations are proof_support inventory items and are not dashboard rows. The cited publication is the source reference for these anchors. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
   "source_named_result_inventory_review": {
+    "candidate_presentations": [
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_001",
+        "presentation_label": "Aggregate posterior matching",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This is a separately named special-case joint-decision algorithm. The current map anchors its opening alongside the general Equation (1) rule but does not enumerate it as its own source-map row. It is a standalone algorithmic presentation rather than an independently named theoretical claim, so it remains outside the normal named-theory denominator.",
+        "source_anchor": {
+          "line_end": 269,
+          "line_start": 262,
+          "publication_locator": "cited publication",
+          "quoted_text": "Aggregate posterior matching A special case of the joint optimization decision rules defined in Equa-\n    tion (1) is as γ → 0, leading to a rule that maximizes accuracy subject to the constraint that distri-\n    butional fidelity be as high as possible. We call such rules matching solutions, e.g., aggregate posterior\n\n\n                                                      5\n\f        matching. For our results, we use aggregate posteriors calculated at multiple geographic levels: nation-\n        ally, throughout a state, or for each County within the state.",
+          "quoted_text_sha256": "a6f7f3bd6b9f07b1bb073e7df85832e4b52c5cf7a41bc6a9748d81f7f6f26221"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_002",
+        "presentation_label": "Data-driven thresholding heuristic",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This is a named batch-trained approximation algorithm, absent as its own source-map row. It is a standalone methodological heuristic, not an independently named theorem or model definition, so normal named-theory scope excludes it.",
+        "source_anchor": {
+          "line_end": 278,
+          "line_start": 270,
+          "publication_locator": "cited publication",
+          "quoted_text": "Data-driven thresholding heuristic One downside of the optimization based approaches is that they\n    may be computationally expensive for large datasets (requiring an integer constrained variable for\n    each data point). Thus, we develop and evaluate the following heuristic: solve the integer optimization\n    for a tractable batch of data. Then, on that batch, train a machine learning model with features\n    being the scores q(y, xi ) and the labels being the optimization outputs ŷi . Finally, apply this model\n    to the rest of the dataset. Once trained, this approach is as simple as existing thresholding or argmax\n    approaches, and so we refer to it a data-driven thresholding heuristic (with vector thresholds implicitly\n    defined by the machine learning model). In this work, we train this approach to approximate the\n    aggregate posterior matching solution and integer programs.",
+          "quoted_text_sha256": "360d2a013a329e7b2852064d28cb3e41bfb97556fb0b66731b52253e365d329b"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_003",
+        "presentation_label": "Top-k sampling",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This is a separately named supplementary sampling algorithm, absent from the source map. It supplies an evaluated method rather than a named paper theorem or source-model definition and is therefore deep-audit material only.",
+        "source_anchor": {
+          "line_end": 868,
+          "line_start": 866,
+          "publication_locator": "cited publication",
+          "quoted_text": "Top-k sampling Top-k sampling is used in many modern applications, including large language models\n    [Holtzman et al., 2020], and is equivalent to Thompson sampling between just the (renormalized)\n    probabilities of the top k classes, with the remaining classes set to probability 0.",
+          "quoted_text_sha256": "2dd402d2daf7fa13f6ebd1047c9624955c92fa1a13349ebd34afc92a36fa95c3"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_004",
+        "presentation_label": "True marginal population matching",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This is a separately named empirical matching algorithm, absent from the source map. It is a standalone use of external population information rather than a named theoretical claim, so it remains outside normal named-theory coverage.",
+        "source_anchor": {
+          "line_end": 872,
+          "line_start": 869,
+          "publication_locator": "cited publication",
+          "quoted_text": "True marginal population matching In some settings, true aggregate population-level information may\n    be available or well-estimated (e.g. through the census or surveys), or some other reference distribution\n    may be chosen given normative motivations. We perform matching using the true makeup of self-\n    reported race to demonstrate the effectiveness of our approach in utilizing additional information.",
+          "quoted_text_sha256": "c656428570ff424b33400a9442201725714610f97063cd69b285b5eefa774cc3"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_005",
+        "presentation_label": "Synthetic data generation",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This is the named simulation-generation procedure, absent from the source map. It is an empirical illustration protocol rather than an independently named theorem, definition, or source-model claim, and thus belongs only to deep-audit material.",
+        "source_anchor": {
+          "line_end": 884,
+          "line_start": 874,
+          "publication_locator": "cited publication",
+          "quoted_text": "    Synthetic data generation. Our synthetic data setting for Figures 4 and 5 is designed to illustrate our\nmain ideas. We use K = 6 classes (i.e., Y = {1 . . . 6}), with the prior frequencies being sequential negative\npowers of 2, with the final two classes having equal frequency (i.e., {1/2, 1/4, 1/8, 1/16, 1/32, 1/32}).\n    We simulate the features x as a K dimensional vector; each dimension is drawn from a Normal distribution\nwith variance σ 2 , where the dimension corresponding to the true y has mean 1 and the remaining dimensions\nhave mean 0. Thus the variance σ 2 characterizes the informativeness of the data (lower σ means lower\npredictor MAE of the Bayes optimal classifier q ∗ (y, x) = Pr(y|x)). We note that this choice makes it easy\nto calculate the Bayes optimal classifier and to sample data. Data are generated by first sampling y1:5000\nfrom the prior, and then sampling x1:5000 with the Pr(x|y) probabilities above. We draw N = 5000 points\nfor each dataset. We calculate the Bayesian optimal posterior from the generating parameters and average\nresults across 100 datasets.",
+          "quoted_text_sha256": "a42195924639e2f11a3f47eff4dc32e2f3f1ea14f84ed28f4312296f153c9ecc"
+        },
+        "visible_kind": "holistic"
+      }
+    ],
     "complete": true,
+    "discovered_candidate_presentation_sha256": "c4fc62e378e75680fb824bc90af6d398cb24ef8e888b31f27e8b659264bfcc4d",
     "discovered_named_result_sha256": "7f2da4a6ca4055827009aaa16d9dd814e66a5255e0020357fd2a787f91709a54",
     "discovered_prose_definition_sha256": "8c6bce7bef75208e18420985652b5e30009c010fe76bb490127f75771cf3077a",
-    "method": "Independent source-only named-result extraction from the pinned DSWG24 text, reconciled by visible theorem presentations and byte-pinned excerpts. Map keys, aliases, and Lean declaration names were not used to discover source presentations.",
+    "method": "Independent source-only holistic review of all 2,379 lines of the byte-pinned text before source-map comparison. Reconciled the main-text and Appendix B Theorem 1(i)-(iii) and Theorem 2(i)-(iii) presentations, all formal model definitions, and the named rule presentations. Excluded standalone prose, figures/tables, empirical observations, and proof-only formulas from normal scope. The five separately named standalone algorithm or simulation presentations not enumerated as their own source-map rows are recorded as deep-audit material; no missing normal named theorem or definition was found.",
     "prose_definition_presentations": [
       {
         "defined_entity_kind": "predicate",
@@ -2992,8 +3282,8 @@
     ],
     "schema": 1,
     "source_artifact_sha256": "2370832850d19fc3e0b74c5471316b099bcab9f958c268ffcd9de9d38ef55295",
-    "validated_at": "2026-08-16T00:00:00Z",
-    "validator": "DSWG24 source-only named-result reconciliation"
+    "validated_at": "2026-09-02T05:37:19Z",
+    "validator": "DSWG24-context-isolated-source-inventory-reviewer-2026-09-02"
   },
   "source_spec_correspondence_schema": 1,
   "source_url": "https://arxiv.org/pdf/2405.16762",

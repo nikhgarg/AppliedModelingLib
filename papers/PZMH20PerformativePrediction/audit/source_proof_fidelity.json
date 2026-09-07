@@ -1,0 +1,604 @@
+{
+  "checked_proof_step_entry_schema": {
+    "required": [
+      "id",
+      "source_locator",
+      "source_step",
+      "checked_conclusion",
+      "scope"
+    ]
+  },
+  "checked_proof_steps": [
+    {
+      "checked_conclusion": "exists_performativelyOptimal and exists_isPerformativelyOptimal give finite-domain attainment of the displayed objective.",
+      "id": "definition-2.1-finite-performative-optimum-attainment",
+      "scope": "Finite nonempty parameter carrier and finite data PMF; this is not the paper's extended-real existence observation.",
+      "source_locator": "PMLR PDF p. 3, Definition 2.1; cited publication lines 134-177",
+      "source_step": "A performatively optimal parameter minimizes performative risk over the parameter space."
+    },
+    {
+      "checked_conclusion": "selectedPopulationRiskMinimizer, selectedRepeatedRiskMinimization, and selectedRepeatedRiskMinimization_spec construct and verify that finite argmin selection.",
+      "id": "definition-3.3-finite-selected-rrm",
+      "scope": "Finite nonempty parameter carrier; no executable runtime claim is made for the noncomputable selector.",
+      "source_locator": "PMLR PDF p. 5, Definition 3.3; cited publication lines 296-312",
+      "source_step": "RRM maps each current parameter to a selected minimizer of population risk under its induced distribution."
+    },
+    {
+      "checked_conclusion": "proposition36aModel, proposition36a_decoupledPerformativeRisk_eq, proposition36aModel_finiteTransportSensitive, proposition36aModel_finiteWassersteinSensitive, proposition36aLoss_convexOn, proposition36aGradient_jointSmooth, proposition36a_not_pointwiseGradientStronglyConvex, proposition36a_isRepeatedRiskMinimization, proposition36a_isPerformativelyStableOn_iff, and proposition36aRRMUpdate_not_tendsto_from_one check a finite binary specialization with the same bilinear frozen-risk mechanism and a formally nonconvergent endpoint cycle.",
+      "id": "proposition-3.6a-finite-binary-counterexample",
+      "scope": "The checked instance fixes beta = 1 and finite-W1 sensitivity epsilon = 1/2. It uses a signed Bernoulli law rather than the source's real point mass and so is a finite-PMF specialization, not the full source quantification.",
+      "source_locator": "PMLR PDF p. 5, Proposition 3.6(a); official supplement Appendix E.2",
+      "source_step": "For a convex jointly smooth linear loss and an epsilon-sensitive distribution map, the source computes a bilinear decoupled risk, identifies 0 as the unique stable point, and shows that RRM cycles between the two domain endpoints rather than converging."
+    },
+    {
+      "checked_conclusion": "proposition36aMeasureModel and proposition36a_measureDecoupledPerformativeRisk_eq realize exactly the real Dirac law and bilinear frozen risk. hasGradientAt_proposition36aMeasureLoss, proposition36aMeasureLoss_convexOn, proposition36aMeasureGradient_jointSmooth, and proposition36aMeasure_not_pointwiseGradientStronglyConvex check the displayed linear loss, gradient, convexity/smoothness, and missing strong convexity. proposition36aMeasureModel_wassersteinSensitive reuses ProbabilityCoupling.expectedDistanceCosts_dirac_nonempty and wassersteinOneReal_dirac_le_dist. proposition36a_isMeasureRepeatedRiskMinimizationOn, proposition36a_isMeasurePerformativelyStableOn_iff, and proposition36aMeasureRRMUpdate_not_tendsto_from_one attach the source's selected RRM and nonconvergent counterexample to that exact model. proposition36aExactDiracCounterexampleSpec/Proposition36aExactDiracCounterexample expose the complete endpoint.",
+      "id": "proposition-3.6a-real-dirac-linear-counterexample",
+      "scope": "Exact real scalar Dirac-law realization of Appendix E.2(a), for arbitrary positive epsilon and beta on the source domain [-1,1]. The proposition's positive gamma quantifier is explicitly present but vacuous in this part's loss and counterexample. The finite binary specialization remains as independent reusable finite support.",
+      "source_locator": "PMLR PDF p. 5, Proposition 3.6(a); official supplement Appendix E.2, lines 254-260",
+      "source_step": "For the linear loss beta*y*phi on theta, phi in [-1,1] and Y a point mass at epsilon*theta, the source computes DPR(theta, phi) = epsilon*beta*theta*phi, identifies 0 as uniquely stable, and observes the selected RRM endpoint cycle for every positive epsilon and beta."
+    },
+    {
+      "checked_conclusion": "proposition36bMeasureModel and proposition36b_measureDecoupledPerformativeRisk_eq exactly realize the source Dirac law and scalar frozen risk. proposition36bMeasureModel_wassersteinSensitive reuses the generic deterministic-Dirac transport bound. convexOn_max_const_affine, proposition36bFrozenRisk_strongConvex, and proposition36bMeasureLoss_strongConvex prove raw-loss gamma-strong convexity; proposition36bMeasureLoss_not_differentiableAt_lowerEndpoint certifies the exact loss's hinge kink. IsProposition36bLargePenalty makes the needed large-penalty condition explicit; proposition36b_lowerEndpoint_isMinimizer, proposition36b_upperEndpoint_isMinimizer, proposition36bRRMUpdate_isEndpointMeasureRRM, and proposition36bRRMUpdate_not_tendsto_from_two prove the two exact-model RRM steps and nonconvergent selected cycle. proposition36bExactDiracEndpointCounterexampleSpec/Proposition36bExactDiracEndpointCounterexample expose the endpoint.",
+      "id": "proposition-3.6b-regularized-hinge-endpoint-calculation",
+      "scope": "Exact real scalar Dirac-law realization of Appendix E.2(b), for arbitrary positive epsilon and gamma subject to the explicit sufficient penalty inequalities. It certifies the source's two RRM steps on the divergent orbit rather than adding an unnecessary global selector away from that orbit. The loss's nondifferentiability proves the stated failure of a gradient-based joint-smoothness premise.",
+      "source_locator": "PMLR PDF p. 5, Proposition 3.6(b); official supplement Appendix E.2, lines 262-271",
+      "source_step": "For the regularized hinge loss with Y a point mass at epsilon theta, the source says that a sufficiently large C makes RRM map 2 to -1/(2 epsilon) and back, producing a nonconvergent cycle despite gamma-strong convexity and failure of joint smoothness."
+    },
+    {
+      "checked_conclusion": "proposition36cMeasureModel uses exactly the real Dirac law and proposition36c_measureDecoupledPerformativeRisk_eq proves its frozen squared risk. proposition36c_measureUniqueFrozenMinimizer and proposition36c_isMeasureRepeatedRiskMinimization derive the source RRM update rather than assuming it. The reusable ProbabilityCoupling.expectedDistanceCosts_dirac_nonempty and wassersteinOneReal_dirac_le_dist support proposition36cMeasureModel_wassersteinSensitive. hasGradientAt_proposition36cLoss, proposition36cGradient_jointSmooth, and proposition36cMeasureModel_pointwiseGradientStronglyConvex verify the actual gradient, joint smoothness constant 2, and strong-convexity constant 2. proposition36c_isMeasurePerformativelyStable_iff_fixedPoint, proposition36c_isMeasurePerformativelyStable_iff, proposition36cMeasureModel_one_no_performativelyStablePoint, proposition36cRRMUpdate_dist, proposition36cRRMUpdate_iterate_sub_fixed, proposition36cRRMUpdate_tendsto_atTop_of_gt_stable, and proposition36cRRMUpdate_tendsto_atBot_of_lt_stable complete the stated stable-point and divergence cases.",
+      "id": "proposition-3.6c-real-dirac-squared-loss-counterexample",
+      "scope": "Exact real scalar Dirac-law realization of Appendix E.2(c), for every nonnegative epsilon in its W1-sensitivity certificate and the source's epsilon = 1 / epsilon > 1 stability and divergence regimes. It checks beta = gamma = 2 for the unscaled squared loss, which is the source proof's displayed squared-loss instance.",
+      "source_locator": "PMLR PDF p. 5, Proposition 3.6(c); official supplement Appendix E.2",
+      "source_step": "For squared loss and the point mass Y = 1 + epsilon theta, the source derives the RRM map G(theta) = 1 + epsilon theta, observes W1(D(theta), D(theta')) = epsilon |theta-theta'|, records beta = gamma, and proves the fixed-point/no-fixed-point/divergence cases."
+    },
+    {
+      "checked_conclusion": "isPerformativelyStable_of_retraining_fixedPoint, retraining_fixedPoint_of_isPerformativelyStable_of_uniqueMinimizer, contracting_retraining_has_unique_stable_point_of_uniqueMinimizer, and rrmIteratesTendstoFixedPoint verify the abstract fixed-point route.",
+      "id": "theorem-3.5-fixed-point-stability-route",
+      "scope": "Complete metric parameter space, an externally supplied contraction, RRM condition, and uniqueness of population-risk minimizers. The paper's derivation of these premises is not formalized.",
+      "source_locator": "PMLR PDF p. 5; official supplement Appendix E.1, pp. 3-4",
+      "source_step": "A contraction of the RRM map has a unique fixed point, and an RRM fixed point is performatively stable."
+    },
+    {
+      "checked_conclusion": "FiniteCoupling.abs_pmfExp_sub_le_lipschitz_of_expectedCostLE and finiteTransportSensitive_lipschitzStatistic establish the same expectation bound from an explicit finite coupling whose expected distance has the stated sensitivity bound.",
+      "id": "definition-3.1-finite-primal-transport-lipschitz-test",
+      "scope": "A finite-PMF primal coupling certificate is used. The separate finite-W₁ ledger row now proves the finite Lipschitz-test direction directly from the coupling-cost infimum, but finite primal/dual equivalence and arbitrary-measure semantics remain open.",
+      "source_locator": "PMLR PDF p. 4, Definition 3.1; official supplement Appendix D, Lemma D.3; Appendix E.1, pp. 3-4",
+      "source_step": "The source applies the Kantorovich--Rubinstein Lipschitz-test estimate to control an expectation difference caused by a sensitive distribution map."
+    },
+    {
+      "checked_conclusion": "FiniteCoupling.finiteWassersteinOne, FiniteCoupling.abs_pmfExp_sub_le_lipschitz_finiteWassersteinOne, finiteWassersteinSensitive_lipschitzStatistic, and finiteWassersteinSensitive_gradientPairing prove the finite-PMF coupling-infimum and its scalar/gradient-pairing consequences.",
+      "id": "definition-3.1-finite-wasserstein-lipschitz-test",
+      "scope": "Finite data PMFs and a finite coupling-cost infimum only. This verifies the needed Kantorovich--Rubinstein direction in the finite model, but not arbitrary measures, a general W₁ construction, or finite primal/dual equality.",
+      "source_locator": "PMLR PDF p. 4, Definition 3.1; official supplement Appendix D, Lemma D.3; Appendix E.1, pp. 3-4",
+      "source_step": "Under Wasserstein-1 sensitivity, apply the Kantorovich--Rubinstein Lipschitz-test inequality to control a distribution-induced expectation difference."
+    },
+    {
+      "checked_conclusion": "frozenRisk_strongConvex_lowerBound, rrm_distance_le_of_strongConvex_firstOrder_of_gradientPairingBound, rrm_distance_le_of_strongConvex_firstOrder_transport, and rrm_distance_le_of_strongConvex_firstOrder_finiteWasserstein prove the finite expected strong-convexity and shared algebraic contraction route from either transport realization.",
+      "id": "theorem-3.5-finite-strong-convexity-and-contraction-tail",
+      "scope": "This reusable algebraic layer keeps an explicit IsFrozenFirstOrderOptimal premise. Its finite convex-domain derivation from differentiability is recorded separately in both primal-certificate and finite-W₁ specializations; their shared Banach tail proves the finite-W₁ geometric convergence route. Arbitrary-measure W₁ and finite primal/dual equivalence remain open.",
+      "source_locator": "PMLR PDF p. 4, assumptions (A1)--(A2); official supplement Appendix E.1, pp. 3-4",
+      "source_step": "Average the pointwise strong-convexity inequality under a frozen law, combine the two minimizer inequalities with first-order variational inequalities, apply the transport gradient-pairing bound, and rearrange to obtain the εβ/γ contraction factor."
+    },
+    {
+      "checked_conclusion": "norm_frozenPopulationGradient_sub_le_of_finiteTransportSensitive and norm_frozenPopulationGradient_sub_le_of_finiteWassersteinSensitive prove the finite-PMF primal and finite-W₁ analogues by pairing the expected-gradient difference with itself, applying the corresponding finite gradient-pairing bound, and canceling its norm.",
+      "id": "appendix-d4-finite-expected-gradient-transport",
+      "scope": "Finite data PMFs, a real inner-product parameter space, and either an explicit finite primal sensitivity certificate or the finite-W₁ coupling-cost infimum condition. These are proof support for Theorem 3.8, not a literal arbitrary-distribution Kantorovich--Rubinstein equivalence.",
+      "source_locator": "Official supplement Appendix D, Lemma D.4; used in Appendix E.3",
+      "source_step": "For an L-Lipschitz vector-valued function, its expectation changes by at most L times the earth-mover distance; the source proves this by pairing with the normalized expectation difference and applying the scalar Kantorovich--Rubinstein bound."
+    },
+    {
+      "checked_conclusion": "The reusable lemmas smooth_upper_model_bound, gradient_cocoercive_of_upperModel_firstOrder, smooth_strong_interpolation_of_firstOrder, smooth_strong_interpolation_eq_of_firstOrder, pointwiseGradient_interpolation_of_jointSmooth, sq_norm_pmfVectorExp_le_pmfExp_sq_norm, frozenPopulationGradient_interpolation_of_jointSmooth, diagonalFrozenPopulationGradient_interpolation_of_jointSmooth_transport, diagonalFrozenPopulationGradient_interpolation_of_jointSmooth_finiteWasserstein, sq_norm_diagonalFrozenPopulationGradient_sub_le_of_jointSmooth_transport, sq_norm_diagonalFrozenPopulationGradient_sub_le_of_jointSmooth_finiteWasserstein, sq_norm_repeatedGradientDescentUpdate_sub_le_of_interpolation_transport, sq_norm_repeatedGradientDescentUpdate_sub_le_of_interpolation_finiteWasserstein, norm_repeatedGradientDescentUpdate_sub_le_of_interpolation_transport, and norm_repeatedGradientDescentUpdate_sub_le_of_interpolation_finiteWasserstein derive the Appendix E.3 squared and displayed norm contractions through `γ ≤ β`. The variational-projection fixed-point bridges and the corresponding primal and finite-W₁ repeatedGradientDescent_convergesLinearly theorems then establish the source's part (b) Banach conclusion and displayed rate.",
+      "id": "theorem-3.8-conservative-finite-rgd-components",
+      "scope": "A checked finite-PMF specialization of all of Theorem 3.8: complete real inner-product parameter space, either explicit primal transport sensitivity or finite-W₁ coupling-cost-infimum sensitivity, a closed nonempty convex domain, and an explicit Euclidean-projection certificate split into its variational and nonexpansive consequences. The `γ = β` boundary is included. The generic Hilbert-projection library now constructs that certificate extensionally, but this finite review row keeps its certificate interface to preserve its frozen source-facing Spec. Arbitrary-distribution Wasserstein semantics remain outside this finite-PMF scope, so it is not credited as the literal general-distribution source theorem.",
+      "source_locator": "PMLR PDF p. 6, Theorem 3.8; official supplement Appendix E.3, pp. 5-6",
+      "source_step": "Split the gradient change into a distribution-shift term and a fixed-law parameter term, use vector expectation transport and strong convexity, expand the squared gradient step, and use nonexpansiveness of projection."
+    },
+    {
+      "checked_conclusion": "norm_measureFrozenPopulationGradient_parameter_sub_le_of_gradientLipschitz establishes frozen-law expected-gradient smoothness by Bochner integration. measureFrozenPopulationGradient_interpolation_of_jointSmooth applies the reusable smooth--strong interpolation theorem directly to the frozen expected risk; measureDiagonalFrozenPopulationGradient_interpolation_of_jointSmooth and sq_norm_measureDiagonalFrozenPopulationGradient_sub_le_of_jointSmooth give the arbitrary-law Appendix E.3 T2/T3 bounds. sq_norm_measureRepeatedGradientDescentUpdate_sub_le_of_interpolation and norm_measureRepeatedGradientDescentUpdate_sub_le_of_interpolation prove the paper's squared and displayed one-step rates. measureRepeatedGradientDescent_convergesLinearly_of_interpolation proves part (b)'s unique domain-stable fixed point, convergence, and geometric bound. hilbertProjection, isVariationalEuclideanProjectionOn_hilbertProjection, and hilbertProjection_lipschitzWith_one directly reuse Mathlib's Hilbert projection existence/minimizer results from https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/Projection/Minimal.html and https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/InnerProductSpace/Projection/Minimal.lean; measureRepeatedGradientDescent_convergesLinearly_withHilbertProjection_of_interpolation and measureWassersteinConvexRGDConvergesLinearly_withHilbertProjection_of_A1_A2 instantiate the source projection extensionally. The existing A1/A2 wrapper and its exact PaperInterface proof endpoint derive the frozen-risk gradient representation using the Mathlib-backed dominated parametric-integral bridge.",
+      "id": "theorem-3.8-general-measure-wasserstein-rgd",
+      "scope": "Arbitrary probability measures on a metric data space; a complete real inner-product parameter space; general W1 sensitivity represented by a finite-first-moment coupling-cost infimum witness; and a nonempty closed convex domain. The selected Euclidean projection is constructed extensionally by direct reuse of Mathlib's Hilbert projection theorem and proved 1-Lipschitz from its variational characterization. The source A1/A2 assumptions are represented by joint gradient smoothness and pointwise strong convexity; the formal endpoint additionally makes Bochner gradient integrability, local loss measurability, and pointwise differentiability explicit. It does not infer the paper's analytic measurability conventions or provide Theorem 3.10's general empirical-Wasserstein concentration.",
+      "source_locator": "PMLR PDF p. 6, Theorem 3.8(a)--(b); official supplement Appendix E.3, pp. 5-6",
+      "source_step": "For a β-jointly smooth and γ-strongly convex loss, split the diagonal expected-gradient change into distribution and parameter components. Apply the Wasserstein vector-expectation bound, smooth--strong interpolation, the stated step-size and sensitivity conditions, and projection nonexpansiveness. Banach then supplies the unique performatively stable fixed point and the displayed geometric rate."
+    },
+    {
+      "checked_conclusion": "hasGradientAt_decoupledPerformativeRisk, isFrozenFirstOrderOptimal_of_hasGradientAt_univ, rrm_distance_le_of_hasGradientAt_univ, finiteUnconstrainedRRMContraction, rrm_distance_le_of_hasGradientAt_univ_finiteWasserstein, finiteWassersteinUnconstrainedRRMContraction, rrm_distance_le_on_of_strongConvex_firstOrder_finiteWasserstein, finiteWassersteinConvexRRMContraction, and finiteWassersteinConvexRRMConvergesLinearly prove finite-PMF whole-space and convex-domain specializations from explicit primal transport or finite-W₁ sensitivity.",
+      "id": "theorem-3.5-finite-unconstrained-specialization",
+      "scope": "Finite data PMFs, a complete real inner-product parameter space, a differentiable gradient representation, and either an explicit finite primal certificate or the finite-W₁ coupling-cost infimum condition. The finite-W₁ convex-domain result additionally assumes a closed convex domain for its Banach conclusion. This is not the source theorem on arbitrary measures or arbitrary-measure Wasserstein-1 sensitivity.",
+      "source_locator": "PMLR PDF p. 5, Theorem 3.5(a); official supplement Appendix D, Lemma D.1; Appendix E.1, pp. 3-4",
+      "source_step": "For a differentiable frozen objective over the full parameter space, Fermat's theorem gives the first-order condition. Combining it with the checked strong-convexity and transport components yields the RRM contraction factor."
+    },
+    {
+      "checked_conclusion": "isFrozenFirstOrderOptimal_on_of_hasGradientAt derives the variational inequality through the tangent cone of a convex domain, and finiteConvexRRMContraction combines it with the finite primal transport proof to establish the displayed distance bound for RRM inputs in that domain.",
+      "id": "theorem-3.5-finite-convex-domain-specialization",
+      "scope": "Finite data PMFs, a complete real inner-product parameter space, a convex domain, an RRM selector returning a minimizer in that domain, a differentiable gradient representation, and an explicit finite primal transport sensitivity certificate. The source's closedness condition is unnecessary conditional on the supplied minimizer, so it is not included as an unused Lean premise. This remains a specialization: finite primal transport has not been proved equivalent to source Wasserstein-1 sensitivity, and arbitrary distributions are not covered.",
+      "source_locator": "PMLR PDF p. 5, Theorem 3.5(a); official supplement Appendix D, Lemma D.1; Appendix E.1, pp. 3-4",
+      "source_step": "For a differentiable frozen objective over the closed convex parameter set Θ, the variational first-order inequality holds at a minimizer. Combining it with the two strong-convexity inequalities and the Wasserstein gradient-pairing bound gives the εβ/γ RRM contraction factor."
+    },
+    {
+      "checked_conclusion": "finiteConvexRRMConvergesLinearly and finiteWassersteinConvexRRMConvergesLinearly restrict the RRM update to the closed parameter domain, construct its Banach fixed point, prove domain stability and uniqueness using the checked strong-convexity first-order uniqueness bridge, and prove the exact geometric εβ/γ iterate bound from respectively a primal certificate and finite-W₁ sensitivity.",
+      "id": "theorem-3.5-finite-convex-domain-convergence",
+      "scope": "Finite data PMFs, a complete real inner-product parameter space, a closed convex parameter domain, the strict finite contraction factor εβ/γ < 1, and either an explicit finite primal certificate or finite-W₁ coupling-cost infimum sensitivity. It is not the source's arbitrary-distribution/Wasserstein-1 theorem.",
+      "source_locator": "PMLR PDF p. 5, Theorem 3.5(b); official supplement Appendix E.1, lines 245-252 of the pinned text",
+      "source_step": "When εβ/γ < 1, apply part (a) to RRM iterates and the stable fixed point to obtain the geometric error bound, equivalently applying Banach's fixed-point theorem to get convergence to a unique performatively stable point."
+    },
+    {
+      "checked_conclusion": "ProbabilityCoupling.norm_integral_sub_le_lipschitz_wassersteinOneReal establishes the arbitrary-measure vector Lipschitz-test step for a real finite W₁ coupling-cost infimum. measureFrozenRisk_strongConvex_lowerBound and isMeasureFrozenGradientStronglyMonotoneInner_of_pointwiseStronglyConvex derive expected-gradient strong monotonicity from pointwise A2 under Bochner integrability; isMeasureFrozenGradientStronglyMonotone_of_inner supplies its whole-space norm form. hasGradientAt_measureDecoupledPerformativeRisk_of_dominated reuses Mathlib's dominated parametric-integral derivative theorem to derive the frozen-risk HasGradientAt representation from local loss measurability, derivative measurability, integrable domination, and pointwise HasGradientAt hypotheses. hasGradientAt_measureDecoupledPerformativeRisk_of_jointSmooth derives its domination on every positive-radius ball from A1's parameter-coordinate gradient Lipschitz inequality and the integrability of the centre gradient. norm_measureFrozenPopulationGradient_sub_le_of_wassersteinSensitive, norm_measureRRM_sub_le_of_wassersteinSensitive_hasGradientAt, measureRRM_fixedPoint_of_isMeasurePerformativelyStable_of_hasGradientAt, measureRRM_convergesLinearly_of_wassersteinSensitive_hasGradientAt, measureWassersteinUnconstrainedRRMConvergesLinearly, and its exact PaperInterface proof endpoint derive the strict-factor Banach conclusion, stable-point uniqueness, and geometric rate.",
+      "id": "theorem-3.5-general-measure-whole-space-convergence",
+      "scope": "Arbitrary probability measures on a metric data space and a complete real inner-product parameter space, but for the whole parameter space only. The formal theorem requires an explicit finite-first-moment coupling witness for each induced-law pair and Bochner gradient integrability. The frozen-risk derivative representation can now be derived from A1's parameter-coordinate smoothness, centre-gradient integrability, local loss measurability, and pointwise differentiability. Pointwise A2 no longer needs to be supplied as an expected-gradient strong-monotonicity premise. The remaining direct source bridge is to assess and encode the source's analytic measurability conventions; this row does not cover the source's arbitrary closed convex Θ or its projected/empirical-Wasserstein routes.",
+      "source_locator": "PMLR PDF p. 5, Theorem 3.5(b); official supplement Appendix E.1, pp. 3-4",
+      "source_step": "For an ε-sensitive distribution map and a β-jointly smooth, γ-strongly convex loss, the RRM contraction factor εβ/γ is strict when ε < γ/β; Banach then gives a unique performatively stable point and linear convergence of the iterates."
+    },
+    {
+      "checked_conclusion": "IsMeasurePerformativelyStableOn and IsMeasureRepeatedRiskMinimizationOn represent the domain-restricted source definitions. measureFrozenRisk_strongConvex_lowerBound averages the pointwise A2 inequality and isMeasureFrozenGradientStronglyMonotoneInner_of_pointwiseStronglyConvex supplies the expected-gradient monotonicity required by the closed-domain proof. hasGradientAt_measureDecoupledPerformativeRisk_of_dominated derives the frozen-risk HasGradientAt representation by reusing Mathlib's dominated parametric-integral derivative theorem; hasGradientAt_measureDecoupledPerformativeRisk_of_jointSmooth in turn derives its local domination from the parameter-coordinate A1 bound and centre-gradient integrability. isMeasureFrozenGradientFirstOrderOptimalOn_of_hasGradientAt derives the variational inequality through the positive tangent cone. norm_measureRRMOn_sub_le_of_wassersteinSensitive_hasGradientAt proves the exact εβ/γ distance bound from general W₁ sensitivity and that derived monotonicity. measureWassersteinConvexRRMContraction_of_A1_A2 and measureWassersteinConvexRRMConvergesLinearly_of_A1_A2 are the A1--A2 paper wrappers. measureFrozenRiskMinimizerOn_unique_of_hasGradientAt and measureRRMOn_fixedPoint_of_isMeasurePerformativelyStableOn_of_hasGradientAt identify all domain-stable points with the RRM fixed point, and measureRRMOn_convergesLinearly_of_wassersteinSensitive_hasGradientAt plus the exact interface proof endpoints prove the closed-domain Banach conclusion and geometric rate.",
+      "id": "theorem-3.5-general-measure-convex-domain",
+      "scope": "Arbitrary probability measures on a metric data space; a complete real inner-product parameter space; a supplied closed convex domain and domain-valued RRM selector. The theorem directly formalizes the source's general W₁/closed-convex RRM route subject to explicit finite-first-moment coupling witnesses and Bochner gradient integrability. The HasGradientAt representation of each frozen risk is derivable from A1's parameter-coordinate bound, centre-gradient integrability, local loss measurability, and pointwise differentiability. Pointwise A2 is derived rather than supplied as expected-gradient strong monotonicity. The remaining source boundary is the source's analytic measurability conventions; general projected-RGD and empirical-Wasserstein concentration are separate results.",
+      "source_locator": "PMLR PDF p. 5, Theorem 3.5(a)--(b); official supplement Appendix D, Lemma D.1 and Appendix E.1, pp. 3-4",
+      "source_step": "On the closed convex parameter set Θ, use the variational first-order inequalities at frozen-risk minimizers, γ-strong convexity, and the Wasserstein gradient-pairing bound to establish the εβ/γ RRM contraction; for ε < γ/β, Banach gives the unique stable point and linear convergence."
+    },
+    {
+      "checked_conclusion": "The finite-PMF primal and finite-W1 routes remain available. The arbitrary-law route first derives value strong convexity of each frozen risk by cancelling the two A2 gradient terms pointwise and integrating the resulting inequality. Quadratic growth at the domain-stable minimizer, performative-optimum ordering, and the on-domain Wasserstein loss bound then give the exact two Lz epsilon over gamma distance. The domain-relative model is extended outside Theta only as an internal proof bridge: the deployed law is anchored at the supplied stable point and the evaluated loss is zero there, while every on-domain risk and hypothesis is preserved. measureWassersteinOptimumStableDistanceSpec/Proof expose the source-facing result.",
+      "id": "theorem-4.3-finite-optimum-stability-distance",
+      "scope": "Arbitrary probability laws on a measurable metric data space and a real inner-product parameter space, with the model, loss, integrability, A2 gradient witness, data-coordinate Lipschitzness, epsilon-sensitivity, and the supplied optimum and stable point all restricted to the paper's closed convex parameter domain. Wasserstein sensitivity carries a finite first-moment coupling witness for each on-domain law pair. The endpoint requires no A1, completeness, differentiation under expectation, gradient integrability, or off-domain model condition.",
+      "source_locator": "PMLR PDF p. 7, Theorem 4.3; official supplement Appendix E.6, pp. 7-8",
+      "source_step": "Use optimality and stability to order the three decoupled-risk terms, apply strong convexity plus the variational first-order inequality at the stable point, then use the Lipschitz/Wasserstein distribution-shift estimate to conclude ||θPO - θPS|| ≤ 2Lzε/γ."
+    },
+    {
+      "checked_conclusion": "performativeRisk_sub_performativelyOptimal_le_of_stable and performativeRisk_sub_performativelyOptimal_le_of_stable_finiteWasserstein give the finite-PMF routes. measurePerformativeRisk_sub_measurePerformativelyOptimal_le_of_stable_wasserstein proves the arbitrary-law W₁ calculation from the general Theorem 4.3 distance result and coordinate-wise loss Lipschitz bounds. measureWassersteinStableObjectiveGap derives its frozen-risk gradient through the A1 analytic bridge; its exact Spec/Proof endpoint is measureWassersteinStableObjectiveGapSpec/Proof.",
+      "id": "corollary-5.1-finite-stable-objective-gap",
+      "scope": "The general route covers arbitrary probability laws on a measurable metric data space and a complete real inner-product parameter space, with explicit data- and parameter-coordinate Lipschitz constants, finite-first-moment W₁ witnesses, A1's analytic differentiation premises, and pointwise A2. It remains conditional on supplied stable and performatively optimal parameters; the finite-PMF primal and finite-W₁ specializations remain available.",
+      "source_locator": "PMLR PDF p. 8, Corollary 5.1; official supplement Appendix E.7, p. 8",
+      "source_step": "Combine the stable-point/performative-optimum distance from Theorem 4.3 with parameter- and data-coordinate Lipschitz bounds to show the stable point's performative risk is at most 2Lzε(Lθ + Lzε)/γ above the Stackelberg/performance optimum."
+    },
+    {
+      "checked_conclusion": "For RERM, uniform_empiricalRiskDeviation_of_not_finiteIidUniformScoreDeviationEvent, the deterministic RERM perturbation lemmas, and finiteIidUniformEmpiricalRiskDeviationFailure_tendsto_zero turn a finite-alphabet uniform loss event into the finite-prefix recursion. For REGD, empiricalSampleLaw_apply_toReal_eq_empiricalCount_div, norm_empiricalPopulationGradient_sub_frozenPopulationGradient_le_of_not_finiteIidEmpiricalGradientMassDeviationEvent, finiteIidEmpiricalGradientMassDeviationFailure_tendsto_zero, the finite transport route, perturbed-contraction lemmas, and measureProb_repeatedEmpiricalGradientDescentTrajectory_le_radius_up_to_of_transport prove finite-PMF concentration support and the finite-horizon trajectory reduction. FiniteCoupling.norm_pmfVectorExp_sub_le_lipschitz_finiteWassersteinOne, norm_empiricalPopulationGradient_sub_frozenPopulationGradient_le_of_finiteWassersteinOne, norm_repeatedEmpiricalGradientDescentUpdate_sub_repeatedGradientDescentUpdate_le_of_finiteWassersteinOne, and measureProb_repeatedEmpiricalGradientDescentTrajectory_le_radius_up_to_of_finiteWassersteinOne provide the direct finite-W₁ event-to-trajectory route. adaptiveFreshProductLaw, freshPerformativeBatchLaw, their state-marginal theorems, and their PMF expectation identities construct one source-shaped fresh adaptive batch and expose its conditional IID law. adaptiveFreshIterateLaw and freshPerformativeIterateLaw recursively compose those fresh-batch transitions into the law of the random deployed state at every round. adaptiveFreshTraceLaw and freshPerformativeTraceLaw construct the complete fixed-batch-size history PMF and prove its conditional-IID one-step expectation expansion. The reusable HeterogeneousBatchTrace and adaptiveFreshHeterogeneousTraceLaw give the same conditional-IID construction when the round-th batch carrier is Fin (n_t). pmfProb_adaptiveFreshTraceLaw_succ and pmfProb_freshPerformativeTraceLaw_succ_le_of_forall derive the fixed-batch adaptive conditional-event identity; adaptiveFreshTraceAnyBadProbability_succ_le, adaptiveFreshTraceAnyBadProbability_le_mul, adaptiveFreshTraceAnyBadProbability_le_sum, and adaptiveFreshHeterogeneousTraceAnyBadProbability_le_sum are reusable fixed-horizon bounds for arbitrary history-dependent batch events. theorem310FailureBudget, hasSum_theorem310_inverseSquare, sum_theorem310FailureBudget_le, freshPerformativeHeterogeneousTraceLawEmpiricalRiskDeviationUpToFailure_le_theorem310Budget, and freshPerformativeHeterogeneousTraceLawEmpiricalGradientMassDeviationUpToFailure_le_theorem310Budget check the source's 6p/(pi^2 t^2) confidence allocation and its finite-prefix RERM and REGD union-bound consequences at the actual time-varying n_t. finiteIidUniformScoreDeviationFailure_le_hoeffding, finiteIidAnyMassDeviationFailure_le_hoeffding, finiteIidUniformEmpiricalRiskDeviationFailure_le_hoeffding, finiteIidEmpiricalGradientMassDeviationFailure_le_hoeffding, freshPerformativeHeterogeneousTraceLawEmpiricalRiskDeviationUpToFailure_le_theorem310Budget_of_hoeffding, and freshPerformativeHeterogeneousTraceLawEmpiricalGradientMassDeviationUpToFailure_le_theorem310Budget_of_hoeffding reuse the finite-family Hoeffding route to discharge both budgets from explicit exponents; RERM assumes [0,1] losses and RGD retains a strict threshold slack. exists_heterogeneousRERMSampleCount_meeting_theorem310Budget and exists_heterogeneousRGDSampleCount_meeting_theorem310Budget construct positive finite-PMF batch schedules satisfying those budgets. dist_heterogeneousRERMState_le_radius_of_not_bad and dist_heterogeneousRGDState_le_radius_of_not_bad prove the corresponding no-bad-event absorbing-ball implications, while one_sub_le_pmfProb_of_heterogeneousRERMConfidenceBudget and one_sub_le_pmfProb_of_heterogeneousRGDConfidenceBudget lift them to finite-horizon probability at least 1-p. The uniform-budget results instantiate to freshPerformativeTraceLawEmpiricalRiskDeviationUpToFailure_tendsto_zero for RERM uniform-loss deviations and freshPerformativeTraceLawEmpiricalGradientMassDeviationUpToFailure_tendsto_zero for REGD empirical-mass deviations.",
+      "id": "theorem-3.10-finite-horizon-regd-transport-trajectory-bridge",
+      "scope": "The finite-IID results are fixed-deployed-law concentration constructors; the added PMF constructions derive complete finite traces of conditionally IID fresh batches, including one-step expectation/event factorizations and fixed-horizon adaptive uniform-loss and empirical-gradient mass failure events whose probabilities vanish with batch size. A direct finite-W₁ empirical-law event has the same checked RGD absorbing-ball implication, without a primal coupling certificate. The heterogeneous trace realizes the source's changing n_t batch carriers. The three existential schedule theorems turn the corresponding parameter-uniform vanishing totals into positive n_t schedules meeting the inverse-square budget at every round, and the finite RERM and finite RGD trajectories satisfy their absorbing-ball conclusion with probability at least 1-p through every fixed horizon. Both branches also have explicit finite-family Hoeffding sufficient conditions for the budget, with a [0,1] loss normalization for RERM and strict threshold slack for RGD's non-strict mass event. `adaptiveFreshHeterogeneousInfiniteTraceLaw` now adds a genuine common Ionescu--Tulcea law, so the finite-PMF RERM uniform-loss, RGD empirical-mass, and finite-alphabet primal-W₁ events have literal all-rounds <= p conclusions. The finite-alphabet W₁ complement now has the matching all-rounds RGD absorbing-ball result; the RERM and empirical-mass deterministic routes remain finite-prefix. This does not invoke Fournier--Guillin or derive the source's general empirical-Wasserstein concentration premise or exact parameter/stopping-time constants.",
+      "source_locator": "PMLR PDF pp. 6-7, Theorem 3.10; official supplement Appendix E.4, pp. 6-7",
+      "source_step": "At each round, empirical earth-mover closeness controls the empirical gradient/update error; population contraction then keeps the iterates in an absorbing ball, and a union bound lifts the roundwise high-probability events to a trajectory guarantee."
+    },
+    {
+      "checked_conclusion": "FiniteCoupling.finiteWassersteinOne_le_diameter_card_mul_of_forall_abs_sub_le constructs a maximal finite coupling and proves that pointwise PMF mass error at most epsilon yields primal finiteWassersteinOne at most diameter times card(Data) times epsilon. finiteWassersteinOne_empiricalSampleLaw_le_of_not_finiteIidEmpiricalGradientMassDeviationEvent applies that result to the empirical sample law, while finiteIidEmpiricalWassersteinOneFailure_le_massDeviationFailure and finiteIidEmpiricalWassersteinOneFailure_le_hoeffding give an explicit fixed-deployed-law probability bound by the existing coordinatewise Hoeffding event. freshPerformativeHeterogeneousTraceLawEmpiricalWassersteinOneUpToFailure_le_theorem310Budget and freshPerformativeHeterogeneousTraceLawEmpiricalWassersteinOneUpToFailure_le_theorem310Budget_of_hoeffding then lift the literal W₁ failure event through the conditionally IID, time-varying finite trace and its inverse-square budget. exists_heterogeneousRGDWassersteinSampleCount_meeting_theorem310Budget transports the selected positive finite mass schedule to that literal W₁ event, and exists_heterogeneousRGDWassersteinConfidenceSchedule makes the resulting finite-prefix `≤ p` bound uniform over every history-dependent deployment rule. dist_heterogeneousRGDState_le_radius_of_not_wassersteinBad proves the corresponding direct no-bad-trace RGD absorbing-ball recurrence, and one_sub_le_pmfProb_of_heterogeneousRGDWassersteinConfidenceBudget transfers any supplied trace-safe consequence to probability at least 1-p.",
+      "id": "theorem-3.10-finite-wasserstein-hoeffding-bridge",
+      "scope": "This is an actual primal-W₁ finite-alphabet concentration specialization, not merely an assumed W₁ event. It carries a diameter/cardinality factor; its fixed-law failure bound is lifted through the conditionally-IID heterogeneous trace with the source-shaped finite-prefix inverse-square confidence allocation, and it now selects a positive schedule for the literal W₁ event itself. It is not a Fournier--Guillin result, the source's stated constants/rate, or an infinite-horizon theorem.",
+      "source_locator": "PMLR PDF pp. 6-7, Theorem 3.10; official supplement Appendix E.4, pp. 6-7",
+      "source_step": "At a fixed deployed parameter, a high-probability empirical earth-mover bound supplies the RGD perturbation premise before the contraction recurrence."
+    },
+    {
+      "checked_conclusion": "freshPerformativeHeterogeneousInfiniteTraceEmpiricalWassersteinOneEvent realizes the concrete maximal-coupling finite-W1 failure at a round of the common Ionescu--Tulcea trace. measureReal_iUnion_freshPerformativeHeterogeneousInfiniteTraceEmpiricalWassersteinOne_le_theorem310Budget proves its literal countable union has measure at most p from the history-uniform finite-IID budget. exists_heterogeneousRGDWassersteinSampleCount_with_infinite_theorem310Confidence transports the existing positive mass-deviation schedule to this all-rounds W1 conclusion. measurableSet_adaptiveFreshHeterogeneousInfiniteTraceBadEvent, not_adaptiveFreshHeterogeneousTraceAnyBadEvent_of_not_iUnion_infiniteBadEvent, and one_sub_le_measureReal_of_measureReal_bad_le bridge the common-trace complement to the prefix recurrence. one_sub_le_measureReal_freshPerformativeHeterogeneousInfiniteTraceRGDState_le_radius_of_wassersteinBudget consequently gives the RGD absorbing-ball invariant at every iteration with probability at least 1-p.",
+      "id": "theorem-3.10-finite-wasserstein-common-trace-confidence",
+      "scope": "This is an actual finite-alphabet primal-W1 all-rounds event and absorbing-ball theorem, with radius diameter * card(Data) * epsilon and an existential positive schedule. It is neither the source's general Fournier--Guillin result nor its exact constants or rate.",
+      "source_locator": "PMLR PDF pp. 6-7, Theorem 3.10; official supplement Appendix E.4, pp. 6-7",
+      "source_step": "Apply the inverse-square roundwise confidence allocation to the empirical earth-mover events on one probability space, before using the deterministic contraction recurrence."
+    },
+    {
+      "checked_conclusion": "measureEmpiricalPopulationGradient and measureRepeatedEmpiricalGradientDescentUpdate make an arbitrary supplied empirical probability law explicit. norm_measureEmpiricalPopulationGradient_sub_measureFrozenPopulationGradient_le_of_wassersteinOne derives the vector gradient error from the reusable arbitrary-measure W₁ Lipschitz-test theorem, and norm_measureRepeatedEmpiricalGradientDescentUpdate_sub_measureRepeatedGradientDescentUpdate_le_of_wassersteinOne adds nonexpansive projection and the step-size factor. The shared empiricalSampleProbabilityMeasure realizes a nonempty finite sample as such a probability law, and norm_measureSampledGradientDescentUpdate_sub_measureRepeatedGradientDescentUpdate_le_of_wassersteinOne is the corresponding sample-level PZ endpoint.",
+      "id": "theorem-3.10-general-wasserstein-event-to-rgd-bridge",
+      "scope": "This is a deterministic arbitrary-measure event-to-update bridge only: it realizes a finite sample as an empirical probability law but assumes the two-law integrability and finite-real W₁ event. It does not prove concentration, the adaptive general-law trajectory recurrence, the paper's Fournier--Guillin constants, or its infinite-horizon conclusion.",
+      "source_locator": "PMLR PDF pp. 6-7, Theorem 3.10; official supplement Appendix E.4, pp. 6-7",
+      "source_step": "At a fixed deployed parameter, empirical W₁ closeness of the batch law to the induced data law controls the empirical gradient and, after nonexpansive projection, the RGD update perturbation before the contraction recurrence."
+    },
+    {
+      "checked_conclusion": "performativeBestResponseOn, performativeBestResponseOn_nonempty_of_compact, isClosed_performativeBestResponseOn_of_compact, isCompact_performativeBestResponseOn_of_compact, convexOn_pmfExp, convexOn_decoupledPerformativeRisk_of_lossConvex, convex_performativeBestResponseOn, closedGraph_performativeBestResponseOn_of_compact, and exists_isPerformativelyStableOn_of_compact_convex_of_lossConvex establish the finite-PMF compact-convex route. The final fixed-point call is EconCSLib.kakutani_fixed_point, adapted from harfe/fixed-point-theorems-lean4 commit 770940ddf9878cf61952ed53d910b92bca841838, FixedPointTheorems/kakutani.lean, under its preserved MIT license; it is a local port, not a Mathlib import.",
+      "id": "proposition-4.1-finite-compact-convex-existence",
+      "scope": "Finite data PMFs and a finite-dimensional normed parameter space. The checked theorem makes joint decoupled-risk continuity explicit, derives compact nonempty and convex best-response values, and uses the port's closed-graph condition. It does not formalize Berge's theorem, the upper-hemicontinuity/closed-graph equivalence, or the source general-distribution/Wasserstein continuity bridge.",
+      "source_locator": "PMLR PDF p. 7, Proposition 4.1; arXiv:2002.06673v4 Appendix D.5, p. 29 (cited publication lines 1543--1552)",
+      "source_step": "For g(theta) = argmin(theta' in Theta) DPR(theta, theta'), joint continuity and compactness yield upper-hemicontinuous compact nonempty values by Berge; convex loss yields convex values; Kakutani gives a fixed point, hence a performatively stable model."
+    },
+    {
+      "checked_conclusion": "measurePerformativeBestResponseOn, measurePerformativeBestResponseOn_nonempty_of_compact, isClosed_measurePerformativeBestResponseOn_of_compact, isCompact_measurePerformativeBestResponseOn_of_compact, convexOn_measureDecoupledPerformativeRisk_of_lossConvex, convex_measurePerformativeBestResponseOn, closedGraph_measurePerformativeBestResponseOn_of_compact, exists_isMeasurePerformativelyStableOn_of_compact_convex_of_lossConvex, and the exact measureCompactConvexStablePointExistsSpec/Proof endpoint formalize the arbitrary-law best-response/Kakutani structure. The fixed-point step is the same source-attributed local MIT-licensed harfe/fixed-point-theorems-lean4 Kakutani port recorded for the finite route. The reusable lipschitzWith_measureDecoupledPerformativeRisk_of_wassersteinSensitive and continuous_measureDecoupledPerformativeRisk_of_wassersteinSensitive prove a stronger W1/loss-Lipschitz sufficient continuity bridge, used by exists_isMeasurePerformativelyStableOn_of_compact_convex_of_lossConvex_of_wassersteinLossLipschitz.",
+      "id": "proposition-4.1-general-compact-convex-existence",
+      "scope": "Arbitrary probability laws on a measurable metric data space and a finite-dimensional real normed parameter space. The direct paper endpoint takes compact nonempty convex Theta, joint continuity of the decoupled risk, and pointwise convexity of loss; frozen-risk convexity is proved by integration. The added bridge replaces direct joint-risk continuity with uniform coordinate-wise loss Lipschitzness, W1 sensitivity, and model integrability, which is stronger than the source's bare pointwise joint-continuity statement. It does not derive joint continuity from that literal source condition, formalize Berge's theorem or upper hemicontinuity, or provide an infinite-dimensional parameter-space result.",
+      "source_locator": "PMLR PDF p. 7, Proposition 4.1; arXiv:2002.06673v4 Appendix D.5, p. 29 (cited publication lines 1543--1552)",
+      "source_step": "For g(theta) = argmin(theta' in Theta) DPR(theta, theta'), use compactness and joint continuity to obtain nonempty compact best-response values, loss convexity to obtain convex values, and Kakutani to obtain a stable fixed point."
+    },
+    {
+      "checked_conclusion": "proposition41NonconvexDomain_isCompact, proposition41NonconvexLoss_continuous, proposition41NonconvexLoss_convex, proposition41NonconvexModel_finiteWassersteinSensitiveOn, and proposition41NonconvexModel_no_performativelyStablePoint construct Theta = {-1, 1}, a jointly continuous globally convex square loss, and a domain-W1-sensitive finite induced-law model with no domain-stable point. IsFiniteWassersteinSensitiveOn is the reusable constrained-domain sensitivity definition used by this construction.",
+      "id": "proposition-4.1-compact-nonconvex-counterexample",
+      "scope": "This is a finite-data counterexample to the literal compact-only statement, not a replacement for the arbitrary-law existence theorem. Its distribution map is required to be sensitive only on the declared source domain, which is the correct scope when D is a map from Theta. It establishes that compactness alone cannot supply the convex-domain Kakutani premise.",
+      "source_locator": "PMLR PDF p. 7, Proposition 4.1; arXiv:2002.06673v4 Appendix D.5, p. 29 (cited publication lines 1543--1552)",
+      "source_step": "Appendix D.5 says that Kakutani's conditions hold after establishing compact nonempty convex best-response values, but the printed proposition assumes only that Theta is compact."
+    },
+    {
+      "checked_conclusion": "concaveOn_real_quadratic_of_nonpos and concaveOn_proposition42_sourceQuadratic derive the source's concavity conclusion from 1/2 ≤ epsilon; strictConcaveOn_real_quadratic_of_neg and strictConcaveOn_proposition42_sourceQuadratic additionally give strict concavity for 1/2 < epsilon. proposition42_repaired_parameter_conditions_consistent verifies that the repair admits epsilon strictly between one half and 2 / 2. proposition42Law, correctedProposition42Model, and performativeRisk_correctedProposition42Model_eq construct a valid finite-PMF repaired instance and prove its exact displayed quadratic. proposition42Loss_strongConvex and proposition42Gradient_jointSmooth check the source loss's strong-convexity and full joint-smoothness calculations with constant 2 on the finite binary data encoding. monotoneBernoulliCoupling, bindSharedBase, proposition42Law_hasExpectedCostLE, correctedProposition42Model_finiteTransportSensitive, finiteWassersteinOne, and correctedProposition42Model_finiteWassersteinSensitive construct the finite primal plan, compute its cost, and derive the corresponding finite W₁ sensitivity bound with coefficient epsilon.",
+      "id": "proposition-4.2-quadratic-concavity-algebraic-tail",
+      "scope": "The source's displayed |mu + epsilon| endpoint condition is insufficient to validate its Bernoulli parameter for all theta in [0,1]; the separate defect record supplies a checked witness and a sufficient repair by adding |mu| ≤ 1/2. Under that repair and epsilon ≥ 0, the corrected finite-PMF law, its exact risk, loss-side joint smoothness/strong convexity, and finite W₁ sensitivity (defined as the infimum over finite coupling costs) are checked. This is a corrected finite-model realization, not a proof of the source's arbitrary-distribution theorem or of a finite primal/dual Kantorovich--Rubinstein equivalence.",
+      "source_locator": "PMLR PDF p. 7, Proposition 4.2; official supplement Appendix E.5",
+      "source_step": "After directly calculating the displayed performative-risk quadratic PR(theta) = 1/4 - 2 theta mu + (1 - 2 epsilon) theta^2, conclude concavity when epsilon is greater than one half."
+    }
+  ],
+  "defect_entry_schema": {
+    "defect_kind_values": [
+      "algebra_or_sign",
+      "inequality_direction",
+      "quantifier_or_uniformity",
+      "domain_or_endpoint",
+      "index_or_integrality",
+      "event_or_measure",
+      "normalization_or_scaling",
+      "logical_dependency",
+      "other"
+    ],
+    "required": [
+      "id",
+      "source_locator",
+      "source_claim",
+      "defect_kind",
+      "affected_source_locators",
+      "statement_impact",
+      "repair_obligation",
+      "acceptance_condition",
+      "resolution",
+      "resolution_evidence"
+    ],
+    "resolution_values": [
+      "repaired_in_lean",
+      "open_proof_obligation",
+      "corrected_source_statement",
+      "resolved_in_current_source"
+    ],
+    "statement_impact_values": [
+      "proof_only",
+      "source_statement",
+      "uncertain"
+    ],
+    "status_impact_values": [
+      "formalized_note",
+      "formalized_with_caveat",
+      "partially_formalized"
+    ]
+  },
+  "defects": [
+    {
+      "acceptance_condition": "Either construct a valid finite-PMF instance under an explicit sufficient endpoint condition, or source-correct the example's parameter restriction before giving Proposition 4.2 endpoint credit.",
+      "affected_source_locators": [
+        "PMLR PDF p. 7, Proposition 4.2",
+        "Official supplement Appendix E.5"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "proposition-4.2-bernoulli-validity-omitted-endpoint",
+      "repair_obligation": "Establish that both Bernoulli probabilities lie in [0,1] for every theta in [0,1], or strengthen the stated parameter restriction. The displayed restriction controls only the theta = 1 endpoint and omits the theta = 0 endpoint |mu| <= 1/2.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "proposition42_source_muCondition_allows_invalidBernoulliParameter checks the concrete witness epsilon = 3/4, mu = -3/4, theta = 0, where all stated inequalities hold but the X = 1 Bernoulli parameter is -1/4. proposition42_bernoulliParameter_unitInterval_of_endpoint_bounds proves the repaired validity implication after adding |mu| <= 1/2, and correctedProposition42Model constructs the resulting finite-PMF law with performativeRisk_correctedProposition42Model_eq checking its exact risk formula.",
+      "source_claim": "With theta in [0,1], epsilon greater than one half, and |mu + epsilon| <= 1/2, the displayed conditional law Y | X ~ Bernoulli(1/2 + mu X + epsilon theta X) is used as the example's distribution map.",
+      "source_locator": "Official supplement Appendix E.5, first paragraph",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The proposition is existential and its concavity algebra remains checked under the displayed normal form, but the appendix's announced parameter condition is insufficient for the full model family. No endpoint credit is claimed for the proposition."
+    },
+    {
+      "acceptance_condition": "Formalize a source-faithful Berge-plus-Kakutani existence proof, with all compactness, continuity, convex-value, and correspondence fixed-point premises derived or explicitly matched to the source assumptions.",
+      "affected_source_locators": [
+        "PMLR PDF p. 7, Proposition 4.1",
+        "Official supplement Appendix E",
+        "arXiv:2002.06673v4 Appendix D.5, p. 29"
+      ],
+      "defect_kind": "other",
+      "id": "proposition-4.1-pmlr-supplement-proof-omission",
+      "repair_obligation": "Formalize the arXiv Appendix D.5 route: derive the compact nonempty upper-hemicontinuous argmin correspondence from joint continuity and compactness, derive convex values from loss convexity, and apply a source-faithful Kakutani fixed-point theorem on the compact convex parameter domain.",
+      "resolution": "resolved_in_current_source",
+      "resolution_evidence": "The official supplement's visible proof sequence is E.1 Theorem 3.5, E.2 Proposition 3.6, E.3 Theorem 3.8, E.4 Theorem 3.10, E.5 Proposition 4.2, E.6 Theorem 4.3, and E.7 Corollary 5.1, with no Proposition 4.1 proof. arXiv:2002.06673v4 Appendix D.5 (arxiv.txt lines 1543--1552) explicitly gives the Berge maximum theorem / convex values / Kakutani route. The finite-PMF compact-convex specialization now derives nonempty compact and convex argmin values plus a closed graph from explicit joint-risk continuity, then applies a source-attributed compatible port of harfe/fixed-point-theorems-lean4 (commit 770940ddf9878cf61952ed53d910b92bca841838; FixedPointTheorems/kakutani.lean; MIT). This is not presented as a Mathlib import or as a proof of the general Berge/upper-hemicontinuity/Wasserstein bridge.",
+      "source_claim": "The PMLR main text sends the Section 4 existence proof to an appendix, but the official supplement has no Proposition 4.1 subsection. The arXiv v4 manuscript supplies the missing proof: Berge's maximum theorem gives an upper-hemicontinuous, compact nonempty best-response correspondence; loss convexity gives convex values; Kakutani then gives a fixed point.",
+      "source_locator": "PMLR PDF p. 7, Proposition 4.1; official supplement Appendix E table of contents and sections E.1--E.7; arXiv:2002.06673v4 Appendix D.5, p. 29 (cited publication lines 1543--1552)",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The missing official-supplement proof is a provenance omission rather than a statement limitation. The arXiv appendix supplies the intended Berge-plus-Kakutani route, and Lean proves the corrected arbitrary-law compact-convex endpoint; the source-statement corrections are tracked separately below."
+    },
+    {
+      "acceptance_condition": "Provide a source-faithful expectation-continuity theorem with every integrability/growth condition stated and prove the resulting Berge/closed-graph bridge, or classify the printed Proposition 4.1 premise as needing a substantive additional condition.",
+      "affected_source_locators": [
+        "PMLR PDF p. 7, Proposition 4.1",
+        "arXiv:2002.06673v4 Appendix D.5, p. 29"
+      ],
+      "defect_kind": "event_or_measure",
+      "id": "proposition-4.1-expected-risk-continuity-bridge",
+      "repair_obligation": "Derive joint continuity of (deployed, evaluated) ↦ E_{D(deployed)} loss(Z; evaluated) from the printed assumptions, or make the additional loss-growth, uniform-integrability, or expectation-continuity condition explicit. Pointwise joint continuity alone is not the same as W1-continuity of an unbounded expectation.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "measureCompactConvexStablePointExistsSpec and measureCompactConvexStablePointExistsProof expose joint continuity of the decoupled expected risk as the exact Berge bridge and prove the arbitrary-law compact-convex stable-point conclusion. The library also proves the sufficient W1/Lipschitz derivation continuous_measureDecoupledPerformativeRisk_of_wassersteinSensitive. The corrected target does not claim that bare pointwise joint continuity of an unbounded loss implies expectation continuity.",
+      "source_claim": "Proposition 4.1 assumes an epsilon-sensitive distribution map and a pointwise loss jointly continuous in (z, theta); Appendix D.5 then applies Berge's theorem to the best response correspondence of the expected decoupled risk.",
+      "source_locator": "PMLR PDF p. 7, Proposition 4.1; arXiv:2002.06673v4 Appendix D.5, p. 29 (arxiv HTML lines 715--719)",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The corrected Proposition 4.1 endpoint is fully proved with the expectation-continuity bridge explicit. The stronger bridge remains visible as a source clarification rather than being hidden in literal source credit, and it does not change the paper's formalized status."
+    },
+    {
+      "acceptance_condition": "Either prove the compact-only statement under its printed hypotheses, or record the compact-convex corrected statement and a source-faithful proof route. A counterexample satisfying the remaining printed conditions establishes that adding convexity is substantive.",
+      "affected_source_locators": [
+        "PMLR PDF p. 7, Proposition 4.1",
+        "arXiv:2002.06673v4 Appendix D.5, p. 29"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "proposition-4.1-convex-domain-omission",
+      "repair_obligation": "Add convexity of the parameter domain Theta (and its nonemptiness) to the Proposition 4.1 hypotheses before applying Kakutani, or give a different existence proof valid for every compact nonconvex Theta.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "proposition41NonconvexDomain_isCompact proves compactness of Theta = {-1, 1}; proposition41NonconvexLoss_continuous and proposition41NonconvexLoss_convex prove a jointly continuous globally convex square loss; proposition41NonconvexModel_finiteWassersteinSensitiveOn proves coefficient-one W1 sensitivity on the declared domain; and proposition41NonconvexModel_no_performativelyStablePoint proves that no stable parameter exists. The corrected library endpoint exists_isMeasurePerformativelyStableOn_of_compact_convex_of_lossConvex explicitly assumes compact nonempty convex Theta.",
+      "source_claim": "Proposition 4.1 assumes only that Theta is compact. Appendix D.5 subsequently says that the conditions of Kakutani's theorem hold after it obtains compact nonempty convex best-response values.",
+      "source_locator": "PMLR PDF p. 7, Proposition 4.1; arXiv:2002.06673v4 Appendix D.5, p. 29 (cited publication lines 1543--1552)",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The omission changes the printed theorem statement, and a compiled finite counterexample shows why convexity must be explicit. Lean fully proves the corrected compact-convex endpoint; the issue is retained as a human-facing source correction without changing the paper's formalized status."
+    },
+    {
+      "acceptance_condition": "A source-faithful proof supplies a uniform adaptive exponential-moment bound from the theorem's stated assumptions, or the checked theorem is classified as a strengthened corrected interface with its additional uniform-moment premise visible.",
+      "affected_source_locators": [
+        "cited publication:373-415"
+      ],
+      "defect_kind": "quantifier_or_uniformity",
+      "id": "theorem-3.10-pointwise-moment-uniform-adaptive-envelope",
+      "repair_obligation": "Derive one deterministic finite moment envelope for every adaptive history-selected deployed law from the pointwise source hypothesis, or add mathematically sufficient compactness/continuity or uniform-integrability premises and state the strengthening explicitly.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "theorem310CompactContinuousMomentEnvelopeSpec and theorem310CompactContinuousMomentEnvelope prove a sufficient compact-domain plus continuous-moment route. The corrected supercritical RERM/RGD trajectory Specs instead expose one shared bounded exponential-moment envelope for every deployed history and derive the all-round conclusion from it. No equivalence with the printed pointwise-only premise is claimed.",
+      "source_claim": "Theorem 3.10 assumes that for some alpha greater than one and mu greater than zero the exponential radial moment xi_{alpha,mu}(theta) is finite for every theta in Theta, then asserts one round-dependent high-probability RERM/REGD guarantee.",
+      "source_locator": "cited publication:373-415",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The corrected Theorem 3.10 endpoints are fully proved with a uniform adaptive moment envelope explicit. The distinction from the printed pointwise premise remains documented as a source regularity clarification and does not change the paper's formalized status."
+    },
+    {
+      "acceptance_condition": "A checked general-law concentration theorem gives an explicit count schedule whose rate is mathematically valid in every claimed dimension and is connected to the all-round adaptive trace; no bare certificate or asymptotic paraphrase is sufficient.",
+      "affected_source_locators": [
+        "cited publication:373-415"
+      ],
+      "defect_kind": "quantifier_or_uniformity",
+      "id": "theorem-3.10-all-dimension-sample-rate",
+      "repair_obligation": "Derive the printed all-dimension sample-count formula from a correctly stated empirical-Wasserstein concentration theorem, including the distinct low-dimensional, critical, and supercritical dimension regimes, or replace it by a proved dimension-regime schedule.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "The pinned Fournier--Guillin arXiv preprint (arXiv:1312.2128, Theorem 2 / displayed Eq. (7)) gives h(x)=x^2 when p>d/2, h(x)=(x/log(2+1/x))^2 when p=d/2, and h(x)=x^(d/p) when p<d/2. Hence at p=1 its small-deviation inversions are x^-2 in d=1, x^-2 log^2(1/x) in d=2, and x^-d only for d>2. The corrected PZ endpoints use the fully proved explicit supercritical dimension-greater-than-two schedule and do not assert the false all-dimension formula.",
+      "source_claim": "Theorem 3.10 gives one displayed all-dimension big-O round-dependent sample-count prescription for empirical Wasserstein control before the RERM and REGD conclusions.",
+      "source_locator": "cited publication:373-415",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The dimension-greater-than-two replacement schedule and all-round trajectory conclusions are fully proved. The source's advertised all-dimension rate is not literally credited and remains documented as a rate-regime correction without changing the paper's formalized status."
+    },
+    {
+      "acceptance_condition": "The RERM source route proves the W1-to-uniform-risk bridge from exactly stated source assumptions, or its checked endpoint visibly retains any additional loss-regularity and integrability conditions as a strengthened boundary.",
+      "affected_source_locators": [
+        "cited publication:373-415"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "theorem-3.10-rerm-data-loss-wasserstein-bridge",
+      "repair_obligation": "Derive the empirical-versus-population frozen-risk uniform deviation required by RERM from A1/A2 and the source moment assumptions, or add and justify an explicit data-coordinate loss Lipschitzness and integrability bridge.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "theorem310CorrectedRERMAllRoundTrajectorySpec exposes IsMeasureDataLossLipschitz and empirical-loss integrability and uses them to prove the W1-to-uniform-risk recurrence before deriving the all-round trajectory conclusion. These assumptions are not claimed to follow from A1/A2 alone.",
+      "source_claim": "Theorem 3.10 derives a finite-sample RERM trajectory guarantee from A1, A2, distribution sensitivity, and the stated moment condition.",
+      "source_locator": "cited publication:373-415",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The corrected RERM endpoint is fully proved with its loss-side regularity and integrability bridge explicit. The additional regularity remains visible as a source-proof clarification without changing the paper's formalized status."
+    },
+    {
+      "acceptance_condition": "The checked route either proves that the printed assumptions imply the general-measure analytic bridge or uses an author-approved corrected target that visibly retains gradient integrability, local loss measurability, pointwise differentiation, and the closed-convex RRM data.",
+      "affected_source_locators": [
+        "cited publication:264-269",
+        "cited publication:324-344",
+        "Official supplement Appendix E.1, pp. 3-4"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "theorem-3.5-general-measure-analytic-bridge",
+      "repair_obligation": "Derive the arbitrary-measure frozen-risk differentiation and Wasserstein bridge from the printed hypotheses under an explicit source topology/measurability convention, or record every additional analytic and domain premise at the public theorem boundary.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "measureWassersteinConvexRRMConvergesLinearlySpec and measureWassersteinConvexRRMConvergesLinearlyProof prove the contraction, unique domain-stable point, convergence, and geometric rate with every needed analytic premise explicit. The author-approved formalized general-measure scope in docs/FORMALIZATION_WORKING_MEMO.md records that this is not archival equivalence.",
+      "source_claim": "Theorem 3.5 states RRM contraction and linear convergence from A1, A2, and epsilon-sensitivity.",
+      "source_locator": "cited publication:264-269; cited publication:324-344",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The corrected general-measure endpoint is fully proved and its added bridge assumptions are machine-visible. The map does not claim that the archival Theorem 3.5 alone establishes those assumptions."
+    },
+    {
+      "acceptance_condition": "The checked route either establishes the general-measure bridge from the source statement or uses an author-approved corrected target with every analytic and projection premise exposed before the contraction and rate conclusion.",
+      "affected_source_locators": [
+        "cited publication:373-415",
+        "Official supplement Appendix E.3"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "theorem-3.8-general-measure-analytic-bridge",
+      "repair_obligation": "Derive the arbitrary-measure expected-gradient, projection, and Wasserstein bridge under the printed source conventions, or state the required integrability, local measurability, differentiation, closed-domain, and projection hypotheses in a corrected target.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "measureWassersteinConvexRGDConvergesLinearlySpec and measureWassersteinConvexRGDConvergesLinearlyProof prove the exact displayed contraction form, unique domain-stable point, convergence, and geometric rate under the explicit analytic and projection interface. The author-approved formalized general-measure scope records the non-equivalence to the archival theorem.",
+      "source_claim": "Theorem 3.8 states projected RGD contraction and linear convergence from A1, A2, epsilon-sensitivity, and displayed step-size conditions.",
+      "source_locator": "cited publication:373-415",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The corrected RGD interface is fully proved and no projection certificate is hidden. Its explicit general-measure bridge assumptions remain a source-statement correction rather than literal Theorem 3.8 credit."
+    },
+    {
+      "acceptance_condition": "The checked route either proves the literal general-measure corollary from the source hypotheses or uses an author-approved corrected target that exposes the analytic bridge and every convergence/objective-gap premise.",
+      "affected_source_locators": [
+        "cited publication:543-561",
+        "Official supplement Appendix E.7, p. 8"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "corollary-5.1-general-measure-analytic-bridge",
+      "repair_obligation": "Derive the inherited general-measure RRM and optimum-stability analytic bridges from the printed source conventions, or retain their gradient-integrability, local measurability, and pointwise-differentiability premises in a corrected objective-gap target.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "measureWassersteinStableObjectiveGapSpec and measureWassersteinStableObjectiveGapProof prove unique stable-point convergence and the exact objective-gap bound while explicitly assuming A1/A2, loss Lipschitzness, Wasserstein sensitivity, RRM, strict contraction, and the needed analytic premises. Its corrected scope is recorded in the working memo.",
+      "source_claim": "Corollary 5.1 states RRM convergence to a stable classifier and the displayed performative-objective gap under Lipschitzness, A1, A2, and epsilon-sensitivity.",
+      "source_locator": "cited publication:543-561",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The full corrected arbitrary-law corollary is proved. The source map preserves that its general-measure analytic bridge is an approved formalization scope, not an archival-equivalence assertion."
+    },
+    {
+      "acceptance_condition": "A checked theorem quantifies over the source constants and constructs a sufficient penalty, then concludes the nonconvergent RRM witness without retaining a caller-supplied penalty premise.",
+      "affected_source_locators": [
+        "cited publication:315-323"
+      ],
+      "defect_kind": "quantifier_or_uniformity",
+      "id": "proposition-3.6b-large-penalty-witness",
+      "repair_obligation": "For every positive epsilon and gamma, exhibit a penalty satisfying IsProposition36bLargePenalty and use the existing conditional two-cycle construction to produce the source existential counterexample.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "proposition36bSufficientPenalty chooses gamma * (epsilon^-2 + 2), and proposition36b_sufficientPenalty_large proves both sufficient inequalities for every positive epsilon and gamma. proposition36bSourceUniformCounterexampleSpec and proposition36bSourceUniformCounterexample package that witness with the checked conditional two-cycle endpoint.",
+      "source_claim": "Proposition 3.6(b) says that for every positive source epsilon and gamma, RRM can fail to converge when the loss is gamma-strongly convex but not jointly smooth.",
+      "source_locator": "cited publication:315-323",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The source statement is now realized with an explicit witness; the retained conditional penalty interface is supporting reusable machinery rather than a limitation of the paper-facing endpoint."
+    },
+    {
+      "acceptance_condition": "The endpoint quantifies over beta, gamma, and epsilon and proves beta-joint smoothness, gamma-strong convexity, epsilon-sensitivity, and a diverging RRM trajectory for every positive gamma <= beta with epsilon >= gamma/beta, including equality.",
+      "affected_source_locators": [
+        "cited publication:315-323"
+      ],
+      "defect_kind": "normalization_or_scaling",
+      "id": "proposition-3.6c-arbitrary-regularity-constants",
+      "repair_obligation": "Realize every feasible positive regularity pair gamma <= beta at the full source threshold epsilon >= gamma/beta; retain the compatibility restriction as a clarification of the printed unrestricted positive-pair quantifier.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "proposition36cRegularityLoss beta gamma datum candidate is gamma*candidate^2/2 - beta*datum*candidate, with actual gradient gamma*candidate - beta*datum. The law is delta_(1+epsilon*theta), and exact frozen minimization gives proposition36cRegularityRRMUpdate = (beta/gamma)*(1+epsilon*theta). The selected proposition36cFeasibleUniformCounterexample proves the regularity and sensitivity conditions and a trajectory tending to +infinity. At epsilon = gamma/beta the update is translation by positive beta/gamma; above it, the affine factor exceeds one. Compatibility gamma <= beta follows from combining gamma-strong convexity with beta-gradient smoothness on a nontrivial parameter interval.",
+      "source_claim": "For every positive epsilon, beta, and gamma, RRM can fail to converge when the loss is beta-jointly smooth and gamma-strongly convex but epsilon is at least gamma divided by beta.",
+      "source_locator": "cited publication:315-323",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The full feasible regularity-constant family and divergence threshold are formally proved. The missing gamma <= beta compatibility remains explicit as a source quantifier clarification rather than literal Proposition 3.6(c) credit, and it does not change the paper's formalized status."
+    }
+  ],
+  "model_convention_entry_schema": {
+    "optional": [
+      "unresolved_relation_to_literal_source"
+    ],
+    "required": [
+      "id",
+      "source_locator",
+      "classification",
+      "formal_meaning",
+      "why_needed",
+      "checked_scope"
+    ]
+  },
+  "model_conventions": [
+    {
+      "checked_scope": "Definitions 2.1, 2.3, and 3.3, finite argmin selection, and fixed-point consequences only.",
+      "classification": "finite_model_specialization",
+      "formal_meaning": "A finite data carrier and PMF-valued distribution map replace the source's general distributions over a closed convex parameter space.",
+      "id": "finite-pmf-performative-model",
+      "source_locator": "cited publication:161-303",
+      "unresolved_relation_to_literal_source": "No arbitrary-distribution, Euclidean, or Wasserstein equivalence is claimed.",
+      "why_needed": "The current reusable expectation and strategic-induced-law APIs are finite-PMF APIs."
+    },
+    {
+      "checked_scope": "Finite-dimensional normed parameter space, compact nonempty convex parameter domain, finite data PMF, and the visible joint-risk-continuity bridge.",
+      "classification": "finite_model_specialization",
+      "formal_meaning": "The finite-PMF existence theorem takes joint continuity of the decoupled population risk on the parameter product and pointwise convexity of finite-data loss. It derives nonempty compact argmin values, convex values, and a closed graph before applying Kakutani.",
+      "id": "proposition-4.1-finite-joint-risk-continuity",
+      "source_locator": "PMLR PDF p. 7, Proposition 4.1; arXiv:2002.06673v4 Appendix D.5, p. 29 (cited publication lines 1543--1552)",
+      "unresolved_relation_to_literal_source": "This does not prove that the source's arbitrary-distribution Wasserstein continuity assumptions imply the bridge, nor that the direct closed-graph condition is equivalent to Berge's upper-hemicontinuity conclusion in the needed generality. The checked endpoint also adds a convex-domain premise missing from the printed Proposition 4.1; a finite counterexample establishes that the omission is substantive.",
+      "why_needed": "The source's ε-sensitive general-distribution map and jointly continuous loss require a still-unformalized bridge to finite-PMF joint decoupled-risk continuity; the reusable Kakutani theorem is stated with a closed graph rather than upper hemicontinuity. The printed statement also omits the convexity of the parameter domain required by its Kakutani step."
+    },
+    {
+      "checked_scope": "The explicit beta = 1, finite-W1 sensitivity coefficient epsilon = 1/2 instance, with the source-domain loss and a selected RRM update.",
+      "classification": "finite_model_specialization",
+      "formal_meaning": "A signed binary Bernoulli observation has mean equal to the deployed parameter on [-1,1], so the source's bilinear frozen risk is represented there exactly with beta = 1. The distribution map is clipped outside that source domain only to make the PMF-valued model total on R.",
+      "id": "proposition-3.6a-finite-binary-model",
+      "source_locator": "PMLR PDF p. 5, Proposition 3.6(a); official supplement Appendix E.2",
+      "unresolved_relation_to_literal_source": "This does not prove the source's full deterministic real-data family or its for-all beta, gamma, epsilon quantification.",
+      "why_needed": "The source uses a real-valued point mass at epsilon theta, whereas the reusable performative-model API currently uses finite PMFs."
+    },
+    {
+      "checked_scope": "The exact domain-restricted model proves the frozen-risk formula, a selected RRM update, W1 sensitivity, actual gradient, convexity, beta-joint smoothness, absence of positive strong-convexity modulus, unique stable point, and a nonconvergent selected endpoint trajectory.",
+      "classification": "source_faithful_general_measure_model",
+      "formal_meaning": "The arbitrary-measure performative-model API represents the source's real-valued deterministic outcome exactly by the probability law diracProba(epsilon * theta) and the linear loss beta * y * phi over the stated domain [-1,1].",
+      "id": "proposition-3.6a-real-dirac-model",
+      "source_locator": "PMLR PDF p. 5, Proposition 3.6(a); official supplement Appendix E.2, lines 254-260",
+      "unresolved_relation_to_literal_source": "None for Appendix E.2(a)'s source model and counterexample mechanism; the positive gamma quantifier is vacuous for this part and retained explicitly in proposition36aExactDiracCounterexampleSpec.",
+      "why_needed": "The finite-PMF surrogate cannot represent the source's continuum of deterministic labels or its arbitrary positive epsilon and beta family."
+    },
+    {
+      "checked_scope": "The exact model realizes the frozen-risk calculation, epsilon sensitivity, pointwise gamma-strong convexity, the hinge nondifferentiability obstruction, and the two domain-constrained RRM minimization steps used on the paper's divergent orbit.",
+      "classification": "source_faithful_general_measure_model",
+      "formal_meaning": "The arbitrary-measure API represents the source's deterministic outcome exactly by diracProba(epsilon * theta) and its regularized-hinge loss by C*max(-1, y*phi) + gamma/2*(phi-1)^2.",
+      "id": "proposition-3.6b-real-dirac-model",
+      "source_locator": "PMLR PDF p. 5, Proposition 3.6(b); official supplement Appendix E.2, lines 262-271",
+      "unresolved_relation_to_literal_source": "No source-model bridge remains for the exhibited orbit. The globally defined update is deliberately not asserted to be an RRM selector away from that orbit, which the source proof does not require.",
+      "why_needed": "The continuum of point-mass labels cannot be represented by the finite-PMF surrogate without changing the source model."
+    },
+    {
+      "checked_scope": "measureWassersteinConvexRRMConvergesLinearlySpec, measureWassersteinConvexRGDConvergesLinearlySpec, and measureWassersteinStableObjectiveGapSpec, each proved by its paired PaperInterface endpoint.",
+      "classification": "author_approved_formalized_general_measure_scope",
+      "formal_meaning": "The arbitrary-law interfaces for Theorems 3.5 and 3.8 and Corollary 5.1 retain Bochner integrability of the data-gradient, local loss measurability, pointwise parameter differentiability, finite-first-moment Wasserstein coupling information, and closed-convex domain/projection structure where their proofs require it. Those three printed statements invoke A1.",
+      "id": "general-measure-analytic-bridge-formalized-scope",
+      "source_locator": "cited publication:264-269; cited publication:324-344; cited publication:373-415; cited publication:543-561",
+      "unresolved_relation_to_literal_source": "No equivalence is claimed from the printed source hypotheses alone to these general-measure analytic premises. The three source-map targets remain explicit approved corrected formalizations.",
+      "why_needed": "The source presents Euclidean learning results under standard regularity language, whereas the reusable Lean endpoints quantify over a measurable metric data space and must state the analytic conditions for differentiating an expectation and applying the Wasserstein bridge. The author approved recording those assumptions as a formalized scope rather than treating the wider arbitrary-law interfaces as archival-equivalent source statements."
+    }
+  ],
+  "paper": "PZMH20PerformativePrediction",
+  "policy": [
+    "Review source proof text by exact source locator and mathematical claim; Lean declaration names are navigation only and are not evidence.",
+    "Give every defect a stable unique id using letters, digits, dot, underscore, or hyphen so source-map contracts can route its repair without depending on Lean names.",
+    "A source proof defect is not a paper/model assumption. Do not classify its repaired conclusion as validated_source_assumption.",
+    "Record every explicit formalization convention that resolves a source-model ambiguity in model_conventions, with the literal source relation and checked scope. A convention is not a literal source theorem without a source-side semantic bridge.",
+    "Record every source proof step independently checked by Lean in checked_proof_steps, including its exact source step, checked conclusion, and scope. A finite/event-level step does not silently establish an arbitrary-space, pointwise-conditioning, or arbitrary-partition claim.",
+    "For every defect, record the mathematical repair obligation and acceptance condition. Resolve it by a Lean derivation, leave it as an explicit open proof obligation, or record an explicit corrected source statement.",
+    "For every defect, separately record status_impact and status_impact_rationale. statement_impact says which source text changed; status_impact says whether the issue is a formalized note, a substantial source-paper caveat with a fully proved correction, or a partial-formalization boundary.",
+    "A proof-only defect may coexist with a source-faithful final theorem only after the replacement derivation is proved. A minor source-statement repair may also be formalized_note when the substantive advertised endpoint is unchanged. Only a substantial central source-paper error with a fully proved corrected endpoint justifies formalized_with_caveat."
+  ],
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "id": "definitions-2.1-2.3-and-3.3-finite-model",
+      "outcome": "no_defect",
+      "semantic_scope": "Finite parameter and data carriers, finite PMFs, and deterministic finite argmin selections.",
+      "source_locator": "cited publication:161-303"
+    },
+    {
+      "id": "theorem-3.5-fixed-point-contraction-consequence",
+      "outcome": "no_defect",
+      "semantic_scope": "Only the generic contraction/fixed-point consequence after an RRM contraction and minimizer uniqueness are supplied; the source's Wasserstein, smoothness, and strong-convexity derivation is not claimed.",
+      "source_locator": "PMLR PDF p. 5; official supplement Appendix E.1, pp. 3-4"
+    },
+    {
+      "id": "proposition-3.6a-finite-binary-counterexample",
+      "outcome": "no_defect",
+      "semantic_scope": "A finite binary specialization of the first counterexample: it has positive finite W1 sensitivity, convex jointly smooth linear loss, no positive strong-convexity modulus, a unique stable point, and a selected nonconvergent RRM two-cycle. The source's deterministic real-data family and its arbitrary beta/epsilon quantifiers are not claimed.",
+      "source_locator": "PMLR PDF p. 5, Proposition 3.6(a); official supplement Appendix E.2"
+    },
+    {
+      "id": "proposition-3.6a-real-dirac-linear-counterexample",
+      "outcome": "no_defect",
+      "semantic_scope": "Exact real point-mass model on [-1,1], for every positive epsilon and beta. The proposition's positive gamma quantifier is retained in the PaperInterface although gamma does not enter this non-strongly-convex construction.",
+      "source_locator": "PMLR PDF p. 5, Proposition 3.6(a); official supplement Appendix E.2, lines 254-260"
+    },
+    {
+      "id": "proposition-3.6b-regularized-hinge-endpoint-calculation",
+      "outcome": "no_defect",
+      "semantic_scope": "The exact real Dirac point-mass model on the stated interval. An explicit sufficient pair of lower bounds replaces the source phrase 'picking C big enough'; the raw loss is gamma-strongly convex and nondifferentiable at the source hinge point, and the two domain-constrained RRM minimization steps on the exhibited orbit produce the nonconvergent endpoint cycle. No off-orbit RRM selector is claimed because it is not used by the source counterexample.",
+      "source_locator": "PMLR PDF p. 5, Proposition 3.6(b); official supplement Appendix E.2, lines 262-271"
+    },
+    {
+      "id": "theorem-3.10-inverse-square-confidence-schedule",
+      "outcome": "no_defect",
+      "semantic_scope": "The source's 6p/(pi^2 t^2) per-round confidence allocation and union-bound arithmetic are checked for finite prefixes, including a heterogeneous finite trace with the source-shaped round-dependent batch count n_t. `hasSum_theorem310FailureBudget` checks the full schedule total. The reusable `adaptiveFreshHeterogeneousInfiniteTraceLaw` directly reuses Mathlib's Ionescu--Tulcea trajectory construction (documentation: https://leanprover-community.github.io/mathlib4_docs/Mathlib/Probability/Kernel/IonescuTulcea/Traj.html; upstream source: https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Probability/Kernel/IonescuTulcea/Traj.lean) to construct one common adaptive law. Its conditional-event theorem, the PZ RERM uniform-loss, RGD empirical-mass, and finite-alphabet primal-W₁ wrappers prove literal all-rounds finite-PMF event bounds. The proof intentionally uses the trajectory kernel directly and does not claim a separately proved equality between every old fixed-horizon PMF type and an infinite-law marginal. In the finite-PMF specialization, vanishing parameter-uniform failure totals construct a positive n_t meeting each round's budget for the RERM, RGD, and finite-W₁ events and instantiate those all-rounds bounds. Reused finite-family Hoeffding gives direct exponential sufficient conditions for RERM under a visible [0,1] loss normalization and for RGD with a visible strict threshold slack for its non-strict mass event. The primal-W₁ event is genuinely concentrated by an explicit maximal coupling proving W₁ at most diameter times card(Data) times the coordinate tolerance, and its failure is bounded by the mass-deviation Hoeffding event. None of these finite alternatives is the source's explicit empirical-Wasserstein/Fournier--Guillin formula, which remains outside the finite-PMF scope.",
+      "source_locator": "Official supplement Appendix E.4, lines 467-576"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "b8c00e1c3fdf4ddaec304d6d0dc7f656a3e25b98a0723d2f4df3692086421b1e",
+  "supporting_source_artifacts": [
+    {
+      "pdf_sha256": "8416876aa8759416d0f42b8a1d2f65560f8dc52a20811552a342f2272c368aa3",
+      "role": "Contains Appendix D's Kantorovich--Rubinstein statement and Appendix E.1's proof of Theorem 3.5, as well as Appendix E.2's Proposition 3.6 counterexamples.",
+      "text_sha256": "5c80fca322f48b11388f1c7b1f8f69d5781c17e3d0b7b392f75b7ff3ef231380",
+      "title": "Official PMLR supplementary PDF",
+      "url": "https://proceedings.mlr.press/v119/perdomo20a/perdomo20a-supp.pdf"
+    },
+    {
+      "pdf_sha256": "af963c3c2aeafd7d50f6a6309f14d3450ffc22d335f5f4535ba0e14b9c694f17",
+      "role": "Appendix D.5 supplies the Proposition 4.1 existence proof via Berge's maximum theorem and Kakutani's fixed-point theorem.",
+      "text_sha256": "e99dd532d9acfc061647a16fcc53b95f1d7e2ae49cb92023018865a12bc4d327",
+      "title": "arXiv v4 manuscript",
+      "url": "https://arxiv.org/abs/2002.06673v4"
+    },
+    {
+      "pdf_sha256": "b238a35001902095e7717fc36b6a66ca65804695ff7e3e70afc82f845aa4aee8",
+      "role": "Supporting source cited by PMLR Theorem 3.10. Its Theorem 2 gives empirical Wasserstein concentration under explicit dimension and tail/moment hypotheses; this pin fixes the general concentration boundary not supplied by the finite-PMF specialization.",
+      "text_sha256": "ea9b7332a6cf30f1d3ea64d18b5fbab4f3d9fded9ec8cfb7f748fa064f4129c2",
+      "title": "Fournier--Guillin author PDF",
+      "url": "https://perso.lpsm.paris/~nfournier/a58.pdf"
+    },
+    {
+      "pdf_sha256": "c9cd8ea15dcc6e55b1baf4f46e12fec86b4b6933d9b51f49c7a2669cad3e3967",
+      "role": "Independent arXiv version of the empirical-Wasserstein concentration source used to cross-check the author PDF before any general theorem is ported.",
+      "text_sha256": "cf214a4cc0c019f8ab598f7f315137eaeaf91735ef9a181e072cfb495dcd3148",
+      "title": "Fournier--Guillin arXiv preprint",
+      "url": "https://arxiv.org/abs/1312.2128"
+    }
+  ]
+}

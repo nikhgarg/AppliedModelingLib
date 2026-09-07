@@ -1,5 +1,5 @@
-import EconCSLib.Foundations.Probability.FiniteExpectation
-import EconCSLib.Foundations.Probability.OrderStatistics
+import AppliedModelingLib.Foundations.Probability.FiniteExpectation
+import AppliedModelingLib.Foundations.Probability.OrderStatistics
 import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
 import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Fintype.BigOperators
@@ -24,8 +24,8 @@ theorem topKCandidateSets_nonempty
     (ι : Type*) [Fintype ι] [DecidableEq ι] (k : ℕ) :
     (topKCandidateSets ι k).Nonempty := by
   classical
-  simpa [topKCandidateSets, EconCSLib.Probability.topKCandidateSets] using
-    EconCSLib.Probability.topKCandidateSets_nonempty ι k
+  simpa [topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets] using
+    AppliedModelingLib.Probability.topKCandidateSets_nonempty ι k
 
 /-- Sum of the best at-most-`k` values over a finite sample. -/
 def topKSumOn {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -38,18 +38,18 @@ theorem sum_le_topKSumOn {ι : Type*} [Fintype ι] [DecidableEq ι]
     (k : ℕ) (v : ι → ℝ) (s : Finset ι) (hs_card : s.card ≤ k) :
     (∑ i ∈ s, v i) ≤ topKSumOn k v := by
   classical
-  simpa [topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets] using
-    EconCSLib.Probability.sum_le_topKSumOn (ι := ι) k v s hs_card
+  simpa [topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets] using
+    AppliedModelingLib.Probability.sum_le_topKSumOn (ι := ι) k v s hs_card
 
 /-- The empty candidate makes the at-most-`k` top value nonnegative. -/
 theorem topKSumOn_nonneg {ι : Type*} [Fintype ι] [DecidableEq ι]
     (k : ℕ) (v : ι → ℝ) :
     0 ≤ topKSumOn k v := by
   classical
-  simpa [topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets] using
-    EconCSLib.Probability.topKSumOn_nonneg (ι := ι) k v
+  simpa [topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets] using
+    AppliedModelingLib.Probability.topKSumOn_nonneg (ι := ι) k v
 
 /-- Reindexing the finite sample does not change its top-`k` sum. -/
 theorem topKSumOn_comp_equiv {ι κ : Type*}
@@ -57,15 +57,15 @@ theorem topKSumOn_comp_equiv {ι κ : Type*}
     (e : ι ≃ κ) (k : ℕ) (v : κ → ℝ) :
     topKSumOn k (fun i : ι => v (e i)) = topKSumOn k v := by
   classical
-  simpa [topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets] using
-    EconCSLib.Probability.topKSumOn_comp_equiv (e := e) (k := k) (v := v)
+  simpa [topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets] using
+    AppliedModelingLib.Probability.topKSumOn_comp_equiv (e := e) (k := k) (v := v)
 
 theorem finset_sum_le_card_mul_of_forall_le {ι : Type*}
     (s : Finset ι) (v : ι → ℝ) (C : ℝ)
     (h : ∀ i ∈ s, v i ≤ C) :
     (∑ i ∈ s, v i) ≤ (s.card : ℝ) * C := by
-  exact EconCSLib.FiniteSum.finset_sum_le_card_mul_of_forall_le s v C h
+  exact AppliedModelingLib.FiniteSum.finset_sum_le_card_mul_of_forall_le s v C h
 
 /-- If every sample value is at most `C`, then the top-`k` sum is at most `k*C`. -/
 theorem topKSumOn_le_card_mul_of_forall_le {ι : Type*}
@@ -74,9 +74,9 @@ theorem topKSumOn_le_card_mul_of_forall_le {ι : Type*}
     (hC_nonneg : 0 ≤ C) (h_le : ∀ i, v i ≤ C) :
     topKSumOn k v ≤ (k : ℝ) * C := by
   classical
-  simpa [topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets] using
-    EconCSLib.Probability.topKSumOn_le_card_mul_of_forall_le
+  simpa [topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets] using
+    AppliedModelingLib.Probability.topKSumOn_le_card_mul_of_forall_le
       (ι := ι) k v hC_nonneg h_le
 
 /-- A witnessed set of `k` top values pins the top-`k` sum to `k * xTop`. -/
@@ -88,9 +88,9 @@ theorem topKSumOn_eq_card_mul_of_top_witness {ι : Type*}
     (hsTop_value : ∀ i ∈ sTop, v i = xTop) :
     topKSumOn k v = (k : ℝ) * xTop := by
   classical
-  simpa [topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets] using
-    EconCSLib.Probability.topKSumOn_eq_card_mul_of_top_witness
+  simpa [topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets] using
+    AppliedModelingLib.Probability.topKSumOn_eq_card_mul_of_top_witness
       (ι := ι) k v hxTop_nonneg h_le sTop hsTop_card hsTop_value
 
 /-- The sample has at least `k` entries equal to the top support value. -/
@@ -107,15 +107,15 @@ def successIndexSet {ι α : Type*} [Fintype ι]
 
 /-- Add one independent draw to a sample indexed by `ι`. -/
 abbrev extendDraw {ι α : Type*} (sample : ι → α) (newItem : α) : Option ι → α :=
-  EconCSLib.extendDraw sample newItem
+  AppliedModelingLib.extendDraw sample newItem
 
 /-- Functions on `Option ι` are equivalent to a distinguished new draw and an old sample. -/
 abbrev optionFunEquivProd (ι α : Type*) : (Option ι → α) ≃ α × (ι → α) :=
-  EconCSLib.optionFunEquivProd ι α
+  AppliedModelingLib.optionFunEquivProd ι α
 
 /-- `Option (Fin a)` is a canonical one-point extension of `Fin a`. -/
 abbrev optionFinEquivFinSucc (a : ℕ) : Option (Fin a) ≃ Fin (a + 1) :=
-  EconCSLib.optionFinEquivFinSucc a
+  AppliedModelingLib.optionFinEquivFinSucc a
 
 /-- Having `k` top values is the same as the top-value count being at least `k`. -/
 theorem hasKTopValues_iff_le_topValueCount {ι : Type*}
@@ -123,9 +123,9 @@ theorem hasKTopValues_iff_le_topValueCount {ι : Type*}
     (k : ℕ) (xTop : ℝ) (v : ι → ℝ) :
     hasKTopValues k xTop v ↔ k ≤ topValueCount xTop v := by
   classical
-  simpa [hasKTopValues, EconCSLib.Probability.hasKTopValues,
-    topValueCount, EconCSLib.Probability.topValueCount] using
-    EconCSLib.Probability.hasKTopValues_iff_le_topValueCount
+  simpa [hasKTopValues, AppliedModelingLib.Probability.hasKTopValues,
+    topValueCount, AppliedModelingLib.Probability.topValueCount] using
+    AppliedModelingLib.Probability.hasKTopValues_iff_le_topValueCount
       (ι := ι) k xTop v
 
 /--
@@ -134,7 +134,7 @@ at most the second support value.
 -/
 abbrev hasPredTopValuesWithSecondBound {ι : Type*} [Fintype ι] [DecidableEq ι]
     (k : ℕ) (xTop xSecond : ℝ) (v : ι → ℝ) : Prop :=
-  EconCSLib.Probability.hasPredTopValuesWithSecondBound k xTop xSecond v
+  AppliedModelingLib.Probability.hasPredTopValuesWithSecondBound k xTop xSecond v
 
 /--
 When every value is either the top value or at most the second support value,
@@ -149,24 +149,24 @@ theorem hasPredTopValuesWithSecondBound_iff_topValueCount_eq {ι : Type*}
     hasPredTopValuesWithSecondBound k xTop xSecond v ↔
       topValueCount xTop v = k - 1 := by
   classical
-  simpa [topValueCount, EconCSLib.Probability.topValueCount,
+  simpa [topValueCount, AppliedModelingLib.Probability.topValueCount,
     hasPredTopValuesWithSecondBound] using
-    EconCSLib.Probability.hasPredTopValuesWithSecondBound_iff_topValueCount_eq
+    AppliedModelingLib.Probability.hasPredTopValuesWithSecondBound_iff_topValueCount_eq
       (ι := ι) k (v := v) hsecond_lt_top hvalue_split
 
 /-- Add one new value to a finite sample. -/
 abbrev extendSample {ι : Type*} (v : ι → ℝ) (newValue : ℝ) : Option ι → ℝ :=
-  EconCSLib.Probability.extendSample v newValue
+  AppliedModelingLib.Probability.extendSample v newValue
 
 /-- Adding one more value cannot reduce the at-most-`k` top value. -/
 theorem topKSumOn_le_extend {ι : Type*} [Fintype ι] [DecidableEq ι]
     (k : ℕ) (v : ι → ℝ) (newValue : ℝ) :
     topKSumOn k v ≤ topKSumOn k (extendSample v newValue) := by
   classical
-  simpa [topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets,
+  simpa [topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets,
     extendSample] using
-    EconCSLib.Probability.topKSumOn_le_extend (ι := ι) k v newValue
+    AppliedModelingLib.Probability.topKSumOn_le_extend (ι := ι) k v newValue
 
 /--
 If the old sample has fewer than `k` coordinates, a maximizing old candidate
@@ -180,10 +180,10 @@ theorem topKSumOn_add_newValue_le_extend_of_card_lt {ι : Type*}
     topKSumOn k v + newValue ≤
       topKSumOn k (extendSample v newValue) := by
   classical
-  simpa [topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets,
+  simpa [topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets,
     extendSample] using
-    EconCSLib.Probability.topKSumOn_add_newValue_le_extend_of_card_lt
+    AppliedModelingLib.Probability.topKSumOn_add_newValue_le_extend_of_card_lt
       (ι := ι) k v newValue hcard_lt
 
 /--
@@ -195,10 +195,10 @@ theorem newValue_le_topKSumOn_extend_sub_of_card_lt {ι : Type*}
     (k : ℕ) (v : ι → ℝ) (newValue : ℝ)
     (hcard_lt : Fintype.card ι < k) :
     newValue ≤ topKSumOn k (extendSample v newValue) - topKSumOn k v := by
-  simpa [topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets,
+  simpa [topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets,
     extendSample] using
-    EconCSLib.Probability.newValue_le_topKSumOn_extend_sub_of_card_lt
+    AppliedModelingLib.Probability.newValue_le_topKSumOn_extend_sub_of_card_lt
       (ι := ι) k v newValue hcard_lt
 
 theorem hasKTopValues_extend_of_hasKTopValues {ι : Type*}
@@ -207,12 +207,12 @@ theorem hasKTopValues_extend_of_hasKTopValues {ι : Type*}
     (h : hasKTopValues k xTop v) :
     hasKTopValues k xTop (extendSample v newValue) := by
   classical
-  simpa [hasKTopValues, EconCSLib.Probability.hasKTopValues,
+  simpa [hasKTopValues, AppliedModelingLib.Probability.hasKTopValues,
     extendSample] using
-    EconCSLib.Probability.hasKTopValues_extend_of_hasKTopValues
+    AppliedModelingLib.Probability.hasKTopValues_extend_of_hasKTopValues
       (v := v) (newValue := newValue)
       (by
-        simpa [hasKTopValues, EconCSLib.Probability.hasKTopValues] using h)
+        simpa [hasKTopValues, AppliedModelingLib.Probability.hasKTopValues] using h)
 
 /--
 If a sample already has `k` top-support values, adding one more bounded item
@@ -226,13 +226,13 @@ theorem topKSumOn_extend_eq_of_hasKTopValues {ι : Type*}
     (hTop : hasKTopValues k xTop v) :
     topKSumOn k (extendSample v newValue) = topKSumOn k v := by
   classical
-  simpa [topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets,
-    extendSample, hasKTopValues, EconCSLib.Probability.hasKTopValues] using
-    EconCSLib.Probability.topKSumOn_extend_eq_of_hasKTopValues
+  simpa [topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets,
+    extendSample, hasKTopValues, AppliedModelingLib.Probability.hasKTopValues] using
+    AppliedModelingLib.Probability.topKSumOn_extend_eq_of_hasKTopValues
       (ι := ι) k v hxTop_nonneg h_le hnew_le
       (by
-        simpa [hasKTopValues, EconCSLib.Probability.hasKTopValues] using hTop)
+        simpa [hasKTopValues, AppliedModelingLib.Probability.hasKTopValues] using hTop)
 
 /--
 Pointwise upper marginal bound for the finite-discrete top-mass failure event:
@@ -248,10 +248,10 @@ theorem topKSumOn_extend_sub_le_top_failure_indicator {ι : Type*}
       (k : ℝ) * xTop *
         (if hasKTopValues k xTop v then (0 : ℝ) else 1) := by
   classical
-  simpa [topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets,
-    extendSample, hasKTopValues, EconCSLib.Probability.hasKTopValues] using
-    EconCSLib.Probability.topKSumOn_extend_sub_le_top_failure_indicator
+  simpa [topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets,
+    extendSample, hasKTopValues, AppliedModelingLib.Probability.hasKTopValues] using
+    AppliedModelingLib.Probability.topKSumOn_extend_sub_le_top_failure_indicator
       (ι := ι) k v hxTop_nonneg h_le hnew_le
 
 /-- Expectation upper bound from a pointwise event-indicator upper bound. -/
@@ -260,8 +260,8 @@ theorem pmfExp_le_const_mul_pmfProb_of_forall_le_indicator {Ω : Type*}
     (μ : PMF Ω) (p : Ω → Prop) [DecidablePred p]
     (f : Ω → ℝ) (C : ℝ)
     (hpoint : ∀ ω, f ω ≤ C * (if p ω then (1 : ℝ) else 0)) :
-    EconCSLib.pmfExp μ f ≤ C * EconCSLib.pmfProb μ p :=
-  EconCSLib.pmfExp_le_const_mul_pmfProb_of_forall_le_indicator
+    AppliedModelingLib.pmfExp μ f ≤ C * AppliedModelingLib.pmfProb μ p :=
+  AppliedModelingLib.pmfExp_le_const_mul_pmfProb_of_forall_le_indicator
     μ p f C hpoint
 
 /--
@@ -278,30 +278,30 @@ theorem pmfPairExp_topK_extend_sub_le_top_failure_prob
     [DecidablePred
       (fun sample : ι → Ω =>
         ¬ hasKTopValues k xTop (fun i => value (sample i)))] :
-    EconCSLib.pmfPairExp sampleLaw itemLaw
+    AppliedModelingLib.pmfPairExp sampleLaw itemLaw
         (fun sample newItem =>
           topKSumOn k
               (extendSample (fun i => value (sample i)) (value newItem)) -
             topKSumOn k (fun i => value (sample i)))
       ≤
         (k : ℝ) * xTop *
-          EconCSLib.pmfProb sampleLaw
+          AppliedModelingLib.pmfProb sampleLaw
             (fun sample =>
               ¬ hasKTopValues k xTop (fun i => value (sample i))) := by
   classical
-  unfold EconCSLib.pmfPairExp
+  unfold AppliedModelingLib.pmfPairExp
   refine pmfExp_le_const_mul_pmfProb_of_forall_le_indicator
     sampleLaw
     (fun sample => ¬ hasKTopValues k xTop (fun i => value (sample i)))
     (fun sample =>
-      EconCSLib.pmfExp itemLaw
+      AppliedModelingLib.pmfExp itemLaw
         (fun newItem =>
           topKSumOn k
               (extendSample (fun i => value (sample i)) (value newItem)) -
             topKSumOn k (fun i => value (sample i))))
     ((k : ℝ) * xTop) ?_
   intro sample
-  refine EconCSLib.pmfExp_le_of_forall_le itemLaw _ _ ?_
+  refine AppliedModelingLib.pmfExp_le_of_forall_le itemLaw _ _ ?_
   intro newItem
   simpa [mul_assoc] using
     topKSumOn_extend_sub_le_top_failure_indicator
@@ -319,11 +319,11 @@ theorem pmfProduct_prob_forall_dependent
     [Fintype α] [DecidableEq α]
     (μ : PMF α) (P : ι → α → Prop)
     [∀ i, DecidablePred (P i)] :
-    EconCSLib.pmfProb (EconCSLib.pmfProduct ι α μ)
+    AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProduct ι α μ)
         (fun f : ι → α => ∀ i : ι, P i (f i)) =
-      ∏ i : ι, EconCSLib.pmfProb μ (P i) := by
+      ∏ i : ι, AppliedModelingLib.pmfProb μ (P i) := by
   classical
-  exact EconCSLib.pmfProduct_prob_forall_dependent μ P
+  exact AppliedModelingLib.pmfProduct_prob_forall_dependent μ P
 
 /-- Product of a two-valued coordinate weight over a finite type. -/
 theorem prod_ite_mem_eq_pow_mul_pow {ι : Type*}
@@ -331,7 +331,7 @@ theorem prod_ite_mem_eq_pow_mul_pow {ι : Type*}
     (∏ i : ι, if i ∈ s then q else rho) =
       q ^ s.card * rho ^ (Fintype.card ι - s.card) := by
   classical
-  exact EconCSLib.FiniteSum.prod_ite_mem_eq_pow_mul_pow s q rho
+  exact AppliedModelingLib.FiniteSum.prod_ite_mem_eq_pow_mul_pow s q rho
 
 /-- The success-index set equals `s` iff each coordinate has the prescribed status. -/
 theorem successIndexSet_eq_iff {ι α : Type*}
@@ -341,8 +341,8 @@ theorem successIndexSet_eq_iff {ι α : Type*}
     successIndexSet p sample = s ↔
       ∀ i : ι, p (sample i) ↔ i ∈ s := by
   classical
-  simpa [successIndexSet, EconCSLib.successIndexSet] using
-    EconCSLib.successIndexSet_eq_iff (sample := sample) (s := s)
+  simpa [successIndexSet, AppliedModelingLib.successIndexSet] using
+    AppliedModelingLib.successIndexSet_eq_iff (sample := sample) (s := s)
 
 /--
 For an independent finite product PMF, the probability of a fixed success-index
@@ -353,14 +353,14 @@ theorem pmfProduct_prob_successIndexSet_eq
     {ι α : Type*} [Fintype ι] [DecidableEq ι]
     [Fintype α] [DecidableEq α]
     (μ : PMF α) (p : α → Prop) [DecidablePred p] (s : Finset ι) :
-    EconCSLib.pmfProb (EconCSLib.pmfProduct ι α μ)
+    AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProduct ι α μ)
         (fun sample : ι → α => successIndexSet p sample = s) =
-      (EconCSLib.pmfProb μ p) ^ s.card *
-        (EconCSLib.pmfProb μ (fun a => ¬ p a)) ^
+      (AppliedModelingLib.pmfProb μ p) ^ s.card *
+        (AppliedModelingLib.pmfProb μ (fun a => ¬ p a)) ^
           (Fintype.card ι - s.card) := by
   classical
-  simpa [successIndexSet, EconCSLib.successIndexSet] using
-    EconCSLib.pmfProduct_prob_successIndexSet_eq (ι := ι) μ p s
+  simpa [successIndexSet, AppliedModelingLib.successIndexSet] using
+    AppliedModelingLib.pmfProduct_prob_successIndexSet_eq (ι := ι) μ p s
 
 /--
 The number of successes in an independent finite product has the usual binomial
@@ -371,15 +371,15 @@ theorem pmfProduct_prob_successIndexSet_card_eq
     {ι α : Type*} [Fintype ι] [DecidableEq ι]
     [Fintype α] [DecidableEq α]
     (μ : PMF α) (p : α → Prop) [DecidablePred p] (j : ℕ) :
-    EconCSLib.pmfProb (EconCSLib.pmfProduct ι α μ)
+    AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProduct ι α μ)
         (fun sample : ι → α => (successIndexSet p sample).card = j) =
       (Nat.choose (Fintype.card ι) j : ℝ) *
-        (EconCSLib.pmfProb μ p) ^ j *
-          (EconCSLib.pmfProb μ (fun a : α => ¬ p a)) ^
+        (AppliedModelingLib.pmfProb μ p) ^ j *
+          (AppliedModelingLib.pmfProb μ (fun a : α => ¬ p a)) ^
             (Fintype.card ι - j) := by
   classical
-  simpa [successIndexSet, EconCSLib.successIndexSet] using
-    EconCSLib.pmfProduct_prob_successIndexSet_card_eq (ι := ι) μ p j
+  simpa [successIndexSet, AppliedModelingLib.successIndexSet] using
+    AppliedModelingLib.pmfProduct_prob_successIndexSet_card_eq (ι := ι) μ p j
 
 /--
 The lower-tail probability for the number of successes in an independent
@@ -389,16 +389,16 @@ theorem pmfProduct_prob_successIndexSet_card_lt_eq_sum
     {ι α : Type*} [Fintype ι] [DecidableEq ι]
     [Fintype α] [DecidableEq α]
     (μ : PMF α) (p : α → Prop) [DecidablePred p] (k : ℕ) :
-    EconCSLib.pmfProb (EconCSLib.pmfProduct ι α μ)
+    AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProduct ι α μ)
         (fun sample : ι → α => (successIndexSet p sample).card < k) =
       ∑ j ∈ Finset.range k,
         (Nat.choose (Fintype.card ι) j : ℝ) *
-          (EconCSLib.pmfProb μ p) ^ j *
-            (EconCSLib.pmfProb μ (fun a : α => ¬ p a)) ^
+          (AppliedModelingLib.pmfProb μ p) ^ j *
+            (AppliedModelingLib.pmfProb μ (fun a : α => ¬ p a)) ^
               (Fintype.card ι - j) := by
   classical
-  simpa [successIndexSet, EconCSLib.successIndexSet] using
-    EconCSLib.pmfProduct_prob_successIndexSet_card_lt_eq_sum (ι := ι) μ p k
+  simpa [successIndexSet, AppliedModelingLib.successIndexSet] using
+    AppliedModelingLib.pmfProduct_prob_successIndexSet_card_lt_eq_sum (ι := ι) μ p k
 
 /--
 For independent finite PMFs, the pair expectation of an event indicator
@@ -410,9 +410,9 @@ theorem pmfPairExp_indicator_and_eq_mul_pmfProb
     (μ : PMF α) (ν : PMF β)
     (p : α → Prop) (q : β → Prop)
     [DecidablePred p] [DecidablePred q] :
-    EconCSLib.pmfPairExp μ ν
+    AppliedModelingLib.pmfPairExp μ ν
         (fun a b => if p a ∧ q b then (1 : ℝ) else 0) =
-      EconCSLib.pmfProb μ p * EconCSLib.pmfProb ν q := EconCSLib.pmfPairExp_indicator_and_eq_mul_pmfProb μ ν p q
+      AppliedModelingLib.pmfProb μ p * AppliedModelingLib.pmfProb ν q := AppliedModelingLib.pmfPairExp_indicator_and_eq_mul_pmfProb μ ν p q
 
 /-- Subtractive linearity for finite pair expectations. -/
 theorem pmfPairExp_sub
@@ -420,24 +420,24 @@ theorem pmfPairExp_sub
     [Fintype β] [DecidableEq β]
     (μ : PMF α) (ν : PMF β)
     (f g : α → β → ℝ) :
-    EconCSLib.pmfPairExp μ ν (fun a b => f a b - g a b) =
-      EconCSLib.pmfPairExp μ ν f - EconCSLib.pmfPairExp μ ν g := by
-  unfold EconCSLib.pmfPairExp
+    AppliedModelingLib.pmfPairExp μ ν (fun a b => f a b - g a b) =
+      AppliedModelingLib.pmfPairExp μ ν f - AppliedModelingLib.pmfPairExp μ ν g := by
+  unfold AppliedModelingLib.pmfPairExp
   calc
-    EconCSLib.pmfExp μ
-        (fun a => EconCSLib.pmfExp ν (fun b => f a b - g a b))
+    AppliedModelingLib.pmfExp μ
+        (fun a => AppliedModelingLib.pmfExp ν (fun b => f a b - g a b))
         =
-        EconCSLib.pmfExp μ
-          (fun a => EconCSLib.pmfExp ν (f a) - EconCSLib.pmfExp ν (g a)) := by
-          refine EconCSLib.pmfExp_congr μ ?_
+        AppliedModelingLib.pmfExp μ
+          (fun a => AppliedModelingLib.pmfExp ν (f a) - AppliedModelingLib.pmfExp ν (g a)) := by
+          refine AppliedModelingLib.pmfExp_congr μ ?_
           intro a
-          exact EconCSLib.pmfExp_sub ν (f a) (g a)
+          exact AppliedModelingLib.pmfExp_sub ν (f a) (g a)
     _ =
-        EconCSLib.pmfExp μ (fun a => EconCSLib.pmfExp ν (f a)) -
-          EconCSLib.pmfExp μ (fun a => EconCSLib.pmfExp ν (g a)) :=
-          EconCSLib.pmfExp_sub μ
-            (fun a => EconCSLib.pmfExp ν (f a))
-            (fun a => EconCSLib.pmfExp ν (g a))
+        AppliedModelingLib.pmfExp μ (fun a => AppliedModelingLib.pmfExp ν (f a)) -
+          AppliedModelingLib.pmfExp μ (fun a => AppliedModelingLib.pmfExp ν (g a)) :=
+          AppliedModelingLib.pmfExp_sub μ
+            (fun a => AppliedModelingLib.pmfExp ν (f a))
+            (fun a => AppliedModelingLib.pmfExp ν (g a))
 
 /--
 An iid product sample on `Option ι` has the same finite expectation as first
@@ -447,18 +447,18 @@ theorem pmfExp_pmfProduct_option_eq_pairExp
     {ι α : Type*} [Fintype ι] [DecidableEq ι]
     [Fintype α] [DecidableEq α]
     (μ : PMF α) (F : (Option ι → α) → ℝ) :
-    EconCSLib.pmfExp (EconCSLib.pmfProduct (Option ι) α μ) F =
-      EconCSLib.pmfPairExp (EconCSLib.pmfProduct ι α μ) μ
+    AppliedModelingLib.pmfExp (AppliedModelingLib.pmfProduct (Option ι) α μ) F =
+      AppliedModelingLib.pmfPairExp (AppliedModelingLib.pmfProduct ι α μ) μ
         (fun sample newItem => F (extendDraw sample newItem)) := by
   classical
   simpa [extendDraw] using
-    EconCSLib.pmfExp_pmfProduct_option_eq_pairExp (ι := ι) μ F
+    AppliedModelingLib.pmfExp_pmfProduct_option_eq_pairExp (ι := ι) μ F
 
 /-- Expected top-`k` value for an iid finite sample indexed by `ι`. -/
 def iidTopKExpectedOn (ι Ω : Type*) [Fintype ι] [DecidableEq ι]
     [Fintype Ω] [DecidableEq Ω]
     (itemLaw : PMF Ω) (k : ℕ) (value : Ω → ℝ) : ℝ :=
-  EconCSLib.pmfExp (EconCSLib.pmfProduct ι Ω itemLaw)
+  AppliedModelingLib.pmfExp (AppliedModelingLib.pmfProduct ι Ω itemLaw)
     (fun sample : ι → Ω => topKSumOn k (fun i => value (sample i)))
 
 /-- Expected top-`k` value for an iid finite sample of natural size `a`. -/
@@ -473,7 +473,7 @@ theorem pmfPairExp_topK_extend_sub_eq_iidTopKExpectedOn_option_sub
     {ι Ω : Type*} [Fintype ι] [DecidableEq ι]
     [Fintype Ω] [DecidableEq Ω]
     (itemLaw : PMF Ω) (k : ℕ) (value : Ω → ℝ) :
-    EconCSLib.pmfPairExp (EconCSLib.pmfProduct ι Ω itemLaw) itemLaw
+    AppliedModelingLib.pmfPairExp (AppliedModelingLib.pmfProduct ι Ω itemLaw) itemLaw
         (fun sample newItem =>
           topKSumOn k
               (extendSample (fun i => value (sample i)) (value newItem)) -
@@ -481,11 +481,11 @@ theorem pmfPairExp_topK_extend_sub_eq_iidTopKExpectedOn_option_sub
       iidTopKExpectedOn (Option ι) Ω itemLaw k value -
         iidTopKExpectedOn ι Ω itemLaw k value := by
   classical
-  simpa [iidTopKExpectedOn, EconCSLib.Probability.iidTopKExpectedOn,
-    topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets,
-    extendSample, EconCSLib.Probability.extendSample] using
-    EconCSLib.Probability.pmfPairExp_topK_extend_sub_eq_iidTopKExpectedOn_option_sub
+  simpa [iidTopKExpectedOn, AppliedModelingLib.Probability.iidTopKExpectedOn,
+    topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets,
+    extendSample, AppliedModelingLib.Probability.extendSample] using
+    AppliedModelingLib.Probability.pmfPairExp_topK_extend_sub_eq_iidTopKExpectedOn_option_sub
       (ι := ι) itemLaw k value
 
 /-- Reindexing an iid finite sample does not change the expected top-`k` value. -/
@@ -496,10 +496,10 @@ theorem iidTopKExpectedOn_equiv {ι κ Ω : Type*}
     iidTopKExpectedOn ι Ω itemLaw k value =
       iidTopKExpectedOn κ Ω itemLaw k value := by
   classical
-  simpa [iidTopKExpectedOn, EconCSLib.Probability.iidTopKExpectedOn,
-    topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets] using
-    EconCSLib.Probability.iidTopKExpectedOn_equiv
+  simpa [iidTopKExpectedOn, AppliedModelingLib.Probability.iidTopKExpectedOn,
+    topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets] using
+    AppliedModelingLib.Probability.iidTopKExpectedOn_equiv
       (e := e) itemLaw k value
 
 /-- The option-step expectation for `Fin a` is the natural-size expectation at `a+1`. -/
@@ -508,11 +508,11 @@ theorem iidTopKExpectedOn_option_fin_eq_succ
     (itemLaw : PMF Ω) (k a : ℕ) (value : Ω → ℝ) :
     iidTopKExpectedOn (Option (Fin a)) Ω itemLaw k value =
       finiteDiscreteIidTopKExpected Ω itemLaw k value (a + 1) := by
-  simpa [finiteDiscreteIidTopKExpected, EconCSLib.Probability.finiteIidTopKExpected,
-    iidTopKExpectedOn, EconCSLib.Probability.iidTopKExpectedOn,
-    topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets] using
-    EconCSLib.Probability.iidTopKExpectedOn_option_fin_eq_succ
+  simpa [finiteDiscreteIidTopKExpected, AppliedModelingLib.Probability.finiteIidTopKExpected,
+    iidTopKExpectedOn, AppliedModelingLib.Probability.iidTopKExpectedOn,
+    topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets] using
+    AppliedModelingLib.Probability.iidTopKExpectedOn_option_fin_eq_succ
       (itemLaw := itemLaw) (k := k) (a := a) (value := value)
 
 /-- Arithmetic bound behind the `k-1`-top promoting event. -/
@@ -524,7 +524,7 @@ theorem top_second_count_bound
     (hsecond_le_top : xSecond ≤ xTop) :
     (b : ℝ) * xTop + (c : ℝ) * xSecond ≤
       ((k - 1 : ℕ) : ℝ) * xTop + xSecond := by
-  exact EconCSLib.Probability.top_second_count_bound
+  exact AppliedModelingLib.Probability.top_second_count_bound
     hk_pos hb hbc hxSecond_nonneg hsecond_le_top
 
 /--
@@ -545,7 +545,7 @@ theorem finset_sum_le_pred_top_add_second {ι : Type*}
     (hnontop_le : ∀ i, i ∉ topSet → v i ≤ xSecond) :
     (∑ i ∈ s, v i) ≤ ((k - 1 : ℕ) : ℝ) * xTop + xSecond := by
   classical
-  exact EconCSLib.Probability.finset_sum_le_pred_top_add_second
+  exact AppliedModelingLib.Probability.finset_sum_le_pred_top_add_second
     hk_pos hxSecond_nonneg hsecond_le_top topSet s htop_card hs_card
     htop_value hnontop_le
 
@@ -565,9 +565,9 @@ theorem topKSumOn_le_pred_top_add_second {ι : Type*}
     (hnontop_le : ∀ i, i ∉ topSet → v i ≤ xSecond) :
     topKSumOn k v ≤ ((k - 1 : ℕ) : ℝ) * xTop + xSecond := by
   classical
-  simpa [topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets] using
-    EconCSLib.Probability.topKSumOn_le_pred_top_add_second
+  simpa [topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets] using
+    AppliedModelingLib.Probability.topKSumOn_le_pred_top_add_second
       (ι := ι) k v hk_pos hxSecond_nonneg hsecond_le_top
       topSet htop_card htop_value hnontop_le
 
@@ -592,10 +592,10 @@ theorem topKSumOn_extend_sub_ge_top_gap_of_pred_top_witness {ι : Type*}
     xTop - xSecond ≤
       topKSumOn k (extendSample v newValue) - topKSumOn k v := by
   classical
-  simpa [topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets,
+  simpa [topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets,
     extendSample] using
-    EconCSLib.Probability.topKSumOn_extend_sub_ge_top_gap_of_pred_top_witness
+    AppliedModelingLib.Probability.topKSumOn_extend_sub_ge_top_gap_of_pred_top_witness
       (ι := ι) k v hk_pos hxTop_nonneg hxSecond_nonneg hsecond_le_top
       topSet htop_card htop_value hnontop_le hnew_eq
 
@@ -619,10 +619,10 @@ theorem topKSumOn_extend_sub_ge_top_gap_promoting_indicator {ι : Type*}
             newValue = xTop then (1 : ℝ) else 0) ≤
       topKSumOn k (extendSample v newValue) - topKSumOn k v := by
   classical
-  simpa [topKSumOn, EconCSLib.Probability.topKSumOn,
-    topKCandidateSets, EconCSLib.Probability.topKCandidateSets,
+  simpa [topKSumOn, AppliedModelingLib.Probability.topKSumOn,
+    topKCandidateSets, AppliedModelingLib.Probability.topKCandidateSets,
     extendSample, hasPredTopValuesWithSecondBound] using
-    EconCSLib.Probability.topKSumOn_extend_sub_ge_top_gap_promoting_indicator
+    AppliedModelingLib.Probability.topKSumOn_extend_sub_ge_top_gap_promoting_indicator
       (ι := ι) k v hk_pos hxTop_nonneg hxSecond_nonneg hsecond_le_top
 
 /--
@@ -645,24 +645,24 @@ theorem top_gap_mul_pmfPairExp_promoting_indicator_le_topK_extend_sub
               (fun i => value (sample i)) ∧
             value newItem = xTop)] :
     (xTop - xSecond) *
-        EconCSLib.pmfPairExp sampleLaw itemLaw
+        AppliedModelingLib.pmfPairExp sampleLaw itemLaw
           (fun sample newItem =>
             if hasPredTopValuesWithSecondBound k xTop xSecond
                 (fun i => value (sample i)) ∧
               value newItem = xTop then (1 : ℝ) else 0)
       ≤
-        EconCSLib.pmfPairExp sampleLaw itemLaw
+        AppliedModelingLib.pmfPairExp sampleLaw itemLaw
           (fun sample newItem =>
             topKSumOn k
                 (extendSample (fun i => value (sample i)) (value newItem)) -
               topKSumOn k (fun i => value (sample i))) := by
   classical
-  unfold EconCSLib.pmfPairExp
-  rw [← EconCSLib.pmfExp_const_mul]
-  refine EconCSLib.pmfExp_le_pmfExp_of_forall_le sampleLaw _ _ ?_
+  unfold AppliedModelingLib.pmfPairExp
+  rw [← AppliedModelingLib.pmfExp_const_mul]
+  refine AppliedModelingLib.pmfExp_le_pmfExp_of_forall_le sampleLaw _ _ ?_
   intro sample
-  rw [← EconCSLib.pmfExp_const_mul]
-  refine EconCSLib.pmfExp_le_pmfExp_of_forall_le itemLaw _ _ ?_
+  rw [← AppliedModelingLib.pmfExp_const_mul]
+  refine AppliedModelingLib.pmfExp_le_pmfExp_of_forall_le itemLaw _ _ ?_
   intro newItem
   exact topKSumOn_extend_sub_ge_top_gap_promoting_indicator
     (ι := ι) k (fun i => value (sample i))
@@ -680,18 +680,18 @@ theorem top_value_mul_pmfProb_le_pmfPairExp_topK_extend_sub_of_card_lt
     (k : ℕ) (value : Ω → ℝ) {xTop : ℝ}
     (hcard_lt : Fintype.card ι < k)
     (hxTop_nonneg : 0 ≤ xTop) :
-    xTop * EconCSLib.pmfProb itemLaw (fun ω => value ω = xTop) ≤
-      EconCSLib.pmfPairExp sampleLaw itemLaw
+    xTop * AppliedModelingLib.pmfProb itemLaw (fun ω => value ω = xTop) ≤
+      AppliedModelingLib.pmfPairExp sampleLaw itemLaw
         (fun sample newItem =>
           topKSumOn k
               (extendSample (fun i => value (sample i)) (value newItem)) -
             topKSumOn k (fun i => value (sample i))) := by
   classical
-  unfold EconCSLib.pmfPairExp
+  unfold AppliedModelingLib.pmfPairExp
   have hinner :
       ∀ sample : ι → Ω,
-        xTop * EconCSLib.pmfProb itemLaw (fun ω => value ω = xTop) ≤
-          EconCSLib.pmfExp itemLaw
+        xTop * AppliedModelingLib.pmfProb itemLaw (fun ω => value ω = xTop) ≤
+          AppliedModelingLib.pmfExp itemLaw
             (fun newItem =>
               topKSumOn k
                   (extendSample (fun i => value (sample i))
@@ -729,7 +729,7 @@ theorem top_value_mul_pmfProb_le_pmfPairExp_topK_extend_sub_of_card_lt
           linarith
         simpa [htop, hxTop_nonneg] using hdiff_nonneg
     have hexp :=
-      EconCSLib.pmfExp_le_pmfExp_of_forall_le itemLaw
+      AppliedModelingLib.pmfExp_le_pmfExp_of_forall_le itemLaw
         (fun newItem =>
           xTop * (if value newItem = xTop then (1 : ℝ) else 0))
         (fun newItem =>
@@ -738,14 +738,14 @@ theorem top_value_mul_pmfProb_le_pmfPairExp_topK_extend_sub_of_card_lt
                 (value newItem)) -
             topKSumOn k (fun i => value (sample i)))
         hpoint
-    rw [EconCSLib.pmfExp_const_mul] at hexp
-    simpa [EconCSLib.pmfProb] using hexp
+    rw [AppliedModelingLib.pmfExp_const_mul] at hexp
+    simpa [AppliedModelingLib.pmfProb] using hexp
   have houter :=
-    EconCSLib.pmfExp_le_pmfExp_of_forall_le sampleLaw
+    AppliedModelingLib.pmfExp_le_pmfExp_of_forall_le sampleLaw
       (fun _sample : ι → Ω =>
-        xTop * EconCSLib.pmfProb itemLaw (fun ω => value ω = xTop))
+        xTop * AppliedModelingLib.pmfProb itemLaw (fun ω => value ω = xTop))
       (fun sample =>
-        EconCSLib.pmfExp itemLaw
+        AppliedModelingLib.pmfExp itemLaw
           (fun newItem =>
             topKSumOn k
                 (extendSample (fun i => value (sample i))

@@ -12,7 +12,7 @@ the terminal rating.
 
 namespace GJ18InformativeRatingSystems
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 
 /-- Sellers receive positive asymptotic match/sample rates. -/
 -- audit-premise: hgHi : 0 < sampleRate hi
@@ -78,14 +78,14 @@ Higher seller types weakly dominate lower types at every upper-tail cutoff.
 This is the finite ordinal form of the source condition that the cumulative
 rating mass `R(theta, y | Y)` increases with seller quality.
 -/
--- audit-premise: htail : ∀ p : finiteChainOrderedPair n, ∀ t : Fin (m + 1), EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p)) (fun r => t ≤ r) ≤ EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p)) (fun r => t ≤ r)
+-- audit-premise: htail : ∀ p : finiteChainOrderedPair n, ∀ t : Fin (m + 1), AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p)) (fun r => t ≤ r) ≤ AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p)) (fun r => t ≤ r)
 abbrev assumption_ordinal_rating_tail_dominance
     {n m : ℕ}
     (M : FiniteRatingLDPModel (Fin n) (Fin (m + 1))) : Prop :=
   ∀ p : finiteChainOrderedPair n, ∀ t : Fin (m + 1),
-    EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p))
+    AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p))
         (fun r => t ≤ r) ≤
-      EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p))
+      AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p))
         (fun r => t ≤ r)
 
 /--
@@ -97,7 +97,7 @@ noncomputable def sourceOrdinalUpperTail
     {Seller : Type*} {m : ℕ}
     (M : FiniteRatingLDPModel Seller (Fin (m + 1)))
     (θ : Seller) (t : Fin (m + 1)) : ℝ :=
-  EconCSLib.pmfProb (M.typeLaw θ) (fun y => t ≤ y)
+  AppliedModelingLib.pmfProb (M.typeLaw θ) (fun y => t ≤ y)
 
 /--
 Literal source-tail contract: for each pair of adjacent *displayed* cutoffs,
@@ -127,16 +127,16 @@ theorem mass_pos_of_source_strict_ordinal_cumulative_tail_decrease_at_displayed_
     intro y hy
     exact (Fin.castSucc_le_succ r).trans hy
   have hsplit :=
-    EconCSLib.pmfProb_eq_add_diff_of_imp (M.typeLaw θ)
+    AppliedModelingLib.pmfProb_eq_add_diff_of_imp (M.typeLaw θ)
       (fun y : Fin (m + 1) => Fin.succ r ≤ y)
       (fun y : Fin (m + 1) => Fin.castSucc r ≤ y)
       hsubset
   have hresidual :
-      EconCSLib.pmfProb (M.typeLaw θ)
+      AppliedModelingLib.pmfProb (M.typeLaw θ)
           (fun y : Fin (m + 1) =>
             Fin.castSucc r ≤ y ∧ ¬ (Fin.succ r ≤ y)) =
-        EconCSLib.pmfProb (M.typeLaw θ) (fun y => y = Fin.castSucc r) := by
-    apply EconCSLib.pmfProb_congr
+        AppliedModelingLib.pmfProb (M.typeLaw θ) (fun y => y = Fin.castSucc r) := by
+    apply AppliedModelingLib.pmfProb_congr
     intro y
     constructor
     · intro hy
@@ -151,12 +151,12 @@ theorem mass_pos_of_source_strict_ordinal_cumulative_tail_decrease_at_displayed_
       · exact le_rfl
       · exact not_le_of_gt r.castSucc_lt_succ
   have hresidual_pos :
-      0 < EconCSLib.pmfProb (M.typeLaw θ)
+      0 < AppliedModelingLib.pmfProb (M.typeLaw θ)
         (fun y : Fin (m + 1) =>
           Fin.castSucc r ≤ y ∧ ¬ (Fin.succ r ≤ y)) := by
     rw [hsplit] at htail
     linarith
-  rw [hresidual, EconCSLib.pmfProb_singleton] at hresidual_pos
+  rw [hresidual, AppliedModelingLib.pmfProb_singleton] at hresidual_pos
   exact hresidual_pos
 
 /-- The bottom displayed cutoff has upper-tail probability one for every finite rating law. -/
@@ -166,14 +166,14 @@ theorem sourceOrdinalUpperTail_zero
     sourceOrdinalUpperTail M θ 0 = 1 := by
   calc
     sourceOrdinalUpperTail M θ 0 =
-        EconCSLib.pmfProb (M.typeLaw θ) (fun _ : Fin (m + 1) => True) := by
+        AppliedModelingLib.pmfProb (M.typeLaw θ) (fun _ : Fin (m + 1) => True) := by
       unfold sourceOrdinalUpperTail
-      apply EconCSLib.pmfProb_congr
+      apply AppliedModelingLib.pmfProb_congr
       intro y
       simp
     _ = 1 := by
-      unfold EconCSLib.pmfProb EconCSLib.pmfExp
-      simpa using EconCSLib.pmfToRealSum (M.typeLaw θ)
+      unfold AppliedModelingLib.pmfProb AppliedModelingLib.pmfExp
+      simpa using AppliedModelingLib.pmfToRealSum (M.typeLaw θ)
 
 /--
 Author-approved corrected ordinal quality condition: a higher seller has a
@@ -225,9 +225,9 @@ theorem mass_pos_last_of_source_strict_ordinal_quality_tail_increase_above_botto
   have htail := hstrict p (Fin.last m) hlast_pos
   unfold sourceOrdinalUpperTail at htail
   have hlast_event (θ : Fin n) :
-      EconCSLib.pmfProb (M.typeLaw θ) (fun y => Fin.last m ≤ y) =
-        EconCSLib.pmfProb (M.typeLaw θ) (fun y => y = Fin.last m) := by
-    apply EconCSLib.pmfProb_congr
+      AppliedModelingLib.pmfProb (M.typeLaw θ) (fun y => Fin.last m ≤ y) =
+        AppliedModelingLib.pmfProb (M.typeLaw θ) (fun y => y = Fin.last m) := by
+    apply AppliedModelingLib.pmfProb_congr
     intro y
     constructor
     · intro hy
@@ -236,7 +236,7 @@ theorem mass_pos_last_of_source_strict_ordinal_quality_tail_increase_above_botto
       subst y
       exact le_rfl
   rw [hlast_event, hlast_event,
-    EconCSLib.pmfProb_singleton, EconCSLib.pmfProb_singleton] at htail
+    AppliedModelingLib.pmfProb_singleton, AppliedModelingLib.pmfProb_singleton] at htail
   exact lt_of_le_of_lt ENNReal.toReal_nonneg htail
 
 /--

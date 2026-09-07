@@ -1,11 +1,11 @@
 ---
 name: lean-community-conventions
-description: Apply Lean community and mathlib conventions to EconCSLib Lean code, documentation, proof claims, PRs, and local library work. Use when writing or reviewing Lean declarations, naming theorem APIs, preparing mathlib-style files, auditing proof claims, or planning convention cleanup against Lean community guidelines.
+description: Apply Lean community and mathlib conventions to AppliedModelingLib Lean code, documentation, proof claims, PRs, and local library work. Use when writing or reviewing Lean declarations, naming theorem APIs, preparing mathlib-style files, auditing proof claims, or planning convention cleanup against Lean community guidelines.
 ---
 
 # Lean Community Conventions
 
-Use this skill when EconCSLib work should move toward Lean community and
+Use this skill when AppliedModelingLib work should move toward Lean community and
 mathlib conventions. It is not a full copy of the Lean community guides; it is the
 working checklist for local code review and cleanup.
 
@@ -30,8 +30,8 @@ working checklist for local code review and cleanup.
 - Lean community, "Pull Request Review Guide":
   <https://leanprover-community.github.io/contribute/pr-review.html>
 
-Scope note: EconCSLib uses these pages as local style and proof-quality
-guidance. AI-written or AI-assisted EconCSLib code should not be contributed
+Scope note: AppliedModelingLib uses these pages as local style and proof-quality
+guidance. AI-written or AI-assisted AppliedModelingLib code should not be contributed
 back to mathlib.
 
 Adoption policy: apply this style to new Lean files, new shared-library APIs,
@@ -60,7 +60,7 @@ Before saying a Lean result is verified, check the Lean community proof gate:
    `Quot.sound`, or a subset.
 5. The formal statement actually matches the mathematical claim.
 
-For EconCSLib paper formalizations, distinguish two claims:
+For AppliedModelingLib paper formalizations, distinguish two claims:
 
 - **Lean-closed theorem:** passes the proof-claim gate for its formal statement.
 - **Paper-derived theorem:** additionally has all nonstandard model,
@@ -164,7 +164,7 @@ For library-facing files:
 
 ## Local PR Checklist
 
-For EconCSLib PRs that should resemble mathlib-style review:
+For AppliedModelingLib PRs that should resemble mathlib-style review:
 
 - Prefer small, self-contained PRs.
 - Make sure the target builds; CI can do full builds, but local targeted builds
@@ -178,7 +178,7 @@ For EconCSLib PRs that should resemble mathlib-style review:
 
 ## Local Review Routine
 
-When reviewing an EconCSLib file for convention alignment:
+When reviewing an AppliedModelingLib file for convention alignment:
 
 1. Run the proof-claim gate for paper-facing claims.
 2. Scan filenames, declaration names, theorem names, and namespace placement.

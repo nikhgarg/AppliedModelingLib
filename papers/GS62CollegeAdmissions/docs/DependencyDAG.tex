@@ -33,28 +33,38 @@
 };
 
 \node[dag_model] (CollegeModel) at (0,-5) {
-  \textbf{College-admissions model (Sections 3--4)} \\
-  Quotas, strict preferences, and the applicant-proposing procedure
+  \textbf{College-admissions model (Sections 2--4)} \\
+  Quotas, strict preference lists, and mutual eligibility
 };
-\node[dag_result] (CollegeUnstable) at (7,-5) {
+\node[dag_model] (WaitingLists) at (0,-9) {
+  \textbf{Waiting-list procedure (Section 4)} \\
+  Simultaneous applicant proposals and top-quota retention
+};
+\node[dag_result] (TerminalStability) at (7,-9) {
+  \textbf{Section 4 conclusion} \\
+  Terminal waiting lists form a stable assignment
+};
+\node[dag_result] (Thm2) at (14,-9) {
+  \textbf{Theorem 2} \\
+  The Section 4 assignment is applicant-optimal among stable assignments
+};
+
+\node[dag_result] (CollegeUnstable) at (0,-14) {
   \textbf{Definition (page 10)} \\
   Unstable college assignment
 };
-\node[dag_result] (CollegeOptimalDefinition) at (14,-5) {
+\node[dag_result] (CollegeOptimalDefinition) at (7,-14) {
   \textbf{Definition (page 10)} \\
   Applicant-optimal stable assignment
-};
-\node[dag_result] (Thm2) at (21,-5) {
-  \textbf{Theorem 2} \\
-  The Section 4 assignment is applicant-optimal among stable assignments
 };
 
 \draw[dag_arrow] (MarriageModel) -- (MarriageUnstable);
 \draw[dag_arrow] (MarriageUnstable) -- (Thm1);
 
-\draw[dag_arrow] (CollegeModel) -- (CollegeUnstable);
+\draw[dag_arrow] (CollegeModel) -- (WaitingLists);
+\draw[dag_arrow] (WaitingLists) -- (TerminalStability);
+\draw[dag_arrow] (TerminalStability) -- (Thm2);
 \draw[dag_arrow] (CollegeUnstable) -- (CollegeOptimalDefinition);
-\draw[dag_arrow] (CollegeOptimalDefinition) -- (Thm2);
 
 \end{dagPaperBody}
 \end{tikzpicture}

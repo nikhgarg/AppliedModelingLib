@@ -12,6 +12,11 @@ The top-level ``source_artifact_path``/``source_artifact_sha256`` remains the
 canonical audit identity.  When this companion is present, it must name the
 same byte-pinned transcript as ``canonical_text``.  The PDF inputs and the
 page-to-transcript map are provenance checks, not alternate source routes.
+When the canonical transcript is materially unreadable because of an
+embedded-font defect, an optional, byte-pinned visual transcription may
+instead supply the semantic-review text.  That transcription is never an
+unbound paraphrase: it is explicitly bound to the primary visual scan and is
+part of the frozen input bundle.
 """
 
 from __future__ import annotations
@@ -35,6 +40,7 @@ _COMPANION_FIELDS = frozenset(
         "extraction",
         "page_map",
         "visual_comparison_attestation",
+        "semantic_review_transcription",
     }
 )
 _PINNED_FILE_FIELDS = frozenset({"path", "sha256"})
@@ -43,6 +49,17 @@ _PAGE_MAP_FIELDS = frozenset(
     {"line_start", "line_end", "pdf_page", "printed_page"}
 )
 _VISUAL_COMPARISON_FIELDS = frozenset({"complete", "method"})
+_SEMANTIC_REVIEW_TRANSCRIPTION_FIELDS = frozenset(
+    {
+        "schema",
+        "path",
+        "sha256",
+        "controlling_visual_source",
+        "complete_for_selected_semantic_surface",
+        "method",
+    }
+)
+_SEMANTIC_REVIEW_TRANSCRIPTION_SCHEMA = 1
 
 
 @dataclass(frozen=True)
@@ -93,6 +110,45 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def semantic_review_source_identity(payload: object) -> tuple[str, str]:
+    """Return the exact text identity permitted for source-to-Spec review.
+
+    A map's top-level source artifact remains the complete canonical source for
+    inventory and coverage.  A companion may additionally provide a visual
+    transcription when the raw extraction is unusable for mathematical
+    passages.  This helper recognizes that text only when the companion's
+    declarative binding is complete; callers still run
+    :func:`source_text_companion_validation_issues` to verify its bytes.
+    """
+
+    if not isinstance(payload, Mapping):
+        return "", ""
+    canonical_path = str(payload.get("source_artifact_path") or "").strip()
+    canonical_sha256 = str(payload.get("source_artifact_sha256") or "").strip().lower()
+    companion = payload.get(SOURCE_TEXT_COMPANION_FIELD)
+    if not isinstance(companion, Mapping):
+        return canonical_path, canonical_sha256
+    transcription = companion.get("semantic_review_transcription")
+    visual = companion.get("visual_primary_scan")
+    if not isinstance(transcription, Mapping) or not isinstance(visual, Mapping):
+        return canonical_path, canonical_sha256
+    path = str(transcription.get("path") or "").strip()
+    digest = str(transcription.get("sha256") or "").strip().lower()
+    controlling_visual = transcription.get("controlling_visual_source")
+    if not isinstance(controlling_visual, Mapping):
+        return canonical_path, canonical_sha256
+    if (
+        transcription.get("schema") != _SEMANTIC_REVIEW_TRANSCRIPTION_SCHEMA
+        or not path
+        or not _SHA256_RE.fullmatch(digest)
+        or transcription.get("complete_for_selected_semantic_surface") is not True
+        or controlling_visual.get("path") != visual.get("path")
+        or controlling_visual.get("sha256") != visual.get("sha256")
+    ):
+        return canonical_path, canonical_sha256
+    return path, digest
+
+
 def _normalized_text_line_count(raw: bytes) -> int | None:
     """Return canonical logical-line count, or ``None`` for non-UTF-8 text."""
 
@@ -113,6 +169,7 @@ def _strict_mapping(
     *,
     field: str,
     allowed_fields: frozenset[str],
+    optional_fields: frozenset[str] = frozenset(),
 ) -> tuple[Mapping[str, object] | None, list[SourceTextCompanionIssue]]:
     """Read a schema object and reject unknown or missing fields explicitly."""
 
@@ -120,7 +177,7 @@ def _strict_mapping(
         return None, [SourceTextCompanionIssue(f"{field} must be an object")]
     keys = {str(key) for key in value}
     issues: list[SourceTextCompanionIssue] = []
-    missing = sorted(allowed_fields - keys)
+    missing = sorted((allowed_fields - optional_fields) - keys)
     unknown = sorted(keys - allowed_fields)
     if missing:
         issues.append(
@@ -268,6 +325,7 @@ def source_text_companion_validation_issues(
         raw_companion,
         field=SOURCE_TEXT_COMPANION_FIELD,
         allowed_fields=_COMPANION_FIELDS,
+        optional_fields=frozenset({"semantic_review_transcription"}),
     )
     if companion is None:
         return issues
@@ -344,6 +402,93 @@ def source_text_companion_validation_issues(
                 f"{SOURCE_TEXT_COMPANION_FIELD}.canonical_text.sha256"
             )
         )
+
+    # A damaged raw extraction can remain the canonical full-source inventory
+    # while a visually checked UTF-8 transcription supplies exact mathematical
+    # passages to semantic reviewers.  This optional route is fail-closed:
+    # its bytes and its primary visual source must both be pinned.
+    semantic_transcription = companion.get("semantic_review_transcription")
+    if semantic_transcription is not None:
+        transcription, transcription_issues = _strict_mapping(
+            semantic_transcription,
+            field=f"{SOURCE_TEXT_COMPANION_FIELD}.semantic_review_transcription",
+            allowed_fields=_SEMANTIC_REVIEW_TRANSCRIPTION_FIELDS,
+        )
+        issues.extend(transcription_issues)
+        if transcription is not None:
+            if transcription.get("schema") != _SEMANTIC_REVIEW_TRANSCRIPTION_SCHEMA:
+                issues.append(
+                    SourceTextCompanionIssue(
+                        f"{SOURCE_TEXT_COMPANION_FIELD}.semantic_review_transcription.schema "
+                        f"must equal {_SEMANTIC_REVIEW_TRANSCRIPTION_SCHEMA}"
+                    )
+                )
+            (
+                _transcription_path,
+                _transcription_path_text,
+                transcription_bytes,
+                transcription_file_issues,
+            ) = _pinned_file_issues(
+                folder,
+                {"path": transcription.get("path"), "sha256": transcription.get("sha256")},
+                field=f"{SOURCE_TEXT_COMPANION_FIELD}.semantic_review_transcription",
+                repository_root=repository_root,
+                require_source_bytes=require_source_bytes,
+                require_pdf=False,
+                file_bytes_override=file_bytes_override,
+                capture_bytes=True,
+            )
+            issues.extend(transcription_file_issues)
+            if (
+                transcription_bytes is not None
+                and _normalized_text_line_count(transcription_bytes) is None
+            ):
+                issues.append(
+                    SourceTextCompanionIssue(
+                        f"{SOURCE_TEXT_COMPANION_FIELD}.semantic_review_transcription "
+                        "must be UTF-8 text"
+                    )
+                )
+            controlling_visual, controlling_visual_issues = _strict_mapping(
+                transcription.get("controlling_visual_source"),
+                field=(
+                    f"{SOURCE_TEXT_COMPANION_FIELD}.semantic_review_transcription."
+                    "controlling_visual_source"
+                ),
+                allowed_fields=_PINNED_FILE_FIELDS,
+            )
+            issues.extend(controlling_visual_issues)
+            visual_descriptor = (
+                companion.get("visual_primary_scan")
+                if isinstance(companion.get("visual_primary_scan"), Mapping)
+                else {}
+            )
+            if controlling_visual is not None and (
+                controlling_visual.get("path") != visual_descriptor.get("path")
+                or controlling_visual.get("sha256") != visual_descriptor.get("sha256")
+            ):
+                issues.append(
+                    SourceTextCompanionIssue(
+                        f"{SOURCE_TEXT_COMPANION_FIELD}.semantic_review_transcription."
+                        "controlling_visual_source must exactly equal "
+                        f"{SOURCE_TEXT_COMPANION_FIELD}.visual_primary_scan"
+                    )
+                )
+            if transcription.get("complete_for_selected_semantic_surface") is not True:
+                issues.append(
+                    SourceTextCompanionIssue(
+                        f"{SOURCE_TEXT_COMPANION_FIELD}.semantic_review_transcription."
+                        "complete_for_selected_semantic_surface must be true"
+                    )
+                )
+            method = transcription.get("method")
+            if not isinstance(method, str) or not method.strip():
+                issues.append(
+                    SourceTextCompanionIssue(
+                        f"{SOURCE_TEXT_COMPANION_FIELD}.semantic_review_transcription.method "
+                        "must be a nonempty string"
+                    )
+                )
 
     extraction, extraction_issues = _strict_mapping(
         companion.get("extraction"),

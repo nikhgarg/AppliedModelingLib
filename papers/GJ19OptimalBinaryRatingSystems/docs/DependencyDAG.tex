@@ -3,7 +3,7 @@
 
 \begin{document}
 \begin{tikzpicture}[
-  x=1cm,
+  x=1.1cm,
   y=1cm,
   every node/.append style={outer sep=5pt, font=\sffamily\small}
 ]
@@ -13,8 +13,9 @@
 \dagPaperLegendRightOfMetadata{
 \node[dag_model, dag_template_legend] (legDef) at (0,0) {definition /\\formula};
 \node[dag_result, dag_template_legend] (legDone) at (4.2,0) {formalized\\result};
+\node[dag_partial, dag_template_legend] (legPartial) at (8.4,0) {remaining gap /\\restricted scope};
 }
-\daglegend{(legDef)(legDone)}{Legend}
+\daglegend{(legDef)(legDone)(legPartial)}{Legend}
 
 \begin{dagPaperBody}
 
@@ -38,9 +39,9 @@
   endpoint-aware equalized levels exist, are unique, and are maximin optimal
 };
 
-\node[dag_result] (T31Lex) at (24.8,0) {
+\node[dag_partial] (T31Lex) at (24.8,0) {
   \textbf{Theorem 3.1 Lexicographic Result} \\
-  source cell rates, finite optimizer, and value-first/rate-second assembly
+  global value and adjacent-formula optimization across all ties, $M\ge3$
 };
 
 \node[dag_model] (MatchModel) at (0,-3.3) {
@@ -55,7 +56,7 @@
 
 \node[dag_result] (FiniteRate) at (12.4,-3.3) {
   \textbf{Finite Adjacent Objective} \\
-  endpoint/source-shaped rows construct finite certificates and give exact rates
+  finite adjacent-error integrals have the displayed rates
 };
 
 \node[dag_result] (T31Branches) at (18.6,-3.3) {
@@ -63,9 +64,9 @@
   nondecreasing matching function supplies positive monotone cell rates
 };
 
-\node[dag_result] (T31) at (24.8,-3.3) {
+\node[dag_partial] (T31) at (24.8,-3.3) {
   \textbf{General-$g$ Theorem 3.1} \\
-  exact staged source certificate, with explicit first-stage tie convention
+  identifying the optimized formula with the $W-W_k$ exponent remains open
 };
 
 \node[dag_result] (TC1) at (0,-6.6) {
@@ -73,14 +74,14 @@
   weighted Laplace principle converts local rates to integral rates
 };
 
-\node[dag_result] (C3) at (6.2,-6.6) {
+\node[dag_partial] (C3) at (6.2,-6.6) {
   \textbf{Lemma C.3} \\
-  piecewise-constant partitions aggregate by the minimum adjacent exponent
+  cross-cell integral rate is proved; its link to $W-W_k$ remains open
 };
 
-\node[dag_result] (C4) at (12.4,-6.6) {
+\node[dag_partial] (C4) at (12.4,-6.6) {
   \textbf{Lemma C.4} \\
-  finite selected pullbacks have positive rate; non-step source gaps have rate zero
+  two integral rates are proved; the same-objective equivalence remains open
 };
 
 \node[dag_result] (C5) at (0,-9.9) {
@@ -103,9 +104,9 @@
   nested-bisection operation count satisfies the step bound
 };
 
-\node[dag_result] (T32Cert) at (24.8,-9.9) {
+\node[dag_partial] (T32Cert) at (24.8,-9.9) {
   \textbf{Algorithm 1 / Theorem 3.2} \\
-  literal weighted runner, additive loss, and polynomial runtime
+  nested bisection with additive loss and the source runtime rate for $M>3$
 };
 
 \node[dag_result] (B1Lemma) at (0,-13.2) {
@@ -118,7 +119,7 @@
   quantile-floor representation and uniform convergence give uniform limits
 };
 
-\node[dag_result] (B2B3) at (12.4,-13.2) {
+\node[dag_partial] (B2B3) at (12.4,-13.2) {
   \textbf{Lemmas B.2-B.3} \\
   finite SLLN learning and rank recovery under strict identifiability
 };

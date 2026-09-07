@@ -12,7 +12,7 @@ Source: `EFXadditivechores.tex`, lines 1700--1729.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 private theorem exceptional_quota_sum (q : ℕ) (companion : Fin 4) :
     Finset.univ.sum (m2Quota q (Finset.univ.erase companion)) = 4 * q + 3 := by

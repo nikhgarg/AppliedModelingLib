@@ -17,35 +17,31 @@
   "build_target": "lake build GKGMM19IterativeLocalVoting",
   "human_review": {
     "reviewed_rows": 0,
-    "total_rows": 44,
+    "total_rows": 12,
     "stale_rows": 0,
     "mismatch_rows": 0,
     "uncertain_rows": 0,
     "source": "v11 PaperInterface claim surface; human entries are recorded after direct review"
   },
-  "human_summary": "Full formalization requires proving stochastic subgradient descent convergence. Theorem 3 is proved as a constrained alternative in general and as the original statement under the explicit full-space condition.",
+  "human_summary": "Formalized: all finite-coordinate Theorem 1 cases, finite-exponent Model B Theorem 2, both Proposition 1 response models, Proposition 2 under its coordinatewise-boundary Model B reading, and Theorem 3's constrained and full-space endpoints are Lean-checked.",
   "human_summary_review": {
-    "note": "Human-written summary supplied on 2026-06-28; preserve verbatim unless a human explicitly asks for a change.",
+    "note": "Human-authorized formalized-status summary updated on 2026-08-28; preserve verbatim unless a human explicitly asks for a change.",
     "status": "human_written"
   },
   "id": "GKGMM19IterativeLocalVoting",
   "repository_visibility": "public",
-  "main_caveat": "",
+  "main_caveat": "No theorem-level formalization boundary remains. Proposition 2 uses the paper proof's coordinatewise-boundary Model B reading, and Theorem 3's projected/full-space distinction is recorded as a source clarification.",
   "paper_interface": {
-    "declaration_rows": 115,
-    "line_count": 2876,
-    "maintainability_issue": null,
-    "oversized": false,
+    "declaration_rows": 189,
+    "line_count": 5523,
+    "maintainability_issue": "PaperInterface.lean is intentionally large; human review is restricted to the 11 source-claim Spec rows.",
+    "oversized": true,
     "path": "papers/GKGMM19IterativeLocalVoting/PaperInterface.lean",
-    "review_rows": 44
+    "review_rows": 11
   },
   "review_entrypoint": "papers/GKGMM19IterativeLocalVoting/FINAL_VALIDATION_REPORT.md",
   "review_surface": {
-    "assumption_names": [
-      "assumption_conditions_c123",
-      "assumption_ssgm_convergence_theorem",
-      "assumption_expected_subgradient_theorem"
-    ],
+    "assumption_names": [],
     "assumption_policy": "source-plus-proof-boundary",
     "assumption_source_file": "papers/GKGMM19IterativeLocalVoting/Assumptions.lean",
     "assumption_validator_summary": {
@@ -54,14 +50,29 @@
       "hidden_premise_samples": [],
       "missing_rows_count": 0,
       "paper_condition_count": 1,
-      "partial_boundary_count": 1,
-      "partial_boundary_premises": [
-        "assumption_ssgm_convergence_theorem: hSSGM : assumption_ssgm_convergence_theorem E"
-      ],
-      "row_count": 2,
+      "partial_boundary_count": 0,
+      "partial_boundary_premises": [],
+      "row_count": 1,
       "stale_judgment_count": 0
     },
     "auxiliary_names": [
+      "AppendixTheorem5ExecutionRegularity",
+      "AppendixTheorem5ExecutionRegularity.ae_tendsto",
+      "AppendixTheorem5ExecutionRegularity.toProjectedSSGMExecution",
+      "AppendixTheorem5Hypotheses",
+      "AppendixTheorem5Hypotheses.compact_solutionSpace",
+      "AppendixTheorem5Hypotheses.euclideanProjectionSourceGeometry",
+      "AppendixTheorem5Hypotheses.project_nonexpansive",
+      "AppendixTheorem5MinimizerSetHypotheses",
+      "AppendixTheorem5MinimizerSetRegularity",
+      "AppendixTheorem5MinimizerSetRegularity.outcomeIndexed_convergesToSet",
+      "AppendixTheorem5MinimizerSetRegularity.toProjectedSSGMExecution",
+      "AppendixTheorem5MinimizerSetStatement",
+      "AppendixTheorem5Statement",
+      "ExpectedSubgradientTheoremStatement",
+      "FiniteSubgradientWithinAt",
+      "assumption_expected_subgradient_theorem",
+      "assumption_ssgm_convergence_theorem",
       "c1_convex_solution_space_source_formula",
       "decomposable_linf_coordinate_replacement_formula",
       "decomposable_linf_local_response_bridge_formula",
@@ -109,6 +120,7 @@
       "theorem3_l2_projection_normal_cone_formula",
       "theorem3_projection_residual_nonpos_formula",
       "theorem3_projection_step_progress_formula",
+      "ssgm_convergence_theorem_consequences",
       "weighted_euclidean_l2_concrete_component_trace_source_formula",
       "weighted_euclidean_l2_ssgm_source_formula",
       "weighted_euclidean_l2_ssgm_source_trajectory_feasible",
@@ -125,50 +137,40 @@
       "proposition2_finite_coordinate_decomposable_linf_medians"
     ],
     "include_names": [
-      "algorithm1_local_neighborhood_formulaSpec",
-      "algorithm1_norm_projection_formulaSpec",
-      "algorithm1_projected_trajectory_feasible_of_normProjectionSpec",
-      "algorithm1_projected_update_formulaSpec",
-      "algorithm1_radius_formulaSpec",
-      "algorithm1_radius_not_summableSpec",
-      "algorithm1_radius_sq_summableSpec",
-      "algorithm1_radius_ssgm_step_size_conditionsSpec",
-      "algorithm1_radius_sum_tendsto_atTopSpec",
-      "algorithm1_radius_tendsto_zeroSpec",
-      "algorithm1_stop_condition_formulaSpec",
-      "algorithm1_window_stable_formulaSpec",
-      "c3_product_density_coordinate_noncollision_aeSpec",
-      "conditions_c123_formulaSpec",
-      "definition1_finite_coordinate_l1_formulaSpec",
-      "definition1_finite_coordinate_l2_formulaSpec",
-      "definition1_finite_coordinate_linf_formulaSpec",
-      "definition1_finite_coordinate_lp_formulaSpec",
-      "definition1_lp_normed_utilities_formulaSpec",
-      "definition2_weighted_euclidean_utilities_formulaSpec",
-      "definition3_decomposable_utilities_formulaSpec",
-      "lemma3_coordinate_equality_bad_event_null_from_boundedDensitySpec",
-      "lemma3_coordinate_equality_bad_event_null_from_productMeasureSpec",
-      "lemma3_coordinate_noncollision_ae_from_productMeasureSpec",
       "lemma3_finite_holder_dual_gradient_candidate_norm_formulaSpec",
-      "lemma3_gradient_candidate_hasFDerivAt_formulaSpec",
-      "lemma3_gradient_candidate_source_formulaSpec",
-      "modelA_response_formulaSpec",
-      "modelA_response_isMaxOn_formulaSpec",
-      "modelA_response_lp_normed_cost_minimizer_formulaSpec",
-      "modelB_finite_response_formulaSpec",
-      "modelB_finite_response_neg_lp_cost_gradient_formulaSpec",
-      "proposition1_weighted_euclidean_l2Spec",
-      "proposition2_decomposable_linf_mediansSpec",
+      "proposition1_weighted_euclidean_joint_c3Spec",
+      "proposition2_coordinatewise_boundary_finite_c3_medianSpec",
+      "appendix_lemma1_uniform_direction_errorSpec",
+      "appendix_lemma2_bad_event_linear_rateSpec",
+      "appendix_lemma4_weighted_bad_event_linear_rateSpec",
       "appendix_theorem4_expected_subgradient_boundarySpec",
       "appendix_theorem5_ssgm_convergence_boundarySpec",
-      "paper_definition4_dlcd_formulaSpec",
-      "dlcdBudgetUtilitySpec",
-      "theorem1_lp_normed_dual_casesSpec",
-      "theorem1_norm_pair_l1_linfSpec",
-      "theorem1_norm_pair_l2_l2Spec",
-      "theorem1_norm_pair_linf_l1Spec",
-      "theorem2_modelB_holder_dual_normsSpec",
-      "theorem3_statement_of_full_sampled_projected_source_semantics_univSpec"
+      "theorem1_finite_c3_six_casesSpec",
+      "theorem2_modelB_finite_holder_dual_c3Spec",
+      "theorem3_population_fullspaceSpec"
+    ],
+    "presentation_sections": [
+      {
+        "title": "Main-text source claims",
+        "names": [
+          "theorem1_finite_c3_six_casesSpec",
+          "theorem2_modelB_finite_holder_dual_c3Spec",
+          "proposition1_weighted_euclidean_joint_c3Spec",
+          "proposition2_coordinatewise_boundary_finite_c3_medianSpec",
+          "theorem3_population_fullspaceSpec"
+        ]
+      },
+      {
+        "title": "Appendix and supplement source claims",
+        "names": [
+          "lemma3_finite_holder_dual_gradient_candidate_norm_formulaSpec",
+          "appendix_lemma1_uniform_direction_errorSpec",
+          "appendix_lemma2_bad_event_linear_rateSpec",
+          "appendix_lemma4_weighted_bad_event_linear_rateSpec",
+          "appendix_theorem4_expected_subgradient_boundarySpec",
+          "appendix_theorem5_ssgm_convergence_boundarySpec"
+        ]
+      }
     ],
     "llm_assumption_review": {
       "assumption_judgment_file": "papers/GKGMM19IterativeLocalVoting/audit/assumption_match_llm.json",
@@ -178,66 +180,78 @@
       "assumption_judgment_file": "papers/GKGMM19IterativeLocalVoting/audit/assumption_match_llm.json",
       "lean_to_tex_file": "papers/GKGMM19IterativeLocalVoting/audit/lean_to_tex_llm.json",
       "match_judgment_file": "papers/GKGMM19IterativeLocalVoting/audit/statement_match_llm.json",
+      "paper_coverage_audit_file": "papers/GKGMM19IterativeLocalVoting/audit/paper_coverage_llm.json",
+      "require_explicit_source_routes": true,
+      "require_source_claim_atoms": true,
       "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
       "review_surface_audit_file": "papers/GKGMM19IterativeLocalVoting/audit/review_surface_llm.json",
       "surface_audit_threshold": 30,
       "surface_warning_threshold": 120,
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2"
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
     },
-    "proof_boundary_names": [
-      "assumption_ssgm_convergence_theorem",
-      "assumption_expected_subgradient_theorem"
-    ],
+    "llm_paper_coverage_review": {
+      "paper_coverage_audit_file": "papers/GKGMM19IterativeLocalVoting/audit/paper_coverage_llm.json",
+      "defect_support_judgment_file": "papers/GKGMM19IterativeLocalVoting/audit/defect_support_match_llm.json",
+      "policy": "Review the complete byte-pinned source-first inventory. Direct source claims must route to one current expanded Spec and a checked proof endpoint; implementation bridges remain dependency-graph proof support rather than becoming duplicate paper claims. Corrected source statements preserve the archival text and bind the approved non-equivalent target explicitly."
+    },
+    "llm_source_record_review": {
+      "source_record_audit_file": "papers/GKGMM19IterativeLocalVoting/audit/source_record_audit.json",
+      "source_record_judgment_file": "papers/GKGMM19IterativeLocalVoting/audit/source_record_match_llm.json",
+      "policy": "Classify every boundary-shaped input and recursive field from expanded semantic content. Bare carrier data are witness data; proposition-valued fields require exact source evidence, a checked Lean derivation, or an approved external theorem boundary. Declaration names are routing only."
+    },
+    "source_proof_fidelity_review": {
+      "ledger_file": "papers/GKGMM19IterativeLocalVoting/audit/source_proof_fidelity.json",
+      "policy": "Record source-proof defects and model conventions by exact source locator and mathematical obligation. Proposition 2 is checked under the coordinatewise-boundary Model B reading stated in its proof, while the memo separately explains how that reading differs from the general normalized-gradient-ray display."
+    },
+    "semantic_model_review": {
+      "schema": 2,
+      "required_dimensions": [
+        "expanded_binders_and_domain",
+        "carrier_and_domain",
+        "probability_support_endpoints",
+        "joint_law_and_state_evolution",
+        "conditioning_and_calibration_semantics",
+        "expectation_definedness",
+        "null_cell_totalization_and_partition_scope",
+        "extended_rate_codomain"
+      ],
+      "policy": "Review every expanded paper-facing continuous-space model, response rule, stochastic-process construction, and convergence endpoint against the pinned source. Inspect carrier and norm domains, radius and stopping conventions, joint ideal-point laws and sampling timing, almost-everywhere and expectation semantics, projection and feasible-direction scope, and the exact assumptions used by each convergence claim. Record a dimension as not applicable only after inspecting its expanded semantics; declaration names are routing only."
+    },
+    "proof_boundary_names": [],
     "slices": [
       {
-        "id": "all",
+        "id": "main_text_source_claims",
+        "title": "Main-text source claims",
         "names": [
-          "conditions_c123_formula",
-          "theorem1_norm_pair_l2_l2",
-          "theorem1_norm_pair_l1_linf",
-          "theorem1_norm_pair_linf_l1",
-          "algorithm1_radius_formula",
-          "algorithm1_radius_tendsto_zero",
-          "algorithm1_radius_sq_summable",
-          "algorithm1_radius_sum_tendsto_atTop",
-          "algorithm1_radius_not_summable",
-          "algorithm1_radius_ssgm_step_size_conditions",
-          "algorithm1_local_neighborhood_formula",
-          "algorithm1_norm_projection_formula",
-          "algorithm1_projected_update_formula",
-          "algorithm1_projected_trajectory_feasible_of_normProjection",
-          "algorithm1_window_stable_formula",
-          "algorithm1_stop_condition_formula",
-          "modelA_response_formula",
-          "modelA_response_isMaxOn_formula",
-          "modelB_finite_response_formula",
-          "modelB_finite_response_neg_lp_cost_gradient_formula",
-          "definition1_lp_normed_utilities_formula",
-          "modelA_response_lp_normed_cost_minimizer_formula",
-          "definition1_finite_coordinate_l1_formula",
-          "definition1_finite_coordinate_l2_formula",
-          "definition1_finite_coordinate_linf_formula",
-          "definition1_finite_coordinate_lp_formula",
-          "lemma3_gradient_candidate_source_formula",
-          "lemma3_finite_holder_dual_gradient_candidate_norm_formula",
-          "lemma3_gradient_candidate_hasFDerivAt_formula",
-          "lemma3_coordinate_equality_bad_event_null_from_boundedDensity",
-          "lemma3_coordinate_equality_bad_event_null_from_productMeasure",
-          "lemma3_coordinate_noncollision_ae_from_productMeasure",
-          "c3_product_density_coordinate_noncollision_ae",
-          "definition2_weighted_euclidean_utilities_formula",
-          "definition3_decomposable_utilities_formula",
-          "theorem1_lp_normed_dual_cases",
-          "theorem2_modelB_holder_dual_norms",
-          "proposition1_weighted_euclidean_l2",
-          "proposition2_decomposable_linf_medians",
-          "theorem3_statement_of_full_sampled_projected_source_semantics_univ"
-        ],
-        "title": "All source-facing review rows"
+          "theorem1_finite_c3_six_casesSpec",
+          "theorem2_modelB_finite_holder_dual_c3Spec",
+          "proposition1_weighted_euclidean_joint_c3Spec",
+          "proposition2_coordinatewise_boundary_finite_c3_medianSpec"
+        ]
+      },
+      {
+        "id": "appendix_source_claims",
+        "title": "Appendix and supplement source claims",
+        "names": [
+          "lemma3_finite_holder_dual_gradient_candidate_norm_formulaSpec",
+          "appendix_lemma1_uniform_direction_errorSpec",
+          "appendix_lemma2_bad_event_linear_rateSpec",
+          "appendix_lemma4_weighted_bad_event_linear_rateSpec",
+          "appendix_theorem4_expected_subgradient_boundarySpec",
+          "appendix_theorem5_ssgm_convergence_boundarySpec"
+        ]
+      },
+      {
+        "id": "additional_source_results",
+        "title": "Additional source results",
+        "names": [
+          "theorem3_population_fullspaceSpec"
+        ]
       }
     ],
-    "source_assumption_names": [
-      "assumption_conditions_c123"
+    "source_assumption_names": [],
+    "source_condition_items": [
+      "conditions_c123_formula"
     ],
     "source_file": "papers/GKGMM19IterativeLocalVoting/PaperInterface.lean",
     "statement_validator_summary": {
@@ -280,56 +294,23 @@
       "stale": false
     },
     "proposition_spec_proofs": {
-      "algorithm1_local_neighborhood_formulaSpec": "algorithm1_local_neighborhood_formula",
-      "algorithm1_norm_projection_formulaSpec": "algorithm1_norm_projection_formula",
-      "algorithm1_projected_trajectory_feasible_of_normProjectionSpec": "algorithm1_projected_trajectory_feasible_of_normProjection",
-      "algorithm1_projected_update_formulaSpec": "algorithm1_projected_update_formula",
-      "algorithm1_radius_formulaSpec": "algorithm1_radius_formula",
-      "algorithm1_radius_not_summableSpec": "algorithm1_radius_not_summable",
-      "algorithm1_radius_sq_summableSpec": "algorithm1_radius_sq_summable",
-      "algorithm1_radius_ssgm_step_size_conditionsSpec": "algorithm1_radius_ssgm_step_size_conditions",
-      "algorithm1_radius_sum_tendsto_atTopSpec": "algorithm1_radius_sum_tendsto_atTop",
-      "algorithm1_radius_tendsto_zeroSpec": "algorithm1_radius_tendsto_zero",
-      "algorithm1_stop_condition_formulaSpec": "algorithm1_stop_condition_formula",
-      "algorithm1_window_stable_formulaSpec": "algorithm1_window_stable_formula",
-      "c3_product_density_coordinate_noncollision_aeSpec": "c3_product_density_coordinate_noncollision_ae",
-      "conditions_c123_formulaSpec": "conditions_c123_formula",
-      "definition1_finite_coordinate_l1_formulaSpec": "definition1_finite_coordinate_l1_formula",
-      "definition1_finite_coordinate_l2_formulaSpec": "definition1_finite_coordinate_l2_formula",
-      "definition1_finite_coordinate_linf_formulaSpec": "definition1_finite_coordinate_linf_formula",
-      "definition1_finite_coordinate_lp_formulaSpec": "definition1_finite_coordinate_lp_formula",
-      "definition1_lp_normed_utilities_formulaSpec": "definition1_lp_normed_utilities_formula",
-      "definition2_weighted_euclidean_utilities_formulaSpec": "definition2_weighted_euclidean_utilities_formula",
-      "definition3_decomposable_utilities_formulaSpec": "definition3_decomposable_utilities_formula",
-      "lemma3_coordinate_equality_bad_event_null_from_boundedDensitySpec": "lemma3_coordinate_equality_bad_event_null_from_boundedDensity",
-      "lemma3_coordinate_equality_bad_event_null_from_productMeasureSpec": "lemma3_coordinate_equality_bad_event_null_from_productMeasure",
-      "lemma3_coordinate_noncollision_ae_from_productMeasureSpec": "lemma3_coordinate_noncollision_ae_from_productMeasure",
       "lemma3_finite_holder_dual_gradient_candidate_norm_formulaSpec": "lemma3_finite_holder_dual_gradient_candidate_norm_formula",
-      "lemma3_gradient_candidate_hasFDerivAt_formulaSpec": "lemma3_gradient_candidate_hasFDerivAt_formula",
-      "lemma3_gradient_candidate_source_formulaSpec": "lemma3_gradient_candidate_source_formula",
-      "modelA_response_formulaSpec": "modelA_response_formula",
-      "modelA_response_isMaxOn_formulaSpec": "modelA_response_isMaxOn_formula",
-      "modelA_response_lp_normed_cost_minimizer_formulaSpec": "modelA_response_lp_normed_cost_minimizer_formula",
-      "modelB_finite_response_formulaSpec": "modelB_finite_response_formula",
-      "modelB_finite_response_neg_lp_cost_gradient_formulaSpec": "modelB_finite_response_neg_lp_cost_gradient_formula",
-      "proposition1_weighted_euclidean_l2Spec": "proposition1_weighted_euclidean_l2",
-      "proposition2_decomposable_linf_mediansSpec": "proposition2_decomposable_linf_medians",
+      "proposition1_weighted_euclidean_joint_c3Spec": "proposition1_weighted_euclidean_joint_c3",
+      "proposition2_coordinatewise_boundary_finite_c3_medianSpec": "proposition2_coordinatewise_boundary_finite_c3_median",
+      "appendix_lemma1_uniform_direction_errorSpec": "appendix_lemma1_uniform_direction_error",
+      "appendix_lemma2_bad_event_linear_rateSpec": "appendix_lemma2_bad_event_linear_rate",
+      "appendix_lemma4_weighted_bad_event_linear_rateSpec": "appendix_lemma4_weighted_bad_event_linear_rate",
       "appendix_theorem4_expected_subgradient_boundarySpec": "appendix_theorem4_expected_subgradient_boundary",
       "appendix_theorem5_ssgm_convergence_boundarySpec": "appendix_theorem5_ssgm_convergence_boundary",
-      "paper_definition4_dlcd_formulaSpec": "paper_definition4_dlcd_formula",
-      "dlcdBudgetUtilitySpec": "dlcdBudgetUtility",
-      "theorem1_lp_normed_dual_casesSpec": "theorem1_lp_normed_dual_cases",
-      "theorem1_norm_pair_l1_linfSpec": "theorem1_norm_pair_l1_linf",
-      "theorem1_norm_pair_l2_l2Spec": "theorem1_norm_pair_l2_l2",
-      "theorem1_norm_pair_linf_l1Spec": "theorem1_norm_pair_linf_l1",
-      "theorem2_modelB_holder_dual_normsSpec": "theorem2_modelB_holder_dual_norms",
-      "theorem3_statement_of_full_sampled_projected_source_semantics_univSpec": "theorem3_statement_of_full_sampled_projected_source_semantics_univ"
+      "theorem1_finite_c3_six_casesSpec": "theorem1_finite_c3_six_cases",
+      "theorem2_modelB_finite_holder_dual_c3Spec": "theorem2_modelB_finite_holder_dual_c3",
+      "theorem3_population_fullspaceSpec": "theorem3_population_fullspace"
     },
     "require_v11_raw_source_spec_screening": true,
     "require_source_spec_correspondence": true
   },
   "schema": 1,
   "source_version": "JAIR 64 (2019), 315-355; published 2019-02-18",
-  "status": "partially formalized",
+  "status": "formalized",
   "title": "Iterative Local Voting for Collective Decision-making in Continuous Spaces"
 }

@@ -14,7 +14,7 @@ compares against the selected raw paper source.
 namespace GS62CollegeAdmissions
 namespace PaperInterface
 
-open EconCSLib.Matching
+open AppliedModelingLib.Matching
 
 /-- The strict, complete marriage domain used by the paper's first theorem. -/
 def strictMarriageDomain {M W : Type*}
@@ -88,12 +88,19 @@ def unstableCollegeAssignment {Applicants Colleges : Type*}
     (mu : ManyToOneAssignment Applicants Colleges) : Prop :=
   replacementPairCollegeInstability val_applicant val_college mu
 
-/-- Literal page-10 applicant optimality over literal-stable assignments. -/
+/-- Literal page-10 applicant optimality in the fixed-quota assignment domain. -/
 def literalApplicantOptimalCollegeAssignment {Applicants Colleges : Type*}
+    (quota : Colleges → ℕ)
     (val_applicant : Applicants → Colleges → ℝ)
     (val_college : Colleges → Applicants → ℝ)
     (mu : ManyToOneAssignment Applicants Colleges) : Prop :=
-  gs62LiteralApplicantOptimalCollegeAssignment val_applicant val_college mu
+  feasibleCollegeAssignment quota mu ∧
+    gs62LiteralStableCollegeAssignment val_applicant val_college mu ∧
+      ∀ nu, feasibleCollegeAssignment quota nu →
+        gs62LiteralStableCollegeAssignment val_applicant val_college nu →
+          ∀ a,
+            ManyToOne.valApplicant val_applicant a (nu.app_match a) ≤
+              ManyToOne.valApplicant val_applicant a (mu.app_match a)
 
 /-- Applicant optimality under the completed standard convention. -/
 def applicantOptimalCollegeAssignment {Applicants Colleges : Type*}
@@ -136,7 +143,7 @@ theorem college_waiting_list_agrees_with_applicant_da
     (val_college : Colleges → Applicants → ℝ)
     (hdomain : strictCollegeAdmissionsDomain val_applicant val_college) :
     ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment
-        quota val_applicant val_college hdomain.2.1 =
+        quota val_applicant val_college hdomain.2.1 hdomain.1.1 =
       ManyToOneOptimality.refinedDeferredAcceptanceManyToOne
         quota val_applicant val_college hdomain.1.2 :=
   ExactCollegeBatchedProcedure.paper_gs62_source_waiting_list_assignment_eq_applicant_da
@@ -153,7 +160,7 @@ theorem college_waiting_list_procedure_stable
     (hdomain : strictCollegeAdmissionsDomain val_applicant val_college) :
     stableCollegeAssignment quota val_applicant val_college
       (ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment
-        quota val_applicant val_college hdomain.2.1) :=
+        quota val_applicant val_college hdomain.2.1 hdomain.1.1) :=
   ExactCollegeBatchedProcedure.paper_gs62_source_waiting_list_assignment_stable
     quota val_applicant val_college hdomain
 

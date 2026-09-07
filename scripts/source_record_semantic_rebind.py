@@ -22,18 +22,22 @@ Serialized overlay entries have no authority on their own.  The loader rereads
 the immutable archived raw/map/sidecar inputs, checks the live raw with the
 folder-aware source-record identity gate, recomputes the unique descriptor
 match, and projects response association pins from the current raw members.
+
+This module is a historical reader only. New closeouts reuse graph-native
+judgment leaves and cannot issue another semantic-rebind artifact. The exact
+retired CLI remains recoverable at
+`a10ef303:scripts/source_record_semantic_rebind.py`; the private reconstruction
+function below exists solely so the reader can reproduce and compare the
+committed artifact byte-for-byte.
 """
 
 from __future__ import annotations
 
-import argparse
 import copy
 import hashlib
 import json
-import os
 import re
 import sys
-import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping
@@ -44,7 +48,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 try:  # Supports direct execution and package imports in focused tests.
-    from scripts.source_coverage_scope import source_item_coverage_sha256
+    from scripts.source_coverage_scope import (
+        source_item_coverage_sha256,
+        source_record_human_review_semantic_sha256,
+    )
     from scripts.source_record_current_revalidation import (
         AUTHENTICATED_EVIDENCE_COMPOSITION_ITEM_FIELD,
         SELECTED_CURRENT_REVALIDATION_ITEM_FIELD,
@@ -52,12 +59,12 @@ try:  # Supports direct execution and package imports in focused tests.
         generated_judgment_keys_sha256,
         generated_judgment_surface_sha256,
     )
-    from scripts.source_record_differential_revalidation import (
+    from scripts.source_record_obligation_groups import (
         SOURCE_RECORD_ITEM_DIGEST_SCHEMA,
         SOURCE_RECORD_V10_PROMPT_VERSION,
         _complete_proposition_alias_presentation_projection,
-        _raw_item_groups,
-        source_record_differential_item_descriptor,
+        raw_source_record_obligation_groups,
+        source_record_obligation_descriptor,
     )
     from scripts.source_record_integrity import (
         canonical_digest_payload,
@@ -70,8 +77,15 @@ try:  # Supports direct execution and package imports in focused tests.
         source_contract_association_record_digest,
         source_map_item_record_digest,
     )
+    from scripts.source_record_overlay_protocol import (
+        SOURCE_RECORD_SEMANTIC_REBIND_FILENAME,
+        SOURCE_RECORD_SEMANTIC_REBIND_ITEM_FIELD,
+    )
 except ModuleNotFoundError:  # pragma: no cover - direct-script fallback.
-    from source_coverage_scope import source_item_coverage_sha256
+    from source_coverage_scope import (
+        source_item_coverage_sha256,
+        source_record_human_review_semantic_sha256,
+    )
     from source_record_current_revalidation import (
         AUTHENTICATED_EVIDENCE_COMPOSITION_ITEM_FIELD,
         SELECTED_CURRENT_REVALIDATION_ITEM_FIELD,
@@ -79,12 +93,12 @@ except ModuleNotFoundError:  # pragma: no cover - direct-script fallback.
         generated_judgment_keys_sha256,
         generated_judgment_surface_sha256,
     )
-    from source_record_differential_revalidation import (
+    from source_record_obligation_groups import (
         SOURCE_RECORD_ITEM_DIGEST_SCHEMA,
         SOURCE_RECORD_V10_PROMPT_VERSION,
         _complete_proposition_alias_presentation_projection,
-        _raw_item_groups,
-        source_record_differential_item_descriptor,
+        raw_source_record_obligation_groups,
+        source_record_obligation_descriptor,
     )
     from source_record_integrity import (
         canonical_digest_payload,
@@ -96,6 +110,10 @@ except ModuleNotFoundError:  # pragma: no cover - direct-script fallback.
         semantic_association_record_digest,
         source_contract_association_record_digest,
         source_map_item_record_digest,
+    )
+    from source_record_overlay_protocol import (
+        SOURCE_RECORD_SEMANTIC_REBIND_FILENAME,
+        SOURCE_RECORD_SEMANTIC_REBIND_ITEM_FIELD,
     )
 
 
@@ -109,9 +127,7 @@ SOURCE_RECORD_SEMANTIC_REBIND_POLICY_VERSION = (
 SOURCE_RECORD_SEMANTIC_REBIND_ARTIFACT_KIND = (
     "source_record_v10_item_level_semantic_sidecar_rebind"
 )
-SOURCE_RECORD_SEMANTIC_REBIND_FILENAME = "source_record_semantic_rebind.json"
 SOURCE_RECORD_SEMANTIC_REBIND_INTEGRITY_FIELD = "source_record_semantic_rebind_sha256"
-SOURCE_RECORD_SEMANTIC_REBIND_ITEM_FIELD = "source_record_semantic_rebind"
 GENERATED_TAXONOMY_CORE_ADAPTER_FIELD = "generated_taxonomy_core_adapter"
 GENERATED_TAXONOMY_CORE_ADAPTER_SCHEMA = 1
 GENERATED_TAXONOMY_CORE_ADAPTER_POLICY_VERSION = (
@@ -400,31 +416,6 @@ def _same_resolved_path(left: Path, right: Path) -> bool:
         return left.resolve() == right.resolve()
     except OSError:
         return False
-
-
-def _cli_paper_dir(root: Path, paper: object) -> Path:
-    """Resolve one paper child without accepting traversal or nested folders."""
-
-    text = str(paper or "").strip()
-    pure = PurePosixPath(text)
-    if (
-        not text
-        or "/" in text
-        or "\\" in text
-        or pure.is_absolute()
-        or len(pure.parts) != 1
-        or pure.parts[0] in {"", ".", ".."}
-    ):
-        raise SourceRecordSemanticRebindError(
-            "--paper must be one normalized paper-directory component"
-        )
-    papers_root = (root / "papers").resolve()
-    paper_dir = (papers_root / pure.parts[0]).resolve()
-    if paper_dir.parent != papers_root:
-        raise SourceRecordSemanticRebindError(
-            "--paper must resolve directly under root/papers"
-        )
-    return paper_dir
 
 
 def _canonical_live_raw_error(
@@ -772,18 +763,24 @@ def _identity_from_map(
         canonical_digest_payload(contract) != canonical_digest_payload(map_contract)
     ):
         raise SourceRecordSemanticRebindError(f"{label} source-contract route differs from its map record")
-    semantic = source_item_coverage_sha256(dict(source_item), "")
-    if not semantic:
+    receipt_semantic = source_item_coverage_sha256(dict(source_item), "")
+    if not receipt_semantic:
         raise SourceRecordSemanticRebindError(f"{label} has no source-content identity")
     supplied_semantic = _sha256(raw_identity.get("source_semantic_sha256"))
-    if current and supplied_semantic != semantic:
+    if current and supplied_semantic != receipt_semantic:
         raise SourceRecordSemanticRebindError(f"{label} source semantic identity is stale")
-    if not current and supplied_semantic and supplied_semantic != semantic:
+    if not current and supplied_semantic and supplied_semantic != receipt_semantic:
         raise SourceRecordSemanticRebindError(
             f"{label} archived source semantic identity disagrees with its archived map"
         )
+    review_semantic = source_record_human_review_semantic_sha256(source_item, "")
+    if not review_semantic:
+        raise SourceRecordSemanticRebindError(
+            f"{label} has no source human-review identity"
+        )
     return {
-        "source_item_semantic_sha256": semantic,
+        "source_item_semantic_sha256": review_semantic,
+        "_source_item_receipt_semantic_sha256": receipt_semantic,
         # The full semantic contract is checked against this map record above,
         # but its declaration strings are navigation coordinates.  Cross-map
         # matching instead uses the source-content identity, route role/mode,
@@ -929,6 +926,10 @@ def _association_descriptor(
                 f"{label} {field_name} has a malformed source identity"
             )
         semantic_ids = [identity["source_item_semantic_sha256"] for identity in identities]
+        receipt_semantic_ids = [
+            identity["_source_item_receipt_semantic_sha256"]
+            for identity in identities
+        ]
         if len(set(semantic_ids)) != len(semantic_ids):
             raise SourceRecordSemanticRebindError(
                 f"{label} {field_name} duplicates a source identity"
@@ -966,7 +967,9 @@ def _association_descriptor(
                 raise SourceRecordSemanticRebindError(
                     f"{label} {field_name} association signature is absent from the current route ledger"
                 )
-            expected = semantic_association_record_digest(semantic_ids, signature)
+            expected = semantic_association_record_digest(
+                receipt_semantic_ids, signature
+            )
             if not expected or _sha256(association.get("semantic_association_sha256")) != expected:
                 raise SourceRecordSemanticRebindError(
                     f"{label} {field_name} has a stale semantic association digest"
@@ -977,7 +980,15 @@ def _association_descriptor(
                 "association_mode": mode,
                 "semantic_contract_member_role": role,
                 "source_identities": sorted(
-                    identities,
+                    [
+                        {
+                            "source_item_semantic_sha256": identity[
+                                "source_item_semantic_sha256"
+                            ],
+                            "source_kind": identity["source_kind"],
+                        }
+                        for identity in identities
+                    ],
                     key=lambda identity: str(identity["source_item_semantic_sha256"]),
                 ),
                 "association_structure": _association_structure_projection(association),
@@ -1163,7 +1174,7 @@ def _normalized_generated_item(
             for identity in synthetic_identities
         ]
     }
-    differential = source_record_differential_item_descriptor(ordinary, section=section)
+    differential = source_record_obligation_descriptor(ordinary, section=section)
     # The association-free differential descriptor correctly retains every
     # unknown generated field.  Add the independently validated source route
     # and exact expanded Lean source surface.
@@ -1249,7 +1260,7 @@ def _groups_by_descriptor(
     generated_taxonomy_core_adapter: bool = True,
     map_items_by_full_digest: Mapping[str, list[Mapping[str, Any]]] | None = None,
 ) -> tuple[dict[str, dict[str, Any]], dict[str, list[str]], dict[str, str]]:
-    groups, group_errors = _raw_item_groups(raw)
+    groups, group_errors = raw_source_record_obligation_groups(raw)
     if group_errors:
         raise SourceRecordSemanticRebindError(
             "raw audit has malformed generated groups: " + ", ".join(sorted(group_errors)[:5])
@@ -1560,7 +1571,7 @@ def _maps_for_prior(
     }
 
 
-def build_source_record_semantic_rebind(
+def _reconstruct_source_record_semantic_rebind(
     *,
     paper: str,
     paper_dir: Path,
@@ -1581,7 +1592,7 @@ def build_source_record_semantic_rebind(
     historical_composition_parent_path: Path | None = None,
     policy_version: str = SOURCE_RECORD_SEMANTIC_REBIND_POLICY_VERSION,
 ) -> dict[str, Any]:
-    """Build a replayable one-to-one semantic sidecar transport artifact."""
+    """Reconstruct the retired artifact exactly for reader validation."""
 
     policy = _semantic_rebind_policy_configuration(policy_version)
     generated_taxonomy_core_adapter = bool(
@@ -1653,7 +1664,7 @@ def build_source_record_semantic_rebind(
         prior_judgments,
         paper=paper,
         prior_raw=prior_raw_audit,
-        prior_groups={key: value for key, value in _raw_item_groups(prior_raw_audit)[0].items()},
+        prior_groups={key: value for key, value in raw_source_record_obligation_groups(prior_raw_audit)[0].items()},
         validated_historical_composition=validated_historical_composition,
     ):
         raise SourceRecordSemanticRebindError(error)
@@ -1666,8 +1677,8 @@ def build_source_record_semantic_rebind(
     assert isinstance(raw_responses, Mapping)  # checked above
     items: dict[str, dict[str, Any]] = {}
     decisions: list[dict[str, str]] = []
-    all_prior_groups, _ = _raw_item_groups(prior_raw_audit)
-    all_current_groups, _ = _raw_item_groups(current_raw_audit)
+    all_prior_groups, _ = raw_source_record_obligation_groups(prior_raw_audit)
+    all_current_groups, _ = raw_source_record_obligation_groups(current_raw_audit)
     for prior_key in sorted(all_prior_groups):
         prior_entry = prior_descriptors.get(prior_key)
         if prior_entry is None:
@@ -2071,7 +2082,7 @@ def source_record_semantic_rebind_overlay_error(
     if error or prior_map is None:
         return error
     try:
-        rebuilt = build_source_record_semantic_rebind(
+        rebuilt = _reconstruct_source_record_semantic_rebind(
             paper=paper,
             paper_dir=paper_dir,
             prior_raw_audit=prior_raw,
@@ -2553,299 +2564,3 @@ def copy_loaded_source_record_semantic_rebind_item(
     if is_loaded_source_record_semantic_rebind_item(value):
         return _LoadedSourceRecordSemanticRebindItem(copied)
     return copied
-
-
-def _semantic_rebind_output_error(out: Path, *, paper_dir: Path) -> str:
-    """Refuse to overwrite ordinary or unrelated evidence artifacts.
-
-    This command emits exactly one evidence-bearing artifact.  Replacing its
-    canonical path is intentional; replacing any other existing paper-local
-    artifact is not.  The ordinary sidecar paths stay protected even when they
-    do not yet exist, because they are reserved workflow targets rather than
-    generic output names.
-    """
-
-    canonical_overlay = source_record_semantic_rebind_overlay_path(paper_dir)
-    if _same_resolved_path(out, canonical_overlay):
-        return ""
-    ordinary_sidecars = (
-        paper_dir / "audit" / "source_record_match_llm.json",
-        paper_dir / "source_record_match_llm.json",
-    )
-    if any(_same_resolved_path(out, path) for path in ordinary_sidecars):
-        return "--out must not target a canonical ordinary source-record sidecar"
-    if out.exists() or out.is_symlink():
-        return (
-            "--out may overwrite only the canonical semantic-rebind overlay; "
-            "the requested path already contains a paper-local artifact"
-        )
-    return ""
-
-
-def _atomic_write(path: Path, contents: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.NamedTemporaryFile(
-        dir=path.parent,
-        prefix=f".{path.name}.",
-        delete=False,
-        mode="w",
-        encoding="utf-8",
-    ) as handle:
-        handle.write(contents)
-        temporary = Path(handle.name)
-    try:
-        os.replace(temporary, path)
-    finally:
-        if temporary.exists():
-            temporary.unlink()
-
-
-def _semantic_rebind_cli_summary(
-    payload: Mapping[str, Any],
-) -> dict[str, int]:
-    """Summarize rebind debt without changing the rebind artifact.
-
-    The historical loop records its manual/nonrebound debt on prior groups,
-    while the current loop records every uncovered current group separately.
-    Those are intentionally different decision projections.  In particular,
-    reporting only the former hides newly generated current obligations.
-
-    The artifact's descriptor-based matching remains the sole authority for
-    reuse.  Each side's storage key is counted only once, and this summary
-    deliberately does not infer a correspondence between different-side
-    unresolved keys from their counts.  Such a count comparison would be a
-    misleading proxy for semantic identity.
-    """
-
-    decisions = payload.get("decisions")
-    if not isinstance(decisions, list):
-        raise SourceRecordSemanticRebindError(
-            "semantic rebind payload has no decision list for CLI summary"
-        )
-
-    semantic_rebound_keys: set[str] = set()
-    current_uncovered_keys: set[str] = set()
-    prior_manual_or_nonrebound_keys: set[str] = set()
-    for decision in decisions:
-        if not isinstance(decision, Mapping):
-            raise SourceRecordSemanticRebindError(
-                "semantic rebind payload has a malformed CLI-summary decision"
-            )
-        status = decision.get("status")
-        current_key = decision.get("current_judgment_key")
-        if status == "rebound":
-            if isinstance(current_key, str) and current_key.strip():
-                semantic_rebound_keys.add(current_key)
-            continue
-        if isinstance(current_key, str) and current_key.strip():
-            current_uncovered_keys.add(current_key)
-        prior_key = decision.get("prior_judgment_key")
-        if (
-            status in {"manual_current_review_required", "not_rebound"}
-            and isinstance(prior_key, str)
-            and prior_key.strip()
-        ):
-            prior_manual_or_nonrebound_keys.add(prior_key)
-
-    return {
-        "semantic_rebound": len(semantic_rebound_keys),
-        "total_current_uncovered": len(current_uncovered_keys),
-        "prior_manual_or_nonrebound": len(prior_manual_or_nonrebound_keys),
-    }
-
-
-def _format_semantic_rebind_cli_summary(summary: Mapping[str, int]) -> str:
-    """Render the current and historical rebind counts without ambiguity."""
-
-    return (
-        f"{summary['semantic_rebound']} semantic-rebound; "
-        f"{summary['total_current_uncovered']} total-current-uncovered "
-        f"({summary['prior_manual_or_nonrebound']} prior-manual/nonrebound)"
-    )
-
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description=(
-            "Build an authenticated item-level source-record semantic sidecar rebind "
-            "without treating an archived raw audit as current."
-        )
-    )
-    parser.add_argument("--root", type=Path, default=ROOT)
-    parser.add_argument("--paper", required=True)
-    parser.add_argument("--prior-raw-audit", type=Path, required=True)
-    parser.add_argument(
-        "--current-raw-audit",
-        type=Path,
-        help=(
-            "Immutable current raw-audit snapshot used to build the overlay. "
-            "The default live path is suitable only until it is replaced; use "
-            "an archived copy when the overlay must survive a later raw refresh."
-        ),
-    )
-    parser.add_argument(
-        "--current-statement-map",
-        type=Path,
-        help=(
-            "Immutable statement-map snapshot matching --current-raw-audit. "
-            "The loader separately validates the live map before reuse."
-        ),
-    )
-    parser.add_argument("--prior-judgments", type=Path, required=True)
-    attestation_lane = parser.add_mutually_exclusive_group(required=True)
-    attestation_lane.add_argument("--prior-attestation", type=Path)
-    attestation_lane.add_argument(
-        "--historical-composition-parent",
-        type=Path,
-        help=(
-            "New full-review parent for a replayed selected-plus-overlay "
-            "historical composition. It replaces --prior-attestation only "
-            "after the special composition validator succeeds."
-        ),
-    )
-    parser.add_argument(
-        "--prior-statement-map",
-        type=Path,
-        help=(
-            "Immutable historical paper_statement_map.json. Required when any "
-            "referenced map item differs from the current snapshot."
-        ),
-    )
-    parser.add_argument(
-        "--prior-association-snapshot-reconciliation",
-        type=Path,
-        help=(
-            "Immutable historical association-snapshot reconciliation. This is "
-            "the sole exception lane for an archived raw audit whose aggregate "
-            "statement-map receipt is known to disagree with an exhaustive "
-            "item-level witness map; it is mutually exclusive with "
-            "--prior-statement-map."
-        ),
-    )
-    parser.add_argument("--out", type=Path)
-    parser.add_argument("--write", action="store_true")
-    return parser.parse_args()
-
-
-def main() -> int:
-    args = parse_args()
-    root = args.root.resolve()
-    try:
-        paper_dir = _cli_paper_dir(root, args.paper)
-        current_path = args.current_raw_audit or (
-            paper_dir / "audit" / "source_record_audit.json"
-        )
-        current_map_path = args.current_statement_map or (
-            paper_dir / "audit" / "paper_statement_map.json"
-        )
-        out = args.out or source_record_semantic_rebind_overlay_path(paper_dir)
-        input_paths = [
-            (args.prior_raw_audit, "--prior-raw-audit"),
-            (current_path, "--current-raw-audit"),
-            (args.prior_judgments, "--prior-judgments"),
-            (current_map_path, "current statement map"),
-            (out, "--out"),
-        ]
-        if args.prior_attestation is not None:
-            input_paths.append((args.prior_attestation, "--prior-attestation"))
-        if args.historical_composition_parent is not None:
-            input_paths.append(
-                (
-                    args.historical_composition_parent,
-                    "--historical-composition-parent",
-                )
-            )
-        for path, label in input_paths:
-            _relative_paper_path(path, paper_dir)
-        if args.prior_statement_map is not None:
-            _relative_paper_path(args.prior_statement_map, paper_dir)
-        if args.prior_association_snapshot_reconciliation is not None:
-            _relative_paper_path(
-                args.prior_association_snapshot_reconciliation, paper_dir
-            )
-        canonical_raw_path = paper_dir / "audit" / "source_record_audit.json"
-        canonical_map_path = paper_dir / "audit" / "paper_statement_map.json"
-        protected_outputs = [
-            args.prior_raw_audit,
-            current_path,
-            args.prior_judgments,
-            current_map_path,
-            canonical_raw_path,
-            canonical_map_path,
-        ]
-        if args.prior_attestation is not None:
-            protected_outputs.append(args.prior_attestation)
-        if args.historical_composition_parent is not None:
-            protected_outputs.append(args.historical_composition_parent)
-        if args.prior_statement_map is not None:
-            protected_outputs.append(args.prior_statement_map)
-        if args.prior_association_snapshot_reconciliation is not None:
-            protected_outputs.append(args.prior_association_snapshot_reconciliation)
-        if any(_same_resolved_path(out, protected) for protected in protected_outputs):
-            raise SourceRecordSemanticRebindError(
-                "--out aliases an input or canonical raw/statement-map artifact"
-            )
-        if error := _semantic_rebind_output_error(out, paper_dir=paper_dir):
-            raise SourceRecordSemanticRebindError(error)
-        prior_raw = _read_json_object(args.prior_raw_audit, label="prior raw audit")
-        current_raw = _read_json_object(current_path, label="current raw audit")
-        prior_judgments = _read_json_object(args.prior_judgments, label="prior judgments")
-        prior_attestation = (
-            _read_json_object(args.prior_attestation, label="prior attestation")
-            if args.prior_attestation is not None
-            else None
-        )
-        historical_composition_parent = (
-            _read_json_object(
-                args.historical_composition_parent,
-                label="historical composition parent",
-            )
-            if args.historical_composition_parent is not None
-            else None
-        )
-        current_map = _read_json_object(current_map_path, label="current statement map")
-        prior_map = (
-            _read_json_object(args.prior_statement_map, label="prior statement map")
-            if args.prior_statement_map is not None
-            else None
-        )
-        payload = build_source_record_semantic_rebind(
-            paper=args.paper,
-            paper_dir=paper_dir,
-            prior_raw_audit=prior_raw,
-            current_raw_audit=current_raw,
-            prior_judgments=prior_judgments,
-            prior_attestation=prior_attestation,
-            prior_raw_audit_path=args.prior_raw_audit,
-            current_raw_audit_path=current_path,
-            prior_judgments_path=args.prior_judgments,
-            prior_attestation_path=args.prior_attestation,
-            current_statement_map=current_map,
-            current_statement_map_path=current_map_path,
-            prior_statement_map=prior_map,
-            prior_statement_map_path=args.prior_statement_map,
-            prior_association_snapshot_reconciliation_path=(
-                args.prior_association_snapshot_reconciliation
-            ),
-            historical_composition_parent=historical_composition_parent,
-            historical_composition_parent_path=args.historical_composition_parent,
-        )
-    except SourceRecordSemanticRebindError as exc:
-        print(f"{args.paper}: semantic rebind refused: {exc}", file=sys.stderr)
-        return 1
-    summary = _format_semantic_rebind_cli_summary(
-        _semantic_rebind_cli_summary(payload)
-    )
-    if args.write:
-        _atomic_write(out, json.dumps(payload, indent=2, sort_keys=True) + "\n")
-        print(f"{args.paper}: wrote {out} ({summary})")
-    else:
-        print(
-            f"{args.paper}: semantic rebind validates "
-            f"({summary}); rerun with --write"
-        )
-    return 0
-
-
-if __name__ == "__main__":  # pragma: no cover - exercised through CLI.
-    raise SystemExit(main())

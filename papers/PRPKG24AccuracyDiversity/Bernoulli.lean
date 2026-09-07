@@ -1,5 +1,5 @@
 import PRPKG24AccuracyDiversity.Basic
-import EconCSLib.Foundations.Probability.Bernoulli
+import AppliedModelingLib.Foundations.Probability.Bernoulli
 
 open scoped BigOperators
 
@@ -25,24 +25,24 @@ theorem bernoulliAtLeastOneValue_succ_sub (p : ℝ) (q : ℕ) :
     bernoulliAtLeastOneValue p (q + 1) - bernoulliAtLeastOneValue p q =
       p * (1 - p) ^ q := by
   simpa [bernoulliAtLeastOneValue,
-    EconCSLib.Probability.Bernoulli.atLeastOneValue] using
-    EconCSLib.Probability.Bernoulli.atLeastOneValue_succ_sub p q
+    AppliedModelingLib.Probability.Bernoulli.atLeastOneValue] using
+    AppliedModelingLib.Probability.Bernoulli.atLeastOneValue_succ_sub p q
 
 /-- Closed form for the value lost by removing the last Bernoulli recommendation. -/
 theorem bernoulliAtLeastOneValue_sub_pred {p : ℝ} {q : ℕ} (hq : 0 < q) :
     bernoulliAtLeastOneValue p q - bernoulliAtLeastOneValue p (q - 1) =
       p * (1 - p) ^ (q - 1) := by
   simpa [bernoulliAtLeastOneValue,
-    EconCSLib.Probability.Bernoulli.atLeastOneValue] using
-    EconCSLib.Probability.Bernoulli.atLeastOneValue_sub_pred (p := p) hq
+    AppliedModelingLib.Probability.Bernoulli.atLeastOneValue] using
+    AppliedModelingLib.Probability.Bernoulli.atLeastOneValue_sub_pred (p := p) hq
 
 /-- Bernoulli satisfaction has nonnegative marginal values for `0 ≤ p ≤ 1`. -/
 theorem bernoulliAtLeastOneValue_succ_sub_nonneg {p : ℝ}
     (hp0 : 0 ≤ p) (hp1 : p ≤ 1) (q : ℕ) :
     0 ≤ bernoulliAtLeastOneValue p (q + 1) - bernoulliAtLeastOneValue p q := by
   simpa [bernoulliAtLeastOneValue,
-    EconCSLib.Probability.Bernoulli.atLeastOneValue] using
-    EconCSLib.Probability.Bernoulli.atLeastOneValue_succ_sub_nonneg hp0 hp1 q
+    AppliedModelingLib.Probability.Bernoulli.atLeastOneValue] using
+    AppliedModelingLib.Probability.Bernoulli.atLeastOneValue_succ_sub_nonneg hp0 hp1 q
 
 /-- Bernoulli satisfaction has diminishing one-step marginal values for `0 ≤ p ≤ 1`. -/
 theorem bernoulliAtLeastOneValue_diminishing_marginal {p : ℝ}
@@ -50,8 +50,8 @@ theorem bernoulliAtLeastOneValue_diminishing_marginal {p : ℝ}
     bernoulliAtLeastOneValue p (q + 2) - bernoulliAtLeastOneValue p (q + 1) ≤
       bernoulliAtLeastOneValue p (q + 1) - bernoulliAtLeastOneValue p q := by
   simpa [bernoulliAtLeastOneValue,
-    EconCSLib.Probability.Bernoulli.atLeastOneValue] using
-    EconCSLib.Probability.Bernoulli.atLeastOneValue_diminishing_marginal hp0 hp1 q
+    AppliedModelingLib.Probability.Bernoulli.atLeastOneValue] using
+    AppliedModelingLib.Probability.Bernoulli.atLeastOneValue_diminishing_marginal hp0 hp1 q
 
 /-- Bernoulli-satisfaction specialization used by the paper's heterogeneous Bernoulli results. -/
 structure BernoulliSatisfactionModel (T : ℕ) where
@@ -89,8 +89,8 @@ theorem toConsumptionModel_has_nonnegative_marginals {T : ℕ}
     (B : BernoulliSatisfactionModel T) (hvalid : B.SuccessProbabilitiesValid) :
     B.toConsumptionModel.HasNonnegativeMarginals := by
   intro t q
-  simpa [ConsumptionModel.HasNonnegativeMarginals, EconCSLib.Allocation.HasNonnegativeMarginals,
-    EconCSLib.Allocation.marginal, toConsumptionModel] using
+  simpa [ConsumptionModel.HasNonnegativeMarginals, AppliedModelingLib.Allocation.HasNonnegativeMarginals,
+    AppliedModelingLib.Allocation.marginal, toConsumptionModel] using
       bernoulliAtLeastOneValue_succ_sub_nonneg (hvalid t).1 (hvalid t).2 q
 
 /-- The Bernoulli specialization has diminishing marginal returns when probabilities are valid. -/
@@ -98,8 +98,8 @@ theorem toConsumptionModel_has_diminishing_returns {T : ℕ}
     (B : BernoulliSatisfactionModel T) (hvalid : B.SuccessProbabilitiesValid) :
     B.toConsumptionModel.HasDiminishingReturns := by
   intro t q
-  simpa [ConsumptionModel.HasDiminishingReturns, EconCSLib.Allocation.HasDiminishingReturns,
-    EconCSLib.Allocation.marginal, toConsumptionModel] using
+  simpa [ConsumptionModel.HasDiminishingReturns, AppliedModelingLib.Allocation.HasDiminishingReturns,
+    AppliedModelingLib.Allocation.marginal, toConsumptionModel] using
       bernoulliAtLeastOneValue_diminishing_marginal (hvalid t).1 (hvalid t).2 q
 
 end BernoulliSatisfactionModel

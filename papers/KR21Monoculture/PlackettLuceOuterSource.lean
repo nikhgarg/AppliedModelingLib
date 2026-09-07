@@ -1,7 +1,7 @@
 import KR21Monoculture.PlackettLuce
 import KR21Monoculture.OuterConditional
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 
 namespace KR21Monoculture
 
@@ -268,15 +268,15 @@ theorem plackettLuce_disagreementProb_pos {n : ℕ}
     0 < disagreementProb (plackettLuceRankingPMF theta value) := by
   let ranking : Ranking n := Equiv.refl (Candidate n)
   let μ := plackettLuceRankingPMF theta value
-  change 0 < EconCSLib.pmfPairExp μ μ
+  change 0 < AppliedModelingLib.pmfPairExp μ μ
     (fun pi sigma => if disagreementEvent (pi, sigma) then 1 else 0)
-  rw [← EconCSLib.pmfExp_pmfProd_eq_pairExp μ μ
+  rw [← AppliedModelingLib.pmfExp_pmfProd_eq_pairExp μ μ
     (fun pair => if disagreementEvent pair then (1 : ℝ) else 0)]
-  change 0 < EconCSLib.pmfProb (EconCSLib.pmfProd μ μ) disagreementEvent
-  refine EconCSLib.pmfProb_pos_of_mass (EconCSLib.pmfProd μ μ)
+  change 0 < AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProd μ μ) disagreementEvent
+  refine AppliedModelingLib.pmfProb_pos_of_mass (AppliedModelingLib.pmfProd μ μ)
     disagreementEvent (ranking, swapTopTwo ranking) ?_ ?_
   · exact (swapTopTwo_firstChoice_ne ranking).symm
-  · rw [EconCSLib.pmfProd_apply_toReal]
+  · rw [AppliedModelingLib.pmfProd_apply_toReal]
     exact mul_pos
       (plackettLuceRankingPMF_atom_toReal_pos theta value ranking)
       (plackettLuceRankingPMF_atom_toReal_pos theta value (swapTopTwo ranking))
@@ -286,10 +286,10 @@ private theorem plackettLuce_disagreementProb_measurable {n : ℕ}
     Measurable fun value : ValueProfile n =>
       disagreementProb (plackettLuceRankingPMF theta value) := by
   change Measurable fun value : ValueProfile n =>
-    EconCSLib.pmfPairExp (plackettLuceRankingPMF theta value)
+    AppliedModelingLib.pmfPairExp (plackettLuceRankingPMF theta value)
       (plackettLuceRankingPMF theta value)
       (fun pi sigma => if disagreementEvent (pi, sigma) then (1 : ℝ) else 0)
-  unfold EconCSLib.pmfPairExp EconCSLib.pmfExp
+  unfold AppliedModelingLib.pmfPairExp AppliedModelingLib.pmfExp
   refine Finset.measurable_sum Finset.univ ?_
   intro pi _
   refine (plackettLuce_ranking_atom_measurable theta pi).ennreal_toReal.mul ?_
@@ -302,32 +302,32 @@ private theorem plackettLuce_disagreementProb_measurable {n : ℕ}
 private theorem plackettLuce_disagreementProb_nonneg {n : ℕ}
     (theta : ℝ) (value : ValueProfile n) :
     0 ≤ disagreementProb (plackettLuceRankingPMF theta value) := by
-  change 0 ≤ EconCSLib.pmfPairExp
+  change 0 ≤ AppliedModelingLib.pmfPairExp
     (plackettLuceRankingPMF theta value) (plackettLuceRankingPMF theta value)
     (fun pi sigma => if disagreementEvent (pi, sigma) then (1 : ℝ) else 0)
-  rw [← EconCSLib.pmfExp_pmfProd_eq_pairExp
+  rw [← AppliedModelingLib.pmfExp_pmfProd_eq_pairExp
     (plackettLuceRankingPMF theta value) (plackettLuceRankingPMF theta value)
     (fun pair => if disagreementEvent pair then (1 : ℝ) else 0)]
-  change 0 ≤ EconCSLib.pmfProb (EconCSLib.pmfProd
+  change 0 ≤ AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProd
     (plackettLuceRankingPMF theta value) (plackettLuceRankingPMF theta value))
     disagreementEvent
-  exact EconCSLib.pmfProb_nonneg (EconCSLib.pmfProd
+  exact AppliedModelingLib.pmfProb_nonneg (AppliedModelingLib.pmfProd
     (plackettLuceRankingPMF theta value) (plackettLuceRankingPMF theta value))
     disagreementEvent
 
 private theorem plackettLuce_disagreementProb_le_one {n : ℕ}
     (theta : ℝ) (value : ValueProfile n) :
     disagreementProb (plackettLuceRankingPMF theta value) ≤ 1 := by
-  change EconCSLib.pmfPairExp
+  change AppliedModelingLib.pmfPairExp
     (plackettLuceRankingPMF theta value) (plackettLuceRankingPMF theta value)
     (fun pi sigma => if disagreementEvent (pi, sigma) then (1 : ℝ) else 0) ≤ 1
-  rw [← EconCSLib.pmfExp_pmfProd_eq_pairExp
+  rw [← AppliedModelingLib.pmfExp_pmfProd_eq_pairExp
     (plackettLuceRankingPMF theta value) (plackettLuceRankingPMF theta value)
     (fun pair => if disagreementEvent pair then (1 : ℝ) else 0)]
-  change EconCSLib.pmfProb (EconCSLib.pmfProd
+  change AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProd
     (plackettLuceRankingPMF theta value) (plackettLuceRankingPMF theta value))
     disagreementEvent ≤ 1
-  exact EconCSLib.pmfProb_le_one (EconCSLib.pmfProd
+  exact AppliedModelingLib.pmfProb_le_one (AppliedModelingLib.pmfProd
     (plackettLuceRankingPMF theta value) (plackettLuceRankingPMF theta value))
     disagreementEvent
 

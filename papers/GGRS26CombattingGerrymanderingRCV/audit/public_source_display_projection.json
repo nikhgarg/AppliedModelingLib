@@ -1,18 +1,36 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "GGRS26CombattingGerrymanderingRCV",
-  "private_source_map_sha256": "4e4555385e111a37cb46c102b4ee04aeac0002e26a8a8536bbdf22e0efeea2e2",
+  "private_source_map_sha256": "ca6cd8d4651997c617a634e1da967274b3c94ff3665ee21cc38ff97f714ee9c2",
   "public_manifest_path": "papers/GGRS26CombattingGerrymanderingRCV/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "1541dce664a409dce329aa14ec619755ec3434a15e9f702faa345ed6240a9533",
+  "public_source_map_sha256": "448394d2661c177e965f67c97af97e4e9b9aeaf00a1960e6d68b1cf151902490",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
   "selected_source_item_ids": [
     "lemma_c1_pav_min_argmax_interval",
-    "proposition1_stv_pav_rounded_seats"
+    "pav_party_seat_selector_definition",
+    "pav_thiele_rule_definition",
+    "proposition1_stv_pav_rounded_seats",
+    "solid_coalition_voter_model",
+    "stv_iterative_rule_definition"
   ],
   "selected_source_items": {
     "lemma_c1_pav_min_argmax_interval": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 393,
+              "line_start": 377,
+              "publication_locator": "cited publication",
+              "quoted_text": "    A Thiele rule is characterized by a function λ. Each voter v in district k provides a set Sv\nof the Nk candidates they like most. The set of winners is determined as follows. Consider a\npotential set of winners C. The amount of points that voter v contributes to C is i=1         λ(i), and\n                                                                                     P|Sv ∩C|\n\nthe set C with the most points across voters (after tie-breaking) is selected. The (non-increasing)\nfunction λ establishes that votes have diminishing returns; the ith approved candidate in the set is\nworth λ(i). For example, winner-take-all approval voting is a Thiele rule with λ(i) = 1: for each\nvoter, the set C receives a number of points equal to the number of candidates in the set that the\nvoter likes, and so the Nk candidates with the most votes win. We further consider Proportional\nApproval Voting (PAV), a Thiele rule with λPAV (i) = 1i ; and Thiele Squared, with λTS = i12 . PAV\nis well-studied in the theoretical social choice literature and comes with optimality guarantees (in\nterms of proportionality) (Skowron 2021). Thiele Squared induces even sharper diminishing returns\nthan PAV in a voter having more of their preferred candidates winning, and thus prioritizes more\nvoters having at least one approved candidate (and 50/50 outcomes between two parties, regardless\nof underlying vote shares). More generally, Thiele rules both contain common voting rules and\nparameterize a rule’s tendency to favor proportional or balanced outcomes.",
+              "quoted_text_sha256": "de953d3b3b9ad41c8e30275b3be2e2ca4c3d246f354a81ddec433be350a1de02"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 2433,
@@ -24,7 +42,76 @@
       ],
       "source_kind": "lemma"
     },
+    "pav_party_seat_selector_definition": {
+      "source_anchors": [
+        {
+          "line_end": 456,
+          "line_start": 428,
+          "publication_locator": "cited publication",
+          "quoted_text": "Calculating seat share given vote shares. Suppose – for a given district with Nk seats and\nVk voters – we know the fraction yp of voters that belong to each party p ∈ {R, D} (vote share).\nHow do we calculate the number of winners np from each party for a given social choice function?\n   Given our assumptions (including solid coalitions), it is straightforward to efficiently do so for\nThiele rules, as candidates from a given party receive the same votes—and so we do not have to\nconsider individual candidates, only the number of winners from each party directly. Then, we have\nthat the party R seat share is:\n                                                                             n\n                                                         \"           \"\n                                    nR (yR , λ) = min arg max yR\n                                                                             X\n                                                                                   λ(i)\n                                                     n           n\n                                                                             i=1\n                                                                                   \n                                                                      k −n\n                                                                     NX\n                                                      +(1 − yR )             λ(i) .                               (1)\n                                                                      i=1\n\n    The inner arg max comes directly from the rule definition – for a given n, suppose a fraction\nyR approves n candidates. Then that will yield yR ni=1 λ(i) points, with the remaining fraction\n                                                      P\n\n1 − yR approving Nk − n candidates and yielding an additional (1 − yR ) N     i=1 λ(i) points. The\n                                                                           P k −n\n\nouter min simply encodes tie-breaking in favor of party D.8 The party D seat share is nD (yR , λ) ≜\nNk − nR (yR , λ).",
+          "quoted_text_sha256": "f5b7e365bdb033b43d639c00f333d15b3d0053098c1659b413fa163b384f656c"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "pav_thiele_rule_definition": {
+      "source_anchors": [
+        {
+          "line_end": 393,
+          "line_start": 377,
+          "publication_locator": "cited publication",
+          "quoted_text": "    A Thiele rule is characterized by a function λ. Each voter v in district k provides a set Sv\nof the Nk candidates they like most. The set of winners is determined as follows. Consider a\npotential set of winners C. The amount of points that voter v contributes to C is i=1         λ(i), and\n                                                                                     P|Sv ∩C|\n\nthe set C with the most points across voters (after tie-breaking) is selected. The (non-increasing)\nfunction λ establishes that votes have diminishing returns; the ith approved candidate in the set is\nworth λ(i). For example, winner-take-all approval voting is a Thiele rule with λ(i) = 1: for each\nvoter, the set C receives a number of points equal to the number of candidates in the set that the\nvoter likes, and so the Nk candidates with the most votes win. We further consider Proportional\nApproval Voting (PAV), a Thiele rule with λPAV (i) = 1i ; and Thiele Squared, with λTS = i12 . PAV\nis well-studied in the theoretical social choice literature and comes with optimality guarantees (in\nterms of proportionality) (Skowron 2021). Thiele Squared induces even sharper diminishing returns\nthan PAV in a voter having more of their preferred candidates winning, and thus prioritizes more\nvoters having at least one approved candidate (and 50/50 outcomes between two parties, regardless\nof underlying vote shares). More generally, Thiele rules both contain common voting rules and\nparameterize a rule’s tendency to favor proportional or balanced outcomes.",
+          "quoted_text_sha256": "de953d3b3b9ad41c8e30275b3be2e2ca4c3d246f354a81ddec433be350a1de02"
+        }
+      ],
+      "source_kind": "definition"
+    },
     "proposition1_stv_pav_rounded_seats": {
+      "semantic_context": [
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 408,
+              "line_start": 394,
+              "publication_locator": "cited publication",
+              "quoted_text": "    In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each\nvoter instead submits a ranking over candidates (here, we assume the rankings are complete, not\npartial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as\nfollows. The number of first-place votes for each candidate is counted. Any candidate with a number\nof votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus\nvotes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has\nenough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,\nand their votes are transferred. The process continues until Nk candidates have been selected, or\nthe number of remaining candidates equals the number of remaining seats. STV is commonly used\nin practice in multi-winner elections.\n    Details can differ in how such votes are transferred, but our results in Section 3 do not depend\non the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV\nrule, in which each voter keeps a fractional number of votes equal to their share of the winning\ncandidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we\nassume that ties are broken in favor of candidates from party D, but randomly within each party.5",
+              "quoted_text_sha256": "0ee0998364381a3114ff31db82d257daa6d4fb2a2a7a455bf42bbf13bcaa1607"
+            },
+            {
+              "line_end": 498,
+              "line_start": 492,
+              "publication_locator": "cited publication",
+              "quoted_text": "    At a high level, the proof establishes that no candidate receives meaningful (in terms of party\nvote share) votes from voters of the other party; in terms of party vote share, we can proceed with\nrunning two separate STV processes. Then, the sequential round path dependence does not matter,\nas the overall number of first-place votes for candidates of each party is invariant, and so the final\npartisan outcome depends just on initial vote shares. We note that the proof does not depend on\nour assumption of fractional STV; other transfer rules (such as random voter transfer) that preserve\nthe number of surplus votes would induce seat shares according to the same formula.",
+              "quoted_text_sha256": "1247e9bff0128a70fc7bc9f9d99c92ce5e04c6b419566011cf409f2757d3bcfe"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 393,
+              "line_start": 377,
+              "publication_locator": "cited publication",
+              "quoted_text": "    A Thiele rule is characterized by a function λ. Each voter v in district k provides a set Sv\nof the Nk candidates they like most. The set of winners is determined as follows. Consider a\npotential set of winners C. The amount of points that voter v contributes to C is i=1         λ(i), and\n                                                                                     P|Sv ∩C|\n\nthe set C with the most points across voters (after tie-breaking) is selected. The (non-increasing)\nfunction λ establishes that votes have diminishing returns; the ith approved candidate in the set is\nworth λ(i). For example, winner-take-all approval voting is a Thiele rule with λ(i) = 1: for each\nvoter, the set C receives a number of points equal to the number of candidates in the set that the\nvoter likes, and so the Nk candidates with the most votes win. We further consider Proportional\nApproval Voting (PAV), a Thiele rule with λPAV (i) = 1i ; and Thiele Squared, with λTS = i12 . PAV\nis well-studied in the theoretical social choice literature and comes with optimality guarantees (in\nterms of proportionality) (Skowron 2021). Thiele Squared induces even sharper diminishing returns\nthan PAV in a voter having more of their preferred candidates winning, and thus prioritizes more\nvoters having at least one approved candidate (and 50/50 outcomes between two parties, regardless\nof underlying vote shares). More generally, Thiele rules both contain common voting rules and\nparameterize a rule’s tendency to favor proportional or balanced outcomes.",
+              "quoted_text_sha256": "de953d3b3b9ad41c8e30275b3be2e2ca4c3d246f354a81ddec433be350a1de02"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 408,
+              "line_start": 394,
+              "publication_locator": "cited publication",
+              "quoted_text": "    In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each\nvoter instead submits a ranking over candidates (here, we assume the rankings are complete, not\npartial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as\nfollows. The number of first-place votes for each candidate is counted. Any candidate with a number\nof votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus\nvotes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has\nenough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,\nand their votes are transferred. The process continues until Nk candidates have been selected, or\nthe number of remaining candidates equals the number of remaining seats. STV is commonly used\nin practice in multi-winner elections.\n    Details can differ in how such votes are transferred, but our results in Section 3 do not depend\non the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV\nrule, in which each voter keeps a fractional number of votes equal to their share of the winning\ncandidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we\nassume that ties are broken in favor of candidates from party D, but randomly within each party.5",
+              "quoted_text_sha256": "0ee0998364381a3114ff31db82d257daa6d4fb2a2a7a455bf42bbf13bcaa1607"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 490,
@@ -35,6 +122,30 @@
         }
       ],
       "source_kind": "proposition"
+    },
+    "solid_coalition_voter_model": {
+      "source_anchors": [
+        {
+          "line_end": 426,
+          "line_start": 415,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fVoter assumptions. Next, we require assumptions on how voters rank or approve candidates.\nFor each Thiele rule, we assume that in each district k there are exactly Nk candidates from each\nparty, and each voter simply approves all the candidates in their party.6 For STV, we assume that\nin each district k there are at least Nk candidates from each party.7 For our primarily empirical\nanalysis, we further assume that parties are solid coalitions (Dummett 1984): that each voter ranks\nall candidates of their party over each candidate of the other party, though intra-party rankings\nmay vary. These assumptions reflect that party membership is a strong predictor of the party of\nthe candidate for which a voter votes. Such an assumption, using historical party vote shares to\npredict vote shares in future elections, is used throughout the redistricting literature for SMDs; our\nadditional assumption is that this behavior extends to partisan voting in multi-member elections.\nWe relax this assumption in Section 4 and study intra-party effects, where voters may disagree on\nwithin-party rankings, in Appendix B.",
+          "quoted_text_sha256": "c79244f0a8e122f4c7cf276f73df8aa733425006afbcacd1d3cb60620823cb10"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "stv_iterative_rule_definition": {
+      "source_anchors": [
+        {
+          "line_end": 408,
+          "line_start": 394,
+          "publication_locator": "cited publication",
+          "quoted_text": "    In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each\nvoter instead submits a ranking over candidates (here, we assume the rankings are complete, not\npartial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as\nfollows. The number of first-place votes for each candidate is counted. Any candidate with a number\nof votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus\nvotes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has\nenough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,\nand their votes are transferred. The process continues until Nk candidates have been selected, or\nthe number of remaining candidates equals the number of remaining seats. STV is commonly used\nin practice in multi-winner elections.\n    Details can differ in how such votes are transferred, but our results in Section 3 do not depend\non the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV\nrule, in which each voter keeps a fractional number of votes equal to their share of the winning\ncandidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we\nassume that ties are broken in favor of candidates from party D, but randomly within each party.5",
+          "quoted_text_sha256": "0ee0998364381a3114ff31db82d257daa6d4fb2a2a7a455bf42bbf13bcaa1607"
+        }
+      ],
+      "source_kind": "definition"
     }
   },
   "source_artifact_sha256": "57762234dc7b4a41d10b7f05110551853ab717136eca7b9216da9425cfb8bce5",

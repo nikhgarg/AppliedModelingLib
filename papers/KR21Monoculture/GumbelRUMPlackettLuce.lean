@@ -1,12 +1,12 @@
 import KR21Monoculture.PlackettLuce
-import EconCSLib.Foundations.Probability.Exponential
+import AppliedModelingLib.Foundations.Probability.Exponential
 import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Probability.Independence.Basic
 
-open EconCSLib MeasureTheory ProbabilityTheory Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory ProbabilityTheory Filter
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal Topology
 
 namespace KR21Monoculture
@@ -98,9 +98,9 @@ theorem gumbelArrivalLaw_ae_positive {n : ℕ} :
     ∀ᵐ arrival ∂gumbelArrivalLaw n, ∀ i : Candidate n, 0 < arrival i := by
   have hprob : ∀ _ : Candidate n, IsProbabilityMeasure (expMeasure 1) := fun _ =>
     isProbabilityMeasure_expMeasure (by norm_num)
-  let M : EconCSLib.Probability.Exponential.Model := ⟨1, by norm_num⟩
+  let M : AppliedModelingLib.Probability.Exponential.Model := ⟨1, by norm_num⟩
   have hbase_zero : expMeasure 1 (Set.Iic (0 : ℝ)) = 0 := by
-    simpa [M, EconCSLib.Probability.Exponential.Model.measure] using
+    simpa [M, AppliedModelingLib.Probability.Exponential.Model.measure] using
       M.measure_Iic_zero
   have hbase : ∀ᵐ x ∂expMeasure 1, 0 < x := by
     exact (measure_eq_zero_iff_ae_notMem.1 hbase_zero).mono fun x hx =>
@@ -290,8 +290,8 @@ private theorem map_unitExp_mul_eq_expMeasure_inv
     {scale : ℝ} (hscale : 0 < scale) :
     Measure.map (fun x : ℝ => scale * x) (expMeasure 1) =
       expMeasure scale⁻¹ := by
-  let unitModel : EconCSLib.Probability.Exponential.Model := ⟨1, by norm_num⟩
-  let scaledModel : EconCSLib.Probability.Exponential.Model :=
+  let unitModel : AppliedModelingLib.Probability.Exponential.Model := ⟨1, by norm_num⟩
+  let scaledModel : AppliedModelingLib.Probability.Exponential.Model :=
     ⟨scale⁻¹, inv_pos.mpr hscale⟩
   letI : IsProbabilityMeasure (expMeasure 1) :=
     isProbabilityMeasure_expMeasure (by norm_num)
@@ -318,12 +318,12 @@ private theorem map_unitExp_mul_eq_expMeasure_inv
     · have hneg : threshold < 0 := lt_of_not_ge hthreshold
       have hdivneg : threshold / scale < 0 := div_neg_of_neg_of_pos hneg hscale
       have hunit_zero : (expMeasure 1) (Set.Iic (threshold / scale)) = 0 := by
-        let M : EconCSLib.Probability.Exponential.Model := ⟨1, by norm_num⟩
+        let M : AppliedModelingLib.Probability.Exponential.Model := ⟨1, by norm_num⟩
         apply measure_mono_null ?_ M.measure_Iio_zero
         intro x hx
         exact lt_of_le_of_lt hx hdivneg
       have hscaled_zero : (expMeasure scale⁻¹) (Set.Iic threshold) = 0 := by
-        let M : EconCSLib.Probability.Exponential.Model :=
+        let M : AppliedModelingLib.Probability.Exponential.Model :=
           ⟨scale⁻¹, inv_pos.mpr hscale⟩
         apply measure_mono_null ?_ M.measure_Iio_zero
         intro x hx

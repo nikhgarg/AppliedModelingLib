@@ -1,0 +1,96 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+\begin{tikzpicture}[
+  every node/.style={font=\sffamily\small},
+  dag_corrected/.style={dag_result,draw=violet!70!black,fill=violet!8}
+]
+
+\dagPaperMetadata{Performative Prediction}{Juan C. Perdomo, Tijana Zrnic, Celestine Mendler-D\"unner, and Moritz Hardt}{ICML / PMLR 119}{2020}{https://proceedings.mlr.press/v119/perdomo20a.html}
+\dagPaperLegendRightOfMetadata{
+  \node[dag_model, dag_template_legend] (legModel) at (0,0) {source model\\or definition};
+  \node[dag_result, dag_template_legend] (legResult) at (5,0) {proved source\\result};
+  \node[dag_corrected, dag_template_legend] (legCorrected) at (10,0) {source formula\\clarification};
+  \node[dag_conditional, dag_template_legend] (legConditional) at (15,0) {proved with current\\analytic premises};
+  \node[dag_partial, dag_template_legend] (legPartial) at (20,0) {formalization gap\\remains};
+}
+\daglegend{(legModel)(legResult)(legCorrected)(legConditional)(legPartial)}{Legend}
+
+\begin{dagPaperBody}
+\begin{scope}[xshift=0.5cm,yshift=-0.4cm]
+
+\node[dag_model, text width=5.2cm] (Model) at (0,0) {
+  \textbf{Definitions 2.1 and 2.3}\\induced law, performative and decoupled risk, optimality, stability
+};
+\node[dag_model, text width=5.2cm] (Regularity) at (9,0) {
+  \textbf{Definition 3.1, A1, and A2}\\Wasserstein sensitivity, joint smoothness, strong convexity
+};
+\node[dag_model, text width=5.2cm] (Updates) at (18,0) {
+  \textbf{Definitions 3.3 and 3.7}\\risk minimization and projected gradient descent
+};
+\node[dag_model, text width=5.2cm] (Sampling) at (27,0) {
+  \textbf{Definition 3.9}\\adaptive RERM/REGD samples and empirical updates
+};
+\node[dag_model, text width=5.2cm] (Objectives) at (36,0) {
+  \textbf{Section 4 objectives}\\best responses, performative optimum, loss regularity
+};
+
+\node[dag_conditional, text width=4.5cm] (T35) at (0,-5.2) {
+  \textbf{Theorem 3.5(a)--(b)}\\RRM contraction and linear convergence
+};
+\node[dag_conditional, text width=4.5cm] (T38) at (6.2,-5.2) {
+  \textbf{Theorem 3.8(a)--(b)}\\projected RGD contraction and convergence
+};
+\node[dag_result, text width=4.5cm] (P36a) at (12.4,-5.2) {
+  \textbf{Proposition 3.6(a)}\\smooth convex nonconvergent RRM example
+};
+\node[dag_result, text width=4.5cm] (P36b) at (18.6,-5.2) {
+  \textbf{Proposition 3.6(b)}\\strongly convex nonsmooth nonconvergence
+};
+\node[dag_corrected, text width=4.5cm] (P36c) at (24.8,-5.2) {
+  \textbf{Proposition 3.6(c)}\\divergence example for $0<\gamma\leq\beta$
+};
+\node[dag_conditional, text width=4.5cm] (P41) at (31,-5.2) {
+  \textbf{Proposition 4.1}\\stable-point existence from continuous expected risk
+};
+\node[dag_result, text width=4.5cm] (T43) at (37.2,-5.2) {
+  \textbf{Theorem 4.3}\\optimal--stable distance bound
+};
+
+\node[dag_partial, text width=5.0cm] (T310a) at (4,-10.0) {
+  \textbf{Theorem 3.10(a)}\\RERM all-round containment for $m>2$; printed sample/burn-in bounds unproved
+};
+\node[dag_partial, text width=5.0cm] (T310b) at (12,-10.0) {
+  \textbf{Theorem 3.10(b)}\\REGD all-round containment for $m>2$; printed sample/burn-in bounds unproved
+};
+\node[dag_corrected, text width=5.0cm] (P42) at (20,-10.0) {
+  \textbf{Proposition 4.2}\\concave performative risk with repaired witness
+};
+\node[dag_conditional, text width=5.0cm] (C51) at (35,-10.0) {
+  \textbf{Corollary 5.1}\\RRM convergence and performative-risk gap
+};
+
+\begin{scope}[on background layer]
+\draw[dag_arrow] (Regularity.south west) -- (T35.north east);
+\draw[dag_arrow] (Updates.south west) -- (T35.north east);
+\draw[dag_arrow] (Regularity.south) -- (T38.north);
+\draw[dag_arrow] (Updates.south) -- (T38.north east);
+\draw[dag_arrow] (Model.south) -- ++(0,-1.2) -| (P36a.north);
+\draw[dag_arrow] (Regularity.south east) -- (P36b.north west);
+\draw[dag_arrow] (Regularity.south east) -- ++(1.2,-1.5) -| (P36c.north);
+\draw[dag_arrow] (Objectives.south west) -- (P41.north east);
+\draw[dag_arrow] (Objectives.south east) -- (T43.north west);
+\draw[dag_arrow] (T35.south) -- (T310a.north west);
+\draw[dag_arrow] (T38.south) -- (T310b.north west);
+\draw[dag_arrow] (Sampling.south) -- (27,-1.6) -- (27.6,-1.6) -- (27.6,-7.0) -| (T310a.north east);
+\draw[dag_arrow] (Sampling.south east) -- (28.2,-1.8) -- (28.2,-7.4) -| (T310b.north east);
+\draw[dag_arrow] (Model.west) -- ++(-1.2,0) -- ++(0,-7.3) -| (P42.north);
+\draw[dag_arrow] (T43.south) -- (C51.north east);
+\draw[dag_arrow] (T35.south west) -- ++(-0.7,-1.2) -- ++(0,-6.0) -| (C51.south);
+\end{scope}
+
+\end{scope}
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

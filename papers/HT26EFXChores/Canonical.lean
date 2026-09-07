@@ -14,7 +14,7 @@ Source: `EFXadditivechores.tex`, lines 730--770.
 namespace HT26EFXChores
 
 open scoped BigOperators
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- A quota vector of the full chore-pool size admits a canonical allocation
 whenever every chore is small for at most one agent.  First reserve the

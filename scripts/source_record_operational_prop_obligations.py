@@ -183,6 +183,7 @@ class StrictSourceSpecCorrespondenceReceipt:
     spec_closure_sha256: str
     spec_surface_sha256: str
     closure_environment_sha256: str
+    authority: str = "persisted_correspondence_v1"
 
 
 @dataclass(frozen=True)
@@ -1195,6 +1196,30 @@ def complete_source_claim_semantic_contract_errors(
     )
     if occurrence_errors:
         return occurrence_errors
+
+    # A recursively traversed record container is not an additional source
+    # primitive once the generator has explicitly classified that exact route
+    # as a structural container.  Its recursively emitted children remain
+    # material components and are checked independently below.  This narrow
+    # case is intentionally tied to the generated section, kind, nested
+    # structure, route, and current response classification; an arbitrary
+    # opaque container still requires its own component contract.
+    recursive_route = item.get("recursive_field_explicit_parent_route")
+    nested_structures = item.get("nested_structures")
+    if (
+        str(item.get("source_component_section") or "").strip()
+        == "recursive_field_items"
+        and str(item.get("source_claim_component_kind") or "").strip()
+        == "recursive_record_field"
+        and isinstance(nested_structures, list)
+        and bool(nested_structures)
+        and all(isinstance(value, str) and value.strip() for value in nested_structures)
+        and isinstance(recursive_route, Mapping)
+        and recursive_route.get("permitted_classifications")
+        == ["container_recursively_audited"]
+        and classification == "container_recursively_audited"
+    ):
+        return []
 
     # A strict source-to-Spec record can cover the *whole* canonical
     # transparent Spec surface.  Its issuer has already checked the source

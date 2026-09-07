@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import base64
 import copy
+import hashlib
 import io
 import json
 import sys
@@ -12,6 +13,7 @@ import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Mapping
 from unittest import mock
 
@@ -95,6 +97,18 @@ def make_surface(
             "statement_sha256": review_dashboard.statement_digest(source_statement),
             "source_location": "source.txt:1-1",
             "source_kind": source_kind,
+            "spec_lean_declarations": ["Fixture.SourceSpec"],
+            "source_anchor_evidence": [
+                {
+                    "path": "source.txt",
+                    "line_start": 1,
+                    "line_end": 1,
+                    "quoted_text": source_statement,
+                    "quoted_text_sha256": hashlib.sha256(
+                        source_statement.encode("utf-8")
+                    ).hexdigest(),
+                }
+            ],
         }
     }
     return REISSUE.CurrentReceiptSurface(
@@ -117,6 +131,42 @@ def fresh_body(
     source_statement: str = SOURCE_STATEMENT,
 ) -> dict[str, object]:
     body = copy.deepcopy(valid_ledger())
+    source_item = {
+        "statement": source_statement,
+        "statement_sha256": review_dashboard.statement_digest(source_statement),
+        "source_location": "source.txt:1-1",
+        "source_kind": "theorem",
+        "spec_lean_declarations": ["Fixture.SourceSpec"],
+        "source_anchor_evidence": [
+            {
+                "path": "source.txt",
+                "line_start": 1,
+                "line_end": 1,
+                "quoted_text": source_statement,
+                "quoted_text_sha256": hashlib.sha256(
+                    source_statement.encode("utf-8")
+                ).hexdigest(),
+            }
+        ],
+    }
+    anchor_identity, anchor_error = review_dashboard.source_anchor_quote_identity(
+        source_item
+    )
+    assert anchor_error == ""
+    _source_text, source_input_identity, source_input_error = (
+        review_dashboard.source_semantic_input_bundle(
+            source_item, require_context_roles=True
+        )
+    )
+    assert source_input_error == ""
+    body.update(
+        {
+            "source_input_protocol": "verbatim_source_anchor_bundle_v1",
+            "source_input_bundle_sha256": source_input_identity,
+            "lean_target_protocol": "expanded_paperinterface_spec_v1",
+            "semantic_target_declaration": "Fixture.SourceSpec",
+        }
+    )
     conclusion = body["source_obligations"][1]
     assert isinstance(conclusion, dict)
     conclusion.update(
@@ -125,12 +175,15 @@ def fresh_body(
             "source_statement_sha256": review_dashboard.statement_digest(source_statement),
             "source_location": "source.txt:1-1",
             "statement": source_statement,
+            "source_anchor_quote_identity_sha256": anchor_identity,
+            "source_input_bundle_sha256": source_input_identity,
         }
     )
     route: dict[str, object] = {
         "source_item": source_key,
         "source_statement_sha256": review_dashboard.statement_digest(source_statement),
         "source_location": "source.txt:1-1",
+        "source_anchor_quote_identity_sha256": anchor_identity,
         "route_kind": route_kind,
     }
     if relation is not None:
@@ -532,6 +585,14 @@ def recovered_historical_replay_materialization_kwargs(
 
 
 class StatementReceiptReissueTests(unittest.TestCase):
+    def test_statement_receipt_surface_excludes_assumption_rows(self) -> None:
+        claim = SimpleNamespace(is_assumption=False)
+        assumption = SimpleNamespace(is_assumption=True)
+
+        self.assertEqual(
+            REISSUE.statement_receipt_review_rows([claim, assumption]), [claim]
+        )
+
     def test_template_is_non_evidence_and_content_addressed(self) -> None:
         target = make_target()
         surface = make_surface(target)
@@ -1555,6 +1616,26 @@ class StatementReceiptReissueTests(unittest.TestCase):
             self.assertEqual(findings[0].severity, "ERROR")
             self.assertIn("fixture replay artifact is stale", findings[0].message)
 
+    def test_selected_v11_lane_never_replays_historical_statement_transport(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            folder = Path(temporary) / "FixturePaper"
+            context = SimpleNamespace(v11_lean_claim_graph_selected=True)
+            with mock.patch.object(
+                PACKAGE_REISSUE,
+                "historical_manifest_replay_persisted_evidence_errors",
+                side_effect=AssertionError("selected v11 must not replay legacy transport"),
+            ) as gate:
+                findings = (
+                    EVIDENCE_INTEGRITY.historical_statement_manifest_replay_evidence_findings(
+                        folder,
+                        "formalized",
+                        context=context,
+                    )
+                )
+
+            self.assertEqual(findings, [])
+            gate.assert_not_called()
+
     def test_already_applied_requires_exact_post_sidecar_and_archive_bytes(self) -> None:
         target = make_target()
         surface = make_surface(target)
@@ -2234,7 +2315,10 @@ class StatementReceiptReissueTests(unittest.TestCase):
             ],
         )
 
-        with self.assertRaisesRegex(REISSUE.StatementReceiptReissueError, "equivalence-bearing"):
+        with self.assertRaisesRegex(
+            REISSUE.StatementReceiptReissueError,
+            "semantic target is not|equivalence-bearing",
+        ):
             REISSUE.materialize_statement_receipt_reissue(surface, prior, plan)
 
     def test_stale_surface_pin_and_duplicate_target_actions_fail_before_write(self) -> None:

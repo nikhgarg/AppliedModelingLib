@@ -1,0 +1,376 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "PG24NoisyMatchingMarkets",
+  "private_source_map_sha256": "75807d3e497e33db7bac393a4f462345818254525907cd111102300d1b6ed237",
+  "public_manifest_path": "papers/PG24NoisyMatchingMarkets/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "9be6980bf955df0acf1e42e5ba4990fb5a6f62bb9649dd77e796ec74e3fdbde3",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "beta_max_concentrating",
+    "capacity_regularity",
+    "holder_value_law_regularity",
+    "long_tailed_noise",
+    "match_probability_formula",
+    "source_apple",
+    "source_beet",
+    "source_duck_1",
+    "source_duck_2",
+    "source_goose_1",
+    "source_goose_2",
+    "source_large_firm_tail_bound",
+    "source_log_bound",
+    "source_lt_approx_f2",
+    "source_lt_large_firms",
+    "source_lt_small_firms",
+    "source_thm1_equivalent_bound",
+    "source_thm2_equivalent_bound",
+    "source_tomato",
+    "source_unbounded_cutoffs",
+    "stable_matching_cutoff_definition",
+    "theorem1_attenuation",
+    "theorem2_amplification",
+    "theorem3_attenuation_in_coalitions",
+    "theorem4_amplification_in_coalitions"
+  ],
+  "selected_source_items": {
+    "beta_max_concentrating": {
+      "source_anchors": [
+        {
+          "line_end": 60,
+          "line_start": 55,
+          "publication_locator": "cited publication",
+          "quoted_text": "We define two regimes of noise distributions $\\DD$. $\\DD$ is \\vocab{$\\beta$-max-concentrating} if and only if\n\\begin{equation}\n    \\Var[X^{(n)}] = O(n^{-\\beta})\n\\end{equation}\nfor some $\\beta > 0,$ where\n$X^{(n)}$ is the maximum order statistic of $n$ samples from $\\DD$ (i.e., the maximum of $n$ independent draws from $\\DD$). For example, all bounded distributions are max-concentrating, and the Gaussian distribution is $1$-max-concentrating.\\footnote{See, e.g., Proposition 4.7 of \\cite{boucheron2012concentration}.} On the other hand, $\\DD$ is \\vocab{long-tailed} if and only if for all $d > 0$,",
+          "quoted_text_sha256": "6f7f6cfbef7ad961825c42a140dac934197f5f56e113a04a9d0ccc5a920429ed"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "capacity_regularity": {
+      "source_anchors": [
+        {
+          "line_end": 48,
+          "line_start": 42,
+          "publication_locator": "cited publication",
+          "quoted_text": "With $\\eta$ and $S$ fixed, we may fully parameterize an \\vocab{economy} by the ordered tuple $(\\DD, C, \\vec{S}, \\rho),$ where $\\DD$ is the noise distribution, $C$ the total number of colleges, $\\vec{S}=(S_1, \\cdots, S_C)$ a vector of college capacities, and $\\rho$ a probability measure over student types (to be defined). We require $\\vec{S}$ and $\\rho$ to satisfy some basic conditions:\n\nAs the total capacity $S$ is fixed, we must have that $S_1 + S_2 + \\cdots + S_C = S.$ We also assume that \n\\begin{equation}\n    S_c < \\frac{\\alpha}{C}\n\\end{equation} \nfor all $c\\in C$ for some fixed $\\alpha$, meaning that no college has a disproportionately large capacity. This kind of assumption is necessary for our results, since otherwise it is possible for an economy to technically have many colleges, but such that a few colleges take up most of the capacity; this results in the economy behaving as if it only had a few colleges. It will also be useful to define $S(C')$ as the total capacity of colleges in $C'\\subseteq C$, that is, $\\sum_{c\\in C'} S_c.$ By definition, $S = S(C).$",
+          "quoted_text_sha256": "140f9fba69a557a96a98a41043290b02c3ede0932a72cc49889adcabfa19b8b9"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "holder_value_law_regularity": {
+      "source_anchors": [
+        {
+          "line_end": 18,
+          "line_start": 16,
+          "publication_locator": "cited publication",
+          "quoted_text": "We assume that $\\eta$ has connected support, which implies that there is a unique value $v_S$ such that $\\eta((v_S, \\infty))=S$; i.e., the measure of students with value at least $v_S$ is equal to $S$, the total capacity of colleges. Holding $\\eta$ and $S$ fixed is convenient, because we can specify two extreme behaviors. On one extreme, only students with value at least $v_S$ are matched, reflecting a ``noise free'' matching; on the other extreme, all students match with probability $S$, reflecting a ``fully noisy'' matching. Note that overall capacity is less than the measure of students.\n\nWe further assume a (weak) regularity condition on $\\eta$: that there is a constant $\\gamma>0$ such that $\\eta((v, v+\\delta)) = O(\\delta^\\gamma)$ for all $v\\in \\RR$ and $\\delta > 0.$ This is equivalent to the cumulative distribution function of student values satisfying a $\\gamma$-Hölder condition. We also fix a constant $\\alpha>0$ that we use to specify a regularity condition on college capacities.",
+          "quoted_text_sha256": "1203bcd40c44add1624b8f9dba4ddbf5bb304992c4047fc8b0b072e7d00deb3e"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "long_tailed_noise": {
+      "source_anchors": [
+        {
+          "line_end": 64,
+          "line_start": 60,
+          "publication_locator": "cited publication",
+          "quoted_text": "$X^{(n)}$ is the maximum order statistic of $n$ samples from $\\DD$ (i.e., the maximum of $n$ independent draws from $\\DD$). For example, all bounded distributions are max-concentrating, and the Gaussian distribution is $1$-max-concentrating.\\footnote{See, e.g., Proposition 4.7 of \\cite{boucheron2012concentration}.} On the other hand, $\\DD$ is \\vocab{long-tailed} if and only if for all $d > 0$,\n\\begin{equation}\n    \\lim_{x\\rightarrow \\infty} \\Pr_{X\\sim \\DD}[X > x + d\\,|\\,X > x] = 1.\n\\end{equation}\nFor example, the Pareto distribution is long-tailed, as are all subexponential distributions. These two regimes do not cover the set of all noise distributions; for example, the exponential and Gumbel distributions are neither max-concentrating nor long-tailed.",
+          "quoted_text_sha256": "be80c897fc46ff0fb0b6ebaed12c041e85f399409fcf4c69a0770dc6e2e60352"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "match_probability_formula": {
+      "source_anchors": [
+        {
+          "line_end": 111,
+          "line_start": 96,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\subsection{Preliminaries}\nWe now make some basic observations that will be useful for our results. We show that key properties of stable matchings operate at the level of student values rather than student types (which also encode student preferences). This means that in our analysis, we can focus on the fixed student value distribution $\\eta$ while mostly ignoring the varying student type distribution $\\rho$.\n\nConsider a matching $\\mu\\in M(\\DD, C)$, characterized by a vector of market-clearing cutoffs $\\vec{P}=\\vec{P}(\\mu)$. Our results focus on the probability that a student $\\theta=(v,\\succ)$ matches to a college. This probability is equal to\n\\begin{equation}\n    \\Pr[\\mu(\\theta)\\in C] = \\Pr[v + X_c > P_c\\text{ for some $c\\in C$}],\n\\end{equation}\nwhere $X_1, \\cdots, X_C \\simiid \\DD.$ Notice that this probability does not depend on $\\succ$, the student's preferences over colleges. Indeed, the probability that a student matches is exactly the probability that a student can afford some college; whether or not they can afford a college only depends on their value and the college's cutoff (not the student's preferences). Accordingly, we can drop $\\theta$ and define\n\\begin{equation}\n    p_\\mu(v) := \\Pr[v + X_c > P_c\\text{ for some $c\\in C$}],\n\\end{equation}\nthe probability that a student with value $v$ is matched under $\\mu$. More generally, for a subset of colleges $C'\\subseteq C$, we define\n\\begin{equation}\n    p_\\mu(v, C') := \\Pr[v + X_c > P_c\\text{ for some $c\\in C'$}],\n\\end{equation}\nthe probability that a student with value $v$ can afford some college in $C'$. By definition, $p_\\mu(v) = p_\\mu(v, C).$",
+          "quoted_text_sha256": "9611a364cb2c19866b25421fbf9b1861cdc4a0a6bcf9ca0a33e3999e789471f5"
+        },
+        {
+          "line_end": 190,
+          "line_start": 181,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\paragraph{Preliminaries.}\nConsider an economy $E = (\\rho, \\vec{S}, \\hat{\\bm{V}})$ and a $(\\DD, \\eta)$-coalition $C$. Let $\\mu$ be a stable matching in $E$ with corresponding market-clearing cutoffs $\\vec{P}$. Our results focus on the probability that a student $\\theta=(\\bm{v},\\succ)$ can \\textit{afford} a college in $C'\\subseteq C$. Recall that the student's true value at $C$ is denoted simply by $v$. Then the probability the student can afford a college in $C'$ is\n\\begin{equation}\n    \\Pr[v + X_c > P_c\\text{ for some $c\\in C'$}],\n\\end{equation}\nwhich does not depend on the true values of the student at colleges outside of the coalition, nor the preferences of the student. We set\n\\begin{equation}\n    p_\\mu(v, C') := \\Pr[v + X_c > P_c\\text{ for some $c\\in C'$}]\n\\end{equation}\nto denote the probability that a student with true value $v$ at coalition $C$ can afford a college in $C'\\subseteq C$. In this way, we can begin to see how the setup of the extended model essentially reduces to that of the basic model, since the quantity we are interested in depends only on the true value of a student at the coalition $C$.",
+          "quoted_text_sha256": "845e4d13178272792b177fbcddc45eb943dda64629a0dda1876034a9045451b3"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "source_apple": {
+      "source_anchors": [
+        {
+          "line_end": 785,
+          "line_start": 779,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}\\label{lem:apple}\n    For $C$ sufficiently large,\n    \\begin{equation}\n        \\frac{\\Pr[v_- + X > P_c]}{\\Pr[v_+ + X > P_c]} > 1 - \\epsilon\n    \\end{equation}\n    for all $c\\in \\FF_2.$\n\\end{lemma}",
+          "quoted_text_sha256": "f0ad7b000885887ec2c39fa6469a77dba12737f8bd84083b32cc48cbe7d7ab83"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "source_beet": {
+      "source_anchors": [
+        {
+          "line_end": 611,
+          "line_start": 599,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:beet}\n\\quad\n\\begin{itemize}\n    \\item[(i)] If $v < P_{C^{\\phi_3}} - \\EE[X^{(C)}] - C^{\\phi_4},$\n    \\begin{equation}\n        p_\\mu(v, \\CC_2) \\le O\\left(C^{-\\beta-2\\phi_4}\\right).\n    \\end{equation}\n    \\item[(ii)] If $v > P_{C^{\\phi_3}} - \\EE[X^{(C)}] - C^{\\phi_4},$\n    \\begin{equation}\n        p_\\mu(v) \\ge 1 - O\\left(C^{-2\\phi_1 - 2\\phi_3 + 2\\phi_2}\\right).\n    \\end{equation}\n\\end{itemize}\n\\end{proposition}",
+          "quoted_text_sha256": "515fa06d1ed7878eab0d436435f952d995f819c89a293e7858a8294920c28c6a"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "source_duck_1": {
+      "source_anchors": [
+        {
+          "line_end": 395,
+          "line_start": 391,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:duck-1}\n\\begin{equation}\n    S(\\CC_1) \\le \\alpha C^{\\phi_3 - 1} = O\\left(C^{-K(\\beta,\\gamma)}\\right).\n\\end{equation}\n\\end{proposition}",
+          "quoted_text_sha256": "8c8ea1ce26e2bbfc5198a31c3169729fc8f94bcdde4a6ba6f855b8a6444b3a2e"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "source_duck_2": {
+      "source_anchors": [
+        {
+          "line_end": 473,
+          "line_start": 469,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:duck-2}\n\\begin{equation}\n    \\int_{-\\infty}^{v_S} p_\\mu(v, \\CC_2)\\,d\\eta(v) = O\\left(C^{-K(\\beta,\\gamma)}\\right).\n\\end{equation}\n\\end{proposition}",
+          "quoted_text_sha256": "1668fc3c11d7e6dd777f4d80d364e9f6b1c193ea86e01e2e3bafeb9e7649871a"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "source_goose_1": {
+      "source_anchors": [
+        {
+          "line_end": 557,
+          "line_start": 553,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:goose-1}\n\\begin{equation}\n    S(\\CC_1) < \\alpha C^{-\\frac{2\\beta\\gamma}{3\\beta\\gamma + 2\\beta + 5\\gamma + 6}}.\n\\end{equation}\n\\end{proposition}",
+          "quoted_text_sha256": "9cb02612c8c2542155d063051bd0e52bcc8c94b27279a520781301099cbe2f38"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "source_goose_2": {
+      "source_anchors": [
+        {
+          "line_end": 651,
+          "line_start": 647,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:goose-2}\n    \\begin{equation}\n    \\int_{-\\infty}^{v_S} p_\\mu(v, \\CC_2)\\,d\\eta(v) = O\\left(C^{-K(\\beta,\\gamma)}\\right).\n\\end{equation}\n\\end{proposition}",
+          "quoted_text_sha256": "e72e7f45cc5ee7e4f28f017b06fb6579dddbe33803531c5459d9c573f1687107"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "source_large_firm_tail_bound": {
+      "source_anchors": [
+        {
+          "line_end": 803,
+          "line_start": 797,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}\n    There exists a constant $\\sigma>0$ such that for $C$ sufficiently large,\n    \\begin{equation}\n        \\Pr[v_+ + X > P_c] \\le \\frac{\\sigma}{C}\n    \\end{equation}\n    for all $c\\in \\FF_2.$\n\\end{lemma}",
+          "quoted_text_sha256": "d9d0698a0356a9b47faa365360ae113b0ba7b5d9d5ad32c4478d896e955c83b6"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "source_log_bound": {
+      "source_anchors": [
+        {
+          "line_end": 570,
+          "line_start": 565,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}\\label{lem:log-bound}\n    If $\\DD$ is $\\beta$-max-concentrating for some $\\beta>0$, then\n    \\begin{equation}\n        \\EE[X^{(n)}] = o(\\log n).\n    \\end{equation}\n\\end{lemma}",
+          "quoted_text_sha256": "9b53d273fefc75748cb2d9baec3a14f421a49e52f6fa4f151ee0c93debb0decf"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "source_lt_approx_f2": {
+      "source_anchors": [
+        {
+          "line_end": 836,
+          "line_start": 831,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:lt-approx-F2}\nFor $C$ sufficiently large,\n\\begin{equation}\n    p_\\mu(v_+, \\CC_2) - p_\\mu(v_-, \\CC_2) < 1 - e^{-2\\epsilon\\sigma}.\n\\end{equation}\n\\end{proposition}",
+          "quoted_text_sha256": "73fca0d55c129a98319e6a872f7630fd1dc5dde45a3193ae0265cccb5d26fd96"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "source_lt_large_firms": {
+      "source_anchors": [
+        {
+          "line_end": 750,
+          "line_start": 744,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:lt-large-firms}\nThere exists a constant $\\sigma > 0$ such that for $C$ sufficiently large,\n    \\begin{equation}\\label{eq:lt-large-firms}\n    p_\\mu(v, \\CC_2) \\in (S - (1 + \\alpha)\\epsilon - (1 - e^{-2\\epsilon\\sigma}), S + \\epsilon + (1 - e^{-2\\epsilon\\sigma})).\n    \\end{equation}\nfor all $v\\in (v_-, v_+).$\n\\end{proposition}",
+          "quoted_text_sha256": "8fdedd37ca75cc66288ee0b41eb2bc054debc35afd9b9a977215bb53d2e558ed"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "source_lt_small_firms": {
+      "source_anchors": [
+        {
+          "line_end": 923,
+          "line_start": 918,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:lt-small-firms}\n\\begin{equation}\n    p_\\mu(v, \\CC_1) \\le \\frac{\\alpha\\sqrt{\\epsilon}}{1 - S - \\epsilon - (1 - e^{-2\\epsilon\\sigma})}\n\\end{equation}\nfor all $v < v^*$ where $\\eta((v^*, v_+))=\\sqrt{\\epsilon}.$\n\\end{proposition}",
+          "quoted_text_sha256": "25445c3482a659009b64810dba4caed959506690dbdebd4673edc5755d04e7aa"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "source_thm1_equivalent_bound": {
+      "source_anchors": [
+        {
+          "line_end": 321,
+          "line_start": 312,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{thm1v2}\n    Let $\\DD$ be $\\beta$-max-concentrating and $v\\in \\RR$. Let $\\mu \\in M(\\DD, C)$. Then\n    \\begin{equation}\n        \\int_{v_S}^\\infty p_\\mu(v)\\,d\\eta(v) = O\\left(C^{-K(\\beta,\\gamma)}\\right),\n    \\end{equation}\n    where\n    \\begin{equation}\n        K(\\beta,\\gamma) := \\frac{2\\beta\\gamma}{3\\beta\\gamma + 2\\beta + 5\\gamma + 6}.\n    \\end{equation}\n\\end{proposition}",
+          "quoted_text_sha256": "42f5c8f631bdd9d4e80f656a98c21cc7f7a434f1b60992f6a26068087ae11d10"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "source_thm2_equivalent_bound": {
+      "source_anchors": [
+        {
+          "line_end": 709,
+          "line_start": 703,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{thm2v2}\nLet $\\DD$ be long-tailed. Then, for all $C$ sufficiently large, for all $\\epsilon>0$ and any $\\mu\\in M(\\DD, C)$,\n\\begin{equation}\n    \\Pr[\\mu(v)\\in C]\\in (S-\\epsilon, S+\\epsilon).\n\\end{equation}\nfor all $v\\in (v_\\epsilon^-, v_\\epsilon^+)$ for $v_\\epsilon^-, v_\\epsilon^+$ chosen such that $\\eta(-\\infty, v_\\epsilon^-) = \\eta((v_\\epsilon, \\infty)) = \\epsilon$.\n\\end{proposition}",
+          "quoted_text_sha256": "0b691ab8c7fd90636edb5ae38fb5b655c27a951397673ab44460f57d5a398ecc"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "source_tomato": {
+      "source_anchors": [
+        {
+          "line_end": 416,
+          "line_start": 404,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:tomato}\n\\quad\n    \\begin{itemize}\n        \\item[(i)] If $v > P^* - \\EE[X^{(C^{\\phi_2})}]  + 2\\delta,$\n        \\begin{equation}\n            p_\\mu(v, \\CC_2) \\ge 1 - O\\left(C^{-2\\phi_1 - \\beta\\phi_2}\\right).\n        \\end{equation}\n        \\item[(ii)] If $v < P^* - \\EE[X^{(C^{\\phi_2})}]  - \\delta,$\n        \\begin{equation}\n            p_\\mu(v, \\CC_2) \\le O\\left(C^{1-2\\phi_1 - (1 + \\beta)\\phi_2}\\right).\n        \\end{equation}\n    \\end{itemize}\n\\end{proposition}",
+          "quoted_text_sha256": "94bc721354d4b12645596727d00f94b9847ee7a314683c4d5b1a1ea5dea23f0f"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "source_unbounded_cutoffs": {
+      "source_anchors": [
+        {
+          "line_end": 759,
+          "line_start": 757,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}\\label{lem:unbounded-cutoffs}\n    For any $P\\in \\RR$, $P_{\\epsilon C} > P$ for all $C$ sufficiently large.\n\\end{lemma}",
+          "quoted_text_sha256": "bacce1c2308e82dfdfe5862ba8749daf34d05d569c8f0d18d6c19a0d49b597ef"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "stable_matching_cutoff_definition": {
+      "source_anchors": [
+        {
+          "line_end": 94,
+          "line_start": 78,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\subsection{Cutoff Characterization of Stable Matching}\nWe now specify the map between economies and stable matchings, using the cutoff characterization shown by \\citet{azevedo2016supply}. Consider an economy $E = (\\DD, C, \\vec{S}, \\rho) \\in E(\\DD,C).$\n\nLet $\\vec{P} = (P_1, P_2, \\cdots, P_C)\\in \\RR^C$ be a vector of \\vocab{cutoffs}, such that college $c$ has cutoff $P_c$. Student $\\theta = (v, \\succ)$ can \\vocab{afford} college $c$ if and only if their estimated value at $c$ exceeds the cutoff $P_c$. Here, we recall that a student with value $v$ receives an estimated value $v + X_c$ at college $c$, where $X_1,\\cdots,X_C$ are drawn i.i.d. according to $\\DD$. The \\vocab{demand} $D^\\theta(\\vec{P})$ of student $\\theta$ at $\\vec{P}$ is their most preferred firm among those they can afford; if they cannot afford any firm, $D^\\theta(\\vec{P}) = \\emptyset$. In our setup, $D^\\theta(\\vec{P})$ is a random variable. Cutoffs $\\vec{P}$ are \\vocab{market-clearing} in the economy $E$ if and only if\n\\begin{equation}\n    \\int_{\\Theta} \\Pr\\left[D^\\theta(\\vec{P})=c\\right] \\,d\\rho(\\theta) = S_c\n\\end{equation}\nfor all $c\\in C$. In other words, the measure of students who demand a college is exactly equal to that college's capacity.\\footnote{Capacities are exactly filled since the total capacity $S$ is less than the total mass of students $1$, and because every student prefers to be matched over being unmatched (i.e., colleges are overdemanded).} \n\nA random function $\\mu:\\Theta\\rightarrow C\\cup \\{\\emptyset\\}$ is a \\vocab{stable matching} of $E$ if and only if\n\\begin{equation}\n    \\mu(\\theta) = D^\\theta(\\vec{P})\n\\end{equation}\nfor cutoffs $\\vec{P}$ that are market-clearing in $E$. We refer the reader to Lemma 1 of \\cite{azevedo2016supply} to see that this condition is in fact equivalent to the classical definition of stable matching, where stability here is with respect to college preferences based on the \\textit{estimated} value of students.\\footnote{This corresponds to a model in which colleges admit students based only on their estimated values (and do not strategize based on, for example, which students other colleges admit).}\n\\\\\n\\\\\nLet $M(\\DD, C)$ denote the set of all matchings that are stable for some economy $E\\in E(\\DD, C).$ Then any matching $\\mu\\in M(\\DD, C)$ can be characterized by a set of market-clearing cutoffs $\\vec{P}(\\mu).$",
+          "quoted_text_sha256": "12ea8e1edc6cf8d84f0fc5623eafcf0d3dcc545b842df223c06172551345cd1e"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "theorem1_attenuation": {
+      "source_anchors": [
+        {
+          "line_end": 268,
+          "line_start": 259,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{theorem}[Attenuation]\\label{thm:attenuating}\n    Let $\\DD$ be max-concentrating and $v\\in \\RR$. Then for all $\\epsilon > 0$, there exists $C(\\epsilon)$ such that for all $C > C(\\epsilon)$ and $\\mu\\in M(\\DD, C)$,\n    \\begin{equation}\n        p_\\mu(v) < \\epsilon \\qquad \\text{if $v < v_S$},\n    \\end{equation}\n    and\n    \\begin{equation}\n        p_\\mu(v) > 1 - \\epsilon \\qquad \\text{if $v > v_S$}.\n    \\end{equation}\n\\end{theorem}",
+          "quoted_text_sha256": "0a54b6fba57d232a7b838fe1a83c123ffb7434a29df93ab80725e3ea22029587"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem2_amplification": {
+      "source_anchors": [
+        {
+          "line_end": 279,
+          "line_start": 274,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{theorem}[Amplification]\\label{thm:amplifying}\n    Let $\\DD$ be long-tailed and $v\\in \\RR$. Then for all $\\epsilon > 0$, there exists $C(\\epsilon)$ such that for all $C > C(\\epsilon)$ and $\\mu\\in M(\\DD, C)$,\n    \\begin{equation}\n        |p_\\mu(v) - S| < \\epsilon.\n    \\end{equation}\n\\end{theorem}",
+          "quoted_text_sha256": "ecff5e2455fd58d6d9fd754e30fb78e70f866c747f356578375e6ac0e9451f3e"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem3_attenuation_in_coalitions": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 190,
+              "line_start": 129,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\subsection{Model and Definitions}\n\n\\paragraph{General noisy economy.}\nThere is a continuum of students of measure 1 to be matched with a finite set of colleges $C^* = \\{1, 2, \\cdots, C^*\\}.$ Each student is identified by their \\textit{true type} $\\theta = (\\bm{v}, \\succ)$, where\n\\begin{equation}\n    \\bm{v} = (v_1, v_2, \\cdots, v_{C^*}) \\in \\RR^C\n\\end{equation}\nare the \\textit{true values} of the student. Here, $v_c$ is the true value of the student at college $c$. In contrast to the basic model, students have multiple true values, which differ across colleges. \n\nA student with true values $\\bm{v}$ has \\textit{approximate values} $\\hat{\\bm{v}},$ where\n\\begin{equation}\n    \\hat{\\bm{v}} = (\\hat{v}_1, \\hat{v}_2, \\cdots, \\hat{v}_{C^*})\n\\end{equation}\nis a random variable over $\\RR^{C^*}$. ($\\hat{v}_1, \\hat{v}_2, \\cdots, \\hat{v}_{C^*}$ need not be independent.) Thus, a student $(\\bm{v},\\succ)$ has true value at college $c$ equal to $v_c$, and the college obtains an approximation of the student's value equal to $\\hat{v}_c.$\n\nAn \\textit{economy} is given by an ordered pair $(\\rho, \\vec{S}, \\hat{\\bm{V}}),$ where $\\rho$ is a probability measure over the set of student types $\\Theta = \\RR^{C^*}\\times \\mathcal{R}$ and $\\vec{S}$ is a vector of college capacities. As before, we hold the total capacity of colleges to be a fixed constant $S\\in (0,1)$, and assume that all students prefer being matched to any college over being unmatched. $\\hat{\\bm{V}} = \\{\\hat{\\bm{v}}\\}_{\\bm{v}\\in \\RR^{C^*}}$ is a set of independent random variables over $\\RR^{C^*}$, where $\\hat{\\bm{v}}$ give the approximate values of a student with true values $\\bm{v}$. For example, one could choose $\\hat{\\bm{V}}$ such that $\\hat{\\bm{v}}$ is equal to $\\bm{v}$ perturbed by noise drawn from a specified multivariate normal distribution for all $\\bm{v}\\in \\RR^C$. Here, $\\hat{\\bm{V}}$ generalizes the role of the noise distribution $\\DD$ in the basic model, by allowing for more broader relationships between true values and approximate values.\n\n(Formally, we require $\\hat{\\bm{V}}$ to be chosen in a way that induces a valid probability distribution over true values and approximate values, where $\\rho$ specifies the marginal distribution of true values, and $\\hat{\\bm{v}}$ specifies the conditional distribution for each true value.)\n\n\\paragraph{Cutoff characterization of stable matching.} \nConsider an economy $E=(\\rho, \\vec{S}, \\hat{\\bm{V}}).$ Given cutoffs $\\vec{P} = (P_1, \\cdots, P_{C^*}),$ we have that a student with true values $\\bm{v}$ can afford college $c$ if and only if $\\hat{v}_c > P_c$. A student's demand $D^{\\theta}(\\vec{P})$ at cutoffs $\\vec{P}$ is equal to the college they most prefer among those they can afford; $D^{\\theta}(\\vec{P})=\\emptyset$ if the student cannot afford any college. Note that $D^{\\theta}(\\vec{P})$ is a random variable. Then, as in the basic model, the cutoffs $\\vec{P}$ are market-clearing if and only if\n\\begin{equation}\n    \\int_{\\theta} \\Pr[D^{\\theta}(\\vec{P})=c]\\,d\\rho(\\theta) = S_c\n\\end{equation}\nfor all $c\\in {C^*}$.\\footnote{Capacities are exactly filled since the total capacity $S$ is less than the total measure of students $1$, and because every student prefers to be matched over being unmatched.} If $\\vec{P}$ is market-clearing, then the function $\\mu:\\theta\\mapsto D^{\\theta}(\\vec{P})$ is a stable matching.\n\n\\paragraph{College coalitions.}\nWe are interested in analyzing the behavior of subsets of colleges in an economy that share the same true preferences over students, but who each make noisy decisions. We now formally define these subsets.\n\nIn an economy $E=(\\rho, \\vec{S}, \\hat{\\bm{V}})$, a subset of colleges $C\\subseteq {C^*}$ is a $(\\DD,\\eta)$\\vocab{-coalition} if and only if the following conditions are met:\n\\begin{enumerate}\n    \\item The true value of a student is same at each college in $C$.\\footnote{Formally, the $\\rho$-measure of students who have different true values at two colleges in $C$ is equal to $0$: \n    \\begin{equation}\n        \\rho\\left(\\{(\\bm{v}, \\succ) \\in \\Theta: \\text{exists }c,c'\\in C\\text{ such that }v_c\\neq v_c'\\}\\right) = 0.\n    \\end{equation}\n    }\n    If this condition is satisfied, for a student with true values $\\bm{v}$, we simply use $v$ to refer to the common true value of the student at colleges in $C$. In other words, $v_c=v$ for all $c\\in C$. We call $v$ the student's \\textit{true value at $C$}.\n    \\item The approximate values of a student at colleges in $C$ is equal (in distribution) to their true value at $C$ perturbed by independent noise drawn from $\\DD$: For all $\\bm{v}\\in \\RR^{C^*},$\n    \\begin{equation}\n        \\hat{v}_c \\eqdist v + X_c\n    \\end{equation}\n    for all $c\\in C$,\n    where $X_1, X_2, \\cdots, X_C$ are drawn i.i.d. according to $\\DD$.\n    \\item The distribution of true values at $C$ is given by the probability measure $\\eta$. That is,\n    \\begin{equation}\n        \\rho((\\bm{v},\\succ): v\\in C) = \\eta(V)\n    \\end{equation}\n    for all $V\\subseteq \\RR.$\n\\end{enumerate}\n\nIn essence, a subset of colleges form a coalition if they behave like the full set of colleges in the basic model---i.e., the colleges in the coalition have the same true value for each student and each obtain independent noisy estimates of this value. (But, as in the basic model, students may have arbitrary preferences over colleges in the coalition, and colleges may differ in their capacities.) Indeed, one may check that in the basic model, the entire set of colleges $C$ forms a $(\\DD,\\eta)$-coalition.\\footnote{The reader might observe that the conditions for a coalition are somewhat simpler than in the basic model: the constants $\\alpha$ and $\\gamma$ governing regularity conditions are notably absent in the extended model. The reason is that these regularity conditions are not necessary for the somewhat weaker results we establish in the extended model. On the other hand, the regularity conditions are also not sufficient to establish stronger results in the extended model, as we explain below.} As we will see, coalitions satisfy very similar properties to the full set of colleges in the basic model.\n\n\\paragraph{Preliminaries.}\nConsider an economy $E = (\\rho, \\vec{S}, \\hat{\\bm{V}})$ and a $(\\DD, \\eta)$-coalition $C$. Let $\\mu$ be a stable matching in $E$ with corresponding market-clearing cutoffs $\\vec{P}$. Our results focus on the probability that a student $\\theta=(\\bm{v},\\succ)$ can \\textit{afford} a college in $C'\\subseteq C$. Recall that the student's true value at $C$ is denoted simply by $v$. Then the probability the student can afford a college in $C'$ is\n\\begin{equation}\n    \\Pr[v + X_c > P_c\\text{ for some $c\\in C'$}],\n\\end{equation}\nwhich does not depend on the true values of the student at colleges outside of the coalition, nor the preferences of the student. We set\n\\begin{equation}\n    p_\\mu(v, C') := \\Pr[v + X_c > P_c\\text{ for some $c\\in C'$}]\n\\end{equation}\nto denote the probability that a student with true value $v$ at coalition $C$ can afford a college in $C'\\subseteq C$. In this way, we can begin to see how the setup of the extended model essentially reduces to that of the basic model, since the quantity we are interested in depends only on the true value of a student at the coalition $C$.",
+              "quoted_text_sha256": "f238d547dd2973d93b264b120d8b61f17b428e69070bf50967d5ab15ef93b785"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 206,
+          "line_start": 196,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{theorem}[Attenuation in Coalitions]\\label{thm:attenuating-extended}\n    Let $\\DD$ be max-concentrating. Then for any $\\epsilon > 0$, there exists $C(\\epsilon)$ such that the following holds.\n    Let $C$ be a $(\\DD, \\eta)$-coalition in an economy $E$ with stable matching $\\mu$ such that $|C|>C(\\epsilon)$. Then there exists $v'\\in \\RR$ and $C'\\subseteq C$ with $\\frac{|C'|}{|C|} > 1 - \\epsilon$, such that\n    \\begin{equation}\n        p_\\mu(v, C') < \\epsilon \\qquad\\text{ for all $v<v'-\\epsilon$},\n    \\end{equation}\n    and\n    \\begin{equation}\n        p_\\mu(v, C) > 1 - \\epsilon \\qquad\\text{ for all $v>v'+\\epsilon$}.\n    \\end{equation}\n\\end{theorem}",
+          "quoted_text_sha256": "25a862a01dba77103e549570193741004823bb34f6babd36b05a112986d65b88"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem4_amplification_in_coalitions": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 190,
+              "line_start": 129,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\subsection{Model and Definitions}\n\n\\paragraph{General noisy economy.}\nThere is a continuum of students of measure 1 to be matched with a finite set of colleges $C^* = \\{1, 2, \\cdots, C^*\\}.$ Each student is identified by their \\textit{true type} $\\theta = (\\bm{v}, \\succ)$, where\n\\begin{equation}\n    \\bm{v} = (v_1, v_2, \\cdots, v_{C^*}) \\in \\RR^C\n\\end{equation}\nare the \\textit{true values} of the student. Here, $v_c$ is the true value of the student at college $c$. In contrast to the basic model, students have multiple true values, which differ across colleges. \n\nA student with true values $\\bm{v}$ has \\textit{approximate values} $\\hat{\\bm{v}},$ where\n\\begin{equation}\n    \\hat{\\bm{v}} = (\\hat{v}_1, \\hat{v}_2, \\cdots, \\hat{v}_{C^*})\n\\end{equation}\nis a random variable over $\\RR^{C^*}$. ($\\hat{v}_1, \\hat{v}_2, \\cdots, \\hat{v}_{C^*}$ need not be independent.) Thus, a student $(\\bm{v},\\succ)$ has true value at college $c$ equal to $v_c$, and the college obtains an approximation of the student's value equal to $\\hat{v}_c.$\n\nAn \\textit{economy} is given by an ordered pair $(\\rho, \\vec{S}, \\hat{\\bm{V}}),$ where $\\rho$ is a probability measure over the set of student types $\\Theta = \\RR^{C^*}\\times \\mathcal{R}$ and $\\vec{S}$ is a vector of college capacities. As before, we hold the total capacity of colleges to be a fixed constant $S\\in (0,1)$, and assume that all students prefer being matched to any college over being unmatched. $\\hat{\\bm{V}} = \\{\\hat{\\bm{v}}\\}_{\\bm{v}\\in \\RR^{C^*}}$ is a set of independent random variables over $\\RR^{C^*}$, where $\\hat{\\bm{v}}$ give the approximate values of a student with true values $\\bm{v}$. For example, one could choose $\\hat{\\bm{V}}$ such that $\\hat{\\bm{v}}$ is equal to $\\bm{v}$ perturbed by noise drawn from a specified multivariate normal distribution for all $\\bm{v}\\in \\RR^C$. Here, $\\hat{\\bm{V}}$ generalizes the role of the noise distribution $\\DD$ in the basic model, by allowing for more broader relationships between true values and approximate values.\n\n(Formally, we require $\\hat{\\bm{V}}$ to be chosen in a way that induces a valid probability distribution over true values and approximate values, where $\\rho$ specifies the marginal distribution of true values, and $\\hat{\\bm{v}}$ specifies the conditional distribution for each true value.)\n\n\\paragraph{Cutoff characterization of stable matching.} \nConsider an economy $E=(\\rho, \\vec{S}, \\hat{\\bm{V}}).$ Given cutoffs $\\vec{P} = (P_1, \\cdots, P_{C^*}),$ we have that a student with true values $\\bm{v}$ can afford college $c$ if and only if $\\hat{v}_c > P_c$. A student's demand $D^{\\theta}(\\vec{P})$ at cutoffs $\\vec{P}$ is equal to the college they most prefer among those they can afford; $D^{\\theta}(\\vec{P})=\\emptyset$ if the student cannot afford any college. Note that $D^{\\theta}(\\vec{P})$ is a random variable. Then, as in the basic model, the cutoffs $\\vec{P}$ are market-clearing if and only if\n\\begin{equation}\n    \\int_{\\theta} \\Pr[D^{\\theta}(\\vec{P})=c]\\,d\\rho(\\theta) = S_c\n\\end{equation}\nfor all $c\\in {C^*}$.\\footnote{Capacities are exactly filled since the total capacity $S$ is less than the total measure of students $1$, and because every student prefers to be matched over being unmatched.} If $\\vec{P}$ is market-clearing, then the function $\\mu:\\theta\\mapsto D^{\\theta}(\\vec{P})$ is a stable matching.\n\n\\paragraph{College coalitions.}\nWe are interested in analyzing the behavior of subsets of colleges in an economy that share the same true preferences over students, but who each make noisy decisions. We now formally define these subsets.\n\nIn an economy $E=(\\rho, \\vec{S}, \\hat{\\bm{V}})$, a subset of colleges $C\\subseteq {C^*}$ is a $(\\DD,\\eta)$\\vocab{-coalition} if and only if the following conditions are met:\n\\begin{enumerate}\n    \\item The true value of a student is same at each college in $C$.\\footnote{Formally, the $\\rho$-measure of students who have different true values at two colleges in $C$ is equal to $0$: \n    \\begin{equation}\n        \\rho\\left(\\{(\\bm{v}, \\succ) \\in \\Theta: \\text{exists }c,c'\\in C\\text{ such that }v_c\\neq v_c'\\}\\right) = 0.\n    \\end{equation}\n    }\n    If this condition is satisfied, for a student with true values $\\bm{v}$, we simply use $v$ to refer to the common true value of the student at colleges in $C$. In other words, $v_c=v$ for all $c\\in C$. We call $v$ the student's \\textit{true value at $C$}.\n    \\item The approximate values of a student at colleges in $C$ is equal (in distribution) to their true value at $C$ perturbed by independent noise drawn from $\\DD$: For all $\\bm{v}\\in \\RR^{C^*},$\n    \\begin{equation}\n        \\hat{v}_c \\eqdist v + X_c\n    \\end{equation}\n    for all $c\\in C$,\n    where $X_1, X_2, \\cdots, X_C$ are drawn i.i.d. according to $\\DD$.\n    \\item The distribution of true values at $C$ is given by the probability measure $\\eta$. That is,\n    \\begin{equation}\n        \\rho((\\bm{v},\\succ): v\\in C) = \\eta(V)\n    \\end{equation}\n    for all $V\\subseteq \\RR.$\n\\end{enumerate}\n\nIn essence, a subset of colleges form a coalition if they behave like the full set of colleges in the basic model---i.e., the colleges in the coalition have the same true value for each student and each obtain independent noisy estimates of this value. (But, as in the basic model, students may have arbitrary preferences over colleges in the coalition, and colleges may differ in their capacities.) Indeed, one may check that in the basic model, the entire set of colleges $C$ forms a $(\\DD,\\eta)$-coalition.\\footnote{The reader might observe that the conditions for a coalition are somewhat simpler than in the basic model: the constants $\\alpha$ and $\\gamma$ governing regularity conditions are notably absent in the extended model. The reason is that these regularity conditions are not necessary for the somewhat weaker results we establish in the extended model. On the other hand, the regularity conditions are also not sufficient to establish stronger results in the extended model, as we explain below.} As we will see, coalitions satisfy very similar properties to the full set of colleges in the basic model.\n\n\\paragraph{Preliminaries.}\nConsider an economy $E = (\\rho, \\vec{S}, \\hat{\\bm{V}})$ and a $(\\DD, \\eta)$-coalition $C$. Let $\\mu$ be a stable matching in $E$ with corresponding market-clearing cutoffs $\\vec{P}$. Our results focus on the probability that a student $\\theta=(\\bm{v},\\succ)$ can \\textit{afford} a college in $C'\\subseteq C$. Recall that the student's true value at $C$ is denoted simply by $v$. Then the probability the student can afford a college in $C'$ is\n\\begin{equation}\n    \\Pr[v + X_c > P_c\\text{ for some $c\\in C'$}],\n\\end{equation}\nwhich does not depend on the true values of the student at colleges outside of the coalition, nor the preferences of the student. We set\n\\begin{equation}\n    p_\\mu(v, C') := \\Pr[v + X_c > P_c\\text{ for some $c\\in C'$}]\n\\end{equation}\nto denote the probability that a student with true value $v$ at coalition $C$ can afford a college in $C'\\subseteq C$. In this way, we can begin to see how the setup of the extended model essentially reduces to that of the basic model, since the quantity we are interested in depends only on the true value of a student at the coalition $C$.",
+              "quoted_text_sha256": "f238d547dd2973d93b264b120d8b61f17b428e69070bf50967d5ab15ef93b785"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 220,
+          "line_start": 213,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{theorem}[Amplification in Coalitions]\\label{thm:amplifying-extended}\n    Let $\\DD$ be long-tailed. Then for any $\\epsilon > 0$, there exists $C(\\epsilon)$ such that the following holds.\n    Let $C$ be a $(\\DD, \\eta)$-coalition in an economy $E$ with stable matching $\\mu$ such that $|C|>C(\\epsilon)$. Then there exists $S'\\in \\RR$ and $C'\\subseteq C$ with $\\frac{|C'|}{|C|} > 1 - \\epsilon$, such that\n    \\begin{equation}\n        |p_\\mu(v, C')-S'| < \\epsilon\n    \\end{equation}\n    for all $v$ except on a set of $\\eta$-measure at most $\\epsilon$.\n\\end{theorem}",
+          "quoted_text_sha256": "b378686f9d7014f67dcb30dc95f5e4a335dfb56bcb3c81b75a0b5b8c3fd69f1c"
+        }
+      ],
+      "source_kind": "theorem"
+    }
+  },
+  "source_artifact_sha256": "076257837016bf0c005b16d463f365f84467a84f1fbe0bfad713c63c638ddf3d",
+  "source_coverage_mode": "named_theoretical_statements"
+}

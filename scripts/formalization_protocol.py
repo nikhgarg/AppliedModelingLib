@@ -6,6 +6,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
+from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from pathlib import PurePosixPath
@@ -13,18 +15,66 @@ from typing import Any, Mapping
 
 
 ROOT = Path(
-    os.environ.get("ECONCSLIB_REPO_ROOT", Path(__file__).resolve().parents[1])
+    os.environ.get("APPLIEDMODELINGLIB_REPO_ROOT", Path(__file__).resolve().parents[1])
 ).resolve()
 PROTOCOL_PATH = ROOT / "config" / "formalization_audit_protocol.json"
 PROTOCOL_SCHEMA = 1
 PROTOCOL_DIGEST_SCHEMA = 1
 COVERAGE_PROTOCOL_DIGEST_SCHEMA = 1
 REVIEW_PROTOCOL_DIGEST_SCHEMA = 1
+ITEM_REVIEW_PROTOCOL_DIGEST_SCHEMA = 1
+
+CLOSEOUT_REVIEW_POLICY_SCHEMA = 1
+CLOSEOUT_REVIEW_POLICY_FIELD = "closeout_review_policy"
+CLOSEOUT_SOURCE_SCOPE_MAIN_NAMED_THEORY = "main_named_theory"
+CLOSEOUT_SOURCE_SCOPE_ALL_NAMED_THEORY = "all_named_theory"
+CLOSEOUT_SOURCE_SCOPE_ALL_PROSE = "all_prose"
+CLOSEOUT_REPEAT_SCOPE_MAIN_PRIMARY = "main_primary"
+CLOSEOUT_REPEAT_SCOPE_ALL_SELECTED = "all_selected"
+CLOSEOUT_REVIEW_POLICY_SOURCE_SCOPES = frozenset(
+    {
+        CLOSEOUT_SOURCE_SCOPE_MAIN_NAMED_THEORY,
+        CLOSEOUT_SOURCE_SCOPE_ALL_NAMED_THEORY,
+        CLOSEOUT_SOURCE_SCOPE_ALL_PROSE,
+    }
+)
+CLOSEOUT_REVIEW_POLICY_REPEAT_SCOPES = frozenset(
+    {CLOSEOUT_REPEAT_SCOPE_MAIN_PRIMARY, CLOSEOUT_REPEAT_SCOPE_ALL_SELECTED}
+)
+CLOSEOUT_REVIEW_POLICY_ALLOWED_SCOPE_PAIRS = frozenset(
+    {
+        (
+            CLOSEOUT_SOURCE_SCOPE_MAIN_NAMED_THEORY,
+            CLOSEOUT_REPEAT_SCOPE_ALL_SELECTED,
+        ),
+        (
+            CLOSEOUT_SOURCE_SCOPE_ALL_NAMED_THEORY,
+            CLOSEOUT_REPEAT_SCOPE_MAIN_PRIMARY,
+        ),
+        (
+            CLOSEOUT_SOURCE_SCOPE_ALL_NAMED_THEORY,
+            CLOSEOUT_REPEAT_SCOPE_ALL_SELECTED,
+        ),
+        (CLOSEOUT_SOURCE_SCOPE_ALL_PROSE, CLOSEOUT_REPEAT_SCOPE_ALL_SELECTED),
+    }
+)
+CLOSEOUT_REVIEW_SCHEDULING_STAGES = (
+    "initial_semantic_review",
+    "final_adversarial_review",
+)
+CLOSEOUT_REVIEW_POLICY_DEFAULT_SOURCE_SCOPE = (
+    CLOSEOUT_SOURCE_SCOPE_ALL_NAMED_THEORY
+)
+CLOSEOUT_REVIEW_POLICY_DEFAULT_REPEAT_SCOPE = CLOSEOUT_REPEAT_SCOPE_MAIN_PRIMARY
+CLOSEOUT_REVIEW_POLICY_DEFAULT_FINAL_ADVERSARY_COUNT = 1
+_ISO_LIKE_UTC_TIMESTAMP_RE = re.compile(
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$"
+)
 
 EXPECTED_AUDIT_VERSIONS = {
     "statement_semantic_review": {
         "current": "v11",
-        "prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+        "prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
     },
     "source_record": {
         "current": "v10",
@@ -34,6 +84,15 @@ EXPECTED_AUDIT_VERSIONS = {
         "current": "v11",
     },
 }
+CURRENT_STATEMENT_SEMANTIC_REVIEW_PROMPT_VERSION = EXPECTED_AUDIT_VERSIONS[
+    "statement_semantic_review"
+]["prompt_version"]
+CURRENT_SOURCE_RECORD_AUDIT_VERSION = EXPECTED_AUDIT_VERSIONS["source_record"][
+    "current"
+]
+CURRENT_SOURCE_RECORD_PROMPT_VERSION = EXPECTED_AUDIT_VERSIONS["source_record"][
+    "prompt_version"
+]
 EXPECTED_LEGACY_V10_TRANSITION_BASELINE_COMMIT = (
     "93817f0b1a75be86bc495223c4952788f4a81df2"
 )
@@ -74,10 +133,67 @@ EXPECTED_REUSE_FAILURES = frozenset(
         "unresolved_route",
     }
 )
+EXPECTED_CLEAN_LEAN_OUTPUT_BYTES = 1_048_576
+EXPECTED_LEAN_DIAGNOSTIC_FAILURES = frozenset(
+    {"panic", "internal_error", "crash_backtrace"}
+)
+EXPECTED_CLEAN_DIAGNOSTIC_SCOPES = frozenset(
+    {"proof_iteration", "paper_closeout", "integration_or_release"}
+)
 
 
 class FormalizationProtocolError(ValueError):
     """The current policy artifact is absent, malformed, or contradictory."""
+
+
+@dataclass(frozen=True)
+class CloseoutReviewScopeApproval:
+    """Exact maintainer authority for the limited main-only source scope."""
+
+    schema: int
+    approval_kind: str
+    approval_reference: str
+    approved_at: str
+
+    def projection(self) -> dict[str, object]:
+        return {
+            "schema": self.schema,
+            "approval_kind": self.approval_kind,
+            "approval_reference": self.approval_reference,
+            "approved_at": self.approved_at,
+        }
+
+
+@dataclass(frozen=True)
+class ResolvedCloseoutReviewPolicy:
+    """One validated paper policy, split into assurance and scheduling views."""
+
+    schema: int
+    source_scope: str
+    repeat_final_scope: str
+    required_final_adversary_count: int
+    scope_approval: CloseoutReviewScopeApproval | None
+    initial_semantic_review_models: tuple[str, ...]
+    final_adversarial_review_models: tuple[str, ...]
+
+    def projection(self) -> dict[str, object]:
+        result: dict[str, object] = {
+            "schema": self.schema,
+            "source_scope": self.source_scope,
+            "repeat_final_scope": self.repeat_final_scope,
+            "required_final_adversary_count": self.required_final_adversary_count,
+            "scheduling": {
+                "initial_semantic_review": list(
+                    self.initial_semantic_review_models
+                ),
+                "final_adversarial_review": list(
+                    self.final_adversarial_review_models
+                ),
+            },
+        }
+        if self.scope_approval is not None:
+            result["scope_approval"] = self.scope_approval.projection()
+        return result
 
 
 def _nonempty_string(value: object, field: str) -> str:
@@ -99,6 +215,355 @@ def _string_set(value: object, field: str) -> frozenset[str]:
             f"{field} must be a duplicate-free list of nonempty strings"
         )
     return frozenset(normalized)
+
+
+def _string_tuple_allow_empty(value: object, field: str) -> tuple[str, ...]:
+    if not isinstance(value, list) or any(
+        not isinstance(item, str) or not item.strip() for item in value
+    ):
+        raise FormalizationProtocolError(
+            f"{field} must be a duplicate-free list of nonempty strings"
+        )
+    normalized = tuple(item.strip() for item in value)
+    if len(normalized) != len(set(normalized)):
+        raise FormalizationProtocolError(
+            f"{field} must be a duplicate-free list of nonempty strings"
+        )
+    return normalized
+
+
+def _validate_review_intensity_contract(coverage: Mapping[str, Any]) -> None:
+    """Validate the configured source-coverage versus review-intensity split.
+
+    Earlier validation accepted this structured policy as unchecked prose.  Keep
+    its exact established vocabulary strict so a typo cannot silently change
+    which source material receives initial or terminal review.
+    """
+
+    intensity = coverage.get("review_intensity")
+    expected_fields = {
+        "default",
+        "main_text_primary",
+        "appendix_baseline",
+        "supporting_proof_or_prose",
+        "override",
+    }
+    if not isinstance(intensity, Mapping) or set(intensity) != expected_fields:
+        raise FormalizationProtocolError(
+            "coverage.review_intensity must contain exactly the established "
+            "main, appendix, supporting-material, and override controls"
+        )
+    if intensity.get("default") != "main_text_primary":
+        raise FormalizationProtocolError(
+            "coverage.review_intensity.default must be main_text_primary"
+        )
+    expected_required = {
+        "main_text_primary": frozenset(
+            {
+                "initial_context_isolated_source_to_Lean_review",
+                "final_adversarial_source_audit",
+            }
+        ),
+        "appendix_baseline": frozenset(
+            {
+                "source_inventory_and_transparent_PaperInterface_Spec",
+                "one_initial_context_isolated_source_to_Lean_review",
+            }
+        ),
+        "supporting_proof_or_prose": frozenset(
+            {"source_context_or_proof_route_attachment_to_the_owning_result"}
+        ),
+    }
+    for tier, required in expected_required.items():
+        record = intensity.get(tier)
+        if not isinstance(record, Mapping) or set(record) != {
+            "applies_to",
+            "required",
+            "rule",
+        }:
+            raise FormalizationProtocolError(
+                f"coverage.review_intensity.{tier} fields are malformed"
+            )
+        _nonempty_string(
+            record.get("applies_to"),
+            f"coverage.review_intensity.{tier}.applies_to",
+        )
+        _nonempty_string(
+            record.get("rule"), f"coverage.review_intensity.{tier}.rule"
+        )
+        if _string_set(
+            record.get("required"),
+            f"coverage.review_intensity.{tier}.required",
+        ) != required:
+            raise FormalizationProtocolError(
+                f"coverage.review_intensity.{tier}.required contradicts the "
+                "established review tier"
+            )
+    _nonempty_string(
+        intensity.get("override"), "coverage.review_intensity.override"
+    )
+
+
+def _closeout_scope_approval(
+    value: object,
+    *,
+    required: bool,
+) -> CloseoutReviewScopeApproval | None:
+    if value is None and not required:
+        return None
+    if not isinstance(value, Mapping):
+        raise FormalizationProtocolError(
+            "closeout_review_policy.scope_approval must be an object"
+        )
+    if set(value) != {
+        "schema",
+        "approval_kind",
+        "approval_reference",
+        "approved_at",
+    }:
+        raise FormalizationProtocolError(
+            "closeout_review_policy.scope_approval fields are malformed"
+        )
+    if isinstance(value.get("schema"), bool) or value.get("schema") != 1:
+        raise FormalizationProtocolError(
+            "closeout_review_policy.scope_approval.schema must be 1"
+        )
+    if value.get("approval_kind") != "explicit_user_instruction":
+        raise FormalizationProtocolError(
+            "closeout_review_policy.scope_approval.approval_kind must be "
+            "explicit_user_instruction"
+        )
+    reference = _nonempty_string(
+        value.get("approval_reference"),
+        "closeout_review_policy.scope_approval.approval_reference",
+    )
+    if len(reference) < 20:
+        raise FormalizationProtocolError(
+            "closeout_review_policy.scope_approval.approval_reference must be substantive"
+        )
+    approved_at = _nonempty_string(
+        value.get("approved_at"),
+        "closeout_review_policy.scope_approval.approved_at",
+    )
+    if not _ISO_LIKE_UTC_TIMESTAMP_RE.fullmatch(approved_at):
+        raise FormalizationProtocolError(
+            "closeout_review_policy.scope_approval.approved_at must be an ISO-like UTC timestamp"
+        )
+    return CloseoutReviewScopeApproval(
+        schema=1,
+        approval_kind="explicit_user_instruction",
+        approval_reference=reference,
+        approved_at=approved_at,
+    )
+
+
+def resolve_closeout_review_policy(
+    value: object | None = None,
+) -> ResolvedCloseoutReviewPolicy:
+    """Return one exact chosen source/repeat/panel/scheduling policy.
+
+    ``None`` selects the configured current default for prospective authoring.
+    Historical source maps are not silently reinterpreted by this function's
+    callers: use :func:`explicit_closeout_review_policy_from_source_map` when
+    deciding whether a stored paper opted into the policy-aware contract.
+    """
+
+    if value is None:
+        value = {
+            "schema": CLOSEOUT_REVIEW_POLICY_SCHEMA,
+            "source_scope": CLOSEOUT_REVIEW_POLICY_DEFAULT_SOURCE_SCOPE,
+            "repeat_final_scope": CLOSEOUT_REVIEW_POLICY_DEFAULT_REPEAT_SCOPE,
+            "required_final_adversary_count": (
+                CLOSEOUT_REVIEW_POLICY_DEFAULT_FINAL_ADVERSARY_COUNT
+            ),
+            "scheduling": {
+                stage: [] for stage in CLOSEOUT_REVIEW_SCHEDULING_STAGES
+            },
+        }
+    if not isinstance(value, Mapping):
+        raise FormalizationProtocolError(
+            "closeout_review_policy must be an object"
+        )
+    allowed_fields = {
+        "schema",
+        "source_scope",
+        "repeat_final_scope",
+        "required_final_adversary_count",
+        "scope_approval",
+        "scheduling",
+    }
+    if not set(value) <= allowed_fields or not {
+        "schema",
+        "source_scope",
+        "repeat_final_scope",
+        "required_final_adversary_count",
+        "scheduling",
+    } <= set(value):
+        raise FormalizationProtocolError(
+            "closeout_review_policy fields are malformed"
+        )
+    if (
+        isinstance(value.get("schema"), bool)
+        or value.get("schema") != CLOSEOUT_REVIEW_POLICY_SCHEMA
+    ):
+        raise FormalizationProtocolError(
+            f"closeout_review_policy.schema must be {CLOSEOUT_REVIEW_POLICY_SCHEMA}"
+        )
+    source_scope = _nonempty_string(
+        value.get("source_scope"), "closeout_review_policy.source_scope"
+    )
+    repeat_scope = _nonempty_string(
+        value.get("repeat_final_scope"),
+        "closeout_review_policy.repeat_final_scope",
+    )
+    if source_scope not in CLOSEOUT_REVIEW_POLICY_SOURCE_SCOPES:
+        raise FormalizationProtocolError(
+            "closeout_review_policy.source_scope must be one of: "
+            + ", ".join(sorted(CLOSEOUT_REVIEW_POLICY_SOURCE_SCOPES))
+        )
+    if repeat_scope not in CLOSEOUT_REVIEW_POLICY_REPEAT_SCOPES:
+        raise FormalizationProtocolError(
+            "closeout_review_policy.repeat_final_scope must be one of: "
+            + ", ".join(sorted(CLOSEOUT_REVIEW_POLICY_REPEAT_SCOPES))
+        )
+    if (source_scope, repeat_scope) not in (
+        CLOSEOUT_REVIEW_POLICY_ALLOWED_SCOPE_PAIRS
+    ):
+        raise FormalizationProtocolError(
+            "closeout_review_policy source_scope/repeat_final_scope combination "
+            "is unsupported"
+        )
+    raw_count = value.get("required_final_adversary_count")
+    if (
+        not isinstance(raw_count, int)
+        or isinstance(raw_count, bool)
+        or raw_count < 1
+    ):
+        raise FormalizationProtocolError(
+            "closeout_review_policy.required_final_adversary_count must be a positive integer"
+        )
+    approval = _closeout_scope_approval(
+        value.get("scope_approval"),
+        required=source_scope == CLOSEOUT_SOURCE_SCOPE_MAIN_NAMED_THEORY,
+    )
+    if (
+        source_scope != CLOSEOUT_SOURCE_SCOPE_MAIN_NAMED_THEORY
+        and approval is not None
+    ):
+        raise FormalizationProtocolError(
+            "closeout_review_policy.scope_approval is reserved for main_named_theory"
+        )
+    scheduling = value.get("scheduling")
+    if not isinstance(scheduling, Mapping) or set(scheduling) != set(
+        CLOSEOUT_REVIEW_SCHEDULING_STAGES
+    ):
+        raise FormalizationProtocolError(
+            "closeout_review_policy.scheduling must contain exactly the initial and final review stages"
+        )
+    initial_models = _string_tuple_allow_empty(
+        scheduling.get("initial_semantic_review"),
+        "closeout_review_policy.scheduling.initial_semantic_review",
+    )
+    final_models = _string_tuple_allow_empty(
+        scheduling.get("final_adversarial_review"),
+        "closeout_review_policy.scheduling.final_adversarial_review",
+    )
+    return ResolvedCloseoutReviewPolicy(
+        schema=CLOSEOUT_REVIEW_POLICY_SCHEMA,
+        source_scope=source_scope,
+        repeat_final_scope=repeat_scope,
+        required_final_adversary_count=raw_count,
+        scope_approval=approval,
+        initial_semantic_review_models=initial_models,
+        final_adversarial_review_models=final_models,
+    )
+
+
+def explicit_closeout_review_policy_from_source_map(
+    source_map: object,
+) -> ResolvedCloseoutReviewPolicy | None:
+    """Read an opted-in policy without inventing one for historical maps."""
+
+    if not isinstance(source_map, Mapping):
+        raise FormalizationProtocolError("paper statement map must be an object")
+    if CLOSEOUT_REVIEW_POLICY_FIELD not in source_map:
+        return None
+    return resolve_closeout_review_policy(source_map[CLOSEOUT_REVIEW_POLICY_FIELD])
+
+
+def closeout_review_policy_assurance_projection(
+    policy: ResolvedCloseoutReviewPolicy,
+) -> dict[str, object]:
+    """Bind source selection, terminal scope, approval, and panel cardinality."""
+
+    result: dict[str, object] = {
+        "schema": 1,
+        "source_scope": policy.source_scope,
+        "repeat_final_scope": policy.repeat_final_scope,
+        "required_final_adversary_count": policy.required_final_adversary_count,
+    }
+    if policy.scope_approval is not None:
+        result["scope_approval"] = policy.scope_approval.projection()
+    return result
+
+
+def resolve_closeout_review_policy_assurance(
+    value: object,
+) -> ResolvedCloseoutReviewPolicy:
+    """Validate an authenticated assurance projection without disk fallback."""
+
+    if not isinstance(value, Mapping):
+        raise FormalizationProtocolError(
+            "closeout review-policy assurance must be an object"
+        )
+    required = {
+        "schema",
+        "source_scope",
+        "repeat_final_scope",
+        "required_final_adversary_count",
+    }
+    allowed = required | {"scope_approval"}
+    if not required <= set(value) or not set(value) <= allowed:
+        raise FormalizationProtocolError(
+            "closeout review-policy assurance fields are malformed"
+        )
+    expanded = dict(value)
+    expanded["scheduling"] = {
+        stage: [] for stage in CLOSEOUT_REVIEW_SCHEDULING_STAGES
+    }
+    policy = resolve_closeout_review_policy(expanded)
+    if closeout_review_policy_assurance_projection(policy) != dict(value):
+        raise FormalizationProtocolError(
+            "closeout review-policy assurance is not canonical"
+        )
+    return policy
+
+
+def closeout_review_policy_material_projection(
+    policy: ResolvedCloseoutReviewPolicy,
+) -> dict[str, object]:
+    """Bind what one terminal reviewer reads, excluding count and scheduling."""
+
+    result: dict[str, object] = {
+        "schema": 1,
+        "source_scope": policy.source_scope,
+        "repeat_final_scope": policy.repeat_final_scope,
+    }
+    if policy.scope_approval is not None:
+        result["scope_approval"] = policy.scope_approval.projection()
+    return result
+
+
+def closeout_review_policy_scheduling_projection(
+    policy: ResolvedCloseoutReviewPolicy,
+) -> dict[str, object]:
+    """Return model preferences that never grant or invalidate assurance."""
+
+    return {
+        "schema": 1,
+        "initial_semantic_review": list(policy.initial_semantic_review_models),
+        "final_adversarial_review": list(policy.final_adversarial_review_models),
+    }
 
 
 def _sha256(value: object, field: str) -> str:
@@ -318,6 +783,7 @@ def validate_formalization_protocol(payload: object) -> dict[str, Any]:
         raise FormalizationProtocolError(
             "standalone formula/equation/algorithm kinds must be deep-only"
         )
+    _validate_review_intensity_contract(coverage)
 
     reuse = payload["reuse"]
     required_identities = _string_set(
@@ -362,6 +828,42 @@ def validate_formalization_protocol(payload: object) -> dict[str, Any]:
     builds = payload["builds"]
     for field in ("proof_iteration", "paper_closeout", "integration_or_release"):
         _nonempty_string(builds.get(field), f"builds.{field}")
+    clean_diagnostics = builds.get("clean_diagnostics")
+    if not isinstance(clean_diagnostics, Mapping):
+        raise FormalizationProtocolError(
+            "builds.clean_diagnostics must be an object"
+        )
+    if set(clean_diagnostics) != {"max_output_bytes", "reject_on", "applies_to"}:
+        raise FormalizationProtocolError(
+            "builds.clean_diagnostics fields are malformed"
+        )
+    if (
+        clean_diagnostics.get("max_output_bytes")
+        != EXPECTED_CLEAN_LEAN_OUTPUT_BYTES
+    ):
+        raise FormalizationProtocolError(
+            "builds.clean_diagnostics.max_output_bytes must match the clean Lean output limit"
+        )
+    if (
+        _string_set(
+            clean_diagnostics.get("reject_on"),
+            "builds.clean_diagnostics.reject_on",
+        )
+        != EXPECTED_LEAN_DIAGNOSTIC_FAILURES
+    ):
+        raise FormalizationProtocolError(
+            "builds.clean_diagnostics.reject_on contradicts the Lean diagnostic failure contract"
+        )
+    if (
+        _string_set(
+            clean_diagnostics.get("applies_to"),
+            "builds.clean_diagnostics.applies_to",
+        )
+        != EXPECTED_CLEAN_DIAGNOSTIC_SCOPES
+    ):
+        raise FormalizationProtocolError(
+            "builds.clean_diagnostics.applies_to must cover every Lean build scope"
+        )
     classifications = payload["classification"]
     expected_impacts = {
         "source_condition_or_refinement": "formalized_note",
@@ -556,6 +1058,58 @@ def _operational_review_protocol_projection(
     }
 
 
+def _operational_item_review_protocol_projection(
+    validated: Mapping[str, Any],
+) -> dict[str, object]:
+    """Return policy that changes one exact source-to-Lean comparison.
+
+    Whole-paper selection, appendix intensity, adversary count, and model
+    scheduling do not change the mathematical judgment for an unchanged item.
+    The historical aggregate review digest remains available for old records;
+    prospective item receipts can use this narrower identity while coverage and
+    closure assurance bind their own projections.
+    """
+
+    versions: dict[str, object] = {}
+    for lane, raw_record in validated["audit_versions"].items():
+        record = {
+            str(key): value
+            for key, value in raw_record.items()
+            if str(key)
+            not in {
+                "meaning",
+                "transition",
+                "legacy_v10_transition_baseline",
+                "required_for",
+            }
+        }
+        if str(lane) == "theorem_realization":
+            record["required_for"] = [
+                "new_paper_closeout",
+                "materially_reissued_closeout",
+            ]
+        versions[str(lane)] = record
+    reuse = {
+        str(key): value
+        for key, value in validated["reuse"].items()
+        if str(key) != "rule"
+    }
+    classification = {
+        str(category): {
+            str(key): value
+            for key, value in record.items()
+            if str(key) != "rule"
+        }
+        for category, record in validated["classification"].items()
+    }
+    return {
+        "protocol_schema": validated["schema"],
+        "audit_versions": versions,
+        "reuse": reuse,
+        "classification": classification,
+    }
+
+
 def _protocol_projection_digest(schema: int, projection: object) -> str:
     encoded = json.dumps(
         {"schema": schema, "protocol": projection},
@@ -591,6 +1145,22 @@ def formalization_review_protocol_digest(payload: object | None = None) -> str:
     return _protocol_projection_digest(
         REVIEW_PROTOCOL_DIGEST_SCHEMA,
         _operational_review_protocol_projection(validated),
+    )
+
+
+def formalization_item_review_protocol_digest(
+    payload: object | None = None,
+) -> str:
+    """Identity of policy that can change one exact semantic judgment."""
+
+    validated = (
+        load_formalization_protocol()
+        if payload is None
+        else validate_formalization_protocol(payload)
+    )
+    return _protocol_projection_digest(
+        ITEM_REVIEW_PROTOCOL_DIGEST_SCHEMA,
+        _operational_item_review_protocol_projection(validated),
     )
 
 

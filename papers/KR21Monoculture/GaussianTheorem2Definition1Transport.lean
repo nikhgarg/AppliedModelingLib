@@ -11,8 +11,8 @@ family to the separately named three-score Gaussian ranking law.  The bridge
 is measure-theoretic and does not rely on matching declaration names.
 -/
 
-open EconCSLib Filter MeasureTheory
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib Filter MeasureTheory
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal Topology
 
 namespace KR21Monoculture
@@ -202,7 +202,7 @@ private theorem rankByScore_three_eq_rum3RankByScores_of_noTies
       rw [hrank]
       symm
       simp only [KR21Monoculture.rum3RankByScores,
-        EconCSLib.SocialChoice.Ranking.rum3RankByScores,
+        AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores,
         KR21Monoculture.rum3Ranking021,
         dif_pos h0, if_neg h32]
   · by_cases h1 : s1 < s2 ∧ s3 ≤ s2
@@ -218,7 +218,7 @@ private theorem rankByScore_three_eq_rum3RankByScores_of_noTies
         rw [hrank]
         symm
         simp only [KR21Monoculture.rum3RankByScores,
-          EconCSLib.SocialChoice.Ranking.rum3RankByScores,
+          AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores,
           KR21Monoculture.rum3Ranking102,
           dif_neg h0, dif_pos h1, if_pos h31]
       · have h13' : s1 < s2 := h1.1
@@ -233,7 +233,7 @@ private theorem rankByScore_three_eq_rum3RankByScores_of_noTies
         rw [hrank]
         symm
         simp only [KR21Monoculture.rum3RankByScores,
-          EconCSLib.SocialChoice.Ranking.rum3RankByScores,
+          AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores,
           KR21Monoculture.rum3Ranking120,
           dif_neg h0, dif_pos h1, if_neg h31]
     · by_cases h21 : s2 ≤ s1
@@ -251,7 +251,7 @@ private theorem rankByScore_three_eq_rum3RankByScores_of_noTies
         rw [hrank]
         symm
         simp only [KR21Monoculture.rum3RankByScores,
-          EconCSLib.SocialChoice.Ranking.rum3RankByScores,
+          AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores,
           KR21Monoculture.rum3Ranking201,
           dif_neg h0, dif_neg h1, if_pos h21]
       · have h12' : s1 < s2 := lt_of_not_ge h21
@@ -268,7 +268,7 @@ private theorem rankByScore_three_eq_rum3RankByScores_of_noTies
         rw [hrank]
         symm
         simp only [KR21Monoculture.rum3RankByScores,
-          EconCSLib.SocialChoice.Ranking.rum3RankByScores,
+          AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores,
           KR21Monoculture.rum3Ranking210,
           dif_neg h0, dif_neg h1, if_neg h21]
 
@@ -365,21 +365,21 @@ private theorem rankingPMFOfMeasure_eq_of_measurePreserving_ae
   apply (ENNReal.toReal_eq_toReal_iff'
     ((rankingPMFOfMeasure mu rank hrank).apply_ne_top pi)
     ((rankingPMFOfMeasure nu rank' hrank').apply_ne_top pi)).mp
-  rw [← EconCSLib.pmfProb_singleton (rankingPMFOfMeasure mu rank hrank) pi]
-  rw [← EconCSLib.pmfProb_singleton (rankingPMFOfMeasure nu rank' hrank') pi]
+  rw [← AppliedModelingLib.pmfProb_singleton (rankingPMFOfMeasure mu rank hrank) pi]
+  rw [← AppliedModelingLib.pmfProb_singleton (rankingPMFOfMeasure nu rank' hrank') pi]
   rw [rankingPMFOfMeasure_eventProb mu rank hrank
     (fun rho : Ranking n => rho = pi)]
   rw [rankingPMFOfMeasure_eventProb nu rank' hrank'
     (fun rho : Ranking n => rho = pi)]
-  trans EconCSLib.measureProb mu (fun omega => rank' (e omega) = pi)
-  · unfold EconCSLib.measureProb
+  trans AppliedModelingLib.measureProb mu (fun omega => rank' (e omega) = pi)
+  · unfold AppliedModelingLib.measureProb
     apply congrArg ENNReal.toReal
     apply measure_congr
     filter_upwards [hintertwine] with omega homega
     apply propext
     change (rank omega = pi) ↔ (rank' (e omega) = pi)
     rw [homega]
-  · exact EconCSLib.measureProb_preimage_of_measurePreserving
+  · exact AppliedModelingLib.measureProb_preimage_of_measurePreserving
       e he (fun omega' : Omega' => rank' omega' = pi)
       (by
         simpa only [Set.preimage_setOf_eq] using
@@ -460,7 +460,7 @@ theorem gaussianThreeCandidateAccuracyFamily_sourceDefinition1
   refine ⟨?_, ?_, ?_⟩
   · intro theta htheta pi
     constructor
-    · exact EconCSLib.continuousAt_of_epsilonContinuousAt
+    · exact AppliedModelingLib.continuousAt_of_epsilonContinuousAt
         (gaussianThreeCandidateDistributionalFamily_atom_epsilonContinuousAt
           htheta (threeCandidateValueProfile x1 x2 x3) pi)
     · have hdiff : DifferentiableAt ℝ

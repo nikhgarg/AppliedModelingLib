@@ -15,7 +15,7 @@ many-to-one assignment is then lifted to a stable refined-seat assignment.
 -/
 
 namespace GS62CollegeAdmissions
-open EconCSLib.Matching
+open AppliedModelingLib.Matching
 open scoped BigOperators
 
 namespace ManyToOneOptimality

@@ -1,8 +1,8 @@
 import LMMS04FairDivision.Theorem31AdaptiveQuery
-import EconCSLib.Foundations.Math.Asymptotics
+import AppliedModelingLib.Foundations.Math.Asymptotics
 
 open Filter Topology
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 namespace LMMS04FairDivision
 namespace Theorem31
@@ -26,11 +26,11 @@ then the finite transcript-count inequality `2 * q < card` holds eventually.
 theorem eventually_two_mul_lt_card_of_tendsToZero_ratio
     (q card : ℕ → ℕ)
     (hratio :
-      EconCSLib.Math.TendsToZero fun n =>
+      AppliedModelingLib.Math.TendsToZero fun n =>
         (((2 * q n : ℕ) : ℝ) / (card n : ℝ)))
     (hcard_pos : ∀ᶠ n in atTop, 0 < card n) :
     ∀ᶠ n in atTop, 2 * q n < card n := by
-  rw [EconCSLib.Math.TendsToZero] at hratio
+  rw [AppliedModelingLib.Math.TendsToZero] at hratio
   have hlt_one :
       ∀ᶠ n in atTop,
         (((2 * q n : ℕ) : ℝ) / (card n : ℝ)) < 1 :=
@@ -126,7 +126,7 @@ theorem eventually_minimum_envy_lower_bound_from_twoBit_adaptive_queries_of_tend
       ∀ n, QueryTranscript (Bool × Bool) (q n) →
         Allocation LMMS31Agent (Item n))
     (hquery_ratio :
-      EconCSLib.Math.TendsToZero fun n =>
+      AppliedModelingLib.Math.TendsToZero fun n =>
         (((2 * q n : ℕ) : ℝ) / (Fintype.card (C n).Pair : ℝ)))
     (hpair_pos : ∀ᶠ n in atTop, 0 < Fintype.card (C n).Pair) :
     ∀ᶠ n in atTop,
@@ -159,7 +159,7 @@ theorem eventually_minimum_envy_ratio_lower_bound_from_twoBit_adaptive_queries_o
       ∀ n, QueryTranscript (Bool × Bool) (q n) →
         Allocation LMMS31Agent (Item n))
     (hquery_ratio :
-      EconCSLib.Math.TendsToZero fun n =>
+      AppliedModelingLib.Math.TendsToZero fun n =>
         (((2 * q n : ℕ) : ℝ) / (Fintype.card (C n).Pair : ℝ)))
     (hpair_pos : ∀ᶠ n in atTop, 0 < Fintype.card (C n).Pair) :
     ∀ᶠ n in atTop,

@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
-"""Issue and validate the canonical final paper-closure receipt.
+"""Validate current graph-native or historical paper-closure credentials.
 
-The final receipt deliberately has two evidence lanes.  A current raw
-source-record audit is the ordinary lane.  A deliberately selected,
-source-anchor-based direct-row review is the compatibility lane for a paper
-whose current closeout was completed without regenerating a historical raw
-machine receipt.  Both lanes bind the same current source, source map,
-transitive Lean interface closure, review ledger, focused build declaration,
-and semantic review protocol.
+The selected accepted obligation graph is the current sole machine acceptance
+credential; schema-6 ``FINAL_CLOSURE_RECEIPT.md`` is only its human-facing
+pointer. Validation dispatches historical schemas under their recorded rules.
+Historical schema-2--4 receipts remain readable for direct validation and
+explicit migration, but this module no longer manufactures them. Fresh
+closeout finalization authenticates the typed strict-stage transaction and
+publishes the accepted graph directly.
 
 This module is intentionally independent of ``audit_evidence_integrity`` so
 the main evidence gate can use it without a circular import.
+
+Its import-closure-accelerator diagnostic is explicitly non-accepting: a
+successful process exit means the inventory completed, not that every carrier
+was exact. Consumers must inspect ``exact_count`` and ``miss_count``.
 """
 
 from __future__ import annotations
@@ -26,28 +30,62 @@ import sys
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path, PurePosixPath
-from typing import Any, Callable, Mapping
-
-try:
-    from scripts.formalization_protocol import formalization_review_protocol_digest
-    from scripts.lean_import_closure import WorktreeImportClosureProvider
-    from scripts.source_archive_surface import source_archive_surface_validation_issues
-    from scripts.tomllib_compat import tomllib
-except ModuleNotFoundError:  # pragma: no cover - direct script invocation.
-    from formalization_protocol import formalization_review_protocol_digest
-    from lean_import_closure import WorktreeImportClosureProvider
-    from source_archive_surface import source_archive_surface_validation_issues
-    from tomllib_compat import tomllib
-
+from typing import Any, Callable, Iterable, Mapping
 
 ROOT = Path(
-    os.environ.get("ECONCSLIB_REPO_ROOT", Path(__file__).resolve().parents[1])
+    os.environ.get("APPLIEDMODELINGLIB_REPO_ROOT", Path(__file__).resolve().parents[1])
 ).resolve()
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.check_formalization_engine_revision import (
+    EngineRevisionError,
+    validate_runtime_engine_registration,
+    validated_runtime_engine_revision_ledger,
+)
+from scripts.closeout_plan_receipt import (
+    CloseoutPlanReceiptError,
+    resolved_plan_lean_closure_projection,
+)
+from scripts.formalization_protocol import formalization_review_protocol_digest
+from scripts.lean_import_closure import (
+    WorktreeImportClosureProvider,
+    lean_import_closure_payload_sha256,
+    lean_import_closure_receipt_payload,
+    validated_lean_import_closure_payload,
+    validated_lean_import_closure_receipt_payload,
+)
+from scripts.lean_process_diagnostics import (
+    bounded_lean_diagnostic_excerpt,
+    lean_diagnostic_failure_reason,
+)
+from scripts.paper_build_command import is_exact_portable_paper_build_command
+from scripts.source_archive_surface import source_archive_surface_validation_issues
+from scripts.source_coverage_scope import (
+    explicit_raw_source_spec_screening_requested,
+)
+from scripts.tomllib_compat import tomllib
+
 RECEIPT_NAME = "FINAL_CLOSURE_RECEIPT.md"
-RECEIPT_SCHEMA = 3
-LEGACY_RECEIPT_SCHEMAS = frozenset({2, RECEIPT_SCHEMA})
+RECEIPT_SCHEMA = 4
+LEGACY_RECEIPT_SCHEMAS = frozenset({2, 3, RECEIPT_SCHEMA})
+OBLIGATION_RECEIPT_SCHEMA = 5
+ACCEPTED_GRAPH_RECEIPT_SCHEMA = 6
+OBLIGATION_RECEIPT_SCHEMAS = frozenset(
+    {OBLIGATION_RECEIPT_SCHEMA, ACCEPTED_GRAPH_RECEIPT_SCHEMA}
+)
 FOCUSED_BUILD_RECEIPT_NAME = "FOCUSED_BUILD_RECEIPT.json"
-FOCUSED_BUILD_RECEIPT_SCHEMA = 1
+FOCUSED_BUILD_RECEIPT_SCHEMA = 2
+AUTHENTICATED_CLOSURE_FOCUSED_BUILD_RECEIPT_SCHEMA = 3
+LEGACY_FOCUSED_BUILD_RECEIPT_SCHEMAS = frozenset(
+    {
+        1,
+        FOCUSED_BUILD_RECEIPT_SCHEMA,
+        AUTHENTICATED_CLOSURE_FOCUSED_BUILD_RECEIPT_SCHEMA,
+    }
+)
+LEAN_IMPORT_CLOSURE_RECEIPT_NAME = "LEAN_IMPORT_CLOSURE_RECEIPT.json"
+LEAN_IMPORT_CLOSURE_RECEIPT_SCHEMA = 1
 RAW_SOURCE_RECORD_LANE = "raw-source-record"
 DIRECT_SOURCE_ROW_REVIEW_LANE = "direct-source-row-review"
 EVIDENCE_LANES = frozenset({RAW_SOURCE_RECORD_LANE, DIRECT_SOURCE_ROW_REVIEW_LANE})
@@ -68,6 +106,8 @@ class FinalClosureReceipt:
 
     path: Path
     payload: Mapping[str, Any]
+    terminal_validation_route: str = ""
+    terminal_validation_detail: str = ""
 
 
 def final_closure_receipt_path(root: Path, paper: str) -> Path:
@@ -76,6 +116,115 @@ def final_closure_receipt_path(root: Path, paper: str) -> Path:
 
 def focused_build_receipt_path(root: Path, paper: str) -> Path:
     return root / "papers" / paper / "audit" / FOCUSED_BUILD_RECEIPT_NAME
+
+
+def lean_import_closure_receipt_path(root: Path, paper: str) -> Path:
+    return (
+        root
+        / "papers"
+        / paper
+        / "audit"
+        / LEAN_IMPORT_CLOSURE_RECEIPT_NAME
+    )
+
+
+def diagnose_exact_import_closure_accelerator(
+    root: Path,
+    paper: str,
+    *,
+    provider_factory: Callable[..., Any] | None = None,
+) -> dict[str, object]:
+    """Diagnose one non-accepting exact import-closure accelerator.
+
+    This deliberately does not load or validate the paper's acceptance
+    credential and never invokes Lean semantic recovery.  It answers only
+    whether the checked-in portable carrier still matches every current
+    source, ownership, build-control, routing, and external-artifact input.
+    """
+
+    paper_id = str(paper).strip()
+    if PAPER_RE.fullmatch(paper_id) is None:
+        return {
+            "paper": paper_id,
+            "exact_accelerator_current": False,
+            "problem": "paper identity is malformed",
+        }
+    path = lean_import_closure_receipt_path(root, paper_id)
+    try:
+        raw_receipt = json.loads(path.read_text(encoding="utf-8"))
+        receipt = validated_lean_import_closure_receipt_payload(
+            raw_receipt,
+            paper=paper_id,
+        )
+        closure = receipt.get("lean_import_closure")
+        if not isinstance(closure, dict):
+            raise ValueError("Lean import-closure carrier payload is malformed")
+        if provider_factory is None:
+            from scripts.lean_signature_manifest import (
+                RepositoryBuildInputSnapshotProvider,
+            )
+
+            provider_factory = RepositoryBuildInputSnapshotProvider
+        provider = provider_factory(
+            root,
+            lean_import_closure_payload=closure,
+        )
+        if not provider.finalize_unchanged():
+            raise ValueError(
+                "Lean import-closure inputs changed during the diagnostic"
+            )
+    except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
+        return {
+            "paper": paper_id,
+            "exact_accelerator_current": False,
+            "problem": str(exc),
+        }
+    return {
+        "paper": paper_id,
+        "exact_accelerator_current": True,
+        "problem": "",
+    }
+
+
+def diagnose_import_closure_accelerators(
+    root: Path,
+    *,
+    paper: str | None = None,
+    provider_factory: Callable[..., Any] | None = None,
+) -> dict[str, object]:
+    """Return one read-only diagnostic over selected portable carriers."""
+
+    if paper is not None:
+        papers = [paper]
+    else:
+        papers = [
+            path.parents[1].name
+            for path in sorted(
+                (root / "papers").glob(
+                    f"*/audit/{LEAN_IMPORT_CLOSURE_RECEIPT_NAME}"
+                )
+            )
+        ]
+    items = [
+        diagnose_exact_import_closure_accelerator(
+            root,
+            paper_id,
+            provider_factory=provider_factory,
+        )
+        for paper_id in papers
+    ]
+    exact_count = sum(
+        item["exact_accelerator_current"] is True for item in items
+    )
+    return {
+        "schema": 1,
+        "acceptance_credential": False,
+        "diagnostic_only": True,
+        "paper_count": len(items),
+        "exact_count": exact_count,
+        "miss_count": len(items) - exact_count,
+        "items": items,
+    }
 
 
 def _sha256_bytes(raw: bytes) -> str:
@@ -279,25 +428,6 @@ def _review_ledger_selected_bytes(path: Path, *, content_start: str | None) -> b
     return text[matches[0] :].encode("utf-8")
 
 
-def _review_ledger_pin(root: Path, path: Path) -> dict[str, str]:
-    """Create the lane-specific immutable review-evidence pin for ``path``."""
-
-    content_start = (
-        REPORT_EVIDENCE_START_MARKER
-        if path.name == "FINAL_VALIDATION_REPORT.md"
-        else None
-    )
-    pin = {
-        "path": path.relative_to(root).as_posix(),
-        "sha256": _sha256_bytes(
-            _review_ledger_selected_bytes(path, content_start=content_start)
-        ),
-    }
-    if content_start is not None:
-        pin["content_start"] = content_start
-    return pin
-
-
 def _validate_review_ledger_pin(
     root: Path,
     paper: str,
@@ -345,15 +475,148 @@ def _validate_review_ledger_pin(
     return path
 
 
+def _lean_import_closure_receipt_payload(
+    paper: str, closure: object
+) -> dict[str, Any]:
+    return dict(lean_import_closure_receipt_payload(paper, closure))
+
+
+def _write_lean_import_closure_receipt(
+    root: Path, paper: str, closure: object
+) -> Path:
+    payload = _lean_import_closure_receipt_payload(paper, closure)
+    path = lean_import_closure_receipt_path(root, paper)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def _saved_interface_closure_candidates(
+    root: Path, paper: str
+) -> Iterable[dict[str, object]]:
+    """Yield canonical Lean-emitted closures from durable or local carriers."""
+
+    receipt_path = lean_import_closure_receipt_path(root, paper)
+    try:
+        payload = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        payload = None
+    if isinstance(payload, Mapping):
+        try:
+            validated_receipt = validated_lean_import_closure_receipt_payload(
+                payload, paper=paper
+            )
+        except ValueError:
+            pass
+        else:
+            closure = validated_receipt.get("lean_import_closure")
+            assert isinstance(closure, dict)
+            yield closure
+
+    # Existing closed papers may predate the durable carrier. Their ignored,
+    # content-addressed operational plan contains the exact same Lean-emitted
+    # closure. It may locate a candidate but cannot authorize it: the caller
+    # below requires the canonical receipt digest and revalidates every current
+    # source, association, control, external artifact, and mutation guard.
+    trace = root / "papers" / paper / ".review_traces"
+    for plan_path in sorted(
+        trace.glob("closeout_execution_plan*.json"), reverse=True
+    ):
+        try:
+            plan = json.loads(plan_path.read_text(encoding="utf-8"))
+            projection = resolved_plan_lean_closure_projection(root, plan)
+            closure = validated_lean_import_closure_payload(
+                projection.get("lean_import_closure")
+            )
+        except (
+            OSError,
+            UnicodeError,
+            json.JSONDecodeError,
+            ValueError,
+            CloseoutPlanReceiptError,
+        ):
+            continue
+        yield closure
+
+
+def _validated_saved_interface_closure(
+    root: Path,
+    paper: str,
+    expected_identity: str,
+    *,
+    entrypoint: str | None = None,
+    closure_provider_factory: Callable[[Path], Any] | None = None,
+) -> tuple[str, dict[str, object]] | None:
+    factory = closure_provider_factory or (
+        lambda repository_root: WorktreeImportClosureProvider(
+            repository_root, eager_source_snapshot=False
+        )
+    )
+    selected_entrypoint = entrypoint or f"papers/{paper}/PaperInterface.lean"
+    for closure in _saved_interface_closure_candidates(root, paper):
+        if lean_import_closure_payload_sha256(closure) != expected_identity:
+            continue
+        provider = factory(root)
+        identity, problem = provider.identity_from_saved_closure(
+            selected_entrypoint, closure
+        )
+        if identity != expected_identity or problem is not None:
+            continue
+        if provider.finalization_problems():
+            continue
+        return expected_identity, closure
+    return None
+
+
 def _current_interface_closure(
     root: Path,
     paper: str,
     *,
-    closure_provider_factory: Callable[[Path], Any] = WorktreeImportClosureProvider,
+    closure_provider_factory: Callable[[Path], Any] | None = None,
+    expected_identity: str | None = None,
+    persist_saved_closure: bool = False,
+    entrypoint: str | None = None,
 ) -> str:
-    provider = closure_provider_factory(root)
-    entrypoint = f"papers/{paper}/PaperInterface.lean"
-    identity, problem = provider.identity_for_entrypoint(entrypoint)
+    # Final-receipt validation needs only the selected PaperInterface closure.
+    # Snapshotting every tracked Lean source in a large monorepo before asking
+    # Lean for that one closure used several GiB without strengthening the
+    # identity.  The provider's lazy mode still authenticates every source in
+    # the Lean-emitted closure and rechecks all of them at finalization.
+    if expected_identity is not None:
+        saved = _validated_saved_interface_closure(
+            root,
+            paper,
+            expected_identity,
+            entrypoint=entrypoint,
+            closure_provider_factory=closure_provider_factory,
+        )
+        if saved is not None:
+            identity, closure = saved
+            if persist_saved_closure:
+                _write_lean_import_closure_receipt(root, paper, closure)
+            return identity
+
+    factory = closure_provider_factory or (
+        lambda repository_root: WorktreeImportClosureProvider(
+            repository_root, eager_source_snapshot=False
+        )
+    )
+    provider = factory(root)
+    selected_entrypoint = entrypoint or f"papers/{paper}/PaperInterface.lean"
+    record_for_entrypoint = getattr(provider, "record_for_entrypoint", None)
+    if callable(record_for_entrypoint):
+        closure, problem = record_for_entrypoint(selected_entrypoint)
+        identity = (
+            lean_import_closure_payload_sha256(closure)
+            if closure is not None
+            else None
+        )
+    else:  # Test doubles and historical injected providers.
+        closure = None
+        identity, problem = provider.identity_for_entrypoint(selected_entrypoint)
     if identity is None or problem is not None:
         raise FinalClosureReceiptError(
             "could not establish current transitive PaperInterface closure: "
@@ -364,6 +627,12 @@ def _current_interface_closure(
         raise FinalClosureReceiptError(
             "PaperInterface closure changed while validated: " + str(problems[0])
         )
+    if expected_identity is not None and identity != expected_identity:
+        raise FinalClosureReceiptError(
+            "PaperInterface transitive import-closure SHA-256 is stale"
+        )
+    if persist_saved_closure and closure is not None:
+        _write_lean_import_closure_receipt(root, paper, closure)
     return identity
 
 
@@ -373,7 +642,7 @@ def validate_final_closure_receipt(
     *,
     required_lane: str | None = None,
     allow_missing_source_bytes: bool = False,
-    closure_provider_factory: Callable[[Path], Any] = WorktreeImportClosureProvider,
+    closure_provider_factory: Callable[[Path], Any] | None = None,
 ) -> FinalClosureReceipt:
     """Fail closed unless the one paper-local receipt binds every current input.
 
@@ -387,8 +656,32 @@ def validate_final_closure_receipt(
     receipt = load_final_closure_receipt(root, paper)
     payload = receipt.payload
     schema = payload.get("schema")
+    if schema in OBLIGATION_RECEIPT_SCHEMAS:
+        try:
+            from scripts.obligation_closure_credential import (
+                ObligationClosureCredentialError,
+                validate_obligation_closure_receipt,
+            )
+            verified = validate_obligation_closure_receipt(
+                root,
+                paper,
+                receipt_path=receipt.path,
+                payload=payload,
+                allow_missing_source_bytes=allow_missing_source_bytes,
+            )
+        except ObligationClosureCredentialError as exc:
+            raise FinalClosureReceiptError(str(exc)) from exc
+        return FinalClosureReceipt(
+            path=receipt.path,
+            payload=receipt.payload,
+            terminal_validation_route=verified.terminal_validation_route,
+            terminal_validation_detail=verified.terminal_validation_detail,
+        )
     if schema not in LEGACY_RECEIPT_SCHEMAS:
-        expected = ", ".join(str(value) for value in sorted(LEGACY_RECEIPT_SCHEMAS))
+        expected = ", ".join(
+            str(value)
+            for value in sorted((*LEGACY_RECEIPT_SCHEMAS, *OBLIGATION_RECEIPT_SCHEMAS))
+        )
         raise FinalClosureReceiptError(f"`schema` must equal one of {expected}")
     if _required_string(payload, "paper") != paper:
         raise FinalClosureReceiptError("receipt `paper` does not match its folder")
@@ -415,11 +708,64 @@ def validate_final_closure_receipt(
         "protocol",
         "closed_at",
     }
+    if schema == RECEIPT_SCHEMA:
+        allowed.add("engine")
     if lane == RAW_SOURCE_RECORD_LANE:
         allowed.add("raw_source_record")
-    if schema == RECEIPT_SCHEMA:
+    if schema in {3, RECEIPT_SCHEMA}:
         allowed.add("focused_build_receipt")
     _expect_exact_keys(payload, field="receipt", required=allowed)
+
+    if schema == RECEIPT_SCHEMA:
+        engine = _mapping(payload, "engine")
+        _expect_exact_keys(
+            engine,
+            field="engine",
+            required={
+                "revision_sequence",
+                "engine_tree_sha256",
+                "formalization_review_protocol_sha256",
+            },
+        )
+        sequence = engine.get("revision_sequence")
+        if not isinstance(sequence, int) or isinstance(sequence, bool) or sequence < 1:
+            raise FinalClosureReceiptError(
+                "`engine.revision_sequence` must be a positive integer"
+            )
+        recorded_engine = _required_sha256(engine, "engine_tree_sha256")
+        recorded_protocol = _required_sha256(
+            engine, "formalization_review_protocol_sha256"
+        )
+        try:
+            ledger = validated_runtime_engine_revision_ledger(root)
+        except EngineRevisionError as exc:
+            raise FinalClosureReceiptError(
+                "formalization engine registration is unavailable: " + str(exc)
+            ) from exc
+        revisions = ledger.get("revisions") if isinstance(ledger, Mapping) else None
+        if not isinstance(revisions, list):
+            raise FinalClosureReceiptError(
+                "receipt engine revision is absent from registered history"
+            )
+        matching_revisions = [
+            revision
+            for revision in revisions
+            if isinstance(revision, Mapping)
+            and revision.get("engine_tree_sha256") == recorded_engine
+            and revision.get("formalization_review_protocol_sha256")
+            == recorded_protocol
+        ]
+        if len(matching_revisions) != 1:
+            raise FinalClosureReceiptError(
+                "receipt engine revision does not match registered history"
+            )
+        # Engine coordinates authenticate which registered verifier issued the
+        # receipt; they are provenance, not a paper-evidence freshness key.
+        # Currentness is checked below against the current protocol and every
+        # receipt-bound source, Spec/proof closure, review, and build identity.
+        # The display sequence may therefore be renumbered when branch ledgers
+        # are linearized, and later engine revisions do not create pairwise
+        # compatibility obligations for already-closed papers.
 
     paper_dir = root / "papers" / paper
     map_path = paper_dir / "audit" / "paper_statement_map.json"
@@ -485,14 +831,34 @@ def validate_final_closure_receipt(
             f"could not read `{source_path}`: canonical source bytes are unavailable"
         )
 
+    # A stale protocol pin is already conclusive negative evidence: no Lean
+    # closure result can make this receipt current.  Check it after the cheap
+    # source pins but before launching the transitive Lean closure.  A matching
+    # pin grants no credit and the validator still checks every Lean, review,
+    # build, and date obligation below.
+    protocol = _mapping(payload, "protocol")
+    _expect_exact_keys(
+        protocol,
+        field="protocol",
+        required={"formalization_review_protocol_sha256"},
+    )
+    if _required_sha256(protocol, "formalization_review_protocol_sha256") != (
+        formalization_review_protocol_digest()
+    ):
+        raise FinalClosureReceiptError("formalization review protocol digest is stale")
+
     closure = _mapping(payload, "paper_interface_closure")
     _expect_exact_keys(closure, field="paper_interface_closure", required={"root", "sha256"})
     if _required_string(closure, "root") != "PaperInterface.lean":
         raise FinalClosureReceiptError(
             "`paper_interface_closure.root` must be `PaperInterface.lean`"
         )
-    if _required_sha256(closure, "sha256") != _current_interface_closure(
-        root, paper, closure_provider_factory=closure_provider_factory
+    expected_closure_identity = _required_sha256(closure, "sha256")
+    if expected_closure_identity != _current_interface_closure(
+        root,
+        paper,
+        closure_provider_factory=closure_provider_factory,
+        expected_identity=expected_closure_identity,
     ):
         raise FinalClosureReceiptError(
             "PaperInterface transitive import-closure SHA-256 is stale"
@@ -547,16 +913,6 @@ def validate_final_closure_receipt(
                 "focused build receipt commit disagrees with final receipt"
             )
 
-    protocol = _mapping(payload, "protocol")
-    _expect_exact_keys(
-        protocol,
-        field="protocol",
-        required={"formalization_review_protocol_sha256"},
-    )
-    if _required_sha256(protocol, "formalization_review_protocol_sha256") != (
-        formalization_review_protocol_digest()
-    ):
-        raise FinalClosureReceiptError("formalization review protocol digest is stale")
     closed_at = _required_string(payload, "closed_at")
     try:
         date.fromisoformat(closed_at)
@@ -609,8 +965,106 @@ def direct_source_row_review_receipt_error(
     )
 
 
-def _toml_string(value: str) -> str:
-    return json.dumps(value, ensure_ascii=True)
+def record_lean_import_closure_receipt(root: Path, paper: str) -> Path:
+    """Persist Lean's already-receipted closure without reopening the paper.
+
+    A current ignored closeout plan may supply the Lean-emitted record. The
+    final receipt's closure digest selects the only acceptable record, and the
+    saved-closure validator rechecks every current source, module association,
+    build control, external artifact, and end-of-transaction mutation guard.
+    If no saved record is available, the same function obtains one live from
+    Lean. This operation creates a portable validation carrier; it does not
+    issue or alter semantic, build, or final-closure evidence.
+    """
+
+    closure_receipt = load_final_closure_receipt(root, paper)
+    if closure_receipt.payload.get("schema") in OBLIGATION_RECEIPT_SCHEMAS:
+        path = lean_import_closure_receipt_path(root, paper)
+        if not path.is_file():
+            raise FinalClosureReceiptError(
+                "graph-native closure has no Lean import-closure carrier"
+            )
+        validate_final_closure_receipt(root, paper)
+        return path
+    expected = _required_sha256(
+        _mapping(closure_receipt.payload, "paper_interface_closure"),
+        "sha256",
+    )
+    current = _current_interface_closure(
+        root,
+        paper,
+        expected_identity=expected,
+        persist_saved_closure=True,
+    )
+    if current != expected:
+        raise FinalClosureReceiptError(
+            "current PaperInterface closure disagrees with the canonical receipt"
+        )
+    path = lean_import_closure_receipt_path(root, paper)
+    if not path.is_file():
+        raise FinalClosureReceiptError(
+            "Lean import-closure receipt was not materialized"
+        )
+    validate_final_closure_receipt(root, paper)
+    return path
+
+
+def record_current_lean_import_closure_receipt(root: Path, paper: str) -> Path:
+    """Materialize Lean's current closure before semantic review begins.
+
+    This is a portable input carrier, never an acceptance credential.  It lets
+    the v11 source/Spec and prerequisite gates consume Lean's exact module
+    graph without depending on the legacy raw source-record artifact.  The
+    final closeout still revalidates the same closure and every watched input.
+    """
+
+    if not PAPER_RE.fullmatch(paper):
+        raise FinalClosureReceiptError("paper identifier is malformed")
+    paper_target = root / "papers" / f"{paper}.lean"
+    if not paper_target.is_file():
+        raise FinalClosureReceiptError(
+            f"missing paper build entrypoint `{paper_target.relative_to(root)}`"
+        )
+    interface = root / "papers" / paper / "PaperInterface.lean"
+    if not interface.is_file():
+        raise FinalClosureReceiptError(
+            f"missing PaperInterface entrypoint `{interface.relative_to(root)}`"
+        )
+    # One portable carrier serves both the complete v11 claim graph and the
+    # actual focused-build target. The paper root is the authority for the
+    # imported interface layout: some papers keep Specs and proof endpoints in
+    # one PaperInterface module, while others split a ProofInterface module.
+    # Requiring a filename here would reject the former without adding any
+    # proof or closure check; Lean's loaded-module graph below owns membership.
+    entrypoint = paper_target.relative_to(root).as_posix()
+    _current_interface_closure(
+        root,
+        paper,
+        persist_saved_closure=True,
+        entrypoint=entrypoint,
+    )
+    path = lean_import_closure_receipt_path(root, paper)
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        validated_receipt = validated_lean_import_closure_receipt_payload(
+            payload, paper=paper
+        )
+        raw_closure = validated_receipt.get("lean_import_closure")
+        assert isinstance(raw_closure, Mapping)
+        loaded_modules = raw_closure.get("lean_loaded_modules")
+        required_modules = {f"{paper}.PaperInterface"}
+        if not isinstance(loaded_modules, list) or not required_modules.issubset(
+            {str(module) for module in loaded_modules}
+        ):
+            raise ValueError(
+                "paper build closure does not load the configured PaperInterface"
+            )
+    except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
+        raise FinalClosureReceiptError(
+            "current Lean import-closure carrier was not materialized correctly: "
+            + str(exc)
+        ) from exc
+    return path
 
 
 def _git_head(root: Path) -> str:
@@ -637,17 +1091,33 @@ def _focused_build(root: Path, command: str) -> None:
         raise FinalClosureReceiptError(f"focused build command cannot be parsed: {exc}") from exc
     if not argv:
         raise FinalClosureReceiptError("focused build command is empty")
-    completed = subprocess.run(argv, cwd=root, check=False)
-    if completed.returncode != 0:
+    completed = subprocess.run(
+        argv,
+        cwd=root,
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    diagnostic_failure = lean_diagnostic_failure_reason(
+        completed.stdout, completed.stderr
+    )
+    if completed.returncode != 0 or diagnostic_failure:
+        reason = diagnostic_failure or f"exit code {completed.returncode}"
+        excerpt = bounded_lean_diagnostic_excerpt(
+            completed.stdout, completed.stderr
+        )
+        if excerpt:
+            reason += f": {excerpt}"
         raise FinalClosureReceiptError(
-            f"focused build failed with exit code {completed.returncode}"
+            f"focused build failed with {reason}"
         )
 
 
 def _current_focused_build_inputs(
     root: Path, paper: str
 ) -> tuple[Mapping[str, Any], Mapping[str, Any], Path, Path, Path, Path]:
-    """Return the source/code inputs a focused build is allowed to certify."""
+    """Return the legacy schema-1 whole-file focused-build inputs."""
 
     paper_dir = root / "papers" / paper
     status_path = paper_dir / "status.json"
@@ -669,41 +1139,119 @@ def _current_focused_build_inputs(
     return status, source_map, source_path, status_path, map_path, interface_path
 
 
-def record_focused_build_receipt(root: Path, paper: str) -> Path:
-    """Run the focused build and preserve a reusable, input-pinned result.
+def _current_focused_build_status(
+    root: Path, paper: str
+) -> tuple[Mapping[str, Any], Path]:
+    """Return the command authority without coupling a build to audit files."""
+
+    status_path = root / "papers" / paper / "status.json"
+    try:
+        status = json.loads(status_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise FinalClosureReceiptError(
+            f"cannot read focused-build status: {exc}"
+        ) from exc
+    if not isinstance(status, Mapping):
+        raise FinalClosureReceiptError("focused-build status must be a JSON object")
+    return status, status_path
+
+
+def record_focused_build_receipt(
+    root: Path,
+    paper: str,
+    *,
+    run_build: bool = True,
+    persist_saved_closure: bool = True,
+    authenticated_lean_import_closure_receipt: Mapping[str, Any] | None = None,
+) -> Path:
+    """Preserve a reusable, input-pinned focused-build result.
 
     This is operational evidence only.  The canonical final-closeout authority
     remains ``FINAL_CLOSURE_RECEIPT.md``; it can reuse this record only while
-    its source, interface, map, and protocol pins are still current.
+    its build command and exact transitive Lean entrypoint closure are still
+    current. Source-review, map, ledger, and protocol authority remain
+    independently bound by the canonical receipt and semantic gates. The
+    ordinary CLI path runs the build here. The strict closeout orchestrator may
+    set ``run_build=False`` only after authenticating the current
+    ``focused_build`` stage receipt produced inside the frozen strict
+    transaction; that path avoids compiling the same paper twice.
     """
 
-    status, _source_map, source_path, status_path, map_path, interface_path = (
-        _current_focused_build_inputs(root, paper)
-    )
+    status, _status_path = _current_focused_build_status(root, paper)
     command = _required_string(status, "build_target")
-    _focused_build(root, command)
-    payload = {
-        "schema": FOCUSED_BUILD_RECEIPT_SCHEMA,
+    if run_build:
+        _focused_build(root, command)
+    payload: dict[str, Any] = {
         "paper": paper,
         "command": command,
         "target": paper,
         "result": "passed",
         "commit": _git_head(root),
-        "status_sha256": _sha256_file(status_path),
-        "statement_map_sha256": _sha256_file(map_path),
-        "source_artifact_sha256": _sha256_file(source_path),
-        "paper_interface_sha256": _sha256_file(interface_path),
-        "formalization_review_protocol_sha256": formalization_review_protocol_digest(),
     }
+    if authenticated_lean_import_closure_receipt is None:
+        interface_closure_sha256 = _current_interface_closure(
+            root,
+            paper,
+            persist_saved_closure=persist_saved_closure,
+        )
+        payload.update(
+            {
+                "schema": FOCUSED_BUILD_RECEIPT_SCHEMA,
+                "paper_interface_closure_sha256": interface_closure_sha256,
+            }
+        )
+    else:
+        if not is_exact_portable_paper_build_command(command, paper):
+            raise FinalClosureReceiptError(
+                "focused build target must be the exact portable paper-root target"
+            )
+        try:
+            closure_receipt = validated_lean_import_closure_receipt_payload(
+                authenticated_lean_import_closure_receipt,
+                paper=paper,
+            )
+            closure = validated_lean_import_closure_payload(
+                closure_receipt.get("lean_import_closure")
+            )
+        except ValueError as exc:
+            raise FinalClosureReceiptError(
+                "authenticated Lean import-closure receipt is malformed: "
+                + str(exc)
+            ) from exc
+        closure_sha256 = lean_import_closure_payload_sha256(closure)
+        if closure_receipt.get("lean_import_closure_sha256") != closure_sha256:
+            raise FinalClosureReceiptError(
+                "authenticated Lean import-closure receipt identity is stale"
+            )
+        payload.update(
+            {
+                "schema": AUTHENTICATED_CLOSURE_FOCUSED_BUILD_RECEIPT_SCHEMA,
+                "lean_entrypoint": str(closure["entrypoint"]),
+                "lean_import_closure_sha256": closure_sha256,
+            }
+        )
     path = focused_build_receipt_path(root, paper)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    validate_focused_build_receipt(root, paper, require_current_head=True)
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    validate_focused_build_receipt(
+        root,
+        paper,
+        require_current_head=True,
+        authenticated_lean_import_closure_receipt=(
+            authenticated_lean_import_closure_receipt
+        ),
+    )
     return path
 
 
 def validate_focused_build_receipt(
-    root: Path, paper: str, *, require_current_head: bool = False
+    root: Path,
+    paper: str,
+    *,
+    require_current_head: bool = False,
+    authenticated_lean_import_closure_receipt: Mapping[str, Any] | None = None,
 ) -> Mapping[str, Any]:
     """Check a recorded focused build without treating it as final closure."""
 
@@ -714,28 +1262,41 @@ def validate_focused_build_receipt(
         raise FinalClosureReceiptError(
             f"could not read focused build receipt: {exc}"
         ) from exc
-    required = {
+    common_required = {
         "schema",
         "paper",
         "command",
         "target",
         "result",
         "commit",
-        "status_sha256",
-        "statement_map_sha256",
-        "source_artifact_sha256",
-        "paper_interface_sha256",
-        "formalization_review_protocol_sha256",
     }
-    if not isinstance(payload, Mapping) or set(payload) != required:
+    if not isinstance(payload, Mapping):
         raise FinalClosureReceiptError("focused build receipt fields are malformed")
-    if payload.get("schema") != FOCUSED_BUILD_RECEIPT_SCHEMA:
+    schema = payload.get("schema")
+    if schema not in LEGACY_FOCUSED_BUILD_RECEIPT_SCHEMAS:
         raise FinalClosureReceiptError("focused build receipt schema is unsupported")
+    if schema == 1:
+        schema_required = {
+            "status_sha256",
+            "statement_map_sha256",
+            "source_artifact_sha256",
+            "paper_interface_sha256",
+            "formalization_review_protocol_sha256",
+        }
+    elif schema == FOCUSED_BUILD_RECEIPT_SCHEMA:
+        schema_required = {
+            "paper_interface_closure_sha256",
+        }
+    else:
+        schema_required = {
+            "lean_entrypoint",
+            "lean_import_closure_sha256",
+        }
+    if set(payload) != common_required | schema_required:
+        raise FinalClosureReceiptError("focused build receipt fields are malformed")
     if _required_string(payload, "paper") != paper:
         raise FinalClosureReceiptError("focused build receipt paper does not match")
-    status, _source_map, source_path, status_path, map_path, interface_path = (
-        _current_focused_build_inputs(root, paper)
-    )
+    status, _status_path = _current_focused_build_status(root, paper)
     if _required_string(payload, "command") != _required_string(status, "build_target"):
         raise FinalClosureReceiptError("focused build receipt command is stale")
     if _required_string(payload, "target") != paper:
@@ -749,16 +1310,72 @@ def validate_focused_build_receipt(
         raise FinalClosureReceiptError(
             "focused build receipt was issued for a different Git commit"
         )
-    expected_pins = {
-        "status_sha256": status_path,
-        "statement_map_sha256": map_path,
-        "source_artifact_sha256": source_path,
-        "paper_interface_sha256": interface_path,
-    }
+    expected_pins: dict[str, Path] = {}
+    if schema == 1:
+        (
+            _legacy_status,
+            _source_map,
+            source_path,
+            legacy_status_path,
+            map_path,
+            interface_path,
+        ) = _current_focused_build_inputs(root, paper)
+        expected_pins.update(
+            {
+                "status_sha256": legacy_status_path,
+                "statement_map_sha256": map_path,
+                "source_artifact_sha256": source_path,
+                "paper_interface_sha256": interface_path,
+            }
+        )
+    elif schema == FOCUSED_BUILD_RECEIPT_SCHEMA:
+        expected_closure = _required_sha256(
+            payload, "paper_interface_closure_sha256"
+        )
+        if _current_interface_closure(
+            root,
+            paper,
+            expected_identity=expected_closure,
+        ) != expected_closure:
+            raise FinalClosureReceiptError(
+                "focused build receipt `paper_interface_closure_sha256` is stale"
+            )
+    else:
+        try:
+            if authenticated_lean_import_closure_receipt is None:
+                closure_path = lean_import_closure_receipt_path(root, paper)
+                raw_closure_receipt = json.loads(
+                    closure_path.read_text(encoding="utf-8")
+                )
+            else:
+                raw_closure_receipt = authenticated_lean_import_closure_receipt
+            closure_receipt = validated_lean_import_closure_receipt_payload(
+                raw_closure_receipt,
+                paper=paper,
+            )
+            closure = validated_lean_import_closure_payload(
+                closure_receipt.get("lean_import_closure")
+            )
+        except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
+            raise FinalClosureReceiptError(
+                "current Lean import-closure receipt is invalid: " + str(exc)
+            ) from exc
+        expected_closure = _required_sha256(
+            payload, "lean_import_closure_sha256"
+        )
+        if (
+            closure_receipt.get("lean_import_closure_sha256") != expected_closure
+            or lean_import_closure_payload_sha256(closure) != expected_closure
+            or _required_string(payload, "lean_entrypoint")
+            != str(closure["entrypoint"])
+        ):
+            raise FinalClosureReceiptError(
+                "focused build receipt Lean import closure is stale"
+            )
     for field, current_path in expected_pins.items():
         if _required_sha256(payload, field) != _sha256_file(current_path):
             raise FinalClosureReceiptError(f"focused build receipt `{field}` is stale")
-    if _required_sha256(
+    if schema == 1 and _required_sha256(
         payload, "formalization_review_protocol_sha256"
     ) != formalization_review_protocol_digest():
         raise FinalClosureReceiptError("focused build receipt protocol is stale")
@@ -766,159 +1383,23 @@ def validate_focused_build_receipt(
 
 
 def _status_requires_v11_source_spec_screening(status: Mapping[str, Any]) -> bool:
-    review_surface = status.get("review_surface")
-    return isinstance(review_surface, Mapping) and review_surface.get(
-        "require_source_spec_correspondence"
-    ) is True
-
-
-def issue_final_closure_receipt(
-    root: Path,
-    paper: str,
-    *,
-    evidence_lane: str,
-    review_ledger_path: str,
-    run_build: bool,
-    reuse_focused_build_receipt: bool = False,
-) -> Path:
-    """Run the focused build and write a newly current canonical receipt."""
-
-    if evidence_lane not in EVIDENCE_LANES:
-        raise FinalClosureReceiptError("unsupported evidence lane")
-    if run_build == reuse_focused_build_receipt:
-        raise FinalClosureReceiptError(
-            "issue exactly one focused-build proof: `--run-focused-build` or a current focused build receipt"
-        )
-    paper_dir = root / "papers" / paper
-    status_path = paper_dir / "status.json"
-    map_path = paper_dir / "audit" / "paper_statement_map.json"
-    try:
-        status = json.loads(status_path.read_text(encoding="utf-8"))
-        source_map = json.loads(map_path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-        raise FinalClosureReceiptError(f"cannot issue receipt from unreadable input: {exc}") from exc
-    if not isinstance(status, Mapping) or not isinstance(source_map, Mapping):
-        raise FinalClosureReceiptError("status and source map must be JSON objects")
-    build_command = _required_string(status, "build_target")
-    source_relative = _required_string(source_map, "source_artifact_path")
-    source_path = _source_artifact_path_from_map(root, paper, source_relative)
-    ledger_path = _paper_local_path(root, paper, review_ledger_path, field="review_ledger")
-    if not ledger_path.is_file():
-        raise FinalClosureReceiptError("review ledger does not exist")
-    if (
-        evidence_lane == DIRECT_SOURCE_ROW_REVIEW_LANE
-        and _status_requires_v11_source_spec_screening(status)
-        and ledger_path.resolve() != (paper_dir / V11_SCREENING_LEDGER_RELATIVE).resolve()
-    ):
-        raise FinalClosureReceiptError(
-            "a v11 source-spec closeout using direct-source-row-review must bind "
-            f"`{V11_SCREENING_LEDGER_RELATIVE.as_posix()}` as its review ledger"
-        )
-    build_receipt: Mapping[str, Any] | None = None
-    if run_build:
-        _focused_build(root, build_command)
-        focused_build_commit = _git_head(root)
-    else:
-        build_receipt = validate_focused_build_receipt(
-            root, paper, require_current_head=True
-        )
-        focused_build_commit = _required_string(build_receipt, "commit")
-    closure_digest = _current_interface_closure(root, paper)
-    payload: dict[str, Any] = {
-        "schema": RECEIPT_SCHEMA if build_receipt is not None else 2,
-        "paper": paper,
-        "closure_status": "current",
-        "evidence_lane": evidence_lane,
-        "source_artifact": {
-            "path": source_path.relative_to(root).as_posix(),
-            "sha256": _sha256_file(source_path),
-        },
-        "statement_map": {
-            "path": map_path.relative_to(root).as_posix(),
-            "sha256": _sha256_file(map_path),
-        },
-        "paper_interface_closure": {
-            "root": "PaperInterface.lean",
-            "sha256": closure_digest,
-        },
-        "review_ledger": _review_ledger_pin(root, ledger_path),
-        "focused_build": {
-            "command": build_command,
-            "target": paper,
-            "result": "passed",
-            "commit": focused_build_commit,
-        },
-        "protocol": {
-            "formalization_review_protocol_sha256": formalization_review_protocol_digest(),
-        },
-        "closed_at": date.today().isoformat(),
-    }
-    if evidence_lane == RAW_SOURCE_RECORD_LANE:
-        raw_path = paper_dir / "audit" / "source_record_audit.json"
-        payload["raw_source_record"] = {
-            "path": raw_path.relative_to(root).as_posix(),
-            "sha256": _sha256_file(raw_path),
-        }
-    if build_receipt is not None:
-        build_receipt_path = focused_build_receipt_path(root, paper)
-        payload["focused_build_receipt"] = {
-            "path": build_receipt_path.relative_to(root).as_posix(),
-            "sha256": _sha256_file(build_receipt_path),
-        }
-    text = _render_receipt(payload)
-    receipt_path = final_closure_receipt_path(root, paper)
-    receipt_path.write_text(text, encoding="utf-8")
-    validate_final_closure_receipt(root, paper, required_lane=evidence_lane)
-    return receipt_path
-
-
-def _render_table(name: str, value: Mapping[str, Any]) -> list[str]:
-    lines = [f"[{name}]"]
-    for key, scalar in value.items():
-        lines.append(f"{key} = {_toml_string(str(scalar))}")
-    lines.append("")
-    return lines
-
-
-def _render_receipt(payload: Mapping[str, Any]) -> str:
-    lines = ["+++"]
-    for key in ("schema", "paper", "closure_status", "evidence_lane", "closed_at"):
-        value = payload[key]
-        lines.append(
-            f"{key} = {value}" if isinstance(value, int) else f"{key} = {_toml_string(str(value))}"
-        )
-    lines.append("")
-    for key in (
-        "source_artifact",
-        "statement_map",
-        "paper_interface_closure",
-        "review_ledger",
-        "raw_source_record",
-        "focused_build",
-        "focused_build_receipt",
-        "protocol",
-    ):
-        value = payload.get(key)
-        if isinstance(value, Mapping):
-            lines.extend(_render_table(key, value))
-    lines.extend(
-        [
-            "+++",
-            "",
-            "# Final Closure Receipt",
-            "",
-            "This receipt binds the current final-closeout inputs. See the pinned review ledger for the source-row reasoning.",
-            "",
-        ]
-    )
-    return "\n".join(lines)
+    return explicit_raw_source_spec_screening_requested(status)
 
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--paper", required=True)
+    parser.add_argument("--paper")
     parser.add_argument("--check", action="store_true")
-    parser.add_argument("--write", action="store_true")
+    parser.add_argument(
+        "--diagnose-import-closure-accelerators",
+        action="store_true",
+        help=(
+            "compare one paper's, or every checked-in paper's, non-accepting "
+            "portable import-closure carrier with current repository inputs; "
+            "never invoke semantic recovery or grant closure; exit zero means "
+            "the diagnostic completed, not that every carrier matched"
+        ),
+    )
     parser.add_argument(
         "--record-focused-build",
         action="store_true",
@@ -927,15 +1408,20 @@ def _parser() -> argparse.ArgumentParser:
             "the canonical final closure receipt may reuse it at the same commit"
         ),
     )
-    parser.add_argument("--evidence-lane", choices=sorted(EVIDENCE_LANES))
-    parser.add_argument("--review-ledger")
-    parser.add_argument("--run-focused-build", action="store_true")
     parser.add_argument(
-        "--reuse-focused-build-receipt",
+        "--record-lean-import-closure",
         action="store_true",
         help=(
-            "with --write, reuse audit/FOCUSED_BUILD_RECEIPT.json only when its "
-            "current input pins and Git commit match"
+            "persist Lean's canonical transitive import-closure record for "
+            "fast path-independent validation of an already-current receipt"
+        ),
+    )
+    parser.add_argument(
+        "--record-current-lean-import-closure",
+        action="store_true",
+        help=(
+            "ask Lean for the current transitive PaperInterface closure and "
+            "write its non-accepting portable carrier before v11 review"
         ),
     )
     parser.add_argument("--allow-missing-source-bytes", action="store_true")
@@ -945,48 +1431,68 @@ def _parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     selected_actions = sum(
-        bool(value) for value in (args.check, args.write, args.record_focused_build)
+        bool(value)
+        for value in (
+            args.check,
+            args.diagnose_import_closure_accelerators,
+            args.record_focused_build,
+            args.record_lean_import_closure,
+            args.record_current_lean_import_closure,
+        )
     )
     if selected_actions != 1:
-        raise SystemExit("choose exactly one of --check, --write, or --record-focused-build")
-    if args.record_focused_build and (
-        args.evidence_lane
-        or args.review_ledger
-        or args.run_focused_build
-        or args.reuse_focused_build_receipt
-    ):
-        raise SystemExit("--record-focused-build cannot be combined with receipt-issue options")
-    if args.reuse_focused_build_receipt and not args.write:
-        raise SystemExit("--reuse-focused-build-receipt requires --write")
-    if args.write and args.run_focused_build == args.reuse_focused_build_receipt:
         raise SystemExit(
-            "--write requires exactly one of --run-focused-build or --reuse-focused-build-receipt"
+            "choose exactly one of --check, "
+            "--diagnose-import-closure-accelerators, --record-focused-build, "
+            "--record-lean-import-closure, or "
+            "--record-current-lean-import-closure"
+        )
+    if not args.diagnose_import_closure_accelerators and not args.paper:
+        raise SystemExit("--paper is required for this action")
+    if args.allow_missing_source_bytes and not args.check:
+        raise SystemExit(
+            "--allow-missing-source-bytes is valid only with --check"
         )
     try:
-        if args.record_focused_build:
+        if args.diagnose_import_closure_accelerators:
+            print(
+                json.dumps(
+                    diagnose_import_closure_accelerators(
+                        ROOT,
+                        paper=args.paper,
+                    ),
+                    ensure_ascii=True,
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+        elif args.record_current_lean_import_closure:
+            path = record_current_lean_import_closure_receipt(ROOT, args.paper)
+            print(f"wrote {path.relative_to(ROOT)}")
+        elif args.record_lean_import_closure:
+            path = record_lean_import_closure_receipt(ROOT, args.paper)
+            print(f"wrote {path.relative_to(ROOT)}")
+        elif args.record_focused_build:
             path = record_focused_build_receipt(ROOT, args.paper)
             print(f"wrote {path.relative_to(ROOT)}")
-        elif args.check:
-            validate_final_closure_receipt(
+        else:
+            current = validate_final_closure_receipt(
                 ROOT,
                 args.paper,
                 allow_missing_source_bytes=args.allow_missing_source_bytes,
             )
-            print(f"final closure receipt is current: {args.paper}")
-        else:
-            if not args.evidence_lane or not args.review_ledger:
-                raise FinalClosureReceiptError(
-                    "--write requires --evidence-lane and --review-ledger"
+            if current.terminal_validation_route == "lean_semantic_recovery":
+                detail = (
+                    f" ({current.terminal_validation_detail})"
+                    if current.terminal_validation_detail
+                    else ""
                 )
-            path = issue_final_closure_receipt(
-                ROOT,
-                args.paper,
-                evidence_lane=args.evidence_lane,
-                review_ledger_path=args.review_ledger,
-                run_build=args.run_focused_build,
-                reuse_focused_build_receipt=args.reuse_focused_build_receipt,
-            )
-            print(f"wrote {path.relative_to(ROOT)}")
+                print(
+                    "final closure receipt is current via Lean semantic "
+                    f"recovery after import-container drift: {args.paper}{detail}"
+                )
+            else:
+                print(f"final closure receipt is current: {args.paper}")
     except FinalClosureReceiptError as exc:
         print(f"final-closure-receipt: {exc}", file=sys.stderr)
         return 1

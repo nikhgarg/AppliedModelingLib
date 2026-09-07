@@ -1,0 +1,1658 @@
+{
+  "approved_review_context_schema": 1,
+  "items": {
+    "algorithm1_seq_eliminate": {
+      "aliases": [
+        "finsetSeqEliminateOutput",
+        "canonicalFreshFinsetSeqEliminateOutputLaw"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.canonicalFreshUniformSeqEliminateOutputLaw"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 233,
+          "line_start": 222,
+          "publication_locator": "cited publication",
+          "quoted_text": "Algorithm 1 S EQ -E LIMINATE\n 1: inputs\n 2:   Set S, bias ε, confidence δ\n 3: n ← ∣S∣\n 4: r ← a random c ∈ S, S = S ∖ {r}\n 5: while S ≠ ∅ do\n 6:   Pick a random c ∈ S, S = S ∖ {c}.\n 7:   if C OMPARE(c, r, 0, ε, nδ ) = 2 then\n 8:      r←c\n 9:   end if\n10: end while\n11: return r",
+          "quoted_text_sha256": "69bd7ff52eaff9502b33865b1eca6de7b262dc5fb4bb548d5ef6798263f58db7"
+        }
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:222-233",
+      "source_note": "Algorithm 1 exact random-order execution surface; the fixed-order elimination theorem is an internal conditional proof kernel.",
+      "statement": "Seq-Eliminate draws a uniformly random full ordering of the n candidates, starts from its first candidate, compares each later challenger with the current running candidate using Compare at confidence delta/n, replaces the incumbent exactly when Compare returns the upper decision, and returns the final incumbent."
+    },
+    "algorithm2_prune": {
+      "aliases": [
+        "stoppedPruneRounds",
+        "freshStoppedPruneTraceStateLaw"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.stoppedPruneRounds",
+        "FalahatgarEtAl2017MaxingRanking.freshStoppedPruneTraceStateLaw"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 324,
+          "line_start": 308,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fAlgorithm 2 P RUNE\n 1: inputs\n 2:   Set S, element a, size n′ , lower bias εl , upper bias εu , confidence δ.\n 3: t ← 1\n 4: S1 ← S\n                                   2\n 5: while ∣St ∣ > 2n′ and t < log n do\n 6:   Initialize: Qt ← ∅\n 7:   for e in St do\n 8:      if C OMPARE(e, a, εl , εu , δ/2t+1 ) = 1 then\n 9:         Qt ← Qt ⋃{e}\n10:      end if\n11:   end for\n12:   St+1 ← St ∖ Qt\n13:   t←t+1\n14: end while\n15: return St .",
+          "quoted_text_sha256": "87856fad50592758dec7727cf854b466e352adb1a44f78fe97284f416b8a6a16"
+        }
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:308-324",
+      "source_note": "Algorithm 2 direct stopped-round execution surface. With rounds numbered from one, the checked finite horizon is floor(log_2 n)^2 - 1.",
+      "statement": "Prune starts from S, tests every active element against an anchor at the geometrically allocated confidence delta/2^(t+1), removes lower decisions, and stops once at most 2n' elements remain or its squared-log round guard is reached."
+    },
+    "algorithm3_opt_maximize": {
+      "aliases": [
+        "canonicalOptMaximizeSourceLogAlgorithmOutputLaw",
+        "sourceOptMaximizeCutoff"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.canonicalOptMaximizeSourceLogAlgorithmOutputLaw",
+        "FalahatgarEtAl2017MaxingRanking.sourceOptMaximizeCutoff"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 391,
+          "line_start": 375,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fAlgorithm 3 O PT-M AXIMIZE\n 1: inputs\n 2:    Set S, bias ε, confidence δ.\n 3: if δ ≤ n1 then\n 4:    return S EQ -E LIMINATE(S, ε, δ)\n 5: end if                    √\n 6: a ← P ICK -A NCHOR(S, 6n log n, ε/3, 4δ )\n                         √\n 7: S ′ ← P RUNE(S, a, 6n log n, ε/3, 2ε/3, 4δ )\n 8: for element e in S ′ do\n 9:    if C OMPARE(e, a, 2ε3\n                                   δ\n                             , ε, 4n ) = 2 then\n10:      return S EQ -E LIMINATE(S ′ , ε, 4δ )\n11:   end if\n12: end for\n13: return a",
+          "quoted_text_sha256": "e5961e520770e304d779876de8b646de0a4098dbde83afabe582064834f3de2e"
+        }
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:375-391",
+      "source_note": "Algorithm 3 literal delta/4 execution surface with its printed base-confidence branch.",
+      "statement": "OPT-Maximize uses Seq-Eliminate in the base-confidence branch; otherwise it runs Pick-Anchor, Prune, the final anchor checks, and if needed Seq-Eliminate on the pruned set."
+    },
+    "algorithm4_compare": {
+      "aliases": [
+        "adaptiveCompare"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.adaptiveCompare"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 759,
+          "line_start": 737,
+          "publication_locator": "cited publication",
+          "quoted_text": "Algorithm 4 C OMPARE\n 1: inputs\n 2:    element i, element j, bias lower limit εl ≥ 0, bias upper limit εu > εl , confidence δ\n 3: initialize\n 4:    εm = (εl + εu )/2, p̃ˆi,j ← 0, ĉ ← 21 , t ← 0, w ← 0\n 5: while ∣p̃ˆi,j − εm ∣ ≤ ĉ and t ≤ (ε −ε\n                                          2            2\n                                                 2 log δ do\n                                        u     l)\n 6:     Compare i and j\n 7:     if i wins then\n 8:          w ←w+1\n 9:     end if\n10:     t←t+1                  √\n                                            2\n11:     p̃ˆi,j ← wt − 12 , ĉ ← 2t\n                                 1\n                                    log 4tδ\n12: end while\n13: if p̃ˆi,j ≤ εm then\n14:     return 1\n15: end if\n16: return 2",
+          "quoted_text_sha256": "7de29c25300a96214dcbb0cba7166b4a6bce51687d1194a134139469d45665fb"
+        }
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:737-759",
+      "source_note": "Algorithm 4 adaptive comparison test.",
+      "statement": "Compare monitors the centered empirical estimate against its confidence radius until separation or the finite cap and returns the lower or upper hypothesis by the displayed midpoint rule."
+    },
+    "algorithm5_pick_anchor": {
+      "aliases": [
+        "pickAnchorUniformSampleLaw",
+        "canonicalFreshPickAnchorOutcomeLaw"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.pickAnchorUniformSampleLaw",
+        "FalahatgarEtAl2017MaxingRanking.canonicalFreshPickAnchorOutcomeLaw"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 884,
+          "line_start": 880,
+          "publication_locator": "cited publication",
+          "quoted_text": "Algorithm 5 P ICK -A NCHOR\n 1: inputs\n 2:   Set S of size n, size n′ , bias ε, confidence δ.\n 3: Form a set Q by selecting min ( nn′ log 2δ , n) random elements from S without replacement.\n 4: return S EQ -E LIMINATE(Q, ε, 2δ )",
+          "quoted_text_sha256": "cb2e277c2b35997c44ab0a885797e8c5cc78a4762291fdfc3050a68acedca555"
+        }
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:880-884",
+      "source_note": "Algorithm 5 direct sampler and fresh-call execution surface; its induced per-call schedule is delta/(2|Q|), correcting a PDF-text extraction artifact.",
+      "statement": "Pick-Anchor samples a capped uniform subset without replacement and runs Seq-Eliminate on that realized subset with confidence delta/2."
+    },
+    "algorithm6_estimate_probability": {
+      "aliases": [
+        "strongTransitivityPairEmpiricalGap"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.estimateProbabilitySampleBudget",
+        "FalahatgarEtAl2017MaxingRanking.strongTransitivityPairEmpiricalGap"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 1173,
+          "line_start": 1169,
+          "publication_locator": "cited publication",
+          "quoted_text": "Algorithm 6 E STIMATE -P ROBABILITY\n 1: inputs\n 2:   element i, element j, bias ε, confidence δ.\n 3: Compare i and j for 2ε12 log 2δ times.\n 4: return Fraction of times i won",
+          "quoted_text_sha256": "f1dc8fb49dd8bf41681bd4fe9510dc5647ef48e7b64a7167a5c55df91c9206f9"
+        }
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:1169-1173",
+      "source_note": "Algorithm 6 fixed pairwise estimator. The coefficient was rechecked on Supplemental PDF page 17 because the tracked text extraction reverses the displayed fraction into 2/epsilon^2.",
+      "statement": "Estimate-Probability returns the fraction of wins after ceiling(1/(2 epsilon^2) log(2/delta)) comparisons."
+    },
+    "algorithm7_strong_transitivity_ranking": {
+      "aliases": [
+        "canonicalStrongTransitivityRankingEstimate",
+        "strongTransitivityRankingOutput"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.canonicalStrongTransitivityRankingEstimate",
+        "FalahatgarEtAl2017MaxingRanking.strongTransitivityRankingOutput"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "prior_result",
+          "source_anchor_evidence": [
+            {
+              "line_end": 1222,
+              "line_start": 1202,
+              "publication_locator": "cited publication",
+              "quoted_text": "Lemma 20. S TRONG -T RANSITIVITY-R ANKING(S, ε, δ) uses O( nε2 log nδ ) comparisons and w.p.≥ 1 − δ\nreturns an ε-ranking.\n\nProof. S TRONG -T RANSITIVITY-R ANKING calls E STIMATE -P ROBABILITY for O(n2 ) times, once for each\npair and each EP (i, j, ε/2, δ/n2 ) uses O( ε12 log nδ ) comparisons and hence bound on comparisons follow.\n\n\n                                                      17\n\fW.p.≥ 1 − δ/n2 , E STIMATE -P ROBABILITY(i, j, ε/2, δ/n2 ) approximates pi,j with p̂i,j such that ∣pi,j − p̂i,j ∣ ≤\n ε\n 2\n   . By the union bound, w.p.≥ 1 − δ, ∣pi,j − p̂i,j ∣ ≤ 2ε ∀i, j, ∈ S. From here we assume that ∣pi,j − p̂i,j ∣ ≤ 2ε\n∀i, j, ∈ S and show that the output is an ε-ranking. Let S t denote the set of remaining elements in S after\nt elements are removed from S. We first show that for 0 ≤ t ≤ n − 1, there is one element e such that\np̂e,j ≥ 21 − ε ∀j ∈ S t and such an element is an ε-maximum of S t . Observe that if there is an element e such\nthat p̂e,j ≥ 21 − ε/2 ∀j ∈ S t then pe,j ≥ 12 − ε ∀j ∈ S t and hence e is an ε-maximum of S t . Further recall\nthat for the absolute maximum at∗ of S t , pat∗ ,j ≥ 21 ∀j ∈ S t and hence p̂at∗ ,j ≥ 12 − ε/2 ∀j ∈ S t . Therefore\nthere will be at least one element e s.t. p̂e,j ≥ 21 − ε/2 and such an element will be an ε-maximum of S t .\nS TRONG -T RANSITIVITY-R ANKING deletes one such element from S t and adds it to the end of the ordered\noutput set. Since for every t, S TRONG -T RANSITIVITY-R ANKING adds an ε-maximum of S t to the output set,\nthe Lemma follows.",
+              "quoted_text_sha256": "e9b7ac342ee54964934bc5eab656cbe31934c94bd8c115d2a03ceb19f1533414"
+            }
+          ]
+        }
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 1199,
+          "line_start": 1182,
+          "publication_locator": "cited publication",
+          "quoted_text": "Algorithm 7 S TRONG -T RANSITIVITY-R ANKING\n 1: inputs\n 2:   Set S, bias ε, confidence δ\n 3: for every pair {i, j} such that i, j ∈ S do\n 4:   p̂i,j ← E STIMATE -P ROBABILITY(i, j, ε/2, δ/n2 )\n 5:   p̂j,i ← 1 − p(i, j)\n 6: end for\n 7: ordered set T ← ∅\n 8: while ∣S∣ > 0 do\n 9:   if ∃e s.t. p̂e,f ≥ 12 − ε ∀f ∈ S then\n10:       Add e at the end of T\n11:       S = S ∖ {e}\n12:   else\n13:       Add S at the end of T\n14:       return T\n15:   end if\n16: end while\n17: return T",
+          "quoted_text_sha256": "0619ae7a8af0699abe78feff89976af31994ff7f127e53a1c7e4933ae1ddae32"
+        }
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:1182-1199",
+      "source_note": "Algorithm 7 direct finite ranking execution surface. Lean uses the proof-consistent epsilon/2 empirical threshold and the complementary reverse estimate; the PDF display omits the hat in the reverse assignment and prints epsilon rather than epsilon/2 on the selection line.",
+      "statement": "Strong-Transitivity-Ranking estimates every unordered pair once, uses complementary reverse estimates, and repeatedly appends an empirical threshold-maximum of the remaining set."
+    },
+    "algorithm8_estimate_borda_score": {
+      "aliases": [
+        "bordaEmpiricalScore"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.estimateBordaScoreSampleBudget",
+        "FalahatgarEtAl2017MaxingRanking.bordaEmpiricalScore"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 1240,
+          "line_start": 1228,
+          "publication_locator": "cited publication",
+          "quoted_text": "Algorithm 8 E STIMATE -B ORDA -S CORE\n 1: inputs\n 2:   set S, element e, bias ε, confidence δ.\n 3: Initialize: w ← 0, ŝ ← 21 , m ← 2ε12 log 2δ .\n 4: for k = 1 to k = m do\n 5:   Compare e with random element ∈ S\n 6:   if e wins then\n 7:       w ←w+1\n 8:   end if\n 9:   ŝ = w\n           k\n10: end for\n11: return ŝ",
+          "quoted_text_sha256": "67a1415c115a4731fa54037bc07b6c738db3b1f9a17ab1f039fa806745c0a553"
+        }
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:1228-1240",
+      "source_note": "Algorithm 8 direct Borda-score estimator. The coefficient was rechecked on Supplemental PDF page 18 because the tracked text extraction reverses the displayed fraction into 2/epsilon^2.",
+      "statement": "Estimate-Borda-Score compares the selected element with uniformly random opponents for ceiling(1/(2 epsilon^2) log(2/delta)) trials and returns its empirical win fraction."
+    },
+    "algorithm9_borda_ranking": {
+      "aliases": [
+        "empiricalBordaRanking"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.IsEmpiricalBordaRankingRule"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 1256,
+          "line_start": 1248,
+          "publication_locator": "cited publication",
+          "quoted_text": "Algorithm 9 B ORDA -R ANKING\n 1: inputs\n 2:   set S, bias ε, confidence δ.\n 3: Initialize: be ← 21 for all e ∈ S\n 4: for element e in S do\n 5:   be ← E STIMATE -B ORDA -S CORE(S, e, 2ε , nδ )\n 6: end for\n 7: Rank S according to be .\n 8: return S.",
+          "quoted_text_sha256": "a70525332bec398fcf376f96e3303a91880605eb4ca13bc3d828205e580002ea"
+        }
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:1248-1256",
+      "source_note": "Algorithm 9 direct empirical Borda ranking surface.",
+      "statement": "Borda-Ranking estimates every arm's Borda score at accuracy epsilon/2 and confidence delta/n, then orders all arms by those estimates."
+    },
+    "approximate_preference_vocabulary": {
+      "aliases": [
+        "EpsilonMaximum",
+        "EpsilonPreferenceRanking"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.EpsilonMaximum",
+        "FalahatgarEtAl2017MaxingRanking.EpsilonPreferenceRanking"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 72,
+          "line_start": 65,
+          "publication_locator": "cited publication",
+          "quoted_text": "Let p̃i,j = pi,j − 12 be the centered preference probability. Note that p̃i,j ≥ 0 iff i is preferable to\nj. If p̃i,j ≥ −ε we say that i is ε-preferable to j. For 0 < ε < 1/2, an element i ∈ [n] is ε-maximum\nif it is ε-preferable to all other elements, namely, p̃i,j ≥ −ε ∀j ≠ i. Given ε > 0, 12 ≥ δ > 0, a\nPAC maxing algorithm must output an ε-maxima with probability ≥ 1 − δ, henceforth abbreviated\nwith high probability (WHP). Similarly, a permutation `1 , . . . ,`n of {1, . . . ,n} is an ε-ranking if `i\nis ε-preferable to `j for all i ≤ j, and a PAC ranking algorithm must output an ε-ranking WHP. Note\nthat in this paper, we consider δ ≤ 21 , the more practical regime. For larger values of δ, one can use\nour algorithms with δ = 12 .",
+          "quoted_text_sha256": "7716ac7ca6ae33b15cc854b7a316740206bb1842e0599eb6631834ce5da1283c"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:65-72",
+      "source_note": "PAC approximate maximum and ranking vocabulary and confidence regime.",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "011ddb5b3289a3d5c43688b7cc7d0ebce3216f4418228144e23ef4ebfa56d14d",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "The map row and source passage define the same centered and approximate preference predicates.",
+        "source_item_statement_sha256": "fbd218369e64b90ea94ba939397835958abc60acb2769b9bfb20fa9fa3c1b289",
+        "validated_at": "2026-08-28T00:00:00Z",
+        "validator": "Codex Falahatgar source-to-map reviewer",
+        "validator_type": "agent"
+      },
+      "statement": "The centered gap is p(i,j)-1/2; epsilon-preferability permits centered gap at least -epsilon; epsilon-maxima and epsilon-rankings satisfy that relation against every competitor or every later position, with success probability at least 1-delta."
+    },
+    "borda_vocabulary": {
+      "aliases": [
+        "bordaScore",
+        "EpsilonBordaMaximum",
+        "EpsilonBordaRanking"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.bordaScore",
+        "FalahatgarEtAl2017MaxingRanking.EpsilonBordaMaximum",
+        "FalahatgarEtAl2017MaxingRanking.EpsilonBordaRanking"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 117,
+          "line_start": 112,
+          "publication_locator": "cited publication",
+          "quoted_text": "score s(i) = n1 ∑j pi,j is the probability that i is preferable to another, randomly selected, element.\nElement i is Borda maximal if s(i) = maxj s(j), and ε-Borda maximal if s(i) ≥ maxj s(j) − ε. A\nPAC Borda-maxing algorithm outputs an ε-Borda maximal element WHP (with probability ≥ 1 − δ).\nSimilarly, a Borda ranking is a permutation i1 , . . . ,in such that for all 1 ≤ j ≤ n − 1, s(ij ) ≥ s(ij+1 ).\nAn ε-Borda ranking is a permutation where for all 1 ≤ j ≤ k ≤ n, s(ij ) ≥ s(ik ) − ε. A PAC\nBorda-ranking algorithm outputs an ε-Borda ranking WHP.",
+          "quoted_text_sha256": "eb027ec975021f88a1f98b65365e1c6182136e7c2de014c9ffcf021c9ccdb184"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:112-117",
+      "source_note": "Borda score, maximum, and ranking vocabulary for the assumption-free section.",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "f0141bb1d9009ec24e7346a1d82e4280d6357f63904d0f113c7fca1f533e4fd3",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "The map row and source passage define the same finite Borda score and approximate Borda objectives.",
+        "source_item_statement_sha256": "3e0e3aba42f2cca66998d20828a77d6eacec0b4d5172f6bc52e85390b366dda1",
+        "validated_at": "2026-08-28T00:00:00Z",
+        "validator": "Codex Falahatgar source-to-map reviewer",
+        "validator_type": "agent"
+      },
+      "statement": "The Borda score is the average pairwise win probability against a uniformly selected element; epsilon-Borda maxima and rankings are within epsilon of the best score or of every later score."
+    },
+    "comparison_model": {
+      "aliases": [
+        "CenteredComparisonProbabilities",
+        "BordaWinProbabilities"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.CenteredComparisonProbabilities",
+        "FalahatgarEtAl2017MaxingRanking.BordaWinProbabilities"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 51,
+          "line_start": 48,
+          "publication_locator": "cited publication",
+          "quoted_text": "Consider a set of n elements, without loss of generality [n] = {1, 2, . . . , n}. A probabilistic model,\nor model for short, is an assignment of a preference probability pi,j ∈ [0, 1] for every i ≠ j ∈\n[n], reflecting the probability that i is preferred when compared with j. We assume that repeated\ncomparisons are independent and that there are no “draws”, hence pj,i = 1 − pi,j .",
+          "quoted_text_sha256": "fb920e7521fdb0f6567888f71904d1478b9123b28c9589f132ff324ec39d9f8d"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:48-51",
+      "source_note": "The governing finite no-draw pairwise-comparison model used throughout the paper.",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "f3912d07e4da4cc9020e74bc17841a3697846b1b757d612b6e390212f189488d",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "The map row and source passage define the same finite pairwise comparison model.",
+        "source_item_statement_sha256": "77420b4e6ba99441c855f4d855ae70563d394fe8582b5c9e2e016df6d777e7c6",
+        "validated_at": "2026-08-28T00:00:00Z",
+        "validator": "Codex Falahatgar source-to-map reviewer",
+        "validator_type": "agent"
+      },
+      "statement": "A finite probabilistic comparison model assigns each distinct ordered pair a preference probability in [0,1], repeated comparisons are independent, and reverse probabilities are complementary."
+    },
+    "exact_preference_vocabulary": {
+      "aliases": [
+        "AbsoluteMaximum",
+        "PreferenceRanking"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.AbsoluteMaximum",
+        "FalahatgarEtAl2017MaxingRanking.PreferenceRanking"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 59,
+          "line_start": 54,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fIf pi,j ≥ 12 , we say that i is preferable to j and write i ≥ j. Element i is maximal in a model if i ≥ j\nfor all j ≠ i. And a permutation `1 , . . . ,`n is a ranking if `i ≥ `j for all i ≤ j. Observe that the\nfirst element of any ranking is always maximal. For example, for n = 3, p1,2 = 1/2, p1,3 = 1/3, and\np2,3 = 2/3, we have 1 ≥ 2, 2 ≥ 1, 3 ≥ 1, and 2 ≥ 3. Hence 2 is the unique maximum, and 2,3,1 is\nthe unique ranking. We seek algorithms that without knowing the underlying model, use pairwise\ncomparisons to find a maximal element and a ranking.",
+          "quoted_text_sha256": "53dacc0c284b382bf9349e6d3e5d71bed76bf03c96bbea0394106b87c84b4e05"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:54-59",
+      "source_note": "Exact maximum and ranking vocabulary.",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "5bf01259d23c25b0d70e48138f9409cc67be03dbfaedbe97a6e03e93b8ca8ebc",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "The map row and source passage define the same exact preference, maximum, and ranking predicates.",
+        "source_item_statement_sha256": "61fd545498e06853a5d0c5250ab4d6fb5238bee665c59fbc9fe3d391b6d572f0",
+        "validated_at": "2026-08-28T00:00:00Z",
+        "validator": "Codex Falahatgar source-to-map reviewer",
+        "validator_type": "agent"
+      },
+      "statement": "Preferability means comparison probability at least one half; a maximum is preferable to every other element; and a ranking orders every earlier element as preferable to every later element."
+    },
+    "good_anchor_definition": {
+      "aliases": [
+        "GoodAnchor"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.GoodAnchor"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 264,
+          "line_start": 263,
+          "publication_locator": "cited publication",
+          "quoted_text": "An element a is called an (ε, n′ )-good anchor if a is not ε-preferable to at most n′ elements, i.e.,\n∣{e ∶ e ∈ S and p̃e,a > ε}∣ ≤ n′ .",
+          "quoted_text_sha256": "319c0d6bdb92ff7ba5e9119fdc455071c1b3757abb77fc51793d4beec08f1717"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:263-264",
+      "source_note": "Definition used by Pick-Anchor, Prune, and OPT-Maximize.",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "fdb28a23652c24ce4d10854fd72ad76554ad4d41bf3c93d49dc9117fb17e3543",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "The map row and source passage define the same strict-better-arm cardinality predicate.",
+        "source_item_statement_sha256": "69d6919e5f4e30c6745f7c73d71e2848d2c7fbb63d4abcd6e386973b28b315c9",
+        "validated_at": "2026-08-28T00:00:00Z",
+        "validator": "Codex Falahatgar source-to-map reviewer",
+        "validator_type": "agent"
+      },
+      "statement": "An (epsilon,n')-good anchor has at most n' elements whose centered preference gap over the anchor is strictly greater than epsilon."
+    },
+    "lemma1": {
+      "aliases": [
+        "lemma1_compareSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma1_compare_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma1_compare_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma1_compareSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 220,
+          "line_start": 206,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 1. For εu > εl , C OMPARE(i, j, εl , εu , δ) uses ≤ (εu −ε       l)\n                                                                         2 log δ comparisons and if p̃i,j ≤ εl ,\n\nthen w.p.≥ 1 − δ, it returns 1, else if p̃i,j ≥ εu , w.p.≥ 1 − δ, it returns 2.\n\nNow we present S EQ -E LIMINATE that uses the testing subroutine C OMPARE and finds an ε-\nmaximum.\n\n3.1.2   S EQ -E LIMINATE Algorithm\n\nS EQ -E LIMINATE takes a variable set S, selects a random running element r ∈ S and repeatedly\nuses C OMPARE(c, r, 0, ε, δ/n) to compare r to a random competing element c ∈ S ∖ r. If C OMPARE\nreturns 1 i.e., deems p̃c,r ≤ 0, it retains r as the running element and eliminates c from S, but if\nC OMPARE returns 2 i.e., deems p̃c,r ≥ ε, it eliminates r from S and updates c as the new running\nelement.",
+          "quoted_text_sha256": "71721397c8db34a6ed3de3c734200bb27eb8c747b96cd0c23407d7efbb82ab74"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma1",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma1_compare_proof",
+          "semantic_claim": "For upper bias greater than lower bias, Compare uses the displayed finite comparison cap; under the lower-gap hypothesis it returns the lower decision with probability at least 1-delta, and under the upper-gap hypothesis it returns the upper decision with probability at least 1-delta.",
+          "source_locator": "cited publication:206-220",
+          "source_quote_sha256": "71721397c8db34a6ed3de3c734200bb27eb8c747b96cd0c23407d7efbb82ab74"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:206-220",
+      "source_note": "Main Lemma 1 with all resource and two correctness clauses bundled into one claim.",
+      "statement": "For upper bias greater than lower bias, Compare uses the displayed finite comparison cap; under the lower-gap hypothesis it returns the lower decision with probability at least 1-delta, and under the upper-gap hypothesis it returns the upper decision with probability at least 1-delta.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma1_compareSpec"
+      ]
+    },
+    "lemma10": {
+      "aliases": [
+        "lemma10_compareCapSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma10_compareCap_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma10_compareCap_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma10_compareCapSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 768,
+          "line_start": 764,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 10. For εu > εl ≥ 0, C OMPARE(i, j, εl , εu , δ) uses ≤ (εu −ε\n                                                                  2\n                                                                     )2\n                                                                        log 2δ comparisons.\n                                                                           l",
+          "quoted_text_sha256": "6ba21783525e6b877beadde61b2e6885bddf93f5fd99159f8d18bd2c6b5cfc69"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma10",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma10_compareCap_proof",
+          "semantic_claim": "Compare uses at most the displayed finite comparison cap when upper bias exceeds lower bias.",
+          "source_locator": "cited publication:764-768",
+          "source_quote_sha256": "6ba21783525e6b877beadde61b2e6885bddf93f5fd99159f8d18bd2c6b5cfc69"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:764-768",
+      "source_note": "Supplement Lemma 10 resource subresult for Compare.",
+      "statement": "Compare uses at most the displayed finite comparison cap when upper bias exceeds lower bias.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma10_compareCapSpec"
+      ]
+    },
+    "lemma11": {
+      "aliases": [
+        "lemma11_compareLowerSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma11_compareLower_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma11_compareLower_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma11_compareLowerSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 779,
+          "line_start": 779,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 11. For εu > εl ≥ 0, if p̃i,j ≤ εl , then w.p.≥ 1 − δ, C OMPARE(i, j, εl , εu , δ) outputs 1.",
+          "quoted_text_sha256": "bee306a70777f591f4c30ef9095629370a216bfac54b579fa8d9e725aa511b67"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma11",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma11_compareLower_proof",
+          "semantic_claim": "If the true centered gap is at most the lower bias, Compare outputs the lower decision with probability at least 1-delta.",
+          "source_locator": "cited publication:779-779",
+          "source_quote_sha256": "bee306a70777f591f4c30ef9095629370a216bfac54b579fa8d9e725aa511b67"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:779",
+      "source_note": "Supplement Lemma 11 lower-gap correctness.",
+      "statement": "If the true centered gap is at most the lower bias, Compare outputs the lower decision with probability at least 1-delta.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma11_compareLowerSpec"
+      ]
+    },
+    "lemma12": {
+      "aliases": [
+        "lemma12_compareUpperSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma12_compareUpper_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma12_compareUpper_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma12_compareUpperSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 811,
+          "line_start": 811,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fLemma 12. For εu > εl ≥ 0, if p̃i,j ≥ εu , then w.p.≥ 1 − δ, C OMPARE(i, j, εl , εu , δ) outputs 2.",
+          "quoted_text_sha256": "3942411f51dc1ce17cd99b7740c5191ca5c52ea7a74cda4f3bb6071d93ad2156"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma12",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma12_compareUpper_proof",
+          "semantic_claim": "If the true centered gap is at least the upper bias, Compare outputs the upper decision with probability at least 1-delta.",
+          "source_locator": "cited publication:811-811",
+          "source_quote_sha256": "3942411f51dc1ce17cd99b7740c5191ca5c52ea7a74cda4f3bb6071d93ad2156"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:811",
+      "source_note": "Supplement Lemma 12 upper-gap correctness.",
+      "statement": "If the true centered gap is at least the upper bias, Compare outputs the upper decision with probability at least 1-delta.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma12_compareUpperSpec"
+      ]
+    },
+    "lemma13": {
+      "aliases": [
+        "lemma13_pruneRetentionSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma13_pruneRetention_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma13_pruneRetention_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma13_pruneRetentionSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 923,
+          "line_start": 923,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 13. If p̃e,a ≥ εu , then w.p.≥ 1 − δ/2, the output set of P RUNE(S, a, n′ , εl , εu , δ) contains e.",
+          "quoted_text_sha256": "a788503fa70713494a1c661d01dfac34cafc13b673f3ee694862d00e9cb76ba9"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma13",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma13_pruneRetention_proof",
+          "semantic_claim": "If an element beats the anchor by at least the upper bias, Prune retains it with probability at least 1-delta/2.",
+          "source_locator": "cited publication:923-923",
+          "source_quote_sha256": "a788503fa70713494a1c661d01dfac34cafc13b673f3ee694862d00e9cb76ba9"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:923",
+      "source_note": "Supplement Lemma 13 retention subresult.",
+      "statement": "If an element beats the anchor by at least the upper bias, Prune retains it with probability at least 1-delta/2.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma13_pruneRetentionSpec"
+      ]
+    },
+    "lemma14": {
+      "aliases": [
+        "lemma14_pruneOneRoundSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma14_pruneOneRound_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma14_pruneOneRound_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma14_pruneOneRoundSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 948,
+          "line_start": 943,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 14. If n′ ≥ 8 log2 n, n1 ≤ δ ≤ nn and a is an (εl , n′ )-good anchor element then w.p.≥ 1 − δ/2,\nP RUNE(S, a, n′ , εl , εu , δ) uses O( (εu −ε\n                                           n\n                                              )2\n                                                 log 1δ ) comparisons and outputs a set of size at most 2n′ .\n                                           l",
+          "quoted_text_sha256": "c649afa2e414c6f66db86e067e6f1dc904c0132e16c7fccf585f9813f2ae72ec"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma14",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma14_pruneOneRound_proof",
+          "semantic_claim": "If n' is at least 8 log^2 n, 1/n <= delta <= n'/n, and the anchor is good, then with probability at least 1-delta/2 the first Prune round uses the stated rate and leaves at most 2n' arms.",
+          "source_locator": "cited publication:943-948",
+          "source_quote_sha256": "c649afa2e414c6f66db86e067e6f1dc904c0132e16c7fccf585f9813f2ae72ec"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:943-948",
+      "source_note": "Supplement Lemma 14; the squared logarithm was confirmed visually in the pinned PDF after text extraction lost the exponent.",
+      "statement": "If n' is at least 8 log^2 n, 1/n <= delta <= n'/n, and the anchor is good, then with probability at least 1-delta/2 the first Prune round uses the stated rate and leaves at most 2n' arms.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma14_pruneOneRoundSpec"
+      ]
+    },
+    "lemma15": {
+      "aliases": [
+        "lemma15_pruneMultiRoundSpec"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:974-984",
+        "archival_source_quote_sha256": "b432e2955d79cb2818466981382cff2ab70690cef20f25105d22ac3d91d8158f",
+        "corrected_target_review_sha256": "6fbdacf57c49c281545cef87993b25984117a9983f96e27229ed78a0363ca7a0",
+        "corrected_target_sha256": "c97fa8b66d0949cf0f53936960709f302ed5c2e539db1a745c16b5e91b59f1c7",
+        "governing_defect_ids": [
+          "FMR17-LEMMA5-CARDINALITY-TYPO-03"
+        ],
+        "schema": 1,
+        "statement": "For the finite centered SST Prune model, under the displayed strict cutoff sqrt(6 n log n) < n', confidence n'/n <= delta with 0 < delta <= 1/2, threshold separation, and good-anchor premises, the source-scheduled stopped execution has probability at least 1-delta/2 of returning at most 2n' arms within the checked Prune comparison-rate bound."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma15_pruneMultiRound_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma15_pruneMultiRound_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma15_pruneMultiRoundSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 984,
+          "line_start": 974,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 15. If n′ > 6n log n, δ ≥ nn and a is an (εl , n′ )-good anchor element, then w.p.≥ 1 − 2δ ,\nP RUNE(S, a, n′ , εl , εu , δ) uses O( (εu −ε\n                                           n\n                                              )2\n                                                 log 1δ ) comparisons and outputs a set of size less than 2n′ .\n                                           l\n\n\n\n\n                                                            14",
+          "quoted_text_sha256": "b432e2955d79cb2818466981382cff2ab70690cef20f25105d22ac3d91d8158f"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma15",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma15_pruneMultiRound_proof",
+          "semantic_claim": "If n' exceeds sqrt(6 n log n), delta >= n'/n, and the anchor is good, then with probability at least 1-delta/2 Prune uses the stated rate and leaves fewer than 2n' arms.",
+          "source_locator": "cited publication:974-984",
+          "source_quote_sha256": "b432e2955d79cb2818466981382cff2ab70690cef20f25105d22ac3d91d8158f"
+        }
+      ],
+      "source_defect_ids": [
+        "FMR17-LEMMA5-CARDINALITY-TYPO-03"
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:974-984",
+      "source_note": "The strict output-size wording repeats Main Lemma 5's source typo. Algorithm 2 stops as soon as the active set has at most 2n' arms and can stop at equality; the corrected target preserves Lemma 15's own strict cutoff, confidence, probability, and comparison-rate surface.",
+      "source_status": "corrected",
+      "statement": "If n' exceeds sqrt(6 n log n), delta >= n'/n, and the anchor is good, then with probability at least 1-delta/2 Prune uses the stated rate and leaves fewer than 2n' arms.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma15_pruneMultiRoundSpec"
+      ]
+    },
+    "lemma16": {
+      "aliases": [
+        "lemma16_finalCheckAnchorSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma16_finalCheckAnchor_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma16_finalCheckAnchor_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma16_finalCheckAnchorSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 1054,
+          "line_start": 1051,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 16. If a, the output of step 6 in O PT-M AXIMIZE(S, ε, δ) is a 2ε\n                                                                     3\n                                                                        -maximum of S, then w.p.≥ 1 − 4δ ,\nO PT-M AXIMIZE(S, ε, δ) outputs a.",
+          "quoted_text_sha256": "789c79ca1add5e5a8a0857d04ffba45e103083223dd98600baa2b190a18423e5"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma16",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma16_finalCheckAnchor_proof",
+          "semantic_claim": "If the anchor produced in step 6 is a 2epsilon/3-maximum, OPT-Maximize outputs it with probability at least 1-delta/4.",
+          "source_locator": "cited publication:1051-1054",
+          "source_quote_sha256": "789c79ca1add5e5a8a0857d04ffba45e103083223dd98600baa2b190a18423e5"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:1051-1054",
+      "source_note": "Supplement Lemma 16 final-check anchor branch.",
+      "statement": "If the anchor produced in step 6 is a 2epsilon/3-maximum, OPT-Maximize outputs it with probability at least 1-delta/4.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma16_finalCheckAnchorSpec"
+      ]
+    },
+    "lemma17": {
+      "aliases": [
+        "lemma17_anchorPruneSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma17_anchorPrune_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma17_anchorPrune_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma17_anchorPruneSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 1077,
+          "line_start": 1071,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 17. For δ ≥ n1 , w.p.≥ 1 − δ/2, steps 1-6 in O PT-M AXIMIZE(S, ε, δ) uses O( εn2 log 1δ ) comparisons,\n                                 √\noutputs a set S ′ of size at most 24n log n and either a is a 2ε/3-maximum element or S ′ contains the absolute\nmaximum element.\n\n                                                           √                         √\n                                                                                       n log n",
+          "quoted_text_sha256": "7f51ca5ab65f687dd87a6c39df65a09f977689f75c9997d98903ee254b8728d9"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma17",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma17_anchorPrune_proof",
+          "semantic_claim": "For delta >= 1/n, with probability at least 1-delta/2, OPT-Maximize's anchor and Prune phase uses the stated rate, leaves the displayed-size subset, and either the anchor is a 2epsilon/3-maximum or the subset contains an absolute maximum.",
+          "source_locator": "cited publication:1071-1077",
+          "source_quote_sha256": "7f51ca5ab65f687dd87a6c39df65a09f977689f75c9997d98903ee254b8728d9"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:1071-1077",
+      "source_note": "Supplement Lemma 17 is proved under its printed 1/n <= delta domain with Algorithm 3's literal delta/4 phase allocations. The finite trace carries the stopped resource bound, and the paired asymptotic clause supplies the displayed rate shape.",
+      "statement": "For delta >= 1/n, with probability at least 1-delta/2, OPT-Maximize's anchor and Prune phase uses the stated rate, leaves the displayed-size subset, and either the anchor is a 2epsilon/3-maximum or the subset contains an absolute maximum.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma17_anchorPruneSpec"
+      ]
+    },
+    "lemma18": {
+      "aliases": [
+        "lemma18_optMaximizeTailSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma18_optMaximizeTail_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma18_optMaximizeTail_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma18_optMaximizeTailSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 1094,
+          "line_start": 1091,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 18. For δ ≥ n1 , if a, the output of step 6 and S ′ , the output of step 7 are such that either a is 2ε/3-\nmaximum of S or S ′ contains the absolute maximum element of S, then steps 8-13 of O PT-M AXIMIZE(S, ε, δ)\n           ′\nuses O( ∣Sε2 ∣ log nδ ) comparisons and w.p.≥ 1 − δ/2, outputs an ε-maximum.",
+          "quoted_text_sha256": "d6036b415fc8a59a0761ebf97dfa05907618817004481c6b25770c1d34e4575f"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma18",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma18_optMaximizeTail_proof",
+          "semantic_claim": "Under the anchor-or-retained-maximum condition, OPT-Maximize steps 8-13 use the stated subset-dependent rate and output an epsilon-maximum with probability at least 1-delta/2.",
+          "source_locator": "cited publication:1091-1094",
+          "source_quote_sha256": "d6036b415fc8a59a0761ebf97dfa05907618817004481c6b25770c1d34e4575f"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:1091-1094",
+      "source_note": "Supplement Lemma 18 final phase correctness and cost.",
+      "statement": "Under the anchor-or-retained-maximum condition, OPT-Maximize steps 8-13 use the stated subset-dependent rate and output an epsilon-maximum with probability at least 1-delta/2.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma18_optMaximizeTailSpec"
+      ]
+    },
+    "lemma19": {
+      "aliases": [
+        "lemma19_estimateProbabilitySpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma19_estimateProbability_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma19_estimateProbability_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma19_estimateProbabilitySpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 1177,
+          "line_start": 1176,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 19. E STIMATE -P ROBABILITY(i, j, ε, δ) uses 2ε12 log 2δ comparisons and w.p.≥ 1 − δ approximates\npi,j to an additive error of ε.",
+          "quoted_text_sha256": "eeea7a18889ee39e7f5a5dbc3bb5a7489bd0e6cbaced63009e18ef816c2ecf65"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma19",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma19_estimateProbability_proof",
+          "semantic_claim": "Estimate-Probability uses the displayed fixed comparison count and estimates p(i,j) within epsilon with probability at least 1-delta.",
+          "source_locator": "cited publication:1176-1177",
+          "source_quote_sha256": "eeea7a18889ee39e7f5a5dbc3bb5a7489bd0e6cbaced63009e18ef816c2ecf65"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:1176-1177",
+      "source_note": "Supplement Lemma 19 pairwise estimation result. Supplemental PDF page 17 confirms the 1/(2 epsilon^2) coefficient; the tracked text extraction reverses that fraction.",
+      "statement": "Estimate-Probability uses ceiling(1/(2 epsilon^2) log(2/delta)) comparisons and estimates p(i,j) within epsilon with probability at least 1-delta.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma19_estimateProbabilitySpec"
+      ]
+    },
+    "lemma20": {
+      "aliases": [
+        "lemma20_strongTransitivityRankingSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma20_strongTransitivityRanking_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma20_strongTransitivityRanking_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma20_strongTransitivityRankingSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 1203,
+          "line_start": 1202,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 20. S TRONG -T RANSITIVITY-R ANKING(S, ε, δ) uses O( nε2 log nδ ) comparisons and w.p.≥ 1 − δ\nreturns an ε-ranking.",
+          "quoted_text_sha256": "dafb599ec3c271b0db610c97671e72a623e66e06d870c23e88e2976b90de32e3"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma20",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma20_strongTransitivityRanking_proof",
+          "semantic_claim": "Strong-Transitivity-Ranking uses O(n^2 epsilon^-2 log(n/delta)) comparisons and returns an epsilon-ranking with probability at least 1-delta.",
+          "source_locator": "cited publication:1202-1203",
+          "source_quote_sha256": "dafb599ec3c271b0db610c97671e72a623e66e06d870c23e88e2976b90de32e3"
+        }
+      ],
+      "source_defect_ids": [
+        "FMR17-ALGORITHM7-DISPLAY-TYPOS-02"
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:1202-1203",
+      "source_note": "Supplement Lemma 20 is the complete presentation of the main-text prose ranking upper bound.",
+      "statement": "Strong-Transitivity-Ranking uses O(n^2 epsilon^-2 log(n/delta)) comparisons and returns an epsilon-ranking with probability at least 1-delta.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma20_strongTransitivityRankingSpec"
+      ]
+    },
+    "lemma21": {
+      "aliases": [
+        "lemma21_estimateBordaScoreSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma21_estimateBordaScore_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma21_estimateBordaScore_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma21_estimateBordaScoreSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 1243,
+          "line_start": 1242,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 21. E STIMATE -B ORDA -S CORE(S, a, ε, δ) uses 2ε12 log 2δ comparisons and w.p.≥ 1 − δ approximates\ns(a) to an additive error of ε.",
+          "quoted_text_sha256": "d657ced8fe66c679058920106e3ba93d5e7c1a77f92351be621c8b95410e7b7d"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma21",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma21_estimateBordaScore_proof",
+          "semantic_claim": "Estimate-Borda-Score uses the displayed comparison count and estimates the Borda score within epsilon with probability at least 1-delta.",
+          "source_locator": "cited publication:1242-1243",
+          "source_quote_sha256": "d657ced8fe66c679058920106e3ba93d5e7c1a77f92351be621c8b95410e7b7d"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:1242-1243",
+      "source_note": "Supplement Lemma 21 Borda-score estimation result. Supplemental PDF page 18 confirms the 1/(2 epsilon^2) coefficient; the tracked text extraction reverses that fraction.",
+      "statement": "Estimate-Borda-Score uses ceiling(1/(2 epsilon^2) log(2/delta)) comparisons and estimates the Borda score within epsilon with probability at least 1-delta.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma21_estimateBordaScoreSpec"
+      ]
+    },
+    "lemma3": {
+      "aliases": [
+        "lemma3_pickAnchorSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma3_pickAnchor_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma3_pickAnchor_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma3_pickAnchorSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 281,
+          "line_start": 279,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 3. P ICK -A NCHOR(S, n′ , ε, δ) uses O( nn′ ε2 log 1δ log nn′ δ ) comparisons and w.p.≥ 1 − δ,\noutputs an (ε, n′ )-good anchor element.\n                                                                            2",
+          "quoted_text_sha256": "7b3cdf19375e325d017ee1c380037adcdc3c4863275182fbfb5c738329288524"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma3",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma3_pickAnchor_proof",
+          "semantic_claim": "Pick-Anchor uses the stated sample-complexity rate and with probability at least 1-delta outputs an (epsilon,n')-good anchor.",
+          "source_locator": "cited publication:279-281",
+          "source_quote_sha256": "7b3cdf19375e325d017ee1c380037adcdc3c4863275182fbfb5c738329288524"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:279-281",
+      "source_note": "Main Lemma 3 with correctness and resource clauses bundled.",
+      "statement": "Pick-Anchor uses the stated sample-complexity rate and with probability at least 1-delta outputs an (epsilon,n')-good anchor.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma3_pickAnchorSpec"
+      ]
+    },
+    "lemma5": {
+      "aliases": [
+        "lemma5_pruneSpec"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:330-336",
+        "archival_source_quote_sha256": "4a2cdf12847dd7fd85c09f18c02abfdef8debf0e59676c00cdbd2be6a48b5676",
+        "corrected_target_review_sha256": "b5e4c7b723491a3b501fc1a65e41ad8e979a8f4d7946dd2e9fd75b0b3a7c3dbb",
+        "corrected_target_sha256": "a18da8b6ddfedf561a218fb589b8b9d1d8d56e0c2cf6dc67f437f5426e721533",
+        "governing_defect_ids": [
+          "FMR17-LEMMA5-CARDINALITY-TYPO-03"
+        ],
+        "schema": 1,
+        "statement": "For the finite centered SST Prune model, under the displayed weak cutoff sqrt(6 n log n) <= n', confidence 1/n <= delta with 0 < delta <= 1/2, threshold separation, and good-anchor premises, the source-scheduled stopped execution has probability at least 1-delta/2 of returning at most 2n' arms while using no more than 16 n (2/(epsilon_u-epsilon_l)^2 + 1) (1 + log(1/delta)) comparisons. If the anchor is not an epsilon_u-maximum, the same source-scheduled Prune execution retains an internally chosen absolute maximum with probability at least 1-delta/2."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma5_prune_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.lemma5_prune_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.lemma5_pruneSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 336,
+          "line_start": 330,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 5. If n′ ≥ 6n log n, δ ≥ n1 and a is an (εl , n′ )-good anchor element, then w.p.≥ 1 − 2δ ,\n                                           n          1\nP RUNE(S, a, n′ , εl , εu , δ) uses O( (εu −ε l)\n                                                2 log δ ) comparisons and outputs a set of size less than\n\n2n′ . Further if a is not an εu -maximum of S then w.p.≥ 1 − 2δ , the output set contains an absolute\nmaximum element of S.",
+          "quoted_text_sha256": "4a2cdf12847dd7fd85c09f18c02abfdef8debf0e59676c00cdbd2be6a48b5676"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma5.premises",
+          "identity_schema": 3,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma5_prune_proof",
+          "semantic_claim": "The premises are the weak cutoff sqrt(6 n log n) <= n', confidence 1/n <= delta, and an (epsilon_l,n')-good anchor.",
+          "source_locator": "cited publication:330-336",
+          "source_quote_sha256": "4a2cdf12847dd7fd85c09f18c02abfdef8debf0e59676c00cdbd2be6a48b5676",
+          "verbatim_source_clause": "Lemma 5. If n′ ≥ 6n log n, δ ≥ n1 and a is an (εl , n′ )-good anchor element"
+        },
+        {
+          "id": "lemma5.comparison_rate",
+          "identity_schema": 3,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma5_prune_proof",
+          "semantic_claim": "On its high-probability Prune execution, the total number of comparisons has rate O(n log(1/delta)/(epsilon_u-epsilon_l)^2).",
+          "source_locator": "cited publication:330-336",
+          "source_quote_sha256": "4a2cdf12847dd7fd85c09f18c02abfdef8debf0e59676c00cdbd2be6a48b5676",
+          "verbatim_source_clause": "P RUNE(S, a, n′ , εl , εu , δ) uses O( (εu −ε l)\n                                                2 log δ ) comparisons"
+        },
+        {
+          "id": "lemma5.output_cardinality",
+          "identity_schema": 3,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma5_prune_proof",
+          "semantic_claim": "The archival display says that the output size is strictly less than 2n'; the documented corrected target says at most 2n', consistent with Algorithm 2 and Appendix A.6.",
+          "source_locator": "cited publication:330-336",
+          "source_quote_sha256": "4a2cdf12847dd7fd85c09f18c02abfdef8debf0e59676c00cdbd2be6a48b5676",
+          "verbatim_source_clause": "outputs a set of size less than\n\n2n′"
+        },
+        {
+          "id": "lemma5.conditional_maximum_retention",
+          "identity_schema": 3,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.lemma5_prune_proof",
+          "semantic_claim": "If the anchor is not an epsilon_u-maximum, the Prune output contains an absolute maximum with probability at least 1-delta/2.",
+          "source_locator": "cited publication:330-336",
+          "source_quote_sha256": "4a2cdf12847dd7fd85c09f18c02abfdef8debf0e59676c00cdbd2be6a48b5676",
+          "verbatim_source_clause": "Further if a is not an εu -maximum of S then w.p.≥ 1 − 2δ , the output set contains an absolute\nmaximum element of S."
+        }
+      ],
+      "source_defect_ids": [
+        "FMR17-LEMMA5-CARDINALITY-TYPO-03"
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:330-336",
+      "source_note": "The strict output-size wording is a source typo: the preceding Prune specification, Algorithm 2's while guard, and Appendix A.6 give the intended at-most-2n' endpoint. The corrected target preserves the complete archival premise, comparison-rate, and conditional maximum-retention surface while making the finite ceiling-aware comparison envelope explicit.",
+      "source_status": "corrected",
+      "statement": "Under the displayed cutoff, confidence, and good-anchor conditions, Prune uses O(n log(1/delta)/(epsilon_u-epsilon_l)^2) comparisons and outputs a set of size less than 2n' with probability at least 1-delta/2; if the anchor is not an epsilon_u-maximum, an absolute maximum is retained with probability at least 1-delta/2.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.lemma5_pruneSpec"
+      ]
+    },
+    "remark4": {
+      "aliases": [
+        "remark4_pickAnchorLinearCutoffSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.remark4_pickAnchorLinearCutoff_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.remark4_pickAnchorLinearCutoff_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.remark4_pickAnchorLinearCutoffSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 286,
+          "line_start": 282,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 4. Note that P ICK -A NCHOR(S, cn, ε, δ) uses Oc ( ε12 (log 1δ ) ) comparisons where the con-\nstant depends only on c but not on n. Hence it is advantageous to use this method to pick near-\nmaximum element when n is large.\n\nWe now present P RUNE that takes an anchor element as input and prunes the set S using the anchor.",
+          "quoted_text_sha256": "c6221a0ac7e8b879b68cce5b5f61968f2b157d506083a74f52ad6f71d833d538"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "remark4",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.remark4_pickAnchorLinearCutoff_proof",
+          "semantic_claim": "For a cutoff cn, Pick-Anchor's comparison bound depends on c, epsilon, and delta but not on n.",
+          "source_locator": "cited publication:282-286",
+          "source_quote_sha256": "c6221a0ac7e8b879b68cce5b5f61968f2b157d506083a74f52ad6f71d833d538"
+        }
+      ],
+      "source_kind": "claim",
+      "source_location": "cited publication:282-286",
+      "source_note": "Main Remark 4 is a numbered quantitative claim and is included manually in the review denominator.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "completed_statement_then_explanation",
+        "core_anchor": {
+          "line_end": 284,
+          "line_start": 282,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 4. Note that P ICK -A NCHOR(S, cn, ε, δ) uses Oc ( ε12 (log 1δ ) ) comparisons where the con-\nstant depends only on c but not on n. Hence it is advantageous to use this method to pick near-\nmaximum element when n is large.",
+          "quoted_text_sha256": "5f3e549ae23fecc746c66234c3d5eeecf6e9b674f37791017ed9efec5a5be309"
+        },
+        "presentation_kind": "claim",
+        "presentation_label": "Remark 4",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "Lines 282-284 contain the complete quantitative Remark 4 statement; lines 285-286 transition to Prune.",
+        "validated_at": "2026-08-28T00:00:00Z",
+        "validator": "Codex Falahatgar source-only boundary review"
+      },
+      "statement": "For a cutoff cn, Pick-Anchor's comparison bound depends on c, epsilon, and delta but not on n.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.remark4_pickAnchorLinearCutoffSpec"
+      ]
+    },
+    "sst_maximum_ranking_existence": {
+      "aliases": [
+        "sstMaximumAndRankingExistenceSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.sstMaximumAndRankingExistence_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.sstMaximumAndRankingExistence_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.sstMaximumAndRankingExistenceSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 91,
+          "line_start": 90,
+          "publication_locator": "cited publication",
+          "quoted_text": "pi,k ≥ max(pi,j , pj,k ). By simple induction, every SST model has a maximum element and a rank-\ning. And one additional property, that is perhaps more difficult to justify, has proved helpful in",
+          "quoted_text_sha256": "44c0fe92b3a146bb4f67bb1bda89986848c67bbd111ac81854f08516f95008b2"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "sst.maximum.ranking.existence",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.sstMaximumAndRankingExistence_proof",
+          "semantic_claim": "By simple induction, every finite SST comparison model has a maximum element and a ranking.",
+          "source_locator": "cited publication:90-91",
+          "source_quote_sha256": "44c0fe92b3a146bb4f67bb1bda89986848c67bbd111ac81854f08516f95008b2"
+        }
+      ],
+      "source_kind": "claim",
+      "source_location": "cited publication:90-91",
+      "source_note": "An independently reviewable main-paper prose claim. The Lean endpoint proves both witnesses from finite no-draw comparison semantics and SST, so downstream source-facing results do not assume them.",
+      "statement": "By simple induction, every finite SST comparison model has a maximum element and a ranking.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.sstMaximumAndRankingExistenceSpec"
+      ]
+    },
+    "strong_stochastic_transitivity": {
+      "aliases": [
+        "StrongStochasticTransitivity"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.StrongStochasticTransitivity"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 93,
+          "line_start": 88,
+          "publication_locator": "cited publication",
+          "quoted_text": "But significantly more general, and more realistic, non-parametric, models may also have max-\nima and rankings. A model is strongly stochastically transitive (SST), if i ≥ j and j ≥ k imply\npi,k ≥ max(pi,j , pj,k ). By simple induction, every SST model has a maximum element and a rank-\ning. And one additional property, that is perhaps more difficult to justify, has proved helpful in\nconstructing maxing and sorting PAC algorithms. A tournament satisfies the stochastic triangle\ninequality if i ≥ j and j ≥ k imply that p̃i,k ≤ p̃i,j + p̃j,k .",
+          "quoted_text_sha256": "21ef9323dad464f7cc793a6eed147b58a68ea8349da6d549da4cb8ada5647e70"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:88-93",
+      "source_note": "The governing structural assumption; the neighboring stochastic-triangle condition is background and is not assumed by the selected results.",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "90bf8531b2bcbf8cc0a07fbbd80bd197b09a45d278d8964f11d3ecebf4bdd50d",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "The map row isolates the SST clause in the source passage; the adjacent triangle inequality is explicitly not assumed by these results.",
+        "source_item_statement_sha256": "a6efd6d8a2af493a5f76a6b1a73dd31e2b292ce9a6d9c0e6bc75a905aa40727f",
+        "validated_at": "2026-08-28T00:00:00Z",
+        "validator": "Codex Falahatgar source-to-map reviewer",
+        "validator_type": "agent"
+      },
+      "statement": "Strong stochastic transitivity requires that if i is preferable to j and j to k, then p(i,k) is at least the maximum of p(i,j) and p(j,k)."
+    },
+    "theorem2": {
+      "aliases": [
+        "theorem2_seqEliminateSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.theorem2_seqEliminate_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.theorem2_seqEliminate_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.theorem2_seqEliminateSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 247,
+          "line_start": 239,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 2. S EQ -E LIMINATE(S, ε, δ) uses O( ∣S∣\n                                             ε2\n                                                 log ∣S∣\n                                                      δ\n                                                         ) comparisons, and w.p.≥ 1 − δ outputs an\nε-maximum.\n\n\n                                                       4",
+          "quoted_text_sha256": "4ec56e34bec1b3462c65f15dfbb6a297fb8590591a5dd3a313fa24d0f8dcb743"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem2",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.theorem2_seqEliminate_proof",
+          "semantic_claim": "Seq-Eliminate uses O(|S| epsilon^-2 log(|S|/delta)) comparisons and outputs an epsilon-maximum with probability at least 1-delta.",
+          "source_locator": "cited publication:239-247",
+          "source_quote_sha256": "4ec56e34bec1b3462c65f15dfbb6a297fb8590591a5dd3a313fa24d0f8dcb743"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:239-247",
+      "source_note": "Main Theorem 2 with correctness and resource clauses bundled.",
+      "statement": "Seq-Eliminate uses O(|S| epsilon^-2 log(|S|/delta)) comparisons and outputs an epsilon-maximum with probability at least 1-delta.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.theorem2_seqEliminateSpec"
+      ]
+    },
+    "theorem22": {
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.theorem22_bordaRanking_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.theorem22_bordaRanking_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.theorem22_bordaRankingSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 1263,
+          "line_start": 1258,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 22. B ORDA -R ANKING(S, ε, δ) uses 2n\n                                           ε2\n                                              log 2n\n                                                   δ\n                                                     comparisons and w.p.≥ 1 − δ outputs an ε-Borda\nranking.",
+          "quoted_text_sha256": "318f3bd5ab7596a0b375297a449e43734971f7ff70581834b2d16b36c17fd50d"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem22",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.theorem22_bordaRanking_proof",
+          "semantic_claim": "Borda-Ranking uses the displayed 2n epsilon^-2 log(2n/delta) comparison count and outputs an epsilon-Borda ranking with probability at least 1-delta.",
+          "source_locator": "cited publication:1258-1263",
+          "source_quote_sha256": "318f3bd5ab7596a0b375297a449e43734971f7ff70581834b2d16b36c17fd50d"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:1258-1263",
+      "source_note": "Supplement Theorem 22 repeats Main Theorem 9's semantic proposition but remains a separate transparent review row because the source does not explicitly mark it as a restatement. Its 2n/epsilon^2 coefficient is consistent with calling the 1/(2 eta^2) Lemma-21 estimator at eta=epsilon/2.",
+      "statement": "Borda-Ranking uses the displayed 2n epsilon^-2 log(2n/delta) comparison count and outputs an epsilon-Borda ranking with probability at least 1-delta.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.theorem22_bordaRankingSpec"
+      ]
+    },
+    "theorem6": {
+      "aliases": [
+        "theorem6_optMaximizeSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.theorem6_optMaximize_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.theorem6_optMaximize_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.theorem6_optMaximizeSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 364,
+          "line_start": 363,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 6. W.p.≥ 1 − δ, O PT-M AXIMIZE(S, ε, δ) uses O( εn2 log 1δ ) comparisons and outputs an\nε-maximum.",
+          "quoted_text_sha256": "6b26003030644ccc936a4f492166422abd5e0b1e151d93703e61d409155aa5ca"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem6",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.theorem6_optMaximize_proof",
+          "semantic_claim": "With probability at least 1-delta, OPT-Maximize uses O(n epsilon^-2 log(1/delta)) comparisons and outputs an epsilon-maximum.",
+          "source_locator": "cited publication:363-364",
+          "source_quote_sha256": "6b26003030644ccc936a4f492166422abd5e0b1e151d93703e61d409155aa5ca"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:363-364",
+      "source_note": "Main Theorem 6 is proved for Algorithm 3's printed branch and literal delta/4 phase allocations. The finite envelope uses 1 + log(1/delta) so the valid endpoint delta = 1 remains nonzero.",
+      "statement": "With probability at least 1-delta, OPT-Maximize uses O(n epsilon^-2 log(1/delta)) comparisons and outputs an epsilon-maximum.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.theorem6_optMaximizeSpec"
+      ]
+    },
+    "theorem7": {
+      "aliases": [
+        "theorem7_rankingLowerBoundSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.theorem7_rankingLowerBound_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.theorem7_rankingLowerBound_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.theorem7_rankingLowerBoundSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 414,
+          "line_start": 408,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 7. There exists a model that satisfies SST for which any algorithm requires Ω(n2 ) com-\nparisons to find a 1/4-ranking with probability ≥ 7/8.\n\nWe also present a trivial ε-ranking algorithm in Appendix B.2 that for any stochastic model with\n                                                  2\nranking (Weak Stochastic Transitivity), uses O( nε2 log nδ ) comparisons and outputs an ε-ranking\nw.p.≥ 1 − δ.",
+          "quoted_text_sha256": "d50da13400c5fd12b35be6196e07e086f4167c3346d7321d8db56cb3de51885b"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem7",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.theorem7_rankingLowerBound_proof",
+          "semantic_claim": "There exists an SST model for which every algorithm requires Omega(n^2) comparisons to find a 1/4-ranking with success probability at least 7/8.",
+          "source_locator": "cited publication:408-414",
+          "source_quote_sha256": "d50da13400c5fd12b35be6196e07e086f4167c3346d7321d8db56cb3de51885b"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:408-414",
+      "source_note": "Main Theorem 7 ranking lower bound. The short display says that there exists an SST model for which any algorithm needs quadratic comparisons, while Supplement B.1 makes the exceptional pair a uniformly random pair in the lower-bound argument. The reviewed source-faithful quantifier order is therefore the conventional worst-case form: for each bounded procedure, some relabeled SST hard instance defeats it. This is a source-proof clarification, not a theorem caveat or change to the Lean target.",
+      "statement": "For every finite-random-tape adaptive ranking procedure using at most n^2/20 comparisons, there is a relabeling of the source SST hard family on which its probability of producing a 1/4-ranking is below 7/8.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.theorem7_rankingLowerBoundSpec"
+      ]
+    },
+    "theorem8": {
+      "aliases": [
+        "theorem8_bordaMaxingSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.theorem8_bordaMaxing_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.theorem8_bordaMaxing_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.theorem8_bordaMaxingSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 448,
+          "line_start": 431,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 8. There exists an algorithm that uses O( εn2 log 1δ ) comparisons and w.p.≥ 1 − δ, outputs\nan ε-Borda maximum.\n\n\n                                                     7\n\fFor ε-Borda ranking, we note that if we compare an element e with ε22 log 2n\n                                                                           δ\n                                                                             random elements, w.p.\n≥ 1 − δ/n, the fraction of times e wins approximates the Borda score of e to an additive error of\n ε\n2\n   . Ranking based on these approximate scores results in an ε-Borda ranking. We present B ORDA -\nR ANKING in C.1 that uses 2n\n                           ε2\n                              log 2n\n                                   δ\n                                     comparisons and w.p.≥ 1 − δ outputs an ε-Borda ranking. Proof\nin C.1.",
+          "quoted_text_sha256": "9f43571a871e14fe062a3e86002e71af0f691473ad26c10c0faba43d6ed9bc1f"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem8",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.theorem8_bordaMaxing_proof",
+          "semantic_claim": "There exists an algorithm using O(n epsilon^-2 log(1/delta)) comparisons that outputs an epsilon-Borda maximum with probability at least 1-delta.",
+          "source_locator": "cited publication:431-448",
+          "source_quote_sha256": "9f43571a871e14fe062a3e86002e71af0f691473ad26c10c0faba43d6ed9bc1f"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:431-448",
+      "source_note": "Main Theorem 8, including its explicit reduction to the cited PAC best-arm result.",
+      "statement": "There exists an algorithm using O(n epsilon^-2 log(1/delta)) comparisons that outputs an epsilon-Borda maximum with probability at least 1-delta.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.theorem8_bordaMaxingSpec"
+      ]
+    },
+    "theorem9": {
+      "aliases": [
+        "theorem9_bordaRankingSpec"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.theorem9_bordaRanking_proof"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "FalahatgarEtAl2017MaxingRanking.theorem9_bordaRanking_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "FalahatgarEtAl2017MaxingRanking.theorem9_bordaRankingSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 453,
+          "line_start": 449,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 9. B ORDA -R ANKING(S, ε, δ) uses 2n   ε2\n                                                  log 2n\n                                                       δ\n                                                          comparisons and w.p.≥ 1 − δ outputs an\nε-Borda ranking.",
+          "quoted_text_sha256": "4d6e3a4f108f4e7b3e63e504216b108d40657bf615f1aa1ded535534351c56bd"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem9",
+          "identity_schema": 2,
+          "reviewed_lean_route": "FalahatgarEtAl2017MaxingRanking.theorem9_bordaRanking_proof",
+          "semantic_claim": "Borda-Ranking uses the displayed 2n epsilon^-2 log(2n/delta) comparison count and outputs an epsilon-Borda ranking with probability at least 1-delta.",
+          "source_locator": "cited publication:449-453",
+          "source_quote_sha256": "4d6e3a4f108f4e7b3e63e504216b108d40657bf615f1aa1ded535534351c56bd"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:449-453",
+      "source_note": "Main Theorem 9 is the canonical presentation; supplement Theorem 22 repeats the same statement. Its 2n/epsilon^2 coefficient remains correct: Algorithm 9 calls the 1/(2 eta^2) estimator at eta=epsilon/2, giving 2/epsilon^2 trials per arm before the integral ceiling correction.",
+      "statement": "Borda-Ranking uses the displayed 2n epsilon^-2 log(2n/delta) comparison count and outputs an epsilon-Borda ranking with probability at least 1-delta.",
+      "support_lean_declarations": [
+        "FalahatgarEtAl2017MaxingRanking.theorem9_bordaRankingSpec"
+      ]
+    }
+  },
+  "paper": "FalahatgarEtAl2017MaxingRanking",
+  "paper_interface_namespace": "FalahatgarEtAl2017MaxingRanking",
+  "paper_semantic_prerequisite_sources": {
+    "FalahatgarEtAl2017MaxingRanking.AbsoluteMaximum": "exact_preference_vocabulary",
+    "FalahatgarEtAl2017MaxingRanking.BordaWinProbabilities": "comparison_model",
+    "FalahatgarEtAl2017MaxingRanking.CenteredComparisonProbabilities": "comparison_model",
+    "FalahatgarEtAl2017MaxingRanking.EpsilonBordaMaximum": "borda_vocabulary",
+    "FalahatgarEtAl2017MaxingRanking.EpsilonBordaRanking": "borda_vocabulary",
+    "FalahatgarEtAl2017MaxingRanking.EpsilonMaximum": "approximate_preference_vocabulary",
+    "FalahatgarEtAl2017MaxingRanking.EpsilonPreferenceRanking": "approximate_preference_vocabulary",
+    "FalahatgarEtAl2017MaxingRanking.GoodAnchor": "good_anchor_definition",
+    "FalahatgarEtAl2017MaxingRanking.IsEmpiricalBordaRankingRule": "algorithm9_borda_ranking",
+    "FalahatgarEtAl2017MaxingRanking.PreferenceRanking": "exact_preference_vocabulary",
+    "FalahatgarEtAl2017MaxingRanking.StrongStochasticTransitivity": "strong_stochastic_transitivity",
+    "FalahatgarEtAl2017MaxingRanking.adaptiveCompare": "algorithm4_compare",
+    "FalahatgarEtAl2017MaxingRanking.bordaEmpiricalScore": "algorithm8_estimate_borda_score",
+    "FalahatgarEtAl2017MaxingRanking.bordaScore": "borda_vocabulary",
+    "FalahatgarEtAl2017MaxingRanking.canonicalFreshPickAnchorOutcomeLaw": "algorithm5_pick_anchor",
+    "FalahatgarEtAl2017MaxingRanking.canonicalFreshUniformSeqEliminateOutputLaw": "algorithm1_seq_eliminate",
+    "FalahatgarEtAl2017MaxingRanking.canonicalOptMaximizeSourceLogAlgorithmOutputLaw": "algorithm3_opt_maximize",
+    "FalahatgarEtAl2017MaxingRanking.canonicalStrongTransitivityRankingEstimate": "algorithm7_strong_transitivity_ranking",
+    "FalahatgarEtAl2017MaxingRanking.estimateBordaScoreSampleBudget": "algorithm8_estimate_borda_score",
+    "FalahatgarEtAl2017MaxingRanking.estimateProbabilitySampleBudget": "algorithm6_estimate_probability",
+    "FalahatgarEtAl2017MaxingRanking.freshStoppedPruneTraceStateLaw": "algorithm2_prune",
+    "FalahatgarEtAl2017MaxingRanking.pickAnchorUniformSampleLaw": "algorithm5_pick_anchor",
+    "FalahatgarEtAl2017MaxingRanking.sourceOptMaximizeCutoff": "algorithm3_opt_maximize",
+    "FalahatgarEtAl2017MaxingRanking.stoppedPruneRounds": "algorithm2_prune",
+    "FalahatgarEtAl2017MaxingRanking.strongTransitivityPairEmpiricalGap": "algorithm6_estimate_probability",
+    "FalahatgarEtAl2017MaxingRanking.strongTransitivityRankingOutput": "algorithm7_strong_transitivity_ranking"
+  },
+  "publication_corrected_target_projection": {
+    "approval_material_included": false,
+    "schema": 1
+  },
+  "schema": 1,
+  "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
+  "source_anchor_evidence_required": true,
+  "source_artifact_sha256": "22407a45267c62e11b46ea3a6c7c392099d91dae0c469274936b6a3461c59e09",
+  "source_claim_atoms_schema": 1,
+  "source_coverage_mode": "named_theoretical_statements",
+  "source_curated": true,
+  "source_inventory_kind": "complete_named_theoretical_source_inventory_with_material_models_and_algorithms",
+  "source_inventory_policy": "Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
+  "source_named_result_inventory_review": {
+    "candidate_presentations": [
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "sst_maximum_ranking_existence",
+        "presentation_label": "Finite SST maximum-and-ranking existence claim",
+        "schema": 1,
+        "scope_disposition": "material_named_claim",
+        "semantic_basis": "The main text independently asserts that simple induction gives every finite SST model both a maximum element and a ranking; this is used downstream to discharge formerly supplied witnesses.",
+        "source_anchor": {
+          "line_end": 91,
+          "line_start": 90,
+          "publication_locator": "cited publication",
+          "quoted_text": "pi,k ≥ max(pi,j , pj,k ). By simple induction, every SST model has a maximum element and a rank-\ning. And one additional property, that is perhaps more difficult to justify, has proved helpful in",
+          "quoted_text_sha256": "44c0fe92b3a146bb4f67bb1bda89986848c67bbd111ac81854f08516f95008b2"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "remark4",
+        "presentation_label": "Remark 4",
+        "schema": 1,
+        "scope_disposition": "material_named_claim",
+        "semantic_basis": "Remark 4 is a numbered quantitative result asserting that the linear-cutoff Pick-Anchor bound is independent of n.",
+        "source_anchor": {
+          "line_end": 286,
+          "line_start": 282,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 4. Note that P ICK -A NCHOR(S, cn, ε, δ) uses Oc ( ε12 (log 1δ ) ) comparisons where the con-\nstant depends only on c but not on n. Hence it is advantageous to use this method to pick near-\nmaximum element when n is large.\n\nWe now present P RUNE that takes an anchor element as input and prunes the set S using the anchor.",
+          "quoted_text_sha256": "c6221a0ac7e8b879b68cce5b5f61968f2b157d506083a74f52ad6f71d833d538"
+        },
+        "visible_kind": "remark"
+      }
+    ],
+    "complete": true,
+    "discovered_candidate_presentation_sha256": "1289400d7c16685e570491cf3a159b6977341b2a21cfa3713a5efa1d2d4daf51",
+    "discovered_named_result_sha256": "d9fc2a24a342f87e2a988acf2dd0f0ff6fb0e8fabcbdb0d37aad8dab867e4219",
+    "discovered_prose_definition_sha256": "554db79f06d47c2b3a8438d667293e64c47897859862f91ed4b99e8b1e449207",
+    "method": "Read the complete byte-pinned official 19-page supplemental transcript, which contains the published main paper followed by its appendices, before consulting Lean or map names; classified every deterministic heading, independently checked the main PDF presentation, and performed a holistic pass for additional material mathematical presentations.",
+    "prose_definition_presentations": [
+      {
+        "defined_entity_kind": "object",
+        "defined_object": "probabilistic model",
+        "definitional_clause": "Consider a set of n elements, without loss of generality [n] = {1, 2, . . . , n}. A probabilistic model,\nor model for short, is an assignment of a preference probability pi,j ∈ [0, 1] for every i ≠ j ∈\n[n], reflecting the probability that i is preferred when compared with j. We assume that repeated\ncomparisons are independent and that there are no “draws”, hence pj,i = 1 − pi,j .",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 51,
+          "line_start": 48,
+          "publication_locator": "cited publication",
+          "quoted_text": "Consider a set of n elements, without loss of generality [n] = {1, 2, . . . , n}. A probabilistic model,\nor model for short, is an assignment of a preference probability pi,j ∈ [0, 1] for every i ≠ j ∈\n[n], reflecting the probability that i is preferred when compared with j. We assume that repeated\ncomparisons are independent and that there are no “draws”, hence pj,i = 1 − pi,j .",
+          "quoted_text_sha256": "fb920e7521fdb0f6567888f71904d1478b9123b28c9589f132ff324ec39d9f8d"
+        }
+      },
+      {
+        "defined_entity_kind": "predicate",
+        "defined_object": "ranking",
+        "definitional_clause": "If pi,j ≥ 12 , we say that i is preferable to j and write i ≥ j. Element i is maximal in a model if i ≥ j\nfor all j ≠ i. And a permutation `1 , . . . ,`n is a ranking if `i ≥ `j for all i ≤ j. Observe that the\nfirst element of any ranking is always maximal. For example, for n = 3, p1,2 = 1/2, p1,3 = 1/3, and\np2,3 = 2/3, we have 1 ≥ 2, 2 ≥ 1, 3 ≥ 1, and 2 ≥ 3. Hence 2 is the unique maximum, and 2,3,1 is\nthe unique ranking. We seek algorithms that without knowing the underlying model, use pairwise\ncomparisons to find a maximal element and a ranking.",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 59,
+          "line_start": 54,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fIf pi,j ≥ 12 , we say that i is preferable to j and write i ≥ j. Element i is maximal in a model if i ≥ j\nfor all j ≠ i. And a permutation `1 , . . . ,`n is a ranking if `i ≥ `j for all i ≤ j. Observe that the\nfirst element of any ranking is always maximal. For example, for n = 3, p1,2 = 1/2, p1,3 = 1/3, and\np2,3 = 2/3, we have 1 ≥ 2, 2 ≥ 1, 3 ≥ 1, and 2 ≥ 3. Hence 2 is the unique maximum, and 2,3,1 is\nthe unique ranking. We seek algorithms that without knowing the underlying model, use pairwise\ncomparisons to find a maximal element and a ranking.",
+          "quoted_text_sha256": "53dacc0c284b382bf9349e6d3e5d71bed76bf03c96bbea0394106b87c84b4e05"
+        }
+      },
+      {
+        "defined_entity_kind": "predicate",
+        "defined_object": "centered preference probability",
+        "definitional_clause": "Let p̃i,j = pi,j − 12 be the centered preference probability. Note that p̃i,j ≥ 0 iff i is preferable to\nj. If p̃i,j ≥ −ε we say that i is ε-preferable to j. For 0 < ε < 1/2, an element i ∈ [n] is ε-maximum\nif it is ε-preferable to all other elements, namely, p̃i,j ≥ −ε ∀j ≠ i. Given ε > 0, 12 ≥ δ > 0, a\nPAC maxing algorithm must output an ε-maxima with probability ≥ 1 − δ, henceforth abbreviated\nwith high probability (WHP). Similarly, a permutation `1 , . . . ,`n of {1, . . . ,n} is an ε-ranking if `i\nis ε-preferable to `j for all i ≤ j, and a PAC ranking algorithm must output an ε-ranking WHP. Note\nthat in this paper, we consider δ ≤ 21 , the more practical regime. For larger values of δ, one can use\nour algorithms with δ = 12 .",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 72,
+          "line_start": 65,
+          "publication_locator": "cited publication",
+          "quoted_text": "Let p̃i,j = pi,j − 12 be the centered preference probability. Note that p̃i,j ≥ 0 iff i is preferable to\nj. If p̃i,j ≥ −ε we say that i is ε-preferable to j. For 0 < ε < 1/2, an element i ∈ [n] is ε-maximum\nif it is ε-preferable to all other elements, namely, p̃i,j ≥ −ε ∀j ≠ i. Given ε > 0, 12 ≥ δ > 0, a\nPAC maxing algorithm must output an ε-maxima with probability ≥ 1 − δ, henceforth abbreviated\nwith high probability (WHP). Similarly, a permutation `1 , . . . ,`n of {1, . . . ,n} is an ε-ranking if `i\nis ε-preferable to `j for all i ≤ j, and a PAC ranking algorithm must output an ε-ranking WHP. Note\nthat in this paper, we consider δ ≤ 21 , the more practical regime. For larger values of δ, one can use\nour algorithms with δ = 12 .",
+          "quoted_text_sha256": "7716ac7ca6ae33b15cc854b7a316740206bb1842e0599eb6631834ce5da1283c"
+        }
+      },
+      {
+        "defined_entity_kind": "predicate",
+        "defined_object": "strongly stochastically transitive",
+        "definitional_clause": "But significantly more general, and more realistic, non-parametric, models may also have max-\nima and rankings. A model is strongly stochastically transitive (SST), if i ≥ j and j ≥ k imply\npi,k ≥ max(pi,j , pj,k ). By simple induction, every SST model has a maximum element and a rank-\ning. And one additional property, that is perhaps more difficult to justify, has proved helpful in\nconstructing maxing and sorting PAC algorithms. A tournament satisfies the stochastic triangle\ninequality if i ≥ j and j ≥ k imply that p̃i,k ≤ p̃i,j + p̃j,k .",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 93,
+          "line_start": 88,
+          "publication_locator": "cited publication",
+          "quoted_text": "But significantly more general, and more realistic, non-parametric, models may also have max-\nima and rankings. A model is strongly stochastically transitive (SST), if i ≥ j and j ≥ k imply\npi,k ≥ max(pi,j , pj,k ). By simple induction, every SST model has a maximum element and a rank-\ning. And one additional property, that is perhaps more difficult to justify, has proved helpful in\nconstructing maxing and sorting PAC algorithms. A tournament satisfies the stochastic triangle\ninequality if i ≥ j and j ≥ k imply that p̃i,k ≤ p̃i,j + p̃j,k .",
+          "quoted_text_sha256": "21ef9323dad464f7cc793a6eed147b58a68ea8349da6d549da4cb8ada5647e70"
+        }
+      },
+      {
+        "defined_entity_kind": "predicate",
+        "defined_object": "score s(i)",
+        "definitional_clause": "score s(i) = n1 ∑j pi,j is the probability that i is preferable to another, randomly selected, element.\nElement i is Borda maximal if s(i) = maxj s(j), and ε-Borda maximal if s(i) ≥ maxj s(j) − ε. A\nPAC Borda-maxing algorithm outputs an ε-Borda maximal element WHP (with probability ≥ 1 − δ).\nSimilarly, a Borda ranking is a permutation i1 , . . . ,in such that for all 1 ≤ j ≤ n − 1, s(ij ) ≥ s(ij+1 ).\nAn ε-Borda ranking is a permutation where for all 1 ≤ j ≤ k ≤ n, s(ij ) ≥ s(ik ) − ε. A PAC\nBorda-ranking algorithm outputs an ε-Borda ranking WHP.",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 117,
+          "line_start": 112,
+          "publication_locator": "cited publication",
+          "quoted_text": "score s(i) = n1 ∑j pi,j is the probability that i is preferable to another, randomly selected, element.\nElement i is Borda maximal if s(i) = maxj s(j), and ε-Borda maximal if s(i) ≥ maxj s(j) − ε. A\nPAC Borda-maxing algorithm outputs an ε-Borda maximal element WHP (with probability ≥ 1 − δ).\nSimilarly, a Borda ranking is a permutation i1 , . . . ,in such that for all 1 ≤ j ≤ n − 1, s(ij ) ≥ s(ij+1 ).\nAn ε-Borda ranking is a permutation where for all 1 ≤ j ≤ k ≤ n, s(ij ) ≥ s(ik ) − ε. A PAC\nBorda-ranking algorithm outputs an ε-Borda ranking WHP.",
+          "quoted_text_sha256": "eb027ec975021f88a1f98b65365e1c6182136e7c2de014c9ffcf021c9ccdb184"
+        }
+      },
+      {
+        "defined_entity_kind": "predicate",
+        "defined_object": "good anchor",
+        "definitional_clause": "An element a is called an (ε, n′ )-good anchor if a is not ε-preferable to at most n′ elements, i.e.,\n∣{e ∶ e ∈ S and p̃e,a > ε}∣ ≤ n′ .",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 264,
+          "line_start": 263,
+          "publication_locator": "cited publication",
+          "quoted_text": "An element a is called an (ε, n′ )-good anchor if a is not ε-preferable to at most n′ elements, i.e.,\n∣{e ∶ e ∈ S and p̃e,a > ε}∣ ≤ n′ .",
+          "quoted_text_sha256": "319c0d6bdb92ff7ba5e9119fdc455071c1b3757abb77fc51793d4beec08f1717"
+        }
+      }
+    ],
+    "schema": 1,
+    "source_artifact_sha256": "22407a45267c62e11b46ea3a6c7c392099d91dae0c469274936b6a3461c59e09",
+    "validated_at": "2026-08-28T00:00:00Z",
+    "validator": "Codex Falahatgar et al. source-only main-and-supplement inventory"
+  },
+  "source_spec_correspondence_schema": 1,
+  "source_url": "https://proceedings.neurips.cc/paper/2017/hash/db98dc0dbafde48e8f74c0de001d35e4-Abstract.html",
+  "source_version": "NeurIPS 2017 published main paper and official supplement",
+  "title": "Maxing and Ranking with Few Assumptions"
+}

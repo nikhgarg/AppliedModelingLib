@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Probability.GaussianSignalKernelRCD
+import AppliedModelingLib.Foundations.Probability.GaussianSignalKernelRCD
 import LG21TestOptionalPolicies.ContinuousAccessConditionedPopulation
 
 /-!
@@ -16,7 +16,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory ProbabilityTheory
 open scoped ENNReal NNReal ProbabilityTheory
 
@@ -157,16 +157,16 @@ private theorem gaussian_two_signal_sequential_law
     (hbaseNoiseVariance : 0 < baseNoiseVariance) :
     let baseLaw := gaussianReal priorMean (priorVariance + baseNoiseVariance).toNNReal
     let posteriorMean : ℝ → ℝ := fun base =>
-      EconCSLib.Probability.gaussianSignalWeight priorVariance baseNoiseVariance * base +
-        EconCSLib.Probability.gaussianSignalPriorWeight priorVariance baseNoiseVariance * priorMean
+      AppliedModelingLib.Probability.gaussianSignalWeight priorVariance baseNoiseVariance * base +
+        AppliedModelingLib.Probability.gaussianSignalPriorWeight priorVariance baseNoiseVariance * priorMean
     let posteriorVariance : ℝ :=
       priorVariance * baseNoiseVariance / (priorVariance + baseNoiseVariance)
-    ((EconCSLib.Probability.gaussianSignalPair priorMean priorVariance baseNoiseVariance).prod
+    ((AppliedModelingLib.Probability.gaussianSignalPair priorMean priorVariance baseNoiseVariance).prod
       (gaussianReal 0 scoreNoiseVariance.toNNReal)).map
         (fun primitive : (ℝ × ℝ) × ℝ =>
           ((primitive.1.1 + primitive.1.2,
             primitive.1.1 + primitive.2), primitive.1.1)) =
-      EconCSLib.Probability.gaussianSignalBaseScoreLatentLaw
+      AppliedModelingLib.Probability.gaussianSignalBaseScoreLatentLaw
         baseLaw posteriorMean (by fun_prop)
         posteriorVariance scoreNoiseVariance := by
   intro baseLaw posteriorMean posteriorVariance
@@ -174,13 +174,13 @@ private theorem gaussian_two_signal_sequential_law
     dsimp [posteriorMean]
     fun_prop
   let firstPosterior : Kernel ℝ ℝ :=
-    EconCSLib.Probability.gaussianSignalPosteriorKernel
+    AppliedModelingLib.Probability.gaussianSignalPosteriorKernel
       priorMean priorVariance baseNoiseVariance
   let posteriorLocation : Kernel ℝ ℝ :=
-    EconCSLib.Probability.gaussianLocationKernel
+    AppliedModelingLib.Probability.gaussianLocationKernel
       posteriorMean hposteriorMean posteriorVariance.toNNReal
   letI : IsMarkovKernel posteriorLocation :=
-    EconCSLib.Probability.gaussianLocationKernel_isMarkov
+    AppliedModelingLib.Probability.gaussianLocationKernel_isMarkov
       posteriorMean hposteriorMean posteriorVariance.toNNReal
   let firstScoreLatent : ℝ × ℝ → ℝ × ℝ :=
     fun pair => (pair.1 + pair.2, pair.1)
@@ -197,25 +197,25 @@ private theorem gaussian_two_signal_sequential_law
     fun_prop
   have hfirstPosterior : firstPosterior = posteriorLocation := by
     ext base event hevent
-    rw [EconCSLib.Probability.gaussianSignalPosteriorKernel_apply,
-      EconCSLib.Probability.gaussianLocationKernel_apply]
+    rw [AppliedModelingLib.Probability.gaussianSignalPosteriorKernel_apply,
+      AppliedModelingLib.Probability.gaussianLocationKernel_apply]
   have hfirst :
-      (EconCSLib.Probability.gaussianSignalPair
+      (AppliedModelingLib.Probability.gaussianSignalPair
         priorMean priorVariance baseNoiseVariance).map firstScoreLatent =
         baseLaw ⊗ₘ posteriorLocation := by
     calc
-      (EconCSLib.Probability.gaussianSignalPair
+      (AppliedModelingLib.Probability.gaussianSignalPair
         priorMean priorVariance baseNoiseVariance).map firstScoreLatent =
           baseLaw ⊗ₘ firstPosterior := by
-            change (EconCSLib.Probability.gaussianSignalPair
+            change (AppliedModelingLib.Probability.gaussianSignalPair
               priorMean priorVariance baseNoiseVariance).map
               (fun pair : ℝ × ℝ => (pair.1 + pair.2, pair.1)) =
-              baseLaw ⊗ₘ EconCSLib.Probability.gaussianSignalPosteriorKernel
+              baseLaw ⊗ₘ AppliedModelingLib.Probability.gaussianSignalPosteriorKernel
                 priorMean priorVariance baseNoiseVariance
-            exact EconCSLib.Probability.gaussianSignalPair_score_latent_joint_factorization
+            exact AppliedModelingLib.Probability.gaussianSignalPair_score_latent_joint_factorization
               priorMean priorVariance baseNoiseVariance hpriorVariance hbaseNoiseVariance
       _ = baseLaw ⊗ₘ posteriorLocation := by rw [hfirstPosterior]
-  let firstJoint := EconCSLib.Probability.gaussianSignalPair
+  let firstJoint := AppliedModelingLib.Probability.gaussianSignalPair
     priorMean priorVariance baseNoiseVariance
   let scoreNoise := gaussianReal 0 scoreNoiseVariance.toNNReal
   have hfirstJointScoreNoise :
@@ -243,7 +243,7 @@ private theorem gaussian_two_signal_sequential_law
       ((baseLaw ⊗ₘ posteriorLocation).prod scoreNoise).map
         (fun primitive : (ℝ × ℝ) × ℝ =>
           ((primitive.1.1, primitive.1.2 + primitive.2), primitive.1.2)) =
-        EconCSLib.Probability.gaussianSignalBaseScoreLatentLaw
+        AppliedModelingLib.Probability.gaussianSignalBaseScoreLatentLaw
           baseLaw posteriorMean hposteriorMean
           posteriorVariance scoreNoiseVariance := by
     let follow : (ℝ × ℝ) × ℝ → (ℝ × ℝ) × ℝ :=
@@ -254,8 +254,8 @@ private theorem gaussian_two_signal_sequential_law
     let stage : ℝ × ℝ → ℝ × ℝ := scoreLatent
     have hstage : Measurable stage := hscoreLatent
     change ((baseLaw ⊗ₘ posteriorLocation).prod scoreNoise).map follow = _
-    unfold EconCSLib.Probability.gaussianSignalBaseScoreLatentLaw
-    unfold EconCSLib.Probability.gaussianSignalJointKernel
+    unfold AppliedModelingLib.Probability.gaussianSignalBaseScoreLatentLaw
+    unfold AppliedModelingLib.Probability.gaussianSignalJointKernel
     rw [← Measure.compProd_const]
     rw [← Measure.compProd_assoc]
     rw [Measure.map_map hfollow (MeasurableEquiv.measurable _)]
@@ -291,9 +291,9 @@ theorem lg21ContinuousGaussianAccessPopulation_single_base_score_skill_law
     let baseLaw := gaussianReal M.priorMean
       ((M.priorVariance : ℝ) + (M.noiseVariance baseFeature : ℝ)).toNNReal
     let posteriorMean : ℝ → ℝ := fun base =>
-      EconCSLib.Probability.gaussianSignalWeight
+      AppliedModelingLib.Probability.gaussianSignalWeight
           (M.priorVariance : ℝ) (M.noiseVariance baseFeature : ℝ) * base +
-        EconCSLib.Probability.gaussianSignalPriorWeight
+        AppliedModelingLib.Probability.gaussianSignalPriorWeight
           (M.priorVariance : ℝ) (M.noiseVariance baseFeature : ℝ) * M.priorMean
     let posteriorVariance : ℝ :=
       (M.priorVariance : ℝ) * (M.noiseVariance baseFeature : ℝ) /
@@ -303,7 +303,7 @@ theorem lg21ContinuousGaussianAccessPopulation_single_base_score_skill_law
         ((lg21ContinuousPopulationFeature baseFeature student,
           lg21ContinuousPopulationFeature testFeature student),
           lg21ContinuousPopulationSkill student)) =
-      EconCSLib.Probability.gaussianSignalBaseScoreLatentLaw
+      AppliedModelingLib.Probability.gaussianSignalBaseScoreLatentLaw
         baseLaw posteriorMean (by fun_prop)
         posteriorVariance (M.noiseVariance testFeature : ℝ) := by
   intro baseLaw posteriorMean posteriorVariance
@@ -350,11 +350,11 @@ theorem lg21ContinuousGaussianAccessPopulation_single_base_score_skill_law
         (gaussianReal 0 (M.noiseVariance baseFeature))).prod
         (gaussianReal 0 (M.noiseVariance testFeature))).map
         primitiveTriple := by rw [hraw]
-    _ = EconCSLib.Probability.gaussianSignalBaseScoreLatentLaw
+    _ = AppliedModelingLib.Probability.gaussianSignalBaseScoreLatentLaw
         baseLaw posteriorMean (by fun_prop)
         posteriorVariance (M.noiseVariance testFeature : ℝ) := by
       dsimp [baseLaw, posteriorMean, posteriorVariance]
-      simpa [EconCSLib.Probability.gaussianSignalPair, primitiveTriple,
+      simpa [AppliedModelingLib.Probability.gaussianSignalPair, primitiveTriple,
         Real.toNNReal_coe] using
         gaussian_two_signal_sequential_law M.priorMean
           (M.priorVariance : ℝ) (M.noiseVariance baseFeature : ℝ)
@@ -379,14 +379,14 @@ theorem lg21ContinuousGaussianAccessPopulation_condDistrib_skill_given_single_ba
     (hscoreNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ)) :
     let law := lg21ContinuousGaussianAccessPopulationLaw M
     let posteriorMean : ℝ → ℝ := fun base =>
-      EconCSLib.Probability.gaussianSignalWeight
+      AppliedModelingLib.Probability.gaussianSignalWeight
           (M.priorVariance : ℝ) (M.noiseVariance baseFeature : ℝ) * base +
-        EconCSLib.Probability.gaussianSignalPriorWeight
+        AppliedModelingLib.Probability.gaussianSignalPriorWeight
           (M.priorVariance : ℝ) (M.noiseVariance baseFeature : ℝ) * M.priorMean
     let posteriorVariance : ℝ :=
       (M.priorVariance : ℝ) * (M.noiseVariance baseFeature : ℝ) /
         ((M.priorVariance : ℝ) + (M.noiseVariance baseFeature : ℝ))
-    let posteriorKernel := EconCSLib.Probability.gaussianSignalPosteriorBaseKernel
+    let posteriorKernel := AppliedModelingLib.Probability.gaussianSignalPosteriorBaseKernel
       posteriorMean (by fun_prop)
       posteriorVariance (M.noiseVariance testFeature : ℝ)
     letI : IsProbabilityMeasure law :=
@@ -431,14 +431,14 @@ theorem lg21ContinuousGaussianAccessPopulation_condDistrib_skill_given_single_ba
     fun_prop
   letI : IsMarkovKernel posteriorKernel := by
     dsimp [posteriorKernel]
-    exact EconCSLib.Probability.gaussianSignalPosteriorBaseKernel_isMarkov
+    exact AppliedModelingLib.Probability.gaussianSignalPosteriorBaseKernel_isMarkov
       posteriorMean hposteriorMean posteriorVariance
         (M.noiseVariance testFeature : ℝ)
   let scoreKernel : Kernel ℝ ℝ :=
-    EconCSLib.Probability.gaussianLocationKernel posteriorMean hposteriorMean
+    AppliedModelingLib.Probability.gaussianLocationKernel posteriorMean hposteriorMean
       (posteriorVariance + (M.noiseVariance testFeature : ℝ)).toNNReal
   letI : IsMarkovKernel scoreKernel :=
-    EconCSLib.Probability.gaussianLocationKernel_isMarkov posteriorMean hposteriorMean
+    AppliedModelingLib.Probability.gaussianLocationKernel_isMarkov posteriorMean hposteriorMean
       (posteriorVariance + (M.noiseVariance testFeature : ℝ)).toNNReal
   have hposteriorVariance : 0 < posteriorVariance := by
     dsimp [posteriorVariance]
@@ -449,21 +449,21 @@ theorem lg21ContinuousGaussianAccessPopulation_condDistrib_skill_given_single_ba
         ((lg21ContinuousPopulationFeature baseFeature student,
           lg21ContinuousPopulationFeature testFeature student),
           lg21ContinuousPopulationSkill student)) =
-      EconCSLib.Probability.gaussianSignalBaseScoreLatentLaw
+      AppliedModelingLib.Probability.gaussianSignalBaseScoreLatentLaw
         baseLaw posteriorMean hposteriorMean
         posteriorVariance (M.noiseVariance testFeature : ℝ) := by
     simpa [law, baseLaw, posteriorMean, posteriorVariance] using
       (lg21ContinuousGaussianAccessPopulation_single_base_score_skill_law
         M haccess baseFeature testFeature hne hpriorVariance hbaseNoiseVariance)
-  have hfactor := EconCSLib.Probability.gaussianSignalBaseScoreLatentLaw_factorization
+  have hfactor := AppliedModelingLib.Probability.gaussianSignalBaseScoreLatentLaw_factorization
     baseLaw posteriorMean hposteriorMean posteriorVariance
       (M.noiseVariance testFeature : ℝ)
       hposteriorVariance hscoreNoiseVariance
   have hscoreKernel : scoreKernel =
-      EconCSLib.Probability.gaussianLocationKernel posteriorMean hposteriorMean
+      AppliedModelingLib.Probability.gaussianLocationKernel posteriorMean hposteriorMean
         (posteriorVariance + (M.noiseVariance testFeature : ℝ)).toNNReal := rfl
   have hposteriorKernel : posteriorKernel =
-      EconCSLib.Probability.gaussianSignalPosteriorBaseKernel
+      AppliedModelingLib.Probability.gaussianSignalPosteriorBaseKernel
         posteriorMean hposteriorMean
         posteriorVariance (M.noiseVariance testFeature : ℝ) := by
     rfl
@@ -474,7 +474,7 @@ theorem lg21ContinuousGaussianAccessPopulation_condDistrib_skill_given_single_ba
             lg21ContinuousPopulationSkill student))).map Prod.fst := by
               rw [Measure.map_map measurable_fst (hobservation.prodMk hskill)]
               rfl
-      _ = (EconCSLib.Probability.gaussianSignalBaseScoreLatentLaw
+      _ = (AppliedModelingLib.Probability.gaussianSignalBaseScoreLatentLaw
           baseLaw posteriorMean hposteriorMean posteriorVariance
             (M.noiseVariance testFeature : ℝ)).map Prod.fst := by
               rw [show (fun student : Bool × (ℝ × (Feature → ℝ)) =>
@@ -494,7 +494,7 @@ theorem lg21ContinuousGaussianAccessPopulation_condDistrib_skill_given_single_ba
     calc
       law.map (fun student => (observation student,
           lg21ContinuousPopulationSkill student)) =
-        EconCSLib.Probability.gaussianSignalBaseScoreLatentLaw
+        AppliedModelingLib.Probability.gaussianSignalBaseScoreLatentLaw
           baseLaw posteriorMean hposteriorMean posteriorVariance
             (M.noiseVariance testFeature : ℝ) := by
               rw [show (fun student : Bool × (ℝ × (Feature → ℝ)) =>

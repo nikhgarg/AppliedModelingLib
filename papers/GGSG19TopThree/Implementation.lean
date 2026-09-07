@@ -432,11 +432,11 @@ compact human-review surface is `PaperInterface.lean`.
 
 namespace GGSG19TopThree
 
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib.SocialChoice.Ranking
 
 noncomputable section
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 
 /-- Definition, Section 3.1: `r = -lim (1 / N) log A_N`. -/
 abbrev definition_large_deviation_rate (A : ℕ → ℝ) (r : ℝ) : Prop :=
@@ -519,7 +519,7 @@ theorem proposition1_induced_prefix_expected_score_bridge
     (inPrefix : Signal → Candidate → Cut → Prop)
     [∀ signal candidate cut, Decidable (inPrefix signal candidate cut)]
     (candidate : Candidate) :
-    EconCSLib.pmfExp law
+    AppliedModelingLib.pmfExp law
         (prefixScoreFromEvent diff inPrefix candidate) =
       prefixExpectedScore diff
         (prefixProbFromEvent law inPrefix) candidate :=
@@ -542,7 +542,7 @@ theorem proposition1_induced_prefix_expected_gap_positive
       StrictTopPrefixDominance (prefixProbFromEvent law inPrefix) hi lo)
     (hdiff : ReasonablePrefixWeights diff) :
     0 <
-      EconCSLib.pmfExp law
+      AppliedModelingLib.pmfExp law
         (fun signal =>
           prefixScoreFromEvent diff inPrefix hi signal -
             prefixScoreFromEvent diff inPrefix lo signal) :=
@@ -1763,7 +1763,7 @@ theorem proposition2_pairwise_chernoff_pointwise_upper_bound_at_rate_of_mean_non
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1786,7 +1786,7 @@ theorem proposition2_pairwise_positive_expected_gap_chernoff_upper_bound_exists
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 <
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal)) :
     ∃ rate : ℝ,
       0 < rate ∧
@@ -1805,7 +1805,7 @@ theorem proposition2_pairwise_positive_expected_gap_chernoff_dual_exists
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 <
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal)) :
     ∃ z : ℝ,
       z ≤ 0 ∧
@@ -1833,7 +1833,7 @@ theorem proposition2_pairwise_exact_rate_from_support_nonneg_zero_gap_prob
         0 ≤ hiScore signal - loScore signal)
     {pZero : ℝ}
     (hZeroProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         pZero)
     (hZero_pos : 0 < pZero) :
@@ -1923,7 +1923,7 @@ theorem proposition2_pairwise_exact_rate_from_path_lower_of_mean_nonneg
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     (hbdd :
       BddBelow (Set.range fun z : ℝ =>
@@ -1946,7 +1946,7 @@ theorem proposition2_pairwise_exact_rate_from_path_lower_of_mean_nonneg_pos_neg_
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2001,8 +2001,8 @@ theorem proposition2_pairwise_exact_rate_from_tilted_window
     (hwindow :
       ∀ᶠ n : ℕ in Filter.atTop,
         lowerConst / (((n.succ : ℕ) : ℝ) ^ degree) ≤
-          EconCSLib.pmfProb
-            (EconCSLib.pmfProduct (Fin n) Signal
+          AppliedModelingLib.pmfProb
+            (AppliedModelingLib.pmfProduct (Fin n) Signal
               (finiteExponentialTilt law
                 (fun signal => hiScore signal - loScore signal) z))
             (fun sample : Fin n → Signal =>
@@ -2032,7 +2032,7 @@ theorem proposition2_pairwise_exact_rate_from_stationary_tilted_window
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2050,8 +2050,8 @@ theorem proposition2_pairwise_exact_rate_from_stationary_tilted_window
     (hwindow :
       ∀ᶠ n : ℕ in Filter.atTop,
         lowerConst / (((n.succ : ℕ) : ℝ) ^ degree) ≤
-          EconCSLib.pmfProb
-            (EconCSLib.pmfProduct (Fin n) Signal
+          AppliedModelingLib.pmfProb
+            (AppliedModelingLib.pmfProduct (Fin n) Signal
               (finiteExponentialTilt law
                 (fun signal => hiScore signal - loScore signal) z))
             (fun sample : Fin n → Signal =>
@@ -2078,7 +2078,7 @@ theorem proposition2_pairwise_exact_rate_from_tail_lower_of_mean_nonneg
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     (hbdd :
       BddBelow (Set.range fun z : ℝ =>
@@ -2102,7 +2102,7 @@ theorem proposition2_pairwise_exact_rate_from_tail_lower_of_mean_nonneg_pos_neg_
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2149,7 +2149,7 @@ theorem proposition2_pairwise_exact_rate_from_bucket_lower_of_mean_nonneg
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     (hbdd :
       BddBelow (Set.range fun z : ℝ =>
@@ -2173,7 +2173,7 @@ theorem proposition2_pairwise_exact_rate_from_bucket_lower_of_mean_nonneg_pos_ne
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2220,7 +2220,7 @@ theorem proposition2_pairwise_exact_rate_from_count_vector_lower_of_mean_nonneg
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     (hbdd :
       BddBelow (Set.range fun z : ℝ =>
@@ -2244,7 +2244,7 @@ theorem proposition2_pairwise_exact_rate_from_count_vector_lower_of_mean_nonneg_
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2291,7 +2291,7 @@ theorem proposition2_pairwise_exact_rate_from_empirical_type_lower_of_mean_nonne
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     (hbdd :
       BddBelow (Set.range fun z : ℝ =>
@@ -2314,7 +2314,7 @@ theorem proposition2_pairwise_exact_rate_from_empirical_type_lower_of_mean_nonne
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2422,7 +2422,7 @@ theorem proposition2_pairwise_exact_rate_from_periodic_count_vector_lower_of_mea
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2461,7 +2461,7 @@ theorem proposition2_pairwise_exact_rate_from_periodic_empirical_type_lower_of_m
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2500,7 +2500,7 @@ theorem proposition2_pairwise_exact_rate_from_periodic_empirical_type_lower_rate
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2539,7 +2539,7 @@ theorem proposition2_pairwise_exact_rate_from_periodic_count_vector_lower_of_log
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2585,7 +2585,7 @@ theorem proposition2_pairwise_exact_rate_from_periodic_count_vector_lower_of_con
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2638,7 +2638,7 @@ theorem proposition2_pairwise_exact_rate_from_periodic_count_vector_lower_of_con
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2690,7 +2690,7 @@ theorem proposition2_pairwise_exact_rate_from_periodic_count_vector_lower_of_log
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2738,7 +2738,7 @@ theorem proposition2_pairwise_exact_rate_from_periodic_count_vector_lower_of_sta
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2786,7 +2786,7 @@ theorem proposition2_pairwise_exact_rate_from_periodic_count_vector_lower_witnes
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2822,7 +2822,7 @@ theorem proposition2_pairwise_exact_rate_from_periodic_empirical_type_lower_witn
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2861,7 +2861,7 @@ theorem proposition2_pairwise_exact_rate_from_periodic_empirical_type_lower_rate
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2899,7 +2899,7 @@ theorem proposition2_pairwise_exact_rate_from_periodic_empirical_type_lower_log_
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2938,7 +2938,7 @@ theorem proposition2_pairwise_exact_rate_from_stationary_tilted_modal_log_suppor
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2967,7 +2967,7 @@ theorem proposition2_pairwise_exact_rate_from_stationary_tilted_modal_log_suppor
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2992,7 +2992,7 @@ theorem proposition2_pairwise_stationary_tilt_rate_identity_and_exact_rate_of_me
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -3041,13 +3041,13 @@ theorem proposition2_pairwise_exact_rate_or_boundary_from_finite_support_mean_no
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal)) :
     ExponentialRateCertificate
         (pairwiseScoringErrorProb law hiScore loScore)
         (pairwiseScoringRate law hiScore loScore) ∨
       (∃ pZero : ℝ,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => hiScore signal - loScore signal = 0) =
           pZero ∧
         0 < pZero ∧
@@ -3069,7 +3069,7 @@ theorem proposition2_pairwise_exact_rate_or_eventually_zero_from_finite_support_
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal)) :
     (∃ rate : ℝ,
       ExponentialRateCertificate
@@ -3090,7 +3090,7 @@ theorem proposition2_pairwise_extended_rate_from_finite_support_mean_nonneg
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal)) :
     ∃ rate : WithTop ℝ,
       HasExtendedExponentialRate
@@ -3109,7 +3109,7 @@ theorem proposition2_pairwise_exact_rate_from_stationary_tilted_modal_log_full_s
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -3141,7 +3141,7 @@ theorem proposition2_pairwise_exact_rate_from_empirical_type_lower_witnesses
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -3278,11 +3278,11 @@ theorem proposition3_approval_pairwise_cramer_certificate_from_ternary_scores
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown) :
     FiniteIidScoreGapCramerCertificate law hiScore loScore :=
@@ -3308,11 +3308,11 @@ theorem proposition3_approval_pairwise_exact_rate_from_ternary_scores
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown) :
     ExponentialRateCertificate
@@ -3337,16 +3337,16 @@ theorem proposition3_approval_pairwise_exact_rate_from_ternary_scores_down_zero
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hZeroProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         pZero)
     (hZero_pos : 0 < pZero)
     (hDownZero :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         0) :
     ExponentialRateCertificate
@@ -3370,11 +3370,11 @@ theorem proposition3_approval_pairwise_eventually_zero_from_ternary_scores_down_
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hZeroZero :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         0)
     (hDownZero :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         0) :
     ∀ᶠ n in Filter.atTop,
@@ -3395,11 +3395,11 @@ theorem proposition3_approval_pairwise_upper_bound_from_ternary_scores_down_zero
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hZeroZero :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         0)
     (hDownZero :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         0)
     (targetRate : ℝ) :
@@ -3426,15 +3426,15 @@ theorem proposition3_approval_pairwise_exact_rate_or_eventually_zero_from_ternar
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown)
     (hZeroProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         pZero) :
     ExponentialRateCertificate
@@ -3461,15 +3461,15 @@ theorem proposition3_approval_pairwise_extended_rate_from_ternary_scores
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown)
     (hZeroProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         pZero) :
     ∃ rate : WithTop ℝ,
@@ -3496,11 +3496,11 @@ theorem proposition3_approval_pairwise_error_tendsto_zero_from_ternary_scores
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown)
     (hrate_pos : 0 < approvalPairwiseRate pUp pDown) :
@@ -3528,11 +3528,11 @@ theorem proposition3_approval_pairwise_error_tendsto_zero_from_ternary_scores_of
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown) :
     Filter.Tendsto
@@ -4206,11 +4206,11 @@ theorem proposition3_approval_pairwise_exact_rate_from_ternary_lower_bounds
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown)
     (hpos :
@@ -4244,11 +4244,11 @@ theorem proposition3_approval_pairwise_exact_rate_from_poly_geometric_lower
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown)
     {lowerConst : ℝ} (hlowerConst : 0 < lowerConst) (lowerDegree : ℕ)
@@ -4319,7 +4319,7 @@ theorem proposition4_relevant_score_gap_error_sum_pointwise_upper_bound_at_finit
     (hmean :
       ∀ pair,
         0 ≤
-          EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp law
             (fun signal => score (hi pair) signal - score (lo pair) signal))
     {aPos aNeg : Pair → Signal}
     (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
@@ -4381,7 +4381,7 @@ theorem proposition4_cross_tier_error_sum_pointwise_upper_bound_at_finiteOutcome
     (hmean :
       ∀ pair : CrossTierPair winnerSet,
         0 ≤
-          EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp law
             (fun signal => score pair.hi signal - score pair.lo signal))
     {aPos aNeg : CrossTierPair winnerSet → Signal}
     (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
@@ -4437,7 +4437,7 @@ theorem proposition4_outcome_error_exact_rate_from_relevant_pairs_finite_support
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal =>
             score (hi pair) signal - score (lo pair) signal))
     {pairWeight : Pair → ℝ} {minRate : ℝ}
@@ -4456,7 +4456,7 @@ theorem proposition4_outcome_error_exact_rate_from_relevant_pairs_finite_support
             (score (hi pair)) (score (lo pair)))
     (hzero_rate_ge :
       ∀ pair pZero,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal =>
               score (hi pair) signal - score (lo pair) signal = 0) =
           pZero →
@@ -4486,7 +4486,7 @@ theorem proposition4_outcome_error_exact_rate_or_eventually_zero_from_relevant_p
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal =>
             score (hi pair) signal - score (lo pair) signal))
     {pairWeight : Pair → ℝ}
@@ -4520,7 +4520,7 @@ theorem proposition4_outcome_error_extended_rate_from_relevant_pairs_finite_supp
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal =>
             score (hi pair) signal - score (lo pair) signal))
     {pairWeight : Pair → ℝ}
@@ -4552,7 +4552,7 @@ def proposition4_pairwise_rate_certificate_from_support_nonneg_zero_gap_prob
         0 ≤ score hi signal - score lo signal)
     (hZeroProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = 0) =
           pZero hi lo)
     (hZero_pos : ∀ hi lo, 0 < pZero hi lo) :
@@ -4575,7 +4575,7 @@ theorem proposition4_outcome_error_exact_rate_from_support_nonneg_zero_gap_prob
         0 ≤ score hi signal - score lo signal)
     (hZeroProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = 0) =
           pZero hi lo)
     (hZero_pos : ∀ hi lo, 0 < pZero hi lo)
@@ -4610,7 +4610,7 @@ def proposition4_relevant_pair_rate_certificate_from_support_nonneg_zero_gap_pro
         0 ≤ score (hi pair) signal - score (lo pair) signal)
     (hZeroProb :
       ∀ pair,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal =>
               score (hi pair) signal - score (lo pair) signal = 0) =
           pZero pair)
@@ -4635,7 +4635,7 @@ theorem proposition4_outcome_error_exact_rate_from_support_nonneg_zero_gap_prob_
         0 ≤ score (hi pair) signal - score (lo pair) signal)
     (hZeroProb :
       ∀ pair,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal =>
               score (hi pair) signal - score (lo pair) signal = 0) =
           pZero pair)
@@ -4672,18 +4672,18 @@ def proposition4_pairwise_rate_certificate_from_approval_ternary_scores_down_zer
           score hi signal - score lo signal = -1)
     (hUpProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = 1) =
           pUp hi lo)
     (hZeroProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = 0) =
           pZero hi lo)
     (hZero_pos : ∀ hi lo, 0 < pZero hi lo)
     (hDownZero :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = -1) =
           0) :
     PairwiseErrorRateCertificate Candidate :=
@@ -4707,18 +4707,18 @@ theorem proposition4_outcome_error_exact_rate_from_approval_ternary_scores_down_
           score hi signal - score lo signal = -1)
     (hUpProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = 1) =
           pUp hi lo)
     (hZeroProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = 0) =
           pZero hi lo)
     (hZero_pos : ∀ hi lo, 0 < pZero hi lo)
     (hDownZero :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = -1) =
           0)
     {pairWeight : Candidate → Candidate → ℝ} {minRate : ℝ}
@@ -4822,7 +4822,7 @@ theorem proposition4_relevant_score_gap_aggregate_positive_exponential_decay
     (hmean :
       ∀ pair,
         0 <
-          EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp law
             (fun signal => score (hi pair) signal - score (lo pair) signal)) :
     ∃ targetRate : ℝ,
       0 < targetRate ∧
@@ -4876,7 +4876,7 @@ theorem proposition4_outcome_error_exact_rate_from_finite_score_gap_periodic_cou
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -4927,7 +4927,7 @@ theorem proposition4_outcome_error_exact_rate_from_finite_score_gap_empirical_ty
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5009,7 +5009,7 @@ theorem proposition4_outcome_error_exact_rate_from_finite_score_gap_path_lower_o
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5104,7 +5104,7 @@ theorem proposition4_outcome_error_exact_rate_from_finite_score_gap_tail_lower_o
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5199,7 +5199,7 @@ theorem proposition4_outcome_error_exact_rate_from_finite_score_gap_empirical_ty
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5243,7 +5243,7 @@ theorem proposition4_outcome_error_exact_rate_from_stationary_tilted_modal_log_s
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5289,7 +5289,7 @@ theorem proposition4_outcome_error_exact_rate_from_stationary_tilted_modal_log_s
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5331,7 +5331,7 @@ theorem proposition4_outcome_error_exact_rate_from_stationary_tilted_modal_log_s
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5367,7 +5367,7 @@ def proposition4_relevant_pair_rate_certificate_from_stationary_tilted_modal_log
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score (hi pair) signal - score (lo pair) signal))
     (aPos aNeg : Pair → Signal)
     (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
@@ -5394,7 +5394,7 @@ theorem proposition4_outcome_error_exact_rate_from_stationary_tilted_modal_log_s
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score (hi pair) signal - score (lo pair) signal))
     (aPos aNeg : Pair → Signal)
     (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
@@ -5439,7 +5439,7 @@ theorem proposition4_outcome_error_exact_rate_from_stationary_tilted_modal_log_s
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score (hi pair) signal - score (lo pair) signal))
     (aPos aNeg : Pair → Signal)
     (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
@@ -5478,7 +5478,7 @@ theorem proposition4_cross_tier_outcome_error_exact_rate_from_stationary_tilted_
     [Nonempty (CrossTierPair winnerSet)]
     (hmean :
       ∀ pair : CrossTierPair winnerSet,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score pair.hi signal - score pair.lo signal))
     (aPos aNeg : CrossTierPair winnerSet → Signal)
     (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
@@ -5510,7 +5510,7 @@ theorem proposition4_outcome_error_exact_rate_from_stationary_tilted_modal_log_s
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5542,7 +5542,7 @@ theorem proposition4_outcome_error_exact_rate_from_stationary_tilted_modal_log_f
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5630,7 +5630,7 @@ theorem proposition4_outcome_error_exact_rate_from_finite_score_gap_bucket_lower
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5725,7 +5725,7 @@ theorem proposition4_outcome_error_exact_rate_from_finite_score_gap_count_vector
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5827,12 +5827,12 @@ theorem proposition4_outcome_error_exact_rate_from_approval_ternary_scores
           score hi signal - score lo signal = -1)
     (hUpProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = 1) =
           pUp hi lo)
     (hDownProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = -1) =
           pDown hi lo)
     {pairWeight : Candidate → Candidate → ℝ} {minRate : ℝ}
@@ -5872,12 +5872,12 @@ theorem proposition4_outcome_error_tendsto_zero_from_approval_ternary_scores
           score hi signal - score lo signal = -1)
     (hUpProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = 1) =
           pUp hi lo)
     (hDownProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = -1) =
           pDown hi lo)
     {pairWeight : Candidate → Candidate → ℝ} {rateFloor : ℝ}
@@ -6111,7 +6111,7 @@ theorem randomized_scoring_outcome_rate_le_static_of_weighted_score_of_zero_scor
     (hsum : (∑ rule : Rule, weight rule) = 1)
     (hzero_pos :
       ∀ pair,
-        0 < EconCSLib.pmfProb law (fun signal => staticGap pair signal = 0)) :
+        0 < AppliedModelingLib.pmfProb law (fun signal => staticGap pair signal = 0)) :
     finiteOutcomeLearningRate
         (fun pair : Pair =>
           randomizedScoringMixtureRate law weight (gap pair)) ≤
@@ -6202,7 +6202,7 @@ theorem randomized_scoring_actual_outcome_rate_le_static_of_weighted_score_of_ze
     (hsum : (∑ rule : Rule, weight rule) = 1)
     (hzero_pos :
       ∀ pair,
-        0 < EconCSLib.pmfProb law (fun signal => staticGap pair signal = 0)) :
+        0 < AppliedModelingLib.pmfProb law (fun signal => staticGap pair signal = 0)) :
     finiteOutcomeLearningRate
         (fun pair : Pair =>
           finiteChernoffRate
@@ -6386,7 +6386,7 @@ theorem randomized_scoring_prefix_actual_reasonable_static_and_outcome_rate_le_s
     (hzero_pos :
       ∀ pair,
         0 <
-          EconCSLib.pmfProb law
+          AppliedModelingLib.pmfProb law
             (fun signal =>
               prefixScoreFromEvent
                   (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -6509,7 +6509,7 @@ theorem randomized_scoring_prefix_actual_pairwise_rate_le_bound_of_source_or_zer
                   inPrefix lo signal) ≤
             targetRate) ∨
       (∃ pZero : ℝ,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal =>
               prefixScoreFromEvent
                   (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -6554,7 +6554,7 @@ theorem randomized_scoring_prefix_actual_pairwise_rate_le_bound_of_source_or_zer
   · rcases hzero with ⟨pZero, hZeroProb, hZero_pos, hzero_le_target⟩
     have hzero_prob_pos :
         0 <
-          EconCSLib.pmfProb law
+          AppliedModelingLib.pmfProb law
             (fun signal => staticGap signal = 0) := by
       simpa [staticGap, hZeroProb] using hZero_pos
     have hstatic_bdd :
@@ -6564,12 +6564,12 @@ theorem randomized_scoring_prefix_actual_pairwise_rate_le_bound_of_source_or_zer
     have hstatic_le_zero :
         finiteChernoffRate law staticGap ≤
           -Real.log
-            (EconCSLib.pmfProb law (fun signal => staticGap signal = 0)) :=
+            (AppliedModelingLib.pmfProb law (fun signal => staticGap signal = 0)) :=
       finiteChernoffRate_le_neg_log_pmfProb_score_eq_zero
         law staticGap hzero_prob_pos
     have hzero_le_target' :
         -Real.log
-            (EconCSLib.pmfProb law (fun signal => staticGap signal = 0)) ≤
+            (AppliedModelingLib.pmfProb law (fun signal => staticGap signal = 0)) ≤
           targetRate := by
       simpa [staticGap, hZeroProb] using hzero_le_target
     exact
@@ -7097,7 +7097,7 @@ theorem randomized_scoring_prefix_cross_tier_static_selection_and_zero_gap_stati
                 inPrefix pair.lo signal)
     (hZeroProb :
       ∀ pair : CrossTierPair winnerSet,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal =>
               prefixScoreFromEvent
                   (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -7221,7 +7221,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_zero_gap_st
                 inPrefix pair.lo signal)
     (hZeroProb :
       ∀ pair : CrossTierPair winnerSet,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal =>
               prefixScoreFromEvent
                   (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -7307,7 +7307,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_zero_gap_st
     intro pair
     have hzero_prob_pos :
         0 <
-          EconCSLib.pmfProb law
+          AppliedModelingLib.pmfProb law
             (fun signal =>
               prefixScoreFromEvent staticDiff inPrefix pair.hi signal -
                 prefixScoreFromEvent staticDiff inPrefix pair.lo signal = 0) := by
@@ -7378,7 +7378,7 @@ theorem randomized_scoring_prefix_cross_tier_static_selection_and_mixed_static_a
     (hmean :
       ∀ pair : CrossTierPair winnerSet,
         0 ≤
-          EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp law
             (fun signal =>
               prefixScoreFromEvent
                   (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -7409,7 +7409,7 @@ theorem randomized_scoring_prefix_cross_tier_static_selection_and_mixed_static_a
                   inPrefix pair.lo signal))
     (hzero_rate_ge :
       ∀ pair : CrossTierPair winnerSet, ∀ pZero,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal =>
               prefixScoreFromEvent
                   (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -7513,7 +7513,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_mixed_s
     (hmean :
       ∀ pair : CrossTierPair winnerSet,
         0 ≤
-          EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp law
             (fun signal =>
               prefixScoreFromEvent
                   (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -7544,7 +7544,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_mixed_s
                   inPrefix pair.lo signal))
     (hzero_rate_ge :
       ∀ pair : CrossTierPair winnerSet, ∀ pZero,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal =>
               prefixScoreFromEvent
                   (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -7647,7 +7647,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_mixed_s
     (hmean :
       ∀ pair : CrossTierPair winnerSet,
         0 ≤
-          EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp law
             (fun signal =>
               prefixScoreFromEvent
                   (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -7678,7 +7678,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_mixed_s
                   inPrefix pair.lo signal))
     (hzero_rate_ge :
       ∀ pair : CrossTierPair winnerSet, ∀ pZero,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal =>
               prefixScoreFromEvent
                   (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -7717,7 +7717,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_mixed_s
                   inPrefix pairMin.lo signal) ≤
             minRate) ∨
       (∃ pZero : ℝ,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal =>
               prefixScoreFromEvent
                   (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -7829,7 +7829,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_rate_or
                   inPrefix pair.lo (aNeg pair) < 0)) ∨
       (∀ pair : CrossTierPair winnerSet,
         0 ≤
-          EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp law
             (fun signal =>
               prefixScoreFromEvent
                   (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -8111,7 +8111,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_rate_or
                   (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
                   inPrefix pair.lo signal) ∧
           (∀ pair : CrossTierPair winnerSet,
-            EconCSLib.pmfProb law
+            AppliedModelingLib.pmfProb law
                 (fun signal =>
                   prefixScoreFromEvent
                       (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -8263,7 +8263,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_rate_or
       (∃ (minRate : ℝ) (pairMin : CrossTierPair winnerSet),
         (∀ pair : CrossTierPair winnerSet,
           0 ≤
-            EconCSLib.pmfExp law
+            AppliedModelingLib.pmfExp law
               (fun signal =>
                 prefixScoreFromEvent
                     (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -8291,7 +8291,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_rate_or
                       (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
                       inPrefix pair.lo signal)) ∧
           (∀ pair : CrossTierPair winnerSet, ∀ pZero,
-            EconCSLib.pmfProb law
+            AppliedModelingLib.pmfProb law
                 (fun signal =>
                   prefixScoreFromEvent
                       (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -8441,7 +8441,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_rate_or
       (∃ (minRate : ℝ) (pairMin : CrossTierPair winnerSet),
         (∀ pair : CrossTierPair winnerSet,
           0 ≤
-            EconCSLib.pmfExp law
+            AppliedModelingLib.pmfExp law
               (fun signal =>
                 prefixScoreFromEvent
                     (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -8469,7 +8469,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_rate_or
                       (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
                       inPrefix pair.lo signal)) ∧
           (∀ pair : CrossTierPair winnerSet, ∀ pZero,
-            EconCSLib.pmfProb law
+            AppliedModelingLib.pmfProb law
                 (fun signal =>
                   prefixScoreFromEvent
                       (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -8507,7 +8507,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_rate_or
                       inPrefix pairMin.lo signal) ≤
                 minRate) ∨
           (∃ pZero : ℝ,
-            EconCSLib.pmfProb law
+            AppliedModelingLib.pmfProb law
                 (fun signal =>
                   prefixScoreFromEvent
                       (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -8669,7 +8669,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_extende
       (∃ (minRate : ℝ) (pairMin : CrossTierPair winnerSet),
         (∀ pair : CrossTierPair winnerSet,
           0 ≤
-            EconCSLib.pmfExp law
+            AppliedModelingLib.pmfExp law
               (fun signal =>
                 prefixScoreFromEvent
                     (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -8697,7 +8697,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_extende
                       (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
                       inPrefix pair.lo signal)) ∧
           (∀ pair : CrossTierPair winnerSet, ∀ pZero,
-            EconCSLib.pmfProb law
+            AppliedModelingLib.pmfProb law
                 (fun signal =>
                   prefixScoreFromEvent
                       (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -8735,7 +8735,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_extende
                       inPrefix pairMin.lo signal) ≤
                 minRate) ∨
           (∃ pZero : ℝ,
-            EconCSLib.pmfProb law
+            AppliedModelingLib.pmfProb law
                 (fun signal =>
                   prefixScoreFromEvent
                       (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -8805,7 +8805,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_extende
     have hmean :
         ∀ pair : CrossTierPair winnerSet,
           0 ≤
-            EconCSLib.pmfExp law
+            AppliedModelingLib.pmfExp law
               (fun signal =>
                 prefixScoreFromEvent staticDiff inPrefix pair.hi signal -
                   prefixScoreFromEvent staticDiff inPrefix pair.lo signal) := by
@@ -9032,7 +9032,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_automat
   have hmean :
       ∀ pair : CrossTierPair winnerSet,
         0 ≤
-          EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp law
             (fun signal =>
               staticScore pair.hi signal - staticScore pair.lo signal) := by
     intro pair
@@ -9091,7 +9091,7 @@ theorem randomized_scoring_prefix_actual_cross_tier_static_selection_and_automat
         · simpa [staticError, staticScore] using hcert
         · have hzero_prob_pos :
               0 <
-                EconCSLib.pmfProb law
+                AppliedModelingLib.pmfProb law
                   (fun signal =>
                     staticScore pair.hi signal -
                       staticScore pair.lo signal = 0) := by
@@ -9521,7 +9521,7 @@ theorem randomized_approval_relevant_pair_aggregate_exact_rate_or_eventually_zer
     (hmean :
       ∀ pair,
         0 ≤
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (randomizedKApprovalSamplingLaw law weight hweight hsum)
             (fun signal : Rule × Ranking n =>
               kApprovalScore (K signal.1) signal.2 (hi pair) -
@@ -9575,7 +9575,7 @@ theorem randomized_approval_relevant_pair_aggregate_extended_rate_from_mixed_exp
     (hmean :
       ∀ pair,
         0 ≤
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (randomizedKApprovalSamplingLaw law weight hweight hsum)
             (fun signal : Rule × Ranking n =>
               kApprovalScore (K signal.1) signal.2 (hi pair) -
@@ -10279,7 +10279,7 @@ theorem randomized_k_approval_aggregate_rate_or_eventually_zero_and_outcome_rate
     (hmixed_expected_gap_nonneg :
       ∀ pair,
         0 ≤
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (randomizedKApprovalSamplingLaw law weight hweight hsum)
             (fun signal : Rule × Ranking n =>
               kApprovalScore (K signal.1) signal.2 (hi pair) -
@@ -10369,7 +10369,7 @@ theorem randomized_k_approval_aggregate_extended_rate_and_outcome_rate_le_static
     (hmixed_expected_gap_nonneg :
       ∀ pair,
         0 ≤
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (randomizedKApprovalSamplingLaw law weight hweight hsum)
             (fun signal : Rule × Ranking n =>
               kApprovalScore (K signal.1) signal.2 (hi pair) -
@@ -10615,7 +10615,7 @@ theorem randomized_k_approval_aggregate_extended_rate_and_extended_outcome_compa
     (hmixed_expected_gap_nonneg :
       ∀ pair,
         0 ≤
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (randomizedKApprovalSamplingLaw law weight hweight hsum)
             (fun signal : Rule × Ranking n =>
               kApprovalScore (K signal.1) signal.2 (hi pair) -
@@ -10980,12 +10980,12 @@ theorem randomized_k_approval_aggregate_exact_rate_and_outcome_rate_le_static_fr
   randomized_k_approval_aggregate_exact_rate_and_outcome_rate_le_static_from_static_component_witnesses_or_static_boundary
     law K weight hi lo pivotal hweight hsum hpairWeight hpairWeight_pos
     (fun pair => by
-      rcases EconCSLib.exists_positive_weight_of_nonneg_sum_eq_one
+      rcases AppliedModelingLib.exists_positive_weight_of_nonneg_sum_eq_one
           weight hweight hsum with
         ⟨rule, hweight_pos⟩
       exact ⟨rule, hweight_pos, hstaticUp_pos pair rule⟩)
     (fun pair => by
-      rcases EconCSLib.exists_positive_weight_of_nonneg_sum_eq_one
+      rcases AppliedModelingLib.exists_positive_weight_of_nonneg_sum_eq_one
           weight hweight hsum with
         ⟨rule, hweight_pos⟩
       exact ⟨rule, hweight_pos, hstaticDown_pos pair rule⟩)

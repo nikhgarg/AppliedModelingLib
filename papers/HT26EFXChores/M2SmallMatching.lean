@@ -14,7 +14,7 @@ Source: `EFXadditivechores.tex`, Case B.2.2(b), lines 2506--2524.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- A pool of at most three M₂ chores admits distinct small endpoints when no
 type fibre has multiplicity more than two.  This is the matching assertion

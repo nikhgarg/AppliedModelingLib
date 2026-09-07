@@ -2,7 +2,7 @@ import KR21Monoculture.LaplaceW11Regularity
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Probability.Moments.Variance
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 open scoped ENNReal ProbabilityTheory
 
 namespace KR21Monoculture

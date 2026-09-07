@@ -13,8 +13,8 @@ rejections.
 
 namespace GHW01DigitalGoods
 
-open EconCSLib
-open EconCSLib.Auction
+open AppliedModelingLib
+open AppliedModelingLib.Auction
 
 noncomputable section
 

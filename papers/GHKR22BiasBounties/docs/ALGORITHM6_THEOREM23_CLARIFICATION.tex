@@ -1,0 +1,31 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+\title{Algorithm 6 and Theorem 23: Clarification}
+\author{Companion to \emph{An Algorithmic Framework for Bias Bounties}}
+\date{}
+\begin{document}
+\maketitle
+Source: \href{https://arxiv.org/abs/2201.10408v4}{arXiv v4}, Algorithm 6 and Theorem 23 (\texttt{main.tex:991--1025}).
+\begin{itemize}
+\item \textbf{Full-sweep stopping $\to$ two coordinate tests at the same pair.}
+Write $\Phi(g,h)=\mu_D(g)[L(D,f,g)-L(D,h,g)]$, where $D$ is the empirical dataset, $f$ the current model, $g$ a group, $h$ a replacement model, $\mu_D(g)$ its group mass, and $L$ conditional loss. After a complete sweep the model response was optimized for the previous group; small sweep gain does not bound both gaps at the final pair.
+At $(g,h)$, choose $h^+\in\arg\max_{\widetilde h\in\mathcal H}\Phi(g,\widetilde h)$.
+If $\Phi(g,h^+)>\Phi(g,h)+\epsilon$, update $h$ and repeat.
+Otherwise choose $g^+\in\arg\max_{\widetilde g\in\mathcal G}\Phi(\widetilde g,h)$;
+update $g$ only if $\Phi(g^+,h)>\Phi(g,h)+\epsilon$.
+Stop when neither test passes. Here $\epsilon>0$, and $\mathcal G,\mathcal H$ are the source group/model classes.
+\item \textbf{The local optimum and integer response bound.}
+The two failed tests give, for all $\widetilde h\in\mathcal H$ and $\widetilde g\in\mathcal G$,
+\[
+\Phi(g,\widetilde h)\le\Phi(g,h)+\epsilon,
+\qquad \Phi(\widetilde g,h)\le\Phi(g,h)+\epsilon.
+\]
+Every update increases $\Phi\in[-1,1]$ by more than $\epsilon$, so including the terminal test there are at most $\lceil2/\epsilon\rceil$ response rounds, each with one model-oracle and at most one group-oracle call.
+\item \textbf{Arbitrary-start positive certificate $\to$ positivity under positive initialization.}
+In a one-feature instance where all admissible replacements have the current model's loss, $\Phi=0$ for every pair. Every pair is locally optimal, but none is a positive certificate. Thus arbitrary initialization guarantees only the local optimum and response bound. Starting at $\Phi(g_0,h_0)>0$ suffices for positivity, since each accepted update increases $\Phi$.
+\end{itemize}
+\end{document}

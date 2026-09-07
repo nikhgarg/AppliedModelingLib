@@ -15,7 +15,7 @@ Conditions 1--2.
 namespace LBG24SpatialUnderreporting
 
 open Filter MeasureTheory ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal ProbabilityTheory
 
 noncomputable section

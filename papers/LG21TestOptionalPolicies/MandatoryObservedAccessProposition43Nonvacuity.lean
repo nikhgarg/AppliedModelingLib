@@ -13,7 +13,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 /-- The literal action imposed by the source's reporting-required-given-access
 protocol: applicants with access take and report, while applicants without

@@ -1,5 +1,5 @@
-import EconCSLib.Foundations.Probability.ForwardStoppedPoisson
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalDeterministicNoArrival
+import AppliedModelingLib.Foundations.Probability.ForwardStoppedPoisson
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalDeterministicNoArrival
 import Mathlib.Probability.ConditionalExpectation
 import Mathlib.Probability.Independence.Conditional
 import Mathlib.Probability.Kernel.Condexp
@@ -30,7 +30,7 @@ not an arbitrary stopped filtration.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal
 
 noncomputable section
@@ -39,9 +39,9 @@ noncomputable section
 Kernelized selection portion of the paper's Condition 1.  The source writes a
 density-style `g(t)` despite conditioning on a continuously valued `T₁`; this
 record uses the well-typed conditional kernel `g(· | T₁)` instead.  The source
-upper horizon is intentionally omitted here because it is irrelevant to the
-local residual-tail result.  In a family indexed by the Poisson rate, callers
-must reuse `rateFreeStartKernel` across rates.  The existing algebraic
+states that the selected start lies in `[T₁,T]`, so the observation horizon is
+recorded explicitly. In a family indexed by the Poisson rate, callers must
+reuse `rateFreeStartKernel` across rates. The existing algebraic
 `Theorem2ConditionOneSource` separately records the rate-independent
 fixed-history likelihood term.
 
@@ -55,6 +55,8 @@ structure Theorem2ConditionOneSelection
     (Tail : Type*) [MeasurableSpace Tail] where
   firstReportTime : Ω → ℝ≥0
   startTime : Ω → ℝ≥0
+  /-- The source observation horizon `T`. -/
+  observationHorizon : ℝ≥0
   /-- A caller-supplied measurable representation of the post-`T₁` tail. -/
   postFirstReportTail : Ω → Tail
   rateFreeStartKernel : Kernel ℝ≥0 ℝ≥0
@@ -63,6 +65,7 @@ structure Theorem2ConditionOneSelection
   startTime_measurable : Measurable startTime
   postFirstReportTail_measurable : Measurable postFirstReportTail
   firstReport_le_start : ∀ ω, firstReportTime ω ≤ startTime ω
+  start_le_observationHorizon : ∀ ω, startTime ω ≤ observationHorizon
   start_conditional_law : ∀ᵐ ω ∂P,
     ProbabilityTheory.HasLaw startTime
       (rateFreeStartKernel (firstReportTime ω))
@@ -899,7 +902,7 @@ theorem conditional_postStartCount_zero_real_eq_exponential_tail_given_firstRepo
       (ProbabilityTheory.condExpKernel P
         (MeasurableSpace.comap C.firstReportTime inferInstance) ω).real
           {ω' | forwardPostStopIntervalCount H C.startTime u ω' = 0} =
-        ((EconCSLib.Probability.Exponential.Model.mk H.rate H.rate_pos).measure
+        ((AppliedModelingLib.Probability.Exponential.Model.mk H.rate H.rate_pos).measure
           (Set.Ioi (u : ℝ))).toReal := by
   filter_upwards [C.conditional_postStartCount_zero_real_given_firstReport_of_tailKernel
     u postCount hpostCount hrepresentation K hTailKernel htailLaw] with ω hω
@@ -1116,7 +1119,7 @@ theorem conditional_postStartCount_zero_real_eq_exponential_tail
     ∀ᵐ ω ∂P,
       (ProbabilityTheory.condExpKernel P C.selectionSigma ω).real
           {ω' | forwardPostStopIntervalCount H C.startTime u ω' = 0} =
-        ((EconCSLib.Probability.Exponential.Model.mk H.rate H.rate_pos).measure
+        ((AppliedModelingLib.Probability.Exponential.Model.mk H.rate H.rate_pos).measure
           (Set.Ioi (u : ℝ))).toReal := by
   filter_upwards [C.conditional_postStartCount_zero_real u] with ω hω
   rw [hω]
@@ -1148,7 +1151,7 @@ theorem conditional_postStartCount_zero_real_eq_exponential_tail_given_firstRepo
     ∀ᵐ ω ∂P,
       (ProbabilityTheory.condExpKernel P C.firstReportSigma ω).real
           {ω' | forwardPostStopIntervalCount H C.startTime u ω' = 0} =
-        ((EconCSLib.Probability.Exponential.Model.mk H.rate H.rate_pos).measure
+        ((AppliedModelingLib.Probability.Exponential.Model.mk H.rate H.rate_pos).measure
           (Set.Ioi (u : ℝ))).toReal := by
   filter_upwards [C.conditional_postStartCount_zero_real_given_firstReport u]
     with ω hω
@@ -1185,7 +1188,7 @@ theorem lemma2_conditional_no_report_exponential_tail_of_condition_one_tail_fact
     ∀ᵐ ω ∂P,
       (ProbabilityTheory.condExpKernel P C.selectionSigma ω).real
           {ω' | forwardPostStopIntervalCount H C.startTime u ω' = 0} =
-        ((EconCSLib.Probability.Exponential.Model.mk H.rate H.rate_pos).measure
+        ((AppliedModelingLib.Probability.Exponential.Model.mk H.rate H.rate_pos).measure
           (Set.Ioi (u : ℝ))).toReal :=
   C.conditional_postStartCount_zero_real_eq_exponential_tail u
 
@@ -1217,7 +1220,7 @@ theorem
     ∀ᵐ ω ∂P,
       (ProbabilityTheory.condExpKernel P C.firstReportSigma ω).real
           {ω' | forwardPostStopIntervalCount H C.startTime u ω' = 0} =
-        ((EconCSLib.Probability.Exponential.Model.mk H.rate H.rate_pos).measure
+        ((AppliedModelingLib.Probability.Exponential.Model.mk H.rate H.rate_pos).measure
           (Set.Ioi (u : ℝ))).toReal :=
   C.conditional_postStartCount_zero_real_eq_exponential_tail_given_firstReport u
 

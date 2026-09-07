@@ -9,7 +9,7 @@ positive-mass fact needed for the finite negative-affine surge cutoff directly
 from source surge dominance and global open optimality.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 
 namespace GN21DriverSurgePricing

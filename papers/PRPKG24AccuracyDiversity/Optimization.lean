@@ -1,5 +1,5 @@
 import PRPKG24AccuracyDiversity.Representation
-import EconCSLib.Foundations.Math.Asymptotics
+import AppliedModelingLib.Foundations.Math.Asymptotics
 
 open scoped BigOperators
 
@@ -14,14 +14,14 @@ Each count is stored as a `Fin (N + 1)`, so the search space is finite. The
 subtype proof records that the decoded allocation has total `N`.
 -/
 abbrev FeasibleAllocationCode (T N : ℕ) :=
-  EconCSLib.Allocation.FeasibleCode (ItemType T) N
+  AppliedModelingLib.Allocation.FeasibleCode (ItemType T) N
 
 namespace FeasibleAllocationCode
 
 /-- Decode a finite allocation code into the library's count-allocation type. -/
 abbrev toAllocation {T N : ℕ} (x : FeasibleAllocationCode T N) :
     CountAllocation T :=
-  EconCSLib.Allocation.FeasibleCode.toAllocation x
+  AppliedModelingLib.Allocation.FeasibleCode.toAllocation x
 
 @[simp] theorem toAllocation_count {T N : ℕ}
     (x : FeasibleAllocationCode T N) (t : ItemType T) :
@@ -31,22 +31,22 @@ abbrev toAllocation {T N : ℕ} (x : FeasibleAllocationCode T N) :
 theorem toAllocation_feasible {T N : ℕ}
     (x : FeasibleAllocationCode T N) :
     FeasibleAtTotal N x.toAllocation :=
-  EconCSLib.Allocation.FeasibleCode.toAllocation_hasTotal x
+  AppliedModelingLib.Allocation.FeasibleCode.toAllocation_hasTotal x
 
 /-- A fixed-total allocation can be encoded in the finite search space. -/
 def ofFeasible {T N : ℕ} (a : CountAllocation T)
     (hfeas : FeasibleAtTotal N a) : FeasibleAllocationCode T N :=
-  EconCSLib.Allocation.FeasibleCode.ofHasTotal a hfeas
+  AppliedModelingLib.Allocation.FeasibleCode.ofHasTotal a hfeas
 
 @[simp] theorem toAllocation_ofFeasible {T N : ℕ}
     (a : CountAllocation T) (hfeas : FeasibleAtTotal N a) :
     (ofFeasible a hfeas).toAllocation = a :=
-  EconCSLib.Allocation.FeasibleCode.toAllocation_ofHasTotal a hfeas
+  AppliedModelingLib.Allocation.FeasibleCode.toAllocation_ofHasTotal a hfeas
 
 /-- A canonical feasible code putting all `N` items on one available type. -/
 noncomputable def singleton {T N : ℕ} [Nonempty (ItemType T)] :
     FeasibleAllocationCode T N :=
-  EconCSLib.Allocation.FeasibleCode.singleton (κ := ItemType T) (N := N)
+  AppliedModelingLib.Allocation.FeasibleCode.singleton (κ := ItemType T) (N := N)
 
 end FeasibleAllocationCode
 
@@ -55,7 +55,7 @@ theorem exists_isOptimalAtTotal {T : ℕ} [Nonempty (ItemType T)]
     (M : ConsumptionModel T) (N : ℕ) :
     ∃ a : CountAllocation T, M.IsOptimalAtTotal N a := by
   obtain ⟨a, htotal, hopt⟩ :=
-    EconCSLib.Allocation.exists_isOptimalAtTotal
+    AppliedModelingLib.Allocation.exists_isOptimalAtTotal
       M.likelihood M.valueOfCount N
   refine ⟨a, ?_, ?_⟩
   · exact htotal
@@ -97,7 +97,7 @@ def AsymptoticHomogeneityTarget {T : ℕ}
 /-- The default PRPKG asymptotic target using the reusable filter-based zero predicate. -/
 def AsymptoticHomogeneity {T : ℕ}
     (Mseq : ℕ → ConsumptionModel T) (G : GammaHomogeneityProfile T) : Prop :=
-  AsymptoticHomogeneityTarget Mseq G EconCSLib.Math.TendsToZero
+  AsymptoticHomogeneityTarget Mseq G AppliedModelingLib.Math.TendsToZero
 
 theorem AsymptoticHomogeneityTarget.mono_rate {T : ℕ}
     {Mseq : ℕ → ConsumptionModel T} {G : GammaHomogeneityProfile T}
@@ -110,17 +110,17 @@ theorem AsymptoticHomogeneityTarget.mono_rate {T : ℕ}
 
 theorem AsymptoticHomogeneityTarget.of_exactInvRate {T : ℕ}
     {Mseq : ℕ → ConsumptionModel T} {G : GammaHomogeneityProfile T} :
-    AsymptoticHomogeneityTarget Mseq G EconCSLib.Math.ExactInvRate →
+    AsymptoticHomogeneityTarget Mseq G AppliedModelingLib.Math.ExactInvRate →
       AsymptoticHomogeneity Mseq G :=
   AsymptoticHomogeneityTarget.mono_rate
-    (fun ε hε => EconCSLib.Math.ExactInvRate_implies_TendsToZero ε hε)
+    (fun ε hε => AppliedModelingLib.Math.ExactInvRate_implies_TendsToZero ε hε)
 
 theorem AsymptoticHomogeneityTarget.of_exactInvSqrtRate {T : ℕ}
     {Mseq : ℕ → ConsumptionModel T} {G : GammaHomogeneityProfile T} :
-    AsymptoticHomogeneityTarget Mseq G EconCSLib.Math.ExactInvSqrtRate →
+    AsymptoticHomogeneityTarget Mseq G AppliedModelingLib.Math.ExactInvSqrtRate →
       AsymptoticHomogeneity Mseq G :=
   AsymptoticHomogeneityTarget.mono_rate
-    (fun ε hε => EconCSLib.Math.ExactInvSqrtRate_implies_TendsToZero ε hε)
+    (fun ε hε => AppliedModelingLib.Math.ExactInvSqrtRate_implies_TendsToZero ε hε)
 
 /--
 Uniform `O(1)` count error for every positive-size optimum gives a paper-style
@@ -132,7 +132,7 @@ theorem AsymptoticHomogeneityTarget.of_uniform_count_abs_error {T : ℕ}
     (hclose :
       ∀ N (a : CountAllocation T), 0 < N → (Mseq N).IsOptimalAtTotal N a →
         ∀ t, |(a.count t : ℝ) - (N : ℝ) * G.targetShare t| ≤ C) :
-    AsymptoticHomogeneityTarget Mseq G EconCSLib.Math.ExactInvRate := by
+    AsymptoticHomogeneityTarget Mseq G AppliedModelingLib.Math.ExactInvRate := by
   refine ⟨fun N => C / (N : ℝ), ?_, ?_⟩
   · exact ⟨C, hC, fun N => rfl⟩
   · intro N a hN hopt

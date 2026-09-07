@@ -12,22 +12,22 @@ noncomputable def twoByTwoModel : RecommendationModel 2 2 where
 
 /-- A deterministic policy that recommends item `u` to user `u`. -/
 noncomputable def diagonalPolicy : Policy 2 2 :=
-  EconCSLib.Policy.pure (fun u => u)
+  AppliedModelingLib.Policy.pure (fun u => u)
 
 /-- A deterministic policy that flips the two users' preferred items. -/
 noncomputable def swappedPolicy : Policy 2 2 :=
-  EconCSLib.Policy.pure (fun u => if u = 0 then (1 : Item 2) else 0)
+  AppliedModelingLib.Policy.pure (fun u => if u = 0 then (1 : Item 2) else 0)
 
 /-- In the toy instance, each user's favorite item has utility `10`. -/
 theorem twoByTwoModel_bestItemUtility_eq (u : User 2) :
     RecommendationModel.bestItemUtility twoByTwoModel u = 10 := by
   apply le_antisymm
-  · unfold RecommendationModel.bestItemUtility EconCSLib.finiteMax
+  · unfold RecommendationModel.bestItemUtility AppliedModelingLib.finiteMax
     apply Finset.sup'_le
     intro j _hj
     fin_cases u <;> fin_cases j <;> norm_num [twoByTwoModel, twoByTwoUtility]
   · simpa [RecommendationModel.bestItemUtility, twoByTwoModel, twoByTwoUtility] using
-      (EconCSLib.le_finiteMax (twoByTwoModel.utility u) u)
+      (AppliedModelingLib.le_finiteMax (twoByTwoModel.utility u) u)
 
 /-- In the toy instance, each item has total utility `11` across the two users. -/
 theorem twoByTwoModel_itemNormalizer_eq (j : Item 2) :
@@ -40,18 +40,18 @@ theorem twoByTwoModel_diagonal_rawItemUtility_eq (j : Item 2) :
     RecommendationModel.rawItemUtility twoByTwoModel diagonalPolicy j = 10 := by
   fin_cases j <;>
     norm_num [RecommendationModel.rawItemUtility, diagonalPolicy, twoByTwoModel,
-      twoByTwoUtility, EconCSLib.Policy.pure, PMF.pure_apply]
+      twoByTwoUtility, AppliedModelingLib.Policy.pure, PMF.pure_apply]
 
 /-- In the two-item diverse-preferences toy instance, recommending each user
 their favorite item gives every user her maximum normalized utility. -/
 theorem paper_example1_diagonal_userFairness_eq_one :
     RecommendationModel.userFairness twoByTwoModel diagonalPolicy = 1 := by
   unfold RecommendationModel.userFairness
-  apply EconCSLib.finiteMin_eq_of_forall
+  apply AppliedModelingLib.finiteMin_eq_of_forall
   intro u
   have hraw : RecommendationModel.rawUserUtility twoByTwoModel diagonalPolicy u = 10 := by
     unfold RecommendationModel.rawUserUtility
-    rw [diagonalPolicy, EconCSLib.Policy.agentScore_pure]
+    rw [diagonalPolicy, AppliedModelingLib.Policy.agentScore_pure]
     fin_cases u <;> norm_num [twoByTwoModel, twoByTwoUtility]
   rw [RecommendationModel.normalizedUserUtility, hraw,
     twoByTwoModel_bestItemUtility_eq]
@@ -62,7 +62,7 @@ same normalized utility. -/
 theorem paper_example1_diagonal_itemFairness_eq :
     RecommendationModel.itemFairness twoByTwoModel diagonalPolicy = (10 : ℝ) / 11 := by
   unfold RecommendationModel.itemFairness
-  apply EconCSLib.finiteMin_eq_of_forall
+  apply AppliedModelingLib.finiteMin_eq_of_forall
   intro j
   rw [RecommendationModel.normalizedItemUtility,
     twoByTwoModel_itemNormalizer_eq,

@@ -16,7 +16,7 @@ open scoped BigOperators
 
 namespace PRPKG24AccuracyDiversity
 
-open EconCSLib
+open AppliedModelingLib
 
 /-- The finite iid Bernoulli law for `q` recommendations with common success probability `p`. -/
 noncomputable def iidBernoulliFiniteLaw
@@ -27,7 +27,7 @@ noncomputable def iidBernoulliFiniteLaw
 /-- The finite iid law realizes the top-one Bernoulli count-value formula. -/
 theorem iidBernoulliFiniteTopOne_expected
     (p : ℝ) (q : ℕ) (hp0 : 0 ≤ p) (hp1 : p ≤ 1) :
-    EconCSLib.pmfExp (iidBernoulliFiniteLaw p q hp0 hp1)
+    AppliedModelingLib.pmfExp (iidBernoulliFiniteLaw p q hp0 hp1)
       rankBernoulliFiniteTopOneSampleValue =
       bernoulliAtLeastOneValue p q := by
   simpa [iidBernoulliFiniteLaw, bernoulliAtLeastOneValue] using
@@ -37,7 +37,7 @@ theorem iidBernoulliFiniteTopOne_expected
 /-- The finite iid law realizes the all-consumed Bernoulli count-value formula. -/
 theorem iidBernoulliFiniteAllConsumed_expected
     (p : ℝ) (q : ℕ) (hp0 : 0 ≤ p) (hp1 : p ≤ 1) :
-    EconCSLib.pmfExp (iidBernoulliFiniteLaw p q hp0 hp1)
+    AppliedModelingLib.pmfExp (iidBernoulliFiniteLaw p q hp0 hp1)
       rankBernoulliFiniteAllConsumedSampleValue =
       (q : ℝ) * p := by
   simpa [iidBernoulliFiniteLaw] using
@@ -52,7 +52,7 @@ theorem bernoulliSatisfactionModel_value_eq_expected_iid_top_one_source
     {T : ℕ} (B : BernoulliSatisfactionModel T)
     (hvalid : B.SuccessProbabilitiesValid) (t : ItemType T) (q : ℕ) :
     B.toConsumptionModel.valueOfCount t q =
-      EconCSLib.pmfExp
+      AppliedModelingLib.pmfExp
         (iidBernoulliFiniteLaw (B.successProb t) q (hvalid t).1 (hvalid t).2)
         rankBernoulliFiniteTopOneSampleValue := by
   simpa [BernoulliSatisfactionModel.toConsumptionModel] using
@@ -68,7 +68,7 @@ theorem bernoulliAllConsumedModel_value_eq_expected_iid_all_consumed_source
     {T : ℕ} (B : BernoulliSatisfactionModel T)
     (hvalid : B.SuccessProbabilitiesValid) (t : ItemType T) (q : ℕ) :
     (bernoulliAllConsumedModel B).valueOfCount t q =
-      EconCSLib.pmfExp
+      AppliedModelingLib.pmfExp
         (iidBernoulliFiniteLaw (B.successProb t) q (hvalid t).1 (hvalid t).2)
         rankBernoulliFiniteAllConsumedSampleValue := by
   simpa [bernoulliAllConsumedModel, ConsumptionModel.linearized,
@@ -88,28 +88,28 @@ theorem bernoulliSatisfactionModel_objective_eq_source_experiment
     (hpreference : ∀ t, B.likelihood t = (preferenceLaw t).toReal)
     (hvalid : B.SuccessProbabilitiesValid) (a : CountAllocation T) :
     B.toConsumptionModel.objective a =
-      EconCSLib.pmfExp preferenceLaw
+      AppliedModelingLib.pmfExp preferenceLaw
         (fun t =>
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (iidBernoulliFiniteLaw (B.successProb t) (a.count t)
               (hvalid t).1 (hvalid t).2)
             rankBernoulliFiniteTopOneSampleValue) := by
   calc
     B.toConsumptionModel.objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t => B.toConsumptionModel.valueOfCount t (a.count t)) :=
       ConsumptionModel.objective_eq_sourcePreferenceLaw_pmfExp
         B.toConsumptionModel a preferenceLaw (by
           intro t
           exact hpreference t)
     _ =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (iidBernoulliFiniteLaw (B.successProb t) (a.count t)
                 (hvalid t).1 (hvalid t).2)
               rankBernoulliFiniteTopOneSampleValue) := by
-      refine EconCSLib.pmfExp_congr preferenceLaw ?_
+      refine AppliedModelingLib.pmfExp_congr preferenceLaw ?_
       intro t
       exact bernoulliSatisfactionModel_value_eq_expected_iid_top_one_source
         B hvalid t (a.count t)
@@ -124,28 +124,28 @@ theorem bernoulliAllConsumedModel_objective_eq_source_experiment
     (hpreference : ∀ t, B.likelihood t = (preferenceLaw t).toReal)
     (hvalid : B.SuccessProbabilitiesValid) (a : CountAllocation T) :
     (bernoulliAllConsumedModel B).objective a =
-      EconCSLib.pmfExp preferenceLaw
+      AppliedModelingLib.pmfExp preferenceLaw
         (fun t =>
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (iidBernoulliFiniteLaw (B.successProb t) (a.count t)
               (hvalid t).1 (hvalid t).2)
             rankBernoulliFiniteAllConsumedSampleValue) := by
   calc
     (bernoulliAllConsumedModel B).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t => (bernoulliAllConsumedModel B).valueOfCount t (a.count t)) :=
       ConsumptionModel.objective_eq_sourcePreferenceLaw_pmfExp
         (bernoulliAllConsumedModel B) a preferenceLaw (by
           intro t
           exact hpreference t)
     _ =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (iidBernoulliFiniteLaw (B.successProb t) (a.count t)
                 (hvalid t).1 (hvalid t).2)
               rankBernoulliFiniteAllConsumedSampleValue) := by
-      refine EconCSLib.pmfExp_congr preferenceLaw ?_
+      refine AppliedModelingLib.pmfExp_congr preferenceLaw ?_
       intro t
       exact bernoulliAllConsumedModel_value_eq_expected_iid_all_consumed_source
         B hvalid t (a.count t)

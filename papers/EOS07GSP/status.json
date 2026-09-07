@@ -18,7 +18,7 @@
   "review_entrypoint": "papers/EOS07GSP/FINAL_VALIDATION_REPORT.md",
   "human_review": {
     "reviewed_rows": 0,
-    "total_rows": 24,
+    "total_rows": 13,
     "stale_rows": 0,
     "mismatch_rows": 0,
     "uncertain_rows": 0,
@@ -26,9 +26,9 @@
   },
   "paper_interface": {
     "path": "papers/EOS07GSP/PaperInterface.lean",
-    "line_count": 516,
+    "line_count": 743,
     "declaration_rows": 36,
-    "review_rows": 24,
+    "review_rows": 13,
     "oversized": false,
     "maintainability_issue": null
   },
@@ -55,11 +55,11 @@
       "surface_warning_threshold": 120,
       "require_explicit_source_routes": true,
       "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2"
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
     },
     "llm_paper_coverage_review": {
       "paper_coverage_audit_file": "papers/EOS07GSP/audit/paper_coverage_llm.json",
-      "policy": "Inventory the first-price and GSP/VCG running examples, Remarks 1-3, Definition 4, Lemmas 5-6, Theorem 7 including the locally-envy-free and VCG-payment clauses, and Theorem 8 including its continuous type law, full-history strategy, Bayes consistency, arbitrary-continuation ex-post PBE, effective uniqueness, and VCG-equivalent outcome. Narrative history and empirical market-size facts are outside the mathematical scope."
+      "policy": "Inventory the first-price and GSP/VCG running examples, Remarks 1-3, Definition 4, Lemmas 5-6, Theorem 7 including the locally-envy-free and VCG-payment clauses, and the owner-approved symmetric-continuation Theorem 8 target: its continuous type law, full-history strategy, bidder-indexed Bayes consistency, common-plan ex-post PBE, effective uniqueness, and VCG-equivalent outcome. Narrative history and empirical market-size facts are outside the mathematical scope."
     },
     "llm_source_record_review": {
       "source_record_audit_file": "papers/EOS07GSP/audit/source_record_audit.json",
@@ -92,7 +92,7 @@
     "assumption_names": [],
     "source_definition_names": [],
     "proposition_spec_proofs": {
-      "definition4_locally_envy_freeSpec": "definition4_locally_envy_free",
+      "corrected_definition4_locally_envy_freeSpec": "corrected_definition4_locally_envy_free",
       "stable_assignmentSpec": "stable_assignment",
       "first_price_running_example_profitable_revision_chainSpec": "first_price_running_example_profitable_revision_chain",
       "remark1_gsp_payments_weakly_dominate_vcgSpec": "remark1_gsp_payments_weakly_dominate_vcg",
@@ -100,25 +100,14 @@
       "remark3_gsp_not_truthfulSpec": "remark3_gsp_not_truthful",
       "running_example_truthful_gsp_nashSpec": "running_example_truthful_gsp_nash",
       "running_example_truthful_gsp_revenue_comparisonSpec": "running_example_truthful_gsp_revenue_comparison",
-      "lemma5_locally_envy_free_stableSpec": "lemma5_locally_envy_free_stable",
-      "lemma6_tiebreak_ranked_gsp_stable_assignment_locally_envy_freeSpec": "lemma6_tiebreak_ranked_gsp_stable_assignment_locally_envy_free",
-      "theorem7_ranked_gsp_bstar_mechanism_realizes_bstar_outcomeSpec": "theorem7_ranked_gsp_bstar_mechanism_realizes_bstar_outcome",
+      "corrected_lemma5_ranked_more_bidders_stableSpec": "corrected_lemma5_ranked_more_bidders_stable",
+      "corrected_lemma6_ranked_more_bidders_constructs_tiebreak_equilibriumSpec": "corrected_lemma6_ranked_more_bidders_constructs_tiebreak_equilibrium",
       "theorem7_bstar_payment_identitySpec": "theorem7_bstar_payment_identity",
-      "theorem7_bstar_locally_envy_freeSpec": "theorem7_bstar_locally_envy_free",
-      "theorem7_no_positive_transfer_conclusionSpec": "theorem7_no_positive_transfer_conclusion",
-      "theorem7_strict_tiebreak_gsp_comparison_conclusionSpec": "theorem7_strict_tiebreak_gsp_comparison_conclusion",
-      "theorem8_dropout_formula_eq_bstar_thresholdSpec": "theorem8_dropout_formula_eq_bstar_threshold",
-      "theorem8_q_step2_waiting_before_q_reviewSpec": "theorem8_q_step2_waiting_before_q_review",
-      "theorem8_q_step1_dropping_after_q_reviewSpec": "theorem8_q_step1_dropping_after_q_review",
-      "theorem8_q_mem_interval_reviewSpec": "theorem8_q_mem_interval_review",
-      "theorem8_q_strict_mem_interval_reviewSpec": "theorem8_q_strict_mem_interval_review",
-      "theorem8_q_continuous_value_reviewSpec": "theorem8_q_continuous_value_review",
-      "theorem8_continuous_source_local_best_response_support_unique_reviewSpec": "theorem8_continuous_source_local_best_response_support_unique_review",
-      "theorem8_strict_values_ex_post_local_deviationSpec": "theorem8_strict_values_ex_post_local_deviation",
-      "theorem8_continuous_generalized_english_payoff_game_strict_values_main_conclusion_reviewSpec": "theorem8_continuous_generalized_english_payoff_game_strict_values_main_conclusion_review"
+      "theorem7_finite_static_bstar_full_correctedSpec": "theorem7_finite_static_bstar_full_corrected",
+      "theorem8_finite_legal_history_pbe_terminal_vcg_ledgerSpec": "theorem8_finite_legal_history_pbe_terminal_vcg_ledger"
     },
     "include_names": [
-      "definition4_locally_envy_freeSpec",
+      "corrected_definition4_locally_envy_freeSpec",
       "stable_assignmentSpec",
       "first_price_running_example_profitable_revision_chainSpec",
       "remark1_gsp_payments_weakly_dominate_vcgSpec",
@@ -126,57 +115,36 @@
       "remark3_gsp_not_truthfulSpec",
       "running_example_truthful_gsp_nashSpec",
       "running_example_truthful_gsp_revenue_comparisonSpec",
-      "lemma5_locally_envy_free_stableSpec",
-      "lemma6_tiebreak_ranked_gsp_stable_assignment_locally_envy_freeSpec",
-      "theorem7_ranked_gsp_bstar_mechanism_realizes_bstar_outcomeSpec",
+      "corrected_lemma5_ranked_more_bidders_stableSpec",
+      "corrected_lemma6_ranked_more_bidders_constructs_tiebreak_equilibriumSpec",
       "theorem7_bstar_payment_identitySpec",
-      "theorem7_bstar_locally_envy_freeSpec",
-      "theorem7_no_positive_transfer_conclusionSpec",
-      "theorem7_strict_tiebreak_gsp_comparison_conclusionSpec",
-      "theorem8_dropout_formula_eq_bstar_thresholdSpec",
-      "theorem8_q_step2_waiting_before_q_reviewSpec",
-      "theorem8_q_step1_dropping_after_q_reviewSpec",
-      "theorem8_q_mem_interval_reviewSpec",
-      "theorem8_q_strict_mem_interval_reviewSpec",
-      "theorem8_q_continuous_value_reviewSpec",
-      "theorem8_continuous_source_local_best_response_support_unique_reviewSpec",
-      "theorem8_strict_values_ex_post_local_deviationSpec",
-      "theorem8_continuous_generalized_english_payoff_game_strict_values_main_conclusion_reviewSpec"
+      "theorem7_finite_static_bstar_full_correctedSpec",
+      "theorem8_finite_legal_history_pbe_terminal_vcg_ledgerSpec"
     ],
     "slices": [
       {
-        "id": "core_path",
-        "title": "Core definitions, examples, Lemmas 5--6, and Theorem 7",
+        "id": "additional_source_results",
+        "title": "Additional source results",
         "names": [
-          "definition4_locally_envy_free",
-          "stable_assignment",
-          "first_price_running_example_profitable_revision_chain",
-          "remark1_gsp_payments_weakly_dominate_vcg",
-          "remark2_vcg_truthful",
-          "remark3_gsp_not_truthful",
-          "running_example_truthful_gsp_nash",
-          "running_example_truthful_gsp_revenue_comparison",
-          "lemma5_locally_envy_free_stable",
-          "lemma6_tiebreak_ranked_gsp_stable_assignment_locally_envy_free",
-          "theorem7_ranked_gsp_bstar_mechanism_realizes_bstar_outcome",
-          "theorem7_bstar_payment_identity",
-          "theorem7_bstar_locally_envy_free",
-          "theorem7_no_positive_transfer_conclusion",
-          "theorem7_strict_tiebreak_gsp_comparison_conclusion"
+          "stable_assignmentSpec",
+          "first_price_running_example_profitable_revision_chainSpec",
+          "remark1_gsp_payments_weakly_dominate_vcgSpec",
+          "remark2_vcg_truthfulSpec",
+          "remark3_gsp_not_truthfulSpec",
+          "running_example_truthful_gsp_nashSpec",
+          "running_example_truthful_gsp_revenue_comparisonSpec",
+          "theorem7_bstar_payment_identitySpec",
+          "theorem8_finite_legal_history_pbe_terminal_vcg_ledgerSpec"
         ]
       },
       {
-        "id": "theorem8_path",
-        "title": "Theorem 8 source-event and continuous bridges",
+        "id": "additional_source_results",
+        "title": "Additional source results",
         "names": [
-          "theorem8_dropout_formula_eq_bstar_threshold",
-          "theorem8_q_step2_waiting_before_q_review",
-          "theorem8_q_step1_dropping_after_q_review",
-          "theorem8_q_mem_interval_review",
-          "theorem8_q_strict_mem_interval_review",
-          "theorem8_q_continuous_value_review",
-          "theorem8_continuous_full_history_bayes_ex_post_review",
-          "theorem8_continuous_source_local_best_response_support_unique_review"
+          "corrected_definition4_locally_envy_freeSpec",
+          "corrected_lemma5_ranked_more_bidders_stableSpec",
+          "corrected_lemma6_ranked_more_bidders_constructs_tiebreak_equilibriumSpec",
+          "theorem7_finite_static_bstar_full_correctedSpec"
         ]
       }
     ],

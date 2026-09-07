@@ -1,0 +1,123 @@
+import AppliedModelingLib.Foundations.Probability.FiniteExpectation
+import Mathlib.Probability.Kernel.Composition.MeasureComp
+
+/-!
+# PMF-valued transition kernels
+
+This module lifts a countable PMF-valued transition rule to Mathlib's measure
+kernel interface.  The bridge keeps finite-PMF rollout recursions and
+Ionescu--Tulcea trajectory arguments on the same transition law.
+-/
+
+namespace AppliedModelingLib
+
+open MeasureTheory ProbabilityTheory
+
+/-- A discrete stochastic kernel represented directly as a PMF-valued map.
+Domain-specific policies and transition rules may use transparent aliases of
+this carrier while retaining their own semantic names. -/
+abbrev PMFKernel (Input Output : Type*) := Input → PMF Output
+
+namespace PMFKernel
+
+/-- PMF-valued kernels are equal when their output laws agree pointwise. -/
+theorem ext {Input Output : Type*} {first second : PMFKernel Input Output}
+    (h : ∀ input, first input = second input) : first = second :=
+  funext h
+
+/-- Embed a deterministic map as a PMF-valued kernel. -/
+noncomputable def pure {Input Output : Type*}
+    (output : Input → Output) : PMFKernel Input Output :=
+  fun input => PMF.pure (output input)
+
+@[simp] theorem pure_apply {Input Output : Type*}
+    (output : Input → Output) (input : Input) :
+    pure output input = PMF.pure (output input) := rfl
+
+/-- Compose two PMF-valued kernels by PMF bind. -/
+noncomputable def comp {Input Middle Output : Type*}
+    (first : PMFKernel Input Middle) (second : PMFKernel Middle Output) :
+    PMFKernel Input Output :=
+  fun input => (first input).bind second
+
+@[simp] theorem comp_apply {Input Middle Output : Type*}
+    (first : PMFKernel Input Middle) (second : PMFKernel Middle Output)
+    (input : Input) :
+    comp first second input = (first input).bind second := rfl
+
+/-- Composition of PMF-valued kernels is associative. -/
+theorem comp_assoc {Input Middle Penultimate Output : Type*}
+    (first : PMFKernel Input Middle) (second : PMFKernel Middle Penultimate)
+    (third : PMFKernel Penultimate Output) :
+    comp (comp first second) third = comp first (comp second third) := by
+  apply ext
+  intro input
+  exact PMF.bind_bind (first input) second third
+
+/-- A kernel assigns positive support to an output when its point mass is
+nonzero. -/
+def Supports {Input Output : Type*}
+    (kernel : PMFKernel Input Output) (input : Input) (output : Output) : Prop :=
+  kernel input output ≠ 0
+
+/-- The expectation of a score under one output law of a finite PMF kernel. -/
+noncomputable def expectedValue {Input Output : Type*}
+    [Fintype Output] [DecidableEq Output]
+    (kernel : PMFKernel Input Output) (score : Input → Output → ℝ)
+    (input : Input) : ℝ :=
+  pmfExp (kernel input) (score input)
+
+/-- Expected values through a composed finite kernel satisfy the tower rule. -/
+theorem expectedValue_comp {Input Middle Output : Type*}
+    [Fintype Middle] [DecidableEq Middle]
+    [Fintype Output] [DecidableEq Output]
+    (first : PMFKernel Input Middle) (second : PMFKernel Middle Output)
+    (score : Output → ℝ) (input : Input) :
+    expectedValue (comp first second) (fun _ output => score output) input =
+      expectedValue first (fun _ middle =>
+        expectedValue second (fun _ output => score output) middle) input := by
+  unfold expectedValue comp
+  exact pmfExp_bind (first input) second score
+
+end PMFKernel
+
+/-- Regard a countable PMF-valued transition rule as a measure kernel. -/
+noncomputable def pmfToMeasureKernel
+    {α β : Type*} [MeasurableSpace α] [MeasurableSpace β]
+    [Countable α] [Countable β] [MeasurableSingletonClass α]
+    [MeasurableSingletonClass β] (transition : PMFKernel α β) : Kernel α β :=
+  Kernel.ofFunOfCountable fun input => (transition input).toMeasure
+
+instance pmfToMeasureKernel.isMarkovKernel
+    {α β : Type*} [MeasurableSpace α] [MeasurableSpace β]
+    [Countable α] [Countable β] [MeasurableSingletonClass α]
+    [MeasurableSingletonClass β] (transition : PMFKernel α β) :
+    IsMarkovKernel (pmfToMeasureKernel transition) where
+  isProbabilityMeasure input := by
+    change IsProbabilityMeasure ((transition input).toMeasure)
+    infer_instance
+
+/-- The measure of a PMF is count measure weighted by its point masses. -/
+private theorem pmf_toMeasure_eq_count_withDensity
+    {α : Type*} [MeasurableSpace α] [Countable α] [MeasurableSingletonClass α]
+    (law : PMF α) :
+    law.toMeasure = Measure.count.withDensity law := by
+  ext event hevent
+  rw [PMF.toMeasure_apply_eq_tsum, withDensity_apply _ hevent,
+    ← lintegral_indicator hevent, lintegral_count]
+
+/-- Composing a PMF measure with its PMF-valued kernel is its PMF bind. -/
+theorem pmfToMeasure_bind_pmfToMeasureKernel_eq_pmf_bind_toMeasure
+    {α β : Type*} [MeasurableSpace α] [MeasurableSpace β]
+    [Countable α] [Countable β] [MeasurableSingletonClass α]
+    [MeasurableSingletonClass β] (law : PMF α) (transition : PMFKernel α β) :
+    pmfToMeasureKernel transition ∘ₘ law.toMeasure = (law.bind transition).toMeasure := by
+  ext event hevent
+  rw [Measure.bind_apply hevent (Kernel.aemeasurable _), pmfToMeasureKernel,
+    pmf_toMeasure_eq_count_withDensity law,
+    lintegral_withDensity_eq_lintegral_mul _ (measurable_of_countable _)
+      (measurable_of_countable _), lintegral_count]
+  rw [PMF.toMeasure_bind_apply law transition event hevent]
+  rfl
+
+end AppliedModelingLib

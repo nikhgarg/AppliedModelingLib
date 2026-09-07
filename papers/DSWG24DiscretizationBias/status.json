@@ -19,19 +19,19 @@
     "reviewed_rows": 0,
     "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     "stale_rows": 0,
-    "total_rows": 17,
+    "total_rows": 9,
     "uncertain_rows": 0
   },
   "human_summary": "",
   "id": "DSWG24DiscretizationBias",
-  "main_caveat": "",
+  "main_caveat": "The generic Pareto vocabulary route is excluded from selected theorem credit; the checked Theorem 2(iii) conclusions do not depend on that wrapper.",
   "paper_interface": {
     "declaration_rows": 64,
-    "line_count": 1330,
+    "line_count": 341,
     "maintainability_issue": "The source-first interface now includes exact support-sensitive and dataset-dependent closeout endpoints in addition to the older continuous proof-support surface. A later refactor may split auxiliary proof support without changing the reviewed interface.",
     "oversized": true,
     "path": "papers/DSWG24DiscretizationBias/PaperInterface.lean",
-    "review_rows": 17
+    "review_rows": 9
   },
   "repository_visibility": "public",
   "review_entrypoint": "papers/DSWG24DiscretizationBias/FINAL_VALIDATION_REPORT.md",
@@ -89,17 +89,9 @@
     ],
     "include_names": [
       "theorem1ii_perfect_classifier_zero_biasSpec",
-      "theorem2iii_non_argmax_not_paretoSpec",
-      "theorem2iii_weighted_objective_maximizer_agrees_argmaxSpec",
-      "tie_broken_argmax_definitionSpec",
-      "thompson_sampling_definitionSpec",
-      "independent_rule_definitionSpec",
-      "integer_optimization_rule_definitionSpec",
-      "bayes_optimal_definitionSpec",
-      "pareto_optimality_definitionSpec",
+      "theorem2iii_randomized_non_argmax_not_paretoSpec",
+      "theorem2iii_randomized_weighted_objective_maximizer_agrees_argmaxSpec",
       "nontrivial_reference_family_definitionSpec",
-      "posterior_simplex_definitionSpec",
-      "calibration_definitionSpec",
       "theorem1i_no_information_biasSpec",
       "theorem1iii_argmax_bias_le_maeSpec",
       "theorem1iii_tight_binary_exampleSpec",
@@ -127,29 +119,21 @@
       "paper_coverage_audit_file": "papers/DSWG24DiscretizationBias/audit/paper_coverage_llm.json",
       "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
       "require_explicit_source_routes": true,
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
       "review_surface_audit_file": "papers/DSWG24DiscretizationBias/audit/review_surface_llm.json",
       "surface_audit_threshold": 30,
       "surface_warning_threshold": 120
     },
     "proposition_spec_proofs": {
-      "bayes_optimal_definitionSpec": "bayes_optimal_definition",
-      "calibration_definitionSpec": "calibration_definition",
-      "independent_rule_definitionSpec": "independent_rule_definition",
-      "integer_optimization_rule_definitionSpec": "integer_optimization_rule_definition",
       "nontrivial_reference_family_definitionSpec": "nontrivial_reference_family_definition",
-      "pareto_optimality_definitionSpec": "pareto_optimality_definition",
-      "posterior_simplex_definitionSpec": "posterior_simplex_definition",
       "theorem1i_no_information_biasSpec": "theorem1i_no_information_bias",
       "theorem1ii_perfect_classifier_zero_biasSpec": "theorem1ii_perfect_classifier_zero_bias",
       "theorem1iii_argmax_bias_le_maeSpec": "theorem1iii_argmax_bias_le_mae",
       "theorem1iii_tight_binary_exampleSpec": "theorem1iii_tight_binary_example",
       "theorem2i_joint_rule_existsSpec": "theorem2i_joint_rule_exists",
       "theorem2ii_argmax_accuracy_maximizingSpec": "theorem2ii_argmax_accuracy_maximizing",
-      "theorem2iii_non_argmax_not_paretoSpec": "theorem2iii_non_argmax_not_pareto",
-      "theorem2iii_weighted_objective_maximizer_agrees_argmaxSpec": "theorem2iii_weighted_objective_maximizer_agrees_argmax",
-      "thompson_sampling_definitionSpec": "thompson_sampling_definition",
-      "tie_broken_argmax_definitionSpec": "tie_broken_argmax_definition"
+      "theorem2iii_randomized_non_argmax_not_paretoSpec": "theorem2iii_randomized_non_argmax_not_pareto",
+      "theorem2iii_randomized_weighted_objective_maximizer_agrees_argmaxSpec": "theorem2iii_randomized_weighted_objective_maximizer_agrees_argmax"
     },
     "require_source_spec_correspondence": true,
     "require_v11_raw_source_spec_screening": true,
@@ -169,93 +153,25 @@
     },
     "slices": [
       {
-        "id": "main_definitions",
+        "id": "additional_source_results",
         "names": [
-          "prior",
-          "accuracy",
-          "marginalLabelShare",
-          "aggregatePosterior",
-          "bias",
-          "fidelity",
-          "classifierMAE",
-          "isFirstArgmax_formula",
-          "isTieBrokenArgmaxRule_formula",
-          "thresholdRule",
-          "isThompsonSamplingRule_formula",
-          "isIndependentRule_formula",
-          "isIndependentRandomizedRule_formula",
-          "bayesOptimal_formula",
-          "perfectClassifierOnSupport_formula",
-          "posteriorSimplex_formula",
-          "calibrated_formula"
+          "theorem1ii_perfect_classifier_zero_biasSpec",
+          "theorem2iii_randomized_non_argmax_not_paretoSpec",
+          "theorem2iii_randomized_weighted_objective_maximizer_agrees_argmaxSpec",
+          "nontrivial_reference_family_definitionSpec",
+          "theorem1i_no_information_biasSpec",
+          "theorem1iii_argmax_bias_le_maeSpec",
+          "theorem1iii_tight_binary_exampleSpec"
         ],
-        "title": "Main-text formulas and rule semantics"
+        "title": "Additional source results"
       },
       {
-        "id": "objectives_and_reference",
+        "id": "additional_source_results",
         "names": [
-          "equation1Objective",
-          "maximizesEquation1_formula",
-          "equation2ExpectedAccuracy",
-          "expectedFidelityAt",
-          "expectedBiasAt",
-          "equation3ExpectedObjective",
-          "paretoOptimal_formula",
-          "referenceSimplexAt_formula",
-          "isAggregateFirstArgmax_formula",
-          "sourcePNq_formula",
-          "objective",
-          "expectedObjective"
+          "theorem2i_joint_rule_existsSpec",
+          "theorem2ii_argmax_accuracy_maximizingSpec"
         ],
-        "title": "Equations (1)-(3), Pareto, and P_N^q"
-      },
-      {
-        "id": "theorem1",
-        "names": [
-          "continuousMarginalLabelShare",
-          "continuousAggregatePosterior",
-          "continuousBias",
-          "continuousAggregateBias",
-          "continuousClassifierMAE",
-          "continuousJointPriorBias",
-          "continuousJointClassifierMAE",
-          "isArgmaxRule_formula",
-          "sourceSa_formula",
-          "sourceSb_formula",
-          "sourceSc_formula",
-          "sourceSd_formula",
-          "sourceSe_formula",
-          "theorem1iNoInformationBiasSpec",
-          "theorem1i_no_information_bias",
-          "theorem1i_no_information_bias_spec",
-          "theorem1iiPriorReferenceZeroBiasSpec",
-          "theorem1ii_prior_reference_zero_bias_on_support_spec",
-          "theorem1iiAggregateReferenceZeroBiasSpec",
-          "theorem1ii_aggregate_reference_zero_bias_on_support_spec",
-          "theorem1iiiArgmaxBiasLeMaeSpec",
-          "theorem1iii_argmax_bias_le_mae",
-          "theorem1iii_argmax_bias_le_mae_spec",
-          "theorem1iiiTightBinaryExampleSpec",
-          "theorem1iii_tight_binary_example",
-          "theorem1iii_tight_binary_example_spec"
-        ],
-        "title": "Theorem 1 and continuous proof support"
-      },
-      {
-        "id": "theorem2",
-        "names": [
-          "theorem2iJointRuleExistsSpec",
-          "theorem2i_joint_rule_exists",
-          "theorem2i_joint_rule_exists_spec",
-          "theorem2iiArgmaxAccuracyMaximizingSpec",
-          "theorem2ii_argmax_accuracy_maximizing",
-          "theorem2ii_argmax_accuracy_maximizing_spec",
-          "theorem2iiiParetoOptimalAgreesArgmaxSpec",
-          "theorem2iii_source_pareto_optimal_agrees_argmax_spec",
-          "theorem2iiiWeightedObjectiveMaximizerAgreesArgmaxSpec",
-          "theorem2iii_source_weighted_objective_maximizer_agrees_argmax_spec"
-        ],
-        "title": "Theorem 2 exact dataset-dependent expected-policy endpoints"
+        "title": "Additional source results"
       }
     ],
     "source_definition_names": [],
@@ -267,6 +183,6 @@
   },
   "schema": 1,
   "source_version": "cited publication source record",
-  "status": "formalized",
+  "status": "partially formalized",
   "title": "Addressing Discretization-Induced Bias in Demographic Prediction"
 }

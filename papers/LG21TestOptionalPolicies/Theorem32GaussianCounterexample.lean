@@ -1,6 +1,6 @@
 import LG21TestOptionalPolicies.Theorem32RandomizedPolicy
 import LG21TestOptionalPolicies.SequentialEquilibrium
-import EconCSLib.Foundations.Probability.GaussianMathlib
+import AppliedModelingLib.Foundations.Probability.GaussianMathlib
 import Mathlib.Probability.ConditionalProbability
 
 /-!
@@ -33,8 +33,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 open MeasureTheory
 open ProbabilityTheory
 

@@ -1,19 +1,62 @@
 # Source Clarifications: GJ19 Optimal Binary Rating Systems
 
-This note records the local source issues referenced in the final validation
-report.  Each entry gives a byte-pinned cited-publication anchor, the checked
-reading, and its effect on the paper-level conclusion.  These are
-clarifications or local corrections; none changes an advertised result.
+Source line numbers refer to the retained publication text and supplement.
 
-| Source anchor | Clarification or correction | Effect |
-| --- | --- | --- |
-| Supplement Appendix C, cited publication lines 1593--1599 | The binary level vector has endpoints `t_0 = 0` and `t_{M-1} = 1`; the repeated printed `t_0 = 1` is an endpoint typo. | The C.5 refinement setup has its unique intended endpoints. |
-| Supplement Appendix B, cited publication lines 779--837 | Algorithm 1's outer midpoint is `j_{M-2} = (u + ell)/2`; both endpoint rates use the candidate vector, and the final helper call takes its target-rate argument. | The main-paper algorithm description determines one executable procedure. |
-| Supplement Appendix C, cited publication lines 2206--2226 | The first endpoint rate is `-g_1 log(1-t_1)`, not `-g_1 log(t_1)`. | The local transcription slip does not alter the rate theorem. |
-| Supplement Appendix C, cited publication lines 1143--1270 | Equal score levels do not make the complement error vanish.  The intended rate decomposition uses separated cross-level cells, equivalently erases within-cell ties. | The minimum adjacent-exponent conclusion is unchanged. |
-| Supplement Appendix C, cited publication lines 1586--1597 | The stated lower bound should use `Omega(M^-3)` notation or an explicit positive-constant inequality, not `O(M^-3)`. | The subsequent quantitative lower bound supplies the intended direction. |
-| Supplement Appendix C, cited publication lines 1081--1141 | The rate functions are not uniformly convergent on the full square near the diagonal.  The applicable argument is on separated cross-level cells (or uses a weighted essential-infimum bound). | The C.3/C.4 rate conclusions do not rely on a false global uniformity assertion. |
-| Main paper Section 3 and Supplement Appendix C, cited publication lines 487--517 and 1328--1584 | The value-then-rate optimization needs its stated general nondecreasing matching-function construction, with a conventional resolution of an unspecified first-stage tie. | Theorem 3.1's advertised optimizer is retained. |
-| Main paper Section 3 and Supplement Appendices B--C, cited publication lines 549--597, 779--837, and 2191--2381 | The algorithmic runtime argument needs an explicit gap bound connecting the discretization choice to the claimed joint dimension-and-accuracy runtime. | Theorem 3.2's algorithmic endpoint is retained. |
-| Supplement Appendix B, cited publication lines 948--976 | The ranking-learning argument uses strict aggregate-score identifiability in addition to continuity. | The stated learning conclusion is retained under the condition used by the proof. |
-| Supplement Appendix C, cited publication lines 1321--1325 | The two-endpoint objective is not jointly strictly convex on a diagonal with multiple minima.  What is used is interior continuity, diagonal zero, off-diagonal positivity, and strict coordinatewise separation. | The local wording is clarified without changing a named theorem. |
+## Local formulas and proof clarifications
+
+- **KL footnote 6, main lines 519–526:** $a\log(b/a)+(1-a)\log((1-b)/(1-a))$ →
+  $a\log(a/b)+(1-a)\log((1-a)/(1-b))$. Both ratios are reversed.
+  The latter is the standard nonnegative divergence used in the proof; this
+  is a local sign clarification, with no added premise.
+- **C.5 endpoints, Appendix C lines 1593–1599:** repeated $t_0=1$ →
+  $t_{M-1}=1$, alongside $t_0=0$, for an $M$-level rating vector.
+- **Algorithm 1, Appendix B lines 779–837:** outer midpoint →
+  $j_{M-2}=(u+\ell)/2$, where $u,\ell$ are the current bounds; both endpoint
+  rates use the candidate vector, and the final helper call includes its
+  target-rate argument. The main-paper description determines these choices.
+- **First endpoint rate, Appendix C lines 2206–2226:**
+  $-g_1\log t_1$ → $-g_1\log(1-t_1)$, where $g_1$ is the first matching rate
+  and $t_1$ the first interior level.
+- **Lower-bound notation, Appendix C lines 1586–1597:**
+  $t_1\ge O(M^{-3})$ is read as $t_1\ge c/M^3$ for some fixed $c>0$.
+  This is an intermediate lower bound on the first positive rating level;
+  Theorem 3.2's big-$O$ runtime is unchanged.
+- **Uniformity, Appendix C lines 1081–1141:** full-square uniform rate
+  convergence → separated-cell or weighted essential-infimum arguments.
+  The full-square claim fails near the diagonal; the rate proof uses the
+  separated domain.
+- **Remark C.2, Appendix C lines 1321–1325:** joint strict convexity →
+  interior continuity, zero value on the diagonal, positivity off it, and
+  strict coordinatewise separation. Multiple diagonal minima preclude joint
+  strict convexity.
+
+## Theorem 3.2: an explicit grid and runtime bound
+
+- **Same asymptotic runtime, with explicit constants:** the finite operation
+  bound gives the paper's $O(M\log^2(M/\epsilon))$ rate for $M$ rating levels and additive error
+  $0<\epsilon\leq1$. The paper bounds matching rates above and away from
+  zero; for a fixed matching function, the proved grid spacing $\delta$ has
+  $1/\delta=O(M^2/\epsilon)$, yielding that operation count.
+- **Endpoint scope:** the displayed formalized runtime theorem covers $M>3$
+  levels. Its explicit count is
+  $M[\log_2(\max\{1,1/\delta\})+2]^2$; this is a refinement of the
+  runtime rate, not a slower asymptotic guarantee.
+
+## Lemma C.4: the two objective comparisons
+
+- **Paper:** the gap between limiting and current ranking quality, $W-W_k$,
+  decays exponentially at a positive rate if and only if the rating rule uses
+  finitely many probability levels.
+- **Formalized:** the finite-level positive-rate proof omits pairs assigned
+  the same level; the other direction proves zero rate for a separately
+  defined pairwise-error integral.
+- **Missing proof:** connect both integrals to $W-W_k$ and establish the
+  adjacent-rate formula in Theorem 3.1, equation (3) (main lines 487–517).
+  Equal assigned rating probabilities need not make a pair's finite-sample
+  ranking contribution zero when sample counts differ: with common probability
+  $1/3$, two samples beat one by signed ordering probability $2/27$.
+  Erasing those pairs therefore needs a proof. This finite-sample example does
+  not refute the paper's asymptotic characterization.
+- **Two-level endpoint:** the formalized optimization covers $M\ge3$.
+  With two deterministic endpoint levels, cross-cell separation has infinite
+  rate, which the current real-valued rate formula does not represent.

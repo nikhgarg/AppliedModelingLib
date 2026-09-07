@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Math.FiniteChoice
+import AppliedModelingLib.Foundations.Math.FiniteChoice
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Logic.Relation
 
@@ -169,7 +169,7 @@ theorem chosenSet_card_eq_slots_of_noDuplicate_of_fillsSlots
 
 /-- Choice rule induced by an assignment selector. -/
 def choiceRuleOfAssignment (select : Finset α → Assignment α σ) :
-    EconCSLib.FiniteChoice.ChoiceRule α :=
+    AppliedModelingLib.FiniteChoice.ChoiceRule α :=
   fun X => (select X).chosenSet
 
 omit [DecidableEq σ] in
@@ -180,7 +180,7 @@ assignment choice rule is feasible.
 theorem feasible_choiceRuleOfAssignment
     {select : Finset α → Assignment α σ}
     (hfeas : ∀ X, Feasible X (select X)) :
-    EconCSLib.FiniteChoice.Feasible (choiceRuleOfAssignment select) := by
+    AppliedModelingLib.FiniteChoice.Feasible (choiceRuleOfAssignment select) := by
   intro X
   exact chosenSet_subset_of_feasible (hfeas X)
 
@@ -193,7 +193,7 @@ theorem qAcceptant_choiceRuleOfAssignment_of_feasible_of_capacityFilling
     {select : Finset α → Assignment α σ}
     (hfeas : ∀ X, Feasible X (select X))
     (hfill : ∀ X, CapacityFilling X (select X)) :
-    EconCSLib.FiniteChoice.QAcceptant
+    AppliedModelingLib.FiniteChoice.QAcceptant
       (Fintype.card σ) (choiceRuleOfAssignment select) := by
   intro X
   by_cases hsmall : X.card ≤ Fintype.card σ
@@ -216,10 +216,10 @@ larger than the number of slots.
 -/
 theorem borderlineSet_choiceRuleOfAssignment_card_le_slots [Fintype α]
     (select : Finset α → Assignment α σ) (X : Finset α) :
-    (EconCSLib.FiniteChoice.borderlineSet
+    (AppliedModelingLib.FiniteChoice.borderlineSet
       (choiceRuleOfAssignment select) X).card ≤ Fintype.card σ := by
   have hborder :=
-    EconCSLib.FiniteChoice.borderlineSet_card_le_choice_card
+    AppliedModelingLib.FiniteChoice.borderlineSet_card_le_choice_card
       (choiceRuleOfAssignment select) X
   have hchoice := chosenSet_card_le_slots (select X)
   exact hborder.trans hchoice
@@ -228,7 +228,7 @@ omit [DecidableEq σ] in
 /-- Assignment-induced choice rules have variability bounded by the number of slots. -/
 theorem variabilityAtMost_choiceRuleOfAssignment_slots [Fintype α]
     (select : Finset α → Assignment α σ) :
-    EconCSLib.FiniteChoice.VariabilityAtMost
+    AppliedModelingLib.FiniteChoice.VariabilityAtMost
       (Fintype.card σ) (choiceRuleOfAssignment select) := by
   intro X
   exact borderlineSet_choiceRuleOfAssignment_card_le_slots select X
@@ -302,27 +302,27 @@ theorem variabilityAtMost_choiceRuleOfAssignment_of_borderline_slot_class_inject
     {select : Finset α → Assignment α σ} {classOf : σ → κ}
     (hinj :
       ∀ {X : Finset α} {y z : α} {sy sz : σ},
-        y ∈ EconCSLib.FiniteChoice.borderlineSet
+        y ∈ AppliedModelingLib.FiniteChoice.borderlineSet
           (choiceRuleOfAssignment select) X →
-        z ∈ EconCSLib.FiniteChoice.borderlineSet
+        z ∈ AppliedModelingLib.FiniteChoice.borderlineSet
           (choiceRuleOfAssignment select) X →
         (select X).matchSlot sy = some y →
         (select X).matchSlot sz = some z →
         classOf sy = classOf sz →
         y = z) :
-    EconCSLib.FiniteChoice.VariabilityAtMost
+    AppliedModelingLib.FiniteChoice.VariabilityAtMost
       ((Finset.univ : Finset σ).image classOf).card
       (choiceRuleOfAssignment select) := by
   classical
   intro X
   let B : Finset α :=
-    EconCSLib.FiniteChoice.borderlineSet
+    AppliedModelingLib.FiniteChoice.borderlineSet
       (choiceRuleOfAssignment select) X
   have hslot_exists :
       ∀ y : {a // a ∈ B}, ∃ s, (select X).matchSlot s = some y.1 := by
     intro y
     have hyChoice : y.1 ∈ choiceRuleOfAssignment select X :=
-      EconCSLib.FiniteChoice.borderlineSet_subset_choice
+      AppliedModelingLib.FiniteChoice.borderlineSet_subset_choice
         (choiceRuleOfAssignment select) X (by simp [B, y.2])
     change y.1 ∈ (select X).chosenSet at hyChoice
     exact mem_chosenSet.mp hyChoice
@@ -335,10 +335,10 @@ theorem variabilityAtMost_choiceRuleOfAssignment_of_borderline_slot_class_inject
   have hclassMap_inj : Function.Injective classMap := by
     intro y z hEq
     apply Subtype.ext
-    have hyB : y.1 ∈ EconCSLib.FiniteChoice.borderlineSet
+    have hyB : y.1 ∈ AppliedModelingLib.FiniteChoice.borderlineSet
         (choiceRuleOfAssignment select) X := by
       simp [B, y.2]
-    have hzB : z.1 ∈ EconCSLib.FiniteChoice.borderlineSet
+    have hzB : z.1 ∈ AppliedModelingLib.FiniteChoice.borderlineSet
         (choiceRuleOfAssignment select) X := by
       simp [B, z.2]
     have hySlot : (select X).matchSlot (slotOf y) = some y.1 :=
@@ -368,15 +368,15 @@ theorem variabilityAtMost_choiceRuleOfAssignment_of_same_slot_order_borderline_i
     (hclass : ∀ {s t : σ}, classOf s = classOf t → SameSlotOrder w s t)
     (hkernel :
       ∀ {X : Finset α} {y z : α} {sy sz : σ},
-        y ∈ EconCSLib.FiniteChoice.borderlineSet
+        y ∈ AppliedModelingLib.FiniteChoice.borderlineSet
           (choiceRuleOfAssignment select) X →
-        z ∈ EconCSLib.FiniteChoice.borderlineSet
+        z ∈ AppliedModelingLib.FiniteChoice.borderlineSet
           (choiceRuleOfAssignment select) X →
         (select X).matchSlot sy = some y →
         (select X).matchSlot sz = some z →
         SameSlotOrder w sy sz →
         y = z) :
-    EconCSLib.FiniteChoice.VariabilityAtMost
+    AppliedModelingLib.FiniteChoice.VariabilityAtMost
       ((Finset.univ : Finset σ).image classOf).card
       (choiceRuleOfAssignment select) := by
   exact
@@ -390,13 +390,13 @@ omit [DecidableEq σ] in
 theorem exists_loss_witness_of_mem_borderlineSet_choiceRuleOfAssignment
     [Fintype α] {select : Finset α → Assignment α σ}
     {X : Finset α} {y : α}
-    (hyB : y ∈ EconCSLib.FiniteChoice.borderlineSet
+    (hyB : y ∈ AppliedModelingLib.FiniteChoice.borderlineSet
       (choiceRuleOfAssignment select) X) :
     ∃ x,
       y ∈ choiceRuleOfAssignment select X \
         choiceRuleOfAssignment select (insert x X) := by
   classical
-  rw [EconCSLib.FiniteChoice.borderlineSet] at hyB
+  rw [AppliedModelingLib.FiniteChoice.borderlineSet] at hyB
   rcases Finset.mem_biUnion.mp hyB with ⟨x, _hx, hyLoss⟩
   exact ⟨x, hyLoss⟩
 
@@ -443,9 +443,12 @@ def SelectsUniqueGlobalOptima
       UniqueChosenSetObjectiveOptimal X w (select X)
 
 /--
-Well-posed LAP weights: every finite applicant pool has a feasible,
-capacity-filling optimum with a unique optimal chosen set. This is the precise
-global no-tie condition needed for a deterministic choice function.
+Well-posed **operational** LAP weights: every finite applicant pool has a
+feasible, capacity-filling optimum with a unique optimal chosen set. The
+argument `w` is already the fixed generic refinement used by the operational
+choice rule. Thus this predicate does not assert that the unrepresented raw
+primary objective has a unique optimum; its uniqueness is only for the
+refined objective that resolves raw-primary ties.
 -/
 def WellPosedObjective (w : α → σ → ℝ) : Prop :=
   ∀ X : Finset α, ∃ A : Assignment α σ,
@@ -506,7 +509,7 @@ feasible.
 theorem feasible_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima
     {w : α → σ → ℝ} {select : Finset α → Assignment α σ}
     (hselect : SelectsUniqueGlobalOptima w select) :
-    EconCSLib.FiniteChoice.Feasible (choiceRuleOfAssignment select) :=
+    AppliedModelingLib.FiniteChoice.Feasible (choiceRuleOfAssignment select) :=
   feasible_choiceRuleOfAssignment
     (feasible_of_selectsUniqueGlobalOptima hselect)
 
@@ -518,7 +521,7 @@ q-acceptant at capacity equal to the number of slots.
 theorem qAcceptant_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima
     {w : α → σ → ℝ} {select : Finset α → Assignment α σ}
     (hselect : SelectsUniqueGlobalOptima w select) :
-    EconCSLib.FiniteChoice.QAcceptant
+    AppliedModelingLib.FiniteChoice.QAcceptant
       (Fintype.card σ) (choiceRuleOfAssignment select) :=
   qAcceptant_choiceRuleOfAssignment_of_feasible_of_capacityFilling
     (feasible_of_selectsUniqueGlobalOptima hselect)
@@ -641,8 +644,8 @@ theorem substitutable_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima_of_sin
     {w : α → σ → ℝ} {select : Finset α → Assignment α σ}
     (hselect : SelectsUniqueGlobalOptima w select)
     (hpreserve : SingleAddOldChosenPreservation w select) :
-    EconCSLib.FiniteChoice.Substitutable (choiceRuleOfAssignment select) := by
-  exact EconCSLib.FiniteChoice.substitutable_of_no_single_add_gain
+    AppliedModelingLib.FiniteChoice.Substitutable (choiceRuleOfAssignment select) := by
+  exact AppliedModelingLib.FiniteChoice.substitutable_of_no_single_add_gain
     (choiceRuleOfAssignment select)
     (no_single_add_gain_of_selectsUniqueGlobalOptima_of_singleAddOldChosenPreservation
       hselect hpreserve)
@@ -657,8 +660,8 @@ theorem dUnstable_one_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima_of_sin
     {w : α → σ → ℝ} {select : Finset α → Assignment α σ}
     (hselect : SelectsUniqueGlobalOptima w select)
     (hpreserve : SingleAddOldChosenPreservation w select) :
-    EconCSLib.FiniteChoice.DUnstable 1 (choiceRuleOfAssignment select) := by
-  exact EconCSLib.FiniteChoice.dUnstable_one_of_feasible_of_qAcceptant_of_substitutable
+    AppliedModelingLib.FiniteChoice.DUnstable 1 (choiceRuleOfAssignment select) := by
+  exact AppliedModelingLib.FiniteChoice.dUnstable_one_of_feasible_of_qAcceptant_of_substitutable
     (feasible_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima hselect)
     (qAcceptant_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima hselect)
     (substitutable_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima_of_singleAddOldChosenPreservation
@@ -673,7 +676,7 @@ theorem dUnstable_one_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima_of_sin
     {w : α → σ → ℝ} {select : Finset α → Assignment α σ}
     (hselect : SelectsUniqueGlobalOptima w select)
     (hrepair : SingleAddExchangeRepair w select) :
-    EconCSLib.FiniteChoice.DUnstable 1 (choiceRuleOfAssignment select) := by
+    AppliedModelingLib.FiniteChoice.DUnstable 1 (choiceRuleOfAssignment select) := by
   exact
     dUnstable_one_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima_of_singleAddOldChosenPreservation
       hselect
@@ -1798,7 +1801,7 @@ exchange-repair certificate is derived above rather than assumed.
 theorem dUnstable_one_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima
     {w : α → σ → ℝ} {select : Finset α → Assignment α σ}
     (hselect : SelectsUniqueGlobalOptima w select) :
-    EconCSLib.FiniteChoice.DUnstable 1 (choiceRuleOfAssignment select) :=
+    AppliedModelingLib.FiniteChoice.DUnstable 1 (choiceRuleOfAssignment select) :=
   dUnstable_one_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima_of_singleAddExchangeRepair
     hselect
     (singleAddExchangeRepair_of_selectsUniqueGlobalOptima hselect)
@@ -1822,18 +1825,18 @@ theorem choice_insert_eq_insert_erase_choice_of_lap_borderline_loss
       choiceRuleOfAssignment select (insert x X) =
         insert x ((choiceRuleOfAssignment select X).erase y) := by
   classical
-  let C : EconCSLib.FiniteChoice.ChoiceRule α := choiceRuleOfAssignment select
-  have hfeas : EconCSLib.FiniteChoice.Feasible C :=
+  let C : AppliedModelingLib.FiniteChoice.ChoiceRule α := choiceRuleOfAssignment select
+  have hfeas : AppliedModelingLib.FiniteChoice.Feasible C :=
     feasible_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima hselect
-  have haccept : EconCSLib.FiniteChoice.QAcceptant (Fintype.card σ) C :=
+  have haccept : AppliedModelingLib.FiniteChoice.QAcceptant (Fintype.card σ) C :=
     qAcceptant_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima hselect
-  have hunstable : EconCSLib.FiniteChoice.DUnstable 1 C :=
+  have hunstable : AppliedModelingLib.FiniteChoice.DUnstable 1 C :=
     dUnstable_one_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima hselect
-  have hsub : EconCSLib.FiniteChoice.Substitutable C :=
-    EconCSLib.FiniteChoice.substitutable_of_dUnstable_one_of_feasible_of_qAcceptant
+  have hsub : AppliedModelingLib.FiniteChoice.Substitutable C :=
+    AppliedModelingLib.FiniteChoice.substitutable_of_dUnstable_one_of_feasible_of_qAcceptant
       hfeas haccept hunstable
   simpa [C] using
-    EconCSLib.FiniteChoice.choice_insert_eq_insert_erase_choice_of_borderline_witness
+    AppliedModelingLib.FiniteChoice.choice_insert_eq_insert_erase_choice_of_borderline_witness
       (C := C) hfeas haccept hsub hunstable hxX hyLoss
 
 omit [DecidableEq σ] in
@@ -1844,7 +1847,7 @@ theorem exists_exact_exchange_witness_of_mem_borderlineSet_choiceRuleOfAssignmen
     [Fintype α] {X : Finset α} {y : α} {w : α → σ → ℝ}
     {select : Finset α → Assignment α σ}
     (hselect : SelectsUniqueGlobalOptima w select)
-    (hyB : y ∈ EconCSLib.FiniteChoice.borderlineSet
+    (hyB : y ∈ AppliedModelingLib.FiniteChoice.borderlineSet
       (choiceRuleOfAssignment select) X) :
     ∃ x,
       x ∉ X ∧
@@ -2158,10 +2161,10 @@ theorem chosen_after_insert_of_ne_lost_of_selectsUniqueGlobalOptima
   have hlossCard :
       (choiceRuleOfAssignment select X \
         choiceRuleOfAssignment select (insert x X)).card ≤ 1 := by
-    rw [EconCSLib.FiniteChoice.choiceDistance,
-      EconCSLib.FiniteChoice.choiceLossTerm] at hdist
+    rw [AppliedModelingLib.FiniteChoice.choiceDistance,
+      AppliedModelingLib.FiniteChoice.choiceLossTerm] at hdist
     omega
-  exact EconCSLib.FiniteChoice.mem_of_mem_of_ne_lost_of_sdiff_card_le_one
+  exact AppliedModelingLib.FiniteChoice.mem_of_mem_of_ne_lost_of_sdiff_card_le_one
     hyLoss hzChoice hz_ne_y hlossCard
 
 /-- Replace the current occupant of slot `s` by applicant `a`. -/
@@ -3130,7 +3133,7 @@ theorem not_slotBelow_old_occupant_of_borderline_lost
     {X : Finset α} {y z : α} {lost oldSlot : σ}
     {w : α → σ → ℝ} {select : Finset α → Assignment α σ}
     (hselect : SelectsUniqueGlobalOptima w select)
-    (hyB : y ∈ EconCSLib.FiniteChoice.borderlineSet
+    (hyB : y ∈ AppliedModelingLib.FiniteChoice.borderlineSet
       (choiceRuleOfAssignment select) X)
     (hlost : (select X).matchSlot lost = some y)
     (hzOldSlot : (select X).matchSlot oldSlot = some z) :
@@ -3168,9 +3171,9 @@ theorem same_slot_order_borderline_injective_of_selectsUniqueGlobalOptima_of_slo
     {w : α → σ → ℝ} {select : Finset α → Assignment α σ}
     (hselect : SelectsUniqueGlobalOptima w select)
     (hnoTies : ∀ s : σ, SlotNoTies w s)
-    (hyB : y ∈ EconCSLib.FiniteChoice.borderlineSet
+    (hyB : y ∈ AppliedModelingLib.FiniteChoice.borderlineSet
       (choiceRuleOfAssignment select) X)
-    (hzB : z ∈ EconCSLib.FiniteChoice.borderlineSet
+    (hzB : z ∈ AppliedModelingLib.FiniteChoice.borderlineSet
       (choiceRuleOfAssignment select) X)
     (hsy : (select X).matchSlot sy = some y)
     (hsz : (select X).matchSlot sz = some z)
@@ -3205,7 +3208,7 @@ theorem variabilityAtMost_choiceRuleOfAssignment_of_distinct_slot_orders
     (hselect : SelectsUniqueGlobalOptima w select)
     (hnoTies : ∀ s : σ, SlotNoTies w s)
     (hclass : ∀ {s t : σ}, classOf s = classOf t → SameSlotOrder w s t) :
-    EconCSLib.FiniteChoice.VariabilityAtMost
+    AppliedModelingLib.FiniteChoice.VariabilityAtMost
       ((Finset.univ : Finset σ).image classOf).card
       (choiceRuleOfAssignment select) := by
   exact
@@ -3227,7 +3230,7 @@ theorem exists_survivor_new_slot_not_same_order_of_borderline_slotBelow
     {X : Finset α} {y z : α} {oldSlot : σ} {w : α → σ → ℝ}
     {select : Finset α → Assignment α σ}
     (hselect : SelectsUniqueGlobalOptima w select)
-    (hyB : y ∈ EconCSLib.FiniteChoice.borderlineSet
+    (hyB : y ∈ AppliedModelingLib.FiniteChoice.borderlineSet
       (choiceRuleOfAssignment select) X)
     (hzChoice : z ∈ choiceRuleOfAssignment select X)
     (hz_ne_y : z ≠ y)
@@ -3264,7 +3267,7 @@ theorem exists_forward_move_not_same_order_of_borderline_slotBelow
     {X : Finset α} {y z : α} {oldSlot : σ} {w : α → σ → ℝ}
     {select : Finset α → Assignment α σ}
     (hselect : SelectsUniqueGlobalOptima w select)
-    (hyB : y ∈ EconCSLib.FiniteChoice.borderlineSet
+    (hyB : y ∈ AppliedModelingLib.FiniteChoice.borderlineSet
       (choiceRuleOfAssignment select) X)
     (hzOldSlot : (select X).matchSlot oldSlot = some z)
     (hz_ne_y : z ≠ y)
@@ -3327,27 +3330,27 @@ theorem choiceRuleOfAssignment_eq_linearTopQChoice_of_common_slot_order
     (hselect : SelectsUniqueGlobalOptima w select)
     (horder : ∀ s a b, a < b ↔ w b s < w a s) :
     choiceRuleOfAssignment select =
-      EconCSLib.FiniteChoice.linearTopQChoice (α := α) (Fintype.card σ) := by
+      AppliedModelingLib.FiniteChoice.linearTopQChoice (α := α) (Fintype.card σ) := by
   classical
   funext X
-  let C : EconCSLib.FiniteChoice.ChoiceRule α := choiceRuleOfAssignment select
-  have hfeasC : EconCSLib.FiniteChoice.Feasible C :=
+  let C : AppliedModelingLib.FiniteChoice.ChoiceRule α := choiceRuleOfAssignment select
+  have hfeasC : AppliedModelingLib.FiniteChoice.Feasible C :=
     feasible_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima hselect
-  have hacceptC : EconCSLib.FiniteChoice.QAcceptant (Fintype.card σ) C :=
+  have hacceptC : AppliedModelingLib.FiniteChoice.QAcceptant (Fintype.card σ) C :=
     qAcceptant_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima hselect
   by_cases hsmall : X.card ≤ Fintype.card σ
   · have hCX : C X = X :=
-      EconCSLib.FiniteChoice.QAcceptant.eq_of_card_le hfeasC hacceptC hsmall
+      AppliedModelingLib.FiniteChoice.QAcceptant.eq_of_card_le hfeasC hacceptC hsmall
     have hTop :
-        EconCSLib.FiniteChoice.linearTopQChoice (α := α) (Fintype.card σ) X = X := by
+        AppliedModelingLib.FiniteChoice.linearTopQChoice (α := α) (Fintype.card σ) X = X := by
       by_cases hqle : Fintype.card σ ≤ X.card
       · have hcard : X.card = Fintype.card σ := le_antisymm hsmall hqle
-        exact EconCSLib.FiniteChoice.linearTopQChoice_eq_of_card_of_forall_lt
+        exact AppliedModelingLib.FiniteChoice.linearTopQChoice_eq_of_card_of_forall_lt
           (α := α) (q := Fintype.card σ) (X := X) (S := X)
           (fun _ hx => hx) hcard (by
             intro s hs y hy hyNot
             exact False.elim (hyNot hy))
-      · unfold EconCSLib.FiniteChoice.linearTopQChoice
+      · unfold AppliedModelingLib.FiniteChoice.linearTopQChoice
         rw [dif_neg hqle]
     simp [C, hCX, hTop]
   · have hlarge : Fintype.card σ ≤ X.card := by omega
@@ -3379,7 +3382,7 @@ theorem choiceRuleOfAssignment_eq_linearTopQChoice_of_common_slot_order
       have hya_lt : y < a := lt_of_le_of_ne (le_of_not_gt hnotlt) hy_ne_a
       have hweight : w a slot < w y slot := (horder slot y a).mp hya_lt
       exact not_lt_of_ge hslotAtLeast hweight
-    exact (EconCSLib.FiniteChoice.linearTopQChoice_eq_of_card_of_forall_lt
+    exact (AppliedModelingLib.FiniteChoice.linearTopQChoice_eq_of_card_of_forall_lt
       (α := α) (q := Fintype.card σ) (X := X) (S := C X)
       hsub hCXcard hbeats).symm
 
@@ -3390,11 +3393,11 @@ theorem qRepresentative_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima_of_c
     {w : α → σ → ℝ} {select : Finset α → Assignment α σ}
     (hselect : SelectsUniqueGlobalOptima w select)
     (horder : ∀ s a b, a < b ↔ w b s < w a s) :
-    EconCSLib.FiniteChoice.QRepresentative
+    AppliedModelingLib.FiniteChoice.QRepresentative
       (Fintype.card σ) (choiceRuleOfAssignment select) := by
   rw [choiceRuleOfAssignment_eq_linearTopQChoice_of_common_slot_order
     hselect horder]
-  exact EconCSLib.FiniteChoice.linearTopQChoice_qRepresentative
+  exact AppliedModelingLib.FiniteChoice.linearTopQChoice_qRepresentative
     (α := α) (Fintype.card σ)
 
 omit [DecidableEq σ] in
@@ -3407,9 +3410,9 @@ theorem variabilityAtMost_one_choiceRuleOfAssignment_of_selectsUniqueGlobalOptim
     {w : α → σ → ℝ} {select : Finset α → Assignment α σ}
     (hselect : SelectsUniqueGlobalOptima w select)
     (horder : ∀ s a b, a < b ↔ w b s < w a s) :
-    EconCSLib.FiniteChoice.VariabilityAtMost 1
+    AppliedModelingLib.FiniteChoice.VariabilityAtMost 1
       (choiceRuleOfAssignment select) := by
-  exact EconCSLib.FiniteChoice.variabilityAtMost_one_of_feasible_of_qRepresentative
+  exact AppliedModelingLib.FiniteChoice.variabilityAtMost_one_of_feasible_of_qRepresentative
     (C := choiceRuleOfAssignment select)
     (feasible_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima hselect)
     (qRepresentative_choiceRuleOfAssignment_of_selectsUniqueGlobalOptima_of_common_slot_order

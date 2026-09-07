@@ -1,0 +1,496 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "PG23MonocultureMatching",
+  "private_source_map_sha256": "af79b3a157ed16933a44eea82fa9e6e941014e47bbeb0fd03b424198ef0405a6",
+  "public_manifest_path": "papers/PG23MonocultureMatching/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "abe5b4eac10e85cb022610fc6c88bb2e747067f0814fe39dc3736fc32de7b3b9",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "cited_al16_continuum_domain",
+    "concrete_type_laws_and_market",
+    "definition_application_strategy",
+    "definition_connected_support",
+    "definition_cutoff_demand_market",
+    "definition_differential_access_model",
+    "definition_matched_firm_rank",
+    "definition_maximum_concentrating",
+    "definition_maximum_order_statistic",
+    "definition_monoculture_differential_type_law",
+    "definition_monoculture_type_law",
+    "definition_polyculture_differential_type_law",
+    "definition_polyculture_type_law",
+    "definition_raw_cutoff_order",
+    "definition_value_threshold",
+    "lemma_potato",
+    "proposition_lattice",
+    "review_corollary4_monocultureCutoff_lt_polycultureCutoff",
+    "review_lemma1_supplyDemand",
+    "review_lemma2_equalCutoffs",
+    "review_lemma_equalCutoffs_differentialAccess",
+    "review_proposition_cdfIncreasing_connectedSupport",
+    "review_proposition_nash_differentialApplicationAccess",
+    "review_proposition_nonzeroMeasure_openInterval",
+    "review_proposition_probabilityFormula",
+    "review_theorem1_wisdom",
+    "review_theorem2_topChoice",
+    "review_theorem3_differentialApplicationAccess"
+  ],
+  "selected_source_items": {
+    "cited_al16_continuum_domain": {
+      "source_anchors": [
+        {
+          "line_end": 435,
+          "line_start": 433,
+          "publication_locator": "cited publication",
+          "quoted_text": "college. We make the following assumption on η, which corresponds to colleges having\nstrict preferences over students in the discrete model.\nAssumption 1. (Strict Preferences) Every college’s indifference curves have ηmeasure 0. That is, for any college c and real number x we have η({θ : eθc = x}) = 0.",
+          "quoted_text_sha256": "21b76cc2a9ada077b55a23dc205b9f69e0769f27892a8a01b864a881ff81e7e4"
+        }
+      ],
+      "source_kind": "assumption"
+    },
+    "concrete_type_laws_and_market": {
+      "source_anchors": [
+        {
+          "line_end": 34,
+          "line_start": 2,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\section{Model and Preliminaries}\nOur model builds on the model of \\cite{azevedo2016supply}, in which there is a continuum of applicants and a finite number of firms (analogously, colleges). An applicant is identified by their true \\textit{value}, which is distributed on $\\RR$ according to a probability measure $\\eta$. Let $\\colleges = \\{1, 2, \\cdots, \\numcolleges\\}$ be the set of all firms. Firms have total capacity $\\totalsupply < 1$ (so there are fewer positions than applicants) and each firm has the same capacity $\\frac{\\totalsupply}{\\numcolleges}.$\n\nAn applicant with value $v$ is associated with an independent random variable $\\theta(v)$, characterizing their preferences over firms and firms' estimated values for that applicant. The realization of $\\theta(v)$ is their \\textit{type}, which lies in $\\Theta$. $\\Theta := \\mathcal{R} \\times \\RR^\\numcolleges$ is the set of applicant types, where $\\mathcal{R}$ is the set of preference orderings over the firms. If $\\theta(v) = \\theta = (\\succ^\\theta, e^\\theta),$ then $\\succ^\\theta$ is the preference ordering of $v$ over firms and $e^\\theta_\\college$ is the \\textit{estimated value} of the applicant at firm $\\college$.\n\nIn the model, $\\theta(v)$ plays a central role. First, it is used to model the process of preference approximation for firms. Firms all prefer applicants with higher true values, but in practice, rank applicants based on the estimated values given by $\\theta(v)$. Second, it connects our model with that of \\cite{azevedo2016supply}. In particular, the distribution $\\eta$ over values in $\\RR$ together with an appropriate choice of $\\theta(v)$ induces a distribution over applicant types, which, alongside specifications of firm capacities, fully determines the model in \\cite{azevedo2016supply}.\\footnote{Formally, consider the probability distribution $\\eta'$ over $\\Theta$ such that for $A\\subseteq \\Theta$,\n\\begin{equation}\n    \\eta'(A) = \\int_\\RR \\Pr[\\theta(v)\\in A]\\,d\\eta(v).\n\\end{equation}}\n\n\\paragraph{}\nA \\textit{matching} is a function $\\mu: \\Theta \\rightarrow \\colleges\\cup \\{\\emptyset\\}$ that satisfies the capacity constraints\n\\begin{equation}\n    \\int_\\RR \\Pr[\\mu(\\theta(v)) = \\college]\\,d\\eta(v) = \\frac{\\totalsupply}{\\numcolleges},\\qquad \\forall \\college\\in \\colleges,\n\\end{equation}\nas well as two additional technical assumptions: that $\\mu^{-1}(\\college)$ is measurable and that the set $\\{\\theta:\\mu(\\theta)\\prec^\\theta \\college\\}$ is open.\\footnote{We remark that matchings are not typically required to fill capacities (i.e., the equality above is typically an inequality), but in our setting, since there is limited total capacity and applicants all prefer being matched to being unmatched, we are only concerned with matchings that fill capacity.}\n\nThen $\\mu(\\theta(v))$ is a random variable indicating where an applicant with value $v$ is matched, with $\\mu(\\theta(v)) = \\emptyset$ indicating that the applicant is not matched. When it is clear what $\\theta$ is, we will abuse notation to write $\\mu(v)$ instead of $\\mu(\\theta(v))$ to denote the random variable representing where an applicant with value $v$ is matched. Notice that the matching of an applicant depends only on their random type, reflecting the fact that their matching outcome depends directly on the scores they receive at each firm rather than their true value.\n\nA matching is \\textit{stable} if there does not exist a pair $\\theta\\in \\Theta, \\college\\in \\colleges$ such that $\\college\\succ^\\theta \\mu(\\theta)$, and $e^\\theta_\\college > e^{\\theta'}_{\\college}$ for some $\\theta'\\in \\mu^{-1}(\\college)$. In other words, there is no applicant-firm pair that would jointly prefer to defect from the current matching to be matched with each other.\n\n\\subsection{A cutoff characterization of stable matchings}\nA benefit of this continuum model is that stable matchings are characterized by a tractable cutoff structure \\citep{azevedo2016supply}. Given a vector of \\textit{cutoffs} $P = (P_1, \\cdots, P_\\numcolleges),$ an applicant with type $\\theta$ can \\textit{afford} firm $\\college$ if $e^\\theta_\\college \\ge P_\\college$. The applicant's \\textit{demand} at $P$ is $D^\\theta(P)$, the applicant's most preferred firm (according to $\\succ^\\theta$) among those they can afford. If they cannot afford any firm, $D^\\theta(P)=\\emptyset$.\nThe \\textit{aggregate demand} of a firm $\\college$ at $P$ is\n\\begin{equation}\n    D^\\college(P) := \\int_\\RR \\Pr[D^{\\theta(v)}(P) = \\college]\\,d\\eta(v),\n\\end{equation}\nthe measure of applicants who demand it.\n\nA vector of cutoffs $P$ is \\textit{market clearing} if and only if\n\\begin{equation}\n    D^\\college(P) = \\frac{\\totalsupply}{\\numcolleges},\\qquad \\forall \\college\\in \\numcolleges.\\footnote{Again, as in the above footnotes, the standard definition in \\cite{azevedo2016supply} would allow for an inequality here if no applicant would prefer to take the empty spots of a firm. This is not possible in our model, so we simplify our definition.}\n\\end{equation}",
+          "quoted_text_sha256": "fc569aaa0311542295a869e260d4fb671a73fafc021cdfd0f2d1679df2d9cf33"
+        },
+        {
+          "line_end": 65,
+          "line_start": 48,
+          "publication_locator": "cited publication",
+          "quoted_text": "\n\\subsection{Instantiating monoculture and polyculture}\nWe instantiate our model by specifying $\\theta(v)$ for monoculture and polyculture. In what follows, we consider a fixed \\textit{noise distribution} $\\DD$.\n\n\\paragraph{Monoculture.} In monoculture, we take the random variable\n\\begin{equation}\n    \\theta_{\\mono}(v) := (\\succ, (v + X, v + X, \\cdots, v + X)),\n\\end{equation}\nwhere $\\succ$ is drawn uniformly at random from $\\mathcal{R}$ and $X\\sim \\DD.$ In other words, applicants have preferences distributed uniformly at random, and each applicant has a single estimated value $v+X$ that is shared across firms. This noisy estimated value equals the applicant's value perturbed by noise drawn from $\\DD$. \n\n\\paragraph{Polyculture.} In polyculture, we take the random variable\n\\begin{equation}\n    \\theta_{\\poly}(v) := (\\succ, (v + X_1, v + X_2, \\cdots, v + X_\\numcolleges)),\n\\end{equation}\nwhere $\\succ$ is drawn uniformly at random from $\\mathcal{R}$ and $X_1,X_2,\\cdots, X_\\numcolleges \\sim \\DD$ are i.i.d.. Again, applicants have preferences distributed uniformly at random, but now each applicant has a distinct, independently drawn estimated value at each firm.\n\n\\paragraph{} For expository purposes, we instantiate our model with a fixed noise distribution $\\DD$ shared across both monoculture and polyculture. However, as will often be obvious, this assumption is not necessary for many of our results. In some cases, (primarily, in Theorem 2) it does allow us to compare monoculture and polyculture \\textit{ceteris paribus}.\n",
+          "quoted_text_sha256": "36fd0660e0bdf48243b804c8b1420264fa69732b7d256a3d3969cfbecac28566"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_application_strategy": {
+      "source_anchors": [
+        {
+          "line_end": 649,
+          "line_start": 649,
+          "publication_locator": "cited publication",
+          "quoted_text": "We will focus on the strategy profile $S$ such that $S_k(v, \\succ)$ gives the $k$ most preferred firms according to $\\succ$. Therefore, strategies do not depend at all on $v$. We will later show that this intuitive set of strategies forms a Nash equilibrium. Fixing this strategy profile $S$, we can now define $\\theta(v)$ for monoculture and polyculture in the presence of differential application access.",
+          "quoted_text_sha256": "2ec10e708869f69583d8c54246bb8e8077e97feb05963b404b1ea07db3e251e6"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_connected_support": {
+      "source_anchors": [
+        {
+          "line_end": 66,
+          "line_start": 66,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\paragraph{A technical assumption on $\\eta$ and $\\DD$.} We will make a basic assumption on the probability measure $\\eta$ and the probability distribution $\\DD$. Let $\\pi$ be the probability measure associated with $\\DD$. Then we assume that both $\\eta$ and $\\pi$ have \\textit{connected support}, where we mean that the smallest closed set of measure $1$ is an interval. Let these respective intervals be $[V_-, V_+]$ and $[X_-, X_+]$. The assumption of connected support means that there are no ``gaps'' in either distribution. This is theoretically convenient, since it ensures that there is a unique stable matching.",
+          "quoted_text_sha256": "3f9dc842d62a67f81a6025ec794c8cf493e126ebc0602c45f622b190e1cff629"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_cutoff_demand_market": {
+      "source_anchors": [
+        {
+          "line_end": 34,
+          "line_start": 24,
+          "publication_locator": "cited publication",
+          "quoted_text": "A benefit of this continuum model is that stable matchings are characterized by a tractable cutoff structure \\citep{azevedo2016supply}. Given a vector of \\textit{cutoffs} $P = (P_1, \\cdots, P_\\numcolleges),$ an applicant with type $\\theta$ can \\textit{afford} firm $\\college$ if $e^\\theta_\\college \\ge P_\\college$. The applicant's \\textit{demand} at $P$ is $D^\\theta(P)$, the applicant's most preferred firm (according to $\\succ^\\theta$) among those they can afford. If they cannot afford any firm, $D^\\theta(P)=\\emptyset$.\nThe \\textit{aggregate demand} of a firm $\\college$ at $P$ is\n\\begin{equation}\n    D^\\college(P) := \\int_\\RR \\Pr[D^{\\theta(v)}(P) = \\college]\\,d\\eta(v),\n\\end{equation}\nthe measure of applicants who demand it.\n\nA vector of cutoffs $P$ is \\textit{market clearing} if and only if\n\\begin{equation}\n    D^\\college(P) = \\frac{\\totalsupply}{\\numcolleges},\\qquad \\forall \\college\\in \\numcolleges.\\footnote{Again, as in the above footnotes, the standard definition in \\cite{azevedo2016supply} would allow for an inequality here if no applicant would prefer to take the empty spots of a firm. This is not possible in our model, so we simplify our definition.}\n\\end{equation}",
+          "quoted_text_sha256": "252873b119cb7be3cc14656856037b633b206b35cd520fcb7f6c7d88c4560c8e"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_differential_access_model": {
+      "source_anchors": [
+        {
+          "line_end": 641,
+          "line_start": 641,
+          "publication_locator": "cited publication",
+          "quoted_text": "We now consider when different applicants can apply to different numbers of firms (analogously, colleges)---which we refer to as \\textit{differential application access}. In particular, we assume some discrete probability distribution $\\kappa$ over $\\{1, 2, \\cdots, \\numcolleges\\}$ that determines the number of firms an applicant can apply to. In particular, an applicant with value $v$ can apply to $k(v)$ firms, where $k(v)$ is drawn independently from $\\kappa$. All other aspects of our model remain the same.",
+          "quoted_text_sha256": "e8b3dc585c383e591e76cee67b1c9f5bc282c7d64a9c25ec22a77d1a37fa5093"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_matched_firm_rank": {
+      "source_anchors": [
+        {
+          "line_end": 600,
+          "line_start": 600,
+          "publication_locator": "cited publication",
+          "quoted_text": "Proceeding to the statement of the result, we define $\\Rank_{\\theta(v)}(\\college) := |\\{\\college':\\college'\\succeq^{\\theta(v)} \\college\\}|$ to be the rank of an applicant's matched firm. (We let $\\Rank_{\\theta(v)}(\\emptyset) = 0$.) Then $\\Rank_{v}(\\mu(v))$ is a random variable giving the rank of the (random) firm an applicant of value $v$ is matched to under $\\mu$. Also recall that $(X_-, X_+)$ is the support of the noise distribution $\\DD$.",
+          "quoted_text_sha256": "a7b013fc8f5a47c9a57876baeb9dbf5182a3fb47d6b903206e28f5ce90d56581"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_maximum_concentrating": {
+      "source_anchors": [
+        {
+          "line_end": 130,
+          "line_start": 125,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}[Maximum-Concentrating Distribution]\\label{def:maximum-concentrating}\n    A distribution $\\DD$ is \\textbf{maximum concentrating} if for all $\\epsilon > 0$,\n    \\begin{equation}\n        \\lim_{n\\rightarrow \\infty} \\Pr\\left[|X^{(n)} - \\EE[X^{(n)}]| > \\epsilon\\right] = 0.\n    \\end{equation}\n\\end{definition}",
+          "quoted_text_sha256": "27e51e01bb5fd688f49733f2f8e067904c4a403ba4e57e2254d69ca534adaa94"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_maximum_order_statistic": {
+      "source_anchors": [
+        {
+          "line_end": 118,
+          "line_start": 112,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}[Maximum Order Statistic]\n    The \\textbf{maximum order statistic} of $n$ draws from a distribution $\\DD$ is defined as the random variable\n    \\begin{equation}\n        X^{(n)} := \\max \\{X_1, X_2, \\cdots, X_n\\}\n    \\end{equation}\n    where $X_1, \\cdots, X_n\\simiid \\DD.$\n\\end{definition}",
+          "quoted_text_sha256": "df1889c3ea0b666269c253b763579270ceed0eec3678d348a858a1617618079f"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_monoculture_differential_type_law": {
+      "source_anchors": [
+        {
+          "line_end": 663,
+          "line_start": 651,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\paragraph{Monoculture with differential application access.} Define\n\\begin{equation}\n    \\theta_{\\mono, \\kappa}(v) = (\\succ, e)\n\\end{equation}\nwhere\n\\begin{equation}\n    e_c = \n    \\begin{cases}\n        v + X &\\quad \\college\\in S_{k(v)}(v, \\succ)\\\\\n        -\\infty &\\quad \\college\\notin S_{k(v)}(v, \\succ)\n    \\end{cases},\n\\end{equation}\nfor $\\succ$ drawn uniformly at random from $\\mathcal{R}$, $k(v)$ drawn from $\\kappa,$ and $X$ drawn from $\\DD$. As before, an applicant with value $v$ is given a random preference ordering over firms. However, now the applicant's estimated values across firms depends also on a random draw from $\\kappa$, which determines how many firms they can apply to. Recall that $e$ gives the vector of estimated values of an applicant across firms. Therefore, under monoculture, this estimated value is shared across the firms the applicant applies to (which are the applicant's top-$k(v)$ most preferred firms), but is $-\\infty$ at other firms (meaning that the applicant will never be matched to firms they do not apply to).",
+          "quoted_text_sha256": "467c85c478aac644fccd3d16e178635d203b48d22a1094f369c8a5d4eed9eece"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_monoculture_type_law": {
+      "source_anchors": [
+        {
+          "line_end": 56,
+          "line_start": 52,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\paragraph{Monoculture.} In monoculture, we take the random variable\n\\begin{equation}\n    \\theta_{\\mono}(v) := (\\succ, (v + X, v + X, \\cdots, v + X)),\n\\end{equation}\nwhere $\\succ$ is drawn uniformly at random from $\\mathcal{R}$ and $X\\sim \\DD.$ In other words, applicants have preferences distributed uniformly at random, and each applicant has a single estimated value $v+X$ that is shared across firms. This noisy estimated value equals the applicant's value perturbed by noise drawn from $\\DD$. ",
+          "quoted_text_sha256": "14cde130f5fee62fdc9ed2e0be0c66823a571a4e16c485ef6dc22c0f6f279c82"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_polyculture_differential_type_law": {
+      "source_anchors": [
+        {
+          "line_end": 677,
+          "line_start": 665,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\paragraph{Polyculture with differential application access.} Define\n\\begin{equation}\n    \\theta_{\\poly, \\kappa}(v) = (\\succ, e)\n\\end{equation}\nwhere\n\\begin{equation}\n    e_\\college = \n    \\begin{cases}\n        v + X_\\college &\\quad \\college\\in S_{k(v)}(v, \\succ)\\\\\n        -\\infty &\\quad \\college\\notin S_{k(v)}(v, \\succ)\n    \\end{cases},\n\\end{equation}\nfor $\\succ$ drawn uniformly at random from $\\mathcal{R}$, $k(v)$ drawn from $\\kappa,$ and $X_1,\\cdots,X_\\numcolleges\\simiid \\DD.$ Here, an applicant gets an independently drawn estimated value at each firm they apply to.",
+          "quoted_text_sha256": "e6dded77eb66925735a1d646658dbbcfb39830910d3620b43b7c29a479d3ef74"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_polyculture_type_law": {
+      "source_anchors": [
+        {
+          "line_end": 62,
+          "line_start": 58,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\paragraph{Polyculture.} In polyculture, we take the random variable\n\\begin{equation}\n    \\theta_{\\poly}(v) := (\\succ, (v + X_1, v + X_2, \\cdots, v + X_\\numcolleges)),\n\\end{equation}\nwhere $\\succ$ is drawn uniformly at random from $\\mathcal{R}$ and $X_1,X_2,\\cdots, X_\\numcolleges \\sim \\DD$ are i.i.d.. Again, applicants have preferences distributed uniformly at random, but now each applicant has a distinct, independently drawn estimated value at each firm.",
+          "quoted_text_sha256": "7e21f0ccbe0572f9c802b3924556ac2816642d1c95e69e76811cb4de0537841b"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_raw_cutoff_order": {
+      "source_anchors": [
+        {
+          "line_end": 196,
+          "line_start": 188,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\subsection{The Lattice Theorem for Stable Matchings}\nA powerful result in the stable matching literature shows that stable matchings have a complete lattice structure. In this section, we state this result in our setup (Theorem A.1 in \\cite{azevedo2016supply}). Consider the lattice operators $\\vee$ and $\\wedge$ on cutoffs in $\\RR^C$, where for a set $Z$ of cutoffs,\n\\begin{equation}\n    \\left(\\bigvee_{P\\in Z} P\\right)_\\college = \\sup_{P\\in Z} P_\\college\n\\end{equation}\nand\n\\begin{equation}\n    \\left(\\bigwedge_{P\\in Z} P\\right)_\\college = \\inf_{P\\in Z} P_\\college.\n\\end{equation}",
+          "quoted_text_sha256": "178216da18537bf782ee80add6b3923fcf82365a1e583b0894d0365107a46d77"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_value_threshold": {
+      "source_anchors": [
+        {
+          "line_end": 537,
+          "line_start": 537,
+          "publication_locator": "cited publication",
+          "quoted_text": "Define $v_S$ to be the unique value such that $\\eta((v_S, \\infty)) = S$, i.e., the threshold at which the mass of students with a value above $v_S$ equals the overall firm capacity. Then note that in the firm-optimal matching, only applicants with value greater than $v_S$ are matched. We may now state our first main result. ",
+          "quoted_text_sha256": "f5515a4085cdaed5147d7b7cc3ae6a1a21ad55918b47875ad7aadf28a9e0d34f"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "lemma_potato": {
+      "source_anchors": [
+        {
+          "line_end": 340,
+          "line_start": 324,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}\\label{lem:potato}\nIf $\\DD$ is maximum concentrating, the following hold for all $\\epsilon, \\delta > 0$ when $\\numcolleges$ is sufficiently large:\n\\begin{enumerate}\n    \\item[(i)] For all $v < P_{\\poly} - \\EE\\left[X^{(\\numcolleges)}\\right] - \\frac{\\delta}{3},$\n    \\begin{equation}\n        \\Pr[\\mu_{\\poly}(v)\\in \\numcolleges] < \\epsilon.\n    \\end{equation}\n    \\item[(ii)] For all $v > P_{\\poly} - \\EE\\left[X^{(\\numcolleges)}\\right] + \\frac{\\delta}{3},$\n    \\begin{equation}\n        \\Pr[\\mu_{\\poly}(v)\\in \\numcolleges] > 1 - \\epsilon.\n    \\end{equation}\n    \\item[(iii)] \n    \\begin{equation}\n\\left|\\left(P_{\\poly} - \\EE\\left[X^{(\\numcolleges)}\\right]\\right) - v_\\totalsupply\\right| < \\frac{2\\delta}{3}.\n    \\end{equation}\n\\end{enumerate}\n\\end{lemma}",
+          "quoted_text_sha256": "b2f7350f87b1c477c078e57597b1220523a2f7d855fdb88bcb1f6e37939d20ab"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "proposition_lattice": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 34,
+              "line_start": 2,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\section{Model and Preliminaries}\nOur model builds on the model of \\cite{azevedo2016supply}, in which there is a continuum of applicants and a finite number of firms (analogously, colleges). An applicant is identified by their true \\textit{value}, which is distributed on $\\RR$ according to a probability measure $\\eta$. Let $\\colleges = \\{1, 2, \\cdots, \\numcolleges\\}$ be the set of all firms. Firms have total capacity $\\totalsupply < 1$ (so there are fewer positions than applicants) and each firm has the same capacity $\\frac{\\totalsupply}{\\numcolleges}.$\n\nAn applicant with value $v$ is associated with an independent random variable $\\theta(v)$, characterizing their preferences over firms and firms' estimated values for that applicant. The realization of $\\theta(v)$ is their \\textit{type}, which lies in $\\Theta$. $\\Theta := \\mathcal{R} \\times \\RR^\\numcolleges$ is the set of applicant types, where $\\mathcal{R}$ is the set of preference orderings over the firms. If $\\theta(v) = \\theta = (\\succ^\\theta, e^\\theta),$ then $\\succ^\\theta$ is the preference ordering of $v$ over firms and $e^\\theta_\\college$ is the \\textit{estimated value} of the applicant at firm $\\college$.\n\nIn the model, $\\theta(v)$ plays a central role. First, it is used to model the process of preference approximation for firms. Firms all prefer applicants with higher true values, but in practice, rank applicants based on the estimated values given by $\\theta(v)$. Second, it connects our model with that of \\cite{azevedo2016supply}. In particular, the distribution $\\eta$ over values in $\\RR$ together with an appropriate choice of $\\theta(v)$ induces a distribution over applicant types, which, alongside specifications of firm capacities, fully determines the model in \\cite{azevedo2016supply}.\\footnote{Formally, consider the probability distribution $\\eta'$ over $\\Theta$ such that for $A\\subseteq \\Theta$,\n\\begin{equation}\n    \\eta'(A) = \\int_\\RR \\Pr[\\theta(v)\\in A]\\,d\\eta(v).\n\\end{equation}}\n\n\\paragraph{}\nA \\textit{matching} is a function $\\mu: \\Theta \\rightarrow \\colleges\\cup \\{\\emptyset\\}$ that satisfies the capacity constraints\n\\begin{equation}\n    \\int_\\RR \\Pr[\\mu(\\theta(v)) = \\college]\\,d\\eta(v) = \\frac{\\totalsupply}{\\numcolleges},\\qquad \\forall \\college\\in \\colleges,\n\\end{equation}\nas well as two additional technical assumptions: that $\\mu^{-1}(\\college)$ is measurable and that the set $\\{\\theta:\\mu(\\theta)\\prec^\\theta \\college\\}$ is open.\\footnote{We remark that matchings are not typically required to fill capacities (i.e., the equality above is typically an inequality), but in our setting, since there is limited total capacity and applicants all prefer being matched to being unmatched, we are only concerned with matchings that fill capacity.}\n\nThen $\\mu(\\theta(v))$ is a random variable indicating where an applicant with value $v$ is matched, with $\\mu(\\theta(v)) = \\emptyset$ indicating that the applicant is not matched. When it is clear what $\\theta$ is, we will abuse notation to write $\\mu(v)$ instead of $\\mu(\\theta(v))$ to denote the random variable representing where an applicant with value $v$ is matched. Notice that the matching of an applicant depends only on their random type, reflecting the fact that their matching outcome depends directly on the scores they receive at each firm rather than their true value.\n\nA matching is \\textit{stable} if there does not exist a pair $\\theta\\in \\Theta, \\college\\in \\colleges$ such that $\\college\\succ^\\theta \\mu(\\theta)$, and $e^\\theta_\\college > e^{\\theta'}_{\\college}$ for some $\\theta'\\in \\mu^{-1}(\\college)$. In other words, there is no applicant-firm pair that would jointly prefer to defect from the current matching to be matched with each other.\n\n\\subsection{A cutoff characterization of stable matchings}\nA benefit of this continuum model is that stable matchings are characterized by a tractable cutoff structure \\citep{azevedo2016supply}. Given a vector of \\textit{cutoffs} $P = (P_1, \\cdots, P_\\numcolleges),$ an applicant with type $\\theta$ can \\textit{afford} firm $\\college$ if $e^\\theta_\\college \\ge P_\\college$. The applicant's \\textit{demand} at $P$ is $D^\\theta(P)$, the applicant's most preferred firm (according to $\\succ^\\theta$) among those they can afford. If they cannot afford any firm, $D^\\theta(P)=\\emptyset$.\nThe \\textit{aggregate demand} of a firm $\\college$ at $P$ is\n\\begin{equation}\n    D^\\college(P) := \\int_\\RR \\Pr[D^{\\theta(v)}(P) = \\college]\\,d\\eta(v),\n\\end{equation}\nthe measure of applicants who demand it.\n\nA vector of cutoffs $P$ is \\textit{market clearing} if and only if\n\\begin{equation}\n    D^\\college(P) = \\frac{\\totalsupply}{\\numcolleges},\\qquad \\forall \\college\\in \\numcolleges.\\footnote{Again, as in the above footnotes, the standard definition in \\cite{azevedo2016supply} would allow for an inequality here if no applicant would prefer to take the empty spots of a firm. This is not possible in our model, so we simplify our definition.}\n\\end{equation}",
+              "quoted_text_sha256": "fc569aaa0311542295a869e260d4fb671a73fafc021cdfd0f2d1679df2d9cf33"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 196,
+              "line_start": 188,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\subsection{The Lattice Theorem for Stable Matchings}\nA powerful result in the stable matching literature shows that stable matchings have a complete lattice structure. In this section, we state this result in our setup (Theorem A.1 in \\cite{azevedo2016supply}). Consider the lattice operators $\\vee$ and $\\wedge$ on cutoffs in $\\RR^C$, where for a set $Z$ of cutoffs,\n\\begin{equation}\n    \\left(\\bigvee_{P\\in Z} P\\right)_\\college = \\sup_{P\\in Z} P_\\college\n\\end{equation}\nand\n\\begin{equation}\n    \\left(\\bigwedge_{P\\in Z} P\\right)_\\college = \\inf_{P\\in Z} P_\\college.\n\\end{equation}",
+              "quoted_text_sha256": "178216da18537bf782ee80add6b3923fcf82365a1e583b0894d0365107a46d77"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 435,
+              "line_start": 408,
+              "publication_locator": "cited publication",
+              "quoted_text": "2. The Continuum Model\n2.1. Definitions. We begin the exposition with the simpler, and novel continuum\nmodel, and examine its connection with the standard discrete Gale and Shapley (1962)\nmodel in Sections 3 and 4. The model follows closely the Gale and Shapley (1962) college\nadmissions model. The main departure is that a finite set of colleges C = {1, 2, . . . , C}\nare matched to a continuum mass of students. A student is described by her type\nθ = (\u001fθ , eθ ). \u001fθ is the student’s strict preference ordering over colleges. The vector\neθ ∈ [0, 1]C describes the colleges’ ordinal preferences for the student. We refer to eθc\nas student θ’s score at college c. Colleges prefer students with higher scores. That is,\n17Specifically, Hatfield et al. (2011b) show that, in a trading network with quasilinear utilities, free\n\ntransfers of a numeraire between agents, and substitutable preferences the set of stable outcomes is\nessentially equivalent to the set of Walrasian equilibria.\n\n\fSUPPLY AND DEMAND IN MATCHING MARKETS\n\n11\n\n0\n\ncollege c prefers student θ over θ0 if eθc > eθc .18 To simplify notation we assume that all\nstudents and colleges are acceptable.19 Let R be the set of all strict preference orderings\nover colleges. We denote the set of all student types by Θ = R × [0, 1]C .\nA continuum economy is given by E = [η, S], where η is a probability measure20\nover Θ and S = (S1 , S2 , . . . , SC ) is a vector of strictly positive capacities for each\ncollege. We make the following assumption on η, which corresponds to colleges having\nstrict preferences over students in the discrete model.\nAssumption 1. (Strict Preferences) Every college’s indifference curves have ηmeasure 0. That is, for any college c and real number x we have η({θ : eθc = x}) = 0.",
+              "quoted_text_sha256": "44b1b80239a121380106562d4a586a785b3f675ea2dfe474885b4b53d6865e1e"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 2068,
+              "line_start": 2026,
+              "publication_locator": "cited publication",
+              "quoted_text": "A.3. Lattice Theorem and Rural Hospitals Theorem. Consider the sup (∨) and\ninf (∧) operators on Rn as lattice operators on cutoffs. That is, given two vectors of\ncutoffs\n(P ∨ P 0 )c = sup{Pc , Pc0 }.\nC\n\nMore generally, given an arbitrary set of cutoffs X ⊆ 2([0,1] ) , we define the sup and\ninf operators analogously. That is\n(∨X)c = sup Pc .\nP ∈X\n\nWe then have that the set of market clearing cutoffs forms a complete lattice with\nrespect to these operators.\nTheorem A1. (Lattice Theorem) The set of market clearing cutoffs is a complete\nlattice under ∨, ∧.\nProof. First note that the set of market clearing cutoffs is nonempty. Now, consider\ntwo market clearing cutoffs P and P 0 , and let P + = P ∨ P 0 . Take a college c, and\nassume without loss of generality that Pc ≤ Pc0 . By the definition of demand, we must\nhave that Dc (P + ) ≥ Dc (P 0 ), as Pc+ = Pc0 and the cutoffs of other colleges are higher\nunder P + . In addition, if Pc0 > 0, then Dc (P + ) ≥ Sc ≥ Dc (P ). Moreover, if Pc0 = 0,\n\n\fAZEVEDO AND LESHNO\n\n44\n\nthen Pc = Pc0 , and Dc (P + ) ≥ Dc (P ). Either way, we have that\nDc (P + ) ≥ max{Dc (P ), Dc (P 0 )}.\nP\nMoreover, the demand for staying unmatched 1 − c∈C Dc (·) must at least as large\nunder P + than under P or P 0 . Because demand for staying unmatched plus for all\ncolleges always sums to 1, we have that, for all colleges, Dc (P + ) = Dc (P ) = Dc (P 0 )\n. In particular, P + is a market clearing cutoff. The proof for the inf operator is\nanalogous. Moreover, it follows by induction that the sup and inf of any finite set of\nmarket clearing cutoffs is a market clearing cutoff. This establishes that the set of\nmarket clearing cutoffs is a lattice.\nLast, we show that the lattice is a complete lattice. That is, that the sup of any\narbitrary, and possibly infinite, set of market clearing cutoffs P ⊆ RC is a market\nclearing cutoff. Every subset of RC has a sup, so that the vector ∨P is well-defined.\nMoreover, there exists a sequence of finite sets Pk ⊆ P such that the vectors ∨Pk ∈ RC\nconverge to ∨P as k grows. By the first part of the proof, each ∨Pk is a market clearing\ncutoff. Since the demand function is continuous,40 the set of market clearing cutoffs is\nclosed. It follows that ∨P = limk→∞ ∨Pk is a market clearing cutoff. The proof for the\ninf operator is analogous.",
+              "quoted_text_sha256": "49905faa5c249557de5d156204c3afb688016e88940ab952938d3af2423e3443"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 200,
+          "line_start": 198,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}[The Lattice Theorem]\\label{prop:lattice}\nThe set of market-clearing cutoffs forms a complete lattice with respect to $\\vee$ and $\\wedge$ as defined above.\n\\end{proposition}",
+          "quoted_text_sha256": "4dcb7b081b7e20eed17ceee54e1718000c3888b892cf7f3853a4f015eb676cb4"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "review_corollary4_monocultureCutoff_lt_polycultureCutoff": {
+      "source_anchors": [
+        {
+          "line_end": 105,
+          "line_start": 100,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{corollary}[Lower Cutoff Under Monoculture]\\label{cor:cutoff-inequality}\nWhen $\\numcolleges \\ge 2,$ the shared cutoff in an economy is lower under monoculture than under polyculture:\n    \\begin{equation}\n        P_{\\mono} < P_{\\poly}.\n    \\end{equation}\n\\end{corollary}",
+          "quoted_text_sha256": "925edf6b5b1649e920b8d2c4c621bfdc848c42cddec6bb13415cab3a54b8b34c"
+        },
+        {
+          "line_end": 316,
+          "line_start": 275,
+          "publication_locator": "cited publication",
+          "quoted_text": "As a consequence of the above proof,\n\\begin{equation}\\label{eq:interval-mono}\n    \\eta((P_{\\mono} - X_+, P_{\\mono} - X_-)) > 0\n\\end{equation}\nand\n\\begin{equation}\\label{eq:interval-poly}\n    \\eta((P_{\\poly} - X_+, P_{\\poly} - X_-)) > 0,\n\\end{equation}\nwhich will be useful in subsequent proofs.\n\n\\begin{proof}[\\textbf{Proof of \\Cref{cor:cutoff-inequality}}]\n    Noting that the total measure of students matched is the same under both monoculture and polyculture (equal to $\\totalsupply$), we have, using \\eqref{eq:match-mono} and \\eqref{eq:match-poly} that\n    \\begin{equation}\n        \\int_{\\RR} \\Pr[v + X > P_{\\mono}]\\,d\\eta(v) = \\totalsupply = \\int_{\\RR} \\Pr[v + X^{(\\numcolleges)} > P_{\\poly}]\\,d\\eta(v).\n    \\end{equation}\n    Assume for the sake of contradiction that $P_{\\mono}\\ge P_{\\poly}.$ To give the desired contradiction, we will show that this implies\n    \\begin{equation}\n        \\int_{\\RR} \\Pr[v + X > P_{\\mono}]\\,d\\eta(v) < \\int_{\\RR} \\Pr[v + X^{(\\numcolleges)} > P_{\\poly}]\\,d\\eta(v).\n    \\end{equation}\n    Clearly,\n    \\begin{equation}\n        \\Pr[v + X > P_{\\mono}] \\le \\Pr[v + X^{(\\numcolleges)} > P_{\\poly}] \n    \\end{equation}\n    for all $v$. We now show that\n    \\begin{equation}\n        \\Pr[v + X > P_{\\mono}] < \\Pr[v + X^{(\\numcolleges)} > P_{\\poly}] \n    \\end{equation}\n    for $v\\in (P_{\\poly}-X_+, P_{\\poly}-X_-)$, an interval which we will show has positive $\\eta$-measure. We have that\n    \\begin{equation}\n        \\Pr[v + X > P_{\\mono}] \\le \\Pr[v + X > P_{\\poly}],\n    \\end{equation}\n    so it suffices to show that \n    \\begin{equation}\\label{eq:water}\n        \\Pr[v + X > P_{\\poly}] < \\Pr[v + X^{(\\numcolleges)} > P_{\\poly}].\n    \\end{equation}\n    We have that\n    \\begin{align}\n        \\Pr[v + X > P_{\\poly}] &= 1 - F_X(P_{\\poly} - v)\\\\\n        \\Pr[v + X^{(\\numcolleges)} > P_{\\poly}] &= 1 - F_X^\\numcolleges(P_{\\poly} - v).\n    \\end{align}\n    Therefore, since $\\numcolleges\\ge 2$, \\eqref{eq:water} holds whenever $F_X(P_{\\poly} - v)\\in (0,1)$, which, by \\Cref{prop:cdf-increasing}, is true when $P_{\\poly} - v \\in (X_-, X_+).$ Equivalently, $v \\in (P_{\\poly} - X_+, P_{\\poly} - X_-).$ This interval has positive measure \\eqref{eq:interval-poly}.\n\\end{proof}",
+          "quoted_text_sha256": "eb197d85bed5ae094e0ada09c6407113d5137e5bd5790da5a6080dfb7ef107d7"
+        }
+      ],
+      "source_kind": "corollary"
+    },
+    "review_lemma1_supplyDemand": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 34,
+              "line_start": 2,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\section{Model and Preliminaries}\nOur model builds on the model of \\cite{azevedo2016supply}, in which there is a continuum of applicants and a finite number of firms (analogously, colleges). An applicant is identified by their true \\textit{value}, which is distributed on $\\RR$ according to a probability measure $\\eta$. Let $\\colleges = \\{1, 2, \\cdots, \\numcolleges\\}$ be the set of all firms. Firms have total capacity $\\totalsupply < 1$ (so there are fewer positions than applicants) and each firm has the same capacity $\\frac{\\totalsupply}{\\numcolleges}.$\n\nAn applicant with value $v$ is associated with an independent random variable $\\theta(v)$, characterizing their preferences over firms and firms' estimated values for that applicant. The realization of $\\theta(v)$ is their \\textit{type}, which lies in $\\Theta$. $\\Theta := \\mathcal{R} \\times \\RR^\\numcolleges$ is the set of applicant types, where $\\mathcal{R}$ is the set of preference orderings over the firms. If $\\theta(v) = \\theta = (\\succ^\\theta, e^\\theta),$ then $\\succ^\\theta$ is the preference ordering of $v$ over firms and $e^\\theta_\\college$ is the \\textit{estimated value} of the applicant at firm $\\college$.\n\nIn the model, $\\theta(v)$ plays a central role. First, it is used to model the process of preference approximation for firms. Firms all prefer applicants with higher true values, but in practice, rank applicants based on the estimated values given by $\\theta(v)$. Second, it connects our model with that of \\cite{azevedo2016supply}. In particular, the distribution $\\eta$ over values in $\\RR$ together with an appropriate choice of $\\theta(v)$ induces a distribution over applicant types, which, alongside specifications of firm capacities, fully determines the model in \\cite{azevedo2016supply}.\\footnote{Formally, consider the probability distribution $\\eta'$ over $\\Theta$ such that for $A\\subseteq \\Theta$,\n\\begin{equation}\n    \\eta'(A) = \\int_\\RR \\Pr[\\theta(v)\\in A]\\,d\\eta(v).\n\\end{equation}}\n\n\\paragraph{}\nA \\textit{matching} is a function $\\mu: \\Theta \\rightarrow \\colleges\\cup \\{\\emptyset\\}$ that satisfies the capacity constraints\n\\begin{equation}\n    \\int_\\RR \\Pr[\\mu(\\theta(v)) = \\college]\\,d\\eta(v) = \\frac{\\totalsupply}{\\numcolleges},\\qquad \\forall \\college\\in \\colleges,\n\\end{equation}\nas well as two additional technical assumptions: that $\\mu^{-1}(\\college)$ is measurable and that the set $\\{\\theta:\\mu(\\theta)\\prec^\\theta \\college\\}$ is open.\\footnote{We remark that matchings are not typically required to fill capacities (i.e., the equality above is typically an inequality), but in our setting, since there is limited total capacity and applicants all prefer being matched to being unmatched, we are only concerned with matchings that fill capacity.}\n\nThen $\\mu(\\theta(v))$ is a random variable indicating where an applicant with value $v$ is matched, with $\\mu(\\theta(v)) = \\emptyset$ indicating that the applicant is not matched. When it is clear what $\\theta$ is, we will abuse notation to write $\\mu(v)$ instead of $\\mu(\\theta(v))$ to denote the random variable representing where an applicant with value $v$ is matched. Notice that the matching of an applicant depends only on their random type, reflecting the fact that their matching outcome depends directly on the scores they receive at each firm rather than their true value.\n\nA matching is \\textit{stable} if there does not exist a pair $\\theta\\in \\Theta, \\college\\in \\colleges$ such that $\\college\\succ^\\theta \\mu(\\theta)$, and $e^\\theta_\\college > e^{\\theta'}_{\\college}$ for some $\\theta'\\in \\mu^{-1}(\\college)$. In other words, there is no applicant-firm pair that would jointly prefer to defect from the current matching to be matched with each other.\n\n\\subsection{A cutoff characterization of stable matchings}\nA benefit of this continuum model is that stable matchings are characterized by a tractable cutoff structure \\citep{azevedo2016supply}. Given a vector of \\textit{cutoffs} $P = (P_1, \\cdots, P_\\numcolleges),$ an applicant with type $\\theta$ can \\textit{afford} firm $\\college$ if $e^\\theta_\\college \\ge P_\\college$. The applicant's \\textit{demand} at $P$ is $D^\\theta(P)$, the applicant's most preferred firm (according to $\\succ^\\theta$) among those they can afford. If they cannot afford any firm, $D^\\theta(P)=\\emptyset$.\nThe \\textit{aggregate demand} of a firm $\\college$ at $P$ is\n\\begin{equation}\n    D^\\college(P) := \\int_\\RR \\Pr[D^{\\theta(v)}(P) = \\college]\\,d\\eta(v),\n\\end{equation}\nthe measure of applicants who demand it.\n\nA vector of cutoffs $P$ is \\textit{market clearing} if and only if\n\\begin{equation}\n    D^\\college(P) = \\frac{\\totalsupply}{\\numcolleges},\\qquad \\forall \\college\\in \\numcolleges.\\footnote{Again, as in the above footnotes, the standard definition in \\cite{azevedo2016supply} would allow for an inequality here if no applicant would prefer to take the empty spots of a firm. This is not possible in our model, so we simplify our definition.}\n\\end{equation}",
+              "quoted_text_sha256": "fc569aaa0311542295a869e260d4fb671a73fafc021cdfd0f2d1679df2d9cf33"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 435,
+              "line_start": 408,
+              "publication_locator": "cited publication",
+              "quoted_text": "2. The Continuum Model\n2.1. Definitions. We begin the exposition with the simpler, and novel continuum\nmodel, and examine its connection with the standard discrete Gale and Shapley (1962)\nmodel in Sections 3 and 4. The model follows closely the Gale and Shapley (1962) college\nadmissions model. The main departure is that a finite set of colleges C = {1, 2, . . . , C}\nare matched to a continuum mass of students. A student is described by her type\nθ = (\u001fθ , eθ ). \u001fθ is the student’s strict preference ordering over colleges. The vector\neθ ∈ [0, 1]C describes the colleges’ ordinal preferences for the student. We refer to eθc\nas student θ’s score at college c. Colleges prefer students with higher scores. That is,\n17Specifically, Hatfield et al. (2011b) show that, in a trading network with quasilinear utilities, free\n\ntransfers of a numeraire between agents, and substitutable preferences the set of stable outcomes is\nessentially equivalent to the set of Walrasian equilibria.\n\n\fSUPPLY AND DEMAND IN MATCHING MARKETS\n\n11\n\n0\n\ncollege c prefers student θ over θ0 if eθc > eθc .18 To simplify notation we assume that all\nstudents and colleges are acceptable.19 Let R be the set of all strict preference orderings\nover colleges. We denote the set of all student types by Θ = R × [0, 1]C .\nA continuum economy is given by E = [η, S], where η is a probability measure20\nover Θ and S = (S1 , S2 , . . . , SC ) is a vector of strictly positive capacities for each\ncollege. We make the following assumption on η, which corresponds to colleges having\nstrict preferences over students in the discrete model.\nAssumption 1. (Strict Preferences) Every college’s indifference curves have ηmeasure 0. That is, for any college c and real number x we have η({θ : eθc = x}) = 0.",
+              "quoted_text_sha256": "44b1b80239a121380106562d4a586a785b3f675ea2dfe474885b4b53d6865e1e"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 558,
+              "line_start": 524,
+              "publication_locator": "cited publication",
+              "quoted_text": "dependence on E when there is no risk of confusion. A cutoff is a minimal score\nPc ∈ [0, 1] required for admission at a college c. We say that a student θ can afford\ncollege c if Pc ≤ eθc , that is c would accept θ. A student’s demand given a vector of\ncutoffs is her favorite college among those she can afford. That is,\n(2.1)\n\nDθ (P ) = arg max{c|Pc ≤ eθc } ∪ {θ}.\n\u001fθ\n\nAggregate demand for college c is the mass of students that demand it,\nDc (P ) = η({θ : Dθ (P ) = c}).\nThe aggregate demand vector {Dc (P )}c∈C is denoted by D(P ).\nA market clearing cutoff is a vector of cutoffs that clears supply and demand for\ncolleges.\nDefinition 2. A vector of cutoffs P is a market clearing cutoff if it satisfies the\nfollowing market clearing equations.\nDc (P ) ≤ Sc\nfor all c, and Dc (P ) = Sc if Pc > 0.\nThere is a natural one-to-one correspondence between stable matchings and market\nclearing cutoffs. To describe this correspondence, we define two operators. Given a\nmarket clearing cutoff P , we define the associated matching µ = MP using the demand\nfunction:\nµ(θ) = Dθ (P ).\nConversely, given a stable matching µ, we define the associated cutoff P = Pµ by\nthe score of a marginal students matched to each college:\n(2.2)\n\nPc = inf eθc .\nθ∈µ(c)\n\nThe operators M and P form a bijection between stable matchings and market\nclearing cutoffs.\nLemma 1. (Supply and Demand Lemma) If µ is stable matching, then Pµ is a\nmarket clearing cutoff. If P is a market clearing cutoff, then MP is a stable matching.\nIn addition, the operators P and M are inverses of each other.",
+              "quoted_text_sha256": "794b7c3fda08de03d6cc6d9b3fc72f1713035d7aa8800292c66d34a20f58f520"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 43,
+          "line_start": 38,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}[Supply and Demand Lemma \\citep{azevedo2016supply}]\\label{lem:supply-demand}\n    A matching $\\mu$ is stable if and only if there exists a vector of market-clearing cutoffs $P$ such that\n    \\begin{equation}\n        \\mu(\\theta) = D^\\theta(P).\n    \\end{equation}\n\\end{lemma}",
+          "quoted_text_sha256": "3bcacd2b4df26b3c24a6891810613f073c45342173c57aa804e01fca1f8a0317"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "review_lemma2_equalCutoffs": {
+      "source_anchors": [
+        {
+          "line_end": 74,
+          "line_start": 71,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}[Equal Cutoffs Lemma]\\label{prop:equal-cutoffs}\n    If $\\theta\\in \\{\\theta_{\\mono}, \\theta_{\\poly}\\},$ then there is a unique vector of market-clearing cutoffs $P$, and\n    $P_1 = P_2 = \\cdots = P_\\numcolleges.$\n\\end{lemma}",
+          "quoted_text_sha256": "a0e167751d59d8d381fa719e25a3f045bab242611941b5999ef9224fd4f83151"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "review_lemma_equalCutoffs_differentialAccess": {
+      "source_anchors": [
+        {
+          "line_end": 684,
+          "line_start": 681,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}[Equal Cutoffs Lemma for Differential Application Access]\\label{lem:equal-cutoffs-diff-access}\n    If $\\theta\\in \\{\\theta_{\\mono, \\kappa}, \\theta_{\\poly, \\kappa}\\},$ then there is a unique vector of market-clearing cutoffs $P$, and\n    $P_1 = P_2 = \\cdots = P_\\numcolleges.$\n\\end{lemma}",
+          "quoted_text_sha256": "0b322b4c6062a4de0252859b1cb6824677ca9755450e0a7c079d4c2732bf3126"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "review_proposition_cdfIncreasing_connectedSupport": {
+      "source_anchors": [
+        {
+          "line_end": 174,
+          "line_start": 151,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\section{Preliminary Results}\n\n\\subsection{Observations About Measures with Connected Support} \n\nTo aid subsequent proofs, we recall our assumption on the probability measure $\\eta$ (of student values) and the probability distribution $\\DD$ (the noise distribution); namely, that they have connected support. We then make two useful observations.\n\nLet $\\pi$ be the probability measure associated with $\\DD$. Then we make the assumption that both $\\eta$ and $\\pi$ have \\textit{connected support}, where we mean that the smallest closed set of measure $1$ is an interval. Let these respective intervals be $[V_-, V_+]$ and $[X_-, X_+]$. (Note that $V_-, X_-$ may be equal to $-\\infty$ and $V_+, X_+$ may be equal to $\\infty$.) In what follows we let $V$ and $X$ be random variables distributed according to the probability measures $\\eta$ and $\\pi$, and let $F_V$ and $F_X$ denote their cdfs.\n\n\\begin{proposition}\\label{prop:cdf-increasing}\nThe following hold:\n\\begin{itemize}\n    \\item[(i)] $F_V$ is strictly increasing on the interval $(V_-, V_+),$ and $F_V(v)\\in (0,1)$ when $v\\in (V_-, V_+).$\n    \\item[(ii)] $F_X$ is strictly increasing on the interval $(X_-, X_+),$ and $F_X(x)\\in (0,1)$ when $x\\in (X_-, X_+).$\n    \\item[(iii)] For all integers $\\numcolleges\\ge 1,$ $F_X^\\numcolleges$ is strictly increasing on the interval $(X_-, X_+),$ and $F_X^\\numcolleges(x)\\in (0,1)$ when $x\\in (X_-, X_+).$\n\\end{itemize}\n\\end{proposition}\n\n\\begin{proof}\nWe show the result for $F_V$; the result for $F_X$ is (clearly) analogous. \n\nFirst suppose that $F_V$ were not strictly increasing on $V_-, V_+$, such that there exists $v_1, v_2$ such that $V_- < v_1 < v_2 < V_+$ and $F_V(v_1) = F_V(v_2)$. Then $\\eta((v_1, v_2)) = F_V(v_2) - F_V(v_1) = 0.$ This implies that $\\eta([V_-, V_+]\\setminus [v_1, v_2]) = 1 - 0 = 1,$ which contradicts the assumption that $[V_-, V_+]$ is the smallest closed set of $\\eta$-measure $1$.\n\nTo show that $F_V(v)\\in (0,1)$ when $v\\in (V_-, V_+)$, it suffices to show that $F_V(V_-)=0$ and $F_V(V_+)=1.$ Assume otherwise, such that $F_V(V_-) > 0$ or $F_V(V_+) < 1.$ This would imply that $\\eta([V_-, V_+]) < 1$, which gives a contradiction.\n\\end{proof}",
+          "quoted_text_sha256": "a28040d50da66c40ecc88c94e757314021208df53ba82926347ecebaf5c64e44"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "review_proposition_nash_differentialApplicationAccess": {
+      "source_anchors": [
+        {
+          "line_end": 691,
+          "line_start": 689,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}[Nash Equilibrium]\\label{prop:nash}\n    For any $\\kappa$, and under both monoculture and polyculture, no applicant benefits ex-ante by deviating from $S$.\n\\end{proposition}",
+          "quoted_text_sha256": "c0e0d9abb376cccffd2cf81c15327952d31de3a2309bcc5898956c84aaf6cc5b"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "review_proposition_nonzeroMeasure_openInterval": {
+      "source_anchors": [
+        {
+          "line_end": 185,
+          "line_start": 176,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:nonzero-measure}\n    Let $I$ be an interval such that\n    \\begin{equation}\n        I \\cap (V_-, V_+) \\neq \\emptyset.\n    \\end{equation}\n    Then $\\eta(I) > 0.$\n\\end{proposition}\n\n\\begin{proof}\n    There exists $a,b$ such that $V_-\\le a<b\\le V_+$ such that $(a,b)\\subseteq I \\cap (V_-, V_+)$. Therefore, $\\eta(I) > \\eta((a,b)).$ We have that $\\eta((a,b)) = F_V(b) - F_V(a) > 0$, where we used that $F_V$ is strictly increasing on $[V_-, V_+]$, as shown in \\Cref{prop:cdf-increasing}. This gives the result.",
+          "quoted_text_sha256": "e1f04e4942da8cad2fe7e5a80473de8610342f0aac35e2ed32664b2d9da491cc"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "review_proposition_probabilityFormula": {
+      "source_anchors": [
+        {
+          "line_end": 95,
+          "line_start": 81,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:prob-match}\n    For all $v \\in \\RR$,\n    \\begin{enumerate}\n    \\item[(i)] the probability an applicant with value $v$ is matched under monoculture is\n\\begin{equation}\\label{eq:match-mono}\n    \\Pr[\\mu_{\\mono}(v) \\in \\colleges] = \\Pr[v + X > P_{\\mono}],\n\\end{equation}\nwhere $X\\sim \\DD,$ and\n\\item[(ii)] the probability an applicant with value $v$ is matched under polyculture is\n\\begin{equation}\\label{eq:match-poly}\n        \\Pr[\\mu_{\\poly}(v) \\in \\colleges] = \\Pr[v + \\max_{\\college\\in \\colleges} X_\\college > P_{\\poly}],\n    \\end{equation}\n    where $X_1,\\cdots, X_\\numcolleges\\simiid \\DD.$\n\\end{enumerate}\n\\end{proposition}",
+          "quoted_text_sha256": "96a514036b0b7dca2c1f81f76621d35bb0bf019d627ae7cfde0e96253147682f"
+        },
+        {
+          "line_end": 80,
+          "line_start": 77,
+          "publication_locator": "cited publication",
+          "quoted_text": "\n\\paragraph{}\nThis cutoff structure allows for clean analysis of stable matchings. Before moving to our main results, we make some basic observations that follow. The next proposition follows directly from the Supply and Demand Lemma (\\Cref{lem:supply-demand}) and the Equal Cutoffs Lemma (\\Cref{prop:equal-cutoffs}).\n",
+          "quoted_text_sha256": "f5fd8a76282315dfc731aaeee84cdae763ef26487a7727dc7d8f6ffaf86d676f"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "review_theorem1_wisdom": {
+      "source_anchors": [
+        {
+          "line_end": 558,
+          "line_start": 539,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{theorem}[Wisdom of the Crowds in Polyculture but not Monoculture]\\label{thm:wisdom}\n    Suppose $\\DD$ is maximum concentrating. Then:\n    \\begin{enumerate}\n        \\item[(i)] Under polyculture, the probability an applicant is matched approaches $0$ or $1$ as $\\numcolleges\\rightarrow \\infty$:\n            \\begin{equation}\n                \\lim_{m\\rightarrow \\infty} \\Pr[\\mu_{\\poly}(v)\\in \\colleges]\n                = \\begin{cases}\n                    0 &\\quad v < v_S \\\\\n                    1 &\\quad v > v_S\n                \\end{cases}\n                \\quad,\n            \\end{equation}\n            and firm welfare approaches optimal.\n        \\item[(ii)] Under monoculture, the probability an applicant is matched\n        \\begin{equation}\n            \\Pr[\\mu_{\\mono}(v)\\in \\colleges]\n        \\end{equation}\n        is constant in $\\numcolleges$, and firm welfare is constant and suboptimal.\n    \\end{enumerate}\n\\end{theorem}",
+          "quoted_text_sha256": "778a53db18f607458f41f30c716e5406e2843335c514a66f4b92573129475e3d"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "review_theorem2_topChoice": {
+      "source_anchors": [
+        {
+          "line_end": 628,
+          "line_start": 609,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{theorem}[Likelihood of Matching to Top Choice or At All]\\label{thm:top-choice}\nThe following hold:\n\\begin{enumerate}\n    \\item[(i)] For all $v$, the probability an applicant matches to their top choice is at least as high under monoculture as under polyculture:\n    \\begin{equation}\\label{eq:prob-first}\n        \\Pr[\\Rank_v(\\mu_{\\mono}(v)) = 1] \\ge \\Pr[\\Rank_v(\\mu_{\\poly}(v)) = 1],\n    \\end{equation}\n    and the inequality is strict for all $v\\in (P_{\\mono} - X_+, P_{\\mono} - X_-),$ a set of positive $\\eta$-measure.\n    \\item[(ii)] For all $v$, if $\\mu_{\\mono}(v)\\in \\colleges$,\n    \\begin{equation}\n        \\Rank_v(\\mu_{\\mono}(v)) = 1,\n    \\end{equation}\n    meaning that all applicants who match under monoculture are matched to their top choice, and that the matching attains optimal applicant welfare.\n    \\item[(iii)] \n    When $\\DD$ is maximum concentrating, for all $v\\in (v_S, P_{\\mono} - X_-),$ which is a set of positive $\\eta$-measure, and for all $\\numcolleges$ sufficiently large, an applicant with value $v$ is less likely to match under monoculture than under polyculture:\n    \\begin{equation}\\label{eq:tiger-2}\n        \\Pr[\\mu_{\\mono}(v)\\in \\colleges] < \\Pr[\\mu_{\\poly}(v)\\in \\colleges].\n    \\end{equation}\n\\end{enumerate}\n\\end{theorem}",
+          "quoted_text_sha256": "1d9fc30ac882e500b1c815a478bb8c1d1b6c426d97bbd4909e3d7c78e65cb67b"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "review_theorem3_differentialApplicationAccess": {
+      "source_anchors": [
+        {
+          "line_end": 719,
+          "line_start": 705,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{theorem}[Differential Application Access in Monoculture and Polyculture]\\label{thm:diff-app-access}\nThe following hold:\n    \\begin{itemize}\n        \\item[(i)] In monoculture, applicants who apply to more firms do not gain an advantage: For all $v$, \n        \\begin{equation}\n            \\Pr[\\mu_{\\mono, \\kappa}(v)\\in \\colleges\\,|\\,k(v)=k] = \\Pr[\\mu_{\\mono}(v)\\in \\colleges]\n        \\end{equation} \n        is constant in $k$.\n        \\item[(ii)] In polyculture, applicants who apply to more firms gain an advantage: For all $v$, \n        \\begin{equation}\n           \\Pr[\\mu_{\\poly, \\kappa}(v)\\in \\colleges\\,|\\,k(v)=k] \n        \\end{equation}\n        is increasing in $k$, and strictly increasing in $k$ for $v\\in (P_{\\poly, \\kappa} - X_+, P_{\\poly, \\kappa} - X_-).$\n    \\end{itemize}\n\\end{theorem}",
+          "quoted_text_sha256": "7fabbbcbb27176ad0f0e486b01616ef07d32c13dff8d7c9494dca0a08799a8ec"
+        },
+        {
+          "line_end": 526,
+          "line_start": 517,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proof}[\\textbf{Proof of \\Cref{thm:diff-app-access}}]\n    To show part (i), note that $P_{\\mono} = P_{\\mono, \\kappa}$.\n    \n    To show part (ii), note that\n    \\begin{align}\n        \\Pr[\\mu_{\\poly, \\kappa}(v)\\in \\colleges\\,|\\,k(v)=k]\n        &= \\Pr[v + X^{(k)} > P_{\\poly, \\kappa}]\\\\\n        &= 1 - F_X^k(P_{\\poly, \\kappa} -v),\\label{eq:clock}\n    \\end{align}\n    which is increasing in $k$. Moreover, when $v\\in (P_{\\poly, \\kappa} - X_+, P_{\\poly, \\kappa} - X_-),$ we have that $P_{\\poly, \\kappa} - v\\in (X_-, X_+),$ so by \\Cref{prop:cdf-increasing}, $F_X(P_{\\poly, \\kappa})\\in (0,1),$ in which case \\eqref{eq:clock} is strictly increasing in $k$.",
+          "quoted_text_sha256": "3dc0cd3e508d9062569faafeb20cfedbaa0653d15e99268a240a6a49e0f70ac4"
+        }
+      ],
+      "source_kind": "theorem"
+    }
+  },
+  "source_artifact_sha256": "3faa7451a9943a22cb15008b6e37d34b3be9390d9c9e00b22b0db949ab3b10fb",
+  "source_coverage_mode": "named_theoretical_statements"
+}

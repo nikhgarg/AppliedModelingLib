@@ -14,7 +14,7 @@
 \node[dag_result, dag_template_legend] (legRes) at (0,0) {formalized\\paper result};
 \node[dag_lemma, dag_template_legend] (legLem) at (4.2,0) {formalized\\support};
 \node[dag_model, dag_template_legend] (legDef) at (8.4,0) {definition /\\formula};
-\node[dag_result, dag_template_legend] (legPart) at (12.6,0) {formalized\\algorithm};
+\node[dag_partial, dag_template_legend] (legPart) at (12.6,0) {formalization\\gap};
 }
 \daglegend{(legRes)(legLem)(legDef)(legPart)}{Legend}
 
@@ -50,9 +50,9 @@
   strict prefix separation iff almost-sure recovery, including equality cases
 };
 
-\node[dag_result] (Prop2) at (7.0,-7.0) {
+\node[dag_partial] (Prop2) at (7.0,-7.0) {
   \textbf{Proposition 2} \\
-  pairwise scoring errors have the score-gap Chernoff rate and finite-N bound
+  pairwise rate proved; finite-N bound remains unproved
 };
 
 \node[dag_result] (Prop3) at (14.0,-7.0) {
@@ -65,9 +65,9 @@
   one static convex combination dominates randomized scoring for any finite goal
 };
 
-\node[dag_result] (Prop4) at (7.0,-10.5) {
+\node[dag_partial] (Prop4) at (7.0,-10.5) {
   \textbf{Proposition 4} \\
-  outcome rate is the minimum relevant pair rate and $Q^N\leq M^2e^{-Nr}$
+  minimum rate and finite-N bound proved with negative-gap mass for every pair
 };
 
 \node[dag_result] (Theorem2) at (14.0,-10.5) {

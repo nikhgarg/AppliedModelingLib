@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import json
+import os
 import re
 import sys
 import tempfile
@@ -153,6 +155,48 @@ class FinalValidationReportTemplateTests(unittest.TestCase):
                 )
             self.assertEqual(len(findings), 1)
             self.assertEqual(findings[0].severity, "ERROR")
+
+    def test_report_reader_status_uses_public_catalog_and_preserves_private_status(self) -> None:
+        cases = [
+            ("GJ19", "public", "partially formalized", "formalized", True),
+            ("MSVV07", "public", "conditional", "formalized", True),
+            ("GJ19", "public", "partially formalized", "partially formalized", False),
+            ("LOS02", "public", "partially formalized", "partially formalized", True),
+            ("LMMS04", "public", "conditional", "partially formalized", True),
+            ("LOS02", "public", "formalized", "formalized", True),
+            ("SNVD17", "private_only", "partially formalized", "partially formalized", True),
+            ("SNVD17", "private_only", "partially formalized", "formalized", False),
+            ("Draft", "public", "paper draft", "formalized", False),
+        ]
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "papers").mkdir()
+            (root / "papers/catalog.json").write_text(json.dumps({
+                "schema": 1, "preserve_partial_status": ["LOS02", "LMMS04"],
+            }), encoding="utf-8")
+            for paper, visibility, technical, reader, passes in cases:
+                with self.subTest(paper=paper, technical=technical, reader=reader):
+                    folder = root / "papers" / paper
+                    folder.mkdir(exist_ok=True)
+                    status_text = json.dumps({
+                        "id": paper, "repository_visibility": visibility, "status": technical,
+                    })
+                    status_file = folder / "status.json"
+                    status_file.write_text(status_text, encoding="utf-8")
+                    (folder / "FINAL_VALIDATION_REPORT.md").write_text(
+                        f"## 2. Closeout Status\n\n- Completion status: **{reader}**.\n",
+                        encoding="utf-8",
+                    )
+                    with (
+                        mock.patch.dict(os.environ, {"APPLIEDMODELINGLIB_REPO_ROOT": str(root)}),
+                        mock.patch.object(audit_repository, "paper_dirs", return_value=[folder]),
+                        mock.patch.object(audit_repository, "ACTIVE_PAPERS", set()),
+                    ):
+                        findings = audit_repository.check_final_report_status_alignment(
+                            include_active=True, paper_filter=paper
+                        )
+                    self.assertEqual(not findings, passes, findings)
+                    self.assertEqual(status_file.read_text(encoding="utf-8"), status_text)
 
     def test_status_alignment_ignores_historical_status_outside_closeout_section(
         self,

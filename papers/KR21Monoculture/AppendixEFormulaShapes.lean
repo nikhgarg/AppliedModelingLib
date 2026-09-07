@@ -1,6 +1,6 @@
 import KR21Monoculture.MallowsFamily
 import KR21Monoculture.ConditionalForm
-import EconCSLib.Foundations.Probability.IndependentProduct
+import AppliedModelingLib.Foundations.Probability.IndependentProduct
 
 /-!
 # KR21 Appendix E formula audit surface
@@ -24,7 +24,7 @@ assumes the strict center/value order used by the Appendix E calculation.
 -/
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -38,7 +38,7 @@ the ranking called `π` in the paper and the second is its independent draw
 `τ`; conditioning is on their first choices differing.
 -/
 noncomputable def appendixE1SourceGap (value : Candidate n → ℝ) : ℝ :=
-  EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+  AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
     (fun pair => value (firstChoice pair.1) - value (secondChoice pair.1))
 
 /--
@@ -48,7 +48,7 @@ disagreement.
 -/
 noncomputable def appendixE2ConditionalTopTwoProbability
     (c d : Candidate n) : ℝ :=
-  EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+  AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
     (fun pair =>
       if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0)
 
@@ -82,14 +82,14 @@ def AppendixE3PairwiseCrossInequality : Prop :=
 top-disagreement event. -/
 theorem appendixE_disagreementProb_pos :
     0 < disagreementProb M.law := by
-  change 0 < EconCSLib.pmfPairExp M.law M.law
+  change 0 < AppliedModelingLib.pmfPairExp M.law M.law
     (fun pi tau => if disagreementEvent (pi, tau) then 1 else 0)
-  rw [← EconCSLib.pmfExp_pmfProd_eq_pairExp M.law M.law
+  rw [← AppliedModelingLib.pmfExp_pmfProd_eq_pairExp M.law M.law
     (fun pair => if disagreementEvent pair then (1 : ℝ) else 0)]
-  refine EconCSLib.pmfProb_pos_of_mass (EconCSLib.pmfProd M.law M.law)
+  refine AppliedModelingLib.pmfProb_pos_of_mass (AppliedModelingLib.pmfProd M.law M.law)
     disagreementEvent (M.center, swapTopTwo M.center) ?_ ?_
   · exact (swapTopTwo_firstChoice_ne M.center).symm
-  · rw [EconCSLib.pmfProd_apply_toReal]
+  · rw [AppliedModelingLib.pmfProd_apply_toReal]
     exact mul_pos (M.law_apply_toReal_pos M.center)
       (M.law_apply_toReal_pos (swapTopTwo M.center))
 
@@ -105,23 +105,23 @@ theorem appendixE2ConditionalTopTwoProbability_eq_source_product_div
         disagreementProb M.law := by
   classical
   rw [appendixE2ConditionalTopTwoProbability,
-    EconCSLib.pmfPairConditionalExp_eq_div_of_pos]
+    AppliedModelingLib.pmfPairConditionalExp_eq_div_of_pos]
   · congr 1
-    unfold EconCSLib.pmfPairIndicatorExp
+    unfold AppliedModelingLib.pmfPairIndicatorExp
     calc
-      EconCSLib.pmfPairExp M.law M.law
+      AppliedModelingLib.pmfPairExp M.law M.law
           (fun pi tau =>
             if disagreementEvent (pi, tau) then
               if c = firstChoice pi ∧ d = secondChoice pi then (1 : ℝ) else 0
             else 0)
-          = EconCSLib.pmfPairExp M.law M.law
+          = AppliedModelingLib.pmfPairExp M.law M.law
               (fun pi tau =>
                 if (c = firstChoice pi ∧ d = secondChoice pi) ∧
                     c ≠ firstChoice tau then (1 : ℝ) else 0) := by
-            unfold EconCSLib.pmfPairExp
-            refine EconCSLib.pmfExp_congr M.law ?_
+            unfold AppliedModelingLib.pmfPairExp
+            refine AppliedModelingLib.pmfExp_congr M.law ?_
             intro pi
-            refine EconCSLib.pmfExp_congr M.law ?_
+            refine AppliedModelingLib.pmfExp_congr M.law ?_
             intro tau
             by_cases htop : c = firstChoice pi ∧ d = secondChoice pi
             · have htopraw : c = pi 0 ∧ d = pi 1 := by
@@ -148,7 +148,7 @@ theorem appendixE2ConditionalTopTwoProbability_eq_source_product_div
       _ = M.firstSecondChoiceProb c d * firstChoiceMissProb M.law c := by
             rw [firstChoiceMissProb_eq_pmfProb_ne]
             simpa [MallowsSpec.firstSecondChoiceProb] using
-              (EconCSLib.pmfPairExp_indicator_and_eq_mul_pmfProb M.law M.law
+              (AppliedModelingLib.pmfPairExp_indicator_and_eq_mul_pmfProb M.law M.law
                 (fun pi => c = firstChoice pi ∧ d = secondChoice pi)
                 (fun tau => c ≠ firstChoice tau))
   · exact M.appendixE_disagreementProb_pos
@@ -162,19 +162,19 @@ theorem appendixE1SourceGap_eq_disagreementConditionalGain
     (value : Candidate n → ℝ) :
     M.appendixE1SourceGap value = disagreementConditionalGain M.law value := by
   change
-    EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+    AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
         (fun pair => value (firstChoice pair.1) - value (secondChoice pair.1)) =
-      EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+      AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
         (fun pair => rerankingGainOnPair value pair.1 pair.2)
   have hindicator :
-      EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+      AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
           (fun pair => value (firstChoice pair.1) - value (secondChoice pair.1)) =
-        EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
           (fun pair => rerankingGainOnPair value pair.1 pair.2) := by
-    unfold EconCSLib.pmfPairIndicatorExp EconCSLib.pmfPairExp
-    refine EconCSLib.pmfExp_congr M.law ?_
+    unfold AppliedModelingLib.pmfPairIndicatorExp AppliedModelingLib.pmfPairExp
+    refine AppliedModelingLib.pmfExp_congr M.law ?_
     intro pi
-    refine EconCSLib.pmfExp_congr M.law ?_
+    refine AppliedModelingLib.pmfExp_congr M.law ?_
     intro tau
     by_cases hdisagreement : disagreementEvent (pi, tau)
     · have hfirst : firstChoice pi ≠ firstChoice tau := hdisagreement
@@ -184,7 +184,7 @@ theorem appendixE1SourceGap_eq_disagreementConditionalGain
     · have hfirst : firstChoice pi = firstChoice tau := by
         simpa [disagreementEvent] using not_not.mp hdisagreement
       simp [hdisagreement]
-  unfold EconCSLib.pmfPairConditionalExp
+  unfold AppliedModelingLib.pmfPairConditionalExp
   rw [hindicator]
 
 /--

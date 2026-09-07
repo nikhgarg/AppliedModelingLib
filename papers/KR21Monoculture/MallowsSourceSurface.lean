@@ -16,7 +16,7 @@ the source's strict witnesses.
 -/
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -58,17 +58,17 @@ theorem source_appendixE2_concrete_mallows_phi
     (hphi : 1 < phi) (htheta : theta = phi - 1) (hn : 0 < n) :
     let M := concreteMallowsSpec center theta
     (∀ c d : Candidate n, rankOf M.center c < rankOf M.center d →
-      EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+      AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
           (fun pair =>
             if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) ≤
-        EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
           (fun pair =>
             if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0)) ∧
       ∃ c d : Candidate n, rankOf M.center c < rankOf M.center d ∧
-        EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
             (fun pair =>
               if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) <
-          EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+          AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
             (fun pair =>
               if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0) := by
   let M := concreteMallowsSpec center theta
@@ -144,20 +144,20 @@ theorem source_appendixE_concrete_mallows_phi
     (hphi : 1 < phi) (htheta : theta = phi - 1) (hn : 0 < n)
     {value : Candidate n → ℝ} (hvalue : StrictlyOrderedBy center value) :
     let M := concreteMallowsSpec center theta
-    0 < EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+    0 < AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
       (fun pair => value (firstChoice pair.1) - value (secondChoice pair.1)) ∧
     (∀ c d : Candidate n, rankOf M.center c < rankOf M.center d →
-      EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+      AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
           (fun pair =>
             if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) ≤
-        EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
           (fun pair =>
             if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0)) ∧
     (∃ c d : Candidate n, rankOf M.center c < rankOf M.center d ∧
-      EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+      AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
           (fun pair =>
             if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) <
-        EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
           (fun pair =>
             if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0)) ∧
     (∀ c d : Candidate n, rankOf M.center c < rankOf M.center d →

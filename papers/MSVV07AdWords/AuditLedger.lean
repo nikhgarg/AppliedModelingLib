@@ -37,7 +37,7 @@ No numbered propositions or corollaries were found in the cached source text.
 
 open scoped BigOperators
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Online
 namespace MSVV07PaperFacing
 
@@ -1327,7 +1327,7 @@ theorem audit_theorem9_no_randomized_feasible_prefix_rule_family_beats_msvv_rati
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             paperMsvvRatio + delta <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm =>
                   C.normalizedRevenue N algorithm permutation) := by
   exact theorem9_no_randomized_feasible_prefix_rule_family_beats_msvv_ratio C
@@ -1343,7 +1343,7 @@ theorem audit_theorem9_no_randomized_integral_prefix_algorithm_beats_msvv_ratio 
         ∀ randomizedAlgorithm : PMF (theorem9IntegralPrefixAlgorithm N),
           ¬ ∀ permutation,
             paperMsvvRatio + delta <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm =>
                   theorem9CappedNormalizedRevenue N algorithm permutation) := by
   exact theorem9_no_randomized_integral_prefix_algorithm_beats_msvv_ratio
@@ -1358,7 +1358,7 @@ theorem audit_theorem9_no_randomized_online_algorithm_beats_msvv_ratio :
         ∀ randomizedAlgorithm : theorem9RandomizedOnlineAlgorithm N,
           ¬ ∀ permutation,
             paperMsvvRatio + delta <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm =>
                   theorem9CappedNormalizedRevenue N algorithm permutation) := by
   exact theorem9_no_randomized_online_algorithm_beats_msvv_ratio
@@ -1366,4 +1366,4 @@ theorem audit_theorem9_no_randomized_online_algorithm_beats_msvv_ratio :
 end AuditLedger
 end MSVV07PaperFacing
 end Online
-end EconCSLib
+end AppliedModelingLib

@@ -16,7 +16,7 @@ and `AdWordsLowerBound.lean`.
 
 open scoped BigOperators
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Online
 namespace MSVV07PaperFacing.Proof
 
@@ -609,6 +609,62 @@ theorem section5_lemma4_dual_feasible_of_same_A_c
       (Optimization.StandardMaxLP.mk A b c).DualFeasible ystar) :
     (Optimization.StandardMaxLP.mk A l c).DualFeasible ystar := by
   exact MSVV07SourceLemmas.lemma4_dual_feasible_of_same_A_c A b l c hystar
+
+/--
+Section 5 Lemma 4 in the paper's tradeoff-revealing form.  `L(π, ψ)` keeps the
+base constraint matrix and objective coefficients, replaces its right-hand
+side by `A a`, and therefore inherits feasibility of `y*`; equality of the
+two witnessed objectives certifies that inherited dual point as optimal.
+-/
+theorem proof_section5_lemma4_tradeoff_revealing_dual_optimal
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (A : κ → ι → ℝ) (b : κ → ℝ) (c : ι → ℝ)
+    (a : ι → ℝ) (ystar : κ → ℝ)
+    (ha_nonnegative : ∀ i, 0 ≤ a i)
+    (hystar_base :
+      (Optimization.StandardMaxLP.mk A b c).DualFeasible ystar)
+    (hvalue :
+      (Optimization.StandardMaxLP.mk A
+        (fun row => ∑ i : ι, A row i * a i) c).primalObjective a =
+      (Optimization.StandardMaxLP.mk A
+        (fun row => ∑ i : ι, A row i * a i) c).dualObjective ystar) :
+    Optimization.IsMinimizerOn
+      (Optimization.StandardMaxLP.mk A
+        (fun row => ∑ i : ι, A row i * a i) c).DualFeasible
+      (Optimization.StandardMaxLP.mk A
+        (fun row => ∑ i : ι, A row i * a i) c).dualObjective
+      ystar := by
+  let l : κ → ℝ := fun row => ∑ i : ι, A row i * a i
+  let P : Optimization.StandardMaxLP ι κ :=
+    Optimization.StandardMaxLP.mk A l c
+  have ha : P.PrimalFeasible a := by
+    constructor
+    · exact ha_nonnegative
+    · intro row
+      change (∑ i : ι, A row i * a i) ≤ ∑ i : ι, A row i * a i
+      exact le_rfl
+  have hystar : P.DualFeasible ystar := by
+    simpa [P, l] using section5_lemma4_dual_feasible_of_same_A_c
+      A b l c hystar_base
+  exact section5_lemma4_standardMaxLP_dual_yStar_optimal P ha hystar
+    (by simpa [P, l] using hvalue)
+
+/--
+Section 5 Lemma 4 for the paper's factor-revealing matrix: the realized type
+vector gives the constructed right side, and the fixed geometric dual is
+optimal without a separately supplied feasibility or objective-equality fact.
+-/
+theorem proof_section5_lemma4_paper_tradeoff_dual_candidate_optimal
+    {m : ℕ} (a : Fin m → ℝ) (ha : ∀ i, 0 ≤ a i) :
+    Optimization.IsMinimizerOn
+      (MSVV07SourceLemmas.tradeoffRevealingLP (m := m)
+        MSVV07SourceLemmas.paperRoutePrimalObjectiveCoeff
+        (fun row => ∑ i : Fin m, MSVV07SourceLemmas.paperRouteMatrixCoeff row i * a i)).DualFeasible
+      (MSVV07SourceLemmas.tradeoffRevealingLP (m := m)
+        MSVV07SourceLemmas.paperRoutePrimalObjectiveCoeff
+        (fun row => ∑ i : Fin m, MSVV07SourceLemmas.paperRouteMatrixCoeff row i * a i)).dualObjective
+      MSVV07SourceLemmas.paperRouteDualCandidate := by
+  exact MSVV07SourceLemmas.lemma4_paper_tradeoff_dual_candidate_optimal a ha
 
 /--
 Section 5 Lemma 5. The right-hand side of `L(π, ψ)` is the original LP
@@ -1899,7 +1955,7 @@ theorem theorem9_no_randomized_feasible_prefix_rule_family_beats_msvv_ratio
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             paperMsvvRatio + delta <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm =>
                   C.normalizedRevenue N algorithm permutation) := by
   rw [paperMsvvRatio_eq_library]
@@ -1919,7 +1975,7 @@ theorem theorem9_no_randomized_integral_prefix_algorithm_beats_msvv_ratio
         ∀ randomizedAlgorithm : PMF (theorem9IntegralPrefixAlgorithm N),
           ¬ ∀ permutation,
             paperMsvvRatio + delta <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm =>
                   theorem9CappedNormalizedRevenue N algorithm permutation) := by
   rw [paperMsvvRatio_eq_library]
@@ -1936,11 +1992,11 @@ theorem proof_theorem9_no_randomized_online_algorithm_beats_msvv_ratio :
         ∀ randomizedAlgorithm : theorem9RandomizedOnlineAlgorithm N,
           ¬ ∀ permutation,
             paperMsvvRatio + delta <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm =>
                   theorem9CappedNormalizedRevenue N algorithm permutation) := by
   exact theorem9_no_randomized_integral_prefix_algorithm_beats_msvv_ratio
 
 end MSVV07PaperFacing.Proof
 end Online
-end EconCSLib
+end AppliedModelingLib

@@ -1,0 +1,47 @@
+{
+  "comment": "Each verdict compares the byte-pinned paper-source bundle with Lean's current semantic target and exact bounded declaration code. These prerequisites are not additional paper-claim rows.",
+  "items": {
+    "AppliedModelingLib.Probability.Queueing.BirthDeathRates": {
+      "elaborated_signature_sha256": "c13878b9bf564ce28d3a11cff2a8a06d99029c2019c480209a7fdfee25d4dc44",
+      "judgment": "matches",
+      "label": "AppliedModelingLib.Probability.Queueing.BirthDeathRates",
+      "library_declaration": "AppliedModelingLib.Probability.Queueing.BirthDeathRates",
+      "library_definition_sha256": "039b0669c21de9b656dc41ab107f817961d4a5629f352ad683a82d96ea2a184b",
+      "library_line_end": 22,
+      "library_line_start": 18,
+      "library_semantic_target_protocol": "lean-library-display-plus-exact-code-v1",
+      "library_semantic_target_sha256": "32c3b0110718637c655014309a8768d481859592353b9fbd5f03f556763c577b",
+      "library_source_path": "AppliedModelingLib/Queueing/MM1/Stationary.lean",
+      "reason": "The source Poisson arrivals and exponential services induce queue-length birth and death rates, and death_zero states the impossibility of a service departure from an empty queue. This is a generic carrier: the constant rates, positivity, and capacity cutoff are supplied by the concrete source-model instantiation rather than omitted from a claimed source theorem.",
+      "source_input_bundle_sha256": "e959c5a44eebf3a45f6f58ad80108eaf46d6386d79378c54d78dee48c947e557",
+      "source_item": "finiteCapacityStationaryLaw",
+      "source_location": "cited publication:82-95; cited publication:132-173",
+      "validated_at": "2026-09-02T07:35:34+00:00",
+      "validator": "naor_library_semantic",
+      "validator_type": "llm_as_judge"
+    },
+    "AppliedModelingLib.Probability.Queueing.GeneratorStationaryLaw": {
+      "elaborated_signature_sha256": "f5213091457c8d4f61103c76ef282173edbc21df5a0375f8ab9296602df544e9",
+      "judgment": "matches",
+      "label": "AppliedModelingLib.Probability.Queueing.GeneratorStationaryLaw",
+      "library_declaration": "AppliedModelingLib.Probability.Queueing.GeneratorStationaryLaw",
+      "library_definition_sha256": "4619fd61136944cda28649cc7e17040b2e427016c3930d58b3f3592c76e6b2af",
+      "library_line_end": 36,
+      "library_line_start": 31,
+      "library_semantic_target_protocol": "lean-library-display-plus-exact-code-v1",
+      "library_semantic_target_sha256": "10bacacb4e4c89ae90430ef178b9e430c8f9dbdfe6cf53ea32c3232f346d7a2c",
+      "library_source_path": "AppliedModelingLib/Queueing/MM1/Stationary.lean",
+      "reason": "The declaration requires a nonnegative normalized mass satisfying the birth-death generator balance at every state, the generic form of the source finite-capacity steady-state equations. Finite capacity, constant rates, and zero mass beyond the threshold belong to the instantiated rates and mass; HasSum is compatible with that finite support.",
+      "source_input_bundle_sha256": "e959c5a44eebf3a45f6f58ad80108eaf46d6386d79378c54d78dee48c947e557",
+      "source_item": "finiteCapacityStationaryLaw",
+      "source_location": "cited publication:82-95; cited publication:132-173",
+      "validated_at": "2026-09-02T07:35:34+00:00",
+      "validator": "naor_library_semantic",
+      "validator_type": "llm_as_judge"
+    }
+  },
+  "paper": "Naor1969QueueTolls",
+  "prompt_version": "library-statement-match-v2-verbatim-source-anchor-lean-display-exact-code",
+  "schema": 1,
+  "target_protocol": "lean-library-display-plus-exact-code-v1"
+}

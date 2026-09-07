@@ -40,7 +40,7 @@ Source status: direct source formula
 Source note: Exact source text lines 171--173.
 -/
 def accuracy {N K : ℕ} (truth decision : Fin N → Fin K) : ℝ :=
-  EconCSLib.Decision.datasetAccuracy truth decision
+  AppliedModelingLib.Decision.datasetAccuracy truth decision
 
 /-- Marginal label share `\hat p_marg(y) = (1/N) sum_i 1[\hat y_i = y]`.
 
@@ -175,24 +175,28 @@ theorem isIndependentRule_formula {X : Type*} {N K : ℕ}
   Iff.rfl
 
 /--
-Randomized independence: conditional on the observed rows, the probability of
-a decision vector factors into common row-level decision probabilities.
+Randomized independence: conditional on the observed rows, a common
+row-level probability kernel independently generates the decision vector.
 -/
 def isIndependentRandomizedRule {X : Type*} {N K : ℕ}
     (jointProbability : (Fin N → X) → (Fin N → Fin K) → ℝ) : Prop :=
   ∃ rowProbability : X → Fin K → ℝ,
-    ∀ xs decision,
-      jointProbability xs decision =
-        ∏ i : Fin N, rowProbability (xs i) (decision i)
+    (∀ x y, 0 ≤ rowProbability x y) ∧
+      (∀ x, (∑ y : Fin K, rowProbability x y) = 1) ∧
+        ∀ xs decision,
+          jointProbability xs decision =
+            ∏ i : Fin N, rowProbability (xs i) (decision i)
 
 /-- Source formula for randomized row-wise independence. -/
 theorem isIndependentRandomizedRule_formula {X : Type*} {N K : ℕ}
     (jointProbability : (Fin N → X) → (Fin N → Fin K) → ℝ) :
     isIndependentRandomizedRule jointProbability ↔
       ∃ rowProbability : X → Fin K → ℝ,
-        ∀ xs decision,
-          jointProbability xs decision =
-            ∏ i : Fin N, rowProbability (xs i) (decision i) :=
+        (∀ x y, 0 ≤ rowProbability x y) ∧
+          (∀ x, (∑ y : Fin K, rowProbability x y) = 1) ∧
+            ∀ xs decision,
+              jointProbability xs decision =
+                ∏ i : Fin N, rowProbability (xs i) (decision i) :=
   Iff.rfl
 
 /--
@@ -220,7 +224,7 @@ specialized to the supplied dataset reference distribution.
 def equation1Objective {N K : ℕ} (γ : ℝ)
     (q : Fin N → Fin K → ℝ) (pref : Fin K → ℝ)
     (decision : Fin N → Fin K) : ℝ :=
-  γ * EconCSLib.Decision.averageScore q decision +
+  γ * AppliedModelingLib.Decision.averageScore q decision +
     (1 - γ) * fidelity decision pref
 
 /-- A decision vector is a runner/argmax solution of Equation (1). -/
@@ -242,7 +246,7 @@ theorem maximizesEquation1_formula {N K : ℕ} (γ : ℝ)
 /-- Predictive MAE for Bayes posterior scores: `E_X sum_y q(y,x)(1-q(y,x))`. -/
 def classifierMAE [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
     (μ : PMF (X × Y)) (q : X → Y → ℝ) : ℝ :=
-  EconCSLib.pmfExp (Finite.featureMarginal μ)
+  AppliedModelingLib.pmfExp (Finite.featureMarginal μ)
     (fun x => ∑ y : Y, q x y * (1 - q x y))
 
 /--
@@ -281,6 +285,18 @@ def continuousJointPriorBias {X Y : Type*} [MeasurableSpace (X × Y)]
   (∫ xy, (if rule xy.1 = y then (1 : ℝ) else 0) ∂μ) -
     ∫ xy, (if xy.2 = y then (1 : ℝ) else 0) ∂μ
 
+/-- Joint-distribution aggregate posterior, integrating the feature posterior over `F_{X,Y}`. -/
+def continuousJointAggregatePosterior {X Y : Type*} [MeasurableSpace (X × Y)]
+    (μ : Measure (X × Y)) (q : X → Y → ℝ) (y : Y) : ℝ :=
+  ∫ xy, q xy.1 y ∂μ
+
+/-- Joint aggregate-posterior bias for the source's aggregate reference choice. -/
+def continuousJointAggregateBias {X Y : Type*} [MeasurableSpace (X × Y)]
+    [DecidableEq Y] (μ : Measure (X × Y)) (q : X → Y → ℝ)
+    (rule : X → Y) (y : Y) : ℝ :=
+  (∫ xy, (if rule xy.1 = y then (1 : ℝ) else 0) ∂μ) -
+    continuousJointAggregatePosterior μ q y
+
 /-- Joint predictive MAE for Theorem 1's continuous statement. -/
 def continuousJointClassifierMAE {X Y : Type*} [MeasurableSpace (X × Y)]
     [Fintype Y] (μ : Measure (X × Y)) (q : X → Y → ℝ) : ℝ :=
@@ -292,10 +308,9 @@ Posterior-simplex condition: each `q(x)` is a probability vector.
 Source status: source model condition
 Source note: The calibrated classifier is a posterior/probability vector over labels at each feature value.
 -/
-def posteriorSimplex {X Y : Type*} [Fintype Y] (q : X → Y → ℝ) : Prop :=
-  (∀ x, (∑ y : Y, q x y) = 1) ∧
-    (∀ x y, 0 ≤ q x y) ∧
-      (∀ x y, q x y ≤ 1)
+abbrev posteriorSimplex {X Y : Type*} [Fintype Y]
+    (q : X → Y → ℝ) : Prop :=
+  AppliedModelingLib.Learning.Prediction.IsSimplexValued q
 
 /-- Source formula for the posterior-simplex condition. -/
 theorem posteriorSimplex_formula {X Y : Type*} [Fintype Y]
@@ -307,8 +322,9 @@ theorem posteriorSimplex_formula {X Y : Type*} [Fintype Y]
   Iff.rfl
 
 /-- Weak argmax support predicate; exact source tie ordering is `isFirstArgmax`. -/
-def isArgmaxRule {X Y : Type*} (q : X → Y → ℝ) (rule : X → Y) : Prop :=
-  ∀ x y, q x y ≤ q x (rule x)
+abbrev isArgmaxRule {X Y : Type*}
+    (q : X → Y → ℝ) (rule : X → Y) : Prop :=
+  AppliedModelingLib.Learning.Prediction.IsArgmaxRule q rule
 
 /-- Source formula for the weak argmax predicate used in Theorem 1. -/
 theorem isArgmaxRule_formula {X Y : Type*}
@@ -335,10 +351,10 @@ def bayesOptimal {Ω σ : Type*} [Fintype Ω] [DecidableEq Ω]
     (trueLabels : Ω → Fin N → Fin K)
     (posterior : σ → Fin N → Fin K → ℝ) : Prop :=
   ∀ xs i y,
-    EconCSLib.pmfProb μ
+    AppliedModelingLib.pmfProb μ
         (fun w => observedDataset w = xs ∧ trueLabels w i = y) =
       posterior xs i y *
-        EconCSLib.pmfProb μ (fun w => observedDataset w = xs)
+        AppliedModelingLib.pmfProb μ (fun w => observedDataset w = xs)
 
 /-- Finite-atom source formula for Bayes-optimal posterior scores. -/
 theorem bayesOptimal_formula {Ω σ : Type*} [Fintype Ω] [DecidableEq Ω]
@@ -348,10 +364,10 @@ theorem bayesOptimal_formula {Ω σ : Type*} [Fintype Ω] [DecidableEq Ω]
     (posterior : σ → Fin N → Fin K → ℝ) :
     bayesOptimal μ observedDataset trueLabels posterior ↔
       ∀ xs i y,
-        EconCSLib.pmfProb μ
+        AppliedModelingLib.pmfProb μ
             (fun w => observedDataset w = xs ∧ trueLabels w i = y) =
           posterior xs i y *
-            EconCSLib.pmfProb μ (fun w => observedDataset w = xs) :=
+            AppliedModelingLib.pmfProb μ (fun w => observedDataset w = xs) :=
   Iff.rfl
 
 /--
@@ -446,7 +462,25 @@ def calibrated {X Y : Type*} [MeasurableSpace (X × Y)] [DecidableEq Y]
       (∫ xy, (if q xy.1 y ∈ s then
           if xy.2 = y then (1 : ℝ) else 0
         else 0) ∂μ) =
-        ∫ xy, (if q xy.1 y ∈ s then q xy.1 y else 0) ∂μ
+            ∫ xy, (if q xy.1 y ∈ s then q xy.1 y else 0) ∂μ
+
+/--
+Calibration makes the source's two permitted Theorem 1 reference choices
+coincide: the aggregate posterior equals the label prior.
+-/
+theorem continuousJointPrior_eq_jointAggregatePosterior_of_calibrated
+    {X Y : Type*} [MeasurableSpace (X × Y)] [DecidableEq Y]
+    (μ : Measure (X × Y)) (q : X → Y → ℝ) (y : Y)
+    (hcal : calibrated μ q) :
+    (∫ xy, (if xy.2 = y then (1 : ℝ) else 0) ∂μ) =
+      continuousJointAggregatePosterior μ q y := by
+  have hcal' : ContinuousTheorem1.ContinuousCalibration μ q := by
+    simpa [calibrated, ContinuousTheorem1.ContinuousCalibration] using hcal
+  simpa [continuousJointAggregatePosterior,
+    ContinuousTheorem1.continuousJointPrior,
+    ContinuousTheorem1.continuousJointAggregatePosterior] using
+    (ContinuousTheorem1.continuousJointPrior_eq_jointAggregatePosterior_of_continuousCalibration
+      μ q y hcal')
 
 /-- Event-preimage source formula for calibration. -/
 theorem calibrated_formula {X Y : Type*} [MeasurableSpace (X × Y)] [DecidableEq Y]
@@ -469,7 +503,7 @@ def objective {N K : ℕ} {σ : Type*}
     (γ : ℝ) (posterior : σ → Fin N → Fin K → ℝ)
     (fidelityTerm : σ → (Fin N → Fin K) → ℝ)
     (xs : σ) (decision : Fin N → Fin K) : ℝ :=
-  γ * EconCSLib.Decision.averageScore (posterior xs) decision +
+  γ * AppliedModelingLib.Decision.averageScore (posterior xs) decision +
     (1 - γ) * fidelityTerm xs decision
 
 /-- Expected paper objective using true-label accuracy plus expected fidelity. -/
@@ -478,9 +512,9 @@ def expectedObjective {ω σ : Type*} {N K : ℕ} [NeZero K]
     (trueLabels : ω → Fin N → Fin K)
     (γ : ℝ) (fidelityTerm : σ → (Fin N → Fin K) → ℝ)
     (rule : σ → Fin N → Fin K) : ℝ :=
-  γ * EconCSLib.Decision.expectedDecisionAccuracy
+  γ * AppliedModelingLib.Decision.expectedDecisionAccuracy
       expect observedDataset trueLabels rule +
-    (1 - γ) * EconCSLib.Decision.expectedObjective
+    (1 - γ) * AppliedModelingLib.Decision.expectedObjective
       expect observedDataset fidelityTerm rule
 
 /-- Equation (2): expected finite-sample true-label accuracy. -/
@@ -488,14 +522,14 @@ def equation2ExpectedAccuracy {ω σ : Type*} {N K : ℕ}
     (expect : (ω → ℝ) → ℝ) (observedDataset : ω → σ)
     (trueLabels : ω → Fin N → Fin K)
     (rule : σ → Fin N → Fin K) : ℝ :=
-  EconCSLib.Decision.expectedDecisionAccuracy
+  AppliedModelingLib.Decision.expectedDecisionAccuracy
     expect observedDataset trueLabels rule
 
 /-- Expected fidelity for a source-shaped dataset-dependent reference family. -/
 def expectedFidelityAt {ω σ : Type*} {N K : ℕ}
     (expect : (ω → ℝ) → ℝ) (observedDataset : ω → σ)
     (prefAt : σ → Fin K → ℝ) (rule : σ → Fin N → Fin K) : ℝ :=
-  EconCSLib.Decision.expectedObjective expect observedDataset
+  AppliedModelingLib.Decision.expectedObjective expect observedDataset
     (fun xs decision => fidelity decision (prefAt xs)) rule
 
 /-- Expected class bias for a source-shaped dataset-dependent reference family. -/
@@ -675,7 +709,7 @@ theorem theorem1i_no_information_bias
       funext x
       exact hnoInformation x y
     rw [hfun]
-    exact EconCSLib.pmfExp_const (Finite.featureMarginal μ) (prior μ y)
+    exact AppliedModelingLib.pmfExp_const (Finite.featureMarginal μ) (prior μ y)
   exact ⟨hprior, by simpa [Finite.paperBias, hagg] using hprior⟩
 
 theorem theorem1i_no_information_bias_spec
@@ -797,7 +831,7 @@ def theorem2iJointRuleExistsSpec
     {ω σ : Type*} {N K : ℕ} [NeZero K]
     (hK : 2 ≤ K) (hNK : K < N)
     (expect : (ω → ℝ) → ℝ)
-    (hlin : EconCSLib.Decision.FiniteLinearExpectation expect)
+    (hlin : AppliedModelingLib.Decision.FiniteLinearExpectation expect)
     (observedDataset : ω → σ)
     (trueLabels : ω → Fin N → Fin K)
     (γ : ℝ) (posterior : σ → Fin N → Fin K → ℝ)
@@ -815,7 +849,7 @@ theorem theorem2i_joint_rule_exists
     {ω σ : Type*} {N K : ℕ} [NeZero K]
     (hK : 2 ≤ K) (hNK : K < N)
     (expect : (ω → ℝ) → ℝ)
-    (hlin : EconCSLib.Decision.FiniteLinearExpectation expect)
+    (hlin : AppliedModelingLib.Decision.FiniteLinearExpectation expect)
     (observedDataset : ω → σ)
     (trueLabels : ω → Fin N → Fin K)
     (γ : ℝ) (posterior : σ → Fin N → Fin K → ℝ)
@@ -836,7 +870,7 @@ theorem theorem2i_joint_rule_exists_spec
     {ω σ : Type*} {N K : ℕ} [NeZero K]
     (hK : 2 ≤ K) (hNK : K < N)
     (expect : (ω → ℝ) → ℝ)
-    (hlin : EconCSLib.Decision.FiniteLinearExpectation expect)
+    (hlin : AppliedModelingLib.Decision.FiniteLinearExpectation expect)
     (observedDataset : ω → σ)
     (trueLabels : ω → Fin N → Fin K)
     (γ : ℝ) (posterior : σ → Fin N → Fin K → ℝ)
@@ -856,40 +890,40 @@ def theorem2iiArgmaxAccuracyMaximizingSpec
     {ω σ : Type*} {N K : ℕ} [NeZero K]
     (hK : 2 ≤ K) (hNK : K < N)
     (expect : (ω → ℝ) → ℝ)
-    (hlin : EconCSLib.Decision.FiniteLinearExpectation expect)
+    (hlin : AppliedModelingLib.Decision.FiniteLinearExpectation expect)
     (observedDataset : ω → σ)
     (trueLabels : ω → Fin N → Fin K)
     (posterior : σ → Fin N → Fin K → ℝ)
     {decisionRule argmaxRule : σ → Fin N → Fin K}
     (hargmax :
-      ∀ xs, EconCSLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs))
+      ∀ xs, AppliedModelingLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs))
     (hbayesRow : ∀ i (choose : σ → Fin K),
       expect (fun x =>
           if choose (observedDataset x) = trueLabels x i then (1 : ℝ) else 0) =
         expect (fun x => posterior (observedDataset x) i (choose (observedDataset x)))) : Prop :=
-    EconCSLib.Decision.expectedDecisionAccuracy
+    AppliedModelingLib.Decision.expectedDecisionAccuracy
         expect observedDataset trueLabels decisionRule ≤
-      EconCSLib.Decision.expectedDecisionAccuracy
+      AppliedModelingLib.Decision.expectedDecisionAccuracy
         expect observedDataset trueLabels argmaxRule
 
 theorem theorem2ii_argmax_accuracy_maximizing
     {ω σ : Type*} {N K : ℕ} [NeZero K]
     (hK : 2 ≤ K) (hNK : K < N)
     (expect : (ω → ℝ) → ℝ)
-    (hlin : EconCSLib.Decision.FiniteLinearExpectation expect)
+    (hlin : AppliedModelingLib.Decision.FiniteLinearExpectation expect)
     (observedDataset : ω → σ)
     (trueLabels : ω → Fin N → Fin K)
     (posterior : σ → Fin N → Fin K → ℝ)
     {decisionRule argmaxRule : σ → Fin N → Fin K}
     (hargmax :
-      ∀ xs, EconCSLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs))
+      ∀ xs, AppliedModelingLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs))
     (hbayesRow : ∀ i (choose : σ → Fin K),
       expect (fun x =>
           if choose (observedDataset x) = trueLabels x i then (1 : ℝ) else 0) =
         expect (fun x => posterior (observedDataset x) i (choose (observedDataset x)))) :
-    EconCSLib.Decision.expectedDecisionAccuracy
+    AppliedModelingLib.Decision.expectedDecisionAccuracy
         expect observedDataset trueLabels decisionRule ≤
-      EconCSLib.Decision.expectedDecisionAccuracy
+      AppliedModelingLib.Decision.expectedDecisionAccuracy
         expect observedDataset trueLabels argmaxRule := by
   exact paper_theorem2ii_argmax_expected_accuracy_maximizing
     hK hNK expect hlin observedDataset trueLabels posterior hargmax hbayesRow
@@ -898,13 +932,13 @@ theorem theorem2ii_argmax_accuracy_maximizing_spec
     {ω σ : Type*} {N K : ℕ} [NeZero K]
     (hK : 2 ≤ K) (hNK : K < N)
     (expect : (ω → ℝ) → ℝ)
-    (hlin : EconCSLib.Decision.FiniteLinearExpectation expect)
+    (hlin : AppliedModelingLib.Decision.FiniteLinearExpectation expect)
     (observedDataset : ω → σ)
     (trueLabels : ω → Fin N → Fin K)
     (posterior : σ → Fin N → Fin K → ℝ)
     {decisionRule argmaxRule : σ → Fin N → Fin K}
     (hargmax :
-      ∀ xs, EconCSLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs))
+      ∀ xs, AppliedModelingLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs))
     (hbayesRow : ∀ i (choose : σ → Fin K),
       expect (fun x =>
           if choose (observedDataset x) = trueLabels x i then (1 : ℝ) else 0) =
@@ -982,7 +1016,7 @@ theorem theorem2iii_source_exists_positive_mass_policy_improvement
     (rule argmaxRule : X → Fin K)
     (hargmax : ∀ x, isFirstArgmax (posterior x) (argmaxRule x))
     (hdisagree :
-      0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
+      0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
     (aggregateArgmax : (Fin N → X) → Fin K)
     (prefAt : (Fin N → X) → Fin K → ℝ)
     (hPNq : sourcePNq
@@ -1040,7 +1074,7 @@ theorem theorem2iii_source_non_argmax_not_expected_pareto
     (rule argmaxRule : X → Fin K)
     (hargmax : ∀ x, isFirstArgmax (posterior x) (argmaxRule x))
     (hdisagree :
-      0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
+      0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
     (aggregateArgmax : (Fin N → X) → Fin K)
     (prefAt : (Fin N → X) → Fin K → ℝ)
     (hPNq : sourcePNq
@@ -1088,15 +1122,15 @@ theorem theorem2iii_source_pareto_optimal_agrees_argmax
       (Theorem2iii.expectedDatasetFidelityAt
         (Theorem2iii.iidSamplePMF μ N) prefAt)
       (fun sample => Theorem2iii.sampledDecision rule sample)) :
-    EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0 := by
+    AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0 := by
   classical
   by_contra hne
   have hp_ne :
-      EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) ≠ 0 := hne
+      AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) ≠ 0 := hne
   have hpos :
-      0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) :=
+      0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) :=
     lt_of_le_of_ne
-      (EconCSLib.pmfProb_nonneg μ (fun x : X => rule x ≠ argmaxRule x))
+      (AppliedModelingLib.pmfProb_nonneg μ (fun x : X => rule x ≠ argmaxRule x))
       hp_ne.symm
   exact
     (theorem2iii_source_non_argmax_not_expected_pareto
@@ -1121,7 +1155,7 @@ def theorem2iiiParetoOptimalAgreesArgmaxSpec
       (Theorem2iii.expectedDatasetFidelityAt
         (Theorem2iii.iidSamplePMF μ N) prefAt)
       (fun sample => Theorem2iii.sampledDecision rule sample) →
-    EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0
+    AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0
 
 /-- Lean evidence for the exact source Pareto proposition. -/
 theorem theorem2iii_source_pareto_optimal_agrees_argmax_spec
@@ -1149,7 +1183,7 @@ theorem theorem2iii_source_non_argmax_not_expected_weightedObjective_maximizer
     (rule argmaxRule : X → Fin K)
     (hargmax : ∀ x, isFirstArgmax (posterior x) (argmaxRule x))
     (hdisagree :
-      0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
+      0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
     (aggregateArgmax : (Fin N → X) → Fin K)
     (prefAt : (Fin N → X) → Fin K → ℝ)
     (hPNq : sourcePNq
@@ -1213,15 +1247,15 @@ theorem theorem2iii_source_weighted_objective_maximizer_agrees_argmax
             (Theorem2iii.expectedDatasetFidelityAt
               (Theorem2iii.iidSamplePMF μ N) prefAt)
             (fun sample => Theorem2iii.sampledDecision rule sample)) :
-    EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0 := by
+    AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0 := by
   classical
   by_contra hne
   have hp_ne :
-      EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) ≠ 0 := hne
+      AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) ≠ 0 := hne
   have hpos :
-      0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) :=
+      0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) :=
     lt_of_le_of_ne
-      (EconCSLib.pmfProb_nonneg μ (fun x : X => rule x ≠ argmaxRule x))
+      (AppliedModelingLib.pmfProb_nonneg μ (fun x : X => rule x ≠ argmaxRule x))
       hp_ne.symm
   exact
     (theorem2iii_source_non_argmax_not_expected_weightedObjective_maximizer
@@ -1252,7 +1286,7 @@ def theorem2iiiWeightedObjectiveMaximizerAgreesArgmaxSpec
           (Theorem2iii.expectedDatasetFidelityAt
             (Theorem2iii.iidSamplePMF μ N) prefAt)
           (fun sample => Theorem2iii.sampledDecision rule sample)) →
-    EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0
+    AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0
 
 /-- Lean evidence for the exact source weighted-objective proposition. -/
 theorem theorem2iii_source_weighted_objective_maximizer_agrees_argmax_spec
@@ -1283,7 +1317,7 @@ theorem theorem2iii_source_randomized_augmented_endpoints
     (rule : Z → Fin K) (argmaxRule : X → Fin K)
     (hargmax : ∀ x, isFirstArgmax (posterior x) (argmaxRule x))
     (hdisagree :
-      0 < EconCSLib.pmfProb ν
+      0 < AppliedModelingLib.pmfProb ν
         (fun z : Z => rule z ≠ argmaxRule (feature z)))
     (aggregateArgmax : (Fin N → X) → Fin K)
     (prefAt : (Fin N → X) → Fin K → ℝ)
@@ -1355,7 +1389,7 @@ theorem theorem2iii_non_argmax_not_pareto
     (μ : PMF X) (posterior : X → Fin K → ℝ) (pref : Fin K → ℝ)
     (rule argmaxRule : X → Fin K)
     (hdisagree :
-      0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
+      0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
     (hNpos : 0 < N)
     (hpref_nonneg : ∀ y, 0 ≤ pref y)
     (hpref_sum : (∑ y : Fin K, pref y) = 1)
@@ -1400,15 +1434,15 @@ theorem theorem2iii_weighted_objective_maximizer_agrees_argmax
               (fun s => Theorem2iii.sampledPosterior posterior s))
             (Theorem2iii.expectedDatasetFidelity (Theorem2iii.iidSamplePMF μ N) pref)
             (fun s => Theorem2iii.sampledDecision rule s)) :
-    EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0 := by
+    AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0 := by
   classical
   by_contra hzero
-  have hp_ne : EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) ≠ 0 :=
+  have hp_ne : AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) ≠ 0 :=
     hzero
   have hnonneg :
-      0 ≤ EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) :=
-    EconCSLib.pmfProb_nonneg μ (fun x : X => rule x ≠ argmaxRule x)
-  have hpos : 0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) :=
+      0 ≤ AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) :=
+    AppliedModelingLib.pmfProb_nonneg μ (fun x : X => rule x ≠ argmaxRule x)
+  have hpos : 0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) :=
     lt_of_le_of_ne hnonneg hp_ne.symm
   exact
     (Theorem2iii.paper_theorem2iii_not_expected_weightedObjective_maximizer_of_independent_rule_disagrees_pos
@@ -1429,7 +1463,7 @@ theorem theorem2iii_strict_disagreement_not_weighted_objective_maximizer
     (rule argmaxRule : X → Fin K)
     {γ : ℝ} (hγpos : 0 < γ) (hγle : γ ≤ 1)
     (hdisagree :
-      0 < EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
+      0 < AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x))
     (hNpos : 0 < N)
     (hpref_nonneg : ∀ y, 0 ≤ pref y)
     (hpref_sum : (∑ y : Fin K, pref y) = 1)

@@ -1,5 +1,5 @@
 import LG21TestOptionalPolicies.ObservedAccessContinuous
-import EconCSLib.Foundations.Probability.MeasureInequalities
+import AppliedModelingLib.Foundations.Probability.MeasureInequalities
 
 /-!
 # Positive-mass observed-access repair for LG21 Lemma 4.1
@@ -29,8 +29,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 open MeasureTheory
 open ProbabilityTheory
 

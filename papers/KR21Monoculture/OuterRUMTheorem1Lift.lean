@@ -2,7 +2,7 @@ import KR21Monoculture.OuterKernelRegularity
 import KR21Monoculture.Theorem2OuterConditionalSource
 import KR21Monoculture.Definition2AsymptoticBridge
 
-open EconCSLib MeasureTheory Filter
+open AppliedModelingLib MeasureTheory Filter
 open scoped Topology
 
 namespace KR21Monoculture
@@ -41,10 +41,10 @@ theorem tendsto_outerExpected_pmfExp_valueSelection_of_atomwise
         (𝓝 ((limitLaw a).toReal))) :
     Tendsto
       (fun theta => outerExpected D
-        (fun value => EconCSLib.pmfExp (law theta value)
+        (fun value => AppliedModelingLib.pmfExp (law theta value)
           (fun a => value (select a)))) atTop
       (𝓝 (outerExpected D
-        (fun value => EconCSLib.pmfExp limitLaw
+        (fun value => AppliedModelingLib.pmfExp limitLaw
           (fun a => value (select a))))) := by
   let term : alpha → ℝ → ValueProfile n → ℝ :=
     fun a theta value => ((law theta value) a).toReal * value (select a)
@@ -70,7 +70,7 @@ theorem tendsto_outerExpected_pmfExp_valueSelection_of_atomwise
         rw [abs_mul, abs_of_nonneg ENNReal.toReal_nonneg]
         simpa [mul_comm] using
           (mul_le_of_le_one_right (abs_nonneg (value (select a)))
-            (EconCSLib.pmf_apply_toReal_le_one (law theta value) a)))
+            (AppliedModelingLib.pmf_apply_toReal_le_one (law theta value) a)))
       (hvalue (select a)).abs hlim
   have hsum : Tendsto
       (fun theta => ∑ a : alpha, ∫ value, term a theta value ∂D) atTop
@@ -78,11 +78,11 @@ theorem tendsto_outerExpected_pmfExp_valueSelection_of_atomwise
     exact tendsto_finset_sum Finset.univ (fun a _ => hterm_tendsto a)
   have hrewrite :
       (fun theta => outerExpected D
-        (fun value => EconCSLib.pmfExp (law theta value)
+        (fun value => AppliedModelingLib.pmfExp (law theta value)
           (fun a => value (select a)))) =
         fun theta => ∑ a : alpha, ∫ value, term a theta value ∂D := by
     funext theta
-    unfold outerExpected EconCSLib.pmfExp
+    unfold outerExpected AppliedModelingLib.pmfExp
     rw [MeasureTheory.integral_finset_sum]
     intro a _
     refine (hvalue (select a)).abs.mono' ?_ ?_
@@ -93,12 +93,12 @@ theorem tendsto_outerExpected_pmfExp_valueSelection_of_atomwise
       rw [abs_mul, abs_of_nonneg ENNReal.toReal_nonneg]
       simpa [mul_comm] using
         (mul_le_of_le_one_right (abs_nonneg (value (select a)))
-          (EconCSLib.pmf_apply_toReal_le_one (law theta value) a))
+          (AppliedModelingLib.pmf_apply_toReal_le_one (law theta value) a))
   have hlimit_rewrite :
-      outerExpected D (fun value => EconCSLib.pmfExp limitLaw
+      outerExpected D (fun value => AppliedModelingLib.pmfExp limitLaw
         (fun a => value (select a))) =
         ∑ a : alpha, ∫ value, limitTerm a value ∂D := by
-    unfold outerExpected EconCSLib.pmfExp
+    unfold outerExpected AppliedModelingLib.pmfExp
     rw [MeasureTheory.integral_finset_sum]
     intro a _
     exact (hvalue (select a)).const_mul _
@@ -128,10 +128,10 @@ theorem tendsto_outerExpected_pmfPairExp_right_valueSelection_of_atomwise
         (𝓝 ((limitRightLaw b).toReal))) :
     Tendsto
       (fun theta => outerExpected D
-        (fun value => EconCSLib.pmfPairExp (leftLaw value) (rightLaw theta value)
+        (fun value => AppliedModelingLib.pmfPairExp (leftLaw value) (rightLaw theta value)
           (fun a b => value (select a b)))) atTop
       (𝓝 (outerExpected D
-        (fun value => EconCSLib.pmfPairExp (leftLaw value) limitRightLaw
+        (fun value => AppliedModelingLib.pmfPairExp (leftLaw value) limitRightLaw
           (fun a b => value (select a b))))) := by
   let term : alpha → beta → ℝ → ValueProfile n → ℝ :=
     fun a b theta value =>
@@ -157,11 +157,11 @@ theorem tendsto_outerExpected_pmfPairExp_right_valueSelection_of_atomwise
           rw [mul_comm]
           exact mul_le_of_le_one_right
             (mul_nonneg ENNReal.toReal_nonneg (abs_nonneg _))
-            (EconCSLib.pmf_apply_toReal_le_one (leftLaw value) a)
+            (AppliedModelingLib.pmf_apply_toReal_le_one (leftLaw value) a)
       _ ≤ |value (select a b)| := by
           rw [mul_comm]
           exact mul_le_of_le_one_right (abs_nonneg (value (select a b)))
-            (EconCSLib.pmf_apply_toReal_le_one (rightLaw theta value) b)
+            (AppliedModelingLib.pmf_apply_toReal_le_one (rightLaw theta value) b)
   have hterm_integrable : ∀ a b theta, Integrable (term a b theta) D := by
     intro a b theta
     refine (hvalue (select a b)).abs.mono' ?_ ?_
@@ -186,11 +186,11 @@ theorem tendsto_outerExpected_pmfPairExp_right_valueSelection_of_atomwise
           rw [mul_comm]
           exact mul_le_of_le_one_right
             (mul_nonneg ENNReal.toReal_nonneg (abs_nonneg _))
-            (EconCSLib.pmf_apply_toReal_le_one (leftLaw value) a)
+            (AppliedModelingLib.pmf_apply_toReal_le_one (leftLaw value) a)
       _ ≤ |value (select a b)| := by
           rw [mul_comm]
           exact mul_le_of_le_one_right (abs_nonneg (value (select a b)))
-            (EconCSLib.pmf_apply_toReal_le_one limitRightLaw b)
+            (AppliedModelingLib.pmf_apply_toReal_le_one limitRightLaw b)
   have hlimitTerm_integrable : ∀ a b, Integrable (limitTerm a b) D := by
     intro a b
     refine (hvalue (select a b)).abs.mono' ?_ ?_
@@ -225,12 +225,12 @@ theorem tendsto_outerExpected_pmfPairExp_right_valueSelection_of_atomwise
       tendsto_finset_sum Finset.univ (fun b _ => hterm_tendsto a b))
   have hrewrite :
       (fun theta => outerExpected D
-        (fun value => EconCSLib.pmfPairExp (leftLaw value) (rightLaw theta value)
+        (fun value => AppliedModelingLib.pmfPairExp (leftLaw value) (rightLaw theta value)
           (fun a b => value (select a b)))) =
         fun theta => ∑ a : alpha, ∑ b : beta,
           ∫ value, term a b theta value ∂D := by
     funext theta
-    unfold outerExpected EconCSLib.pmfPairExp EconCSLib.pmfExp
+    unfold outerExpected AppliedModelingLib.pmfPairExp AppliedModelingLib.pmfExp
     simp_rw [Finset.mul_sum]
     simp only [term, mul_assoc]
     rw [MeasureTheory.integral_finset_sum]
@@ -245,11 +245,11 @@ theorem tendsto_outerExpected_pmfPairExp_right_valueSelection_of_atomwise
           simpa [term, mul_assoc] using hterm_integrable a b theta)
   have hlimit_rewrite :
       outerExpected D
-        (fun value => EconCSLib.pmfPairExp (leftLaw value) limitRightLaw
+        (fun value => AppliedModelingLib.pmfPairExp (leftLaw value) limitRightLaw
           (fun a b => value (select a b))) =
         ∑ a : alpha, ∑ b : beta,
           ∫ value, limitTerm a b value ∂D := by
-    unfold outerExpected EconCSLib.pmfPairExp EconCSLib.pmfExp
+    unfold outerExpected AppliedModelingLib.pmfPairExp AppliedModelingLib.pmfExp
     simp_rw [Finset.mul_sum]
     simp only [limitTerm, mul_assoc]
     rw [MeasureTheory.integral_finset_sum]

@@ -4,8 +4,8 @@ import KR21Monoculture.AppendixBGaussianMixtureDefinition1
 import KR21Monoculture.ThreeCandidateValueProfile
 import Mathlib.MeasureTheory.Function.JacobianOneDim
 
-open EconCSLib MeasureTheory ProbabilityTheory Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory ProbabilityTheory Filter
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal Topology
 
 namespace KR21Monoculture
@@ -221,7 +221,7 @@ theorem appendixCRawScoreMap_eq_contract
     appendixCRawScoreMap value thetaA noise i =
       rumContractScore (thetaH / thetaA) (value i)
         (appendixCRawScoreMap value thetaH noise i) := by
-  unfold appendixCRawScoreMap rumContractScore EconCSLib.Probability.rumContractScore
+  unfold appendixCRawScoreMap rumContractScore AppliedModelingLib.Probability.rumContractScore
   field_simp [ne_of_gt hthetaA, ne_of_gt hthetaH]
   ring
 
@@ -352,7 +352,7 @@ theorem appendixC_candidateScoreDensity_map_to_scoreSpace
     simp [
       threeCandidateValueProfile,
       tripleToCandidateFunction, rum3ScoreDensityENN,
-      EconCSLib.Probability.rum3ScoreDensityENN,
+      AppliedModelingLib.Probability.rum3ScoreDensityENN,
       rum3Score1, rum3Score2, rum3Score3]
   simpa [e, hdensity] using htransport
 
@@ -413,7 +413,7 @@ theorem appendixC_rankByScore_three_eq_rum3RankByScores_of_noTies
       rw [hrank]
       symm
       simp only [KR21Monoculture.rum3RankByScores,
-        EconCSLib.SocialChoice.Ranking.rum3RankByScores,
+        AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores,
         KR21Monoculture.rum3Ranking021,
         dif_pos h0, if_neg h32]
   · by_cases h1 : s1 < s2 ∧ s3 ≤ s2
@@ -429,7 +429,7 @@ theorem appendixC_rankByScore_three_eq_rum3RankByScores_of_noTies
         rw [hrank]
         symm
         simp only [KR21Monoculture.rum3RankByScores,
-          EconCSLib.SocialChoice.Ranking.rum3RankByScores,
+          AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores,
           KR21Monoculture.rum3Ranking102,
           dif_neg h0, dif_pos h1, if_pos h31]
       · have h13' : s1 < s2 := h1.1
@@ -444,7 +444,7 @@ theorem appendixC_rankByScore_three_eq_rum3RankByScores_of_noTies
         rw [hrank]
         symm
         simp only [KR21Monoculture.rum3RankByScores,
-          EconCSLib.SocialChoice.Ranking.rum3RankByScores,
+          AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores,
           KR21Monoculture.rum3Ranking120,
           dif_neg h0, dif_pos h1, if_neg h31]
     · by_cases h21 : s2 ≤ s1
@@ -462,7 +462,7 @@ theorem appendixC_rankByScore_three_eq_rum3RankByScores_of_noTies
         rw [hrank]
         symm
         simp only [KR21Monoculture.rum3RankByScores,
-          EconCSLib.SocialChoice.Ranking.rum3RankByScores,
+          AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores,
           KR21Monoculture.rum3Ranking201,
           dif_neg h0, dif_neg h1, if_pos h21]
       · have h12' : s1 < s2 := lt_of_not_ge h21
@@ -479,7 +479,7 @@ theorem appendixC_rankByScore_three_eq_rum3RankByScores_of_noTies
         rw [hrank]
         symm
         simp only [KR21Monoculture.rum3RankByScores,
-          EconCSLib.SocialChoice.Ranking.rum3RankByScores,
+          AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores,
           KR21Monoculture.rum3Ranking210,
           dif_neg h0, dif_neg h1, if_neg h21]
 
@@ -503,21 +503,21 @@ theorem appendixC_rankingPMFOfMeasure_eq_of_measurePreserving_ae
   apply (ENNReal.toReal_eq_toReal_iff'
     ((rankingPMFOfMeasure μ rank hrank).apply_ne_top pi)
     ((rankingPMFOfMeasure ν rank' hrank').apply_ne_top pi)).mp
-  rw [← EconCSLib.pmfProb_singleton (rankingPMFOfMeasure μ rank hrank) pi]
-  rw [← EconCSLib.pmfProb_singleton (rankingPMFOfMeasure ν rank' hrank') pi]
+  rw [← AppliedModelingLib.pmfProb_singleton (rankingPMFOfMeasure μ rank hrank) pi]
+  rw [← AppliedModelingLib.pmfProb_singleton (rankingPMFOfMeasure ν rank' hrank') pi]
   rw [rankingPMFOfMeasure_eventProb μ rank hrank
     (fun rho : Ranking n => rho = pi)]
   rw [rankingPMFOfMeasure_eventProb ν rank' hrank'
     (fun rho : Ranking n => rho = pi)]
-  trans EconCSLib.measureProb μ (fun omega => rank' (e omega) = pi)
-  · unfold EconCSLib.measureProb
+  trans AppliedModelingLib.measureProb μ (fun omega => rank' (e omega) = pi)
+  · unfold AppliedModelingLib.measureProb
     apply congrArg ENNReal.toReal
     apply measure_congr
     filter_upwards [hintertwine] with omega homega
     apply propext
     change (rank omega = pi) ↔ (rank' (e omega) = pi)
     rw [homega]
-  · exact EconCSLib.measureProb_preimage_of_measurePreserving
+  · exact AppliedModelingLib.measureProb_preimage_of_measurePreserving
       e he (fun omega' : Ω' => rank' omega' = pi)
       (by
         simpa only [Set.preimage_setOf_eq] using

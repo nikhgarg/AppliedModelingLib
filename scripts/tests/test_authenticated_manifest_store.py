@@ -17,7 +17,18 @@ from scripts import review_dashboard as DASHBOARD
 class AuthenticatedManifestStoreTests(unittest.TestCase):
     SIGNATURE = "a" * 64
     DEPENDENCY = "b" * 64
-    HASH_TOOL = {"resolved_path": "/fixture/hash", "sha256": "c" * 64}
+    HASH_TOOL = {
+        "schema": "1",
+        "command": "sha256sum",
+        "resolved_path": "/fixture/hash",
+        "executable_sha256": "c" * 64,
+        "version_stdout_sha256": "d" * 64,
+        "version_banner": "sha256sum fixture",
+        "known_vector": "sha256(abc)",
+        "known_vector_sha256": (
+            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        ),
+    }
 
     def context(self, module: str = "Fixture.Interface") -> dict[str, object]:
         return {
@@ -369,6 +380,89 @@ class AuthenticatedManifestStoreTests(unittest.TestCase):
             {"current_context_identity_changed": [auxiliary, reviewed]},
         )
         seed.assert_not_called()
+
+    def test_current_semantic_binding_reuses_manifest_across_context_change(
+        self,
+    ) -> None:
+        reviewed = "Fixture.Interface.reviewed"
+        context = self.context()
+        changed_context = self.context()
+        changed_context["helper_fingerprint"] = ["0" * 64, 20]
+        binding = self.current_binding(reviewed)
+        semantic_binding = {
+            field: str(binding[field])
+            for field in (
+                "elaborated_signature_sha256",
+                "semantic_dependency_sha256",
+                "elaborated_proposition_graph_sha256",
+            )
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            paper_dir = Path(temporary) / "Fixture"
+            digest_patch, dependency_patch = self.patches()
+            with digest_patch, dependency_patch:
+                STORE.publish_authenticated_manifest_store(
+                    paper_dir=paper_dir,
+                    paper="Fixture",
+                    candidates=[self.candidate(reviewed, context=context)],
+                )
+                seed = mock.Mock(return_value={reviewed})
+                accepted, diagnostics = STORE.prime_authenticated_manifest_store(
+                    root=Path(temporary),
+                    paper_dir=paper_dir,
+                    current_declaration_bindings={reviewed: binding},
+                    current_contexts=[changed_context],
+                    semantic_revalidated_bindings={reviewed: semantic_binding},
+                    reattach=lambda _root, manifests, timeout_seconds: {
+                        key: dict(value) for key, value in manifests.items()
+                    },
+                    seed=seed,
+                )
+
+        self.assertEqual(set(accepted), {reviewed})
+        self.assertEqual(diagnostics["fresh_required_count"], 0)
+        self.assertEqual(diagnostics["rejected_by_reason"], {})
+        self.assertEqual(
+            seed.call_args.kwargs["current_context"], changed_context
+        )
+
+    def test_prime_scopes_diagnostics_and_work_to_requested_roots(self) -> None:
+        requested = "Fixture.Interface.requested"
+        unrelated = "Fixture.Interface.unrelated"
+        context = self.context()
+        with tempfile.TemporaryDirectory() as temporary:
+            paper_dir = Path(temporary) / "Fixture"
+            digest_patch, dependency_patch = self.patches()
+            with digest_patch, dependency_patch:
+                STORE.publish_authenticated_manifest_store(
+                    paper_dir=paper_dir,
+                    paper="Fixture",
+                    candidates=[
+                        self.candidate(requested, context=context),
+                        self.candidate(unrelated, context=context),
+                    ],
+                )
+                accepted, diagnostics = STORE.prime_authenticated_manifest_store(
+                    root=Path(temporary),
+                    paper_dir=paper_dir,
+                    current_declaration_bindings={
+                        requested: self.current_binding(requested),
+                    },
+                    current_contexts=[context],
+                    requested_declarations=[requested],
+                    reattach=lambda _root, manifests, timeout_seconds: {
+                        key: dict(value) for key, value in manifests.items()
+                    },
+                    seed=lambda _root, _module, requested_names, manifests, **_kwargs: (
+                        set(requested_names) & set(manifests)
+                    ),
+                )
+
+        self.assertEqual(set(accepted), {requested})
+        self.assertEqual(diagnostics["requested_count"], 1)
+        self.assertEqual(diagnostics["candidate_count"], 1)
+        self.assertEqual(diagnostics["fresh_required_count"], 0)
+        self.assertEqual(diagnostics["rejected_by_reason"], {})
 
     def test_prime_returns_only_entries_accepted_by_independent_seed(self) -> None:
         first = "Fixture.Interface.first"

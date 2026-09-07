@@ -4,10 +4,17 @@
 % Do not hand-edit generated packets; annotate the PDF or reconcile notes into
 % the paper-local human-review log.
 \documentclass[10pt]{article}
-\usepackage[margin=0.43in]{geometry}
+\usepackage[margin=0.43in,footskip=0.2in]{geometry}
 \usepackage{fontspec}
-\setmainfont{Latin Modern Roman}
-\setmonofont{DejaVu Sans Mono}
+% Use a Unicode-complete main face as well as a Unicode-complete code face.
+% Reviewer reasons and source labels can contain exact Greek symbols outside
+% verbatim blocks; silently dropping one would corrupt the review packet.
+\setmainfont{DejaVu Serif}
+% The broad DejaVu Sans Unicode coverage preserves Lean's mathematical glyphs
+% (including U+2216 set difference and superscript identifiers) in verbatim
+% review blocks.  Its proportional metrics are preferable to silently missing
+% exact semantic text from a narrower monospace font.
+\setmonofont{DejaVu Sans}
 \usepackage{hyperref}
 \usepackage{amssymb}
 \usepackage{fvextra}
@@ -15,7 +22,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.15em}
 \linespread{0.92}
-\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,breaklinks=true}
 \DefineVerbatimEnvironment{ReviewVerbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\scriptsize}
 \newcommand{\reviewerbox}{%
   \par\noindent\fbox{\parbox{0.96\linewidth}{\rule{0pt}{0.38in}}}\par
@@ -36,13 +43,13 @@ specifications, and hash-bound raw-source-to-Spec screening records.
 
 \noindent\textbf{Paper:} GS62CollegeAdmissions\\
 \textbf{Paper id:} \texttt{GS62CollegeAdmissions}\\
-\textbf{Source version:} American Mathematical Monthly 69(1), January 1962, printed pages 9-15\\
+\textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright American Mathematical Monthly 69(1), January 1962, printed pages 9-15}\\
 \textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
-\textbf{Rows:} 5\\
-\textbf{Generated:} 2026-08-18\\
+\textbf{Rows:} 6\\
+\textbf{Generated:} 2026-09-06\\
 \textbf{Source URL:} \href{https://doi.org/10.1080/00029890.1962.11989827}{official source}
 
-\noindent\fbox{\parbox{0.96\linewidth}{\textbf{Review status:} 0/5 source-claim screens; 0/6 library prerequisite screens. This is a review worksheet while those direct checks remain pending; it is not a final validation receipt.}}\par
+
 
 
 
@@ -55,385 +62,812 @@ log.
 \section*{Open the interactive dashboard}
 The interactive dashboard is an optional alternative to using this PDF; it
 presents the same review surface rather than an additional review requirement.
-After forking and cloning (or pulling) EconCSLib, run the following from the
+After forking and cloning (or pulling) AppliedModelingLib, run the following from the
 repository root. The cache command is needed only the first time in a new clone.
 \begin{ReviewVerbatim}
-cd <your-EconCSLib-checkout>
+cd <your-repository-checkout>
 lake exe cache get
 python3 scripts/review_dashboard.py --paper GS62CollegeAdmissions --serve
 \end{ReviewVerbatim}
 Open \url{http://127.0.0.1:8765/} in a browser and keep that terminal running
-while reviewing. The dashboard records saved annotations in this paper's
+while reviewing. The dashboard records saved annotations in this paper's local
 reviewer-owned review record.
 
 \section*{Contents}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{library-section-b24d17ff16ccd642}{Semantic library prerequisites (6; not paper claims)}
+\item \hyperlink{governing-declaration-section-5ef5ef0364b6939c}{Governing Lean declarations (22; supporting context)}
+\item \hyperlink{paper-prerequisite-section-5ef5ef0364b6939c}{Paper-specific semantic prerequisites (2; not paper claims)}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{library-prerequisite-4a3989697f894599}{EconCSLib.FiniteChoice.linearTopQChoice}
-\item \hyperlink{library-prerequisite-696efabb1e6e61e6}{Assignment M W}
-\item \hyperlink{library-prerequisite-d4d72d8ec5d3dae7}{ManyToOne.valApplicant}
-\item \hyperlink{library-prerequisite-13cfc69b6645d71f}{ManyToOneAssignment Applicants Colleges}
-\item \hyperlink{library-prerequisite-d47ffea487f3794c}{valM}
-\item \hyperlink{library-prerequisite-95033c6ce6f85835}{valW}
+\item \hyperlink{paper-prerequisite-6b7d3de7046692a6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}Final\allowbreak{}State}
+\item \hyperlink{paper-prerequisite-4b230c4877bf6ef9}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}Final\allowbreak{}Assignment}
 \end{itemize}
-\item \hyperlink{source-section-0c7af8265958a9ea}{Main-text source claims (5)}
+\item \hyperlink{source-section-0c7af8265958a9ea}{Main-text source claims (6)}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{source-claim-4b269aa42b6f656d}{unstableCollegeAssignment\_iff\_source\_definitionSpec}
-\item \hyperlink{source-claim-bdf5e4a40e708c9e}{literalApplicantOptimalCollegeAssignment\_iff\_source\_definitionSpec}
-\item \hyperlink{source-claim-f836a3d18eeab599}{unstableMarriage\_iff\_source\_definitionSpec}
-\item \hyperlink{source-claim-e6bf09e833b5d546}{theorem1\_stable\_marriage\_existsSpec}
-\item \hyperlink{source-claim-5b11dd2478126734}{theorem2\_applicant\_optimalitySpec}
+\item \hyperlink{source-claim-4b269aa42b6f656d}{unstable\allowbreak{}College\allowbreak{}Assignment\_\allowbreak{}iff\_\allowbreak{}source\_\allowbreak{}definition\allowbreak{}Spec}
+\item \hyperlink{source-claim-bdf5e4a40e708c9e}{literal\allowbreak{}Applicant\allowbreak{}Optimal\allowbreak{}College\allowbreak{}Assignment\_\allowbreak{}iff\_\allowbreak{}source\_\allowbreak{}definition\allowbreak{}Spec}
+\item \hyperlink{source-claim-f836a3d18eeab599}{unstable\allowbreak{}Marriage\_\allowbreak{}iff\_\allowbreak{}source\_\allowbreak{}definition\allowbreak{}Spec}
+\item \hyperlink{source-claim-e6bf09e833b5d546}{theorem1\_\allowbreak{}stable\_\allowbreak{}marriage\_\allowbreak{}exists\allowbreak{}Spec}
+\item \hyperlink{source-claim-5b11dd2478126734}{theorem2\_\allowbreak{}applicant\_\allowbreak{}optimality\allowbreak{}Spec}
+\item \hyperlink{source-claim-defab06662f25c9e}{section4\_\allowbreak{}waiting\_\allowbreak{}list\_\allowbreak{}terminal\_\allowbreak{}stability\allowbreak{}Spec}
 \end{itemize}
 \end{itemize}
 
 \clearpage
-\hypertarget{library-section-b24d17ff16ccd642}{}
-\section*{Material library prerequisites}
-\hypertarget{library-prerequisite-4a3989697f894599}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}FiniteChoice.\allowbreak{}linearTopQChoice}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 232-\allowbreak{}249\par}
-\paragraph{Verbatim paper-source connection}
+\hypertarget{governing-declaration-section-5ef5ef0364b6939c}{}
+\section*{Governing Lean declarations}
+These exact graph-bound declaration bodies are retained by the displayed specifications or reviewed prerequisites. They are supporting context and do not add source-result rows or semantic judgments.
+\hypertarget{governing-declaration-ad5a1ec386b1ba4b}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Finite\allowbreak{}Choice.\allowbreak{}linear\allowbreak{}Top\allowbreak{}Q\allowbreak{}Choice}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-a 1, 3 2, 2 3, 1 4, 3
+type:
+{α : Type u_1} → [DecidableEq α] → [LinearOrder α] → ℕ → Finset α → Finset α
 
-                             3 1,4 2,3 3,2 4,4
-
-                            y 3,1 1,4 2,3 4,2
-                            5 2,2 3,1 1,4 4,1
-
-
-   The condition that there be the same number of boys and girls is not essen-
-tial. If there are b boys and g girls with b < g, then the procedure terminates as
-soon as b girls have been proposed to. If b > g the procedure ends when every
-boy is either on some girl's string or has been rejected by all of the girls. In
-either case the set of marriages that results is stable.
-   It is clear that there is an entirely symmetrical procedure, with girls propos-
-ing to boys, which must also lead to a stable set of marriages. The two solutions
-are not generally the same as shown by Example 1; indeed, we shall see in a
-moment that when the boys propose, the result is optimal for the boys, and
-when the girls propose it is optimal for the girls. The solutions by the two pro-
-
-[Next verbatim source excerpt]
-
-forward. For convenience we will assume that if a college is not willing to accept
-a student under any circumstances, as described in Section 2, then that student
-will not even be permitted to apply to the college. With this understanding the
-
-[Next verbatim source excerpt]
-
-return to the philosophical principle mentioned earlier and give it a precise
-formulation.
-
-   DEFINITION. A stable assignment is called optimal if every applicant is at least
-as well off under it as under any other stable assignment.
-
-
-[Next verbatim source excerpt]
-
-                            a 1, 3 2, 2 3, 1 4, 3
-
-                             3 1,4 2,3 3,2 4,4
-
-                            y 3,1 1,4 2,3 4,2
-                            5 2,2 3,1 1,4 4,1
-
-
-   The condition that there be the same number of boys and girls is not essen-
-tial. If there are b boys and g girls with b < g, then the procedure terminates as
-soon as b girls have been proposed to. If b > g the procedure ends when every
-boy is either on some girl's string or has been rejected by all of the girls. In
-either case the set of marriages that results is stable.
-   It is clear that there is an entirely symmetrical procedure, with girls propos-
-ing to boys, which must also lead to a stable set of marriages. The two solutions
-are not generally the same as shown by Example 1; indeed, we shall see in a
-moment that when the boys propose, the result is optimal for the boys, and
-when the girls propose it is optimal for the girls. The solutions by the two pro-
-
-[Next verbatim source excerpt]
-
-cedures will be the same only when there is a unique stable set of marriages.
-   4. Stable assignments and the admissions problem. The extension of our
-"deferred-acceptance" procedure to the problem of college admissions is straight-
+value:
+fun {α : Type u_1} [DecidableEq α] [LinearOrder α] (q : ℕ) (a : Finset α) =>
+  if h : q ≤ a.card then
+    Finset.image
+      (fun (i : Fin q) =>
+        ↑((a.orderIsoOfFin (AppliedModelingLib.FiniteChoice.linearTopQChoice._proof_1 a))
+            ⟨↑i, AppliedModelingLib.FiniteChoice.linearTopQChoice._proof_2 q a h i⟩))
+      Finset.univ
+  else a
 \end{ReviewVerbatim}
 
-\paragraph{Lean-expanded library semantic target}
+
+\hypertarget{governing-declaration-508c084086b006b8}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-{α : Type u_1} →
-  [inst : DecidableEq α] →
-    [inst_1 : LinearOrder α] →
-      (q : ℕ) →
-        (a : Finset α) →
-          if h : q ≤ a.card then Finset.image (fun i => ↑((a.orderIsoOfFin ⋯) ⟨↑i, ⋯⟩)) Finset.univ else a
+field m_match:
+{M : Type u_1} → {W : Type u_2} → AppliedModelingLib.Matching.Assignment M W → M → Option W
+
+field w_match:
+{M : Type u_1} → {W : Type u_2} → AppliedModelingLib.Matching.Assignment M W → W → Option M
+
+field consistent_m:
+∀ {M : Type u_1} {W : Type u_2} (self : AppliedModelingLib.Matching.Assignment M W) (m : M) (w : W),
+  self.m_match m = some w ↔ self.w_match w = some m
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+
+\hypertarget{governing-declaration-8545f3e969a7bb0c}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Many\allowbreak{}To\allowbreak{}One.\allowbreak{}val\allowbreak{}Applicant}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-noncomputable def linearTopQChoice (q : ℕ) : ChoiceRule α :=
-  fun X =>
-    if h : q ≤ X.card then
-      Finset.univ.image
-        (fun i : Fin q =>
-          ((X.orderIsoOfFin (by rfl)
-            ⟨i.1, lt_of_lt_of_le i.2 h⟩ : X) : α))
-    else
-      X
-\end{ReviewVerbatim}
+type:
+{Applicants : Type u_1} → {Colleges : Type u_2} → (Applicants → Colleges → ℝ) → Applicants → Option Colleges → ℝ
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source says each college retains the q applicants it ranks highest, or all applicants if fewer apply. The Lean library function is exactly that top-q selection from the candidate pool under the college order.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-696efabb1e6e61e6}{}
-\subsection*{\small\ttfamily\raggedright Assignment M W}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 133-\allowbreak{}139\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-Example 1. The following is the "ranking matrix" of three men, a, ,3, and 7,
-and three women, A, B, and C.
-
-                                        A        B       C
-
-                              a 1,3 2,2 3,1
-\end{ReviewVerbatim}
-
-\paragraph{Lean declaration type (metadata)}
-\begin{ReviewVerbatim}
-Type u_1 → Type u_2 → Type (max u_1 u_2)
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-/-- A matching between Men and Women. -/
-structure Assignment (M W : Type*) where
-  m_match : M → Option W
-  w_match : W → Option M
-  consistent_m : ∀ m w, m_match m = some w ↔ w_match w = some m
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source's set of marriages pairs each participant with an actual mate. The Lean structure records both partner maps and their mutual consistency; the PaperInterface predicate separately states the source's complete-marriage domain.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-d4d72d8ec5d3dae7}{}
-\subsection*{\small\ttfamily\raggedright ManyToOne.\allowbreak{}valApplicant}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 232-\allowbreak{}249\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-a 1, 3 2, 2 3, 1 4, 3
-
-                             3 1,4 2,3 3,2 4,4
-
-                            y 3,1 1,4 2,3 4,2
-                            5 2,2 3,1 1,4 4,1
-
-
-   The condition that there be the same number of boys and girls is not essen-
-tial. If there are b boys and g girls with b < g, then the procedure terminates as
-soon as b girls have been proposed to. If b > g the procedure ends when every
-boy is either on some girl's string or has been rejected by all of the girls. In
-either case the set of marriages that results is stable.
-   It is clear that there is an entirely symmetrical procedure, with girls propos-
-ing to boys, which must also lead to a stable set of marriages. The two solutions
-are not generally the same as shown by Example 1; indeed, we shall see in a
-moment that when the boys propose, the result is optimal for the boys, and
-when the girls propose it is optimal for the girls. The solutions by the two pro-
-
-[Next verbatim source excerpt]
-
-forward. For convenience we will assume that if a college is not willing to accept
-a student under any circumstances, as described in Section 2, then that student
-will not even be permitted to apply to the college. With this understanding the
-
-[Next verbatim source excerpt]
-
-return to the philosophical principle mentioned earlier and give it a precise
-formulation.
-
-   DEFINITION. A stable assignment is called optimal if every applicant is at least
-as well off under it as under any other stable assignment.
-
-
-[Next verbatim source excerpt]
-
-                            a 1, 3 2, 2 3, 1 4, 3
-
-                             3 1,4 2,3 3,2 4,4
-
-                            y 3,1 1,4 2,3 4,2
-                            5 2,2 3,1 1,4 4,1
-
-
-   The condition that there be the same number of boys and girls is not essen-
-tial. If there are b boys and g girls with b < g, then the procedure terminates as
-soon as b girls have been proposed to. If b > g the procedure ends when every
-boy is either on some girl's string or has been rejected by all of the girls. In
-either case the set of marriages that results is stable.
-   It is clear that there is an entirely symmetrical procedure, with girls propos-
-ing to boys, which must also lead to a stable set of marriages. The two solutions
-are not generally the same as shown by Example 1; indeed, we shall see in a
-moment that when the boys propose, the result is optimal for the boys, and
-when the girls propose it is optimal for the girls. The solutions by the two pro-
-
-[Next verbatim source excerpt]
-
-cedures will be the same only when there is a unique stable set of marriages.
-   4. Stable assignments and the admissions problem. The extension of our
-"deferred-acceptance" procedure to the problem of college admissions is straight-
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-{Applicants : Type u_1} →
-  {Colleges : Type u_2} →
-    (val_applicant : Applicants → Colleges → ℝ) →
-      (a : Applicants) →
-        (c : Option Colleges) →
-          match c with
-          | none => 0
-          | some c' => val_applicant a c'
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def valApplicant {Applicants Colleges : Type*}
-    (val_applicant : Applicants → Colleges → ℝ)
-    (a : Applicants) (c : Option Colleges) : ℝ :=
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} (val_applicant : Applicants → Colleges → ℝ) (a : Applicants)
+    (c : Option Colleges) =>
   match c with
   | none => 0
   | some c' => val_applicant a c'
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} Sections 4--5 make a terminal applicant either waitlisted or rejected by every willing and permitted college. The procedure's applicant comparison uses an explicit zero outside option for that unmatched terminal case; when matched, the definition returns exactly the applicant's value for the assigned college.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-13cfc69b6645d71f}{}
-\subsection*{\small\ttfamily\raggedright ManyToOneAssignment Applicants Colleges}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 93-\allowbreak{}98\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-return to the philosophical principle mentioned earlier and give it a precise
-formulation.
 
-   DEFINITION. A stable assignment is called optimal if every applicant is at least
-as well off under it as under any other stable assignment.
+\hypertarget{governing-declaration-5f205dc5e20311a8}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Many\allowbreak{}To\allowbreak{}One\allowbreak{}Assignment}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+field app_match:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    AppliedModelingLib.Matching.ManyToOneAssignment Applicants Colleges → Applicants → Option Colleges
+
+field college_roster:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    AppliedModelingLib.Matching.ManyToOneAssignment Applicants Colleges → Colleges → Finset Applicants
+
+field consistent:
+∀ {Applicants : Type u_1} {Colleges : Type u_2}
+  (self : AppliedModelingLib.Matching.ManyToOneAssignment Applicants Colleges) (a : Applicants) (c : Colleges),
+  self.app_match a = some c ↔ a ∈ self.college_roster c
 \end{ReviewVerbatim}
 
-\paragraph{Lean declaration type (metadata)}
+
+\hypertarget{governing-declaration-3963208d135cca00}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}val\allowbreak{}M}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-Type u_1 → Type u_2 → Type (max u_1 u_2)
-\end{ReviewVerbatim}
+type:
+{M : Type u_1} → {W : Type u_2} → (M → W → ℝ) → M → Option W → ℝ
 
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-/-- A many-to-one assignment between applicants and colleges. -/
-structure ManyToOneAssignment (Applicants Colleges : Type*) where
-  app_match : Applicants → Option Colleges
-  college_roster : Colleges → Finset Applicants
-  consistent : ∀ a c, app_match a = some c ↔ a ∈ college_roster c
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} The source describes applicants assigned to colleges and later permits an applicant to be rejected by every college willing to consider them. The Lean structure records the applicant-to-college relation, college rosters, and their consistency, including that permitted unmatched outcome.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-d47ffea487f3794c}{}
-\subsection*{\small\ttfamily\raggedright valM}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 133-\allowbreak{}139\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-Example 1. The following is the "ranking matrix" of three men, a, ,3, and 7,
-and three women, A, B, and C.
-
-                                        A        B       C
-
-                              a 1,3 2,2 3,1
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-{M : Type u_1} →
-  {W : Type u_2} →
-    (val : M → W → ℝ) →
-      (m : M) →
-        (w : Option W) →
-          match w with
-          | none => 0
-          | some w' => val m w'
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-/-- The value of a match for a man. 0 if unmatched. -/
-def valM {M W : Type*} (val : M → W → ℝ) (m : M) (w : Option W) : ℝ :=
+value:
+fun {M : Type u_1} {W : Type u_2} (val : M → W → ℝ) (m : M) (w : Option W) =>
   match w with
   | none => 0
   | some w' => val m w'
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-\textbf{Reason:} On the explicitly complete marriage domain of the reviewed source claim, the only relevant branch returns the source man's value for his actual mate; the none-to-zero branch does not represent a source actual mate.
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-95033c6ce6f85835}{}
-\subsection*{\small\ttfamily\raggedright valW}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 133-\allowbreak{}139\par}
-\paragraph{Verbatim paper-source connection}
+
+\hypertarget{governing-declaration-85f87c1f3ae178ac}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}val\allowbreak{}W}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-Example 1. The following is the "ranking matrix" of three men, a, ,3, and 7,
-and three women, A, B, and C.
+type:
+{M : Type u_1} → {W : Type u_2} → (W → M → ℝ) → W → Option M → ℝ
 
-                                        A        B       C
-
-                              a 1,3 2,2 3,1
-\end{ReviewVerbatim}
-
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-{M : Type u_1} →
-  {W : Type u_2} →
-    (val : W → M → ℝ) →
-      (w : W) →
-        (m : Option M) →
-          match m with
-          | none => 0
-          | some m' => val w m'
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-/-- The value of a match for a woman. 0 if unmatched. -/
-def valW {M W : Type*} (val : W → M → ℝ) (w : W) (m : Option M) : ℝ :=
+value:
+fun {M : Type u_1} {W : Type u_2} (val : W → M → ℝ) (w : W) (m : Option M) =>
   match m with
   | none => 0
   | some m' => val w m'
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
+
+\hypertarget{governing-declaration-2a222855a7d234b6}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}State}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+field applications:
+{Applicants : Type u_3} →
+  {Colleges : Type u_4} →
+    [inst : DecidableEq Applicants] →
+      GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges →
+        Colleges → Finset Applicants
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-fd1ded9db62599bc}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}college\allowbreak{}Order}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    (val_college : Colleges → Applicants → ℝ) →
+      (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') →
+        Colleges → LinearOrder Applicants
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} (val_college : Colleges → Applicants → ℝ)
+    (hcollegeStrict : ∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a')
+    (c : Colleges) =>
+  LinearOrder.lift' (fun (a : Applicants) => OrderDual.toDual (val_college c a))
+    fun {{a b : Applicants}}
+      (h :
+        (fun (a : Applicants) => OrderDual.toDual (val_college c a)) a =
+          (fun (a : Applicants) => OrderDual.toDual (val_college c a)) b) =>
+    hcollegeStrict c a b h
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-ae5bdb457b3ee684}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}college\allowbreak{}Top\allowbreak{}Q}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [DecidableEq Applicants] →
+      (Colleges → ℕ) →
+        (val_college : Colleges → Applicants → ℝ) →
+          (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') →
+            Colleges → Finset Applicants → Finset Applicants
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [DecidableEq Applicants] (quota : Colleges → ℕ)
+    (val_college : Colleges → Applicants → ℝ)
+    (hcollegeStrict : ∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') (c : Colleges)
+    (pool : Finset Applicants) =>
+  AppliedModelingLib.FiniteChoice.linearTopQChoice (quota c) pool
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-ad5a1ec386b1ba4b}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Finite\allowbreak{}Choice.\allowbreak{}linear\allowbreak{}Top\allowbreak{}Q\allowbreak{}Choice}
+\item \hyperlink{governing-declaration-fd1ded9db62599bc}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}college\allowbreak{}Order}
+\end{itemize}
+\hypertarget{governing-declaration-54e4e9a72cd03d42}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}initial\allowbreak{}Source\allowbreak{}State}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [inst : DecidableEq Applicants] →
+      GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [DecidableEq Applicants] =>
+  { applications := fun (x : Colleges) => ∅ }
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2a222855a7d234b6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}State}
+\end{itemize}
+\hypertarget{governing-declaration-e57e786394b2484c}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Eligible}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} → (Applicants → Colleges → ℝ) → (Colleges → Applicants → ℝ) → Applicants → Colleges → Prop
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} (val_applicant : Applicants → Colleges → ℝ)
+    (val_college : Colleges → Applicants → ℝ) (a : Applicants) (c : Colleges) =>
+  0 < val_applicant a c ∧ 0 < val_college c a
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-03751795717f46c8}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}untried\allowbreak{}Eligible\allowbreak{}Colleges}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [Fintype Colleges] →
+      [inst : DecidableEq Applicants] →
+        (Applicants → Colleges → ℝ) →
+          (Colleges → Applicants → ℝ) →
+            GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges →
+              Applicants → Finset Colleges
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [Fintype Colleges] [DecidableEq Applicants]
+    (val_applicant : Applicants → Colleges → ℝ) (val_college : Colleges → Applicants → ℝ)
+    (s : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges)
+    (a : Applicants) =>
+  {c : Colleges |
+    GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceEligible val_applicant val_college a c ∧
+      a ∉ s.applications c}
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2a222855a7d234b6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}State}
+\item \hyperlink{governing-declaration-e57e786394b2484c}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Eligible}
+\end{itemize}
+\hypertarget{governing-declaration-26c21eeaa57296a6}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}untried\allowbreak{}Eligible\allowbreak{}Pairs}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [Fintype Applicants] →
+      [Fintype Colleges] →
+        [inst : DecidableEq Applicants] →
+          (Applicants → Colleges → ℝ) →
+            (Colleges → Applicants → ℝ) →
+              GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges →
+                Finset (Applicants × Colleges)
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [Fintype Applicants] [Fintype Colleges] [DecidableEq Applicants]
+    (val_applicant : Applicants → Colleges → ℝ) (val_college : Colleges → Applicants → ℝ)
+    (s : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges) =>
+  {p : Applicants × Colleges |
+    GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceEligible val_applicant val_college p.1 p.2 ∧
+      p.1 ∉ s.applications p.2}
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2a222855a7d234b6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}State}
+\item \hyperlink{governing-declaration-e57e786394b2484c}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Eligible}
+\end{itemize}
+\hypertarget{governing-declaration-9c0bc8f14e96a0bc}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}waiting\allowbreak{}List}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [inst : DecidableEq Applicants] →
+      (Colleges → ℕ) →
+        (val_college : Colleges → Applicants → ℝ) →
+          (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') →
+            GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges →
+              Colleges → Finset Applicants
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [DecidableEq Applicants] (quota : Colleges → ℕ)
+    (val_college : Colleges → Applicants → ℝ)
+    (hcollegeStrict : ∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a')
+    (s : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges)
+    (c : Colleges) =>
+  GS62CollegeAdmissions.ExactCollegeBatchedProcedure.collegeTopQ quota val_college hcollegeStrict c (s.applications c)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2a222855a7d234b6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}State}
+\item \hyperlink{governing-declaration-ae5bdb457b3ee684}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}college\allowbreak{}Top\allowbreak{}Q}
+\end{itemize}
+\hypertarget{governing-declaration-2852be7ab15a9eaa}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}State\allowbreak{}Invariant}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [inst : DecidableEq Applicants] →
+      (Colleges → ℕ) →
+        (Applicants → Colleges → ℝ) →
+          (val_college : Colleges → Applicants → ℝ) →
+            (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') →
+              GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges → Prop
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [DecidableEq Applicants] (quota : Colleges → ℕ)
+    (val_applicant : Applicants → Colleges → ℝ) (val_college : Colleges → Applicants → ℝ)
+    (hcollegeStrict : ∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a')
+    (s : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges) =>
+  (∀ (a : Applicants) (c d : Colleges),
+      a ∈ GS62CollegeAdmissions.ExactCollegeBatchedProcedure.waitingList quota val_college hcollegeStrict s c →
+        a ∈ GS62CollegeAdmissions.ExactCollegeBatchedProcedure.waitingList quota val_college hcollegeStrict s d →
+          c = d) ∧
+    (∀ (a : Applicants) (c : Colleges),
+        a ∈ s.applications c →
+          GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceEligible val_applicant val_college a c) ∧
+      ∀ (a : Applicants) (c d : Colleges),
+        a ∈ s.applications c →
+          GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceEligible val_applicant val_college a d →
+            a ∉ s.applications d → val_applicant a d ≤ val_applicant a c
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2a222855a7d234b6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}State}
+\item \hyperlink{governing-declaration-e57e786394b2484c}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Eligible}
+\item \hyperlink{governing-declaration-9c0bc8f14e96a0bc}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}waiting\allowbreak{}List}
+\end{itemize}
+\hypertarget{governing-declaration-1f468ddd39465ab4}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}assigned\allowbreak{}College}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [Fintype Colleges] →
+      [inst : DecidableEq Applicants] →
+        (Colleges → ℕ) →
+          (val_college : Colleges → Applicants → ℝ) →
+            (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') →
+              GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges →
+                Applicants → Option Colleges
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [Fintype Colleges] [DecidableEq Applicants] (quota : Colleges → ℕ)
+    (val_college : Colleges → Applicants → ℝ)
+    (hcollegeStrict : ∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a')
+    (s : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges)
+    (a : Applicants) =>
+  if h :
+      ∃ (c : Colleges),
+        a ∈ GS62CollegeAdmissions.ExactCollegeBatchedProcedure.waitingList quota val_college hcollegeStrict s c then
+    some (Classical.choose h)
+  else none
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2a222855a7d234b6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}State}
+\item \hyperlink{governing-declaration-9c0bc8f14e96a0bc}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}waiting\allowbreak{}List}
+\end{itemize}
+\hypertarget{governing-declaration-65e4bdbeef377fb1}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Active}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [Fintype Colleges] →
+      [inst : DecidableEq Applicants] →
+        (Colleges → ℕ) →
+          (Applicants → Colleges → ℝ) →
+            (val_college : Colleges → Applicants → ℝ) →
+              (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') →
+                GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges →
+                  Applicants → Prop
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [Fintype Colleges] [DecidableEq Applicants] (quota : Colleges → ℕ)
+    (val_applicant : Applicants → Colleges → ℝ) (val_college : Colleges → Applicants → ℝ)
+    (hcollegeStrict : ∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a')
+    (s : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges)
+    (a : Applicants) =>
+  GS62CollegeAdmissions.ExactCollegeBatchedProcedure.assignedCollege quota val_college hcollegeStrict s a = none ∧
+    (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.untriedEligibleColleges val_applicant val_college s a).Nonempty
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2a222855a7d234b6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}State}
+\item \hyperlink{governing-declaration-1f468ddd39465ab4}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}assigned\allowbreak{}College}
+\item \hyperlink{governing-declaration-03751795717f46c8}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}untried\allowbreak{}Eligible\allowbreak{}Colleges}
+\end{itemize}
+\hypertarget{governing-declaration-0a9b767c71562143}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}next\allowbreak{}College}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [Fintype Applicants] →
+      [Fintype Colleges] →
+        [inst : DecidableEq Applicants] →
+          [DecidableEq Colleges] →
+            (Colleges → ℕ) →
+              (Applicants → Colleges → ℝ) →
+                (val_college : Colleges → Applicants → ℝ) →
+                  (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') →
+                    GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges →
+                      Applicants → Option Colleges
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [Fintype Applicants] [Fintype Colleges] [DecidableEq Applicants]
+    [DecidableEq Colleges] (quota : Colleges → ℕ) (val_applicant : Applicants → Colleges → ℝ)
+    (val_college : Colleges → Applicants → ℝ)
+    (hcollegeStrict : ∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a')
+    (s : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges)
+    (a : Applicants) =>
+  if hactive :
+      GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceActive quota val_applicant val_college hcollegeStrict s
+        a then
+    some
+      (Classical.choose
+        (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.nextCollege._proof_1 quota val_applicant val_college
+          hcollegeStrict s a hactive))
+  else none
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-65e4bdbeef377fb1}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Active}
+\item \hyperlink{governing-declaration-2a222855a7d234b6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}State}
+\item \hyperlink{governing-declaration-03751795717f46c8}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}untried\allowbreak{}Eligible\allowbreak{}Colleges}
+\end{itemize}
+\hypertarget{governing-declaration-af45c64e4d2fd2f5}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}new\allowbreak{}Applications}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [Fintype Applicants] →
+      [Fintype Colleges] →
+        [inst : DecidableEq Applicants] →
+          [DecidableEq Colleges] →
+            (Colleges → ℕ) →
+              (Applicants → Colleges → ℝ) →
+                (val_college : Colleges → Applicants → ℝ) →
+                  (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') →
+                    GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges →
+                      Colleges → Finset Applicants
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [Fintype Applicants] [Fintype Colleges] [DecidableEq Applicants]
+    [DecidableEq Colleges] (quota : Colleges → ℕ) (val_applicant : Applicants → Colleges → ℝ)
+    (val_college : Colleges → Applicants → ℝ)
+    (hcollegeStrict : ∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a')
+    (s : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges)
+    (c : Colleges) =>
+  {a : Applicants |
+    GS62CollegeAdmissions.ExactCollegeBatchedProcedure.nextCollege quota val_applicant val_college hcollegeStrict s a =
+      some c}
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2a222855a7d234b6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}State}
+\item \hyperlink{governing-declaration-0a9b767c71562143}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}next\allowbreak{}College}
+\end{itemize}
+\hypertarget{governing-declaration-afdcf9105d64d786}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Assignment\allowbreak{}From\allowbreak{}State}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [Fintype Applicants] →
+      [Fintype Colleges] →
+        [inst : DecidableEq Applicants] →
+          [DecidableEq Colleges] →
+            (quota : Colleges → ℕ) →
+              (val_applicant : Applicants → Colleges → ℝ) →
+                (val_college : Colleges → Applicants → ℝ) →
+                  (hcollegeStrict : ∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') →
+                    (s :
+                        GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges) →
+                      GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceStateInvariant quota val_applicant
+                          val_college hcollegeStrict s →
+                        AppliedModelingLib.Matching.ManyToOneAssignment Applicants Colleges
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [Fintype Applicants] [Fintype Colleges] [DecidableEq Applicants]
+    [DecidableEq Colleges] (quota : Colleges → ℕ) (val_applicant : Applicants → Colleges → ℝ)
+    (val_college : Colleges → Applicants → ℝ)
+    (hcollegeStrict : ∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a')
+    (s : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges)
+    (hinv :
+      GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceStateInvariant quota val_applicant val_college
+        hcollegeStrict s) =>
+  { app_match := GS62CollegeAdmissions.ExactCollegeBatchedProcedure.assignedCollege quota val_college hcollegeStrict s,
+    college_roster := GS62CollegeAdmissions.ExactCollegeBatchedProcedure.waitingList quota val_college hcollegeStrict s,
+    consistent := fun (a : Applicants) (c : Colleges) =>
+      GS62CollegeAdmissions.ExactCollegeBatchedProcedure.assignedCollege_eq_some_iff quota val_applicant val_college
+        hcollegeStrict s hinv a c }
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-5f205dc5e20311a8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Many\allowbreak{}To\allowbreak{}One\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-2852be7ab15a9eaa}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}State\allowbreak{}Invariant}
+\item \hyperlink{governing-declaration-2a222855a7d234b6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}State}
+\item \hyperlink{governing-declaration-1f468ddd39465ab4}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}assigned\allowbreak{}College}
+\item \hyperlink{governing-declaration-9c0bc8f14e96a0bc}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}waiting\allowbreak{}List}
+\end{itemize}
+\hypertarget{governing-declaration-5b76003b2b75ddf8}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Step}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [Fintype Applicants] →
+      [Fintype Colleges] →
+        [inst : DecidableEq Applicants] →
+          [DecidableEq Colleges] →
+            (Colleges → ℕ) →
+              (Applicants → Colleges → ℝ) →
+                (val_college : Colleges → Applicants → ℝ) →
+                  (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') →
+                    GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges →
+                      GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [Fintype Applicants] [Fintype Colleges] [DecidableEq Applicants]
+    [DecidableEq Colleges] (quota : Colleges → ℕ) (val_applicant : Applicants → Colleges → ℝ)
+    (val_college : Colleges → Applicants → ℝ)
+    (hcollegeStrict : ∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a')
+    (s : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges) =>
+  {
+    applications := fun (c : Colleges) =>
+      s.applications c ∪
+        GS62CollegeAdmissions.ExactCollegeBatchedProcedure.newApplications quota val_applicant val_college
+          hcollegeStrict s c }
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2a222855a7d234b6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}State}
+\item \hyperlink{governing-declaration-af45c64e4d2fd2f5}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}new\allowbreak{}Applications}
+\end{itemize}
+\hypertarget{governing-declaration-5f295db79d7f234f}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Run\allowbreak{}To\allowbreak{}Terminal}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [Fintype Applicants] →
+      [Fintype Colleges] →
+        [inst : DecidableEq Applicants] →
+          [DecidableEq Colleges] →
+            (Colleges → ℕ) →
+              (Applicants → Colleges → ℝ) →
+                (val_college : Colleges → Applicants → ℝ) →
+                  (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') →
+                    GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges →
+                      GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [Fintype Applicants] [Fintype Colleges] [DecidableEq Applicants]
+    [DecidableEq Colleges] (quota : Colleges → ℕ) (val_applicant : Applicants → Colleges → ℝ)
+    (val_college : Colleges → Applicants → ℝ)
+    (hcollegeStrict : ∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a')
+    (a : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges) =>
+  WellFounded.Nat.fix
+    (fun (x : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges) =>
+      (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.untriedEligiblePairs val_applicant val_college x).card)
+    (fun (a : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges)
+        (a_1 :
+          (y : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges) →
+            InvImage (fun (x1 x2 : ℕ) => x1 < x2)
+                (fun
+                    (x :
+                      GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges) =>
+                  (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.untriedEligiblePairs val_applicant val_college
+                      x).card)
+                y a →
+              GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges) =>
+      let s : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges := a;
+      if hactive :
+          ∃ (a : Applicants),
+            GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceActive quota val_applicant val_college
+              hcollegeStrict s a then
+        a_1
+          (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceStep quota val_applicant val_college hcollegeStrict
+            s)
+          (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceRunToTerminal._proof_1 quota val_applicant
+            val_college hcollegeStrict a hactive)
+      else s)
+    a
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-65e4bdbeef377fb1}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Active}
+\item \hyperlink{governing-declaration-2a222855a7d234b6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}State}
+\item \hyperlink{governing-declaration-5b76003b2b75ddf8}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Step}
+\item \hyperlink{governing-declaration-26c21eeaa57296a6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}untried\allowbreak{}Eligible\allowbreak{}Pairs}
+\end{itemize}
+\clearpage
+\hypertarget{paper-prerequisite-section-5ef5ef0364b6939c}{}
+\section*{Paper-specific semantic prerequisites}
+\hypertarget{paper-prerequisite-6b7d3de7046692a6}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}Final\allowbreak{}State}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}Final\allowbreak{}State\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 232-\allowbreak{}247\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+4. Stable assignments and the admissions problem. The extension of our
+"deferred-acceptance"procedureto the problemofcollegeadmissionsis straight-
+forward.For conveniencewe will assume that ifa college is not willingto accept
+a student underany circumstances,as describedin Section 2, then that student
+will not even be permittedto apply to the college. With this understandingthe
+procedure follows: First, all students apply to the college of their firstchoice.
+A college with a quota of q then places on its waiting list the q applicants who
+rank highest,or all applicants if there are fewerthan q, and rejects the rest.
+Rejected applicants then apply to their second choice and again each college
+selects the top q fromamong the new applicants and those on its waiting list,
+puts these on its new waitinglist,and rejects the rest.The procedureterminates
+when every applicant is either on a waiting list or has been rejected by every
+college to which he is willingand permittedto apply. At this point each college
+
+[form-feed in source extraction]
+14             COLLEGE ADMISSIONS AND STABILITY OF MARRIAGE              [January
+
+admits everyoneon its waitinglist and the stable assignmenthas been achieved.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [Fintype Applicants] →
+      [Fintype Colleges] →
+        [inst : DecidableEq Applicants] →
+          [DecidableEq Colleges] →
+            (Colleges → ℕ) →
+              (val_applicant : Applicants → Colleges → ℝ) →
+                (val_college : Colleges → Applicants → ℝ) →
+                  (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') →
+                    (∀ (a : Applicants) (c c' : Colleges), val_applicant a c = val_applicant a c' → c = c') →
+                      GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [Fintype Applicants] [Fintype Colleges] [DecidableEq Applicants]
+    [DecidableEq Colleges] (quota : Colleges → ℕ) (val_applicant : Applicants → Colleges → ℝ)
+    (val_college : Colleges → Applicants → ℝ)
+    (hcollegeStrict : ∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a')
+    (happlicantStrict : ∀ (a : Applicants) (c c' : Colleges), val_applicant a c = val_applicant a c' → c = c') =>
+  GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceRunToTerminal quota val_applicant val_college hcollegeStrict
+    GS62CollegeAdmissions.ExactCollegeBatchedProcedure.initialSourceState
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2a222855a7d234b6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}State}
+\item \hyperlink{governing-declaration-54e4e9a72cd03d42}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}initial\allowbreak{}Source\allowbreak{}State}
+\item \hyperlink{governing-declaration-5f295db79d7f234f}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Run\allowbreak{}To\allowbreak{}Terminal}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} On the explicitly complete marriage domain of the reviewed source claim, the only relevant branch returns the source woman's value for her actual mate; the none-to-zero branch does not represent a source actual mate.
+{\raggedright
+\textbf{Reason:} The expanded value is the terminal waiting-\allowbreak{}list state obtained from the empty history by simultaneous rounds:\allowbreak{} unmatched applicants choose their best untried mutually eligible college, and each college retains its top quota-\allowbreak{}many applicants.\allowbreak{} It halts precisely when no such applicant-\allowbreak{}college pair remains, matching the Section 4 termination condition.\allowbreak{} The approved strict-\allowbreak{}list numeric extension warrants both strict ranking premises, while the two-\allowbreak{}sided positive filter faithfully represents willingness and permission pair by pair.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-4b230c4877bf6ef9}{}
+\subsection*{\small\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}Final\allowbreak{}Assignment}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}Final\allowbreak{}Assignment\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 232-\allowbreak{}247\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+4. Stable assignments and the admissions problem. The extension of our
+"deferred-acceptance"procedureto the problemofcollegeadmissionsis straight-
+forward.For conveniencewe will assume that ifa college is not willingto accept
+a student underany circumstances,as describedin Section 2, then that student
+will not even be permittedto apply to the college. With this understandingthe
+procedure follows: First, all students apply to the college of their firstchoice.
+A college with a quota of q then places on its waiting list the q applicants who
+rank highest,or all applicants if there are fewerthan q, and rejects the rest.
+Rejected applicants then apply to their second choice and again each college
+selects the top q fromamong the new applicants and those on its waiting list,
+puts these on its new waitinglist,and rejects the rest.The procedureterminates
+when every applicant is either on a waiting list or has been rejected by every
+college to which he is willingand permittedto apply. At this point each college
+
+[form-feed in source extraction]
+14             COLLEGE ADMISSIONS AND STABILITY OF MARRIAGE              [January
+
+admits everyoneon its waitinglist and the stable assignmenthas been achieved.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{Applicants : Type u_1} →
+  {Colleges : Type u_2} →
+    [Fintype Applicants] →
+      [Fintype Colleges] →
+        [DecidableEq Applicants] →
+          [DecidableEq Colleges] →
+            (Colleges → ℕ) →
+              (val_applicant : Applicants → Colleges → ℝ) →
+                (val_college : Colleges → Applicants → ℝ) →
+                  (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') →
+                    (∀ (a : Applicants) (c c' : Colleges), val_applicant a c = val_applicant a c' → c = c') →
+                      AppliedModelingLib.Matching.ManyToOneAssignment Applicants Colleges
+
+value:
+fun {Applicants : Type u_1} {Colleges : Type u_2} [Fintype Applicants] [Fintype Colleges] [DecidableEq Applicants]
+    [DecidableEq Colleges] (quota : Colleges → ℕ) (val_applicant : Applicants → Colleges → ℝ)
+    (val_college : Colleges → Applicants → ℝ)
+    (hcollegeStrict : ∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a')
+    (happlicantStrict : ∀ (a : Applicants) (c c' : Colleges), val_applicant a c = val_applicant a c' → c = c') =>
+  GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceAssignmentFromState quota val_applicant val_college
+    hcollegeStrict
+    (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalState quota val_applicant val_college
+      hcollegeStrict happlicantStrict)
+    (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalState_invariant quota val_applicant
+      val_college hcollegeStrict happlicantStrict)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-5f205dc5e20311a8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Many\allowbreak{}To\allowbreak{}One\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-2852be7ab15a9eaa}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}State\allowbreak{}Invariant}
+\item \hyperlink{governing-declaration-afdcf9105d64d786}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Assignment\allowbreak{}From\allowbreak{}State}
+\item \hyperlink{paper-prerequisite-6b7d3de7046692a6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}Final\allowbreak{}State}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The expanded value starts from the empty application history, repeatedly lets each unmatched applicant apply to the best untried pair that is positive for both sides, keeps each college's top quota-\allowbreak{}many cumulative applicants, and converts the terminal waiting lists into the stated assignment.\allowbreak{} This is the Section 4 procedure and its terminal admission step.\allowbreak{} The approved strict-\allowbreak{}list numeric extension warrants both strict ranking premises;\allowbreak{} pairwise eligibility does not add the rejected global implication.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
@@ -446,33 +880,51 @@ def valW {M W : Type*} (val : W → M → ℝ) (w : W) (m : Option M) : ℝ :=
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 93-\allowbreak{}98\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
-return to the philosophical principle mentioned earlier and give it a precise
-formulation.
-
-   DEFINITION. A stable assignment is called optimal if every applicant is at least
-as well off under it as under any other stable assignment.
+DEFINITION. An assignment  ofapplicantstocolleges
+                                                   willbecalledunstableif
+thereare twoapplicantsa and ,Bwhoare assignedtocolleges
+                                                      A andB, respectively,
+although        A toB and A prefers: toa.
+        ,3prefers
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {Applicants : Type u_1} {Colleges : Type u_2} (val_applicant : Applicants → Colleges → ℝ)
-  (val_college : Colleges → Applicants → ℝ) (mu : EconCSLib.Matching.ManyToOneAssignment Applicants Colleges),
-  GS62CollegeAdmissions.PaperInterface.unstableCollegeAssignment val_applicant val_college mu ↔
-    ∃ alpha beta A B,
-      mu.app_match alpha = some A ∧
-        mu.app_match beta = some B ∧
-          val_applicant beta B < val_applicant beta A ∧ val_college A alpha < val_college A beta
+  (val_college : Colleges → Applicants → ℝ) (mu : AppliedModelingLib.Matching.ManyToOneAssignment Applicants Colleges),
+  ∃ (alpha : Applicants) (beta : Applicants) (A : Colleges) (B : Colleges),
+    mu.app_match alpha = some A ∧
+      mu.app_match beta = some B ∧
+        val_applicant beta B < val_applicant beta A ∧ val_college A alpha < val_college A beta
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-5f205dc5e20311a8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Many\allowbreak{}To\allowbreak{}One\allowbreak{}Assignment}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Applicants → Colleges → ℝ
+4. parameter: Colleges → Applicants → ℝ
+5. parameter: AppliedModelingLib.Matching.ManyToOneAssignment Applicants Colleges
+6. conclusion: ∃ (alpha : Applicants) (beta : Applicants) (A : Colleges) (B : Colleges),
+  mu.app_match alpha = some A ∧
+    mu.app_match beta = some B ∧ val_applicant beta B < val_applicant beta A ∧ val_college A alpha < val_college A beta
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-GS62CollegeAdmissions.ProofInterface.unstableCollegeAssignment_iff_source_definition
+GS62CollegeAdmissions.PaperInterface.unstableCollegeAssignment_iff_source_definition
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The transparent Spec states the displayed current-assignment replacement pair directly: two currently assigned applicants, their current colleges, the applicant's strict improvement, and the college's strict preference for the replacement applicant. It adds no vacancy, unmatched-applicant, or individual-rationality condition.
+{\raggedright
+\textbf{Reason:} The target is exactly the printed replacement-\allowbreak{}pair criterion:\allowbreak{} two assigned applicants, one preferring the other's college, and that college preferring the applicant over its assignee.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
@@ -482,23 +934,56 @@ GS62CollegeAdmissions.ProofInterface.unstableCollegeAssignment_iff_source_defini
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 115-\allowbreak{}117\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
-3. Stable assignments and a marriage problem. In trying to settle the
-question of the existence of stable assignments we were led to look first at a
-special case, in which there are the same number of applicants as colleges and all
+DEFINITION. A stableassignment                      applicantis at least
+                                is calledoptimalif every
+as welloffunderit as underanyotherstableassignment.
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ {Applicants : Type u_1} {Colleges : Type u_2} (val_applicant : Applicants → Colleges → ℝ)
-  (val_college : Colleges → Applicants → ℝ) (mu : EconCSLib.Matching.ManyToOneAssignment Applicants Colleges),
-  GS62CollegeAdmissions.PaperInterface.literalApplicantOptimalCollegeAssignment val_applicant val_college mu ↔
-    (¬∃ alpha beta A B,
+∀ {Applicants : Type u_1} {Colleges : Type u_2} (quota : Colleges → ℕ) (val_applicant : Applicants → Colleges → ℝ)
+  (val_college : Colleges → Applicants → ℝ) (mu : AppliedModelingLib.Matching.ManyToOneAssignment Applicants Colleges),
+  (∀ (c : Colleges), (mu.college_roster c).card ≤ quota c) ∧
+    (¬∃ (alpha : Applicants) (beta : Applicants) (A : Colleges) (B : Colleges),
           mu.app_match alpha = some A ∧
             mu.app_match beta = some B ∧
               val_applicant beta B < val_applicant beta A ∧ val_college A alpha < val_college A beta) ∧
-      ∀ (nu : EconCSLib.Matching.ManyToOneAssignment Applicants Colleges),
-        (¬∃ alpha beta A B,
+      ∀ (nu : AppliedModelingLib.Matching.ManyToOneAssignment Applicants Colleges),
+        (∀ (c : Colleges), (nu.college_roster c).card ≤ quota c) →
+          (¬∃ (alpha : Applicants) (beta : Applicants) (A : Colleges) (B : Colleges),
+                nu.app_match alpha = some A ∧
+                  nu.app_match beta = some B ∧
+                    val_applicant beta B < val_applicant beta A ∧ val_college A alpha < val_college A beta) →
+            ∀ (a : Applicants),
+              (match nu.app_match a with
+                | none => 0
+                | some c => val_applicant a c) ≤
+                match mu.app_match a with
+                | none => 0
+                | some c => val_applicant a c
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-5f205dc5e20311a8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Many\allowbreak{}To\allowbreak{}One\allowbreak{}Assignment}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Colleges → ℕ
+4. parameter: Applicants → Colleges → ℝ
+5. parameter: Colleges → Applicants → ℝ
+6. parameter: AppliedModelingLib.Matching.ManyToOneAssignment Applicants Colleges
+7. conclusion: (∀ (c : Colleges), (mu.college_roster c).card ≤ quota c) ∧
+  (¬∃ (alpha : Applicants) (beta : Applicants) (A : Colleges) (B : Colleges),
+        mu.app_match alpha = some A ∧
+          mu.app_match beta = some B ∧
+            val_applicant beta B < val_applicant beta A ∧ val_college A alpha < val_college A beta) ∧
+    ∀ (nu : AppliedModelingLib.Matching.ManyToOneAssignment Applicants Colleges),
+      (∀ (c : Colleges), (nu.college_roster c).card ≤ quota c) →
+        (¬∃ (alpha : Applicants) (beta : Applicants) (A : Colleges) (B : Colleges),
               nu.app_match alpha = some A ∧
                 nu.app_match beta = some B ∧
                   val_applicant beta B < val_applicant beta A ∧ val_college A alpha < val_college A beta) →
@@ -512,13 +997,15 @@ special case, in which there are the same number of applicants as colleges and a
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-GS62CollegeAdmissions.ProofInterface.literalApplicantOptimalCollegeAssignment_iff_source_definition
+GS62CollegeAdmissions.PaperInterface.literalApplicantOptimalCollegeAssignment_iff_source_definition
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The transparent Spec preserves the literal page-10 comparison class: quota-feasible assignments with no displayed replacement pair and applicant-by-applicant weak preference for the selected assignment. This row intentionally does not use the Section 4 operational stability convention.
+{\raggedright
+\textbf{Reason:} The surrounding Section 2 text fixes each college's quota and explains the displayed instability pair as a replacement that stays within that quota.\allowbreak{} The target requires the candidate roster to satisfy card <= quota and applies the same condition to every comparison assignment before treating it as stable.\allowbreak{} Both no-\allowbreak{}pair clauses literally require alpha at A, beta at B, beta preferring A to B, and A preferring beta to alpha;\allowbreak{} it then requires every applicant to be at least as well off under the candidate as under each such stable comparison assignment.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
@@ -528,33 +1015,55 @@ GS62CollegeAdmissions.ProofInterface.literalApplicantOptimalCollegeAssignment_if
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 133-\allowbreak{}139\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
-Example 1. The following is the "ranking matrix" of three men, a, ,3, and 7,
-and three women, A, B, and C.
-
-                                        A        B       C
-
-                              a 1,3 2,2 3,1
+A certain communityconsists of n men and n women. Each person ranks
+those of the opposite sex in accordance with his or her preferencesfora marriage
+partner.We seek a satisfactoryway of marryingoffall membersof the com-
+munity.Imitatingour earlierdefinition,we call a set of marriagesunstable(and
+here the suitabilityof the termis quite clear) if under it thereare a man and a
+woman who are not marriedto each other but prefereach other to theiractual
+mates.
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (val_w : W → M → ℝ) (mu : EconCSLib.Matching.Assignment M W),
-  GS62CollegeAdmissions.PaperInterface.unstableMarriage val_m val_w mu ↔
-    ((∀ (m : M), ∃ w, mu.m_match m = some w) ∧ ∀ (w : W), ∃ m, mu.w_match w = some m) ∧
-      ∃ m w,
-        EconCSLib.Matching.valM val_m m (mu.m_match m) < val_m m w ∧
-          EconCSLib.Matching.valW val_w w (mu.w_match w) < val_w w m
+∀ {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (val_w : W → M → ℝ)
+  (mu : AppliedModelingLib.Matching.Assignment M W),
+  ((∀ (m : M), ∃ (w : W), mu.m_match m = some w) ∧ ∀ (w : W), ∃ (m : M), mu.w_match w = some m) ∧
+    ∃ (m : M) (w : W),
+      AppliedModelingLib.Matching.valM val_m m (mu.m_match m) < val_m m w ∧
+        AppliedModelingLib.Matching.valW val_w w (mu.w_match w) < val_w w m
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-3963208d135cca00}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}val\allowbreak{}M}
+\item \hyperlink{governing-declaration-85f87c1f3ae178ac}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}val\allowbreak{}W}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: M → W → ℝ
+4. parameter: W → M → ℝ
+5. parameter: AppliedModelingLib.Matching.Assignment M W
+6. conclusion: ((∀ (m : M), ∃ (w : W), mu.m_match m = some w) ∧ ∀ (w : W), ∃ (m : M), mu.w_match w = some m) ∧
+  ∃ (m : M) (w : W),
+    AppliedModelingLib.Matching.valM val_m m (mu.m_match m) < val_m m w ∧
+      AppliedModelingLib.Matching.valW val_w w (mu.w_match w) < val_w w m
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-GS62CollegeAdmissions.ProofInterface.unstableMarriage_iff_source_definition
+GS62CollegeAdmissions.PaperInterface.unstableMarriage_iff_source_definition
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The source's marriage discussion concerns a complete matching and a man-woman pair who each prefer the other to the present partner. The transparent Spec writes the completeness and both strict present-partner comparisons explicitly.
+{\raggedright
+\textbf{Reason:} The target requires a complete marriage and a man and woman who each strictly prefer the other to their assigned mate;\allowbreak{} strict preference makes them necessarily not married to each other, matching the source definition.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
@@ -564,43 +1073,44 @@ GS62CollegeAdmissions.ProofInterface.unstableMarriage_iff_source_definition
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 127-\allowbreak{}139\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
+3. Stable assignments and a marriage problem. In trying to settle the
+question of the existence of stable assignmentswe were led to look firstat a
+special case, in whichthereare the same numberof applicants as colleges and all
+quotas are unity. This situation is, of course, highlyunnatural in the context
+of college admissions, but there is another "story" into which it fits quite
+readily.
+   A certain communityconsists of n men and n women. Each person ranks
+those of the opposite sex in accordance with his or her preferencesfora marriage
+partner.We seek a satisfactoryway of marryingoffall membersof the com-
+munity.Imitatingour earlierdefinition,we call a set of marriagesunstable(and
+here the suitabilityof the termis quite clear) if under it thereare a man and a
+woman who are not marriedto each other but prefereach other to theiractual
 mates.
 
-   QUESTION: For any pattern of preferences is it possible to find a stable set of
-marriages?
+[Next verbatim source excerpt]
 
-   Before giving the answer let us look at some examples.
-
-   Example 1. The following is the "ranking matrix" of three men, a, ,3, and 7,
-and three women, A, B, and C.
-
-                                        A        B       C
-
-                              a 1,3 2,2 3,1
+     THEOREM 1. Therealwaysexistsa stablesetofmarriages.
 
 [Next verbatim source excerpt]
 
-,y ranks a first, and a, 3 and y all rank a last. Then regardless of S's preference
+   3. Stable assignments and a marriage problem. In trying to settle the
+question of the existence of stable assignmentswe were led to look firstat a
+special case, in whichthereare the same numberof applicants as colleges and all
+quotas are unity. This situation is, of course, highlyunnatural in the context
+of college admissions, but there is another "story" into which it fits quite
+readily.
 
 [Next verbatim source excerpt]
 
+   A certain communityconsists of n men and n women. Each person ranks
+those of the opposite sex in accordance with his or her preferencesfora marriage
+partner.We seek a satisfactoryway of marryingoffall membersof the com-
+munity.Imitatingour earlierdefinition,we call a set of marriagesunstable(and
+here the suitabilityof the termis quite clear) if under it thereare a man and a
+woman who are not marriedto each other but prefereach other to theiractual
 mates.
-
-   QUESTION: For any pattern of preferences is it possible to find a stable set of
-marriages?
-
-   Before giving the answer let us look at some examples.
-
-[Next verbatim source excerpt]
-
-
-   Example 1. The following is the "ranking matrix" of three men, a, ,3, and 7,
-and three women, A, B, and C.
-
-                                        A        B       C
-
-                              a 1,3 2,2 3,1
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
@@ -612,177 +1122,388 @@ and three women, A, B, and C.
       (∀ (w : W) (m m' : M), val_w w m = val_w w m' → m = m') →
         (∀ (m : M) (w : W), 0 < val_m m w) →
           (∀ (w : W) (m : M), 0 < val_w w m) →
-            ∃ mu,
-              ¬(((∀ (m : M), ∃ w, mu.m_match m = some w) ∧ ∀ (w : W), ∃ m, mu.w_match w = some m) ∧
-                    ∃ m w,
-                      EconCSLib.Matching.valM val_m m (mu.m_match m) < val_m m w ∧
-                        EconCSLib.Matching.valW val_w w (mu.w_match w) < val_w w m) ∧
-                (∀ (m : M), ∃ w, mu.m_match m = some w) ∧ ∀ (w : W), ∃ m, mu.w_match w = some m
+            ∃ (mu : AppliedModelingLib.Matching.Assignment M W),
+              ¬(((∀ (m : M), ∃ (w : W), mu.m_match m = some w) ∧ ∀ (w : W), ∃ (m : M), mu.w_match w = some m) ∧
+                    ∃ (m : M) (w : W),
+                      AppliedModelingLib.Matching.valM val_m m (mu.m_match m) < val_m m w ∧
+                        AppliedModelingLib.Matching.valW val_w w (mu.w_match w) < val_w w m) ∧
+                (∀ (m : M), ∃ (w : W), mu.m_match m = some w) ∧ ∀ (w : W), ∃ (m : M), mu.w_match w = some m
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-3963208d135cca00}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}val\allowbreak{}M}
+\item \hyperlink{governing-declaration-85f87c1f3ae178ac}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}val\allowbreak{}W}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Fintype M
+4. parameter: Fintype W
+5. parameter: DecidableEq M
+6. parameter: DecidableEq W
+7. parameter: M → W → ℝ
+8. parameter: W → M → ℝ
+9. assumption: Fintype.card M = Fintype.card W
+10. assumption: ∀ (m : M) (w w' : W), val_m m w = val_m m w' → w = w'
+11. assumption: ∀ (w : W) (m m' : M), val_w w m = val_w w m' → m = m'
+12. assumption: ∀ (m : M) (w : W), 0 < val_m m w
+13. assumption: ∀ (w : W) (m : M), 0 < val_w w m
+14. conclusion: ∃ (mu : AppliedModelingLib.Matching.Assignment M W),
+  ¬(((∀ (m : M), ∃ (w : W), mu.m_match m = some w) ∧ ∀ (w : W), ∃ (m : M), mu.w_match w = some m) ∧
+        ∃ (m : M) (w : W),
+          AppliedModelingLib.Matching.valM val_m m (mu.m_match m) < val_m m w ∧
+            AppliedModelingLib.Matching.valW val_w w (mu.w_match w) < val_w w m) ∧
+    (∀ (m : M), ∃ (w : W), mu.m_match m = some w) ∧ ∀ (w : W), ∃ (m : M), mu.w_match w = some m
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-GS62CollegeAdmissions.ProofInterface.theorem1_stable_marriage_exists
+GS62CollegeAdmissions.PaperInterface.theorem1_stable_marriage_exists
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The transparent Spec has the source's finite equal-size strict complete domain and concludes a complete assignment with no mutually preferred blocking pair. Its expanded form makes the source's stable-marriage claim checkable without a wrapper predicate.
+{\raggedright
+\textbf{Reason:} For equal finite complete strict lists, the target returns a perfect matching and excludes a mutually preferred nonmatching pair, which is exactly the source's stable set of marriages.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-5b11dd2478126734}{}
 \section*{Review row 5}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 232-\allowbreak{}249\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 253-\allowbreak{}255\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
-a 1, 3 2, 2 3, 1 4, 3
-
-                             3 1,4 2,3 3,2 4,4
-
-                            y 3,1 1,4 2,3 4,2
-                            5 2,2 3,1 1,4 4,1
-
-
-   The condition that there be the same number of boys and girls is not essen-
-tial. If there are b boys and g girls with b < g, then the procedure terminates as
-soon as b girls have been proposed to. If b > g the procedure ends when every
-boy is either on some girl's string or has been rejected by all of the girls. In
-either case the set of marriages that results is stable.
-   It is clear that there is an entirely symmetrical procedure, with girls propos-
-ing to boys, which must also lead to a stable set of marriages. The two solutions
-are not generally the same as shown by Example 1; indeed, we shall see in a
-moment that when the boys propose, the result is optimal for the boys, and
-when the girls propose it is optimal for the girls. The solutions by the two pro-
+THEOREM 2. Everyapplicant is at least as well offundertheassignmentgiven
+by thedeferredacceptanceprocedureas he would be underany otherstableassign-
+ment.
 
 [Next verbatim source excerpt]
 
-forward. For convenience we will assume that if a college is not willing to accept
-a student under any circumstances, as described in Section 2, then that student
-will not even be permitted to apply to the college. With this understanding the
+    4. Stable assignments and the admissions problem. The extension of our
+"deferred-acceptance"procedureto the problemofcollegeadmissionsis straight-
+forward.For conveniencewe will assume that ifa college is not willingto accept
+a student underany circumstances,as describedin Section 2, then that student
+will not even be permittedto apply to the college. With this understandingthe
+procedure follows: First, all students apply to the college of their firstchoice.
+A college with a quota of q then places on its waiting list the q applicants who
+rank highest,or all applicants if there are fewerthan q, and rejects the rest.
+Rejected applicants then apply to their second choice and again each college
+selects the top q fromamong the new applicants and those on its waiting list,
+puts these on its new waitinglist,and rejects the rest.The procedureterminates
+when every applicant is either on a waiting list or has been rejected by every
+college to which he is willingand permittedto apply. At this point each college
 
-[Next verbatim source excerpt]
-
-return to the philosophical principle mentioned earlier and give it a precise
-formulation.
-
-   DEFINITION. A stable assignment is called optimal if every applicant is at least
-as well off under it as under any other stable assignment.
+[form-feed in source extraction]
+14             COLLEGE ADMISSIONS AND STABILITY OF MARRIAGE              [January
 
 
 [Next verbatim source excerpt]
 
-                            a 1, 3 2, 2 3, 1 4, 3
-
-                             3 1,4 2,3 3,2 4,4
-
-                            y 3,1 1,4 2,3 4,2
-                            5 2,2 3,1 1,4 4,1
-
-
-   The condition that there be the same number of boys and girls is not essen-
-tial. If there are b boys and g girls with b < g, then the procedure terminates as
-soon as b girls have been proposed to. If b > g the procedure ends when every
-boy is either on some girl's string or has been rejected by all of the girls. In
-either case the set of marriages that results is stable.
-   It is clear that there is an entirely symmetrical procedure, with girls propos-
-ing to boys, which must also lead to a stable set of marriages. The two solutions
-are not generally the same as shown by Example 1; indeed, we shall see in a
-moment that when the boys propose, the result is optimal for the boys, and
-when the girls propose it is optimal for the girls. The solutions by the two pro-
-
-[Next verbatim source excerpt]
-
-cedures will be the same only when there is a unique stable set of marriages.
-   4. Stable assignments and the admissions problem. The extension of our
-"deferred-acceptance" procedure to the problem of college admissions is straight-
+admits everyoneon its waitinglist and the stable assignmenthas been achieved.
+The proofthat the assignmentis stable is entirelyanalogous to the proofgiven
+forthe marriageproblemand is leftto the reader.
+   5. Optimality.We now show that the "deferredacceptance" procedurejust
+described yields not only a stable but an optimal assignment of applicants.
+That is,
 \end{ReviewVerbatim}
 
+% report-context-presentation-sha256: cce894ff4aa0526f91efa49af0d866ed1482f454abff4344e836d2569d7db02c
+\paragraph{Settled source reading}
+The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {Applicants : Type u_1} {Colleges : Type u_2} [inst : Fintype Applicants] [inst_1 : Fintype Colleges]
   [inst_2 : DecidableEq Applicants] [inst_3 : DecidableEq Colleges] (quota : Colleges → ℕ)
-  (val_applicant : Applicants → Colleges → ℝ) (val_college : Colleges → Applicants → ℝ),
-  ((∀ (a : Applicants) (c c' : Colleges), val_applicant a c = val_applicant a c' → c = c') ∧
-      ∀ (a : Applicants) (c : Colleges), val_applicant a c ≠ 0) →
-    ∀
-      (hcollege_strict :
-        (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') ∧
-          ∀ (c : Colleges) (a : Applicants), val_college c a ≠ 0),
-      (∃ s,
-          GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceReachable quota val_applicant val_college ⋯ s ∧
-            ¬∃ a,
-                GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceActive quota val_applicant val_college ⋯ s a) ∧
-        ∀ (s : GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceWaitingListState Applicants Colleges),
-          GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceReachable quota val_applicant val_college ⋯ s →
-            (¬∃ a,
-                  GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceActive quota val_applicant val_college ⋯ s
-                    a) →
-              ((∀ (c : Colleges),
-                    ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceAssignmentView quota val_college ⋯
-                              s).college_roster
-                          c).card ≤
-                      quota c) ∧
-                  (∀ (a : Applicants),
-                      0 ≤
-                        EconCSLib.Matching.ManyToOne.valApplicant val_applicant a
-                          ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceAssignmentView quota val_college ⋯
-                                s).app_match
-                            a)) ∧
-                    (∀ (c : Colleges),
-                        ∀
-                          a ∈
-                            (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceAssignmentView quota val_college ⋯
-                                  s).college_roster
-                              c,
-                          0 ≤ val_college c a) ∧
-                      ∀ (a : Applicants) (c : Colleges),
-                        EconCSLib.Matching.ManyToOne.valApplicant val_applicant a
-                              ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceAssignmentView quota
-                                    val_college ⋯ s).app_match
-                                a) <
-                            val_applicant a c →
-                          (0 < val_college c a ∧
-                                ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceAssignmentView quota
-                                          val_college ⋯ s).college_roster
-                                      c).card <
-                                  quota c ∨
-                              ∃
-                                a' ∈
-                                  (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceAssignmentView quota
-                                        val_college ⋯ s).college_roster
-                                    c,
-                                val_college c a' < val_college c a) →
-                            False) ∧
-                ∀ (nu : EconCSLib.Matching.ManyToOneAssignment Applicants Colleges),
-                  ((∀ (c : Colleges), (nu.college_roster c).card ≤ quota c) ∧
-                      (∀ (a : Applicants),
-                          0 ≤ EconCSLib.Matching.ManyToOne.valApplicant val_applicant a (nu.app_match a)) ∧
-                        (∀ (c : Colleges), ∀ a ∈ nu.college_roster c, 0 ≤ val_college c a) ∧
-                          ∀ (a : Applicants) (c : Colleges),
-                            EconCSLib.Matching.ManyToOne.valApplicant val_applicant a (nu.app_match a) <
-                                val_applicant a c →
-                              (0 < val_college c a ∧ (nu.college_roster c).card < quota c ∨
-                                  ∃ a' ∈ nu.college_roster c, val_college c a' < val_college c a) →
-                                False) →
-                    ∀ (a : Applicants),
-                      EconCSLib.Matching.ManyToOne.valApplicant val_applicant a (nu.app_match a) ≤
-                        EconCSLib.Matching.ManyToOne.valApplicant val_applicant a
-                          ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceAssignmentView quota val_college ⋯
-                                s).app_match
-                            a)
+  (val_applicant : Applicants → Colleges → ℝ) (val_college : Colleges → Applicants → ℝ)
+  (happlicant_strict :
+    (∀ (a : Applicants) (c c' : Colleges), val_applicant a c = val_applicant a c' → c = c') ∧
+      ∀ (a : Applicants) (c : Colleges), val_applicant a c ≠ 0)
+  (hcollege_strict :
+    (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') ∧
+      ∀ (c : Colleges) (a : Applicants), val_college c a ≠ 0)
+  (nu : AppliedModelingLib.Matching.ManyToOneAssignment Applicants Colleges),
+  ((∀ (c : Colleges), (nu.college_roster c).card ≤ quota c) ∧
+      (∀ (a : Applicants), 0 ≤ AppliedModelingLib.Matching.ManyToOne.valApplicant val_applicant a (nu.app_match a)) ∧
+        (∀ (c : Colleges), ∀ a ∈ nu.college_roster c, 0 ≤ val_college c a) ∧
+          ∀ (a : Applicants) (c : Colleges),
+            AppliedModelingLib.Matching.ManyToOne.valApplicant val_applicant a (nu.app_match a) < val_applicant a c →
+              (0 < val_college c a ∧ (nu.college_roster c).card < quota c ∨
+                  ∃ a' ∈ nu.college_roster c, val_college c a' < val_college c a) →
+                False) →
+    ∀ (a : Applicants),
+      AppliedModelingLib.Matching.ManyToOne.valApplicant val_applicant a (nu.app_match a) ≤
+        AppliedModelingLib.Matching.ManyToOne.valApplicant val_applicant a
+          ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment quota val_applicant
+                val_college
+                (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1 val_college
+                  hcollege_strict)
+                (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2
+                  val_applicant happlicant_strict)).app_match
+            a)
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-8545f3e969a7bb0c}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Many\allowbreak{}To\allowbreak{}One.\allowbreak{}val\allowbreak{}Applicant}
+\item \hyperlink{governing-declaration-5f205dc5e20311a8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Many\allowbreak{}To\allowbreak{}One\allowbreak{}Assignment}
+\item \hyperlink{paper-prerequisite-4b230c4877bf6ef9}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}Final\allowbreak{}Assignment}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Fintype Applicants
+4. parameter: Fintype Colleges
+5. parameter: DecidableEq Applicants
+6. parameter: DecidableEq Colleges
+7. parameter: Colleges → ℕ
+8. parameter: Applicants → Colleges → ℝ
+9. parameter: Colleges → Applicants → ℝ
+10. assumption: (∀ (a : Applicants) (c c' : Colleges), val_applicant a c = val_applicant a c' → c = c') ∧
+  ∀ (a : Applicants) (c : Colleges), val_applicant a c ≠ 0
+11. assumption: (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') ∧
+  ∀ (c : Colleges) (a : Applicants), val_college c a ≠ 0
+12. parameter: AppliedModelingLib.Matching.ManyToOneAssignment Applicants Colleges
+13. assumption: (∀ (c : Colleges), (nu.college_roster c).card ≤ quota c) ∧
+  (∀ (a : Applicants), 0 ≤ AppliedModelingLib.Matching.ManyToOne.valApplicant val_applicant a (nu.app_match a)) ∧
+    (∀ (c : Colleges), ∀ a ∈ nu.college_roster c, 0 ≤ val_college c a) ∧
+      ∀ (a : Applicants) (c : Colleges),
+        AppliedModelingLib.Matching.ManyToOne.valApplicant val_applicant a (nu.app_match a) < val_applicant a c →
+          (0 < val_college c a ∧ (nu.college_roster c).card < quota c ∨
+              ∃ a' ∈ nu.college_roster c, val_college c a' < val_college c a) →
+            False
+14. parameter: Applicants
+15. conclusion: AppliedModelingLib.Matching.ManyToOne.valApplicant val_applicant a (nu.app_match a) ≤
+  AppliedModelingLib.Matching.ManyToOne.valApplicant val_applicant a
+    ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment quota val_applicant
+          val_college
+          (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1 val_college
+            hcollege_strict)
+          (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2 val_applicant
+            happlicant_strict)).app_match
+      a)
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-GS62CollegeAdmissions.ProofInterface.theorem2_applicant_optimality
+GS62CollegeAdmissions.PaperInterface.theorem2_applicant_optimality
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} The raw bundle includes both the earlier displayed replacement-pair condition and Sections 4--5. Read together, the latter uses stable assignment for the terminal top-quota waiting-list outcome and says its stability proof is analogous to the marriage proof; it therefore supplies the completed operational comparison class used by the transparent Spec. The literal display remains a distinct source claim and is not silently identified with that Section 4--5 reading.
+{\raggedright
+\textbf{Reason:} The expanded target quantifies every assignment satisfying quota feasibility, both individual-\allowbreak{}rationality clauses, and the same vacancy-\allowbreak{}or-\allowbreak{}displacement no-\allowbreak{}block condition, then for every applicant compares its value weakly below the value in sourceWaitingListFinalAssignment.\allowbreak{} That is the source theorem's applicant-\allowbreak{}wise weak preference for the direct Section 4 procedure outcome over every other stable assignment.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-defab06662f25c9e}{}
+\section*{Review row 6}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 232-\allowbreak{}249\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+admits everyoneon its waitinglist and the stable assignmenthas been achieved.
+The proofthat the assignmentis stable is entirelyanalogous to the proofgiven
+forthe marriageproblemand is leftto the reader.
+\end{ReviewVerbatim}
+
+% report-context-presentation-sha256: cce894ff4aa0526f91efa49af0d866ed1482f454abff4344e836d2569d7db02c
+\paragraph{Settled source reading}
+The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {Applicants : Type u_1} {Colleges : Type u_2} [inst : Fintype Applicants] [inst_1 : Fintype Colleges]
+  [inst_2 : DecidableEq Applicants] [inst_3 : DecidableEq Colleges] (quota : Colleges → ℕ)
+  (val_applicant : Applicants → Colleges → ℝ) (val_college : Colleges → Applicants → ℝ)
+  (happlicant_strict :
+    (∀ (a : Applicants) (c c' : Colleges), val_applicant a c = val_applicant a c' → c = c') ∧
+      ∀ (a : Applicants) (c : Colleges), val_applicant a c ≠ 0)
+  (hcollege_strict :
+    (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') ∧
+      ∀ (c : Colleges) (a : Applicants), val_college c a ≠ 0),
+  (¬∃ (a : Applicants),
+        GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceActive quota val_applicant val_college
+          (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1 val_college
+            hcollege_strict)
+          (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalState quota val_applicant
+            val_college
+            (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1 val_college
+              hcollege_strict)
+            (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2 val_applicant
+              happlicant_strict))
+          a) ∧
+    (∀ (c : Colleges),
+        ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment quota val_applicant
+                  val_college
+                  (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1
+                    val_college hcollege_strict)
+                  (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2
+                    val_applicant happlicant_strict)).college_roster
+              c).card ≤
+          quota c) ∧
+      (∀ (a : Applicants),
+          0 ≤
+            AppliedModelingLib.Matching.ManyToOne.valApplicant val_applicant a
+              ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment quota val_applicant
+                    val_college
+                    (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1
+                      val_college hcollege_strict)
+                    (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2
+                      val_applicant happlicant_strict)).app_match
+                a)) ∧
+        (∀ (c : Colleges),
+            ∀
+              a ∈
+                (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment quota val_applicant
+                      val_college
+                      (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1
+                        val_college hcollege_strict)
+                      (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2
+                        val_applicant happlicant_strict)).college_roster
+                  c,
+              0 ≤ val_college c a) ∧
+          ∀ (a : Applicants) (c : Colleges),
+            AppliedModelingLib.Matching.ManyToOne.valApplicant val_applicant a
+                  ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment quota
+                        val_applicant val_college
+                        (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1
+                          val_college hcollege_strict)
+                        (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2
+                          val_applicant happlicant_strict)).app_match
+                    a) <
+                val_applicant a c →
+              (0 < val_college c a ∧
+                    ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment quota
+                              val_applicant val_college
+                              (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1
+                                val_college hcollege_strict)
+                              (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2
+                                val_applicant happlicant_strict)).college_roster
+                          c).card <
+                      quota c ∨
+                  ∃
+                    a' ∈
+                      (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment quota
+                            val_applicant val_college
+                            (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1
+                              val_college hcollege_strict)
+                            (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2
+                              val_applicant happlicant_strict)).college_roster
+                        c,
+                    val_college c a' < val_college c a) →
+                False
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-8545f3e969a7bb0c}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Many\allowbreak{}To\allowbreak{}One.\allowbreak{}val\allowbreak{}Applicant}
+\item \hyperlink{governing-declaration-5f205dc5e20311a8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Many\allowbreak{}To\allowbreak{}One\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-65e4bdbeef377fb1}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}Source\allowbreak{}Active}
+\item \hyperlink{paper-prerequisite-4b230c4877bf6ef9}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}Final\allowbreak{}Assignment}
+\item \hyperlink{paper-prerequisite-6b7d3de7046692a6}{GS62\allowbreak{}College\allowbreak{}Admissions.\allowbreak{}Exact\allowbreak{}College\allowbreak{}Batched\allowbreak{}Procedure.\allowbreak{}source\allowbreak{}Waiting\allowbreak{}List\allowbreak{}Final\allowbreak{}State}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Fintype Applicants
+4. parameter: Fintype Colleges
+5. parameter: DecidableEq Applicants
+6. parameter: DecidableEq Colleges
+7. parameter: Colleges → ℕ
+8. parameter: Applicants → Colleges → ℝ
+9. parameter: Colleges → Applicants → ℝ
+10. assumption: (∀ (a : Applicants) (c c' : Colleges), val_applicant a c = val_applicant a c' → c = c') ∧
+  ∀ (a : Applicants) (c : Colleges), val_applicant a c ≠ 0
+11. assumption: (∀ (c : Colleges) (a a' : Applicants), val_college c a = val_college c a' → a = a') ∧
+  ∀ (c : Colleges) (a : Applicants), val_college c a ≠ 0
+12. conclusion: (¬∃ (a : Applicants),
+      GS62CollegeAdmissions.ExactCollegeBatchedProcedure.SourceActive quota val_applicant val_college
+        (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1 val_college
+          hcollege_strict)
+        (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalState quota val_applicant val_college
+          (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1 val_college
+            hcollege_strict)
+          (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2 val_applicant
+            happlicant_strict))
+        a) ∧
+  (∀ (c : Colleges),
+      ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment quota val_applicant
+                val_college
+                (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1 val_college
+                  hcollege_strict)
+                (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2
+                  val_applicant happlicant_strict)).college_roster
+            c).card ≤
+        quota c) ∧
+    (∀ (a : Applicants),
+        0 ≤
+          AppliedModelingLib.Matching.ManyToOne.valApplicant val_applicant a
+            ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment quota val_applicant
+                  val_college
+                  (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1
+                    val_college hcollege_strict)
+                  (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2
+                    val_applicant happlicant_strict)).app_match
+              a)) ∧
+      (∀ (c : Colleges),
+          ∀
+            a ∈
+              (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment quota val_applicant
+                    val_college
+                    (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1
+                      val_college hcollege_strict)
+                    (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2
+                      val_applicant happlicant_strict)).college_roster
+                c,
+            0 ≤ val_college c a) ∧
+        ∀ (a : Applicants) (c : Colleges),
+          AppliedModelingLib.Matching.ManyToOne.valApplicant val_applicant a
+                ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment quota
+                      val_applicant val_college
+                      (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1
+                        val_college hcollege_strict)
+                      (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2
+                        val_applicant happlicant_strict)).app_match
+                  a) <
+              val_applicant a c →
+            (0 < val_college c a ∧
+                  ((GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment quota
+                            val_applicant val_college
+                            (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1
+                              val_college hcollege_strict)
+                            (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2
+                              val_applicant happlicant_strict)).college_roster
+                        c).card <
+                    quota c ∨
+                ∃
+                  a' ∈
+                    (GS62CollegeAdmissions.ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment quota
+                          val_applicant val_college
+                          (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_1
+                            val_college hcollege_strict)
+                          (GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stabilitySpec._proof_2
+                            val_applicant happlicant_strict)).college_roster
+                      c,
+                  val_college c a' < val_college c a) →
+              False
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+GS62CollegeAdmissions.PaperInterface.section4_waiting_list_terminal_stability
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The expanded conclusion says the direct final state has no SourceActive applicant (which expands to being unmatched with an untried mutually eligible college) and that its returned assignment is quota-\allowbreak{}feasible, applicant-\allowbreak{} and college-\allowbreak{}individually rational, and has no strictly preferred mutually eligible vacancy-\allowbreak{}or-\allowbreak{}displacement block.\allowbreak{} This is the stated terminal waiting-\allowbreak{}list outcome under the approved completed stability reading.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox

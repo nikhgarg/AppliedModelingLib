@@ -1,62 +1,47 @@
 # Source clarifications
 
+Source: [official arXiv version](https://arxiv.org/pdf/2204.08620), main model
+and Appendices B.1–B.2, C.2.
+
 ## Lemma 1 and Proposition 1: calendar-time first reports
 
-For the steady-state results, an observed incident is one whose **first report
-time** lies in the calendar-time observation interval. It is not an incident
-whose birth lies in that interval and which will eventually be reported. Thus
-an incident born before the left endpoint can contribute to the observed count
-when its first report occurs inside the interval.
+- **Birth-window eventual reports → first reports inside the calendar-time
+  window.** An incident born earlier can count if first reported inside the
+  window. The proof must therefore displace retained incident births by their
+  first-report delays, rather than only thin births. The stationary marked
+  displacement theorem gives the observed homogeneous Poisson process.
+- **Proposition 1 nonidentifiability construction → positive observed rate.**
+  This makes its two compensating latent incident rates positive. The
+  zero-detection process is covered separately by Lemma 1.
 
-The formal model uses a stationary Poisson process of incident births. Each
-incident has an iid duration with the source density on nonnegative durations.
-Up to its first report, its homogeneous Poisson report clock is independent of
-that duration. Equivalently, conditional on duration `t`, its probability of
-no report before the duration ends is `exp (-lambda * t)`. Consequently the
-retention probability in Lemma 1 is
+## Appendix B.2: likelihood-factorization algebra
 
-\[
-  p = \int_0^\infty \bigl(1-\exp(-\lambda t)\bigr) f(t)\,dt.
-\]
-
-The calendar-time first-report process is the image of the retained marked
-birth process under `birth time + first-report delay`. The required result is
-therefore the stationary marked-displacement theorem: this image is a
-homogeneous Poisson process with rate `Lambda p`. Proposition 1's unit-window
-law of large numbers and its nonidentifiability conclusion use that same
-calendar-time process.
-
-This clarification concerns the pre-first-report duration/report relation. It
-does not require later response or observation-end behavior to be independent
-of the report history.
-
-Source anchors: Lemma 1 and Proposition 1 (Appendix B.1; `cited publication:1433-1542`),
-and the paper's incident, reporting, and observed-data model
-(`cited publication:194-220`).
-
-## Theorem 1 and Appendix Theorem 2: causal endpoint policy
-
-The endpoint is one realized stopping time. Given the visible report history,
-the policy may react to that history, but it does not inspect the next
-unobserved report time or depend directly on the reporting-rate parameter. At
-each live history, the next report clock and the immediate endpoint response
-are combined causally; the earlier event either produces the next report or
-sets the unique endpoint. A fixed cap, an inspection, or a work order is
-covered by this policy. The scalar endpoint density in the source is the
-absolutely continuous branch of the underlying endpoint kernel.
-
-The full theorem permits a selected start after the first report. Its
-selection is rate-free conditional on the retained pre-start report history;
-the formal result keeps that history in the conditioning state rather than
-specializing the theorem to the first report.
-
-Source anchors: Theorem 1 and Appendix Theorem 2 (`cited publication:254-300;1565-1590`),
-and the NYC observation-window application (`cited publication:2086-2110`).
+- **Equation (30) first post-start gap → $t_{m+1}-s$**, where $s$ is the
+  selected start after report $m$ and $t_{m+1}$ the next report time.
+- **Equation (31) residual normalization → multiply by $M!/(e-s)^M$**, where
+  $M$ is the post-start count and $e$ the endpoint. This converts
+  $\lambda^Me^{-\lambda(e-s)}$ into the Poisson count mass with mean
+  $\lambda(e-s)$. It repairs the algebra without changing the likelihood
+  factorization. For a history-responsive endpoint, that factor alone is not
+  a Poisson law conditional on the endpoints: the residual records selection.
 
 ## Equation (3): rate-estimation convention
 
-The maximum-likelihood statement is read on nonnegative reporting rates with
-strictly positive total observation exposure. At zero total report count, the
-estimator is zero and is a maximizer on that nonnegative domain.
+- **Count-over-exposure estimator → nonnegative rates and strictly positive
+  total exposure.** A zero count then has the attained maximum-likelihood
+  estimate zero, rather than an unattained positive-rate limit.
 
-Source anchor: Equation (3), `cited publication:279-291`.
+
+## Lemma 2: conditioning on an observed first report
+
+- **Source → formalized:** Appendix Theorem 2, Condition 1 selects a start
+  after a realized first report within the observation window. The current
+  Lemma 2 model instead requires an unconditional exponential first arrival
+  to lie before a fixed finite horizon $H$ for every outcome.
+- **Why this needs repair:** for reporting rate $\lambda>0$, the exponential
+  law gives $P(T_1>H)=e^{-\lambda H}>0$, contradicting that bound. No process
+  satisfies both premises, so the Lemma 2 and Appendix D.8.2 proofs do not
+  establish the source claims.
+- **Scope:** the main likelihood-factorization proof uses a separate causal
+  observation model. This finding concerns the formalization's conditioning,
+  not a counterexample to the paper's waiting-time result.

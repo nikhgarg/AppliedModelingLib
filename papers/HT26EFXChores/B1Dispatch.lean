@@ -15,7 +15,7 @@ Source: `EFXadditivechores.tex`, lines 2472--2542.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- A quota vector of total size `4a+1` with entries in `{a,a+1}` has one
 long agent.  The relabelling names that agent `0`. -/

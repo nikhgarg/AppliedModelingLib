@@ -23,8 +23,9 @@ agent will look first: workflow/context/validation guidance belongs in
 one concrete reusable pattern, failed approach, or exact build/search command
 over a broad reminder that duplicates existing guidance.
 
-For stronger-model pauses, update the public status surfaces as part of the
-same checkpoint: paper README/handoff, paper-local `status.json`,
-`docs/PAPER_STATUS.md`, and the website status table. The useful payload is a
-short list of current strongest wrappers/certificates and hard proof seams, not
-a long helper lemma changelog.
+For stronger-model pauses, record the exact source/Lean mismatch, strongest
+proved result, and remaining seam in the paper-local working memo or another
+authorized internal record. Do not change public status, website visibility, or
+release metadata without explicit authorization. At a later authorized status or
+closeout boundary, summarize the mathematical result rather than a long helper
+lemma changelog.

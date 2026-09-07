@@ -12,7 +12,7 @@ Source: EFXadditivechores.tex, lines 2411--2443.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- Complete source Case B.2.1(b), once the prefix has been oriented in the
 working labels.  The two small fibre profiles use their explicit schedules;

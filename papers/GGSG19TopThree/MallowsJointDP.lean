@@ -1,5 +1,5 @@
-import EconCSLib.Foundations.Probability.FiniteExpectation
-import EconCSLib.SocialChoice.Ranking.Mallows
+import AppliedModelingLib.Foundations.Probability.FiniteExpectation
+import AppliedModelingLib.SocialChoice.Ranking.Mallows
 import Mathlib.Probability.ProbabilityMassFunction.Monad
 
 /-!
@@ -315,7 +315,7 @@ theorem mallowsPairDP_sum_eq_one {N : ℕ}
       mallowsPairDP model leftStage rightStage N state = 1 := by
   classical
   simp_rw [mallowsPairDP_correct]
-  exact EconCSLib.pmfToRealSum
+  exact AppliedModelingLib.pmfToRealSum
     (mallowsPairProcess model leftStage rightStage N)
 
 /--
@@ -537,7 +537,7 @@ theorem mallowsPairDPTabulationRun_sum_eq_one {N : ℕ}
     ∑ state : MallowsPairPositionState N,
       (mallowsPairDPTabulationRun model leftStage rightStage N).table state = 1 := by
   simp_rw [mallowsPairDPTabulationRun_correct]
-  exact EconCSLib.pmfToRealSum
+  exact AppliedModelingLib.pmfToRealSum
     (mallowsPairProcess model leftStage rightStage N)
 
 /--

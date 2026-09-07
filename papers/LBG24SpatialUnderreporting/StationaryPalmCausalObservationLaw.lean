@@ -1,6 +1,6 @@
 import LBG24SpatialUnderreporting.CausalEndpointDensitySource
 import LBG24SpatialUnderreporting.StationaryPalmCausalEndpointBridge
-import EconCSLib.Foundations.Probability.FiniteKernelProduct
+import AppliedModelingLib.Foundations.Probability.FiniteKernelProduct
 import Mathlib.Probability.Kernel.CompProdEqIff
 import Mathlib.Tactic
 
@@ -17,8 +17,8 @@ the finite gap-tail observation measure.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory ProbabilityTheory
-open EconCSLib.Probability
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped BigOperators ENNReal NNReal ProbabilityTheory
 
 noncomputable section

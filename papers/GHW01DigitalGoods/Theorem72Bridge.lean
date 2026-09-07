@@ -1,4 +1,4 @@
-import EconCSLib.MechanismDesign.Auctions.DigitalGoods
+import AppliedModelingLib.MechanismDesign.Auctions.DigitalGoods
 
 /-!
 # Theorem 7.2 benchmark bridge
@@ -11,8 +11,8 @@ coincide.
 
 namespace GHW01DigitalGoods
 
-open EconCSLib
-open EconCSLib.Auction
+open AppliedModelingLib
+open AppliedModelingLib.Auction
 
 noncomputable section
 

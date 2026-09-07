@@ -1,7 +1,7 @@
-import EconCSLib.Foundations.Probability.Averaging
-import EconCSLib.Foundations.Probability.IntegralLargeDeviations
-import EconCSLib.Foundations.Probability.LargeDeviations
-import EconCSLib.Foundations.Optimization.Certificate
+import AppliedModelingLib.Foundations.Optimization.Averaging
+import AppliedModelingLib.Foundations.Probability.IntegralLargeDeviations
+import AppliedModelingLib.Foundations.Probability.LargeDeviations
+import AppliedModelingLib.Foundations.Optimization.Certificate
 
 namespace PRPKG24AccuracyDiversity
 
@@ -13,7 +13,7 @@ open scoped BigOperators
 
 This file keeps the paper-facing Proposition 4 averaging names stable while the
 reusable averaging/minimization certificate lives in
-`EconCSLib.Foundations.Probability.Averaging`.
+`AppliedModelingLib.Foundations.Optimization.Averaging`.
 -/
 
 /--
@@ -21,7 +21,7 @@ Paper-facing alias for the reusable averaging/minimization certificate used in
 Proposition 4.
 -/
 abbrev Proposition4AveragingCertificate :=
-  EconCSLib.Probability.AveragingMinimizationCertificate
+  AppliedModelingLib.Optimization.AveragingMinimizationCertificate
 
 namespace Proposition4AveragingCertificate
 
@@ -40,7 +40,7 @@ theorem rho_le_gamma_of_gamma_eq_sSup_range
     ∀ alpha : Profile, ∀ u : User, rho alpha u ≤ gamma alpha := by
   intro alpha u
   rw [gamma_eq_sSup_range alpha]
-  exact EconCSLib.Optimization.le_sSup_range
+  exact AppliedModelingLib.Optimization.le_sSup_range
     (rho alpha) u (rho_bddAbove alpha)
 
 /--
@@ -80,18 +80,18 @@ theorem gamma_eq_sSup_range_of_laplace_rate_unique
     (laplace : Profile → ℕ → ℝ)
     (hgamma :
       ∀ alpha : Profile,
-        EconCSLib.Probability.HasExponentialRate
+        AppliedModelingLib.Probability.HasExponentialRate
           (laplace alpha) (-(gamma alpha)))
     (hsup :
       ∀ alpha : Profile,
-        EconCSLib.Probability.HasExponentialRate
+        AppliedModelingLib.Probability.HasExponentialRate
           (laplace alpha) (-(sSup (Set.range (rho alpha))))) :
     ∀ alpha : Profile,
       gamma alpha = sSup (Set.range (rho alpha)) := by
   intro alpha
   have hneg :
       -(gamma alpha) = -(sSup (Set.range (rho alpha))) :=
-    EconCSLib.Probability.HasExponentialRate.unique
+    AppliedModelingLib.Probability.HasExponentialRate.unique
       (hgamma alpha) (hsup alpha)
   linarith
 
@@ -106,11 +106,11 @@ theorem gamma_eq_sSup_kernelIntegral_range_of_laplace_rate_unique
     (laplace : Profile → ℕ → ℝ)
     (hgamma :
       ∀ alpha : Profile,
-        EconCSLib.Probability.HasExponentialRate
+        AppliedModelingLib.Probability.HasExponentialRate
           (laplace alpha) (-(gamma alpha)))
     (hsup :
       ∀ alpha : Profile,
-        EconCSLib.Probability.HasExponentialRate
+        AppliedModelingLib.Probability.HasExponentialRate
           (laplace alpha)
           (-(sSup
             (Set.range
@@ -137,7 +137,7 @@ theorem gamma_eq_sSup_range_of_attained_pointwise_max
       gamma alpha = sSup (Set.range (rho alpha)) := by
   intro alpha
   symm
-  exact EconCSLib.Optimization.sSup_range_eq_of_forall_le_of_exists_eq
+  exact AppliedModelingLib.Optimization.sSup_range_eq_of_forall_le_of_exists_eq
     (rho alpha) (hmax alpha) (hattain alpha)
 
 /--
@@ -200,7 +200,7 @@ theorem positive_laplace_rate_of_attained_pointwise_max_uniformWeightLower
     (hx0 : ∀ alpha : Profile, rho alpha (x0 alpha) = gamma alpha)
     (hcont : ∀ alpha : Profile, ContinuousAt (rho alpha) (x0 alpha)) :
     ∀ alpha : Profile,
-      EconCSLib.Probability.ExponentialRateCertificate
+      AppliedModelingLib.Probability.ExponentialRateCertificate
         (fun n : ℕ =>
           ∫ u, w alpha u * Real.exp ((n : ℝ) * rho alpha u)
             ∂userMeasure alpha)
@@ -209,7 +209,7 @@ theorem positive_laplace_rate_of_attained_pointwise_max_uniformWeightLower
   haveI : IsFiniteMeasure (userMeasure alpha) := hfinite alpha
   haveI : Measure.IsOpenPosMeasure (userMeasure alpha) := hopen alpha
   exact
-    EconCSLib.Probability.weightedExactPositiveExponentialIntegral_exponentialRateCertificate_of_continuous_max_uniformWeightLower
+    AppliedModelingLib.Probability.weightedExactPositiveExponentialIntegral_exponentialRateCertificate_of_continuous_max_uniformWeightLower
       (userMeasure alpha) (w alpha) (rho alpha)
       (hF_int alpha) (hw_int alpha) (hWpos alpha) (hcpos alpha)
       (hw_lower alpha) (hw_bound alpha) (x0 alpha)
@@ -238,7 +238,7 @@ theorem positive_laplace_rate_of_attained_pointwise_max_unitWeight
     (hx0 : ∀ alpha : Profile, rho alpha (x0 alpha) = gamma alpha)
     (hcont : ∀ alpha : Profile, ContinuousAt (rho alpha) (x0 alpha)) :
     ∀ alpha : Profile,
-      EconCSLib.Probability.ExponentialRateCertificate
+      AppliedModelingLib.Probability.ExponentialRateCertificate
         (fun n : ℕ =>
           ∫ u, Real.exp ((n : ℝ) * rho alpha u) ∂userMeasure alpha)
         (-(gamma alpha)) := by
@@ -266,7 +266,7 @@ theorem positive_laplace_rate_of_attained_pointwise_max_unitWeight
         filter_upwards with u
         norm_num)
       x0 hmax hx0 hcont
-  refine EconCSLib.Probability.ExponentialRateCertificate.congr ?_
+  refine AppliedModelingLib.Probability.ExponentialRateCertificate.congr ?_
     (hcert alpha)
   filter_upwards with n
   apply integral_congr_ae
@@ -288,7 +288,7 @@ theorem gamma_eq_sSup_range_of_positive_laplace_rate_unique_attained_max_uniform
     (rho : Profile → User → ℝ) (W c : Profile → ℝ)
     (hsource :
       ∀ alpha : Profile,
-        EconCSLib.Probability.HasExponentialRate
+        AppliedModelingLib.Probability.HasExponentialRate
           (fun n : ℕ =>
             ∫ u, w alpha u * Real.exp ((n : ℝ) * rho alpha u)
               ∂userMeasure alpha)
@@ -326,13 +326,13 @@ theorem gamma_eq_sSup_range_of_positive_laplace_rate_unique_attained_max_uniform
       hcpos hw_lower hw_bound x0 hmax hx0 hcont
   have hrate_eq :
       -(gamma alpha) = -(supValue alpha) :=
-    EconCSLib.Probability.HasExponentialRate.unique
+    AppliedModelingLib.Probability.HasExponentialRate.unique
       (hsource alpha) (hcert alpha).has_rate
   have hgamma_eq : gamma alpha = supValue alpha := by
     linarith
   have hsSup_eq :
       sSup (Set.range (rho alpha)) = supValue alpha :=
-    EconCSLib.Optimization.sSup_range_eq_of_forall_le_of_exists_eq
+    AppliedModelingLib.Optimization.sSup_range_eq_of_forall_le_of_exists_eq
       (rho alpha) (hmax alpha) ⟨x0 alpha, hx0 alpha⟩
   exact hgamma_eq.trans hsSup_eq.symm
 
@@ -347,7 +347,7 @@ theorem gamma_eq_sSup_range_of_positive_laplace_rate_unique_attained_max_unitWei
     (rho : Profile → User → ℝ)
     (hsource :
       ∀ alpha : Profile,
-        EconCSLib.Probability.HasExponentialRate
+        AppliedModelingLib.Probability.HasExponentialRate
           (fun n : ℕ =>
             ∫ u, Real.exp ((n : ℝ) * rho alpha u) ∂userMeasure alpha)
           (-(gamma alpha)))
@@ -371,13 +371,13 @@ theorem gamma_eq_sSup_range_of_positive_laplace_rate_unique_attained_max_unitWei
       userMeasure supValue rho hfinite hopen hF_int x0 hmax hx0 hcont
   have hrate_eq :
       -(gamma alpha) = -(supValue alpha) :=
-    EconCSLib.Probability.HasExponentialRate.unique
+    AppliedModelingLib.Probability.HasExponentialRate.unique
       (hsource alpha) (hcert alpha).has_rate
   have hgamma_eq : gamma alpha = supValue alpha := by
     linarith
   have hsSup_eq :
       sSup (Set.range (rho alpha)) = supValue alpha :=
-    EconCSLib.Optimization.sSup_range_eq_of_forall_le_of_exists_eq
+    AppliedModelingLib.Optimization.sSup_range_eq_of_forall_le_of_exists_eq
       (rho alpha) (hmax alpha) ⟨x0 alpha, hx0 alpha⟩
   exact hgamma_eq.trans hsSup_eq.symm
 
@@ -392,7 +392,7 @@ noncomputable def ofFiniteUniformAverage
           uniformValue)
     (rho_le_gamma : ∀ alpha : Profile, ∀ u : User, rho alpha u ≤ gamma alpha) :
     Proposition4AveragingCertificate Profile User :=
-  EconCSLib.Probability.AveragingMinimizationCertificate.ofFiniteUniformAverage
+  AppliedModelingLib.Optimization.AveragingMinimizationCertificate.ofFiniteUniformAverage
     gamma rho uniformProfile uniformValue uniform_gamma_eq
     average_rho_eq_uniformValue rho_le_gamma
 
@@ -426,7 +426,7 @@ noncomputable def ofProbabilityIntegralAverage
         uniformValue)
     (rho_le_gamma : ∀ alpha : Profile, ∀ u : User, rho alpha u ≤ gamma alpha) :
     Proposition4AveragingCertificate Profile User :=
-  EconCSLib.Probability.AveragingMinimizationCertificate.ofProbabilityIntegralAverage
+  AppliedModelingLib.Optimization.AveragingMinimizationCertificate.ofProbabilityIntegralAverage
     userMeasure gamma rho uniformProfile uniformValue rho_integrable
     uniform_gamma_eq integral_rho_eq_uniformValue rho_le_gamma
 
@@ -458,7 +458,7 @@ noncomputable def ofProbabilityIntegralAverageOfPositiveLaplaceRateUniqueAttaine
     (uniformProfile : Profile) (uniformValue : ℝ)
     (hsource :
       ∀ alpha : Profile,
-        EconCSLib.Probability.HasExponentialRate
+        AppliedModelingLib.Probability.HasExponentialRate
           (fun n : ℕ =>
             ∫ u, w alpha u * Real.exp ((n : ℝ) * rho alpha u)
               ∂userMeasure)
@@ -493,7 +493,7 @@ noncomputable def ofProbabilityIntegralAverageOfPositiveLaplaceRateUniqueAttaine
     Proposition4AveragingCertificate Profile User :=
   ofProbabilityIntegralAverageOfSupremum userMeasure gamma rho uniformProfile
     uniformValue rho_integrable uniform_gamma_eq integral_rho_eq_uniformValue
-    (EconCSLib.Optimization.bddAbove_range_apply_of_forall_le rho hmax)
+    (AppliedModelingLib.Optimization.bddAbove_range_apply_of_forall_le rho hmax)
     (gamma_eq_sSup_range_of_positive_laplace_rate_unique_attained_max_uniformWeightLower
       (fun _ : Profile => userMeasure) w gamma supValue rho W c hsource
       (fun _ => inferInstance) (fun _ => hopen) hF_int hw_int hWpos
@@ -522,7 +522,7 @@ noncomputable def ofProbabilityKernelAverage
       ∀ alpha : Profile, ∀ u : User,
         (∫ x, kernel x u ∂profileMeasure alpha) ≤ gamma alpha) :
     Proposition4AveragingCertificate Profile User :=
-  EconCSLib.Probability.AveragingMinimizationCertificate.ofProbabilityKernelAverage
+  AppliedModelingLib.Optimization.AveragingMinimizationCertificate.ofProbabilityKernelAverage
     userMeasure profileMeasure profile_probability gamma kernel uniformProfile
     uniformValue rho_integrable uniform_gamma_eq integral_kernel_swap
     kernel_user_integral_eq rho_le_gamma
@@ -583,7 +583,7 @@ noncomputable def ofProbabilityKernelAverageOfIntegrable
       ∀ alpha : Profile, ∀ u : User,
         (∫ x, kernel x u ∂profileMeasure alpha) ≤ gamma alpha) :
     Proposition4AveragingCertificate Profile User :=
-  EconCSLib.Probability.AveragingMinimizationCertificate.ofProbabilityKernelAverageOfIntegrable
+  AppliedModelingLib.Optimization.AveragingMinimizationCertificate.ofProbabilityKernelAverageOfIntegrable
     userMeasure profileMeasure profile_probability gamma kernel uniformProfile
     uniformValue kernel_integrable uniform_gamma_eq kernel_user_integral_eq
     rho_le_gamma
@@ -633,7 +633,7 @@ noncomputable def ofProbabilityKernelAverageOfIntegrableOfPositiveLaplaceRateUni
     (uniformProfile : Profile) (uniformValue : ℝ)
     (hsource :
       ∀ alpha : Profile,
-        EconCSLib.Probability.HasExponentialRate
+        AppliedModelingLib.Probability.HasExponentialRate
           (fun n : ℕ =>
             ∫ u,
               w alpha u *
@@ -686,7 +686,7 @@ noncomputable def ofProbabilityKernelAverageOfIntegrableOfPositiveLaplaceRateUni
   ofProbabilityKernelAverageOfIntegrableOfSupremum userMeasure profileMeasure
     profile_probability gamma kernel uniformProfile uniformValue
     kernel_integrable uniform_gamma_eq kernel_user_integral_eq
-    (EconCSLib.Optimization.bddAbove_range_apply_of_forall_le
+    (AppliedModelingLib.Optimization.bddAbove_range_apply_of_forall_le
       (fun alpha u => ∫ x, kernel x u ∂profileMeasure alpha) hmax)
     (gamma_eq_sSup_range_of_positive_laplace_rate_unique_attained_max_uniformWeightLower
       (fun _ : Profile => userMeasure) w gamma supValue
@@ -726,7 +726,7 @@ noncomputable def ofProbabilityKernelSymmetryAverageOfIntegrable
       ∀ alpha : Profile, ∀ u : User,
         (∫ x, kernel x u ∂profileMeasure alpha) ≤ gamma alpha) :
     Proposition4AveragingCertificate Profile User :=
-  EconCSLib.Probability.AveragingMinimizationCertificate.ofProbabilityKernelSymmetryAverageOfIntegrable
+  AppliedModelingLib.Optimization.AveragingMinimizationCertificate.ofProbabilityKernelSymmetryAverageOfIntegrable
     userMeasure profileMeasure profile_probability gamma kernel uniformProfile
     uniformValue kernel_integrable uniform_gamma_eq userAction itemAction anchor
     userAction_measurePreserving userAction_measurableEmbedding
@@ -804,7 +804,7 @@ noncomputable def ofProbabilityKernelAverageOfBounded
       ∀ alpha : Profile, ∀ u : User,
         (∫ x, kernel x u ∂profileMeasure alpha) ≤ gamma alpha) :
     Proposition4AveragingCertificate Profile User :=
-  EconCSLib.Probability.AveragingMinimizationCertificate.ofProbabilityKernelAverageOfBounded
+  AppliedModelingLib.Optimization.AveragingMinimizationCertificate.ofProbabilityKernelAverageOfBounded
     userMeasure profileMeasure profile_probability gamma kernel uniformProfile
     uniformValue C kernel_aestronglyMeasurable kernel_norm_le uniform_gamma_eq
     kernel_user_integral_eq rho_le_gamma
@@ -854,7 +854,7 @@ paper-facing namespace.
 theorem uniform_minimizes {Profile User : Type*}
     (C : Proposition4AveragingCertificate Profile User) :
     ∀ alpha : Profile, C.gamma C.uniformProfile ≤ C.gamma alpha :=
-  EconCSLib.Probability.AveragingMinimizationCertificate.uniform_minimizes C
+  AppliedModelingLib.Optimization.AveragingMinimizationCertificate.uniform_minimizes C
 
 end Proposition4AveragingCertificate
 

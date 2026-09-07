@@ -9,7 +9,7 @@ product of each displayed candidate's weight divided by the total weight of
 that candidate and all later displayed candidates.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open scoped BigOperators
 
 namespace KR21Monoculture

@@ -1,28 +1,25 @@
 # Final Validation Report: EOS07GSP
 
-Updated: 2026-07-31
+Updated: 2026-09-04
 
 ## 1. Human Verdict
-Formalized. The compact review surface covers the curated NBER mathematical
-inventory: the first-price and GSP/VCG examples, Remarks 1--3, Definition 4,
-Lemmas 5--6, Theorem 7, and Theorem 8.
 
-For Theorem 8, Lean now constructs the continuous positive-density value law,
-full-history strategy, conditional Bayes beliefs on every positive-probability
-survival event, and a legal-history ex-post PBE. Sequential rationality compares
-the named strategy against every complete history-dependent continuation plan
-for every realized ordered opponent profile, which also gives the posterior-
-expected best-response inequality. Every legal-history ex-post PBE has the same
-clock-clamped dropout action, and the induced finite outcome is VCG-equivalent.
-The source's below-clock raw threshold is recorded as the ordinary
-immediate-drop interpretation of a stopped auction, not as a theorem caveat.
+The formalization covers the static GSP/VCG comparisons, the corrected finite
+Theorem 7 revenue result, and Theorem 8's equilibrium and VCG-outcome claims.
+
+**Formalization gap:** Theorem 8 uniqueness is proved among common symmetric
+continuation plans; uniqueness among arbitrary bidder-specific plans remains
+unproved. [Details](docs/SOURCE_CLARIFICATIONS.md#theorem-8-symmetric-continuation-plans).
 
 ## 2. Closeout Status
-- Completion status: formalized.
-- Audit summary: source coverage has 24 covered; diagnostics: full inventory shown because paper_statement_map.json must explicitly set source_coverage_mode before a source-coverage closeout; statement LLM-as-judge has no rows; diagnostics: 23 orphan/stale statement-sidecar rows excluded, 23 configured rows without unambiguous current receipts; Lean-to-TeX has 23 row translations; assumption provenance sidecar has no configured source-condition rows; source-record classification has 35 source condition, 2 non-propositional witness data; source-record audit reports 23 source-record review rows, 44 boundary inputs, 5 conclusion dependencies, 34 recursive fields, 0 source-record-only unresolved conclusion dependencies, 0 recursion failures; review-surface audit review surface passed over 23 review rows; holistic source-first audit status is not inferred by this generator; DAG/source-json audit status is not inferred (see `docs/PUBLIC_DAG_HOLISTIC_AUDIT_2026-07-02.md`).
-- One-sentence recap: the curated NBER mathematical inventory through Theorem 8 is covered, including the source-intended legal-history ex-post PBE, Bayes consistency, arbitrary-continuation sequential rationality, effective uniqueness, and VCG outcome.
-- Source pin: `EOS07GSP.txt`, SHA256 `9094a9c8cd917b728cf872b7741a4de9b5636c5cdadd08b7bfcc4b7c64df9cbc`.
-- Certification note: Lean proof status and protocol evidence are current at closeout; saved human dashboard review remains a separate governance lane and is not claimed here.
+
+- Completion status: formalized on the stated corrected static and common-plan
+  dynamic scope.
+- The current report surface contains 13 source-facing results. Earlier
+  declaration counts retained in the technical evidence describe historical
+  validation surfaces.
+- The detailed source, build, and review records below support that scope; they
+  do not enlarge the static or dynamic claims beyond the stated conditions.
 
 ## 3. Source and Scope
 - Paper: *Internet Advertising and the Generalized Second-Price Auction:
@@ -37,52 +34,43 @@ immediate-drop interpretation of a stopped auction, not as a theorem caveat.
 - DAG artifacts: `papers/EOS07GSP/docs/DependencyDAG.tex` and
   `papers/EOS07GSP/docs/DependencyDAG.pdf`
 - Lean footprint: tracked in `papers/EOS07GSP/status.json`; the compact review
-  surface currently has 23 paper-facing rows and no theorem-facing assumption
-  declaration.
+  surface currently selects 13 source-facing claims and no theorem-facing
+  assumption declaration.
 
 The folder tracks the NBER working-paper numbering: Remarks 1--3, Definition
 4, Lemmas 5--6, and Theorems 7--8. A later public PDF renumbers analogous main
 results, so this report uses the NBER numbering consistently.
 
 ## 4. Researcher Summary of Checked Results
-- The first-price instability example has a compact arithmetic row showing the
-  displayed profitable bid revisions.
-- The GSP/VCG position-auction interface, locally envy-free outcomes, stable
-  assignments, and the GSP/VCG running two-slot example are formalized.
-- Remark 1, Remark 2, and Remark 3 are formalized: GSP payments weakly dominate
-  VCG payments at the same bids, VCG is truthful, and GSP is not dominant-
-  strategy truthful.
-- Lemma 5 is formalized. Lemma 6 is formalized for the source's `K > N`
-  condition through the deterministic tie-broken ranked-GSP implementation used
-  to make off-equilibrium reports total; strict constructed profiles have no
-  equilibrium ties.
-- Theorem 7 is formalized, including the constructed `B*` outcome, payment
-  identity, direct locally-envy-free equilibrium row, no-positive-transfer
-  conclusion, and the strict tie-broken GSP comparison conclusion.
-- Theorem 8 is formalized on its legal-history domain. Lean constructs the
-  continuous full-history strategy and Bayes-consistent conditional belief
-  system, proves ex-post optimality against every complete continuation plan,
-  lifts that comparison to supported posterior expectations, proves effective
-  dropout-action uniqueness among legal-history ex-post PBEs, and derives the
-  VCG-equivalent finite outcome.
 
-## 5. Remaining Boundaries and Gaps
-No mathematical source-inventory gaps are recorded. The formula can lie below
-the current clock when a bidder's value is below the last dropout. On such a
-stopped-auction history it means immediate dropout, so legality and uniqueness
-are stated for the observable clock-clamped action on feasible histories. This
-is an implied operational-domain convention, not a weakened theorem or caveat.
-Saved human dashboard review remains separate from Lean proof status.
+| Result | Comparison with source |
+| --- | --- |
+| First-price example; GSP/VCG two-slot example | **Exact:** the displayed bid revisions and outcome/payment calculations. |
+| Remarks 1–3 | **Exact:** GSP payments weakly dominate VCG payments at the same bids; VCG is truthful and GSP is not dominant-strategy truthful. |
+| Lemma 5; Theorem 7 | **Necessary strengthening:** every unassigned bidder has no bottom-slot envy; otherwise the stated stability and VCG-revenue comparisons can fail. The stable-assignment bridge and seller-minimal VCG-revenue comparison use this strengthened Definition 4. [Witness](docs/SOURCE_CLARIFICATIONS.md#definition-4-unassigned-bidders-and-the-bottom-slot). |
+| Lemma 6 | **Restriction for strict-bid realization:** positive winner utility excludes stable assignments whose exact payments force a bid tie. This does not establish necessity for every tie-aware realization. [Obstruction](docs/SOURCE_CLARIFICATIONS.md#lemma-6-positive-winner-surplus). |
+| Theorem 8 | **Formalization gap:** equilibrium and the VCG outcome are proved; uniqueness is checked only for a common symmetric continuation plan. Asymmetric-plan uniqueness remains unproved. [Scope](docs/SOURCE_CLARIFICATIONS.md#theorem-8-symmetric-continuation-plans). |
 
-## 6. Additional Assumptions Beyond Paper
-None.
+## 5. Formalization Clarifications and Additions
+
+The checked scope is the three explicit conditions in Section 6. In
+particular, the strict-surplus result does not cover every stable assignment,
+and common-plan uniqueness leaves asymmetric-plan uniqueness unresolved.
+
+## 6. Explicit Formalization Additions
+
+The static results add no bottom-slot envy for every unassigned bidder
+(Definition 4) and positive realized utility for every winner (Lemma 6).
+Theorem 8's uniqueness is restricted to common symmetric continuation plans.
+The [memo](docs/SOURCE_CLARIFICATIONS.md) supplies both static obstructions
+and the dynamic scope comparison.
+
+Lemma 6 permits real-valued bids, including a potentially negative unassigned
+tail. A nonnegative-bid version would need a positive-tail condition.
 
 ## 7. Proof-Strategy Deviations
-Theorem 8 uses an ex-post refinement of sequential rationality: the proof first
-compares complete continuation plans pointwise for every ordered opponent-value
-profile, then integrates the inequality under every supported posterior.
-Deterministic tie-breaking totalizes finite ranked-GSP implementation statements
-whose source equilibrium profiles are strict.
+
+Theorem 8 first compares continuation plans pointwise for each opponent-value profile, then integrates under supported conditional beliefs. Its common-plan scope is stated in Section 6.
 
 ## 8. Proof Tricks Worth Reusing
 - Keep the human review surface close to the paper inventory. EOS uses 23
@@ -107,12 +95,14 @@ interface for continuous ascending auctions. Neither extension is needed for the
 paper's result, and neither is claimed here without a dedicated reviewed theorem.
 
 ## 10. Mathematical Typos or Other Fixes Suggested in the Source Paper
-None found.
 
-## 11. Paper Issues or Caveats
-None affecting theorem status. The below-clock threshold case is an ordinary
-stopped-auction immediate-drop convention and is exposed explicitly by the
-legal-history predicate and clock-clamped uniqueness statement.
+See Section 6 and the [memo](docs/SOURCE_CLARIFICATIONS.md) for the static additions and common-plan restriction.
+
+## 11. Source Corrections and Formalization Clarifications
+
+No wider static or dynamic conclusion is inferred beyond Section 6. The
+below-clock threshold uses the stated immediate-drop interpretation of a
+stopped auction.
 
 ## 12. Detailed Formalization Evidence
 The formalization is organized around a compact paper interface and an
@@ -206,13 +196,18 @@ The final command is the targeted repository audit command required for this
 paper's closeout gate.
 
 ## 18. Paper Definitions Checked
-- Locally envy-free equilibrium: Definition 4's static-equilibrium condition
-  plus the displayed adjacent-rank no-envy inequality, exposed by the proved
-  unfolding `definition4_locally_envy_free`.
+- Corrected locally envy-free equilibrium: Definition 4's static-equilibrium
+  condition and displayed adjacent-rank no-envy inequality, plus every
+  unassigned bidder's bottom-slot condition. Lean:
+  `corrected_definition4_locally_envy_free`.
 - Stable assignment: the Shapley-Shubik assignment-game no-profitable-rematch
   predicate used by Lemmas 5--6. Lean: `stable_assignment`.
-- Theorem 7 `B*` bid/payment construction: the ranked finite GSP profile and
-  VCG-tail payment identity. Lean: `theorem7_bstar_payment_identity`.
+- Amended Lemma 6 stable assignment: the archival predicate plus strictly
+  positive utility for every assigned bidder. Lean:
+  `corrected_lemma6_stable_assignment`.
+- Corrected Theorem 7: the finite `B*` GSP profile, VCG position/payment
+  ledger, and actual seller-minimal-revenue comparison. Lean:
+  `theorem7_finite_static_bstar_full_corrected`.
 - Theorem 8 dropout-price formula: the continuous generalized-English
   indifference price and its finite `B*` threshold specialization. Lean:
   `theorem8_dropout_formula_eq_bstar_threshold`.
@@ -247,31 +242,32 @@ equilibrium and GSP revenue higher than VCG revenue.
 stable assignment.
 
 **Lean interface statement.**
-- `lemma5_locally_envy_free_stable`
+- `corrected_lemma5_ranked_more_bidders_stable`
 
-**Status.** formalized.
+**Status.** archival statement not claimed; the corrected full
+`K>N` ordinary-GSP bridge is proved.
 
 ### Lemma 6
 **Paper statement.** Any stable assignment is an outcome of a locally
 envy-free GSP equilibrium.
 
 **Lean interface statement.**
-- `lemma6_tiebreak_ranked_gsp_stable_assignment_locally_envy_free`
+- `corrected_lemma6_ranked_more_bidders_constructs_tiebreak_equilibrium`
 
-**Status.** formalized.
+**Status.** archival statement not claimed. The explicit strict-surplus
+amended domain excludes the zero-surplus counterexample, and its direct full
+`K>N` construction/equilibrium proof is complete.
 
 ### Theorem 7
 **Paper statement.** The constructed `B*` equilibrium yields the same positions
 and payments as VCG and is revenue-minimal among locally envy-free equilibria.
 
 **Lean interface statement.**
-- `theorem7_ranked_gsp_bstar_mechanism_realizes_bstar_outcome`
-- `theorem7_bstar_payment_identity`
-- `theorem7_bstar_locally_envy_free`
-- `theorem7_no_positive_transfer_conclusion`
-- `theorem7_strict_tiebreak_gsp_comparison_conclusion`
+- `theorem7_finite_static_bstar_full_corrected`
 
-**Status.** formalized.
+**Status.** archival statement not claimed. The corrected
+finite target is proved: B-star is locally envy-free with the VCG ledger, and
+its revenue is weakly minimal over corrected strict ranked-GSP comparisons.
 
 ### Theorem 8
 **Paper statement.** The generalized-English auction has a unique continuous-
@@ -289,48 +285,25 @@ declaration
 `theorem8_source_event_strict_values_unique_pbe_formula_conclusion` together
 with the Theorem 7 `B*` outcome and the dropout-formula bridge.
 
-**Status.** formalized. The full-history row proves the source-intended legal-
-history ex-post PBE with actual conditional Bayes beliefs, arbitrary complete
-continuation deviations, effective-action uniqueness, and the displayed
-dropout formula.
+**Status.** formalized. The selected finite endpoint proves the
+full-history ex-post PBE with actual conditional Bayes beliefs, arbitrary
+complete **common-plan** deviations, effective-action uniqueness, and the
+displayed dropout formula. The common-plan scope is the explicitly stated
+formalization clarification, while the archival bidder-indexed wording remains
+visible in the source notes.
 
-## 20. Paper-Facing Statement Validator Ledger
+## 20. Statement Review Evidence
 
-The compact surface has 23 configured rows and the source inventory has 24
-items. The raw statement-v10 rows do not bind the current cached statements by
-exact semantic identity, so they remain diagnostic-only even though the
-coverage-v4 ledger is present. Human dashboard certification remains unclaimed.
+The current source-to-statement assessment and exact review targets are recorded
+in the following artifacts. Mathematical scope and qualifications are explained
+with their named results above.
 
-<!-- BEGIN GENERATED STATEMENT VALIDATOR LEDGER -->
-### Current Canonical Evidence
-Independent human dashboard review: 0/23 rows. No human row-level approval is inferred. review surface passed; Agent check by Codex EOS07 source-first v10 full-formalization audit; 2026-07-19 Diagnostic-only evidence excluded from this paper-facing ledger: 23 unconfigured, stale, or ambiguous statement-sidecar rows.
-
-| Paper-facing statement | Lean declaration | Validators | Validator comments |
-| --- | --- | --- | --- |
-| Definition4 locally envy free | `definition4_locally_envy_free` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Stable assignment | `stable_assignment` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| First price running example profitable revision chain | `first_price_running_example_profitable_revision_chain` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Remark1 gsp payments weakly dominate vcg | `remark1_gsp_payments_weakly_dominate_vcg` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Remark2 vcg truthful | `remark2_vcg_truthful` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Remark3 gsp not truthful | `remark3_gsp_not_truthful` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Running example truthful gsp nash | `running_example_truthful_gsp_nash` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Running example truthful gsp revenue comparison | `running_example_truthful_gsp_revenue_comparison` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Lemma5 locally envy free stable | `lemma5_locally_envy_free_stable` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Lemma6 tiebreak ranked gsp stable assignment locally envy free | `lemma6_tiebreak_ranked_gsp_stable_assignment_locally_envy_free` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Theorem7 ranked gsp bstar mechanism realizes bstar outcome | `theorem7_ranked_gsp_bstar_mechanism_realizes_bstar_outcome` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Theorem7 bstar payment identity | `theorem7_bstar_payment_identity` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Theorem7 bstar locally envy free | `theorem7_bstar_locally_envy_free` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Theorem7 no positive transfer conclusion | `theorem7_no_positive_transfer_conclusion` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Theorem7 strict tiebreak gsp comparison conclusion | `theorem7_strict_tiebreak_gsp_comparison_conclusion` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Theorem8 dropout formula eq bstar threshold | `theorem8_dropout_formula_eq_bstar_threshold` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Theorem8 q step2 waiting before q review | `theorem8_q_step2_waiting_before_q_review` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Theorem8 q step1 dropping after q review | `theorem8_q_step1_dropping_after_q_review` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Theorem8 q mem interval review | `theorem8_q_mem_interval_review` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Theorem8 q strict mem interval review | `theorem8_q_strict_mem_interval_review` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Theorem8 q continuous value review | `theorem8_q_continuous_value_review` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Theorem8 continuous full history bayes ex post review | `theorem8_continuous_full_history_bayes_ex_post_review` | No completed statement check recorded. No Lean translation recorded | None recorded |
-| Theorem8 continuous source local best response support unique review | `theorem8_continuous_source_local_best_response_support_unique_review` | No completed statement check recorded. No Lean translation recorded | None recorded |
-<!-- END GENERATED STATEMENT VALIDATOR LEDGER -->
+- [Source statement inventory](audit/paper_statement_map.json)
+- [Source-to-statement review](FINAL_CLOSURE_RECEIPT.md)
+- [Model and definition review](FINAL_CLOSURE_RECEIPT.md)
+- [Reusable definitions review](FINAL_CLOSURE_RECEIPT.md)
+- [Canonical closeout record](FINAL_CLOSURE_RECEIPT.md)
+- [Review packet](docs/HUMAN_REVIEW_PACKET.pdf)
 
 ## 21. Source-Coverage Audit Ledger
 

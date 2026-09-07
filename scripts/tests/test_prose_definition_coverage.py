@@ -18,6 +18,7 @@ if str(ROOT) not in sys.path:
 
 from scripts import review_dashboard  # noqa: E402
 from scripts import audit_evidence_integrity as integrity  # noqa: E402
+from scripts import source_named_result_index  # noqa: E402
 from scripts.source_coverage_scope import (  # noqa: E402
     NAMED_THEORETICAL_STATEMENTS,
     SOURCE_PROSE_DEFINITION_PRESENTATIONS_FIELD,
@@ -324,7 +325,7 @@ class ProseDefinitionCoverageTests(unittest.TestCase):
                 },
             },
         }
-        source_presentations = integrity.extract_named_result_presentations(
+        source_presentations = source_named_result_index.extract_named_result_presentations(
             source_text, source_format="text"
         )
         review = payload["source_named_result_inventory_review"]

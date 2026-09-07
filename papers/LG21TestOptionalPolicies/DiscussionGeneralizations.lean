@@ -25,7 +25,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
+open AppliedModelingLib
 
 /-! ## Conditioning on reporting instead of access -/
 

@@ -14,7 +14,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 /-- Under the literal observed-access source carriers, Definition 6's
 resampling policy is observably fair up to null base fibres and demographically

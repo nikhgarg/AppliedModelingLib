@@ -24,7 +24,7 @@ namespace GJ18InformativeRatingSystems
 noncomputable section
 
 open scoped BigOperators
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 
 /--
 Literal finite-state version of the source's pairwise objective `P_k`.
@@ -38,10 +38,10 @@ def sourceStatePairwisePk
     {n : Nat} {Omega : Type*} [Fintype Omega] [DecidableEq Omega]
     (mu : PMF Omega) (score : Omega -> Fin n -> Real)
     (p : finiteChainOrderedPair n) : Real :=
-  EconCSLib.pmfProb mu
+  AppliedModelingLib.pmfProb mu
       (fun omega => score omega (finiteChainOrderedPairHi p) >
         score omega (finiteChainOrderedPairLo p)) -
-    EconCSLib.pmfProb mu
+    AppliedModelingLib.pmfProb mu
       (fun omega => score omega (finiteChainOrderedPairHi p) <
         score omega (finiteChainOrderedPairLo p))
 
@@ -54,7 +54,7 @@ def sourceStateScoreGapLeftTailProb
     {n : Nat} {Omega : Type*} [Fintype Omega] [DecidableEq Omega]
     (mu : PMF Omega) (score : Omega -> Fin n -> Real)
     (p : finiteChainOrderedPair n) : Real :=
-  EconCSLib.pmfProb mu
+  AppliedModelingLib.pmfProb mu
     (fun omega => score omega (finiteChainOrderedPairHi p) <=
       score omega (finiteChainOrderedPairLo p))
 
@@ -214,25 +214,25 @@ theorem sourceStatePairwisePk_iidFloorCompletion_eq_twoSampleFloorPkObjective
     rw [hval] at hp
     exact (Nat.lt_irrefl lo.val) hp
   have hright_marginal :=
-    EconCSLib.pmfProb_pmfPi_twoCoord_eq_pmfProd_dependent
+    AppliedModelingLib.pmfProb_pmfPi_twoCoord_eq_pmfProd_dependent
       (μ := fun theta : Fin n =>
-        EconCSLib.pmfProduct
+        AppliedModelingLib.pmfProduct
           (Fin (floorSampleCount sampleRate theta k)) Rating (M.typeLaw theta))
       (i := hi) (j := lo) hne
       (p := fun hiSample loSample =>
         cHi * finiteIidScoreSum M.score hiSample >
           cLo * finiteIidScoreSum M.score loSample)
   have hleft_marginal :=
-    EconCSLib.pmfProb_pmfPi_twoCoord_eq_pmfProd_dependent
+    AppliedModelingLib.pmfProb_pmfPi_twoCoord_eq_pmfProd_dependent
       (μ := fun theta : Fin n =>
-        EconCSLib.pmfProduct
+        AppliedModelingLib.pmfProduct
           (Fin (floorSampleCount sampleRate theta k)) Rating (M.typeLaw theta))
       (i := hi) (j := lo) hne
       (p := fun hiSample loSample =>
         cHi * finiteIidScoreSum M.score hiSample <
           cLo * finiteIidScoreSum M.score loSample)
   have hright :
-      EconCSLib.pmfProb (iidFloorSourceStateLaw M sampleRate k)
+      AppliedModelingLib.pmfProb (iidFloorSourceStateLaw M sampleRate k)
           (fun sample =>
             iidFloorSourceStateScore M sampleRate k sample
                 (finiteChainOrderedPairHi p) >
@@ -245,7 +245,7 @@ theorem sourceStatePairwisePk_iidFloorCompletion_eq_twoSampleFloorPkObjective
     simpa [finiteChainJointFloorRatingLaw, finiteChainJointFloorAverageScore,
       hi, lo, nHi, nLo, cHi, cLo] using hright_marginal
   have hleft :
-      EconCSLib.pmfProb (iidFloorSourceStateLaw M sampleRate k)
+      AppliedModelingLib.pmfProb (iidFloorSourceStateLaw M sampleRate k)
           (fun sample =>
             iidFloorSourceStateScore M sampleRate k sample
                 (finiteChainOrderedPairHi p) <
@@ -288,9 +288,9 @@ theorem sourceStateScoreGapLeftTailProb_iidFloorCompletion_eq_twoSampleFloorScor
     rw [hval] at hp
     exact (Nat.lt_irrefl lo.val) hp
   have hmarginal :=
-    EconCSLib.pmfProb_pmfPi_twoCoord_eq_pmfProd_dependent
+    AppliedModelingLib.pmfProb_pmfPi_twoCoord_eq_pmfProd_dependent
       (μ := fun theta : Fin n =>
-        EconCSLib.pmfProduct
+        AppliedModelingLib.pmfProduct
           (Fin (floorSampleCount sampleRate theta k)) Rating (M.typeLaw theta))
       (i := hi) (j := lo) hne
       (p := fun hiSample loSample =>

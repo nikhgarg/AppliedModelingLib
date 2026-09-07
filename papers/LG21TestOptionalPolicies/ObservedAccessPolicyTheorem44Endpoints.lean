@@ -18,7 +18,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 /-- The mandatory-given-access source carrier induces a literal Definition 6
 two-branch policy that is observably fair up to null public-base fibres and

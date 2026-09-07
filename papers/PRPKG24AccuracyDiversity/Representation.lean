@@ -3,14 +3,14 @@ import Mathlib.Algebra.BigOperators.Field
 import Mathlib.Analysis.Convex.StdSimplex
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace PRPKG24AccuracyDiversity
 
 namespace CountAllocation
 
 /-- Representation of a type in a recommendation allocation. -/
-noncomputable def representation {T : ℕ} (a : CountAllocation T) (t : ItemType T) : ℝ := EconCSLib.Allocation.share a t
+noncomputable def representation {T : ℕ} (a : CountAllocation T) (t : ItemType T) : ℝ := AppliedModelingLib.Allocation.share a t
 
 /-- Exact target representation profile. -/
 def HasExactRepresentation {T : ℕ}
@@ -26,7 +26,7 @@ def HasRepresentationAtLeast {T : ℕ}
 
 @[simp] theorem representation_eq_share {T : ℕ}
     (a : CountAllocation T) (t : ItemType T) :
-    representation a t = EconCSLib.Allocation.share a t := rfl
+    representation a t = AppliedModelingLib.Allocation.share a t := rfl
 
 end CountAllocation
 
@@ -102,7 +102,7 @@ namespace CountAllocation
 /-- Representation shares are nonnegative. -/
 theorem representation_nonneg {T : ℕ} (a : CountAllocation T) (t : ItemType T) :
     0 ≤ representation a t := by
-  simpa [representation] using EconCSLib.Allocation.share_nonneg (a := a) (k := t)
+  simpa [representation] using AppliedModelingLib.Allocation.share_nonneg (a := a) (k := t)
 
 /--
 If the total count is larger than `T * K`, at least one type has count larger
@@ -110,19 +110,19 @@ than `K`.
 -/
 theorem exists_count_gt_of_card_mul_lt_total
     {T : ℕ} [NeZero T] (a : CountAllocation T) {K : ℕ}
-    (hgt : T * K < EconCSLib.Allocation.total a) :
+    (hgt : T * K < AppliedModelingLib.Allocation.total a) :
     ∃ t : ItemType T, K < a.count t := by
   have hgt' :
-      Fintype.card (ItemType T) * K < EconCSLib.Allocation.total a := by
+      Fintype.card (ItemType T) * K < AppliedModelingLib.Allocation.total a := by
     simpa [Fintype.card_fin] using hgt
-  exact EconCSLib.Allocation.exists_count_gt_of_card_mul_lt_total a hgt'
+  exact AppliedModelingLib.Allocation.exists_count_gt_of_card_mul_lt_total a hgt'
 
 /-- If the allocation has nonzero total, type representations sum to one. -/
 theorem sum_representation_eq_one_of_total_ne_zero {T : ℕ}
-    (a : CountAllocation T) (h : EconCSLib.Allocation.total a ≠ 0) :
+    (a : CountAllocation T) (h : AppliedModelingLib.Allocation.total a ≠ 0) :
     ∑ t, representation a t = 1 := by
   simpa [representation] using
-    EconCSLib.Allocation.sum_share_eq_one_of_total_ne_zero (a := a) h
+    AppliedModelingLib.Allocation.sum_share_eq_one_of_total_ne_zero (a := a) h
 
 /-- Exact representation implies approximate representation for every nonnegative tolerance. -/
 theorem exact_implies_approx {T : ℕ}
@@ -210,11 +210,11 @@ is within `C` of `N * targetShare`, representation shares are within `C / N`.
 -/
 theorem approx_of_count_abs_error {T : ℕ}
     (G : GammaHomogeneityProfile T) (a : CountAllocation T) {N : ℕ} {C : ℝ}
-    (hN : EconCSLib.Allocation.total a = N) (hNpos : 0 < N)
+    (hN : AppliedModelingLib.Allocation.total a = N) (hNpos : 0 < N)
     (hclose : ∀ t, |(a.count t : ℝ) - (N : ℝ) * G.targetShare t| ≤ C) :
     G.Approx a (C / (N : ℝ)) := by
   intro t
-  have htotal_ne : EconCSLib.Allocation.total a ≠ 0 := by
+  have htotal_ne : AppliedModelingLib.Allocation.total a ≠ 0 := by
     rw [hN]
     exact Nat.ne_of_gt hNpos
   have hNreal_pos : 0 < (N : ℝ) := by exact_mod_cast hNpos
@@ -222,7 +222,7 @@ theorem approx_of_count_abs_error {T : ℕ}
   have hrep :
       CountAllocation.representation a t = (a.count t : ℝ) / (N : ℝ) := by
     rw [CountAllocation.representation_eq_share]
-    rw [EconCSLib.Allocation.share_eq_div_of_total_ne_zero
+    rw [AppliedModelingLib.Allocation.share_eq_div_of_total_ne_zero
       (a := a) (k := t) htotal_ne]
     rw [hN]
   calc
@@ -257,7 +257,7 @@ theorem count_abs_sub_weighted_average_le_of_pairwise_scaled_bounded {T : ℕ}
     ∀ t,
       |(a.count t : ℝ) -
         weight t * (N / ∑ i : ItemType T, weight i)| ≤ C * weight t :=
-   EconCSLib.Allocation.count_abs_sub_weighted_average_le_of_pairwise_scaled_bounded
+   AppliedModelingLib.Allocation.count_abs_sub_weighted_average_le_of_pairwise_scaled_bounded
     a weight hN hweight_pos hC hpair
 
 end GammaHomogeneityProfile
@@ -283,12 +283,12 @@ If all type counts are pairwise bounded by `C`, then each count is within
 theorem count_abs_sub_uniform_average_le_C_of_pairwise_bounded
     {T : ℕ} [NeZero T]
     (a : CountAllocation T) {N : ℕ} {C : ℝ}
-    (hN : EconCSLib.Allocation.total a = N)
+    (hN : AppliedModelingLib.Allocation.total a = N)
     (hbound : ∀ i j : ItemType T, (a.count i : ℝ) ≤ (a.count j : ℝ) + C)
     (t : ItemType T) :
     |(a.count t : ℝ) - (N : ℝ) / (T : ℝ)| ≤ C := by
   simpa [Fintype.card_fin] using
-    EconCSLib.Allocation.count_abs_sub_uniform_average_le_C_of_pairwise_bounded
+    AppliedModelingLib.Allocation.count_abs_sub_uniform_average_le_C_of_pairwise_bounded
       a hN hbound t
 
 /--
@@ -299,12 +299,12 @@ one of the uniform real average `N / T`.
 theorem count_abs_sub_uniform_average_le_one_of_pairwise_balanced
     {T : ℕ} [NeZero T]
     (a : CountAllocation T) {N : ℕ}
-    (hN : EconCSLib.Allocation.total a = N)
+    (hN : AppliedModelingLib.Allocation.total a = N)
     (hbal : ∀ i j : ItemType T, a.count i ≤ a.count j + 1)
     (t : ItemType T) :
     |(a.count t : ℝ) - (N : ℝ) / (T : ℝ)| ≤ 1 := by
   simpa [Fintype.card_fin] using
-    EconCSLib.Allocation.count_abs_sub_uniform_average_le_one_of_pairwise_balanced
+    AppliedModelingLib.Allocation.count_abs_sub_uniform_average_le_one_of_pairwise_balanced
       a hN hbal t
 
 /--
@@ -314,7 +314,7 @@ rounding error `1 / N`.
 theorem uniformProfile_approx_of_pairwise_balanced_counts
     {T : ℕ} [NeZero T]
     (a : CountAllocation T) {N : ℕ}
-    (hN : EconCSLib.Allocation.total a = N) (hNpos : 0 < N)
+    (hN : AppliedModelingLib.Allocation.total a = N) (hNpos : 0 < N)
     (hbal : ∀ i j : ItemType T, a.count i ≤ a.count j + 1) :
     (uniformProfile T).Approx a (1 / (N : ℝ)) := by
   refine GammaHomogeneityProfile.approx_of_count_abs_error

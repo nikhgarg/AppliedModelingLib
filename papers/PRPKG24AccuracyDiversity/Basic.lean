@@ -1,7 +1,7 @@
-import EconCSLib.Applications.RecommenderSystems.Allocation
+import AppliedModelingLib.Applications.RecommenderSystems.Allocation
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace PRPKG24AccuracyDiversity
 
@@ -9,7 +9,7 @@ namespace PRPKG24AccuracyDiversity
 abbrev ItemType (T : ℕ) := Fin T
 
 /-- A count allocation: how many recommended items are drawn from each type. -/
-abbrev CountAllocation (T : ℕ) := EconCSLib.Allocation (ItemType T)
+abbrev CountAllocation (T : ℕ) := AppliedModelingLib.Allocation (ItemType T)
 
 /--
 Generic finite abstraction of the paper's consumption-constrained objective.
@@ -29,10 +29,10 @@ namespace ConsumptionModel
 
 /-- The finite count-objective induced by a consumption model. -/
 noncomputable def objective {T : ℕ}
-    (M : ConsumptionModel T) (a : CountAllocation T) : ℝ := EconCSLib.Allocation.objective a M.likelihood M.valueOfCount
+    (M : ConsumptionModel T) (a : CountAllocation T) : ℝ := AppliedModelingLib.Allocation.objective a M.likelihood M.valueOfCount
 
 /-- `a` is feasible for a slate/recommendation set of size `N`. -/
-def FeasibleAtTotal {T : ℕ} (N : ℕ) (a : CountAllocation T) : Prop := EconCSLib.Allocation.HasTotal a N
+def FeasibleAtTotal {T : ℕ} (N : ℕ) (a : CountAllocation T) : Prop := AppliedModelingLib.Allocation.HasTotal a N
 
 /-- `a` maximizes the consumption-constrained objective among allocations of size `N`. -/
 def IsOptimalAtTotal {T : ℕ}
@@ -42,13 +42,13 @@ def IsOptimalAtTotal {T : ℕ}
 
 /-- Marginal gain from adding one more item of type `t` after already recommending `q`. -/
 noncomputable def marginalValue {T : ℕ}
-    (M : ConsumptionModel T) (t : ItemType T) (q : ℕ) : ℝ := EconCSLib.Allocation.marginal M.valueOfCount t q
+    (M : ConsumptionModel T) (t : ItemType T) (q : ℕ) : ℝ := AppliedModelingLib.Allocation.marginal M.valueOfCount t q
 
 /-- The model has nonnegative marginal values in every type. -/
-def HasNonnegativeMarginals {T : ℕ} (M : ConsumptionModel T) : Prop := EconCSLib.Allocation.HasNonnegativeMarginals M.valueOfCount
+def HasNonnegativeMarginals {T : ℕ} (M : ConsumptionModel T) : Prop := AppliedModelingLib.Allocation.HasNonnegativeMarginals M.valueOfCount
 
 /-- The model has diminishing returns in every type. -/
-def HasDiminishingReturns {T : ℕ} (M : ConsumptionModel T) : Prop := EconCSLib.Allocation.HasDiminishingReturns M.valueOfCount
+def HasDiminishingReturns {T : ℕ} (M : ConsumptionModel T) : Prop := AppliedModelingLib.Allocation.HasDiminishingReturns M.valueOfCount
 
 /-- Linear, no-consumption-constraint value: each additional item has the same value. -/
 def linearValueOfCount {T : ℕ}
@@ -63,7 +63,7 @@ def linearized {T : ℕ}
 
 @[simp] theorem objective_eq_allocation_objective {T : ℕ}
     (M : ConsumptionModel T) (a : CountAllocation T) :
-    M.objective a = EconCSLib.Allocation.objective a M.likelihood M.valueOfCount := rfl
+    M.objective a = AppliedModelingLib.Allocation.objective a M.likelihood M.valueOfCount := rfl
 
 @[simp] theorem marginalValue_apply {T : ℕ}
     (M : ConsumptionModel T) (t : ItemType T) (q : ℕ) :

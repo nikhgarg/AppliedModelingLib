@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create and validate an isolated EconCSLib paper contribution.
+"""Create and validate an isolated AppliedModelingLib paper contribution.
 
 This is the stable contributor-facing facade.  It deliberately keeps a
 single-paper pull request independent from every unchanged paper.  The same
@@ -1043,7 +1043,7 @@ def _validation_commands(
     if status not in KNOWN_STATUSES:
         raise ContributionError(f"unsupported paper status {status!r}")
     commands: list[list[str]] = [
-        ["lake", "build", f"{paper}.PaperInterface" if fast else paper]
+        ["lake", "build", f"+{paper}.PaperInterface" if fast else f"+{paper}"]
     ]
     if fast:
         return commands
@@ -1179,20 +1179,6 @@ def _strict_closeout_completion_is_current(
     return not receipt_error
 
 
-def _planner_action(plan: Mapping[str, object], action_id: str) -> Mapping[str, object] | None:
-    raw_actions = plan.get("actions")
-    if not isinstance(raw_actions, list):
-        return None
-    matches = [
-        action
-        for action in raw_actions
-        if isinstance(action, Mapping) and action.get("id") == action_id
-    ]
-    if len(matches) != 1:
-        return None
-    return matches[0]
-
-
 def _validated_planner_command(
     paper: str,
     plan: Mapping[str, object],
@@ -1208,25 +1194,10 @@ def _validated_planner_command(
         raise ContributionError(f"planner returned invalid argv for {action_id}")
     argv = list(raw_argv)
     if action_id == "paper_build":
-        expected = ["env", "LEAN_NUM_THREADS=1", "lake", "build", paper]
+        expected = ["env", "LEAN_NUM_THREADS=1", "lake", "build", f"+{paper}"]
         if argv != expected:
             raise ContributionError("planner paper_build command is not canonical")
         return expected
-    if action_id == "fresh_manifest_batch":
-        expected_tail = [
-            "scripts/refresh_closeout_manifest_cache.py",
-            "--paper",
-            paper,
-        ]
-        if len(argv) != 1 + len(expected_tail) or argv[1:] != expected_tail:
-            raise ContributionError(
-                "planner fresh_manifest_batch command is not canonical"
-            )
-        if Path(argv[0]).name not in {"python", "python3", Path(PYTHON).name}:
-            raise ContributionError(
-                "planner fresh_manifest_batch interpreter is not Python"
-            )
-        return [PYTHON, *expected_tail]
     if action_id == "strict_closeout":
         identity = str(plan.get("plan_identity_sha256") or "")
         if not re.fullmatch(r"[0-9a-f]{64}", identity):
@@ -1312,7 +1283,7 @@ def _execute_planned_closeout(
                 )
             retried_publication_races.add(retry_key)
             continue
-        if action_id not in {"paper_build", "fresh_manifest_batch", "strict_closeout"}:
+        if action_id not in {"paper_build", "strict_closeout"}:
             reason = str(action.get("reason") or "manual inspection is required")
             raise ContributionError(
                 f"closeout stopped at `{action_id}`: {reason}"
@@ -1340,15 +1311,6 @@ def _execute_planned_closeout(
             # planner preflight has ruled out a source/status stop.
             ensure_isolation()
 
-        # A cold-cache schedule deliberately exposes the manifest refresh as
-        # the build's state-qualified successor. Complete that pair before the
-        # required replan; replanning between them just schedules the build
-        # again because no manifest exists yet.
-        if action_id == "paper_build":
-            manifest = _planner_action(plan, "fresh_manifest_batch")
-            if manifest is not None and manifest.get("state") == "after_paper_build":
-                _run(_validated_planner_command(paper, plan, manifest))
-                reassert()
     raise ContributionError("closeout planner did not reach a terminal result in 12 steps")
 
 
@@ -1663,11 +1625,22 @@ def _agent_source_audit_template(paper: str) -> str:
 ## Overall status: NEEDS AGENT REVIEW
 
 Complete this after the statement map and `PaperInterface.lean` are stable,
-then replace the status above with `PASS` only when the audit is complete. This
-must be an independent source-first review: it must not merely summarize
+but do not complete it during intake or the first repair-oriented adversarial
+source-to-interface pass. First finish semantic judgments and compiled Lean
+evidence, then run the closeout planner. Replace the status above with `PASS`
+only when the planner schedules the final adversarial audit and that review is
+complete.
+
+- Reviewed final holistic audit surface identity: `<replace with planner-issued sha256>`
+
+This must be an independent source-first review: it must not merely summarize
 existing sidecars. Construct the source inventory from the source itself before
 using Lean declarations as navigation, then compare the interface for
-omissions, hidden strengthening/weakening, and semantic mismatches.
+omissions, hidden strengthening/weakening, and semantic mismatches. Reread the
+complete source rather than treating the frozen intake inventory as proof of
+its own completeness. This final adversarial pass is separate from the earlier
+source-only intake review, the first adversarial repair pass, and the item-level
+machine gates. It must bind the exact source-and-Lean semantic surface reviewed.
 
 ## Source Inventory
 

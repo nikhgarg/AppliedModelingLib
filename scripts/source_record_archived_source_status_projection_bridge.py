@@ -35,6 +35,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 try:  # Supports package imports and direct execution.
+    from scripts.formalization_protocol import CURRENT_SOURCE_RECORD_PROMPT_VERSION
     from scripts.source_coverage_scope import (
         legacy_source_item_coverage_sha256_before_direct_source_status_exclusion,
         legacy_source_item_coverage_sha256_schema4_direct_source_status_excluded,
@@ -50,6 +51,7 @@ try:  # Supports package imports and direct execution.
         source_map_item_record_digest,
     )
 except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
+    from formalization_protocol import CURRENT_SOURCE_RECORD_PROMPT_VERSION
     from source_coverage_scope import (
         legacy_source_item_coverage_sha256_before_direct_source_status_exclusion,
         legacy_source_item_coverage_sha256_schema4_direct_source_status_excluded,
@@ -66,9 +68,7 @@ except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
     )
 
 
-SOURCE_RECORD_V10_PROMPT_VERSION = (
-    "source-record-v10-semantic-conclusion-boundary-contract"
-)
+SOURCE_RECORD_V10_PROMPT_VERSION = CURRENT_SOURCE_RECORD_PROMPT_VERSION
 ARCHIVED_SOURCE_STATUS_PROJECTION_BRIDGE_SCHEMA = 1
 ARCHIVED_SOURCE_STATUS_PROJECTION_BRIDGE_POLICY_VERSION = (
     "source-record-v10-archived-schema4-direct-source-status-bridge-v1"

@@ -19,7 +19,7 @@ namespace GJ18InformativeRatingSystems
 noncomputable section
 
 open scoped BigOperators
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 
 /-- The increment from ordinal level `k` to `k + 1`, zero outside the range. -/
 private noncomputable def sourceOrdinalTailCoeff {m : Nat}
@@ -105,32 +105,32 @@ private theorem source_ordinal_tail_score_eq_score_zero_add_sum {m : Nat}
 /-- Finite expected ordinal score as a weighted sum of upper-tail masses. -/
 private theorem pmfExp_source_ordinal_tail_decomposition {m : Nat}
     (mu : PMF (Fin (m + 1))) (score : Fin (m + 1) -> Real) :
-    EconCSLib.pmfExp mu score =
+    AppliedModelingLib.pmfExp mu score =
       score 0 + ∑ k ∈ Finset.range m,
         sourceOrdinalTailCoeff score k *
-          EconCSLib.pmfProb mu (fun r : Fin (m + 1) =>
+          AppliedModelingLib.pmfProb mu (fun r : Fin (m + 1) =>
             sourceOrdinalTailThreshold (m := m) k ≤ r) := by
   classical
   calc
-    EconCSLib.pmfExp mu score =
-        EconCSLib.pmfExp mu (fun r : Fin (m + 1) =>
+    AppliedModelingLib.pmfExp mu score =
+        AppliedModelingLib.pmfExp mu (fun r : Fin (m + 1) =>
           score 0 + ∑ k ∈ Finset.range m,
             if k < r.val then sourceOrdinalTailCoeff score k else 0) := by
-          refine EconCSLib.pmfExp_congr mu ?_
+          refine AppliedModelingLib.pmfExp_congr mu ?_
           intro r
           exact source_ordinal_tail_score_eq_score_zero_add_sum score r
     _ = score 0 +
-        EconCSLib.pmfExp mu (fun r : Fin (m + 1) =>
+        AppliedModelingLib.pmfExp mu (fun r : Fin (m + 1) =>
           ∑ k ∈ Finset.range m,
             if k < r.val then sourceOrdinalTailCoeff score k else 0) := by
-          rw [EconCSLib.pmfExp_add, EconCSLib.pmfExp_const]
+          rw [AppliedModelingLib.pmfExp_add, AppliedModelingLib.pmfExp_const]
     _ = score 0 + ∑ k ∈ Finset.range m,
-        EconCSLib.pmfExp mu (fun r : Fin (m + 1) =>
+        AppliedModelingLib.pmfExp mu (fun r : Fin (m + 1) =>
           if k < r.val then sourceOrdinalTailCoeff score k else 0) := by
-          rw [EconCSLib.pmfExp_finset_sum]
+          rw [AppliedModelingLib.pmfExp_finset_sum]
     _ = score 0 + ∑ k ∈ Finset.range m,
         sourceOrdinalTailCoeff score k *
-          EconCSLib.pmfProb mu (fun r : Fin (m + 1) =>
+          AppliedModelingLib.pmfProb mu (fun r : Fin (m + 1) =>
             sourceOrdinalTailThreshold (m := m) k ≤ r) := by
           refine congrArg (fun x => score 0 + x) ?_
           refine Finset.sum_congr rfl ?_
@@ -141,14 +141,14 @@ private theorem pmfExp_source_ordinal_tail_decomposition {m : Nat}
                 (⟨k + 1, Nat.succ_lt_succ hk⟩ : Fin (m + 1)) :=
             sourceOrdinalTailThreshold_of_lt hk
           calc
-            EconCSLib.pmfExp mu (fun r : Fin (m + 1) =>
+            AppliedModelingLib.pmfExp mu (fun r : Fin (m + 1) =>
                 if k < r.val then sourceOrdinalTailCoeff score k else 0)
                 =
-                EconCSLib.pmfExp mu (fun r : Fin (m + 1) =>
+                AppliedModelingLib.pmfExp mu (fun r : Fin (m + 1) =>
                   sourceOrdinalTailCoeff score k *
                     (if sourceOrdinalTailThreshold (m := m) k ≤ r then
                       (1 : Real) else 0)) := by
-                  refine EconCSLib.pmfExp_congr mu ?_
+                  refine AppliedModelingLib.pmfExp_congr mu ?_
                   intro r
                   have hevent :
                       (sourceOrdinalTailThreshold (m := m) k ≤ r) ↔
@@ -164,9 +164,9 @@ private theorem pmfExp_source_ordinal_tail_decomposition {m : Nat}
                       fun hle => hkr (hevent.1 hle)
                     simp [hkr, htail]
             _ = sourceOrdinalTailCoeff score k *
-                EconCSLib.pmfProb mu (fun r : Fin (m + 1) =>
+                AppliedModelingLib.pmfProb mu (fun r : Fin (m + 1) =>
                   sourceOrdinalTailThreshold (m := m) k ≤ r) := by
-                  rw [EconCSLib.pmfExp_const_mul]
+                  rw [AppliedModelingLib.pmfExp_const_mul]
                   rfl
 
 private theorem sourceOrdinalTailCoeff_nonneg_of_strictMono {m : Nat}
@@ -198,20 +198,20 @@ theorem source_strict_expected_score_gap
     (sourceModel : FiniteOrdinalSourceModel M sampleRate)
     (hm : 0 < m)
     (p : finiteChainOrderedPair n) :
-    EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score <
-      EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score := by
+    AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score <
+      AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score := by
   classical
   rw [pmfExp_source_ordinal_tail_decomposition,
     pmfExp_source_ordinal_tail_decomposition]
   have hsum :
       (∑ k ∈ Finset.range m,
           sourceOrdinalTailCoeff M.score k *
-            EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p))
+            AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p))
               (fun r : Fin (m + 1) =>
                 sourceOrdinalTailThreshold (m := m) k ≤ r)) <
         ∑ k ∈ Finset.range m,
           sourceOrdinalTailCoeff M.score k *
-            EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p))
+            AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p))
               (fun r : Fin (m + 1) =>
                 sourceOrdinalTailThreshold (m := m) k ≤ r) := by
     refine Finset.sum_lt_sum ?_ ?_
@@ -231,10 +231,10 @@ theorem source_strict_expected_score_gap
         hcoeff
     · refine ⟨0, Finset.mem_range.mpr hm, ?_⟩
       have htail :
-          EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p))
+          AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p))
               (fun r : Fin (m + 1) =>
                 sourceOrdinalTailThreshold (m := m) 0 ≤ r) <
-            EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p))
+            AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p))
               (fun r : Fin (m + 1) =>
                 sourceOrdinalTailThreshold (m := m) 0 ≤ r) :=
         by
@@ -258,8 +258,8 @@ theorem source_strict_expected_score_gaps
     (sourceModel : FiniteOrdinalSourceModel M sampleRate)
     (hm : 0 < m) :
     forall p : finiteChainOrderedPair n,
-      EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score <
-        EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score := by
+      AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score <
+        AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score := by
   intro p
   exact source_strict_expected_score_gap M sampleRate sourceModel hm p
 
@@ -394,7 +394,7 @@ theorem source_binary_pairwiseThresholdRateTop_pos_of_low_terminal_mass_zero
         M sourceModel.quality_tails_strictly_increase_above_bottom p (by omega)
     simpa [hi] using hmass
   have hrate_pos : 0 < sampleRate hi *
-      (-Real.log (EconCSLib.pmfProb (M.typeLaw hi)
+      (-Real.log (AppliedModelingLib.pmfProb (M.typeLaw hi)
         (fun r => M.score r = M.score (0 : Fin 2)))) :=
     binaryBottomTopBoundaryRate_pos
       M sampleRate hi (0 : Fin 2) (Fin.last 1)
@@ -402,7 +402,7 @@ theorem source_binary_pairwiseThresholdRateTop_pos_of_low_terminal_mass_zero
   have hrate_eq :
       M.pairwiseThresholdRateTop sampleRate hi lo =
         (sampleRate hi *
-          (-Real.log (EconCSLib.pmfProb (M.typeLaw hi)
+          (-Real.log (AppliedModelingLib.pmfProb (M.typeLaw hi)
             (fun r => M.score r = M.score (0 : Fin 2))) : WithTop Real)) :=
     pairwiseSellerThresholdRateTop_eq_binary_bottom_top_boundary
       M sampleRate hi lo (0 : Fin 2) (Fin.last 1)

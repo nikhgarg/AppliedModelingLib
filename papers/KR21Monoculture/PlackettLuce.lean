@@ -1,7 +1,7 @@
 import KR21Monoculture.Theorem1
-import EconCSLib.Foundations.Probability.WithoutReplacement
+import AppliedModelingLib.Foundations.Probability.WithoutReplacement
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -89,8 +89,8 @@ noncomputable def plackettLuceRankingPMF {n : ℕ} (theta : ℝ)
 noncomputable def firstSecondChoiceProb {n : ℕ}
     (mu : PMF (Ranking n)) (first second : Candidate n) : ℝ :=
   pmfProb mu fun pi =>
-    first = EconCSLib.SocialChoice.Ranking.firstChoice pi ∧
-      second = EconCSLib.SocialChoice.Ranking.secondChoice pi
+    first = AppliedModelingLib.SocialChoice.Ranking.firstChoice pi ∧
+      second = AppliedModelingLib.SocialChoice.Ranking.secondChoice pi
 
 /-- A second-position marginal is the sum of its first/second joint atoms. -/
 theorem secondChoiceProb_eq_sum_firstSecondChoiceProb {n : ℕ}
@@ -101,24 +101,24 @@ theorem secondChoiceProb_eq_sum_firstSecondChoiceProb {n : ℕ}
   unfold secondChoiceProb firstSecondChoiceProb pmfProb pmfExp
   calc
     ∑ pi : Ranking n, (mu pi).toReal *
-        (if second = EconCSLib.SocialChoice.Ranking.secondChoice pi then 1 else 0)
+        (if second = AppliedModelingLib.SocialChoice.Ranking.secondChoice pi then 1 else 0)
         = ∑ pi : Ranking n, ∑ first : Candidate n,
             (mu pi).toReal *
-              (if first = EconCSLib.SocialChoice.Ranking.firstChoice pi ∧
-                  second = EconCSLib.SocialChoice.Ranking.secondChoice pi
+              (if first = AppliedModelingLib.SocialChoice.Ranking.firstChoice pi ∧
+                  second = AppliedModelingLib.SocialChoice.Ranking.secondChoice pi
                 then 1 else 0) := by
           refine Finset.sum_congr rfl ?_
           intro pi _
           by_cases hsecond :
-              second = EconCSLib.SocialChoice.Ranking.secondChoice pi
+              second = AppliedModelingLib.SocialChoice.Ranking.secondChoice pi
           · simp [hsecond]
           · have hsecond' : second ≠ pi 1 := by
-              simpa [EconCSLib.SocialChoice.Ranking.secondChoice] using hsecond
+              simpa [AppliedModelingLib.SocialChoice.Ranking.secondChoice] using hsecond
             simp [hsecond']
     _ = ∑ first : Candidate n, ∑ pi : Ranking n,
           (mu pi).toReal *
-            (if first = EconCSLib.SocialChoice.Ranking.firstChoice pi ∧
-                second = EconCSLib.SocialChoice.Ranking.secondChoice pi
+            (if first = AppliedModelingLib.SocialChoice.Ranking.firstChoice pi ∧
+                second = AppliedModelingLib.SocialChoice.Ranking.secondChoice pi
               then 1 else 0) := by
           exact Finset.sum_comm
 
@@ -176,19 +176,19 @@ theorem bestRemainingProb_eq_first_add_firstSecond {n : ℕ}
   classical
   have hevent : ∀ pi : Ranking n,
       (i = bestRemainingAfter pi removed) ↔
-        (i = EconCSLib.SocialChoice.Ranking.firstChoice pi) ∨
-          (removed = EconCSLib.SocialChoice.Ranking.firstChoice pi ∧
-            i = EconCSLib.SocialChoice.Ranking.secondChoice pi) := by
+        (i = AppliedModelingLib.SocialChoice.Ranking.firstChoice pi) ∨
+          (removed = AppliedModelingLib.SocialChoice.Ranking.firstChoice pi ∧
+            i = AppliedModelingLib.SocialChoice.Ranking.secondChoice pi) := by
     intro pi
     by_cases hfirst :
-        EconCSLib.SocialChoice.Ranking.firstChoice pi = removed
+        AppliedModelingLib.SocialChoice.Ranking.firstChoice pi = removed
     · constructor
       · intro hbest
         right
         refine ⟨hfirst.symm, ?_⟩
         have hremaining :
             bestRemainingAfter pi removed =
-              EconCSLib.SocialChoice.Ranking.secondChoice pi := by
+              AppliedModelingLib.SocialChoice.Ranking.secondChoice pi := by
           rw [← hfirst]
           exact bestRemainingAfter_of_eq pi
         exact hbest.trans hremaining
@@ -196,7 +196,7 @@ theorem bestRemainingProb_eq_first_add_firstSecond {n : ℕ}
         · exact False.elim (hi (hfirst_i.trans hfirst))
         · have hremaining :
               bestRemainingAfter pi removed =
-                EconCSLib.SocialChoice.Ranking.secondChoice pi := by
+                AppliedModelingLib.SocialChoice.Ranking.secondChoice pi := by
             rw [← hfirst]
             exact bestRemainingAfter_of_eq pi
           exact hsecond.trans hremaining.symm
@@ -239,10 +239,10 @@ theorem plackettLuceRankingPMF_firstChoiceProb_eq_equation7
     (i : Candidate n) :
     firstChoiceProb (plackettLuceRankingPMF theta value) i =
       plackettLuceChoiceProb theta value Finset.univ i := by
-  unfold firstChoiceProb EconCSLib.SocialChoice.Ranking.firstChoiceProb
+  unfold firstChoiceProb AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb
     plackettLuceRankingPMF
   rw [pmfProb_map]
-  simpa [EconCSLib.SocialChoice.Ranking.firstChoice,
+  simpa [AppliedModelingLib.SocialChoice.Ranking.firstChoice,
     plackettLuceChoiceProb, eq_comm] using
       plackettLuceFreshRankingPMF_firstChoiceProb_eq_equation7
         theta value i
@@ -345,14 +345,14 @@ theorem plackettLuceRankingPMF_firstSecondChoiceProb_eq_equation7
       exact pmfProb_eq_zero_of_no_mass _ _ (by
         intro pi hpi
         exact False.elim
-          (EconCSLib.SocialChoice.Ranking.firstChoice_ne_secondChoice pi
+          (AppliedModelingLib.SocialChoice.Ranking.firstChoice_ne_secondChoice pi
             (hpi.1.symm.trans hpi.2)))
     rw [hzero]
     simp [plackettLuceChoiceProb]
   · unfold firstSecondChoiceProb plackettLuceRankingPMF
     rw [pmfProb_map]
-    simpa [EconCSLib.SocialChoice.Ranking.firstChoice,
-      EconCSLib.SocialChoice.Ranking.secondChoice, eq_comm] using
+    simpa [AppliedModelingLib.SocialChoice.Ranking.firstChoice,
+      AppliedModelingLib.SocialChoice.Ranking.secondChoice, eq_comm] using
       plackettLuceFreshRankingPMF_firstSecondProb_eq_equation7
         theta value first second hne
 

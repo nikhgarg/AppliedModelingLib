@@ -12,6 +12,8 @@ CONFIG = ROOT / ".codex" / "config.toml"
 
 class PrivateCodexConfigTests(unittest.TestCase):
     def test_login_shell_startup_noise_is_disabled_project_wide(self) -> None:
+        if not CONFIG.is_file():
+            self.skipTest("private project Codex configuration is not present")
         payload = tomllib.loads(CONFIG.read_text(encoding="utf-8"))
 
         self.assertIs(payload.get("allow_login_shell"), False)

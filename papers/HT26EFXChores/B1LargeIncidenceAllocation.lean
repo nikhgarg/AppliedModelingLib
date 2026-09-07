@@ -13,7 +13,7 @@ Source: `EFXadditivechores.tex`, lines 2472--2504.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- A canonical prefix with agent `0` long becomes envy-free after each short
 agent receives one own-small chore that is large for agent `0`.  This is the

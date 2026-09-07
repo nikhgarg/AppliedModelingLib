@@ -23,6 +23,7 @@ from scripts import audit_evidence_integrity as integrity  # noqa: E402
 from scripts import audit_repository  # noqa: E402
 from scripts import lean_signature_manifest  # noqa: E402
 from scripts import review_dashboard  # noqa: E402
+from scripts import source_named_result_index  # noqa: E402
 from scripts.source_record_integrity import (  # noqa: E402
     stamp_source_record_audit_receipts,
 )
@@ -39,6 +40,12 @@ class SemanticContractCloseoutBridgeTests(unittest.TestCase):
         )
         legacy_transition.start()
         self.addCleanup(legacy_transition.stop)
+        foreign_scope = mock.patch(
+            "scripts.lean_signature_manifest.foreign_model_definition_scope",
+            return_value=((), (), ""),
+        )
+        foreign_scope.start()
+        self.addCleanup(foreign_scope.stop)
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.paper = Path(self.temporary.name) / "FixturePaper"
@@ -94,8 +101,8 @@ class SemanticContractCloseoutBridgeTests(unittest.TestCase):
             "source_location": "source.txt:1",
             "source_anchor_evidence": self.source_anchor(),
             "semantic_contract": {
-                "spec_declaration": "sourceShape",
-                "evidence_declaration": "proofRoute",
+                "spec_declaration": "Fixture.sourceShape",
+                "evidence_declaration": "Fixture.proofRoute",
                 "evidence_mode": "proves",
                 "semantic_shape": "plain",
             },
@@ -103,7 +110,7 @@ class SemanticContractCloseoutBridgeTests(unittest.TestCase):
 
     def write_map(self, items: dict[str, dict[str, object]]) -> None:
         named_result_digest = integrity.named_result_presentations_sha256(
-            integrity.extract_named_result_presentations(
+            source_named_result_index.extract_named_result_presentations(
                 self.source.read_text(encoding="utf-8"), source_format="text"
             )
         )
@@ -298,7 +305,7 @@ class SemanticContractCloseoutBridgeTests(unittest.TestCase):
             mock.patch.object(
                 lean_signature_manifest,
                 "run_lean_semantic_contract_transparency_checks",
-                return_value={"sourceShape": exact},
+                return_value={"Fixture.sourceShape": exact},
             ),
         ):
             errors = audit_repository.semantic_contract_executable_terminal_policy_errors(
@@ -412,6 +419,10 @@ class SemanticContractCloseoutBridgeTests(unittest.TestCase):
             lean_signature_manifest,
             "run_lean_semantic_contract_transparency_checks",
             return_value=transparent,
+        ), mock.patch.object(
+            lean_signature_manifest,
+            "foreign_model_definition_scope",
+            return_value=((), (), ""),
         ):
             self.assertTrue(
                 audit_repository.semantic_contract_closeout_bridge_is_current(
@@ -438,6 +449,115 @@ class SemanticContractCloseoutBridgeTests(unittest.TestCase):
                     json.loads((self.paper / "status.json").read_text(encoding="utf-8")),
                 )
             )
+
+    def test_invalid_strict_inventory_fails_before_legacy_lean_replay(self) -> None:
+        """An inventory error is not repaired by expensive legacy programs."""
+
+        self.write_map({"opaque_source_atom": self.contract_item()})
+        payload = json.loads(
+            (self.audit / "paper_statement_map.json").read_text(encoding="utf-8")
+        )
+        declarations = audit_repository.paper_lean_declaration_index(self.paper)
+        transparency = mock.Mock(
+            side_effect=AssertionError("invalid inventory must fail before Lean")
+        )
+        matches = mock.Mock(
+            side_effect=AssertionError("invalid inventory must fail before Lean")
+        )
+        with (
+            mock.patch.object(
+                audit_repository,
+                "source_spec_correspondence_requested",
+                return_value=True,
+            ),
+            mock.patch.object(
+                integrity, "semantic_contract_inventory_findings", return_value=[]
+            ),
+            mock.patch.object(
+                audit_repository,
+                "semantic_contract_closeout_bridge_inventory",
+                return_value=(None, [mock.Mock()]),
+            ),
+            mock.patch.object(
+                lean_signature_manifest,
+                "run_lean_semantic_contract_transparency_checks",
+                transparency,
+            ),
+            mock.patch.object(
+                lean_signature_manifest,
+                "run_lean_semantic_contract_matches",
+                matches,
+            ),
+        ):
+            findings = audit_repository.paper_statement_map_semantic_contract_findings(
+                "FixturePaper",
+                self.paper,
+                "formalized",
+                payload,
+                declarations,
+                set(),
+                json.loads((self.paper / "status.json").read_text(encoding="utf-8")),
+            )
+
+        self.assertEqual(len(findings), 1)
+        self.assertIn("strict source-to-Spec inventory is unavailable", findings[0].message)
+        transparency.assert_not_called()
+        matches.assert_not_called()
+
+    def test_complete_contract_pass_is_reused_only_in_issuing_transaction(self) -> None:
+        """The second bridge consumer cannot replay or fabricate a prior pass."""
+
+        self.write_map({"opaque_source_atom": self.contract_item()})
+        snapshot_status = json.loads(
+            (self.paper / "status.json").read_text(encoding="utf-8")
+        )
+        snapshot_map = json.loads(
+            (self.audit / "paper_statement_map.json").read_text(encoding="utf-8")
+        )
+        context = self.terminal_policy_context(
+            snapshot_status=snapshot_status,
+            snapshot_map=snapshot_map,
+        )
+        with mock.patch.object(
+            audit_repository, "exact_evidence_run_context", return_value=True
+        ):
+            context.record_semantic_contract_closeout_bridge(
+                {"opaque_source_atom"}
+            )
+            self.assertEqual(
+                context.current_semantic_contract_closeout_bridge_scope_keys(),
+                (),
+            )
+            context.record_semantic_contract_closeout_bridge(
+                {"opaque_source_atom"},
+                _issuer=audit_repository._SEMANTIC_CONTRACT_CLOSEOUT_BRIDGE_ISSUER,
+            )
+            with mock.patch.object(
+                integrity,
+                "semantic_contract_closeout_bridge_inventory",
+                side_effect=AssertionError("complete transaction pass should be reused"),
+            ):
+                self.assertTrue(
+                    audit_repository.semantic_contract_closeout_bridge_is_current(
+                        "FixturePaper",
+                        self.paper,
+                        "formalized",
+                        snapshot_status,
+                        run_context=context,
+                    )
+                )
+
+        unissued = audit_repository.PaperCloseoutRunContext(
+            "FixturePaper", self.paper
+        )
+        unissued.record_semantic_contract_closeout_bridge(
+            {"opaque_source_atom"},
+            _issuer=audit_repository._SEMANTIC_CONTRACT_CLOSEOUT_BRIDGE_ISSUER,
+        )
+        self.assertEqual(
+            unissued.current_semantic_contract_closeout_bridge_scope_keys(),
+            (),
+        )
 
     def test_precloseout_pairs_require_partial_status_and_current_exact_contracts(self) -> None:
         self.write_status("partially formalized")
@@ -588,6 +708,30 @@ class SemanticContractCloseoutBridgeTests(unittest.TestCase):
             any("requires an exact semantic_contract" in finding.message for finding in findings)
         )
 
+    def test_support_only_source_inventory_does_not_block_direct_bridge(self) -> None:
+        """Support rows stay visible without becoming duplicate Spec obligations."""
+
+        support = self.contract_item()
+        support.pop("semantic_contract")
+        support["source_status"] = "support_only"
+        support["inventory_role"] = "proof_support"
+        support["support_lean_declarations"] = ["Fixture.proofRoute"]
+        self.write_map(
+            {
+                "direct_source_claim": self.contract_item(),
+                "source_proof_support": support,
+            }
+        )
+
+        inventory, findings = integrity.semantic_contract_closeout_bridge_inventory(
+            self.paper, "formalized"
+        )
+
+        self.assertEqual(findings, [])
+        assert inventory is not None
+        self.assertEqual(inventory.contract_item_keys, ("direct_source_claim",))
+        self.assertEqual(inventory.scope_exclusion_item_keys, ())
+
     def test_explicit_byte_pinned_scope_exclusion_stays_visible_but_is_allowed(self) -> None:
         self.source_text = (
             "Theorem 1. States the exact audited property.\n"
@@ -644,7 +788,7 @@ class SemanticContractCloseoutBridgeTests(unittest.TestCase):
             inventory.scope_exclusion_item_keys, ("renamed_scope_disposition",)
         )
 
-    def test_spec_cannot_alias_or_cite_evidence(self) -> None:
+    def test_spec_structure_rejects_aliases_and_missing_source(self) -> None:
         path = self.paper / "PaperInterface.lean"
         evidence = audit_repository.LeanDeclaration(
             path=path,
@@ -666,30 +810,10 @@ class SemanticContractCloseoutBridgeTests(unittest.TestCase):
             "SourceSpec": [alias_spec],
             "Fixture.SourceSpec": [alias_spec],
         }
-        alias_error = audit_repository.semantic_contract_spec_independence_error(
-            declaration_index,
-            alias_spec,
-            evidence,
-            configured_spec_name="SourceSpec",
-            configured_evidence_name="Evidence",
+        alias_error = audit_repository.semantic_contract_spec_structure_error(
+            declaration_index, alias_spec
         )
         self.assertIn("trivial alias", alias_error)
-
-        wrapper_spec = audit_repository.LeanDeclaration(
-            path=path,
-            line=5,
-            kind="abbrev",
-            name="SourceSpec",
-            source="abbrev SourceSpec : Prop := SourceSpec_spec_proof ∧ True",
-        )
-        wrapper_error = audit_repository.semantic_contract_spec_independence_error(
-            declaration_index,
-            wrapper_spec,
-            evidence,
-            configured_spec_name="SourceSpec",
-            configured_evidence_name="Evidence",
-        )
-        self.assertIn("_spec_proof", wrapper_error)
 
         missing_source_spec = audit_repository.LeanDeclaration(
             path=path,
@@ -698,12 +822,8 @@ class SemanticContractCloseoutBridgeTests(unittest.TestCase):
             name="MissingSourceSpec",
             source="",
         )
-        missing_source_error = audit_repository.semantic_contract_spec_independence_error(
-            declaration_index,
-            missing_source_spec,
-            evidence,
-            configured_spec_name="MissingSourceSpec",
-            configured_evidence_name="Evidence",
+        missing_source_error = audit_repository.semantic_contract_spec_structure_error(
+            declaration_index, missing_source_spec
         )
         self.assertIn("explicitly declare result type `Prop`", missing_source_error)
 

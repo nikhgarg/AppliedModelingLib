@@ -1,0 +1,95 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+\begin{tikzpicture}[every node/.style={font=\sffamily\small}]
+
+\dagPaperMetadata{Axioms for Learning from Pairwise Comparisons}{Ritesh Noothigattu, Dominik Peters, and Ariel D. Procaccia}{NeurIPS}{2020}{https://proceedings.neurips.cc/paper_files/paper/2020/hash/cdaa9b682e10c291d3bbadca4c96f5de-Abstract.html}
+\dagPaperLegendRightOfMetadata{
+  \node[dag_model, dag_template_legend] (legModel) at (0,0) {formalized\\model or definition};
+  \node[dag_lemma, dag_template_legend] (legLemma) at (4.7,0) {formalized\\lemma or supplement support};
+  \node[dag_result, dag_template_legend] (legResult) at (9.4,0) {formalized\\main result};
+}
+\daglegend{(legModel)(legLemma)(legResult)}{Legend}
+
+\begin{dagPaperBody}
+\begin{scope}[xshift=0.8cm,yshift=-0.5cm]
+
+\node[dag_model, text width=5.4cm] (Data) at (0,0) {
+  \textbf{Pairwise-count data}\\finite alternatives, directed counts, comparison graph
+};
+\node[dag_model, text width=5.4cm] (Likelihood) at (9,0) {
+  \textbf{Random-utility likelihood}\\CDF-like link, score differences, fixed-reference MLE
+};
+\node[dag_lemma, text width=4.8cm] (ClaimA) at (18,0) {
+  \textbf{Supplement Claim A.1}\\strictly concave coin-flip likelihood and exact fit
+};
+\node[dag_lemma, text width=4.8cm] (ClaimC) at (-6.3,-4.5) {
+  \textbf{Supplement Claim C.1}\\strict crossed-product inequality
+};
+
+\node[dag_lemma, text width=4.6cm] (Lemma21) at (0,-4.5) {
+  \textbf{Lemma 2.1}\\MLE existence from componentwise strong connectivity
+};
+\node[dag_lemma, text width=4.6cm] (Lemma22) at (7,-4.5) {
+  \textbf{Lemma 2.2}\\one-neighbor perfect fit
+};
+\node[dag_lemma, text width=4.6cm] (Lemma23) at (14,-4.5) {
+  \textbf{Lemma 2.3}\\finite sup-norm bound
+};
+\node[dag_lemma, text width=4.6cm] (Lemma24) at (21,-4.5) {
+  \textbf{Lemma 2.4}\\connectivity, strict concavity, uniqueness
+};
+
+\node[dag_model, text width=4.6cm] (Def31) at (0,-9) {
+  \textbf{Definition 3.1}\\Pareto efficiency
+};
+\node[dag_model, text width=4.6cm] (Def41) at (7,-9) {
+  \textbf{Definition 4.1}\\monotonicity
+};
+\node[dag_model, text width=4.6cm] (Def51) at (14,-9) {
+  \textbf{Definition 5.1}\\pairwise-majority consistency
+};
+\node[dag_model, text width=4.6cm] (Def61) at (21,-9) {
+  \textbf{Definition 6.1}\\separability under pooling
+};
+
+\node[dag_result, text width=4.8cm] (Thm32) at (0,-13.5) {
+  \textbf{Theorem 3.2}\\MLE satisfies Pareto efficiency
+};
+\node[dag_result, text width=4.8cm] (Thm42) at (7,-13.5) {
+  \textbf{Theorem 4.2}\\MLE satisfies monotonicity
+};
+\node[dag_result, text width=4.8cm] (Thm53) at (14,-13.5) {
+  \textbf{Theorem 5.3}\\MLE violates pairwise-majority consistency
+};
+\node[dag_result, text width=4.8cm] (Thm63) at (21,-13.5) {
+  \textbf{Theorem 6.3}\\MLE violates separability
+};
+
+\begin{scope}[on background layer]
+\draw[dag_arrow] (Data) -- (Likelihood);
+\draw[dag_arrow] (Likelihood.south west) -- (Lemma21.north east);
+\draw[dag_arrow] (Likelihood) -- (Lemma22);
+\draw[dag_arrow] (ClaimA) -- (Lemma22);
+\draw[dag_arrow] (Likelihood) -- (Lemma23);
+\draw[dag_arrow] (ClaimA) -- (Lemma23);
+\draw[dag_arrow] (Data.south east) -- ++(1,-1.0) -| (Lemma24.north west);
+\draw[dag_arrow] (Likelihood.south east) -- (Lemma24.north west);
+\draw[dag_arrow] (Def31) -- (Thm32);
+\draw[dag_arrow] (ClaimC.south) -- ++(0,-8.9) -- (Thm32.west);
+\draw[dag_arrow] (Def41) -- (Thm42);
+\draw[dag_arrow] (Lemma24.south west) -- ++(-1.0,-1.0) -- ++(-10.2,0) -- ++(0,-7.7) -- (Thm42.east);
+\draw[dag_arrow] (Def51) -- (Thm53);
+\draw[dag_arrow] (Lemma21.south) -- ++(0,-1.0) -- ++(11.2,0) -- ++(0,-7.0) -- (Thm53.west);
+\draw[dag_arrow] (Lemma23.south) -- ++(0,-1.2) -- ++(3.0,0) -- ++(0,-6.8) -- (Thm53.east);
+\draw[dag_arrow] (Def61) -- (Thm63);
+\draw[dag_arrow] (Lemma21.south) -- ++(0,-1.5) -- ++(25.0,0) -- ++(0,-6.5) -- (Thm63.east);
+\draw[dag_arrow] (Lemma22.south) -- ++(0,-1.7) -- ++(11.2,0) -- ++(0,-6.3) -- (Thm63.west);
+\draw[dag_arrow] (Lemma23.south) -- ++(0,-1.9) -- ++(4.2,0) -- ++(0,-6.1) -- (Thm63.west);
+\end{scope}
+
+\end{scope}
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

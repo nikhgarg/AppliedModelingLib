@@ -15,7 +15,7 @@ Source: `EFXadditivechores.tex`, Cases B.1--B.4.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- Every normalized four-agent `\{1,r\}` chore instance with `r > 2` admits
 an EFX allocation. -/

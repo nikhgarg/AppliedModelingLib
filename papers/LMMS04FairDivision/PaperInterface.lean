@@ -11,7 +11,7 @@ proof-facing aliases and migration endpoints live in `ProofInterface.lean`.
 open MeasureTheory
 open Filter
 open scoped BigOperators
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 namespace LMMS04FairDivision
 namespace PaperInterface
@@ -460,6 +460,36 @@ def theorem4_2_uniform_random_mechanism_truthfulSpec : Prop :=
 /-- Transparent v11 semantic target for the source abbreviation `theorem4_2_uniform_random_max_envy_probability_bound`. -/
 def theorem4_2_uniform_random_max_envy_probability_boundSpec : Prop :=
   v11PropositionTypeOf theorem4_2_uniform_random_max_envy_probability_bound
+
+/-- Lean-checked proof endpoint for the Lemma 2.2 source contract. -/
+theorem lemma2_2_acyclic_reductionSpec_proof :
+    lemma2_2_acyclic_reductionSpec := by
+  exact lemma2_2_acyclic_reduction
+
+/-- Lean-checked proof endpoint for the Theorem 2.1 existence source contract. -/
+theorem theorem2_1_bounded_envy_allocation_existsSpec_proof :
+    theorem2_1_bounded_envy_allocation_existsSpec := by
+  exact theorem2_1_bounded_envy_allocation_exists
+
+/-- Lean-checked proof endpoint for the Theorem 2.3 source contract. -/
+theorem theorem2_3_real_interval_supported_atom_boundSpec_proof :
+    theorem2_3_real_interval_supported_atom_boundSpec := by
+  exact theorem2_3_real_interval_supported_atom_bound
+
+/-- Lean-checked proof endpoint for Theorem 4.1's envy-free clause. -/
+theorem theorem4_1_source_not_truthful_envy_free_whenever_existsSpec_proof :
+    theorem4_1_source_not_truthful_envy_free_whenever_existsSpec := by
+  exact theorem4_1_source_not_truthful_envy_free_whenever_exists
+
+/-- Lean-checked proof endpoint for Theorem 4.1's minimum-envy clause. -/
+theorem theorem4_1_source_minimum_envy_not_truthfulSpec_proof :
+    theorem4_1_source_minimum_envy_not_truthfulSpec := by
+  exact theorem4_1_source_minimum_envy_not_truthful
+
+/-- Lean-checked proof endpoint for Theorem 4.2's uniform-truthfulness atom. -/
+theorem theorem4_2_uniform_random_mechanism_truthfulSpec_proof :
+    theorem4_2_uniform_random_mechanism_truthfulSpec := by
+  exact theorem4_2_uniform_random_mechanism_truthful
 
 end
 

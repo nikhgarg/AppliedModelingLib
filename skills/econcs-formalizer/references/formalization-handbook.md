@@ -1,14 +1,15 @@
 # Detailed Formalization Handbook
 
-This is the detailed reference preserved from the former monolithic skill.
-Current operational defaults are normative only in
-`config/formalization_audit_protocol.json`; when this handbook conflicts with
-that protocol or the concise `SKILL.md`, follow the protocol. Search this file
-for a domain, audit lane, or failure mode only when the concise skill points to
-detail or the active task needs it. Do not load the full handbook by default.
+This explanatory handbook is preserved from the former monolithic skill. It
+contains long-form rationale, examples, historical failure modes, and search
+terms; it is not a second operational rulebook. The stage references selected
+by `../SKILL.md` and `config/formalization_audit_protocol.json` are normative.
+When this handbook conflicts with either, follow the stage reference and
+protocol. Search this file only when the router points here for additional
+context. Do not load it by default.
 
 Use this skill to turn economics-and-computation papers into maintainable Lean
-code. Keep repository-specific status out of this file; in `EconCSLib`, that
+code. Keep repository-specific status out of this file; in `AppliedModelingLib`, that
 belongs in paper-local `status.json`, `docs/PAPER_STATUS.md`, and the website
 status table.
 
@@ -23,7 +24,8 @@ convention style.
 
 When updating skills from prior sessions or user corrections, use
 `skills/econcs-session-insights/SKILL.md` as the provenance workflow. Promote
-durable day-to-day formalization rules into this skill or its proof references;
+durable day-to-day formalization rules into the appropriate authoritative
+stage reference or proof reference;
 do not leave them as a parallel operational rulebook in the session-insights
 skill.
 
@@ -31,7 +33,8 @@ When planning automation-heavy formalization workflows, multi-agent proof
 campaigns, retrieval-grounded statement translation, or compiler-guided repair
 loops, also consult `skills/ai-formalization-workflows/SKILL.md`. That skill is
 a source-credited ledger of external AI-formalization workflow patterns; this
-formalizer skill remains the operational rulebook for EconCSLib.
+formalizer router and its stage references remain operational authority for the
+repository.
 
 When actively proving a theorem, closing a `sorry`/`admit`, or repairing a
 broken Lean proof, use `skills/econcs-prover/SKILL.md` as the proof-production
@@ -69,14 +72,8 @@ ignored runtime directory). Overlay helpers must not materialize temporary
 confirm and terminate its child process tree before retrying; quiet output does
 not establish that the original scan stopped.
 
-Before declaring a paper done, running post-validation/post-formalization
-audits, updating a final validation report, or preparing a public PR closeout,
-read `skills/econcs-formalizer/references/post-formalization-closeout.md`.
-Keep final validation report structure, post-formalization audits,
-DAG/source/source-json comparison, LOC sourcing, and note/gap/deviation rules
-in that one closeout reference for now. Do not split the closeout workflow into
-more files yet; if it later gets too large, move only DAG-specific visual/layout
-rules to a future `references/dependency-dags.md`.
+Before declaring a paper done, read `audit-and-closeout.md`; before writing or
+refreshing reader-facing artifacts, read `human-facing-artifacts.md`.
 
 ## Proof Campaign Pace
 
@@ -123,10 +120,9 @@ Apply these source-fidelity rules throughout a proof or audit campaign:
 
 ## Component 1: Workflow and Organization
 
-Operational sequencing is normative in
-`references/post-formalization-closeout.md`: freeze report/status/DAG inputs,
-run `closeout_reuse_plan.py`, follow its dependency-ordered actions through any
-explicit replan, and use its exact strict-closeout argv. That sequence overrides
+Operational sequencing is normative in `references/audit-and-closeout.md`:
+follow `closeout_reuse_plan.py` and its dependency-ordered actions through each
+explicit replan, then use its exact strict-closeout argv. The current sequence overrides
 older literal build/refresh/runner examples retained below for context.
 The planner's compiled identity is exact bytes; filesystem stats are guarded
 accelerators only, so an identical-byte rebuild does not reopen a closeout.
@@ -326,19 +322,13 @@ sidecar-summary edits alone must not trigger a raw scan. If a paper keeps a lega
 `source_record_audit.json`, synchronize it with the canonical `audit/` copy or
 remove it according to the paper's existing sidecar policy; do not leave a
 canonical/legacy divergence and call the paper post-audit clean.
-For the narrow `partially formalized` -> `formalized` closeout transition, do
-not reflexively regenerate the raw audit. While the paper is still partial,
-prepare `python3 scripts/source_record_partial_to_formalized_transition.py
---paper <paper-folder> --write`. It is usable only when the exact saved raw
-proves its partial-only precloseout projection covered no inputs, every saved
-ordinary direct-statement-ledger key is revalidated against its current exact
-source route, full declaration content, cached elaborated signature, source
-statement, and atom ledger, the current status later differs by exactly that
-one field, every other v10 input identity is unchanged, and the explicit
-status-transition producer identity still matches. A missing static receipt,
-any loss of direct coverage, a nonempty partial-only projection, or a changed
-producer requires the ordinary current raw audit. This is a conservative reuse
-rule, not a naming-based equivalence or a general status bypass.
+Do not issue or consume a pairwise `partially formalized` -> `formalized`
+compatibility receipt. Generate or reuse the canonical source-record audit at
+the paper's final status. A historical transition artifact may remain in an
+older paper as provenance recoverable at its issuing commit, but it is not a
+current acceptance credential, a template for new work, a naming-based
+equivalence, or a status bypass. Current closure follows the ordinary exact
+source/declaration/signature/statement/atom identities.
 At a real closeout/publication boundary, run the reuse planner and then its
 exact printed `strict_closeout` argv, including its profile, plan identity, and
 new-run disposition.
@@ -396,7 +386,7 @@ diagnose a named dashboard failure before changing the surface; it is not a
 routine closeout predecessor and a clean statement-judge sidecar alone is not
 evidence that hidden premises or unreviewed helpers are absent.
 Before creating a paper-local definition, record, theorem family, or reusable
-`EconCSLib/` primitive for a common proof seam, do a dependency and
+`AppliedModelingLib/` primitive for a common proof seam, do a dependency and
 shared-library context load. Search imported upstream libraries first:
 `Mathlib/` for mathematical structures and theorems, `Cslib/` for computer
 science and runtime notions, and `Optlib/` when it exists in the workspace or
@@ -415,7 +405,7 @@ URL, file/module path, commit or release when available, license status, and a
 short description of what was reused; place that provenance near the resulting
 Lean code or in the paper/formalization plan, and cite it in human-facing paper
 text when the reuse affects the manuscript.
-Search `EconCSLib/` next for the domain noun and proof shape:
+Search `AppliedModelingLib/` next for the domain noun and proof shape:
 equilibrium/best-response/a.e.
 exception, threshold/cutoff, CDF/quantile/PIT/tie-breaking, finite mixture,
 Gaussian/admissions/testing, LP/certificate, ranking/social choice, auction, or
@@ -426,7 +416,7 @@ again whenever a proof loop starts building wrappers around a standard concept.
 Also search related paper folders, especially completed or recently active
 papers in the same domain, before adding paper-local machinery. Many reusable
 algorithmic layers first appear inside a paper folder before being promoted to
-`EconCSLib/`; do not reinvent a simulator, runner, trace generator, dynamic
+`AppliedModelingLib/`; do not reinvent a simulator, runner, trace generator, dynamic
 process, checker pattern, certificate, or source-model constructor until you
 have searched sibling papers for the same domain nouns and declaration shapes.
 If two papers need the same machinery, elevate the common core into the shared
@@ -437,7 +427,7 @@ API is the one to build on. If the user, notes, or repository history suggest a
 specific same-domain paper already built the machinery, pause implementation and
 inspect that paper plus its imports before adding new declarations.
 For continuous equilibrium work in particular, check
-`EconCSLib.Foundations.Optimization.ChoiceEquilibriumAE`,
+`AppliedModelingLib.Foundations.Optimization.ChoiceEquilibriumAE`,
 `StrategicEquilibrium`, and the admissions/testing probability modules before
 defining a local equilibrium or distributional interface.
 For continuous optimization or geometry work, assume mathlib probably already
@@ -445,7 +435,7 @@ has the basic objects: norms and distances on finite products, `WithLp`/`PiLp`,
 inner-product and finite-dimensional spaces, Frechet/scalar derivatives,
 convexity/concavity/extrema, projections, Holder inequalities, and special
 function derivative rules. Search and reuse these before writing formula-level
-norm, derivative, convexity, projection, or argmax APIs in `EconCSLib/`.
+norm, derivative, convexity, projection, or argmax APIs in `AppliedModelingLib/`.
 The outside-of-Lean plan must contain a short "shared-library reuse checkpoint"
 before any substantial proof campaign: list the shared declarations or modules
 inspected, including relevant mathlib/cslib/optlib candidates, potential
@@ -503,7 +493,7 @@ process, or matching-market primitive, and a paper wrapper uses a reusable
 library definition for that object, add a paper-local bridge/equivalence row
 whose statement expands both sides enough for source comparison. In
 `audit/paper_statement_map.json`, any source item that points directly to a
-reusable `EconCSLib/` declaration in `lean_declarations` or
+reusable `AppliedModelingLib/` declaration in `lean_declarations` or
 `support_lean_declarations` must also list a paper-local bridge under one of
 `semantic_bridge_declarations`, `paper_equivalence_declarations`,
 `source_equivalence_declarations`, or `library_bridge_declarations`. The
@@ -545,12 +535,12 @@ rebuilds declaration indexes each run, follows paper-local aliases for visible
 premises, asks Lean for transitive axioms, scans reusable library declarations
 for certificate/source-boundary APIs, rejects reusable `Assumption` or
 `Hypothesis` declarations, rejects paper/source provenance wording in
-`EconCSLib/*.lean`, checks source inventories for name-only source coverage,
+`AppliedModelingLib/*.lean`, checks source inventories for name-only source coverage,
 requires paper-local semantic bridges for direct source-map-to-library links,
 requires those bridges to be reviewed rows with source-status provenance,
 and checks generic code/docs for concrete paper IDs, citation prefixes, or
 paper theorem-number labels. Put paper metadata in paper-local files or data
-config; keep `EconCSLib/`, audit scripts, and generic workflow docs
+config; keep `AppliedModelingLib/`, audit scripts, and generic workflow docs
 paper-neutral. If a citation-like term is truly an established algorithm/domain
 name, record that as a data-configured allowlist entry rather than a code
 exception. This audit reduces hidden-premise, name-matching, and generic-code
@@ -606,7 +596,7 @@ not edit or build a file while its owner is mid-edit; ask the owner to stop at a
 coherent compiling boundary first. When the user asks for a stopping point,
 freeze new theorem scope and finish only the smallest coherent targeted-build
 boundary needed for a trustworthy checkpoint.
-If an active proof batch edits shared `EconCSLib/` library code, still stay in
+If an active proof batch edits shared `AppliedModelingLib/` library code, still stay in
 the targeted-build loop: build the touched library module or namespace root and
 the active paper root that imports it. Do not run a broad/full repository build
 merely because a shared library file changed while the paper is still in
@@ -686,14 +676,8 @@ post-boundary usage logs, but if the goal is a human-facing "unique work"
 estimate, label that separately instead of presenting it as raw billable usage.
 For financial reconciliation, prefer the OpenAI Costs/Usage dashboard or Costs
 API over local log reconstruction.
-Sanity-check local counts against known scale. In the June 5, 2026 workshop
-audit, `492` rollout files collapsed to `7` non-guardian root session trees.
-The naive file-level sum over embedded transcripts reported about `$58k`; the
-corrected post-boundary, subagent-inclusive non-guardian estimate was about
-`6.05B` total tokens and `$4.6k`, with subagents contributing about `$775`.
-If a future all-session estimate is an order of magnitude larger than the
-top-level estimate, inspect for embedded parent transcript token events before
-publishing the table.
+These are general accounting instructions. Keep actual session traces, user
+messages, session identifiers, and unpublished usage/cost results private.
 When the latest green endpoint is a source-sequence, source-certificate, or
 analytic boundary rather than the actual paper distribution/object, say that
 plainly in the private handoff/plan and public status/final report. Name the
@@ -862,7 +846,7 @@ random seeds, and generated artifacts.
 For a user-approved axiom boundary, keep the axiom in the paper folder's
 `Assumptions.lean` or another paper-local assumptions file, give it a precise
 `assumption_*` name, and validate it as `partial_boundary`. Do not put
-paper-specific axioms in reusable `EconCSLib/`, and do not hide paper formulas
+paper-specific axioms in reusable `AppliedModelingLib/`, and do not hide paper formulas
 inside a generic axiom that the recursive audit cannot identify.
 Do not use `formalized with caveat` for source-quality notes, poor OCR, or an
 audit observation that does not change the closed paper-facing theorem. Put that
@@ -872,7 +856,7 @@ the dependency DAG. Keep the named theorem/lemma node in its ordinary
 formalized style, mention the correction in concise paper-facing language, and
 put the detailed statement/counterexample in the final report or a focused
 math note.
-For standalone author-facing source notes in a paper folder, follow the
+For standalone public-facing source notes in a paper folder, follow the
 KR/GKGMM note pattern rather than writing an agent handoff: include the paper
 statement, the exact proof-step or statement issue, the statement proved in
 Lean, why the correction appears, downstream impact, suggested repair options
@@ -880,7 +864,9 @@ if applicable, and Lean references. Avoid workflow boilerplate, old-session
 history, and Lean declaration dumps beyond the few names a reader needs to
 find the formalization. Recheck the current source cache before writing the
 note, and link the note from the final validation report when it is part of the
-paper's author-facing source-quality record.
+paper's public source-quality record. Unless the user explicitly requests a
+restricted coauthor artifact, do not label the note “author-facing”; begin
+with its mathematical issue and present disposition.
 For finite-size or premise-implication notes, start with a short `Status`
 section that distinguishes a proof-premise gap from a counterexample to the
 theorem statement. Include the exact printed premise, the finite condition
@@ -895,11 +881,11 @@ premise gap and say exactly which Lean lemma discharges it.
 Frame these notes as implication failures (`printed premise P` does not imply
 `proof-step premise Q`) unless you have an actual counterexample to the source
 theorem. Explicitly name the affected paper-facing results and the nearby
-results that are not affected, so the author-facing note does not accidentally
+results that are not affected, so the note does not accidentally
 cast doubt on unrelated formalized endpoints.
 If a focused source note for the same issue already exists under the paper's
 `docs/` folder, revise that note instead of creating a duplicate. Keep the note
-author-facing: a short summary first, then paper statement, proof-step issue,
+public-facing: a short summary first, then paper statement, proof-step issue,
 Lean repair, downstream impact, and suggested source-text repair. Do not bury
 the conclusion under declaration inventories, command logs, or agent handoff
 history.
@@ -1541,7 +1527,7 @@ row is closed when its expanded statement no longer exposes such a premise and
 `#print axioms` on the row reports only approved standard foundations. Do not
 mark a row partial merely because its proof calls internal library lemmas with
 certificate-shaped names when those certificates are constructed by closed Lean
-theorems. Do not bake paper-source displayed formulas into `EconCSLib/`
+theorems. Do not bake paper-source displayed formulas into `AppliedModelingLib/`
 definitions or implicit instances to make the call site look unconditional;
 make source formulas explicit parameters/certificate fields or keep them in the
 paper folder.
@@ -1633,7 +1619,7 @@ paper theorem should stay green with its actual statement; the conditional
 application should get its own row or node. Do not let a harder follow-on
 endpoint make the source theorem look unformalized.
 
-In EconCSLib, paper-local `papers/<Paper>/status.json` files are the source of
+In AppliedModelingLib, paper-local `papers/<Paper>/status.json` files are the source of
 truth for paper status, compact `human_summary` notes, human-review row counts,
 `PaperInterface.lean` metadata, review-surface slices, and artifact paths.
 New unfinished paper folders should also be listed in
@@ -1868,7 +1854,7 @@ paper-facing proof surface, and keep the proof ledger as an implementation
 endpoint ledger that cites the strongest bridge instead of rebuilding the same
 proof.
 
-Subagents are always allowed for EconCSLib formalization work; treat this as
+Subagents are always allowed for AppliedModelingLib formalization work; treat this as
 standing user authorization for paper-intake, proof, audit, CI, and release
 tasks, and do not pause to ask for permission before using them. Use judgment
 about whether they shorten the current proof loop or improve confidence.
@@ -1992,10 +1978,11 @@ PBE-to-local-best-response bridge are formalized or explicitly approved as a
 boundary. If a continuous theorem is reduced to a local best-response
 certificate, keep that certificate out of the fully formalized status unless a
 Lean constructor derives it from the continuous source game.
-When updating the skill, treat this as an invariant, not a preference: if the
-new lesson names a specific paper, theorem number, counterexample, proof
-recipe, or declaration family, it belongs in a reference file unless it is only
-a one-line routing pointer.
+When updating a public skill, retain the reusable method without importing
+private paper or session provenance. A publicly released paper or formalization
+may be cited as an example when the cited content is already public. Keep
+unpublished audit findings, private declaration families, repair history, and
+non-public source excerpts in the paper evidence or private wiki.
 
 When a displayed formula conflicts with its surrounding derivation, do not
 silently overwrite the paper statement. Keep the literal source formula and the
@@ -2018,7 +2005,7 @@ When starting a new paper, briefly inspect the repository's already-formalized
 papers in the same EC area and ask which proof moves should become general
 library tools. Do not force a detached library project before proving the paper,
 but if a lemma, interface, or theorem is likely to be useful to another EC paper,
-build it in `EconCSLib` while formalizing the current result.
+build it in `AppliedModelingLib` while formalizing the current result.
 When a proof needs the "top `k`" elements of an arbitrary finite profile, prefer
 building a ranking/top-prefix interface on the original domain over reindexing
 the whole mechanism. Reindexing is often harder because selected argmaxes,
@@ -2057,7 +2044,7 @@ creating or refreshing a paper plan. The plan must explicitly contain:
   conjectures/extensions that look trivial, nontrivial, or false, and which
   ones should wait until the source theorem chain is stable;
 - shared-library reuse checkpoint: mathlib/cslib/optlib, potential upstream
-  Lean sources, and EconCSLib modules or declarations inspected, the API chosen,
+  Lean sources, and AppliedModelingLib modules or declarations inspected, the API chosen,
   citation/provenance for any upstream material used or ported, and near-misses
   that explain any new reusable library definitions;
 - formal target map: which source rows will be fully proved now, which rows are
@@ -2156,7 +2143,7 @@ DA infrastructure guidance, manipulation-rank warning, and source-repair notes.
 For STV/RCV, ranked-choice voting, Thiele, or multi-member district papers,
 load `references/proof-markets-social-choice.md` before building paper-local
 models. Start with reusable voting semantics under
-`EconCSLib/SocialChoice/Voting`, then keep paper folders as source-versioned
+`AppliedModelingLib/SocialChoice/Voting`, then keep paper folders as source-versioned
 thin wrappers and explicit empirical/simulation-boundary ledgers.
 Before adding any new STV/RCV simulator, generated trace, full-election-run,
 candidate-removal runner, Algorithm A/3/7 checker, or concrete algorithm type,
@@ -2174,9 +2161,9 @@ reductions and solver transfers from external machine-level class semantics.
 
 ### 1.2 Library Layering Rule: Textbook vs. Audit Trail
 
-Think of the repository as having two distinct roles: **`EconCSLib` is the textbook. The `papers/` directory is the audit trail.**
+Think of the repository as having two distinct roles: **`AppliedModelingLib` is the textbook. The `papers/` directory is the audit trail.**
 
-- **`EconCSLib/` (The Textbook):** Put generic, abstracted EC/CS/econ results here. If a definition, algorithm, or theorem is foundational enough that a graduate student should know it, or if a second paper might build on it (e.g., Gale-Shapley, Nash equilibrium, LP duality), it belongs in the core library.
+- **`AppliedModelingLib/` (The Textbook):** Put generic, abstracted EC/CS/econ results here. If a definition, algorithm, or theorem is foundational enough that a graduate student should know it, or if a second paper might build on it (e.g., Gale-Shapley, Nash equilibrium, LP duality), it belongs in the core library.
   - **Abstraction:** Code here should be highly abstracted and stripped of
     paper-specific notation. Use generic types (`α`, `β`) and follow
     `skills/lean-community-conventions/SKILL.md` for reusable API naming,
@@ -2185,11 +2172,11 @@ Think of the repository as having two distinct roles: **`EconCSLib` is the textb
 
 - **`papers/` (The Audit Trail):** Each paper-specific folder is a formalization artifact proving that the specific claims in a specific PDF are true.
   - **Notation Fidelity:** Translate paper-specific notation (e.g., exactly matching the paper's index variables like `u`, `j`, `t`) into the shared primitives.
-  - **Paper-Facing Wrappers:** Write theorems whose signatures match the paper *exactly*. These should be thin wrappers that call the generic library theorems. (e.g., `theorem roth82_theorem_1 : ... := EconCSLib.Markets.Matching.da_is_stable`).
+  - **Paper-Facing Wrappers:** Write theorems whose signatures match the paper *exactly*. These should be thin wrappers that call the generic library theorems. (e.g., `theorem roth82_theorem_1 : ... := AppliedModelingLib.Markets.Matching.da_is_stable`).
   - **Local Ledger:** Keep the paper's specific narrative flow in `MainTheorems.lean`, `README.md`, and `docs/DependencyDAG.tex`.
-  - **Upstreaming Workflow:** It is normal to build everything inside a `papers/` folder initially. Once a proof is stable, **upstream** the generalized math into `EconCSLib`, leaving only the thin wrappers and paper-specific stepping stones behind.
+  - **Upstreaming Workflow:** It is normal to build everything inside a `papers/` folder initially. Once a proof is stable, **upstream** the generalized math into `AppliedModelingLib`, leaving only the thin wrappers and paper-specific stepping stones behind.
 
-- **Standard for Upstreaming:** To prevent "upstream bloat," use the "Second Paper" test: **Move a result to `EconCSLib` if a second paper or another likely EC formalization would plausibly need it.** Foundationally reusable math (like Gale-Shapley, Nash equilibrium, LP duality, threshold mechanisms, monotone single-parameter allocation consequences, or finite-expectation/probability interfaces) passes this test; hyper-specific algebraic lemmas or messy intermediate steps used only for one paper's specific narrative should remain in that paper's folder.
+- **Standard for Upstreaming:** To prevent "upstream bloat," use the "Second Paper" test: **Move a result to `AppliedModelingLib` if a second paper or another likely applied-modeling formalization would plausibly need it.** Foundationally reusable math (like Gale-Shapley, Nash equilibrium, LP duality, threshold mechanisms, monotone single-parameter allocation consequences, or finite-expectation/probability interfaces) passes this test; hyper-specific algebraic lemmas or messy intermediate steps used only for one paper's specific narrative should remain in that paper's folder.
 - If two papers could use a lemma after renaming variables, it belongs in the generic library.
 - If a proof starts with a paper-local lemma and it becomes generic, extract it before building more paper-specific code on top of it.
 - It is fine, and often faster overall, to create reusable library material while proving a paper when the abstraction directly closes the active paper seam and is likely to serve the broader EC community. Avoid speculative polish, but do not avoid general infrastructure just because the current paper could be hacked locally.
@@ -2203,7 +2190,7 @@ Think of the repository as having two distinct roles: **`EconCSLib` is the textb
   API.
 - After a library extraction pass, update the discoverability surface before
   calling the pass complete: the reusable module docstring, any aggregate import
-  docstring, `docs/ECONCSLIB_DOMAIN_INDEX.md`, and the relevant roadmap or
+  docstring, `docs/APPLIEDMODELINGLIB_DOMAIN_INDEX.md`, and the relevant roadmap or
   extraction-plan index. Update this skill when the extraction creates a new
   workflow rule or a module future agents should check first.
 - During library provenance refactors, avoid ambiguous pairs where a local
@@ -2242,16 +2229,16 @@ Think of the repository as having two distinct roles: **`EconCSLib` is the textb
   constructor exists, keep the binder visible and classify it as a source/library
   abstraction or partial boundary according to the paper's status.
 - Reusable `Assumption`/`Hypothesis` declarations are not allowed in
-  `EconCSLib/`; true paper assumptions live in paper-local `Assumptions.lean`.
+  `AppliedModelingLib/`; true paper assumptions live in paper-local `Assumptions.lean`.
   Shared modules should describe generic mathematical APIs, not paper/source
   provenance. When adding a standard-name wrapper such as a convexity,
   concavity, order, metric, or probability notion, add a build-checked theorem
-  in `EconCSLib.LibraryDefinitionAudit` showing equivalence to the mathlib or
-  local canonical definition, and keep that module imported by `EconCSLib.lean`.
+  in `AppliedModelingLib.LibraryDefinitionAudit` showing equivalence to the mathlib or
+  local canonical definition, and keep that module imported by `AppliedModelingLib.lean`.
 - After a reusable-library provenance refactor or API rename, run a targeted
   validation matrix before calling it done: `rg` for stale old names, build each
   touched library module, build downstream paper libraries that import the API,
-  and then build aggregate `EconCSLib`. If the refactor changes a heavily used
+  and then build aggregate `AppliedModelingLib`. If the refactor changes a heavily used
   generic certificate API, also build at least one representative downstream
   paper that exercises dot notation and paper-local adapters for that API.
 - For domain-specific proof seams, use the proof-reference routing table below
@@ -2260,9 +2247,9 @@ Think of the repository as having two distinct roles: **`EconCSLib` is the textb
   future proof agents should check first.
 - For LP-heavy papers, prefer a paper-local equality-form, certificate, or BFS-witness interface when that is enough to follow the paper proof and close named results. Build a generic LP/simplex/duality layer only when the current theorem truly needs it or a second paper will immediately reuse it; otherwise keep the optimization boundary narrow and auditable in the paper folder.
 - Keep paper-module imports as narrow as practical. Avoid importing aggregate
-  roots such as `EconCSLib` from paper-local proof files when a leaf module like
-  `EconCSLib.Foundations.Probability.FiniteExpectation` or
-  `EconCSLib.Foundations.Math.FiniteSigns` suffices; aggregate imports can make
+  roots such as `AppliedModelingLib` from paper-local proof files when a leaf module like
+  `AppliedModelingLib.Foundations.Probability.FiniteExpectation` or
+  `AppliedModelingLib.Foundations.Math.FiniteSigns` suffices; aggregate imports can make
   targeted paper builds depend on unrelated dirty library areas such as auctions.
   When narrowing imports, add the exact missing leaf import at the file that uses
   the declaration rather than restoring a broad root import.
@@ -2280,7 +2267,7 @@ Think of the repository as having two distinct roles: **`EconCSLib` is the textb
   immediately after Lake claims the dependency was built, treat it first as
   shared build-artifact churn. Check for active `lake`/`lean` jobs with `ps`,
   let concurrent local builds finish, then materialize the missing dependency
-  target directly (for example `lake build EconCSLib.Foundations.Probability.BivariateGaussian`)
+  target directly (for example `lake build AppliedModelingLib.Foundations.Probability.BivariateGaussian`)
   before rerunning the paper target. Do not debug theorem code until the same
   paper module reaches elaboration and reports an actual Lean error.
 - After adding a declaration to an imported paper module and exposing it through
@@ -2404,7 +2391,7 @@ Think of the repository as having two distinct roles: **`EconCSLib` is the textb
   assumptions without exposing them. If the paper is a classic/public benchmark
   or an already-approved public contribution, it may start directly in the
   public repo. In either case, create the standard paper folder and root module
-  in that primary repo, keep reusable paper-independent lemmas in `EconCSLib/`,
+  in that primary repo, keep reusable paper-independent lemmas in `AppliedModelingLib/`,
   and only move the paper to the public repo after its status is either
   `formalized`/`formalized with caveat` or an explicitly approved
   `partially formalized` public seam.
@@ -2566,7 +2553,7 @@ formalization, execute the standard intake before deep proof work:
   direct statement is too hard, create an explicit bridge theorem whose name and
   assumptions describe the remaining gap.
 - Run a retrieval-grounding pass before inventing a new model or helper API:
-  search Mathlib, Cslib, Optlib when present, and existing `EconCSLib/` modules
+  search Mathlib, Cslib, Optlib when present, and existing `AppliedModelingLib/` modules
   for the source concept and proof role. Prefer existing formal concepts; if a
   paper-local encoding is necessary, add a small equivalence or sanity theorem
   before using it downstream.
@@ -2738,8 +2725,10 @@ the Lean statements against the paper.
   1. A `status.json` file holding the paper status and dashboard metadata.
   2. A `docs/DependencyDAG.tex` proof roadmap and rendered
      `docs/DependencyDAG.pdf`.
-  3. A `docs/AGENT_SOURCE_AUDIT.md` holistic source-first audit when an
-     agent-source audit has been run.
+  3. Final adversarial audit documents selected by the recorded contract:
+     historical schemas use `docs/AGENT_SOURCE_AUDIT.md`; policy-aware
+     closeouts also use `docs/FINAL_ADVERSARIAL_REVIEW_PANEL.json` and distinct
+     paper-local audit documents for any additional required reviewers.
   4. A `FINAL_VALIDATION_REPORT.md` when the paper has a final validation
      claim.
   5. `audit/*.json` for tracked LLM/source-audit sidecars.
@@ -3209,11 +3198,14 @@ the Lean statements against the paper.
   owning module/agent for each obligation. This is where omissions and hidden
   premises should be found; closeout should not be a second paper-discovery
   phase.
-  New scaffolds persist that seal prospectively in
-  `audit/intake_freeze.json`. A trusted pre-rollout commit defines which
-  existing papers are grandfathered; never backfill the marker or rerun their
-  audits merely to adopt the workflow. Deleting the marker from a new paper
-  must fail intake rather than reclassify it as legacy.
+  New scaffolds persist the curator decisions in
+  `audit/v11_source_map_preparation_config.json`; the preparation command
+  derives the canonical exact anchors and inventory identities in
+  `paper_statement_map.json`. Do not create a second `intake_freeze.json`
+  authority. Historical papers whose tracked status already selects that
+  container retain direct validation under its recorded contract, while the
+  trusted pre-rollout cohort remains grandfathered. Never add or delete a
+  historical marker to switch lanes or rerun an audit merely for conformance.
 - While that initial statement review and manifest are fully current, run
   `python3 scripts/semantic_audit_reuse.py --paper <paper-folder>
   --bootstrap-current --write` once. It records the entry-local semantic pins
@@ -3493,17 +3485,27 @@ the Lean statements against the paper.
      obligation, source-route role and content, elaborated endpoint, scoped
      context, and proof-fidelity record. A missing prior raw receipt makes a
      legacy judgment a revalidation seed, not automatically current evidence.
-     When one stable v10 raw receipt is superseded by a narrowly changed one,
-     archive the prior raw audit and sidecar, then use
-     `scripts/source_record_differential_revalidation.py` to create the
-     paper-local differential overlay. It may preserve only a *unique*, exact
-     descriptor-identical generated group, and its loader must authenticate the
-     current canonical raw receipt before accepting it. Compare input/field
-     groups by their local expanded obligation, source content/route role,
-     context, and proof-fidelity scope; compare semantic-model groups by the
-     full result surface. Do not match via a judgment key, theorem/declaration
-     name, binder, or shared storage spelling. Any changed or ambiguous group
-     remains absent from the overlay and receives a fresh manual response.
+     Historical papers may still contain a byte-pinned differential overlay.
+     `scripts/source_record_differential_revalidation.py` is now a reader only:
+     it may preserve only a *unique*, exact descriptor-identical generated
+     group and must authenticate the current canonical raw receipt before
+     accepting it. Do not issue a new differential overlay. Graph-native
+     closeout instead reuses independently content-addressed current judgment
+     leaves whose exact source atom, expanded Lean target, semantic context,
+     and proof-fidelity coordinates remain unchanged; changed or ambiguous
+     leaves return to review. Historical input/field groups remain local to
+     their expanded obligation, source content/route role, context, and
+     proof-fidelity scope, while semantic-model groups retain the full result
+     surface. No path may match via a judgment key, theorem/declaration name,
+     binder, or shared storage spelling.
+     The descriptor and group semantics themselves belong to
+     `scripts/source_record_obligation_groups.py`, not to that historical
+     reader. Every current consumer and every retained historical reader must
+     call this one transport-independent authority. Do not copy its
+     normalizers into a planner, dashboard, receipt adapter, or new transport.
+     A module extraction is nonsemantic only after the serialized descriptor
+     preimages and digests agree across the complete tracked raw corpus and
+     malformed/unknown group surfaces retain fail-closed tests.
      For the exceptional complete-manual-revalidation route, use
      `scripts/source_record_current_revalidation.py` only after a reviewer has
      inspected the current v10 raw surface. Its attestation must bind the exact
@@ -3654,20 +3656,18 @@ the Lean statements against the paper.
   - update `docs/DependencyDAG.tex`, render and visually inspect
     `docs/DependencyDAG.pdf`, and record that DAG audit evidence in both
     `FINAL_VALIDATION_REPORT.md` and `docs/POST_FORMALIZATION_AUDIT.md`;
-  - write `docs/AGENT_SOURCE_AUDIT.md` as an independent source-first holistic
-    audit, not as a generated summary of existing sidecars. Read the source
-    paper/PDF/text first, build or verify the source inventory from the source
-    itself, then inspect `PaperInterface.lean` and the Lean statements for
-    omissions, hidden strengthening/weakening, and semantic mismatches. This is
-    a deep agentic paper-to-Lean audit: do not start from the rows already in
-    the dashboard, and do not treat the row-local LLM sidecars as the audit.
-    Use `paper_coverage_llm.json`, `statement_match_llm.json`,
-    `assumption_match_llm.json`, and `source_record_match_llm.json` only as
-    supporting evidence after the independent pass. The note must say
-    `## Overall status: PASS` only if the agent's own holistic analysis agrees
-    that the source claims are covered and the Lean statements match; it must
-    explicitly state that it is an "independent source-first" audit and does
-    "not merely summarize existing sidecars";
+  - complete the final adversarial review contract selected by the planner's
+    frozen surface. Each required policy-aware reviewer independently reads the
+    complete selected terminal source/Lean material, uses a distinct audit
+    document, and records its identity, exact surface attestation, audit hash,
+    and independence in `docs/FINAL_ADVERSARIAL_REVIEW_PANEL.json`. The first
+    audit remains `docs/AGENT_SOURCE_AUDIT.md`; a historical surface without
+    policy assurance keeps only its recorded single-file contract. Do not start
+    from dashboard rows or treat row-local LLM sidecars as the audit. Give PASS
+    only when the reviewer's own source/inventory/interface analysis agrees,
+    and preserve valid earlier panel entries if only reviewer count rises. The
+    current machine markers and scope rules live in
+    `references/audit-and-closeout.md` and its linked prompt, not this handbook;
   - before the final freeze, resolve every already-known unresolved `mismatch`,
     `mismatch` with `resolution: "conditional_boundary"`, `uncertain`, stale,
     missing, or broad-surface finding and record real mathematical boundaries
@@ -3743,7 +3743,7 @@ the Lean statements against the paper.
   `PaperInterface.lean` but not the launcher yet, run:
 
   `python3 scripts/bootstrap_review_launchers.py --write`
-- **CRITICAL MANDATE - NO HIDDEN DEFINITIONS:** A human reviewer cannot verify a theorem if its core terms are opaque references to generic library modules (e.g., `EconCSLib.Statistics.priorWeightedVariance`). The `PaperInterface.lean` file MUST expose the exact mathematical formulas for the paper's definitions. Do this by defining paper-specific `abbrev`s or `def`s at the top of the interface that spell out the raw formulas exactly as they appear in the paper, and then use those local definitions in your paper-facing theorem statements or prove they equal the generic terms. A reviewer must see the actual math equations inside this single file without needing to open imported generic modules. The same rule applies recursively through library definitions: if a reusable definition carries a paper-specific displayed formula, either expose the formula in `PaperInterface.lean` or prove and review a paper-local equivalence to it. The LLM judge sidecars must check this expanded formula surface, not just the library identifier. Keep neutral proof-ledger files for theorem endpoint aliases and proof-seam coverage, not standalone proof-facing formula duplicates.
+- **CRITICAL MANDATE - NO HIDDEN DEFINITIONS:** A human reviewer cannot verify a theorem if its core terms are opaque references to generic library modules (e.g., `AppliedModelingLib.Statistics.priorWeightedVariance`). The `PaperInterface.lean` file MUST expose the exact mathematical formulas for the paper's definitions. Do this by defining paper-specific `abbrev`s or `def`s at the top of the interface that spell out the raw formulas exactly as they appear in the paper, and then use those local definitions in your paper-facing theorem statements or prove they equal the generic terms. A reviewer must see the actual math equations inside this single file without needing to open imported generic modules. The same rule applies recursively through library definitions: if a reusable definition carries a paper-specific displayed formula, either expose the formula in `PaperInterface.lean` or prove and review a paper-local equivalence to it. The LLM judge sidecars must check this expanded formula surface, not just the library identifier. Keep neutral proof-ledger files for theorem endpoint aliases and proof-seam coverage, not standalone proof-facing formula duplicates.
   When a paper-facing theorem depends on those formulas, state the theorem over
   the local paper definitions where practical, even if the proof immediately
   discharges the claim by `simpa` through a reusable library theorem. It is not
@@ -3764,7 +3764,16 @@ the Lean statements against the paper.
   `not formalized`.
 - **Paper Directory and Namespace Convention:** All new paper folders, modules, and internal namespaces MUST be named using the format `[AuthorInitials][2DigitYear][Descriptor]` in PascalCase (for example, `ABC12RepresentativeTitle`). This guarantees collision-proof Lean namespaces while immediately communicating the citation. All paper implementations sit within the `papers/` directory.
 - **One citation per paper folder:** Do not use aggregate folders for award lists, reading lists, or multi-paper campaigns. Split them into one `[AuthorInitials][2DigitYear][Descriptor]` folder per source paper, each with its own source PDF/text cache, README, DAG, and `MainTheorems.lean`. If an aggregate module already exists, keep it only as a compatibility import or handoff note and move paper-facing status into the citation-specific folders.
-- **Initial Proof Roadmap (Dependency DAG):** At the *very beginning* of formalizing a new paper, before writing any deep proof code, you must create a comprehensive proof roadmap. Read through the paper carefully to identify *every* named result (Definitions, Lemmas, Propositions, Theorems, Corollaries) and map out exactly how they relate to each other. Encode this roadmap as `docs/DependencyDAG.tex` and render `docs/DependencyDAG.pdf` in the paper folder; both files are review artifacts and the rendered PDF should be committed. This ensures no named result is overlooked, helps you understand the overall proof architecture, and gives humans a clear audit of the theorem flow.
+- **Initial dependency plan; terminal Dependency DAG:** At the beginning of a
+  paper, before deep proof work, inventory the selected source definitions,
+  assumptions, and named results and record their dependency order in the
+  source map and working formalization plan. Do not create terminal
+  `docs/DependencyDAG.tex` or `docs/DependencyDAG.pdf` during intake. After the
+  Lean-owned graph, semantic reviews, complete tracked-module elaboration, and
+  proof realization are current, the closeout planner schedules
+  `complete_terminal_closeout_documents`; only then render and visually inspect
+  the paper-facing DAG from the final reviewed surface. This keeps early proof
+  architecture explicit without repeatedly rewriting a purportedly final DAG.
   - All paper DAGs MUST `\input` the shared preamble located at `docs/tikz/dag_preamble.tex`.
   - Use the exact node styles defined in the preamble and status vocabulary:
     `formalized` uses `dag_result` (green theorem/result), `dag_lemma`
@@ -4109,8 +4118,9 @@ the Lean statements against the paper.
     conclusion obtained from those constructors. Keep assumptions/certificates
     in the signature only when they are genuine remaining paper obligations, and
     name them explicitly in `status.json` and the DAG.
-  - Report check: create or update `FINAL_VALIDATION_REPORT.md` in the
-    paper folder. It must state whether the paper is formalized, the exact source
+  - Report check: when the closeout planner schedules
+    `complete_terminal_closeout_documents`, create or update
+    `FINAL_VALIDATION_REPORT.md` in the paper folder. It must state whether the paper is formalized, the exact source
     version, the named-result inventory, any deliberate model conventions or
     proof-route deviations, the commands run, and links to status, DAG, and
     audit ledger. If the report needs detailed source line mappings, helper
@@ -4118,14 +4128,15 @@ the Lean statements against the paper.
     implementation notes to preserve context, move those details into
     `docs/POST_FORMALIZATION_AUDIT.md` or private audit notes and summarize only the
     human-relevant conclusion in the final report.
-  - Build check: after updating the audit, run the targeted paper build and
+  - Build check: after updating the audit, elaborate every tracked paper-owned
+    module through `private_paper_checkpoint.py` and
     render the DAG from the paper folder. Also run a placeholder grep over the
     claimed paper and library files, a stale-status grep over `status.json`/DAG/
     final report, and `git diff --check`. Do not mark the audit complete until
     all required commands succeed.
 - **Post-formalization library elevation pass:** Once a paper theorem closes,
   scan the proof for reusable primitives, proof results, and proof techniques
-  that belong in `EconCSLib` rather than the paper namespace. Good candidates
+  that belong in `AppliedModelingLib` rather than the paper namespace. Good candidates
   include model-neutral definitions, algorithm trace APIs, invariants,
   side-symmetry lemmas, finite-cardinality bridges, monotonicity/termination
   facts, reusable certificate constructors, common proof decompositions, and
@@ -4281,6 +4292,12 @@ search.
    Keep the source-block map limited to source presentation, location,
    dependencies, target signature, and proof status. Use it to select the next
    proof seam, not to substitute planning for proof progress.
+   Before drafting that skeleton, classify every presentation by semantic role.
+   Use one complete Spec plus a distinct endpoint for each result and the
+   actual declaration for each definition, algorithm, model, assumption, or
+   condition. Then run the non-certifying semantic-architecture pre-pass in the
+   main skill and repair role/category errors and source-model bypasses before
+   intake freeze or evidence issuance.
 
 2. Context Efficiency vs. Edit Accuracy (File Reading Strategy).
    Do not over-optimize context limits by reading tiny chunks of files (e.g., using `sed` to read 15-20 lines) if you are about to use the `replace` tool. Micro-reading frequently drops necessary surrounding whitespace or context, causing the `replace` tool to fail repeatedly with "0 occurrences found". The cost of spinning in a multi-turn failure loop is far higher than the cost of reading the entire file once. Use `read_file` to ingest small-to-medium files completely, or use `grep -C 20` to get substantial context, ensuring you capture exact, copy-pasteable blocks for your `old_string`.
@@ -4526,7 +4543,7 @@ Instead:
    using `rg` for keywords, or use `Moogle` / LeanSearchClient if configured.
 6. If the scratch proof requires a new import, add the narrow leaf import at
    the file that uses the declaration; do not recover by importing aggregate
-   roots such as `Mathlib` or `EconCSLib`.
+   roots such as `Mathlib` or `AppliedModelingLib`.
 
 Never enter a cycle of modifying a single line in a shell command just to test slightly different lemma names. Stop, use `exact?`, and proceed efficiently.
 
@@ -4541,7 +4558,7 @@ Never enter a cycle of modifying a single line in a shell command just to test s
   build unless a paper-specific dependency outside that target requires it;
   record the reason and extra target in the validation receipt. Full builds are
   integration/release checks or an explicit user request. The detailed rule
-  lives in `references/post-formalization-closeout.md`.
+  lives in `references/audit-and-closeout.md`.
 - Re-read `PaperInterface.lean` and check each named
   definition/theorem/corollary against the paper statement.
 - Run the paper-local review workflow from within the paper folder only when an
@@ -4615,8 +4632,11 @@ Never enter a cycle of modifying a single line in a shell command just to test s
   gate. These commands read/write only the selected paper's owned README or
   legacy note and never traverse aggregate status/site inputs. In particular, keep
   `paper_interface.line_count`, review-surface classification, and
-  `human_review.total_rows` synchronized with the actual interface; otherwise
-  the expensive gate only discovers deterministic metadata drift.
+  `human_review.total_rows` synchronized with the actual interface for release
+  navigation. A line-count, row-count, or presentation-layout mismatch is an
+  advisory regeneration task, not a reason to replan or repeat semantic/build
+  evidence. Review-surface membership, assumption classification, proof routes,
+  build target, and formalization status remain strict closeout controls.
   The strict closeout reads paper-local `status.json` and deliberately ignores
   aggregate drift. Run the unscoped status sync only at integration, public PR,
   or release time; do not let another paper's generated drift block a target
@@ -4807,7 +4827,7 @@ Never enter a cycle of modifying a single line in a shell command just to test s
   chatter: name the modeling choices, proof decomposition, and Lean tactics or
   library seams that saved time or would have saved time if used earlier.
 - Run a proof-level library-lift pass before final handoff. Inspect the
-  paper-local proof modules for thin wrappers around `EconCSLib`, generic
+  paper-local proof modules for thin wrappers around `AppliedModelingLib`, generic
   lemmas that are not paper-specific, reusable certificate constructors,
   proof-result patterns, and techniques that would serve another paper. Extract
   small, targeted generic lemmas/results immediately when the destination is
@@ -5129,21 +5149,23 @@ reference.
 
 | Touched code | Read |
 |---|---|
-| `EconCSLib/Foundations/Math/*`, graph/counting/rounding/sign lemmas | `references/proof-foundations-math.md` |
-| `EconCSLib/Foundations/Probability/*`, finite PMFs, Markov kernels/chains, CTMCs, renewal-reward, reward-rate, concentration, measure inequalities, continuous densities, RUM/noise laws, order statistics, large deviations | `references/proof-foundations-probability.md` |
-| `EconCSLib/Foundations/Optimization/*`, argmax/existence/objective wrappers | `references/proof-foundations-optimization.md` |
-| `EconCSLib/Applications/RecommenderSystems/*`, accuracy/diversity, producer fairness, count allocation | `references/proof-recommender-systems.md` |
-| `EconCSLib/Algorithms/Online/*`, online allocation/matching, regret/Yao | `references/proof-algorithms-online.md` |
-| `EconCSLib/MechanismDesign/Auctions/*`, digital goods, GSP, combinatorial auctions | `references/proof-mechanism-design.md` |
-| `EconCSLib/Markets/*` or `EconCSLib/SocialChoice/*`, matching, fair division, rankings, social choice | `references/proof-markets-social-choice.md` |
+| `AppliedModelingLib/Foundations/Math/*`, graph/counting/rounding/sign lemmas | `references/proof-foundations-math.md` |
+| `AppliedModelingLib/Foundations/Probability/*`, finite PMFs, Markov kernels/chains, CTMCs, renewal-reward, reward-rate, concentration, measure inequalities, continuous densities, RUM/noise laws, order statistics, large deviations | `references/proof-foundations-probability.md` |
+| `AppliedModelingLib/Foundations/Optimization/*`, argmax/existence/objective wrappers | `references/proof-foundations-optimization.md` |
+| `AppliedModelingLib/Applications/RecommenderSystems/*`, accuracy/diversity, producer fairness, count allocation | `references/proof-recommender-systems.md` |
+| `AppliedModelingLib/Algorithms/Online/*`, online allocation/matching, regret/Yao | `references/proof-algorithms-online.md` |
+| `AppliedModelingLib/MechanismDesign/Auctions/*`, digital goods, GSP, combinatorial auctions | `references/proof-mechanism-design.md` |
+| `AppliedModelingLib/Markets/*` or `AppliedModelingLib/SocialChoice/*`, matching, fair division, rankings, social choice | `references/proof-markets-social-choice.md` |
 
 `references/proof-strategies.md` is only a short router/index for these files.
 Do not load detailed proof references for routine README/DAG/status edits or
 simple wrapper repairs.
-When updating this skill from a proof session, put proof tactics and theorem
+When updating this skill from proof work, put reusable tactics and theorem
 patterns in the relevant `references/proof-*.md` file. Keep `SKILL.md` limited
 to workflow, routing, folder contracts, validation, and context/source-control
-rules. Before committing a skill update, run a quick grep for paper IDs, named
-theorem numbers, and declaration names in `SKILL.md`; any substantive match
-should usually be moved to a reference file. Acceptable matches are routing
-pointers, examples in folder-contract text, and generic validation templates.
+rules. Before committing a public skill update, scan `SKILL.md` and every
+exported reference for private-only paper identifiers, unpublished findings,
+non-public source excerpts, private or local links, and dependencies on wiki
+examples, feedback ledgers, or session history. Public references must be
+self-contained. They may use examples from publicly released papers or
+formalizations when the cited facts and declarations are already public.

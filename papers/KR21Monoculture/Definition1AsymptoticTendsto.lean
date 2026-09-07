@@ -11,8 +11,8 @@ and exposes the corrected `W^{1,1}` Theorem 5 conclusion with an explicit
 `Filter.Tendsto` result.
 -/
 
-open EconCSLib MeasureTheory Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory Filter
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal Topology
 
 namespace KR21Monoculture
@@ -165,7 +165,7 @@ theorem correctedW11ScaledNoiseDefinition1_sourceFaithful_of_source
     ⟨hcontinuous, hdifferentiable, _hconcentration, hremoval, hstrict⟩
   refine ⟨?_, ?_, hremoval, hstrict⟩
   · intro theta htheta pi
-    exact ⟨EconCSLib.continuousAt_of_epsilonContinuousAt
+    exact ⟨AppliedModelingLib.continuousAt_of_epsilonContinuousAt
       (hcontinuous theta htheta pi), hdifferentiable theta htheta pi⟩
   · exact correctedW11ScaledNoiseFamily_atom_tendsto_to_pure
       f hnormalized value center hcenter

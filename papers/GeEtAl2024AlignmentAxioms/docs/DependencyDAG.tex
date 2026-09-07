@@ -1,0 +1,110 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+\begin{tikzpicture}[every node/.style={font=\sffamily\small}]
+
+\dagPaperMetadata{Axioms for AI Alignment from Human Feedback}{Luise Ge, Daniel Halpern, Evi Micha, Ariel D. Procaccia, Itai Shapira, Yevgeniy Vorobeychik, and Junlin Wu}{NeurIPS}{2024}{https://arxiv.org/abs/2405.14758}
+\dagPaperLegendRightOfMetadata{
+  \node[dag_model, dag_template_legend] (legModel) at (0,0) {formalized\\model or definition};
+  \node[dag_lemma, dag_template_legend] (legLemma) at (4.7,0) {formalized\\lemma or appendix support};
+  \node[dag_result, dag_template_legend] (legResult) at (9.4,0) {formalized\\main result};
+}
+\daglegend{(legModel)(legLemma)(legResult)}{Legend}
+
+\begin{dagPaperBody}
+\begin{scope}[xshift=0.8cm,yshift=-0.5cm]
+
+\node[dag_model, text width=8.2cm] (LinearModel) at (21,0) {
+  \textbf{Linear social-choice model and core axioms}\\features, linear rewards, feasible rankings and profiles; Pareto optimality and pairwise majority consistency
+};
+
+\node[dag_model, text width=5.2cm] (StandardLoss) at (5,-4.0) {
+  \textbf{Standard-loss rule}\\nonnegative loss and ranking-restricted infimum
+};
+\node[dag_model, text width=5.2cm] (MajorityC1) at (19,-4.0) {
+  \textbf{Majority-loss and C1 rules}\\majority-only loss and pairwise-relation dependence
+};
+\node[dag_model, text width=5.2cm] (LCPO) at (27,-4.0) {
+  \textbf{LCPO rule and axioms}\\majority consistency and winner monotonicity
+};
+\node[dag_model, text width=6.3cm] (AppendixRules) at (38,-4.0) {
+  \textbf{Appendix-C rule models}\\separability; Copeland/LCPO, Kemeny, Pareto-Kemeny, and leximax plurality
+};
+\node[dag_model, text width=5.6cm] (Definition22) at (47,-4.0) {
+  \textbf{Definition 2.2 and consequences}\\PMC rule; nonexistence is possible; uniqueness holds whenever a PMC ranking exists
+};
+
+\node[dag_lemma, text width=4.2cm] (Lemma32) at (0,-8.3) {
+  \textbf{Lemma 3.2}\\unconstrained optimizer separation
+};
+\node[dag_lemma, text width=4.2cm] (Lemma33) at (5.6,-8.3) {
+  \textbf{Lemma 3.3}\\parameter-minimizer bounds
+};
+\node[dag_lemma, text width=4.2cm] (Lemma34) at (11.2,-8.3) {
+  \textbf{Corrected Lemma 3.4}\\strict copy-order cone
+};
+\node[dag_lemma, text width=4.2cm] (Lemma35) at (16.8,-8.3) {
+  \textbf{Corrected Lemma 3.5}\\closed-half-space objective gap
+};
+\node[dag_result, text width=4.4cm] (Theorem36) at (22.4,-8.3) {
+  \textbf{Theorem 3.6}\\majority-loss rule satisfies PMC
+};
+\node[dag_result, text width=5.4cm] (Theorem37) at (28.0,-8.3) {
+  \textbf{Theorem 3.7 and consequences}\\C1 rules fail PO; C1 plus PO implies PMC; PMC respects unanimous pairs; Appendix A.6 has no PMC ranking
+};
+\node[dag_result, text width=5.0cm] (Theorem43) at (35.0,-8.3) {
+  \textbf{Theorem 4.3}\\LCPO satisfies PO, PMC, majority consistency, and winner monotonicity
+};
+\node[dag_lemma, text width=5.2cm] (AppendixB) at (47,-8.3) {
+  \textbf{Appendix B}\\explicit feasible profile with a unique PMC ranking that is linearly infeasible
+};
+
+\node[dag_result, text width=5.2cm] (Theorem31) at (8.4,-12.7) {
+  \textbf{Theorem 3.1}\\standard-loss rules fail PO and PMC
+};
+
+\node[dag_lemma, text width=4.4cm] (TheoremC2) at (19.6,-13.8) {
+  \textbf{Theorem C.2}\\Copeland and LCPO fail separability
+};
+\node[dag_lemma, text width=4.4cm] (TheoremC3) at (25.2,-13.8) {
+  \textbf{Theorem C.3}\\linear Kemeny satisfies PMC and separability
+};
+\node[dag_lemma, text width=4.4cm] (TheoremC4) at (30.8,-13.8) {
+  \textbf{Theorem C.4}\\linear Kemeny fails PO and majority consistency
+};
+\node[dag_lemma, text width=4.4cm] (TheoremC5) at (36.4,-13.8) {
+  \textbf{Theorem C.5}\\Pareto-Kemeny fails separability and majority consistency
+};
+\node[dag_lemma, text width=4.4cm] (TheoremC6) at (42.0,-13.8) {
+  \textbf{Theorem C.6}\\leximax plurality satisfies three axioms
+};
+\begin{scope}[on background layer]
+\draw[dag_arrow] (LinearModel.south west) -- ++(-2.0,-1.0) -| (StandardLoss.north);
+\draw[dag_arrow] (LinearModel.south) -- ++(0,-1.0) -| (MajorityC1.north);
+\draw[dag_arrow] (LinearModel.south east) -- ++(2.0,-1.0) -| (LCPO.north);
+\draw[dag_arrow] (LinearModel.south east) -- ++(4.0,-1.0) -| (AppendixRules.north);
+\draw[dag_arrow] (LinearModel.east) -- ++(3.0,0) |- (Definition22.north);
+
+\draw[dag_arrow] (StandardLoss.south west) -- ++(-1.0,-1.0) -| (Lemma32.north);
+\draw[dag_arrow] (Lemma32) -- (Lemma33);
+\draw[dag_arrow] (Lemma33) -- (Lemma34);
+\draw[dag_arrow] (Lemma34) -- (Lemma35);
+\draw[dag_arrow] (Lemma35.south) -- ++(0,-1.0) -| (Theorem31.north east);
+
+\draw[dag_arrow] (MajorityC1.south) -- ++(0,-1.0) -| (Theorem36.north);
+\draw[dag_arrow] (MajorityC1.south east) -- ++(1.0,-1.0) -| (Theorem37.north);
+\draw[dag_arrow] (LCPO.south) -- ++(0,-1.0) -| (Theorem43.north);
+\draw[dag_arrow] (Definition22.south) -- (AppendixB.north);
+
+\draw[dag_arrow] (AppendixRules.south) -- ++(0,-6.7) -- ++(-18.4,0) -- (TheoremC2.north);
+\draw[dag_arrow] (AppendixRules.south) -- ++(0,-6.7) -- ++(-12.8,0) -- (TheoremC3.north);
+\draw[dag_arrow] (AppendixRules.south) -- ++(0,-6.7) -- ++(-7.2,0) -- (TheoremC4.north);
+\draw[dag_arrow] (AppendixRules.south) -- ++(0,-6.7) -- ++(-1.6,0) -- (TheoremC5.north);
+\draw[dag_arrow] (AppendixRules.south) -- ++(0,-6.7) -- ++(4.0,0) -- (TheoremC6.north);
+\end{scope}
+
+\end{scope}
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

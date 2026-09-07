@@ -14,7 +14,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-- The literal access/no-report population selected by a public promotion
@@ -133,7 +133,7 @@ theorem LG21HiddenAccessLiteralSourceEquilibriumAE.reportBestResponse_ae_on_rawP
         E.noReportPayoff publicScore.1 ≤
           E.reportedPayoff publicScore.1 publicScore.2 := by
     rw [hrawBaseScoreLaw]
-    exact hreportBest.1
+    exact (E.optionalReportBestResponse_ae hreportBest).1
   simpa [rawLaw, baseScore] using
     (ae_of_ae_map hbaseScore.aemeasurable hbestBaseScore)
 

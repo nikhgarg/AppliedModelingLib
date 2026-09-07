@@ -6,7 +6,7 @@ open scoped BigOperators
 namespace PRPKG24AccuracyDiversity
 namespace AppendixD1GenericIVLift
 
-open EconCSLib
+open AppliedModelingLib
 open AppendixD1GenericPower
 open AppendixD1GenericIV
 
@@ -30,7 +30,7 @@ certificate as an input.
 theorem corrected_lemmaD1_iv_optimizer_shares_of_power_tail
     {m : ℕ} [NeZero m] {B sigma : ℝ} {h : ℕ → ℝ}
     (p : Fin m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : Fin m => h))
     (hp_pos : ∀ i, 0 < p i)
     (hB_pos : 0 < B) (hsigma_pos : 0 < sigma) (hsigma_lt_one : sigma < 1)
@@ -76,19 +76,19 @@ theorem corrected_lemmaD1_iv_optimizer_shares_of_power_tail
       p (powerBenchmarkAllocation p sigma) (targetShare p sigma)
       hB_pos hsigma_pos htail hbenchmark_counts_atTop hbenchmark_share
   have hactual_simplex : ∀ᶠ N : ℕ in atTop,
-      (fun i => EconCSLib.Allocation.share (seq.allocation N) i) ∈
+      (fun i => AppliedModelingLib.Allocation.share (seq.allocation N) i) ∈
         stdSimplex ℝ (Fin m) := by
     filter_upwards [eventually_gt_atTop 0] with N hN
     constructor
     · intro i
-      exact EconCSLib.Allocation.share_nonneg (seq.allocation N) i
-    · exact EconCSLib.Allocation.sum_share_eq_one_of_total_ne_zero
+      exact AppliedModelingLib.Allocation.share_nonneg (seq.allocation N) i
+    · exact AppliedModelingLib.Allocation.sum_share_eq_one_of_total_ne_zero
         (a := seq.allocation N) (by
           rw [(seq.optimal N).1]
           exact Nat.ne_of_gt hN)
   intro t
   change Tendsto
-    (fun N : ℕ => EconCSLib.Allocation.share (seq.allocation N) t)
+    (fun N : ℕ => AppliedModelingLib.Allocation.share (seq.allocation N) t)
     atTop (nhds (targetShare p sigma t))
   rw [Metric.tendsto_nhds]
   intro ε hε_pos
@@ -97,7 +97,7 @@ theorem corrected_lemmaD1_iv_optimizer_shares_of_power_tail
     dsimp [εhalf]
     linarith
   obtain ⟨eta, heta_pos, hseparate⟩ :=
-    EconCSLib.Allocation.exists_gap_on_stdSimplex_of_strict_unique_max
+    AppliedModelingLib.Allocation.exists_gap_on_stdSimplex_of_strict_unique_max
       (sourcePowerObjective p sigma) (targetShare p sigma)
       htarget_simplex hobjective_cont hobjective_strict εhalf hεhalf_pos
   let delta : ℝ := eta / 3
@@ -139,24 +139,24 @@ theorem corrected_lemmaD1_iv_optimizer_shares_of_power_tail
     have hraw :
         rawPowerTailObjective p h (powerBenchmarkAllocation p sigma N) ≤
           rawPowerTailObjective p h (seq.allocation N) := by
-      simpa [rawPowerTailObjective, EconCSLib.Allocation.objective] using hopt
+      simpa [rawPowerTailObjective, AppliedModelingLib.Allocation.objective] using hopt
     exact (div_le_div_iff_of_pos_right hden_pos).2 hraw
   have hfar_abs : εhalf <
-      |EconCSLib.Allocation.share (seq.allocation N) t - targetShare p sigma t| := by
+      |AppliedModelingLib.Allocation.share (seq.allocation N) t - targetShare p sigma t| := by
     have hnot_dist : ¬ dist
-        (EconCSLib.Allocation.share (seq.allocation N) t)
+        (AppliedModelingLib.Allocation.share (seq.allocation N) t)
         (targetShare p sigma t) < ε := by
       simpa using hnot
     have hdist : ε ≤ dist
-        (EconCSLib.Allocation.share (seq.allocation N) t)
+        (AppliedModelingLib.Allocation.share (seq.allocation N) t)
         (targetShare p sigma t) := le_of_not_gt hnot_dist
     rw [Real.dist_eq] at hdist
     calc
       εhalf = ε / 2 := rfl
       _ < ε := by linarith
-      _ ≤ |EconCSLib.Allocation.share (seq.allocation N) t - targetShare p sigma t| := hdist
+      _ ≤ |AppliedModelingLib.Allocation.share (seq.allocation N) t - targetShare p sigma t| := hdist
   have hgapN := hseparate
-    (fun i => EconCSLib.Allocation.share (seq.allocation N) i)
+    (fun i => AppliedModelingLib.Allocation.share (seq.allocation N) i)
     hsimplex ⟨t, hfar_abs⟩
   have hchain :
       sourcePowerObjective p sigma (targetShare p sigma) - delta ≤

@@ -9,7 +9,7 @@ the Gumbel/exponential-race bridge needs this finite probability identity
 directly.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 

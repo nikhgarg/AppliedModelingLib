@@ -19,11 +19,13 @@ if str(ROOT) not in sys.path:
 from scripts import (  # noqa: E402
     source_record_historical_association_snapshot_reconciliation as RECONCILIATION,
 )
-from scripts.source_coverage_scope import source_item_coverage_sha256  # noqa: E402
+from scripts.source_coverage_scope import (  # noqa: E402
+    source_record_source_item_record_sha256,
+    source_record_source_item_semantic_sha256,
+)
 from scripts.source_record_integrity import stamp_source_record_audit_receipts  # noqa: E402
 from scripts.source_record_target_disposition import (  # noqa: E402
     source_contract_association_record_digest,
-    source_map_item_record_digest,
 )
 
 
@@ -62,14 +64,14 @@ def _association(
     source_key: str,
     include_by_key: bool = True,
 ) -> dict[str, object]:
-    item_digest = source_map_item_record_digest(item)
+    item_digest = source_record_source_item_record_sha256(item)
     identity: dict[str, object] = {
         "source_key": source_key,
         "source_location": item["source_location"],
         "source_kind": item["source_kind"],
         "semantic_contract": copy.deepcopy(item["semantic_contract"]),
         "source_map_item_sha256": item_digest,
-        "source_semantic_sha256": source_item_coverage_sha256(item, ""),
+        "source_semantic_sha256": source_record_source_item_semantic_sha256(item, ""),
     }
     association: dict[str, object] = {
         "schema": 2,
@@ -182,7 +184,7 @@ class HistoricalAssociationSnapshotReconciliationTests(unittest.TestCase):
         self.assertEqual(ledger["identity_count"], 1)
         self.assertEqual(
             ledger["identity_rows"][0]["source_map_item_sha256"],
-            source_map_item_record_digest(_map_item()),
+            source_record_source_item_record_sha256(_map_item()),
         )
 
         loaded = RECONCILIATION.load_historical_association_snapshot_reconciliation(
@@ -194,6 +196,28 @@ class HistoricalAssociationSnapshotReconciliationTests(unittest.TestCase):
             RECONCILIATION.is_loaded_historical_association_snapshot_reconciliation(
                 loaded
             )
+        )
+
+    def test_reconciles_a_raw_pin_across_refreshable_correspondence_receipts(self) -> None:
+        item = _map_item()
+        item["source_spec_correspondence"] = {
+            "schema": 1,
+            "source_atoms_sha256": "a" * 64,
+            "spec_closure_sha256": "b" * 64,
+            "spec_surface_sha256": "c" * 64,
+            "closure_environment_sha256": "d" * 64,
+            "item_identity_sha256": "e" * 64,
+            "source_atom_bindings": [],
+            "closure_node_dispositions": [],
+        }
+        self._write_fixture(item=item)
+
+        artifact = self._create()
+        self.assertEqual(
+            artifact["association_identity_ledger"]["identity_rows"][0][
+                "source_map_item_sha256"
+            ],
+            source_record_source_item_record_sha256(item),
         )
 
     def test_reconciles_every_generator_owned_section_not_only_judgment_responses(self) -> None:

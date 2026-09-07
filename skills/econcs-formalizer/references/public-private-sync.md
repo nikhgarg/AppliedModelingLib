@@ -39,16 +39,29 @@ maintainer explicitly asks for a public-safe PR.
   PR branch against public `main`; contributors should assume they do not have
   push access to public and should use ordinary fork/branch PR mechanics.
 - Prefer ref-to-ref checks over visual inspection. After a sync, run direct
-  diffs for shared paths such as `EconCSLib/`, `scripts/`, synced docs, synced
+  diffs for shared paths such as `AppliedModelingLib/`, `scripts/`, synced docs, synced
   skill references, and public paper folders. Investigate every remaining
   modified (`M`) diff under public paper folders; only private-only deletes,
   checkout-local generated aggregates, and intentionally sanitized skill/docs
   differences should remain.
-- If a private skill reference contains useful general guidance plus private
-  paper names, copy the idea into the public skill in sanitized form. Do not
-  copy the private reference file wholesale unless a leakage scan confirms it
-  contains no private paper IDs, private URLs, source-cache paths, or
-  non-public planning details.
+- Preserve useful methods, proof strategies, diagnostic checks, and public API
+  guidance when preparing skills for release. Public papers and released
+  formalizations may remain concrete examples. A reference to a public paper
+  does not authorize publishing its private formalization findings or repair
+  history. Generalize those details while retaining the actionable lesson;
+  do not remove useful mathematical guidance merely to remove provenance.
+- Keep wiki examples, feedback ledgers, session provenance, and maintenance
+  history private by default. Sanitizing an example for private retention does
+  not authorize publishing it. Promote its general lesson into a self-contained
+  public skill; do not copy unpublished findings or statements, private user
+  quotations, or session identifiers. Public skills must work without access
+  to the private wiki or feedback ledger. Publishing a private wiki example
+  needs a separate, explicit export decision; ordinary public-paper examples
+  do not require that additional workflow.
+- Review every exported skill reference, template, and bundled example, not
+  only `SKILL.md`. Check that examples and links use public material;
+  a file living under `skills/` is not evidence that it is public-safe. Record
+  exact export paths and keep private provenance out of the candidate.
 - Record the outcome in commits/PR bodies: what public changes were reflected
   into private, whether any explicitly requested public-safe contribution was
   prepared, which generated files were regenerated rather than copied, and which
@@ -121,13 +134,13 @@ For public-safe paths, prefer the latest semantically valid artifact:
   to use fuller labels such as `Public note` when useful.
 - The website library-components table is generated from
   `papers/catalog.json` `library_components`. Treat that table as a partition
-  of tracked `EconCSLib/**/*.lean` files: folded rows are fine, but the row LOC
+  of tracked `AppliedModelingLib/**/*.lean` files: folded rows are fine, but the row LOC
   totals should add up to the actual library LOC in that checkout with no
   duplicate-counted or missing Lean files. Put Foundations rows first, then
   application/domain rows in descending LOC order unless there is a stronger
-  reader-facing reason. Name the prose column `Content details`, and write
-  audience-relevant capability summaries rather than internal implementation
-  inventories.
+  reader-facing reason. Name the prose column `Content`, and cover the important
+  concepts in each area with concise lists rather than explaining one example
+  in depth or listing internal implementation details.
 - Aggregate files (`papers/status.json`, `papers/human_status.json`,
   `docs/PAPER_STATUS.md`, `site/index.html`, and per-paper generated
   `README.md` entrypoints): never copy across the public/private boundary.
@@ -137,12 +150,17 @@ For public-safe paths, prefer the latest semantically valid artifact:
 
 ## Source Artifacts
 
-Keep source-paper PDFs, extracted source text, publisher archives, arXiv source
-archives, and dashboard caches private or ignored unless redistribution rights
-and project policy explicitly allow publication. Public reports should cite the
-source URL and, if needed, describe a local ignored cache. Planning, handoff,
-audit, and citation-provenance notes written by the project may be tracked when
-they do not reproduce source-paper text.
+Source-paper PDFs, extracted source text, publisher archives, and arXiv source
+archives may be tracked in the private repository when they are the pinned
+evidence for a paper or needed for a durable private handoff. Add exact source
+paths only (using `git add -f` when cache-ignore rules apply); keep dashboard
+caches and unneeded local variants ignored. Do not copy source bytes into a
+public candidate by default. Such publication requires the user's explicit
+permission for the exact artifacts, independently of their private tracking or
+redistribution status. Public reports should cite the source URL and, if
+needed, describe a local source cache. Planning, handoff, audit, and
+citation-provenance notes written by the project may be tracked when they do
+not reproduce source-paper text.
 
 A public candidate is therefore a **structural** validation environment for
 licensed source evidence. It must retain the canonical source path/provenance
@@ -216,7 +234,15 @@ closeout sequence. Before treating copied sidecars as current:
    is the exact fetched public base. Use explicit pathspecs; do not merge or
    stack private commits, because intermediate history is also published. For
    public changes, prepare a PR; do not assume direct push access.
-9. After the candidate commit is fixed, a human reviewer creates
+   During local candidate review, keep the `release/` branch editable. Apply
+   feedback to maintained private sources where applicable, refresh only the
+   reviewed exported files, regenerate destination aggregates, and renew the
+   allowlist blob pins and candidate checks. Consolidate the revised export to
+   one release commit before validating it; a prior guard pass does not cover
+   later edits. Preparing an editable candidate does not authorize publication.
+9. Open the PR after the candidate guard passes; no approval artifact is needed
+   merely to request review. Only when a maintainer is ready to merge the
+   accepted PR does that maintainer create
    `~/.config/econcslib/public-release-approval.json` outside both repositories.
    It pins the exact candidate and public-base commits, allowlist and guard
    SHA256 values, and sorted private source commits. This path is fixed in the
@@ -225,12 +251,14 @@ closeout sequence. Before treating copied sidecars as current:
 10. From the clean committed public candidate, invoke the canonical private
    guard:
    `python3 <private-repo>/scripts/public_release_candidate_guard.py --repo "$PWD"
-   --allowlist <reviewed-allowlist.json>`. Do not execute a guard from the
+   --allowlist <reviewed-allowlist.json>` before opening the PR. Do not execute a guard from the
    candidate itself. Do not proceed while it reports a visibility,
    trust-anchor, ancestry, provenance, forbidden-path, or Lean
    dependency-closure error. The guard fixes public and private refs/remotes,
    authenticates its containing private checkout, requires canonical fetch and
-   push URLs, and rejects shared Git common/object stores.
+   push URLs, and rejects shared Git common/object stores. Immediately before
+   merging, the maintainer reruns it with `--authoritative` to validate the
+   approval pin.
 
 ## What Not To Do
 

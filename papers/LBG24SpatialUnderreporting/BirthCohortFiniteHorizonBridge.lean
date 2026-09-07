@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Probability.PoissonFiniteHorizonMarkedThinning
+import AppliedModelingLib.Foundations.Probability.PoissonFiniteHorizonMarkedThinning
 
 /-!
 # Finite birth-cohort retention bridge for Lemma 1
@@ -25,8 +25,8 @@ process.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
-open EconCSLib.Probability.FiniteHorizonMarkedPoisson
+open AppliedModelingLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson
 open scoped ENNReal NNReal ProbabilityTheory
 
 noncomputable section
@@ -140,7 +140,7 @@ theorem retainedBirthCount_le_latentBirthCount
   rw [M.retainedBirthCount_eq_kept, M.latentBirthCount_eq_total]
   simpa [kept, keptInMarks, total] using Finset.card_le_card
     (Finset.subset_univ
-      (EconCSLib.successIndexSet (fun b : Bool => b = true)
+      (AppliedModelingLib.successIndexSet (fun b : Bool => b = true)
         (M.cohortSample omega).marks))
 
 end BirthCohortRetentionSource

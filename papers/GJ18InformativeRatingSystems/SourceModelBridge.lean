@@ -19,7 +19,7 @@ namespace GJ18InformativeRatingSystems
 
 noncomputable section
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 
 /--
 The author-approved corrected/source-shaped finite-ordinal package. The
@@ -116,10 +116,10 @@ noncomputable def ordinalSourcePairwiseLdpCertificate_at_least_three_levels
       sourceModel.quality_tails_strictly_increase_above_bottom
   have hmean :
       forall p : finiteChainOrderedPair n,
-        EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score <=
-          EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score := by
+        AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score <=
+          AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score := by
     intro p
-    exact EconCSLib.pmfExp_le_pmfExp_of_fin_tail_prob_le
+    exact AppliedModelingLib.pmfExp_le_pmfExp_of_fin_tail_prob_le
       (M.typeLaw (finiteChainOrderedPairLo p))
       (M.typeLaw (finiteChainOrderedPairHi p)) M.score
       sourceModel.scores_strictly_increasing.monotone (htail p)
@@ -244,9 +244,9 @@ noncomputable def ordinalSourceSinglePairwiseLdpCertificate_binary
     assumption_ordinal_rating_tail_dominance_of_source_strict_quality_tails M
       sourceModel.quality_tails_strictly_increase_above_bottom
   have hmean :
-      EconCSLib.pmfExp (M.typeLaw lo) M.score <=
-        EconCSLib.pmfExp (M.typeLaw hi) M.score := by
-    exact EconCSLib.pmfExp_le_pmfExp_of_fin_tail_prob_le
+      AppliedModelingLib.pmfExp (M.typeLaw lo) M.score <=
+        AppliedModelingLib.pmfExp (M.typeLaw hi) M.score := by
+    exact AppliedModelingLib.pmfExp_le_pmfExp_of_fin_tail_prob_le
       (M.typeLaw lo) (M.typeLaw hi) M.score
       sourceModel.scores_strictly_increasing.monotone (by
         simpa [hi, lo] using htail p)
@@ -290,7 +290,7 @@ noncomputable def ordinalSourceSinglePairwiseLdpCertificate_binary
   · have hlo_top_zero : (M.typeLaw lo (Fin.last 1)).toReal = 0 := by
       exact le_antisymm (le_of_not_gt hlo_top) ENNReal.toReal_nonneg
     let rate : Real := sampleRate hi *
-      (-Real.log (EconCSLib.pmfProb (M.typeLaw hi)
+      (-Real.log (AppliedModelingLib.pmfProb (M.typeLaw hi)
         (fun r => M.score r = M.score (0 : Fin 2))))
     refine
       { rate := fun _ => rate

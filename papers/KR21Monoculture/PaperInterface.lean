@@ -84,8 +84,8 @@ older module paths.
 the configured paper-facing rows directly for paper-vs-Lean review.
 -/
 
-open EconCSLib MeasureTheory ProbabilityTheory Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory ProbabilityTheory Filter
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal NNReal Topology
 
 namespace KR21Monoculture
@@ -322,6 +322,28 @@ theorem source_definition2_conditional_at_iff_payoff_comparison
     F D theta regularity hdisagreement
 
 /--
+Source Definition 2 with its full universal positive-accuracy quantifier and
+literal outer value/ranking-pair conditional experiment.  The positive
+denominator is an explicit well-posedness condition for the displayed
+conditional expectation, rather than a silent totalization convention.
+-/
+theorem source_definition2_iff
+    {n : ℕ} (F : DistributionalAccuracyFamily n)
+    (D : Measure (ValueProfile n)) :
+    SourceDefinition2 F D ↔
+      ∀ theta : ℝ, 0 < theta → ∀ hatom : ∀ ranking : Ranking n,
+        Measurable fun value => F.dist theta value ranking,
+        let J := F.outerIndependentPairJointLaw D theta hatom
+        let numerator : ℝ := ∫ x : ValueProfile n × RankingPair n,
+          if firstChoice x.2.1 ≠ firstChoice x.2.2 then
+            x.1 (firstChoice x.2.1) - x.1 (secondChoice x.2.1)
+          else 0 ∂J
+        let denominator : ℝ := ∫ x : ValueProfile n × RankingPair n,
+          if firstChoice x.2.1 ≠ firstChoice x.2.2 then (1 : ℝ) else 0 ∂J
+        0 < denominator → 0 < numerator / denominator :=
+  Iff.rfl
+
+/--
 Source Definition 3 is definitionally the outer-D comparison between an
 accurate and a human first mover against the same human second mover.
 -/
@@ -331,6 +353,24 @@ theorem source_definition3_at_iff_weaker_competition
     SourceDefinition3At F D thetaA thetaH ↔
       F.PrefersWeakerCompetition D thetaA thetaH :=
   KR21Monoculture.source_definition3_at_iff_weaker_competition F D thetaA thetaH
+
+/--
+Source Definition 3 with its full quantifier over every ordered positive
+accuracy pair.  The same human law is the second mover in both displayed
+outer expectations.
+-/
+theorem source_definition3_iff
+    {n : ℕ} (F : DistributionalAccuracyFamily n)
+    (D : Measure (ValueProfile n)) :
+    SourceDefinition3 F D ↔
+      ∀ thetaA thetaH : ℝ, 0 < thetaH → thetaH < thetaA →
+        (∫ value : ValueProfile n,
+          pmfPairExp (F.dist thetaH value) (F.dist thetaA value)
+            (fun pi sigma => secondMoverUtility value pi sigma) ∂D) <
+        (∫ value : ValueProfile n,
+          pmfPairExp (F.dist thetaH value) (F.dist thetaH value)
+            (fun pi sigma => secondMoverUtility value pi sigma) ∂D) :=
+  Iff.rfl
 
 /-! ## Section 2.2 Model and Equations (2)--(6) -/
 
@@ -555,7 +595,7 @@ with positive `theta`.
 theorem definition1_concreteMallowsSpec_atom_continuity
     {n : ℕ} (center : Ranking n) {theta : ℝ} (htheta : 0 < theta)
     (pi : Ranking n) :
-    EconCSLib.EpsilonContinuousAt
+    AppliedModelingLib.EpsilonContinuousAt
       (fun theta' => (((concreteMallowsSpec center theta').law) pi).toReal) theta :=
     KR21Monoculture.paper_definition1_concreteMallowsSpec_atom_continuity
       center htheta pi
@@ -594,13 +634,13 @@ theorem appendixA_expectedBestInSet_monotonicity_of_finite_rankByScore_contracti
     {remaining : Finset (Candidate n)}
     {t : ℝ} (ht0 : 0 ≤ t) (htlt1 : t < 1)
     (hremaining : remaining.Nonempty) :
-    EconCSLib.SocialChoice.Ranking.expectedBestInSet
+    AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet
         (mu.map (fun omega =>
-          EconCSLib.SocialChoice.Ranking.rankByScore (raw omega)))
+          AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw omega)))
         value remaining ≤
-      EconCSLib.SocialChoice.Ranking.expectedBestInSet
+      AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet
         (mu.map (fun omega =>
-          EconCSLib.SocialChoice.Ranking.rankByScore
+          AppliedModelingLib.SocialChoice.Ranking.rankByScore
             (fun i => paper_appendixC_contractedScore t (value i) (raw omega i))))
         value remaining :=
   KR21Monoculture.paper_appendixA_expectedBestInSet_monotonicity_of_finite_rankByScore_contraction
@@ -623,22 +663,22 @@ theorem appendixA_expectedBestInSet_monotonicity_of_measure_rankByScore_contract
     {t : ℝ}
     (hrawRank :
       Measurable (fun omega =>
-        EconCSLib.SocialChoice.Ranking.rankByScore (raw omega)))
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw omega)))
     (hcontractRank :
       Measurable (fun omega =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => paper_appendixC_contractedScore t (value i) (raw omega i))))
     (ht0 : 0 ≤ t) (htlt1 : t < 1)
     (hremaining : remaining.Nonempty) :
-    EconCSLib.SocialChoice.Ranking.expectedBestInSet
-        (EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
-          (fun omega => EconCSLib.SocialChoice.Ranking.rankByScore (raw omega))
+    AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet
+        (AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
+          (fun omega => AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw omega))
           hrawRank)
         value remaining ≤
-      EconCSLib.SocialChoice.Ranking.expectedBestInSet
-        (EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
+      AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet
+        (AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
           (fun omega =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (value i) (raw omega i)))
           hcontractRank)
         value remaining :=
@@ -659,10 +699,10 @@ theorem appendixA_expectedBestInSet_strict_of_measure_rankByScore_contraction
     {t : ℝ}
     (hrawRank :
       Measurable (fun omega =>
-        EconCSLib.SocialChoice.Ranking.rankByScore (raw omega)))
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw omega)))
     (hcontractRank :
       Measurable (fun omega =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => paper_appendixC_contractedScore t (value i) (raw omega i))))
     (ht0 : 0 ≤ t) (htlt1 : t < 1)
     (hremaining : remaining.Nonempty)
@@ -670,22 +710,22 @@ theorem appendixA_expectedBestInSet_strict_of_measure_rankByScore_contraction
       0 < mu {omega |
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore (raw omega))
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw omega))
             remaining) <
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (value i) (raw omega i)))
             remaining)}) :
-    EconCSLib.SocialChoice.Ranking.expectedBestInSet
-        (EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
-          (fun omega => EconCSLib.SocialChoice.Ranking.rankByScore (raw omega))
+    AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet
+        (AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
+          (fun omega => AppliedModelingLib.SocialChoice.Ranking.rankByScore (raw omega))
           hrawRank)
         value remaining <
-      EconCSLib.SocialChoice.Ranking.expectedBestInSet
-        (EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
+      AppliedModelingLib.SocialChoice.Ranking.expectedBestInSet
+        (AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
           (fun omega =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (value i) (raw omega i)))
           hcontractRank)
         value remaining :=
@@ -709,36 +749,36 @@ theorem appendixA_theorem1RemovalMonotonicityAt_of_scaledNoise_rankByScore_sourc
     (hthetaH : 0 < thetaH) (hthetaHA : thetaH < thetaA)
     (hrawRank :
       Measurable (fun omega =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => F.value i + noise omega i / thetaH)))
     (haccurateRank :
       Measurable (fun omega =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => F.value i + noise omega i / thetaA)))
     (hdistH :
       F.dist thetaH =
-        EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
+        AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
           (fun omega =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise omega i / thetaH))
           hrawRank)
     (hdistA :
       F.dist thetaA =
-        EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
+        AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
           (fun omega =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise omega i / thetaA))
           haccurateRank)
     (hstrict_univ :
       0 < mu {omega |
         F.value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise omega i / thetaH))
             Finset.univ) <
         F.value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise omega i / thetaA))
             Finset.univ)}) :
     AccuracyFamily.Theorem1RemovalMonotonicityAt F thetaA thetaH :=
@@ -761,24 +801,24 @@ theorem appendixA_theorem1RemovalMonotonicityAt_of_scaledNoise_top_switch_set
     (hthetaH : 0 < thetaH) (hthetaHA : thetaH < thetaA)
     (hrawRank :
       Measurable (fun omega =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => F.value i + noise omega i / thetaH)))
     (haccurateRank :
       Measurable (fun omega =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => F.value i + noise omega i / thetaA)))
     (hdistH :
       F.dist thetaH =
-        EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
+        AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
           (fun omega =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise omega i / thetaH))
           hrawRank)
     (hdistA :
       F.dist thetaA =
-        EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
+        AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
           (fun omega =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise omega i / thetaA))
           haccurateRank)
     {low high : Candidate n} {S : Set Omega}
@@ -818,12 +858,12 @@ theorem appendixA_scaledNoise_strict_fullset_improvement_pos_of_noise_fullSuppor
       {noise |
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => value i + noise i / thetaH))
             Finset.univ) <
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => value i + noise i / thetaA))
             Finset.univ)} :=
   KR21Monoculture.paper_appendixA_scaledNoise_strict_fullset_improvement_pos_of_noise_fullSupport
@@ -849,24 +889,24 @@ theorem appendixA_theorem1RemovalMonotonicityAt_of_scaledNoise_fullSupport_densi
     (hthetaH : 0 < thetaH) (hthetaHA : thetaH < thetaA)
     (hrawRank :
       Measurable (fun noise : Candidate n → ℝ =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => F.value i + noise i / thetaH)))
     (haccurateRank :
       Measurable (fun noise : Candidate n → ℝ =>
-        EconCSLib.SocialChoice.Ranking.rankByScore
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore
           (fun i => F.value i + noise i / thetaA)))
     (hdistH :
       F.dist thetaH =
-        EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
+        AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
           (fun noise =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise i / thetaH))
           hrawRank)
     (hdistA :
       F.dist thetaA =
-        EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
+        AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure mu
           (fun noise =>
-            EconCSLib.SocialChoice.Ranking.rankByScore
+            AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => F.value i + noise i / thetaA))
           haccurateRank)
     {low high : Candidate n}
@@ -909,11 +949,11 @@ theorem appendixA_strict_fullset_improvement_pos_of_scoreSpace_top_switch_openBo
       {score |
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore score)
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore score)
             Finset.univ) <
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (value i) (score i)))
             Finset.univ)} :=
   KR21Monoculture.paper_appendixA_strict_fullset_improvement_pos_of_scoreSpace_top_switch_openBox
@@ -947,11 +987,11 @@ theorem appendixA_strict_fullset_improvement_pos_of_scoreSpace_topSwitch_paramet
       {score |
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore score)
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore score)
             Finset.univ) <
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (value i) (score i)))
             Finset.univ)} :=
   KR21Monoculture.paper_appendixA_strict_fullset_improvement_pos_of_scoreSpace_topSwitch_parameters
@@ -978,11 +1018,11 @@ theorem appendixA_strict_fullset_improvement_pos_of_scoreSpace_fullSupport
       {score |
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore score)
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore score)
             Finset.univ) <
         value
           (bestInSet
-            (EconCSLib.SocialChoice.Ranking.rankByScore
+            (AppliedModelingLib.SocialChoice.Ranking.rankByScore
               (fun i => paper_appendixC_contractedScore t (value i) (score i)))
             Finset.univ)} :=
   KR21Monoculture.paper_appendixA_strict_fullset_improvement_pos_of_scoreSpace_fullSupport
@@ -1005,12 +1045,12 @@ theorem appendixA_atomwise_concentration_of_sum_inversion_probs
       ∀ lower delta, 0 < delta →
         ∃ hi, lower < hi ∧
           (∑ ab : Candidate n × Candidate n,
-            EconCSLib.measureProb (mu hi)
+            AppliedModelingLib.measureProb (mu hi)
               (fun omega => invertedPair center (rank hi omega) ab)) < delta) :
     ∀ lower delta, 0 < delta →
       ∃ hi, lower < hi ∧
         ∀ pi : Ranking n,
-          |((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          |((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
                 (mu hi) (rank hi) (hrank hi)) pi).toReal -
             (((PMF.pure center : PMF (Ranking n)) pi).toReal)| < delta :=
   KR21Monoculture.paper_appendixA_atomwise_concentration_of_sum_inversion_probs
@@ -1034,13 +1074,13 @@ theorem appendixA_atomwise_concentration_of_sum_adjacent_inversion_probs
       ∀ lower delta, 0 < delta →
         ∃ hi, lower < hi ∧
           (∑ i : Fin (n + 1),
-            EconCSLib.measureProb (mu hi)
+            AppliedModelingLib.measureProb (mu hi)
               (fun omega => invertedPair center (rank hi omega)
                 (center i.castSucc, center i.succ))) < delta) :
     ∀ lower delta, 0 < delta →
       ∃ hi, lower < hi ∧
         ∀ pi : Ranking n,
-          |((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          |((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
                 (mu hi) (rank hi) (hrank hi)) pi).toReal -
             (((PMF.pure center : PMF (Ranking n)) pi).toReal)| < delta :=
   KR21Monoculture.paper_appendixA_atomwise_concentration_of_sum_adjacent_inversion_probs
@@ -1060,23 +1100,23 @@ theorem appendixA_atomwise_concentration_of_sum_adjacent_score_misorder_probs
     (score : ℝ → Omega → Candidate n → ℝ)
     (hrank : ∀ theta,
       Measurable (fun omega =>
-        EconCSLib.SocialChoice.Ranking.rankByScore (score theta omega)))
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore (score theta omega)))
     (center : Ranking n)
     (hmisorder :
       ∀ lower delta, 0 < delta →
         ∃ hi, lower < hi ∧
           (∑ i : Fin (n + 1),
-            EconCSLib.measureProb (mu hi)
+            AppliedModelingLib.measureProb (mu hi)
               (fun omega =>
                 score hi omega (center i.castSucc) ≤
                   score hi omega (center i.succ))) < delta) :
     ∀ lower delta, 0 < delta →
       ∃ hi, lower < hi ∧
         ∀ pi : Ranking n,
-          |((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          |((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
                 (mu hi)
                 (fun omega =>
-                  EconCSLib.SocialChoice.Ranking.rankByScore (score hi omega))
+                  AppliedModelingLib.SocialChoice.Ranking.rankByScore (score hi omega))
                 (hrank hi)) pi).toReal -
             (((PMF.pure center : PMF (Ranking n)) pi).toReal)| < delta :=
   KR21Monoculture.paper_appendixA_atomwise_concentration_of_sum_adjacent_score_misorder_probs
@@ -1099,13 +1139,13 @@ theorem appendixA_atomwise_concentration_of_sum_inversion_probs_tendsto
       Filter.Tendsto
         (fun theta : ℝ =>
           ∑ ab : Candidate n × Candidate n,
-            EconCSLib.measureProb (mu theta)
+            AppliedModelingLib.measureProb (mu theta)
               (fun omega => invertedPair center (rank theta omega) ab))
         Filter.atTop (nhds 0)) :
     ∀ lower delta, 0 < delta →
       ∃ hi, lower < hi ∧
         ∀ pi : Ranking n,
-          |((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          |((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
                 (mu hi) (rank hi) (hrank hi)) pi).toReal -
             (((PMF.pure center : PMF (Ranking n)) pi).toReal)| < delta :=
   KR21Monoculture.paper_appendixA_atomwise_concentration_of_sum_inversion_probs_tendsto
@@ -1129,14 +1169,14 @@ theorem appendixA_atomwise_concentration_of_sum_adjacent_inversion_probs_tendsto
       Filter.Tendsto
         (fun theta : ℝ =>
           ∑ i : Fin (n + 1),
-            EconCSLib.measureProb (mu theta)
+            AppliedModelingLib.measureProb (mu theta)
               (fun omega => invertedPair center (rank theta omega)
                 (center i.castSucc, center i.succ)))
         Filter.atTop (nhds 0)) :
     ∀ lower delta, 0 < delta →
       ∃ hi, lower < hi ∧
         ∀ pi : Ranking n,
-          |((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          |((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
                 (mu hi) (rank hi) (hrank hi)) pi).toReal -
             (((PMF.pure center : PMF (Ranking n)) pi).toReal)| < delta :=
   KR21Monoculture.paper_appendixA_atomwise_concentration_of_sum_adjacent_inversion_probs_tendsto
@@ -1155,13 +1195,13 @@ theorem appendixA_atomwise_concentration_of_sum_adjacent_score_misorder_probs_te
     (score : ℝ → Omega → Candidate n → ℝ)
     (hrank : ∀ theta,
       Measurable (fun omega =>
-        EconCSLib.SocialChoice.Ranking.rankByScore (score theta omega)))
+        AppliedModelingLib.SocialChoice.Ranking.rankByScore (score theta omega)))
     (center : Ranking n)
     (hsum :
       Filter.Tendsto
         (fun theta : ℝ =>
           ∑ i : Fin (n + 1),
-            EconCSLib.measureProb (mu theta)
+            AppliedModelingLib.measureProb (mu theta)
               (fun omega =>
                 score theta omega (center i.castSucc) ≤
                   score theta omega (center i.succ)))
@@ -1169,10 +1209,10 @@ theorem appendixA_atomwise_concentration_of_sum_adjacent_score_misorder_probs_te
     ∀ lower delta, 0 < delta →
       ∃ hi, lower < hi ∧
         ∀ pi : Ranking n,
-          |((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          |((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
                 (mu hi)
                 (fun omega =>
-                  EconCSLib.SocialChoice.Ranking.rankByScore (score hi omega))
+                  AppliedModelingLib.SocialChoice.Ranking.rankByScore (score hi omega))
                 (hrank hi)) pi).toReal -
             (((PMF.pure center : PMF (Ranking n)) pi).toReal)| < delta :=
   KR21Monoculture.paper_appendixA_atomwise_concentration_of_sum_adjacent_score_misorder_probs_tendsto
@@ -1197,7 +1237,7 @@ theorem appendixA_scaledNoise_adjacent_score_misorder_sum_tendsto
     Filter.Tendsto
       (fun theta : ℝ =>
         ∑ i : Fin (n + 1),
-          EconCSLib.measureProb mu
+          AppliedModelingLib.measureProb mu
             (fun omega =>
               value (center i.castSucc) +
                   noise omega (center i.castSucc) / theta ≤
@@ -1218,7 +1258,7 @@ theorem appendixA_scaledNoise_rankByScore_measurable
     (hnoise : ∀ c : Candidate n, Measurable (fun omega => noise omega c))
     (value : Candidate n → ℝ) (theta : ℝ) :
     Measurable (fun omega =>
-      EconCSLib.SocialChoice.Ranking.rankByScore
+      AppliedModelingLib.SocialChoice.Ranking.rankByScore
         (fun c => value c + noise omega c / theta)) :=
   KR21Monoculture.paper_appendixA_scaledNoise_rankByScore_measurable
     noise hnoise value theta
@@ -1237,7 +1277,7 @@ theorem appendixA_scaledNoiseRankingPMF_atom_epsilonContinuousAt_of_ae_noTies
         ∀ i j : Candidate n, i ≠ j →
           value i + noise i / theta ≠ value j + noise j / theta)
     (pi : Ranking n) :
-    EconCSLib.EpsilonContinuousAt
+    AppliedModelingLib.EpsilonContinuousAt
       (fun theta' =>
         ((KR21Monoculture.paper_appendixA_scaledNoiseRankingPMF
           mu value theta') pi).toReal)
@@ -1281,10 +1321,10 @@ theorem appendixA_scaledNoise_atomwise_concentration
     ∀ lower delta, 0 < delta →
       ∃ hi, lower < hi ∧
         ∀ pi : Ranking n,
-          |((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          |((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
                 mu
                 (fun omega =>
-                  EconCSLib.SocialChoice.Ranking.rankByScore
+                  AppliedModelingLib.SocialChoice.Ranking.rankByScore
                     (fun c => value c + noise omega c / hi))
                 (appendixA_scaledNoise_rankByScore_measurable
                   noise hnoise value hi)) pi).toReal -
@@ -1325,10 +1365,10 @@ noncomputable def appendixA_scaledNoise_definition1_consequence_of_fullSupport_s
     (hdist :
       ∀ theta, 0 < theta →
         F.dist theta =
-          EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+          AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
             mu
             (fun noise =>
-              EconCSLib.SocialChoice.Ranking.rankByScore
+              AppliedModelingLib.SocialChoice.Ranking.rankByScore
                 (fun c => F.value c + noise c / theta))
             (appendixA_scaledNoise_rankByScore_measurable
               (Omega := Candidate n → ℝ)
@@ -1787,14 +1827,15 @@ theorem theorem6_source_unitVarianceLaplace_iid_rum_prefersWeakerCompetition
 /--
 Theorem 6 at its literal generic source-law surface.  The ranking laws are
 generated from one normalized iid density by `x_i + epsilon_i / theta`.
-The source's full-support condition is obtained from nonnegative density plus
-strict well-ordering, and the Jacobian/product-law ranking transport is proved
-inside the cited endpoint rather than supplied as a law-equality premise.
+The source's full-support condition is explicit as pointwise density
+positivity, and the Jacobian/product-law ranking transport is proved inside the
+cited endpoint rather than supplied as a law-equality premise.
 -/
 theorem theorem6_source_raw_iid_density_prefersWeakerCompetition
     (f : ℝ → ℝ) {thetaA thetaH x1 x2 x3 : ℝ}
     (hfmeas : Measurable f) (hf : StrictlyWellOrderedNoise f)
     (hnonneg : ∀ z : ℝ, 0 ≤ f z)
+    (hfullSupport : ∀ z : ℝ, 0 < f z)
     (hnormalized : ∫⁻ z, ENNReal.ofReal (f z) ∂volume = 1)
     (hthetaH : 0 < thetaH) (hthetaHA : thetaH < thetaA)
     (hx12 : x2 < x1) (hx23 : x3 < x2) :
@@ -1808,8 +1849,8 @@ theorem theorem6_source_raw_iid_density_prefersWeakerCompetition
         (w11CandidateNoiseLaw_isProbabilityMeasure_of_base_normalization 1 f hnormalized)
         (threeCandidateValueProfile x1 x2 x3) thetaH)
       (threeCandidateValueProfile x1 x2 x3) :=
-  KR21Monoculture.appendixC_source_rawRUM_theorem6_prefersWeakerCompetition_of_nonneg
-    f hfmeas hf hnonneg hnormalized hthetaH hthetaHA x1 x2 x3 hx12 hx23
+  KR21Monoculture.appendixC_source_rawRUM_theorem6_prefersWeakerCompetition
+    f hfmeas hf hfullSupport hnormalized hthetaH hthetaHA x1 x2 x3 hx12 hx23
 
 /--
 Theorem 6 with its iid density product and raw `x_i + epsilon_i / theta`
@@ -1821,6 +1862,7 @@ theorem theorem6_source_raw_iid_density_semantic_complete
     (hf : ∀ ⦃a b c d : ℝ⦄, b < a → d < c →
       f (a - c) * f (b - d) > f (a - d) * f (b - c))
     (hnonneg : ∀ z : ℝ, 0 ≤ f z)
+    (hfullSupport : ∀ z : ℝ, 0 < f z)
     (hnormalized : ∫⁻ z, ENNReal.ofReal (f z) ∂volume = 1)
     (hthetaH : 0 < thetaH) (hthetaHA : thetaH < thetaA)
     (hx12 : x2 < x1) (hx23 : x3 < x2) :
@@ -1851,11 +1893,11 @@ theorem theorem6_source_raw_iid_density_semantic_complete
           (w11CandidateNoiseLaw (n := 1) f)
           (threeCandidateValueProfile x1 x2 x3) theta).toMeasure = _
       unfold paper_appendixA_scaledNoiseRankingPMF
-      unfold EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+      unfold AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
       rw [Measure.toPMF_toMeasure]
       simp [w11CandidateNoiseLaw, w11BaseNoiseLaw]
     · exact theorem6_source_raw_iid_density_prefersWeakerCompetition
-        f hfmeas hf hnonneg hnormalized hthetaH hthetaHA hx12 hx23
+        f hfmeas hf hnonneg hfullSupport hnormalized hthetaH hthetaHA hx12 hx23
 
 /--
 Theorem 6 with its Definition 3 conclusion written as the literal fixed-PMF
@@ -1868,6 +1910,7 @@ theorem theorem6_source_raw_iid_density_literal_semantic_complete
     (hf : ∀ ⦃a b c d : ℝ⦄, b < a → d < c →
       f (a - c) * f (b - d) > f (a - d) * f (b - c))
     (hnonneg : ∀ z : ℝ, 0 ≤ f z)
+    (hfullSupport : ∀ z : ℝ, 0 < f z)
     (hnormalized : ∫⁻ z, ENNReal.ofReal (f z) ∂volume = 1)
     (hthetaH : 0 < thetaH) (hthetaHA : thetaH < thetaA)
     (hx12 : x2 < x1) (hx23 : x3 < x2) :
@@ -1888,11 +1931,11 @@ theorem theorem6_source_raw_iid_density_literal_semantic_complete
         (rankingLaw thetaH) (rankingLaw thetaH)
         (threeCandidateValueProfile x1 x2 x3) := by
   rcases theorem6_source_raw_iid_density_semantic_complete
-    f hfmeas hf hnonneg hnormalized hthetaH hthetaHA hx12 hx23 with
+    f hfmeas hf hnonneg hfullSupport hnormalized hthetaH hthetaHA hx12 hx23 with
     ⟨hprob, rankingLaw, hlaw, hpref⟩
   refine ⟨hprob, rankingLaw, hlaw, ?_⟩
   simpa only [Model.PrefersWeakerCompetition,
-    EconCSLib.SocialChoice.Ranking.PrefersWeakerCompetition] using hpref
+    AppliedModelingLib.SocialChoice.Ranking.PrefersWeakerCompetition] using hpref
 
 /-! ## Appendix C, Lemmas 2 and 3 -/
 
@@ -1956,13 +1999,13 @@ theorem lemma2_source_arbitraryFinite_bottom_first_probability_semantic_complete
       mu.map (fun epsilon => rankByScore
         (fun c => value c + epsilon c / thetaA))
     unfold paper_appendixA_scaledNoiseRankingPMF
-    unfold EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    unfold AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
     rw [Measure.toPMF_toMeasure]
   · change (paper_appendixA_scaledNoiseRankingPMF mu value thetaH).toMeasure =
       mu.map (fun epsilon => rankByScore
         (fun c => value c + epsilon c / thetaH))
     unfold paper_appendixA_scaledNoiseRankingPMF
-    unfold EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    unfold AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
     rw [Measure.toPMF_toMeasure]
   · exact lemma2_source_arbitraryFinite_bottom_first_probability
       mu hthetaH hthetaHA value bottom hbottom
@@ -2024,7 +2067,7 @@ theorem lemma2_source_arbitraryFinite_iid_bottom_first_probability_semantic_comp
       (w11CandidateNoiseLaw (n := n) f).map
         (fun epsilon => rankByScore (fun c => value c + epsilon c / thetaA))
     unfold paper_appendixA_scaledNoiseRankingPMF
-    unfold EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    unfold AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
     rw [Measure.toPMF_toMeasure]
   · change
       (paper_appendixA_scaledNoiseRankingPMF
@@ -2032,7 +2075,7 @@ theorem lemma2_source_arbitraryFinite_iid_bottom_first_probability_semantic_comp
       (w11CandidateNoiseLaw (n := n) f).map
         (fun epsilon => rankByScore (fun c => value c + epsilon c / thetaH))
     unfold paper_appendixA_scaledNoiseRankingPMF
-    unfold EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    unfold AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
     rw [Measure.toPMF_toMeasure]
   · exact KR21Monoculture.appendixC_general_source_lemma2_bottom_first_probability
       (w11CandidateNoiseLaw (n := n) f) hthetaH hthetaHA value
@@ -2188,10 +2231,10 @@ theorem lemma3_source_arbitraryFinite_iid_delta_le_top_delta
     rfl
   rw [hpmfA, hpmfH]
   simp only [KR21Monoculture.firstChoiceProb]
-  rw [EconCSLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure,
-    EconCSLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure,
-    EconCSLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure,
-    EconCSLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure]
+  rw [AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure,
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure,
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure,
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure]
   simpa [rankA, rankH, appendixCRawScoreMap, eq_comm] using
     (KR21Monoculture.appendixCGeneralLemma3_sourceRaw_delta_le_top_delta
       hf hfmeas hnonneg hnormalized value hvalueOrder hthetaH hthetaHA hi)
@@ -2258,7 +2301,7 @@ theorem lemma3_source_arbitraryFinite_iid_delta_le_top_delta_semantic_complete
       (w11CandidateNoiseLaw (n := n) f).map
         (fun epsilon => rankByScore (fun c => value c + epsilon c / thetaA))
     unfold paper_appendixA_scaledNoiseRankingPMF
-    unfold EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    unfold AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
     rw [Measure.toPMF_toMeasure]
   · change
       (paper_appendixA_scaledNoiseRankingPMF
@@ -2266,7 +2309,7 @@ theorem lemma3_source_arbitraryFinite_iid_delta_le_top_delta_semantic_complete
       (w11CandidateNoiseLaw (n := n) f).map
         (fun epsilon => rankByScore (fun c => value c + epsilon c / thetaH))
     unfold paper_appendixA_scaledNoiseRankingPMF
-    unfold EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    unfold AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
     rw [Measure.toPMF_toMeasure]
   · exact lemma3_source_arbitraryFinite_iid_delta_le_top_delta
       hf hfmeas hnonneg hnormalized value hvalueOrder hthetaH hthetaHA hi
@@ -2344,9 +2387,9 @@ theorem equationA1_source_top_probability_eq_tail_probability
     (c : Candidate n)
     (hnoTie : ∀ᵐ noise ∂mu, ∀ i j : Candidate n, i ≠ j →
       value i + noise i / theta ≠ value j + noise j / theta) :
-    EconCSLib.measureProb mu
+    AppliedModelingLib.measureProb mu
         (fun noise => SourceAppendixATopEvent value noise theta c) =
-      EconCSLib.measureProb mu
+      AppliedModelingLib.measureProb mu
         (fun noise => SourceAppendixATailEvent value noise theta c) :=
   KR21Monoculture.source_appendixA_top_event_probability_eq_tail_probability
     mu value htheta c hnoTie
@@ -2366,11 +2409,11 @@ theorem equationA1_source_selectedTop_probability_eq_conditionalTail_integral
       ∀ i j : Candidate n, i ≠ j ->
         value i + sourceAppendixAProductNoise z i / theta ≠
           value j + sourceAppendixAProductNoise z j / theta) :
-    EconCSLib.measureProb ((sourceAppendixARestNoiseLaw n mu).prod mu)
+    AppliedModelingLib.measureProb ((sourceAppendixARestNoiseLaw n mu).prod mu)
         (fun z => SourceAppendixATopEvent value
           (sourceAppendixAProductNoise z) theta 0) =
       ∫ rest : Fin (n + 1) -> Real,
-        EconCSLib.measureProb mu
+        AppliedModelingLib.measureProb mu
           (fun epsilon => SourceAppendixAFirstTail value theta rest epsilon)
         ∂sourceAppendixARestNoiseLaw n mu :=
   KR21Monoculture.sourceAppendixA_selectedTop_probability_eq_conditionalTail_integral
@@ -2388,13 +2431,13 @@ theorem equationA1_source_w11_iid_conditionalTail_integral
     (h_nonnegative : forall x, 0 <= f x)
     (hnormalized : ∫⁻ x, ENNReal.ofReal (f x) ∂volume = 1)
     (value : Candidate n -> Real) {theta : Real} (htheta : 0 < theta) :
-    EconCSLib.measureProb
+    AppliedModelingLib.measureProb
         ((sourceAppendixARestNoiseLaw n (w11BaseNoiseLaw f)).prod
           (w11BaseNoiseLaw f))
         (fun z => SourceAppendixATopEvent value
           (sourceAppendixAProductNoise z) theta 0) =
       ∫ rest : Fin (n + 1) -> Real,
-        EconCSLib.measureProb (w11BaseNoiseLaw f)
+        AppliedModelingLib.measureProb (w11BaseNoiseLaw f)
           (fun epsilon => SourceAppendixAFirstTail value theta rest epsilon)
         ∂sourceAppendixARestNoiseLaw n (w11BaseNoiseLaw f) :=
   KR21Monoculture.sourceAppendixA_selectedTop_probability_eq_conditionalTail_integral_of_w11Density
@@ -2412,13 +2455,13 @@ theorem equationA1_source_w11_iid_literal_event_conditionalTail_integral
     (value : Candidate n -> Real)
     (hsource_top_order : ∀ d : Fin (n + 1), value (Fin.succ d) < value 0)
     {theta : Real} (htheta : 0 < theta) :
-    EconCSLib.measureProb
+    AppliedModelingLib.measureProb
         ((sourceAppendixARestNoiseLaw n (w11BaseNoiseLaw f)).prod
           (w11BaseNoiseLaw f))
         (fun z => firstChoice (rankByScore (fun i =>
           value i + sourceAppendixAProductNoise z i / theta)) = (0 : Candidate n)) =
       ∫ rest : Fin (n + 1) -> Real,
-        EconCSLib.measureProb (w11BaseNoiseLaw f)
+        AppliedModelingLib.measureProb (w11BaseNoiseLaw f)
         (fun epsilon => forall d : Fin (n + 1),
             theta * (value (Fin.succ d) - value 0) + rest d < epsilon)
         ∂sourceAppendixARestNoiseLaw n (w11BaseNoiseLaw f) := by
@@ -2985,21 +3028,31 @@ theorem appendixC2_source_pairwise_full_events
         ((gaussian.prod gaussian)
           {epsilon : ℝ × ℝ |
             xi + epsilon.1 / theta < u ∧ xj + epsilon.2 / theta < u}).toReal
+    let laplaceWinner : ℝ :=
+      ((laplace.prod laplace)
+        {epsilon : ℝ × ℝ |
+          xj + epsilon.2 / theta < xi + epsilon.1 / theta}).toReal
+    let gaussianWinner : ℝ :=
+      ((gaussian.prod gaussian)
+        {epsilon : ℝ × ℝ |
+          xj + epsilon.2 / theta < xi + epsilon.1 / theta}).toReal
     ((∀ a : ℝ,
       0 < ((laplace.prod laplace)
         {epsilon : ℝ × ℝ |
           xi + epsilon.1 / theta < a ∧ xj + epsilon.2 / theta < a}).toReal ∧
       ∃ d, HasDerivAt laplaceRatio d a ∧ 0 ≤ d) ∧
-      (∃ a d, HasDerivAt laplaceRatio d a ∧ 0 < d)) ∧
+      (∃ a d, HasDerivAt laplaceRatio d a ∧ 0 < d) ∧
+      Filter.Tendsto laplaceRatio Filter.atTop (nhds laplaceWinner)) ∧
     (∀ a : ℝ,
       0 < ((gaussian.prod gaussian)
         {epsilon : ℝ × ℝ |
           xi + epsilon.1 / theta < a ∧ xj + epsilon.2 / theta < a}).toReal ∧
-      ∃ d, HasDerivAt gaussianRatio d a ∧ 0 < d) := by
+      ∃ d, HasDerivAt gaussianRatio d a ∧ 0 < d) ∧
+      Filter.Tendsto gaussianRatio Filter.atTop (nhds gaussianWinner) := by
   dsimp
   obtain ⟨⟨hLaplaceAll, hLaplaceSome⟩, hGaussianAll⟩ :=
     appendixC2_source_laplace_gaussian_pairwise_raw htheta hx
-  refine ⟨⟨?_, ?_⟩, ?_⟩
+  refine ⟨⟨?_, ?_, ?_⟩, ?_, ?_⟩
   · intro a
     exact ⟨appendixC_laplace_raw_denominator_pos (a := a) htheta,
       by
@@ -3007,9 +3060,61 @@ theorem appendixC2_source_pairwise_full_events
           theorem7LaplaceMeasure, theorem7LaplacePDF, sub_zero] using hLaplaceAll a⟩
   · simpa [appendixC_source_full_numerator_event_eq,
       theorem7LaplaceMeasure, theorem7LaplacePDF, sub_zero] using hLaplaceSome
+  · have htail :
+      Filter.Tendsto
+        (fun u =>
+          (((volume : Measure ℝ).withDensity
+              (fun z => ENNReal.ofReal
+                ((Real.sqrt 2 / 2) * Real.exp (-Real.sqrt 2 * |z|)))).prod
+              ((volume : Measure ℝ).withDensity
+                (fun z => ENNReal.ofReal
+                  ((Real.sqrt 2 / 2) * Real.exp (-Real.sqrt 2 * |z|))))
+            {epsilon : ℝ × ℝ |
+              xi + epsilon.1 / theta < u ∧
+                xj + epsilon.2 / theta < xi + epsilon.1 / theta}).toReal /
+            (((volume : Measure ℝ).withDensity
+              (fun z => ENNReal.ofReal
+                ((Real.sqrt 2 / 2) * Real.exp (-Real.sqrt 2 * |z|)))).prod
+              ((volume : Measure ℝ).withDensity
+                (fun z => ENNReal.ofReal
+                  ((Real.sqrt 2 / 2) * Real.exp (-Real.sqrt 2 * |z|))))
+            {epsilon : ℝ × ℝ |
+              xi + epsilon.1 / theta < u ∧ xj + epsilon.2 / theta < u}).toReal)
+        Filter.atTop
+        (nhds
+          ((((volume : Measure ℝ).withDensity
+              (fun z => ENNReal.ofReal
+                ((Real.sqrt 2 / 2) * Real.exp (-Real.sqrt 2 * |z|)))).prod
+              ((volume : Measure ℝ).withDensity
+                (fun z => ENNReal.ofReal
+                  ((Real.sqrt 2 / 2) * Real.exp (-Real.sqrt 2 * |z|))))
+            {epsilon : ℝ × ℝ |
+              xj + epsilon.2 / theta < xi + epsilon.1 / theta}).toReal)) := by
+        simpa [sourceUnitVarianceLaplacePairConditionalRatio,
+          sourceUnitVarianceLaplacePairWinnerProbability,
+          sourceUnitVarianceLaplacePairInnovationMeasure,
+          sourceUnitVarianceLaplacePairStrictNumeratorEvent,
+          sourceUnitVarianceLaplacePairStrictDenominatorEvent,
+          sourceUnitVarianceLaplacePairStrictWinnerEvent,
+          theorem7LaplaceMeasure, theorem7LaplacePDF, sub_zero] using
+          (sourceUnitVarianceLaplacePairConditionalRatio_tendsto_atTop_winner
+            (xi := xi) (xj := xj) htheta)
+    apply htail.congr'
+    exact Filter.Eventually.of_forall fun u => by
+      dsimp
+      rw [← appendixC_source_full_numerator_event_eq]
   · intro a
     exact ⟨appendixC_gaussian_raw_denominator_pos (a := a) htheta,
       by simpa only [appendixC_source_full_numerator_event_eq] using hGaussianAll a⟩
+  · apply
+      (sourceStandardGaussianPairConditionalRatio_tendsto_atTop_winner
+        (xi := xi) (xj := xj) htheta).congr'
+    exact Filter.Eventually.of_forall fun u => by
+      simp only [sourceStandardGaussianPairConditionalRatio,
+        sourceStandardGaussianPairInnovationMeasure,
+        sourceStandardGaussianPairStrictNumeratorEvent,
+        sourceStandardGaussianPairStrictDenominatorEvent]
+      rw [appendixC_source_full_numerator_event_eq]
 
 /-! ## Appendix C displayed formula surface (C.3)--(C.10) -/
 
@@ -3128,7 +3233,24 @@ theorem equationC5_gaussian_source_semantic_complete
             Real.exp (-((x - xi) ^ 2)) * (1 + theorem8Erf (x - xj))) *
             (2 / Real.sqrt Real.pi) *
             ((1 + theorem8Erf (a - xi)) * Real.exp (-((a - xj) ^ 2)) +
-              (1 + theorem8Erf (a - xj)) * Real.exp (-((a - xi) ^ 2))) := by
+              (1 + theorem8Erf (a - xj)) * Real.exp (-((a - xi) ^ 2))) ∧
+      ∃ d,
+        HasDerivAt
+          (fun u =>
+            (2 / Real.sqrt Real.pi) *
+              (∫ x : ℝ in Set.Iic u,
+                Real.exp (-((x - xi) ^ 2)) * (1 + theorem8Erf (x - xj))) /
+              ((1 + theorem8Erf (u - xi)) * (1 + theorem8Erf (u - xj)))) d a ∧
+        (0 < d ↔
+          0 <
+            (1 + theorem8Erf (a - xi)) * (1 + theorem8Erf (a - xj)) *
+                Real.exp (-((a - xi) ^ 2)) * (1 + theorem8Erf (a - xj)) -
+              (∫ x : ℝ in Set.Iic a,
+                Real.exp (-((x - xi) ^ 2)) * (1 + theorem8Erf (x - xj))) *
+                (2 / Real.sqrt Real.pi) *
+                ((1 + theorem8Erf (a - xi)) * Real.exp (-((a - xj) ^ 2)) +
+                  (1 + theorem8Erf (a - xj)) *
+                    Real.exp (-((a - xi) ^ 2)))) := by
   dsimp
   have hfull :
       {p : ℝ × ℝ | p.1 < a ∧ p.2 < a ∧ p.2 < p.1} =
@@ -3151,7 +3273,7 @@ theorem equationC5_gaussian_source_semantic_complete
       {p : ℝ × ℝ | p.1 < a ∧ p.2 < a} = Set.Iio a ×ˢ Set.Iio a := by
     ext p
     simp
-  refine ⟨?_, ?_, ?_⟩
+  refine ⟨?_, ?_, ?_, ?_⟩
   · change 0 < ((ProbabilityTheory.gaussianReal xi (1 / 2 : ℝ≥0)).prod
       (ProbabilityTheory.gaussianReal xj (1 / 2 : ℝ≥0))
       {p : ℝ × ℝ | p.1 < a ∧ p.2 < a}).toReal
@@ -3171,6 +3293,7 @@ theorem equationC5_gaussian_source_semantic_complete
         theorem8GaussianProductStrictConditionalRatioAt_eq_pdf_cdf xi xj a
       _ = _ := equationC5_gaussian_density_cdf_ratio_eq_erf_integral xi xj a
   · exact equationC5_gaussian_derivative_sign_inequality hx
+  · exact equationC5_gaussian_erf_ratio_derivative_pos_iff xi xj a
 
 /-- Equation (C.5), the original-coordinate derivative-sign inequality. -/
 theorem equationC5_gaussian_derivative_sign_inequality
@@ -3211,8 +3334,8 @@ theorem equationC7_gaussian_rational_term_tendsto_atBot_zero
       Filter.atBot (nhds 0) :=
   KR21Monoculture.equationC7_gaussian_rational_term_tendsto_atBot_zero delta
 
-/-- Equation (C.7), full reduced-expression left-tail limit. -/
-theorem equationC7_gaussian_reduced_expression_tendsto_atBot_zero
+/-- The full C.6 reduced-expression left-tail limit retained for later use. -/
+theorem equationC7_gaussian_full_reduced_expression_tendsto_atBot_zero
     (delta : ℝ) :
     Filter.Tendsto
       (fun t =>
@@ -3226,6 +3349,31 @@ theorem equationC7_gaussian_reduced_expression_tendsto_atBot_zero
               Real.exp (-(x ^ 2)) * theorem8Erf (x + delta)))
       Filter.atBot (nhds 0) :=
   KR21Monoculture.equationC7_gaussian_reduced_expression_tendsto_atBot_zero delta
+
+/--
+Equation (C.7): the displayed rational term and the displayed Gaussian
+integral both have left-tail limit zero.  This is the transparent form of the
+source's equality of the two limits.  The C.6-difference limit remains a
+separate supporting endpoint above.
+-/
+theorem equationC7_gaussian_reduced_expression_tendsto_atBot_zero
+    (delta : ℝ) :
+    Filter.Tendsto
+      (fun t =>
+        ((1 + theorem8Erf t) * (1 + theorem8Erf (t + delta)) ^ 2 *
+            Real.exp (-(t ^ 2))) /
+          ((1 + theorem8Erf t) * Real.exp (-((t + delta) ^ 2)) +
+            (1 + theorem8Erf (t + delta)) * Real.exp (-(t ^ 2))))
+      Filter.atBot (nhds 0) ∧
+    Filter.Tendsto
+      (fun t =>
+        ∫ x : ℝ in Set.Iic t,
+          Real.exp (-(x ^ 2)) * theorem8Erf (x + delta))
+      Filter.atBot (nhds 0) :=
+  ⟨equationC7_gaussian_rational_term_tendsto_atBot_zero delta, by
+    simpa [theorem8GaussianJ] using
+      (theorem8GaussianJ_tendsto_atBot_zero_of_integrableOn
+        (theorem8GaussianJ_integrableOn_concrete delta))⟩
 
 /-- Equation (C.8), the literal derivative before factorization. -/
 theorem equationC8_gaussian_reduced_expression_hasDerivAt
@@ -3453,7 +3601,7 @@ theorem theorem8_source_semantic_complete
     · simp at hd
     · simpa [rank, score] using hji
   have htheta : 0 < sigma⁻¹ := inv_pos.mpr hsigma
-  obtain ⟨_hLaplace, hGaussian⟩ :=
+  obtain ⟨_hLaplace, hGaussian, _hGaussianTail⟩ :=
     appendixC2_source_pairwise_full_events
       (theta := sigma⁻¹) (xi := xi) (xj := xj) htheta hx
   have hderiv : ∀ a : ℝ,
@@ -3815,7 +3963,7 @@ theorem theorem2_gaussianStd_target_from_rum_source_and_atom_continuity
     (hx12 : x2 < x1) (hx23 : x3 < x2)
     (_hdist_atom_continuity :
       ∀ θ, 0 < θ →
-        ∀ π : Ranking 1, EconCSLib.EpsilonContinuousAt
+        ∀ π : Ranking 1, AppliedModelingLib.EpsilonContinuousAt
           (fun θ' => ((F.dist θ') π).toReal) θ)
     (hdist :
       ∀ θ, 0 < θ →
@@ -3974,7 +4122,7 @@ theorem theorem2_laplacianRate_target_from_rum_source_and_atom_continuity
     (hx12 : x2 < x1) (hx23 : x3 < x2)
     (hdist_atom_continuity :
       ∀ θ, 0 < θ →
-        ∀ π : Ranking 1, EconCSLib.EpsilonContinuousAt
+        ∀ π : Ranking 1, AppliedModelingLib.EpsilonContinuousAt
           (fun θ' => ((F.dist θ') π).toReal) θ)
     (hdist :
       ∀ θ (hθ : 0 < θ),
@@ -4083,11 +4231,12 @@ theorem equationF1_mallows_top_two_probability
   KR21Monoculture.source_equationF1_mallows_top_two_probability M phi hphi hcd
 
 /--
-Equation (F.1) at the literal source Mallows model.  The statement binds the
-ranking law to Equation (8), including `theta = phi - 1`, instead of accepting
-an arbitrary Mallows record as a source-model premise.
+Appendix F Lemma 5 (displayed as Equation (F.1)) at the literal source Mallows
+model. The statement binds the ranking law to Equation (8), including
+`theta = phi - 1`, instead of accepting an arbitrary Mallows record as a
+source-model premise.
 -/
-theorem equationF1_source_phi_complete
+theorem lemma5_source_phi_complete
     {n : ℕ} (center : Ranking n) (phi theta : ℝ)
     (hphi : 1 < phi) (htheta : theta = phi - 1) {c d : Candidate n}
     (hcd : rankOf center c < rankOf center d) :
@@ -4205,9 +4354,9 @@ theorem lemma8_source_mallows_phi_pairwise_correct_probability_lt
         (Mmore.law pi).toReal =
           phiMore⁻¹ ^ kendallTau center pi /
             (∑ tau : Ranking n, phiMore⁻¹ ^ kendallTau center tau)) ∧
-      EconCSLib.pmfProb Mless.law
+      AppliedModelingLib.pmfProb Mless.law
         (fun pi => rankOf pi c < rankOf pi d) <
-        EconCSLib.pmfProb Mmore.law
+        AppliedModelingLib.pmfProb Mmore.law
           (fun pi => rankOf pi c < rankOf pi d) := by
   have hphiMore : 1 < phiMore := lt_trans hphiLess hphiOrder
   dsimp
@@ -4273,7 +4422,7 @@ theorem theorem1_from_explicit_proof_conditions
     (hprefers_weaker_competition : ∀ θA θH, 0 < θH → θH < θA →
       Model.PrefersWeakerCompetition (F.dist θA) (F.dist θH) F.value)
     (hatom_continuity : ∀ θ, 0 < θ → ∀ π : Ranking n,
-      EconCSLib.EpsilonContinuousAt
+      AppliedModelingLib.EpsilonContinuousAt
         (fun θ' => ((F.dist θ') π).toReal) θ)
     (hasymptotic_first_dominance : ∀ θH lower, 0 < θH → θH < lower →
       ∃ hi, lower < hi ∧
@@ -4335,8 +4484,9 @@ theorem theorem1_from_literal_source_conditions
 /--
 Paper Theorem 1 with the literal outer-`D` source experiment.  This is the
 source-facing form of Definitions 1--3: Definition 1 remains universal over
-value profiles, Definition 2 is the conditional gain in the joint experiment
-that first samples from `D`, and Definition 3 is the ex-ante weaker-
+the source's strictly center-ordered value profiles, Definition 2 is the
+conditional gain in the joint experiment that first samples from `D`, and
+Definition 3 is the ex-ante weaker-
 competition comparison.  The theorem derives the common high-accuracy
 algorithmic witness outside the outer expectation.
 
@@ -4380,7 +4530,7 @@ theorem theorem1_outer_from_literal_source_conditions
         expectedBestInSet (F.dist thetaH value) value remaining ≤
           expectedBestInSet (F.dist thetaA value) value remaining)
     (hfull_set_strict : ∀ thetaA thetaH, 0 < thetaH → thetaH < thetaA →
-      ∀ value,
+      ∀ value, StrictlyOrderedBy center value →
         expectedBestInSet (F.dist thetaH value) value Finset.univ <
           expectedBestInSet (F.dist thetaA value) value Finset.univ) :
     F.DistributionalTheorem1Target D thetaH :=
@@ -4669,7 +4819,7 @@ theorem equationE1_concrete_mallows_source_conditional_gain_pos
     {n : ℕ} (center : Ranking n) {theta : ℝ} (htheta : 0 < theta) (hn : 0 < n)
     {value : Candidate n → ℝ} (hvalue : StrictlyOrderedBy center value) :
     let M := concreteMallowsSpec center theta
-    0 < EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+    0 < AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
       (fun pair => value (firstChoice pair.1) - value (secondChoice pair.1)) := by
   simpa [MallowsSpec.appendixE1SourceGap] using
     (KR21Monoculture.concreteMallows_appendixE_source_endpoints
@@ -4685,10 +4835,10 @@ theorem equationE2_concrete_mallows_source_conditional_top_two_comparison
     {value : Candidate n → ℝ} (hvalue : StrictlyOrderedBy center value) :
     let M := concreteMallowsSpec center theta
     ∀ c d : Candidate n, rankOf M.center c < rankOf M.center d →
-      EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+      AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
           (fun pair =>
             if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) ≤
-        EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
           (fun pair =>
             if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0) := by
   simpa [MallowsSpec.AppendixE2PairwiseComparison,
@@ -4723,7 +4873,7 @@ theorem equationE1_source_concrete_mallows_phi
     (hphi : 1 < phi) (htheta : theta = phi - 1) (hn : 0 < n)
     {value : Candidate n → ℝ} (hvalue : StrictlyOrderedBy center value) :
     let M := concreteMallowsSpec center theta
-    0 < EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+    0 < AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
       (fun pair => value (firstChoice pair.1) - value (secondChoice pair.1)) := by
   exact (KR21Monoculture.source_appendixE_concrete_mallows_phi
     center phi theta hphi htheta hn hvalue).1
@@ -4738,17 +4888,17 @@ theorem equationE2_source_concrete_mallows_phi
     (hphi : 1 < phi) (htheta : theta = phi - 1) (hn : 0 < n) :
     let M := concreteMallowsSpec center theta
     (∀ c d : Candidate n, rankOf M.center c < rankOf M.center d →
-      EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+      AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
           (fun pair =>
             if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) ≤
-        EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
           (fun pair =>
             if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0)) ∧
       ∃ c d : Candidate n, rankOf M.center c < rankOf M.center d ∧
-        EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
             (fun pair =>
               if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) <
-          EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+          AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
             (fun pair =>
               if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0) :=
   KR21Monoculture.source_appendixE2_concrete_mallows_phi
@@ -4778,7 +4928,7 @@ the independent other draw's top-miss mass divided by top-disagreement mass.
 -/
 theorem equationE2_mallows_conditional_top_two_factorization
     {n : ℕ} (M : MallowsSpec n) (c d : Candidate n) :
-    EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+    AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
         (fun pair =>
           if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0) =
       (M.firstSecondChoiceProb c d * firstChoiceMissProb M.law c) /
@@ -5179,7 +5329,7 @@ theorem theorem2_semantic_gaussian_raw_ranking_transport_measure
     (theorem2_semantic_gaussian_raw_ranking_transport
       (theta := theta) (x1 := x1) (x2 := x2) (x3 := x3) htheta)
   simpa [theorem2_semantic_gaussian_raw_rank,
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure] using h
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure] using h
 
 theorem theorem2_semantic_laplace_raw_ranking_transport
     {theta x1 x2 x3 : ℝ} (htheta : 0 < theta) :
@@ -5231,7 +5381,7 @@ theorem theorem2_semantic_laplace_raw_ranking_transport_measure
     (theorem2_semantic_laplace_raw_ranking_transport
       (theta := theta) (x1 := x1) (x2 := x2) (x3 := x3) htheta)
   simpa [theorem2_semantic_laplace_raw_rank,
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure] using h
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure] using h
 
 theorem theorem2_semantic_gaussian_raw_source_definition1
     {x1 x2 x3 : ℝ} (hx12 : x2 < x1) (hx23 : x3 < x2) :
@@ -5537,10 +5687,10 @@ theorem theorem1_with_outer_value_distribution
     (D : Measure (ValueProfile n)) [IsProbabilityMeasure D] (thetaH : ℝ)
     (hindependent : F.PrefersIndependentReranking D thetaH)
     (f_continuity : ∀ theta, thetaH ≤ theta →
-      EconCSLib.EpsilonContinuousAt
+      AppliedModelingLib.EpsilonContinuousAt
         (fun thetaA => F.theorem1_f D thetaA thetaH) theta)
     (g_continuity : ∀ theta, thetaH ≤ theta →
-      EconCSLib.EpsilonContinuousAt
+      AppliedModelingLib.EpsilonContinuousAt
         (fun thetaA => F.theorem1_g D thetaA thetaH) theta)
     (hasymptotic : ∀ lower, thetaH < lower →
       ∃ hi, lower < hi ∧
@@ -5578,7 +5728,7 @@ theorem theorem1_outer_atomwise_regular_fixed_order_source
       AEStronglyMeasurable (fun value : ValueProfile n =>
         ((F.dist theta value) pi).toReal) D)
     (hatom_continuous : ∀ value pi theta,
-      EconCSLib.EpsilonContinuousAt
+      AppliedModelingLib.EpsilonContinuousAt
         (fun theta' => ((F.dist theta' value) pi).toReal) theta)
     (hatom_tendsto : ∀ᵐ value ∂D, ∀ pi,
       Tendsto (fun theta => ((F.dist theta value) pi).toReal) atTop
@@ -5646,12 +5796,12 @@ theorem theorem3_mallows_with_outer_value_distribution
         ∫ omega, expectedSecondMoverIndependent
           (C omega).human.law (C omega).human.law (value omega) ∂D := by
   constructor
-  · exact EconCSLib.integral_lt_integral_of_forall_lt D hshared hindependent
+  · exact AppliedModelingLib.integral_lt_integral_of_forall_lt D hshared hindependent
       fun omega =>
         (KR21Monoculture.MallowsComparison.paper_theorem3_pointwise_rankFactorization
           (C omega) (hstrict omega) hn (halg_q_lt_one omega)
           (hhuman_q_lt_one omega) (hq_lt omega)).1
-  · exact EconCSLib.integral_lt_integral_of_forall_lt D hbetter hworse
+  · exact AppliedModelingLib.integral_lt_integral_of_forall_lt D hbetter hworse
       fun omega =>
         (KR21Monoculture.MallowsComparison.paper_theorem3_pointwise_rankFactorization
           (C omega) (hstrict omega) hn (halg_q_lt_one omega)
@@ -6067,7 +6217,7 @@ theorem appendixA_theorem5_arbitraryFinite_corrected_W11_full_definition1
     (hcenter : ∀ i : Fin (n + 1),
       value (center i.succ) < value (center i.castSucc)) :
     (∀ theta, 0 < theta → ∀ pi : Ranking n,
-      EconCSLib.EpsilonContinuousAt
+      AppliedModelingLib.EpsilonContinuousAt
         (fun theta' =>
           ((w11CorrectedScaledNoiseFamily f hnormalized value).dist theta' pi).toReal)
         theta) ∧
@@ -6216,7 +6366,7 @@ theorem appendixA_theorem5_corrected_source_complete
         (fun epsilon => rankByScore
           (fun i => value i + epsilon i / theta))
     unfold paper_appendixA_scaledNoiseRankingPMF
-    unfold EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    unfold AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
     rw [Measure.toPMF_toMeasure]
 
 /-- Source equation (7), the Plackett--Luce remaining-set choice formula. -/
@@ -6781,9 +6931,9 @@ theorem jointLawDisagreementConditionalGain_eq_source_ratio_semantic
     · have h0 : x.2.1 0 ≠ x.2.2 0 := by simpa [firstChoice] using h
       have hne : firstChoice x.2.1 ≠ firstChoice x.2.2 := h
       simp only [disagreementEvent, if_pos hne]
-      change EconCSLib.SocialChoice.Ranking.rerankingGainOnPair
+      change AppliedModelingLib.SocialChoice.Ranking.rerankingGainOnPair
         x.1 x.2.1 x.2.2 = x.1 (x.2.1 0) - x.1 (x.2.1 1)
-      exact EconCSLib.SocialChoice.Ranking.rerankingGainOnPair_of_neFirst
+      exact AppliedModelingLib.SocialChoice.Ranking.rerankingGainOnPair_of_neFirst
         x.1 x.2.1 x.2.2 h0
   have hden_eq :
       (∫ x : ValueProfile n × RankingPair n,
@@ -6846,7 +6996,7 @@ theorem section31_literalUnitVarianceGumbel_outer_zero_effect_semantic_complete
         (J = Measure.compProd D (F.independentPairKernel theta hatom)) ∧
         (∀ profile,
           F.independentPairKernel theta hatom profile =
-            (EconCSLib.pmfProd (F.dist theta profile) (F.dist theta profile)).toMeasure) ∧
+            (AppliedModelingLib.pmfProd (F.dist theta profile) (F.dist theta profile)).toMeasure) ∧
         Integrable (fun value => expectedSecondMoverIndependent
           (F.dist theta value) (F.dist theta value) value) D ∧
         Integrable (fun value => expectedSecondMoverShared (F.dist theta value) value) D ∧
@@ -6874,7 +7024,7 @@ theorem section31_literalUnitVarianceGumbel_outer_zero_effect_semantic_complete
           (fun epsilon => rankByScore
             (fun i => profile i + epsilon i / theta))
     unfold sourceUnitVarianceGumbelRUMRankingPMF
-    unfold EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    unfold AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
     rw [Measure.toPMF_toMeasure]
     congr 1
   · intro profile
@@ -6972,7 +7122,7 @@ abbrev section31_literalUnitVarianceGumbel_outer_zero_effect_semantic_completeSp
       (J = Measure.compProd D (F.independentPairKernel theta hatom)) ∧
       (∀ profile,
         F.independentPairKernel theta hatom profile =
-          (EconCSLib.pmfProd (F.dist theta profile) (F.dist theta profile)).toMeasure) ∧
+          (AppliedModelingLib.pmfProd (F.dist theta profile) (F.dist theta profile)).toMeasure) ∧
       Integrable (fun value => expectedSecondMoverIndependent
         (F.dist theta value) (F.dist theta value) value) D ∧
       Integrable (fun value => expectedSecondMoverShared (F.dist theta value) value) D ∧
@@ -7380,7 +7530,7 @@ product law, and the realized-score ranking map used by the conclusion.
 theorem appendixB1_source_discrete_definition2_counterexample_semantic_complete :
     let componentLaw : PMF AppendixB1NoiseAtom := appendixB1NoisePMF
     let rawNoiseLaw : PMF AppendixB1NoiseTriple :=
-      EconCSLib.pmfProd (EconCSLib.pmfProd componentLaw componentLaw) componentLaw
+      AppliedModelingLib.pmfProd (AppliedModelingLib.pmfProd componentLaw componentLaw) componentLaw
     let rawRank : AppendixB1NoiseTriple -> Ranking 1 := fun noise =>
       rankByScore (fun c => appendixB1Value c +
         appendixB1NoiseValue (appendixB1NoiseTripleFunction noise c))
@@ -7410,7 +7560,7 @@ theorem appendixB1_source_discrete_definition2_counterexample_semantic_complete 
     simpa [appendixB1DiscreteScore] using
       (appendixB1_rankByScore_discreteTriple_eq noise)
   have hmap :
-      (EconCSLib.pmfProd (EconCSLib.pmfProd appendixB1NoisePMF appendixB1NoisePMF)
+      (AppliedModelingLib.pmfProd (AppliedModelingLib.pmfProd appendixB1NoisePMF appendixB1NoisePMF)
         appendixB1NoisePMF).map
         (fun noise => rankByScore (fun c => appendixB1Value c +
           appendixB1NoiseValue (appendixB1NoiseTripleFunction noise c))) =
@@ -7519,7 +7669,7 @@ whose product construction and realized-score maps appear in the type.
 theorem appendixB2_source_discrete_definition3_counterexample_semantic_complete :
     let componentLaw : PMF AppendixB2NoiseAtom := appendixB2NoisePMF
     let rawNoiseLaw : PMF AppendixB2NoiseTriple :=
-      EconCSLib.pmfProd (EconCSLib.pmfProd componentLaw componentLaw) componentLaw
+      AppliedModelingLib.pmfProd (AppliedModelingLib.pmfProd componentLaw componentLaw) componentLaw
     let algorithmRank : AppendixB2NoiseTriple -> Ranking 1 := fun noise =>
       rankByScore (fun c => appendixB2Value c + (10 / 11) *
         appendixB2NoiseValue (appendixB2NoiseTripleFunction noise c))
@@ -7568,8 +7718,8 @@ theorem appendixB2_source_discrete_definition3_counterexample_semantic_complete 
     simpa [appendixB2HumanDiscreteScore] using
       (appendixB2_human_rankByScore_discreteTriple_eq noise)
   have hAlgorithmMap :
-      (EconCSLib.pmfProd
-        (EconCSLib.pmfProd appendixB2NoisePMF appendixB2NoisePMF)
+      (AppliedModelingLib.pmfProd
+        (AppliedModelingLib.pmfProd appendixB2NoisePMF appendixB2NoisePMF)
         appendixB2NoisePMF).map
           (fun noise => rankByScore (fun c => appendixB2Value c + (10 / 11) *
             appendixB2NoiseValue (appendixB2NoiseTripleFunction noise c))) =
@@ -7586,8 +7736,8 @@ theorem appendixB2_source_discrete_definition3_counterexample_semantic_complete 
         exact hAlgorithmPointwise noise]
     exact appendixB2NoiseTriplePMF_map_algorithmDiscreteTripleRank
   have hHumanMap :
-      (EconCSLib.pmfProd
-        (EconCSLib.pmfProd appendixB2NoisePMF appendixB2NoisePMF)
+      (AppliedModelingLib.pmfProd
+        (AppliedModelingLib.pmfProd appendixB2NoisePMF appendixB2NoisePMF)
         appendixB2NoisePMF).map
           (fun noise => rankByScore (fun c => appendixB2Value c + (10 / 9) *
             appendixB2NoiseValue (appendixB2NoiseTripleFunction noise c))) =
@@ -7636,7 +7786,7 @@ three-fold iid noise experiment and their realized-score ranking maps.
 theorem equationB1_counterexample_first_choice_x1_semantic_complete :
     let componentLaw : PMF AppendixB2NoiseAtom := appendixB2NoisePMF
     let rawNoiseLaw : PMF AppendixB2NoiseTriple :=
-      EconCSLib.pmfProd (EconCSLib.pmfProd componentLaw componentLaw) componentLaw
+      AppliedModelingLib.pmfProd (AppliedModelingLib.pmfProd componentLaw componentLaw) componentLaw
     let algorithmRank : AppendixB2NoiseTriple -> Ranking 1 := fun noise =>
       rankByScore (fun c => appendixB2Value c + (10 / 11) *
         appendixB2NoiseValue (appendixB2NoiseTripleFunction noise c))
@@ -7676,8 +7826,8 @@ theorem equationB1_counterexample_first_choice_x1_semantic_complete :
     simpa [appendixB2HumanDiscreteScore] using
       (appendixB2_human_rankByScore_discreteTriple_eq noise)
   have hAlgorithmMap :
-      (EconCSLib.pmfProd
-        (EconCSLib.pmfProd appendixB2NoisePMF appendixB2NoisePMF)
+      (AppliedModelingLib.pmfProd
+        (AppliedModelingLib.pmfProd appendixB2NoisePMF appendixB2NoisePMF)
         appendixB2NoisePMF).map
           (fun noise => rankByScore (fun c => appendixB2Value c + (10 / 11) *
             appendixB2NoiseValue (appendixB2NoiseTripleFunction noise c))) =
@@ -7694,8 +7844,8 @@ theorem equationB1_counterexample_first_choice_x1_semantic_complete :
         exact hAlgorithmPointwise noise]
     exact appendixB2NoiseTriplePMF_map_algorithmDiscreteTripleRank
   have hHumanMap :
-      (EconCSLib.pmfProd
-        (EconCSLib.pmfProd appendixB2NoisePMF appendixB2NoisePMF)
+      (AppliedModelingLib.pmfProd
+        (AppliedModelingLib.pmfProd appendixB2NoisePMF appendixB2NoisePMF)
         appendixB2NoisePMF).map
           (fun noise => rankByScore (fun c => appendixB2Value c + (10 / 9) *
             appendixB2NoiseValue (appendixB2NoiseTripleFunction noise c))) =
@@ -7728,7 +7878,7 @@ three-fold iid noise experiment and their realized-score ranking maps.
 theorem equationB2_counterexample_first_choice_x2_semantic_complete :
     let componentLaw : PMF AppendixB2NoiseAtom := appendixB2NoisePMF
     let rawNoiseLaw : PMF AppendixB2NoiseTriple :=
-      EconCSLib.pmfProd (EconCSLib.pmfProd componentLaw componentLaw) componentLaw
+      AppliedModelingLib.pmfProd (AppliedModelingLib.pmfProd componentLaw componentLaw) componentLaw
     let algorithmRank : AppendixB2NoiseTriple -> Ranking 1 := fun noise =>
       rankByScore (fun c => appendixB2Value c + (10 / 11) *
         appendixB2NoiseValue (appendixB2NoiseTripleFunction noise c))
@@ -7768,8 +7918,8 @@ theorem equationB2_counterexample_first_choice_x2_semantic_complete :
     simpa [appendixB2HumanDiscreteScore] using
       (appendixB2_human_rankByScore_discreteTriple_eq noise)
   have hAlgorithmMap :
-      (EconCSLib.pmfProd
-        (EconCSLib.pmfProd appendixB2NoisePMF appendixB2NoisePMF)
+      (AppliedModelingLib.pmfProd
+        (AppliedModelingLib.pmfProd appendixB2NoisePMF appendixB2NoisePMF)
         appendixB2NoisePMF).map
           (fun noise => rankByScore (fun c => appendixB2Value c + (10 / 11) *
             appendixB2NoiseValue (appendixB2NoiseTripleFunction noise c))) =
@@ -7786,8 +7936,8 @@ theorem equationB2_counterexample_first_choice_x2_semantic_complete :
         exact hAlgorithmPointwise noise]
     exact appendixB2NoiseTriplePMF_map_algorithmDiscreteTripleRank
   have hHumanMap :
-      (EconCSLib.pmfProd
-        (EconCSLib.pmfProd appendixB2NoisePMF appendixB2NoisePMF)
+      (AppliedModelingLib.pmfProd
+        (AppliedModelingLib.pmfProd appendixB2NoisePMF appendixB2NoisePMF)
         appendixB2NoisePMF).map
           (fun noise => rankByScore (fun c => appendixB2Value c + (10 / 9) *
             appendixB2NoiseValue (appendixB2NoiseTripleFunction noise c))) =
@@ -8463,7 +8613,7 @@ does not yet connect the full sequential product experiment to cardinal values.
 theorem source_threeFirm_uniform_orderStatistic_table
     (candidate : SourceFourCandidate) :
     (sourceExpectedOrderStatisticValue candidate : ℝ) =
-      EconCSLib.Probability.expectedUpperOrderStatistic
+      AppliedModelingLib.Probability.expectedUpperOrderStatistic
         (Measure.pi (fun _ : Fin 4 => PRPKG24AccuracyDiversity.uniform01Measure))
         candidate :=
   sourceExpectedOrderStatisticValue_eq_uniform01_expectedUpperOrderStatistic
@@ -8918,7 +9068,7 @@ theorem equationE1_source_phi_complete
         (M.law pi).toReal =
           phi⁻¹ ^ kendallTau center pi /
             (∑ tau : Ranking n, phi⁻¹ ^ kendallTau center tau)) ∧
-      0 < EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+      0 < AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
         (fun pair => value (firstChoice pair.1) - value (secondChoice pair.1)) := by
   dsimp
   refine ⟨(source_equation8_concrete_mallows_probability center phi theta
@@ -8943,15 +9093,15 @@ theorem equationE1_source_phi_literal_conditional_semantic_complete
         (M.law pi).toReal =
           phi⁻¹ ^ kendallTau center pi /
             (∑ tau : Ranking n, phi⁻¹ ^ kendallTau center tau)) ∧
-      0 < EconCSLib.pmfPairProb M.law M.law disagreementEvent ∧
-      0 < EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+      0 < AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent ∧
+      0 < AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
         (fun pair => value (firstChoice pair.1) - value (secondChoice pair.1)) /
-          EconCSLib.pmfPairProb M.law M.law disagreementEvent := by
+          AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent := by
   dsimp
   let M := concreteMallowsSpec center theta
-  have hden : 0 < EconCSLib.pmfPairProb M.law M.law disagreementEvent := by
+  have hden : 0 < AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent := by
     simpa [disagreementProb] using M.appendixE_disagreementProb_pos
-  have hcond : 0 < EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+  have hcond : 0 < AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
       (fun pair => value (firstChoice pair.1) - value (secondChoice pair.1)) := by
     simpa [M] using
       (source_appendixE_concrete_mallows_phi center phi theta
@@ -8961,10 +9111,10 @@ theorem equationE1_source_phi_literal_conditional_semantic_complete
   · intro pi
     exact (source_equation8_concrete_mallows_probability center phi theta
       hphi htheta pi).2
-  · change 0 < EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+  · change 0 < AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
         (fun pair => value (firstChoice pair.1) - value (secondChoice pair.1)) /
-          EconCSLib.pmfPairProb M.law M.law disagreementEvent
-    rw [← EconCSLib.pmfPairConditionalExp_eq_div_of_pos
+          AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent
+    rw [← AppliedModelingLib.pmfPairConditionalExp_eq_div_of_pos
       (μ := M.law) (ν := M.law) (p := disagreementEvent)
       (f := fun pair => value (firstChoice pair.1) - value (secondChoice pair.1)) hden]
     exact hcond
@@ -8980,17 +9130,17 @@ theorem equationE2_source_phi_complete
           phi⁻¹ ^ kendallTau center pi /
             (∑ tau : Ranking n, phi⁻¹ ^ kendallTau center tau)) ∧
       (∀ c d : Candidate n, rankOf M.center c < rankOf M.center d →
-        EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
             (fun pair =>
               if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) ≤
-          EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+          AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
             (fun pair =>
               if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0)) ∧
       ∃ c d : Candidate n, rankOf M.center c < rankOf M.center d ∧
-        EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
             (fun pair =>
               if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) <
-          EconCSLib.pmfPairConditionalExp M.law M.law disagreementEvent
+          AppliedModelingLib.pmfPairConditionalExp M.law M.law disagreementEvent
             (fun pair =>
               if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0) := by
   dsimp
@@ -9015,28 +9165,28 @@ theorem equationE2_source_phi_literal_conditional_semantic_complete
         (M.law pi).toReal =
           phi⁻¹ ^ kendallTau center pi /
             (∑ tau : Ranking n, phi⁻¹ ^ kendallTau center tau)) ∧
-      0 < EconCSLib.pmfPairProb M.law M.law disagreementEvent ∧
+      0 < AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent ∧
       (∀ c d : Candidate n, rankOf M.center c < rankOf M.center d →
-        EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
             (fun pair =>
               if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) /
-            EconCSLib.pmfPairProb M.law M.law disagreementEvent ≤
-          EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+            AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent ≤
+          AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
             (fun pair =>
               if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0) /
-            EconCSLib.pmfPairProb M.law M.law disagreementEvent) ∧
+            AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent) ∧
       ∃ c d : Candidate n, rankOf M.center c < rankOf M.center d ∧
-        EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
             (fun pair =>
               if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) /
-            EconCSLib.pmfPairProb M.law M.law disagreementEvent <
-          EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+            AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent <
+          AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
             (fun pair =>
               if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0) /
-            EconCSLib.pmfPairProb M.law M.law disagreementEvent := by
+            AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent := by
   dsimp
   let M := concreteMallowsSpec center theta
-  have hden : 0 < EconCSLib.pmfPairProb M.law M.law disagreementEvent := by
+  have hden : 0 < AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent := by
     simpa [disagreementProb] using M.appendixE_disagreementProb_pos
   have hsource := source_appendixE2_concrete_mallows_phi center phi theta hphi htheta hn
   refine ⟨(source_equation8_concrete_mallows_probability center phi theta
@@ -9046,38 +9196,38 @@ theorem equationE2_source_phi_literal_conditional_semantic_complete
       hphi htheta pi).2
   · intro c d hcd
     have h := hsource.1 c d hcd
-    change EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+    change AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
         (fun pair =>
           if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) /
-        EconCSLib.pmfPairProb M.law M.law disagreementEvent ≤
-      EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent ≤
+      AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
         (fun pair =>
           if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0) /
-        EconCSLib.pmfPairProb M.law M.law disagreementEvent
-    rw [← EconCSLib.pmfPairConditionalExp_eq_div_of_pos
+        AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent
+    rw [← AppliedModelingLib.pmfPairConditionalExp_eq_div_of_pos
       (μ := M.law) (ν := M.law) (p := disagreementEvent)
       (f := fun pair =>
         if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) hden,
-      ← EconCSLib.pmfPairConditionalExp_eq_div_of_pos
+      ← AppliedModelingLib.pmfPairConditionalExp_eq_div_of_pos
         (μ := M.law) (ν := M.law) (p := disagreementEvent)
         (f := fun pair =>
           if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0) hden]
     simpa [M] using h
   · rcases hsource.2 with ⟨c, d, hcd, hstrict⟩
     refine ⟨c, d, hcd, ?_⟩
-    change EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+    change AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
         (fun pair =>
           if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) /
-        EconCSLib.pmfPairProb M.law M.law disagreementEvent <
-      EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent <
+      AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
         (fun pair =>
           if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0) /
-        EconCSLib.pmfPairProb M.law M.law disagreementEvent
-    rw [← EconCSLib.pmfPairConditionalExp_eq_div_of_pos
+        AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent
+    rw [← AppliedModelingLib.pmfPairConditionalExp_eq_div_of_pos
       (μ := M.law) (ν := M.law) (p := disagreementEvent)
       (f := fun pair =>
         if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) hden,
-      ← EconCSLib.pmfPairConditionalExp_eq_div_of_pos
+      ← AppliedModelingLib.pmfPairConditionalExp_eq_div_of_pos
         (μ := M.law) (ν := M.law) (p := disagreementEvent)
         (f := fun pair =>
           if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0) hden]
@@ -9286,7 +9436,7 @@ theorem theorem4_source_mallows_outer_literal_semantic_complete
       SourceMallowsSequential.outerExpectedBestInSet,
       SourceMallowsSequential.rankingLaw,
       DistributionalAccuracyFamily.outerExpected,
-      expectedBestInSet, EconCSLib.pmfExp, SequentialModel.remainingAfter]
+      expectedBestInSet, AppliedModelingLib.pmfExp, SequentialModel.remainingAfter]
       using SourceMallowsSequential.source_theorem4_mallows_outer_allHumanOptimal
         (k := k) D center hphiA hphiH haccuracy hvalue horder
   · intro haccuracy hstrict
@@ -9296,7 +9446,7 @@ theorem theorem4_source_mallows_outer_literal_semantic_complete
       SourceMallowsSequential.outerExpectedBestInSet,
       SourceMallowsSequential.rankingLaw,
       DistributionalAccuracyFamily.outerExpected,
-      expectedBestInSet, EconCSLib.pmfExp, SequentialModel.remainingAfter]
+      expectedBestInSet, AppliedModelingLib.pmfExp, SequentialModel.remainingAfter]
       using SourceMallowsSequential.source_theorem4_mallows_outer_humanUnique
         (k := k) D center hphiA hphiH haccuracy hvalue hstrict
 
@@ -9395,7 +9545,7 @@ theorem theorem4_source_mallows_outer_horizon_lt_literal_semantic_complete
         SourceMallowsSequential.outerExpectedBestInSet,
         SourceMallowsSequential.rankingLaw,
         DistributionalAccuracyFamily.outerExpected,
-        expectedBestInSet, EconCSLib.pmfExp, SequentialModel.remainingAfter]
+        expectedBestInSet, AppliedModelingLib.pmfExp, SequentialModel.remainingAfter]
         using SourceMallowsSequential.source_theorem4_mallows_outer_allHumanOptimal
           (k := k) D center hphiA hphiH haccuracy hvalue horder
     exact hweak i (by omega) hired hhired strategy
@@ -9424,7 +9574,7 @@ theorem theorem4_source_mallows_outer_horizon_lt_literal_semantic_complete
         SourceMallowsSequential.outerExpectedBestInSet,
         SourceMallowsSequential.rankingLaw,
         DistributionalAccuracyFamily.outerExpected,
-        expectedBestInSet, EconCSLib.pmfExp, SequentialModel.remainingAfter]
+        expectedBestInSet, AppliedModelingLib.pmfExp, SequentialModel.remainingAfter]
         using SourceMallowsSequential.source_theorem4_mallows_outer_humanUnique
           (k := k) D center hphiA hphiH haccuracy hvalue horder
     exact hstrict i (by omega) hired hhired strategy hbest
@@ -9547,7 +9697,7 @@ theorem source_definition2_definition3_joint_semantic_complete
     (J = Measure.compProd D (F.independentPairKernel theta hatom)) ∧
     (∀ value,
       F.independentPairKernel theta hatom value =
-        (EconCSLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
+        (AppliedModelingLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
     (SourceDefinition2ConditionalAt F D theta hatom ↔ 0 < d2Numerator / d2Denominator) ∧
     ((0 < d2Numerator / d2Denominator) ↔ d2Shared < d2Independent) ∧
     (Integrable (fun value =>
@@ -9590,9 +9740,9 @@ theorem source_definition2_definition3_joint_semantic_complete
     · have h0 : x.2.1 0 ≠ x.2.2 0 := by simpa [firstChoice] using h
       have hne : firstChoice x.2.1 ≠ firstChoice x.2.2 := h
       simp only [disagreementEvent, if_pos hne]
-      change EconCSLib.SocialChoice.Ranking.rerankingGainOnPair
+      change AppliedModelingLib.SocialChoice.Ranking.rerankingGainOnPair
         x.1 x.2.1 x.2.2 = x.1 (x.2.1 0) - x.1 (x.2.1 1)
-      exact EconCSLib.SocialChoice.Ranking.rerankingGainOnPair_of_neFirst
+      exact AppliedModelingLib.SocialChoice.Ranking.rerankingGainOnPair_of_neFirst
         x.1 x.2.1 x.2.2 h0
   have hden_event_eq :
       (∫ x : ValueProfile n × RankingPair n,
@@ -9670,7 +9820,7 @@ theorem source_definition2_literal_outer_joint_semantic_complete
     (J = Measure.compProd D (F.independentPairKernel theta hatom)) ∧
     (∀ value,
       F.independentPairKernel theta hatom value =
-        (EconCSLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
+        (AppliedModelingLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
     (SourceDefinition2ConditionalAt F D theta hatom ↔ 0 < d2Numerator / d2Denominator) ∧
     ((0 < d2Numerator / d2Denominator) ↔ d2Shared < d2Independent) := by
   dsimp
@@ -9706,9 +9856,9 @@ theorem source_definition2_literal_outer_joint_semantic_complete
     · have h0 : x.2.1 0 ≠ x.2.2 0 := by simpa [firstChoice] using h
       have hne : firstChoice x.2.1 ≠ firstChoice x.2.2 := h
       simp only [disagreementEvent, if_pos hne]
-      change EconCSLib.SocialChoice.Ranking.rerankingGainOnPair
+      change AppliedModelingLib.SocialChoice.Ranking.rerankingGainOnPair
         x.1 x.2.1 x.2.2 = x.1 (x.2.1 0) - x.1 (x.2.1 1)
-      exact EconCSLib.SocialChoice.Ranking.rerankingGainOnPair_of_neFirst
+      exact AppliedModelingLib.SocialChoice.Ranking.rerankingGainOnPair_of_neFirst
         x.1 x.2.1 x.2.2 h0
   have hden_event_eq :
       (∫ x : ValueProfile n × RankingPair n,
@@ -9784,7 +9934,7 @@ theorem equation2_equation3_outer_joint_semantic_complete
     (J = Measure.compProd D (F.independentPairKernel theta hatom)) ∧
     (∀ value,
       F.independentPairKernel theta hatom value =
-        (EconCSLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
+        (AppliedModelingLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
     ((0 < numerator / denominator) ↔ UAA < UAH) ∧
     (UAH - UAA = numerator) := by
   dsimp
@@ -9839,7 +9989,7 @@ theorem equation2_outer_joint_payoff_equivalence_semantic_complete
     (J = Measure.compProd D (F.independentPairKernel theta hatom)) ∧
     (∀ value,
       F.independentPairKernel theta hatom value =
-        (EconCSLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
+        (AppliedModelingLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
     ((0 < numerator / denominator) ↔ UAA < UAH) := by
   dsimp
   rcases equation2_equation3_outer_joint_semantic_complete
@@ -9883,7 +10033,7 @@ abbrev equation2_outer_joint_payoff_equivalence_semantic_completeSpec
   (J = Measure.compProd D (F.independentPairKernel theta hatom)) ∧
   (∀ value,
     F.independentPairKernel theta hatom value =
-      (EconCSLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
+      (AppliedModelingLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
   ((0 < numerator / denominator) ↔ UAA < UAH)
 
 theorem equation2_outer_joint_payoff_equivalence_semantic_complete_spec_proof
@@ -9910,24 +10060,25 @@ theorem equation2_outer_joint_payoff_equivalence_semantic_complete_spec_proof
 
 /--
 Equation (3) as its own outer-D paper-facing row.  Unlike Equation (2), this
-identity needs no positive-conditioning premise: it is a raw equality between
-the joint payoff difference and the top-disagreement numerator.
+identity needs no positive-conditioning premise.  It is the raw equality
+between the joint payoff difference and the top-disagreement numerator when
+the algorithmic and human rankings have equal accuracy, `thetaA = thetaH`.
 -/
 theorem equation3_outer_joint_payoff_identity_semantic_complete
     {n : ℕ} (F : DistributionalAccuracyFamily n)
     (D : Measure (ValueProfile n)) [IsProbabilityMeasure D]
-    (theta : ℝ)
+    (thetaA thetaH : ℝ) (hequalAccuracy : thetaA = thetaH)
     (hatom : ∀ ranking : Ranking n,
-      Measurable fun value => F.dist theta value ranking)
+      Measurable fun value => F.dist thetaH value ranking)
     (hshared : Integrable
       (fun x : ValueProfile n × RankingPair n =>
         secondMoverUtility x.1 x.2.1 x.2.1)
-      (F.outerIndependentPairJointLaw D theta hatom))
+      (F.outerIndependentPairJointLaw D thetaH hatom))
     (hindependent : Integrable
       (fun x : ValueProfile n × RankingPair n =>
         secondMoverUtility x.1 x.2.1 x.2.2)
-      (F.outerIndependentPairJointLaw D theta hatom)) :
-    let J := F.outerIndependentPairJointLaw D theta hatom
+      (F.outerIndependentPairJointLaw D thetaH hatom)) :
+    let J := F.outerIndependentPairJointLaw D thetaH hatom
     let numerator : ℝ := ∫ x : ValueProfile n × RankingPair n,
       if firstChoice x.2.1 ≠ firstChoice x.2.2 then
         x.1 (firstChoice x.2.1) - x.1 (secondChoice x.2.1)
@@ -9936,11 +10087,12 @@ theorem equation3_outer_joint_payoff_identity_semantic_complete
       secondMoverUtility x.1 x.2.1 x.2.1 ∂J
     let UAH : ℝ := ∫ x : ValueProfile n × RankingPair n,
       secondMoverUtility x.1 x.2.1 x.2.2 ∂J
-    (J = Measure.compProd D (F.independentPairKernel theta hatom)) ∧
+    (J = Measure.compProd D (F.independentPairKernel thetaH hatom)) ∧
     (∀ value,
-      F.independentPairKernel theta hatom value =
-        (EconCSLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
+      F.independentPairKernel thetaH hatom value =
+        (AppliedModelingLib.pmfProd (F.dist thetaH value) (F.dist thetaH value)).toMeasure) ∧
     (UAH - UAA = numerator) := by
+  subst thetaA
   dsimp
   refine ⟨rfl, ?_, ?_⟩
   · intro value
@@ -9957,23 +10109,24 @@ theorem equation3_outer_joint_payoff_identity_semantic_complete
 /--
 Audited source-facing proposition for Equation (3).  The specification is the
 unconditioned payoff-difference identity over the same outer candidate-value
-law and conditionally iid ranking-pair experiment.
+law and conditionally iid ranking-pair experiment, explicitly restricted to
+the source's equal-accuracy setting `thetaA = thetaH`.
 -/
 abbrev equation3_outer_joint_payoff_identity_semantic_completeSpec
     {n : ℕ} (F : DistributionalAccuracyFamily n)
     (D : Measure (ValueProfile n)) [IsProbabilityMeasure D]
-    (theta : ℝ)
+    (thetaA thetaH : ℝ) (hequalAccuracy : thetaA = thetaH)
     (hatom : ∀ ranking : Ranking n,
-      Measurable fun value => F.dist theta value ranking)
+      Measurable fun value => F.dist thetaH value ranking)
     (hshared : Integrable
       (fun x : ValueProfile n × RankingPair n =>
         secondMoverUtility x.1 x.2.1 x.2.1)
-      (F.outerIndependentPairJointLaw D theta hatom))
+      (F.outerIndependentPairJointLaw D thetaH hatom))
     (hindependent : Integrable
       (fun x : ValueProfile n × RankingPair n =>
         secondMoverUtility x.1 x.2.1 x.2.2)
-      (F.outerIndependentPairJointLaw D theta hatom)) : Prop :=
-  let J := F.outerIndependentPairJointLaw D theta hatom
+      (F.outerIndependentPairJointLaw D thetaH hatom)) : Prop :=
+  let J := F.outerIndependentPairJointLaw D thetaH hatom
   let numerator : ℝ := ∫ x : ValueProfile n × RankingPair n,
     if firstChoice x.2.1 ≠ firstChoice x.2.2 then
       x.1 (firstChoice x.2.1) - x.1 (secondChoice x.2.1)
@@ -9982,30 +10135,30 @@ abbrev equation3_outer_joint_payoff_identity_semantic_completeSpec
     secondMoverUtility x.1 x.2.1 x.2.1 ∂J
   let UAH : ℝ := ∫ x : ValueProfile n × RankingPair n,
     secondMoverUtility x.1 x.2.1 x.2.2 ∂J
-  (J = Measure.compProd D (F.independentPairKernel theta hatom)) ∧
+  (J = Measure.compProd D (F.independentPairKernel thetaH hatom)) ∧
   (∀ value,
-    F.independentPairKernel theta hatom value =
-      (EconCSLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
+    F.independentPairKernel thetaH hatom value =
+      (AppliedModelingLib.pmfProd (F.dist thetaH value) (F.dist thetaH value)).toMeasure) ∧
   (UAH - UAA = numerator)
 
 theorem equation3_outer_joint_payoff_identity_semantic_complete_spec_proof
     {n : ℕ} (F : DistributionalAccuracyFamily n)
     (D : Measure (ValueProfile n)) [IsProbabilityMeasure D]
-    (theta : ℝ)
+    (thetaA thetaH : ℝ) (hequalAccuracy : thetaA = thetaH)
     (hatom : ∀ ranking : Ranking n,
-      Measurable fun value => F.dist theta value ranking)
+      Measurable fun value => F.dist thetaH value ranking)
     (hshared : Integrable
       (fun x : ValueProfile n × RankingPair n =>
         secondMoverUtility x.1 x.2.1 x.2.1)
-      (F.outerIndependentPairJointLaw D theta hatom))
+      (F.outerIndependentPairJointLaw D thetaH hatom))
     (hindependent : Integrable
       (fun x : ValueProfile n × RankingPair n =>
         secondMoverUtility x.1 x.2.1 x.2.2)
-      (F.outerIndependentPairJointLaw D theta hatom)) :
+      (F.outerIndependentPairJointLaw D thetaH hatom)) :
     equation3_outer_joint_payoff_identity_semantic_completeSpec
-      F D theta hatom hshared hindependent :=
+      F D thetaA thetaH hequalAccuracy hatom hshared hindependent :=
   equation3_outer_joint_payoff_identity_semantic_complete
-    F D theta hatom hshared hindependent
+    F D thetaA thetaH hequalAccuracy hatom hshared hindependent
 
 /--
 Definition 3 at the source's ordered positive-accuracy domain.  It exposes the
@@ -10113,7 +10266,7 @@ theorem theorem1_outer_semantic_complete
         expectedBestInSet (F.dist thetaH value) value remaining ≤
           expectedBestInSet (F.dist thetaA value) value remaining)
     (hfull_set_strict : ∀ thetaA thetaH, 0 < thetaH → thetaH < thetaA →
-      ∀ value,
+      ∀ value, StrictlyOrderedBy center value →
         expectedBestInSet (F.dist thetaH value) value Finset.univ <
           expectedBestInSet (F.dist thetaA value) value Finset.univ) :
     ∃ thetaA, thetaH < thetaA ∧
@@ -10179,7 +10332,7 @@ theorem commonLocationPositiveScaleGumbel_outer_zero_effect_semantic_complete
     (J = Measure.compProd D (F.independentPairKernel theta hatom)) ∧
     (∀ value,
       F.independentPairKernel theta hatom value =
-        (EconCSLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
+        (AppliedModelingLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
     Integrable (fun value => expectedSecondMoverIndependent
       (F.dist theta value) (F.dist theta value) value) D ∧
     Integrable (fun value => expectedSecondMoverShared (F.dist theta value) value) D ∧
@@ -10343,7 +10496,7 @@ theorem theorem1_outer_raw_definition2_definition3_semantic_complete
         expectedBestInSet (F.dist thetaH value) value remaining ≤
           expectedBestInSet (F.dist thetaA value) value remaining)
     (hfull_set_strict : ∀ thetaA thetaH, 0 < thetaH → thetaH < thetaA →
-      ∀ value,
+      ∀ value, StrictlyOrderedBy center value →
         expectedBestInSet (F.dist thetaH value) value Finset.univ <
           expectedBestInSet (F.dist thetaA value) value Finset.univ) :
     ∃ thetaA, thetaH < thetaA ∧
@@ -10772,7 +10925,7 @@ exact payoff gap, and failed predicate are all explicit.
 abbrev appendixB1_source_discrete_definition2_counterexample_semantic_completeSpec : Prop :=
   let componentLaw : PMF AppendixB1NoiseAtom := appendixB1NoisePMF
   let rawNoiseLaw : PMF AppendixB1NoiseTriple :=
-    EconCSLib.pmfProd (EconCSLib.pmfProd componentLaw componentLaw) componentLaw
+    AppliedModelingLib.pmfProd (AppliedModelingLib.pmfProd componentLaw componentLaw) componentLaw
   let rawRank : AppendixB1NoiseTriple -> Ranking 1 := fun noise =>
     rankByScore (fun c => appendixB1Value c +
       appendixB1NoiseValue (appendixB1NoiseTripleFunction noise c))
@@ -10806,7 +10959,7 @@ forward ranking laws remain explicit through the failed predicate.
 abbrev appendixB2_source_discrete_definition3_counterexample_semantic_completeSpec : Prop :=
   let componentLaw : PMF AppendixB2NoiseAtom := appendixB2NoisePMF
   let rawNoiseLaw : PMF AppendixB2NoiseTriple :=
-    EconCSLib.pmfProd (EconCSLib.pmfProd componentLaw componentLaw) componentLaw
+    AppliedModelingLib.pmfProd (AppliedModelingLib.pmfProd componentLaw componentLaw) componentLaw
   let algorithmRank : AppendixB2NoiseTriple -> Ranking 1 := fun noise =>
     rankByScore (fun c => appendixB2Value c + (10 / 11) *
       appendixB2NoiseValue (appendixB2NoiseTripleFunction noise c))
@@ -10851,7 +11004,7 @@ to both literal iid score-pushforward laws, rather than merely to named PMFs.
 abbrev equationB1_counterexample_first_choice_x1_semantic_completeSpec : Prop :=
   let componentLaw : PMF AppendixB2NoiseAtom := appendixB2NoisePMF
   let rawNoiseLaw : PMF AppendixB2NoiseTriple :=
-    EconCSLib.pmfProd (EconCSLib.pmfProd componentLaw componentLaw) componentLaw
+    AppliedModelingLib.pmfProd (AppliedModelingLib.pmfProd componentLaw componentLaw) componentLaw
   let algorithmRank : AppendixB2NoiseTriple -> Ranking 1 := fun noise =>
     rankByScore (fun c => appendixB2Value c + (10 / 11) *
       appendixB2NoiseValue (appendixB2NoiseTripleFunction noise c))
@@ -10887,7 +11040,7 @@ is tied to both literal iid score-pushforward laws in the audited statement.
 abbrev equationB2_counterexample_first_choice_x2_semantic_completeSpec : Prop :=
   let componentLaw : PMF AppendixB2NoiseAtom := appendixB2NoisePMF
   let rawNoiseLaw : PMF AppendixB2NoiseTriple :=
-    EconCSLib.pmfProd (EconCSLib.pmfProd componentLaw componentLaw) componentLaw
+    AppliedModelingLib.pmfProd (AppliedModelingLib.pmfProd componentLaw componentLaw) componentLaw
   let algorithmRank : AppendixB2NoiseTriple -> Ranking 1 := fun noise =>
     rankByScore (fun c => appendixB2Value c + (10 / 11) *
       appendixB2NoiseValue (appendixB2NoiseTripleFunction noise c))
@@ -11520,9 +11673,34 @@ theorem section31_literalUnitVarianceGumbel_best_available_weakly_dominates_spec
     value hthetaA hthetaH
 
 /--
-Audited source-facing Definition 2 proposition.  The outer value/ranking-pair
-law, conditionally iid kernel, literal conditional numerator and denominator,
-and its payoff comparison are all explicit.
+Audited source-facing Definition 2 proposition.  This is the complete
+definition, so the universal positive-accuracy quantifier is part of the
+semantic target rather than an implicit caller convention.
+-/
+abbrev source_definition2_iffSpec
+    {n : ℕ} (F : DistributionalAccuracyFamily n)
+    (D : Measure (ValueProfile n)) : Prop :=
+  SourceDefinition2 F D ↔
+    ∀ theta : ℝ, 0 < theta → ∀ hatom : ∀ ranking : Ranking n,
+      Measurable fun value => F.dist theta value ranking,
+      let J := F.outerIndependentPairJointLaw D theta hatom
+      let numerator : ℝ := ∫ x : ValueProfile n × RankingPair n,
+        if firstChoice x.2.1 ≠ firstChoice x.2.2 then
+          x.1 (firstChoice x.2.1) - x.1 (secondChoice x.2.1)
+        else 0 ∂J
+      let denominator : ℝ := ∫ x : ValueProfile n × RankingPair n,
+        if firstChoice x.2.1 ≠ firstChoice x.2.2 then (1 : ℝ) else 0 ∂J
+      0 < denominator → 0 < numerator / denominator
+
+theorem source_definition2_iff_spec_proof
+    {n : ℕ} (F : DistributionalAccuracyFamily n)
+    (D : Measure (ValueProfile n)) :
+    source_definition2_iffSpec F D :=
+  source_definition2_iff F D
+
+/--
+The fixed-accuracy Definition 2 expansion retained as a prerequisite for
+results that instantiate the definition at one selected parameter.
 -/
 abbrev source_definition2_literal_outer_joint_semantic_completeSpec
     {n : ℕ} (F : DistributionalAccuracyFamily n)
@@ -11555,7 +11733,7 @@ abbrev source_definition2_literal_outer_joint_semantic_completeSpec
   (J = Measure.compProd D (F.independentPairKernel theta hatom)) ∧
   (∀ value,
     F.independentPairKernel theta hatom value =
-      (EconCSLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
+      (AppliedModelingLib.pmfProd (F.dist theta value) (F.dist theta value)).toMeasure) ∧
   (SourceDefinition2ConditionalAt F D theta hatom ↔ 0 < d2Numerator / d2Denominator) ∧
   ((0 < d2Numerator / d2Denominator) ↔ d2Shared < d2Independent)
 
@@ -11582,9 +11760,31 @@ theorem source_definition2_literal_outer_joint_semantic_complete_spec_proof
     F D theta htheta hatom hshared hindependent hdisagreement
 
 /--
-Audited source-facing Definition 3 proposition.  It retains the ordered
-positive accuracy domain, both finite-PMF outer expectations, their
-integrability, and the literal strict comparison.
+Audited source-facing Definition 3 proposition.  This is the complete
+definition, including its universal quantifier over ordered positive accuracy
+pairs, rather than a single instantiated comparison.
+-/
+abbrev source_definition3_iffSpec
+    {n : ℕ} (F : DistributionalAccuracyFamily n)
+    (D : Measure (ValueProfile n)) : Prop :=
+  SourceDefinition3 F D ↔
+    ∀ thetaA thetaH : ℝ, 0 < thetaH → thetaH < thetaA →
+      (∫ value : ValueProfile n,
+        pmfPairExp (F.dist thetaH value) (F.dist thetaA value)
+          (fun pi sigma => secondMoverUtility value pi sigma) ∂D) <
+      (∫ value : ValueProfile n,
+        pmfPairExp (F.dist thetaH value) (F.dist thetaH value)
+          (fun pi sigma => secondMoverUtility value pi sigma) ∂D)
+
+theorem source_definition3_iff_spec_proof
+    {n : ℕ} (F : DistributionalAccuracyFamily n)
+    (D : Measure (ValueProfile n)) :
+    source_definition3_iffSpec F D :=
+  source_definition3_iff F D
+
+/--
+The fixed-pair Definition 3 expansion retained as a prerequisite for results
+that instantiate the definition at one ordered accuracy pair.
 -/
 abbrev source_definition3_literal_outer_semantic_completeSpec
     {n : ℕ} (F : DistributionalAccuracyFamily n)
@@ -11701,7 +11901,7 @@ abbrev theorem1_outer_raw_definition2_definition3_semantic_completeSpec
         expectedBestInSet (F.dist thetaH value) value remaining ≤
           expectedBestInSet (F.dist thetaA value) value remaining)
     (hfull_set_strict : ∀ thetaA thetaH, 0 < thetaH → thetaH < thetaA →
-      ∀ value,
+      ∀ value, StrictlyOrderedBy center value →
         expectedBestInSet (F.dist thetaH value) value Finset.univ <
           expectedBestInSet (F.dist thetaA value) value Finset.univ) : Prop :=
   ∃ thetaA, thetaH < thetaA ∧
@@ -11777,7 +11977,7 @@ theorem theorem1_outer_raw_definition2_definition3_semantic_complete_spec_proof
         expectedBestInSet (F.dist thetaH value) value remaining ≤
           expectedBestInSet (F.dist thetaA value) value remaining)
     (hfull_set_strict : ∀ thetaA thetaH, 0 < thetaH → thetaH < thetaA →
-      ∀ value,
+      ∀ value, StrictlyOrderedBy center value →
         expectedBestInSet (F.dist thetaH value) value Finset.univ <
           expectedBestInSet (F.dist thetaA value) value Finset.univ) :
     theorem1_outer_raw_definition2_definition3_semantic_completeSpec
@@ -11997,17 +12197,30 @@ theorem definition4_strictlyWellOrderedNoise_iff_spec_proof (f : ℝ → ℝ) :
 /-- Audited corrected Appendix C Lemma 1 proposition. -/
 abbrev lemma1_corrected_gaussian_laplace_kernel_targetSpec
     {kappa lam : ℝ} (hkappa : 0 < kappa) (hlam : 0 < lam) : Prop :=
-  StrictlyWellOrderedNoise (gaussianNoiseKernel kappa) ∧
-    WeaklyWellOrderedNoise (laplacianNoiseKernel lam) ∧
-    (¬ StrictlyWellOrderedNoise (laplacianNoiseKernel lam)) ∧
+  (∀ ⦃a b c d : ℝ⦄, b < a → d < c →
+    Real.exp (-kappa * (a - c) ^ 2) * Real.exp (-kappa * (b - d) ^ 2) >
+      Real.exp (-kappa * (a - d) ^ 2) * Real.exp (-kappa * (b - c) ^ 2)) ∧
+  (∀ ⦃a b c d : ℝ⦄, b < a → d < c →
+      Real.exp (-lam * |a - d|) * Real.exp (-lam * |b - c|) ≤
+        Real.exp (-lam * |a - c|) * Real.exp (-lam * |b - d|)) ∧
+    (¬ ∀ ⦃a b c d : ℝ⦄, b < a → d < c →
+      Real.exp (-lam * |a - c|) * Real.exp (-lam * |b - d|) >
+        Real.exp (-lam * |a - d|) * Real.exp (-lam * |b - c|)) ∧
     ∀ {a b c d : ℝ}, b < a → d < c → b < c → d < a →
-      laplacianNoiseKernel lam (a - c) * laplacianNoiseKernel lam (b - d) >
-        laplacianNoiseKernel lam (a - d) * laplacianNoiseKernel lam (b - c)
+      Real.exp (-lam * |a - c|) * Real.exp (-lam * |b - d|) >
+        Real.exp (-lam * |a - d|) * Real.exp (-lam * |b - c|)
 
 theorem lemma1_corrected_gaussian_laplace_kernel_target_spec_proof
     {kappa lam : ℝ} (hkappa : 0 < kappa) (hlam : 0 < lam) :
     lemma1_corrected_gaussian_laplace_kernel_targetSpec hkappa hlam :=
-  lemma1_corrected_gaussian_laplace_kernel_target hkappa hlam
+  by
+    simpa only [StrictlyWellOrderedNoise, WeaklyWellOrderedNoise,
+      gaussianNoiseKernel, laplacianNoiseKernel,
+      AppliedModelingLib.Probability.StrictlyWellOrderedNoise,
+      AppliedModelingLib.Probability.WeaklyWellOrderedNoise,
+      AppliedModelingLib.Probability.gaussianNoiseKernel,
+      AppliedModelingLib.Probability.laplacianNoiseKernel] using
+      (lemma1_corrected_gaussian_laplace_kernel_target hkappa hlam)
 
 /-- Audited source-facing proposition for Equation (C.4). -/
 abbrev equationC4_laplace_case3_expression_posSpec
@@ -12045,7 +12258,11 @@ theorem equationC6_gaussian_reduced_expression_pos_spec_proof
       (delta := delta) (t := t) hdelta :=
   equationC6_gaussian_reduced_expression_pos hdelta
 
-/-- Audited source-facing proposition for Equation (C.7). -/
+/--
+Audited source-facing proposition for Equation (C.7): its displayed rational
+term and its displayed Gaussian integral have the same explicit left-tail
+limit, zero.  The C.6 difference limit is a separate support result.
+-/
 abbrev equationC7_gaussian_reduced_expression_tendsto_atBot_zeroSpec
     (delta : ℝ) : Prop :=
   Filter.Tendsto
@@ -12053,11 +12270,12 @@ abbrev equationC7_gaussian_reduced_expression_tendsto_atBot_zeroSpec
       ((1 + theorem8Erf t) * (1 + theorem8Erf (t + delta)) ^ 2 *
           Real.exp (-(t ^ 2))) /
         ((1 + theorem8Erf t) * Real.exp (-((t + delta) ^ 2)) +
-          (1 + theorem8Erf (t + delta)) * Real.exp (-(t ^ 2))) -
-        (1 + theorem8Erf t) -
-        (2 / Real.sqrt Real.pi) *
-          (∫ x : ℝ in Set.Iic t,
-            Real.exp (-(x ^ 2)) * theorem8Erf (x + delta)))
+          (1 + theorem8Erf (t + delta)) * Real.exp (-(t ^ 2))))
+    Filter.atBot (nhds 0) ∧
+  Filter.Tendsto
+    (fun t =>
+      ∫ x : ℝ in Set.Iic t,
+        Real.exp (-(x ^ 2)) * theorem8Erf (x + delta))
     Filter.atBot (nhds 0)
 
 theorem equationC7_gaussian_reduced_expression_tendsto_atBot_zero_spec_proof
@@ -12074,13 +12292,13 @@ abbrev equationA1_source_w11_iid_literal_event_conditionalTail_integralSpec
     (value : Candidate n -> Real)
     (hsource_top_order : ∀ d : Fin (n + 1), value (Fin.succ d) < value 0)
     {theta : Real} (htheta : 0 < theta) : Prop :=
-  EconCSLib.measureProb
+  AppliedModelingLib.measureProb
       ((sourceAppendixARestNoiseLaw n (w11BaseNoiseLaw f)).prod
         (w11BaseNoiseLaw f))
       (fun z => firstChoice (rankByScore (fun i =>
         value i + sourceAppendixAProductNoise z i / theta)) = (0 : Candidate n)) =
     ∫ rest : Fin (n + 1) -> Real,
-      EconCSLib.measureProb (w11BaseNoiseLaw f)
+      AppliedModelingLib.measureProb (w11BaseNoiseLaw f)
         (fun epsilon => forall d : Fin (n + 1),
           theta * (value (Fin.succ d) - value 0) + rest d < epsilon)
       ∂sourceAppendixARestNoiseLaw n (w11BaseNoiseLaw f)
@@ -12166,17 +12384,27 @@ abbrev appendixC2_source_pairwise_full_eventsSpec
       ((gaussian.prod gaussian)
         {epsilon : ℝ × ℝ |
           xi + epsilon.1 / theta < u ∧ xj + epsilon.2 / theta < u}).toReal
+  let laplaceWinner : ℝ :=
+    ((laplace.prod laplace)
+      {epsilon : ℝ × ℝ |
+        xj + epsilon.2 / theta < xi + epsilon.1 / theta}).toReal
+  let gaussianWinner : ℝ :=
+    ((gaussian.prod gaussian)
+      {epsilon : ℝ × ℝ |
+        xj + epsilon.2 / theta < xi + epsilon.1 / theta}).toReal
   ((∀ a : ℝ,
     0 < ((laplace.prod laplace)
       {epsilon : ℝ × ℝ |
         xi + epsilon.1 / theta < a ∧ xj + epsilon.2 / theta < a}).toReal ∧
     ∃ d, HasDerivAt laplaceRatio d a ∧ 0 ≤ d) ∧
-    (∃ a d, HasDerivAt laplaceRatio d a ∧ 0 < d)) ∧
+    (∃ a d, HasDerivAt laplaceRatio d a ∧ 0 < d) ∧
+    Filter.Tendsto laplaceRatio Filter.atTop (nhds laplaceWinner)) ∧
   (∀ a : ℝ,
     0 < ((gaussian.prod gaussian)
       {epsilon : ℝ × ℝ |
         xi + epsilon.1 / theta < a ∧ xj + epsilon.2 / theta < a}).toReal ∧
-    ∃ d, HasDerivAt gaussianRatio d a ∧ 0 < d)
+    ∃ d, HasDerivAt gaussianRatio d a ∧ 0 < d) ∧
+    Filter.Tendsto gaussianRatio Filter.atTop (nhds gaussianWinner)
 
 theorem appendixC2_source_pairwise_full_events_spec_proof
     {theta xi xj : ℝ} (htheta : 0 < theta) (hx : xj < xi) :
@@ -12191,6 +12419,7 @@ abbrev theorem6_source_raw_iid_density_literal_semantic_completeSpec
     (hf : ∀ ⦃a b c d : ℝ⦄, b < a → d < c →
       f (a - c) * f (b - d) > f (a - d) * f (b - c))
     (hnonneg : ∀ z : ℝ, 0 ≤ f z)
+    (hfullSupport : ∀ z : ℝ, 0 < f z)
     (hnormalized : ∫⁻ z, ENNReal.ofReal (f z) ∂volume = 1)
     (hthetaH : 0 < thetaH) (hthetaHA : thetaH < thetaA)
     (hx12 : x2 < x1) (hx23 : x3 < x2) : Prop :=
@@ -12217,14 +12446,15 @@ theorem theorem6_source_raw_iid_density_literal_semantic_complete_spec_proof
     (hf : ∀ ⦃a b c d : ℝ⦄, b < a → d < c →
       f (a - c) * f (b - d) > f (a - d) * f (b - c))
     (hnonneg : ∀ z : ℝ, 0 ≤ f z)
+    (hfullSupport : ∀ z : ℝ, 0 < f z)
     (hnormalized : ∫⁻ z, ENNReal.ofReal (f z) ∂volume = 1)
     (hthetaH : 0 < thetaH) (hthetaHA : thetaH < thetaA)
     (hx12 : x2 < x1) (hx23 : x3 < x2) :
     theorem6_source_raw_iid_density_literal_semantic_completeSpec
       (thetaA := thetaA) (thetaH := thetaH) (x1 := x1) (x2 := x2) (x3 := x3)
-      f hfmeas hf hnonneg hnormalized hthetaH hthetaHA hx12 hx23 :=
+      f hfmeas hf hnonneg hfullSupport hnormalized hthetaH hthetaHA hx12 hx23 :=
   theorem6_source_raw_iid_density_literal_semantic_complete
-    f hfmeas hf hnonneg hnormalized hthetaH hthetaHA hx12 hx23
+    f hfmeas hf hnonneg hfullSupport hnormalized hthetaH hthetaHA hx12 hx23
 
 /-- Audited corrected source-facing proposition for Theorem 5. -/
 abbrev appendixA_theorem5_corrected_source_completeSpec
@@ -12398,7 +12628,24 @@ abbrev equationC5_gaussian_source_semantic_completeSpec
           Real.exp (-((x - xi) ^ 2)) * (1 + theorem8Erf (x - xj))) *
           (2 / Real.sqrt Real.pi) *
           ((1 + theorem8Erf (a - xi)) * Real.exp (-((a - xj) ^ 2)) +
-            (1 + theorem8Erf (a - xj)) * Real.exp (-((a - xi) ^ 2)))
+            (1 + theorem8Erf (a - xj)) * Real.exp (-((a - xi) ^ 2))) ∧
+    ∃ d,
+      HasDerivAt
+        (fun u =>
+          (2 / Real.sqrt Real.pi) *
+            (∫ x : ℝ in Set.Iic u,
+              Real.exp (-((x - xi) ^ 2)) * (1 + theorem8Erf (x - xj))) /
+            ((1 + theorem8Erf (u - xi)) * (1 + theorem8Erf (u - xj)))) d a ∧
+      (0 < d ↔
+        0 <
+          (1 + theorem8Erf (a - xi)) * (1 + theorem8Erf (a - xj)) *
+              Real.exp (-((a - xi) ^ 2)) * (1 + theorem8Erf (a - xj)) -
+            (∫ x : ℝ in Set.Iic a,
+              Real.exp (-((x - xi) ^ 2)) * (1 + theorem8Erf (x - xj))) *
+              (2 / Real.sqrt Real.pi) *
+              ((1 + theorem8Erf (a - xi)) * Real.exp (-((a - xj) ^ 2)) +
+                (1 + theorem8Erf (a - xj)) *
+                  Real.exp (-((a - xi) ^ 2))))
 
 theorem equationC5_gaussian_source_semantic_complete_spec_proof
     {xi xj a : ℝ} (hx : xj < xi) :
@@ -12795,10 +13042,10 @@ abbrev equationE1_source_phi_literal_conditional_semantic_completeSpec
       (M.law pi).toReal =
         phi⁻¹ ^ kendallTau center pi /
           (∑ tau : Ranking n, phi⁻¹ ^ kendallTau center tau)) ∧
-    0 < EconCSLib.pmfPairProb M.law M.law disagreementEvent ∧
-    0 < EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+    0 < AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent ∧
+    0 < AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
       (fun pair => value (firstChoice pair.1) - value (secondChoice pair.1)) /
-        EconCSLib.pmfPairProb M.law M.law disagreementEvent
+        AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent
 
 theorem equationE1_source_phi_literal_conditional_semantic_complete_spec_proof
     {n : ℕ} (center : Ranking n) (phi theta : ℝ)
@@ -12819,25 +13066,25 @@ abbrev equationE2_source_phi_literal_conditional_semantic_completeSpec
       (M.law pi).toReal =
         phi⁻¹ ^ kendallTau center pi /
           (∑ tau : Ranking n, phi⁻¹ ^ kendallTau center tau)) ∧
-    0 < EconCSLib.pmfPairProb M.law M.law disagreementEvent ∧
+    0 < AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent ∧
     (∀ c d : Candidate n, rankOf M.center c < rankOf M.center d →
-      EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+      AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
           (fun pair =>
             if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) /
-          EconCSLib.pmfPairProb M.law M.law disagreementEvent ≤
-        EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+          AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent ≤
+        AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
           (fun pair =>
             if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0) /
-          EconCSLib.pmfPairProb M.law M.law disagreementEvent) ∧
+          AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent) ∧
     ∃ c d : Candidate n, rankOf M.center c < rankOf M.center d ∧
-      EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+      AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
           (fun pair =>
             if d = firstChoice pair.1 ∧ c = secondChoice pair.1 then (1 : ℝ) else 0) /
-          EconCSLib.pmfPairProb M.law M.law disagreementEvent <
-        EconCSLib.pmfPairIndicatorExp M.law M.law disagreementEvent
+          AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent <
+        AppliedModelingLib.pmfPairIndicatorExp M.law M.law disagreementEvent
           (fun pair =>
             if c = firstChoice pair.1 ∧ d = secondChoice pair.1 then (1 : ℝ) else 0) /
-          EconCSLib.pmfPairProb M.law M.law disagreementEvent
+          AppliedModelingLib.pmfPairProb M.law M.law disagreementEvent
 
 theorem equationE2_source_phi_literal_conditional_semantic_complete_spec_proof
     {n : ℕ} (center : Ranking n) (phi theta : ℝ)
@@ -12914,8 +13161,8 @@ theorem equationF1_mallows_top_two_probability_spec_proof
       (c := c) (d := d) M phi hphi_gt hphi hcd :=
   equationF1_mallows_top_two_probability M phi hphi_gt hphi hcd
 
-/-- Audited source-facing proposition for Equation (F.1)'s literal Mallows law. -/
-abbrev equationF1_source_phi_completeSpec
+/-- Audited source-facing proposition for Appendix F Lemma 5 / Equation (F.1). -/
+abbrev lemma5_source_phi_completeSpec
     {n : ℕ} (center : Ranking n) (phi theta : ℝ)
     (hphi : 1 < phi) (htheta : theta = phi - 1) {c d : Candidate n}
     (hcd : rankOf center c < rankOf center d) : Prop :=
@@ -12928,34 +13175,44 @@ abbrev equationF1_source_phi_completeSpec
     M.firstSecondChoiceProb c d =
       phi * M.firstSecondChoiceProb d c
 
-theorem equationF1_source_phi_complete_spec_proof
+theorem lemma5_source_phi_complete_spec_proof
     {n : ℕ} (center : Ranking n) (phi theta : ℝ)
     (hphi : 1 < phi) (htheta : theta = phi - 1) {c d : Candidate n}
     (hcd : rankOf center c < rankOf center d) :
-    equationF1_source_phi_completeSpec
+    lemma5_source_phi_completeSpec
       (c := c) (d := d) center phi theta hphi htheta hcd :=
-  equationF1_source_phi_complete center phi theta hphi htheta hcd
+  lemma5_source_phi_complete center phi theta hphi htheta hcd
 
-/-- Audited source-facing proposition for Appendix F Lemma 6. -/
+/--
+Audited source-facing proposition for Appendix F Lemma 6.
+
+`N` is the paper's total number of candidates.  The reusable `Candidate n`
+carrier has `n + 2` elements, so the source-facing presentation uses
+`Candidate (N - 2)` and records the two-firm model's implicit `2 ≤ N` bound.
+-/
 abbrev lemma6_source_phi_rank_power_completeSpec
-    {n : ℕ} (center : Ranking n) (phi theta : ℝ)
-    (hphi : 1 < phi) (htheta : theta = phi - 1) (c : Candidate n) : Prop :=
+    {N : ℕ} (hN : 2 ≤ N) (center : Ranking (N - 2)) (phi theta : ℝ)
+    (hphi : 1 < phi) (htheta : theta = phi - 1) (c : Candidate (N - 2)) : Prop :=
   let M := concreteMallowsSpec center theta
   M.q = phi⁻¹ ∧
-    (∀ pi : Ranking n,
+    (∀ pi : Ranking (N - 2),
       (M.law pi).toReal =
         phi⁻¹ ^ kendallTau center pi /
-          (∑ tau : Ranking n, phi⁻¹ ^ kendallTau center tau)) ∧
+          (∑ tau : Ranking (N - 2), phi⁻¹ ^ kendallTau center tau)) ∧
     firstChoiceProb M.law c =
-      phi⁻¹ ^ (rankOf M.center c : ℕ) /
-        candidateRankPowerSum n phi⁻¹
+      (1 - phi⁻¹) /
+        (phi ^ (rankOf M.center c : ℕ) *
+          (1 - phi⁻¹ ^ N))
 
 theorem lemma6_source_phi_rank_power_complete_spec_proof
-    {n : ℕ} (center : Ranking n) (phi theta : ℝ)
-    (hphi : 1 < phi) (htheta : theta = phi - 1) (c : Candidate n) :
+    {N : ℕ} (hN : 2 ≤ N) (center : Ranking (N - 2)) (phi theta : ℝ)
+    (hphi : 1 < phi) (htheta : theta = phi - 1) (c : Candidate (N - 2)) :
     lemma6_source_phi_rank_power_completeSpec
-      (n := n) center phi theta hphi htheta c :=
-  lemma6_source_phi_rank_power_complete center phi theta hphi htheta c
+      (N := N) hN center phi theta hphi htheta c := by
+  simpa only [lemma6_source_phi_rank_power_completeSpec, inv_pow,
+    Nat.sub_add_cancel hN] using
+    (equationF2_source_phi_closed_form_complete
+      (n := N - 2) center phi theta hphi htheta c)
 
 /-- Audited source-facing proposition for Equation (F.2). -/
 abbrev equationF2_source_phi_closed_form_completeSpec
@@ -13032,9 +13289,9 @@ abbrev lemma8_source_mallows_phi_pairwise_correct_probability_ltSpec
       (Mmore.law pi).toReal =
         phiMore⁻¹ ^ kendallTau center pi /
           (∑ tau : Ranking n, phiMore⁻¹ ^ kendallTau center tau)) ∧
-    EconCSLib.pmfProb Mless.law
+    AppliedModelingLib.pmfProb Mless.law
       (fun pi => rankOf pi c < rankOf pi d) <
-      EconCSLib.pmfProb Mmore.law
+      AppliedModelingLib.pmfProb Mmore.law
         (fun pi => rankOf pi c < rankOf pi d)
 
 theorem lemma8_source_mallows_phi_pairwise_correct_probability_lt_spec_proof
@@ -13201,10 +13458,10 @@ theorem equation6_literal_payoff_indifference_from_source_conditions
         (F.dist theta) F.value (hdefinition2 theta htheta).1).mpr
         (hdefinition2 theta htheta).2
   have hatom_epsilon_continuous : ∀ theta, 0 < theta → ∀ pi : Ranking n,
-      EconCSLib.EpsilonContinuousAt
+      AppliedModelingLib.EpsilonContinuousAt
         (fun theta' => ((F.dist theta') pi).toReal) theta := by
     intro theta htheta pi
-    exact EconCSLib.epsilonContinuousAt_of_continuousAt
+    exact AppliedModelingLib.epsilonContinuousAt_of_continuousAt
       (hatom_continuous theta htheta pi)
   obtain ⟨lo, hthetaH_lo, hlo⟩ :=
     AccuracyFamily.theorem1_exists_right_initial_f_lt_g_of_prefersIndependent_and_atom_continuity
@@ -13284,10 +13541,10 @@ theorem equation6_outer_payoff_indifference_of_crossing_conditions
     (D : Measure (ValueProfile n)) (thetaH : ℝ)
     (hindependent : F.PrefersIndependentReranking D thetaH)
     (hf_continuity : ∀ theta, thetaH ≤ theta →
-      EconCSLib.EpsilonContinuousAt
+      AppliedModelingLib.EpsilonContinuousAt
         (fun thetaA => F.theorem1_f D thetaA thetaH) theta)
     (hg_continuity : ∀ theta, thetaH ≤ theta →
-      EconCSLib.EpsilonContinuousAt
+      AppliedModelingLib.EpsilonContinuousAt
         (fun thetaA => F.theorem1_g D thetaA thetaH) theta)
     (hasymptotic : ∀ lower, thetaH < lower →
       ∃ hi, lower < hi ∧
@@ -13460,12 +13717,12 @@ theorem equation6_outer_payoff_indifference_from_source_conditions
     · intro theta htheta
       exact DistributionalAccuracyFamily.epsilonContinuousAt_theorem1_f_of_atomwise
         F D thetaH theta hvalue hatom_aestrongly_measurable
-        (fun value pi => EconCSLib.epsilonContinuousAt_of_continuousAt
+        (fun value pi => AppliedModelingLib.epsilonContinuousAt_of_continuousAt
           (hatom_continuous value theta (lt_of_lt_of_le hthetaH htheta) pi))
     · intro theta htheta
       exact DistributionalAccuracyFamily.epsilonContinuousAt_theorem1_g_of_atomwise
         F D thetaH theta hvalue hatom_aestrongly_measurable
-        (fun value pi => EconCSLib.epsilonContinuousAt_of_continuousAt
+        (fun value pi => AppliedModelingLib.epsilonContinuousAt_of_continuousAt
           (hatom_continuous value theta (lt_of_lt_of_le hthetaH htheta) pi))
     · exact DistributionalAccuracyFamily.exists_outer_first_dominance_of_atomwise_tendsto
         F D thetaH center hvalue hatom_aestrongly_measurable hatom_tendsto hpure_gap
@@ -13654,7 +13911,7 @@ theorem theorem1_raw_outer_literal_payoff_terminal_conclusion
         expectedBestInSet (F.dist thetaH value) value remaining ≤
           expectedBestInSet (F.dist thetaA value) value remaining)
     (hfull_set_strict : ∀ thetaA thetaH, 0 < thetaH → thetaH < thetaA →
-      ∀ value,
+      ∀ value, StrictlyOrderedBy center value →
         expectedBestInSet (F.dist thetaH value) value Finset.univ <
           expectedBestInSet (F.dist thetaA value) value Finset.univ) :
     ∃ thetaA, thetaH < thetaA ∧
@@ -13777,7 +14034,7 @@ abbrev theorem1_raw_outer_literal_payoff_terminal_conclusionSpec
         expectedBestInSet (F.dist thetaH value) value remaining ≤
           expectedBestInSet (F.dist thetaA value) value remaining)
     (hfull_set_strict : ∀ thetaA thetaH, 0 < thetaH → thetaH < thetaA →
-      ∀ value,
+      ∀ value, StrictlyOrderedBy center value →
         expectedBestInSet (F.dist thetaH value) value Finset.univ <
           expectedBestInSet (F.dist thetaA value) value Finset.univ) : Prop :=
   ∃ thetaA, thetaH < thetaA ∧
@@ -13885,7 +14142,7 @@ theorem theorem1_raw_outer_literal_payoff_terminal_conclusion_spec_proof
         expectedBestInSet (F.dist thetaH value) value remaining ≤
           expectedBestInSet (F.dist thetaA value) value remaining)
     (hfull_set_strict : ∀ thetaA thetaH, 0 < thetaH → thetaH < thetaA →
-      ∀ value,
+      ∀ value, StrictlyOrderedBy center value →
         expectedBestInSet (F.dist thetaH value) value Finset.univ <
           expectedBestInSet (F.dist thetaA value) value Finset.univ) :
     theorem1_raw_outer_literal_payoff_terminal_conclusionSpec
@@ -14096,9 +14353,9 @@ theorem theorem3_source_complete_semantic_complete_literal_payoff
       · have h0 : x.2.1 0 ≠ x.2.2 0 := by simpa [firstChoice] using h
         have hne : firstChoice x.2.1 ≠ firstChoice x.2.2 := h
         simp only [disagreementEvent, if_pos hne]
-        change EconCSLib.SocialChoice.Ranking.rerankingGainOnPair
+        change AppliedModelingLib.SocialChoice.Ranking.rerankingGainOnPair
           x.1 x.2.1 x.2.2 = x.1 (x.2.1 0) - x.1 (x.2.1 1)
-        exact EconCSLib.SocialChoice.Ranking.rerankingGainOnPair_of_neFirst
+        exact AppliedModelingLib.SocialChoice.Ranking.rerankingGainOnPair_of_neFirst
           x.1 x.2.1 x.2.2 h0
     have hden_eq :
         (∫ x : ValueProfile n × RankingPair n,

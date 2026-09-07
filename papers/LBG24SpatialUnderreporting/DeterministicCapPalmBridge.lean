@@ -20,8 +20,8 @@ cited as an Eq. (8) source-model closure.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory ProbabilityTheory
-open EconCSLib.Probability
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped BigOperators ENNReal NNReal ProbabilityTheory
 
 noncomputable section

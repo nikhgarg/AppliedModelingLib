@@ -1,4 +1,4 @@
-import EconCSLib.MechanismDesign.Auctions.DigitalGoods
+import AppliedModelingLib.MechanismDesign.Auctions.DigitalGoods
 import Mathlib.Data.Multiset.Sort
 import Mathlib.Probability.ProbabilityMassFunction.Constructions
 
@@ -15,7 +15,7 @@ literally a probability distribution over such outcomes.
 namespace GHW01DigitalGoods
 namespace SourceDefinitions
 
-open EconCSLib.Auction
+open AppliedModelingLib.Auction
 open scoped BigOperators ENNReal
 
 noncomputable section
@@ -312,7 +312,7 @@ Source: lines 97-102 and 228-234.
 -/
 abbrev fixedPriceRevenue {Agent : Type*} [Fintype Agent]
     (bids : BidProfile Agent) (p : ℝ) : ℝ :=
-  EconCSLib.Auction.singlePriceRevenue bids p
+  AppliedModelingLib.Auction.singlePriceRevenue bids p
 
 /-- Outcome revenue agrees with the reusable fixed-price revenue definition.
 
@@ -323,10 +323,10 @@ theorem fixedPriceOutcome_revenue {Agent : Type*} [Fintype Agent]
     (fixedPriceOutcome bids p).revenue = fixedPriceRevenue bids p := by
   classical
   change (fixedPriceOutcome bids p).revenue =
-    EconCSLib.Auction.singlePriceRevenue bids p
-  rw [EconCSLib.Auction.singlePriceRevenue_eq_saleCount_mul]
+    AppliedModelingLib.Auction.singlePriceRevenue bids p
+  rw [AppliedModelingLib.Auction.singlePriceRevenue_eq_saleCount_mul]
   simp [AuctionOutcome.revenue, fixedPriceOutcome,
-    EconCSLib.Auction.saleCount]
+    AppliedModelingLib.Auction.saleCount]
 
 /-- `F`: the maximum fixed-price revenue over prices equal to an input bid.
 The source's normalized nonempty bid domain makes this finite candidate set

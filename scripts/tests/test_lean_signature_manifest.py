@@ -13,7 +13,6 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
-from typing import Mapping
 from unittest import mock
 
 from scripts import lean_signature_manifest as manifest_module
@@ -27,7 +26,6 @@ from scripts.lean_signature_manifest import (
     run_lean_constructor_field_slot_counts_for_source,
     run_lean_inductive_constructor_field_slot_counts_for_source,
     run_lean_constructor_result_type_matches_for_source,
-    run_lean_operational_outcome_domain_bridges_for_source,
     run_lean_proposition_spec_proof_matches_for_source,
     run_lean_recursive_field_proposition_sorts,
     run_lean_recursive_field_proposition_sorts_for_source,
@@ -46,8 +44,15 @@ ROOT = Path(__file__).resolve().parents[2]
 class LeanSignatureManifestTests(unittest.TestCase):
     IMPORT_MANIFEST_HASH_TOOL_IDENTITY = {
         "schema": "1",
+        "command": "sha256sum",
         "resolved_path": "/fixture/sha256sum",
         "executable_sha256": "f" * 64,
+        "version_stdout_sha256": "e" * 64,
+        "version_banner": "sha256sum fixture",
+        "known_vector": "sha256(abc)",
+        "known_vector_sha256": (
+            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        ),
     }
 
     def enriched_import_manifest_results(
@@ -55,13 +60,16 @@ class LeanSignatureManifestTests(unittest.TestCase):
     ) -> dict[str, dict[str, object]]:
         """Return the production wrapper fields for mocked Lean output."""
 
+        portable_hash_tool = (
+            manifest_module.portable_semantic_hash_tool_identity(
+                self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY
+            )
+        )
         return {
             name: {
                 **manifest,
-                "canonical_representation": "lean_compact_canonical_v2",
-                "semantic_hash_tool_identity": (
-                    self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY
-                ),
+                "canonical_representation": manifest_module.CANONICAL_REPRESENTATION,
+                "semantic_hash_tool_identity": portable_hash_tool,
             }
             for name, manifest in manifests.items()
         }
@@ -70,6 +78,131 @@ class LeanSignatureManifestTests(unittest.TestCase):
         result = run_lean_signature_manifests_for_source(ROOT, source, names)
         self.assertEqual(set(result), set(names))
         return result
+
+    def test_semantic_closure_extractor_has_a_current_source_identity(self) -> None:
+        """Import refactors must not silently disable every closure receipt."""
+
+        identity = manifest_module._semantic_contract_closure_extractor_identity()
+        self.assertIsNotNone(identity)
+        assert identity is not None
+        self.assertEqual(identity["schema"], "4")
+        self.assertEqual(
+            identity["canonical_surface_representation"],
+            "lean_compact_canonical_surface_sha256_v2",
+        )
+        self.assertRegex(identity["python_source_slice_sha256"], r"^[0-9a-f]{64}$")
+
+    def test_oversized_definition_value_uses_exact_compact_fingerprint(self) -> None:
+        """A large valid data definition must not erase its sibling rows."""
+
+        def definition_manifest(payload: str) -> dict[str, object]:
+            return {
+                "schema": manifest_module.MANIFEST_SCHEMA,
+                "declaration_kind": "definition",
+                "conclusion_mode": "type_and_value",
+                "atoms": [
+                    {
+                        "ref": "result",
+                        "role": "conclusion",
+                        "canonical": {
+                            "tag": "definition",
+                            "type": {"tag": "sort", "level": {"tag": "zero"}},
+                            "value": {
+                                "tag": "opaque_fixture_payload",
+                                "payload": payload,
+                            },
+                        },
+                        "display": "Fixture := exact large value",
+                    }
+                ],
+            }
+
+        large = "a" * (manifest_module.MAX_COMPACT_CANONICAL_BYTES + 1)
+        first = definition_manifest(large + "0")
+        second = definition_manifest(large + "1")
+        first_digest = manifest_module.signature_manifest_digest(first)
+        second_digest = manifest_module.signature_manifest_digest(second)
+
+        self.assertRegex(first_digest, r"^[0-9a-f]{64}$")
+        self.assertRegex(second_digest, r"^[0-9a-f]{64}$")
+        self.assertNotEqual(first_digest, second_digest)
+        canonical = manifest_module._canonical_payload(first)
+        self.assertIsNotNone(canonical)
+        assert canonical is not None
+        result = canonical["atoms"][0]["canonical"]
+        self.assertEqual(set(result), {"tag", "sha256"})
+        self.assertEqual(result["tag"], "definition")
+
+        small = definition_manifest("small")
+        small_canonical = manifest_module._canonical_payload(small)
+        self.assertIsNotNone(small_canonical)
+        assert small_canonical is not None
+        self.assertIn("value", small_canonical["atoms"][0]["canonical"])
+
+    def test_oversized_theorem_atoms_use_exact_compact_fingerprints(self) -> None:
+        """Large valid theorem binders and conclusions remain exact signatures."""
+
+        def theorem_manifest(binder_payload: str, result_payload: str) -> dict[str, object]:
+            return {
+                "schema": manifest_module.MANIFEST_SCHEMA,
+                "declaration_kind": "theorem",
+                "conclusion_mode": "type_only",
+                "atoms": [
+                    {
+                        "ref": "arg0",
+                        "role": "parameter",
+                        "binder_info": "explicit",
+                        "canonical": {
+                            "tag": "fixture_binder",
+                            "payload": binder_payload,
+                        },
+                    },
+                    {
+                        "ref": "result",
+                        "role": "conclusion",
+                        "canonical": {
+                            "tag": "fixture_result",
+                            "payload": result_payload,
+                        },
+                    },
+                ],
+            }
+
+        large = "a" * (manifest_module.MAX_COMPACT_CANONICAL_BYTES + 1)
+        first = theorem_manifest(large + "binder-0", large + "result-0")
+        same = theorem_manifest(large + "binder-0", large + "result-0")
+        changed_binder = theorem_manifest(large + "binder-1", large + "result-0")
+        changed_result = theorem_manifest(large + "binder-0", large + "result-1")
+
+        first_digest = manifest_module.signature_manifest_digest(first)
+        self.assertRegex(first_digest, r"^[0-9a-f]{64}$")
+        self.assertEqual(
+            first_digest,
+            manifest_module.signature_manifest_digest(same),
+        )
+        self.assertNotEqual(
+            first_digest,
+            manifest_module.signature_manifest_digest(changed_binder),
+        )
+        self.assertNotEqual(
+            first_digest,
+            manifest_module.signature_manifest_digest(changed_result),
+        )
+
+        canonical = manifest_module._canonical_payload(first)
+        self.assertIsNotNone(canonical)
+        assert canonical is not None
+        for atom in canonical["atoms"]:
+            self.assertEqual(set(atom["canonical"]), {"tag", "sha256"})
+            self.assertEqual(atom["canonical"]["tag"], "canonical")
+        self.assertEqual(canonical["atoms"][0]["binder_info"], "explicit")
+
+        small = theorem_manifest("small binder", "small result")
+        small_canonical = manifest_module._canonical_payload(small)
+        self.assertIsNotNone(small_canonical)
+        assert small_canonical is not None
+        self.assertIn("payload", small_canonical["atoms"][0]["canonical"])
+        self.assertIn("payload", small_canonical["atoms"][1]["canonical"])
 
     def test_helper_hash_transport_uses_private_files_not_pipes(self) -> None:
         """Keep restricted runtimes free of helper-owned process descriptors."""
@@ -83,152 +216,89 @@ class LeanSignatureManifestTests(unittest.TestCase):
         self.assertNotIn("IO.Process.output", helper)
         self.assertNotIn(".piped", helper)
 
-    def test_manifest_batch_size_defaults_to_singleton_and_bounds_override(
+    def test_compiled_helper_is_a_thin_reexport_of_receipt_pinned_source(
         self,
     ) -> None:
-        names = ["Fixture.a", "Fixture.b", "Fixture.c", "Fixture.d"]
-        with mock.patch.dict(os.environ, {manifest_module.MANIFEST_BATCH_SIZE_ENV: ""}):
-            self.assertEqual(
-                manifest_module._manifest_initial_batches(names),
-                [["Fixture.a"], ["Fixture.b"], ["Fixture.c"], ["Fixture.d"]],
-            )
-        with mock.patch.dict(
-            os.environ, {manifest_module.MANIFEST_BATCH_SIZE_ENV: "3"}
-        ):
-            self.assertEqual(
-                manifest_module._manifest_initial_batches(names),
-                [["Fixture.a", "Fixture.b", "Fixture.c"], ["Fixture.d"]],
-            )
-        with mock.patch.dict(
-            os.environ,
-            {manifest_module.MANIFEST_BATCH_SIZE_ENV: "not-a-number"},
-        ):
-            self.assertEqual(manifest_module._manifest_batch_size(), 1)
-        with mock.patch.dict(
-            os.environ,
-            {
-                manifest_module.MANIFEST_BATCH_SIZE_ENV: str(
-                    manifest_module.MAX_MANIFEST_BATCH_SIZE + 1
-                )
-            },
-        ):
-            self.assertEqual(
-                manifest_module._manifest_batch_size(),
-                manifest_module.MAX_MANIFEST_BATCH_SIZE,
-            )
+        """Prevent the injected and compiled Lean command bodies from drifting."""
 
-    def test_singleton_batch_keeps_the_callers_full_timeout(self) -> None:
-        self.assertEqual(
-            manifest_module._manifest_batch_timeout_seconds(
-                ["Fixture.row"], 300, chunked=True
-            ),
-            300,
-        )
-        self.assertLess(
-            manifest_module._manifest_batch_timeout_seconds(
-                ["Fixture.first", "Fixture.second"], 300, chunked=True
-            ),
-            300,
-        )
+        compiled_path = ROOT / manifest_module.COMPILED_AUDIT_HELPER_SOURCE
+        compiled = compiled_path.read_text(encoding="utf-8")
+        helper = manifest_module.HELPER_PATH.read_text(encoding="utf-8")
+        lake = (ROOT / "lakefile.toml").read_text(encoding="utf-8")
+        audit_library_stanza = """[[lean_lib]]
+name = "AppliedModelingLibAuditScripts"
+srcDir = "scripts"
+roots = ["lean_signature_manifest_helper"]
+"""
 
-    def test_manifest_cache_authority_is_independent_of_batch_capacity(self) -> None:
-        names = ["BatchSchedule.a", "BatchSchedule.b"]
-        row_a = {names[0]: {"sha256": "a"}}
-        row_b = {names[1]: {"sha256": "b"}}
-        expected = self.enriched_import_manifest_results({**row_a, **row_b})
-        manifest_module._CACHE.clear()
-        try:
-            with (
-                mock.patch.object(
-                    manifest_module, "_build_import_target", return_value=True
-                ),
-                mock.patch.object(
-                    manifest_module, "_built_olean_fingerprint", return_value=(1, 2)
-                ),
-                mock.patch.object(
-                    manifest_module,
-                    "_built_workspace_module_inventory",
-                    return_value=(("BatchSchedule.Module",), "workspace-1"),
-                ),
-                mock.patch.object(
-                    manifest_module,
-                    "_semantic_contract_closure_hash_tool_identity",
-                    return_value=self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-                ),
-                mock.patch.object(
-                    manifest_module,
-                    "_run_manifest_script",
-                    side_effect=[row_a, row_b],
-                ) as run_script,
-            ):
-                with mock.patch.dict(
-                    os.environ, {manifest_module.MANIFEST_BATCH_SIZE_ENV: "1"}
-                ):
-                    first = manifest_module.run_lean_signature_manifests(
-                        ROOT, "BatchSchedule.Module", names
-                    )
-                with mock.patch.dict(
-                    os.environ, {manifest_module.MANIFEST_BATCH_SIZE_ENV: "4"}
-                ):
-                    second = manifest_module.run_lean_signature_manifests(
-                        ROOT, "BatchSchedule.Module", names
-                    )
-            self.assertEqual(first, expected)
-            self.assertEqual(second, expected)
-            self.assertEqual(run_script.call_count, 2)
-        finally:
-            manifest_module._CACHE.clear()
+        self.assertEqual(lake.count(audit_library_stanza), 1)
+        self.assertTrue(compiled.startswith("import lean_signature_manifest_helper\n"))
+        self.assertNotIn("elab_rules : command", compiled)
+        self.assertEqual(compiled.count("import lean_signature_manifest_helper"), 1)
+        self.assertGreaterEqual(helper.count("elab_rules : command"), 3)
 
-    def test_manifest_checkpoint_keeps_completed_singleton_before_interruption(
+    def test_compiled_helper_reexport_registers_the_lean_audit_commands(
         self,
     ) -> None:
-        """A later interrupted row cannot erase an earlier completed receipt."""
+        """Exercise one semantic command through the stable compiled import."""
 
-        import_module = "CheckpointSurface.Module"
-        names = ["CheckpointSurface.first", "CheckpointSurface.second"]
+        self.assertTrue(
+            manifest_module._build_compiled_audit_helper(ROOT, timeout_seconds=120)
+        )
+        source = """import AppliedModelingLib.Audit.SignatureManifest
+
+namespace Fixture
+
+def sourceSpec : Prop := True
+theorem sourceSpec_proof : sourceSpec := trivial
+
+#proposition_spec_proof_match "Fixture.sourceSpec" "Fixture.sourceSpec_proof"
+
+end Fixture
+"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "CompiledAuditHelperFixture.lean"
+            fixture.write_text(source, encoding="utf-8")
+            result = subprocess.run(
+                ["lake", "env", "lean", str(fixture)],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+                timeout=120,
+            )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(
+            'LEAN_PROPOSITION_SPEC_PROOF_MATCH:{"matches":true',
+            result.stdout,
+        )
+
+    def test_manifest_context_digest_ignores_hash_tool_install_location(self) -> None:
         context = {
             "schema": 3,
-            "import_module": import_module,
-            "olean_fingerprint": ["a" * 64, 1],
-            "helper_fingerprint": ["b" * 64, 2],
+            "import_module": "Fixture.PaperInterface",
+            "olean_fingerprint": ["a" * 64, 10],
+            "helper_fingerprint": ["b" * 64, 20],
             "semantic_hash_tool_identity": self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-            "canonical_representation": "lean_compact_canonical_v2",
-            "audit_scope_fingerprint": manifest_module._audit_scope_fingerprint(
-                import_module, ("a" * 64, 1), (import_module,)
-            ),
-            "audit_modules": [import_module],
-            "semantic_module_fingerprints": [[import_module, ["a" * 64, 1]]],
+            "canonical_representation": manifest_module.CANONICAL_REPRESENTATION,
+            "audit_scope_fingerprint": "c" * 64,
+            "audit_modules": ["Fixture.PaperInterface"],
+            "semantic_module_fingerprints": [
+                ["Fixture.PaperInterface", ["a" * 64, 10]]
+            ],
         }
-        first = {names[0]: {"sha256": "c" * 64}}
-        checkpoints: list[tuple[dict, dict]] = []
-        manifest_module._CACHE.clear()
-        try:
-            with (
-                mock.patch.object(
-                    manifest_module,
-                    "signature_manifest_cache_context",
-                    return_value=context,
-                ),
-                mock.patch.object(
-                    manifest_module,
-                    "_run_manifest_script",
-                    side_effect=[first, KeyboardInterrupt()],
-                ),
-            ):
-                with self.assertRaises(KeyboardInterrupt):
-                    manifest_module.run_lean_signature_manifests(
-                        ROOT,
-                        import_module,
-                        names,
-                        manifest_checkpoint=lambda received_context, manifests: (
-                            checkpoints.append(
-                                (dict(received_context), dict(manifests))
-                            )
-                        ),
-                    )
-            self.assertEqual(checkpoints, [(context, first)])
-        finally:
-            manifest_module._CACHE.clear()
+        relocated = {
+            **context,
+            "semantic_hash_tool_identity": {
+                **self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
+                "resolved_path": "/other/machine/bin/sha256sum",
+            },
+        }
+        self.assertEqual(
+            manifest_module.signature_manifest_cache_context_sha256(context),
+            manifest_module.signature_manifest_cache_context_sha256(relocated),
+        )
 
     def saved_lean_import_closure(
         self,
@@ -300,15 +370,15 @@ class LeanSignatureManifestTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paper = root / "papers" / "Fixture"
-            shared = root / "EconCSLib" / "Shared"
+            shared = root / "AppliedModelingLib" / "Shared"
             paper.mkdir(parents=True)
             shared.mkdir(parents=True)
-            (root / "EconCSLib.lean").write_text(
-                "import EconCSLib.Shared.Core\n", encoding="utf-8"
+            (root / "AppliedModelingLib.lean").write_text(
+                "import AppliedModelingLib.Shared.Core\n", encoding="utf-8"
             )
             (shared / "Core.lean").write_text("def shared := 1\n", encoding="utf-8")
             (paper / "PaperInterface.lean").write_text(
-                "import Fixture.Model\nimport EconCSLib\n", encoding="utf-8"
+                "import Fixture.Model\nimport AppliedModelingLib\n", encoding="utf-8"
             )
             (paper / "Model.lean").write_text(
                 "/- import Fixture.Unused -/\ndef model := shared\n", encoding="utf-8"
@@ -322,8 +392,8 @@ class LeanSignatureManifestTests(unittest.TestCase):
         self.assertEqual(
             closure,
             (
-                "EconCSLib",
-                "EconCSLib.Shared.Core",
+                "AppliedModelingLib",
+                "AppliedModelingLib.Shared.Core",
                 "Fixture.Model",
                 "Fixture.PaperInterface",
             ),
@@ -363,17 +433,65 @@ class LeanSignatureManifestTests(unittest.TestCase):
 
         self.assertEqual(closure, ())
 
+    def test_repository_ownership_snapshot_matches_exact_module_routing(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "Root.lean").write_text("def root := 1\n", encoding="utf-8")
+            (root / "AppliedModelingLib" / "Model.lean").parent.mkdir(parents=True)
+            (root / "AppliedModelingLib" / "Model.lean").write_text(
+                "def model := 1\n", encoding="utf-8"
+            )
+            (root / "papers" / "Fixture" / "Model.lean").parent.mkdir(
+                parents=True
+            )
+            (root / "papers" / "Fixture" / "Model.lean").write_text(
+                "def model := 1\n", encoding="utf-8"
+            )
+            (root / "Fixture" / "Model.lean").parent.mkdir(parents=True)
+            (root / "Fixture" / "Model.lean").write_text(
+                "def duplicate := 1\n", encoding="utf-8"
+            )
+            snapshot = import_closure.repository_module_ownership_snapshot(root)
+
+            for module in (
+                "Root",
+                "AppliedModelingLib.Model",
+                "Fixture.Model",
+                "Mathlib.Data.Finset.Basic",
+            ):
+                self.assertEqual(
+                    snapshot.candidates(module),
+                    manifest_module._repository_module_source_candidates(
+                        root, module
+                    ),
+                )
+
+    def test_repository_ownership_snapshot_is_refreshed_for_finalization(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "papers").mkdir()
+            before = import_closure.repository_module_ownership_snapshot(root)
+            self.assertEqual(before.candidates("Mathlib.NewOwner"), ())
+
+            local_owner = root / "Mathlib" / "NewOwner.lean"
+            local_owner.parent.mkdir()
+            local_owner.write_text("def local := 1\n", encoding="utf-8")
+            after = import_closure.repository_module_ownership_snapshot(root)
+
+            self.assertEqual(before.candidates("Mathlib.NewOwner"), ())
+            self.assertEqual(after.candidates("Mathlib.NewOwner"), (local_owner,))
+
     def test_paper_owned_import_scope_excludes_pinned_shared_terminals(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             paper = root / "papers" / "Fixture"
-            shared = root / "EconCSLib" / "Shared"
+            shared = root / "AppliedModelingLib" / "Shared"
             nested = paper / "Nested"
             paper.mkdir(parents=True)
             shared.mkdir(parents=True)
             nested.mkdir(parents=True)
             (paper / "PaperInterface.lean").write_text(
-                "import Fixture.Model\nimport EconCSLib.Shared.Core\n",
+                "import Fixture.Model\nimport AppliedModelingLib.Shared.Core\n",
                 encoding="utf-8",
             )
             (paper / "Model.lean").write_text(
@@ -388,7 +506,7 @@ class LeanSignatureManifestTests(unittest.TestCase):
                 "_lean_loaded_module_candidates",
                 side_effect=[
                     (
-                        "EconCSLib.Shared.Core",
+                        "AppliedModelingLib.Shared.Core",
                         "Fixture.Model",
                         "Fixture.Nested.Core",
                         "Fixture.PaperInterface",
@@ -478,32 +596,43 @@ class LeanSignatureManifestTests(unittest.TestCase):
     def test_build_snapshot_provider_reads_shared_modules_once_per_run(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
-            shared = root / "EconCSLib" / "Common.lean"
+            shared = root / "AppliedModelingLib" / "Common.lean"
             shared.parent.mkdir(parents=True)
             shared.write_text("def common := 1\n", encoding="utf-8")
             for paper_name in ("First", "Second"):
                 paper = root / "papers" / paper_name
                 paper.mkdir(parents=True)
                 (paper / "PaperInterface.lean").write_text(
-                    "import EconCSLib.Common\n",
+                    "import AppliedModelingLib.Common\n",
                     encoding="utf-8",
                 )
 
             first_receipt = self.saved_lean_import_closure(
                 root,
                 "First.PaperInterface",
-                ("EconCSLib.Common", "First.PaperInterface"),
+                ("AppliedModelingLib.Common", "First.PaperInterface"),
             )
             second_receipt = self.saved_lean_import_closure(
                 root,
                 "Second.PaperInterface",
-                ("EconCSLib.Common", "Second.PaperInterface"),
+                ("AppliedModelingLib.Common", "Second.PaperInterface"),
             )
             provider = manifest_module.RepositoryBuildInputSnapshotProvider(
                 root,
                 lean_import_closure_payload=first_receipt,
             )
             provider.adopt_lean_import_closure_payload(second_receipt)
+            self.assertTrue(
+                provider.owns_exact_lean_import_closure_payload(first_receipt)
+            )
+            self.assertTrue(
+                provider.owns_exact_lean_import_closure_payload(second_receipt)
+            )
+            self.assertFalse(
+                provider.owns_exact_lean_import_closure_payload(
+                    {**first_receipt, "entry_module": "Changed.PaperInterface"}
+                )
+            )
             first = manifest_module.repository_build_input_snapshot(
                 root,
                 "First.PaperInterface",
@@ -530,6 +659,158 @@ class LeanSignatureManifestTests(unittest.TestCase):
         self.assertEqual(diagnostics["parse_requests"], 0)
         self.assertEqual(diagnostics["snapshot_reuses"], 1)
         self.assertTrue(unchanged)
+
+    def test_provider_finalization_reuses_exact_external_artifact_snapshot(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paper = root / "papers" / "Fixture"
+            paper.mkdir(parents=True)
+            (paper / "PaperInterface.lean").write_text(
+                "import Fixture.Model\n", encoding="utf-8"
+            )
+            (paper / "Model.lean").write_text("def value := 1\n", encoding="utf-8")
+            receipt = self.saved_lean_import_closure(
+                root,
+                "Fixture.PaperInterface",
+                ("Fixture.Model", "Fixture.PaperInterface"),
+            )
+
+            with mock.patch.object(
+                import_closure,
+                "external_module_artifact_snapshot",
+                wraps=import_closure.external_module_artifact_snapshot,
+            ) as artifact_snapshot:
+                provider = manifest_module.RepositoryBuildInputSnapshotProvider(
+                    root,
+                    lean_import_closure_payload=receipt,
+                )
+                self.assertTrue(provider.finalize_unchanged())
+
+            self.assertEqual(artifact_snapshot.call_count, 1)
+            self.assertEqual(
+                provider.diagnostics()["external_artifact_snapshot_reuses"],
+                1,
+            )
+
+    def test_graph_authenticated_provider_does_not_replay_ambient_artifacts(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paper = root / "papers" / "Fixture"
+            paper.mkdir(parents=True)
+            (paper / "PaperInterface.lean").write_text(
+                "import Fixture.Model\n", encoding="utf-8"
+            )
+            model = paper / "Model.lean"
+            model.write_text("def value := 1\n", encoding="utf-8")
+            receipt = self.saved_lean_import_closure(
+                root,
+                "Fixture.PaperInterface",
+                ("Fixture.Model", "Fixture.PaperInterface"),
+            )
+            receipt = import_closure.validated_lean_import_closure_payload(
+                {
+                    **receipt,
+                    "lean_loaded_modules": [
+                        *receipt["lean_loaded_modules"],
+                        "Mathlib",
+                    ],
+                    "external_import_modules": ["Mathlib"],
+                    "external_module_artifacts_sha256": "a" * 64,
+                }
+            )
+
+            with mock.patch.object(
+                import_closure,
+                "external_module_artifact_snapshot",
+                side_effect=AssertionError(
+                    "accepted-graph verification replayed ambient artifacts"
+                ),
+            ) as artifact_snapshot:
+                guard = (
+                    manifest_module.graph_authenticated_lean_import_closure_guard(
+                        root,
+                        receipt,
+                    )
+                )
+                self.assertFalse(hasattr(guard, "snapshot"))
+                self.assertTrue(guard.finalize_unchanged())
+
+            artifact_snapshot.assert_not_called()
+            model.write_text("def value := 2\n", encoding="utf-8")
+            self.assertFalse(guard.finalize_unchanged())
+
+            model.write_text("def value := 1\n", encoding="utf-8")
+            lakefile = root / "lakefile.lean"
+            routing = lakefile.read_bytes()
+            lakefile.write_bytes(routing + b"-- changed route\n")
+            with self.assertRaisesRegex(ValueError, "Lake routing changed"):
+                manifest_module.graph_authenticated_lean_import_closure_guard(
+                    root,
+                    receipt,
+                )
+
+            lakefile.write_bytes(routing)
+            (root / "Mathlib.lean").write_text(
+                "def newlyLocal := 1\n", encoding="utf-8"
+            )
+            with self.assertRaisesRegex(ValueError, "gained repository source"):
+                manifest_module.graph_authenticated_lean_import_closure_guard(
+                    root,
+                    receipt,
+                )
+
+    def test_repository_source_projection_never_adopts_or_hashes_artifacts(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paper = root / "papers" / "Fixture"
+            paper.mkdir(parents=True)
+            interface = paper / "PaperInterface.lean"
+            model = paper / "Model.lean"
+            interface.write_text("import Fixture.Model\n", encoding="utf-8")
+            model.write_text("def value := 1\n", encoding="utf-8")
+            receipt = self.saved_lean_import_closure(
+                root,
+                "Fixture.PaperInterface",
+                ("Fixture.Model", "Fixture.PaperInterface"),
+            )
+            receipt = import_closure.validated_lean_import_closure_payload(
+                {
+                    **receipt,
+                    "lean_loaded_modules": [
+                        *receipt["lean_loaded_modules"],
+                        "Mathlib",
+                    ],
+                    "external_import_modules": ["Mathlib"],
+                    "external_module_artifacts_sha256": "a" * 64,
+                }
+            )
+            provider = manifest_module.RepositoryBuildInputSnapshotProvider(root)
+            with mock.patch.object(
+                import_closure,
+                "external_module_artifact_snapshot",
+                side_effect=AssertionError(
+                    "review projection hashed accepting build artifacts"
+                ),
+            ) as artifact_snapshot:
+                snapshot = provider.validated_repository_source_snapshot(receipt)
+
+            artifact_snapshot.assert_not_called()
+            self.assertEqual(
+                tuple(row[0] for row in snapshot),
+                ("Fixture.Model", "Fixture.PaperInterface"),
+            )
+            self.assertEqual(provider.repository_source_snapshot("Fixture.PaperInterface"), ())
+            self.assertFalse(provider.owns_exact_lean_import_closure_payload(receipt))
+
+            model.write_text("def value := 2\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "source bytes changed"):
+                provider.validated_repository_source_snapshot(receipt)
 
     def test_legacy_control_receipt_preserves_old_build_snapshot_identity(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -667,6 +948,72 @@ class LeanSignatureManifestTests(unittest.TestCase):
                 1,
             )
 
+    def test_semantic_authority_adopts_current_sources_without_old_byte_replay(
+        self,
+    ) -> None:
+        from scripts.source_record_semantic_reuse import (
+            CurrentSemanticReuseAuthority,
+        )
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paper = root / "papers" / "Fixture"
+            paper.mkdir(parents=True)
+            interface = paper / "PaperInterface.lean"
+            model = paper / "Model.lean"
+            interface.write_text("import Fixture.Model\n", encoding="utf-8")
+            model.write_text("def value := 1\n", encoding="utf-8")
+            receipt = self.saved_lean_import_closure(
+                root,
+                "Fixture.PaperInterface",
+                ("Fixture.Model", "Fixture.PaperInterface"),
+            )
+            # This edit invalidates the historical file-container receipt. A
+            # completed Lean pass has separately established that its reviewed
+            # declarations retain the canonical semantic identity.
+            model.write_text("-- documentation only\ndef value := 1\n", encoding="utf-8")
+            watched_paths = (
+                interface,
+                model,
+                root / "lean-toolchain",
+                root / "lake-manifest.json",
+            )
+            material = tuple(
+                (
+                    path.relative_to(root).as_posix(),
+                    "present",
+                    hashlib.sha256(path.read_bytes()).hexdigest(),
+                )
+                for path in watched_paths
+            )
+            authority = CurrentSemanticReuseAuthority(
+                paper="Fixture",
+                raw_audit_file_sha256="a" * 64,
+                semantic_identity_sha256="b" * 64,
+                reviewed_declarations=("Fixture.Spec",),
+                watched_repository_material=material,
+                result={},
+            )
+            provider = manifest_module.RepositoryBuildInputSnapshotProvider(
+                root,
+                lean_import_closure_payload=receipt,
+                semantic_reuse_authority=authority,
+            )
+
+            snapshots = provider.repository_source_snapshot(
+                "Fixture.PaperInterface"
+            )
+            self.assertEqual(
+                {module for module, _path, _content, _digest in snapshots},
+                {"Fixture.Model", "Fixture.PaperInterface"},
+            )
+            self.assertEqual(
+                provider.diagnostics()["semantic_receipts_adopted"], 1
+            )
+            self.assertTrue(provider.finalize_unchanged())
+            model.write_text("def value := 2\n", encoding="utf-8")
+            self.assertFalse(provider.finalize_unchanged())
+
     def test_build_snapshot_provider_rejects_new_routing_ambiguity(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -735,6 +1082,42 @@ class LeanSignatureManifestTests(unittest.TestCase):
             )
             graph_loader.assert_not_called()
             self.assertTrue(provider.finalize_unchanged())
+
+    def test_saved_receipt_reports_every_changed_source_in_one_pass(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paper = root / "papers" / "Fixture"
+            paper.mkdir(parents=True)
+            interface = paper / "PaperInterface.lean"
+            model = paper / "Model.lean"
+            interface.write_text("import Fixture.Model\n", encoding="utf-8")
+            model.write_text("def value := 1\n", encoding="utf-8")
+            receipt = self.saved_lean_import_closure(
+                root,
+                "Fixture.PaperInterface",
+                ("Fixture.Model", "Fixture.PaperInterface"),
+            )
+            interface.write_text("import Fixture.Model\n-- changed\n", encoding="utf-8")
+            model.write_text("def value := 2\n", encoding="utf-8")
+
+            with self.assertRaises(ValueError) as raised:
+                manifest_module.RepositoryBuildInputSnapshotProvider(
+                    root,
+                    lean_import_closure_payload=receipt,
+                )
+
+        message = str(raised.exception)
+        self.assertIn("2 problem(s)", message)
+        self.assertIn(
+            "Lean import-closure source bytes changed: "
+            "papers/Fixture/Model.lean",
+            message,
+        )
+        self.assertIn(
+            "Lean import-closure source bytes changed: "
+            "papers/Fixture/PaperInterface.lean",
+            message,
+        )
 
     def test_lean_receipt_closure_includes_dependency_python_diagnostic_misses(
         self,
@@ -818,6 +1201,24 @@ class LeanSignatureManifestTests(unittest.TestCase):
             )
             self.assertEqual(provider.diagnostics()["parse_requests"], 0)
             self.assertTrue(provider.finalize_unchanged())
+
+    def test_provider_preserves_bounded_non_authoritative_discovery_error(self) -> None:
+        root = Path("/tmp/diagnostic-fixture")
+        provider = manifest_module.RepositoryBuildInputSnapshotProvider(root)
+        reason = "Lake could not build +Fixture.PaperInterface:olean: timed out after 600 seconds; " + "x" * 5000
+        worktree = mock.Mock()
+        worktree.record_for_entrypoint.return_value = (None, mock.Mock(reason=reason))
+        provider._live_closure_provider = worktree
+        with mock.patch.object(manifest_module, "_repository_module_source_path",
+                               return_value=root / "papers/Fixture/PaperInterface.lean"):
+            self.assertEqual(provider.lean_loaded_module_names("Fixture.PaperInterface"), ())
+        error = provider.lean_loaded_module_error("Fixture.PaperInterface")
+        self.assertIn("timed out after 600 seconds", error)
+        self.assertIn("+Fixture.PaperInterface:olean", error)
+        self.assertLessEqual(len(error), 1200)
+        self.assertEqual(provider.lean_loaded_module_error("Other"), "")
+        worktree.record_for_entrypoint.assert_called_once()
+        self.assertEqual(provider._closure_receipts, {})
 
     def test_shared_provider_reuses_one_receipt_for_build_and_environment_layers(
         self,
@@ -918,8 +1319,6 @@ class LeanSignatureManifestTests(unittest.TestCase):
     def test_import_runners_forward_one_provider_to_the_build_layer(self) -> None:
         provider = mock.Mock()
         provider.root = ROOT.resolve()
-        domain_route = tuple(f"domain{index}" for index in range(8))
-        transition_route = tuple(f"transition{index}" for index in range(12))
         calls = [
             lambda: manifest_module.run_lean_proposition_spec_proof_matches(
                 ROOT,
@@ -932,20 +1331,6 @@ class LeanSignatureManifestTests(unittest.TestCase):
                 "Fixture.PaperInterface",
                 [("Fixture.target", "Fixture.proof", "Fixture.refutation")],
                 build_input_provider=provider,
-            ),
-            lambda: manifest_module.run_lean_operational_outcome_domain_bridges(
-                ROOT,
-                "Fixture.PaperInterface",
-                [domain_route],  # type: ignore[list-item]
-                build_input_provider=provider,
-            ),
-            lambda: (
-                manifest_module.run_lean_operational_outcome_state_transition_bridges(
-                    ROOT,
-                    "Fixture.PaperInterface",
-                    [transition_route],  # type: ignore[list-item]
-                    build_input_provider=provider,
-                )
             ),
             lambda: manifest_module.run_lean_semantic_contract_transparency_checks(
                 ROOT,
@@ -1012,6 +1397,45 @@ class LeanSignatureManifestTests(unittest.TestCase):
             )
 
         self.assertEqual(popen.call_count, 1)
+
+    def test_native_module_builds_share_single_thread_environment(self) -> None:
+        root = Path("/tmp/repository")
+        process = mock.Mock(returncode=0)
+        process.communicate.return_value = ("", "")
+        self.addCleanup(manifest_module._SUCCESSFUL_BUILD_SNAPSHOT_CACHE.clear)
+        with mock.patch.dict(os.environ, {
+            "LEAN_NUM_THREADS": "24", "BUILD_ENV_TEST_SENTINEL": "preserved",
+        }):
+            with (
+                mock.patch.object(manifest_module, "_compiled_audit_module_available", return_value=True),
+                mock.patch.object(manifest_module, "run_owned_lean_process", return_value=process) as run,
+            ):
+                self.assertTrue(manifest_module._build_compiled_audit_helper(root, 17))
+            self.assertEqual(run.call_args.args[0], [
+                "lake", "build", "+" + manifest_module.COMPILED_AUDIT_HELPER_MODULE,
+            ])
+            self.assertEqual(run.call_args.kwargs["timeout"], 17)
+            self.assertEqual(run.call_args.kwargs["env"]["LEAN_NUM_THREADS"], "1")
+            self.assertEqual(run.call_args.kwargs["env"]["BUILD_ENV_TEST_SENTINEL"], "preserved")
+
+            for provider in (None, mock.Mock(root=root)):
+                with self.subTest(shared_provider=provider is not None):
+                    manifest_module._SUCCESSFUL_BUILD_SNAPSHOT_CACHE.clear()
+                    with (
+                        mock.patch.object(manifest_module, "_build_target_input_snapshot", return_value="source") as snapshot,
+                        mock.patch.object(manifest_module, "_build_target_artifact_snapshot", return_value=("artifact",)),
+                        mock.patch.object(manifest_module.subprocess, "Popen", return_value=process) as popen,
+                    ):
+                        self.assertTrue(manifest_module._build_import_target(
+                            root, "Fixture.PaperInterface", 23, provider=provider,
+                        ))
+                    self.assertEqual(popen.call_args.args[0], ["lake", "build", "+Fixture.PaperInterface"])
+                    self.assertEqual(popen.call_args.kwargs["env"]["LEAN_NUM_THREADS"], "1")
+                    self.assertEqual(popen.call_args.kwargs["env"]["BUILD_ENV_TEST_SENTINEL"], "preserved")
+                    self.assertIs(popen.call_args.kwargs["start_new_session"], True)
+                    self.assertIs(snapshot.call_args.kwargs["provider"], provider)
+                    process.communicate.assert_called_with(timeout=23)
+            self.assertEqual(os.environ["LEAN_NUM_THREADS"], "24")
 
     def test_build_target_rejects_source_mutation_during_build(self) -> None:
         manifest_module._SUCCESSFUL_BUILD_SNAPSHOT_CACHE.clear()
@@ -1400,6 +1824,110 @@ def sourceSpec (Carrier : Type) : Prop := ∀ alpha : List (Fin 2), terminal alp
             normalized["transparent_value_presentation_telescope"],
             presentation,
         )
+
+    def test_transparent_definition_value_telescope_preserves_terminal_negation(
+        self,
+    ) -> None:
+        source = """
+def Property (n : Nat) : Prop := n = n
+def negativeSpec : Prop := ∀ n : Nat, n > 0 → ¬ Property n
+axiom negativeProof (n : Nat) (h : n > 0) : ¬ Property n
+"""
+        manifests = self.manifests(source, ["negativeSpec", "negativeProof"])
+        presentation = manifests["negativeSpec"][
+            "transparent_value_presentation_telescope"
+        ]
+        self.assertIsInstance(presentation, dict)
+        assert isinstance(presentation, dict)
+        self.assertEqual(
+            [atom["role"] for atom in presentation["atoms"]],
+            ["parameter", "assumption", "conclusion"],
+        )
+        self.assertIn("¬Property", presentation["atoms"][-1]["display"])
+        self.assertEqual(
+            [atom["role"] for atom in manifests["negativeProof"]["atoms"]],
+            ["parameter", "assumption", "assumption", "conclusion"],
+        )
+        self.assertEqual(
+            manifests["negativeProof"]["atoms"][-1]["display"], "False"
+        )
+
+    def test_review_display_exposes_material_existential_witness_domain(self) -> None:
+        source = """
+def witnessSpec : Prop :=
+  ∃ packet : {values : List Nat // values.length ≤ 3}, packet.1.length ≤ 3
+"""
+        manifest = self.manifests(source, ["witnessSpec"])["witnessSpec"]
+        presentation = manifest["transparent_value_presentation_telescope"]
+        result_display = presentation["atoms"][-1]["display"]
+        self.assertIn("packet : { values : List Nat // values.length ≤ 3 }", result_display)
+        self.assertIn("packet.val.length ≤ 3", result_display)
+
+        surface = manifest_module.review_claim_atom_surface(manifest)
+        self.assertIsNotNone(surface)
+        assert surface is not None
+        target = manifest_module.review_claim_target_text(
+            {
+                "display": result_display,
+                "review_claim_atoms": surface["claim_atoms"],
+                "review_claim_atoms_sha256": surface["claim_atoms_sha256"],
+            }
+        )
+        self.assertIn("packet : { values : List Nat // values.length ≤ 3 }", target)
+
+    def test_review_display_does_not_elide_proof_irrelevant_arguments(self) -> None:
+        """A semantic reviewer must never receive Lean's `⋯` placeholder."""
+
+        source = """
+def sourceMass (rate : Nat) (_rate_pos : 0 < rate) : Nat := rate
+def sourceSpec (rate : Nat) (rate_pos : 0 < rate) : Prop :=
+  sourceMass rate rate_pos = rate
+"""
+        manifest = self.manifests(source, ["sourceSpec"])["sourceSpec"]
+        surface = manifest_module.review_claim_atom_surface(manifest)
+        self.assertIsNotNone(surface)
+        assert surface is not None
+        rendered = "\n".join(
+            str(atom["display"]) for atom in surface["claim_atoms"]
+        )
+        self.assertNotIn("⋯", rendered)
+        self.assertIn("sourceMass rate rate_pos", rendered)
+
+    def test_review_claim_surface_uses_only_lean_emitted_atom_roles(self) -> None:
+        source = """
+def sourceSpec (n : Nat) (header : n = n) : Prop :=
+  (n > 0) → ¬ n < 0
+def sourceValue (n : Nat) : Nat := n + 1
+"""
+        manifests = self.manifests(source, ["sourceSpec", "sourceValue"])
+
+        spec_surface = manifest_module.review_claim_atom_surface(
+            manifests["sourceSpec"]
+        )
+        self.assertIsNotNone(spec_surface)
+        assert spec_surface is not None
+        self.assertEqual(
+            [atom["role"] for atom in spec_surface["claim_atoms"]],
+            ["parameter", "assumption", "assumption", "conclusion"],
+        )
+        self.assertIn("¬", spec_surface["claim_atoms"][-1]["display"])
+        self.assertRegex(spec_surface["claim_atoms_sha256"], r"^[0-9a-f]{64}$")
+
+        value_surface = manifest_module.review_claim_atom_surface(
+            manifests["sourceValue"]
+        )
+        self.assertIsNotNone(value_surface)
+        assert value_surface is not None
+        self.assertEqual(
+            [atom["role"] for atom in value_surface["claim_atoms"]],
+            ["parameter", "conclusion"],
+        )
+
+        malformed = json.loads(json.dumps(manifests["sourceSpec"]))
+        malformed["transparent_value_presentation_telescope"]["atoms"][-1][
+            "role"
+        ] = "assumption"
+        self.assertIsNone(manifest_module.review_claim_atom_surface(malformed))
 
     def test_reducible_alias_cannot_hide_binders(self) -> None:
         source = """
@@ -2607,216 +3135,6 @@ theorem sourceDefinitionWrong (value : Nat) :
         self.assertTrue(matches[routes[5]])
         self.assertFalse(matches[routes[6]])
 
-    def test_operational_outcome_bridge_requires_exact_terminal_run_shape(self) -> None:
-        source = """
-import Mathlib
-namespace OutcomeFixture
-inductive Model where
-  | mk
-
-inductive Step : Model -> Nat -> Nat -> Prop where
-  | stay (model : Model) (n : Nat) : Step model n n
-
-inductive OtherStep : Model -> Nat -> Nat -> Prop where
-  | stay (model : Model) (n : Nat) : OtherStep model n n
-
-def ends (value : Nat) : Prop := value = value
-
-theorem target (model : Model) :
-    ∀ outcome,
-      Relation.ReflTransGen (Step model) 0 outcome ->
-      ends outcome ->
-      outcome = outcome := by
-  intro _ _ hterminal
-  rfl
-
-theorem bridge (model : Model) :
-    ∃ outcome, Relation.ReflTransGen (Step model) 0 outcome ∧ ends outcome := by
-  exact ⟨0, Relation.ReflTransGen.refl, rfl⟩
-
-theorem wrongRelationBridge (model : Model) :
-    ∃ outcome, Relation.ReflTransGen (OtherStep model) 0 outcome ∧ ends outcome := by
-  exact ⟨0, Relation.ReflTransGen.refl, rfl⟩
-
-theorem bridgeNeedsExtra (model : Model) (extra : Nat) :
-    ∃ outcome, Relation.ReflTransGen (Step model) 0 outcome ∧ ends outcome := by
-  exact ⟨0, Relation.ReflTransGen.refl, rfl⟩
-
-theorem targetModelAbsent (model : Model) :
-    ∀ outcome,
-      Relation.ReflTransGen (Step Model.mk) 0 outcome ->
-      ends outcome ->
-      outcome = outcome := by
-  intro _ _ hterminal
-  rfl
-
-theorem bridgeModelAbsent (model : Model) :
-    ∃ outcome, Relation.ReflTransGen (Step Model.mk) 0 outcome ∧ ends outcome := by
-  exact ⟨0, Relation.ReflTransGen.refl, rfl⟩
-
-theorem targetTerminalAbsent (model : Model) :
-    ∀ outcome,
-      Relation.ReflTransGen (Step model) 0 outcome ->
-      ends outcome ->
-      True := by
-  intro _ _ _
-  trivial
-
-theorem targetTerminalAbsentRun (model : Model) :
-    ∀ outcome,
-      Relation.ReflTransGen (Step model) 0 0 ->
-      ends outcome ->
-      outcome = outcome := by
-  intro _ _ _
-  rfl
-
-theorem bridgeTerminalAbsentRun (model : Model) :
-    ∃ outcome, Relation.ReflTransGen (Step model) 0 0 ∧ ends outcome := by
-  exact ⟨0, Relation.ReflTransGen.refl, rfl⟩
-
-theorem targetTerminalAbsentPredicate (model : Model) :
-    ∀ outcome,
-      Relation.ReflTransGen (Step model) 0 outcome ->
-      ends 0 ->
-      outcome = outcome := by
-  intro _ _ _
-  rfl
-
-theorem bridgeTerminalAbsentPredicate (model : Model) :
-    ∃ outcome, Relation.ReflTransGen (Step model) 0 outcome ∧ ends 0 := by
-  exact ⟨0, Relation.ReflTransGen.refl, rfl⟩
-
-theorem renamedTarget (sourceModel : Model) :
-    ∀ finalNode,
-      Relation.ReflTransGen (Step sourceModel) 0 finalNode ->
-      ends finalNode ->
-      finalNode = finalNode := by
-  intro _ _ _
-  rfl
-
-theorem renamedBridge (sourceModel : Model) :
-    ∃ finalNode,
-      Relation.ReflTransGen (Step sourceModel) 0 finalNode ∧ ends finalNode := by
-  exact ⟨0, Relation.ReflTransGen.refl, rfl⟩
-end OutcomeFixture
-"""
-        routes = [
-            (
-                "OutcomeFixture.target",
-                "OutcomeFixture.bridge",
-                0,
-                1,
-                2,
-                3,
-                "OutcomeFixture.Model",
-                "OutcomeFixture.Step",
-            ),
-            (
-                "OutcomeFixture.target",
-                "OutcomeFixture.wrongRelationBridge",
-                0,
-                1,
-                2,
-                3,
-                "OutcomeFixture.Model",
-                "OutcomeFixture.Step",
-            ),
-            (
-                "OutcomeFixture.target",
-                "OutcomeFixture.bridgeNeedsExtra",
-                0,
-                1,
-                2,
-                3,
-                "OutcomeFixture.Model",
-                "OutcomeFixture.Step",
-            ),
-            (
-                "OutcomeFixture.targetModelAbsent",
-                "OutcomeFixture.bridgeModelAbsent",
-                0,
-                1,
-                2,
-                3,
-                "OutcomeFixture.Model",
-                "OutcomeFixture.Step",
-            ),
-            (
-                "OutcomeFixture.targetTerminalAbsent",
-                "OutcomeFixture.bridge",
-                0,
-                1,
-                2,
-                3,
-                "OutcomeFixture.Model",
-                "OutcomeFixture.Step",
-            ),
-            (
-                "OutcomeFixture.targetTerminalAbsentRun",
-                "OutcomeFixture.bridgeTerminalAbsentRun",
-                0,
-                1,
-                2,
-                3,
-                "OutcomeFixture.Model",
-                "OutcomeFixture.Step",
-            ),
-            (
-                "OutcomeFixture.targetTerminalAbsentPredicate",
-                "OutcomeFixture.bridgeTerminalAbsentPredicate",
-                0,
-                1,
-                2,
-                3,
-                "OutcomeFixture.Model",
-                "OutcomeFixture.Step",
-            ),
-            (
-                "OutcomeFixture.renamedTarget",
-                "OutcomeFixture.renamedBridge",
-                0,
-                1,
-                2,
-                3,
-                "OutcomeFixture.Model",
-                "OutcomeFixture.Step",
-            ),
-            (
-                "OutcomeFixture.target",
-                "OutcomeFixture.bridge",
-                0,
-                1,
-                2,
-                3,
-                "OutcomeFixture.Step",
-                "OutcomeFixture.Step",
-            ),
-            (
-                "OutcomeFixture.target",
-                "OutcomeFixture.bridge",
-                0,
-                1,
-                2,
-                3,
-                "OutcomeFixture.Model",
-                "OutcomeFixture.OtherStep",
-            ),
-        ]
-        matches = run_lean_operational_outcome_domain_bridges_for_source(
-            ROOT, source, routes
-        )
-        self.assertEqual(set(matches), set(routes))
-        self.assertTrue(matches[routes[0]])
-        self.assertFalse(matches[routes[1]])
-        self.assertFalse(matches[routes[2]])
-        self.assertFalse(matches[routes[3]])
-        self.assertFalse(matches[routes[4]])
-        self.assertFalse(matches[routes[5]])
-        self.assertFalse(matches[routes[6]])
-        self.assertTrue(matches[routes[7]])
-        self.assertFalse(matches[routes[8]])
-        self.assertFalse(matches[routes[9]])
-
     def test_spec_closure_manifest_is_name_stable_and_keeps_proof_types_and_instance_args(
         self,
     ) -> None:
@@ -2865,28 +3183,15 @@ end ClosureFixture
         foundation_identities = manifests["ClosureFixture.firstSpec"][
             "closure_module_identities"
         ]
-        self.assertTrue(foundation_identities)
-        for identity in foundation_identities:
-            if identity["origin_class"] == "foundation":
-                self.assertRegex(identity["artifact_sha256"], r"^[0-9a-f]{64}$")
+        # This inline fixture reaches only the compact Init foundation root.
+        # Foundation roots are pinned once by package/toolchain context;
+        # exact artifact rows are reserved for paper and unregistered-external
+        # modules.
+        self.assertEqual(foundation_identities, [])
         self.assertRegex(
             manifests["ClosureFixture.firstSpec"]["closure_foundation_context_sha256"],
             r"^[0-9a-f]{64}$",
         )
-
-        def application_binder_infos(value: object) -> set[str]:
-            if isinstance(value, list):
-                return set().union(*(application_binder_infos(item) for item in value))
-            if not isinstance(value, dict):
-                return set()
-            infos = (
-                {str(value["arg_binder_info"])}
-                if value.get("tag") == "app" and "arg_binder_info" in value
-                else set()
-            )
-            for child in value.values():
-                infos.update(application_binder_infos(child))
-            return infos
 
         choice = manifests["ClosureFixture.choiceSpec"]
         self.assertEqual(
@@ -2895,14 +3200,18 @@ end ClosureFixture
         self.assertIn(
             "Classical.choice", [node["declaration"] for node in choice["nodes"]]
         )
-        self.assertIn("explicit", application_binder_infos(choice["surface"]["body"]))
+        self.assertEqual(
+            choice["surface"]["representation"],
+            "lean_compact_canonical_surface_sha256_v2",
+        )
+        self.assertRegex(
+            choice["surface"]["body_fingerprint"]["canonical_sha256"],
+            r"^[0-9a-f]{64}$",
+        )
 
         instance = manifests["ClosureFixture.instanceSpec"]
         self.assertEqual(
             instance["surface"]["binder_domains"][1]["binder_info"], "instImplicit"
-        )
-        self.assertIn(
-            "instImplicit", application_binder_infos(instance["surface"]["body"])
         )
 
         proof_projection = manifests["ClosureFixture.proofProjectionSpec"]
@@ -2923,7 +3232,7 @@ end ClosureFixture
             "fuel_exhausted", [failure["tag"] for failure in exhausted["failures"]]
         )
 
-    def test_rejected_spec_closure_keeps_terminal_fallback_surface(self) -> None:
+    def test_rejected_spec_closure_keeps_terminal_fingerprint_surface(self) -> None:
         source = """
 namespace ClosureFixture
 opaque hiddenTerm : Nat
@@ -2946,7 +3255,7 @@ end ClosureFixture
         )
         manifest = manifests["ClosureFixture.rejectedSpec"]
         self.assertFalse(manifest["passes"])
-        self.assertEqual(manifest["surface_mode"], "terminal_fallback")
+        self.assertEqual(manifest["surface_mode"], "terminal_fingerprints")
         self.assertIsNotNone(manifest["surface"])
         self.assertTrue(manifest["surface_sha256"])
         self.assertIn(
@@ -2967,7 +3276,10 @@ end ClosureFixture
             "ClosureFixture.hiddenWitness",
             [node["declaration"] for node in theorem_selected["nodes"]],
         )
-        self.assertIn("local_theorem", json.dumps(theorem_selected["surface"]))
+        self.assertEqual(
+            theorem_selected["surface"]["representation"],
+            "lean_compact_canonical_surface_sha256_v2",
+        )
         axiom_selected = manifests["ClosureFixture.axiomSelectedSpec"]
         self.assertFalse(axiom_selected["passes"])
         self.assertIn(
@@ -3009,6 +3321,8 @@ end ClosureFixture
                 "paper_modules": ["Fixture"],
                 "workspace_modules": ["Fixture"],
                 "foundation_modules": ["Init"],
+                "foreign_model_definitions": [],
+                "foreign_model_modules": [],
                 "hash_tool_path": "/usr/bin/sha256sum",
                 "inline_paper_scope": False,
             },
@@ -3034,6 +3348,75 @@ end ClosureFixture
         self.assertEqual(
             compact_normalized["surface"]["representation"],
             "lean_compact_canonical_surface_sha256_v2",
+        )
+
+        decoded["nodes"] = [
+            {
+                "structural_path": "statement/foreign_model",
+                "node_role": "terminal",
+                "origin_class": "foreign_model_definition",
+                "module_origin": "Sibling.Model",
+                "declaration": "Sibling.Model.definition",
+                "canonical_identity": {
+                    "tag": "definition",
+                    "declaration_kind": "definition",
+                    "declaration_type_hash": "1",
+                    "declaration_value_hash": "2",
+                },
+            }
+        ]
+        decoded["reached_modules"].append(
+            {
+                "origin_class": "foreign_model_definition",
+                "module_origin": "Sibling.Model",
+            }
+        )
+        foreign_normalized = manifest_module._normalize_semantic_contract_closure(
+            decoded
+        )
+        self.assertIsNotNone(foreign_normalized)
+        assert foreign_normalized is not None
+        self.assertEqual(
+            foreign_normalized["nodes"][0]["origin_class"],
+            "foreign_model_definition",
+        )
+
+    def test_compact_closure_pins_paper_artifacts_not_package_root_pseudo_modules(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            build_root = root / ".lake" / "build" / "lib" / "lean"
+            artifact = build_root / "Fixture.olean"
+            artifact.parent.mkdir(parents=True)
+            artifact.write_bytes(b"compiled paper module")
+            snapshot = manifest_module._closure_module_identity_snapshot(
+                root,
+                {
+                    "Fixture.SourceSpec": {
+                        "surface_mode": "closure_fingerprints",
+                        "reached_modules": [
+                            {
+                                "origin_class": "paper",
+                                "module_origin": "Fixture",
+                            },
+                            {
+                                "origin_class": "foundation",
+                                "module_origin": "Mathlib",
+                            },
+                        ],
+                    }
+                },
+                timeout_seconds=5,
+                lean_path=str(build_root),
+            )
+
+        self.assertEqual(
+            [
+                identity["module_origin"]
+                for identity in snapshot["Fixture.SourceSpec"]
+            ],
+            ["Fixture"],
         )
 
     def test_semantic_contract_closure_output_has_structured_hard_cap(self) -> None:
@@ -3360,6 +3743,8 @@ end ClosureFixture
                 "scope": {
                     "hash_tool_path": "/verified/sha256sum",
                     "foundation_modules": ["Init"],
+                    "foreign_model_definitions": [],
+                    "foreign_model_modules": [],
                 },
                 "reached_modules": [
                     {"origin_class": "paper", "module_origin": "Fixture"}
@@ -3372,7 +3757,10 @@ end ClosureFixture
                     mock.patch.object(
                         manifest_module,
                         "_semantic_contract_closure_hash_tool_identity",
-                        return_value={"resolved_path": "/verified/sha256sum"},
+                        return_value={
+                            **self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
+                            "resolved_path": "/verified/sha256sum",
+                        },
                     ),
                     mock.patch.object(
                         manifest_module,
@@ -3446,15 +3834,16 @@ end ClosureFixture
         specification = "Paper.SourceSpec"
         import_module = "Paper.PaperInterface"
         hash_tool = {
-            "schema": "1",
+            **self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
             "resolved_path": "/verified/sha256sum",
-            "executable_sha256": "a" * 64,
         }
         extractor = {"schema": "fixture", "source_slice_sha256": "b" * 64}
         raw_manifest = {
             "scope": {
                 "hash_tool_path": hash_tool["resolved_path"],
                 "foundation_modules": ["Init"],
+                "foreign_model_definitions": [],
+                "foreign_model_modules": [],
             },
             "reached_modules": [
                 {
@@ -3567,6 +3956,8 @@ end ClosureFixture
                 "scope": {
                     "hash_tool_path": "/verified/sha256sum",
                     "foundation_modules": ["Init"],
+                    "foreign_model_definitions": [],
+                    "foreign_model_modules": [],
                 },
                 "reached_modules": [
                     {"origin_class": "paper", "module_origin": "Fixture"}
@@ -3734,9 +4125,9 @@ end A
             self.assertTrue(first_renamed["passes"], first_renamed["failures"])
             self.assertTrue(second_renamed["passes"], second_renamed["failures"])
             self.assertEqual(
-                first_renamed["surface_mode"], "closure_expanded"
+                first_renamed["surface_mode"], "closure_fingerprints"
             )
-            self.assertIn("body", first_renamed["surface"])
+            self.assertIn("body_fingerprint", first_renamed["surface"])
             self.assertNotEqual(
                 first_renamed["surface_sha256"],
                 renamed["A.ChangedSpec"]["surface_sha256"],
@@ -3851,12 +4242,7 @@ name = \"A\"
             )
             for index in range(50)
         ]
-        chunks = [
-            routes[index : index + manifest_module.SEMANTIC_CONTRACT_MATCH_CHUNK_SIZE]
-            for index in range(
-                0, len(routes), manifest_module.SEMANTIC_CONTRACT_MATCH_CHUNK_SIZE
-            )
-        ]
+        chunks = manifest_module._semantic_contract_match_batches(routes)
         expected = {route: index % 2 == 0 for index, route in enumerate(routes)}
         chunk_results = [
             {
@@ -3893,11 +4279,45 @@ name = \"A\"
         self.assertEqual([call.args[2] for call in run_script.call_args_list], chunks)
         self.assertEqual(
             [call.args[3] for call in run_script.call_args_list],
-            [manifest_module.MAX_CHUNKED_SEMANTIC_CONTRACT_MATCH_TIMEOUT_SECONDS]
-            * len(chunks),
+            [91] * len(chunks),
         )
         self.assertLessEqual(
             len(chunks), manifest_module.MAX_SEMANTIC_CONTRACT_MATCH_CHUNKS
+        )
+
+    def test_semantic_contract_batches_start_at_their_stated_capacity(self) -> None:
+        """An ordinary ten-row paper shares one bounded Lean import."""
+
+        transparency_names = [f"Paper.spec{index}" for index in range(10)]
+        closure_names = [f"Paper.spec{index}" for index in range(10)]
+        routes = [
+            (f"Paper.spec{index}", f"Paper.proof{index}", "proves")
+            for index in range(10)
+        ]
+
+        self.assertEqual(
+            manifest_module._semantic_contract_transparency_batches(transparency_names),
+            [
+                transparency_names[:2],
+                transparency_names[2:4],
+                transparency_names[4:6],
+                transparency_names[6:8],
+                transparency_names[8:],
+            ],
+        )
+        self.assertEqual(
+            manifest_module._semantic_contract_closure_batches(closure_names),
+            [
+                closure_names[:2],
+                closure_names[2:4],
+                closure_names[4:6],
+                closure_names[6:8],
+                closure_names[8:],
+            ],
+        )
+        self.assertEqual(
+            manifest_module._semantic_contract_match_batches(routes),
+            [routes],
         )
 
     def test_import_semantic_contracts_retry_only_missing_routes(self) -> None:
@@ -3953,9 +4373,30 @@ name = \"A\"
         )
         self.assertEqual(
             [call.args[3] for call in run_script.call_args_list],
-            [manifest_module.MAX_CHUNKED_SEMANTIC_CONTRACT_MATCH_TIMEOUT_SECONDS]
-            * (len(chunks) + len(missing_chunk)),
+            [91] * (len(chunks) + len(missing_chunk)),
         )
+
+    def test_semantic_contract_retries_bisect_before_singletons(self) -> None:
+        routes = [
+            (f"Adaptive.spec{index}", f"Adaptive.proof{index}", "proves")
+            for index in range(7)
+        ]
+        calls: list[list[tuple[str, str, str]]] = []
+
+        def run_batch(
+            batch: list[tuple[str, str, str]],
+        ) -> dict[tuple[str, str, str], bool]:
+            calls.append(batch)
+            return {batch[0]: True} if len(batch) == 1 else {}
+
+        recovered = manifest_module._semantic_contract_adaptive_retries(
+            routes, run_batch
+        )
+
+        self.assertEqual(recovered, {route: True for route in routes})
+        self.assertEqual(calls[0], routes[:3])
+        self.assertIn(routes[3:], calls)
+        self.assertLess(len(calls), 2 * len(routes))
 
     def test_source_premise_false_eliminator_uses_elaborated_input_shape(self) -> None:
         source = """
@@ -4162,11 +4603,11 @@ end LocalModel
 
     def test_imported_repository_dependency_closure_is_compact(self) -> None:
         names = [
-            "EconCSLib.Matching.CompleteLatticeOn.exists_lub",
-            "EconCSLib.Matching.CompleteLatticeOn.exists_glb",
+            "AppliedModelingLib.Matching.CompleteLatticeOn.exists_lub",
+            "AppliedModelingLib.Matching.CompleteLatticeOn.exists_glb",
         ]
         manifests = manifest_module.run_lean_signature_manifests(
-            ROOT, "EconCSLib.Markets.Matching.ContinuumCutoff", names
+            ROOT, "AppliedModelingLib.Markets.Matching.ContinuumCutoff", names
         )
         self.assertEqual(set(manifests), set(names))
         for manifest in manifests.values():
@@ -4195,51 +4636,6 @@ end LocalModel
         self.assertEqual(result, {})
         run_script.assert_not_called()
 
-    def test_import_target_is_built_before_manifest_run(self) -> None:
-        expected = {
-            "FreshCheckout.row": {
-                "schema": 2,
-                "declaration_kind": "theorem",
-                "conclusion_mode": "type_only",
-                "atoms": [],
-                "sha256": "x",
-            }
-        }
-        with (
-            mock.patch.object(
-                manifest_module, "_build_import_target", return_value=True
-            ) as build,
-            mock.patch.object(
-                manifest_module, "_built_olean_fingerprint", return_value=(1, 2)
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_built_workspace_module_inventory",
-                return_value=(
-                    ("FreshCheckout.BuiltModule", "Shared.Hidden"),
-                    "workspace-1",
-                ),
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_semantic_contract_closure_hash_tool_identity",
-                return_value=self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-            ),
-            mock.patch.object(
-                manifest_module, "_run_manifest_script", return_value=expected
-            ) as run_script,
-        ):
-            result = manifest_module.run_lean_signature_manifests(
-                ROOT, "FreshCheckout.BuiltModule", ["FreshCheckout.row"]
-            )
-        self.assertEqual(result, self.enriched_import_manifest_results(expected))
-        build.assert_called_once()
-        run_script.assert_called_once()
-        self.assertEqual(
-            run_script.call_args.args[-2],
-            "FreshCheckout.BuiltModule",
-        )
-
     def test_audit_scope_is_the_exact_review_module_not_its_namespace(self) -> None:
         modules = (
             "KR21Monoculture.MainTheorems",
@@ -4257,325 +4653,6 @@ end LocalModel
                 "KR21Monoculture.PaperInterface", tuple(reversed(modules))
             ),
         )
-
-    def test_unrelated_workspace_artifact_does_not_invalidate_review_manifest_cache(
-        self,
-    ) -> None:
-        expected = {"Paper.row": {"sha256": "current"}}
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            build = root / ".lake" / "build" / "lib" / "lean" / "Paper"
-            build.mkdir(parents=True)
-            (build / "PaperInterface.olean").write_bytes(b"review-interface")
-            unrelated = build / "UnrelatedExperimentalProof.olean"
-            unrelated.write_bytes(b"before")
-            manifest_module._CACHE.clear()
-            try:
-                with (
-                    mock.patch.object(
-                        manifest_module, "_build_import_target", return_value=True
-                    ),
-                    mock.patch.object(
-                        manifest_module,
-                        "_semantic_contract_closure_hash_tool_identity",
-                        return_value=self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-                    ),
-                    mock.patch.object(
-                        manifest_module,
-                        "_run_manifest_script",
-                        return_value=expected,
-                    ) as run_script,
-                ):
-                    before = manifest_module.run_lean_signature_manifests(
-                        root, "Paper.PaperInterface", ["Paper.row"]
-                    )
-                    unrelated.write_bytes(b"after-unrelated-change")
-                    after = manifest_module.run_lean_signature_manifests(
-                        root, "Paper.PaperInterface", ["Paper.row"]
-                    )
-                expected_result = self.enriched_import_manifest_results(expected)
-                self.assertEqual(before, expected_result)
-                self.assertEqual(after, expected_result)
-                run_script.assert_called_once()
-                self.assertEqual(run_script.call_args.args[-2], "Paper.PaperInterface")
-            finally:
-                manifest_module._CACHE.clear()
-
-    def test_import_manifest_small_batch_failure_retries_rows(self) -> None:
-        row_a = {"LargeBatch.a": {"sha256": "a"}}
-        row_b = {"LargeBatch.b": {"sha256": "b"}}
-        with (
-            mock.patch.object(
-                manifest_module, "_build_import_target", return_value=True
-            ),
-            mock.patch.object(
-                manifest_module, "_built_olean_fingerprint", return_value=(1, 2)
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_built_workspace_module_inventory",
-                return_value=(("LargeBatch.Module",), "workspace-1"),
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_semantic_contract_closure_hash_tool_identity",
-                return_value=self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-            ),
-            mock.patch.object(manifest_module, "_manifest_batch_size", return_value=4),
-            mock.patch.object(
-                manifest_module,
-                "_run_manifest_script",
-                side_effect=[{}, row_a, row_b],
-            ) as run_script,
-        ):
-            result = manifest_module.run_lean_signature_manifests(
-                ROOT,
-                "LargeBatch.Module",
-                ["LargeBatch.a", "LargeBatch.b"],
-            )
-        self.assertEqual(
-            result,
-            self.enriched_import_manifest_results({**row_a, **row_b}),
-        )
-        self.assertEqual(run_script.call_count, 3)
-        self.assertEqual(run_script.call_args_list[1].args[2], ["LargeBatch.a"])
-        self.assertEqual(run_script.call_args_list[2].args[2], ["LargeBatch.b"])
-
-    def test_import_manifest_medium_surface_uses_bounded_chunks(self) -> None:
-        """Medium exact surfaces avoid one opaque, long-running Meta request."""
-
-        names = [
-            f"MediumSurface.row{index:02}"
-            for index in range(manifest_module.MIN_CHUNKED_MANIFEST_REQUEST_ROWS)
-        ]
-        chunks = manifest_module._manifest_initial_batches(names)
-        expected = {
-            name: {"sha256": f"manifest-{index}"} for index, name in enumerate(names)
-        }
-        expected_result = self.enriched_import_manifest_results(expected)
-        chunk_results = [{name: expected[name] for name in chunk} for chunk in chunks]
-        with (
-            mock.patch.object(
-                manifest_module, "_build_import_target", return_value=True
-            ),
-            mock.patch.object(
-                manifest_module, "_built_olean_fingerprint", return_value=(1, 2)
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_built_workspace_module_inventory",
-                return_value=(("MediumSurface.Module",), "workspace-1"),
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_semantic_contract_closure_hash_tool_identity",
-                return_value=self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-            ),
-            mock.patch.object(
-                manifest_module, "_run_manifest_script", side_effect=chunk_results
-            ) as run_script,
-        ):
-            result = manifest_module.run_lean_signature_manifests(
-                ROOT, "MediumSurface.Module", names
-            )
-        self.assertEqual(result, expected_result)
-        self.assertEqual([call.args[2] for call in run_script.call_args_list], chunks)
-        self.assertEqual(
-            [call.args[3] for call in run_script.call_args_list],
-            [
-                manifest_module._manifest_batch_timeout_seconds(
-                    chunk, 120, chunked=True
-                )
-                for chunk in chunks
-            ],
-        )
-
-    def test_import_manifest_progress_reports_fresh_batches_without_changing_receipts(
-        self,
-    ) -> None:
-        """Observability is operational and cannot alter the manifest result."""
-
-        names = ["ProgressSurface.a", "ProgressSurface.b", "ProgressSurface.c"]
-        chunks = [names[:2], names[2:]]
-        expected = {
-            name: {"sha256": f"manifest-{index}"}
-            for index, name in enumerate(names)
-        }
-        events: list[dict[str, object]] = []
-        manifest_module._CACHE.clear()
-        try:
-            with (
-                mock.patch.object(
-                    manifest_module, "_build_import_target", return_value=True
-                ),
-                mock.patch.object(
-                    manifest_module, "_built_olean_fingerprint", return_value=(1, 2)
-                ),
-                mock.patch.object(
-                    manifest_module,
-                    "_built_workspace_module_inventory",
-                    return_value=(("ProgressSurface.Module",), "workspace-1"),
-                ),
-                mock.patch.object(
-                    manifest_module,
-                    "_semantic_contract_closure_hash_tool_identity",
-                    return_value=self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-                ),
-                mock.patch.object(manifest_module, "_manifest_batch_size", return_value=2),
-                mock.patch.object(
-                    manifest_module,
-                    "_run_manifest_script",
-                    side_effect=[{name: expected[name] for name in chunk} for chunk in chunks],
-                ),
-            ):
-                received = manifest_module.run_lean_signature_manifests(
-                    ROOT,
-                    "ProgressSurface.Module",
-                    names,
-                    progress_callback=events.append,
-                )
-        finally:
-            manifest_module._CACHE.clear()
-
-        self.assertEqual(received, self.enriched_import_manifest_results(expected))
-        self.assertEqual(
-            events,
-            [
-                {
-                    "schema": manifest_module.MANIFEST_PROGRESS_EVENT_SCHEMA,
-                    "runner": "full_manifest",
-                    "status": "started",
-                    "batch_number": 1,
-                    "batch_total": 2,
-                    "root_count": 2,
-                    "completed_count": 0,
-                    "missing_count": 0,
-                },
-                {
-                    "schema": manifest_module.MANIFEST_PROGRESS_EVENT_SCHEMA,
-                    "runner": "full_manifest",
-                    "status": "finished",
-                    "batch_number": 1,
-                    "batch_total": 2,
-                    "root_count": 2,
-                    "completed_count": 2,
-                    "missing_count": 0,
-                },
-                {
-                    "schema": manifest_module.MANIFEST_PROGRESS_EVENT_SCHEMA,
-                    "runner": "full_manifest",
-                    "status": "started",
-                    "batch_number": 2,
-                    "batch_total": 2,
-                    "root_count": 1,
-                    "completed_count": 0,
-                    "missing_count": 0,
-                },
-                {
-                    "schema": manifest_module.MANIFEST_PROGRESS_EVENT_SCHEMA,
-                    "runner": "full_manifest",
-                    "status": "finished",
-                    "batch_number": 2,
-                    "batch_total": 2,
-                    "root_count": 1,
-                    "completed_count": 1,
-                    "missing_count": 0,
-                },
-            ],
-        )
-
-    def test_import_manifest_ten_row_residual_uses_bounded_chunks(self) -> None:
-        """A post-cache residual below the old threshold cannot fail as one batch."""
-
-        names = [f"ResidualSurface.row{index:02}" for index in range(10)]
-        chunks = manifest_module._manifest_initial_batches(names)
-        expected = {
-            name: {"sha256": f"manifest-{index}"} for index, name in enumerate(names)
-        }
-        expected_result = self.enriched_import_manifest_results(expected)
-        with (
-            mock.patch.object(
-                manifest_module, "_build_import_target", return_value=True
-            ),
-            mock.patch.object(
-                manifest_module, "_built_olean_fingerprint", return_value=(1, 2)
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_built_workspace_module_inventory",
-                return_value=(("ResidualSurface.Module",), "workspace-1"),
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_semantic_contract_closure_hash_tool_identity",
-                return_value=self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_run_manifest_script",
-                side_effect=[
-                    {name: expected[name] for name in chunk} for chunk in chunks
-                ],
-            ) as run_script,
-        ):
-            result = manifest_module.run_lean_signature_manifests(
-                ROOT, "ResidualSurface.Module", names, timeout_seconds=91
-            )
-
-        self.assertEqual(result, expected_result)
-        self.assertEqual([call.args[2] for call in run_script.call_args_list], chunks)
-        self.assertEqual(
-            [call.args[3] for call in run_script.call_args_list],
-            [
-                manifest_module._manifest_batch_timeout_seconds(chunk, 91, chunked=True)
-                for chunk in chunks
-            ],
-        )
-
-    def test_import_manifest_reuses_fresh_context_for_narrower_request(self) -> None:
-        """Binder-sort follow-ups do not rerun identical current manifests."""
-
-        names = ["CurrentContext.alpha", "CurrentContext.beta"]
-        expected = {
-            name: {"sha256": f"manifest-{index}"} for index, name in enumerate(names)
-        }
-        manifest_module._CACHE.clear()
-        try:
-            with (
-                mock.patch.object(
-                    manifest_module, "_build_import_target", return_value=True
-                ),
-                mock.patch.object(
-                    manifest_module, "_built_olean_fingerprint", return_value=(1, 2)
-                ),
-                mock.patch.object(
-                    manifest_module,
-                    "_built_workspace_module_inventory",
-                    return_value=(("CurrentContext.Module",), "workspace-1"),
-                ),
-                mock.patch.object(
-                    manifest_module,
-                    "_semantic_contract_closure_hash_tool_identity",
-                    return_value=self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-                ),
-                mock.patch.object(
-                    manifest_module, "_run_manifest_script", return_value=expected
-                ) as run_script,
-            ):
-                full = manifest_module.run_lean_signature_manifests(
-                    ROOT, "CurrentContext.Module", names
-                )
-                full_request_calls = run_script.call_count
-                narrow = manifest_module.run_lean_signature_manifests(
-                    ROOT, "CurrentContext.Module", [names[0]]
-                )
-            expected_result = self.enriched_import_manifest_results(expected)
-            self.assertEqual(full, expected_result)
-            self.assertEqual(narrow, {names[0]: expected_result[names[0]]})
-            self.assertGreater(full_request_calls, 0)
-            self.assertEqual(run_script.call_count, full_request_calls)
-        finally:
-            manifest_module._CACHE.clear()
 
     def test_recursive_field_safety_large_surface_uses_bounded_batches(self) -> None:
         def locator(index: int) -> dict[str, object]:
@@ -5273,283 +5350,6 @@ end LocalModel
         finally:
             manifest_module._TYPE_WITNESS_PAYLOAD_SAFETY_CACHE.clear()
 
-    def test_import_manifest_paper_sized_request_uses_bounded_chunks(self) -> None:
-        names = [f"ChunkedBulk.row{index:02}" for index in range(50)]
-        chunks = manifest_module._manifest_initial_batches(names)
-        expected = {
-            name: {"sha256": f"manifest-{index}"} for index, name in enumerate(names)
-        }
-        expected_result = self.enriched_import_manifest_results(expected)
-        retry_results = [{name: expected[name] for name in chunk} for chunk in chunks]
-        with (
-            mock.patch.object(
-                manifest_module, "_build_import_target", return_value=True
-            ),
-            mock.patch.object(
-                manifest_module, "_built_olean_fingerprint", return_value=(1, 2)
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_built_workspace_module_inventory",
-                return_value=(("ChunkedBulk.Module",), "workspace-1"),
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_semantic_contract_closure_hash_tool_identity",
-                return_value=self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_run_manifest_script",
-                side_effect=retry_results,
-            ) as run_script,
-        ):
-            result = manifest_module.run_lean_signature_manifests(
-                ROOT, "ChunkedBulk.Module", names
-            )
-        self.assertEqual(result, expected_result)
-        self.assertEqual(run_script.call_count, len(chunks))
-        self.assertEqual(
-            [call.args[2] for call in run_script.call_args_list],
-            chunks,
-        )
-        self.assertEqual(
-            [call.args[3] for call in run_script.call_args_list],
-            [
-                manifest_module._manifest_batch_timeout_seconds(
-                    chunk, 120, chunked=True
-                )
-                for chunk in chunks
-            ],
-        )
-        self.assertTrue(
-            all(
-                len(chunk) <= manifest_module._manifest_batch_size() for chunk in chunks
-            )
-        )
-
-    def test_import_manifest_medium_surface_above_legacy_ceiling_uses_chunks(
-        self,
-    ) -> None:
-        """A 91-row paper must not regress to one oversized Meta invocation."""
-
-        names = [f"MediumSurface.row{index:03}" for index in range(91)]
-        chunks = manifest_module._manifest_initial_batches(names)
-        expected = {
-            name: {"sha256": f"manifest-{index}"} for index, name in enumerate(names)
-        }
-        expected_result = self.enriched_import_manifest_results(expected)
-        chunk_results = [{name: expected[name] for name in chunk} for chunk in chunks]
-        with (
-            mock.patch.object(
-                manifest_module, "_build_import_target", return_value=True
-            ),
-            mock.patch.object(
-                manifest_module, "_built_olean_fingerprint", return_value=(1, 2)
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_built_workspace_module_inventory",
-                return_value=(("MediumSurface.Module",), "workspace-1"),
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_semantic_contract_closure_hash_tool_identity",
-                return_value=self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-            ),
-            mock.patch.object(
-                manifest_module, "_run_manifest_script", side_effect=chunk_results
-            ) as run_script,
-        ):
-            result = manifest_module.run_lean_signature_manifests(
-                ROOT, "MediumSurface.Module", names
-            )
-        self.assertEqual(result, expected_result)
-        self.assertGreater(len(chunks), 16)
-        self.assertEqual(
-            [call.args[2] for call in run_script.call_args_list],
-            chunks,
-        )
-
-    def test_import_manifest_chunked_request_retries_failed_chunk_locally(self) -> None:
-        names = [f"ChunkedResidual.row{index:02}" for index in range(16)]
-        chunks = manifest_module._manifest_chunks(names, batch_size=4)
-        missing_chunk = chunks[2]
-        expected = {
-            name: {"sha256": f"manifest-{index}"} for index, name in enumerate(names)
-        }
-        initial_results = [
-            ({name: expected[name] for name in chunk} if chunk != missing_chunk else {})
-            for chunk in chunks
-        ]
-        initial_results[0]["Unexpected.row"] = {"sha256": "unexpected"}
-        retry_batches = manifest_module._manifest_retry_batches(missing_chunk)
-        retry_results = [
-            {name: expected[name] for name in retry_batch}
-            for retry_batch in retry_batches
-        ]
-        expected_result = self.enriched_import_manifest_results(expected)
-        with (
-            mock.patch.object(
-                manifest_module, "_build_import_target", return_value=True
-            ),
-            mock.patch.object(
-                manifest_module, "_built_olean_fingerprint", return_value=(1, 2)
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_built_workspace_module_inventory",
-                return_value=(("ChunkedResidual.Module",), "workspace-1"),
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_semantic_contract_closure_hash_tool_identity",
-                return_value=self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-            ),
-            mock.patch.object(manifest_module, "_manifest_batch_size", return_value=4),
-            mock.patch.object(
-                manifest_module,
-                "_run_manifest_script",
-                side_effect=[
-                    initial_results[0],
-                    initial_results[1],
-                    initial_results[2],
-                    *retry_results,
-                    initial_results[3],
-                ],
-            ) as run_script,
-        ):
-            result = manifest_module.run_lean_signature_manifests(
-                ROOT, "ChunkedResidual.Module", names, timeout_seconds=91
-            )
-        self.assertEqual(result, expected_result)
-        self.assertEqual(list(result), names)
-        self.assertEqual(
-            [call.args[2] for call in run_script.call_args_list],
-            [
-                chunks[0],
-                chunks[1],
-                chunks[2],
-                *retry_batches,
-                chunks[3],
-            ],
-        )
-        self.assertEqual(
-            [call.args[3] for call in run_script.call_args_list],
-            [
-                manifest_module._manifest_batch_timeout_seconds(
-                    chunks[0], 91, chunked=True
-                ),
-                manifest_module._manifest_batch_timeout_seconds(
-                    chunks[1], 91, chunked=True
-                ),
-                manifest_module._manifest_batch_timeout_seconds(
-                    chunks[2], 91, chunked=True
-                ),
-                *[91 for _batch in retry_batches],
-                manifest_module._manifest_batch_timeout_seconds(
-                    chunks[3], 91, chunked=True
-                ),
-            ],
-        )
-
-    def test_import_manifest_large_failure_keeps_singleton_resource_bound(self) -> None:
-        names = [f"FailedBulk.row{index}" for index in range(33)]
-        batches = manifest_module._manifest_initial_batches(sorted(names))
-        with (
-            mock.patch.object(
-                manifest_module, "_build_import_target", return_value=True
-            ),
-            mock.patch.object(
-                manifest_module, "_built_olean_fingerprint", return_value=(1, 2)
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_built_workspace_module_inventory",
-                return_value=(("FailedBulk.Module",), "workspace-1"),
-            ),
-            mock.patch.object(
-                manifest_module, "_run_manifest_script", return_value={}
-            ) as run_script,
-        ):
-            result = manifest_module.run_lean_signature_manifests(
-                ROOT, "FailedBulk.Module", names
-            )
-        self.assertEqual(result, {})
-        self.assertEqual(run_script.call_count, len(batches))
-        self.assertEqual([call.args[2] for call in run_script.call_args_list], batches)
-
-    def test_import_manifest_large_partial_batch_keeps_only_bulk_rows(self) -> None:
-        verified_name = "PartialBulk.verified"
-        names = [verified_name] + [f"PartialBulk.missing{index}" for index in range(33)]
-        batches = manifest_module._manifest_initial_batches(sorted(names))
-        verified = {verified_name: {"sha256": "verified"}}
-        with (
-            mock.patch.object(
-                manifest_module, "_build_import_target", return_value=True
-            ),
-            mock.patch.object(
-                manifest_module, "_built_olean_fingerprint", return_value=(1, 2)
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_built_workspace_module_inventory",
-                return_value=(("PartialBulk.Module",), "workspace-1"),
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_semantic_contract_closure_hash_tool_identity",
-                return_value=self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-            ),
-            mock.patch.object(
-                manifest_module, "_run_manifest_script", return_value=verified
-            ) as run_script,
-        ):
-            result = manifest_module.run_lean_signature_manifests(
-                ROOT, "PartialBulk.Module", names
-            )
-        self.assertEqual(result, self.enriched_import_manifest_results(verified))
-        self.assertEqual(run_script.call_count, len(batches))
-        self.assertEqual([call.args[2] for call in run_script.call_args_list], batches)
-
-    def test_import_manifest_partial_batch_retries_only_missing_rows(self) -> None:
-        row_a = {"PartialBatch.a": {"sha256": "a"}}
-        row_b = {"PartialBatch.b": {"sha256": "b"}}
-        with (
-            mock.patch.object(
-                manifest_module, "_build_import_target", return_value=True
-            ),
-            mock.patch.object(
-                manifest_module, "_built_olean_fingerprint", return_value=(1, 2)
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_built_workspace_module_inventory",
-                return_value=(("PartialBatch.Module",), "workspace-1"),
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_semantic_contract_closure_hash_tool_identity",
-                return_value=self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_run_manifest_script",
-                side_effect=[row_a, row_b],
-            ) as run_script,
-        ):
-            result = manifest_module.run_lean_signature_manifests(
-                ROOT,
-                "PartialBatch.Module",
-                ["PartialBatch.a", "PartialBatch.b"],
-            )
-        self.assertEqual(
-            result,
-            self.enriched_import_manifest_results({**row_a, **row_b}),
-        )
-        self.assertEqual(run_script.call_count, 2)
-        self.assertEqual(run_script.call_args_list[1].args[2], ["PartialBatch.b"])
-
     def test_workspace_inventory_uses_exact_built_module_origins(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -5563,45 +5363,6 @@ end LocalModel
         modules, identity = inventory or ((), "")
         self.assertEqual(modules, ("Paper.Interface", "Shared.Hidden"))
         self.assertRegex(identity, r"^[0-9a-f]{64}$")
-
-    def test_changed_olean_fingerprint_invalidates_manifest_cache(self) -> None:
-        first = {"CacheInvalidation.row": {"sha256": "first"}}
-        second = {"CacheInvalidation.row": {"sha256": "second"}}
-        with (
-            mock.patch.object(
-                manifest_module, "_build_import_target", return_value=True
-            ) as build,
-            mock.patch.object(
-                manifest_module,
-                "_built_olean_fingerprint",
-                side_effect=[(1, 10), (2, 10)],
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_built_workspace_module_inventory",
-                return_value=(("CacheInvalidation.Module",), "workspace-1"),
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_semantic_contract_closure_hash_tool_identity",
-                return_value=self.IMPORT_MANIFEST_HASH_TOOL_IDENTITY,
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_run_manifest_script",
-                side_effect=[first, second],
-            ) as run_script,
-        ):
-            before = manifest_module.run_lean_signature_manifests(
-                ROOT, "CacheInvalidation.Module", ["CacheInvalidation.row"]
-            )
-            after = manifest_module.run_lean_signature_manifests(
-                ROOT, "CacheInvalidation.Module", ["CacheInvalidation.row"]
-            )
-        self.assertEqual(before, self.enriched_import_manifest_results(first))
-        self.assertEqual(after, self.enriched_import_manifest_results(second))
-        self.assertEqual(build.call_count, 2)
-        self.assertEqual(run_script.call_count, 2)
 
     def test_semantic_artifact_identity_rejects_same_size_restored_mtime(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -5912,6 +5673,22 @@ axiom changedRow (p q : Prop) : ChangedPaper.wrapper p q
         node.pop("semantic_identity_sha256", None)
         self.assertIsNone(manifest_module.semantic_dependency_manifest(tampered))
 
+    def test_revalidation_basis_is_complete_and_excludes_stale_artifacts(
+        self,
+    ) -> None:
+        manifest = self.manifests("def demo : Prop := True", ["demo"])["demo"]
+        basis = manifest_module.lean_manifest_revalidation_basis(manifest)
+        self.assertIsNotNone(basis)
+        assert basis is not None
+        self.assertEqual(
+            manifest_module.signature_manifest_digest(basis),
+            manifest_module.signature_manifest_digest(manifest),
+        )
+        self.assertNotIn("semantic_dependency_module_identities", basis)
+        self.assertNotIn("semantic_dependency_environment_identities", basis)
+        self.assertNotIn("semantic_dependency_manifest", basis)
+        self.assertEqual(basis["schema"], manifest_module.MANIFEST_SCHEMA)
+
     def test_transitive_external_module_and_environment_pins_are_exact(self) -> None:
         canonical = {
             "schema": 1,
@@ -6172,7 +5949,7 @@ theorem demo : True := by
             "olean_fingerprint": ["a" * 64, 1],
             "helper_fingerprint": ["b" * 64, 2],
             "semantic_hash_tool_identity": {"sha256": "c" * 64},
-            "canonical_representation": "lean_compact_canonical_v2",
+            "canonical_representation": manifest_module.CANONICAL_REPRESENTATION,
             "audit_modules": ["Fixture.Paper"],
         }
         current_context = {
@@ -6220,162 +5997,6 @@ theorem demo : True := by
                 current_context=current_context,
             )
         )
-
-    def test_item_revalidation_runner_uses_current_context_and_bounded_batches(
-        self,
-    ) -> None:
-        manifest_module._MANIFEST_REVALIDATION_RECEIPT_CACHE.clear()
-        self.addCleanup(manifest_module._MANIFEST_REVALIDATION_RECEIPT_CACHE.clear)
-        names = [f"Fixture.Paper.row{index}" for index in range(10)]
-        batches = manifest_module._manifest_initial_batches(names)
-        results = [
-            {name: {"schema": 1, "receipt": name} for name in batch}
-            for batch in batches
-        ]
-        current_context = {"schema": 3, "import_module": "Fixture.Paper"}
-        events: list[dict[str, object]] = []
-        with (
-            mock.patch.object(
-                manifest_module,
-                "_signature_manifest_context_cache_coordinates",
-                return_value=(
-                    ("context",),
-                    ("Fixture.Paper",),
-                    {"resolved_path": "/fixture/hash"},
-                ),
-            ),
-            mock.patch.object(
-                manifest_module,
-                "signature_manifest_cache_context",
-            ) as rebuild_context,
-            mock.patch.object(
-                manifest_module,
-                "_run_manifest_revalidation_script",
-                side_effect=results,
-            ) as run_receipts,
-            mock.patch.object(
-                manifest_module, "_run_manifest_script"
-            ) as run_full_manifest,
-        ):
-            received = manifest_module.run_lean_signature_manifest_revalidations(
-                ROOT,
-                "Fixture.Paper",
-                names,
-                timeout_seconds=91,
-                semantic_dependency_modules=("Fixture.Paper",),
-                current_context=current_context,
-                progress_callback=events.append,
-            )
-
-        self.assertEqual(set(received), set(names))
-        rebuild_context.assert_not_called()
-        run_full_manifest.assert_not_called()
-        self.assertEqual(
-            [call.args[2] for call in run_receipts.call_args_list], batches
-        )
-        self.assertEqual(
-            [call.args[3] for call in run_receipts.call_args_list],
-            [
-                manifest_module._manifest_batch_timeout_seconds(batch, 91, chunked=True)
-                for batch in batches
-            ],
-        )
-        self.assertEqual(len(events), 2 * len(batches))
-        self.assertEqual(
-            [event["status"] for event in events],
-            [status for _batch in batches for status in ("started", "finished")],
-        )
-        self.assertEqual(
-            [event["runner"] for event in events],
-            ["manifest_revalidation"] * len(events),
-        )
-        self.assertEqual(
-            [event["root_count"] for event in events],
-            [len(batch) for batch in batches for _status in ("started", "finished")],
-        )
-
-    def test_item_revalidation_receipts_reuse_only_exact_context_successes(self) -> None:
-        manifest_module._MANIFEST_REVALIDATION_RECEIPT_CACHE.clear()
-        self.addCleanup(manifest_module._MANIFEST_REVALIDATION_RECEIPT_CACHE.clear)
-
-        def coordinates(
-            _root: Path,
-            _import_module: str,
-            context: Mapping[str, object],
-            _modules: tuple[str, ...] | None,
-        ) -> tuple[tuple[object, ...], tuple[str, ...], dict[str, str]]:
-            return (
-                ("fixture-context", context["token"]),
-                ("Fixture.Paper",),
-                {"resolved_path": "/fixture/hash"},
-            )
-
-        context_a = {"schema": 3, "import_module": "Fixture.Paper", "token": "a"}
-        context_b = {"schema": 3, "import_module": "Fixture.Paper", "token": "b"}
-        one = "Fixture.Paper.one"
-        two = "Fixture.Paper.two"
-        missing = "Fixture.Paper.missing"
-        responses = [
-            {one: {"schema": 1, "nested": {"receipt": "a"}}},
-            {two: {"schema": 1, "nested": {"receipt": "b"}}},
-            {one: {"schema": 1, "nested": {"receipt": "c"}}},
-            {},
-            {missing: {"schema": 1, "nested": {"receipt": "fresh"}}},
-        ]
-        with (
-            mock.patch.object(
-                manifest_module,
-                "_signature_manifest_context_cache_coordinates",
-                side_effect=coordinates,
-            ),
-            mock.patch.object(
-                manifest_module,
-                "_run_manifest_revalidation_script",
-                side_effect=responses,
-            ) as run_receipts,
-        ):
-            first = manifest_module.run_lean_signature_manifest_revalidations(
-                ROOT,
-                "Fixture.Paper",
-                [one],
-                current_context=context_a,
-            )
-            first[one]["nested"]["receipt"] = "caller-mutated"
-            reused = manifest_module.run_lean_signature_manifest_revalidations(
-                ROOT,
-                "Fixture.Paper",
-                [one, two],
-                current_context=context_a,
-            )
-            changed_context = manifest_module.run_lean_signature_manifest_revalidations(
-                ROOT,
-                "Fixture.Paper",
-                [one],
-                current_context=context_b,
-            )
-            first_missing = manifest_module.run_lean_signature_manifest_revalidations(
-                ROOT,
-                "Fixture.Paper",
-                [missing],
-                current_context=context_a,
-            )
-            second_missing = manifest_module.run_lean_signature_manifest_revalidations(
-                ROOT,
-                "Fixture.Paper",
-                [missing],
-                current_context=context_a,
-            )
-
-        self.assertEqual(reused[one]["nested"]["receipt"], "a")
-        self.assertEqual(reused[two]["nested"]["receipt"], "b")
-        self.assertEqual(changed_context[one]["nested"]["receipt"], "c")
-        self.assertEqual(first_missing, {})
-        self.assertEqual(second_missing[missing]["nested"]["receipt"], "fresh")
-        self.assertEqual(
-            [call.args[2] for call in run_receipts.call_args_list],
-            [[one], [two], [one], [missing], [missing]],
-        )
-
 
 if __name__ == "__main__":
     unittest.main()

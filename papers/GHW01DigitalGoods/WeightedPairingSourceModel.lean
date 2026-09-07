@@ -1,4 +1,4 @@
-import EconCSLib.MechanismDesign.Auctions.DigitalGoods
+import AppliedModelingLib.MechanismDesign.Auctions.DigitalGoods
 
 /-!
 # Source Model for the Weighted-Pairing Auction
@@ -10,7 +10,7 @@ revenue expression already provided by the reusable auction library.
 
 namespace GHW01DigitalGoods
 
-open EconCSLib.Auction
+open AppliedModelingLib.Auction
 open scoped BigOperators
 
 noncomputable section

@@ -1,5 +1,5 @@
 import LBG24SpatialUnderreporting.ForwardTheorem2SelectionEndpointDensity
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalFiniteDensity
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalFiniteDensity
 
 /-!
 # Finite predictable endpoint product model for LBG Appendix Theorem 2
@@ -18,7 +18,7 @@ arrives first.
 namespace LBG24SpatialUnderreporting
 
 open Filter MeasureTheory ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal ProbabilityTheory
 
 noncomputable section

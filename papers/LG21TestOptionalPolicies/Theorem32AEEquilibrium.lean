@@ -1,6 +1,6 @@
 import LG21TestOptionalPolicies.MainTheorems
-import EconCSLib.Foundations.Optimization.ChoiceEquilibriumAE
-import EconCSLib.Foundations.Probability.MeasureInequalities
+import AppliedModelingLib.GameTheory.Choice.EquilibriumAE
+import AppliedModelingLib.Foundations.Probability.MeasureInequalities
 
 /-!
 # Theorem 3.2 Almost-Everywhere Equilibrium Seam
@@ -15,8 +15,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 open MeasureTheory
 
 /-- Definition 1 source equilibrium, but with best response required `μ`-a.e. -/
@@ -24,7 +24,7 @@ def lg21SourceEquilibriumAE
     {Skill Base Test : Type*}
     [MeasurableSpace (LG21AccessStudentInfo Skill Base Test)]
     (μ : Measure (LG21AccessStudentInfo Skill Base Test))
-    (E : LG21SourceEquilibriumData Skill Base Test) : Prop := EconCSLib.IsChoiceEquilibriumAE μ E.toEquilibriumData
+    (E : LG21SourceEquilibriumData Skill Base Test) : Prop := AppliedModelingLib.IsChoiceEquilibriumAE μ E.toEquilibriumData
 
 theorem lg21SourceEquilibriumAE_feasible_ae
     {Skill Base Test : Type*}
@@ -35,7 +35,7 @@ theorem lg21SourceEquilibriumAE_feasible_ae
     ∀ᵐ info ∂μ,
       LG21AccessAction.feasible E.requirement
         (LG21AccessStudentInfo.chosenAction
-          E.takeDecision E.reportDecision info) := EconCSLib.isChoiceEquilibriumAE_feasible_ae hEq
+          E.takeDecision E.reportDecision info) := AppliedModelingLib.isChoiceEquilibriumAE_feasible_ae hEq
 
 theorem lg21SourceEquilibriumAE_best_response_ae
     {Skill Base Test : Type*}
@@ -48,7 +48,7 @@ theorem lg21SourceEquilibriumAE_best_response_ae
         E.payoff info action ≤
           E.payoff info
             (LG21AccessStudentInfo.chosenAction
-              E.takeDecision E.reportDecision info) := EconCSLib.isChoiceEquilibriumAE_best_response_ae hEq
+              E.takeDecision E.reportDecision info) := AppliedModelingLib.isChoiceEquilibriumAE_best_response_ae hEq
 
 theorem lg21SourceEquilibriumAE_estimationConsistent
     {Skill Base Test : Type*}
@@ -56,7 +56,7 @@ theorem lg21SourceEquilibriumAE_estimationConsistent
     {μ : Measure (LG21AccessStudentInfo Skill Base Test)}
     {E : LG21SourceEquilibriumData Skill Base Test}
     (hEq : lg21SourceEquilibriumAE μ E) :
-    E.estimationConsistent := EconCSLib.isChoiceEquilibriumAE_consistency hEq
+    E.estimationConsistent := AppliedModelingLib.isChoiceEquilibriumAE_consistency hEq
 
 /-- A pointwise source equilibrium implies the corresponding a.e. equilibrium. -/
 theorem lg21SourceEquilibriumAE_of_sourceEquilibrium
@@ -65,7 +65,7 @@ theorem lg21SourceEquilibriumAE_of_sourceEquilibrium
     {μ : Measure (LG21AccessStudentInfo Skill Base Test)}
     {E : LG21SourceEquilibriumData Skill Base Test}
     (hEq : lg21SourceEquilibrium E) :
-    lg21SourceEquilibriumAE μ E := EconCSLib.isChoiceEquilibriumAE_of_pointwise hEq
+    lg21SourceEquilibriumAE μ E := AppliedModelingLib.isChoiceEquilibriumAE_of_pointwise hEq
 
 /--
 Optional-reporting a.e. best-response consequence: for almost every realized
@@ -137,7 +137,7 @@ theorem lg21OptionalReportingBaseSourceEquilibriumData_actorMean_le_reported_sco
       (fun base => (baseTerm base + signalWeight base * actorMean base) /
         denom base)
       estimationConsistent hEq
-  exact EconCSLib.ae_imp_le_of_affine_div_le_affine_div μ
+  exact AppliedModelingLib.ae_imp_le_of_affine_div_le_affine_div μ
     (fun info => reportDecision info.base info.test = true)
     (fun info => baseTerm info.base)
     (fun info => signalWeight info.base)
@@ -158,14 +158,14 @@ theorem lg21_ae_property_contradicts_positive_failure_mass
     (hAE : ∀ᵐ info ∂μ, P info)
     (hQ_bad : ∀ info, Q info → ¬ P info)
     (hpos : 0 < μ {info | Q info}) : False :=
-    EconCSLib.ae_property_contradicts_positive_failure_mass
+    AppliedModelingLib.ae_property_contradicts_positive_failure_mass
       μ P Q hAE hQ_bad hpos
 
 /-- Positive measure is monotone under set inclusion. -/
 theorem lg21_measure_pos_of_subset
     {Info : Type*} [MeasurableSpace Info]
     {μ : Measure Info} {A B : Set Info}
-    (hAB : A ⊆ B) (hpos : 0 < μ A) : 0 < μ B := EconCSLib.measure_pos_of_subset hAB hpos
+    (hAB : A ⊆ B) (hpos : 0 < μ A) : 0 < μ B := AppliedModelingLib.measure_pos_of_subset hAB hpos
 
 /--
 Almost every reporter being above the imputed mean contradicts positive mass of
@@ -185,7 +185,7 @@ theorem lg21_actorMean_le_reported_score_ae_contradicts_positive_below_mean_repo
       0 < μ {info |
         reportDecision info.base info.test = true ∧
           info.test < actorMean info.base}) : False :=
-  EconCSLib.ae_imp_le_contradicts_positive_selected_lt_mass μ
+  AppliedModelingLib.ae_imp_le_contradicts_positive_selected_lt_mass μ
     (fun info => reportDecision info.base info.test = true)
     (fun info => actorMean info.base) (fun info => info.test)
     hAE hpos
@@ -257,7 +257,7 @@ theorem lg21OptionalReportingBaseSourceEquilibriumData_not_sourceEquilibriumAE_o
       0 < μ {info |
         reportDecision info.base info.test = true ∧
           info.test < actorMean info.base} :=
-    EconCSLib.positive_selected_lt_mass_of_positive_lower_lt_mass
+    AppliedModelingLib.positive_selected_lt_mass_of_positive_lower_lt_mass
       (selected := fun info : LG21AccessStudentInfo Skill Base ℝ =>
         reportDecision info.base info.test = true)
       (lower := fun info => cutoff info.base)
@@ -794,7 +794,7 @@ theorem lg21ReportRequiredBaseSourceEquilibriumData_actorMean_le_taker_skill_ae
             denom info.base :=
     hle.mono fun info hle_info htake => by
       simpa [houtside info.base] using hle_info htake
-  exact EconCSLib.ae_imp_le_of_affine_div_le_affine_div μ
+  exact AppliedModelingLib.ae_imp_le_of_affine_div_le_affine_div μ
     (fun info => takeDecision info.skill info.base = true)
     (fun info => baseTerm info.base)
     (fun info => signalWeight info.base)
@@ -823,7 +823,7 @@ theorem lg21_actorMean_le_taker_skill_ae_contradicts_positive_below_mean_taker_m
       0 < μ {info |
         takeDecision info.skill info.base = true ∧
           info.skill < actorMean info.base}) : False :=
-  EconCSLib.ae_imp_le_contradicts_positive_selected_lt_mass μ
+  AppliedModelingLib.ae_imp_le_contradicts_positive_selected_lt_mass μ
     (fun info => takeDecision info.skill info.base = true)
     (fun info => actorMean info.base) (fun info => info.skill)
     hAE hpos
@@ -897,7 +897,7 @@ theorem lg21ReportRequiredBaseSourceEquilibriumData_not_sourceEquilibriumAE_of_p
       0 < μ {info |
         takeDecision info.skill info.base = true ∧
           info.skill < actorMean info.base} :=
-    EconCSLib.positive_selected_lt_mass_of_positive_lower_lt_mass
+    AppliedModelingLib.positive_selected_lt_mass_of_positive_lower_lt_mass
       (selected := fun info : LG21AccessStudentInfo ℝ Base Test =>
         takeDecision info.skill info.base = true)
       (lower := fun info => cutoff info.base)

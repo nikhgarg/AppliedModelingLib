@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Probability.StationaryPoissonDisplacement
+import AppliedModelingLib.Foundations.Probability.StationaryPoissonDisplacement
 
 /-!
 # Calendar-time first-report displacement
@@ -13,7 +13,7 @@ equality alone is not that theorem.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal MeasureTheory NNReal
 
 noncomputable section
@@ -25,16 +25,20 @@ measure has total mass equal to that reporting probability. -/
 structure CalendarFirstReportSourceModel
     (Ω : Type*) [MeasurableSpace Ω] (P : Measure Ω) where
   incidentRate : ℝ
-  incidentRate_pos : 0 < incidentRate
+  /-- Poisson incidence may be degenerate at zero; the source's Lemma 1
+  calculation includes that boundary. -/
+  incidentRate_nonnegative : 0 ≤ incidentRate
   retentionProbability : ℝ
-  retentionProbability_pos : 0 < retentionProbability
+  /-- An incident may have zero probability of reporting before its duration
+  ends; this is likewise a source-valid boundary. -/
+  retentionProbability_nonnegative : 0 ≤ retentionProbability
   retentionProbability_le_one : retentionProbability ≤ 1
   retainedDelay : Measure ℝ
   retainedDelay_finite : IsFiniteMeasure retainedDelay
   retainedDelay_nonnegative_support : retainedDelay (Set.Iio (0 : ℝ)) = 0
   retainedDelay_mass :
     retainedDelay Set.univ = ENNReal.ofReal retentionProbability
-  markedBirths : EconCSLib.Probability.PoissonCountingMeasureByLaw
+  markedBirths : AppliedModelingLib.Probability.PoissonCountingMeasureByLaw
     Ω (ℝ × ℝ) P
       (ENNReal.ofReal incidentRate • ((volume : Measure ℝ).prod retainedDelay))
 
@@ -66,7 +70,7 @@ theorem firstReportSet_intensity_ne_top
   change (ENNReal.ofReal M.incidentRate •
     ((volume : Measure ℝ).prod M.retainedDelay))
       ((fun z : ℝ × ℝ => z.1 + z.2) ⁻¹' Set.Ioc a b) ≠ ∞
-  rw [EconCSLib.Probability.smul_volume_prod_preimage_add_Ioc]
+  rw [AppliedModelingLib.Probability.smul_volume_prod_preimage_add_Ioc]
   exact
     ENNReal.mul_ne_top
       (ENNReal.mul_ne_top ENNReal.ofReal_ne_top (measure_ne_top _ _))
@@ -120,9 +124,9 @@ theorem firstReportSet_intensity_toNNReal_eq_rateExposure
     ((ENNReal.ofReal M.incidentRate •
       ((volume : Measure ℝ).prod M.retainedDelay))
       (firstReportSet s t)).toNNReal =
-      EconCSLib.Probability.PoissonProcess.rateExposureParam
+      AppliedModelingLib.Probability.PoissonProcess.rateExposureParam
         (M.incidentRate * M.retentionProbability) ((t : ℝ) - (s : ℝ))
-        (mul_nonneg (mul_nonneg M.incidentRate_pos.le M.retentionProbability_pos.le)
+        (mul_nonneg (mul_nonneg M.incidentRate_nonnegative M.retentionProbability_nonnegative)
           (sub_nonneg.mpr (NNReal.coe_le_coe.mpr hst))) := by
   letI : IsFiniteMeasure M.retainedDelay := M.retainedDelay_finite
   apply ENNReal.coe_injective
@@ -130,16 +134,16 @@ theorem firstReportSet_intensity_toNNReal_eq_rateExposure
   change (ENNReal.ofReal M.incidentRate •
     ((volume : Measure ℝ).prod M.retainedDelay))
       ((fun z : ℝ × ℝ => z.1 + z.2) ⁻¹' Set.Ioc (s : ℝ) (t : ℝ)) = _
-  rw [EconCSLib.Probability.smul_volume_prod_preimage_add_Ioc]
+  rw [AppliedModelingLib.Probability.smul_volume_prod_preimage_add_Ioc]
   rw [M.retainedDelay_mass, Real.volume_Ioc]
-  simp only [EconCSLib.Probability.PoissonProcess.rateExposureParam]
+  simp only [AppliedModelingLib.Probability.PoissonProcess.rateExposureParam]
   rw [ENNReal.coe_nnreal_eq]
   change ENNReal.ofReal M.incidentRate * ENNReal.ofReal M.retentionProbability *
       ENNReal.ofReal ((t : ℝ) - (s : ℝ)) =
     ENNReal.ofReal (M.incidentRate * M.retentionProbability * ((t : ℝ) - (s : ℝ)))
-  rw [← ENNReal.ofReal_mul M.incidentRate_pos.le]
+  rw [← ENNReal.ofReal_mul M.incidentRate_nonnegative]
   exact (ENNReal.ofReal_mul
-    (mul_nonneg M.incidentRate_pos.le M.retentionProbability_pos.le)).symm
+    (mul_nonneg M.incidentRate_nonnegative M.retentionProbability_nonnegative)).symm
 
 /-- A forward increment of the calendar count is the count of exactly the
 corresponding displaced marked-birth interval. -/
@@ -167,7 +171,7 @@ theorem calendarCount_increment_hasLaw
       (ProbabilityTheory.poissonMeasure
         (rateExposureParam
           (M.incidentRate * M.retentionProbability) ((t : ℝ) - (s : ℝ))
-          (mul_nonneg (mul_nonneg M.incidentRate_pos.le M.retentionProbability_pos.le)
+          (mul_nonneg (mul_nonneg M.incidentRate_nonnegative M.retentionProbability_nonnegative)
             (sub_nonneg.mpr (NNReal.coe_le_coe.mpr hst))))) P := by
   have h := M.markedBirths.finiteCount_hasLaw (firstReportSet s t)
     (measurableSet_firstReportSet s t)
@@ -217,11 +221,13 @@ theorem calendarCount_hasIndepIncrements
 of calendar-time first reports, at the incident rate times the probability of
 reporting before the duration ends. -/
 def toForwardHomogeneousPoissonProcess
-    (M : CalendarFirstReportSourceModel Ω P) :
+    (M : CalendarFirstReportSourceModel Ω P)
+    (incidentRate_pos : 0 < M.incidentRate)
+    (retentionProbability_pos : 0 < M.retentionProbability) :
     ForwardHomogeneousPoissonCountingProcessByLaw Ω P where
   isProbability := M.markedBirths.isProbability
   rate := M.incidentRate * M.retentionProbability
-  rate_pos := mul_pos M.incidentRate_pos M.retentionProbability_pos
+  rate_pos := mul_pos incidentRate_pos retentionProbability_pos
   count := M.calendarCount
   count_measurable := fun t =>
     M.markedBirths.measurable_finiteCount (firstReportSet 0 t)
@@ -240,7 +246,7 @@ incident is first reported before its duration ends. -/
 theorem calendar_first_report_intensity_eq_mass_smul
     (retainedDelay : Measure ℝ) [IsFiniteMeasure retainedDelay] :
     (volume : Measure ℝ) ∗ retainedDelay = retainedDelay Set.univ • volume :=
-  EconCSLib.Probability.volume_conv_eq_mass_smul retainedDelay
+  AppliedModelingLib.Probability.volume_conv_eq_mass_smul retainedDelay
 
 /-- For a calendar interval, the marked-birth intensity of first reports is
 the incident intensity times the retained-delay mass times interval length. -/
@@ -250,7 +256,7 @@ theorem calendar_first_report_intensity_Ioc
     (incidentIntensity • ((volume : Measure ℝ).prod retainedDelay))
         ((fun z : ℝ × ℝ => z.1 + z.2) ⁻¹' Set.Ioc a b) =
       incidentIntensity * retainedDelay Set.univ * volume (Set.Ioc a b) :=
-  EconCSLib.Probability.smul_volume_prod_preimage_add_Ioc
+  AppliedModelingLib.Probability.smul_volume_prod_preimage_add_Ioc
     incidentIntensity retainedDelay a b
 
 end

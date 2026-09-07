@@ -12,58 +12,6 @@ open scoped BigOperators
 open GCG24UserItemFairness.ProofBridge
 noncomputable section
 
-theorem recommendationUtility_realizes_spec {m n : ℕ} (W : RecommendationModel m n)
-    (u : User m) (j : Item n) : recommendationUtilitySpec (m := m) (n := n) (W := W) (u := u) (j := j) := by
-  rfl
-
-theorem rawUserUtility_realizes_spec {m n : ℕ}
-    (W : RecommendationModel m n) (ρ : Policy m n) (u : User m) : rawUserUtilitySpec (m := m) (n := n) (W := W) (ρ := ρ) (u := u) := by
-  rfl
-
-theorem normalizedUserUtility_realizes_spec {m n : ℕ} [NeZero n]
-    (W : RecommendationModel m n) (ρ : Policy m n) (u : User m) : normalizedUserUtilitySpec (m := m) (n := n) (W := W) (ρ := ρ) (u := u) := by
-  rfl
-
-theorem userFairness_realizes_spec {m n : ℕ} [NeZero m] [NeZero n]
-    (W : RecommendationModel m n) (ρ : Policy m n) : userFairnessSpec (m := m) (n := n) (W := W) (ρ := ρ) := by
-  rfl
-
-theorem rawItemUtility_realizes_spec {m n : ℕ}
-    (W : RecommendationModel m n) (ρ : Policy m n) (j : Item n) : rawItemUtilitySpec (m := m) (n := n) (W := W) (ρ := ρ) (j := j) := by
-  rfl
-
-theorem itemNormalizer_realizes_spec {m n : ℕ}
-    (W : RecommendationModel m n) (j : Item n) : itemNormalizerSpec (m := m) (n := n) (W := W) (j := j) := by
-  rfl
-
-theorem normalizedItemUtility_realizes_spec {m n : ℕ}
-    (W : RecommendationModel m n) (ρ : Policy m n) (j : Item n) : normalizedItemUtilitySpec (m := m) (n := n) (W := W) (ρ := ρ) (j := j) := by
-  rfl
-
-theorem itemFairness_realizes_spec {m n : ℕ} [NeZero n]
-    (W : RecommendationModel m n) (ρ : Policy m n) : itemFairnessSpec (m := m) (n := n) (W := W) (ρ := ρ) := by
-  rfl
-
-theorem priceOfFairness_realizes_spec {m n : ℕ} [NeZero m] [NeZero n]
-    (W : RecommendationModel m n) : priceOfFairnessSpec (m := m) (n := n) (W := W) := by
-  rfl
-
-theorem solvesProblemOne_iff {m n : ℕ} [NeZero m] [NeZero n]
-    (W : RecommendationModel m n) (γ : ℝ) (ρ : Policy m n) : solvesProblemOne_iffSpec (m := m) (n := n) (W := W) (γ := γ) (ρ := ρ) := by
-  exact GCG24UserItemFairness.ProofBridge.solvesProblemOne_iff (m := m) (n := n) (W := W) (γ := γ) (ρ := ρ)
-
-theorem priceOfMisestimation_realizes_spec {m n : ℕ} [NeZero m] [NeZero n]
-    (E : EstimatedRecommendationModel m n) (γ : ℝ) (ρhat : Policy m n)
-    (hEstimatedOptimal : solvesProblemOne E.estimatedModel γ ρhat) : priceOfMisestimationSpec (m := m) (n := n) (E := E) (γ := γ) (ρhat := ρhat) (hEstimatedOptimal := hEstimatedOptimal) := by
-  rfl
-
-theorem problem11EqualityFeasibleSet_realizes_spec {n : ℕ}
-    (beta : ℝ) (v : Item n → ℝ) : problem11EqualityFeasibleSetSpec (n := n) (beta := beta) (v := v) := by
-  rfl
-
-theorem problem11BasicFeasible_realizes_spec {n : ℕ}
-    (beta : ℝ) (v : Item n → ℝ) (ρ : TypePolicy 3 n) (ell : ℝ) : problem11BasicFeasibleSpec (n := n) (beta := beta) (v := v) (ρ := ρ) (ell := ell) := by
-  rfl
 
 theorem appendix_c_lemma1_item_fairness_positive
     {m n : ℕ} [NeZero m] [NeZero n]
@@ -76,10 +24,14 @@ theorem appendix_c_lemma2_item_fairness_equality_lp_solution_set
   exact GCG24UserItemFairness.ProofBridge.appendix_c_lemma2_item_fairness_equality_lp_solution_set (m := m) (n := n) (W := W) (hPositive := hPositive) (rho := rho)
 
 theorem appendix_d_lemma3_unconstrained_baseline
-    {m n : ℕ} [NeZero m] [NeZero n]
-    (W : RecommendationModel m n) (hNonnegative : W.Nonnegative)
-    (hRow : W.RowHasPositiveItem) : appendix_d_lemma3_unconstrained_baselineSpec (m := m) (n := n) (W := W) (hNonnegative := hNonnegative) (hRow := hRow) := by
-  exact GCG24UserItemFairness.ProofBridge.appendix_d_lemma3_unconstrained_baseline (m := m) (n := n) (W := W) (hNonnegative := hNonnegative) (hRow := hRow)
+    {n : ℕ} [NeZero n] {alpha : ℝ} {v : Item n → ℝ}
+    (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
+    (hpos : ∀ j : Item n, 0 < v j)
+    (hdec : OpposingTypes.StrictlyDecreasingByIndex v) :
+    appendix_d_lemma3_unconstrained_baselineSpec
+      (n := n) (alpha := alpha) (v := v) halpha0 halpha1 hpos hdec := by
+  exact GCG24UserItemFairness.ProofBridge.appendix_d_lemma3_unconstrained_baseline
+    (n := n) (alpha := alpha) (v := v) halpha0 halpha1 hpos hdec
 
 theorem appendix_d_lemma4_problem6_unique_sparse_solution
     {n : ℕ} [NeZero n] {alpha : ℝ} {v : Item n → ℝ}
@@ -324,69 +276,42 @@ theorem theorem4_misestimation_without_fairness_universal
         Strue.types.toType u = 1)
     (hbeta : (n : ℝ)⁻¹ < beta)
     (hvalue : assumption_theorem4_universal_value_vector v) : theorem4_misestimation_without_fairness_universalSpec (m := m) (n := n) (E := E) (Strue := Strue) (Sest := Sest) (hTypesTrue := hTypesTrue) (hTypesEst := hTypesEst) (beta := beta) (v := v) (htrue := htrue) (hestimated := hestimated) (hredTrue := hredTrue) (hredEst := hredEst) (hknown0 := hknown0) (hknown1 := hknown1) (hbeta := hbeta) (hvalue := hvalue) := by
-  exact GCG24UserItemFairness.ProofBridge.theorem4_misestimation_without_fairness_universal (m := m) (n := n) (E := E) (Strue := Strue) (Sest := Sest) (hTypesTrue := hTypesTrue) (hTypesEst := hTypesEst) (beta := beta) (v := v) (htrue := htrue) (hestimated := hestimated) (hredTrue := hredTrue) (hredEst := hredEst) (hknown0 := hknown0) (hknown1 := hknown1) (hbeta := hbeta) (hvalue := hvalue)
+  let ρ : TypePolicy 3 n := OpposingTypes.theorem4NoFairnessPolicyCollapsed v
+  refine ⟨(Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ, ?_⟩
+  exact GCG24UserItemFairness.ProofBridge.theorem4_misestimation_without_fairness_universal
+    (m := m) (n := n) (E := E) (Strue := Strue) (Sest := Sest)
+    (hTypesTrue := hTypesTrue) (hTypesEst := hTypesEst) (beta := beta) (v := v)
+    (htrue := htrue) (hestimated := hestimated) (hredTrue := hredTrue)
+    (hredEst := hredEst) (hknown0 := hknown0) (hknown1 := hknown1)
+    (hbeta := hbeta) (hvalue := hvalue)
 
-theorem theorem4_misestimation_tradeoff_typeZero
+/--
+Theorem 4's single existential high-item-fairness source bullet.  The two
+cold-user true-type cases are discharged inside `ProofBridge`; they are not
+premises of the paper-facing statement.
+-/
+theorem theorem4_misestimation_tradeoff
     {m n : ℕ} [NeZero m] [NeZero n]
-    (E : EstimatedRecommendationModel m n)
-    (Strue : RecommendationModel.SymmetricData m n 2)
-    (Sest : RecommendationModel.SymmetricData m n 3)
-    (hTypesTrue : Function.Surjective Strue.types.toType)
-    (hTypesEst : Function.Surjective Sest.types.toType)
     {beta eps : ℝ}
-    (u : User m)
-    (htrue : assumption_theorem4_true_model_reduction E Strue)
-    (hestimated : assumption_theorem4_estimated_model_reduction E Sest)
-    (hredTrue :
-      (Strue.canonicalReductionOfSurjective hTypesTrue).reduced =
-        OpposingTypes.twoTypeReducedModel (1 / 2 : ℝ)
-        (OpposingTypes.theorem4SmallValueVector (n := n) eps))
-    (hredEst :
-      (Sest.canonicalReductionOfSurjective hTypesEst).reduced =
-        OpposingTypes.theorem4EstimatedReducedModel beta
-        (OpposingTypes.theorem4SmallValueVector (n := n) eps))
-    (hknown0 :
-      ∀ u : User m, Sest.types.toType u = 0 →
-        Strue.types.toType u = 0)
-    (hknown1 :
-      ∀ u : User m, Sest.types.toType u = 1 →
-        Strue.types.toType u = 1)
-    (htrueType : Strue.types.toType u = 0)
-    (hestimatedType : Sest.types.toType u = 2)
-    (heps : 0 < eps)
-    (hbeta : (n : ℝ)⁻¹ < beta) : theorem4_misestimation_tradeoff_typeZeroSpec (m := m) (n := n) (E := E) (Strue := Strue) (Sest := Sest) (hTypesTrue := hTypesTrue) (hTypesEst := hTypesEst) (beta := beta) (eps := eps) (u := u) (htrue := htrue) (hestimated := hestimated) (hredTrue := hredTrue) (hredEst := hredEst) (hknown0 := hknown0) (hknown1 := hknown1) (htrueType := htrueType) (hestimatedType := hestimatedType) (heps := heps) (hbeta := hbeta) := by
-  exact GCG24UserItemFairness.ProofBridge.theorem4_misestimation_tradeoff_typeZero (m := m) (n := n) (E := E) (Strue := Strue) (Sest := Sest) (hTypesTrue := hTypesTrue) (hTypesEst := hTypesEst) (beta := beta) (eps := eps) (u := u) (htrue := htrue) (hestimated := hestimated) (hredTrue := hredTrue) (hredEst := hredEst) (hknown0 := hknown0) (hknown1 := hknown1) (htrueType := htrueType) (hestimatedType := hestimatedType) (heps := heps) (hbeta := hbeta)
-
-theorem theorem4_misestimation_tradeoff_typeOne
-    {m n : ℕ} [NeZero m] [NeZero n]
-    (E : EstimatedRecommendationModel m n)
-    (Strue : RecommendationModel.SymmetricData m n 2)
-    (Sest : RecommendationModel.SymmetricData m n 3)
-    (hTypesTrue : Function.Surjective Strue.types.toType)
-    (hTypesEst : Function.Surjective Sest.types.toType)
-    {beta eps : ℝ}
-    (u : User m)
-    (htrue : assumption_theorem4_true_model_reduction E Strue)
-    (hestimated : assumption_theorem4_estimated_model_reduction E Sest)
-    (hredTrue :
-      (Strue.canonicalReductionOfSurjective hTypesTrue).reduced =
-        OpposingTypes.twoTypeReducedModel (1 / 2 : ℝ)
-        (OpposingTypes.theorem4SmallValueVector (n := n) eps))
-    (hredEst :
-      (Sest.canonicalReductionOfSurjective hTypesEst).reduced =
-        OpposingTypes.theorem4EstimatedReducedModel beta
-        (OpposingTypes.theorem4SmallValueVector (n := n) eps))
-    (hknown0 :
-      ∀ u : User m, Sest.types.toType u = 0 →
-        Strue.types.toType u = 0)
-    (hknown1 :
-      ∀ u : User m, Sest.types.toType u = 1 →
-        Strue.types.toType u = 1)
-    (htrueType : Strue.types.toType u = 1)
-    (hestimatedType : Sest.types.toType u = 2)
-    (heps : 0 < eps)
-    (hbeta : (n : ℝ)⁻¹ < beta) : theorem4_misestimation_tradeoff_typeOneSpec (m := m) (n := n) (E := E) (Strue := Strue) (Sest := Sest) (hTypesTrue := hTypesTrue) (hTypesEst := hTypesEst) (beta := beta) (eps := eps) (u := u) (htrue := htrue) (hestimated := hestimated) (hredTrue := hredTrue) (hredEst := hredEst) (hknown0 := hknown0) (hknown1 := hknown1) (htrueType := htrueType) (hestimatedType := hestimatedType) (heps := heps) (hbeta := hbeta) := by
-  exact GCG24UserItemFairness.ProofBridge.theorem4_misestimation_tradeoff_typeOne (m := m) (n := n) (E := E) (Strue := Strue) (Sest := Sest) (hTypesTrue := hTypesTrue) (hTypesEst := hTypesEst) (beta := beta) (eps := eps) (u := u) (htrue := htrue) (hestimated := hestimated) (hredTrue := hredTrue) (hredEst := hredEst) (hknown0 := hknown0) (hknown1 := hknown1) (htrueType := htrueType) (hestimatedType := hestimatedType) (heps := heps) (hbeta := hbeta)
+    (hparams : assumption_theorem4_parameter_domain n beta eps) :
+    theorem4_misestimation_tradeoffSpec
+      (m := m) (n := n) (beta := beta) (eps := eps) hparams := by
+  rcases hparams with ⟨heps, hbeta, _⟩
+  refine ⟨OpposingTypes.theorem4SmallValueVector (n := n) eps, ?_, ?_⟩
+  · exact ⟨OpposingTypes.theorem4SmallValueVector_pos (n := n) (eps := eps) heps,
+      OpposingTypes.theorem4SmallValueVector_strictlyDecreasing
+        (n := n) (eps := eps) heps⟩
+  · intro E Strue Sest hTypesTrue hTypesEst htrue hestimated hredTrue hredEst
+      hknown0 hknown1
+    obtain ⟨_, ρ, hsolves, hlarge⟩ :=
+      GCG24UserItemFairness.ProofBridge.theorem4_misestimation_tradeoff
+        (m := m) (n := n) (E := E) (Strue := Strue) (Sest := Sest)
+        (hTypesTrue := hTypesTrue) (hTypesEst := hTypesEst) (beta := beta)
+        (eps := eps) (htrue := htrue) (hestimated := hestimated)
+        (hredTrue := hredTrue) (hredEst := hredEst) (hknown0 := hknown0)
+        (hknown1 := hknown1) (heps := heps) (hbeta := hbeta)
+    exact ⟨(Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ,
+      hsolves, hlarge⟩
 
 end
 

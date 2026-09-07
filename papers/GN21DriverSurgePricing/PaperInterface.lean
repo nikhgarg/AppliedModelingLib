@@ -14,11 +14,12 @@ open scoped ENNReal
 incentive-compatible pricing.  The source gives both the single-state and
 two-state accept-all readings in one clause, so they are reviewed together as
 one paper claim rather than as duplicate definition cards. -/
-def review_definition_incentive_compatibleSpec : Prop :=
-  (∀ R : SingleStateReward,
+def review_definition_incentive_compatibleSpec :
+    (SingleStateReward → Prop) × (DynamicReward → Prop) :=
+  (fun R =>
     ∀ σ : TripPolicy, σ ⊆ acceptAllPolicy → MeasurableSet σ →
-      R σ ≤ R acceptAllPolicy) ∧
-  (∀ R : DynamicReward,
+      R σ ≤ R acceptAllPolicy,
+   fun R =>
     dynamicFeasibleOpenPolicy acceptAllDynamicPolicy ∧
       ∀ σ : Fin 2 → TripPolicy,
         dynamicFeasibleOpenPolicy σ →
@@ -28,18 +29,27 @@ def review_definition_incentive_compatibleSpec : Prop :=
 def review_definition_surge_stateSpec
     (mu : Fin 2 → Measure TripLength) (arrival : Fin 2 → ℝ)
     (w : Fin 2 → PricingFunction) : Prop :=
-  gn21SourceSurgeStateDominance mu arrival w
+  ∃ σ2 : TripPolicy,
+    σ2 ⊆ acceptAllPolicy ∧ IsOpen σ2 ∧
+      ∀ σ1 : TripPolicy,
+        σ1 ⊆ acceptAllPolicy → IsOpen σ1 →
+          gn21MeasuredStateRewardRate (mu 0) (arrival 0) (w 0) σ1 <
+            gn21MeasuredStateRewardRate (mu 1) (arrival 1) (w 1) σ2
 
 /-! ## Main-text results -/
 
 /-- Source-facing semantic target for `review_theorem1_single_state_threshold_best_response`. -/
 def review_theorem1_single_state_threshold_best_responseSpec
-  (μ : MeasureTheory.Measure TripLength) (arrivalRate : ℝ) (w : PricingFunction)
-  (hrate_measurable : Measurable fun τ => w τ / τ) (hrate_nonneg : ∀ (τ : TripLength), 0 < τ → 0 ≤ w τ / τ)
-  (hfinite_acceptAll : μ acceptAllPolicy ≠ ⊤) (hw_integrable_acceptAll : MeasureTheory.IntegrableOn w acceptAllPolicy μ)
+  (μ : MeasureTheory.Measure TripLength) (arrivalRate : ℝ) (w : GN21PayoutFunction)
+  (hrate_measurable : Measurable fun τ => w.toPricingFunction τ / τ)
+  (hfinite_acceptAll : μ acceptAllPolicy ≠ ⊤)
+  (hw_integrable_acceptAll :
+    MeasureTheory.IntegrableOn w.toPricingFunction acceptAllPolicy μ)
   (htime_integrable_acceptAll : MeasureTheory.IntegrableOn (fun τ => τ) acceptAllPolicy μ) (hlambda : 0 < arrivalRate) : Prop :=
-  ∃ c,
-    0 ≤ c ∧ ∃ σ, thresholdRatePolicy w c σ ∧ singleStateMeasurableOptimal (singleStateRenewalReward μ arrivalRate w) σ
+  ∃ c, 0 ≤ c ∧ ∃ σ,
+    thresholdRatePolicy w.toPricingFunction c σ ∧
+      singleStateMeasurableOptimal
+        (singleStateRenewalReward μ arrivalRate w.toPricingFunction) σ
 
 /-- Source-facing semantic target for `review_proposition3_1_affine_single_state_ic`. -/
 def review_proposition3_1_affine_single_state_icSpec (mu : MeasureTheory.Measure TripLength)
@@ -156,10 +166,10 @@ general structured-policy clause and its stricter fully-IC clause as one
 numbered theorem; both clauses therefore appear in one semantic target. -/
 def review_theorem3_structured_pricingSpec : Prop :=
   (∀ (mu : Fin 2 → MeasureTheory.Measure TripLength) (arrival : Fin 2 → ℝ)
-      (R1 R2 switch12 switch21 : ℝ)
+      (R1 : NNReal) (R2 switch12 switch21 : ℝ)
       [MeasureTheory.NoAtoms (mu 0)] [MeasureTheory.NoAtoms (mu 1)]
       [MeasureTheory.IsFiniteMeasure (mu 0)] [MeasureTheory.IsFiniteMeasure (mu 1)]
-      (hR1_nonneg : 0 ≤ R1) (hR1_lt_R2 : R1 < R2)
+      (hR1_lt_R2 : (R1 : ℝ) < R2)
       (harrival1_pos : 0 < arrival 0) (harrival2_pos : 0 < arrival 1)
       (hswitch12_pos : 0 < switch12) (hswitch21_pos : 0 < switch21)
       (htime1_integrable :

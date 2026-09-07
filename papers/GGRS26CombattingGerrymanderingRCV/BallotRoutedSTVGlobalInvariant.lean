@@ -11,7 +11,7 @@ policy laws; no party projection or terminal outcome is assumed.
 namespace GGRS26CombattingGerrymanderingRCV
 
 open scoped BigOperators
-open EconCSLib.SocialChoice.Voting
+open AppliedModelingLib.SocialChoice.Voting
 
 variable {Voter Candidate : Type*} [DecidableEq Voter] [DecidableEq Candidate]
 variable {voters : Finset Voter} {initialCandidates : Finset Candidate}

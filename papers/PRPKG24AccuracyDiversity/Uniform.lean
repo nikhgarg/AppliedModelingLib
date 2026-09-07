@@ -1,9 +1,9 @@
 import PRPKG24AccuracyDiversity.Exchange
 import PRPKG24AccuracyDiversity.TopKOracle
-import EconCSLib.Foundations.Math.BinomialBounds
-import EconCSLib.Foundations.Math.GammaAsymptotics
-import EconCSLib.Foundations.Probability.RealDistribution
-import EconCSLib.Foundations.Math.FiniteRounding
+import AppliedModelingLib.Foundations.Math.BinomialBounds
+import AppliedModelingLib.Foundations.Math.GammaAsymptotics
+import AppliedModelingLib.Foundations.Probability.RealDistribution
+import AppliedModelingLib.Foundations.Math.FiniteRounding
 import Mathlib.Algebra.Order.Floor.Semiring
 import Mathlib.Data.Real.Sqrt
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
@@ -40,7 +40,7 @@ theorem uniform01Measure_real_eq_volume_real_inter
 
 theorem uniform01_reflectedCDFMass_eq {x : ℝ}
     (hx_pos : 0 < x) (hx_lt_one : x < 1) :
-    EconCSLib.Probability.reflectedCDFMass uniform01Measure 1 x = x := by
+    AppliedModelingLib.Probability.reflectedCDFMass uniform01Measure 1 x = x := by
   let t : Set ℝ := {y : ℝ | (1 : ℝ) ≤ x + y}
   have ht_inter :
       t ∩ Set.Icc (0 : ℝ) 1 = Set.Icc (1 - x) 1 := by
@@ -56,7 +56,7 @@ theorem uniform01_reflectedCDFMass_eq {x : ℝ}
       · exact ⟨by linarith [hy.1, hx_lt_one], hy.2⟩
   have hle : 1 - x ≤ (1 : ℝ) := by linarith
   calc
-    EconCSLib.Probability.reflectedCDFMass uniform01Measure 1 x =
+    AppliedModelingLib.Probability.reflectedCDFMass uniform01Measure 1 x =
         uniform01Measure.real t := by rfl
     _ = volume.real (t ∩ Set.Icc (0 : ℝ) 1) :=
         uniform01Measure_real_eq_volume_real_inter t
@@ -67,7 +67,7 @@ theorem uniform01_reflectedCDFMass_eq {x : ℝ}
 
 theorem uniform01_reflectedCDFMass_eventually_eq_power :
     ∀ᶠ x in nhdsWithin (0 : ℝ) (Set.Ioi (0 : ℝ)),
-      EconCSLib.Probability.reflectedCDFMass uniform01Measure 1 x =
+      AppliedModelingLib.Probability.reflectedCDFMass uniform01Measure 1 x =
         (1 / 1 : ℝ) * x ^ (1 : ℝ) := by
   filter_upwards
     [self_mem_nhdsWithin,
@@ -237,7 +237,7 @@ theorem boundedReflectedPowerProductMeasure_all_bounds_ae {beta : ℝ}
         (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta),
       ∀ i : Fin q, 0 ≤ sample i ∧ sample i ≤ 1 := by
   simpa using
-    EconCSLib.Probability.iidProductMeasure_forall_bounds_ae
+    AppliedModelingLib.Probability.iidProductMeasure_forall_bounds_ae
       (n := q) (boundedReflectedPowerSourceMeasure beta)
       (boundedReflectedPowerSourceMeasure_ae_bounds hbeta_pos)
 
@@ -248,13 +248,13 @@ theorem
       MeasureTheory.Measure.pi
         (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta)]
       fun sample =>
-        EconCSLib.Probability.ascendingOrderStatistic
-          (EconCSLib.Probability.reflectedSample 1 sample) rank := by
+        AppliedModelingLib.Probability.ascendingOrderStatistic
+          (AppliedModelingLib.Probability.reflectedSample 1 sample) rank := by
   filter_upwards [boundedReflectedPowerProductMeasure_all_bounds_ae
     hbeta_pos q] with sample hsample
   exact
-    EconCSLib.Probability.le_ascendingOrderStatistic_of_forall_le
-      (EconCSLib.Probability.reflectedSample_nonneg_of_forall_le
+    AppliedModelingLib.Probability.le_ascendingOrderStatistic_of_forall_le
+      (AppliedModelingLib.Probability.reflectedSample_nonneg_of_forall_le
         1 (fun i => (hsample i).2)) rank
 
 theorem
@@ -262,11 +262,11 @@ theorem
     {beta : ℝ} (hbeta_pos : 0 < beta) {q : ℕ} (rank : Fin q) :
     MeasureTheory.Integrable
       (fun sample : Fin q → ℝ =>
-        EconCSLib.Probability.ascendingOrderStatistic
-          (EconCSLib.Probability.reflectedSample 1 sample) rank)
+        AppliedModelingLib.Probability.ascendingOrderStatistic
+          (AppliedModelingLib.Probability.reflectedSample 1 sample) rank)
       (MeasureTheory.Measure.pi
         (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta)) :=
-  EconCSLib.Probability.reflectedAscendingOrderStatistic_integrable_of_ae_bounds
+  AppliedModelingLib.Probability.reflectedAscendingOrderStatistic_integrable_of_ae_bounds
     1 0
     (MeasureTheory.Measure.pi
       (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta))
@@ -280,8 +280,8 @@ theorem
     (MeasureTheory.Measure.pi
         (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta)).real
         {sample : Fin q → ℝ |
-          x < EconCSLib.Probability.ascendingOrderStatistic
-            (EconCSLib.Probability.reflectedSample 1 sample) rank} =
+          x < AppliedModelingLib.Probability.ascendingOrderStatistic
+            (AppliedModelingLib.Probability.reflectedSample 1 sample) rank} =
       ∑ j ∈ Finset.Icc 0 rank.val,
         (Nat.choose q j : ℝ) *
           (x ^ beta) ^ j * (1 - x ^ beta) ^ (q - j) := by
@@ -295,25 +295,25 @@ theorem
   let successSet : Set ℝ := Set.Ici (1 - x)
   have hset :
       {sample : Fin q → ℝ |
-          x < EconCSLib.Probability.ascendingOrderStatistic
-            (EconCSLib.Probability.reflectedSample 1 sample) rank} =
+          x < AppliedModelingLib.Probability.ascendingOrderStatistic
+            (AppliedModelingLib.Probability.reflectedSample 1 sample) rank} =
         {sample : Fin q → ℝ |
-          EconCSLib.Probability.iidSuccessCount successSet sample ≤
+          AppliedModelingLib.Probability.iidSuccessCount successSet sample ≤
             rank.val} := by
     ext sample
     have hcount :
         (Finset.univ.filter
             (fun i : Fin q =>
-              EconCSLib.Probability.reflectedSample 1 sample i ≤ x)).card =
-          EconCSLib.Probability.iidSuccessCount successSet sample := by
-      unfold EconCSLib.Probability.iidSuccessCount
-        EconCSLib.Probability.iidSuccessIndexSet successSet
+              AppliedModelingLib.Probability.reflectedSample 1 sample i ≤ x)).card =
+          AppliedModelingLib.Probability.iidSuccessCount successSet sample := by
+      unfold AppliedModelingLib.Probability.iidSuccessCount
+        AppliedModelingLib.Probability.iidSuccessIndexSet successSet
       congr 1
       ext i
       constructor
       · intro hi
         have hle : 1 - sample i ≤ x := by
-          simpa [EconCSLib.Probability.reflectedSample] using
+          simpa [AppliedModelingLib.Probability.reflectedSample] using
             (Finset.mem_filter.mp hi).2
         exact Finset.mem_filter.mpr
           ⟨Finset.mem_univ i, by
@@ -326,12 +326,12 @@ theorem
             change 1 - sample i ≤ x
             linarith⟩
     have hiff :=
-      EconCSLib.Probability.ascendingOrderStatistic_rank_count_le_iff
-        (EconCSLib.Probability.reflectedSample 1 sample) rank x
+      AppliedModelingLib.Probability.ascendingOrderStatistic_rank_count_le_iff
+        (AppliedModelingLib.Probability.reflectedSample 1 sample) rank x
     change
-      x < EconCSLib.Probability.ascendingOrderStatistic
-          (EconCSLib.Probability.reflectedSample 1 sample) rank ↔
-        EconCSLib.Probability.iidSuccessCount successSet sample ≤ rank.val
+      x < AppliedModelingLib.Probability.ascendingOrderStatistic
+          (AppliedModelingLib.Probability.reflectedSample 1 sample) rank ↔
+        AppliedModelingLib.Probability.iidSuccessCount successSet sample ≤ rank.val
     rw [← hcount]
     exact hiff.symm
   have htail :
@@ -342,7 +342,7 @@ theorem
   have hmin : min rank.val q = rank.val :=
     min_eq_left (Nat.le_of_lt rank.isLt)
   rw [hset,
-    EconCSLib.Probability.iidProductMeasure_successCount_le_real
+    AppliedModelingLib.Probability.iidProductMeasure_successCount_le_real
       (boundedReflectedPowerSourceMeasure beta) measurableSet_Ici rank.val]
   rw [hmin, htail]
 
@@ -353,26 +353,26 @@ theorem
     (MeasureTheory.Measure.pi
         (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta)).real
         {sample : Fin q → ℝ |
-          x < EconCSLib.Probability.ascendingOrderStatistic
-            (EconCSLib.Probability.reflectedSample 1 sample) rank} =
+          x < AppliedModelingLib.Probability.ascendingOrderStatistic
+            (AppliedModelingLib.Probability.reflectedSample 1 sample) rank} =
       0 := by
   let μ : MeasureTheory.Measure (Fin q → ℝ) :=
     MeasureTheory.Measure.pi
       (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta)
   have hset :
       {sample : Fin q → ℝ |
-          x < EconCSLib.Probability.ascendingOrderStatistic
-            (EconCSLib.Probability.reflectedSample 1 sample) rank}
+          x < AppliedModelingLib.Probability.ascendingOrderStatistic
+            (AppliedModelingLib.Probability.reflectedSample 1 sample) rank}
         =ᵐ[μ] (∅ : Set (Fin q → ℝ)) := by
     filter_upwards [boundedReflectedPowerProductMeasure_all_bounds_ae
       hbeta_pos q] with sample hsample
     have hupper :
-        EconCSLib.Probability.ascendingOrderStatistic
-            (EconCSLib.Probability.reflectedSample 1 sample) rank ≤ 1 :=
+        AppliedModelingLib.Probability.ascendingOrderStatistic
+            (AppliedModelingLib.Probability.reflectedSample 1 sample) rank ≤ 1 :=
       by
         simpa using
-          EconCSLib.Probability.ascendingOrderStatistic_le_of_forall_le
-            (EconCSLib.Probability.reflectedSample_le_of_forall_lower
+          AppliedModelingLib.Probability.ascendingOrderStatistic_le_of_forall_le
+            (AppliedModelingLib.Probability.reflectedSample_le_of_forall_lower
               1 0 (fun i => (hsample i).1)) rank
     exact propext
       ⟨fun hmem =>
@@ -382,8 +382,8 @@ theorem
     (MeasureTheory.Measure.pi
         (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta)).real
         {sample : Fin q → ℝ |
-          x < EconCSLib.Probability.ascendingOrderStatistic
-            (EconCSLib.Probability.reflectedSample 1 sample) rank}
+          x < AppliedModelingLib.Probability.ascendingOrderStatistic
+            (AppliedModelingLib.Probability.reflectedSample 1 sample) rank}
         =
         μ.real (∅ : Set (Fin q → ℝ)) := by
           simpa [μ] using MeasureTheory.measureReal_congr (μ := μ) hset
@@ -398,16 +398,16 @@ theorem
         (MeasureTheory.Measure.pi
           (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta)).real
           {sample : Fin q → ℝ |
-            x < EconCSLib.Probability.ascendingOrderStatistic
-              (EconCSLib.Probability.reflectedSample 1 sample) rank})
+            x < AppliedModelingLib.Probability.ascendingOrderStatistic
+              (AppliedModelingLib.Probability.reflectedSample 1 sample) rank})
       (Set.Ioo (0 : ℝ) 1) := by
   classical
   let tail : ℝ → ℝ := fun x =>
     (MeasureTheory.Measure.pi
       (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta)).real
       {sample : Fin q → ℝ |
-        x < EconCSLib.Probability.ascendingOrderStatistic
-          (EconCSLib.Probability.reflectedSample 1 sample) rank}
+        x < AppliedModelingLib.Probability.ascendingOrderStatistic
+          (AppliedModelingLib.Probability.reflectedSample 1 sample) rank}
   let kernel : ℝ → ℝ := fun x =>
     ∑ j ∈ Finset.Icc 0 rank.val,
       (Nat.choose q j : ℝ) *
@@ -418,7 +418,7 @@ theorem
       (Finset.Icc 0 rank.val)
       (fun j _hj => by
         simpa [mul_assoc, mul_left_comm, mul_comm] using
-          (EconCSLib.Math.integrableOn_Ioo_zero_one_rpow_power_kernel
+          (AppliedModelingLib.Math.integrableOn_Ioo_zero_one_rpow_power_kernel
             hbeta_pos j (q - j)).const_mul (Nat.choose q j : ℝ))
   refine hkernel.congr_fun ?_ measurableSet_Ioo
   intro x hx
@@ -436,8 +436,8 @@ theorem
         (MeasureTheory.Measure.pi
           (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta)).real
           {sample : Fin q → ℝ |
-            x < EconCSLib.Probability.ascendingOrderStatistic
-              (EconCSLib.Probability.reflectedSample 1 sample) rank})
+            x < AppliedModelingLib.Probability.ascendingOrderStatistic
+              (AppliedModelingLib.Probability.reflectedSample 1 sample) rank})
       (Set.Ioi (1 : ℝ)) := by
   have hzero :
       MeasureTheory.IntegrableOn (fun _x : ℝ => (0 : ℝ)) (Set.Ioi (1 : ℝ)) :=
@@ -456,8 +456,8 @@ theorem
         (MeasureTheory.Measure.pi
           (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta)).real
           {sample : Fin q → ℝ |
-            x < EconCSLib.Probability.ascendingOrderStatistic
-              (EconCSLib.Probability.reflectedSample 1 sample) rank}
+            x < AppliedModelingLib.Probability.ascendingOrderStatistic
+              (AppliedModelingLib.Probability.reflectedSample 1 sample) rank}
       =
       ∑ j ∈ Finset.Icc 0 rank.val,
         (Nat.choose q j : ℝ) *
@@ -475,8 +475,8 @@ theorem
         (MeasureTheory.Measure.pi
           (fun _ : Fin q => boundedReflectedPowerSourceMeasure beta)).real
           {sample : Fin q → ℝ |
-            x < EconCSLib.Probability.ascendingOrderStatistic
-              (EconCSLib.Probability.reflectedSample 1 sample) rank}
+            x < AppliedModelingLib.Probability.ascendingOrderStatistic
+              (AppliedModelingLib.Probability.reflectedSample 1 sample) rank}
         =
         ∫ x in Set.Ioo (0 : ℝ) 1,
           ∑ j ∈ lowerTail,
@@ -496,7 +496,7 @@ theorem
           exact MeasureTheory.integral_finset_sum lowerTail
             (fun j _hj => by
               simpa [mul_assoc, mul_left_comm, mul_comm] using
-                (EconCSLib.Math.integrableOn_Ioo_zero_one_rpow_power_kernel
+                (AppliedModelingLib.Math.integrableOn_Ioo_zero_one_rpow_power_kernel
                   hbeta_pos j (q - j)).const_mul (Nat.choose q j : ℝ))
     _ =
         ∑ j ∈ lowerTail,
@@ -529,7 +529,7 @@ theorem
                     ProbabilityTheory.beta
                       ((j : ℝ) + 1 / beta)
                       (((q - j : ℕ) : ℝ) + 1)) := by
-                  rw [EconCSLib.Math.integral_Ioo_zero_one_rpow_power_kernel_eq_s_mul_beta
+                  rw [AppliedModelingLib.Math.integral_Ioo_zero_one_rpow_power_kernel_eq_s_mul_beta
                     (s := 1 / beta) (beta := beta) hinv_pos hbeta_pos hinv_mul
                     j (q - j)]
 
@@ -537,7 +537,7 @@ theorem uniform01ProductMeasure_all_bounds_ae (q : ℕ) :
     ∀ᵐ sample ∂MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure),
       ∀ i : Fin q, 0 ≤ sample i ∧ sample i ≤ 1 := by
   simpa using
-    EconCSLib.Probability.iidProductMeasure_forall_bounds_ae
+    AppliedModelingLib.Probability.iidProductMeasure_forall_bounds_ae
       (n := q) uniform01Measure uniform01Measure_ae_bounds
 
 theorem uniform01ProductMeasure_upperOrderStatistic_nonnegative_ae
@@ -545,19 +545,19 @@ theorem uniform01ProductMeasure_upperOrderStatistic_nonnegative_ae
     (fun _sample : Fin q → ℝ => (0 : ℝ)) ≤ᵐ[
       MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure)]
       fun sample =>
-        EconCSLib.Probability.upperOrderStatistic sample rankFromTop := by
+        AppliedModelingLib.Probability.upperOrderStatistic sample rankFromTop := by
   filter_upwards [uniform01ProductMeasure_all_bounds_ae q] with sample hsample
   exact
-    EconCSLib.Probability.le_upperOrderStatistic_of_forall_le
+    AppliedModelingLib.Probability.le_upperOrderStatistic_of_forall_le
       (fun i => (hsample i).1) rankFromTop
 
 theorem uniform01ProductMeasure_upperOrderStatistic_integrable
     {q : ℕ} (rankFromTop : Fin q) :
     MeasureTheory.Integrable
       (fun sample : Fin q → ℝ =>
-        EconCSLib.Probability.upperOrderStatistic sample rankFromTop)
+        AppliedModelingLib.Probability.upperOrderStatistic sample rankFromTop)
       (MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure)) :=
-  EconCSLib.Probability.upperOrderStatistic_integrable_of_ae_bounds
+  AppliedModelingLib.Probability.upperOrderStatistic_integrable_of_ae_bounds
     0 1 (MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure))
     rankFromTop (uniform01ProductMeasure_all_bounds_ae q)
 
@@ -566,7 +566,7 @@ theorem uniform01ProductMeasure_upperOrderStatistic_gt_real
     {q : ℕ} (rankFromTop : Fin q) :
     (MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure)).real
         {sample : Fin q → ℝ |
-          x < EconCSLib.Probability.upperOrderStatistic sample rankFromTop} =
+          x < AppliedModelingLib.Probability.upperOrderStatistic sample rankFromTop} =
       ∑ j ∈ Finset.Icc (rankFromTop.val + 1) q,
         (Nat.choose q j : ℝ) *
           (1 - x) ^ j * x ^ (q - j) := by
@@ -578,12 +578,12 @@ theorem uniform01ProductMeasure_upperOrderStatistic_gt_real
     infer_instance
   have hset :
       {sample : Fin q → ℝ |
-          x < EconCSLib.Probability.upperOrderStatistic sample rankFromTop} =
+          x < AppliedModelingLib.Probability.upperOrderStatistic sample rankFromTop} =
         {sample : Fin q → ℝ |
-          EconCSLib.Probability.iidSuccessCount (Set.Ioi x) sample ≤
+          AppliedModelingLib.Probability.iidSuccessCount (Set.Ioi x) sample ≤
             rankFromTop.val}ᶜ := by
     ext sample
-    simp [EconCSLib.Probability.upperOrderStatistic_lt_iff_rank_lt_iidSuccessCount_Ioi]
+    simp [AppliedModelingLib.Probability.upperOrderStatistic_lt_iff_rank_lt_iidSuccessCount_Ioi]
   have htail : uniform01Measure.real (Set.Ioi x) = 1 - x :=
     uniform01Measure_real_Ioi_eq hx_pos.le hx_lt_one.le
   have hcomp : 1 - (1 - x) = x := by ring
@@ -591,32 +591,32 @@ theorem uniform01ProductMeasure_upperOrderStatistic_gt_real
     min_eq_left (Nat.le_of_lt rankFromTop.isLt)
   rw [hset,
     MeasureTheory.measureReal_compl
-      (EconCSLib.Probability.iidSuccessCount_le_measurableSet
+      (AppliedModelingLib.Probability.iidSuccessCount_le_measurableSet
         (n := q) measurableSet_Ioi rankFromTop.val),
     MeasureTheory.probReal_univ,
-    EconCSLib.Probability.iidProductMeasure_successCount_le_real
+    AppliedModelingLib.Probability.iidProductMeasure_successCount_le_real
       uniform01Measure measurableSet_Ioi rankFromTop.val]
   rw [hmin, htail, hcomp]
   simpa [μ, mul_assoc] using
-    EconCSLib.FiniteSum.binomial_lower_tail_complement_eq_upper_tail
+    AppliedModelingLib.FiniteSum.binomial_lower_tail_complement_eq_upper_tail
       rankFromTop.isLt (1 - x)
 
 theorem uniform01ProductMeasure_upperOrderStatistic_gt_real_of_one_lt
     {x : ℝ} (hx : 1 < x) {q : ℕ} (rankFromTop : Fin q) :
     (MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure)).real
         {sample : Fin q → ℝ |
-          x < EconCSLib.Probability.upperOrderStatistic sample rankFromTop} =
+          x < AppliedModelingLib.Probability.upperOrderStatistic sample rankFromTop} =
       0 := by
   let μ : MeasureTheory.Measure (Fin q → ℝ) :=
     MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure)
   have hset :
       {sample : Fin q → ℝ |
-          x < EconCSLib.Probability.upperOrderStatistic sample rankFromTop}
+          x < AppliedModelingLib.Probability.upperOrderStatistic sample rankFromTop}
         =ᵐ[μ] (∅ : Set (Fin q → ℝ)) := by
     filter_upwards [uniform01ProductMeasure_all_bounds_ae q] with sample hsample
     have hupper :
-        EconCSLib.Probability.upperOrderStatistic sample rankFromTop ≤ 1 :=
-      EconCSLib.Probability.upperOrderStatistic_le_of_forall_le
+        AppliedModelingLib.Probability.upperOrderStatistic sample rankFromTop ≤ 1 :=
+      AppliedModelingLib.Probability.upperOrderStatistic_le_of_forall_le
         (fun i => (hsample i).2) rankFromTop
     exact propext
       ⟨fun hmem =>
@@ -625,7 +625,7 @@ theorem uniform01ProductMeasure_upperOrderStatistic_gt_real_of_one_lt
   calc
     (MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure)).real
         {sample : Fin q → ℝ |
-          x < EconCSLib.Probability.upperOrderStatistic sample rankFromTop}
+          x < AppliedModelingLib.Probability.upperOrderStatistic sample rankFromTop}
         =
         μ.real (∅ : Set (Fin q → ℝ)) := by
           simpa [μ] using MeasureTheory.measureReal_congr (μ := μ) hset
@@ -637,13 +637,13 @@ theorem uniform01ProductMeasure_upperOrderStatistic_tail_integrableOn_Ioo_zero_o
       (fun x : ℝ =>
         (MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure)).real
           {sample : Fin q → ℝ |
-            x < EconCSLib.Probability.upperOrderStatistic sample rankFromTop})
+            x < AppliedModelingLib.Probability.upperOrderStatistic sample rankFromTop})
       (Set.Ioo (0 : ℝ) 1) := by
   classical
   let tail : ℝ → ℝ := fun x =>
     (MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure)).real
       {sample : Fin q → ℝ |
-        x < EconCSLib.Probability.upperOrderStatistic sample rankFromTop}
+        x < AppliedModelingLib.Probability.upperOrderStatistic sample rankFromTop}
   let kernel : ℝ → ℝ := fun x =>
     ∑ j ∈ Finset.Icc (rankFromTop.val + 1) q,
       (Nat.choose q j : ℝ) * (1 - x) ^ j * x ^ (q - j)
@@ -653,7 +653,7 @@ theorem uniform01ProductMeasure_upperOrderStatistic_tail_integrableOn_Ioo_zero_o
       (Finset.Icc (rankFromTop.val + 1) q)
       (fun j _hj => by
         simpa [mul_assoc, mul_left_comm, mul_comm] using
-          (EconCSLib.Math.integrableOn_Ioo_zero_one_pow_mul_one_sub_pow
+          (AppliedModelingLib.Math.integrableOn_Ioo_zero_one_pow_mul_one_sub_pow
             (q - j) j).const_mul (Nat.choose q j : ℝ))
   refine hkernel.congr_fun ?_ measurableSet_Ioo
   intro x hx
@@ -666,7 +666,7 @@ theorem uniform01ProductMeasure_upperOrderStatistic_tail_integrableOn_Ioi_one
       (fun x : ℝ =>
         (MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure)).real
           {sample : Fin q → ℝ |
-            x < EconCSLib.Probability.upperOrderStatistic sample rankFromTop})
+            x < AppliedModelingLib.Probability.upperOrderStatistic sample rankFromTop})
       (Set.Ioi (1 : ℝ)) := by
   have hzero :
       MeasureTheory.IntegrableOn (fun _x : ℝ => (0 : ℝ)) (Set.Ioi (1 : ℝ)) :=
@@ -680,7 +680,7 @@ theorem uniform01ProductMeasure_upperOrderStatistic_tail_integral_Ioo_zero_one
     ∫ x in Set.Ioo (0 : ℝ) 1,
         (MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure)).real
           {sample : Fin q → ℝ |
-            x < EconCSLib.Probability.upperOrderStatistic sample rankFromTop}
+            x < AppliedModelingLib.Probability.upperOrderStatistic sample rankFromTop}
       =
       (q - rankFromTop.val : ℝ) / ((q : ℝ) + 1) := by
   classical
@@ -689,7 +689,7 @@ theorem uniform01ProductMeasure_upperOrderStatistic_tail_integral_Ioo_zero_one
     ∫ x in Set.Ioo (0 : ℝ) 1,
         (MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure)).real
           {sample : Fin q → ℝ |
-            x < EconCSLib.Probability.upperOrderStatistic sample rankFromTop}
+            x < AppliedModelingLib.Probability.upperOrderStatistic sample rankFromTop}
         =
         ∫ x in Set.Ioo (0 : ℝ) 1,
           ∑ j ∈ upperTail,
@@ -716,7 +716,7 @@ theorem uniform01ProductMeasure_upperOrderStatistic_tail_integral_Ioo_zero_one
                 exact MeasureTheory.integral_finset_sum upperTail
                   (fun j _hj => by
                     simpa [mul_assoc, mul_left_comm, mul_comm] using
-                      (EconCSLib.Math.integrableOn_Ioo_zero_one_pow_mul_one_sub_pow
+                      (AppliedModelingLib.Math.integrableOn_Ioo_zero_one_pow_mul_one_sub_pow
                         (q - j) j).const_mul (Nat.choose q j : ℝ))
             _ =
               ∑ j ∈ upperTail,
@@ -746,13 +746,13 @@ theorem uniform01ProductMeasure_upperOrderStatistic_tail_integral_Ioo_zero_one
                         ProbabilityTheory.beta
                           (((q - j : ℕ) : ℝ) + 1)
                           (((j : ℕ) : ℝ) + 1) := by
-                        rw [EconCSLib.Math.integral_Ioo_zero_one_pow_mul_one_sub_pow_eq_beta_nat]
+                        rw [AppliedModelingLib.Math.integral_Ioo_zero_one_pow_mul_one_sub_pow_eq_beta_nat]
     _ =
         ∑ _j ∈ upperTail, (1 / (((q : ℕ) : ℝ) + 1) : ℝ) := by
           refine Finset.sum_congr rfl ?_
           intro j hj
           have hjq : j ≤ q := (Finset.mem_Icc.mp hj).2
-          exact EconCSLib.Math.nat_choose_mul_beta_nat_sub_add_one_eq_inv_succ hjq
+          exact AppliedModelingLib.Math.nat_choose_mul_beta_nat_sub_add_one_eq_inv_succ hjq
     _ = (q - rankFromTop.val : ℝ) / ((q : ℝ) + 1) := by
           have hcard : upperTail.card = q - rankFromTop.val := by
             dsimp [upperTail]
@@ -764,19 +764,19 @@ theorem uniform01ProductMeasure_upperOrderStatistic_tail_integral_Ioo_zero_one
 
 theorem uniform01ProductMeasure_expectedUpperOrderStatistic_eq
     {q : ℕ} (rankFromTop : Fin q) :
-    EconCSLib.Probability.expectedUpperOrderStatistic
+    AppliedModelingLib.Probability.expectedUpperOrderStatistic
         (MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure))
         rankFromTop =
       (q - rankFromTop.val : ℝ) / ((q : ℝ) + 1) := by
   let tail : ℝ → ℝ := fun x =>
     (MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure)).real
       {sample : Fin q → ℝ |
-        x < EconCSLib.Probability.upperOrderStatistic sample rankFromTop}
+        x < AppliedModelingLib.Probability.upperOrderStatistic sample rankFromTop}
   have h_nonneg :=
     uniform01ProductMeasure_upperOrderStatistic_nonnegative_ae rankFromTop
   have h_int :=
     uniform01ProductMeasure_upperOrderStatistic_integrable rankFromTop
-  rw [EconCSLib.Probability.expectedUpperOrderStatistic_eq_integral_tail_probability_of_nonneg
+  rw [AppliedModelingLib.Probability.expectedUpperOrderStatistic_eq_integral_tail_probability_of_nonneg
     (μ := MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure))
     rankFromTop h_nonneg h_int]
   have hbelow_Ioo : MeasureTheory.IntegrableOn tail (Set.Ioo (0 : ℝ) 1) :=
@@ -892,11 +892,11 @@ theorem uniform01_expectedOrderStatisticMeanSeq_eq_uniformAscendingOrderStatisti
   calc
     uniform01IidOrderStatisticMeanSeq (q - r) q
         =
-        EconCSLib.Probability.expectedUpperOrderStatistic
+        AppliedModelingLib.Probability.expectedUpperOrderStatistic
           (MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure))
           ⟨r, hrq⟩ := by
           simpa [uniform01IidOrderStatisticMeanSeq, expectedOrderStatisticMeanSeq] using
-            EconCSLib.Probability.expectedSampleOrderStatisticMean_eq_expectedUpperOrderStatistic_of_rank_from_top
+            AppliedModelingLib.Probability.expectedSampleOrderStatisticMean_eq_expectedUpperOrderStatistic_of_rank_from_top
               (μ := MeasureTheory.Measure.pi (fun _ : Fin q => uniform01Measure))
               (a := q) (r := r) hrq
     _ = (q - r : ℝ) / ((q : ℝ) + 1) :=
@@ -1291,8 +1291,8 @@ noncomputable def uniformSqrtLowerAnchor {T : ℕ}
 theorem total_uniformSqrtUpperAnchor_le {T : ℕ} [NeZero T]
     (likelihood : ItemType T → ℝ) (N : ℕ)
     (hnorm : ∑ i, Real.sqrt (likelihood i) ≠ 0) :
-    (EconCSLib.Allocation.total (uniformSqrtUpperAnchor likelihood N) : ℝ) ≤ N + T := by
-  unfold uniformSqrtUpperAnchor floorCountAnchor EconCSLib.Allocation.total
+    (AppliedModelingLib.Allocation.total (uniformSqrtUpperAnchor likelihood N) : ℝ) ≤ N + T := by
+  unfold uniformSqrtUpperAnchor floorCountAnchor AppliedModelingLib.Allocation.total
   dsimp only
   have h_le : ∀ t, (⌊uniformSqrtShiftedTarget likelihood N t⌋₊ : ℝ) ≤ uniformSqrtShiftedTarget likelihood N t := by
     intro t
@@ -1307,8 +1307,8 @@ theorem total_uniformSqrtLowerAnchor_le_N {T : ℕ} [NeZero T]
     (likelihood : ItemType T → ℝ) (N : ℕ)
     (hnorm : ∑ i, Real.sqrt (likelihood i) ≠ 0)
     (h_interior : ∀ t, 1 ≤ uniformSqrtShiftedTarget likelihood N t) :
-    (EconCSLib.Allocation.total (uniformSqrtLowerAnchor likelihood N) : ℝ) ≤ N := by
-  unfold uniformSqrtLowerAnchor EconCSLib.Allocation.total
+    (AppliedModelingLib.Allocation.total (uniformSqrtLowerAnchor likelihood N) : ℝ) ≤ N := by
+  unfold uniformSqrtLowerAnchor AppliedModelingLib.Allocation.total
   dsimp only
   have h_ge1 : ∀ t, 1 ≤ ⌊uniformSqrtShiftedTarget likelihood N t⌋₊ := by
     intro t
@@ -1334,8 +1334,8 @@ theorem total_uniformSqrtLowerAnchor_eq_N_of_integers {T : ℕ} [NeZero T]
     (hnorm : ∑ i, Real.sqrt (likelihood i) ≠ 0)
     (h_interior : ∀ t, 1 ≤ uniformSqrtShiftedTarget likelihood N t)
     (hintegers : ∀ t, uniformSqrtShiftedTarget likelihood N t = ⌊uniformSqrtShiftedTarget likelihood N t⌋₊) :
-    (EconCSLib.Allocation.total (uniformSqrtLowerAnchor likelihood N) : ℝ) = N := by
-  unfold uniformSqrtLowerAnchor EconCSLib.Allocation.total
+    (AppliedModelingLib.Allocation.total (uniformSqrtLowerAnchor likelihood N) : ℝ) = N := by
+  unfold uniformSqrtLowerAnchor AppliedModelingLib.Allocation.total
   dsimp only
   have h_ge1 : ∀ t, 1 ≤ ⌊uniformSqrtShiftedTarget likelihood N t⌋₊ := by
     intro t
@@ -1361,8 +1361,8 @@ theorem total_uniformSqrtLowerAnchor_gt_N_sub_T_refined {T : ℕ} [NeZero T]
     (hnorm : ∑ i, Real.sqrt (likelihood i) ≠ 0)
     (h_interior : ∀ t, 1 ≤ uniformSqrtShiftedTarget likelihood N t)
     (hnot_integers : ∃ t, uniformSqrtShiftedTarget likelihood N t ≠ ⌊uniformSqrtShiftedTarget likelihood N t⌋₊) :
-    (N : ℝ) - T < (EconCSLib.Allocation.total (uniformSqrtLowerAnchor likelihood N) : ℝ) := by
-  unfold uniformSqrtLowerAnchor EconCSLib.Allocation.total
+    (N : ℝ) - T < (AppliedModelingLib.Allocation.total (uniformSqrtLowerAnchor likelihood N) : ℝ) := by
+  unfold uniformSqrtLowerAnchor AppliedModelingLib.Allocation.total
   dsimp only
   have h_ge1 : ∀ t, 1 ≤ ⌊uniformSqrtShiftedTarget likelihood N t⌋₊ := by
     intro t
@@ -1509,7 +1509,7 @@ noncomputable def sqrtLikelihoodProfile {T : ℕ}
 
 noncomputable def uniformSqrtMinShare {T : ℕ} [NeZero T]
     (likelihood : ItemType T → ℝ) : ℝ :=
-  EconCSLib.finiteMin
+  AppliedModelingLib.finiteMin
     (fun t : ItemType T =>
       Real.sqrt (likelihood t) / ∑ i : ItemType T, Real.sqrt (likelihood i))
 
@@ -1518,7 +1518,7 @@ theorem uniformSqrtMinShare_le_share {T : ℕ} [NeZero T]
     uniformSqrtMinShare likelihood ≤
       Real.sqrt (likelihood t) / ∑ i : ItemType T, Real.sqrt (likelihood i) := by
   unfold uniformSqrtMinShare
-  exact EconCSLib.finiteMin_le
+  exact AppliedModelingLib.finiteMin_le
     (fun t : ItemType T =>
       Real.sqrt (likelihood t) / ∑ i : ItemType T, Real.sqrt (likelihood i)) t
 
@@ -1572,7 +1572,7 @@ theorem targetShare_eq {T : ℕ}
 
 theorem approx_of_count_abs_error {T : ℕ}
     (likelihood : ItemType T → ℝ) (a : CountAllocation T) {N : ℕ} {C : ℝ}
-    (hN : EconCSLib.Allocation.total a = N) (hNpos : 0 < N)
+    (hN : AppliedModelingLib.Allocation.total a = N) (hNpos : 0 < N)
     (hclose :
       ∀ t,
         |(a.count t : ℝ) -
@@ -1598,7 +1598,7 @@ theorem forwardMarginal_le_backwardMarginal_of_optimum {T : ℕ}
     {a : CountAllocation T} {src dst : ItemType T}
     (hopt : (uniformTopOneConsumptionModel likelihood).IsOptimalAtTotal N a)
     (hne : src ≠ dst)
-    (hcan : EconCSLib.Allocation.CanMoveOne a src) :
+    (hcan : AppliedModelingLib.Allocation.CanMoveOne a src) :
     likelihood dst *
         (1 / ((a.count dst + 1 : ℝ) * (a.count dst + 2 : ℝ))) ≤
       likelihood src *
@@ -1607,7 +1607,7 @@ theorem forwardMarginal_le_backwardMarginal_of_optimum {T : ℕ}
   ConsumptionModel.weightedForwardMarginal_le_weightedBackwardMarginal_of_optimum (uniformTopOneConsumptionModel likelihood) N hopt hne hcan
   unfold ConsumptionModel.weightedForwardMarginal ConsumptionModel.weightedBackwardMarginal at h
   unfold ConsumptionModel.marginalValue at h
-  unfold EconCSLib.Allocation.marginal at h
+  unfold AppliedModelingLib.Allocation.marginal at h
   unfold uniformTopOneConsumptionModel at h
   dsimp only at h
   have hq : 0 < a.count src := hcan
@@ -1624,7 +1624,7 @@ theorem noRoundingCrossingBetween_of_strictExchangeCertificate {T : ℕ}
     (hlike_nonneg : ∀ t, 0 ≤ likelihood t)
     (horder : ∀ t, lower.count t ≤ upper.count t)
     (hcert : StrictRoundingExchangeCertificateBetween likelihood lower upper) :
-    EconCSLib.FiniteRounding.NoRoundingCrossingBetween
+    AppliedModelingLib.FiniteRounding.NoRoundingCrossingBetween
       (fun t : ItemType T => a.count t)
       (fun t : ItemType T => lower.count t)
       (fun t : ItemType T => upper.count t) := by
@@ -1636,7 +1636,7 @@ theorem noRoundingCrossingBetween_of_strictExchangeCertificate {T : ℕ}
     simpa [ConsumptionModel.StrictRoundingExchangeCertificateBetween,
       ConsumptionModel.weightedForwardMarginal, ConsumptionModel.weightedBackwardMarginal,
       ConsumptionModel.marginalValue, uniformTopOneConsumptionModel,
-      EconCSLib.Allocation.marginal, hlow_ne, uniformTopOneValue_succ_sub,
+      AppliedModelingLib.Allocation.marginal, hlow_ne, uniformTopOneValue_succ_sub,
       uniformTopOneValue_sub_pred hlow] using hcert high low hlow
   exact
     ConsumptionModel.noRoundingCrossingBetween_of_strictExchangeCertificate
@@ -1698,7 +1698,7 @@ theorem weightedForwardMarginal_eq_of_le {T : ℕ}
       likelihood t *
         (uniformTopKFactor k / ((q + 1 : ℝ) * (q + 2 : ℝ))) := by
   unfold ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-    EconCSLib.Allocation.marginal uniformTopKConsumptionModel
+    AppliedModelingLib.Allocation.marginal uniformTopKConsumptionModel
   dsimp only
   rw [uniformTopKValue_succ_sub_of_le hkq]
 
@@ -1783,14 +1783,14 @@ namespace UniformRounding
 
 theorem count_close_of_no_rounding_crossing_between {T : ℕ}
     (a lower upper : CountAllocation T) {N L U : ℕ}
-    (ha : EconCSLib.Allocation.total a = N)
-    (hlower : EconCSLib.Allocation.total lower = L)
-    (hupper : EconCSLib.Allocation.total upper = U)
+    (ha : AppliedModelingLib.Allocation.total a = N)
+    (hlower : AppliedModelingLib.Allocation.total lower = L)
+    (hupper : AppliedModelingLib.Allocation.total upper = U)
     (hNlt : N < L + Fintype.card (ItemType T) + 1)
     (hUlt : U < N + Fintype.card (ItemType T) + 1)
     (horder : ∀ t, lower.count t ≤ upper.count t)
     (hno :
-      EconCSLib.FiniteRounding.NoRoundingCrossingBetween
+      AppliedModelingLib.FiniteRounding.NoRoundingCrossingBetween
         (fun t : ItemType T => a.count t)
         (fun t : ItemType T => lower.count t)
         (fun t : ItemType T => upper.count t)) :
@@ -1798,7 +1798,7 @@ theorem count_close_of_no_rounding_crossing_between {T : ℕ}
       lower.count t < a.count t + Fintype.card (ItemType T) + 1 ∧
         a.count t < upper.count t + Fintype.card (ItemType T) + 1 := by
   exact
-    EconCSLib.FiniteRounding.NoRoundingCrossingBetween.count_close
+    AppliedModelingLib.FiniteRounding.NoRoundingCrossingBetween.count_close
       (fun t : ItemType T => a.count t)
       (fun t : ItemType T => lower.count t)
       (fun t : ItemType T => upper.count t)
@@ -1806,14 +1806,14 @@ theorem count_close_of_no_rounding_crossing_between {T : ℕ}
 
 theorem count_le_card_of_no_rounding_crossing_between {T : ℕ}
     (a lower upper : CountAllocation T) {N L U : ℕ}
-    (ha : EconCSLib.Allocation.total a = N)
-    (hlower : EconCSLib.Allocation.total lower = L)
-    (hupper : EconCSLib.Allocation.total upper = U)
+    (ha : AppliedModelingLib.Allocation.total a = N)
+    (hlower : AppliedModelingLib.Allocation.total lower = L)
+    (hupper : AppliedModelingLib.Allocation.total upper = U)
     (hNlt : N < L + Fintype.card (ItemType T) + 1)
     (hUlt : U < N + Fintype.card (ItemType T) + 1)
     (horder : ∀ t, lower.count t ≤ upper.count t)
     (hno :
-      EconCSLib.FiniteRounding.NoRoundingCrossingBetween
+      AppliedModelingLib.FiniteRounding.NoRoundingCrossingBetween
         (fun t : ItemType T => a.count t)
         (fun t : ItemType T => lower.count t)
         (fun t : ItemType T => upper.count t)) :
@@ -1822,7 +1822,7 @@ theorem count_le_card_of_no_rounding_crossing_between {T : ℕ}
         a.count t ≤ upper.count t + Fintype.card (ItemType T) := by
   intro t
   exact
-    EconCSLib.FiniteRounding.NoRoundingCrossingBetween.count_le_close
+    AppliedModelingLib.FiniteRounding.NoRoundingCrossingBetween.count_le_close
       (fun t : ItemType T => a.count t)
       (fun t : ItemType T => lower.count t)
       (fun t : ItemType T => upper.count t)
@@ -1841,14 +1841,14 @@ theorem sqrt_profile_approx_of_no_rounding_crossing_between {T : ℕ}
     (hNpos : 0 < N)
     (a lower upper : CountAllocation T) {L U : ℕ}
     (hnorm : (∑ i : ItemType T, Real.sqrt (likelihood i)) ≠ 0)
-    (ha : EconCSLib.Allocation.total a = N)
-    (hlower : EconCSLib.Allocation.total lower = L)
-    (hupper : EconCSLib.Allocation.total upper = U)
+    (ha : AppliedModelingLib.Allocation.total a = N)
+    (hlower : AppliedModelingLib.Allocation.total lower = L)
+    (hupper : AppliedModelingLib.Allocation.total upper = U)
     (hNlt : N < L + Fintype.card (ItemType T) + 1)
     (hUlt : U < N + Fintype.card (ItemType T) + 1)
     (horder : ∀ t, lower.count t ≤ upper.count t)
     (hno :
-      EconCSLib.FiniteRounding.NoRoundingCrossingBetween
+      AppliedModelingLib.FiniteRounding.NoRoundingCrossingBetween
         (fun t : ItemType T => a.count t)
         (fun t : ItemType T => lower.count t)
         (fun t : ItemType T => upper.count t))

@@ -1,8 +1,8 @@
 import KR21Monoculture.Basic
-import EconCSLib.SocialChoice.Ranking.Score
+import AppliedModelingLib.SocialChoice.Ranking.Score
 
-open EconCSLib
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib
+open AppliedModelingLib.SocialChoice.Ranking
 
 namespace KR21Monoculture
 

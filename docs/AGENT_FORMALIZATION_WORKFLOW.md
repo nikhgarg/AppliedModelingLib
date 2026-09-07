@@ -23,7 +23,7 @@ python3 scripts/formalization_protocol.py
   `docs/DependencyDAG.pdf` are the main human surfaces. Use
   `VALIDATION_MODEL.md` to explain status labels.
 - Agent-facing docs may be detailed and operational. This file,
-  `docs/ARCHITECTURE.md`, `docs/ECONCSLIB_DOMAIN_INDEX.md`, and
+  `docs/ARCHITECTURE.md`, `docs/APPLIEDMODELINGLIB_DOMAIN_INDEX.md`, and
   `skills/econcs-formalizer/` contain workflow rules and implementation
   conventions. Use `skills/econcs-prover/` for active Lean theorem proving and
   proof repair.
@@ -121,7 +121,7 @@ cataloguing of all prose or whole-paper cache invalidation.
 ### Theorem-Realization V11
 
 New papers and explicitly requested v11 upgrades set
-`review_surface.require_source_spec_correspondence: true`. It becomes a
+`review_surface.require_v11_raw_source_spec_screening: true`. It becomes a
 closeout gate for `formalized` and `formalized with caveat`, not an immediate
 error for a `not started` statement skeleton. Before Lean drafting, independently
 inventory every material source atom from exact pinned source-quote bytes. This
@@ -132,20 +132,21 @@ A material repair of a trusted legacy-v10 paper instead needs a current
 item-level v10 source and Lean review. It does not silently manufacture a v11
 source-to-Spec migration. An explicit v11 marker always strengthens this rule.
 
-For each claim-bearing endpoint at closeout,
-`source_spec_correspondence_schema: 1` requires a transparent `Spec : Prop`, a
-theorem/lemma whose Lean Meta type is exactly that `Spec`, plus
-atom-to-elaborated-Spec coverage and a full Lean closure receipt. The closure
-includes implicit proof and typeclass/instance arguments.
-Every material terminal has one explicit disposition: source atom, approved
-source correction/additional assumption, checked Lean derivation, or
-version-pinned foundation basis. No declaration, data, record, container,
-carrier, or function shape receives automatic credit. A written semantic bridge
-is independent review evidence, not a self-certifying assertion.
+For each selected endpoint at closeout, the current raw-source screening
+compares every byte-pinned source atom with one transparent `Spec : Prop`.
+The builder-issued Lean graph independently proves that the theorem/lemma has
+exactly that Spec type and owns the complete recursive semantic, proof,
+instance, and axiom closure. Do not issue a second
+`source_spec_correspondence` worksheet, atom-to-component bridge ledger, or
+terminal-node disposition ledger. No declaration, data, record, container,
+carrier, or function shape receives automatic credit merely from its name or
+kind; unresolved graph or semantic-review nodes fail closed in their owning
+lane.
 
-Reuse this lane per item only when the source atoms and exact quote pins, Spec
-closure, narrow closure environment, and theorem type are unchanged. Legacy v10
-records remain readable but cannot silently become v11 credentials.
+Reuse the source judgment and Lean graph only when their respective portable
+semantic identities remain unchanged. Legacy correspondence records remain
+readable under their recorded protocol but cannot silently become current v11
+credentials.
 
 The agent should think through the proof and formalization plan outside Lean
 before proving, especially where the paper is underspecified. Keep that plan in
@@ -187,7 +188,7 @@ must record the sections from
 - the shared-library reuse checkpoint for mathlib, cslib, optlib, potential
   upstream Lean sources from
   [`UPSTREAM_LEAN_SOURCES.md`](UPSTREAM_LEAN_SOURCES.md), and existing
-  `EconCSLib` APIs, including citation/provenance for any upstream material
+  `AppliedModelingLib` APIs, including citation/provenance for any upstream material
   used or ported;
 - the formal target map, including rows to fully prove, empirical/out-of-scope
   rows, and any explicit boundary that would remain if the paper cannot be
@@ -218,8 +219,8 @@ documents. Keep those private by default.
 
 Completed papers should also have:
 
-- `ProofInterface.lean` when implementation-facing theorem endpoints would make
-  `PaperInterface.lean` too large to review directly.
+- `ProofInterface.lean`, containing the distinct theorem/lemma proof endpoints
+  paired with the transparent Specs in `PaperInterface.lean`.
 - `ProofLedger.lean` when an exhaustive source-numbered proof endpoint ledger is
   useful. Do not create new `PostPaperAudit.lean` or `AuditLedger.lean` files;
   they are not human-facing audit surfaces and should be consolidated into
@@ -239,6 +240,81 @@ Completed papers should also have:
   source reading needs explanation. State the source anchor, current reading,
   and result-level effect; do not record audit chronology, proof-repair history,
   or Lean implementation detail there.
+
+### Existing papers assigned for current closeout
+
+A closeout assignment authorizes the routine current-protocol migration needed
+to reach an accepted receipt. An older theorem-wrapper interface, or a missing
+source map, `ProofInterface.lean`, `status.json`, audit ledger, DAG, packet,
+report, or closure artifact is not by itself a blocker and is not the final
+answer to the assignment. Read the pinned source and existing proofs, replace
+the paper-facing surface with one complete transparent Spec per source claim,
+create the exact-type proof endpoints and current source routes, repair the
+proof/interface seam, generate all required evidence and human-facing files,
+and continue to closeout.
+
+Do not migrate the old interface one wrapper at a time. Its declarations are
+proof-navigation candidates, not the source denominator. Reconstruct the
+source-only named-presentation inventory first and record a table from each
+source item to its one complete Spec plus any supporting implementation
+endpoints. Multiple specializations, probability components, rate corollaries,
+resource envelopes, or helper variants for one numbered source result normally
+remain proof support unless the source presents them independently. A
+one-Spec-per-old-wrapper rewrite must be rejected before freeze unless every
+row has its own exact pinned source presentation.
+An independently numbered appendix or supplement lemma remains a source claim
+even when it is used only inside the proof of a main-text theorem. Put it in
+the marked appendix/supplement section and keep it in the denominator; reserve
+proof-support-only status for Lean-introduced helpers or source proof text that
+is not independently presented as a named result.
+
+Build the source inventory from one combined source-only review surface. Run
+the deterministic named-heading scan as a hard floor, then—before using any
+Lean declaration, old interface row, or source-map classification—give the
+complete canonical source text to a reviewing agent. Record every additional
+material remark, observation, note, example, or unlabelled result it finds by
+exact source locator in the same `candidate_presentations` list. Explicitly
+classify every mechanical and holistic candidate as a normal material claim or
+deep-audit material; an empty list must still be recorded. This is an intake
+completeness decision, not a source-to-Lean semantic verdict.
+Inspect mixed prose blocks rather than treating a visible definition heading as
+the end of the presentation. A sentence beside a definition may separately
+assert existence, uniqueness, an implication, or another theorem-like fact;
+that assertion is its own candidate when the source independently presents it.
+
+Do this in one pre-audit migration pass: run the read-only structural diagnosis
+once, collect the full deficiency list, refactor the complete source-facing
+surface, obtain one focused build, and freeze it before semantic screening.
+Thereafter execute only the closeout planner's named successor and repair only
+the item it identifies. Do not alternate between partial interface edits and
+whole-paper receipt generation. Request a user decision only for missing source
+material, a substantive source ambiguity, a new assumption/correction, or a
+proof obstruction that would change the agreed theorem—not for routine
+protocol files or generated presentation artifacts.
+
+After drafting the complete source-facing interface and before issuing semantic
+judgments, run the first adversarial source-to-interface audit. Reread the full
+source against the expanded Lean surface, repair the complete deficiency list,
+and rebuild once. This is a repair pass, not acceptance evidence; do not mark
+`docs/AGENT_SOURCE_AUDIT.md` as final here.
+
+After the interface, proofs, prerequisites, machine evidence, and compiled
+inputs are stable, let the closeout planner freeze their exact operational
+transaction and project its location-neutral semantic audit surface. When it
+schedules `perform_final_adversarial_source_audit`, reread the complete source
+once more and write `docs/AGENT_SOURCE_AUDIT.md`, including this line for that
+exact semantic surface:
+
+    - Reviewed final holistic audit surface identity: `<sha256>`
+
+Compare the final expanded Lean surface for omissions, candidate
+misclassification, hidden strengthening or weakening, and semantic mismatch.
+Green item-level gates, source-only intake, and the first adversarial repair
+pass do not substitute for this final surface-bound check. Any source, status,
+semantic-target, prerequisite, or proof-contract repair changes the surface and
+requires the final audit to bind the replacement identity. Pure path, line,
+module, declaration-name, build, or tool-routing changes do not require another
+human audit when the planner proves the full semantic surface unchanged.
 
 ## What The Agent Should Keep Current
 
@@ -275,14 +351,16 @@ Completed papers should also have:
 - `AuditInterface.lean`: optional implementation/proof-support surface for
   bulky aliases and helper endpoints. It may be imported by
   `PaperInterface.lean`, but it must not be configured as the review surface.
-- `ProofInterface.lean`: optional implementation-facing theorem endpoint
-  surface for broad wrapper families and proof-seam checks.
+- `ProofInterface.lean`: required current-protocol theorem endpoint surface,
+  distinct from the one-row-per-source-claim semantic review surface.
 - `ProofLedger.lean`: optional exhaustive proof endpoint ledger when useful;
   `PostPaperAudit.lean`/`AuditLedger.lean` files are not review surfaces and
   should be consolidated into `ProofLedger.lean` during ordinary maintenance.
 - `FINAL_VALIDATION_REPORT.md`: final human report.
-- `audit/*.json`: LLM-as-judge, source-statement-map, source-record, and
-  assumption-provenance sidecars.
+- `audit/*.json`: current source-to-Spec, source-coverage,
+  prerequisite-semantic, assumption-provenance, proof-fidelity, and accepted-
+  graph artifacts. Historical source-record sidecars may remain as provenance
+  but are not a current closeout lane.
 
 Completed papers with a configured source-proof fidelity ledger must use
 schema 2. Every defect entry needs `status_impact` and
@@ -317,7 +395,7 @@ as the theorem statement and assumptions are explicit.
 Before declaring a paper complete, run a library elevation pass over the
 paper-local proof modules. Check whether any proof results, proof techniques,
 certificate constructors, model-neutral definitions, or reusable primitives
-should move into `EconCSLib` for other papers to reuse. Elevate local/low-risk
+should move into `AppliedModelingLib` for other papers to reuse. Elevate local/low-risk
 items when the destination module is clear and the build can be checked. If the
 move needs broader API design, keep the paper-facing wrapper in place and record
 the candidate, destination module, and reusable proof idea in
@@ -361,8 +439,8 @@ proof-boundary section variables, axiom/opaque placeholders, and guarded debug
 commands, and to list shared-library APIs with certificate/source-boundary
 parameters. Then check that no completed paper wrapper still exposes one.
 The same pass rejects reusable `Assumption`/`Hypothesis` declarations and
-paper/source provenance wording in `EconCSLib/*.lean`, and requires the
-root-imported `EconCSLib.LibraryDefinitionAudit` module for standard-name
+paper/source provenance wording in `AppliedModelingLib/*.lean`, and requires the
+root-imported `AppliedModelingLib.LibraryDefinitionAudit` module for standard-name
 definitions. When adding a standard wrapper such as a convexity, concavity,
 order, metric, or probability notion, add a build-checked equivalence lemma in
 that audit module against the mathlib or local canonical definition.
@@ -390,14 +468,14 @@ on every run and reports direct certificate/source-boundary APIs and
 source-shaped reusable definitions; do not check in a dependency index.
 The reusable-library parser covers theorem, lemma, def, abbrev, structure,
 class, and inductive declarations. A proof-boundary structure or package may
-live in `EconCSLib/`, but a paper-specific formula/window/row/source name should
+live in `AppliedModelingLib/`, but a paper-specific formula/window/row/source name should
 not be baked into the reusable API.
 
 The repository audit also includes a source-hygiene pass for generic code. It
 discovers paper IDs and citation prefixes from the `papers/` folders, then
 rejects those concrete references in reusable code, audit scripts, and generic
 workflow docs. It also rejects paper theorem-number labels such as `Theorem 2`
-or `Lemma 4.1` in `EconCSLib/` comments. The check is intentionally standard-
+or `Lemma 4.1` in `AppliedModelingLib/` comments. The check is intentionally standard-
 based rather than function-name-based: paper metadata belongs in paper-local
 files or data config, source theorem numbering belongs in paper interfaces and
 validation reports, and reusable code should use domain or algorithm names.
@@ -423,31 +501,65 @@ When the agent says a paper is done, inspect:
 5. `ProofLedger.lean`, only if an exhaustive proof endpoint ledger is needed
 
 The post-formalization audit must inspect the report and DAG before handoff.
-After the final report, post-formalization audit, or DAG source changes, freeze
-those inputs and begin the closeout with:
+Do not write those terminal products against a still-moving interface merely
+to make intake look complete. Once the source map and paper interface are
+stable, begin or resume closeout with:
 
 ```bash
 python3 scripts/closeout_reuse_plan.py --paper <paper>
 ```
 
-Execute only its current `next_action`; when it schedules strict closeout, use
-the exact `run_paper_closeout.py` command it prints. That worker owns the
+Execute only its current `next_action`. The planner first freezes source
+inventory, acquires the Lean-owned graph, completes semantic review, establishes
+source-to-Spec correspondence, and obtains the focused build. Only after those
+lanes are current does `complete_terminal_closeout_documents` require the final
+report and DAG. At that action, write `FINAL_VALIDATION_REPORT.md` and
+`docs/DependencyDAG.tex` from the selected final surface, compile
+`docs/DependencyDAG.pdf`, visually inspect it, and rerun the planner. Missing or
+revised presentation products never invalidate the retained graph or semantic
+judgments. When the planner subsequently schedules strict closeout, use the
+exact `run_paper_closeout.py` command it prints. That worker revalidates the
 targeted DAG/final-report and semantic closeout gate: completed or conditional
-papers must name the DAG TeX/PDF artifacts, record rendered/visual DAG
-inspection evidence, include validation checks, and avoid stale placeholder
-language such as `not checked` or `not run`.
+papers must name the DAG TeX/PDF artifacts, record visual inspection in the
+`DAG Audit` or `DAG Status` section, include validation checks, and avoid stale
+placeholder language such as `not checked` or `not run`.
 
-When the planner schedules a raw reissue, do not interleave a build, dashboard
-refresh, or sidecar write. Freeze inputs, issue one raw candidate, validate any
-authenticated structural replay against that exact raw/map pair, then compute
-reuse and materialize only the remaining semantic delta. A changed input returns
-to the planner; an unchanged failure is inspected rather than retried. Check a
-busy source-record worker with
-`python3 skills/econcs-formalizer/scripts/source_record_audit.py --root . --lock-status`.
-That command is diagnostic only: never delete or replace the lock to force a
-new scan. Execute a planned raw reissue only through the printed
-`closeout_reuse_plan.py --execute-freeze-raw-reissue` wrapper. A current raw
-with a malformed judgment sidecar needs reconstruction, not a raw scan.
+A low-level audit, source-record producer, dashboard refresh, or sidecar
+generator is not a routine frozen-closeout precursor. Run one only when the
+planner schedules it or when a named failure requires that exact diagnostic;
+then return to the planner rather than treating the diagnostic as acceptance.
+
+The worker also finalizes closure inside the same passing strict transaction:
+its issuer-protected runtime pass publishes the accepted graph and writes the
+schema-6 human pointer before success is reported. A planner result with
+`closeout_complete: true` has no further action. A serialized worker result
+cannot be finalized later; if in-process publication failed, inspect the result
+and rerun the exact current transaction. Unchanged Lean graph and semantic
+judgments remain reusable, while the cheap gates and complete tracked-module
+elaboration rerun.
+
+The current planner never schedules a historical source-record raw reissue.
+An unclosed paper without the v11 graph-native surface receives
+`upgrade_to_current_protocol`; prepare that surface rather than manufacturing
+a new legacy raw receipt. Existing accepted historical graphs remain valid
+under their recorded protocol and are not reopened merely by this producer
+retirement.
+
+Prospective v11 planning uses exactly one source-intake authority. New intake
+uses the reviewed source-inventory plan and its exact materialized source map;
+an already-open migration may retain its selected tracked intake freeze. The
+typed route preflight and builder-issued semantic transaction own all later
+checks. The planner does not separately reopen the dashboard's legacy coverage
+sidecar or reconstruct source-to-Spec cards from presentation rows.
+
+Once the cheap protocol and saved-review-container checks pass, the planner
+loads one current Lean graph checkpoint into one evidence snapshot transaction.
+It retains that context and uses the graph's exact Spec, paper-prerequisite,
+and reusable-library target projection for all semantic-review deltas and later
+strict checks. Reviewer-material commands use `--v11-review-graph`; packet and
+dashboard caches are generated later for presentation and are never target or
+reuse authority. A missing graph schedules the single graph-preparation action
+rather than falling back to packet bytes or a second Lean/context pass.
 
 For a named failure diagnosis only, a maintainer may run the underlying audit
 without creating a competing execution record:
@@ -485,7 +597,7 @@ For reusable library work during active paper development, stay targeted:
 
 ```bash
 lake build <touched-library-module>
-lake build <active-paper-root>
+lake build +<touched-paper-module>
 git diff --check
 ```
 
@@ -499,7 +611,7 @@ At integration, release, or an explicitly requested repository-wide stopping
 point, broaden validation as appropriate:
 
 ```bash
-lake build EconCSLib
+lake build AppliedModelingLib
 python3 scripts/sync_paper_status.py --check
 python3 scripts/audit_repository.py --include-active --library-premise-audit --info-limit 0
 git diff --check
@@ -509,14 +621,15 @@ The broad audit checks whether existing LLM-as-judge sidecars are current. It
 does not require regenerating or rerunning judge sidecars for every paper unless
 the user explicitly asks for an all-paper refresh.
 
-For paper closeout or post-formalization work, batch the final report and DAG
-updates, freeze them, and run the planner:
+For paper closeout or post-formalization work, begin with the planner:
 
 ```bash
 python3 scripts/closeout_reuse_plan.py --paper <paper>
 ```
 
-Follow only its dependency-ordered action. Treat the paper-specific DAG/report
+Follow only its dependency-ordered action. When it schedules
+`complete_terminal_closeout_documents`, write and inspect the final report and
+DAG, then replan. Treat the paper-specific DAG/report
 findings from its strict worker as blockers for a completion claim, even if
 unrelated global repository findings remain. Use a direct
 `audit_repository.py --paper-closeout --no-closeout-state` invocation only to
@@ -526,19 +639,20 @@ The unfiltered full repository audit is a closeout/public-promotion check. It
 is available through manual CI dispatch and should not run on routine push/PR
 CI for ordinary documentation or proof-development churn.
 
-At paper closeout, build the complete paper root serially:
+At paper closeout, pass every tracked paper-owned Lean module to one
+single-threaded, dependency-aware rehashed Lake transaction:
 
 ```bash
-env LEAN_NUM_THREADS=1 lake build <PaperRoot>
+env LEAN_NUM_THREADS=1 python3 scripts/private_paper_checkpoint.py <PaperRoot>
 ```
 
-Use `lake build <PaperRoot>.PaperInterface` only as a faster proof-iteration
-check. Passing the interface alone is not a paper closeout build.
+Use `lake build +<TouchedPaperModule>` as a faster proof-iteration check.
+Passing one interface or root module alone is not a paper closeout build.
 
 The full target:
 
 ```bash
-lake build EconCSLib
+lake build AppliedModelingLib
 ```
 
 is an integration/public-release gate when that aggregate target is part of the
@@ -565,405 +679,83 @@ The dashboard also shows compact paper-source action links (open PDF/text file) 
 quick jumps back to the source statement when needed.
 Paper-side formulas are rendered with MathJax when they look like LaTeX.
 
-At the beginning of a paper, run a lightweight statement target-setting pass
-before spending much time on proofs:
+## Current statement and semantic-review route
 
-1. First complete the `FORMALIZATION_PLAN.md` initial outside-Lean paper audit:
-   source/version inventory, source-only named-presentation receipt,
-   formula/dependency sanity check, shared-library reuse checkpoint, formal
-   target/boundary map, suspected bugs or source ambiguities, and the next
-   proof seam. Pin the exact artifact bytes used by that inventory with
-   top-level `source_artifact_path` and `source_artifact_sha256`; an URL or
-   digest without the bytes is not source evidence. Use normal
-   `named_theoretical_statements` scope unless the user asks for the explicit
-   deep all-prose audit.
-2. Independently inventory every material source atom from exact pinned quote
-   bytes, then build the initial source inventory and a compact
-   `PaperInterface.lean` skeleton containing every in-scope paper-facing
-   definition and named statement. In normal mode, do not create independent
-   rows for ordinary prose, captions, figures, tables, numerical examples,
-   simulations, or empirical material. Record an unlabelled condition only
-   when it is a dependency of an in-scope item. Give each in-scope
-   theorem/formula claim a transparent complete source-shaped `Spec : Prop` and
-   a theorem/lemma with exactly that type, using `by sorry` only as the temporary
-   private proof body. Do not use `axiom`, `opaque`, a theorem package, or a new
-   assumption to make the skeleton compile. Identifiers and type/container shape
-   cannot fill an atom or source-semantic gap.
-3. Generate `audit/lean_to_tex_llm.json` from those Lean statements alone, with no
-   paper context. The translation must preserve every visible binder,
-   hypothesis, domain condition, equivalence/implication direction, and
-   conclusion.
-4. Generate `audit/statement_match_llm.json` by asking a separate judge to compare
-   only the complete original paper statement and the Lean-to-TeX draft. A
-   `matches` verdict requires the same hypotheses, subparts, quantifiers,
-   domains, constants, normalizations, signs, inequality directions, and
-   conclusions; conditional wrappers, omitted source subclaims, source-row
-   packages, and broad aggregates must be marked `mismatch` or `uncertain`.
-   The source curator and this judge must independently check that the
-   `source_obligations` list exhausts the complete pinned excerpt; its strings
-   are curated semantic atoms, not mechanically guaranteed by the source
-   statement digest.
-5. Run `python3 scripts/audit_conclusion_provenance.py --paper <paper> --json`
-   on the skeleton. Resolve conclusion-bearing inputs before proof work; a
-   `sorry` is more honest at this phase than importing the target through a
-   premise.
-6. Run `python3 scripts/review_dashboard.py --paper <paper> --refresh-cache` to
-   regenerate the Lean declaration manifests, then run
-   `python3 scripts/review_dashboard.py --paper <paper> --statement-precheck`.
-   Finish the paper's focused Lean build before freezing the reviewed
-   signatures. Reuse unchanged rows at item granularity: source semantic digest
-   plus current quote anchor plus unique elaborated signature/dependency
-   fingerprint. For v11 realization evidence, the item identity additionally
-   binds source atoms, Spec closure, narrow closure environment, and exact
-   theorem type. Do not invalidate an entire paper because another paper or an
-   unrelated source line changed. Serialize explicit cache writers against the
-   same paper surface, but normal JSON/precheck reads are read-only. Refresh
-   only after the relevant interface/source-map/sidecar evidence changes, not
-   after a report-only edit or every proof helper.
-7. Run `python3 scripts/review_dashboard.py --paper <paper> --assumption-precheck`
-   before treating statement matches as certified targets. The statement judge
-   is row-local; it does not prove that theorem premises are source assumptions
-   or derived facts.
-8. Fix mismatches by editing `PaperInterface.lean` unless the translation is
-   plainly wrong. Treat unresolved uncertainty as an explicit source/target
-   ambiguity before proof work begins.
-9. Record the current schema-6 canonical Lean declaration-manifest SHA-256 for every
-   matched row in `FORMALIZATION_PLAN.md`. This is the statement freeze. V6
-   includes definition/abbreviation values and name-free fingerprints of
-   repository-local reducible dependencies, rather than freezing only a
-   theorem's surface type. Implement proofs by
-   replacing `sorry` without changing the elaborated type. If a type changes,
-   its judgment is stale and steps 3--9 must be repeated for that row.
+At the beginning of a paper, establish the complete source surface before
+proof search:
 
-This initial pass is intentionally smaller than the full review workflow: do not
-update the DAG, final validation report, human-review log, or review-surface
-audit just for this target-setting pass. Its purpose is to make sure the Lean
-statements are the right theorem targets before they become expensive to prove;
-it is valid only together with the assumption/hidden-premise check above. Draft
-`sorry` bodies are allowed only in this private target-setting phase; every
-closeout/publication check must reject them.
+1. Byte-pin one exact source version and complete the outside-Lean inventory,
+   formula/dependency sanity check, scope selection, and working memo described
+   by the intake stage guide.
+2. Create actual source models and definitions plus one transparent complete
+   `Spec : Prop` for each selected source claim in `PaperInterface.lean`.
+   Put the distinct theorem/lemma endpoints in `ProofInterface.lean`; a
+   temporary private `by sorry` is an honest target skeleton, never evidence.
+3. Run the one non-certifying architecture pre-pass, repair role confusion,
+   hidden result packages, and accidental implementation premises, then freeze
+   the reviewed source map and interfaces before expensive proof work.
+4. Let Lean acquire the complete selected declaration graph and recursive
+   premise/proof/instance closure through the current planner route. Python may
+   transport that typed result but must not rediscover Lean semantics from
+   source text, names, declaration kinds, or regular expressions.
+5. Give the semantic judge only the ordered byte-pinned source-anchor bundle,
+   any explicitly pinned context needed to interpret it, and the fully expanded
+   transparent Spec emitted from Lean. Never interpose a Lean-to-TeX
+   translation, curator paraphrase, theorem label, wrapper theorem, or map
+   summary as semantic evidence. Every source atom must be accounted for and
+   every Lean premise/conclusion atom must be aligned or reported unresolved.
+6. Apply the same direct semantic standard to every material paper-local and
+   reusable-library prerequisite. Ordinary registered foundations may
+   terminate at their trusted boundary; unusual or materially source-defining
+   concepts remain recursively reviewable by judgment.
+7. Put each genuine source assumption or external theorem boundary in the
+   explicit assumption/provenance lane. A displayed formula, certificate,
+   witness, source row, normalization, or proof convenience is not a source
+   assumption merely because a helper accepts it.
+8. After proof realization is complete, run the planner-scheduled independent
+   holistic source audit over the full pinned source inventory, final expanded
+   Specs, material prerequisites, proof routes, and classified exclusions.
+   This is an adversarial completeness check, not a substitute for row-level
+   semantic review.
 
-Pinned source artifacts are ignored by default for redistribution safety. A
-fresh checkout therefore cannot reproduce the source-byte attestation unless a
-secured CI input downloads/provisions the exact artifact and verifies its hash,
-or the artifact was deliberately tracked after a rights review. In the absence
-of those bytes, CI must report source certification pending; never turn the
-recorded digest alone into a pass.
-
-At final closeout, the repository audit is the enforcement layer for the same
-evidence. Completed papers should fail `python3 scripts/audit_repository.py` if
-statement-translation sidecars, review-surface sidecars, or assumption
-provenance are stale, missing, uncertain, mismatched, or otherwise flagged.
-Use dashboard commands for quick paper-local diagnosis, but do not rely on a
-JSON export alone when the hidden-premise lane needs Lean expansion.
-Audit evidence is fail-closed. Blank template sidecars, parse failures, missing
-files, missing prompt versions, stale prompt versions, missing current digests,
-missing validator/model identity, missing timestamps, stale source inventories,
-stale dashboard surfaces, unrecognized judgments, failed judge runs, and items
-without explicit success verdicts are all alarms. The audit should move from
-pending/failing to passing only after a current run records the exact version,
-inputs, validator metadata, and recognized success judgment for the current
-Lean and paper source.
-For public-facing closeout, this includes an explicit current
-`audit/review_surface_llm.json` pass even when the dashboard has 30 or fewer rows; the
-30-row threshold is an early workflow prompt, not a closeout exemption.
-
-At a statement-review boundary, run the independent LLM statement workflow:
-
-1. Curate `PaperInterface.lean` to the paper-facing Lean definitions and named
-   statements that should actually be formalized.
-   If the dashboard has more than 30 rows, run a separate no-paper-context LLM
-   review-surface audit and save `audit/review_surface_llm.json`; if it has 50 or
-   more rows, treat that as an oversized-surface warning and curate before broad
-   human review.
-2. Ask a separate LLM, with no paper context, to translate each current Lean
-   statement into paper-style LaTeX/prose. Save stable outputs in
-   `audit/lean_to_tex_llm.json`. New tracked entries should use
-   `{ "tex_statement": "...", "lean_statement_sha256": "..." }` so stale
-   translation drafts can be detected, and the sidecar should record
-   `prompt_version: "lean-to-tex-v3-strict-context-free-semantic-inputs"`. The translation
-   prompt must require every visible binder, hypothesis, domain condition,
-   named predicate/wrapper application, equivalence or implication direction,
-   and conclusion to survive unchanged in the prose/LaTeX rendering. It must
-   not turn a named premise into a theorem label, source-like phrase, or
-   proof-route summary.
-3. Ask an independent semantic LLM judge, with no Lean/proof context, to compare
-   the original paper statement against the translated LaTeX/prose. Save verdicts and reasons in
-   `audit/statement_match_llm.json`, including current Lean, paper, and TeX statement
-   digests plus validator/model metadata, and record
-   `prompt_version: "statement-match-v10-semantic-fidelity-seat-stopping"` for
-   compatibility with the established v10 gate. That identifier is a version
-   label, not a source-scope or domain classifier; new fidelity-risk records
-   use the domain-neutral v3 execution schema. The judge must compare the full
-   source statement semantically, not just the theorem
-   label, qualitative claim, phrase overlap, or source-looking Lean name. It
-   should expand or otherwise inspect named predicates/wrappers enough to decide
-   whether every Lean premise is source-backed or derived. It should reject or
-   mark uncertain any omitted subpart, added non-source hypothesis, hidden
-   strengthening inside a named predicate, changed quantifier/domain, changed
-   constant or normalizer, sign error, inequality-direction change, broad
-   aggregate row, source-row package, certificate/replay/process/bridge
-   package, or weakened/strengthened theorem.
-   Every row must also enumerate `source_obligations` and `lean_obligations`
-   with explicit `parameter`/`assumption`/`conclusion` kinds, then relate them in
-   `obligation_alignment`. Each Lean obligation must reference exactly one
-   machine-generated signature atom with `signature_ref`; the refs must cover
-   every elaborated binder and the final conclusion exactly once, and the row
-   must record the current `lean_signature_sha256`. Every source obligation needs an exact locator, and
-   every alignment needs an explicit mathematical `bridge_statement`. A match
-   is invalid if any source conclusion is unmatched or any Lean input
-   lacks a source implication/equivalence. Gap lists contain obligation ids,
-   not prose. A conditional-boundary resolution may document an extra Lean
-   assumption but never an unmatched/weakened source conclusion. Ledger ids and
-   declaration names are routing only, never evidence.
-   Every row must also carry the versioned `fidelity_risk_review` inside
-   `semantic_scope_review`. Review all five dimensions from expanded source and
-   Lean semantics, even when a dimension is inapplicable:
-   source output arity/shape and terminal projection; nonvacuous adversarial
-   action spaces with carrier, capacity, and duplicate interactions; coherent
-   realization of combined candidatewise extrema with actual-runner or checked
-   refinement evidence; syntactic-family cardinality versus nonempty realized
-   fibers, with surjectivity before exact equality; and execution scope across
-   input domains, state transitions, termination conditions, numeric
-   representation, cost claims, and any bridge from local execution to the
-   advertised global result.
-   Each applicable match must cite source and elaborated-Lean obligation ids and
-   bind its semantic evidence to a Lean conclusion. A restricted input class,
-   local transition, incomplete termination argument, mismatched numeric model,
-   or local work count cannot be promoted to an end-to-end or polynomial claim
-   without a checked global bridge.
-   Function, theorem, field, and dimension names only route this review.
-4. For every displayed or source-defining formula used by a selected
-   paper-facing result, verify the exact signs, constants, quantifiers,
-   inequality direction, normalizing factors, domains, and hypotheses through
-   that result's transparent realization evidence. An exact helper/subclaim row
-   may make this dependency legible, but it is not an independent normal-scope
-   obligation unless the source presents it as named theory. If the formula is
-   not derived from source model primitives in Lean, it is a visible proof
-   boundary for the selected result, not a completed theorem.
-5. If any paper-facing theorem has a premise that is not derived in Lean,
-   declare it in paper-local `Assumptions.lean`, list it in `status.json`
-   `review_surface.assumption_names`, and ask a separate source-assumption
-   judge to confirm that it is an explicit paper/source model assumption. Save
-   this in `audit/assumption_match_llm.json`, with
-   `prompt_version: "assumption-provenance-v3-semantic-exact-premise-source"`.
-   Do not try to hide such a premise by making the `PaperInterface.lean` row an
-   `abbrev` alias to a proof-facing theorem. The audit expands review-surface
-   declarations and direct paper-local alias targets, then uses Lean-native
-   `#print axioms` on paper-facing rows for transitive proof debt. Any visible
-   certificate, source-row equation, external theorem, or proof-boundary witness
-   still counts unless it is derived or routed through the explicit assumption
-   ledger.
-   If `Assumptions.lean` uses `-- audit-premise:` comments, group approval is
-   not enough: every exact premise must have an `audit/assumption_match_llm.json`
-   `premise_judgments` entry with a source location. Mark non-source or
-   not-yet-derived premises as `partial_boundary` and keep the paper status
-   partial until those premises are derived or source-matched.
-   The assumption judge must decide each exact premise independently. A
-   displayed formula, capacity equation, threshold identity, normalization,
-   density or mass row, source-row package, certificate, witness object, or
-   proof convenience is not a source assumption merely because it appears in a
-   proof or can be consumed by a Lean helper. It is acceptable only if the
-   source states it as an assumption or theorem condition, or if Lean derives it
-   from previously validated source primitives.
-   This applies equally when the premise comes from a reusable library theorem.
-   A direct paper alias to a library theorem that takes a certificate, witness,
-   source-row package, or external-boundary parameter is conditional unless the
-   paper wrapper constructs that argument internally or exposes it as a
-   validated paper assumption. Run
-   `python3 scripts/audit_repository.py --library-only --library-premise-audit`
-   after reusable-library edits to inventory direct certificate/source-boundary
-   APIs and source-shaped reusable names; combine that inventory with the
-   paper-facing `#print axioms` audit and expanded-statement review.
-6. If any reviewed theorem mentions a record, certificate, replay, process,
-   bridge, source-row package, or broad model predicate, generate
-   `audit/source_record_audit.json` with the skill helper during active
-   target-setting or to diagnose a named source-record failure, and save
-   `audit/source_record_match_llm.json` with `prompt_version:
-   "source-record-v10-semantic-conclusion-boundary-contract"`. Every proposition or
-   unknown non-data visible input and every recursively reached record field
-   input needs source evidence, a Lean derivation from paper primitives, an
-   approved external boundary, or an unresolved finding. A source-looking Lean
-   name or theorem label is not evidence. Once the paper is frozen for closeout,
-   do not invoke the raw producer directly: the planner decides whether existing
-   raw evidence is reusable, needs a judgment-only repair, or needs one
-   serialized raw transition.
-   A direct statement match never proves a caller-supplied conclusion-bearing
-   premise or model record. A builder returning `Record` proves only that it
-   can build some record, not that it equals the visible argument; retain
-   field-level source evidence unless a reviewed equality/reconstruction bridge
-   identifies the argument.
-   The generated semantic-model lane is type-shape driven. If it marks
-   `carrier_and_domain.requires_cardinality_boundary_analysis_when_detected`, the
-   judgment must include `cardinality_boundary_analysis` with the source and
-   Lean cardinal domains, endpoint cases checked, strictness witness/reason, and
-   Lean boundary evidence. If it marks
-   `joint_law_and_state_evolution.requires_transformed_law_analysis_when_detected`,
-   include `transformed_law_analysis` with source/Lean operations, the full
-   parameter-domain/endpoints account, normalization or pushforward evidence,
-   outcome-equivariance/no-relabeling evidence, and a Lean semantic bridge. An
-   explicit no-transform or no-strictness finding is still a semantic judgment,
-   never an inference from a declaration name.
-   Do not duplicate an ordinary visible-premise judgment when a current,
-   gap-free v10 row already checks that exact declaration through a selected
-   normal-scope named theorem, proposition, lemma, corollary, definition, or
-   visibly source-labelled claim/condition. Standalone remarks, formulas,
-   equations, algorithms, and algorithmic formulas are deep-only and cannot
-   manufacture this normal-scope discharge. A selected row can cover only the
-   ordinary premise surface; it never resolves a semantically identified
-   conclusion dependency, including a caller-supplied record or certificate
-   input. Those fields remain subject to recursive v10 inspection.
-   The static lane expands parsed records through both `abbrev` and reducible
-   `def` type aliases and follows imported repository records. Its data/proof
-   decision uses instantiated types and `Type`/`Sort` binder kinds; renaming a
-   structure, field, theorem, constructor, or generic carrier must not change
-   the verdict.
-   An author-approved corrected model is a distinct closeout scope, not a
-   shortcut around source fidelity. Pin the approval memo and archive, set
-   `archival_equivalence_claimed: false`, and bind the complete canonical
-   content of every governing correction. The current source-record audit must
-   enumerate the expanded semantic items, each by fully qualified declaration
-   and digest. Its corrected-model semantic contract must map every such item,
-   every detected dimension, every target result, and every visible model or
-   assumption condition to exact generated items and qualified declarations.
-   Include checkable source locators, source-vs-Lean comparisons, exact Lean
-   evidence, approval evidence for nonliteral conditions, and checked bridge
-   declarations present in the current imported paper-local surface. Never use
-   a final component, field name, binder name, or correction ID alone as a
-   match; ambiguity or staleness fails closeout.
-   Recursive traversal must also preserve function direction. A proposition
-   stored in a record or returned by one of its fields is package evidence; a
-   proposition inside the exact source-step object accepted as an argument to
-   a record method is a caller-supplied antecedent. Do not classify that nested
-   argument as a stored result merely because one of its constructor fields is
-   syntactically equal to a component of the reviewed row's conclusion.
-   A certificate that is constructed internally from already proved primitives
-   is discharged; a certificate that is merely consumed by a helper remains a
-   premise of every paper-facing theorem that depends on that helper.
-   Compare visible proposition premises structurally with each theorem's
-   advertised result. A supplied premise equivalent to, providing, or logically
-   composing advertised feasibility, cost, runtime, or optimality is
-   conclusion-bearing proof debt and cannot cover that same source theorem,
-   regardless of declaration or binder names.
-   Apply the same five fidelity-risk checks to boundary records and helper
-   premises. In particular, an adversarial universal can be vacuous after a
-   validity filter, independent per-candidate extrema may have no joint witness,
-   and a syntax-level family count is not the number of nonempty semantic fibers
-   without a surjectivity theorem.
-   Audit algorithmic complexity from the executable's transitive semantic
-   operational dependency graph across every branch reachable over the claimed
-   input domain. Extensional or refinement correctness does not transfer a
-   runtime bound. A cached or memoized executor must expose that no reachable
-   recursive branch evaluates the old semantic closure or oracle after
-   materialization; function and declaration names are routing only, not
-   evidence. Charge traversal and enumeration length, duplicates,
-   materialization/rebuilding, representation and container primitives, and
-   exact-rational bit growth. Any excluded item requires withholding the
-   corresponding full runtime match. Also require a worst-case recurrence or
-   equivalent bound over all reachable branches. When eliminating closure
-   recomputation is material, require a cost-threaded executor or generated
-   IR/C evidence pinned by source and artifact digests to the exact audited
-   build, with a semantic source binding; absence of a symbol name is not
-   evidence after renaming or inlining.
-   An exact `matches` judgment at `polynomial_time` must include
-   `operational_complexity_review.schema_version:
-   "operational-complexity-review-v1-transitive-work-accounting"`. The
-   dashboard rejects a missing review, incomplete reachable-branch graph,
-   missing worst-case recurrence or bound, unpinned material closure evidence,
-   and any work item marked `missing` or `excluded_by_claim`.
-   For a repaired source defect or a claim whose correctness depends on an
-   executable/runtime, preprocessing, counterexample, or refinement bridge,
-   opt the source map into `semantic_contract_schema: 1`. Mark the item
-   `claim_bearing: true`, classify every other map item explicitly as true or
-   false, and give each true item `semantic_contract` with a reviewed transparent
-   Prop specification (`spec_declaration`), a reviewed theorem/lemma
-   (`evidence_declaration`), `evidence_mode: proves|refutes`, and
-   `semantic_shape: plain`. The full audit asks Lean Meta whether the evidence
-   has exactly the specification, or exactly its negation. Specialized runtime,
-   preprocessing, and refinement shape labels are rejected until the audit has
-   a real structural check for them; declaration names never relax the exact
-   proposition check. Link each
-   `repaired_in_lean` fidelity-ledger defect by its stable id through
-   `source_defect_ids`. A new-paper `by sorry` statement is an audited target
-   skeleton, not proof evidence, so do not manufacture a semantic contract from
-   that theorem alone.
-   For every new or explicit-v11 full closeout, this exact-proposition route is
-   necessary but not sufficient: complete the general v11
-   source-to-Spec correspondence described above. It applies to every
-   claim-bearing endpoint, not only runtime, preprocessing, counterexample, or
-   refinement claims. Independently inventory pinned source atoms before Lean;
-   then account for the full elaborated closure, including proof and instance
-   arguments, without any name or container-based exemption. V10 sidecars and
-   contracts remain readable historical evidence but are not v11 credit.
-   `claim_bearing` still serves ordinary named-theory coverage: a selected
-   source definition can correctly retain `claim_bearing: true` without being
-   a v11 theorem-realization target. Do not invent a `Prop` specification or
-   semantic contract for such vocabulary merely to satisfy v11; strict
-   source-to-Spec records belong to theorem-like source claims.
-   For a named evidence-integrity diagnosis during evidence review, run
-   `python3 scripts/audit_evidence_integrity.py --paper <paper> --include-source-obligations`.
-   This opt-in lane reports current `unresolved_assumed_math` source-record
-   judgments under the current audit digest and ignores stale historical
-   judgments, so the remaining proof queue is semantic rather than name-based.
-   It is not a routine frozen-closeout precursor; the planner-issued strict
-   worker runs the acceptance lane in-process.
-   Keep event semantics exact: open/strict events (`>`, `Ioi`, strict upper
-   tails) are not interchangeable with closed/non-strict events (`>=`, `Ici`)
-   unless Lean proves the boundary has zero mass or the source explicitly
-   supplies that regularity. A distributional quantile or bracket lemma with a
-   closed-tail lower side is not evidence for a strict-tail lower bound by
-   naming similarity.
-7. Treat any formula wrappers as dependency visibility, not proof provenance
-   or automatic normal-scope inventory. A paper-facing `_formula`, `_iff`,
-   `_rule`, or analogous row, when used, is closed only
-   when the equality/iff/rule is proved from the source model primitives or from
-   separately validated paper assumptions. A wrapper whose body assumes a
-   displayed equation, source row, capacity identity, normalization, or other
-   formula is a partial endpoint until that assumption is eliminated or
-   validated as a paper assumption.
-
-If the semantic judge reports mismatch or uncertainty, edit the Lean statement and
-repeat the translation/judgment pass unless the translation itself is plainly
-wrong. The dashboard displays the paper statement, current Lean statement,
-Lean-to-TeX draft, and independent LLM judgment; these LLM checks do not count
-as human review rows. `python3 scripts/review_dashboard.py --paper <paper> --precheck`
-reports missing, stale, uncertain, and mismatched LLM statement-audit rows and
-assumption-provenance rows separately from human dashboard-review entries. Use
-it to diagnose an active statement-review problem, not as a routine
-frozen-closeout predecessor.
-If every row, or nearly every row, is uncertain, treat that as a parser or
-source-statement extraction failure first. Fix the source map/report sections,
-or record one paper-wide source-map issue, before accepting row-by-row
-uncertainty.
-
-When updating evidence, refresh the machine-readable validator ledger with:
+Begin or resume this workflow with:
 
 ```bash
-python3 scripts/review_dashboard.py --paper <paper> --export-format validators-md
+python3 scripts/closeout_reuse_plan.py --paper <paper>
 ```
 
-The JSON ledger should include every dashboard/PaperInterface row, human/model/
-agent validators, and validator comments. It is provenance for statement
-targets, not a replacement for the human-only dashboard review count. Keep it
-in the public audit JSON and bind it through the canonical closure receipt,
-rather than appending it to the final report.
+Execute only the printed `next_action`. The planner reuses unchanged
+authenticated graph and semantic-review objects, regenerates cheap derived
+artifacts, schedules the final report/DAG only after evidence and realization
+are current, and publishes acceptance only from its issuer-protected in-process
+strict pass.
 
-For a non-interactive statement-review check (exits non-zero when anything is
-stale or unreviewed):
+The dashboard and PDF packet are equivalent optional human-review
+presentations of the current graph. Generate them only after the source map and
+interfaces are stable enough to review:
 
 ```bash
-./review-dashboard.sh --check
+python3 scripts/review_dashboard_packet.py --paper <paper> --write --compile
+./papers/<paper>/review-dashboard.sh
 ```
 
-This is diagnostic/review preparation; it does not replace the planner-issued
-strict closeout receipt.
+Saved human annotations are reviewer-owned and may not be fabricated or
+auto-closed. Their absence is not a Lean closeout blocker.
 
-If you are working in an older paper folder that already has
-`PaperInterface.lean` but no local launcher yet, run once:
+Do not generate `lean_to_tex_llm.json`, `statement_match_llm.json`,
+`source_record_audit.json`, or `source_record_match_llm.json` for a new
+current-protocol paper. Existing copies remain readable historical provenance
+for papers closed under an older protocol; they are not current semantic
+inputs, current scaffold outputs, or alternative acceptance credentials.
 
-```bash
-python3 scripts/bootstrap_review_launchers.py --write
-```
+Pinned source artifacts remain ignored by default for redistribution safety. A
+fresh checkout without the exact provisioned bytes cannot reproduce a
+source-byte attestation and must report that input as unavailable rather than
+accepting a recorded digest alone.
+
+For a named diagnosis, use the exact diagnostic command printed by the planner.
+A standalone dashboard/precheck, evidence audit, or repository audit is useful
+for repair but cannot replace the planner-issued strict transaction.
 
 ## Maintenance Note
 

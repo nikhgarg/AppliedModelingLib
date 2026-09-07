@@ -14,7 +14,7 @@ namespace GJ19OptimalBinaryRatingSystems
 
 noncomputable section
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 
 /--
 Lemma B.1 (matching-rate shift).  Above an interior pivot `k`, the new sample
@@ -93,7 +93,7 @@ theorem lemmaB1_matching_rate_shift
       have htop : m + 1 < m + 2 := by omega
       simp [crossed, htop, hlevels.2.1, hshiftedLevels.2.1]
     obtain ⟨s, hks, hs_top, hs_prev, hs_now⟩ :=
-      EconCSLib.FiniteSum.exists_bool_transition crossed
+      AppliedModelingLib.FiniteSum.exists_bool_transition crossed
         (lo := k) (hi := m + 1) (by omega)
         hcrossed_pivot hcrossed_top
     have hs_pos : 0 < s := hk0.trans hks
@@ -253,7 +253,7 @@ theorem lemmaB1_matching_rate_shift
         simpa [pivot] using hpivot_lt
       simp [crossed, hklt, hpivot_lt']
     obtain ⟨s, hs_pos, hs_le_k, hs_prev, hs_now⟩ :=
-      EconCSLib.FiniteSum.exists_bool_transition crossed
+      AppliedModelingLib.FiniteSum.exists_bool_transition crossed
         (lo := 0) (hi := k) hk0 hcrossed_zero hcrossed_pivot
     have hs_le_m1 : s ≤ m + 1 := hs_le_k.trans hkm.le
     have hprev_lt_m2 : s - 1 < m + 2 := by omega

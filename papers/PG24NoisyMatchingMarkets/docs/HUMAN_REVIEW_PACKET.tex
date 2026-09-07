@@ -1,0 +1,2377 @@
+% Generated human-review packet template.  Source records, Lean statements,
+% and raw-source-to-Spec screening fields are substituted by
+% scripts/review_dashboard_packet.py.
+% Do not hand-edit generated packets; annotate the PDF or reconcile notes into
+% the paper-local human-review log.
+\documentclass[10pt]{article}
+\usepackage[margin=0.43in,footskip=0.2in]{geometry}
+\usepackage{fontspec}
+% Use a Unicode-complete main face as well as a Unicode-complete code face.
+% Reviewer reasons and source labels can contain exact Greek symbols outside
+% verbatim blocks; silently dropping one would corrupt the review packet.
+\setmainfont{DejaVu Serif}
+% The broad DejaVu Sans Unicode coverage preserves Lean's mathematical glyphs
+% (including U+2216 set difference and superscript identifiers) in verbatim
+% review blocks.  Its proportional metrics are preferable to silently missing
+% exact semantic text from a narrower monospace font.
+\setmonofont{DejaVu Sans}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{fvextra}
+\usepackage{enumitem}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.15em}
+\linespread{0.92}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,breaklinks=true}
+\DefineVerbatimEnvironment{ReviewVerbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\scriptsize}
+\newcommand{\reviewerbox}{%
+  \par\noindent\fbox{\parbox{0.96\linewidth}{\rule{0pt}{0.38in}}}\par
+}
+\newcommand{\reviewmatch}[1]{%
+  \par\noindent\textbf{Reviewer check:} $\square$\; #1\par
+  \noindent\emph{If left unchecked, explain the discrepancy or uncertainty below.}\par
+}
+
+\begin{document}
+\fontsize{9}{10}\selectfont
+
+\begin{center}
+{\LARGE Human review packet: PG24NoisyMatchingMarkets}\\[0.35em]
+\small Generated from byte-pinned source excerpts, the expanded PaperInterface
+specifications, and hash-bound raw-source-to-Spec screening records.
+\end{center}
+
+\noindent\textbf{Paper:} PG24NoisyMatchingMarkets\\
+\textbf{Paper id:} \texttt{PG24NoisyMatchingMarkets}\\
+\textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright arXiv:2402.16771 source archive SHA256 5779a3e63007b043c1f4db4200b7add8455929a2730c5261bfdee0e5102a59ef}\\
+\textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
+\textbf{Rows:} 25\\
+\textbf{Generated:} 2026-09-06\\
+\textbf{Source URL:} \href{https://arxiv.org/abs/2402.16771}{official source}
+
+
+
+
+
+\section*{How to use this packet}
+For each source claim, compare the exact source excerpts with the expanded
+PaperInterface specification. Mark up this PDF or fill the blank reviewer box in the TeX source;
+return the annotated file for reconciliation into the paper-local human-review
+log.
+
+\section*{Open the interactive dashboard}
+The interactive dashboard is an optional alternative to using this PDF; it
+presents the same review surface rather than an additional review requirement.
+After forking and cloning (or pulling) AppliedModelingLib, run the following from the
+repository root. The cache command is needed only the first time in a new clone.
+\begin{ReviewVerbatim}
+cd <your-repository-checkout>
+lake exe cache get
+python3 scripts/review_dashboard.py --paper PG24NoisyMatchingMarkets --serve
+\end{ReviewVerbatim}
+Open \url{http://127.0.0.1:8765/} in a browser and keep that terminal running
+while reviewing. The dashboard records saved annotations in this paper's local
+reviewer-owned review record.
+
+\section*{Contents}
+\begin{itemize}[leftmargin=1.2em]
+\item \hyperlink{paper-prerequisite-section-5ef5ef0364b6939c}{Paper-specific semantic prerequisites (4; not paper claims)}
+\begin{itemize}[leftmargin=1.2em]
+\item \hyperlink{paper-prerequisite-e0ab5d7c9cd882ec}{PG24\allowbreak{}Noisy\allowbreak{}Matching\allowbreak{}Markets.\allowbreak{}PG24\allowbreak{}Basic\allowbreak{}Economy\allowbreak{}Source\allowbreak{}Data}
+\item \hyperlink{paper-prerequisite-ff3f13051cdbc914}{PG24\allowbreak{}Noisy\allowbreak{}Matching\allowbreak{}Markets.\allowbreak{}PG24\allowbreak{}Coalition\allowbreak{}Source\allowbreak{}Sampling}
+\item \hyperlink{paper-prerequisite-c7f1778ccec10a69}{PG24\allowbreak{}Noisy\allowbreak{}Matching\allowbreak{}Markets.\allowbreak{}PG24\allowbreak{}Literal\allowbreak{}Basic\allowbreak{}Market}
+\item \hyperlink{paper-prerequisite-85595fc482827ece}{PG24\allowbreak{}Noisy\allowbreak{}Matching\allowbreak{}Markets.\allowbreak{}PG24\allowbreak{}True\allowbreak{}Value\allowbreak{}Source\allowbreak{}Stable\allowbreak{}Data}
+\end{itemize}
+\item \hyperlink{source-section-f10b5f68e4acf3dc}{Source claims (25)}
+\begin{itemize}[leftmargin=1.2em]
+\item \hyperlink{source-claim-303fbbfacf485b9e}{holder\_\allowbreak{}value\_\allowbreak{}law\_\allowbreak{}regularity\allowbreak{}Spec}
+\item \hyperlink{source-claim-43c0061a94bae683}{capacity\_\allowbreak{}regularity\allowbreak{}Spec}
+\item \hyperlink{source-claim-e7d4a295961f7481}{beta\_\allowbreak{}max\_\allowbreak{}concentrating\allowbreak{}Spec}
+\item \hyperlink{source-claim-7d3f65be7a4787b0}{long\_\allowbreak{}tailed\_\allowbreak{}noise\allowbreak{}Spec}
+\item \hyperlink{source-claim-083c0bfe40f05233}{stable\_\allowbreak{}matching\_\allowbreak{}cutoff\_\allowbreak{}definition\allowbreak{}Spec}
+\item \hyperlink{source-claim-a3b59b88e9ed2ee1}{match\_\allowbreak{}probability\_\allowbreak{}formula\allowbreak{}Spec}
+\item \hyperlink{source-claim-4ecaf547b8a4bff9}{review\_\allowbreak{}theorem1\_\allowbreak{}attenuation\allowbreak{}Spec}
+\item \hyperlink{source-claim-9e706cf872adcab7}{review\_\allowbreak{}theorem2\_\allowbreak{}amplification\allowbreak{}Spec}
+\item \hyperlink{source-claim-62c35df4a96426fc}{review\_\allowbreak{}theorem3\_\allowbreak{}attenuation\allowbreak{}In\allowbreak{}Coalitions\allowbreak{}Spec}
+\item \hyperlink{source-claim-09a28f818364c658}{review\_\allowbreak{}theorem4\_\allowbreak{}amplification\allowbreak{}In\allowbreak{}Coalitions\allowbreak{}Spec}
+\item \hyperlink{source-claim-68004cb711da81c5}{source\_\allowbreak{}thm1\_\allowbreak{}corrected\_\allowbreak{}lower\_\allowbreak{}tail\allowbreak{}Spec}
+\item \hyperlink{source-claim-baab78c419a8d66e}{source\_\allowbreak{}duck\_\allowbreak{}1\allowbreak{}Spec}
+\item \hyperlink{source-claim-059a664ca2f2c12c}{source\_\allowbreak{}tomato\allowbreak{}Spec}
+\item \hyperlink{source-claim-2f4e3f42143d1dc8}{source\_\allowbreak{}duck\_\allowbreak{}2\allowbreak{}Spec}
+\item \hyperlink{source-claim-8894ff8f48aa126b}{source\_\allowbreak{}goose\_\allowbreak{}1\allowbreak{}Spec}
+\item \hyperlink{source-claim-0288a6d97ff1b834}{source\_\allowbreak{}log\_\allowbreak{}bound\allowbreak{}Spec}
+\item \hyperlink{source-claim-331214905b993ae6}{source\_\allowbreak{}beet\allowbreak{}Spec}
+\item \hyperlink{source-claim-96a16163ca076128}{source\_\allowbreak{}goose\_\allowbreak{}2\allowbreak{}Spec}
+\item \hyperlink{source-claim-5395bd56b3a3fad8}{source\_\allowbreak{}thm2\_\allowbreak{}equivalent\_\allowbreak{}bound\allowbreak{}Spec}
+\item \hyperlink{source-claim-ab8439dc4f2d61d9}{source\_\allowbreak{}lt\_\allowbreak{}large\_\allowbreak{}firms\allowbreak{}Spec}
+\item \hyperlink{source-claim-ff22377c4e341e25}{source\_\allowbreak{}unbounded\_\allowbreak{}cutoffs\allowbreak{}Spec}
+\item \hyperlink{source-claim-0a81e0b7c57cd17d}{source\_\allowbreak{}apple\allowbreak{}Spec}
+\item \hyperlink{source-claim-c2e5b332ed480ff8}{source\_\allowbreak{}large\_\allowbreak{}firm\_\allowbreak{}tail\_\allowbreak{}bound\allowbreak{}Spec}
+\item \hyperlink{source-claim-0e9edb794ea448f5}{source\_\allowbreak{}lt\_\allowbreak{}approx\_\allowbreak{}f2\allowbreak{}Spec}
+\item \hyperlink{source-claim-4b0c97696721fa81}{source\_\allowbreak{}lt\_\allowbreak{}small\_\allowbreak{}firms\allowbreak{}Spec}
+\end{itemize}
+\end{itemize}
+
+\clearpage
+\hypertarget{paper-prerequisite-section-5ef5ef0364b6939c}{}
+\section*{Paper-specific semantic prerequisites}
+\hypertarget{paper-prerequisite-e0ab5d7c9cd882ec}{}
+\subsection*{\small\ttfamily\raggedright PG24\allowbreak{}Noisy\allowbreak{}Matching\allowbreak{}Markets.\allowbreak{}PG24\allowbreak{}Basic\allowbreak{}Economy\allowbreak{}Source\allowbreak{}Data}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PG24\allowbreak{}Noisy\allowbreak{}Matching\allowbreak{}Markets.\allowbreak{}PG24\allowbreak{}Basic\allowbreak{}Economy\allowbreak{}Source\allowbreak{}Data\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 9-\allowbreak{}18\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+There is a continuum of students of measure $1$ and a finite set of colleges $C = \{1, 2, \cdots, C\}$. A standard model of stable matching between students and colleges has three ingredients: student preferences over colleges, college preferences over students, and college capacities. Given these three ingredients, we may analyze the corresponding set of \textit{stable matchings}, matchings between students and colleges so that no student-college pair would jointly prefer to defect from the matching.
+
+The focal point of our model is on how colleges form preferences over students, so this is where we begin. Each student has a \vocab{value} $v\in \RR$, such that colleges all prefer students with higher value. Student values specify the true preferences of colleges. Colleges, however, only obtain noisy estimates of student values, dictated by a \textit{noise distribution} $\DD$: for a student with value $v$, each college $c\in C$ obtains a noisy estimate equal to $v + X_c$, where $X_c$ is drawn independently from $\DD$. Given this noise, we are interested in the probability that a student with value $v$ matches. For the sake of comparison, it is convenient to hold two parameters of our model fixed:
+\begin{itemize}
+    \item $\eta$, a probability measure over student values, and
+    \item $S\in (0,1)$, the total capacity of colleges.
+\end{itemize}
+We assume that $\eta$ has connected support, which implies that there is a unique value $v_S$ such that $\eta((v_S, \infty))=S$; i.e., the measure of students with value at least $v_S$ is equal to $S$, the total capacity of colleges. Holding $\eta$ and $S$ fixed is convenient, because we can specify two extreme behaviors. On one extreme, only students with value at least $v_S$ are matched, reflecting a ``noise free'' matching; on the other extreme, all students match with probability $S$, reflecting a ``fully noisy'' matching. Note that overall capacity is less than the measure of students.
+
+We further assume a (weak) regularity condition on $\eta$: that there is a constant $\gamma>0$ such that $\eta((v, v+\delta)) = O(\delta^\gamma)$ for all $v\in \RR$ and $\delta > 0.$ This is equivalent to the cumulative distribution function of student values satisfying a $\gamma$-Hölder condition. We also fix a constant $\alpha>0$ that we use to specify a regularity condition on college capacities.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+field noiseLaw_isProbability:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply alpha : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Cutoff : Type v}
+  (self : PG24NoisyMatchingMarkets.PG24BasicEconomySourceData C noiseLaw eta totalSupply alpha StudentType Cutoff),
+  MeasureTheory.IsProbabilityMeasure noiseLaw
+
+field totalSupply_pos:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply alpha : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Cutoff : Type v}
+  (self : PG24NoisyMatchingMarkets.PG24BasicEconomySourceData C noiseLaw eta totalSupply alpha StudentType Cutoff),
+  0 < totalSupply
+
+field totalSupply_lt_one:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply alpha : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Cutoff : Type v}
+  (self : PG24NoisyMatchingMarkets.PG24BasicEconomySourceData C noiseLaw eta totalSupply alpha StudentType Cutoff),
+  totalSupply < 1
+
+field market:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply alpha : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Cutoff : Type v} →
+            PG24NoisyMatchingMarkets.PG24BasicEconomySourceData C noiseLaw eta totalSupply alpha StudentType Cutoff →
+              PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The source basic economy's probability noise law and total-\allowbreak{}supply bounds are explicit fields;\allowbreak{} its literal market field supplies the probability student/\allowbreak{}value law, strict source-\allowbreak{}student preferences, iid outcome law, capacity sum and regularity, and score equation.\allowbreak{} The source's cutoff characterization is separately reviewed at stable\_\allowbreak{}matching\_\allowbreak{}cutoff\_\allowbreak{}definition, so this primitive model bundle contains no result or selected-\allowbreak{}cutoff certificate.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-ff3f13051cdbc914}{}
+\subsection*{\small\ttfamily\raggedright PG24\allowbreak{}Noisy\allowbreak{}Matching\allowbreak{}Markets.\allowbreak{}PG24\allowbreak{}Coalition\allowbreak{}Source\allowbreak{}Sampling}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PG24\allowbreak{}Noisy\allowbreak{}Matching\allowbreak{}Markets.\allowbreak{}PG24\allowbreak{}Coalition\allowbreak{}Source\allowbreak{}Sampling\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 129-\allowbreak{}190\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\subsection{Model and Definitions}
+
+\paragraph{General noisy economy.}
+There is a continuum of students of measure 1 to be matched with a finite set of colleges $C^* = \{1, 2, \cdots, C^*\}.$ Each student is identified by their \textit{true type} $\theta = (\bm{v}, \succ)$, where
+\begin{equation}
+    \bm{v} = (v_1, v_2, \cdots, v_{C^*}) \in \RR^C
+\end{equation}
+are the \textit{true values} of the student. Here, $v_c$ is the true value of the student at college $c$. In contrast to the basic model, students have multiple true values, which differ across colleges.
+
+A student with true values $\bm{v}$ has \textit{approximate values} $\hat{\bm{v}},$ where
+\begin{equation}
+    \hat{\bm{v}} = (\hat{v}_1, \hat{v}_2, \cdots, \hat{v}_{C^*})
+\end{equation}
+is a random variable over $\RR^{C^*}$. ($\hat{v}_1, \hat{v}_2, \cdots, \hat{v}_{C^*}$ need not be independent.) Thus, a student $(\bm{v},\succ)$ has true value at college $c$ equal to $v_c$, and the college obtains an approximation of the student's value equal to $\hat{v}_c.$
+
+An \textit{economy} is given by an ordered pair $(\rho, \vec{S}, \hat{\bm{V}}),$ where $\rho$ is a probability measure over the set of student types $\Theta = \RR^{C^*}\times \mathcal{R}$ and $\vec{S}$ is a vector of college capacities. As before, we hold the total capacity of colleges to be a fixed constant $S\in (0,1)$, and assume that all students prefer being matched to any college over being unmatched. $\hat{\bm{V}} = \{\hat{\bm{v}}\}_{\bm{v}\in \RR^{C^*}}$ is a set of independent random variables over $\RR^{C^*}$, where $\hat{\bm{v}}$ give the approximate values of a student with true values $\bm{v}$. For example, one could choose $\hat{\bm{V}}$ such that $\hat{\bm{v}}$ is equal to $\bm{v}$ perturbed by noise drawn from a specified multivariate normal distribution for all $\bm{v}\in \RR^C$. Here, $\hat{\bm{V}}$ generalizes the role of the noise distribution $\DD$ in the basic model, by allowing for more broader relationships between true values and approximate values.
+
+(Formally, we require $\hat{\bm{V}}$ to be chosen in a way that induces a valid probability distribution over true values and approximate values, where $\rho$ specifies the marginal distribution of true values, and $\hat{\bm{v}}$ specifies the conditional distribution for each true value.)
+
+\paragraph{Cutoff characterization of stable matching.}
+Consider an economy $E=(\rho, \vec{S}, \hat{\bm{V}}).$ Given cutoffs $\vec{P} = (P_1, \cdots, P_{C^*}),$ we have that a student with true values $\bm{v}$ can afford college $c$ if and only if $\hat{v}_c > P_c$. A student's demand $D^{\theta}(\vec{P})$ at cutoffs $\vec{P}$ is equal to the college they most prefer among those they can afford; $D^{\theta}(\vec{P})=\emptyset$ if the student cannot afford any college. Note that $D^{\theta}(\vec{P})$ is a random variable. Then, as in the basic model, the cutoffs $\vec{P}$ are market-clearing if and only if
+\begin{equation}
+    \int_{\theta} \Pr[D^{\theta}(\vec{P})=c]\,d\rho(\theta) = S_c
+\end{equation}
+for all $c\in {C^*}$.\footnote{Capacities are exactly filled since the total capacity $S$ is less than the total measure of students $1$, and because every student prefers to be matched over being unmatched.} If $\vec{P}$ is market-clearing, then the function $\mu:\theta\mapsto D^{\theta}(\vec{P})$ is a stable matching.
+
+\paragraph{College coalitions.}
+We are interested in analyzing the behavior of subsets of colleges in an economy that share the same true preferences over students, but who each make noisy decisions. We now formally define these subsets.
+
+In an economy $E=(\rho, \vec{S}, \hat{\bm{V}})$, a subset of colleges $C\subseteq {C^*}$ is a $(\DD,\eta)$\vocab{-coalition} if and only if the following conditions are met:
+\begin{enumerate}
+    \item The true value of a student is same at each college in $C$.\footnote{Formally, the $\rho$-measure of students who have different true values at two colleges in $C$ is equal to $0$:
+    \begin{equation}
+        \rho\left(\{(\bm{v}, \succ) \in \Theta: \text{exists }c,c'\in C\text{ such that }v_c\neq v_c'\}\right) = 0.
+    \end{equation}
+    }
+    If this condition is satisfied, for a student with true values $\bm{v}$, we simply use $v$ to refer to the common true value of the student at colleges in $C$. In other words, $v_c=v$ for all $c\in C$. We call $v$ the student's \textit{true value at $C$}.
+    \item The approximate values of a student at colleges in $C$ is equal (in distribution) to their true value at $C$ perturbed by independent noise drawn from $\DD$: For all $\bm{v}\in \RR^{C^*},$
+    \begin{equation}
+        \hat{v}_c \eqdist v + X_c
+    \end{equation}
+    for all $c\in C$,
+    where $X_1, X_2, \cdots, X_C$ are drawn i.i.d. according to $\DD$.
+    \item The distribution of true values at $C$ is given by the probability measure $\eta$. That is,
+    \begin{equation}
+        \rho((\bm{v},\succ): v\in C) = \eta(V)
+    \end{equation}
+    for all $V\subseteq \RR.$
+\end{enumerate}
+
+In essence, a subset of colleges form a coalition if they behave like the full set of colleges in the basic model---i.e., the colleges in the coalition have the same true value for each student and each obtain independent noisy estimates of this value. (But, as in the basic model, students may have arbitrary preferences over colleges in the coalition, and colleges may differ in their capacities.) Indeed, one may check that in the basic model, the entire set of colleges $C$ forms a $(\DD,\eta)$-coalition.\footnote{The reader might observe that the conditions for a coalition are somewhat simpler than in the basic model: the constants $\alpha$ and $\gamma$ governing regularity conditions are notably absent in the extended model. The reason is that these regularity conditions are not necessary for the somewhat weaker results we establish in the extended model. On the other hand, the regularity conditions are also not sufficient to establish stronger results in the extended model, as we explain below.} As we will see, coalitions satisfy very similar properties to the full set of colleges in the basic model.
+
+\paragraph{Preliminaries.}
+Consider an economy $E = (\rho, \vec{S}, \hat{\bm{V}})$ and a $(\DD, \eta)$-coalition $C$. Let $\mu$ be a stable matching in $E$ with corresponding market-clearing cutoffs $\vec{P}$. Our results focus on the probability that a student $\theta=(\bm{v},\succ)$ can \textit{afford} a college in $C'\subseteq C$. Recall that the student's true value at $C$ is denoted simply by $v$. Then the probability the student can afford a college in $C'$ is
+\begin{equation}
+    \Pr[v + X_c > P_c\text{ for some $c\in C'$}],
+\end{equation}
+which does not depend on the true values of the student at colleges outside of the coalition, nor the preferences of the student. We set
+\begin{equation}
+    p_\mu(v, C') := \Pr[v + X_c > P_c\text{ for some $c\in C'$}]
+\end{equation}
+to denote the probability that a student with true value $v$ at coalition $C$ can afford a college in $C'\subseteq C$. In this way, we can begin to see how the setup of the extended model essentially reduces to that of the basic model, since the quantity we are interested in depends only on the true value of a student at the coalition $C$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+field studentLaw:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {StudentType : Type v} →
+      [inst : MeasurableSpace StudentType] →
+        {Outcome : Type u} →
+          [inst_1 : MeasurableSpace Outcome] →
+            PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling C noiseLaw eta StudentType Outcome →
+              MeasureTheory.Measure StudentType
+
+field studentLaw_isProbability:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {StudentType : Type v} [inst : MeasurableSpace StudentType]
+  {Outcome : Type u} [inst_1 : MeasurableSpace Outcome]
+  (self : PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling C noiseLaw eta StudentType Outcome),
+  MeasureTheory.IsProbabilityMeasure self.studentLaw
+
+field outcomeLaw:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {StudentType : Type v} →
+      [inst : MeasurableSpace StudentType] →
+        {Outcome : Type u} →
+          [inst_1 : MeasurableSpace Outcome] →
+            PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling C noiseLaw eta StudentType Outcome →
+              MeasureTheory.Measure Outcome
+
+field outcomeLaw_isProbability:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {StudentType : Type v} [inst : MeasurableSpace StudentType]
+  {Outcome : Type u} [inst_1 : MeasurableSpace Outcome]
+  (self : PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling C noiseLaw eta StudentType Outcome),
+  MeasureTheory.IsProbabilityMeasure self.outcomeLaw
+
+field commonValue:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {StudentType : Type v} →
+      [inst : MeasurableSpace StudentType] →
+        {Outcome : Type u} →
+          [inst_1 : MeasurableSpace Outcome] →
+            PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling C noiseLaw eta StudentType Outcome → StudentType → ℝ
+
+field commonValue_measurable:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {StudentType : Type v} [inst : MeasurableSpace StudentType]
+  {Outcome : Type u} [inst_1 : MeasurableSpace Outcome]
+  (self : PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling C noiseLaw eta StudentType Outcome),
+  Measurable self.commonValue
+
+field commonValue_map:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {StudentType : Type v} [inst : MeasurableSpace StudentType]
+  {Outcome : Type u} [inst_1 : MeasurableSpace Outcome]
+  (self : PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling C noiseLaw eta StudentType Outcome),
+  MeasureTheory.Measure.map self.commonValue self.studentLaw = eta
+
+field sourceStudent:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {StudentType : Type v} →
+      [inst : MeasurableSpace StudentType] →
+        {Outcome : Type u} →
+          [inst_1 : MeasurableSpace Outcome] →
+            PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling C noiseLaw eta StudentType Outcome →
+              Outcome → StudentType
+
+field coalitionNoise:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {StudentType : Type v} →
+      [inst : MeasurableSpace StudentType] →
+        {Outcome : Type u} →
+          [inst_1 : MeasurableSpace Outcome] →
+            PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling C noiseLaw eta StudentType Outcome →
+              Outcome → Fin (C + 1) → ℝ
+
+field sourceCoordinates_measurable:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {StudentType : Type v} [inst : MeasurableSpace StudentType]
+  {Outcome : Type u} [inst_1 : MeasurableSpace Outcome]
+  (self : PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling C noiseLaw eta StudentType Outcome),
+  Measurable fun (outcome : Outcome) => (self.sourceStudent outcome, self.coalitionNoise outcome)
+
+field sourceCoordinates_map:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {StudentType : Type v} [inst : MeasurableSpace StudentType]
+  {Outcome : Type u} [inst_1 : MeasurableSpace Outcome]
+  (self : PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling C noiseLaw eta StudentType Outcome),
+  MeasureTheory.Measure.map (fun (outcome : Outcome) => (self.sourceStudent outcome, self.coalitionNoise outcome))
+      self.outcomeLaw =
+    self.studentLaw.prod (MeasureTheory.Measure.pi fun (x : Fin (C + 1)) => noiseLaw)
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The corrected extended-\allowbreak{}coalition source bundle supplies a probability law over full student types, a common coalition value with marginal eta, and iid coalition noises with law D conditional on the student.\allowbreak{} The Lean record packages exactly that sampling component as a student law and a joint student-\allowbreak{}by-\allowbreak{}iid-\allowbreak{}noise product law while leaving the rest of StudentType unconstrained.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-c7f1778ccec10a69}{}
+\subsection*{\small\ttfamily\raggedright PG24\allowbreak{}Noisy\allowbreak{}Matching\allowbreak{}Markets.\allowbreak{}PG24\allowbreak{}Literal\allowbreak{}Basic\allowbreak{}Market}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PG24\allowbreak{}Noisy\allowbreak{}Matching\allowbreak{}Markets.\allowbreak{}PG24\allowbreak{}Literal\allowbreak{}Basic\allowbreak{}Market\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 9-\allowbreak{}18\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+There is a continuum of students of measure $1$ and a finite set of colleges $C = \{1, 2, \cdots, C\}$. A standard model of stable matching between students and colleges has three ingredients: student preferences over colleges, college preferences over students, and college capacities. Given these three ingredients, we may analyze the corresponding set of \textit{stable matchings}, matchings between students and colleges so that no student-college pair would jointly prefer to defect from the matching.
+
+The focal point of our model is on how colleges form preferences over students, so this is where we begin. Each student has a \vocab{value} $v\in \RR$, such that colleges all prefer students with higher value. Student values specify the true preferences of colleges. Colleges, however, only obtain noisy estimates of student values, dictated by a \textit{noise distribution} $\DD$: for a student with value $v$, each college $c\in C$ obtains a noisy estimate equal to $v + X_c$, where $X_c$ is drawn independently from $\DD$. Given this noise, we are interested in the probability that a student with value $v$ matches. For the sake of comparison, it is convenient to hold two parameters of our model fixed:
+\begin{itemize}
+    \item $\eta$, a probability measure over student values, and
+    \item $S\in (0,1)$, the total capacity of colleges.
+\end{itemize}
+We assume that $\eta$ has connected support, which implies that there is a unique value $v_S$ such that $\eta((v_S, \infty))=S$; i.e., the measure of students with value at least $v_S$ is equal to $S$, the total capacity of colleges. Holding $\eta$ and $S$ fixed is convenient, because we can specify two extreme behaviors. On one extreme, only students with value at least $v_S$ are matched, reflecting a ``noise free'' matching; on the other extreme, all students match with probability $S$, reflecting a ``fully noisy'' matching. Note that overall capacity is less than the measure of students.
+
+We further assume a (weak) regularity condition on $\eta$: that there is a constant $\gamma>0$ such that $\eta((v, v+\delta)) = O(\delta^\gamma)$ for all $v\in \RR$ and $\delta > 0.$ This is equivalent to the cumulative distribution function of student values satisfying a $\gamma$-Hölder condition. We also fix a constant $\alpha>0$ that we use to specify a regularity condition on college capacities.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+field studentLaw:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply alpha : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Cutoff : Type v} →
+            PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff →
+              MeasureTheory.Measure StudentType
+
+field studentLaw_isProbability:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply alpha : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Cutoff : Type v}
+  (self : PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff),
+  MeasureTheory.IsProbabilityMeasure self.studentLaw
+
+field value:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply alpha : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Cutoff : Type v} →
+            PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff →
+              StudentType → ℝ
+
+field value_measurable:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply alpha : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Cutoff : Type v}
+  (self : PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff),
+  Measurable self.value
+
+field value_marginal:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply alpha : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Cutoff : Type v}
+  (self : PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff),
+  MeasureTheory.Measure.map self.value self.studentLaw = eta
+
+field demand:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply alpha : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Cutoff : Type v} →
+            PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff →
+              PG24NoisyMatchingMarkets.PG24FinitePreferredDemand (StudentType × (Fin (C + 1) → ℝ)) (Fin (C + 1)) Cutoff
+
+field studentPreferenceRank:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply alpha : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Cutoff : Type v} →
+            PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff →
+              StudentType → Fin (C + 1) → ℕ
+
+field studentPreferenceRank_injective:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply alpha : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Cutoff : Type v}
+  (self : PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff)
+  (student : StudentType), Function.Injective (self.studentPreferenceRank student)
+
+field demand_preferenceRank_eq_studentPreferenceRank:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply alpha : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Cutoff : Type v}
+  (self : PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff)
+  (student : StudentType) (noise : Fin (C + 1) → ℝ) (college : Fin (C + 1)),
+  self.demand.preferenceRank (student, noise) college = self.studentPreferenceRank student college
+
+field demand_outcomeLaw_eq_iid:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply alpha : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Cutoff : Type v}
+  (self : PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff),
+  self.demand.outcomeLaw = self.studentLaw.prod (MeasureTheory.Measure.pi fun (x : Fin (C + 1)) => noiseLaw)
+
+field capacity:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply alpha : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Cutoff : Type v} →
+            PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff →
+              Fin (C + 1) → ℝ
+
+field totalCapacity_eq:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply alpha : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Cutoff : Type v}
+  (self : PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff),
+  ∑ college : Fin (C + 1), self.capacity college = totalSupply
+
+field approximateScore:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply alpha : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Cutoff : Type v} →
+            PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff →
+              StudentType × (Fin (C + 1) → ℝ) → Fin (C + 1) → ℝ
+
+field demand_globalScore_eq_approximateScore:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply alpha : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Cutoff : Type v}
+  (self : PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff)
+  (P : Cutoff) (outcome : StudentType × (Fin (C + 1) → ℝ)) (college : Fin (C + 1)),
+  self.demand.globalScore P outcome college = self.approximateScore outcome college
+
+field basic_score:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply alpha : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Cutoff : Type v}
+  (self : PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff)
+  (outcome : StudentType × (Fin (C + 1) → ℝ)) (college : Fin (C + 1)),
+  self.approximateScore outcome college = self.value outcome.1 + outcome.2 college
+
+field capacity_regular:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply alpha : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Cutoff : Type v}
+  (self : PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff),
+  PG24NoisyMatchingMarkets.capacityRegular self.capacity alpha (C + 1)
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The basic-\allowbreak{}economy source and scoped record context specify a probability law of student types with value marginal eta, student-\allowbreak{}level strict preferences, iid D-\allowbreak{}noise across colleges, scores v+X\_\allowbreak{}c, finite capacities summing to S, and the per-\allowbreak{}college regularity premise.\allowbreak{} The target carries exactly those fields, and the repaired studentPreferenceRank plus demand-\allowbreak{}preference equality now prevents realized noise from changing the student's ranking.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-85595fc482827ece}{}
+\subsection*{\small\ttfamily\raggedright PG24\allowbreak{}Noisy\allowbreak{}Matching\allowbreak{}Markets.\allowbreak{}PG24\allowbreak{}True\allowbreak{}Value\allowbreak{}Source\allowbreak{}Stable\allowbreak{}Data}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PG24\allowbreak{}Noisy\allowbreak{}Matching\allowbreak{}Markets.\allowbreak{}PG24\allowbreak{}True\allowbreak{}Value\allowbreak{}Source\allowbreak{}Stable\allowbreak{}Data\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 129-\allowbreak{}190\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\subsection{Model and Definitions}
+
+\paragraph{General noisy economy.}
+There is a continuum of students of measure 1 to be matched with a finite set of colleges $C^* = \{1, 2, \cdots, C^*\}.$ Each student is identified by their \textit{true type} $\theta = (\bm{v}, \succ)$, where
+\begin{equation}
+    \bm{v} = (v_1, v_2, \cdots, v_{C^*}) \in \RR^C
+\end{equation}
+are the \textit{true values} of the student. Here, $v_c$ is the true value of the student at college $c$. In contrast to the basic model, students have multiple true values, which differ across colleges.
+
+A student with true values $\bm{v}$ has \textit{approximate values} $\hat{\bm{v}},$ where
+\begin{equation}
+    \hat{\bm{v}} = (\hat{v}_1, \hat{v}_2, \cdots, \hat{v}_{C^*})
+\end{equation}
+is a random variable over $\RR^{C^*}$. ($\hat{v}_1, \hat{v}_2, \cdots, \hat{v}_{C^*}$ need not be independent.) Thus, a student $(\bm{v},\succ)$ has true value at college $c$ equal to $v_c$, and the college obtains an approximation of the student's value equal to $\hat{v}_c.$
+
+An \textit{economy} is given by an ordered pair $(\rho, \vec{S}, \hat{\bm{V}}),$ where $\rho$ is a probability measure over the set of student types $\Theta = \RR^{C^*}\times \mathcal{R}$ and $\vec{S}$ is a vector of college capacities. As before, we hold the total capacity of colleges to be a fixed constant $S\in (0,1)$, and assume that all students prefer being matched to any college over being unmatched. $\hat{\bm{V}} = \{\hat{\bm{v}}\}_{\bm{v}\in \RR^{C^*}}$ is a set of independent random variables over $\RR^{C^*}$, where $\hat{\bm{v}}$ give the approximate values of a student with true values $\bm{v}$. For example, one could choose $\hat{\bm{V}}$ such that $\hat{\bm{v}}$ is equal to $\bm{v}$ perturbed by noise drawn from a specified multivariate normal distribution for all $\bm{v}\in \RR^C$. Here, $\hat{\bm{V}}$ generalizes the role of the noise distribution $\DD$ in the basic model, by allowing for more broader relationships between true values and approximate values.
+
+(Formally, we require $\hat{\bm{V}}$ to be chosen in a way that induces a valid probability distribution over true values and approximate values, where $\rho$ specifies the marginal distribution of true values, and $\hat{\bm{v}}$ specifies the conditional distribution for each true value.)
+
+\paragraph{Cutoff characterization of stable matching.}
+Consider an economy $E=(\rho, \vec{S}, \hat{\bm{V}}).$ Given cutoffs $\vec{P} = (P_1, \cdots, P_{C^*}),$ we have that a student with true values $\bm{v}$ can afford college $c$ if and only if $\hat{v}_c > P_c$. A student's demand $D^{\theta}(\vec{P})$ at cutoffs $\vec{P}$ is equal to the college they most prefer among those they can afford; $D^{\theta}(\vec{P})=\emptyset$ if the student cannot afford any college. Note that $D^{\theta}(\vec{P})$ is a random variable. Then, as in the basic model, the cutoffs $\vec{P}$ are market-clearing if and only if
+\begin{equation}
+    \int_{\theta} \Pr[D^{\theta}(\vec{P})=c]\,d\rho(\theta) = S_c
+\end{equation}
+for all $c\in {C^*}$.\footnote{Capacities are exactly filled since the total capacity $S$ is less than the total measure of students $1$, and because every student prefers to be matched over being unmatched.} If $\vec{P}$ is market-clearing, then the function $\mu:\theta\mapsto D^{\theta}(\vec{P})$ is a stable matching.
+
+\paragraph{College coalitions.}
+We are interested in analyzing the behavior of subsets of colleges in an economy that share the same true preferences over students, but who each make noisy decisions. We now formally define these subsets.
+
+In an economy $E=(\rho, \vec{S}, \hat{\bm{V}})$, a subset of colleges $C\subseteq {C^*}$ is a $(\DD,\eta)$\vocab{-coalition} if and only if the following conditions are met:
+\begin{enumerate}
+    \item The true value of a student is same at each college in $C$.\footnote{Formally, the $\rho$-measure of students who have different true values at two colleges in $C$ is equal to $0$:
+    \begin{equation}
+        \rho\left(\{(\bm{v}, \succ) \in \Theta: \text{exists }c,c'\in C\text{ such that }v_c\neq v_c'\}\right) = 0.
+    \end{equation}
+    }
+    If this condition is satisfied, for a student with true values $\bm{v}$, we simply use $v$ to refer to the common true value of the student at colleges in $C$. In other words, $v_c=v$ for all $c\in C$. We call $v$ the student's \textit{true value at $C$}.
+    \item The approximate values of a student at colleges in $C$ is equal (in distribution) to their true value at $C$ perturbed by independent noise drawn from $\DD$: For all $\bm{v}\in \RR^{C^*},$
+    \begin{equation}
+        \hat{v}_c \eqdist v + X_c
+    \end{equation}
+    for all $c\in C$,
+    where $X_1, X_2, \cdots, X_C$ are drawn i.i.d. according to $\DD$.
+    \item The distribution of true values at $C$ is given by the probability measure $\eta$. That is,
+    \begin{equation}
+        \rho((\bm{v},\succ): v\in C) = \eta(V)
+    \end{equation}
+    for all $V\subseteq \RR.$
+\end{enumerate}
+
+In essence, a subset of colleges form a coalition if they behave like the full set of colleges in the basic model---i.e., the colleges in the coalition have the same true value for each student and each obtain independent noisy estimates of this value. (But, as in the basic model, students may have arbitrary preferences over colleges in the coalition, and colleges may differ in their capacities.) Indeed, one may check that in the basic model, the entire set of colleges $C$ forms a $(\DD,\eta)$-coalition.\footnote{The reader might observe that the conditions for a coalition are somewhat simpler than in the basic model: the constants $\alpha$ and $\gamma$ governing regularity conditions are notably absent in the extended model. The reason is that these regularity conditions are not necessary for the somewhat weaker results we establish in the extended model. On the other hand, the regularity conditions are also not sufficient to establish stronger results in the extended model, as we explain below.} As we will see, coalitions satisfy very similar properties to the full set of colleges in the basic model.
+
+\paragraph{Preliminaries.}
+Consider an economy $E = (\rho, \vec{S}, \hat{\bm{V}})$ and a $(\DD, \eta)$-coalition $C$. Let $\mu$ be a stable matching in $E$ with corresponding market-clearing cutoffs $\vec{P}$. Our results focus on the probability that a student $\theta=(\bm{v},\succ)$ can \textit{afford} a college in $C'\subseteq C$. Recall that the student's true value at $C$ is denoted simply by $v$. Then the probability the student can afford a college in $C'$ is
+\begin{equation}
+    \Pr[v + X_c > P_c\text{ for some $c\in C'$}],
+\end{equation}
+which does not depend on the true values of the student at colleges outside of the coalition, nor the preferences of the student. We set
+\begin{equation}
+    p_\mu(v, C') := \Pr[v + X_c > P_c\text{ for some $c\in C'$}]
+\end{equation}
+to denote the probability that a student with true value $v$ at coalition $C$ can afford a college in $C'\subseteq C$. In this way, we can begin to see how the setup of the extended model essentially reduces to that of the basic model, since the quantity we are interested in depends only on the true value of a student at the coalition $C$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+field sampling:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Outcome : Type v} →
+            [inst_1 : MeasurableSpace Outcome] →
+              {GlobalCollege : Type w} →
+                [inst_2 : Fintype GlobalCollege] →
+                  {Cutoff : Type x} →
+                    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType
+                        Outcome GlobalCollege Cutoff →
+                      PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling C noiseLaw eta StudentType Outcome
+
+field rankOfStudent:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Outcome : Type v} →
+            [inst_1 : MeasurableSpace Outcome] →
+              {GlobalCollege : Type w} →
+                [inst_2 : Fintype GlobalCollege] →
+                  {Cutoff : Type x} →
+                    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType
+                        Outcome GlobalCollege Cutoff →
+                      StudentType → GlobalCollege → ℕ
+
+field rankOfStudent_injective:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Outcome : Type v} [inst_1 : MeasurableSpace Outcome] {GlobalCollege : Type w}
+  [inst_2 : Fintype GlobalCollege] {Cutoff : Type x}
+  (self :
+    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType Outcome GlobalCollege
+      Cutoff)
+  (student : StudentType), Function.Injective (self.rankOfStudent student)
+
+field cutoffCoordinates:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Outcome : Type v} →
+            [inst_1 : MeasurableSpace Outcome] →
+              {GlobalCollege : Type w} →
+                [inst_2 : Fintype GlobalCollege] →
+                  {Cutoff : Type x} →
+                    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType
+                        Outcome GlobalCollege Cutoff →
+                      Cutoff → GlobalCollege → ℝ
+
+field globalScore:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Outcome : Type v} →
+            [inst_1 : MeasurableSpace Outcome] →
+              {GlobalCollege : Type w} →
+                [inst_2 : Fintype GlobalCollege] →
+                  {Cutoff : Type x} →
+                    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType
+                        Outcome GlobalCollege Cutoff →
+                      Cutoff → Outcome → GlobalCollege → ℝ
+
+field singletonDemandMeasurable:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Outcome : Type v} [inst_1 : MeasurableSpace Outcome] {GlobalCollege : Type w}
+  [inst_2 : Fintype GlobalCollege] {Cutoff : Type x}
+  (self :
+    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType Outcome GlobalCollege
+      Cutoff)
+  (P : Cutoff) (college : GlobalCollege),
+  MeasurableSet
+    {outcome : Outcome |
+      PG24NoisyMatchingMarkets.theorem4DemandFromPreferences
+          (fun (outcome : Outcome) (college : GlobalCollege) =>
+            self.rankOfStudent (self.sampling.sourceStudent outcome) college)
+          self.cutoffCoordinates self.globalScore P outcome =
+        some college}
+
+field capacity:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Outcome : Type v} →
+            [inst_1 : MeasurableSpace Outcome] →
+              {GlobalCollege : Type w} →
+                [inst_2 : Fintype GlobalCollege] →
+                  {Cutoff : Type x} →
+                    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType
+                        Outcome GlobalCollege Cutoff →
+                      GlobalCollege → ℝ
+
+field totalCapacity_eq:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Outcome : Type v} [inst_1 : MeasurableSpace Outcome] {GlobalCollege : Type w}
+  [inst_2 : Fintype GlobalCollege] {Cutoff : Type x}
+  (self :
+    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType Outcome GlobalCollege
+      Cutoff),
+  ∑ college : GlobalCollege, self.capacity college = totalSupply
+
+field selectedCutoff:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Outcome : Type v} →
+            [inst_1 : MeasurableSpace Outcome] →
+              {GlobalCollege : Type w} →
+                [inst_2 : Fintype GlobalCollege] →
+                  {Cutoff : Type x} →
+                    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType
+                        Outcome GlobalCollege Cutoff →
+                      Cutoff
+
+field selectedCutoff_clearing:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Outcome : Type v} [inst_1 : MeasurableSpace Outcome] {GlobalCollege : Type w}
+  [inst_2 : Fintype GlobalCollege] {Cutoff : Type x}
+  (self :
+    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType Outcome GlobalCollege
+      Cutoff)
+  (college : GlobalCollege),
+  (AppliedModelingLib.Matching.eventMass self.sampling.outcomeLaw fun (outcome : Outcome) =>
+      PG24NoisyMatchingMarkets.theorem4DemandFromPreferences
+          (fun (outcome : Outcome) (college : GlobalCollege) =>
+            self.rankOfStudent (self.sampling.sourceStudent outcome) college)
+          self.cutoffCoordinates self.globalScore self.selectedCutoff outcome =
+        some college) =
+    self.capacity college
+
+field approximateScore:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Outcome : Type v} →
+            [inst_1 : MeasurableSpace Outcome] →
+              {GlobalCollege : Type w} →
+                [inst_2 : Fintype GlobalCollege] →
+                  {Cutoff : Type x} →
+                    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType
+                        Outcome GlobalCollege Cutoff →
+                      Outcome → GlobalCollege → ℝ
+
+field globalScore_eq_approximateScore:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Outcome : Type v} [inst_1 : MeasurableSpace Outcome] {GlobalCollege : Type w}
+  [inst_2 : Fintype GlobalCollege] {Cutoff : Type x}
+  (self :
+    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType Outcome GlobalCollege
+      Cutoff)
+  (P : Cutoff) (outcome : Outcome) (college : GlobalCollege),
+  self.globalScore P outcome college = self.approximateScore outcome college
+
+field coalitionEmbedding:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Outcome : Type v} →
+            [inst_1 : MeasurableSpace Outcome] →
+              {GlobalCollege : Type w} →
+                [inst_2 : Fintype GlobalCollege] →
+                  {Cutoff : Type x} →
+                    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType
+                        Outcome GlobalCollege Cutoff →
+                      Fin (C + 1) ↪ GlobalCollege
+
+field trueValue:
+{C : ℕ} →
+  {noiseLaw eta : MeasureTheory.Measure ℝ} →
+    {totalSupply : ℝ} →
+      {StudentType : Type u} →
+        [inst : MeasurableSpace StudentType] →
+          {Outcome : Type v} →
+            [inst_1 : MeasurableSpace Outcome] →
+              {GlobalCollege : Type w} →
+                [inst_2 : Fintype GlobalCollege] →
+                  {Cutoff : Type x} →
+                    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType
+                        Outcome GlobalCollege Cutoff →
+                      StudentType → GlobalCollege → ℝ
+
+field coalition_trueValue_ae:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Outcome : Type v} [inst_1 : MeasurableSpace Outcome] {GlobalCollege : Type w}
+  [inst_2 : Fintype GlobalCollege] {Cutoff : Type x}
+  (self :
+    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType Outcome GlobalCollege
+      Cutoff),
+  ∀ᵐ (student : StudentType) ∂self.sampling.studentLaw,
+    ∀ (college : Fin (C + 1)),
+      self.trueValue student (self.coalitionEmbedding college) = self.sampling.commonValue student
+
+field score_eq_trueValue_plus_noise_ae:
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Outcome : Type v} [inst_1 : MeasurableSpace Outcome] {GlobalCollege : Type w}
+  [inst_2 : Fintype GlobalCollege] {Cutoff : Type x}
+  (self :
+    PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType Outcome GlobalCollege
+      Cutoff),
+  ∀ᵐ (outcome : Outcome) ∂self.sampling.outcomeLaw,
+    ∀ (college : Fin (C + 1)),
+      self.approximateScore outcome (self.coalitionEmbedding college) =
+        self.trueValue (self.sampling.sourceStudent outcome) (self.coalitionEmbedding college) +
+          self.sampling.coalitionNoise outcome college
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The source extended coalition model's joint iid sampling, rich student preferences, embedded coalition, common true value almost everywhere, score-\allowbreak{}equals-\allowbreak{}true-\allowbreak{}value-\allowbreak{}plus-\allowbreak{}noise relation, capacity, and exact clearing are explicit primitive fields.\allowbreak{} Its derived local adapter stores no threshold, subset, regular set, or result.\allowbreak{} The source's all-\allowbreak{}types conditional formulation is represented modulo student-\allowbreak{}law-\allowbreak{}null types, which leaves every eta-\allowbreak{}measured and iid-\allowbreak{}affordance conclusion unchanged.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+
+\clearpage
+\hypertarget{source-claim-303fbbfacf485b9e}{}
+\hypertarget{source-section-f10b5f68e4acf3dc}{}
+\section*{Source claims}
+\subsection*{Review row 1}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 16-\allowbreak{}18\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+We assume that $\eta$ has connected support, which implies that there is a unique value $v_S$ such that $\eta((v_S, \infty))=S$; i.e., the measure of students with value at least $v_S$ is equal to $S$, the total capacity of colleges. Holding $\eta$ and $S$ fixed is convenient, because we can specify two extreme behaviors. On one extreme, only students with value at least $v_S$ are matched, reflecting a ``noise free'' matching; on the other extreme, all students match with probability $S$, reflecting a ``fully noisy'' matching. Note that overall capacity is less than the measure of students.
+
+We further assume a (weak) regularity condition on $\eta$: that there is a constant $\gamma>0$ such that $\eta((v, v+\delta)) = O(\delta^\gamma)$ for all $v\in \RR$ and $\delta > 0.$ This is equivalent to the cumulative distribution function of student values satisfying a $\gamma$-Hölder condition. We also fix a constant $\alpha>0$ that we use to specify a regularity condition on college capacities.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (eta : MeasureTheory.Measure ℝ),
+  IsPreconnected eta.support ∧ PG24NoisyMatchingMarkets.PG24HolderIntervalRegular eta ↔
+    IsPreconnected eta.support ∧
+      ∃ (holderConstant : ℝ) (exponent : ℝ),
+        0 < exponent ∧
+          0 ≤ holderConstant ∧
+            ∀ (x delta : ℝ), 0 < delta → eta.real (Set.Ioo x (x + delta)) ≤ holderConstant * delta.rpow exponent
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.holder_value_law_regularitySpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The source connected-\allowbreak{}support and uniform Holder interval-\allowbreak{}mass condition are expanded explicitly, including positive exponent, nonnegative constant, and every positive interval width.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-43c0061a94bae683}{}
+\section*{Review row 2}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 42-\allowbreak{}48\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+With $\eta$ and $S$ fixed, we may fully parameterize an \vocab{economy} by the ordered tuple $(\DD, C, \vec{S}, \rho),$ where $\DD$ is the noise distribution, $C$ the total number of colleges, $\vec{S}=(S_1, \cdots, S_C)$ a vector of college capacities, and $\rho$ a probability measure over student types (to be defined). We require $\vec{S}$ and $\rho$ to satisfy some basic conditions:
+
+As the total capacity $S$ is fixed, we must have that $S_1 + S_2 + \cdots + S_C = S.$ We also assume that
+\begin{equation}
+    S_c < \frac{\alpha}{C}
+\end{equation}
+for all $c\in C$ for some fixed $\alpha$, meaning that no college has a disproportionately large capacity. This kind of assumption is necessary for our results, since otherwise it is possible for an economy to technically have many colleges, but such that a few colleges take up most of the capacity; this results in the economy behaving as if it only had a few colleges. It will also be useful to define $S(C')$ as the total capacity of colleges in $C'\subseteq C$, that is, $\sum_{c\in C'} S_c.$ By definition, $S = S(C).$
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {College : Type u} [inst : Fintype College] (capacity : College → ℝ) (alpha totalSupply : ℝ),
+  PG24NoisyMatchingMarkets.capacityRegular capacity alpha (Fintype.card College) ∧
+      ∑ c : College, capacity c = totalSupply ↔
+    (∀ (c : College), capacity c < alpha / ↑(Fintype.card College)) ∧ ∑ c : College, capacity c = totalSupply
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.capacity_regularitySpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec is exactly the source strict per-\allowbreak{}college alpha/\allowbreak{}card bound together with the total-\allowbreak{}capacity equality, expressed as an equivalence with the named capacity predicate.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-e7d4a295961f7481}{}
+\section*{Review row 3}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 55-\allowbreak{}60\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+We define two regimes of noise distributions $\DD$. $\DD$ is \vocab{$\beta$-max-concentrating} if and only if
+\begin{equation}
+    \Var[X^{(n)}] = O(n^{-\beta})
+\end{equation}
+for some $\beta > 0,$ where
+$X^{(n)}$ is the maximum order statistic of $n$ samples from $\DD$ (i.e., the maximum of $n$ independent draws from $\DD$). For example, all bounded distributions are max-concentrating, and the Gaussian distribution is $1$-max-concentrating.\footnote{See, e.g., Proposition 4.7 of \cite{boucheron2012concentration}.} On the other hand, $\DD$ is \vocab{long-tailed} if and only if for all $d > 0$,
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (noiseLaw : MeasureTheory.Measure ℝ) (maxVariance : ℕ → ℝ) (beta : ℝ),
+  PG24NoisyMatchingMarkets.source_assumption_iid_beta_max_variance_bound noiseLaw maxVariance →
+    PG24NoisyMatchingMarkets.betaMaxConcentratingVariance maxVariance beta →
+      0 < beta ∧
+        ∃ (K : ℝ) (N : ℕ),
+          0 ≤ K ∧
+            ∀ (n : ℕ),
+              N ≤ n →
+                ProbabilityTheory.variance
+                    (fun (sample : Fin (n + 1) → ℝ) =>
+                      AppliedModelingLib.Probability.upperOrderStatistic sample
+                        AppliedModelingLib.Probability.topSampleRank)
+                    (MeasureTheory.Measure.pi fun (x : Fin (n + 1)) => noiseLaw) ≤
+                  K * (↑(n + 1)).rpow (-beta)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.beta_max_concentratingSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The source beta-\allowbreak{}max definition and the Spec have the same noise law, positive exponent, eventual constant/\allowbreak{}rate, and iid maximum-\allowbreak{}variance conclusion;\allowbreak{} Lean's Fin(n+1) convention is the documented nonempty-\allowbreak{}product indexing shift.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-7d3f65be7a4787b0}{}
+\section*{Review row 4}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 60-\allowbreak{}64\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+$X^{(n)}$ is the maximum order statistic of $n$ samples from $\DD$ (i.e., the maximum of $n$ independent draws from $\DD$). For example, all bounded distributions are max-concentrating, and the Gaussian distribution is $1$-max-concentrating.\footnote{See, e.g., Proposition 4.7 of \cite{boucheron2012concentration}.} On the other hand, $\DD$ is \vocab{long-tailed} if and only if for all $d > 0$,
+\begin{equation}
+    \lim_{x\rightarrow \infty} \Pr_{X\sim \DD}[X > x + d\,|\,X > x] = 1.
+\end{equation}
+For example, the Pareto distribution is long-tailed, as are all subexponential distributions. These two regimes do not cover the set of all noise distributions; for example, the exponential and Gumbel distributions are neither max-concentrating nor long-tailed.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (noiseLaw : MeasureTheory.Measure ℝ),
+  PG24NoisyMatchingMarkets.LongTailedSurvival (AppliedModelingLib.Probability.upperTailMass noiseLaw) ↔
+    ∀ (d : ℝ),
+      0 < d →
+        Filter.Tendsto
+          (fun (x : ℝ) =>
+            AppliedModelingLib.Probability.upperTailMass noiseLaw (x + d) /
+              AppliedModelingLib.Probability.upperTailMass noiseLaw x)
+          Filter.atTop (nhds 1)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.long_tailed_noiseSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec gives the source long-\allowbreak{}tail conditional-\allowbreak{}survival ratio for every positive shift, as a limit at positive upper-\allowbreak{}tail mass arguments.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-083c0bfe40f05233}{}
+\section*{Review row 5}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 78-\allowbreak{}94\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\subsection{Cutoff Characterization of Stable Matching}
+We now specify the map between economies and stable matchings, using the cutoff characterization shown by \citet{azevedo2016supply}. Consider an economy $E = (\DD, C, \vec{S}, \rho) \in E(\DD,C).$
+
+Let $\vec{P} = (P_1, P_2, \cdots, P_C)\in \RR^C$ be a vector of \vocab{cutoffs}, such that college $c$ has cutoff $P_c$. Student $\theta = (v, \succ)$ can \vocab{afford} college $c$ if and only if their estimated value at $c$ exceeds the cutoff $P_c$. Here, we recall that a student with value $v$ receives an estimated value $v + X_c$ at college $c$, where $X_1,\cdots,X_C$ are drawn i.i.d. according to $\DD$. The \vocab{demand} $D^\theta(\vec{P})$ of student $\theta$ at $\vec{P}$ is their most preferred firm among those they can afford; if they cannot afford any firm, $D^\theta(\vec{P}) = \emptyset$. In our setup, $D^\theta(\vec{P})$ is a random variable. Cutoffs $\vec{P}$ are \vocab{market-clearing} in the economy $E$ if and only if
+\begin{equation}
+    \int_{\Theta} \Pr\left[D^\theta(\vec{P})=c\right] \,d\rho(\theta) = S_c
+\end{equation}
+for all $c\in C$. In other words, the measure of students who demand a college is exactly equal to that college's capacity.\footnote{Capacities are exactly filled since the total capacity $S$ is less than the total mass of students $1$, and because every student prefers to be matched over being unmatched (i.e., colleges are overdemanded).}
+
+A random function $\mu:\Theta\rightarrow C\cup \{\emptyset\}$ is a \vocab{stable matching} of $E$ if and only if
+\begin{equation}
+    \mu(\theta) = D^\theta(\vec{P})
+\end{equation}
+for cutoffs $\vec{P}$ that are market-clearing in $E$. We refer the reader to Lemma 1 of \cite{azevedo2016supply} to see that this condition is in fact equivalent to the classical definition of stable matching, where stability here is with respect to college preferences based on the \textit{estimated} value of students.\footnote{This corresponds to a model in which colleges admit students based only on their estimated values (and do not strategize based on, for example, which students other colleges admit).}
+\\
+\\
+Let $M(\DD, C)$ denote the set of all matchings that are stable for some economy $E\in E(\DD, C).$ Then any matching $\mu\in M(\DD, C)$ can be characterized by a set of market-clearing cutoffs $\vec{P}(\mu).$
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {C : ℕ} {noiseLaw eta : MeasureTheory.Measure ℝ} {totalSupply alpha : ℝ} {StudentType : Type u}
+  [inst : MeasurableSpace StudentType] {Cutoff : Type v}
+  (market : PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha StudentType Cutoff)
+  (matching : StudentType × (Fin (C + 1) → ℝ) → Option (Fin (C + 1))),
+  market.isStable matching ↔
+    ∃ (cutoffPoint : Cutoff), market.marketClearing cutoffPoint ∧ matching = market.demand.demandAt cutoffPoint
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.stable_matching_cutoff_definitionSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec is the source definition:\allowbreak{} a stable matching is exactly favorite-\allowbreak{}affordable cutoff demand for a market-\allowbreak{}clearing cutoff, with the matching equality and every-\allowbreak{}college clearing condition explicit.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-a3b59b88e9ed2ee1}{}
+\section*{Review row 6}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 96-\allowbreak{}111\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\subsection{Preliminaries}
+We now make some basic observations that will be useful for our results. We show that key properties of stable matchings operate at the level of student values rather than student types (which also encode student preferences). This means that in our analysis, we can focus on the fixed student value distribution $\eta$ while mostly ignoring the varying student type distribution $\rho$.
+
+Consider a matching $\mu\in M(\DD, C)$, characterized by a vector of market-clearing cutoffs $\vec{P}=\vec{P}(\mu)$. Our results focus on the probability that a student $\theta=(v,\succ)$ matches to a college. This probability is equal to
+\begin{equation}
+    \Pr[\mu(\theta)\in C] = \Pr[v + X_c > P_c\text{ for some $c\in C$}],
+\end{equation}
+where $X_1, \cdots, X_C \simiid \DD.$ Notice that this probability does not depend on $\succ$, the student's preferences over colleges. Indeed, the probability that a student matches is exactly the probability that a student can afford some college; whether or not they can afford a college only depends on their value and the college's cutoff (not the student's preferences). Accordingly, we can drop $\theta$ and define
+\begin{equation}
+    p_\mu(v) := \Pr[v + X_c > P_c\text{ for some $c\in C$}],
+\end{equation}
+the probability that a student with value $v$ is matched under $\mu$. More generally, for a subset of colleges $C'\subseteq C$, we define
+\begin{equation}
+    p_\mu(v, C') := \Pr[v + X_c > P_c\text{ for some $c\in C'$}],
+\end{equation}
+the probability that a student with value $v$ can afford some college in $C'$. By definition, $p_\mu(v) = p_\mu(v, C).$
+
+[Next verbatim source excerpt]
+
+\paragraph{Preliminaries.}
+Consider an economy $E = (\rho, \vec{S}, \hat{\bm{V}})$ and a $(\DD, \eta)$-coalition $C$. Let $\mu$ be a stable matching in $E$ with corresponding market-clearing cutoffs $\vec{P}$. Our results focus on the probability that a student $\theta=(\bm{v},\succ)$ can \textit{afford} a college in $C'\subseteq C$. Recall that the student's true value at $C$ is denoted simply by $v$. Then the probability the student can afford a college in $C'$ is
+\begin{equation}
+    \Pr[v + X_c > P_c\text{ for some $c\in C'$}],
+\end{equation}
+which does not depend on the true values of the student at colleges outside of the coalition, nor the preferences of the student. We set
+\begin{equation}
+    p_\mu(v, C') := \Pr[v + X_c > P_c\text{ for some $c\in C'$}]
+\end{equation}
+to denote the probability that a student with true value $v$ at coalition $C$ can afford a college in $C'\subseteq C$. In this way, we can begin to see how the setup of the extended model essentially reduces to that of the basic model, since the quantity we are interested in depends only on the true value of a student at the coalition $C$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {College : Type u} [Fintype College] (sampleLaw : MeasureTheory.Measure (College → ℝ)) (active : Finset College)
+  (value : ℝ) (cutoff : College → ℝ),
+  PG24NoisyMatchingMarkets.cutoffAffordanceProbability sampleLaw active value cutoff =
+    sampleLaw.real {noise : College → ℝ | ∃ college ∈ active, cutoff college < value + noise college}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.match_probability_formulaSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The expanded formula is the source strict-\allowbreak{}exceedance probability that value plus an iid active-\allowbreak{}college noise draw crosses at least one cutoff;\allowbreak{} it preserves the active subset and strict inequality.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-4ecaf547b8a4bff9}{}
+\section*{Review row 7}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 259-\allowbreak{}268\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{theorem}[Attenuation]\label{thm:attenuating}
+    Let $\DD$ be max-concentrating and $v\in \RR$. Then for all $\epsilon > 0$, there exists $C(\epsilon)$ such that for all $C > C(\epsilon)$ and $\mu\in M(\DD, C)$,
+    \begin{equation}
+        p_\mu(v) < \epsilon \qquad \text{if $v < v_S$},
+    \end{equation}
+    and
+    \begin{equation}
+        p_\mu(v) > 1 - \epsilon \qquad \text{if $v > v_S$}.
+    \end{equation}
+\end{theorem}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {Admissible : ℕ → Type w} {StudentType : (C : ℕ) → Admissible C → Type u}
+  [inst : (C : ℕ) → (a : Admissible C) → MeasurableSpace (StudentType C a)] {Cutoff : (C : ℕ) → Admissible C → Type v}
+  (noiseLaw eta : MeasureTheory.Measure ℝ) [MeasureTheory.IsProbabilityMeasure noiseLaw]
+  [MeasureTheory.IsProbabilityMeasure eta] {maxVariance : ℕ → ℝ} {alpha beta totalSupply vS : ℝ}
+  (market :
+    (C : ℕ) →
+      (a : Admissible C) →
+        PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha (StudentType C a) (Cutoff C a))
+  (selectedCutoff : (C : ℕ) → (a : Admissible C) → Cutoff C a),
+  (∀ (C : ℕ) (a : Admissible C), (market C a).marketClearing (selectedCutoff C a)) →
+    PG24NoisyMatchingMarkets.betaMaxConcentratingVariance maxVariance beta →
+      PG24NoisyMatchingMarkets.source_assumption_iid_beta_max_variance_bound noiseLaw maxVariance →
+        0 < alpha →
+          PG24NoisyMatchingMarkets.PG24HolderIntervalRegular eta →
+            IsPreconnected eta.support →
+              0 < totalSupply →
+                totalSupply < 1 →
+                  eta.real (Set.Ioi vS) = totalSupply →
+                    (∀ (value epsilon : ℝ),
+                        value < vS →
+                          0 < epsilon →
+                            ∀ᶠ (C : ℕ) in Filter.atTop,
+                              ∀ (a : Admissible C),
+                                PG24NoisyMatchingMarkets.cutoffAffordanceProbability
+                                    (MeasureTheory.Measure.pi fun (x : Fin (C + 1)) => noiseLaw) Finset.univ value
+                                    ((market C a).demand.cutoffCoordinates (selectedCutoff C a)) <
+                                  epsilon) ∧
+                      ∀ (value epsilon : ℝ),
+                        vS < value →
+                          0 < epsilon →
+                            ∀ᶠ (C : ℕ) in Filter.atTop,
+                              ∀ (a : Admissible C),
+                                1 - epsilon <
+                                  PG24NoisyMatchingMarkets.cutoffAffordanceProbability
+                                    (MeasureTheory.Measure.pi fun (x : Fin (C + 1)) => noiseLaw) Finset.univ value
+                                    ((market C a).demand.cutoffCoordinates (selectedCutoff C a))
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.review_theorem1_attenuationSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} For every fixed below-\allowbreak{}threshold or above-\allowbreak{}threshold value and positive tolerance, the Spec preserves the source eventual uniformity over admissible basic economies and selected clearing cutoffs, with low probability tending to zero and high probability tending to one.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-9e706cf872adcab7}{}
+\section*{Review row 8}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 274-\allowbreak{}279\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{theorem}[Amplification]\label{thm:amplifying}
+    Let $\DD$ be long-tailed and $v\in \RR$. Then for all $\epsilon > 0$, there exists $C(\epsilon)$ such that for all $C > C(\epsilon)$ and $\mu\in M(\DD, C)$,
+    \begin{equation}
+        |p_\mu(v) - S| < \epsilon.
+    \end{equation}
+\end{theorem}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {StudentTypeSeq : ℕ → Type u} [inst : (C : ℕ) → MeasurableSpace (StudentTypeSeq C)] {Admissible : ℕ → Type v}
+  (CutoffSeq : ℕ → Type w) (noiseLaw eta : MeasureTheory.Measure ℝ) [MeasureTheory.IsProbabilityMeasure noiseLaw]
+  [MeasureTheory.IsProbabilityMeasure eta] {totalSupply alpha : ℝ}
+  (market :
+    (C : ℕ) →
+      Admissible C →
+        PG24NoisyMatchingMarkets.PG24LiteralBasicMarket C noiseLaw eta totalSupply alpha (StudentTypeSeq C)
+          (CutoffSeq C))
+  (selectedCutoff : (C : ℕ) → Admissible C → CutoffSeq C),
+  (∀ (C : ℕ) (a : Admissible C), (market C a).marketClearing (selectedCutoff C a)) →
+    PG24NoisyMatchingMarkets.PG24HolderIntervalRegular eta →
+      IsPreconnected eta.support →
+        PG24NoisyMatchingMarkets.LongTailedSurvival (AppliedModelingLib.Probability.upperTailMass noiseLaw) →
+          0 < totalSupply →
+            totalSupply < 1 →
+              0 < alpha →
+                ∀ (target epsilon : ℝ),
+                  0 < epsilon →
+                    ∀ᶠ (C : ℕ) in Filter.atTop,
+                      ∀ (a : Admissible C),
+                        |PG24NoisyMatchingMarkets.cutoffAffordanceProbability
+                                (MeasureTheory.Measure.pi fun (x : Fin (C + 1)) => noiseLaw) Finset.univ target
+                                ((market C a).demand.cutoffCoordinates (selectedCutoff C a)) -
+                              totalSupply| <
+                          epsilon
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.review_theorem2_amplificationSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec preserves the source long-\allowbreak{}tailed conclusion:\allowbreak{} every fixed real target has eventual uniformly small distance between full-\allowbreak{}coalition affordability probability and total supply across the selected basic economies.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-62c35df4a96426fc}{}
+\section*{Review row 9}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 196-\allowbreak{}206\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{theorem}[Attenuation in Coalitions]\label{thm:attenuating-extended}
+    Let $\DD$ be max-concentrating. Then for any $\epsilon > 0$, there exists $C(\epsilon)$ such that the following holds.
+    Let $C$ be a $(\DD, \eta)$-coalition in an economy $E$ with stable matching $\mu$ such that $|C|>C(\epsilon)$. Then there exists $v'\in \RR$ and $C'\subseteq C$ with $\frac{|C'|}{|C|} > 1 - \epsilon$, such that
+    \begin{equation}
+        p_\mu(v, C') < \epsilon \qquad\text{ for all $v<v'-\epsilon$},
+    \end{equation}
+    and
+    \begin{equation}
+        p_\mu(v, C) > 1 - \epsilon \qquad\text{ for all $v>v'+\epsilon$}.
+    \end{equation}
+\end{theorem}
+
+[Next verbatim source excerpt]
+
+\subsection{Model and Definitions}
+
+\paragraph{General noisy economy.}
+There is a continuum of students of measure 1 to be matched with a finite set of colleges $C^* = \{1, 2, \cdots, C^*\}.$ Each student is identified by their \textit{true type} $\theta = (\bm{v}, \succ)$, where
+\begin{equation}
+    \bm{v} = (v_1, v_2, \cdots, v_{C^*}) \in \RR^C
+\end{equation}
+are the \textit{true values} of the student. Here, $v_c$ is the true value of the student at college $c$. In contrast to the basic model, students have multiple true values, which differ across colleges.
+
+A student with true values $\bm{v}$ has \textit{approximate values} $\hat{\bm{v}},$ where
+\begin{equation}
+    \hat{\bm{v}} = (\hat{v}_1, \hat{v}_2, \cdots, \hat{v}_{C^*})
+\end{equation}
+is a random variable over $\RR^{C^*}$. ($\hat{v}_1, \hat{v}_2, \cdots, \hat{v}_{C^*}$ need not be independent.) Thus, a student $(\bm{v},\succ)$ has true value at college $c$ equal to $v_c$, and the college obtains an approximation of the student's value equal to $\hat{v}_c.$
+
+An \textit{economy} is given by an ordered pair $(\rho, \vec{S}, \hat{\bm{V}}),$ where $\rho$ is a probability measure over the set of student types $\Theta = \RR^{C^*}\times \mathcal{R}$ and $\vec{S}$ is a vector of college capacities. As before, we hold the total capacity of colleges to be a fixed constant $S\in (0,1)$, and assume that all students prefer being matched to any college over being unmatched. $\hat{\bm{V}} = \{\hat{\bm{v}}\}_{\bm{v}\in \RR^{C^*}}$ is a set of independent random variables over $\RR^{C^*}$, where $\hat{\bm{v}}$ give the approximate values of a student with true values $\bm{v}$. For example, one could choose $\hat{\bm{V}}$ such that $\hat{\bm{v}}$ is equal to $\bm{v}$ perturbed by noise drawn from a specified multivariate normal distribution for all $\bm{v}\in \RR^C$. Here, $\hat{\bm{V}}$ generalizes the role of the noise distribution $\DD$ in the basic model, by allowing for more broader relationships between true values and approximate values.
+
+(Formally, we require $\hat{\bm{V}}$ to be chosen in a way that induces a valid probability distribution over true values and approximate values, where $\rho$ specifies the marginal distribution of true values, and $\hat{\bm{v}}$ specifies the conditional distribution for each true value.)
+
+\paragraph{Cutoff characterization of stable matching.}
+Consider an economy $E=(\rho, \vec{S}, \hat{\bm{V}}).$ Given cutoffs $\vec{P} = (P_1, \cdots, P_{C^*}),$ we have that a student with true values $\bm{v}$ can afford college $c$ if and only if $\hat{v}_c > P_c$. A student's demand $D^{\theta}(\vec{P})$ at cutoffs $\vec{P}$ is equal to the college they most prefer among those they can afford; $D^{\theta}(\vec{P})=\emptyset$ if the student cannot afford any college. Note that $D^{\theta}(\vec{P})$ is a random variable. Then, as in the basic model, the cutoffs $\vec{P}$ are market-clearing if and only if
+\begin{equation}
+    \int_{\theta} \Pr[D^{\theta}(\vec{P})=c]\,d\rho(\theta) = S_c
+\end{equation}
+for all $c\in {C^*}$.\footnote{Capacities are exactly filled since the total capacity $S$ is less than the total measure of students $1$, and because every student prefers to be matched over being unmatched.} If $\vec{P}$ is market-clearing, then the function $\mu:\theta\mapsto D^{\theta}(\vec{P})$ is a stable matching.
+
+\paragraph{College coalitions.}
+We are interested in analyzing the behavior of subsets of colleges in an economy that share the same true preferences over students, but who each make noisy decisions. We now formally define these subsets.
+
+In an economy $E=(\rho, \vec{S}, \hat{\bm{V}})$, a subset of colleges $C\subseteq {C^*}$ is a $(\DD,\eta)$\vocab{-coalition} if and only if the following conditions are met:
+\begin{enumerate}
+    \item The true value of a student is same at each college in $C$.\footnote{Formally, the $\rho$-measure of students who have different true values at two colleges in $C$ is equal to $0$:
+    \begin{equation}
+        \rho\left(\{(\bm{v}, \succ) \in \Theta: \text{exists }c,c'\in C\text{ such that }v_c\neq v_c'\}\right) = 0.
+    \end{equation}
+    }
+    If this condition is satisfied, for a student with true values $\bm{v}$, we simply use $v$ to refer to the common true value of the student at colleges in $C$. In other words, $v_c=v$ for all $c\in C$. We call $v$ the student's \textit{true value at $C$}.
+    \item The approximate values of a student at colleges in $C$ is equal (in distribution) to their true value at $C$ perturbed by independent noise drawn from $\DD$: For all $\bm{v}\in \RR^{C^*},$
+    \begin{equation}
+        \hat{v}_c \eqdist v + X_c
+    \end{equation}
+    for all $c\in C$,
+    where $X_1, X_2, \cdots, X_C$ are drawn i.i.d. according to $\DD$.
+    \item The distribution of true values at $C$ is given by the probability measure $\eta$. That is,
+    \begin{equation}
+        \rho((\bm{v},\succ): v\in C) = \eta(V)
+    \end{equation}
+    for all $V\subseteq \RR.$
+\end{enumerate}
+
+In essence, a subset of colleges form a coalition if they behave like the full set of colleges in the basic model---i.e., the colleges in the coalition have the same true value for each student and each obtain independent noisy estimates of this value. (But, as in the basic model, students may have arbitrary preferences over colleges in the coalition, and colleges may differ in their capacities.) Indeed, one may check that in the basic model, the entire set of colleges $C$ forms a $(\DD,\eta)$-coalition.\footnote{The reader might observe that the conditions for a coalition are somewhat simpler than in the basic model: the constants $\alpha$ and $\gamma$ governing regularity conditions are notably absent in the extended model. The reason is that these regularity conditions are not necessary for the somewhat weaker results we establish in the extended model. On the other hand, the regularity conditions are also not sufficient to establish stronger results in the extended model, as we explain below.} As we will see, coalitions satisfy very similar properties to the full set of colleges in the basic model.
+
+\paragraph{Preliminaries.}
+Consider an economy $E = (\rho, \vec{S}, \hat{\bm{V}})$ and a $(\DD, \eta)$-coalition $C$. Let $\mu$ be a stable matching in $E$ with corresponding market-clearing cutoffs $\vec{P}$. Our results focus on the probability that a student $\theta=(\bm{v},\succ)$ can \textit{afford} a college in $C'\subseteq C$. Recall that the student's true value at $C$ is denoted simply by $v$. Then the probability the student can afford a college in $C'$ is
+\begin{equation}
+    \Pr[v + X_c > P_c\text{ for some $c\in C'$}],
+\end{equation}
+which does not depend on the true values of the student at colleges outside of the coalition, nor the preferences of the student. We set
+\begin{equation}
+    p_\mu(v, C') := \Pr[v + X_c > P_c\text{ for some $c\in C'$}]
+\end{equation}
+to denote the probability that a student with true value $v$ at coalition $C$ can afford a college in $C'\subseteq C$. In this way, we can begin to see how the setup of the extended model essentially reduces to that of the basic model, since the quantity we are interested in depends only on the true value of a student at the coalition $C$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (noiseLaw eta : MeasureTheory.Measure ℝ) [MeasureTheory.IsProbabilityMeasure noiseLaw]
+  [MeasureTheory.IsProbabilityMeasure eta] {maxVariance : ℕ → ℝ} {beta : ℝ},
+  PG24NoisyMatchingMarkets.betaMaxConcentratingVariance maxVariance beta →
+    PG24NoisyMatchingMarkets.source_assumption_iid_beta_max_variance_bound noiseLaw maxVariance →
+      ∀ {totalSupply : ℝ},
+        0 < totalSupply →
+          totalSupply < 1 →
+            ∀ (epsilon : ℝ),
+              0 < epsilon →
+                ∃ (N : ℕ),
+                  ∀ (C : ℕ),
+                    N ≤ C →
+                      ∀ (StudentType : Type u) [inst : MeasurableSpace StudentType] (Outcome : Type v)
+                        [inst_1 : MeasurableSpace Outcome] (GlobalCollege : Type w) [inst_2 : Fintype GlobalCollege]
+                        (Cutoff : Type x)
+                        (data :
+                          PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType
+                            Outcome GlobalCollege Cutoff),
+                        ∃ (threshold : ℝ) (actualCoalition : Finset GlobalCollege) (actualLargeSubset :
+                          PG24NoisyMatchingMarkets.Theorem4ActualCoalitionSubset data.coalitionEmbedding),
+                          actualCoalition = PG24NoisyMatchingMarkets.theorem4ActualCoalition data.coalitionEmbedding ∧
+                            PG24NoisyMatchingMarkets.CoalitionLargeSubset actualCoalition actualLargeSubset.actualSubset
+                                epsilon ∧
+                              N < actualCoalition.card ∧
+                                (∀ value < threshold - epsilon,
+                                    data.toStudentTypedSourceStableData.pMuOnActualCoalitionSubset value
+                                        actualLargeSubset <
+                                      epsilon) ∧
+                                  ∀ (value : ℝ),
+                                    threshold + epsilon < value →
+                                      1 - epsilon <
+                                        data.toStudentTypedSourceStableData.pMuOnActualCoalitionSubset value
+                                          (PG24NoisyMatchingMarkets.Theorem4ActualCoalitionSubset.ofIndexed
+                                            data.coalitionEmbedding Finset.univ)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.review_theorem3_attenuationInCoalitionsSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The literal extended primitive bundle preserves the source coalition inputs.\allowbreak{} For every tolerance it selects a size threshold before an arbitrary economy and returns a large embedded subcoalition with the source low/\allowbreak{}high affordability threshold conclusions.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-09a28f818364c658}{}
+\section*{Review row 10}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 213-\allowbreak{}220\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{theorem}[Amplification in Coalitions]\label{thm:amplifying-extended}
+    Let $\DD$ be long-tailed. Then for any $\epsilon > 0$, there exists $C(\epsilon)$ such that the following holds.
+    Let $C$ be a $(\DD, \eta)$-coalition in an economy $E$ with stable matching $\mu$ such that $|C|>C(\epsilon)$. Then there exists $S'\in \RR$ and $C'\subseteq C$ with $\frac{|C'|}{|C|} > 1 - \epsilon$, such that
+    \begin{equation}
+        |p_\mu(v, C')-S'| < \epsilon
+    \end{equation}
+    for all $v$ except on a set of $\eta$-measure at most $\epsilon$.
+\end{theorem}
+
+[Next verbatim source excerpt]
+
+\subsection{Model and Definitions}
+
+\paragraph{General noisy economy.}
+There is a continuum of students of measure 1 to be matched with a finite set of colleges $C^* = \{1, 2, \cdots, C^*\}.$ Each student is identified by their \textit{true type} $\theta = (\bm{v}, \succ)$, where
+\begin{equation}
+    \bm{v} = (v_1, v_2, \cdots, v_{C^*}) \in \RR^C
+\end{equation}
+are the \textit{true values} of the student. Here, $v_c$ is the true value of the student at college $c$. In contrast to the basic model, students have multiple true values, which differ across colleges.
+
+A student with true values $\bm{v}$ has \textit{approximate values} $\hat{\bm{v}},$ where
+\begin{equation}
+    \hat{\bm{v}} = (\hat{v}_1, \hat{v}_2, \cdots, \hat{v}_{C^*})
+\end{equation}
+is a random variable over $\RR^{C^*}$. ($\hat{v}_1, \hat{v}_2, \cdots, \hat{v}_{C^*}$ need not be independent.) Thus, a student $(\bm{v},\succ)$ has true value at college $c$ equal to $v_c$, and the college obtains an approximation of the student's value equal to $\hat{v}_c.$
+
+An \textit{economy} is given by an ordered pair $(\rho, \vec{S}, \hat{\bm{V}}),$ where $\rho$ is a probability measure over the set of student types $\Theta = \RR^{C^*}\times \mathcal{R}$ and $\vec{S}$ is a vector of college capacities. As before, we hold the total capacity of colleges to be a fixed constant $S\in (0,1)$, and assume that all students prefer being matched to any college over being unmatched. $\hat{\bm{V}} = \{\hat{\bm{v}}\}_{\bm{v}\in \RR^{C^*}}$ is a set of independent random variables over $\RR^{C^*}$, where $\hat{\bm{v}}$ give the approximate values of a student with true values $\bm{v}$. For example, one could choose $\hat{\bm{V}}$ such that $\hat{\bm{v}}$ is equal to $\bm{v}$ perturbed by noise drawn from a specified multivariate normal distribution for all $\bm{v}\in \RR^C$. Here, $\hat{\bm{V}}$ generalizes the role of the noise distribution $\DD$ in the basic model, by allowing for more broader relationships between true values and approximate values.
+
+(Formally, we require $\hat{\bm{V}}$ to be chosen in a way that induces a valid probability distribution over true values and approximate values, where $\rho$ specifies the marginal distribution of true values, and $\hat{\bm{v}}$ specifies the conditional distribution for each true value.)
+
+\paragraph{Cutoff characterization of stable matching.}
+Consider an economy $E=(\rho, \vec{S}, \hat{\bm{V}}).$ Given cutoffs $\vec{P} = (P_1, \cdots, P_{C^*}),$ we have that a student with true values $\bm{v}$ can afford college $c$ if and only if $\hat{v}_c > P_c$. A student's demand $D^{\theta}(\vec{P})$ at cutoffs $\vec{P}$ is equal to the college they most prefer among those they can afford; $D^{\theta}(\vec{P})=\emptyset$ if the student cannot afford any college. Note that $D^{\theta}(\vec{P})$ is a random variable. Then, as in the basic model, the cutoffs $\vec{P}$ are market-clearing if and only if
+\begin{equation}
+    \int_{\theta} \Pr[D^{\theta}(\vec{P})=c]\,d\rho(\theta) = S_c
+\end{equation}
+for all $c\in {C^*}$.\footnote{Capacities are exactly filled since the total capacity $S$ is less than the total measure of students $1$, and because every student prefers to be matched over being unmatched.} If $\vec{P}$ is market-clearing, then the function $\mu:\theta\mapsto D^{\theta}(\vec{P})$ is a stable matching.
+
+\paragraph{College coalitions.}
+We are interested in analyzing the behavior of subsets of colleges in an economy that share the same true preferences over students, but who each make noisy decisions. We now formally define these subsets.
+
+In an economy $E=(\rho, \vec{S}, \hat{\bm{V}})$, a subset of colleges $C\subseteq {C^*}$ is a $(\DD,\eta)$\vocab{-coalition} if and only if the following conditions are met:
+\begin{enumerate}
+    \item The true value of a student is same at each college in $C$.\footnote{Formally, the $\rho$-measure of students who have different true values at two colleges in $C$ is equal to $0$:
+    \begin{equation}
+        \rho\left(\{(\bm{v}, \succ) \in \Theta: \text{exists }c,c'\in C\text{ such that }v_c\neq v_c'\}\right) = 0.
+    \end{equation}
+    }
+    If this condition is satisfied, for a student with true values $\bm{v}$, we simply use $v$ to refer to the common true value of the student at colleges in $C$. In other words, $v_c=v$ for all $c\in C$. We call $v$ the student's \textit{true value at $C$}.
+    \item The approximate values of a student at colleges in $C$ is equal (in distribution) to their true value at $C$ perturbed by independent noise drawn from $\DD$: For all $\bm{v}\in \RR^{C^*},$
+    \begin{equation}
+        \hat{v}_c \eqdist v + X_c
+    \end{equation}
+    for all $c\in C$,
+    where $X_1, X_2, \cdots, X_C$ are drawn i.i.d. according to $\DD$.
+    \item The distribution of true values at $C$ is given by the probability measure $\eta$. That is,
+    \begin{equation}
+        \rho((\bm{v},\succ): v\in C) = \eta(V)
+    \end{equation}
+    for all $V\subseteq \RR.$
+\end{enumerate}
+
+In essence, a subset of colleges form a coalition if they behave like the full set of colleges in the basic model---i.e., the colleges in the coalition have the same true value for each student and each obtain independent noisy estimates of this value. (But, as in the basic model, students may have arbitrary preferences over colleges in the coalition, and colleges may differ in their capacities.) Indeed, one may check that in the basic model, the entire set of colleges $C$ forms a $(\DD,\eta)$-coalition.\footnote{The reader might observe that the conditions for a coalition are somewhat simpler than in the basic model: the constants $\alpha$ and $\gamma$ governing regularity conditions are notably absent in the extended model. The reason is that these regularity conditions are not necessary for the somewhat weaker results we establish in the extended model. On the other hand, the regularity conditions are also not sufficient to establish stronger results in the extended model, as we explain below.} As we will see, coalitions satisfy very similar properties to the full set of colleges in the basic model.
+
+\paragraph{Preliminaries.}
+Consider an economy $E = (\rho, \vec{S}, \hat{\bm{V}})$ and a $(\DD, \eta)$-coalition $C$. Let $\mu$ be a stable matching in $E$ with corresponding market-clearing cutoffs $\vec{P}$. Our results focus on the probability that a student $\theta=(\bm{v},\succ)$ can \textit{afford} a college in $C'\subseteq C$. Recall that the student's true value at $C$ is denoted simply by $v$. Then the probability the student can afford a college in $C'$ is
+\begin{equation}
+    \Pr[v + X_c > P_c\text{ for some $c\in C'$}],
+\end{equation}
+which does not depend on the true values of the student at colleges outside of the coalition, nor the preferences of the student. We set
+\begin{equation}
+    p_\mu(v, C') := \Pr[v + X_c > P_c\text{ for some $c\in C'$}]
+\end{equation}
+to denote the probability that a student with true value $v$ at coalition $C$ can afford a college in $C'\subseteq C$. In this way, we can begin to see how the setup of the extended model essentially reduces to that of the basic model, since the quantity we are interested in depends only on the true value of a student at the coalition $C$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (noiseLaw eta : MeasureTheory.Measure ℝ) [MeasureTheory.IsProbabilityMeasure noiseLaw]
+  [MeasureTheory.IsProbabilityMeasure eta],
+  PG24NoisyMatchingMarkets.LongTailedSurvival (AppliedModelingLib.Probability.upperTailMass noiseLaw) →
+    ∀ {totalSupply : ℝ},
+      0 < totalSupply →
+        totalSupply < 1 →
+          ∀ (epsilon : ℝ),
+            0 < epsilon →
+              ∃ (N : ℕ),
+                ∀ (C : ℕ),
+                  N ≤ C →
+                    ∀ (StudentType : Type u) [inst : MeasurableSpace StudentType] (Outcome : Type v)
+                      [inst_1 : MeasurableSpace Outcome] (GlobalCollege : Type w) [inst_2 : Fintype GlobalCollege]
+                      (Cutoff : Type x)
+                      (data :
+                        PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData C noiseLaw eta totalSupply StudentType
+                          Outcome GlobalCollege Cutoff),
+                      ∃ (effectiveSupply : ℝ) (actualCoalition : Finset GlobalCollege) (actualLargeSubset :
+                        PG24NoisyMatchingMarkets.Theorem4ActualCoalitionSubset data.coalitionEmbedding) (regularSet :
+                        Set ℝ),
+                        actualCoalition = PG24NoisyMatchingMarkets.theorem4ActualCoalition data.coalitionEmbedding ∧
+                          PG24NoisyMatchingMarkets.CoalitionLargeSubset actualCoalition actualLargeSubset.actualSubset
+                              epsilon ∧
+                            N < actualCoalition.card ∧
+                              eta.real regularSetᶜ ≤ epsilon ∧
+                                ∀ value ∈ regularSet,
+                                  |data.toStudentTypedSourceStableData.pMuOnActualCoalitionSubset value
+                                          actualLargeSubset -
+                                        effectiveSupply| <
+                                    epsilon
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.review_theorem4_amplificationInCoalitionsSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec preserves the extended source quantifier order and returns an effective supply, large embedded subcoalition, and eta-\allowbreak{}exceptional regular set on which affordability is uniformly epsilon-\allowbreak{}close under long-\allowbreak{}tailed noise.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-68004cb711da81c5}{}
+\section*{Review row 11}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 312-\allowbreak{}321\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{proposition}\label{thm1v2}
+    Let $\DD$ be $\beta$-max-concentrating and $v\in \RR$. Let $\mu \in M(\DD, C)$. Then
+    \begin{equation}
+        \int_{v_S}^\infty p_\mu(v)\,d\eta(v) = O\left(C^{-K(\beta,\gamma)}\right),
+    \end{equation}
+    where
+    \begin{equation}
+        K(\beta,\gamma) := \frac{2\beta\gamma}{3\beta\gamma + 2\beta + 5\gamma + 6}.
+    \end{equation}
+\end{proposition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {Admissible : ℕ → Type w} {StudentType : (C : ℕ) → Admissible C → Type u}
+  [inst : (C : ℕ) → (a : Admissible C) → MeasurableSpace (StudentType C a)] {Cutoff : (C : ℕ) → Admissible C → Type v}
+  (noiseLaw eta : MeasureTheory.Measure ℝ) [MeasureTheory.IsProbabilityMeasure noiseLaw]
+  [MeasureTheory.IsProbabilityMeasure eta] {maxVariance : ℕ → ℝ} {alpha beta totalSupply vS : ℝ}
+  (inst_3 :
+    (C : ℕ) →
+      (a : Admissible C) →
+        PG24NoisyMatchingMarkets.PG24LiteralBasicTwoScaleInstance C noiseLaw eta totalSupply alpha (StudentType C a)
+          (Cutoff C a)),
+  PG24NoisyMatchingMarkets.betaMaxConcentratingVariance maxVariance beta →
+    PG24NoisyMatchingMarkets.source_assumption_iid_beta_max_variance_bound noiseLaw maxVariance →
+      0 ≤ alpha →
+        PG24NoisyMatchingMarkets.PG24HolderIntervalRegular eta →
+          eta.real (Set.Ioi vS) = totalSupply →
+            ∀ (epsilon : ℝ),
+              0 < epsilon →
+                ∀ᶠ (C : ℕ) in Filter.atTop,
+                  ∀ (a : Admissible C),
+                    (AppliedModelingLib.Matching.eventMass
+                        ((inst_3 C a).studentLaw.prod (MeasureTheory.Measure.pi fun (x : Fin (C + 1)) => noiseLaw))
+                        fun (outcome : StudentType C a × (Fin (C + 1) → ℝ)) =>
+                        (inst_3 C a).value outcome.1 ∈ Set.Iic vS ∧
+                          AppliedModelingLib.Matching.chosenInActive
+                            ((inst_3 C a).literal.demand.demandAt (inst_3 C a).literal.selectedCutoff) Finset.univ
+                            outcome) <
+                      epsilon
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_thm1_corrected_lower_tailSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The printed upper-\allowbreak{}tail negative-\allowbreak{}power display is refuted separately because positive limiting supply makes it impossible.\allowbreak{} This Spec states the lower-\allowbreak{}tail matched-\allowbreak{}mass vanishing conclusion described by the surrounding prose, footnote, and Theorem 1, without upgrading the source O notation to a uniform rate.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-baab78c419a8d66e}{}
+\section*{Review row 12}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 391-\allowbreak{}395\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{proposition}\label{prop:duck-1}
+\begin{equation}
+    S(\CC_1) \le \alpha C^{\phi_3 - 1} = O\left(C^{-K(\beta,\gamma)}\right).
+\end{equation}
+\end{proposition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {College : Type u} (active : Finset College) (capacity : College → ℝ) {alpha beta gamma : ℝ} {C : ℕ},
+  0 < ↑C →
+    0 < alpha →
+      ↑active.card < (↑C).rpow (PG24NoisyMatchingMarkets.theorem1TailPhi3 beta gamma) →
+        (∀ c ∈ active, capacity c < alpha / ↑C) →
+          AppliedModelingLib.Matching.activeCapacity active capacity ≤
+            alpha * (↑C).rpow (PG24NoisyMatchingMarkets.theorem1TailPhi3 beta gamma - 1)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_duck_1Spec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec preserves duck-\allowbreak{}1's sparse-\allowbreak{}block capacity inequality with its displayed alpha times C\textasciicircum{}(phi3-\allowbreak{}1) exponent;\allowbreak{} the source proof's sign slip is not imported into the conclusion.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-059a664ca2f2c12c}{}
+\section*{Review row 13}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 404-\allowbreak{}416\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{proposition}\label{prop:tomato}
+\quad
+    \begin{itemize}
+        \item[(i)] If $v > P^* - \EE[X^{(C^{\phi_2})}]  + 2\delta,$
+        \begin{equation}
+            p_\mu(v, \CC_2) \ge 1 - O\left(C^{-2\phi_1 - \beta\phi_2}\right).
+        \end{equation}
+        \item[(ii)] If $v < P^* - \EE[X^{(C^{\phi_2})}]  - \delta,$
+        \begin{equation}
+            p_\mu(v, \CC_2) \le O\left(C^{1-2\phi_1 - (1 + \beta)\phi_2}\right).
+        \end{equation}
+    \end{itemize}
+\end{proposition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (noiseLaw : MeasureTheory.Measure ℝ) [MeasureTheory.IsProbabilityMeasure noiseLaw] (maxVariance : ℕ → ℝ)
+  {beta gamma : ℝ},
+  PG24NoisyMatchingMarkets.betaMaxConcentratingVariance maxVariance beta →
+    0 < gamma →
+      PG24NoisyMatchingMarkets.source_assumption_iid_beta_max_variance_bound noiseLaw maxVariance →
+        ∀ (dense upper : (C : ℕ) → Finset (Fin C)) (cutoff : (C : ℕ) → Fin C → ℝ)
+          (highValue ceiling lowValue pivot : ℕ → ℝ),
+          (∀ᶠ (C : ℕ) in Filter.atTop, dense C ⊆ upper C) →
+            (∀ᶠ (C : ℕ) in Filter.atTop,
+                (↑C).rpow (PG24NoisyMatchingMarkets.theorem1TailPhi2 beta gamma) ≤ ↑(dense C).card) →
+              (∀ᶠ (C : ℕ) in Filter.atTop, ∀ c ∈ dense C, cutoff C c ≤ ceiling C) →
+                (∀ᶠ (C : ℕ) in Filter.atTop,
+                    ceiling C - highValue C <
+                      PG24NoisyMatchingMarkets.theorem1DenseGroupCenter noiseLaw C beta gamma -
+                        PG24NoisyMatchingMarkets.theorem1DenseDeviationRadius C beta gamma) →
+                  (∀ᶠ (C : ℕ) in Filter.atTop, ∀ c ∈ upper C, pivot C ≤ cutoff C c) →
+                    (∀ᶠ (C : ℕ) in Filter.atTop,
+                        PG24NoisyMatchingMarkets.theorem1DenseGroupCenter noiseLaw C beta gamma +
+                            PG24NoisyMatchingMarkets.theorem1DenseDeviationRadius C beta gamma ≤
+                          pivot C - lowValue C) →
+                      (∃ (A : ℝ),
+                          0 ≤ A ∧
+                            ∀ᶠ (C : ℕ) in Filter.atTop,
+                              1 -
+                                  PG24NoisyMatchingMarkets.cutoffAffordanceProbability
+                                    (MeasureTheory.Measure.pi fun (x : Fin C) => noiseLaw) (upper C) (highValue C)
+                                    (cutoff C) ≤
+                                A *
+                                  (↑C).rpow
+                                    (-2 * PG24NoisyMatchingMarkets.theorem1TailPhi1 beta gamma -
+                                      beta * PG24NoisyMatchingMarkets.theorem1TailPhi2 beta gamma)) ∧
+                        ∃ (B : ℝ),
+                          0 ≤ B ∧
+                            ∀ᶠ (C : ℕ) in Filter.atTop,
+                              PG24NoisyMatchingMarkets.cutoffAffordanceProbability
+                                  (MeasureTheory.Measure.pi fun (x : Fin C) => noiseLaw) (upper C) (lowValue C)
+                                  (cutoff C) ≤
+                                B *
+                                  (↑C).rpow
+                                    (1 - 2 * PG24NoisyMatchingMarkets.theorem1TailPhi1 beta gamma -
+                                      (1 + beta) * PG24NoisyMatchingMarkets.theorem1TailPhi2 beta gamma)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_tomatoSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec preserves both displayed tomato exponents from the source dense-\allowbreak{}block cutoff and separation hypotheses;\allowbreak{} its valid union/\allowbreak{}Chebyshev route replaces the source proof's reversed intermediate event comparison.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-2f4e3f42143d1dc8}{}
+\section*{Review row 14}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 469-\allowbreak{}473\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{proposition}\label{prop:duck-2}
+\begin{equation}
+    \int_{-\infty}^{v_S} p_\mu(v, \CC_2)\,d\eta(v) = O\left(C^{-K(\beta,\gamma)}\right).
+\end{equation}
+\end{proposition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (noiseLaw valueLaw : MeasureTheory.Measure ℝ) [MeasureTheory.IsProbabilityMeasure noiseLaw]
+  [MeasureTheory.IsProbabilityMeasure valueLaw] (maxVariance : ℕ → ℝ) {beta gamma : ℝ},
+  PG24NoisyMatchingMarkets.betaMaxConcentratingVariance maxVariance beta →
+    0 < gamma →
+      PG24NoisyMatchingMarkets.source_assumption_iid_beta_max_variance_bound noiseLaw maxVariance →
+        ∀ (upper : (C : ℕ) → Finset (Fin C)) (cutoff : (C : ℕ) → Fin C → ℝ) (lowValue pivot : ℕ → ℝ),
+          (∀ᶠ (C : ℕ) in Filter.atTop, ∀ c ∈ upper C, pivot C ≤ cutoff C c) →
+            (∀ᶠ (C : ℕ) in Filter.atTop,
+                PG24NoisyMatchingMarkets.theorem1DenseGroupCenter noiseLaw C beta gamma +
+                    PG24NoisyMatchingMarkets.theorem1DenseDeviationRadius C beta gamma ≤
+                  pivot C - lowValue C) →
+              ∃ (A : ℝ),
+                0 ≤ A ∧
+                  ∀ᶠ (C : ℕ) in Filter.atTop,
+                    ∫ (v : ℝ),
+                        (Set.Iic (lowValue C)).indicator
+                          (fun (v : ℝ) =>
+                            PG24NoisyMatchingMarkets.cutoffAffordanceProbability
+                              (MeasureTheory.Measure.pi fun (x : Fin C) => noiseLaw) (upper C) v (cutoff C))
+                          v ∂valueLaw ≤
+                      A * (↑C).rpow (-PG24NoisyMatchingMarkets.theorem1TailK beta gamma)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_duck_2Spec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec preserves duck-\allowbreak{}2's first-\allowbreak{}case low-\allowbreak{}value cutoff-\allowbreak{}affordance integral rate and makes its implicit source cutoff/\allowbreak{}separation geometry visible as hypotheses.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-8894ff8f48aa126b}{}
+\section*{Review row 15}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 553-\allowbreak{}557\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{proposition}\label{prop:goose-1}
+\begin{equation}
+    S(\CC_1) < \alpha C^{-\frac{2\beta\gamma}{3\beta\gamma + 2\beta + 5\gamma + 6}}.
+\end{equation}
+\end{proposition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {College : Type u} (active : Finset College) (capacity : College → ℝ) {alpha beta gamma : ℝ} {C : ℕ},
+  0 < ↑C →
+    0 < alpha →
+      ↑active.card < (↑C).rpow (PG24NoisyMatchingMarkets.theorem1TailPhi3 beta gamma) →
+        (∀ c ∈ active, capacity c < alpha / ↑C) →
+          AppliedModelingLib.Matching.activeCapacity active capacity <
+            alpha * (↑C).rpow (-PG24NoisyMatchingMarkets.theorem1TailK beta gamma)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_goose_1Spec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec retains goose-\allowbreak{}1's literal strict alpha times C\textasciicircum{}(-\allowbreak{}K) sparse-\allowbreak{}block capacity rate, notwithstanding the printed proof's inconsistent exponent notation.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-0288a6d97ff1b834}{}
+\section*{Review row 16}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 565-\allowbreak{}570\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{lemma}\label{lem:log-bound}
+    If $\DD$ is $\beta$-max-concentrating for some $\beta>0$, then
+    \begin{equation}
+        \EE[X^{(n)}] = o(\log n).
+    \end{equation}
+\end{lemma}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (noiseLaw : MeasureTheory.Measure ℝ) [MeasureTheory.IsProbabilityMeasure noiseLaw] (maxVariance : ℕ → ℝ) (beta : ℝ),
+  PG24NoisyMatchingMarkets.betaMaxConcentratingVariance maxVariance beta →
+    PG24NoisyMatchingMarkets.source_assumption_iid_beta_max_variance_bound noiseLaw maxVariance →
+      Filter.Tendsto
+        (fun (n : ℕ) =>
+          AppliedModelingLib.Probability.expectedTopOrderStatisticSeq
+              (fun (k : ℕ) => MeasureTheory.Measure.pi fun (x : Fin (k + 1)) => noiseLaw) n /
+            Real.log ↑n)
+        Filter.atTop (nhds 0)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_log_boundSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec is the source log-\allowbreak{}bound conclusion that the expected iid maximum divided by the logarithmic sample scale tends to zero under beta-\allowbreak{}max concentration and the iid variance bridge.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-331214905b993ae6}{}
+\section*{Review row 17}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 599-\allowbreak{}611\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{proposition}\label{prop:beet}
+\quad
+\begin{itemize}
+    \item[(i)] If $v < P_{C^{\phi_3}} - \EE[X^{(C)}] - C^{\phi_4},$
+    \begin{equation}
+        p_\mu(v, \CC_2) \le O\left(C^{-\beta-2\phi_4}\right).
+    \end{equation}
+    \item[(ii)] If $v > P_{C^{\phi_3}} - \EE[X^{(C)}] - C^{\phi_4},$
+    \begin{equation}
+        p_\mu(v) \ge 1 - O\left(C^{-2\phi_1 - 2\phi_3 + 2\phi_2}\right).
+    \end{equation}
+\end{itemize}
+\end{proposition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (noiseLaw : MeasureTheory.Measure ℝ) [MeasureTheory.IsProbabilityMeasure noiseLaw] (maxVariance : ℕ → ℝ)
+  {beta gamma : ℝ},
+  PG24NoisyMatchingMarkets.betaMaxConcentratingVariance maxVariance beta →
+    0 < gamma →
+      PG24NoisyMatchingMarkets.source_assumption_iid_beta_max_variance_bound noiseLaw maxVariance →
+        ∀ (cutoff : (C : ℕ) → Fin (C + 1) → ℝ),
+          (∀ᶠ (C : ℕ) in Filter.atTop,
+              PG24NoisyMatchingMarkets.theorem3RankedCutoffNat C (cutoff C) 0 +
+                  ↑(PG24NoisyMatchingMarkets.theorem3DenseGapBlockCount C
+                        (PG24NoisyMatchingMarkets.theorem1TailPhi2 beta gamma)
+                        (PG24NoisyMatchingMarkets.theorem1TailPhi3 beta gamma)) *
+                    (↑C).rpow (PG24NoisyMatchingMarkets.theorem1TailPhi1 beta gamma) <
+                PG24NoisyMatchingMarkets.theorem3RankedCutoffNat C (cutoff C)
+                  (PG24NoisyMatchingMarkets.theorem3EarlyPrefixRank C
+                    (PG24NoisyMatchingMarkets.theorem1TailPhi3 beta gamma))) →
+            (∃ (A : ℝ),
+                0 ≤ A ∧
+                  ∀ᶠ (C : ℕ) in Filter.atTop,
+                    PG24NoisyMatchingMarkets.cutoffAffordanceProbability
+                        (MeasureTheory.Measure.pi fun (x : Fin (C + 1)) => noiseLaw)
+                        (PG24NoisyMatchingMarkets.theorem1CutoffAtOrAboveBlock Finset.univ (cutoff C)
+                          (PG24NoisyMatchingMarkets.theorem3RankedCutoffNat C (cutoff C)
+                            (PG24NoisyMatchingMarkets.theorem3EarlyPrefixRank C
+                              (PG24NoisyMatchingMarkets.theorem1TailPhi3 beta gamma))))
+                        (PG24NoisyMatchingMarkets.theorem3RankedCutoffNat C (cutoff C)
+                              (PG24NoisyMatchingMarkets.theorem3EarlyPrefixRank C
+                                (PG24NoisyMatchingMarkets.theorem1TailPhi3 beta gamma)) -
+                            AppliedModelingLib.Probability.expectedTopOrderStatisticSeq
+                              (fun (n : ℕ) => MeasureTheory.Measure.pi fun (x : Fin (n + 1)) => noiseLaw) C -
+                          (↑C).rpow (PG24NoisyMatchingMarkets.theorem1TailPhi4 beta gamma))
+                        (cutoff C) ≤
+                      A * (↑C).rpow (-beta - 2 * PG24NoisyMatchingMarkets.theorem1TailPhi4 beta gamma)) ∧
+              ∀ (value : ℕ → ℝ),
+                (∀ᶠ (C : ℕ) in Filter.atTop,
+                    PG24NoisyMatchingMarkets.theorem3RankedCutoffNat C (cutoff C)
+                            (PG24NoisyMatchingMarkets.theorem3EarlyPrefixRank C
+                              (PG24NoisyMatchingMarkets.theorem1TailPhi3 beta gamma)) -
+                          AppliedModelingLib.Probability.expectedTopOrderStatisticSeq
+                            (fun (n : ℕ) => MeasureTheory.Measure.pi fun (x : Fin (n + 1)) => noiseLaw) C -
+                        (↑C).rpow (PG24NoisyMatchingMarkets.theorem1TailPhi4 beta gamma) <
+                      value C) →
+                  Filter.Tendsto
+                    (fun (C : ℕ) =>
+                      PG24NoisyMatchingMarkets.cutoffAffordanceProbability
+                        (MeasureTheory.Measure.pi fun (x : Fin (C + 1)) => noiseLaw) Finset.univ (value C) (cutoff C))
+                    Filter.atTop (nhds 1)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_beetSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The literal beet(i) maximum-\allowbreak{}affordance rate is retained.\allowbreak{} For beet(ii), the source's unsupported one-\allowbreak{}draw polynomial rate is explicitly replaced by the valid qualitative full-\allowbreak{}affordance convergence under the printed beta-\allowbreak{}max assumptions, as documented in the source note.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-96a16163ca076128}{}
+\section*{Review row 18}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 647-\allowbreak{}651\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{proposition}\label{prop:goose-2}
+    \begin{equation}
+    \int_{-\infty}^{v_S} p_\mu(v, \CC_2)\,d\eta(v) = O\left(C^{-K(\beta,\gamma)}\right).
+\end{equation}
+\end{proposition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (noiseLaw valueLaw : MeasureTheory.Measure ℝ) [MeasureTheory.IsProbabilityMeasure noiseLaw]
+  [MeasureTheory.IsProbabilityMeasure valueLaw] (maxVariance : ℕ → ℝ) {beta gamma vS totalSupply : ℝ},
+  PG24NoisyMatchingMarkets.betaMaxConcentratingVariance maxVariance beta →
+    0 < gamma →
+      PG24NoisyMatchingMarkets.source_assumption_iid_beta_max_variance_bound noiseLaw maxVariance →
+        ∀ (cutoff : (C : ℕ) → Fin (C + 1) → ℝ),
+          (∀ (C : ℕ),
+              ∫ (value : ℝ),
+                  PG24NoisyMatchingMarkets.cutoffAffordanceProbability
+                    (MeasureTheory.Measure.pi fun (x : Fin (C + 1)) => noiseLaw) Finset.univ value
+                    (cutoff C) ∂valueLaw =
+                totalSupply) →
+            valueLaw.real (Set.Ioi vS) = totalSupply →
+              (∀ᶠ (C : ℕ) in Filter.atTop,
+                  PG24NoisyMatchingMarkets.theorem3RankedCutoffNat C (cutoff C) 0 +
+                      ↑(PG24NoisyMatchingMarkets.theorem3DenseGapBlockCount C
+                            (PG24NoisyMatchingMarkets.theorem1TailPhi2 beta gamma)
+                            (PG24NoisyMatchingMarkets.theorem1TailPhi3 beta gamma)) *
+                        (↑C).rpow (PG24NoisyMatchingMarkets.theorem1TailPhi1 beta gamma) <
+                    PG24NoisyMatchingMarkets.theorem3RankedCutoffNat C (cutoff C)
+                      (PG24NoisyMatchingMarkets.theorem3EarlyPrefixRank C
+                        (PG24NoisyMatchingMarkets.theorem1TailPhi3 beta gamma))) →
+                Filter.Tendsto
+                  (fun (C : ℕ) =>
+                    ∫ (value : ℝ),
+                      (Set.Iic vS).indicator
+                        (fun (value : ℝ) =>
+                          PG24NoisyMatchingMarkets.cutoffAffordanceProbability
+                            (MeasureTheory.Measure.pi fun (x : Fin (C + 1)) => noiseLaw)
+                            (PG24NoisyMatchingMarkets.theorem1CutoffAtOrAboveBlock Finset.univ (cutoff C)
+                              (PG24NoisyMatchingMarkets.theorem3RankedCutoffNat C (cutoff C)
+                                (PG24NoisyMatchingMarkets.theorem3EarlyPrefixRank C
+                                  (PG24NoisyMatchingMarkets.theorem1TailPhi3 beta gamma))))
+                            value (cutoff C))
+                        value ∂valueLaw)
+                  Filter.atTop (nhds 0)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_goose_2Spec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec proves the same Case-\allowbreak{}2 high-\allowbreak{}cutoff, low-\allowbreak{}value integral tends to zero.\allowbreak{} It does not attribute the printed polynomial rate, which depends on beet(ii)'s unavailable one-\allowbreak{}draw rate, to beta-\allowbreak{}max concentration alone.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-5395bd56b3a3fad8}{}
+\section*{Review row 19}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 703-\allowbreak{}709\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{proposition}\label{thm2v2}
+Let $\DD$ be long-tailed. Then, for all $C$ sufficiently large, for all $\epsilon>0$ and any $\mu\in M(\DD, C)$,
+\begin{equation}
+    \Pr[\mu(v)\in C]\in (S-\epsilon, S+\epsilon).
+\end{equation}
+for all $v\in (v_\epsilon^-, v_\epsilon^+)$ for $v_\epsilon^-, v_\epsilon^+$ chosen such that $\eta(-\infty, v_\epsilon^-) = \eta((v_\epsilon, \infty)) = \epsilon$.
+\end{proposition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {Admissible : ℕ → Type u} {matchProb : (C : ℕ) → Admissible C → ℝ → ℝ} (eta : MeasureTheory.Measure ℝ)
+  [MeasureTheory.IsProbabilityMeasure eta] {totalSupply : ℝ},
+  (∀ (C : ℕ) (a : Admissible C), Monotone (matchProb C a)) →
+    (∀ (target tolerance : ℝ),
+        0 < tolerance →
+          ∀ᶠ (C : ℕ) in Filter.atTop, ∀ (a : Admissible C), |matchProb C a target - totalSupply| < tolerance) →
+      ∀ (epsilon vLow vHigh : ℝ),
+        0 < epsilon →
+          eta.real (Set.Iio vLow) = epsilon →
+            eta.real (Set.Ioi vHigh) = epsilon →
+              vLow < vHigh →
+                ∀ᶠ (C : ℕ) in Filter.atTop,
+                  ∀ (a : Admissible C) (value : ℝ),
+                    vLow < value →
+                      value < vHigh →
+                        totalSupply - epsilon < matchProb C a value ∧ matchProb C a value < totalSupply + epsilon
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_thm2_equivalent_boundSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec gives the source central-\allowbreak{}window conclusion with both endpoint inequalities and uniformity over the displayed interval;\allowbreak{} it derives the corrected upper endpoint from the all-\allowbreak{}real amplification theorem and monotonicity.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-ab8439dc4f2d61d9}{}
+\section*{Review row 20}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 744-\allowbreak{}750\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{proposition}\label{prop:lt-large-firms}
+There exists a constant $\sigma > 0$ such that for $C$ sufficiently large,
+    \begin{equation}\label{eq:lt-large-firms}
+    p_\mu(v, \CC_2) \in (S - (1 + \alpha)\epsilon - (1 - e^{-2\epsilon\sigma}), S + \epsilon + (1 - e^{-2\epsilon\sigma})).
+    \end{equation}
+for all $v\in (v_-, v_+).$
+\end{proposition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {pLarge : ℕ → ℝ → ℝ} {vLow vHigh S alpha epsilon sigma : ℝ},
+  (∀ᶠ (C : ℕ) in Filter.atTop, Monotone (pLarge C)) →
+    (∀ᶠ (C : ℕ) in Filter.atTop, pLarge C vLow ≤ S + epsilon) →
+      (∀ᶠ (C : ℕ) in Filter.atTop, S - (1 + alpha) * epsilon ≤ pLarge C vHigh) →
+        (∀ᶠ (C : ℕ) in Filter.atTop, pLarge C vHigh - pLarge C vLow < 1 - Real.exp (-(2 * epsilon * sigma))) →
+          ∀ᶠ (C : ℕ) in Filter.atTop,
+            ∀ (v : ℝ),
+              vLow < v →
+                v < vHigh →
+                  S - (1 + alpha) * epsilon - (1 - Real.exp (-(2 * epsilon * sigma))) < pLarge C v ∧
+                    pLarge C v < S + epsilon + (1 - Real.exp (-(2 * epsilon * sigma)))
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_lt_large_firmsSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec retains the source eventual strict open interval bound, simultaneously for every value between the two displayed endpoints.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-ff22377c4e341e25}{}
+\section*{Review row 21}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 757-\allowbreak{}759\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{lemma}\label{lem:unbounded-cutoffs}
+    For any $P\in \RR$, $P_{\epsilon C} > P$ for all $C$ sufficiently large.
+\end{lemma}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {StudentTypeSeq : ℕ → Type u} [inst : (C : ℕ) → MeasurableSpace (StudentTypeSeq C)] {OutcomeSeq : ℕ → Type v}
+  [inst_1 : (C : ℕ) → MeasurableSpace (OutcomeSeq C)] {GlobalCollegeSeq : ℕ → Type w}
+  [inst_2 : (C : ℕ) → Fintype (GlobalCollegeSeq C)] (CutoffSeq : ℕ → Type x) (noiseLaw eta : MeasureTheory.Measure ℝ)
+  [MeasureTheory.IsProbabilityMeasure noiseLaw] [MeasureTheory.IsProbabilityMeasure eta],
+  PG24NoisyMatchingMarkets.LongTailedSurvival (AppliedModelingLib.Probability.upperTailMass noiseLaw) →
+    ∀ {totalSupply epsilon : ℝ},
+      0 < epsilon →
+        totalSupply < 1 →
+          ∀
+            (data :
+              (C : ℕ) →
+                PG24NoisyMatchingMarkets.PG24LiteralSourceStableData C noiseLaw eta totalSupply (StudentTypeSeq C)
+                  (OutcomeSeq C) (GlobalCollegeSeq C) (CutoffSeq C)),
+            (∀ (C : ℕ) (i j : Fin (C + 1)),
+                ↑i ≤ ↑j →
+                  (data C).toExtendedCoalitionSourceStableInstance.localCutoff i ≤
+                    (data C).toExtendedCoalitionSourceStableInstance.localCutoff j) →
+              ∀ (P : ℝ),
+                ∀ᶠ (C : ℕ) in Filter.atTop,
+                  ∀
+                    c ∈
+                      PG24NoisyMatchingMarkets.indexSuffixLarge
+                        (PG24NoisyMatchingMarkets.epsilonFloorSplitIndex epsilon C) C,
+                    P < (data C).toExtendedCoalitionSourceStableInstance.localCutoff c
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_unbounded_cutoffsSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec is the source eventual strict fixed-\allowbreak{}floor divergence of every sorted large-\allowbreak{}firm cutoff, using literal iid sampling, exact clearing capacity, and the documented Fin(C+1) rounding convention.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-0a81e0b7c57cd17d}{}
+\section*{Review row 22}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 779-\allowbreak{}785\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{lemma}\label{lem:apple}
+    For $C$ sufficiently large,
+    \begin{equation}
+        \frac{\Pr[v_- + X > P_c]}{\Pr[v_+ + X > P_c]} > 1 - \epsilon
+    \end{equation}
+    for all $c\in \FF_2.$
+\end{lemma}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {StudentTypeSeq : ℕ → Type u} [inst : (C : ℕ) → MeasurableSpace (StudentTypeSeq C)] {OutcomeSeq : ℕ → Type v}
+  [inst_1 : (C : ℕ) → MeasurableSpace (OutcomeSeq C)] {GlobalCollegeSeq : ℕ → Type w}
+  [inst_2 : (C : ℕ) → Fintype (GlobalCollegeSeq C)] (CutoffSeq : ℕ → Type x) (noiseLaw eta : MeasureTheory.Measure ℝ)
+  [MeasureTheory.IsProbabilityMeasure noiseLaw] [MeasureTheory.IsProbabilityMeasure eta],
+  PG24NoisyMatchingMarkets.LongTailedSurvival (AppliedModelingLib.Probability.upperTailMass noiseLaw) →
+    ∀ {totalSupply epsilon vLow vHigh : ℝ},
+      0 < epsilon →
+        vLow < vHigh →
+          totalSupply < 1 →
+            ∀
+              (data :
+                (C : ℕ) →
+                  PG24NoisyMatchingMarkets.PG24LiteralSourceStableData C noiseLaw eta totalSupply (StudentTypeSeq C)
+                    (OutcomeSeq C) (GlobalCollegeSeq C) (CutoffSeq C)),
+              (∀ (C : ℕ) (i j : Fin (C + 1)),
+                  ↑i ≤ ↑j →
+                    (data C).toExtendedCoalitionSourceStableInstance.localCutoff i ≤
+                      (data C).toExtendedCoalitionSourceStableInstance.localCutoff j) →
+                ∀ᶠ (C : ℕ) in Filter.atTop,
+                  ∀
+                    c ∈
+                      PG24NoisyMatchingMarkets.indexSuffixLarge
+                        (PG24NoisyMatchingMarkets.epsilonFloorSplitIndex epsilon C) C,
+                    0 <
+                        AppliedModelingLib.Probability.upperTailMass noiseLaw
+                          ((data C).toExtendedCoalitionSourceStableInstance.localCutoff c - vHigh) ∧
+                      1 - epsilon <
+                        AppliedModelingLib.Probability.upperTailMass noiseLaw
+                            ((data C).toExtendedCoalitionSourceStableInstance.localCutoff c - vLow) /
+                          AppliedModelingLib.Probability.upperTailMass noiseLaw
+                            ((data C).toExtendedCoalitionSourceStableInstance.localCutoff c - vHigh)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_appleSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec retains the source eventual strict low-\allowbreak{}value/\allowbreak{}high-\allowbreak{}value upper-\allowbreak{}tail ratio exceeding one minus epsilon for every large-\allowbreak{}firm cutoff, with the denominator-\allowbreak{}positivity condition made derivable rather than silently totalized.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-c2e5b332ed480ff8}{}
+\section*{Review row 23}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 797-\allowbreak{}803\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{lemma}
+    There exists a constant $\sigma>0$ such that for $C$ sufficiently large,
+    \begin{equation}
+        \Pr[v_+ + X > P_c] \le \frac{\sigma}{C}
+    \end{equation}
+    for all $c\in \FF_2.$
+\end{lemma}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {StudentTypeSeq : ℕ → Type u} [inst : (C : ℕ) → MeasurableSpace (StudentTypeSeq C)] {OutcomeSeq : ℕ → Type v}
+  [inst_1 : (C : ℕ) → MeasurableSpace (OutcomeSeq C)] {GlobalCollegeSeq : ℕ → Type w}
+  [inst_2 : (C : ℕ) → Fintype (GlobalCollegeSeq C)] (CutoffSeq : ℕ → Type x) (noiseLaw eta : MeasureTheory.Measure ℝ)
+  [MeasureTheory.IsProbabilityMeasure noiseLaw] [MeasureTheory.IsProbabilityMeasure eta],
+  PG24NoisyMatchingMarkets.LongTailedSurvival (AppliedModelingLib.Probability.upperTailMass noiseLaw) →
+    ∀ {totalSupply epsilon vHigh : ℝ},
+      0 < epsilon →
+        totalSupply < 1 →
+          ∀
+            (data :
+              (C : ℕ) →
+                PG24NoisyMatchingMarkets.PG24LiteralSourceStableData C noiseLaw eta totalSupply (StudentTypeSeq C)
+                  (OutcomeSeq C) (GlobalCollegeSeq C) (CutoffSeq C)),
+            (∀ (C : ℕ) (i j : Fin (C + 1)),
+                ↑i ≤ ↑j →
+                  (data C).toExtendedCoalitionSourceStableInstance.localCutoff i ≤
+                    (data C).toExtendedCoalitionSourceStableInstance.localCutoff j) →
+              ∃ (sigma : ℝ),
+                0 < sigma ∧
+                  ∀ᶠ (C : ℕ) in Filter.atTop,
+                    ∀
+                      c ∈
+                        PG24NoisyMatchingMarkets.indexSuffixLarge
+                          (PG24NoisyMatchingMarkets.epsilonFloorSplitIndex epsilon C) C,
+                      AppliedModelingLib.Probability.upperTailMass noiseLaw
+                          ((data C).toExtendedCoalitionSourceStableInstance.localCutoff c - vHigh) ≤
+                        sigma / ↑C
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_large_firm_tail_boundSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec is the source eventual sigma/\allowbreak{}C upper-\allowbreak{}tail crossing bound for every large-\allowbreak{}firm cutoff;\allowbreak{} the checked internal sigma/\allowbreak{}(C+1) estimate is explicitly stronger and converted to the displayed rate.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-0e9edb794ea448f5}{}
+\section*{Review row 24}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 831-\allowbreak{}836\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{proposition}\label{prop:lt-approx-F2}
+For $C$ sufficiently large,
+\begin{equation}
+    p_\mu(v_+, \CC_2) - p_\mu(v_-, \CC_2) < 1 - e^{-2\epsilon\sigma}.
+\end{equation}
+\end{proposition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {active : (n : ℕ) → Finset (Fin (n + 1))} {qLow qHigh : (n : ℕ) → Fin (n + 1) → ℝ} {epsilon sigma : ℝ},
+  0 < epsilon →
+    0 < sigma →
+      (∀ᶠ (n : ℕ) in Filter.atTop, (active n).Nonempty) →
+        (∀ᶠ (n : ℕ) in Filter.atTop,
+            ∀ c ∈ active n, Real.exp (-(2 * epsilon * sigma / ↑(n + 1))) < (1 - qHigh n c) / (1 - qLow n c)) →
+          (∀ᶠ (n : ℕ) in Filter.atTop, ∀ c ∈ active n, 0 < 1 - qLow n c) →
+            (∀ᶠ (n : ℕ) in Filter.atTop, ∀ c ∈ active n, 1 - qLow n c ≤ 1) →
+              ∀ᶠ (n : ℕ) in Filter.atTop,
+                PG24NoisyMatchingMarkets.independentAffordanceProbability (active n) (qHigh n) -
+                    PG24NoisyMatchingMarkets.independentAffordanceProbability (active n) (qLow n) <
+                  1 - Real.exp (-(2 * epsilon * sigma))
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_lt_approx_f2Spec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec preserves the source strict exponential upper bound on the large-\allowbreak{}firm high-\allowbreak{}minus-\allowbreak{}low affordability gap, using the atom-\allowbreak{}safe complement of a strict upper-\allowbreak{}tail event and explicit strict local ingredients.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-4b0c97696721fa81}{}
+\section*{Review row 25}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 918-\allowbreak{}923\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{proposition}\label{prop:lt-small-firms}
+\begin{equation}
+    p_\mu(v, \CC_1) \le \frac{\alpha\sqrt{\epsilon}}{1 - S - \epsilon - (1 - e^{-2\epsilon\sigma})}
+\end{equation}
+for all $v < v^*$ where $\eta((v^*, v_+))=\sqrt{\epsilon}.$
+\end{proposition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {pSmall : ℕ → ℝ → ℝ} {vStar totalSupply alpha epsilon sigma : ℝ},
+  0 < epsilon →
+    0 < 1 - totalSupply - epsilon - (1 - Real.exp (-(2 * epsilon * sigma))) →
+      (∀ᶠ (C : ℕ) in Filter.atTop, Monotone (pSmall C)) →
+        (∀ᶠ (C : ℕ) in Filter.atTop,
+            √epsilon * (1 - totalSupply - epsilon - (1 - Real.exp (-(2 * epsilon * sigma)))) * pSmall C vStar ≤
+              epsilon * alpha) →
+          ∀ᶠ (C : ℕ) in Filter.atTop,
+            ∀ v < vStar,
+              PG24NoisyMatchingMarkets.theorem2_smallFirmSourceBound totalSupply alpha epsilon sigma (pSmall C v)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+PG24NoisyMatchingMarkets.ProofInterface.source_lt_small_firmsSpec_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Spec preserves the source epsilon-\allowbreak{}dependent small-\allowbreak{}firm upper bound uniformly for every value below v-\allowbreak{}star, with the source proof's monotonicity and positive denominator explicit.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+
+\end{document}

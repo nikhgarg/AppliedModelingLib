@@ -9,7 +9,7 @@ certificates: each result is a direct statement about a fixed response,
 feasible policy, or aggregate-reward replacement.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped Function ProbabilityTheory Topology ENNReal symmDiff
 

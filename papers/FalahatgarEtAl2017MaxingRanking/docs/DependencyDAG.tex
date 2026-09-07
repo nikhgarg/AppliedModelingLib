@@ -1,0 +1,111 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+\begin{tikzpicture}[
+  x=1.22cm,
+  y=1.18cm,
+  every node/.append style={outer sep=4pt, font=\sffamily\scriptsize},
+  falwide/.style={text width=4.4cm, minimum height=1.35cm, align=center, inner sep=3pt}
+]
+
+\dagPaperMetadata{Maxing and Ranking with Few Assumptions}{Falahatgar, Hao, Orlitsky, Pichapati, Ravindrakumar}{NeurIPS 30}{2017}{https://proceedings.neurips.cc/paper/2017/hash/db98dc0dbafde48e8f74c0de001d35e4-Abstract.html}
+\dagPaperLegendRightOfMetadata{
+\node[dag_model, dag_template_legend] (legModel) at (0,0) {model /\ algorithm};
+\node[dag_lemma, right=0.35cm of legModel, dag_template_legend] (legLemma) {formalized\ lemma / remark};
+\node[dag_result, right=0.35cm of legLemma, dag_template_legend] (legResult) {formalized\ theorem};
+\node[dag_lemma, right=0.35cm of legResult, dag_template_legend] (legBoundary) {proved\ cited dependency};
+}
+\daglegend{(legModel)(legLemma)(legResult)(legBoundary)}{Legend}
+
+\begin{dagPaperBody}
+\begin{scope}[xshift=1.0cm]
+
+\node[dag_model, falwide] (Model) at (0,0)
+  {\textbf{Sections 1--3 model}\par finite no-draw comparisons, centered gaps, SST, maxima, rankings, good anchors};
+\node[dag_lemma, falwide] (SSTExistence) at (0,-1.8)
+  {\textbf{Finite SST existence claim}\par every finite SST model has an absolute maximum and an exact ranking};
+\node[dag_model, falwide] (Compare) at (6,0)
+  {\textbf{Algorithm 4: Compare}\par adaptive confidence exit and finite midpoint fallback};
+\node[dag_lemma, falwide] (L1012) at (12,0)
+  {\textbf{Lemmas 10--12}\par finite cap; lower-gap and upper-gap decision probabilities};
+\node[dag_lemma, falwide] (L1) at (18,0)
+  {\textbf{Main Lemma 1}\par combined Compare resource and two correctness clauses};
+
+\node[dag_model, falwide] (SeqAlg) at (0,-3.4)
+  {\textbf{Algorithm 1: Seq-Eliminate}\par fresh incumbent/challenger comparison execution};
+\node[dag_result, falwide] (T2) at (6,-3.4)
+  {\textbf{Theorem 2}\par $1-\delta$ $\epsilon$-maximum and finite source-rate envelope};
+\node[dag_model, falwide] (PickAlg) at (12,-3.4)
+  {\textbf{Algorithm 5: Pick-Anchor}\par uniform subset then Seq-Eliminate at $\delta/2$};
+\node[dag_lemma, falwide] (L3R4) at (18,-3.4)
+  {\textbf{Lemma 3 and Remark 4}\par good-anchor probability/cost; linear-cutoff bound independent of $n$};
+
+\node[dag_model, falwide] (PruneAlg) at (0,-6.8)
+  {\textbf{Algorithm 2: Prune}\par fresh stopped rounds with geometric confidence schedule and squared-log guard};
+\node[dag_lemma, falwide] (L1315) at (6,-6.8)
+  {\textbf{Lemmas 13--15}\par retention, first-round size, and multi-round Prune guarantee};
+\node[dag_lemma, falwide] (L5) at (12,-6.8)
+  {\textbf{Main Lemma 5}\par combined Prune size, cost, and maximum-retention result};
+\node[dag_model, falwide] (OptAlg) at (18,-6.8)
+  {\textbf{Algorithm 3: OPT-Maximize}\par branch split and $\delta/4$ phase allocations};
+
+\node[dag_lemma, falwide] (L1618) at (3,-10.2)
+  {\textbf{Lemmas 16--18}\par anchor return, joint event, and final-loop/fallback tail};
+\node[dag_result, falwide] (T6) at (12,-10.2)
+  {\textbf{Theorem 6}\par joint $1-\delta$ $\epsilon$-maximum and $O(n(1+\log(1/\delta))/\epsilon^2)$ envelope};
+\node[dag_result, falwide] (T7) at (21,-10.2)
+  {\textbf{Theorem 7}\par finite adaptive randomized $\Omega(n^2)$ ranking lower bound};
+
+\node[dag_model, falwide] (RankAlg) at (0,-13.6)
+  {\textbf{Algorithms 6--7}\par unordered-pair estimates and iterative threshold ranking};
+\node[dag_lemma, falwide] (L1920) at (6,-13.6)
+  {\textbf{Lemmas 19--20}\par pairwise concentration; $\epsilon$-ranking probability and cost};
+\node[dag_model, falwide] (BordaModel) at (12,-13.6)
+  {\textbf{Section 5 / Algorithms 8--9}\par Borda score, estimator, and empirical-score ranking};
+\node[dag_lemma, falwide] (ZCL) at (18,-13.6)
+  {\textbf{Theorem 8 cited dependency}\par natively proved Zhou--Chen--Li PAC best-arm algorithm};
+
+\node[dag_result, falwide] (T8) at (3,-17.0)
+  {\textbf{Theorem 8}\par $1-\delta$ $\epsilon$-Borda maximum at the source rate};
+\node[dag_lemma, falwide] (L21) at (9,-17.0)
+  {\textbf{Lemma 21}\par Borda-score estimation probability and finite count};
+\node[dag_result, falwide] (T9) at (15,-17.0)
+  {\textbf{Main Theorem 9}\par Borda-Ranking correctness and comparison count};
+\node[dag_result, falwide] (T22) at (21,-17.0)
+  {\textbf{Supplement Theorem 22}\par separate source-presentation row for the same complete statement};
+
+\draw[dag_arrow] (Model) -- (Compare);
+\draw[dag_arrow] (Compare) -- (L1012);
+\draw[dag_arrow] (L1012) -- (L1);
+\draw[dag_arrow] (Model) -- (SSTExistence);
+\draw[dag_arrow] (SSTExistence) -- (SeqAlg);
+\draw[dag_arrow] (SSTExistence.east) -- ++(0.45,0) -| (T2.north);
+\draw[dag_arrow] (SSTExistence.east) -- ++(0.75,0) -| (L3R4.north);
+\draw[dag_arrow] (L1.south west) -- (T2.north east);
+\draw[dag_arrow] (SeqAlg) -- (T2);
+\draw[dag_arrow] (T2) -- (PickAlg);
+\draw[dag_arrow] (PickAlg) -- (L3R4);
+\draw[dag_arrow] (Model.west) -- (-4.1,0) |- (PruneAlg.west);
+\draw[dag_arrow] (L1012.south) -- ++(0,-0.7) -- (9,-1.45) -- (9,-5.4) -| (L1315.north);
+\draw[dag_arrow] (PruneAlg) -- (L1315);
+\draw[dag_arrow] (L1315) -- (L5);
+\draw[dag_arrow] (L3R4) -- (OptAlg);
+\draw[dag_arrow] (L5) -- (OptAlg);
+\draw[dag_arrow] (OptAlg.south west) -- (L1618.north east);
+\draw[dag_arrow] (L1618) -- (T6);
+\draw[dag_arrow] (L3R4.east) -- (21,-3.4) -- (21,-8.7) -| (T6.north);
+\draw[dag_arrow] (L5.south) -- ++(0,-0.5) -| (T6.north);
+\draw[dag_arrow] (Model.north) -- (0,0.95) -- (24.5,0.95) |- (T7.east);
+\draw[dag_arrow] (Model.west) -- (-4.8,0) |- (RankAlg.west);
+\draw[dag_arrow] (RankAlg) -- (L1920);
+\draw[dag_arrow] (BordaModel) -- (L21);
+\draw[dag_arrow] (BordaModel) -- (ZCL);
+\draw[dag_arrow] (ZCL.south west) -- (T8.north east);
+\draw[dag_arrow] (L21) -- (T9);
+\draw[dag_arrow] (L21.south) -- ++(0,-0.8) -| (T22.south);
+
+\end{scope}
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

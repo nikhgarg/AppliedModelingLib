@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Math.FiniteChoice
+import AppliedModelingLib.Foundations.Math.FiniteChoice
 import Mathlib.Data.Fintype.Fin
 import Mathlib.Tactic
 
@@ -17,7 +17,7 @@ families, giving tight `d`-instability constructions for every `1 ≤ d ≤ 2q`.
 
 namespace DGD26AdmissionsPredictability
 
-open EconCSLib.FiniteChoice
+open AppliedModelingLib.FiniteChoice
 
 /-! ## Ranked trigger-switch construction criteria -/
 

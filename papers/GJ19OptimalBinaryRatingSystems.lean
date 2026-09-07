@@ -1,1 +1,1 @@
-import GJ19OptimalBinaryRatingSystems.PaperInterface
+import GJ19OptimalBinaryRatingSystems.ProofInterface

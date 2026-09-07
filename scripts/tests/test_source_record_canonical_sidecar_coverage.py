@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
 from scripts import audit_evidence_integrity as EVIDENCE  # noqa: E402
 from scripts import audit_conclusion_provenance as CONCLUSION  # noqa: E402
 from scripts import audit_repository as REPOSITORY  # noqa: E402
+from scripts import source_record_authenticated_overlay_union as UNION  # noqa: E402
 from scripts import source_record_current_revalidation as CURRENT  # noqa: E402
 from scripts import source_record_differential_revalidation as DIFFERENTIAL  # noqa: E402
 from scripts.source_record_integrity import stamp_source_record_audit_receipts  # noqa: E402
@@ -143,6 +144,22 @@ class CanonicalSourceRecordSidecarCoverageTests(unittest.TestCase):
                     "schema": 1
                 },
             }
+        )
+
+    def authenticated_differential_lane(
+        self, items: dict[str, dict[str, object]]
+    ) -> UNION.AuthenticatedCurrentOverlayLane:
+        return UNION.AuthenticatedCurrentOverlayLane(
+            label="differential",
+            items=items,
+            _loader_token=UNION._LOADED_LANE_SENTINEL,
+            _is_loaded=(
+                DIFFERENTIAL.is_loaded_source_record_differential_revalidation_item
+            ),
+            _copy_loaded=(
+                DIFFERENTIAL.copy_loaded_source_record_differential_revalidation_item
+            ),
+            _issued_items=list(items.values()),
         )
 
     def test_complete_canonical_sidecar_needs_no_complement_marker(self) -> None:
@@ -307,34 +324,30 @@ class CanonicalSourceRecordSidecarCoverageTests(unittest.TestCase):
         }
         self.sidecar_path.write_text(json.dumps(sidecar), encoding="utf-8")
         overlay = {"second current group": self.loaded_differential_response()}
+        lane = self.authenticated_differential_lane(overlay)
         with (
             mock.patch.object(
                 CURRENT, "validate_selected_rebound_sidecar", return_value=[]
             ),
             mock.patch.object(
+                UNION,
+                "load_authenticated_current_overlay_lanes",
+                return_value=(lane,),
+            ),
+            mock.patch.object(
                 SOURCE_RECORD_AUDIT,
-                "load_current_source_record_differential_revalidation_items",
-                return_value=overlay,
+                "source_record_overlay_labels_with_artifacts",
+                return_value=("differential",),
             ),
             mock.patch.object(
                 REPOSITORY,
-                "load_current_source_record_differential_revalidation_items",
-                return_value=overlay,
-            ),
-            mock.patch.object(
-                REPOSITORY,
-                "load_current_source_record_schema4_to5_migration_items",
-                return_value={},
-            ),
-            mock.patch.object(
-                REPOSITORY,
-                "load_current_attested_selected_semantic_reuse_items",
-                return_value={},
+                "source_record_overlay_labels_with_artifacts",
+                return_value=("differential",),
             ),
             mock.patch.object(
                 CONCLUSION,
-                "load_current_source_record_differential_revalidation_items",
-                return_value=overlay,
+                "source_record_overlay_labels_with_artifacts",
+                return_value=("differential",),
             ),
             mock.patch.object(
                 CONCLUSION,
@@ -412,22 +425,10 @@ class CanonicalSourceRecordSidecarCoverageTests(unittest.TestCase):
         }
         self.sidecar_path.write_text(json.dumps(sidecar), encoding="utf-8")
 
-        with (
-            mock.patch.object(
-                REPOSITORY,
-                "load_current_source_record_schema4_to5_migration_items",
-                return_value={},
-            ),
-            mock.patch.object(
-                REPOSITORY,
-                "load_current_source_record_differential_revalidation_items",
-                return_value={},
-            ),
-            mock.patch.object(
-                REPOSITORY,
-                "load_current_attested_selected_semantic_reuse_items",
-                return_value={},
-            ),
+        with mock.patch.object(
+            REPOSITORY,
+            "source_record_overlay_labels_with_artifacts",
+            return_value=(),
         ):
             loaded = REPOSITORY.source_record_judgment_items(
                 self.sidecar_path,

@@ -19,7 +19,7 @@ the reusable auction library.
 
 namespace GHW01DigitalGoods.ProofBridge
 
-open EconCSLib.Auction
+open AppliedModelingLib.Auction
 open scoped BigOperators
 
 noncomputable section
@@ -600,8 +600,8 @@ theorem optimalThreshold_attains_fixedPriceBenchmark
       (fun j => values i ≤ values j)).card
     exact Finset.card_pos.mpr ⟨i, by simp⟩
   have hsingle_pos : 0 < singlePriceRevenue values (values i) := by
-    change 0 < EconCSLib.Auction.singlePriceRevenue values (values i)
-    rw [EconCSLib.Auction.singlePriceRevenue_eq_saleCount_mul]
+    change 0 < AppliedModelingLib.Auction.singlePriceRevenue values (values i)
+    rw [AppliedModelingLib.Auction.singlePriceRevenue_eq_saleCount_mul]
     have hcount_pos : 0 < (saleCount values (values i) : ℝ) := by
       exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hself_count)
     exact mul_pos hcount_pos (lt_of_lt_of_le zero_lt_one (hvalue_ge_one i))
@@ -901,7 +901,7 @@ theorem lemma6_1_fixed_size : lemma6_1_fixed_sizeSpec := by
 /-- Fair-coin specialization used internally by the Theorem 6.2 proof. -/
 theorem lemma6_1_fair_coin
     {Index : Type*} (s : Finset Index) (keep : Bool) :
-    (EconCSLib.FairCoin.productMeasure Index).real
+    (AppliedModelingLib.FairCoin.productMeasure Index).real
         {side | (∑ i ∈ s, if side i = keep then (1 : ℝ) else 0) ≤
           (s.card : ℝ) / 3} ≤
       Real.exp (-(s.card : ℝ) / 36) := by
@@ -1058,7 +1058,7 @@ theorem theorem6_2_random_sampling_fair_coin_support
       (alpha : ℝ) * highValue ≤ fixedPriceBenchmark values) :
     1 - Real.exp (-(alpha : ℝ) / 36) -
         40 * Real.exp (-(alpha : ℝ) / 72) ≤
-      (EconCSLib.FairCoin.productMeasure (Fin n)).real
+      (AppliedModelingLib.FairCoin.productMeasure (Fin n)).real
         {side |
           fixedPriceBenchmark values ≤
             6 *
@@ -1086,7 +1086,7 @@ theorem theorem6_2_random_sampling_fair_coin_support
   change
     1 - Real.exp (-(alpha : ℝ) / 36) -
         40 * Real.exp (-(alpha : ℝ) / 72) ≤
-      (EconCSLib.FairCoin.productMeasure (Fin n)).real
+      (AppliedModelingLib.FairCoin.productMeasure (Fin n)).real
         {side |
           finiteCandidateFixedPriceBenchmark values 1 ≤
             6 *
@@ -1547,11 +1547,11 @@ def lemma8_1_truthful_monotoneSpec : Prop := by
     (values : Agent → ℝ) (price : Price → ℝ) (offerLaw : Agent → PMF Price)
     (_hcdf_monotone :
       ∀ i j, values i ≤ values j → ∀ t, t ≤ values i →
-        EconCSLib.pmfProb (offerLaw i) (fun p => price p ≤ t) ≤
-          EconCSLib.pmfProb (offerLaw j) (fun p => price p ≤ t))
+        AppliedModelingLib.pmfProb (offerLaw i) (fun p => price p ≤ t) ≤
+          AppliedModelingLib.pmfProb (offerLaw j) (fun p => price p ≤ t))
     (i j : Agent) (_hij : values i < values j),
-    EconCSLib.pmfProb (offerLaw i) (fun p => price p ≤ values i) ≤
-      EconCSLib.pmfProb (offerLaw j) (fun p => price p ≤ values j)
+    AppliedModelingLib.pmfProb (offerLaw i) (fun p => price p ≤ values i) ≤
+      AppliedModelingLib.pmfProb (offerLaw j) (fun p => price p ≤ values j)
 
 theorem lemma8_1_truthful_monotone : lemma8_1_truthful_monotoneSpec := by
   classical
@@ -1559,7 +1559,7 @@ theorem lemma8_1_truthful_monotone : lemma8_1_truthful_monotoneSpec := by
   have hsame_cutoff :=
     hcdf_monotone i j (le_of_lt hij) (values i) le_rfl
   exact hsame_cutoff.trans
-    (EconCSLib.pmfProb_le_of_imp
+    (AppliedModelingLib.pmfProb_le_of_imp
       (offerLaw j)
       (fun p => price p ≤ values i)
       (fun p => price p ≤ values j)
@@ -1590,8 +1590,8 @@ def theorem8_2_truthful_revenue_upper_boundSpec : Prop := by
     (_hprice_nonneg : ∀ p, 0 ≤ price p)
     (_hcdf_monotone :
       ∀ i j, values i ≤ values j → ∀ t, t ≤ values i →
-        EconCSLib.pmfProb (offerLaw i) (fun p => price p ≤ t) ≤
-          EconCSLib.pmfProb (offerLaw j) (fun p => price p ≤ t)),
+        AppliedModelingLib.pmfProb (offerLaw i) (fun p => price p ≤ t) ≤
+          AppliedModelingLib.pmfProb (offerLaw j) (fun p => price p ≤ t)),
     paper_theorem8_2_raw_cdf_expected_revenue
         values price offerLaw ≤
       fixedPriceBenchmark values
@@ -1681,7 +1681,7 @@ theorem lemma9_2_bid_independence : lemma9_2_bid_independenceSpec := by
   classical
   intro Agent M htruth hIR hNPT hbinary bids i
   simpa [truthful, paper_digital_goods_truthful] using
-    EconCSLib.Auction.paper_lemma9_2_deterministic_truthful_auction_bid_independent_slices
+    AppliedModelingLib.Auction.paper_lemma9_2_deterministic_truthful_auction_bid_independent_slices
       M htruth hIR hNPT hbinary bids i
 
 /--

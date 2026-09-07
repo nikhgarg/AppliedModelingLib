@@ -1,0 +1,65 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+\begin{tikzpicture}[every node/.style={font=\sffamily\small}]
+
+\dagPaperMetadata{The Regulation of Queue Size by Levying Tolls}{P. Naor}{Econometrica 37(1)}{1969}{https://www.jstor.org/stable/1909200}
+\dagPaperLegendRightOfMetadata{
+  \node[dag_model, dag_template_legend] (legModel) at (0,0) {formalized\\model};
+  \node[dag_lemma, dag_template_legend] (legLemma) at (4.4,0) {formalized\\lemma/API};
+  \node[dag_result, dag_template_legend] (legResult) at (8.8,0) {formalized\\paper result};
+}
+\daglegend{(legModel)(legLemma)(legResult)}{Legend}
+
+\begin{dagPaperBody}
+\begin{scope}[yshift=-0.8cm]
+
+\node[dag_model, text width=4.7cm] (Model) at (0,0) {
+  \textbf{Finite-admission M/M/1 model}\\
+  threshold policy, $\rho=\lambda/\mu$, geometric state mass, rewards, and queueing cost
+};
+
+\node[dag_lemma, text width=4.7cm] (Stationary) at (7.4,0) {
+  \textbf{Stationary performance identities}\\
+  balance law, generating polynomial, mean queue length, blocked/admitted/service flows
+};
+
+\node[dag_result, text width=4.7cm] (Private) at (14.8,0) {
+  \textbf{Self-optimizing threshold}\\
+  $n_s=\lfloor R\mu/C\rfloor$ under the source tie convention
+};
+
+\node[dag_lemma, text width=4.7cm] (Marginals) at (0,-4.6) {
+  \textbf{Finite-sum marginal identities}\\
+  delay exposure is monotone; exact welfare and revenue one-step differences
+};
+
+\node[dag_result, text width=4.7cm] (Social) at (7.4,-4.6) {
+  \textbf{Socially optimal threshold}\\
+  a global welfare maximizer exists and is no higher than $n_s$
+};
+
+\node[dag_result, text width=4.7cm] (Revenue) at (14.8,-4.6) {
+  \textbf{Revenue threshold and toll}\\
+  a feasible maximizer $n_r$ satisfies $n_r\le n_0\le n_s$; $\theta_r=R-Cn_r/\mu$
+};
+
+\node[dag_result, text width=4.7cm] (Toll) at (7.4,-9.2) {
+  \textbf{Beneficial toll interval}\\
+  the source's strict-lower/weak-upper fee interval implements $n_0$ and preserves combined income
+};
+
+\draw[dag_arrow] (Model.east) -- (Stationary.west);
+\draw[dag_arrow] (Stationary.south west) -- (Marginals.north east);
+\draw[dag_arrow] (Stationary.east) -- (Private.west);
+\draw[dag_arrow] (Marginals.east) -- (Social.west);
+\draw[dag_arrow] (Private.south west) -- (Social.north east);
+\draw[dag_arrow] (Social.east) -- (Revenue.west);
+\draw[dag_arrow] (Private.south) -- ++(0,-1.4) -| (Toll.north east);
+\draw[dag_arrow] (Social.south) -- (Toll.north);
+
+\end{scope}
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

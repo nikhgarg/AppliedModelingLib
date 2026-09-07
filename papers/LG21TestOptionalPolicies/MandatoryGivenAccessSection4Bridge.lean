@@ -31,8 +31,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 open MeasureTheory
 open ProbabilityTheory
 
@@ -199,21 +199,23 @@ def observedScorePBOModel [Nonempty Feature]
     (S : LG21MandatorySection4Source Feature)
     (noAccessPolicy : ArbitraryNoAccessPolicy Feature) :
     LG21P42ObservedScoreGaussianPBOModel (Feature → ℝ) where
+  basePosteriorMean := S.baseSignals.posteriorMean
+  basePosteriorMean_measurable := by
+    unfold GaussianOffsetSignalFamily.posteriorMean
+    unfold GaussianSignalFamily.posteriorMean
+    unfold GaussianOffsetSignalFamily.centeredSignal
+    fun_prop
+  basePosteriorVariance := S.posteriorBaseVarianceNNReal
+  basePosteriorVariance_pos := S.posteriorBaseVarianceNNReal_pos
+  latentSkillGivenBaseLaw := fun base =>
+    gaussianReal (S.baseSignals.posteriorMean base)
+      S.posteriorBaseVarianceNNReal
+  latentSkillGivenBaseLaw_eq_gaussian := fun _ => rfl
   testNoiseVariance := S.testNoiseVarianceNNReal
   testNoiseVariance_pos := S.testNoiseVarianceNNReal_pos
-  pboIntercept := fun base =>
-    (1 - lg21D6PosteriorTestWeight S.gaussianPBOResamplingSource) *
-      S.baseSignals.posteriorMean base
-  pboIntercept_measurable := by
-    have hposterior : Measurable S.baseSignals.posteriorMean := by
-      unfold GaussianOffsetSignalFamily.posteriorMean
-      unfold GaussianSignalFamily.posteriorMean
-      unfold GaussianOffsetSignalFamily.centeredSignal
-      fun_prop
-    exact measurable_const.mul hposterior
-  pboSlope := fun _ => lg21D6PosteriorTestWeight S.gaussianPBOResamplingSource
-  pboSlope_measurable := measurable_const
-  pboSlope_pos := fun _ => S.gaussianPBOResamplingSource_weight_pos
+  testScoreGivenSkillLaw := fun skill =>
+    gaussianReal skill S.testNoiseVarianceNNReal
+  testScoreGivenSkillLaw_eq_gaussian := fun _ => rfl
   noAccessEstimateKernel := noAccessPolicy.estimateKernel
   noAccessEstimateKernel_isMarkov := noAccessPolicy.estimateKernel_isMarkov
 
@@ -230,13 +232,18 @@ theorem observedScorePBOEstimate_eq_resamplingPBOEstimate [Nonempty Feature]
         (S.observedScorePBOModel noAccessPolicy) base score =
       lg21D6GaussianPBOEstimate S.gaussianPBOResamplingSource
         (S.baseSignals.posteriorMean base, score) := by
-  change
-    (1 - lg21D6PosteriorTestWeight S.gaussianPBOResamplingSource) *
-        S.baseSignals.posteriorMean base +
-        lg21D6PosteriorTestWeight S.gaussianPBOResamplingSource * score =
-      S.baseSignals.posteriorMean base +
-        lg21D6PosteriorTestWeight S.gaussianPBOResamplingSource *
-          (score - S.baseSignals.posteriorMean base)
+  unfold lg21P42GaussianPBOEstimate observedScorePBOModel
+    LG21P42ObservedScoreGaussianPBOModel.pboIntercept
+    LG21P42ObservedScoreGaussianPBOModel.pboSlope
+    lg21D6GaussianPBOEstimate lg21D6PosteriorTestWeight
+    gaussianPBOResamplingSource
+    gaussianSignalPriorWeight gaussianSignalWeight
+  have hsum : (S.posteriorBaseVarianceNNReal : ℝ) +
+      (S.testNoiseVarianceNNReal : ℝ) ≠ 0 :=
+    ne_of_gt (add_pos S.posteriorBaseVarianceNNReal_pos
+      S.testNoiseVarianceNNReal_pos)
+  field_simp
+  simp only [id_eq]
   ring
 
 /-!

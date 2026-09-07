@@ -1,0 +1,114 @@
+{
+  "defects": [
+    {
+      "acceptance_condition": "The transparent Lemma 2 Spec states both component separation and the no-harder testing inequality, and its proof endpoint establishes them for every sample size and test.",
+      "affected_source_locators": [
+        "cited publication:527-568"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "SU20-LEMMA2-MIXTURE-NONCONVEX-05",
+      "repair_obligation": "Replace mixture membership by a finite-test comparison showing that some separated component has error at least the mixture error.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "Testing.lean proves the component-averaging reduction; PaperInterface.lean and ProofInterface.lean expose and prove the complete Lemma 2 target; docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md records the corrected route.",
+      "source_claim": "The printed proof says that a mixture of component alternatives remains in the delta-separated class once every component is in that class.",
+      "source_locator": "cited publication:531",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The separated class need not be convex, but the stated testing comparison follows directly because a fixed test's mixture error is the average of its component errors. Lean proves every component is separated and proves this averaging reduction with the same epsilon and delta constants."
+    },
+    {
+      "acceptance_condition": "The transparent Theorem 1 Spec exposes the perturbation-range condition and its proof endpoint establishes all three source conclusions.",
+      "affected_source_locators": [
+        "cited publication:321-335",
+        "cited publication:429-440",
+        "cited publication:660-670"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "SU20-THEOREM1-PERTURBATION-RANGE-01",
+      "repair_obligation": "State 2 mu(sigma) delta <= 1 and prove the risk, testing-radius, and sample-complexity conclusions with the same concrete decomposition.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "PaperInterface.lean and ProofInterface.lean expose and prove the complete corrected target; docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md records the reading.",
+      "source_claim": "Theorem 1 substitutes epsilon = 2 mu(sigma) delta into a perturbation distribution whose earlier definition restricts epsilon to [0,1], without restating the resulting upper bound on delta.",
+      "source_locator": "cited publication:321-335",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The restriction is the visible probability-domain condition of the source's own perturbation construction. Lean states it explicitly and proves all three advertised Theorem 1 conclusions, so this is a clarification rather than a caveat or partial boundary."
+    },
+    {
+      "acceptance_condition": "The checked proof derives the exact printed Theorem 1 risk endpoint without the inconsistent intermediate coefficient.",
+      "affected_source_locators": [
+        "cited publication:573-580",
+        "cited publication:660-669"
+      ],
+      "defect_kind": "algebra_or_sign",
+      "id": "SU20-THEOREM1-LECAM-COEFFICIENT-02",
+      "repair_obligation": "Use coefficient 1/2 in the Le Cam step and coefficient 1/4 only after applying TV <= (1/2)sqrt(chi-square).",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "Testing.lean proves finite Le Cam, the chi-square-to-TV step, and theorem1_productTestingLowerBound.",
+      "source_claim": "The first displayed proof line uses coefficient 1/4 before total variation although the preceding Le Cam inequality uses 1/2; the next chi-square line and theorem endpoint correspond to the standard route.",
+      "source_locator": "cited publication:660-669",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The theorem statement is unchanged. Lean proves the standard Le Cam inequality and derives the printed final risk bound with the correct constants."
+    },
+    {
+      "acceptance_condition": "The corrected comparison-incidence and global-corollary Specs expose both conditions and are proved from the concrete two-phase packing.",
+      "affected_source_locators": [
+        "cited publication:680-696",
+        "cited publication:884-918"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "SU20-CYCLE-BOUND-DOMAINS-03",
+      "repair_obligation": "State denominator positivity for the rational mean branch and n >= 4 for the displayed logarithmic dispersion simplification.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "AppendixCyclePackingComposition.lean, CorollaryOne.lean, PaperInterface.lean, and ProofInterface.lean prove the corrected statements; docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md records them.",
+      "source_claim": "The printed rational mean branch omits positivity of d - 4n + 8 log_2(n), and the final real-log dispersion simplification is used without stating its n >= 4 range.",
+      "source_locator": "cited publication:884-918",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Lean proves the same two-tier construction and bounds with the two local domain conditions explicit; the unconditional 2n branches remain available. These local clarifications do not weaken the substantive result."
+    },
+    {
+      "acceptance_condition": "The transparent corollary Spec begins at n = 3 and its proof endpoint covers the full corrected range.",
+      "affected_source_locators": [
+        "cited publication:919-933"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "SU20-ALL-EVEN-ENDPOINT-04",
+      "repair_obligation": "Replace n >= 2 by n >= 3 and prove the small n = 3 case rather than relying on the asymptotic plot statement.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "AllEvenSubsets.lean and ProofInterface.lean prove the corrected range; docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md records the endpoint correction.",
+      "source_claim": "The all-even-subsets corollary claims n >= 2, but the n = 2 comparison-incidence graph is not Eulerian.",
+      "source_locator": "cited publication:919-933",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The valid endpoint begins at n = 3. Lean proves n = 3 directly and every n >= 4 case from the general construction, so this is a one-value source typo rather than a caveat or partial formalization."
+    }
+  ],
+  "paper": "SeshadriUgander2020IIATesting",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Lemma 2's separation and finite testing-reduction conclusion.",
+      "source_locator": "cited publication:527-568"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Theorem 1's risk, testing-radius, and sample-complexity conclusions and the Le Cam/chi-square proof route.",
+      "source_locator": "cited publication:321-335; cited publication:655-677"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The global corollary and its Appendix comparison-incidence cycle construction, mean bound, and dispersion bound.",
+      "source_locator": "cited publication:680-696; cited publication:884-918"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The all-even-subsets corollary and its small-n endpoint.",
+      "source_locator": "cited publication:919-933"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "feb6f5733dff7a07a311d1b27a04ae4c20c682504a4c4ee183ec05b8696cbc32"
+}

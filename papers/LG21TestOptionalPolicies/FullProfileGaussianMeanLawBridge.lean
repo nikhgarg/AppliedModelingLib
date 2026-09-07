@@ -1,5 +1,5 @@
 import LG21TestOptionalPolicies.FullProfileGaussianSequentialBridge
-import EconCSLib.Foundations.Probability.FiniteGaussianProfileMeanLaw
+import AppliedModelingLib.Foundations.Probability.FiniteGaussianProfileMeanLaw
 
 /-!
 # Literal full-profile posterior-mean law for LG21
@@ -14,8 +14,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory
-open EconCSLib.Probability
+open AppliedModelingLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib.Probability
 open scoped ENNReal NNReal ProbabilityTheory
 
 /-- The literal full non-test LG21 source profile has a source-derived

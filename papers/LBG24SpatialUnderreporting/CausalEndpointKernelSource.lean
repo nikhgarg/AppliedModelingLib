@@ -1,5 +1,5 @@
 import LBG24SpatialUnderreporting.CollapsedCausalObservationLaw
-import EconCSLib.Foundations.Probability.KernelCompProdDensity
+import AppliedModelingLib.Foundations.Probability.KernelCompProdDensity
 
 /-!
 # Atomic causal endpoint kernels for LBG Appendix Theorem 2
@@ -14,7 +14,7 @@ joint base measure, including when the endpoint kernel has atoms.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal ProbabilityTheory
 
 noncomputable section

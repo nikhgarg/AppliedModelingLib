@@ -1,8 +1,8 @@
-import EconCSLib.SocialChoice.FairDivision.Mechanisms
+import AppliedModelingLib.SocialChoice.FairDivision.Mechanisms
 import Mathlib.Tactic
 
 open scoped BigOperators
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 namespace LMMS04FairDivision
 namespace Theorem41

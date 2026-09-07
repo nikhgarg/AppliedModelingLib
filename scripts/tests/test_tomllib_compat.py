@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 import subprocess
 import sys
 import unittest
@@ -18,6 +19,11 @@ class TomllibCompatTests(unittest.TestCase):
         )
         self.assertEqual(payload["name"], "Fixture")
         self.assertEqual(payload["lean_lib"], [{"name": "Paper26Result"}])
+        stream_payload = tomllib.load(
+            io.BytesIO(b'agent = "fixture"\nscopes = ["papers/Fixture"]\n')
+        )
+        self.assertEqual(stream_payload["agent"], "fixture")
+        self.assertEqual(stream_payload["scopes"], ["papers/Fixture"])
         with self.assertRaises(tomllib.TOMLDecodeError):
             tomllib.loads("name = 1\nname = 2\n")
 
@@ -27,7 +33,9 @@ class TomllibCompatTests(unittest.TestCase):
             "paper_contribution.py",
             "paper_target_registration.py",
             "public_release_candidate_guard.py",
+            "shared_worktree_status.py",
             "sync_paper_status.py",
+            "work_claim.py",
         )
         for entrypoint in entrypoints:
             with self.subTest(entrypoint=entrypoint):

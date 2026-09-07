@@ -71,15 +71,15 @@ source risks, and reusable-library choices before opening Lean files.
   - Optlib declarations/modules inspected:
   - Other potential upstream sources inspected:
   - Upstream sources used or ported, with citation/provenance:
-  - Existing `EconCSLib` declarations/modules inspected:
+  - Existing `AppliedModelingLib` declarations/modules inspected:
   - API chosen and near-misses:
-  - Source-defined objects that will use reusable library definitions, and the
-    planned paper-local semantic bridge/equivalence rows:
-    - Each bridge row must be listed on the configured review or assumption
-      surface, carry a `Source status:` comment, and be referenced from
-      `audit/paper_statement_map.json` under a semantic/equivalence bridge
-      field. Matching the source object by Lean/library/source name alone is
-      not source evidence.
+  - Source-defined objects that will use reusable library definitions, with
+    each exact reusable declaration and its planned source-map route:
+    - Each material declaration must receive a current source-to-Lean semantic
+      judgment over its complete definition. Route the source item directly to
+      that declaration; do not add a paper-local wrapper merely because the
+      implementation is reusable. Matching by Lean/library/source name alone
+      is not source evidence.
 - Proof strategy consequences:
   - Source proof route to follow:
   - Cleaner Lean route or reusable library route:
@@ -101,6 +101,30 @@ source risks, and reusable-library choices before opening Lean files.
 - Do not treat source-map keys, aliases, Lean declaration names, or matching
   terminology as coverage evidence.
 
+## Role-Shaped Lean Target Map
+
+Classify source presentations before proof decomposition. Each asserted result
+gets one complete transparent `Spec : Prop` and a distinct theorem/lemma proof
+or refutation endpoint. Each definition, algorithm, governing model,
+assumption, or condition gets its actual complete declaration instead of a
+theorem-shaped restatement. Record which result Specs consume those
+declarations so a dead source-shaped duplicate cannot receive review credit.
+For a genuinely standalone named definition, record `standalone` rather than
+manufacturing an unused premise; that standalone review cannot justify a
+different result's model obligations.
+
+| Source item / role | Complete Lean semantic target | Result Specs that consume it, or `standalone` | Distinct proof/refutation endpoint, for results only | Pre-pass finding or refactor |
+|---|---|---|---|---|
+| | | | | |
+
+- Non-certifying semantic-architecture pre-pass run:
+  - Inputs: byte-pinned source presentations, source inventory, full candidate
+    Lean declarations, and Lean-produced dependency view.
+  - Role/category errors, omitted atoms, dead/bypassed declarations,
+    duplication, or presentation issues found:
+  - Refactors completed before freeze:
+  - The pre-pass is diagnostic only and is not cited as audit evidence.
+
 ## Initial Proof Strategy
 
 After the source receipt, selected item/dependency map, audited interface
@@ -109,7 +133,7 @@ plan or other documentation only at a material boundary: changed source scope,
 new or resolved obligation, status change, or closeout.
 
 - Main theorem chain:
-- Likely reusable `EconCSLib` seams:
+- Likely reusable `AppliedModelingLib` seams:
 - Paper steps that look underspecified or analytically hard:
 - Trivial generalization/conjecture/extension targets to revisit after the
   source theorem chain is stable:
@@ -129,8 +153,11 @@ new or resolved obligation, status change, or closeout.
 
 ## Audited Statement Skeleton
 
-Before proof work, write every selected paper-facing formal item with its
-complete source-shaped Lean type and a temporary private `by sorry` proof body.
+Before proof work, write every selected source result with its complete source-
+shaped Lean `Spec` and a distinct endpoint with a temporary private `by sorry`
+proof body. Write source definitions, algorithms, models, assumptions, and
+conditions as their actual declarations and make dependent Specs use them;
+never add `by sorry` wrappers merely to turn those roles into theorem rows.
 Run the current semantic statement and recursive premise-provenance audits, then
 freeze the canonical elaborated-signature manifest here. A theorem name is only
 a navigation key; the elaborated type is the reviewed object.
@@ -166,13 +193,13 @@ material; and `proof_support` needs a substantive source-support scope and
 never gives endpoint credit. Declaration and function names are navigation
 only.
 
-Before full closeout, retain the current protocol-required source-record and
-semantic-model judgments for every row whose expanded semantics trigger them.
-Each generated judgment key must be nonempty, unique, and tied to the exact
-source item and elaborated signature. A live source defect, unresolved semantic
-dimension, added non-source premise, or weakened conclusion is not repaired by
-renaming a parameter or route; record it as the appropriate open obligation or
-status boundary.
+Before full closeout, complete the current raw-source-to-expanded-Spec,
+semantic-model, and premise-provenance judgments for every row whose expanded
+semantics trigger them. Each generated judgment key must be nonempty, unique,
+and tied to the exact source item and Lean semantic identity. A live source
+defect, unresolved semantic dimension, added non-source premise, or weakened
+conclusion is not repaired by renaming a parameter or route; record it as the
+appropriate open obligation or status boundary.
 
 | Source semantic item / exact locator | Lean navigation key (not evidence) | Current elaborated signature/dependency identity | Statement verdict | Premise provenance | Proof body |
 |---|---|---|---|---|---|
@@ -191,6 +218,11 @@ Replacing `sorry` with a proof while preserving the type does not.
       definitions, results, claims, formulas, equations, algorithms,
       assumptions, model conditions, named appendix items, and their unlabelled
       dependencies. Enter deep mode only on an explicit request.
+- [ ] Classify every selected presentation by semantic role and fill the role-
+      shaped Lean target map before decomposing proofs.
+- [ ] Run the non-certifying semantic-architecture pre-pass; resolve role
+      errors, omitted clauses, fake wrappers, dead duplicates, and bypassed
+      source declarations before intake freeze or evidence issuance.
 - [ ] Pin each selected item and theorem premise by source semantic identity,
       byte locator, and compact source evidence.
 - [ ] After a source-map change, run `--source-inventory-check`. Reuse only an
@@ -208,11 +240,13 @@ Replacing `sorry` with a proof while preserving the type does not.
       statements, and exact unmatched/unjustified obligation-id lists. Do not
       classify a weakened source conclusion as a conditional boundary.
 - [ ] Build or select reusable library APIs before adding paper-local wrappers.
-- [ ] Replace the paper scaffold with all source-facing Lean definitions and
-      exact theorem types, using `by sorry` only as the temporary private proof
-      body for each statement row.
-- [ ] Run the current statement and source-record/provenance checks on the
-      complete skeleton; freeze every elaborated signature/dependency identity.
+- [ ] Replace the paper scaffold with actual source-facing definitions,
+      algorithms, models, assumptions, and conditions plus one complete Spec
+      and distinct endpoint per source result. Use `by sorry` only as a
+      temporary private result-endpoint proof body.
+- [ ] Run the current raw-source-to-expanded-Spec, Lean-owned recursive closure,
+      and premise-provenance checks on the complete skeleton; freeze every Lean
+      semantic identity.
 - [ ] Complete every semantic review dimension triggered by the source and Lean
       statements. Do not mark a dimension absent merely because a wrapper,
       source phrase, or declaration name appears familiar.
@@ -220,9 +254,12 @@ Replacing `sorry` with a proof while preserving the type does not.
       boundary note.
 - [ ] Replace every skeleton `sorry` without changing the audited type; rerun
       statement review if a type changes.
-- [ ] At closeout, update README, status, DAG, and validation report from the
-      same row list.
-- [ ] At closeout, run the targeted paper build, audits,
+- [ ] At closeout, begin with `python3 scripts/closeout_reuse_plan.py --paper
+      <Paper>` and execute only its `next_action`. Let its terminal-document
+      action schedule README, paper-local status, DAG, and validation-report
+      generation from the same current row list; do not create those final
+      artifacts during intake or ordinary proof work.
+- [ ] Let the planner own the targeted paper build, audits,
       placeholder/provenance checks, and DAG validation.
 - [ ] Record any unresolved source bug, assumption, or library debt.
 
@@ -233,11 +270,11 @@ Replacing `sorry` with a proof while preserving the type does not.
 - Next bridge lemmas to try:
 - Informal proof sketch / recurrence / construction:
 
-## Deviations And Assumptions
+## Issue And Deviation Log
 
-- Source imprecision or substantive proof-route deviation to report later
-  (source route vs Lean route):
-- Genuine paper assumptions to declare in `Assumptions.lean`:
-- Temporary certificate fields to discharge:
-- Validation/audit checks that must inspect these assumptions:
-  coverage, LLM-as-judge, source-record, holistic source-first, DAG/source-json:
+Record possible source clarifications, printed errors, substantive proof-route
+deviations, model conventions, extra assumptions, and temporary certificate
+debt in `docs/FORMALIZATION_WORKING_MEMO.md`. This plan may name the active
+proof seam, but it is not a second issue ledger. The working memo is a lead log,
+not evidence for the final validation report; independently verify every item
+against the pinned source and final Lean surface during closeout.

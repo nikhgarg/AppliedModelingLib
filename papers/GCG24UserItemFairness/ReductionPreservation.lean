@@ -1,7 +1,7 @@
 import GCG24UserItemFairness.LPReduction
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace GCG24UserItemFairness
 
@@ -15,7 +15,7 @@ theorem rawUserUtility_eq_of_sameType {m n K : ℕ}
     {u u' : User m} (hType : S.types.toType u = S.types.toType u') :
     RecommendationModel.rawUserUtility S.model ρ u =
       RecommendationModel.rawUserUtility S.model ρ u' := by
-  unfold RecommendationModel.rawUserUtility EconCSLib.Policy.agentScore EconCSLib.pmfExp
+  unfold RecommendationModel.rawUserUtility AppliedModelingLib.Policy.agentScore AppliedModelingLib.pmfExp
   refine Finset.sum_congr rfl ?_
   intro j _
   have hrow : S.model.utility u j = S.model.utility u' j := by
@@ -62,7 +62,7 @@ theorem reduced_rowHasPositiveItem_of_rowHasPositiveItem
   rw [R.utility_agrees (reps.repr k) j] at hj
   simpa [reps.repr_spec k] using hj
 
-/-- Type weights in the reduced model are nonnegative cardinalities. -/
+/-- Type weights in the reduced model are nonnegative population shares. -/
 theorem reduced_nonnegativeWeights {m n K : ℕ}
     (R : ReductionWitness m n K) :
     R.reduced.NonnegativeWeights := by
@@ -72,6 +72,7 @@ theorem reduced_nonnegativeWeights {m n K : ℕ}
 
 /-- Chosen representatives make every reduced type weight strictly positive. -/
 theorem reduced_positiveWeights_of_representatives {m n K : ℕ}
+    [NeZero m]
     (R : ReductionWitness m n K)
     (reps : UserTypeAssignment.TypeRepresentatives R.data.types) :
     R.reduced.PositiveWeights := by
@@ -83,7 +84,9 @@ theorem reduced_positiveWeights_of_representatives {m n K : ℕ}
       reps.repr k ∈
         (Finset.univ.filter fun u => R.data.types.toType u = k) := by
     simp [reps.repr_spec k]
-  exact_mod_cast Finset.card_pos.mpr ⟨reps.repr k, hmem⟩
+  exact div_pos
+    (by exact_mod_cast Finset.card_pos.mpr ⟨reps.repr k, hmem⟩)
+    (by exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne m))
 
 /-- Original entrywise utility nonnegativity transfers to the reduced model. -/
 theorem reduced_nonnegativeUtilities_of_nonnegative
@@ -118,8 +121,8 @@ theorem rawUserUtility_liftedPolicy_eq_rawTypeUtility {m n K : ℕ}
     RecommendationModel.rawUserUtility R.data.model (R.liftedPolicy ρ) u =
       TypeWeightedRecommendationModel.rawTypeUtility R.reduced ρ (R.data.types.toType u) := by
   unfold RecommendationModel.rawUserUtility TypeWeightedRecommendationModel.rawTypeUtility
-    EconCSLib.Policy.agentScore EconCSLib.pmfExp ReductionWitness.liftedPolicy
-    UserTypeAssignment.liftTypePolicy EconCSLib.Policy.liftAlong
+    AppliedModelingLib.Policy.agentScore AppliedModelingLib.pmfExp ReductionWitness.liftedPolicy
+    UserTypeAssignment.liftTypePolicy AppliedModelingLib.Policy.liftAlong
   refine Finset.sum_congr rfl ?_
   intro j _
   rw [R.utility_agrees u j]
@@ -145,14 +148,21 @@ theorem normalizedUserUtility_liftedPolicy_eq_normalizedTypeUtility {m n K : ℕ
   rw [rawUserUtility_liftedPolicy_eq_rawTypeUtility (R := R) (ρ := ρ) (u := u)]
   rw [bestItemUtility_eq_bestTypeUtility (R := R) (u := u)]
 
-/-- Lifted reduced policies preserve item raw utility exactly. -/
-theorem rawItemUtility_liftedPolicy_eq_rawItemUtility {m n K : ℕ}
+/--
+Lifted reduced policies preserve item raw utility up to the common population
+scale.  The reduced weights are population shares, so multiplying the reduced
+sum by the number of users recovers the source sum.
+-/
+theorem rawItemUtility_liftedPolicy_eq_card_mul_rawItemUtility {m n K : ℕ}
+    [NeZero m]
     (R : ReductionWitness m n K) (ρ : TypePolicy K n) (j : Item n) :
     RecommendationModel.rawItemUtility R.data.model (R.liftedPolicy ρ) j =
-      TypeWeightedRecommendationModel.rawItemUtility R.reduced ρ j := by
+      (m : ℝ) * TypeWeightedRecommendationModel.rawItemUtility R.reduced ρ j := by
   classical
   unfold RecommendationModel.rawItemUtility TypeWeightedRecommendationModel.rawItemUtility
-    ReductionWitness.liftedPolicy UserTypeAssignment.liftTypePolicy EconCSLib.Policy.liftAlong
+    ReductionWitness.liftedPolicy UserTypeAssignment.liftTypePolicy AppliedModelingLib.Policy.liftAlong
+  have hm : (m : ℝ) ≠ 0 := by
+    exact_mod_cast NeZero.ne m
   calc
     ∑ u : User m, R.data.model.utility u j * (ρ (R.data.types.toType u) j).toReal
         = ∑ u : User m,
@@ -162,25 +172,33 @@ theorem rawItemUtility_liftedPolicy_eq_rawItemUtility {m n K : ℕ}
           intro u _
           rw [R.utility_agrees u j]
     _ = ∑ k : UserType K,
-          RecommendationModel.UserTypeAssignment.typeWeight R.data.types k *
+          (RecommendationModel.UserTypeAssignment.typeCard R.data.types k : ℝ) *
             (R.reduced.utility k j * (ρ k j).toReal) := by
-          exact (EconCSLib.Policy.sum_fiber_card_mul
+          exact (AppliedModelingLib.Policy.sum_fiber_card_mul
             (τ := R.data.types.toType)
             (f := fun k : UserType K => R.reduced.utility k j * (ρ k j).toReal)).symm
-    _ = ∑ k : UserType K,
+    _ = (m : ℝ) * ∑ k : UserType K,
           R.reduced.weight k * R.reduced.utility k j * (ρ k j).toReal := by
+          rw [Finset.mul_sum]
           refine Finset.sum_congr rfl ?_
           intro k _
           rw [R.weight_eq_typeWeight k]
-          ring
+          simp only [RecommendationModel.UserTypeAssignment.typeWeight]
+          field_simp [hm]
 
-/-- Lifted reduced policies preserve item normalizers exactly. -/
-theorem itemNormalizer_eq_itemNormalizer {m n K : ℕ}
+/--
+Lifted reduced policies preserve item normalizers up to the same common
+population scale as their raw item utilities.
+-/
+theorem itemNormalizer_eq_card_mul_itemNormalizer {m n K : ℕ}
+    [NeZero m]
     (R : ReductionWitness m n K) (j : Item n) :
     RecommendationModel.itemNormalizer R.data.model j =
-      TypeWeightedRecommendationModel.itemNormalizer R.reduced j := by
+      (m : ℝ) * TypeWeightedRecommendationModel.itemNormalizer R.reduced j := by
   classical
   unfold RecommendationModel.itemNormalizer TypeWeightedRecommendationModel.itemNormalizer
+  have hm : (m : ℝ) ≠ 0 := by
+    exact_mod_cast NeZero.ne m
   calc
     ∑ u : User m, R.data.model.utility u j
         = ∑ u : User m, R.reduced.utility (R.data.types.toType u) j := by
@@ -188,25 +206,37 @@ theorem itemNormalizer_eq_itemNormalizer {m n K : ℕ}
           intro u _
           rw [R.utility_agrees u j]
     _ = ∑ k : UserType K,
-          RecommendationModel.UserTypeAssignment.typeWeight R.data.types k *
+          (RecommendationModel.UserTypeAssignment.typeCard R.data.types k : ℝ) *
             R.reduced.utility k j := by
-          exact (EconCSLib.Policy.sum_fiber_card_mul
+          exact (AppliedModelingLib.Policy.sum_fiber_card_mul
             (τ := R.data.types.toType)
             (f := fun k : UserType K => R.reduced.utility k j)).symm
-    _ = ∑ k : UserType K, R.reduced.weight k * R.reduced.utility k j := by
+    _ = (m : ℝ) * ∑ k : UserType K,
+        R.reduced.weight k * R.reduced.utility k j := by
+          rw [Finset.mul_sum]
           refine Finset.sum_congr rfl ?_
           intro k _
           rw [R.weight_eq_typeWeight k]
+          simp only [RecommendationModel.UserTypeAssignment.typeWeight]
+          field_simp [hm]
 
 /-- Lifted reduced policies preserve normalized item utility pointwise. -/
 theorem normalizedItemUtility_liftedPolicy_eq_normalizedItemUtility {m n K : ℕ}
+    [NeZero m]
     (R : ReductionWitness m n K) (ρ : TypePolicy K n) (j : Item n) :
     RecommendationModel.normalizedItemUtility R.data.model (R.liftedPolicy ρ) j =
       TypeWeightedRecommendationModel.normalizedItemUtility R.reduced ρ j := by
   unfold RecommendationModel.normalizedItemUtility
     TypeWeightedRecommendationModel.normalizedItemUtility
-  rw [rawItemUtility_liftedPolicy_eq_rawItemUtility (R := R) (ρ := ρ) (j := j)]
-  rw [itemNormalizer_eq_itemNormalizer (R := R) (j := j)]
+  rw [rawItemUtility_liftedPolicy_eq_card_mul_rawItemUtility
+    (R := R) (ρ := ρ) (j := j)]
+  rw [itemNormalizer_eq_card_mul_itemNormalizer (R := R) (j := j)]
+  have hm : (m : ℝ) ≠ 0 := by
+    exact_mod_cast NeZero.ne m
+  by_cases hden : TypeWeightedRecommendationModel.itemNormalizer R.reduced j = 0
+  · simp [hden]
+  · simp [hm, hden]
+    field_simp [hm, hden]
 
 /-- The source user-coordinate item-equality row for a lifted reduced policy is
 the corresponding reduced equality-LP row. -/
@@ -292,7 +322,7 @@ theorem userReduced_feasible_iff
   · intro hred
     refine ⟨?_, ?_, hρ, ?_⟩
     · intro u
-      exact EconCSLib.pmfToRealSum (ρ u)
+      exact AppliedModelingLib.pmfToRealSum (ρ u)
     · intro u j
       exact ENNReal.toReal_nonneg
     · intro j
@@ -795,11 +825,10 @@ theorem sourceActiveBasis_sourceNormalPullback_span_top
     _ = ⊤ := LinearMap.range_eq_top.mpr
       (sourceNormalPullbackLinear_surjective R reps)
 
-/-- The source item-equality normal pulls back to the weighted reduced
-item-equality normal. This is the coefficient-level reason the reduced LP has
-type-cardinality weights in its item rows. -/
+/-- The source item-equality normal pulls back to the population-weighted
+reduced item-equality normal. -/
 theorem sourceNormalPullback_itemEqualityNormal
-    {m n K : ℕ}
+    {m n K : ℕ} [NeZero m]
     (R : ReductionWitness m n K) (j : Item n) :
     sourceNormalPullback R
         (RecommendationModel.UserSymmetricEqualityLP.itemEqualityNormal
@@ -816,7 +845,7 @@ theorem sourceNormalPullback_itemEqualityNormal
             (fun u =>
               R.data.model.utility u j /
                 RecommendationModel.itemNormalizer R.data.model j)) =
-            RecommendationModel.UserTypeAssignment.typeWeight R.data.types k *
+            (RecommendationModel.UserTypeAssignment.typeCard R.data.types k : ℝ) *
               (R.reduced.utility k j /
                 RecommendationModel.itemNormalizer R.data.model j) := by
         calc
@@ -836,18 +865,17 @@ theorem sourceNormalPullback_itemEqualityNormal
                 have htype : R.data.types.toType u = k := by
                   simpa using hu
                 rw [R.utility_agrees u j, htype]
-          _ = RecommendationModel.UserTypeAssignment.typeWeight R.data.types k *
+          _ = (RecommendationModel.UserTypeAssignment.typeCard R.data.types k : ℝ) *
                 (R.reduced.utility k j /
                   RecommendationModel.itemNormalizer R.data.model j) := by
-                simp [RecommendationModel.UserTypeAssignment.typeWeight,
-                  RecommendationModel.UserTypeAssignment.typeCard, nsmul_eq_mul]
+                simp [RecommendationModel.UserTypeAssignment.typeCard, nsmul_eq_mul]
       calc
         sourceNormalPullback R
             (RecommendationModel.UserSymmetricEqualityLP.itemEqualityNormal
               (RecommendationModel.UserSymmetricEqualityLP.ofSymmetricData R.data) j)
             (Sum.inl (k, j))
             =
-              RecommendationModel.UserTypeAssignment.typeWeight R.data.types k *
+              (RecommendationModel.UserTypeAssignment.typeCard R.data.types k : ℝ) *
                 (R.reduced.utility k j /
                   RecommendationModel.itemNormalizer R.data.model j) := by
                 simpa [sourceNormalPullback,
@@ -855,8 +883,13 @@ theorem sourceNormalPullback_itemEqualityNormal
         _ = R.reduced.weight k * R.reduced.utility k j /
               TypeWeightedRecommendationModel.itemNormalizer R.reduced j := by
               rw [R.weight_eq_typeWeight k]
-              rw [itemNormalizer_eq_itemNormalizer (R := R) (j := j)]
-              ring
+              rw [itemNormalizer_eq_card_mul_itemNormalizer (R := R) (j := j)]
+              simp only [RecommendationModel.UserTypeAssignment.typeWeight]
+              have hm : (m : ℝ) ≠ 0 := by
+                exact_mod_cast NeZero.ne m
+              by_cases hden : TypeWeightedRecommendationModel.itemNormalizer R.reduced j = 0
+              · simp [hden]
+              · field_simp [hm, hden]
         _ = TypeWeightedRecommendationModel.equalityLPItemNormal R.reduced j
               (Sum.inl (k, j)) := by
               simp [TypeWeightedRecommendationModel.equalityLPItemNormal]
@@ -1175,7 +1208,7 @@ def sourceConstraintReducedImage
 /-- Every source row normal pulls back either to its quotient reduced-row normal
 or to zero for source type-symmetry rows. -/
 theorem sourceNormalPullback_constraintNormal
-    {m n K : ℕ}
+    {m n K : ℕ} [NeZero m]
     (R : ReductionWitness m n K)
     (c : RecommendationModel.UserSymmetricEqualityLP.Constraint m n K) :
     sourceNormalPullback R
@@ -1250,7 +1283,7 @@ theorem sourceConstraintReducedImage_active_descend
       simpa [sourceConstraintReducedImage] using (Option.some.inj himage).symm
     subst cRed
     simpa [TypePolicy.ReducedEqualityLPConstraintActive] using
-      EconCSLib.pmfToRealSum
+      AppliedModelingLib.pmfToRealSum
         ((UserTypeAssignment.descendTypePolicy R.data.types reps ρ)
           (R.data.types.toType u))
   · simp [sourceConstraintReducedImage] at himage
@@ -1331,7 +1364,7 @@ theorem sourceActiveBasis_reducedRowImage_active_descend
 space. This is the rank statement needed before extracting a reduced
 full-cardinality independent active subset. -/
 theorem sourceActiveBasis_reducedRowImage_normal_span_top
-    {m n K : ℕ}
+    {m n K : ℕ} [NeZero m]
     (R : ReductionWitness m n K)
     (reps : UserTypeAssignment.TypeRepresentatives R.data.types)
     {ρ : Policy m n} {ell : ℝ}
@@ -1388,7 +1421,7 @@ vectors. This is the finite-dimensional extraction step from the spanning
 rank statement; a later theorem chooses corresponding row indices and packages
 the reduced active-basis structure. -/
 theorem sourceActiveBasis_exists_independent_reducedRowImage_normals
-    {m n K : ℕ}
+    {m n K : ℕ} [NeZero m]
     (R : ReductionWitness m n K)
     (reps : UserTypeAssignment.TypeRepresentatives R.data.types)
     {ρ : Policy m n} {ell : ℝ}
@@ -1426,7 +1459,7 @@ theorem sourceActiveBasis_exists_independent_reducedRowImage_normals
 dimension many semantic rows. This is a consequence of spanning the reduced
 dual; it is not a cardinality assumption smuggled into the statement. -/
 theorem sourceActiveBasis_reducedRowImage_card_ge
-    {m n K : ℕ}
+    {m n K : ℕ} [NeZero m]
     (R : ReductionWitness m n K)
     (reps : UserTypeAssignment.TypeRepresentatives R.data.types)
     {ρ : Policy m n} {ell : ℝ}
@@ -1565,7 +1598,7 @@ theorem sourceActiveBasis_reducedBasicFeasible_descend
 representative source-row normal. This packages the weighted item-row identity
 with the representative simplex and nonnegativity row identities. -/
 theorem sourceNormalPullback_representativeSourceConstraintNormal
-    {m n K : ℕ}
+    {m n K : ℕ} [NeZero m]
     (R : ReductionWitness m n K)
     (reps : UserTypeAssignment.TypeRepresentatives R.data.types)
     (c : TypePolicy.ReducedEqualityLPConstraint K n) :
@@ -1736,12 +1769,12 @@ theorem userReduced_activeRows_correspond
         R.data.types ρ).mpr hρ c
 
 /-- Lifted reduced policies preserve minimum item fairness. -/
-theorem itemFairness_liftedPolicy_eq_itemFairness {m n K : ℕ} [NeZero n]
+theorem itemFairness_liftedPolicy_eq_itemFairness {m n K : ℕ} [NeZero m] [NeZero n]
     (R : ReductionWitness m n K) (ρ : TypePolicy K n) :
     RecommendationModel.itemFairness R.data.model (R.liftedPolicy ρ) =
       TypeWeightedRecommendationModel.itemFairness R.reduced ρ := by
   unfold RecommendationModel.itemFairness TypeWeightedRecommendationModel.itemFairness
-    EconCSLib.finiteMin
+    AppliedModelingLib.finiteMin
   exact Finset.inf'_congr Finset.univ_nonempty rfl
     (by
       intro j _
@@ -1763,16 +1796,16 @@ theorem userFairness_liftedPolicy_eq_typeFairness {m n K : ℕ}
     fun k => TypeWeightedRecommendationModel.normalizedTypeUtility R.reduced ρ k
   calc
     RecommendationModel.userFairness R.data.model (R.liftedPolicy ρ)
-        = EconCSLib.finiteMin
+        = AppliedModelingLib.finiteMin
             (fun u : User m => f (R.data.types.toType u)) := by
-          unfold RecommendationModel.userFairness EconCSLib.finiteMin f
+          unfold RecommendationModel.userFairness AppliedModelingLib.finiteMin f
           exact Finset.inf'_congr Finset.univ_nonempty rfl
             (by
               intro u _
               exact normalizedUserUtility_liftedPolicy_eq_normalizedTypeUtility
                 (R := R) (ρ := ρ) (u := u))
-    _ = EconCSLib.finiteMin f := by
-          exact EconCSLib.Policy.finiteMin_comp_of_fiberRepresentatives
+    _ = AppliedModelingLib.finiteMin f := by
+          exact AppliedModelingLib.Policy.finiteMin_comp_of_fiberRepresentatives
             R.data.types.toType reps f
     _ = TypeWeightedRecommendationModel.typeFairness R.reduced ρ := by
           rfl

@@ -15,6 +15,7 @@ import hashlib
 import json
 import os
 import re
+import signal
 import subprocess
 import sys
 import tempfile
@@ -48,6 +49,9 @@ EXTERNAL_MODULE_PREFIXES = frozenset(
         "Qq",
         "Batteries",
         "Cli",
+        # Immutable direct Lake dependency; attribution and Apache-2.0 audit
+        # are recorded in docs/UPSTREAM_LEAN_SOURCES.md.
+        "Vlasov",
     }
 )
 LEAN_IMPORT_GRAPH_HELPER = "scripts/lean_import_graph_helper.lean"
@@ -60,7 +64,8 @@ LEGACY_WORKTREE_IDENTITY_CONTROL_PATHS = (
     LEAN_IMPORT_GRAPH_HELPER,
 )
 WORKTREE_IDENTITY_SCHEMA = "econcslib.lean-loaded-import-closure/v2"
-LEAN_IMPORT_GRAPH_MARKER = "ECONCSLIB_LEAN_IMPORT_CLOSURE "
+LEAN_IMPORT_CLOSURE_RECEIPT_SCHEMA = 1
+LEAN_IMPORT_GRAPH_MARKER = "APPLIEDMODELINGLIB_LEAN_IMPORT_CLOSURE "
 LEAN_IMPORT_GRAPH_SCHEMA = "econcslib.lean-loaded-module-closure/v1"
 DEFAULT_LEAN_GRAPH_TIMEOUT_SECONDS = 600
 LAKE_ROUTING_SCHEMA = "econcslib.entry-module-lake-routing/v2"
@@ -93,6 +98,126 @@ class ImportClosureIssue:
             f"{self.entrypoint}: {self.importer} imports {self.imported_module}"
             f"{dependency}: {self.reason}"
         )
+
+
+@dataclass(frozen=True)
+class ExternalArtifactFileState:
+    """Runtime-only mutation guard for one exactly hashed external artifact."""
+
+    module: str
+    path: Path
+    device: int
+    inode: int
+    byte_length: int
+    mtime_ns: int
+    ctime_ns: int
+
+    @classmethod
+    def from_stat(
+        cls,
+        module: str,
+        path: Path,
+        value: os.stat_result,
+    ) -> "ExternalArtifactFileState":
+        return cls(
+            module=module,
+            path=path,
+            device=value.st_dev,
+            inode=value.st_ino,
+            byte_length=value.st_size,
+            mtime_ns=value.st_mtime_ns,
+            ctime_ns=value.st_ctime_ns,
+        )
+
+    def current_problem(self) -> str:
+        try:
+            current = ExternalArtifactFileState.from_stat(
+                self.module,
+                self.path,
+                self.path.stat(),
+            )
+        except OSError as exc:
+            return (
+                "loaded external module artifact cannot be restated: "
+                f"{self.module}: {exc}"
+            )
+        if current != self:
+            return (
+                "loaded external module artifact changed after exact hashing: "
+                + self.module
+            )
+        return ""
+
+
+@dataclass(frozen=True)
+class ExternalModuleArtifactSnapshot:
+    """Exact content identities plus a non-serialized transaction guard."""
+
+    module_records: tuple[tuple[str, int, str], ...]
+    file_states: tuple[ExternalArtifactFileState, ...]
+
+    def records(self) -> list[dict[str, object]]:
+        return [
+            {"module": module, "byte_length": byte_length, "sha256": sha256}
+            for module, byte_length, sha256 in self.module_records
+        ]
+
+    def current_problem(
+        self,
+        *,
+        search_snapshot: ExternalArtifactSearchSnapshot | None = None,
+    ) -> str:
+        if search_snapshot is not None:
+            expected_paths_by_module: dict[str, list[Path]] = {}
+            for state in self.file_states:
+                expected_paths_by_module.setdefault(state.module, []).append(
+                    state.path
+                )
+            for module, _byte_length, _sha256 in self.module_records:
+                current_paths = tuple(
+                    sorted(
+                        path
+                        for _role, path in search_snapshot.candidates(module)
+                    )
+                )
+                if current_paths != tuple(
+                    sorted(expected_paths_by_module.get(module, []))
+                ):
+                    return (
+                        "loaded external module artifact candidate set changed: "
+                        + module
+                    )
+        for state in self.file_states:
+            problem = state.current_problem()
+            if problem:
+                return problem
+        return ""
+
+
+@dataclass(frozen=True)
+class ExternalArtifactSearchSnapshot:
+    """One bounded inventory of possible external artifact namespace roots."""
+
+    roots: tuple[
+        tuple[str, Path, frozenset[str], frozenset[str]], ...
+    ]
+
+    def candidates(self, module: str) -> tuple[tuple[str, Path], ...]:
+        if not MODULE_RE.fullmatch(module):
+            return ()
+        parts = module.split(".")
+        candidates: list[tuple[str, Path]] = []
+        for role, root, direct_modules, prefixes in self.roots:
+            if len(parts) == 1:
+                if parts[0] in direct_modules:
+                    candidates.append((role, root / f"{parts[0]}.olean"))
+                continue
+            if parts[0] not in prefixes:
+                continue
+            candidate = root.joinpath(*parts).with_suffix(".olean")
+            if candidate.is_file():
+                candidates.append((role, candidate))
+        return tuple(candidates)
 
 
 @dataclass(frozen=True)
@@ -157,10 +282,11 @@ def validated_lean_import_closure_payload(value: object) -> dict[str, object]:
     if not isinstance(raw_modules, list):
         raise ValueError("Lean import-closure module set is malformed")
     modules = [str(module).strip() for module in raw_modules]
+    module_set = set(modules)
     if (
         not modules
         or modules != sorted(modules)
-        or len(modules) != len(set(modules))
+        or len(modules) != len(module_set)
         or any(not MODULE_RE.fullmatch(module) for module in modules)
         or entry_module not in modules
     ):
@@ -185,7 +311,7 @@ def validated_lean_import_closure_payload(value: object) -> dict[str, object]:
         digest = str(raw.get("sha256") or "").strip().lower()
         byte_length = raw.get("byte_length")
         if (
-            module not in modules
+            module not in module_set
             or module_name_for_path(path) != module
             or module in seen_source_modules
             or path in seen_source_paths
@@ -216,12 +342,13 @@ def validated_lean_import_closure_payload(value: object) -> dict[str, object]:
     if not isinstance(raw_external, list):
         raise ValueError("Lean import-closure external module set is malformed")
     external = [str(module).strip() for module in raw_external]
+    external_set = set(external)
     if (
         external != sorted(external)
-        or len(external) != len(set(external))
-        or any(module not in modules for module in external)
-        or seen_source_modules.intersection(external)
-        or set(modules) != seen_source_modules.union(external)
+        or len(external) != len(external_set)
+        or not external_set.issubset(module_set)
+        or seen_source_modules.intersection(external_set)
+        or module_set != seen_source_modules.union(external_set)
     ):
         raise ValueError("Lean import-closure module ownership partition is invalid")
 
@@ -376,6 +503,92 @@ def lean_import_closure_payload_sha256(value: object) -> str:
     return _stable_sha256(validated_lean_import_closure_payload(value))
 
 
+def lean_import_closure_source_only_recovery_problem(
+    accepted: object,
+    current: object,
+) -> str:
+    """Explain why two closures differ by more than repository source bytes."""
+
+    accepted_closure = validated_lean_import_closure_payload(accepted)
+    current_closure = validated_lean_import_closure_payload(current)
+    immutable_fields = (
+        "schema",
+        "entrypoint",
+        "entry_module",
+        "lean_loaded_modules",
+        "external_import_modules",
+        "external_module_artifacts_sha256",
+        "build_controls",
+        "lake_routing",
+    )
+    for field in immutable_fields:
+        if accepted_closure[field] != current_closure[field]:
+            return f"Lean import-closure {field} changed"
+    accepted_sources = [
+        {"module": row["module"], "path": row["path"]}
+        for row in accepted_closure["sources"]
+    ]
+    current_sources = [
+        {"module": row["module"], "path": row["path"]}
+        for row in current_closure["sources"]
+    ]
+    if accepted_sources != current_sources:
+        return "Lean import-closure repository source ownership changed"
+    return ""
+
+
+def lean_import_closure_receipt_payload(
+    paper: str, closure: object
+) -> dict[str, object]:
+    """Wrap one Lean-owned closure in its portable non-accepting carrier."""
+
+    paper_id = str(paper).strip()
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", paper_id):
+        raise ValueError("Lean import-closure receipt paper identity is malformed")
+    validated = validated_lean_import_closure_payload(closure)
+    actual_entrypoint = str(validated.get("entrypoint") or "").strip()
+    allowed_entrypoints = {
+        f"papers/{paper_id}.lean",
+        f"papers/{paper_id}/PaperInterface.lean",
+        f"papers/{paper_id}/ProofInterface.lean",
+    }
+    if actual_entrypoint not in allowed_entrypoints:
+        raise ValueError("Lean import-closure receipt entrypoint is for another paper")
+    return {
+        "schema": LEAN_IMPORT_CLOSURE_RECEIPT_SCHEMA,
+        "paper": paper_id,
+        "acceptance_credential": False,
+        "entrypoint": actual_entrypoint,
+        "lean_import_closure_sha256": lean_import_closure_payload_sha256(
+            validated
+        ),
+        "lean_import_closure": validated,
+    }
+
+
+def validated_lean_import_closure_receipt_payload(
+    value: object, *, paper: str
+) -> dict[str, object]:
+    """Validate the exact portable carrier for one paper's Lean closure."""
+
+    expected_fields = {
+        "schema",
+        "paper",
+        "acceptance_credential",
+        "entrypoint",
+        "lean_import_closure_sha256",
+        "lean_import_closure",
+    }
+    if not isinstance(value, Mapping) or set(value) != expected_fields:
+        raise ValueError("Lean import-closure receipt fields are malformed")
+    canonical = lean_import_closure_receipt_payload(
+        paper, value.get("lean_import_closure")
+    )
+    if value != canonical:
+        raise ValueError("Lean import-closure receipt identity is invalid")
+    return canonical
+
+
 def _git(repo: Path, args: list[str]) -> bytes:
     result = subprocess.run(
         ["git", *args],
@@ -479,6 +692,89 @@ def repository_module_candidate_map(
         if module is not None:
             grouped.setdefault(module, set()).add(path)
     return {module: tuple(sorted(paths)) for module, paths in grouped.items()}
+
+
+@dataclass(frozen=True)
+class RepositoryModuleOwnershipSnapshot:
+    """One bounded filesystem routing snapshot for many Lean module names.
+
+    Most modules loaded by Lean come from Mathlib or the toolchain. Probing
+    both possible repository paths separately for tens of thousands of those
+    modules adds no assurance when neither top-level namespace exists locally.
+    Inventory those routing prefixes once, then perform exact path checks only
+    for prefixes which can resolve in this repository. A closeout transaction
+    takes a fresh snapshot again at finalization, so a concurrently added local
+    owner still fails.
+    """
+
+    root: Path
+    root_direct_modules: frozenset[str]
+    root_prefixes: frozenset[str]
+    papers_direct_modules: frozenset[str]
+    papers_prefixes: frozenset[str]
+
+    def candidates(self, module: str) -> tuple[Path, ...]:
+        if not MODULE_RE.fullmatch(module):
+            return ()
+        parts = module.split(".")
+        candidates: list[Path] = []
+        if len(parts) == 1:
+            if parts[0] in self.root_direct_modules:
+                candidates.append(self.root / f"{parts[0]}.lean")
+            if parts[0] in self.papers_direct_modules:
+                candidates.append(self.root / "papers" / f"{parts[0]}.lean")
+        else:
+            if parts[0] in self.root_prefixes:
+                candidate = self.root.joinpath(*parts).with_suffix(".lean")
+                if candidate.is_file():
+                    candidates.append(candidate)
+            if parts[0] in self.papers_prefixes:
+                candidate = (self.root / "papers").joinpath(*parts).with_suffix(
+                    ".lean"
+                )
+                if candidate.is_file():
+                    candidates.append(candidate)
+        return tuple(sorted({path.resolve() for path in candidates}))
+
+
+def repository_module_ownership_snapshot(
+    root: Path,
+) -> RepositoryModuleOwnershipSnapshot:
+    """Capture repository namespace prefixes used for exact module routing."""
+
+    root = root.resolve()
+    papers = root / "papers"
+    try:
+        root_entries = tuple(root.iterdir())
+        paper_entries = tuple(papers.iterdir()) if papers.is_dir() else ()
+    except OSError as exc:
+        raise ValueError(
+            "repository module-ownership inventory is unavailable"
+        ) from exc
+
+    def direct_modules(entries: Iterable[Path]) -> frozenset[str]:
+        return frozenset(
+            path.stem
+            for path in entries
+            if path.suffix == ".lean"
+            and path.is_file()
+            and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", path.stem)
+        )
+
+    def prefixes(entries: Iterable[Path]) -> frozenset[str]:
+        return frozenset(
+            path.name
+            for path in entries
+            if path.is_dir() and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", path.name)
+        )
+
+    return RepositoryModuleOwnershipSnapshot(
+        root=root,
+        root_direct_modules=direct_modules(root_entries),
+        root_prefixes=prefixes(root_entries),
+        papers_direct_modules=direct_modules(paper_entries),
+        papers_prefixes=prefixes(paper_entries),
+    )
 
 
 def lake_routing_projection(
@@ -683,7 +979,7 @@ def default_entrypoints(indexed: set[str], changed: set[str]) -> set[str]:
         path
         for path in indexed
         if path.endswith("/PaperInterface.lean")
-        or path == "EconCSLib.lean"
+        or path == "AppliedModelingLib.lean"
         or (
             path.startswith("papers/")
             and path.count("/") == 1
@@ -695,6 +991,46 @@ def default_entrypoints(indexed: set[str], changed: set[str]) -> set[str]:
 
 
 LeanModuleGraphLoader = Callable[[Path, str, int], tuple[tuple[str, ...] | None, str]]
+
+
+def single_threaded_lean_build_environment() -> dict[str, str]:
+    """Bound native Lake/Lean build concurrency without changing build inputs."""
+
+    return {**os.environ, "LEAN_NUM_THREADS": "1"}
+
+
+def run_owned_lean_process(
+    command: list[str], *, cwd: Path, timeout: int,
+    env: Mapping[str, str] | None = None,
+) -> subprocess.CompletedProcess[bytes]:
+    """Run one native command; clean owned descendants on failure or cancellation."""
+
+    process = subprocess.Popen(
+        command, cwd=cwd, env=env, stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE, start_new_session=True,
+    )
+    try:
+        stdout, stderr = process.communicate(timeout=timeout)
+    except BaseException as exc:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        except OSError:
+            # Cleanup must not hide the original failure. Even when group
+            # termination fails, try to terminate and reap the owned parent.
+            try:
+                process.kill()
+            except OSError:
+                pass
+        try:
+            stdout, stderr = process.communicate(timeout=1)
+            if isinstance(exc, subprocess.TimeoutExpired):
+                exc.output, exc.stderr = stdout, stderr
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+        raise
+    return subprocess.CompletedProcess(command, process.returncode, stdout, stderr)
 
 
 def lean_loaded_module_closure(
@@ -723,12 +1059,10 @@ def lean_loaded_module_closure(
         return None, f"Lean import-graph helper is unavailable: {exc}"
     if build_entry_module:
         try:
-            build = subprocess.run(
+            build = run_owned_lean_process(
                 ["lake", "build", f"+{entry_module}:olean"],
                 cwd=root,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                check=False,
+                env=single_threaded_lean_build_environment(),
                 timeout=timeout_seconds,
             )
         except (OSError, subprocess.TimeoutExpired) as exc:
@@ -748,15 +1082,12 @@ def lean_loaded_module_closure(
         "#econcslib_import_closure\n"
     )
     with tempfile.TemporaryDirectory() as temporary:
-        driver = Path(temporary) / "EconCSLibImportClosure.lean"
+        driver = Path(temporary) / "AppliedModelingLibImportClosure.lean"
         driver.write_text(script, encoding="utf-8")
         try:
-            result = subprocess.run(
+            result = run_owned_lean_process(
                 ["lake", "env", "lean", str(driver)],
                 cwd=root,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                check=False,
                 timeout=timeout_seconds,
             )
         except (OSError, subprocess.TimeoutExpired) as exc:
@@ -796,27 +1127,57 @@ def lean_loaded_module_closure(
     return tuple(sorted(modules)), ""
 
 
-def external_module_artifact_records(
+def external_module_artifact_search_roots(
     root: Path,
-    modules: Iterable[str],
     *,
     timeout_seconds: int = 60,
-) -> tuple[list[dict[str, object]] | None, str]:
-    """Hash the exact first ``.olean`` found for every loaded external module.
+) -> tuple[list[tuple[str, Path]] | None, str]:
+    """Reconstruct path-labeled artifact roots without launching ``lake env``.
 
-    ``lake env printenv LEAN_PATH`` exposes the same ordered search roots used by
-    the candidate package environment.  Paths are intentionally not receipt
-    identity: private and public clones may live elsewhere.  The module and
-    exact artifact bytes are identity, while the pinned Lake routing, manifest,
-    and toolchain controls bind how the current locator is reconstructed.
+    The labels are stable Lake/toolchain roles, not filesystem locations. They
+    may be retained in operational stat caches without making those caches
+    checkout- or machine-path dependent.
     """
 
-    requested = tuple(sorted(str(module).strip() for module in modules))
-    if not requested:
-        return [], ""
+    manifest_path = root / "lake-manifest.json"
     try:
-        result = subprocess.run(
-            ["lake", "env", "printenv", "LEAN_PATH"],
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return None, f"Lake manifest cannot reconstruct artifact roots: {exc}"
+    packages = manifest.get("packages") if isinstance(manifest, Mapping) else None
+    if not isinstance(packages, list):
+        return None, "Lake manifest has no package inventory"
+    package_locations: list[tuple[str, tuple[str, ...]]] = []
+    for package in packages:
+        if not isinstance(package, Mapping):
+            continue
+        name = str(package.get("name") or "").strip()
+        raw_subdir = package.get("subDir")
+        subdir = str(raw_subdir or "").strip()
+        if subdir:
+            subdir_path = PurePosixPath(subdir)
+            subdir_parts = subdir_path.parts
+            if (
+                subdir_path.is_absolute()
+                or not subdir_parts
+                or any(part in {"", ".", ".."} for part in subdir_parts)
+            ):
+                return None, "Lake manifest package subdirectory is malformed"
+        else:
+            subdir_parts = ()
+        package_locations.append((name, tuple(subdir_parts)))
+    package_names = [name for name, _subdir_parts in package_locations]
+    if (
+        any(
+            not name or "/" in name or "\\" in name or name in {".", ".."}
+            for name in package_names
+        )
+        or len(set(package_names)) != len(package_names)
+    ):
+        return None, "Lake manifest package inventory is malformed"
+    try:
+        prefix_result = subprocess.run(
+            ["lean", "--print-prefix"],
             cwd=root,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -824,53 +1185,179 @@ def external_module_artifact_records(
             timeout=timeout_seconds,
         )
     except (OSError, subprocess.TimeoutExpired) as exc:
-        return None, f"Lake could not expose the Lean artifact search path: {exc}"
-    if result.returncode != 0:
-        error = result.stderr.decode("utf-8", errors="replace").strip()
-        return None, "Lake could not expose the Lean artifact search path: " + error
-    search_paths = [
-        Path(raw).resolve()
-        for raw in result.stdout.decode("utf-8", errors="replace")
-        .strip()
-        .split(os.pathsep)
-        if raw.strip()
+        return None, f"Lean could not expose its toolchain prefix: {exc}"
+    if prefix_result.returncode != 0:
+        error = prefix_result.stderr.decode("utf-8", errors="replace").strip()
+        return None, "Lean could not expose its toolchain prefix: " + error
+    prefix = Path(
+        prefix_result.stdout.decode("utf-8", errors="replace").strip()
+    ).resolve()
+    candidates = [
+        (
+            f"lake-package:{name}",
+            root
+            / ".lake"
+            / "packages"
+            / name
+            / Path(*subdir_parts)
+            / ".lake"
+            / "build"
+            / "lib"
+            / "lean",
+        )
+        for name, subdir_parts in package_locations
     ]
+    candidates.extend(
+        (
+            ("repository-build", root / ".lake" / "build" / "lib" / "lean"),
+            ("toolchain", prefix / "lib" / "lean"),
+        )
+    )
+    search_paths: list[tuple[str, Path]] = []
+    seen: set[Path] = set()
+    for role, candidate in candidates:
+        resolved = candidate.resolve()
+        if resolved.is_dir() and resolved not in seen:
+            search_paths.append((role, resolved))
+            seen.add(resolved)
     if not search_paths:
         return None, "Lake exposed an empty Lean artifact search path"
+    return search_paths, ""
 
-    artifacts: list[dict[str, object]] = []
+
+def external_artifact_search_snapshot(
+    root: Path,
+    *,
+    timeout_seconds: int = 60,
+) -> tuple[ExternalArtifactSearchSnapshot | None, str]:
+    """Inventory top-level artifact namespaces once for one transaction pass."""
+
+    search_roots, error = external_module_artifact_search_roots(
+        root, timeout_seconds=timeout_seconds
+    )
+    if search_roots is None:
+        return None, error
+    records: list[tuple[str, Path, frozenset[str], frozenset[str]]] = []
+    for role, search_root in search_roots:
+        try:
+            entries = tuple(search_root.iterdir())
+        except OSError as exc:
+            return None, f"Lean artifact root cannot be inventoried: {role}: {exc}"
+        direct_modules = frozenset(
+            path.stem
+            for path in entries
+            if path.suffix == ".olean"
+            and path.is_file()
+            and MODULE_RE.fullmatch(path.stem)
+        )
+        prefixes = frozenset(
+            path.name
+            for path in entries
+            if path.is_dir() and MODULE_RE.fullmatch(path.name)
+        )
+        records.append((role, search_root, direct_modules, prefixes))
+    return ExternalArtifactSearchSnapshot(tuple(records)), ""
+
+
+def external_module_artifact_snapshot(
+    root: Path,
+    modules: Iterable[str],
+    *,
+    timeout_seconds: int = 60,
+) -> tuple[ExternalModuleArtifactSnapshot | None, str]:
+    """Hash external ``.olean`` bytes once and retain a mutation guard.
+
+    The exact package set comes from the pinned Lake manifest and the Lean core
+    root comes from the cwd-selected toolchain.  We deliberately do not launch
+    ``lake env`` merely to print ``LEAN_PATH``: Lake can consume close to a GiB
+    before one byte is hashed.  Paths are navigation only.  A module must have
+    one artifact byte identity across every reconstructed candidate root; a
+    conflicting duplicate fails closed instead of relying on search order.
+    """
+
+    requested = tuple(sorted(str(module).strip() for module in modules))
+    if not requested:
+        return ExternalModuleArtifactSnapshot((), ()), ""
+    search_snapshot, root_error = external_artifact_search_snapshot(
+        root,
+        timeout_seconds=timeout_seconds,
+    )
+    if search_snapshot is None:
+        return None, root_error
+
+    module_records: list[tuple[str, int, str]] = []
+    file_states: list[ExternalArtifactFileState] = []
     for module in requested:
         if not MODULE_RE.fullmatch(module):
             return None, f"loaded external module has invalid identity: {module}"
-        relative = Path(*module.split(".")).with_suffix(".olean")
-        artifact = next(
-            (
-                root_path / relative
-                for root_path in search_paths
-                if (root_path / relative).is_file()
-            ),
-            None,
+        artifact_candidates = tuple(
+            path for _role, path in search_snapshot.candidates(module)
         )
-        if artifact is None:
+        if not artifact_candidates:
             return (
                 None,
                 f"loaded external module has no resolvable .olean artifact: {module}",
             )
-        try:
-            content = artifact.read_bytes()
-        except OSError as exc:
+        artifact_identities: set[tuple[int, str]] = set()
+        for artifact in artifact_candidates:
+            try:
+                digest = hashlib.sha256()
+                with artifact.open("rb") as stream:
+                    before = os.fstat(stream.fileno())
+                    for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                        digest.update(chunk)
+                    after = os.fstat(stream.fileno())
+                if (
+                    before.st_size != after.st_size
+                    or before.st_mtime_ns != after.st_mtime_ns
+                    or before.st_ctime_ns != after.st_ctime_ns
+                    or before.st_ino != after.st_ino
+                    or before.st_dev != after.st_dev
+                ):
+                    return (
+                        None,
+                        f"loaded external module artifact changed while hashed: {module}",
+                    )
+            except OSError as exc:
+                return (
+                    None,
+                    f"loaded external module artifact cannot be read: {module}: {exc}",
+                )
+            artifact_identities.add((after.st_size, digest.hexdigest()))
+            file_states.append(
+                ExternalArtifactFileState.from_stat(module, artifact, after)
+            )
+        if len(artifact_identities) != 1:
             return (
                 None,
-                f"loaded external module artifact cannot be read: {module}: {exc}",
+                f"loaded external module has conflicting .olean artifacts: {module}",
             )
-        artifacts.append(
-            {
-                "module": module,
-                "byte_length": len(content),
-                "sha256": hashlib.sha256(content).hexdigest(),
-            }
-        )
-    return artifacts, ""
+        byte_length, artifact_sha256 = next(iter(artifact_identities))
+        module_records.append((module, byte_length, artifact_sha256))
+    snapshot = ExternalModuleArtifactSnapshot(
+        tuple(module_records),
+        tuple(file_states),
+    )
+    mutation_problem = snapshot.current_problem()
+    if mutation_problem:
+        return None, mutation_problem
+    return snapshot, ""
+
+
+def external_module_artifact_records(
+    root: Path,
+    modules: Iterable[str],
+    *,
+    timeout_seconds: int = 60,
+) -> tuple[list[dict[str, object]] | None, str]:
+    """Return portable exact-byte records for loaded external modules."""
+
+    snapshot, problem = external_module_artifact_snapshot(
+        root,
+        modules,
+        timeout_seconds=timeout_seconds,
+    )
+    return (snapshot.records() if snapshot is not None else None), problem
 
 
 def external_module_artifacts_sha256(records: Iterable[Mapping[str, object]]) -> str:
@@ -2210,7 +2697,7 @@ def dependency_closure_issues(
                         )
                         continue
                     prefix = module.split(".", 1)[0]
-                    if prefix in repository_prefixes or prefix == "EconCSLib":
+                    if prefix in repository_prefixes or prefix == "AppliedModelingLib":
                         add(
                             ImportClosureIssue(
                                 entrypoint,

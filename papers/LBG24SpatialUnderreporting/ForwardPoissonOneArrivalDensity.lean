@@ -1,7 +1,7 @@
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalFiniteDensity
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalBoundedStoppingBlock
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalUnboundedStopping
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalRenewalCount
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalFiniteDensity
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalBoundedStoppingBlock
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalUnboundedStopping
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalRenewalCount
 
 /-!
 # Actual one-arrival density for the forward canonical Poisson construction
@@ -16,7 +16,7 @@ version remains a separate induction over terminal survival slices.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory Filter ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal ProbabilityTheory
 
 noncomputable section
@@ -127,7 +127,7 @@ private theorem expMeasure_Ioi_eq_ofReal_exp
     {rate threshold : ℝ} (hrate : 0 < rate) (hthreshold : 0 ≤ threshold) :
     expMeasure rate (Set.Ioi threshold) =
       ENNReal.ofReal (Real.exp (-(rate * threshold))) := by
-  let model : EconCSLib.Probability.Exponential.Model := ⟨rate, hrate⟩
+  let model : AppliedModelingLib.Probability.Exponential.Model := ⟨rate, hrate⟩
   letI : IsProbabilityMeasure (expMeasure rate) :=
     isProbabilityMeasure_expMeasure hrate
   apply (ENNReal.toReal_eq_toReal_iff'
@@ -283,7 +283,7 @@ theorem oneArrivalPair_projection_eq_withDensity
           ENNReal.ofReal (Real.exp (-(rate * (horizon - x)))) ∂volume := by
       rw [show expMeasure rate = volume.withDensity (exponentialPDF rate) by rfl]
       exact MeasureTheory.setLIntegral_withDensity_eq_setLIntegral_mul volume
-        (EconCSLib.Probability.PoissonProcess.measurable_exponentialPDF rate)
+        (AppliedModelingLib.Probability.PoissonProcess.measurable_exponentialPDF rate)
         (measurable_terminalTailDensity rate horizon)
         (hB.inter measurableSet_Iic)
     _ = ∫⁻ x in B ∩ Set.Iic horizon,

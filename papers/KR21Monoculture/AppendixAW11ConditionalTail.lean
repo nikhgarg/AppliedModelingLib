@@ -1,8 +1,8 @@
 import KR21Monoculture.AppendixAConditionalTail
 import KR21Monoculture.W11Definition1Correction
 
-open EconCSLib MeasureTheory ProbabilityTheory Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory ProbabilityTheory Filter
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal
 
 namespace KR21Monoculture
@@ -164,13 +164,13 @@ theorem sourceAppendixA_selectedTop_probability_eq_conditionalTail_integral_of_w
     (h_nonnegative : forall x, 0 <= f x)
     (hnormalized : ∫⁻ x, ENNReal.ofReal (f x) ∂volume = 1)
     (value : Candidate n -> Real) {theta : Real} (htheta : 0 < theta) :
-    EconCSLib.measureProb
+    AppliedModelingLib.measureProb
         ((sourceAppendixARestNoiseLaw n (w11BaseNoiseLaw f)).prod
           (w11BaseNoiseLaw f))
         (fun z => SourceAppendixATopEvent value
           (sourceAppendixAProductNoise z) theta 0) =
       ∫ rest : Fin (n + 1) -> Real,
-        EconCSLib.measureProb (w11BaseNoiseLaw f)
+        AppliedModelingLib.measureProb (w11BaseNoiseLaw f)
           (fun epsilon => SourceAppendixAFirstTail value theta rest epsilon)
         ∂sourceAppendixARestNoiseLaw n (w11BaseNoiseLaw f) := by
   letI : IsProbabilityMeasure (w11BaseNoiseLaw f) :=

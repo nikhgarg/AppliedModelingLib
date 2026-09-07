@@ -2,7 +2,7 @@ import DGD26AdmissionsPredictability.AuditInterface
 
 namespace DGD26AdmissionsPredictability
 
-open EconCSLib.FiniteChoice
+open AppliedModelingLib.FiniteChoice
 
 variable {α : Type*} [DecidableEq α]
 
@@ -13,11 +13,12 @@ def sequentialCompositionSource : List (PaperChoiceRule α) → PaperChoiceRule 
       let chosen := C X
       chosen ∪ sequentialCompositionSource Cs (X \ chosen)
 
-/-- The paper's feasible, capacity-filling, objective-optimal assignment model. -/
+/-- The paper's feasible, objective-optimal maximum-weight assignment model. -/
 def lapModel {σ : Type*} [DecidableEq σ] [Fintype σ]
     (X : Finset α) (w : α → σ → ℝ) (A : LAP.Assignment α σ) : Prop :=
   paper_definition_lap_assignment_feasible X A ∧
-    paper_definition_lap_capacity_filling X A ∧
-      paper_definition_lap_objective_optimal X w A
+    ∀ B : LAP.Assignment α σ,
+      paper_definition_lap_assignment_feasible X B →
+        LAP.Assignment.objective w B ≤ LAP.Assignment.objective w A
 
 end DGD26AdmissionsPredictability

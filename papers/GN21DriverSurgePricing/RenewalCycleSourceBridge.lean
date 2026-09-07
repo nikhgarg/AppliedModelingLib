@@ -1,7 +1,8 @@
 import GN21DriverSurgePricing.RenewalCycleSeeds
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalNonexplosion
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalRenewalCountMarginal
-import EconCSLib.Foundations.Probability.PoissonFiniteHorizonMarkedThinning
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalNonexplosion
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalRenewalCountMarginal
+import AppliedModelingLib.Foundations.Probability.IndependentPairLaw
+import AppliedModelingLib.Foundations.Probability.PoissonFiniteHorizonMarkedThinning
 
 /-!
 # Source-component bridge for GN21 renewal cycles
@@ -37,10 +38,10 @@ theorem integrable_gn21RawCycleClock
   have hrate : 0 < rate := by
     fin_cases clock <;> simp [rate, gn21CycleClockRate, harrivalI, harrivalJ,
       hswitchIJ, hswitchJI]
-  let M : EconCSLib.Probability.Exponential.Model :=
-    EconCSLib.Probability.Exponential.Model.mk rate hrate
+  let M : AppliedModelingLib.Probability.Exponential.Model :=
+    AppliedModelingLib.Probability.Exponential.Model.mk rate hrate
   have hExp : Integrable (fun x : Real => x) (ProbabilityTheory.expMeasure rate) := by
-    simpa [EconCSLib.Probability.Exponential.Model.measure, M] using M.integrable_id
+    simpa [AppliedModelingLib.Probability.Exponential.Model.measure, M] using M.integrable_id
   have hLaw := gn21RawCycleClock_hasLaw muI muJ arrivalI arrivalJ switchIJ switchJI
     harrivalI harrivalJ hswitchIJ hswitchJI clock n
   have hmap : Measure.map (gn21RawCycleClock clock n)
@@ -71,8 +72,8 @@ theorem integral_gn21RawCycleClock_eq_inv_rate
   have hrate : 0 < rate := by
     fin_cases clock <;> simp [rate, gn21CycleClockRate, harrivalI, harrivalJ,
       hswitchIJ, hswitchJI]
-  let M : EconCSLib.Probability.Exponential.Model :=
-    EconCSLib.Probability.Exponential.Model.mk rate hrate
+  let M : AppliedModelingLib.Probability.Exponential.Model :=
+    AppliedModelingLib.Probability.Exponential.Model.mk rate hrate
   have hLaw := gn21RawCycleClock_hasLaw muI muJ arrivalI arrivalJ switchIJ switchJI
     harrivalI harrivalJ hswitchIJ hswitchJI clock n
   calc
@@ -81,11 +82,11 @@ theorem integral_gn21RawCycleClock_eq_inv_rate
         ∫ x, x ∂ProbabilityTheory.expMeasure rate := by
           simpa [rate] using hLaw.integral_eq
     _ = M.expectedMaxValue 1 := by
-      simpa [EconCSLib.Probability.Exponential.Model.measure, M] using
+      simpa [AppliedModelingLib.Probability.Exponential.Model.measure, M] using
         M.integral_id_eq_expectedMaxValue_one
     _ = 1 / rate := by
-      simp [EconCSLib.Probability.Exponential.Model.expectedMaxValue,
-        EconCSLib.Probability.Exponential.expectedMaxValueOfRate_one, M]
+      simp [AppliedModelingLib.Probability.Exponential.Model.expectedMaxValue,
+        AppliedModelingLib.Probability.Exponential.expectedMaxValueOfRate_one, M]
     _ = 1 / gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI clock := by
       rfl
 
@@ -153,7 +154,7 @@ theorem gn21RawCycleClockStream_hasLaw
     (hswitchIJ : 0 < switchIJ) (hswitchJI : 0 < switchJI)
     (clock : Fin 4) :
     HasLaw (fun seed : GN21RawCycleSeed => seed.1 clock)
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI clock))
       (gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI) := by
   let clockRate := gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI
@@ -163,12 +164,12 @@ theorem gn21RawCycleClockStream_hasLaw
       harrivalJ, hswitchIJ, hswitchJI]
   let clockMeasure : Measure (Fin 4 -> Nat -> Real) :=
     Measure.infinitePi fun c : Fin 4 =>
-      EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (clockRate c)
   letI : forall c : Fin 4, IsProbabilityMeasure
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (clockRate c)) := fun c =>
-    EconCSLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
+    AppliedModelingLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
       (hclockRate c)
   letI : IsProbabilityMeasure clockMeasure := by
     dsimp [clockMeasure]
@@ -192,14 +193,14 @@ theorem gn21RawCycleClockStream_hasLaw
     rw [Measure.map_fst_prod]
     simp
   have hstream : HasLaw (Function.eval clock)
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (clockRate clock)) clockMeasure :=
     (measurePreserving_eval_infinitePi
       (fun c : Fin 4 =>
-        EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+        AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
           (clockRate c)) clock).hasLaw
   change HasLaw (fun seed : GN21RawCycleSeed => seed.1 clock)
-    (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+    (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
       (clockRate clock)) (clockMeasure.prod markMeasure)
   simpa only [Function.comp_apply] using hstream.comp hfst
 
@@ -215,7 +216,7 @@ theorem gn21RawRequestCount_hasLaw_poisson
     (clock : Fin 4) (t : Real) (ht : 0 <= t) :
     HasLaw
       (fun seed : GN21RawCycleSeed =>
-        EconCSLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock))
+        AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock))
       (ProbabilityTheory.poissonMeasure
         (⟨gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI clock * t,
           mul_nonneg (by
@@ -232,7 +233,7 @@ theorem gn21RawRequestCount_hasLaw_poisson
   have hstream := gn21RawCycleClockStream_hasLaw muI muJ arrivalI arrivalJ
     switchIJ switchJI harrivalI harrivalJ hswitchIJ hswitchJI clock
   have hcount :=
-    EconCSLib.Probability.PoissonProcess.canonicalRenewalCount_hasLaw_poisson
+    AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount_hasLaw_poisson
       (rate := rate) (t := t) hrate ht
   simpa [rate, Function.comp_def] using hcount.comp hstream
 
@@ -296,12 +297,12 @@ theorem gn21RawCycleMarkStream_hasLaw
       harrivalJ, hswitchIJ, hswitchJI]
   let clockMeasure : Measure (Fin 4 -> Nat -> Real) :=
     Measure.infinitePi fun c : Fin 4 =>
-      EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (clockRate c)
   letI : forall c : Fin 4, IsProbabilityMeasure
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (clockRate c)) := fun c =>
-    EconCSLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
+    AppliedModelingLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
       (hclockRate c)
   letI : IsProbabilityMeasure clockMeasure := by
     dsimp [clockMeasure]
@@ -332,6 +333,104 @@ theorem gn21RawCycleMarkStream_hasLaw
     (Measure.infinitePi fun _ : Nat => markLaw state)
     (clockMeasure.prod markMeasure)
   simpa only [Function.comp_apply] using hstate.comp hsnd
+
+/-- A literal source request-clock stream and a literal source mark stream
+are jointly distributed as their independent product laws.  This is the raw
+input factorization used when the accepted-mark stopping index selects a
+suffix of the clock stream. -/
+theorem gn21RawCycleClockStream_markStream_hasLaw_prod
+    (muI muJ : Measure TripLength)
+    (arrivalI arrivalJ switchIJ switchJI : Real)
+    [IsProbabilityMeasure muI] [IsProbabilityMeasure muJ]
+    (harrivalI : 0 < arrivalI) (harrivalJ : 0 < arrivalJ)
+    (hswitchIJ : 0 < switchIJ) (hswitchJI : 0 < switchJI)
+    (clock : Fin 4) (state : Fin 2) :
+    HasLaw (fun seed : GN21RawCycleSeed => (seed.1 clock, seed.2 state))
+      ((AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+        (gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI clock)).prod
+        (Measure.infinitePi fun _ : Nat => gn21CycleMarkLaw muI muJ state))
+      (gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI) := by
+  let clockRate := gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI
+  let clockMeasure : Measure (Fin 4 -> Nat -> Real) :=
+    Measure.infinitePi fun c : Fin 4 =>
+      AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+        (clockRate c)
+  let markLaw := gn21CycleMarkLaw muI muJ
+  let markMeasure : Measure (Fin 2 -> Nat -> TripLength) :=
+    Measure.infinitePi fun s : Fin 2 =>
+      Measure.infinitePi fun _ : Nat => markLaw s
+  let P := gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI
+  let clockStream : (Fin 4 -> Nat -> Real) -> Nat -> Real := Function.eval clock
+  let markStream : (Fin 2 -> Nat -> TripLength) -> Nat -> TripLength := Function.eval state
+  have hclockRate : ∀ c : Fin 4, 0 < clockRate c := by
+    intro c
+    fin_cases c <;> simp [clockRate, gn21CycleClockRate, harrivalI,
+      harrivalJ, hswitchIJ, hswitchJI]
+  letI : ∀ c : Fin 4, IsProbabilityMeasure
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+        (clockRate c)) := fun c =>
+    AppliedModelingLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
+      (hclockRate c)
+  letI : IsProbabilityMeasure clockMeasure := by
+    dsimp [clockMeasure]
+    infer_instance
+  letI : ∀ s : Fin 2, IsProbabilityMeasure (markLaw s) := by
+    intro s
+    fin_cases s <;> simp only [markLaw, gn21CycleMarkLaw]
+    all_goals infer_instance
+  letI : ∀ s : Fin 2, IsProbabilityMeasure
+      (Measure.infinitePi fun _ : Nat => markLaw s) := fun s => inferInstance
+  letI : IsProbabilityMeasure markMeasure := by
+    dsimp [markMeasure]
+    infer_instance
+  letI : IsProbabilityMeasure P := by
+    simpa [P] using isProbabilityMeasure_gn21RawCycleSeedMeasure
+      muI muJ arrivalI arrivalJ switchIJ switchJI
+      harrivalI harrivalJ hswitchIJ hswitchJI
+  have hclockMeas : Measurable clockStream := by
+    simpa [clockStream] using (measurable_pi_apply clock :
+      Measurable (Function.eval clock : (Fin 4 -> Nat -> Real) -> Nat -> Real))
+  have hmarkMeas : Measurable markStream := by
+    simpa [markStream] using (measurable_pi_apply state :
+      Measurable (Function.eval state : (Fin 2 -> Nat -> TripLength) -> Nat -> TripLength))
+  have hclock : HasLaw clockStream
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+        (clockRate clock)) clockMeasure := by
+    simpa [clockStream] using
+      (measurePreserving_eval_infinitePi
+        (fun c : Fin 4 =>
+          AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+            (clockRate c)) clock).hasLaw
+  have hmark : HasLaw markStream
+      (Measure.infinitePi fun _ : Nat => markLaw state) markMeasure := by
+    simpa [markStream] using
+      (measurePreserving_eval_infinitePi
+        (fun s : Fin 2 => Measure.infinitePi fun _ : Nat => markLaw s) state).hasLaw
+  have hclockSource : HasLaw (Prod.fst : GN21RawCycleSeed -> Fin 4 -> Nat -> Real)
+      clockMeasure P := by
+    refine ⟨measurable_fst.aemeasurable, ?_⟩
+    change Measure.map Prod.fst (clockMeasure.prod markMeasure) = clockMeasure
+    rw [Measure.map_fst_prod]
+    simp
+  have hmarkSource : HasLaw (Prod.snd : GN21RawCycleSeed -> Fin 2 -> Nat -> TripLength)
+      markMeasure P := by
+    refine ⟨measurable_snd.aemeasurable, ?_⟩
+    change Measure.map Prod.snd (clockMeasure.prod markMeasure) = markMeasure
+    rw [Measure.map_snd_prod]
+    simp
+  have hclockRaw : HasLaw (fun seed : GN21RawCycleSeed => clockStream seed.1)
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+        (clockRate clock)) P := hclock.comp hclockSource
+  have hmarkRaw : HasLaw (fun seed : GN21RawCycleSeed => markStream seed.2)
+      (Measure.infinitePi fun _ : Nat => markLaw state) P := hmark.comp hmarkSource
+  have hindep : ProbabilityTheory.IndepFun
+      (fun seed : GN21RawCycleSeed => clockStream seed.1)
+      (fun seed : GN21RawCycleSeed => markStream seed.2) P := by
+    simpa [P, Function.comp_def] using
+      (ProbabilityTheory.indepFun_prod hclockMeas hmarkMeas)
+  simpa [P, clockRate, markLaw, clockStream, markStream, gn21RawCycleClock,
+    gn21RawCycleMark] using
+    (AppliedModelingLib.Probability.indepFun_hasLaw_prodMk hclockRaw hmarkRaw hindep)
 
 /-- The policy-classified raw mark stream has the literal iid product law of
 the classified one-mark measure.  This is an all-stream statement, not merely
@@ -499,7 +598,7 @@ theorem gn21RawRequestCountAndAcceptedMarkRangePrefix_hasLaw
     (hsigma : MeasurableSet sigma) (t : Real) (ht : 0 <= t) (n : Nat) :
     HasLaw
       (fun seed : GN21RawCycleSeed =>
-        (EconCSLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock),
+        (AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock),
           gn21RawAcceptedMarkRangePrefix state sigma n seed))
       ((ProbabilityTheory.poissonMeasure
         (⟨gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI clock * t,
@@ -521,12 +620,12 @@ theorem gn21RawRequestCountAndAcceptedMarkRangePrefix_hasLaw
   have hrate : 0 < rate := hclockRate clock
   let clockMeasure : Measure (Fin 4 -> Nat -> Real) :=
     Measure.infinitePi fun c : Fin 4 =>
-      EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (clockRate c)
   letI : forall c : Fin 4, IsProbabilityMeasure
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (clockRate c)) := fun c =>
-    EconCSLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
+    AppliedModelingLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
       (hclockRate c)
   letI : IsProbabilityMeasure clockMeasure := by
     dsimp [clockMeasure]
@@ -559,22 +658,22 @@ theorem gn21RawRequestCountAndAcceptedMarkRangePrefix_hasLaw
   let classify : (Nat -> TripLength) -> Nat -> Bool :=
     fun stream index => gn21AcceptanceMark sigma (stream index)
   have hclockStream : MeasurePreserving (Function.eval clock) clockMeasure
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate) := by
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate) := by
     simpa [clockMeasure, rate] using
       (measurePreserving_eval_infinitePi
         (fun c : Fin 4 =>
-          EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+          AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
             (clockRate c)) clock)
   have hcountBase : MeasurePreserving
-      (EconCSLib.Probability.PoissonProcess.canonicalRenewalCount t)
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate)
+      (AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount t)
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate)
       countLaw := by
-    refine ⟨EconCSLib.Probability.PoissonProcess.measurable_canonicalRenewalCount t, ?_⟩
-    exact (EconCSLib.Probability.PoissonProcess.canonicalRenewalCount_hasLaw_poisson
+    refine ⟨AppliedModelingLib.Probability.PoissonProcess.measurable_canonicalRenewalCount t, ?_⟩
+    exact (AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount_hasLaw_poisson
       hrate ht).map_eq
   have hcount : MeasurePreserving
       (fun clocks : Fin 4 -> Nat -> Real =>
-        EconCSLib.Probability.PoissonProcess.canonicalRenewalCount t (clocks clock))
+        AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount t (clocks clock))
       clockMeasure countLaw := by
     simpa [Function.comp_def] using hcountBase.comp hclockStream
   have hstate : MeasurePreserving (Function.eval state) markMeasure
@@ -608,7 +707,7 @@ theorem gn21RawRequestCountAndAcceptedMarkRangePrefix_hasLaw
   have hjoint := hcount.prod hprefix
   change HasLaw
     (fun seed : (Fin 4 -> Nat -> Real) × (Fin 2 -> Nat -> TripLength) =>
-      (EconCSLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock),
+      (AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock),
         gn21RawAcceptedMarkRangePrefix state sigma n seed))
     (countLaw.prod (Measure.pi fun _ : I => B))
     (clockMeasure.prod markMeasure)
@@ -683,7 +782,7 @@ theorem gn21AcceptanceProbability_toReal_eq_singleStateTripMass
 finite product measure of its Bernoulli one-mark law. -/
 theorem gn21_iidMarks_toMeasure_eq_pi_bernoulli
     (p : ℝ≥0) (hp : p <= 1) (n : Nat) :
-    (EconCSLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n).toMeasure =
+    (AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n).toMeasure =
       Measure.pi (fun _ : Fin n => (PMF.bernoulli p hp).toMeasure) := by
   apply Measure.ext_of_singleton
   intro marks
@@ -699,9 +798,9 @@ theorem gn21_iidMarks_toMeasure_eq_pi_bernoulli
       intro i
       simpa using hx i (by simp)
   rw [PMF.toMeasure_apply_singleton
-      (EconCSLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n)
+      (AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n)
       marks (measurableSet_singleton _), hsingleton, Measure.pi_pi]
-  simp [EconCSLib.Probability.FiniteHorizonMarkedPoisson.iidMarks]
+  simp [AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.iidMarks]
 
 /-- Reindexing a finite range-restricted prefix by `Fin n` preserves its iid
 product law. -/
@@ -740,7 +839,7 @@ theorem gn21RawRequestCountAndAcceptedMarkPrefix_hasLaw_iid
     (hp_mass : (p : ℝ≥0∞) = gn21CycleMarkLaw muI muJ state sigma) :
     HasLaw
       (fun seed : GN21RawCycleSeed =>
-        (EconCSLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock),
+        (AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock),
           gn21RawAcceptedMarkPrefix state sigma n seed))
       ((ProbabilityTheory.poissonMeasure
         (⟨gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI clock * t,
@@ -750,7 +849,7 @@ theorem gn21RawRequestCountAndAcceptedMarkPrefix_hasLaw_iid
             · exact harrivalJ.le
             · exact hswitchIJ.le
             · exact hswitchJI.le) ht⟩ : ℝ≥0)).prod
-        (EconCSLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n).toMeasure)
+        (AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n).toMeasure)
       (gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI) := by
   let rate := gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI clock
   have hrate : 0 < rate := by
@@ -774,7 +873,7 @@ theorem gn21RawRequestCountAndAcceptedMarkPrefix_hasLaw_iid
     clock state sigma hsigma t ht n
   have hRange' : HasLaw
       (fun seed : GN21RawCycleSeed =>
-        (EconCSLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock),
+        (AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock),
           gn21RawAcceptedMarkRangePrefix state sigma n seed))
       (countLaw.prod (Measure.pi fun _ : I => B))
       (gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI) := by
@@ -783,7 +882,7 @@ theorem gn21RawRequestCountAndAcceptedMarkPrefix_hasLaw_iid
   have hpairReindex := (MeasurePreserving.id countLaw).prod hreindex
   have hFin : HasLaw
       (fun seed : GN21RawCycleSeed =>
-        (EconCSLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock),
+        (AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock),
           fun i : Fin n =>
             gn21RawAcceptedMarkRangePrefix state sigma n seed
               (gn21FinRangeEquiv n i)))
@@ -794,16 +893,16 @@ theorem gn21RawRequestCountAndAcceptedMarkPrefix_hasLaw_iid
     exact measure_map_gn21AcceptanceMark_eq_bernoulli M sigma hsigma p hp
       (by simpa [M] using hp_mass)
   have hiid : Measure.pi (fun _ : Fin n => B) =
-      (EconCSLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n).toMeasure := by
+      (AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n).toMeasure := by
     rw [hBernoulli]
     exact (gn21_iidMarks_toMeasure_eq_pi_bernoulli p hp n).symm
   rw [hiid] at hFin
   change HasLaw
     (fun seed : GN21RawCycleSeed =>
-      (EconCSLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock),
+      (AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock),
         gn21RawAcceptedMarkPrefix state sigma n seed))
     (countLaw.prod
-      (EconCSLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n).toMeasure)
+      (AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n).toMeasure)
     (gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI)
   simpa [gn21RawAcceptedMarkPrefix, gn21RawAcceptedMarkRangePrefix,
     gn21FinRangeEquiv] using hFin
@@ -813,9 +912,9 @@ horizon.  Its length is the actual canonical request count and its marks are
 the matching initial segment of the same source mark stream. -/
 def gn21RawFiniteHorizonMarkedSample
     (clock : Fin 4) (state : Fin 2) (sigma : TripPolicy) (t : Real) :
-    GN21RawCycleSeed -> EconCSLib.Probability.FiniteHorizonMarkedPoisson.Sample :=
+    GN21RawCycleSeed -> AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.Sample :=
   fun seed =>
-    let N := EconCSLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock)
+    let N := AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock)
     ⟨N, fun i => gn21AcceptanceMark sigma (gn21RawCycleMark state i seed)⟩
 
 /-- The actual random-length source horizon sample is measurable.  Its atoms
@@ -827,9 +926,9 @@ theorem measurable_gn21RawFiniteHorizonMarkedSample
     Measurable (gn21RawFiniteHorizonMarkedSample clock state sigma t) := by
   classical
   let N : GN21RawCycleSeed -> Nat := fun seed =>
-    EconCSLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock)
+    AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock)
   have hN : Measurable N :=
-    EconCSLib.Probability.PoissonProcess.measurable_canonicalRenewalCount t |>.comp
+    AppliedModelingLib.Probability.PoissonProcess.measurable_canonicalRenewalCount t |>.comp
       ((measurable_pi_apply clock).comp measurable_fst)
   refine measurable_to_countable' ?_
   rintro ⟨n, marks⟩
@@ -872,7 +971,7 @@ theorem gn21RawFiniteHorizonMarkedSample_hasLaw
     (p : ℝ≥0) (hp : p <= 1)
     (hp_mass : (p : ℝ≥0∞) = gn21CycleMarkLaw muI muJ state sigma) :
     HasLaw (gn21RawFiniteHorizonMarkedSample clock state sigma t)
-      (EconCSLib.Probability.FiniteHorizonMarkedPoisson.jointPMF
+      (AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.jointPMF
         (⟨gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI clock * t,
           mul_nonneg (by
             fin_cases clock
@@ -891,11 +990,11 @@ theorem gn21RawFiniteHorizonMarkedSample_hasLaw
   apply Measure.ext_of_singleton
   rintro ⟨n, marks⟩
   let N : GN21RawCycleSeed -> Nat := fun seed =>
-    EconCSLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock)
+    AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount t (seed.1 clock)
   let markVector : GN21RawCycleSeed -> Fin n -> Bool := fun seed i =>
     gn21AcceptanceMark sigma (gn21RawCycleMark state i seed)
   have hN : Measurable N :=
-    EconCSLib.Probability.PoissonProcess.measurable_canonicalRenewalCount t |>.comp
+    AppliedModelingLib.Probability.PoissonProcess.measurable_canonicalRenewalCount t |>.comp
       ((measurable_pi_apply clock).comp measurable_fst)
   have hmarkVector : Measurable markVector := by
     apply measurable_pi_lambda
@@ -907,7 +1006,7 @@ theorem gn21RawFiniteHorizonMarkedSample_hasLaw
   have hpref : HasLaw (fun seed : GN21RawCycleSeed =>
       (N seed, markVector seed))
       ((ProbabilityTheory.poissonMeasure mean).prod
-        (EconCSLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n).toMeasure)
+        (AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n).toMeasure)
       (gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI) := by
     simpa [N, markVector, mean, rate] using
       (gn21RawRequestCountAndAcceptedMarkPrefix_hasLaw_iid
@@ -932,23 +1031,23 @@ theorem gn21RawFiniteHorizonMarkedSample_hasLaw
     ← Measure.map_apply (hN.prodMk hmarkVector) (measurableSet_singleton _),
     hpref.map_eq, ← Set.singleton_prod_singleton, Measure.prod_prod,
     PMF.toMeasure_apply_singleton
-      (EconCSLib.Probability.FiniteHorizonMarkedPoisson.jointPMF mean p hp)
-      (EconCSLib.Probability.FiniteHorizonMarkedPoisson.Sample.mk n marks)
+      (AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.jointPMF mean p hp)
+      (AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.Sample.mk n marks)
       (measurableSet_singleton _),
-    EconCSLib.Probability.FiniteHorizonMarkedPoisson.jointPMF_apply]
+    AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.jointPMF_apply]
   calc
     (ProbabilityTheory.poissonMeasure mean) {n} *
-        (EconCSLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n).toMeasure {marks} =
+        (AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n).toMeasure {marks} =
         ((ProbabilityTheory.poissonMeasure mean).toPMF).toMeasure {n} *
-          (EconCSLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n).toMeasure
+          (AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n).toMeasure
             {marks} := by
               rw [Measure.toPMF_toMeasure]
     _ = (ProbabilityTheory.poissonMeasure mean).toPMF n *
-          EconCSLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n marks := by
+          AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n marks := by
             rw [PMF.toMeasure_apply_singleton (ProbabilityTheory.poissonMeasure mean).toPMF n
               (measurableSet_singleton _),
               PMF.toMeasure_apply_singleton
-                (EconCSLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n)
+                (AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.iidMarks p hp n)
                 marks (measurableSet_singleton _)]
 
 /-- The number of accepted requests among the actual raw requests up to a
@@ -956,7 +1055,7 @@ deterministic horizon. -/
 def gn21RawAcceptedRequestCount
     (clock : Fin 4) (state : Fin 2) (sigma : TripPolicy) (t : Real) :
     GN21RawCycleSeed -> Nat :=
-  fun seed => EconCSLib.Probability.FiniteHorizonMarkedPoisson.kept
+  fun seed => AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.kept
     (gn21RawFiniteHorizonMarkedSample clock state sigma t seed)
 
 /-- Deterministic-horizon marked-Poisson thinning for the actual GN21 raw
@@ -992,7 +1091,7 @@ theorem gn21RawAcceptedRequestCount_hasLaw_poisson
     muI muJ arrivalI arrivalJ switchIJ switchJI harrivalI harrivalJ hswitchIJ hswitchJI
     clock state sigma hsigma t ht p hp hp_mass
   simpa [gn21RawAcceptedRequestCount, mean, rate, Function.comp_def] using
-    (EconCSLib.Probability.FiniteHorizonMarkedPoisson.kept_hasLaw mean p hp).comp hsample
+    (AppliedModelingLib.Probability.FiniteHorizonMarkedPoisson.kept_hasLaw mean p hp).comp hsample
 
 /-- Source-mass specialization of deterministic-horizon marked thinning. -/
 theorem gn21RawAcceptedRequestCount_hasLaw_poisson_of_sourceMass
@@ -1254,17 +1353,17 @@ private theorem integral_eq_inv_rate_of_expLaw
     (hrate : 0 < rate)
     (hLaw : HasLaw clock (ProbabilityTheory.expMeasure rate) P) :
     (∫ omega, clock omega ∂P) = 1 / rate := by
-  let M : EconCSLib.Probability.Exponential.Model :=
-    EconCSLib.Probability.Exponential.Model.mk rate hrate
+  let M : AppliedModelingLib.Probability.Exponential.Model :=
+    AppliedModelingLib.Probability.Exponential.Model.mk rate hrate
   calc
     (∫ omega, clock omega ∂P) = ∫ x, x ∂ProbabilityTheory.expMeasure rate :=
       hLaw.integral_eq
     _ = M.expectedMaxValue 1 := by
-      simpa [EconCSLib.Probability.Exponential.Model.measure, M] using
+      simpa [AppliedModelingLib.Probability.Exponential.Model.measure, M] using
         M.integral_id_eq_expectedMaxValue_one
     _ = 1 / rate := by
-      simp [EconCSLib.Probability.Exponential.Model.expectedMaxValue,
-        EconCSLib.Probability.Exponential.expectedMaxValueOfRate_one, M]
+      simp [AppliedModelingLib.Probability.Exponential.Model.expectedMaxValue,
+        AppliedModelingLib.Probability.Exponential.expectedMaxValueOfRate_one, M]
 
 /-- Exact mean of the literal post-thinning accepted-arrival delay. -/
 theorem integral_gn21PostThinningAcceptedArrivalDelay_eq_inv_rate

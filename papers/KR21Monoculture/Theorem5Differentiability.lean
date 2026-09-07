@@ -1,7 +1,7 @@
 import KR21Monoculture.RUM
 import Mathlib.Analysis.Calculus.ParametricIntegral
 
-open EconCSLib MeasureTheory Filter
+open AppliedModelingLib MeasureTheory Filter
 open scoped Topology
 
 namespace KR21Monoculture
@@ -43,7 +43,7 @@ theorem scaledIIDDensity_eq_product_theta_mul {n : ℕ} (f : ℝ → ℝ)
 /-- The noise vectors producing a particular ranking under additive scores. -/
 def rankingNoiseRegion {n : ℕ} (value : Candidate n → ℝ)
     (pi : Ranking n) : Set (Candidate n → ℝ) :=
-  {z | EconCSLib.SocialChoice.Ranking.rankByScore
+  {z | AppliedModelingLib.SocialChoice.Ranking.rankByScore
       (fun i => value i + z i) = pi}
 
 /-- The scaled-coordinate kernel restricted to the ranking cell for `pi`. -/

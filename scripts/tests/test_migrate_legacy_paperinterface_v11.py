@@ -46,12 +46,13 @@ end Demo
             paper, proof = migration.render(paper_dir=paper_dir, config=self._config())
         self.assertIn(
             "def conditionSpec (p : Prop) : Prop :=\n"
-            "  Demo.ProofBridge.legacyCondition (p := p) ↔\n"
-            "    p",
+            "  p",
             paper,
         )
         self.assertIn(
-            "theorem condition_realizes_spec (p : Prop) : conditionSpec (p := p) := by\n"
+            "theorem condition_realizes_spec (p : Prop) : "
+            "Demo.ProofBridge.legacyCondition (p := p) ↔ "
+            "conditionSpec (p := p) := by\n"
             "  rfl",
             proof,
         )

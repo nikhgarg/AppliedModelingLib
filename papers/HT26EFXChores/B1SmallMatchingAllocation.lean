@@ -14,7 +14,7 @@ Source: `EFXadditivechores.tex`, lines 2506--2524.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- An injective small-endpoint matching, with its unused endpoint made long
 in a canonical M₀₁ prefix, gives an EFX allocation. -/

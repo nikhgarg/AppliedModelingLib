@@ -17,7 +17,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-- Under forced reporting, every positive literal access-taking population
@@ -170,8 +170,7 @@ theorem LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE.exists_finite_t
       selectionMass skillKernel actionEvent publicBase ≠ 0 := by
     simpa [skillKernel, action, actionEvent] using
       (E.ae_positive_takeSelectionMass_of_localTailStability hnoAccess hstable
-        baseLaw baseMean hbaseMean baseVariance
-        (M.noiseVariance testFeature : ℝ) hbaseVariance htestNoiseVariance
+        baseLaw baseMean hbaseMean baseVariance hbaseVariance htestNoiseVariance
         hsourceFactor)
   have hcutoffSelected : ∀ᵐ publicBase ∂
       normalizedSelectedBase baseLaw skillKernel actionEvent,

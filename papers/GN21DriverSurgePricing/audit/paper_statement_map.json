@@ -1,4 +1,5 @@
 {
+  "approved_review_context_schema": 1,
   "generated_at": "2026-08-15T00:00:00Z",
   "items": {
     "assumption_affine_response_shape_domains": {
@@ -247,6 +248,70 @@
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "- Lemma 6 endpoint derivative formula domain."
     },
+    "condition_lemma5_component_variation": {
+      "aliases": [
+        "Lemma5DerivativeShape",
+        "GN21Lemma5EndpointSignRealization"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GN21DriverSurgePricing.Lemma5DerivativeShape",
+        "GN21DriverSurgePricing.ProofBridge.GN21Lemma5EndpointSignRealization"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 3342,
+          "line_start": 3325,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 5 shows how the structure of an optimizer σ ∗ = ∪k (`k , uk ) of a set function R̂(σ)\ndepends on the derivative of the set function with respect to the endpoints of the sets that make\n∂\nup the policy, ∂u\nR̂(σ). The main idea is that as long as the derivative can be shown to be positive\nfor some u that is an endpoint of σi , that policy can be locally modified to accept more trips and\nincrease the overall reward function. We work with a function r(u, σ) that has the same sign as the\n∂\n∂\nderivative ∂u\nR̂(σ). Given r(u, σ), we analyze the sign of ∂u\nR̂(σ) as it depends on the structure of\nσ, and in turn can characterize the structure of the optimal σ ∗ .\nIn particular, we will show how properties of r(u, σ) – whether for a fixed σ it is always positive,\nstrictly increasing, strictly decreasing, strictly quasi-convex, or strictly quasi-concave in u – lead to\ndifferent optimal σ ∗ . The rest of the appendix section applies Lemma 5 to our context, by showing\nhow different pricing functions induce different properties of r(u, σ) and thus different optimal\npolicies for each state σi∗ .",
+          "quoted_text_sha256": "99447b2f0194a8b8b79f876192854ae64ac97706c26ccb31ee406d34c7a02279"
+        },
+        {
+          "line_end": 3692,
+          "line_start": 3652,
+          "publication_locator": "cited publication",
+          "quoted_text": "These lemmas primarily involve properties of derivatives of the reward function R(w, σ) and its\ncomponents in the dynamic model, as a function of the pricing.\n55\n\n\fD.3.1\n\nNotation and assumptions\n\nRecall in the dynamic model that we constrain σi to be measurable, open, subsets of the R+ . Then,\nσi can be written as a countable union of disjoint subsets of R+ , i.e. σi = ∪∞\nk=0 (`k , uk ). We further\nassume that uk 6= `m , for any k, m; we can do so without loss of generality by making a measure 0\nchange to σi , by adding uk = `m to σi .\n∂\nSuppose u is an upper-endpoint of σi , ie. ∃k such that u = uk . Then, we use ∂u\nH(σi ) to denote\n∂\nthe derivative of the set function H with respect to u at σi . Similarly, ∂` H(σi ) is the derivative of\nH at σi with respect to a lower-endpoint of σi .\n∂\n∂\nWe derive ∂u\nR(w, {σ1 , σ2 }), ∂`\nR(w, {σ1 , σ2 }). We will make it clear in each instance whether u\n∂\nrefers to the derivative\nor ` is an endpoint of σ1 or σ2 . For all the derivatives in this subsection ∂u\n∂\nwith respect to an upper endpoint in σi , and ∂` refers to a derivative at a lower endpoint of σi .\nNote that\n∂\n∂\nR(w, {σ1 , σ2 }) = − R(w, {σ1 , σ2 }).\n∂u\n∂`\nFurthermore:\n• We use σ in the function argument when the function depends on policies in both states, and\nσi when it only depends on the policy in state i.\n• We use ∝ to denote that “two functions of u have the same sign except where f (u) = 0”,\nrather than proportional to.\n• All policy equalities are up to measure 0.",
+          "quoted_text_sha256": "e967c95fac06eed4cfecb778740e7d7e7fcf81b66d8ca4a080638433cd2c48ed"
+        }
+      ],
+      "source_kind": "condition",
+      "source_location": "cited publication:3325-3342; cited publication:3652-3692",
+      "source_note": "This is source-semantic proof input for Lemma 5, kept separate from the Lemma 5 result presentation so the current graph reviews the component-local derivative-shape and endpoint-sign records without duplicating the theorem claim.",
+      "statement": "Appendix D's Lemma 5 variation route uses the stated open-policy endpoint representation and the five response-shape conditions, together with the component-local endpoint derivative/sign realization for the policy being varied."
+    },
+    "condition_lemma6_endpoint_derivative_data": {
+      "aliases": [
+        "GN21SourceFiniteUpperEndpoint",
+        "Lemma6EndpointDerivativeData"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GN21DriverSurgePricing.GN21SourceFiniteUpperEndpoint",
+        "GN21DriverSurgePricing.Lemma6EndpointDerivativeData"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 3680,
+          "line_start": 3652,
+          "publication_locator": "cited publication",
+          "quoted_text": "These lemmas primarily involve properties of derivatives of the reward function R(w, σ) and its\ncomponents in the dynamic model, as a function of the pricing.\n55\n\n\fD.3.1\n\nNotation and assumptions\n\nRecall in the dynamic model that we constrain σi to be measurable, open, subsets of the R+ . Then,\nσi can be written as a countable union of disjoint subsets of R+ , i.e. σi = ∪∞\nk=0 (`k , uk ). We further\nassume that uk 6= `m , for any k, m; we can do so without loss of generality by making a measure 0\nchange to σi , by adding uk = `m to σi .\n∂\nSuppose u is an upper-endpoint of σi , ie. ∃k such that u = uk . Then, we use ∂u\nH(σi ) to denote\n∂\nthe derivative of the set function H with respect to u at σi . Similarly, ∂` H(σi ) is the derivative of\nH at σi with respect to a lower-endpoint of σi .\n∂\n∂\nWe derive ∂u\nR(w, {σ1 , σ2 }), ∂`\nR(w, {σ1 , σ2 }). We will make it clear in each instance whether u\n∂\nrefers to the derivative\nor ` is an endpoint of σ1 or σ2 . For all the derivatives in this subsection ∂u\n∂\nwith respect to an upper endpoint in σi , and ∂` refers to a derivative at a lower endpoint of σi .",
+          "quoted_text_sha256": "848f49e90c49c8b05d3800ed004297428fa62aa9b4d9d629d5f1fb78b89a1bf6"
+        },
+        {
+          "line_end": 4152,
+          "line_start": 4105,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 6. Let R(w, σ) be as defined in Lemma 1. Then, ∂u\n\u0013\n\u0012\n\u0013 \u0012\nqi→j (u)\nQj\nQi\nwi (u) Qi Qj\nr(u, i, w, σ) ,\n+\n−\nRj +\nRi\n∆ji +\nu\nu\nTi\nTj\nTi\nTj\n\nProof. Proof.\nµi ({σj , σ2 }) =\n\nQj Ti\nQj Ti + Qi Tj\n\nR(w, σ) = µ1 (σ)R1 (w1 , σ1 ) + µ2 (σ)R2 (w2 , σ2 )\n\u0015\n\u0014\n1\n[Q2 W1 + Q1 W2 ]\n=\nQ2 T1 + Q1 T2\nWi\nRi (σi ) =\nTi\n\u0014\n\u0015\nZ\n∂\n∂\nQi =\nλi→j + λi\nqi→j (τ )dFi (τ ) = λi qi→j (u)fi (u)\n∂u\n∂u\nτ ∈σi",
+          "quoted_text_sha256": "793af4f4959ea93651a1cba0f90ff6cdd769433dddac9653c06d3c08cd6b147b"
+        }
+      ],
+      "source_kind": "condition",
+      "source_location": "cited publication:3652-3680; cited publication:4105-4152",
+      "source_note": "This is source-semantic Lemma 6 input, separate from the Lemma 6 result presentation; it retains both the endpoint-domain record and the derivative-data record for independent current review.",
+      "statement": "Appendix D's Lemma 6 endpoint calculation uses the stated finite upper-endpoint domain and the displayed derivative data for the dynamic aggregate quantities."
+    },
     "gn21_lemma10_appendix_presentation": {
       "claim_bearing": false,
       "coverage_status": "covered",
@@ -473,9 +538,94 @@
       },
       "statement": "Appendix D.4 repeats Theorem 3."
     },
+    "model_dynamic_iid_renewal_cycle_bridge": {
+      "aliases": [
+        "GN21DynamicIIDCycleModel",
+        "GN21TimeFractionIIDCycleModel"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The reusable IID convergence endpoints remain the Lemma 1 dynamic-reward and Lemma 3 time-fraction interfaces. Their raw source-model companions are the public actual-calendar endpoints, backed by the two raw-calendar constructors and direct convergence theorems. No optimizer or policy-form conclusion is supplied as a premise.",
+          "classification": "source_text_model_convention",
+          "formal_meaning": "The literal raw source seed contains independent Poisson arrival/mark streams and alternating CTMC switch-clock streams. The actual-calendar time and earnings constructors read successive observations from deterministic post-exit tails of that one seed, and prove the required measurability, integrability, pairwise independence, identical distributions, and expected-cycle identities. The records therefore describe derived source observables rather than assumed renewal samples.",
+          "id": "GN21-IID-RENEWAL-CYCLE-MODEL-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "788d8c5b32543a3af1c588c63ae61913e4c7cf4124548e0d9932fd5549c86cad",
+          "source_locator": "cited publication:217-252; cited publication:264-285; cited publication:324-367; cited publication:671-696",
+          "why_needed": "Lemmas 1 and 3 invoke a renewal process, independence, geometric exit structure, and Wald/strong-law mean identities. The raw-calendar construction now derives those ingredients from the source primitives and makes the literal same-tail route explicit, rather than representing a CTMC/Poisson construction by an unproved record premise."
+        }
+      ],
+      "claim_bearing": false,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GN21DriverSurgePricing.GN21DynamicIIDCycleModel",
+        "GN21DriverSurgePricing.GN21TimeFractionIIDCycleModel",
+        "GN21DriverSurgePricing.gn21DynamicIIDCycleModel_of_actualCalendar",
+        "GN21DriverSurgePricing.gn21TimeFractionIIDCycleModel_of_actualCalendar",
+        "GN21DriverSurgePricing.paper_lemma1_stochastic_dynamic_reward_decomposition_of_actual_calendar",
+        "GN21DriverSurgePricing.paper_lemma3_stochastic_time_fraction_formula_of_actual_calendar"
+      ],
+      "model_convention_ids": [
+        "GN21-IID-RENEWAL-CYCLE-MODEL-01"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 252,
+          "line_start": 217,
+          "publication_locator": "cited publication",
+          "quoted_text": "We start with a model where there is a single world state, i.e., all model components are constant\nover time. Time is continuous and indexed by t. At each time t, the driver is either open, or busy.\nWhile open, the driver receives job (trip) requests from riders according to a Poisson process at\nrate λ, i.e., the time between requests is exponential with mean λ1 . Job lengths, denoted by τ , are\ndrawn independently and identically from a continuous distribution F .\nIf the driver accepts a job request of length τ at time t (as discussed below), they receive\na payout of w(τ ) at time t + τ , at which time they become open again. Otherwise, the driver\nremains open. Except where specified, the only assumptions on w are that it is continuous and\n)\nasymptotically (sub)-linear: ∃c : lim inf τ →∞ w(τ\nτ ≤ c, which ensures that the driver reward is also\nbounded.3\n2.1.2\n\nDynamic model with surge pricing\n\nA model with fixed pricing and arrival rates of jobs is not a realistic representation of ride-hailing\nplatforms. In particular, rider demand (both in intensity and in distribution) may vary substantially\nover time, even within a day (cf. Appendix Figure 9c). To study how this dynamic nature affects\ndriver decisions, we consider a model with two states, i ∈ {1, 2}, where i = 2 denotes the surge\nstate. (At a high level, the surge state provides a higher earnings rate to the driver. The precise\ndefinition is in Section 2.2.2, after we formulate the driver’s earnings rate in each state).\nThe world evolves stochastically between the two states, as a Continuous Time Markov Chain\n(CTMC). When the world is in state i, the state changes to j according to a fixed exponential clock\nthat ticks at rate λi→j , independently of other randomness.\nWhen open in state i, the driver receives job requests at rate λi with lengths τ ∼ Fi , and collects\npayout according to payment function wi , which is presumed to have the same properties as w in\nthe single-state model. The state of the world may change while a driver is on trip. Crucially, the\ndriver receives payments according to the state of the world i when the trip begins. We will use\nw = {w1 , w2 } to denote the overall pricing mechanism.\n\n2.2\n\nDriver strategies and earnings\n\nIn our model, the driver can decide whether to accept the trip request, with no penalty.4",
+          "quoted_text_sha256": "6427b356f10a581641c9427774a2438d0936aad941c7ed80a0dbf5d6dfff4116"
+        },
+        {
+          "line_end": 285,
+          "line_start": 264,
+          "publication_locator": "cited publication",
+          "quoted_text": "\ffollows policy σ = {σ1 , σ2 }, where σi ⊆ R+ indicates the jobs accepted in state i. We assume that\ndriver policies are measurable with respect to F (corresponding Fi in dynamic model); for technical\nreasons, in the dynamic model we also assume that σi consist of a union of open intervals, i.e., are\nopen subsets of R+ . When we write equalities with policies σ, we mean equality up to changes of\nmeasure 0.\nThe driver is long-lived and aims to maximize their own lifetime average hourly earnings on the\nplatform, including both open and busy times. Let R(w, σ, t) denote the (random) total earnings\nfrom jobs accepted from time 0 up to time t if the driver follows policy σ and the payout function\nis w. Then, the driver’s lifetime earnings rate is\nR(w, σ) , lim inf t→∞\n\nR(w, σ, t)\n.\nt\n\nThis earnings rate is a deterministic (non-random) quantity, and is a function of the driver policy\nσ, pricing function w, and the primitives.\nA driver policy σ ∗ is optimal (best-response) with respect to pricing function w if it maximizes\nthe lifetime earnings rate of the driver among all policies: R(w, σ ∗ ) ≥ R(w, σ), for all valid policies\nσ (i.e., measurable with respect to F or Fi , with σi open sets). Then, pricing function w is incentive\ncompatible (IC) if accepting all job requests is optimal with respect to w, i.e., σ = (0, ∞) in\nthe single-state model or σ = {(0, ∞), (0, ∞)} in the dynamic model is optimal with respect to w.",
+          "quoted_text_sha256": "6ced9c4ec3a00f608d1a5c3c15706f4d30fabf93fd032df264a1334573807203"
+        },
+        {
+          "line_end": 367,
+          "line_start": 324,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fLemma 1. In the dynamic model, the earnings rate can be decomposed into each state i earnings\nrate Ri (wi , σi ) and fraction of time µi (σ) spent in state i:\nR(w, σ) = µ1 (σ)R1 (w1 , σ1 ) + µ2 (σ)R2 (w2 , σ2 )\n\nwith probability 1.\n\ni (σi )\nAs in the single-state model, Ri (wi , σi ) = W\nTi (σi ) , where\n\nZ\n1\nWi (σi ) =\nwi (τ )dFi (τ ),\nFi (σi ) τ ∈σi\n\n1\n1\nTi (σi ) =\n+\nλi Fi (σi ) Fi (σi )\n\nZ\nτ dFi (τ )\nτ ∈σi\n\nWe prove the result by defining a new renewal process, in which a single reward renewal cycle\nis: the time between the driver is open in state 1 to the next time the driver is open in state 1\nafter being open in state 2 at least once. In other words, each renewal cycle is composed of some\nnumber (potentially zero) of sub-cycles in which the driver is open in state 1 and then is open in\nstate 1 again after a completed trip; one sub-cycle starting with the driver open in state 1 and\nending with being open in state 2 (either after a completed trip or a state transition while open);\nsome number (potentially zero) of sub-cycles in which the driver is open in state 2 and then is open\nin state 2 again after a completed trip; and finally one sub-cycle starting in state 2 and ending with\nthe driver open in state 1.\nGiven the number of such renewal reward cycles completed up to time t, the total earnings on\ntrips starting in each state (earnings in each sub-cycle) are independent of each other, and then we\nuse Wald’s identity (Wald, 1973) to separate µi (σ) and Ri (σi ).\nNote that Ti (σi ) is not exactly the expected length of time in a single sub-cycle in a state\ngiven σi , but rather is proportional to it; the multiplicative constant λi Fi (σi1)+λi→j cancels out with\nthe same constant in the expected earnings in a single sub-cycle in a state given σi . This constant\nemerges from the primitives: when the driver is open in state i, there are two competing exponential\nclocks (with rates λi Fi (σi ) and λi→j , respectively) that determine whether the driver will accept a\nrequest before the world state changes.",
+          "quoted_text_sha256": "cc70fea615bd41e399606f0cfdeee647cc198f0d76d67ca2e304a740ae6facaa"
+        },
+        {
+          "line_end": 696,
+          "line_start": 671,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 3. Let Ti (σi ) be as defined in Lemma 1. The fraction of time a driver following strategy\nσ = {σ1 , σ2 } spends either open in state i or on a trip started in state i is\nλi Fi (σi )Ti (σi )Qj (σj )\nλj Fj (σj )Tj (σj )Qi (σi ) + λi Fi (σi )Ti (σi )Qj (σj )\nZ\nQi (σi ) = λi→j + λi\nqi→j (τ )dFi (τ )\nµi (σ) =\n\nwhere\n\nτ ∈σi\n\nWe prove this lemma by finding the expected number of sub-cycles in each state i, i.e., within a\nlarger renewal reward cycle as defined, the expected number of sub-cycles that start with the driver\n12\n\n\fbeing open in state i. This expectation is the mean of a geometric random variable parameterized\nby the probability that the driver will next be open in state j, given the driver is currently open in\nstate i. Qi (σi ) is proportional to this probability. (As with Ti (σi ), there is a normalizing constant\n1\nλi Fi (σi )+λi→j ); the larger it is, the fewer sub-cycles spent in state i. It has two components: the\nfirst is the probability that the state changes before the driver accepts a trip request; the second\nis the probability that the world state is j when the driver completes a trip. Thus, the numerator\nin µi (σ) is proportional to the length of a sub-cycle in state i, times the fraction of sub-cycles that\nare started in state i. The larger Qj (σj ) or Ti (σi ), the more time the driver spends in state i.",
+          "quoted_text_sha256": "a18684afe6314420f3c1a00e8b6c72c8f62ff741bda9eec041ad5bb3d7fc9d22"
+        }
+      ],
+      "source_kind": "model",
+      "source_location": "cited publication:217-252; cited publication:264-285; cited publication:324-367; cited publication:671-696",
+      "source_note": "This source-model bridge is distinct from the displayed Lemma 1 and Lemma 3 conclusions. The literal raw-calendar constructors now derive the explicit IID-cycle records and the two direct almost-sure limits from one deterministic-tail source path; the records are not accepted as a new assumption.",
+      "statement": "The source's independent Poisson request/mark primitives and two-state switching clocks induce the regenerative IID renewal-cycle variables, geometric exit structure, integrability, and expected state-time and earning identities used in Lemmas 1 and 3."
+    },
     "model_policy_equalities_modulo_null_sets": {
       "aliases": [],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "PaperInterface.GN21Lemma5AENullEndpointVariation and PaperInterface.GN21Theorem4AENullEndpointVariation expose the with-density law, a.e. policy equality, and transparent endpoint-calculus realization for the one-state and statewise routes. Their zero_density_interval_reward_eq theorems prove reward equality for a density-zero interval; ZeroDensityBridge.lean proves that interval nullness. GN21Lemma5EndpointSignRealization and GN21Theorem4EndpointSignRealization contain the separately authorized raw finite endpoint derivative/sign fields, which the current finite-variation engine still consumes directly. The null-interval theorems are supporting source-model facts, not a Lean derivation that replaces those raw fields. The v10 source-record receipt must expand and hash each field; density-a.e. equality alone cannot certify them.",
+          "classification": "human_verified_source_implicit",
+          "formal_meaning": "Policies are identified modulo the trip-length law. The source's derivative-sign notation explicitly excludes f(u)=0, so a density-zero interval traversal preserves reward instead of requiring a fictitious strict endpoint sign there; the Lemma 6 calculation supplies the density-factor route for positive-density moves. This a.e. equality does not itself derive a raw derivative/sign fact at a finite zero-density endpoint.",
+          "id": "GN21-L5-AE-NULL-SET-CONVENTION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "11fb8932cfdd68219840c1e10fd1df0b9da9c813f9c9f91f97ef6148f473a66f",
+          "source_locator": "cited publication:264-284; cited publication:3660-3692; cited publication:4105-4152",
+          "why_needed": "This keeps the Lemma 5 a.e. conclusion faithful to the source without silently strengthening the density to full support or treating a zero-density endpoint as economically relevant. The separately authorized finite endpoint-sign realization remains transparent source-model regularity for the variation engine, not a hidden theorem conclusion and not an inference from the a.e. convention."
+        }
+      ],
       "claim_bearing": false,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GN21DriverSurgePricing.ProofBridge.GN21Lemma5AENullEndpointVariation"
+      ],
       "model_convention_ids": [
         "GN21-L5-AE-NULL-SET-CONVENTION-01"
       ],
@@ -499,20 +649,24 @@
       "source_location": "cited publication:3660-3692; cited publication:4105-4152",
       "source_note": "This is the approved source-model convention supporting null-interval reward invariance and the density-aware endpoint-calculus route. It is not a separate named theorem endpoint and receives no ordinary coverage credit. The Lemma 5 and Theorem 4 review rows expose the density law, a.e. reward congruence, and the finite endpoint-sign realization as transparent expanded fields. The null-set facts prove reward invariance across a density-zero interval; they do not derive raw same-sign facts at a zero-density endpoint. Those raw finite endpoint signs are a separately authorized source-model regularity and must be audited by expanded content, not declaration name.",
       "source_status": "source_model_convention",
-      "statement": "Appendix D identifies policy equalities up to sets of trip-length measure zero and uses derivative-sign notation only away from points where the density is zero; Lemma 6's endpoint calculation displays the density factor in the derivative of the source aggregate quantities.",
-      "support_lean_declarations": [
-        "GN21DriverSurgePricing.assumption_policy_equalities_modulo_null_sets",
-        "GN21DriverSurgePricing.PaperInterface.review_lemma5_null_interval_reward_invariance",
-        "GN21DriverSurgePricing.PaperInterface.GN21Lemma5EndpointSignRealization",
-        "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
-        "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation.zero_density_interval_reward_eq",
-        "GN21DriverSurgePricing.PaperInterface.GN21Theorem4EndpointSignRealization",
-        "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
-        "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation.zero_density_interval_reward_eq"
-      ]
+      "statement": "Appendix D identifies policy equalities up to sets of trip-length measure zero and uses derivative-sign notation only away from points where the density is zero; Lemma 6's endpoint calculation displays the density factor in the derivative of the source aggregate quantities."
     },
     "model_theorem3_nonnegative_target_rate_convention": {
       "aliases": [],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only the first target-rate domain in `PaperInterface.review_theorem3_structured_general_policy_source_claim` and the paired Theorem 3 Spec. It does not authorize the strict target-rate order, arrival or switching conditions, finite-trip-law assumptions, price construction, or either policy conclusion.",
+          "classification": "human_verified_source_implicit",
+          "formal_meaning": "Theorem 3's first target-earning-rate argument is represented as `NNReal`. Its real-valued nonnegativity is therefore derived within the source-facing construction rather than supplied as a theorem premise.",
+          "id": "GN21-T3-NONNEGATIVE-TARGET-RATE-CONVENTION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "a1d723be2f2f44e25d3b0c31635051a6f75c26c6ccb6d102e7557b42b2a3e71a",
+          "source_locator": "cited publication:704-711; cited publication:4083-4091",
+          "why_needed": "The real-valued construction derives positivity of R2 from the target-rate order and uses the resulting signs in the low-ratio derivative inequalities. This source-model representation supplies no price witness, policy form, optimality comparison, or conclusion."
+        }
+      ],
       "claim_bearing": false,
       "model_convention_ids": [
         "GN21-T3-NONNEGATIVE-TARGET-RATE-CONVENTION-01"
@@ -528,9 +682,9 @@
       ],
       "source_kind": "model",
       "source_location": "cited publication:704-711; cited publication:4083-4091",
-      "source_note": "This convention supports only the visible hR1_nonneg domain of Theorem 3's first clause. It does not supply a pricing witness, policy form, optimality comparison, or any conclusion.",
+      "source_note": "The source-facing target represents the first earning rate as a nonnegative quantity, from which the real-valued construction derives its sign. This does not supply a pricing witness, policy form, optimality comparison, or conclusion.",
       "source_status": "source_model_convention",
-      "statement": "Theorem 3 target earning rates are nonnegative. The source's low-ratio discussion explicitly ranges R1 / R2 over [0, C), and the result concerns earnings rates generated by nonnegative payout policies.",
+      "statement": "Theorem 3's first target is a nonnegative earnings rate. The source's low-ratio discussion explicitly ranges R1 / R2 over [0, C), and the result concerns earnings rates generated by payout policies.",
       "support_lean_declarations": [
         "GN21DriverSurgePricing.PaperInterface.review_theorem3_structured_general_policy_source_claim"
       ]
@@ -562,6 +716,7 @@
         "review_definition_dynamic_ic"
       ],
       "claim_bearing": false,
+      "inventory_role": "proof_support",
       "source_anchor_evidence": [
         {
           "line_end": 285,
@@ -586,6 +741,7 @@
         "review_definition_single_state_ic"
       ],
       "claim_bearing": false,
+      "inventory_role": "proof_support",
       "source_anchor_evidence": [
         {
           "line_end": 285,
@@ -610,6 +766,7 @@
         "review_definition_threshold_policy"
       ],
       "claim_bearing": false,
+      "inventory_role": "proof_support",
       "source_anchor_evidence": [
         {
           "line_end": 520,
@@ -669,7 +826,7 @@
       "source_claim_atoms": [
         {
           "id": "lemma10.nonsurge_derivative_positive",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma10_nonsurge_derivative_positive_of_acceptAll_boundsSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma10_nonsurge_derivative_positive_of_acceptAll_bounds",
           "semantic_claim": "Under the displayed structured non-surge-price bounds, the relevant non-surge upper-endpoint derivative is positive.",
           "source_locator": "cited publication:3834-3853",
           "source_quote_sha256": "58d7d4a53009deb93a889acaa52b36e7896023568c88058507ebed1923af1cd6"
@@ -677,24 +834,6 @@
       ],
       "source_kind": "lemma",
       "source_location": "cited publication:3828-3829; cited publication:3834-3853; cited publication:4750-4751",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "7542de8631379727ee177022112ef34af3c7b59296e208d739648f3c08adf22f",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "e6195910c9fb00b6706b04572c8052adabf33569fdf95c26b8af64a792265289",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: Lemma 10 fixes the surge policy, uses the displayed non-surge price and accept-all quantities, and concludes positivity of the relevant non-surge upper-endpoint derivative. The expanded Spec makes the source inequality domain and derivative statement explicit.",
-            "source_atom_sha256": "a880f542427b52f94b494fb3d15efe9ad989b97b1ff04da07cc620a9fb779691",
-            "spec_component_sha256s": [
-              "808acad2ab55170041a1dd63870df44d12d60da5248e57da5dbb9cad798e5ad9"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "0945e954cef4d0669e435fee26d87dd6ebac1402ffd86c83b5d0cf9161b0514f",
-        "spec_closure_sha256": "25ef376f73fee72d9b9b9ee2f06d1ffc68ebbdc35079bbad7890652a498ffbc8",
-        "spec_surface_sha256": "808acad2ab55170041a1dd63870df44d12d60da5248e57da5dbb9cad798e5ad9"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "-\nLemma 10: non-surge-state derivative positivity under accept-all bounds.",
       "support_lean_declarations": [
@@ -704,6 +843,20 @@
     "review_lemma1_measured_dynamic_reward_decomposition": {
       "aliases": [
         "review_lemma1_measured_dynamic_reward_decomposition"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The reusable IID convergence endpoints remain the Lemma 1 dynamic-reward and Lemma 3 time-fraction interfaces. Their raw source-model companions are the public actual-calendar endpoints, backed by the two raw-calendar constructors and direct convergence theorems. No optimizer or policy-form conclusion is supplied as a premise.",
+          "classification": "source_text_model_convention",
+          "formal_meaning": "The literal raw source seed contains independent Poisson arrival/mark streams and alternating CTMC switch-clock streams. The actual-calendar time and earnings constructors read successive observations from deterministic post-exit tails of that one seed, and prove the required measurability, integrability, pairwise independence, identical distributions, and expected-cycle identities. The records therefore describe derived source observables rather than assumed renewal samples.",
+          "id": "GN21-IID-RENEWAL-CYCLE-MODEL-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "788d8c5b32543a3af1c588c63ae61913e4c7cf4124548e0d9932fd5549c86cad",
+          "source_locator": "cited publication:217-252; cited publication:264-285; cited publication:324-367; cited publication:671-696",
+          "why_needed": "Lemmas 1 and 3 invoke a renewal process, independence, geometric exit structure, and Wald/strong-law mean identities. The raw-calendar construction now derives those ingredients from the source primitives and makes the literal same-tail route explicit, rather than representing a CTMC/Poisson construction by an unproved record premise."
+        }
       ],
       "claim_bearing": true,
       "lean_declarations": [
@@ -730,7 +883,7 @@
       "source_claim_atoms": [
         {
           "id": "lemma1.dynamic_reward_decomposition",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma1_measured_dynamic_reward_decompositionSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma1_measured_dynamic_reward_decomposition",
           "semantic_claim": "With probability one, dynamic renewal earnings per unit time converge to the stated state-time-fraction-weighted reward.",
           "source_locator": "cited publication:324-367",
           "source_quote_sha256": "cc70fea615bd41e399606f0cfdeee647cc198f0d76d67ca2e304a740ae6facaa"
@@ -739,24 +892,6 @@
       "source_kind": "lemma",
       "source_location": "cited publication:324-367",
       "source_note": "The review row is the direct IID-cycle almost-sure convergence theorem, not the former deterministic algebraic identity. GN21DynamicIIDCycleModel visibly supplies per-cycle integrability, pairwise independence, identical distributions, and expected-cycle identities. It is an explicit source-model encoding of the renewal proof; the row does not claim to construct it from bare CTMC/Poisson primitives.",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "7542de8631379727ee177022112ef34af3c7b59296e208d739648f3c08adf22f",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "bb7ddbfc003dfd71be5c2fbcca2c3e8d4667c916d605cfbcbf1754016063141a",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: Lemma 1 states the almost-sure decomposition of dynamic earnings into state-time fractions times state earnings rates. The transparent Spec is the renewal-cycle almost-sure convergence statement with the displayed weighted reward formula and its explicit IID-cycle model inputs.",
-            "source_atom_sha256": "a4ef4a528d3a4117d679ec879062797963dba7154cfd1a391cfcc833cb702740",
-            "spec_component_sha256s": [
-              "a52360a15eafadc741fa56f92668329b96416bbb5cd3149194cae98b7517a586"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "5011f381c6d0fb35055a31d359c244f60ae7f357181233987150233078a4b698",
-        "spec_closure_sha256": "9a277e55ddd9158315fbcb5fd6fdc55f23120f7229e138c9f584422dea129a0c",
-        "spec_surface_sha256": "a52360a15eafadc741fa56f92668329b96416bbb5cd3149194cae98b7517a586"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "Lemma 1: under the dynamic renewal-cycle model, the sample-path cumulative total earnings divided by cumulative renewal-cycle time converges with probability one to the state-fraction-weighted state reward sum, represented by gn21MeasuredDynamicReward.",
       "support_lean_declarations": [
@@ -789,7 +924,7 @@
       "source_claim_atoms": [
         {
           "id": "lemma2.two_state_switch_probability",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma2_switch_probability_formulaSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma2_switch_probability_formula",
           "semantic_claim": "The two-state CTMC transition probability equals the displayed exponential formula.",
           "source_locator": "cited publication:657-670",
           "source_quote_sha256": "9e925256e420c66168c368c033a415bfbbd0019bf684025dfbdcb73540d62bdf"
@@ -797,24 +932,6 @@
       ],
       "source_kind": "lemma",
       "source_location": "cited publication:657-670",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "7542de8631379727ee177022112ef34af3c7b59296e208d739648f3c08adf22f",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "8e2c678a49682d9fe4271df42421934d9bb45d76de4522510347c8100a352d75",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: Lemma 2 gives the probability of a state switch during a trip as the displayed CTMC exponential formula. The Spec states that formula for the two switch rates and trip duration, including the positive-rate denominator condition.",
-            "source_atom_sha256": "65b19c22ec69e8d85fa137398c19f0fe36ce4d7b2f138d5252bc71c914a1c1d7",
-            "spec_component_sha256s": [
-              "385ea04391a661d56c444ebe2e2081c1a731e4310b5cac9bc8b8f1bd908737c4"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "7f82dc283a93b63a9da93d5fb6a6f7525770ee6be89900f66d933c8d3e18fb02",
-        "spec_closure_sha256": "b0c78fc9543031fd3ffbe176361a39433ee66cb847cb5eb3ec4cdb3a20ea4f48",
-        "spec_surface_sha256": "385ea04391a661d56c444ebe2e2081c1a731e4310b5cac9bc8b8f1bd908737c4"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "-\nLemma 2: CTMC switch-probability formula.",
       "support_lean_declarations": [
@@ -824,6 +941,20 @@
     "review_lemma3_measured_time_fraction_formula": {
       "aliases": [
         "review_lemma3_measured_time_fraction_formula"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The reusable IID convergence endpoints remain the Lemma 1 dynamic-reward and Lemma 3 time-fraction interfaces. Their raw source-model companions are the public actual-calendar endpoints, backed by the two raw-calendar constructors and direct convergence theorems. No optimizer or policy-form conclusion is supplied as a premise.",
+          "classification": "source_text_model_convention",
+          "formal_meaning": "The literal raw source seed contains independent Poisson arrival/mark streams and alternating CTMC switch-clock streams. The actual-calendar time and earnings constructors read successive observations from deterministic post-exit tails of that one seed, and prove the required measurability, integrability, pairwise independence, identical distributions, and expected-cycle identities. The records therefore describe derived source observables rather than assumed renewal samples.",
+          "id": "GN21-IID-RENEWAL-CYCLE-MODEL-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "788d8c5b32543a3af1c588c63ae61913e4c7cf4124548e0d9932fd5549c86cad",
+          "source_locator": "cited publication:217-252; cited publication:264-285; cited publication:324-367; cited publication:671-696",
+          "why_needed": "Lemmas 1 and 3 invoke a renewal process, independence, geometric exit structure, and Wald/strong-law mean identities. The raw-calendar construction now derives those ingredients from the source primitives and makes the literal same-tail route explicit, rather than representing a CTMC/Poisson construction by an unproved record premise."
+        }
       ],
       "claim_bearing": true,
       "lean_declarations": [
@@ -850,7 +981,7 @@
       "source_claim_atoms": [
         {
           "id": "lemma3.measured_time_fraction",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma3_measured_time_fraction_formulaSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma3_measured_time_fraction_formula",
           "semantic_claim": "With probability one, the dynamic renewal time fraction converges to the displayed T,Q expression.",
           "source_locator": "cited publication:671-696",
           "source_quote_sha256": "a18684afe6314420f3c1a00e8b6c72c8f62ff741bda9eec041ad5bb3d7fc9d22"
@@ -859,24 +990,6 @@
       "source_kind": "lemma",
       "source_location": "cited publication:671-696",
       "source_note": "The review row is the direct IID-cycle almost-sure convergence theorem, not the former deterministic algebraic identity. GN21TimeFractionIIDCycleModel visibly supplies per-cycle integrability, pairwise independence, identical distributions, and expected-cycle identities. It is an explicit source-model encoding of the renewal proof; the row does not claim to construct it from bare CTMC/Poisson primitives.",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "7542de8631379727ee177022112ef34af3c7b59296e208d739648f3c08adf22f",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "53dd4f3f5c2dc341d99a63038d2f43cfc6befd816b25ab065e685bb2f4622bdb",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: Lemma 3 identifies the almost-sure fraction of time spent in each state with the displayed expression in T and Q. The expanded Spec keeps the sample-path convergence, both state components, and the renewal-cycle model assumptions explicit.",
-            "source_atom_sha256": "9791f9e8b06b79c941a5dd0d18ee71ff25671a21b2da94066cbb01e2c17cd8df",
-            "spec_component_sha256s": [
-              "dcd941cadb1a6d62e66977f3c75ad28ef52b0b8c942a7a8bfb1d5bd4b788d812"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "5c299dae134cfd05c09a2ee3269941905138e679c589451c9509eb19a1ed06fa",
-        "spec_closure_sha256": "efa26618c7d0fdcf667943659d0d84773e8c701cd3b4761ec0e7f413c19785b1",
-        "spec_surface_sha256": "dcd941cadb1a6d62e66977f3c75ad28ef52b0b8c942a7a8bfb1d5bd4b788d812"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "Lemma 3: under the dynamic renewal-cycle model, the sample fraction of renewal-cycle time spent in state i converges with probability one to the displayed T,Q time-fraction formula, represented by gn21MeasuredTimeFraction.",
       "support_lean_declarations": [
@@ -916,7 +1029,7 @@
       "source_claim_atoms": [
         {
           "id": "lemma4.threshold_uniqueness_mod_null",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma4_single_state_threshold_uniquenessSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma4_single_state_threshold_uniqueness",
           "semantic_claim": "The single-state threshold optimizer is unique up to trip-length-null differences, with the source cutoff convention.",
           "source_locator": "cited publication:2375-2379",
           "source_quote_sha256": "5c7aa8d6d471dd1d3df07f1ff0964e81c5fed3e68df95982b31e2125ee5fafa6"
@@ -925,24 +1038,6 @@
       "source_kind": "lemma",
       "source_location": "cited publication:2841-2853; cited publication:2375-2379",
       "source_note": "The printed Lemma 4 quantifies over the single-state pricing function without a positive-payout-mass premise. The reviewed Lean row now discharges the zero-positive-payout branch internally: cutoff zero uses the complete threshold (accept-all), its strict threshold is null, and the two advertised null-difference clauses follow for every feasible optimum.",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "7542de8631379727ee177022112ef34af3c7b59296e208d739648f3c08adf22f",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "ee5587ceaea502aefb855bd00455d6b97ae0946dc85b178161c667273979c526",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: Lemma 4 says that a single-state optimal policy is unique up to changes on a zero-measure set under the strict threshold comparison. The Spec gives the two optimal-policy hypotheses and exactly the source null-set equality conclusion.",
-            "source_atom_sha256": "458c0c13d37e4c9987d838ed79299173ec1dd9998ec83ad420a35e0963296d9f",
-            "spec_component_sha256s": [
-              "fbac005bf4c1f94dd6deb8a0933b06a38abc07cb4be8ca38069e521408e660d7"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "fffe6b82f4b9780f3bf873050d02d44e32dd9f59175634801f51deef64d08639",
-        "spec_closure_sha256": "740aac47bc13a6818528a87de6665fa46866e7233569896de3265a4bc5e7107f",
-        "spec_surface_sha256": "fbac005bf4c1f94dd6deb8a0933b06a38abc07cb4be8ca38069e521408e660d7"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "-\nLemma 4: threshold optimizer uniqueness up to null sets.",
       "support_lean_declarations": [
@@ -975,7 +1070,7 @@
       "source_claim_atoms": [
         {
           "id": "lemma6.endpoint_derivative_and_sign",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma6_upper_endpoint_derivative_formulaSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma6_upper_endpoint_derivative_formula",
           "semantic_claim": "The aggregate reward's upper-endpoint derivative has the displayed formula and, at positive density, the displayed response sign.",
           "source_locator": "cited publication:3724-3767",
           "source_quote_sha256": "1d5f32d181f84f49fac1d5c4923f9d080f5a0f9f160fa925c8c4772edde141c3"
@@ -983,24 +1078,6 @@
       ],
       "source_kind": "lemma",
       "source_location": "cited publication:3724-3767",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "7542de8631379727ee177022112ef34af3c7b59296e208d739648f3c08adf22f",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "2cc5f51ccdc9b300c34ec9bcfb1e6217285309c382a9d61d88e59aa0f31bca5d",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: Lemma 6 gives the upper-endpoint derivative formula for the dynamic reward and uses positive endpoint density only for the strict sign consequence. The expanded Spec retains the formula and separates that conditional sign transfer, matching the selected source statement and proof context.",
-            "source_atom_sha256": "39d99979a8ede5a85b3e14a2b6587b794a073fbbc0bac9cec46ae0890dc8a5ce",
-            "spec_component_sha256s": [
-              "8f9e04c9533fcfab65428f2d14381034319aedbed2ad10068d8321c4cb3dcd0e"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "f9ce2d4a86bc2cc673ce55ed1a1aacecf97c59f7188405d2786444c703b214d0",
-        "spec_closure_sha256": "48a5778a4bc625d43e47eff111bd0bd999706fefc3ef602152874a4c31824c2e",
-        "spec_surface_sha256": "8f9e04c9533fcfab65428f2d14381034319aedbed2ad10068d8321c4cb3dcd0e"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "-\nLemma 6: upper-endpoint derivative formula.\n\nproves the exact endpoint derivative formula without assuming positive endpoint\ndensity; positive density is only the conditional premise for the strict\nsign-transfer corollary in the conclusion.",
       "support_lean_declarations": [
@@ -1033,7 +1110,7 @@
       "source_claim_atoms": [
         {
           "id": "lemma7.positive_affine_quasiconvex",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma7_affine_positive_additive_response_quasi_convexSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma7_affine_positive_additive_response_quasi_convex",
           "semantic_claim": "For positive affine pricing in the stated nonpositive reward-gap regime, the response is strictly quasi-convex on positive trip lengths.",
           "source_locator": "cited publication:3773-3774",
           "source_quote_sha256": "b9307411a83659ef3e668fce4a8ec8eafdbe68d0bd2c958ee0adab7eda725dac"
@@ -1041,24 +1118,6 @@
       ],
       "source_kind": "lemma",
       "source_location": "cited publication:3773-3774",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "7542de8631379727ee177022112ef34af3c7b59296e208d739648f3c08adf22f",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "0094630f79944cf2fd62bda95d96706cdeb46825237254e3e5730043c88f8862",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: Lemma 7 identifies the response under a positive additive affine price as strictly quasi-convex. The Spec gives the same price form, coefficient condition, and quasi-convex response conclusion.",
-            "source_atom_sha256": "2bbb4236891a9ba01f149ccb94e03112cabcc07a4135cd963b6758203dcc5ed1",
-            "spec_component_sha256s": [
-              "8849a861a522285951e446de104e7b8b061919d84dd974e118dfe1b6f538bfc3"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "8fe3742e3662cbdf0aead8e0d18f0f262f46edf99ebc3a6cd4be941009e08138",
-        "spec_closure_sha256": "12e8f2ce794d4040f1e20ee783be6b710ab17cb2966dacd3aba5c919eafe1b99",
-        "spec_surface_sha256": "8849a861a522285951e446de104e7b8b061919d84dd974e118dfe1b6f538bfc3"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "-\nLemma 7: positive-additive affine response is quasi-convex.",
       "support_lean_declarations": [
@@ -1091,7 +1150,7 @@
       "source_claim_atoms": [
         {
           "id": "lemma8.negative_affine_quasiconcave",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma8_affine_negative_additive_response_quasi_concaveSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma8_affine_negative_additive_response_quasi_concave",
           "semantic_claim": "For negative affine pricing in the stated nonnegative reward-gap regime, the response is strictly quasi-concave on positive trip lengths.",
           "source_locator": "cited publication:3775-3809",
           "source_quote_sha256": "9f9c3fe1e246620a660108ab809e9b9671899ef18f4adc994c6244762e9ed3bc"
@@ -1099,24 +1158,6 @@
       ],
       "source_kind": "lemma",
       "source_location": "cited publication:3775-3809",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "7542de8631379727ee177022112ef34af3c7b59296e208d739648f3c08adf22f",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "2dd05b5cc70ebbcef445768a6ae71c1261d7dc7e449f372f9272740b8dcd718a",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: Lemma 8 identifies the response under the corresponding negative additive affine price as strictly quasi-concave. The Spec preserves the source price form, sign condition, and quasi-concavity conclusion.",
-            "source_atom_sha256": "75a70aa86e32eea923fd23cb4e60164fdfdd736cf83ba376c273e6740b2b4639",
-            "spec_component_sha256s": [
-              "e39f061b1eb41fc8a773bcefcbce90da92e4a8c09c4133ac5753666ff214033f"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "fee58a3665e40453ad4d782ac511b9d5a239355bf74152078ab8eb15bf34678f",
-        "spec_closure_sha256": "96c023c1a567624a0ededceae07af4d72df5a126f7dae6efffaee0c814498367",
-        "spec_surface_sha256": "e39f061b1eb41fc8a773bcefcbce90da92e4a8c09c4133ac5753666ff214033f"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "-\nLemma 8: negative-additive affine response is quasi-concave.",
       "support_lean_declarations": [
@@ -1163,7 +1204,7 @@
       "source_claim_atoms": [
         {
           "id": "lemma9.surge_derivative_positive",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma9_surge_derivative_positive_of_acceptAll_boundsSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_lemma9_surge_derivative_positive_of_acceptAll_bounds",
           "semantic_claim": "Under the displayed structured surge-price bounds, the relevant surge upper-endpoint derivative is positive.",
           "source_locator": "cited publication:3809-3833",
           "source_quote_sha256": "89ca906c12ece7190870e4c10d9a66a0848a06457ac29c04b06620b498c7dd34"
@@ -1171,24 +1212,6 @@
       ],
       "source_kind": "lemma",
       "source_location": "cited publication:704-708; cited publication:3809-3833; cited publication:4587-4588",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "7542de8631379727ee177022112ef34af3c7b59296e208d739648f3c08adf22f",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "00b43ef2658fb9a4592671dbc8468379d7259b05944d0aa8940bdcaff3a4de05",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: Lemma 9 fixes the non-surge policy, applies the displayed surge-state price and accept-all bounds, and concludes positivity of the relevant surge derivative. The transparent Spec records those fixed quantities, bounds, and derivative conclusion without suppressing the interval conditions.",
-            "source_atom_sha256": "71befc7f12e8bd2bc2bc5c1d8cb55946f6470e8bd34c3681b142c3d2f848e4b9",
-            "spec_component_sha256s": [
-              "fe01b0079d9fc03d4f927c424d64bea74bf59f4f1f876a5f97b955bf90eab83e"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "d371ff59e3a7e79a997f211b4a61778c95c8a962aba7f18dce2426af29c45a27",
-        "spec_closure_sha256": "6433dcbf840c5edc19757ded3bdb4c2419d6767a2b32389e3d0f42c391e3715d",
-        "spec_surface_sha256": "fe01b0079d9fc03d4f927c424d64bea74bf59f4f1f876a5f97b955bf90eab83e"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "-\nLemma 9: surge-state derivative positivity under accept-all bounds.",
       "support_lean_declarations": [
@@ -1221,7 +1244,7 @@
       "source_claim_atoms": [
         {
           "id": "proposition3_1.affine_single_state_ic",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_proposition3_1_affine_single_state_icSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_proposition3_1_affine_single_state_ic",
           "semantic_claim": "For an affine single-state price w(tau) = m tau + a, accept-all is incentive compatible under the displayed nonnegative-additive and waiting-value bounds.",
           "source_locator": "cited publication:498-548",
           "source_quote_sha256": "b8a65cbd115481744bf2d7bf85a6a564239e0ccaf6fca09e0a4de07dc8b92e55"
@@ -1229,24 +1252,6 @@
       ],
       "source_kind": "proposition",
       "source_location": "cited publication:498-548",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "7542de8631379727ee177022112ef34af3c7b59296e208d739648f3c08adf22f",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "6917b475e662a14d8129f4a0f402bedc9ec00a6f636eaac5f5ff68baf65ca8f7",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: Proposition 3.1 states that affine payment proportional to trip duration is incentive compatible. The Spec uses the paper's affine one-state reward and concludes the accept-all incentive-compatibility relation under the displayed positive-arrival and parameter domain.",
-            "source_atom_sha256": "0655846af4c862e10c8b448a60ea73445cd4a4cc251c4cbd6aee7811bfa8e8aa",
-            "spec_component_sha256s": [
-              "a6d1208e44e2e7ea9c3774ebc8eed74bf8733db181e35f3516ce2034a29a1512"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "59eab998bb3634acc2e0504fc82c26e1b48839f486d9c1b7cdf238c8773f5608",
-        "spec_closure_sha256": "a71b66dd2c4a3ef4cf866492e8f7ebdbbca97d7c052ab81cc1717ea2683a0541",
-        "spec_surface_sha256": "a6d1208e44e2e7ea9c3774ebc8eed74bf8733db181e35f3516ce2034a29a1512"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "Proposition 3.1: affine single-state pricing is incentive compatible.",
       "support_lean_declarations": [
@@ -1333,9 +1338,26 @@
       "aliases": [
         "review_theorem1_single_state_threshold_best_response"
       ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only the payment-domain field of `ProofBridge.GN21PayoutFunction` and the derived hourly-rate sign used by `PaperInterface.review_theorem1_single_state_threshold_best_response`. It does not authorize measurability, integrability, arrival positivity, a threshold witness, or the optimality conclusion.",
+          "classification": "human_verified_source_implicit",
+          "formal_meaning": "The source-facing single-state payout argument is represented by `GN21PayoutFunction`, whose on-trip payments are nonnegative. Its hourly-rate nonnegativity is derived within the theorem rather than supplied as a separate rate premise.",
+          "id": "GN21-T1-PAYOUT-NONNEGATIVITY-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "ad277021727d540beafb08b442cc8f00b73edfa4379eb2a1bbf61cdf0ec8f236",
+          "source_locator": "cited publication:222-228; cited publication:2538-2562",
+          "why_needed": "Theorem 1's source proof treats the absence of positive payouts as the zero-reward case and otherwise orders trips by their per-time earnings. The current construction uses the resulting hourly-rate sign in its threshold argument. This source-model representation supplies no threshold, policy, reward comparison, or conclusion."
+        }
+      ],
       "claim_bearing": true,
       "lean_declarations": [
         "GN21DriverSurgePricing.PaperInterface.review_theorem1_single_state_threshold_best_response"
+      ],
+      "model_convention_ids": [
+        "GN21-T1-PAYOUT-NONNEGATIVITY-01"
       ],
       "semantic_contract": {
         "evidence_declaration": "GN21DriverSurgePricing.PaperInterface.review_theorem1_single_state_threshold_best_response",
@@ -1355,7 +1377,7 @@
       "source_claim_atoms": [
         {
           "id": "theorem1.threshold_best_response",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_theorem1_single_state_threshold_best_responseSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_theorem1_single_state_threshold_best_response",
           "semantic_claim": "Under the displayed single-state source domain, an optimal policy exists and is a payment-per-time threshold policy.",
           "source_locator": "cited publication:455-520",
           "source_quote_sha256": "ea9ca6a84a57472e96b07197bbf51c7e910eea92a19f72828dba266a860f1462"
@@ -1363,25 +1385,7 @@
       ],
       "source_kind": "theorem",
       "source_location": "cited publication:455-520",
-      "source_note": "The printed Theorem 1 says that for each pricing function w an optimal threshold policy exists; it does not assume positive payout mass. The reviewed Lean row now discharges the zero-positive-payout branch internally: every feasible policy then has zero reward and the cutoff-zero complete threshold is optimal.",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "7542de8631379727ee177022112ef34af3c7b59296e208d739648f3c08adf22f",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "d2be14c0b7f40af75ac40f79451362614204a7ce1d026fd14a74f2e9c70f4341",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: Theorem 1 states that a single-state optimum can be selected as a threshold policy. The expanded Spec gives an explicit cutoff and policy satisfying the source threshold relation and concludes optimality for the one-state renewal reward under the stated measurable and integrability domain.",
-            "source_atom_sha256": "a8293d0865972511de790fb65c05de64653b3596870c42224cfa4807c71fcb6b",
-            "spec_component_sha256s": [
-              "f3722a07af2a47ce6b23ed9f809d9ac3474d7c6a4d09dfb6f0ab74ec6ccc331c"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "d08d42b35ecf04e53a72dc104b0a2a69193603ee3b7fe2211574b2def6940a91",
-        "spec_closure_sha256": "486eb47224d9543b938edbb42591adf2b9d15c784674ee837e323da3ea032d58",
-        "spec_surface_sha256": "f3722a07af2a47ce6b23ed9f809d9ac3474d7c6a4d09dfb6f0ab74ec6ccc331c"
-      },
+      "source_note": "The source proof treats its zero-payout branch as zero reward for every policy. The source-facing payout model records the corresponding nonnegative on-trip payment domain and derives the hourly-rate sign internally; it still discharges the zero-positive-payout branch.",
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "Theorem 1: optimal single-state policies are threshold policies.",
       "support_lean_declarations": [
@@ -1435,7 +1439,7 @@
       "source_claim_atoms": [
         {
           "id": "theorem2.multiplicative_policy_shapes",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_theorem2_multiplicative_policy_shape_source_claimSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_theorem2_multiplicative_policy_shape_source_claim",
           "semantic_claim": "For source-domain multiplicative pricing, an open optimal policy exists with the stated non-surge and surge cutoff forms, and every open optimum has those forms up to null sets.",
           "source_locator": "cited publication:560-656",
           "source_quote_sha256": "ff23d56c4a063db6e880b6c85845ed7ee3f144c516ec93b1a3d7505d6670f370"
@@ -1443,24 +1447,6 @@
       ],
       "source_kind": "theorem",
       "source_location": "cited publication:264-285; cited publication:441-442; cited publication:560-656; cited publication:3710-3714",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "651cb410e59ad2ec4bde8e2201fc58615ecdfc4aa30c851aa663c1089fe33c8c",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "bf4e9c371b7f6cc6bd5f9b12ffeced240f8539dec68ef84248fa971c2b6fea46",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: Theorem 2 gives the multiplicative-pricing policy shapes: an optimal open policy exists and every optimal open policy has the stated non-surge reject-long and surge reject-short cutoff forms up to null sets. The expanded Spec states both quantifier clauses and the continuous-law, positive-rate, and surge-state model domain used in the source.",
-            "source_atom_sha256": "3bc0b0ac4450cad6a002fe6857164951e1de8b70d0c92c740cd3bb1a27250c17",
-            "spec_component_sha256s": [
-              "efe45b37ca85b6b8489c7497c67b8082b7ae5668052383306f0c84fa638eb921"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "bc4b4bbe664ab72d149365b8a7db151dc952228b6aee276d39aad80b52d6f1bf",
-        "spec_closure_sha256": "68e38b7ba1dfa478da026c009f44235001acbd499228259d5643693da27af50b",
-        "spec_surface_sha256": "efe45b37ca85b6b8489c7497c67b8082b7ae5668052383306f0c84fa638eb921"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "- Theorem 2 (cited publication:560-579): for multiplicative pricing with nonnegative multipliers, an optimal source-open policy exists whose non-surge component rejects long trips up to a finite-or-infinite cutoff and whose surge component rejects short trips up to a finite-or-infinite cutoff, up to null sets. Every optimal source-open policy has those forms. The source model uses continuous probability trip laws, positive arrival and CTMC rates, and the Appendix-D surge-state dominance condition.",
       "support_lean_declarations": [
@@ -1493,7 +1479,7 @@
       "source_claim_atoms": [
         {
           "id": "theorem2.positive_finite_cutoff_non_ic",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_theorem2_multiplicative_positive_finite_cutoff_not_ic_both_statesSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_theorem2_multiplicative_positive_finite_cutoff_not_ic_both_states",
           "semantic_claim": "There are multiplicative-pricing instances with positive finite cutoff deviations in both states, so multiplicative pricing is not dynamically incentive compatible.",
           "source_locator": "cited publication:560-656",
           "source_quote_sha256": "ff23d56c4a063db6e880b6c85845ed7ee3f144c516ec93b1a3d7505d6670f370"
@@ -1501,24 +1487,6 @@
       ],
       "source_kind": "theorem",
       "source_location": "cited publication:560-656",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "00c1b6161e77c34376c80c894bc9a6c3784c6feb3c4dd9906e9d86ea51a791fc",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "12aa0342833e3e574c0214aafacfa15091a1b45755029f71e2efa1f918a78fa2",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: The selected Theorem 2 source instance supplies a multiplicative pricing rule with profitable positive finite-cutoff deviations in both states and therefore fails dynamic incentive compatibility. The Spec states that concrete two-state instance and both deviations directly, rather than using the theorem name as evidence.",
-            "source_atom_sha256": "355da745e8467c7fbacd10aff5fafdc61101736f4c4ff21d9458aa9b67ee03a5",
-            "spec_component_sha256s": [
-              "8eb022a2dbc7391775384cfab1184d9963dfa9823306b20e81e271a9af0fa1c0"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "76ee2aef05fbfb80e303023666924b09b263a9625703ecf974a5a2e9f7167057",
-        "spec_closure_sha256": "69072e8835558d10f8ac969132d7369faf1efb403812cbe2c9e34d8c5165f056",
-        "spec_surface_sha256": "8eb022a2dbc7391775384cfab1184d9963dfa9823306b20e81e271a9af0fa1c0"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "-\nTheorem 2: explicit multiplicative-pricing instance with positive finite\ncutoff deviations in both states, and hence measured dynamic non-IC.",
       "support_lean_declarations": [
@@ -1528,6 +1496,20 @@
     "review_theorem3_structured_pricing": {
       "aliases": [
         "review_theorem3_structured_pricing"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only the first target-rate domain in `PaperInterface.review_theorem3_structured_general_policy_source_claim` and the paired Theorem 3 Spec. It does not authorize the strict target-rate order, arrival or switching conditions, finite-trip-law assumptions, price construction, or either policy conclusion.",
+          "classification": "human_verified_source_implicit",
+          "formal_meaning": "Theorem 3's first target-earning-rate argument is represented as `NNReal`. Its real-valued nonnegativity is therefore derived within the source-facing construction rather than supplied as a theorem premise.",
+          "id": "GN21-T3-NONNEGATIVE-TARGET-RATE-CONVENTION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "a1d723be2f2f44e25d3b0c31635051a6f75c26c6ccb6d102e7557b42b2a3e71a",
+          "source_locator": "cited publication:704-711; cited publication:4083-4091",
+          "why_needed": "The real-valued construction derives positivity of R2 from the target-rate order and uses the resulting signs in the low-ratio derivative inequalities. This source-model representation supplies no price witness, policy form, optimality comparison, or conclusion."
+        }
       ],
       "claim_bearing": true,
       "lean_declarations": [
@@ -1568,7 +1550,7 @@
       "source_claim_atoms": [
         {
           "id": "theorem3.structured_pricing",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_theorem3_structured_pricingSpec",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_theorem3_structured_pricing",
           "semantic_claim": "For R1 < R2, the stated structured prices attain the target state rewards and admit the stated surge/non-surge optimal policy; for R1/R2 in (C,1), such prices are fully incentive compatible and accept-all is uniquely optimal up to null sets.",
           "source_locator": "cited publication:704-720",
           "source_quote_sha256": "6fa6b56a16a6678c1e3eae560afa30abe4c9128ddc8d4e042fcb4c1db286aecd"
@@ -1594,24 +1576,6 @@
         "validated_at": "2026-08-18T00:00:00Z",
         "validator": "GN21 independent source-presentation boundary reviewer"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "2b7c0bed2e2c52c575c57677703ee1e17846457ecf5bfc45890f49a65bbd0f5c",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "521488c39c46f64dfadc99b961c339eb406ffedef96fb3a8b70a39918593a82a",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: The one numbered Theorem 3 has an ordered-target structured-pricing clause and a stricter displayed-ratio fully-incentive-compatible clause. The transparent conjunction preserves both source domains, the structured-price form, target-rate conclusions, policy form, accept-all optimality, and uniqueness up to null sets.",
-            "source_atom_sha256": "8d2e89671a5f71d2f608984bf00f8dbcd1efb9d3865e2e15c7805ae20db864db",
-            "spec_component_sha256s": [
-              "47c9b62c6c45197d6b18d6b3cefde5798538c8a3e94b1752db350e7533f08b2e"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "978ed61506a2015d3c7804e6a1116bc22317ae462c8fb53bffd3a1b92df8d1ba",
-        "spec_closure_sha256": "af24759b84e552f2a961ea4e28813d8d722ecc176f313232a451edcd50dd5e62",
-        "spec_surface_sha256": "47c9b62c6c45197d6b18d6b3cefde5798538c8a3e94b1752db350e7533f08b2e"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "Theorem 3: for ordered target earning rates, structured prices attain the target state rates and have the stated surge/non-surge optimal policy form; in the displayed ratio interval, structured prices are fully incentive compatible and accept-all is uniquely optimal up to null sets.",
       "support_lean_declarations": [
@@ -1623,15 +1587,10 @@
         "review_definition_incentive_compatible"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GN21DriverSurgePricing.PaperInterface.review_definition_incentive_compatible_realizes_spec"
+        "GN21DriverSurgePricing.PaperInterface.review_definition_incentive_compatibleSpec"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GN21DriverSurgePricing.PaperInterface.review_definition_incentive_compatible_realizes_spec",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "GN21DriverSurgePricing.PaperInterface.review_definition_incentive_compatibleSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 287,
@@ -1664,44 +1623,18 @@
         "validator": "GN21 independent direct definition-to-Spec reviewer",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "2b7c0bed2e2c52c575c57677703ee1e17846457ecf5bfc45890f49a65bbd0f5c",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "9ee11f2c126522d35ed6942ac06e6d2c574f6ae3d2c92044f353ef242736837f",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: The source presents one definition of incentive-compatible pricing with both accept-all branches. The transparent conjunction retains the one-state measurable-policy comparison and the dynamic open measurable-policy-pair comparison as the one source claim.",
-            "source_atom_sha256": "09702d8518d01e5306a481d50bd682b1b34e1466aaa7d53fdcb0b092236c19f2",
-            "spec_component_sha256s": [
-              "8b16558d534c78aaa189afaeff8094f5111a9215d7e2dcbd1811240fab33dfc5"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "95e6e2ebdc4fcb0403aec7a60945730d8f98a8dce76a6e2247db7b16b42e25de",
-        "spec_closure_sha256": "0255e696080591f6069bcf876054290307d2d043a25d8f83c60cd41e111fe311",
-        "spec_surface_sha256": "8b16558d534c78aaa189afaeff8094f5111a9215d7e2dcbd1811240fab33dfc5"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
-      "statement": "Definition (incentive-compatible pricing): accepting every request maximizes the driver's lifetime earnings rate over the source's valid policies, in the stated one-state and two-state models.",
-      "support_lean_declarations": [
-        "GN21DriverSurgePricing.PaperInterface.review_definition_incentive_compatibleSpec"
-      ]
+      "statement": "Definition (incentive-compatible pricing): accepting every request maximizes the driver's lifetime earnings rate over the source's valid policies, in the stated one-state and two-state models."
     },
     "source_definition_surge_state": {
       "aliases": [
         "review_definition_surge_state"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GN21DriverSurgePricing.PaperInterface.review_definition_surge_state_realizes_spec"
+        "GN21DriverSurgePricing.PaperInterface.review_definition_surge_stateSpec"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GN21DriverSurgePricing.PaperInterface.review_definition_surge_state_realizes_spec",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "GN21DriverSurgePricing.PaperInterface.review_definition_surge_stateSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 381,
@@ -1734,33 +1667,70 @@
         "validator": "GN21 independent definition semantic-equivalence review",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "651cb410e59ad2ec4bde8e2201fc58615ecdfc4aa30c851aa663c1089fe33c8c",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "7abca376fa5c54f2fda7143704ee96015278d515eadbb20229ed213fa5a87478",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: The source defines state 2 as a surge state when one state-2 policy has a reward rate strictly above every feasible state-1 policy. The transparent Spec preserves that existential policy, universal comparison, strict inequality, and open-policy domain.",
-            "source_atom_sha256": "126552b666546dbb9a71d86346262c34c17a08017a30f56d4d3d809f0c2e9f01",
-            "spec_component_sha256s": [
-              "22640e4904b009e684d2a6c6d75fd5d86e39a8c03846d24b030824d7afd4a355"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "59204475adb5e78f79e81a300519b59b963d14b8d31abbcb07799cd9c25efc90",
-        "spec_closure_sha256": "b25b359831ececddb4a191c50e67a0233ee4dbb3528d9a8d5094987a9211eb21",
-        "spec_surface_sha256": "22640e4904b009e684d2a6c6d75fd5d86e39a8c03846d24b030824d7afd4a355"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
-      "statement": "Definition (surge state): state 2 is the surge state when it has an open feasible policy whose state-2 reward rate is strictly greater than that of every feasible open state-1 policy.",
-      "support_lean_declarations": [
-        "GN21DriverSurgePricing.PaperInterface.review_definition_surge_stateSpec"
-      ]
+      "statement": "Definition (surge state): state 2 is the surge state when it has an open feasible policy whose state-2 reward rate is strictly greater than that of every feasible open state-1 policy."
     },
     "source_lemma5_full_variational_policy_forms": {
       "aliases": [
         "lemma5_full_variational_policy_forms"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only the 24 exact paths listed below, rooted at the two a.e. variation records for the direct Lemma 5 and Theorem 4 source rows. This convention does not credit the raw endpoint engine support declaration, nor does it alter the source theorem conclusions.",
+          "classification": "human_verified_source_implicit",
+          "formal_meaning": "The endpoint-variation arguments for Lemma 5 and Theorem 4 use finite endpoint derivative, one-sided boundary derivative, continuity, and sign-witness facts for each concrete variation they perform. These are source-model regularity premises for the raw Lean variation engine; they are not inferred from policy equality modulo null sets or from the source's f(u)>0 notation alone.",
+          "id": "GN21-FINITE-ENDPOINT-CALCULUS-REGULARITY-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "878b9a82c6e1ecee807648625a930d6d85d2bcda9a55a9640d043512f858a367",
+          "source_locator": "cited publication:3343-3366; cited publication:3394-3644; cited publication:4105-4165",
+          "why_needed": "The direct proof engine consumes the finite endpoint facts field-by-field. Enumerating them gives every such field a separately pinned source route and prevents a support declaration, a record name, or a sibling field from conferring blanket source credit."
+        },
+        {
+          "checked_scope": "PaperInterface.GN21Lemma5AENullEndpointVariation and PaperInterface.GN21Theorem4AENullEndpointVariation expose the with-density law, a.e. policy equality, and transparent endpoint-calculus realization for the one-state and statewise routes. Their zero_density_interval_reward_eq theorems prove reward equality for a density-zero interval; ZeroDensityBridge.lean proves that interval nullness. GN21Lemma5EndpointSignRealization and GN21Theorem4EndpointSignRealization contain the separately authorized raw finite endpoint derivative/sign fields, which the current finite-variation engine still consumes directly. The null-interval theorems are supporting source-model facts, not a Lean derivation that replaces those raw fields. The v10 source-record receipt must expand and hash each field; density-a.e. equality alone cannot certify them.",
+          "classification": "human_verified_source_implicit",
+          "formal_meaning": "Policies are identified modulo the trip-length law. The source's derivative-sign notation explicitly excludes f(u)=0, so a density-zero interval traversal preserves reward instead of requiring a fictitious strict endpoint sign there; the Lemma 6 calculation supplies the density-factor route for positive-density moves. This a.e. equality does not itself derive a raw derivative/sign fact at a finite zero-density endpoint.",
+          "id": "GN21-L5-AE-NULL-SET-CONVENTION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "11fb8932cfdd68219840c1e10fd1df0b9da9c813f9c9f91f97ef6148f473a66f",
+          "source_locator": "cited publication:264-284; cited publication:3660-3692; cited publication:4105-4152",
+          "why_needed": "This keeps the Lemma 5 a.e. conclusion faithful to the source without silently strengthening the density to full support or treating a zero-density endpoint as economically relevant. The separately authorized finite endpoint-sign realization remains transparent source-model regularity for the variation engine, not a hidden theorem conclusion and not an inference from the a.e. convention."
+        },
+        {
+          "checked_scope": "Only `PaperInterface.lemma5_full_variational_policy_forms.hendpoint_continuous`. It does not authorize the raw derivative/sign realization fields, the Theorem 4 endpoint-continuity binder, or any conclusion-bearing package. `PaperInterface.lemma5_full_variational_policy_forms.hcontinuous` is separately recorded as the scoped global-policy-continuity regularity.",
+          "classification": "human_verified_source_implicit",
+          "formal_meaning": "For the direct Lemma 5 route only, the source's continuity-in-policy assumption is used along each finite endpoint-coordinate family, including the compactified boundary representatives, so the corresponding finite endpoint reward map is continuous on the shape-specific compact domain. This is the precise source-model premise represented by the visible `hendpoint_continuous` binder; it supplies compact maximizer existence but no optimizer, policy form, dominance inequality, or strictness conclusion.",
+          "id": "GN21-L5-ENDPOINT-COMPACTNESS-CONTINUITY-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "2275d0c2ba91118cb1fd572bb6fbc4b18eba60d15dcd5d62c4ee02d40c12fc36",
+          "source_locator": "cited publication:3343-3366; cited publication:3388-3404; cited publication:3496-3500; cited publication:3564-3581; cited publication:3632-3644",
+          "why_needed": "The source explicitly invokes one- and two-coordinate endpoint continuity and compact maximum existence after reducing to finite interval families, but does not spell out a topological bridge from continuity in the symmetric-difference policy metric to Lean's `ContinuousOn` over every finite extended-endpoint vector. The direct interface exposes that bridge as an auditable, non-result model premise instead of treating it as a consequence of a record name or allowing the compact maximizer to be caller-supplied."
+        },
+        {
+          "checked_scope": "Only `PaperInterface.lemma5_full_variational_policy_forms.hcontinuous`. It does not authorize endpoint-coordinate compactness, derivative/sign realization, the Theorem 4 continuity binder, or any conclusion-bearing package. A future scoped-domain refactor may replace this convention by a direct derivation from the literal source-domain continuity condition.",
+          "classification": "human_verified_source_implicit",
+          "formal_meaning": "Lemma 5 explicitly assumes that Rhat is continuous in its open measurable policy argument. The current Lean interface totalizes Rhat to arbitrary `TripPolicy` values and expresses that continuity as `GN21SymmDiffContinuousAt` at every such value. The resulting global extension is a visible source-model regularity: it supplies only continuity at policy arguments, never a policy form, reward comparison, maximizer, or strictness conclusion.",
+          "id": "GN21-L5-GLOBAL-POLICY-CONTINUITY-REGULARITY-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "1d7054c8e21bd8e1369822e2844aa02b2db8c32b018bbc9e5207998283e6db7f",
+          "source_locator": "cited publication:3343-3366; cited publication:3394-3404",
+          "why_needed": "The finite-interval source proof uses continuity after symmetric-difference approximation, but the current reusable Lean variation engine is typed over total set functions and takes an all-policy continuity binder. Recording that extension explicitly prevents the source-domain wording from being overstated as an exact match for the broader Lean binder, while keeping the theorem conclusion unchanged."
+        },
+        {
+          "checked_scope": "Only these seven binders of `PaperInterface.lemma5_full_variational_policy_forms`: `hresponse_positive`, `hresponse_increasing`, `hresponse_decreasing`, `hresponse_quasiConvex`, `hzero_quasiConvex`, `hresponse_quasiConcave`, and `hzero_quasiConcave`. It does not authorize `hcontinuous`, `hendpoint_continuous`, any raw derivative/sign realization field, any Theorem 4 binder, or any conclusion-bearing package. A future scoped-domain/inclusive-endpoint refactor may replace this convention with direct source-domain lemmas.",
+          "classification": "human_verified_source_implicit",
+          "formal_meaning": "Lemma 5 states its response-shape property for every policy in the displayed near-optimal reward band after defining the policy domain to be open measurable subsets of positive trip lengths. The current Lean endpoint totalizes policies to arbitrary `TripPolicy` values and asks for the five response shapes at every such reward-admissible value. In the two quasi cases, its core predicates quantify strictly positive trip lengths and the two visible `hzero_*` binders supply the boundary-at-zero comparisons used by the finite endpoint-vector proof. Together these are a visible source-model regularity for the current direct variation engine, not a literal restatement of the printed domain wording.",
+          "id": "GN21-L5-GLOBAL-POLICY-RESPONSE-SHAPE-REGULARITY-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "bd3d004abdf62419c693d66277bfa2a5d4b84f170772a1bc12efc82477b2e3ab",
+          "source_locator": "cited publication:3343-3366; cited publication:3370-3387; cited publication:3407-3425; cited publication:3509-3537; cited publication:3582-3610",
+          "why_needed": "The former literal-source labels hid both the total-policy extension and the boundary bridge. The source proof works with finite interval families that include `(0, u)` and reasons from the advertised shape property while moving and collapsing endpoints; it does not spell Lean's all-`TripPolicy` totalization or separate its positive-domain quasi predicates from their zero-boundary comparisons. Recording the seven inputs as one narrow convention keeps those proof obligations explicit without supplying an optimizer, policy form, dominance comparison, strictness fact, or any other conclusion."
+        }
       ],
       "claim_bearing": true,
       "lean_declarations": [
@@ -1805,7 +1775,7 @@
       "source_claim_atoms": [
         {
           "id": "lemma5.five_variational_policy_forms",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.lemma5_full_variational_policy_formsSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.lemma5_full_variational_policy_forms",
           "semantic_claim": "For each listed response shape, Lemma 5 supplies a no-worse policy of the corresponding form, strictly better unless the starting policy already has that form up to null sets.",
           "source_locator": "cited publication:3343-3386",
           "source_quote_sha256": "0e1ca62391069834895094d97f6f4c075257e48f0239c8f3d2e8a4737ae85e59"
@@ -1814,24 +1784,6 @@
       "source_kind": "lemma",
       "source_location": "cited publication:3343-3386; cited publication:3387-3644; cited publication:3660-3692",
       "source_note": "The direct endpoint proves the five forms, compact existence, weak dominance, and strict-unless-a.e. clauses from endpoint variation. The source visibly assumes continuity and response shapes only on its open measurable policy domain; Lean totalizes the objective and exposes globally quantified symmetric-difference continuity and response-shape premises. Those broader policy-domain and zero-endpoint bridges are separately recorded as scoped source-model regularities rather than labeled literal source conditions. The proof's finite-dimensional endpoint-coordinate continuity/maximizer step is likewise separately recorded, rather than conflated with the raw endpoint derivative/sign realization. The source's explicit equality-modulo-null-sets convention, rather than a full-support strengthening, discharges density-zero interval traversals; the checked bridge is retained as support.",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "7b1a23785a4d146b1adad6f2714fa2865bbcbb966375ac7c3d374638a8258eb2",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "a297e3b1cfeaf5f2d0d4daa26e999932a11697174ecd9bbe18db5e7c13a521f1",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: Lemma 5 treats the five stated response-shape cases and concludes a no-worse policy of the corresponding interval form, with strict improvement unless the starting policy already has that form up to null sets. The Spec makes the source's continuous-law, open-policy, equality-modulo-null-sets, and endpoint-derivative conditions explicit rather than replacing them by a name or a policy-form premise.",
-            "source_atom_sha256": "c6f54dab3c17000f0cd5e2062cc77aa03da17c7ec60fc06f091e9a9dec714250",
-            "spec_component_sha256s": [
-              "fb6229afcc15171a658d3586c77c8bf2d6ab89a089066a3df20e7e6bb5abef1b"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "8e63c18e30950c54094e909220501997265bd5cd89c688894ca803c4a125ffda",
-        "spec_closure_sha256": "d355c2bfed645b5d1071dc3c150886d316903bfab82792307647a5307d0a1edb",
-        "spec_surface_sha256": "fb6229afcc15171a658d3586c77c8bf2d6ab89a089066a3df20e7e6bb5abef1b"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "Lemma 5: for an objective on open measurable subsets of positive trip lengths with a continuous probability law, endpoint derivatives satisfying the stated continuity/sign-witness hypotheses, and a positive-mass starting policy above the empty-policy value, each of the five local response shapes (positive, strictly increasing, strictly decreasing, strictly quasi-convex, strictly quasi-concave) yields a no-worse policy of the corresponding form (accept all, upper ray, initial interval, two tails, middle interval), with strict improvement unless the starting policy already has that form.",
       "support_lean_declarations": [
@@ -1880,6 +1832,20 @@
       "aliases": [
         "review_theorem4_full_structural_policy_forms_direct"
       ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only `PaperInterface.theorem4_full_structural_policy_forms_open_corrected.hcontinuous`. It does not authorize either endpoint-family continuity binder, the canonical-pair compactness binder, response-shape or reward-band inputs, any raw derivative/sign realization field, or any conclusion-bearing package. A future scoped-domain refactor may replace this convention by a direct source-domain continuity derivation.",
+          "classification": "human_verified_source_implicit",
+          "formal_meaning": "For each source-feasible open two-state context reached by the sequential Theorem 4 replacements and each replaced state, the statewise reward is continuous at each source-open measurable policy in the symmetric-difference sense used by Lemma 5. The current Lean binder totalizes both the continuity centre and the comparison policy to arbitrary `TripPolicy` values. That ambient totalization is an explicit source-model regularity, not a literal claim that the paper defines or assumes continuity at non-open policies.",
+          "id": "GN21-T4-GLOBAL-POLICY-CONTINUITY-REGULARITY-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "66269a047e85e166de4c128a38339ef4965261c28ebecfaffd8aa122f62a0ed8",
+          "source_locator": "cited publication:3343-3366; cited publication:3394-3404; cited publication:3660-3692; cited publication:3711-3714; cited publication:3884-3943",
+          "why_needed": "The source applies Lemma 5 after statewise replacements, while the reusable Lean variation engine is typed over total set functions and its continuity predicate quantifies raw sets. Making the totalization visible prevents the open-policy source domain from being silently enlarged, without supplying a policy form, reward comparison, maximizer, strictness fact, or any other theorem conclusion."
+        }
+      ],
       "claim_bearing": true,
       "lean_declarations": [
         "GN21DriverSurgePricing.PaperInterface.review_theorem4_full_structural_policy_forms_direct"
@@ -1912,7 +1878,7 @@
       "source_claim_atoms": [
         {
           "id": "theorem4.six_structural_policy_forms",
-          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_theorem4_full_structural_policy_forms_directSpec_proof",
+          "reviewed_lean_route": "GN21DriverSurgePricing.PaperInterface.review_theorem4_full_structural_policy_forms_direct",
           "semantic_claim": "For the source two-state surge model, an open optimal policy exists with each stated price-case-specific form, and every open optimum has those forms up to null sets.",
           "source_locator": "cited publication:3859-3880",
           "source_quote_sha256": "36dec9382a15fe5f4518ae3dbb37af5f6cbe6e93eb7690291c80148b8bd570e8"
@@ -1921,24 +1887,6 @@
       "source_kind": "theorem",
       "source_location": "cited publication:3859-3880; cited publication:3884-3943",
       "source_note": "The direct endpoint preserves the six printed price-to-form cases, open-policy optimizer attainment, and the all-optima a.e. clause. Its two positive branches use `gn21SourceUpperEndpointDerivativePositiveAt` in the actual state being varied, matching the source's aggregate upper-endpoint condition without replacing it by pointwise marginal-response positivity. Finite-endpoint continuity is derived in Lean from the measured Q/T/W aggregate model on ordered endpoint vectors, so it is neither a theorem premise nor a model convention. The remaining continuity-in-policy premise is the source's condition for the open contexts reached by the statewise replacements.",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "3737e17cc0f360c44075d45443ebe841dc780c3be8016e99eb8e5b2dfb5a9df7",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "987a98ea14460afe13119677d87a779ea30d89cdb41dbc6f84c35a61bd68850d",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct raw-source-to-expanded-Spec review: Theorem 4 asserts existence of an open measurable optimum and the listed structural price-policy forms for every such optimum. The Spec retains the five response-shape cases, the source surge-state model, open measurable domain, and the existence-and-universal structural conclusion; the zero-density convention is represented by the source's stated almost-everywhere policy semantics, not by a full-support assumption.",
-            "source_atom_sha256": "10b14a893c7d5c7faa2530c7a90e895b586283efb14050f12cab98214864d1a8",
-            "spec_component_sha256s": [
-              "fef8681ee734ed7cb5790bf90b8a48be88ffe66e3a67ec489909732f46d46d7c"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "7ffa6ae07a56ace3456c505568f424cedf0174bb67f3189646fcd9a61f0db909",
-        "spec_closure_sha256": "f5e8dc1354303a1bcec419ce771d8f99f4c634f23617eb3accf7982414d8cf8f",
-        "spec_surface_sha256": "fef8681ee734ed7cb5790bf90b8a48be88ffe66e3a67ec489909732f46d46d7c"
-      },
       "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",
       "statement": "Theorem 4: for the two-state source model with state 2 the surge state, there exists an open measurable optimal policy and every open measurable optimal policy has the price-case-specific interval form: non-surge positive additive prices reject long trips, negative additive prices accept a middle interval, and positive endpoint derivative cases accept all; surge negative additive prices reject short trips, positive additive prices reject a middle interval, and positive endpoint derivative cases accept all. The source proof derives optimizer existence and those forms from the surge-state replacement and Lemma 5 route.",
       "support_lean_declarations": [
@@ -1947,13 +1895,25 @@
     }
   },
   "paper": "GN21DriverSurgePricing",
-  "publication_source_display_projection": {
-    "manifest": "audit/public_source_display_projection.json",
-    "raw_source_bytes_included": false,
-    "schema": 1
+  "paper_interface_namespace": "GN21DriverSurgePricing",
+  "paper_semantic_prerequisite_sources": {
+    "GN21DriverSurgePricing.GN21DynamicIIDCycleModel": "model_dynamic_iid_renewal_cycle_bridge",
+    "GN21DriverSurgePricing.GN21SourceFiniteUpperEndpoint": "condition_lemma6_endpoint_derivative_data",
+    "GN21DriverSurgePricing.GN21TimeFractionIIDCycleModel": "model_dynamic_iid_renewal_cycle_bridge",
+    "GN21DriverSurgePricing.Lemma5DerivativeShape": "condition_lemma5_component_variation",
+    "GN21DriverSurgePricing.Lemma6EndpointDerivativeData": "condition_lemma6_endpoint_derivative_data",
+    "GN21DriverSurgePricing.PaperInterface.review_definition_incentive_compatibleSpec": "source_definition_incentive_compatible",
+    "GN21DriverSurgePricing.PaperInterface.review_definition_surge_stateSpec": "source_definition_surge_state",
+    "GN21DriverSurgePricing.ProofBridge.GN21Lemma5AENullEndpointVariation": "model_policy_equalities_modulo_null_sets",
+    "GN21DriverSurgePricing.ProofBridge.GN21Lemma5EndpointSignRealization": "condition_lemma5_component_variation",
+    "GN21DriverSurgePricing.gn21DynamicIIDCycleModel_of_actualCalendar": "model_dynamic_iid_renewal_cycle_bridge",
+    "GN21DriverSurgePricing.gn21TimeFractionIIDCycleModel_of_actualCalendar": "model_dynamic_iid_renewal_cycle_bridge",
+    "GN21DriverSurgePricing.paper_lemma1_stochastic_dynamic_reward_decomposition_of_actual_calendar": "model_dynamic_iid_renewal_cycle_bridge",
+    "GN21DriverSurgePricing.paper_lemma3_stochastic_time_fraction_formula_of_actual_calendar": "model_dynamic_iid_renewal_cycle_bridge"
   },
   "schema": 1,
   "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
   "source_anchor_evidence_required": true,
   "source_artifact_sha256": "6b6668553e576084e0c6c9995964252bed6b14aae113d6ce90f78538a7eb9889",
   "source_claim_atoms_schema": 1,
@@ -1965,10 +1925,125 @@
   "source_location_validated_at": "2026-08-15T00:00:00Z",
   "source_location_validator": "source-location verification",
   "source_named_result_inventory_review": {
+    "candidate_presentations": [
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_001",
+        "presentation_label": "Remark 1",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "Remark 1 collects continuity and derivative-shape observations used in the Appendix-D proof route. It is not a named paper result; the related named Lemmas 6--8 and Theorem 4 are already canonical review rows. Retain it as deep proof-support material, outside the normal denominator.",
+        "source_anchor": {
+          "line_end": 3771,
+          "line_start": 3747,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 1. Given assumptions on Fi , wi :\n• Ri (σ), R(σ), µi are continuous in σ\n∂\n• ∂u\nR(w, σ), r(u, i, w, σ) are both continuous in u (for fixed σ), and continuous in σ.\n\n•\n\nqi→j (u)\nis strictly decreasing in u.\nu\n\n• If ∆ji < 0 (i = 2 the surge state) and wiu(u) is non-decreasing in u, then r(u, i, w, σ) is\n∂\nR(w, σ) is negative up to a certain point\nstrictly increasing in u for a fixed σ. Thus, ∂u\nU ∈ (0, ∞) ∪ {∞} and then positive thereafter.\n• If ∆ji > 0 (i = 1 the non-surge state) and wiu(u) is non-increasing in u, then r(u, i, w, σ)\n∂\nis strictly decreasing in u for a fixed σ. Thus, ∂u\nR(w, σ) is positive up to a certain point\nU ∈ (0, ∞) ∪ {∞} and then negative thereafter.\nD.3.3\n\nLemmas for driver policy in response to affine pricing",
+          "quoted_text_sha256": "5e53765e8830b1fd1abcd5b05b3a90e4db7f3d3aea04d503e27823d1b9e63973"
+        },
+        "visible_kind": "remark"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_002",
+        "presentation_label": "Remark 2",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "Remark 2 is an algebraic derivative expansion used to prove the named Lemmas 9--10 and Theorem 3. Those named results are already routed; this internal proof calculation remains deep audit material rather than a second claim row.",
+        "source_anchor": {
+          "line_end": 3791,
+          "line_start": 3781,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 2.\nLet\nThen\n\nwi (u) = mu + zqi→j (u)\nWi = m(Ti − 1) + z(Qi − λi→j )\n∂\nR(w, σ) ∝ qi→j (u) [(Rj − m)Tj Ti + mTj + zQj Ti + zTj λi→j ]\n∂u\n+ u [Qi Tj (m − Rj ) + Qj (m − zQi + zλi→j )]\nq",
+          "quoted_text_sha256": "2e768dd26ce8c1079c3c5f865475d969283965148fb89c2c0a86b00fd30dcf65"
+        },
+        "visible_kind": "remark"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_003",
+        "presentation_label": "Remark 3",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "Remark 3 is the boundary-limit calculation used within the Lemma 9 proof. It is not a named theorem or definition and is retained as deep proof-support material.",
+        "source_anchor": {
+          "line_end": 3797,
+          "line_start": 3793,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 3. limu→0 i→ju\n\n(u)\n\n= λi→j .",
+          "quoted_text_sha256": "676d60c8927242c933c4438a4f55e9658d7543d464b427a0976fff1fc3226b2e"
+        },
+        "visible_kind": "remark"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_004",
+        "presentation_label": "Remark 4",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "Remark 4 supplies auxiliary inequalities used within the named Lemma 9--10 proof route. It is not a paper-result row and remains deep proof-support material.",
+        "source_anchor": {
+          "line_end": 3807,
+          "line_start": 3799,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 4. λi→j Ti − Qi ≥ 0 and maximized when σi = (0, ∞). Similarly, Qi ≥ 0 and maximized\nwhen σi = (0, ∞).\n\n∂\nIn the next lemma, we consider u an upper endpoint of σ2 , and so ∂u\nR(w = {w1 , w2 }, σ =\n{σ1 , σ2 }) is a derivative with respect to an upper endpoint of σ2 .\n\n57",
+          "quoted_text_sha256": "3771afeef3f47a5b5636e5b791949a1385594c7afe8913dc1f4d4ea08ca4758e"
+        },
+        "visible_kind": "remark"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_005",
+        "presentation_label": "Remark 2",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This Appendix-D proof presentation repeats Remark 2's algebraic calculation. The named Lemmas 9--10 and Theorem 3 remain the canonical reviewed claims; the repeated proof support is deep audit material.",
+        "source_anchor": {
+          "line_end": 4480,
+          "line_start": 4469,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 2.\nwi (u) = mu + zqi→j (u)\n\nLet\n\nWi = m(Ti − 1) + z(Qi − λi→j )\n∂\nR(w, σ) ∝ qi→j (u) [(Rj − m)Tj Ti + mTj + zQj Ti + zTj λi→j ]\n∂u\n+ u [Qi Tj (m − Rj ) + Qj (m − zQi + zλi→j )]\n\nThen",
+          "quoted_text_sha256": "58b8251ce529b2c9bd68079556d27a6068974faef15d4c2edfe9d54f80c66106"
+        },
+        "visible_kind": "remark"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_006",
+        "presentation_label": "Remark 3",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This Appendix-D presentation repeats the Remark 3 boundary-limit calculation used within Lemma 9. It remains deep proof-support material, not an additional normal-surface claim.",
+        "source_anchor": {
+          "line_end": 4520,
+          "line_start": 4516,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 3. limu→0 i→ju\n\n(u)\n\n= λi→j .",
+          "quoted_text_sha256": "676d60c8927242c933c4438a4f55e9658d7543d464b427a0976fff1fc3226b2e"
+        },
+        "visible_kind": "remark"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_007",
+        "presentation_label": "Remark 4",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This Appendix-D presentation repeats the Remark 4 auxiliary inequalities used in the Lemma 9--10 proof route. It remains deep proof-support material, not an additional normal-surface claim.",
+        "source_anchor": {
+          "line_end": 4541,
+          "line_start": 4538,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 4. λi→j Ti − Qi ≥ 0 and maximized when σi = (0, ∞). Similarly, Qi ≥ 0 and maximized\nwhen σi = (0, ∞).\n\n64",
+          "quoted_text_sha256": "2d1f05e0e6904860475fd73bc007ecfdaf347189d4eefdaffed4932d0027849b"
+        },
+        "visible_kind": "remark"
+      }
+    ],
     "complete": true,
+    "discovered_candidate_presentation_sha256": "8b550a97c28bf1dbb3cb0f3171d9324330e2380ce40151b8b1e7a98fe673932b",
     "discovered_named_result_sha256": "12e483e98247c1e06e3795599f9481ed9fdf3190d86c29eaaa27c7948db4f680",
     "discovered_prose_definition_sha256": "e8ff8098d8f51f7ab63e4381630393dfeea63d3b4fd438b5b55863c689726e01",
-    "method": "Source-only named-result index over the pinned text artifact, reconciled by visible source spans and byte-pinned excerpts. Map keys, aliases, and Lean route spellings were not used to discover presentations.",
+    "method": "Source-only holistic inventory of the complete pinned paper text, including Sections 1--7, Appendix A--D, repeated appendix theorem/lemma presentations, numerical and empirical appendices, and references. The current map routes the model definitions, Theorems 1--4, Proposition 3.1, Lemmas 1--10, and the source-facing policy-form prerequisites. The seven mechanically labelled remarks are internal proof support or duplicate appendix proof support and are retained as deep audit material. Numerical analysis, RideAustin empirics, figure captions, and future-work prose are not additional normal-surface mathematical claims. No additional material mathematical presentation was found.",
     "prose_definition_presentations": [
       {
         "defined_entity_kind": "predicate",
@@ -2129,8 +2204,8 @@
     ],
     "schema": 1,
     "source_artifact_sha256": "6b6668553e576084e0c6c9995964252bed6b14aae113d6ce90f78538a7eb9889",
-    "validated_at": "2026-08-15T00:00:00Z",
-    "validator": "GN21 source-only named-result reconciliation"
+    "validated_at": "2026-09-02T02:29:27Z",
+    "validator": "Codex GN21 source-only migration inventory pass"
   },
   "source_spec_correspondence_schema": 1,
   "source_url": "https://arxiv.org/pdf/1905.07544; published article: https://doi.org/10.1287/mnsc.2021.4058",

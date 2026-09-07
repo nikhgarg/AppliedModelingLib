@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalPostArrival
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalPostArrival
 
 /-!
 # Canonical first-report Poisson restart for LBG24
@@ -13,7 +13,7 @@ an externally selected start time after the first report.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal
 
 noncomputable section
@@ -56,7 +56,7 @@ theorem lemma2_canonical_firstReport_conditional_exponential_tail
         (MeasurableSpace.comap canonicalFirstArrival inferInstance) ω).real
           {ω' | canonicalRenewalCount (horizon : ℝ)
             (futureInterarrival 1 ω') = 0} =
-        ((EconCSLib.Probability.Exponential.Model.mk rate hrate).measure
+        ((AppliedModelingLib.Probability.Exponential.Model.mk rate hrate).measure
           (Set.Ioi (horizon : ℝ))).toReal := by
   filter_upwards [lemma2_canonical_firstReport_conditional_no_report hrate horizon]
     with ω hω
@@ -100,7 +100,7 @@ theorem lemma2_canonical_reportIndex_conditional_exponential_tail
         (MeasurableSpace.comap (arrivalPrefix reportIndex) inferInstance) ω).real
           {ω' | canonicalRenewalCount (horizon : ℝ)
             (futureInterarrival reportIndex ω') = 0} =
-        ((EconCSLib.Probability.Exponential.Model.mk rate hrate).measure
+        ((AppliedModelingLib.Probability.Exponential.Model.mk rate hrate).measure
           (Set.Ioi (horizon : ℝ))).toReal := by
   filter_upwards [lemma2_canonical_reportIndex_conditional_no_report
     hrate reportIndex horizon] with ω hω

@@ -23,7 +23,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 namespace LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE
@@ -1403,7 +1403,7 @@ theorem localReportedPayoff_eq_rawGaussianPosterior_ae_under_eachTestLaw_of_acti
   have htestAC : gaussianReal latentSkill
       (M.noiseVariance testFeature) ≪ scoreKernel publicBase := by
     rw [hscoreLaw]
-    exact EconCSLib.Probability.gaussianReal_absolutelyContinuous_of_positive_variances
+    exact AppliedModelingLib.Probability.gaussianReal_absolutelyContinuous_of_positive_variances
       latentSkill (baseMean publicBase)
       hnoiseNN
       (Real.toNNReal_pos.mpr (add_pos hpriorVariance hnoiseVariance))

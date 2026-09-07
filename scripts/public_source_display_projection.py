@@ -17,6 +17,7 @@ every displayed anchor verify against their declared bytes.
 from __future__ import annotations
 
 import argparse
+from dataclasses import dataclass
 import hashlib
 import json
 import os
@@ -25,24 +26,25 @@ import sys
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
-try:
-    from scripts.public_release_projection import ProjectionError, project_bytes
-    from scripts.review_dashboard import paper_coverage_inventory
-    from scripts.source_coverage_scope import (
-        _current_canonical_text_source,
-        source_coverage_mode_from_map,
-    )
-except ModuleNotFoundError:  # Direct ``python scripts/...`` execution.
-    from public_release_projection import ProjectionError, project_bytes
-    from review_dashboard import paper_coverage_inventory
-    from source_coverage_scope import (
-        _current_canonical_text_source,
-        source_coverage_mode_from_map,
-    )
+PACKAGE_ROOT = Path(__file__).resolve().parents[1]
+if str(PACKAGE_ROOT) not in sys.path:
+    sys.path.insert(0, str(PACKAGE_ROOT))
+
+from scripts.public_release_projection import ProjectionError, project_bytes
+from scripts.review_dashboard import paper_coverage_inventory
+from scripts.source_coverage_scope import (
+    _current_canonical_text_source,
+    source_coverage_mode_from_map,
+)
+from scripts.source_artifact_companion import (
+    resolve_paper_source_artifact_path,
+    semantic_review_source_identity,
+)
+from scripts.source_manifest_validation import cited_source_artifact_registry
 
 
 ROOT = Path(
-    os.environ.get("ECONCSLIB_REPO_ROOT", Path(__file__).resolve().parents[1])
+    os.environ.get("APPLIEDMODELINGLIB_REPO_ROOT", Path(__file__).resolve().parents[1])
 ).resolve()
 PAPERS_DIR = ROOT / "papers"
 PAPER_STATEMENT_MAP_FILE = "audit/paper_statement_map.json"
@@ -57,6 +59,23 @@ _SHA256_RE = re.compile(r"[0-9a-f]{64}")
 
 class PublicSourceDisplayProjectionError(ValueError):
     """Raised when the private audit cannot produce a safe display projection."""
+
+
+@dataclass(frozen=True)
+class _RegisteredTextSource:
+    """One private UTF-8 source whose exact bytes are registered by the map."""
+
+    path: Path
+    lines: tuple[str, ...]
+    semantic_roles: frozenset[str] = frozenset()
+
+
+@dataclass(frozen=True)
+class _RegisteredSourceBundle:
+    """The only source artifacts from which display anchors may be emitted."""
+
+    primary_sources: Mapping[Path, _RegisteredTextSource]
+    cited_sources: Mapping[str, _RegisteredTextSource]
 
 
 def public_source_display_projection_path(folder: Path) -> Path:
@@ -146,12 +165,195 @@ def _current_source(
     return source_text, source_path, source_format, source_sha256
 
 
+def _normalized_source_lines(source_text: str) -> tuple[str, ...]:
+    lines = source_text.split("\n")
+    if source_text.endswith("\n"):
+        lines.pop()
+    return tuple(lines)
+
+
+def _read_registered_text_source(
+    path: Path,
+    expected_sha256: str,
+    *,
+    label: str,
+    semantic_roles: frozenset[str] = frozenset(),
+) -> _RegisteredTextSource:
+    """Read one already declared source and recheck its exact UTF-8 bytes."""
+
+    try:
+        raw = path.read_bytes()
+    except OSError as exc:
+        raise PublicSourceDisplayProjectionError(
+            f"cannot read {label}: {exc}"
+        ) from exc
+    actual_sha256 = hashlib.sha256(raw).hexdigest()
+    if actual_sha256 != expected_sha256:
+        raise PublicSourceDisplayProjectionError(
+            f"{label} SHA-256 does not match its registered source pin"
+        )
+    try:
+        text = raw.decode("utf-8").replace("\r\n", "\n").replace("\r", "\n")
+    except UnicodeDecodeError as exc:
+        raise PublicSourceDisplayProjectionError(
+            f"{label} is not UTF-8 text"
+        ) from exc
+    return _RegisteredTextSource(
+        path=path,
+        lines=_normalized_source_lines(text),
+        semantic_roles=semantic_roles,
+    )
+
+
+def _registered_source_bundle(
+    folder: Path,
+    map_path: Path,
+    map_payload: Mapping[str, object],
+    *,
+    canonical_text: str,
+    canonical_path_text: str,
+    canonical_sha256: str,
+) -> _RegisteredSourceBundle:
+    """Materialize only canonical, selected-semantic, and cited source pins."""
+
+    canonical_path, path_error = resolve_paper_source_artifact_path(
+        folder,
+        canonical_path_text,
+        repository_root=ROOT,
+    )
+    if canonical_path is None:
+        raise PublicSourceDisplayProjectionError(
+            "cannot resolve the canonical source artifact: " + path_error
+        )
+    primary_sources: dict[Path, _RegisteredTextSource] = {
+        canonical_path: _RegisteredTextSource(
+            path=canonical_path,
+            lines=_normalized_source_lines(canonical_text),
+        )
+    }
+
+    semantic_path_text, semantic_sha256 = semantic_review_source_identity(map_payload)
+    semantic_path, semantic_path_error = resolve_paper_source_artifact_path(
+        folder,
+        semantic_path_text,
+        repository_root=ROOT,
+    )
+    if semantic_path is None:
+        raise PublicSourceDisplayProjectionError(
+            "cannot resolve the selected semantic source artifact: "
+            + semantic_path_error
+        )
+    if not _SHA256_RE.fullmatch(semantic_sha256):
+        raise PublicSourceDisplayProjectionError(
+            "selected semantic source artifact has no valid SHA-256 pin"
+        )
+    if semantic_path == canonical_path:
+        if semantic_sha256 != canonical_sha256:
+            raise PublicSourceDisplayProjectionError(
+                "selected semantic source pin disagrees with the canonical source pin"
+            )
+    else:
+        primary_sources[semantic_path] = _read_registered_text_source(
+            semantic_path,
+            semantic_sha256,
+            label="selected semantic source artifact",
+        )
+
+    raw_cited_sources, cited_findings = cited_source_artifact_registry(
+        folder,
+        "formalized",
+        map_path,
+        map_payload,
+    )
+    if cited_findings:
+        messages = sorted({finding.message for finding in cited_findings})
+        raise PublicSourceDisplayProjectionError(
+            "cited source artifact registry is invalid: " + "; ".join(messages)
+        )
+    cited_sources: dict[str, _RegisteredTextSource] = {}
+    for source_id, source in raw_cited_sources.items():
+        path = source.get("path")
+        lines = source.get("lines")
+        roles = source.get("semantic_roles")
+        if (
+            not isinstance(path, Path)
+            or not isinstance(lines, list)
+            or any(not isinstance(line, str) for line in lines)
+            or not isinstance(roles, set)
+            or any(not isinstance(role, str) for role in roles)
+        ):
+            raise PublicSourceDisplayProjectionError(
+                f"cited source artifact `{source_id}` did not materialize as pinned UTF-8 text"
+            )
+        cited_sources[source_id] = _RegisteredTextSource(
+            path=path,
+            lines=tuple(lines),
+            semantic_roles=frozenset(roles),
+        )
+    return _RegisteredSourceBundle(
+        primary_sources=primary_sources,
+        cited_sources=cited_sources,
+    )
+
+
+def _registered_source_for_anchor(
+    folder: Path,
+    private_record: Mapping[str, object],
+    raw_path: object,
+    sources: _RegisteredSourceBundle,
+    *,
+    label: str,
+) -> tuple[_RegisteredTextSource | None, list[str]]:
+    """Resolve an anchor through its identity-bound registered source route."""
+
+    path, path_error = resolve_paper_source_artifact_path(
+        folder,
+        raw_path,
+        repository_root=ROOT,
+    )
+    if path is None:
+        return None, [f"{label} source path {path_error}"]
+
+    raw_cited_id = private_record.get("cited_source_artifact_id")
+    if raw_cited_id is not None:
+        cited_id = str(raw_cited_id or "").strip()
+        cited_source = sources.cited_sources.get(cited_id)
+        if cited_source is None:
+            return None, [
+                f"{label} names unregistered cited source artifact `{cited_id}`"
+            ]
+        role = str(
+            private_record.get("cited_source_role")
+            or private_record.get("semantic_role")
+            or ""
+        ).strip()
+        if role not in cited_source.semantic_roles:
+            return None, [
+                f"{label} uses cited source artifact `{cited_id}` for unregistered "
+                f"semantic role `{role}`"
+            ]
+        if path != cited_source.path:
+            return None, [
+                f"{label} does not point to pinned cited source artifact `{cited_id}`"
+            ]
+        return cited_source, []
+
+    source = sources.primary_sources.get(path)
+    if source is None:
+        return None, [
+            f"{label} does not point to the canonical source artifact or its "
+            "selected semantic transcription"
+        ]
+    return source, []
+
+
 def _display_anchor(
     private_anchor: object,
     public_anchor: object,
     *,
-    source_text: str,
-    source_path: str,
+    folder: Path,
+    private_record: Mapping[str, object],
+    sources: _RegisteredSourceBundle,
     label: str,
 ) -> tuple[dict[str, Any] | None, list[str]]:
     """Validate a private anchor and emit its matching public-map anchor.
@@ -172,10 +374,18 @@ def _display_anchor(
     quote = private_anchor.get("quoted_text")
     recorded_sha = str(private_anchor.get("quoted_text_sha256") or "").strip().lower()
     errors: list[str] = []
+    source: _RegisteredTextSource | None = None
     if not isinstance(path, str) or not _normalized_source_path(path):
         errors.append(f"{label} has no valid source path")
-    elif _normalized_source_path(path) != _normalized_source_path(source_path):
-        errors.append(f"{label} does not point to the canonical source artifact")
+    else:
+        source, source_errors = _registered_source_for_anchor(
+            folder,
+            private_record,
+            path,
+            sources,
+            label=label,
+        )
+        errors.extend(source_errors)
     if not isinstance(line_start, int) or isinstance(line_start, bool) or line_start < 1:
         errors.append(f"{label} has no valid line_start")
     if (
@@ -197,12 +407,11 @@ def _display_anchor(
     actual_sha = _sha256_text(normalized_quote)
     if actual_sha != recorded_sha:
         errors.append(f"{label} quoted_text_sha256 does not match quoted_text")
-    lines = source_text.split("\n")
-    if source_text.endswith("\n"):
-        lines.pop()
-    if line_end > len(lines):
-        errors.append(f"{label} line range is outside the canonical source artifact")
-    elif normalized_quote != "\n".join(lines[line_start - 1 : line_end]):
+    if source is None:
+        pass
+    elif line_end > len(source.lines):
+        errors.append(f"{label} line range is outside the registered source artifact")
+    elif normalized_quote != "\n".join(source.lines[line_start - 1 : line_end]):
         errors.append(f"{label} quoted_text does not equal the current source slice")
     public_quote = public_anchor.get("quoted_text")
     public_sha = str(public_anchor.get("quoted_text_sha256") or "").strip().lower()
@@ -233,8 +442,9 @@ def _display_anchor_bundle(
     private_anchors: object,
     public_anchors: object,
     *,
-    source_text: str,
-    source_path: str,
+    folder: Path,
+    private_record: Mapping[str, object],
+    sources: _RegisteredSourceBundle,
     label: str,
 ) -> tuple[list[dict[str, Any]], list[str]]:
     if not isinstance(private_anchors, list) or not private_anchors:
@@ -249,8 +459,9 @@ def _display_anchor_bundle(
         result, anchor_errors = _display_anchor(
             private_anchor,
             public_anchors[index],
-            source_text=source_text,
-            source_path=source_path,
+            folder=folder,
+            private_record=private_record,
+            sources=sources,
             label=f"{label} source anchor {index}",
         )
         errors.extend(anchor_errors)
@@ -263,8 +474,8 @@ def _display_context_requirements(
     private_item: Mapping[str, object],
     public_item: Mapping[str, object],
     *,
-    source_text: str,
-    source_path: str,
+    folder: Path,
+    sources: _RegisteredSourceBundle,
     label: str,
 ) -> tuple[list[dict[str, Any]], list[str]]:
     """Project raw semantic context without carrying explanatory paraphrases."""
@@ -301,8 +512,9 @@ def _display_context_requirements(
         anchors, anchor_errors = _display_anchor_bundle(
             private_requirement.get("source_anchor_evidence"),
             public_requirement.get("source_anchor_evidence"),
-            source_text=source_text,
-            source_path=source_path,
+            folder=folder,
+            private_record=private_requirement,
+            sources=sources,
             label=requirement_label,
         )
         errors.extend(anchor_errors)
@@ -346,6 +558,14 @@ def build_public_source_display_projection(folder: Path) -> dict[str, Any]:
         raise PublicSourceDisplayProjectionError(mode_error)
     source_text, source_path, _source_format, source_sha256 = _current_source(
         folder, map_payload
+    )
+    sources = _registered_source_bundle(
+        folder,
+        _map_path,
+        map_payload,
+        canonical_text=source_text,
+        canonical_path_text=source_path,
+        canonical_sha256=source_sha256,
     )
     try:
         _full_inventory, selected_inventory, selected_mode, selection_error = (
@@ -393,15 +613,16 @@ def build_public_source_display_projection(folder: Path) -> dict[str, Any]:
         anchors, anchor_errors = _display_anchor_bundle(
             raw_item.get("source_anchor_evidence"),
             public_item.get("source_anchor_evidence"),
-            source_text=source_text,
-            source_path=source_path,
+            folder=folder,
+            private_record=raw_item,
+            sources=sources,
             label=label,
         )
         contexts, context_errors = _display_context_requirements(
             raw_item,
             public_item,
-            source_text=source_text,
-            source_path=source_path,
+            folder=folder,
+            sources=sources,
             label=label,
         )
         errors.extend(anchor_errors)

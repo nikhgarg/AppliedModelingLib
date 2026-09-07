@@ -1,0 +1,127 @@
+{
+  "defects": [],
+  "model_conventions": [
+    {
+      "checked_scope": "The direct admitted arrival/work and stationary Palm constructions are checked through the active queueing route. The convention covers only the source-stated admitted-stream normal form. It does not assert a raw-path or empirical-frequency theorem, and it does not credit an unproved raw-to-admitted transport.",
+      "classification": "explicit_source_model_normal_form",
+      "formal_meaning": "The source itself states the independent admitted Poisson streams at rates s after thinning, together with iid unit-mean exponential work. The active Lean route constructs that admitted-stream/Palm model directly at the stated rates and uses it for GPS/FCFS replay.",
+      "id": "LG24-POST-THINNING-ADMITTED-POISSON-NORMAL-FORM-01",
+      "recursive_field_source_scope": {
+        "entries": [
+          {
+            "field_chain": [
+              {
+                "field": "arrivalRate",
+                "structure": "LG24ServiceLevelAgreements.SLA2026BoroughQueueingInput"
+              }
+            ],
+            "permitted_classifications": [
+              "validated_source_assumption"
+            ],
+            "root_record": "LG24ServiceLevelAgreements.SLA2026BoroughQueueingInput",
+            "source_item": "stationary_gps_response_tail_context",
+            "source_locator": "cited publication:530"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "arrivalRate_pos",
+                "structure": "LG24ServiceLevelAgreements.SLA2026BoroughQueueingInput"
+              }
+            ],
+            "permitted_classifications": [
+              "validated_source_assumption"
+            ],
+            "root_record": "LG24ServiceLevelAgreements.SLA2026BoroughQueueingInput",
+            "source_item": "stationary_gps_response_tail_context",
+            "source_locator": "cited publication:530"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "admittedRate",
+                "structure": "LG24ServiceLevelAgreements.SLA2026BoroughQueueingInput"
+              }
+            ],
+            "permitted_classifications": [
+              "validated_source_assumption"
+            ],
+            "root_record": "LG24ServiceLevelAgreements.SLA2026BoroughQueueingInput",
+            "source_item": "stationary_gps_response_tail_context",
+            "source_locator": "cited publication:530-532; cited publication:558"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "admittedRate_pos",
+                "structure": "LG24ServiceLevelAgreements.SLA2026BoroughQueueingInput"
+              }
+            ],
+            "permitted_classifications": [
+              "validated_source_assumption"
+            ],
+            "root_record": "LG24ServiceLevelAgreements.SLA2026BoroughQueueingInput",
+            "source_item": "stationary_gps_response_tail_context",
+            "source_locator": "cited publication:530-532; cited publication:558"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "admittedRate_le_arrivalRate",
+                "structure": "LG24ServiceLevelAgreements.SLA2026BoroughQueueingInput"
+              }
+            ],
+            "permitted_classifications": [
+              "validated_source_assumption"
+            ],
+            "root_record": "LG24ServiceLevelAgreements.SLA2026BoroughQueueingInput",
+            "source_item": "stationary_gps_response_tail_context",
+            "source_locator": "cited publication:530-532; cited publication:558"
+          }
+        ],
+        "schema": 1
+      },
+      "source_locator": "cited publication:530-537",
+      "why_needed": "The source writes the admitted-stream law explicitly, but the current library does not yet prove a pathwise raw-marked survivor re-enumeration, multiclass pushforward equality, selected-Palm transport, and response-functional correspondence. Calling the direct carrier a derivation from the raw carrier would therefore be false; taking the explicitly stated post-thinning law as the model normal form is precise and does not weaken a named paper conclusion."
+    },
+    {
+      "checked_scope": "PaperInterface.lean makes both the global steady-operation condition and the target-local margin visible. SLA2026GPSParameters.lean derives the stronger all-cell/aggregate facts only inside the fixed-load-feasible policy bridge. The stationary selected-Palm GPS/FCFS proof uses the visible global condition plus the target margin and does not treat the fixed-load bridge as an unconditional source derivation.",
+      "classification": "steady_operation_regularization",
+      "formal_meaning": "For the selected Borough's SLA subsystem, Lean makes explicit the full-system well-definedness regularity implicit in the source's GPS/steady-operation language: nonnegative capacity, positive SLA weights, total weight at most one, and total SLA admitted load below capacity. The displayed target tail margin remains the separate condition s_target < C phi_target. Always-backlogged no-guarantee background work is excluded from the SLA load sum because it receives only residual capacity.",
+      "id": "LG24-STEADY-SLA-SUBSYSTEM-CONDITION-01",
+      "source_locator": "cited publication:541-543; cited publication:600-602; cited publication:628-639",
+      "why_needed": "The standalone display explicitly states only the target-local margin, while the active remote-past construction needs a stable full SLA subsystem. The source's positive admitted streams and GPS active-set allocation make zero weight for any SLA class incompatible with a well-defined stationary full queue, and aggregate slack is needed for stationarity. The later fixed-load program proves stronger all-cell margins only for policies satisfying its own quantified SLA constraints, together with the positive SLA parameter recorded at :600-602; it cannot silently strengthen the standalone display. This convention exposes the implicit global regularity and keeps its dependency direction honest."
+    }
+  ],
+  "paper": "LG24ServiceLevelAgreements",
+  "review_status": "reviewed_no_defects",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The source's explicitly stated post-thinning independent admitted-Poisson/iid-work normal form, steady ideal-fluid GPS/FCFS model, selected admitted-request tail inequality, logarithmic sufficient SLA inequality, and fixed-load optimization program. This review checks the displayed tail-to-SLA algebra, sign orientation, model-carrier scope, and the separation between the display's target-local margin and the later fixed-load submodel. It does not call the unproved raw-carrier-to-admitted-Palm transport a derivation.",
+      "source_locator": "cited publication:524-602; cited publication:628-698"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The reciprocal-capacity reformulation: convexity after restricting to the positive feasible region, necessity by summing the cellwise service margins, sufficiency by explicit Borough capacity and weight construction, and the equality-chain argument for binding-case uniqueness.",
+      "source_locator": "cited publication:628-698; cited publication:2686-2750"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The all-request cost, total efficiency, within-category range objective, and the two endpoint arguments: the Cauchy--Schwarz equality characterization for the efficient SLA and the positive-affine cost construction, existence, and binding argument for the efficiency-best zero-range SLA.",
+      "source_locator": "cited publication:728-858; cited publication:2758-2803"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The price-of-equity proof: normalized capacity shares at binding endpoints, the Pearson chi-square identity, the constructive equitable upper bound, the zero-price equivalence, and the capacity-rescaling argument under categorywise fixed noninspection burden.",
+      "source_locator": "cited publication:912-958; cited publication:2819-2940"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The centralized reciprocal program, its square-root optimum, the strict per-cell SLA comparison under positive loads and at least two Boroughs, and the algebra reducing centralization-gain-versus-price comparison to the normalized effective-load and chi-square inequality.",
+      "source_locator": "cited publication:1077-1155; cited publication:2942-2998"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "eda9c8c9688a350b6d7696bb8e456ea0ce0ffe4b1f33e70636e24f82bb052b35"
+}

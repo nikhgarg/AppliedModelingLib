@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Probability.OrderStatistics
+import AppliedModelingLib.Foundations.Probability.OrderStatistics
 
 /-!
 # PRPKG Definition 3 IID Source Bridge
@@ -30,7 +30,7 @@ The source's bottom-indexed expected order-statistic table `mu_D(i, a)`,
 formed from `a` iid draws from one common base distribution `D`.
 -/
 def definition3IidOrderStatisticMean (D : Measure ℝ) : ℕ → ℕ → ℝ :=
-  EconCSLib.Probability.expectedOrderStatisticMeanSeq
+  AppliedModelingLib.Probability.expectedOrderStatisticMeanSeq
     (definition3IidSampleMeasure D)
 
 /-- A finite iid sample of a probability law is again a probability law. -/
@@ -43,16 +43,16 @@ theorem definition3IidSampleMeasure_isProbabilityMeasure
 /-- A finite order statistic is bounded in absolute value by all sample norms. -/
 private theorem sampleOrderStatisticValue_norm_le_sum_norm
     {a : ℕ} (sample : Fin a → ℝ) (rank : ℕ) :
-    ‖EconCSLib.Probability.sampleOrderStatisticValue sample rank‖ ≤
+    ‖AppliedModelingLib.Probability.sampleOrderStatisticValue sample rank‖ ≤
       ∑ i : Fin a, ‖sample i‖ := by
   classical
   by_cases hrank : 0 < rank ∧ rank ≤ a
-  · rw [EconCSLib.Probability.sampleOrderStatisticValue, dif_pos hrank]
+  · rw [AppliedModelingLib.Probability.sampleOrderStatisticValue, dif_pos hrank]
     change ‖sample (Tuple.sort sample ⟨rank - 1, by omega⟩)‖ ≤
       ∑ i : Fin a, ‖sample i‖
     exact Finset.single_le_sum
       (fun i _ => norm_nonneg (sample i)) (Finset.mem_univ _)
-  · simp [EconCSLib.Probability.sampleOrderStatisticValue, hrank,
+  · simp [AppliedModelingLib.Probability.sampleOrderStatisticValue, hrank,
       Finset.sum_nonneg]
 
 /--
@@ -65,7 +65,7 @@ theorem definition3Iid_sampleOrderStatisticValue_integrable
     (hfinite_mean : Integrable (fun x : ℝ => x) D) (a rank : ℕ) :
     Integrable
       (fun sample : Fin a → ℝ =>
-        EconCSLib.Probability.sampleOrderStatisticValue sample rank)
+        AppliedModelingLib.Probability.sampleOrderStatisticValue sample rank)
       (definition3IidSampleMeasure D a) := by
   have hsum_integrable :
       Integrable (fun sample : Fin a → ℝ => ∑ i : Fin a, ‖sample i‖)
@@ -76,7 +76,7 @@ theorem definition3Iid_sampleOrderStatisticValue_integrable
     intro i _hi
     exact (MeasureTheory.integrable_eval hfinite_mean).norm
   refine hsum_integrable.mono'
-    (EconCSLib.Probability.sampleOrderStatisticValue_measurable rank).aestronglyMeasurable ?_
+    (AppliedModelingLib.Probability.sampleOrderStatisticValue_measurable rank).aestronglyMeasurable ?_
   exact Filter.Eventually.of_forall
     (fun sample => sampleOrderStatisticValue_norm_le_sum_norm sample rank)
 
@@ -87,7 +87,7 @@ theorem definition3Iid_topKRange_orderStatistic_integrable
     ∀ i ∈ Finset.range (min k a),
       Integrable
         (fun sample : Fin a → ℝ =>
-          EconCSLib.Probability.sampleOrderStatisticValue sample (a - i))
+          AppliedModelingLib.Probability.sampleOrderStatisticValue sample (a - i))
         (definition3IidSampleMeasure D a) := by
   intro i _hi
   exact definition3Iid_sampleOrderStatisticValue_integrable
@@ -104,12 +104,12 @@ needed to exchange the finite sum and expectation.
 theorem definition3_iid_orderStatisticTopKSum_eq_expectedSampleTopKSum
     (D : Measure ℝ) [IsProbabilityMeasure D]
     (hfinite_mean : Integrable (fun x : ℝ => x) D) (k a : ℕ) :
-    EconCSLib.Probability.orderStatisticTopKSumFromMean
+    AppliedModelingLib.Probability.orderStatisticTopKSumFromMean
         (definition3IidOrderStatisticMean D) k a =
-      EconCSLib.Probability.expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedSampleTopKSum
         (definition3IidSampleMeasure D a) k := by
   simpa [definition3IidOrderStatisticMean] using
-    EconCSLib.Probability.expectedOrderStatisticMeanSeq_topKSum_eq_expectedSampleTopKSum
+    AppliedModelingLib.Probability.expectedOrderStatisticMeanSeq_topKSum_eq_expectedSampleTopKSum
       (definition3IidSampleMeasure D) k a
       (definition3Iid_topKRange_orderStatistic_integrable D hfinite_mean k a)
 
@@ -122,9 +122,9 @@ source anchor reaches the same explicit iid law and integrability obligations.
 theorem proposition5_iid_orderStatisticTopKSum_eq_expectedSampleTopKSum
     (D : Measure ℝ) [IsProbabilityMeasure D]
     (hfinite_mean : Integrable (fun x : ℝ => x) D) (k a : ℕ) :
-    EconCSLib.Probability.orderStatisticTopKSumFromMean
+    AppliedModelingLib.Probability.orderStatisticTopKSumFromMean
         (definition3IidOrderStatisticMean D) k a =
-      EconCSLib.Probability.expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedSampleTopKSum
         (definition3IidSampleMeasure D a) k :=
   definition3_iid_orderStatisticTopKSum_eq_expectedSampleTopKSum
     D hfinite_mean k a

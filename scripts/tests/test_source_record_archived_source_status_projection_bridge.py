@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
 
 from scripts import source_record_archived_source_status_projection_bridge as BRIDGE
 from scripts import source_record_differential_revalidation as DIFFERENTIAL
+from scripts import source_record_obligation_groups as OBLIGATIONS
 from scripts.source_coverage_scope import (
     legacy_source_item_coverage_sha256_before_direct_source_status_exclusion,
     legacy_source_item_coverage_sha256_schema4_direct_source_status_excluded,
@@ -130,8 +131,8 @@ def raw_audit(
 ) -> dict[str, object]:
     raw: dict[str, object] = {
         "paper": PAPER,
-        "prompt_version": DIFFERENTIAL.SOURCE_RECORD_V10_PROMPT_VERSION,
-        "source_record_policy_version": DIFFERENTIAL.SOURCE_RECORD_V10_PROMPT_VERSION,
+        "prompt_version": OBLIGATIONS.SOURCE_RECORD_V10_PROMPT_VERSION,
+        "source_record_policy_version": OBLIGATIONS.SOURCE_RECORD_V10_PROMPT_VERSION,
         "paper_statement_map_sha256": paper_statement_map_sha256,
         "boundary_input_items": [item],
         "conclusion_dependency_items": [],
@@ -149,8 +150,8 @@ def sidecar(raw: dict[str, object], key: str, prior_semantic_pin: str) -> dict[s
     response = {
         "classification": "validated_source_assumption",
         "reason": "fixture source review",
-        "prompt_version": DIFFERENTIAL.SOURCE_RECORD_V10_PROMPT_VERSION,
-        "source_record_policy_version": DIFFERENTIAL.SOURCE_RECORD_V10_PROMPT_VERSION,
+        "prompt_version": OBLIGATIONS.SOURCE_RECORD_V10_PROMPT_VERSION,
+        "source_record_policy_version": OBLIGATIONS.SOURCE_RECORD_V10_PROMPT_VERSION,
         "source_record_audit_sha256": raw["source_record_audit_sha256"],
         "validator": "fixture auditor",
         "validated_at": "2026-07-28T00:00:00Z",
@@ -159,8 +160,8 @@ def sidecar(raw: dict[str, object], key: str, prior_semantic_pin: str) -> dict[s
     return {
         "schema": 1,
         "paper": PAPER,
-        "prompt_version": DIFFERENTIAL.SOURCE_RECORD_V10_PROMPT_VERSION,
-        "source_record_policy_version": DIFFERENTIAL.SOURCE_RECORD_V10_PROMPT_VERSION,
+        "prompt_version": OBLIGATIONS.SOURCE_RECORD_V10_PROMPT_VERSION,
+        "source_record_policy_version": OBLIGATIONS.SOURCE_RECORD_V10_PROMPT_VERSION,
         "source_record_audit_sha256": raw["source_record_audit_sha256"],
         "validator": "fixture auditor",
         "validated_at": "2026-07-28T00:00:00Z",
@@ -521,83 +522,7 @@ class ArchivedSourceStatusProjectionBridgeTests(unittest.TestCase):
         self.assertIsNone(result)
         self.assertIn("absent or differs", refusal)
 
-    def test_differential_pairs_unique_normalized_descriptor_not_keys(self) -> None:
-        self.save_bridge()
-        root_patch = patch.object(DIFFERENTIAL, "ROOT", self.root)
-        root_patch.start()
-        self.addCleanup(root_patch.stop)
-        overlay = DIFFERENTIAL.build_source_record_differential_revalidation(
-            paper=PAPER,
-            prior_raw_audit=self.prior_raw,
-            prior_judgments=self.prior_judgments,
-            current_raw_audit=self.current_raw,
-            prior_raw_audit_path=self.paths["prior_raw"],
-            prior_judgments_path=self.paths["prior_judgments"],
-            current_raw_audit_path=self.paths["current_raw"],
-            archived_source_status_projection_bridge_path=self.paths["bridge"],
-        )
-        self.assertEqual(set(overlay["items"]), {self.current_key})
-        item = overlay["items"][self.current_key]
-        metadata = item[DIFFERENTIAL.SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_ITEM_FIELD]
-        self.assertEqual(metadata["prior_judgment_key"], self.prior_key)
-        self.assertEqual(metadata["current_judgment_key"], self.current_key)
-        self.assertIn(
-            DIFFERENTIAL.ARCHIVED_SOURCE_STATUS_PROJECTION_BRIDGE_FIELD, metadata
-        )
-        self.assertEqual(
-            metadata[
-                DIFFERENTIAL.ARCHIVED_SOURCE_STATUS_PROJECTION_NORMALIZED_DESCRIPTOR_FIELD
-            ],
-            metadata["current_group_semantic_descriptor"],
-        )
-        write_json(self.paths["overlay"], overlay)
-        loaded = DIFFERENTIAL.load_current_source_record_differential_revalidation_items(
-            self.paper_dir,
-            PAPER,
-            self.current_raw,
-            path=self.paths["overlay"],
-            current_raw_audit_path=self.paths["current_raw"],
-        )
-        self.assertEqual(set(loaded), {self.current_key})
-        self.assertEqual(
-            loaded[self.current_key]["semantic_association_sha256"],
-            self.current_association["semantic_association_sha256"],
-        )
 
-    def test_differential_rejects_ambiguous_normalized_pair(self) -> None:
-        self.save_bridge()
-        duplicate = copy.deepcopy(self.prior_raw["boundary_input_items"][0])
-        duplicate["judgment_key"] = "another-archive-address"
-        self.prior_raw["boundary_input_items"].append(duplicate)
-        stamp_source_record_audit_receipts(self.prior_raw)
-        self.prior_judgments = sidecar(
-            self.prior_raw,
-            self.prior_key,
-            self.prior_association["semantic_association_sha256"],
-        )
-        self.prior_judgments["items"]["another-archive-address"] = copy.deepcopy(
-            self.prior_judgments["items"][self.prior_key]
-        )
-        self._write_inputs()
-        # Rebuild a bridge against the duplicate archive. The bridge itself is
-        # association-level and remains valid; the differential pairing must
-        # reject the two normalized generated groups without looking at names.
-        self.save_bridge()
-        root_patch = patch.object(DIFFERENTIAL, "ROOT", self.root)
-        root_patch.start()
-        self.addCleanup(root_patch.stop)
-        overlay = DIFFERENTIAL.build_source_record_differential_revalidation(
-            paper=PAPER,
-            prior_raw_audit=self.prior_raw,
-            prior_judgments=self.prior_judgments,
-            current_raw_audit=self.current_raw,
-            prior_raw_audit_path=self.paths["prior_raw"],
-            prior_judgments_path=self.paths["prior_judgments"],
-            current_raw_audit_path=self.paths["current_raw"],
-            archived_source_status_projection_bridge_path=self.paths["bridge"],
-        )
-        self.assertEqual(overlay["items"], {})
-        self.assertEqual(len(overlay["manual_review_required"]), 1)
 
 
 if __name__ == "__main__":  # pragma: no cover

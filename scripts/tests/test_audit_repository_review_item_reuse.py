@@ -13,7 +13,11 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
 
-from scripts import audit_repository
+from scripts import (
+    audit_evidence_integrity,
+    audit_repository,
+    review_surface_structure,
+)
 
 
 def finding_identity(
@@ -24,7 +28,67 @@ def finding_identity(
     ]
 
 
+def legacy_source_record_state(
+    audit_payload: dict[str, object],
+    *,
+    audit_path: Path | None = None,
+    match_path: Path | None = None,
+    source_record_identity_error: str = "",
+    current_source_record_judgments: dict[str, dict[str, object]] | None = None,
+    corrected_scope_current: bool = False,
+    semantic_reuse_authority: object | None = None,
+) -> SimpleNamespace:
+    """Build the explicit raw-evidence lane used by closeout test fixtures."""
+
+    return SimpleNamespace(
+        inputs=SimpleNamespace(
+            audit_snapshot=SimpleNamespace(
+                path=audit_path or Path("audit/source_record_audit.json"),
+                payload=audit_payload,
+            ),
+            match_snapshot=SimpleNamespace(
+                path=match_path or Path("audit/source_record_match_llm.json"),
+                payload={},
+            ),
+            audit_path_error="",
+            match_path_error="",
+        ),
+        source_record_identity_error=source_record_identity_error,
+        semantic_reuse_authority=semantic_reuse_authority,
+        current_source_record_judgments=(current_source_record_judgments or {}),
+        corrected_scope_current=corrected_scope_current,
+        semantic_contract_revalidation=None,
+        semantic_contract_revalidation_error="",
+        administrative_projection_rebind=None,
+        administrative_projection_rebind_path=None,
+        administrative_projection_rebind_error="",
+        configured_assumption_regularity_context=None,
+        configured_assumption_regularity_context_error="",
+    )
+
+
 class StrictReviewItemReuseTests(unittest.TestCase):
+    def test_assumption_declarations_accept_exact_qualified_status_names(self) -> None:
+        source = "namespace Fixture\n\naxiom source_condition : Prop\n"
+
+        declarations = review_surface_structure.assumption_declarations_from_text(
+            source, {"Fixture.source_condition"}
+        )
+
+        self.assertEqual(set(declarations), {"Fixture.source_condition"})
+
+    def test_assumption_declarations_disambiguate_dotted_names(self) -> None:
+        source = (
+            "theorem First.shared : True := by trivial\n"
+            "theorem Second.shared : True := by trivial\n"
+        )
+
+        declarations = review_surface_structure.assumption_declarations_from_text(
+            source, {"First.shared", "Second.shared"}
+        )
+
+        self.assertEqual(set(declarations), {"First.shared", "Second.shared"})
+
     def test_lazy_provider_memoizes_success_and_failure(self) -> None:
         folder = Path("papers/opaque-paper-id")
         rows = (object(), object())
@@ -138,6 +202,535 @@ class StrictReviewItemReuseTests(unittest.TestCase):
 
 
 class PaperCloseoutRunContextTests(unittest.TestCase):
+    def test_current_v11_declaration_index_uses_lean_inventory_and_exact_bytes(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            papers = root / "papers"
+            paper_id = "OpaquePaper_lean_inventory"
+            folder = papers / paper_id
+            folder.mkdir(parents=True)
+            interface = folder / "PaperInterface.lean"
+            proof = folder / "ProofInterface.lean"
+            interface_text = (
+                f"namespace {paper_id}\n"
+                "def claimSpec : Prop :=\n  True\n"
+                f"end {paper_id}\n"
+            )
+            proof_text = (
+                f"namespace {paper_id}\n"
+                "theorem claim : claimSpec := by trivial\n"
+                f"end {paper_id}\n"
+            )
+            interface.write_text(interface_text, encoding="utf-8")
+            proof.write_text(proof_text, encoding="utf-8")
+            entry_module = f"{paper_id}.ProofInterface"
+            closure = {
+                "entrypoint": proof.relative_to(root).as_posix(),
+                "entry_module": entry_module,
+                "sources": [
+                    {
+                        "module": f"{paper_id}.PaperInterface",
+                        "path": interface.relative_to(root).as_posix(),
+                    },
+                    {
+                        "module": entry_module,
+                        "path": proof.relative_to(root).as_posix(),
+                    },
+                ],
+            }
+            specification = f"{paper_id}.claimSpec"
+            theorem = f"{paper_id}.claim"
+            evidence_context = SimpleNamespace(
+                folder=folder.resolve(),
+                issued_by_builder=True,
+                audit_payload={"lean_import_closure": closure},
+                statement_map={
+                    "items": {
+                        "claim": {
+                            "semantic_contract": {
+                                "spec_declaration": specification,
+                                "evidence_declaration": theorem,
+                                "evidence_mode": "proves",
+                            }
+                        }
+                    }
+                },
+            )
+            provider = mock.Mock()
+            provider.repository_source_snapshot.return_value = (
+                (
+                    f"{paper_id}.PaperInterface",
+                    interface.resolve(),
+                    interface_text.encode("utf-8"),
+                    "a" * 64,
+                ),
+                (
+                    entry_module,
+                    proof.resolve(),
+                    proof_text.encode("utf-8"),
+                    "b" * 64,
+                ),
+            )
+            inventory = {
+                "source_declarations": [],
+                "declarations": [
+                    {
+                        "declaration": specification,
+                        "review_owner_declaration": specification,
+                        "generated_from_owner": False,
+                        "paper_owned": True,
+                        "module": f"{paper_id}.PaperInterface",
+                        "declaration_kind": "definition",
+                        "source_presented": True,
+                        "source_range": {
+                            "line_start": 2,
+                            "column_start": 0,
+                            "line_end": 3,
+                            "column_end": 6,
+                        },
+                    },
+                    {
+                        "declaration": theorem,
+                        "review_owner_declaration": theorem,
+                        "generated_from_owner": False,
+                        "paper_owned": True,
+                        "module": entry_module,
+                        "declaration_kind": "theorem",
+                        "source_presented": True,
+                        "source_range": {
+                            "line_start": 2,
+                            "column_start": 0,
+                            "line_end": 2,
+                            "column_end": len(
+                                "theorem claim : claimSpec := by trivial"
+                            ),
+                        },
+                    },
+                ],
+            }
+            surface = SimpleNamespace(
+                declaration_inventory=inventory,
+                module_sources={
+                    f"{paper_id}.PaperInterface": (
+                        interface.resolve(),
+                        interface_text.encode("utf-8"),
+                    ),
+                    entry_module: (proof.resolve(), proof_text.encode("utf-8")),
+                },
+                library_source_declarations={},
+                build_input_provider=provider,
+            )
+            with (
+                mock.patch.object(audit_repository, "ROOT", root),
+                mock.patch.object(audit_repository, "PAPERS", papers),
+                mock.patch.object(
+                    audit_repository,
+                    "RepositoryBuildInputSnapshotProvider",
+                    return_value=provider,
+                ),
+                mock.patch.object(
+                    audit_repository, "exact_evidence_run_context", return_value=True
+                ),
+                mock.patch.object(
+                    audit_repository,
+                    "paper_closeout_v11_direct_semantic_review_state",
+                    return_value=(True, ""),
+                ),
+                mock.patch.object(
+                    audit_repository,
+                    "paper_closeout_v11_lean_review_surface",
+                    return_value=surface,
+                ),
+                mock.patch.object(
+                    audit_repository,
+                    "lean_declaration_index_from_source_bytes",
+                    side_effect=AssertionError(
+                        "current v11 declaration indexing must use Lean's typed inventory"
+                    ),
+                ) as native,
+            ):
+                context = audit_repository.PaperCloseoutRunContext(
+                    paper_id, folder, evidence_context=evidence_context
+                )
+                exact_sources = context.lean_owned_source_snapshots()
+                declaration_index = context.paper_declaration_index()
+
+            resolved_spec = audit_repository.resolve_declaration_name(
+                declaration_index, "claimSpec"
+            )
+            resolved_proof = audit_repository.resolve_declaration_name(
+                declaration_index, "claim"
+            )
+            self.assertEqual(len(resolved_spec), 1)
+            self.assertEqual(len(resolved_proof), 1)
+            self.assertEqual(
+                exact_sources,
+                {
+                    interface.resolve(): interface_text.encode("utf-8"),
+                    proof.resolve(): proof_text.encode("utf-8"),
+                },
+            )
+            self.assertEqual(resolved_spec[0].source, "def claimSpec : Prop :=\n  True")
+            self.assertEqual(resolved_proof[0].kind, "theorem")
+            self.assertEqual(
+                audit_repository.qualified_declaration_identity(resolved_proof[0]),
+                theorem,
+            )
+            native.assert_not_called()
+            provider.repository_source_snapshot.assert_not_called()
+
+    def test_current_v11_context_uses_live_lean_instead_of_stale_raw_closure(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "OpaquePaper_v11"
+            folder.mkdir()
+            legacy_closure = {"entry_module": "OpaquePaper_v11.PaperInterface"}
+            evidence_context = SimpleNamespace(
+                folder=folder.resolve(),
+                issued_by_builder=True,
+                status="formalized",
+                audit_payload={"lean_import_closure": legacy_closure},
+                source_record_identity_error="legacy import bytes changed",
+                semantic_reuse_authority=None,
+            )
+            shared_provider = mock.Mock()
+            surface = SimpleNamespace(build_input_provider=shared_provider)
+            with (
+                mock.patch.object(
+                    audit_repository, "exact_evidence_run_context", return_value=True
+                ),
+                mock.patch.object(
+                    audit_repository,
+                    "paper_closeout_v11_direct_semantic_review_state",
+                    return_value=(True, ""),
+                ),
+                mock.patch.object(
+                    audit_repository,
+                    "paper_closeout_v11_lean_review_surface",
+                    return_value=surface,
+                ),
+                mock.patch.object(
+                    audit_repository,
+                    "RepositoryBuildInputSnapshotProvider",
+                    return_value=mock.Mock(),
+                ) as provider_factory,
+            ):
+                context = audit_repository.PaperCloseoutRunContext.from_exact_evidence_context(
+                    folder.name, folder, evidence_context=evidence_context
+                )
+
+        self.assertTrue(context.v11_direct_semantic_review_current)
+        self.assertIs(context.build_input_provider, shared_provider)
+        provider_factory.assert_not_called()
+
+    def test_selected_v11_context_retains_graph_when_semantic_judgment_fails(self) -> None:
+        """A real v11 finding must not be masked by retired source transport."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "OpaquePaper_v11_finding"
+            folder.mkdir(parents=True)
+            interface = folder / "PaperInterface.lean"
+            paper_id = folder.name
+            interface_bytes = (
+                f"namespace {paper_id}\n"
+                "def reviewedSpec : Prop := True\n"
+                f"end {paper_id}\n"
+            ).encode("utf-8")
+            interface.write_bytes(interface_bytes)
+            library = root / "AppliedModelingLib" / "Fixture.lean"
+            library.parent.mkdir()
+            library.write_text(
+                "namespace AppliedModelingLib\ndef fixture : Prop := True\nend AppliedModelingLib\n",
+                encoding="utf-8",
+            )
+            legacy_closure = {"entry_module": "Retired.Legacy"}
+            evidence_context = SimpleNamespace(
+                folder=folder.resolve(),
+                issued_by_builder=True,
+                status="formalized",
+                audit_payload={"lean_import_closure": legacy_closure},
+                source_record_identity_error="",
+                semantic_reuse_authority=None,
+                v11_lean_claim_graph_selected=True,
+                source_semantic_lane=(
+                    audit_evidence_integrity.V11_LEAN_CLAIM_GRAPH_EVIDENCE_LANE
+                ),
+            )
+            shared_provider = mock.Mock()
+            reviewed_spec = f"{paper_id}.reviewedSpec"
+            surface = SimpleNamespace(
+                build_input_provider=shared_provider,
+                module_sources={
+                    f"{paper_id}.PaperInterface": (
+                        interface.resolve(),
+                        interface_bytes,
+                    )
+                },
+                declaration_inventory={
+                    "declarations": [
+                        {
+                            "declaration": reviewed_spec,
+                            "review_owner_declaration": reviewed_spec,
+                            "generated_from_owner": False,
+                            "paper_owned": True,
+                            "module": f"{paper_id}.PaperInterface",
+                            "declaration_kind": "definition",
+                            "source_presented": True,
+                            "source_range": {
+                                "line_start": 2,
+                                "column_start": 0,
+                                "line_end": 2,
+                                "column_end": len(
+                                    "def reviewedSpec : Prop := True"
+                                ),
+                            },
+                        }
+                    ]
+                },
+                library_source_declarations={
+                    "AppliedModelingLib.fixture": {
+                        "source_path": library.resolve(),
+                        "source": "def fixture : Prop := True",
+                        "source_range": {
+                            "line_start": 2,
+                            "column_start": 0,
+                            "line_end": 2,
+                            "column_end": len("def fixture : Prop := True"),
+                        },
+                        "declaration_kind": "definition",
+                    }
+                },
+            )
+            with (
+                mock.patch.object(audit_repository, "ROOT", root),
+                mock.patch.object(
+                    audit_repository, "exact_evidence_run_context", return_value=True
+                ),
+                mock.patch.object(
+                    audit_repository,
+                    "paper_closeout_v11_direct_semantic_review_state",
+                    return_value=(False, "library judgment is stale"),
+                ),
+                mock.patch.object(
+                    audit_repository,
+                    "paper_closeout_v11_lean_review_surface",
+                    return_value=surface,
+                ) as retained_graph,
+                mock.patch.object(
+                    audit_repository,
+                    "RepositoryBuildInputSnapshotProvider",
+                    return_value=mock.Mock(),
+                ) as provider_factory,
+                mock.patch.object(
+                    audit_repository,
+                    "lean_declaration_index_from_source_bytes",
+                    side_effect=AssertionError(
+                        "selected v11 graph fell back to Python source parsing"
+                    ),
+                ),
+            ):
+                context = audit_repository.PaperCloseoutRunContext.from_exact_evidence_context(
+                    folder.name, folder, evidence_context=evidence_context
+                )
+                snapshots = context.lean_owned_source_snapshots()
+                paper_declarations = context.paper_declaration_index()
+                library_declarations = context.library_declaration_index()
+                selected_v11_closeout = context.selected_v11_closeout
+                current_v11_closeout = context.current_v11_closeout
+
+        self.assertFalse(context.v11_direct_semantic_review_current)
+        self.assertTrue(context.v11_lean_claim_graph_selected)
+        self.assertTrue(selected_v11_closeout)
+        self.assertFalse(current_v11_closeout)
+        self.assertEqual(context.v11_direct_semantic_review_error, "library judgment is stale")
+        self.assertEqual(snapshots, {interface.resolve(): interface_bytes})
+        self.assertEqual(
+            len(
+                audit_repository.resolve_declaration_name(
+                    paper_declarations, "reviewedSpec"
+                )
+            ),
+            1,
+        )
+        self.assertEqual(
+            len(
+                audit_repository.resolve_declaration_name(
+                    library_declarations, "AppliedModelingLib.fixture"
+                )
+            ),
+            1,
+        )
+        self.assertIs(context.build_input_provider, shared_provider)
+        retained_graph.assert_called_once_with(folder, evidence_context)
+        provider_factory.assert_not_called()
+
+    def test_exact_transaction_skew_stops_before_v11_graph_construction(self) -> None:
+        """A predetermined raw/map mismatch must not launch derived Lean work."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "OpaquePaper_skew"
+            folder.mkdir()
+            evidence_context = SimpleNamespace(
+                folder=folder.resolve(),
+                issued_by_builder=True,
+                audit_payload={},
+                semantic_reuse_authority=None,
+            )
+            skew = audit_repository.Finding(
+                "ERROR",
+                folder / "audit" / "source_record_audit.json",
+                "exact source-map transaction skew",
+            )
+            with (
+                mock.patch.object(
+                    audit_repository, "exact_evidence_run_context", return_value=True
+                ),
+                mock.patch.object(
+                    audit_repository,
+                    "paper_closeout_source_record_transaction_skew_findings",
+                    return_value=[skew],
+                ),
+                mock.patch.object(
+                    audit_repository,
+                    "paper_closeout_v11_direct_semantic_review_state",
+                ) as semantic_state,
+            ):
+                context = audit_repository.PaperCloseoutRunContext(
+                    folder.name, folder, evidence_context=evidence_context
+                )
+
+        self.assertFalse(context.v11_direct_semantic_review_current)
+        self.assertEqual(
+            context.v11_direct_semantic_review_error,
+            "exact source-map transaction skew",
+        )
+        semantic_state.assert_not_called()
+
+    def test_selected_v11_missing_graph_never_instantiates_legacy_provider(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "OpaquePaper_missing_graph"
+            folder.mkdir()
+            evidence_context = SimpleNamespace(
+                folder=folder.resolve(),
+                issued_by_builder=True,
+                status="formalized",
+                audit_payload={"lean_import_closure": {"entry_module": "Retired"}},
+                semantic_reuse_authority=None,
+                v11_lean_claim_graph_selected=True,
+            )
+            with (
+                mock.patch.object(
+                    audit_repository, "exact_evidence_run_context", return_value=True
+                ),
+                mock.patch.object(
+                    audit_repository,
+                    "paper_closeout_v11_direct_semantic_review_state",
+                    return_value=(False, "the selected Lean graph is unavailable"),
+                ),
+                mock.patch.object(
+                    audit_repository,
+                    "paper_closeout_v11_lean_review_surface",
+                    return_value=None,
+                ),
+                mock.patch.object(
+                    audit_repository,
+                    "RepositoryBuildInputSnapshotProvider",
+                ) as provider_factory,
+            ):
+                context = audit_repository.PaperCloseoutRunContext.from_exact_evidence_context(
+                    folder.name, folder, evidence_context=evidence_context
+                )
+                selected_v11_closeout = context.selected_v11_closeout
+
+        self.assertTrue(selected_v11_closeout)
+        self.assertIsNone(context.build_input_provider)
+        provider_factory.assert_not_called()
+
+    def test_selected_v11_statement_check_defers_to_current_evidence_owner(
+        self,
+    ) -> None:
+        folder = Path("/tmp/OpaquePaper_selected_statement")
+        run_context = SimpleNamespace(selected_v11_closeout=True)
+        with (
+            mock.patch.object(
+                audit_repository,
+                "paper_statement_map_declaration_findings",
+                side_effect=AssertionError(
+                    "selected v11 replayed the legacy declaration checker"
+                ),
+            ),
+            mock.patch.object(
+                audit_repository,
+                "evaluate_author_approved_corrected_scope",
+                return_value=False,
+            ),
+            mock.patch.object(
+                audit_repository,
+                "semantic_contract_closeout_bridge_is_current",
+                side_effect=AssertionError("selected v11 entered a legacy dashboard lane"),
+            ),
+        ):
+            findings = audit_repository.paper_statement_sidecar_findings(
+                folder.name,
+                folder,
+                "formalized",
+                status_payload_override={"status": "formalized"},
+                run_context=run_context,  # type: ignore[arg-type]
+            )
+
+        self.assertEqual(findings, [])
+
+    def test_selected_invalid_v11_source_record_check_never_runs_legacy_audit(
+        self,
+    ) -> None:
+        folder = Path("/tmp/OpaquePaper_selected_source_record")
+        run_context = SimpleNamespace(
+            selected_v11_closeout=True,
+            current_v11_closeout=False,
+            v11_direct_semantic_review_error="library review is stale",
+        )
+        with mock.patch.object(
+            audit_repository,
+            "run_source_record_audit_helper",
+            side_effect=AssertionError("selected v11 ran the raw source-record audit"),
+        ):
+            findings = audit_repository.check_source_record_audit(
+                folder.name,
+                folder,
+                {},
+                "formalized",
+                True,
+                paper_closeout=True,
+                run_context=run_context,  # type: ignore[arg-type]
+            )
+
+        self.assertEqual(len(findings), 1)
+        self.assertIn("selected v11 semantic lane is not current", findings[0].message)
+        self.assertIn("library review is stale", findings[0].message)
+
+    def test_selected_v11_never_calls_legacy_explicit_model_gate(self) -> None:
+        folder = Path("/tmp/OpaquePaper_selected_explicit_model")
+        run_context = SimpleNamespace(selected_v11_closeout=True)
+        with mock.patch.object(
+            audit_evidence_integrity,
+            "explicit_source_route_semantic_model_findings",
+            side_effect=AssertionError(
+                "selected v11 called the legacy explicit-model gate"
+            ),
+        ):
+            findings = (
+                audit_repository.check_explicit_source_route_semantic_model_evidence(
+                    folder,
+                    "formalized",
+                    {},
+                    run_context=run_context,  # type: ignore[arg-type]
+                )
+            )
+
+        self.assertEqual(findings, [])
+
     def test_manifest_reuse_rows_require_exact_current_evidence_context(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             folder = Path(temp_dir) / "OpaquePaper_623"
@@ -155,14 +748,15 @@ class PaperCloseoutRunContextTests(unittest.TestCase):
             current_evidence = SimpleNamespace(
                 folder=folder.resolve(),
                 issued_by_builder=True,
-                audit_payload=payload,
-                source_record_identity_error="",
+                legacy_source_record_state=legacy_source_record_state(payload),
             )
             stale_evidence = SimpleNamespace(
                 folder=folder.resolve(),
                 issued_by_builder=True,
-                audit_payload=payload,
-                source_record_identity_error="stale source fingerprint",
+                legacy_source_record_state=legacy_source_record_state(
+                    payload,
+                    source_record_identity_error="stale source fingerprint",
+                ),
             )
             with (
                 mock.patch.object(
@@ -227,7 +821,7 @@ class PaperCloseoutRunContextTests(unittest.TestCase):
             evidence_context = SimpleNamespace(
                 folder=folder.resolve(),
                 issued_by_builder=True,
-                audit_payload=audit_payload,
+                legacy_source_record_state=legacy_source_record_state(audit_payload),
             )
             build_input_provider = mock.Mock()
             build_input_provider.repository_source_snapshot.return_value = (
@@ -302,12 +896,14 @@ class PaperCloseoutRunContextTests(unittest.TestCase):
             evidence_context = SimpleNamespace(
                 folder=folder.resolve(),
                 issued_by_builder=True,
-                audit_payload={
-                    "lean_import_closure": {
-                        "entrypoint": interface.relative_to(root).as_posix(),
-                        "entry_module": entry_module,
+                legacy_source_record_state=legacy_source_record_state(
+                    {
+                        "lean_import_closure": {
+                            "entrypoint": interface.relative_to(root).as_posix(),
+                            "entry_module": entry_module,
+                        }
                     }
-                },
+                ),
             )
             provider = mock.Mock()
             provider.repository_source_snapshot.return_value = (
@@ -356,12 +952,14 @@ class PaperCloseoutRunContextTests(unittest.TestCase):
             self.assertEqual(exact_interface, interface_text)
             self.assertEqual(exact_assumptions, assumption_text)
             self.assertEqual(
-                audit_repository.review_rows_from_interface_text(exact_interface or ""),
+                review_surface_structure.review_rows_from_interface_text(
+                    exact_interface or ""
+                ),
                 [(2, "reviewed_result")],
             )
             self.assertIn(
                 "source_condition",
-                audit_repository.assumption_declarations_from_text(
+                review_surface_structure.assumption_declarations_from_text(
                     exact_assumptions or "", {"source_condition"}
                 ),
             )
@@ -416,12 +1014,14 @@ class PaperCloseoutRunContextTests(unittest.TestCase):
             evidence_context = SimpleNamespace(
                 folder=folder.resolve(),
                 issued_by_builder=True,
-                audit_payload={
-                    "lean_import_closure": {
-                        "entrypoint": interface.relative_to(root).as_posix(),
-                        "entry_module": entry_module,
+                legacy_source_record_state=legacy_source_record_state(
+                    {
+                        "lean_import_closure": {
+                            "entrypoint": interface.relative_to(root).as_posix(),
+                            "entry_module": entry_module,
+                        }
                     }
-                },
+                ),
                 input_snapshots=snapshots,
                 source_proof_fidelity_snapshot=snapshots[-1],
             )
@@ -521,12 +1121,14 @@ class PaperCloseoutRunContextTests(unittest.TestCase):
             evidence_context = SimpleNamespace(
                 folder=folder.resolve(),
                 issued_by_builder=True,
-                audit_payload={
-                    "lean_import_closure": {
-                        "entrypoint": interface.relative_to(root).as_posix(),
-                        "entry_module": entry_module,
+                legacy_source_record_state=legacy_source_record_state(
+                    {
+                        "lean_import_closure": {
+                            "entrypoint": interface.relative_to(root).as_posix(),
+                            "entry_module": entry_module,
+                        }
                     }
-                },
+                ),
                 input_snapshots=(
                     SimpleNamespace(
                         path=status_path,
@@ -590,6 +1192,13 @@ class PaperCloseoutRunContextTests(unittest.TestCase):
             self.assertFalse(  # type: ignore[attr-defined]
                 first.is_file(folder / "audit" / "statement_match_llm.json")
             )
+            with mock.patch.object(
+                audit_repository.PaperCloseoutRunContext,
+                "selected_v11_closeout",
+                new_callable=mock.PropertyMock,
+                return_value=True,
+            ):
+                self.assertIsNone(context.dashboard_audit_inputs())
 
     def test_statement_and_assumption_judgments_use_exact_json_snapshots(
         self,
@@ -640,12 +1249,14 @@ class PaperCloseoutRunContextTests(unittest.TestCase):
             evidence_context = SimpleNamespace(
                 folder=folder.resolve(),
                 issued_by_builder=True,
-                audit_payload={
-                    "lean_import_closure": {
-                        "entrypoint": interface.relative_to(root).as_posix(),
-                        "entry_module": entry_module,
+                legacy_source_record_state=legacy_source_record_state(
+                    {
+                        "lean_import_closure": {
+                            "entrypoint": interface.relative_to(root).as_posix(),
+                            "entry_module": entry_module,
+                        }
                     }
-                },
+                ),
                 input_snapshots=snapshots,
             )
             provider = mock.Mock()
@@ -851,11 +1462,13 @@ class PaperCloseoutRunContextTests(unittest.TestCase):
             issued_by_builder=True,
             status_payload=status,
             corrected_scope_current=True,
-            source_record_identity_error="",
-            audit_payload=payload,
-            audit_snapshot=SimpleNamespace(path=audit_path, payload=payload),
-            match_snapshot=SimpleNamespace(path=judgment_path),
-            current_source_record_judgments=judgments,
+            legacy_source_record_state=legacy_source_record_state(
+                payload,
+                audit_path=audit_path,
+                match_path=judgment_path,
+                current_source_record_judgments=judgments,
+                corrected_scope_current=True,
+            ),
         )
         with mock.patch.object(
             audit_repository, "exact_evidence_run_context", return_value=True
@@ -1225,20 +1838,6 @@ class PaperCloseoutRunContextTests(unittest.TestCase):
                         return_value={},
                     )
                 )
-                stack.enter_context(
-                    mock.patch.object(
-                        audit_repository,
-                        "assumption_declarations_from_file",
-                        return_value={},
-                    )
-                )
-                stack.enter_context(
-                    mock.patch.object(
-                        audit_repository,
-                        "assumption_premises_from_file",
-                        return_value={},
-                    )
-                )
                 corrected_scope = stack.enter_context(
                     mock.patch.object(
                         audit_repository,
@@ -1448,7 +2047,7 @@ class PaperCloseoutRunContextTests(unittest.TestCase):
                     [spec_name, proof_name],
                     set(),
                     "partially formalized",
-                    paper_closeout=True,
+                    paper_closeout=False,
                     review_items_provider=provider_arg,
                 )
                 return sidecar, conditional, proposition
@@ -1479,7 +2078,9 @@ class PaperCloseoutRunContextTests(unittest.TestCase):
                 ),
             ):
                 baseline = run_all(None)
-                self.assertEqual(dashboard_rows.call_count, 3)
+                # Two diagnostic consumers extract rows without a shared
+                # provider; canonical closeout no longer uses this parser lane.
+                self.assertEqual(dashboard_rows.call_count, 2)
 
                 dashboard_rows.reset_mock()
                 provider = audit_repository.LazyStrictReviewItems(folder)

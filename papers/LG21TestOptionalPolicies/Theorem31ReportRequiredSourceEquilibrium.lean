@@ -14,8 +14,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 open MeasureTheory
 
 /--
@@ -441,7 +441,7 @@ theorem paper_theorem3_1_report_required_source_equilibriumAE_of_no_take_mixture
           (takeEstimate base) (fun _skill : ℝ => noTakeEstimate base) := by
     intro base
     exact
-      EconCSLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
+      AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
         (fun skill => hdecision_payoff base skill)
   have hEq :
       lg21SourceEquilibriumAE μ

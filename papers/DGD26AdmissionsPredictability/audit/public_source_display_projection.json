@@ -1,20 +1,22 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "DGD26AdmissionsPredictability",
-  "private_source_map_sha256": "ded9c0c24a1abd3fea80546ed8297eac02aefb1dd637c2d2385321f028c819b9",
+  "private_source_map_sha256": "8b43abc54c008aa739aadfeaf5bbf8fa5a68592a576d75a0fc3f3773e969fe0f",
   "public_manifest_path": "papers/DGD26AdmissionsPredictability/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "5c02e8a02b5c3f23f1a4b6d3d6524e16506238fa0c3f10dd87bdc66d34ceef0e",
+  "public_source_map_sha256": "086ef880804db944dbe8c8543f06053a0c1e445aef5fb5fa463e31a68a74c8e6",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
   "selected_source_item_ids": [
     "definition_borderline_set",
     "definition_choice_distance",
+    "definition_choice_function_model",
     "definition_consistency",
     "definition_d_instability",
     "definition_general_variability",
     "definition_independence",
     "definition_lap_assignment_choice",
+    "definition_lap_model_objective",
     "definition_lap_slot_order",
     "definition_lap_slot_order_equivalence",
     "definition_main_variability",
@@ -93,6 +95,18 @@
       ],
       "source_kind": "definition"
     },
+    "definition_choice_function_model": {
+      "source_anchors": [
+        {
+          "line_end": 181,
+          "line_start": 172,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\subsection{Choice Functions}\n\nMany admissions processes have capacity constraints (either perceived or actual). This fact gives rise to what we call \\textit{cohort-dependence}: an applicant's acceptance decision depends on not only their own characteristics, but also the number and characteristics of other applicants.\n\n\\textit{Choice functions} formalize admission decision processes and allow modeling such dependence. \nA choice function describes the behavior of ``choosing'' elements from a set of available options, and is commonly used in economic models. Formally, a choice function over the universe $\\calX$ is a function $\\choice: 2^\\calX \\to 2^\\calX$ that maps all subsets $X$ of $\\calX$ to the accepted set $\\choice(X)$, where $\\choice(X) \\subseteq X$. As our motivation focuses on real applicant datasets, we consider finite subsets. \n\nRecalling admissions data, the binary admissions label $y$ for student $x$ is 1 if $x \\in \\choice(X)$ and 0 otherwise.\nTo aid in our discussion, we will slightly abuse notation to relate pairs $(x_i,y_i)$ to the choice function $\\mathcal C(X)$ where $x_i\\in X$. \nDefine $\\mathcal C(X)_i$ as 1 if $x_i\\in \\mathcal C(X)$ and 0 otherwise; this allows us to write the label $y_i=\\mathcal C(X)_i$.",
+          "quoted_text_sha256": "cac9189691d18215ab2870f87ac70ab597190ff0a58ac938a7b012140646dd34"
+        }
+      ],
+      "source_kind": "definition"
+    },
     "definition_consistency": {
       "source_anchors": [
         {
@@ -151,7 +165,19 @@
           "quoted_text_sha256": "022bb0f6d7d027eb8215da396fa78b916946102d6b5eb3c7b9867077a3f164d8"
         }
       ],
-      "source_kind": "model"
+      "source_kind": "definition"
+    },
+    "definition_lap_model_objective": {
+      "source_anchors": [
+        {
+          "line_end": 1084,
+          "line_start": 1073,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\subsubsection{Linear Assignment Problems} \\label{sec:lap-proofs}\n\nWe highlight \\textit{linear assignment problems} as a generalization of sequential composition. \nThe linear sum assignment problem can be represented as a bipartite graph matching. \nOne one side of the graph are applicants, and on the other are available admissions slots.\nEdges connect these nodes according to how well suited each applicant is for each slot.\nThe admissions decision is made by selecting edges which have maximal sum, subject to the constraint that each applicant and each slot is selected only once.\n\nConsider all edges connecting to slot $s$; then for each element  $x_j \\in X$ there is a real number weight $w(x_j, s)$. Then sorting $x \\in \\calX$ by $w(x,s)$ creates a total ordering, which we call $\\succ_s$. Let slot $s'$ be \\textit{equivalent} to \nto slot $s$ if and only if $\\succ_{s'} = \\succ_{s}$. \nWe will assume for simplicity that weights are defined such that ties do not occur.\nLet assignment $A$ be the set of pairs $\\{(x_{s_1}, s_1), ..., (x_{s_q}, s_q)\\}$.",
+          "quoted_text_sha256": "1059f9c1981ec4a0b4f9794944db2efa087cf8e0fe4e8d2ec70fc16e5522f8d5"
+        }
+      ],
+      "source_kind": "definition"
     },
     "definition_lap_slot_order": {
       "source_anchors": [
@@ -405,13 +431,6 @@
           "publication_locator": "cited publication",
           "quoted_text": "\\begin{restatable}[]{proposition}{empiricalmethods} \n\\label{prop:program-variability}\nAll considered choice functions ({Ed. Opt}, {Screened/Open}, {Ed. Opt with DIA}, and {Screened/Open with DIA}) are $1$-unstable. Furthermore, their variability is (tightly) equal to their number of queues: \n\n\\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]\n    \\item Screened/Open programs are $1$-variable\n    \\item Screened/Open with DIA programs are $2$-variable\n    \\item Ed. Opt. programs are $3$-variable\n    \\item Ed. Opt with DIA programs are $6$-variable\n\\end{itemize}\n\n\\end{restatable}",
           "quoted_text_sha256": "fa5aad8fd36c5d394fba9757f98e190d8ab7f8aaf6240f5a587fee4d987c47eb"
-        },
-        {
-          "line_end": 1158,
-          "line_start": 1150,
-          "publication_locator": "cited publication",
-          "quoted_text": "\\subsection{Proof of \\Cref{prop:program-variability}} \\label{sec:program-prop-proof}\n\nRecall \\Cref{prop:program-variability}:\n\\empiricalmethods*\n\nWe construct applicant sets to prove the variability of each empirical method we study, showing that the upper bound from \\Cref{thm:variability} based on the number of queues is tight.\n\nNote that both Screened and Open programs are explicitly a ranking, and therefore have variability $1$ by  \\Cref{thm:variability}. \nScreened and Open programs with DIA are upper-bounded by variability 2, as they are composed of two queues. It is easy to see that this upper bound is tight. Consider an applicant pool $X$ where the lowest-ranking students in the DIA queue is lower-ranked than the lowest-ranked student in the non-DIA queue. Then $A_\\choice(X)$ contains two elements -- adding a new DIA-qualified student might lead to rejecting the lowest-ranked student in the DIA queue, while a non-DIA student would lead to a change in the non-DIA queue. Similarly, in the three-queue Ed. Opt. case, the variability $3$ bound is tight, as there are applicant pools where adding a single high-, middle-, or low-category student would displace a different student in the corresponding queue. Likewise, the six queues in Ed. Opt. with DIA programs lead to six diffrent students who might be displaced depending on what category a new applicant falls into.",
-          "quoted_text_sha256": "6c2d6098e2b3c1400451a8e44ce5db10a6ec758755d2362c47a45ee8769c0c51"
         }
       ],
       "source_kind": "proposition"
@@ -424,13 +443,6 @@
           "publication_locator": "cited publication",
           "quoted_text": "\\begin{restatable}[]{proposition}{empiricalmethods} \n\\label{prop:program-variability}\nAll considered choice functions ({Ed. Opt}, {Screened/Open}, {Ed. Opt with DIA}, and {Screened/Open with DIA}) are $1$-unstable. Furthermore, their variability is (tightly) equal to their number of queues: \n\n\\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]\n    \\item Screened/Open programs are $1$-variable\n    \\item Screened/Open with DIA programs are $2$-variable\n    \\item Ed. Opt. programs are $3$-variable\n    \\item Ed. Opt with DIA programs are $6$-variable\n\\end{itemize}\n\n\\end{restatable}",
           "quoted_text_sha256": "fa5aad8fd36c5d394fba9757f98e190d8ab7f8aaf6240f5a587fee4d987c47eb"
-        },
-        {
-          "line_end": 1158,
-          "line_start": 1150,
-          "publication_locator": "cited publication",
-          "quoted_text": "\\subsection{Proof of \\Cref{prop:program-variability}} \\label{sec:program-prop-proof}\n\nRecall \\Cref{prop:program-variability}:\n\\empiricalmethods*\n\nWe construct applicant sets to prove the variability of each empirical method we study, showing that the upper bound from \\Cref{thm:variability} based on the number of queues is tight.\n\nNote that both Screened and Open programs are explicitly a ranking, and therefore have variability $1$ by  \\Cref{thm:variability}. \nScreened and Open programs with DIA are upper-bounded by variability 2, as they are composed of two queues. It is easy to see that this upper bound is tight. Consider an applicant pool $X$ where the lowest-ranking students in the DIA queue is lower-ranked than the lowest-ranked student in the non-DIA queue. Then $A_\\choice(X)$ contains two elements -- adding a new DIA-qualified student might lead to rejecting the lowest-ranked student in the DIA queue, while a non-DIA student would lead to a change in the non-DIA queue. Similarly, in the three-queue Ed. Opt. case, the variability $3$ bound is tight, as there are applicant pools where adding a single high-, middle-, or low-category student would displace a different student in the corresponding queue. Likewise, the six queues in Ed. Opt. with DIA programs lead to six diffrent students who might be displaced depending on what category a new applicant falls into.",
-          "quoted_text_sha256": "6c2d6098e2b3c1400451a8e44ce5db10a6ec758755d2362c47a45ee8769c0c51"
         }
       ],
       "source_kind": "proposition"
@@ -663,13 +675,6 @@
           "publication_locator": "cited publication",
           "quoted_text": "\\begin{restatable}[]{proposition}{empiricalmethods} \n\\label{prop:program-variability}\nAll considered choice functions ({Ed. Opt}, {Screened/Open}, {Ed. Opt with DIA}, and {Screened/Open with DIA}) are $1$-unstable. Furthermore, their variability is (tightly) equal to their number of queues: \n\n\\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]\n    \\item Screened/Open programs are $1$-variable\n    \\item Screened/Open with DIA programs are $2$-variable\n    \\item Ed. Opt. programs are $3$-variable\n    \\item Ed. Opt with DIA programs are $6$-variable\n\\end{itemize}\n\n\\end{restatable}",
           "quoted_text_sha256": "fa5aad8fd36c5d394fba9757f98e190d8ab7f8aaf6240f5a587fee4d987c47eb"
-        },
-        {
-          "line_end": 1158,
-          "line_start": 1150,
-          "publication_locator": "cited publication",
-          "quoted_text": "\\subsection{Proof of \\Cref{prop:program-variability}} \\label{sec:program-prop-proof}\n\nRecall \\Cref{prop:program-variability}:\n\\empiricalmethods*\n\nWe construct applicant sets to prove the variability of each empirical method we study, showing that the upper bound from \\Cref{thm:variability} based on the number of queues is tight.\n\nNote that both Screened and Open programs are explicitly a ranking, and therefore have variability $1$ by  \\Cref{thm:variability}. \nScreened and Open programs with DIA are upper-bounded by variability 2, as they are composed of two queues. It is easy to see that this upper bound is tight. Consider an applicant pool $X$ where the lowest-ranking students in the DIA queue is lower-ranked than the lowest-ranked student in the non-DIA queue. Then $A_\\choice(X)$ contains two elements -- adding a new DIA-qualified student might lead to rejecting the lowest-ranked student in the DIA queue, while a non-DIA student would lead to a change in the non-DIA queue. Similarly, in the three-queue Ed. Opt. case, the variability $3$ bound is tight, as there are applicant pools where adding a single high-, middle-, or low-category student would displace a different student in the corresponding queue. Likewise, the six queues in Ed. Opt. with DIA programs lead to six diffrent students who might be displaced depending on what category a new applicant falls into.",
-          "quoted_text_sha256": "6c2d6098e2b3c1400451a8e44ce5db10a6ec758755d2362c47a45ee8769c0c51"
         }
       ],
       "source_kind": "proposition"
@@ -742,13 +747,6 @@
           "publication_locator": "cited publication",
           "quoted_text": "\\begin{restatable}[]{proposition}{empiricalmethods} \n\\label{prop:program-variability}\nAll considered choice functions ({Ed. Opt}, {Screened/Open}, {Ed. Opt with DIA}, and {Screened/Open with DIA}) are $1$-unstable. Furthermore, their variability is (tightly) equal to their number of queues: \n\n\\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]\n    \\item Screened/Open programs are $1$-variable\n    \\item Screened/Open with DIA programs are $2$-variable\n    \\item Ed. Opt. programs are $3$-variable\n    \\item Ed. Opt with DIA programs are $6$-variable\n\\end{itemize}\n\n\\end{restatable}",
           "quoted_text_sha256": "fa5aad8fd36c5d394fba9757f98e190d8ab7f8aaf6240f5a587fee4d987c47eb"
-        },
-        {
-          "line_end": 1158,
-          "line_start": 1150,
-          "publication_locator": "cited publication",
-          "quoted_text": "\\subsection{Proof of \\Cref{prop:program-variability}} \\label{sec:program-prop-proof}\n\nRecall \\Cref{prop:program-variability}:\n\\empiricalmethods*\n\nWe construct applicant sets to prove the variability of each empirical method we study, showing that the upper bound from \\Cref{thm:variability} based on the number of queues is tight.\n\nNote that both Screened and Open programs are explicitly a ranking, and therefore have variability $1$ by  \\Cref{thm:variability}. \nScreened and Open programs with DIA are upper-bounded by variability 2, as they are composed of two queues. It is easy to see that this upper bound is tight. Consider an applicant pool $X$ where the lowest-ranking students in the DIA queue is lower-ranked than the lowest-ranked student in the non-DIA queue. Then $A_\\choice(X)$ contains two elements -- adding a new DIA-qualified student might lead to rejecting the lowest-ranked student in the DIA queue, while a non-DIA student would lead to a change in the non-DIA queue. Similarly, in the three-queue Ed. Opt. case, the variability $3$ bound is tight, as there are applicant pools where adding a single high-, middle-, or low-category student would displace a different student in the corresponding queue. Likewise, the six queues in Ed. Opt. with DIA programs lead to six diffrent students who might be displaced depending on what category a new applicant falls into.",
-          "quoted_text_sha256": "6c2d6098e2b3c1400451a8e44ce5db10a6ec758755d2362c47a45ee8769c0c51"
         }
       ],
       "source_kind": "proposition"
@@ -761,13 +759,6 @@
           "publication_locator": "cited publication",
           "quoted_text": "\\begin{restatable}[]{proposition}{empiricalmethods} \n\\label{prop:program-variability}\nAll considered choice functions ({Ed. Opt}, {Screened/Open}, {Ed. Opt with DIA}, and {Screened/Open with DIA}) are $1$-unstable. Furthermore, their variability is (tightly) equal to their number of queues: \n\n\\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]\n    \\item Screened/Open programs are $1$-variable\n    \\item Screened/Open with DIA programs are $2$-variable\n    \\item Ed. Opt. programs are $3$-variable\n    \\item Ed. Opt with DIA programs are $6$-variable\n\\end{itemize}\n\n\\end{restatable}",
           "quoted_text_sha256": "fa5aad8fd36c5d394fba9757f98e190d8ab7f8aaf6240f5a587fee4d987c47eb"
-        },
-        {
-          "line_end": 1158,
-          "line_start": 1150,
-          "publication_locator": "cited publication",
-          "quoted_text": "\\subsection{Proof of \\Cref{prop:program-variability}} \\label{sec:program-prop-proof}\n\nRecall \\Cref{prop:program-variability}:\n\\empiricalmethods*\n\nWe construct applicant sets to prove the variability of each empirical method we study, showing that the upper bound from \\Cref{thm:variability} based on the number of queues is tight.\n\nNote that both Screened and Open programs are explicitly a ranking, and therefore have variability $1$ by  \\Cref{thm:variability}. \nScreened and Open programs with DIA are upper-bounded by variability 2, as they are composed of two queues. It is easy to see that this upper bound is tight. Consider an applicant pool $X$ where the lowest-ranking students in the DIA queue is lower-ranked than the lowest-ranked student in the non-DIA queue. Then $A_\\choice(X)$ contains two elements -- adding a new DIA-qualified student might lead to rejecting the lowest-ranked student in the DIA queue, while a non-DIA student would lead to a change in the non-DIA queue. Similarly, in the three-queue Ed. Opt. case, the variability $3$ bound is tight, as there are applicant pools where adding a single high-, middle-, or low-category student would displace a different student in the corresponding queue. Likewise, the six queues in Ed. Opt. with DIA programs lead to six diffrent students who might be displaced depending on what category a new applicant falls into.",
-          "quoted_text_sha256": "6c2d6098e2b3c1400451a8e44ce5db10a6ec758755d2362c47a45ee8769c0c51"
         }
       ],
       "source_kind": "proposition"

@@ -13,7 +13,7 @@ continuity, an integrable weak derivative agreeing with `deriv` almost
 everywhere, strict positivity, and normalization.
 -/
 
-open EconCSLib MeasureTheory Filter
+open AppliedModelingLib MeasureTheory Filter
 open scoped ENNReal Topology
 
 namespace KR21Monoculture

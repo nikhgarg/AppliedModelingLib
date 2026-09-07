@@ -132,8 +132,6 @@ def archive_surface_member_line_offsets(member_texts: list[tuple[str, str]]) -> 
         line += 1  # opening delimiter
         offsets[member] = line
         line += len(text.split("\n")) - (1 if text.endswith("\n") else 0)
-        if not text.endswith("\n"):
-            line += 1
         line += 1  # closing delimiter
     return offsets
 

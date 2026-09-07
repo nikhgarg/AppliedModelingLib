@@ -8,7 +8,7 @@ namespace EOS07GSP
 
 namespace PaperInterface
 
-open EconCSLib.Auction
+open AppliedModelingLib.Auction
 noncomputable section
 
 theorem definition4_locally_envy_free
@@ -17,6 +17,119 @@ theorem definition4_locally_envy_free
     (values bids : Bidder → ℝ) (allocatedPositions : ℕ)
     (bidderAtRank : ℕ → Bidder) (slotAtRank : ℕ → Slot) : definition4_locally_envy_freeSpec (Bidder := Bidder) (Slot := Slot) (E := E) (M := M) (values := values) (bids := bids) (allocatedPositions := allocatedPositions) (bidderAtRank := bidderAtRank) (slotAtRank := slotAtRank) := by
   exact EOS07GSP.ProofBridge.definition4_locally_envy_free (Bidder := Bidder) (Slot := Slot) (E := E) (M := M) (values := values) (bids := bids) (allocatedPositions := allocatedPositions) (bidderAtRank := bidderAtRank) (slotAtRank := slotAtRank)
+
+/-- Project-approved correction of the printed Definition 4 boundary. -/
+theorem corrected_definition4_locally_envy_free
+    {Bidder Slot : Type*} [DecidableEq Bidder]
+    (E : PositionEnvironment Slot) (M : PositionMechanism Bidder Slot)
+    (values bids : Bidder → ℝ) (allocatedPositions : ℕ)
+    (bidderAtRank : ℕ → Bidder) (slotAtRank : ℕ → Slot) : corrected_definition4_locally_envy_freeSpec (Bidder := Bidder) (Slot := Slot) (E := E) (M := M) (values := values) (bids := bids) (allocatedPositions := allocatedPositions) (bidderAtRank := bidderAtRank) (slotAtRank := slotAtRank) := by
+  exact EOS07GSP.ProofBridge.corrected_definition4_locally_envy_free (Bidder := Bidder) (Slot := Slot) (E := E) (M := M) (values := values) (bids := bids) (allocatedPositions := allocatedPositions) (bidderAtRank := bidderAtRank) (slotAtRank := slotAtRank)
+
+/-- Project-approved strict-surplus domain clarification for amended Lemma 6. -/
+theorem corrected_lemma6_stable_assignment
+    {Bidder Slot : Type*}
+    (E : PositionEnvironment Slot) (O : PositionOutcome Bidder Slot)
+    (values : Bidder → ℝ) :
+    corrected_lemma6_stable_assignmentSpec
+      (Bidder := Bidder) (Slot := Slot) (E := E) (O := O) (values := values) := by
+  exact EOS07GSP.ProofBridge.corrected_lemma6_stable_assignment
+    (Bidder := Bidder) (Slot := Slot) (E := E) (O := O) (values := values)
+
+/-- Direct finite endpoint for the owner-approved strict-surplus Lemma 6
+amendment. -/
+theorem corrected_lemma6_ranked_one_extra_constructs_tiebreak_equilibrium
+    {n : ℕ} {value payment clickThroughRate : ℕ → ℝ}
+    (O : PositionOutcome (Fin (n + 1)) (Fin n))
+    (hcorrected :
+      correctedLemma6StableAssignment
+        (paper_theorem7_ranked_environment clickThroughRate)
+        (fun i : Fin (n + 1) => value i.val) O)
+    (hslots : ∀ i : Fin n, O.slotOf i.castSucc = some i)
+    (hunassigned : O.slotOf (Fin.last n) = none)
+    (hpayment : ∀ i : Fin n,
+      O.paymentPerClick i.castSucc = payment i.val / clickThroughRate i.val)
+    (hunassigned_payment : O.paymentPerClick (Fin.last n) = 0)
+    (hclick_pos : ∀ i : Fin n, 0 < clickThroughRate i.val)
+    (hclick_strict :
+      ∀ k : ℕ, k + 1 < n → clickThroughRate (k + 1) < clickThroughRate k) :
+    corrected_lemma6_ranked_one_extra_constructs_tiebreak_equilibriumSpec
+      O hcorrected hslots hunassigned hpayment hunassigned_payment hclick_pos
+      hclick_strict := by
+  exact EOS07GSP.ProofBridge.corrected_lemma6_ranked_one_extra_constructs_tiebreak_equilibrium
+    O hcorrected hslots hunassigned hpayment hunassigned_payment hclick_pos
+    hclick_strict
+
+/-- Direct full-`K>N` endpoint for the owner-approved strict-surplus Lemma 6
+amendment. -/
+theorem corrected_lemma6_ranked_more_bidders_constructs_tiebreak_equilibrium
+    {m n : ℕ} (hn : 0 < n) (hnm : n < m)
+    {value payment clickThroughRate : ℕ → ℝ}
+    (O : PositionOutcome (Fin m) (Fin n))
+    (hcorrected :
+      correctedLemma6StableAssignment
+        (paper_theorem7_ranked_environment clickThroughRate)
+        (fun i : Fin m => value i.val) O)
+    (hslots : ∀ i : Fin n,
+      O.slotOf ⟨i.val, Nat.lt_trans i.isLt hnm⟩ = some i)
+    (hunassigned : ∀ bidder : Fin m, n ≤ bidder.val → O.slotOf bidder = none)
+    (hpayment : ∀ i : Fin n,
+      O.paymentPerClick ⟨i.val, Nat.lt_trans i.isLt hnm⟩ =
+        payment i.val / clickThroughRate i.val)
+    (hclick_pos : ∀ i : Fin n, 0 < clickThroughRate i.val)
+    (hclick_strict :
+      ∀ k : ℕ, k + 1 < n → clickThroughRate (k + 1) < clickThroughRate k) :
+    corrected_lemma6_ranked_more_bidders_constructs_tiebreak_equilibriumSpec
+      hn hnm O hcorrected hslots hunassigned hpayment hclick_pos hclick_strict := by
+  exact
+    EOS07GSP.ProofBridge.corrected_lemma6_ranked_more_bidders_constructs_tiebreak_equilibrium
+      hn hnm O hcorrected hslots hunassigned hpayment hclick_pos hclick_strict
+
+/-- Direct amended-source Lemma 5 endpoint for `K = N + 1`. -/
+theorem corrected_lemma5_ranked_one_extra_stable
+    {n : ℕ} {value clickThroughRate : ℕ → ℝ}
+    (bids : Fin (n + 1) → ℝ)
+    (hstrict :
+      ∀ {i j : Fin (n + 1)}, i.val < j.val → bids j < bids i)
+    (hn : 0 < n)
+    (hclick_pos : ∀ i : Fin n, 0 < clickThroughRate i.val)
+    (hclick_strict :
+      ∀ k : ℕ, k + 1 < n → clickThroughRate (k + 1) < clickThroughRate k)
+    (hcorrected :
+      correctedDefinition4LocallyEnvyFree
+        (paper_theorem7_ranked_environment clickThroughRate)
+        (paper_ranked_gsp_mechanism (n + 1) n)
+        (fun i : Fin (n + 1) => value i.val) bids n
+        (fun rank => if h : rank < n then (⟨rank, h⟩ : Fin n).castSucc else 0)
+        (fun rank => if h : rank < n then (⟨rank, h⟩ : Fin n) else ⟨0, hn⟩)) :
+    corrected_lemma5_ranked_one_extra_stableSpec bids hstrict hn hclick_pos
+      hclick_strict hcorrected := by
+  exact EOS07GSP.ProofBridge.corrected_lemma5_ranked_one_extra_stable
+    bids hstrict hn hclick_pos hclick_strict hcorrected
+
+/-- Direct corrected Lemma 5 endpoint for the full finite `K>N` source
+domain.  Its separate bottom condition for every unassigned bidder is the
+project-approved repair recorded in the validation report. -/
+theorem corrected_lemma5_ranked_more_bidders_stable
+    {m n : ℕ} (hn : 0 < n) (hnm : n < m)
+    {value clickThroughRate : ℕ → ℝ} (bids : Fin m → ℝ)
+    (hstrict :
+      ∀ {i j : Fin m}, i.val < j.val → bids j < bids i)
+    (hclick_pos : ∀ i : Fin n, 0 < clickThroughRate i.val)
+    (hclick_strict :
+      ∀ k : ℕ, k + 1 < n → clickThroughRate (k + 1) < clickThroughRate k)
+    (hcorrected :
+      correctedDefinition4LocallyEnvyFree
+        (paper_theorem7_ranked_environment clickThroughRate)
+        (paper_ranked_gsp_mechanism m n)
+        (fun i : Fin m => value i.val) bids n
+        (fun rank => if h : rank < n then (⟨rank, Nat.lt_trans h hnm⟩ : Fin m)
+          else ⟨0, Nat.lt_trans hn hnm⟩)
+        (fun rank => if h : rank < n then (⟨rank, h⟩ : Fin n) else ⟨0, hn⟩)) :
+    corrected_lemma5_ranked_more_bidders_stableSpec
+      hn hnm bids hstrict hclick_pos hclick_strict hcorrected := by
+  exact EOS07GSP.ProofBridge.corrected_lemma5_ranked_more_bidders_stable
+    hn hnm bids hstrict hclick_pos hclick_strict hcorrected
 
 theorem stable_assignment
     {Bidder Slot : Type*}
@@ -32,9 +145,8 @@ theorem remark1_gsp_payments_weakly_dominate_vcg
     (hvalue_nonneg : ∀ i, 0 ≤ value i)
     (hvalue_mono : ∀ i, value (i + 1) ≤ value i)
     (hclick_nonneg : ∀ i, 0 ≤ clickThroughRate i)
-    {rank remaining : ℕ}
-    (hclick_pos : 0 < clickThroughRate rank) : remark1_gsp_payments_weakly_dominate_vcgSpec (value := value) (clickThroughRate := clickThroughRate) (hvalue_nonneg := hvalue_nonneg) (hvalue_mono := hvalue_mono) (hclick_nonneg := hclick_nonneg) (rank := rank) (remaining := remaining) (hclick_pos := hclick_pos) := by
-  exact EOS07GSP.audit_remark1_truthful_gsp_payment_weakly_dominates_vcg_per_click (value := value) (clickThroughRate := clickThroughRate) (hvalue_nonneg := hvalue_nonneg) (hvalue_mono := hvalue_mono) (hclick_nonneg := hclick_nonneg) (rank := rank) (remaining := remaining) (hclick_pos := hclick_pos)
+    (rank remaining : ℕ) : remark1_gsp_payments_weakly_dominate_vcgSpec (value := value) (clickThroughRate := clickThroughRate) hvalue_nonneg hvalue_mono hclick_nonneg rank remaining := by
+  exact EOS07GSP.ProofBridge.remark1_gsp_payments_weakly_dominate_vcg hvalue_nonneg hvalue_mono hclick_nonneg rank remaining
 
 theorem remark2_vcg_truthful
     {Bidder Slot : Type*} [Fintype Bidder] [DecidableEq Bidder]
@@ -44,13 +156,21 @@ theorem remark2_vcg_truthful
   exact EOS07GSP.audit_remark2_finite_position_vcg_truthful (Bidder := Bidder) (Slot := Slot) (E := E) (hclick_pos := hclick_pos)
 
 theorem remark3_gsp_not_truthful : remark3_gsp_not_truthfulSpec := by
-  exact EOS07GSP.audit_gsp_not_dominant_strategy_truthful
+  exact ⟨EOS07GSP.remark3_source_truthful_utility,
+    EOS07GSP.remark3_source_shaded_utility,
+    EOS07GSP.ProofBridge.remark3_gsp_not_truthful⟩
 
 theorem running_example_truthful_gsp_nash : running_example_truthful_gsp_nashSpec := by
   exact EOS07GSP.audit_running_example_truthful_gsp_is_nash
 
 theorem running_example_truthful_gsp_revenue_comparison : running_example_truthful_gsp_revenue_comparisonSpec := by
-  exact EOS07GSP.audit_running_example_truthful_gsp_revenue_gt_vcg_revenue
+  refine ⟨by norm_num [EOS07GSP.paper_eos_running_example_value],
+    by norm_num [EOS07GSP.paper_eos_running_example_value], ?_, ?_, ?_, ?_,
+    EOS07GSP.audit_running_example_truthful_gsp_revenue_gt_vcg_revenue⟩
+  · exact EOS07GSP.audit_running_example_truthful_gsp_total_payments.1
+  · exact EOS07GSP.audit_running_example_truthful_gsp_total_payments.2
+  · exact EOS07GSP.audit_running_example_vcg_total_payments.1
+  · exact EOS07GSP.audit_running_example_vcg_total_payments.2
 
 theorem lemma5_locally_envy_free_stable
     {Bidder Slot : Type*} [DecidableEq Bidder]
@@ -151,6 +271,56 @@ theorem theorem7_strict_tiebreak_gsp_comparison_conclusion
       ∀ k : ℕ, k + 1 < n → clickThroughRate (k + 1) < clickThroughRate k) : theorem7_strict_tiebreak_gsp_comparison_conclusionSpec (n := n) (value := value) (vcgTotalPayment := vcgTotalPayment) (clickThroughRate := clickThroughRate) (hclick_nonneg := hclick_nonneg) (hclick_pos := hclick_pos) (hclick_mono := hclick_mono) (hvalue_mono := hvalue_mono) (hvcg_rec := hvcg_rec) (hpayment_le_value := hpayment_le_value) (hvcg_tail_eq := hvcg_tail_eq) (hvalue_nonneg := hvalue_nonneg) (hvalue_strict := hvalue_strict) (hclick_strict := hclick_strict) := by
   exact EOS07GSP.ProofBridge.theorem7_strict_tiebreak_gsp_comparison_conclusion (n := n) (value := value) (vcgTotalPayment := vcgTotalPayment) (clickThroughRate := clickThroughRate) (hclick_nonneg := hclick_nonneg) (hclick_pos := hclick_pos) (hclick_mono := hclick_mono) (hvalue_mono := hvalue_mono) (hvcg_rec := hvcg_rec) (hpayment_le_value := hpayment_le_value) (hvcg_tail_eq := hvcg_tail_eq) (hvalue_nonneg := hvalue_nonneg) (hvalue_strict := hvalue_strict) (hclick_strict := hclick_strict)
 
+theorem theorem7_finite_static_bstar_tiebreak_conclusion
+    {n : ℕ} (model : EOSFiniteStaticBStarOrder n) :
+    theorem7_finite_static_bstar_tiebreak_conclusionSpec model := by
+  exact eos_finite_static_bstar_tiebreak_source_conclusion model
+
+/-- Direct corrected finite seller-minimal-revenue endpoint for EOS Theorem
+7.  This exposes the actual revenue inequality proved from the first-loser
+terminal condition and backward stable-payment induction. -/
+theorem theorem7_finite_static_bstar_revenue_minimal_corrected
+    {m n : ℕ} (hnm : n < m) (model : EOSFiniteStaticBStarOrder n)
+    (bids : Fin m → ℝ)
+    (hstrict :
+      ∀ {i j : Fin m}, i.val < j.val → bids j < bids i)
+    (hcorrected :
+      correctedDefinition4LocallyEnvyFree
+        (paper_theorem7_ranked_environment model.clickThroughRate)
+        (paper_ranked_gsp_mechanism m n)
+        (fun i : Fin m => model.value i.val) bids n
+        (fun rank => if h : rank < n then
+          (⟨rank, Nat.lt_trans h hnm⟩ : Fin m)
+          else ⟨0, Nat.lt_trans model.slots_nonempty hnm⟩)
+        (fun rank => if h : rank < n then (⟨rank, h⟩ : Fin n)
+          else ⟨0, model.slots_nonempty⟩)) :
+    theorem7_finite_static_bstar_revenue_minimal_correctedSpec
+      hnm model bids hstrict hcorrected := by
+  exact EOS07GSP.ProofBridge.theorem7_finite_static_bstar_revenue_minimal_corrected
+    hnm model bids hstrict hcorrected
+
+/-- Complete corrected finite Theorem 7 endpoint, joining the actual B-star
+equilibrium/VCG ledger to the direct seller-minimal-revenue comparison. -/
+theorem theorem7_finite_static_bstar_full_corrected
+    {m n : ℕ} (hnm : n < m) (model : EOSFiniteStaticBStarOrder n)
+    (bids : Fin m → ℝ)
+    (hstrict :
+      ∀ {i j : Fin m}, i.val < j.val → bids j < bids i)
+    (hcorrected :
+      correctedDefinition4LocallyEnvyFree
+        (paper_theorem7_ranked_environment model.clickThroughRate)
+        (paper_ranked_gsp_mechanism m n)
+        (fun i : Fin m => model.value i.val) bids n
+        (fun rank => if h : rank < n then
+          (⟨rank, Nat.lt_trans h hnm⟩ : Fin m)
+          else ⟨0, Nat.lt_trans model.slots_nonempty hnm⟩)
+        (fun rank => if h : rank < n then (⟨rank, h⟩ : Fin n)
+          else ⟨0, model.slots_nonempty⟩)) :
+    theorem7_finite_static_bstar_full_correctedSpec
+      hnm model bids hstrict hcorrected := by
+  exact EOS07GSP.ProofBridge.theorem7_finite_static_bstar_full_corrected
+    hnm model bids hstrict hcorrected
+
 theorem theorem8_dropout_formula_eq_bstar_threshold
     (value clickThroughRate : ℕ → ℝ) (remaining rank : ℕ)
     (hclick_pos : ∀ i, 0 < clickThroughRate i) : theorem8_dropout_formula_eq_bstar_thresholdSpec (value := value) (clickThroughRate := clickThroughRate) (remaining := remaining) (rank := rank) (hclick_pos := hclick_pos) := by
@@ -213,6 +383,27 @@ theorem theorem8_strict_values_ex_post_local_deviation
 theorem theorem8_continuous_generalized_english_payoff_game_strict_values_main_conclusion_review
     (model : theorem8StrictOrderedValueCertificate) (n : ℕ) : theorem8_continuous_generalized_english_payoff_game_strict_values_main_conclusion_reviewSpec (model := model) (n := n) := by
   exact EOS07GSP.PaperInterface.theorem8_continuous_generalized_english_payoff_game_strict_values_main_conclusion (model := model) (n := n)
+
+theorem theorem8_finite_legal_history_pbe_terminal_vcg_ledger
+    {Bidder : Type*} [Fintype Bidder] [DecidableEq Bidder] [Nonempty Bidder]
+    (law : Theorem8ContinuousValueLaw)
+    (clickThroughRate : ℕ → ℝ) (values : Bidder → ℝ)
+    (htwo : 1 < Fintype.card Bidder)
+    (hvalue_nonneg : ∀ bidder, 0 ≤ values bidder)
+    (hclick_pos : ∀ rank, rank < Fintype.card Bidder - 1 →
+      0 < clickThroughRate rank)
+    (hcurrent_nonneg : ∀ rank, rank < Fintype.card Bidder - 1 →
+      0 ≤ clickThroughRate (rank + 1))
+    (hclick_strict : ∀ rank, rank < Fintype.card Bidder - 1 →
+      clickThroughRate (rank + 1) < clickThroughRate rank)
+    (hbottom_zero : clickThroughRate (Fintype.card Bidder - 1) = 0)
+    (defaultBidder : Bidder) :
+    theorem8_finite_legal_history_pbe_terminal_vcg_ledgerSpec law
+      clickThroughRate values htwo hvalue_nonneg hclick_pos hcurrent_nonneg
+      hclick_strict hbottom_zero defaultBidder := by
+  exact theorem8_named_finite_legal_history_pbe_terminal_vcg_ledger law
+    clickThroughRate values htwo hvalue_nonneg hclick_pos hcurrent_nonneg
+    hclick_strict hbottom_zero defaultBidder
 
 end
 

@@ -1,0 +1,116 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+\begin{tikzpicture}[every node/.style={font=\sffamily\small}]
+
+\dagPaperMetadata{Monoculture in Matching Markets}{Kenny Peng and Nikhil Garg}{NeurIPS}{2024}{https://papers.nips.cc/paper_files/paper/2024/hash/95249d42f559a0cfaf282fdf26fe2e69-Abstract-Conference.html}
+\dagPaperLegendRightOfMetadata{
+  \node[dag_model, dag_template_legend] (legModel) at (0,0) {formalized\\definition/model};
+  \node[dag_lemma, dag_template_legend] (legDirect) at (3.6,0) {direct source\\result};
+  \node[dag_conditional, dag_template_legend] (legClarified) at (7.2,0) {result with visible\\clarification};
+  \node[dag_partial, dag_template_legend] (legPartial) at (10.8,0) {formalization\\gap};
+  \node[dag_unformalized, dag_template_legend] (legOutside) at (14.4,0) {outside mathematical\\scope};
+}
+\daglegend{(legModel)(legDirect)(legClarified)(legPartial)(legOutside)}{Legend}
+
+\begin{dagPaperBody}
+\begin{scope}[yshift=-0.8cm]
+
+\node[dag_model, text width=4.0cm] (Model) at (0,0) {
+  \textbf{Continuum matching model}\\
+  applicant values and rankings; mono/poly scores; favorite-affordable demand, stability, and clearing
+};
+
+\node[dag_model, text width=4.0cm] (Noise) at (6.5,0) {
+  \textbf{Noise definitions}\\
+  iid maximum order statistic and maximum-concentrating noise
+};
+
+\node[dag_conditional, text width=4.7cm] (Support) at (13.0,0) {
+  \textbf{Appendix support observations}\\
+  support-interior CDF strictness and positive mass of nonempty open intervals
+};
+
+\node[dag_lemma, text width=4.7cm] (Lattice) at (19.5,0) {
+  \textbf{Clearing-cutoff lattice}\\
+  market-clearing cutoffs form a complete lattice under coordinatewise suprema and infima
+};
+
+\node[dag_model, text width=4.0cm] (DiffModel) at (26.0,0) {
+  \textbf{Differential-access model}\\
+  application counts, access-specific demand, equal capacities, and ex-ante success
+};
+
+\node[dag_lemma, text width=4.7cm] (SupplyDemand) at (0,-4.9) {
+  \textbf{Supply and Demand Lemma}\\
+  stable matching $\Longleftrightarrow$ favorite-affordable choice at a clearing cutoff
+};
+
+\node[dag_conditional, text width=4.7cm] (EqualCutoffs) at (6.5,-4.9) {
+  \textbf{Equal Cutoffs Lemma}\\
+  existence, uniqueness, and equal coordinates with visible score-level nullity
+};
+
+\node[dag_conditional, text width=4.7cm] (FormulaCorollary) at (13.0,-4.9) {
+  \textbf{Probability formula and Corollary 4}\\
+  strict noise-tail formulas and $P_{mono}<P_{poly}$
+};
+
+\node[dag_lemma, text width=4.7cm] (ThresholdLemma) at (19.5,-4.9) {
+  \textbf{Three-part threshold lemma}\\
+  eventual low/high bounds and cutoff location under maximum concentration
+};
+
+\node[dag_conditional, text width=4.7cm] (DiffEqual) at (26.0,-4.9) {
+  \textbf{Differential-access Equal Cutoffs}\\
+  unique common mono/poly cutoffs under the visible exact-clearing regularity
+};
+
+\node[dag_unformalized, text width=4.7cm] (Outside) at (0,-10.0) {
+  \textbf{Outside mathematical scope}\\
+  simulations, computational experiments, figures, and narrative conclusion prose
+};
+
+\node[dag_conditional, text width=4.7cm] (TheoremOne) at (6.5,-10.0) {
+  \textbf{Theorem 1}\\
+  polyculture threshold efficiency and welfare convergence; monoculture invariance and strict welfare loss
+};
+
+\node[dag_conditional, text width=4.7cm] (TheoremTwo) at (13.0,-10.0) {
+  \textbf{Theorem 2}\\
+  top-choice dominance, top-ranked monoculture matches, and eventual polyculture match advantage
+};
+
+\node[dag_conditional, text width=4.7cm] (TheoremThree) at (19.5,-10.0) {
+  \textbf{Theorem 3}\\
+  monoculture probability equals the unrestricted baseline; polyculture probability increases with applications, strictly on the support interior
+};
+
+\node[dag_conditional, text width=4.7cm] (Nash) at (26.0,-10.0) {
+  \textbf{Finite application-game proposition}\\
+  no profitable feasible deviation from the prescribed top-ranked set
+};
+
+\draw[dag_arrow] (Model) -- (SupplyDemand);
+\draw[dag_arrow] (SupplyDemand) -- (EqualCutoffs);
+\draw[dag_dashed_arrow, rounded corners=6pt] (Lattice.south) -- ++(0,-1.6) -| (EqualCutoffs.north east);
+\draw[dag_arrow] (Noise) -- (Support);
+\draw[dag_arrow, rounded corners=6pt] (Noise.south) -- ++(0,-2.3) -| (ThresholdLemma.north);
+\draw[dag_arrow] (Support) -- (FormulaCorollary);
+\draw[dag_arrow] (EqualCutoffs) -- (FormulaCorollary);
+\draw[dag_arrow] (DiffModel) -- (DiffEqual);
+
+\draw[dag_arrow] (EqualCutoffs) -- (TheoremOne);
+\draw[dag_arrow] (FormulaCorollary) -- (TheoremTwo);
+\draw[dag_arrow, rounded corners=6pt] (FormulaCorollary.south) -- ++(0,-1.4) -| (TheoremOne.north);
+\draw[dag_arrow, rounded corners=6pt] (ThresholdLemma.south) -- ++(0,-2.0) -| (TheoremOne.north east);
+\draw[dag_arrow, rounded corners=6pt] (ThresholdLemma.south east) -- ++(0.5,-2.5) -| (TheoremTwo.north east);
+\draw[dag_arrow] (DiffEqual) -- (Nash);
+\draw[dag_arrow] (DiffEqual) -- (TheoremThree);
+\draw[dag_arrow, rounded corners=6pt] (FormulaCorollary.south east) -- ++(0.4,-2.2) -| (TheoremThree.north west);
+
+\end{scope}
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

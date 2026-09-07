@@ -11,7 +11,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from scripts import closeout_reuse_plan as planner
+from scripts import closeout_intake_freeze as intake
 from scripts.closeout_plan_receipt import content_input_snapshot
 
 
@@ -123,10 +123,10 @@ class CloseoutLegacyRolloutTests(unittest.TestCase):
             "papers/Fixture/REPORT.md"
         ]
         with mock.patch.object(
-            planner, "INTAKE_FREEZE_LEGACY_BASELINE_COMMIT", self.rollout
+            intake, "INTAKE_FREEZE_LEGACY_BASELINE_COMMIT", self.rollout
         ):
             self.assertEqual(
-                planner._rollout_content_input_error(
+                intake._rollout_content_input_error(
                     self.root, "papers/Fixture/REPORT.md", identity
                 ),
                 "",
@@ -135,7 +135,7 @@ class CloseoutLegacyRolloutTests(unittest.TestCase):
                 "administrative edit\n", encoding="utf-8"
             )
             self.assertEqual(
-                planner._rollout_content_input_error(
+                intake._rollout_content_input_error(
                     self.root, "papers/Fixture/REPORT.md", identity
                 ),
                 "",
@@ -146,7 +146,7 @@ class CloseoutLegacyRolloutTests(unittest.TestCase):
             ]
             self.assertIn(
                 "differs from rollout",
-                planner._rollout_content_input_error(
+                intake._rollout_content_input_error(
                     self.root, "papers/Fixture/REPORT.md", changed
                 ),
             )
@@ -182,13 +182,13 @@ class CloseoutLegacyRolloutTests(unittest.TestCase):
             external=["Init", "NewPackage.Runtime"],
         )
         with mock.patch.object(
-            planner, "INTAKE_FREEZE_LEGACY_BASELINE_COMMIT", self.rollout
+            intake, "INTAKE_FREEZE_LEGACY_BASELINE_COMMIT", self.rollout
         ):
             self.assertEqual(
-                planner._rollout_graph_errors(self.root, "Fixture", current), []
+                intake._rollout_graph_errors(self.root, "Fixture", current), []
             )
-            errors = planner._rollout_graph_errors(self.root, "Fixture", lost)
-            added_errors = planner._rollout_graph_errors(
+            errors = intake._rollout_graph_errors(self.root, "Fixture", lost)
+            added_errors = intake._rollout_graph_errors(
                 self.root, "Fixture", added_external
             )
         self.assertTrue(

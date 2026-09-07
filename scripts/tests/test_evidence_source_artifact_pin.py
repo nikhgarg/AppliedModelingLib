@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import hashlib
-import importlib.util
 import json
 import sys
 import tempfile
@@ -22,15 +21,9 @@ from scripts.source_record_integrity import (  # noqa: E402
     stamp_source_record_audit_integrity,
     stamp_source_record_audit_receipts,
 )
-
-GATE_PATH = ROOT / "scripts" / "audit_evidence_integrity.py"
-SPEC = importlib.util.spec_from_file_location(
-    "audit_evidence_integrity_artifact_test", GATE_PATH
-)
-assert SPEC is not None and SPEC.loader is not None
-GATE = importlib.util.module_from_spec(SPEC)
-sys.modules[SPEC.name] = GATE
-SPEC.loader.exec_module(GATE)
+from scripts import audit_evidence_integrity as GATE  # noqa: E402
+from scripts import source_manifest_validation as source_manifest  # noqa: E402
+from scripts import source_named_result_index  # noqa: E402
 
 
 def complete_v10_source_record_scan_fixture(
@@ -135,6 +128,9 @@ class SourceArtifactPinTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         previous_root = GATE.ROOT
         GATE.ROOT = self.root
+        source_root_patch = patch.object(source_manifest, "ROOT", self.root)
+        source_root_patch.start()
+        self.addCleanup(source_root_patch.stop)
         self.addCleanup(setattr, GATE, "ROOT", previous_root)
         self.paper = self.root / "papers" / "FixturePaper"
         self.paper.mkdir(parents=True)
@@ -144,7 +140,7 @@ class SourceArtifactPinTests(unittest.TestCase):
         self.digest = hashlib.sha256(self.artifact.read_bytes()).hexdigest()
 
     def findings(self, payload: dict[str, object]) -> list[object]:
-        return GATE.source_artifact_pin_findings(
+        return source_manifest.source_artifact_pin_findings(
             self.paper, "formalized", self.manifest, payload
         )
 
@@ -158,6 +154,31 @@ class SourceArtifactPinTests(unittest.TestCase):
             ),
             [],
         )
+
+    def test_current_v11_lane_ignores_superseded_legacy_name_reason(self) -> None:
+        self.manifest.parent.mkdir(parents=True, exist_ok=True)
+        (self.manifest.parent / "paper_coverage_llm.json").write_text(
+            json.dumps({"items": {"old": {"reason": "matched by name"}}}),
+            encoding="utf-8",
+        )
+
+        legacy_findings = GATE.check_placeholder_evidence(
+            self.paper, "formalized"
+        )
+        selected_context = SimpleNamespace(v11_lean_claim_graph_selected=True)
+        with patch.object(
+            GATE, "AUDIT_SIDECARS", ("paper_coverage_llm.json",)
+        ):
+            current_findings = GATE.check_placeholder_evidence(
+                self.paper,
+                "formalized",
+                context=selected_context,
+            )
+
+        self.assertTrue(
+            any("name matching as semantic evidence" in f.message for f in legacy_findings)
+        )
+        self.assertEqual(current_findings, [])
 
     def test_matching_repository_relative_artifact_path_passes(self) -> None:
         self.assertEqual(
@@ -224,7 +245,7 @@ class SourceArtifactPinTests(unittest.TestCase):
         self.assertIn("not a regular file", non_regular[0].message)
 
     def test_structural_public_mode_warns_when_pinned_bytes_are_not_provisioned(self) -> None:
-        findings = GATE.source_artifact_pin_findings(
+        findings = source_manifest.source_artifact_pin_findings(
             self.paper,
             "formalized",
             self.manifest,
@@ -249,7 +270,7 @@ class SourceArtifactPinTests(unittest.TestCase):
         self.assertIn("64 hexadecimal characters", findings[0].message)
 
     def test_missing_statement_map_does_not_pass_source_manifest_check(self) -> None:
-        findings = GATE.check_source_manifest(self.paper, "formalized")
+        findings = source_manifest.check_source_manifest(self.paper, "formalized")
         self.assertEqual(len(findings), 1)
         self.assertIn("source statement inventory is missing", findings[0].message)
 
@@ -263,6 +284,9 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         previous_root = GATE.ROOT
         GATE.ROOT = self.root
+        source_root_patch = patch.object(source_manifest, "ROOT", self.root)
+        source_root_patch.start()
+        self.addCleanup(source_root_patch.stop)
         self.addCleanup(setattr, GATE, "ROOT", previous_root)
         self.paper = self.root / "papers" / "FixturePaper"
         self.audit = self.paper / "audit"
@@ -273,10 +297,10 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
 
     def quote(self, line_start: int, line_end: int | None = None) -> dict[str, object]:
         line_end = line_start if line_end is None else line_end
-        lines = GATE.normalized_source_lines(
-            GATE.normalized_source_text(self.artifact.read_bytes())
+        lines = source_manifest.normalized_source_lines(
+            source_manifest.normalized_source_text(self.artifact.read_bytes())
         )
-        excerpt = GATE.normalized_source_line_excerpt(lines, line_start, line_end)
+        excerpt = source_manifest.normalized_source_line_excerpt(lines, line_start, line_end)
         assert excerpt is not None
         return {
             "path": "source.txt",
@@ -309,7 +333,7 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
         }
 
     def findings(self, payload: dict[str, object]) -> list[object]:
-        return GATE.source_anchor_evidence_findings(
+        return source_manifest.source_anchor_evidence_findings(
             self.paper, "formalized", self.manifest, payload
         )
 
@@ -318,8 +342,8 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
     ) -> dict[str, object]:
         source_digest = payload["source_artifact_sha256"]
         assert isinstance(source_digest, str)
-        source_text = GATE.normalized_source_text(self.artifact.read_bytes())
-        presentations = GATE.extract_named_result_presentations(
+        source_text = source_manifest.normalized_source_text(self.artifact.read_bytes())
+        presentations = source_named_result_index.extract_named_result_presentations(
             source_text, source_format="text"
         )
         return {
@@ -330,7 +354,9 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
             "method": "fixture named-result source scan",
             "source_artifact_sha256": source_digest,
             "discovered_named_result_sha256": (
-                GATE.named_result_presentations_sha256(presentations)
+                source_named_result_index.named_result_presentations_sha256(
+                    presentations
+                )
             ),
             "prose_definition_presentations": [],
             "discovered_prose_definition_sha256": hashlib.sha256(
@@ -340,6 +366,63 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
 
     def test_exact_quote_from_pinned_source_passes(self) -> None:
         payload = self.payload(evidence=[self.quote(1, 2)])
+        self.assertEqual(self.findings(payload), [])
+
+    def test_raw_inventory_and_visual_semantic_anchor_have_distinct_pins(self) -> None:
+        visual = self.paper / "visual-review.md"
+        visual_scan = self.paper / "visual-source.pdf"
+        ocr_input = self.paper / "ocr-input.pdf"
+        visual_text = "Alpha theorem in visually checked mathematical notation.\n"
+        visual.write_text(visual_text, encoding="utf-8")
+        visual_scan.write_bytes(b"%PDF-fixture-visual\n")
+        ocr_input.write_bytes(b"%PDF-fixture-ocr\n")
+        quote = visual_text.rstrip("\n")
+        payload = self.payload(
+            "source.txt:1-2",
+            [
+                {
+                    "path": "visual-review.md",
+                    "line_start": 1,
+                    "line_end": 1,
+                    "quoted_text": quote,
+                    "quoted_text_sha256": hashlib.sha256(quote.encode("utf-8")).hexdigest(),
+                }
+            ],
+        )
+        payload["source_text_companion"] = {
+            "schema": 1,
+            "canonical_text": {
+                "path": "source.txt",
+                "sha256": hashlib.sha256(self.artifact.read_bytes()).hexdigest(),
+            },
+            "visual_primary_scan": {
+                "path": "visual-source.pdf",
+                "sha256": hashlib.sha256(visual_scan.read_bytes()).hexdigest(),
+            },
+            "transcript_input_scan": {
+                "path": "ocr-input.pdf",
+                "sha256": hashlib.sha256(ocr_input.read_bytes()).hexdigest(),
+            },
+            "extraction": {"tool": "pdftotext", "options": ["-layout"]},
+            "page_map": [
+                {"line_start": 1, "line_end": 3, "pdf_page": 1, "printed_page": 1}
+            ],
+            "visual_comparison_attestation": {
+                "complete": True,
+                "method": "Checked the visual source against the canonical transcript.",
+            },
+            "semantic_review_transcription": {
+                "schema": 1,
+                "path": "visual-review.md",
+                "sha256": hashlib.sha256(visual.read_bytes()).hexdigest(),
+                "controlling_visual_source": {
+                    "path": "visual-source.pdf",
+                    "sha256": hashlib.sha256(visual_scan.read_bytes()).hexdigest(),
+                },
+                "complete_for_selected_semantic_surface": True,
+                "method": "Visually transcribed the selected theorem passage.",
+            },
+        }
         self.assertEqual(self.findings(payload), [])
 
     def test_multiple_declared_anchors_each_need_matching_quote(self) -> None:
@@ -448,17 +531,20 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
             ).hexdigest(),
         }
         self.manifest.write_text(json.dumps(payload), encoding="utf-8")
-        self.assertEqual(GATE.check_source_manifest(self.paper, "formalized"), [])
+        self.assertEqual(source_manifest.check_source_manifest(self.paper, "formalized"), [])
 
         row["user_approved_scope_exclusion"]["approval_kind"] = "curator_note"
         self.manifest.write_text(json.dumps(payload), encoding="utf-8")
-        findings = GATE.check_source_manifest(self.paper, "formalized")
+        findings = source_manifest.check_source_manifest(self.paper, "formalized")
         self.assertTrue(
             any("approval_kind" in finding.message for finding in findings)
         )
 
-    def test_user_scope_exclusion_rejects_a_named_formal_source_kind(self) -> None:
-        payload = self.payload("source.txt:1", [self.quote(1)], required=False)
+    def test_user_scope_exclusion_may_explicitly_exclude_a_named_formal_kind(self) -> None:
+        payload = self.payload("source.txt:1", [self.quote(1)])
+        payload["source_named_result_inventory_review"] = (
+            self.named_result_inventory_review(payload)
+        )
         row = payload["items"]["source_row"]
         assert isinstance(row, dict)
         quote = self.quote(1)["quoted_text"]
@@ -472,7 +558,7 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
                     "approval_kind": "explicit_user_instruction",
                     "approval_reference": "User instruction for this review pass.",
                     "approved_at": "2026-07-25",
-                    "reason": "The user excluded this unnumbered prose assertion from this proof pass.",
+                    "reason": "The user expressly excluded this named theorem from this proof pass.",
                     "source_locator": "source.txt:1",
                     "source_evidence": "The exact source line remains byte-pinned in the inventory.",
                     "source_anchor_quote_sha256": hashlib.sha256(
@@ -483,16 +569,14 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
         )
         self.manifest.write_text(json.dumps(payload), encoding="utf-8")
 
-        findings = GATE.check_source_manifest(self.paper, "formalized")
+        self.assertEqual(source_manifest.check_source_manifest(self.paper, "formalized"), [])
 
-        self.assertTrue(
-            any("limited to an unnumbered prose assertion" in finding.message for finding in findings),
-            [finding.message for finding in findings],
-        )
-
-    def test_user_scope_exclusion_rejects_a_relabelled_theorem_presentation(self) -> None:
+    def test_user_scope_exclusion_keeps_a_named_theorem_quote_visible(self) -> None:
         self.artifact.write_bytes(b"Theorem 1 states the exact audited property.\n")
-        payload = self.payload("source.txt:1", [self.quote(1)], required=False)
+        payload = self.payload("source.txt:1", [self.quote(1)])
+        payload["source_named_result_inventory_review"] = (
+            self.named_result_inventory_review(payload)
+        )
         row = payload["items"]["source_row"]
         assert isinstance(row, dict)
         quote = self.quote(1)["quoted_text"]
@@ -506,7 +590,7 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
                     "approval_kind": "explicit_user_instruction",
                     "approval_reference": "User instruction for this review pass.",
                     "approved_at": "2026-07-25",
-                    "reason": "The user excluded this unnumbered prose assertion from this proof pass.",
+                    "reason": "The user expressly excluded this named theorem from this proof pass.",
                     "source_locator": "source.txt:1",
                     "source_evidence": "The exact source line remains byte-pinned in the inventory.",
                     "source_anchor_quote_sha256": hashlib.sha256(
@@ -517,12 +601,7 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
         )
         self.manifest.write_text(json.dumps(payload), encoding="utf-8")
 
-        findings = GATE.check_source_manifest(self.paper, "formalized")
-
-        self.assertTrue(
-            any("cannot exclude a source-labelled formal result" in finding.message for finding in findings),
-            [finding.message for finding in findings],
-        )
+        self.assertEqual(source_manifest.check_source_manifest(self.paper, "formalized"), [])
 
     def test_user_scope_exclusion_cannot_remove_registered_proof_support(self) -> None:
         self.artifact.write_bytes(b"An unnumbered supporting assertion is used below.\n")
@@ -552,7 +631,7 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
         )
         self.manifest.write_text(json.dumps(payload), encoding="utf-8")
 
-        findings = GATE.check_source_manifest(self.paper, "formalized")
+        findings = source_manifest.check_source_manifest(self.paper, "formalized")
 
         self.assertTrue(
             any("cannot remove an assertion marked as proof_support" in finding.message for finding in findings),
@@ -591,7 +670,7 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
         )
         self.manifest.write_text(json.dumps(payload), encoding="utf-8")
 
-        self.assertEqual(GATE.check_source_manifest(self.paper, "formalized"), [])
+        self.assertEqual(source_manifest.check_source_manifest(self.paper, "formalized"), [])
 
     def test_manifest_gate_runs_the_opted_in_anchor_check(self) -> None:
         payload = self.payload()
@@ -604,7 +683,7 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
             self.named_result_inventory_review(payload)
         )
         self.manifest.write_text(json.dumps(payload), encoding="utf-8")
-        findings = GATE.check_source_manifest(self.paper, "formalized")
+        findings = source_manifest.check_source_manifest(self.paper, "formalized")
         self.assertEqual(len(findings), 1)
         self.assertIn("source_anchor_evidence must be a nonempty list", findings[0].message)
 
@@ -618,7 +697,7 @@ class SourceAnchorEvidenceTests(unittest.TestCase):
         self.manifest.write_text(json.dumps(payload), encoding="utf-8")
         self.artifact.unlink()
 
-        findings = GATE.check_source_manifest(
+        findings = source_manifest.check_source_manifest(
             self.paper, "formalized", require_source_bytes=False
         )
 
@@ -638,6 +717,9 @@ class CorrectedSourceTargetMapTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         previous_root = GATE.ROOT
         GATE.ROOT = self.root
+        source_root_patch = patch.object(source_manifest, "ROOT", self.root)
+        source_root_patch.start()
+        self.addCleanup(source_root_patch.stop)
         self.addCleanup(setattr, GATE, "ROOT", previous_root)
         self.paper = self.root / "papers" / "FixturePaper"
         self.audit = self.paper / "audit"
@@ -656,10 +738,10 @@ class CorrectedSourceTargetMapTests(unittest.TestCase):
         )
 
     def payload(self) -> dict[str, object]:
-        source_lines = GATE.normalized_source_lines(
-            GATE.normalized_source_text(self.source.read_bytes())
+        source_lines = source_manifest.normalized_source_lines(
+            source_manifest.normalized_source_text(self.source.read_bytes())
         )
-        excerpt = GATE.normalized_source_line_excerpt(source_lines, 1, 2)
+        excerpt = source_manifest.normalized_source_line_excerpt(source_lines, 1, 2)
         assert excerpt is not None
         archival = "The archival theorem claims the unrestricted result."
         corrected = "With the explicit three-point condition, the repaired result holds."
@@ -683,7 +765,7 @@ class CorrectedSourceTargetMapTests(unittest.TestCase):
                 "artifact_sha256": hashlib.sha256(self.approval.read_bytes()).hexdigest(),
             },
         }
-        target["corrected_target_sha256"] = GATE.corrected_target_record_digest(
+        target["corrected_target_sha256"] = source_manifest.corrected_target_record_digest(
             target
         )
         return {
@@ -729,13 +811,280 @@ class CorrectedSourceTargetMapTests(unittest.TestCase):
         )
 
     def findings(self, payload: dict[str, object]) -> list[object]:
-        return GATE.corrected_source_statement_map_findings(
+        return source_manifest.corrected_source_statement_map_findings(
             self.paper, "formalized", payload
         )
+
+    def current_excerpt_payload(self) -> dict[str, object]:
+        payload = self.payload()
+        item = payload["items"]["opaque_source_key"]
+        assert isinstance(item, dict)
+        target = item["corrected_target"]
+        assert isinstance(target, dict)
+        approval = target["approval"]
+        assert isinstance(approval, dict)
+        excerpt = (
+            "The repaired target is approved only with its explicit condition."
+        )
+        approval.pop("artifact_sha256")
+        approval.update(
+            {
+                "artifact_protocol": GATE.CORRECTED_TARGET_APPROVAL_PROTOCOL,
+                "artifact_excerpt": excerpt,
+                "artifact_excerpt_sha256": hashlib.sha256(
+                    excerpt.encode("utf-8")
+                ).hexdigest(),
+            }
+        )
+        target["corrected_target_sha256"] = source_manifest.corrected_target_record_digest(
+            target
+        )
+        return payload
 
     def test_valid_corrected_target_is_anchored_to_its_archival_source(self) -> None:
         self.write_ledger()
         self.assertEqual(self.findings(self.payload()), [])
+
+    def excluded_payload(self) -> dict[str, object]:
+        payload = self.payload()
+        item = payload["items"]["opaque_source_key"]
+        quote = self.source.read_text().rstrip("\n")
+        digest = hashlib.sha256(quote.encode()).hexdigest()
+        item.pop("lean_declarations")
+        item.update(
+            claim_bearing=True,
+            inventory_role="source_scope_exclusion",
+            scope_disposition="user_approved_scope_exclusion",
+            coverage_status="user_approved_scope_exclusion",
+            source_anchor_evidence=[{
+                "path": "source.txt", "line_start": 1, "line_end": 2,
+                "quoted_text": quote, "quoted_text_sha256": digest,
+            }],
+            user_approved_scope_exclusion={
+                "schema": 1,
+                "approval_kind": "explicit_user_instruction",
+                "approval_reference": "The maintainer explicitly deferred this result for the release.",
+                "approved_at": "2026-09-06",
+                "reason": "The original result remains uncredited pending a feasible-domain proof.",
+                "source_locator": "source.txt:1-2",
+                "source_evidence": "The theorem claims an unrestricted conclusion beyond the current proof domain.",
+                "source_anchor_quote_sha256": digest,
+            },
+        )
+        return payload
+
+    def test_excluded_corrected_target_preserves_validated_provenance_without_endpoint(self) -> None:
+        self.write_ledger()
+        self.assertEqual(self.findings(self.excluded_payload()), [])
+
+    def test_excluded_corrected_target_still_rejects_stale_approval(self) -> None:
+        self.write_ledger()
+        payload = self.excluded_payload()
+        self.approval.write_text("This artifact no longer contains the approved target.\n")
+        self.assertTrue(any("artifact_sha256" in f.message for f in self.findings(payload)))
+
+    def test_excluded_corrected_target_cannot_retain_an_active_route(self) -> None:
+        self.write_ledger()
+        payload = self.excluded_payload()
+        payload["items"]["opaque_source_key"]["lean_declarations"] = ["active_endpoint"]
+        self.assertTrue(self.findings(payload))
+
+    def subsumed_payload(self) -> dict[str, object]:
+        payload = self.payload()
+        payload["source_coverage_mode"] = "named_theoretical_statements"
+        payload["semantic_contract_schema"] = 1
+        items = payload["items"]
+        assert isinstance(items, dict)
+        support = items["opaque_source_key"]
+        assert isinstance(support, dict)
+        support.pop("lean_declarations")
+        support.update(
+            claim_bearing=True,
+            coverage_status="subsumed_by_selected_result",
+            inventory_role="subsumed_by_selected_result",
+            protocol_role="subsumed_by_selected_result",
+            source_status="subsumed_by_selected_result",
+            source_scope_classification="source_resolved_within_paper_observation",
+            scope_disposition="supporting_context_for_selected_result",
+            subsumed_by_source_item="canonical_result",
+        )
+        items["canonical_result"] = {
+            "claim_bearing": True,
+            "source_kind": "theorem",
+            "title": "Theorem 1. Canonical repaired result",
+            "statement": "Theorem 1 gives the selected repaired result.",
+            "lean_declarations": ["canonical_complete_endpoint"],
+            "semantic_contract": {
+                "spec_declaration": "Fixture.CanonicalSpec",
+                "evidence_declaration": "Fixture.CanonicalProof",
+                "evidence_mode": "proves",
+                "semantic_shape": "plain",
+            },
+        }
+        return payload
+
+    def test_subsumed_corrected_target_retains_validated_provenance_without_endpoint(
+        self,
+    ) -> None:
+        self.write_ledger()
+        self.assertEqual(self.findings(self.subsumed_payload()), [])
+
+    def test_subsumed_corrected_target_still_rejects_stale_approval(self) -> None:
+        self.write_ledger()
+        payload = self.subsumed_payload()
+        self.approval.write_text("This artifact no longer contains the approved target.\n")
+        self.assertTrue(
+            any("artifact_sha256" in finding.message for finding in self.findings(payload))
+        )
+
+    def test_invalid_subsumption_does_not_exempt_a_corrected_target_endpoint(
+        self,
+    ) -> None:
+        self.write_ledger()
+        payload = self.subsumed_payload()
+        support = payload["items"]["opaque_source_key"]
+        assert isinstance(support, dict)
+        support["lean_declarations"] = ["duplicate_active_endpoint"]
+        messages = [finding.message for finding in self.findings(payload)]
+        self.assertTrue(
+            any(
+                "corrected_target without coverage_status corrected_source_statement"
+                in message
+                for message in messages
+            ),
+            messages,
+        )
+
+    def test_exclusion_requires_every_source_slice_in_its_recorded_order(self) -> None:
+        payload = self.excluded_payload()
+        approval = payload["items"]["opaque_source_key"]["user_approved_scope_exclusion"]
+        approval["source_locator"] = "source.txt:1; source.txt:2"
+        validate = lambda: source_manifest.user_approved_scope_exclusion_errors(self.paper, approval)
+        self.assertEqual(validate(), [])
+        approval["source_locator"] = "source.txt:2; source.txt:1"
+        self.assertTrue(any("exact source quote" in error for error in validate()))
+        approval["source_locator"] = "source.txt:1; source.txt:2"
+        self.source.write_text(self.source.read_text().replace("three-point", "four-point"))
+        self.assertTrue(any("exact source quote" in error for error in validate()))
+
+    def test_excluded_corrected_target_rejects_malformed_retained_target(self) -> None:
+        self.write_ledger()
+        payload = self.excluded_payload()
+        payload["items"]["opaque_source_key"]["corrected_target"] = "not a target record"
+        self.assertTrue(any("structured corrected_target" in f.message for f in self.findings(payload)))
+
+    def test_quarantined_false_source_claim_needs_no_fictitious_corrected_target(self) -> None:
+        """A documented false claim is distinct from an approved replacement."""
+
+        self.write_ledger(resolution="quarantined_source_defect")
+        payload = self.payload()
+        items = payload["items"]
+        assert isinstance(items, dict)
+        item = items["opaque_source_key"]
+        assert isinstance(item, dict)
+        item.pop("corrected_target")
+        item["coverage_status"] = "not_credited_source_defect"
+        item["source_status"] = "quarantined_source_defect"
+
+        self.assertEqual(self.findings(payload), [])
+
+    def test_corrected_source_semantic_bundle_needs_no_single_theorem_endpoint(self) -> None:
+        """One corrected algorithm may govern a bounded prerequisite bundle."""
+
+        self.write_ledger()
+        payload = self.payload()
+        items = payload["items"]
+        assert isinstance(items, dict)
+        item = items["opaque_source_key"]
+        assert isinstance(item, dict)
+        item["inventory_role"] = "source_semantic_declaration"
+        item["lean_declarations"] = [
+            "Fixture.correctedTransition",
+            "Fixture.correctedOutput",
+        ]
+
+        self.assertEqual(self.findings(payload), [])
+
+    def test_current_approval_ignores_unrelated_artifact_prose_only(self) -> None:
+        self.write_ledger()
+        payload = self.current_excerpt_payload()
+        self.assertEqual(self.findings(payload), [])
+
+        self.approval.write_text(
+            "The repaired target is approved only with its explicit condition.\n"
+            "This unrelated implementation note was added later.\n",
+            encoding="utf-8",
+        )
+        self.assertEqual(self.findings(payload), [])
+
+        self.approval.write_text(
+            "The repaired target is no longer approved with that condition.\n",
+            encoding="utf-8",
+        )
+        findings = self.findings(payload)
+        self.assertTrue(
+            any("occur exactly once" in finding.message for finding in findings),
+            [finding.message for finding in findings],
+        )
+
+    def test_current_approval_rejects_an_ambiguous_repeated_excerpt(self) -> None:
+        self.write_ledger()
+        payload = self.current_excerpt_payload()
+        excerpt = "The repaired target is approved only with its explicit condition."
+        self.approval.write_text(excerpt + "\n" + excerpt + "\n", encoding="utf-8")
+        findings = self.findings(payload)
+        self.assertTrue(
+            any("found 2" in finding.message for finding in findings),
+            [finding.message for finding in findings],
+        )
+
+    def test_original_locator_never_replaces_the_current_excerpt_check(self) -> None:
+        self.write_ledger()
+        payload = self.current_excerpt_payload()
+        target = payload["items"]["opaque_source_key"]["corrected_target"]
+        approval = target["approval"]
+        approval["original_artifact_path"] = "docs/retired-approval.md"
+        target["corrected_target_sha256"] = (
+            source_manifest.corrected_target_record_digest(target)
+        )
+
+        # The historical file is intentionally absent. Only its canonical
+        # locator is needed; the current file still carries the authority.
+        self.assertEqual(self.findings(payload), [])
+
+        self.approval.unlink()
+        findings = self.findings(payload)
+        self.assertTrue(
+            any("artifact_path" in finding.message for finding in findings),
+            [finding.message for finding in findings],
+        )
+
+        self.approval.write_text(
+            "This current artifact omits the approved corrected-target excerpt.\n",
+            encoding="utf-8",
+        )
+        findings = self.findings(payload)
+        self.assertTrue(
+            any("found 0" in finding.message for finding in findings),
+            [finding.message for finding in findings],
+        )
+
+    def test_malformed_original_locator_is_rejected_even_with_fresh_digest(
+        self,
+    ) -> None:
+        self.write_ledger()
+        payload = self.current_excerpt_payload()
+        target = payload["items"]["opaque_source_key"]["corrected_target"]
+        approval = target["approval"]
+        approval["original_artifact_path"] = "../docs/approval.md"
+        target["corrected_target_sha256"] = (
+            source_manifest.corrected_target_record_digest(target)
+        )
+        findings = self.findings(payload)
+        self.assertTrue(
+            any("original_artifact_path" in finding.message for finding in findings),
+            [finding.message for finding in findings],
+        )
 
     def test_repeated_corrected_presentation_inherits_canonical_endpoint(self) -> None:
         """An alias cannot be forced to recreate its canonical proof route."""
@@ -826,7 +1175,7 @@ class CorrectedSourceTargetMapTests(unittest.TestCase):
         target = payload["items"]["opaque_source_key"]["corrected_target"]
         assert isinstance(target, dict)
         target["archival_equivalence_claimed"] = True
-        target["corrected_target_sha256"] = GATE.corrected_target_record_digest(target)
+        target["corrected_target_sha256"] = source_manifest.corrected_target_record_digest(target)
         findings = self.findings(payload)
         self.assertTrue(
             any("archival_equivalence_claimed" in finding.message for finding in findings)
@@ -885,6 +1234,14 @@ class CorrectedSourceTargetMapTests(unittest.TestCase):
         coverage_path.write_text(json.dumps(coverage), encoding="utf-8")
         findings = GATE.corrected_target_coverage_findings(self.paper, "formalized")
         self.assertTrue(any("uses `covered`" in finding.message for finding in findings))
+        self.assertEqual(
+            GATE.corrected_target_coverage_findings(
+                self.paper,
+                "formalized",
+                context=SimpleNamespace(v11_lean_claim_graph_selected=True),
+            ),
+            [],
+        )
 
     def test_coverage_fast_lane_accepts_unique_paper_interface_short_row(self) -> None:
         """Dashboard-local row names may bind one unique configured endpoint."""
@@ -927,6 +1284,53 @@ class CorrectedSourceTargetMapTests(unittest.TestCase):
             "opaque_complete_endpoint"
         ]
         coverage_path.write_text(json.dumps(coverage), encoding="utf-8")
+        self.assertEqual(
+            GATE.corrected_target_coverage_findings(self.paper, "formalized"), []
+        )
+
+    def test_coverage_fast_lane_accepts_exact_contract_backed_spec(self) -> None:
+        """A v11 source card may own a corrected endpoint through its Spec."""
+
+        payload = self.payload()
+        payload["semantic_contract_schema"] = 1
+        item = payload["items"]["opaque_source_key"]
+        assert isinstance(item, dict)
+        endpoint = f"{self.paper.name}.PaperInterface.complete_endpoint"
+        spec = f"{self.paper.name}.PaperInterface.complete_endpointSpec"
+        item["lean_declarations"] = [endpoint]
+        item["semantic_contract"] = {
+            "spec_declaration": spec,
+            "evidence_declaration": endpoint,
+            "evidence_mode": "proves",
+            "semantic_shape": "plain",
+        }
+        (self.audit / "paper_statement_map.json").write_text(
+            json.dumps(payload), encoding="utf-8"
+        )
+        target = item["corrected_target"]
+        assert isinstance(target, dict)
+        coverage = {
+            "items": {
+                "opaque_source_key": {
+                    "coverage": "covered_corrected_target",
+                    "target_kind": "approved_corrected_target",
+                    "review_rows": [spec],
+                    "statement_sha256": target["approval"][
+                        "target_statement_sha256"
+                    ],
+                    "archival_statement_sha256": hashlib.sha256(
+                        str(item["statement"]).encode("utf-8")
+                    ).hexdigest(),
+                    "corrected_target_sha256": target["corrected_target_sha256"],
+                    "governing_defect_ids": ["FIXTURE-SOURCE-DEFECT"],
+                    "archival_equivalence_claimed": False,
+                }
+            }
+        }
+        (self.audit / "paper_coverage_llm.json").write_text(
+            json.dumps(coverage), encoding="utf-8"
+        )
+
         self.assertEqual(
             GATE.corrected_target_coverage_findings(self.paper, "formalized"), []
         )
@@ -988,6 +1392,9 @@ class SourcePremiseConsistencyGateTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         previous_root = GATE.ROOT
         GATE.ROOT = self.root
+        source_root_patch = patch.object(source_manifest, "ROOT", self.root)
+        source_root_patch.start()
+        self.addCleanup(source_root_patch.stop)
         self.addCleanup(setattr, GATE, "ROOT", previous_root)
         self.paper = self.root / "papers" / "FixturePaper"
         self.audit = self.paper / "audit"
@@ -1059,6 +1466,9 @@ class CorrectedModelScopeContractTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         previous_root = GATE.ROOT
         GATE.ROOT = self.root
+        source_root_patch = patch.object(source_manifest, "ROOT", self.root)
+        source_root_patch.start()
+        self.addCleanup(source_root_patch.stop)
         self.addCleanup(setattr, GATE, "ROOT", previous_root)
         # Synthetic corrected-scope fixtures do not install the source-record
         # helper. Exercise the real identity subprocess path explicitly in
@@ -1630,7 +2040,7 @@ class CorrectedModelScopeContractTests(unittest.TestCase):
         )
         self.assertTrue(
             any(
-                "aggregate surface does not match its serialized raw-evidence projection"
+                "compact raw-evidence digest is stale"
                 in finding.message
                 for finding in findings
             ),
@@ -1660,7 +2070,7 @@ class CorrectedModelScopeContractTests(unittest.TestCase):
         )
         self.assertTrue(
             any(
-                "aggregate surface does not match its serialized raw-evidence projection"
+                "compact raw-evidence digest is stale"
                 in finding.message
                 for finding in findings
             ),
@@ -2175,6 +2585,37 @@ class CorrectedModelScopeContractTests(unittest.TestCase):
         self.assertEqual(len(findings), 1)
         self.assertIn("non-source/caveat assumption", findings[0].message)
 
+    def test_v11_corrected_scope_rows_require_exact_scope_and_approval_pins(self) -> None:
+        status = self._write_valid_scope()
+        scope = status["formalization_scope"]
+        approval = scope["approval"]
+        assumptions = {
+            "items": {
+                self.assumption_row: {
+                    "judgment": "documented_additional_assumption",
+                    "author_approved_corrected_scope": {
+                        "scope_id": scope["scope_id"],
+                        "approval_artifact_path": approval["artifact_path"],
+                        "approval_artifact_sha256": approval["artifact_sha256"],
+                        "correction_ids": [self.correction_id],
+                    },
+                }
+            }
+        }
+
+        self.assertEqual(
+            GATE.current_v11_author_approved_assumption_rows(status, assumptions),
+            {self.assumption_row},
+        )
+
+        assumptions["items"][self.assumption_row][
+            "author_approved_corrected_scope"
+        ]["approval_artifact_sha256"] = "0" * 64
+        self.assertEqual(
+            GATE.current_v11_author_approved_assumption_rows(status, assumptions),
+            set(),
+        )
+
         self._write_valid_scope()
         (self.audit / "assumption_match_llm.json").write_text(
             json.dumps(
@@ -2303,6 +2744,34 @@ class SemanticContractInventoryTests(unittest.TestCase):
                     [finding.message for finding in findings],
                 )
 
+    def test_schema_two_typed_prerequisites_do_not_require_legacy_contracts(self) -> None:
+        findings = self.findings(
+            {
+                "semantic_contract_schema": 1,
+                "semantic_route_schema": 2,
+                "items": {
+                    "source_formula": {
+                        "claim_bearing": True,
+                        "source_kind": "formula",
+                        "statement": "The source defines a formula used by the result.",
+                        "inventory_role": "source_semantic_declaration",
+                        "lean_declarations": ["Fixture.sourceFormula"],
+                    },
+                    "typed_support": {
+                        "claim_bearing": True,
+                        "source_kind": "prose_assertion",
+                        "statement": "The source proof uses this intermediate support.",
+                        "inventory_role": "proof_support",
+                        "scope_disposition": "explicit_proof_support",
+                    },
+                },
+            }
+        )
+        self.assertFalse(
+            any("lacks semantic_contract" in finding.message for finding in findings),
+            [finding.message for finding in findings],
+        )
+
     def test_claim_bearing_result_still_requires_contract(self) -> None:
         for source_kind in ("theorem", "proposition", "lemma", "corollary"):
             with self.subTest(source_kind=source_kind):
@@ -2325,6 +2794,30 @@ class SemanticContractInventoryTests(unittest.TestCase):
                     ),
                     [finding.message for finding in findings],
                 )
+
+    def test_quarantined_false_result_uses_defect_support_not_positive_contract(self) -> None:
+        findings = self.findings(
+            {
+                "semantic_contract_schema": 1,
+                "items": {
+                    "false_source_result": {
+                        "claim_bearing": True,
+                        "source_kind": "lemma",
+                        "statement": "Lemma 1. The printed inequality holds.",
+                        "source_status": "quarantined_source_defect",
+                        "inventory_role": "quarantined_source_defect",
+                        "source_defect_ids": ["FIX-1"],
+                        "support_lean_declarations": [
+                            "Fixture.printedInequalityCounterexample"
+                        ],
+                    }
+                },
+            }
+        )
+        self.assertFalse(
+            any("lacks semantic_contract" in finding.message for finding in findings),
+            [finding.message for finding in findings],
+        )
 
     def test_nonnamed_defect_support_may_remain_nonclaim_context(self) -> None:
         findings = self.findings(
@@ -2407,7 +2900,7 @@ class SemanticContractInventoryTests(unittest.TestCase):
                         "semantic_contract": {
                             "spec_declaration": "Renamed.checkedShape",
                             "evidence_declaration": "Renamed.unrelatedProof",
-                            "evidence_mode": "refutes",
+                            "evidence_mode": "proves",
                             "semantic_shape": "plain",
                         },
                     }
@@ -2575,7 +3068,7 @@ class SemanticContractInventoryTests(unittest.TestCase):
                         "semantic_contract": {
                             "spec_declaration": "Renamed.checkedShape",
                             "evidence_declaration": "Renamed.unrelatedProof",
-                            "evidence_mode": "refutes",
+                            "evidence_mode": "proves",
                             "semantic_shape": "plain",
                         },
                     }
@@ -2711,8 +3204,28 @@ class SemanticContractScopeDispositionTests(unittest.TestCase):
                 "source_scope_classification": (
                     "source_declared_open_nonresult_observation"
                 ),
+                "coverage_status": "source_declared_open",
+                "protocol_role": "source_declared_open",
                 "scope_reason": "The exact source remark explicitly reports an unresolved issue.",
                 "source_evidence": "The byte-pinned source remark is the scope evidence.",
+            },
+        )
+        self.assertEqual(findings, [])
+
+    def test_ocr_spaced_conjecture_heading_is_open_nonresult_evidence(self) -> None:
+        findings = self.findings(
+            "C ONJECTURE 1. The displayed limit is zero.",
+            {
+                "statement": "The source labels the displayed limit as a conjecture.",
+                "source_kind": "open_problem",
+                "claim_bearing": False,
+                "source_scope_classification": (
+                    "source_declared_open_nonresult_observation"
+                ),
+                "coverage_status": "source_declared_open",
+                "protocol_role": "source_declared_open",
+                "scope_reason": "The exact source heading explicitly marks the statement as a conjecture.",
+                "source_evidence": "The byte-pinned OCR source heading is the scope evidence.",
             },
         )
         self.assertEqual(findings, [])
@@ -2723,6 +3236,8 @@ class SemanticContractScopeDispositionTests(unittest.TestCase):
             "source_kind": "remark",
             "claim_bearing": False,
             "source_scope_classification": "source_declared_open_nonresult_observation",
+            "coverage_status": "source_declared_open",
+            "protocol_role": "source_declared_open",
             "scope_reason": "The exact source remark explicitly reports an unresolved issue.",
             "source_evidence": "The byte-pinned source remark is the scope evidence.",
         }
@@ -2749,6 +3264,8 @@ class SemanticContractScopeDispositionTests(unittest.TestCase):
             "source_kind": "remark",
             "claim_bearing": False,
             "source_scope_classification": "source_declared_open_nonresult_observation",
+            "coverage_status": "source_declared_open",
+            "protocol_role": "source_declared_open",
             "scope_reason": "The exact source remark explicitly reports an unresolved issue.",
             "source_evidence": "The byte-pinned source remark is the scope evidence.",
         }
@@ -2768,7 +3285,13 @@ class SemanticContractScopeDispositionTests(unittest.TestCase):
             self.paper, "formalized", require_source_bytes=False
         )
         messages = [finding.message for finding in findings]
-        self.assertTrue(any("escapes the paper folder" in message for message in messages), messages)
+        self.assertTrue(
+            any(
+                "source_location must name the pinned source artifact" in message
+                for message in messages
+            ),
+            messages,
+        )
 
         row["source_location"] = "source.txt:1"
         row["source_anchor_evidence"][0]["path"] = "source.txt"
@@ -2911,12 +3434,55 @@ class SemanticSurfaceInventoryTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
-            findings = GATE.semantic_surface_inventory_findings(paper, "formalized")
+            findings = source_manifest.semantic_surface_inventory_findings(paper, "formalized")
 
         messages = [finding.message for finding in findings]
         self.assertTrue(any("unknown field" in message for message in messages), messages)
         self.assertTrue(
             any("required_structural_tokens must be a nonempty" in message for message in messages),
+            messages,
+        )
+
+    def test_schema_three_semantic_prerequisite_uses_its_explicit_root_not_a_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            paper = Path(temp_dir) / "FixturePaper"
+            audit = paper / "audit"
+            audit.mkdir(parents=True)
+            (audit / "paper_statement_map.json").write_text(
+                json.dumps(
+                    {
+                        "source_coverage_mode": "named_theoretical_statements",
+                        "semantic_contract_schema": 1,
+                        "semantic_route_schema": 2,
+                        "items": {
+                            "source_definition": {
+                                "source_kind": "definition",
+                                "claim_bearing": True,
+                                "inventory_role": "source_semantic_declaration",
+                                "lean_declarations": ["FixturePaper.SourceDefinition"],
+                                "semantic_surface": {
+                                    "schema": 3,
+                                    "outer_binder_sha256": "0" * 64,
+                                    "required_result_patterns": [
+                                        {
+                                            "id": "definition_shape",
+                                            "relation": "iff",
+                                            "all_features": ["finite"],
+                                            "quantifier_shape": {"forall": 0, "exists": 0},
+                                        }
+                                    ],
+                                },
+                            }
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            findings = source_manifest.semantic_surface_inventory_findings(paper, "formalized")
+
+        messages = [finding.message for finding in findings]
+        self.assertFalse(
+            any("needs an exact semantic_contract" in message for message in messages),
             messages,
         )
 
@@ -2928,6 +3494,9 @@ class ProducerIndependenceTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         previous_root = GATE.ROOT
         GATE.ROOT = self.root
+        source_root_patch = patch.object(source_manifest, "ROOT", self.root)
+        source_root_patch.start()
+        self.addCleanup(source_root_patch.stop)
         self.addCleanup(setattr, GATE, "ROOT", previous_root)
         self.paper = self.root / "papers" / "FixturePaper"
         (self.paper / "audit").mkdir(parents=True)
@@ -3102,6 +3671,17 @@ class CoverageRowSignaturePinTests(unittest.TestCase):
             [],
         )
 
+    def test_selected_v11_lane_never_validates_legacy_coverage_pins(self) -> None:
+        self.write_coverage({})
+
+        findings = GATE.coverage_row_signature_pin_findings(
+            self.paper,
+            "formalized",
+            context=SimpleNamespace(v11_lean_claim_graph_selected=True),
+        )
+
+        self.assertEqual(findings, [])
+
 
 class SourceRecordJudgmentTests(unittest.TestCase):
     def setUp(self) -> None:
@@ -3110,6 +3690,9 @@ class SourceRecordJudgmentTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         previous_root = GATE.ROOT
         GATE.ROOT = self.root
+        source_root_patch = patch.object(source_manifest, "ROOT", self.root)
+        source_root_patch.start()
+        self.addCleanup(source_root_patch.stop)
         self.addCleanup(setattr, GATE, "ROOT", previous_root)
         identity_patch = patch.object(
             GATE, "source_record_current_input_fingerprint_error", return_value=""

@@ -14,8 +14,8 @@ The theorem results intentionally keep the `Finset` quantifier visible rather
 than hiding it in a certificate structure.
 -/
 
-open EconCSLib MeasureTheory
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory
+open AppliedModelingLib.SocialChoice.Ranking
 
 namespace KR21Monoculture
 
@@ -149,7 +149,7 @@ theorem paper_definition1_full_removal_monotonicity_of_scaledNoise_rankByScore_s
     congr 1
     funext i
     simp [t, raw, paper_appendixC_contractedScore, rumContractScore,
-      EconCSLib.Probability.rumContractScore]
+      AppliedModelingLib.Probability.rumContractScore]
     field_simp [ne_of_gt hthetaH, ne_of_gt hthetaA]
   have hcontractRank :
       Measurable (fun omega =>

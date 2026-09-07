@@ -1,4 +1,5 @@
 {
+  "approved_review_context_schema": 1,
   "declared_scope_exclusions": [
     "Participatory-budgeting and other empirical datasets",
     "Regression, simulation, and plotted numerical outputs",
@@ -16,16 +17,10 @@
   "items": {
     "algorithm_efficient_mallows_arbitrary_pair_joint_location_dp": {
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GGSG19TopThree.PaperInterface.source_mallows_arbitrary_pair_joint_location_dynamic_program"
+        "GGSG19TopThree.mallowsPairDPTabulationRun"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GGSG19TopThree.PaperInterface.source_mallows_arbitrary_pair_joint_location_dynamic_program",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GGSG19TopThree.PaperInterface.source_mallows_arbitrary_pair_joint_location_dynamic_programSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 763,
@@ -42,23 +37,30 @@
           "quoted_text_sha256": "eff16e5d4ddc7eb935fae848bc6858c78e2eee8ba9c88c9439d1f6626c2a6e78"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "algorithm.efficient.mallows.arbitrary.pair.joint.location.dp",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.mallowsPairDPTabulationRun",
+          "semantic_claim": "The paper advertises an efficient dynamic program that exactly computes the joint position distribution of any candidate pair under Mallows repeated insertion and says this program generated the numerical plots and located the counterexample.",
+          "source_locator": "audit/cited publication:763-763",
+          "source_quote_sha256": "3977fe09debbfe7c882a8eac7ac57aa636140ce28fbe4f043c857ef67587b8e6"
+        }
+      ],
       "source_kind": "algorithm",
       "source_location": "audit/cited publication:763; audit/cited publication:1546-1550",
       "source_note": "Lean defines a materialized dense-tabulation runner for the source repeated-insertion recurrence on arbitrary tracked pairs, proves its table refines an independently defined PMF-bind process, proves normalization, and proves its exact scalar-operation count and degree-six bound.",
       "source_status": "direct_source_algorithm",
-      "statement": "The paper advertises an efficient dynamic program that exactly computes the joint position distribution of any candidate pair under Mallows repeated insertion and says this program generated the numerical plots and located the counterexample.",
-      "support_lean_declarations": [
-        "GGSG19TopThree.PaperInterface.source_mallows_arbitrary_pair_joint_location_dynamic_programSpec"
-      ]
+      "statement": "The paper advertises an efficient dynamic program that exactly computes the joint position distribution of any candidate pair under Mallows repeated insertion and says this program generated the numerical plots and located the counterexample."
     },
     "assumption_mallows_nontrivial_winner_and_parameter_domain": {
       "aliases": [
         "assumption_mallows_nontrivial_winner_and_parameter_domain"
       ],
       "claim_bearing": false,
-      "inventory_role": "premise_declaration",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "assumption_mallows_nontrivial_winner_and_parameter_domain"
+        "GGSG19TopThree.assumption_mallows_nontrivial_winner_and_parameter_domain"
       ],
       "source_anchor_evidence": [
         {
@@ -90,9 +92,9 @@
     },
     "assumption_mallows_repeated_insertion_parameter_domain": {
       "claim_bearing": false,
-      "inventory_role": "premise_declaration",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "assumption_mallows_repeated_insertion_parameter_domain"
+        "GGSG19TopThree.assumption_mallows_repeated_insertion_parameter_domain"
       ],
       "source_anchor_evidence": [
         {
@@ -120,9 +122,9 @@
         "assumption_nontrivial_k_approval_cutoffs"
       ],
       "claim_bearing": false,
-      "inventory_role": "premise_declaration",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "assumption_nontrivial_k_approval_cutoffs"
+        "GGSG19TopThree.assumption_nontrivial_k_approval_cutoffs"
       ],
       "source_anchor_evidence": [
         {
@@ -157,9 +159,9 @@
         "assumption_pairwise_approval_ternary_gap_domain"
       ],
       "claim_bearing": false,
-      "inventory_role": "premise_declaration",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "assumption_pairwise_approval_ternary_gap_domain"
+        "GGSG19TopThree.assumption_pairwise_approval_ternary_gap_domain"
       ],
       "source_anchor_evidence": [
         {
@@ -187,9 +189,9 @@
         "assumption_randomized_mechanism_probability_weights"
       ],
       "claim_bearing": false,
-      "inventory_role": "premise_declaration",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "assumption_randomized_mechanism_probability_weights"
+        "GGSG19TopThree.assumption_randomized_mechanism_probability_weights"
       ],
       "source_anchor_evidence": [
         {
@@ -238,7 +240,6 @@
     },
     "example_randomization_helps_Durham_numeric": {
       "claim_bearing": true,
-      "inventory_role": "proof_support",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_example_durham_ward1_randomized_approval_improves_static3_static4"
       ],
@@ -255,6 +256,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "\\lemrandomizebetterapprovalWselection*\n\\begin{proof}\nWe provide two proofs: a numeric example from a real-world election, and a contrived, constructed example.\n\n\\parbold{Numeric example found in a real election} In Durham Ward 1, to select 2 winners, randomizing between 3 and 4-Approval is better than either individually, even though asymptotically the mechanisms pick the same set of winners. The critical pair with $2$-Approval is with the candidate asymptotically ranked 1st, and the best item not selected. With $3$-Approval, it is with the candidate asymptotically ranked 2nd, and the same best item not selected.\n\nWe will call these items $h$, $i,j$ (the one not selected) respectively. The respective probabilities of being selected alone:\n\n%\n%\n%\n%\n%\n%\n%\n%\n%\n%\n%\n\n\\begin{align*}\nt_{hj}^h(3)&= 0.277 \\\\\nt_{hj}^h(4)&= 0.266\t\\\\\nt_{hj}^j(3)&= 0.200\t\\\\\nt_{hj}^j(4)&= 0.188\t\\\\\nt_{ij}^i(3)&= 0.255\t\\\\\nt_{ij}^i(4)&= 0.295\t\\\\\nt_{ij}^j(3)&= 0.160\\\\\nt_{ij}^j(4)&= 0.217\\\\\\\\\n%\nt_{hj}^h(\\{3, 4\\})&= 0.271\t \\\\\nt_{hj}^j(\\{3, 4\\})&= 0.194\t\\\\\nt_{ij}^i(\\{3, 4\\})&= 0.275\t\\\\\nt_{ij}^j(\\{3, 4\\})&= 0.189\\\\\n\\end{align*}\n\nAnd the resulting rates (using the formula in Proposition~\\ref{lem:pairwiselearning_approval}) are:\n\n\\begin{align*}\nr_{hj}(3) &= .00616932\\\\\nr_{ij}(3) &= .01114061\\\\\nr_{hj}(4) &= .00677352\\\\\nr_{ij}(4) &= .00592327\\\\\nr_{hj}(\\{3, 4\\}) &= .00642839\\\\\nr_{ij}(\\{3, 4\\}) &= .00815633\\\\\nr(3) &= \\min(r_{hj}(3), r_{ij}(3)) = .00616932\\\\\nr(4) &= \\min(r_{hj}(4), r_{ij}(4)) = .00592327\\\\\nr(\\{3, 4\\}) &= \\min(r_{hj}(\\{3, 4\\}), r_{ij}(\\{3, 4\\})) = .00642839 > \\max(r(3), r(4))\n\\end{align*}\n\nThus randomization improves learning.",
           "quoted_text_sha256": "4db7550365dfae5f709e757c80dba36bc3ced64919303b381deed791b667f5c3"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "example.randomization.helps.Durham.numeric",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_example_durham_ward1_randomized_approval_improves_static3_static4",
+          "semantic_claim": "A Durham Ward 1 numerical example reports two pivotal pairs and approval probabilities for three-, four-, and equal-mixture approval, with the mixture's minimum rate exceeding both static outcome rates.",
+          "source_locator": "audit/cited publication:1606-1656",
+          "source_quote_sha256": "4db7550365dfae5f709e757c80dba36bc3ced64919303b381deed791b667f5c3"
         }
       ],
       "source_kind": "example",
@@ -355,9 +366,10 @@
     },
     "model_arbitrary_ordered_tier_goal": {
       "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
-      "scope_disposition": "paper_prerequisite",
-      "scope_disposition_note": "The ordered tier-goal setup is a source model premise for the selected learning claims.",
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GGSG19TopThree.model_arbitrary_ordered_tier_goal"
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 312,
@@ -374,16 +386,12 @@
     },
     "model_cumulative_scores_ranking_and_outcome": {
       "claim_bearing": true,
-      "inventory_role": "model_or_formula",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GGSG19TopThree.PaperInterface.source_model_cumulative_scores_ranking_and_outcome"
+        "GGSG19TopThree.ProofBridge.iidUniformTieCandidateAverageScore",
+        "GGSG19TopThree.iidUniformTieTieredCorrect",
+        "GGSG19TopThree.rankingUniformTieSignalLaw"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GGSG19TopThree.PaperInterface.source_model_cumulative_scores_ranking_and_outcome",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GGSG19TopThree.PaperInterface.source_model_cumulative_scores_ranking_and_outcomeSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 345,
@@ -391,6 +399,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "\\parbold{Outcome} After $N$ voters, candidate $i$'s cumulative score is $s_i^N = \\frac{1}{N} \\sum_{v=1}^N s_{iv}$. Candidates are ranked in descending order of score, to form ranking ${\\sigma}^N$, with ties broken uniformly at random. We denote the \\textit{outcome} after $N$ voters, corresponding to the goal $G$, as $O^N(M, F, \\beta, G)$. For example, for the goal of selecting $W$ winners, $O^N(M, F, \\beta, G)$ is simply the top $W$ candidates in ${\\sigma}^N$. When $(M, F, \\beta, G)$ is clear from context, we will refer to the outcome as $O^N$. ",
           "quoted_text_sha256": "9943a3352fea7c8f32fe5a3d84f7d401ff8472edfd7fbbcd0dc1e3dfe1a57685"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "model.cumulative.scores.ranking.and.outcome",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.ProofBridge.iidUniformTieCandidateAverageScore",
+          "semantic_claim": "A candidate's N-voter score is the average of per-voter scores; candidates are ordered by this score with uniform random tie breaking, and the goal-specific outcome is the induced tier or winner selection.",
+          "source_locator": "audit/cited publication:345-345",
+          "source_quote_sha256": "9943a3352fea7c8f32fe5a3d84f7d401ff8472edfd7fbbcd0dc1e3dfe1a57685"
         }
       ],
       "source_kind": "definition",
@@ -407,10 +425,7 @@
         "validator_type": "agent"
       },
       "source_status": "direct_source_model",
-      "statement": "A candidate's N-voter score is the average of per-voter scores; candidates are ordered by this score with uniform random tie breaking, and the goal-specific outcome is the induced tier or winner selection.",
-      "support_lean_declarations": [
-        "GGSG19TopThree.PaperInterface.source_model_cumulative_scores_ranking_and_outcomeSpec"
-      ]
+      "statement": "A candidate's N-voter score is the average of per-voter scores; candidates are ordered by this score with uniform random tie breaking, and the goal-specific outcome is the induced tier or winner selection."
     },
     "model_expected_score_limit_and_tier_outcome": {
       "claim_bearing": false,
@@ -433,9 +448,10 @@
     },
     "model_finite_iid_strict_rankings": {
       "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
-      "scope_disposition": "paper_prerequisite",
-      "scope_disposition_note": "The iid ranking law is a source model premise for the selected definitions and results, not a separate claim card.",
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GGSG19TopThree.model_finite_iid_strict_rankings"
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 296,
@@ -452,16 +468,10 @@
     },
     "model_k_approval_score": {
       "claim_bearing": true,
-      "inventory_role": "model_or_formula",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GGSG19TopThree.PaperInterface.source_model_k_approval_score"
+        "AppliedModelingLib.SocialChoice.Ranking.kApprovalScore"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GGSG19TopThree.PaperInterface.source_model_k_approval_score",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GGSG19TopThree.PaperInterface.source_model_k_approval_scoreSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 339,
@@ -469,6 +479,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "\t\\item [$K$-Approval] Voter $v$ selects her favorite $K$ candidates, i.e., reveals $\\{i \\,:\\, {\\sigma_v}(i) \\leq K \\}$. A candidate receives a score $s_{iv} = 1$ for being selected, $0$ otherwise. \n%\n\t\t\n%\n\t%\n\t\n\n\\end{description}\n\n$\\beta$ encodes both elicitation and aggregation. For example, $K$-Approval is equivalent to $K$-ranking with score function $\\beta(k) = \\bbI[k \\leq K]$.  Furthermore, note that given $K$-ranking data, one can simulate $K'$-ranking elicitation for $K'\\leq K$ with a $\\beta$ s.t. $\\beta(k) = 0$ for $k>K'$. %",
           "quoted_text_sha256": "dd785a696254fe771fe34633ed118f3d4ff976d274bf9f790c2a7d77610d77d3"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "model.k.approval.score",
+          "identity_schema": 2,
+          "reviewed_lean_route": "AppliedModelingLib.SocialChoice.Ranking.kApprovalScore",
+          "semantic_claim": "Under K-approval, a voter selects the top K candidates and each selected candidate receives one point while each other candidate receives zero.",
+          "source_locator": "audit/cited publication:330-339",
+          "source_quote_sha256": "dd785a696254fe771fe34633ed118f3d4ff976d274bf9f790c2a7d77610d77d3"
         }
       ],
       "source_kind": "definition",
@@ -485,23 +505,14 @@
         "validator_type": "agent"
       },
       "source_status": "direct_source_model",
-      "statement": "Under K-approval, a voter selects the top K candidates and each selected candidate receives one point while each other candidate receives zero.",
-      "support_lean_declarations": [
-        "GGSG19TopThree.PaperInterface.source_model_k_approval_scoreSpec"
-      ]
+      "statement": "Under K-approval, a voter selects the top K candidates and each selected candidate receives one point while each other candidate receives zero."
     },
     "model_k_ranking_score": {
       "claim_bearing": true,
-      "inventory_role": "model_or_formula",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GGSG19TopThree.PaperInterface.source_model_k_ranking_score"
+        "GGSG19TopThree.ProofBridge.kRankingScore"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GGSG19TopThree.PaperInterface.source_model_k_ranking_score",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GGSG19TopThree.PaperInterface.source_model_k_ranking_scoreSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 329,
@@ -509,6 +520,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "\\parbold{Elicitation and Aggregation}\nVoters vote using an elicitation mechanism. Their votes are then aggregated using a positional scoring rule, parameterized as $\\beta: \\{1,\\dots,M\\} \\mapsto \\bbR$. We consider the following mechanisms:\n\\begin{description}\n\t\\item [$K$-Ranking] Voter $v$ ranks her favorite $K$ candidates, i.e., reveals $\\{(i, {\\sigma_v}(i)) \\,:\\, {\\sigma_v}(i) \\leq K \\}$. Candidate $i$ then receives a score $s_{iv} = \\beta({\\sigma_v}(i))$ if ranked, $0$ otherwise. For example, $\\beta(k) = M-k$ for the Borda count.\\footnote{In Borda, candidates not ranked receive a score $(M-K-1)/2$, consistent with assuming they are all tied in position $(K + 1)$.}\n\t",
           "quoted_text_sha256": "d76508734756454603ccebb3b9bc83c815308cb20a273b56d6f3d441335f17df"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "model.k.ranking.score",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.ProofBridge.kRankingScore",
+          "semantic_claim": "Under K-ranking, a voter reveals the positions of her top K candidates; a revealed candidate receives beta of its position and an unrevealed candidate receives zero.",
+          "source_locator": "audit/cited publication:325-329",
+          "source_quote_sha256": "d76508734756454603ccebb3b9bc83c815308cb20a273b56d6f3d441335f17df"
         }
       ],
       "source_kind": "definition",
@@ -525,16 +546,14 @@
         "validator_type": "agent"
       },
       "source_status": "direct_source_model",
-      "statement": "Under K-ranking, a voter reveals the positions of her top K candidates; a revealed candidate receives beta of its position and an unrevealed candidate receives zero.",
-      "support_lean_declarations": [
-        "GGSG19TopThree.PaperInterface.source_model_k_ranking_scoreSpec"
-      ]
+      "statement": "Under K-ranking, a voter reveals the positions of her top K candidates; a revealed candidate receives beta of its position and an unrevealed candidate receives zero."
     },
     "model_mallows_ranking_mass_and_parameter_domain": {
       "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
-      "scope_disposition": "paper_prerequisite",
-      "scope_disposition_note": "The Mallows mass function and parameter range are source model premises for the selected Mallows results and algorithm.",
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GGSG19TopThree.model_mallows_ranking_mass_and_parameter_domain"
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 296,
@@ -551,9 +570,10 @@
     },
     "model_randomized_scoring_mechanism": {
       "claim_bearing": false,
-      "inventory_role": "source_premise_declaration",
-      "scope_disposition": "paper_prerequisite",
-      "scope_disposition_note": "The randomized mechanism is a source model premise for the selected randomized-scoring results.",
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GGSG19TopThree.model_randomized_scoring_mechanism"
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 670,
@@ -570,16 +590,11 @@
     },
     "model_reasonable_positional_scoring_rules": {
       "claim_bearing": true,
-      "inventory_role": "model_or_formula",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GGSG19TopThree.PaperInterface.source_model_reasonable_positional_scoring_rules"
+        "GGSG19TopThree.ReasonablePrefixWeights",
+        "GGSG19TopThree.rankingPrefixScore"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GGSG19TopThree.PaperInterface.source_model_reasonable_positional_scoring_rules",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GGSG19TopThree.PaperInterface.source_model_reasonable_positional_scoring_rulesSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 342,
@@ -587,6 +602,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "$\\beta$ encodes both elicitation and aggregation. For example, $K$-Approval is equivalent to $K$-ranking with score function $\\beta(k) = \\bbI[k \\leq K]$.  Furthermore, note that given $K$-ranking data, one can simulate $K'$-ranking elicitation for $K'\\leq K$ with a $\\beta$ s.t. $\\beta(k) = 0$ for $k>K'$. %\n\n\nThe scoring rule $\\beta$ is a design choice made by the election organizer, and so we will refer to $\\beta$ as the election's \\textit{design}. We restrict ourselves to non-constant, non-increasing scoring rules, i.e.,  $\\beta \\in \\mB = \\{\\beta : \\forall k<\\ell \\in {1,\\dots,M}, \\beta(k)\\geq \\beta(\\ell), \\text{ and } \\exists k<\\ell, \\beta(k)> \\beta(\\ell) \\}$.",
           "quoted_text_sha256": "f440f374d963e2442f4e77b755ddf6aec322e490ac601a0dd87350b3b905e2b6"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "model.reasonable.positional.scoring.rules",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.ReasonablePrefixWeights",
+          "semantic_claim": "The design class B consists of nonconstant nonincreasing positional score functions, equivalently nonnegative adjacent prefix weights with at least one strict drop.",
+          "source_locator": "audit/cited publication:339-342",
+          "source_quote_sha256": "f440f374d963e2442f4e77b755ddf6aec322e490ac601a0dd87350b3b905e2b6"
         }
       ],
       "source_kind": "definition",
@@ -603,10 +628,7 @@
         "validator_type": "agent"
       },
       "source_status": "direct_source_model",
-      "statement": "The design class B consists of nonconstant nonincreasing positional score functions, equivalently nonnegative adjacent prefix weights with at least one strict drop.",
-      "support_lean_declarations": [
-        "GGSG19TopThree.PaperInterface.source_model_reasonable_positional_scoring_rulesSpec"
-      ]
+      "statement": "The design class B consists of nonconstant nonincreasing positional score functions, equivalently nonnegative adjacent prefix weights with at least one strict drop."
     },
     "proof_constructed_all_other_cutoffs_worse": {
       "claim_bearing": false,
@@ -678,7 +700,6 @@
     },
     "proof_mallows_common_pivotal_pair": {
       "claim_bearing": true,
-      "inventory_role": "proof_support",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_proof_mallows_common_pivotal_pair"
       ],
@@ -702,6 +723,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "\\lemmallowsnorando*\n\\begin{proof}\n\tWhen selecting $W$ winners out of $M$ candidates, we need to separate candidates $1 \\dots W$ from candidates $W + 1 \\dots M$. It is easy to show that the pivotal pair, regardless of which $K$ is used in $K$-Approval, is $W$,$W+1$. Applying Theorem~\\ref{lem:randomizenotbetterapproval}, then, randomization cannot help the overall rate.\n\\end{proof}",
           "quoted_text_sha256": "a9e2b29304a69a5704868a312d1ced1125f7121df1f6bba82074c69d9d802aa3"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "proof.mallows.common.pivotal.pair",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_proof_mallows_common_pivotal_pair",
+          "semantic_claim": "For Mallows W-selection, the cross-tier pair W,W+1 is pivotal for every K-approval cutoff, so the fixed-pair non-improvement theorem controls the overall outcome rate.",
+          "source_locator": "audit/cited publication:728-734",
+          "source_quote_sha256": "3476de829bdc9f743916df5f0cb770f0ec6bca2e1387a3ce30b2d2b22bd6a5d4"
         }
       ],
       "source_kind": "formula",
@@ -731,7 +762,6 @@
     },
     "proof_mallows_four_candidate_joint_location_matrix": {
       "claim_bearing": true,
-      "inventory_role": "proof_support",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_proof_mallows_four_candidate_joint_location_matrix"
       ],
@@ -750,6 +780,16 @@
           "quoted_text_sha256": "6d118b5f76905887471308b1bdb74c7fe958283bf00abaafc4fae0defe9debb4"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "proof.mallows.four.candidate.joint.location.matrix",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_proof_mallows_four_candidate_joint_location_matrix",
+          "semantic_claim": "For reference items three and four in the four-candidate example, the appendix gives the complete off-diagonal joint-position matrix with normalizer N_3 N_4.",
+          "source_locator": "audit/cited publication:1548-1568",
+          "source_quote_sha256": "6d118b5f76905887471308b1bdb74c7fe958283bf00abaafc4fae0defe9debb4"
+        }
+      ],
       "source_kind": "equation",
       "source_location": "audit/cited publication:1548-1568",
       "source_status": "proof_support_inventory",
@@ -760,7 +800,6 @@
     },
     "proof_mallows_repeated_insertion_probability": {
       "claim_bearing": true,
-      "inventory_role": "proof_support",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_mallows_repeated_insertion_probability_formula"
       ],
@@ -779,10 +818,26 @@
           "quoted_text_sha256": "178ca5c9886428800e62e48da28c31575a329f20a87af7d5358eb9392248d06d"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "proof.mallows.repeated.insertion.kernel",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_mallows_repeated_insertion_probability_formula",
+          "semantic_claim": "The displayed repeated-insertion kernel assigns item i to each position j at most i with probability phi^(i-j) divided by 1 + phi + ... + phi^(i-1).",
+          "source_locator": "audit/cited publication:1546-1546",
+          "source_quote_sha256": "65ca15e8409c4930de334079e59e32b6c2e99b2667f1b26f5198b743d7838714"
+        }
+      ],
+      "source_core_projection": {
+        "classification": "literal_source_core",
+        "description": "The direct contract freezes the displayed normalized one-stage insertion kernel. The adjacent independence and resulting-Mallows-law prose remains source-model context for the downstream repeated-insertion process rather than an assertion of this one-stage formula theorem.",
+        "direct_declaration": "GGSG19TopThree.PaperInterface.source_mallows_repeated_insertion_probability_formula",
+        "spec_declaration": "GGSG19TopThree.PaperInterface.source_mallows_repeated_insertion_probability_formulaSpec"
+      },
       "source_kind": "formula",
       "source_location": "audit/cited publication:1544-1548",
       "source_status": "proof_support_inventory",
-      "statement": "In repeated insertion, reference item i is inserted at position j at normalized weight phi^(i-j), independently of earlier insertion choices, and the resulting ranking has the Mallows law.",
+      "statement": "The displayed repeated-insertion kernel assigns item i to each position j at most i with normalized weight phi^(i-j); positions beyond i have probability zero.",
       "support_lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_mallows_repeated_insertion_probability_formulaSpec"
       ]
@@ -1184,7 +1239,6 @@
         "source_corollary_lem_mallowsnorando"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_corollary_lem_mallowsnorando"
       ],
@@ -1210,6 +1264,16 @@
           "quoted_text_sha256": "a9e2b29304a69a5704868a312d1ced1125f7121df1f6bba82074c69d9d802aa3"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.corollary.mallows.randomization.no.improvement.positive.noise",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_corollary_lem_mallowsnorando",
+          "semantic_claim": "Mallows corollary for 0<phi<1: for selecting W winners, an approval-rate-optimal static K-approval rule weakly dominates every finite randomized family of nontrivial K-approval rules.",
+          "source_locator": "audit/cited publication:726-734",
+          "source_quote_sha256": "016e2db3eb71e355328c972e90a44b5deb47b24d07a9f2072105f25de6af114f"
+        }
+      ],
       "source_kind": "corollary",
       "source_location": "audit/cited publication:726-734; audit/cited publication:1532-1535",
       "source_status": "direct_source_statement",
@@ -1224,7 +1288,6 @@
         "source_corollary_lem_mallowsnorando"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_corollary_lem_mallowsnorando_zero_noise"
       ],
@@ -1250,6 +1313,16 @@
           "quoted_text_sha256": "a9e2b29304a69a5704868a312d1ced1125f7121df1f6bba82074c69d9d802aa3"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.corollary.mallows.randomization.no.improvement.zero.noise",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_corollary_lem_mallowsnorando_zero_noise",
+          "semantic_claim": "Mallows corollary at phi=0: deterministic rankings make the static W-approval error eventually zero, so its extended rate is top and weakly dominates every randomized finite rate.",
+          "source_locator": "audit/cited publication:726-734",
+          "source_quote_sha256": "016e2db3eb71e355328c972e90a44b5deb47b24d07a9f2072105f25de6af114f"
+        }
+      ],
       "source_kind": "corollary",
       "source_location": "audit/cited publication:726-734; audit/cited publication:1532-1535",
       "source_status": "direct_source_statement",
@@ -1263,16 +1336,10 @@
         "paper_definition_design_invariant"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GGSG19TopThree.PaperInterface.paper_definition_design_invariant_statement"
+        "GGSG19TopThree.ProofBridge.paper_definition_design_invariant"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GGSG19TopThree.PaperInterface.paper_definition_design_invariant_statement",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GGSG19TopThree.PaperInterface.paper_definition_design_invariant_statementSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 384,
@@ -1282,29 +1349,30 @@
           "quoted_text_sha256": "a7cf2adcacf73a145aaf7411677181dd68593e2e374c4e9583dac10315aeec00"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.definition1.design.invariance",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.ProofBridge.paper_definition_design_invariant",
+          "semantic_claim": "Definition 1: a setting is asymptotically design-invariant for goal G when every reasonable scoring rule converges almost surely to the same goal-specific outcome.",
+          "source_locator": "audit/cited publication:376-384",
+          "source_quote_sha256": "a7cf2adcacf73a145aaf7411677181dd68593e2e374c4e9583dac10315aeec00"
+        }
+      ],
       "source_kind": "definition",
       "source_location": "audit/cited publication:376-384",
       "source_status": "direct_source_definition",
-      "statement": "Definition 1: a setting is asymptotically design-invariant for goal G when every reasonable scoring rule converges almost surely to the same goal-specific outcome.",
-      "support_lean_declarations": [
-        "GGSG19TopThree.PaperInterface.paper_definition_design_invariant_statementSpec"
-      ]
+      "statement": "Definition 1: a setting is asymptotically design-invariant for goal G when every reasonable scoring rule converges almost surely to the same goal-specific outcome."
     },
     "source_definition2_large_deviation_rate": {
       "aliases": [
         "paper_definition_large_deviation_rate"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GGSG19TopThree.PaperInterface.paper_definition_large_deviation_rate_statement"
+        "GGSG19TopThree.ProofBridge.paper_definition_large_deviation_rate"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GGSG19TopThree.PaperInterface.paper_definition_large_deviation_rate_statement",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GGSG19TopThree.PaperInterface.paper_definition_large_deviation_rate_statementSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 458,
@@ -1314,29 +1382,30 @@
           "quoted_text_sha256": "7056215ecab4f9d7875c8f1b024aba6d1a7b731784a9cbfd31021bc86435f6d5"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.definition2.large.deviation.rate",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.ProofBridge.paper_definition_large_deviation_rate",
+          "semantic_claim": "Definition 2: for a nonnegative sequence A_N tending to zero, r is its large-deviation rate when r equals minus the limit of log A_N divided by N.",
+          "source_locator": "audit/cited publication:449-458",
+          "source_quote_sha256": "7056215ecab4f9d7875c8f1b024aba6d1a7b731784a9cbfd31021bc86435f6d5"
+        }
+      ],
       "source_kind": "definition",
       "source_location": "audit/cited publication:449-458",
       "source_status": "direct_source_definition",
-      "statement": "Definition 2: for a nonnegative sequence A_N tending to zero, r is its large-deviation rate when r equals minus the limit of log A_N divided by N.",
-      "support_lean_declarations": [
-        "GGSG19TopThree.PaperInterface.paper_definition_large_deviation_rate_statementSpec"
-      ]
+      "statement": "Definition 2: for a nonnegative sequence A_N tending to zero, r is its large-deviation rate when r equals minus the limit of log A_N divided by N."
     },
     "source_definition3_rate_optimality": {
       "aliases": [
         "paper_definition_rate_optimal"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GGSG19TopThree.PaperInterface.paper_definition_rate_optimal_statement"
+        "GGSG19TopThree.ProofBridge.paper_definition_rate_optimal"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GGSG19TopThree.PaperInterface.paper_definition_rate_optimal_statement",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GGSG19TopThree.PaperInterface.paper_definition_rate_optimal_statementSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 553,
@@ -1346,20 +1415,26 @@
           "quoted_text_sha256": "969ace6b7339f926086a679bb710bdfb9247690737a7a00a2a8beda7538325ef"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.definition3.rate.optimality",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.ProofBridge.paper_definition_rate_optimal",
+          "semantic_claim": "Definition 3: a feasible scoring rule is rate-optimal when it maximizes the Proposition 4 outcome-learning rate; K-star approval is approval-rate-optimal when it maximizes that rate among K-approval mechanisms.",
+          "source_locator": "audit/cited publication:542-553",
+          "source_quote_sha256": "969ace6b7339f926086a679bb710bdfb9247690737a7a00a2a8beda7538325ef"
+        }
+      ],
       "source_kind": "definition",
       "source_location": "audit/cited publication:542-553",
       "source_status": "direct_source_definition",
-      "statement": "Definition 3: a feasible scoring rule is rate-optimal when it maximizes the Proposition 4 outcome-learning rate; K-star approval is approval-rate-optimal when it maximizes that rate among K-approval mechanisms.",
-      "support_lean_declarations": [
-        "GGSG19TopThree.PaperInterface.paper_definition_rate_optimal_statementSpec"
-      ]
+      "statement": "Definition 3: a feasible scoring rule is rate-optimal when it maximizes the Proposition 4 outcome-learning rate; K-star approval is approval-rate-optimal when it maximizes that rate among K-approval mechanisms."
     },
     "source_proposition1_design_invariance_iff_strict_prefix_separation": {
       "aliases": [
         "source_proposition1_thm_consistency_tiered"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_proposition1_thm_consistency_tiered"
       ],
@@ -1385,6 +1460,16 @@
           "quoted_text_sha256": "fa511aa2466963f9f83e877184dcced36269fbd608b432477cc01679c8ee0c0b"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.proposition1.design.invariance.iff.strict.prefix.separation",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_proposition1_thm_consistency_tiered",
+          "semantic_claim": "Proposition 1: under independent uniform tie breaking, design invariance for an arbitrary ordered-tier goal holds exactly when every higher-tier candidate has strictly larger top-k probability than every lower-tier candidate for every proper prefix k; equality is part of the reverse implication, not an excluded premise.",
+          "source_locator": "audit/cited publication:386-391",
+          "source_quote_sha256": "768979fd106d5e218266057801691063c05855ea7bc58a522d9ec9a028e3c206"
+        }
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:386-391; audit/cited publication:1194-1219",
       "source_status": "direct_source_statement",
@@ -1398,7 +1483,6 @@
         "source_proposition2_thm_pairwiselearning_finite_support"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_proposition2_thm_pairwiselearning_finite_support"
       ],
@@ -1424,6 +1508,16 @@
           "quoted_text_sha256": "b82ff53a3b1ed5b7c8572a380ac8a1dcc49178d326b6cb2d5677dbf1f898547d"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.proposition2.pairwise.learning.rate.and.bound",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_proposition2_thm_pairwiselearning_finite_support",
+          "semantic_claim": "Proposition 2: if candidate i has larger expected score than j, the probability of reversing them has Chernoff large-deviation rate minus the infimum over real z of the log score-gap MGF, and is at most exp(-N r_ij) for every N.",
+          "source_locator": "audit/cited publication:471-485",
+          "source_quote_sha256": "c7847e3788b3c532d33b1aadb61ebb4ac524502dbab710eb02ccefe05ade8e6f"
+        }
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:471-485; audit/cited publication:1268-1305",
       "source_status": "direct_source_statement_with_explicit_finite_support_boundaries",
@@ -1437,7 +1531,6 @@
         "source_proposition3_lem_pairwiselearning_approval_finite_ternary"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_proposition3_lem_pairwiselearning_approval_finite_ternary"
       ],
@@ -1463,6 +1556,16 @@
           "quoted_text_sha256": "c3ab8a20f2d56d73a77e59b7a3354b8238511c86579e6b7a4fb8f42c872751a8"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.proposition3.k.approval.closed.pairwise.rate",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_proposition3_lem_pairwiselearning_approval_finite_ternary",
+          "semantic_claim": "Proposition 3: the K-approval pairwise rate equals minus the log of 2 times the geometric mean of the two one-sided approval probabilities plus the probability of a zero score gap.",
+          "source_locator": "audit/cited publication:498-516",
+          "source_quote_sha256": "62b8a73922ac86f745aa3d8c6b6c62c276fa1b91ba17d0097773b7424315a76c"
+        }
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:498-516; audit/cited publication:1309-1331",
       "source_status": "direct_source_statement_with_explicit_eventually_zero_boundary",
@@ -1477,7 +1580,6 @@
         "source_proposition4_thm_goal_learning_finite_sample_M_sq_bound"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_proposition4_thm_goal_learning_finite_sample_M_sq_bound"
       ],
@@ -1503,6 +1605,16 @@
           "quoted_text_sha256": "adce03cffb29a18dccd06d66c8df9b7fffbf28cb4f193770ecad289da822f237"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.proposition4.finite.sample.M.sq.bound",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_proposition4_thm_goal_learning_finite_sample_M_sq_bound",
+          "semantic_claim": "Proposition 4: for every sample size N, Q^N is at most M squared times exp(-N r), where r is the minimum relevant pairwise rate.",
+          "source_locator": "audit/cited publication:522-538",
+          "source_quote_sha256": "7a9c00299d31372b9f78dbe6fea7e803fb887f50782ec079b016517a417366ef"
+        }
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:522-538; audit/cited publication:1333-1374",
       "source_status": "direct_source_statement",
@@ -1517,7 +1629,6 @@
         "source_proposition4_thm_goal_learning_finite_sample_M_sq_bound"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_proposition4_thm_goal_learning_exact_minimum_rate"
       ],
@@ -1543,6 +1654,16 @@
           "quoted_text_sha256": "adce03cffb29a18dccd06d66c8df9b7fffbf28cb4f193770ecad289da822f237"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.proposition4.outcome.exact.minimum.rate",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_proposition4_thm_goal_learning_exact_minimum_rate",
+          "semantic_claim": "Proposition 4: the expected number Q^N of cross-tier reversals has large-deviation rate equal to the minimum relevant pairwise rate.",
+          "source_locator": "audit/cited publication:522-538",
+          "source_quote_sha256": "7a9c00299d31372b9f78dbe6fea7e803fb887f50782ec079b016517a417366ef"
+        }
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:522-538; audit/cited publication:1333-1374",
       "source_status": "direct_source_statement",
@@ -1556,7 +1677,6 @@
         "source_theorem1_lem_randomizebetterscoring_arbitrary_goal"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_theorem1_lem_randomizebetterscoring_arbitrary_goal"
       ],
@@ -1582,6 +1702,16 @@
           "quoted_text_sha256": "d11f46f39a0169cda0bebd55a30b9320d244f92dec5e86012a148f4f38825b74"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.theorem1.randomized.scoring.no.improvement",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_theorem1_lem_randomizebetterscoring_arbitrary_goal",
+          "semantic_claim": "Theorem 1: for every asymptotically design-invariant finite goal and randomized family of reasonable scoring rules, their probability-weighted static convex combination has outcome-learning rate at least that of the randomized mechanism.",
+          "source_locator": "audit/cited publication:680-690",
+          "source_quote_sha256": "d6016a1b54506aa6b4d21f26601083e022b6533fafc5f027fc3dea18f56e2071"
+        }
+      ],
       "source_kind": "theorem",
       "source_location": "audit/cited publication:680-690; audit/cited publication:1398-1491",
       "source_status": "direct_source_statement",
@@ -1595,7 +1725,6 @@
         "source_theorem2_lem_randomizenotbetterapproval_pairwise"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_theorem2_lem_randomizenotbetterapproval_pairwise"
       ],
@@ -1621,6 +1750,16 @@
           "quoted_text_sha256": "0dd327873c72704d2b073e972965df869f2e0f3ddf8eb435507ce260bf433b0b"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.theorem2.randomized.k.approval.fixed.pair.no.improvement",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_theorem2_lem_randomizenotbetterapproval_pairwise",
+          "semantic_claim": "Theorem 2: for any fixed candidate pair and randomized K-approval mechanism, some static K-approval component has pairwise learning rate at least the randomized rate.",
+          "source_locator": "audit/cited publication:702-722",
+          "source_quote_sha256": "bae654bcd65160efe9c2c2945ecad0e2950ca33ed40c1a30689b1419de3901cc"
+        }
+      ],
       "source_kind": "theorem",
       "source_location": "audit/cited publication:702-722; audit/cited publication:1498-1527",
       "source_status": "direct_source_statement",
@@ -1634,7 +1773,6 @@
         "source_theorem_lem_mallowsnotWK_counterexample"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_theorem_lem_mallowsnotWK_counterexample"
       ],
@@ -1660,6 +1798,16 @@
           "quoted_text_sha256": "3100baee1f348419a55cf44fc74306dbc025c52e92cc470c7114a18cfed2bf48"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.theorem.mallows.W.approval.not.rate.optimal",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_theorem_lem_mallowsnotWK_counterexample",
+          "semantic_claim": "Under the Mallows model for W-winner selection, W-approval need not be approval-rate-optimal; the source proves this with a four-candidate, three-winner high-noise example.",
+          "source_locator": "audit/cited publication:751-761",
+          "source_quote_sha256": "d4376b21b02c88f4ad5e741fadffb8b1b649014acb6c44d5bffc4699079d0c62"
+        }
+      ],
       "source_kind": "theorem",
       "source_location": "audit/cited publication:751-761; audit/cited publication:1538-1603",
       "source_status": "direct_source_statement",
@@ -1673,7 +1821,6 @@
         "source_theorem_lem_randomizebetterapproval_w_selection_constructed"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_source_target",
       "lean_declarations": [
         "GGSG19TopThree.PaperInterface.source_theorem_lem_randomizebetterapproval_w_selection_constructed"
       ],
@@ -1699,6 +1846,16 @@
           "quoted_text_sha256": "9da80b3c999959dace03619b12d0e8754a2becf6db703d802cc50a843266e574"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "source.theorem.randomized.approval.can.help.W.selection",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GGSG19TopThree.PaperInterface.source_theorem_lem_randomizebetterapproval_w_selection_constructed",
+          "semantic_claim": "There exist asymptotically design-invariant W-selection settings where a randomized K-approval mechanism has strictly larger outcome-learning rate than every static K-approval mechanism.",
+          "source_locator": "audit/cited publication:739-748",
+          "source_quote_sha256": "8c388e30d7920b5ac7ffc25ad622c1131a60b8b697f25c8643f9a51a1d625e27"
+        }
+      ],
       "source_kind": "theorem",
       "source_location": "audit/cited publication:739-748; audit/cited publication:1606-1863",
       "source_status": "direct_source_statement",
@@ -1708,16 +1865,38 @@
       ]
     }
   },
+  "library_semantic_prerequisite_sources": {
+    "AppliedModelingLib.SocialChoice.Ranking.kApprovalScore": "model_k_approval_score"
+  },
   "paper": "GGSG19TopThree",
-  "publication_source_display_projection": {
-    "manifest": "audit/public_source_display_projection.json",
-    "raw_source_bytes_included": false,
-    "schema": 1
+  "paper_interface_namespace": "GGSG19TopThree",
+  "paper_semantic_prerequisite_sources": {
+    "GGSG19TopThree.ProofBridge.iidUniformTieCandidateAverageScore": "model_cumulative_scores_ranking_and_outcome",
+    "GGSG19TopThree.ProofBridge.kRankingScore": "model_k_ranking_score",
+    "GGSG19TopThree.ProofBridge.paper_definition_design_invariant": "source_definition1_design_invariance",
+    "GGSG19TopThree.ProofBridge.paper_definition_large_deviation_rate": "source_definition2_large_deviation_rate",
+    "GGSG19TopThree.ProofBridge.paper_definition_rate_optimal": "source_definition3_rate_optimality",
+    "GGSG19TopThree.ReasonablePrefixWeights": "model_reasonable_positional_scoring_rules",
+    "GGSG19TopThree.assumption_mallows_nontrivial_winner_and_parameter_domain": "assumption_mallows_nontrivial_winner_and_parameter_domain",
+    "GGSG19TopThree.assumption_mallows_repeated_insertion_parameter_domain": "assumption_mallows_repeated_insertion_parameter_domain",
+    "GGSG19TopThree.assumption_nontrivial_k_approval_cutoffs": "assumption_nontrivial_k_approval_cutoffs",
+    "GGSG19TopThree.assumption_pairwise_approval_ternary_gap_domain": "assumption_pairwise_approval_ternary_gap_domain",
+    "GGSG19TopThree.assumption_randomized_mechanism_probability_weights": "assumption_randomized_mechanism_probability_weights",
+    "GGSG19TopThree.iidUniformTieTieredCorrect": "model_cumulative_scores_ranking_and_outcome",
+    "GGSG19TopThree.mallowsPairDPTabulationRun": "algorithm_efficient_mallows_arbitrary_pair_joint_location_dp",
+    "GGSG19TopThree.model_arbitrary_ordered_tier_goal": "model_arbitrary_ordered_tier_goal",
+    "GGSG19TopThree.model_finite_iid_strict_rankings": "model_finite_iid_strict_rankings",
+    "GGSG19TopThree.model_mallows_ranking_mass_and_parameter_domain": "model_mallows_ranking_mass_and_parameter_domain",
+    "GGSG19TopThree.model_randomized_scoring_mechanism": "model_randomized_scoring_mechanism",
+    "GGSG19TopThree.rankingPrefixScore": "model_reasonable_positional_scoring_rules",
+    "GGSG19TopThree.rankingUniformTieSignalLaw": "model_cumulative_scores_ranking_and_outcome"
   },
   "schema": 1,
   "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
   "source_anchor_evidence_required": true,
   "source_artifact_sha256": "a8032b5c1b9bb4015edaf92f7b2a76cdc66643ff5bc27ea39f8f5b7c48f29f1a",
+  "source_claim_atoms_schema": 1,
   "source_coverage_mode": "named_theoretical_statements",
   "source_curated": true,
   "source_curated_at": "2026-07-18T00:00:00Z",
@@ -1725,10 +1904,45 @@
   "source_inventory_kind": "source_curated_atomic_inventory",
   "source_inventory_policy": "Source-first atomic inventory of the finite-ranking model, all three definitions, all nine named theoretical results, displayed rate and probability formulas, appendix proof equations, fixed examples, and the advertised efficient Mallows joint-location dynamic program. Empirical data analyses and plotted numerical outputs are outside theorem scope, but the algorithm used to produce the Mallows plots is not silently excluded. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
   "source_named_result_inventory_review": {
+    "candidate_presentations": [
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_001",
+        "presentation_label": "remark@1223",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This proof-side four-candidate profile is an illustrative counterexample to agreement between 1- and 2-Approval outcomes, not a named general proposition or a new source theorem. It adds no independent semantic target beyond the source model and selected theory rows already in the inventory.",
+        "source_anchor": {
+          "line_end": 1238,
+          "line_start": 1223,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{remark}\n\tThe following example, with candidates $A,B,C,D$ leads to a disjoint set of $2$ winners with $1$-Approval and $2$ approval, respectively\n\t\\FloatBarrier\n\t\\begin{table}[h]\n\t\t\\begin{tabular}{l|ccccc}\n\t\t\t& Voter 1 & Voter 2 & Voter 3 & Voter 4 & Voter 5 \\\\ \\hline\n\t\t\tRank 1 & A       & A       & D       & D       & B       \\\\\n\t\t\tRank 2 & B       & B       & C       & C       & C       \\\\\n\t\t\tRank 3 & C       & C       & B       & B       & D       \\\\\n\t\t\tRank 4 & D       & D       & A       & A       & A      \n\t\t\\end{tabular}\n\t\\end{table}\n\t\\FloatBarrier\n\tWith $1$-Approval, candidates $A,D$ are selected. With $2$-Approval, $B,C$ are selected.\n\t\n\\end{remark}",
+          "quoted_text_sha256": "3643c38a5e28d13c043d091acf42927805a433a2315348991503521b39504512"
+        },
+        "visible_kind": "remark"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_002",
+        "presentation_label": "rem:tminusaplusa",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "The monotonicity remark is already retained verbatim as the non-claim-bearing proof-support item `remark_approval_rate_monotonicity` at the same source span. The duplicate candidate is kept in the source-review ledger but does not create a second direct source claim.",
+        "source_anchor": {
+          "line_end": 1263,
+          "line_start": 1258,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{remark}\n%\n%\n\t$r(a,b) > r(c,d)$ when $a> c, b \\leq d$, OR $a \\geq c, b < d$. \n\t\\label{rem:tminusaplusa}\n\\end{remark}",
+          "quoted_text_sha256": "b62030c8bc529815136f885bf449ae41466ce50c537591f2b4fa975838733252"
+        },
+        "visible_kind": "remark"
+      }
+    ],
     "complete": true,
+    "discovered_candidate_presentation_sha256": "90da6fe149a0cd01205ec8f7ccfbcb277eec0c4ac9486375c93281af61182301",
     "discovered_named_result_sha256": "741f78c023c48ad9dade03db4a66e08e938ca6b110feaf6ea81c4e31d235f254",
     "discovered_prose_definition_sha256": "91f398aafd3a67e01f95e9298eef6efa412c0b39dba6c6d8a72ec5738a4c09e0",
-    "method": "Independent source-only extraction from the pinned archive surface reconciled the three Definition environments, four Propositions, four Theorems, and one Corollary to exact current source anchors. The separate prose-definition ledger records the four direct model definitions before the numbered theory statements; source-map keys and Lean declarations were not used to discover presentations.",
+    "method": "Complete line-oriented review of the 2,039-line pinned TeX source, using all section/subsection boundaries and labelled mathematical environments as a discovery index, then reconciling every visible theoretical presentation against the pre-existing 66-item source inventory and the two mechanically surfaced proof remarks. No additional material mathematical presentation was found outside that inventory and candidate ledger.",
     "prose_definition_presentations": [
       {
         "defined_entity_kind": "object",
@@ -1793,8 +2007,8 @@
     ],
     "schema": 1,
     "source_artifact_sha256": "a8032b5c1b9bb4015edaf92f7b2a76cdc66643ff5bc27ea39f8f5b7c48f29f1a",
-    "validated_at": "2026-08-19T00:00:00Z",
-    "validator": "Codex GGSG19 source-only named-result reconciliation"
+    "validated_at": "2026-09-03T23:16:32Z",
+    "validator": "Codex GGSG19 full pinned-source candidate review"
   },
   "source_spec_correspondence_schema": 1,
   "source_url": "https://arxiv.org/pdf/1906.08160",

@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Probability.FiniteRatingComparison
+import AppliedModelingLib.Applications.RatingSystems.FiniteComparison
 
 /-!
 # Implementation Theorems: Designing Informative Rating Systems
@@ -19,7 +19,7 @@ namespace GJ18InformativeRatingSystems
 
 noncomputable section
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 
 /--
 Lemma C transfer bridge: if the paper's `P_k`-style error probability is
@@ -571,12 +571,12 @@ theorem finiteFloorPkObjective_oneSub_hasExponentialRate_of_adjacent_logMGF_deri
     (hmean_hi :
       ∀ p : Pair,
         0 ≤
-          EconCSLib.pmfExp (M.typeLaw (pairHi p))
+          AppliedModelingLib.pmfExp (M.typeLaw (pairHi p))
             (fun r : Rating => M.score r - a p))
     (hmean_lo :
       ∀ p : Pair,
         0 ≤
-          EconCSLib.pmfExp (M.typeLaw (pairLo p))
+          AppliedModelingLib.pmfExp (M.typeLaw (pairLo p))
             (fun r : Rating => a p - M.score r))
     (hiPos hiNeg loPos loNeg : Pair → Rating)
     (hmass_hi_pos :
@@ -667,12 +667,12 @@ theorem finiteFloorPkObjective_oneSub_hasExponentialRate_of_min_logMGF_derivativ
     (hmean_hi :
       ∀ p : Pair,
         0 ≤
-          EconCSLib.pmfExp (M.typeLaw (pairHi p))
+          AppliedModelingLib.pmfExp (M.typeLaw (pairHi p))
             (fun r : Rating => M.score r - a p))
     (hmean_lo :
       ∀ p : Pair,
         0 ≤
-          EconCSLib.pmfExp (M.typeLaw (pairLo p))
+          AppliedModelingLib.pmfExp (M.typeLaw (pairLo p))
             (fun r : Rating => a p - M.score r))
     (hiPos hiNeg loPos loNeg : Pair → Rating)
     (hmass_hi_pos :
@@ -1250,7 +1250,7 @@ theorem twoSampleFloorScoreGapLeftTailProb_eq_joint_floor_rating_prob
     (p : finiteChainOrderedPair n) (k : ℕ) :
     twoSampleFloorScoreGapLeftTailProb M sampleRate
         (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k =
-      EconCSLib.pmfProb (finiteChainJointFloorRatingLaw M sampleRate k)
+      AppliedModelingLib.pmfProb (finiteChainJointFloorRatingLaw M sampleRate k)
         (fun sample =>
           finiteChainJointFloorAverageScore M sampleRate k sample
               (finiteChainOrderedPairHi p) ≤
@@ -1271,9 +1271,9 @@ theorem twoSampleFloorScoreGapLeftTailProb_eq_joint_floor_rating_prob
     rw [hval] at hp
     exact (Nat.lt_irrefl lo.val) hp
   have hmarginal :=
-    EconCSLib.pmfProb_pmfPi_twoCoord_eq_pmfProd_dependent
+    AppliedModelingLib.pmfProb_pmfPi_twoCoord_eq_pmfProd_dependent
       (μ := fun θ : Fin n =>
-        EconCSLib.pmfProduct
+        AppliedModelingLib.pmfProduct
           (Fin (floorSampleCount sampleRate θ k)) Rating (M.typeLaw θ))
       (i := hi) (j := lo) hne
       (p := fun hiSample loSample =>
@@ -1281,17 +1281,17 @@ theorem twoSampleFloorScoreGapLeftTailProb_eq_joint_floor_rating_prob
           cLo * finiteIidScoreSum M.score loSample)
   have hpair :
       twoSampleFloorScoreGapLeftTailProb M sampleRate hi lo k =
-        EconCSLib.pmfProb
-          (EconCSLib.pmfProd
-            (EconCSLib.pmfProduct (Fin nHi) Rating (M.typeLaw hi))
-            (EconCSLib.pmfProduct (Fin nLo) Rating (M.typeLaw lo)))
+        AppliedModelingLib.pmfProb
+          (AppliedModelingLib.pmfProd
+            (AppliedModelingLib.pmfProduct (Fin nHi) Rating (M.typeLaw hi))
+            (AppliedModelingLib.pmfProduct (Fin nLo) Rating (M.typeLaw lo)))
           (fun sample =>
             cHi * finiteIidScoreSum M.score sample.1 ≤
               cLo * finiteIidScoreSum M.score sample.2) := by
     unfold twoSampleFloorScoreGapLeftTailProb twoSampleScoreGapLeftTailProb
       twoSampleRatingLaw twoSampleScoreGapSum
     dsimp [hi, lo, nHi, nLo, cHi, cLo]
-    refine EconCSLib.pmfProb_congr _ ?_
+    refine AppliedModelingLib.pmfProb_congr _ ?_
     intro sample
     constructor <;> intro h <;> linarith
   calc
@@ -1301,15 +1301,15 @@ theorem twoSampleFloorScoreGapLeftTailProb_eq_joint_floor_rating_prob
       twoSampleFloorScoreGapLeftTailProb M sampleRate hi lo k := by
         simp [hi, lo]
     _ =
-      EconCSLib.pmfProb
-        (EconCSLib.pmfProd
-          (EconCSLib.pmfProduct (Fin nHi) Rating (M.typeLaw hi))
-          (EconCSLib.pmfProduct (Fin nLo) Rating (M.typeLaw lo)))
+      AppliedModelingLib.pmfProb
+        (AppliedModelingLib.pmfProd
+          (AppliedModelingLib.pmfProduct (Fin nHi) Rating (M.typeLaw hi))
+          (AppliedModelingLib.pmfProduct (Fin nLo) Rating (M.typeLaw lo)))
         (fun sample =>
           cHi * finiteIidScoreSum M.score sample.1 ≤
             cLo * finiteIidScoreSum M.score sample.2) := hpair
     _ =
-      EconCSLib.pmfProb (finiteChainJointFloorRatingLaw M sampleRate k)
+      AppliedModelingLib.pmfProb (finiteChainJointFloorRatingLaw M sampleRate k)
         (fun sample =>
           finiteChainJointFloorAverageScore M sampleRate k sample hi ≤
             finiteChainJointFloorAverageScore M sampleRate k sample lo) := by
@@ -1317,7 +1317,7 @@ theorem twoSampleFloorScoreGapLeftTailProb_eq_joint_floor_rating_prob
           finiteChainJointFloorAverageScore, hi, lo, nHi, nLo, cHi, cLo]
           using hmarginal.symm
     _ =
-      EconCSLib.pmfProb (finiteChainJointFloorRatingLaw M sampleRate k)
+      AppliedModelingLib.pmfProb (finiteChainJointFloorRatingLaw M sampleRate k)
         (fun sample =>
           finiteChainJointFloorAverageScore M sampleRate k sample
               (finiteChainOrderedPairHi p) ≤
@@ -1347,7 +1347,7 @@ theorem finiteChainIntervalAdjacentRatesDominate_of_floor_leftTail_event_bounds
         ∀ᶠ k in Filter.atTop,
           twoSampleFloorScoreGapLeftTailProb M sampleRate
               (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k ≤
-            ∑ m : EconCSLib.FiniteIntervalAdjacentIndex
+            ∑ m : AppliedModelingLib.FiniteIntervalAdjacentIndex
                 (finiteChainOrderedPairLo p) (finiteChainOrderedPairHi p),
               twoSampleFloorScoreGapLeftTailProb M sampleRate m.succ m.1 k) :
     ∀ p : finiteChainOrderedPair n, ∃ i : finiteChainAdjacentIndex n,
@@ -1356,7 +1356,7 @@ theorem finiteChainIntervalAdjacentRatesDominate_of_floor_leftTail_event_bounds
           rate (finiteChainAdjacentPair i) ≤ rate p := by
   classical
   intro p
-  let ι := EconCSLib.FiniteIntervalAdjacentIndex
+  let ι := AppliedModelingLib.FiniteIntervalAdjacentIndex
     (finiteChainOrderedPairLo p) (finiteChainOrderedPairHi p)
   have hι_nonempty : Nonempty ι := by
     refine ⟨⟨finiteChainOrderedPairLo p, ?_, ?_⟩⟩
@@ -1364,7 +1364,7 @@ theorem finiteChainIntervalAdjacentRatesDominate_of_floor_leftTail_event_bounds
     · exact p.2
   let intervalPair : ι → finiteChainOrderedPair n :=
     fun m => ⟨(m.succ, m.1), by
-      simpa [EconCSLib.FiniteIntervalAdjacentIndex.succ] using
+      simpa [AppliedModelingLib.FiniteIntervalAdjacentIndex.succ] using
         Nat.lt_succ_self m.1.val⟩
   have hcomponent :
       ∃ m : ι, rate (intervalPair m) ≤ rate p := by
@@ -1377,7 +1377,7 @@ theorem finiteChainIntervalAdjacentRatesDominate_of_floor_leftTail_event_bounds
       intro m
       simpa [intervalPair] using hcert (intervalPair m)
     exact
-      EconCSLib.Probability.exists_component_rate_le_of_eventually_le_finite_sum
+      AppliedModelingLib.Probability.exists_component_rate_le_of_eventually_le_finite_sum
         (ι := ι)
         (p := fun k : ℕ =>
           twoSampleFloorScoreGapLeftTailProb M sampleRate
@@ -1393,7 +1393,7 @@ theorem finiteChainIntervalAdjacentRatesDominate_of_floor_leftTail_event_bounds
       (finiteChainOrderedPairHi p).isLt⟩
   refine ⟨i, m.2.1, m.2.2, ?_⟩
   simpa [i, intervalPair, finiteChainAdjacentPair,
-    EconCSLib.FiniteIntervalAdjacentIndex.succ] using hmrate
+    AppliedModelingLib.FiniteIntervalAdjacentIndex.succ] using hmrate
 
 /--
 Interval-local adjacent threshold-rate dominance follows from interval-local
@@ -1419,13 +1419,13 @@ theorem finiteChainIntervalAdjacentThresholdRatesDominate_of_floor_leftTail_even
         ∀ᶠ k in Filter.atTop,
           twoSampleFloorScoreGapLeftTailProb M sampleRate
               (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k ≤
-            ∑ m : EconCSLib.FiniteIntervalAdjacentIndex
+            ∑ m : AppliedModelingLib.FiniteIntervalAdjacentIndex
                 (finiteChainOrderedPairLo p) (finiteChainOrderedPairHi p),
               twoSampleFloorScoreGapLeftTailProb M sampleRate m.succ m.1 k) :
     finiteChainIntervalAdjacentThresholdRatesDominate M sampleRate := by
   classical
   intro p
-  let ι := EconCSLib.FiniteIntervalAdjacentIndex
+  let ι := AppliedModelingLib.FiniteIntervalAdjacentIndex
     (finiteChainOrderedPairLo p) (finiteChainOrderedPairHi p)
   have hι_nonempty : Nonempty ι := by
     refine ⟨⟨finiteChainOrderedPairLo p, ?_, ?_⟩⟩
@@ -1433,7 +1433,7 @@ theorem finiteChainIntervalAdjacentThresholdRatesDominate_of_floor_leftTail_even
     · exact p.2
   let intervalPair : ι → finiteChainOrderedPair n :=
     fun m => ⟨(m.succ, m.1), by
-      simpa [EconCSLib.FiniteIntervalAdjacentIndex.succ] using
+      simpa [AppliedModelingLib.FiniteIntervalAdjacentIndex.succ] using
         Nat.lt_succ_self m.1.val⟩
   have hcomponent :
       ∃ m : ι,
@@ -1449,7 +1449,7 @@ theorem finiteChainIntervalAdjacentThresholdRatesDominate_of_floor_leftTail_even
       intro m
       simpa [intervalPair] using hcert (intervalPair m)
     exact
-      EconCSLib.Probability.exists_component_rate_le_of_eventually_le_finite_sum
+      AppliedModelingLib.Probability.exists_component_rate_le_of_eventually_le_finite_sum
         (ι := ι)
         (p := fun k : ℕ =>
           twoSampleFloorScoreGapLeftTailProb M sampleRate
@@ -1467,7 +1467,7 @@ theorem finiteChainIntervalAdjacentThresholdRatesDominate_of_floor_leftTail_even
   refine ⟨i, m.2.1, m.2.2, ?_⟩
   simpa [i, intervalPair, finiteChainAdjacentThresholdRate,
     finiteChainOrderedPairThresholdRate, finiteChainAdjacentPair,
-    EconCSLib.FiniteIntervalAdjacentIndex.succ] using hmrate
+    AppliedModelingLib.FiniteIntervalAdjacentIndex.succ] using hmrate
 
 /--
 The interval-local floor-count left-tail event bounds follow from a joint
@@ -1486,37 +1486,37 @@ theorem finiteChainIntervalFloorLeftTailEventBounds_of_joint_score_marginals
       ∀ (p : finiteChainOrderedPair n) (k : ℕ),
         twoSampleFloorScoreGapLeftTailProb M sampleRate
             (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k =
-          EconCSLib.pmfProb (μ k)
+          AppliedModelingLib.pmfProb (μ k)
             (fun ω => score k ω (finiteChainOrderedPairHi p) ≤
               score k ω (finiteChainOrderedPairLo p))) :
     ∀ p : finiteChainOrderedPair n,
       ∀ᶠ k in Filter.atTop,
         twoSampleFloorScoreGapLeftTailProb M sampleRate
             (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k ≤
-          ∑ m : EconCSLib.FiniteIntervalAdjacentIndex
+          ∑ m : AppliedModelingLib.FiniteIntervalAdjacentIndex
               (finiteChainOrderedPairLo p) (finiteChainOrderedPairHi p),
             twoSampleFloorScoreGapLeftTailProb M sampleRate m.succ m.1 k := by
   classical
   intro p
   filter_upwards with k
-  let ι := EconCSLib.FiniteIntervalAdjacentIndex
+  let ι := AppliedModelingLib.FiniteIntervalAdjacentIndex
     (finiteChainOrderedPairLo p) (finiteChainOrderedPairHi p)
   have hbound :=
-    EconCSLib.pmfProb_pairInversion_le_sum_intervalAdjacentInversion
+    AppliedModelingLib.pmfProb_pairInversion_le_sum_intervalAdjacentInversion
       (μ k) (score k)
       (i := finiteChainOrderedPairLo p)
       (j := finiteChainOrderedPairHi p)
       p.2
   have hsum_eq :
       (∑ m : ι,
-        EconCSLib.pmfProb (μ k) (fun ω => score k ω m.succ ≤ score k ω m.1)) =
+        AppliedModelingLib.pmfProb (μ k) (fun ω => score k ω m.succ ≤ score k ω m.1)) =
       ∑ m : ι,
         twoSampleFloorScoreGapLeftTailProb M sampleRate m.succ m.1 k := by
     refine Finset.sum_congr rfl ?_
     intro m _
     let pAdj : finiteChainOrderedPair n :=
       ⟨(m.succ, m.1), by
-        simpa [EconCSLib.FiniteIntervalAdjacentIndex.succ] using
+        simpa [AppliedModelingLib.FiniteIntervalAdjacentIndex.succ] using
           Nat.lt_succ_self m.1.val⟩
     have hm := hmarginal pAdj k
     simpa [pAdj] using hm.symm
@@ -1524,12 +1524,12 @@ theorem finiteChainIntervalFloorLeftTailEventBounds_of_joint_score_marginals
     twoSampleFloorScoreGapLeftTailProb M sampleRate
         (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k
         =
-      EconCSLib.pmfProb (μ k)
+      AppliedModelingLib.pmfProb (μ k)
         (fun ω => score k ω (finiteChainOrderedPairHi p) ≤
           score k ω (finiteChainOrderedPairLo p)) := hmarginal p k
     _ ≤
       ∑ m : ι,
-        EconCSLib.pmfProb (μ k) (fun ω => score k ω m.succ ≤ score k ω m.1) :=
+        AppliedModelingLib.pmfProb (μ k) (fun ω => score k ω m.succ ≤ score k ω m.1) :=
       hbound
     _ =
       ∑ m : ι,
@@ -1571,7 +1571,7 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExtendedExponentialRate_of_
         ∀ᶠ k in Filter.atTop,
           twoSampleFloorScoreGapLeftTailProb M sampleRate
               (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k ≤
-            ∑ m : EconCSLib.FiniteIntervalAdjacentIndex
+            ∑ m : AppliedModelingLib.FiniteIntervalAdjacentIndex
                 (finiteChainOrderedPairLo p) (finiteChainOrderedPairHi p),
               twoSampleFloorScoreGapLeftTailProb M sampleRate m.succ m.1 k :=
     finiteChainIntervalFloorLeftTailEventBounds_of_joint_score_marginals
@@ -1745,8 +1745,8 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExtendedExponentialRate_of_
     (hpositive_sample : ∀ θ : Fin n, 0 < sampleRate θ)
     (hmean_gap :
       ∀ p : finiteChainOrderedPair n,
-        EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score ≤
-          EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score)
+        AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score ≤
+          AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score)
     (zCross : finiteChainOrderedPair n → ℝ)
     (hzCross : ∀ p : finiteChainOrderedPair n, zCross p ≤ 0)
     (hcross :
@@ -1791,8 +1791,8 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExtendedExponentialRate_of_
     (hpositive_sample : ∀ θ : Fin n, 0 < sampleRate θ)
     (hmean_gap :
       ∀ p : finiteChainOrderedPair n,
-        EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score ≤
-          EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score)
+        AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score ≤
+          AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score)
     (rLow rHigh : Rating)
     (hmass_low : ∀ θ : Fin n, 0 < (M.typeLaw θ rLow).toReal)
     (hmass_high : ∀ θ : Fin n, 0 < (M.typeLaw θ rHigh).toReal)
@@ -1830,8 +1830,8 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExtendedExponentialRate_of_
     (hpositive_sample : ∀ θ : Fin n, 0 < sampleRate θ)
     (hmean_gap :
       ∀ p : finiteChainOrderedPair n,
-        EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score ≤
-          EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score)
+        AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score ≤
+          AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score)
     (rHiLow rHiHigh rLoLow rLoHigh : finiteChainOrderedPair n → Rating)
     (hmass_hi_low :
       ∀ p : finiteChainOrderedPair n,
@@ -1903,9 +1903,9 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExtendedExponentialRate_of_
     (hpositive_sample : ∀ θ : Fin n, 0 < sampleRate θ)
     (htail :
       ∀ p : finiteChainOrderedPair n, ∀ t : Fin (m + 1),
-        EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p))
+        AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p))
             (fun r => t ≤ r) ≤
-          EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p))
+          AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p))
             (fun r => t ≤ r))
     (hscore_mono : Monotone M.score)
     (hmass_low : ∀ θ : Fin n, 0 < (M.typeLaw θ 0).toReal)
@@ -1918,10 +1918,10 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExtendedExponentialRate_of_
       (minFiniteChainAdjacentThresholdRateTop M sampleRate) := by
   have hmean_gap :
       ∀ p : finiteChainOrderedPair n,
-        EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score ≤
-          EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score :=
+        AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score ≤
+          AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score :=
     fun p =>
-      EconCSLib.pmfExp_le_pmfExp_of_fin_tail_prob_le
+      AppliedModelingLib.pmfExp_le_pmfExp_of_fin_tail_prob_le
         (M.typeLaw (finiteChainOrderedPairLo p))
         (M.typeLaw (finiteChainOrderedPairHi p))
         M.score hscore_mono (htail p)
@@ -1950,9 +1950,9 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExtendedExponentialRate_of_
     (hpositive_sample : ∀ θ : Fin n, 0 < sampleRate θ)
     (htail :
       ∀ p : finiteChainOrderedPair n, ∀ t : Fin (m + 1),
-        EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p))
+        AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p))
             (fun r => t ≤ r) ≤
-          EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p))
+          AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p))
             (fun r => t ≤ r))
     (hscore_mono : Monotone M.score)
     (hfull_support : M.fullSupport)
@@ -2373,7 +2373,7 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExponentialRate_of_interval
         ∀ᶠ k in Filter.atTop,
           twoSampleFloorScoreGapLeftTailProb M sampleRate
               (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k ≤
-            ∑ m : EconCSLib.FiniteIntervalAdjacentIndex
+            ∑ m : AppliedModelingLib.FiniteIntervalAdjacentIndex
                 (finiteChainOrderedPairLo p) (finiteChainOrderedPairHi p),
               twoSampleFloorScoreGapLeftTailProb M sampleRate m.succ m.1 k) :
     HasExponentialRate
@@ -2501,7 +2501,7 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExponentialRate_of_interval
         ∀ᶠ k in Filter.atTop,
           twoSampleFloorScoreGapLeftTailProb M sampleRate
               (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k ≤
-            ∑ m : EconCSLib.FiniteIntervalAdjacentIndex
+            ∑ m : AppliedModelingLib.FiniteIntervalAdjacentIndex
                 (finiteChainOrderedPairLo p) (finiteChainOrderedPairHi p),
               twoSampleFloorScoreGapLeftTailProb M sampleRate m.succ m.1 k) :
     HasExponentialRate
@@ -2574,7 +2574,7 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExponentialRate_of_interval
         ∀ᶠ k in Filter.atTop,
           twoSampleFloorScoreGapLeftTailProb M sampleRate
               (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k ≤
-            ∑ m : EconCSLib.FiniteIntervalAdjacentIndex
+            ∑ m : AppliedModelingLib.FiniteIntervalAdjacentIndex
                 (finiteChainOrderedPairLo p) (finiteChainOrderedPairHi p),
               twoSampleFloorScoreGapLeftTailProb M sampleRate m.succ m.1 k) :
     HasExponentialRate
@@ -2647,7 +2647,7 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExponentialRate_of_joint_sc
       ∀ (p : finiteChainOrderedPair n) (k : ℕ),
         twoSampleFloorScoreGapLeftTailProb M sampleRate
             (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k =
-          EconCSLib.pmfProb (μ k)
+          AppliedModelingLib.pmfProb (μ k)
             (fun ω => score k ω (finiteChainOrderedPairHi p) ≤
               score k ω (finiteChainOrderedPairLo p))) :
     HasExponentialRate
@@ -2703,7 +2703,7 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExponentialRate_of_joint_sc
       ∀ (p : finiteChainOrderedPair n) (k : ℕ),
         twoSampleFloorScoreGapLeftTailProb M sampleRate
             (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k =
-          EconCSLib.pmfProb (μ k)
+          AppliedModelingLib.pmfProb (μ k)
             (fun ω => score k ω (finiteChainOrderedPairHi p) ≤
               score k ω (finiteChainOrderedPairLo p))) :
     HasExponentialRate
@@ -2754,7 +2754,7 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExponentialRate_of_joint_sc
       ∀ (p : finiteChainOrderedPair n) (k : ℕ),
         twoSampleFloorScoreGapLeftTailProb M sampleRate
             (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k =
-          EconCSLib.pmfProb (μ k)
+          AppliedModelingLib.pmfProb (μ k)
             (fun ω => score k ω (finiteChainOrderedPairHi p) ≤
               score k ω (finiteChainOrderedPairLo p))) :
     HasExponentialRate
@@ -2808,7 +2808,7 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExponentialRate_of_joint_fl
       ∀ (p : finiteChainOrderedPair n) (k : ℕ),
         twoSampleFloorScoreGapLeftTailProb M sampleRate
             (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k =
-          EconCSLib.pmfProb (finiteChainJointFloorRatingLaw M sampleRate k)
+          AppliedModelingLib.pmfProb (finiteChainJointFloorRatingLaw M sampleRate k)
             (fun sample =>
               finiteChainJointFloorAverageScore M sampleRate k sample
                   (finiteChainOrderedPairHi p) ≤
@@ -2868,7 +2868,7 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExponentialRate_of_joint_fl
       ∀ (p : finiteChainOrderedPair n) (k : ℕ),
         twoSampleFloorScoreGapLeftTailProb M sampleRate
             (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k =
-          EconCSLib.pmfProb (finiteChainJointFloorRatingLaw M sampleRate k)
+          AppliedModelingLib.pmfProb (finiteChainJointFloorRatingLaw M sampleRate k)
             (fun sample =>
               finiteChainJointFloorAverageScore M sampleRate k sample
                   (finiteChainOrderedPairHi p) ≤
@@ -2920,7 +2920,7 @@ theorem finiteChainUniformFloorPkObjective_oneSub_hasExponentialRate_of_joint_fl
       ∀ (p : finiteChainOrderedPair n) (k : ℕ),
         twoSampleFloorScoreGapLeftTailProb M sampleRate
             (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k =
-          EconCSLib.pmfProb (finiteChainJointFloorRatingLaw M sampleRate k)
+          AppliedModelingLib.pmfProb (finiteChainJointFloorRatingLaw M sampleRate k)
             (fun sample =>
               finiteChainJointFloorAverageScore M sampleRate k sample
                   (finiteChainOrderedPairHi p) ≤
@@ -3823,7 +3823,7 @@ theorem finiteRankingPkComplementError_hasExponentialRate_of_adjacent_logMGF_der
     (hmean :
       ∀ p : Pair,
         0 ≤
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (twoSampleRateBlockLaw M (pairHi p) (pairLo p)
               (gHi p) (gLo p))
             (twoSampleRateBlockScore M (gHi p) (gLo p)))
@@ -3918,7 +3918,7 @@ theorem finiteIntegerRatePkObjective_oneSub_hasExponentialRate_of_adjacent_logMG
     (hmean :
       ∀ p : Pair,
         0 ≤
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (twoSampleRateBlockLaw M (pairHi p) (pairLo p)
               (gHi p) (gLo p))
             (twoSampleRateBlockScore M (gHi p) (gLo p)))
@@ -4014,7 +4014,7 @@ theorem finiteFloorPkObjective_oneSub_hasExponentialRate_of_nat_sampleRates_adja
     (hmean :
       ∀ p : Pair,
         0 ≤
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (twoSampleRateBlockLaw M (pairHi p) (pairLo p)
               (gHi p) (gLo p))
             (twoSampleRateBlockScore M (gHi p) (gLo p)))

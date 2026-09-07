@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Probability.GaussianSignalKernelRCD
+import AppliedModelingLib.Foundations.Probability.GaussianSignalKernelRCD
 import LG21TestOptionalPolicies.ContinuousGaussianFullProfileSourceLaw
 import LG21TestOptionalPolicies.ContinuousGaussianTwoFeatureRCD
 
@@ -21,7 +21,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 open scoped ENNReal NNReal ProbabilityTheory BigOperators
 
 /-- The indices left after exposing one coordinate of a finite noise family. -/
@@ -404,7 +404,7 @@ theorem lg21ContinuousGaussianAccessPopulation_condDistrib_skill_given_single_ba
       (M.priorVariance : ℝ) (M.noiseVariance baseFeature : ℝ)
     let posteriorVariance := lg21GaussianOneBasePosteriorVariance M.priorMean
       (M.priorVariance : ℝ) (M.noiseVariance baseFeature : ℝ)
-    let posteriorKernel := EconCSLib.Probability.gaussianSignalPosteriorBaseKernel
+    let posteriorKernel := AppliedModelingLib.Probability.gaussianSignalPosteriorBaseKernel
       posteriorMean (by
         simpa [posteriorMean] using
           (measurable_lg21GaussianOneBasePosteriorMean M.priorMean
@@ -438,7 +438,7 @@ theorem lg21ContinuousGaussianAccessPopulation_condDistrib_skill_given_single_ba
 sequential finite-parameter Gaussian. -/
 theorem lg21GaussianTwoSignalSequentialPosteriorKernel_apply
     (priorMean priorVariance baseNoiseVariance scoreNoiseVariance base score : ℝ) :
-    EconCSLib.Probability.gaussianSignalPosteriorBaseKernel
+    AppliedModelingLib.Probability.gaussianSignalPosteriorBaseKernel
       (lg21GaussianOneBasePosteriorMean priorMean priorVariance baseNoiseVariance)
       (measurable_lg21GaussianOneBasePosteriorMean
         priorMean priorVariance baseNoiseVariance)
@@ -451,7 +451,7 @@ theorem lg21GaussianTwoSignalSequentialPosteriorKernel_apply
           [(score, scoreNoiseVariance), (base, baseNoiseVariance)]).1
         ((lg21GaussianSequentialPosteriorParameters priorMean priorVariance
           [(0, scoreNoiseVariance), (0, baseNoiseVariance)]).2).toNNReal := by
-  rw [EconCSLib.Probability.gaussianSignalPosteriorBaseKernel_apply]
+  rw [AppliedModelingLib.Probability.gaussianSignalPosteriorBaseKernel_apply]
   rfl
 
 end

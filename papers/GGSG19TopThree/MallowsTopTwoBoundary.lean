@@ -13,7 +13,7 @@ namespace GGSG19TopThree
 
 noncomputable section
 
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib.SocialChoice.Ranking
 
 private theorem mallowsTopWTwoApprovalPairUpProb_boundary_le_pair {n : ℕ}
     (M : MallowsSpec n) (fac : M.RankFactorization)

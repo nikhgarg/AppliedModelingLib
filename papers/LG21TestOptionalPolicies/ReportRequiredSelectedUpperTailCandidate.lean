@@ -21,7 +21,7 @@ noncomputable section
 
 open MeasureTheory ProbabilityTheory Set
 open scoped ENNReal NNReal ProbabilityTheory
-open EconCSLib Probability
+open AppliedModelingLib Probability
 
 /--
 The report-required candidate with an upper-tail latent taking rule.  Its
@@ -298,7 +298,7 @@ theorem lg21ReportRequiredSelectedUpperTailCandidate_sequentialEquilibrium_of_ro
         hpriorVariance hnoiseVariance) := by
   constructor
   · intro publicBase
-    exact EconCSLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
+    exact AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
       (fun latentSkill =>
         lg21ReportRequiredSelectedUpperTailCandidate_takeDecision_iff_bestResponse_of_root
           baseMean cutoff noReportValue priorVariance noiseVariance

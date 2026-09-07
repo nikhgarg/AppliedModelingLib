@@ -160,35 +160,9 @@ def _lakefile_engine_projection(content: bytes) -> bytes:
     if header or body:
         blocks.append((header, body))
 
-    name_pattern = re.compile(r'^name\s*=\s*"([^"]+)"\s*(?:#.*)?$')
-    declared_libraries = {
-        match.group(1)
-        for block_header, block_body in blocks
-        if block_header == "[[lean_lib]]"
-        for line in block_body
-        if (match := name_pattern.fullmatch(line.strip())) is not None
-    }
-    current_libraries = {"AppliedModelingLib", "AppliedModelingLibAuditScripts"}
-    present_current_libraries = declared_libraries & current_libraries
-    if present_current_libraries == current_libraries:
-        required_libraries = current_libraries
-    elif present_current_libraries:
-        raise EngineRevisionError(
-            "lakefile.toml has a partial current audit-runtime Lean library set"
-        )
-    elif "EconCSLib" in declared_libraries:
-        # One-time public bootstrap support.  The trusted public base predates
-        # the AppliedModelingLib rename and audit-helper library.  Its own
-        # engine registration must still cover the exact legacy shared-library
-        # block; candidate trees that declare the current pair use the same
-        # projection as the final checker below.
-        required_libraries = {"EconCSLib"}
-    else:
-        raise EngineRevisionError(
-            "lakefile.toml omits a required audit-runtime Lean library"
-        )
-
     selected: list[dict[str, object]] = []
+    required_libraries = {"AppliedModelingLib", "AppliedModelingLibAuditScripts"}
+    name_pattern = re.compile(r'^name\s*=\s*"([^"]+)"\s*(?:#.*)?$')
     for block_header, block_body in blocks:
         keep = block_header in {"[leanOptions]", "[[require]]"}
         if block_header == "[[lean_lib]]":
@@ -1104,21 +1078,6 @@ def validated_runtime_engine_revision_ledger(root: Path) -> object:
     established that the working tree is clean and that the exact ``HEAD``
     implementation is the ledger tip.  It therefore cannot turn mutable
     workflow configuration into paper evidence.
-    """
-
-    root = root.resolve()
-    validate_runtime_engine_registration(root)
-    head_view = GitCandidateView(root, tree="HEAD")
-    return _json_from_candidate(head_view, LEDGER_PATH)
-
-
-def validated_runtime_raw_producer_compatibility_ledger(root: Path) -> object:
-    """Return the immutable registered ledger for a provenance mismatch.
-
-    This is deliberately separate from normal exact receipt reuse. A caller
-    that wants to bridge differing raw-producer code identities must first
-    establish clean-HEAD runtime registration, then read the ledger from that
-    immutable HEAD tree rather than from a mutable working file.
     """
 
     root = root.resolve()

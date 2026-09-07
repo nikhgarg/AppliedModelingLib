@@ -1,5 +1,5 @@
 import GN21DriverSurgePricing.MainTheorems
-import EconCSLib.Foundations.Probability.ExponentialInterarrival
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrival
 import Mathlib.Probability.Independence.InfinitePi
 
 /-!
@@ -56,7 +56,7 @@ def gn21RawCycleSeedMeasure
     (muI muJ : Measure TripLength)
     (arrivalI arrivalJ switchIJ switchJI : Real) : Measure GN21RawCycleSeed :=
   (Measure.infinitePi fun clock : Fin 4 =>
-    EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+    AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
       (gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI clock)).prod
   (Measure.infinitePi fun state : Fin 2 =>
     Measure.infinitePi fun _ : Nat => gn21CycleMarkLaw muI muJ state)
@@ -162,13 +162,13 @@ theorem isProbabilityMeasure_gn21RawCycleSeedMeasure
     fin_cases clock <;> simp [clockRate, gn21CycleClockRate, harrivalI,
       harrivalJ, hswitchIJ, hswitchJI]
   letI : forall clock : Fin 4, IsProbabilityMeasure
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (clockRate clock)) := fun clock =>
-    EconCSLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
+    AppliedModelingLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
       (hclockRate clock)
   letI : IsProbabilityMeasure
       (Measure.infinitePi fun clock : Fin 4 =>
-        EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+        AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
           (clockRate clock)) := inferInstance
   let markLaw := gn21CycleMarkLaw muI muJ
   letI : forall state : Fin 2, IsProbabilityMeasure (markLaw state) := by
@@ -182,14 +182,14 @@ theorem isProbabilityMeasure_gn21RawCycleSeedMeasure
         Measure.infinitePi fun _ : Nat => markLaw state) := inferInstance
   change IsProbabilityMeasure
     ((Measure.infinitePi fun clock : Fin 4 =>
-      EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI clock)).prod
     (Measure.infinitePi fun state : Fin 2 =>
       Measure.infinitePi fun _ : Nat => gn21CycleMarkLaw muI muJ state))
   simpa only [clockRate, markLaw] using
     (inferInstance : IsProbabilityMeasure
       ((Measure.infinitePi fun clock : Fin 4 =>
-        EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+        AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
           (clockRate clock)).prod
       (Measure.infinitePi fun state : Fin 2 =>
         Measure.infinitePi fun _ : Nat => markLaw state)))
@@ -213,12 +213,12 @@ theorem gn21RawCycleClock_hasLaw
       harrivalJ, hswitchIJ, hswitchJI]
   let clockMeasure : Measure (Fin 4 -> Nat -> Real) :=
     Measure.infinitePi fun c : Fin 4 =>
-      EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (clockRate c)
   letI : forall c : Fin 4, IsProbabilityMeasure
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (clockRate c)) := fun c =>
-    EconCSLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
+    AppliedModelingLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
       (hclockRate c)
   letI : IsProbabilityMeasure clockMeasure := by
     dsimp [clockMeasure]
@@ -242,18 +242,18 @@ theorem gn21RawCycleClock_hasLaw
     rw [Measure.map_fst_prod]
     simp
   have hstream : HasLaw (Function.eval clock)
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (clockRate clock)) clockMeasure :=
     (measurePreserving_eval_infinitePi
       (fun c : Fin 4 =>
-        EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+        AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
           (clockRate c)) clock).hasLaw
   have hclock : HasLaw (fun seed : GN21RawCycleSeed => seed.1 clock)
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (clockRate clock)) (clockMeasure.prod markMeasure) := by
     simpa only [Function.comp_apply] using hstream.comp hfst
   have hinterarrival :=
-    EconCSLib.Probability.PoissonProcess.interarrival_hasLaw (hclockRate clock) n
+    AppliedModelingLib.Probability.PoissonProcess.interarrival_hasLaw (hclockRate clock) n
   change HasLaw (fun seed : GN21RawCycleSeed => seed.1 clock n)
     (ProbabilityTheory.expMeasure (clockRate clock))
     (clockMeasure.prod markMeasure)
@@ -276,12 +276,12 @@ theorem gn21RawCycleMark_hasLaw
       harrivalJ, hswitchIJ, hswitchJI]
   let clockMeasure : Measure (Fin 4 -> Nat -> Real) :=
     Measure.infinitePi fun c : Fin 4 =>
-      EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (clockRate c)
   letI : forall c : Fin 4, IsProbabilityMeasure
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (clockRate c)) := fun c =>
-    EconCSLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
+    AppliedModelingLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
       (hclockRate c)
   letI : IsProbabilityMeasure clockMeasure := by
     dsimp [clockMeasure]

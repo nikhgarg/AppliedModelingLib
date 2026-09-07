@@ -4,10 +4,17 @@
 % Do not hand-edit generated packets; annotate the PDF or reconcile notes into
 % the paper-local human-review log.
 \documentclass[10pt]{article}
-\usepackage[margin=0.43in]{geometry}
+\usepackage[margin=0.43in,footskip=0.2in]{geometry}
 \usepackage{fontspec}
-\setmainfont{Latin Modern Roman}
-\setmonofont{DejaVu Sans Mono}
+% Use a Unicode-complete main face as well as a Unicode-complete code face.
+% Reviewer reasons and source labels can contain exact Greek symbols outside
+% verbatim blocks; silently dropping one would corrupt the review packet.
+\setmainfont{DejaVu Serif}
+% The broad DejaVu Sans Unicode coverage preserves Lean's mathematical glyphs
+% (including U+2216 set difference and superscript identifiers) in verbatim
+% review blocks.  Its proportional metrics are preferable to silently missing
+% exact semantic text from a narrower monospace font.
+\setmonofont{DejaVu Sans}
 \usepackage{hyperref}
 \usepackage{amssymb}
 \usepackage{fvextra}
@@ -15,7 +22,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.15em}
 \linespread{0.92}
-\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,breaklinks=true}
 \DefineVerbatimEnvironment{ReviewVerbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\scriptsize}
 \newcommand{\reviewerbox}{%
   \par\noindent\fbox{\parbox{0.96\linewidth}{\rule{0pt}{0.38in}}}\par
@@ -36,13 +43,13 @@ specifications, and hash-bound raw-source-to-Spec screening records.
 
 \noindent\textbf{Paper:} MBJG25ProducerFairness\\
 \textbf{Paper id:} \texttt{MBJG25ProducerFairness}\\
-\textbf{Source version:} not recorded\\
+\textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright ICWSM 2025, 19(1), 1139-1157}\\
 \textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
-\textbf{Rows:} 28\\
-\textbf{Generated:} 2026-08-18\\
-\textbf{Source URL:} \href{https://doi.org/10.1609/icwsm.v19i1.35854}{official source}
+\textbf{Rows:} 2\\
+\textbf{Generated:} 2026-09-06\\
+\textbf{Source URL:} \href{https://ojs.aaai.org/index.php/ICWSM/article/view/35865}{official source}
 
-\noindent\fbox{\parbox{0.96\linewidth}{\textbf{Review status:} 0/28 source-claim screens; 0/5 library prerequisite screens. This is a review worksheet while those direct checks remain pending; it is not a final validation receipt.}}\par
+
 
 
 
@@ -55,1943 +62,325 @@ log.
 \section*{Open the interactive dashboard}
 The interactive dashboard is an optional alternative to using this PDF; it
 presents the same review surface rather than an additional review requirement.
-After forking and cloning (or pulling) EconCSLib, run the following from the
+After forking and cloning (or pulling) AppliedModelingLib, run the following from the
 repository root. The cache command is needed only the first time in a new clone.
 \begin{ReviewVerbatim}
-cd <your-EconCSLib-checkout>
+cd <your-repository-checkout>
 lake exe cache get
 python3 scripts/review_dashboard.py --paper MBJG25ProducerFairness --serve
 \end{ReviewVerbatim}
 Open \url{http://127.0.0.1:8765/} in a browser and keep that terminal running
-while reviewing. The dashboard records saved annotations in this paper's
+while reviewing. The dashboard records saved annotations in this paper's local
 reviewer-owned review record.
 
 \section*{Contents}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{library-section-ad8f8e32cbdfebc6}{Semantic library prerequisites (5; not paper claims)}
+\item \hyperlink{paper-prerequisite-section-5ef5ef0364b6939c}{Paper-specific semantic prerequisites (1; not paper claims)}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{library-prerequisite-035345cdc23fb9d0}{EconCSLib.Statistics.GlobalMaxAt}
-\item \hyperlink{library-prerequisite-4257d258b40d00b7}{EconCSLib.Statistics.GlobalMinAt}
-\item \hyperlink{library-prerequisite-1661d59161ee9155}{EconCSLib.Statistics.JensenConcave}
-\item \hyperlink{library-prerequisite-aa3d377dcc497061}{EconCSLib.Statistics.JensenConvex}
-\item \hyperlink{library-prerequisite-e5c7eedc40c11b7a}{EconCSLib.pmfExp}
+\item \hyperlink{paper-prerequisite-a998c700d4f94308}{MBJG25\allowbreak{}Producer\allowbreak{}Fairness.\allowbreak{}paper\_\allowbreak{}fixed\_\allowbreak{}binary\_\allowbreak{}model\_\allowbreak{}formula\allowbreak{}Spec}
 \end{itemize}
-\item \hyperlink{source-section-f10b5f68e4acf3dc}{Source claims (28)}
+\item \hyperlink{source-section-f10b5f68e4acf3dc}{Source claims (2)}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{source-claim-7a45c0b2fffc539f}{paper\_posterior\_ratingSpec}
-\item \hyperlink{source-claim-ec7384519273acb4}{paper\_posterior\_meanSpec}
-\item \hyperlink{source-claim-20150c21c10be6e2}{paper\_biasSpec}
-\item \hyperlink{source-claim-23bc13a84ad0b29a}{paper\_varianceSpec}
-\item \hyperlink{source-claim-6e52f3be6106ad49}{paper\_squared\_biasSpec}
-\item \hyperlink{source-claim-9fd08233a5aeb857}{paper\_fixed\_market\_mseSpec}
-\item \hyperlink{source-claim-da6d1b14c0df1e3e}{paper\_facing\_fixed\_mse\_decompositionSpec}
-\item \hyperlink{source-claim-000171f0bf87b98c}{paper\_facing\_theorem3\_1\_variance\_weak\_decreaseSpec}
-\item \hyperlink{source-claim-976fc5a9912d46b4}{paper\_facing\_theorem3\_1\_variance\_strict\_decrease\_interiorSpec}
-\item \hyperlink{source-claim-5564d9d725c13f20}{paper\_facing\_theorem3\_1\_squared\_bias\_nondecreasingSpec}
-\item \hyperlink{source-claim-2dcf6dbcf162b5d0}{paper\_facing\_theorem3\_2\_squared\_bias\_convex\_in\_qualitySpec}
-\item \hyperlink{source-claim-444ef89e21ba4476}{paper\_facing\_theorem3\_2\_squared\_bias\_global\_min\_at\_prior\_meanSpec}
-\item \hyperlink{source-claim-3afe5de598f0ed9d}{paper\_facing\_theorem3\_2\_variance\_concave\_in\_qualitySpec}
-\item \hyperlink{source-claim-a4656e58047f308c}{paper\_facing\_theorem3\_2\_variance\_global\_max\_at\_halfSpec}
-\item \hyperlink{source-claim-6ce0e529b89e57b7}{paper\_facing\_theorem3\_1\_variance\_strict\_decrease\_counterexample\_quality\_zeroSpec}
-\item \hyperlink{source-claim-464dc3b105b500a1}{paper\_facing\_theorem3\_1\_variance\_strict\_decrease\_counterexample\_quality\_oneSpec}
-\item \hyperlink{source-claim-5e3bedb3cf1d62b0}{paper\_facing\_selection\_rateSpec}
-\item \hyperlink{source-claim-430cb3de083df7cf}{paper\_facing\_individual\_producer\_unfairnessSpec}
-\item \hyperlink{source-claim-aace03b9ed863bb2}{paper\_facing\_marketplace\_producer\_unfairnessSpec}
-\item \hyperlink{source-claim-f5087ebba0ec2e7e}{paper\_facing\_thompson\_sampling\_mechanismSpec}
-\item \hyperlink{source-claim-9acd03585d100ede}{paper\_facing\_expected\_regretSpec}
-\item \hyperlink{source-claim-7a7d1cda2bb14e73}{paper\_facing\_responsive\_mse\_decompositionSpec}
-\item \hyperlink{source-claim-8281b9d563b2f959}{paper\_facing\_eq20\_bayesian\_rating\_equivalenceSpec}
-\item \hyperlink{source-claim-48bd38a1dccb3b5f}{paper\_ordinal\_posterior\_ratingSpec}
-\item \hyperlink{source-claim-c141e929e91e7be9}{paper\_facing\_eq21\_zero\_prior\_comparisonSpec}
-\item \hyperlink{source-claim-c0449d6c0ae69374}{paper\_facing\_k\_sampling\_mechanismSpec}
-\item \hyperlink{source-claim-03b433e77eab6bcb}{paper\_facing\_k\_sampling\_one\_is\_argmaxSpec}
-\item \hyperlink{source-claim-48e4400514808bc7}{paper\_facing\_k\_sampling\_market\_size\_is\_uniformSpec}
+\item \hyperlink{source-claim-98cc132a8c76d666}{paper\_\allowbreak{}theorem3\_\allowbreak{}1\allowbreak{}Spec}
+\item \hyperlink{source-claim-ad27f52afb94912c}{paper\_\allowbreak{}theorem3\_\allowbreak{}2\allowbreak{}Spec}
 \end{itemize}
 \end{itemize}
 
 \clearpage
-\hypertarget{library-section-ad8f8e32cbdfebc6}{}
-\section*{Material library prerequisites}
-\hypertarget{library-prerequisite-035345cdc23fb9d0}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Statistics.\allowbreak{}GlobalMaxAt}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
+\hypertarget{paper-prerequisite-section-5ef5ef0364b6939c}{}
+\section*{Paper-specific semantic prerequisites}
+\hypertarget{paper-prerequisite-a998c700d4f94308}{}
+\subsection*{\small\ttfamily\raggedright MBJG25\allowbreak{}Producer\allowbreak{}Fairness.\allowbreak{}paper\_\allowbreak{}fixed\_\allowbreak{}binary\_\allowbreak{}model\_\allowbreak{}formula\allowbreak{}Spec}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright MBJG25\allowbreak{}Producer\allowbreak{}Fairness.\allowbreak{}paper\_\allowbreak{}fixed\_\allowbreak{}binary\_\allowbreak{}model\_\allowbreak{}formula\allowbreak{}Spec\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 159-\allowbreak{}219\par}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
-∀ (f : ℝ → ℝ) (x₀ x : ℝ), f x ≤ f x₀
+with binary reviews, our model extends readily to ordinal                       is the number of negative ratings). We can compute the pos-
+reviews as well (see Appendix E).                                               terior mean estimated quality for product v at timestep t as:
+                                                                                                                    α̂ + R(v, t)
+2.1    Model Primitives                                                                       q̂α̂,β̂ (v, t) =                         .   (1)
+Our modeling framework is as follows.                                                                            α̂ + β̂ + |S(v, t)|
+   Products. There is a universe of products V . Product v ∈                       The platform impacts the operation of a prior-weighted
+V has unobserved true quality qv , where 0 ≤ qv ≤ 1.                            rating system only through the prior choice, determined here
+   Binary ratings that accumulate over time. Products ac-                       by α̂ and β̂. There are two aspects of this choice: the shape
+cumulate ratings over time, as users interact with and rate                     of the prior, and its strength relative to observed ratings in
+products. To capture this phenomenon, we assume the mar-                        determining the posterior. In our analysis, we fix the prior
+ket operates over discrete time periods t, and products can                     shape by relying on market-level data, in a manner inspired
+receive ratings at each time period. We assume these ratings                    by empirical Bayesian statistical methods (Robbins 1964).
+are binary, i.e., 0 or 1.                                                       Our analysis shows that the strength of the prior then medi-
+   Crucially, the true quality of a product should impact the                   ates the tradeoff between efficiency and producer fairness.
+rating received; we suppose that a rating for product v is                         Formally, to reason about a prior’s strength, we fix a prior
+Bernoulli(qv ), independent of all other randomness in the
+                                                                                shape (α̃, β̃), then set (α̂, β̂) = (η α̃, η β̃) for some prior
+system. Since ratings accumulate, we use S(v, T ) to denote
+                                                                                strength η ≥ 0, providing us with a single-parameter lever
+the set of binary ratings that product v ∈ V has received
+                                                                                to adjust the strength of the prior. We elaborate on how we
+after T timesteps have elapsed.
+                                                                                calibrate the prior shape in Section 3.2. Note in particular
+   We assume binary ratings as a simplification for ease of
+                                                                                that if η = 0, then the platform simply implements sample
+exposition; our results qualitatively extend to other settings,
+                                                                                averaging to compute the estimated quality of an item.
+as we demonstrate in Appendix E. We note that this choice
+captures how many platforms elicit ratings (e.g., in any plat-                  2.2   Fixed and Responsive Models
+form that uses a thumbs-up/thumbs-down system); in other
+platforms with more than two options, ratings often follow a                    We study two models for how customers may interact with
+“J-curve” where users mostly only use the extreme options                       items, and items accumulate ratings over time. We begin
+(Hu, Zhang, and Pavlou 2009). In Appendix G, we demon-                          with a fixed model in which the products receive ratings at
+strate that our results hold even when we assume users’ dis-                    the same rate, regardless of their past ratings. We then study
+tribution over ratings is centered or even right-skewed.                        a (more realistic) responsive model in which products with
+   Prior-Weighted Rating System. In a prior-weighted rat-                       higher estimated ratings receive ratings more often.
+ing system, the prior distribution is a design choice of the                       Fixed model. In the fixed setting, all products stay in the
+platform. The system operates by estimating a posterior dis-                    market for the entire time horizon, and each product v ∈ V
+tribution of the estimated true quality for each product, given                 accumulates one rating at each timestep t. In this model, the
+the prior and the received ratings on that product.                             platform eventually accurately learns the true quality of all
+   We primarily consider rating systems where the prior rep-                    products, but has noisy estimates for each finite time t.
+resents a Beta distribution.1 Then, in this setting, the plat-                     Responsive model. The responsive model differs from
+form chooses the prior Beta distribution parameters (α̂, β̂).2                  the fixed model in two ways: (1) items enter and exit the
+                                                                                marketplace over time; (2) items are more likely to receive
+We will refer to α̂ + β̂ as the prior strength, as it indicates                 ratings if they have a higher estimated quality in the rating
+how strongly the prior is concentrated around its mean (and                     system. These changes in the responsive model capture se-
+how many ratings will be needed to “overwhelm”) the prior.                      lection effects (Acemoglu et al. 2022), in which consumers
+   After a product receives a rating, the platform updates its                  may react to previous ratings, more often choosing to inter-
+estimation posterior distribution for its true quality. In our                  act with (and thus rate) items with more positive ratings in
+    1
+      This choice is natural, given that ratings are assumed to be
+                                                                                the past; these effects are not present in the fixed model.
+Bernoulli. The Beta distribution is the conjugate prior for Bernoulli              At each timestep t, only a subset M (t) ⊆ V of the prod-
+data, i.e., with this choice of prior, the posterior distribution re-           ucts is available for purchase. A single consumer chooses
+mains a Beta distribution but with different parameters.                        a single product v(t) to purchase and provides a rating on
+    2
+      In a Beta(α, β) distribution, the mean is α+βα
+                                                     ; the higher that          that product, and at the end of the timestep, each product
+α + β are, the more concentrated the distribution around the mean.              v ∈ M (t) exits the marketplace with some uniform, ex-
+A common interpretation of the parameters is that α+β is the num-               ogenous probability and is replaced by another product not
+ber of trials (coin flips), and α represents the number of successes.           currently in the market. The customer choice will depend
+
+[Next verbatim source excerpt]
+
+   compromising anonymity...                                                       Bias2 = (E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv )2                        (6)
+                                                                                                "                     #     !2
+ (a) If your work uses existing assets, did you cite the cre-                                     η α̃ + R(v, t)
+      ators? Yes; we cite the datasets used (Gao et al. 2022;                            = E                        qv − qv                        (7)
+                                                                                                  η α̃ + η β̃ + t
+      Wan et al. 2019; Wan and McAuley 2018; Hou et al.
+                                                                                                                      !2
+      2024).                                                                                 η α̃ − η α̃qv − η β̃qv
+ (b) Did you mention the license of the assets? Yes, when                                =                                .                        (8)
+      we first perform in-depth analysis for each dataset.                                        η α̃ + η β̃ + t
+ (c) Did you include any new assets in the supplemental                     Variance can also be broken down accordingly:
+      material or as a URL? No, because we did not develop
+      any new datasets or assets outside of our simulation
+      experiments.                                                          Variance = Var[q̂ηα̃,ηβ̃ (v, t)|qv ]                    (9)
+ (d) Did you discuss whether and how consent was ob-                                     "
+                                                                                           [U+0010 control character]                                   [U+0011 control character]2
+                                                                                                                                   #
+      tained from people whose data you’re using/curating?                           = E q̂ηα̃,ηβ̃ (v, t) − E[q̂ηα̃,ηβ̃ (v, t)] qv
+      No, because the license for the dataset permits sharing
+      and adaptation of the content so long as it is properly                                                                                 (10)
+      attributed.                                                                                                           2
+                                                                                        E[(R(v, t) − E[R(v, t)]) |qv ]
+ (e) Did you discuss whether the data you are using/cu-                               =                                                       (11)
+      rating contains personally identifiable information or                                    (η α̃ + η β̃ + t)2
+      offensive content? No, because the original authors of                            Var[R(v, t)|qv ]
+                                                                                      =                                                       (12)
+      the dataset fully anonymized it.                                                  (η α̃ + η β̃ + t)2
+  (f) If you are curating or releasing new datasets, did you                              tqv (1 − qv )
+      discuss how you intend to make your datasets FAIR?                              =                    .                                  (13)
+      N/A                                                                               (η α̃ + η β̃ + t)2
+ (g) If you are curating or releasing new datasets, did you                 The expected MSE can be written as follows:
+      create a Datasheet for the Dataset? N/A
+6. Additionally, if you used crowdsourcing or conducted                                                            !2
+   research with human subjects, without compromising                                   η α̃ − η α̃qv − η β̃qv                tqv (1 − qv )
+                                                                             MSE =                                      +                      .
+   anonymity...                                                                              η α̃ + η β̃ + t                (η α̃ + η β̃ + t)2
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+
+
+\paragraph{Lean-elaborated paper signature}
 \begin{ReviewVerbatim}
-def GlobalMaxAt (f : ℝ → ℝ) (x₀ : ℝ) : Prop :=
-  ∀ x, f x ≤ f x₀
+type:
+{alpha beta eta q : ℝ} → {t : ℕ} → 0 < alpha → 0 < beta → 0 ≤ eta → 0 < t → 0 ≤ q → q ≤ 1 → Prop
+
+value:
+fun {alpha beta eta q : ℝ} {t : ℕ} (halpha : 0 < alpha) (hbeta : 0 < beta) (heta : 0 ≤ eta) (ht : 0 < t) (hq0 : 0 ≤ q)
+    (hq1 : q ≤ 1) =>
+  MBJG25ProducerFairness.paper_expected_posterior_mean alpha beta eta t q =
+      (eta * alpha + ↑t * q) / (eta * alpha + eta * beta + ↑t) ∧
+    MBJG25ProducerFairness.paper_conditional_bias alpha beta eta t q =
+        MBJG25ProducerFairness.paper_expected_posterior_mean alpha beta eta t q - q ∧
+      MBJG25ProducerFairness.paper_conditional_variance alpha beta eta t q =
+          ↑t * q * (1 - q) / (eta * alpha + eta * beta + ↑t) ^ 2 ∧
+        MBJG25ProducerFairness.paper_conditional_squared_bias alpha beta eta t q =
+          MBJG25ProducerFairness.paper_conditional_bias alpha beta eta t q ^ 2
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The source specifies binary Bernoulli ratings in discrete timesteps, one rating per product per fixed-\allowbreak{}model timestep, Beta parameters (eta*alpha, eta*beta) with eta >= 0, and its Appendix-\allowbreak{}A bias and variance formulas.\allowbreak{} The target faithfully uses a positive natural review count cast to ℝ and states the corresponding conditional expectation, bias, variance, and squared-\allowbreak{}bias identities.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-4257d258b40d00b7}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Statistics.\allowbreak{}GlobalMinAt}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ (f : ℝ → ℝ) (x₀ x : ℝ), f x₀ ≤ f x
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def GlobalMinAt (f : ℝ → ℝ) (x₀ : ℝ) : Prop :=
-  ∀ x, f x₀ ≤ f x
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-1661d59161ee9155}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Statistics.\allowbreak{}JensenConcave}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ (f : ℝ → ℝ) (x y lam : ℝ), 0 ≤ lam → lam ≤ 1 → lam * f x + (1 - lam) * f y ≤ f (lam * x + (1 - lam) * y)
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def JensenConcave (f : ℝ → ℝ) : Prop :=
-  ∀ x y lam, 0 ≤ lam → lam ≤ 1 →
-    lam * f x + (1 - lam) * f y ≤ f (lam * x + (1 - lam) * y)
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-aa3d377dcc497061}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Statistics.\allowbreak{}JensenConvex}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ (f : ℝ → ℝ) (x y lam : ℝ), 0 ≤ lam → lam ≤ 1 → f (lam * x + (1 - lam) * y) ≤ lam * f x + (1 - lam) * f y
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def JensenConvex (f : ℝ → ℝ) : Prop :=
-  ∀ x y lam, 0 ≤ lam → lam ≤ 1 →
-    f (lam * x + (1 - lam) * y) ≤ lam * f x + (1 - lam) * f y
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-e5c7eedc40c11b7a}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}pmfExp}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-{α : Type u_1} → [inst : Fintype α] → [DecidableEq α] → (μ : PMF α) → (f : α → ℝ) → ∑ a, (μ a).toReal * f a
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-noncomputable def pmfExp {α : Type*} [Fintype α] [DecidableEq α]
-    (μ : PMF α) (f : α → ℝ) : ℝ :=
-  ∑ a, (μ a).toReal * f a
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
 
 \clearpage
-\hypertarget{source-claim-7a45c0b2fffc539f}{}
+\hypertarget{source-claim-98cc132a8c76d666}{}
 \hypertarget{source-section-f10b5f68e4acf3dc}{}
 \section*{Source claims}
 \subsection*{Review row 1}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 203-\allowbreak{}276\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 313-\allowbreak{}334\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
-Beta-Bernoulli setting, this posterior distribution for product
-v at timestep t is a Beta distribution with parameters
-α = α̂ + R(v, t),
-β = β̂ + (|S(v, t)| − R(v, t)),
-where R(v, t) ∼ Binomial(t, qv ) is the number of positive
-ratings received by the item so far (and so |S(v, t)| − R(v, t)
-is the number of negative ratings). We can compute the posterior mean estimated quality for product v at timestep t as:
-
-Model Primitives
-
-Our modeling framework is as follows.
-Products. There is a universe of products V . Product v ∈
-V has unobserved true quality qv , where 0 ≤ qv ≤ 1.
-Binary ratings that accumulate over time. Products accumulate ratings over time, as users interact with and rate
-products. To capture this phenomenon, we assume the market operates over discrete time periods t, and products can
-receive ratings at each time period. We assume these ratings
-are binary, i.e., 0 or 1.
-Crucially, the true quality of a product should impact the
-rating received; we suppose that a rating for product v is
-Bernoulli(qv ), independent of all other randomness in the
-system. Since ratings accumulate, we use S(v, T ) to denote
-the set of binary ratings that product v ∈ V has received
-after T timesteps have elapsed.
-We assume binary ratings as a simplification for ease of
-exposition; our results qualitatively extend to other settings,
-as we demonstrate in Appendix E. We note that this choice
-captures how many platforms elicit ratings (e.g., in any platform that uses a thumbs-up/thumbs-down system); in other
-platforms with more than two options, ratings often follow a
-“J-curve” where users mostly only use the extreme options
-(Hu, Zhang, and Pavlou 2009). In Appendix G, we demonstrate that our results hold even when we assume users’ distribution over ratings is centered or even right-skewed.
-Prior-Weighted Rating System. In a prior-weighted rating system, the prior distribution is a design choice of the
-platform. The system operates by estimating a posterior distribution of the estimated true quality for each product, given
-the prior and the received ratings on that product.
-We primarily consider rating systems where the prior represents a Beta distribution.1 Then, in this setting, the platform chooses the prior Beta distribution parameters (α̂, β̂).2
-We will refer to α̂ + β̂ as the prior strength, as it indicates
-how strongly the prior is concentrated around its mean (and
-how many ratings will be needed to “overwhelm”) the prior.
-After a product receives a rating, the platform updates its
-estimation posterior distribution for its true quality. In our
-1
-This choice is natural, given that ratings are assumed to be
-Bernoulli. The Beta distribution is the conjugate prior for Bernoulli
-data, i.e., with this choice of prior, the posterior distribution remains a Beta distribution but with different parameters.
-2
-α
-In a Beta(α, β) distribution, the mean is α+β
-; the higher that
-α + β are, the more concentrated the distribution around the mean.
-A common interpretation of the parameters is that α+β is the number of trials (coin flips), and α represents the number of successes.
-
-q̂α̂,β̂ (v, t) =
-
-α̂ + R(v, t)
-α̂ + β̂ + |S(v, t)|
-
-.
-
-(1)
-
-The platform impacts the operation of a prior-weighted
-rating system only through the prior choice, determined here
-by α̂ and β̂. There are two aspects of this choice: the shape
-of the prior, and its strength relative to observed ratings in
-determining the posterior. In our analysis, we fix the prior
-shape by relying on market-level data, in a manner inspired
-by empirical Bayesian statistical methods (Robbins 1964).
-Our analysis shows that the strength of the prior then mediates the tradeoff between efficiency and producer fairness.
-Formally, to reason about a prior’s strength, we fix a prior
-shape (α̃, β̃), then set (α̂, β̂) = (η α̃, η β̃) for some prior
-strength η ≥ 0, providing us with a single-parameter lever
-to adjust the strength of the prior. We elaborate on how we
-calibrate the prior shape in Section 3.2. Note in particular
-that if η = 0, then the platform simply implements sample
-averaging to compute the estimated quality of an item.
+Theorem 3.1. Suppose we have a prior-weighted rating sys-                      iments, is attached in the submission.
+tem in the fixed setting with prior parameters (η α̃, η β̃). Fix                  Model calibration. To pick a prior shape (α̃, β̃), we make
+product v with true quality qv and consider quality estima-                    use of the empirical Bayes (EB) method (Robbins 1964),
+tion after t timesteps.                                                        which provides an approach for computing an estimate of
+   Then, as η             ≥ 0 increases, (1) squared bias                      prior parameters across a population. We perform a 60-40
+[U+0010 control character]                              [U+0011 control character]2                                              train-test split on the products in the our dataset. We use all
+  E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv     is nondecreasing; (2) vari-                 available ratings data for products in the training set to cali-
+ance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.                    brate (α̃, β̃) using EB. The remaining 1,331 products (in the
+                                                                               test set) are the universe of products V on which the simu-
+   Theorem 3.1 establishes the trade-off between fairness                      lation is run. We are interested in investigating how ratings
+and efficiency. As the prior strength of a prior-weighted rat-                 in the marketplace change over time, so our marketplace is
+ing system increases, it is less likely for two identical prod-                simulated over time; we fix a finite time horizon T , and at
+ucts to be rated differently, reducing variance while increas-                 each timestep t, either draw one review for all v ∈ V in the
+ing estimation bias.                                                           fixed model, or draw one review for the specific v ∈ V cho-
+   The above theorem characterizes error for a given quality                   sen by the consumer at timestep t in the responsive model.
+level qv as prior strength changes. We are also interested in                     Fixed model parameters. We set a time horizon of T =
+how the true quality of the product influences the efficiency                  50, and run our simulations for four different values of
+and fairness metric, i.e., how the platform estimates quality                  η ∈ {0, 1, 10, 1000}. The first two η values correspond to
+for different true quality levels. An ideal statistical estimator              prior-weighted rating systems under the sample mean esti-
+for quality should have low MSE across all quality levels.                     mator and the baseline empirical Bayes (EB) estimator re-
+Our next theorem characterizes how efficiency and unfair-                      spectively. η = 10 corresponds to a setting where the prior
+ness vary with true product quality:                                           is difficult to overcome in early timesteps, but eventually is
 \end{ReviewVerbatim}
 
 
+\paragraph{Formalized review target}
+The archival source above is not asserted equivalent to this formalized target.
+\begin{ReviewVerbatim}
+Corrected Theorem 3.1: in the fixed Beta-Bernoulli model, after a positive discrete review count and for nonnegative prior strengths with etaLow <= etaHigh, squared conditional bias is nondecreasing; conditional variance weakly decreases for every true quality q in [0,1], and strictly decreases when 0 < q < 1 and etaLow < etaHigh.
+\end{ReviewVerbatim}
+
+\textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 313-\allowbreak{}320\par}
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ (alphaHat betaHat : ℝ) (positiveRatings totalRatings : ℕ),
-  MBJG25ProducerFairness.paper_posterior_rating alphaHat betaHat positiveRatings totalRatings =
-    (alphaHat + ↑positiveRatings) / (alphaHat + betaHat + ↑totalRatings)
+∀ {alpha beta q etaLow etaHigh : ℝ} {t : ℕ},
+  0 < alpha →
+    0 < beta →
+      0 < t →
+        0 ≤ q →
+          q ≤ 1 →
+            0 ≤ etaLow →
+              etaLow ≤ etaHigh →
+                MBJG25ProducerFairness.paper_conditional_squared_bias alpha beta etaLow t q ≤
+                    MBJG25ProducerFairness.paper_conditional_squared_bias alpha beta etaHigh t q ∧
+                  MBJG25ProducerFairness.paper_conditional_variance alpha beta etaHigh t q ≤
+                      MBJG25ProducerFairness.paper_conditional_variance alpha beta etaLow t q ∧
+                    (0 < q →
+                      q < 1 →
+                        etaLow < etaHigh →
+                          MBJG25ProducerFairness.paper_conditional_variance alpha beta etaHigh t q <
+                            MBJG25ProducerFairness.paper_conditional_variance alpha beta etaLow t q)
 \end{ReviewVerbatim}
 
+
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_posterior_rating
+MBJG25ProducerFairness.paper_theorem3_1_proof
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
+{\raggedright
+\textbf{Reason:} The target expresses weakly increasing squared bias and weakly decreasing variance as prior strength rises, with strict variance decrease restricted to 0<q<1 and etaLow<etaHigh, exactly matching the approved endpoint correction;\allowbreak{} positive discrete t and q∈[0,1] are stated approved model context.\allowbreak{}
+\par}
+\reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-ec7384519273acb4}{}
+\hypertarget{source-claim-ad27f52afb94912c}{}
 \section*{Review row 2}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 203-\allowbreak{}276\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 335-\allowbreak{}344\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
-Beta-Bernoulli setting, this posterior distribution for product
-v at timestep t is a Beta distribution with parameters
-α = α̂ + R(v, t),
-β = β̂ + (|S(v, t)| − R(v, t)),
-where R(v, t) ∼ Binomial(t, qv ) is the number of positive
-ratings received by the item so far (and so |S(v, t)| − R(v, t)
-is the number of negative ratings). We can compute the posterior mean estimated quality for product v at timestep t as:
-
-Model Primitives
-
-Our modeling framework is as follows.
-Products. There is a universe of products V . Product v ∈
-V has unobserved true quality qv , where 0 ≤ qv ≤ 1.
-Binary ratings that accumulate over time. Products accumulate ratings over time, as users interact with and rate
-products. To capture this phenomenon, we assume the market operates over discrete time periods t, and products can
-receive ratings at each time period. We assume these ratings
-are binary, i.e., 0 or 1.
-Crucially, the true quality of a product should impact the
-rating received; we suppose that a rating for product v is
-Bernoulli(qv ), independent of all other randomness in the
-system. Since ratings accumulate, we use S(v, T ) to denote
-the set of binary ratings that product v ∈ V has received
-after T timesteps have elapsed.
-We assume binary ratings as a simplification for ease of
-exposition; our results qualitatively extend to other settings,
-as we demonstrate in Appendix E. We note that this choice
-captures how many platforms elicit ratings (e.g., in any platform that uses a thumbs-up/thumbs-down system); in other
-platforms with more than two options, ratings often follow a
-“J-curve” where users mostly only use the extreme options
-(Hu, Zhang, and Pavlou 2009). In Appendix G, we demonstrate that our results hold even when we assume users’ distribution over ratings is centered or even right-skewed.
-Prior-Weighted Rating System. In a prior-weighted rating system, the prior distribution is a design choice of the
-platform. The system operates by estimating a posterior distribution of the estimated true quality for each product, given
-the prior and the received ratings on that product.
-We primarily consider rating systems where the prior represents a Beta distribution.1 Then, in this setting, the platform chooses the prior Beta distribution parameters (α̂, β̂).2
-We will refer to α̂ + β̂ as the prior strength, as it indicates
-how strongly the prior is concentrated around its mean (and
-how many ratings will be needed to “overwhelm”) the prior.
-After a product receives a rating, the platform updates its
-estimation posterior distribution for its true quality. In our
-1
-This choice is natural, given that ratings are assumed to be
-Bernoulli. The Beta distribution is the conjugate prior for Bernoulli
-data, i.e., with this choice of prior, the posterior distribution remains a Beta distribution but with different parameters.
-2
-α
-In a Beta(α, β) distribution, the mean is α+β
-; the higher that
-α + β are, the more concentrated the distribution around the mean.
-A common interpretation of the parameters is that α+β is the number of trials (coin flips), and α represents the number of successes.
-
-q̂α̂,β̂ (v, t) =
-
-α̂ + R(v, t)
-α̂ + β̂ + |S(v, t)|
-
-.
-
-(1)
-
-The platform impacts the operation of a prior-weighted
-rating system only through the prior choice, determined here
-by α̂ and β̂. There are two aspects of this choice: the shape
-of the prior, and its strength relative to observed ratings in
-determining the posterior. In our analysis, we fix the prior
-shape by relying on market-level data, in a manner inspired
-by empirical Bayesian statistical methods (Robbins 1964).
-Our analysis shows that the strength of the prior then mediates the tradeoff between efficiency and producer fairness.
-Formally, to reason about a prior’s strength, we fix a prior
-shape (α̃, β̃), then set (α̂, β̂) = (η α̃, η β̃) for some prior
-strength η ≥ 0, providing us with a single-parameter lever
-to adjust the strength of the prior. We elaborate on how we
-calibrate the prior shape in Section 3.2. Note in particular
-that if η = 0, then the platform simply implements sample
-averaging to compute the estimated quality of an item.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (alpha beta eta t q_v : ℝ),
-  MBJG25ProducerFairness.paper_posterior_mean alpha beta eta t q_v =
-    (eta * alpha + t * q_v) / (eta * alpha + eta * beta + t)
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_posterior_mean
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-20150c21c10be6e2}{}
-\section*{Review row 3}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 333-\allowbreak{}341\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Why MSE? Via the bias-variance decomposition, meansquared error encodes a metric for efficiency and a metric
-for producer unfairness. For product v with true quality qv :
-[U+0010 control character]
-[U+0011 control character]2
-E[(q̂ηα̃,ηβ̃ (v, t) − qv )2 |qv ] = E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv
-+ Var[q̂ηα̃,ηβ̃ (v, t)|qv ].
-(3)
-When conditioned on a product with given true quality
-qv , the variance component of the MSE (second component
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (alpha beta eta t q_v : ℝ),
-  MBJG25ProducerFairness.paper_bias alpha beta eta t q_v =
-    (eta * alpha + t * q_v) / (eta * alpha + eta * beta + t) - q_v
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_bias
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-23bc13a84ad0b29a}{}
-\section*{Review row 4}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1533-\allowbreak{}1552\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Variance can also be broken down accordingly:
-"
-Var[q̂ηα̃,ηβ̃ (v, t)|qv ] = E
-
-[U+0010 control character]
-
-[U+0011 control character]2
-q̂ηα̃,ηβ̃ (v, t) − E[q̂ηα̃,ηβ̃ (v, t)] qv
-(8)
-2
-
-E[(R(v, t) − E[R(v, t)]) |qv ]
-(η α̃ + η β̃ + t)2
-Var[R(v, t)|qv ]
-=
-(η α̃ + η β̃ + t)2
-tqv (1 − qv )
-=
-.
-(η α̃ + η β̃ + t)2
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (alpha beta eta t q_v : ℝ),
-  MBJG25ProducerFairness.paper_variance alpha beta eta t q_v = t * q_v * (1 - q_v) / (eta * alpha + eta * beta + t) ^ 2
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_variance
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-6e52f3be6106ad49}{}
-\section*{Review row 5}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 333-\allowbreak{}341\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Why MSE? Via the bias-variance decomposition, meansquared error encodes a metric for efficiency and a metric
-for producer unfairness. For product v with true quality qv :
-[U+0010 control character]
-[U+0011 control character]2
-E[(q̂ηα̃,ηβ̃ (v, t) − qv )2 |qv ] = E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv
-+ Var[q̂ηα̃,ηβ̃ (v, t)|qv ].
-(3)
-When conditioned on a product with given true quality
-qv , the variance component of the MSE (second component
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (alpha beta eta t q_v : ℝ),
-  MBJG25ProducerFairness.paper_squared_bias alpha beta eta t q_v =
-    MBJG25ProducerFairness.paper_bias alpha beta eta t q_v ^ 2
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_squared_bias
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-9fd08233a5aeb857}{}
-\section*{Review row 6}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 315-\allowbreak{}333\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Informally, efficiency is measured by whether or not the rating system is successfully identifying high-quality products.
-Individual producer fairness is measured by whether products of similar true quality are treated similarly.
-Metrics in fixed setting. In the fixed model, we focus
-primarily on an accuracy measure: the mean-squared error
-(MSE) of the estimated quality in predicting true quality,
-defined at timestep t as
-P
-M SE(q̂ηα̃,ηβ̃ ) =
-
-2
-v∈V (q̂η α̃,η β̃ (v, t) − qv )
-
-|V |
-
-.
-
-(2)
-
-Why MSE? Via the bias-variance decomposition, meansquared error encodes a metric for efficiency and a metric
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {V : Type u_1} [inst : Fintype V] [inst_1 : Nonempty V] (estimatedQuality trueQuality : V → ℝ),
-  MBJG25ProducerFairness.paper_fixed_market_mse estimatedQuality trueQuality =
-    (∑ v, (estimatedQuality v - trueQuality v) ^ 2) / ↑(Fintype.card V)
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_fixed_market_mse
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-da6d1b14c0df1e3e}{}
-\section*{Review row 7}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 333-\allowbreak{}345\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Why MSE? Via the bias-variance decomposition, meansquared error encodes a metric for efficiency and a metric
-for producer unfairness. For product v with true quality qv :
-[U+0010 control character]
-[U+0011 control character]2
-E[(q̂ηα̃,ηβ̃ (v, t) − qv )2 |qv ] = E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv
-+ Var[q̂ηα̃,ηβ̃ (v, t)|qv ].
-(3)
-When conditioned on a product with given true quality
-qv , the variance component of the MSE (second component
-on the right-hand side) represents an objective for producer
-fairness, as the estimator should ideally estimate products
-of similar true quality similarly, even if that estimated quality is biased. The bias component of MSE is correlated with
-consumer efficiency; in particular, a rating system that consistently underrates high-quality products or overrates lowquality ones will lead to poor consumer experiences.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {Ω : Type u_1} [inst : Fintype Ω] [inst_1 : DecidableEq Ω] (rating_dist : PMF Ω) (posterior_rating : Ω → ℝ) (q_v : ℝ),
-  (EconCSLib.pmfExp rating_dist fun ω => (posterior_rating ω - q_v) ^ 2) =
-    (EconCSLib.pmfExp rating_dist posterior_rating - q_v) ^ 2 +
-      EconCSLib.pmfExp rating_dist fun ω => (posterior_rating ω - EconCSLib.pmfExp rating_dist posterior_rating) ^ 2
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_fixed_mse_decomposition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-000171f0bf87b98c}{}
-\section*{Review row 8}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 443-\allowbreak{}450\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix
-product v with true quality qv and consider quality estimation after t timesteps.
-Then, as η
-≥ 0 increases, (1) squared bias
-[U+0010 control character]
-[U+0011 control character]2
-E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv
-is nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {alpha beta t q etaLow etaHigh : ℝ},
-  MBJG25ProducerFairness.assumption_positive_prior_shape alpha beta →
-    MBJG25ProducerFairness.assumption_positive_time t →
-      MBJG25ProducerFairness.assumption_quality_nonnegative q →
-        MBJG25ProducerFairness.assumption_quality_at_most_one q →
-          MBJG25ProducerFairness.assumption_prior_strength_nonnegative etaLow →
-            MBJG25ProducerFairness.assumption_prior_strength_weak_order etaLow etaHigh →
-              MBJG25ProducerFairness.paper_variance alpha beta etaHigh t q ≤
-                MBJG25ProducerFairness.paper_variance alpha beta etaLow t q
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_theorem3_1_variance_weak_decrease
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-976fc5a9912d46b4}{}
-\section*{Review row 9}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 443-\allowbreak{}450\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix
-product v with true quality qv and consider quality estimation after t timesteps.
-Then, as η
-≥ 0 increases, (1) squared bias
-[U+0010 control character]
-[U+0011 control character]2
-E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv
-is nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {alpha beta t q etaLow etaHigh : ℝ},
-  MBJG25ProducerFairness.assumption_positive_prior_shape alpha beta →
-    MBJG25ProducerFairness.assumption_positive_time t →
-      MBJG25ProducerFairness.assumption_quality_positive q →
-        MBJG25ProducerFairness.assumption_quality_lt_one q →
-          MBJG25ProducerFairness.assumption_prior_strength_nonnegative etaLow →
-            MBJG25ProducerFairness.assumption_prior_strength_strict_order etaLow etaHigh →
-              MBJG25ProducerFairness.paper_variance alpha beta etaHigh t q <
-                MBJG25ProducerFairness.paper_variance alpha beta etaLow t q
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_interior
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-5564d9d725c13f20}{}
-\section*{Review row 10}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 443-\allowbreak{}450\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix
-product v with true quality qv and consider quality estimation after t timesteps.
-Then, as η
-≥ 0 increases, (1) squared bias
-[U+0010 control character]
-[U+0011 control character]2
-E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv
-is nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {alpha beta t q etaLow etaHigh : ℝ},
-  MBJG25ProducerFairness.assumption_positive_prior_shape alpha beta →
-    MBJG25ProducerFairness.assumption_positive_time t →
-      MBJG25ProducerFairness.assumption_prior_strength_nonnegative etaLow →
-        MBJG25ProducerFairness.assumption_prior_strength_weak_order etaLow etaHigh →
-          MBJG25ProducerFairness.paper_squared_bias alpha beta etaLow t q ≤
-            MBJG25ProducerFairness.paper_squared_bias alpha beta etaHigh t q
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_theorem3_1_squared_bias_nondecreasing
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-2dcf6dbcf162b5d0}{}
-\section*{Review row 11}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 460-\allowbreak{}469\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.
-Then, as a function of true product quality, squared bias
-[U+0010 control character]
-[U+0011 control character]2
-E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv
-is convex with a global miniα̃
-mum at α̃+
-, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave
-β̃
+Theorem 3.2. Suppose we have a prior-weighted rating sys-                      shifted significantly by ratings data. η = 1000 corresponds
+tem in the fixed setting with prior parameters (η α̃, η β̃). Con-              to a setting where the posterior is essentially equal to the
+sider quality estimation after t timesteps.                                    prior throughout the entire simulation, i.e., ratings data is
+   Then, as a function of true product quality, squared bias                   ignored. We ran all of our experiments (for both the fixed
+[U+0010 control character]                              [U+0011 control character]2                                              and responsive models) on an internally-provided comput-
+  E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv    is convex with a global mini-                ing cluster, where the compute power required for our simu-
+mum at α̃+α̃
+                , while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave          lations was negligible.
+             β̃
 with a global maximum at 1/2.
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {alpha beta eta t : ℝ},
-  MBJG25ProducerFairness.assumption_positive_prior_shape alpha beta →
-    MBJG25ProducerFairness.assumption_prior_strength_nonnegative eta →
-      MBJG25ProducerFairness.assumption_positive_time t →
-        EconCSLib.Statistics.JensenConvex fun q => MBJG25ProducerFairness.paper_squared_bias alpha beta eta t q
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_theorem3_2_squared_bias_convex_in_quality
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-444ef89e21ba4476}{}
-\section*{Review row 12}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 460-\allowbreak{}469\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.
-Then, as a function of true product quality, squared bias
-[U+0010 control character]
-[U+0011 control character]2
-E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv
-is convex with a global miniα̃
-mum at α̃+
-, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave
-β̃
-with a global maximum at 1/2.
-\end{ReviewVerbatim}
-
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ {alpha beta eta t : ℝ},
-  MBJG25ProducerFairness.assumption_positive_prior_shape alpha beta →
-    MBJG25ProducerFairness.assumption_prior_strength_nonnegative eta →
-      MBJG25ProducerFairness.assumption_positive_time t →
-        EconCSLib.Statistics.GlobalMinAt (fun q => MBJG25ProducerFairness.paper_squared_bias alpha beta eta t q)
-          (alpha / (alpha + beta))
+∀ {alpha beta eta : ℝ} {t : ℕ},
+  0 < alpha →
+    0 < beta →
+      0 ≤ eta →
+        0 < t →
+          (∀ (x y lam : ℝ),
+              0 ≤ x →
+                x ≤ 1 →
+                  0 ≤ y →
+                    y ≤ 1 →
+                      0 ≤ lam →
+                        lam ≤ 1 →
+                          MBJG25ProducerFairness.paper_conditional_squared_bias alpha beta eta t
+                              (lam * x + (1 - lam) * y) ≤
+                            lam * MBJG25ProducerFairness.paper_conditional_squared_bias alpha beta eta t x +
+                              (1 - lam) * MBJG25ProducerFairness.paper_conditional_squared_bias alpha beta eta t y) ∧
+            (0 ≤ alpha / (alpha + beta) ∧
+                alpha / (alpha + beta) ≤ 1 ∧
+                  ∀ (q : ℝ),
+                    0 ≤ q →
+                      q ≤ 1 →
+                        MBJG25ProducerFairness.paper_conditional_squared_bias alpha beta eta t
+                            (alpha / (alpha + beta)) ≤
+                          MBJG25ProducerFairness.paper_conditional_squared_bias alpha beta eta t q) ∧
+              (∀ (x y lam : ℝ),
+                  0 ≤ x →
+                    x ≤ 1 →
+                      0 ≤ y →
+                        y ≤ 1 →
+                          0 ≤ lam →
+                            lam ≤ 1 →
+                              lam * MBJG25ProducerFairness.paper_conditional_variance alpha beta eta t x +
+                                  (1 - lam) * MBJG25ProducerFairness.paper_conditional_variance alpha beta eta t y ≤
+                                MBJG25ProducerFairness.paper_conditional_variance alpha beta eta t
+                                  (lam * x + (1 - lam) * y)) ∧
+                ∀ (q : ℝ),
+                  0 ≤ q →
+                    q ≤ 1 →
+                      MBJG25ProducerFairness.paper_conditional_variance alpha beta eta t q ≤
+                        MBJG25ProducerFairness.paper_conditional_variance alpha beta eta t (1 / 2)
 \end{ReviewVerbatim}
 
+
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_theorem3_2_squared_bias_global_min_at_prior_mean
+MBJG25ProducerFairness.paper_theorem3_2_proof
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-3afe5de598f0ed9d}{}
-\section*{Review row 13}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 460-\allowbreak{}469\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.
-Then, as a function of true product quality, squared bias
-[U+0010 control character]
-[U+0011 control character]2
-E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv
-is convex with a global miniα̃
-mum at α̃+
-, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave
-β̃
-with a global maximum at 1/2.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {alpha beta eta t : ℝ},
-  MBJG25ProducerFairness.assumption_nonnegative_time t →
-    EconCSLib.Statistics.JensenConcave fun q => MBJG25ProducerFairness.paper_variance alpha beta eta t q
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_theorem3_2_variance_concave_in_quality
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-a4656e58047f308c}{}
-\section*{Review row 14}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 460-\allowbreak{}469\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.
-Then, as a function of true product quality, squared bias
-[U+0010 control character]
-[U+0011 control character]2
-E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv
-is convex with a global miniα̃
-mum at α̃+
-, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave
-β̃
-with a global maximum at 1/2.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {alpha beta eta t : ℝ},
-  MBJG25ProducerFairness.assumption_nonnegative_time t →
-    EconCSLib.Statistics.GlobalMaxAt (fun q => MBJG25ProducerFairness.paper_variance alpha beta eta t q) (1 / 2)
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_theorem3_2_variance_global_max_at_half
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-6ce0e529b89e57b7}{}
-\section*{Review row 15}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 443-\allowbreak{}450\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix
-product v with true quality qv and consider quality estimation after t timesteps.
-Then, as η
-≥ 0 increases, (1) squared bias
-[U+0010 control character]
-[U+0011 control character]2
-E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv
-is nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (alpha beta t etaLow etaHigh : ℝ),
-  ¬MBJG25ProducerFairness.paper_variance alpha beta etaHigh t 0 <
-      MBJG25ProducerFairness.paper_variance alpha beta etaLow t 0
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_zero
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-464dc3b105b500a1}{}
-\section*{Review row 16}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 443-\allowbreak{}450\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix
-product v with true quality qv and consider quality estimation after t timesteps.
-Then, as η
-≥ 0 increases, (1) squared bias
-[U+0010 control character]
-[U+0011 control character]2
-E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv
-is nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (alpha beta t etaLow etaHigh : ℝ),
-  ¬MBJG25ProducerFairness.paper_variance alpha beta etaHigh t 1 <
-      MBJG25ProducerFairness.paper_variance alpha beta etaLow t 1
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_one
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-5e3bedb3cf1d62b0}{}
-\section*{Review row 17}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 346-\allowbreak{}353\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Metrics in responsive setting. In the responsive setting,
-because consumers choose (and rate) higher rated items at
-higher probabilities, we base our metrics directly off of how
-often products are selected. We define lv to be the lifespan
-of a product v in the responsive model. The selection rate
-of a product v as the fraction of times that it was rated (and
-thus the fraction of times the product was purchased) during
-its lifespan, SR(v) := |S(v, t)|/lv .
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (selections lifespan : ℝ),
-  MBJG25ProducerFairness.paper_facing_selection_rate selections lifespan = selections / lifespan
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_selection_rate
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-430cb3de083df7cf}{}
-\section*{Review row 18}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 376-\allowbreak{}386\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Fairness. To capture variance conditional on quality, our
-chosen fairness metric is the standard deviation in selection rate given true quality. This individual fairness notion
-is conditional on quality: items of similar quality ought to
-be picked at similar rates. Let σ̂(U ) be the sample standard
-deviation computed on a set of real-valued numbers U . For a
-fixed true quality q, the individual (un)fairness metric is the
-standard deviation in selection rate conditioned on an item
-being of that true quality:
-σ̂ ({SR(v)|qv = q}) .
-
-(5)
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {V : Type u_1} [inst : Fintype V] [inst_1 : DecidableEq V] (selections lifespan q_v : V → ℝ) (q : ℝ),
-  MBJG25ProducerFairness.paper_facing_individual_producer_unfairness selections lifespan q_v q =
-    have S := {v | q_v v = q};
-    have selectionRate := fun v => MBJG25ProducerFairness.paper_facing_selection_rate (selections v) (lifespan v);
-    have meanSelectionRate := if S.card = 0 then 0 else (∑ v ∈ S, selectionRate v) / ↑S.card;
-    if S.card = 0 then 0 else √((∑ v ∈ S, (selectionRate v - meanSelectionRate) ^ 2) / ↑S.card)
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_individual_producer_unfairness
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-aace03b9ed863bb2}{}
-\section*{Review row 19}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 386-\allowbreak{}390\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-(5)
-
-To get a marketplace-level metric of producer unfairness,
-we take the expectation of eq. (5) over true qualities q.
-We do not use a statistical measure as in the fixed setting for two reasons: (1) The responsive model allows for
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {Q : Type u_1} [inst : Fintype Q] [inst_1 : DecidableEq Q] (quality_dist : PMF Q) (quality_unfairness : Q → ℝ),
-  MBJG25ProducerFairness.paper_facing_marketplace_producer_unfairness quality_dist quality_unfairness =
-    ∑ q, (quality_dist q).toReal * quality_unfairness q
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_marketplace_producer_unfairness
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-f5087ebba0ec2e7e}{}
-\section*{Review row 20}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 680-\allowbreak{}708\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-sampling algorithm. This section is organized as follows. We
-
-first outline how we implement simulations for the responsive model, and then investigate how tuning prior strength
-affects the producer fairness and match quality metrics. We
-conclude with a discussion of results, and compare our simulation outcomes with those from the fixed model.
-
-4.1
-
-Responsive Model Implementation
-
-Here, we describe our simulation implementation of the responsive model. (Note that, as discussed in Section 2.3, the
-changes in the responsive setting make quality estimation
-inherently biased, complicating the theory developed in the
-fixed setting; Appendix C demonstrates the dependency of
-bias and variance on the exact dynamics of the sampling
-algorithm used for consumer choice in this setting.) An
-overview of the responsive model’s design and metrics for
-efficiency and fairness are provided in Section 2.
-Users adaptively choose products on the market. At
-each timestep t, a subset of the products M (t) ⊆ V is available for purchase. A single user interacts with a single item
-at each timestep, making their choice as a function of past
-ratings. In particular, in the main text, we model this user as
-a Thompson sampler that utilizes the posterior quality distribution for each item. That is, for each v ∈ M (t), the consumer draws a sample xv ∼ Beta(α̂+R(v, t), β̂+|S(v, t)|−
-R(v, t)), and then chooses and rates the product v(t) that
-maximizes xv .4 Thompson sampling is a well-studied algorithm for trading off between exploitation and exploration
-in multi-armed bandit problems (Russo et al. 2018). Prior
-work has also argued that it serves as a reasonable approximation of real-world consumer choice; for example, Krafft
-et al. (2021) demonstrate that when individual human decisions are aggregated together in consumer financial markets, the behavior is remarkably close to that of a distributed
-Thompson sampling setting.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {V : Type u_1} [Fintype V] [DecidableEq V] [Nonempty V] (belief : PMF (V → ℝ)),
-  ∃ tie_breaker,
-    (∀ (profile : V → ℝ) (v : V), profile v ≤ profile (tie_breaker profile)) ∧
-      ∃ policy, policy = belief.bind fun profile => PMF.pure (tie_breaker profile)
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_thompson_sampling_mechanism
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-9acd03585d100ede}{}
-\section*{Review row 21}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 354-\allowbreak{}369\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Efficiency. Formally, to measure efficiency, we use total
-expected regret compared to the best item in the marketplace
-at each time step:
-
-E
-
-" T
-X
-t=1
-
-#
-max {qv } − qv(t) .
-
-v∈M (t)
-
-(4)
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {V : Type u_1} [inst : Fintype V] [inst_1 : DecidableEq V] [inst_2 : Nonempty V] (T : ℕ) (M : Fin T → Finset V)
-  (h_nonempty : ∀ (t : Fin T), (M t).Nonempty) (q : V → ℝ) (pi : (t : Fin T) → PMF ↥(M t)),
-  MBJG25ProducerFairness.paper_facing_expected_regret T M h_nonempty q pi =
-    ∑ t, ((M t).sup' ⋯ q - EconCSLib.pmfExp (pi t) fun v => q ↑v)
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_expected_regret
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-7a7d1cda2bb14e73}{}
-\section*{Review row 22}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1750-\allowbreak{}1815\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-50
-
-1
-Figure 8: Lineplot of mean-squared
-error different quality
-estimators in fixed setting over time. η = 0 represents the
-sample mean estimator, η = 1 represents the empirical
-Bayes (EB) estimator. The sample mean estimator (η = 0)
-has high MSE for low time-steps, due to variance in ratings. On the other extreme, for extremely high prior strength
-η = 1000, the platform never learns from ratings data. This
-presents evidence that proper calibration of prior strength
-can help solve the cold start problem in the context of accurate quality estimates for products.
-
-Discussion of bias-variance decomposition
-in responsive model
-
-This appendix discusses a decomposition of the biasvariance decomposition in Equation 7 as applied to the responsive setting. While mean-squared prediction error may
-no longer serve as an ideal metric for consumer and producer welfare in this setting, we demonstrate that markets
-that care about MSE for its own sake can still reason about
-prediction error for a prior-weighted rating system so long as
-they can make statements about the changes in how products
-are sampled based on changes in qv and η.
-Let the number of reviews for product v with fixed true
-quality qv , prior parameters α̃, β̃ and system-level prior
-strength η, calculated at timestep t, be Nα̃,β̃ (qv , η, t). We
-focus on the number of reviews for a product at a fixed
-time t with fixed prior parameters α̃, β̃, and so we simplify by omitting these variables in this notation, letting
-N (qv , η) denote the number of reviews. Now, at this time
-t, a prior-weighted rating system’s estimated quality for v
-is given by q̂ηα̃,ηβ̃ (v, N (qv , η)), and the MSE is given by
-E[(q̂ηα̃,ηβ̃ (v, N (qv , η)) − qv )2 |qv ]. We can break down bias
-and variance of mean-squared prediction error through the
-usage of the tower law of probability:
-E[(q̂ηα̃,ηβ̃ (v, N (qv , η)) − qv )2 |qv ]
-h
-i
-= E E[(q̂ηα̃,ηβ̃ (v, N (qv , η)) − qv )2 ] N (qv , η), qv
-
-(19)
-
-
-[form-feed in source extraction]
-When the number of reviews at a given point in time is
-fixed, we can treat the estimated quality identically to how it
-is calculated in the fixed setting. This gives us the following
-bias-variance breakdown:
-E[(q̂ηα̃,ηβ̃ (v, N (qv , η)) − qv )2 |qv ]
-[U+F8EE private-use glyph]
-!2 [U+F8F9 private-use glyph]
-η α̃ − η α̃qv − η β̃qv
-qv [U+F8FB private-use glyph]
-= E[U+F8F0 private-use glyph]
-η α̃ + η β̃ + N (qv , η)
-"
-#
-N (qv , η)qv (1 − qv )
-+E
-qv
-(η α̃ + η β̃ + N (qv , η))2
-
-can be achieved by setting the prior strength η in a priorweighted rating system to zero. For a product with n ratings, k of which are positive, a population average rating of
-C, and an integer-valued threshold m, the Bayesian rating q
-of a product is calculated to be
-n
-k
-m
-· +
-·C
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {α : Type u_1} {Ω : Type u_2} [inst : Fintype α] [inst_1 : DecidableEq α] [inst_2 : Fintype Ω]
-  [inst_3 : DecidableEq Ω] {alpha beta eta q_v : ℝ} (state_dist : PMF α) (rating_dist : α → PMF Ω) (N : α → ℝ)
-  (posterior_rating : α → Ω → ℝ),
-  (∀ (s : α),
-      EconCSLib.pmfExp (rating_dist s) (posterior_rating s) =
-        MBJG25ProducerFairness.paper_posterior_mean alpha beta eta (N s) q_v) →
-    (∀ (s : α),
-        (EconCSLib.pmfExp (rating_dist s) fun ω =>
-            (posterior_rating s ω - EconCSLib.pmfExp (rating_dist s) (posterior_rating s)) ^ 2) =
-          MBJG25ProducerFairness.paper_variance alpha beta eta (N s) q_v) →
-      (EconCSLib.pmfExp state_dist fun s =>
-          EconCSLib.pmfExp (rating_dist s) fun ω => (posterior_rating s ω - q_v) ^ 2) =
-        (EconCSLib.pmfExp state_dist fun s => MBJG25ProducerFairness.paper_squared_bias alpha beta eta (N s) q_v) +
-          EconCSLib.pmfExp state_dist fun s => MBJG25ProducerFairness.paper_variance alpha beta eta (N s) q_v
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_responsive_mse_decomposition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-8281b9d563b2f959}{}
-\section*{Review row 23}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1810-\allowbreak{}1835\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-of a product is calculated to be
-n
-k
-m
-· +
-·C
-n+m n n+m
-k + mC
-=
-,
-n+m
-which is equivalent to a prior-weighted rating system
-with prior strength m and baseline prior distribution of
-Beta(C, 1).
-q=
-
-(20)
-
-From here, one may proceed with the proofs of the theorems in Section 3 so long as they can make statements about
-the bias and variance terms in the above expression. In the
-responsive model in this paper, N (qv , η) is a noisy random
-variable that is a function of the play distribution in a multiarmed bandit. The theoretical challenge in proving stronger
-results in the responsive setting is being able to characterize N (qv , η) for finite samples, and how it changes with η
-– in this work, we show empirical results that the tradeoff
-holds for a variety of consumer choice models (Thompson
-sampling, and various models discussed in Appendix F).
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (n k : ℕ) (m C : ℝ),
-  MBJG25ProducerFairness.assumption_positive_rating_count n →
-    have nR := ↑n;
-    have kR := ↑k;
-    nR / (nR + m) * (kR / nR) + m / (nR + m) * C = (kR + m * C) / (nR + m) ∧
-      MBJG25ProducerFairness.paper_posterior_rating (m * C) (m * (1 - C)) k n = (kR + m * C) / (nR + m)
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_eq20_bayesian_rating_equivalence
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-48bd38a1dccb3b5f}{}
-\section*{Review row 24}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1903-\allowbreak{}2029\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Because of the ordinal nature of the ratings data in this
-where the exact rating aggregation method is hidden to comsetting, we need to adjust our model primitives as defined in
-bat fake reviews and brigading, sample mean rating systems
-Section 2.1. Rather than a Beta-Bernoulli setting, we model
-where the overall rating of a product is the average ratour ratings as being drawn from a categorical distribution
-ing it has received over a certain period of time by trustwith a Dirichlet prior. Let K be the set of possible ratings
-worthy reviewers, and Bayesian ratings, which calculates
-for a product v (i.e. K = {1, 2, 3, 4, 5} for Amazon proda weighted average between the sample mean rating and a
-ucts and K = {0, 1, 2, 3, 4, 5} for Goodreads products). If
-population-level mean rating. Assuming the reviews are bi7
-nary, both sample mean and Bayesian ratings are captured
-Licensed under the MIT License
-8
-by our prior-weighted ratings system. Sample mean ratings
-Licensed under the Apache 2.0 license
-
-
-[form-feed in source extraction]
-Product Category
-Children
-Comics & Graphic
-Fantasy & Paranormal
-History & Biography
-Mystery, Crime, Thriller
-Poetry
-Romance
-Young Adult
-All Beauty
-Beauty & Personal Care
-Clothing, Shoes, Jewelry
-Health & Personal Care
-Industrial & Scientific
-Magazine Subscriptions
-Patio, Lawn, Garden
-Sports & Outdoor
-Tools, Home Improvement
-Video Games
-
-Platform
-Goodreads
-Goodreads
-Goodreads
-Goodreads
-Goodreads
-Goodreads
-Goodreads
-Goodreads
-Amazon
-Amazon
-Amazon
-Amazon
-Amazon
-Amazon
-Amazon
-Amazon
-Amazon
-Amazon
-
-# Items
-124.1k
-89.4k
-258.6k
-302.9k
-219.2k
-36.5k
-335.4k
-93.4k
-112.6k
-94.3k
-7.2mil
-60.3k
-427.5k
-3.4k
-851.7k
-1.6mil
-1.5mil
-137.2k
-
-# Ratings
-734.6k
-542.4k
-3.4mil
-2.1mil
-1.8mil
-154.6k
-3.6mil
-2.4mil
-701.5k
-2.1mil
-66.0mil
-494.1k
-5.2mil
-71.5k
-16.5mil
-19.6mil
-27.0mil
-4.6mil
-
-Table 2: Table showing details about each dataset used in
-Appendix E.
-
-ratings for a product v are drawn from a categorical distribution with weights {pv,k }P
-k∈K , then we define the true quality
-qv of this product to be j∈K pv,j · j.
-To estimate the quality of a product at time T , we define
-S(v, k, T ) to be the set of k-star reviews for product v at
-time T , and N (v, k, t) := |S(v, k, T )|. The prior parameters, instead of being for a Beta distribution, are now for a
-Dirichlet distribution; they are given by α̂ = {α̂j }j∈K . Due
-to the conjugacy of the Dirichlet distribution and the categorical distribution, we can define the estimated quality for
-v at time t as
-
-P
-
-j∈K
-q̂α̂ (v, t) = P
-
-N (v, j, t) · j
-
-j∈K N (v, j, t)
-
-(21)
-
-Our notions of prior strength and shape remain the same
-as before; that is, if we fix a prior shape α̃ = {α̃j }j∈K ,
-our choice of strength η ≥ 0 changes the Dirichlet prior
-by setting α̂ = {η α̃j }j∈K . The rest of our also model definitions remain unchanged. We kept the same experimental
-hyperparameters of the original experiment in Section 4.2,
-with the exception of our η values now being chosen from
-{0.001, 1, 10, 100, 1000, 10000}, and our Thompson sampling model for consumer choice now using Dirichlet priors rather than Beta priors. To fit the Dirichlet distribution to
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {K : Type u_1} [inst : Fintype K] (ratingValue priorPseudoCount observedCount : K → ℝ),
-  MBJG25ProducerFairness.paper_ordinal_posterior_rating ratingValue priorPseudoCount observedCount =
-    (∑ j, (priorPseudoCount j + observedCount j) * ratingValue j) / ∑ j, (priorPseudoCount j + observedCount j)
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_ordinal_posterior_rating
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-c141e929e91e7be9}{}
-\section*{Review row 25}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1903-\allowbreak{}2029\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Because of the ordinal nature of the ratings data in this
-where the exact rating aggregation method is hidden to comsetting, we need to adjust our model primitives as defined in
-bat fake reviews and brigading, sample mean rating systems
-Section 2.1. Rather than a Beta-Bernoulli setting, we model
-where the overall rating of a product is the average ratour ratings as being drawn from a categorical distribution
-ing it has received over a certain period of time by trustwith a Dirichlet prior. Let K be the set of possible ratings
-worthy reviewers, and Bayesian ratings, which calculates
-for a product v (i.e. K = {1, 2, 3, 4, 5} for Amazon proda weighted average between the sample mean rating and a
-ucts and K = {0, 1, 2, 3, 4, 5} for Goodreads products). If
-population-level mean rating. Assuming the reviews are bi7
-nary, both sample mean and Bayesian ratings are captured
-Licensed under the MIT License
-8
-by our prior-weighted ratings system. Sample mean ratings
-Licensed under the Apache 2.0 license
-
-
-[form-feed in source extraction]
-Product Category
-Children
-Comics & Graphic
-Fantasy & Paranormal
-History & Biography
-Mystery, Crime, Thriller
-Poetry
-Romance
-Young Adult
-All Beauty
-Beauty & Personal Care
-Clothing, Shoes, Jewelry
-Health & Personal Care
-Industrial & Scientific
-Magazine Subscriptions
-Patio, Lawn, Garden
-Sports & Outdoor
-Tools, Home Improvement
-Video Games
-
-Platform
-Goodreads
-Goodreads
-Goodreads
-Goodreads
-Goodreads
-Goodreads
-Goodreads
-Goodreads
-Amazon
-Amazon
-Amazon
-Amazon
-Amazon
-Amazon
-Amazon
-Amazon
-Amazon
-Amazon
-
-# Items
-124.1k
-89.4k
-258.6k
-302.9k
-219.2k
-36.5k
-335.4k
-93.4k
-112.6k
-94.3k
-7.2mil
-60.3k
-427.5k
-3.4k
-851.7k
-1.6mil
-1.5mil
-137.2k
-
-# Ratings
-734.6k
-542.4k
-3.4mil
-2.1mil
-1.8mil
-154.6k
-3.6mil
-2.4mil
-701.5k
-2.1mil
-66.0mil
-494.1k
-5.2mil
-71.5k
-16.5mil
-19.6mil
-27.0mil
-4.6mil
-
-Table 2: Table showing details about each dataset used in
-Appendix E.
-
-ratings for a product v are drawn from a categorical distribution with weights {pv,k }P
-k∈K , then we define the true quality
-qv of this product to be j∈K pv,j · j.
-To estimate the quality of a product at time T , we define
-S(v, k, T ) to be the set of k-star reviews for product v at
-time T , and N (v, k, t) := |S(v, k, T )|. The prior parameters, instead of being for a Beta distribution, are now for a
-Dirichlet distribution; they are given by α̂ = {α̂j }j∈K . Due
-to the conjugacy of the Dirichlet distribution and the categorical distribution, we can define the estimated quality for
-v at time t as
-
-P
-
-j∈K
-q̂α̂ (v, t) = P
-
-N (v, j, t) · j
-
-j∈K N (v, j, t)
-
-(21)
-
-Our notions of prior strength and shape remain the same
-as before; that is, if we fix a prior shape α̃ = {α̃j }j∈K ,
-our choice of strength η ≥ 0 changes the Dirichlet prior
-by setting α̂ = {η α̃j }j∈K . The rest of our also model definitions remain unchanged. We kept the same experimental
-hyperparameters of the original experiment in Section 4.2,
-with the exception of our η values now being chosen from
-{0.001, 1, 10, 100, 1000, 10000}, and our Thompson sampling model for consumer choice now using Dirichlet priors rather than Beta priors. To fit the Dirichlet distribution to
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {K : Type u_1} [inst : Fintype K] (ratingValue observedCount : K → ℝ),
-  MBJG25ProducerFairness.paper_ordinal_posterior_rating ratingValue (fun x => 0) observedCount =
-    (∑ j, observedCount j * ratingValue j) / ∑ j, observedCount j
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_eq21_zero_prior_comparison
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-c0449d6c0ae69374}{}
-\section*{Review row 26}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 2090-\allowbreak{}2175\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-F
-
-Robustness tests for different selection
-mechanisms
-
-The responsive-setting empirical setup detailed in Section
-4.2 assumes that agents are Thompson samplers, which
-is meant to serve as a metaphor for real-world customers
-roughly choosing the best product on the market based on
-the ratings information available to them. The amount of
-noise in this decision-making process can vary from platform to platform; for example, users in some online platforms may pay less attention to other user-generated reviews, due to the user interface de-emphasizing ratings. In
-order to capture how our results may change in response to
-this noisiness, we use this appendix to repeat our empirical
-experiments while replacing our Thompson sampling choice
-algorithm with lower-fidelity variants.
-To generalize our Thompson sampling algorithm into
-a parameterizable algorithm that we can tune, we use ksampling. This is a simple variant of Thompson sampling,
-which is defined as follows: Instead of drawing a sample
-from n different samples and selecting the arm that maximizes the expected reward conditional on that sample, we instead take the top-k most expected reward-maximizing arms
-and select one of those arms uniformly at random. Note that
-at k = 1, this approach is equivalent to traditional Thompson
-sampling, while at k = n, we are picking an arm uniformly
-
-1.0
-
-Nucleus Size
-1
-2
-3
-4
-5
-Prior Strength
-0.001
-1
-10
-100
-1000
-10000
-
-0.9
-0.8
-Expected Total Regret
-
-4.0
-
-0.7
-0.6
-0.5
-0.4
-0.3
-0.2
-
-0.100
-
-0.125
-0.150
-0.175
-0.200
-Standard Deviation of Selection Rate
-
-0.225
-
-1
-Figure 12: Scatterplot of average
-standard deviation in selection rate against total expected regret for robustness tests
-of the responsive setting when the consumer sampling algorithm is modified. Colours represent the nucleus size k,
-while size represents the prior strength η. The efficiencyfairness trade-off illustrated in Figure 3 holds for all values
-of k except for when k = 5, where sampling products purely
-at random at each timestep incurs a regret-maximizing but
-”fair” solution, and the value of η does not affect fairness or
-efficiency.
-
-at random.9
-We repeat our KuaiRec experiments while replacing Thompson sampling with k-sampling, varying k ∈
-{1, 2, 3, 4, 5}; we refer to k as the nucleus size. We choose
-our η values from {0.001, 1, 10, 100, 1000, 10000}, and
-keep all other hyperparameters unchanged from Section 4.2.
-Note that because we keep the market size of 5 unchanged
-from our original simulations, our sampling algorithm samples uniformly at random when k = 5.
-We find that the central efficiency-fairness trade-off is surprisingly resilient to degradations in the consumer sampling
-algorithm in identifying the best-performing product. While
-the uniformly random selection case k = 5 behaves chaotically, due to the product choice at each timestep being completely randomly chosen and not informed by any kind of
-prior knowledge, all other nucleus sizes yield an efficiencyversus-fairness curve that (while noisy for higher values of
-k) qualitatively exhibit similar behavior as in our primary
-experiments. In particular, as η increases, regret generally
-increases while unfairness decreases.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {V : Type u_1} [inst : Fintype V] [DecidableEq V] [Nonempty V] (profile : V → ℝ) (k : ℕ),
-  0 < k →
-    k ≤ Fintype.card V →
-      ∃ top,
-        top.card = k ∧
-          (∀ v ∈ top, ∀ w ∉ top, profile w ≤ profile v) ∧
-            ∃ (htop : top.Nonempty), ∃ policy, policy = PMF.uniformOfFinset top htop
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_k_sampling_mechanism
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-03b433e77eab6bcb}{}
-\section*{Review row 27}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 2090-\allowbreak{}2175\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-F
-
-Robustness tests for different selection
-mechanisms
-
-The responsive-setting empirical setup detailed in Section
-4.2 assumes that agents are Thompson samplers, which
-is meant to serve as a metaphor for real-world customers
-roughly choosing the best product on the market based on
-the ratings information available to them. The amount of
-noise in this decision-making process can vary from platform to platform; for example, users in some online platforms may pay less attention to other user-generated reviews, due to the user interface de-emphasizing ratings. In
-order to capture how our results may change in response to
-this noisiness, we use this appendix to repeat our empirical
-experiments while replacing our Thompson sampling choice
-algorithm with lower-fidelity variants.
-To generalize our Thompson sampling algorithm into
-a parameterizable algorithm that we can tune, we use ksampling. This is a simple variant of Thompson sampling,
-which is defined as follows: Instead of drawing a sample
-from n different samples and selecting the arm that maximizes the expected reward conditional on that sample, we instead take the top-k most expected reward-maximizing arms
-and select one of those arms uniformly at random. Note that
-at k = 1, this approach is equivalent to traditional Thompson
-sampling, while at k = n, we are picking an arm uniformly
-
-1.0
-
-Nucleus Size
-1
-2
-3
-4
-5
-Prior Strength
-0.001
-1
-10
-100
-1000
-10000
-
-0.9
-0.8
-Expected Total Regret
-
-4.0
-
-0.7
-0.6
-0.5
-0.4
-0.3
-0.2
-
-0.100
-
-0.125
-0.150
-0.175
-0.200
-Standard Deviation of Selection Rate
-
-0.225
-
-1
-Figure 12: Scatterplot of average
-standard deviation in selection rate against total expected regret for robustness tests
-of the responsive setting when the consumer sampling algorithm is modified. Colours represent the nucleus size k,
-while size represents the prior strength η. The efficiencyfairness trade-off illustrated in Figure 3 holds for all values
-of k except for when k = 5, where sampling products purely
-at random at each timestep incurs a regret-maximizing but
-”fair” solution, and the value of η does not affect fairness or
-efficiency.
-
-at random.9
-We repeat our KuaiRec experiments while replacing Thompson sampling with k-sampling, varying k ∈
-{1, 2, 3, 4, 5}; we refer to k as the nucleus size. We choose
-our η values from {0.001, 1, 10, 100, 1000, 10000}, and
-keep all other hyperparameters unchanged from Section 4.2.
-Note that because we keep the market size of 5 unchanged
-from our original simulations, our sampling algorithm samples uniformly at random when k = 5.
-We find that the central efficiency-fairness trade-off is surprisingly resilient to degradations in the consumer sampling
-algorithm in identifying the best-performing product. While
-the uniformly random selection case k = 5 behaves chaotically, due to the product choice at each timestep being completely randomly chosen and not informed by any kind of
-prior knowledge, all other nucleus sizes yield an efficiencyversus-fairness curve that (while noisy for higher values of
-k) qualitatively exhibit similar behavior as in our primary
-experiments. In particular, as η increases, regret generally
-increases while unfairness decreases.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {V : Type u_1} [Fintype V] [DecidableEq V] [Nonempty V] (profile : V → ℝ),
-  ∃ top,
-    top.card = 1 ∧
-      ∃ v,
-        top = {v} ∧
-          (∀ (w : V), profile w ≤ profile v) ∧ ∃ (htop : top.Nonempty), PMF.uniformOfFinset top htop = PMF.pure v
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_k_sampling_one_is_argmax
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-48e4400514808bc7}{}
-\section*{Review row 28}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 2090-\allowbreak{}2175\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-F
-
-Robustness tests for different selection
-mechanisms
-
-The responsive-setting empirical setup detailed in Section
-4.2 assumes that agents are Thompson samplers, which
-is meant to serve as a metaphor for real-world customers
-roughly choosing the best product on the market based on
-the ratings information available to them. The amount of
-noise in this decision-making process can vary from platform to platform; for example, users in some online platforms may pay less attention to other user-generated reviews, due to the user interface de-emphasizing ratings. In
-order to capture how our results may change in response to
-this noisiness, we use this appendix to repeat our empirical
-experiments while replacing our Thompson sampling choice
-algorithm with lower-fidelity variants.
-To generalize our Thompson sampling algorithm into
-a parameterizable algorithm that we can tune, we use ksampling. This is a simple variant of Thompson sampling,
-which is defined as follows: Instead of drawing a sample
-from n different samples and selecting the arm that maximizes the expected reward conditional on that sample, we instead take the top-k most expected reward-maximizing arms
-and select one of those arms uniformly at random. Note that
-at k = 1, this approach is equivalent to traditional Thompson
-sampling, while at k = n, we are picking an arm uniformly
-
-1.0
-
-Nucleus Size
-1
-2
-3
-4
-5
-Prior Strength
-0.001
-1
-10
-100
-1000
-10000
-
-0.9
-0.8
-Expected Total Regret
-
-4.0
-
-0.7
-0.6
-0.5
-0.4
-0.3
-0.2
-
-0.100
-
-0.125
-0.150
-0.175
-0.200
-Standard Deviation of Selection Rate
-
-0.225
-
-1
-Figure 12: Scatterplot of average
-standard deviation in selection rate against total expected regret for robustness tests
-of the responsive setting when the consumer sampling algorithm is modified. Colours represent the nucleus size k,
-while size represents the prior strength η. The efficiencyfairness trade-off illustrated in Figure 3 holds for all values
-of k except for when k = 5, where sampling products purely
-at random at each timestep incurs a regret-maximizing but
-”fair” solution, and the value of η does not affect fairness or
-efficiency.
-
-at random.9
-We repeat our KuaiRec experiments while replacing Thompson sampling with k-sampling, varying k ∈
-{1, 2, 3, 4, 5}; we refer to k as the nucleus size. We choose
-our η values from {0.001, 1, 10, 100, 1000, 10000}, and
-keep all other hyperparameters unchanged from Section 4.2.
-Note that because we keep the market size of 5 unchanged
-from our original simulations, our sampling algorithm samples uniformly at random when k = 5.
-We find that the central efficiency-fairness trade-off is surprisingly resilient to degradations in the consumer sampling
-algorithm in identifying the best-performing product. While
-the uniformly random selection case k = 5 behaves chaotically, due to the product choice at each timestep being completely randomly chosen and not informed by any kind of
-prior knowledge, all other nucleus sizes yield an efficiencyversus-fairness curve that (while noisy for higher values of
-k) qualitatively exhibit similar behavior as in our primary
-experiments. In particular, as η increases, regret generally
-increases while unfairness decreases.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {V : Type u_1} [inst : Fintype V] [DecidableEq V] [inst_2 : Nonempty V] (profile : V → ℝ),
-  ∃ top, top.card = Fintype.card V ∧ ∃ (htop : top.Nonempty), PMF.uniformOfFinset top htop = PMF.uniformOfFintype V
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-MBJG25ProducerFairness.paper_facing_k_sampling_market_size_is_uniform
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} The target formalizes the source claims on true-\allowbreak{}quality domain [0,1]:\allowbreak{} squared conditional bias is convex with global minimum at alpha/\allowbreak{}(alpha+beta), and conditional variance is concave with global maximum at 1/\allowbreak{}2;\allowbreak{} positive discrete t is covered by the approved model context.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox

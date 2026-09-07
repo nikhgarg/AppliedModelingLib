@@ -20,7 +20,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
+open AppliedModelingLib
 
 /-- The actual optional-reporting output law at a realized score. -/
 def lg21OptionalDeterministicReporterOperationalLaw

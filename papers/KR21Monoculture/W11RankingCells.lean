@@ -1,7 +1,7 @@
 import KR21Monoculture.W11FiniteProduct
 
-open EconCSLib MeasureTheory Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory Filter
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped Topology ENNReal
 
 namespace KR21Monoculture

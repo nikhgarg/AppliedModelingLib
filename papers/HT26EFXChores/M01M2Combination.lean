@@ -17,7 +17,7 @@ Source: `EFXadditivechores.tex`, lines 1732--1740 (case `b=0`).
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- The `b = 0` source case: a multiple-of-four M₀₁ prefix and an M₂ pool
 admit a joint EFX allocation.  This theorem deliberately concerns only the

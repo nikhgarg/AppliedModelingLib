@@ -42,7 +42,7 @@
     "reviewed_rows": 0,
     "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     "stale_rows": 0,
-    "total_rows": 4,
+    "total_rows": 17,
     "uncertain_rows": 0
   },
   "human_summary": "Formalized: the likelihood, Lemma 1, and Proposition 1 are checked. Lemma 1 and Proposition 1 now count actual calendar-time first reports through a stationary marked-displacement construction; the duration mixture is the explicitly stated pre-first-report survival condition.",
@@ -52,27 +52,29 @@
   },
   "id": "LBG24SpatialUnderreporting",
   "last_status_checkpoint": "2026-08-16: The literal calendar-time first-report route now compiles. A stationary marked birth process is displaced by its retained first-report delay; Lean derives the interval Poisson laws, independent increments, and Proposition 1 limits. The approved source clarification makes the pre-first-report survival bridge explicit and leaves post-first-report behavior unrestricted.",
-  "main_caveat": "Lemma 1 and Proposition 1 use the source-clarified calendar-time first-report reading and an explicit pre-first-report survival bridge. This is a narrow model clarification: it does not impose any post-first-report lifetime or endpoint behavior.",
+  "main_caveat": "",
   "open_source_boundaries": [],
   "paper_interface": {
-    "declaration_rows": 398,
-    "line_count": 9446,
-    "maintainability_issue": "PaperInterface.lean contains a large proof-facing declaration ledger around the 23 configured paper rows; review_surface.slices keep the human review batches manageable.",
-    "oversized": true,
+    "declaration_rows": 9,
+    "line_count": 219,
+    "maintainability_issue": null,
+    "oversized": false,
     "path": "papers/LBG24SpatialUnderreporting/PaperInterface.lean",
-    "review_rows": 21
+    "review_rows": 8
   },
   "repository_visibility": "public",
   "review_entrypoint": "papers/LBG24SpatialUnderreporting/FINAL_VALIDATION_REPORT.md",
   "review_surface": {
     "assumption_names": [
-      "assumption_lemma2_condition_one_selection",
-      "assumption_theorem2_condition_density_source_model",
-      "assumption_lemma2_forward_source_model"
+      "LBG24SpatialUnderreporting.Lemma2ForwardSourceModel"
     ],
     "assumption_policy": "source-plus-proof-boundary",
     "assumption_source_file": "papers/LBG24SpatialUnderreporting/Assumptions.lean",
     "auxiliary_names": [
+      "LBG24SpatialUnderreporting.assumption_lemma2_forward_source_model",
+      "LBG24SpatialUnderreporting.assumption_lemma2_condition_one_selection",
+      "LBG24SpatialUnderreporting.Lemma2ForwardSourceModel.process",
+      "LBG24SpatialUnderreporting.Lemma2ForwardSourceModel.selection",
       "poisson_count_mean",
       "lemma1_finite_duration_first_report_weighted_average",
       "lemma1_continuous_duration_poisson_thinning_count_law",
@@ -454,10 +456,14 @@
       "theorem2_zero_report_window_source_data_exposure_count"
     ],
     "include_names": [
-      "appendixTheorem2Eq8CausalStoppingSourceSpec",
-      "lemma1CalendarTimeDurationSourceObservedProcessSpec",
-      "proposition1CalendarTimeHomogeneousSourceSpec",
-      "lemma2ForwardSelectedStartExponentialTailSpec"
+      "sourceHomogeneousReportingDelayMeanSpec",
+      "sourceTheorem1LikelihoodDecompositionSpec",
+      "sourceEquation2PoissonCountPMFSpec",
+      "sourceEquation3MaximumLikelihoodEstimateSpec",
+      "sourceEquation6PoissonRegressionLikelihoodSpec",
+      "sourceZeroInflatedLikelihoodExtensionSpec",
+      "sourceLemma1CalendarTimeDurationObservedProcessSpec",
+      "sourceProposition1CalendarTimeNonidentifiabilitySpec"
     ],
     "llm_assumption_review": {
       "assumption_judgment_file": "papers/LBG24SpatialUnderreporting/audit/assumption_match_llm.json",
@@ -484,23 +490,24 @@
       "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
       "require_explicit_source_routes": true,
       "require_source_claim_atoms": true,
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
       "review_surface_audit_file": "papers/LBG24SpatialUnderreporting/audit/review_surface_llm.json",
       "surface_audit_threshold": 30,
       "surface_warning_threshold": 120
     },
     "paper_coverage_required": true,
     "proposition_spec_proofs": {
-      "appendixTheorem2Eq8CausalStoppingSourceSpec": "appendix_theorem2_eq8_causal_stopping_source_model",
-      "lemma1CalendarTimeDurationSourceObservedProcessSpec": "lemma1_calendar_time_duration_source_observed_process",
-      "lemma2ForwardSelectedStartExponentialTailSpec": "lemma2_forward_selected_start_exponential_tail",
-      "proposition1CalendarTimeHomogeneousSourceSpec": "proposition1_calendar_time_homogeneous_source_nonidentifiability"
+      "sourceEquation2PoissonCountPMFSpec": "sourceEquation2PoissonCountPMF",
+      "sourceEquation3MaximumLikelihoodEstimateSpec": "sourceEquation3MaximumLikelihoodEstimate",
+      "sourceEquation6PoissonRegressionLikelihoodSpec": "sourceEquation6PoissonRegressionLikelihood",
+      "sourceHomogeneousReportingDelayMeanSpec": "sourceHomogeneousReportingDelayMean",
+      "sourceLemma1CalendarTimeDurationObservedProcessSpec": "sourceLemma1CalendarTimeDurationObservedProcess",
+      "sourceProposition1CalendarTimeNonidentifiabilitySpec": "sourceProposition1CalendarTimeNonidentifiability",
+      "sourceTheorem1LikelihoodDecompositionSpec": "sourceTheorem1LikelihoodDecomposition",
+      "sourceZeroInflatedLikelihoodExtensionSpec": "sourceZeroInflatedLikelihoodExtension"
     },
     "quarantined_auxiliary_names": [
-      "theorem1_process_law_case_product_from_poisson_increment_laws_of_exists_pos_exposure",
-      "lemma1_steady_state_duration_cumulative_intensity_birth_cohort_process",
-      "lemma1_steady_state_duration_source_observed_process",
-      "proposition1_steady_state_duration_source_exists_nonidentifiability"
+      "theorem1_process_law_case_product_from_poisson_increment_laws_of_exists_pos_exposure"
     ],
     "quarantined_auxiliary_source_reasons": {
       "LBG24SpatialUnderreporting.lemma1_steady_state_duration_cumulative_intensity_birth_cohort_process": "This historical birth-cohort support route is retained for internal Lean navigation only. The paper-facing Lemma 1 and Proposition 1 review uses the calendar-time first-report route, so this declaration cannot supply source credit or appear on the human review surface.",
@@ -525,93 +532,24 @@
     },
     "slices": [
       {
-        "id": "source_formulas_and_lemma1",
-        "label": "Source formulas and Lemma 1",
+        "id": "main_text",
         "names": [
-          "homogeneous_reporting_delay_mean_formula",
-          "equation2_poisson_count_pmf_formula",
-          "first_report_probability_formula",
-          "lemma1_continuous_duration_first_report_probability_integral",
-          "lemma1_continuous_duration_observed_rate_integral",
-          "lemma1_nonhomogeneous_first_report_probability_integral",
-          "lemma1_nonhomogeneous_observed_rate_integral",
-          "lemma1CalendarTimeDurationSourceObservedProcessSpec",
-          "lemma1_calendar_time_duration_source_observed_process"
-        ]
+          "sourceHomogeneousReportingDelayMeanSpec",
+          "sourceLemma1CalendarTimeDurationObservedProcessSpec",
+          "sourceProposition1CalendarTimeNonidentifiabilitySpec",
+          "sourceTheorem1LikelihoodDecompositionSpec",
+          "sourceEquation3MaximumLikelihoodEstimateSpec",
+          "sourceEquation6PoissonRegressionLikelihoodSpec",
+          "sourceZeroInflatedLikelihoodExtensionSpec"
+        ],
+        "title": "Main-text models, definitions, and results"
       },
       {
-        "id": "lemma2_and_proposition1",
-        "label": "Lemma 2 and Proposition 1",
+        "id": "additional_source_results",
         "names": [
-          "lemma2ForwardSelectedStartExponentialTailSpec",
-          "lemma2_forward_selected_start_exponential_tail",
-          "appendix_shifted_poisson_after_first_jump",
-          "proposition1_calendar_time_duration_source_count_lln",
-          "proposition1_calendar_time_homogeneous_source_count_lln",
-          "proposition1CalendarTimeHomogeneousSourceSpec",
-          "proposition1_calendar_time_homogeneous_source_nonidentifiability"
-        ]
-      },
-      {
-        "id": "likelihood_and_appendix_theorem2",
-        "label": "Theorem 1 and Appendix Theorem 2",
-        "names": [
-          "appendixTheorem2Eq8CausalStoppingSourceSpec",
-          "appendix_theorem2_eq8_causal_stopping_source_model"
-        ]
-      },
-      {
-        "id": "empirical_likelihood_and_windows",
-        "label": "Empirical likelihood and preprocessing windows",
-        "names": [
-          "theorem2_observed_window_data_definition",
-          "equation3_mle_formula",
-          "equation3_mle_global_logLikelihood_max",
-          "equation3_mle_global_logLikelihood_max_zero_count",
-          "equation5_poisson_regression_rate_formula",
-          "equation6_poisson_regression_likelihood_formula",
-          "equation7_zero_inflated_likelihood_zero",
-          "equation7_zero_inflated_likelihood_positive_count",
-          "equation33_nyc_observation_end",
-          "equation33_nyc_preprocessing_endpoint_is_stopping_time",
-          "equation34_chicago_observation_end"
-        ]
-      },
-      {
-        "id": "auxiliary_lines_01",
-        "label": "Auxiliary proof-facing rows 1",
-        "line_end": 2063,
-        "line_start": 1
-      },
-      {
-        "id": "auxiliary_lines_02",
-        "label": "Auxiliary proof-facing rows 2",
-        "line_end": 3596,
-        "line_start": 2064
-      },
-      {
-        "id": "auxiliary_lines_03",
-        "label": "Auxiliary proof-facing rows 3",
-        "line_end": 5216,
-        "line_start": 3597
-      },
-      {
-        "id": "auxiliary_lines_04",
-        "label": "Auxiliary proof-facing rows 4",
-        "line_end": 7502,
-        "line_start": 5217
-      },
-      {
-        "id": "auxiliary_lines_05",
-        "label": "Auxiliary proof-facing rows 5",
-        "line_end": 9072,
-        "line_start": 7503
-      },
-      {
-        "id": "auxiliary_lines_06",
-        "label": "Auxiliary proof-facing rows 6",
-        "line_end": 999999,
-        "line_start": 9073
+          "sourceEquation2PoissonCountPMFSpec"
+        ],
+        "title": "Additional source results"
       }
     ],
     "source_component_statement_routes": [
@@ -639,6 +577,17 @@
         "source_item": "lemma1_process_thinning_and_detection_rate",
         "source_location": "cited publication:1511-1515"
       }
+    ],
+    "source_condition_items": [
+      "source_incident_birth_death_model",
+      "source_reporting_process_model",
+      "equation4_equation5_poisson_regression_rate_formula",
+      "condition1_selected_start",
+      "condition2_endpoint_selection",
+      "equation33_nyc_observation_end",
+      "equation34_chicago_observation_end",
+      "source_lemma1_reporting_duration_primitives",
+      "source_zero_inflated_incident_model"
     ],
     "source_file": "papers/LBG24SpatialUnderreporting/PaperInterface.lean",
     "source_proof_fidelity_review": {

@@ -173,6 +173,21 @@ class CloseoutExecutionStateTests(unittest.TestCase):
             assert active is not None
             self.assertEqual(active["paper"], "Fixture")
 
+            lease.heartbeat(
+                stage="primary_paper_gate",
+                completed_units=3,
+                total_units=8,
+                cache_hits=2,
+                cache_misses=1,
+                details={"status": "started"},
+            )
+            running, heartbeat_error = read_execution_state(state_path)
+            self.assertEqual(heartbeat_error, "")
+            assert running is not None
+            self.assertEqual(running["progress"]["stage"], "primary_paper_gate")
+            self.assertEqual(running["progress"]["completed_units"], 3)
+            self.assertIn("heartbeat_at", running["progress"])
+
             duplicate, duplicate_error = CloseoutExecutionLease.acquire(
                 state_path,
                 paper="Fixture",
@@ -192,6 +207,7 @@ class CloseoutExecutionStateTests(unittest.TestCase):
             self.assertEqual(payload["state"], "complete")
             self.assertFalse(payload["acceptance_credential"])
             self.assertTrue(payload["result"]["semantic_closeout_passed"])
+            self.assertNotIn("progress", payload)
             self.assertTrue(lease.lock_path.exists())
             self.assertFalse(execution_lock_is_held(state_path))
             self.assertIsNone(running_execution_summary(state_path))

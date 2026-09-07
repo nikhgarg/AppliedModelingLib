@@ -27,7 +27,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 /-- The total fixed-fibre policy-law representative for a voluntary
 active-branch source profile.  Its equilibrium index is the actual selected

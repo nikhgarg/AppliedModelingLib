@@ -52,65 +52,39 @@ except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
     )
 
 try:
-    from scripts.source_record_schema4_to5_migration import (
-        copy_loaded_source_record_schema4_to5_migration_item,
-        is_loaded_source_record_schema4_to5_migration_item,
-        load_current_source_record_schema4_to5_migration_items,
-        source_record_schema4_to5_migration_item_has_provenance,
-    )
+    from scripts.formalization_protocol import CURRENT_SOURCE_RECORD_PROMPT_VERSION
 except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from source_record_schema4_to5_migration import (
-        copy_loaded_source_record_schema4_to5_migration_item,
-        is_loaded_source_record_schema4_to5_migration_item,
-        load_current_source_record_schema4_to5_migration_items,
-        source_record_schema4_to5_migration_item_has_provenance,
-    )
+    from formalization_protocol import CURRENT_SOURCE_RECORD_PROMPT_VERSION
 
 try:
-    from scripts.source_record_differential_revalidation import (
-        _raw_item_groups as source_record_raw_item_groups,
-        copy_loaded_source_record_differential_revalidation_item,
-        is_loaded_source_record_differential_revalidation_item,
-        load_current_source_record_differential_revalidation_items,
-        source_record_differential_revalidation_item_has_provenance,
+    from scripts.source_record_obligation_groups import (
+        raw_source_record_obligation_groups,
     )
 except ModuleNotFoundError:  # pragma: no cover - supports direct-script imports.
-    from source_record_differential_revalidation import (
-        _raw_item_groups as source_record_raw_item_groups,
-        copy_loaded_source_record_differential_revalidation_item,
-        is_loaded_source_record_differential_revalidation_item,
-        load_current_source_record_differential_revalidation_items,
-        source_record_differential_revalidation_item_has_provenance,
+    from source_record_obligation_groups import (
+        raw_source_record_obligation_groups,
     )
 
 try:
-    from scripts.source_record_attested_selected_reuse import (
-        copy_loaded_source_record_attested_selected_reuse_item,
-        is_loaded_source_record_attested_selected_reuse_item,
-        load_current_attested_selected_semantic_reuse_items,
-        source_record_attested_selected_reuse_item_has_provenance,
+    from scripts.source_record_archived_transports import (
+        archived_source_record_transport_artifacts,
+        archived_source_record_transport_item_field,
     )
 except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from source_record_attested_selected_reuse import (
-        copy_loaded_source_record_attested_selected_reuse_item,
-        is_loaded_source_record_attested_selected_reuse_item,
-        load_current_attested_selected_semantic_reuse_items,
-        source_record_attested_selected_reuse_item_has_provenance,
+    from source_record_archived_transports import (
+        archived_source_record_transport_artifacts,
+        archived_source_record_transport_item_field,
     )
 
 try:
-    from scripts.source_record_historical_descriptor_migration import (
-        copy_loaded_source_record_historical_descriptor_migration_item,
-        is_loaded_source_record_historical_descriptor_migration_item,
-        load_current_source_record_historical_descriptor_migration_items,
-        source_record_historical_descriptor_migration_item_has_provenance,
+    from scripts.source_record_overlay_protocol import (
+        serialized_source_record_overlay_labels,
+        source_record_overlay_labels_with_artifacts,
     )
 except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from source_record_historical_descriptor_migration import (
-        copy_loaded_source_record_historical_descriptor_migration_item,
-        is_loaded_source_record_historical_descriptor_migration_item,
-        load_current_source_record_historical_descriptor_migration_items,
-        source_record_historical_descriptor_migration_item_has_provenance,
+    from source_record_overlay_protocol import (
+        serialized_source_record_overlay_labels,
+        source_record_overlay_labels_with_artifacts,
     )
 
 try:
@@ -195,6 +169,17 @@ except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
         theorem_facing_semantic_restriction_status,
         theorem_realization_component_contract_errors,
         theorem_realization_components,
+    )
+
+try:
+    from scripts.source_claim_atom_schema import (
+        graph_native_source_spec_realization_identity_sha256,
+        source_claim_atoms_semantic_sha256,
+    )
+except ModuleNotFoundError:  # pragma: no cover - supports direct-script imports.
+    from source_claim_atom_schema import (
+        graph_native_source_spec_realization_identity_sha256,
+        source_claim_atoms_semantic_sha256,
     )
 
 try:
@@ -325,7 +310,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PAPERS = ROOT / "papers"
 HELPER = ROOT / "skills" / "econcs-formalizer" / "scripts" / "source_record_audit.py"
 FULLY_FORMALIZED_STATUSES = {"formalized", "formalized with caveat"}
-SOURCE_RECORD_PROMPT_VERSION = "source-record-v10-semantic-conclusion-boundary-contract"
+SOURCE_RECORD_PROMPT_VERSION = CURRENT_SOURCE_RECORD_PROMPT_VERSION
 _CONTEXT_OVERRIDE_UNSET = object()
 RESTRICTED_SUBTYPE_DOMAIN_CONTEXT_KIND = "restricted_subtype_domain"
 TRANSPARENT_SUBTYPE_DOMAIN_CONTEXT_SCHEMA = 1
@@ -386,8 +371,11 @@ class SourceRecordAuditSnapshot:
     :func:`load_source_record_audit_snapshot`.  A canonical snapshot retains
     its source path so the conclusion gate can reject a concurrent replacement
     before returning a result.  ``identity_validated`` is issued only by this
-    module after the ordinary current-source identity replay succeeds; it is
-    neither persisted nor a substitute for that replay.
+    module after the ordinary current-source identity replay succeeds.
+    ``structural_v11_validated`` is a separate capability that exposes the
+    payload only as recursive inventory after current v11 semantics and
+    theorem realization pass; it never authenticates historical judgments.
+    Neither capability is persisted or inferred from serialized fields.
     """
 
     paper: str
@@ -411,6 +399,7 @@ class SourceRecordAuditSnapshot:
     input_raw_bytes_override: Mapping[Path, bytes | None] | None = None
     _content_binding_token: object | None = None
     _identity_validation_token: object | None = None
+    _structural_v11_validation_token: object | None = None
 
     @property
     def identity_validated(self) -> bool:
@@ -427,6 +416,16 @@ class SourceRecordAuditSnapshot:
         """Whether the payload was parsed by the exact-byte snapshot loader."""
 
         binding = self._content_binding_token
+        return (
+            isinstance(binding, _SourceRecordSnapshotBinding)
+            and binding.snapshot is self
+        )
+
+    @property
+    def structural_v11_validated(self) -> bool:
+        """Whether v11 issued this raw payload as structural inventory only."""
+
+        binding = self._structural_v11_validation_token
         return (
             isinstance(binding, _SourceRecordSnapshotBinding)
             and binding.snapshot is self
@@ -455,6 +454,7 @@ def _issued_source_record_audit_snapshot(
     auxiliary_routing_context_error_override: str | None = None,
     input_raw_bytes_override: Mapping[Path, bytes | None] | None = None,
     identity_validated: bool = False,
+    structural_v11_validated: bool = False,
     payload_is_immutable: bool = False,
 ) -> SourceRecordAuditSnapshot:
     """Issue an exact-object-bound snapshot capability."""
@@ -473,6 +473,9 @@ def _issued_source_record_audit_snapshot(
     content_binding = _SourceRecordSnapshotBinding()
     identity_binding = (
         _SourceRecordSnapshotBinding() if identity_validated else None
+    )
+    structural_v11_binding = (
+        _SourceRecordSnapshotBinding() if structural_v11_validated else None
     )
     frozen_input_raw_bytes = (
         MappingProxyType(
@@ -512,10 +515,13 @@ def _issued_source_record_audit_snapshot(
         input_raw_bytes_override=frozen_input_raw_bytes,
         _content_binding_token=content_binding,
         _identity_validation_token=identity_binding,
+        _structural_v11_validation_token=structural_v11_binding,
     )
     content_binding.snapshot = snapshot
     if identity_binding is not None:
         identity_binding.snapshot = snapshot
+    if structural_v11_binding is not None:
+        structural_v11_binding.snapshot = snapshot
     return snapshot
 
 
@@ -947,9 +953,24 @@ def source_record_audit_snapshot_from_bytes(
     )
 
 
+def _loaded_evidence_integrity_callable(name: str) -> object | None:
+    """Return one already loaded policy gate, independent of context ownership."""
+
+    for module_name in (
+        "scripts.audit_evidence_integrity",
+        "audit_evidence_integrity",
+    ):
+        candidate = getattr(sys.modules.get(module_name), name, None)
+        if callable(candidate):
+            return candidate
+    return None
+
+
 def source_record_audit_snapshot_from_evidence_context(
     paper: str,
     context: object,
+    *,
+    structural_v11_prevalidated: bool = False,
 ) -> tuple[SourceRecordAuditSnapshot | None, str]:
     """Transfer one already validated exact evidence snapshot without reparsing.
 
@@ -983,9 +1004,15 @@ def source_record_audit_snapshot_from_evidence_context(
         return None, "evidence context was not issued by the exact snapshot builder"
     if context.folder != (PAPERS / paper).resolve():
         return None, "evidence context belongs to a different paper"
+    legacy_state = getattr(context, "legacy_source_record_state", None)
+    if legacy_state is None:
+        return None, "evidence context did not select the legacy source-record lane"
+    legacy_inputs = getattr(legacy_state, "inputs", None)
+    audit_snapshot = getattr(legacy_inputs, "audit_snapshot", None)
+    match_snapshot = getattr(legacy_inputs, "match_snapshot", None)
     configured_path_errors = (
-        ("source-record audit", context.audit_path_error),
-        ("source-record judgment", context.match_path_error),
+        ("source-record audit", getattr(legacy_inputs, "audit_path_error", "")),
+        ("source-record judgment", getattr(legacy_inputs, "match_path_error", "")),
         ("source-proof fidelity ledger", context.source_proof_fidelity_path_error),
     )
     for label, path_error in configured_path_errors:
@@ -994,35 +1021,46 @@ def source_record_audit_snapshot_from_evidence_context(
                 f"evidence context has an invalid configured {label} path: "
                 + path_error
             )
-    if context.administrative_projection_rebind_error:
+    if legacy_state.administrative_projection_rebind_error:
         return None, (
             "evidence context has an invalid administrative projection rebind: "
-            + context.administrative_projection_rebind_error
+            + legacy_state.administrative_projection_rebind_error
         )
-    if context.source_record_identity_error:
+    structural_v11_current = False
+    if legacy_state.source_record_identity_error and structural_v11_prevalidated:
+        v11_state = _loaded_evidence_integrity_callable(
+            "v11_direct_semantic_review_state"
+        )
+        if callable(v11_state):
+            structural_v11_current, _v11_error = v11_state(
+                context.folder,
+                context.status,
+                context=context,
+            )
+    if legacy_state.source_record_identity_error and not structural_v11_current:
         return None, (
             "evidence context has no current source-record identity: "
-            + context.source_record_identity_error
+            + legacy_state.source_record_identity_error
         )
-    payload = context.audit_payload
-    digest = context.audit_snapshot.sha256 or ""
+    payload = getattr(audit_snapshot, "payload", None)
+    digest = getattr(audit_snapshot, "sha256", None) or ""
     if not isinstance(payload, dict) or not re.fullmatch(r"[0-9a-f]{64}", digest):
         return None, "evidence context has no exact source-record payload"
     if str(payload.get("paper") or "").strip() != paper:
         return None, "evidence source-record payload belongs to a different paper"
     administrative_rebind = _normalized_administrative_projection_rebind(
-        context.administrative_projection_rebind
+        legacy_state.administrative_projection_rebind
     )
     if (
-        context.administrative_projection_rebind is not None
+        legacy_state.administrative_projection_rebind is not None
         and administrative_rebind is None
     ):
         return None, "evidence context has a malformed administrative projection rebind"
     regularity_context = _normalized_configured_assumption_regularity_context(
-        context.configured_assumption_regularity_context
+        legacy_state.configured_assumption_regularity_context
     )
     if (
-        context.configured_assumption_regularity_context is not None
+        legacy_state.configured_assumption_regularity_context is not None
         and regularity_context is None
     ):
         return None, "evidence context has a malformed configured-assumption regularity context"
@@ -1031,14 +1069,20 @@ def source_record_audit_snapshot_from_evidence_context(
             paper=paper,
             payload=payload,
             source_file_sha256=digest,
-            source_path=context.audit_snapshot.path,
+            source_path=getattr(audit_snapshot, "path", None),
             paper_statement_map_sha256=context.paper_statement_map_sha256,
-            source_record_match_path=context.match_snapshot.path,
-            source_record_match_sha256=context.match_snapshot.sha256 or "",
-            current_judgments_override=context.current_source_record_judgments,
+            source_record_match_path=getattr(match_snapshot, "path", None),
+            source_record_match_sha256=(
+                getattr(match_snapshot, "sha256", None) or ""
+            ),
+            current_judgments_override=(
+                {}
+                if structural_v11_current
+                else legacy_state.current_source_record_judgments
+            ),
             status_payload_override=context.status_payload,
             paper_statement_map_override=context.statement_map,
-            corrected_scope_current_override=context.corrected_scope_current,
+            corrected_scope_current_override=legacy_state.corrected_scope_current,
             administrative_projection_rebind_override=(
                 administrative_rebind
             ),
@@ -1046,19 +1090,20 @@ def source_record_audit_snapshot_from_evidence_context(
                 regularity_context
             ),
             configured_assumption_regularity_context_error_override=(
-                context.configured_assumption_regularity_context_error
+                legacy_state.configured_assumption_regularity_context_error
             ),
             auxiliary_routing_context_override=(
-                context.auxiliary_routing_context
+                legacy_state.auxiliary_routing_context
             ),
             auxiliary_routing_context_error_override=(
-                context.auxiliary_routing_context_error
+                legacy_state.auxiliary_routing_context_error
             ),
             input_raw_bytes_override={
                 input_snapshot.path.resolve(): input_snapshot.raw_bytes
                 for input_snapshot in context.input_snapshots
             },
-            identity_validated=True,
+            identity_validated=not structural_v11_current,
+            structural_v11_validated=structural_v11_current,
             payload_is_immutable=True,
         ),
         "",
@@ -1139,31 +1184,22 @@ def selector_certificate_finding_message(item: dict[str, Any]) -> str:
     )
 
 
+def _authenticated_overlay_union_module() -> Any:
+    """Load the shared transport authority only when current evidence needs it."""
+
+    try:
+        from scripts import source_record_authenticated_overlay_union as overlay_union
+    except ModuleNotFoundError:  # pragma: no cover - direct-script fallback.
+        import source_record_authenticated_overlay_union as overlay_union
+    return overlay_union
+
+
 def _copy_loaded_source_record_overlay_item(
     value: Mapping[str, Any], updates: Mapping[str, Any] | None = None
 ) -> dict[str, Any]:
-    scoped_rebind = _scoped_receipt_rebind_module()
-    if scoped_rebind.is_loaded_source_record_scoped_receipt_rebind_item(value):
-        return scoped_rebind.copy_loaded_source_record_scoped_receipt_rebind_item(
-            value, updates
-        )
-    if is_loaded_source_record_historical_descriptor_migration_item(value):
-        return copy_loaded_source_record_historical_descriptor_migration_item(value, updates)
-    if is_loaded_source_record_attested_selected_reuse_item(value):
-        return copy_loaded_source_record_attested_selected_reuse_item(value, updates)
-    if is_loaded_source_record_differential_revalidation_item(value):
-        return copy_loaded_source_record_differential_revalidation_item(value, updates)
-    return copy_loaded_source_record_schema4_to5_migration_item(value, updates)
-
-
-def _scoped_receipt_rebind_module() -> Any:
-    """Load the explicit legacy scoped-receipt exception only at consumption."""
-
-    try:
-        from scripts import source_record_scoped_receipt_rebind as scoped_rebind
-    except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
-        import source_record_scoped_receipt_rebind as scoped_rebind
-    return scoped_rebind
+    return _authenticated_overlay_union_module().copy_loader_authenticated_or_plain_current_item(
+        value, updates
+    )
 
 
 def _project_current_source_record_response_association_pins(
@@ -1183,7 +1219,7 @@ def _project_current_source_record_response_association_pins(
     logic and delegates pin construction to the shared raw-group projector.
     """
 
-    groups, group_errors = source_record_raw_item_groups(audit_payload)
+    groups, group_errors = raw_source_record_obligation_groups(audit_payload)
     if group_errors:
         return {}
     projected_current: dict[str, dict[str, Any]] = {}
@@ -1241,17 +1277,24 @@ def _current_judgments_from_payload(
     payload: dict[str, Any],
     *,
     paper_dir: Path | None = None,
-    allow_schema4_to5_migration: bool = False,
-    allow_differential_revalidation: bool = False,
-    allow_attested_selected_reuse: bool = False,
-    allow_historical_descriptor_migration: bool = False,
-    allow_scoped_receipt_rebind: bool = False,
+    authenticated_overlay_lane: object | None = None,
 ) -> dict[str, dict[str, Any]]:
     if payload.get("schema") != 1 or payload.get("paper") not in {None, paper}:
         return {}
     raw_items = payload.get("items") or payload.get("field_judgments") or {}
     if not isinstance(raw_items, dict):
         return {}
+    overlay_union = None
+    if authenticated_overlay_lane is not None:
+        overlay_union = _authenticated_overlay_union_module()
+        if (
+            not isinstance(
+                authenticated_overlay_lane,
+                overlay_union.AuthenticatedCurrentOverlayLane,
+            )
+            or raw_items is not authenticated_overlay_lane.items
+        ):
+            return {}
     required_prompt_version = str(audit_payload.get("prompt_version") or "").strip()
     required_audit_digest = str(audit_payload.get("source_record_audit_sha256") or "").strip()
     required_item_digests = current_item_digests(audit_payload)
@@ -1262,54 +1305,26 @@ def _current_judgments_from_payload(
     payload_timestamp = payload.get("validated_at") or payload.get("timestamp") or payload.get(
         "generated_at"
     )
-    scoped_rebind = _scoped_receipt_rebind_module()
     out: dict[str, dict[str, Any]] = {}
     for key, value in raw_items.items():
         if not isinstance(value, dict):
             continue
+        if archived_source_record_transport_item_field(value):
+            continue
         raw_key = str(key)
-        migrated_overlay_entry = is_loaded_source_record_schema4_to5_migration_item(value)
-        differential_overlay_entry = (
-            is_loaded_source_record_differential_revalidation_item(value)
-        )
-        attested_selected_reuse_entry = (
-            is_loaded_source_record_attested_selected_reuse_item(value)
-        )
-        historical_descriptor_entry = (
-            is_loaded_source_record_historical_descriptor_migration_item(value)
-        )
-        scoped_receipt_entry = (
-            scoped_rebind.is_loaded_source_record_scoped_receipt_rebind_item(value)
-        )
-        loaded_overlay_entry = (
-            migrated_overlay_entry
-            or differential_overlay_entry
-            or attested_selected_reuse_entry
-            or historical_descriptor_entry
-            or scoped_receipt_entry
-        )
-        if (
-            (
-                source_record_schema4_to5_migration_item_has_provenance(value)
-                or source_record_differential_revalidation_item_has_provenance(value)
-                or source_record_attested_selected_reuse_item_has_provenance(value)
-                or source_record_historical_descriptor_migration_item_has_provenance(value)
-                or scoped_rebind.source_record_scoped_receipt_rebind_item_has_provenance(
-                    value
-                )
+        loaded_overlay_entry = bool(
+            authenticated_overlay_lane is not None
+            and overlay_union is not None
+            and overlay_union.authenticated_current_overlay_item(
+                authenticated_overlay_lane, value
             )
-            and not loaded_overlay_entry
+        )
+        if authenticated_overlay_lane is not None and not loaded_overlay_entry:
+            continue
+        if (
+            authenticated_overlay_lane is None
+            and serialized_source_record_overlay_labels(value)
         ):
-            continue
-        if migrated_overlay_entry and not allow_schema4_to5_migration:
-            continue
-        if differential_overlay_entry and not allow_differential_revalidation:
-            continue
-        if attested_selected_reuse_entry and not allow_attested_selected_reuse:
-            continue
-        if historical_descriptor_entry and not allow_historical_descriptor_migration:
-            continue
-        if scoped_receipt_entry and not allow_scoped_receipt_rebind:
             continue
         item_prompt_version = str(
             value.get("prompt_version") or payload_prompt_version
@@ -1384,6 +1399,8 @@ def current_judgments(paper: str, audit_payload: dict[str, Any]) -> dict[str, di
     """Load ordinary judgments plus authenticated narrow-reuse overlays."""
 
     folder = PAPERS / paper
+    if archived_source_record_transport_artifacts(folder):
+        return {}
     path = folder / "audit" / "source_record_match_llm.json"
     if not path.exists():
         path = folder / "source_record_match_llm.json"
@@ -1391,64 +1408,32 @@ def current_judgments(paper: str, audit_payload: dict[str, Any]) -> dict[str, di
     ordinary = _current_judgments_from_payload(
         paper, audit_payload, sidecar_payload, paper_dir=folder
     )
-    migrated_items = load_current_source_record_schema4_to5_migration_items(
-        folder, paper, audit_payload
+    consumed_overlay_labels = (
+        "differential",
+        "semantic_rebind",
     )
-    migrated: dict[str, dict[str, Any]] = {}
-    if migrated_items:
-        migrated = _current_judgments_from_payload(
-            paper,
-            audit_payload,
-            {"schema": 1, "paper": paper, "items": migrated_items},
-            allow_schema4_to5_migration=True,
-        )
-    differential_items = load_current_source_record_differential_revalidation_items(
-        folder, paper, audit_payload
+    present_overlay_labels = source_record_overlay_labels_with_artifacts(
+        folder, lane_labels=consumed_overlay_labels
     )
-    differential: dict[str, dict[str, Any]] = {}
-    if differential_items:
-        differential = _current_judgments_from_payload(
-            paper,
-            audit_payload,
-            {"schema": 1, "paper": paper, "items": differential_items},
-            allow_differential_revalidation=True,
-        )
-    attested_selected_reuse_items = load_current_attested_selected_semantic_reuse_items(
-        folder, paper, audit_payload
-    )
-    attested_selected_reuse: dict[str, dict[str, Any]] = {}
-    if attested_selected_reuse_items:
-        attested_selected_reuse = _current_judgments_from_payload(
-            paper,
-            audit_payload,
-            {"schema": 1, "paper": paper, "items": attested_selected_reuse_items},
-            allow_attested_selected_reuse=True,
-        )
-    historical_descriptor_items = (
-        load_current_source_record_historical_descriptor_migration_items(
-            folder, paper, audit_payload
-        )
-    )
-    historical_descriptor: dict[str, dict[str, Any]] = {}
-    if historical_descriptor_items:
-        historical_descriptor = _current_judgments_from_payload(
-            paper,
-            audit_payload,
-            {"schema": 1, "paper": paper, "items": historical_descriptor_items},
-            allow_historical_descriptor_migration=True,
-        )
-    scoped_rebind = _scoped_receipt_rebind_module()
-    scoped_receipt_items = scoped_rebind.load_current_source_record_scoped_receipt_rebind_items(
-        folder, paper, audit_payload
-    )
-    scoped_receipt: dict[str, dict[str, Any]] = {}
-    if scoped_receipt_items:
-        scoped_receipt = _current_judgments_from_payload(
-            paper,
-            audit_payload,
-            {"schema": 1, "paper": paper, "items": scoped_receipt_items},
-            allow_scoped_receipt_rebind=True,
-        )
+    overlay_current: dict[str, dict[str, dict[str, Any]]] = {}
+    if present_overlay_labels:
+        overlay_union = _authenticated_overlay_union_module()
+        try:
+            lanes = overlay_union.load_authenticated_current_overlay_lanes(
+                folder,
+                paper,
+                audit_payload,
+                lane_labels=present_overlay_labels,
+            )
+        except overlay_union.SourceRecordAuthenticatedOverlayUnionError:
+            return {}
+        for lane in lanes:
+            overlay_current[lane.label] = _current_judgments_from_payload(
+                paper,
+                audit_payload,
+                {"schema": 1, "paper": paper, "items": lane.items},
+                authenticated_overlay_lane=lane,
+            )
     # An overlay remains authoritative over stale ordinary evidence, but an
     # ordinary response carrying the exact current aggregate receipt is newer
     # evidence and wins over every overlay lane.
@@ -1461,14 +1446,9 @@ def current_judgments(paper: str, audit_payload: dict[str, Any]) -> dict[str, di
         == current_raw_digest
     }
     composed = {
-        # This narrow legacy exception remains below every established
-        # current/reissue lane on a collision.
-        **scoped_receipt,
-        **attested_selected_reuse,
-        **historical_descriptor,
+        **overlay_current.get("semantic_rebind", {}),
         **ordinary,
-        **migrated,
-        **differential,
+        **overlay_current.get("differential", {}),
         **ordinary_with_current_receipt,
     }
     if canonical_source_record_match_sidecar_path(path, folder):
@@ -2654,7 +2634,17 @@ def _current_direct_source_domain_correspondence_receipts(
                     ),
                 )
             )
-            if not direct_component_route and not transparent_spec_route:
+            authenticated_assumption_route = bool(
+                association.get("association_mode")
+                == SOURCE_ASSUMPTION_ASSOCIATION_ORIGIN
+                and association.get("semantic_contract_member_role")
+                == SOURCE_ASSUMPTION_ASSOCIATION_ROLE
+            )
+            if not (
+                direct_component_route
+                or transparent_spec_route
+                or authenticated_assumption_route
+            ):
                 continue
             effective_association = administrative_projection_rebound_association(
                 association, administrative_projection_rebind
@@ -2679,6 +2669,7 @@ def _current_direct_source_domain_correspondence_receipts(
             )
             direct_component_route = True
             transparent_spec_route = False
+            authenticated_assumption_route = False
 
         effective_parent_association = administrative_projection_rebound_association(
             raw_parent_association, administrative_projection_rebind
@@ -2706,6 +2697,13 @@ def _current_direct_source_domain_correspondence_receipts(
             if transparent_spec_route and transparent_spec_parent_receipt is not None
             else component_signature
         )
+        if authenticated_assumption_route and (
+            str(effective_parent_association.get("association_origin") or "").strip()
+            != SOURCE_ASSUMPTION_ASSOCIATION_ORIGIN
+            or str(effective_parent_association.get("role") or "").strip()
+            != SOURCE_ASSUMPTION_ASSOCIATION_ROLE
+        ):
+            continue
         component_semantic_sha = _sha256_value(
             effective_association.get(SEMANTIC_ASSOCIATION_SHA256_FIELD)
         )
@@ -2730,6 +2728,21 @@ def _current_direct_source_domain_correspondence_receipts(
 
         source_identities = effective_association.get("source_item_identities")
         if not isinstance(source_identities, list) or not source_identities:
+            continue
+        if authenticated_assumption_route and component_semantic_sha != (
+            semantic_association_record_digest(
+                [
+                    str(identity.get("source_semantic_sha256") or "")
+                    .strip()
+                    .lower()
+                    for identity in source_identities
+                    if isinstance(identity, Mapping)
+                ],
+                effective_association.get(
+                    "reviewed_elaborated_signature_identity"
+                ),
+            )
+        ):
             continue
         source_kinds_are_domain = True
         for raw_identity in source_identities:
@@ -2909,6 +2922,10 @@ def _strict_source_spec_receipts_by_key(
             or receipt.evidence_mode != "proves"
             or not receipt.semantic_shape.strip()
             or any(not re.fullmatch(r"[0-9a-f]{64}", digest) for digest in digests)
+            or receipt.authority not in {
+                "persisted_correspondence_v1",
+                "v11_graph_native_v1",
+            }
         ):
             continue
         existing = indexed.get(key)
@@ -2930,6 +2947,35 @@ def _strict_source_spec_runtime_matches_item(
     """Verify one in-memory Lean receipt against its exact current map row."""
 
     raw_contract = raw_item.get("semantic_contract")
+    if receipt.authority == "v11_graph_native_v1":
+        raw_atoms = raw_item.get("source_claim_atoms")
+        source_atoms_sha = source_claim_atoms_semantic_sha256(raw_atoms)
+        if (
+            raw_item.get("claim_bearing") is not True
+            or not isinstance(raw_contract, Mapping)
+            or not source_atoms_sha
+            or source_atoms_sha != receipt.source_atoms_sha256
+            or str(raw_contract.get("spec_declaration") or "").strip()
+            != receipt.spec_declaration
+            or str(raw_contract.get("evidence_declaration") or "").strip()
+            != receipt.evidence_declaration
+            or str(raw_contract.get("evidence_mode") or "").strip()
+            != receipt.evidence_mode
+            or str(raw_contract.get("semantic_shape") or "").strip()
+            != receipt.semantic_shape
+        ):
+            return False
+        expected_identity = graph_native_source_spec_realization_identity_sha256(
+            raw_contract,
+            source_atoms_sha256=source_atoms_sha,
+            spec_closure_sha256=receipt.spec_closure_sha256,
+            spec_surface_sha256=receipt.spec_surface_sha256,
+            closure_environment_sha256=receipt.closure_environment_sha256,
+        )
+        return bool(
+            expected_identity
+            and expected_identity == receipt.item_identity_sha256
+        )
     correspondence = raw_item.get("source_spec_correspondence")
     if (
         raw_item.get("claim_bearing") is not True
@@ -4024,26 +4070,6 @@ class TransparentSpecSemanticParentRoute:
 
     semantic_model_judgment_key: str
     evidence_declaration: str
-
-
-@dataclass(frozen=True)
-class OperationalOutcomeStateTransitionBinding:
-    """A complete source-bound result-local state/transition route.
-
-    Unlike ``SemanticModelRecordBinding``, neither the state nor the
-    transition is a caller-supplied model.  The component set is therefore
-    produced only after the exact conclusion telescope, semantic model review,
-    recursive field closures, Lean bridge, and bridge axiom closure all agree.
-    ``component_keys`` contains generated occurrence identities, never binder
-    labels or declaration-name classifications.
-    """
-
-    declaration_identity: tuple[str, str]
-    elaborated_signatures: frozenset[tuple[str, str]]
-    state_root: str
-    transition_root: str
-    component_keys: frozenset[str]
-    source_model_judgment_key: str
 
 
 def _generated_dependency_binder_names(item: Mapping[str, Any]) -> frozenset[str]:
@@ -5391,410 +5417,6 @@ def current_complete_semantic_model_record_bindings(
         for binding in candidate_bindings
         if counts[uniqueness_key(binding)] == 1
     )
-
-
-def current_complete_operational_outcome_state_transition_bindings(
-    paper: str,
-    audit_payload: Mapping[str, Any],
-    judgments: Mapping[str, dict[str, Any]],
-) -> tuple[OperationalOutcomeStateTransitionBinding, ...]:
-    """Retired compatibility hook; never grants source-domain credit.
-
-    Older artifacts carried a bespoke state/transition receipt whose field
-    layout could create theorem-realization correspondence credit. Canonical
-    closeout now derives correspondence only from the general elaborated Lean
-    dependency graph, so historical callers fail closed here.
-    """
-
-    return ()
-
-    _archived_implementation = r"""
-
-    folder = PAPERS / paper
-    statement_map = load_payload(folder / "audit" / "paper_statement_map.json")
-    source_proof_fidelity = audit_payload.get("source_proof_fidelity")
-    if not isinstance(statement_map, Mapping) or not isinstance(
-        source_proof_fidelity, Mapping
-    ):
-        return ()
-    status_payload = load_payload(folder / "status.json") or {}
-    if not theorem_realization_contract_active(
-        audit_payload, status_payload, statement_map, folder=folder
-    ):
-        # This route exists to produce v11 occurrence receipts.  Retaining a
-        # legacy classification-only approximation here would weaken the new
-        # route and make old payloads appear to have reviewed state fields.
-        return ()
-    status = str(status_payload.get("status") or "")
-    administrative_projection_rebind = current_administrative_projection_rebind_context(
-        paper, audit_payload, status_payload
-    )
-    raw_fields = audit_payload.get("recursive_field_items")
-    raw_semantic_items = audit_payload.get("semantic_model_items")
-    raw_dependencies = audit_payload.get("conclusion_dependency_items")
-    raw_theorem_inputs = audit_payload.get("theorem_facing_input_items")
-    expected_field_keys = audit_payload.get("expected_field_judgment_keys")
-    if (
-        not isinstance(raw_fields, list)
-        or not isinstance(raw_semantic_items, list)
-        or not isinstance(raw_dependencies, list)
-        or not isinstance(raw_theorem_inputs, list)
-        or not isinstance(expected_field_keys, list)
-    ):
-        return ()
-    field_items: dict[str, Mapping[str, Any]] = {}
-    for raw_field in raw_fields:
-        if not isinstance(raw_field, Mapping):
-            return ()
-        key = str(raw_field.get("judgment_key") or "").strip()
-        if not key or key in field_items:
-            return ()
-        field_items[key] = raw_field
-    expected = {str(key).strip() for key in expected_field_keys if str(key).strip()}
-    if not expected or not set(field_items).issubset(expected):
-        return ()
-    dependencies = [item for item in raw_dependencies if isinstance(item, Mapping)]
-    if len(dependencies) != len(raw_dependencies):
-        return ()
-    theorem_input_items: dict[str, Mapping[str, Any]] = {}
-    for raw_item in raw_theorem_inputs:
-        if not isinstance(raw_item, Mapping):
-            return ()
-        key = str(raw_item.get("judgment_key") or "").strip()
-        if not key or key in theorem_input_items:
-            return ()
-        theorem_input_items[key] = raw_item
-
-    judgment_path = folder / "audit" / "source_record_match_llm.json"
-    expected_item_digests = source_record_expected_item_digests(dict(audit_payload))
-    expected_item_digest_pins = source_record_expected_item_digest_pins(
-        dict(audit_payload)
-    )
-    source_item_semantic_sha256_by_key = _current_source_item_semantic_sha256_by_key(
-        statement_map
-    )
-    source_correction_identities = current_source_correction_identity_by_key(
-        statement_map, source_proof_fidelity
-    )
-    component_occurrences = theorem_realization_component_occurrence_index(
-        audit_payload
-    )
-    atom_receipts = current_source_claim_atom_receipts(audit_payload)
-    require_source_claim_atoms = bool(
-        statement_map.get("source_claim_atoms_schema") == 1
-    )
-    component_groups = theorem_realization_components_by_source_key(audit_payload)
-    recursive_field_components: dict[str, Mapping[str, Any]] = {}
-    conclusion_dependency_components: dict[str, Mapping[str, Any]] = {}
-    for source_key, components in component_groups.items():
-        field_components = [
-            component
-            for component in components
-            if str(component.get("source_component_section") or "").strip()
-            == "recursive_field_items"
-        ]
-        if len(field_components) == 1:
-            recursive_field_components[source_key] = field_components[0]
-        dependency_components = [
-            component
-            for component in components
-            if str(component.get("source_component_section") or "").strip()
-            == "conclusion_dependency_items"
-        ]
-        if len(dependency_components) == 1:
-            conclusion_dependency_components[source_key] = dependency_components[0]
-
-    current_source_disposition_keys: set[str] = set()
-    for section in (
-        "theorem_facing_input_items",
-        "boundary_input_items",
-        "conclusion_dependency_items",
-        "type_valued_certificate_result_items",
-        "recursive_field_items",
-    ):
-        raw_items = audit_payload.get(section)
-        if not isinstance(raw_items, list):
-            continue
-        for raw_item in raw_items:
-            if not isinstance(raw_item, Mapping):
-                continue
-            key = str(raw_item.get("judgment_key") or "").strip()
-            judgment = judgments.get(key)
-            if not key or not isinstance(judgment, Mapping):
-                continue
-            if source_input_target_disposition_errors(
-                raw_item,
-                judgment,
-                statement_map=statement_map,
-                source_proof_fidelity=source_proof_fidelity,
-                status=status,
-                administrative_projection_rebind=administrative_projection_rebind,
-            ):
-                continue
-            current_source_disposition_keys.add(key)
-
-    candidates: list[OperationalOutcomeStateTransitionBinding] = []
-    for raw_semantic in raw_semantic_items:
-        if not isinstance(raw_semantic, Mapping):
-            return ()
-        semantic_key = str(raw_semantic.get("judgment_key") or "").strip()
-        semantic_judgment = judgments.get(semantic_key)
-        semantic_identity = _reviewed_declaration_identity(dict(raw_semantic))
-        if (
-            not semantic_key
-            or not isinstance(semantic_judgment, Mapping)
-            or semantic_identity is None
-        ):
-            continue
-        semantic_signatures = _elaborated_signature_identities(
-            dict(raw_semantic), declaration=semantic_identity[0]
-        )
-        if not semantic_signatures:
-            continue
-        direct_route = _current_direct_semantic_model_route(
-            paper,
-            folder,
-            judgment_path,
-            raw_semantic,
-            semantic_judgment,
-            audit_payload=audit_payload,
-            statement_map=statement_map,
-            source_proof_fidelity=source_proof_fidelity,
-            administrative_projection_rebind=administrative_projection_rebind,
-        )
-        if direct_route is None:
-            continue
-        raw_association, association_sha256 = direct_route
-
-        route_candidates: list[
-            tuple[
-                tuple[str, str, int, int, int, int, int, int, str, str, str],
-                Mapping[str, Any],
-                Mapping[str, Any],
-            ]
-        ] = []
-        for state_item in dependencies:
-            for run_item in dependencies:
-                route = operational_outcome_state_transition_bridge_route(
-                    raw_semantic,
-                    semantic_judgment,
-                    qualified_declaration=semantic_identity[0],
-                    state_item=state_item,
-                    run_item=run_item,
-                )
-                if route is not None:
-                    route_candidates.append((route, state_item, run_item))
-        if len(route_candidates) != 1:
-            continue
-        route, state_item, run_item = route_candidates[0]
-        if not result_domain_has_checked_operational_outcome_route(
-            paper, audit_payload, judgments, run_item
-        ):
-            continue
-        (
-            _bridge,
-            _initial_witness,
-            _model_index,
-            _state_index,
-            _initial_index,
-            _terminal_index,
-            _run_index,
-            _terminal_predicate_index,
-            _model_root,
-            state_root,
-            transition_root,
-        ) = route
-        state_fields = _recursive_field_closure(field_items, judgments, state_root)
-        transition_fields = _recursive_field_closure(
-            field_items, judgments, transition_root
-        )
-        if (
-            not state_fields
-            or not transition_fields
-            or not state_fields.issubset(expected)
-            or not transition_fields.issubset(expected)
-        ):
-            continue
-        closure_fields = state_fields | transition_fields
-        state_component_key = str(state_item.get("judgment_key") or "").strip()
-        run_component_key = str(run_item.get("judgment_key") or "").strip()
-        state_component = conclusion_dependency_components.get(state_component_key)
-        run_component = conclusion_dependency_components.get(run_component_key)
-        if not state_component_key or not run_component_key or (
-            state_component is None or run_component is None
-        ):
-            continue
-        state_path = state_item.get("elaborated_result_path")
-        following_atoms = (
-            state_path.get("following_result_binder_atoms")
-            if isinstance(state_path, Mapping)
-            else None
-        )
-        if (
-            not isinstance(following_atoms, list)
-            or len(following_atoms) < 4
-            or not isinstance(following_atoms[0], Mapping)
-            or not isinstance(following_atoms[3], Mapping)
-        ):
-            continue
-        initial_component = _result_assumption_component_for_exact_atom(
-            raw_theorem_inputs,
-            component_groups,
-            declaration_identity=semantic_identity,
-            elaborated_signatures=semantic_signatures,
-            atom=dict(following_atoms[0]),
-        )
-        terminal_component = _result_assumption_component_for_exact_atom(
-            raw_theorem_inputs,
-            component_groups,
-            declaration_identity=semantic_identity,
-            elaborated_signatures=semantic_signatures,
-            atom=dict(following_atoms[3]),
-        )
-        initial_component_key = str(
-            initial_component.get("source_judgment_key") or ""
-        ).strip() if isinstance(initial_component, Mapping) else ""
-        terminal_component_key = str(
-            terminal_component.get("source_judgment_key") or ""
-        ).strip() if isinstance(terminal_component, Mapping) else ""
-        initial_item = theorem_input_items.get(initial_component_key)
-        terminal_item = theorem_input_items.get(terminal_component_key)
-        if (
-            initial_component is None
-            or terminal_component is None
-            or initial_item is None
-            or terminal_item is None
-        ):
-            continue
-        all_components = [
-            *[recursive_field_components.get(field_key) for field_key in closure_fields],
-            state_component,
-            initial_component,
-            run_component,
-            terminal_component,
-        ]
-        if any(component is None for component in all_components):
-            continue
-        if any(
-            not isinstance(judgments.get(field_key), Mapping)
-            or not _current_semantic_model_field_is_safe(
-                recursive_field_components[field_key],
-                judgments[field_key],
-                raw_semantic_parent_association=raw_association,
-                semantic_association_sha256=association_sha256,
-                semantic_convention_ids=frozenset(),
-                statement_map=statement_map,
-                source_proof_fidelity=source_proof_fidelity,
-                status=status,
-                source_model_judgment_key=semantic_key,
-                administrative_projection_rebind=administrative_projection_rebind,
-                source_item_semantic_sha256_by_key=(
-                    source_item_semantic_sha256_by_key
-                ),
-                current_source_disposition_keys=current_source_disposition_keys,
-                current_source_correction_identities=source_correction_identities,
-                current_component_sha256s_by_source_judgment_key=(
-                    component_occurrences
-                ),
-                current_source_claim_atom_receipts=atom_receipts,
-                require_source_claim_atom=require_source_claim_atoms,
-            )
-            for field_key in closure_fields
-        ):
-            continue
-        if any(
-            not isinstance(judgments.get(key), Mapping)
-            or not _current_semantic_model_field_is_safe(
-                item,
-                judgments[key],
-                raw_semantic_parent_association=raw_association,
-                semantic_association_sha256=association_sha256,
-                semantic_convention_ids=frozenset(),
-                statement_map=statement_map,
-                source_proof_fidelity=source_proof_fidelity,
-                status=status,
-                source_model_judgment_key=semantic_key,
-                administrative_projection_rebind=administrative_projection_rebind,
-                source_item_semantic_sha256_by_key=(
-                    source_item_semantic_sha256_by_key
-                ),
-                current_source_disposition_keys=current_source_disposition_keys,
-                current_source_correction_identities=source_correction_identities,
-                current_component_sha256s_by_source_judgment_key=(
-                    component_occurrences
-                ),
-                current_source_claim_atom_receipts=atom_receipts,
-                require_source_claim_atom=require_source_claim_atoms,
-            )
-            # The source-domain contract belongs to the generated occurrence,
-            # not its source parser input row.  Passing the latter loses the
-            # component hash that ties the receipt to this exact premise.
-            for key, item in (
-                (initial_component_key, initial_component),
-                (terminal_component_key, terminal_component),
-            )
-        ):
-            continue
-        generated_component_keys = {
-            str(component.get("judgment_key") or "").strip()
-            for component in all_components
-            if isinstance(component, Mapping)
-        }
-        if not generated_component_keys or len(generated_component_keys) != len(
-            all_components
-        ):
-            continue
-        candidates.append(
-            OperationalOutcomeStateTransitionBinding(
-                declaration_identity=semantic_identity,
-                elaborated_signatures=semantic_signatures,
-                state_root=state_root,
-                transition_root=transition_root,
-                component_keys=frozenset(generated_component_keys),
-                source_model_judgment_key=semantic_key,
-            )
-        )
-
-    # A repeated declaration/closure route is ambiguous even where its text
-    # happens to be identical.  Sidecar records must select a unique generated
-    # state/run occurrence rather than inheriting a first-match result.
-    counts: dict[
-        tuple[
-            tuple[str, str],
-            frozenset[tuple[str, str]],
-            str,
-            str,
-            frozenset[str],
-            str,
-        ],
-        int,
-    ] = {}
-    for binding in candidates:
-        identity = (
-            binding.declaration_identity,
-            binding.elaborated_signatures,
-            binding.state_root,
-            binding.transition_root,
-            binding.component_keys,
-            binding.source_model_judgment_key,
-        )
-        counts[identity] = counts.get(identity, 0) + 1
-    return tuple(
-        binding
-        for binding in candidates
-        if counts[
-            (
-                binding.declaration_identity,
-                binding.elaborated_signatures,
-                binding.state_root,
-                binding.transition_root,
-                binding.component_keys,
-                binding.source_model_judgment_key,
-            )
-        ]
-        == 1
-    )
-    """
 
 
 def _canonical_semantic_receipt_json(value: object) -> str | None:
@@ -7563,6 +7185,20 @@ def _audit_paper(
                 "source-record snapshot belongs to a different paper",
             )
         ]
+    if (
+        snapshot.structural_v11_validated
+        and not theorem_realization_component_prevalidated
+    ):
+        return [
+            Finding(
+                paper,
+                "<audit>",
+                "<source-record snapshot>",
+                (),
+                "structural-v11 source-record inventory lacks the primary "
+                "theorem-realization prevalidation capability",
+            )
+        ]
     mutation_error = (
         source_record_audit_snapshot_mutation_error(snapshot)
         if finalize_snapshot and evidence_context is None
@@ -7603,7 +7239,7 @@ def _audit_paper(
                 "source-record snapshot payload belongs to a different paper",
             )
         ]
-    if not snapshot.identity_validated:
+    if not snapshot.identity_validated and not snapshot.structural_v11_validated:
         statement_map_sha256 = current_paper_statement_map_sha256(paper_dir)
         identity_error = source_record_audit_identity_error(
             payload,
@@ -7718,19 +7354,25 @@ def _audit_paper(
                 ]
                 return findings
         findings = missing_configured_row_findings(paper, payload)
-        findings.extend(
-            reachable_paper_interface_auxiliary_findings(
-                paper,
-                payload,
-                folder=PAPERS / paper,
-                routing_context_override=(
-                    snapshot.auxiliary_routing_context_override
-                ),
-                routing_context_error_override=(
-                    snapshot.auxiliary_routing_context_error_override
-                ),
+        if not theorem_realization_component_prevalidated:
+            # A consolidated v11 closeout has already checked the exact
+            # expanded Specs, their paired proof endpoints, source atoms, and
+            # complete transitive realization components.  Requiring another
+            # source-map route merely because a reachable helper happens to
+            # live in PaperInterface would make code location semantic.
+            findings.extend(
+                reachable_paper_interface_auxiliary_findings(
+                    paper,
+                    payload,
+                    folder=PAPERS / paper,
+                    routing_context_override=(
+                        snapshot.auxiliary_routing_context_override
+                    ),
+                    routing_context_error_override=(
+                        snapshot.auxiliary_routing_context_error_override
+                    ),
+                )
             )
-        )
         findings.extend(omitted_direct_dependency_findings(paper, payload))
         findings.extend(
             source_premise_false_eliminator_findings(
@@ -7768,6 +7410,18 @@ def _audit_paper(
             statement_map if isinstance(statement_map, Mapping) else None,
             folder=PAPERS / paper,
         )
+        if snapshot.structural_v11_validated and not strict_component_contract:
+            findings.append(
+                Finding(
+                    paper,
+                    "<audit>",
+                    "<source-record snapshot>",
+                    (),
+                    "structural-v11 inventory is unavailable because the exact "
+                    "theorem-realization contract is not active",
+                )
+            )
+            return findings
         antecedent_keys = exact_source_antecedents(judgments)
         data_antecedent_keys = nonpropositional_source_data_antecedents(
             judgments, strict_realization=strict_component_contract
@@ -8022,13 +7676,8 @@ def _audit_paper(
             and evidence_context is not None
             and "findings" in locals()
         ):
-            evidence_module = sys.modules.get(
-                type(evidence_context).__module__
-            )
-            mutation_checker = getattr(
-                evidence_module,
-                "evidence_run_context_mutation_findings",
-                None,
+            mutation_checker = _loaded_evidence_integrity_callable(
+                "evidence_run_context_mutation_findings"
             )
             context_mutations = (
                 mutation_checker(evidence_context)
@@ -8078,8 +7727,35 @@ def audit_paper_for_consolidated_closeout_transaction(
     unfinalized result.
     """
 
+    if theorem_realization_component_prevalidated:
+        evidence_module = sys.modules.get(
+            "scripts.audit_evidence_integrity"
+        ) or sys.modules.get("audit_evidence_integrity")
+        if evidence_module is None:
+            if __package__:
+                from . import audit_evidence_integrity as evidence_module
+            else:  # pragma: no cover - direct script invocation.
+                import audit_evidence_integrity as evidence_module
+        receipt_validator = getattr(
+            evidence_module,
+            "has_current_v11_evidence_integrity_receipt",
+            None,
+        )
+        if callable(receipt_validator) and receipt_validator(evidence_context):
+            # The current v11 primary and evidence gates have already checked
+            # the exact source atoms, expanded semantic targets, typed
+            # result/proof contracts, direct definitions, complete Lean
+            # dependency graph, material prerequisites, source inventory, and
+            # axiom closure. The legacy conclusion pass is a projection of
+            # those same obligations from the superseded raw carrier.
+            return []
+
     snapshot, error = source_record_audit_snapshot_from_evidence_context(
-        paper, evidence_context
+        paper,
+        evidence_context,
+        structural_v11_prevalidated=(
+            theorem_realization_component_prevalidated
+        ),
     )
     if snapshot is None:
         return [

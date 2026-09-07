@@ -30,11 +30,9 @@
 
 \node[dag_model, right=of Def31] (Def51)
   {\textbf{Definition 5.1}\\single-minded bidder};
-\node[dag_result, below=of Def51] (Thm61Red)
-  {\textbf{Theorem 6.1}\\clique/graph/set-packing decision/allocation reductions};
-\node[dag_conditional, below=of Thm61Red] (Thm61Complexity)
-  {\textbf{Theorem 6.1}\\abstract NP/ZPP and class-note consequences};
-\node[dag_model, below=of Thm61Complexity] (Def71)
+\node[dag_partial, below=of Def51] (Thm61Red)
+  {\textbf{Theorem 6.1}\\native complexity conclusion\\(explicit zero-proof boundary)};
+\node[dag_model, below=of Thm61Red] (Def71)
   {\textbf{Definition 7.1}\\average amount per good and concrete order};
 \node[dag_model, below=of Def71] (GreedyAlloc)
   {\textbf{Greedy Allocation}\\explicit-order fold and feasibility};
@@ -66,7 +64,6 @@
 \draw[dag_arrow] (Thm41) -- (Prop42);
 \draw[dag_arrow] (Def31) -- (Def51);
 \draw[dag_arrow] (Def51) -- (Thm61Red);
-\draw[dag_dashed_arrow] (Thm61Red) -- (Thm61Complexity);
 \draw[dag_arrow] (Def51) -- (Def71);
 \draw[dag_arrow] (Def71) -- (GreedyAlloc);
 \draw[dag_arrow] (GreedyAlloc) -- (Thm72);

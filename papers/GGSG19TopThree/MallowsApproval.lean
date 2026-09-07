@@ -1,5 +1,5 @@
 import GGSG19TopThree.MainTheorems
-import EconCSLib.SocialChoice.Ranking.MallowsRankFactorization
+import AppliedModelingLib.SocialChoice.Ranking.MallowsRankFactorization
 
 open scoped BigOperators
 
@@ -7,8 +7,8 @@ namespace GGSG19TopThree
 
 noncomputable section
 
-open EconCSLib.SocialChoice.Ranking
-open EconCSLib.Probability
+open AppliedModelingLib.SocialChoice.Ranking
+open AppliedModelingLib.Probability
 
 /-!
 # Mallows Approval Examples
@@ -684,7 +684,7 @@ theorem mallowsRankFactorization_partition_eq_w3
       mallowsW3N3, Finset.sum_range_succ] at h
     exact h
   rw [fac.partition_eq, hfirst]
-  norm_num [candidateRankPowerSum, EconCSLib.SocialChoice.Ranking.Candidate,
+  norm_num [candidateRankPowerSum, AppliedModelingLib.SocialChoice.Ranking.Candidate,
     mallowsW3N4, Fin.sum_univ_eq_sum_range, Finset.sum_range_succ]
 
 private theorem mallowsW3N3_ne_zero_of_mallows (M : MallowsSpec 2) :
@@ -1022,14 +1022,14 @@ theorem mallowsFirstChoiceProb_3_eq
 
 /-- Mallows probability that `c` is last. -/
 def mallowsLastChoiceProb (M : MallowsSpec 2) (c : Candidate 2) : ℝ :=
-  EconCSLib.pmfProb M.law (fun π => c = mallowsLastChoice π)
+  AppliedModelingLib.pmfProb M.law (fun π => c = mallowsLastChoice π)
 
 /-- Last-position probabilities reduce to finite Mallows weights. -/
 theorem mallowsLastChoiceProb_eq_lastWeight_div_partition
     (M : MallowsSpec 2) (c : Candidate 2) :
     mallowsLastChoiceProb M c = mallowsLastWeight M c / M.partition := by
   classical
-  unfold mallowsLastChoiceProb EconCSLib.pmfProb EconCSLib.pmfExp mallowsLastWeight
+  unfold mallowsLastChoiceProb AppliedModelingLib.pmfProb AppliedModelingLib.pmfExp mallowsLastWeight
   calc
     ∑ π : Ranking 2, (M.law π).toReal *
         (if c = mallowsLastChoice π then (1 : ℝ) else 0)
@@ -1067,7 +1067,7 @@ def mallowsTopThreePairUpWeight
 /-- Probability of the `K = 3` approval up-event for an ordered pair. -/
 def mallowsTopThreePairUpProb
     (M : MallowsSpec 2) (hi lo : Candidate 2) : ℝ :=
-  EconCSLib.pmfProb M.law
+  AppliedModelingLib.pmfProb M.law
     (fun π =>
       rankOf π hi < (3 : Candidate 2) ∧ rankOf π lo = (3 : Candidate 2))
 
@@ -1077,7 +1077,7 @@ theorem mallowsTopThreePairUpProb_eq_weight_div_partition
     mallowsTopThreePairUpProb M hi lo =
       mallowsTopThreePairUpWeight M hi lo / M.partition := by
   classical
-  unfold mallowsTopThreePairUpProb EconCSLib.pmfProb EconCSLib.pmfExp
+  unfold mallowsTopThreePairUpProb AppliedModelingLib.pmfProb AppliedModelingLib.pmfExp
     mallowsTopThreePairUpWeight
   calc
     ∑ π : Ranking 2, (M.law π).toReal *
@@ -1117,7 +1117,7 @@ theorem mallowsTopThreePairUpProb_eq_kApprovalPairUpProb
       kApprovalPairUpProb M.law 3 hi lo := by
   rw [kApprovalPairUpProb_three_eq_rankOf_lastProb M.law hhi_lo]
   unfold mallowsTopThreePairUpProb
-  refine (EconCSLib.pmfProb_congr M.law ?_).trans rfl
+  refine (AppliedModelingLib.pmfProb_congr M.law ?_).trans rfl
   intro π
   constructor
   · intro h
@@ -1332,7 +1332,7 @@ Exact iid pairwise rate certificate for the concrete high-noise Mallows
 `K = 2` approval pivotal pair `(3,4)`.
 -/
 theorem mallowsHighNoiseW3K2_pair23_exact_rate_certificate_concrete :
-    EconCSLib.Probability.ExponentialRateCertificate
+    AppliedModelingLib.Probability.ExponentialRateCertificate
       (pairwiseScoringErrorProb mallowsHighNoiseW3Spec.law
         (fun π => kApprovalScore 2 π (2 : Candidate 2))
         (fun π => kApprovalScore 2 π (3 : Candidate 2)))
@@ -1369,7 +1369,7 @@ Exact iid pairwise rate certificate for the concrete high-noise Mallows
 `K = 1` approval pivotal pair `(3,4)`.
 -/
 theorem mallowsHighNoiseW3K1_pair23_exact_rate_certificate_concrete :
-    EconCSLib.Probability.ExponentialRateCertificate
+    AppliedModelingLib.Probability.ExponentialRateCertificate
       (pairwiseScoringErrorProb mallowsHighNoiseW3Spec.law
         (fun π => kApprovalScore 1 π (2 : Candidate 2))
         (fun π => kApprovalScore 1 π (3 : Candidate 2)))
@@ -1402,7 +1402,7 @@ Exact iid pairwise rate certificate for the concrete high-noise Mallows
 `K = 3` approval pivotal pair `(3,4)`.
 -/
 theorem mallowsHighNoiseW3K3_pair23_exact_rate_certificate_concrete :
-    EconCSLib.Probability.ExponentialRateCertificate
+    AppliedModelingLib.Probability.ExponentialRateCertificate
       (pairwiseScoringErrorProb mallowsHighNoiseW3Spec.law
         (fun π => kApprovalScore 3 π (2 : Candidate 2))
         (fun π => kApprovalScore 3 π (3 : Candidate 2)))
@@ -2750,7 +2750,7 @@ theorem mallowsHighNoiseW3K1_outcome_error_exact_rate_of_mallows
   ext n
   simp [mallowsW3K1OutcomeErrorProbOf,
     kApprovalRelevantPairRateCertificate,
-    EconCSLib.Probability.FiniteErrorRateCertificate.aggregateError]
+    AppliedModelingLib.Probability.FiniteErrorRateCertificate.aggregateError]
 
 /--
 Model-parametric `K = 1` W-selection aggregate convergence theorem: in any
@@ -2834,7 +2834,7 @@ theorem mallowsHighNoiseW3K1_outcome_error_tendsto_zero_of_mallows
   ext n
   simp [mallowsW3K1OutcomeErrorProbOf,
     kApprovalRelevantPairRateCertificate,
-    EconCSLib.Probability.FiniteErrorRateCertificate.aggregateError]
+    AppliedModelingLib.Probability.FiniteErrorRateCertificate.aggregateError]
 
 /--
 Model-parametric `K = 2` W-selection aggregate exact-rate theorem: for any
@@ -2949,7 +2949,7 @@ theorem mallowsHighNoiseW3K2_outcome_error_exact_rate_of_mallows
   ext n
   simp [mallowsW3K2OutcomeErrorProbOf,
     kApprovalRelevantPairRateCertificate,
-    EconCSLib.Probability.FiniteErrorRateCertificate.aggregateError]
+    AppliedModelingLib.Probability.FiniteErrorRateCertificate.aggregateError]
 
 /--
 Model-parametric `K = 2` W-selection aggregate convergence theorem: in any
@@ -3057,7 +3057,7 @@ theorem mallowsHighNoiseW3K2_outcome_error_tendsto_zero_of_mallows
   ext n
   simp [mallowsW3K2OutcomeErrorProbOf,
     kApprovalRelevantPairRateCertificate,
-    EconCSLib.Probability.FiniteErrorRateCertificate.aggregateError]
+    AppliedModelingLib.Probability.FiniteErrorRateCertificate.aggregateError]
 
 /--
 Concrete `K = 1` W-selection aggregate exact-rate theorem: the finite sum of
@@ -3157,7 +3157,7 @@ theorem mallowsHighNoiseW3K2_outcome_error_exact_rate_concrete :
   simp [mallowsHighNoiseW3K2OutcomeErrorProb,
     mallowsW3K2OutcomeErrorProbOf,
     kApprovalRelevantPairRateCertificate,
-    EconCSLib.Probability.FiniteErrorRateCertificate.aggregateError]
+    AppliedModelingLib.Probability.FiniteErrorRateCertificate.aggregateError]
 
 /-- The concrete high-noise `K = 2` Mallows W-selection outcome rate is positive. -/
 theorem mallowsHighNoiseW3K2OutcomeRate_pos_concrete :
@@ -3285,7 +3285,7 @@ theorem mallowsHighNoiseW3K3_outcome_error_exact_rate_of_mallows
   ext n
   simp [mallowsW3K3OutcomeErrorProbOf,
     kApprovalRelevantPairRateCertificate,
-    EconCSLib.Probability.FiniteErrorRateCertificate.aggregateError]
+    AppliedModelingLib.Probability.FiniteErrorRateCertificate.aggregateError]
 
 /--
 Model-parametric `K = 3` W-selection aggregate convergence theorem: in any
@@ -3387,7 +3387,7 @@ theorem mallowsHighNoiseW3K3_outcome_error_tendsto_zero_of_mallows
   ext n
   simp [mallowsW3K3OutcomeErrorProbOf,
     kApprovalRelevantPairRateCertificate,
-    EconCSLib.Probability.FiniteErrorRateCertificate.aggregateError]
+    AppliedModelingLib.Probability.FiniteErrorRateCertificate.aggregateError]
 
 /--
 Concrete `K = 3` W-selection aggregate exact-rate theorem: the finite sum of
@@ -3456,7 +3456,7 @@ theorem mallowsHighNoiseW3K3_outcome_error_exact_rate_concrete :
   simp [mallowsHighNoiseW3K3OutcomeErrorProb,
     mallowsW3K3OutcomeErrorProbOf,
     kApprovalRelevantPairRateCertificate,
-    EconCSLib.Probability.FiniteErrorRateCertificate.aggregateError]
+    AppliedModelingLib.Probability.FiniteErrorRateCertificate.aggregateError]
 
 /-- The concrete high-noise `K = 3` Mallows W-selection outcome rate is positive. -/
 theorem mallowsHighNoiseW3K3OutcomeRate_pos_concrete :

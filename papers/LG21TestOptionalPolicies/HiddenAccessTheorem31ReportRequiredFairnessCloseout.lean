@@ -16,7 +16,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-- The concrete Definition-2--4 law surface for the literal hidden-access
@@ -48,8 +48,57 @@ def lg21HiddenAccessReportRequiredLiteralOutputLawSurface
   fullFeatureLaw := fun E publicBase score =>
     Measure.dirac (E.source.reportedPayoff publicBase score)
 
+/-- Definition 3 evaluated at one supplied report-required equilibrium. -/
+def lg21HiddenAccessReportRequiredObservablyFairAt
+    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
+    {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
+    (E : LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE M testFeature)
+    (baseMean : (LG21NonTestFeature Feature testFeature → ℝ) → ℝ)
+    (hbaseMean : Measurable baseMean) (baseVariance : ℝ) : Prop :=
+  ∀ publicBase,
+    lg21HiddenAccessReportRequiredObservableAccessOutputLaw E publicBase
+        baseMean hbaseMean baseVariance =
+      lg21HiddenAccessReportRequiredNoAccessOutputLaw E publicBase
+
+/-- Definition 4 evaluated at one supplied report-required equilibrium. -/
+def lg21HiddenAccessReportRequiredDemographicallyFairAt
+    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
+    {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
+    (E : LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE M testFeature) : Prop :=
+  lg21HiddenAccessReportRequiredActualDemographicAccessOutputLaw E =
+    lg21HiddenAccessReportRequiredActualDemographicNoAccessOutputLaw E
+
 /-- The direct source-Gaussian latent witness refutes the generic Definition-2
 predicate on the concrete actual-output surface. -/
+theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_latentSkillFairAt_of_sourceGaussianFactor
+    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
+    {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
+    (E : LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE M testFeature)
+    (hnoAccess : 0 < M.accessLaw {false})
+    (hstable : LG21ReportRequiredStableAgainstLocalTailEntry
+      (M := M) (testFeature := testFeature) E.source.takeDecision)
+    (hpriorVariance : 0 < (M.priorVariance : ℝ))
+    (hnonTestNoiseVariance : ∀ feature : LG21NonTestFeature Feature testFeature,
+      0 < (M.noiseVariance feature.1 : ℝ))
+    (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
+    (baseLaw : Measure (LG21NonTestFeature Feature testFeature → ℝ))
+    [IsProbabilityMeasure baseLaw]
+    (baseMean : (LG21NonTestFeature Feature testFeature → ℝ) → ℝ)
+    (hbaseMean : Measurable baseMean)
+    (baseVariance : ℝ)
+    (hbaseVariance : 0 < baseVariance)
+    (hsourceFactor :
+      (lg21ContinuousGaussianPopulationLaw M).map
+        (lg21HiddenAccessBaseScoreSkillObservation testFeature) =
+        baseLaw ⊗ₘ gaussianSignalJointKernel
+          baseMean hbaseMean baseVariance (M.noiseVariance testFeature : ℝ)) :
+    ¬ lg21HiddenAccessReportRequiredLatentSkillFair E := by
+  exact lg21HiddenAccessReportRequired_not_latentSkillFair_of_sourceGaussianFactor
+    E hnoAccess hstable hpriorVariance hnonTestNoiseVariance htestNoiseVariance
+    baseLaw baseMean hbaseMean baseVariance hbaseVariance hsourceFactor
+
+/-- The same fixed-equilibrium witness refutes the paper's all-equilibria
+Definition 2 predicate. -/
 theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_latentSkillFair_of_sourceGaussianFactor
     {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
     {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
@@ -64,8 +113,7 @@ theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_latentSkillFai
     (baseLaw : Measure (LG21NonTestFeature Feature testFeature → ℝ))
     [IsProbabilityMeasure baseLaw]
     (baseMean : (LG21NonTestFeature Feature testFeature → ℝ) → ℝ)
-    (hbaseMean : Measurable baseMean)
-    (baseVariance : ℝ)
+    (hbaseMean : Measurable baseMean) (baseVariance : ℝ)
     (hbaseVariance : 0 < baseVariance)
     (hsourceFactor :
       (lg21ContinuousGaussianPopulationLaw M).map
@@ -76,7 +124,7 @@ theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_latentSkillFai
       (lg21HiddenAccessReportRequiredLiteralOutputLawSurface
         M testFeature baseMean hbaseMean baseVariance) := by
   intro hfair
-  apply lg21HiddenAccessReportRequired_not_latentSkillFair_of_sourceGaussianFactor
+  apply lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_latentSkillFairAt_of_sourceGaussianFactor
     E hnoAccess hstable hpriorVariance hnonTestNoiseVariance htestNoiseVariance
     baseLaw baseMean hbaseMean baseVariance hbaseVariance hsourceFactor
   intro latentSkill publicBase
@@ -86,7 +134,7 @@ theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_latentSkillFai
 against Definition 3 on the concrete actual-output surface.  The selected
 base is required to satisfy the literal PBO integrability consequence as well
 as the source best-response and posterior-monotonicity facts. -/
-theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_observablyFair_of_sourceGaussianFactor
+theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_observablyFairAt_of_sourceGaussianFactor
     {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
     {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
     (E : LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE M testFeature)
@@ -108,9 +156,8 @@ theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_observablyFair
         (lg21HiddenAccessBaseScoreSkillObservation testFeature) =
         baseLaw ⊗ₘ gaussianSignalJointKernel
           baseMean hbaseMean baseVariance (M.noiseVariance testFeature : ℝ)) :
-    ¬ lg21SourceLawObservablyFair
-      (lg21HiddenAccessReportRequiredLiteralOutputLawSurface
-        M testFeature baseMean hbaseMean baseVariance) := by
+    ¬ lg21HiddenAccessReportRequiredObservablyFairAt E
+      baseMean hbaseMean baseVariance := by
   let skillKernel := gaussianLocationKernel
     baseMean hbaseMean baseVariance.toNNReal
   letI : IsMarkovKernel skillKernel := gaussianLocationKernel_isMarkov
@@ -123,8 +170,7 @@ theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_observablyFair
       selectionMass skillKernel actionEvent publicBase ≠ 0 := by
     simpa [skillKernel, action, actionEvent] using
       (E.ae_positive_takeSelectionMass_of_localTailStability hnoAccess hstable
-        baseLaw baseMean hbaseMean baseVariance
-        (M.noiseVariance testFeature : ℝ) hbaseVariance htestNoiseVariance
+        baseLaw baseMean hbaseMean baseVariance hbaseVariance htestNoiseVariance
         hsourceFactor)
   have hbest : ∀ᵐ publicBase ∂baseLaw,
       NoProfitableBinaryChoiceDeviationAE (skillKernel publicBase)
@@ -184,13 +230,46 @@ theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_observablyFair
     (lg21HiddenAccessReportRequired_observableOutputLaw_ne_of_localFacts
       E publicBase baseMean hbaseMean baseVariance hbaseVariance hintegrableBase
       hbestBase' hstrictBase hchosen)
-    (hfair E publicBase)
+    (hfair publicBase)
+
+/-- The fixed-equilibrium observable witness refutes the all-equilibria
+Definition 3 predicate. -/
+theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_observablyFair_of_sourceGaussianFactor
+    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
+    {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
+    (E : LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE M testFeature)
+    (hnoAccess : 0 < M.accessLaw {false})
+    (hstable : LG21ReportRequiredStableAgainstLocalTailEntry
+      (M := M) (testFeature := testFeature) E.source.takeDecision)
+    (hpriorVariance : 0 < (M.priorVariance : ℝ))
+    (hnonTestNoiseVariance : ∀ feature : LG21NonTestFeature Feature testFeature,
+      0 < (M.noiseVariance feature.1 : ℝ))
+    (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
+    (baseLaw : Measure (LG21NonTestFeature Feature testFeature → ℝ))
+    [IsProbabilityMeasure baseLaw]
+    (baseMean : (LG21NonTestFeature Feature testFeature → ℝ) → ℝ)
+    (hbaseMean : Measurable baseMean) (baseVariance : ℝ)
+    (hbaseVariance : 0 < baseVariance)
+    (hsourceFactor :
+      (lg21ContinuousGaussianPopulationLaw M).map
+        (lg21HiddenAccessBaseScoreSkillObservation testFeature) =
+        baseLaw ⊗ₘ gaussianSignalJointKernel
+          baseMean hbaseMean baseVariance (M.noiseVariance testFeature : ℝ)) :
+    ¬ lg21SourceLawObservablyFair
+      (lg21HiddenAccessReportRequiredLiteralOutputLawSurface
+        M testFeature baseMean hbaseMean baseVariance) := by
+  intro hfair
+  apply lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_observablyFairAt_of_sourceGaussianFactor
+    E hnoAccess hstable hpriorVariance hnonTestNoiseVariance htestNoiseVariance
+    baseLaw baseMean hbaseMean baseVariance hbaseVariance hsourceFactor
+  intro publicBase
+  exact hfair E publicBase
 
 /-- The source's pre-score strict-gain argument also survives integration over
 public bases.  The output comparison is between expected *actual* output
 conditional on a base and the no-report output, so it does not assert any
 realized-score pointwise or stochastic-order comparison. -/
-theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_demographicallyFair_of_sourceGaussianFactor
+theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_demographicallyFairAt_of_sourceGaussianFactor
     {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
     {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
     (E : LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE M testFeature)
@@ -212,9 +291,7 @@ theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_demographicall
         (lg21HiddenAccessBaseScoreSkillObservation testFeature) =
         baseLaw ⊗ₘ gaussianSignalJointKernel
           baseMean hbaseMean baseVariance (M.noiseVariance testFeature : ℝ)) :
-    ¬ lg21SourceLawDemographicallyFair
-      (lg21HiddenAccessReportRequiredLiteralOutputLawSurface
-        M testFeature baseMean hbaseMean baseVariance) := by
+    ¬ lg21HiddenAccessReportRequiredDemographicallyFairAt E := by
   let skillKernel := gaussianLocationKernel
     baseMean hbaseMean baseVariance.toNNReal
   letI : IsMarkovKernel skillKernel := gaussianLocationKernel_isMarkov
@@ -227,8 +304,7 @@ theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_demographicall
       selectionMass skillKernel actionEvent publicBase ≠ 0 := by
     simpa [skillKernel, action, actionEvent] using
       (E.ae_positive_takeSelectionMass_of_localTailStability hnoAccess hstable
-        baseLaw baseMean hbaseMean baseVariance
-        (M.noiseVariance testFeature : ℝ) hbaseVariance htestNoiseVariance
+        baseLaw baseMean hbaseMean baseVariance hbaseVariance htestNoiseVariance
         hsourceFactor)
   have hbest : ∀ᵐ publicBase ∂baseLaw,
       NoProfitableBinaryChoiceDeviationAE (skillKernel publicBase)
@@ -323,7 +399,38 @@ theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_demographicall
         E hnoAccess]
     exact hprimitiveLawNe
   intro hfair
-  exact hactualLawNe (hfair E)
+  exact hactualLawNe hfair
+
+/-- The fixed-equilibrium demographic witness refutes the all-equilibria
+Definition 4 predicate. -/
+theorem lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_demographicallyFair_of_sourceGaussianFactor
+    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
+    {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
+    (E : LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE M testFeature)
+    (hnoAccess : 0 < M.accessLaw {false})
+    (hstable : LG21ReportRequiredStableAgainstLocalTailEntry
+      (M := M) (testFeature := testFeature) E.source.takeDecision)
+    (hpriorVariance : 0 < (M.priorVariance : ℝ))
+    (hnonTestNoiseVariance : ∀ feature : LG21NonTestFeature Feature testFeature,
+      0 < (M.noiseVariance feature.1 : ℝ))
+    (htestNoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
+    (baseLaw : Measure (LG21NonTestFeature Feature testFeature → ℝ))
+    [IsProbabilityMeasure baseLaw]
+    (baseMean : (LG21NonTestFeature Feature testFeature → ℝ) → ℝ)
+    (hbaseMean : Measurable baseMean) (baseVariance : ℝ)
+    (hbaseVariance : 0 < baseVariance)
+    (hsourceFactor :
+      (lg21ContinuousGaussianPopulationLaw M).map
+        (lg21HiddenAccessBaseScoreSkillObservation testFeature) =
+        baseLaw ⊗ₘ gaussianSignalJointKernel
+          baseMean hbaseMean baseVariance (M.noiseVariance testFeature : ℝ)) :
+    ¬ lg21SourceLawDemographicallyFair
+      (lg21HiddenAccessReportRequiredLiteralOutputLawSurface
+        M testFeature baseMean hbaseMean baseVariance) := by
+  intro hfair
+  exact lg21HiddenAccessReportRequiredLiteralOutputLawSurface_not_demographicallyFairAt_of_sourceGaussianFactor
+    E hnoAccess hstable hpriorVariance hnonTestNoiseVariance htestNoiseVariance
+    baseLaw baseMean hbaseMean baseVariance hbaseVariance hsourceFactor (hfair E)
 
 /-- Direct report-required Theorem-3.1 closeout on the concrete source-law
 surface.  Each failure is witnessed by the literal forced-report public-output

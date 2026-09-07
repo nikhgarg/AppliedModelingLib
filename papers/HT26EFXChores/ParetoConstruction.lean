@@ -1,4 +1,4 @@
-import EconCSLib.SocialChoice.FairDivision.Chores
+import AppliedModelingLib.SocialChoice.FairDivision.Chores
 import Mathlib.Tactic
 
 /-!
@@ -14,7 +14,7 @@ Source: `EFXadditivechores.tex`, lines 423--441.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 private theorem po_A_endpoint_lt (n : ℕ) : n - 1 < 2 * n + 1 := by omega
 
@@ -1923,6 +1923,266 @@ theorem poLowImprovement_last_high_cost
   rw [Finset.card_pair hne]
   norm_num
 
+/-! ## Explicit EFX witness for the Theorem-2 instance
+
+The paragraph immediately after the source's cost table is mathematically
+important: it makes the EFX--Pareto incompatibility nonvacuous by exhibiting
+an EFX allocation of the constructed instance.  Every agent except the final
+high-group agent receives a matching A-item and a small group item.  The final
+agent receives the remaining B-item and the last two C-items.
+-/
+
+/-- Total owner map for the source's explicit EFX witness. -/
+def poEfxWitnessOwner (n : ℕ) (hn : 1 ≤ n)
+    (item : Fin (2 * n + 1)) : Fin n :=
+  if hA : item.val < n - 1 then
+    ⟨item.val, by omega⟩
+  else if hB : item.val < n + n / 2 then
+    if hBLast : item.val < n + n / 2 - 1 then
+      ⟨item.val - (n - 1), by omega⟩
+    else
+      poLastHigh n hn
+  else if hCBeforeLast : item.val < 2 * n then
+    ⟨item.val - n, by omega⟩
+  else
+    poLastHigh n hn
+
+/-- The source's explicit EFX allocation of the Theorem-2 instance. -/
+noncomputable def poEfxWitness (n : ℕ) (hn : 1 ≤ n) :
+    Allocation (Fin n) (Fin (2 * n + 1)) :=
+  allocationOfOwner Finset.univ (fun item => some (poEfxWitnessOwner n hn item))
+
+theorem poEfxWitness_feasible (n : ℕ) (hn : 1 ≤ n) :
+    IsAllocationOf (poEfxWitness n hn) (Finset.univ : Finset (Fin (2 * n + 1))) := by
+  apply isAllocationOf_allocationOfOwner
+  intro item _
+  exact ⟨poEfxWitnessOwner n hn item, rfl⟩
+
+theorem poEfxWitness_low_bundle
+    (n : ℕ) (hn : 4 ≤ n) (low : Fin n) (hlow : low.val < n / 2) :
+    poEfxWitness n (by omega) low = {poAFor n low, poBFor n low hlow} := by
+  classical
+  ext item
+  simp only [poEfxWitness, allocationOfOwner, Finset.mem_filter, Finset.mem_univ, true_and,
+    Option.some.injEq, Finset.mem_insert, Finset.mem_singleton, Fin.ext_iff]
+  unfold poEfxWitnessOwner
+  split
+  · simp [poAFor, poBFor, poLastHigh]
+    omega
+  · split
+    · split
+      · simp [poAFor, poBFor, poLastHigh]
+        omega
+      · simp [poAFor, poBFor, poLastHigh]
+        omega
+    · split
+      · simp [poAFor, poBFor, poLastHigh]
+        omega
+      · simp [poAFor, poBFor, poLastHigh]
+        omega
+
+theorem poEfxWitness_nonlast_high_bundle
+    (n : ℕ) (hn : 4 ≤ n) (high : Fin n)
+    (hhigh : n / 2 ≤ high.val) (hnotLast : high.val < n - 1) :
+    poEfxWitness n (by omega) high = {poAFor n high, poCFor n high} := by
+  classical
+  ext item
+  simp only [poEfxWitness, allocationOfOwner, Finset.mem_filter, Finset.mem_univ, true_and,
+    Option.some.injEq, Finset.mem_insert, Finset.mem_singleton, Fin.ext_iff]
+  unfold poEfxWitnessOwner
+  split
+  · simp [poAFor, poCFor, poLastHigh]
+    omega
+  · split
+    · split
+      · simp [poAFor, poCFor, poLastHigh]
+        omega
+      · simp [poAFor, poCFor, poLastHigh]
+        omega
+    · split
+      · simp [poAFor, poCFor, poLastHigh]
+        omega
+      · simp [poAFor, poCFor, poLastHigh]
+        omega
+
+theorem poEfxWitness_last_high_bundle (n : ℕ) (hn : 4 ≤ n) :
+    poEfxWitness n (by omega) (poLastHigh n (by omega)) =
+      {poBLast n (by omega), poCFor n (poLastHigh n (by omega)), poCLast n} := by
+  classical
+  ext item
+  simp only [poEfxWitness, allocationOfOwner, Finset.mem_filter, Finset.mem_univ, true_and,
+    Option.some.injEq, Finset.mem_insert, Finset.mem_singleton, Fin.ext_iff]
+  unfold poEfxWitnessOwner
+  split
+  · simp [poBLast, poCFor, poCLast, poLastHigh]
+    omega
+  · split
+    · split
+      · simp [poBLast, poCFor, poCLast, poLastHigh]
+        omega
+      · simp [poBLast, poCFor, poCLast, poLastHigh]
+        omega
+    · split
+      · simp [poBLast, poCFor, poCLast, poLastHigh]
+        omega
+      · simp [poBLast, poCFor, poCLast, poLastHigh]
+        omega
+
+/-- Every bundle in the witness costs every observer at least `r + 1`. -/
+theorem poEfxWitness_cost_lower
+    (n : ℕ) (hn : 4 ≤ n) (r : ℝ) (hr : 2 < r) (observer owner : Fin n) :
+    r + 1 ≤ additiveChoreCost (poCost n r) observer (poEfxWitness n (by omega) owner) := by
+  by_cases hownerLow : owner.val < n / 2
+  · rw [poEfxWitness_low_bundle n hn owner hownerLow]
+    apply po_cost_ge_r_add_one_of_large_and_other n r (by linarith) observer
+      {poAFor n owner, poBFor n owner hownerLow} (poAFor n owner) (poBFor n owner hownerLow)
+    · simp
+    · apply poCost_on_A
+      simp [poAItems, poAFor]
+      omega
+    · simp
+    · intro heq
+      have hval := congrArg Fin.val heq
+      dsimp [poAFor, poBFor] at hval
+      omega
+  · have hownerHigh : n / 2 ≤ owner.val := le_of_not_gt hownerLow
+    by_cases hownerLast : owner.val < n - 1
+    · rw [poEfxWitness_nonlast_high_bundle n hn owner hownerHigh hownerLast]
+      apply po_cost_ge_r_add_one_of_large_and_other n r (by linarith) observer
+        {poAFor n owner, poCFor n owner} (poAFor n owner) (poCFor n owner)
+      · simp
+      · apply poCost_on_A
+        simp [poAItems, poAFor]
+        omega
+      · simp
+      · intro heq
+        have hval := congrArg Fin.val heq
+        dsimp [poAFor, poCFor] at hval
+        omega
+    · have hownerEq : owner = poLastHigh n (by omega) := by
+        apply Fin.ext
+        simp [poLastHigh]
+        omega
+      rw [hownerEq]
+      rw [poEfxWitness_last_high_bundle n hn]
+      by_cases hobserverLow : observer.val < n / 2
+      · apply po_cost_ge_r_add_one_of_large_and_other n r (by linarith) observer
+          {poBLast n (by omega), poCFor n (poLastHigh n (by omega)), poCLast n}
+          (poCFor n (poLastHigh n (by omega))) (poBLast n (by omega))
+        · simp
+        · apply poCost_on_C_low n r observer hobserverLow
+          simp [poCItems, poCFor, poLastHigh]
+          omega
+        · simp
+        · intro heq
+          have hval := congrArg Fin.val heq
+          dsimp [poCFor, poLastHigh, poBLast] at hval
+          omega
+      · have hobserverHigh : n / 2 ≤ observer.val := le_of_not_gt hobserverLow
+        apply po_cost_ge_r_add_one_of_large_and_other n r (by linarith) observer
+          {poBLast n (by omega), poCFor n (poLastHigh n (by omega)), poCLast n}
+          (poBLast n (by omega)) (poCFor n (poLastHigh n (by omega)))
+        · simp
+        · apply poCost_on_B_high n r observer hobserverHigh
+          simp [poBItems, poBLast]
+          omega
+        · simp
+        · intro heq
+          have hval := congrArg Fin.val heq
+          dsimp [poBLast, poCFor, poLastHigh] at hval
+          omega
+
+/-- Every owner values her own witness bundle at most `r + 2`. -/
+theorem poEfxWitness_own_cost_upper
+    (n : ℕ) (hn : 4 ≤ n) (r : ℝ) (owner : Fin n) :
+    additiveChoreCost (poCost n r) owner (poEfxWitness n (by omega) owner) ≤ r + 2 := by
+  by_cases hownerLow : owner.val < n / 2
+  · rw [poEfxWitness_low_bundle n hn owner hownerLow]
+    have hA : poAFor n owner ∈ poAItems n := by
+      simp [poAItems, poAFor]
+      omega
+    have hB : poBFor n owner hownerLow ∈ poBItems n := by
+      simp [poBItems, poBFor]
+      omega
+    have hne : poBFor n owner hownerLow ≠ poAFor n owner := by
+      intro heq
+      have hval := congrArg Fin.val heq
+      dsimp [poAFor, poBFor] at hval
+      omega
+    unfold additiveChoreCost
+    rw [Finset.sum_insert (by simpa using Ne.symm hne), Finset.sum_singleton,
+      poCost_on_A n r owner (poAFor n owner) hA,
+      poCost_on_B_low n r owner hownerLow (poBFor n owner hownerLow) hB]
+    linarith
+  · have hownerHigh : n / 2 ≤ owner.val := le_of_not_gt hownerLow
+    by_cases hownerLast : owner.val < n - 1
+    · rw [poEfxWitness_nonlast_high_bundle n hn owner hownerHigh hownerLast]
+      have hA : poAFor n owner ∈ poAItems n := by
+        simp [poAItems, poAFor]
+        omega
+      have hC : poCFor n owner ∈ poCItems n := by
+        simp [poCItems, poCFor]
+        omega
+      have hne : poCFor n owner ≠ poAFor n owner := by
+        intro heq
+        have hval := congrArg Fin.val heq
+        dsimp [poAFor, poCFor] at hval
+        omega
+      unfold additiveChoreCost
+      rw [Finset.sum_insert (by simpa using Ne.symm hne), Finset.sum_singleton,
+        poCost_on_A n r owner (poAFor n owner) hA,
+        poCost_on_C_high n r owner hownerHigh (poCFor n owner) hC]
+      linarith
+    · have hownerEq : owner = poLastHigh n (by omega) := by
+        apply Fin.ext
+        simp [poLastHigh]
+        omega
+      rw [hownerEq]
+      rw [poEfxWitness_last_high_bundle n hn,
+        poCost_high_bundle n r (poLastHigh n (by omega)) (by
+          change n / 2 ≤ n - 1
+          omega)]
+      have hA : ({poBLast n (by omega), poCFor n (poLastHigh n (by omega)), poCLast n} ∩
+          poAItems n) = ∅ := by
+        ext item
+        simp [poAItems, poBLast, poCFor, poCLast, poLastHigh, Fin.lt_def, Fin.ext_iff]
+        omega
+      have hB : ({poBLast n (by omega), poCFor n (poLastHigh n (by omega)), poCLast n} ∩
+          poBItems n) = {poBLast n (by omega)} := by
+        ext item
+        simp [poBItems, poBLast, poCFor, poCLast, poLastHigh, Fin.lt_def,
+          Fin.le_iff_val_le_val, Fin.ext_iff]
+        omega
+      have hC : ({poBLast n (by omega), poCFor n (poLastHigh n (by omega)), poCLast n} ∩
+          poCItems n) = {poCFor n (poLastHigh n (by omega)), poCLast n} := by
+        ext item
+        simp only [Finset.mem_inter, Finset.mem_insert, Finset.mem_singleton, Fin.ext_iff]
+        simp [poCItems, poBLast, poCFor, poCLast, poLastHigh, Fin.le_iff_val_le_val]
+        omega
+      rw [hA, hB, hC]
+      have hne : poCFor n (poLastHigh n (by omega)) ≠ poCLast n := by
+        intro heq
+        have hval := congrArg Fin.val heq
+        dsimp [poCFor, poCLast, poLastHigh] at hval
+        omega
+      rw [Finset.card_singleton, Finset.card_pair hne]
+      norm_num
+
+/-- The source's displayed construction is an EFX allocation, so Theorem 2's
+incompatibility instance is nonvacuous. -/
+theorem poEfxWitness_is_efx
+    (n : ℕ) (hn : 4 ≤ n) (r : ℝ) (hr : 2 < r) :
+    EFXForChores (additiveChoreCost (poCost n r)) (poEfxWitness n (by omega)) := by
+  intro owner comparison
+  right
+  intro item hitem
+  rw [additiveChoreCost_erase (poCost n r) owner
+    (poEfxWitness n (by omega) owner) item hitem]
+  have hitemLower : 1 ≤ poCost n r owner item := poCost_ge_one n r (by linarith) owner item
+  have hown := poEfxWitness_own_cost_upper n hn r owner
+  have hcomparison := poEfxWitness_cost_lower n hn r hr owner comparison
+  linarith
+
 /-- The source's explicit Pareto improvement when the agent whose original
 EFX cost is at least `r + 2` lies in the low group. -/
 theorem po_low_improvement_pareto_dominates
@@ -2374,7 +2634,7 @@ theorem po_efx_not_pareto_optimal
   intro hoptimal
   obtain ⟨focal, hfocalCost⟩ := po_some_agent_cost_ge_r_add_two n hn r hr allocation halloc hefx
   unfold ParetoOptimalForChores at hoptimal
-  apply hoptimal
+  apply hoptimal.2
   by_cases hlow : focal.val < n / 2
   · refine ⟨poLowImprovement n focal, poLowImprovement_feasible n focal, ?_⟩
     exact po_low_improvement_pareto_dominates n hn r hr allocation halloc hefx focal hlow hfocalCost

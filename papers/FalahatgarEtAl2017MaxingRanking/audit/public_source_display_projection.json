@@ -1,0 +1,419 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "FalahatgarEtAl2017MaxingRanking",
+  "private_source_map_sha256": "f0b0580f46f823b9693d1f23de2488fec6ec9232c176808b2504811b69d30eb5",
+  "public_manifest_path": "papers/FalahatgarEtAl2017MaxingRanking/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "e0322325e87e571855763b8b91aeb969ee4926a494728c513f8bc7795d6a5c06",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "algorithm2_prune",
+    "algorithm3_opt_maximize",
+    "approximate_preference_vocabulary",
+    "borda_vocabulary",
+    "comparison_model",
+    "exact_preference_vocabulary",
+    "good_anchor_definition",
+    "lemma1",
+    "lemma10",
+    "lemma11",
+    "lemma12",
+    "lemma13",
+    "lemma14",
+    "lemma15",
+    "lemma16",
+    "lemma17",
+    "lemma18",
+    "lemma19",
+    "lemma20",
+    "lemma21",
+    "lemma3",
+    "lemma5",
+    "remark4",
+    "sst_maximum_ranking_existence",
+    "strong_stochastic_transitivity",
+    "theorem2",
+    "theorem22",
+    "theorem6",
+    "theorem7",
+    "theorem8",
+    "theorem9"
+  ],
+  "selected_source_items": {
+    "algorithm2_prune": {
+      "source_anchors": [
+        {
+          "line_end": 324,
+          "line_start": 308,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fAlgorithm 2 P RUNE\n 1: inputs\n 2:   Set S, element a, size n′ , lower bias εl , upper bias εu , confidence δ.\n 3: t ← 1\n 4: S1 ← S\n                                   2\n 5: while ∣St ∣ > 2n′ and t < log n do\n 6:   Initialize: Qt ← ∅\n 7:   for e in St do\n 8:      if C OMPARE(e, a, εl , εu , δ/2t+1 ) = 1 then\n 9:         Qt ← Qt ⋃{e}\n10:      end if\n11:   end for\n12:   St+1 ← St ∖ Qt\n13:   t←t+1\n14: end while\n15: return St .",
+          "quoted_text_sha256": "87856fad50592758dec7727cf854b466e352adb1a44f78fe97284f416b8a6a16"
+        }
+      ],
+      "source_kind": "algorithm"
+    },
+    "algorithm3_opt_maximize": {
+      "source_anchors": [
+        {
+          "line_end": 391,
+          "line_start": 375,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fAlgorithm 3 O PT-M AXIMIZE\n 1: inputs\n 2:    Set S, bias ε, confidence δ.\n 3: if δ ≤ n1 then\n 4:    return S EQ -E LIMINATE(S, ε, δ)\n 5: end if                    √\n 6: a ← P ICK -A NCHOR(S, 6n log n, ε/3, 4δ )\n                         √\n 7: S ′ ← P RUNE(S, a, 6n log n, ε/3, 2ε/3, 4δ )\n 8: for element e in S ′ do\n 9:    if C OMPARE(e, a, 2ε3\n                                   δ\n                             , ε, 4n ) = 2 then\n10:      return S EQ -E LIMINATE(S ′ , ε, 4δ )\n11:   end if\n12: end for\n13: return a",
+          "quoted_text_sha256": "e5961e520770e304d779876de8b646de0a4098dbde83afabe582064834f3de2e"
+        }
+      ],
+      "source_kind": "algorithm"
+    },
+    "approximate_preference_vocabulary": {
+      "source_anchors": [
+        {
+          "line_end": 72,
+          "line_start": 65,
+          "publication_locator": "cited publication",
+          "quoted_text": "Let p̃i,j = pi,j − 12 be the centered preference probability. Note that p̃i,j ≥ 0 iff i is preferable to\nj. If p̃i,j ≥ −ε we say that i is ε-preferable to j. For 0 < ε < 1/2, an element i ∈ [n] is ε-maximum\nif it is ε-preferable to all other elements, namely, p̃i,j ≥ −ε ∀j ≠ i. Given ε > 0, 12 ≥ δ > 0, a\nPAC maxing algorithm must output an ε-maxima with probability ≥ 1 − δ, henceforth abbreviated\nwith high probability (WHP). Similarly, a permutation `1 , . . . ,`n of {1, . . . ,n} is an ε-ranking if `i\nis ε-preferable to `j for all i ≤ j, and a PAC ranking algorithm must output an ε-ranking WHP. Note\nthat in this paper, we consider δ ≤ 21 , the more practical regime. For larger values of δ, one can use\nour algorithms with δ = 12 .",
+          "quoted_text_sha256": "7716ac7ca6ae33b15cc854b7a316740206bb1842e0599eb6631834ce5da1283c"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "borda_vocabulary": {
+      "source_anchors": [
+        {
+          "line_end": 117,
+          "line_start": 112,
+          "publication_locator": "cited publication",
+          "quoted_text": "score s(i) = n1 ∑j pi,j is the probability that i is preferable to another, randomly selected, element.\nElement i is Borda maximal if s(i) = maxj s(j), and ε-Borda maximal if s(i) ≥ maxj s(j) − ε. A\nPAC Borda-maxing algorithm outputs an ε-Borda maximal element WHP (with probability ≥ 1 − δ).\nSimilarly, a Borda ranking is a permutation i1 , . . . ,in such that for all 1 ≤ j ≤ n − 1, s(ij ) ≥ s(ij+1 ).\nAn ε-Borda ranking is a permutation where for all 1 ≤ j ≤ k ≤ n, s(ij ) ≥ s(ik ) − ε. A PAC\nBorda-ranking algorithm outputs an ε-Borda ranking WHP.",
+          "quoted_text_sha256": "eb027ec975021f88a1f98b65365e1c6182136e7c2de014c9ffcf021c9ccdb184"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "comparison_model": {
+      "source_anchors": [
+        {
+          "line_end": 51,
+          "line_start": 48,
+          "publication_locator": "cited publication",
+          "quoted_text": "Consider a set of n elements, without loss of generality [n] = {1, 2, . . . , n}. A probabilistic model,\nor model for short, is an assignment of a preference probability pi,j ∈ [0, 1] for every i ≠ j ∈\n[n], reflecting the probability that i is preferred when compared with j. We assume that repeated\ncomparisons are independent and that there are no “draws”, hence pj,i = 1 − pi,j .",
+          "quoted_text_sha256": "fb920e7521fdb0f6567888f71904d1478b9123b28c9589f132ff324ec39d9f8d"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "exact_preference_vocabulary": {
+      "source_anchors": [
+        {
+          "line_end": 59,
+          "line_start": 54,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fIf pi,j ≥ 12 , we say that i is preferable to j and write i ≥ j. Element i is maximal in a model if i ≥ j\nfor all j ≠ i. And a permutation `1 , . . . ,`n is a ranking if `i ≥ `j for all i ≤ j. Observe that the\nfirst element of any ranking is always maximal. For example, for n = 3, p1,2 = 1/2, p1,3 = 1/3, and\np2,3 = 2/3, we have 1 ≥ 2, 2 ≥ 1, 3 ≥ 1, and 2 ≥ 3. Hence 2 is the unique maximum, and 2,3,1 is\nthe unique ranking. We seek algorithms that without knowing the underlying model, use pairwise\ncomparisons to find a maximal element and a ranking.",
+          "quoted_text_sha256": "53dacc0c284b382bf9349e6d3e5d71bed76bf03c96bbea0394106b87c84b4e05"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "good_anchor_definition": {
+      "source_anchors": [
+        {
+          "line_end": 264,
+          "line_start": 263,
+          "publication_locator": "cited publication",
+          "quoted_text": "An element a is called an (ε, n′ )-good anchor if a is not ε-preferable to at most n′ elements, i.e.,\n∣{e ∶ e ∈ S and p̃e,a > ε}∣ ≤ n′ .",
+          "quoted_text_sha256": "319c0d6bdb92ff7ba5e9119fdc455071c1b3757abb77fc51793d4beec08f1717"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "lemma1": {
+      "source_anchors": [
+        {
+          "line_end": 220,
+          "line_start": 206,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 1. For εu > εl , C OMPARE(i, j, εl , εu , δ) uses ≤ (εu −ε       l)\n                                                                         2 log δ comparisons and if p̃i,j ≤ εl ,\n\nthen w.p.≥ 1 − δ, it returns 1, else if p̃i,j ≥ εu , w.p.≥ 1 − δ, it returns 2.\n\nNow we present S EQ -E LIMINATE that uses the testing subroutine C OMPARE and finds an ε-\nmaximum.\n\n3.1.2   S EQ -E LIMINATE Algorithm\n\nS EQ -E LIMINATE takes a variable set S, selects a random running element r ∈ S and repeatedly\nuses C OMPARE(c, r, 0, ε, δ/n) to compare r to a random competing element c ∈ S ∖ r. If C OMPARE\nreturns 1 i.e., deems p̃c,r ≤ 0, it retains r as the running element and eliminates c from S, but if\nC OMPARE returns 2 i.e., deems p̃c,r ≥ ε, it eliminates r from S and updates c as the new running\nelement.",
+          "quoted_text_sha256": "71721397c8db34a6ed3de3c734200bb27eb8c747b96cd0c23407d7efbb82ab74"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma10": {
+      "source_anchors": [
+        {
+          "line_end": 768,
+          "line_start": 764,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 10. For εu > εl ≥ 0, C OMPARE(i, j, εl , εu , δ) uses ≤ (εu −ε\n                                                                  2\n                                                                     )2\n                                                                        log 2δ comparisons.\n                                                                           l",
+          "quoted_text_sha256": "6ba21783525e6b877beadde61b2e6885bddf93f5fd99159f8d18bd2c6b5cfc69"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma11": {
+      "source_anchors": [
+        {
+          "line_end": 779,
+          "line_start": 779,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 11. For εu > εl ≥ 0, if p̃i,j ≤ εl , then w.p.≥ 1 − δ, C OMPARE(i, j, εl , εu , δ) outputs 1.",
+          "quoted_text_sha256": "bee306a70777f591f4c30ef9095629370a216bfac54b579fa8d9e725aa511b67"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma12": {
+      "source_anchors": [
+        {
+          "line_end": 811,
+          "line_start": 811,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fLemma 12. For εu > εl ≥ 0, if p̃i,j ≥ εu , then w.p.≥ 1 − δ, C OMPARE(i, j, εl , εu , δ) outputs 2.",
+          "quoted_text_sha256": "3942411f51dc1ce17cd99b7740c5191ca5c52ea7a74cda4f3bb6071d93ad2156"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma13": {
+      "source_anchors": [
+        {
+          "line_end": 923,
+          "line_start": 923,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 13. If p̃e,a ≥ εu , then w.p.≥ 1 − δ/2, the output set of P RUNE(S, a, n′ , εl , εu , δ) contains e.",
+          "quoted_text_sha256": "a788503fa70713494a1c661d01dfac34cafc13b673f3ee694862d00e9cb76ba9"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma14": {
+      "source_anchors": [
+        {
+          "line_end": 948,
+          "line_start": 943,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 14. If n′ ≥ 8 log2 n, n1 ≤ δ ≤ nn and a is an (εl , n′ )-good anchor element then w.p.≥ 1 − δ/2,\nP RUNE(S, a, n′ , εl , εu , δ) uses O( (εu −ε\n                                           n\n                                              )2\n                                                 log 1δ ) comparisons and outputs a set of size at most 2n′ .\n                                           l",
+          "quoted_text_sha256": "c649afa2e414c6f66db86e067e6f1dc904c0132e16c7fccf585f9813f2ae72ec"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma15": {
+      "source_anchors": [
+        {
+          "line_end": 984,
+          "line_start": 974,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 15. If n′ > 6n log n, δ ≥ nn and a is an (εl , n′ )-good anchor element, then w.p.≥ 1 − 2δ ,\nP RUNE(S, a, n′ , εl , εu , δ) uses O( (εu −ε\n                                           n\n                                              )2\n                                                 log 1δ ) comparisons and outputs a set of size less than 2n′ .\n                                           l\n\n\n\n\n                                                            14",
+          "quoted_text_sha256": "b432e2955d79cb2818466981382cff2ab70690cef20f25105d22ac3d91d8158f"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma16": {
+      "source_anchors": [
+        {
+          "line_end": 1054,
+          "line_start": 1051,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 16. If a, the output of step 6 in O PT-M AXIMIZE(S, ε, δ) is a 2ε\n                                                                     3\n                                                                        -maximum of S, then w.p.≥ 1 − 4δ ,\nO PT-M AXIMIZE(S, ε, δ) outputs a.",
+          "quoted_text_sha256": "789c79ca1add5e5a8a0857d04ffba45e103083223dd98600baa2b190a18423e5"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma17": {
+      "source_anchors": [
+        {
+          "line_end": 1077,
+          "line_start": 1071,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 17. For δ ≥ n1 , w.p.≥ 1 − δ/2, steps 1-6 in O PT-M AXIMIZE(S, ε, δ) uses O( εn2 log 1δ ) comparisons,\n                                 √\noutputs a set S ′ of size at most 24n log n and either a is a 2ε/3-maximum element or S ′ contains the absolute\nmaximum element.\n\n                                                           √                         √\n                                                                                       n log n",
+          "quoted_text_sha256": "7f51ca5ab65f687dd87a6c39df65a09f977689f75c9997d98903ee254b8728d9"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma18": {
+      "source_anchors": [
+        {
+          "line_end": 1094,
+          "line_start": 1091,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 18. For δ ≥ n1 , if a, the output of step 6 and S ′ , the output of step 7 are such that either a is 2ε/3-\nmaximum of S or S ′ contains the absolute maximum element of S, then steps 8-13 of O PT-M AXIMIZE(S, ε, δ)\n           ′\nuses O( ∣Sε2 ∣ log nδ ) comparisons and w.p.≥ 1 − δ/2, outputs an ε-maximum.",
+          "quoted_text_sha256": "d6036b415fc8a59a0761ebf97dfa05907618817004481c6b25770c1d34e4575f"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma19": {
+      "source_anchors": [
+        {
+          "line_end": 1177,
+          "line_start": 1176,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 19. E STIMATE -P ROBABILITY(i, j, ε, δ) uses 2ε12 log 2δ comparisons and w.p.≥ 1 − δ approximates\npi,j to an additive error of ε.",
+          "quoted_text_sha256": "eeea7a18889ee39e7f5a5dbc3bb5a7489bd0e6cbaced63009e18ef816c2ecf65"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma20": {
+      "source_anchors": [
+        {
+          "line_end": 1203,
+          "line_start": 1202,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 20. S TRONG -T RANSITIVITY-R ANKING(S, ε, δ) uses O( nε2 log nδ ) comparisons and w.p.≥ 1 − δ\nreturns an ε-ranking.",
+          "quoted_text_sha256": "dafb599ec3c271b0db610c97671e72a623e66e06d870c23e88e2976b90de32e3"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma21": {
+      "source_anchors": [
+        {
+          "line_end": 1243,
+          "line_start": 1242,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 21. E STIMATE -B ORDA -S CORE(S, a, ε, δ) uses 2ε12 log 2δ comparisons and w.p.≥ 1 − δ approximates\ns(a) to an additive error of ε.",
+          "quoted_text_sha256": "d657ced8fe66c679058920106e3ba93d5e7c1a77f92351be621c8b95410e7b7d"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma3": {
+      "source_anchors": [
+        {
+          "line_end": 281,
+          "line_start": 279,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 3. P ICK -A NCHOR(S, n′ , ε, δ) uses O( nn′ ε2 log 1δ log nn′ δ ) comparisons and w.p.≥ 1 − δ,\noutputs an (ε, n′ )-good anchor element.\n                                                                            2",
+          "quoted_text_sha256": "7b3cdf19375e325d017ee1c380037adcdc3c4863275182fbfb5c738329288524"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma5": {
+      "source_anchors": [
+        {
+          "line_end": 336,
+          "line_start": 330,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 5. If n′ ≥ 6n log n, δ ≥ n1 and a is an (εl , n′ )-good anchor element, then w.p.≥ 1 − 2δ ,\n                                           n          1\nP RUNE(S, a, n′ , εl , εu , δ) uses O( (εu −ε l)\n                                                2 log δ ) comparisons and outputs a set of size less than\n\n2n′ . Further if a is not an εu -maximum of S then w.p.≥ 1 − 2δ , the output set contains an absolute\nmaximum element of S.",
+          "quoted_text_sha256": "4a2cdf12847dd7fd85c09f18c02abfdef8debf0e59676c00cdbd2be6a48b5676"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "remark4": {
+      "source_anchors": [
+        {
+          "line_end": 286,
+          "line_start": 282,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 4. Note that P ICK -A NCHOR(S, cn, ε, δ) uses Oc ( ε12 (log 1δ ) ) comparisons where the con-\nstant depends only on c but not on n. Hence it is advantageous to use this method to pick near-\nmaximum element when n is large.\n\nWe now present P RUNE that takes an anchor element as input and prunes the set S using the anchor.",
+          "quoted_text_sha256": "c6221a0ac7e8b879b68cce5b5f61968f2b157d506083a74f52ad6f71d833d538"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "sst_maximum_ranking_existence": {
+      "source_anchors": [
+        {
+          "line_end": 91,
+          "line_start": 90,
+          "publication_locator": "cited publication",
+          "quoted_text": "pi,k ≥ max(pi,j , pj,k ). By simple induction, every SST model has a maximum element and a rank-\ning. And one additional property, that is perhaps more difficult to justify, has proved helpful in",
+          "quoted_text_sha256": "44c0fe92b3a146bb4f67bb1bda89986848c67bbd111ac81854f08516f95008b2"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "strong_stochastic_transitivity": {
+      "source_anchors": [
+        {
+          "line_end": 93,
+          "line_start": 88,
+          "publication_locator": "cited publication",
+          "quoted_text": "But significantly more general, and more realistic, non-parametric, models may also have max-\nima and rankings. A model is strongly stochastically transitive (SST), if i ≥ j and j ≥ k imply\npi,k ≥ max(pi,j , pj,k ). By simple induction, every SST model has a maximum element and a rank-\ning. And one additional property, that is perhaps more difficult to justify, has proved helpful in\nconstructing maxing and sorting PAC algorithms. A tournament satisfies the stochastic triangle\ninequality if i ≥ j and j ≥ k imply that p̃i,k ≤ p̃i,j + p̃j,k .",
+          "quoted_text_sha256": "21ef9323dad464f7cc793a6eed147b58a68ea8349da6d549da4cb8ada5647e70"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "theorem2": {
+      "source_anchors": [
+        {
+          "line_end": 247,
+          "line_start": 239,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 2. S EQ -E LIMINATE(S, ε, δ) uses O( ∣S∣\n                                             ε2\n                                                 log ∣S∣\n                                                      δ\n                                                         ) comparisons, and w.p.≥ 1 − δ outputs an\nε-maximum.\n\n\n                                                       4",
+          "quoted_text_sha256": "4ec56e34bec1b3462c65f15dfbb6a297fb8590591a5dd3a313fa24d0f8dcb743"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem22": {
+      "source_anchors": [
+        {
+          "line_end": 1263,
+          "line_start": 1258,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 22. B ORDA -R ANKING(S, ε, δ) uses 2n\n                                           ε2\n                                              log 2n\n                                                   δ\n                                                     comparisons and w.p.≥ 1 − δ outputs an ε-Borda\nranking.",
+          "quoted_text_sha256": "318f3bd5ab7596a0b375297a449e43734971f7ff70581834b2d16b36c17fd50d"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem6": {
+      "source_anchors": [
+        {
+          "line_end": 364,
+          "line_start": 363,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 6. W.p.≥ 1 − δ, O PT-M AXIMIZE(S, ε, δ) uses O( εn2 log 1δ ) comparisons and outputs an\nε-maximum.",
+          "quoted_text_sha256": "6b26003030644ccc936a4f492166422abd5e0b1e151d93703e61d409155aa5ca"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem7": {
+      "source_anchors": [
+        {
+          "line_end": 414,
+          "line_start": 408,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 7. There exists a model that satisfies SST for which any algorithm requires Ω(n2 ) com-\nparisons to find a 1/4-ranking with probability ≥ 7/8.\n\nWe also present a trivial ε-ranking algorithm in Appendix B.2 that for any stochastic model with\n                                                  2\nranking (Weak Stochastic Transitivity), uses O( nε2 log nδ ) comparisons and outputs an ε-ranking\nw.p.≥ 1 − δ.",
+          "quoted_text_sha256": "d50da13400c5fd12b35be6196e07e086f4167c3346d7321d8db56cb3de51885b"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem8": {
+      "source_anchors": [
+        {
+          "line_end": 448,
+          "line_start": 431,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 8. There exists an algorithm that uses O( εn2 log 1δ ) comparisons and w.p.≥ 1 − δ, outputs\nan ε-Borda maximum.\n\n\n                                                     7\n\fFor ε-Borda ranking, we note that if we compare an element e with ε22 log 2n\n                                                                           δ\n                                                                             random elements, w.p.\n≥ 1 − δ/n, the fraction of times e wins approximates the Borda score of e to an additive error of\n ε\n2\n   . Ranking based on these approximate scores results in an ε-Borda ranking. We present B ORDA -\nR ANKING in C.1 that uses 2n\n                           ε2\n                              log 2n\n                                   δ\n                                     comparisons and w.p.≥ 1 − δ outputs an ε-Borda ranking. Proof\nin C.1.",
+          "quoted_text_sha256": "9f43571a871e14fe062a3e86002e71af0f691473ad26c10c0faba43d6ed9bc1f"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem9": {
+      "source_anchors": [
+        {
+          "line_end": 453,
+          "line_start": 449,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 9. B ORDA -R ANKING(S, ε, δ) uses 2n   ε2\n                                                  log 2n\n                                                       δ\n                                                          comparisons and w.p.≥ 1 − δ outputs an\nε-Borda ranking.",
+          "quoted_text_sha256": "4d6e3a4f108f4e7b3e63e504216b108d40657bf615f1aa1ded535534351c56bd"
+        }
+      ],
+      "source_kind": "theorem"
+    }
+  },
+  "source_artifact_sha256": "22407a45267c62e11b46ea3a6c7c392099d91dae0c469274936b6a3461c59e09",
+  "source_coverage_mode": "named_theoretical_statements"
+}

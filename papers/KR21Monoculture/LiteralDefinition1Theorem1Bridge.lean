@@ -1,6 +1,6 @@
 import KR21Monoculture.Definition2AsymptoticBridge
 import KR21Monoculture.ConditionalForm
-import EconCSLib.SocialChoice.Ranking.SequentialPayoff
+import AppliedModelingLib.SocialChoice.Ranking.SequentialPayoff
 
 /-!
 # Literal Definition 1 to Theorem 1 bridge
@@ -18,8 +18,8 @@ definition-2 and definition-3 premises remain direct caller obligations, and
 every Definition-1 clause is a visible binder in the source-shaped endpoint.
 -/
 
-open EconCSLib Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib Filter
+open AppliedModelingLib.SocialChoice.Ranking
 
 namespace KR21Monoculture
 
@@ -69,16 +69,16 @@ theorem atomwise_tendsto_pure_of_center_atom_tendsto
       Tendsto (fun theta => ((mu theta) a).toReal) atTop
         (nhds (((PMF.pure center : PMF alpha) a).toReal)) := by
   have hwrong_eq : ∀ theta : ℝ,
-      EconCSLib.pmfProb (mu theta) (fun a => a ≠ center) =
+      AppliedModelingLib.pmfProb (mu theta) (fun a => a ≠ center) =
         1 - ((mu theta) center).toReal := by
     intro theta
-    rw [← EconCSLib.pmfProb_singleton (mu theta) center]
+    rw [← AppliedModelingLib.pmfProb_singleton (mu theta) center]
     simpa only [ne_eq, not_false_eq_true] using
-      (EconCSLib.pmfProb_compl (mu theta) (fun a => a = center))
+      (AppliedModelingLib.pmfProb_compl (mu theta) (fun a => a = center))
   have hwrong_tendsto :
-      Tendsto (fun theta => EconCSLib.pmfProb (mu theta) (fun a => a ≠ center))
+      Tendsto (fun theta => AppliedModelingLib.pmfProb (mu theta) (fun a => a ≠ center))
         atTop (nhds 0) := by
-    rw [show (fun theta => EconCSLib.pmfProb (mu theta) (fun a => a ≠ center)) =
+    rw [show (fun theta => AppliedModelingLib.pmfProb (mu theta) (fun a => a ≠ center)) =
       (fun theta => 1 - ((mu theta) center).toReal) by
         funext theta
         exact hwrong_eq theta]
@@ -89,13 +89,13 @@ theorem atomwise_tendsto_pure_of_center_atom_tendsto
   rw [Metric.tendsto_atTop]
   intro epsilon hepsilon
   have hsmall : ∀ᶠ theta : ℝ in atTop,
-      EconCSLib.pmfProb (mu theta) (fun a => a ≠ center) < epsilon :=
+      AppliedModelingLib.pmfProb (mu theta) (fun a => a ≠ center) < epsilon :=
     hwrong_tendsto.eventually (Iio_mem_nhds hepsilon)
   rcases Filter.eventually_atTop.1 hsmall with ⟨lower, hlower⟩
   refine ⟨lower, ?_⟩
   intro theta htheta
   rw [Real.dist_eq]
-  exact EconCSLib.atomwise_close_to_pure_of_wrong_prob_lt
+  exact AppliedModelingLib.atomwise_close_to_pure_of_wrong_prob_lt
     (mu theta) center hepsilon (hlower theta htheta) a
 
 /--
@@ -237,7 +237,7 @@ theorem theorem1Target_of_sourceDefinition1Definition2_fields
         (hdefinition2 theta htheta).2
   · exact hprefers_weaker_competition
   · intro theta htheta pi
-    exact EconCSLib.epsilonContinuousAt_of_continuousAt
+    exact AppliedModelingLib.epsilonContinuousAt_of_continuousAt
       (hatom_continuous theta htheta pi)
   · exact atomwise_tendsto_pure_of_center_atom_tendsto F.dist center hcenter_tendsto
   · exact hremaining_weak

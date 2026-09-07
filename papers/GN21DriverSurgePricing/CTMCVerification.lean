@@ -9,7 +9,7 @@ printed Lemma 9 interval argument: the constructed price is fixed from the
 accept-all primitives before any deviation policy is considered.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped Function ProbabilityTheory Topology ENNReal
 

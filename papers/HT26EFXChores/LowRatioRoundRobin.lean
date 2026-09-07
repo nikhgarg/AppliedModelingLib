@@ -1,4 +1,4 @@
-import EconCSLib.SocialChoice.FairDivision.Chores
+import AppliedModelingLib.SocialChoice.FairDivision.Chores
 import Mathlib.Tactic
 
 /-!
@@ -11,14 +11,14 @@ records the algebraic bridge from the standard goods-EF1 certificate for that
 round-robin procedure to chore EFX in a full (equal-cardinality) round.
 
 The round-robin choice and EF1 argument follow the finite-choice construction
-in GTIL EconCSLib's `Indivisible/RoundRobin.lean` (commit `cef01c7`), adapted
+in GTIL AppliedModelingLib's `Indivisible/RoundRobin.lean` (commit `cef01c7`), adapted
 to the chore namespace.  The conversion below is specific to the He--Tao
 `{1,r}` regime and is proved directly.
 -/
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 variable {Item : Type}
 
@@ -132,7 +132,7 @@ theorem efxForChores_of_equalCard_complementaryEF1
 
 /-- Choose a remaining chore with maximum complementary weight, equivalently a
 minimum-cost remaining chore for the picking agent.  This is the chore-side
-specialization of GTIL EconCSLib's `rawBestGood`. -/
+specialization of GTIL AppliedModelingLib's `rawBestGood`. -/
 noncomputable def lowRatioBestChore
     (r : ℝ) (cost : ChoreCost (Fin 4) Item) (agent : Fin 4)
     (remaining : Finset Item) (hremaining : remaining.Nonempty) : Item :=

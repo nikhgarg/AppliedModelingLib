@@ -1,7 +1,7 @@
 import KR21Monoculture.WeakCompetition
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -15,7 +15,7 @@ where finite lemmas are typically stated in terms of top-candidate probabilities
 -/
 noncomputable def firstChoiceGapMass {n : ℕ}
     (μ : PMF (Ranking n)) (value : Candidate n → ℝ) (c : Candidate n) : ℝ :=
-  EconCSLib.SocialChoice.Ranking.firstChoiceGapMass μ value c
+  AppliedModelingLib.SocialChoice.Ranking.firstChoiceGapMass μ value c
 
 /--
 The collision-probability difference between a better and worse ranking law,
@@ -23,14 +23,14 @@ viewed candidate-by-candidate.
 -/
 noncomputable def firstChoiceCollisionDiff {n : ℕ}
     (μBetter μWorse : PMF (Ranking n)) (c : Candidate n) : ℝ :=
-  EconCSLib.SocialChoice.Ranking.firstChoiceCollisionDiff μBetter μWorse c
+  AppliedModelingLib.SocialChoice.Ranking.firstChoiceCollisionDiff μBetter μWorse c
 
 /-- Summing the first-choice fibers recovers the full expected value gap. -/
 theorem sum_firstChoiceGapMass_eq_expectedGap {n : ℕ}
     (μ : PMF (Ranking n)) (value : Candidate n → ℝ) :
     (∑ c : Candidate n, firstChoiceGapMass μ value c) =
       pmfExp μ (fun π => valueGap value π) :=
-   EconCSLib.SocialChoice.Ranking.sum_firstChoiceGapMass_eq_expectedGap
+   AppliedModelingLib.SocialChoice.Ranking.sum_firstChoiceGapMass_eq_expectedGap
     μ value
 
 /--
@@ -41,7 +41,7 @@ theorem firstChoiceGapMass_nonneg_of_gap_nonneg_onFiber {n : ℕ}
     (μ : PMF (Ranking n)) (value : Candidate n → ℝ) (c : Candidate n)
     (hgap : ∀ π : Ranking n, c = firstChoice π → 0 ≤ valueGap value π) :
     0 ≤ firstChoiceGapMass μ value c :=
-   EconCSLib.SocialChoice.Ranking.firstChoiceGapMass_nonneg_of_gap_nonneg_onFiber
+   AppliedModelingLib.SocialChoice.Ranking.firstChoiceGapMass_nonneg_of_gap_nonneg_onFiber
     μ value c hgap
 
 /--
@@ -53,14 +53,14 @@ theorem expectedRerankingGain_eq_sum_firstChoiceMissProb_mul_firstChoiceGapMass
     expectedRerankingGain μ value =
       ∑ c : Candidate n,
         firstChoiceMissProb μ c * firstChoiceGapMass μ value c := by
-  simpa [expectedRerankingGain, EconCSLib.SocialChoice.Ranking.expectedRerankingGain,
+  simpa [expectedRerankingGain, AppliedModelingLib.SocialChoice.Ranking.expectedRerankingGain,
     firstChoiceMissProb, firstChoiceGapMass,
-    EconCSLib.SocialChoice.Ranking.firstChoiceGapMass,
-    valueGap, EconCSLib.SocialChoice.Ranking.valueGap,
-    rerankingGainOnPair, EconCSLib.SocialChoice.Ranking.rerankingGainOnPair,
-    firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice,
-    secondChoice, EconCSLib.SocialChoice.Ranking.secondChoice] using
-    EconCSLib.SocialChoice.Ranking.expectedRerankingGain_eq_sum_firstChoiceMissProb_mul_firstChoiceGapMass
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceGapMass,
+    valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap,
+    rerankingGainOnPair, AppliedModelingLib.SocialChoice.Ranking.rerankingGainOnPair,
+    firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice,
+    secondChoice, AppliedModelingLib.SocialChoice.Ranking.secondChoice] using
+    AppliedModelingLib.SocialChoice.Ranking.expectedRerankingGain_eq_sum_firstChoiceMissProb_mul_firstChoiceGapMass
       (μ := μ) (value := value)
 
 /--
@@ -77,17 +77,17 @@ theorem expectedFirstMover_sub_secondMoverIndependent_eq_sum_firstChoiceProb_mul
       ∑ c : Candidate n,
         firstChoiceProb μ c * firstChoiceGapMass μ value c := by
   simpa [expectedFirstMoverUtility,
-    EconCSLib.SocialChoice.Ranking.expectedFirstMoverUtility,
+    AppliedModelingLib.SocialChoice.Ranking.expectedFirstMoverUtility,
     expectedSecondMoverIndependent,
-    EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent,
+    AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent,
     firstChoiceProb, firstChoiceGapMass,
-    EconCSLib.SocialChoice.Ranking.firstChoiceGapMass,
-    valueGap, EconCSLib.SocialChoice.Ranking.valueGap,
-    secondMoverUtility, EconCSLib.SocialChoice.Ranking.secondMoverUtility,
-    bestRemainingAfter, EconCSLib.SocialChoice.Ranking.bestRemainingAfter,
-    firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice,
-    secondChoice, EconCSLib.SocialChoice.Ranking.secondChoice] using
-    EconCSLib.SocialChoice.Ranking.expectedFirstMover_sub_secondMoverIndependent_eq_sum_firstChoiceProb_mul_firstChoiceGapMass
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceGapMass,
+    valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap,
+    secondMoverUtility, AppliedModelingLib.SocialChoice.Ranking.secondMoverUtility,
+    bestRemainingAfter, AppliedModelingLib.SocialChoice.Ranking.bestRemainingAfter,
+    firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice,
+    secondChoice, AppliedModelingLib.SocialChoice.Ranking.secondChoice] using
+    AppliedModelingLib.SocialChoice.Ranking.expectedFirstMover_sub_secondMoverIndependent_eq_sum_firstChoiceProb_mul_firstChoiceGapMass
       (μ := μ) (value := value)
 
 /-- Candidate-sum version of the utility-side Definition 2. -/
@@ -113,13 +113,13 @@ theorem expectedCollisionLossDiff_eq_sum_collisionDiff_mul_firstChoiceGapMass
         firstChoiceCollisionDiff μBetter μWorse c *
           firstChoiceGapMass μWorse value c := by
   simpa [firstChoiceCollisionDiff,
-    EconCSLib.SocialChoice.Ranking.firstChoiceCollisionDiff,
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceCollisionDiff,
     firstChoiceProb, firstChoiceGapMass,
-    EconCSLib.SocialChoice.Ranking.firstChoiceGapMass,
-    valueGap, EconCSLib.SocialChoice.Ranking.valueGap,
-    firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice,
-    secondChoice, EconCSLib.SocialChoice.Ranking.secondChoice] using
-    EconCSLib.SocialChoice.Ranking.expectedCollisionLossDiff_eq_sum_collisionDiff_mul_firstChoiceGapMass
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceGapMass,
+    valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap,
+    firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice,
+    secondChoice, AppliedModelingLib.SocialChoice.Ranking.secondChoice] using
+    AppliedModelingLib.SocialChoice.Ranking.expectedCollisionLossDiff_eq_sum_collisionDiff_mul_firstChoiceGapMass
       (μBetter := μBetter) (μWorse := μWorse) (value := value)
 
 /-- Definition 3 grouped by first-choice candidate rather than full rankings. -/

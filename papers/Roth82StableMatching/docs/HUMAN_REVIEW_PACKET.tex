@@ -4,10 +4,17 @@
 % Do not hand-edit generated packets; annotate the PDF or reconcile notes into
 % the paper-local human-review log.
 \documentclass[10pt]{article}
-\usepackage[margin=0.43in]{geometry}
+\usepackage[margin=0.43in,footskip=0.2in]{geometry}
 \usepackage{fontspec}
-\setmainfont{Latin Modern Roman}
-\setmonofont{DejaVu Sans Mono}
+% Use a Unicode-complete main face as well as a Unicode-complete code face.
+% Reviewer reasons and source labels can contain exact Greek symbols outside
+% verbatim blocks; silently dropping one would corrupt the review packet.
+\setmainfont{DejaVu Serif}
+% The broad DejaVu Sans Unicode coverage preserves Lean's mathematical glyphs
+% (including U+2216 set difference and superscript identifiers) in verbatim
+% review blocks.  Its proportional metrics are preferable to silently missing
+% exact semantic text from a narrower monospace font.
+\setmonofont{DejaVu Sans}
 \usepackage{hyperref}
 \usepackage{amssymb}
 \usepackage{fvextra}
@@ -15,7 +22,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.15em}
 \linespread{0.92}
-\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,breaklinks=true}
 \DefineVerbatimEnvironment{ReviewVerbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\scriptsize}
 \newcommand{\reviewerbox}{%
   \par\noindent\fbox{\parbox{0.96\linewidth}{\rule{0pt}{0.38in}}}\par
@@ -36,13 +43,13 @@ specifications, and hash-bound raw-source-to-Spec screening records.
 
 \noindent\textbf{Paper:} Roth82StableMatching\\
 \textbf{Paper id:} \texttt{Roth82StableMatching}\\
-\textbf{Source version:} Mathematics of Operations Research 7(4), 1982, printed pages 617-628\\
+\textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright Mathematics of Operations Research 7(4), 1982, printed pages 617-628}\\
 \textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
-\textbf{Rows:} 21\\
-\textbf{Generated:} 2026-08-18\\
+\textbf{Rows:} 10\\
+\textbf{Generated:} 2026-09-06\\
 \textbf{Source URL:} \href{https://doi.org/10.1287/moor.7.4.617}{official source}
 
-\noindent\fbox{\parbox{0.96\linewidth}{\textbf{Review status:} 0/21 source-claim screens; 0/17 library prerequisite screens. This is a review worksheet while those direct checks remain pending; it is not a final validation receipt.}}\par
+
 
 
 
@@ -55,525 +62,881 @@ log.
 \section*{Open the interactive dashboard}
 The interactive dashboard is an optional alternative to using this PDF; it
 presents the same review surface rather than an additional review requirement.
-After forking and cloning (or pulling) EconCSLib, run the following from the
+After forking and cloning (or pulling) AppliedModelingLib, run the following from the
 repository root. The cache command is needed only the first time in a new clone.
 \begin{ReviewVerbatim}
-cd <your-EconCSLib-checkout>
+cd <your-repository-checkout>
 lake exe cache get
 python3 scripts/review_dashboard.py --paper Roth82StableMatching --serve
 \end{ReviewVerbatim}
 Open \url{http://127.0.0.1:8765/} in a browser and keep that terminal running
-while reviewing. The dashboard records saved annotations in this paper's
+while reviewing. The dashboard records saved annotations in this paper's local
 reviewer-owned review record.
 
 \section*{Contents}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{library-section-0c510c317e2b6223}{Semantic library prerequisites (17; not paper claims)}
+\item \hyperlink{governing-declaration-section-5ef5ef0364b6939c}{Governing Lean declarations (29; supporting context)}
+\item \hyperlink{paper-prerequisite-section-5ef5ef0364b6939c}{Paper-specific semantic prerequisites (12; not paper claims)}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{library-prerequisite-696efabb1e6e61e6}{Assignment M W}
-\item \hyperlink{library-prerequisite-3a48a492dbaa97aa}{EconCSLib.Matching.Assignment.mk}
-\item \hyperlink{library-prerequisite-ae8c7c18274f4768}{EconCSLib.Matching.Assignment.swap}
-\item \hyperlink{library-prerequisite-75d5b066bfbed958}{EconCSLib.Matching.DAState}
-\item \hyperlink{library-prerequisite-1e72e6838a39f31b}{EconCSLib.Matching.DAState.m\_proposals}
-\item \hyperlink{library-prerequisite-165bcbe66e2d4d10}{EconCSLib.Matching.BestRemainingWoman}
-\item \hyperlink{library-prerequisite-2a4544d30767f1f8}{EconCSLib.Matching.DAState.m\_match}
-\item \hyperlink{library-prerequisite-195b6c3333685760}{EconCSLib.Matching.DAState.w\_match}
-\item \hyperlink{library-prerequisite-54486bebfa8220c4}{EconCSLib.Matching.DAState.consistent}
-\item \hyperlink{library-prerequisite-8fc508b4ea79859d}{EconCSLib.Matching.DAState.mk}
-\item \hyperlink{library-prerequisite-676fe9e83c789602}{EconCSLib.Matching.IsActiveMan}
-\item \hyperlink{library-prerequisite-905f5d7f350912ad}{EconCSLib.Matching.exists\_best\_woman}
-\item \hyperlink{library-prerequisite-159b891590b0737c}{EconCSLib.Matching.removeProposal}
-\item \hyperlink{library-prerequisite-d0c1731dee1678fa}{EconCSLib.Matching.daStep}
-\item \hyperlink{library-prerequisite-148cb9561d8b9357}{EconCSLib.Matching.initialDAState}
-\item \hyperlink{library-prerequisite-732520feff67f701}{EconCSLib.Matching.deferredAcceptanceState}
-\item \hyperlink{library-prerequisite-9aab9fc301ec38e5}{EconCSLib.Matching.deferredAcceptance}
+\item \hyperlink{paper-prerequisite-efa58a68b1c17a47}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}complete\allowbreak{}Marriage\allowbreak{}Outcome}
+\item \hyperlink{paper-prerequisite-959836477d3894e7}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}efficient\allowbreak{}Matching\allowbreak{}Procedure}
+\item \hyperlink{paper-prerequisite-4a6f1f4c2cc31f96}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}fills\allowbreak{}Individual\allowbreak{}Quotas}
+\item \hyperlink{paper-prerequisite-bcdb1d603a6bc29f}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}man\allowbreak{}Report\allowbreak{}Strictly\allowbreak{}Ranks\allowbreak{}Partner\allowbreak{}First}
+\item \hyperlink{paper-prerequisite-4ea46caa97f4cf98}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}preference\allowbreak{}Profile}
+\item \hyperlink{paper-prerequisite-0c127f79bf5ff5ac}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}matching\allowbreak{}Procedure}
+\item \hyperlink{paper-prerequisite-3f648194f6cc68b8}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Marriage\allowbreak{}Model}
+\item \hyperlink{paper-prerequisite-42fca1f7c299639c}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Stable\allowbreak{}Marriage}
+\item \hyperlink{paper-prerequisite-44aa864d4a515095}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Men\allowbreak{}Optimal}
+\item \hyperlink{paper-prerequisite-38b3f3ba417296e2}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Stable\allowbreak{}Matching\allowbreak{}Procedure}
+\item \hyperlink{paper-prerequisite-6c23e95d9facee8d}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Women\allowbreak{}Optimal}
+\item \hyperlink{paper-prerequisite-a52c1e717dd94cee}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}truthful\allowbreak{}For\allowbreak{}All\allowbreak{}Agents}
 \end{itemize}
-\item \hyperlink{source-section-f10b5f68e4acf3dc}{Source claims (21)}
+\item \hyperlink{source-section-f10b5f68e4acf3dc}{Source claims (10)}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{source-claim-660a339fbfd3318f}{preferenceProfile\_eq\_source\_definitionSpec}
-\item \hyperlink{source-claim-fd14fbb9277413b7}{completeMarriageOutcome\_iff\_source\_definitionSpec}
-\item \hyperlink{source-claim-de65a07086fc73df}{sourceStableMarriage\_iff\_source\_definitionSpec}
-\item \hyperlink{source-claim-ee021b20b26b9efe}{fillsIndividualQuotas\_iff\_source\_definitionSpec}
-\item \hyperlink{source-claim-a59d544dcd58d682}{sourceStableMatchingProcedure\_iff\_source\_definitionSpec}
-\item \hyperlink{source-claim-238b1f865cc8464c}{truthfulForAllAgents\_iff\_source\_definitionSpec}
-\item \hyperlink{source-claim-c58c00f4b4ad6e83}{efficientMatchingProcedure\_iff\_source\_definitionSpec}
-\item \hyperlink{source-claim-28dc2b89f44923a5}{theorem1\_stable\_outcome\_existsSpec}
-\item \hyperlink{source-claim-e0f372cfa20685ca}{theorem2\_side\_optimal\_stable\_outcomesSpec}
-\item \hyperlink{source-claim-fd8851b538d7c013}{theorem3\_no\_stable\_truthful\_procedureSpec}
-\item \hyperlink{source-claim-3a4281641c18a9e6}{theorem4\_efficient\_truthful\_procedure\_existsSpec}
-\item \hyperlink{source-claim-20d2db0d61f9b81c}{theorem5\_optimal\_side\_truthfulSpec}
-\item \hyperlink{source-claim-b35add4c342a0889}{corollary5\_1\_first\_choice\_need\_not\_be\_misrepresentedSpec}
-\item \hyperlink{source-claim-f2c197ac0692ce06}{lemma1\_simple\_report\_same\_partnerSpec}
-\item \hyperlink{source-claim-46db9470e122c4fe}{lemma2\_simple\_report\_harms\_no\_manSpec}
-\item \hyperlink{source-claim-c7ba28726e90028a}{theorem6\_no\_outcome\_strictly\_better\_for\_all\_menSpec}
-\item \hyperlink{source-claim-775470afdcdc7bf3}{theorem7\_later\_choice\_manipulation\_unavoidableSpec}
-\item \hyperlink{source-claim-f143def46edc881e}{manReportStrictlyRanksPartnerFirst\_iff\_source\_definitionSpec}
-\item \hyperlink{source-claim-e79a67a30eb14eca}{matchingProcedure\_eq\_source\_definitionSpec}
-\item \hyperlink{source-claim-c30c6d5e5f9f5a57}{sideOptimalStableOutcome\_iff\_source\_definitionSpec}
-\item \hyperlink{source-claim-5a318a92fe832efb}{sourceMarriageModel\_iff\_source\_definitionSpec}
+\item \hyperlink{source-claim-28dc2b89f44923a5}{theorem1\_\allowbreak{}stable\_\allowbreak{}outcome\_\allowbreak{}exists\allowbreak{}Spec}
+\item \hyperlink{source-claim-e0f372cfa20685ca}{theorem2\_\allowbreak{}side\_\allowbreak{}optimal\_\allowbreak{}stable\_\allowbreak{}outcomes\allowbreak{}Spec}
+\item \hyperlink{source-claim-fd8851b538d7c013}{theorem3\_\allowbreak{}no\_\allowbreak{}stable\_\allowbreak{}truthful\_\allowbreak{}procedure\allowbreak{}Spec}
+\item \hyperlink{source-claim-3a4281641c18a9e6}{theorem4\_\allowbreak{}efficient\_\allowbreak{}truthful\_\allowbreak{}procedure\_\allowbreak{}exists\allowbreak{}Spec}
+\item \hyperlink{source-claim-20d2db0d61f9b81c}{theorem5\_\allowbreak{}optimal\_\allowbreak{}side\_\allowbreak{}truthful\allowbreak{}Spec}
+\item \hyperlink{source-claim-b35add4c342a0889}{corollary5\_\allowbreak{}1\_\allowbreak{}first\_\allowbreak{}choice\_\allowbreak{}need\_\allowbreak{}not\_\allowbreak{}be\_\allowbreak{}misrepresented\allowbreak{}Spec}
+\item \hyperlink{source-claim-f2c197ac0692ce06}{lemma1\_\allowbreak{}simple\_\allowbreak{}report\_\allowbreak{}same\_\allowbreak{}partner\allowbreak{}Spec}
+\item \hyperlink{source-claim-46db9470e122c4fe}{lemma2\_\allowbreak{}simple\_\allowbreak{}report\_\allowbreak{}harms\_\allowbreak{}no\_\allowbreak{}man\allowbreak{}Spec}
+\item \hyperlink{source-claim-c7ba28726e90028a}{theorem6\_\allowbreak{}no\_\allowbreak{}outcome\_\allowbreak{}strictly\_\allowbreak{}better\_\allowbreak{}for\_\allowbreak{}all\_\allowbreak{}men\allowbreak{}Spec}
+\item \hyperlink{source-claim-775470afdcdc7bf3}{theorem7\_\allowbreak{}later\_\allowbreak{}choice\_\allowbreak{}manipulation\_\allowbreak{}unavoidable\allowbreak{}Spec}
 \end{itemize}
 \end{itemize}
 
 \clearpage
-\hypertarget{library-section-0c510c317e2b6223}{}
-\section*{Material library prerequisites}
-\hypertarget{library-prerequisite-696efabb1e6e61e6}{}
-\subsection*{\small\ttfamily\raggedright Assignment M W}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean declaration type (metadata)}
+\hypertarget{governing-declaration-section-5ef5ef0364b6939c}{}
+\section*{Governing Lean declarations}
+These exact graph-bound declaration bodies are retained by the displayed specifications or reviewed prerequisites. They are supporting context and do not add source-result rows or semantic judgments.
+\hypertarget{governing-declaration-508c084086b006b8}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-Type u_1 → Type u_2 → Type (max u_1 u_2)
-\end{ReviewVerbatim}
+field m_match:
+{M : Type u_1} → {W : Type u_2} → AppliedModelingLib.Matching.Assignment M W → M → Option W
 
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-/-- A matching between Men and Women. -/
-structure Assignment (M W : Type*) where
-  m_match : M → Option W
-  w_match : W → Option M
-  consistent_m : ∀ m w, m_match m = some w ↔ w_match w = some m
-\end{ReviewVerbatim}
+field w_match:
+{M : Type u_1} → {W : Type u_2} → AppliedModelingLib.Matching.Assignment M W → W → Option M
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-3a48a492dbaa97aa}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}Assignment.\allowbreak{}mk}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean declaration type (metadata)}
-\begin{ReviewVerbatim}
-{M : Type u_1} →
-  {W : Type u_2} →
-    (m_match : M → Option W) →
-      (w_match : W → Option M) →
-        (∀ (m : M) (w : W), m_match m = some w ↔ w_match w = some m) → EconCSLib.Matching.Assignment M W
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-library declaration is not registered or discoverable
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-ae8c7c18274f4768}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}Assignment.\allowbreak{}swap}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-{M : Type u_1} →
-  {W : Type u_2} →
-    (mu : EconCSLib.Matching.Assignment M W) → { m_match := mu.w_match, w_match := mu.m_match, consistent_m := ⋯ }
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def swap {M W : Type*} (mu : Assignment M W) : Assignment W M where
-  m_match := mu.w_match
-  w_match := mu.m_match
-  consistent_m w m := (mu.consistent_m m w).symm
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-75d5b066bfbed958}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}DAState}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean declaration type (metadata)}
-\begin{ReviewVerbatim}
-Type u_3 → Type u_4 → Type (max u_3 u_4)
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-structure DAState (M W : Type*) where
-  m_match : M → Option W
-  w_match : W → Option M
-  m_proposals : M → Finset W
-  consistent : ∀ m w, m_match m = some w ↔ w_match w = some m
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-1e72e6838a39f31b}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}DAState.\allowbreak{}m\_\allowbreak{}proposals}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-{M : Type u_3} → {W : Type u_4} → (self : EconCSLib.Matching.DAState M W) → (a : M) → self.3 a
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-library declaration is not registered or discoverable
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-165bcbe66e2d4d10}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}BestRemainingWoman}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-∀ {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (s : EconCSLib.Matching.DAState M W) (m : M) (w : W),
-  w ∈ s.m_proposals m ∧ 0 ≤ val_m m w ∧ ∀ w' ∈ s.m_proposals m, 0 ≤ val_m m w' → val_m m w' ≤ val_m m w
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def BestRemainingWoman (val_m : M → W → ℝ) (s : DAState M W) (m : M) (w : W) : Prop :=
-  w ∈ s.m_proposals m ∧ 0 ≤ val_m m w ∧
-  ∀ w' ∈ s.m_proposals m, 0 ≤ val_m m w' → val_m m w' ≤ val_m m w
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-2a4544d30767f1f8}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}DAState.\allowbreak{}m\_\allowbreak{}match}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-{M : Type u_3} → {W : Type u_4} → (self : EconCSLib.Matching.DAState M W) → (a : M) → self.1 a
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-library declaration is not registered or discoverable
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-195b6c3333685760}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}DAState.\allowbreak{}w\_\allowbreak{}match}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-{M : Type u_3} → {W : Type u_4} → (self : EconCSLib.Matching.DAState M W) → (a : W) → self.2 a
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-library declaration is not registered or discoverable
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-54486bebfa8220c4}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}DAState.\allowbreak{}consistent}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean declaration type (metadata)}
-\begin{ReviewVerbatim}
-∀ {M : Type u_3} {W : Type u_4} (self : EconCSLib.Matching.DAState M W) (m : M) (w : W),
+field consistent_m:
+∀ {M : Type u_1} {W : Type u_2} (self : AppliedModelingLib.Matching.Assignment M W) (m : M) (w : W),
   self.m_match m = some w ↔ self.w_match w = some m
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+
+\hypertarget{governing-declaration-5c4e9a523aaa427b}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment.\allowbreak{}swap}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-library declaration is not registered or discoverable
+type:
+{M : Type u_1} →
+  {W : Type u_2} → AppliedModelingLib.Matching.Assignment M W → AppliedModelingLib.Matching.Assignment W M
+
+value:
+fun {M : Type u_1} {W : Type u_2} (mu : AppliedModelingLib.Matching.Assignment M W) =>
+  { m_match := mu.w_match, w_match := mu.m_match,
+    consistent_m := AppliedModelingLib.Matching.Assignment.swap._proof_1 mu }
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-8fc508b4ea79859d}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}DAState.\allowbreak{}mk}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean declaration type (metadata)}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\end{itemize}
+\hypertarget{governing-declaration-5a30d5393719ccd5}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}DA\allowbreak{}State}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-{M : Type u_3} →
-  {W : Type u_4} →
-    (m_match : M → Option W) →
-      (w_match : W → Option M) →
-        (M → Finset W) → (∀ (m : M) (w : W), m_match m = some w ↔ w_match w = some m) → EconCSLib.Matching.DAState M W
+field m_match:
+{M : Type u_3} → {W : Type u_4} → AppliedModelingLib.Matching.DAState M W → M → Option W
+
+field w_match:
+{M : Type u_3} → {W : Type u_4} → AppliedModelingLib.Matching.DAState M W → W → Option M
+
+field m_proposals:
+{M : Type u_3} → {W : Type u_4} → AppliedModelingLib.Matching.DAState M W → M → Finset W
+
+field consistent:
+∀ {M : Type u_3} {W : Type u_4} (self : AppliedModelingLib.Matching.DAState M W) (m : M) (w : W),
+  self.m_match m = some w ↔ self.w_match w = some m
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+
+\hypertarget{governing-declaration-dd9d2304c3651745}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Best\allowbreak{}Remaining\allowbreak{}Woman}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-library declaration is not registered or discoverable
+type:
+{M : Type u_1} → {W : Type u_2} → (M → W → ℝ) → AppliedModelingLib.Matching.DAState M W → M → W → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (s : AppliedModelingLib.Matching.DAState M W) (m : M) (w : W) =>
+  w ∈ s.m_proposals m ∧ 0 ≤ val_m m w ∧ ∀ w' ∈ s.m_proposals m, 0 ≤ val_m m w' → val_m m w' ≤ val_m m w
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-676fe9e83c789602}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}IsActiveMan}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-5a30d5393719ccd5}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}DA\allowbreak{}State}
+\end{itemize}
+\hypertarget{governing-declaration-288bbfdb71174960}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Is\allowbreak{}Active\allowbreak{}Man}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-∀ {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (s : EconCSLib.Matching.DAState M W) (m : M),
+type:
+{M : Type u_1} → {W : Type u_2} → (M → W → ℝ) → AppliedModelingLib.Matching.DAState M W → M → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (s : AppliedModelingLib.Matching.DAState M W) (m : M) =>
   s.m_match m = none ∧ ∃ w ∈ s.m_proposals m, 0 ≤ val_m m w
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-5a30d5393719ccd5}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}DA\allowbreak{}State}
+\end{itemize}
+\hypertarget{governing-declaration-f2a8c67fdcdfb001}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}initial\allowbreak{}DA\allowbreak{}State}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-def IsActiveMan (val_m : M → W → ℝ) (s : DAState M W) (m : M) : Prop :=
-  s.m_match m = none ∧ ∃ w ∈ s.m_proposals m, 0 ≤ val_m m w
+type:
+(M : Type u_3) → (W : Type u_4) → [Fintype W] → AppliedModelingLib.Matching.DAState M W
+
+value:
+fun (M : Type u_3) (W : Type u_4) [Fintype W] =>
+  { m_match := fun (x : M) => none, w_match := fun (x : W) => none, m_proposals := fun (x : M) => Finset.univ,
+    consistent := AppliedModelingLib.Matching.initialDAState._proof_1 M W }
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-905f5d7f350912ad}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}exists\_\allowbreak{}best\_\allowbreak{}woman}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean declaration type (metadata)}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-5a30d5393719ccd5}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}DA\allowbreak{}State}
+\end{itemize}
+\hypertarget{governing-declaration-0f67fd6f46dbc7be}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}remove\allowbreak{}Proposal}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-∀ {M : Type u_1} {W : Type u_2} [Fintype M] [Fintype W] [DecidableEq M] [DecidableEq W] (val_m : M → W → ℝ)
-  (s : EconCSLib.Matching.DAState M W) (m : M),
-  EconCSLib.Matching.IsActiveMan val_m s m → ∃ w, EconCSLib.Matching.BestRemainingWoman val_m s m w
+type:
+{M : Type u_1} →
+  {W : Type u_2} → [DecidableEq M] → [DecidableEq W] → AppliedModelingLib.Matching.DAState M W → M → W → M → Finset W
+
+value:
+fun {M : Type u_1} {W : Type u_2} [DecidableEq M] [DecidableEq W] (s : AppliedModelingLib.Matching.DAState M W) (m : M)
+    (w : W) (a : M) =>
+  if a = m then s.m_proposals m \ {w} else s.m_proposals a
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-5a30d5393719ccd5}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}DA\allowbreak{}State}
+\end{itemize}
+\hypertarget{governing-declaration-8c1fcfb37dd0c79c}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}da\allowbreak{}Step}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-lemma exists_best_woman (val_m : M → W → ℝ) (s : DAState M W) (m : M)
-    (hact : IsActiveMan val_m s m) : ∃ w, BestRemainingWoman val_m s m w
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-159b891590b0737c}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}removeProposal}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
+type:
 {M : Type u_1} →
   {W : Type u_2} →
-    [inst : DecidableEq M] →
-      [inst_1 : DecidableEq W] →
-        (s : EconCSLib.Matching.DAState M W) →
-          (m : M) → (w : W) → (a : M) → if a = m then s.m_proposals m \ {w} else s.m_proposals a
-\end{ReviewVerbatim}
+    [Fintype M] →
+      [Fintype W] →
+        [DecidableEq M] →
+          [DecidableEq W] →
+            (M → W → ℝ) →
+              (W → M → ℝ) → AppliedModelingLib.Matching.DAState M W → AppliedModelingLib.Matching.DAState M W
 
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def removeProposal (s : DAState M W) (m : M) (w : W) : M → Finset W :=
-  fun m' => if m' = m then s.m_proposals m \ {w} else s.m_proposals m'
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-d0c1731dee1678fa}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}daStep}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-{M : Type u_1} →
-  {W : Type u_2} →
-    [inst : Fintype M] →
-      [inst_1 : Fintype W] →
-        [inst_2 : DecidableEq M] →
-          [inst_3 : DecidableEq W] →
-            (val_m : M → W → ℝ) →
-              (val_w : W → M → ℝ) →
-                (s : EconCSLib.Matching.DAState M W) →
-                  have x := Classical.propDecidable (∃ m, EconCSLib.Matching.IsActiveMan val_m s m);
-                  if h : ∃ m, EconCSLib.Matching.IsActiveMan val_m s m then
-                    let m := Classical.choose h;
-                    have hact := ⋯;
-                    have w_exists := ⋯;
-                    let w := Classical.choose w_exists;
-                    have hw_best := ⋯;
-                    have new_proposals := EconCSLib.Matching.removeProposal s m w;
-                    let m_current := s.w_match w;
-                    have accepts :=
-                      match m_current with
-                      | none => 0 ≤ val_w w m
-                      | some m' => val_w w m' < val_w w m;
-                    have x := Classical.propDecidable accepts;
-                    if hacc : accepts then
-                      let new_w_match := Function.update s.w_match w (some m);
-                      let new_m_match := fun m'' =>
-                        if m'' = m then some w else if m_current = some m'' then none else s.m_match m'';
-                      { m_match := new_m_match, w_match := new_w_match, m_proposals := new_proposals, consistent := ⋯ }
-                    else { m_match := s.m_match, w_match := s.w_match, m_proposals := new_proposals, consistent := ⋯ }
-                  else s
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-noncomputable def daStep (val_m : M → W → ℝ) (val_w : W → M → ℝ)
-    (s : DAState M W) : DAState M W :=
-  have _ : Decidable (∃ m, IsActiveMan val_m s m) := Classical.propDecidable _
-  if h : ∃ m, IsActiveMan val_m s m then
-    let m := Classical.choose h
-    let hact := Classical.choose_spec h
-    let w_exists := exists_best_woman val_m s m hact
-    let w := Classical.choose w_exists
-    let hw_best := Classical.choose_spec w_exists
-    let new_proposals := removeProposal s m w
-    let m_current := s.w_match w
-    let accepts :=
+value:
+fun {M : Type u_1} {W : Type u_2} [Fintype M] [Fintype W] [DecidableEq M] [DecidableEq W] (val_m : M → W → ℝ)
+    (val_w : W → M → ℝ) (s : AppliedModelingLib.Matching.DAState M W) =>
+  have x : Decidable (∃ (m : M), AppliedModelingLib.Matching.IsActiveMan val_m s m) :=
+    Classical.propDecidable (∃ (m : M), AppliedModelingLib.Matching.IsActiveMan val_m s m);
+  if h : ∃ (m : M), AppliedModelingLib.Matching.IsActiveMan val_m s m then
+    let m : M := Classical.choose h;
+    have hact : AppliedModelingLib.Matching.IsActiveMan val_m s (Classical.choose h) :=
+      AppliedModelingLib.Matching.daStep._proof_1 val_m s h;
+    have w_exists : ∃ (w : W), AppliedModelingLib.Matching.BestRemainingWoman val_m s m w :=
+      AppliedModelingLib.Matching.exists_best_woman val_m s m hact;
+    let w : W := Classical.choose w_exists;
+    have hw_best : AppliedModelingLib.Matching.BestRemainingWoman val_m s m (Classical.choose w_exists) :=
+      AppliedModelingLib.Matching.daStep._proof_3 val_m s h;
+    have new_proposals : M → Finset W := AppliedModelingLib.Matching.removeProposal s m w;
+    let m_current : Option M := s.w_match w;
+    have accepts : Prop :=
       match m_current with
       | none => 0 ≤ val_w w m
-      | some m' => val_w w m' < val_w w m
-    have _ : Decidable accepts := Classical.propDecidable _
+      | some m' => val_w w m' < val_w w m;
+    have x : Decidable accepts := Classical.propDecidable accepts;
     if hacc : accepts then
-      let new_w_match := Function.update s.w_match w (some m)
-      let new_m_match := fun m'' =>
-        if m'' = m then some w
-        else if m_current = some m'' then none
-        else s.m_match m''
-      { m_match := new_m_match
-        w_match := new_w_match
-        m_proposals := new_proposals
-        consistent := by
-          simpa [new_m_match, new_w_match, m_current] using
-            acceptMatch_consistent s hact.1 }
-    else
-      { s with m_proposals := new_proposals }
-  else
-    s
+      let new_w_match : W → Option M := Function.update s.w_match w (some m);
+      let new_m_match : M → Option W := fun (m'' : M) =>
+        if m'' = m then some w else if m_current = some m'' then none else s.m_match m'';
+      { m_match := new_m_match, w_match := new_w_match, m_proposals := new_proposals,
+        consistent := AppliedModelingLib.Matching.daStep._proof_4 val_m s h }
+    else { m_match := s.m_match, w_match := s.w_match, m_proposals := new_proposals, consistent := s.consistent }
+  else s
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-148cb9561d8b9357}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}initialDAState}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-dd9d2304c3651745}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Best\allowbreak{}Remaining\allowbreak{}Woman}
+\item \hyperlink{governing-declaration-5a30d5393719ccd5}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}DA\allowbreak{}State}
+\item \hyperlink{governing-declaration-288bbfdb71174960}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Is\allowbreak{}Active\allowbreak{}Man}
+\item \hyperlink{governing-declaration-0f67fd6f46dbc7be}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}remove\allowbreak{}Proposal}
+\end{itemize}
+\hypertarget{governing-declaration-b911e64803613d12}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}deferred\allowbreak{}Acceptance\allowbreak{}State}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-(M : Type u_3) →
-  (W : Type u_4) →
-    [inst : Fintype W] →
-      { m_match := fun x => none, w_match := fun x => none, m_proposals := fun x => Finset.univ, consistent := ⋯ }
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-def initialDAState (M W : Type*) [Fintype W] : DAState M W where
-  m_match _ := none
-  w_match _ := none
-  m_proposals _ := Finset.univ
-  consistent m w := by simp
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-732520feff67f701}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}deferredAcceptanceState}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
+type:
 {M : Type u_1} →
   {W : Type u_2} →
-    [inst : Fintype M] →
-      [inst_1 : Fintype W] →
-        [inst_2 : DecidableEq M] →
-          [inst_3 : DecidableEq W] →
-            (val_m : M → W → ℝ) →
-              (val_w : W → M → ℝ) →
-                have max_steps := Fintype.card M * Fintype.card W;
-                List.foldl (fun s x => EconCSLib.Matching.daStep val_m val_w s) (EconCSLib.Matching.initialDAState M W)
-                  (List.range max_steps)
+    [Fintype M] →
+      [Fintype W] →
+        [DecidableEq M] → [DecidableEq W] → (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.DAState M W
+
+value:
+fun {M : Type u_1} {W : Type u_2} [Fintype M] [Fintype W] [DecidableEq M] [DecidableEq W] (val_m : M → W → ℝ)
+    (val_w : W → M → ℝ) =>
+  have max_steps : ℕ := Fintype.card M * Fintype.card W;
+  List.foldl
+    (fun (s : AppliedModelingLib.Matching.DAState M W) (x : ℕ) => AppliedModelingLib.Matching.daStep val_m val_w s)
+    (AppliedModelingLib.Matching.initialDAState M W) (List.range max_steps)
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-5a30d5393719ccd5}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}DA\allowbreak{}State}
+\item \hyperlink{governing-declaration-8c1fcfb37dd0c79c}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}da\allowbreak{}Step}
+\item \hyperlink{governing-declaration-f2a8c67fdcdfb001}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}initial\allowbreak{}DA\allowbreak{}State}
+\end{itemize}
+\hypertarget{governing-declaration-aa54bd3fb9fa7870}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}deferred\allowbreak{}Acceptance}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-noncomputable def deferredAcceptanceState (val_m : M → W → ℝ) (val_w : W → M → ℝ) : DAState M W :=
-  let max_steps := Fintype.card M * Fintype.card W
-  (List.range max_steps).foldl (fun s _ => daStep val_m val_w s) (initialDAState M W)
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-9aab9fc301ec38e5}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Matching.\allowbreak{}deferredAcceptance}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
+type:
 {M : Type u_1} →
   {W : Type u_2} →
-    [inst : Fintype M] →
-      [inst_1 : Fintype W] →
-        [inst_2 : DecidableEq M] →
-          [inst_3 : DecidableEq W] →
-            (val_m : M → W → ℝ) →
-              (val_w : W → M → ℝ) →
-                { m_match := (EconCSLib.Matching.deferredAcceptanceState val_m val_w).m_match,
-                  w_match := (EconCSLib.Matching.deferredAcceptanceState val_m val_w).w_match, consistent_m := ⋯ }
+    [Fintype M] →
+      [Fintype W] →
+        [DecidableEq M] → [DecidableEq W] → (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W
+
+value:
+fun {M : Type u_1} {W : Type u_2} [Fintype M] [Fintype W] [DecidableEq M] [DecidableEq W] (val_m : M → W → ℝ)
+    (val_w : W → M → ℝ) =>
+  { m_match := (AppliedModelingLib.Matching.deferredAcceptanceState val_m val_w).m_match,
+    w_match := (AppliedModelingLib.Matching.deferredAcceptanceState val_m val_w).w_match,
+    consistent_m := AppliedModelingLib.Matching.deferredAcceptance._proof_1 val_m val_w }
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-5a30d5393719ccd5}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}DA\allowbreak{}State}
+\item \hyperlink{governing-declaration-b911e64803613d12}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}deferred\allowbreak{}Acceptance\allowbreak{}State}
+\end{itemize}
+\hypertarget{governing-declaration-0f7292fceafe9196}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}Many\allowbreak{}To\allowbreak{}Many\allowbreak{}Quota\allowbreak{}Assignment}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-noncomputable def deferredAcceptance (val_m : M → W → ℝ) (val_w : W → M → ℝ) : Assignment M W where
-  m_match := (deferredAcceptanceState val_m val_w).m_match
-  w_match := (deferredAcceptanceState val_m val_w).w_match
-  consistent_m := (deferredAcceptanceState val_m val_w).consistent
+field partnersM:
+{M : Type u_1} → {W : Type u_2} → Roth82StableMatching.PaperInterface.ManyToManyQuotaAssignment M W → M → Set W
+
+field partnersW:
+{M : Type u_1} → {W : Type u_2} → Roth82StableMatching.PaperInterface.ManyToManyQuotaAssignment M W → W → Set M
+
+field consistent:
+∀ {M : Type u_1} {W : Type u_2} (self : Roth82StableMatching.PaperInterface.ManyToManyQuotaAssignment M W) (m : M)
+  (w : W), w ∈ self.partnersM m ↔ m ∈ self.partnersW w
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
+
+\hypertarget{governing-declaration-7357e0557237bc7e}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}men\allowbreak{}Deferred\allowbreak{}Acceptance}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} →
+  {W : Type u_2} →
+    [Fintype M] →
+      [Fintype W] →
+        [DecidableEq M] → [DecidableEq W] → (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W
+
+value:
+fun {M : Type u_1} {W : Type u_2} [Fintype M] [Fintype W] [DecidableEq M] [DecidableEq W] (val_m : M → W → ℝ)
+    (val_w : W → M → ℝ) =>
+  AppliedModelingLib.Matching.deferredAcceptance val_m val_w
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-aa54bd3fb9fa7870}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}deferred\allowbreak{}Acceptance}
+\end{itemize}
+\hypertarget{governing-declaration-f4b775d19717e062}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}pareto\allowbreak{}Optimal}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} → {W : Type u_2} → (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (val_w : W → M → ℝ)
+    (mu : AppliedModelingLib.Matching.Assignment M W) =>
+  Roth82StableMatching.PaperInterface.completeMarriageOutcome mu ∧
+    ¬∃ (nu : AppliedModelingLib.Matching.Assignment M W),
+        Roth82StableMatching.PaperInterface.completeMarriageOutcome nu ∧
+          (∀ (m : M),
+              (match mu.m_match m with
+                | none => 0
+                | some w => val_m m w) ≤
+                match nu.m_match m with
+                | none => 0
+                | some w => val_m m w) ∧
+            (∀ (w : W),
+                (match mu.w_match w with
+                  | none => 0
+                  | some m => val_w w m) ≤
+                  match nu.w_match w with
+                  | none => 0
+                  | some m => val_w w m) ∧
+              ((∃ (m : M),
+                  (match mu.m_match m with
+                    | none => 0
+                    | some w => val_m m w) <
+                    match nu.m_match m with
+                    | none => 0
+                    | some w => val_m m w) ∨
+                ∃ (w : W),
+                  (match mu.w_match w with
+                    | none => 0
+                    | some m => val_w w m) <
+                    match nu.w_match w with
+                    | none => 0
+                    | some m => val_w w m)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{paper-prerequisite-efa58a68b1c17a47}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}complete\allowbreak{}Marriage\allowbreak{}Outcome}
+\end{itemize}
+\hypertarget{governing-declaration-d06ec2a2987f0c72}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}strict\allowbreak{}Marriage\allowbreak{}Domain}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} → {W : Type u_2} → (M → W → ℝ) → (W → M → ℝ) → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (val_w : W → M → ℝ) =>
+  (∀ (m : M) (w w' : W), val_m m w = val_m m w' → w = w') ∧
+    (∀ (w : W) (m m' : M), val_w w m = val_w w m' → m = m') ∧
+      (∀ (m : M) (w : W), 0 < val_m m w) ∧ ∀ (w : W) (m : M), 0 < val_w w m
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-4613872a443c5231}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}strict\allowbreak{}Preference\allowbreak{}Profile}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} → {W : Type u_2} → (M → W → ℝ) → (W → M → ℝ) → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (val_w : W → M → ℝ) =>
+  (∀ (m : M) (w w' : W), val_m m w = val_m m w' → w = w') ∧ ∀ (w : W) (m m' : M), val_w w m = val_w w m' → m = m'
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-dfbb1ea119053a17}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}unstable\allowbreak{}Marriage}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} → {W : Type u_2} → (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (val_w : W → M → ℝ)
+    (mu : AppliedModelingLib.Matching.Assignment M W) =>
+  ∃ (m : M) (w : W),
+    (match mu.m_match m with
+        | none => 0
+        | some w' => val_m m w') <
+        val_m m w ∧
+      (match mu.w_match w with
+        | none => 0
+        | some m' => val_w w m') <
+        val_w w m
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\end{itemize}
+\hypertarget{governing-declaration-13c08a3bc523499b}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}women\allowbreak{}Deferred\allowbreak{}Acceptance}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} →
+  {W : Type u_2} →
+    [Fintype M] →
+      [Fintype W] →
+        [DecidableEq M] → [DecidableEq W] → (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W
+
+value:
+fun {M : Type u_1} {W : Type u_2} [Fintype M] [Fintype W] [DecidableEq M] [DecidableEq W] (val_m : M → W → ℝ)
+    (val_w : W → M → ℝ) =>
+  (AppliedModelingLib.Matching.deferredAcceptance val_w val_m).swap
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-5c4e9a523aaa427b}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment.\allowbreak{}swap}
+\item \hyperlink{governing-declaration-aa54bd3fb9fa7870}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}deferred\allowbreak{}Acceptance}
+\end{itemize}
+\hypertarget{governing-declaration-0c153381badbbb56}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Theorem3\allowbreak{}Agent}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+Type
+
+value:
+Fin 3
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-cc45a763435d5ea8}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}matching\_\allowbreak{}val\allowbreak{}M}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} → {W : Type u_2} → (M → W → ℝ) → M → Option W → ℝ
+
+value:
+fun {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (m : M) (w : Option W) =>
+  match w with
+  | none => 0
+  | some w' => val_m m w'
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-ffa246b79d7ac936}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}matching\_\allowbreak{}val\allowbreak{}W}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} → {W : Type u_2} → (W → M → ℝ) → W → Option M → ℝ
+
+value:
+fun {M : Type u_1} {W : Type u_2} (val_w : W → M → ℝ) (w : W) (m : Option M) =>
+  match m with
+  | none => 0
+  | some m' => val_w w m'
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-ecdbfb35ba925628}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}is\_\allowbreak{}stable}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} → {W : Type u_2} → (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (val_w : W → M → ℝ)
+    (mu : AppliedModelingLib.Matching.Assignment M W) =>
+  (∀ (m : M), 0 ≤ Roth82StableMatching.paper_matching_valM val_m m (mu.m_match m)) ∧
+    (∀ (w : W), 0 ≤ Roth82StableMatching.paper_matching_valW val_w w (mu.w_match w)) ∧
+      ∀ (m : M) (w : W),
+        Roth82StableMatching.paper_matching_valM val_m m (mu.m_match m) < val_m m w →
+          Roth82StableMatching.paper_matching_valW val_w w (mu.w_match w) < val_w w m → False
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-cc45a763435d5ea8}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}matching\_\allowbreak{}val\allowbreak{}M}
+\item \hyperlink{governing-declaration-ffa246b79d7ac936}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}matching\_\allowbreak{}val\allowbreak{}W}
+\end{itemize}
+\hypertarget{governing-declaration-167d49d4619a658f}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}profitable\_\allowbreak{}man\_\allowbreak{}misreport}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} →
+  {W : Type u_2} →
+    [DecidableEq M] →
+      ((M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W) →
+        (M → W → ℝ) → (W → M → ℝ) → M → (W → ℝ) → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} [DecidableEq M]
+    (mechanism : (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W) (val_m : M → W → ℝ)
+    (val_w : W → M → ℝ) (m : M) (report_m : W → ℝ) =>
+  Roth82StableMatching.paper_matching_valM val_m m ((mechanism val_m val_w).m_match m) <
+    Roth82StableMatching.paper_matching_valM val_m m ((mechanism (Function.update val_m m report_m) val_w).m_match m)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-cc45a763435d5ea8}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}matching\_\allowbreak{}val\allowbreak{}M}
+\end{itemize}
+\hypertarget{governing-declaration-9bd30c48345ff631}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}profitable\_\allowbreak{}woman\_\allowbreak{}misreport}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} →
+  {W : Type u_2} →
+    [DecidableEq W] →
+      ((M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W) →
+        (M → W → ℝ) → (W → M → ℝ) → W → (M → ℝ) → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} [DecidableEq W]
+    (mechanism : (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W) (val_m : M → W → ℝ)
+    (val_w : W → M → ℝ) (w : W) (report_w : M → ℝ) =>
+  Roth82StableMatching.paper_matching_valW val_w w ((mechanism val_m val_w).w_match w) <
+    Roth82StableMatching.paper_matching_valW val_w w ((mechanism val_m (Function.update val_w w report_w)).w_match w)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-ffa246b79d7ac936}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}matching\_\allowbreak{}val\allowbreak{}W}
+\end{itemize}
+\hypertarget{governing-declaration-0a8b32ef4c5240a6}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}rank\_\allowbreak{}of\_\allowbreak{}choice}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{A : Type u_1} → [Fintype A] → [DecidableEq A] → (A → ℝ) → A → ℕ
+
+value:
+fun {A : Type u_1} [Fintype A] [DecidableEq A] (score : A → ℝ) (a : A) => {b : A | score a < score b}.card + 1
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-ce1e5725c9164a18}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}report\_\allowbreak{}misrepresents\_\allowbreak{}kth\_\allowbreak{}choice}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{A : Type u_1} → [Fintype A] → [DecidableEq A] → (A → ℝ) → (A → ℝ) → ℕ → Prop
+
+value:
+fun {A : Type u_1} [Fintype A] [DecidableEq A] (true_score report_score : A → ℝ) (k : ℕ) =>
+  ∃ (a : A),
+    Roth82StableMatching.paper_rank_of_choice true_score a = k ∧
+      Roth82StableMatching.paper_rank_of_choice report_score a ≠ k
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-0a8b32ef4c5240a6}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}rank\_\allowbreak{}of\_\allowbreak{}choice}
+\end{itemize}
+\hypertarget{governing-declaration-068b689808887691}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}strict\_\allowbreak{}marriage\_\allowbreak{}domain}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} → {W : Type u_2} → (M → W → ℝ) → (W → M → ℝ) → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (val_w : W → M → ℝ) =>
+  (∀ (m : M) (w w' : W), val_m m w = val_m m w' → w = w') ∧
+    (∀ (w : W) (m m' : M), val_w w m = val_w w m' → m = m') ∧
+      (∀ (m : M) (w : W), 0 < val_m m w) ∧ ∀ (w : W) (m : M), 0 < val_w w m
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-1b38d0058a2355f4}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}stable\_\allowbreak{}matching\_\allowbreak{}procedure\_\allowbreak{}on\_\allowbreak{}strict\_\allowbreak{}marriage\_\allowbreak{}domain}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} → {W : Type u_2} → ((M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W) → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2}
+    (mechanism : (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W) =>
+  ∀ (val_m : M → W → ℝ) (val_w : W → M → ℝ),
+    Roth82StableMatching.paper_strict_marriage_domain val_m val_w →
+      Roth82StableMatching.paper_is_stable val_m val_w (mechanism val_m val_w)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-ecdbfb35ba925628}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}is\_\allowbreak{}stable}
+\item \hyperlink{governing-declaration-068b689808887691}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}strict\_\allowbreak{}marriage\_\allowbreak{}domain}
+\end{itemize}
+\hypertarget{governing-declaration-0ddc5fa6f82ccbe5}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}stable\_\allowbreak{}procedure\_\allowbreak{}has\_\allowbreak{}profitable\_\allowbreak{}strict\_\allowbreak{}kth\_\allowbreak{}choice\_\allowbreak{}misreport}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} →
+  {W : Type u_2} →
+    [Fintype M] →
+      [Fintype W] →
+        [DecidableEq M] →
+          [DecidableEq W] → ℕ → ((M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W) → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} [Fintype M] [Fintype W] [DecidableEq M] [DecidableEq W] (k : ℕ)
+    (mechanism : (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W) =>
+  ∃ (val_m : M → W → ℝ) (val_w : W → M → ℝ),
+    Roth82StableMatching.paper_strict_marriage_domain val_m val_w ∧
+      ((∃ (m : M) (report_m : W → ℝ),
+          Roth82StableMatching.paper_strict_marriage_domain (Function.update val_m m report_m) val_w ∧
+            Roth82StableMatching.paper_report_misrepresents_kth_choice (val_m m) report_m k ∧
+              Roth82StableMatching.paper_profitable_man_misreport mechanism val_m val_w m report_m) ∨
+        ∃ (w : W) (report_w : M → ℝ),
+          Roth82StableMatching.paper_strict_marriage_domain val_m (Function.update val_w w report_w) ∧
+            Roth82StableMatching.paper_report_misrepresents_kth_choice (val_w w) report_w k ∧
+              Roth82StableMatching.paper_profitable_woman_misreport mechanism val_m val_w w report_w)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-167d49d4619a658f}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}profitable\_\allowbreak{}man\_\allowbreak{}misreport}
+\item \hyperlink{governing-declaration-9bd30c48345ff631}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}profitable\_\allowbreak{}woman\_\allowbreak{}misreport}
+\item \hyperlink{governing-declaration-ce1e5725c9164a18}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}report\_\allowbreak{}misrepresents\_\allowbreak{}kth\_\allowbreak{}choice}
+\item \hyperlink{governing-declaration-068b689808887691}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}strict\_\allowbreak{}marriage\_\allowbreak{}domain}
+\end{itemize}
+\hypertarget{governing-declaration-d7d2f9cb7d4bef58}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}no\_\allowbreak{}stable\_\allowbreak{}procedure\_\allowbreak{}avoids\_\allowbreak{}strict\_\allowbreak{}kth\_\allowbreak{}choice\_\allowbreak{}manipulation\_\allowbreak{}on}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+(M : Type u_1) → (W : Type u_2) → [Fintype M] → [Fintype W] → [DecidableEq M] → [DecidableEq W] → ℕ → Prop
+
+value:
+fun (M : Type u_1) (W : Type u_2) [Fintype M] [Fintype W] [DecidableEq M] [DecidableEq W] (k : ℕ) =>
+  ∀ (mechanism : (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W),
+    Roth82StableMatching.paper_stable_matching_procedure_on_strict_marriage_domain mechanism →
+      Roth82StableMatching.paper_stable_procedure_has_profitable_strict_kth_choice_misreport k mechanism
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-1b38d0058a2355f4}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}stable\_\allowbreak{}matching\_\allowbreak{}procedure\_\allowbreak{}on\_\allowbreak{}strict\_\allowbreak{}marriage\_\allowbreak{}domain}
+\item \hyperlink{governing-declaration-0ddc5fa6f82ccbe5}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}stable\_\allowbreak{}procedure\_\allowbreak{}has\_\allowbreak{}profitable\_\allowbreak{}strict\_\allowbreak{}kth\_\allowbreak{}choice\_\allowbreak{}misreport}
+\end{itemize}
+\clearpage
+\hypertarget{paper-prerequisite-section-5ef5ef0364b6939c}{}
+\section*{Paper-specific semantic prerequisites}
+\hypertarget{paper-prerequisite-efa58a68b1c17a47}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}complete\allowbreak{}Marriage\allowbreak{}Outcome}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}complete\allowbreak{}Marriage\allowbreak{}Outcome\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 140-\allowbreak{}145\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+An outcome of the (monogamous) marriage problem is a onemen and women, i.e., an invertible function x: M - W. An outco
+
+by x = [(ml,x(ml)),(m2,x(m2)),. .. , (mn,x(mM))] where x(mi
+
+matched with man m,, and x- (wj) = mi is the man matched wit
+A matching x is stable if no man and no woman who are not m
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} → {W : Type u_2} → AppliedModelingLib.Matching.Assignment M W → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} (mu : AppliedModelingLib.Matching.Assignment M W) =>
+  (∀ (m : M), ∃ (w : W), mu.m_match m = some w) ∧ ∀ (w : W), ∃ (m : M), mu.w_match w = some m
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Section 2 defines a marriage outcome as an invertible one-\allowbreak{}to-\allowbreak{}one matching of the equal sides.\allowbreak{}  Assignment supplies mutual consistency, and completeMarriageOutcome requires every man and woman to have a partner, exactly the source outcome condition.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
-
 \clearpage
-\hypertarget{source-claim-660a339fbfd3318f}{}
-\hypertarget{source-section-f10b5f68e4acf3dc}{}
-\section*{Source claims}
-\subsection*{Review row 1}
+\hypertarget{paper-prerequisite-959836477d3894e7}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}efficient\allowbreak{}Matching\allowbreak{}Procedure}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}efficient\allowbreak{}Matching\allowbreak{}Procedure\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 433-\allowbreak{}435\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+To see the role played by stability in Theorem 3, observe that there are effici
+matching procedures, i.e., procedures which always yield Pareto optimal (but not
+necessarily stable) outcomes, which do not give players any incentive to misrepresent
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} → {W : Type u_2} → ((M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W) → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2}
+    (mechanism : (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W) =>
+  ∀ (val_m : M → W → ℝ) (val_w : W → M → ℝ),
+    Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w →
+      Roth82StableMatching.PaperInterface.paretoOptimal val_m val_w (mechanism val_m val_w)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-f4b775d19717e062}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}pareto\allowbreak{}Optimal}
+\item \hyperlink{governing-declaration-d06ec2a2987f0c72}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}strict\allowbreak{}Marriage\allowbreak{}Domain}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Section 4 calls efficient procedures those always yielding Pareto-\allowbreak{}optimal, not necessarily stable, outcomes.\allowbreak{}  The target quantifies over legal strict marriage reports and invokes paretoOptimal, whose definition includes a complete outcome and excludes a complete outcome weakly improving all agents and strictly improving one.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-4a6f1f4c2cc31f96}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}fills\allowbreak{}Individual\allowbreak{}Quotas}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}fills\allowbreak{}Individual\allowbreak{}Quotas\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 167-\allowbreak{}175\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+The marriage problem as outlined above differs from the general matching problem
+in three principal respects. First, in the marriage problem, each agent is to be matched
+
+with exactly one partner, but in the general matching problem, different agents may
+need to be matched with different numbers of partners, so that each agent has a
+"quota," and an outcome is a function which matches each agent with his quota of
+partners.6 For our purposes, this difference between the marriage problem and the
+general matching problem turns out to be of no consequence, since all the arguments
+which will be used can be carried over virtually unchanged to the general case. Second,
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} →
+  {W : Type u_2} → (M → ℕ) → (W → ℕ) → Roth82StableMatching.PaperInterface.ManyToManyQuotaAssignment M W → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} (quotaM : M → ℕ) (quotaW : W → ℕ)
+    (mu : Roth82StableMatching.PaperInterface.ManyToManyQuotaAssignment M W) =>
+  (∀ (m : M), (mu.partnersM m).Finite ∧ (mu.partnersM m).ncard = quotaM m) ∧
+    ∀ (w : W), (mu.partnersW w).Finite ∧ (mu.partnersW w).ncard = quotaW w
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-0f7292fceafe9196}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}Many\allowbreak{}To\allowbreak{}Many\allowbreak{}Quota\allowbreak{}Assignment}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Roth's general matching extension assigns every agent its individual quota of partners.\allowbreak{}  The carrier's pair-\allowbreak{}consistency field records reciprocal matches;\allowbreak{} fillsIndividualQuotas then requires each finite partner set to have exactly the stated quota on both sides.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-bcdb1d603a6bc29f}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}man\allowbreak{}Report\allowbreak{}Strictly\allowbreak{}Ranks\allowbreak{}Partner\allowbreak{}First}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}man\allowbreak{}Report\allowbreak{}Strictly\allowbreak{}Ranks\allowbreak{}Partner\allowbreak{}First\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 522-\allowbreak{}529\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+We first show that only a certain kind of simple misrepresentation need
+
+considered, since if any successful manipulation is possible, then it can be achieved
+a simple misrepresentation. Specifically, if P'(mi) is an arbitrary misrepresentation
+discussed above, then an equivalent simple misrepresentation P"(mi) is one in whic
+
+y(mi)P"(mi)wj for all wj #y(mi). That is, P"(mi) is a preference relation which ha
+y(m,) as the most preferred match of mi,. The justification for calling P"(mi) an
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{W : Type u_1} → (W → ℝ) → W → Prop
+
+value:
+fun {W : Type u_1} (report_m : W → ℝ) (wstar : W) => ∀ (w : W), w ≠ wstar → report_m w < report_m wstar
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The Section 5 simple misrepresentation P'' ranks the partner y(mi) obtained under P' above every other possible partner.\allowbreak{}  The target is precisely that strict top-\allowbreak{}ranking condition for report\_\allowbreak{}m and wstar.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-4ea46caa97f4cf98}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}preference\allowbreak{}Profile}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}preference\allowbreak{}Profile\par}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 130-\allowbreak{}138\par}
-\paragraph{Verbatim source input}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 defined on W. When no confusion will occur, P(mi) will sometim
 
@@ -587,64 +950,136 @@ times be referred to as the preference profile.
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
+
+\paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
-∀ (M : Type u) (W : Type v),
-  Roth82StableMatching.PaperInterface.preferenceProfile M W =
-    { profile //
-      (∀ (m : M) (w w' : W), profile.1 m w = profile.1 m w' → w = w') ∧
-        ∀ (w : W) (m m' : M), profile.2 w m = profile.2 w m' → m = m' }
+type:
+Type u → Type v → Type (max u v)
+
+value:
+fun (M : Type u) (W : Type v) =>
+  { profile : (M → W → ℝ) × (W → M → ℝ) //
+    (∀ (m : M) (w w' : W), profile.1 m w = profile.1 m w' → w = w') ∧
+      ∀ (w : W) (m m' : M), profile.2 w m = profile.2 w m' → m = m' }
 \end{ReviewVerbatim}
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-Roth82StableMatching.PaperInterface.preferenceProfile_eq_source_definition
-\end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Section 2 defines the preference profile as all agents' complete, transitive, strict ordinal relations.\allowbreak{}  A real-\allowbreak{}valued score for each opposite-\allowbreak{}side agent with no ties induces exactly such a strict ranking on the finite marriage domain, and the target carries one score family for each side.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-fd14fbb9277413b7}{}
-\section*{Review row 2}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 140-\allowbreak{}145\par}
-\paragraph{Verbatim source input}
+\hypertarget{paper-prerequisite-0c127f79bf5ff5ac}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}matching\allowbreak{}Procedure}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}matching\allowbreak{}Procedure\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 300-\allowbreak{}303\par}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
-An outcome of the (monogamous) marriage problem is a onemen and women, i.e., an invertible function x: M - W. An outco
-
-by x = [(ml,x(ml)),(m2,x(m2)),. .. , (mn,x(mM))] where x(mi
-
-matched with man m,, and x- (wj) = mi is the man matched wit
-A matching x is stable if no man and no woman who are not m
+4. Incentives and stability. Since each agent alone knows his own preferences, any
+matching procedure which depends on agents' preferences can be thought of as
+consisting of two parts: a mechanism for eliciting the preferences of the agents, and a
+mechanism for aggregating these elicited preferences to determine an outcome. This
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
+
+\paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
-∀ {M : Type u_1} {W : Type u_2} (mu : EconCSLib.Matching.Assignment M W),
-  Roth82StableMatching.PaperInterface.completeMarriageOutcome mu ↔
-    (∀ (m : M), ∃ w, mu.m_match m = some w) ∧ ∀ (w : W), ∃ m, mu.w_match w = some m
+type:
+Type u → Type v → Type (max u v)
+
+value:
+fun (M : Type u) (W : Type v) =>
+  Roth82StableMatching.PaperInterface.preferenceProfile M W →
+    { mu : AppliedModelingLib.Matching.Assignment M W //
+      Roth82StableMatching.PaperInterface.completeMarriageOutcome mu }
 \end{ReviewVerbatim}
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-Roth82StableMatching.PaperInterface.completeMarriageOutcome_iff_source_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{paper-prerequisite-efa58a68b1c17a47}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}complete\allowbreak{}Marriage\allowbreak{}Outcome}
+\item \hyperlink{paper-prerequisite-4ea46caa97f4cf98}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}preference\allowbreak{}Profile}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} The paper treats a matching procedure as mapping a reported preference profile to an outcome.\allowbreak{}  The target takes Roth's strict two-\allowbreak{}sided profile carrier to an Assignment bundled with completeMarriageOutcome, preserving the marriage-\allowbreak{}model outcome requirement.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-de65a07086fc73df}{}
-\section*{Review row 3}
+\hypertarget{paper-prerequisite-3f648194f6cc68b8}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Marriage\allowbreak{}Model}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Marriage\allowbreak{}Model\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 176-\allowbreak{}197\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+the marriage problem was defined as having equal numbers of men and women, and
+without the possibility that a feasible outcome could leave any agent unmatched, while
+in the general matching problem, there may be an excess of one kind of agent, and an
+
+outcome need not make a match for every agent. This more general case can be
+handled by adding suitable "dummy" agents corresponding to the option of being
+unmatched in the final outcome. The third respect in which the marriage problem as
+described above is more restrictive than the general matching problem is that indiffer-
+
+ence between potential partners has been ruled out by the assumption that all
+preferences are strict. Relaxing this assumption would actually complicate some of the
+results. To avoid these complications, only strict preferences will be considered.
+
+Thus the marriage problem will be used to represent the general matching problem
+with strict preferences. This should not obscure the fact that much of the interest of the
+5That is, the preference relations P(m,) (or P(wi)) have the following properties:
+(1) transitivity: if WjPiWk and wkPiwI, then wjPiwl;
+
+(2) completeness: for all distinct wj, wk in W, exactly one of the relations wjPiWk or wkP,wj holds
+The interpretation of the preference relations Pi as strict preference relations means that we are ruling out
+the possibility that an agent will be indifferent between two potential partners. (Also, it is never the case that
+wjP.jW.) See the discussion at the end of this section.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} → {W : Type u_2} → [Fintype M] → [Fintype W] → (M → W → ℝ) → (W → M → ℝ) → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} [Fintype M] [Fintype W] (val_m : M → W → ℝ) (val_w : W → M → ℝ) =>
+  Fintype.card M = Fintype.card W ∧ Roth82StableMatching.PaperInterface.strictPreferenceProfile val_m val_w
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4613872a443c5231}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}strict\allowbreak{}Preference\allowbreak{}Profile}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Roth's marriage model has equal finite sets M and W and strict preferences over the opposite side.\allowbreak{}  sourceMarriageModel states equal cardinality together with the strict two-\allowbreak{}sided score representation of those rankings.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-42fca1f7c299639c}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Stable\allowbreak{}Marriage}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Stable\allowbreak{}Marriage\par}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 145-\allowbreak{}165\par}
-\paragraph{Verbatim source input}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 A matching x is stable if no man and no woman who are not m
 
@@ -670,76 +1105,91 @@ partners).
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
+
+\paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
-∀ {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (val_w : W → M → ℝ) (mu : EconCSLib.Matching.Assignment M W),
-  Roth82StableMatching.PaperInterface.sourceStableMarriage val_m val_w mu ↔
-    Roth82StableMatching.PaperInterface.completeMarriageOutcome mu ∧
-      ¬∃ m w,
-          (match mu.m_match m with
-              | none => 0
-              | some w' => val_m m w') <
-              val_m m w ∧
-            (match mu.w_match w with
-              | none => 0
-              | some m' => val_w w m') <
-              val_w w m
+type:
+{M : Type u_1} → {W : Type u_2} → (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (val_w : W → M → ℝ)
+    (mu : AppliedModelingLib.Matching.Assignment M W) =>
+  Roth82StableMatching.PaperInterface.completeMarriageOutcome mu ∧
+    ¬Roth82StableMatching.PaperInterface.unstableMarriage val_m val_w mu
 \end{ReviewVerbatim}
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-Roth82StableMatching.PaperInterface.sourceStableMarriage_iff_source_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{paper-prerequisite-efa58a68b1c17a47}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}complete\allowbreak{}Marriage\allowbreak{}Outcome}
+\item \hyperlink{governing-declaration-dfbb1ea119053a17}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}unstable\allowbreak{}Marriage}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Section 2 defines stability as a complete marriage outcome with no unmatched man-\allowbreak{}woman pair who both prefer each other to their assigned partners.\allowbreak{}  sourceStableMarriage is completeMarriageOutcome together with the negation of precisely that blocking-\allowbreak{}pair predicate.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-ee021b20b26b9efe}{}
-\section*{Review row 4}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 167-\allowbreak{}175\par}
-\paragraph{Verbatim source input}
+\hypertarget{paper-prerequisite-44aa864d4a515095}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Men\allowbreak{}Optimal}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Men\allowbreak{}Optimal\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 463-\allowbreak{}466\par}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
-The marriage problem as outlined above differs from the general matching problem
-in three principal respects. First, in the marriage problem, each agent is to be matched
+results, which make use of the fact that Theorem 1 permits us to identify, for each set
 
-with exactly one partner, but in the general matching problem, different agents may
-need to be matched with different numbers of partners, so that each agent has a
-"quota," and an outcome is a function which matches each agent with his quota of
-partners.6 For our purposes, this difference between the marriage problem and the
-general matching problem turns out to be of no consequence, since all the arguments
-which will be used can be carried over virtually unchanged to the general case. Second,
+of agents, a unique optimal stable outcome, which they each like at least as well as any
+other stable outcome.
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
+
+\paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
-∀ {M : Type u_1} {W : Type u_2} (quotaM : M → ℕ) (quotaW : W → ℕ)
-  (mu : Roth82StableMatching.PaperInterface.ManyToManyQuotaAssignment M W),
-  Roth82StableMatching.PaperInterface.fillsIndividualQuotas quotaM quotaW mu ↔
-    (∀ (m : M), (mu.partnersM m).Finite ∧ (mu.partnersM m).ncard = quotaM m) ∧
-      ∀ (w : W), (mu.partnersW w).Finite ∧ (mu.partnersW w).ncard = quotaW w
+type:
+{M : Type u_1} → {W : Type u_2} → (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (val_w : W → M → ℝ)
+    (mu : AppliedModelingLib.Matching.Assignment M W) =>
+  Roth82StableMatching.PaperInterface.sourceStableMarriage val_m val_w mu ∧
+    ∀ (mu' : AppliedModelingLib.Matching.Assignment M W),
+      Roth82StableMatching.PaperInterface.sourceStableMarriage val_m val_w mu' →
+        ∀ (m : M),
+          (match mu'.m_match m with
+            | none => 0
+            | some w => val_m m w) ≤
+            match mu.m_match m with
+            | none => 0
+            | some w => val_m m w
 \end{ReviewVerbatim}
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-Roth82StableMatching.PaperInterface.fillsIndividualQuotas_iff_source_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{paper-prerequisite-42fca1f7c299639c}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Stable\allowbreak{}Marriage}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Theorem 2's source definition of a men-\allowbreak{}optimal stable outcome requires stability and weak preference by every man over every other stable outcome.\allowbreak{}  sourceMenOptimal requires source stability and compares every complete source-\allowbreak{}stable marriage to mu using each man's true score in exactly that direction.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-a59d544dcd58d682}{}
-\section*{Review row 5}
+\hypertarget{paper-prerequisite-38b3f3ba417296e2}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Stable\allowbreak{}Matching\allowbreak{}Procedure}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Stable\allowbreak{}Matching\allowbreak{}Procedure\par}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 313-\allowbreak{}323\par}
-\paragraph{Verbatim source input}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 A different kind of problem concerning incentives arises for matching procedures
 which do not result in stable outcomes, since such procedures give at least one pair of
@@ -755,31 +1205,92 @@ preference profiles will be called a stable matching procedure.
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
+
+\paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
-∀ {M : Type u_1} {W : Type u_2} (mechanism : (M → W → ℝ) → (W → M → ℝ) → EconCSLib.Matching.Assignment M W),
-  Roth82StableMatching.PaperInterface.sourceStableMatchingProcedure mechanism ↔
-    ∀ (val_m : M → W → ℝ) (val_w : W → M → ℝ),
-      Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w →
-        Roth82StableMatching.PaperInterface.sourceStableMarriage val_m val_w (mechanism val_m val_w)
+type:
+{M : Type u_1} → {W : Type u_2} → ((M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W) → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2}
+    (mechanism : (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W) =>
+  ∀ (val_m : M → W → ℝ) (val_w : W → M → ℝ),
+    Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w →
+      Roth82StableMatching.PaperInterface.sourceStableMarriage val_m val_w (mechanism val_m val_w)
 \end{ReviewVerbatim}
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-Roth82StableMatching.PaperInterface.sourceStableMatchingProcedure_iff_source_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{paper-prerequisite-42fca1f7c299639c}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Stable\allowbreak{}Marriage}
+\item \hyperlink{governing-declaration-d06ec2a2987f0c72}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}strict\allowbreak{}Marriage\allowbreak{}Domain}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Section 4 defines a stable matching procedure as one that yields a stable outcome for arbitrary preference profiles.\allowbreak{}  The target requires every legal strict profile to map to sourceStableMarriage, including the source's complete outcome and no-\allowbreak{}blocking-\allowbreak{}pair condition.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-238b1f865cc8464c}{}
-\section*{Review row 6}
+\hypertarget{paper-prerequisite-6c23e95d9facee8d}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Women\allowbreak{}Optimal}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Women\allowbreak{}Optimal\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 463-\allowbreak{}466\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+results, which make use of the fact that Theorem 1 permits us to identify, for each set
+
+of agents, a unique optimal stable outcome, which they each like at least as well as any
+other stable outcome.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{M : Type u_1} → {W : Type u_2} → (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W → Prop
+
+value:
+fun {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (val_w : W → M → ℝ)
+    (mu : AppliedModelingLib.Matching.Assignment M W) =>
+  Roth82StableMatching.PaperInterface.sourceStableMarriage val_m val_w mu ∧
+    ∀ (mu' : AppliedModelingLib.Matching.Assignment M W),
+      Roth82StableMatching.PaperInterface.sourceStableMarriage val_m val_w mu' →
+        ∀ (w : W),
+          (match mu'.w_match w with
+            | none => 0
+            | some m => val_w w m) ≤
+            match mu.w_match w with
+            | none => 0
+            | some m => val_w w m
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{paper-prerequisite-42fca1f7c299639c}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Stable\allowbreak{}Marriage}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The women-\allowbreak{}optimal counterpart of Theorem 2 requires stability and weak preference by every woman over every other stable outcome.\allowbreak{}  sourceWomenOptimal is the symmetric complete source-\allowbreak{}stable comparison using each woman's true score.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-a52c1e717dd94cee}{}
+\subsection*{\small\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}truthful\allowbreak{}For\allowbreak{}All\allowbreak{}Agents}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}truthful\allowbreak{}For\allowbreak{}All\allowbreak{}Agents\par}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 340-\allowbreak{}351\par}
-\paragraph{Verbatim source input}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 Before proceeding further with this discussion, we need to make precise what is
 meant by a procedure which gives agents an incentive to reveal their true preferences.
@@ -796,84 +1307,65 @@ correctly, and he may, of course, do worse."
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
+
+\paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
-∀ {M : Type u_1} {W : Type u_2} [inst : DecidableEq M] [inst_1 : DecidableEq W]
-  (mechanism : (M → W → ℝ) → (W → M → ℝ) → EconCSLib.Matching.Assignment M W),
-  Roth82StableMatching.PaperInterface.truthfulForAllAgents mechanism ↔
-    (∀ (val_m : M → W → ℝ) (val_w : W → M → ℝ),
-        Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w →
-          ∀ (m : M) (report_m : W → ℝ),
-            Roth82StableMatching.PaperInterface.strictMarriageDomain (Function.update val_m m report_m) val_w →
-              (match (mechanism (Function.update val_m m report_m) val_w).m_match m with
-                | none => 0
-                | some w => val_m m w) ≤
-                match (mechanism val_m val_w).m_match m with
-                | none => 0
-                | some w => val_m m w) ∧
-      ∀ (val_m : M → W → ℝ) (val_w : W → M → ℝ),
-        Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w →
-          ∀ (w : W) (report_w : M → ℝ),
-            Roth82StableMatching.PaperInterface.strictMarriageDomain val_m (Function.update val_w w report_w) →
-              (match (mechanism val_m (Function.update val_w w report_w)).w_match w with
-                | none => 0
-                | some m => val_w w m) ≤
-                match (mechanism val_m val_w).w_match w with
-                | none => 0
-                | some m => val_w w m
-\end{ReviewVerbatim}
+type:
+{M : Type u_1} →
+  {W : Type u_2} →
+    [DecidableEq M] → [DecidableEq W] → ((M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W) → Prop
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-Roth82StableMatching.PaperInterface.truthfulForAllAgents_iff_source_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-c58c00f4b4ad6e83}{}
-\section*{Review row 7}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 433-\allowbreak{}435\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-To see the role played by stability in Theorem 3, observe that there are effici
-matching procedures, i.e., procedures which always yield Pareto optimal (but not
-necessarily stable) outcomes, which do not give players any incentive to misrepresent
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {M : Type u_1} {W : Type u_2} (mechanism : (M → W → ℝ) → (W → M → ℝ) → EconCSLib.Matching.Assignment M W),
-  Roth82StableMatching.PaperInterface.efficientMatchingProcedure mechanism ↔
+value:
+fun {M : Type u_1} {W : Type u_2} [DecidableEq M] [DecidableEq W]
+    (mechanism : (M → W → ℝ) → (W → M → ℝ) → AppliedModelingLib.Matching.Assignment M W) =>
+  (∀ (val_m : M → W → ℝ) (val_w : W → M → ℝ),
+      Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w →
+        ∀ (m : M) (report_m : W → ℝ),
+          Roth82StableMatching.PaperInterface.strictMarriageDomain (Function.update val_m m report_m) val_w →
+            (match (mechanism (Function.update val_m m report_m) val_w).m_match m with
+              | none => 0
+              | some w => val_m m w) ≤
+              match (mechanism val_m val_w).m_match m with
+              | none => 0
+              | some w => val_m m w) ∧
     ∀ (val_m : M → W → ℝ) (val_w : W → M → ℝ),
       Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w →
-        Roth82StableMatching.PaperInterface.paretoOptimal val_m val_w (mechanism val_m val_w)
+        ∀ (w : W) (report_w : M → ℝ),
+          Roth82StableMatching.PaperInterface.strictMarriageDomain val_m (Function.update val_w w report_w) →
+            (match (mechanism val_m (Function.update val_w w report_w)).w_match w with
+              | none => 0
+              | some m => val_w w m) ≤
+              match (mechanism val_m val_w).w_match w with
+              | none => 0
+              | some m => val_w w m
 \end{ReviewVerbatim}
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-Roth82StableMatching.PaperInterface.efficientMatchingProcedure_iff_source_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-d06ec2a2987f0c72}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}strict\allowbreak{}Marriage\allowbreak{}Domain}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Section 4 defines truthful revelation as a dominant strategy:\allowbreak{} regardless of the other reports, a unilateral misreport cannot produce a better true outcome.\allowbreak{}  truthfulForAllAgents gives exactly those two one-\allowbreak{}side-\allowbreak{}at-\allowbreak{}a-\allowbreak{}time weak inequalities over legal reported profiles for men and women.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
+
 \clearpage
 \hypertarget{source-claim-28dc2b89f44923a5}{}
-\section*{Review row 8}
+\hypertarget{source-section-f10b5f68e4acf3dc}{}
+\section*{Source claims}
+\subsection*{Review row 1}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 227\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
 THEOREM 1. The set of stable outcomes is always nonempty.
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
@@ -882,7 +1374,29 @@ THEOREM 1. The set of stable outcomes is always nonempty.
   (val_m : M → W → ℝ) (val_w : W → M → ℝ),
   Fintype.card M = Fintype.card W →
     Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w →
-      ∃ mu, Roth82StableMatching.PaperInterface.sourceStableMarriage val_m val_w mu
+      ∃ (mu : AppliedModelingLib.Matching.Assignment M W),
+        Roth82StableMatching.PaperInterface.sourceStableMarriage val_m val_w mu
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{paper-prerequisite-42fca1f7c299639c}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Stable\allowbreak{}Marriage}
+\item \hyperlink{governing-declaration-d06ec2a2987f0c72}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}strict\allowbreak{}Marriage\allowbreak{}Domain}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Fintype M
+4. parameter: Fintype W
+5. parameter: DecidableEq M
+6. parameter: DecidableEq W
+7. parameter: M → W → ℝ
+8. parameter: W → M → ℝ
+9. assumption: Fintype.card M = Fintype.card W
+10. assumption: Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w
+11. conclusion: ∃ (mu : AppliedModelingLib.Matching.Assignment M W),
+  Roth82StableMatching.PaperInterface.sourceStableMarriage val_m val_w mu
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -890,15 +1404,17 @@ Roth82StableMatching.PaperInterface.theorem1_stable_outcome_exists
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Theorem 1 states that the set of stable outcomes is always nonempty and its proof constructs one for arbitrary marriage preferences.\allowbreak{}  The target quantifies over finite equal-\allowbreak{}sided strict marriage profiles and returns an assignment satisfying the source-\allowbreak{}stable predicate, whose definition includes complete matching and no blocking pair.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-e0f372cfa20685ca}{}
-\section*{Review row 9}
+\section*{Review row 2}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 258-\allowbreak{}259\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -907,18 +1423,41 @@ stable outcome, and one weakly preferred by every woman.
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {M : Type u_1} {W : Type u_2} [inst : Fintype M] [inst_1 : Fintype W] [DecidableEq M] [DecidableEq W]
   (val_m : M → W → ℝ) (val_w : W → M → ℝ),
   Fintype.card M = Fintype.card W →
     Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w →
-      (∃ mu,
-          Roth82StableMatching.PaperInterface.menOptimal val_m val_w mu ∧
-            Roth82StableMatching.PaperInterface.completeMarriageOutcome mu) ∧
-        ∃ nu,
-          Roth82StableMatching.PaperInterface.womenOptimal val_m val_w nu ∧
-            Roth82StableMatching.PaperInterface.completeMarriageOutcome nu
+      (∃ (mu : AppliedModelingLib.Matching.Assignment M W),
+          Roth82StableMatching.PaperInterface.sourceMenOptimal val_m val_w mu) ∧
+        ∃ (nu : AppliedModelingLib.Matching.Assignment M W),
+          Roth82StableMatching.PaperInterface.sourceWomenOptimal val_m val_w nu
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{paper-prerequisite-44aa864d4a515095}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Men\allowbreak{}Optimal}
+\item \hyperlink{paper-prerequisite-6c23e95d9facee8d}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Women\allowbreak{}Optimal}
+\item \hyperlink{governing-declaration-d06ec2a2987f0c72}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}strict\allowbreak{}Marriage\allowbreak{}Domain}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Fintype M
+4. parameter: Fintype W
+5. parameter: DecidableEq M
+6. parameter: DecidableEq W
+7. parameter: M → W → ℝ
+8. parameter: W → M → ℝ
+9. assumption: Fintype.card M = Fintype.card W
+10. assumption: Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w
+11. conclusion: (∃ (mu : AppliedModelingLib.Matching.Assignment M W),
+    Roth82StableMatching.PaperInterface.sourceMenOptimal val_m val_w mu) ∧
+  ∃ (nu : AppliedModelingLib.Matching.Assignment M W),
+    Roth82StableMatching.PaperInterface.sourceWomenOptimal val_m val_w nu
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -926,15 +1465,17 @@ Roth82StableMatching.PaperInterface.theorem2_side_optimal_stable_outcomes
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Theorem 2 says there is a stable outcome weakly preferred by every man to every other stable outcome and symmetrically for women.\allowbreak{}  The repaired target now returns sourceMenOptimal and sourceWomenOptimal outcomes, each defined over complete source-\allowbreak{}stable marriages, exactly preserving the source's comparison class rather than the broader operational predicate.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-fd8851b538d7c013}{}
-\section*{Review row 10}
+\section*{Review row 3}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 356-\allowbreak{}357\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -943,11 +1484,32 @@ for which truthful revelation of preferences is a dominant strategy for all agen
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-¬∃ mechanism,
+¬∃ (mechanism :
+    (Roth82StableMatching.Theorem3Agent → Roth82StableMatching.Theorem3Agent → ℝ) →
+      (Roth82StableMatching.Theorem3Agent → Roth82StableMatching.Theorem3Agent → ℝ) →
+        AppliedModelingLib.Matching.Assignment Roth82StableMatching.Theorem3Agent Roth82StableMatching.Theorem3Agent),
     Roth82StableMatching.PaperInterface.sourceStableMatchingProcedure mechanism ∧
       Roth82StableMatching.PaperInterface.truthfulForAllAgents mechanism
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{paper-prerequisite-38b3f3ba417296e2}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Stable\allowbreak{}Matching\allowbreak{}Procedure}
+\item \hyperlink{paper-prerequisite-a52c1e717dd94cee}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}truthful\allowbreak{}For\allowbreak{}All\allowbreak{}Agents}
+\item \hyperlink{governing-declaration-0c153381badbbb56}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Theorem3\allowbreak{}Agent}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. assumption: ∃ (mechanism :
+  (Roth82StableMatching.Theorem3Agent → Roth82StableMatching.Theorem3Agent → ℝ) →
+    (Roth82StableMatching.Theorem3Agent → Roth82StableMatching.Theorem3Agent → ℝ) →
+      AppliedModelingLib.Matching.Assignment Roth82StableMatching.Theorem3Agent Roth82StableMatching.Theorem3Agent),
+  Roth82StableMatching.PaperInterface.sourceStableMatchingProcedure mechanism ∧
+    Roth82StableMatching.PaperInterface.truthfulForAllAgents mechanism
+2. conclusion: False
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -955,15 +1517,17 @@ Roth82StableMatching.PaperInterface.theorem3_no_stable_truthful_procedure
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Theorem 3 proves the general impossibility by exhibiting a three-\allowbreak{}men/\allowbreak{}three-\allowbreak{}women matching problem on which no stable procedure is truthful for all agents.\allowbreak{}  The target formalizes precisely that fixed finite counterexample:\allowbreak{} no mechanism can simultaneously be source-\allowbreak{}stable on every legal profile and dominant-\allowbreak{}strategy truthful for both sides.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-3a4281641c18a9e6}{}
-\section*{Review row 11}
+\section*{Review row 4}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 438-\allowbreak{}439\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -972,12 +1536,26 @@ preferences is a dominant strategy for every agent.
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ (n : ℕ),
-  ∃ mechanism,
+  ∃ (mechanism : (Fin n → Fin n → ℝ) → (Fin n → Fin n → ℝ) → AppliedModelingLib.Matching.Assignment (Fin n) (Fin n)),
     Roth82StableMatching.PaperInterface.efficientMatchingProcedure mechanism ∧
       Roth82StableMatching.PaperInterface.truthfulForAllAgents mechanism
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{paper-prerequisite-959836477d3894e7}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}efficient\allowbreak{}Matching\allowbreak{}Procedure}
+\item \hyperlink{paper-prerequisite-a52c1e717dd94cee}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}truthful\allowbreak{}For\allowbreak{}All\allowbreak{}Agents}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: ℕ
+2. conclusion: ∃ (mechanism : (Fin n → Fin n → ℝ) → (Fin n → Fin n → ℝ) → AppliedModelingLib.Matching.Assignment (Fin n) (Fin n)),
+  Roth82StableMatching.PaperInterface.efficientMatchingProcedure mechanism ∧
+    Roth82StableMatching.PaperInterface.truthfulForAllAgents mechanism
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -985,15 +1563,17 @@ Roth82StableMatching.PaperInterface.theorem4_efficient_truthful_procedure_exists
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Theorem 4 constructs efficient matching procedures with dominant truthful revelation for every agent.\allowbreak{}  The target gives one such procedure on every finite equal-\allowbreak{}sided marriage market;\allowbreak{} efficientMatchingProcedure includes a complete Pareto-\allowbreak{}optimal outcome for every legal profile, and truthfulForAllAgents covers both sides' legal unilateral reports.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-20d2db0d61f9b81c}{}
-\section*{Review row 12}
+\section*{Review row 5}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 468-\allowbreak{}475\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -1008,6 +1588,7 @@ is a dominant strategy for all the agents in that set.
 
 ALVIN E. ROTH
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
@@ -1044,20 +1625,69 @@ ALVIN E. ROTH
                 | some m => val_w w m
 \end{ReviewVerbatim}
 
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-7357e0557237bc7e}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}men\allowbreak{}Deferred\allowbreak{}Acceptance}
+\item \hyperlink{paper-prerequisite-44aa864d4a515095}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Men\allowbreak{}Optimal}
+\item \hyperlink{paper-prerequisite-6c23e95d9facee8d}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Women\allowbreak{}Optimal}
+\item \hyperlink{governing-declaration-d06ec2a2987f0c72}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}strict\allowbreak{}Marriage\allowbreak{}Domain}
+\item \hyperlink{governing-declaration-13c08a3bc523499b}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}women\allowbreak{}Deferred\allowbreak{}Acceptance}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Fintype M
+4. parameter: Fintype W
+5. parameter: DecidableEq M
+6. parameter: DecidableEq W
+7. parameter: M → W → ℝ
+8. parameter: W → M → ℝ
+9. assumption: Fintype.card M = Fintype.card W
+10. assumption: Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w
+11. conclusion: (Roth82StableMatching.PaperInterface.sourceMenOptimal val_m val_w
+      (Roth82StableMatching.PaperInterface.menDeferredAcceptance val_m val_w) ∧
+    ∀ (m : M) (report_m : W → ℝ),
+      Roth82StableMatching.PaperInterface.strictMarriageDomain (Function.update val_m m report_m) val_w →
+        (match
+            (Roth82StableMatching.PaperInterface.menDeferredAcceptance (Function.update val_m m report_m) val_w).m_match
+              m with
+          | none => 0
+          | some w => val_m m w) ≤
+          match (Roth82StableMatching.PaperInterface.menDeferredAcceptance val_m val_w).m_match m with
+          | none => 0
+          | some w => val_m m w) ∧
+  Roth82StableMatching.PaperInterface.sourceWomenOptimal val_m val_w
+      (Roth82StableMatching.PaperInterface.womenDeferredAcceptance val_m val_w) ∧
+    ∀ (w : W) (report_w : M → ℝ),
+      Roth82StableMatching.PaperInterface.strictMarriageDomain val_m (Function.update val_w w report_w) →
+        (match
+            (Roth82StableMatching.PaperInterface.womenDeferredAcceptance val_m
+                  (Function.update val_w w report_w)).w_match
+              w with
+          | none => 0
+          | some m => val_w w m) ≤
+          match (Roth82StableMatching.PaperInterface.womenDeferredAcceptance val_m val_w).w_match w with
+          | none => 0
+          | some m => val_w w m
+\end{ReviewVerbatim}
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 Roth82StableMatching.PaperInterface.theorem5_optimal_side_truthful
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Theorem 5 states that the procedure selecting the optimal stable outcome for either side makes truth-\allowbreak{}telling dominant for all agents on that side.\allowbreak{}  The target pairs the men-\allowbreak{} and women-\allowbreak{}proposing deferred-\allowbreak{}acceptance outcomes with their respective source-\allowbreak{}optimality and one-\allowbreak{}side dominant-\allowbreak{}strategy inequalities on legal reports.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-b35add4c342a0889}{}
-\section*{Review row 13}
+\section*{Review row 6}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 477-\allowbreak{}535\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -1123,6 +1753,7 @@ from P only in that P"(mi,) replaces P(mi).
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {M : Type u_1} {W : Type u_2} [inst : Fintype M] [inst_1 : Fintype W] [inst_2 : DecidableEq M]
@@ -1134,7 +1765,7 @@ from P only in that P"(mi,) replaces P(mi).
               (Roth82StableMatching.PaperInterface.menDeferredAcceptance val_m val_w) ∧
             ∀ (w : W) (report_w : M → ℝ),
               Roth82StableMatching.PaperInterface.strictMarriageDomain val_m (Function.update val_w w report_w) →
-                ∃ report_w',
+                ∃ (report_w' : M → ℝ),
                   Roth82StableMatching.PaperInterface.strictMarriageDomain val_m (Function.update val_w w report_w') ∧
                     (∀ (mstar : M),
                         (∀ (m : M), m ≠ mstar → val_w w m < val_w w mstar) →
@@ -1157,7 +1788,7 @@ from P only in that P"(mi,) replaces P(mi).
               (Roth82StableMatching.PaperInterface.womenDeferredAcceptance val_m val_w) ∧
             ∀ (m : M) (report_m : W → ℝ),
               Roth82StableMatching.PaperInterface.strictMarriageDomain (Function.update val_m m report_m) val_w →
-                ∃ report_m',
+                ∃ (report_m' : W → ℝ),
                   Roth82StableMatching.PaperInterface.strictMarriageDomain (Function.update val_m m report_m') val_w ∧
                     (∀ (wstar : W),
                         (∀ (w : W), w ≠ wstar → val_m m w < val_m m wstar) →
@@ -1176,20 +1807,89 @@ from P only in that P"(mi,) replaces P(mi).
                         | some w => val_m m w
 \end{ReviewVerbatim}
 
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-7357e0557237bc7e}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}men\allowbreak{}Deferred\allowbreak{}Acceptance}
+\item \hyperlink{paper-prerequisite-44aa864d4a515095}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Men\allowbreak{}Optimal}
+\item \hyperlink{paper-prerequisite-6c23e95d9facee8d}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}source\allowbreak{}Women\allowbreak{}Optimal}
+\item \hyperlink{governing-declaration-d06ec2a2987f0c72}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}strict\allowbreak{}Marriage\allowbreak{}Domain}
+\item \hyperlink{governing-declaration-13c08a3bc523499b}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}women\allowbreak{}Deferred\allowbreak{}Acceptance}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Fintype M
+4. parameter: Fintype W
+5. parameter: DecidableEq M
+6. parameter: DecidableEq W
+7. assumption: Nonempty M
+8. assumption: Nonempty W
+9. assumption: Fintype.card M = Fintype.card W
+10. conclusion: (∀ (val_m : M → W → ℝ) (val_w : W → M → ℝ),
+    Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w →
+      Roth82StableMatching.PaperInterface.sourceMenOptimal val_m val_w
+          (Roth82StableMatching.PaperInterface.menDeferredAcceptance val_m val_w) ∧
+        ∀ (w : W) (report_w : M → ℝ),
+          Roth82StableMatching.PaperInterface.strictMarriageDomain val_m (Function.update val_w w report_w) →
+            ∃ (report_w' : M → ℝ),
+              Roth82StableMatching.PaperInterface.strictMarriageDomain val_m (Function.update val_w w report_w') ∧
+                (∀ (mstar : M),
+                    (∀ (m : M), m ≠ mstar → val_w w m < val_w w mstar) →
+                      ∀ (m : M), m ≠ mstar → report_w' m < report_w' mstar) ∧
+                  (match
+                      (Roth82StableMatching.PaperInterface.menDeferredAcceptance val_m
+                            (Function.update val_w w report_w)).w_match
+                        w with
+                    | none => 0
+                    | some m => val_w w m) ≤
+                    match
+                      (Roth82StableMatching.PaperInterface.menDeferredAcceptance val_m
+                            (Function.update val_w w report_w')).w_match
+                        w with
+                    | none => 0
+                    | some m => val_w w m) ∧
+  ∀ (val_m : M → W → ℝ) (val_w : W → M → ℝ),
+    Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w →
+      Roth82StableMatching.PaperInterface.sourceWomenOptimal val_m val_w
+          (Roth82StableMatching.PaperInterface.womenDeferredAcceptance val_m val_w) ∧
+        ∀ (m : M) (report_m : W → ℝ),
+          Roth82StableMatching.PaperInterface.strictMarriageDomain (Function.update val_m m report_m) val_w →
+            ∃ (report_m' : W → ℝ),
+              Roth82StableMatching.PaperInterface.strictMarriageDomain (Function.update val_m m report_m') val_w ∧
+                (∀ (wstar : W),
+                    (∀ (w : W), w ≠ wstar → val_m m w < val_m m wstar) →
+                      ∀ (w : W), w ≠ wstar → report_m' w < report_m' wstar) ∧
+                  (match
+                      (Roth82StableMatching.PaperInterface.womenDeferredAcceptance (Function.update val_m m report_m)
+                            val_w).m_match
+                        m with
+                    | none => 0
+                    | some w => val_m m w) ≤
+                    match
+                      (Roth82StableMatching.PaperInterface.womenDeferredAcceptance (Function.update val_m m report_m')
+                            val_w).m_match
+                        m with
+                    | none => 0
+                    | some w => val_m m w
+\end{ReviewVerbatim}
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 Roth82StableMatching.PaperInterface.corollary5_1_first_choice_need_not_be_misrepresented
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Corollary 5.\allowbreak{}1 says the non-\allowbreak{}optimal side need not misreport its first choice.\allowbreak{}  The target records that, for either orientation, every legal unilateral report has a legal weakly better replacement which preserves any true first choice as first;\allowbreak{} this is the source's no-\allowbreak{}gain-\allowbreak{}from-\allowbreak{}changing-\allowbreak{}first-\allowbreak{}choice statement for the procedure selecting the opposite side's optimal stable outcome.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-f2c197ac0692ce06}{}
-\section*{Review row 14}
+\section*{Review row 7}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 537\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -1197,19 +1897,50 @@ LEMMA 1. If y = g(P') and z = g(P") then z(mi) = y(mi).
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {M : Type u_1} {W : Type u_2} [inst : Fintype M] [inst_1 : Fintype W] [inst_2 : DecidableEq M]
   [inst_3 : DecidableEq W] (val_m : M → W → ℝ) (val_w : W → M → ℝ) (m : M) (report_m simple_report_m : W → ℝ)
   (wstar : W),
-  Roth82StableMatching.PaperInterface.strictMarriageDomain (Function.update val_m m simple_report_m) val_w →
-    (Roth82StableMatching.PaperInterface.menDeferredAcceptance (Function.update val_m m report_m) val_w).m_match m =
-        some wstar →
-      (∀ (w : W), w ≠ wstar → simple_report_m w < simple_report_m wstar) →
-        (Roth82StableMatching.PaperInterface.menDeferredAcceptance (Function.update val_m m simple_report_m)
-                val_w).m_match
-            m =
-          (Roth82StableMatching.PaperInterface.menDeferredAcceptance (Function.update val_m m report_m) val_w).m_match m
+  Roth82StableMatching.PaperInterface.strictMarriageDomain (Function.update val_m m report_m) val_w →
+    Roth82StableMatching.PaperInterface.strictMarriageDomain (Function.update val_m m simple_report_m) val_w →
+      (Roth82StableMatching.PaperInterface.menDeferredAcceptance (Function.update val_m m report_m) val_w).m_match m =
+          some wstar →
+        (∀ (w : W), w ≠ wstar → simple_report_m w < simple_report_m wstar) →
+          (Roth82StableMatching.PaperInterface.menDeferredAcceptance (Function.update val_m m simple_report_m)
+                  val_w).m_match
+              m =
+            (Roth82StableMatching.PaperInterface.menDeferredAcceptance (Function.update val_m m report_m) val_w).m_match
+              m
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{governing-declaration-7357e0557237bc7e}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}men\allowbreak{}Deferred\allowbreak{}Acceptance}
+\item \hyperlink{governing-declaration-d06ec2a2987f0c72}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}strict\allowbreak{}Marriage\allowbreak{}Domain}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Fintype M
+4. parameter: Fintype W
+5. parameter: DecidableEq M
+6. parameter: DecidableEq W
+7. parameter: M → W → ℝ
+8. parameter: W → M → ℝ
+9. parameter: M
+10. parameter: W → ℝ
+11. parameter: W → ℝ
+12. parameter: W
+13. assumption: Roth82StableMatching.PaperInterface.strictMarriageDomain (Function.update val_m m report_m) val_w
+14. assumption: Roth82StableMatching.PaperInterface.strictMarriageDomain (Function.update val_m m simple_report_m) val_w
+15. assumption: (Roth82StableMatching.PaperInterface.menDeferredAcceptance (Function.update val_m m report_m) val_w).m_match m =
+  some wstar
+16. assumption: ∀ (w : W), w ≠ wstar → simple_report_m w < simple_report_m wstar
+17. conclusion: (Roth82StableMatching.PaperInterface.menDeferredAcceptance (Function.update val_m m simple_report_m) val_w).m_match m =
+  (Roth82StableMatching.PaperInterface.menDeferredAcceptance (Function.update val_m m report_m) val_w).m_match m
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -1217,15 +1948,17 @@ Roth82StableMatching.PaperInterface.lemma1_simple_report_same_partner
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Lemma 1 (pp.\allowbreak{} 621–22) compares the reported profile P' with the simple profile P'', both of which are preference profiles, and concludes z(mi)=y(mi).\allowbreak{}  The target now expressly requires strict legal domains for both updated reports, assumes that P' produces wstar and that P'' ranks wstar first, and concludes the same match for mi.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-46db9470e122c4fe}{}
-\section*{Review row 15}
+\section*{Review row 8}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 564-\allowbreak{}567\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -1234,6 +1967,7 @@ y(m)P(mi)x(mi) or y(mi)= x(mi) then, for each mj in M, either y(mj)P(mj)x(mj) or
 
 y(mj) = x(mj).
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
@@ -1269,20 +2003,66 @@ y(mj) = x(mj).
                   | some w => val_m m' w
 \end{ReviewVerbatim}
 
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{paper-prerequisite-bcdb1d603a6bc29f}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}man\allowbreak{}Report\allowbreak{}Strictly\allowbreak{}Ranks\allowbreak{}Partner\allowbreak{}First}
+\item \hyperlink{governing-declaration-7357e0557237bc7e}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}men\allowbreak{}Deferred\allowbreak{}Acceptance}
+\item \hyperlink{governing-declaration-d06ec2a2987f0c72}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}strict\allowbreak{}Marriage\allowbreak{}Domain}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Fintype M
+4. parameter: Fintype W
+5. parameter: DecidableEq M
+6. parameter: DecidableEq W
+7. parameter: M → W → ℝ
+8. parameter: W → M → ℝ
+9. parameter: M
+10. parameter: W → ℝ
+11. parameter: W
+12. assumption: Fintype.card M = Fintype.card W
+13. assumption: Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w
+14. assumption: Roth82StableMatching.PaperInterface.strictMarriageDomain (Function.update val_m m simple_report_m) val_w
+15. assumption: (Roth82StableMatching.PaperInterface.menDeferredAcceptance (Function.update val_m m simple_report_m) val_w).m_match m =
+  some ystar
+16. assumption: (match (Roth82StableMatching.PaperInterface.menDeferredAcceptance val_m val_w).m_match m with
+  | none => 0
+  | some w => val_m m w) ≤
+  match
+    (Roth82StableMatching.PaperInterface.menDeferredAcceptance (Function.update val_m m simple_report_m) val_w).m_match
+      m with
+  | none => 0
+  | some w => val_m m w
+17. assumption: Roth82StableMatching.PaperInterface.manReportStrictlyRanksPartnerFirst simple_report_m ystar
+18. parameter: M
+19. conclusion: (match (Roth82StableMatching.PaperInterface.menDeferredAcceptance val_m val_w).m_match m' with
+  | none => 0
+  | some w => val_m m' w) ≤
+  match
+    (Roth82StableMatching.PaperInterface.menDeferredAcceptance (Function.update val_m m simple_report_m) val_w).m_match
+      m' with
+  | none => 0
+  | some w => val_m m' w
+\end{ReviewVerbatim}
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 Roth82StableMatching.PaperInterface.lemma2_simple_report_harms_no_man
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Lemma 2 states that a simple unilateral report which leaves mi weakly better off cannot make any man worse off.\allowbreak{}  The target uses the men-\allowbreak{}proposing procedure, legal true and changed profiles, the simple-\allowbreak{}report/\allowbreak{}top-\allowbreak{}partner condition, and weak comparison of every man's true utility, matching that conditional source conclusion.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-c7ba28726e90028a}{}
-\section*{Review row 16}
+\section*{Review row 9}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 678-\allowbreak{}684\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -1296,13 +2076,14 @@ example above shows that this can't be strengthened to strong Pareto optimality.
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {M : Type u_1} {W : Type u_2} [inst : Fintype M] [inst_1 : Fintype W] [inst_2 : DecidableEq M]
   [inst_3 : DecidableEq W] [Nonempty M] (val_m : M → W → ℝ) (val_w : W → M → ℝ),
   Fintype.card M = Fintype.card W →
     Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w →
-      ¬∃ nu,
+      ¬∃ (nu : AppliedModelingLib.Matching.Assignment M W),
           Roth82StableMatching.PaperInterface.completeMarriageOutcome nu ∧
             ∀ (m : M),
               (match (Roth82StableMatching.PaperInterface.menDeferredAcceptance val_m val_w).m_match m with
@@ -1313,20 +2094,52 @@ example above shows that this can't be strengthened to strong Pareto optimality.
                 | some w => val_m m w
 \end{ReviewVerbatim}
 
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-508c084086b006b8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Matching.\allowbreak{}Assignment}
+\item \hyperlink{paper-prerequisite-efa58a68b1c17a47}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}complete\allowbreak{}Marriage\allowbreak{}Outcome}
+\item \hyperlink{governing-declaration-7357e0557237bc7e}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}men\allowbreak{}Deferred\allowbreak{}Acceptance}
+\item \hyperlink{governing-declaration-d06ec2a2987f0c72}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}Paper\allowbreak{}Interface.\allowbreak{}strict\allowbreak{}Marriage\allowbreak{}Domain}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Fintype M
+4. parameter: Fintype W
+5. parameter: DecidableEq M
+6. parameter: DecidableEq W
+7. assumption: Nonempty M
+8. parameter: M → W → ℝ
+9. parameter: W → M → ℝ
+10. assumption: Fintype.card M = Fintype.card W
+11. assumption: Roth82StableMatching.PaperInterface.strictMarriageDomain val_m val_w
+12. conclusion: ¬∃ (nu : AppliedModelingLib.Matching.Assignment M W),
+    Roth82StableMatching.PaperInterface.completeMarriageOutcome nu ∧
+      ∀ (m : M),
+        (match (Roth82StableMatching.PaperInterface.menDeferredAcceptance val_m val_w).m_match m with
+          | none => 0
+          | some w => val_m m w) <
+          match nu.m_match m with
+          | none => 0
+          | some w => val_m m w
+\end{ReviewVerbatim}
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 Roth82StableMatching.PaperInterface.theorem6_no_outcome_strictly_better_for_all_men
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Theorem 6 says no feasible outcome is strictly preferred by all men to g(P), the men-\allowbreak{}proposing outcome.\allowbreak{}  The target excludes exactly a complete feasible assignment that gives every man a strict true-\allowbreak{}utility improvement over menDeferredAcceptance, under the source's finite strict marriage assumptions.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-775470afdcdc7bf3}{}
-\section*{Review row 17}
+\section*{Review row 10}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 713-\allowbreak{}714\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -1335,10 +2148,22 @@ incentive to misrepresent his kth choice, for k -# 1.
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ (k : ℕ),
-  1 < k → ∃ n, Roth82StableMatching.paper_no_stable_procedure_avoids_strict_kth_choice_manipulation_on (Fin n) (Fin n) k
+  1 < k →
+    ∃ (n : ℕ), Roth82StableMatching.paper_no_stable_procedure_avoids_strict_kth_choice_manipulation_on (Fin n) (Fin n) k
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-d7d2f9cb7d4bef58}{Roth82\allowbreak{}Stable\allowbreak{}Matching.\allowbreak{}paper\_\allowbreak{}no\_\allowbreak{}stable\_\allowbreak{}procedure\_\allowbreak{}avoids\_\allowbreak{}strict\_\allowbreak{}kth\_\allowbreak{}choice\_\allowbreak{}manipulation\_\allowbreak{}on}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: ℕ
+2. assumption: 1 < k
+3. conclusion: ∃ (n : ℕ), Roth82StableMatching.paper_no_stable_procedure_avoids_strict_kth_choice_manipulation_on (Fin n) (Fin n) k
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -1346,177 +2171,11 @@ Roth82StableMatching.PaperInterface.theorem7_later_choice_manipulation_unavoidab
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-f143def46edc881e}{}
-\section*{Review row 18}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 522-\allowbreak{}529\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-We first show that only a certain kind of simple misrepresentation need
-
-considered, since if any successful manipulation is possible, then it can be achieved
-a simple misrepresentation. Specifically, if P'(mi) is an arbitrary misrepresentation
-discussed above, then an equivalent simple misrepresentation P"(mi) is one in whic
-
-y(mi)P"(mi)wj for all wj #y(mi). That is, P"(mi) is a preference relation which ha
-y(m,) as the most preferred match of mi,. The justification for calling P"(mi) an
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {W : Type u_1} (report_m : W → ℝ) (wstar : W),
-  Roth82StableMatching.PaperInterface.manReportStrictlyRanksPartnerFirst report_m wstar ↔
-    ∀ (w : W), w ≠ wstar → report_m w < report_m wstar
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-Roth82StableMatching.PaperInterface.manReportStrictlyRanksPartnerFirst_iff_source_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-e79a67a30eb14eca}{}
-\section*{Review row 19}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 300-\allowbreak{}303\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-4. Incentives and stability. Since each agent alone knows his own preferences, any
-matching procedure which depends on agents' preferences can be thought of as
-consisting of two parts: a mechanism for eliciting the preferences of the agents, and a
-mechanism for aggregating these elicited preferences to determine an outcome. This
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (M : Type u) (W : Type v),
-  Roth82StableMatching.PaperInterface.matchingProcedure M W =
-    (Roth82StableMatching.PaperInterface.preferenceProfile M W →
-      { mu // Roth82StableMatching.PaperInterface.completeMarriageOutcome mu })
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-Roth82StableMatching.PaperInterface.matchingProcedure_eq_source_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-c30c6d5e5f9f5a57}{}
-\section*{Review row 20}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 463-\allowbreak{}466\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-results, which make use of the fact that Theorem 1 permits us to identify, for each set
-
-of agents, a unique optimal stable outcome, which they each like at least as well as any
-other stable outcome.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {M : Type u_1} {W : Type u_2} (val_m : M → W → ℝ) (val_w : W → M → ℝ) (mu : EconCSLib.Matching.Assignment M W),
-  (Roth82StableMatching.PaperInterface.sourceMenOptimal val_m val_w mu ↔
-      Roth82StableMatching.PaperInterface.sourceStableMarriage val_m val_w mu ∧
-        ∀ (mu' : EconCSLib.Matching.Assignment M W),
-          Roth82StableMatching.PaperInterface.sourceStableMarriage val_m val_w mu' →
-            ∀ (m : M),
-              (match mu'.m_match m with
-                | none => 0
-                | some w => val_m m w) ≤
-                match mu.m_match m with
-                | none => 0
-                | some w => val_m m w) ∧
-    (Roth82StableMatching.PaperInterface.sourceWomenOptimal val_m val_w mu ↔
-      Roth82StableMatching.PaperInterface.sourceStableMarriage val_m val_w mu ∧
-        ∀ (mu' : EconCSLib.Matching.Assignment M W),
-          Roth82StableMatching.PaperInterface.sourceStableMarriage val_m val_w mu' →
-            ∀ (w : W),
-              (match mu'.w_match w with
-                | none => 0
-                | some m => val_w w m) ≤
-                match mu.w_match w with
-                | none => 0
-                | some m => val_w w m)
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-Roth82StableMatching.PaperInterface.sideOptimalStableOutcome_iff_source_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-5a318a92fe832efb}{}
-\section*{Review row 21}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 176-\allowbreak{}197\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-the marriage problem was defined as having equal numbers of men and women, and
-without the possibility that a feasible outcome could leave any agent unmatched, while
-in the general matching problem, there may be an excess of one kind of agent, and an
-
-outcome need not make a match for every agent. This more general case can be
-handled by adding suitable "dummy" agents corresponding to the option of being
-unmatched in the final outcome. The third respect in which the marriage problem as
-described above is more restrictive than the general matching problem is that indiffer-
-
-ence between potential partners has been ruled out by the assumption that all
-preferences are strict. Relaxing this assumption would actually complicate some of the
-results. To avoid these complications, only strict preferences will be considered.
-
-Thus the marriage problem will be used to represent the general matching problem
-with strict preferences. This should not obscure the fact that much of the interest of the
-5That is, the preference relations P(m,) (or P(wi)) have the following properties:
-(1) transitivity: if WjPiWk and wkPiwI, then wjPiwl;
-
-(2) completeness: for all distinct wj, wk in W, exactly one of the relations wjPiWk or wkP,wj holds
-The interpretation of the preference relations Pi as strict preference relations means that we are ruling out
-the possibility that an agent will be indifferent between two potential partners. (Also, it is never the case that
-wjP.jW.) See the discussion at the end of this section.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {M : Type u_1} {W : Type u_2} [inst : Fintype M] [inst_1 : Fintype W] (val_m : M → W → ℝ) (val_w : W → M → ℝ),
-  Roth82StableMatching.PaperInterface.sourceMarriageModel val_m val_w ↔
-    Fintype.card M = Fintype.card W ∧
-      (∀ (m : M) (w w' : W), val_m m w = val_m m w' → w = w') ∧ ∀ (w : W) (m m' : M), val_w w m = val_w w m' → m = m'
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-Roth82StableMatching.PaperInterface.sourceMarriageModel_iff_source_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Theorem 7 says that for every kth choice with k not first, no stable procedure can avoid incentives to misrepresent it;\allowbreak{} the proof states k>1.\allowbreak{}  The target uses the equivalent natural-\allowbreak{}number condition 1<k and asserts a finite witness instance for each such rank, matching the source's impossibility form.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox

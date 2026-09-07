@@ -1,7 +1,7 @@
 import KR21Monoculture.FirstChoice
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -12,7 +12,7 @@ second mover's own ranking is drawn from `μWorse`.
 -/
 noncomputable def weakerCompetitionGain {n : ℕ}
     (μBetter μWorse : PMF (Ranking n)) (value : Candidate n → ℝ) : ℝ :=
-  EconCSLib.SocialChoice.Ranking.weakerCompetitionGain μBetter μWorse value
+  AppliedModelingLib.SocialChoice.Ranking.weakerCompetitionGain μBetter μWorse value
 
 /-- Preference for weaker competition is positivity of the weaker-competition gain. -/
 theorem prefersWeakerCompetition_iff_weakerCompetitionGain_pos {n : ℕ}
@@ -20,7 +20,7 @@ theorem prefersWeakerCompetition_iff_weakerCompetitionGain_pos {n : ℕ}
     Model.PrefersWeakerCompetition μBetter μWorse value ↔
       0 < weakerCompetitionGain μBetter μWorse value := by
   unfold Model.PrefersWeakerCompetition weakerCompetitionGain
-  exact EconCSLib.SocialChoice.Ranking.prefersWeakerCompetition_iff_weakerCompetitionGain_pos
+  exact AppliedModelingLib.SocialChoice.Ranking.prefersWeakerCompetition_iff_weakerCompetitionGain_pos
     μBetter μWorse value
 
 /--
@@ -42,10 +42,10 @@ theorem weakerCompetitionGain_eq_expected_collision_loss_diff {n : ℕ}
           (firstChoiceProb μBetter (firstChoice π) -
               firstChoiceProb μWorse (firstChoice π)) * valueGap value π) := by
   simpa [weakerCompetitionGain,
-    EconCSLib.SocialChoice.Ranking.weakerCompetitionGain,
+    AppliedModelingLib.SocialChoice.Ranking.weakerCompetitionGain,
     firstChoiceProb, valueGap, firstChoice,
-    EconCSLib.SocialChoice.Ranking.firstChoice] using
-    EconCSLib.SocialChoice.Ranking.weakerCompetitionGain_eq_expected_collision_loss_diff
+    AppliedModelingLib.SocialChoice.Ranking.firstChoice] using
+    AppliedModelingLib.SocialChoice.Ranking.weakerCompetitionGain_eq_expected_collision_loss_diff
       (μBetter := μBetter) (μWorse := μWorse) (value := value)
 
 /-- Definition 3, rewritten using first-choice collision probabilities and value gaps. -/
@@ -72,19 +72,19 @@ theorem weakerCompetitionGain_nonneg_of_collisionProb_le_and_gap_nonneg {n : ℕ
     (hgap : ∀ π : Ranking n, 0 ≤ valueGap value π) :
     0 ≤ weakerCompetitionGain μBetter μWorse value := by
   simpa [weakerCompetitionGain,
-    EconCSLib.SocialChoice.Ranking.weakerCompetitionGain,
-    valueGap, EconCSLib.SocialChoice.Ranking.valueGap] using
-    EconCSLib.SocialChoice.Ranking.weakerCompetitionGain_nonneg_of_collisionProb_le_and_gap_nonneg
+    AppliedModelingLib.SocialChoice.Ranking.weakerCompetitionGain,
+    valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap] using
+    AppliedModelingLib.SocialChoice.Ranking.weakerCompetitionGain_nonneg_of_collisionProb_le_and_gap_nonneg
       (μBetter := μBetter) (μWorse := μWorse) (value := value)
       (by
         intro π
         simpa [firstChoiceProb, firstChoice,
-          EconCSLib.SocialChoice.Ranking.firstChoice] using hprob π)
+          AppliedModelingLib.SocialChoice.Ranking.firstChoice] using hprob π)
       (by
         intro π
-        simpa [valueGap, EconCSLib.SocialChoice.Ranking.valueGap,
-          firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice,
-          secondChoice, EconCSLib.SocialChoice.Ranking.secondChoice] using hgap π)
+        simpa [valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap,
+          firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice,
+          secondChoice, AppliedModelingLib.SocialChoice.Ranking.secondChoice] using hgap π)
 
 /-- Utility-side corollary of the sufficient monotonicity condition. -/
 theorem expectedSecondMoverIndependent_le_of_collisionProb_le_and_gap_nonneg {n : ℕ}
@@ -95,18 +95,18 @@ theorem expectedSecondMoverIndependent_le_of_collisionProb_le_and_gap_nonneg {n 
     expectedSecondMoverIndependent μWorse μBetter value ≤
       expectedSecondMoverIndependent μWorse μWorse value := by
   simpa [expectedSecondMoverIndependent,
-    EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent,
-    secondMoverUtility, EconCSLib.SocialChoice.Ranking.secondMoverUtility] using
-    EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent_le_self_of_collisionProb_le_and_gap_nonneg
+    AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent,
+    secondMoverUtility, AppliedModelingLib.SocialChoice.Ranking.secondMoverUtility] using
+    AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent_le_self_of_collisionProb_le_and_gap_nonneg
       (μBetter := μBetter) (μWorse := μWorse) (value := value)
       (by
         intro π
         simpa [firstChoiceProb, firstChoice,
-          EconCSLib.SocialChoice.Ranking.firstChoice] using hprob π)
+          AppliedModelingLib.SocialChoice.Ranking.firstChoice] using hprob π)
       (by
         intro π
-        simpa [valueGap, EconCSLib.SocialChoice.Ranking.valueGap,
-          firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice,
-          secondChoice, EconCSLib.SocialChoice.Ranking.secondChoice] using hgap π)
+        simpa [valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap,
+          firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice,
+          secondChoice, AppliedModelingLib.SocialChoice.Ranking.secondChoice] using hgap π)
 
 end KR21Monoculture

@@ -2,6 +2,13 @@ import GS62CollegeAdmissions.MainTheorems
 import Mathlib.Data.Fin.VecNotation
 import Mathlib.Tactic.FinCases
 
+/-! The finite rank-table proofs below deliberately avoid the global simp
+simproc, which panics on this Lean toolchain when reducing nested vectors. -/
+syntax (name := finiteSimp) "finite_simp" Lean.Parser.Tactic.simpArgs : tactic
+
+macro_rules
+  | `(tactic| finite_simp [$args,*]) => `(tactic| simp only [$args,*] <;> decide)
+
 /-!
 # Gale--Shapley 1962: finite examples
 
@@ -111,66 +118,74 @@ theorem paper_gs62_example2_unique_stable_marriage :
       hb30 | hb02 | hb10
     · rcases htarget with ⟨h0, h1, h2, h3⟩
       funext i
-      fin_cases i <;> simp [example2Partner, h0, h1, h2, h3]
+      fin_cases i
+      · change partner 0 = 2
+        exact h0
+      · change partner 1 = 3
+        exact h1
+      · change partner 2 = 0
+        exact h2
+      · change partner 3 = 1
+        exact h3
     · rcases hb12 with ⟨h1, h2⟩
       exact (hnoBlock 1 2
-        (by simp [example2MenRank, h1, h2])
-        (by simp [example2WomenRank, h2])).elim
+        (by finite_simp [example2MenRank, h1, h2])
+        (by finite_simp [example2WomenRank, h2])).elim
     · rcases hb20 with ⟨h2, h0⟩
       rcases h2 with h2 | h2 <;>
         exact (hnoBlock 2 0
-          (by simp [example2MenRank, h0, h2])
-          (by simp [example2WomenRank, h0])).elim
+          (by finite_simp [example2MenRank, h0, h2])
+          (by finite_simp [example2WomenRank, h0])).elim
     · rcases hb13 with ⟨h1, h3⟩
       rcases h1 with h1 | h1 <;>
         exact (hnoBlock 1 3
-          (by simp [example2MenRank, h1, h3])
-          (by simp [example2WomenRank, h3])).elim
+          (by finite_simp [example2MenRank, h1, h3])
+          (by finite_simp [example2WomenRank, h3])).elim
     · rcases hb32 with hb | hb
       · rcases hb with ⟨h3, h2⟩
         rcases h2 with h2 | h2 <;>
           exact (hnoBlock 3 2
-            (by simp [example2MenRank, h2, h3])
-            (by simp [example2WomenRank, h2])).elim
+            (by finite_simp [example2MenRank, h2, h3])
+            (by finite_simp [example2WomenRank, h2])).elim
       · rcases hb with ⟨h3, h2⟩
         exact (hnoBlock 3 2
-          (by simp [example2MenRank, h2, h3])
-          (by simp [example2WomenRank, h2])).elim
+          (by finite_simp [example2MenRank, h2, h3])
+          (by finite_simp [example2WomenRank, h2])).elim
     · rcases hb01 with hb | hb
       · rcases hb with ⟨h0, h1⟩
         rcases h0 with h0 | h0 | h0 <;>
           exact (hnoBlock 0 1
-            (by simp [example2MenRank, h0, h1])
-            (by simp [example2WomenRank, h1])).elim
+            (by finite_simp [example2MenRank, h0, h1])
+            (by finite_simp [example2WomenRank, h1])).elim
       · rcases hb with ⟨h0, h1⟩
         exact (hnoBlock 0 1
-          (by simp [example2MenRank, h0, h1])
-          (by simp [example2WomenRank, h1])).elim
+          (by finite_simp [example2MenRank, h0, h1])
+          (by finite_simp [example2WomenRank, h1])).elim
     · rcases hb30 with hb | hb
       · rcases hb with ⟨h3, h0⟩
         rcases h0 with h0 | h0 <;>
           exact (hnoBlock 3 0
-            (by simp [example2MenRank, h0, h3])
-            (by simp [example2WomenRank, h0])).elim
+            (by finite_simp [example2MenRank, h0, h3])
+            (by finite_simp [example2WomenRank, h0])).elim
       · rcases hb with ⟨h3, h0⟩
         exact (hnoBlock 3 0
-          (by simp [example2MenRank, h0, h3])
-          (by simp [example2WomenRank, h0])).elim
+          (by finite_simp [example2MenRank, h0, h3])
+          (by finite_simp [example2WomenRank, h0])).elim
     · rcases hb02 with hb | hb
       · rcases hb with ⟨h0, h2⟩
         exact (hnoBlock 0 2
-          (by simp [example2MenRank, h0, h2])
-          (by simp [example2WomenRank, h2])).elim
+          (by finite_simp [example2MenRank, h0, h2])
+          (by finite_simp [example2WomenRank, h2])).elim
       · rcases hb with ⟨h0, h2⟩
         rcases h2 with h2 | h2 <;>
           exact (hnoBlock 0 2
-            (by simp [example2MenRank, h0, h2])
-            (by simp [example2WomenRank, h2])).elim
+            (by finite_simp [example2MenRank, h0, h2])
+            (by finite_simp [example2WomenRank, h2])).elim
     · rcases hb10 with ⟨h1, h0⟩
       rcases h1 with h1 | h1 <;>
         exact (hnoBlock 1 0
-          (by simp [example2MenRank, h0, h1])
-          (by simp [example2WomenRank, h0])).elim
+          (by finite_simp [example2MenRank, h0, h1])
+          (by finite_simp [example2WomenRank, h0])).elim
 
 /-! ## Example 3: the roommates obstruction -/
 
@@ -211,7 +226,9 @@ theorem paper_gs62_example3_no_stable_roommate_pairing :
   fin_cases p0
   · exact hfixed 0 h0
   · have h1 : partner 1 = 0 := by
-      simpa [h0] using hinvol 0
+        calc
+          partner 1 = partner (partner 0) := by rw [h0]; rfl
+          _ = 0 := hinvol 0
     have h2 : partner 2 = 3 := by
       generalize h : partner 2 = p2
       fin_cases p2
@@ -222,12 +239,14 @@ theorem paper_gs62_example3_no_stable_roommate_pairing :
         have hval := congrArg Fin.val this
         norm_num at hval
       · exact (hfixed 2 h).elim
-      · simpa using h
+      · rfl
     exact hnoBlock 1 2 (by decide)
-      (by simp [example3Rank, h1])
-      (by simp [example3Rank, h2])
+      (by rw [h1]; change 0 < 1; decide)
+      (by rw [h2]; change 1 < 2; decide)
   · have h2 : partner 2 = 0 := by
-      simpa [h0] using hinvol 0
+        calc
+          partner 2 = partner (partner 0) := by rw [h0]; rfl
+          _ = 0 := hinvol 0
     have h1 : partner 1 = 3 := by
       generalize h : partner 1 = p1
       fin_cases p1
@@ -238,12 +257,14 @@ theorem paper_gs62_example3_no_stable_roommate_pairing :
       · have : (1 : Fin 4) = 0 := hinjective (h.trans h0.symm)
         have hval := congrArg Fin.val this
         norm_num at hval
-      · simpa using h
+      · rfl
     exact hnoBlock 0 1 (by decide)
-      (by simp [example3Rank, h0])
-      (by simp [example3Rank, h1])
+      (by rw [h0]; change 0 < 1; decide)
+      (by rw [h1]; change 1 < 2; decide)
   · have h3 : partner 3 = 0 := by
-      simpa [h0] using hinvol 0
+        calc
+          partner 3 = partner (partner 0) := by rw [h0]; rfl
+          _ = 0 := hinvol 0
     have h1 : partner 1 = 2 := by
       generalize h : partner 1 = p1
       fin_cases p1
@@ -251,14 +272,16 @@ theorem paper_gs62_example3_no_stable_roommate_pairing :
         have hval := congrArg Fin.val this
         norm_num at hval
       · exact (hfixed 1 h).elim
-      · simpa using h
+      · rfl
       · have : (1 : Fin 4) = 0 := hinjective (h.trans h0.symm)
         have hval := congrArg Fin.val this
         norm_num at hval
     have h2 : partner 2 = 1 := by
-      simpa [h1] using hinvol 1
+      calc
+        partner 2 = partner (partner 1) := by rw [h1]
+        _ = 1 := hinvol 1
     exact hnoBlock 0 2 (by decide)
-      (by simp [example3Rank, h0])
-      (by simp [example3Rank, h2])
+      (by rw [h0]; change 1 < 2; decide)
+      (by rw [h2]; change 0 < 1; decide)
 
 end GS62CollegeAdmissions

@@ -11,24 +11,18 @@ LLM-as-judge pass.
 from __future__ import annotations
 
 import argparse
-import ast
 from copy import deepcopy
-from contextvars import ContextVar
 import errno
-import fcntl
+from functools import lru_cache
 import hashlib
 import json
 import os
 import re
 import shutil
-import signal
-import subprocess
 import sys
 import tempfile
-import threading
 import time
 from collections import deque
-from contextlib import contextmanager
 from dataclasses import dataclass, asdict, field as dataclass_field
 from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping
@@ -37,6 +31,9 @@ from typing import Any, Callable, Iterable, Mapping
 REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
+
+REPOSITORY_LIBRARY_MODULE_ROOT = "AppliedModelingLib"
+REPOSITORY_LIBRARY_ROOT_FILE = f"{REPOSITORY_LIBRARY_MODULE_ROOT}.lean"
 
 from scripts.source_record_projection_contract import (  # noqa: E402
     CheckedProjectionResult,
@@ -51,16 +48,46 @@ from scripts.source_record_projection_contract import (  # noqa: E402
     checked_projection_result,
     source_record_classification,
 )
-from scripts.source_record_raw_producer_compatibility import (  # noqa: E402
+from scripts.source_record_producer_provenance import (  # noqa: E402
     fingerprint_without_raw_producer_provenance,
-    source_record_fingerprint_matches_with_raw_producer_compatibility,
 )
-from scripts.closeout_wave_engine import (  # noqa: E402
-    closeout_raw_reissue_admission_error,
+from scripts.source_record_artifact_io import (  # noqa: E402
+    atomic_write_text_if_changed,
+    canonical_source_record_audit_path,
+    finalize_source_record_audit_output,
+    load_json_object,
+    source_record_audit_output_path,
+)
+from scripts.source_record_runtime import (  # noqa: E402
+    SOURCE_RECORD_LAKE_BUILD_TIMEOUT_SECONDS,
+    SOURCE_RECORD_LAKE_ENV_TIMEOUT_SECONDS,
+    SOURCE_RECORD_LEAN_CHECK_TIMEOUT_SECONDS,
+    SOURCE_RECORD_LEAN_ELABORATION_TIMEOUT_SECONDS,
+    SourceRecordAuditLockUnavailable,
+    run_source_record_subprocess,
+    source_record_audit_lock,
+    source_record_audit_lock_status,
+    source_record_progress,
+    source_record_progress_phase,
+    structural_scan_progress_summary,
+)
+from scripts.source_record_semantic_reuse import (  # noqa: E402
+    POLICY as SOURCE_RECORD_SEMANTIC_REUSE_POLICY,
+    load_current_semantic_reuse_authority,
+    load_semantic_reuse_cache,
+    rebind_semantic_validation_authority_controls,
+    semantic_fingerprint_matches,
+    validate_current_semantic_reuse,
+    write_semantic_reuse_cache,
+)
+from scripts.source_record_raw_producer_identity import (  # noqa: E402
+    SOURCE_RECORD_RAW_PRODUCER_CODE_IDENTITY_SCHEMA,
+    SOURCE_RECORD_RAW_PRODUCER_EXTERNAL_CODE_PATHS,
+    raw_generation_code_identity,
 )
 from scripts.check_formalization_engine_revision import (  # noqa: E402
     EngineRevisionError,
-    validated_runtime_raw_producer_compatibility_ledger,
+    validate_runtime_engine_registration,
 )
 from scripts.audit_evidence_integrity import (  # noqa: E402
     CONDITIONING_INFORMATION_CONTEXT_KIND,
@@ -95,7 +122,9 @@ from scripts.audit_evidence_integrity import (  # noqa: E402
     semantic_contract_validation_errors,
     corrected_model_scope_model_bindings,
     corrected_model_scope_model_metadata,
+    source_record_effective_semantic_surface_error,
     source_record_raw_semantic_surface_error,
+    source_record_semantic_contract_revalidation_context,
     source_artifact_pin_findings,
     source_claim_atoms_validation_errors,
     source_file_line_anchor_errors,
@@ -125,6 +154,7 @@ from scripts.source_coverage_scope import (  # noqa: E402
     legacy_source_map_cache_semantic_sha256,
     source_map_cache_semantic_sha256,
     source_coverage_mode_from_map,
+    source_item_effective_route_policy,
 )
 from scripts.source_record_freshness import (  # noqa: E402
     SOURCE_RECORD_ITEM_DIGEST_SCHEMA,
@@ -139,35 +169,13 @@ from scripts.source_record_integrity import (  # noqa: E402
     source_record_raw_reusable_item_metadata_error,
     stamp_source_record_audit_integrity,
 )
-from scripts.source_record_partial_to_formalized_transition import (  # noqa: E402
-    validate_source_record_partial_to_formalized_transition,
+from scripts.source_record_overlay_protocol import (  # noqa: E402
+    serialized_source_record_overlay_labels,
+    source_record_overlay_labels_with_artifacts,
 )
-from scripts.source_record_diagnostic_rebind import (  # noqa: E402
-    direct_route_diagnostic_rebind_error,
-)
-from scripts.source_record_selected_surface_rebind import (  # noqa: E402
-    selected_surface_rebind_context,
-)
-from scripts.source_record_schema4_to5_migration import (  # noqa: E402
-    SOURCE_RECORD_SCHEMA4_TO5_MIGRATION_FILENAME,
-    SourceRecordSchema4To5MigrationError,
-    build_source_record_schema4_to5_migration,
-    copy_loaded_source_record_schema4_to5_migration_item,
-    is_loaded_source_record_schema4_to5_migration_item,
-    load_current_source_record_schema4_to5_migration_items,
-    source_record_schema4_to5_migration_item_has_provenance,
-)
-from scripts.source_record_differential_revalidation import (  # noqa: E402
-    copy_loaded_source_record_differential_revalidation_item,
-    is_loaded_source_record_differential_revalidation_item,
-    load_current_source_record_differential_revalidation_items,
-    source_record_differential_revalidation_item_has_provenance,
-)
-from scripts.source_record_attested_selected_reuse import (  # noqa: E402
-    copy_loaded_source_record_attested_selected_reuse_item,
-    is_loaded_source_record_attested_selected_reuse_item,
-    load_current_attested_selected_semantic_reuse_items,
-    source_record_attested_selected_reuse_item_has_provenance,
+from scripts.source_record_archived_transports import (  # noqa: E402
+    archived_source_record_transport_artifacts,
+    archived_source_record_transport_item_field,
 )
 from scripts.lean_signature_manifest import (  # noqa: E402
     RECURSIVE_FIELD_SAFETY_LOCATOR_SCHEMA,
@@ -198,7 +206,9 @@ from scripts.lean_signature_manifest import (  # noqa: E402
 )
 from scripts.lean_import_closure import (  # noqa: E402
     WorktreeImportClosureProvider,
+    index_paths,
     lean_import_closure_payload_sha256,
+    module_name_for_path,
     validated_lean_import_closure_payload,
 )
 from scripts.authenticated_manifest_store import (  # noqa: E402
@@ -206,6 +216,13 @@ from scripts.authenticated_manifest_store import (  # noqa: E402
     prime_exact_context_attested_resume_manifests,
     elaborated_proposition_graph_sha256,
     merge_authenticated_manifest_store,
+)
+from scripts.source_record_manifest_cache import (  # noqa: E402
+    checkpoint_manifest_resume_cache as _checkpoint_manifest_resume_cache,
+    current_manifest_resume_bindings as _current_manifest_resume_bindings,
+    local_declaration_manifest_bindings as _local_declaration_manifest_bindings,
+    prime_signature_manifest_store as _prime_signature_manifest_store,
+    publish_signature_manifest_store as _publish_signature_manifest_store,
 )
 from scripts.source_record_target_disposition import (  # noqa: E402
     STATEMENT_SOURCE_REVIEW_ASSOCIATION_ORIGIN,
@@ -245,6 +262,7 @@ from scripts.source_record_record_closure_completion import (  # noqa: E402
     current_record_field_closure_completion_candidates,
 )
 from scripts.formalization_protocol import (  # noqa: E402
+    CURRENT_SOURCE_RECORD_PROMPT_VERSION,
     FORMALIZATION_COVERAGE_PROTOCOL_FIELD,
     formalization_coverage_protocol_digest,
     formalization_judgment_review_protocol_is_current,
@@ -334,18 +352,11 @@ RISK_TERMS = {
     "update",
 }
 
-SOURCE_RECORD_PROMPT_VERSION = "source-record-v10-semantic-conclusion-boundary-contract"
+SOURCE_RECORD_PROMPT_VERSION = CURRENT_SOURCE_RECORD_PROMPT_VERSION
 # This version is the cache boundary for code that can change the generated
 # source-record obligation surface.  Bump it with any such change; do not bump
 # it for diagnostics, sidecar validation, or dashboard-only changes.
 SOURCE_RECORD_SURFACE_GENERATOR_VERSION = "source-record-surface-generator-v4"
-PARTIAL_TO_FORMALIZED_STATUS_TRANSITION_ENGINE_IDENTITY = {
-    "path": (
-        "skills/econcs-formalizer/scripts/source_record_audit.py"
-        "#partial-to-formalized-maximal-input-surface"
-    ),
-    "surface_semantic_version": "partial-to-formalized-maximal-input-surface-v3",
-}
 
 # A routing-only supplement can replay this narrow lexical dependency analysis
 # without regenerating otherwise unchanged source-record obligations.  Bump
@@ -575,12 +586,6 @@ SOURCE_RECORD_SURFACE_ENGINE_VERSIONS = {
 # the fresh-generation source slice and its direct local helpers, plus the two
 # imported producer subsystems it invokes.  Cache/judgment-summary consumers
 # are outside that slice and therefore retain aggregate-scan reuse.
-SOURCE_RECORD_RAW_PRODUCER_CODE_IDENTITY_SCHEMA = 1
-SOURCE_RECORD_RAW_PRODUCER_BEGIN_MARKER = "# SOURCE_RECORD_RAW_PRODUCER_BEGIN"
-SOURCE_RECORD_RAW_PRODUCER_END_MARKER = "# SOURCE_RECORD_RAW_PRODUCER_END"
-SOURCE_RECORD_RAW_PRODUCER_EXTERNAL_CODE_PATHS = (
-    "scripts/lean_signature_manifest_helper.lean",
-)
 SOURCE_RECORD_LEAN_IMPORT_CLOSURE_FIELD = "lean_import_closure"
 SOURCE_RECORD_LEAN_IMPORT_CLOSURE_SHA256_FIELD = "lean_import_closure_sha256"
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
@@ -671,496 +676,6 @@ CONDITIONING_INFORMATION_REQUIREMENT_SCHEMA = 1
 # field name never selects or discharges the obligation.
 SOURCE_MODEL_DERIVATION_DIMENSION = "source_model_derivation"
 SOURCE_MODEL_DERIVATION_REQUIREMENT_SCHEMA = 2
-
-# Isolated checks can compile a sizeable paper interface, so these are
-# deliberately generous.  They bound a wedged Lake/Lean child without turning
-# a slow but legitimate paper-local closeout into a false failure.
-SOURCE_RECORD_LAKE_BUILD_TIMEOUT_SECONDS = 600
-SOURCE_RECORD_LAKE_ENV_TIMEOUT_SECONDS = 60
-SOURCE_RECORD_LEAN_ELABORATION_TIMEOUT_SECONDS = 600
-SOURCE_RECORD_LEAN_CHECK_TIMEOUT_SECONDS = 600
-SOURCE_RECORD_PROGRESS_HEARTBEAT_SECONDS = 30
-_ACTIVE_SOURCE_RECORD_AUDIT_LOCK_FD: ContextVar[int | None] = ContextVar(
-    "active_source_record_audit_lock_fd", default=None
-)
-_ACTIVE_SOURCE_RECORD_AUDIT_PROGRESS_UPDATER: ContextVar[
-    Callable[[str], None] | None
-] = ContextVar("active_source_record_audit_progress_updater", default=None)
-
-
-@dataclass(frozen=True)
-class CapturedSubprocessResult:
-    """Result of one bounded source-record child process."""
-
-    returncode: int
-    stdout: str
-    elapsed_seconds: float
-    timed_out: bool = False
-
-
-def _as_text_output(value: object) -> str:
-    """Normalize subprocess output after a timeout across Python versions."""
-
-    if value is None:
-        return ""
-    if isinstance(value, bytes):
-        return value.decode("utf-8", errors="replace")
-    return str(value)
-
-
-def source_record_progress(
-    message: str,
-    *,
-    progress_updater: Callable[[str], None] | None = None,
-) -> None:
-    """Emit diagnostics on stderr without contaminating JSON stdout output."""
-
-    # A caller can lose its terminal stream while the serialized audit still
-    # owns a valid output path and lock.  Diagnostics must not turn that
-    # transport failure into a killed audit or a stranded temporary overlay.
-    try:
-        print(f"source-record audit: {message}", file=sys.stderr, flush=True)
-    except (BrokenPipeError, OSError, ValueError):
-        pass
-    # The lock payload is an ignored operational observation, never audit
-    # evidence.  It lets a later observer attribute an active serialized scan
-    # to its current phase instead of guessing from shared temporary scripts.
-    updater = (
-        progress_updater
-        if progress_updater is not None
-        else _ACTIVE_SOURCE_RECORD_AUDIT_PROGRESS_UPDATER.get()
-    )
-    if updater is not None:
-        try:
-            updater(message)
-        except (OSError, ValueError):
-            pass
-
-
-@contextmanager
-def source_record_progress_phase(
-    phase: str,
-    *,
-    heartbeat_seconds: float = SOURCE_RECORD_PROGRESS_HEARTBEAT_SECONDS,
-):
-    """Report a long audit phase while black-box Meta checks are running.
-
-    Several semantic-contract passes live in shared audit helpers and do not
-    expose their individual Lean subprocesses here.  A lightweight heartbeat
-    makes a slow, serialized source-record run distinguishable from a lost
-    terminal stream.  It is diagnostic only and never changes audit results.
-    """
-
-    started = time.monotonic()
-    stopped = threading.Event()
-    interval = max(float(heartbeat_seconds), 0.1)
-    progress_updater = _ACTIVE_SOURCE_RECORD_AUDIT_PROGRESS_UPDATER.get()
-
-    def heartbeat() -> None:
-        while not stopped.wait(interval):
-            source_record_progress(
-                f"{phase} still running ({time.monotonic() - started:.0f}s elapsed)",
-                progress_updater=progress_updater,
-            )
-
-    source_record_progress(f"{phase} started")
-    worker = threading.Thread(
-        target=heartbeat,
-        name="source-record-audit-progress",
-        daemon=True,
-    )
-    worker.start()
-    try:
-        yield
-    finally:
-        stopped.set()
-        worker.join(timeout=interval + 1)
-        source_record_progress(
-            f"{phase} finished ({time.monotonic() - started:.1f}s elapsed)"
-        )
-
-
-def structural_scan_progress_summary(diagnostics: Mapping[str, Any]) -> str:
-    """Render operational reuse counters without adding them to audit evidence."""
-
-    raw_stages = diagnostics.get("stages")
-    stages = (
-        [stage for stage in raw_stages if isinstance(stage, Mapping)]
-        if isinstance(raw_stages, list)
-        else [diagnostics]
-    )
-
-    def total(field: str) -> int:
-        return sum(
-            int(stage.get(field) or 0)
-            for stage in stages
-            if type(stage.get(field) or 0) is int
-        )
-
-    return (
-        f"{total('requested_count')} requested; "
-        f"{total('reused_count')} reused; "
-        f"{total('fresh_count')} fresh; "
-        f"{total('missing_count')} missing; "
-        f"{total('batch_count')} Lean batches"
-    )
-
-
-def run_source_record_subprocess(
-    command: list[str],
-    *,
-    cwd: Path,
-    phase: str,
-    timeout_seconds: float,
-    heartbeat_seconds: float = SOURCE_RECORD_PROGRESS_HEARTBEAT_SECONDS,
-) -> CapturedSubprocessResult:
-    """Run one Lake/Lean command with bounded, group-wide cleanup.
-
-    ``subprocess.run(..., timeout=...)`` only kills its direct child.  Lake can
-    have a Lean child of its own, so the audit instead creates a process group
-    and kills/reaps that whole group on timeout.  Capturing child output keeps
-    generated JSON deterministic; heartbeats go only to stderr.
-    """
-
-    timeout = max(float(timeout_seconds), 0.0)
-    interval = max(float(heartbeat_seconds), 0.1)
-    started = time.monotonic()
-    source_record_progress(
-        f"{phase} started (timeout {timeout:.0f}s)"
-    )
-    lock_fd = _ACTIVE_SOURCE_RECORD_AUDIT_LOCK_FD.get()
-    popen_kwargs: dict[str, object] = {
-        "cwd": str(cwd),
-        "stdout": subprocess.PIPE,
-        "stderr": subprocess.STDOUT,
-        "text": True,
-        "start_new_session": True,
-        "close_fds": True,
-    }
-    if lock_fd is not None:
-        try:
-            os.fstat(lock_fd)
-        except OSError as exc:
-            elapsed = time.monotonic() - started
-            message = f"could not inherit active source-record lock for {phase}: {exc}"
-            source_record_progress(f"{phase} failed to start ({elapsed:.1f}s elapsed)")
-            return CapturedSubprocessResult(125, message, elapsed)
-        # Preserve the exact flock descriptor in a detached Lake/Lean process
-        # group. If the supervising terminal/session disappears, that child
-        # remains the serialized scan owner until it exits.
-        popen_kwargs["pass_fds"] = (lock_fd,)
-    try:
-        proc = subprocess.Popen(command, **popen_kwargs)
-    except OSError as exc:
-        elapsed = time.monotonic() - started
-        message = f"could not launch {phase}: {type(exc).__name__}: {exc}"
-        source_record_progress(f"{phase} failed to start ({elapsed:.1f}s elapsed)")
-        return CapturedSubprocessResult(125, message, elapsed)
-
-    try:
-        while True:
-            elapsed = time.monotonic() - started
-            remaining = timeout - elapsed
-            if remaining <= 0:
-                raise subprocess.TimeoutExpired(command, timeout)
-            try:
-                stdout, _stderr = proc.communicate(timeout=min(interval, remaining))
-            except subprocess.TimeoutExpired:
-                elapsed = time.monotonic() - started
-                if elapsed < timeout:
-                    source_record_progress(
-                        f"{phase} still running ({elapsed:.0f}s elapsed)"
-                    )
-                    continue
-                raise
-            elapsed = time.monotonic() - started
-            source_record_progress(
-                f"{phase} finished ({elapsed:.1f}s elapsed; exit {proc.returncode})"
-            )
-            return CapturedSubprocessResult(
-                proc.returncode,
-                _as_text_output(stdout),
-                elapsed,
-            )
-    except subprocess.TimeoutExpired as exc:
-        try:
-            os.killpg(proc.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        try:
-            stdout, _stderr = proc.communicate(timeout=5)
-        except (OSError, subprocess.TimeoutExpired):
-            stdout = exc.output
-        elapsed = time.monotonic() - started
-        output = _as_text_output(stdout)
-        timeout_message = (
-            f"source-record audit timed out during {phase} after {elapsed:.1f}s "
-            f"(limit {timeout:.0f}s); killed its Lake/Lean process group"
-        )
-        source_record_progress(timeout_message)
-        if output:
-            output = f"{output}\n{timeout_message}\n"
-        else:
-            output = timeout_message + "\n"
-        return CapturedSubprocessResult(124, output, elapsed, timed_out=True)
-    except BaseException:
-        # Keyboard interruption during a source-record run should not strand a
-        # Lake child in its own session.  Re-raise so the caller keeps its
-        # normal signal/exit semantics.
-        try:
-            os.killpg(proc.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        try:
-            proc.communicate(timeout=5)
-        except (OSError, subprocess.TimeoutExpired):
-            pass
-        raise
-
-
-class SourceRecordAuditLockUnavailable(RuntimeError):
-    """Raised when another expensive source-record audit owns the repo lock."""
-
-
-SOURCE_RECORD_AUDIT_LOCK_SCHEMA = 1
-SOURCE_RECORD_AUDIT_LOCK_HEARTBEAT_SECONDS = 15.0
-SOURCE_RECORD_AUDIT_LOCK_MAX_OWNER_BYTES = 16 * 1024
-
-
-def source_record_audit_lock_path(root: Path) -> Path:
-    """Return the one repository-wide lock used by expensive source scans."""
-
-    return root / ".lake" / "source-record-audit.lock"
-
-
-def _source_record_audit_lock_owner_payload(
-    owner: Mapping[str, object] | None,
-    *,
-    started_at_epoch: float,
-) -> dict[str, object]:
-    """Build bounded diagnostic metadata without treating it as authority."""
-
-    payload: dict[str, object] = {
-        "schema": SOURCE_RECORD_AUDIT_LOCK_SCHEMA,
-        "pid": os.getpid(),
-        "started_at_epoch": started_at_epoch,
-        "heartbeat_at_epoch": time.time(),
-    }
-    if not isinstance(owner, Mapping):
-        return payload
-    # These are observability labels only.  Restrict the serialized shape so a
-    # caller cannot turn a lock file into an arbitrary diagnostic payload.
-    for field in ("paper", "operation", "request_id"):
-        value = str(owner.get(field) or "").strip()
-        if value:
-            payload[field] = value[:256]
-    return payload
-
-
-def _write_source_record_audit_lock_owner(
-    handle: Any, payload: Mapping[str, object]
-) -> None:
-    """Rewrite owner metadata on the locked inode; never replace its path."""
-
-    handle.seek(0)
-    handle.truncate()
-    json.dump(dict(payload), handle, sort_keys=True)
-    handle.flush()
-    os.fsync(handle.fileno())
-
-
-def _bounded_source_record_audit_lock_owner_text(handle: Any) -> str:
-    """Read bounded lock diagnostics without letting malformed bytes mask a lock."""
-
-    try:
-        handle.seek(0)
-        text = handle.read(SOURCE_RECORD_AUDIT_LOCK_MAX_OWNER_BYTES + 1)
-    except (OSError, UnicodeError):
-        return ""
-    if len(text) > SOURCE_RECORD_AUDIT_LOCK_MAX_OWNER_BYTES:
-        return ""
-    return text
-
-
-def source_record_audit_lock_status(root: Path) -> dict[str, object]:
-    """Return a read-only observation of the serialized source-scan lock.
-
-    The PID is diagnostic only: sandboxed workers can live in an invisible PID
-    namespace, so this function deliberately does not infer liveness or
-    reclaim a lock.  Lock ownership remains the kernel ``flock`` on this exact
-    inode; deleting or replacing the path would permit overlapping Lean scans.
-    """
-
-    root = root.resolve()
-    lock_path = source_record_audit_lock_path(root)
-    observed_at_epoch = time.time()
-    result: dict[str, object] = {
-        "schema": SOURCE_RECORD_AUDIT_LOCK_SCHEMA,
-        "lock_path": str(lock_path),
-        "observed_at_epoch": observed_at_epoch,
-        "held": False,
-        "owner_visibility": "not_available",
-    }
-    try:
-        handle = lock_path.open("rb")
-    except FileNotFoundError:
-        result["state"] = "absent"
-        return result
-    except OSError as exc:
-        result.update({"state": "unreadable", "error": str(exc)})
-        return result
-    lock_acquired = False
-    try:
-        try:
-            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            result["held"] = True
-            result["state"] = "held"
-        else:
-            lock_acquired = True
-            result["state"] = "available"
-        try:
-            raw_owner = handle.read(SOURCE_RECORD_AUDIT_LOCK_MAX_OWNER_BYTES + 1)
-        except OSError as exc:
-            result.update({"owner_visibility": "unreadable", "error": str(exc)})
-            return result
-        if len(raw_owner) > SOURCE_RECORD_AUDIT_LOCK_MAX_OWNER_BYTES:
-            result["owner_visibility"] = "too_large"
-            return result
-        try:
-            owner_text = raw_owner.decode("utf-8")
-        except UnicodeDecodeError:
-            result["owner_visibility"] = "updating_or_malformed"
-            return result
-        if not owner_text.strip():
-            result["owner_visibility"] = "empty"
-            return result
-        try:
-            owner = json.loads(owner_text)
-        except json.JSONDecodeError:
-            result["owner_visibility"] = "updating_or_malformed"
-            return result
-        if not isinstance(owner, Mapping):
-            result["owner_visibility"] = "malformed"
-            return result
-        owner_payload = dict(owner)
-        result["owner"] = owner_payload
-        result["owner_visibility"] = "last_owner" if lock_acquired else "recorded"
-        heartbeat = owner_payload.get("heartbeat_at_epoch") or owner_payload.get(
-            "started_at_epoch"
-        )
-        if isinstance(heartbeat, (int, float)) and not isinstance(heartbeat, bool):
-            result["owner_age_seconds"] = max(0.0, observed_at_epoch - heartbeat)
-        return result
-    finally:
-        if lock_acquired:
-            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
-        handle.close()
-
-
-@contextmanager
-def source_record_audit_lock(
-    root: Path,
-    timeout_seconds: float,
-    *,
-    owner: Mapping[str, object] | None = None,
-):
-    """Serialize isolated Lean source-record scans for one repository.
-
-    The audit runs several isolated `lake`/`lean` processes.  Running multiple
-    instances concurrently can exhaust the sandbox's process/descriptor budget
-    and leave detached scans behind after a caller loses its stream.  A
-    repository-local advisory lock makes that failure deterministic and gives
-    callers a clear retry path instead.
-    """
-
-    lock_path = source_record_audit_lock_path(root)
-    lock_path.parent.mkdir(parents=True, exist_ok=True)
-    with lock_path.open("a+", encoding="utf-8") as handle:
-        deadline = time.monotonic() + max(timeout_seconds, 0.0)
-        while True:
-            try:
-                fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-                break
-            except BlockingIOError as exc:
-                if time.monotonic() >= deadline:
-                    owner = _bounded_source_record_audit_lock_owner_text(handle).strip()
-                    owner_detail = f" Current holder: {owner}." if owner else ""
-                    raise SourceRecordAuditLockUnavailable(
-                        "another source-record audit is already running for "
-                        f"{root}; wait for it to finish and retry"
-                        f"{owner_detail}"
-                    ) from exc
-                time.sleep(min(0.1, max(deadline - time.monotonic(), 0.0)))
-        lock_context_token = _ACTIVE_SOURCE_RECORD_AUDIT_LOCK_FD.set(handle.fileno())
-        started_at_epoch = time.time()
-        owner_payload = _source_record_audit_lock_owner_payload(
-            owner, started_at_epoch=started_at_epoch
-        )
-        owner_write_lock = threading.Lock()
-        heartbeat_stop = threading.Event()
-        progress_sequence = 0
-
-        def record_progress(message: str) -> None:
-            """Publish bounded phase diagnostics on the held lease inode."""
-
-            nonlocal progress_sequence
-            normalized = " ".join(str(message).split())
-            if not normalized:
-                return
-            observed_at_epoch = time.time()
-            try:
-                with owner_write_lock:
-                    progress_sequence += 1
-                    owner_payload["progress_sequence"] = progress_sequence
-                    owner_payload["progress_message"] = normalized[:512]
-                    owner_payload["progress_at_epoch"] = observed_at_epoch
-                    owner_payload["heartbeat_at_epoch"] = observed_at_epoch
-                    _write_source_record_audit_lock_owner(handle, owner_payload)
-            except OSError:
-                # A lost diagnostic write cannot alter lock ownership or the
-                # audit result. The independent heartbeat may still succeed.
-                pass
-
-        def refresh_owner_heartbeat() -> None:
-            while not heartbeat_stop.wait(SOURCE_RECORD_AUDIT_LOCK_HEARTBEAT_SECONDS):
-                owner_payload["heartbeat_at_epoch"] = time.time()
-                try:
-                    with owner_write_lock:
-                        _write_source_record_audit_lock_owner(handle, owner_payload)
-                except OSError:
-                    # The lock holder still owns the inode.  A later status
-                    # read can report stale metadata, but must never trigger
-                    # an unsafe automatic replacement scan.
-                    return
-
-        heartbeat = threading.Thread(
-            target=refresh_owner_heartbeat,
-            name="source-record-audit-lock-heartbeat",
-            daemon=True,
-        )
-        progress_context_token = _ACTIVE_SOURCE_RECORD_AUDIT_PROGRESS_UPDATER.set(
-            record_progress
-        )
-        try:
-            with owner_write_lock:
-                _write_source_record_audit_lock_owner(handle, owner_payload)
-            heartbeat.start()
-            yield
-        finally:
-            heartbeat_stop.set()
-            heartbeat.join(timeout=SOURCE_RECORD_AUDIT_LOCK_HEARTBEAT_SECONDS + 1)
-            try:
-                with owner_write_lock:
-                    handle.seek(0)
-                    handle.truncate()
-                    handle.flush()
-                    fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
-            finally:
-                _ACTIVE_SOURCE_RECORD_AUDIT_PROGRESS_UPDATER.reset(
-                    progress_context_token
-                )
-                _ACTIVE_SOURCE_RECORD_AUDIT_LOCK_FD.reset(lock_context_token)
 
 # This optional lane is deliberately driven by the expanded Lean types below,
 # rather than paper-local declaration, field, or binder names.  A source model
@@ -1630,47 +1145,6 @@ def mask_lean_comments(text: str) -> str:
     return "".join(output)
 
 
-def mask_block_comments(text: str) -> str:
-    """Backward-compatible alias for the full Lean comment masker."""
-
-    return mask_lean_comments(text)
-
-
-def mask_lean_string_literals(text: str) -> str:
-    """Mask quoted Lean string contents while preserving source line structure.
-
-    This is intentionally narrower than :func:`mask_lean_comments`: declaration
-    parsing needs strings intact, whereas a lexical declaration-dependency scan
-    must not treat prose inside a string as a theorem or structure reference.
-    Escapes are consumed as part of the literal so an escaped quote cannot end
-    the mask early.
-    """
-
-    output: list[str] = []
-    index = 0
-    in_string = False
-    while index < len(text):
-        char = text[index]
-        if not in_string:
-            if char == '"':
-                in_string = True
-                output.append(" ")
-            else:
-                output.append(char)
-            index += 1
-            continue
-
-        if char == "\\" and index + 1 < len(text):
-            output.append("\n" if char == "\n" else " ")
-            escaped = text[index + 1]
-            output.append("\n" if escaped == "\n" else " ")
-            index += 2
-            continue
-        output.append("\n" if char == "\n" else " ")
-        if char == '"':
-            in_string = False
-        index += 1
-    return "".join(output)
 
 
 def normalize_ws(text: str) -> str:
@@ -2877,265 +2351,6 @@ def attach_source_record_item_digests(
         item["source_record_item_sha256"] = stable_digest(scoped_context)
 
 
-def load_json_object(path: Path) -> dict[str, Any]:
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return {}
-    return payload if isinstance(payload, dict) else {}
-
-
-def source_record_audit_output_path(
-    args: argparse.Namespace, root: Path, paper_dir: Path
-) -> Path:
-    """Resolve this invocation's requested generated audit artifact."""
-
-    if args.out:
-        candidate = Path(args.out)
-        return candidate if candidate.is_absolute() else root / candidate
-    return canonical_source_record_audit_path(paper_dir)
-
-
-def canonical_source_record_audit_path(paper_dir: Path) -> Path:
-    """Return the one canonical aggregate-cache artifact for a paper."""
-
-    return paper_dir / "audit" / "source_record_audit.json"
-
-
-def atomic_write_text_if_changed(path: Path, text: str) -> bool:
-    """Atomically replace one generated text artifact only when bytes differ."""
-
-    data = text.encode("utf-8")
-    path.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        existing_stat = path.stat()
-    except OSError:
-        existing_stat = None
-    if existing_stat is not None and existing_stat.st_size == len(data):
-        unchanged = True
-        offset = 0
-        try:
-            with path.open("rb") as existing:
-                while chunk := existing.read(1024 * 1024):
-                    end = offset + len(chunk)
-                    if chunk != memoryview(data)[offset:end]:
-                        unchanged = False
-                        break
-                    offset = end
-        except OSError:
-            unchanged = False
-        if unchanged and offset == len(data):
-            return False
-
-    temporary_path: Path | None = None
-    try:
-        with tempfile.NamedTemporaryFile(
-            mode="wb",
-            dir=path.parent,
-            prefix=f".{path.name}.",
-            suffix=".tmp",
-            delete=False,
-        ) as temporary:
-            temporary_path = Path(temporary.name)
-            os.fchmod(
-                temporary.fileno(),
-                (existing_stat.st_mode & 0o777) if existing_stat is not None else 0o644,
-            )
-            temporary.write(data)
-            temporary.flush()
-            os.fsync(temporary.fileno())
-        os.replace(temporary_path, path)
-        temporary_path = None
-    finally:
-        if temporary_path is not None:
-            temporary_path.unlink(missing_ok=True)
-    return True
-
-
-def source_record_schema4_to5_migration_output_path(
-    args: argparse.Namespace, root: Path, paper_dir: Path
-) -> Path:
-    """Resolve the explicit one-time schema-4-to-5 overlay output path."""
-
-    if args.schema4_to5_migration_out:
-        candidate = Path(args.schema4_to5_migration_out)
-        return candidate if candidate.is_absolute() else root / candidate
-    return paper_dir / "audit" / SOURCE_RECORD_SCHEMA4_TO5_MIGRATION_FILENAME
-
-
-def source_record_schema4_to5_migration_input_path(
-    raw_path: str | None, root: Path, *, default: Path
-) -> Path:
-    """Resolve a migration input without invoking the audit generator."""
-
-    if not raw_path:
-        return default
-    candidate = Path(raw_path)
-    return candidate if candidate.is_absolute() else root / candidate
-
-
-def generate_source_record_schema4_to5_migration(
-    args: argparse.Namespace, root: Path
-) -> int:
-    """Write a deterministic direct-key overlay without source/Lean work."""
-
-    if not args.prior_source_record_audit or not args.prior_source_record_judgments:
-        print(
-            "error: --generate-schema4-to5-migration requires both "
-            "--prior-source-record-audit and --prior-source-record-judgments",
-            file=sys.stderr,
-        )
-        return 2
-    paper_dir = root / "papers" / args.paper
-    prior_audit_path = source_record_schema4_to5_migration_input_path(
-        args.prior_source_record_audit,
-        root,
-        default=paper_dir / "audit" / "source_record_audit.json",
-    )
-    prior_judgments_path = source_record_schema4_to5_migration_input_path(
-        args.prior_source_record_judgments,
-        root,
-        default=paper_dir / "audit" / "source_record_match_llm.json",
-    )
-    current_audit_path = source_record_schema4_to5_migration_input_path(
-        args.current_source_record_audit,
-        root,
-        default=canonical_source_record_audit_path(paper_dir),
-    )
-    missing_paths = [
-        path
-        for path in (prior_audit_path, prior_judgments_path, current_audit_path)
-        if not path.is_file()
-    ]
-    if missing_paths:
-        print(
-            "error: schema4-to5 migration input is missing: "
-            + ", ".join(str(path) for path in missing_paths),
-            file=sys.stderr,
-        )
-        return 2
-    try:
-        payload = build_source_record_schema4_to5_migration(
-            paper=args.paper,
-            prior_raw_audit=load_json_object(prior_audit_path),
-            prior_judgments=load_json_object(prior_judgments_path),
-            current_raw_audit=load_json_object(current_audit_path),
-            prior_raw_audit_path=prior_audit_path,
-            prior_judgments_path=prior_judgments_path,
-            current_raw_audit_path=current_audit_path,
-        )
-    except SourceRecordSchema4To5MigrationError as exc:
-        print(f"error: {exc}", file=sys.stderr)
-        return 2
-    output_path = source_record_schema4_to5_migration_output_path(args, root, paper_dir)
-    atomic_write_text_if_changed(
-        output_path, json.dumps(payload, indent=2, sort_keys=True) + "\n"
-    )
-    print(
-        json.dumps(
-            {
-                "paper": args.paper,
-                "schema4_to5_migration": str(output_path),
-                "migrated_item_count": len(payload.get("items") or {}),
-                "decision_count": len(payload.get("decisions") or []),
-            },
-            sort_keys=True,
-        )
-    )
-    return 0
-
-
-def finalize_source_record_audit_output(
-    args: argparse.Namespace,
-    root: Path,
-    paper_dir: Path,
-    encoded: str,
-    *,
-    lean_returncode: int,
-    has_recursion_failures: bool,
-    input_change_during_scan_error: str = "",
-) -> int:
-    """Emit a diagnostic result and refresh canonical evidence only on success.
-
-    A caller may request a noncanonical ``--out`` artifact for debugging even
-    when Lean or recursion fails.  The canonical paper-local sidecar is
-    evidence, however: it is written only after a non-``--no-lean`` run has
-    returned success and reported no recursion failures. A normal full scan
-    writes that canonical sidecar and emits a compact receipt. Printing the
-    potentially multi-megabyte raw payload is an explicit ``--stdout``
-    diagnostic mode, never the default transport.
-    """
-
-    output_path: Path | None = None
-    canonical_path = canonical_source_record_audit_path(paper_dir)
-    output_is_canonical = False
-    emit_stdout = bool(getattr(args, "stdout", False))
-    if args.out:
-        output_path = source_record_audit_output_path(args, root, paper_dir)
-        output_is_canonical = output_path.resolve() == canonical_path.resolve()
-        # Preserve separate diagnostic artifacts, but defer a direct canonical
-        # destination until every run-success condition below has been checked.
-        if not output_is_canonical:
-            atomic_write_text_if_changed(output_path, encoded + "\n")
-    elif not emit_stdout and not args.no_lean:
-        # A successful normal scan is evidence-producing work. Do not make a
-        # caller reconstruct a canonical path from an unbounded stdout stream.
-        output_path = canonical_path
-        output_is_canonical = True
-    if emit_stdout:
-        print(encoded)
-
-    if input_change_during_scan_error:
-        if output_is_canonical:
-            print(
-                "refusing to replace canonical source-record audit because "
-                + input_change_during_scan_error,
-                file=sys.stderr,
-            )
-        return 4
-    if lean_returncode != 0:
-        if output_is_canonical:
-            print(
-                "refusing to replace canonical source-record audit after a failed Lean check",
-                file=sys.stderr,
-            )
-        return 2
-    if has_recursion_failures:
-        if output_is_canonical:
-            print(
-                "refusing to replace canonical source-record audit after recursion failures",
-                file=sys.stderr,
-            )
-        return 3
-    if args.no_lean:
-        if output_is_canonical:
-            print(
-                "refusing to replace canonical source-record audit from a --no-lean run",
-                file=sys.stderr,
-            )
-            return 2
-        return 0
-
-    # A noncanonical output is a transport copy, and a direct/default canonical
-    # destination reaches this point only after all full-run acceptance
-    # conditions passed.
-    if output_path is not None:
-        atomic_write_text_if_changed(canonical_path, encoded + "\n")
-    if not emit_stdout:
-        print(
-            json.dumps(
-                {
-                    "paper": args.paper,
-                    "source_record_audit": str(canonical_path),
-                    "canonical_refreshed": output_path is not None,
-                    "lean_returncode": lean_returncode,
-                },
-                sort_keys=True,
-            )
-        )
-    return 0
-
-
 def source_record_cache_file_identity(root: Path, path: Path) -> dict[str, str]:
     """Return a fail-closed identity for one cache dependency path."""
 
@@ -3152,264 +2367,67 @@ def source_record_cache_file_identity(root: Path, path: Path) -> dict[str, str]:
     return {"path": display, "sha256": "", "status": "missing"}
 
 
-def _source_record_python_ast_identity(
-    path: Path,
-    *,
-    display_path: str,
-) -> dict[str, str]:
-    """Return a comment/format-insensitive implementation identity for Python."""
-
-    try:
-        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
-    except (OSError, SyntaxError, UnicodeDecodeError):
-        return {"path": display_path, "sha256": "", "status": "unavailable"}
-    normalized = ast.dump(tree, annotate_fields=True, include_attributes=False)
-    return {
-        "path": display_path,
-        "sha256": hashlib.sha256(normalized.encode("utf-8")).hexdigest(),
-        "status": "present",
-    }
-
-
 def _source_record_raw_generation_code_identity(
     *,
     entry_path: Path | None = None,
     repository_root: Path | None = None,
 ) -> dict[str, str]:
-    """Hash the transitive repository-Python producer closure.
+    """Hash the transitive producer closure from repository-relative bytes."""
 
-    The marker-delimited _run_audit statements are roots. Calls, loaded
-    top-level definitions/constants, and repository imports are followed across
-    modules by Python's parsed AST. Unrelated declarations are excluded. A
-    repository import that cannot be resolved makes the identity unavailable;
-    the cache therefore fails closed instead of silently trusting a partial
-    call graph.
-    """
-
-    display_path = (
-        "skills/econcs-formalizer/scripts/source_record_audit.py"
-        "#fresh-raw-generation"
-    )
-    entry_path = (entry_path or Path(__file__)).resolve()
-    repository_root = (repository_root or REPOSITORY_ROOT).resolve()
-    parsed: dict[Path, dict[str, Any]] = {}
-    unresolved: set[str] = set()
-    import_routes: set[tuple[str, str, str]] = set()
-
-    def repository_module_path(module: str) -> Path | None:
-        if not module or any(not part for part in module.split(".")):
-            return None
-        relative = Path(*module.split("."))
-        for candidate in (
-            repository_root / relative.with_suffix(".py"),
-            repository_root / relative / "__init__.py",
-        ):
-            try:
-                resolved = candidate.resolve()
-                resolved.relative_to(repository_root)
-            except (OSError, RuntimeError, ValueError):
-                continue
-            if resolved.is_file():
-                return resolved
-        return None
-
-    def parse_module(path: Path) -> dict[str, Any] | None:
-        resolved = path.resolve()
-        if resolved in parsed:
-            return parsed[resolved]
-        try:
-            source = resolved.read_text(encoding="utf-8")
-            tree = ast.parse(source, filename=str(resolved))
-        except (OSError, SyntaxError, UnicodeDecodeError):
-            unresolved.add(f"unparseable:{resolved}")
-            return None
-        definitions: dict[str, ast.AST] = {}
-        constants: dict[str, ast.AST] = {}
-        imported_names: dict[str, tuple[str, str]] = {}
-        imported_modules: dict[str, str] = {}
-        for statement in tree.body:
-            if isinstance(statement, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-                definitions[statement.name] = statement
-            elif isinstance(statement, (ast.Assign, ast.AnnAssign)):
-                targets = statement.targets if isinstance(statement, ast.Assign) else [statement.target]
-                for target in targets:
-                    if isinstance(target, ast.Name):
-                        constants[target.id] = statement
-            elif isinstance(statement, ast.ImportFrom):
-                if statement.level:
-                    unresolved.add(f"relative-import:{resolved}:{statement.lineno}")
-                    continue
-                module = str(statement.module or "")
-                for alias in statement.names:
-                    if alias.name == "*":
-                        unresolved.add(f"star-import:{resolved}:{statement.lineno}")
-                        continue
-                    imported_names[alias.asname or alias.name] = (module, alias.name)
-            elif isinstance(statement, ast.Import):
-                for alias in statement.names:
-                    imported_modules[alias.asname or alias.name.split(".")[0]] = alias.name
-        info = {
-            "tree": tree,
-            "definitions": definitions,
-            "constants": constants,
-            "imported_names": imported_names,
-            "imported_modules": imported_modules,
-        }
-        parsed[resolved] = info
-        return info
-
-    entry = parse_module(entry_path)
+    root = (repository_root or REPOSITORY_ROOT).resolve()
+    entry = (entry_path or Path(__file__)).resolve()
     try:
-        if entry is None:
-            raise ValueError("entry module unavailable")
-        source_lines = entry_path.read_text(encoding="utf-8").splitlines()
-        begin_lines = [
-            index + 1
-            for index, line in enumerate(source_lines)
-            if line.strip() == SOURCE_RECORD_RAW_PRODUCER_BEGIN_MARKER
-        ]
-        end_lines = [
-            index + 1
-            for index, line in enumerate(source_lines)
-            if line.strip() == SOURCE_RECORD_RAW_PRODUCER_END_MARKER
-        ]
-        if len(begin_lines) != 1 or len(end_lines) != 1 or begin_lines[0] >= end_lines[0]:
-            raise ValueError("raw-producer markers are missing or malformed")
-        run_audit = entry["definitions"].get("_run_audit")
-        if not isinstance(run_audit, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            raise ValueError("_run_audit declaration is unavailable")
-        fresh_statements = [
-            statement
-            for statement in run_audit.body
-            if statement.lineno > begin_lines[0]
-            and getattr(statement, "end_lineno", statement.lineno) < end_lines[0]
-        ]
-        if not fresh_statements:
-            raise ValueError("raw-producer marker block is empty")
-
-        pending: list[tuple[Path, str, str]] = []
-        reached: dict[Path, dict[tuple[str, str], ast.AST]] = {}
-
-        def enqueue_symbol(module_path: Path, symbol: str) -> bool:
-            info = parse_module(module_path)
-            if info is None:
-                return False
-            if symbol in info["definitions"]:
-                pending.append((module_path.resolve(), "definition", symbol))
-                return True
-            if symbol in info["constants"]:
-                pending.append((module_path.resolve(), "constant", symbol))
-                return True
-            return False
-
-        def resolve_loaded_names(module_path: Path, syntax: ast.AST) -> None:
-            info = parse_module(module_path)
-            if info is None:
-                return
-            for node in ast.walk(syntax):
-                if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load):
-                    name = node.id
-                    if enqueue_symbol(module_path, name):
-                        continue
-                    imported = info["imported_names"].get(name)
-                    if imported is None:
-                        continue
-                    imported_module, imported_symbol = imported
-                    target_path = repository_module_path(imported_module)
-                    if target_path is None:
-                        continue
-                    import_routes.add((str(module_path), imported_module, imported_symbol))
-                    if not enqueue_symbol(target_path, imported_symbol):
-                        unresolved.add(
-                            f"missing-imported-symbol:{imported_module}:{imported_symbol}"
-                        )
-                elif (
-                    isinstance(node, ast.Attribute)
-                    and isinstance(node.value, ast.Name)
-                ):
-                    imported_module = info["imported_modules"].get(node.value.id)
-                    if imported_module is None:
-                        continue
-                    target_path = repository_module_path(imported_module)
-                    if target_path is None:
-                        continue
-                    import_routes.add((str(module_path), imported_module, node.attr))
-                    if not enqueue_symbol(target_path, node.attr):
-                        unresolved.add(
-                            f"missing-imported-attribute:{imported_module}:{node.attr}"
-                        )
-
-        for statement in fresh_statements:
-            resolve_loaded_names(entry_path, statement)
-        seen: set[tuple[Path, str, str]] = set()
-        while pending:
-            module_path, kind, symbol = pending.pop(0)
-            key = (module_path, kind, symbol)
-            if key in seen:
-                continue
-            seen.add(key)
-            info = parse_module(module_path)
-            if info is None:
-                continue
-            table = info["definitions"] if kind == "definition" else info["constants"]
-            syntax = table.get(symbol)
-            if syntax is None:
-                unresolved.add(f"missing-reached-symbol:{module_path}:{symbol}")
-                continue
-            reached.setdefault(module_path, {})[(kind, symbol)] = syntax
-            resolve_loaded_names(module_path, syntax)
-
-        normalized = {
-            "schema": SOURCE_RECORD_RAW_PRODUCER_CODE_IDENTITY_SCHEMA,
-            "fresh_generation_statements": [
-                ast.dump(statement, annotate_fields=True, include_attributes=False)
-                for statement in fresh_statements
-            ],
-            "repository_import_routes": sorted(import_routes),
-            "modules": [
-                {
-                    "path": repository_relative_path(repository_root, module_path),
-                    "members": [
-                        {
-                            "kind": kind,
-                            "name": name,
-                            "syntax": ast.dump(
-                                syntax,
-                                annotate_fields=True,
-                                include_attributes=False,
-                            ),
-                        }
-                        for (kind, name), syntax in sorted(members.items())
-                    ],
-                }
-                for module_path, members in sorted(
-                    reached.items(), key=lambda item: str(item[0])
-                )
-            ],
+        entry_relative = entry.relative_to(root).as_posix()
+    except (OSError, RuntimeError, ValueError):
+        return {
+            "path": (
+                "skills/econcs-formalizer/scripts/source_record_audit.py"
+                "#fresh-raw-generation"
+            ),
+            "sha256": "",
+            "status": "unavailable",
         }
-        encoded = json.dumps(
-            normalized, sort_keys=True, separators=(",", ":")
-        ).encode("utf-8")
-    except (OSError, SyntaxError, UnicodeDecodeError, ValueError):
-        return {"path": display_path, "sha256": "", "status": "unavailable"}
-    if unresolved:
-        return {"path": display_path, "sha256": "", "status": "unavailable"}
-    return {
-        "path": display_path,
-        "sha256": hashlib.sha256(encoded).hexdigest(),
-        "status": "present",
-    }
+
+    def read_bytes(relative_path: str) -> bytes | None:
+        candidate = root / relative_path
+        try:
+            return candidate.read_bytes() if candidate.is_file() else None
+        except OSError:
+            return None
+
+    return raw_generation_code_identity(
+        read_bytes,
+        entry_path=entry_relative,
+        display_path=(
+            "skills/econcs-formalizer/scripts/source_record_audit.py"
+            "#fresh-raw-generation"
+        ),
+    )
 
 
-def _raw_producer_identity_records(
-    pairs: tuple[tuple[str, str], ...],
-) -> list[dict[str, str]]:
-    """Return one complete, deterministically ordered producer identity list."""
+_UNCACHED_SOURCE_RECORD_RAW_GENERATION_CODE_IDENTITY = (
+    _source_record_raw_generation_code_identity
+)
 
-    return [
-        {"path": path, "sha256": sha256, "status": "present"}
-        for path, sha256 in sorted(pairs)
-    ]
+
+@lru_cache(maxsize=8)
+def _registered_raw_generation_code_identity(
+    engine_tree_sha256: str,
+) -> tuple[str, str, str]:
+    """Reuse provenance only under one exact clean registered engine tree."""
+
+    # The key is deliberately consumed even though the underlying helper reads
+    # the repository. Runtime engine validation proves that every tracked
+    # production source has exactly the registered tree bytes. Dirty or
+    # unregistered executions bypass this cache below.
+    _ = engine_tree_sha256
+    identity = _UNCACHED_SOURCE_RECORD_RAW_GENERATION_CODE_IDENTITY()
+    return (
+        str(identity.get("path") or ""),
+        str(identity.get("sha256") or ""),
+        str(identity.get("status") or ""),
+    )
+
 
 
 def source_record_raw_producer_code_identities(
@@ -3427,24 +2445,32 @@ def source_record_raw_producer_code_identities(
     Every new receipt records the actual marker-bounded producer bytes. The
     feature arguments are retained for callers that calculate the same
     fingerprint shape, but feature-scoped invalidation now belongs entirely to
-    the structured `audit_engine_identities` list. A registered provenance
-    compatibility grant may reuse an older raw only when *all* non-producer
-    fingerprint inputs, including those feature identities, are exactly equal.
-    This avoids paper-specific code-hash aliases while keeping exact code
-    provenance on every raw receipt.
+    the structured `audit_engine_identities` list. Reuse checks the complete
+    non-producer fingerprint or independently reproduces every receipt-bound
+    semantic identity under the current registered verifier. This avoids
+    paper-specific code-hash aliases while keeping exact code provenance on
+    every raw receipt.
     """
 
-    identities = [_source_record_raw_generation_code_identity()]
+    producer = _source_record_raw_generation_code_identity
+    if producer is _UNCACHED_SOURCE_RECORD_RAW_GENERATION_CODE_IDENTITY:
+        try:
+            registration = validate_runtime_engine_registration(REPOSITORY_ROOT)
+        except EngineRevisionError:
+            identity = producer()
+        else:
+            path, sha256, status = _registered_raw_generation_code_identity(
+                registration.engine_tree_sha256
+            )
+            identity = {"path": path, "sha256": sha256, "status": status}
+    else:
+        # Preserve explicit test/diagnostic injection and never let an earlier
+        # production cache hide it.
+        identity = producer()
+    identities = [identity]
     for relative_path in SOURCE_RECORD_RAW_PRODUCER_EXTERNAL_CODE_PATHS:
         path = REPOSITORY_ROOT / relative_path
-        if path.suffix == ".py":
-            identities.append(
-                _source_record_python_ast_identity(
-                    path, display_path=relative_path
-                )
-            )
-        else:
-            identities.append(source_record_cache_file_identity(REPOSITORY_ROOT, path))
+        identities.append(source_record_cache_file_identity(REPOSITORY_ROOT, path))
     # Keep the keyword-only feature inputs intentionally consumed: callers use
     # them to document that the same map-scoped semantic identities were
     # calculated before provenance is attached. They must not select a
@@ -3484,17 +2510,21 @@ def source_record_raw_producer_code_identity_matches(
     current_fingerprint: Mapping[str, Any],
     *,
     repository_root: Path = REPOSITORY_ROOT,
+    semantic_reuse: Mapping[str, Any] | None = None,
 ) -> bool:
-    """Return whether a stored raw receipt has current producer provenance.
+    """Return whether a stored raw receipt has current semantic inputs.
 
     Test-only callers sometimes replace the complete input fingerprint with a
     small fixture.  Such a current fixture has no producer-code field and
     deliberately retains its existing test semantics.  Real fingerprints
-    always carry this field. Exact producer identities are the default. A
-    differing pair can pass only through the append-only engine ledger's
-    explicit compatibility graph and only when every non-producer fingerprint
-    input is equal; it cannot be inferred from a map key, a Lean name, or the
-    current producer's AST.
+    always carry this field. Producer hashes remain forensic provenance, not a
+    second semantic validity authority. A differing implementation can reuse a
+    receipt when either every non-producer input is exact or the current
+    verifier has reproduced every receipt-bound semantic identity and the
+    separately owned current gates cover map/status/fidelity coordinates. The
+    executing engine must also be clean, committed, and registered. Actual
+    audit semantics remain pinned by the structured protocol, source inputs,
+    and feature identities inside that projection.
     """
 
     current_identities = current_fingerprint.get("raw_producer_code_identities")
@@ -3518,25 +2548,33 @@ def source_record_raw_producer_code_identity_matches(
         and dict(stored_fingerprint) == dict(current_fingerprint)
     ):
         return True
-    if (
+    exact_nonproducer = (
         fingerprint_without_raw_producer_provenance(stored_fingerprint)
-        != fingerprint_without_raw_producer_provenance(current_fingerprint)
-    ):
-        return False
-    # A differing producer identity is never authorized from a dirty
-    # worktree. The engine gate binds the compatibility ledger to registered
-    # clean-HEAD bytes before its graph can be consulted.
-    try:
-        ledger = validated_runtime_raw_producer_compatibility_ledger(
-            repository_root
+        == fingerprint_without_raw_producer_provenance(current_fingerprint)
+    )
+    semantic_noncontainer = (
+        isinstance(semantic_reuse, Mapping)
+        and semantic_reuse.get("schema") == 1
+        and semantic_reuse.get("policy") == SOURCE_RECORD_SEMANTIC_REUSE_POLICY
+        and semantic_reuse.get("paper") == current_fingerprint.get("paper")
+        and semantic_reuse.get("current") is True
+        and isinstance(semantic_reuse.get("reviewed_declaration_count"), int)
+        and int(semantic_reuse.get("reviewed_declaration_count")) > 0
+        and SHA256_RE.fullmatch(
+            str(semantic_reuse.get("semantic_identity_sha256") or "")
         )
+        and semantic_fingerprint_matches(stored_fingerprint, current_fingerprint)
+    )
+    if not (exact_nonproducer or semantic_noncontainer):
+        return False
+    # Implementation-only drift is never authorized from a dirty or
+    # unregistered engine. The ledger authenticates the current verifier as an
+    # operational matter; it does not create an engine-pair evidence bridge.
+    try:
+        validate_runtime_engine_registration(repository_root)
     except EngineRevisionError:
         return False
-    return source_record_fingerprint_matches_with_raw_producer_compatibility(
-        stored_fingerprint,
-        current_fingerprint,
-        ledger=ledger,
-    )
+    return True
 
 
 def source_record_dependency_identities(
@@ -4656,23 +3694,6 @@ def paper_statement_map_cache_receipts(paper_dir: Path) -> tuple[str, str]:
     )
 
 
-def _legacy_source_record_input_fingerprint(
-    fingerprint: Mapping[str, Any], *, paper_statement_map_sha256: str
-) -> dict[str, Any]:
-    """Return the v6 full-map cache identity for unchanged legacy receipts.
-
-    A legacy raw audit has no separate semantic-map receipt.  It can remain
-    reusable only while its full source-map provenance still matches exactly;
-    it must not receive the new administrative-edit exception retroactively.
-    """
-
-    legacy = dict(fingerprint)
-    legacy["schema"] = 6
-    legacy.pop("paper_statement_map_semantic_sha256", None)
-    legacy["paper_statement_map_sha256"] = paper_statement_map_sha256
-    return legacy
-
-
 def source_record_legacy_v9_protocol_fingerprint(
     current_fingerprint: Mapping[str, Any], paper_dir: Path
 ) -> dict[str, Any] | None:
@@ -4944,8 +3965,12 @@ def _source_record_input_fingerprint(
         return None
     if not interface_path.exists() or not interface_path.is_file():
         return None
-    assumptions_path = assumption_source_path(
-        root, paper_dir, status_path, interface_path=interface_path
+    assumptions_path = effective_source_record_assumption_path(
+        root,
+        paper_dir,
+        status_path,
+        interface_path=interface_path,
+        lean_import_closure=None if legacy_v7 else lean_import_closure,
     )
     review_surface = status.get("review_surface") if isinstance(status, dict) else None
     if legacy_v7:
@@ -6362,78 +5387,22 @@ def source_record_current_manifest_resume_bindings(
     qualified_row_refs: Mapping[str, str],
     selected_row_source_paths: Mapping[str, Path],
     source_text_by_path: Mapping[Path, str],
-) -> tuple[dict[str, dict[str, str]], set[str]]:
-    """Build exact current journal bindings from the frozen review sources.
-
-    This intentionally delegates declaration rendering to the dashboard parser
-    used when the journal was written.  The source-record scan supplies frozen
-    current source text, so a mutable worktree read cannot create a false
-    exact-context cache hit.  Fully-qualified declarations are only routing
-    coordinates; source path, kind, and exact declaration text make the
-    binding.
-    """
+) -> tuple[dict[str, dict[str, Any]], set[str]]:
+    """Build exact current journal bindings from the frozen review sources."""
 
     try:
         from scripts import review_dashboard as dashboard
     except Exception:  # noqa: BLE001 - unavailable parser is a cache miss.
         return {}, set(qualified_row_refs.values())
-
-    requested: dict[str, Path] = {}
-    duplicates: set[str] = set()
-    for row, raw_qualified in qualified_row_refs.items():
-        qualified = semantic_contract_fully_qualified_identity(raw_qualified)
-        source_path = selected_row_source_paths.get(row)
-        if not qualified or not isinstance(source_path, Path):
-            continue
-        if qualified in requested and requested[qualified].resolve() != source_path.resolve():
-            duplicates.add(qualified)
-            requested.pop(qualified, None)
-        elif qualified not in duplicates:
-            requested[qualified] = source_path
-
-    parsed_by_qualified: dict[str, tuple[str, str, Path]] = {}
-    for source_path in sorted(set(requested.values())):
-        try:
-            text = source_text_by_path[source_path.resolve()]
-        except (KeyError, OSError):
-            for qualified, expected_path in requested.items():
-                if expected_path.resolve() == source_path.resolve():
-                    duplicates.add(qualified)
-            continue
-        for kind, _name, full_name, raw_signature, _comment, _line, parsed_path in (
-            dashboard.parse_review_source_declarations(
-                source_path, source_text=text
-            )
-        ):
-            if full_name not in requested or requested[full_name].resolve() != parsed_path.resolve():
-                continue
-            if full_name in parsed_by_qualified:
-                duplicates.add(full_name)
-                parsed_by_qualified.pop(full_name, None)
-                continue
-            parsed_by_qualified[full_name] = (kind, raw_signature, parsed_path)
-
-    bindings: dict[str, dict[str, str]] = {}
-    folder_root = paper_dir.resolve()
-    for qualified, source_path in requested.items():
-        if qualified in duplicates:
-            continue
-        parsed = parsed_by_qualified.get(qualified)
-        if parsed is None:
-            continue
-        kind, raw_signature, parsed_path = parsed
-        try:
-            source_file = parsed_path.resolve().relative_to(folder_root).as_posix()
-        except (OSError, ValueError):
-            duplicates.add(qualified)
-            continue
-        bindings[qualified] = {
-            "qualified_declaration": qualified,
-            "source_file": source_file,
-            "declaration_kind": kind,
-            "lean_source_declaration": raw_signature,
-        }
-    return bindings, duplicates
+    return _current_manifest_resume_bindings(
+        paper_dir=paper_dir,
+        qualified_row_refs=qualified_row_refs,
+        selected_row_source_paths=selected_row_source_paths,
+        source_text_by_path=source_text_by_path,
+        parse_review_source_declarations=(
+            dashboard.parse_review_source_declarations
+        ),
+    )
 
 
 def preprime_source_record_manifest_resume_cache(
@@ -6472,8 +5441,12 @@ def preprime_source_record_manifest_resume_cache(
         interface_declarations = parse_declarations(
             interface_path, source_text=interface_text
         )
-        assumptions_path = assumption_source_path(
-            root, paper_dir, status_path, interface_path=interface_path
+        assumptions_path = effective_source_record_assumption_path(
+            root,
+            paper_dir,
+            status_path,
+            interface_path=interface_path,
+            lean_import_closure=lean_import_closure,
         )
         assumption_declarations: dict[str, str] = {}
         assumption_namespace = ""
@@ -6544,6 +5517,26 @@ def preprime_source_record_manifest_resume_cache(
         )
         for duplicate in binding_duplicates:
             current_bindings.pop(duplicate, None)
+        local_declarations = parse_local_declarations(
+            root,
+            local_lean_files,
+            source_text_by_path=authenticated_source_text,
+        )
+        local_bindings, local_binding_duplicates = (
+            _local_declaration_manifest_bindings(
+                root=root,
+                paper_dir=paper_dir,
+                declarations=local_declarations,
+            )
+        )
+        for duplicate in local_binding_duplicates:
+            local_bindings.pop(duplicate, None)
+        # Configured review roots use the dashboard parser contract.  Every
+        # other paper-local root uses the raw producer's exact frozen parser
+        # coordinate, so the next raw scan can attest all reached manifests
+        # rather than only the source-facing subset.
+        local_bindings.update(current_bindings)
+        current_bindings = local_bindings
         current_context = signature_manifest_cache_context(
             root,
             import_module,
@@ -6592,7 +5585,7 @@ def prime_source_record_signature_manifest_store(
     import_module: str | None = None,
     semantic_dependency_modules: tuple[str, ...] = (),
     current_context: Mapping[str, Any] | None = None,
-    current_bindings: Mapping[str, Mapping[str, str]] | None = None,
+    current_bindings: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
     """Prime current roots only through exact-context journal attestation.
 
@@ -6605,55 +5598,32 @@ def prime_source_record_signature_manifest_store(
     inputs return a normal fresh-Lean miss.
     """
 
-    deferred = {
-        "schema": 1,
-        "paper": paper_dir.name,
-        "candidate_count": 0,
-        "context_count": 0,
-        "accepted_context_count": 0,
-        "context_provider_call_count": 0,
-        "seeded_count": 0,
-        "seeded_declarations": [],
-        "fresh_required_count": 0,
-        "rejected_by_reason": {},
-        "store_status": "deferred_without_current_source_bindings",
-    }
-    if (
-        not import_module
-        or not semantic_dependency_modules
-        or not isinstance(current_context, Mapping)
-        or not current_bindings
-    ):
-        return {}, deferred
     try:
         from scripts import review_dashboard as dashboard
-
-        resume_records = dashboard.current_manifest_resume_records(
-            paper_dir,
-            context=current_context,
-            bindings=current_bindings,
-        )
-    except Exception:  # noqa: BLE001 - ignored journal data is only an optimization.
-        return {}, {
-            **deferred,
-            "store_status": "resume_records_unavailable",
-            "fresh_required_count": len(current_bindings),
-        }
-    try:
-        return prime_exact_context_attested_resume_manifests(
+        return _prime_signature_manifest_store(
             root=root,
             paper_dir=paper_dir,
             import_module=import_module,
             semantic_dependency_modules=semantic_dependency_modules,
             current_context=current_context,
             current_bindings=current_bindings,
-            resume_records=resume_records,
+            resume_records_provider=dashboard.current_manifest_resume_records,
+            attester=prime_exact_context_attested_resume_manifests,
         )
-    except Exception:  # noqa: BLE001 - a failed cache optimization is a miss.
+    except Exception:  # noqa: BLE001 - failed cache optimization is a miss.
+        binding_count = len(current_bindings or {})
         return {}, {
-            **deferred,
+            "schema": 1,
+            "paper": paper_dir.name,
+            "candidate_count": 0,
+            "context_count": 0,
+            "accepted_context_count": 0,
+            "context_provider_call_count": 0,
+            "seeded_count": 0,
+            "seeded_declarations": [],
+            "fresh_required_count": binding_count,
+            "rejected_by_reason": {},
             "store_status": "resume_attestation_unavailable",
-            "fresh_required_count": len(current_bindings),
         }
 
 
@@ -6666,6 +5636,7 @@ def publish_source_record_signature_manifest_store(
     configured_review_rows: Iterable[Mapping[str, Any]],
     manifests: Mapping[str, Mapping[str, Any]],
     context: Mapping[str, Any] | None = None,
+    configured_source_bindings: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> set[str]:
     """Merge every exact manifest validated by a successful full raw scan.
 
@@ -6689,123 +5660,19 @@ def publish_source_record_signature_manifest_store(
         )
     if not isinstance(context, Mapping):
         return set()
-    configured_rows_by_qualified: dict[str, Mapping[str, Any]] = {}
-    duplicate_configured: set[str] = set()
-    for raw_row in configured_review_rows:
-        if not isinstance(raw_row, Mapping):
-            continue
-        qualified = semantic_contract_fully_qualified_identity(
-            raw_row.get("qualified_declaration")
-        )
-        if not qualified:
-            continue
-        if qualified in configured_rows_by_qualified:
-            duplicate_configured.add(qualified)
-            configured_rows_by_qualified.pop(qualified, None)
-            continue
-        if qualified not in duplicate_configured:
-            configured_rows_by_qualified[qualified] = raw_row
-
-    candidates: list[dict[str, Any]] = []
-    for raw_qualified, manifest in sorted(
-        manifests.items(), key=lambda item: str(item[0])
-    ):
-        qualified = semantic_contract_fully_qualified_identity(raw_qualified)
-        if (
-            not qualified
-            or qualified != str(raw_qualified).strip()
-            or qualified in duplicate_configured
-            or not isinstance(manifest, Mapping)
-        ):
-            continue
-        signature = signature_manifest_digest(manifest)
-        dependency = semantic_dependency_manifest(manifest)
-        dependency_sha256 = (
-            str(dependency.get("semantic_dependency_sha256") or "")
-            .strip()
-            .lower()
-            if isinstance(dependency, Mapping)
-            else ""
-        )
-        proposition_graph_sha256 = elaborated_proposition_graph_sha256(
-            manifest.get("elaborated_proposition_graph")
-        )
-        if (
-            not SHA256_RE.fullmatch(signature)
-            or not SHA256_RE.fullmatch(dependency_sha256)
-            or not SHA256_RE.fullmatch(proposition_graph_sha256)
-        ):
-            continue
-        raw_row = configured_rows_by_qualified.get(qualified)
-        if (
-            raw_row is not None
-            and (
-                signature
-                != str(raw_row.get("elaborated_signature_sha256") or "")
-                .strip()
-                .lower()
-                or dependency_sha256
-                != str(raw_row.get("semantic_dependency_sha256") or "")
-                .strip()
-                .lower()
-                or proposition_graph_sha256
-                != configured_review_row_proposition_graph_sha256(raw_row)
-            )
-        ):
-            continue
-        if raw_row is not None:
-            authority_binding = {
-                key: raw_row.get(key)
-                for key in (
-                    "qualified_declaration",
-                    "lean_source_declaration",
-                    "effective_qualified_declaration",
-                    "effective_lean_source_declaration",
-                    "review_alias_expansion",
-                    "source_file",
-                    "source_sha256",
-                    "elaborated_signature_sha256",
-                    "semantic_dependency_sha256",
-                    "elaborated_proposition_graph_sha256",
-                )
-            }
-        else:
-            authority_binding = {
-                "schema": 1,
-                "kind": "successful_source_record_manifest",
-                "qualified_declaration": qualified,
-                "elaborated_signature_sha256": signature,
-                "semantic_dependency_sha256": dependency_sha256,
-                "elaborated_proposition_graph_sha256": (
-                    proposition_graph_sha256
-                ),
-            }
-        candidates.append(
-            {
-                "qualified_declaration": qualified,
-                "manifest": manifest,
-                "context": context,
-                "authority_binding": authority_binding,
-            }
-        )
-    stored_declarations = merge_authenticated_manifest_store(
+    return _publish_signature_manifest_store(
+        root=root,
         paper_dir=paper_dir,
-        paper=paper_dir.name,
-        candidates=candidates,
+        import_module=import_module,
+        semantic_dependency_modules=semantic_dependency_modules,
+        configured_review_rows=configured_review_rows,
+        manifests=manifests,
+        context=context,
+        configured_source_bindings=configured_source_bindings,
+        merger=merge_authenticated_manifest_store,
+        signature_digest=signature_manifest_digest,
+        dependency_manifest=semantic_dependency_manifest,
     )
-    # ``merge_authenticated_manifest_store`` preserves valid entries supplied
-    # by other producers.  Its full return value therefore cannot certify that
-    # this source-record scan accepted a same-named raw payload.  Expose only
-    # candidates that this exact scan constructed and the shared store retained
-    # so a later non-authoritative journal checkpoint cannot borrow authority
-    # from an older carrier.
-    candidate_declarations = {
-        str(candidate["qualified_declaration"]).strip()
-        for candidate in candidates
-        if isinstance(candidate.get("qualified_declaration"), str)
-        and str(candidate["qualified_declaration"]).strip()
-    }
-    return candidate_declarations & set(stored_declarations)
 
 
 def checkpoint_source_record_manifest_resume_cache(
@@ -6813,7 +5680,7 @@ def checkpoint_source_record_manifest_resume_cache(
     paper_dir: Path,
     context: Mapping[str, Any],
     published_declarations: Iterable[str],
-    resume_bindings: Mapping[str, Mapping[str, str]],
+    resume_bindings: Mapping[str, Mapping[str, Any]],
     manifests: Mapping[str, Mapping[str, Any]],
 ) -> set[str]:
     """Checkpoint only source-bound raw roots accepted by store publication.
@@ -6827,31 +5694,15 @@ def checkpoint_source_record_manifest_resume_cache(
     dependency artifacts through the shared attester.
     """
 
-    accepted = {
-        str(qualified).strip()
-        for qualified in published_declarations
-        if isinstance(qualified, str) and str(qualified).strip()
-    }
-    candidates = {
-        qualified: dict(raw_manifest)
-        for qualified, raw_manifest in manifests.items()
-        if (
-            isinstance(qualified, str)
-            and qualified in accepted
-            and qualified in resume_bindings
-            and isinstance(raw_manifest, Mapping)
-        )
-    }
-    if not candidates:
-        return set()
     try:
         from scripts import review_dashboard as dashboard
-
-        checkpointed = dashboard.checkpoint_manifest_resume_records(
-            paper_dir,
-            resume_bindings,
-            context,
-            candidates,
+        return _checkpoint_manifest_resume_cache(
+            paper_dir=paper_dir,
+            context=context,
+            published_declarations=published_declarations,
+            resume_bindings=resume_bindings,
+            manifests=manifests,
+            checkpoint=dashboard.checkpoint_manifest_resume_records,
         )
     except Exception as exc:  # noqa: BLE001 - cache persistence is a miss.
         source_record_progress(
@@ -6859,13 +5710,6 @@ def checkpoint_source_record_manifest_resume_cache(
             + type(exc).__name__
         )
         return set()
-    if not isinstance(checkpointed, set):
-        return set()
-    return {
-        qualified
-        for qualified in checkpointed
-        if qualified in candidates
-    }
 
 
 def publish_current_source_record_manifest_store(
@@ -6877,7 +5721,7 @@ def publish_current_source_record_manifest_store(
     semantic_dependency_modules: tuple[str, ...],
     configured_review_rows: Iterable[Mapping[str, Any]],
     manifests: Mapping[str, Mapping[str, Any]],
-    resume_bindings: Mapping[str, Mapping[str, str]] | None = None,
+    resume_bindings: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> set[str]:
     """Publish a successful canonical raw scan as future cache authority.
 
@@ -6907,6 +5751,7 @@ def publish_current_source_record_manifest_store(
             configured_review_rows=configured_review_rows,
             manifests=manifests,
             context=context,
+            configured_source_bindings=resume_bindings,
         )
     except Exception as exc:  # noqa: BLE001 - publication must not alter a valid raw scan.
         source_record_progress(
@@ -7283,6 +6128,11 @@ def current_direct_statement_ledger_covered_boundary_input_keys_without_lean(
             sidecar,
             inventory=source_inventory,
             require_statement_target=True,
+            require_verbatim_source_inputs=(
+                dashboard.statement_review_requires_verbatim_source_inputs(
+                    sidecar
+                )
+            ),
         ):
             continue
         current_covered_rows.add(row)
@@ -7305,6 +6155,36 @@ def saved_source_record_lean_import_closure(
     return payload.get(SOURCE_RECORD_LEAN_IMPORT_CLOSURE_FIELD)
 
 
+def source_record_lean_closure_entry_for_paper(
+    root: Path,
+    paper_dir: Path,
+) -> Path:
+    """Return the exact Lean module that exposes every configured audit row.
+
+    ``PaperInterface`` owns the semantic specifications.  When exact proof
+    endpoints live in a separate ``ProofInterface``, Lean's normal dependency
+    direction is ``ProofInterface -> PaperInterface``.  The authenticated
+    source snapshot must therefore be rooted at the proof module so it contains
+    both files.  Embedded proof endpoints keep the interface itself as root.
+
+    This selection is structural and paper-independent: it follows the
+    configured proof-pair surface and the conventional/configured proof source,
+    never a theorem name or a paper-specific exception.
+    """
+
+    status_path = paper_dir / "status.json"
+    interface_path = review_source_path(root, paper_dir, status_path)
+    if not parse_status_proof_endpoint_rows(status_path):
+        return interface_path
+    proof_path = proof_endpoint_source_path(
+        root,
+        paper_dir,
+        status_path,
+        interface_path=interface_path,
+    )
+    return proof_path or interface_path
+
+
 def source_record_lean_import_closure_for_paper(
     root: Path,
     paper_dir: Path,
@@ -7315,22 +6195,10 @@ def source_record_lean_import_closure_for_paper(
 ) -> tuple[SourceRecordLeanImportClosure | None, str]:
     """Acquire the one closure shared by fingerprinting and raw extraction."""
 
-    status_path = paper_dir / "status.json"
     try:
-        interface_path = review_source_path(root, paper_dir, status_path)
-        proof_path = proof_endpoint_source_path(
-            root, paper_dir, status_path, interface_path=interface_path
-        )
+        closure_entry = source_record_lean_closure_entry_for_paper(root, paper_dir)
     except (OSError, ValueError) as exc:
-        return None, f"review interface is unavailable: {exc}"
-    # A proof endpoint is machine-only evidence, but its module must be in
-    # the Lean-owned closure for exact Spec/proof verification.  It imports
-    # PaperInterface, which remains available for semantic source review.
-    closure_entry = (
-        proof_path
-        if proof_path is not None and parse_status_proof_endpoint_rows(status_path)
-        else interface_path
-    )
+        return None, f"review closure entry is unavailable: {exc}"
     return acquire_source_record_lean_import_closure(
         root,
         closure_entry,
@@ -7338,6 +6206,287 @@ def source_record_lean_import_closure_for_paper(
         saved_closure=saved_source_record_lean_import_closure(saved_payload),
         allow_live_lean_graph=allow_live_lean_graph,
     )
+
+
+def current_effective_source_record_review_declarations(
+    paper_dir: Path,
+    status_path: Path,
+    current_preflight_rows: Iterable[Mapping[str, Any]],
+) -> tuple[set[str] | None, str]:
+    """Reconstruct the exact root set selected by the raw producer.
+
+    ``status.include_names`` also drives displayed support and deep-review
+    cards. Those names can belong to separate source/library evidence lanes
+    and therefore are not automatically canonical raw roots. Semantic reuse
+    must compare the receipt with the producer's effective selection.
+    """
+
+    current_preflight_rows = [
+        row
+        for row in current_preflight_rows
+        if isinstance(row, Mapping)
+        and str(row.get("row") or "").strip()
+        and str(row.get("qualified_declaration") or "").strip()
+    ]
+    configured_present = [str(row["row"]).strip() for row in current_preflight_rows]
+    qualified_row_refs = {
+        str(row["row"]).strip(): str(row["qualified_declaration"]).strip()
+        for row in current_preflight_rows
+    }
+    try:
+        (
+            source_selected_rows,
+            _source_contract_statement_map,
+            source_selection,
+        ) = source_coverage_review_rows(
+            paper_dir, configured_present, qualified_row_refs
+        )
+        explicit_targets, explicit_config_errors = (
+            explicit_source_target_declarations_for_semantic_review(status_path)
+        )
+        explicit_rows, explicit_selection = explicit_source_target_review_rows(
+            paper_dir,
+            configured_present,
+            qualified_row_refs,
+            explicit_targets,
+        )
+        configured_assumption_references = set(
+            parse_status_review_surface_names(status_path, ("assumption_names",))
+        )
+        configured_assumption_rows = [
+            row for row in configured_present if row in configured_assumption_references
+        ]
+        scope_targets, scope_errors = (
+            formalization_scope_target_declarations_for_semantic_review(status_path)
+        )
+        effective_rows, effective_selection = effective_source_record_review_rows(
+            source_selected_rows=source_selected_rows,
+            configured_present=configured_present,
+            qualified_row_refs=qualified_row_refs,
+            configured_assumption_rows=configured_assumption_rows,
+            formalization_scope_targets=scope_targets,
+            explicit_source_target_rows=explicit_rows,
+        )
+    except (OSError, RuntimeError, TypeError, ValueError) as exc:
+        return None, f"current configured review roots are unavailable: {exc}"
+    selection_errors = [
+        str(source_selection.get("source_coverage_selection_error") or "").strip(),
+        str(source_selection.get("source_coverage_mode_error") or "").strip(),
+        *[
+            str(error).strip()
+            for error in source_selection.get("source_coverage_route_errors", [])
+            if str(error).strip()
+        ],
+        *[str(error).strip() for error in explicit_config_errors if str(error).strip()],
+        *[
+            str(error).strip()
+            for error in explicit_selection.get(
+                "semantic_model_explicit_source_target_route_errors", []
+            )
+            if str(error).strip()
+        ],
+        *[str(error).strip() for error in scope_errors if str(error).strip()],
+        *[
+            str(error).strip()
+            for error in effective_selection.get(
+                "semantic_model_scope_target_route_errors", []
+            )
+            if str(error).strip()
+        ],
+    ]
+    if any(selection_errors):
+        return None, "current configured review-root selection is invalid"
+    declarations = {
+        qualified_row_refs[row] for row in effective_rows if row in qualified_row_refs
+    }
+    if not declarations:
+        return None, "current configured review-root selection is empty"
+    return declarations, ""
+
+
+def current_source_record_semantic_reuse_identity(
+    root: Path,
+    paper_dir: Path,
+    *,
+    saved_payload: Mapping[str, Any],
+) -> tuple[SourceRecordLeanImportClosure | None, dict[str, Any] | None, str]:
+    """Validate a canonical raw receipt against current Lean semantics.
+
+    This is the ordinary fallback after a whole-file closure hash misses.  It
+    asks Lean to elaborate every canonical reviewed declaration in the current
+    environment and delegates the declaration/dependency comparison to the
+    version-independent semantic verifier.  It creates no receipt and no
+    human judgment.  In particular, it does not first materialize the former
+    whole-import-closure validator: doing so made a harmless source-container
+    edit pay the memory and runtime cost of the very identity being replaced.
+    """
+
+    status_path = paper_dir / "status.json"
+    try:
+        interface_path = review_source_path(root, paper_dir, status_path)
+    except (OSError, ValueError) as exc:
+        return None, None, f"review interface is unavailable: {exc}"
+    try:
+        closure_entry = source_record_lean_closure_entry_for_paper(root, paper_dir)
+    except (OSError, ValueError) as exc:
+        return None, None, f"review closure entry is unavailable: {exc}"
+    try:
+        entrypoint = closure_entry.resolve().relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return None, None, "review interface escapes the repository root"
+    saved_closure = saved_source_record_lean_import_closure(saved_payload)
+    try:
+        validated_saved_closure = validated_lean_import_closure_payload(saved_closure)
+    except ValueError as exc:
+        return None, None, f"saved Lean import closure is malformed: {exc}"
+    # This object exists only to compute the current schema-10 fingerprint.
+    # Its closure-dependent fields are explicitly removed by
+    # ``semantic_fingerprint_projection`` after Lean has checked all canonical
+    # roots.  Current bytes keep the ordinary projection helpers deterministic;
+    # the historical record remains provenance and is never accepted as a
+    # current byte receipt on this path.
+    projection_sources: list[Path] = []
+    projection_source_bytes: list[tuple[Path, bytes]] = []
+    for raw_source in validated_saved_closure["sources"]:
+        if not isinstance(raw_source, Mapping):
+            return None, None, "saved Lean import closure has a malformed source"
+        relative = str(raw_source.get("path") or "")
+        candidate = (root / relative).resolve()
+        try:
+            candidate.relative_to(root.resolve())
+            content = candidate.read_bytes()
+        except (OSError, ValueError):
+            # Historical path coordinates are provenance. A declaration may
+            # move; the current qualified-name elaboration below is authority.
+            content = b""
+        projection_sources.append(candidate)
+        projection_source_bytes.append((candidate, content))
+    if interface_path.resolve() not in projection_sources:
+        projection_sources.append(interface_path.resolve())
+        projection_source_bytes.append(
+            (interface_path.resolve(), interface_path.read_bytes())
+        )
+    current_closure = SourceRecordLeanImportClosure(
+        record=validated_saved_closure,
+        repository_sources=tuple(sorted(projection_sources)),
+        sha256=lean_import_closure_payload_sha256(validated_saved_closure),
+        repository_source_bytes=tuple(
+            sorted(projection_source_bytes, key=lambda item: item[0])
+        ),
+    )
+
+    current_preflight = configured_review_reference_static_preflight(root, paper_dir)
+    if current_preflight.get("status") != "static_passed":
+        return None, None, "current configured review roots are unavailable"
+    (
+        current_configured_review_declarations,
+        current_review_selection_error,
+    ) = current_effective_source_record_review_declarations(
+        paper_dir,
+        status_path,
+        current_preflight.get("configured_rows", []),
+    )
+    if current_configured_review_declarations is None:
+        return None, None, current_review_selection_error
+    current_semantic_dimensions, current_semantic_dimension_errors = (
+        semantic_model_review_config(status_path)
+    )
+    if current_semantic_dimension_errors:
+        return None, None, "current semantic-model review configuration is invalid"
+    current_fidelity = source_proof_fidelity_context(paper_dir)
+    current_fidelity_defects = (
+        current_fidelity.get("defects", [])
+        if isinstance(current_fidelity, Mapping)
+        else []
+    )
+    statement_map = load_json_object(paper_dir / "audit" / "paper_statement_map.json")
+    current_source_map_defect_ids = {
+        str(defect_id).strip()
+        for item in (
+            statement_map.get("items", {}).values()
+            if isinstance(statement_map.get("items"), Mapping)
+            else []
+        )
+        if isinstance(item, Mapping)
+        for defect_id in item.get("source_defect_ids", [])
+        if isinstance(defect_id, str) and defect_id.strip()
+    }
+    # A tracked semantic authority is the durable result of this exact
+    # declaration-level Lean comparison. Its loader rechecks the canonical raw
+    # rows, their semantic identity, and every repository input watched by the
+    # successful pass. Consume it before launching Lean again; the caller still
+    # runs the independent current statement-map, correspondence, transparent-
+    # pair, and strict closeout gates after this function returns.
+    raw_path = paper_dir / "audit" / "source_record_audit.json"
+    try:
+        raw_bytes = raw_path.read_bytes()
+        exact_raw_payload = json.loads(raw_bytes)
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        exact_raw_payload = None
+        raw_bytes = b""
+    if exact_raw_payload == saved_payload and raw_bytes:
+        authority = load_current_semantic_reuse_authority(
+            root=root,
+            paper_dir=paper_dir,
+            raw_audit_file_sha256=hashlib.sha256(raw_bytes).hexdigest(),
+            raw_audit=saved_payload,
+        )
+        authority_result = authority.result if authority is not None else None
+        authority_semantic = (
+            authority_result.get("semantic_receipt_reuse")
+            if isinstance(authority_result, Mapping)
+            else None
+        )
+        if (
+            authority is not None
+            and set(authority.reviewed_declarations)
+            == current_configured_review_declarations
+            and isinstance(authority_semantic, Mapping)
+            and authority_semantic.get("current") is True
+            and authority_semantic.get("reviewed_declaration_count")
+            == len(current_configured_review_declarations)
+            and authority_semantic.get("semantic_model_dimension_count")
+            == len(current_semantic_dimensions)
+            and authority_semantic.get("separately_routed_proof_defect_count")
+            == len(current_fidelity_defects)
+        ):
+            return current_closure, dict(authority_semantic), ""
+    try:
+        current_import_module = lean_module_name(root, closure_entry)
+        paper_relative = paper_dir.resolve().relative_to(root.resolve()).as_posix()
+        current_semantic_dependency_modules = tuple(
+            sorted(
+                {
+                    module
+                    for relative in index_paths(root)
+                    if relative.startswith(paper_relative + "/")
+                    for module in (module_name_for_path(relative),)
+                    if module is not None
+                }
+            )
+        )
+    except (OSError, RuntimeError, ValueError) as exc:
+        return None, None, f"current Lean review environment is unavailable: {exc}"
+
+    semantic_reuse, semantic_error = validate_current_semantic_reuse(
+        root=root,
+        paper_dir=paper_dir,
+        raw_audit=saved_payload,
+        current_import_module=current_import_module,
+        current_semantic_dependency_modules=(
+            current_semantic_dependency_modules
+        ),
+        current_configured_review_declarations=(
+            current_configured_review_declarations
+        ),
+        current_semantic_model_dimension_ids=set(current_semantic_dimensions),
+        current_source_proof_fidelity=current_fidelity,
+        current_source_map_defect_ids=current_source_map_defect_ids,
+        build_timeout_seconds=SOURCE_RECORD_LAKE_BUILD_TIMEOUT_SECONDS,
+    )
+    if semantic_error or semantic_reuse is None:
+        return None, None, semantic_error or "current semantic reuse validation failed"
+    return current_closure, semantic_reuse, ""
 
 
 def reusable_source_record_audit(
@@ -7445,135 +6594,19 @@ def reusable_source_record_audit(
         if stored_closure_sha256 != lean_import_closure.sha256:
             return None
     stored_fingerprint = payload.get("source_record_input_fingerprint")
-    # A status transition or selected-surface rebind can narrow ordinary input
-    # differences, but neither may carry raw obligations across an unreviewed
-    # producer implementation change. Older receipts without complete
-    # provenance reissue once; a producer-only transition can otherwise reuse
-    # only through the registered compatibility ledger.
-    fingerprint_matches = source_record_raw_producer_code_identity_matches(
+    # Exact non-producer identity is the normal fast path. A current semantic
+    # verifier may also reproduce every receipt-bound declaration identity;
+    # producer hashes remain provenance in either case. Older receipt schemas
+    # and materially changed fingerprints take the normal fresh-raw path.
+    if not source_record_raw_producer_code_identity_matches(
         stored_fingerprint,
         fingerprint,
         repository_root=REPOSITORY_ROOT,
-    )
-    if not fingerprint_matches:
-        return None
-    legacy_v9_protocol_fingerprint_matches = False
-    legacy_v7_fingerprint: dict[str, Any] | None = None
-    legacy_v7_fingerprint_matches = False
-    legacy_v6_fingerprint_matches = False
-    stored_fingerprint_schema = (
-        stored_fingerprint.get("schema")
-        if isinstance(stored_fingerprint, Mapping)
-        else None
-    )
-    # The closeout reissue transition has a narrower cache policy than normal
-    # development reuse.  Its caller was sent here precisely because the
-    # planner requires a current schema-10 raw receipt, so accepting a legacy
-    # compatibility, status-transition, or selected-surface rebind would
-    # return unchanged evidence and schedule the same costly action again.
-    # This is cache policy only: it neither changes generated obligations nor
-    # makes a cache hit an acceptance credential.
-    if getattr(args, "closeout_raw_reissue", False) and not (
-        stored_fingerprint_schema == 10 and fingerprint_matches
     ):
         return None
-    if not fingerprint_matches and stored_fingerprint_schema == 9:
-        legacy_v9 = source_record_legacy_v9_protocol_fingerprint(
-            fingerprint, paper_dir
-        )
-        legacy_v9_protocol_fingerprint_matches = (
-            legacy_v9 is not None and stored_fingerprint == legacy_v9
-        )
-    if not fingerprint_matches and stored_fingerprint_schema in {6, 7}:
-        # Compatibility projection is expensive and can only equal one of the
-        # two historical schemas. A stale current receipt proceeds directly to
-        # the current semantic transition/rebind checks.
-        legacy_v7_fingerprint = source_record_legacy_v7_input_fingerprint(
-            args,
-            root,
-            paper_dir,
-            paper_statement_map_sha256=paper_statement_map_sha256,
-            paper_statement_map_semantic_sha256=paper_statement_map_semantic_sha256,
-            lean_import_closure=lean_import_closure,
-        )
-        legacy_v7_fingerprint_matches = (
-            legacy_v7_fingerprint is not None
-            and stored_fingerprint == legacy_v7_fingerprint
-        )
-        legacy_v6_fingerprint_matches = (
-            legacy_v7_fingerprint is not None
-            and stored_fingerprint
-            == _legacy_source_record_input_fingerprint(
-                legacy_v7_fingerprint,
-                paper_statement_map_sha256=paper_statement_map_sha256,
-            )
-            and str(payload.get("paper_statement_map_sha256") or "").strip().lower()
-            == paper_statement_map_sha256.strip().lower()
-        )
-    transition_matches = False
-    transition_current_direct_ledger_keys: set[str] | None = None
-    selected_surface_rebind_matches = False
-    if not (
-        fingerprint_matches
-        or legacy_v9_protocol_fingerprint_matches
-        or legacy_v7_fingerprint_matches
-        or legacy_v6_fingerprint_matches
-    ):
-        # The transition receipt is the only aggregate-cache exception for a
-        # status-only partial-to-formalized change.  Feed it the exact same
-        # static descriptor revalidation that the normal reuse path uses,
-        # rather than letting the receipt load a second generator module or
-        # trusting a saved ledger solely because its keys look unchanged.
-        saved_transition_coverages = source_record_saved_statement_ledger_coverages(
-            payload
-        )
-        if saved_transition_coverages is not None and saved_transition_coverages[0]:
-            transition_current_direct_ledger_keys = (
-                current_direct_statement_ledger_covered_boundary_input_keys_without_lean(
-                    root, paper_dir, payload
-                )
-            )
-        transition_matches = not validate_source_record_partial_to_formalized_transition(
-            root=root,
-            paper=args.paper,
-            paper_dir=paper_dir,
-            raw_audit=payload,
-            current_input_fingerprint=fingerprint,
-            current_direct_ledger_covered_keys=transition_current_direct_ledger_keys,
-        )
-        # An external selected-surface receipt is narrower than the normal
-        # aggregate identity and is considered only after both exact identity
-        # paths and the status-only transition receipt fail.  Its validator
-        # reconstructs content descriptors, semantic contexts, routing, roots,
-        # and direct-ledger evidence; it never joins source items by map key or
-        # Lean declaration spelling.
-        if not transition_matches:
-            try:
-                selected_rebind, _selected_rebind_path, selected_rebind_error = (
-                    selected_surface_rebind_context(
-                        root=root,
-                        paper=args.paper,
-                        paper_dir=paper_dir,
-                        raw_audit=payload,
-                        current_input_fingerprint=fingerprint,
-                    )
-                )
-            except Exception:  # noqa: BLE001 - optional rebinds fail closed.
-                return None
-            selected_surface_rebind_matches = (
-                selected_rebind is not None and not selected_rebind_error
-            )
     if (
         payload.get("paper") != args.paper
         or payload.get("prompt_version") != SOURCE_RECORD_PROMPT_VERSION
-        or not (
-            fingerprint_matches
-            or legacy_v9_protocol_fingerprint_matches
-            or legacy_v7_fingerprint_matches
-            or legacy_v6_fingerprint_matches
-            or transition_matches
-            or selected_surface_rebind_matches
-        )
         or not SHA256_RE.fullmatch(
             str(payload.get("paper_statement_map_sha256") or "").strip().lower()
         )
@@ -7586,12 +6619,6 @@ def reusable_source_record_audit(
             expected_item_digest_schema=SOURCE_RECORD_ITEM_DIGEST_SCHEMA,
         )
         or source_record_raw_scan_completeness_error(payload)
-        or direct_route_diagnostic_rebind_error(
-            root=root,
-            paper=args.paper,
-            paper_dir=paper_dir,
-            raw_audit=payload,
-        )
     ):
         return None
     lean_check = payload.get("lean_check")
@@ -7615,13 +6642,11 @@ def reusable_source_record_audit(
     if saved_precloseout_ledger_keys:
         return None
     if saved_direct_ledger_keys:
-        current_direct_ledger_keys = transition_current_direct_ledger_keys
-        if current_direct_ledger_keys is None:
-            current_direct_ledger_keys = (
-                current_direct_statement_ledger_covered_boundary_input_keys_without_lean(
-                    root, paper_dir, payload
-                )
+        current_direct_ledger_keys = (
+            current_direct_statement_ledger_covered_boundary_input_keys_without_lean(
+                root, paper_dir, payload
             )
+        )
         if (
             current_direct_ledger_keys is None
             or not saved_direct_ledger_keys <= current_direct_ledger_keys
@@ -7848,75 +6873,14 @@ def source_record_payload_is_non_evidence(payload: dict[str, Any]) -> bool:
     return "candidate" in validator_type or "proposal" in validator_type
 
 
-def _historical_descriptor_migration_module() -> Any:
-    """Load authenticated historical transports without an import-time cycle.
-
-    The schema-2 semantic rebind validates the live raw receipt through the
-    shared evidence gate.  Deferring this bridge import keeps the authority
-    path explicit: a JSON marker alone is never enough for this generator's
-    current-judgment view.
-    """
+def _authenticated_overlay_union_module() -> Any:
+    """Load the one overlay authority only when a paper has an overlay."""
 
     try:
-        from scripts import source_record_historical_descriptor_migration as historical
+        from scripts import source_record_authenticated_overlay_union as overlay_union
     except ModuleNotFoundError:  # pragma: no cover - direct-script fallback.
-        import source_record_historical_descriptor_migration as historical
-    return historical
-
-
-def _semantic_rebind_module() -> Any:
-    """Load the schema-2 transport as its own stronger current lane.
-
-    The item-level loader checks the live folder through the evidence gate, so
-    it remains lazy here rather than relying on import order.  A serialized
-    marker never enters this summary without that loader capability.
-    """
-
-    try:
-        from scripts import source_record_semantic_rebind as semantic_rebind
-    except ModuleNotFoundError:  # pragma: no cover - direct-script fallback.
-        import source_record_semantic_rebind as semantic_rebind
-    return semantic_rebind
-
-
-def _scoped_receipt_rebind_module() -> Any:
-    """Load the narrow legacy receipt transport only at summary consumption.
-
-    The transport itself imports the shared evidence gate.  Keeping this
-    import lazy preserves the generator's existing initialization boundary and
-    makes a serialized provenance field insufficient to enter this summary.
-    """
-
-    try:
-        from scripts import source_record_scoped_receipt_rebind as scoped_rebind
-    except ModuleNotFoundError:  # pragma: no cover - direct-script fallback.
-        import source_record_scoped_receipt_rebind as scoped_rebind
-    return scoped_rebind
-
-
-def _copy_loaded_source_record_overlay_item(
-    value: Mapping[str, Any], updates: Mapping[str, Any] | None = None
-) -> dict[str, Any]:
-    historical = _historical_descriptor_migration_module()
-    semantic_rebind = _semantic_rebind_module()
-    scoped_rebind = _scoped_receipt_rebind_module()
-    if scoped_rebind.is_loaded_source_record_scoped_receipt_rebind_item(value):
-        return scoped_rebind.copy_loaded_source_record_scoped_receipt_rebind_item(
-            value, updates
-        )
-    if semantic_rebind.is_loaded_source_record_semantic_rebind_item(value):
-        return semantic_rebind.copy_loaded_source_record_semantic_rebind_item(
-            value, updates
-        )
-    if historical.is_loaded_source_record_historical_descriptor_migration_item(value):
-        return historical.copy_loaded_source_record_historical_descriptor_migration_item(
-            value, updates
-        )
-    if is_loaded_source_record_attested_selected_reuse_item(value):
-        return copy_loaded_source_record_attested_selected_reuse_item(value, updates)
-    if is_loaded_source_record_differential_revalidation_item(value):
-        return copy_loaded_source_record_differential_revalidation_item(value, updates)
-    return copy_loaded_source_record_schema4_to5_migration_item(value, updates)
+        import source_record_authenticated_overlay_union as overlay_union
+    return overlay_union
 
 
 def current_source_record_judgments_from_payload(
@@ -7925,12 +6889,7 @@ def current_source_record_judgments_from_payload(
     audit_payload: dict[str, Any],
     *,
     paper_dir: Path | None = None,
-    allow_schema4_to5_migration: bool = False,
-    allow_differential_revalidation: bool = False,
-    allow_attested_selected_reuse: bool = False,
-    allow_semantic_rebind: bool = False,
-    allow_historical_descriptor_migration: bool = False,
-    allow_scoped_receipt_rebind: bool = False,
+    authenticated_overlay_lane: object | None = None,
 ) -> dict[str, dict[str, Any]]:
     """Validate one ordinary sidecar or centrally loaded reuse overlay payload.
 
@@ -7953,6 +6912,17 @@ def current_source_record_judgments_from_payload(
     raw_items = payload.get("items") or payload.get("field_judgments") or {}
     if not isinstance(raw_items, dict):
         return {}
+    overlay_union = None
+    if authenticated_overlay_lane is not None:
+        overlay_union = _authenticated_overlay_union_module()
+        if (
+            not isinstance(
+                authenticated_overlay_lane,
+                overlay_union.AuthenticatedCurrentOverlayLane,
+            )
+            or raw_items is not authenticated_overlay_lane.items
+        ):
+            return {}
 
     required_prompt_version = str(audit_payload.get("prompt_version") or "").strip()
     required_audit_digest = str(audit_payload.get("source_record_audit_sha256") or "").strip()
@@ -7973,9 +6943,6 @@ def current_source_record_judgments_from_payload(
     )
 
     expected_key_by_unique_item_digest = current_unique_item_digest_keys(audit_payload)
-    historical = _historical_descriptor_migration_module()
-    semantic_rebind = _semantic_rebind_module()
-    scoped_rebind = _scoped_receipt_rebind_module()
     out: dict[str, dict[str, Any]] = {}
 
     for key, value in raw_items.items():
@@ -7983,69 +6950,25 @@ def current_source_record_judgments_from_payload(
             continue
         if source_record_payload_is_non_evidence(value):
             continue
+        if archived_source_record_transport_item_field(value):
+            continue
         raw_key = str(key)
-        migrated_overlay_entry = is_loaded_source_record_schema4_to5_migration_item(value)
-        differential_overlay_entry = (
-            is_loaded_source_record_differential_revalidation_item(value)
-        )
-        attested_selected_reuse_entry = (
-            is_loaded_source_record_attested_selected_reuse_item(value)
-        )
-        semantic_rebind_entry = semantic_rebind.is_loaded_source_record_semantic_rebind_item(
-            value
-        )
-        # The compatibility bridge recognizes a schema-2 private item for
-        # older direct callers.  In this distinct-lane consumer it must not
-        # require both the semantic and historical allowances.
-        historical_descriptor_entry = (
-            not semantic_rebind_entry
-            and historical.is_loaded_source_record_historical_descriptor_migration_item(
-                value
+        loaded_overlay_entry = bool(
+            authenticated_overlay_lane is not None
+            and overlay_union is not None
+            and overlay_union.authenticated_current_overlay_item(
+                authenticated_overlay_lane, value
             )
         )
-        scoped_receipt_entry = (
-            scoped_rebind.is_loaded_source_record_scoped_receipt_rebind_item(value)
-        )
-        loaded_overlay_entry = (
-            migrated_overlay_entry
-            or differential_overlay_entry
-            or attested_selected_reuse_entry
-            or semantic_rebind_entry
-            or historical_descriptor_entry
-            or scoped_receipt_entry
-        )
+        if authenticated_overlay_lane is not None and not loaded_overlay_entry:
+            continue
         if (
-            (
-                source_record_schema4_to5_migration_item_has_provenance(value)
-                or source_record_differential_revalidation_item_has_provenance(value)
-                or source_record_attested_selected_reuse_item_has_provenance(value)
-                or semantic_rebind.source_record_semantic_rebind_item_has_provenance(
-                    value
-                )
-                or historical.source_record_historical_descriptor_migration_item_has_provenance(
-                    value
-                )
-                or scoped_rebind.source_record_scoped_receipt_rebind_item_has_provenance(
-                    value
-                )
-            )
-            and not loaded_overlay_entry
+            authenticated_overlay_lane is None
+            and serialized_source_record_overlay_labels(value)
         ):
             # A copied overlay JSON object is not ordinary schema-5 evidence.
             # Only the centralized loader can attach the private in-memory
-            # authorization used by the migration path below.
-            continue
-        if migrated_overlay_entry and not allow_schema4_to5_migration:
-            continue
-        if differential_overlay_entry and not allow_differential_revalidation:
-            continue
-        if attested_selected_reuse_entry and not allow_attested_selected_reuse:
-            continue
-        if semantic_rebind_entry and not allow_semantic_rebind:
-            continue
-        if historical_descriptor_entry and not allow_historical_descriptor_migration:
-            continue
-        if scoped_receipt_entry and not allow_scoped_receipt_rebind:
+            # authorization used by the overlay path below.
             continue
         if not loaded_overlay_entry and not ordinary_protocol_current:
             continue
@@ -8072,7 +6995,7 @@ def current_source_record_judgments_from_payload(
         if (
             (loaded_overlay_entry and required_item_keys and raw_key not in required_item_keys)
             or (
-                not migrated_overlay_entry
+                not loaded_overlay_entry
                 and audit_digest_current
                 and required_item_keys
                 and raw_key not in required_item_keys
@@ -8135,14 +7058,20 @@ def current_source_record_judgments_from_payload(
             # a semantic-ID remap is accepted only when it is unique above.
             if resolved_key in out:
                 continue
-            out[resolved_key] = _copy_loaded_source_record_overlay_item(
-                value,
-                {
-                    "prompt_version": item_prompt_version,
-                    "source_record_audit_sha256": item_audit_digest,
-                    "source_record_item_sha256": item_digest,
-                    "source_record_item_digest_schema": item_digest_schema,
-                },
+            updates = {
+                "prompt_version": item_prompt_version,
+                "source_record_audit_sha256": item_audit_digest,
+                "source_record_item_sha256": item_digest,
+                "source_record_item_digest_schema": item_digest_schema,
+            }
+            out[resolved_key] = (
+                overlay_union.copy_authenticated_current_overlay_item(
+                    authenticated_overlay_lane, value, updates
+                )
+                if loaded_overlay_entry
+                and overlay_union is not None
+                and authenticated_overlay_lane is not None
+                else {**value, **updates}
             )
     return out
 
@@ -8152,6 +7081,8 @@ def current_source_record_judgments(
 ) -> dict[str, dict[str, Any]]:
     """Load ordinary judgments plus authenticated narrow-reuse overlays."""
 
+    if archived_source_record_transport_artifacts(paper_dir):
+        return {}
     path = paper_dir / "audit" / "source_record_match_llm.json"
     if not path.exists():
         path = paper_dir / "source_record_match_llm.json"
@@ -8159,104 +7090,32 @@ def current_source_record_judgments(
     ordinary = current_source_record_judgments_from_payload(
         sidecar_payload, paper, audit_payload, paper_dir=paper_dir
     )
-    migrated_items = load_current_source_record_schema4_to5_migration_items(
-        paper_dir, paper, audit_payload
+    consumed_overlay_labels = (
+        "differential",
+        "semantic_rebind",
     )
-    migrated: dict[str, dict[str, Any]] = {}
-    if migrated_items:
-        migrated = current_source_record_judgments_from_payload(
-            {
-                "schema": 1,
-                "paper": paper,
-                "items": migrated_items,
-            },
-            paper,
-            audit_payload,
-            allow_schema4_to5_migration=True,
-        )
-    differential_items = load_current_source_record_differential_revalidation_items(
-        paper_dir, paper, audit_payload
+    present_overlay_labels = source_record_overlay_labels_with_artifacts(
+        paper_dir, lane_labels=consumed_overlay_labels
     )
-    differential: dict[str, dict[str, Any]] = {}
-    if differential_items:
-        differential = current_source_record_judgments_from_payload(
-            {
-                "schema": 1,
-                "paper": paper,
-                "items": differential_items,
-            },
-            paper,
-            audit_payload,
-            allow_differential_revalidation=True,
-        )
-    attested_selected_reuse_items = load_current_attested_selected_semantic_reuse_items(
-        paper_dir, paper, audit_payload
-    )
-    attested_selected_reuse: dict[str, dict[str, Any]] = {}
-    if attested_selected_reuse_items:
-        attested_selected_reuse = current_source_record_judgments_from_payload(
-            {
-                "schema": 1,
-                "paper": paper,
-                "items": attested_selected_reuse_items,
-            },
-            paper,
-            audit_payload,
-            allow_attested_selected_reuse=True,
-        )
-    semantic_rebind = _semantic_rebind_module()
-    semantic_rebind_items = semantic_rebind.load_current_source_record_semantic_rebind_items(
-        paper_dir, paper, audit_payload
-    )
-    semantic_rebind_current: dict[str, dict[str, Any]] = {}
-    if semantic_rebind_items:
-        semantic_rebind_current = current_source_record_judgments_from_payload(
-            {
-                "schema": 1,
-                "paper": paper,
-                "items": semantic_rebind_items,
-            },
-            paper,
-            audit_payload,
-            paper_dir=paper_dir,
-            allow_semantic_rebind=True,
-        )
-    historical = _historical_descriptor_migration_module()
-    historical_descriptor_items = (
-        historical.load_current_source_record_historical_descriptor_migration_items(
-            paper_dir, paper, audit_payload, include_semantic_rebind=False
-        )
-    )
-    historical_descriptor: dict[str, dict[str, Any]] = {}
-    if historical_descriptor_items:
-        historical_descriptor = current_source_record_judgments_from_payload(
-            {
-                "schema": 1,
-                "paper": paper,
-                "items": historical_descriptor_items,
-            },
-            paper,
-            audit_payload,
-            paper_dir=paper_dir,
-            allow_historical_descriptor_migration=True,
-        )
-    scoped_rebind = _scoped_receipt_rebind_module()
-    scoped_receipt_items = scoped_rebind.load_current_source_record_scoped_receipt_rebind_items(
-        paper_dir, paper, audit_payload
-    )
-    scoped_receipt: dict[str, dict[str, Any]] = {}
-    if scoped_receipt_items:
-        scoped_receipt = current_source_record_judgments_from_payload(
-            {
-                "schema": 1,
-                "paper": paper,
-                "items": scoped_receipt_items,
-            },
-            paper,
-            audit_payload,
-            paper_dir=paper_dir,
-            allow_scoped_receipt_rebind=True,
-        )
+    overlay_current: dict[str, dict[str, dict[str, Any]]] = {}
+    if present_overlay_labels:
+        overlay_union = _authenticated_overlay_union_module()
+        try:
+            lanes = overlay_union.load_authenticated_current_overlay_lanes(
+                paper_dir,
+                paper,
+                audit_payload,
+                lane_labels=present_overlay_labels,
+            )
+        except overlay_union.SourceRecordAuthenticatedOverlayUnionError:
+            return {}
+        for lane in lanes:
+            overlay_current[lane.label] = current_source_record_judgments_from_payload(
+                {"schema": 1, "paper": paper, "items": lane.items},
+                paper,
+                audit_payload,
+                authenticated_overlay_lane=lane,
+            )
     # An overlay remains authoritative over stale ordinary evidence, but a
     # separately validated ordinary response with the exact live aggregate
     # receipt is newer evidence and must win over every overlay lane.
@@ -8269,18 +7128,12 @@ def current_source_record_judgments(
         == current_raw_digest
     }
     effective = {
-        # The legacy receipt is a narrow exception, never newer than any
-        # established current/reissue lane on a collision.
-        **scoped_receipt,
-        **attested_selected_reuse,
-        **historical_descriptor,
         **ordinary,
-        **migrated,
-        **differential,
+        **overlay_current.get("differential", {}),
         # Schema 2 replays byte-pinned inputs and a full current semantic
         # descriptor, so it is stronger than the legacy differential lane.
         # Independently reviewed ordinary current evidence still wins last.
-        **semantic_rebind_current,
+        **overlay_current.get("semantic_rebind", {}),
         **ordinary_with_current_receipt,
     }
     current_v10_surface = (
@@ -9802,17 +8655,6 @@ def refresh_existing_judgment_summary(
             "source-record judgment summary refresh requires an unmodified "
             f"generated raw audit at {audit_path}: {integrity_error}"
         )
-    rebind_error = direct_route_diagnostic_rebind_error(
-        root=paper_dir.parents[1],
-        paper=paper,
-        paper_dir=paper_dir,
-        raw_audit=payload,
-    )
-    if rebind_error:
-        raise SystemExit(
-            "source-record judgment summary refresh requires a reproducible "
-            f"diagnostic rebind at {audit_path}: {rebind_error}"
-        )
     if paper_statement_map_semantic_sha256 is None:
         _full_map_sha256, paper_statement_map_semantic_sha256 = (
             paper_statement_map_cache_receipts(paper_dir)
@@ -9846,41 +8688,12 @@ def refresh_existing_judgment_summary(
         SHA256_RE.fullmatch(current_semantic_map_digest) is not None
         and recorded_semantic_map_digest == current_semantic_map_digest
     )
-    if (
-        recorded_map_digest != current_map_digest
-        and not administrative_map_only_change
-    ):
-        # Normal exact/semantic-map refreshes above remain the first path. A
-        # selected-surface receipt can cover only a later map change whose
-        # current selected content and all no-Lean dependency projections
-        # reconstruct exactly; it does not treat source keys or Lean names as
-        # an equivalence witness.
-        try:
-            selected_rebind, _selected_rebind_path, selected_rebind_error = (
-                selected_surface_rebind_context(
-                    root=paper_dir.parents[1],
-                    paper=paper,
-                    paper_dir=paper_dir,
-                    raw_audit=payload,
-                )
-            )
-        except Exception as error:  # noqa: BLE001 - optional rebinds fail closed.
-            selected_rebind = None
-            selected_rebind_error = (
-                "selected-surface rebind validation raised "
-                f"{type(error).__name__}: {error}"
-            )
-        if selected_rebind is None or selected_rebind_error:
-            detail = (
-                "; selected-surface rebind rejected: " + selected_rebind_error
-                if selected_rebind_error
-                else ""
-            )
-            raise SystemExit(
-                "source-record audit paper_statement_map_sha256 is stale for a "
-                "nonadministrative current map change at "
-                f"{audit_path}; regenerate the Lean-checked audit surface{detail}"
-            )
+    if recorded_map_digest != current_map_digest and not administrative_map_only_change:
+        raise SystemExit(
+            "source-record audit paper_statement_map_sha256 is stale for a "
+            "nonadministrative current map change at "
+            f"{audit_path}; regenerate the Lean-checked audit surface"
+        )
     lean_check_payload = payload.get("lean_check")
     if (
         not isinstance(lean_check_payload, dict)
@@ -9929,10 +8742,9 @@ def refresh_existing_judgment_summary(
             "unresolved_conclusion_dependency_items": unresolved,
         }
     )
-    # Prompt wording is a cheap presentation projection. Re-render it from the
-    # current helper without invalidating or regenerating the semantic/Lean
-    # evidence receipt.
-    payload["llm_judge_prompt"] = source_record_llm_judge_prompt(paper, payload)
+    # Prompt text is rendered on demand by the manual-review/template command.
+    # It is not evidence and no longer belongs in the canonical carrier.
+    payload.pop("llm_judge_prompt", None)
     if write:
         atomic_write_text_if_changed(
             audit_path, json.dumps(payload, indent=2, sort_keys=True) + "\n"
@@ -10356,6 +9168,14 @@ def result_type_inputs(
     as ordinary declaration binders and must enter the provenance audit. A
     leading result-local ``let`` is instead retained as the terminal semantic
     surface, without descending into its local definition types or values.
+
+    Prefix negation deliberately remains terminal. Although Lean implements
+    ``Not P`` as ``P → False``, a source-facing transparent ``Spec`` records
+    the nonreducing proposition boundary in a Lean-owned presentation
+    telescope. Reinterpreting ``¬ P`` textually as another caller premise
+    loses that boundary and can disagree with the exact presentation
+    telescope. The later manifest alignment, not this parser, owns the
+    accepted binder and conclusion structure.
     """
 
     inputs: list[dict[str, str]] = []
@@ -10371,32 +9191,6 @@ def result_type_inputs(
             if candidate not in occupied:
                 occupied.add(candidate)
                 return candidate
-
-    def negation_operand_consumes_remainder(operand: str) -> bool:
-        """Whether Lean's prefix negation owns the complete remaining text."""
-
-        candidate = normalize_ws(operand).strip()
-        if not candidate:
-            return False
-        # A quantified proposition owns its entire body, and a balanced group
-        # explicitly delimits the prefix operand.
-        if candidate.startswith(("∀", "∃")) or re.match(
-            r"^(?:forall|exists)\b", candidate
-        ):
-            return True
-        if strip_outer_group(candidate) != candidate:
-            return True
-
-        normalized = normalize_logic_syntax(candidate)
-        if split_top_level_arrow(normalized) is not None:
-            return False
-        # These infix connectives bind more weakly than prefix negation. If
-        # one occurs at top level, only its left operand is negated and the
-        # whole result is not a `P → False` telescope.
-        return not any(
-            top_level_token_index(normalized, connective) is not None
-            for connective in ("∧", "∨", "↔")
-        )
 
     while remainder:
         # A leading local let scopes only over the theorem result.  The static
@@ -10416,27 +9210,11 @@ def result_type_inputs(
         if result_head.startswith("∃") or re.match(r"^exists\b", result_head):
             break
 
-        # Lean's `Not P` is definitionally `P → False`. Parse only a
-        # syntactically outer negation here, where the ordinary exact Lean
-        # telescope checks can verify the resulting binder. A negation nested
-        # inside a conjunction, quantifier body, or other proposition remains
-        # part of that terminal expression and is never lifted into a premise.
         outer_arrow_split = split_top_level_arrow(remainder)
-        negated_premise = ""
-        if outer_arrow_split is None and result_head.startswith("¬"):
-            negated_premise = result_head[1:].strip()
-        elif outer_arrow_split is None and re.match(r"^Not\b", result_head):
-            negated_premise = result_head[len("Not") :].strip()
-        if negated_premise and negation_operand_consumes_remainder(negated_premise):
-            inputs.append(
-                {
-                    "names": fresh_anonymous_name(),
-                    "type": normalize_ws(strip_outer_group(negated_premise)),
-                    "input_origin": "result_arrow",
-                }
-            )
-            remainder = "False"
-            continue
+        if outer_arrow_split is None and (
+            result_head.startswith("¬") or re.match(r"^Not\b", result_head)
+        ):
+            break
 
         forall_split = split_leading_forall(remainder)
         if forall_split is not None:
@@ -10609,8 +9387,23 @@ def header_inputs_from_declaration(declaration: str) -> list[dict[str, str]]:
     header = declaration_header(declaration)
     type_split = split_top_level_colon(header)
     binder_prefix = type_split[0] if type_split is not None else header
-    for span in balanced_binder_spans(binder_prefix):
-        is_instance_binder = span.strip().startswith("[")
+    for opener, span in balanced_binder_spans_with_delimiters(binder_prefix):
+        is_instance_binder = opener == "["
+        # `[∀ C : Carrier, Class (family C)]` is one anonymous instance
+        # parameter whose *type* is a dependent function.  The colon belongs
+        # to that type, not to a named outer binder.  Treating `∀ C` as a
+        # binder name overcounts the elaborated telescope and can make a
+        # source-result path look malformed.
+        if is_instance_binder and normalize_ws(span).startswith("∀"):
+            inputs.append(
+                {
+                    "names": f"instance_{anonymous_instance_index}",
+                    "type": normalize_ws(span),
+                    "input_origin": "instance_binder",
+                }
+            )
+            anonymous_instance_index += 1
+            continue
         split = split_top_level_colon(span)
         if split is None:
             type_text = normalize_ws(span)
@@ -11309,6 +10102,44 @@ def assumption_source_path(
     return resolved
 
 
+def effective_source_record_assumption_path(
+    root: Path,
+    paper_dir: Path,
+    status_path: Path,
+    *,
+    interface_path: Path,
+    lean_import_closure: SourceRecordLeanImportClosure | None,
+) -> Path | None:
+    """Return an assumption source that belongs to the active audit surface.
+
+    A scaffold may retain an empty, unimported ``Assumptions.lean`` file.  It
+    is not a paper premise merely because it exists beside the interface.  An
+    assumption source becomes audit material when status explicitly selects an
+    assumption row or Lean's loaded proof/interface closure reaches the file.
+    The former case remains fail-closed when the configured source is not in
+    the authenticated closure; the latter catches imported but accidentally
+    unregistered support declarations.
+
+    ``None`` for ``lean_import_closure`` preserves the conservative historical
+    behavior used by static diagnostics that have not acquired Lean authority.
+    """
+
+    path = assumption_source_path(
+        root,
+        paper_dir,
+        status_path,
+        interface_path=interface_path,
+    )
+    if parse_status_review_surface_names(status_path, ("assumption_names",)):
+        return path
+    if lean_import_closure is None:
+        return path
+    closure_sources = {
+        source.resolve() for source in lean_import_closure.repository_sources
+    }
+    return path if path.resolve() in closure_sources else None
+
+
 def lean_module_name(root: Path, path: Path) -> str:
     """Return the Lean module name for a repository Lean file."""
 
@@ -11317,22 +10148,6 @@ def lean_module_name(root: Path, path: Path) -> str:
     if parts and parts[0] == "papers":
         parts = parts[1:]
     return ".".join(parts)
-
-
-def paper_local_lean_files(paper_dir: Path, interface_path: Path) -> list[Path]:
-    """Return ambient Lean modules for optional worktree diagnostics only.
-
-    Canonical source-record generation must instead call
-    :func:`paper_interface_import_closure_lean_files`.  Keeping this helper
-    explicit avoids silently changing callers that intentionally inventory
-    loose development files while preventing it from becoming audit evidence.
-    """
-
-    discovered = {
-        path for path in paper_dir.rglob("*.lean") if path.is_file()
-    }
-    discovered.add(interface_path)
-    return sorted(discovered)
 
 
 def update_namespace_scopes(line: str, scopes: list[tuple[str, list[str]]]) -> bool:
@@ -12890,12 +11705,6 @@ def terminal_arrow_result(type_text: str) -> str:
     return text[last_arrow:].strip() if last_arrow is not None else text
 
 
-def top_level_arrow_domain(type_text: str) -> str | None:
-    """Return the first outermost function domain, if the type is a function."""
-
-    split = split_top_level_arrow(normalize_ws(type_text).strip())
-    return split[0] if split is not None else None
-
 
 def is_definitely_data_type(
     type_text: str,
@@ -13011,32 +11820,6 @@ def proposition_type_relation(
     return ""
 
 
-def is_conclusion_bearing_field(
-    field: FieldInfo,
-    *,
-    row_result_type: str = "",
-    root_structure: str = "",
-    used_as_dependency: bool = False,
-    proposition_heads: set[str] | None = None,
-    proposition_aliases: dict[str, PropositionAliasInfo] | None = None,
-) -> bool:
-    """Recognize result-feeding fields from types and proof dependencies.
-
-    Structure and field suffixes deliberately do not participate. A consistent
-    rename therefore leaves the verdict unchanged. Names are used later only
-    to route projection references and to produce diagnostics.
-    """
-
-    _ = root_structure
-    if field.nested_structures:
-        return False
-    if row_result_type and proposition_type_relation(
-        field.type, row_result_type, proposition_aliases
-    ):
-        return True
-    return bool(used_as_dependency and is_proposition_type(field.type, proposition_heads))
-
-
 def paper_import_file(root: Path, module: str) -> Path | None:
     parts = [part for part in module.split(".") if part]
     if len(parts) < 2:
@@ -13051,12 +11834,18 @@ def paper_import_file(root: Path, module: str) -> Path | None:
 
 
 def repository_import_file(root: Path, module: str) -> Path | None:
-    """Resolve one exact repository module named by a Lean import command."""
+    """Resolve one exact current repository module for diagnostics only.
 
-    if module == "EconCSLib":
-        candidate = root / "EconCSLib.lean"
+    Lean's authenticated loaded-module record, not this text resolver, owns the
+    declaration universe credited by the audit.  Keeping the current library
+    root in one constant prevents a project rename from leaving independent
+    parser rules behind.
+    """
+
+    if module == REPOSITORY_LIBRARY_MODULE_ROOT:
+        candidate = root / REPOSITORY_LIBRARY_ROOT_FILE
         return candidate if candidate.is_file() else None
-    if module.startswith("EconCSLib."):
+    if module.startswith(f"{REPOSITORY_LIBRARY_MODULE_ROOT}."):
         candidate = root.joinpath(*module.split(".")).with_suffix(".lean")
         return candidate if candidate.is_file() else None
     imported = paper_import_file(root, module)
@@ -13071,7 +11860,7 @@ def repository_import_is_expected(root: Path, module: str) -> bool:
 
     head = module.split(".", 1)[0]
     return bool(
-        head == "EconCSLib"
+        head == REPOSITORY_LIBRARY_MODULE_ROOT
         or (root / "papers" / head).exists()
         or (root / "papers" / f"{head}.lean").exists()
     )
@@ -14440,9 +13229,6 @@ def decided_propositions_from_body(body: str) -> list[str]:
             propositions.append(proposition)
     return propositions
 
-
-def decided_proposition_from_body(body: str) -> str:
-    return " /\\ ".join(decided_propositions_from_body(body))
 
 
 def if_certificate_proposition_from_body(body: str, *, option_success: bool) -> str:
@@ -15978,6 +14764,19 @@ def source_claim_atom_authoritative_for_item(
     separately required before an atom route can gain a Spec companion.
     """
 
+    # Support-only entries and quarantined false source statements stay in the
+    # source inventory and can retain checked support declarations, but they do
+    # not state a proved paper result through this direct source-to-Spec lane.
+    # Use the shared route policy rather than inferring an obligation from a
+    # theorem-like presentation label alone.
+    route_policy = source_item_effective_route_policy(source_item)
+    if bool(route_policy["is_support_only"]) or bool(
+        route_policy["is_quarantined_source_defect"]
+    ) or bool(
+        route_policy["is_source_declared_open_nonresult"]
+    ):
+        return False
+
     # The normal atom obligation remains theorem-like: a plain source
     # definition does not become a theorem-realization obligation merely
     # because another item enabled the map-wide atom schema.  A source map may
@@ -16150,6 +14949,15 @@ def source_coverage_review_rows(
             # A source-only repeated presentation is separately anchored for
             # inventory completeness, while its canonical item owns the
             # direct source-to-Lean review route.
+            continue
+        route_policy = source_item_effective_route_policy(source_item)
+        if bool(route_policy["is_support_only"]) or bool(
+            route_policy["is_quarantined_source_defect"]
+        ) or bool(
+            route_policy["is_source_declared_open_nonresult"]
+        ):
+            # Retain support-only and quarantined items in the selected source
+            # inventory, but do not route either as a proved paper result.
             continue
         valid_routes: set[str] = set()
         if source_claim_atom_authoritative_for_item(statement_map, source_item):
@@ -17154,19 +15962,19 @@ def elaborated_review_signature_surfaces(
         )
 
         def report_manifest_batch_progress(event: Mapping[str, Any]) -> None:
-            """Keep a long exact-manifest pass observable without changing evidence."""
+            """Keep a long native graph request observable without changing evidence."""
 
             batch_number = event.get("batch_number")
             batch_total = event.get("batch_total")
             root_count = event.get("root_count")
             if event.get("status") == "started":
                 source_record_progress(
-                    "exact elaborated review-signature manifest batch "
+                    "exact elaborated review-signature graph request "
                     f"{batch_number}/{batch_total} started ({root_count} roots)"
                 )
                 return
             source_record_progress(
-                "exact elaborated review-signature manifest batch "
+                "exact elaborated review-signature graph request "
                 f"{batch_number}/{batch_total} finished ({root_count} roots; "
                 f"{event.get('completed_count')} complete; "
                 f"{event.get('missing_count')} missing)"
@@ -17265,25 +16073,6 @@ def elaborated_review_signature_surfaces(
         validated_manifests[qualified] = manifest
     return digests, validated_manifests, errors
 
-
-def elaborated_review_signature_digests(
-    *,
-    root: Path,
-    import_module: str,
-    row_names: list[str],
-    qualified_row_refs: dict[str, str],
-    no_lean: bool,
-) -> tuple[dict[str, str], list[str]]:
-    """Backward-compatible digest-only projection of elaborated surfaces."""
-
-    digests, _manifests, errors = elaborated_review_signature_surfaces(
-        root=root,
-        import_module=import_module,
-        row_names=row_names,
-        qualified_row_refs=qualified_row_refs,
-        no_lean=no_lean,
-    )
-    return digests, errors
 
 
 def _input_binder_arity(visible_input: Mapping[str, object]) -> int:
@@ -19004,7 +17793,11 @@ def semantic_model_spec_analysis_declaration(
     """Return a parser-facing Spec declaration without granting text credit."""
 
     presentation_body = declaration_body_text(declaration)
-    if structural_surface.get("validation_mode") == ELABORATED_BARE_SPEC_REFERENCE_MODE:
+    if (
+        structural_surface.get("validation_mode")
+        == ELABORATED_BARE_SPEC_REFERENCE_MODE
+        and not semantic_model_transparent_spec_body(declaration)
+    ):
         presentation_body = semantic_model_tactic_exact_presentation_body(declaration)
     body_start = declaration_body_start_index(declaration)
     if not presentation_body or body_start is None:
@@ -19055,15 +17848,24 @@ def semantic_contract_pair_structural_surfaces(
     ):
         return None
     spec_body = semantic_model_transparent_spec_body(spec_source)
+    # A proof endpoint in a sibling ProofInterface commonly has the exact
+    # source-facing Spec as its whole result type.  Its theorem text therefore
+    # has no duplicated binders to compare against the transparent Spec body.
+    # Accept that layout only through the complete Lean-owned direct type edge
+    # and transparent-value graph; the helper rejects wrappers, applications,
+    # and any additional type dependency.
+    bare_surfaces = semantic_contract_elaborated_bare_spec_surfaces(
+        evidence_qualified_name=evidence_qualified_name,
+        evidence_source=evidence_source,
+        evidence_manifest=evidence_manifest,
+        spec_qualified_name=spec_qualified_name,
+        spec_source=spec_source,
+        spec_manifest=spec_manifest,
+    )
+    if bare_surfaces is not None:
+        return bare_surfaces
     if not spec_body:
-        return semantic_contract_elaborated_bare_spec_surfaces(
-            evidence_qualified_name=evidence_qualified_name,
-            evidence_source=evidence_source,
-            evidence_manifest=evidence_manifest,
-            spec_qualified_name=spec_qualified_name,
-            spec_source=spec_source,
-            spec_manifest=spec_manifest,
-        )
+        return None
     evidence_context = evidence_qualified_name.rsplit(".", 1)[0]
     spec_context = spec_qualified_name.rsplit(".", 1)[0]
     spec_surface = semantic_contract_signature_surface(
@@ -19729,13 +18531,16 @@ def semantic_contract_positional_signature_manifests(
     """Select Lean-owned positional surfaces for parsed source binders.
 
     The full reduced theorem manifest remains the authority for semantic
-    graphs, dependency reachability, and declaration identity.  An exact
-    schema-2 transparent-Spec owner may instead use its elaborated definition
-    value's nonreducing outer telescope to align source-written binders.  The
-    alternate telescope is accepted only when each of its binder atoms is the
-    exact prefix of the paired proof theorem's full reduced telescope.  Thus
-    reduction-introduced binders remain visible to semantic review but cannot
-    be misreported as source inputs.
+    graphs, dependency reachability, proof realization, and declaration
+    identity. An exact schema-2 transparent-Spec owner instead uses its
+    elaborated definition value's complete nonreducing telescope for
+    source-presentation coordinates: both its binders and its terminal
+    conclusion. The alternate telescope is accepted only when each binder
+    atom is the exact prefix of the paired proof theorem's full reduced
+    telescope and the separately Lean-validated Spec/proof relation is
+    current. Thus reduction-introduced binders remain visible in the proof
+    manifest without being misreported as source inputs or replacing a
+    source-facing wrapper such as negation with its reduced ``False`` result.
     """
 
     positional: dict[str, Mapping[str, Any]] = {}
@@ -19834,15 +18639,20 @@ def semantic_contract_positional_signature_manifests(
                 f"{spec_qualified}: transparent definition-value binders are not an exact prefix of the paired proof telescope"
             )
             continue
-        # Keep the paired proof signature digest, terminal conclusion atom,
-        # and semantic graph.  Only the source-written binder prefix changes
-        # presentation coordinates.  In particular, a definition-value
-        # terminal may not be relabeled as the paired theorem's conclusion.
+        # The complete Lean-produced presentation telescope owns both the
+        # source-written binder prefix and its terminal conclusion.  The
+        # paired proof theorem may reduce a wrapper such as `Not P` to an
+        # additional assumption and `False`; substituting that reduced
+        # terminal here would erase the exact source-facing proposition
+        # boundary.  The independently validated Spec/proof relation and the
+        # recorded proof signature continue to authenticate the proof route.
         adapter = dict(full_manifest)
-        adapter["atoms"] = [
-            *deepcopy(presentation_binders),
-            deepcopy(full_atoms[-1]),
-        ]
+        adapter["atoms"] = deepcopy(presentation_atoms)
+        adapter["sha256"] = presentation_sha
+        adapter["positional_surface_kind"] = (
+            "transparent_definition_value_outer_telescope"
+        )
+        adapter["paired_proof_signature_sha256"] = full_signature
         adapter["transparent_spec_presentation_telescope_sha256"] = presentation_sha
         positional[row] = adapter
         routes[row] = {
@@ -19852,19 +18662,6 @@ def semantic_contract_positional_signature_manifests(
         }
     return positional, routes, sorted(set(errors))
 
-
-def semantic_model_declaration_inputs(declaration: str) -> list[dict[str, str]]:
-    """Return header and result-level premise binders of one actual surface."""
-
-    header_inputs = visible_inputs_from_declaration(
-        declaration, include_result_inputs=False
-    )
-    used_names = {
-        name
-        for visible_input in header_inputs
-        for name in binder_names(visible_input.get("names", ""))
-    }
-    return header_inputs + conclusion_inputs_from_declaration(declaration, used_names)
 
 
 def semantic_contract_source_identity(
@@ -20154,6 +18951,15 @@ def explicit_direct_source_route_identities(
         if source_key in presentation_aliases:
             # The source-only alias still counts for presentation inventory,
             # but the canonical source item owns the one direct Lean route.
+            continue
+        route_policy = source_item_effective_route_policy(source_item)
+        if bool(route_policy["is_support_only"]) or bool(
+            route_policy["is_quarantined_source_defect"]
+        ) or bool(
+            route_policy["is_source_declared_open_nonresult"]
+        ):
+            # Support-only and quarantined items may document checked proof or
+            # defect support, but never furnish direct source-result provenance.
             continue
         if source_claim_atom_authoritative_for_item(statement_map, source_item):
             # The atom collector below owns this theorem-like presentation.
@@ -20779,6 +19585,9 @@ def _validated_statement_source_route_receipt(
         dict(entry),
         inventory={str(key): dict(value) for key, value in route_inventory.items()},
         require_statement_target=True,
+        require_verbatim_source_inputs=(
+            dashboard.statement_review_requires_verbatim_source_inputs(entry)
+        ),
     )
     if ledger_error or route_error:
         return None, "; ".join(
@@ -22380,6 +21189,9 @@ def attach_statement_source_component_associations(
             dict(entry),
             inventory=combined_route_inventory,
             require_statement_target=True,
+            require_verbatim_source_inputs=(
+                dashboard.statement_review_requires_verbatim_source_inputs(entry)
+            ),
         )
         if ledger_error or route_error:
             errors.append(
@@ -28947,19 +27759,6 @@ def subtype_predicate_result_bridges(
     return bridges
 
 
-def dependency_projection_keys(
-    declarations: list[LocalDeclaration],
-    fields: list[FieldInfo],
-) -> set[tuple[str, str]]:
-    """Return record fields projected anywhere in a proof dependency closure."""
-
-    source = "\n".join(declaration.source for declaration in declarations)
-    return {
-        (field.structure, field.field)
-        for field in fields
-        if re.search(rf"\.\s*{re.escape(field.field)}\b", source)
-    }
-
 
 def constructor_candidates(
     *,
@@ -30396,18 +29195,23 @@ def lean_check(
         except ValueError:
             proof_display = str(proof_source_path)
         proof_sha256 = hashlib.sha256(proof_source_path.read_bytes()).hexdigest()
-        if proof_module != import_module:
-            return {
-                "command": "source-record current-proof-endpoint elaboration",
-                "returncode": 1,
-                "truncated": False,
-                "output": (
-                    "configured proof endpoint module does not equal the generated "
-                    f"check import module: {proof_module} != {import_module}"
-                ),
-            }
 
-    build_target = import_module
+    expected_import_module = proof_module or interface_module
+    if import_module != expected_import_module:
+        return {
+            "command": "source-record complete-review import preflight",
+            "returncode": 1,
+            "truncated": False,
+            "output": (
+                "generated review checks must import the smallest module that "
+                "exposes every configured semantic Spec and proof endpoint: "
+                f"{import_module} != {expected_import_module}"
+            ),
+        }
+
+    # A bare target with the paper/library name can select Lake's library
+    # target and reuse a stale module artifact.  Force the exact import module.
+    build_target = f"+{import_module}"
     build_proc = run_source_record_subprocess(
         ["lake", "build", build_target],
         cwd=root,
@@ -30428,11 +29232,12 @@ def lean_check(
 
     # Do not let an incremental Lake build turn this into a check of an older
     # module with the same name.  Static source-record expansion is performed
-    # from ``PaperInterface.lean`` above, so the Lean check must elaborate that
-    # exact source file too.  Stage the paper namespace's built dependencies in
-    # a temporary overlay, remove any old artifact for the review module, then
-    # elaborate the current source into that overlay.  The generated `#check`
-    # script imports the overlay before the ordinary build directory.
+    # from the configured semantic and proof sources above, so the Lean check
+    # must elaborate those exact files too.  Stage the paper namespace's built
+    # dependencies in a temporary overlay, remove old artifacts for the review
+    # modules, then elaborate the current sources in dependency order.  The
+    # generated `#check` script imports the overlay before the ordinary build
+    # directory.
     artifact_library = root / ".lake" / "build" / "lib" / "lean"
     module_parts = [part for part in import_module.split(".") if part]
     interface_module_parts = [part for part in interface_module.split(".") if part]
@@ -30441,7 +29246,7 @@ def lean_check(
             "command": "source-record current-interface elaboration",
             "returncode": 1,
             "truncated": False,
-            "output": f"invalid PaperInterface module name {import_module!r}",
+            "output": f"invalid complete-review module name {import_module!r}",
         }
     namespace_artifacts = artifact_library / module_parts[0]
     if not namespace_artifacts.is_dir():
@@ -30452,7 +29257,7 @@ def lean_check(
             "output": (
                 "Lake reported a successful build but did not produce the paper namespace "
                 f"artifact directory {namespace_artifacts}; cannot verify current "
-                "PaperInterface source against a fresh isolated artifact"
+                "complete review surface against fresh isolated artifacts"
             ),
         }
 
@@ -30709,9 +29514,17 @@ def lean_check(
                 "fresh_source_elaboration": fresh_source_metadata,
             }
 
+        # A separate proof endpoint imports PaperInterface.  Compile it only
+        # after the exact current interface artifact exists in the isolated
+        # overlay, then import that proof module in the generated row check.
+        # This follows Lean's dependency direction and prevents either side of
+        # the Spec/proof pair from being read from an older build artifact.
         fresh_proof_sources: list[dict[str, Any]] = []
         if proof_source_path is not None:
-            proof_artifact = overlay_root.joinpath(*module_parts)
+            proof_module_parts = [
+                part for part in proof_module.split(".") if part
+            ]
+            proof_artifact = overlay_root.joinpath(*proof_module_parts)
             proof_artifact.parent.mkdir(parents=True, exist_ok=True)
             remove_overlay_artifact(proof_artifact)
             proof_proc = run_source_record_subprocess(
@@ -30740,12 +29553,17 @@ def lean_check(
                 "returncode": proof_proc.returncode,
             }
             fresh_proof_sources.append(proof_metadata)
-            fresh_source_metadata["selected_proof_endpoint_sources"] = fresh_proof_sources
+            fresh_source_metadata["selected_proof_endpoint_sources"] = (
+                fresh_proof_sources
+            )
             proof_output = proof_proc.stdout
             proof_truncated = len(proof_output) > max_output_chars
             if proof_truncated:
                 proof_output = proof_output[:max_output_chars] + "\n[truncated]\n"
-            if proof_proc.returncode != 0 or not proof_artifact.with_suffix(".olean").is_file():
+            if (
+                proof_proc.returncode != 0
+                or not proof_artifact.with_suffix(".olean").is_file()
+            ):
                 return {
                     "command": (
                         f"lake build {build_target} && lake env lean --root "
@@ -30771,7 +29589,7 @@ def lean_check(
                 str(script_path),
             ],
             cwd=root,
-            phase="generated PaperInterface row check",
+            phase="generated complete-review row check",
             timeout_seconds=SOURCE_RECORD_LEAN_CHECK_TIMEOUT_SECONDS,
         )
         failed_checked_rows: list[dict[str, Any]] = []
@@ -30779,7 +29597,7 @@ def lean_check(
         if diagnose_failed_rows and proc.returncode != 0 and row_names:
             if proc.returncode in {124, 125}:
                 row_check_diagnostic_error = (
-                    "batch generated PaperInterface row check did not complete; "
+                    "batch generated complete-review row check did not complete; "
                     "row-local checks were not launched"
                 )
             else:
@@ -30799,12 +29617,12 @@ def lean_check(
                         str(base_script_path),
                     ],
                     cwd=root,
-                    phase="generated PaperInterface preflight import check",
+                    phase="generated complete-review preflight import check",
                     timeout_seconds=SOURCE_RECORD_LEAN_CHECK_TIMEOUT_SECONDS,
                 )
                 if base_proc.returncode != 0:
                     row_check_diagnostic_error = (
-                        "generated PaperInterface preflight could not import the "
+                        "generated complete-review preflight could not import the "
                         "fresh isolated review surface; row-local declaration "
                         "failures are unavailable"
                     )
@@ -30856,10 +29674,10 @@ def lean_check(
         output = output[:max_output_chars] + "\n[truncated]\n"
     result = {
         "command": (
-            f"lake build {build_target} && [selected configured assumption source -> isolated "
-            "overlay] && lake env lean --root <repository-root> "
-            f"-o <isolated {import_module}.olean> {interface_display} && "
-            "lake env env LEAN_PATH=<isolated>:<lake-lean-path> lean "
+            f"lake build {build_target} && [configured semantic interface"
+            + (" and proof endpoint" if proof_source_path is not None else "")
+            + " -> isolated overlay] && lake env env "
+            "LEAN_PATH=<isolated>:<lake-lean-path> lean "
             "<generated-source-record-audit-script>"
         ),
         "returncode": proc.returncode,
@@ -31178,6 +29996,23 @@ def lean_check_subset_from_configured_preflight(
                 for row in unverified_rows
             )
         )
+    if not requested_rows:
+        # The configured-surface preflight is intentionally stronger than the
+        # final source-record selection: it may have elaborated ordinary Specs
+        # and proof endpoints even when recursive analysis finds no
+        # boundary-shaped rows or fields to audit.  Preserve that distinction
+        # in the canonical raw receipt.  Copying the successful superset check
+        # with an empty row list would falsely look like an executed empty
+        # check and fail the zero-surface postcondition.
+        return {
+            "command": "skipped Lean check: no source-record rows or fields",
+            "returncode": 0,
+            "truncated": False,
+            "output": "",
+            "requested_checked_rows": [],
+            "checked_rows": [],
+            "fresh_source_elaboration": {"mode": "not_run_without_lean"},
+        }
     narrowed = dict(check)
     narrowed["requested_checked_rows"] = requested_rows
     narrowed["checked_rows"] = requested_rows
@@ -31456,396 +30291,33 @@ def source_proof_fidelity_context(paper_dir: Path) -> dict[str, Any] | None:
     }
 
 
-def judge_prompt(
-    paper_id: str,
-    items: list[dict[str, Any]],
-    source_proof_fidelity: dict[str, Any] | None = None,
-    semantic_context_requirements: list[dict[str, Any]] | None = None,
-) -> str:
-    semantic_context_instruction = ""
-    if semantic_context_requirements:
-        semantic_context_instruction = (
-            "\n\nThe source-map semantic-context requirements below are byte-pinned "
-            "source-text review context only. They are not theorem statements, proof "
-            "routes, source-coverage credit, or evidence that any Lean declaration or "
-            "function has the intended semantics. For each relevant expanded Lean "
-            "surface, compare the literal source quote, declared semantic kind, and "
-            "explanation with the actual quantifiers, domains, laws, conventions, and "
-            "totalizations. A context requirement can expose a missing assumption or a "
-            "mismatch; it cannot discharge that obligation. Do not infer anything from "
-            "the source-map key or from a Lean declaration/function name.\n\n"
-            + json.dumps(semantic_context_requirements, indent=2, sort_keys=True)
+def authenticated_lean_review_source(
+    path: Path,
+    *,
+    source_bytes_by_path: Mapping[Path, bytes],
+    source_text_by_path: Mapping[Path, str],
+    role: str,
+) -> tuple[bytes, str]:
+    """Return one configured review source from the frozen Lean closure.
+
+    Configured semantic, proof, and assumption files are authoritative inputs,
+    not incidental filesystem context.  A raw scan therefore consumes their
+    exact bytes only from the Lean-owned closure snapshot and fails with a
+    bounded diagnostic when the Lean-owned complete-review import graph omits
+    one.  It must never fall back to a live reread after closure acquisition.
+    """
+
+    resolved = path.resolve()
+    content = source_bytes_by_path.get(resolved)
+    text = source_text_by_path.get(resolved)
+    if content is None or text is None:
+        raise SystemExit(
+            f"configured {role} source is absent from the Lean-owned "
+            f"complete-review import closure: {path}"
         )
-    proof_fidelity_instruction = ""
-    if source_proof_fidelity is not None:
-        proof_fidelity_instruction = (
-            "\n\nThe optional source-proof fidelity ledger below records source-proof text by "
-            "source locator and mathematical claim, not by Lean declaration name. A recorded "
-            "proof defect is never by itself a validated paper/source assumption. Its "
-            "model_conventions and checked_proof_steps are also source-located semantic "
-            "context: compare their literal formal meaning and stated scope with the expanded "
-            "Lean surface. A convention is not a literal source theorem unless a source-side "
-            "semantic bridge is supplied, and a checked proof step proves only its stated "
-            "scope rather than a broader null-fiber, arbitrary-partition, or arbitrary-space "
-            "claim. Do not classify a boundary input or field as validated_source_assumption "
-            "merely because it restates a repaired proof line, convention, or checked-step "
-            "summary: require a Lean derivation, an explicit approved partial boundary, or an "
-            "explicit corrected source-statement path.\n\n"
-            + json.dumps(source_proof_fidelity, indent=2, sort_keys=True)
-        )
-    item_block = json.dumps(items, indent=2, sort_keys=True)
-    context_blocks = [
-        instruction
-        for instruction in (semantic_context_instruction, proof_fidelity_instruction)
-        if instruction
-    ]
-    if context_blocks:
-        item_block = "\n\n".join(context_blocks) + "\n\nSource-record items:\n" + item_block
-    return (
-        "You are auditing Lean formalization provenance, not just theorem text.\n"
-        f"Paper: {paper_id}\n\n"
-        "For each item below, compare the original paper source statement/proof text "
-        "with the Lean-checked statement and the dependency path. Scrutinize every "
-        "visible theorem input semantically: names and source-looking type suffixes "
-        "are only routing hints, not evidence. Do not approve by theorem label, "
-        "phrase overlap, or source-looking Lean name. Each input must correspond "
-        "to a specific paper primitive/source assumption, be derived by a "
-        "Lean-checked constructor from paper primitives, be an approved external "
-        "boundary, or remain an unresolved conditional/partial boundary. In "
-        "particular, any Certificate, Replay, Process, or Bridge input needs a "
-        "specific source statement or an instantiation path from the paper's "
-        "primitive model; do not accept it merely because the final theorem name "
-        "resembles the paper claim.\n\n"
-        "When recording a judgment, copy the generated `source_record_item_digest_schema`, "
-        "`source_record_item_semantic_id`, and `source_record_item_sha256` exactly when "
-        "the item marks `source_record_item_reuse_eligibility.eligible` true. Never invent "
-        "or reconstruct these values from a row, binder, source-map key, or declaration "
-        "name. An ineligible item has aggregate-audit freshness only and must not receive a "
-        "synthetic item digest.\n\n"
-        "The judgment sidecar must also record a top-level "
-        "`formalization_review_protocol_sha256` computed by the current "
-        "`scripts.formalization_protocol.formalization_review_protocol_digest`; this is "
-        "review authority, not a generated Lean-obligation identity. Never copy a stale "
-        "digest from a cached raw audit.\n\n"
-        "For an optimization, finite-search, or algorithmic result, also audit the "
-        "semantics end to end. Identify the literal legal action space (including "
-        "whether rankings may be partial, blank, repeated, or only full); determine "
-        "whether a profile is an ordered tuple, a multiset, or a bounded stock and "
-        "whether multiplicities are unrestricted; inspect the actual source executor "
-        "used to evaluate the objective/target; and check both successful and "
-        "no-result branches over the stated capacity. A generic finite selector is "
-        "not an implementation, a source-faithful optimizer, or a runtime proof until "
-        "those semantic bridges are derived. Distinguish a noncomputable existence "
-        "selector from an executable enumeration, and separately verify any claimed "
-        "complexity, arithmetic representation, and refinement relation to external "
-        "code. Apply this checklist from expanded definitions and proof dependencies, "
-        "not declaration names or function-name patterns.\n\n"
-        "Explicitly test the recurring fidelity hazards. Compare the source output's "
-        "arity and projection policy with the actual runner output, including any "
-        "terminal component. For universal adversarial transformations, establish an "
-        "inhabited legal action space with the stated carrier/capacity and check whether "
-        "prefixing or concatenation creates duplicate-invalid ballots. Never combine "
-        "candidatewise extrema unless one coherent admissible witness realizes the "
-        "combined values, and require an actual-runner or checked refinement bridge. "
-        "Separate syntax-family cardinality from the number of nonempty realized fibers; "
-        "an exact equality needs surjectivity. Finally, compare source and Lean input "
-        "domains, state transitions, termination conditions, numeric representations, "
-        "and cost scopes. Keep a local transition, restricted input class, partial "
-        "execution, or local cost count separate from an advertised end-to-end or "
-        "polynomial claim until a checked global bridge is present.\n\n"
-        "For every `semantic_model_comparison` item, do not reuse the ordinary field "
-        "classification as a substitute for the requested source-model comparison. Set its "
-        "top-level `classification` to `semantic_model_review` and provide a "
-        "`semantic_model_dimensions` object keyed by every listed dimension. Each dimension "
-        "must give `verdict` (`matches_source_model`, `not_applicable`, "
-        "`mismatch_or_open`, or `documented_partial_boundary`), an exact `source_locator`, "
-        "a concrete `semantic_comparison`, and `lean_evidence` tied to the expanded surface. "
-        "A detected dimension marked `requires_checked_bridge_when_detected`, including "
-        "endpoint support, joint law/state evolution, extended rates, and opaque carrier "
-        "surfaces, also needs `lean_bridge`: a checked theorem, constructor, equality, "
-        "simulation, or refinement route. `not_applicable` is invalid for a detected shape. "
-        "When the expanded surface lists `terminal_term_dependency_surface`, audit the "
-        "transparent definition chain by its displayed Lean constructors, source files, and "
-        "digests, not by its local names. Any listed opaque, ambiguous, tactic-body, or "
-        "bounded path remains bridge-required; it cannot be waved away because its terminal "
-        "type is `Real` or `Prop`. "
-        "When a `carrier_and_domain` dimension has "
-        "`requires_cardinality_boundary_analysis_when_detected`, include a "
-        "`cardinality_boundary_analysis` object with a verdict "
-        "(`threshold_checked`, `no_strictness_or_interior_requirement`, "
-        "`mismatch_or_open`, or `documented_partial_boundary`), "
-        "`source_cardinality_domain`, `lean_cardinality_domain`, "
-        "`boundary_cases_checked`, `strictness_witness_or_reason`, and "
-        "`lean_boundary_evidence`. When a `joint_law_and_state_evolution` dimension "
-        "has `requires_transformed_law_analysis_when_detected`, include a "
-        "`transformed_law_analysis` object with a verdict "
-        "(`no_transform_or_canonicalization`, `transformed_law_checked`, "
-        "`canonicalization_checked`, `mismatch_or_open`, or "
-        "`documented_partial_boundary`), `source_operation`, `lean_operation`, "
-        "`parameter_domain_and_endpoints`, "
-        "`law_normalization_or_pushforward_evidence`, "
-        "`outcome_equivariance_or_no_relabeling_evidence`, and "
-        "`lean_semantic_bridge`. An explicit no-transform finding still needs those "
-        "semantic fields; do not substitute declaration names. "
-        "When a `joint_law_and_state_evolution` dimension has "
-        "`requires_distribution_parameterization_analysis_when_detected`, include a "
-        "`distribution_parameterization_analysis` object with a verdict "
-        "(`no_parameterized_law_or_scale`, `definitionally_same_parameterization`, "
-        "`proved_exact_law_equivalence`, "
-        "`proved_outcome_equivalence_after_translation`, `mismatch_or_open`, or "
-        "`documented_partial_boundary`), `source_parameterization`, "
-        "`source_scale_or_variance`, `lean_parameterization`, "
-        "`lean_scale_or_variance`, `parameter_translation`, "
-        "`family_coupling_scope`, `family_coupling_evidence`, "
-        "`law_equivalence_evidence`, `outcome_preservation_evidence`, and "
-        "`lean_semantic_bridge`. State the literal source and Lean scale/rate/"
-        "precision/standard-deviation/variance conventions and the parameter mapping "
-        "formula. A positive reparameterization by itself is not source-to-Lean law "
-        "equivalence: the review needs a checked equality, equivalence, or pushforward "
-        "of laws plus the outcome-preservation scope. When the source compares two "
-        "accuracies, scales, or parameters, state whether both arise from one "
-        "parameter-independent base law or latent source; separate source-looking "
-        "laws at each parameter are not a source family until a checked coupling "
-        "bridge proves that relation. "
-        "When a `joint_law_and_state_evolution` dimension has "
-        "`requires_source_carrier_coherence_analysis_when_detected`, include a "
-        "`source_carrier_coherence_analysis` object with verdict "
-        "(`source_carrier_pushforward_checked`, "
-        "`source_conditioned_or_restricted_pushforward_checked`, "
-        "`source_defined_joint_kernel_law_checked`, "
-        "`generated_product_or_kernel_not_source_pushforward`, "
-        "`weighted_or_tilted_not_source_pushforward`, `mismatch_or_open`, or "
-        "`documented_partial_boundary`), `source_random_variable_carrier`, "
-        "`lean_random_variable_carrier`, "
-        "`stage_identity_or_resampling_evidence`, `joint_law_bridge_evidence`, "
-        "`measure_construction`, `measure_transport_evidence`, "
-        "`source_rate_scope`, `lean_rate_scope`, and `rate_family_evidence`. "
-        "State whether all stages use the same source random variable or one "
-        "source-defined joint kernel law. A generated product, weighted, or tilted "
-        "likelihood measure is not a source pushforward until an explicit source-carrier "
-        "transport proves it. When the source claim is rate-free or rate-indexed, a "
-        "fixed-rate Lean witness is insufficient: give a checked all-rate indexed family "
-        "bridge with the shared source policy/carrier. "
-        "In particular, compare strict tail statements with terminal cutoff/top-support facts; "
-        "compare an iid/product law with the source state evolution; and compare finite Real "
-        "rates with all WithTop/infinite cases after unfolding wrappers. For a detected "
-        "conditioning/calibration or null-cell/partition shape, separately state whether "
-        "conditioning is pointwise, almost-everywhere, positive-fiber, or measurable-event "
-        "based, expose the joint-event formula, and distinguish finite, countable, and "
-        "arbitrary partition scope; state cell measurability/cover/disjointness and the "
-        "zero-mass-cell totalization. Do not treat an exact-fiber equation as meaningful on "
-        "null or atomless fibers without a checked bridge. A finite positive-mass calculation "
-        "cannot silently cover an arbitrary partition. For a detected expectation definedness "
-        "shape, state what makes each expectation a defined value "
-        "(integrability/measurability or extended-value convention), including "
-        "indicator/strategy correctness functions. These are expanded mathematical semantics, not "
-        "field-name checks.\n\n"
-        "When a semantic-model dimension has "
-        "`requires_source_equality_partition_analysis`, include a "
-        "`source_equality_partition_analysis` object whose "
-        "`semantic_association_sha256` exactly matches the generated association and "
-        "whose relation is `feature_equality_iff_class_equality`. Give separate "
-        "verdicts and expanded Lean evidence for "
-        "`feature_equality_implies_class_equality` and "
-        "`class_equality_implies_feature_equality`, plus a combined "
-        "`lean_bridge_evidence`. A same-class-implies-same-feature field alone is "
-        "a weaker one-way condition, not a source-defined equality partition; mark "
-        "the enclosing dimension mismatch/open or partial if either direction is "
-        "absent. Do not infer either direction from a type, field, binder, or "
-        "declaration name.\n\n"
-        "When a semantic-model dimension has "
-        "`requires_strategic_observation_totality_analysis`, include a "
-        "`strategic_observation_totality_analysis` object whose "
-        "`semantic_association_sha256` exactly matches the generated association. "
-        "State the literal source equilibrium action domain and the Lean feasible "
-        "action domain; enumerate the observation branches induced by feasible "
-        "actions; classify zero-probability branches; and state how each conditional "
-        "expectation/posterior/payoff is total there. A full match needs a checked "
-        "source-backed totalization, proof that every action-relevant branch has "
-        "positive probability, proof that the action is infeasible, or an explicit "
-        "source equilibrium-domain restriction. A finite off-path belief/payoff "
-        "inserted only by Lean is `lean_only_offpath_completion`, not a source match; "
-        "mark the enclosing dimension mismatch/open or partial. Do not infer any of "
-        "this from a theorem, equilibrium predicate, strategy, posterior, binder, "
-        "or function name.\n\n"
-        "When a semantic-model dimension has "
-        "`requires_conditioning_information_analysis`, include a "
-        "`conditioning_information_analysis` object whose "
-        "`semantic_association_sha256` exactly matches the generated association. "
-        "For every generated source contract, reproduce its source conditional-value "
-        "kind, observed-component IDs, ordered action-selection-stage IDs, "
-        "raw-vs-selected law population, and conditionalization scope; then state the "
-        "Lean conditional-value kind and enumerate the corresponding Lean observed "
-        "components and stages with expanded descriptions. Use the direct-match verdict "
-        "only when the value kind, component set, ordered stages, law population, and "
-        "a.e./pointwise scope all agree. A raw posterior or raw conditional law is not "
-        "evidence for a source-selected population, and a chosen RCD version does not "
-        "establish a pointwise belief. Record a mismatch/open or partial boundary "
-        "otherwise. This comparison is semantic and source/signature pinned; do not "
-        "infer it from a "
-        "posterior, belief, conditional, kernel, theorem, binder, or function name.\n\n"
-        "Unfold every result-bearing predicate, iff, and transparent wrapper before "
-        "assigning source credit. If a winner, feasibility, or optimality predicate "
-        "unfolds to the same advertised fact about an independently supplied object, "
-        "that is a self-characterization, not evidence that the source algorithm "
-        "produced the object. Keep the source runner, Lean runner, runner output, "
-        "fixed input profile, universally quantified profile family, and any "
-        "independently characterized object in distinct semantic worlds until a "
-        "Lean-checked equality, simulation, refinement, or result-preservation "
-        "proposition connects them. Merely conjoining a runner-success fact with an "
-        "independent definitional characterization is not such a bridge. A theorem "
-        "about one fixed profile is not an all-profile theorem. A noncomputable "
-        "witness is not an executable algorithm, and executability is not a "
-        "polynomial-time bound; require the runtime conclusion and arithmetic/input "
-        "representation model separately.\n\n"
-        "When a boundary input has a nonempty result_relation, compare its proposition "
-        "to the advertised result structurally. An input that is equivalent to, provides, "
-        "or is a logical component of the advertised feasibility/cost/runtime/optimality "
-        "result is conclusion-bearing proof debt, not independent source evidence for the "
-        "same source theorem. Do not classify that caller-supplied result component as a "
-        "validated_source_assumption solely from a source locator; source-facing coverage "
-        "must use a row that derives the component from paper primitives.\n\n"
-        "For an input carrying a generated `source_contract_association`, source credit is "
-        "content-pinned rather than name-pinned. For schema 1, copy its exact "
-        "`association_sha256` into `source_contract_association_sha256`, its exact "
-        "`source_map_item_keys`, and its exact `source_map_item_sha256_by_key`. For schema "
-        "2, copy the generated `semantic_association_sha256` exactly: it binds the current "
-        "source semantic identities and exact elaborated review signature. Schema-2 legacy "
-        "key/full-map pins are aggregate-route diagnostics and may be stale after a uniquely "
-        "validated semantic-safe map-key or route rename; never reconstruct a semantic pin. "
-        "Do not substitute "
-        "a source-map key, row, binder, or function name. A literal archival source condition uses "
-        "`validated_source_assumption` plus `source_target_disposition` "
-        "`literal_source_match`. A necessary explicit source-model convention uses "
-        "`approved_source_convention`, `source_target_disposition` "
-        "`approved_source_convention`, and exact `model_convention_ids` with their current "
-        "`model_convention_sha256_by_id` values. A corrected source condition uses "
-        "`approved_corrected_condition`, `source_target_disposition` "
-        "`approved_corrected_target`, and the exact corrected-target defect union plus "
-        "`corrected_target_sha256_by_source_item` for schema 1 or "
-        "`corrected_target_sha256_by_source_semantic_sha256` for schema 2. Never call an archival statement literal "
-        "when its associated source-map target is corrected. `approved_external_boundary` "
-        "is partial-only and cannot close a formalized paper.\n\n"
-        "A recursive field carrying generated `recursive_field_explicit_parent_route` has "
-        "only the narrow source route recorded in that receipt. Its classification must be "
-        "one of the receipt's exact `permitted_classifications`; never extend a container "
-        "route to a leaf below it. A receipt on a nested record permits only "
-        "`container_recursively_audited`, and a non-container leaf can never use that "
-        "classification. When the receipt permits `approved_source_convention`, use "
-        "`source_target_disposition: approved_source_convention`, cite exactly its one "
-        "`convention_id`, and copy its exact convention digest and source locator. Do not "
-        "replace that receipt with a field name, parent declaration, or a different "
-        "source-model convention.\n\n"
-        "For a `semantic_model_review` item carrying a generated "
-        "`source_statement_association`, the source map explicitly selected one "
-        "source presentation and one current fully-qualified review route. It is "
-        "not a direct/Spec structural contract and it is not evidence by name. "
-        "For every successful dimension response, copy its generated schema-2 "
-        "`semantic_association_sha256` exactly and state the matching "
-        "`source_target_disposition`. Use `approved_corrected_target` with the "
-        "exact corrected-target defect union and "
-        "`corrected_target_sha256_by_source_semantic_sha256` when that selected "
-        "source item has an approved corrected target; never silently label that "
-        "archival statement literal. A map-key or source-locator rename can only "
-        "reuse the response through this generated source-semantic plus current "
-        "elaborated-signature pin.\n\n"
-        "Classify the item as "
-        "one of: proved_from_primitives, validated_source_assumption, approved_source_convention, "
-        "approved_corrected_condition, approved_external_boundary, "
-        "visible_boundary_component, derived_from_visible_boundary, "
-        "container_recursively_audited, derived_consequence_record, "
-        "nonpropositional_witness_data, or unresolved_assumed_math. Use "
-        "visible_boundary_component only for a recursive/internal source-record field that is "
-        "exactly exposed as a component of a visible theorem-boundary premise; do not use it "
-        "for the theorem-boundary input itself. Use derived_from_visible_boundary only when "
-        "Lean derives the recursive/internal field from visible theorem-boundary premises and "
-        "the boundary premises remain explicit proof debt in the reviewed statement. "
-        "container_recursively_audited only for a field whose type is another audited "
-        "record/source/certificate and whose nested fields are separately judged; do not use "
-        "it for a field whose type is a mathematical proposition or formula. Use "
-        "derived_consequence_record only for fields of a theorem-output/consequence record "
-        "whose constructor proof is separately checked and whose premise records are separately "
-        "audited. Use nonpropositional_witness_data only for bare data witnesses "
-        "(for example a chosen stream, cost function, gradient/noise/bias function, or "
-        "projection function) whose type is not proposition-valued and does not itself state "
-        "an equality, recurrence, optimality, measurability, convergence, continuity, or "
-        "response/trajectory semantics. The proposition-valued fields that constrain that "
-        "witness must still be classified separately. When a conclusion field reports a "
-        "hidden_subtype_predicate, only the subtype's value projection is witness data; its "
-        "property projection is proposition-bearing and must be proved or matched to an exact "
-        "source assumption. A nonpropositional_witness_data judgment cannot discharge it. Mark "
-        "unresolved_assumed_math if the Lean row merely "
-        "takes a record/certificate/replay/process/bridge/source-model field that "
-        "states convexity, response semantics, trace/replay validity, transfer "
-        "preservation, trajectory generation, continuity, convergence, equilibrium, "
-        "or a displayed formula that should be derived. Do not mark a field as "
-        "proved just because Lean typechecks a projection from a structure premise. "
-        "For conclusion_dependency_items, only a valid_constructors entry carrying a "
-        "passing result_type_compatibility Lean-Meta definitional-equality check is "
-        "authoritative for an unconditional derivation. An incompatible_constructors "
-        "entry is not a route even when its record head has the same spelling: fixed "
-        "parameters and universe levels must match the exact reviewed binder. A rejected constructor is "
-        "circular because an alpha-equivalent/provider proposition or axiom/opaque "
-        "dependency supplies the target. A conditional constructor is acceptable "
-        "only through a `proved_from_primitives` judgment on that conclusion-bearing "
-        "premise with a checked_projection object containing exactly: "
-        "constructor_declaration, conditional_constructor_result_type, and "
-        "source_antecedent_keys. The declaration and result type must exactly match "
-        "one static conditional_constructors entry; source_antecedent_keys must "
-        "exactly equal that entry's required_source_antecedent_fields and each key "
-        "must have a current validated_source_assumption judgment with an exact "
-        "source locator. Do not cite a function name or free-form lean_derivation "
-        "as a substitute for this contract. A rejected/circular or unlisted "
-        "constructor is invalid. Names and container suffixes do not change either "
-        "verdict.\n\n"
-        + item_block
-    )
+    return content, text
 
 
-def source_record_llm_judge_prompt(
-    paper: str, payload: Mapping[str, Any]
-) -> str:
-    """Render the human/LLM review prompt from immutable semantic evidence."""
-
-    def dict_items(key: str) -> list[dict[str, Any]]:
-        value = payload.get(key)
-        if not isinstance(value, list):
-            return []
-        return [item for item in value if isinstance(item, dict)]
-
-    conclusion_dependencies = dict_items("conclusion_dependency_items")
-    dependency_keys = {
-        str(item.get("judgment_key") or "").strip()
-        for item in conclusion_dependencies
-    }
-    covered_boundary_keys = {
-        str(key).strip()
-        for key in payload.get("statement_ledger_covered_boundary_input_keys", [])
-        if isinstance(key, str) and key.strip()
-    }
-    uncovered_boundary_items = [
-        item
-        for item in dict_items("boundary_input_items")
-        if str(item.get("judgment_key") or "").strip()
-        not in covered_boundary_keys | dependency_keys
-    ]
-    source_proof_fidelity = payload.get("source_proof_fidelity")
-    semantic_context_items = payload.get("semantic_context_requirements")
-    return judge_prompt(
-        paper,
-        conclusion_dependencies
-        + uncovered_boundary_items
-        + dict_items("type_valued_certificate_result_items")
-        + dict_items("rows_with_semantic_inputs")
-        + dict_items("recursive_field_items")
-        + dict_items("semantic_model_items"),
-        source_proof_fidelity if isinstance(source_proof_fidelity, dict) else None,
-        (
-            [item for item in semantic_context_items if isinstance(item, dict)]
-            if isinstance(semantic_context_items, list)
-            else []
-        ),
-    )
 
 
 def _run_audit(args: argparse.Namespace, root: Path) -> int:
@@ -31986,11 +30458,16 @@ def _run_audit(args: argparse.Namespace, root: Path) -> int:
     interface_path = review_source_path(root, paper_dir, status_path)
     if not interface_path.exists():
         raise SystemExit(f"missing review surface Lean file at {interface_path}")
-    interface_text = authenticated_lean_source_text[interface_path.resolve()]
+    interface_bytes, interface_text = authenticated_lean_review_source(
+        interface_path,
+        source_bytes_by_path=authenticated_lean_source_bytes,
+        source_text_by_path=authenticated_lean_source_text,
+        role="semantic review interface",
+    )
     interface_source_identity = source_artifact_identity(
         root,
         interface_path,
-        content=authenticated_lean_source_bytes[interface_path.resolve()],
+        content=interface_bytes,
     )
     proof_path = proof_endpoint_source_path(
         root, paper_dir, status_path, interface_path=interface_path
@@ -32000,21 +30477,24 @@ def _run_audit(args: argparse.Namespace, root: Path) -> int:
     proof_namespace = ""
     proof_declarations: dict[str, str] = {}
     if proof_path is not None:
-        proof_text = authenticated_lean_source_text.get(proof_path.resolve(), "")
-        if not proof_text:
-            raise SystemExit(
-                "configured proof endpoint source is absent from the Lean-owned "
-                f"import closure: {proof_path}"
-            )
+        proof_bytes, proof_text = authenticated_lean_review_source(
+            proof_path,
+            source_bytes_by_path=authenticated_lean_source_bytes,
+            source_text_by_path=authenticated_lean_source_text,
+            role="proof endpoint",
+        )
         proof_source_identity = source_artifact_identity(
             root,
             proof_path,
-            content=authenticated_lean_source_bytes[proof_path.resolve()],
+            content=proof_bytes,
         )
         proof_namespace = first_declaration_namespace(
             proof_path, source_text=proof_text
         )
         proof_declarations = parse_declarations(proof_path, source_text=proof_text)
+    # The generated check must see every configured row.  Embedded endpoints
+    # use PaperInterface directly; a separate ProofInterface imports that
+    # semantic interface and is therefore the smallest correct check root.
     import_module = lean_module_name(root, proof_path or interface_path)
 
     row_namespace = first_declaration_namespace(
@@ -32027,18 +30507,23 @@ def _run_audit(args: argparse.Namespace, root: Path) -> int:
         interface_path, source_text=interface_text
     )
     qualified_row_refs: dict[str, str] = {}
-    assumptions_path = assumption_source_path(
-        root, paper_dir, status_path, interface_path=interface_path
+    assumptions_path = effective_source_record_assumption_path(
+        root,
+        paper_dir,
+        status_path,
+        interface_path=interface_path,
+        lean_import_closure=lean_import_closure,
     )
     assumption_declarations: dict[str, str] = {}
     assumption_namespace = ""
     assumption_source_identity: dict[str, str] | None = None
     if assumptions_path is not None and assumptions_path.exists():
-        assumption_text = authenticated_lean_source_text.get(
-            assumptions_path.resolve()
+        assumption_bytes, assumption_text = authenticated_lean_review_source(
+            assumptions_path,
+            source_bytes_by_path=authenticated_lean_source_bytes,
+            source_text_by_path=authenticated_lean_source_text,
+            role="assumption",
         )
-        if assumption_text is None:
-            assumption_text = read_text(assumptions_path)
         assumption_namespace = first_declaration_namespace(
             assumptions_path, source_text=assumption_text
         )
@@ -32048,7 +30533,7 @@ def _run_audit(args: argparse.Namespace, root: Path) -> int:
         assumption_source_identity = source_artifact_identity(
             root,
             assumptions_path,
-            content=authenticated_lean_source_bytes.get(assumptions_path.resolve()),
+            content=assumption_bytes,
         )
 
     declarations: dict[str, str] = {}
@@ -34727,9 +33212,9 @@ def _run_audit(args: argparse.Namespace, root: Path) -> int:
     # after Lean output is present and before judgment reuse, so sidecar
     # judgments always name the final independently recomputable identity.
     attach_source_record_audit_surface(payload, audit_surface)
-    payload["llm_judge_prompt"] = source_record_llm_judge_prompt(
-        args.paper, payload
-    )
+    # The exact manual-review queue renders its prompt from this immutable raw
+    # surface. Do not duplicate that derived view inside the receipt.
+    payload.pop("llm_judge_prompt", None)
     if not args.ignore_current_judgments:
         current_judgments = current_source_record_judgments(
             paper_dir, args.paper, payload
@@ -34828,6 +33313,20 @@ def _run_audit(args: argparse.Namespace, root: Path) -> int:
                 )
                 for duplicate in resume_binding_duplicates:
                     resume_bindings.pop(duplicate, None)
+                local_resume_bindings, local_resume_duplicates = (
+                    _local_declaration_manifest_bindings(
+                        root=root,
+                        paper_dir=paper_dir,
+                        declarations=local_declarations,
+                        requested_declarations=(
+                            elaborated_signature_manifests_by_qualified.keys()
+                        ),
+                    )
+                )
+                for duplicate in local_resume_duplicates:
+                    local_resume_bindings.pop(duplicate, None)
+                local_resume_bindings.update(resume_bindings)
+                resume_bindings = local_resume_bindings
             except Exception as exc:  # noqa: BLE001 - a journal miss is harmless.
                 resume_bindings = {}
                 source_record_progress(
@@ -34966,27 +33465,81 @@ def source_record_identity_only_payload(
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         fail("could not load current source-record inputs: " + str(exc))
         return None
+    saved_closure_record = saved_source_record_lean_import_closure(saved_payload)
+    saved_closure_is_structurally_current = True
     try:
-        provider = WorktreeImportClosureProvider(
-            root,
-            eager_source_snapshot=False,
-            allow_dirty_worktree_sources=True,
+        validated_lean_import_closure_payload(saved_closure_record)
+    except ValueError:
+        # Legacy or malformed receipts stay on the former replay path.  This
+        # preserves its actionable diagnostics (and its testable provider
+        # boundary) without making the ordinary, structurally valid stale-byte
+        # case materialize the expensive historical closure validator.
+        saved_closure_is_structurally_current = False
+    try:
+        status_path = paper_dir / "status.json"
+        interface_path = review_source_path(root, paper_dir, status_path)
+        closure_entry = source_record_lean_closure_entry_for_paper(root, paper_dir)
+        lean_import_closure = (
+            source_record_lean_import_closure_from_record(
+                root,
+                closure_entry,
+                saved_closure_record,
+            )
+            if saved_closure_is_structurally_current
+            else None
         )
-    except (OSError, RuntimeError) as exc:
-        fail("could not initialize Lean import-closure provider: " + str(exc))
+        provider: WorktreeImportClosureProvider | None = None
+        closure_error = ""
+    except SourceRecordLeanImportClosureStaleError as exc:
+        lean_import_closure = None
+        provider = None
+        closure_error = str(exc)
+    except (OSError, RuntimeError, ValueError) as exc:
+        fail("could not validate saved Lean import closure: " + str(exc))
         return None
-    lean_import_closure, closure_error = (
-        source_record_lean_import_closure_for_paper(
+
+    # Exact-byte reuse retains the strict external-artifact and mutation
+    # validator.  A byte miss goes directly to the semantic fallback below.
+    if lean_import_closure is not None or not saved_closure_is_structurally_current:
+        try:
+            provider = WorktreeImportClosureProvider(
+                root,
+                eager_source_snapshot=False,
+                allow_dirty_worktree_sources=True,
+            )
+        except (OSError, RuntimeError) as exc:
+            fail("could not initialize Lean import-closure provider: " + str(exc))
+            return None
+        lean_import_closure, closure_error = (
+            source_record_lean_import_closure_for_paper(
+                root,
+                paper_dir,
+                provider=provider,
+                saved_payload=saved_payload,
+                allow_live_lean_graph=False,
+            )
+        )
+        if lean_import_closure is None and not saved_closure_is_structurally_current:
+            fail("could not replay current Lean import closure: " + closure_error)
+            return None
+    semantic_reuse: dict[str, Any] | None = None
+    if lean_import_closure is None:
+        (
+            lean_import_closure,
+            semantic_reuse,
+            semantic_reuse_error,
+        ) = current_source_record_semantic_reuse_identity(
             root,
             paper_dir,
-            provider=provider,
             saved_payload=saved_payload,
-            allow_live_lean_graph=False,
         )
-    )
-    if lean_import_closure is None:
-        fail("could not replay current Lean import closure: " + closure_error)
-        return None
+        if lean_import_closure is None or semantic_reuse is None:
+            fail(
+                "could not validate current source-record semantics after Lean "
+                "closure bytes changed: "
+                + (semantic_reuse_error or closure_error)
+            )
+            return None
     fingerprint = source_record_input_fingerprint(
         args,
         root,
@@ -35008,6 +33561,8 @@ def source_record_identity_only_payload(
             lean_import_closure.record
         ),
     }
+    if semantic_reuse is not None:
+        payload["semantic_receipt_reuse"] = deepcopy(semantic_reuse)
     if getattr(args, "include_legacy_fingerprint", False):
         legacy_v9 = source_record_legacy_v9_protocol_fingerprint(
             fingerprint, paper_dir
@@ -35029,8 +33584,10 @@ def source_record_identity_only_payload(
                 lean_import_closure=lean_import_closure,
             )
         )
-    finalization_error = source_record_lean_import_closure_finalization_error(
-        provider
+    finalization_error = (
+        source_record_lean_import_closure_finalization_error(provider)
+        if provider is not None
+        else ""
     )
     if finalization_error:
         fail(
@@ -35156,6 +33713,28 @@ def fast_saved_source_record_identity_payload(
     semantic_surface_error = str(
         source_record_raw_semantic_surface_error(payload) or ""
     )
+    if semantic_surface_error:
+        (
+            semantic_contract_revalidation,
+            semantic_contract_revalidation_error,
+        ) = source_record_semantic_contract_revalidation_context(
+            paper_dir, payload
+        )
+        if semantic_contract_revalidation_error:
+            semantic_surface_error = (
+                "semantic-contract revalidation is invalid: "
+                + semantic_contract_revalidation_error
+            )
+        else:
+            semantic_surface_error = str(
+                source_record_effective_semantic_surface_error(
+                    payload,
+                    semantic_contract_revalidation=(
+                        semantic_contract_revalidation
+                    ),
+                )
+                or ""
+            )
     scan_completeness_error = str(
         source_record_raw_scan_completeness_error(payload) or ""
     )
@@ -35199,24 +33778,19 @@ def fast_saved_source_record_identity_payload(
     status_path = paper_dir / "status.json"
     try:
         interface_path = review_source_path(root, paper_dir, status_path)
-        proof_path = proof_endpoint_source_path(
-            root, paper_dir, status_path, interface_path=interface_path
-        )
     except (OSError, ValueError) as exc:
         return failure("review interface is unavailable: " + str(exc))
 
-    # The raw audit may enter through a separately configured proof endpoint
-    # so Lean can check the exact Spec-to-theorem route.  That endpoint imports
-    # the one semantic PaperInterface surface.  Fast reuse must validate the
-    # saved closure against the same entrypoint as fresh raw generation; using
-    # PaperInterface here would falsely classify a valid proof-interface
-    # receipt as a foreign interface.
-    closure_entry = (
-        proof_path
-        if proof_path is not None and parse_status_proof_endpoint_rows(status_path)
-        else interface_path
-    )
+    # Replay the same Lean-owned root used by fresh raw generation.  A separate
+    # proof module imports the canonical semantic interface, so that proof
+    # module is the smallest root whose closure contains both sides of every
+    # configured Spec/proof pair.
+    try:
+        closure_entry = source_record_lean_closure_entry_for_paper(root, paper_dir)
+    except (OSError, ValueError) as exc:
+        return failure("review closure entry is unavailable: " + str(exc))
 
+    semantic_reuse: dict[str, Any] | None = None
     try:
         closure = source_record_lean_import_closure_from_record(
             root,
@@ -35224,7 +33798,51 @@ def fast_saved_source_record_identity_payload(
             payload.get(SOURCE_RECORD_LEAN_IMPORT_CLOSURE_FIELD),
         )
     except SourceRecordLeanImportClosureStaleError as exc:
+        byte_fast_path_error = str(exc)
+        cached_result = (
+            load_semantic_reuse_cache(
+                root=root,
+                paper_dir=paper_dir,
+                raw_audit_file_sha256=hashlib.sha256(raw_bytes).hexdigest(),
+            )
+            if not raw_validation_error
+            else None
+        )
+        if cached_result is not None:
+            cached_result["semantic_reuse_cache"] = {
+                "state": "current_exact_repository_material",
+                "acceptance_credential": False,
+            }
+            return cached_result
+        closure, semantic_reuse, semantic_error = (
+            current_source_record_semantic_reuse_identity(
+                root,
+                paper_dir,
+                saved_payload=payload,
+            )
+        )
+        if closure is None or semantic_reuse is None:
+            closure_error = byte_fast_path_error
+            if semantic_error:
+                closure_error += "; semantic reuse validation unavailable: " + semantic_error
+            set_validation_dimensions(
+                raw_integrity_error=raw_integrity_error,
+                semantic_surface_error=semantic_surface_error,
+                scan_completeness_error=scan_completeness_error,
+                reusable_item_metadata_error=reusable_item_metadata_error,
+                source_identity_state="stale",
+                source_identity_reason=closure_error,
+            )
+            return failure(
+                "saved Lean semantic receipt is not current: " + closure_error
+            )
+    except ValueError as exc:
         closure_error = str(exc)
+        # A structurally valid saved closure may name a former review
+        # entrypoint after a paper moves its paired proof endpoints into a
+        # dedicated ProofInterface.  That is a material source/interface
+        # identity change and requires a fresh raw receipt, not an ambiguous
+        # manual-inspection state.
         set_validation_dimensions(
             raw_integrity_error=raw_integrity_error,
             semantic_surface_error=semantic_surface_error,
@@ -35234,9 +33852,10 @@ def fast_saved_source_record_identity_payload(
             source_identity_reason=closure_error,
         )
         return failure("saved Lean import closure is not current: " + closure_error)
-    except ValueError as exc:
-        return failure("saved Lean import closure is not current: " + str(exc))
-    if stored_fingerprint.get(SOURCE_RECORD_LEAN_IMPORT_CLOSURE_SHA256_FIELD) != closure.sha256:
+    if semantic_reuse is None and (
+        stored_fingerprint.get(SOURCE_RECORD_LEAN_IMPORT_CLOSURE_SHA256_FIELD)
+        != closure.sha256
+    ):
         return failure("saved Lean import-closure digest does not match its closure receipt")
 
     map_sha256, semantic_map_sha256 = paper_statement_map_cache_receipts(paper_dir)
@@ -35261,11 +33880,52 @@ def fast_saved_source_record_identity_payload(
     )
     if current_fingerprint is None:
         return failure("could not reconstruct current source-record source identity")
-    if not source_record_raw_producer_code_identity_matches(
+    producer_identity_matches = source_record_raw_producer_code_identity_matches(
         stored_fingerprint,
         current_fingerprint,
         repository_root=REPOSITORY_ROOT,
-    ):
+        semantic_reuse=semantic_reuse,
+    )
+    if not producer_identity_matches and semantic_reuse is None:
+        # A current imported-byte closure does not imply that every other raw
+        # fingerprint coordinate is a mathematical change.  In particular, a
+        # registered audit-engine edit or a strictly revalidated source-to-Spec
+        # carrier refresh can miss the byte fast path while all configured Lean
+        # roots retain the same signature, proposition graph, and transitive
+        # semantic dependencies.  Run the general current-verifier fallback
+        # once before declaring the raw stale.  Its projection still retains
+        # exact source artifacts, status obligations, fidelity ledgers,
+        # toolchain controls, and every non-Lean semantic input, so a material
+        # paper/source change continues to fail below.
+        semantic_closure, semantic_candidate, _semantic_error = (
+            current_source_record_semantic_reuse_identity(
+                root,
+                paper_dir,
+                saved_payload=payload,
+            )
+        )
+        if semantic_closure is not None and semantic_candidate is not None:
+            closure = semantic_closure
+            semantic_reuse = semantic_candidate
+            current_fingerprint = source_record_input_fingerprint(
+                fingerprint_args,
+                root,
+                paper_dir,
+                paper_statement_map_sha256=map_sha256,
+                paper_statement_map_semantic_sha256=semantic_map_sha256,
+                lean_import_closure=closure,
+                raw_audit_payload=payload,
+            )
+            producer_identity_matches = bool(
+                current_fingerprint is not None
+                and source_record_raw_producer_code_identity_matches(
+                    stored_fingerprint,
+                    current_fingerprint,
+                    repository_root=REPOSITORY_ROOT,
+                    semantic_reuse=semantic_reuse,
+                )
+            )
+    if not producer_identity_matches:
         set_validation_dimensions(
             raw_integrity_error=raw_integrity_error,
             semantic_surface_error=semantic_surface_error,
@@ -35304,7 +33964,12 @@ def fast_saved_source_record_identity_payload(
     # The aggregate cache explicitly permits source-map administrative edits
     # when their semantic receipt is unchanged.  Keep this narrow exception
     # identical to the normal source-record reuse contract.
-    if recorded_map_sha256 != map_sha256 and (
+    # A successful current-semantic reuse check already compared the exact
+    # configured roots and their Lean identities, and separately validated the
+    # current map-owned dimensions/defect routes.  Do not let this older
+    # aggregate map hash veto that stronger current result.  The byte-only fast
+    # path retains the historical exact-or-semantic-map receipt rule.
+    if semantic_reuse is None and recorded_map_sha256 != map_sha256 and (
         stored_fingerprint.get("paper_statement_map_semantic_sha256")
         != semantic_map_sha256
     ):
@@ -35351,9 +34016,6 @@ def fast_saved_source_record_identity_payload(
         raw_bytes_state="stable",
         source_identity_state="current",
     )
-    if raw_validation_error:
-        return failure(raw_validation_error)
-
     result = {
         "schema": 1,
         "paper": args.paper,
@@ -35366,7 +34028,80 @@ def fast_saved_source_record_identity_payload(
         ).strip(),
         "source_record_input_fingerprint_sha256": stable_digest(current_fingerprint),
     }
+    hard_raw_validation_error = next(
+        (
+            error
+            for error in (
+                raw_integrity_error,
+                scan_completeness_error,
+                reusable_item_metadata_error,
+            )
+            if error
+        ),
+        "",
+    )
+    if semantic_reuse is not None and not hard_raw_validation_error:
+        result["semantic_receipt_reuse"] = deepcopy(semantic_reuse)
     result.update(observed_saved_receipt)
+    if semantic_reuse is not None:
+        watched_paths = {
+            raw_path,
+            status_path,
+            paper_dir / "audit" / "paper_statement_map.json",
+            root / "config" / "formalization_audit_protocol.json",
+            closure_entry,
+            *closure.repository_sources,
+        }
+        try:
+            watched_paths.update(
+                diagnostic_imported_paper_lean_files(root, [closure_entry])
+            )
+        except (OSError, RuntimeError, ValueError):
+            # Cache persistence is only an optimization.  The current result
+            # remains valid; a later planner will simply rerun this verifier.
+            watched_paths = set()
+        if watched_paths:
+            # Resolve repository-relative and paper-relative ledger routes
+            # through the same guarded helper used by raw generation.  Joining
+            # an already ``papers/...`` route to ``paper_dir`` recorded a
+            # nonexistent doubled path and failed to watch the real ledger.
+            fidelity_path = source_proof_fidelity_path(paper_dir)
+            if fidelity_path is not None:
+                watched_paths.add(fidelity_path)
+        if watched_paths:
+            for identity_field in (
+                "source_artifact_identities",
+                "toolchain_identities",
+            ):
+                for identity in current_fingerprint.get(identity_field, []):
+                    if not isinstance(identity, Mapping):
+                        continue
+                    relative = str(identity.get("path") or "").strip()
+                    if not relative or Path(relative).is_absolute():
+                        continue
+                    candidate = (root / relative).resolve()
+                    try:
+                        candidate.relative_to(root.resolve())
+                    except ValueError:
+                        watched_paths = set()
+                        break
+                    watched_paths.add(candidate)
+                if not watched_paths:
+                    break
+        if watched_paths:
+            write_semantic_reuse_cache(
+                root=root,
+                paper_dir=paper_dir,
+                raw_audit_file_sha256=result["source_record_audit_file_sha256"],
+                watched_paths=watched_paths,
+                result=result,
+            )
+    if raw_validation_error:
+        # A declaration-semantic authority may still have been published
+        # above.  It never repairs this error by itself: the accepting evidence
+        # context must independently validate the exact raw receipt and any
+        # narrow structural revalidation artifact before using that authority.
+        return failure(raw_validation_error)
     return result
 
 
@@ -35427,18 +34162,6 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
-        "--closeout-raw-reissue",
-        action="store_true",
-        help=(
-            "closeout-only cache policy: reuse only an exact current schema-10 "
-            "raw receipt, otherwise regenerate it under the normal scan lock"
-        ),
-    )
-    parser.add_argument(
-        "--closeout-raw-reissue-operation-id",
-        help=argparse.SUPPRESS,
-    )
-    parser.add_argument(
         "--identity-only",
         action="store_true",
         help=(
@@ -35456,49 +34179,21 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--rebind-semantic-authority-controls",
+        action="store_true",
+        help=(
+            "rebind a current declaration-semantic authority after proving that "
+            "the effective status controls and source-proof-fidelity semantics "
+            "are unchanged; this performs no Lean work"
+        ),
+    )
+    parser.add_argument(
         "--include-legacy-fingerprint",
         action="store_true",
         help=(
             "with --identity-only, also compute legacy v9 protocol-split and "
             "v7 compatibility identities; current schema-10 evidence should "
             "omit this extra work"
-        ),
-    )
-    parser.add_argument(
-        "--generate-schema4-to5-migration",
-        action="store_true",
-        help=(
-            "create the explicit one-time v4-to-v5 direct-key judgment overlay "
-            "from saved raw audits and a saved v10 judgment sidecar; this mode "
-            "does not run a source-record scan or Lean"
-        ),
-    )
-    parser.add_argument(
-        "--prior-source-record-audit",
-        help=(
-            "saved schema-4 raw source_record_audit.json used by the prior "
-            "judgments (required with --generate-schema4-to5-migration)"
-        ),
-    )
-    parser.add_argument(
-        "--prior-source-record-judgments",
-        help=(
-            "saved v10 source_record_match_llm.json tied to the prior raw audit "
-            "(required with --generate-schema4-to5-migration)"
-        ),
-    )
-    parser.add_argument(
-        "--current-source-record-audit",
-        help=(
-            "current schema-5 raw source_record_audit.json; defaults to the "
-            "paper's canonical audit artifact"
-        ),
-    )
-    parser.add_argument(
-        "--schema4-to5-migration-out",
-        help=(
-            "output path for the v4-to-v5 overlay; defaults to "
-            "audit/source_record_schema4_to5_migration.json"
         ),
     )
     parser.add_argument("--max-depth", type=int, default=4, help="maximum recursive structure depth")
@@ -35533,16 +34228,10 @@ def main() -> int:
             args.refresh_judgment_summary,
             args.ignore_current_judgments,
             args.force,
-            args.closeout_raw_reissue,
-            args.closeout_raw_reissue_operation_id,
             args.identity_only,
             args.fast_saved_identity,
+            args.rebind_semantic_authority_controls,
             args.include_legacy_fingerprint,
-            args.generate_schema4_to5_migration,
-            args.prior_source_record_audit,
-            args.prior_source_record_judgments,
-            args.current_source_record_audit,
-            args.schema4_to5_migration_out,
         )
         if any(incompatible):
             print(
@@ -35558,15 +34247,6 @@ def main() -> int:
     if bool(getattr(args, "stdout", False)) and args.out:
         print("error: --stdout cannot be combined with --out", file=sys.stderr)
         return 2
-    if (
-        getattr(args, "closeout_raw_reissue_operation_id", None)
-        and not getattr(args, "closeout_raw_reissue", False)
-    ):
-        print(
-            "error: --closeout-raw-reissue-operation-id requires --closeout-raw-reissue",
-            file=sys.stderr,
-        )
-        return 2
     if getattr(args, "include_legacy_fingerprint", False) and not args.identity_only:
         print(
             "error: --include-legacy-fingerprint requires --identity-only",
@@ -35575,11 +34255,9 @@ def main() -> int:
         return 2
     if getattr(args, "fast_saved_identity", False) and (
         args.identity_only
-        or args.generate_schema4_to5_migration
         or args.refresh_judgment_summary
         or args.ignore_current_judgments
         or args.force
-        or args.closeout_raw_reissue
         or args.no_lean
         or args.out
         or getattr(args, "stdout", False)
@@ -35589,31 +34267,26 @@ def main() -> int:
             file=sys.stderr,
         )
         return 2
+    if getattr(args, "rebind_semantic_authority_controls", False) and (
+        args.identity_only
+        or args.fast_saved_identity
+        or args.refresh_judgment_summary
+        or args.ignore_current_judgments
+        or args.force
+        or args.no_lean
+        or args.out
+        or getattr(args, "stdout", False)
+    ):
+        print(
+            "error: --rebind-semantic-authority-controls cannot be combined "
+            "with audit-generation options",
+            file=sys.stderr,
+        )
+        return 2
     root = Path(args.root).resolve()
     # Isolated audit passes spawn several Lean subprocesses.  Keep them within
     # the sandbox descriptor/process budget even when callers omit this env var.
     os.environ.setdefault("LEAN_NUM_THREADS", "1")
-    if args.generate_schema4_to5_migration:
-        if args.identity_only:
-            print(
-                "error: --identity-only cannot be combined with "
-                "--generate-schema4-to5-migration",
-                file=sys.stderr,
-            )
-            return 2
-        try:
-            with source_record_audit_lock(
-                root,
-                args.lock_timeout_seconds,
-                owner={
-                    "paper": args.paper,
-                    "operation": "schema4_to5_migration",
-                },
-            ):
-                return generate_source_record_schema4_to5_migration(args, root)
-        except SourceRecordAuditLockUnavailable as exc:
-            print(f"error: {exc}", file=sys.stderr)
-            return 4
     if args.identity_only:
         failure_reason: list[str] = []
         payload = source_record_identity_only_payload(
@@ -35639,52 +34312,87 @@ def main() -> int:
         payload = fast_saved_source_record_identity_payload(args, root)
         print(json.dumps(payload, sort_keys=True))
         return 0 if payload.get("current") is True else 1
-    if getattr(args, "closeout_raw_reissue", False):
-        admission_error = closeout_raw_reissue_admission_error(
-            root,
-            args.paper,
-            str(getattr(args, "closeout_raw_reissue_operation_id", "") or ""),
-        )
-        if admission_error:
+    if getattr(args, "rebind_semantic_authority_controls", False):
+        paper_dir = root / "papers" / args.paper
+        raw_path = paper_dir / "audit" / "source_record_audit.json"
+        status_path = paper_dir / "status.json"
+        try:
+            validate_runtime_engine_registration(root)
+            raw_payload = load_json_object(raw_path)
+            status_bytes = status_path.read_bytes()
+            status_payload = json.loads(status_bytes)
+            status_control_sha256 = stable_digest(
+                source_record_status_control_projection(
+                    paper_dir, status_path, status_payload
+                )
+            )
+            status_file_sha256 = hashlib.sha256(status_bytes).hexdigest()
+            fidelity_path = source_proof_fidelity_path(paper_dir)
+            fidelity_bytes = (
+                fidelity_path.read_bytes() if fidelity_path is not None else b""
+            )
+            fidelity_sha256 = source_record_proof_fidelity_semantic_sha256(
+                paper_dir
+            )
+            if fidelity_path is not None and fidelity_path.read_bytes() != fidelity_bytes:
+                raise RuntimeError(
+                    "source-proof fidelity bytes changed while computing semantic controls"
+                )
+            fidelity_file_sha256 = (
+                hashlib.sha256(fidelity_bytes).hexdigest()
+                if fidelity_path is not None
+                else ""
+            )
+        except (
+            EngineRevisionError,
+            OSError,
+            RuntimeError,
+            ValueError,
+            json.JSONDecodeError,
+        ) as exc:
             print(
-                "error: closeout raw-reissue admission refused: " + admission_error,
+                "error: could not compute current semantic controls: " + str(exc),
                 file=sys.stderr,
             )
             return 2
-    else:
-        # The cache is a receipt-validated semantic identity check, not a
-        # weaker name-based shortcut. Check it before taking the lock used
-        # exclusively for fresh Lean/source scans so an ordinary current paper
-        # never waits behind an unrelated regeneration. A closeout reissue is
-        # deliberately excluded: it must create the raw operation it records.
-        cached_exit = emit_reusable_source_record_audit_without_lock(args, root)
-        if cached_exit is not None:
-            return cached_exit
+        error = rebind_semantic_validation_authority_controls(
+            root=root,
+            paper_dir=paper_dir,
+            raw_audit=raw_payload,
+            current_status_control_sha256=status_control_sha256,
+            current_status_file_sha256=status_file_sha256,
+            current_source_proof_fidelity_sha256=fidelity_sha256,
+            current_source_proof_fidelity_file_sha256=fidelity_file_sha256,
+            source_proof_fidelity_path=fidelity_path,
+        )
+        if error:
+            print("error: " + error, file=sys.stderr)
+            return 2
+        print(
+            json.dumps(
+                {
+                    "paper": args.paper,
+                    "rebound": True,
+                    "semantic_controls_unchanged": True,
+                    "lean_rerun": False,
+                },
+                sort_keys=True,
+            )
+        )
+        return 0
+    # The cache is a receipt-validated semantic identity check, not a weaker
+    # name-based shortcut. Check it before taking the lock used exclusively for
+    # fresh Lean/source scans so an ordinary current paper never waits behind
+    # an unrelated regeneration.
+    cached_exit = emit_reusable_source_record_audit_without_lock(args, root)
+    if cached_exit is not None:
+        return cached_exit
     try:
         with source_record_audit_lock(
             root,
             args.lock_timeout_seconds,
             owner={"paper": args.paper, "operation": "source_record_scan"},
         ):
-            # Recheck after acquiring the producer's own lock: a registered
-            # engine transition between admission and this point must not
-            # consume another expensive raw scan.
-            if getattr(args, "closeout_raw_reissue", False):
-                admission_error = closeout_raw_reissue_admission_error(
-                    root,
-                    args.paper,
-                    str(
-                        getattr(args, "closeout_raw_reissue_operation_id", "")
-                        or ""
-                    ),
-                )
-                if admission_error:
-                    print(
-                        "error: closeout raw-reissue admission refused: "
-                        + admission_error,
-                        file=sys.stderr,
-                    )
-                    return 2
             return _run_audit(args, root)
     except SourceRecordAuditLockUnavailable as exc:
         print(f"error: {exc}", file=sys.stderr)

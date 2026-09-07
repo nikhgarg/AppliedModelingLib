@@ -10,7 +10,7 @@ an independent reranking to reusing the common ranking.
 -/
 noncomputable def PrefersIndependentReranking {n : ℕ}
     (μ : PMF (Ranking n)) (value : Candidate n → ℝ) : Prop :=
-  EconCSLib.SocialChoice.Ranking.PrefersIndependentReranking μ value
+  AppliedModelingLib.SocialChoice.Ranking.PrefersIndependentReranking μ value
 
 /--
 Utility-side version of the paper's "preference for weaker competition":
@@ -20,7 +20,7 @@ when the first mover uses the more accurate one.
 -/
 noncomputable def PrefersWeakerCompetition {n : ℕ}
     (μBetter μWorse : PMF (Ranking n)) (value : Candidate n → ℝ) : Prop :=
-  EconCSLib.SocialChoice.Ranking.PrefersWeakerCompetition μBetter μWorse value
+  AppliedModelingLib.SocialChoice.Ranking.PrefersWeakerCompetition μBetter μWorse value
 
 /-- The fixed-parameter hypotheses corresponding to a single pair `(μA, μH)`. -/
 noncomputable def PaperHypotheses {n : ℕ} (M : Model n) : Prop :=

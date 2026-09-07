@@ -13,7 +13,7 @@ Source: `EFXadditivechores.tex`, lines 2543--2996.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- The complete simple-graph B.3.2 schedule transports across a relabelling
 that names its two short prefix agents `0` and `1`. -/

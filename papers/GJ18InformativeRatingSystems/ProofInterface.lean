@@ -9,7 +9,7 @@ namespace GJ18InformativeRatingSystems
 namespace PaperInterface
 
 open Filter
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 open GJ18InformativeRatingSystems.ProofBridge
 noncomputable section
 

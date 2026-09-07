@@ -14,7 +14,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-- Literal Definition-2 law equality for the report-required hidden-access
@@ -122,8 +122,7 @@ theorem LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE.takeExpectedPay
       selectionMass skillKernel actionEvent publicBase ≠ 0 := by
     simpa [skillKernel, action, actionEvent] using
       (E.ae_positive_takeSelectionMass_of_localTailStability hnoAccess hstable
-        baseLaw baseMean hbaseMean baseVariance
-        (M.noiseVariance testFeature : ℝ) hbaseVariance htestNoiseVariance
+        baseLaw baseMean hbaseMean baseVariance hbaseVariance htestNoiseVariance
         hsourceFactor)
   have haccessFactor :
       (lg21ContinuousGaussianAccessPopulationLaw M).map
@@ -270,8 +269,7 @@ theorem LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE.exists_taking_s
       selectionMass skillKernel actionEvent publicBase ≠ 0 := by
     simpa [skillKernel, action, actionEvent] using
       (E.ae_positive_takeSelectionMass_of_localTailStability hnoAccess hstable
-        baseLaw baseMean hbaseMean baseVariance
-        (M.noiseVariance testFeature : ℝ) hbaseVariance htestNoiseVariance
+        baseLaw baseMean hbaseMean baseVariance hbaseVariance htestNoiseVariance
         hsourceFactor)
   have hbest : ∀ᵐ publicBase ∂baseLaw,
       NoProfitableBinaryChoiceDeviationAE (skillKernel publicBase)

@@ -1,0 +1,22 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+\title{Source Changes: Bias Bounties}
+\author{Companion to \emph{An Algorithmic Framework for Bias Bounties}}
+\date{}
+\begin{document}
+\maketitle
+Source: \href{https://arxiv.org/abs/2201.10408v4}{arXiv v4}. Detailed explanations and source line anchors are in the companion \href{SOURCE_CLARIFICATIONS.md}{source clarification memo}.
+\begin{itemize}
+\item \textbf{Observation 4: pointwise $\to$ almost everywhere.} Null-point changes are invisible to subgroup integrals. The arbitrary-law equivalence compares each admissible alternative model almost everywhere; countably many labels permit one common full-measure set for action comparisons.
+\item \textbf{Theorem 11: transcript count $\to$ an explicit finite tail.} With sample size $n$, threshold $\epsilon>0$, and submission horizon $U$, the sparse family has at most $N=U(U+1)^{\lfloor2/\epsilon\rfloor}$ members, giving failure probability at most $2N\exp(-n\epsilon^2/32)$. A terminal extra acceptance does not enlarge the family of queried prefixes.
+\item \textbf{Algorithm 4: shared checker and restart.} External proposals and repairs share one transcript; accepted repairs restart the historical scan because they change the model.
+\item \textbf{Algorithm 5: $D\to D_t$, $2/\epsilon\to\lceil2/\epsilon\rceil$.} Optimization and stopping use the fresh round block and an integer round count.
+\item \textbf{Lemma 15: $g_p\to g$.} The displayed subscript is undefined; $g$ is the quantified group.
+\item \textbf{Lemma 22: normalization $\to$ disagreement identity.} Disagreement empirical risk equals a group-independent constant minus the certificate objective, so its minimization maximizes the objective.
+\item \textbf{Algorithm 6 and Theorem 23: two gaps and conditional positivity.} Replace full-sweep stopping with coordinate tests at the same pair. Positive initialization is needed only for the positive-certificate clause; see the \href{ALGORITHM6_THEOREM23_CLARIFICATION.pdf}{focused algorithm note} for the proof and counterexample.
+\end{itemize}
+\end{document}

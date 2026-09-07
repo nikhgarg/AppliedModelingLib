@@ -1,7 +1,7 @@
 import KR21Monoculture.Theorem2Distributional
 import KR21Monoculture.OuterConditional
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 
 namespace KR21Monoculture
 
@@ -104,49 +104,49 @@ theorem disagreementProb_pos_of_prefersIndependentReranking
     0 < disagreementProb mu := by
   have hprob_eq :
       disagreementProb mu =
-        EconCSLib.pmfProb (EconCSLib.pmfProd mu mu) disagreementEvent := by
-    change EconCSLib.pmfPairExp mu mu
+        AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProd mu mu) disagreementEvent := by
+    change AppliedModelingLib.pmfPairExp mu mu
         (fun pi sigma => if disagreementEvent (pi, sigma) then (1 : ℝ) else 0) =
-      EconCSLib.pmfExp (EconCSLib.pmfProd mu mu)
+      AppliedModelingLib.pmfExp (AppliedModelingLib.pmfProd mu mu)
         (fun pair => if disagreementEvent pair then (1 : ℝ) else 0)
-    exact (EconCSLib.pmfExp_pmfProd_eq_pairExp mu mu
+    exact (AppliedModelingLib.pmfExp_pmfProd_eq_pairExp mu mu
       (fun pair => if disagreementEvent pair then (1 : ℝ) else 0)).symm
   by_contra hnot
   have hzero : disagreementProb mu = 0 :=
     le_antisymm (le_of_not_gt hnot) (by
       rw [hprob_eq]
-      exact EconCSLib.pmfProb_nonneg _ _)
+      exact AppliedModelingLib.pmfProb_nonneg _ _)
   have hmass_zero : ∀ pair : RankingPair n, disagreementEvent pair →
-      ((EconCSLib.pmfProd mu mu) pair).toReal = 0 := by
+      ((AppliedModelingLib.pmfProd mu mu) pair).toReal = 0 := by
     intro pair hpair
     by_contra hmass_ne
-    have hmass_pos : 0 < ((EconCSLib.pmfProd mu mu) pair).toReal :=
+    have hmass_pos : 0 < ((AppliedModelingLib.pmfProd mu mu) pair).toReal :=
       lt_of_le_of_ne ENNReal.toReal_nonneg (Ne.symm hmass_ne)
     have hprob_pos :
-        0 < EconCSLib.pmfProb (EconCSLib.pmfProd mu mu) disagreementEvent :=
-      EconCSLib.pmfProb_pos_of_mass (EconCSLib.pmfProd mu mu)
+        0 < AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProd mu mu) disagreementEvent :=
+      AppliedModelingLib.pmfProb_pos_of_mass (AppliedModelingLib.pmfProd mu mu)
         disagreementEvent pair hpair hmass_pos
     rw [← hprob_eq, hzero] at hprob_pos
     exact (lt_irrefl (0 : ℝ)) hprob_pos
   have hgain_zero : expectedRerankingGain mu value = 0 := by
     rw [expectedRerankingGain_eq_pairIndicatorExp]
-    unfold EconCSLib.pmfPairIndicatorExp
+    unfold AppliedModelingLib.pmfPairIndicatorExp
     calc
-      EconCSLib.pmfPairExp mu mu
+      AppliedModelingLib.pmfPairExp mu mu
           (fun pi sigma => if disagreementEvent (pi, sigma) then
             pairRerankingGain value (pi, sigma) else 0) =
-        EconCSLib.pmfExp (EconCSLib.pmfProd mu mu)
+        AppliedModelingLib.pmfExp (AppliedModelingLib.pmfProd mu mu)
           (fun pair => if disagreementEvent pair then
             pairRerankingGain value pair else 0) :=
-          (EconCSLib.pmfExp_pmfProd_eq_pairExp mu mu
+          (AppliedModelingLib.pmfExp_pmfProd_eq_pairExp mu mu
             (fun pair => if disagreementEvent pair then
               pairRerankingGain value pair else 0)).symm
       _ = 0 := by
-        unfold EconCSLib.pmfExp
+        unfold AppliedModelingLib.pmfExp
         refine Finset.sum_eq_zero ?_
         intro pair _
         by_cases hpair : disagreementEvent pair
-        · change ((EconCSLib.pmfProd mu mu) pair).toReal *
+        · change ((AppliedModelingLib.pmfProd mu mu) pair).toReal *
               (if disagreementEvent pair then pairRerankingGain value pair else 0) = 0
           rw [if_pos hpair, hmass_zero pair hpair]
           ring

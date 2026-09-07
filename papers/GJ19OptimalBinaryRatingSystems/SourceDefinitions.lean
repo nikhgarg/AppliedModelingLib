@@ -1,5 +1,5 @@
 import GJ19OptimalBinaryRatingSystems.MainTheorems
-import EconCSLib.Foundations.Optimization.Certificate
+import AppliedModelingLib.Foundations.Optimization.Certificate
 
 /-!
 # Source model and implementation definitions for Garg--Johari (2019)
@@ -196,7 +196,7 @@ def SourceQuestionDesignSolution
     {Representative Y : Type*} [Fintype Representative] [Fintype Y]
     (quality : Representative → ℝ) (β : ℝ → ℝ)
     (ψHat : Representative → Y → ℝ) (H : Y → ℝ) : Prop :=
-  EconCSLib.Optimization.IsMinimizerOn
+  AppliedModelingLib.Optimization.IsMinimizerOn
     (SourceQuestionDistribution : (Y → ℝ) → Prop)
     (sourceQuestionDesignL1Objective quality β ψHat) H
 

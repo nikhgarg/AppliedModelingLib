@@ -37,7 +37,7 @@ import sys
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
-from typing import Any, Callable, Mapping
+from typing import Any, Mapping
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,6 +45,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 try:  # Supports direct execution and package imports in tests.
+    from scripts.formalization_protocol import CURRENT_SOURCE_RECORD_PROMPT_VERSION
     from scripts.audit_evidence_integrity import source_record_raw_scan_completeness_error
     from scripts.source_coverage_scope import (
         DEFAULT_SOURCE_COVERAGE_MODE,
@@ -64,6 +65,7 @@ try:  # Supports direct execution and package imports in tests.
         stamp_source_record_audit_integrity,
     )
 except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
+    from formalization_protocol import CURRENT_SOURCE_RECORD_PROMPT_VERSION
     from audit_evidence_integrity import source_record_raw_scan_completeness_error
     from source_coverage_scope import (
         DEFAULT_SOURCE_COVERAGE_MODE,
@@ -84,9 +86,7 @@ except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
     )
 
 
-SOURCE_RECORD_V10_PROMPT_VERSION = (
-    "source-record-v10-semantic-conclusion-boundary-contract"
-)
+SOURCE_RECORD_V10_PROMPT_VERSION = CURRENT_SOURCE_RECORD_PROMPT_VERSION
 SOURCE_RECORD_AGGREGATE_REPROJECTION_SCHEMA = 1
 SOURCE_RECORD_AGGREGATE_REPROJECTION_POLICY_VERSION = (
     "source-record-v10-pre-schema5-aggregate-receipt-reprojection-v1"
@@ -254,7 +254,6 @@ class CurrentReprojectionContext:
     unconfigured_review_surface_rows: tuple[str, ...]
     unconfigured_assumption_support_rows: tuple[str, ...]
     quarantined_auxiliary_review_rows: tuple[str, ...]
-    judge_prompt: Callable[[str, list[dict[str, Any]], dict[str, Any] | None, list[dict[str, Any]] | None], str]
 
 
 @dataclass(frozen=True)
@@ -698,7 +697,6 @@ def _resolve_current_review_context(
         unconfigured_review_surface_rows=tuple(unconfigured_interface),
         unconfigured_assumption_support_rows=tuple(unconfigured_assumptions),
         quarantined_auxiliary_review_rows=tuple(sorted(quarantined_qualified)),
-        judge_prompt=module.judge_prompt,
     )
 
 
@@ -1373,31 +1371,9 @@ def build_aggregate_only_reprojection(
     payload["unresolved_conclusion_dependency_count"] = len(conclusion_items)
     payload["unresolved_conclusion_dependency_items"] = copy.deepcopy(conclusion_items)
 
-    # The old prompt may include rows no longer in the current source-map
-    # selection. Re-render it from the retained raw obligations without asking
-    # Lean to inspect anything again.
-    statement_ledger = set(payload.get("statement_ledger_covered_boundary_input_keys") or [])
-    conclusion_keys = {
-        str(item.get("judgment_key") or "").strip() for item in conclusion_items
-    }
-    prompt_items = (
-        list(conclusion_items)
-        + [
-            item
-            for item in boundary_items
-            if str(item.get("judgment_key") or "").strip() not in statement_ledger
-            and str(item.get("judgment_key") or "").strip() not in conclusion_keys
-        ]
-        + list(payload["rows_with_semantic_inputs"])
-        + list(recursive_items)
-        + list(semantic_items)
-    )
-    payload["llm_judge_prompt"] = context.judge_prompt(
-        context.paper,
-        prompt_items,
-        payload.get("source_proof_fidelity"),
-        payload.get("semantic_context_requirements"),
-    )
+    # Prompt wording is a derived manual-review view, not raw evidence. The
+    # template command can render it from these retained obligations.
+    payload.pop("llm_judge_prompt", None)
 
     _mark_aggregate_only(payload)
     for field in (

@@ -15,7 +15,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-- The public score-local report rule used in the literal Theorem 3.1
@@ -347,6 +347,11 @@ theorem lg21HiddenAccess_not_stable_of_positive_rawPosteriorGain_scoreLocalPatch
     candidateTake := lg21HiddenAccessAllTake testFeature
     candidateReport := candidateReport
     candidate := candidate
+    candidate_test_law := by
+      intro latentSkill publicBase
+      rw [E.raw_test_law]
+      simp [candidate, lg21HiddenAccessAllTakeLiteralCandidate,
+        lg21HiddenAccessGaussianCandidateWithReportAction]
     candidate_report_action := by rfl
     candidate_take_measurable := lg21HiddenAccessAllTake_measurable testFeature
     candidate_report_measurable := hcandidateReportMeasurable

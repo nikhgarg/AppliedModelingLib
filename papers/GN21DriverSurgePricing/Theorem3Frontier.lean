@@ -9,7 +9,7 @@ proof work a narrow build target while the large CTMC theorem ledger remains
 stable.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped Function ProbabilityTheory Topology ENNReal
 

@@ -2,7 +2,7 @@ import LG21TestOptionalPolicies.ObservedAccessAllProtocolD6OutputBridge
 
 namespace LG21TestOptionalPolicies
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 #check condDistrib_ae_eq_of_measure_eq_compProd_of_measurable
 #check condDistrib_congr_left

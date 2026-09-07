@@ -1,20 +1,22 @@
 # Final Validation Report: EFX for Additive Chores
 
-Updated: 2026-08-18
+Updated: 2026-08-31
 
 ## 1. Human Verdict
 
 The paper's named theoretical surface is formalized. The checked surface
 includes the displayed fairness and allocation definitions, Theorems 1--3,
-their named supporting propositions and lemmas, and the two named Appendix A
-propositions. Independent reviewer annotations may be added through the packet
-or dashboard, but are not a prerequisite for this formalization status.
+their named supporting propositions and lemmas, the general-agent insertion
+remark, the explicit EFX witness used in Theorem 2, and the two named Appendix
+A propositions. Independent reviewer annotations may be added through the
+packet or dashboard, but are not a prerequisite for this formalization status.
 
 ## 2. Closeout Status
 
 - Completion status: formalized.
-- 22 source claims are in scope: six definitions, three theorems, six
-  propositions, and seven lemmas.
+- 24 source claims are in scope: six definitions, three theorems, six
+  propositions, seven lemmas, one substantive remark, and one unlabeled
+  mathematical claim.
 - Every selected claim has a direct paper-facing semantic statement and a
   checked proof route. No theorem-level boundary remains within this scope.
 
@@ -26,25 +28,22 @@ or dashboard, but are not a prerequisite for this formalization status.
 - Formalized paper surface: the definitions of EF for chores, EFX for chores,
   Pareto-optimality, canonical allocation, canonical short/long labels, and
   super-canonical allocation; Theorems 1--3; the named propositions and
-  lemmas supporting those results; and the named Appendix A propositions.
-- Scope boundary: remarks, literature comparisons, and external-algorithm
-  discussion are not named theoretical claims in this review surface.
+  lemmas supporting those results; the general-agent insertion remark; the
+  explicit EFX witness in the Theorem 2 construction; and the named Appendix A
+  propositions.
+- Scope boundary: the complete source review also records two explanatory
+  remarks about the general-
+  \(n\) construction and tightness as deep-audit material. They do not add a
+  separate mathematical endpoint beyond Theorem 1 and its appendix route.
 
 ## 4. Researcher Summary of Checked Results
 
-- **Theorem 1 (tri-valued EFX nonexistence).** For every \(n \geq 4\), there
-  is a tri-valued instance with \(n\) agents that has no EFX allocation. The
-  formalized route includes the four-agent construction and the Appendix A
-  extension to arbitrary \(n\).
-- **Theorem 2 (EFX and Pareto-optimality incompatibility).** For every
-  \(n \geq 4\) and \(r > \lceil n/2 \rceil + 1\), there is a
-  \((1,r)\)-bi-valued instance with \(n\) agents in which every EFX allocation
-  is not Pareto-optimal. The checked supporting propositions establish the
-  required large-item and cost lower bounds before the Pareto comparison.
-- **Theorem 3 (four-agent bi-valued EFX existence).** Every four-agent
-  bi-valued instance has an EFX allocation. The checked route covers the
-  paper's M01/M2/M34 decomposition, the low- and high-ratio cases, balanced
-  orientations, insertion, composition, and the exceptional residue case.
+| Result | Comparison with source |
+| --- | --- |
+| Theorem 1 | **Exact.** |
+| Theorem 2 | **Exact.** |
+| Theorem 3 | **Exact.** |
+| Propositions 1–6; Lemmas 1–7; Remark 3 | **Exact.** |
 
 ## 5. Remaining Boundaries and Gaps
 
@@ -52,16 +51,11 @@ None within the selected named theoretical surface.
 
 ## 6. Additional Assumptions Beyond Paper
 
-None. Finiteness, additivity, the number of agents, the cost-ratio bounds, and
-the construction-specific conditions used by the results are stated source
-conditions, not added assumptions.
+None.
 
 ## 7. Proof-Strategy Deviations
 
-None. The formal proof routes retain the paper's construction-based split:
-the tri-valued construction and its appendix extension for Theorem 1, the
-A/B/C construction and EFX lower bounds for Theorem 2, and the M01/M2/M34
-case analysis for Theorem 3.
+None.
 
 ## 8. Proof Structure Worth Reusing
 
@@ -88,66 +82,85 @@ None identified in the audited source version.
 
 None within the reviewed named theoretical surface.
 
-## 12. Checked Claim Inventory
+## 12. Detailed Formalization Evidence
 
-The 22 checked source claims are organized as follows:
+The current surface contains 24 source presentations: six definitions and 18
+result claims. The result claims cover Theorems 1--3, their named propositions
+and lemmas, the explicit EFX witness used in Theorem 2, and the general-agent
+insertion claim. [PaperInterface.lean](PaperInterface.lean) contains the 18
+transparent result specifications, and [ProofInterface.lean](ProofInterface.lean)
+supplies their checked endpoints.
 
-- **Model and allocation vocabulary:** the displayed definitions of EF for
-  chores, EFX for chores, Pareto-optimality, canonical allocation, canonical
-  short/long labels, and super-canonical allocation.
-- **Theorem 1 route:** Theorem 1, the four-agent proposition that no bundle
-  has two A items, the proposition that an A-free bundle is expensive, and the
-  two Appendix A propositions used in the arbitrary-agent extension.
-- **Theorem 2 route:** Theorem 2, the proposition that every EFX agent receives
-  a large item, and the EFX cost-lower-bound proposition.
-- **Theorem 3 route:** Theorem 3; the M34 insertion, composition, canonical
-  allocation properties, balanced orientation, M2 EFX allocation, M2 EFX
-  allocation properties, and exceptional-residue-combination lemmas.
+## 13. Paper Assumption Provenance
 
-The [human review packet](docs/HUMAN_REVIEW_PACKET.pdf) presents these claims
-in dependency order with the corresponding source inputs and reviewer
-annotation space. The interactive dashboard, launched with
-`papers/HT26EFXChores/review-dashboard.sh`, is an optional alternative to
-using the PDF.
+No standalone paper-facing assumption is selected. Three paper-local
+definition prerequisites match their source connections in the
+[prerequisite ledger](FINAL_CLOSURE_RECEIPT.md). The finite
+chore set, nonnegative item costs, additive bundle costs, feasibility, and the
+tri-valued and bi-valued domains appear directly in the expanded result
+targets.
 
-## 13. Source and Assumption Provenance
+## 14. Displayed Formula Provenance
 
-Each of the 22 claims is anchored to the selected arXiv TeX source and its
-local location is recorded in the [statement map](audit/paper_statement_map.json).
-The theorem summaries above use the theorem statements at lines 304--306,
-416--418, and 532--534 of that source. The map also records the source anchors
-for every supporting proposition and lemma rather than treating their proof
-use as implicit.
+The [statement map](audit/paper_statement_map.json) records exact source routes
+for the allocation, cost, EF, EFX, Pareto, canonical, and super-canonical
+definitions and for all supporting result presentations. The
+[source-to-Spec ledger](FINAL_CLOSURE_RECEIPT.md) records 18
+direct matching result judgments.
 
-## 14. Semantic Review and Proof Evidence
+## 15. Library Lift Pass
 
-For each selected source claim, the [raw source-to-specification ledger](audit/v11_raw_source_spec_screening.json)
-records the direct comparison between the byte-pinned source input and its one
-semantic review target. The paired Lean theorem is separately checked as the
-proof endpoint for that target. The [current focused-build receipt](audit/FOCUSED_BUILD_RECEIPT.json)
-and [final closure receipt](FINAL_CLOSURE_RECEIPT.md) identify the current
-validation run.
+The three selected reusable declarations are the shared envy-free, EFX, and
+Pareto-optimal predicates for chores. All three match their selected source
+connections in the [library ledger](FINAL_CLOSURE_RECEIPT.md).
+The canonical-allocation constructions and theorem-specific decomposition
+remain paper-local.
 
-## 15. Reused Definitions
+## 16. DAG Audit
 
-Reusable allocation and chore-fairness vocabulary is reviewed under the same
-source-to-semantics standard as paper-local code. The [library review ledger](audit/library_semantic_review.json)
-records the direct source connection for the finite-allocation, cost, EF, EFX,
-and Pareto prerequisites used by the paper claims. They are review inputs, not
-extra claims attributed to this paper.
+[DependencyDAG.tex](docs/DependencyDAG.tex) and
+[DependencyDAG.pdf](docs/DependencyDAG.pdf) show the six definitions and the
+Theorem 1, Theorem 2, and Theorem 3 result routes. The explicit Theorem 2 EFX
+witness and the general-agent insertion claim appear as their own nodes. The
+rendered DAG was visually inspected for legibility, clipping, and node-edge
+overlap.
 
-## 16. Dependency DAG
+## 17. Validation Checks
 
-The [dependency DAG](docs/DependencyDAG.pdf) separates the shared definitions
-from the Theorem 1, Theorem 2, and Theorem 3 routes, and places the supporting
-propositions and lemmas before the results that use them. It is a companion to
-the claim inventory, not a replacement for the source comparisons above.
+The [focused-build receipt](FINAL_CLOSURE_RECEIPT.md) records a passing
+paper build. The [import-closure receipt](FINAL_CLOSURE_RECEIPT.md)
+and [final closure receipt](FINAL_CLOSURE_RECEIPT.md) record the checked Lean
+closure and terminal obligation graph.
 
-## 17. Validation Materials
+## 18. Paper Definitions Checked
 
-- [Human review packet (PDF)](docs/HUMAN_REVIEW_PACKET.pdf)
-- [Dependency DAG (PDF)](docs/DependencyDAG.pdf)
-- [Statement map](audit/paper_statement_map.json)
-- [Source-to-specification ledger](audit/v11_raw_source_spec_screening.json)
-- [Library review ledger](audit/library_semantic_review.json)
-- [Final closure receipt](FINAL_CLOSURE_RECEIPT.md)
+The checked source definitions are envy-freeness for chores, EFX for chores,
+Pareto optimality, canonical allocation, canonical short/long labels, and
+super-canonical allocation. The exact source and Lean routes are recorded in
+the [statement map](audit/paper_statement_map.json).
+
+## 19. Named Theorem Statements Checked
+
+- Theorem 1 and its supporting four-agent, A-free-bundle, and Appendix A
+  propositions.
+- Theorem 2, its explicit EFX allocation, the large-item proposition, and the
+  EFX cost lower bound.
+- Theorem 3 and the insertion, composition, canonical-allocation, balanced
+  orientation, M2 allocation, and exceptional-residue lemmas.
+- The general-agent insertion claim.
+
+The 18 exact target/endpoint pairings are in
+[PaperInterface.lean](PaperInterface.lean) and
+[ProofInterface.lean](ProofInterface.lean).
+
+## 20. Paper-Facing Statement Validator Ledger
+
+The [source-to-Spec ledger](FINAL_CLOSURE_RECEIPT.md) contains
+18 direct matches. The [human review packet](docs/HUMAN_REVIEW_PACKET.pdf)
+presents the definitions and results in dependency order.
+
+## 21. Source-Coverage Audit Ledger
+
+The [coverage ledger](FINAL_CLOSURE_RECEIPT.md) contains 20 covered
+named-theory items. The full 24-presentation inventory and route assignments
+are recorded in the [statement map](audit/paper_statement_map.json).

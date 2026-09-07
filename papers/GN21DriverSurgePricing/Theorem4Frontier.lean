@@ -9,7 +9,7 @@ source proof path.  The heavy CTMC endpoint records remain in
 statements.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped Function ProbabilityTheory Topology ENNReal
 

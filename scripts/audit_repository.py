@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Repository hygiene audit for EconCSLib.
+"""Repository hygiene audit for AppliedModelingLib.
 
 The checks here are intentionally mechanical. They are meant to catch stale
 paper-folder structure, hidden Lean proof placeholders, noisy `#check` ledgers,
@@ -22,8 +22,18 @@ import weakref
 from dataclasses import dataclass, field as dataclass_field
 from datetime import date
 from contextlib import nullcontext
+from enum import Enum
 from pathlib import Path
 from typing import Any, Callable, Mapping, MutableMapping
+
+# Direct-file and package execution share one canonical import namespace. This
+# replaces per-import fallback branches while preserving the issuer alias below.
+if __package__ in {None, ""}:
+    repository_root = str(Path(__file__).resolve().parents[1])
+    if repository_root not in sys.path:
+        sys.path.insert(0, repository_root)
+
+from scripts.formalization_protocol import CURRENT_SOURCE_RECORD_PROMPT_VERSION
 
 
 def _register_supported_import_aliases() -> None:
@@ -74,327 +84,292 @@ def _register_supported_import_aliases() -> None:
 _register_supported_import_aliases()
 
 
-try:
-    from scripts.final_validation_report_status import (
-        FINAL_REPORT_CLOSEOUT_STATUS_RE as SHARED_FINAL_REPORT_CLOSEOUT_STATUS_RE,
-        FINAL_REPORT_STATUS_LINE_RE as SHARED_FINAL_REPORT_STATUS_LINE_RE,
-        final_report_declared_statuses as shared_final_report_declared_statuses,
-        report_status_alignment_errors,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports direct script execution.
-    from final_validation_report_status import (
-        FINAL_REPORT_CLOSEOUT_STATUS_RE as SHARED_FINAL_REPORT_CLOSEOUT_STATUS_RE,
-        FINAL_REPORT_STATUS_LINE_RE as SHARED_FINAL_REPORT_STATUS_LINE_RE,
-        final_report_declared_statuses as shared_final_report_declared_statuses,
-        report_status_alignment_errors,
-    )
+from scripts.final_validation_report_status import (
+    FINAL_REPORT_CLOSEOUT_STATUS_RE as SHARED_FINAL_REPORT_CLOSEOUT_STATUS_RE,
+    FINAL_REPORT_STATUS_LINE_RE as SHARED_FINAL_REPORT_STATUS_LINE_RE,
+    final_report_declared_statuses as shared_final_report_declared_statuses,
+    report_status_alignment_errors,
+)
 
-try:
-    from scripts.closeout_document_gates import closeout_document_hard_errors
-except ModuleNotFoundError:  # pragma: no cover - supports direct script execution.
-    from closeout_document_gates import closeout_document_hard_errors
+from scripts.closeout_document_gates import closeout_document_hard_errors
 
-try:
-    from scripts.closeout_execution_state import (
-        CloseoutExecutionLease,
-        default_closeout_execution_path,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports direct script execution.
-    from closeout_execution_state import (
-        CloseoutExecutionLease,
-        default_closeout_execution_path,
-    )
+from scripts.lean_axiom_closure import (
+    APPROVED_LEAN_AXIOMS,
+    LeanAxiomClosureError,
+    run_lean_axiom_closures,
+)
 
-try:
-    from scripts.closeout_plan_receipt import load_validated_closeout_plan_receipt
-except ModuleNotFoundError:  # pragma: no cover - supports direct script execution.
-    from closeout_plan_receipt import load_validated_closeout_plan_receipt
+from scripts.lean_process_diagnostics import (
+    bounded_lean_diagnostic_excerpt,
+    lean_diagnostic_failure_reason,
+)
 
-try:
-    from scripts.check_formalization_engine_revision import (
-        runtime_engine_registration_error,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports direct script execution.
-    from check_formalization_engine_revision import runtime_engine_registration_error
+from scripts.current_closeout.declarations import (
+    LeanDeclaration,
+    declaration_key,
+    declaration_index_from_inventory as lean_declaration_index_from_inventory,
+    declaration_index_from_source_records as lean_declaration_index_from_source_records,
+    resolve_declaration_name,
+    unique_declarations,
+)
 
-try:
-    from scripts.source_model_process_obligations import (
-        caller_supplied_model_construction_basis,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from source_model_process_obligations import (
-        caller_supplied_model_construction_basis,
-    )
+from scripts.current_closeout.primary_gate import (
+    CurrentV11PrimaryGateResult,
+    ReviewRoutePartition,
+    partition_review_routes,
+)
+from scripts.current_closeout.primary_gate_transaction import (
+    current_v11_primary_gate_result,
+    evaluate_and_accept_current_v11_primary_gate,
+)
 
-try:
-    from scripts.lean_signature_manifest import (
-        FOUNDATION_STRUCTURAL_DATA_ALLOWLIST_SHA256,
-        FOUNDATION_STRUCTURAL_DATA_ALLOWLIST_VERSION,
-        FOUNDATION_STRUCTURAL_DATA_MODULE_BY_HEAD,
-        RECURSIVE_FIELD_SAFETY_RECEIPT_SCHEMA,
-        SEMANTIC_CONTRACT_EXECUTABLE_TERMINAL_RECEIPT_FIELD,
-        SEMANTIC_CONTRACT_EXECUTABLE_TERMINAL_RECEIPT_SCHEMA,
-        SEMANTIC_CONTRACT_EXECUTABLE_TERMINAL_SCHEMA,
-        RepositoryBuildInputSnapshotProvider,
-        canonical_semantic_contract_executable_terminals,
-        canonical_recursive_field_safety_locator,
-        semantic_contract_executable_terminal_receipt_sha256,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from lean_signature_manifest import (
-        FOUNDATION_STRUCTURAL_DATA_ALLOWLIST_SHA256,
-        FOUNDATION_STRUCTURAL_DATA_ALLOWLIST_VERSION,
-        FOUNDATION_STRUCTURAL_DATA_MODULE_BY_HEAD,
-        RECURSIVE_FIELD_SAFETY_RECEIPT_SCHEMA,
-        SEMANTIC_CONTRACT_EXECUTABLE_TERMINAL_RECEIPT_FIELD,
-        SEMANTIC_CONTRACT_EXECUTABLE_TERMINAL_RECEIPT_SCHEMA,
-        SEMANTIC_CONTRACT_EXECUTABLE_TERMINAL_SCHEMA,
-        RepositoryBuildInputSnapshotProvider,
-        canonical_semantic_contract_executable_terminals,
-        canonical_recursive_field_safety_locator,
-        semantic_contract_executable_terminal_receipt_sha256,
-    )
+from scripts.closeout_execution_state import (
+    CloseoutExecutionLease,
+    default_closeout_execution_path,
+)
 
-try:
-    from scripts.source_record_projection_contract import (
-        checked_projection_result,
-        semantic_model_subanalysis_errors,
-        source_record_classification,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from source_record_projection_contract import (
-        checked_projection_result,
-        semantic_model_subanalysis_errors,
-        source_record_classification,
-    )
+from scripts.closeout_status_projection import (
+    CloseoutStatusProjectionError,
+    graph_native_human_review_total_from_payload,
+)
 
-try:
-    from scripts.source_record_target_disposition import (
-        EXPLICIT_DIRECT_SOURCE_ROUTE_ORIGIN,
-        EXPLICIT_DIRECT_SOURCE_ROUTE_ROLE,
-        SOURCE_CLAIM_ATOM_ASSOCIATION_FIELD,
-        SOURCE_CLAIM_ATOM_ROUTE_ORIGIN,
-        SOURCE_CLAIM_ATOM_ROUTE_ROLE,
-        approved_source_convention_antecedent_errors,
-        project_source_record_response_association_pins,
-        recursive_field_target_disposition_errors,
-        semantic_association_record_digest,
-        semantic_target_disposition_errors,
-        source_contract_association_record_digest,
-        source_input_target_disposition_errors,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from source_record_target_disposition import (
-        EXPLICIT_DIRECT_SOURCE_ROUTE_ORIGIN,
-        EXPLICIT_DIRECT_SOURCE_ROUTE_ROLE,
-        SOURCE_CLAIM_ATOM_ASSOCIATION_FIELD,
-        SOURCE_CLAIM_ATOM_ROUTE_ORIGIN,
-        SOURCE_CLAIM_ATOM_ROUTE_ROLE,
-        approved_source_convention_antecedent_errors,
-        project_source_record_response_association_pins,
-        recursive_field_target_disposition_errors,
-        semantic_association_record_digest,
-        semantic_target_disposition_errors,
-        source_contract_association_record_digest,
-        source_input_target_disposition_errors,
-    )
+from scripts.closeout_plan_receipt import (
+    load_validated_closeout_plan_receipt,
+)
 
-try:
-    from scripts.configured_assumption_formalization_regularities import (
-        FORMALIZATION_REGULARITY_CLASSIFICATION,
-        load_configured_assumption_formalization_regularity_context,
-        response_claims_configured_assumption_formalization_regularity,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from configured_assumption_formalization_regularities import (
-        FORMALIZATION_REGULARITY_CLASSIFICATION,
-        load_configured_assumption_formalization_regularity_context,
-        response_claims_configured_assumption_formalization_regularity,
-    )
+from scripts.obligation_routes import (
+    EvidenceRoute,
+    EvidenceRouteSet,
+    ObligationRouteError,
+)
 
-try:
-    from scripts.source_record_auxiliary_routing_supplement import (
-        current_auxiliary_routing_context,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from source_record_auxiliary_routing_supplement import (
-        current_auxiliary_routing_context,
-    )
 
-try:
-    from scripts.source_record_freshness import (
-        SOURCE_RECORD_ITEM_DIGEST_SCHEMA,
-        source_record_item_judgment_current,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from source_record_freshness import (
-        SOURCE_RECORD_ITEM_DIGEST_SCHEMA,
-        source_record_item_judgment_current,
-    )
+def _legacy_review_surface_structure_module() -> Any:
+    """Load the text parser only for ordinary or historical diagnostics.
 
-try:
-    from scripts.source_record_integrity import (
-        canonical_digest_payload,
-        source_record_audit_receipt_error,
-        source_record_item_reuse_eligible,
-        source_record_target_route_error,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from source_record_integrity import (
-        canonical_digest_payload,
-        source_record_audit_receipt_error,
-        source_record_item_reuse_eligible,
-        source_record_target_route_error,
-    )
+    Current v11 acceptance obtains declarations, kinds, source ranges, and
+    proof relationships from Lean's typed graph. Keeping this import lazy makes
+    it impossible for parser availability to become an incidental prerequisite
+    of the selected closeout path.
+    """
 
-try:
-    from scripts.audit_evidence_integrity import (
-        SOURCE_CLAIM_ATOMS_KEY,
-        SOURCE_CLAIM_ATOMS_SCHEMA,
-        SOURCE_CLAIM_ATOMS_SCHEMA_KEY,
-        SOURCE_CLAIM_ATOM_THEOREM_LIKE_KINDS,
-        SOURCE_SPEC_CORRESPONDENCE_KEY,
-        SOURCE_SPEC_CORRESPONDENCE_SCHEMA,
-        canonical_source_record_match_sidecar_path,
-        canonical_source_record_sidecar_effective_coverage_error,
-        corrected_model_scope_model_bindings,
-        corrected_model_transitively_reachable_field_items,
-        current_paper_statement_map_sha256,
-        semantic_contract_closeout_bridge_inventory,
-        schema_version_is_exact,
-        schema_version_is_supported,
-        source_spec_correspondence_item_identity_sha256,
-        source_spec_correspondence_enabled,
-        source_spec_correspondence_requested,
-        source_spec_correspondence_validation_errors,
-        source_claim_atoms_validation_errors,
-        source_record_audit_identity_error,
-        source_record_effective_semantic_errors,
-        source_record_effective_input_judgment_keys,
-        source_record_effective_semantic_surface_error,
-        source_record_semantic_contract_revalidation_context,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from audit_evidence_integrity import (
-        SOURCE_CLAIM_ATOMS_KEY,
-        SOURCE_CLAIM_ATOMS_SCHEMA,
-        SOURCE_CLAIM_ATOMS_SCHEMA_KEY,
-        SOURCE_CLAIM_ATOM_THEOREM_LIKE_KINDS,
-        SOURCE_SPEC_CORRESPONDENCE_KEY,
-        SOURCE_SPEC_CORRESPONDENCE_SCHEMA,
-        canonical_source_record_match_sidecar_path,
-        canonical_source_record_sidecar_effective_coverage_error,
-        corrected_model_scope_model_bindings,
-        corrected_model_transitively_reachable_field_items,
-        current_paper_statement_map_sha256,
-        semantic_contract_closeout_bridge_inventory,
-        schema_version_is_exact,
-        schema_version_is_supported,
-        source_spec_correspondence_item_identity_sha256,
-        source_spec_correspondence_enabled,
-        source_spec_correspondence_requested,
-        source_spec_correspondence_validation_errors,
-        source_claim_atoms_validation_errors,
-        source_record_audit_identity_error,
-        source_record_effective_semantic_errors,
-        source_record_effective_input_judgment_keys,
-        source_record_effective_semantic_surface_error,
-        source_record_semantic_contract_revalidation_context,
-    )
+    from scripts import review_surface_structure
 
-try:
-    from scripts.source_claim_semantic_contract import (
-        RecursiveFieldExplicitParentComponentReceipt,
-        SemanticContractExecutableTerminalComponentReceipt,
-        StrictSourceSpecCorrespondenceReceipt,
-        source_claim_component_sha256,
-        theorem_realization_components,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports direct-script imports.
-    from source_claim_semantic_contract import (
-        RecursiveFieldExplicitParentComponentReceipt,
-        SemanticContractExecutableTerminalComponentReceipt,
-        StrictSourceSpecCorrespondenceReceipt,
-        source_claim_component_sha256,
-        theorem_realization_components,
-    )
+    return review_surface_structure
 
-try:
-    from scripts.source_record_schema4_to5_migration import (
-        copy_loaded_source_record_schema4_to5_migration_item,
-        is_loaded_source_record_schema4_to5_migration_item,
-        load_current_source_record_schema4_to5_migration_items,
-        source_record_schema4_to5_migration_item_has_provenance,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from source_record_schema4_to5_migration import (
-        copy_loaded_source_record_schema4_to5_migration_item,
-        is_loaded_source_record_schema4_to5_migration_item,
-        load_current_source_record_schema4_to5_migration_items,
-        source_record_schema4_to5_migration_item_has_provenance,
-    )
 
-try:
-    from scripts.source_record_differential_revalidation import (
-        _raw_item_groups as source_record_raw_item_groups,
-        copy_loaded_source_record_differential_revalidation_item,
-        is_loaded_source_record_differential_revalidation_item,
-        load_current_source_record_differential_revalidation_items,
-        source_record_differential_revalidation_item_has_provenance,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports direct-script imports.
-    from source_record_differential_revalidation import (
-        _raw_item_groups as source_record_raw_item_groups,
-        copy_loaded_source_record_differential_revalidation_item,
-        is_loaded_source_record_differential_revalidation_item,
-        load_current_source_record_differential_revalidation_items,
-        source_record_differential_revalidation_item_has_provenance,
-    )
+def auxiliary_names_not_exported_from_review_source(
+    auxiliary_names: set[str],
+    actual_review_names: list[str],
+    configured_assumption_declaration_names: set[str] | None = None,
+) -> list[str]:
+    """Compare configured roles with an already established declaration set."""
 
-try:
-    from scripts.source_record_attested_selected_reuse import (
-        copy_loaded_source_record_attested_selected_reuse_item,
-        is_loaded_source_record_attested_selected_reuse_item,
-        load_current_attested_selected_semantic_reuse_items,
-        source_record_attested_selected_reuse_item_has_provenance,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from source_record_attested_selected_reuse import (
-        copy_loaded_source_record_attested_selected_reuse_item,
-        is_loaded_source_record_attested_selected_reuse_item,
-        load_current_attested_selected_semantic_reuse_items,
-        source_record_attested_selected_reuse_item_has_provenance,
-    )
+    exported = set(actual_review_names)
+    exported.update(name.rsplit(".", 1)[-1] for name in actual_review_names)
+    exported.update(configured_assumption_declaration_names or set())
+    return sorted(auxiliary_names - exported)
 
-try:
-    from scripts.source_coverage_scope import (
-        DEEP_PAPER_WITH_ALL_PROSE_CLAIMS,
-        NAMED_THEORETICAL_STATEMENTS,
-        filter_source_map_items_for_proof_obligations,
-        source_coverage_mode_from_map,
-        source_index_byte_pinned_anchor_item_ids,
-        source_record_source_item_record_sha256,
-        source_record_source_item_semantic_sha256,
-        source_named_result_environment_kinds_from_map,
-        source_presentation_aliases,
-    )
-except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
-    from source_coverage_scope import (
-        DEEP_PAPER_WITH_ALL_PROSE_CLAIMS,
-        NAMED_THEORETICAL_STATEMENTS,
-        filter_source_map_items_for_proof_obligations,
-        source_coverage_mode_from_map,
-        source_index_byte_pinned_anchor_item_ids,
-        source_record_source_item_record_sha256,
-        source_record_source_item_semantic_sha256,
-        source_named_result_environment_kinds_from_map,
-        source_presentation_aliases,
-    )
 
-try:
-    from scripts.root_readme_policy import validate_root_readme
-except ModuleNotFoundError:  # pragma: no cover - supports module-style imports
-    from root_readme_policy import validate_root_readme
+def reviewed_names_not_declared_in_review_source(
+    include_names: list[str],
+    declaration_blocks: Mapping[str, object],
+) -> list[str]:
+    """Compare configured rows with Lean-owned or legacy declaration records."""
+
+    declared = set(declaration_blocks)
+    declared.update(name.rsplit(".", 1)[-1] for name in declaration_blocks)
+    return [
+        name
+        for name in include_names
+        if name not in declared and name.rsplit(".", 1)[-1] not in declared
+    ]
+
+from scripts.check_formalization_engine_revision import (
+    runtime_engine_registration_error,
+)
+
+from scripts.statement_sidecar_audit import statement_sidecar_summary_issues
+
+from scripts.source_model_process_obligations import (
+    caller_supplied_model_construction_basis,
+)
+
+from scripts.lean_signature_manifest import (
+    FOUNDATION_STRUCTURAL_DATA_ALLOWLIST_SHA256,
+    FOUNDATION_STRUCTURAL_DATA_ALLOWLIST_VERSION,
+    FOUNDATION_STRUCTURAL_DATA_MODULE_BY_HEAD,
+    RECURSIVE_FIELD_SAFETY_RECEIPT_SCHEMA,
+    SEMANTIC_CONTRACT_EXECUTABLE_TERMINAL_RECEIPT_FIELD,
+    SEMANTIC_CONTRACT_EXECUTABLE_TERMINAL_RECEIPT_SCHEMA,
+    SEMANTIC_CONTRACT_EXECUTABLE_TERMINAL_SCHEMA,
+    RepositoryBuildInputSnapshotProvider,
+    canonical_semantic_contract_executable_terminals,
+    canonical_recursive_field_safety_locator,
+    semantic_contract_executable_terminal_receipt_sha256,
+)
+
+from scripts.source_record_legacy_contract import (
+    EXPLICIT_DIRECT_SOURCE_ROUTE_ORIGIN,
+    EXPLICIT_DIRECT_SOURCE_ROUTE_ROLE,
+    SOURCE_CLAIM_ATOM_ASSOCIATION_FIELD,
+    SOURCE_CLAIM_ATOM_ROUTE_ORIGIN,
+    SOURCE_CLAIM_ATOM_ROUTE_ROLE,
+    SOURCE_RECORD_ITEM_DIGEST_SCHEMA,
+)
+from scripts.legacy_source_record_boundary import (
+    deferred_legacy_source_record_callable as _deferred_legacy_source_record_callable,
+)
+
+from scripts.configured_assumption_formalization_regularities import (
+    FORMALIZATION_REGULARITY_CLASSIFICATION,
+    load_configured_assumption_formalization_regularity_context,
+    response_claims_configured_assumption_formalization_regularity,
+)
+
+from scripts.audit_evidence_integrity import (
+    SOURCE_CLAIM_ATOMS_KEY,
+    SOURCE_CLAIM_ATOMS_SCHEMA,
+    SOURCE_CLAIM_ATOMS_SCHEMA_KEY,
+    SOURCE_CLAIM_ATOM_THEOREM_LIKE_KINDS,
+    SOURCE_SPEC_CORRESPONDENCE_KEY,
+    SOURCE_SPEC_CORRESPONDENCE_SCHEMA,
+    canonical_source_record_match_sidecar_path,
+    canonical_source_record_sidecar_effective_coverage_error,
+    corrected_model_scope_model_bindings,
+    corrected_model_transitively_reachable_field_items,
+    current_paper_statement_map_sha256,
+    graph_native_source_spec_realization_receipts,
+    graph_authority_source_spec_correspondence_errors,
+    raw_source_spec_screening_requested,
+    semantic_authority_source_spec_correspondence_errors,
+    semantic_contract_closeout_bridge_inventory,
+    schema_version_is_exact,
+    schema_version_is_supported,
+    source_spec_correspondence_item_identity_sha256,
+    source_spec_correspondence_enabled,
+    source_spec_correspondence_requested,
+    source_spec_correspondence_validation_errors,
+    source_claim_atoms_validation_errors,
+    source_index_byte_pinned_anchor_item_ids,
+    source_record_audit_identity_error,
+    source_record_effective_semantic_errors,
+    source_record_effective_input_judgment_keys,
+    source_record_effective_semantic_surface_error,
+    source_record_semantic_contract_revalidation_context,
+)
+
+from scripts.source_claim_semantic_contract import (
+    RecursiveFieldExplicitParentComponentReceipt,
+    SemanticContractExecutableTerminalComponentReceipt,
+    StrictSourceSpecCorrespondenceReceipt,
+    source_claim_component_sha256,
+    theorem_realization_components,
+)
+
+from scripts.source_coverage_scope import (
+    DEEP_PAPER_WITH_ALL_PROSE_CLAIMS,
+    KNOWN_SOURCE_PRESENTATION_KINDS,
+    NAMED_THEORETICAL_STATEMENTS,
+    filter_source_map_items_for_proof_obligations,
+    explicit_raw_source_spec_screening_requested,
+    source_coverage_mode_from_map,
+    source_record_source_item_record_sha256,
+    source_record_source_item_semantic_sha256,
+    source_item_effective_route_policy,
+    source_named_result_environment_kinds_from_map,
+    source_presentation_aliases,
+)
+
+from scripts.root_readme_policy import validate_root_readme
+
+from scripts.repository_check_registry import (
+    execute_registered_checks,
+    ordinary_repository_checks,
+    reusable_library_checks,
+)
+
+
+checked_projection_result = _deferred_legacy_source_record_callable(
+    "checked_projection_result"
+)
+semantic_model_subanalysis_errors = _deferred_legacy_source_record_callable(
+    "semantic_model_subanalysis_errors"
+)
+source_record_classification = _deferred_legacy_source_record_callable(
+    "source_record_classification"
+)
+approved_source_convention_antecedent_errors = (
+    _deferred_legacy_source_record_callable(
+        "approved_source_convention_antecedent_errors"
+    )
+)
+project_source_record_response_association_pins = (
+    _deferred_legacy_source_record_callable(
+        "project_source_record_response_association_pins"
+    )
+)
+recursive_field_target_disposition_errors = (
+    _deferred_legacy_source_record_callable(
+        "recursive_field_target_disposition_errors"
+    )
+)
+semantic_association_record_digest = _deferred_legacy_source_record_callable(
+    "semantic_association_record_digest"
+)
+semantic_target_disposition_errors = _deferred_legacy_source_record_callable(
+    "semantic_target_disposition_errors"
+)
+source_contract_association_record_digest = (
+    _deferred_legacy_source_record_callable(
+        "source_contract_association_record_digest"
+    )
+)
+source_input_target_disposition_errors = _deferred_legacy_source_record_callable(
+    "source_input_target_disposition_errors"
+)
+current_auxiliary_routing_context = _deferred_legacy_source_record_callable(
+    "current_auxiliary_routing_context"
+)
+source_record_item_judgment_current = _deferred_legacy_source_record_callable(
+    "source_record_item_judgment_current"
+)
+canonical_digest_payload = _deferred_legacy_source_record_callable(
+    "canonical_digest_payload"
+)
+source_record_audit_receipt_error = _deferred_legacy_source_record_callable(
+    "source_record_audit_receipt_error"
+)
+source_record_audit_surface_view = _deferred_legacy_source_record_callable(
+    "source_record_audit_surface_view"
+)
+source_record_item_reuse_eligible = _deferred_legacy_source_record_callable(
+    "source_record_item_reuse_eligible"
+)
+source_record_target_route_error = _deferred_legacy_source_record_callable(
+    "source_record_target_route_error"
+)
+raw_source_record_obligation_groups = _deferred_legacy_source_record_callable(
+    "raw_source_record_obligation_groups"
+)
+serialized_source_record_overlay_labels = _deferred_legacy_source_record_callable(
+    "serialized_source_record_overlay_labels"
+)
+source_record_overlay_labels_with_artifacts = (
+    _deferred_legacy_source_record_callable(
+        "source_record_overlay_labels_with_artifacts"
+    )
+)
+archived_source_record_transport_artifacts = (
+    _deferred_legacy_source_record_callable(
+        "archived_source_record_transport_artifacts"
+    )
+)
+archived_source_record_transport_item_field = (
+    _deferred_legacy_source_record_callable(
+        "archived_source_record_transport_item_field"
+    )
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -483,9 +458,9 @@ SOURCE_RECORD_JUDGMENT_ITEM_SECTIONS = (
 )
 REQUIRED_LLM_ASSUMPTION_PROMPT_VERSION = "assumption-provenance-v4-verbatim-source-anchor-exact-premise"
 REQUIRED_LLM_STATEMENT_PROMPT_VERSION = (
-    "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2"
+    "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
 )
-REQUIRED_SOURCE_RECORD_PROMPT_VERSION = "source-record-v10-semantic-conclusion-boundary-contract"
+REQUIRED_SOURCE_RECORD_PROMPT_VERSION = CURRENT_SOURCE_RECORD_PROMPT_VERSION
 SOURCE_RECORD_LEAN_IMPORT_CLOSURE_FIELD = "lean_import_closure"
 
 
@@ -518,850 +493,6 @@ SOURCE_RECORD_EXACT_LOCATOR_RE = re.compile(
     r")",
     re.I,
 )
-# Historical receipt parsers below remain available for inspecting archived
-# artifacts. They are deliberately not called by any canonical acceptance
-# path; source/conclusion closure is decided by the general Lean dependency
-# graph and ordinary source-record classifications.
-OPERATIONAL_OUTCOME_DOMAIN_RECEIPT_SCHEMA = 1
-OPERATIONAL_OUTCOME_DOMAIN_RECEIPT_FIELD = "operational_outcome_domain_receipts"
-OPERATIONAL_OUTCOME_TRANSITION_BINDING_SCHEMA = 1
-OPERATIONAL_OUTCOME_STATE_TRANSITION_RECEIPT_SCHEMA = 2
-OPERATIONAL_OUTCOME_STATE_TRANSITION_RECEIPT_FIELD = (
-    "operational_outcome_state_transition_receipts"
-)
-OPERATIONAL_OUTCOME_STATE_TRANSITION_BINDING_SCHEMA = 1
-_OUTER_BINDER_REF_RE = re.compile(r"^b/(0|[1-9][0-9]*)$")
-
-
-def _operational_outcome_atom_identity(
-    raw_atom: object, *, role: str
-) -> tuple[int, dict[str, str]] | None:
-    """Normalize one exact manifest atom without consulting its display name."""
-
-    if not isinstance(raw_atom, Mapping) or set(raw_atom) != {
-        "ref",
-        "role",
-        "signature_atom_sha256",
-    }:
-        return None
-    ref = str(raw_atom.get("ref") or "").strip()
-    atom_role = str(raw_atom.get("role") or "").strip()
-    atom_digest = str(raw_atom.get("signature_atom_sha256") or "").strip().lower()
-    match = _OUTER_BINDER_REF_RE.fullmatch(ref)
-    if (
-        match is None
-        or atom_role != role
-        or not re.fullmatch(r"[0-9a-f]{64}", atom_digest)
-    ):
-        return None
-    return int(match.group(1)), {
-        "ref": ref,
-        "role": atom_role,
-        "signature_atom_sha256": atom_digest,
-    }
-
-
-def operational_outcome_result_path_atoms(
-    raw_path: object,
-    *,
-    expected_signature_sha256: str,
-) -> tuple[
-    tuple[int, dict[str, str]],
-    tuple[int, dict[str, str]],
-    tuple[int, dict[str, str]],
-] | None:
-    """Validate a generated result-domain path without using binder names.
-
-    The only admissible shape is a universally quantified outcome parameter
-    immediately followed by a legal-execution proof and a terminal predicate.
-    All positions are exact Lean-manifest atoms. Later result binders may be
-    independently audited conclusion obligations; this route reads no later
-    atoms and grants them no execution-model credit. This intentionally
-    rejects a header premise, a result-level forall with a different connective
-    shape, or a path reconstructed from text/binder spellings.
-    """
-
-    if not isinstance(raw_path, Mapping):
-        return None
-    signature = str(raw_path.get("manifest_signature_sha256") or "").strip().lower()
-    supplied_digest = str(raw_path.get("path_sha256") or "").strip().lower()
-    if (
-        not re.fullmatch(r"[0-9a-f]{64}", signature)
-        or signature != expected_signature_sha256.strip().lower()
-        or not re.fullmatch(r"[0-9a-f]{64}", supplied_digest)
-        or not schema_version_is_exact(raw_path.get("schema"), 1)
-        or raw_path.get("input_section") != "result"
-        or raw_path.get("connective") != "arrow"
-    ):
-        return None
-    digest_payload = {key: value for key, value in raw_path.items() if key != "path_sha256"}
-    expected_digest = hashlib.sha256(
-        json.dumps(
-            digest_payload,
-            ensure_ascii=False,
-            sort_keys=True,
-            separators=(",", ":"),
-        ).encode("utf-8")
-    ).hexdigest()
-    if supplied_digest != expected_digest:
-        return None
-
-    raw_binder_atoms = raw_path.get("binder_atoms")
-    raw_preceding = raw_path.get("preceding_result_binder_atoms")
-    raw_following = raw_path.get("following_result_binder_atoms")
-    if (
-        not isinstance(raw_binder_atoms, list)
-        or not isinstance(raw_preceding, list)
-        or not isinstance(raw_following, list)
-        or len(raw_binder_atoms) != 1
-        or len(raw_preceding) != 1
-        or len(raw_following) < 1
-    ):
-        return None
-    terminal = _operational_outcome_atom_identity(raw_preceding[0], role="parameter")
-    run = _operational_outcome_atom_identity(raw_binder_atoms[0], role="assumption")
-    terminal_predicate = _operational_outcome_atom_identity(
-        raw_following[0], role="assumption"
-    )
-    terminal_conclusion = raw_path.get("terminal_conclusion_atom")
-    if (
-        terminal is None
-        or run is None
-        or terminal_predicate is None
-        or not isinstance(terminal_conclusion, Mapping)
-        or set(terminal_conclusion) != {"ref", "role", "signature_atom_sha256"}
-        or str(terminal_conclusion.get("ref") or "").strip() != "result"
-        or str(terminal_conclusion.get("role") or "").strip() != "conclusion"
-        or not re.fullmatch(
-            r"[0-9a-f]{64}",
-            str(terminal_conclusion.get("signature_atom_sha256") or "").strip().lower(),
-        )
-        or not (terminal[0] + 1 == run[0] and run[0] + 1 == terminal_predicate[0])
-    ):
-        return None
-    return terminal, run, terminal_predicate
-
-
-def operational_outcome_result_path_indices(
-    raw_path: object,
-    *,
-    expected_signature_sha256: str,
-) -> tuple[int, int, int] | None:
-    """Return the validated terminal/run/predicate positions for one path."""
-
-    atoms = operational_outcome_result_path_atoms(
-        raw_path, expected_signature_sha256=expected_signature_sha256
-    )
-    if atoms is None:
-        return None
-    terminal, run, terminal_predicate = atoms
-    return terminal[0], run[0], terminal_predicate[0]
-
-
-def _operational_outcome_domain_receipt(
-    raw_receipt: object,
-) -> dict[str, object] | None:
-    """Parse a sidecar's complete model/run/bridge receipt fail-closed."""
-
-    required_fields = {
-        "schema",
-        "target_declaration_sha256",
-        "target_signature_sha256",
-        "result_path_sha256",
-        "model_header_atom",
-        "model_root",
-        "run_atom",
-        "transition_root",
-        "bridge_declaration",
-    }
-    if not isinstance(raw_receipt, Mapping) or set(raw_receipt) != required_fields:
-        return None
-    if not schema_version_is_exact(
-        raw_receipt.get("schema"), OPERATIONAL_OUTCOME_DOMAIN_RECEIPT_SCHEMA
-    ):
-        return None
-    declaration_sha = str(raw_receipt.get("target_declaration_sha256") or "").strip().lower()
-    signature_sha = str(raw_receipt.get("target_signature_sha256") or "").strip().lower()
-    path_sha = str(raw_receipt.get("result_path_sha256") or "").strip().lower()
-    model = _operational_outcome_atom_identity(
-        raw_receipt.get("model_header_atom"), role="parameter"
-    )
-    run = _operational_outcome_atom_identity(raw_receipt.get("run_atom"), role="assumption")
-    model_root = str(raw_receipt.get("model_root") or "").strip()
-    transition_root = str(raw_receipt.get("transition_root") or "").strip()
-    bridge = str(raw_receipt.get("bridge_declaration") or "").strip()
-    if (
-        not re.fullmatch(r"[0-9a-f]{64}", declaration_sha)
-        or not re.fullmatch(r"[0-9a-f]{64}", signature_sha)
-        or not re.fullmatch(r"[0-9a-f]{64}", path_sha)
-        or model is None
-        or run is None
-        or not is_fully_qualified_lean_identity(model_root)
-        or not is_fully_qualified_lean_identity(transition_root)
-        or not is_fully_qualified_lean_identity(bridge)
-    ):
-        return None
-    return {
-        "target_declaration_sha256": declaration_sha,
-        "target_signature_sha256": signature_sha,
-        "result_path_sha256": path_sha,
-        "model_header_atom": model[1],
-        "model_root": model_root,
-        "run_atom": run[1],
-        "transition_root": transition_root,
-        "bridge_declaration": bridge,
-    }
-
-
-def _operational_outcome_transition_binding(
-    raw_binding: object,
-    *,
-    qualified_declaration: str,
-    declaration_sha256: str,
-    signature_sha256: str,
-    result_path_sha256: str,
-    run_atom: Mapping[str, str],
-) -> tuple[int, dict[str, object]] | None:
-    """Validate one generated model/header-to-result-run atom join."""
-
-    required_fields = {
-        "schema",
-        "reviewed_declaration_identity",
-        "reviewed_elaborated_signature_identity",
-        "model_header_atom",
-        "model_root",
-        "result_path_sha256",
-        "run_atom",
-        "transition_root",
-    }
-    if not isinstance(raw_binding, Mapping) or set(raw_binding) != required_fields:
-        return None
-    if not schema_version_is_exact(
-        raw_binding.get("schema"), OPERATIONAL_OUTCOME_TRANSITION_BINDING_SCHEMA
-    ):
-        return None
-    declaration_identity = raw_binding.get("reviewed_declaration_identity")
-    signature_identity = raw_binding.get("reviewed_elaborated_signature_identity")
-    if (
-        not isinstance(declaration_identity, Mapping)
-        or set(declaration_identity) != {"qualified_declaration", "declaration_sha256"}
-        or str(declaration_identity.get("qualified_declaration") or "").strip()
-        != qualified_declaration
-        or str(declaration_identity.get("declaration_sha256") or "").strip().lower()
-        != declaration_sha256
-        or not isinstance(signature_identity, Mapping)
-        or set(signature_identity)
-        != {"qualified_declaration", "elaborated_signature_sha256"}
-        or str(signature_identity.get("qualified_declaration") or "").strip()
-        != qualified_declaration
-        or str(signature_identity.get("elaborated_signature_sha256") or "").strip().lower()
-        != signature_sha256
-    ):
-        return None
-    model = _operational_outcome_atom_identity(
-        raw_binding.get("model_header_atom"), role="parameter"
-    )
-    bound_run = _operational_outcome_atom_identity(raw_binding.get("run_atom"), role="assumption")
-    model_root = str(raw_binding.get("model_root") or "").strip()
-    transition_root = str(raw_binding.get("transition_root") or "").strip()
-    path_sha = str(raw_binding.get("result_path_sha256") or "").strip().lower()
-    if (
-        model is None
-        or bound_run is None
-        or path_sha != result_path_sha256
-        or bound_run[1] != dict(run_atom)
-        or not is_fully_qualified_lean_identity(model_root)
-        or not is_fully_qualified_lean_identity(transition_root)
-    ):
-        return None
-    return model[0], {
-        "model_header_atom": model[1],
-        "model_root": model_root,
-        "run_atom": bound_run[1],
-        "transition_root": transition_root,
-    }
-
-
-def operational_outcome_domain_bridge_route(
-    semantic_item: Mapping[str, object],
-    semantic_judgment: Mapping[str, object],
-    *,
-    qualified_declaration: str,
-    raw_path: object,
-) -> tuple[str, int, int, int, int, str, str] | None:
-    """Join one sidecar bridge to one generated atom-pinned operational route.
-
-    A route exists only when the semantic row, generated model/run binding,
-    result path, and sidecar receipt all agree exactly.  Neither the generated
-    output nor this join uses a binder spelling, row label, or theorem-name
-    heuristic to identify the model or transition.
-    """
-
-    semantic_identity = semantic_model_item_exact_receipt_identity(
-        semantic_item, qualified_declaration=qualified_declaration
-    )
-    if semantic_identity is None:
-        return None
-    declaration_sha, signature_sha = semantic_identity
-    path_atoms = operational_outcome_result_path_atoms(
-        raw_path, expected_signature_sha256=signature_sha
-    )
-    if path_atoms is None or not isinstance(raw_path, Mapping):
-        return None
-    terminal, run, terminal_predicate = path_atoms
-    path_sha = str(raw_path.get("path_sha256") or "").strip().lower()
-    raw_bindings = semantic_item.get("operational_outcome_transition_bindings")
-    raw_receipts = semantic_judgment.get(OPERATIONAL_OUTCOME_DOMAIN_RECEIPT_FIELD)
-    if not isinstance(raw_bindings, list) or not isinstance(raw_receipts, list):
-        return None
-
-    bindings: list[tuple[int, dict[str, object]]] = []
-    for raw_binding in raw_bindings:
-        binding = _operational_outcome_transition_binding(
-            raw_binding,
-            qualified_declaration=qualified_declaration,
-            declaration_sha256=declaration_sha,
-            signature_sha256=signature_sha,
-            result_path_sha256=path_sha,
-            run_atom=run[1],
-        )
-        if binding is None:
-            return None
-        bindings.append(binding)
-    receipts: list[dict[str, object]] = []
-    for raw_receipt in raw_receipts:
-        receipt = _operational_outcome_domain_receipt(raw_receipt)
-        if receipt is None:
-            return None
-        receipts.append(receipt)
-
-    matches: list[tuple[str, int, int, int, int, str, str]] = []
-    for model_index, binding in bindings:
-        if model_index >= terminal[0]:
-            continue
-        for receipt in receipts:
-            if (
-                receipt["target_declaration_sha256"] != declaration_sha
-                or receipt["target_signature_sha256"] != signature_sha
-                or receipt["result_path_sha256"] != path_sha
-                or receipt["model_header_atom"] != binding["model_header_atom"]
-                or receipt["model_root"] != binding["model_root"]
-                or receipt["run_atom"] != binding["run_atom"]
-                or receipt["transition_root"] != binding["transition_root"]
-            ):
-                continue
-            bridge = str(receipt["bridge_declaration"])
-            matches.append(
-                (
-                    bridge,
-                    model_index,
-                    terminal[0],
-                    run[0],
-                    terminal_predicate[0],
-                    str(binding["model_root"]),
-                    str(binding["transition_root"]),
-                )
-            )
-    return matches[0] if len(matches) == 1 else None
-
-
-def _operational_outcome_state_transition_result_path_atoms(
-    raw_path: object,
-    *,
-    expected_signature_sha256: str,
-) -> tuple[
-    tuple[int, dict[str, str]],
-    tuple[int, dict[str, str]],
-    tuple[int, dict[str, str]],
-    tuple[int, dict[str, str]],
-    tuple[int, dict[str, str]],
-] | None:
-    """Validate one state/initial/terminal/run result-path window.
-
-    This is a narrow, manifest-owned telescope shape.  The matching Lean
-    checker subsequently verifies that the state has the advertised carrier
-    root and that the run actually starts at it; Python never infers either
-    fact from a label or declaration name.
-    """
-
-    if not isinstance(raw_path, Mapping):
-        return None
-    signature = str(raw_path.get("manifest_signature_sha256") or "").strip().lower()
-    supplied_digest = str(raw_path.get("path_sha256") or "").strip().lower()
-    if (
-        not re.fullmatch(r"[0-9a-f]{64}", signature)
-        or signature != expected_signature_sha256.strip().lower()
-        or not re.fullmatch(r"[0-9a-f]{64}", supplied_digest)
-        or not schema_version_is_exact(raw_path.get("schema"), 1)
-        or raw_path.get("input_section") != "result"
-        or raw_path.get("connective") != "forall"
-    ):
-        return None
-    digest_payload = {key: value for key, value in raw_path.items() if key != "path_sha256"}
-    expected_digest = hashlib.sha256(
-        json.dumps(
-            digest_payload,
-            ensure_ascii=False,
-            sort_keys=True,
-            separators=(",", ":"),
-        ).encode("utf-8")
-    ).hexdigest()
-    if supplied_digest != expected_digest:
-        return None
-    raw_binder_atoms = raw_path.get("binder_atoms")
-    raw_preceding = raw_path.get("preceding_result_binder_atoms")
-    raw_following = raw_path.get("following_result_binder_atoms")
-    if (
-        not isinstance(raw_binder_atoms, list)
-        or not isinstance(raw_preceding, list)
-        or not isinstance(raw_following, list)
-        or len(raw_binder_atoms) != 1
-        or len(raw_following) < 4
-    ):
-        return None
-    state = _operational_outcome_atom_identity(raw_binder_atoms[0], role="parameter")
-    initial_predicate = _operational_outcome_atom_identity(
-        raw_following[0], role="assumption"
-    )
-    terminal = _operational_outcome_atom_identity(raw_following[1], role="parameter")
-    run = _operational_outcome_atom_identity(raw_following[2], role="assumption")
-    terminal_predicate = _operational_outcome_atom_identity(
-        raw_following[3], role="assumption"
-    )
-    terminal_conclusion = raw_path.get("terminal_conclusion_atom")
-    if (
-        state is None
-        or initial_predicate is None
-        or terminal is None
-        or run is None
-        or terminal_predicate is None
-        or not isinstance(terminal_conclusion, Mapping)
-        or set(terminal_conclusion) != {"ref", "role", "signature_atom_sha256"}
-        or str(terminal_conclusion.get("ref") or "").strip() != "result"
-        or str(terminal_conclusion.get("role") or "").strip() != "conclusion"
-        or not re.fullmatch(
-            r"[0-9a-f]{64}",
-            str(terminal_conclusion.get("signature_atom_sha256") or "")
-            .strip()
-            .lower(),
-        )
-        or not (
-            state[0] + 1 == initial_predicate[0]
-            and initial_predicate[0] + 1 == terminal[0]
-            and terminal[0] + 1 == run[0]
-            and run[0] + 1 == terminal_predicate[0]
-        )
-    ):
-        return None
-    return state, initial_predicate, terminal, run, terminal_predicate
-
-
-def _operational_outcome_state_transition_run_path_matches(
-    raw_state_path: object,
-    raw_run_path: object,
-    *,
-    expected_signature_sha256: str,
-) -> bool:
-    """Check that a transition dependency is the exact run of a state path."""
-
-    state_atoms = _operational_outcome_state_transition_result_path_atoms(
-        raw_state_path, expected_signature_sha256=expected_signature_sha256
-    )
-    if state_atoms is None or not isinstance(raw_state_path, Mapping):
-        return False
-    if not isinstance(raw_run_path, Mapping):
-        return False
-    signature = str(raw_run_path.get("manifest_signature_sha256") or "").strip().lower()
-    supplied_digest = str(raw_run_path.get("path_sha256") or "").strip().lower()
-    if (
-        not re.fullmatch(r"[0-9a-f]{64}", signature)
-        or signature != expected_signature_sha256.strip().lower()
-        or not re.fullmatch(r"[0-9a-f]{64}", supplied_digest)
-        or not schema_version_is_exact(raw_run_path.get("schema"), 1)
-        or raw_run_path.get("input_section") != "result"
-        or raw_run_path.get("connective") != "arrow"
-    ):
-        return False
-    digest_payload = {key: value for key, value in raw_run_path.items() if key != "path_sha256"}
-    expected_digest = hashlib.sha256(
-        json.dumps(
-            digest_payload,
-            ensure_ascii=False,
-            sort_keys=True,
-            separators=(",", ":"),
-        ).encode("utf-8")
-    ).hexdigest()
-    if supplied_digest != expected_digest:
-        return False
-    raw_binders = raw_run_path.get("binder_atoms")
-    raw_preceding = raw_run_path.get("preceding_result_binder_atoms")
-    raw_following = raw_run_path.get("following_result_binder_atoms")
-    if (
-        not isinstance(raw_binders, list)
-        or not isinstance(raw_preceding, list)
-        or not isinstance(raw_following, list)
-        or len(raw_binders) != 1
-    ):
-        return False
-    state, initial_predicate, terminal, run, terminal_predicate = state_atoms
-    expected_preceding = [
-        *list(raw_state_path.get("preceding_result_binder_atoms") or []),
-        state[1],
-        initial_predicate[1],
-        terminal[1],
-    ]
-    expected_following = [
-        terminal_predicate[1],
-        *list(raw_state_path.get("following_result_binder_atoms") or [])[4:],
-    ]
-    return bool(
-        raw_preceding == expected_preceding
-        and raw_binders == [run[1]]
-        and raw_following == expected_following
-        and raw_run_path.get("terminal_conclusion_atom")
-        == raw_state_path.get("terminal_conclusion_atom")
-    )
-
-
-def _operational_outcome_state_transition_receipt(
-    raw_receipt: object,
-) -> dict[str, object] | None:
-    """Parse one complete result-local state/transition sidecar receipt."""
-
-    required_fields = {
-        "schema",
-        "target_declaration_sha256",
-        "target_signature_sha256",
-        "model_header_atom",
-        "model_root",
-        "state_result_path_sha256",
-        "state_atom",
-        "state_root",
-        "initial_predicate_atom",
-        "run_result_path_sha256",
-        "terminal_atom",
-        "run_atom",
-        "terminal_predicate_atom",
-        "transition_root",
-        "bridge_declaration",
-        "initial_state_witness_declaration",
-    }
-    if not isinstance(raw_receipt, Mapping) or set(raw_receipt) != required_fields:
-        return None
-    if not schema_version_is_exact(
-        raw_receipt.get("schema"), OPERATIONAL_OUTCOME_STATE_TRANSITION_RECEIPT_SCHEMA
-    ):
-        return None
-    declaration_sha = str(raw_receipt.get("target_declaration_sha256") or "").strip().lower()
-    signature_sha = str(raw_receipt.get("target_signature_sha256") or "").strip().lower()
-    state_path_sha = str(raw_receipt.get("state_result_path_sha256") or "").strip().lower()
-    run_path_sha = str(raw_receipt.get("run_result_path_sha256") or "").strip().lower()
-    model = _operational_outcome_atom_identity(
-        raw_receipt.get("model_header_atom"), role="parameter"
-    )
-    state = _operational_outcome_atom_identity(raw_receipt.get("state_atom"), role="parameter")
-    initial_predicate = _operational_outcome_atom_identity(
-        raw_receipt.get("initial_predicate_atom"), role="assumption"
-    )
-    terminal = _operational_outcome_atom_identity(
-        raw_receipt.get("terminal_atom"), role="parameter"
-    )
-    run = _operational_outcome_atom_identity(raw_receipt.get("run_atom"), role="assumption")
-    terminal_predicate = _operational_outcome_atom_identity(
-        raw_receipt.get("terminal_predicate_atom"), role="assumption"
-    )
-    model_root = str(raw_receipt.get("model_root") or "").strip()
-    state_root = str(raw_receipt.get("state_root") or "").strip()
-    transition_root = str(raw_receipt.get("transition_root") or "").strip()
-    bridge = str(raw_receipt.get("bridge_declaration") or "").strip()
-    initial_witness = str(
-        raw_receipt.get("initial_state_witness_declaration") or ""
-    ).strip()
-    if (
-        not re.fullmatch(r"[0-9a-f]{64}", declaration_sha)
-        or not re.fullmatch(r"[0-9a-f]{64}", signature_sha)
-        or not re.fullmatch(r"[0-9a-f]{64}", state_path_sha)
-        or not re.fullmatch(r"[0-9a-f]{64}", run_path_sha)
-        or model is None
-        or state is None
-        or initial_predicate is None
-        or terminal is None
-        or run is None
-        or terminal_predicate is None
-        or not is_fully_qualified_lean_identity(model_root)
-        or not is_fully_qualified_lean_identity(state_root)
-        or not is_fully_qualified_lean_identity(transition_root)
-        or not is_fully_qualified_lean_identity(bridge)
-        or not is_fully_qualified_lean_identity(initial_witness)
-    ):
-        return None
-    return {
-        "target_declaration_sha256": declaration_sha,
-        "target_signature_sha256": signature_sha,
-        "model_header_atom": model[1],
-        "model_root": model_root,
-        "state_result_path_sha256": state_path_sha,
-        "state_atom": state[1],
-        "state_root": state_root,
-        "initial_predicate_atom": initial_predicate[1],
-        "run_result_path_sha256": run_path_sha,
-        "terminal_atom": terminal[1],
-        "run_atom": run[1],
-        "terminal_predicate_atom": terminal_predicate[1],
-        "transition_root": transition_root,
-        "bridge_declaration": bridge,
-        "initial_state_witness_declaration": initial_witness,
-    }
-
-
-def _operational_outcome_state_transition_binding(
-    raw_binding: object,
-    *,
-    qualified_declaration: str,
-    declaration_sha256: str,
-    signature_sha256: str,
-    state_result_path_sha256: str,
-    run_result_path_sha256: str,
-    state_atom: Mapping[str, str],
-    initial_predicate_atom: Mapping[str, str],
-    terminal_atom: Mapping[str, str],
-    run_atom: Mapping[str, str],
-    terminal_predicate_atom: Mapping[str, str],
-    state_root: str,
-    transition_root: str,
-) -> tuple[int, dict[str, object]] | None:
-    """Validate one generated header/state/run join against exact inputs."""
-
-    required_fields = {
-        "schema",
-        "reviewed_declaration_identity",
-        "reviewed_elaborated_signature_identity",
-        "model_header_atom",
-        "model_root",
-        "state_result_path_sha256",
-        "state_atom",
-        "state_root",
-        "initial_predicate_atom",
-        "run_result_path_sha256",
-        "terminal_atom",
-        "run_atom",
-        "terminal_predicate_atom",
-        "transition_root",
-    }
-    if not isinstance(raw_binding, Mapping) or set(raw_binding) != required_fields:
-        return None
-    if not schema_version_is_exact(
-        raw_binding.get("schema"), OPERATIONAL_OUTCOME_STATE_TRANSITION_BINDING_SCHEMA
-    ):
-        return None
-    declaration_identity = raw_binding.get("reviewed_declaration_identity")
-    signature_identity = raw_binding.get("reviewed_elaborated_signature_identity")
-    if (
-        not isinstance(declaration_identity, Mapping)
-        or set(declaration_identity) != {"qualified_declaration", "declaration_sha256"}
-        or str(declaration_identity.get("qualified_declaration") or "").strip()
-        != qualified_declaration
-        or str(declaration_identity.get("declaration_sha256") or "").strip().lower()
-        != declaration_sha256
-        or not isinstance(signature_identity, Mapping)
-        or set(signature_identity)
-        != {"qualified_declaration", "elaborated_signature_sha256"}
-        or str(signature_identity.get("qualified_declaration") or "").strip()
-        != qualified_declaration
-        or str(signature_identity.get("elaborated_signature_sha256") or "").strip().lower()
-        != signature_sha256
-    ):
-        return None
-    model = _operational_outcome_atom_identity(
-        raw_binding.get("model_header_atom"), role="parameter"
-    )
-    bound_state = _operational_outcome_atom_identity(
-        raw_binding.get("state_atom"), role="parameter"
-    )
-    bound_initial = _operational_outcome_atom_identity(
-        raw_binding.get("initial_predicate_atom"), role="assumption"
-    )
-    bound_terminal = _operational_outcome_atom_identity(
-        raw_binding.get("terminal_atom"), role="parameter"
-    )
-    bound_run = _operational_outcome_atom_identity(raw_binding.get("run_atom"), role="assumption")
-    bound_terminal_predicate = _operational_outcome_atom_identity(
-        raw_binding.get("terminal_predicate_atom"), role="assumption"
-    )
-    model_root = str(raw_binding.get("model_root") or "").strip()
-    bound_state_root = str(raw_binding.get("state_root") or "").strip()
-    bound_transition_root = str(raw_binding.get("transition_root") or "").strip()
-    bound_state_path_sha = str(raw_binding.get("state_result_path_sha256") or "").strip().lower()
-    bound_run_path_sha = str(raw_binding.get("run_result_path_sha256") or "").strip().lower()
-    if (
-        model is None
-        or bound_state is None
-        or bound_initial is None
-        or bound_terminal is None
-        or bound_run is None
-        or bound_terminal_predicate is None
-        or bound_state_path_sha != state_result_path_sha256
-        or bound_run_path_sha != run_result_path_sha256
-        or bound_state[1] != dict(state_atom)
-        or bound_initial[1] != dict(initial_predicate_atom)
-        or bound_terminal[1] != dict(terminal_atom)
-        or bound_run[1] != dict(run_atom)
-        or bound_terminal_predicate[1] != dict(terminal_predicate_atom)
-        or bound_state_root != state_root
-        or bound_transition_root != transition_root
-        or not is_fully_qualified_lean_identity(model_root)
-        or not is_fully_qualified_lean_identity(bound_state_root)
-        or not is_fully_qualified_lean_identity(bound_transition_root)
-    ):
-        return None
-    return model[0], {
-        "model_header_atom": model[1],
-        "model_root": model_root,
-        "state_atom": bound_state[1],
-        "state_root": bound_state_root,
-        "initial_predicate_atom": bound_initial[1],
-        "terminal_atom": bound_terminal[1],
-        "run_atom": bound_run[1],
-        "terminal_predicate_atom": bound_terminal_predicate[1],
-        "transition_root": bound_transition_root,
-    }
-
-
-def operational_outcome_state_transition_bridge_route(
-    semantic_item: Mapping[str, object],
-    semantic_judgment: Mapping[str, object],
-    *,
-    qualified_declaration: str,
-    state_item: Mapping[str, object],
-    run_item: Mapping[str, object],
-) -> tuple[str, str, int, int, int, int, int, int, str, str, str] | None:
-    """Join a result-local state/transition bridge through exact receipts.
-
-    The caller must provide the two generated conclusion dependencies.  This
-    function requires that their paths are the same adjacent elaborated
-    telescope before it considers a sidecar.  It cannot be activated by a
-    source-map label or a declaration/field name.
-    """
-
-    semantic_identity = semantic_model_item_exact_receipt_identity(
-        semantic_item, qualified_declaration=qualified_declaration
-    )
-    state_identity = semantic_model_item_exact_receipt_identity(
-        state_item, qualified_declaration=qualified_declaration
-    )
-    run_identity = semantic_model_item_exact_receipt_identity(
-        run_item, qualified_declaration=qualified_declaration
-    )
-    if (
-        semantic_identity is None
-        or state_identity != semantic_identity
-        or run_identity != semantic_identity
-    ):
-        return None
-    declaration_sha, signature_sha = semantic_identity
-    raw_state_path = state_item.get("elaborated_result_path")
-    raw_run_path = run_item.get("elaborated_result_path")
-    state_atoms = _operational_outcome_state_transition_result_path_atoms(
-        raw_state_path, expected_signature_sha256=signature_sha
-    )
-    if (
-        state_atoms is None
-        or not isinstance(raw_state_path, Mapping)
-        or not isinstance(raw_run_path, Mapping)
-        or not _operational_outcome_state_transition_run_path_matches(
-            raw_state_path,
-            raw_run_path,
-            expected_signature_sha256=signature_sha,
-        )
-    ):
-        return None
-    state, initial_predicate, terminal, run, terminal_predicate = state_atoms
-    state_root = str(state_item.get("record") or "").strip()
-    transition_root = str(run_item.get("record") or "").strip()
-    state_path_sha = str(raw_state_path.get("path_sha256") or "").strip().lower()
-    run_path_sha = str(raw_run_path.get("path_sha256") or "").strip().lower()
-    if (
-        str(state_item.get("kind") or "").strip() != "record_conclusion_input"
-        or str(run_item.get("kind") or "").strip() != "record_conclusion_input"
-        or not is_fully_qualified_lean_identity(state_root)
-        or not is_fully_qualified_lean_identity(transition_root)
-        or not re.fullmatch(r"[0-9a-f]{64}", state_path_sha)
-        or not re.fullmatch(r"[0-9a-f]{64}", run_path_sha)
-    ):
-        return None
-    raw_bindings = semantic_item.get("operational_outcome_state_transition_bindings")
-    raw_receipts = semantic_judgment.get(
-        OPERATIONAL_OUTCOME_STATE_TRANSITION_RECEIPT_FIELD
-    )
-    if not isinstance(raw_bindings, list) or not isinstance(raw_receipts, list):
-        return None
-    bindings: list[tuple[int, dict[str, object]]] = []
-    for raw_binding in raw_bindings:
-        binding = _operational_outcome_state_transition_binding(
-            raw_binding,
-            qualified_declaration=qualified_declaration,
-            declaration_sha256=declaration_sha,
-            signature_sha256=signature_sha,
-            state_result_path_sha256=state_path_sha,
-            run_result_path_sha256=run_path_sha,
-            state_atom=state[1],
-            initial_predicate_atom=initial_predicate[1],
-            terminal_atom=terminal[1],
-            run_atom=run[1],
-            terminal_predicate_atom=terminal_predicate[1],
-            state_root=state_root,
-            transition_root=transition_root,
-        )
-        if binding is None:
-            return None
-        bindings.append(binding)
-    receipts: list[dict[str, object]] = []
-    for raw_receipt in raw_receipts:
-        receipt = _operational_outcome_state_transition_receipt(raw_receipt)
-        if receipt is None:
-            return None
-        receipts.append(receipt)
-
-    matches: list[tuple[str, str, int, int, int, int, int, int, str, str, str]] = []
-    for model_index, binding in bindings:
-        if model_index >= state[0]:
-            continue
-        for receipt in receipts:
-            if (
-                receipt["target_declaration_sha256"] != declaration_sha
-                or receipt["target_signature_sha256"] != signature_sha
-                or receipt["model_header_atom"] != binding["model_header_atom"]
-                or receipt["model_root"] != binding["model_root"]
-                or receipt["state_result_path_sha256"] != state_path_sha
-                or receipt["state_atom"] != binding["state_atom"]
-                or receipt["state_root"] != binding["state_root"]
-                or receipt["initial_predicate_atom"]
-                != binding["initial_predicate_atom"]
-                or receipt["run_result_path_sha256"] != run_path_sha
-                or receipt["terminal_atom"] != binding["terminal_atom"]
-                or receipt["run_atom"] != binding["run_atom"]
-                or receipt["terminal_predicate_atom"]
-                != binding["terminal_predicate_atom"]
-                or receipt["transition_root"] != binding["transition_root"]
-            ):
-                continue
-            matches.append(
-                (
-                    str(receipt["bridge_declaration"]),
-                    str(receipt["initial_state_witness_declaration"]),
-                    model_index,
-                    state[0],
-                    initial_predicate[0],
-                    terminal[0],
-                    run[0],
-                    terminal_predicate[0],
-                    str(binding["model_root"]),
-                    str(binding["state_root"]),
-                    str(binding["transition_root"]),
-                )
-            )
-    return matches[0] if len(matches) == 1 else None
-
 APPROVED_SOURCE_RECORD_CLASSIFICATIONS = {
     "container_recursively_audited",
     "derived_consequence_record",
@@ -1463,31 +594,6 @@ DAG_STATUS_STYLES = {
 }
 PAPER_FOLDER_NAME_RE = re.compile(r"^[A-Z][A-Za-z0-9]*\d{2}[A-Z][A-Za-z0-9]*$")
 LEAN_DECL_RE = re.compile(r"^\s*(?:theorem|lemma|def|abbrev|structure|class|inductive|export)\s+", re.M)
-REVIEW_DECL_RE = re.compile(
-    r"^\s*(?:(?:@[A-Za-z_][A-Za-z0-9_]*(?:\([^)]*\))?\s+)*)?"
-    r"(?:(?:noncomputable|private|protected)\s+)*"
-    r"(?:theorem|lemma|def|abbrev|axiom|structure|class|inductive)\s+"
-    r"([A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*)\b",
-    re.M,
-)
-REVIEW_DECL_KIND_RE = re.compile(
-    r"^\s*(?:(?:@[A-Za-z_][A-Za-z0-9_]*(?:\([^)]*\))?\s+)*)?"
-    r"(?:(?:noncomputable|private|protected)\s+)*"
-    r"(theorem|lemma|def|abbrev|axiom|structure|class|inductive)\s+"
-    r"([A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*)\b",
-    re.M,
-)
-LIBRARY_DECL_KIND_RE = re.compile(
-    r"^\s*(?:(?:@[A-Za-z_][A-Za-z0-9_]*(?:\([^)]*\))?\s+)*)?"
-    r"(?:(?:noncomputable|private|protected)\s+)*"
-    r"(theorem|lemma|def|abbrev|structure|class|inductive)\s+"
-    r"([A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*)\b",
-    re.M,
-)
-REVIEW_EXPORT_OPEN_RE = re.compile(
-    r"^\s*export\s+[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*\s+\((.*)$"
-)
-REVIEW_EXPORT_NAME_RE = re.compile(r"\b[A-Za-z_][A-Za-z0-9_']*\b")
 SOURCE_EQUATION_WRAPPER_MARKERS = (
     "_formula",
     "_iff",
@@ -1515,35 +621,6 @@ SEMANTIC_BRIDGE_DECLARATION_FIELDS = (
     "source_equivalence_declarations",
     "library_bridge_declarations",
 )
-SOURCE_INVENTORY_KINDS = {
-    "definition",
-    "predicate_vocabulary",
-    "formula",
-    "equation",
-    "algorithmic_formula",
-    "model",
-    "algorithm",
-    "assumption",
-    "example",
-    "remark",
-    "prose_assertion",
-    "figure",
-    "table",
-    "caption",
-    "figure_caption",
-    "table_caption",
-    "simulation",
-    "empirical_observation",
-    "computational_observation",
-    "implementation_measurement",
-    "open_problem",
-    "lemma",
-    "theorem",
-    "proposition",
-    "corollary",
-    "claim",
-    "runtime_claim",
-}
 THEOREM_LIKE_SOURCE_INVENTORY_KINDS = {
     "lemma",
     "theorem",
@@ -1622,9 +699,6 @@ ASSUMPTION_POLICY_STRICT_VALUES = {
 ASSUMPTION_POLICY_ALLOWED_VALUES = ASSUMPTION_POLICY_STRICT_VALUES | {
     "source-plus-proof-boundary",
 }
-ASSUMPTION_DECL_NAME_RE = re.compile(
-    r"^(?:paper_)?assumption(?:_|$)|^source_assumption(?:_|$)|_assumption(?:_|$)"
-)
 AXIOM_LIKE_DECL_NAME_RE = re.compile(
     r"^\s*(?:axiom|opaque|constant|unsafe\s+(?:axiom|def|theorem|lemma))\s+"
     r"(?P<name>[A-Za-z_][A-Za-z0-9_']*)\b"
@@ -1726,10 +800,7 @@ PROOF_FACING_AUDIT_FORMULA_RE = re.compile(
     re.I | re.S,
 )
 AXIOM_LIKE_DECL_RE = re.compile(r"^\s*(?:axiom|opaque|constant|unsafe\s+(?:axiom|def|theorem|lemma))\b")
-APPROVED_LEAN_AXIOMS = {"propext", "Classical.choice", "Quot.sound"}
-PRINT_AXIOMS_RE = re.compile(r"'([^']+)'\s+depends on axioms:\s*\[(.*?)\]", re.S)
-PRINT_NO_AXIOMS_RE = re.compile(r"'([^']+)'\s+does not depend on any axioms")
-LIBRARY_STANDARD_DEFINITION_AUDIT_FILE = ROOT / "EconCSLib" / "LibraryDefinitionAudit.lean"
+LIBRARY_STANDARD_DEFINITION_AUDIT_FILE = ROOT / "AppliedModelingLib" / "LibraryDefinitionAudit.lean"
 REQUIRED_LIBRARY_STANDARD_AUDITS = {
     "jensenConvex_iff_convexOn_univ": "JensenConvex matches mathlib `ConvexOn ℝ Set.univ`",
     "jensenConcave_iff_concaveOn_univ": "JensenConcave matches mathlib `ConcaveOn ℝ Set.univ`",
@@ -1808,13 +879,63 @@ class Finding:
         return f"[{self.severity}] {rel}: {self.message}"
 
 
-@dataclass(frozen=True)
-class LeanDeclaration:
-    path: Path
-    line: int
-    kind: str
-    name: str
-    source: str
+class MachinePaperStatusPhase(str, Enum):
+    """Bounded validators inside the otherwise monolithic primary paper gate."""
+
+    STATEMENT_SIDECAR = "statement_sidecar"
+    INTERFACE_AXIOM_CLOSURE = "interface_axiom_closure"
+    PROPOSITION_SPEC_ROUTES = "proposition_spec_routes"
+    SOURCE_PROOF_FIDELITY = "source_proof_fidelity"
+    EXPLICIT_SEMANTIC_MODEL = "explicit_semantic_model"
+    SOURCE_RECORD = "source_record"
+
+
+def run_machine_paper_status_phase(
+    phase: MachinePaperStatusPhase,
+    paper_id: str,
+    producer: Callable[[], list[Finding]],
+    *,
+    timings: MutableMapping[str, float] | None = None,
+    progress_callback: Callable[[Mapping[str, object]], None] | None = None,
+) -> list[Finding]:
+    """Run one named primary-gate validator without changing its authority."""
+
+    started = time.perf_counter()
+
+    def publish(status: str, *, elapsed_seconds: float | None = None) -> None:
+        if progress_callback is None:
+            return
+        event: dict[str, object] = {
+            "schema": 1,
+            "paper": paper_id,
+            "phase": phase.value,
+            "status": status,
+        }
+        if elapsed_seconds is not None:
+            event["elapsed_seconds"] = elapsed_seconds
+        try:
+            progress_callback(event)
+        except Exception:  # noqa: BLE001 - progress cannot affect evidence.
+            pass
+
+    publish("started")
+    try:
+        findings = producer()
+    except BaseException:
+        publish("failed", elapsed_seconds=round(time.perf_counter() - started, 6))
+        raise
+    if not isinstance(findings, list) or any(
+        not isinstance(finding, Finding) for finding in findings
+    ):
+        raise TypeError(f"machine paper-status phase `{phase.value}` returned invalid findings")
+    elapsed = round(time.perf_counter() - started, 6)
+    if timings is not None:
+        timing_key = f"{paper_id}.{phase.value}"
+        if timing_key in timings:
+            raise RuntimeError(f"machine paper-status phase `{timing_key}` ran twice")
+        timings[timing_key] = elapsed
+    publish("finished", elapsed_seconds=elapsed)
+    return findings
 
 
 @dataclass(frozen=True)
@@ -1875,10 +996,6 @@ REFERENCE_NAME_STOPLIST = {
 }
 
 
-def declaration_key(declaration: LeanDeclaration) -> tuple[Path, int, str]:
-    return (declaration.path, declaration.line, declaration.name)
-
-
 def reference_name_is_specific(name: str) -> bool:
     """Return whether a declaration name is specific enough for lexical closure.
 
@@ -1902,12 +1019,50 @@ def reference_name_is_specific(name: str) -> bool:
     return "_" in unqualified or "'" in unqualified or len(unqualified) >= 16
 
 
+def top_level_declaration_body_marker(source: str) -> int | None:
+    """Locate the first declaration-level ``:=`` outside binder delimiters.
+
+    Named Lean arguments such as ``(Feature := Fin m)`` can occur in binder
+    types before the declaration's result.  Splitting on the first textual
+    ``:=`` truncates that signature and can make an explicit ``: Prop`` look
+    absent.  This scanner is intentionally small: it only separates a parsed
+    declaration block's header from its body and never interprets the type.
+    """
+
+    depth = 0
+    quote: str | None = None
+    escaped = False
+    index = 0
+    while index + 1 < len(source):
+        char = source[index]
+        if quote is not None:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = None
+            index += 1
+            continue
+        if char == '"':
+            quote = char
+            index += 1
+            continue
+        if char in "([{⦃":
+            depth += 1
+        elif char in ")]}⦄" and depth > 0:
+            depth -= 1
+        elif depth == 0 and source.startswith(":=", index):
+            return index
+        index += 1
+    return None
+
+
 def declaration_body(source: str) -> str:
     """Return the proof/body part of a Lean declaration for dependency scans."""
 
-    if ":=" not in source:
-        return ""
-    return source.split(":=", 1)[1]
+    marker = top_level_declaration_body_marker(source)
+    return "" if marker is None else source[marker + 2 :]
 
 
 def declaration_reference_names(source: str, *, body_only: bool = True) -> set[str]:
@@ -1953,14 +1108,14 @@ def lean_files(include_active: bool) -> list[Path]:
                 continue
             if not path.parts:
                 continue
-            if path.relative_to(ROOT).parts[0] not in {"EconCSLib", "papers"}:
+            if path.relative_to(ROOT).parts[0] not in {"AppliedModelingLib", "papers"}:
                 continue
             if not include_active and any(part in ACTIVE_PAPERS for part in path.parts):
                 continue
             files.append(path)
         return sorted(files)
 
-    for root in [ROOT / "EconCSLib", PAPERS]:
+    for root in [ROOT / "AppliedModelingLib", PAPERS]:
         if not root.exists():
             continue
         for path in root.rglob("*.lean"):
@@ -1989,20 +1144,29 @@ def lean_code_lines_from_text(text: str) -> list[tuple[int, str]]:
         out: list[str] = []
         i = 0
         while i < len(line):
-            if depth == 0 and line.startswith("/-", i):
+            if depth == 0:
+                opening = line.find("/-", i)
+                if opening < 0:
+                    out.append(line[i:])
+                    break
+                out.append(line[i:opening])
+                depth = 1
+                i = opening + 2
+                continue
+            opening = line.find("/-", i)
+            closing = line.find("-/", i)
+            if closing < 0:
+                if opening < 0:
+                    break
                 depth += 1
-                i += 2
-            elif depth > 0 and line.startswith("/-", i):
+                i = opening + 2
+                continue
+            if 0 <= opening < closing:
                 depth += 1
-                i += 2
-            elif depth > 0 and line.startswith("-/", i):
-                depth -= 1
-                i += 2
-            elif depth == 0:
-                out.append(line[i])
-                i += 1
-            else:
-                i += 1
+                i = opening + 2
+                continue
+            depth -= 1
+            i = closing + 2
         code_lines.append((line_no, strip_line_comment("".join(out))))
     return code_lines
 
@@ -2016,28 +1180,7 @@ def lean_code_lines(path: Path) -> list[tuple[int, str]]:
 def lean_code_text(text: str) -> str:
     """Return Lean source text with line and nested block comments removed."""
 
-    code_lines: list[str] = []
-    depth = 0
-    for line in text.splitlines():
-        out: list[str] = []
-        i = 0
-        while i < len(line):
-            if depth == 0 and line.startswith("/-", i):
-                depth += 1
-                i += 2
-            elif depth > 0 and line.startswith("/-", i):
-                depth += 1
-                i += 2
-            elif depth > 0 and line.startswith("-/", i):
-                depth -= 1
-                i += 2
-            elif depth == 0:
-                out.append(line[i])
-                i += 1
-            else:
-                i += 1
-        code_lines.append(strip_line_comment("".join(out)))
-    return "\n".join(code_lines)
+    return "\n".join(code for _line, code in lean_code_lines_from_text(text))
 
 
 def check_sorries_in_files(files: list[Path]) -> list[Finding]:
@@ -2438,12 +1581,6 @@ CLOSEOUT_AUDIT_DAG_HEADING_RE = re.compile(r"(?mi)^##+\s+DAG\s+(?:Audit|Status)\
 CLOSEOUT_AUDIT_COMMANDS_HEADING_RE = re.compile(
     r"(?mi)^##+\s+(?:Validation\s+)?Commands\b"
 )
-CLOSEOUT_VISUAL_DAG_EVIDENCE_RE = re.compile(
-    r"\b(?:visual(?:ly)?|render(?:ed|ing)?|layout|overlap|pdflatex|latexmk|mutool|png)\b",
-    re.I,
-)
-
-
 def paper_local_status(folder: Path) -> str:
     status_file = folder / "status.json"
     if not status_file.exists():
@@ -2500,9 +1637,8 @@ def check_final_report_status_alignment(
             payload = json.loads(status_file.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             continue
-        status = payload.get("status")
         report_text = report.read_text(encoding="utf-8")
-        for error in report_status_alignment_errors(status, report_text):
+        for error in report_status_alignment_errors(payload, report_text):
             findings.append(
                 Finding(
                     "ERROR",
@@ -2646,15 +1782,6 @@ def check_final_report_human_facing_front_matter(
         source_reading = source_clarifications or source_fixes
         issues = FINAL_REPORT_ISSUES_CAVEATS_RE.search(report_text)
         detailed = FINAL_REPORT_DETAILED_EVIDENCE_RE.search(report_text)
-        assumption_provenance = FINAL_REPORT_ASSUMPTION_PROVENANCE_RE.search(report_text)
-        formula_provenance = FINAL_REPORT_FORMULA_PROVENANCE_RE.search(report_text)
-        library_lift = FINAL_REPORT_LIBRARY_LIFT_RE.search(report_text)
-        dag_audit = FINAL_REPORT_DAG_AUDIT_RE.search(report_text)
-        validation_checks = FINAL_REPORT_VALIDATION_CHECKS_RE.search(report_text)
-        definitions_checked = FINAL_REPORT_DEFINITIONS_CHECKED_RE.search(report_text)
-        theorems_checked = FINAL_REPORT_THEOREMS_CHECKED_RE.search(report_text)
-        validator_ledger = FINAL_REPORT_VALIDATOR_LEDGER_RE.search(report_text)
-        source_coverage = FINAL_REPORT_SOURCE_COVERAGE_RE.search(report_text)
         required_front_sections = [
             ("Closeout Status", closeout),
             ("Source and Scope", source_scope),
@@ -2727,6 +1854,9 @@ def check_dag_and_validation_report_closeout(
     paper_filter: str | None = None,
     *,
     force_selected_closeout: bool = False,
+    final_holistic_surface_sha256: str = "",
+    all_selected_semantic_review_sha256: str | None = None,
+    final_holistic_review_policy_assurance: Mapping[str, object] | None = None,
 ) -> list[Finding]:
     """Ensure completed paper closeout audits include DAG/report evidence."""
 
@@ -2755,9 +1885,21 @@ def check_dag_and_validation_report_closeout(
         corrected_scope_current = current_author_approved_corrected_scope(
             folder, status_payload
         )
+        final_holistic_required = explicit_raw_source_spec_screening_requested(
+            status_payload
+        )
         for document_error in closeout_document_hard_errors(
             folder,
             corrected_scope_current=corrected_scope_current,
+            final_holistic_required=final_holistic_required,
+            require_visual_dag_inspection=True,
+            final_holistic_surface_sha256=final_holistic_surface_sha256,
+            all_selected_semantic_review_sha256=(
+                all_selected_semantic_review_sha256
+            ),
+            final_holistic_review_policy_assurance=(
+                final_holistic_review_policy_assurance
+            ),
             post_formalization_audit=post_audit,
         ):
             findings.append(
@@ -2804,14 +1946,6 @@ def check_dag_and_validation_report_closeout(
                                 f"final validation report should name `{artifact}` in the DAG audit evidence",
                             )
                         )
-                if not CLOSEOUT_VISUAL_DAG_EVIDENCE_RE.search(report_text):
-                    findings.append(
-                        Finding(
-                            "WARN",
-                            report,
-                            "final validation report should record rendered/visual DAG inspection evidence",
-                        )
-                    )
                 if f"--paper {folder.name}" not in report_text or "scripts/audit_repository.py" not in report_text:
                     findings.append(
                         Finding(
@@ -2820,7 +1954,9 @@ def check_dag_and_validation_report_closeout(
                             "final validation report should record the targeted repository audit command",
                         )
                     )
-        if not corrected_scope_current and agent_source_audit.exists():
+        if (
+            not corrected_scope_current or final_holistic_required
+        ) and agent_source_audit.exists():
             try:
                 agent_audit_text = agent_source_audit.read_text(encoding="utf-8")
             except OSError:
@@ -2914,69 +2050,6 @@ def _safe_slice_id(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9_.-]+", "-", value.strip()).strip("-") or "all"
 
 
-def declaration_match_at(
-    lines: list[str], line_index: int, declaration_re: re.Pattern[str]
-) -> re.Match[str] | None:
-    """Match a Lean declaration beginning at one physical line.
-
-    Lean permits a declaration keyword and its identifier on separate lines.
-    The review and repository indexes must recognize that syntax exactly as
-    they recognize the one-line spelling; otherwise a real elaborated theorem
-    can be misreported as an unresolvable or unclassified name.
-    """
-
-    match = declaration_re.match(lines[line_index])
-    if match is not None or line_index + 1 >= len(lines):
-        return match
-    return declaration_re.match(lines[line_index] + "\n" + lines[line_index + 1])
-
-
-def review_rows_from_interface_text(interface_text: str) -> list[tuple[int, str]]:
-    """Return declaration/export rows exposed by a human review interface."""
-
-    lines = interface_text.splitlines()
-    decls: list[tuple[int, str]] = []
-    line_number = 1
-    block_depth = 0
-    while line_number <= len(lines):
-        line = lines[line_number - 1]
-        stripped = line.strip()
-        if block_depth > 0:
-            block_depth += line.count("/-")
-            block_depth -= line.count("-/")
-            block_depth = max(block_depth, 0)
-            line_number += 1
-            continue
-        if stripped.startswith("/-"):
-            block_depth += line.count("/-")
-            block_depth -= line.count("-/")
-            block_depth = max(block_depth, 0)
-            line_number += 1
-            continue
-        if stripped.startswith("--"):
-            line_number += 1
-            continue
-        match = declaration_match_at(lines, line_number - 1, REVIEW_DECL_RE)
-        if match:
-            decls.append((line_number, match.group(1)))
-            line_number += 1
-            continue
-        export_match = REVIEW_EXPORT_OPEN_RE.match(line)
-        if export_match:
-            chunks = [export_match.group(1)]
-            end_line_number = line_number
-            while ")" not in chunks[-1] and end_line_number < len(lines):
-                end_line_number += 1
-                chunks.append(lines[end_line_number - 1])
-            names_text = "\n".join(chunks).split(")", 1)[0]
-            for name in REVIEW_EXPORT_NAME_RE.findall(names_text):
-                decls.append((line_number, name))
-            line_number = end_line_number + 1
-            continue
-        line_number += 1
-    return decls
-
-
 def zero_row_review_surface_imports_paper_module(
     paper_id: str,
     review_source_text: str,
@@ -3011,103 +2084,6 @@ def status_allows_empty_review_surface(status_payload: dict[str, object]) -> boo
     return True
 
 
-def auxiliary_names_not_exported_from_review_source(
-    auxiliary_names: set[str],
-    actual_review_names: list[str],
-    configured_assumption_declaration_names: set[str] | None = None,
-) -> list[str]:
-    """Return auxiliary names absent from both configured structural surfaces.
-
-    An auxiliary may be declared or exported by `PaperInterface.lean`, or it may
-    be an exact configured declaration in the paper's `Assumptions.lean` support
-    surface. Declarations in other implementation modules do not qualify.
-    """
-
-    exported = set(actual_review_names)
-    exported.update(name.rsplit(".", 1)[-1] for name in actual_review_names)
-    exported.update(configured_assumption_declaration_names or set())
-    return sorted(auxiliary_names - exported)
-
-
-def reviewed_names_not_declared_in_review_source(
-    include_names: list[str],
-    declaration_blocks: dict[str, tuple[int, str, str]],
-) -> list[str]:
-    """Return configured reviewed rows that lack a declaration block in PaperInterface.
-
-    `review_rows_from_interface_text` treats `export` as a visible row so
-    auxiliary aliases can remain compact.  Paper-facing reviewed statements are
-    stricter: the theorem/formula statement itself must be written in
-    `PaperInterface.lean`, with only its proof delegated to imported modules.
-    """
-
-    declared = set(declaration_blocks)
-    declared.update(name.rsplit(".", 1)[-1] for name in declaration_blocks)
-    missing: list[str] = []
-    for name in include_names:
-        short_name = name.rsplit(".", 1)[-1]
-        if name not in declared and short_name not in declared:
-            missing.append(name)
-    return missing
-
-
-def lean_declaration_blocks(
-    interface_text: str,
-    declaration_re: re.Pattern[str],
-) -> dict[str, tuple[int, str, str]]:
-    """Return syntactic Lean declaration blocks keyed by name.
-
-    Values are `(line_number, kind, declaration_source)`.  The parser is
-    intentionally syntactic and only needs enough structure for provenance and
-    review-surface hygiene checks.
-    """
-
-    lines = interface_text.splitlines()
-    starts: list[tuple[int, str, str]] = []
-    block_depth = 0
-    for line_number, line in enumerate(lines, start=1):
-        stripped = line.strip()
-        if block_depth > 0:
-            block_depth += line.count("/-")
-            block_depth -= line.count("-/")
-            block_depth = max(block_depth, 0)
-            continue
-        if stripped.startswith("/-"):
-            block_depth += line.count("/-")
-            block_depth -= line.count("-/")
-            block_depth = max(block_depth, 0)
-            continue
-        if stripped.startswith("--"):
-            continue
-        match = declaration_match_at(lines, line_number - 1, declaration_re)
-        if match:
-            starts.append((line_number, match.group(1), match.group(2)))
-
-    out: dict[str, tuple[int, str, str]] = {}
-    for index, (line_number, kind, name) in enumerate(starts):
-        next_line = starts[index + 1][0] if index + 1 < len(starts) else len(lines) + 1
-        source = "\n".join(lines[line_number - 1 : next_line - 1]).strip()
-        out[name] = (line_number, kind, source)
-    return out
-
-
-def review_declaration_blocks(interface_text: str) -> dict[str, tuple[int, str, str]]:
-    """Return review-surface declarations keyed by name.
-
-    Structures/classes/inductives are included so paper-local source
-    assumptions declared in `Assumptions.lean` can be audited through the same
-    provenance ledger as theorem-like assumptions.
-    """
-
-    return lean_declaration_blocks(interface_text, REVIEW_DECL_KIND_RE)
-
-
-def library_declaration_blocks(interface_text: str) -> dict[str, tuple[int, str, str]]:
-    """Return reusable-library declarations, including structures and classes."""
-
-    return lean_declaration_blocks(interface_text, LIBRARY_DECL_KIND_RE)
-
-
 def _leading_comment_before(lines: list[str], line_number: int) -> str:
     """Return the contiguous comment block immediately before a declaration."""
 
@@ -3140,7 +2116,11 @@ def review_declaration_comments(interface_text: str) -> dict[str, str]:
     lines = interface_text.splitlines()
     return {
         name: _leading_comment_before(lines, line_number)
-        for name, (line_number, _kind, _source) in review_declaration_blocks(interface_text).items()
+        for name, (line_number, _kind, _source) in (
+            _legacy_review_surface_structure_module()
+            .review_declaration_blocks(interface_text)
+            .items()
+        )
     }
 
 
@@ -3171,7 +2151,12 @@ def interface_tuple_witness_declarations(interface_text: str) -> list[tuple[int,
     """Return review declarations whose result type exposes tuple witness data."""
 
     flagged: list[tuple[int, str]] = []
-    for name, (line_number, _kind, source) in review_declaration_blocks(interface_text).items():
+    declaration_blocks = (
+        _legacy_review_surface_structure_module().review_declaration_blocks(
+            interface_text
+        )
+    )
+    for name, (line_number, _kind, source) in declaration_blocks.items():
         target = _declaration_target_source(source)
         if target and TUPLE_WITNESS_TARGET_RE.search(target):
             flagged.append((line_number, name))
@@ -3258,79 +2243,6 @@ def lean_module_name(path: Path) -> str:
     return ".".join(parts)
 
 
-def parse_print_axioms_output(output: str) -> dict[str, set[str]]:
-    """Parse Lean `#print axioms` output keyed by fully qualified declaration."""
-
-    parsed: dict[str, set[str]] = {}
-    for match in PRINT_NO_AXIOMS_RE.finditer(output):
-        parsed[match.group(1)] = set()
-    for match in PRINT_AXIOMS_RE.finditer(output):
-        raw_axioms = match.group(2)
-        axioms = {
-            axiom.strip()
-            for axiom in re.split(r",|\n", raw_axioms)
-            if axiom.strip()
-        }
-        parsed[match.group(1)] = axioms
-    return parsed
-
-
-def operational_outcome_bridge_axiom_closure_is_approved(
-    import_module: str, bridge_declaration: str
-) -> bool:
-    """Check one operational nonvacuity bridge for transitive proof debt.
-
-    A bridge with the right theorem type can still be `by sorry` or depend on
-    a paper-local/imported axiom.  Reuse the repository's authoritative
-    `#print axioms` parser and standard-foundation allowlist, but deliberately
-    do *not* admit paper-specific boundary axioms here: an outcome-domain
-    existence bridge is construction evidence, not a source assumption.
-    """
-
-    if not (
-        is_fully_qualified_lean_identity(import_module)
-        and is_fully_qualified_lean_identity(bridge_declaration)
-    ):
-        return False
-    script = "\n".join(
-        [
-            f"import {import_module}",
-            "set_option pp.universes false",
-            f"#print axioms {bridge_declaration}",
-            "",
-        ]
-    )
-    try:
-        build_proc = subprocess.run(
-            ["lake", "build", import_module],
-            cwd=ROOT,
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=600,
-        )
-        if build_proc.returncode != 0:
-            return False
-        with tempfile.TemporaryDirectory() as tmpdir:
-            script_path = Path(tmpdir) / "operational_outcome_axioms.lean"
-            script_path.write_text(script, encoding="utf-8")
-            proc = subprocess.run(
-                ["lake", "env", "lean", str(script_path)],
-                cwd=ROOT,
-                check=False,
-                capture_output=True,
-                text=True,
-                timeout=180,
-            )
-    except (OSError, subprocess.TimeoutExpired):
-        return False
-    if proc.returncode != 0:
-        return False
-    parsed = parse_print_axioms_output(proc.stdout)
-    axioms = parsed.get(bridge_declaration)
-    return axioms is not None and not (axioms - APPROVED_LEAN_AXIOMS)
-
-
 def check_paper_interface_axiom_closure(
     paper_id: str,
     interface_path: Path,
@@ -3360,51 +2272,17 @@ def check_paper_interface_axiom_closure(
     if not rows:
         return []
 
-    script_lines = [
-        f"import {lean_module_name(interface_path)}",
-        "set_option pp.universes false",
-        "",
-    ]
-    for _name, qualified_name, _line_no in rows:
-        script_lines.append(f"#print axioms {qualified_name}")
-    script = "\n".join(script_lines) + "\n"
-
     severity = completed_status_finding_severity(status)
     module_name = lean_module_name(interface_path)
     try:
-        build_proc = subprocess.run(
-            ["lake", "build", module_name],
-            cwd=ROOT,
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=600,
+        parsed = run_lean_axiom_closures(
+            ROOT,
+            module_name,
+            (qualified_name for _name, qualified_name, _line_no in rows),
+            timeout_seconds=180,
+            build_timeout_seconds=600,
         )
-        if build_proc.returncode != 0:
-            details = (build_proc.stderr or build_proc.stdout).strip().splitlines()
-            excerpt = " ".join(details[:3])[:600] if details else "Lake returned a nonzero status"
-            return [
-                Finding(
-                    severity,
-                    interface_path,
-                    f"`{paper_id}` Lean axiom audit could not build `{module_name}`: {excerpt}",
-                )
-            ]
-
-        audit_tmp_root = ROOT / ".lake" / "paper_axiom_audit"
-        audit_tmp_root.mkdir(parents=True, exist_ok=True)
-        with tempfile.TemporaryDirectory(dir=audit_tmp_root) as tmpdir:
-            script_path = Path(tmpdir) / "paper_axiom_audit.lean"
-            script_path.write_text(script, encoding="utf-8")
-            proc = subprocess.run(
-                ["lake", "env", "lean", str(script_path)],
-                cwd=ROOT,
-                check=False,
-                capture_output=True,
-                text=True,
-                timeout=180,
-            )
-    except (OSError, subprocess.TimeoutExpired) as exc:
+    except LeanAxiomClosureError as exc:
         return [
             Finding(
                 severity,
@@ -3412,19 +2290,6 @@ def check_paper_interface_axiom_closure(
                 f"`{paper_id}` Lean axiom audit could not run for PaperInterface rows: {exc}",
             )
         ]
-
-    if proc.returncode != 0:
-        details = (proc.stderr or proc.stdout).strip().splitlines()
-        excerpt = " ".join(details[:3])[:600] if details else "Lean returned a nonzero status"
-        return [
-            Finding(
-                severity,
-                interface_path,
-                f"`{paper_id}` Lean axiom audit failed for PaperInterface rows: {excerpt}",
-            )
-        ]
-
-    parsed = parse_print_axioms_output(proc.stdout)
     approved_boundary_axioms = approved_boundary_axioms or set()
     approved_axioms = set(APPROVED_LEAN_AXIOMS)
     for name in approved_boundary_axioms:
@@ -3484,10 +2349,11 @@ def lean_declaration_index_from_source_bytes(
             text = content.decode("utf-8")
         except UnicodeError:
             continue
+        structure = _legacy_review_surface_structure_module()
         declaration_blocks = (
-            library_declaration_blocks(text)
+            structure.library_declaration_blocks(text)
             if library_modules
-            else review_declaration_blocks(text)
+            else structure.review_declaration_blocks(text)
         )
         namespace_stacks = namespace_stacks_at_lines(
             text,
@@ -3531,35 +2397,11 @@ def paper_lean_declaration_index(folder: Path) -> dict[str, list[LeanDeclaration
     return lean_declaration_index_from_source_bytes(source_bytes)
 
 
-def resolve_declaration_name(
-    declaration_index: dict[str, list[LeanDeclaration]], name: object
-) -> list[LeanDeclaration]:
-    """Resolve an unqualified or module-qualified declaration name."""
-
-    target = str(name or "").strip()
-    if not target:
-        return []
-    candidates: list[LeanDeclaration] = []
-    if target in declaration_index:
-        candidates.extend(declaration_index[target])
-    elif "." not in target:
-        candidates.extend(declaration_index.get(target.rsplit(".", 1)[-1], []))
-    seen: set[tuple[Path, int, str]] = set()
-    resolved: list[LeanDeclaration] = []
-    for declaration in candidates:
-        key = declaration_key(declaration)
-        if key in seen:
-            continue
-        seen.add(key)
-        resolved.append(declaration)
-    return resolved
-
-
 def library_lean_files() -> list[Path]:
     """Return tracked reusable-library Lean files."""
 
     files: set[Path] = set()
-    root = ROOT / "EconCSLib"
+    root = ROOT / "AppliedModelingLib"
     if root.exists():
         files.update(path for path in root.rglob("*.lean") if path.is_file())
     try:
@@ -3568,7 +2410,7 @@ def library_lean_files() -> list[Path]:
         tracked = []
     for rel in tracked:
         path = ROOT / rel
-        if path.suffix == ".lean" and path.exists() and path.relative_to(ROOT).parts[0] == "EconCSLib":
+        if path.suffix == ".lean" and path.exists() and path.relative_to(ROOT).parts[0] == "AppliedModelingLib":
             files.add(path)
     return sorted(files)
 
@@ -3682,19 +2524,19 @@ def strict_review_items_for_paper(
     build_input_provider: RepositoryBuildInputSnapshotProvider | None = None,
     audit_inputs: object | None = None,
     validated_configured_review_rows: tuple[Mapping[str, object], ...] | None = None,
+    semantic_reuse_authority: object | None = None,
 ) -> tuple[Any, ...]:
     """Build one signature-current dashboard surface for an audit."""
 
-    try:
-        from scripts.review_dashboard import review_items_for_paper
-    except ModuleNotFoundError:  # Direct `python scripts/audit_repository.py`.
-        from review_dashboard import review_items_for_paper
+    from scripts.review_dashboard import review_items_for_paper
 
     kwargs: dict[str, object] = {}
     if validated_configured_review_rows is not None:
         kwargs["validated_configured_review_rows"] = (
             validated_configured_review_rows
         )
+    if semantic_reuse_authority is not None:
+        kwargs["semantic_reuse_authority"] = semantic_reuse_authority
     return tuple(
         review_items_for_paper(
             folder,
@@ -3721,11 +2563,13 @@ class LazyStrictReviewItems:
         validated_configured_review_rows: (
             tuple[Mapping[str, object], ...] | None
         ) = None,
+        semantic_reuse_authority: object | None = None,
     ) -> None:
         self.folder = folder
         self.build_input_provider = build_input_provider
         self.audit_inputs = audit_inputs
         self.validated_configured_review_rows = validated_configured_review_rows
+        self.semantic_reuse_authority = semantic_reuse_authority
         self._attempted = False
         self._items: tuple[Any, ...] = ()
         self._error: Exception | None = None
@@ -3738,6 +2582,10 @@ class LazyStrictReviewItems:
                 if self.validated_configured_review_rows is not None:
                     kwargs["validated_configured_review_rows"] = (
                         self.validated_configured_review_rows
+                    )
+                if self.semantic_reuse_authority is not None:
+                    kwargs["semantic_reuse_authority"] = (
+                        self.semantic_reuse_authority
                     )
                 self._items = strict_review_items_for_paper(
                     self.folder,
@@ -3755,11 +2603,25 @@ class LazyStrictReviewItems:
 def exact_evidence_run_context(value: object) -> bool:
     """Accept only a builder-issued context from this module's import identity."""
 
-    if __package__:
-        from .audit_evidence_integrity import EvidenceRunContext
-    else:  # pragma: no cover - direct script invocation.
-        from audit_evidence_integrity import EvidenceRunContext
+    from scripts.audit_evidence_integrity import EvidenceRunContext
     return isinstance(value, EvidenceRunContext) and value.issued_by_builder
+
+
+def _legacy_source_record_state(value: object) -> object | None:
+    """Return only the explicitly acquired legacy lane from an exact context."""
+
+    return getattr(value, "legacy_source_record_state", None)
+
+
+def _legacy_source_record_inputs(value: object) -> object | None:
+    state = _legacy_source_record_state(value)
+    return getattr(state, "inputs", None)
+
+
+def _legacy_source_record_audit_payload(value: object) -> object | None:
+    inputs = _legacy_source_record_inputs(value)
+    snapshot = getattr(inputs, "audit_snapshot", None)
+    return getattr(snapshot, "payload", None)
 
 
 class _PaperCloseoutRunContextIssuerBinding:
@@ -3785,6 +2647,17 @@ class _SemanticContractExecutableTerminalReceiptIssuerCapability:
 
 _SEMANTIC_CONTRACT_EXECUTABLE_TERMINAL_RECEIPT_ISSUER = (
     _SemanticContractExecutableTerminalReceiptIssuerCapability()
+)
+
+
+class _SemanticContractCloseoutBridgeIssuerCapability:
+    """Private capability held only by the complete contract validator."""
+
+    __slots__ = ()
+
+
+_SEMANTIC_CONTRACT_CLOSEOUT_BRIDGE_ISSUER = (
+    _SemanticContractCloseoutBridgeIssuerCapability()
 )
 
 
@@ -3882,6 +2755,13 @@ class PaperCloseoutRunContext:
         self._semantic_contract_executable_terminal_component_receipts: set[
             SemanticContractExecutableTerminalComponentReceipt
         ] = set()
+        # The statement-map declaration gate and the legacy-sidecar bridge
+        # consume the same complete semantic-contract validation.  Retain its
+        # successful source-item scope only inside this exact transaction so
+        # the second consumer does not rerun the same Lean/source proof.
+        self._semantic_contract_closeout_bridge_scope_keys: frozenset[str] = (
+            frozenset()
+        )
         # Explicit source-model field scopes are reviewed as direct primitives,
         # but their route metadata is not a component contract.  Store only
         # transaction-minted occurrence receipts after the exact parent
@@ -3895,15 +2775,85 @@ class PaperCloseoutRunContext:
         self._strict_v11_source_record_judgment_handoff: (
             _StrictV11SourceRecordJudgmentHandoffCapability | None
         ) = None
-        audit_payload = getattr(evidence_context, "audit_payload", None)
+        legacy_state = getattr(
+            evidence_context, "legacy_source_record_state", None
+        )
+        legacy_inputs = getattr(legacy_state, "inputs", None)
+        legacy_audit_snapshot = getattr(legacy_inputs, "audit_snapshot", None)
+        audit_payload = getattr(legacy_audit_snapshot, "payload", None)
         lean_import_closure_payload = (
             audit_payload.get(SOURCE_RECORD_LEAN_IMPORT_CLOSURE_FIELD)
             if isinstance(audit_payload, Mapping)
             else None
         )
-        self.build_input_provider = RepositoryBuildInputSnapshotProvider(
-            ROOT,
-            lean_import_closure_payload=lean_import_closure_payload,
+        transaction_skew = (
+            paper_closeout_source_record_transaction_skew_findings(
+                paper_id,
+                evidence_context,
+            )
+            if evidence_context is not None
+            else []
+        )
+        if transaction_skew:
+            self.v11_direct_semantic_review_current = False
+            self.v11_direct_semantic_review_error = transaction_skew[0].message
+        else:
+            (
+                self.v11_direct_semantic_review_current,
+                self.v11_direct_semantic_review_error,
+            ) = paper_closeout_v11_direct_semantic_review_state(
+                paper_id,
+                folder,
+                evidence_context,
+            )
+        self.v11_lean_claim_graph_selected = bool(
+            getattr(evidence_context, "v11_lean_claim_graph_selected", False)
+            or self.v11_direct_semantic_review_current
+        )
+        self.v11_lean_review_surface: object | None = None
+        if self.v11_lean_claim_graph_selected:
+            # The selected v11 lane builds one exact Lean graph before it can
+            # decide whether every saved semantic judgment is current.  Keep
+            # that graph even when a judgment fails: downstream structural
+            # checks must expose the real v11 finding, not discard Lean's
+            # authenticated source ownership and fall into the retired raw
+            # source-record transport.
+            self.v11_lean_review_surface = paper_closeout_v11_lean_review_surface(
+                folder,
+                evidence_context,
+            )
+            if (
+                self.v11_direct_semantic_review_current
+                and self.v11_lean_review_surface is None
+            ):
+                self.v11_direct_semantic_review_current = False
+                self.v11_direct_semantic_review_error = (
+                    "v11 semantic gate did not retain its Lean review graph"
+                )
+        provider_kwargs: dict[str, object] = {}
+        semantic_reuse_authority = getattr(
+            legacy_state, "semantic_reuse_authority", None
+        )
+        if semantic_reuse_authority is not None:
+            provider_kwargs["lean_import_closure_payload"] = (
+                lean_import_closure_payload
+            )
+            provider_kwargs["semantic_reuse_authority"] = semantic_reuse_authority
+        elif not self.v11_lean_claim_graph_selected:
+            provider_kwargs["lean_import_closure_payload"] = (
+                lean_import_closure_payload
+            )
+        shared_provider = getattr(
+            self.v11_lean_review_surface, "build_input_provider", None
+        )
+        self.build_input_provider = (
+            shared_provider
+            if shared_provider is not None
+            else (
+                None
+                if self.v11_lean_claim_graph_selected
+                else RepositoryBuildInputSnapshotProvider(ROOT, **provider_kwargs)
+            )
         )
 
     @property
@@ -3916,6 +2866,18 @@ class PaperCloseoutRunContext:
             and binding.context is self
             and exact_evidence_run_context(self.evidence_context)
         )
+
+    @property
+    def selected_v11_closeout(self) -> bool:
+        """Whether this exact closeout is owned by the retained v11 graph."""
+
+        return self.issued_by_builder and self.v11_lean_claim_graph_selected
+
+    @property
+    def current_v11_closeout(self) -> bool:
+        """Whether the selected v11 graph and all semantic leaves are current."""
+
+        return self.selected_v11_closeout and self.v11_direct_semantic_review_current
 
     def record_strict_source_spec_correspondence_receipt(
         self,
@@ -3963,6 +2925,35 @@ class PaperCloseoutRunContext:
                 ),
             )
         )
+
+    def record_semantic_contract_closeout_bridge(
+        self,
+        source_item_keys: object,
+        *,
+        _issuer: object | None = None,
+    ) -> None:
+        """Retain one complete contract pass for this exact transaction."""
+
+        if (
+            not self.issued_by_builder
+            or _issuer is not _SEMANTIC_CONTRACT_CLOSEOUT_BRIDGE_ISSUER
+            or not isinstance(source_item_keys, (tuple, list, set, frozenset))
+        ):
+            return
+        keys = frozenset(
+            str(value).strip()
+            for value in source_item_keys
+            if isinstance(value, str) and value.strip()
+        )
+        if keys:
+            self._semantic_contract_closeout_bridge_scope_keys = keys
+
+    def current_semantic_contract_closeout_bridge_scope_keys(self) -> tuple[str, ...]:
+        """Return a complete contract scope proven earlier in this run."""
+
+        if not self.issued_by_builder:
+            return ()
+        return tuple(sorted(self._semantic_contract_closeout_bridge_scope_keys))
 
     def record_semantic_contract_executable_terminal_component_receipts(
         self,
@@ -4061,14 +3052,9 @@ class PaperCloseoutRunContext:
             or not self.issued_by_builder
         ):
             return False
-        if __package__:
-            from .audit_evidence_integrity import (
-                _issue_primary_closeout_source_record_judgment_receipt,
-            )
-        else:  # pragma: no cover - direct script invocation.
-            from audit_evidence_integrity import (  # type: ignore[no-redef]
-                _issue_primary_closeout_source_record_judgment_receipt,
-            )
+        from scripts.audit_evidence_integrity import (
+            _issue_primary_closeout_source_record_judgment_receipt,
+        )
 
         return _issue_primary_closeout_source_record_judgment_receipt(
             self.evidence_context
@@ -4162,9 +3148,14 @@ class PaperCloseoutRunContext:
     def current_source_record_audit(
         self,
     ) -> tuple[dict[str, object] | None, str]:
-        evidence_payload = getattr(self.evidence_context, "audit_payload", None)
+        legacy_state = getattr(
+            self.evidence_context, "legacy_source_record_state", None
+        )
+        legacy_inputs = getattr(legacy_state, "inputs", None)
+        audit_snapshot = getattr(legacy_inputs, "audit_snapshot", None)
+        evidence_payload = getattr(audit_snapshot, "payload", None)
         identity_error = str(
-            getattr(self.evidence_context, "source_record_identity_error", "") or ""
+            getattr(legacy_state, "source_record_identity_error", "") or ""
         )
         if isinstance(evidence_payload, dict) and not identity_error:
             return evidence_payload, ""
@@ -4221,7 +3212,11 @@ class PaperCloseoutRunContext:
         return tuple(dict(row) for row in raw_rows if isinstance(row, Mapping))
 
     def saved_source_record_audit(self, path: Path) -> dict[str, object] | None:
-        audit_snapshot = getattr(self.evidence_context, "audit_snapshot", None)
+        legacy_state = getattr(
+            self.evidence_context, "legacy_source_record_state", None
+        )
+        legacy_inputs = getattr(legacy_state, "inputs", None)
+        audit_snapshot = getattr(legacy_inputs, "audit_snapshot", None)
         snapshot_path = getattr(audit_snapshot, "path", None)
         snapshot_payload = getattr(audit_snapshot, "payload", None)
         if (
@@ -4316,16 +3311,18 @@ class PaperCloseoutRunContext:
         return path, self.exact_json_payload(path) if path is not None else None
 
     def dashboard_audit_inputs(self) -> object | None:
-        """Build one strict dashboard bundle from transaction-owned bytes."""
+        """Build the historical dashboard bundle from transaction-owned bytes.
 
-        if self.evidence_context is None:
+        A selected v11 closeout is validated from its typed Lean claim graph
+        and exact configured source artifacts. It must never reconstruct a
+        second semantic surface from dashboard conventions or legacy aliases.
+        """
+
+        if self.evidence_context is None or self.selected_v11_closeout:
             return None
 
         def build() -> object:
-            if __package__:
-                from .review_dashboard import DashboardAuditInputs
-            else:  # pragma: no cover - direct script invocation.
-                from review_dashboard import DashboardAuditInputs
+            from scripts.dashboard_audit_inputs import DashboardAuditInputs
 
             snapshots: dict[Path, bytes | None] = {}
             for snapshot in getattr(self.evidence_context, "input_snapshots", ()):
@@ -4359,12 +3356,16 @@ class PaperCloseoutRunContext:
         path: Path,
         payload: dict[str, object],
     ) -> Mapping[str, dict[str, object]]:
-        audit_snapshot = getattr(self.evidence_context, "audit_snapshot", None)
-        match_snapshot = getattr(self.evidence_context, "match_snapshot", None)
+        legacy_state = getattr(
+            self.evidence_context, "legacy_source_record_state", None
+        )
+        legacy_inputs = getattr(legacy_state, "inputs", None)
+        audit_snapshot = getattr(legacy_inputs, "audit_snapshot", None)
+        match_snapshot = getattr(legacy_inputs, "match_snapshot", None)
         audit_payload = getattr(audit_snapshot, "payload", None)
         match_path = getattr(match_snapshot, "path", None)
         current_judgments = getattr(
-            self.evidence_context, "current_source_record_judgments", None
+            legacy_state, "current_source_record_judgments", None
         )
         if (
             payload is audit_payload
@@ -4402,12 +3403,13 @@ class PaperCloseoutRunContext:
         return self._memoized(("derived", name, *identity), producer)
 
     def _lean_owned_source_snapshots(self) -> dict[Path, bytes]:
-        """Return exact repository Lean bytes named by the validated raw receipt.
+        """Return exact repository Lean bytes owned by the selected protocol.
 
-        The source-record producer obtains this source set from Lean's loaded
-        module graph. This consumer verifies every retained digest before
-        parsing it and never widens the set with a directory scan. The evidence
-        transaction's final mutation check remains the publication boundary.
+        V11 consumes the retained Lean graph's exact module sources. The legacy
+        source-record lane consumes the source set obtained from Lean's loaded
+        module graph and bound into that protocol's receipt. Neither route
+        widens its source set with a directory scan. The evidence transaction's
+        final mutation check remains the publication boundary.
         """
 
         if self.evidence_context is None:
@@ -4416,7 +3418,70 @@ class PaperCloseoutRunContext:
                 for path in paper_lean_files(self.folder)
                 if path.is_file()
             }
-        audit_payload = getattr(self.evidence_context, "audit_payload", None)
+
+        # The current v11 lane already constructs one Lean-owned declaration
+        # graph from the standalone import-closure receipt and retains the
+        # exact module bytes used to elaborate it.  Consume those bytes
+        # directly.  Falling through to the historical raw source-record
+        # fingerprint would make an intentionally superseded transport a
+        # prerequisite for dashboards and closeout, and would also parse a
+        # second, weaker ownership description after the v11 graph passed.
+        if self.v11_lean_claim_graph_selected:
+            raw_module_sources = getattr(
+                self.v11_lean_review_surface, "module_sources", None
+            )
+            if not isinstance(raw_module_sources, Mapping) or not raw_module_sources:
+                raise ValueError(
+                    "selected v11 Lean review graph has no exact module sources: "
+                    + (
+                        self.v11_direct_semantic_review_error
+                        or "the exact graph was not retained"
+                    )
+                )
+            root = ROOT.resolve()
+            snapshots: dict[Path, bytes] = {}
+            for module, raw_source in raw_module_sources.items():
+                if (
+                    not isinstance(module, str)
+                    or not module.strip()
+                    or not isinstance(raw_source, tuple)
+                    or len(raw_source) != 2
+                ):
+                    raise ValueError(
+                        "current v11 Lean review graph has a malformed module source"
+                    )
+                raw_path, content = raw_source
+                if not isinstance(raw_path, Path) or not isinstance(content, bytes):
+                    raise ValueError(
+                        "current v11 Lean review graph has malformed source bytes"
+                    )
+                try:
+                    path = raw_path.resolve()
+                    path.relative_to(root)
+                except (OSError, RuntimeError, ValueError) as exc:
+                    raise ValueError(
+                        "current v11 Lean review graph source escapes the repository"
+                    ) from exc
+                if path.suffix != ".lean":
+                    raise ValueError(
+                        "current v11 Lean review graph contains a non-Lean source"
+                    )
+                prior = snapshots.get(path)
+                if prior is not None and prior != content:
+                    raise ValueError(
+                        "current v11 Lean review graph assigns conflicting bytes to one source"
+                    )
+                snapshots[path] = content
+            interface = (self.folder / "PaperInterface.lean").resolve()
+            if interface not in snapshots:
+                raise ValueError(
+                    "current v11 Lean review graph omits PaperInterface.lean"
+                )
+            return snapshots
+
+        audit_payload = _legacy_source_record_audit_payload(
+            self.evidence_context
+        )
         closure_payload = (
             audit_payload.get(SOURCE_RECORD_LEAN_IMPORT_CLOSURE_FIELD)
             if isinstance(audit_payload, Mapping)
@@ -4528,11 +3593,55 @@ class PaperCloseoutRunContext:
                 if path == (PAPERS / f"{self.paper_id}.lean").resolve()
                 or paper_root in path.parents
             }
+            if self.v11_lean_claim_graph_selected:
+                payload = getattr(
+                    self.v11_lean_review_surface, "declaration_inventory", None
+                )
+                module_sources = getattr(
+                    self.v11_lean_review_surface, "module_sources", None
+                )
+                if isinstance(payload, Mapping) and isinstance(
+                    module_sources, Mapping
+                ):
+                    declarations = lean_declaration_index_from_inventory(
+                        payload, module_sources
+                    )
+                    if declarations:
+                        return declarations
+                raise ValueError(
+                    "selected v11 Lean review graph has no usable paper declaration inventory"
+                )
             return lean_declaration_index_from_source_bytes(paper_sources)
 
         value = self._memoized(("paper_declaration_index",), build)
         assert isinstance(value, dict)
         return value
+
+    def current_v11_primary_gate_result(self) -> CurrentV11PrimaryGateResult:
+        """Return the one parser-free core gate for this exact v11 transaction."""
+
+        if not self.selected_v11_closeout or self.evidence_context is None:
+            raise ValueError(
+                "current v11 primary gate requires its builder-issued transaction"
+            )
+        return current_v11_primary_gate_result(
+            ROOT,
+            self.folder,
+            context=self.evidence_context,
+        )
+
+    def evaluate_and_accept_current_v11_primary_gate(self) -> tuple[object, object]:
+        """Return the exact current verdict and its nominal acceptance object."""
+
+        if not self.selected_v11_closeout or self.evidence_context is None:
+            raise ValueError(
+                "current v11 primary gate requires its builder-issued transaction"
+            )
+        return evaluate_and_accept_current_v11_primary_gate(
+            ROOT,
+            self.folder,
+            context=self.evidence_context,
+        )
 
     def library_declaration_index(self) -> dict[str, list[LeanDeclaration]]:
         """Return imported reusable-library declarations from the same closure."""
@@ -4541,7 +3650,18 @@ class PaperCloseoutRunContext:
             return library_lean_declaration_index()
 
         def build() -> dict[str, list[LeanDeclaration]]:
-            library_root = (ROOT / "EconCSLib").resolve()
+            if self.v11_lean_claim_graph_selected:
+                records = getattr(
+                    self.v11_lean_review_surface,
+                    "library_source_declarations",
+                    None,
+                )
+                if not isinstance(records, Mapping):
+                    raise ValueError(
+                        "selected v11 Lean review graph has no usable library declaration inventory"
+                    )
+                return lean_declaration_index_from_source_records(records)
+            library_root = (ROOT / "AppliedModelingLib").resolve()
             library_sources = {
                 path: content
                 for path, content in self.lean_owned_source_snapshots().items()
@@ -4608,12 +3728,20 @@ def paper_statement_sidecar_findings(
     """
 
     severity = completed_status_finding_severity(status)
-    findings = paper_statement_map_declaration_findings(
-        paper_id,
-        folder,
-        status,
-        presentation_hygiene=presentation_hygiene,
-        run_context=run_context,
+    selected_v11_closeout = bool(
+        run_context is not None and run_context.selected_v11_closeout
+    )
+    findings = (
+        []
+        if selected_v11_closeout
+        else paper_statement_map_declaration_findings(
+            paper_id,
+            folder,
+            status,
+            presentation_hygiene=presentation_hygiene,
+            run_context=run_context,
+            skip_semantic_contract_lean=False,
+        )
     )
     status_payload = (
         status_payload_override
@@ -4647,6 +3775,15 @@ def paper_statement_sidecar_findings(
         )
         return findings
 
+    if selected_v11_closeout:
+        # The selected v11 transaction owns the source/Spec review lane even
+        # when one of its semantic leaves is stale. Its exact error is reported
+        # by the primary and evidence gates. Typed map structure, source-route
+        # projection, atom, defect, and source-fidelity checks are owned by the
+        # later transaction-bound evidence capability; the legacy declaration
+        # checker and dashboard summaries are never fallback evidence.
+        return findings
+
     # Exact source-map contracts can replace only an absent/non-evidence
     # legacy statement or coverage lane.  They never suppress source-record,
     # model-semantic, assumption-provenance, populated-sidecar, or map-route
@@ -4666,24 +3803,14 @@ def paper_statement_sidecar_findings(
             run_context=run_context,
         )
     try:
-        try:
-            from scripts.review_dashboard import (
-                assumption_provenance_audit_summary,
-                bind_current_v11_source_spec_screening,
-                human_review_claim_items,
-                paper_coverage_audit_summary,
-                review_surface_audit_summary,
-                statement_translation_audit_summary,
-            )
-        except ModuleNotFoundError:  # Direct script execution.
-            from review_dashboard import (
-                assumption_provenance_audit_summary,
-                bind_current_v11_source_spec_screening,
-                human_review_claim_items,
-                paper_coverage_audit_summary,
-                review_surface_audit_summary,
-                statement_translation_audit_summary,
-            )
+        from scripts.review_dashboard import (
+            assumption_provenance_audit_summary,
+            bind_current_v11_source_spec_screening,
+            human_review_claim_items,
+            paper_coverage_audit_summary,
+            review_surface_audit_summary,
+            statement_translation_audit_summary,
+        )
 
         audit_inputs = (
             run_context.dashboard_audit_inputs()
@@ -4692,11 +3819,23 @@ def paper_statement_sidecar_findings(
         )
         dashboard_scope: Any = nullcontext()
         if audit_inputs is not None:
-            try:
-                from scripts.review_dashboard import dashboard_audit_input_scope
-            except ModuleNotFoundError:  # Direct script execution.
-                from review_dashboard import dashboard_audit_input_scope
+            from scripts.dashboard_audit_inputs import dashboard_audit_input_scope
             dashboard_scope = dashboard_audit_input_scope(audit_inputs)
+        strict_semantic_kwargs: dict[str, object] = {}
+        semantic_authority = (
+            getattr(
+                run_context.evidence_context,
+                "semantic_reuse_authority",
+                None,
+            )
+            if run_context is not None
+            and run_context.evidence_context is not None
+            else None
+        )
+        if semantic_authority is not None:
+            strict_semantic_kwargs["semantic_reuse_authority"] = (
+                semantic_authority
+            )
         with dashboard_scope:
             items = (
                 review_items_provider()
@@ -4709,21 +3848,16 @@ def paper_statement_sidecar_findings(
                         else None
                     ),
                     audit_inputs=audit_inputs,
+                    **strict_semantic_kwargs,
                 )
             )
             surface = review_surface_audit_summary(folder, items)
             statements = statement_translation_audit_summary(folder, items)
             paper_coverage = paper_coverage_audit_summary(folder, items)
             assumptions = assumption_provenance_audit_summary(folder, items)
-            review_surface_config = (
-                status_payload.get("review_surface")
-                if isinstance(status_payload, dict)
-                else None
-            )
-            v11_required = bool(
-                isinstance(review_surface_config, dict)
-                and review_surface_config.get("require_v11_raw_source_spec_screening")
-                is True
+            v11_required = raw_source_spec_screening_requested(
+                status_payload,
+                folder=folder,
             )
             v11_screening_errors: list[str] = []
             v11_coverage_errors: list[str] = []
@@ -4738,6 +3872,14 @@ def paper_statement_sidecar_findings(
                 claim_rows = human_review_claim_items(folder, list(items))
                 bind_current_v11_source_spec_screening(folder, claim_rows)
                 for row in claim_rows:
+                    # Source-model assumptions are audited through the
+                    # independent assumption/source-record lane.  They are
+                    # deliberately not transparent paper ``Spec`` claims, so
+                    # requiring a raw-source-to-Spec row here would create an
+                    # impossible duplicate obligation for an assumption-only
+                    # declaration.
+                    if row.get("is_assumption") is True:
+                        continue
                     name = str(row.get("full_name") or "").strip()
                     verdict = str(row.get("llm_match_judgment") or "").strip()
                     source = str(row.get("llm_match_source") or "").strip()
@@ -4774,11 +3916,17 @@ def paper_statement_sidecar_findings(
                     if coverage_mode_error:
                         v11_coverage_errors.append("invalid_source_coverage_mode")
                     else:
-                        selected_source_ids = source_index_byte_pinned_anchor_item_ids(
-                            folder,
-                            source_map,
-                            coverage_mode,
-                            repository_root=ROOT,
+                        selected_source_ids = (
+                            source_index_byte_pinned_anchor_item_ids(
+                                folder,
+                                source_map,
+                                coverage_mode,
+                                context=(
+                                    run_context.evidence_context
+                                    if run_context is not None
+                                    else None
+                                ),
+                            )
                         )
                         required_items = filter_source_map_items_for_proof_obligations(
                             source_map_items,
@@ -4793,7 +3941,23 @@ def paper_statement_sidecar_findings(
                         )
                         if alias_errors:
                             v11_coverage_errors.append("invalid_presentation_aliases")
-                        required_keys = set(required_items) - set(aliases)
+                        # This is the same source-to-Spec scope as the strict
+                        # evidence gate. Selected support-only atoms are still
+                        # checked by source/proof provenance, but have no
+                        # transparent Spec and cannot require a v11 card.
+                        required_keys = {
+                            str(source_key)
+                            for source_key, source_item in required_items.items()
+                            if source_key not in aliases
+                            and isinstance(source_item, Mapping)
+                            and isinstance(source_item.get("semantic_contract"), Mapping)
+                            and str(
+                                source_item["semantic_contract"].get(
+                                    "spec_declaration"
+                                )
+                                or ""
+                            ).strip()
+                        }
                         claims_by_source: dict[str, list[dict[str, Any]]] = {}
                         for row in claim_rows:
                             source_key = str(
@@ -4866,275 +4030,29 @@ def paper_statement_sidecar_findings(
             if reusable:
                 bridge_lanes[lane] = True
 
-    if v11_required:
-        if v11_screening_errors:
-            findings.append(
-                Finding(
-                    severity,
-                    folder / f"{PAPER_AUDIT_DIR}/v11_raw_source_spec_screening.json",
-                    f"`{paper_id}` v11 raw-source-to-expanded-Spec screening needs attention: "
-                    + ", ".join(v11_screening_errors[:8])
-                    + ("; ..." if len(v11_screening_errors) > 8 else ""),
-                )
-            )
-        if v11_coverage_errors:
-            findings.append(
-                Finding(
-                    severity,
-                    folder / f"{PAPER_AUDIT_DIR}/paper_statement_map.json",
-                    f"`{paper_id}` v11 source inventory is not fully covered by "
-                    "current raw-source-to-Spec rows: "
-                    + ", ".join(v11_coverage_errors[:8])
-                    + ("; ..." if len(v11_coverage_errors) > 8 else ""),
-                )
-            )
-        if not v11_screening_errors and not v11_coverage_errors:
-            # A fully current v11 verdict is the source-semantic counterpart
-            # of legacy review-surface, translation, and coverage rows.  The
-            # source-first coverage relation above additionally ensures that
-            # context for one row cannot silently cover another source item.
-            bridge_lanes.update(
-                {"review_surface": True, "statement": True, "coverage": True}
-            )
-
-    strict_evidence_required = status in {
-        "formalized",
-        "formalized with caveat",
-        "partially formalized",
-        "conditional",
-    }
-    surface_needs_attention = bool(
-        surface.get("needs_attention")
-        or (strict_evidence_required and not surface.get("has_completed_audit"))
-    )
-    if surface_needs_attention and not bridge_lanes["review_surface"]:
-        reasons: list[str] = []
-        if strict_evidence_required and not surface.get("has_completed_audit"):
-            reasons.append("missing explicit review-surface LLM pass")
-        if surface.get("missing_required"):
-            reasons.append("missing review-surface LLM audit")
-        if surface.get("stale"):
-            reasons.append("stale review-surface LLM audit")
-        if surface.get("metadata_missing"):
-            reasons.append("review-surface audit missing validator/timestamp success metadata")
-        if surface.get("judgment") in {"needs_curation", "uncertain"}:
-            reasons.append(f"review-surface judgment `{surface.get('judgment')}`")
-        if surface.get("unknown_judgment"):
-            reasons.append(f"unrecognized review-surface judgment `{surface.get('judgment') or 'missing'}`")
-        findings.append(
-            Finding(
-                severity,
-                folder / f"{PAPER_AUDIT_DIR}/review_surface_llm.json",
-                f"`{paper_id}` review-surface audit needs attention: "
-                + (", ".join(reasons) if reasons else "unknown issue"),
-            )
+    if v11_required and not v11_screening_errors and not v11_coverage_errors:
+        # A fully current v11 verdict is the source-semantic counterpart of
+        # the legacy review-surface, translation, and coverage rows.  The
+        # source-first coverage relation above additionally ensures that
+        # context for one row cannot silently cover another source item.
+        bridge_lanes.update(
+            {"review_surface": True, "statement": True, "coverage": True}
         )
 
-    if paper_coverage.get("needs_attention") and not bridge_lanes["coverage"]:
-        parts: list[str] = []
-        for key, label in (
-            ("missing_inventory", "missing required source-statement inventory"),
-            ("unresolved_statement_map", "unresolved audit/paper_statement_map.json"),
-            ("missing_required", "missing paper-level coverage audit"),
-            ("inventory_unknown_source_kind_count", "source statement with unknown source_kind"),
-            ("missing_coverage_count", "source statement without coverage judgment"),
-            ("partial_count", "partially covered source statement"),
-            ("missing_count", "missing source statement"),
-            ("uncertain_count", "uncertain source-coverage judgment"),
-            ("unknown_count", "unknown source-coverage judgment"),
-            ("stale_statement_count", "stale source-statement digest"),
-            ("extra_coverage_count", "stale extra coverage item"),
-            ("coverage_metadata_missing_count", "coverage item missing validator/timestamp metadata"),
-            ("invalid_row_link_count", "invalid linked dashboard row"),
-            (
-                "coverage_row_signature_error_count",
-                "coverage judgment without a current elaborated Lean-row signature pin",
-            ),
-            (
-                "coverage_source_input_error_count",
-                "coverage judgment without the required byte-pinned raw source-input protocol",
-            ),
-            ("covered_without_rows_count", "covered source statement without linked row"),
-            ("covered_without_reason_count", "covered source statement without semantic coverage reason"),
-            (
-                "covered_with_seed_reason_count",
-                "covered source statement justified only by dashboard/source-key name matching",
-            ),
-            ("covered_without_source_evidence_count", "covered source statement without source evidence"),
-            (
-                "result_covered_without_proof_row_count",
-                "paper-facing result covered without a theorem/lemma row",
-            ),
-            (
-                "result_matched_only_by_definition_row_count",
-                "paper-facing result whose positive match evidence is only def/abbrev rows",
-            ),
-            ("support_without_declarations_count", "support-covered source statement without support declarations"),
-            ("support_without_reason_count", "support-covered source statement without semantic coverage reason"),
-            ("support_without_source_evidence_count", "support-covered source statement without source evidence"),
-            (
-                "invalid_quarantined_defect_support_count",
-                "quarantined source defect without exact-hash semantic support",
-            ),
-            (
-                "defect_support_judgment_error_count",
-                "missing/stale/malformed defect-support semantic judgment",
-            ),
-            (
-                "quarantined_defect_direct_coverage_count",
-                "quarantined source defect incorrectly counted as direct proof coverage",
-            ),
-            ("out_of_scope_without_reason_count", "out-of-scope source statement without semantic reason"),
-            ("out_of_scope_without_source_evidence_count", "out-of-scope source statement without source evidence"),
-            (
-                "required_out_of_scope_count",
-                "required source-visible review target marked out of scope/not a paper target",
-            ),
-        ):
-            value = paper_coverage.get(key)
-            if isinstance(value, bool):
-                if value:
-                    parts.append(label)
-            elif isinstance(value, int) and value:
-                parts.append(f"{value} {label}(s)")
-        if paper_coverage.get("stale_inventory"):
-            parts.append("stale source-inventory digest")
-        if paper_coverage.get("stale_surface"):
-            parts.append("stale review-surface digest")
-        if paper_coverage.get("audit_metadata_missing"):
-            parts.append("paper-coverage audit missing validator/timestamp success metadata")
-        findings.append(
-            Finding(
-                severity,
-                folder / f"{PAPER_AUDIT_DIR}/paper_coverage_llm.json",
-                f"`{paper_id}` paper-coverage audit needs attention: "
-                + (", ".join(parts) if parts else "unknown issue"),
-            )
-        )
-    if (
-        paper_coverage.get("source_to_lean_needs_attention")
-        and not bridge_lanes["coverage"]
+    for issue in statement_sidecar_summary_issues(
+        paper_id,
+        status,
+        surface=surface,
+        statements=statements,
+        paper_coverage=paper_coverage,
+        assumptions=assumptions,
+        bridge_lanes=bridge_lanes,
+        v11_required=v11_required,
+        v11_screening_errors=v11_screening_errors,
+        v11_coverage_errors=v11_coverage_errors,
     ):
-        parts = []
-        for key, label in (
-            ("support_only_named_claim_count", "theorem-like source statement only support-covered"),
-            (
-                "support_only_required_source_item_count",
-                "required source-visible review target only support-covered",
-            ),
-            (
-                "invalid_quarantined_defect_support_count",
-                "quarantined source defect without exact-hash semantic support",
-            ),
-            (
-                "defect_support_judgment_error_count",
-                "missing/stale/malformed defect-support semantic judgment",
-            ),
-            (
-                "quarantined_defect_direct_coverage_count",
-                "quarantined source defect incorrectly counted as direct proof coverage",
-            ),
-            (
-                "required_out_of_scope_count",
-                "required source-visible review target marked out of scope/not a paper target",
-            ),
-            (
-                "coverage_row_signature_error_count",
-                "source-to-row link without a current elaborated Lean-row signature pin",
-            ),
-            ("row_statement_match_missing_count", "source-to-row link without row-local statement judgment"),
-            ("row_statement_match_stale_count", "source-to-row link with stale row-local statement judgment"),
-            ("row_statement_match_mismatch_count", "source-to-row link with mismatched row-local statement judgment"),
-            ("row_statement_match_uncertain_count", "source-to-row link with uncertain row-local statement judgment"),
-            ("row_statement_match_unknown_count", "source-to-row link with unknown row-local statement judgment"),
-            (
-                "result_covered_without_proof_row_count",
-                "paper-facing result covered without a theorem/lemma row",
-            ),
-            (
-                "result_matched_only_by_definition_row_count",
-                "paper-facing result whose positive match evidence is only def/abbrev rows",
-            ),
-            (
-                "row_statement_match_conditional_without_coverage_boundary_count",
-                "direct source coverage link whose row is only conditionally matched",
-            ),
-            (
-                "row_statement_match_missing_statement_digest_count",
-                "source-to-row link without row-local statement digest",
-            ),
-            (
-                "row_statement_match_wrong_statement_digest_count",
-                "source-to-row link with wrong row-local statement digest",
-            ),
-            ("row_assumption_provenance_missing_count", "source-to-assumption link without provenance judgment"),
-            ("row_assumption_provenance_stale_count", "source-to-assumption link with stale provenance judgment"),
-            ("row_assumption_provenance_mismatch_count", "source-to-assumption link with provenance mismatch"),
-            ("row_assumption_provenance_uncertain_count", "source-to-assumption link with uncertain provenance"),
-            ("row_assumption_provenance_unknown_count", "source-to-assumption link with unknown provenance"),
-            (
-                "row_assumption_provenance_conditional_without_coverage_boundary_count",
-                "direct source coverage link whose assumption is only a partial boundary",
-            ),
-        ):
-            value = paper_coverage.get(key)
-            if isinstance(value, int) and value:
-                parts.append(f"{value} {label}(s)")
-        if parts:
-            findings.append(
-                Finding(
-                    severity,
-                    folder / f"{PAPER_AUDIT_DIR}/paper_coverage_llm.json",
-                    f"`{paper_id}` source-to-Lean audit needs attention: " + ", ".join(parts),
-                )
-            )
-
-    if statements.get("needs_attention") and not bridge_lanes["statement"]:
-        parts: list[str] = []
-        for key, label in (
-            ("missing_draft_count", "missing Lean-to-TeX draft"),
-            ("stale_draft_count", "stale Lean-to-TeX draft"),
-            ("missing_judgment_count", "missing statement-judge row"),
-            ("stale_judgment_count", "stale statement-judge row"),
-            ("missing_obligation_ledger_count", "statement row without a complete semantic obligation ledger"),
-            ("mismatch_count", "statement mismatch"),
-            ("uncertain_count", "uncertain statement judgment"),
-            ("unknown_count", "unknown statement judgment"),
-        ):
-            value = statements.get(key)
-            if isinstance(value, int) and value:
-                parts.append(f"{value} {label}(s)")
         findings.append(
-            Finding(
-                severity,
-                folder / f"{PAPER_AUDIT_DIR}/statement_match_llm.json",
-                f"`{paper_id}` statement-translation audit needs attention: "
-                + (", ".join(parts) if parts else "unknown issue"),
-            )
-        )
-    if assumptions.get("needs_attention"):
-        parts = []
-        for key, label in (
-            ("missing_rows_count", "configured assumption declaration missing from review surface"),
-            ("unlisted_rows_count", "assumption-like declaration not listed in status.json"),
-            ("missing_judgment_count", "missing assumption-provenance judgment"),
-            ("stale_judgment_count", "stale assumption-provenance judgment"),
-            ("not_paper_assumption_count", "assumption judged not paper/source backed"),
-            ("uncertain_count", "uncertain assumption-provenance judgment"),
-            ("unknown_count", "unknown assumption-provenance judgment"),
-            ("unresolved_premise_count", "unresolved premise-level provenance judgment"),
-            ("missing_source_location_premise_count", "source-text premise judgment without source location"),
-        ):
-            value = assumptions.get(key)
-            if isinstance(value, int) and value:
-                parts.append(f"{value} {label}(s)")
-        findings.append(
-            Finding(
-                severity,
-                folder / f"{PAPER_AUDIT_DIR}/assumption_match_llm.json",
-                f"`{paper_id}` assumption-provenance audit needs attention: "
-                + (", ".join(parts) if parts else "unknown issue"),
-            )
+            Finding(severity, folder / issue.artifact, issue.message)
         )
     return findings
 
@@ -5220,12 +4138,13 @@ def source_coverage_declaration_names(item: dict[str, object]) -> list[str] | No
 
 
 def source_inventory_semantic_bridge_names(item: dict[str, object]) -> list[str] | None:
-    """Return paper-local bridge declarations recorded for a source inventory item.
+    """Return legacy paper-local bridge declarations for a source inventory item.
 
-    These fields are intentionally explicit.  A source item may point at a
-    reusable-library definition/theorem only after a paper-local bridge row has
-    compared the library object to the source statement semantically; resolving a
-    reusable declaration by name is not source evidence.
+    These fields remain part of the legacy source-map contract.  Current v11
+    closeout instead binds a direct reusable-library source route to the exact
+    declaration through the Lean-owned graph and the current material-library
+    semantic ledger.  That location-neutral route must not manufacture a
+    paper-local wrapper merely because the implementation is reusable.
     """
 
     names: list[str] = []
@@ -5242,6 +4161,7 @@ def paper_reviewed_semantic_bridge_names(
     *,
     status_payload: Mapping[str, object] | None = None,
     source_text_by_path: Mapping[Path, str] | None = None,
+    include_legacy_comment_hygiene: bool = False,
 ) -> tuple[set[str], dict[str, str]]:
     """Return reviewed/assumption bridge rows and leading comments for a paper.
 
@@ -5269,7 +4189,14 @@ def paper_reviewed_semantic_bridge_names(
             for value in values:
                 reviewed_names.add(value)
                 reviewed_names.add(value.rsplit(".", 1)[-1])
+    # Current v11 acceptance resolves every configured name through Lean's
+    # elaborated declaration inventory and validates source status through the
+    # typed source map. Leading Lean comments are an older, presentation-only
+    # diagnostic; do not parse Lean merely to recover them on the accepting
+    # path.
     comments: dict[str, str] = {}
+    if not include_legacy_comment_hygiene:
+        return reviewed_names, comments
     for review_path in {
         review_surface_source_file_path(folder, review_surface),
         proof_endpoint_source_file_path(folder, review_surface),
@@ -5377,7 +4304,10 @@ def declaration_body_assignment_start(
     though it were the statement.
     """
 
-    match = declaration_match or REVIEW_DECL_KIND_RE.match(source)
+    declaration_re = (
+        _legacy_review_surface_structure_module().REVIEW_DECL_KIND_RE
+    )
+    match = declaration_match or declaration_re.match(source)
     if match is None:
         return None
     candidates = [
@@ -5402,7 +4332,10 @@ def declaration_semantic_surface_signature(source: str, kind: str | None = None)
     """
 
     surface = lean_code_text(source)
-    match = REVIEW_DECL_KIND_RE.match(surface)
+    declaration_re = (
+        _legacy_review_surface_structure_module().REVIEW_DECL_KIND_RE
+    )
+    match = declaration_re.match(surface)
     declaration_kind = kind or (match.group(1) if match is not None else "")
     if declaration_kind not in {"def", "abbrev"}:
         body_start = declaration_body_assignment_start(surface, match)
@@ -5413,7 +4346,7 @@ def declaration_semantic_surface_signature(source: str, kind: str | None = None)
             return ""
         if body_start is not None:
             surface = surface[:body_start]
-        match = REVIEW_DECL_KIND_RE.match(surface)
+        match = declaration_re.match(surface)
     else:
         # The definition assignment token is not source-level equality.  Keep
         # the full transparent body, but do not let either its assignment or
@@ -5572,12 +4505,6 @@ def canonical_schema3_expression_sha256(value: object) -> str:
     if normalized is None:
         return ""
     return hashlib.sha256(_canonical_json_key(normalized).encode("utf-8")).hexdigest()
-
-
-def canonical_schema3_guard_sha256(value: object) -> str:
-    """Backward-compatible guard-oriented name for the generic expression pin."""
-
-    return canonical_schema3_expression_sha256(value)
 
 
 def _canonical_bvar_index(value: object) -> int | None:
@@ -7207,6 +6134,7 @@ def semantic_contract_schema3_surface_routes(
     reviewed_declaration_keys: set[tuple[Path, int, str]],
     *,
     build_input_provider: RepositoryBuildInputSnapshotProvider | None = None,
+    run_context: PaperCloseoutRunContext | None = None,
 ) -> tuple[dict[str, SemanticContractSurfaceRoute], list[Finding]]:
     """Return schema-3 routes whose current contract can supply a Spec body.
 
@@ -7225,16 +6153,10 @@ def semantic_contract_schema3_surface_routes(
         return routes, findings
 
     try:
-        try:
-            from scripts.audit_evidence_integrity import (
-                SEMANTIC_CONTRACT_SCHEMAS,
-                semantic_contract_validation_errors,
-            )
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (
-                SEMANTIC_CONTRACT_SCHEMAS,
-                semantic_contract_validation_errors,
-            )
+        from scripts.audit_evidence_integrity import (
+            SEMANTIC_CONTRACT_SCHEMAS,
+            semantic_contract_validation_errors,
+        )
     except Exception as error:  # noqa: BLE001 - a closeout route fails closed.
         return routes, [
             Finding(
@@ -7371,11 +6293,33 @@ def semantic_contract_schema3_surface_routes(
                 )
             )
             continue
-        independence_error = semantic_contract_spec_structure_error(
-            paper_declarations,
-            specification,
-            require_visible_syntax=not source_spec_correspondence_enabled(payload),
+        native_surface = (
+            run_context.v11_lean_review_surface
+            if run_context is not None
+            and run_context.selected_v11_closeout
+            else None
         )
+        native_sources = getattr(native_surface, "source_declarations", None)
+        native_targets = getattr(native_surface, "semantic_targets", None)
+        qualified_specification = _qualified_contract_declaration_name(
+            paper_declarations, spec_name
+        )
+        if isinstance(native_sources, Mapping) and isinstance(
+            native_targets, Mapping
+        ):
+            native_source = native_sources.get(qualified_specification)
+            independence_error = (
+                "specification is absent from the accepted Lean semantic graph"
+                if not isinstance(native_source, Mapping)
+                or qualified_specification not in native_targets
+                else ""
+            )
+        else:
+            independence_error = semantic_contract_spec_structure_error(
+                paper_declarations,
+                specification,
+                require_visible_syntax=not source_spec_correspondence_enabled(payload),
+            )
         if independence_error:
             findings.append(
                 Finding(
@@ -7386,9 +6330,6 @@ def semantic_contract_schema3_surface_routes(
                 )
             )
             continue
-        qualified_specification = _qualified_contract_declaration_name(
-            paper_declarations, spec_name
-        )
         qualified_evidence = _qualified_contract_declaration_name(
             paper_declarations, evidence_name
         )
@@ -7414,20 +6355,12 @@ def semantic_contract_schema3_surface_routes(
     if not requested:
         return routes, findings
     try:
-        try:
-            from scripts.lean_signature_manifest import (
-                paper_local_module_names,
-                run_lean_semantic_contract_matches,
-                run_lean_semantic_contract_transparency_checks,
-            )
-            from scripts.review_dashboard import review_source_file, review_source_module
-        except ModuleNotFoundError:
-            from lean_signature_manifest import (
-                paper_local_module_names,
-                run_lean_semantic_contract_matches,
-                run_lean_semantic_contract_transparency_checks,
-            )
-            from review_dashboard import review_source_file, review_source_module
+        from scripts.lean_signature_manifest import (
+            paper_local_module_names,
+            run_lean_semantic_contract_matches,
+            run_lean_semantic_contract_transparency_checks,
+        )
+        from scripts.review_dashboard import review_source_file, review_source_module
         source_path = review_source_file(folder)
         module = review_source_module(folder, source_path)
         transparency_checks = run_lean_semantic_contract_transparency_checks(
@@ -7503,6 +6436,7 @@ def paper_statement_map_semantic_surface_findings(
     *,
     presentation_hygiene: bool = False,
     build_input_provider: RepositoryBuildInputSnapshotProvider | None = None,
+    run_context: PaperCloseoutRunContext | None = None,
 ) -> list[Finding]:
     """Check opt-in source-map semantic surfaces on explicit direct routes.
 
@@ -7516,12 +6450,7 @@ def paper_statement_map_semantic_surface_findings(
     severity = completed_status_finding_severity(status)
     findings: list[Finding] = []
     try:
-        try:
-            from scripts.audit_evidence_integrity import semantic_surface_validation_errors
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (
-                semantic_surface_validation_errors,
-            )
+        from scripts.audit_evidence_integrity import semantic_surface_validation_errors
     except Exception as error:  # noqa: BLE001 - source-fidelity audit fails closed.
         return [
             Finding(
@@ -7542,6 +6471,7 @@ def paper_statement_map_semantic_surface_findings(
         paper_declarations,
         reviewed_declaration_keys,
         build_input_provider=build_input_provider,
+        run_context=run_context,
     )
     findings.extend(contract_route_findings)
     manifest_requests: list[SemanticSurfaceManifestRequest] = []
@@ -7701,18 +6631,11 @@ def paper_statement_map_semantic_surface_findings(
             }
         )
         try:
-            try:
-                from scripts.lean_signature_manifest import (
-                    paper_local_module_names,
-                    run_lean_signature_manifests,
-                    signature_manifest_outer_binder_digest,
-                )
-            except ModuleNotFoundError:
-                from lean_signature_manifest import (
-                    paper_local_module_names,
-                    run_lean_signature_manifests,
-                    signature_manifest_outer_binder_digest,
-                )
+            from scripts.lean_signature_manifest import (
+                paper_local_module_names,
+                run_lean_signature_manifests,
+                signature_manifest_outer_binder_digest,
+            )
             manifests = run_lean_signature_manifests(
                 ROOT,
                 f"{folder.name}.PaperInterface",
@@ -7824,12 +6747,7 @@ def configured_source_proof_fidelity_path(
         organized = folder / PAPER_AUDIT_DIR / "source_proof_fidelity.json"
         return organized if organized.exists() else folder / "source_proof_fidelity.json"
     try:
-        try:
-            from scripts.audit_evidence_integrity import source_proof_fidelity_ledger_path
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (
-                source_proof_fidelity_ledger_path,
-            )
+        from scripts.audit_evidence_integrity import source_proof_fidelity_ledger_path
         path, error = source_proof_fidelity_ledger_path(folder, status_payload)
     except Exception:  # noqa: BLE001 - callers fail closed on missing evidence.
         return None
@@ -7839,43 +6757,6 @@ def configured_source_proof_fidelity_path(
 SEMANTIC_CONTRACT_SPEC_STRUCTURE_RE = re.compile(
     r"(?:∀|∃|∧|∨|↔|→|=|≠|≤|≥|<|>|∈|∉|\bif\b|\bmatch\b|∫|∑)"
 )
-
-
-def _declaration_identity_routes(
-    declaration_index: dict[str, list[LeanDeclaration]],
-    declaration: LeanDeclaration,
-) -> set[str]:
-    """Return every local route that resolves to one declaration identity.
-
-    These names are used only to detect an explicit circular reference in a
-    manually written Spec body.  They never establish source coverage or
-    mathematical equivalence.
-    """
-
-    key = declaration_key(declaration)
-    return {
-        route
-        for route, candidates in declaration_index.items()
-        if any(declaration_key(candidate) == key for candidate in candidates)
-    }
-
-
-def _lean_identifier_occurs(text: str, identifier: str) -> bool:
-    """Check a full Lean identifier occurrence without matching a suffix.
-
-    A qualified route and its unqualified short name are checked separately by
-    the caller.  Keeping the dot out of either boundary prevents `foo` from
-    spuriously matching the tail of `Other.foo`.
-    """
-
-    if not identifier:
-        return False
-    return bool(
-        re.search(
-            rf"(?<![A-Za-z0-9_'.]){re.escape(identifier)}(?![A-Za-z0-9_'])",
-            text,
-        )
-    )
 
 
 def semantic_contract_spec_structure_error(
@@ -7931,51 +6812,6 @@ def semantic_contract_spec_structure_error(
             "specification body has no visible logical/mathematical structure; "
             "a bare predicate/certificate wrapper cannot serve as a semantic closeout Spec"
         )
-    return ""
-
-
-def semantic_contract_spec_independence_error(
-    declaration_index: dict[str, list[LeanDeclaration]],
-    spec_declaration: LeanDeclaration,
-    evidence_declaration: LeanDeclaration,
-    *,
-    configured_spec_name: str,
-    configured_evidence_name: str,
-) -> str:
-    """Return legacy spelling diagnostics after structural Spec validation.
-
-    New semantic-surface routes must use
-    :func:`semantic_contract_spec_structure_error` plus the Lean-AST
-    transparency receipt as their acceptance criteria.  This compatibility
-    helper retains the older direct-reference diagnostic for callers that
-    explicitly request it, but declaration spelling is not proof evidence.
-    """
-
-    structure_error = semantic_contract_spec_structure_error(
-        declaration_index, spec_declaration
-    )
-    if structure_error:
-        return structure_error
-    body = lean_code_text(declaration_body(spec_declaration.source)).strip()
-
-    evidence_routes = _declaration_identity_routes(
-        declaration_index, evidence_declaration
-    )
-    evidence_routes.add(configured_evidence_name)
-    evidence_routes.add(configured_evidence_name.rsplit(".", 1)[-1])
-    evidence_routes.discard("")
-    wrapper_routes = {
-        f"{route.rsplit('.', 1)[-1]}_spec_proof" for route in evidence_routes
-    }
-    spec_short_name = configured_spec_name.rsplit(".", 1)[-1]
-    if spec_short_name:
-        wrapper_routes.add(f"{spec_short_name}_spec_proof")
-    for route in sorted(evidence_routes | wrapper_routes):
-        if _lean_identifier_occurs(body, route):
-            return (
-                "specification body cites its evidence theorem or a `_spec_proof` "
-                "wrapper; write the source proposition independently"
-            )
     return ""
 
 
@@ -8106,7 +6942,7 @@ def _realization_required_node_components(
         if not component or not origin or not role:
             errors.append("Lean closure has a malformed material node identity")
             continue
-        if origin == "foundation":
+        if origin in {"foundation", "foreign_model_definition"}:
             continue
         # Every production paper-owned node has already been recursively
         # traversed and inlined into the canonical Spec surface. Unsafe paper
@@ -8279,18 +7115,11 @@ def paper_statement_map_semantic_contract_findings(
         run_context.build_input_provider if run_context is not None else None
     )
     try:
-        try:
-            from scripts.audit_evidence_integrity import (
-                SEMANTIC_CONTRACT_SCHEMAS,
-                semantic_contract_inventory_findings,
-                semantic_contract_validation_errors,
-            )
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (
-                SEMANTIC_CONTRACT_SCHEMAS,
-                semantic_contract_inventory_findings,
-                semantic_contract_validation_errors,
-            )
+        from scripts.audit_evidence_integrity import (
+            SEMANTIC_CONTRACT_SCHEMAS,
+            semantic_contract_inventory_findings,
+            semantic_contract_validation_errors,
+        )
         structural_findings = semantic_contract_inventory_findings(
             folder,
             str(status or ""),
@@ -8384,7 +7213,11 @@ def paper_statement_map_semantic_contract_findings(
                 ):
                     reviewed_declaration_keys.add(declaration_key(proofs[0]))
     contract_schema = payload.get("semantic_contract_schema")
-    strict_realization = source_spec_correspondence_enabled(payload)
+    strict_realization = source_spec_correspondence_requested(
+        status_payload,
+        payload,
+        folder=folder,
+    )
     # The source inventory decides which source claims may mint a full-surface
     # occurrence receipt.  Do this once, inside the same exact evidence
     # transaction that will run Lean below.  It is intentionally not inferred
@@ -8413,9 +7246,27 @@ def paper_statement_map_semantic_contract_findings(
                     )
         except Exception:
             # The receipt is a closeout capability.  An unavailable inventory
-            # simply withholds it; the ordinary source-map findings remain the
-            # user-facing diagnostic.
+            # withholds it; fail closed below before starting obsolete Lean
+            # fallback work.
             strict_source_scope_keys = frozenset()
+        if not strict_source_scope_keys:
+            # A v11 source-to-Spec paper cannot recover from an invalid strict
+            # inventory by replaying the legacy transparency and manifest
+            # lanes.  Those programs do not repair missing/ambiguous source
+            # obligations, and running them first turns a cheap metadata error
+            # into minutes of needless Lean imports.  Preserve any precise
+            # structural findings already collected and otherwise emit one
+            # explicit fail-closed diagnostic.
+            if not findings:
+                findings.append(
+                    Finding(
+                        severity,
+                        statement_map,
+                        f"`{paper_id}` strict source-to-Spec inventory is unavailable; "
+                        "repair the source inventory before running Lean realization",
+                    )
+                )
+            return findings
     requested: dict[str, tuple[str, str, str, str, dict[str, object]]] = {}
     defect_ids_by_item: dict[str, set[str]] = {}
     for source_key, raw_item in items.items():
@@ -8552,27 +7403,119 @@ def paper_statement_map_semantic_contract_findings(
             if source_key in strict_source_scope_keys
         }
     )
-    if requested:
+    semantic_authority_realization_errors: list[str] | None = None
+    correspondence_authority_errors: list[str] | None = None
+    if strict_realization and strict_source_scope_keys:
+        semantic_authority_realization_errors = (
+            semantic_authority_source_spec_correspondence_errors(
+                ROOT,
+                folder,
+                payload,
+                [
+                    (source_key, raw_item)
+                    for source_key, (
+                        _spec,
+                        _evidence,
+                        _mode,
+                        _shape,
+                        raw_item,
+                    ) in requested.items()
+                    if source_key in strict_source_scope_keys
+                ],
+                evidence_context=(
+                    run_context.evidence_context
+                    if run_context is not None
+                    else None
+                ),
+            )
+        )
+        correspondence_authority_errors = (
+            semantic_authority_realization_errors
+            if semantic_authority_realization_errors is not None
+            else graph_authority_source_spec_correspondence_errors(
+                ROOT,
+                folder,
+                payload,
+                [
+                    (source_key, raw_item)
+                    for source_key, (
+                        _spec,
+                        _evidence,
+                        _mode,
+                        _shape,
+                        raw_item,
+                    ) in requested.items()
+                    if source_key in strict_source_scope_keys
+                ],
+                evidence_context=(
+                    run_context.evidence_context
+                    if run_context is not None
+                    else None
+                ),
+            )
+        )
+    semantic_authority_realization_current = (
+        semantic_authority_realization_errors == []
+    )
+    correspondence_authority_current = correspondence_authority_errors == []
+    graph_native_receipts: dict[str, dict[str, str]] = {}
+    if (
+        correspondence_authority_current
+        and run_context is not None
+        and run_context.current_v11_closeout
+    ):
+        graph_receipt_result = graph_native_source_spec_realization_receipts(
+            ROOT,
+            folder,
+            payload,
+            [
+                (source_key, raw_item)
+                for source_key, (
+                    _spec,
+                    _evidence,
+                    _mode,
+                    _shape,
+                    raw_item,
+                ) in requested.items()
+                if source_key in strict_source_scope_keys
+            ],
+            evidence_context=run_context.evidence_context,
+        )
+        if graph_receipt_result is not None:
+            graph_native_receipts, graph_receipt_errors = graph_receipt_result
+            if graph_receipt_errors:
+                correspondence_authority_current = False
+                correspondence_authority_errors = graph_receipt_errors
+                graph_native_receipts = {}
+    if requested and not correspondence_authority_current:
+        foreign_definitions: tuple[str, ...] = ()
+        foreign_modules: tuple[str, ...] = ()
+        foreign_scope_error = ""
         try:
-            try:
-                from scripts.lean_signature_manifest import (
-                    paper_local_module_names,
-                    run_lean_semantic_contract_closure_manifests,
-                    run_lean_semantic_contract_transparency_checks,
-                )
-                from scripts.review_dashboard import review_source_file, review_source_module
-            except ModuleNotFoundError:
-                from lean_signature_manifest import (
-                    paper_local_module_names,
-                    run_lean_semantic_contract_closure_manifests,
-                    run_lean_semantic_contract_transparency_checks,
-                )
-                from review_dashboard import review_source_file, review_source_module
+            from scripts.lean_signature_manifest import (
+                foreign_model_definition_scope,
+                paper_local_module_names,
+                run_lean_semantic_contract_closure_manifests,
+                run_lean_semantic_contract_transparency_checks,
+            )
+            from scripts.review_dashboard import review_source_file, review_source_module
             source_path = review_source_file(folder)
             review_module = review_source_module(folder, source_path)
             paper_modules = paper_local_module_names(
                 ROOT, folder, provider=build_input_provider
             )
+            foreign_definitions, foreign_modules, foreign_scope_error = (
+                foreign_model_definition_scope(ROOT, folder)
+            )
+            if foreign_scope_error:
+                findings.append(
+                    Finding(
+                        severity,
+                        folder / "status.json",
+                        f"`{paper_id}` foreign model definition scope is invalid: "
+                        + foreign_scope_error,
+                    )
+                )
             transparency_checks = run_lean_semantic_contract_transparency_checks(
                 ROOT,
                 review_module,
@@ -8585,12 +7528,19 @@ def paper_statement_map_semantic_contract_findings(
                 paper_modules,
                 build_input_provider=build_input_provider,
             )
-            if strict_realization and strict_specs:
+            if (
+                strict_realization
+                and strict_specs
+                and not foreign_scope_error
+                and not correspondence_authority_current
+            ):
                 closure_manifests = run_lean_semantic_contract_closure_manifests(
                     ROOT,
                     review_module,
                     strict_specs,
                     paper_modules,
+                    foreign_model_definitions=foreign_definitions,
+                    foreign_model_modules=foreign_modules,
                     build_input_provider=build_input_provider,
                 )
         except Exception:  # noqa: BLE001 - unavailable structural evidence fails closed.
@@ -8598,24 +7548,14 @@ def paper_statement_map_semantic_contract_findings(
             closure_manifests = {}
 
     meta_matches: dict[tuple[str, str, str], bool] = {}
-    if requested:
+    if requested and not semantic_authority_realization_current:
         try:
-            try:
-                from scripts.lean_signature_manifest import run_lean_semantic_contract_matches
-                from scripts.review_dashboard import (
-                    review_proof_module,
-                    review_source_file,
-                    review_source_module,
-                )
-            except ModuleNotFoundError:
-                from lean_signature_manifest import (
-                    run_lean_semantic_contract_matches,
-                )
-                from review_dashboard import (
-                    review_proof_module,
-                    review_source_file,
-                    review_source_module,
-                )
+            from scripts.lean_signature_manifest import run_lean_semantic_contract_matches
+            from scripts.review_dashboard import (
+                review_proof_module,
+                review_source_file,
+                review_source_module,
+            )
             source_path = review_source_file(folder)
             meta_matches = run_lean_semantic_contract_matches(
                 ROOT,
@@ -8636,7 +7576,7 @@ def paper_statement_map_semantic_contract_findings(
     checked_items: set[str] = set()
     for source_key, (spec, evidence, mode, shape, raw_item) in requested.items():
         transparency = transparency_checks.get(spec)
-        transparency_accepted = (
+        transparency_accepted = correspondence_authority_current or (
             isinstance(transparency, dict) and transparency.get("passes") is True
         )
         terminal_policy_errors: list[str] = []
@@ -8690,7 +7630,10 @@ def paper_statement_map_semantic_contract_findings(
                 )
             )
             continue
-        if meta_matches.get((spec, evidence, mode)) is not True:
+        if (
+            not semantic_authority_realization_current
+            and meta_matches.get((spec, evidence, mode)) is not True
+        ):
             expected = (
                 "the exact specification"
                 if mode == "proves"
@@ -8712,8 +7655,12 @@ def paper_statement_map_semantic_contract_findings(
             )
             continue
         if strict_realization and source_key in strict_source_scope_keys:
-            realization_errors = source_spec_correspondence_runtime_errors(
-                raw_item, closure_manifests.get(spec)
+            realization_errors = (
+                []
+                if correspondence_authority_current
+                else source_spec_correspondence_runtime_errors(
+                    raw_item, closure_manifests.get(spec)
+                )
             )
             if realization_errors:
                 findings.append(
@@ -8730,8 +7677,49 @@ def paper_statement_map_semantic_contract_findings(
             # gate.  The projector rechecks every field against the exact
             # map, parent association, atom contexts, and component route, so
             # this is not a blanket source-map exemption.
-            raw_correspondence = raw_item.get(SOURCE_SPEC_CORRESPONDENCE_KEY)
             raw_contract = raw_item.get("semantic_contract")
+            graph_receipt = graph_native_receipts.get(source_key)
+            if (
+                run_context is not None
+                and isinstance(graph_receipt, Mapping)
+                and isinstance(raw_contract, dict)
+                and str(graph_receipt.get("spec_declaration") or "").strip()
+                == spec
+                and str(graph_receipt.get("evidence_declaration") or "").strip()
+                == evidence
+                and str(graph_receipt.get("evidence_mode") or "").strip()
+                == mode
+                and str(graph_receipt.get("semantic_shape") or "").strip()
+                == shape
+            ):
+                run_context.record_strict_source_spec_correspondence_receipt(
+                    StrictSourceSpecCorrespondenceReceipt(
+                        source_item_key=source_key,
+                        spec_declaration=spec,
+                        evidence_declaration=evidence,
+                        evidence_mode=mode,
+                        semantic_shape=shape,
+                        source_atoms_sha256=str(
+                            graph_receipt["source_atoms_sha256"]
+                        ),
+                        item_identity_sha256=str(
+                            graph_receipt["item_identity_sha256"]
+                        ),
+                        spec_closure_sha256=str(
+                            graph_receipt["spec_closure_sha256"]
+                        ),
+                        spec_surface_sha256=str(
+                            graph_receipt["spec_surface_sha256"]
+                        ),
+                        closure_environment_sha256=str(
+                            graph_receipt["closure_environment_sha256"]
+                        ),
+                        authority="v11_graph_native_v1",
+                    )
+                )
+                checked_items.add(source_key)
+                continue
+            raw_correspondence = raw_item.get(SOURCE_SPEC_CORRESPONDENCE_KEY)
             if (
                 run_context is not None
                 and source_key in strict_source_scope_keys
@@ -8818,6 +7806,16 @@ def paper_statement_map_semantic_contract_findings(
                     "without a successfully Lean-checked source-map semantic contract",
                 )
             )
+    if (
+        run_context is not None
+        and strict_source_scope_keys
+        and strict_source_scope_keys.issubset(checked_items)
+        and not findings
+    ):
+        run_context.record_semantic_contract_closeout_bridge(
+            strict_source_scope_keys,
+            _issuer=_SEMANTIC_CONTRACT_CLOSEOUT_BRIDGE_ISSUER,
+        )
     return findings
 
 
@@ -8852,14 +7850,9 @@ def semantic_contract_precloseout_exact_contract_pairs(
         return ()
 
     try:
-        try:
-            from scripts.audit_evidence_integrity import (
-                semantic_contract_closeout_bridge_inventory,
-            )
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (
-                semantic_contract_closeout_bridge_inventory,
-            )
+        from scripts.audit_evidence_integrity import (
+            semantic_contract_closeout_bridge_inventory,
+        )
         inventory, inventory_findings = semantic_contract_closeout_bridge_inventory(
             folder, status_text
         )
@@ -8992,15 +7985,20 @@ def semantic_contract_closeout_bridge_is_current(
 
     if status not in {"formalized", "formalized with caveat"}:
         return False
+    if (
+        run_context is not None
+        and run_context.current_semantic_contract_closeout_bridge_scope_keys()
+    ):
+        # The declaration gate already completed the full source inventory,
+        # semantic-contract, Lean-Meta/correspondence, and repaired-defect
+        # checks in this exact builder-issued transaction.  Replaying the same
+        # function here adds no evidence; the transaction's final mutation
+        # check remains the shared boundary for both consumers.
+        return True
     try:
-        try:
-            from scripts.audit_evidence_integrity import (
-                semantic_contract_closeout_bridge_inventory,
-            )
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (
-                semantic_contract_closeout_bridge_inventory,
-            )
+        from scripts.audit_evidence_integrity import (
+            semantic_contract_closeout_bridge_inventory,
+        )
         inventory, inventory_findings = semantic_contract_closeout_bridge_inventory(
             folder,
             str(status),
@@ -9045,71 +8043,6 @@ def semantic_contract_closeout_bridge_is_current(
     return not contract_findings
 
 
-def source_spec_correspondence_closeout_lane_status(folder: Path) -> str:
-    """Return the explicit v11 realization-lane status without a Lean rerun.
-
-    This is intentionally a cheap, visible distinction.  A legacy v10 map can
-    remain readable and retain its historical audit evidence, but it cannot be
-    described as having passed the newer realization invariant until it opts
-    into the atom-level correspondence schema.  Determining *current* v11
-    validity still calls the focused Lean gate below.
-    """
-
-    payload = load_json_object(folder / PAPER_AUDIT_DIR / "paper_statement_map.json")
-    if not source_spec_correspondence_enabled(payload):
-        return "v11 realization audit pending"
-    return "v11 realization audit configured"
-
-
-def source_spec_correspondence_closeout_is_current(
-    paper_id: str,
-    folder: Path,
-    status: object,
-    status_payload: dict[str, object],
-    paper_declarations: dict[str, list[LeanDeclaration]] | None = None,
-) -> bool:
-    """Return whether a paper has passed the strict atom-level v11 lane.
-
-    Unlike the historical semantic-contract bridge, this never treats a
-    legacy map as implicitly current.  The function is intentionally focused
-    per paper; callers should cache/reuse its item receipts through their
-    source atom and closure identities rather than triggering repository-wide
-    reissues after unrelated changes.
-    """
-
-    if status not in {"formalized", "formalized with caveat"}:
-        return False
-    statement_map = folder / PAPER_AUDIT_DIR / "paper_statement_map.json"
-    payload = load_json_object(statement_map)
-    if not source_spec_correspondence_enabled(payload):
-        return False
-    assert isinstance(payload, dict)
-    try:
-        try:
-            from scripts.audit_evidence_integrity import (
-                source_spec_correspondence_inventory_findings,
-            )
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (
-                source_spec_correspondence_inventory_findings,
-            )
-        if source_spec_correspondence_inventory_findings(folder, str(status)):
-            return False
-    except Exception:
-        return False
-    declarations = paper_declarations or paper_lean_declaration_index(folder)
-    try:
-        return not paper_statement_map_semantic_contract_findings(
-            paper_id,
-            folder,
-            status,
-            payload,
-            declarations,
-            set(),
-            status_payload,
-        )
-    except Exception:
-        return False
 
 
 def _configured_review_sidecar_path(
@@ -9217,10 +8150,7 @@ def semantic_contract_closeout_blank_sidecar_lanes(
     """
 
     try:
-        try:
-            from scripts import review_dashboard as dashboard
-        except ModuleNotFoundError:
-            import review_dashboard as dashboard
+        from scripts import review_dashboard as dashboard
         if run_context is None:
             review_surface_path = dashboard.llm_review_surface_file(folder)
             lean_to_tex_path = dashboard.llm_lean_to_tex_drafts_file(folder)
@@ -9393,6 +8323,7 @@ def paper_statement_map_declaration_findings(
     *,
     presentation_hygiene: bool = False,
     run_context: PaperCloseoutRunContext | None = None,
+    skip_semantic_contract_lean: bool = False,
 ) -> list[Finding]:
     """Check that source-inventory Lean declaration names resolve."""
 
@@ -9452,7 +8383,9 @@ def paper_statement_map_declaration_findings(
         folder,
         payload,
         coverage_mode,
-        repository_root=ROOT,
+        context=(
+            run_context.evidence_context if run_context is not None else None
+        ),
     )
     direct_proof_items = filter_source_map_items_for_proof_obligations(
         items,
@@ -9469,6 +8402,10 @@ def paper_statement_map_declaration_findings(
         source_key: item
         for source_key, item in direct_proof_items.items()
         if source_key not in presentation_aliases
+        # Support-only rows remain source-visible proof inventory. They are
+        # deliberately not direct source-result obligations and therefore
+        # need no theorem route, atom contract, or transparent Spec card.
+        and not bool(source_item_effective_route_policy(item).get("is_support_only"))
     }
     direct_proof_item_keys = set(direct_proof_items)
     direct_proof_payload = dict(payload)
@@ -9483,6 +8420,10 @@ def paper_statement_map_declaration_findings(
         run_context.library_declaration_index()
         if run_context is not None
         else library_lean_declaration_index()
+    )
+    native_v11_routes = bool(
+        run_context is not None
+        and run_context.selected_v11_closeout
     )
     if run_context is not None:
         status_payload = run_context.exact_json_payload(folder / "status.json") or {}
@@ -9499,7 +8440,12 @@ def paper_statement_map_declaration_findings(
         else {}
     )
     reviewed_source_texts: dict[Path, str] | None = None
-    if run_context is not None and run_context.evidence_context is not None:
+    if (
+        presentation_hygiene
+        and not native_v11_routes
+        and run_context is not None
+        and run_context.evidence_context is not None
+    ):
         reviewed_source_texts = {}
         for source_path in {
             review_surface_source_file_path(folder, review_surface).resolve(),
@@ -9514,6 +8460,9 @@ def paper_statement_map_declaration_findings(
             folder,
             status_payload=status_payload,
             source_text_by_path=reviewed_source_texts,
+            include_legacy_comment_hygiene=(
+                presentation_hygiene and not native_v11_routes
+            ),
         )
     )
     reviewed_source_paths = {
@@ -9784,11 +8733,12 @@ def paper_statement_map_declaration_findings(
         )
         if not source_kind:
             missing_source_kinds.append(str(source_key))
-        elif source_kind not in SOURCE_INVENTORY_KINDS:
+        elif source_kind not in KNOWN_SOURCE_PRESENTATION_KINDS:
             unknown_source_kinds.append(f"{source_key}:{source_kind}")
 
         if (
             is_direct_proof_obligation
+            and not is_quarantined_source_defect
             and source_claim_atoms_enabled
             and source_kind in SOURCE_CLAIM_ATOM_THEOREM_LIKE_KINDS
         ):
@@ -9845,6 +8795,15 @@ def paper_statement_map_declaration_findings(
                     if (
                         is_unique_reviewed_declaration(
                             resolved, LEAN_PROOF_DECLARATION_KINDS
+                        )
+                        or (
+                            len(resolved) == 1
+                            and resolved[0].kind in LEAN_PROOF_DECLARATION_KINDS
+                            and (
+                                support_name.strip() in quarantined_auxiliary_names
+                                or support_name.strip().rsplit(".", 1)[-1]
+                                in quarantined_auxiliary_short_names
+                            )
                         )
                     ):
                         reviewed_evidence = True
@@ -9917,6 +8876,8 @@ def paper_statement_map_declaration_findings(
                             resolved, LEAN_PROOF_DECLARATION_KINDS
                         )
                         or (
+                            not native_v11_routes
+                            and
                             is_unique_reviewed_declaration(resolved)
                             and is_thin_review_alias_to_proved_theorem(
                                 paper_declarations, resolved[0]
@@ -9969,7 +8930,15 @@ def paper_statement_map_declaration_findings(
                 if resolve_declaration_name(paper_declarations, name):
                     continue
                 if resolve_declaration_name(library_declarations, name):
-                    if not bridge_resolved:
+                    # The selected v11 lane validates the exact reusable
+                    # declaration, source route, Lean semantic identity, and
+                    # current source-to-library judgment in the material
+                    # library gate.  Requiring an additional paper-local
+                    # equivalence wrapper here is location-based duplication:
+                    # the same declaration would need no wrapper if moved into
+                    # the paper folder.  Legacy lanes retain their historical
+                    # explicit bridge requirement.
+                    if not native_v11_routes and not bridge_resolved:
                         missing_semantic_bridge.append(f"{source_key}:{field_name}:{name}")
                     continue
                 missing.append(f"{source_key}:{name}")
@@ -10226,20 +9195,22 @@ def paper_statement_map_declaration_findings(
                 if run_context is not None
                 else None
             ),
-        )
-    )
-    findings.extend(
-        paper_statement_map_semantic_contract_findings(
-            paper_id,
-            folder,
-            status,
-            direct_proof_payload,
-            paper_declarations,
-            reviewed_bridge_names,
-            status_payload if isinstance(status_payload, dict) else {},
             run_context=run_context,
         )
     )
+    if not skip_semantic_contract_lean:
+        findings.extend(
+            paper_statement_map_semantic_contract_findings(
+                paper_id,
+                folder,
+                status,
+                direct_proof_payload,
+                paper_declarations,
+                reviewed_bridge_names,
+                status_payload if isinstance(status_payload, dict) else {},
+                run_context=run_context,
+            )
+        )
     return findings
 
 
@@ -10258,12 +9229,6 @@ def is_signature_only_review_alias(kind: str, source: str) -> bool:
     if re.match(r"paper_[A-Za-z0-9_']+\b", body):
         return True
     return False
-
-
-def is_assumption_decl_name(name: str) -> bool:
-    """Return whether a declaration name is meant to be a paper assumption."""
-
-    return bool(ASSUMPTION_DECL_NAME_RE.search(name))
 
 
 def review_surface_assumption_names(review_surface: dict[str, object]) -> tuple[set[str], list[str]]:
@@ -10360,6 +9325,39 @@ def review_surface_source_file_path(folder: Path, review_surface: dict[str, obje
     return folder / "PaperInterface.lean"
 
 
+def v11_source_claim_review_names(
+    status_payload: Mapping[str, object],
+) -> frozenset[str] | None:
+    """Return the explicit one-semantic-target-per-claim v11 surface.
+
+    The selection is structural and location-independent.  Every configured
+    human review name is selected here without guessing its semantic role from
+    a status-list category. The retained Lean graph and typed statement-map
+    routes subsequently prove whether it is a theorem-backed Spec or a direct
+    source definition/model/algorithm and require the corresponding proof
+    endpoint when applicable. Legacy `source_definition_names` may describe
+    reusable vocabulary rather than paper-local claims, so it is not an
+    admissible role classifier. ``None`` retains the legacy behavior.
+    """
+
+    review_surface = status_payload.get("review_surface")
+    if not isinstance(review_surface, Mapping) or not (
+        explicit_raw_source_spec_screening_requested(status_payload)
+    ):
+        return None
+    raw_names = review_surface.get("include_names")
+    if not isinstance(raw_names, list):
+        return None
+    names = [
+        str(value).strip()
+        for value in raw_names
+        if isinstance(value, str) and value.strip()
+    ]
+    if not names or len(names) != len(raw_names) or len(names) != len(set(names)):
+        return None
+    return frozenset(names)
+
+
 def proof_endpoint_source_file_path(folder: Path, review_surface: dict[str, object]) -> Path:
     """Return the optional module containing theorem endpoints for reviewed Specs.
 
@@ -10372,7 +9370,11 @@ def proof_endpoint_source_file_path(folder: Path, review_surface: dict[str, obje
     raw_path = review_surface.get("proof_file")
     if isinstance(raw_path, str) and raw_path.strip():
         return ROOT / raw_path.strip()
-    return folder / "ProofInterface.lean"
+    # A separate ProofInterface is opt-in. Legacy and migrated papers may
+    # keep the exact-type theorem endpoint beside the reviewed Spec in
+    # PaperInterface; treating a nonexistent sibling as the default turns a
+    # valid configured proof route into a spurious closeout failure.
+    return review_surface_source_file_path(folder, review_surface)
 
 
 def assumption_judgment_file_path(folder: Path, review_surface: dict[str, object]) -> Path:
@@ -10477,17 +9479,22 @@ def source_record_target_disposition_rebind_context(
     """
 
     if run_context is not None:
-        evidence_payload = getattr(run_context.evidence_context, "audit_payload", None)
+        evidence_payload = _legacy_source_record_audit_payload(
+            run_context.evidence_context
+        )
         if raw_audit is evidence_payload:
+            legacy_state = _legacy_source_record_state(
+                run_context.evidence_context
+            )
             return (
                 getattr(
-                    run_context.evidence_context,
+                    legacy_state,
                     "administrative_projection_rebind",
                     None,
                 ),
                 str(
                     getattr(
-                        run_context.evidence_context,
+                        legacy_state,
                         "administrative_projection_rebind_error",
                         "",
                     )
@@ -10514,14 +9521,9 @@ def source_record_target_disposition_rebind_context(
         else load_json_object(statement_map_path)
     )
     try:
-        try:
-            from scripts.audit_evidence_integrity import (
-                source_record_administrative_projection_rebind_context,
-            )
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (
-                source_record_administrative_projection_rebind_context,
-            )
+        from scripts.audit_evidence_integrity import (
+            source_record_administrative_projection_rebind_context,
+        )
         context, _receipt_path, error = (
             source_record_administrative_projection_rebind_context(
                 folder,
@@ -10542,14 +9544,9 @@ def evaluate_author_approved_corrected_scope(
 ) -> bool:
     """Run the shared corrected-scope validator without changing failures."""
 
-    try:
-        from scripts.audit_evidence_integrity import (
-            author_approved_corrected_scope_contract_is_current,
-        )
-    except ModuleNotFoundError:
-        from audit_evidence_integrity import (
-            author_approved_corrected_scope_contract_is_current,
-        )
+    from scripts.audit_evidence_integrity import (
+        author_approved_corrected_scope_contract_is_current,
+    )
     return author_approved_corrected_scope_contract_is_current(
         folder, status_payload
     )
@@ -10656,65 +9653,6 @@ def is_fully_qualified_lean_identity(value: str) -> bool:
     return bool(re.fullmatch(r"[^\s.]+(?:\.[^\s.]+)+", value))
 
 
-def corrected_scope_semantic_record_bindings(
-    folder: Path,
-    status_payload: dict[str, object],
-    *,
-    run_context: PaperCloseoutRunContext | None = None,
-) -> dict[str, tuple[tuple[frozenset[str], str], ...]]:
-    """Return contract-covered record inputs keyed by exact declaration FQN.
-
-    Legacy scalar scopes retain their full reviewed semantic surface. For a
-    multi-model scope, only a target row's exact declared model root can route
-    its record input; a sibling, paired, or unassigned root never inherits the
-    target's contract coverage. A binding with multiple resolved roots is
-    intentionally unusable.
-    """
-
-    scope = status_payload.get("formalization_scope")
-    if not isinstance(scope, dict):
-        return {}
-    model_bindings, model_binding_errors = corrected_model_scope_model_bindings(scope)
-    if model_binding_errors or model_bindings is None:
-        return {}
-    items = current_corrected_scope_semantic_items(
-        folder, status_payload, run_context=run_context
-    )
-    bindings_by_declaration: dict[str, tuple[tuple[frozenset[str], str], ...]] = {}
-    for qualified, item in items.items():
-        expected_root = model_bindings.target_model_spec_declarations.get(qualified)
-        if expected_root is None and not model_bindings.uses_legacy_scalar:
-            continue
-        bindings: list[tuple[frozenset[str], str]] = []
-        for raw_binding in item.get("record_input_bindings") or []:
-            if not isinstance(raw_binding, dict):
-                continue
-            roots = {
-                str(root).strip()
-                for root in raw_binding.get("record_roots") or []
-                if str(root).strip()
-            }
-            # A source record can only route one semantically resolved model
-            # record. Never infer an identity from a short name or an ambiguous
-            # collection of possible roots.
-            if len(roots) != 1:
-                continue
-            root = next(iter(roots))
-            if not is_fully_qualified_lean_identity(root):
-                continue
-            if expected_root is not None and root != expected_root:
-                continue
-            names = frozenset(
-                str(name).strip()
-                for name in raw_binding.get("binder_names") or []
-                if str(name).strip()
-            )
-            bindings.append((names, root))
-        if bindings:
-            bindings_by_declaration[qualified] = tuple(bindings)
-    return bindings_by_declaration
-
-
 @dataclass(frozen=True)
 class CurrentCorrectedModelInputBinding:
     """One generated, fully instantiated corrected-model input surface."""
@@ -10768,14 +9706,9 @@ def current_corrected_model_contract_field_items(
                 return items
         return None
     try:
-        try:
-            from scripts.audit_evidence_integrity import (
-                current_author_approved_corrected_model_field_items,
-            )
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (
-                current_author_approved_corrected_model_field_items,
-            )
+        from scripts.audit_evidence_integrity import (
+            current_author_approved_corrected_model_field_items,
+        )
         items = current_author_approved_corrected_model_field_items(
             folder, status_payload
         )
@@ -11279,6 +10212,9 @@ def premise_is_current_corrected_model_contract_input(
 def qualified_declaration_identity(declaration: LeanDeclaration) -> str:
     """Return a declaration's namespace-qualified identity from its own file."""
 
+    if declaration.qualified_name:
+        return declaration.qualified_name
+
     try:
         text = declaration.path.read_text(encoding="utf-8")
     except OSError:
@@ -11306,6 +10242,16 @@ class CurrentNamedTheorySemanticReviewSurface:
     """
 
     rows: dict[str, CurrentNamedTheorySemanticReviewRow]
+
+
+@dataclass(frozen=True)
+class TransparentSpecReceiptIdentity:
+    """Exact direct-proof and transparent-Spec identities from one receipt."""
+
+    direct_declaration_sha256: str
+    direct_elaborated_signature_sha256: str
+    spec_qualified_declaration: str
+    spec_declaration_sha256: str
 
 
 def _receipt_declaration_sha_for_qualified(
@@ -11579,6 +10525,122 @@ def semantic_model_item_exact_receipt_identity(
     return direct_declaration_sha, direct_signature_sha
 
 
+def semantic_model_item_transparent_spec_receipt_identity(
+    item: Mapping[str, object], *, qualified_declaration: str
+) -> TransparentSpecReceiptIdentity | None:
+    """Return an exact cross-file transparent-Spec route when one is recorded.
+
+    The ordinary semantic-model receipt is owned by the proof endpoint.  This
+    helper does not move that ownership.  It first validates the complete
+    generated direct/Spec contract, then returns the transparent Spec identity
+    whose Lean-owned structural surface was proved equal to the endpoint.
+    """
+
+    direct_identity = semantic_model_item_exact_receipt_identity(
+        item, qualified_declaration=qualified_declaration
+    )
+    if direct_identity is None:
+        return None
+    group = item.get("semantic_contract_group")
+    if not isinstance(group, Mapping):
+        return None
+    raw_members = group.get("member_rows")
+    if not isinstance(raw_members, list):
+        return None
+    spec_members = [
+        member
+        for member in raw_members
+        if isinstance(member, Mapping)
+        and str(member.get("role") or "").strip() == "transparent_spec"
+    ]
+    if len(spec_members) != 1:
+        return None
+    spec_member = spec_members[0]
+    spec_qualified = str(spec_member.get("qualified_declaration") or "").strip()
+    spec_declaration_sha = _receipt_declaration_sha_for_qualified(
+        spec_member.get("reviewed_declaration_identity"), spec_qualified
+    )
+    semantic_origin = item.get("semantic_surface_origin")
+    if (
+        not is_fully_qualified_lean_identity(spec_qualified)
+        or spec_declaration_sha is None
+        or not isinstance(semantic_origin, Mapping)
+        or str(semantic_origin.get("kind") or "").strip()
+        != "transparent_spec_body"
+        or str(semantic_origin.get("qualified_declaration") or "").strip()
+        != spec_qualified
+    ):
+        return None
+    direct_declaration_sha, direct_signature_sha = direct_identity
+    return TransparentSpecReceiptIdentity(
+        direct_declaration_sha256=direct_declaration_sha,
+        direct_elaborated_signature_sha256=direct_signature_sha,
+        spec_qualified_declaration=spec_qualified,
+        spec_declaration_sha256=spec_declaration_sha,
+    )
+
+
+def configured_semantic_review_row_identity(
+    folder: Path,
+    configured_row: Mapping[str, object],
+    declaration_index: dict[str, list[LeanDeclaration]],
+    *,
+    qualified_declaration: str,
+    expected_declaration_sha256: str,
+    expected_elaborated_signature_sha256: str | None,
+) -> tuple[CurrentNamedTheorySemanticReviewRow | None, str]:
+    """Validate one configured row against its current exact Lean source."""
+
+    source_path = corrected_model_recorded_source_path(
+        folder, configured_row.get("source_file")
+    )
+    if source_path is None:
+        return None, "has no safely resolved configured receipt route"
+    source_sha = str(configured_row.get("source_sha256") or "").strip().lower()
+    signature_sha = str(
+        configured_row.get("elaborated_signature_sha256") or ""
+    ).strip().lower()
+    declaration_source = configured_row.get("lean_source_declaration")
+    if (
+        not re.fullmatch(r"[0-9a-f]{64}", source_sha)
+        or not re.fullmatch(r"[0-9a-f]{64}", signature_sha)
+        or not isinstance(declaration_source, str)
+        or hashlib.sha256(declaration_source.encode("utf-8")).hexdigest()
+        != expected_declaration_sha256
+    ):
+        return None, "lacks a complete FQN/source/signature receipt route"
+    if (
+        expected_elaborated_signature_sha256 is not None
+        and signature_sha != expected_elaborated_signature_sha256
+    ):
+        return None, "elaborated-signature identity does not exactly match its configured FQN route"
+    try:
+        if hashlib.sha256(source_path.read_bytes()).hexdigest() != source_sha:
+            return None, "receipt source bytes are stale"
+    except OSError:
+        return None, "receipt source file is unavailable"
+    try:
+        matching_declarations = [
+            declaration
+            for declaration in declaration_index.get(qualified_declaration, [])
+            if declaration.path.resolve() == source_path
+            and qualified_declaration_identity(declaration) == qualified_declaration
+        ]
+    except (OSError, RuntimeError):
+        return None, "declaration source cannot be resolved safely"
+    if len(matching_declarations) != 1:
+        return None, "declaration does not resolve uniquely to its exact receipt source"
+    return (
+        CurrentNamedTheorySemanticReviewRow(
+            source_path=source_path,
+            source_sha256=source_sha,
+            elaborated_signature_sha256=signature_sha,
+            individual_direct_source_route=False,
+        ),
+        "",
+    )
+
+
 def semantic_model_item_has_individual_direct_source_route(
     item: Mapping[str, object],
     *,
@@ -11688,6 +10750,14 @@ def current_named_theory_semantic_review_surface(
     mode intentionally returns no filter, so it retains every review row.
     """
 
+    if run_context is not None:
+        exact_status = run_context.exact_json_payload(folder / "status.json")
+        if isinstance(exact_status, dict):
+            # Generated repository status is presentation/index data and may
+            # lag a paper-local closeout edit. Semantic-lane selection must use
+            # the immutable paper-local status captured by this transaction.
+            status_payload = exact_status
+
     review_surface = status_payload.get("review_surface")
     semantic_review_configured = isinstance(
         review_surface, dict
@@ -11698,6 +10768,69 @@ def current_named_theory_semantic_review_surface(
             if semantic_review_configured
             else (None, "")
         )
+    # A current v11 closeout selects one expanded Lean semantic object per
+    # source claim: a Spec plus proof endpoint for results, or the full direct
+    # declaration for definitions/models/algorithms. Requiring the older
+    # receipt's whole PaperInterface byte hash here would make comments,
+    # declaration order, and file moves semantic.
+    v11_names = v11_source_claim_review_names(status_payload)
+    if (
+        run_context is not None
+        and run_context.selected_v11_closeout
+        and v11_names is not None
+    ):
+        v11_current = run_context.current_v11_closeout
+        v11_error = run_context.v11_direct_semantic_review_error
+        if v11_current:
+            selected_declarations: dict[str, LeanDeclaration] = {}
+            for name in sorted(v11_names):
+                resolved = resolve_declaration_name(declaration_index, name)
+                if len(resolved) != 1:
+                    return None, f"v11 source Spec does not resolve uniquely: {name}"
+                selected_declarations[
+                    qualified_declaration_identity(resolved[0])
+                ] = resolved[0]
+            result_routes, direct_routes, route_findings = (
+                current_v11_typed_review_routes(
+                    folder.name,
+                    folder,
+                    v11_names,
+                    run_context=run_context,
+                )
+            )
+            if route_findings:
+                return None, "; ".join(finding.message for finding in route_findings)
+            if set(result_routes) | set(direct_routes) != set(v11_names):
+                return None, "v11 source claims do not have one typed source-map route each"
+            # The builder-issued v11 verdict above has already compared every
+            # selected byte-pinned source claim to its current Lean semantic
+            # object and reviewed every material paper/library prerequisite.
+            # The retained Lean graph separately owns typed proof equality and
+            # axiom closure, so this projection does not replay either batch.
+            interface_path = review_surface_source_file_path(
+                folder, review_surface
+            ).resolve()
+            try:
+                interface_sha256 = hashlib.sha256(
+                    interface_path.read_bytes()
+                ).hexdigest()
+            except OSError:
+                return None, "v11 PaperInterface source is unavailable"
+            rows: dict[str, CurrentNamedTheorySemanticReviewRow] = {}
+            for qualified, declaration in selected_declarations.items():
+                if declaration.path.resolve() != interface_path:
+                    return None, f"v11 source Spec is outside PaperInterface: {qualified}"
+                rows[qualified] = CurrentNamedTheorySemanticReviewRow(
+                    source_path=interface_path,
+                    source_sha256=interface_sha256,
+                    elaborated_signature_sha256="",
+                    individual_direct_source_route=True,
+                )
+            return CurrentNamedTheorySemanticReviewSurface(rows), ""
+        return None, "v11 direct semantic review is not current: " + (
+            v11_error or "the selected v11 semantic gate did not pass"
+        )
+
     audit_path = source_record_audit_file_path(folder, review_surface)
     try:
         audit_path.resolve().relative_to(folder.resolve())
@@ -11815,13 +10948,14 @@ def current_named_theory_semantic_review_surface(
         if not isinstance(raw_row, dict):
             continue
         qualified = str(raw_row.get("qualified_declaration") or "").strip()
-        if qualified in semantic_by_qualified:
+        if is_fully_qualified_lean_identity(qualified):
             configured_by_qualified.setdefault(qualified, []).append(raw_row)
 
     interface_path = (folder / "PaperInterface.lean").resolve()
     if not interface_path.exists():
         return None, "PaperInterface.lean is missing while selecting semantic review rows"
     selected_rows: dict[str, CurrentNamedTheorySemanticReviewRow] = {}
+    selected_surface_by_direct: dict[str, str] = {}
     for qualified, (_judgment_key, raw_item) in semantic_by_qualified.items():
         configured_rows = configured_by_qualified.get(qualified, [])
         if len(configured_rows) != 1:
@@ -11831,10 +10965,10 @@ def current_named_theory_semantic_review_surface(
                 + qualified,
             )
         configured_row = configured_rows[0]
-        source_path = corrected_model_recorded_source_path(
+        direct_source_path = corrected_model_recorded_source_path(
             folder, configured_row.get("source_file")
         )
-        if source_path is None:
+        if direct_source_path is None:
             return (
                 None,
                 "semantic-model declaration has no safely resolved configured "
@@ -11844,7 +10978,7 @@ def current_named_theory_semantic_review_surface(
         # support rows in Assumptions.lean are audited by the source-record
         # lane, but their intentionally aggregate-only signature metadata must
         # not block the independent PaperInterface projection.
-        if source_path != interface_path:
+        if direct_source_path != interface_path and "semantic_contract_group" not in raw_item:
             continue
         receipt_identity = semantic_model_item_exact_receipt_identity(
             raw_item, qualified_declaration=qualified
@@ -11856,66 +10990,86 @@ def current_named_theory_semantic_review_surface(
                 "incomplete exact identity: " + qualified,
             )
         declaration_sha, semantic_signature_sha = receipt_identity
-        source_sha = str(configured_row.get("source_sha256") or "").strip().lower()
-        signature_sha = str(
-            configured_row.get("elaborated_signature_sha256") or ""
-        ).strip().lower()
-        declaration_source = configured_row.get("lean_source_declaration")
-        if (
-            not re.fullmatch(r"[0-9a-f]{64}", source_sha)
-            or not re.fullmatch(r"[0-9a-f]{64}", signature_sha)
-            or not isinstance(declaration_source, str)
-            or hashlib.sha256(declaration_source.encode("utf-8")).hexdigest()
-            != declaration_sha
-        ):
+        direct_row, direct_row_error = configured_semantic_review_row_identity(
+            folder,
+            configured_row,
+            declaration_index,
+            qualified_declaration=qualified,
+            expected_declaration_sha256=declaration_sha,
+            expected_elaborated_signature_sha256=semantic_signature_sha,
+        )
+        if direct_row_error or direct_row is None:
             return (
                 None,
-                "semantic-model declaration lacks a complete FQN/source/signature "
+                "semantic-model declaration " + direct_row_error + ": " + qualified,
+            )
+        individual_direct_source_route = (
+            semantic_model_item_has_individual_direct_source_route(
+                raw_item,
+                qualified_declaration=qualified,
+                declaration_sha256=declaration_sha,
+                elaborated_signature_sha256=semantic_signature_sha,
+            )
+        )
+        if direct_source_path == interface_path:
+            selected_rows[qualified] = CurrentNamedTheorySemanticReviewRow(
+                source_path=direct_row.source_path,
+                source_sha256=direct_row.source_sha256,
+                elaborated_signature_sha256=direct_row.elaborated_signature_sha256,
+                individual_direct_source_route=individual_direct_source_route,
+            )
+            selected_surface_by_direct[qualified] = qualified
+            continue
+
+        transparent_spec = semantic_model_item_transparent_spec_receipt_identity(
+            raw_item, qualified_declaration=qualified
+        )
+        if transparent_spec is None:
+            return (
+                None,
+                "cross-file semantic-model declaration lacks an exact transparent-Spec "
                 "receipt route: " + qualified,
             )
-        if semantic_signature_sha != signature_sha:
+        spec_qualified = transparent_spec.spec_qualified_declaration
+        spec_configured_rows = configured_by_qualified.get(spec_qualified, [])
+        if len(spec_configured_rows) != 1:
             return (
                 None,
-                "semantic-model elaborated-signature identity does not exactly "
-                "match its configured FQN route: " + qualified,
+                "transparent Spec has no unique configured receipt route: "
+                + spec_qualified,
             )
-        try:
-            if hashlib.sha256(source_path.read_bytes()).hexdigest() != source_sha:
-                return None, "semantic-model receipt source bytes are stale: " + qualified
-        except OSError:
-            return None, "semantic-model receipt source file is unavailable: " + qualified
-        try:
-            matching_declarations = [
-                declaration
-                for declaration in declaration_index.get(qualified, [])
-                if declaration.path.resolve() == source_path
-                and qualified_declaration_identity(declaration) == qualified
-            ]
-        except (OSError, RuntimeError):
-            return (
-                None,
-                "semantic-model declaration source cannot be resolved safely: "
-                + qualified,
-            )
-        if len(matching_declarations) != 1:
-            return (
-                None,
-                "semantic-model declaration does not resolve uniquely to its exact "
-                "receipt source: " + qualified,
-            )
-        selected_rows[qualified] = CurrentNamedTheorySemanticReviewRow(
-            source_path=source_path,
-            source_sha256=source_sha,
-            elaborated_signature_sha256=signature_sha,
-            individual_direct_source_route=(
-                semantic_model_item_has_individual_direct_source_route(
-                    raw_item,
-                    qualified_declaration=qualified,
-                    declaration_sha256=declaration_sha,
-                    elaborated_signature_sha256=signature_sha,
-                )
-            ),
+        spec_row, spec_row_error = configured_semantic_review_row_identity(
+            folder,
+            spec_configured_rows[0],
+            declaration_index,
+            qualified_declaration=spec_qualified,
+            expected_declaration_sha256=transparent_spec.spec_declaration_sha256,
+            # The receipt-owned proof endpoint supplies the elaborated proof
+            # signature.  The Spec row is independently source/declaration
+            # pinned and its Lean-generated structural surface is exactly
+            # paired with that endpoint by the validated contract above.
+            expected_elaborated_signature_sha256=None,
         )
+        if spec_row_error or spec_row is None:
+            return (
+                None,
+                "transparent Spec " + spec_row_error + ": " + spec_qualified,
+            )
+        if spec_row.source_path != interface_path:
+            return (
+                None,
+                "transparent Spec does not resolve to PaperInterface.lean: "
+                + spec_qualified,
+            )
+        if spec_qualified in selected_rows:
+            return None, "transparent Spec is selected by multiple semantic receipts: " + spec_qualified
+        selected_rows[spec_qualified] = CurrentNamedTheorySemanticReviewRow(
+            source_path=spec_row.source_path,
+            source_sha256=spec_row.source_sha256,
+            elaborated_signature_sha256=spec_row.elaborated_signature_sha256,
+            individual_direct_source_route=individual_direct_source_route,
+        )
+        selected_surface_by_direct[qualified] = spec_qualified
 
     scope_targets, scope_error = formalization_scope_target_declarations_for_receipt(
         status_payload
@@ -11923,7 +11077,7 @@ def current_named_theory_semantic_review_surface(
     if scope_error:
         return None, scope_error
     for target in scope_targets or set():
-        if target not in semantic_by_qualified or target not in selected_rows:
+        if target not in semantic_by_qualified or target not in selected_surface_by_direct:
             return (
                 None,
                 "governing formalization-scope target is absent from the exact "
@@ -12012,26 +11166,6 @@ def raw_qualified_premise_type_head(premise: str) -> str:
 
     head = raw_premise_type_head(premise)
     return head if is_fully_qualified_lean_identity(head) else ""
-
-
-def premise_is_current_corrected_model_record(
-    premise: str,
-    declaration: LeanDeclaration,
-    record_bindings: dict[str, tuple[tuple[frozenset[str], str], ...]],
-) -> bool:
-    """Whether a premise is an exact contract-mapped model input.
-
-    We do not infer this from the text ``*SourceModel`` or a short type head.
-    The generated audit resolved the input in Lean's namespace context and the
-    contract pinned that generated item. Named source declarations match only
-    their recorded binder names.  Lean may erase unused names in an expanded
-    statement, in which case the anonymous type head must equal the recorded
-    fully qualified root verbatim.
-    """
-
-    return premise_matches_current_model_record_binding(
-        premise, declaration, record_bindings
-    )
 
 
 def premise_matches_current_model_record_binding(
@@ -12164,13 +11298,14 @@ def source_record_semantic_contract_revalidation_for_payload(
     )
     if (
         exact_evidence_run_context(evidence_context)
-        and payload is getattr(evidence_context, "audit_payload", None)
+        and payload is _legacy_source_record_audit_payload(evidence_context)
     ):
+        legacy_state = _legacy_source_record_state(evidence_context)
         return (
-            getattr(evidence_context, "semantic_contract_revalidation", None),
+            getattr(legacy_state, "semantic_contract_revalidation", None),
             str(
                 getattr(
-                    evidence_context,
+                    legacy_state,
                     "semantic_contract_revalidation_error",
                     "",
                 )
@@ -12244,16 +11379,22 @@ def run_source_record_audit_helper(paper_id: str) -> tuple[dict[str, object] | N
             pass
 
 
+def _authenticated_overlay_union_module() -> Any:
+    """Load the shared current-overlay authority on demand."""
+
+    from scripts import source_record_authenticated_overlay_union as overlay_union
+
+    return overlay_union
+
+
 def _copy_loaded_source_record_overlay_item(
     value: Mapping[str, Any], updates: Mapping[str, Any] | None = None
 ) -> dict[str, Any]:
     """Preserve a private overlay-loader token during in-memory normalization."""
 
-    if is_loaded_source_record_attested_selected_reuse_item(value):
-        return copy_loaded_source_record_attested_selected_reuse_item(value, updates)
-    if is_loaded_source_record_differential_revalidation_item(value):
-        return copy_loaded_source_record_differential_revalidation_item(value, updates)
-    return copy_loaded_source_record_schema4_to5_migration_item(value, updates)
+    return _authenticated_overlay_union_module().copy_loader_authenticated_or_plain_current_item(
+        value, updates
+    )
 
 
 def source_record_judgment_items(
@@ -12271,7 +11412,7 @@ def source_record_judgment_items(
     """
 
     def normalized_items(
-        payload: dict[str, object], *, require_loaded_overlay: bool
+        payload: dict[str, object], *, authenticated_overlay_lane: object | None = None
     ) -> dict[str, dict[str, object]]:
         if not payload or not schema_version_is_exact(payload.get("schema"), 1):
             return {}
@@ -12282,6 +11423,17 @@ def source_record_judgment_items(
             items = payload.get("field_judgments")
         if not isinstance(items, dict):
             return {}
+        overlay_union = None
+        if authenticated_overlay_lane is not None:
+            overlay_union = _authenticated_overlay_union_module()
+            if (
+                not isinstance(
+                    authenticated_overlay_lane,
+                    overlay_union.AuthenticatedCurrentOverlayLane,
+                )
+                or items is not authenticated_overlay_lane.items
+            ):
+                return {}
         payload_prompt_version = str(payload.get("prompt_version") or "").strip()
         payload_audit_digest = str(
             payload.get("source_record_audit_sha256") or ""
@@ -12304,34 +11456,21 @@ def source_record_judgment_items(
             key = str(raw_key).strip()
             if not key:
                 continue
-            migrated_overlay_item = is_loaded_source_record_schema4_to5_migration_item(
-                raw_item
-            )
-            differential_overlay_item = (
-                is_loaded_source_record_differential_revalidation_item(raw_item)
-            )
-            attested_selected_reuse_item = (
-                is_loaded_source_record_attested_selected_reuse_item(raw_item)
-            )
-            loaded_overlay_item = (
-                migrated_overlay_item
-                or differential_overlay_item
-                or attested_selected_reuse_item
-            )
-            if (
-                (
-                    source_record_schema4_to5_migration_item_has_provenance(raw_item)
-                    or source_record_differential_revalidation_item_has_provenance(
-                        raw_item
-                    )
-                    or source_record_attested_selected_reuse_item_has_provenance(
-                        raw_item
-                    )
-                )
-                and not loaded_overlay_item
-            ):
+            if archived_source_record_transport_item_field(raw_item):
                 continue
-            if require_loaded_overlay and not loaded_overlay_item:
+            loaded_overlay_item = bool(
+                authenticated_overlay_lane is not None
+                and overlay_union is not None
+                and overlay_union.authenticated_current_overlay_item(
+                    authenticated_overlay_lane, raw_item
+                )
+            )
+            if authenticated_overlay_lane is not None and not loaded_overlay_item:
+                continue
+            if (
+                authenticated_overlay_lane is None
+                and serialized_source_record_overlay_labels(raw_item)
+            ):
                 continue
             row_name = key.split(".", 1)[0]
             is_formalized_note = row_name in formalized_note_rows
@@ -12385,7 +11524,7 @@ def source_record_judgment_items(
                         ),
                     },
                 )
-            elif not require_loaded_overlay:
+            elif authenticated_overlay_lane is None:
                 out[key] = {
                     "classification": str(raw_item).strip(),
                     "prompt_version": payload_prompt_version,
@@ -12399,37 +11538,32 @@ def source_record_judgment_items(
                 }
         return out
 
+    if paper_dir is not None and archived_source_record_transport_artifacts(paper_dir):
+        return {}
     sidecar_payload = load_json_object(path)
-    ordinary = normalized_items(sidecar_payload, require_loaded_overlay=False)
+    ordinary = normalized_items(sidecar_payload)
     if current_raw_audit is None or paper_dir is None:
         return ordinary
-    migrated_items = load_current_source_record_schema4_to5_migration_items(
-        paper_dir, paper_id, current_raw_audit
+    present_overlay_labels = source_record_overlay_labels_with_artifacts(
+        paper_dir, lane_labels=("differential",)
     )
-    migrated: dict[str, dict[str, object]] = {}
-    if migrated_items:
-        migrated = normalized_items(
-            {"schema": 1, "paper": paper_id, "items": migrated_items},
-            require_loaded_overlay=True,
-        )
-    differential_items = load_current_source_record_differential_revalidation_items(
-        paper_dir, paper_id, current_raw_audit
-    )
-    differential: dict[str, dict[str, object]] = {}
-    if differential_items:
-        differential = normalized_items(
-            {"schema": 1, "paper": paper_id, "items": differential_items},
-            require_loaded_overlay=True,
-        )
-    attested_selected_reuse_items = load_current_attested_selected_semantic_reuse_items(
-        paper_dir, paper_id, current_raw_audit
-    )
-    attested_selected_reuse: dict[str, dict[str, object]] = {}
-    if attested_selected_reuse_items:
-        attested_selected_reuse = normalized_items(
-            {"schema": 1, "paper": paper_id, "items": attested_selected_reuse_items},
-            require_loaded_overlay=True,
-        )
+    overlay_current: dict[str, dict[str, dict[str, object]]] = {}
+    if present_overlay_labels:
+        overlay_union = _authenticated_overlay_union_module()
+        try:
+            lanes = overlay_union.load_authenticated_current_overlay_lanes(
+                paper_dir,
+                paper_id,
+                current_raw_audit,
+                lane_labels=present_overlay_labels,
+            )
+        except overlay_union.SourceRecordAuthenticatedOverlayUnionError:
+            return {}
+        for lane in lanes:
+            overlay_current[lane.label] = normalized_items(
+                {"schema": 1, "paper": paper_id, "items": lane.items},
+                authenticated_overlay_lane=lane,
+            )
     # A loaded overlay has independently matched this current generated
     # obligation, including any necessary association rebind.  It remains
     # preferred over a stale ordinary response, but an ordinary response bound
@@ -12446,10 +11580,8 @@ def source_record_judgment_items(
         == current_raw_digest
     }
     composed = {
-        **attested_selected_reuse,
         **ordinary,
-        **migrated,
-        **differential,
+        **overlay_current.get("differential", {}),
         **ordinary_with_current_receipt,
     }
     if canonical_source_record_match_sidecar_path(path, paper_dir):
@@ -12479,7 +11611,7 @@ def source_record_judgment_items(
             status_payload=status_payload,
         )
     )
-    groups, group_errors = source_record_raw_item_groups(current_raw_audit)
+    groups, group_errors = raw_source_record_obligation_groups(current_raw_audit)
     if group_errors:
         return composed
     projected_composed = dict(composed)
@@ -12615,28 +11747,15 @@ def source_record_judgment_current(
 ) -> bool:
     """Return true when a judgment matches current aggregate or semantic pins."""
 
-    migrated_overlay_item = is_loaded_source_record_schema4_to5_migration_item(
-        judgment
-    )
-    differential_overlay_item = (
-        is_loaded_source_record_differential_revalidation_item(judgment)
-    )
-    attested_selected_reuse_item = (
-        is_loaded_source_record_attested_selected_reuse_item(judgment)
-    )
-    loaded_overlay_item = (
-        migrated_overlay_item
-        or differential_overlay_item
-        or attested_selected_reuse_item
-    )
-    if (
-        (
-            source_record_schema4_to5_migration_item_has_provenance(judgment)
-            or source_record_differential_revalidation_item_has_provenance(judgment)
-            or source_record_attested_selected_reuse_item_has_provenance(judgment)
+    if archived_source_record_transport_item_field(judgment):
+        return False
+    loaded_overlay_label = (
+        _authenticated_overlay_union_module().loader_authenticated_current_overlay_label(
+            judgment
         )
-        and not loaded_overlay_item
-    ):
+    )
+    loaded_overlay_item = loaded_overlay_label == "differential"
+    if serialized_source_record_overlay_labels(judgment) and not loaded_overlay_item:
         return False
     if loaded_overlay_item:
         # The overlay loader already recomputed a complete semantic descriptor
@@ -13913,11 +13032,12 @@ def _recursive_field_explicit_parent_component_receipts(
     ):
         return ()
 
-    review_surface = exact_audit.get("source_record_audit_surface")
+    review_surface = source_record_audit_surface_view(exact_audit)
     if not isinstance(review_surface, Mapping):
         return ()
     judgment_file = source_record_judgment_file_path(folder, dict(review_surface))
-    match_snapshot = getattr(run_context.evidence_context, "match_snapshot", None)
+    legacy_inputs = _legacy_source_record_inputs(run_context.evidence_context)
+    match_snapshot = getattr(legacy_inputs, "match_snapshot", None)
     if not isinstance(getattr(match_snapshot, "path", None), Path) or (
         match_snapshot.path.resolve() != judgment_file.resolve()
     ):
@@ -14233,22 +13353,13 @@ def semantic_contract_executable_terminal_policy_errors(
     import_module = f"{folder.name}.{source_path.stem}"
     build_input_provider = run_context.build_input_provider
     try:
-        try:
-            from scripts.lean_signature_manifest import (
-                paper_local_module_names,
-                run_lean_semantic_contract_transparency_checks,
-                run_lean_signature_manifests,
-                semantic_dependency_manifest,
-                signature_manifest_digest,
-            )
-        except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
-            from lean_signature_manifest import (  # type: ignore[no-redef]
-                paper_local_module_names,
-                run_lean_semantic_contract_transparency_checks,
-                run_lean_signature_manifests,
-                semantic_dependency_manifest,
-                signature_manifest_digest,
-            )
+        from scripts.lean_signature_manifest import (
+            paper_local_module_names,
+            run_lean_semantic_contract_transparency_checks,
+            run_lean_signature_manifests,
+            semantic_dependency_manifest,
+            signature_manifest_digest,
+        )
         paper_modules = paper_local_module_names(
             ROOT, folder, provider=build_input_provider
         )
@@ -14299,7 +13410,10 @@ def semantic_contract_executable_terminal_policy_errors(
             "exact closeout source-record audit is unavailable"
             + (f": {audit_error}" if audit_error else "")
         ]
-    if audit is not getattr(evidence_context, "audit_payload", None):
+    legacy_state = getattr(evidence_context, "legacy_source_record_state", None)
+    legacy_inputs = getattr(legacy_state, "inputs", None)
+    legacy_audit_snapshot = getattr(legacy_inputs, "audit_snapshot", None)
+    if audit is not getattr(legacy_audit_snapshot, "payload", None):
         return [
             "executable-recursion terminal bridge received a non-snapshot source-record audit"
         ]
@@ -14312,9 +13426,7 @@ def semantic_contract_executable_terminal_policy_errors(
         not re.fullmatch(r"[0-9a-f]{64}", expected_map_sha)
         or str(audit.get("paper_statement_map_sha256") or "").strip().lower()
         != expected_map_sha
-        or str(
-            getattr(evidence_context, "source_record_identity_error", "") or ""
-        ).strip()
+        or str(getattr(legacy_state, "source_record_identity_error", "") or "").strip()
     ):
         return [
             "exact source-record snapshot has no current map/input-fingerprint authorization"
@@ -14501,7 +13613,8 @@ def semantic_contract_executable_terminal_policy_errors(
         return ["could not revalidate the direct source-model dependency fingerprint"]
 
     judgment_file = source_record_judgment_file_path(folder, dict(review_surface))
-    match_snapshot = getattr(evidence_context, "match_snapshot", None)
+    legacy_inputs = _legacy_source_record_inputs(evidence_context)
+    match_snapshot = getattr(legacy_inputs, "match_snapshot", None)
     if not isinstance(getattr(match_snapshot, "path", None), Path) or (
         match_snapshot.path.resolve() != judgment_file.resolve()
     ):
@@ -14539,6 +13652,30 @@ def semantic_contract_executable_terminal_policy_errors(
             "direct source-model review has an invalid target-disposition rebind: "
             + target_disposition_rebind_error
         ]
+    # A selected, current v11 source-to-Spec review is the authoritative
+    # source-target decision for this exact transaction.  Keep the legacy
+    # semantic-model row's dimensional comparison, source locator, and Lean
+    # evidence checks, but do not ask it to restate the already-reviewed
+    # literal-versus-corrected target disposition.  This is deliberately
+    # narrow: an unavailable, stale, or unselected v11 lane leaves the v10
+    # disposition gate fully active.
+    v11_source_target_current = False
+    try:
+        from scripts.current_closeout.semantic_review import (
+            current_v11_direct_semantic_review_state,
+        )
+
+        v11_source_target_current, _v11_source_target_error = (
+            current_v11_direct_semantic_review_state(
+                ROOT,
+                folder,
+                context=evidence_context,
+            )
+        )
+    except Exception:
+        # The direct v11 lane is an optional replacement only when it can be
+        # fully validated from the same immutable evidence transaction.
+        v11_source_target_current = False
     review_findings = semantic_model_review_findings(
         paper_id,
         folder,
@@ -14562,7 +13699,7 @@ def semantic_contract_executable_terminal_policy_errors(
         target_disposition_administrative_projection_rebind=(
             target_disposition_rebind
         ),
-        enforce_target_disposition=True,
+        enforce_target_disposition=not v11_source_target_current,
     )
     if review_findings:
         return [
@@ -14755,15 +13892,9 @@ def strict_v11_occurrence_closeout_findings(
         )
 
     try:
-        if __package__:
-            from .audit_conclusion_provenance import (
-                theorem_realization_component_contract_findings,
-            )
-        else:  # pragma: no cover - direct script invocation.
-            from audit_conclusion_provenance import (
-                theorem_realization_component_contract_findings,
-            )
-
+        from scripts.audit_conclusion_provenance import (
+            theorem_realization_component_contract_findings,
+        )
         occurrence_findings = theorem_realization_component_contract_findings(
             paper_id,
             payload,
@@ -14816,6 +13947,43 @@ def strict_v11_occurrence_closeout_findings(
             )
         )
     return True, converted
+
+
+def current_v11_direct_semantic_closeout_state(
+    folder: Path,
+    status: object,
+    *,
+    run_context: PaperCloseoutRunContext | None = None,
+) -> tuple[bool, str]:
+    """Return the shared authoritative v11 semantic-lane decision.
+
+    The planner and the evidence-integrity gate already use
+    ``v11_direct_semantic_review_state`` to select the exact raw-source to
+    expanded-Spec, paper-prerequisite, and material-library review lane.  The
+    recursive source-record consumer must use that same decision rather than
+    demand a second set of generated binder and semantic-model judgments.
+
+    This does not waive structural or Lean validation: the repository audit
+    still checks the source inventory, source/Spec atom correspondence,
+    semantic contracts, recursive dependency closure, and focused build.  If
+    the v11 evidence is missing or stale, this function returns false and the
+    legacy occurrence-indexed lane remains fully active.
+    """
+
+    try:
+        from scripts.current_closeout.semantic_review import (
+            current_v11_direct_semantic_review_state,
+        )
+        evidence_context = (
+            run_context.evidence_context if run_context is not None else None
+        )
+        return current_v11_direct_semantic_review_state(
+            ROOT,
+            folder,
+            context=evidence_context,
+        )
+    except Exception as exc:  # noqa: BLE001 - fallback must remain fail closed.
+        return False, f"v11 direct semantic-review state is unavailable: {exc}"
 
 
 @dataclass(frozen=True)
@@ -15193,17 +14361,10 @@ def current_strict_v11_full_spec_source_record_coverage(
         None,
     )
     try:
-        if __package__:
-            from .audit_conclusion_provenance import (
-                current_strict_transparent_spec_full_surface_source_record_judgment_keys,
-                current_strict_transparent_spec_semantic_parent_judgment_keys,
-            )
-        else:  # pragma: no cover - direct script invocation.
-            from audit_conclusion_provenance import (
-                current_strict_transparent_spec_full_surface_source_record_judgment_keys,
-                current_strict_transparent_spec_semantic_parent_judgment_keys,
-            )
-
+        from scripts.audit_conclusion_provenance import (
+            current_strict_transparent_spec_full_surface_source_record_judgment_keys,
+            current_strict_transparent_spec_semantic_parent_judgment_keys,
+        )
         component_keys = (
             current_strict_transparent_spec_full_surface_source_record_judgment_keys(
                 paper_id,
@@ -15264,22 +14425,6 @@ def current_strict_v11_full_spec_source_record_coverage(
     )
 
 
-def current_strict_v11_full_spec_source_record_component_judgment_keys(
-    paper_id: str,
-    folder: Path,
-    audit_payload: Mapping[str, object],
-    *,
-    run_context: PaperCloseoutRunContext | None = None,
-) -> frozenset[str]:
-    """Return the component half of the strict full-Spec coverage bridge."""
-
-    return current_strict_v11_full_spec_source_record_coverage(
-        paper_id,
-        folder,
-        audit_payload,
-        run_context=run_context,
-    ).component_judgment_keys
-
 
 def current_strict_v11_full_spec_source_record_semantic_model_judgment_keys(
     paper_id: str,
@@ -15298,6 +14443,73 @@ def current_strict_v11_full_spec_source_record_semantic_model_judgment_keys(
     ).semantic_model_judgment_keys
 
 
+def source_record_structural_payload_for_closeout(
+    run_context: PaperCloseoutRunContext,
+) -> tuple[dict[str, object] | None, str]:
+    """Return current raw structural inventory for the selected legacy lane.
+
+    Selected v11 closeout exits through its Lean graph before this function is
+    called. A stale legacy receipt therefore cannot be revived as merely
+    structural input by reading an outer-context compatibility projection.
+    """
+
+    return run_context.current_source_record_audit()
+
+
+@dataclass(frozen=True)
+class SourceRecordEvidenceRolePolicy:
+    """Which historical raw lanes may contribute to this closeout."""
+
+    raw_semantic_authority: bool
+    raw_auxiliary_routing_authority: bool
+
+
+def source_record_evidence_role_policy(
+    *, exact_v11_direct_current: bool
+) -> SourceRecordEvidenceRolePolicy:
+    """Keep structural reuse distinct from legacy semantic authority."""
+
+    legacy_authority = not exact_v11_direct_current
+    return SourceRecordEvidenceRolePolicy(
+        raw_semantic_authority=legacy_authority,
+        raw_auxiliary_routing_authority=legacy_authority,
+    )
+
+
+def v11_lean_source_structure_findings(
+    paper_id: str,
+    folder: Path,
+    review_surface: Mapping[str, object],
+    status: object,
+    *,
+    run_context: PaperCloseoutRunContext,
+) -> list[Finding]:
+    """Adapt the current-path structural gate to legacy ``Finding`` output."""
+
+    severity = assumption_finding_severity(
+        str(review_surface.get("assumption_policy") or "").strip().lower()
+        in ASSUMPTION_POLICY_STRICT_VALUES,
+        status,
+    )
+    gate = run_context.current_v11_primary_gate_result()
+    errors = gate.configuration_errors + gate.semantic_errors + gate.structure_errors
+    assumption_path = assumption_source_file_path(
+        folder, dict(review_surface)
+    ).resolve()
+    return [
+        Finding(
+            severity,
+            (
+                assumption_path
+                if "Assumptions.lean support declaration" in message
+                else folder / "PaperInterface.lean"
+            ),
+            message,
+        )
+        for message in errors
+    ]
+
+
 def check_source_record_audit(
     paper_id: str,
     folder: Path,
@@ -15312,8 +14524,49 @@ def check_source_record_audit(
     """Run and validate recursive source-record audit coverage for a paper."""
 
     severity = assumption_finding_severity(strict_assumption_policy, status)
+    selected_v11_closeout = bool(
+        paper_closeout
+        and run_context is not None
+        and run_context.selected_v11_closeout
+    )
+    exact_v11_direct_current = bool(
+        selected_v11_closeout
+        and run_context is not None
+        and run_context.current_v11_closeout
+    )
+    evidence_roles = source_record_evidence_role_policy(
+        exact_v11_direct_current=selected_v11_closeout
+    )
+    if selected_v11_closeout:
+        assert run_context is not None
+        if not exact_v11_direct_current:
+            return [
+                Finding(
+                    severity,
+                    folder / "status.json",
+                    f"`{paper_id}` selected v11 semantic lane is not current: "
+                    + (
+                        run_context.v11_direct_semantic_review_error
+                        or "the exact v11 semantic gate did not pass"
+                    ),
+                )
+            ]
+        findings = v11_lean_source_structure_findings(
+            paper_id,
+            folder,
+            review_surface,
+            status,
+            run_context=run_context,
+        )
+        if not findings:
+            if prevalidated_strict_v11_occurrence_papers is not None:
+                prevalidated_strict_v11_occurrence_papers.add(paper_id)
+            run_context.stage_strict_v11_source_record_judgment_handoff()
+        return findings
     payload, error = (
-        run_context.current_source_record_audit()
+        source_record_structural_payload_for_closeout(
+            run_context,
+        )
         if run_context is not None
         else run_source_record_audit_helper(paper_id)
     )
@@ -15322,40 +14575,48 @@ def check_source_record_audit(
     if payload is None:
         return [Finding(severity, folder / "PaperInterface.lean", f"`{paper_id}` source-record audit produced no payload")]
 
-    (
-        semantic_contract_revalidation,
-        semantic_contract_revalidation_error,
-    ) = source_record_semantic_contract_revalidation_for_payload(
-        folder,
-        payload,
-        run_context=run_context,
-    )
-    if semantic_contract_revalidation_error:
-        return [
-            Finding(
-                severity,
-                folder / "PaperInterface.lean",
-                f"`{paper_id}` source-record semantic-contract revalidation is invalid: "
-                + semantic_contract_revalidation_error,
-            )
-        ]
-    semantic_surface_error = source_record_effective_semantic_surface_error(
-        payload,
-        semantic_contract_revalidation=semantic_contract_revalidation,
-    )
-    if semantic_surface_error:
-        return [
-            Finding(
-                severity,
-                folder / "PaperInterface.lean",
-                f"`{paper_id}` source-record audit has an invalid semantic surface: "
-                + semantic_surface_error,
-            )
-        ]
-    effective_semantic_errors = source_record_effective_semantic_errors(
-        payload,
-        semantic_contract_revalidation=semantic_contract_revalidation,
-    )
+    semantic_contract_revalidation: object | None = None
+    effective_semantic_errors: Mapping[str, object] = {
+        # A complete v11 lane owns source-contract association semantics. The
+        # historical raw scan may retain obsolete wrapper-pair diagnostics,
+        # but those cannot become a second semantic acceptance lane.
+        "source_contract_association_errors": [],
+    }
+    if evidence_roles.raw_semantic_authority:
+        (
+            semantic_contract_revalidation,
+            semantic_contract_revalidation_error,
+        ) = source_record_semantic_contract_revalidation_for_payload(
+            folder,
+            payload,
+            run_context=run_context,
+        )
+        if semantic_contract_revalidation_error:
+            return [
+                Finding(
+                    severity,
+                    folder / "PaperInterface.lean",
+                    f"`{paper_id}` source-record semantic-contract revalidation is invalid: "
+                    + semantic_contract_revalidation_error,
+                )
+            ]
+        semantic_surface_error = source_record_effective_semantic_surface_error(
+            payload,
+            semantic_contract_revalidation=semantic_contract_revalidation,
+        )
+        if semantic_surface_error:
+            return [
+                Finding(
+                    severity,
+                    folder / "PaperInterface.lean",
+                    f"`{paper_id}` source-record audit has an invalid semantic surface: "
+                    + semantic_surface_error,
+                )
+            ]
+        effective_semantic_errors = source_record_effective_semantic_errors(
+            payload,
+            semantic_contract_revalidation=semantic_contract_revalidation,
+        )
     findings: list[Finding] = []
     findings.extend(source_premise_consistency_findings(paper_id, folder, status, payload))
     findings.extend(
@@ -15399,13 +14660,47 @@ def check_source_record_audit(
     # surface.  Treat that semantic inventory as a closeout obligation.  In
     # particular, do not reconstruct this check from declaration spellings:
     # a source-backed premise can be hidden by an arbitrary name.
-    unconfigured_assumption_support_rows = sorted(
-        {
-            str(row).strip()
-            for row in payload.get("unconfigured_assumption_support_rows") or []
-            if isinstance(row, str) and row.strip()
+    unconfigured_assumption_support_rows = {
+        str(row).strip()
+        for row in payload.get("unconfigured_assumption_support_rows") or []
+        if isinstance(row, str) and row.strip()
+    }
+    configured_support_names: set[str] = set()
+    for key in (
+        "assumption_names",
+        "auxiliary_names",
+        "quarantined_auxiliary_names",
+    ):
+        values = review_surface.get(key) or []
+        if isinstance(values, list):
+            configured_support_names.update(
+                str(value).strip()
+                for value in values
+                if isinstance(value, str) and value.strip()
+            )
+    # A saved raw scan may predate a status-only classification of one of the
+    # exact support declarations it already inventoried. Resolve that current
+    # classification against the raw qualified identities. An ambiguous tail
+    # match grants no credit, and the separate status-surface gate still proves
+    # that the configured name is declared in Assumptions.lean.
+    for configured_name in configured_support_names:
+        qualified = (
+            configured_name
+            if configured_name.startswith(paper_id + ".")
+            else paper_id + "." + configured_name
+        )
+        candidates = {
+            row
+            for row in unconfigured_assumption_support_rows
+            if (
+                row == configured_name
+                or row == qualified
+                or row.endswith("." + configured_name)
+            )
         }
-    )
+        if len(candidates) == 1:
+            unconfigured_assumption_support_rows -= candidates
+    unconfigured_assumption_support_rows = sorted(unconfigured_assumption_support_rows)
     if unconfigured_assumption_support_rows:
         findings.append(
             Finding(
@@ -15427,8 +14722,15 @@ def check_source_record_audit(
     # shared context accepts either the generated raw ledger or a narrow,
     # raw-bound issued routing supplement. The latter is intentionally only a
     # reachability transport: it cannot supply source/proof credit below.
+    # A complete v11 lane instead validates Lean's current expanded paper-
+    # prerequisite graph directly against its raw-source ledger, so the
+    # historical raw-routing supplement is neither needed nor authoritative.
     unresolved_auxiliaries: list[dict[str, object]] = []
-    if str(payload.get("prompt_version") or "").strip() == REQUIRED_SOURCE_RECORD_PROMPT_VERSION:
+    if (
+        evidence_roles.raw_auxiliary_routing_authority
+        and str(payload.get("prompt_version") or "").strip()
+        == REQUIRED_SOURCE_RECORD_PROMPT_VERSION
+    ):
         # A real v10 raw receipt always names its paper. Small historical
         # diagnostic fixtures predate that identity field, so retain their
         # direct-ledger behavior rather than pretending they can authenticate
@@ -15739,13 +15041,30 @@ def check_source_record_audit(
         review_surface.get("proposition_spec_proofs"), dict
     ) and bool(review_surface.get("proposition_spec_proofs"))
 
+    def repository_lean_module(path: Path) -> str:
+        relative = path.relative_to(ROOT).with_suffix("")
+        parts = list(relative.parts)
+        if parts[:1] == ["papers"]:
+            parts = parts[1:]
+        return ".".join(parts)
+
+    try:
+        actual_proof_module = repository_lean_module(configured_proof_path)
+    except ValueError:
+        actual_proof_module = ""
+
     def source_record_import_is_admissible(record: Mapping[str, object]) -> bool:
         import_module = str(record.get("import_module") or "").strip()
         if not import_module or import_module == expected_import_module:
             return True
+        admissible_proof_modules = {
+            module
+            for module in (configured_proof_module, actual_proof_module)
+            if module
+        }
         if (
-            not configured_proof_module
-            or import_module != configured_proof_module
+            not actual_proof_module
+            or import_module not in admissible_proof_modules
             or not has_configured_spec_proof_pairs
         ):
             return False
@@ -15763,8 +15082,19 @@ def check_source_record_audit(
         try:
             expected_paths = {
                 expected_import_module: str(configured_source_path.relative_to(ROOT)),
-                configured_proof_module: str(configured_proof_path.relative_to(ROOT)),
+                actual_proof_module: str(configured_proof_path.relative_to(ROOT)),
             }
+            if import_module == configured_proof_module and (
+                configured_proof_module != actual_proof_module
+            ):
+                configured_path = (
+                    ROOT
+                    / "papers"
+                    / Path(*configured_proof_module.split("."))
+                ).with_suffix(".lean")
+                expected_paths[configured_proof_module] = str(
+                    configured_path.relative_to(ROOT)
+                )
         except ValueError:
             return False
         seen = {
@@ -15905,17 +15235,35 @@ def check_source_record_audit(
         )
     )
     strict_v11_occurrence_closeout = False
+    v11_direct_current = exact_v11_direct_current
     if paper_closeout:
-        (
-            strict_v11_occurrence_closeout,
-            occurrence_closeout_findings,
-        ) = strict_v11_occurrence_closeout_findings(
-            paper_id,
-            folder,
-            payload,
-            judgments,
-            run_context=run_context,
-        )
+        if not v11_direct_current:
+            v11_direct_current, _v11_direct_error = (
+                current_v11_direct_semantic_closeout_state(
+                    folder,
+                    status,
+                    run_context=run_context,
+                )
+            )
+        if v11_direct_current:
+            # The exact source/Spec, paper-prerequisite, and library ledgers
+            # are the selected semantic-review lane.  The repository audit
+            # independently checks their source atoms, Lean contracts, proof
+            # closure, and build, so generated v10 binder/model rows would be
+            # duplicate judgments over the same expanded propositions.
+            strict_v11_occurrence_closeout = True
+            occurrence_closeout_findings: list[Finding] = []
+        else:
+            (
+                strict_v11_occurrence_closeout,
+                occurrence_closeout_findings,
+            ) = strict_v11_occurrence_closeout_findings(
+                paper_id,
+                folder,
+                payload,
+                judgments,
+                run_context=run_context,
+            )
         if (
             strict_v11_occurrence_closeout
             and not occurrence_closeout_findings
@@ -15951,11 +15299,14 @@ def check_source_record_audit(
             review_surface,
             run_context=run_context,
         )
-        if run_context is not None and payload is getattr(
-            run_context.evidence_context, "audit_payload", None
+        if run_context is not None and payload is _legacy_source_record_audit_payload(
+            run_context.evidence_context
         ):
+            legacy_state = _legacy_source_record_state(
+                run_context.evidence_context
+            )
             target_disposition_formalization_regularity_context = getattr(
-                run_context.evidence_context,
+                legacy_state,
                 "configured_assumption_regularity_context",
                 None,
             )
@@ -15991,7 +15342,15 @@ def check_source_record_audit(
                     )
                 )
 
-    if unresolved_auxiliaries:
+    # Under the v11 lane the exact expanded Specs, every material paper
+    # prerequisite, and every material library declaration have already been
+    # reviewed from their semantic contents, while Lean checks the paired proof
+    # endpoints and their recursive derivations.  Requiring the same reachable
+    # helper to acquire another source-map route merely because its declaration
+    # happens to live in PaperInterface would make code location semantic.  The
+    # location-independent v11 review therefore supersedes this legacy
+    # PaperInterface-only auxiliary-routing diagnostic.
+    if unresolved_auxiliaries and not v11_direct_current:
         for item in unresolved_auxiliaries:
             declaration = str(item.get("declaration") or "unknown declaration").strip()
             disposition = str(item.get("disposition") or "unresolved").strip()
@@ -16134,208 +15493,6 @@ def check_source_record_audit(
     exact_source_antecedent_keys = {
         key for key in expected_keys if exact_source_antecedent(key)
     }
-
-    def _retired_result_domain_operational_route(
-        item: dict[str, object],
-    ) -> bool:
-        """Retired compatibility hook; canonical closure never calls it.
-
-        Archived audit artifacts used a bespoke result-telescope receipt and
-        classification. The general elaborated dependency graph now owns this
-        decision, so the old field-layout route is quarantined fail-closed.
-        """
-
-        return False
-
-        _archived_implementation = r'''
-
-        if str(item.get("kind") or "").strip() != "record_conclusion_input":
-            return False
-        qualified = _generated_item_qualified_declaration(item)
-        key = str(item.get("judgment_key") or "").strip()
-        if not qualified or not key:
-            return False
-        raw_path = item.get("elaborated_result_path")
-        if not isinstance(raw_path, Mapping):
-            return False
-
-        # The result-domain response is a distinct classification.  In
-        # particular, a historical `validated_source_assumption` on the run
-        # cannot obtain this exemption from the ordinary antecedent lane.
-        run_judgment = judgments.get(key)
-        if (
-            not isinstance(run_judgment, dict)
-            or str(run_judgment.get("classification") or "").strip()
-            != VALIDATED_SOURCE_OUTCOME_DOMAIN_CLASSIFICATION
-            or run_judgment.get("prompt_version_stale")
-            or run_judgment.get("metadata_missing")
-            or not source_record_judgment_current(
-                key,
-                run_judgment,
-                digest=digest,
-                expected_item_digests=expected_item_digests,
-                expected_item_digest_pins=expected_item_digest_pins,
-            )
-            or not SOURCE_RECORD_EXACT_LOCATOR_RE.search(
-                str(
-                    run_judgment.get("source_location")
-                    or run_judgment.get("source_evidence")
-                    or ""
-                )
-            )
-        ):
-            return False
-
-        semantic_items = semantic_model_items_by_qualified.get(qualified, [])
-        if len(semantic_items) != 1 or not current_source_semantic_operational_model(
-            qualified
-        ):
-            return False
-        semantic_item = semantic_items[0]
-        # A shared qualified declaration is not enough: the conclusion input
-        # and semantic row must pin the same exact source declaration and
-        # elaborated signature before their manifest atoms may be joined.
-        if semantic_model_item_exact_receipt_identity(
-            item, qualified_declaration=qualified
-        ) != semantic_model_item_exact_receipt_identity(
-            semantic_item, qualified_declaration=qualified
-        ):
-            return False
-        semantic_key = str(semantic_item.get("judgment_key") or "").strip()
-        semantic_judgment = judgments.get(semantic_key)
-        if not isinstance(semantic_judgment, Mapping):
-            return False
-        joined_route = operational_outcome_domain_bridge_route(
-            semantic_item,
-            semantic_judgment,
-            qualified_declaration=qualified,
-            raw_path=raw_path,
-        )
-        if joined_route is not None:
-            (
-                bridge_declaration,
-                model_index,
-                terminal_index,
-                run_index,
-                terminal_predicate_index,
-                model_root,
-                transition_root,
-            ) = joined_route
-            operational_roots = (model_root, transition_root)
-            route = (
-                qualified,
-                bridge_declaration,
-                model_index,
-                terminal_index,
-                run_index,
-                terminal_predicate_index,
-                model_root,
-                transition_root,
-            )
-            bridge_declarations = (bridge_declaration,)
-            try:
-                bridge_matches = run_lean_operational_outcome_domain_bridges(
-                    ROOT,
-                    expected_import_module,
-                    [route],
-                    timeout_seconds=120,
-                    build_timeout_seconds=600,
-                    build_input_provider=(
-                        run_context.build_input_provider
-                        if run_context is not None
-                        else None
-                    ),
-                )
-            except Exception:  # noqa: BLE001 - a missing Meta result fails closed.
-                return False
-        else:
-            # A conclusion-quantified state is not a caller record.  Find an
-            # exact state path from the same reviewed declaration and require
-            # the separate state/initial/run receipt to choose it uniquely.
-            state_routes = [
-                candidate
-                for state_item in conclusion_dependencies
-                if isinstance(state_item, Mapping)
-                for candidate in [
-                    operational_outcome_state_transition_bridge_route(
-                        semantic_item,
-                        semantic_judgment,
-                        qualified_declaration=qualified,
-                        state_item=state_item,
-                        run_item=item,
-                    )
-                ]
-                if candidate is not None
-            ]
-            if len(state_routes) != 1:
-                return False
-            (
-                bridge_declaration,
-                initial_witness_declaration,
-                model_index,
-                state_index,
-                initial_predicate_index,
-                terminal_index,
-                run_index,
-                terminal_predicate_index,
-                model_root,
-                state_root,
-                transition_root,
-            ) = state_routes[0]
-            operational_roots = (model_root, state_root, transition_root)
-            route = (
-                qualified,
-                bridge_declaration,
-                initial_witness_declaration,
-                model_index,
-                state_index,
-                initial_predicate_index,
-                terminal_index,
-                run_index,
-                terminal_predicate_index,
-                model_root,
-                state_root,
-                transition_root,
-            )
-            bridge_declarations = (
-                bridge_declaration,
-                initial_witness_declaration,
-            )
-            try:
-                bridge_matches = run_lean_operational_outcome_state_transition_bridges(
-                    ROOT,
-                    expected_import_module,
-                    [route],
-                    timeout_seconds=120,
-                    build_timeout_seconds=600,
-                    build_input_provider=(
-                        run_context.build_input_provider
-                        if run_context is not None
-                        else None
-                    ),
-                )
-            except Exception:  # noqa: BLE001 - a missing Meta result fails closed.
-                return False
-
-        # The same current semantic row must close every recursively reachable
-        # field for each exact elaborated root.  This does not reuse the
-        # caller-binder route: the header/state/run relationship is generated
-        # from the result telescope and checked above.
-        if not all(current_operational_record_closure(root) for root in operational_roots):
-            return False
-        if bridge_matches.get(route) is not True:
-            return False
-        # The bridge is construction evidence only after its exact Lean type
-        # and transitive axiom closure both pass.  A `sorry`, local axiom, or
-        # imported opaque proof debt cannot turn a universal outcome statement
-        # into a nonvacuous operational domain.
-        if not all(
-            current_operational_bridge_axiom_closure(declaration)
-            for declaration in bridge_declarations
-        ):
-            return False
-        return True
-        '''
 
     def dependency_has_resolved_constructor(item: dict[str, object]) -> bool:
         """Accept non-record constructors only through checked sidecar contracts.
@@ -16540,7 +15697,16 @@ def check_source_record_audit(
     # retain the ordinary semantic-model journal requirement.
     strict_parent_semantic_keys: frozenset[str] = frozenset()
     strict_component_source_judgment_keys: frozenset[str] = frozenset()
-    if strict_v11_occurrence_closeout and not target_disposition_rebind_error:
+    if v11_direct_current:
+        # The current v11 ledger reviewed every selected expanded Spec and its
+        # paper-local and reusable-library prerequisites.  All generated v10
+        # component/model keys are therefore compatibility metadata, not a
+        # second semantic-review obligation.  Static source/Spec receipts and
+        # Lean realization contracts are still validated independently by the
+        # current closeout transaction.
+        strict_parent_semantic_keys = expected_semantic_model_keys
+        strict_component_source_judgment_keys = expected_keys
+    elif strict_v11_occurrence_closeout and not target_disposition_rebind_error:
         try:
             strict_coverage = current_strict_v11_full_spec_source_record_coverage(
                 paper_id,
@@ -16636,7 +15802,16 @@ def check_source_record_audit(
     )
 
     missing = sorted(required_expected_keys - set(judgments))
-    extra = sorted(set(judgments) - allowed_judgment_keys)
+    # A current v11 direct source-to-expanded-Spec review owns the complete
+    # semantic disposition surface.  Unselected v10 rows are historical input
+    # data only: they cannot grant current credit and therefore are neither an
+    # error nor an operator-facing closeout warning.  The legacy lane retains
+    # its exact extra-row diagnostic whenever v11 is unavailable or stale.
+    extra = (
+        []
+        if v11_direct_current
+        else sorted(set(judgments) - allowed_judgment_keys)
+    )
     unresolved = (
         []
         if strict_v11_occurrence_closeout
@@ -17069,11 +16244,12 @@ def source_record_validated_boundary_premises(
     )
     if rebind_error:
         return set()
-    if run_context is not None and saved_audit is getattr(
-        run_context.evidence_context, "audit_payload", None
+    if run_context is not None and saved_audit is _legacy_source_record_audit_payload(
+        run_context.evidence_context
     ):
+        legacy_state = _legacy_source_record_state(run_context.evidence_context)
         regularity_context = getattr(
-            run_context.evidence_context,
+            legacy_state,
             "configured_assumption_regularity_context",
             None,
         )
@@ -17511,81 +16687,6 @@ def _source_record_model_field_is_current(
     return True
 
 
-def operational_outcome_complete_record_closure(
-    root: str,
-    *,
-    field_items: Mapping[str, dict[str, object]],
-    expected_field_keys: set[str],
-    fieldless_nested_data_keys: frozenset[str] | None = None,
-    judgments: Mapping[str, dict[str, object]],
-    digest: str,
-    expected_item_digests: dict[str, str],
-    expected_item_digest_pins: dict[str, frozenset[tuple[str, int, str]]] | None,
-) -> bool:
-    """Require current recursive source-record closure for one exact root.
-
-    This is the operational-domain version of the ordinary caller-model
-    closure.  It intentionally receives an already-selected elaborated root
-    and never joins a record to a conclusion dependency by binder spelling.
-    Proposition fields require proposition-grade source/Lean evidence; all
-    recursively reachable carrier fields still need a current approved record
-    judgment.
-    """
-
-    if not is_fully_qualified_lean_identity(root):
-        return False
-    if fieldless_nested_data_keys is None:
-        structures_with_fields = {
-            str(item.get("structure") or "").strip()
-            for item in field_items.values()
-            if str(item.get("structure") or "").strip()
-        }
-        fieldless_nested_data_keys = frozenset(
-            field_key
-            for field_key, item in field_items.items()
-            if isinstance(item, Mapping)
-            and isinstance(item.get("nested_structures"), list)
-            and {
-                str(nested or "").strip()
-                for nested in item.get("nested_structures") or []
-                if str(nested or "").strip()
-            }
-            and not {
-                str(nested or "").strip()
-                for nested in item.get("nested_structures") or []
-                if str(nested or "").strip()
-            }
-            & structures_with_fields
-            and source_record_classification(judgments.get(field_key, {}))
-            == "nonpropositional_witness_data"
-            and _source_record_field_allows_fieldless_data(item)
-        )
-    closure = _source_record_recursive_field_closure(
-        dict(field_items),
-        root,
-        fieldless_nested_data_keys=fieldless_nested_data_keys,
-    )
-    if not closure or not closure.issubset(expected_field_keys):
-        return False
-    for field_key in closure:
-        field_item = field_items.get(field_key)
-        judgment = judgments.get(field_key)
-        if not isinstance(field_item, Mapping) or not isinstance(judgment, dict):
-            return False
-        if not _source_record_model_field_is_current(
-            field_key,
-            judgment,
-            field_item=field_item,
-            digest=digest,
-            expected_item_digests=expected_item_digests,
-            expected_item_digest_pins=expected_item_digest_pins,
-            proposition_field=str(field_item.get("proposition_sort") or "").strip()
-            == "true",
-        ):
-            return False
-    return True
-
-
 def _source_record_complete_model_record_bindings_uncached(
     paper_id: str,
     folder: Path,
@@ -17927,16 +17028,10 @@ def current_statement_conditional_boundary_rows(
             if run_context is not None and run_context.evidence_context is not None
             else None
         )
-        try:
-            from scripts.review_dashboard import (
-                _is_conditional_boundary_judgment,
-                load_llm_statement_judgments,
-            )
-        except ModuleNotFoundError:  # Direct script execution.
-            from review_dashboard import (
-                _is_conditional_boundary_judgment,
-                load_llm_statement_judgments,
-            )
+        from scripts.review_dashboard import (
+            _is_conditional_boundary_judgment,
+            load_llm_statement_judgments,
+        )
 
         review_items = (
             review_items_provider()
@@ -17970,45 +17065,6 @@ def current_statement_conditional_boundary_rows(
     }
 
 
-def assumption_declarations_from_text(
-    source_text: str,
-    declared_names: set[str] | None = None,
-) -> dict[str, tuple[int, str, str]]:
-    """Return explicit ledger assumptions from caller-owned Lean source text.
-
-    A declaration's spelling is not semantic provenance. Callers with a
-    status-ledger set receive exactly those declarations; the optional legacy
-    fallback preserves standalone use of this helper while migration completes.
-    """
-
-    declarations = review_declaration_blocks(source_text)
-    if declared_names is not None:
-        return {
-            name: declaration
-            for name, declaration in declarations.items()
-            if name in declared_names
-        }
-    return {
-        name: declaration
-        for name, declaration in declarations.items()
-        if is_assumption_decl_name(name)
-    }
-
-
-def assumption_declarations_from_file(
-    path: Path, declared_names: set[str] | None = None
-) -> dict[str, tuple[int, str, str]]:
-    """Diagnostic wrapper that reads a paper-local Assumptions.lean file."""
-
-    if not path.exists() or not path.is_file():
-        return {}
-    try:
-        source_text = path.read_text(encoding="utf-8")
-    except OSError:
-        return {}
-    return assumption_declarations_from_text(source_text, declared_names)
-
-
 def assumption_premises_from_text(
     source_text: str,
     declared_names: set[str] | None = None,
@@ -18019,12 +17075,13 @@ def assumption_premises_from_text(
     pending: list[str] = []
     block_depth = 0
     out: dict[str, set[str]] = {}
+    structure = _legacy_review_surface_structure_module()
     for line in lines:
         premise_match = ASSUMPTION_AUDIT_PREMISE_RE.match(line)
         if premise_match:
             pending.append(normalize_premise_text(premise_match.group(1)))
             continue
-        declaration_match = REVIEW_DECL_KIND_RE.match(line)
+        declaration_match = structure.REVIEW_DECL_KIND_RE.match(line)
         if not declaration_match:
             stripped = line.strip()
             if "/-" in line:
@@ -18043,26 +17100,12 @@ def assumption_premises_from_text(
         is_declared_assumption = (
             name in declared_names
             if declared_names is not None
-            else is_assumption_decl_name(name)
+            else structure.is_assumption_decl_name(name)
         )
         if is_declared_assumption and pending:
             out.setdefault(name, set()).update(pending)
         pending = []
     return out
-
-
-def assumption_premises_from_file(
-    path: Path, declared_names: set[str] | None = None
-) -> dict[str, set[str]]:
-    """Diagnostic wrapper that reads assumption-premise comments from a file."""
-
-    if not path.exists() or not path.is_file():
-        return {}
-    try:
-        source_text = path.read_text(encoding="utf-8")
-    except OSError:
-        return {}
-    return assumption_premises_from_text(source_text, declared_names)
 
 
 def normalize_assumption_judgment(raw: object) -> str:
@@ -18368,19 +17411,6 @@ def assumption_judgments_from_payload(
     return out
 
 
-def load_assumption_judgments(
-    path: Path, paper_id: str
-) -> dict[str, dict[str, object]]:
-    """Diagnostic wrapper that reads paper-assumption judgments from a file."""
-
-    if not path.exists() or not path.is_file():
-        return {}
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return {}
-    return assumption_judgments_from_payload(payload, paper_id)
-
 
 def load_expanded_review_statements(folder: Path) -> dict[str, tuple[str, int]]:
     """Load dashboard-expanded Lean statements keyed by review row name."""
@@ -18472,7 +17502,8 @@ def expanded_statement_anonymous_boundary_premises(lean_statement: str) -> list[
 def declaration_header(source: str) -> str:
     """Return the declaration signature before the proof/body."""
 
-    head = source.split(":=", 1)[0]
+    marker = top_level_declaration_body_marker(source)
+    head = source if marker is None else source[:marker]
     head = head.split(" where", 1)[0]
     return re.sub(r"\s+", " ", head).strip()
 
@@ -18631,23 +17662,6 @@ def resolve_library_target(
     return out
 
 
-def unique_declarations(
-    declaration_index: dict[str, list[LeanDeclaration]]
-) -> list[LeanDeclaration]:
-    """Return declarations from an index without qualified-name duplicates."""
-
-    seen: set[tuple[Path, int, str]] = set()
-    out: list[LeanDeclaration] = []
-    for declarations in declaration_index.values():
-        for declaration in declarations:
-            key = declaration_key(declaration)
-            if key in seen:
-                continue
-            seen.add(key)
-            out.append(declaration)
-    return out
-
-
 def _boundary_dependency_key(
     dependency: BoundaryDependency,
 ) -> tuple[str, str, Path, int, str]:
@@ -18672,27 +17686,6 @@ def dedupe_boundary_dependencies(
             continue
         seen.add(key)
         out.append(dependency)
-    return out
-
-
-def paper_local_reference_target_map(
-    declarations: list[LeanDeclaration],
-    declaration_index: dict[str, list[LeanDeclaration]],
-) -> dict[tuple[Path, int, str], list[LeanDeclaration]]:
-    """Resolve paper-local declaration references once for fixed-point scans."""
-
-    out: dict[tuple[Path, int, str], list[LeanDeclaration]] = {}
-    for declaration in declarations:
-        targets: list[LeanDeclaration] = []
-        seen: set[tuple[Path, int, str]] = set()
-        for reference in declaration_reference_names(declaration.source):
-            for target in resolve_paper_local_target(declaration_index, reference):
-                key = declaration_key(target)
-                if key == declaration_key(declaration) or key in seen:
-                    continue
-                seen.add(key)
-                targets.append(target)
-        out[declaration_key(declaration)] = targets
     return out
 
 
@@ -18841,14 +17834,6 @@ def referenced_library_boundary_dependencies(
     return dedupe_boundary_dependencies(dependencies)
 
 
-def merge_boundary_alias_maps(*maps: dict[str, set[str]]) -> dict[str, set[str]]:
-    out: dict[str, set[str]] = {}
-    for mapping in maps:
-        for key, values in mapping.items():
-            out.setdefault(key, set()).update(values)
-    return out
-
-
 def library_boundary_dependency_index(
     declaration_index: dict[str, list[LeanDeclaration]],
 ) -> dict[tuple[Path, int, str], list[BoundaryDependency]]:
@@ -18895,127 +17880,6 @@ def library_boundary_dependency_index(
     return dependencies
 
 
-def paper_boundary_dependency_index(
-    declaration_index: dict[str, list[LeanDeclaration]],
-    library_declaration_index: dict[str, list[LeanDeclaration]],
-    library_boundary_dependencies: dict[tuple[Path, int, str], list[BoundaryDependency]],
-) -> dict[tuple[Path, int, str], list[BoundaryDependency]]:
-    """Propagate library boundary dependencies through paper-local wrappers."""
-
-    declarations = unique_declarations(declaration_index)
-    reference_targets = paper_local_reference_target_map(declarations, declaration_index)
-    library_reference_targets = library_reference_target_map(declarations, library_declaration_index)
-    boundary_aliases = merge_boundary_alias_maps(
-        boundary_type_alias_map(unique_declarations(library_declaration_index)),
-        boundary_type_alias_map(declarations),
-    )
-    dependencies: dict[tuple[Path, int, str], list[BoundaryDependency]] = {}
-    for declaration in declarations:
-        key = declaration_key(declaration)
-        direct = referenced_library_boundary_dependencies(
-            library_reference_targets.get(key, []),
-            library_boundary_dependencies,
-            boundary_aliases,
-        )
-        if direct:
-            dependencies[key] = direct
-
-    changed = True
-    while changed:
-        changed = False
-        for declaration in declarations:
-            key = declaration_key(declaration)
-            current = dependencies.get(key, [])
-            propagated: list[BoundaryDependency] = []
-            for target in reference_targets.get(key, []):
-                target_key = declaration_key(target)
-                for dependency in dependencies.get(target_key, []):
-                    if references_discharge_boundary(
-                        reference_targets.get(key, []) + library_reference_targets.get(key, []),
-                        [dependencies, library_boundary_dependencies],
-                        dependency.premise,
-                        boundary_aliases,
-                    ):
-                        continue
-                    propagated.append(
-                        BoundaryDependency(
-                            category=dependency.category,
-                            premise=dependency.premise,
-                            declaration=dependency.declaration,
-                            via=target.name,
-                        )
-                    )
-            merged = dedupe_boundary_dependencies(current + propagated)
-            if len(merged) != len(current):
-                dependencies[key] = merged
-                changed = True
-    return dependencies
-
-
-def paper_hidden_premise_dependency_index(
-    declaration_index: dict[str, list[LeanDeclaration]],
-    assumption_names: set[str],
-) -> dict[tuple[Path, int, str], list[BoundaryDependency]]:
-    """Propagate paper-local certificate/source-boundary premises.
-
-    Direct certificate/source-row/external binders mark a declaration
-    immediately.  A fixed point over body references then marks wrappers that
-    depend on helpers with such boundary premises.  Ordinary mathematical side
-    conditions are not propagated here: a caller may derive them from stronger
-    visible source conditions, and the paper-facing statement judge is
-    responsible for validating those visible conditions.
-    """
-
-    declarations = unique_declarations(declaration_index)
-    reference_targets = paper_local_reference_target_map(declarations, declaration_index)
-    boundary_aliases = boundary_type_alias_map(declarations)
-    dependencies: dict[tuple[Path, int, str], list[BoundaryDependency]] = {}
-    for declaration in declarations:
-        if declaration.name in assumption_names:
-            continue
-        direct_hidden = hidden_premise_binders(declaration.source, assumption_names)
-        direct = [
-            BoundaryDependency(
-                category="paper-premise",
-                premise=premise,
-                declaration=declaration,
-                via=declaration.name,
-            )
-            for premise in explicit_boundary_premises(direct_hidden)
-        ]
-        if direct:
-            dependencies[declaration_key(declaration)] = direct
-
-    changed = True
-    while changed:
-        changed = False
-        for declaration in declarations:
-            key = declaration_key(declaration)
-            current = dependencies.get(key, [])
-            propagated: list[BoundaryDependency] = []
-            for target in reference_targets.get(key, []):
-                target_key = declaration_key(target)
-                for dependency in dependencies.get(target_key, []):
-                    if references_discharge_boundary(
-                        reference_targets.get(key, []),
-                        [dependencies],
-                        dependency.premise,
-                        boundary_aliases,
-                    ):
-                        continue
-                    propagated.append(
-                        BoundaryDependency(
-                            category=dependency.category,
-                            premise=dependency.premise,
-                            declaration=dependency.declaration,
-                            via=target.name,
-                        )
-                    )
-            merged = dedupe_boundary_dependencies(current + propagated)
-            if len(merged) != len(current):
-                dependencies[key] = merged
-                changed = True
-    return dependencies
 
 
 def source_specific_library_smells(declaration: LeanDeclaration) -> list[str]:
@@ -19124,15 +17988,15 @@ def check_library_standard_definition_audits() -> list[Finding]:
         ]
 
     text = audit_file.read_text(encoding="utf-8")
-    root_module = ROOT / "EconCSLib.lean"
-    if root_module.exists() and "import EconCSLib.LibraryDefinitionAudit" not in root_module.read_text(
+    root_module = ROOT / "AppliedModelingLib.lean"
+    if root_module.exists() and "import AppliedModelingLib.LibraryDefinitionAudit" not in root_module.read_text(
         encoding="utf-8"
     ):
         findings.append(
             Finding(
                 "ERROR",
                 root_module,
-                "`EconCSLib.LibraryDefinitionAudit` should be imported by the root "
+                "`AppliedModelingLib.LibraryDefinitionAudit` should be imported by the root "
                 "library target so CI builds the standard-definition checks",
             )
         )
@@ -19152,7 +18016,9 @@ def check_library_standard_definition_audits() -> list[Finding]:
 def review_surface_slice_counts(interface_text: str, status_file: Path) -> tuple[list[str], dict[str, int]]:
     """Count human-review declaration rows by paper-local status review slices."""
 
-    decls = review_rows_from_interface_text(interface_text)
+    decls = _legacy_review_surface_structure_module().review_rows_from_interface_text(
+        interface_text
+    )
     if not status_file.exists():
         return [], {"all": len(decls)}
 
@@ -19292,7 +18158,11 @@ def check_review_launcher_readiness(include_active: bool) -> list[Finding]:
             findings.append(Finding("ERROR", review_source, "configured review surface does not exist"))
             continue
         review_source_text = review_source.read_text(encoding="utf-8")
-        item_count = len(review_rows_from_interface_text(review_source_text))
+        item_count = len(
+            _legacy_review_surface_structure_module().review_rows_from_interface_text(
+                review_source_text
+            )
+        )
         if item_count == 0:
             if not status_allows_empty_review_surface(status_payload):
                 findings.append(Finding("ERROR", review_source, "review dashboard finds no review rows"))
@@ -19604,9 +18474,6 @@ def iter_markdown_tables(path: Path) -> list[tuple[list[str], list[list[str]]]]:
     return tables
 
 
-def markdown_display_text(text: str) -> str:
-    return MARKDOWN_LINK_RE.sub(r"\1", text)
-
 
 def _certified_source_definition_item(
     folder: Path,
@@ -19625,16 +18492,10 @@ def _certified_source_definition_item(
     if not payload or payload.get("source_curated") is not True or payload.get("seed_scaffold") is True:
         return False
     try:
-        try:
-            from scripts.audit_evidence_integrity import (
-                identities_for_keys,
-                source_artifact_pin_findings,
-            )
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (
-                identities_for_keys,
-                source_artifact_pin_findings,
-            )
+        from scripts.audit_evidence_integrity import (
+            identities_for_keys,
+            source_artifact_pin_findings,
+        )
         if source_artifact_pin_findings(
             folder, "formalized", statement_map, payload
         ):
@@ -19717,10 +18578,7 @@ def check_source_proof_fidelity(
     """
 
     try:
-        try:
-            from scripts.audit_evidence_integrity import source_proof_fidelity_findings
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import source_proof_fidelity_findings
+        from scripts.audit_evidence_integrity import source_proof_fidelity_findings
         external_findings = source_proof_fidelity_findings(
             folder,
             status,
@@ -19764,15 +18622,13 @@ def check_explicit_source_route_semantic_model_evidence(
     trigger and freshness rules shared with the push-time integrity audit.
     """
 
+    if run_context is not None and run_context.selected_v11_closeout:
+        return []
+
     try:
-        try:
-            from scripts.audit_evidence_integrity import (
-                explicit_source_route_semantic_model_findings,
-            )
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (
-                explicit_source_route_semantic_model_findings,
-            )
+        from scripts.audit_evidence_integrity import (
+            explicit_source_route_semantic_model_findings,
+        )
         external_findings = explicit_source_route_semantic_model_findings(
             folder,
             status,
@@ -19798,6 +18654,109 @@ def check_explicit_source_route_semantic_model_evidence(
         path = raw_path if raw_path.is_absolute() else ROOT / raw_path
         converted.append(Finding(str(finding.severity), path, str(finding.message)))
     return converted
+
+
+def _current_v11_review_route_partition(
+    paper_id: str,
+    folder: Path,
+    review_names: set[str] | frozenset[str],
+    *,
+    run_context: PaperCloseoutRunContext,
+) -> tuple[ReviewRoutePartition | None, list[Finding]]:
+    """Load the exact typed route set and delegate its closed partition."""
+
+    source_map = run_context.exact_json_payload(
+        folder / PAPER_AUDIT_DIR / "paper_statement_map.json"
+    )
+    if not isinstance(source_map, Mapping):
+        return None, [
+            Finding(
+                "ERROR",
+                folder / "status.json",
+                f"`{paper_id}` retained v11 transaction has no statement map",
+            )
+        ]
+    try:
+        route_set = EvidenceRouteSet.from_source_map(source_map)
+    except ObligationRouteError as exc:
+        return None, [
+            Finding(
+                "ERROR",
+                folder / "status.json",
+                f"`{paper_id}` retained v11 transaction has invalid typed routes: {exc}",
+            )
+        ]
+
+    partition = partition_review_routes(
+        paper_id=paper_id,
+        review_names=tuple(review_names),
+        route_set=route_set,
+        declarations=run_context.paper_declaration_index(),
+    )
+    return partition, [
+        Finding("ERROR", folder / "status.json", message)
+        for message in partition.errors
+    ]
+
+
+def current_v11_typed_review_routes(
+    paper_id: str,
+    folder: Path,
+    review_names: set[str] | frozenset[str],
+    *,
+    run_context: PaperCloseoutRunContext,
+) -> tuple[
+    dict[str, tuple[str, EvidenceRoute]],
+    dict[str, str],
+    list[Finding],
+]:
+    """Partition one v11 surface into typed results and direct declarations."""
+
+    partition, findings = _current_v11_review_route_partition(
+        paper_id,
+        folder,
+        review_names,
+        run_context=run_context,
+    )
+    if partition is None:
+        return {}, {}, findings
+    return partition.result_map(), partition.direct_map(), findings
+
+
+def current_v11_direct_proof_pair_findings(
+    paper_id: str,
+    folder: Path,
+    review_surface: Mapping[str, object],
+    proof_routes: Mapping[str, str],
+    v11_names: set[str] | frozenset[str],
+    *,
+    run_context: PaperCloseoutRunContext,
+) -> list[Finding]:
+    """Project proof findings from the one current-v11 core gate."""
+
+    del review_surface, proof_routes, v11_names
+    errors = run_context.current_v11_primary_gate_result().proof_errors
+    return [
+        Finding("ERROR", folder / "status.json", message) for message in errors
+    ]
+
+
+def current_v11_direct_axiom_closure_findings(
+    paper_id: str,
+    folder: Path,
+    review_surface: Mapping[str, object],
+    include_names: list[str],
+    approved_boundary_axioms: set[str],
+    *,
+    run_context: PaperCloseoutRunContext,
+) -> list[Finding]:
+    """Project axiom findings from the one current-v11 core gate."""
+
+    del review_surface, include_names, approved_boundary_axioms
+    errors = run_context.current_v11_primary_gate_result().axiom_errors
+    return [
+        Finding("ERROR", folder / "status.json", message) for message in errors
+    ]
 
 
 def check_proposition_spec_routes(
@@ -19848,25 +18807,147 @@ def check_proposition_spec_routes(
     else:
         proof_routes = {str(spec).strip(): str(proof).strip() for spec, proof in raw_proofs.items()}
 
+    if (
+        paper_closeout
+        and run_context is not None
+        and run_context.selected_v11_closeout
+    ):
+        status_payload = run_context.exact_json_payload(folder / "status.json")
+        v11_names = (
+            v11_source_claim_review_names(status_payload)
+            if isinstance(status_payload, Mapping)
+            else None
+        )
+        if v11_names is not None:
+            return findings + current_v11_direct_proof_pair_findings(
+                paper_id,
+                folder,
+                review_surface,
+                proof_routes,
+                v11_names,
+                run_context=run_context,
+            )
+
+    if paper_closeout and run_context is not None:
+        status_payload = run_context.exact_json_payload(folder / "status.json")
+        v11_names = (
+            v11_source_claim_review_names(status_payload)
+            if isinstance(status_payload, Mapping)
+            else None
+        )
+        map_payload = run_context.exact_json_payload(
+            folder / PAPER_AUDIT_DIR / "paper_statement_map.json"
+        )
+        map_items = (
+            map_payload.get("items")
+            if isinstance(map_payload, Mapping)
+            else None
+        )
+        if v11_names is not None and isinstance(map_items, Mapping):
+            declarations = run_context.paper_declaration_index()
+            selected_items: list[tuple[str, Mapping[str, object]]] = []
+            expected_receipt_routes: set[tuple[str, str, str, str]] = set()
+            route_error = False
+            for spec_name in sorted(v11_names):
+                proof_name = proof_routes.get(spec_name, "")
+                specs = resolve_declaration_name(declarations, spec_name)
+                proofs = resolve_declaration_name(declarations, proof_name)
+                if len(specs) != 1 or len(proofs) != 1:
+                    route_error = True
+                    break
+                qualified_spec = qualified_declaration_identity(specs[0])
+                qualified_proof = qualified_declaration_identity(proofs[0])
+                candidates: list[tuple[str, Mapping[str, object]]] = []
+                for key, raw_item in map_items.items():
+                    contract = (
+                        raw_item.get("semantic_contract")
+                        if isinstance(raw_item, Mapping)
+                        else None
+                    )
+                    if (
+                        isinstance(contract, Mapping)
+                        and str(contract.get("spec_declaration") or "").strip()
+                        == qualified_spec
+                        and str(contract.get("evidence_declaration") or "").strip()
+                        == qualified_proof
+                    ):
+                        candidates.append((str(key), raw_item))
+                if len(candidates) != 1:
+                    route_error = True
+                    break
+                selected_items.extend(candidates)
+                contract = candidates[0][1].get("semantic_contract")
+                assert isinstance(contract, Mapping)
+                expected_receipt_routes.add(
+                    (
+                        candidates[0][0],
+                        qualified_spec,
+                        qualified_proof,
+                        str(contract.get("evidence_mode") or "").strip(),
+                    )
+                )
+            if not route_error and len(selected_items) == len(v11_names):
+                current_receipt_routes = {
+                    (
+                        receipt.source_item_key,
+                        receipt.spec_declaration,
+                        receipt.evidence_declaration,
+                        receipt.evidence_mode,
+                    )
+                    for receipt in (
+                        run_context.current_strict_source_spec_correspondence_receipts()
+                    )
+                }
+                current_scope = set(
+                    run_context.current_strict_source_spec_correspondence_scope_keys()
+                )
+                if (
+                    expected_receipt_routes
+                    and expected_receipt_routes.issubset(current_receipt_routes)
+                    and {key for key, _item in selected_items}.issubset(current_scope)
+                ):
+                    # The statement-map declaration gate already ran the one
+                    # exact batched Lean Meta comparison and minted these
+                    # source/Spec/proof receipts inside this immutable closeout
+                    # transaction.  Reconstructing dashboard manifests here
+                    # would repeat that proof-pair check without adding an
+                    # independent obligation.
+                    return findings
+                authority_errors = (
+                    semantic_authority_source_spec_correspondence_errors(
+                        ROOT,
+                        folder,
+                        map_payload,
+                        selected_items,
+                        evidence_context=run_context.evidence_context,
+                    )
+                )
+                if authority_errors == []:
+                    # The current semantic authority was issued from Lean's
+                    # exact expanded Spec/proof-pair graph for every selected
+                    # v11 claim. Re-running one Meta program per pair is a
+                    # derived reconstruction, not an independent proof check.
+                    return findings
+
+    if paper_closeout:
+        return findings + [
+            Finding(
+                "ERROR",
+                folder / "status.json",
+                f"`{paper_id}` canonical closeout has no complete typed Lean "
+                "semantic-contract graph; parser-discovered declarations and "
+                "per-pair checks are diagnostic only",
+            )
+        ]
+
     try:
-        try:
-            from scripts.review_dashboard import (
-                is_proposition_specification_manifest,
-                parse_review_source_declarations,
-                review_proof_module,
-                review_source_file,
-            )
-            from scripts.lean_signature_manifest import run_lean_proposition_spec_proof_matches
-        except ModuleNotFoundError:
-            from review_dashboard import (
-                is_proposition_specification_manifest,
-                parse_review_source_declarations,
-                review_proof_module,
-                review_source_file,
-            )
-            from lean_signature_manifest import (
-                run_lean_proposition_spec_proof_matches,
-            )
+        from scripts.review_dashboard import (
+            is_proposition_specification_manifest,
+            parse_review_source_declarations,
+            review_proof_module,
+            review_source_file,
+        )
+        from scripts.lean_signature_manifest import run_lean_proposition_spec_proof_matches
         items = (
             review_items_provider()
             if review_items_provider is not None
@@ -19938,7 +19019,11 @@ def check_proposition_spec_routes(
         for path, text in parsed_sources:
             if text is None:
                 continue
-            declaration_blocks = review_declaration_blocks(text)
+            declaration_blocks = (
+                _legacy_review_surface_structure_module().review_declaration_blocks(
+                    text
+                )
+            )
             namespace_stacks = namespace_stacks_at_lines(
                 text,
                 {line for line, _kind, _source in declaration_blocks.values()},
@@ -20078,6 +19163,8 @@ def check_machine_paper_status(
     deep_paper_prose: bool = False,
     prevalidated_strict_v11_occurrence_papers: set[str] | None = None,
     run_context: PaperCloseoutRunContext | None = None,
+    phase_timings: MutableMapping[str, float] | None = None,
+    phase_progress_callback: Callable[[Mapping[str, object]], None] | None = None,
 ) -> list[Finding]:
     findings: list[Finding] = []
     using_paper_local_fallback = False
@@ -20203,6 +19290,7 @@ def check_machine_paper_status(
                 paper_run_context.dashboard_audit_inputs()
                 if paper_run_context is not None
                 and paper_run_context.evidence_context is not None
+                and not paper_run_context.selected_v11_closeout
                 else None
             )
             validated_configured_review_rows = (
@@ -20228,6 +19316,16 @@ def check_machine_paper_status(
             ),
             audit_inputs=dashboard_audit_inputs,
             validated_configured_review_rows=validated_configured_review_rows,
+            semantic_reuse_authority=(
+                getattr(
+                    paper_run_context.evidence_context,
+                    "semantic_reuse_authority",
+                    None,
+                )
+                if paper_run_context is not None
+                and paper_run_context.evidence_context is not None
+                else None
+            ),
         )
 
         paper_status_file = PAPERS / paper_id / "status.json"
@@ -20495,34 +19593,53 @@ def check_machine_paper_status(
                     "paper-facing statement blocks declared in `PaperInterface.lean`.",
                 )
             )
-        if deep_paper_prose:
-            findings.extend(
-                paper_statement_sidecar_findings(
+        findings.extend(
+            run_machine_paper_status_phase(
+                MachinePaperStatusPhase.STATEMENT_SIDECAR,
+                paper_id,
+                lambda: paper_statement_sidecar_findings(
                     paper_id,
                     PAPERS / paper_id,
                     status,
-                    presentation_hygiene=True,
+                    presentation_hygiene=deep_paper_prose,
                     review_items_provider=review_items_provider,
                     corrected_scope_evaluation=corrected_scope_evaluation,
                     status_payload_override=entry,
                     run_context=paper_run_context,
-                )
+                ),
+                timings=phase_timings,
+                progress_callback=phase_progress_callback,
             )
-        else:
-            findings.extend(
-                paper_statement_sidecar_findings(
-                    paper_id,
-                    PAPERS / paper_id,
-                    status,
-                    review_items_provider=review_items_provider,
-                    corrected_scope_evaluation=corrected_scope_evaluation,
-                    status_payload_override=entry,
-                    run_context=paper_run_context,
-                )
+        )
+        declaration_index = (
+            paper_run_context.paper_declaration_index()
+            if paper_run_context is not None
+            else paper_lean_declaration_index(PAPERS / paper_id)
+        )
+        uses_v11_lean_declaration_surface = bool(
+            paper_run_context is not None
+            and paper_run_context.selected_v11_closeout
+        )
+        native_review_declarations = (
+            tuple(
+                declaration
+                for declaration in unique_declarations(declaration_index)
+                if declaration.path.resolve() == review_source_path.resolve()
             )
-        actual_review_names = [
-            name for _line, name in review_rows_from_interface_text(review_source_text)
-        ]
+            if uses_v11_lean_declaration_surface
+            else ()
+        )
+        actual_review_names = (
+            [declaration.name for declaration in native_review_declarations]
+            if uses_v11_lean_declaration_surface
+            else [
+                name
+                for _line, name in (
+                    _legacy_review_surface_structure_module()
+                    .review_rows_from_interface_text(review_source_text)
+                )
+            ]
+        )
         assumption_source_file = assumption_source_file_path(PAPERS / paper_id, review_surface)
         assumption_source_text = (
             paper_run_context.exact_lean_source_text(assumption_source_file)
@@ -20536,16 +19653,51 @@ def check_machine_paper_status(
                 )
             except OSError:
                 assumption_source_text = None
-        configured_assumption_declarations = assumption_declarations_from_text(
-            assumption_source_text or "", assumption_names.union(auxiliary_names)
-        )
+        if uses_v11_lean_declaration_surface:
+            configured_assumption_declarations: dict[
+                str, tuple[int, str, str]
+            ] = {}
+            for configured_name in sorted(assumption_names.union(auxiliary_names)):
+                resolved = [
+                    declaration
+                    for declaration in resolve_declaration_name(
+                        declaration_index, configured_name
+                    )
+                    if declaration.path.resolve() == assumption_source_file.resolve()
+                ]
+                if len(resolved) == 1:
+                    declaration = resolved[0]
+                    configured_assumption_declarations[configured_name] = (
+                        declaration.line,
+                        declaration.kind,
+                        declaration.source,
+                    )
+        else:
+            configured_assumption_declarations = (
+                _legacy_review_surface_structure_module()
+                .assumption_declarations_from_text(
+                    assumption_source_text or "",
+                    assumption_names.union(auxiliary_names),
+                )
+            )
         configured_assumption_auxiliary_names = auxiliary_names.intersection(
             configured_assumption_declarations
         )
-        missing_auxiliary_exports = auxiliary_names_not_exported_from_review_source(
-            auxiliary_names,
-            actual_review_names,
-            configured_assumption_auxiliary_names,
+        # In the current graph-native lane, auxiliary_names is retained only
+        # as historical/presentation metadata. Lean's selected claim and
+        # prerequisite graph is the complete semantic authority, so a stale
+        # implementation-helper label must not reopen the paper or become an
+        # extra review obligation merely because it once appeared in this
+        # legacy list. Historical lanes still require every configured
+        # auxiliary to resolve through their declared structural surfaces.
+        missing_auxiliary_exports = (
+            []
+            if uses_v11_lean_declaration_surface
+            else auxiliary_names_not_exported_from_review_source(
+                auxiliary_names,
+                actual_review_names,
+                configured_assumption_auxiliary_names,
+            )
         )
         if missing_auxiliary_exports:
             findings.append(
@@ -20561,10 +19713,14 @@ def check_machine_paper_status(
                     "configured structural surfaces out of `review_surface`.",
                 )
             )
-        if review_source_is_interface and zero_row_review_surface_imports_paper_module(
-            paper_id,
-            review_source_text,
-            actual_review_names,
+        if (
+            not uses_v11_lean_declaration_surface
+            and review_source_is_interface
+            and zero_row_review_surface_imports_paper_module(
+                paper_id,
+                review_source_text,
+                actual_review_names,
+            )
         ):
             findings.append(
                 Finding(
@@ -20576,7 +19732,20 @@ def check_machine_paper_status(
                     "implementation module outside the human review surface.",
                 )
             )
-        declaration_blocks = review_declaration_blocks(review_source_text)
+        declaration_blocks = (
+            {
+                declaration.name: (
+                    declaration.line,
+                    declaration.kind,
+                    declaration.source,
+                )
+                for declaration in native_review_declarations
+            }
+            if uses_v11_lean_declaration_surface
+            else _legacy_review_surface_structure_module().review_declaration_blocks(
+                review_source_text
+            )
+        )
         exported_only_review_names = reviewed_names_not_declared_in_review_source(
             include_names,
             declaration_blocks,
@@ -20597,19 +19766,22 @@ def check_machine_paper_status(
                     "implementation modules.",
                 )
             )
-        declaration_comments = review_declaration_comments(review_source_text)
-        declaration_index = (
-            paper_run_context.paper_declaration_index()
-            if paper_run_context is not None
-            else paper_lean_declaration_index(PAPERS / paper_id)
+        declaration_comments = (
+            review_declaration_comments(review_source_text)
+            if deep_paper_prose and not uses_v11_lean_declaration_surface
+            else {}
         )
         assumption_declarations = {
             name: declaration
             for name, declaration in configured_assumption_declarations.items()
             if name in assumption_names
         }
-        assumption_file_premises = assumption_premises_from_text(
-            assumption_source_text or "", assumption_names
+        assumption_file_premises = (
+            {}
+            if uses_v11_lean_declaration_surface
+            else assumption_premises_from_text(
+                assumption_source_text or "", assumption_names
+            )
         )
         assumption_judgments: dict[str, dict[str, object]] = {}
         validated_assumption_premises: set[str] = set()
@@ -20687,9 +19859,10 @@ def check_machine_paper_status(
         if recorded_line_count != actual_line_count:
             findings.append(
                 Finding(
-                    "ERROR",
+                    "WARN",
                     PAPER_STATUS_FILE,
-                    f"`{paper_id}` line_count is {recorded_line_count}, expected {actual_line_count}",
+                    f"`{paper_id}` display line_count is {recorded_line_count}, "
+                    f"currently {actual_line_count}; refresh generated status before release",
                 )
             )
         declared_assumption_names = set(actual_review_names) | set(assumption_declarations)
@@ -20716,58 +19889,104 @@ def check_machine_paper_status(
                 )
             )
         findings.extend(
-            check_paper_interface_axiom_closure(
+            run_machine_paper_status_phase(
+                MachinePaperStatusPhase.INTERFACE_AXIOM_CLOSURE,
                 paper_id,
-                review_source_path,
-                review_source_text,
-                include_names,
-                declaration_blocks,
-                status,
-                proof_boundary_names,
+                lambda: (
+                    current_v11_direct_axiom_closure_findings(
+                        paper_id,
+                        PAPERS / paper_id,
+                        review_surface,
+                        include_names,
+                        proof_boundary_names,
+                        run_context=paper_run_context,
+                    )
+                    if paper_run_context is not None
+                    and paper_run_context.selected_v11_closeout
+                    else check_paper_interface_axiom_closure(
+                        paper_id,
+                        review_source_path,
+                        review_source_text,
+                        include_names,
+                        declaration_blocks,
+                        status,
+                        proof_boundary_names,
+                    )
+                ),
+                timings=phase_timings,
+                progress_callback=phase_progress_callback,
             )
         )
         findings.extend(
-            check_proposition_spec_routes(
+            run_machine_paper_status_phase(
+                MachinePaperStatusPhase.PROPOSITION_SPEC_ROUTES,
                 paper_id,
-                PAPERS / paper_id,
-                review_surface,
-                include_names,
-                assumption_names,
-                status,
-                paper_closeout=paper_closeout,
-                review_items_provider=review_items_provider,
-                run_context=paper_run_context,
+                lambda: check_proposition_spec_routes(
+                    paper_id,
+                    PAPERS / paper_id,
+                    review_surface,
+                    include_names,
+                    assumption_names,
+                    status,
+                    paper_closeout=paper_closeout,
+                    review_items_provider=review_items_provider,
+                    run_context=paper_run_context,
+                ),
+                timings=phase_timings,
+                progress_callback=phase_progress_callback,
             )
         )
         if isinstance(status, str):
             findings.extend(
-                check_source_proof_fidelity(
-                    PAPERS / paper_id,
-                    status,
-                    entry,
-                    require_source_bytes=require_source_bytes,
-                    run_context=paper_run_context,
+                run_machine_paper_status_phase(
+                    MachinePaperStatusPhase.SOURCE_PROOF_FIDELITY,
+                    paper_id,
+                    lambda: check_source_proof_fidelity(
+                        PAPERS / paper_id,
+                        status,
+                        entry,
+                        require_source_bytes=require_source_bytes,
+                        run_context=paper_run_context,
+                    ),
+                    timings=phase_timings,
+                    progress_callback=phase_progress_callback,
                 )
             )
-            findings.extend(
-                check_explicit_source_route_semantic_model_evidence(
-                    PAPERS / paper_id,
-                    status,
-                    entry,
-                    run_context=paper_run_context,
+            if not (
+                paper_run_context is not None
+                and paper_run_context.selected_v11_closeout
+            ):
+                findings.extend(
+                    run_machine_paper_status_phase(
+                        MachinePaperStatusPhase.EXPLICIT_SEMANTIC_MODEL,
+                        paper_id,
+                        lambda: check_explicit_source_route_semantic_model_evidence(
+                            PAPERS / paper_id,
+                            status,
+                            entry,
+                            run_context=paper_run_context,
+                        ),
+                        timings=phase_timings,
+                        progress_callback=phase_progress_callback,
+                    )
                 )
-            )
-        source_record_findings = check_source_record_audit(
+        source_record_findings = run_machine_paper_status_phase(
+            MachinePaperStatusPhase.SOURCE_RECORD,
             paper_id,
-            PAPERS / paper_id,
-            review_surface,
-            status,
-            strict_assumption_policy,
-            paper_closeout=paper_closeout,
-            prevalidated_strict_v11_occurrence_papers=(
-                prevalidated_strict_v11_occurrence_papers
+            lambda: check_source_record_audit(
+                paper_id,
+                PAPERS / paper_id,
+                review_surface,
+                status,
+                strict_assumption_policy,
+                paper_closeout=paper_closeout,
+                prevalidated_strict_v11_occurrence_papers=(
+                    prevalidated_strict_v11_occurrence_papers
+                ),
+                run_context=paper_run_context,
             ),
-            run_context=paper_run_context,
+            timings=phase_timings,
+            progress_callback=phase_progress_callback,
         )
         findings.extend(source_record_findings)
         semantic_hidden_premise_surface: (
@@ -20995,7 +20214,7 @@ def check_machine_paper_status(
         # semantic closeout gate.
         expanded_review_statements = (
             load_expanded_review_statements(PAPERS / paper_id)
-            if deep_paper_prose
+            if deep_paper_prose and not uses_v11_lean_declaration_surface
             else {}
         )
         for name, (expanded_statement, expanded_line) in expanded_review_statements.items():
@@ -21041,7 +20260,15 @@ def check_machine_paper_status(
                 "expanded review row",
                 row_name=name,
             )
-        for name in include_names:
+        # The current v11 path has already reviewed Lean's complete emitted
+        # parameter/assumption/conclusion atom surface against the verbatim
+        # source and checked every material paper/library prerequisite.  Do not
+        # reparse those same declaration types with the older textual binder
+        # heuristics. Legacy protocols retain that diagnostic below.
+        hidden_premise_review_names = (
+            () if uses_v11_lean_declaration_surface else include_names
+        )
+        for name in hidden_premise_review_names:
             declaration = declaration_blocks.get(name)
             if not declaration:
                 continue
@@ -21202,11 +20429,35 @@ def check_machine_paper_status(
                 )
         total_rows = review.get("total_rows") if isinstance(review, dict) else None
         review_rows = interface.get("review_rows")
-        source_condition_rows = len(assumption_names)
         source_claim_surface = (
             isinstance(review, dict)
             and review.get("surface") == "source_claims_v1"
-        )
+        ) or v11_source_claim_review_names(entry) is not None
+        graph_native_human_total: int | None = None
+        if source_claim_surface:
+            source_map_path = PAPERS / paper_id / PAPER_AUDIT_DIR / "paper_statement_map.json"
+            source_map_payload = (
+                paper_run_context.exact_json_payload(source_map_path)
+                if paper_run_context is not None
+                else load_json_object(source_map_path)
+            )
+            if source_map_payload is not None:
+                try:
+                    graph_native_human_total = (
+                        graph_native_human_review_total_from_payload(
+                            source_map_payload,
+                            entry,
+                        )
+                    )
+                except CloseoutStatusProjectionError as exc:
+                    findings.append(
+                        Finding(
+                            "ERROR",
+                            PAPER_STATUS_FILE,
+                            f"`{paper_id}` graph-native human-review selection is invalid: {exc}",
+                        )
+                    )
+        source_condition_rows = len(assumption_names)
         if (
             isinstance(total_rows, int)
             and isinstance(review_rows, int)
@@ -21223,7 +20474,9 @@ def check_machine_paper_status(
             )
         configured_review_surface_names = set(include_names).union(assumption_names)
         valid_review_totals = {len(set(include_names)), len(configured_review_surface_names)}
-        if source_claim_surface:
+        if graph_native_human_total is not None:
+            valid_review_totals = {graph_native_human_total}
+        if source_claim_surface and graph_native_human_total is None:
             paired_specs = review_surface.get("proposition_spec_proofs", {})
             if isinstance(paired_specs, dict):
                 valid_review_totals.update(
@@ -21232,12 +20485,33 @@ def check_machine_paper_status(
                         len(paired_specs) + source_condition_rows,
                     }
                 )
+            slices = review_surface.get("slices", [])
+            if isinstance(slices, list):
+                sliced_claim_names = {
+                    name.strip()
+                    for raw_slice in slices
+                    if isinstance(raw_slice, dict)
+                    for name in raw_slice.get("names", [])
+                    if isinstance(name, str)
+                    and name.strip()
+                    and name.strip() in set(include_names)
+                }
+                if sliced_claim_names:
+                    valid_review_totals.update(
+                        {
+                            len(sliced_claim_names),
+                            len(sliced_claim_names) + source_condition_rows,
+                        }
+                    )
         if isinstance(total_rows, int) and include_names and total_rows not in valid_review_totals:
             findings.append(
                 Finding(
-                    "ERROR",
+                    "WARN" if graph_native_human_total is not None else "ERROR",
                     PAPER_STATUS_FILE,
-                    f"`{paper_id}` human_review.total_rows should count either PaperInterface "
+                    f"`{paper_id}` human_review.total_rows should be the typed source-graph "
+                    f"denominator {graph_native_human_total}"
+                    if graph_native_human_total is not None
+                    else f"`{paper_id}` human_review.total_rows should count either PaperInterface "
                     "review rows, paired source claims, or those rows plus separately tracked source conditions",
                 )
             )
@@ -21266,7 +20540,12 @@ def check_machine_paper_status(
         unclassified_review_names = (
             set(actual_review_names) - set(include_names) - assumption_names - auxiliary_names
         )
-        if unclassified_review_names:
+        # A v11 source-claim surface explicitly selects its one semantic Spec
+        # per paper claim. Other declarations in the same module are ordinary
+        # transparent vocabulary or proof-facing helpers; their file location
+        # does not turn them into additional human-review rows. Completeness is
+        # enforced from the source inventory and material-prerequisite ledgers.
+        if unclassified_review_names and not source_claim_surface:
             findings.append(
                 Finding(
                     "ERROR",
@@ -21587,7 +20866,7 @@ def check_stale_architecture_terms() -> list[Finding]:
                     Finding(
                         "WARN",
                         path,
-                        f"stale architecture term `DecisionCore` at line {line_no}; use current `EconCSLib` layering",
+                        f"stale architecture term `DecisionCore` at line {line_no}; use current `AppliedModelingLib` layering",
                     )
                 )
     return findings
@@ -21647,7 +20926,7 @@ def has_module_docstring_with_main_declarations(path: Path) -> bool:
 
 def check_strict_lean_style() -> list[Finding]:
     findings: list[Finding] = []
-    for path in sorted((ROOT / "EconCSLib").rglob("*.lean")):
+    for path in sorted((ROOT / "AppliedModelingLib").rglob("*.lean")):
         if not has_module_docstring_with_main_declarations(path):
             findings.append(
                 Finding(
@@ -21763,7 +21042,7 @@ def known_paper_source_terms() -> set[str]:
 def generic_source_hygiene_paths(*, library_only: bool) -> list[Path]:
     """Return reusable files that should not contain concrete paper references."""
 
-    roots: list[Path] = [ROOT / "EconCSLib"]
+    roots: list[Path] = [ROOT / "AppliedModelingLib"]
     if not library_only:
         roots.extend(
             [
@@ -21822,7 +21101,7 @@ def check_generic_source_reference_hygiene(*, library_only: bool = False) -> lis
                         "files or data config, or use a paper-neutral domain name",
                     )
                 )
-            if path.suffix == ".lean" and "EconCSLib" in path.parts:
+            if path.suffix == ".lean" and "AppliedModelingLib" in path.parts:
                 if match := GENERIC_SOURCE_THEOREM_LABEL_RE.search(line):
                     findings.append(
                         Finding(
@@ -21840,22 +21119,14 @@ def run_library(
     strict_style: bool,
     library_premise_audit: bool = False,
 ) -> list[Finding]:
-    files = library_lean_files()
-    findings: list[Finding] = []
-    findings.extend(check_sorries_in_files(files))
-    findings.extend(check_axiom_like_declarations_in_files(files))
-    findings.extend(check_hidden_variable_premises_in_files(files))
-    findings.extend(check_guarded_checks_in_files(files))
-    findings.extend(check_library_source_assumption_standards())
-    findings.extend(check_library_reusable_provenance_language())
-    findings.extend(check_library_standard_definition_audits())
-    findings.extend(check_library_source_hygiene())
-    findings.extend(check_generic_source_reference_hygiene(library_only=True))
-    if strict_style:
-        findings.extend(check_strict_lean_style())
-    if library_premise_audit:
-        findings.extend(check_library_certificate_boundaries())
-    return findings
+    return execute_registered_checks(
+        reusable_library_checks(
+            sys.modules[__name__],
+            files=library_lean_files(),
+            strict_style=strict_style,
+            library_premise_audit=library_premise_audit,
+        )
+    )
 
 
 def check_root_readme_policy() -> list[Finding]:
@@ -21880,19 +21151,10 @@ def paper_closeout_evidence_integrity_findings(
     are not an additional mandatory closeout pass.
     """
 
-    # Import through the same package identity as this module.  Falling back
-    # from a package import to an already-loaded top-level module can create two
-    # independent caches and defeat the in-process closeout reuse boundary.
-    if __package__:
-        from .audit_evidence_integrity import (
-            run as run_evidence_integrity_finalized,
-            run_for_consolidated_closeout_transaction as run_evidence_integrity_deferred,
-        )
-    else:  # pragma: no cover - direct script invocation.
-        from audit_evidence_integrity import (
-            run as run_evidence_integrity_finalized,
-            run_for_consolidated_closeout_transaction as run_evidence_integrity_deferred,
-        )
+    from scripts.audit_evidence_integrity import (
+        run as run_evidence_integrity_finalized,
+        run_for_consolidated_closeout_transaction as run_evidence_integrity_deferred,
+    )
 
     run_evidence_integrity = (
         run_evidence_integrity_deferred
@@ -21922,21 +21184,148 @@ def paper_closeout_evidence_integrity_findings(
     return converted
 
 
+def paper_closeout_fast_route_schema_findings(
+    paper_id: str,
+    *,
+    context: object | None = None,
+) -> list[Finding]:
+    """Reject route/configuration defects from frozen inputs before Lean work.
+
+    This reader is only for an actual historical transaction. Current callers
+    use current_closeout.primary_gate_transaction directly.
+    """
+
+    from scripts.evidence_run_context import V11EvidenceRunContext
+
+    from scripts.audit_evidence_integrity import source_spec_correspondence_inventory_findings
+    from scripts.source_manifest_validation import repaired_source_defect_route_preflight_findings
+
+    folder = PAPERS / paper_id
+    if context is not None:
+        context_folder = getattr(context, "folder", None)
+        if (
+            isinstance(context, V11EvidenceRunContext)
+            or not exact_evidence_run_context(context)
+            or not isinstance(context_folder, Path)
+            or context_folder != folder.resolve()
+        ):
+            return [
+                Finding(
+                    "ERROR",
+                    folder / "status.json",
+                    f"`{paper_id}` route-schema preflight requires its exact "
+                    "builder-issued historical evidence transaction",
+                )
+            ]
+        status = str(getattr(context, "status", "") or "").strip()
+    else:
+        status_payload = load_json_object(folder / "status.json") or {}
+        status = str(status_payload.get("status") or "").strip()
+    raw_findings = source_spec_correspondence_inventory_findings(
+        folder,
+        status,
+        require_source_bytes=False,
+        context=context,
+    )
+    raw_findings.extend(
+        repaired_source_defect_route_preflight_findings(
+            folder,
+            status,
+            context=context,
+        )
+    )
+    converted: list[Finding] = []
+    seen: set[tuple[str, str, str]] = set()
+    for finding in raw_findings:
+        path = Path(finding.path)
+        if not path.is_absolute():
+            path = ROOT / path
+        key = (str(finding.severity), str(path), str(finding.message))
+        if key in seen:
+            continue
+        seen.add(key)
+        converted.append(
+            Finding(
+                str(finding.severity),
+                path,
+                f"`{paper_id}` route-schema preflight: {finding.message}",
+            )
+        )
+    return converted
+
+
 def build_paper_closeout_evidence_context(
     paper_id: str,
     *,
     diagnostics: MutableMapping[str, int] | None = None,
+    operational_plan_receipt: Mapping[str, object] | None = None,
 ) -> object:
     """Acquire the one exact evidence transaction shared by all closeout lanes."""
 
-    if __package__:
-        from .audit_evidence_integrity import build_evidence_run_context
-    else:  # pragma: no cover - direct script invocation.
-        from audit_evidence_integrity import build_evidence_run_context
+    from scripts.current_closeout.evidence_transaction import (
+        CurrentV11EvidenceSnapshotRoot,
+    )
+
+    graph_reference = (
+        operational_plan_receipt.get("v11_lean_review_graph")
+        if isinstance(operational_plan_receipt, Mapping)
+        else None
+    )
+    current_root = CurrentV11EvidenceSnapshotRoot.acquire(
+        PAPERS / paper_id,
+        repository_root=ROOT,
+    )
+    if current_root.v11_selected:
+        return current_root.build_v11(
+            graph_reference if isinstance(graph_reference, Mapping) else None
+        )
+
+    from scripts.audit_evidence_integrity import build_evidence_run_context
 
     return build_evidence_run_context(
-        PAPERS / paper_id, diagnostics=diagnostics
+        PAPERS / paper_id,
+        diagnostics=diagnostics,
+        v11_lean_review_graph_reference=None,
     )
+
+
+def paper_closeout_v11_direct_semantic_review_state(
+    paper_id: str,
+    folder: Path,
+    evidence_context: object,
+) -> tuple[bool, str]:
+    """Validate the exact replacement lane before adopting legacy build inputs."""
+
+    from scripts.current_closeout.semantic_review import (
+        current_v11_direct_semantic_review_state,
+    )
+
+    try:
+        return current_v11_direct_semantic_review_state(
+            ROOT,
+            folder,
+            context=evidence_context,
+        )
+    except (OSError, RuntimeError, ValueError) as exc:
+        return False, str(exc)
+
+
+def paper_closeout_v11_lean_review_surface(
+    folder: Path,
+    evidence_context: object,
+) -> object | None:
+    """Reuse the exact graph already constructed by the v11 semantic gate.
+
+    The graph is retained independently of the final semantic verdict so a
+    stale or incomplete judgment is reported as that v11 finding rather than
+    being masked by a fallback to superseded legacy source ownership.
+    """
+
+    from scripts.current_closeout.review_surface import (
+        builder_issued_v11_lean_review_surface,
+    )
+
+    return builder_issued_v11_lean_review_surface(folder, evidence_context)
 
 
 def paper_closeout_source_record_transaction_skew_findings(
@@ -21954,7 +21343,12 @@ def paper_closeout_source_record_transaction_skew_findings(
     preflight: it cannot refresh raw evidence or alter any human judgment.
     """
 
-    audit_payload = getattr(evidence_context, "audit_payload", None)
+    legacy_state = getattr(evidence_context, "legacy_source_record_state", None)
+    if legacy_state is None:
+        return []
+    legacy_inputs = getattr(legacy_state, "inputs", None)
+    audit_snapshot = getattr(legacy_inputs, "audit_snapshot", None)
+    audit_payload = getattr(audit_snapshot, "payload", None)
     raw_map_sha = (
         str(audit_payload.get("paper_statement_map_sha256") or "")
         .strip()
@@ -21966,7 +21360,7 @@ def paper_closeout_source_record_transaction_skew_findings(
         getattr(evidence_context, "paper_statement_map_sha256", "") or ""
     ).strip().lower()
     identity_error = str(
-        getattr(evidence_context, "source_record_identity_error", "") or ""
+        getattr(legacy_state, "source_record_identity_error", "") or ""
     ).strip()
     if not (
         re.fullmatch(r"[0-9a-f]{64}", raw_map_sha)
@@ -21976,7 +21370,6 @@ def paper_closeout_source_record_transaction_skew_findings(
     ):
         return []
 
-    audit_snapshot = getattr(evidence_context, "audit_snapshot", None)
     audit_path = getattr(audit_snapshot, "path", None)
     if not isinstance(audit_path, Path):
         audit_path = PAPERS / paper_id / DEFAULT_SOURCE_RECORD_AUDIT_FILE
@@ -21999,6 +21392,8 @@ def paper_closeout_source_record_transaction_skew_findings(
 def paper_closeout_evidence_context_prebuild_findings(
     paper_id: str,
     evidence_context: object,
+    *,
+    run_context: PaperCloseoutRunContext | None = None,
 ) -> list[Finding]:
     """Reject a known-invalid exact raw context before compiling the paper.
 
@@ -22012,19 +21407,48 @@ def paper_closeout_evidence_context_prebuild_findings(
     remains unchanged.
     """
 
+    # Lane ownership and lane success are different facts.  Once the exact
+    # transaction selects v11, legacy source-record files are deliberately not
+    # acquired and can never serve as fallback evidence.  A current v11 lane
+    # proceeds; a failed one stops here with its actual semantic error before
+    # the focused build or any legacy consumer can manufacture derivative
+    # missing-sidecar/fingerprint findings.
+    if (
+        run_context is not None
+        and run_context.evidence_context is evidence_context
+        and run_context.selected_v11_closeout
+    ):
+        if run_context.current_v11_closeout:
+            return []
+        detail = str(run_context.v11_direct_semantic_review_error or "").strip()
+        return [
+            Finding(
+                "ERROR",
+                PAPERS / paper_id / "status.json",
+                f"`{paper_id}` selected v11 semantic lane is not current: "
+                + (detail or "the exact v11 semantic gate did not pass")
+                + ". Repair the selected v11 evidence; the superseded legacy "
+                "source-record lane is not fallback acceptance evidence.",
+            )
+        ]
+
     skew_findings = paper_closeout_source_record_transaction_skew_findings(
         paper_id, evidence_context
     )
     if skew_findings:
         return skew_findings
 
-    audit_snapshot = getattr(evidence_context, "audit_snapshot", None)
+    legacy_state = getattr(evidence_context, "legacy_source_record_state", None)
+    if legacy_state is None:
+        return []
+    legacy_inputs = getattr(legacy_state, "inputs", None)
+    audit_snapshot = getattr(legacy_inputs, "audit_snapshot", None)
     audit_path = getattr(audit_snapshot, "path", None)
     if not isinstance(audit_path, Path):
         audit_path = PAPERS / paper_id / DEFAULT_SOURCE_RECORD_AUDIT_FILE
 
     identity_error = str(
-        getattr(evidence_context, "source_record_identity_error", "") or ""
+        getattr(legacy_state, "source_record_identity_error", "") or ""
     ).strip()
     if not identity_error:
         return []
@@ -22051,10 +21475,9 @@ def paper_closeout_context_mutation_findings(
 ) -> list[Finding]:
     """Convert both exact transaction owners' final mutation verdicts."""
 
-    if __package__:
-        from .audit_evidence_integrity import evidence_run_context_mutation_findings
-    else:  # pragma: no cover - direct script invocation.
-        from audit_evidence_integrity import evidence_run_context_mutation_findings
+    from scripts.audit_evidence_integrity import (
+        evidence_run_context_mutation_findings,
+    )
 
     converted: list[Finding] = []
     for finding in evidence_run_context_mutation_findings(
@@ -22085,6 +21508,25 @@ def paper_closeout_context_mutation_findings(
     return converted
 
 
+def _load_conclusion_provenance_auditors() -> tuple[Callable[..., object], Callable[..., object]]:
+    """Load the historical/raw conclusion engine only after current-v11 misses.
+
+    The accepted v11 path already owns a runtime-only capability for the exact
+    source, semantic, Lean-graph, realization, and axiom checks performed by
+    the primary gate.  Importing the historical aggregate engine merely to
+    rediscover that capability eagerly loads its raw-receipt implementation.
+    Keep the complete auditors available for every nonaccepting or legacy
+    route, but outside current-v11 startup.
+    """
+
+    from scripts.audit_conclusion_provenance import (
+        audit_paper,
+        audit_paper_for_consolidated_closeout_transaction,
+    )
+
+    return audit_paper, audit_paper_for_consolidated_closeout_transaction
+
+
 def paper_closeout_conclusion_provenance_findings(
     paper_id: str,
     *,
@@ -22093,16 +21535,22 @@ def paper_closeout_conclusion_provenance_findings(
 ) -> list[Finding]:
     """Run conclusion provenance against the same closeout snapshot."""
 
-    if __package__:
-        from .audit_conclusion_provenance import (
-            audit_paper,
-            audit_paper_for_consolidated_closeout_transaction,
+    if context is not None and theorem_realization_component_prevalidated:
+        from scripts.audit_evidence_integrity import (
+            has_current_v11_evidence_integrity_receipt,
         )
-    else:  # pragma: no cover - direct script invocation.
-        from audit_conclusion_provenance import (
-            audit_paper,
-            audit_paper_for_consolidated_closeout_transaction,
-        )
+
+        if has_current_v11_evidence_integrity_receipt(context):
+            # The unforgeable in-process capability proves that the current
+            # v11 primary and evidence gates checked the complete conclusion
+            # graph and its exact source/evidence inventory.
+            # There is no second conclusion obligation in the superseded raw
+            # carrier, so do not import that carrier's audit implementation.
+            return []
+
+    audit_paper, audit_paper_for_consolidated_closeout_transaction = (
+        _load_conclusion_provenance_auditors()
+    )
 
     if context is not None:
         audit_findings = audit_paper_for_consolidated_closeout_transaction(
@@ -22148,8 +21596,11 @@ def closeout_transaction_input_sha256(
     if run_context is None or run_context.evidence_context is None:
         return ""
     evidence_context = run_context.evidence_context
+    raw_snapshots = getattr(evidence_context, "input_snapshots", None)
+    if not isinstance(raw_snapshots, (tuple, list)):
+        return ""
     snapshots: list[dict[str, object]] = []
-    for snapshot in getattr(evidence_context, "input_snapshots", ()):
+    for snapshot in raw_snapshots:
         path = getattr(snapshot, "path", None)
         if not isinstance(path, Path):
             continue
@@ -22193,7 +21644,7 @@ def check_paper_root_build_closeout(paper_id: str) -> list[Finding]:
 
     try:
         proc = subprocess.run(
-            ["env", "LEAN_NUM_THREADS=1", "lake", "build", paper_id],
+            ["env", "LEAN_NUM_THREADS=1", "lake", "build", f"+{paper_id}"],
             cwd=ROOT,
             check=False,
             capture_output=True,
@@ -22208,15 +21659,21 @@ def check_paper_root_build_closeout(paper_id: str) -> list[Finding]:
                 f"`{paper_id}` focused paper-root build could not run: {exc}",
             )
         ]
-    if proc.returncode == 0:
+    diagnostic_failure = lean_diagnostic_failure_reason(proc.stdout, proc.stderr)
+    if proc.returncode == 0 and not diagnostic_failure:
         return []
-    details = (proc.stderr or proc.stdout).strip().splitlines()
-    excerpt = " ".join(details[:4])[:1000] if details else "Lake returned nonzero"
+    excerpt = bounded_lean_diagnostic_excerpt(proc.stdout, proc.stderr)
+    if diagnostic_failure:
+        reason = diagnostic_failure
+    else:
+        reason = f"Lake exited {proc.returncode}"
+    if excerpt:
+        reason += f": {excerpt}"
     return [
         Finding(
             "ERROR",
             PAPERS / paper_id / "PaperInterface.lean",
-            f"`{paper_id}` focused paper-root build failed: {excerpt}",
+            f"`{paper_id}` focused paper-root build failed: {reason}",
         )
     ]
 
@@ -22230,296 +21687,36 @@ def run(
     require_source_bytes: bool = True,
     deep_paper_prose: bool = False,
     closeout_trace: MutableMapping[str, object] | None = None,
+    closeout_progress_callback: Callable[[Mapping[str, object]], None] | None = None,
+    operational_plan_identity: str = "",
+    operational_plan_receipt: Mapping[str, object] | None = None,
 ) -> list[Finding]:
     if paper_closeout:
-        closeout_started = time.perf_counter()
-        stage_times: dict[str, float] = {}
-        evidence_diagnostics: dict[str, int] = {}
-        run_context: PaperCloseoutRunContext | None = None
+        from scripts.paper_closeout_executor import execute_paper_closeout
 
-        def finish_closeout(result: list[Finding]) -> list[Finding]:
-            if closeout_trace is not None:
-                build_input_diagnostics = (
-                    run_context.build_input_provider.diagnostics()
-                    if run_context is not None
-                    else {}
-                )
-                closeout_trace.update(
-                    {
-                        "schema": 1,
-                        "paper": paper_filter or "",
-                        "stages_seconds": dict(stage_times),
-                        "evidence_counters": dict(evidence_diagnostics),
-                        "build_input_counters": build_input_diagnostics,
-                        "closeout_context_counters": (
-                            run_context.diagnostics()
-                            if run_context is not None
-                            else {}
-                        ),
-                        "transaction_input_sha256": (
-                            closeout_transaction_input_sha256(run_context)
-                        ),
-                        "total_seconds": round(
-                            time.perf_counter() - closeout_started, 6
-                        ),
-                        "errors": sum(
-                            finding.severity == "ERROR" for finding in result
-                        ),
-                        "warnings": sum(
-                            finding.severity == "WARN" for finding in result
-                        ),
-                    }
-                )
-            return result
-
-        def record_stage(name: str, started: float) -> None:
-            stage_times[name] = round(time.perf_counter() - started, 6)
-
-        if paper_filter is None:
-            return finish_closeout([
-                Finding(
-                    "ERROR",
-                    PAPERS,
-                    "paper-closeout requires a paper folder",
-                )
-            ])
-        try:
-            current_audit_config = load_audit_config()
-        except (OSError, ValueError, json.JSONDecodeError) as exc:
-            return finish_closeout([
-                Finding(
-                    "ERROR",
-                    AUDIT_CONFIG,
-                    f"paper-closeout audit configuration is unavailable: {exc}",
-                )
-            ])
-        if current_audit_config != AUDIT_CONFIG_PAYLOAD:
-            return finish_closeout([
-                Finding(
-                    "ERROR",
-                    AUDIT_CONFIG,
-                    "paper-closeout audit configuration changed after process "
-                    "startup; discard this run and restart the command",
-                )
-            ])
-        stage_started = time.perf_counter()
-        closeout_preflight_findings = check_dag_and_validation_report_closeout(
-            include_active=True,
+        return execute_paper_closeout(
+            sys.modules[__name__],
             paper_filter=paper_filter,
-            force_selected_closeout=True,
-        )
-        try:
-            try:
-                from scripts.closeout_reuse_plan import intake_freeze_readiness
-            except ModuleNotFoundError:
-                from closeout_reuse_plan import intake_freeze_readiness
-
-            intake_readiness = intake_freeze_readiness(
-                PAPERS / paper_filter,
-                repository_root=ROOT,
-            )
-        except (OSError, RuntimeError, ValueError) as exc:
-            intake_readiness = {
-                "ready": False,
-                "errors": [f"intake-freeze preflight is unavailable: {exc}"],
-            }
-        if intake_readiness.get("ready") is not True:
-            errors = intake_readiness.get("errors")
-            details = (
-                "; ".join(str(error) for error in errors)
-                if isinstance(errors, list) and errors
-                else "intake-freeze preflight did not establish readiness"
-            )
-            closeout_preflight_findings.append(
-                Finding(
-                    "ERROR",
-                    PAPERS / paper_filter / "status.json",
-                    f"`{paper_filter}` prospective intake boundary failed: {details}",
-                )
-            )
-        record_stage("closeout_artifact_preflight", stage_started)
-        if any(
-            finding.severity == "ERROR"
-            for finding in closeout_preflight_findings
-        ):
-            return finish_closeout(closeout_preflight_findings)
-        # Do not run repository hygiene and then infer ownership from an error
-        # message. This lane is deliberately only the selected paper's named
-        # theoretical statements and their semantic proof/provenance closure.
-        try:
-            stage_started = time.perf_counter()
-            evidence_context = build_paper_closeout_evidence_context(
-                paper_filter, diagnostics=evidence_diagnostics
-            )
-            record_stage("acquire_exact_context", stage_started)
-            run_context = PaperCloseoutRunContext.from_exact_evidence_context(
-                paper_filter,
-                PAPERS / paper_filter,
-                evidence_context=evidence_context,
-            )
-        except Exception as exc:  # noqa: BLE001 - closeout must fail closed.
-            record_stage("acquire_exact_context", stage_started)
-            return finish_closeout([
-                Finding(
-                    "ERROR",
-                    PAPERS / paper_filter / "status.json",
-                    f"`{paper_filter}` could not acquire one exact closeout "
-                    f"evidence transaction: {exc}",
-                )
-            ])
-        stage_started = time.perf_counter()
-        transaction_prebuild_findings = (
-            paper_closeout_evidence_context_prebuild_findings(
-                paper_filter, evidence_context
-            )
-        )
-        record_stage("source_record_transaction_preflight", stage_started)
-        if transaction_prebuild_findings:
-            stage_started = time.perf_counter()
-            transaction_prebuild_findings.extend(
-                paper_closeout_context_mutation_findings(
-                    evidence_context,
-                    diagnostics=evidence_diagnostics,
-                    build_input_provider=run_context.build_input_provider,
-                )
-            )
-            record_stage("final_input_check", stage_started)
-            return finish_closeout(transaction_prebuild_findings)
-        stage_started = time.perf_counter()
-        root_build_findings = check_paper_root_build_closeout(paper_filter)
-        record_stage("paper_root_build", stage_started)
-        if root_build_findings:
-            stage_started = time.perf_counter()
-            root_build_findings.extend(
-                paper_closeout_context_mutation_findings(
-                    evidence_context,
-                    diagnostics=evidence_diagnostics,
-                    build_input_provider=run_context.build_input_provider,
-                )
-            )
-            record_stage("final_input_check", stage_started)
-            return finish_closeout(root_build_findings)
-        prevalidated_strict_v11_occurrence_papers: set[str] = set()
-        stage_started = time.perf_counter()
-        findings = list(closeout_preflight_findings)
-        findings.extend(check_machine_paper_status(
             library_premise_audit=library_premise_audit,
-            paper_filter=paper_filter,
-            paper_closeout=True,
             require_source_bytes=require_source_bytes,
             deep_paper_prose=deep_paper_prose,
-            prevalidated_strict_v11_occurrence_papers=(
-                prevalidated_strict_v11_occurrence_papers
-            ),
-            run_context=run_context,
-        ))
-        record_stage("primary_paper_gate", stage_started)
-        if any(finding.severity == "ERROR" for finding in findings):
-            stage_started = time.perf_counter()
-            findings.extend(
-                paper_closeout_context_mutation_findings(
-                    evidence_context,
-                    diagnostics=evidence_diagnostics,
-                    build_input_provider=run_context.build_input_provider,
-                )
-            )
-            record_stage("final_input_check", stage_started)
-            return finish_closeout(findings)
-        # A strict source-record receipt can be reused by the deferred
-        # evidence lane only after all primary paper checks, not merely the
-        # source-record subcheck, have completed without an error.
-        run_context.publish_staged_strict_v11_source_record_judgment_handoff()
-        stage_started = time.perf_counter()
-        evidence_findings = paper_closeout_evidence_integrity_findings(
-            paper_filter,
-            require_source_bytes=require_source_bytes,
-            context=evidence_context,
-            diagnostics=evidence_diagnostics,
+            closeout_trace=closeout_trace,
+            closeout_progress_callback=closeout_progress_callback,
+            operational_plan_identity=operational_plan_identity,
+            operational_plan_receipt=operational_plan_receipt,
         )
-        record_stage("evidence_integrity", stage_started)
-        findings.extend(evidence_findings)
-        if any(finding.severity == "ERROR" for finding in evidence_findings):
-            stage_started = time.perf_counter()
-            findings.extend(
-                paper_closeout_context_mutation_findings(
-                    evidence_context,
-                    diagnostics=evidence_diagnostics,
-                    build_input_provider=run_context.build_input_provider,
-                )
-            )
-            record_stage("final_input_check", stage_started)
-            return finish_closeout(findings)
-        stage_started = time.perf_counter()
-        findings.extend(
-            paper_closeout_conclusion_provenance_findings(
-                paper_filter,
-                theorem_realization_component_prevalidated=(
-                    paper_filter in prevalidated_strict_v11_occurrence_papers
-                ),
-                context=evidence_context,
-            )
-        )
-        record_stage("conclusion_provenance", stage_started)
-        stage_started = time.perf_counter()
-        findings.extend(
-            paper_closeout_context_mutation_findings(
-                evidence_context,
-                diagnostics=evidence_diagnostics,
-                build_input_provider=run_context.build_input_provider,
-            )
-        )
-        record_stage("final_input_check", stage_started)
-        return finish_closeout(findings)
 
-    findings: list[Finding] = []
-    findings.extend(check_sorries(include_active))
-    findings.extend(check_axiom_like_declarations(include_active))
-    findings.extend(check_hidden_variable_premises(include_active))
-    findings.extend(check_guarded_checks(include_active))
-    findings.extend(check_library_source_assumption_standards())
-    findings.extend(check_library_reusable_provenance_language())
-    findings.extend(check_library_standard_definition_audits())
-    findings.extend(check_library_source_hygiene())
-    findings.extend(check_generic_source_reference_hygiene())
-    findings.extend(check_paper_contract(include_active))
-    findings.extend(check_final_report_status_alignment(include_active, paper_filter=paper_filter))
-    findings.extend(
-        check_final_report_human_facing_front_matter(
-            include_active,
-            paper_filter=paper_filter,
-        )
-    )
-    findings.extend(
-        check_dag_and_validation_report_closeout(
+    return execute_registered_checks(
+        ordinary_repository_checks(
+            sys.modules[__name__],
             include_active=include_active,
-            paper_filter=paper_filter,
-        )
-    )
-    findings.extend(check_review_launcher_readiness(include_active))
-    findings.extend(check_dag_status_styles())
-    findings.extend(check_paper_facing_ledgers(include_active))
-    findings.extend(check_post_paper_audit_interfaces(include_active))
-    findings.extend(
-        check_machine_paper_status(
+            strict_style=strict_style,
             library_premise_audit=library_premise_audit,
             paper_filter=paper_filter,
-            paper_closeout=paper_closeout,
             require_source_bytes=require_source_bytes,
             deep_paper_prose=deep_paper_prose,
         )
     )
-    findings.extend(check_status_label_vocabulary())
-    findings.extend(check_generated_human_status_labels())
-    findings.extend(check_readme_status_tables(include_active, paper_filter=paper_filter))
-    findings.extend(check_tracked_artifacts(include_active))
-    findings.extend(check_stale_architecture_terms())
-    findings.extend(check_root_readme_policy())
-    findings.extend(check_human_facing_readme())
-    if strict_style:
-        findings.extend(check_strict_lean_style())
-    if library_premise_audit:
-        findings.extend(check_library_certificate_boundaries())
-    return findings
 
 
 def finding_paper_id(finding: Finding) -> str:
@@ -22536,37 +21733,6 @@ def finding_paper_id(finding: Finding) -> str:
     if match:
         return match.group(1)
     return "REPO"
-
-
-def finding_is_for_paper_closeout(finding: Finding, paper_id: str) -> bool:
-    """Return whether a finding is structurally owned by one paper.
-
-    Paper closeout no longer uses this as its primary scope mechanism: it
-    dispatches directly to the paper-local named-theory lane. Keep this helper
-    strict for callers that render an already-scoped report. In particular, a
-    repository test/doc finding that merely *mentions* a paper identifier is
-    never paper-owned.
-    """
-
-    path = finding.path
-    rel = path.relative_to(ROOT) if path.is_absolute() else path
-    parts = rel.parts
-    if len(parts) >= 2 and parts[0] == "papers":
-        if parts[1] == paper_id or parts[1] == f"{paper_id}.lean":
-            if PUBLIC_RELEASE and "no cached source PDF found" in finding.message:
-                return False
-            return True
-        # Aggregate status artifacts live directly under `papers/`. Their path
-        # has no paper directory, so route them by their explicit paper id in
-        # the finding text rather than silently dropping a stale aggregate from
-        # `--paper-closeout`.
-        if parts[1] not in {"status.json", "human_status.json"}:
-            return False
-        # Aggregate status artifacts have no folder component. Their producer
-        # consistently places the owning paper id in the first quoted token;
-        # do not use a broad substring match that could capture test prose.
-        return finding.message.startswith(f"`{paper_id}`")
-    return False
 
 
 def paper_status_label(paper_id: str) -> str:
@@ -22714,7 +21880,7 @@ def main() -> int:
     parser.add_argument(
         "--strict-style",
         action="store_true",
-        help="also report Mathlib-style module-docstring guidance for reusable EconCSLib modules",
+        help="also report Mathlib-style module-docstring guidance for reusable AppliedModelingLib modules",
     )
     parser.add_argument(
         "--library-premise-audit",
@@ -22724,7 +21890,7 @@ def main() -> int:
     parser.add_argument(
         "--library-only",
         action="store_true",
-        help="audit only reusable EconCSLib code and library provenance checks",
+        help="audit only reusable AppliedModelingLib code and library provenance checks",
     )
     parser.add_argument(
         "--paper",
@@ -22805,6 +21971,7 @@ def main() -> int:
         ),
     )
     args = parser.parse_args()
+    operational_plan_receipt: Mapping[str, object] | None = None
     if args.paper_closeout and not args.paper:
         parser.error("--paper-closeout requires --paper <paper-folder>")
     if args.paper_closeout and args.library_only:
@@ -22817,6 +21984,37 @@ def main() -> int:
         parser.error("--closeout-state cannot be combined with --no-closeout-state")
     if args.operational_plan_identity and not args.paper_closeout:
         parser.error("--operational-plan-identity requires --paper-closeout")
+    if args.paper_closeout and args.paper:
+        folder = PAPERS / args.paper
+        status_payload = load_json_object(folder / "status.json")
+        source_map_payload = load_json_object(
+            folder / "audit" / "paper_statement_map.json"
+        )
+        if isinstance(status_payload, Mapping) and (
+            explicit_raw_source_spec_screening_requested(
+                status_payload,
+                source_map_payload,
+            )
+        ):
+            # Current publication has one owner.  Preserve the historical CLI
+            # spelling as an operator convenience, but delegate before this
+            # module acquires a lease or enters the mixed legacy executor.
+            from scripts.current_closeout.strict_runner import main as run_current
+
+            current_argv = ["--paper", args.paper]
+            if args.operational_plan_identity:
+                current_argv.extend(
+                    ["--operational-plan-identity", args.operational_plan_identity]
+                )
+            if args.deep_paper_prose:
+                current_argv.append("--deep-paper-prose")
+            if args.allow_missing_source_bytes:
+                current_argv.append("--allow-missing-source-bytes")
+            if args.closeout_state is not None:
+                current_argv.extend(["--closeout-state", str(args.closeout_state)])
+            if args.no_closeout_state:
+                current_argv.append("--no-closeout-state")
+            return run_current(current_argv)
     if args.paper_closeout and not args.no_closeout_state:
         if not re.fullmatch(r"[0-9a-f]{64}", args.operational_plan_identity):
             parser.error(
@@ -22832,7 +22030,7 @@ def main() -> int:
                 file=sys.stderr,
             )
             return 6
-        _receipt, plan_error = load_validated_closeout_plan_receipt(
+        operational_plan_receipt, plan_error = load_validated_closeout_plan_receipt(
             ROOT,
             paper=args.paper,
             deep_paper_prose=args.deep_paper_prose,
@@ -22882,6 +22080,35 @@ def main() -> int:
                 library_premise_audit=args.library_premise_audit,
             )
         else:
+            def publish_closeout_progress(event: Mapping[str, object]) -> None:
+                if closeout_lease is None:
+                    return
+                completed = event.get("completed_stage_count")
+                total = event.get("total_stage_count")
+                closeout_lease.heartbeat(
+                    stage=str(event.get("stage") or "strict_closeout"),
+                    completed_units=(
+                        completed
+                        if isinstance(completed, int) and not isinstance(completed, bool)
+                        else None
+                    ),
+                    total_units=(
+                        total
+                        if isinstance(total, int) and not isinstance(total, bool)
+                        else None
+                    ),
+                    details={
+                        str(key): value
+                        for key, value in event.items()
+                        if key
+                        not in {
+                            "stage",
+                            "completed_stage_count",
+                            "total_stage_count",
+                        }
+                    },
+                )
+
             findings = run(
                 include_active=args.include_active,
                 strict_style=args.strict_style,
@@ -22891,6 +22118,11 @@ def main() -> int:
                 require_source_bytes=not args.allow_missing_source_bytes,
                 deep_paper_prose=args.deep_paper_prose,
                 closeout_trace=closeout_trace,
+                closeout_progress_callback=(
+                    publish_closeout_progress if args.paper_closeout else None
+                ),
+                operational_plan_identity=args.operational_plan_identity,
+                operational_plan_receipt=operational_plan_receipt,
             )
     except BaseException as exc:
         if closeout_lease is not None:
@@ -22900,6 +22132,24 @@ def main() -> int:
     errors = [finding for finding in findings if finding.severity == "ERROR"]
     warnings = [finding for finding in findings if finding.severity == "WARN"]
     infos = [finding for finding in findings if finding.severity == "INFO"]
+    if (
+        args.paper_closeout
+        and not errors
+        and args.paper is not None
+        and (
+            not isinstance(closeout_trace, Mapping)
+            or closeout_trace.get("current_closeout_published") is not True
+        )
+    ):
+        finding = Finding(
+            "ERROR",
+            PAPERS / args.paper / ".review_traces",
+            f"`{args.paper}` strict checks passed but the accepted graph was not "
+            "published from the issuer-protected in-process closeout pass; the "
+            "serialized trace is diagnostics only and cannot be finalized later",
+        )
+        findings.append(finding)
+        errors.append(finding)
     exit_code = 1 if errors else 0
     if closeout_lease is not None:
         persisted_findings = []

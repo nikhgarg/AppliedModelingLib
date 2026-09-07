@@ -24,7 +24,7 @@ local instance (p : Prop) : Decidable p := Classical.propDecidable p
 open scoped BigOperators Topology
 open Filter
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Online
 namespace MSVV07PaperFacing
 namespace SourceRunner
@@ -32,6 +32,62 @@ namespace SourceRunner
 variable {Advertiser Query : Type*}
 
 /-! ## Sections 2--3: source definitions -/
+
+/--
+Re-index a concrete arrival list by its positions.  This is the faithful
+finite query universe for MSVV's online model: two equal query *words* at
+different times become distinct `Fin history.length` occurrences while retain
+their original bid vector.  It is deliberately not a deduplication.
+-/
+def occurrenceIndexedInstance
+    (I : PaperInstance Advertiser Query) (history : List Query) :
+    PaperInstance Advertiser (Fin history.length) where
+  budget := I.budget
+  bid a t := I.bid a (history.get t)
+
+@[simp]
+theorem occurrenceIndexedInstance_budget
+    (I : PaperInstance Advertiser Query) (history : List Query) (a : Advertiser) :
+    (occurrenceIndexedInstance I history).budget a = I.budget a :=
+  rfl
+
+@[simp]
+theorem occurrenceIndexedInstance_bid
+    (I : PaperInstance Advertiser Query) (history : List Query)
+    (a : Advertiser) (t : Fin history.length) :
+    (occurrenceIndexedInstance I history).bid a t = I.bid a (history.get t) :=
+  rfl
+
+theorem occurrenceIndexedInstance_nonnegativeBids
+    (I : PaperInstance Advertiser Query) (history : List Query)
+    (hbid : I.NonnegativeBids) :
+    (occurrenceIndexedInstance I history).NonnegativeBids := by
+  intro a t
+  exact hbid a (history.get t)
+
+theorem occurrenceIndexedInstance_positiveBudgets
+    (I : PaperInstance Advertiser Query) (history : List Query)
+    (hbudget : I.PositiveBudgets) :
+    (occurrenceIndexedInstance I history).PositiveBudgets := by
+  intro a
+  simpa using hbudget a
+
+theorem occurrenceIndexedInstance_smallBids
+    (I : PaperInstance Advertiser Query) (history : List Query) {epsilon : ℝ}
+    (hsmall : paperSmallBids I epsilon) :
+    paperSmallBids (occurrenceIndexedInstance I history) epsilon := by
+  intro a t
+  simpa using hsmall a (history.get t)
+
+/--
+Section 6 delayed entry, represented on a concrete arrival sequence.  An
+advertiser is unavailable before its one entry time and remains available from
+then on; this deliberately rules out disappearance and re-entry.
+-/
+def availableFromEntry {n : ℕ}
+    (entryTime : Advertiser → Fin (n + 1)) :
+    Advertiser → Fin n → Prop :=
+  fun a t => entryTime a ≤ t.castSucc
 
 /-- Section 2's ratio definition, including its universal quantifier over inputs. -/
 def IsAlphaCompetitive {Instance : Type*}
@@ -411,6 +467,15 @@ noncomputable def occurrenceBalanceScore
     (S : OccurrenceState Advertiser Query) (q : Query) (a : Advertiser) : ℝ :=
   I.bid a q * (1 - Real.exp (S.spent a / I.budget a - 1))
 
+/--
+The score used by the Section 5 algorithm with an arbitrary tradeoff function
+`psi`: a bid times `psi` of the bidder's current spent-budget fraction.
+-/
+noncomputable def occurrenceTradeoffScore
+    (psi : ℝ → ℝ) (I : PaperInstance Advertiser Query)
+    (S : OccurrenceState Advertiser Query) (q : Query) (a : Advertiser) : ℝ :=
+  I.bid a q * psi (S.spent a / I.budget a)
+
 /-- Discrete Section 3 score computed from the currently active budget slab. -/
 noncomputable def occurrenceDiscreteScore
     (k : ℕ) (hk : 0 < k)
@@ -419,6 +484,15 @@ noncomputable def occurrenceDiscreteScore
   I.bid a q * discreteTradeoff k
     (activeBudgetSlab k hk (S.spent a) (I.budget a))
 
+/-- A discrete Section 3 choice is feasible and maximizes the `psi_k` score. -/
+def occurrenceDiscreteBalanceChoice
+    (k : ℕ) (hk : 0 < k)
+    (I : PaperInstance Advertiser Query)
+    (S : OccurrenceState Advertiser Query) (q : Query) (a : Advertiser) : Prop :=
+  occurrenceCanAssign I S q a ∧
+    ∀ b, occurrenceCanAssign I S q b →
+      occurrenceDiscreteScore k hk I S q b ≤ occurrenceDiscreteScore k hk I S q a
+
 /-- The actual finite scan used for one continuous Balance/MSVV decision. -/
 noncomputable def balanceScan
     {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
@@ -426,6 +500,19 @@ noncomputable def balanceScan
     (S : OccurrenceState Advertiser Query) (q : Query) :
     FiniteMaxScanResult Advertiser :=
   finiteMaxScan (occurrenceCanAssign I S q) (occurrenceBalanceScore I S q)
+    (Finset.univ : Finset Advertiser).toList
+
+/--
+The deterministic finite scan for the source algorithm with tradeoff `psi`.
+It makes the source's resulting allocation, and hence its final type counts,
+an explicit function of the instance, arrival history, and tradeoff.
+-/
+noncomputable def tradeoffScan
+    {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
+    (psi : ℝ → ℝ) (I : PaperInstance Advertiser Query)
+    (S : OccurrenceState Advertiser Query) (q : Query) :
+    FiniteMaxScanResult Advertiser :=
+  finiteMaxScan (occurrenceCanAssign I S q) (occurrenceTradeoffScore psi I S q)
     (Finset.univ : Finset Advertiser).toList
 
 /-- The actual finite scan used for one discrete Section 3 decision. -/
@@ -467,6 +554,14 @@ noncomputable def balanceStep
     OccurrenceState Advertiser Query :=
   applyScanDecision I S q (balanceScan I S q)
 
+/-- One occurrence step of the source algorithm using the supplied tradeoff. -/
+noncomputable def tradeoffStep
+    {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
+    (psi : ℝ → ℝ) (I : PaperInstance Advertiser Query)
+    (S : OccurrenceState Advertiser Query) (q : Query) :
+    OccurrenceState Advertiser Query :=
+  applyScanDecision I S q (tradeoffScan psi I S q)
+
 /-- One occurrence step of the discrete Section 3 runner. -/
 noncomputable def discreteBalanceStep
     {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
@@ -492,6 +587,16 @@ noncomputable def runBalanceOccurrences
     OccurrenceState Advertiser Query :=
   runOccurrencesFrom (balanceStep I) initialOccurrenceState history
 
+/--
+The Section 5 run for an arbitrary tradeoff `psi` on a concrete AdWords
+instance and finite arrival history.
+-/
+noncomputable def runTradeoffOccurrences
+    {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
+    (psi : ℝ → ℝ) (I : PaperInstance Advertiser Query) (history : List Query) :
+    OccurrenceState Advertiser Query :=
+  runOccurrencesFrom (tradeoffStep psi I) initialOccurrenceState history
+
 /-- Source-faithful discrete Section 3 run. -/
 noncomputable def runDiscreteBalanceOccurrences
     {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
@@ -513,6 +618,21 @@ theorem balanceScan_winner_is_balance_choice
   have hspec :=
     (finiteMaxScan_winner_spec
       (occurrenceCanAssign I S q) (occurrenceBalanceScore I S q)
+      (Finset.univ : Finset Advertiser).toList).2 a hchoice
+  exact ⟨hspec.2.1, fun b hb => hspec.2.2 b (by simp) hb⟩
+
+/-- The discrete finite scan realizes its stated feasible `psi_k` argmax rule. -/
+theorem discreteBalanceScan_winner_is_discrete_choice
+    {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
+    (k : ℕ) (hk : 0 < k)
+    (I : PaperInstance Advertiser Query)
+    (S : OccurrenceState Advertiser Query) (q : Query) (a : Advertiser)
+    (hchoice : (discreteBalanceScan k hk I S q).winner = some a) :
+    occurrenceDiscreteBalanceChoice k hk I S q a := by
+  classical
+  have hspec :=
+    (finiteMaxScan_winner_spec
+      (occurrenceCanAssign I S q) (occurrenceDiscreteScore k hk I S q)
       (Finset.univ : Finset Advertiser).toList).2 a hchoice
   exact ⟨hspec.2.1, fun b hb => hspec.2.2 b (by simp) hb⟩
 
@@ -660,6 +780,25 @@ noncomputable def occurrenceSpend
     | none => 0
     | some owner => if owner = a then I.bid a (history.get t) else 0
 
+/-- A source-model allocation is total when every arriving occurrence receives an owner. -/
+def occurrenceAssignmentIsTotal
+    (history : List Query) (A : Fin history.length → Option Advertiser) : Prop :=
+  ∀ t, ∃ a, A t = some a
+
+/--
+The Section 2 feasibility model for a chronological allocation: every arrival
+is assigned and no advertiser is charged above its budget.  The separate
+online runner may expose an unassigned occurrence when its feasibility scan has
+no candidate; connecting that execution to this total source model is a later
+theorem obligation, not a definitionally hidden convention.
+-/
+def occurrenceAssignmentFeasible
+    [DecidableEq Advertiser]
+    (I : PaperInstance Advertiser Query) (history : List Query)
+    (A : Fin history.length → Option Advertiser) : Prop :=
+  occurrenceAssignmentIsTotal history A ∧
+    ∀ a, occurrenceSpend I history A a ≤ I.budget a
+
 /--
 When query identifiers are genuinely distinct and cover the finite query type,
 the old identifier-indexed revenue is the corresponding chronological list sum.
@@ -743,6 +882,53 @@ noncomputable abbrev section5AlphaTypeCount
     {Advertiser : Type*} [Fintype Advertiser]
     (k : ℕ) (finalSpentFraction : Advertiser → ℝ) : Fin k → ℝ :=
   section4TypeCount k finalSpentFraction
+
+/--
+The vector `a` used by Section 5's factor-revealing LP has the first `k - 1`
+type counts: the terminal type is not an LP variable.  Writing `k = m + 1`
+makes that source convention total, including the degenerate `m = 0` case.
+-/
+noncomputable def section5PreterminalAlphaTypeCount
+    {Advertiser : Type*} [Fintype Advertiser]
+    (m : ℕ) (finalSpentFraction : Advertiser → ℝ) : Fin m → ℝ :=
+  fun i => section5AlphaTypeCount (m + 1) finalSpentFraction i.castSucc
+
+/-- Each realized Section 5 preterminal type count is nonnegative. -/
+theorem section5PreterminalAlphaTypeCount_nonnegative
+    {Advertiser : Type*} [Fintype Advertiser]
+    (m : ℕ) (finalSpentFraction : Advertiser → ℝ) (i : Fin m) :
+    0 ≤ section5PreterminalAlphaTypeCount m finalSpentFraction i := by
+  unfold section5PreterminalAlphaTypeCount section5AlphaTypeCount section4TypeCount
+  apply Finset.sum_nonneg
+  intro a _
+  split_ifs <;> norm_num
+
+/-- The final spent-budget fraction produced by a Section 5 tradeoff run. -/
+noncomputable def section5TradeoffRunSpentFraction
+    {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
+    (psi : ℝ → ℝ) (I : PaperInstance Advertiser Query) (history : List Query) :
+    Advertiser → ℝ :=
+  fun a => (runTradeoffOccurrences psi I history).spent a / I.budget a
+
+/--
+Section 5's `k-1`-coordinate type-count vector for the actual run on an
+instance with tradeoff `psi` (with `k = m + 1`).
+-/
+noncomputable def section5PreterminalAlphaTypeCountOfTradeoffRun
+    {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
+    (m : ℕ) (psi : ℝ → ℝ) (I : PaperInstance Advertiser Query)
+    (history : List Query) : Fin m → ℝ :=
+  section5PreterminalAlphaTypeCount m
+    (section5TradeoffRunSpentFraction psi I history)
+
+/-- Actual-run Section 5 type counts are nonnegative. -/
+theorem section5PreterminalAlphaTypeCountOfTradeoffRun_nonnegative
+    {Advertiser Query : Type*} [Fintype Advertiser] [DecidableEq Advertiser]
+    (m : ℕ) (psi : ℝ → ℝ) (I : PaperInstance Advertiser Query)
+    (history : List Query) (i : Fin m) :
+    0 ≤ section5PreterminalAlphaTypeCountOfTradeoffRun m psi I history i := by
+  exact section5PreterminalAlphaTypeCount_nonnegative m
+    (section5TradeoffRunSpentFraction psi I history) i
 
 /-- Section 5's idealized slab-spend vector `beta`. -/
 noncomputable abbrev section5IdealizedBeta
@@ -1418,6 +1604,41 @@ noncomputable def runReplicatedRankingProposal
     OccurrenceState (Representative Advertiser m) Query :=
   runOccurrencesFrom (replicatedRankingStep m I rankWeight)
     initialOccurrenceState history
+
+/-- A representative has exhausted its equal budget in a completed run. -/
+def representativeBudgetExhausted
+    {Advertiser Query : Type*}
+    (m : ℕ) (I : PaperInstance Advertiser Query)
+    (S : OccurrenceState (Representative Advertiser m) Query)
+    (r : Representative Advertiser m) : Prop :=
+  S.spent r = (replicatedInstance m I).budget r
+
+/--
+The Section 8 replicated-RANKING exhaustion-order heuristic, made explicit as
+a predicate rather than claimed as a proved performance guarantee: within one
+original bidder's representatives, exhaustion at a later rank entails
+exhaustion at every earlier rank.
+-/
+def replicatedRankingExhaustionInRankOrder
+    {Advertiser Query : Type*}
+    (m : ℕ) (I : PaperInstance Advertiser Query)
+    (rank : Representative Advertiser m → ℕ)
+    (S : OccurrenceState (Representative Advertiser m) Query) : Prop :=
+  ∀ r r', r.1 = r'.1 → rank r ≤ rank r' →
+    representativeBudgetExhausted m I S r' →
+      representativeBudgetExhausted m I S r
+
+/-- Unfold the explicit Section 8 exhaustion-order heuristic. -/
+theorem replicatedRankingExhaustionInRankOrder_iff
+    {Advertiser Query : Type*}
+    (m : ℕ) (I : PaperInstance Advertiser Query)
+    (rank : Representative Advertiser m → ℕ)
+    (S : OccurrenceState (Representative Advertiser m) Query) :
+    replicatedRankingExhaustionInRankOrder m I rank S ↔
+      ∀ r r', r.1 = r'.1 → rank r ≤ rank r' →
+        representativeBudgetExhausted m I S r' →
+          representativeBudgetExhausted m I S r := by
+  rfl
 
 /-- A selected representative is affordable and maximizes the rank-scaled bid. -/
 theorem replicatedRankingScan_winner_spec
@@ -2370,6 +2591,38 @@ theorem factorLPTight_revenue_eq_N_sub_lpValue (m : ℕ) (N : ℝ) :
   rw [hobjective] at htotal
   exact eq_sub_of_add_eq htotal
 
+/--
+The explicit cohort-fluid BALANCE realization at unit total budget approaches
+the MSVV ratio.  This is an internal limiting witness; it does not purport to
+identify the external finite exact instance cited from KP00 in MSVV07.
+-/
+theorem factorLPTightFluidRevenue_tendsTo_msvvRatio :
+    Sequence.SeqTendsTo
+      (fun m : ℕ => factorLPTightFluidRevenue m 1)
+      paperMsvvRatio := by
+  intro delta hdelta
+  obtain ⟨K, hK⟩ :=
+    MSVV07SourceLemmas.lemma3_factor_revealing_lp_value_tends (1 : ℝ) delta hdelta
+  refine ⟨K, ?_⟩
+  intro m hm
+  have hvalue := hK (m + 1) (by omega)
+  have hfactor :
+      MSVV07SourceLemmas.factorRevealingLPValue m 1 =
+        1 * (1 - 1 / ((m + 1 : ℕ) : ℝ)) ^ (m + 1) := by
+    rfl
+  change |factorLPTightFluidRevenue m 1 - paperMsvvRatio| ≤ delta
+  rw [factorLPTight_revenue_eq_N_sub_lpValue, hfactor]
+  calc
+    |1 - 1 * (1 - 1 / ((m + 1 : ℕ) : ℝ)) ^ (m + 1) - paperMsvvRatio| =
+        |-(1 * (1 - 1 / ((m + 1 : ℕ) : ℝ)) ^ (m + 1) -
+          1 / Real.exp 1)| := by
+            congr 1
+            simp only [paperMsvvRatio]
+            ring
+    _ = |1 * (1 - 1 / ((m + 1 : ℕ) : ℝ)) ^ (m + 1) -
+          1 / Real.exp 1| := abs_neg _
+    _ ≤ delta := hvalue
+
 /-- Revenue is the sum of the query mass actually allocated in every slab. -/
 theorem factorLPTight_sum_slab_allocations_eq_revenue (m : ℕ) (N : ℝ) :
     (∑ stage ∈ Finset.range (m + 1),
@@ -2519,4 +2772,4 @@ theorem theorem9_base_equal_spread_balance_eventually_le_msvvRatio_add :
 end SourceRunner
 end MSVV07PaperFacing
 end Online
-end EconCSLib
+end AppliedModelingLib

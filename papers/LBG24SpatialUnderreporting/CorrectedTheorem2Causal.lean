@@ -20,7 +20,7 @@ before the next exponential interarrival gap is drawn.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal ProbabilityTheory
 
 noncomputable section
@@ -35,6 +35,8 @@ endpoint kernel is a function of that visible prefix and is rate-free.
 structure FiniteStageCausalEndpointProfile (T : OrderedFiniteJumpTimeline) where
   /-- The rate-free selected-start density factor `g(s | H)`. -/
   startDensity : ℝ
+  /-- A conditional probability density is nonnegative at the selected start. -/
+  startDensity_nonnegative : 0 ≤ startDensity
   /-- A rate-free endpoint-clock kernel after every visible finite prefix. -/
   endKernel : ∀ j : Fin (T.count + 1), Kernel (Fin j.1 → ℝ) ℝ
   endKernel_isMarkov : ∀ j, IsMarkovKernel (endKernel j)
@@ -173,6 +175,7 @@ def toFiniteStageCausalEndpointProfile
     (M : CollapsedFiniteStageEndpointModel T.count) :
     FiniteStageCausalEndpointProfile T where
   startDensity := M.startWeight.toReal
+  startDensity_nonnegative := ENNReal.toReal_nonneg
   endKernel := M.endKernel
   endKernel_isMarkov := M.endKernel_isMarkov
   endDensity := M.endDensity
@@ -184,12 +187,12 @@ private theorem exponentialBlockDensity_toReal_eq_pdfReal_prod
     (gaps : Fin count → ℝ) :
     (exponentialBlockDensity rate count gaps).toReal =
       ∏ i : Fin count,
-        (EconCSLib.Probability.Exponential.Model.mk rate h_rate).pdfReal (gaps i) := by
+        (AppliedModelingLib.Probability.Exponential.Model.mk rate h_rate).pdfReal (gaps i) := by
   simp only [exponentialBlockDensity, ENNReal.toReal_prod]
   apply Finset.prod_congr rfl
   intro i _
   simp only [ProbabilityTheory.exponentialPDF,
-    EconCSLib.Probability.Exponential.Model.pdfReal]
+    AppliedModelingLib.Probability.Exponential.Model.pdfReal]
   rw [ENNReal.toReal_ofReal
     (ProbabilityTheory.exponentialPDFReal_nonneg h_rate (gaps i))]
 
@@ -225,7 +228,7 @@ theorem rawGapTailDensity_toReal_eq_rawLikelihood
   have hweight := endpointWeight_toReal_eq_profile_endpointWeight T M
   have htail :
       (CollapsedFiniteStageEndpointModel.terminalNoArrivalTail rate T.tail).toReal =
-        ((EconCSLib.Probability.Exponential.Model.mk rate h_rate).measure
+        ((AppliedModelingLib.Probability.Exponential.Model.mk rate h_rate).measure
           (Set.Ioi T.tail)).toReal := by
     rw [← CollapsedFiniteStageEndpointModel.expMeasure_Ioi_eq_terminalNoArrivalTail
       h_rate T.tail_nonneg]
@@ -237,8 +240,8 @@ theorem rawGapTailDensity_toReal_eq_rawLikelihood
   rw [show theorem2InterarrivalTailLikelihood
       (Finset.univ : Finset (Fin T.count)) rate T.gap T.tail =
       (∏ j : Fin T.count,
-        (EconCSLib.Probability.Exponential.Model.mk rate h_rate).pdfReal (T.gap j)) *
-          ((EconCSLib.Probability.Exponential.Model.mk rate h_rate).measure
+        (AppliedModelingLib.Probability.Exponential.Model.mk rate h_rate).pdfReal (T.gap j)) *
+          ((AppliedModelingLib.Probability.Exponential.Model.mk rate h_rate).measure
             (Set.Ioi T.tail)).toReal by
       exact interarrivalTailLikelihood_eq_exponential_pdfReal_prod_mul_tail
         (Finset.univ : Finset (Fin T.count)) rate h_rate T.gap T.tail

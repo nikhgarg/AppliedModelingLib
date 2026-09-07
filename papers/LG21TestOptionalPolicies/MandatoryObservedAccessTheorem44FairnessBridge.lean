@@ -12,8 +12,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory
-open EconCSLib.Probability
+open AppliedModelingLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib.Probability
 
 /-- Under mandatory-given-access feasibility and the attained full-record PBO,
 the literal output is observably fair up to null base fibres and demographically

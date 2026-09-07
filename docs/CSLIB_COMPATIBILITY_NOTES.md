@@ -3,7 +3,7 @@
 Current as of April 23, 2026.
 
 CSLib is now an explicit dependency of this repository. Treat it as an external
-upstream library rather than copying broad chunks into EconCSLib. The best
+upstream library rather than copying broad chunks into AppliedModelingLib. The best
 near-term use is to import small foundational APIs where they remove current
 paper-level seams.
 
@@ -16,7 +16,7 @@ local APIs, see [`UPSTREAM_LEAN_SOURCES.md`](UPSTREAM_LEAN_SOURCES.md).
 - Repository: https://github.com/leanprover/cslib
 - API docs: https://leanprover.github.io/cslib/
 
-EconCSLib currently targets Lean `v4.30.0-rc2` and pins CSLib to the matching
+AppliedModelingLib currently targets Lean `v4.30.0-rc2` and pins CSLib to the matching
 release tag:
 
 ```toml
@@ -39,7 +39,7 @@ Candidate import:
 
 Current use:
 
-- `EconCSLib.FairDivision.IndivisibleGoods` imports this module.
+- `AppliedModelingLib.SocialChoice.FairDivision.IndivisibleGoods` imports this module.
 - `HasStepEnvyCycle` records positive-length closed envy walks via
   `Relation.RelatesInSteps`.
 - `hasStepEnvyCycleExtraction_of_finite` converts the finite non-acyclic envy
@@ -66,8 +66,9 @@ minimal-counterexample proof:
 5. use the already-proved list-to-permutation and permutation-to-reduction
    lemmas.
 
-This seam is now closed in the reusable module `EconCSLib.Graph.Cycle` by
-`EconCSLib.Graph.exists_simple_cycle_list_of_stepCycle`; the fair-division
+This seam is now closed in the reusable module
+`AppliedModelingLib.Foundations.Graph.Cycle` by
+`AppliedModelingLib.Foundations.Graph.exists_simple_cycle_list_of_stepCycle`; the fair-division
 paper applies it via `hasEnvyCycleListExtraction_of_finite`.
 
 ### Relation Rewriting
@@ -139,7 +140,7 @@ Useful definitions:
 - execution semantics
 
 This is relevant for long-run complexity formalizations, especially if
-EconCSLib develops computability/reduction interfaces. It is not currently the
+AppliedModelingLib develops computability/reduction interfaces. It is not currently the
 right substrate for PPAD or communication complexity lower bounds; those need
 domain-specific reduction and protocol libraries first.
 
@@ -155,7 +156,7 @@ domain-specific reduction and protocol libraries first.
   structure certified algorithms, but competitive-ratio libraries still need to
   be built locally.
 - Voting/STV 2016 Test-of-Time paper: medium future impact. Automata/language
-  APIs can help with encodings, but voting primitives should live in EconCSLib.
+  APIs can help with encodings, but voting primitives should live in AppliedModelingLib.
 - Nash/complexity 2022 and communication 2019 tracks: long-run impact. URM and
   language APIs are useful foundations, but they do not yet supply PPAD,
   communication protocols, or economic reductions.

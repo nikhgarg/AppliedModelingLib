@@ -1,10 +1,10 @@
 import GCG24UserItemFairness.ReductionPreservation
-import EconCSLib.Applications.RecommenderSystems.PolicyAveraging
+import AppliedModelingLib.Applications.RecommenderSystems.PolicyAveraging
 import Mathlib.Algebra.BigOperators.Field
 import Mathlib.Tactic.FieldSimp
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace GCG24UserItemFairness
 
@@ -33,7 +33,7 @@ noncomputable def averageTypePolicy {m n K : ℕ} [NeZero K]
     (τ : RecommendationModel.UserTypeAssignment m K)
     (reps : TypeRepresentatives τ) (ρ : Policy m n) : TypePolicy K n :=
   fun k =>
-    EconCSLib.Policy.averageOn ρ (fiberUsers τ k)
+    AppliedModelingLib.Policy.averageOn ρ (fiberUsers τ k)
       (fiberUsers_nonempty τ reps k)
 
 /-- The averaged type policy has action probabilities equal to fiber averages. -/
@@ -44,7 +44,7 @@ theorem averageTypePolicy_apply_toReal {m n K : ℕ} [NeZero K]
     ((averageTypePolicy τ reps ρ k) j).toReal =
       (∑ u ∈ fiberUsers τ k, (ρ u j).toReal) /
         ((fiberUsers τ k).card : ℝ) := by
-  exact EconCSLib.Policy.averageOn_apply_toReal ρ (fiberUsers τ k)
+  exact AppliedModelingLib.Policy.averageOn_apply_toReal ρ (fiberUsers τ k)
     (fiberUsers_nonempty τ reps k) j
 
 /-- Summing over fibers recovers the original user sum. -/
@@ -179,8 +179,8 @@ theorem rawUserUtility_symmetrizedPolicy_eq_average
         simpa [fiber, UserTypeAssignment.fiberUsers] using hu'
       simpa [k] using htype'
     exact S.agreeWithinTypes u' u htype
-  unfold RecommendationModel.rawUserUtility EconCSLib.Policy.agentScore
-    EconCSLib.pmfExp
+  unfold RecommendationModel.rawUserUtility AppliedModelingLib.Policy.agentScore
+    AppliedModelingLib.pmfExp
   calc
     ∑ j : Item n, ((S.symmetrizedPolicy reps ρ u) j).toReal * S.model.utility u j
         = ∑ j : Item n,
@@ -306,7 +306,7 @@ theorem userFairness_le_userFairness_symmetrizedPolicy
     RecommendationModel.userFairness S.model ρ ≤
       RecommendationModel.userFairness S.model (S.symmetrizedPolicy reps ρ) := by
   classical
-  unfold RecommendationModel.userFairness EconCSLib.finiteMin
+  unfold RecommendationModel.userFairness AppliedModelingLib.finiteMin
   apply Finset.le_inf'
   intro u _
   rw [normalizedUserUtility_symmetrizedPolicy_eq_average
@@ -395,7 +395,7 @@ theorem itemFairness_symmetrizedPolicy_eq {m n K : ℕ} [NeZero n] [NeZero K]
     (ρ : Policy m n) :
     RecommendationModel.itemFairness S.model (S.symmetrizedPolicy reps ρ) =
       RecommendationModel.itemFairness S.model ρ := by
-  unfold RecommendationModel.itemFairness EconCSLib.finiteMin
+  unfold RecommendationModel.itemFairness AppliedModelingLib.finiteMin
   exact Finset.inf'_congr Finset.univ_nonempty rfl
     (by
       intro j _

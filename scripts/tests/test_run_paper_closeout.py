@@ -4,16 +4,22 @@
 from __future__ import annotations
 
 import hashlib
+import io
+import json
 import sys
 import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
 
-from scripts import run_paper_closeout as runner
+from scripts import run_paper_closeout as runner_cli
+from scripts.current_closeout import worker as runner
 
 
 class RunPaperCloseoutTests(unittest.TestCase):
+    def test_cli_delegates_to_the_current_worker_service(self) -> None:
+        self.assertIs(runner_cli.main, runner.main)
+
     def setUp(self) -> None:
         engine_guard = mock.patch.object(
             runner, "runtime_engine_registration_error", return_value=""
@@ -43,8 +49,11 @@ class RunPaperCloseoutTests(unittest.TestCase):
         with mock.patch.object(Path, "read_text") as read_text:
             command = runner._audit_command("Fixture", deep_paper_prose=False)
         self.assertNotIn("--no-closeout-state", command)
-        self.assertIn("--paper-closeout", command)
-        self.assertIn("--closeout-trace", command)
+        self.assertEqual(
+            command[1:3], ["-m", "scripts.current_closeout.strict_runner"]
+        )
+        self.assertNotIn("--paper-closeout", command)
+        self.assertNotIn("--closeout-trace", command)
         read_text.assert_not_called()
 
         command = runner._audit_command("Fixture", deep_paper_prose=True)
@@ -56,6 +65,101 @@ class RunPaperCloseoutTests(unittest.TestCase):
         self.assertEqual(
             command[-2:], ["--operational-plan-identity", "a" * 64]
         )
+
+    def test_inner_closeout_progress_mirrors_only_matching_plan(self) -> None:
+        progress_state = {
+            "paper": "Fixture",
+            "state": "running",
+            "request": {"operational_plan_identity": "a" * 64},
+            "progress": {
+                "stage": "primary_paper_gate",
+                "completed_units": 4,
+                "total_units": runner.STRICT_CLOSEOUT_STAGE_COUNT,
+                "details": {"status": "started"},
+            },
+        }
+        with (
+            mock.patch.object(
+                runner, "default_closeout_execution_path", return_value=Path("inner.json")
+            ),
+            mock.patch.object(
+                runner, "read_execution_state", return_value=(progress_state, "")
+            ),
+        ):
+            mirrored = runner._inner_closeout_progress("Fixture", "a" * 64)
+
+        self.assertEqual(
+            mirrored,
+            (
+                "primary_paper_gate",
+                4,
+                runner.STRICT_CLOSEOUT_STAGE_COUNT,
+                {
+                    "status": "started",
+                    "inner_execution_state": "running",
+                    "progress_source": "current_closeout_strict_runner",
+                },
+            ),
+        )
+
+    def test_inner_closeout_progress_rejects_stale_plan(self) -> None:
+        progress_state = {
+            "paper": "Fixture",
+            "state": "running",
+            "request": {"operational_plan_identity": "b" * 64},
+            "progress": {
+                "stage": "primary_paper_gate",
+                "completed_units": 4,
+                "total_units": runner.STRICT_CLOSEOUT_STAGE_COUNT,
+            },
+        }
+        with mock.patch.object(
+            runner, "read_execution_state", return_value=(progress_state, "")
+        ):
+            self.assertIsNone(
+                runner._inner_closeout_progress("Fixture", "a" * 64)
+            )
+
+    def test_inner_closeout_progress_accepts_registered_final_stage(self) -> None:
+        progress_state = {
+            "paper": "Fixture",
+            "state": "running",
+            "request": {"operational_plan_identity": "a" * 64},
+            "progress": {
+                "stage": "final_input_check",
+                "completed_units": runner.STRICT_CLOSEOUT_STAGE_COUNT,
+                "total_units": runner.STRICT_CLOSEOUT_STAGE_COUNT,
+            },
+        }
+        with mock.patch.object(
+            runner, "read_execution_state", return_value=(progress_state, "")
+        ):
+            mirrored = runner._inner_closeout_progress("Fixture", "a" * 64)
+        self.assertIsNotNone(mirrored)
+        assert mirrored is not None
+        self.assertEqual(mirrored[:3], (
+            "final_input_check",
+            runner.STRICT_CLOSEOUT_STAGE_COUNT,
+            runner.STRICT_CLOSEOUT_STAGE_COUNT,
+        ))
+
+    def test_inner_closeout_progress_rejects_unregistered_stage(self) -> None:
+        progress_state = {
+            "paper": "Fixture",
+            "state": "running",
+            "request": {"operational_plan_identity": "a" * 64},
+            "progress": {
+                "stage": "ad_hoc_extra_stage",
+                "completed_units": 1,
+                "total_units": runner.STRICT_CLOSEOUT_STAGE_COUNT,
+            },
+        }
+        with mock.patch.object(
+            runner, "read_execution_state", return_value=(progress_state, "")
+        ):
+            self.assertIsNone(
+                runner._inner_closeout_progress("Fixture", "a" * 64)
+            )
 
     def test_completed_state_returns_recorded_exit_without_running_audit(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -249,6 +353,11 @@ class RunPaperCloseoutTests(unittest.TestCase):
             )
         self.assertEqual(result, 6)
         popen.assert_called_once()
+        command = popen.call_args.args[0]
+        self.assertEqual(
+            Path(command[1]),
+            runner.ROOT / "scripts" / "run_paper_closeout.py",
+        )
 
     def test_lock_handoff_waits_for_new_running_state(self) -> None:
         active = {"paper": "Fixture", "launch_id": "b" * 32}
@@ -314,10 +423,57 @@ class RunPaperCloseoutTests(unittest.TestCase):
                 runner, "read_execution_state", return_value=(payload, "")
             ),
             mock.patch.object(runner, "running_execution_summary", return_value=None),
+            mock.patch.object(
+                runner,
+                "load_final_closure_receipt",
+                side_effect=runner.FinalClosureReceiptError("missing receipt"),
+            ),
             mock.patch.object(runner.subprocess, "Popen") as popen,
         ):
             self.assertEqual(runner._status("Fixture"), 0)
         popen.assert_not_called()
+
+    def test_status_separates_canonical_closeout_from_old_worker_state(self) -> None:
+        operational = {
+            "schema": 1,
+            "acceptance_credential": False,
+            "state": "complete",
+            "exit_code": 7,
+            "result": {"receipt_finalization_failed": True},
+        }
+        receipt = mock.Mock(
+            path=Path("/repo/papers/Fixture/FINAL_CLOSURE_RECEIPT.md"),
+            payload={
+                "schema": 6,
+                "closed_at": "2026-08-26",
+                "accepted_graph": {
+                    "pointer": "papers/Fixture/audit/current_accepted_graph.json",
+                    "graph_sha256": "a" * 64,
+                },
+            },
+        )
+        stdout = io.StringIO()
+        with (
+            mock.patch.object(runner, "ROOT", Path("/repo")),
+            mock.patch.object(
+                runner,
+                "effective_closeout_execution_state",
+                return_value=(operational, "", "worker", Path("state.json")),
+            ),
+            mock.patch.object(runner, "running_execution_summary", return_value=None),
+            mock.patch.object(runner, "load_final_closure_receipt", return_value=receipt),
+            mock.patch("sys.stdout", stdout),
+        ):
+            self.assertEqual(runner._status("Fixture"), 0)
+
+        output = json.loads(stdout.getvalue())
+        self.assertEqual(output["canonical_closeout"]["state"], "recorded")
+        self.assertEqual(
+            output["canonical_closeout"]["accepted_graph_sha256"], "a" * 64
+        )
+        self.assertNotIn("acceptance_credential", output)
+        self.assertFalse(output["operational_execution"]["acceptance_credential"])
+        self.assertEqual(output["operational_execution"]["exit_code"], 7)
 
     def test_worker_records_immutable_log_and_terminal_result(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -329,6 +485,11 @@ class RunPaperCloseoutTests(unittest.TestCase):
                 mock.patch.object(runner, "ROOT", root),
                 mock.patch.object(runner, "_audit_command", return_value=command),
                 mock.patch.object(runner, "_plan_receipt_error", return_value=""),
+                mock.patch.object(
+                    runner,
+                    "_inner_current_closeout_finalization",
+                    return_value={"canonical_receipt": "papers/Fixture/FINAL_CLOSURE_RECEIPT.md"},
+                ),
             ):
                 result = runner._worker(
                     "Fixture",
@@ -353,6 +514,45 @@ class RunPaperCloseoutTests(unittest.TestCase):
                 state["result"]["operational_plan_identity_schema"],
                 runner.OPERATIONAL_PLAN_IDENTITY_SCHEMA,
             )
+            self.assertEqual(
+                state["result"]["closeout_finalization"]["canonical_receipt"],
+                "papers/Fixture/FINAL_CLOSURE_RECEIPT.md",
+            )
+
+    def test_worker_never_reconstructs_current_publication_from_child_exit(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "papers" / "Fixture").mkdir(parents=True)
+            launch_id = "e" * 32
+            command = [sys.executable, "-c", "print('current closeout published')"]
+            published = {
+                "canonical_receipt": "papers/Fixture/FINAL_CLOSURE_RECEIPT.md",
+                "evidence_lane": "obligation-graph",
+            }
+            with (
+                mock.patch.object(runner, "ROOT", root),
+                mock.patch.object(runner, "_audit_command", return_value=command),
+                mock.patch.object(runner, "_plan_receipt_error", return_value=""),
+                mock.patch.object(
+                    runner,
+                    "_inner_current_closeout_finalization",
+                    return_value=published,
+                ),
+            ):
+                result = runner._worker(
+                    "Fixture",
+                    deep_paper_prose=False,
+                    launch_id=launch_id,
+                    plan_identity="f" * 64,
+                )
+                state, error = runner.read_execution_state(
+                    runner.worker_state_path("Fixture")
+                )
+        self.assertEqual(result, 0)
+        self.assertEqual(error, "")
+        assert state is not None
+        self.assertEqual(state["result"]["closeout_finalization"], published)
+        self.assertFalse(hasattr(runner, "finalize_passed_closeout"))
 
     def test_worker_invalidates_success_when_plan_changes_during_audit(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -385,6 +585,39 @@ class RunPaperCloseoutTests(unittest.TestCase):
             self.assertEqual(state["result"]["audit_exit_code"], 0)
             self.assertFalse(state["result"]["semantic_closeout_passed"])
             self.assertTrue(state["result"]["replan_required"])
+
+    def test_worker_fails_closed_when_child_has_no_publication_record(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "papers" / "Fixture").mkdir(parents=True)
+            launch_id = "d" * 32
+            command = [sys.executable, "-c", "print('audit passed')"]
+            with (
+                mock.patch.object(runner, "ROOT", root),
+                mock.patch.object(runner, "_audit_command", return_value=command),
+                mock.patch.object(runner, "_plan_receipt_error", return_value=""),
+                mock.patch.object(
+                    runner,
+                    "_inner_current_closeout_finalization",
+                    return_value=None,
+                ),
+            ):
+                result = runner._worker(
+                    "Fixture",
+                    deep_paper_prose=False,
+                    launch_id=launch_id,
+                    plan_identity="f" * 64,
+                )
+                state, error = runner.read_execution_state(
+                    runner.worker_state_path("Fixture")
+                )
+        self.assertEqual(result, 7)
+        self.assertEqual(error, "")
+        assert state is not None
+        self.assertTrue(state["result"]["semantic_closeout_passed"])
+        self.assertEqual(state["result"]["audit_exit_code"], 0)
+        self.assertTrue(state["result"]["receipt_finalization_failed"])
+        self.assertIn("without its in-process publication record", state["result"]["reason"])
 
     def test_worker_preserves_failed_child_exit_without_postrun_revalidation(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

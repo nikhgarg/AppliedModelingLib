@@ -1,9 +1,9 @@
 # Website Maintenance
 
-The `site/` directory contains the GitHub Pages source for the public Applied Modeling Lib
-project, currently hosted in the `EconCSLib`
-repository. The deployment workflow publishes `site/` from `main` and
-enables Pages through GitHub Actions on the first successful deployment.
+The `site/` directory contains the GitHub Pages source for
+[AppliedModelingLib](https://gargnikhil.com/AppliedModelingLib/).
+The deployment workflow builds the landing page, rendered Markdown documents,
+and paper PDFs from `main`. Changes to `site/` or `papers/` trigger deployment.
 
 ## Preview Locally
 
@@ -62,13 +62,28 @@ python3 site/private_preview_server.py --port 8080
 ```
 
 The browser switches artifact links to this checkout only when the localhost
-server advertises that capability. A normal static server or the public site
-keeps the GitHub links.
+server advertises that capability. A plain server of the unbuilt `site/`
+directory keeps the GitHub fallback links.
 Markdown reports and linked memos render as HTML, with tables and mathematics;
 generator boundary comments remain in their source files and are hidden from
 readers. Heading identifiers match GitHub Markdown, so the same section links
 work locally and in the public repository. The preview does not rewrite the
 reports or their audit evidence.
+
+To preview the deployed form from a public checkout, build into a fresh directory:
+
+```bash
+python3 site/build_public_site.py --output ../appliedmodelinglib-site --base-path ''
+python3 -m http.server 8081 --directory ../appliedmodelinglib-site
+```
+
+The public build uses the same Markdown renderer. Reports and memos have `.html`
+URLs under `/AppliedModelingLib/artifacts/papers/`; their relative links and
+heading fragments remain usable. PDFs open on the site, while Lean, JSON, and
+TeX links open their GitHub sources. Each rendered document also offers its
+Markdown source. Only tracked files in folders explicitly marked public are
+eligible; a table link to an unpublished artifact stops the build. The builder
+does not modify report text or audit records.
 
 The hero vision sentence, the maintainer footer, the former-name note,
 and the note about the separate `gametheoryinlean/EconCSLib` project are

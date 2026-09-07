@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - "site/**"
+      - "papers/**"
       - ".github/workflows/pages.yml"
 
 permissions:
@@ -33,10 +34,19 @@ jobs:
         with:
           enablement: true
 
+      - name: Install document renderer
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+
+      - name: Test published document rendering
+        run: python3 -m unittest discover -s site -p 'test_*.py'
+
+      - name: Build website and paper documents
+        run: python3 site/build_public_site.py --output "$RUNNER_TEMP/published-site"
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: site
+          path: ${{ runner.temp }}/published-site
 
       - name: Deploy to GitHub Pages
         id: deployment

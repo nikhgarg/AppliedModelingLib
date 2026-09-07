@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """Serve the current status site and current paper artifacts on localhost.
 
-The generated site continues to contain only public GitHub artifact URLs.
-When it is viewed through this server, a small browser-side rewrite selects the
-``/artifacts/`` route below, which is deliberately available only from the
-local checkout.
+The local server renders current checkout documents on demand. The public
+Pages builder uses the same renderer to publish static HTML documents.
 """
 
 from __future__ import annotations
@@ -55,7 +53,9 @@ def paper_artifact_navigation(path: Path) -> str:
     return '<nav class="artifact-links" aria-label="Paper artifacts">' + " ".join(links) + "</nav>"
 
 
-def render_markdown_artifact(path: Path) -> bytes:
+def render_markdown_artifact(
+    path: Path, *, css_url: str = "/styles/site.css", navigation: str | None = None
+) -> bytes:
     """Render report prose while keeping source-only generator comments hidden."""
 
     result = subprocess.run(
@@ -63,13 +63,15 @@ def render_markdown_artifact(path: Path) -> bytes:
             "pandoc", "--from=markdown+gfm_auto_identifiers", "--to=html5",
             "--standalone", "--strip-comments", "--mathml",
             "--metadata", f"pagetitle={path.stem.replace('_', ' ').title()}",
-            "--css=/styles/site.css",
+            f"--css={css_url}",
         ],
         input=path.read_text(encoding="utf-8"),
         text=True, capture_output=True, check=True, timeout=15,
     )
     return result.stdout.replace(
-        "<body>", '<body class="artifact-document">' + paper_artifact_navigation(path), 1
+        "<body>", '<body class="artifact-document">' + (
+            paper_artifact_navigation(path) if navigation is None else navigation
+        ), 1
     ).encode("utf-8")
 
 

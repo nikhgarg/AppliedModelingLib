@@ -2139,7 +2139,8 @@ def validate_public_recorded_graph_inputs(
             )
             guard, _semantic_paths = revalidate_terminal_lean_semantics(
                 root, paper, current, preflight=_preflight,
-                accepted_import_closure=closure,
+                accepted_import_closure=dict(closure),
+                allow_withheld_source_material=True,
                 authenticated_prerequisite_source_items_by_declaration=prerequisite_sources,
             )
         if not guard.finalize_unchanged():

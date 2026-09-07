@@ -158,6 +158,7 @@ def _validate_current_source_routes(
     preflight: ObligationStructuralPreflight,
     *,
     paper_dir: Path,
+    allow_withheld_source_material: bool = False,
     authenticated_prerequisite_source_items_by_declaration: (
         Mapping[str, str] | None
     ) = None,
@@ -186,17 +187,44 @@ def _validate_current_source_routes(
     assert isinstance(prerequisites, Mapping)
     assert isinstance(leaves, Mapping)
     try:
+        projected_source_map = source_map
+        withheld_roles = set()
+        if allow_withheld_source_material:
+            if "source_text_file" in source_map:
+                raise ValueError("public source recovery requires a withheld source locator")
+            items = source_map.get("items", {})
+            withheld_roles = {
+                key for key, item in items.items()
+                if isinstance(item, Mapping) and item.get("corrected_target") is not None
+            }
+            if withheld_roles:
+                if source_map.get("publication_corrected_target_projection") != {
+                    "schema": 1, "approval_material_included": False
+                }:
+                    raise ValueError("public corrected targets lack their withholding declaration")
+                # Approval provenance participates in the private role digest.
+                # Public transport checks the retained clauses and current Lean
+                # meanings; it cannot attest to withheld approval provenance.
+                projected_source_map = dict(source_map, items={
+                    key: {k: v for k, v in item.items() if k != "corrected_target"}
+                    for key, item in items.items()
+                })
         current_leaves, navigation = (
             project_source_route_leaf_material_from_validated_inputs(
-                source_map=source_map,
+                source_map=projected_source_map,
                 preflight=preflight,
             )
         )
-        source_material = current_source_semantic_material(
-            paper_dir=paper_dir,
-            source_map=source_map,
-            source_route_navigation=navigation,
-        )
+        if allow_withheld_source_material:
+            if "source_text_file" in source_map:
+                raise ValueError("public source recovery requires a withheld source locator")
+            source_material = None
+        else:
+            source_material = current_source_semantic_material(
+                paper_dir=paper_dir,
+                source_map=source_map,
+                source_route_navigation=navigation,
+            )
     except (
         ObligationEvidenceError,
         ObligationEvidenceProjectionError,
@@ -236,6 +264,23 @@ def _validate_current_source_routes(
             "source_atoms": semantic_atoms(atom_ids, leaves),
         }
         accepted_bundles[str(source_item_id)] = set()
+
+    if allow_withheld_source_material:
+        # Public exports cannot replay private verbatim/approval bundles. Keep
+        # their exact route names and semantic source atoms fixed instead;
+        # subsequent Lean checks still validate every target and dependency.
+        # This route reads recorded evidence and cannot issue acceptance.
+        if set(navigation) != set(accepted_entries) or any(
+            tuple(a[:2] if source_item_id in withheld_roles else a
+                  for a in semantic_atoms(tuple(atom_ids), current_leaves))
+            != tuple(a[:2] if source_item_id in withheld_roles else a
+                     for a in accepted_entries[source_item_id]["source_atoms"])
+            for source_item_id, atom_ids in navigation.items()
+        ):
+            raise TerminalLeanSemanticRevalidationError(
+                "public source routes or semantic atoms changed"
+            )
+        return {source_item_id: source_item_id for source_item_id in navigation}
 
     def judgment_bundle(digest: str, atom_ids: tuple[str, ...]) -> str:
         leaf = leaves.get(digest)
@@ -930,6 +975,7 @@ def revalidate_terminal_lean_semantics(
     preflight: ObligationStructuralPreflight,
     accepted_import_closure: Mapping[str, Any],
     current_import_closure: Mapping[str, Any] | None = None,
+    allow_withheld_source_material: bool = False,
     authenticated_prerequisite_source_items_by_declaration: (
         Mapping[str, str] | None
     ) = None,
@@ -968,6 +1014,7 @@ def revalidate_terminal_lean_semantics(
         source_map,
         preflight,
         paper_dir=paper_dir,
+        allow_withheld_source_material=allow_withheld_source_material,
         authenticated_prerequisite_source_items_by_declaration=(
             authenticated_prerequisite_source_items_by_declaration
         ),

@@ -13,7 +13,7 @@ the precise result-by-result statements and qualifications.
 - **Documentation — PRPKG24:** updated the validation report, clarification
   memo, and review packet to distinguish shared regularity conventions from
   result-specific corrections.
-  [Read the report](https://gargnikhil.com/AppliedModelingLib/artifacts/papers/PRPKG24AccuracyDiversity/FINAL_VALIDATION_REPORT.html).
+  [Read the report](https://gargnikhil.com/AppliedModelingLib/artifacts/papers/PRPKG24AccuracyDiversity/FINAL_VALIDATION_REPORT.html) · [Release PR](https://github.com/nikhgarg/AppliedModelingLib/pull/45).
 - **Website:** AI and applications appears immediately after Foundations in
   the library table. Deployment checks verify the published documents, their
   links, and the old project URLs.

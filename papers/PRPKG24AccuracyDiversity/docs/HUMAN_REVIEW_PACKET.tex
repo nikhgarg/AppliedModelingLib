@@ -5354,7 +5354,7 @@ where π is the uniform probability measure over Sd .
 \paragraph{Formalized review target}
 The archival source above is not asserted equivalent to this formalized target.
 \begin{ReviewVerbatim}
-On the source unit-sphere model, with a full-support preference probability measure and a continuous nonconstant radial kernel p with 0 < p <= 1 on realized distances, the uniform probability profile pi satisfies Gamma(pi) <= Gamma(alpha) for every probability profile alpha.
+On the source unit-sphere model, with preference measure sigma.withDensity density for normalized sphere volume sigma and an a.e.-measurable density positive sigma-almost everywhere, and a continuous nonconstant radial kernel p with 0 < p <= 1 on realized distances, the uniform probability profile pi satisfies Gamma(pi) <= Gamma(alpha) for every probability profile alpha.
 \end{ReviewVerbatim}
 
 \textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 1122-\allowbreak{}1145\par}
@@ -5364,21 +5364,29 @@ On the source unit-sphere model, with a full-support preference probability meas
   [inst_3 : BorelSpace E] [OpensMeasurableSpace (PRPKG24AccuracyDiversity.Proposition4Sphere.UnitSphere E)]
   [inst_5 : FiniteDimensional ℝ E] [inst_6 : Nontrivial E]
   (preferenceMeasure : MeasureTheory.Measure (PRPKG24AccuracyDiversity.Proposition4Sphere.UnitSphere E))
-  [MeasureTheory.IsProbabilityMeasure preferenceMeasure] (p : ℝ → ℝ),
-  preferenceMeasure.IsOpenPosMeasure →
-    Continuous p →
-      (∃ r ∈ Set.Icc 0 2, ∃ s ∈ Set.Icc 0 2, p r ≠ p s) →
-        (∀ r ∈ Set.Icc 0 2, 0 < p r ∧ p r ≤ 1) →
-          ∀ (alpha : MeasureTheory.ProbabilityMeasure (PRPKG24AccuracyDiversity.Proposition4Sphere.UnitSphere E)),
-            PRPKG24AccuracyDiversity.Proposition4Sphere.logRadialDistanceProfileSupValue p
-                PRPKG24AccuracyDiversity.Proposition4Sphere.sphereVolumeUniformProbabilityMeasure ≤
-              PRPKG24AccuracyDiversity.Proposition4Sphere.logRadialDistanceProfileSupValue p alpha
+  [MeasureTheory.IsProbabilityMeasure preferenceMeasure] (p : ℝ → ℝ)
+  (density : PRPKG24AccuracyDiversity.Proposition4Sphere.UnitSphere E → ENNReal),
+  AEMeasurable density (PRPKG24AccuracyDiversity.Proposition4Sphere.sphereUniformMeasure MeasureTheory.volume) →
+    (∀ᵐ (u :
+        PRPKG24AccuracyDiversity.Proposition4Sphere.UnitSphere
+          E) ∂PRPKG24AccuracyDiversity.Proposition4Sphere.sphereUniformMeasure MeasureTheory.volume,
+        density u ≠ 0) →
+      preferenceMeasure =
+          (PRPKG24AccuracyDiversity.Proposition4Sphere.sphereUniformMeasure MeasureTheory.volume).withDensity density →
+        Continuous p →
+          (∃ r ∈ Set.Icc 0 2, ∃ s ∈ Set.Icc 0 2, p r ≠ p s) →
+            (∀ r ∈ Set.Icc 0 2, 0 < p r ∧ p r ≤ 1) →
+              ∀ (alpha : MeasureTheory.ProbabilityMeasure (PRPKG24AccuracyDiversity.Proposition4Sphere.UnitSphere E)),
+                PRPKG24AccuracyDiversity.Proposition4Sphere.logRadialDistanceProfileSupValue p
+                    PRPKG24AccuracyDiversity.Proposition4Sphere.sphereVolumeUniformProbabilityMeasure ≤
+                  PRPKG24AccuracyDiversity.Proposition4Sphere.logRadialDistanceProfileSupValue p alpha
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
 \begin{itemize}\raggedright
 \item \hyperlink{governing-declaration-2eb72c62aa16afd0}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Proposition4\allowbreak{}Sphere.\allowbreak{}Unit\allowbreak{}Sphere}
 \item \hyperlink{governing-declaration-5bb85ad03d6a9e69}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Proposition4\allowbreak{}Sphere.\allowbreak{}log\allowbreak{}Radial\allowbreak{}Distance\allowbreak{}Profile\allowbreak{}Sup\allowbreak{}Value}
+\item \hyperlink{governing-declaration-eaa19779f7cfd160}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Proposition4\allowbreak{}Sphere.\allowbreak{}sphere\allowbreak{}Uniform\allowbreak{}Measure}
 \item \hyperlink{governing-declaration-8e890c3a6904c331}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Proposition4\allowbreak{}Sphere.\allowbreak{}sphere\allowbreak{}Volume\allowbreak{}Uniform\allowbreak{}Probability\allowbreak{}Measure}
 \end{itemize}
 \paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
@@ -5393,12 +5401,19 @@ On the source unit-sphere model, with a full-support preference probability meas
 9. parameter: MeasureTheory.Measure (PRPKG24AccuracyDiversity.Proposition4Sphere.UnitSphere E)
 10. assumption: MeasureTheory.IsProbabilityMeasure preferenceMeasure
 11. parameter: ℝ → ℝ
-12. assumption: preferenceMeasure.IsOpenPosMeasure
-13. assumption: Continuous p
-14. assumption: ∃ r ∈ Set.Icc 0 2, ∃ s ∈ Set.Icc 0 2, p r ≠ p s
-15. assumption: ∀ r ∈ Set.Icc 0 2, 0 < p r ∧ p r ≤ 1
-16. parameter: MeasureTheory.ProbabilityMeasure (PRPKG24AccuracyDiversity.Proposition4Sphere.UnitSphere E)
-17. conclusion: PRPKG24AccuracyDiversity.Proposition4Sphere.logRadialDistanceProfileSupValue p
+12. parameter: PRPKG24AccuracyDiversity.Proposition4Sphere.UnitSphere E → ENNReal
+13. assumption: AEMeasurable density (PRPKG24AccuracyDiversity.Proposition4Sphere.sphereUniformMeasure MeasureTheory.volume)
+14. assumption: ∀ᵐ (u :
+  PRPKG24AccuracyDiversity.Proposition4Sphere.UnitSphere
+    E) ∂PRPKG24AccuracyDiversity.Proposition4Sphere.sphereUniformMeasure MeasureTheory.volume,
+  density u ≠ 0
+15. assumption: preferenceMeasure =
+  (PRPKG24AccuracyDiversity.Proposition4Sphere.sphereUniformMeasure MeasureTheory.volume).withDensity density
+16. assumption: Continuous p
+17. assumption: ∃ r ∈ Set.Icc 0 2, ∃ s ∈ Set.Icc 0 2, p r ≠ p s
+18. assumption: ∀ r ∈ Set.Icc 0 2, 0 < p r ∧ p r ≤ 1
+19. parameter: MeasureTheory.ProbabilityMeasure (PRPKG24AccuracyDiversity.Proposition4Sphere.UnitSphere E)
+20. conclusion: PRPKG24AccuracyDiversity.Proposition4Sphere.logRadialDistanceProfileSupValue p
     PRPKG24AccuracyDiversity.Proposition4Sphere.sphereVolumeUniformProbabilityMeasure ≤
   PRPKG24AccuracyDiversity.Proposition4Sphere.logRadialDistanceProfileSupValue p alpha
 \end{ReviewVerbatim}
@@ -5411,7 +5426,7 @@ PRPKG24AccuracyDiversity.PaperInterface.proposition4Spec_proof
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Approved corrected target:\allowbreak{} the intended Gamma(pi)<=Gamma(alpha) comparison is represented by the log-\allowbreak{}radial supremum inequality, with the approved continuous radial kernel and full-\allowbreak{}support preference law.\allowbreak{}
+\textbf{Reason:} The approved corrected target's normalized-\allowbreak{}sphere-\allowbreak{}volume preference law is exactly `sphereUniformMeasure volume` with the stated a.\allowbreak{}e.\allowbreak{}-\allowbreak{}measurable, a.\allowbreak{}e.\allowbreak{}-\allowbreak{}positive density;\allowbreak{} its continuous nonconstant radial kernel with values in `(0,1]` on realized distances is exactly `p` on `[0,2]`.\allowbreak{} The Spec quantifies over every sphere probability profile and states the intended minimization inequality, with `sphereVolumeUniformProbabilityMeasure` as pi and `logRadialDistanceProfileSupValue` as the direct Eq.\allowbreak{} (17)/\allowbreak{}(20) Gamma endpoint.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par

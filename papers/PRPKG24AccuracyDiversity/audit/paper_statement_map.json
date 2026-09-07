@@ -936,13 +936,13 @@
         "archival_equivalence_claimed": false,
         "archival_source_locator": "cited publication:1122-1145",
         "archival_source_quote_sha256": "ed24f491bd74286940f4dfbf427f7aba1c2a4ff8073a5874bdfafb180e28008e",
-        "corrected_target_review_sha256": "8eaaf2d5b16294d302be544dd003d46b4568634307dc8dc93221a912c1b7c7f3",
-        "corrected_target_sha256": "be575ddb41d0585bdecfab6c2c54e956fd58a85b604b5225b05cf2018d071f73",
+        "corrected_target_review_sha256": "d6c9efb0b7d67d7531e02b835c069549241d9cd1599a8487a1242fbf21070f83",
+        "corrected_target_sha256": "e0b06c57891783cbd441b236c1155030c6bab9b6e276c5e25ce5caa993253dfb",
         "governing_defect_ids": [
           "PRPKG24-PROP4-EQ18-TYPE-01"
         ],
         "schema": 1,
-        "statement": "On the source unit-sphere model, with a full-support preference probability measure and a continuous nonconstant radial kernel p with 0 < p <= 1 on realized distances, the uniform probability profile pi satisfies Gamma(pi) <= Gamma(alpha) for every probability profile alpha."
+        "statement": "On the source unit-sphere model, with preference measure sigma.withDensity density for normalized sphere volume sigma and an a.e.-measurable density positive sigma-almost everywhere, and a continuous nonconstant radial kernel p with 0 < p <= 1 on realized distances, the uniform probability profile pi satisfies Gamma(pi) <= Gamma(alpha) for every probability profile alpha."
       },
       "coverage_status": "corrected_source_statement",
       "lean_declarations": [
@@ -979,7 +979,7 @@
       ],
       "source_kind": "proposition",
       "source_location": "cited publication:1122-1145",
-      "source_note": "The source prints a membership symbol between real-valued expressions. The approved target is the intended minimization inequality and visibly adds continuity of the radial kernel, the analytic regularity needed for the compact-sphere Laplace endpoint; it is not credited as archival wording.",
+      "source_note": "The source prints a membership symbol between real-valued expressions. The approved target is the intended minimization inequality, with the approved clarified regularity domain of a preference density positive almost everywhere with respect to normalized sphere volume and a continuous radial kernel; it is not credited as archival wording. Equation (20)'s finite-measure correction remains separately recorded.",
       "source_status": "corrected",
       "source_url": "https://arxiv.org/pdf/2307.15142",
       "statement": "Proposition 4, Equation 18: Gamma(pi) is printed as an element of inf_alpha Gamma(alpha).",

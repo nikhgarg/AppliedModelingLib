@@ -1,5 +1,6 @@
 import PRPKG24AccuracyDiversity.Examples
 import PRPKG24AccuracyDiversity.Uniform
+import PRPKG24AccuracyDiversity.Proposition2Counterexample
 import PRPKG24AccuracyDiversity.TailHomogeneity
 import PRPKG24AccuracyDiversity.Bounded
 import PRPKG24AccuracyDiversity.Pareto

@@ -964,6 +964,15 @@
       "verification": [
         "77 contribution, changed-scope, and trusted-archive tests passed; 97 scope and public-release-guard tests passed; the original large release is no longer blocked by the artifact-history classifier."
       ]
+    },
+    {
+      "engine_tree_sha256": "fd46df7f1cdad2b5bfc2433559a1992c6045cb41654cbdeccbf23f68b1f3e893",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Validate public recorded graphs and current Lean inputs, reusing the Lean identity verifier after shared-source byte changes.",
+      "sequence": 80,
+      "verification": [
+        "131 closure, receipt, and terminal Lean semantic revalidation tests passed; PRPKG public evidence validates without issuing acceptance."
+      ]
     }
   ],
   "schema": 2

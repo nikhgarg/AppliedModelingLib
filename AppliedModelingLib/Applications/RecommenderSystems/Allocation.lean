@@ -1138,5 +1138,133 @@ theorem exists_isOptimalAtTotal
     rw [hxmax] at hle
     simpa [score, xb] using hle
 
+/--
+A common marginal shadow price certifies global optimality for a separable
+diminishing-return allocation problem.  The lower bound on every final
+backward marginal and upper bound on every final forward marginal are the
+discrete analogue of the Lagrange multiplier condition for the fixed-total
+constraint.
+-/
+theorem isOptimalAtTotal_of_shadowPrice
+    (a : Allocation κ) (weight : κ → ℝ) (valueOfCount : κ → ℕ → ℝ)
+    (N : ℕ) (shadowPrice : ℝ)
+    (ha : HasTotal a N)
+    (hDR : HasDiminishingReturns valueOfCount)
+    (hweight_nonneg : ∀ t, 0 ≤ weight t)
+    (hforward : ∀ t,
+      weightedForwardMarginal weight valueOfCount t (a.count t) ≤ shadowPrice)
+    (hbackward : ∀ t, 0 < a.count t →
+      shadowPrice ≤ weightedBackwardMarginal weight valueOfCount t (a.count t)) :
+    IsOptimalAtTotal weight valueOfCount N a := by
+  constructor
+  · exact ha
+  · intro b hb
+    have hforward_at : ∀ t {q : ℕ}, a.count t ≤ q →
+        weightedForwardMarginal weight valueOfCount t q ≤ shadowPrice := by
+      intro t q haq
+      exact (weightedForwardMarginal_antitone_of_diminishing
+        weight valueOfCount hDR hweight_nonneg t haq).trans (hforward t)
+    have hcoordinate_up : ∀ t (q : ℕ), a.count t ≤ q →
+        weight t * valueOfCount t q - weight t * valueOfCount t (a.count t) ≤
+          shadowPrice * ((q : ℝ) - (a.count t : ℝ)) := by
+      intro t q haq
+      induction q, haq using Nat.le_induction with
+      | base => norm_num
+      | succ q haq ih =>
+          have hstep :
+              weight t * (valueOfCount t (q + 1) - valueOfCount t q) ≤
+                shadowPrice := by
+            simpa [weightedForwardMarginal, marginal] using hforward_at t haq
+          calc
+            weight t * valueOfCount t (q + 1) - weight t * valueOfCount t (a.count t) =
+                (weight t * valueOfCount t q - weight t * valueOfCount t (a.count t)) +
+                  weight t * (valueOfCount t (q + 1) - valueOfCount t q) := by ring
+            _ ≤ shadowPrice * ((q : ℝ) - (a.count t : ℝ)) + shadowPrice :=
+              add_le_add ih hstep
+            _ = shadowPrice * (((q + 1 : ℕ) : ℝ) - (a.count t : ℝ)) := by
+              push_cast
+              ring
+    have hcoordinate_down : ∀ t (q : ℕ), q ≤ a.count t →
+        weight t * valueOfCount t q - weight t * valueOfCount t (a.count t) ≤
+          shadowPrice * ((q : ℝ) - (a.count t : ℝ)) := by
+      intro t q hqa
+      by_cases hq : q = a.count t
+      · subst q
+        norm_num
+      · have hq_lt : q < a.count t := lt_of_le_of_ne hqa hq
+        have ha_pos : 0 < a.count t := lt_of_le_of_lt (Nat.zero_le q) hq_lt
+        have hbackward_forward :
+            shadowPrice ≤
+              weightedForwardMarginal weight valueOfCount t (a.count t - 1) := by
+          rw [← weightedBackwardMarginal_eq_weightedForwardMarginal_pred
+            weight valueOfCount t ha_pos]
+          exact hbackward t ha_pos
+        have hforward_before : ∀ {r : ℕ}, r < a.count t →
+            shadowPrice ≤ weightedForwardMarginal weight valueOfCount t r := by
+          intro r hr
+          have hle : r ≤ a.count t - 1 := by omega
+          exact hbackward_forward.trans
+            (weightedForwardMarginal_antitone_of_diminishing
+              weight valueOfCount hDR hweight_nonneg t hle)
+        have hsegment : ∀ r (hr : r ≤ a.count t),
+            shadowPrice * ((a.count t : ℝ) - (r : ℝ)) ≤
+              weight t * (valueOfCount t (a.count t) - valueOfCount t r) := by
+          intro r hr
+          refine Nat.decreasingInduction ?_ ?_ hr
+          · intro r hr ih
+            have hstep : shadowPrice ≤
+                weight t * (valueOfCount t (r + 1) - valueOfCount t r) := by
+              simpa [weightedForwardMarginal, marginal] using hforward_before hr
+            calc
+              shadowPrice * ((a.count t : ℝ) - (r : ℝ)) =
+                  shadowPrice * ((a.count t : ℝ) - ((r + 1 : ℕ) : ℝ)) +
+                    shadowPrice := by
+                push_cast
+                ring
+              _ ≤ weight t * (valueOfCount t (a.count t) - valueOfCount t (r + 1)) +
+                    weight t * (valueOfCount t (r + 1) - valueOfCount t r) :=
+                add_le_add ih hstep
+              _ = weight t * (valueOfCount t (a.count t) - valueOfCount t r) := by
+                ring
+          · norm_num
+        have hfinal := hsegment q hqa
+        linarith
+    have hcoordinate : ∀ t,
+        weight t * valueOfCount t (b.count t) - weight t * valueOfCount t (a.count t) ≤
+          shadowPrice * ((b.count t : ℝ) - (a.count t : ℝ)) := by
+      intro t
+      by_cases hab : a.count t ≤ b.count t
+      · exact hcoordinate_up t (b.count t) hab
+      · exact hcoordinate_down t (b.count t) (Nat.le_of_not_ge hab)
+    have hsum_coordinate :
+        (∑ t : κ, (weight t * valueOfCount t (b.count t) -
+          weight t * valueOfCount t (a.count t))) ≤
+          (∑ t : κ, shadowPrice * ((b.count t : ℝ) - (a.count t : ℝ))) := by
+      exact Finset.sum_le_sum (s := Finset.univ) (fun t _ => hcoordinate t)
+    have hsum_a : (∑ t, (a.count t : ℝ)) = (N : ℝ) := by
+      rw [← Nat.cast_sum]
+      exact_mod_cast ha
+    have hsum_b : (∑ t, (b.count t : ℝ)) = (N : ℝ) := by
+      rw [← Nat.cast_sum]
+      exact_mod_cast hb
+    have hsum_difference : ∑ t, ((b.count t : ℝ) - (a.count t : ℝ)) = 0 := by
+      rw [Finset.sum_sub_distrib, hsum_a, hsum_b]
+      ring
+    have hsum_shadow :
+        ∑ t, shadowPrice * ((b.count t : ℝ) - (a.count t : ℝ)) = 0 := by
+      rw [← Finset.mul_sum, hsum_difference]
+      ring
+    have hobjective_difference :
+        objective b weight valueOfCount - objective a weight valueOfCount =
+          ∑ t, (weight t * valueOfCount t (b.count t) -
+            weight t * valueOfCount t (a.count t)) := by
+      unfold objective
+      rw [Finset.sum_sub_distrib]
+    have hobjective_le : objective b weight valueOfCount -
+        objective a weight valueOfCount ≤ 0 := by
+      rw [hobjective_difference]
+      exact hsum_coordinate.trans_eq hsum_shadow
+    linarith
+
 end Allocation
 end AppliedModelingLib

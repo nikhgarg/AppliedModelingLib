@@ -986,6 +986,187 @@ theorem logRadialDistanceProfileSupValue_sphereVolumeUniform_eq_anchorIntegral
         (E := E) p anchor anchor
 
 /--
+Essential-supremum Proposition 4 endpoint.  It retains the source's radial
+symmetry argument but uses the actual Laplace objective under the preference
+measure.  The domination condition says sphere volume gives zero mass only to
+preference-null sets; for a density model, this is the positive-density-a.e.
+bridge.  Unlike the pointwise-supremum endpoint, no continuity of the radial
+kernel is used here.
+-/
+theorem
+    radialDistanceKernel_probabilityProfile_sphereVolumeUniform_minimizes_essSup
+    [MeasurableSpace E] [BorelSpace E]
+    [FiniteDimensional ℝ E] [Nontrivial E]
+    (preferenceMeasure : MeasureTheory.Measure (UnitSphere E))
+    [MeasureTheory.IsProbabilityMeasure preferenceMeasure]
+    (p : ℝ → ℝ)
+    (hvolume_preference :
+      sphereUniformMeasure (MeasureTheory.volume : MeasureTheory.Measure E) ≪
+        preferenceMeasure)
+    (kernel_integrable_uniform :
+      ∀ alpha : MeasureTheory.ProbabilityMeasure (UnitSphere E),
+        MeasureTheory.Integrable
+          (Function.uncurry (logRadialDistanceKernel (E := E) p))
+          ((alpha : MeasureTheory.Measure (UnitSphere E)).prod
+            (sphereUniformMeasure
+              (MeasureTheory.volume : MeasureTheory.Measure E))))
+    (anchor : UnitSphere E)
+    (hpayoff_bddAbove :
+      ∀ alpha : MeasureTheory.ProbabilityMeasure (UnitSphere E),
+        Filter.IsBoundedUnder (· ≤ ·) (ae preferenceMeasure)
+          (logRadialDistanceProfilePayoff (E := E) p alpha)) :
+    ∀ alpha : MeasureTheory.ProbabilityMeasure (UnitSphere E),
+      essSup
+        (logRadialDistanceProfilePayoff (E := E) p
+          (sphereVolumeUniformProbabilityMeasure (E := E)))
+        preferenceMeasure ≤
+      essSup (logRadialDistanceProfilePayoff (E := E) p alpha)
+        preferenceMeasure := by
+  haveI : MeasureTheory.IsProbabilityMeasure
+      (sphereUniformMeasure
+        (MeasureTheory.volume : MeasureTheory.Measure E)) :=
+    sphereUniformMeasure_isProbabilityMeasure
+      (MeasureTheory.volume : MeasureTheory.Measure E)
+  refine
+    AppliedModelingLib.Optimization.AveragingMinimizationCertificate.uniform_minimizes_essSup_of_integral_average
+      preferenceMeasure
+      (sphereUniformMeasure
+        (MeasureTheory.volume : MeasureTheory.Measure E))
+      hvolume_preference
+      (logRadialDistanceProfilePayoff (E := E) p)
+      (sphereVolumeUniformProbabilityMeasure (E := E))
+      (∫ u, logRadialDistanceKernel p anchor u
+        ∂sphereUniformMeasure (MeasureTheory.volume : MeasureTheory.Measure E))
+      ?_ ?_ ?_ hpayoff_bddAbove
+  · intro alpha
+    simpa [logRadialDistanceProfilePayoff] using
+      (kernel_integrable_uniform alpha).integral_prod_right
+  · intro alpha
+    calc
+      (∫ u, logRadialDistanceProfilePayoff (E := E) p alpha u
+          ∂sphereUniformMeasure (MeasureTheory.volume : MeasureTheory.Measure E)) =
+          ∫ x, (∫ u, logRadialDistanceKernel p x u
+            ∂sphereUniformMeasure
+              (MeasureTheory.volume : MeasureTheory.Measure E))
+            ∂(alpha : MeasureTheory.Measure (UnitSphere E)) := by
+            have hswap :=
+              MeasureTheory.integral_integral_swap
+                (μ := (alpha : MeasureTheory.Measure (UnitSphere E)))
+                (ν := sphereUniformMeasure
+                  (MeasureTheory.volume : MeasureTheory.Measure E))
+                (f := logRadialDistanceKernel (E := E) p)
+                (kernel_integrable_uniform alpha)
+            simpa [logRadialDistanceProfilePayoff] using hswap.symm
+      _ = ∫ _x : UnitSphere E,
+            (∫ u, logRadialDistanceKernel p anchor u
+              ∂sphereUniformMeasure
+                (MeasureTheory.volume : MeasureTheory.Measure E))
+            ∂(alpha : MeasureTheory.Measure (UnitSphere E)) := by
+            apply integral_congr_ae
+            filter_upwards with x
+            exact
+              logRadialDistanceKernel_sphereVolumeUniform_integral_eq_anchor
+                (E := E) p anchor x
+      _ = ∫ u, logRadialDistanceKernel p anchor u
+            ∂sphereUniformMeasure
+              (MeasureTheory.volume : MeasureTheory.Measure E) := by
+            simp
+  · intro u
+    exact
+      logRadialDistanceProfilePayoff_sphereVolumeUniform_eq_anchorIntegral
+        (E := E) p anchor u
+
+/--
+Density-model specialization of the essential-supremum endpoint.  A
+measurable preference density that is positive almost everywhere with respect
+to normalized sphere volume supplies the required volume-to-preference
+absolute-continuity bridge.  No continuity of that density is required.
+-/
+theorem
+    radialDistanceKernel_probabilityProfile_sphereVolumeUniform_minimizes_essSup_of_positive_density
+    [MeasurableSpace E] [BorelSpace E]
+    [FiniteDimensional ℝ E] [Nontrivial E]
+    (preferenceMeasure : MeasureTheory.Measure (UnitSphere E))
+    [MeasureTheory.IsProbabilityMeasure preferenceMeasure]
+    (density : UnitSphere E → ENNReal)
+    (hdensity : AEMeasurable density
+      (sphereUniformMeasure (MeasureTheory.volume : MeasureTheory.Measure E)))
+    (hdensity_pos : ∀ᵐ u ∂sphereUniformMeasure
+      (MeasureTheory.volume : MeasureTheory.Measure E), density u ≠ 0)
+    (hpreference : preferenceMeasure =
+      (sphereUniformMeasure (MeasureTheory.volume : MeasureTheory.Measure E)).withDensity density)
+    (p : ℝ → ℝ)
+    (kernel_integrable_uniform :
+      ∀ alpha : MeasureTheory.ProbabilityMeasure (UnitSphere E),
+        MeasureTheory.Integrable
+          (Function.uncurry (logRadialDistanceKernel (E := E) p))
+          ((alpha : MeasureTheory.Measure (UnitSphere E)).prod
+            (sphereUniformMeasure
+              (MeasureTheory.volume : MeasureTheory.Measure E))))
+    (anchor : UnitSphere E)
+    (hpayoff_bddAbove :
+      ∀ alpha : MeasureTheory.ProbabilityMeasure (UnitSphere E),
+        Filter.IsBoundedUnder (· ≤ ·) (ae preferenceMeasure)
+          (logRadialDistanceProfilePayoff (E := E) p alpha)) :
+    ∀ alpha : MeasureTheory.ProbabilityMeasure (UnitSphere E),
+      essSup
+        (logRadialDistanceProfilePayoff (E := E) p
+          (sphereVolumeUniformProbabilityMeasure (E := E)))
+        preferenceMeasure ≤
+      essSup (logRadialDistanceProfilePayoff (E := E) p alpha)
+        preferenceMeasure := by
+  apply
+    radialDistanceKernel_probabilityProfile_sphereVolumeUniform_minimizes_essSup
+      (E := E) preferenceMeasure p ?_ kernel_integrable_uniform anchor
+      hpayoff_bddAbove
+  rw [hpreference]
+  exact MeasureTheory.withDensity_absolutelyContinuous' hdensity hdensity_pos
+
+/--
+The finite-`n` relaxed-failure integral has the essential-supremum Laplace
+limit whenever the profile payoff is measurable, integrable after
+exponentiation, and almost-everywhere bounded above.  This is the exact
+measure-theoretic reading of Equation (17) without replacing its preference
+measure by bare sphere volume.
+-/
+theorem
+    logRadialDistanceProfile_failureIntegral_normalizedLog_tendsto_essSup
+    [MeasurableSpace E] [BorelSpace E]
+    [FiniteDimensional ℝ E] [Nontrivial E]
+    (preferenceMeasure : MeasureTheory.Measure (UnitSphere E))
+    [MeasureTheory.IsProbabilityMeasure preferenceMeasure]
+    (p : ℝ → ℝ)
+    (alpha : MeasureTheory.ProbabilityMeasure (UnitSphere E))
+    (hpayoff_measurable :
+      Measurable (logRadialDistanceProfilePayoff (E := E) p alpha))
+    (hpayoff_bddAbove :
+      Filter.IsBoundedUnder (· ≤ ·) (ae preferenceMeasure)
+        (logRadialDistanceProfilePayoff (E := E) p alpha))
+    (hF_int :
+      ∀ n : ℕ,
+        MeasureTheory.Integrable
+          (fun u : UnitSphere E =>
+            Real.exp
+              ((n : ℝ) *
+                logRadialDistanceProfilePayoff (E := E) p alpha u))
+          preferenceMeasure) :
+    Tendsto
+      (fun n : ℕ =>
+        (n : ℝ)⁻¹ * Real.log
+          (∫ u, Real.exp
+              ((n : ℝ) *
+                logRadialDistanceProfilePayoff (E := E) p alpha u)
+            ∂preferenceMeasure))
+      atTop
+      (nhds
+        (essSup (logRadialDistanceProfilePayoff (E := E) p alpha)
+          preferenceMeasure)) :=
+  AppliedModelingLib.Probability.positiveLaplaceIntegral_normalizedLog_tendsto_essSup
+    preferenceMeasure
+    (logRadialDistanceProfilePayoff (E := E) p alpha)
+    hpayoff_measurable hpayoff_bddAbove hF_int
+
+/--
 Equations (17) and (20): the normalized logarithm of the relaxed finite-`n`
 failure integral converges to the user supremum of `rho`.  Lean retains the
 source preference probability measure in every finite-`n` integral; its full

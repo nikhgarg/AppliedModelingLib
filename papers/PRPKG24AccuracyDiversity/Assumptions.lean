@@ -205,16 +205,33 @@ abbrev assumption_proposition4_radial_nonsatisfaction_kernel
     ∀ r : ℝ, r ∈ Set.Icc (0 : ℝ) 2 → 0 < q r ∧ q r ≤ 1
 
 /--
-The compact-sphere Laplace step needs continuity of the radial kernel.  The
-paper does not state this regularity explicitly; Lean exposes it as the minor
-analytic boundary needed to turn the Laplace heuristic into an exact limit.
-Source status: explicit formalization boundary, not a source-stated premise.
-Source note: Schema-2 issue PRPKG24-PROP4-CONTINUITY-BOUNDARY-01 governs continuity; it is not literal source provenance.
+The compact-sphere Laplace step uses continuity of the radial kernel. Together
+with the positive-a.e. preference-density clarification, this is the approved
+regularity domain under which the Proposition 4 Laplace display is read as its
+pointwise supremum.
 -/
 -- audit-premise: hp : Continuous q
 abbrev assumption_proposition4_continuous_sphere_laplace_boundary
     (q : ℝ → ℝ) : Prop :=
   Continuous q
+
+/--
+The Proposition 4 preference law is represented by a measurable density with
+respect to normalized sphere volume, positive almost everywhere.  This makes
+the preference and geometric volume null sets compatible in the averaging
+argument; continuity of the density is not required.
+-/
+-- audit-premise: hdensity : AEMeasurable density (Proposition4Sphere.sphereUniformMeasure (MeasureTheory.volume : MeasureTheory.Measure E))
+-- audit-premise: hdensity_pos : ∀ᵐ u ∂Proposition4Sphere.sphereUniformMeasure (MeasureTheory.volume : MeasureTheory.Measure E), density u ≠ 0
+-- audit-premise: hpreference : preferenceMeasure = (Proposition4Sphere.sphereUniformMeasure (MeasureTheory.volume : MeasureTheory.Measure E)).withDensity density
+abbrev assumption_proposition4_positive_preference_density
+    {X : Type*} [MeasurableSpace X]
+    (baseMeasure preferenceMeasure : MeasureTheory.Measure X)
+    (density : X → ENNReal) : Prop :=
+  AEMeasurable density baseMeasure ∧
+    (∀ᵐ u ∂baseMeasure, density u ≠ 0) ∧
+      preferenceMeasure =
+        baseMeasure.withDensity density
 
 /-- Lemma D.5's finite rounding endpoint is stated for positive `N`. -/
 -- audit-premise: hNpos : 0 < N

@@ -172,6 +172,63 @@ theorem of_measurable_sublevel_measure_pos
       (measure_ne_top μ {x : α | phi x ≤ rate + ε})
 
 /--
+For a measurable real payoff that is almost-everywhere bounded above, the
+negative payoff has essential infimum equal to the negative essential
+supremum. This is the measurable, discontinuity-tolerant Laplace bridge: it
+does not replace an essential supremum by a pointwise maximum.
+-/
+theorem neg_of_essSup
+    {α : Type*} [MeasurableSpace α] {μ : Measure α}
+    [IsFiniteMeasure μ] [NeZero μ]
+    {f : α → ℝ} (hf : Measurable f)
+    (hbound : IsBoundedUnder (· ≤ ·) (ae μ) f) :
+    HasAEEssentialInfimum μ (fun x => -(f x)) (-(essSup f μ)) := by
+  refine of_measurable_sublevel_measure_pos ?_ ?_ ?_
+  · filter_upwards [ae_le_essSup hbound] with x hx
+    linarith
+  · intro t
+    exact measurableSet_le hf.neg measurable_const
+  · intro ε hε
+    by_contra hnot
+    have hzero : μ {x : α | -(f x) ≤ -(essSup f μ) + ε} = 0 :=
+      nonpos_iff_eq_zero.mp (not_lt.mp hnot)
+    have hbad_subset : {x : α | ¬ f x ≤ essSup f μ - ε} ⊆
+        {x : α | -(f x) ≤ -(essSup f μ) + ε} := by
+      intro x hx
+      dsimp at hx ⊢
+      linarith
+    have hbad_zero : μ {x : α | ¬ f x ≤ essSup f μ - ε} = 0 :=
+      measure_mono_null hbad_subset hzero
+    have hae : ∀ᵐ x ∂μ, f x ≤ essSup f μ - ε := by
+      rw [ae_iff]
+      exact hbad_zero
+    have hco : IsCoboundedUnder (· ≤ ·) (ae μ) f := by
+      have hexists : ∃ n : ℕ, ∃ᶠ x in ae μ, -(n : ℝ) ≤ f x := by
+        by_contra hno
+        have hzero : ∀ n : ℕ, μ {x : α | -(n : ℝ) ≤ f x} = 0 := by
+          intro n
+          have hnotfreq : ¬ ∃ᶠ x in ae μ, -(n : ℝ) ≤ f x :=
+            fun hfreq => hno ⟨n, hfreq⟩
+          have hae_not : ∀ᵐ x ∂μ, ¬ (-(n : ℝ) ≤ f x) :=
+            Filter.not_frequently.mp hnotfreq
+          simpa only [not_not] using (ae_iff.mp hae_not)
+        have huniv : (⋃ n : ℕ, {x : α | -(n : ℝ) ≤ f x}) = Set.univ := by
+          apply Set.eq_univ_of_forall
+          intro x
+          obtain ⟨n, hn⟩ := exists_nat_ge (-(f x))
+          exact Set.mem_iUnion.mpr ⟨n, by dsimp; linarith⟩
+        have hmeasure_univ : μ Set.univ = 0 := by
+          rw [← huniv]
+          exact measure_iUnion_null hzero
+        exact (Measure.measure_univ_ne_zero.mpr (NeZero.ne μ)) hmeasure_univ
+      rcases hexists with ⟨n, hn⟩
+      exact IsCoboundedUnder.of_frequently_ge hn
+    have hle : essSup f μ ≤ essSup f μ - ε := by
+      change Filter.limsup f (ae μ) ≤ essSup f μ - ε
+      exact Filter.limsup_le_of_le hco hae
+    linarith
+
+/--
 Continuous-minimizer constructor for the Laplace essential-infimum interface.
 If `phi` has a global minimum `rate` at `x0`, is continuous at `x0`, and the
 finite measure gives positive mass to every nonempty open set, then `rate` is
@@ -949,6 +1006,44 @@ theorem laplaceIntegral_hasExponentialRate_of_uniform_tendsto_essentialInf
     (HasAEEssentialInfimum.ae_lower hess)
     huniform
     (HasAEEssentialInfimum.nearInfSets hess)
+
+/--
+For a measurable, almost-everywhere bounded-above payoff, the positive
+Laplace integral has normalized logarithmic limit equal to its essential
+supremum.  This is the measurable form of the Laplace principle: the limit
+does not in general equal a pointwise supremum without an additional
+near-maximizer condition.
+-/
+theorem positiveLaplaceIntegral_normalizedLog_tendsto_essSup
+    {α : Type*} [MeasurableSpace α] (μ : Measure α)
+    [IsFiniteMeasure μ] [NeZero μ]
+    (f : α → ℝ) (hf : Measurable f)
+    (hbound : IsBoundedUnder (· ≤ ·) (ae μ) f)
+    (hF_int :
+      ∀ n : ℕ, Integrable
+        (fun x : α => Real.exp ((n : ℝ) * f x)) μ) :
+    Tendsto
+      (fun n : ℕ =>
+        (n : ℝ)⁻¹ * Real.log
+          (∫ x, Real.exp ((n : ℝ) * f x) ∂μ))
+      atTop (nhds (essSup f μ)) := by
+  have hrate :=
+    laplaceIntegral_hasExponentialRate_of_uniform_tendsto_essentialInf
+      μ (fun _ x => -(f x)) (fun x => -(f x))
+      (by
+        intro n
+        convert hF_int n using 1
+        ext x
+        congr 1
+        ring)
+      (HasAEEssentialInfimum.neg_of_essSup hf hbound)
+      (by
+        intro ε hε
+        filter_upwards with n x
+        simp [hε.le])
+  rw [HasExponentialRate] at hrate
+  have hrate_neg := hrate.neg
+  simpa [logDecay] using hrate_neg
 
 /--
 Weighted compact-Laplace skeleton with a positive-weight near-infimum

@@ -1,22 +1,37 @@
 # Source Clarifications: Accuracy-Diversity
 
+## Clarified regularity conditions
+
+The following source-consistent, natural model conventions state the shared
+regularity domains. The report therefore describes only the affected results as
+exact with these conditions; this presentation does not erase the result-local
+source corrections below.
+
+- For Corollary 1 and Theorem 1(ii)--(iv), every named preferred type has
+  positive probability: $p_t>0$. These are the all-coordinate share formulas;
+  a zero-probability type calls for a separate supportwise formulation.
+- In the fixed-top-$k$ model of Theorem 1(i)--(ii), conditional values are
+  nonnegative almost surely. This identifies the finite allocation objective
+  with the source's exact top-$k$ value primitive. Theorem 1(i)'s separate
+  nondegenerate-top-value repair is not absorbed by this condition.
+- For Proposition 4, write the preference measure as normalized sphere volume
+  with an a.e.-measurable density that is positive almost everywhere, and take
+  the nonconstant radial kernel to be continuous with values in $(0,1]$. The
+  density need not be continuous: it transfers sphere-volume null sets to the
+  preference law, while kernel continuity rules out a pointwise Laplace
+  supremum supported only on a null spike.
+
 ## Value and type-support restrictions
 
-- Corollary 1's type probabilities $p_t$ → $p_t>0$ for every type in the
-  current proof. Whether the conclusion holds with zero-probability types
-  remains unresolved.
-- Theorem 1(ii)'s merely upper-bounded conditional value law → an upper-bounded
-  law with nonnegative values almost surely. This is a sufficient condition in
-  the current allocation proof; that proof does not cover arbitrary translated
-  negative laws, and necessity for the conclusion is unresolved.
-- All-coordinate share limits → positive preferred-type mass for every named
-  type. A zero-mass coordinate needs a separate supportwise formulation, so
-  positivity is needed only for the stated all-coordinate conclusion.
+- Theorem 1(i)'s finite-discrete branch additionally needs a positive top
+  value, a strictly smaller nonnegative second bound, and positive law mass at
+  the top and below it. A point-mass law makes the fixed-top-$k$ objective
+  eventually flat and does not force uniformity of every optimal sequence.
 
 ## Proposition 2 and the finite uniform model
 
 - Relaxed allocation $a_t=N s_t-1$ → $(N+T)s_t-1$, where $s_t=\sqrt{p_t}/\sum_j\sqrt{p_j}$, $p_t$ is type weight, $T$ the type count, and $N$ the budget. The printed coordinates sum to $N-T$, not $N$.
-- Printed rounding error $(T+1)/N$ → checked bound $(2T+1)/N$ on $|a_t/N-s_t|$ in the positive top-$k$ domain, where $k$ is the consumption count. The optimizer shift alone does not refute the sharper bound; its proof remains open here. Both bounds give the same square-root share limit.
+- Printed rounding error $(T+1)/N$ → checked bound $(2T+1)/N$ on $|a_t/N-s_t|$ in the positive top-$k$ domain, where $k$ is the consumption count. A compiled strictly-positive-PMF witness refutes the sharper printed bound. Both bounds give the same square-root share limit.
 
 ## Theorem 2: independent rank-varying Bernoulli values
 
@@ -39,14 +54,11 @@ Here $h(a)$ is one type's expected top-$k$ value from an allocation of $a$ items
 ## Proposition 4
 
 - Equation (18)'s membership in an infimum → the real inequality $\Gamma(\pi)\le\Gamma(\alpha)$ for every profile $\alpha$, with $\pi$ uniform and $\Gamma$ the source objective. Equation (20)'s unweighted surface integral → the preference-weighted measure in Equation (17); full support does not equate those finite integrals.
-- The pointwise-supremum Laplace step uses regularity, such as a continuous
-  nonconstant radial kernel valued in $(0,1]$ on realized distances. This is a
-  sufficient current proof condition, and its necessity for Proposition 4 is
-  unresolved. Nonconstancy alone is insufficient: under a nonatomic uniform
-  measure, $g=1$ at one point and zero elsewhere gives
-  $\log(\int e^{ng}\,d\mu)/n=0$ while $\sup g=1$. This diagnoses that inference
-  outside the continuous-kernel domain; it does not refute Proposition 4 under
-  all its hypotheses.
+- Under the clarified regularity conditions above, the Proposition 4 endpoint
+  is exact. The density condition and radial continuity have distinct roles;
+  neither asserts continuity of the preference density. The separate Equation
+  (18) type correction and Equation (20) finite-measure repair remain visible
+  in the preceding bullet.
 
 ## All-consumed and Bernoulli endpoints
 

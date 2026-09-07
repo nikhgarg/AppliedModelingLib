@@ -53,3 +53,11 @@ jobs:
         uses: actions/deploy-pages@v5
         with:
           timeout: "600000"
+
+      - name: Verify deployed pages and legacy redirects
+        env:
+          PUBLISHED_URL: ${{ steps.deployment.outputs.page_url }}
+        run: >-
+          python3 site/check_deployed_site.py
+          --build-dir "$RUNNER_TEMP/published-site"
+          --base-url "$PUBLISHED_URL" --check-legacy

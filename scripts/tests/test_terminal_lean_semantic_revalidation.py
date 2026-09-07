@@ -21,6 +21,39 @@ from scripts.obligation_evidence_graph import (
 
 
 class TerminalLeanSemanticRevalidationTests(unittest.TestCase):
+    def test_public_source_recovery_requires_exact_routes_and_atoms(self) -> None:
+        def atom(quote):
+            return source_atom_leaf(
+                contract_sha256="1" * 64, source_artifact_sha256="2" * 64,
+                source_quote_sha256=quote * 64, source_component_sha256="4" * 64,
+                source_role_contract_sha256="5" * 64,
+            )
+        original, changed = atom("3"), atom("6")
+        loaded = SimpleNamespace(
+            paper_index=SimpleNamespace(
+                route_leaf_sha256s_by_source_item={
+                    "claim": {"source_atom": (original.leaf_sha256,)}},
+                prerequisite_leaf_sha256s_by_declaration={}),
+            graph=SimpleNamespace(leaves={original.leaf_sha256: original}))
+        with mock.patch.object(terminal, "current_source_semantic_material",
+                               side_effect=ValueError("private material withheld")), \
+             mock.patch.object(terminal, "project_source_route_leaf_material_from_validated_inputs") as project:
+            project.return_value = ({original.leaf_sha256: original}, {"claim": (original.leaf_sha256,)})
+            call = lambda source, public: terminal._validate_current_source_routes(
+                loaded, source, SimpleNamespace(), paper_dir=Path("/fixture"),
+                allow_withheld_source_material=public)
+            self.assertEqual(call({}, True), {"claim": "claim"})
+            with self.assertRaisesRegex(terminal.TerminalLeanSemanticRevalidationError, "private material withheld"):
+                call({}, False)
+            with self.assertRaisesRegex(terminal.TerminalLeanSemanticRevalidationError, "withheld source locator"):
+                call({"source_text_file": "source.tex"}, True)
+            project.return_value = ({changed.leaf_sha256: changed}, {"claim": (changed.leaf_sha256,)})
+            with self.assertRaisesRegex(terminal.TerminalLeanSemanticRevalidationError, "semantic atoms changed"):
+                call({}, True)
+            project.return_value = ({original.leaf_sha256: original}, {"renamed": (original.leaf_sha256,)})
+            with self.assertRaisesRegex(terminal.TerminalLeanSemanticRevalidationError, "source routes"):
+                call({}, True)
+
     def test_module_discovery_failure_preserves_bounded_causal_diagnostic(self) -> None:
         root = Path("/tmp/diagnostic-fixture")
         provider = terminal.RepositoryBuildInputSnapshotProvider(root)

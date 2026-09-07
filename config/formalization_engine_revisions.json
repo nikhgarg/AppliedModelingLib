@@ -973,6 +973,15 @@
       "verification": [
         "131 closure, receipt, and terminal Lean semantic revalidation tests passed; PRPKG public evidence validates without issuing acceptance."
       ]
+    },
+    {
+      "engine_tree_sha256": "d83dbc65ae1f7362441404b87b610a1116b85f614503d03f032794052eb57c30",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Public Lean recovery checks recorded source clauses without replaying withheld approval material.",
+      "sequence": 81,
+      "verification": [
+        "132 closure and terminal Lean identity tests pass; strict private checks are unchanged."
+      ]
     }
   ],
   "schema": 2

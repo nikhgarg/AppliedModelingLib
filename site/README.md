@@ -1,6 +1,6 @@
 # AppliedModelingLib Website
 
-[Visit the project website](https://gargnikhil.com/EconCSLib/) to explore the
+[Visit the project website](https://gargnikhil.com/AppliedModelingLib/) to explore the
 reusable Lean library and paper formalizations.
 
 The paper table links to validation reports, source-clarification memos,

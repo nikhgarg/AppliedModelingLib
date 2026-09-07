@@ -1112,6 +1112,21 @@ def validated_runtime_engine_revision_ledger(root: Path) -> object:
     return _json_from_candidate(head_view, LEDGER_PATH)
 
 
+def validated_runtime_raw_producer_compatibility_ledger(root: Path) -> object:
+    """Return the immutable registered ledger for a provenance mismatch.
+
+    This is deliberately separate from normal exact receipt reuse. A caller
+    that wants to bridge differing raw-producer code identities must first
+    establish clean-HEAD runtime registration, then read the ledger from that
+    immutable HEAD tree rather than from a mutable working file.
+    """
+
+    root = root.resolve()
+    validate_runtime_engine_registration(root)
+    head_view = GitCandidateView(root, tree="HEAD")
+    return _json_from_candidate(head_view, LEDGER_PATH)
+
+
 def validated_recorded_engine_revision_ledger(root: Path) -> object:
     """Validate the committed issuer history without accepting the live engine.
 

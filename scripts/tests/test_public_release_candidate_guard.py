@@ -2208,6 +2208,10 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
             )
         )
 
+    def test_renamed_public_repository_is_still_canonical(self) -> None:
+        self.assertIsNotNone(guard.PUBLIC_REMOTE_RE.fullmatch("https://github.com/nikhgarg/AppliedModelingLib.git"))
+        self.assertIsNone(guard.PUBLIC_REMOTE_RE.fullmatch("https://github.com/attacker/AppliedModelingLib.git"))
+
     def test_canonical_remote_checks_fetch_and_every_push_url(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo = Path(temp_dir) / "candidate"

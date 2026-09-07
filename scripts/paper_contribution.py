@@ -260,7 +260,9 @@ def _changed_paths(merge_base: str, head: str) -> tuple[ChangedPath, ...]:
     return tuple(changes)
 
 
-def _commit_history_paths(merge_base: str, head: str) -> tuple[str, ...]:
+def _commit_history_paths(
+    merge_base: str, head: str, *, include_deletions: bool = True
+) -> tuple[str, ...]:
     """Return every path mentioned by a non-merge candidate commit."""
 
     merge_commits = _git_text(
@@ -278,6 +280,7 @@ def _commit_history_paths(merge_base: str, head: str) -> tuple[str, ...]:
             "--name-only",
             "-z",
             "--no-renames",
+            *([] if include_deletions else ["--diff-filter=ACMRT"]),
             f"{merge_base}..{head}",
         ],
         cwd=ROOT,
@@ -304,7 +307,7 @@ def _unsafe_public_artifact(path: str) -> bool:
         return False
     if parts[0] == ".scratch":
         return True
-    if len(parts) < 3 or parts[0] != "papers" or not PAPER_ID_RE.fullmatch(parts[1]):
+    if len(parts) < 3 or parts[0] != "papers":
         return False
     relative = parts[2:]
     if not relative:
@@ -313,7 +316,7 @@ def _unsafe_public_artifact(path: str) -> bool:
     source_candidate = PurePosixPath(name)
     source_directory = re.sub(r"[-_.]", "", relative[0].lower())
     return bool(
-        source_directory.startswith("source")
+        (len(relative) > 1 and source_directory.startswith("source"))
         or source_directory in {"auditsource", "papersource"}
         or name.startswith("source-audited")
         or name in {"source.pdf", "source.txt", "source.tex"}
@@ -324,7 +327,10 @@ def _unsafe_public_artifact(path: str) -> bool:
         or name.endswith((".doc", ".docx", ".rtf", ".epub"))
         or (
             name.endswith(".pdf")
-            and tuple(relative) != ("docs", "DependencyDAG.pdf")
+            and tuple(relative) not in {
+                ("docs", "DependencyDAG.pdf"),
+                ("docs", "HUMAN_REVIEW_PACKET.pdf"),
+            }
         )
         or name.endswith(
             (
@@ -763,10 +769,14 @@ def contribution_plan(base_ref: str, head_ref: str = "HEAD") -> ContributionPlan
         )
     try:
         history_paths = _commit_history_paths(merge_base, head)
+        introduced_paths = _commit_history_paths(merge_base, head, include_deletions=False)
     except ContributionError as exc:
         history_paths = ()
+        introduced_paths = ()
         reasons.append(str(exc))
-    for path in history_paths:
+    # A deletion removes content already reachable from the public base. Added
+    # and later deleted source bytes still occur in introduced_paths and block.
+    for path in introduced_paths:
         if _unsafe_public_artifact(path):
             blocked = True
             reasons.append(

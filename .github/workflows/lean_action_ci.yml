@@ -20,6 +20,7 @@ jobs:
     env:
       # Bounds Lake's runtime pool and every Lean subprocess it launches.
       LEAN_NUM_THREADS: "1"
+      PUBLIC_SOURCE_MODE: ${{ github.event.repository.private != true }}
 
     steps:
       - name: Check out repository
@@ -46,7 +47,7 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
           mkdir -p "$TRUSTED_CI_ROOT"
-          git archive "$BASE_SHA" scripts | tar -x -C "$TRUSTED_CI_ROOT"
+          git archive "$BASE_SHA" scripts config | tar -x -C "$TRUSTED_CI_ROOT"
       - name: Classify pull request scope
         id: contribution-scope
         if: github.event_name == 'pull_request'
@@ -134,11 +135,28 @@ jobs:
         run: >-
           python3 scripts/check_formalization_engine_revision.py
           --tree HEAD --base-tree HEAD^
+      - name: Select changed-work validation
+        id: change-scope
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            SCOPE_TOOL="$TRUSTED_CI_ROOT/scripts/ci_change_scope.py"
+          else
+            SCOPE_TOOL="$GITHUB_WORKSPACE/scripts/ci_change_scope.py"
+          fi
+          echo "CI_SCOPE_TOOL=$SCOPE_TOOL" >> "$GITHUB_ENV"
+          echo "CI_BASE_SHA=$EVENT_BASE" >> "$GITHUB_ENV"
+          if [[ "$EVENT_NAME" == "workflow_dispatch" || -z "$EVENT_BASE" || "$EVENT_BASE" =~ ^0+$ || ! -f "$SCOPE_TOOL" ]]; then
+            echo "mode=integration" >> "$GITHUB_OUTPUT"
+            echo "build_lean=true" >> "$GITHUB_OUTPUT"
+          else
+            python3 "$SCOPE_TOOL" plan --repo "$GITHUB_WORKSPACE" \
+              --base "$EVENT_BASE" --head HEAD --github-output "$GITHUB_OUTPUT"
+          fi
       - name: Set up Lean dependencies
-        if: >-
-          github.event_name != 'pull_request' ||
-          (steps.contribution-scope.outputs.mode != 'docs' &&
-          steps.contribution-scope.outputs.mode != 'aggregate')
+        if: steps.change-scope.outputs.mode != 'docs'
         uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1
         with:
           # The private workspace expands beyond the hosted runner's free disk
@@ -150,6 +168,20 @@ jobs:
           lint: "false"
           use-github-cache: "false"
           use-mathlib-cache: "true"
+      - name: Restore project build cache
+        if: steps.change-scope.outputs.mode != 'docs'
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .lake/build
+          key: ${{ runner.os }}-aml-project-v1-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-aml-project-v1-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+      - name: Remove obsolete cached module interfaces
+        if: steps.change-scope.outputs.mode != 'docs'
+        run: |
+          if [[ -f "$CI_SCOPE_TOOL" ]]; then
+            python3 "$CI_SCOPE_TOOL" prune-cache --repo "$GITHUB_WORKSPACE" --base HEAD --head HEAD
+          fi
       - name: Check isolated paper contribution
         if: >-
           github.event_name == 'pull_request' &&
@@ -162,52 +194,66 @@ jobs:
           --repo "$GITHUB_WORKSPACE"
           --base "$BASE_SHA"
           --allow-missing-source-bytes
-      - name: Build Lean targets
+      - name: Build changed papers and their dependents
         if: >-
-          github.event_name != 'pull_request' ||
-          steps.contribution-scope.outputs.mode == 'integration'
+          steps.change-scope.outputs.mode == 'papers' &&
+          (github.event_name != 'pull_request' || steps.contribution-scope.outputs.mode != 'paper')
+        run: >-
+          python3 "$CI_SCOPE_TOOL" build --repo "$GITHUB_WORKSPACE"
+          --base "$CI_BASE_SHA" --head HEAD
+      - name: Validate selected paper evidence
+        if: >-
+          steps.change-scope.outputs.mode == 'papers' &&
+          (github.event_name != 'pull_request' || steps.contribution-scope.outputs.mode != 'paper')
+        run: |
+          SOURCE_FLAG=()
+          if [[ "$PUBLIC_SOURCE_MODE" == "true" ]]; then SOURCE_FLAG+=(--public); fi
+          python3 "$CI_SCOPE_TOOL" check --repo "$GITHUB_WORKSPACE" \
+            --base "$CI_BASE_SHA" --head HEAD "${SOURCE_FLAG[@]}"
+      - name: Build Lean targets
+        if: steps.change-scope.outputs.mode == 'integration'
         # defaultTargets intentionally excludes some private/new paper targets.
         # Integration must still compile every registered lean_lib.
         run: python3 scripts/paper_target_registration.py build-all
       - name: Test semantic provenance audits
-        if: >-
-          github.event_name != 'pull_request' ||
-          steps.contribution-scope.outputs.mode == 'integration'
+        if: steps.change-scope.outputs.mode == 'integration'
         run: python3 scripts/run_isolated_audit_tests.py
       - name: Audit conclusion-bearing theorem inputs
-        if: >-
-          github.event_name != 'pull_request' ||
-          steps.contribution-scope.outputs.mode == 'integration'
+        if: steps.change-scope.outputs.mode == 'integration'
         run: python3 scripts/audit_conclusion_provenance.py
       - name: Check paper status aggregate
         if: >-
           github.event_name == 'workflow_dispatch' ||
           (github.event_name == 'pull_request' &&
-          steps.contribution-scope.outputs.mode == 'integration')
+          steps.change-scope.outputs.mode == 'integration')
         run: python3 scripts/sync_paper_status.py --check
       - name: Audit source-evidence integrity
-        if: >-
-          github.event_name != 'pull_request' ||
-          steps.contribution-scope.outputs.mode == 'integration'
-        run: python3 scripts/audit_evidence_integrity.py
+        if: steps.change-scope.outputs.mode == 'integration'
+        run: |
+          SOURCE_FLAG=()
+          if [[ "$PUBLIC_SOURCE_MODE" == "true" ]]; then SOURCE_FLAG+=(--allow-missing-source-bytes); fi
+          python3 scripts/audit_evidence_integrity.py "${SOURCE_FLAG[@]}"
       - name: Audit reusable library provenance
-        if: >-
-          github.event_name != 'pull_request' ||
-          steps.contribution-scope.outputs.mode == 'integration'
+        if: steps.change-scope.outputs.mode == 'integration'
         run: python3 scripts/audit_repository.py --library-only --library-premise-audit --info-limit 0
       - name: Audit statement translations
-        if: >-
-          github.event_name != 'pull_request' ||
-          steps.contribution-scope.outputs.mode == 'integration'
+        if: steps.change-scope.outputs.mode == 'integration'
         run: python3 scripts/review_dashboard.py --statement-check
       - name: Audit paper coverage
-        if: >-
-          github.event_name != 'pull_request' ||
-          steps.contribution-scope.outputs.mode == 'integration'
+        if: steps.change-scope.outputs.mode == 'integration'
         run: python3 scripts/review_dashboard.py --paper-coverage-check
       - name: Full repository closeout audit
         if: >-
           github.event_name == 'workflow_dispatch' ||
           (github.event_name == 'pull_request' &&
-          steps.contribution-scope.outputs.mode == 'integration')
-        run: python3 scripts/audit_repository.py --include-active --library-premise-audit --info-limit 0
+          steps.change-scope.outputs.mode == 'integration')
+        run: |
+          SOURCE_FLAG=()
+          if [[ "$PUBLIC_SOURCE_MODE" == "true" ]]; then SOURCE_FLAG+=(--allow-missing-source-bytes); fi
+          python3 scripts/audit_repository.py --include-active --library-premise-audit --info-limit 0 "${SOURCE_FLAG[@]}"
+      - name: Save trusted main project build cache
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.change-scope.outputs.mode != 'docs'
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .lake/build
+          key: ${{ runner.os }}-aml-project-v1-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.sha }}

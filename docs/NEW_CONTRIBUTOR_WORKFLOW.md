@@ -23,9 +23,17 @@ It does not own or update:
 - any other paper folder or audit evidence
 
 The paper-scoped check and pull-request CI build and audit only `<PaperName>`.
-Existing paper state cannot make that lane fail. A change to shared library,
-tooling, audit protocol, workflow, or multiple papers instead uses the
-integration lane.
+A multi-paper update builds and audits the changed papers and their reverse
+import dependents. Documentation and website updates skip Lean compilation.
+Changes to shared library code, tooling, audit protocol, or build controls use
+the full integration lane; manual workflow runs also retain that backstop.
+
+Main pushes use the same committed-change selection, so merging a paper update
+does not automatically rebuild every unrelated paper. CI restores only the
+project's `.lake/build` cache, separately from Mathlib, removes obsolete module
+interfaces, and saves caches only after successful trusted main pushes.
+Source-export checks, engine registration, and paper evidence checks remain
+required. CI reads existing evidence; it does not issue fresh semantic reviews.
 
 ## 1. Create A Public-Based Working Branch
 
@@ -33,9 +41,9 @@ Fork the public repository on GitHub, then clone the fork and retain the project
 repository as `upstream`:
 
 ```bash
-git clone https://github.com/example-contributor/EconCSLib.git
-cd EconCSLib
-git remote add upstream https://github.com/nikhgarg/EconCSLib.git
+git clone https://github.com/example-contributor/AppliedModelingLib.git
+cd AppliedModelingLib
+git remote add upstream https://github.com/nikhgarg/AppliedModelingLib.git
 git fetch upstream
 git switch -c paper/abc24-short-title upstream/main
 ```

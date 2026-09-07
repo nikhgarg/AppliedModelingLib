@@ -9,10 +9,11 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: lean-action-ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -140,11 +141,23 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
           EVENT_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           if [[ "$EVENT_NAME" == "pull_request" ]]; then
             SCOPE_TOOL="$TRUSTED_CI_ROOT/scripts/ci_change_scope.py"
           else
             SCOPE_TOOL="$GITHUB_WORKSPACE/scripts/ci_change_scope.py"
+          fi
+          if [[ "$EVENT_NAME" == "push" ]]; then
+            # Include earlier failed, canceled, or superseded pending changes.
+            # An unavailable baseline safely selects the full integration lane.
+            EVENT_BASE=""
+            RUNS_FILE="$RUNNER_TEMP/successful-main-runs.json"
+            if gh api "repos/$GITHUB_REPOSITORY/actions/workflows/lean_action_ci.yml/runs?branch=main&event=push&status=success&per_page=100" > "$RUNS_FILE"; then
+              EVENT_BASE=$(python3 "$SCOPE_TOOL" successful-main-base \
+                --repo "$GITHUB_WORKSPACE" --head HEAD --runs-json "$RUNS_FILE" \
+                --repository "$GITHUB_REPOSITORY")
+            fi
           fi
           echo "CI_SCOPE_TOOL=$SCOPE_TOOL" >> "$GITHUB_ENV"
           echo "CI_BASE_SHA=$EVENT_BASE" >> "$GITHUB_ENV"

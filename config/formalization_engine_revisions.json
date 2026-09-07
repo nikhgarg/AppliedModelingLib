@@ -982,6 +982,15 @@
       "verification": [
         "132 closure and terminal Lean identity tests pass; strict private checks are unchanged."
       ]
+    },
+    {
+      "engine_tree_sha256": "5e3a2644f318dd813e112b7535e2e58587f7e5f60beac32e530281d9f4916660",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Carry unvalidated main changes into subsequent CI runs and preserve running main builds.",
+      "sequence": 82,
+      "verification": [
+        "27 focused CI scope and workflow tests pass, including canceled proof changes followed by documentation."
+      ]
     }
   ],
   "schema": 2

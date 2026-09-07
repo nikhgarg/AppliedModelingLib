@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path, PurePosixPath
 import subprocess
 import sys
@@ -19,6 +20,26 @@ from scripts.tomllib_compat import tomllib
 
 def git(repo, *args):
     return subprocess.check_output(["git", "-C", str(repo), *args])
+
+
+def successful_main_base(repo: Path, head: str, runs: dict, repository: str) -> str:
+    """Select an already successful ancestor, never an unverified push parent."""
+    head = git(repo, "rev-parse", "--verify", head + "^{commit}").decode().strip()
+    best = ""
+    for run in runs.get("workflow_runs", []):
+        sha = run.get("head_sha", "")
+        if (run.get("status") != "completed" or run.get("conclusion") != "success"
+                or run.get("event") != "push" or run.get("head_branch") != "main"
+                or run.get("path", "").split("@")[0] != ".github/workflows/lean_action_ci.yml"
+                or (run.get("head_repository") or {}).get("full_name") != repository
+                or not isinstance(sha, str) or not re.fullmatch(r"[0-9a-f]{40}", sha)):
+            continue
+        def ancestor(a, b):
+            return subprocess.run(["git", "-C", str(repo), "merge-base", "--is-ancestor", a, b],
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0
+        if ancestor(sha, head) and (not best or ancestor(best, sha)):
+            best = sha
+    return best
 
 
 def plan(repo: Path, base: str, head: str = "HEAD") -> dict:
@@ -170,13 +191,23 @@ def prune_build_cache(repo: Path, head: str):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("plan", "build", "check", "prune-cache"))
+    parser.add_argument("action", choices=("plan", "build", "check", "prune-cache", "successful-main-base"))
     parser.add_argument("--repo", type=Path, default=Path.cwd())
-    parser.add_argument("--base", required=True)
+    parser.add_argument("--base")
     parser.add_argument("--head", default="HEAD")
     parser.add_argument("--github-output", type=Path)
     parser.add_argument("--public", action="store_true")
+    parser.add_argument("--runs-json", type=Path)
+    parser.add_argument("--repository")
     args = parser.parse_args()
+    if args.action == "successful-main-base":
+        if not args.runs_json or not args.repository:
+            parser.error("successful-main-base requires --runs-json and --repository")
+        print(successful_main_base(args.repo, args.head,
+                                   json.loads(args.runs_json.read_text()), args.repository))
+        return
+    if not args.base:
+        parser.error("this action requires --base")
     selection = plan(args.repo, args.base, args.head)
     if args.github_output:
         with args.github_output.open("a") as out:

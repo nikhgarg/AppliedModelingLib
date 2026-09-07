@@ -3,7 +3,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 import unittest
-from scripts.ci_change_scope import plan, prune_build_cache, require_clean_head
+from scripts.ci_change_scope import plan, prune_build_cache, require_clean_head, successful_main_base
 
 
 class ScopeTests(unittest.TestCase):
@@ -38,6 +38,51 @@ class ScopeTests(unittest.TestCase):
     def commit(self):
         self.git('add', '--all')
         self.git('commit', '-qm', 'fixture')
+
+    def successful_run(self, sha):
+        return dict(status='completed', conclusion='success', event='push',
+                    head_branch='main', head_sha=sha,
+                    path='.github/workflows/lean_action_ci.yml',
+                    head_repository={'full_name': 'Owner/Repo'})
+
+    def test_docs_followup_still_checks_prior_unvalidated_proof_change(self):
+        base = self.git('rev-parse', 'base').decode().strip()
+        self.write('papers/AAA24Paper/Main.lean', '-- Changed proof\n')
+        self.commit()
+        unfinished = self.git('rev-parse', 'HEAD').decode().strip()
+        self.write('docs/readme.md', '# Documentation follow-up\n')
+        self.commit()
+        failed = self.successful_run(unfinished)
+        failed['conclusion'] = 'cancelled'
+        selected = successful_main_base(self.root, 'HEAD',
+            {'workflow_runs': [failed, self.successful_run(base)]}, 'Owner/Repo')
+        self.assertEqual(selected, base)
+        # A mixed proof/documentation diff conservatively takes the full lane.
+        self.assertEqual(plan(self.root, selected)['mode'], 'integration')
+        self.assertEqual(plan(self.root, unfinished)['mode'], 'docs')
+
+    def test_successful_baseline_is_the_newest_validated_ancestor(self):
+        old = self.git('rev-parse', 'HEAD').decode().strip()
+        self.write('docs/a.md', 'First documentation change\n')
+        self.commit()
+        newer = self.git('rev-parse', 'HEAD').decode().strip()
+        self.write('docs/b.md', 'Second documentation change\n')
+        self.commit()
+        runs = {'workflow_runs': [self.successful_run(newer), self.successful_run(old)]}
+        self.assertEqual(successful_main_base(self.root, 'HEAD', runs, 'Owner/Repo'), newer)
+        self.assertEqual(plan(self.root, newer)['mode'], 'docs')
+
+    def test_no_untrusted_run_can_supply_a_main_baseline(self):
+        sha = self.git('rev-parse', 'HEAD').decode().strip()
+        for key, value in [('event', 'pull_request'), ('status', 'in_progress'),
+                           ('head_branch', 'other'), ('conclusion', 'failure'),
+                           ('path', '.github/workflows/pages.yml'),
+                           ('head_sha', '0' * 40),
+                           ('head_repository', {'full_name': 'Other/Repo'})]:
+            row = self.successful_run(sha); row[key] = value
+            with self.subTest(key=key):
+                self.assertEqual(successful_main_base(self.root, 'HEAD',
+                    {'workflow_runs': [row]}, 'Owner/Repo'), '')
 
     def test_restored_cache_keeps_live_modules_and_removes_deleted_interfaces(self):
         self.write('.lake/build/lib/lean/AAA24Paper/Main.olean', 'live compiled module')

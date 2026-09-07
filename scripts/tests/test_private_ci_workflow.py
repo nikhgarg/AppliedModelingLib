@@ -173,13 +173,17 @@ class PrivateCIWorkflowTests(unittest.TestCase):
         self.assertNotIn("outputs.mode == 'aggregate'", body)
         self.assertNotIn("github.event_name != 'pull_request'", body)
 
-    def test_change_selection_uses_trusted_base_for_prs_and_exact_push_base(self) -> None:
+    def test_change_selection_uses_trusted_pr_base_and_successful_main_ancestor(self) -> None:
         body = self.step("Select changed-work validation")
         self.assertIn('$TRUSTED_CI_ROOT/scripts/ci_change_scope.py', body)
         self.assertIn('github.event.before', body)
         self.assertIn('--base "$EVENT_BASE" --head HEAD', body)
         self.assertIn('echo "mode=integration"', body)
         self.assertNotIn('echo "mode=papers"', body)
+        self.assertIn('successful-main-base', body)
+        self.assertIn('EVENT_BASE=""', body)
+        self.assertIn('status=success', body)
+        self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' }}", self.text)
 
     def test_batch_paper_validation_keeps_build_and_evidence_checks(self) -> None:
         build = self.step("Build changed papers and their dependents")

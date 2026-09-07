@@ -25,7 +25,7 @@ class PrivateCIWorkflowTests(unittest.TestCase):
 
     def test_lean_setup_is_bounded_and_skipped_for_docs_only_prs(self) -> None:
         body = self.step("Set up Lean dependencies")
-        self.assertRegex(body, r"steps\.contribution-scope\.outputs\.mode != 'docs'")
+        self.assertRegex(body, r"steps\.change-scope\.outputs\.mode != 'docs'")
         self.assertRegex(body, r"uses: leanprover/lean-action@[0-9a-f]{40}")
         for field in ("auto-config", "build", "test", "lint", "use-github-cache"):
             self.assertRegex(body, rf'{field}:\s*["\']?false["\']?')
@@ -44,7 +44,7 @@ class PrivateCIWorkflowTests(unittest.TestCase):
         self.assertNotIn("${{ runner.temp }}", self.text)
 
         trusted = self.step("Materialize trusted CI implementation")
-        self.assertIn('git archive "$BASE_SHA" scripts', trusted)
+        self.assertIn('git archive "$BASE_SHA" scripts config', trusted)
         self.assertIn('tar -x -C "$TRUSTED_CI_ROOT"', trusted)
         self.assertIn('BASE_SHA: ${{ github.event.pull_request.base.sha }}', trusted)
         self.assertLess(
@@ -115,7 +115,7 @@ class PrivateCIWorkflowTests(unittest.TestCase):
         ):
             self.assertNotIn(forbidden, body)
 
-    def test_every_broad_step_is_integration_only_on_pull_requests(self) -> None:
+    def test_every_broad_step_requires_integration_even_on_main_pushes(self) -> None:
         broad_steps = (
             "Build Lean targets",
             "Test semantic provenance audits",
@@ -128,12 +128,12 @@ class PrivateCIWorkflowTests(unittest.TestCase):
         for name in broad_steps:
             with self.subTest(name=name):
                 body = self.step(name)
-                self.assertIn("github.event_name != 'pull_request'", body)
-                self.assertIn("outputs.mode == 'integration'", body)
+                self.assertNotIn("github.event_name != 'pull_request'", body)
+                self.assertIn("steps.change-scope.outputs.mode == 'integration'", body)
 
     def test_aggregate_only_pr_skips_lean_and_runs_only_projection_check(self) -> None:
         setup = self.step("Set up Lean dependencies")
-        self.assertIn("outputs.mode != 'aggregate'", setup)
+        self.assertIn("steps.change-scope.outputs.mode != 'docs'", setup)
 
         aggregate = self.step("Check aggregate-only contribution")
         self.assertIn("outputs.mode == 'aggregate'", aggregate)
@@ -172,6 +172,36 @@ class PrivateCIWorkflowTests(unittest.TestCase):
         self.assertIn("outputs.mode == 'integration'", body)
         self.assertNotIn("outputs.mode == 'aggregate'", body)
         self.assertNotIn("github.event_name != 'pull_request'", body)
+
+    def test_change_selection_uses_trusted_base_for_prs_and_exact_push_base(self) -> None:
+        body = self.step("Select changed-work validation")
+        self.assertIn('$TRUSTED_CI_ROOT/scripts/ci_change_scope.py', body)
+        self.assertIn('github.event.before', body)
+        self.assertIn('--base "$EVENT_BASE" --head HEAD', body)
+        self.assertIn('echo "mode=integration"', body)
+        self.assertNotIn('echo "mode=papers"', body)
+
+    def test_batch_paper_validation_keeps_build_and_evidence_checks(self) -> None:
+        build = self.step("Build changed papers and their dependents")
+        checks = self.step("Validate selected paper evidence")
+        for body in (build, checks):
+            self.assertIn("steps.change-scope.outputs.mode == 'papers'", body)
+            self.assertIn('"$CI_SCOPE_TOOL"', body)
+            self.assertIn('--base "$CI_BASE_SHA" --head HEAD', body)
+        self.assertIn(' build ', build)
+        self.assertIn(' check ', checks)
+
+    def test_only_successful_trusted_main_runs_save_project_cache(self) -> None:
+        restore = self.step("Restore project build cache")
+        save = self.step("Save trusted main project build cache")
+        prune = self.step("Remove obsolete cached module interfaces")
+        self.assertIn('path: .lake/build', restore)
+        self.assertIn('path: .lake/build', save)
+        self.assertIn("success() && github.event_name == 'push'", save)
+        self.assertIn("github.ref == 'refs/heads/main'", save)
+        self.assertIn('prune-cache', prune)
+        self.assertLess(self.text.index('- name: Remove obsolete cached module interfaces'),
+                        self.text.index('- name: Build changed papers and their dependents'))
 
     def test_integration_build_enumerates_registered_not_only_default_targets(self) -> None:
         body = self.step("Build Lean targets")

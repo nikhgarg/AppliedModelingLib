@@ -170,6 +170,24 @@ class PaperContributionScopeTests(unittest.TestCase):
             )
         )
 
+    def test_review_packets_and_source_model_lean_are_project_artifacts(self) -> None:
+        for paper in (PAPER, "LongAuthorEtAl2017Example"):
+            for relative in ("SourceModel.lean", "docs/HUMAN_REVIEW_PACKET.pdf"):
+                self.assertFalse(contribution._unsafe_public_artifact(f"papers/{paper}/{relative}"))
+            self.assertTrue(contribution._unsafe_public_artifact(f"papers/{paper}/source/main.tex"))
+
+    def test_removing_source_already_in_base_does_not_export_new_content(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = GitFixture(Path(temp_dir))
+            source = fixture.root / "papers" / EXISTING / "source.pdf"
+            source.write_bytes(b"previously published source")
+            fixture.commit("old public source")
+            fixture.git("tag", "-f", "base")
+            source.unlink()
+            fixture.commit("remove source from current public tree")
+            plan = self.plan(fixture)
+        self.assertFalse(plan.blocked)
+
     def test_exact_new_paper_and_registration_select_only_that_paper(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             fixture = GitFixture(Path(temp_dir))

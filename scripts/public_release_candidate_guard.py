@@ -116,7 +116,7 @@ REVIEWER_APPROVAL_PATH = (
 )
 PUBLIC_REMOTE_RE = re.compile(
     r"^(?:https://github\.com/|ssh://git@github\.com/|git@github\.com:)"
-    r"nikhgarg/EconCSLib(?:\.git)?$",
+    r"nikhgarg/(?:AppliedModelingLib|EconCSLib)(?:\.git)?$",
     re.IGNORECASE,
 )
 PRIVATE_REMOTE_RE = re.compile(

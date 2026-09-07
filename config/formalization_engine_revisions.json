@@ -1,5 +1,6 @@
 {
   "boundary": "tracked-formalization-engine-production-sources-v1",
+  "independent_registration_start_sequence": 56,
   "revisions": [
     {
       "engine_tree_sha256": "eab10d81bc3749ad3f9d75a2f896bf7a7eb5c1d43828b22c71646279bbd81a6f",
@@ -211,7 +212,6 @@
       "previous_engine_tree_sha256": "cfa504fd80a4535e12b09f7ffdaba4fd8b7f4d9bf5c6f3189673c587cf80a2da",
       "previous_formalization_review_protocol_sha256": "e94b775a4b0bfdebe915ac7d0c13c414fad98036906876fb9239a7086c3cd805",
       "rationale": "Repair source-vocabulary direct-route provenance with separately authenticated broad-binding and one-route selectors, preserve historic non-feature raw reuse, report semantic rebind debt accurately, and remove duplicate closeout cache and failure-path work without changing review obligations.",
-      "relation_to_previous": "review_compatible",
       "raw_producer_compatibility": {
         "invariant": "same-nonproducer-source-record-fingerprint-v1",
         "predecessor_raw_producer_code_identity_sets": [
@@ -254,6 +254,7 @@
           }
         ]
       },
+      "relation_to_previous": "review_compatible",
       "sequence": 17,
       "verification": [
         "Focused source-record association, vocabulary-selection, target-disposition, semantic-rebind, planner-cache, and closeout-worker regressions pass.",
@@ -745,7 +746,18 @@
       "verification": [
         "The merged packet normalization is content-preserving apart from generated whitespace; focused v11 source-map and paper-interface regressions are rerun on the merged tree."
       ]
+    },
+    {
+      "engine_tree_sha256": "02543b4e5e90a5f1869189a9c8a4a319bf6fca6acff78e75d023237070f34962",
+      "formalization_review_protocol_sha256": "345e2b1c89c9ca81d8d51463fa57ad502450652e438ef4561cf76f9c5ca1fe09",
+      "rationale": "Upgrade the public engine authority to independent registrations while preserving the immutable schema-1 history and canonical review protocol.",
+      "sequence": 56,
+      "verification": [
+        "The schema-1 public history remains an exact prefix and the independent-registration boundary starts at sequence 56.",
+        "Focused engine-revision regression tests and trusted-base negative checks pass.",
+        "The legacy raw-producer ledger reader is retained with its exact prior body so existing public audit commands remain importable during the transition."
+      ]
     }
   ],
-  "schema": 1
+  "schema": 2
 }

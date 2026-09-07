@@ -3,8 +3,9 @@ Updated: 2026-09-07
 
 ## 1. Human Verdict
 
-The paper's named theoretical results are proved on the domains and with the
-finite bound stated below.
+The paper's named theoretical results are proved on the domains stated below.
+Shared clarified regularity conditions are consolidated once in Section 6;
+genuine source corrections remain result-local.
 
 ## 2. Closeout Status
 
@@ -27,40 +28,56 @@ figures, captions, and other numerical observations are outside this scope.
 | --- | --- |
 | Example 1, continuous top-one relaxation (Equation 2) | **Supplemental illustration.** The continuous relaxation is proved; Example 1 as a whole is outside the selected result scope. |
 | Equation (4); Definitions 1–3; Proposition 5; Lemma 1 | **Exact.** |
-| [Corollary 1](docs/SOURCE_CLARIFICATIONS.md#value-and-type-support-restrictions) | **Current proof restriction:** positive probability for every preferred type; necessity is unresolved. |
-| [Theorem 1(i)--(iv)](docs/SOURCE_CLARIFICATIONS.md#value-and-type-support-restrictions) | **Current proof restrictions:** every named type has positive mass for the stated all-coordinate limits; a zero-mass type instead needs a supportwise statement. Parts (i)--(ii) also use nonnegative conditional values, and the proof does not cover translated negative laws; necessity of nonnegativity is unresolved. |
+| [Corollary 1](docs/SOURCE_CLARIFICATIONS.md#clarified-regularity-conditions) | **Exact with clarified regularity conditions.** |
+| [Theorem 1(i)](docs/SOURCE_CLARIFICATIONS.md#value-and-type-support-restrictions) | **Corrected target:** the finite-discrete conclusion needs a nondegenerate top-value split; a point-mass law does not force uniform optimal shares. |
+| [Theorem 1(ii)--(iv)](docs/SOURCE_CLARIFICATIONS.md#clarified-regularity-conditions) | **Exact with clarified regularity conditions.** |
 | [Theorem 1(v)](docs/SOURCE_CLARIFICATIONS.md#all-consumed-and-bernoulli-endpoints) | **Additional sign condition:** the common conditional mean is nonnegative. A negative mean reverses the maximal-weight choice; at zero mean every allocation ties. |
-| [Proposition 2](docs/SOURCE_CLARIFICATIONS.md#proposition-2-and-the-finite-uniform-model) | **Narrower proved finite bound:** the checked allocation is `(N+T)s_t-1` with error `(2T+1)/N`. The paper's sharper `(T+1)/N` bound remains unproved, while both bounds give the same square-root shares. |
+| [Proposition 2](docs/SOURCE_CLARIFICATIONS.md#proposition-2-and-the-finite-uniform-model) | **Source correction:** a compiled strictly-positive-PMF counterexample refutes the printed `(T+1)/N` constant. The checked `(2T+1)/N` bound retains the same square-root limit. |
 | [Theorem 2](docs/SOURCE_CLARIFICATIONS.md#theorem-2-independent-rank-varying-bernoulli-values) | **Source clarification:** independent Bernoulli coordinates with rank-dependent probabilities. |
 | [Appendix Lemma D.1](docs/SOURCE_CLARIFICATIONS.md#theorem-1-and-appendix-lemma-d1-share-asymptotics) | **Changed statement:** corrected sign regimes and deficit comparison replace the printed asymptotic branches. |
 | [Appendix Lemmas D.2–D.5](docs/SOURCE_CLARIFICATIONS.md#order-statistics-and-integer-rounding) | **Restricted scope:** eventual valid ranks and the corrected strictly-concave rounding statement. |
 | [Proposition 4, Equations (18) and (20)](docs/SOURCE_CLARIFICATIONS.md#proposition-4) | **Formulas corrected:** Equation (18) is an inequality; Equation (20) uses the preference-weighted measure from Equation (17). |
-| [Proposition 4, limit step](docs/SOURCE_CLARIFICATIONS.md#proposition-4) | **Current proof condition:** a continuous nonconstant radial kernel suffices for the pointwise-supremum limit. The memo gives a discontinuous diagnostic for the proof step; necessity for Proposition 4 is unresolved. |
+| [Proposition 4, limit step](docs/SOURCE_CLARIFICATIONS.md#clarified-regularity-conditions) | **Exact with clarified regularity conditions.** |
 | [Theorem 3; Corollary 3](docs/SOURCE_CLARIFICATIONS.md#all-consumed-and-bernoulli-endpoints) | **Restricted scope:** nondegenerate Bernoulli endpoint domains. |
 
 ## 5. Remaining Boundaries and Gaps
 
-The current finite Proposition 2 bound is weaker than the printed constant;
-see Section 7. The model domains are in Section 6 and the Theorem 2 reading is
-in Section 10. Computational claims are outside this theoretical scope.
+The corrected Proposition 2 finite constant and the other result-local source
+corrections are stated in Sections 4 and 7. Shared model domains are in Section
+6, and the Theorem 2 reading is in Section 10. Computational claims are
+outside this theoretical scope.
 
-## 6. Additional Assumptions Beyond Paper
+## 6. Clarified Regularity Conditions
 
-Theorem 1(i)--(ii) use nonnegative conditional values almost surely as a
-current proof restriction; necessity is unresolved. Corollary 1 uses positive
-probability for every preferred type, with necessity unresolved. All-coordinate share limits use
-strictly positive type masses because zero-mass coordinates require a
-supportwise statement. Theorem 1(v)'s maximal-weight comparison uses a
-nonnegative common mean, and Bernoulli share results exclude their specified
-degenerate endpoints. Proposition 4's limit step uses continuous nonconstant
-radial kernels as a sufficient proof condition, with necessity unresolved.
-See the [domain notes](docs/SOURCE_CLARIFICATIONS.md).
+These clarified regularity conditions state the common domains for the rows
+marked **Exact with clarified regularity conditions**. They do not convert a
+false source claim, a changed finite constant, or a non-equivalent repair into
+an exact reading.
+
+- When a result states a coordinatewise share formula for all named types,
+  each named preferred-type probability is positive. This is the intended
+  regular domain for Corollary 1 and Theorem 1(ii)--(iv).
+- In the fixed-top-`k` value model, conditional values are nonnegative almost
+  surely. This makes the source top-`k` value primitive coincide with the
+  finite allocation objective used for Theorem 1(i)--(ii); Theorem 1(i)'s
+  separate nondegeneracy repair remains visible in its own row.
+- For Proposition 4, the preference measure is normalized sphere volume with
+  an a.e.-measurable density that is positive almost everywhere, and the
+  nonconstant radial kernel is continuous with values in `(0,1]`. The density
+  need not be continuous: it aligns preference and volume null sets, while
+  radial continuity rules out a pointwise Laplace maximum supported only on a
+  null spike.
+
+Theorem 1(v)'s sign condition and the Bernoulli endpoint exclusions are
+separate result-local restrictions. See the
+[source clarification record](docs/SOURCE_CLARIFICATIONS.md).
 
 ## 7. Proof-Strategy Deviations
 
 The checked Proposition 2 allocation is $(N+T)s_t-1$ and gives the finite
-bound $(2T+1)/N$. The paper's $(T+1)/N$ bound is not established or refuted
-here. The asymptotic square-root shares are unchanged.
+bound $(2T+1)/N$. A compiled strictly-positive-PMF witness refutes the paper's
+$(T+1)/N$ bound under its printed finite model. The asymptotic square-root
+shares are unchanged.
 [Exact comparison](docs/SOURCE_CLARIFICATIONS.md#proposition-2-and-the-finite-uniform-model).
 
 The memo also gives [D.1’s deficit and maximization comparisons](docs/SOURCE_CLARIFICATIONS.md#theorem-1-and-appendix-lemma-d1-share-asymptotics) and [Proposition 4’s measure correction](docs/SOURCE_CLARIFICATIONS.md#proposition-4).
@@ -80,21 +97,16 @@ zero selection probability are excluded or assigned a separate convention.
 ## 10. Source Clarifications and Exact Readings
 
 Theorem 2's rank-dependent Bernoulli probabilities are independent but cannot
-also be identically distributed. The memo gives the [value/type domains](docs/SOURCE_CLARIFICATIONS.md#value-and-type-support-restrictions) and [order-statistic/rounding domains](docs/SOURCE_CLARIFICATIONS.md#order-statistics-and-integer-rounding); the result rows link the other clarifications.
-
-<!-- BEGIN GENERATED SETTLED REVIEW CONTEXT -->
-<!-- settled-review-context-sha256: 13e8a5cfd0342ec5126326332aad949b034c1b61d6c6e4a929a197023436373b -->
-<!-- settled-review-context-presentation-sha256: 1445c07efab7c313e8fc6ec9a4392097e45ac22b21e6380a8d8909ed98c2d35f -->
-### Source readings and additional assumptions
-
-- Theorem 1(ii): an upper-bounded conditional value law → an upper-bounded law with nonnegative values almost surely. The current allocation proof does not establish the translated negative-value domain.
-- All-coordinate share limits: possibly zero type masses → strictly positive mass for every named type.
-<!-- END GENERATED SETTLED REVIEW CONTEXT -->
+also be identically distributed. The [clarified regularity conditions](docs/SOURCE_CLARIFICATIONS.md#clarified-regularity-conditions) apply only to
+the rows identified in Section 6; the [order-statistic and rounding domains](docs/SOURCE_CLARIFICATIONS.md#order-statistics-and-integer-rounding) and
+other result-local corrections remain separately stated.
 
 ## 11. Paper Issues or Caveats
 
 The formalization boundaries are stated in the limited-scope paragraph and
-Sections 4--6; no claim is made that Proposition 2's sharper bound is false.
+Sections 4--6. Proposition 2's sharper printed finite bound is false under its
+printed model; its checked counterexample and corrected constant are visible
+in Sections 4 and 7.
 
 ## 12. Detailed Formalization Evidence
 
@@ -141,6 +153,9 @@ the paper import surface. The [closeout record](FINAL_CLOSURE_RECEIPT.md)
 records build and acceptance evidence for its pinned inputs. The
 [review packet](docs/HUMAN_REVIEW_PACKET.pdf) presents the current selected
 statements and governing definitions.
+
+The targeted terminal command is
+`python3 scripts/run_paper_closeout.py --paper PRPKG24AccuracyDiversity`.
 
 ## 18. Paper Definitions Checked
 

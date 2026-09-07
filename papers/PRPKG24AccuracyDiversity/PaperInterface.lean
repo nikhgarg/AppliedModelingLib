@@ -380,7 +380,14 @@ theorem equation2_example1_logRelaxedObjective_formula
 
 /-! ## Main Theorems and Corollaries -/
 
-/-- Theorem 1(i): exact-top-`k` finite-discrete iid source, equation (6). -/
+/--
+Theorem 1(i): exact-top-`k` finite-discrete iid source, equation (6).
+
+Source clarifications: every named preferred type has strictly positive mass,
+and conditional item values use the nonnegative utility scale assumed
+throughout Theorem 1.  Thus the exact top-`k` finite experiment and its
+monotonicity route have the intended domain.
+-/
 abbrev theorem1_i :=
   @theorem1_i_finiteDiscrete_iid_exact_source_formula
 
@@ -459,10 +466,11 @@ Theorem 1(ii): bounded iid upper-endpoint PMF source route, equation (6).
 The `withDensity` model derives the local-integrability and reflected-tail
 facts internally from the literal PDF representation.  The remaining support
 normalization and the preferred-type PMF are explicit in the theorem type.
-The endpoint adopts the recorded nonnegative-value convention; it does not
-claim the translated upper-bounded source class without that convention.
+Source clarifications: each named preferred type has positive mass, and the
+conditional item values use the nonnegative utility scale rather than an
+arbitrary translated upper-bounded scale.
 Source status: direct PMF outer-model and literal-PDF conditional route under
-recorded conventions
+the stated source-domain clarifications
 -/
 theorem theorem1_ii_formula
     {T : ℕ} [NeZero T] {beta c M L : ℝ} {k : ℕ}
@@ -662,7 +670,10 @@ Corollary 1: every nonnegative `gamma` is attained by a concrete source-iid
 conditional-value model.  The witness records its source family, parameters,
 and exponent identity; every optimal fixed-`k` sequence has the stated limit.
 
-Source status: approved source corollary with explicit positive-`k` domain
+Source clarification: every named preferred type has strictly positive mass
+`p_t > 0`; zero-mass labels are removed before applying the all-coordinate
+homogeneity statement.  The explicit `hlike_pos` hypothesis is this source
+domain clarification, alongside the positive-`k` domain.
 -/
 theorem corollary1
     {T : ℕ} [NeZero T] {k : ℕ}
@@ -1831,12 +1842,14 @@ the profile objective as the user supremum, and derives the needed continuity
 and integrability facts from compactness plus joint continuity of the kernel.
 The exposed source-shaped wrapper retains the paper's nonconstant `(0,1]`
 radial-kernel condition on the realized unit-sphere distance range `[0,2]`.
-It also exposes continuity of the radial function, the minor analytic
-regularity needed by the exact compact-sphere Laplace limit.  The conclusion
-corrects the printed type error `Gamma(pi) in inf_alpha Gamma(alpha)` to the
-intended pointwise minimization inequality.  Equations (17) and (20) are
-exposed separately above as the exact bridge from the source limit to this
-compact-supremum objective.
+Its clarified regularity domain uses a continuous radial function and a
+measurable preference density, positive almost everywhere with respect to
+normalized sphere volume.  The latter connects the source preference law to
+the geometric averaging measure; continuity of the density is not required.
+The conclusion corrects the printed type error `Gamma(pi) in inf_alpha
+Gamma(alpha)` to the intended pointwise minimization inequality.  Equations
+(17) and (20) are exposed separately above as the exact bridge from the source
+limit to this compact-supremum objective.
 -/
 theorem proposition4
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -1846,7 +1859,15 @@ theorem proposition4
     (preferenceMeasure : MeasureTheory.Measure (Proposition4Sphere.UnitSphere E))
     [MeasureTheory.IsProbabilityMeasure preferenceMeasure]
     (p : ℝ → ℝ)
-    (hopen : MeasureTheory.Measure.IsOpenPosMeasure preferenceMeasure)
+    (density : Proposition4Sphere.UnitSphere E → ENNReal)
+    (hdensity : AEMeasurable density
+      (Proposition4Sphere.sphereUniformMeasure
+        (MeasureTheory.volume : MeasureTheory.Measure E)))
+    (hdensity_pos : ∀ᵐ u ∂Proposition4Sphere.sphereUniformMeasure
+      (MeasureTheory.volume : MeasureTheory.Measure E), density u ≠ 0)
+    (hpreference : preferenceMeasure =
+      (Proposition4Sphere.sphereUniformMeasure
+        (MeasureTheory.volume : MeasureTheory.Measure E)).withDensity density)
     (hp : Continuous p)
     (hp_nonconstant :
       ∃ r ∈ Set.Icc (0 : ℝ) 2,
@@ -1857,10 +1878,30 @@ theorem proposition4
       Proposition4Sphere.logRadialDistanceProfileSupValue (E := E) p
           (Proposition4Sphere.sphereVolumeUniformProbabilityMeasure (E := E)) ≤
         Proposition4Sphere.logRadialDistanceProfileSupValue (E := E) p alpha :=
-  Proposition4Sphere.radialDistanceKernel_probabilityProfile_sphereVolumeUniform_minimizes_of_continuous_positive_profileSup
-    (E := E) preferenceMeasure p hopen
-    (PRPKG24AccuracyDiversity.Proposition4Sphere.defaultUnitSpherePoint E) hp
-    (fun r hr => (hp_range r hr).1)
+  by
+    haveI : MeasureTheory.IsProbabilityMeasure
+        (Proposition4Sphere.sphereUniformMeasure
+          (MeasureTheory.volume : MeasureTheory.Measure E)) :=
+      Proposition4Sphere.sphereUniformMeasure_isProbabilityMeasure
+        (MeasureTheory.volume : MeasureTheory.Measure E)
+    haveI : MeasureTheory.Measure.IsOpenPosMeasure
+        (Proposition4Sphere.sphereUniformMeasure
+          (MeasureTheory.volume : MeasureTheory.Measure E)) :=
+      Proposition4Sphere.sphereUniformMeasure_isOpenPosMeasure
+        (MeasureTheory.volume : MeasureTheory.Measure E)
+    have hvolume_preference :
+        Proposition4Sphere.sphereUniformMeasure
+            (MeasureTheory.volume : MeasureTheory.Measure E) ≪
+          preferenceMeasure := by
+      rw [hpreference]
+      exact MeasureTheory.withDensity_absolutelyContinuous' hdensity hdensity_pos
+    letI : MeasureTheory.Measure.IsOpenPosMeasure preferenceMeasure :=
+      hvolume_preference.isOpenPosMeasure
+    exact
+      Proposition4Sphere.radialDistanceKernel_probabilityProfile_sphereVolumeUniform_minimizes_of_continuous_positive_profileSup
+        (E := E) preferenceMeasure p inferInstance
+        (PRPKG24AccuracyDiversity.Proposition4Sphere.defaultUnitSpherePoint E) hp
+        (fun r hr => (hp_range r hr).1)
 
 /-- Uniform `[0,1]` specialization retained as supporting mathematics. -/
 abbrev uniform_order_statistic_topk_specialization :=
@@ -2785,7 +2826,15 @@ def proposition4Spec : Prop :=
     (preferenceMeasure : MeasureTheory.Measure (Proposition4Sphere.UnitSphere E))
     [MeasureTheory.IsProbabilityMeasure preferenceMeasure]
     (p : ℝ → ℝ)
-    (hopen : MeasureTheory.Measure.IsOpenPosMeasure preferenceMeasure)
+    (density : Proposition4Sphere.UnitSphere E → ENNReal)
+    (hdensity : AEMeasurable density
+      (Proposition4Sphere.sphereUniformMeasure
+        (MeasureTheory.volume : MeasureTheory.Measure E)))
+    (hdensity_pos : ∀ᵐ u ∂Proposition4Sphere.sphereUniformMeasure
+      (MeasureTheory.volume : MeasureTheory.Measure E), density u ≠ 0)
+    (hpreference : preferenceMeasure =
+      (Proposition4Sphere.sphereUniformMeasure
+        (MeasureTheory.volume : MeasureTheory.Measure E)).withDensity density)
     (hp : Continuous p)
     (hp_nonconstant :
       ∃ r ∈ Set.Icc (0 : ℝ) 2,

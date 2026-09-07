@@ -251,6 +251,24 @@
       ]
     },
     {
+      "title": "AI and applications",
+      "paths": [
+        "AppliedModelingLib/Applications.lean",
+        "AppliedModelingLib/Applications",
+        "AppliedModelingLib/Privacy.lean",
+        "AppliedModelingLib/Privacy",
+        "AppliedModelingLib/Alignment.lean",
+        "AppliedModelingLib/Alignment"
+      ],
+      "examples": "Alignment axioms and welfare; differential privacy and composition; algorithmic fairness; admissions policies; rating systems; recommender systems and producer/user fairness.",
+      "papers": [
+        "MBJG25ProducerFairness",
+        "GJ18InformativeRatingSystems",
+        "GJ19OptimalBinaryRatingSystems",
+        "GCG24UserItemFairness"
+      ]
+    },
+    {
       "title": "Learning and statistics",
       "paths": [
         "AppliedModelingLib/Learning.lean",
@@ -325,24 +343,6 @@
         "AppliedModelingLib/Queueing"
       ],
       "examples": "Single-server and many-server queues; priority service and processor sharing; waiting times, workloads, and stationary distributions; heavy-traffic limits; congestion externalities and pricing."
-    },
-    {
-      "title": "AI and applications",
-      "paths": [
-        "AppliedModelingLib/Applications.lean",
-        "AppliedModelingLib/Applications",
-        "AppliedModelingLib/Privacy.lean",
-        "AppliedModelingLib/Privacy",
-        "AppliedModelingLib/Alignment.lean",
-        "AppliedModelingLib/Alignment"
-      ],
-      "examples": "Alignment axioms and welfare; differential privacy and composition; algorithmic fairness; admissions policies; rating systems; recommender systems and producer/user fairness.",
-      "papers": [
-        "MBJG25ProducerFairness",
-        "GJ18InformativeRatingSystems",
-        "GJ19OptimalBinaryRatingSystems",
-        "GCG24UserItemFairness"
-      ]
     }
   ],
   "preserve_partial_status": [

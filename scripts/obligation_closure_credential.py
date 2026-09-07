@@ -363,12 +363,18 @@ def _validate_current_source(
         source_map.get("source_artifact_path"),
         repository_root=root,
     )
-    if source_path is None:
+    expected = _sha256(source_map.get("source_artifact_sha256"), "source artifact")
+    # Public projections deliberately omit local source locators. The explicit
+    # source-free mode still validates the recorded digest and archive metadata;
+    # the surrounding closure verifier checks the graph and current Lean inputs.
+    locator_withheld = (
+        allow_missing_source_bytes and "source_artifact_path" not in source_map
+    )
+    if source_path is None and not locator_withheld:
         raise ObligationClosureCredentialError(
             "current source artifact path is invalid: " + problem
         )
-    expected = _sha256(source_map.get("source_artifact_sha256"), "source artifact")
-    if source_path.is_file():
+    if source_path is not None and source_path.is_file():
         if _sha256_file(source_path) != expected:
             raise ObligationClosureCredentialError(
                 "current source artifact bytes disagree with the obligation graph"
@@ -391,7 +397,7 @@ def _validate_current_source(
             "current archive-source provenance is invalid: "
             + "; ".join(issue.message for issue in substantive_archive_issues)
         )
-    return source_path if source_path.is_file() else None
+    return source_path if source_path is not None and source_path.is_file() else None
 
 
 def _validate_current_build(
@@ -2093,6 +2099,53 @@ def validate_nonaccepting_recorded_graph_projection(
         source_review_metadata_by_specification=source_review_metadata,
         prerequisite_review_metadata_by_declaration=prerequisite_review_metadata,
     )
+
+
+
+def validate_public_recorded_graph_inputs(
+    root: Path, paper: str, payload: Mapping[str, Any]
+) -> None:
+    """Check public transport and current code; never issue paper acceptance.
+
+    Public exports withhold source files and private review/approval records.
+    Their immutable graph carries the recorded judgments. Authenticate that
+    graph and its complete review surface, then compare every current repository
+    Lean input against the graph's recorded build preimage. Do not replay private
+    source-assurance producers or manufacture a fresh closeout credential.
+    """
+    from scripts.lean_signature_manifest import graph_authenticated_lean_import_closure_guard
+
+    projection = validate_nonaccepting_recorded_graph_projection(root, paper, payload)
+    if not projection.reviewed_display_surface_complete:
+        raise ObligationClosureCredentialError("public graph review surface is incomplete")
+    _preflight, _paths, source_map = _current_preflight(root, paper)
+    _validate_current_source(root, paper, source_map, allow_missing_source_bytes=True)
+    digest = recorded_accepted_graph_lean_import_closure_sha256(root, paper, payload)
+    try:
+        closure = load_lean_import_closure_preimage(root, paper, digest)
+        try:
+            guard = graph_authenticated_lean_import_closure_guard(root, closure)
+        except ValueError:
+            # Byte changes in a shared module need not change the reviewed
+            # declarations. Reuse the existing Lean identity verifier; it
+            # checks the elaborated statements and transitive dependencies,
+            # and fails if any reviewed mathematical meaning changed.
+            current = _selected_accepted_graph_from_receipt(
+                root, paper, payload, preflight=_preflight,
+                authority_sha256s=_recorded_engine_authorities(root),
+            )
+            _, _, prerequisite_sources = _recorded_issued_review_metadata(
+                root, paper, current, _preflight
+            )
+            guard, _semantic_paths = revalidate_terminal_lean_semantics(
+                root, paper, current, preflight=_preflight,
+                accepted_import_closure=closure,
+                authenticated_prerequisite_source_items_by_declaration=prerequisite_sources,
+            )
+        if not guard.finalize_unchanged():
+            raise ValueError("public Lean inputs changed during validation")
+    except (ValueError, RuntimeError, OSError) as exc:
+        raise ObligationClosureCredentialError(str(exc)) from exc
 
 
 def _accepted_graph_direct_target_identities(

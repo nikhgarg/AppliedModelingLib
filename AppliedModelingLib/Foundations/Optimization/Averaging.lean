@@ -1,6 +1,7 @@
 import AppliedModelingLib.Foundations.Math.FiniteSum
 import AppliedModelingLib.Foundations.Optimization.Certificate
 import AppliedModelingLib.Foundations.Probability.Symmetry
+import Mathlib.MeasureTheory.Function.EssSup
 import Mathlib.MeasureTheory.Integral.Average
 import Mathlib.MeasureTheory.Integral.IntegrableOn
 import Mathlib.MeasureTheory.Integral.Prod
@@ -313,6 +314,47 @@ theorem uniform_minimizes {Profile User : Type*}
     (C : AveragingMinimizationCertificate Profile User) :
     ∀ alpha : Profile, C.gamma C.uniformProfile ≤ C.gamma alpha :=
   C.isGlobalMinimizer
+
+/--
+Essential-supremum version of the probability averaging argument.
+
+The source objective is the essential supremum of the user payoff under the
+preference measure.  If the geometric averaging measure is absolutely
+continuous with respect to that preference measure, an almost-everywhere
+preference upper bound transfers to the geometric average.  Thus a uniform
+profile whose payoff is constant and every profile's geometric average equals
+that constant is a global minimizer.  No pointwise maximizer or continuity is
+needed for this step.
+-/
+theorem uniform_minimizes_essSup_of_integral_average
+    {Profile User : Type*} [MeasurableSpace User]
+    (preferenceMeasure userMeasure : Measure User)
+    [IsProbabilityMeasure preferenceMeasure] [IsProbabilityMeasure userMeasure]
+    (huser_preference : userMeasure ≪ preferenceMeasure)
+    (rho : Profile → User → ℝ)
+    (uniformProfile : Profile) (uniformValue : ℝ)
+    (rho_integrable : ∀ alpha : Profile, Integrable (rho alpha) userMeasure)
+    (integral_rho_eq_uniformValue :
+      ∀ alpha : Profile, (∫ u, rho alpha u ∂userMeasure) = uniformValue)
+    (uniform_rho : ∀ u : User, rho uniformProfile u = uniformValue)
+    (rho_bddAbove :
+      ∀ alpha : Profile,
+        Filter.IsBoundedUnder (· ≤ ·) (ae preferenceMeasure) (rho alpha)) :
+    ∀ alpha : Profile,
+      essSup (rho uniformProfile) preferenceMeasure ≤
+        essSup (rho alpha) preferenceMeasure := by
+  intro alpha
+  have huniform : rho uniformProfile = fun _ : User => uniformValue :=
+    funext uniform_rho
+  rw [huniform, essSup_const']
+  rw [← integral_rho_eq_uniformValue alpha]
+  calc
+    (∫ u, rho alpha u ∂userMeasure) ≤
+        ∫ _u : User, essSup (rho alpha) preferenceMeasure ∂userMeasure := by
+      apply integral_mono_ae (rho_integrable alpha) (integrable_const _)
+      exact huser_preference.ae_le (ae_le_essSup (rho_bddAbove alpha))
+    _ = essSup (rho alpha) preferenceMeasure := by
+      simp
 
 end AveragingMinimizationCertificate
 

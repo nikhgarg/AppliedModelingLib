@@ -161,3 +161,13 @@ The selected destination is `nikhgarg/AppliedModelingLib` and
       `nikhgarg/EconCSLib` repository, which would break Git redirects.
 - [ ] Verify the old Git URL still fetches and give fork owners the upstream
       remote-update instructions. Existing forks require no recreation.
+
+## Reader-facing release record and deployed links
+
+- Update [the release log](RELEASE_LOG.md) with the changed papers, separating
+  proof, coverage, and documentation changes. Link to affected reports and the
+  public change. Summarize the final result; keep private development history out.
+- Require the Pages deployment's live-link check to pass. It compares the
+  generated files with the deployed bytes, checks local links and anchors, and
+  verifies the legacy site and repository entry points. A local build alone
+  does not verify deployment.

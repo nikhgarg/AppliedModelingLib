@@ -2720,3 +2720,61 @@ class ObligationClosureCredentialTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PublicSourceLocatorTests(unittest.TestCase):
+    def test_withheld_locator_requires_explicit_source_free_mode(self):
+        with tempfile.TemporaryDirectory() as d:
+            source = {'source_artifact_sha256': '1' * 64}
+            with mock.patch.object(credential, 'source_archive_surface_validation_issues', return_value=[]):
+                self.assertIsNone(credential._validate_current_source(Path(d), 'Paper', source, allow_missing_source_bytes=True))
+                with self.assertRaisesRegex(credential.ObligationClosureCredentialError, 'path is invalid'):
+                    credential._validate_current_source(Path(d), 'Paper', source, allow_missing_source_bytes=False)
+
+    def test_source_free_mode_does_not_accept_invalid_digest_or_explicit_locator(self):
+        with tempfile.TemporaryDirectory() as d:
+            for source in (
+                {'source_artifact_sha256': 'bad'},
+                {'source_artifact_sha256': '1' * 64, 'source_artifact_path': None},
+                {'source_artifact_sha256': '1' * 64, 'source_artifact_path': '../escape.pdf'},
+            ):
+                with self.subTest(source=source), self.assertRaises(credential.ObligationClosureCredentialError):
+                    credential._validate_current_source(Path(d), 'Paper', source, allow_missing_source_bytes=True)
+
+    def test_available_source_bytes_still_must_match(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            folder = root / 'papers/Paper'
+            folder.mkdir(parents=True)
+            (folder / 'source.pdf').write_bytes(b'changed bytes')
+            source = {'source_artifact_sha256': '1' * 64, 'source_artifact_path': 'source.pdf'}
+            with self.assertRaisesRegex(credential.ObligationClosureCredentialError, 'bytes disagree'):
+                credential._validate_current_source(root, 'Paper', source, allow_missing_source_bytes=True)
+
+
+class PublicGraphInputTests(unittest.TestCase):
+    def test_changed_public_inputs_fail_even_with_authenticated_graph(self):
+        with mock.patch.object(credential, 'validate_nonaccepting_recorded_graph_projection', return_value=SimpleNamespace(reviewed_display_surface_complete=True)), mock.patch.object(credential, '_current_preflight', return_value=(None, (), {})), mock.patch.object(credential, '_validate_current_source'), mock.patch.object(credential, 'recorded_accepted_graph_lean_import_closure_sha256', return_value='1' * 64), mock.patch.object(credential, 'load_lean_import_closure_preimage', return_value={}), mock.patch('scripts.lean_signature_manifest.graph_authenticated_lean_import_closure_guard', side_effect=ValueError('current Lean source changed')), mock.patch.object(credential, '_selected_accepted_graph_from_receipt', side_effect=ValueError('current Lean source changed')):
+            with self.assertRaisesRegex(credential.ObligationClosureCredentialError, 'current Lean source changed'):
+                credential.validate_public_recorded_graph_inputs(Path('.'), 'Paper', {})
+
+    def test_incomplete_public_review_surface_fails(self):
+        with mock.patch.object(credential, 'validate_nonaccepting_recorded_graph_projection', return_value=SimpleNamespace(reviewed_display_surface_complete=False)):
+            with self.assertRaisesRegex(credential.ObligationClosureCredentialError, 'review surface is incomplete'):
+                credential.validate_public_recorded_graph_inputs(Path('.'), 'Paper', {})
+
+    def test_public_reader_is_explicit_and_does_not_reissue_acceptance(self):
+        from scripts import final_closure_receipt as receipts
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            folder = root / 'papers/Paper/audit'
+            folder.mkdir(parents=True)
+            (folder / 'paper_statement_map.json').write_text('{}')
+            receipt = receipts.FinalClosureReceipt(path=root / 'receipt.md', payload={'schema': 6})
+            with mock.patch.object(receipts, 'load_final_closure_receipt', return_value=receipt), mock.patch.object(credential, 'validate_public_recorded_graph_inputs') as public, mock.patch.object(credential, 'validate_obligation_closure_receipt', side_effect=credential.ObligationClosureCredentialError('private review required')) as strict:
+                result = receipts.validate_final_closure_receipt(root, 'Paper', allow_missing_source_bytes=True)
+                self.assertEqual(result.terminal_validation_route, 'public_recorded_graph')
+                strict.assert_not_called()
+                with self.assertRaisesRegex(receipts.FinalClosureReceiptError, 'private review required'):
+                    receipts.validate_final_closure_receipt(root, 'Paper')
+                self.assertEqual(public.call_count, 1)

@@ -7,7 +7,7 @@ closed_at = "2026-09-07"
 
 [accepted_graph]
 pointer = "papers/PRPKG24AccuracyDiversity/audit/obligation_evidence/current_accepted_graph.json"
-graph_sha256 = "776159080968789621f2aab5d6148a7e5c4e0936c065232e02d0bfe405cffa8c"
+graph_sha256 = "72a29aa4f6c37913bd3e980b6a963ad1da6ecf640ec7b7e70ffcbbf804c81e8e"
 
 +++
 

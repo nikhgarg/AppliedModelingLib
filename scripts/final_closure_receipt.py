@@ -656,6 +656,26 @@ def validate_final_closure_receipt(
     receipt = load_final_closure_receipt(root, paper)
     payload = receipt.payload
     schema = payload.get("schema")
+    if schema == 6 and allow_missing_source_bytes:
+        source_map = json.loads((root / "papers" / paper / "audit" / "paper_statement_map.json").read_text())
+        if "source_artifact_path" not in source_map:
+            try:
+                from scripts.obligation_closure_credential import (
+                    ObligationClosureCredentialError,
+                    validate_public_recorded_graph_inputs,
+                )
+                validate_public_recorded_graph_inputs(root, paper, payload)
+            except (ObligationClosureCredentialError, ValueError, RuntimeError, OSError) as exc:
+                raise FinalClosureReceiptError(str(exc)) from exc
+            return FinalClosureReceipt(
+                path=receipt.path,
+                payload=receipt.payload,
+                terminal_validation_route="public_recorded_graph",
+                terminal_validation_detail=(
+                    "Recorded graph and current Lean inputs verified; source files and "
+                    "private review records are withheld. No new acceptance is issued."
+                ),
+            )
     if schema in OBLIGATION_RECEIPT_SCHEMAS:
         try:
             from scripts.obligation_closure_credential import (

@@ -897,7 +897,7 @@
       "human_translation": "0/25 reviewed",
       "llm_as_judge_translation": "accepted closeout: 25/25 raw-source-to-Spec match",
       "llm_as_judge_paper_coverage": "accepted closeout: 25/25 source claims covered",
-      "lean_loc": 63564,
+      "lean_loc": 63979,
       "main_note": "",
       "main_note_citation": null,
       "main_note_review": {

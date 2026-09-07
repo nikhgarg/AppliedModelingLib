@@ -8406,7 +8406,7 @@
       "open_source_boundaries": [],
       "paper_interface": {
         "declaration_rows": 133,
-        "line_count": 2988,
+        "line_count": 3037,
         "maintainability_issue": "The large interface separates the selected transparent specifications from proof endpoints, governing definitions, and supplemental material.",
         "oversized": true,
         "path": "papers/PRPKG24AccuracyDiversity/PaperInterface.lean",

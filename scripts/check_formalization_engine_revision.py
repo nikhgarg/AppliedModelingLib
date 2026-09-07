@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Guard semantic-engine compatibility without making code hashes paper evidence.
+"""Register audit engines independently without making code hashes paper evidence.
 
 The guard is commit, CI, and local closeout infrastructure. It hashes production
 audit implementation sources from an exact Git candidate view, then requires that
 pair of engine and canonical review-protocol identities to be registered in an
-append-only revision chain.  A compatibility-preserving implementation change
-may keep the review protocol unchanged, but must be explicitly attested.  A
-semantic change is accepted only when the structured review protocol changes.
+append-only authority set.  Each current registration is validated directly;
+no predecessor-to-successor compatibility path grants evidence reuse.  The
+legacy linked revision history remains immutable provenance for older receipts.
 
 The engine digest is deliberately *not* a paper closeout or semantic-evidence
 identity.  Its only purpose is to prevent an implementation edit from being
@@ -41,13 +41,25 @@ except ModuleNotFoundError:  # pragma: no cover - direct-script import support.
 
 LEDGER_PATH = "config/formalization_engine_revisions.json"
 PROTOCOL_PATH = "config/formalization_audit_protocol.json"
-LEDGER_SCHEMA = 1
+LEDGER_SCHEMA = 2
+LEGACY_LEDGER_SCHEMA = 1
+INDEPENDENT_REGISTRATION_START_FIELD = "independent_registration_start_sequence"
 ENGINE_DIGEST_SCHEMA = 1
 REVIEW_PROTOCOL_DIGEST_SCHEMA = 1
 BOUNDARY_ID = "tracked-formalization-engine-production-sources-v1"
-ENGINE_ROOTS = ("scripts", "skills/econcs-formalizer/scripts")
+ENGINE_ROOTS = (
+    "scripts",
+    "skills/econcs-formalizer/scripts",
+    "AppliedModelingLib/Audit",
+)
+ENGINE_EXACT_PATHS = ("lakefile.toml",)
+ENGINE_PATHS = (*ENGINE_ROOTS, *ENGINE_EXACT_PATHS)
 ENGINE_SUFFIXES = frozenset({".py", ".lean", ".sh"})
-EXCLUDED_PREFIXES = ("scripts/tests/",)
+# Public-release packaging is a separate boundary from paper closeout. Changes
+# to projection, allowlisting, or candidate hygiene must be reviewed and tested
+# for release safety, but they do not alter source-to-Lean semantic acceptance
+# and therefore must not issue a new paper-audit engine identity.
+EXCLUDED_PREFIXES = ("scripts/tests/", "scripts/public_release_")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 RELATION_BOOTSTRAP = "bootstrap"
 RELATION_COMPATIBLE = "review_compatible"
@@ -76,7 +88,7 @@ class RuntimeEngineRegistration:
     engine_tree_sha256: str
     review_semantic_class_sha256: str
     revision_sequence: int
-    relation_to_previous: str
+    registration_kind: str
     engine_file_count: int
 
 
@@ -113,8 +125,121 @@ def is_engine_source_path(value: str) -> bool:
         return False
     if "/__pycache__/" in f"/{path}/" or path.endswith(".pyc"):
         return False
+    if path in ENGINE_EXACT_PATHS:
+        return True
     in_root = any(path == root or path.startswith(f"{root}/") for root in ENGINE_ROOTS)
     return in_root and PurePosixPath(path).suffix in ENGINE_SUFFIXES
+
+
+def _lakefile_engine_projection(content: bytes) -> bytes:
+    """Retain audit-runtime configuration without hashing paper registration.
+
+    Paper targets are append-only repository routing, not audit-engine
+    implementation.  The closeout engine depends on the shared library, the
+    audit-helper library, Lean options, and package requirements.  Project only
+    those TOML sections so adding or removing an unrelated paper cannot demand
+    a new engine authority.
+    """
+
+    try:
+        lines = content.decode("utf-8").splitlines()
+    except UnicodeDecodeError as exc:
+        raise EngineRevisionError("lakefile.toml is not UTF-8") from exc
+    blocks: list[tuple[str, list[str]]] = []
+    header = ""
+    body: list[str] = []
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("[") and stripped.endswith("]"):
+            if header or body:
+                blocks.append((header, body))
+            header = stripped
+            body = []
+        else:
+            body.append(line)
+    if header or body:
+        blocks.append((header, body))
+
+    name_pattern = re.compile(r'^name\s*=\s*"([^"]+)"\s*(?:#.*)?$')
+    declared_libraries = {
+        match.group(1)
+        for block_header, block_body in blocks
+        if block_header == "[[lean_lib]]"
+        for line in block_body
+        if (match := name_pattern.fullmatch(line.strip())) is not None
+    }
+    current_libraries = {"AppliedModelingLib", "AppliedModelingLibAuditScripts"}
+    present_current_libraries = declared_libraries & current_libraries
+    if present_current_libraries == current_libraries:
+        required_libraries = current_libraries
+    elif present_current_libraries:
+        raise EngineRevisionError(
+            "lakefile.toml has a partial current audit-runtime Lean library set"
+        )
+    elif "EconCSLib" in declared_libraries:
+        # One-time public bootstrap support.  The trusted public base predates
+        # the AppliedModelingLib rename and audit-helper library.  Its own
+        # engine registration must still cover the exact legacy shared-library
+        # block; candidate trees that declare the current pair use the same
+        # projection as the final checker below.
+        required_libraries = {"EconCSLib"}
+    else:
+        raise EngineRevisionError(
+            "lakefile.toml omits a required audit-runtime Lean library"
+        )
+
+    selected: list[dict[str, object]] = []
+    for block_header, block_body in blocks:
+        keep = block_header in {"[leanOptions]", "[[require]]"}
+        if block_header == "[[lean_lib]]":
+            names = [
+                match.group(1)
+                for line in block_body
+                if (match := name_pattern.fullmatch(line.strip())) is not None
+            ]
+            if len(names) != 1:
+                raise EngineRevisionError(
+                    "lakefile.toml lean_lib block has no unique name"
+                )
+            keep = names[0] in required_libraries
+        if keep:
+            selected.append(
+                {
+                    "header": block_header,
+                    "lines": [line.rstrip() for line in block_body],
+                }
+            )
+    selected_libraries = {
+        match.group(1)
+        for block in selected
+        if block["header"] == "[[lean_lib]]"
+        for line in block["lines"]
+        if isinstance(line, str)
+        and (match := name_pattern.fullmatch(line.strip())) is not None
+    }
+    if selected_libraries != required_libraries:
+        raise EngineRevisionError(
+            "lakefile.toml omits a required audit-runtime Lean library"
+        )
+    headers = [block["header"] for block in selected]
+    if "[leanOptions]" not in headers or "[[require]]" not in headers:
+        raise EngineRevisionError(
+            "lakefile.toml omits audit-runtime options or requirements"
+        )
+    return json.dumps(
+        {"schema": 1, "sections": selected},
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+
+
+def _engine_blob_content(blob: CandidateBlob) -> bytes:
+    return (
+        _lakefile_engine_projection(blob.content)
+        if blob.path == "lakefile.toml"
+        else blob.content
+    )
 
 
 def engine_tree_digest(blobs: Iterable[CandidateBlob]) -> tuple[str, int]:
@@ -129,12 +254,13 @@ def engine_tree_digest(blobs: Iterable[CandidateBlob]) -> tuple[str, int]:
         if path in seen:
             raise EngineRevisionError(f"duplicate engine source path: {path}")
         seen.add(path)
+        content = _engine_blob_content(blob)
         records.append(
             {
                 "path": path,
                 "mode": str(blob.mode),
-                "sha256": hashlib.sha256(blob.content).hexdigest(),
-                "size": len(blob.content),
+                "sha256": hashlib.sha256(content).hexdigest(),
+                "size": len(content),
             }
         )
     if not records:
@@ -376,7 +502,7 @@ class GitCandidateView:
         return None if entry is None else self._blob(entry[1])
 
     def engine_blobs(self) -> tuple[CandidateBlob, ...]:
-        entries = self._entries(ENGINE_ROOTS)
+        entries = self._entries(ENGINE_PATHS)
         selected = {
             path: (mode, oid)
             for path, (mode, oid) in entries.items()
@@ -436,17 +562,20 @@ def validate_revision_ledger(
     current_engine_sha256: str,
     current_protocol_sha256: str,
 ) -> dict[str, Any]:
-    """Validate the whole chain and require its tip to match the candidate."""
+    """Validate the authority history and require its tip to match the candidate."""
 
-    if not isinstance(payload, Mapping) or set(payload) != {
-        "schema",
-        "boundary",
-        "revisions",
-    }:
+    if not isinstance(payload, Mapping):
         raise EngineRevisionError("formalization engine revision file is malformed")
-    if payload.get("schema") != LEDGER_SCHEMA:
+    schema = payload.get("schema")
+    expected_top_fields = {"schema", "boundary", "revisions"}
+    if schema == LEDGER_SCHEMA:
+        expected_top_fields.add(INDEPENDENT_REGISTRATION_START_FIELD)
+    if set(payload) != expected_top_fields:
+        raise EngineRevisionError("formalization engine revision file is malformed")
+    if schema not in {LEGACY_LEDGER_SCHEMA, LEDGER_SCHEMA}:
         raise EngineRevisionError(
-            f"formalization engine revision schema must be {LEDGER_SCHEMA}"
+            "formalization engine revision schema must be "
+            f"{LEGACY_LEDGER_SCHEMA} or {LEDGER_SCHEMA}"
         )
     if payload.get("boundary") != BOUNDARY_ID:
         raise EngineRevisionError(
@@ -458,25 +587,41 @@ def validate_revision_ledger(
             "formalization engine has no registered bootstrap revision"
         )
 
+    if schema == LEDGER_SCHEMA:
+        independent_start = payload.get(INDEPENDENT_REGISTRATION_START_FIELD)
+        if (
+            not isinstance(independent_start, int)
+            or isinstance(independent_start, bool)
+            or independent_start < 1
+            or independent_start > len(raw_revisions)
+        ):
+            raise EngineRevisionError(
+                "independent engine-registration start sequence is malformed"
+            )
+    else:
+        independent_start = len(raw_revisions) + 1
+
     revisions: list[dict[str, Any]] = []
     prior: dict[str, Any] | None = None
+    registered_pairs: set[tuple[str, str]] = set()
     for offset, raw_revision in enumerate(raw_revisions):
         sequence = offset + 1
         if not isinstance(raw_revision, Mapping):
             raise EngineRevisionError(f"revision {sequence} must be an object")
-        relation = str(raw_revision.get("relation_to_previous") or "")
         common_fields = {
             "sequence",
             "engine_tree_sha256",
             "formalization_review_protocol_sha256",
-            "relation_to_previous",
             "rationale",
             "verification",
         }
-        expected_fields = (
-            common_fields
+        independent = sequence >= independent_start
+        relation = str(raw_revision.get("relation_to_previous") or "")
+        legacy_common_fields = common_fields | {"relation_to_previous"}
+        expected_fields = common_fields if independent else (
+            legacy_common_fields
             if relation == RELATION_BOOTSTRAP
-            else common_fields
+            else legacy_common_fields
             | {
                 "previous_engine_tree_sha256",
                 "previous_formalization_review_protocol_sha256",
@@ -486,6 +631,11 @@ def validate_revision_ledger(
             RAW_PRODUCER_COMPATIBILITY_FIELD
         )
         if raw_producer_compatibility is not None:
+            if independent:
+                raise EngineRevisionError(
+                    f"independent registration {sequence} cannot carry a pairwise "
+                    "raw-producer compatibility grant"
+                )
             expected_fields = expected_fields | {
                 RAW_PRODUCER_COMPATIBILITY_FIELD
             }
@@ -493,7 +643,7 @@ def validate_revision_ledger(
             raise EngineRevisionError(f"revision {sequence} fields are malformed")
         if raw_revision.get("sequence") != sequence:
             raise EngineRevisionError(f"revision {sequence} sequence is malformed")
-        if relation not in RELATIONS:
+        if not independent and relation not in RELATIONS:
             raise EngineRevisionError(
                 f"revision {sequence} has unknown compatibility relation"
             )
@@ -527,7 +677,16 @@ def validate_revision_ledger(
             raw_revision.get("verification"), f"revision {sequence} verification"
         )
 
-        if sequence == 1:
+        pair = (engine, protocol)
+        if pair in registered_pairs:
+            raise EngineRevisionError(
+                f"revision {sequence} duplicates an existing engine/protocol registration"
+            )
+        registered_pairs.add(pair)
+
+        if independent:
+            pass
+        elif sequence == 1:
             if relation != RELATION_BOOTSTRAP:
                 raise EngineRevisionError("the first revision must be bootstrap")
         else:
@@ -568,6 +727,9 @@ def validate_revision_ledger(
         revision = dict(raw_revision)
         revision["engine_tree_sha256"] = engine
         revision["formalization_review_protocol_sha256"] = protocol
+        revision["registration_kind"] = (
+            "independent" if independent else "legacy_linked_revision"
+        )
         revisions.append(revision)
         prior = revision
 
@@ -582,22 +744,25 @@ def validate_revision_ledger(
     if prior["engine_tree_sha256"] != current_engine:
         raise EngineRevisionError(
             "formalization engine implementation changed without a registered "
-            "compatibility transition"
+            "independent engine authority"
         )
     if prior["formalization_review_protocol_sha256"] != current_protocol:
         raise EngineRevisionError(
             "canonical formalization review protocol changed without a registered "
-            "semantic transition"
+            "independent engine authority"
         )
-    return {
-        "schema": LEDGER_SCHEMA,
+    result = {
+        "schema": schema,
         "boundary": BOUNDARY_ID,
         "revisions": revisions,
     }
+    if schema == LEDGER_SCHEMA:
+        result[INDEPENDENT_REGISTRATION_START_FIELD] = independent_start
+    return result
 
 
 def validate_append_only_history(current: object, base: object | None) -> None:
-    """Require an existing trusted chain to remain an exact prefix.
+    """Require existing authorities to remain an exact prefix.
 
     Internal hash links cannot prove that somebody did not replace the whole
     file with a new bootstrap.  Index checks therefore compare against HEAD,
@@ -608,9 +773,7 @@ def validate_append_only_history(current: object, base: object | None) -> None:
         return
     if not isinstance(base, Mapping) or not isinstance(current, Mapping):
         raise EngineRevisionError("formalization engine revision history is malformed")
-    if base.get("schema") != current.get("schema") or base.get(
-        "boundary"
-    ) != current.get("boundary"):
+    if base.get("boundary") != current.get("boundary"):
         raise EngineRevisionError(
             "formalization engine revision schema or boundary changed across history"
         )
@@ -627,6 +790,26 @@ def validate_append_only_history(current: object, base: object | None) -> None:
         raise EngineRevisionError(
             "formalization engine revision history was rewritten instead of appended"
         )
+    base_schema = base.get("schema")
+    current_schema = current.get("schema")
+    if base_schema == current_schema == LEDGER_SCHEMA:
+        if base.get(INDEPENDENT_REGISTRATION_START_FIELD) != current.get(
+            INDEPENDENT_REGISTRATION_START_FIELD
+        ):
+            raise EngineRevisionError(
+                "independent engine-registration boundary was rewritten"
+            )
+        return
+    if base_schema == LEGACY_LEDGER_SCHEMA and current_schema == LEDGER_SCHEMA:
+        if current.get(INDEPENDENT_REGISTRATION_START_FIELD) != len(base_revisions) + 1:
+            raise EngineRevisionError(
+                "legacy engine history was not migrated at an append-only boundary"
+            )
+        return
+    if base_schema != current_schema:
+        raise EngineRevisionError(
+            "formalization engine revision schema changed outside the supported migration"
+        )
 
 
 def bootstrap_payload(
@@ -635,12 +818,12 @@ def bootstrap_payload(
     return {
         "schema": LEDGER_SCHEMA,
         "boundary": BOUNDARY_ID,
+        INDEPENDENT_REGISTRATION_START_FIELD: 1,
         "revisions": [
             {
                 "sequence": 1,
                 "engine_tree_sha256": engine_sha256,
                 "formalization_review_protocol_sha256": protocol_sha256,
-                "relation_to_previous": RELATION_BOOTSTRAP,
                 "rationale": (
                     "Prospective engine-revision guard adoption; existing paper "
                     "evidence is not rewritten or reopened."
@@ -662,7 +845,7 @@ def updated_payload(
     rationale: str,
     verification: Sequence[str],
 ) -> dict[str, Any]:
-    """Return a candidate update; validation still occurs on the next check."""
+    """Append one independent engine authority without a version-pair bridge."""
 
     if not isinstance(payload, Mapping):
         raise EngineRevisionError("formalization engine revision file is malformed")
@@ -685,26 +868,23 @@ def updated_payload(
     )
     if engine == previous_engine and protocol == previous_protocol:
         raise EngineRevisionError("candidate already matches the registered revision")
-    relation = (
-        RELATION_SEMANTIC if protocol != previous_protocol else RELATION_COMPATIBLE
-    )
-    if relation == RELATION_COMPATIBLE and engine == previous_engine:
-        raise EngineRevisionError(
-            "a compatibility transition must change the engine implementation"
-        )
     new_revision = {
         "sequence": len(revisions) + 1,
         "engine_tree_sha256": engine,
         "formalization_review_protocol_sha256": protocol,
-        "relation_to_previous": relation,
-        "previous_engine_tree_sha256": previous_engine,
-        "previous_formalization_review_protocol_sha256": previous_protocol,
         "rationale": _validated_text(rationale, "rationale", minimum=20),
         "verification": _validated_verification(list(verification), "verification"),
     }
+    independent_start = (
+        int(payload[INDEPENDENT_REGISTRATION_START_FIELD])
+        if payload.get("schema") == LEDGER_SCHEMA
+        and isinstance(payload.get(INDEPENDENT_REGISTRATION_START_FIELD), int)
+        else len(revisions) + 1
+    )
     result = {
-        "schema": payload.get("schema"),
+        "schema": LEDGER_SCHEMA,
         "boundary": payload.get("boundary"),
+        INDEPENDENT_REGISTRATION_START_FIELD: independent_start,
         "revisions": [*revisions, new_revision],
     }
     validate_revision_ledger(
@@ -810,7 +990,7 @@ def _runtime_dirty_material_paths(
     projection, so prose-only edits remain operationally neutral.
     """
 
-    pathspecs = (*ENGINE_ROOTS, PROTOCOL_PATH, LEDGER_PATH)
+    pathspecs = (*ENGINE_PATHS, PROTOCOL_PATH, LEDGER_PATH)
     assert head_view.tree is not None
     staged = _git_paths(
         head_view,
@@ -912,24 +1092,54 @@ def validate_runtime_engine_registration(root: Path) -> RuntimeEngineRegistratio
         engine_tree_sha256=engine,
         review_semantic_class_sha256=protocol,
         revision_sequence=int(tip["sequence"]),
-        relation_to_previous=str(tip["relation_to_previous"]),
+        registration_kind=str(tip["registration_kind"]),
         engine_file_count=file_count,
     )
 
 
-def validated_runtime_raw_producer_compatibility_ledger(root: Path) -> object:
-    """Return the immutable registered ledger for a provenance mismatch.
+def validated_runtime_engine_revision_ledger(root: Path) -> object:
+    """Return the immutable registered engine ledger from clean ``HEAD``.
 
-    This is deliberately separate from normal exact receipt reuse. A caller
-    that wants to bridge differing raw-producer code identities must first
-    establish clean-HEAD runtime registration, then read the ledger from that
-    immutable HEAD tree rather than from a mutable working file.
+    Operational consumers may use this only after runtime registration has
+    established that the working tree is clean and that the exact ``HEAD``
+    implementation is the ledger tip.  It therefore cannot turn mutable
+    workflow configuration into paper evidence.
     """
 
     root = root.resolve()
     validate_runtime_engine_registration(root)
     head_view = GitCandidateView(root, tree="HEAD")
     return _json_from_candidate(head_view, LEDGER_PATH)
+
+
+def validated_recorded_engine_revision_ledger(root: Path) -> object:
+    """Validate the committed issuer history without accepting the live engine.
+
+    This is for non-authoritative presentation projections that need to confirm
+    that a recorded terminal issuer belongs to immutable committed history. It
+    deliberately does not hash or approve working-tree implementation bytes;
+    closeout, release, and evidence gates must use runtime registration instead.
+    """
+
+    root = root.resolve()
+    head_view = GitCandidateView(root, tree="HEAD")
+    payload = _json_from_candidate(head_view, LEDGER_PATH)
+    revisions = payload.get("revisions") if isinstance(payload, Mapping) else None
+    tip = revisions[-1] if isinstance(revisions, list) and revisions else None
+    if not isinstance(tip, Mapping):
+        raise EngineRevisionError(
+            "committed formalization engine history has no recorded issuer"
+        )
+    return validate_revision_ledger(
+        payload,
+        current_engine_sha256=_validated_sha256(
+            tip.get("engine_tree_sha256"), "recorded engine"
+        ),
+        current_protocol_sha256=_validated_sha256(
+            tip.get("formalization_review_protocol_sha256"),
+            "recorded formalization review protocol",
+        ),
+    )
 
 
 def runtime_engine_registration_error(root: Path) -> str:

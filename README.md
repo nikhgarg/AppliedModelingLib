@@ -11,7 +11,7 @@ human-facing reporting, a review dashboard, and auditing procedures to support
 this workflow.
 
 Links:
-- [Project website](https://gargnikhil.com/EconCSLib/)
+- [Project website](https://gargnikhil.com/AppliedModelingLib/)
 - [Paper describing project](https://arxiv.org/abs/2606.13306)
 - [Slack workspace for applied math modeling in Lean](https://join.slack.com/t/appliedmodelinglib/shared_invite/zt-42slirzxx-rEO8eEns7~4~i3Lbu7N~lA)
 

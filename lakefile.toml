@@ -202,6 +202,8 @@ srcDir = "papers"
 [[lean_lib]]
 name = "PG23MonocultureMatching"
 srcDir = "papers"
+# Existing matching support modules are shared by this paper and PG24.
+globs = ["PG23MonocultureMatching", "AL16SupplyDemandMatching.+"]
 
 [[lean_lib]]
 name = "PG24NoisyMatchingMarkets"

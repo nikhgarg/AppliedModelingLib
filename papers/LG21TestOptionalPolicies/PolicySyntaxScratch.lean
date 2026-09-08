@@ -1,5 +1,6 @@
 import LG21TestOptionalPolicies.ObservedAccessPolicySemantics
 
+#guard_msgs(drop info) in
 #check LG21TestOptionalPolicies.LG21ObservedAccessTwoBranchOutput.noAccessKernel_isMarkov
 
 namespace LG21TestOptionalPolicies
@@ -12,6 +13,7 @@ variable (accessOutput : Bool × (ℝ × (Feature -> ℝ)) -> ℝ)
 variable (noAccessKernel : Kernel (LG21NonTestFeature Feature testFeature -> ℝ) ℝ)
 variable [IsMarkovKernel noAccessKernel]
 
+#guard_msgs(drop info) in
 #check ({ accessOutput := accessOutput
           noAccessKernel := noAccessKernel
           noAccessKernel_isMarkov := inferInstance } :

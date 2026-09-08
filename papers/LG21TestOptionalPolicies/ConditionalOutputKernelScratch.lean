@@ -4,18 +4,31 @@ namespace LG21TestOptionalPolicies
 
 open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
+#guard_msgs(drop info) in
 #check condDistrib_ae_eq_of_measure_eq_compProd_of_measurable
+#guard_msgs(drop info) in
 #check condDistrib_congr_left
+#guard_msgs(drop info) in
 #check condDistrib_comp
+#guard_msgs(drop info) in
 #check Measure.compProd_map
+#guard_msgs(drop info) in
 #check Measure.compProd_eq_comp_prod
+#guard_msgs(drop info) in
 #check Measure.map_comp
+#guard_msgs(drop info) in
 #check Kernel.id
+#guard_msgs(drop info) in
 #check Kernel.prodMkLeft
+#guard_msgs(drop info) in
 #check Kernel.prodMkRight
+#guard_msgs(drop info) in
 #check Kernel.id_prod_apply'
+#guard_msgs(drop info) in
 #check Kernel.map_apply'
+#guard_msgs(drop info) in
 #check Kernel.ext
+#guard_msgs(drop info) in
 #check Kernel.ext_iff
 
 theorem conditional_output_kernel_of_joint_factorization

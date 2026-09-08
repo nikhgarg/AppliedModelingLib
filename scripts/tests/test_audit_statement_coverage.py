@@ -74,7 +74,7 @@ class StatementCoverageGateTests(unittest.TestCase):
     def test_cli_preserves_paper_selection_strict_default_and_failed_exit(self):
         for extra in ([], ["--allow-missing-source-bytes"]):
             with self.subTest(extra=extra), patch.object(
-                gate.review_dashboard, "iter_paper_folders", return_value=[FOLDER],
+                gate, "selected_paper_folders", return_value=[FOLDER],
             ) as select, patch.object(gate, "audit_paper", return_value=True) as audit, contextlib.redirect_stdout(io.StringIO()):
                 self.assertEqual(gate.main(["--kind", "coverage", "--paper", FOLDER.name, *extra]), 1)
             select.assert_called_once_with(FOLDER.name)
@@ -82,7 +82,7 @@ class StatementCoverageGateTests(unittest.TestCase):
 
     def test_exception_blocks_and_remaining_papers_are_checked(self):
         folders = [FOLDER, FOLDER.with_name("SecondPaper")]
-        with patch.object(gate.review_dashboard, "iter_paper_folders", return_value=folders), patch.object(
+        with patch.object(gate, "selected_paper_folders", return_value=folders), patch.object(
             gate, "audit_paper", side_effect=[ValueError("invalid credential"), False],
         ) as audit, contextlib.redirect_stdout(io.StringIO()) as output:
             self.assertEqual(gate.main(["--kind", "statement"]), 1)
@@ -90,10 +90,25 @@ class StatementCoverageGateTests(unittest.TestCase):
         self.assertIn("invalid credential", output.getvalue())
 
     def test_empty_selection_is_not_success(self):
-        with patch.object(gate.review_dashboard, "iter_paper_folders", return_value=[]), contextlib.redirect_stderr(io.StringIO()):
+        with patch.object(gate, "selected_paper_folders", return_value=[]), contextlib.redirect_stderr(io.StringIO()):
             with self.assertRaises(SystemExit) as error:
                 gate.main(["--kind", "statement", "--paper", "MissingPaper"])
         self.assertEqual(error.exception.code, 2)
+
+    def test_paper_inventory_excludes_legacy_sources_without_readding_active_papers(self):
+        legacy_sources = FOLDER.with_name("LegacySources")
+        active_paper = FOLDER.with_name("ActivePaper")
+        for paper_filter in (None, FOLDER.name):
+            with self.subTest(paper=paper_filter), patch.object(
+                gate.audit_evidence_integrity, "paper_dirs",
+                return_value=[FOLDER, active_paper],
+            ) as inventory, patch.object(
+                gate.review_dashboard, "iter_paper_folders",
+                return_value=[FOLDER, legacy_sources],
+            ) as review_folders:
+                self.assertEqual(gate.selected_paper_folders(paper_filter), [FOLDER])
+            inventory.assert_called_once_with(paper_filter)
+            review_folders.assert_called_once_with(paper_filter)
 
     def test_direct_cli_starts_from_unrelated_directory_without_pythonpath(self):
         environment = dict(os.environ)

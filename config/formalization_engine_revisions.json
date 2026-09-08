@@ -1018,6 +1018,15 @@
       "verification": [
         "84 CI dispatch regressions and 51 native fixture tests pass; focused conclusion and reusable-library audits pass"
       ]
+    },
+    {
+      "engine_tree_sha256": "cd231067d4fdb4fc7f88b5569172dcc2ce4c2ab0d9e6114ad82f4414eeeab10f",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Align CI with registered papers, configured proof and review surfaces, and current reader documentation",
+      "sequence": 86,
+      "verification": [
+        "94 focused regressions pass; public file, launcher, heading, and diagnostic checks pass; no mathematical Lean changes"
+      ]
     }
   ],
   "schema": 2

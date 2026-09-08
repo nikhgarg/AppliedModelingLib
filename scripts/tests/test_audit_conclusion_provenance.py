@@ -6,6 +6,8 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -26,6 +28,89 @@ assert SPEC is not None and SPEC.loader is not None
 GATE = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = GATE
 SPEC.loader.exec_module(GATE)
+
+
+class DirectCommandLineTests(unittest.TestCase):
+    def test_direct_script_starts_without_pythonpath_from_another_directory(self) -> None:
+        environment = dict(os.environ)
+        environment.pop("PYTHONPATH", None)
+        with tempfile.TemporaryDirectory() as directory:
+            result = subprocess.run(
+                [sys.executable, str(GATE_PATH), "--help"],
+                cwd=directory,
+                env=environment,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("--public-complete", result.stdout)
+
+
+class GraphCredentialConclusionTests(unittest.TestCase):
+    def test_current_graph_uses_complete_validator_with_explicit_source_policy(self) -> None:
+        warning = EVIDENCE.Finding("WARN", "Fixture", "status.json", "human review pending")
+        for require_bytes in (True, False):
+            with self.subTest(require_source_bytes=require_bytes), patch.object(
+                EVIDENCE, "graph_native_closure_fast_path_findings", return_value=[warning]
+            ) as validate, patch.object(GATE, "_audit_paper") as legacy:
+                self.assertEqual(
+                    GATE.audit_paper("Fixture", require_source_bytes=require_bytes), []
+                )
+                validate.assert_called_once_with(
+                    GATE.PAPERS / "Fixture", release=False,
+                    require_source_bytes=require_bytes,
+                )
+                legacy.assert_not_called()
+
+    def test_invalid_selected_graph_blocks_without_legacy_fallback(self) -> None:
+        error = EVIDENCE.Finding("ERROR", "Fixture", "receipt", "current Lean closure differs")
+        with patch.object(
+            EVIDENCE, "graph_native_closure_fast_path_findings", return_value=[error]
+        ), patch.object(GATE, "_audit_paper") as legacy:
+            findings = GATE.audit_paper("Fixture")
+        self.assertEqual(len(findings), 1)
+        self.assertIn("current Lean closure differs", findings[0].message)
+        legacy.assert_not_called()
+
+    def test_unselected_graph_preserves_legacy_audit(self) -> None:
+        expected = [GATE.Finding("Fixture", "row", "binder", (), "unproved input")]
+        with patch.object(
+            EVIDENCE, "graph_native_closure_fast_path_findings", return_value=None
+        ), patch.object(GATE, "_audit_paper", return_value=expected) as legacy:
+            self.assertEqual(GATE.audit_paper("Fixture"), expected)
+        legacy.assert_called_once_with(
+            "Fixture", theorem_realization_component_prevalidated=False,
+            source_record_snapshot=None, finalize_snapshot=True,
+        )
+
+    def test_cli_requires_source_bytes_unless_explicitly_disabled(self) -> None:
+        for extra in ([], ["--allow-missing-source-bytes"]):
+            with self.subTest(arguments=extra), patch.object(
+                sys, "argv", [str(GATE_PATH), "--jobs", "1", *extra]
+            ), patch.object(GATE, "paper_ids", return_value=["Fixture"]), patch.object(
+                GATE, "audit_paper", return_value=[]
+            ) as audit, patch.object(sys, "stdout"):
+                self.assertEqual(GATE.main(), 0)
+            audit.assert_called_once_with("Fixture", require_source_bytes=not extra)
+
+    def test_workflow_passes_public_source_flag_only_for_public_mode(self) -> None:
+        workflow = (ROOT / ".github/workflows/lean_action_ci.yml").read_text()
+        step = workflow.split("      - name: Audit conclusion-bearing theorem inputs\n", 1)[1]
+        step = step.split("      - name:", 1)[0]
+        body = step.split("        run: |\n", 1)[1]
+        body = "\n".join(line[10:] for line in body.splitlines())
+        for mode in ("true", "false", "", "unexpected"):
+            with self.subTest(mode=mode):
+                environment = dict(os.environ, PUBLIC_SOURCE_MODE=mode)
+                result = subprocess.run(
+                    ["bash", "-c", "python3() { printf '%s\\n' \"$@\"; }\n" + body],
+                    env=environment, capture_output=True, text=True, check=True,
+                )
+                expected = ["scripts/audit_conclusion_provenance.py", "--jobs", "1"]
+                if mode == "true":
+                    expected.append("--allow-missing-source-bytes")
+                self.assertEqual(result.stdout.splitlines(), expected)
 
 
 def model_record_item(

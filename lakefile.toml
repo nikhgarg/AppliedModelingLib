@@ -96,6 +96,8 @@ srcDir = "papers"
 [[lean_lib]]
 name = "FalahatgarEtAl2017MaxingRanking"
 srcDir = "papers"
+# These already-published support modules are transitive imports of this paper.
+globs = ["FalahatgarEtAl2017MaxingRanking", "ZhouChenLi2014OptimalPACMultipleArm.+"]
 
 [[lean_lib]]
 name = "FreundSchapire1997Hedge"

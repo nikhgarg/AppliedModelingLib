@@ -93,15 +93,6 @@ paper-local constructions retain their exact feature tables and profiles.
 
 Footnote 7's six-candidate ranking uses parameter `(delta,2)` in place of `(1,1)`; see the [witness note](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#six-candidate-feasibility-witness). Sections 6–7 cover the other statement scopes and proof changes.
 
-<!-- BEGIN GENERATED SETTLED REVIEW CONTEXT -->
-<!-- settled-review-context-sha256: 52f17d07ecede417d7ae6c3e8a2855c496150759993ce0571f176b498302ddeb -->
-<!-- settled-review-context-presentation-sha256: cdd1947c589bccfc799d482410690a59004dc3e30f3666949882a5bf3aa76c4f -->
-### Source readings and additional assumptions
-
-- The checked C.5 counterexample retains the source proof’s local choice of v1 on its first profile as an explicit premise. Recording that premise does not itself prove a reduction from every Pareto-Kemeny selector.
-- The checked C.6 rule uses a fixed profile-independent tie key for the sequential highest-plurality prescription. Strict plurality comparisons are unchanged; the theorem has this specified rule-family scope.
-<!-- END GENERATED SETTLED REVIEW CONTEXT -->
-
 ## 11. Paper Issues or Caveats
 
 Section 7 explains the proof replacements and misplaced example attribution. Section 6 states the rule-selection scope; Section 10 links the exact local corrections.

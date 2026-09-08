@@ -65,16 +65,6 @@ The [memo](docs/SOURCE_CLARIFICATIONS.md) gives the nonreport-mixture and
 [cutoff correction](docs/SOURCE_CLARIFICATIONS.md#lemma-41-and-proposition-43-calculations), the randomized-policy example and checked operational
 blankness conclusion, and the unconditional Gaussian variance calculation.
 
-<!-- BEGIN GENERATED SETTLED REVIEW CONTEXT -->
-<!-- settled-review-context-sha256: 768fc111179d3b42af7bcea57fdef0e1cd204d98f2a965bd531c03f8c5dd66a3 -->
-<!-- settled-review-context-presentation-sha256: fdee972c1b72c7867956c878ff28a320eca6dc4553e08c766891aaacad4f11ee -->
-### Source readings and additional assumptions
-
-- **Formalization gap:** the [Section 4 explanation](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches) records the added maximal active-branch selection, which has not been derived from the source equilibrium definition.
-- The [access-law explanation](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches) distinguishes the source's uncorrelated-access wording from the independence used by the current law.
-- The [equilibrium-timing explanation](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches) states the local recalibration refinement separately for optional and required reporting.
-<!-- END GENERATED SETTLED REVIEW CONTEXT -->
-
 ## 11. Paper Issues or Caveats
 
 The equilibrium coverage gaps are in Section 5. Section 6 distinguishes the supported randomized-output obstruction from conditions whose necessity is unknown.

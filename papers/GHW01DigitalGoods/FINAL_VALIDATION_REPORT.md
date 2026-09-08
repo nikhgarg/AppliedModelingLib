@@ -77,14 +77,6 @@ No additional generalization is claimed by this closeout.
 - [Lemma 8.1 and Theorem 8.2](docs/SOURCE_CLARIFICATIONS.md#lemma-81-and-theorem-82): replace the preliminary truthfulness inference by the journal monotone-offer condition.
 - [Logarithmic bounds](docs/SOURCE_CLARIFICATIONS.md#logarithmic-domains): state the denominator domains and distinguish them from the narrower checked range.
 
-<!-- BEGIN GENERATED SETTLED REVIEW CONTEXT -->
-<!-- settled-review-context-sha256: fbbb1f03659f1ee73e2b3ce439ce6b066dbfd1e438d48d11dfd19646f16e6376 -->
-<!-- settled-review-context-presentation-sha256: 6ae044c383931feffe6d5cfd5b8adb27451dbdd819d4a2b0d4a2cb70e4987eab -->
-### Source readings and additional assumptions
-
-- The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).
-<!-- END GENERATED SETTLED REVIEW CONTEXT -->
-
 ## 11. Paper Issues or Caveats
 
 Section 5 records the randomization and parameter coverage gaps. The journal monotone-offer correction is separate from those formalization limits.

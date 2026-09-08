@@ -1908,6 +1908,42 @@ def check_final_report_human_facing_front_matter(
     return findings
 
 
+def check_graph_native_paper_closure(
+    include_active: bool,
+    *,
+    paper_filter: str | None,
+    require_source_bytes: bool,
+    selected_papers: set[str],
+) -> list[Finding]:
+    """Validate the canonical graph once before ordinary audit consumers run.
+
+    The selected set is execution-local routing, never acceptance evidence.
+    Failed credentials remain errors and do not launch a legacy producer.
+    Papers without graph credentials retain their existing checks.
+    """
+
+    from scripts.audit_evidence_integrity import graph_native_closure_fast_path_findings
+
+    selected_papers.clear()
+    findings: list[Finding] = []
+    for folder in paper_dirs():
+        if paper_filter is not None and folder.name != paper_filter:
+            continue
+        if folder.name in ACTIVE_PAPERS and not include_active:
+            continue
+        graph_findings = graph_native_closure_fast_path_findings(
+            folder, release=False, require_source_bytes=require_source_bytes,
+        )
+        if graph_findings is None:
+            continue
+        selected_papers.add(folder.name)
+        findings.extend(
+            Finding(finding.severity, ROOT / finding.path, finding.message)
+            for finding in graph_findings
+        )
+    return findings
+
+
 def check_dag_and_validation_report_closeout(
     include_active: bool,
     paper_filter: str | None = None,
@@ -1916,6 +1952,7 @@ def check_dag_and_validation_report_closeout(
     final_holistic_surface_sha256: str = "",
     all_selected_semantic_review_sha256: str | None = None,
     final_holistic_review_policy_assurance: Mapping[str, object] | None = None,
+    public_graph_papers: Iterable[str] = (),
 ) -> list[Finding]:
     """Ensure completed paper closeout audits include DAG/report evidence."""
 
@@ -1941,8 +1978,11 @@ def check_dag_and_validation_report_closeout(
         dag_tex = paper_relative_file(folder, DEPENDENCY_DAG_TEX_FILE, "DependencyDAG.tex")
         dag_pdf = paper_relative_file(folder, DEPENDENCY_DAG_PDF_FILE, "DependencyDAG.pdf")
         agent_source_audit = folder / AGENT_SOURCE_AUDIT_FILE
-        corrected_scope_current = current_author_approved_corrected_scope(
-            folder, status_payload
+        recorded_public_graph = folder.name in public_graph_papers
+        corrected_scope_current = (
+            False if recorded_public_graph else current_author_approved_corrected_scope(
+                folder, status_payload
+            )
         )
         final_holistic_required = explicit_raw_source_spec_screening_requested(
             status_payload
@@ -1951,7 +1991,13 @@ def check_dag_and_validation_report_closeout(
             folder,
             corrected_scope_current=corrected_scope_current,
             final_holistic_required=final_holistic_required,
+            # Public graph validation authenticates the recorded review and
+            # current Lean inputs without the withheld private approval/cache
+            # records. Ordinary CI still checks the published report surface;
+            # the strict paper-closeout caller retains every terminal gate.
             require_visual_dag_inspection=True,
+            check_private_review_artifacts=not recorded_public_graph,
+            check_final_holistic=not recorded_public_graph,
             final_holistic_surface_sha256=final_holistic_surface_sha256,
             all_selected_semantic_review_sha256=(
                 all_selected_semantic_review_sha256
@@ -18342,7 +18388,9 @@ def check_paper_facing_ledgers(include_active: bool) -> list[Finding]:
     return findings
 
 
-def check_post_paper_audit_interfaces(include_active: bool) -> list[Finding]:
+def check_post_paper_audit_interfaces(
+    include_active: bool, *, graph_native_papers: Iterable[str] = (),
+) -> list[Finding]:
     findings: list[Finding] = []
     interface_required = {
         folder.name
@@ -18384,13 +18432,17 @@ def check_post_paper_audit_interfaces(include_active: bool) -> list[Finding]:
         if interface.exists():
             text = interface.read_text(encoding="utf-8")
             if folder.name in interface_required and aggregator.exists():
-                import_line = f"import {folder.name}.PaperInterface"
-                if import_line not in aggregator.read_text(encoding="utf-8"):
+                from scripts.lean_signature_manifest import repository_module_names_in_import_closure
+
+                # This is an export-hygiene diagnostic, not Lean acceptance.
+                # A ProofInterface carrier can reach PaperInterface transitively.
+                imported = repository_module_names_in_import_closure(ROOT, folder.name)
+                if f"{folder.name}.PaperInterface" not in imported:
                     findings.append(
                         Finding(
                             "ERROR",
                             aggregator,
-                            "completed/formalized paper root should import `PaperInterface.lean`",
+                            "completed/formalized paper root should reach `PaperInterface.lean` through its imports",
                         )
                     )
             if "PProd" in text:
@@ -18404,7 +18456,10 @@ def check_post_paper_audit_interfaces(include_active: bool) -> list[Finding]:
                     Finding("ERROR", human_interface, "human-facing interface should not use tuple witnesses")
                 )
             tuple_witness_decls = interface_tuple_witness_declarations(text)
-            if tuple_witness_decls:
+            # A validated graph checks exact typed source targets. Products can
+            # be intentional source definitions or factors inside an equation;
+            # the older tuple-wrapper heuristic is not a second adjudicator.
+            if tuple_witness_decls and folder.name not in graph_native_papers:
                 sample_line, sample_name = tuple_witness_decls[0]
                 findings.append(
                     Finding(
@@ -19242,6 +19297,7 @@ def check_machine_paper_status(
     run_context: PaperCloseoutRunContext | None = None,
     phase_timings: MutableMapping[str, float] | None = None,
     phase_progress_callback: Callable[[Mapping[str, object]], None] | None = None,
+    graph_native_papers: Iterable[str] = (),
 ) -> list[Finding]:
     findings: list[Finding] = []
     using_paper_local_fallback = False
@@ -19477,6 +19533,13 @@ def check_machine_paper_status(
                 findings.append(
                     Finding("ERROR", PAPER_STATUS_FILE, f"`{paper_id}` has reviewed_rows greater than total_rows")
                 )
+
+        if not paper_closeout and paper_id in graph_native_papers:
+            # Basic status and human-review metadata above still apply. The
+            # earlier canonical graph validator owns source roles, proof routes,
+            # and material dependencies; legacy reconstruction cannot add or
+            # revoke acceptance and can write obsolete source-record outputs.
+            continue
 
         interface = entry.get("paper_interface")
         if not isinstance(interface, dict):

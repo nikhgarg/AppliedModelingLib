@@ -168,6 +168,18 @@ jobs:
             python3 "$SCOPE_TOOL" plan --repo "$GITHUB_WORKSPACE" \
               --base "$EVENT_BASE" --head HEAD --github-output "$GITHUB_OUTPUT"
           fi
+      - name: Make room for Lean build artifacts
+        if: steps.change-scope.outputs.mode != 'docs' && runner.environment == 'github-hosted'
+        # Lean and its caches need more disk than the default image leaves free.
+        # These fixed SDK directories are unused by this Linux Lean workflow.
+        run: |
+          if [[ "${RUNNER_ENVIRONMENT:-}" != "github-hosted" ]]; then
+            echo "Refusing SDK cleanup outside a GitHub-hosted runner." >&2
+            exit 1
+          fi
+          df -h .
+          sudo rm -rf -- /usr/local/lib/android /usr/share/dotnet /usr/local/.ghcup /opt/ghc
+          df -h .
       - name: Set up Lean dependencies
         if: steps.change-scope.outputs.mode != 'docs'
         uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1

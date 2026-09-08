@@ -3328,6 +3328,35 @@ def _candidate_explicit_lake_srcdir_modules(
     }
 
 
+def public_paper_target_issues(repo: Path, candidate_commit: str) -> list[str]:
+    """Require every registered paper root in the exact exported Git tree."""
+
+    try:
+        lake = tomllib.loads(_git(repo, ["show", f"{candidate_commit}:lakefile.toml"]))
+    except (RuntimeError, UnicodeError, tomllib.TOMLDecodeError) as exc:
+        return [f"public Lake configuration is unavailable or malformed: {exc}"]
+    paths = set(_git(repo, ["ls-tree", "-r", "--name-only", candidate_commit]).splitlines())
+    issues: list[str] = []
+    for library in lake.get("lean_lib", []):
+        if not isinstance(library, dict) or library.get("srcDir") != "papers":
+            continue
+        name = library.get("name")
+        roots = library.get("roots", [name])
+        if not isinstance(roots, list):
+            issues.append(f"public paper target {name}: roots must be a list")
+            continue
+        for root in roots:
+            if not isinstance(root, str) or not re.fullmatch(
+                r"[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*", root
+            ):
+                issues.append(f"public paper target {name}: malformed root {root!r}")
+                continue
+            path = "papers/" + root.replace(".", "/") + ".lean"
+            if path not in paths:
+                issues.append(f"public paper target {name}: registered root is not exported: {path}")
+    return issues
+
+
 def _public_candidate_dependency_closure_issues(
     repo: Path,
     candidate_commit: str,
@@ -3568,6 +3597,7 @@ def run_guard(
         selected_graph_authority_registration_issues(repo, candidate_commit)
     )
     issues.extend(generated_status_freshness_issues(repo, candidate_commit))
+    issues.extend(public_paper_target_issues(repo, candidate_commit))
     for issue in _public_candidate_dependency_closure_issues(
         repo,
         candidate_commit,

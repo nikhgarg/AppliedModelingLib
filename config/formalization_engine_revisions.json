@@ -1000,6 +1000,15 @@
       "verification": [
         "59 focused terminal and source-role projection tests pass; deterministic metadata generated for the same 36 public papers without modifying accepted graphs or claims."
       ]
+    },
+    {
+      "engine_tree_sha256": "10bb1970338f03cdd944339977c79ce1e3375cec32389dda505c8783b4dca038",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Use the complete accepted credential identity when authenticating public source-role projection metadata.",
+      "sequence": 84,
+      "verification": [
+        "59 focused tests pass; actual accepted-credential regression distinguishes its semantic graph from its accepting graph."
+      ]
     }
   ],
   "schema": 2

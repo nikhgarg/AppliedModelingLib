@@ -340,7 +340,10 @@ def _validate_current_source_routes(
                     paper=paper_dir.name,
                     public_source_map_bytes=map_bytes,
                     public_display_manifest_bytes=display_bytes,
-                    accepted_graph_sha256=getattr(graph, "graph_sha256", ""),
+                    # The credential's graph property exposes only its inner
+                    # semantic DAG. The release bridge pins the accepting DAG,
+                    # whose identity belongs to the credential itself.
+                    accepted_graph_sha256=getattr(loaded, "graph_sha256", ""),
                     accepted_role_sha256s_by_source_item={
                         key: tuple(atom[2] for atom in entry["source_atoms"])
                         for key, entry in accepted_entries.items()

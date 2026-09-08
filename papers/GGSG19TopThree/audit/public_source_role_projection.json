@@ -1,0 +1,413 @@
+{
+  "acceptance_credential": false,
+  "accepted_graph_sha256": "be8f45b12fa946920d80e8b0995e44f1b7557987f2c91ac8d85fec352d5427bf",
+  "bindings_by_source_item": {
+    "algorithm_efficient_mallows_arbitrary_pair_joint_location_dp": {
+      "accepted_source_role_contract_sha256": "48e39d93ab7e5f12d6c9d8a7a617c398d392fc3c5b98eeb0320c2bb31df88e0a",
+      "public_source_role_projection_sha256": "48e39d93ab7e5f12d6c9d8a7a617c398d392fc3c5b98eeb0320c2bb31df88e0a",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_mallows_nontrivial_winner_and_parameter_domain": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_mallows_repeated_insertion_parameter_domain": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_nontrivial_k_approval_cutoffs": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_pairwise_approval_ternary_gap_domain": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_randomized_mechanism_probability_weights": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "example_disjoint_one_and_two_approval_winners": {
+      "accepted_source_role_contract_sha256": "1a87ebea96d7ccfc07cd02d4e45eca360a7cb83c69ec4fa0692922fb97fb592e",
+      "public_source_role_projection_sha256": "1a87ebea96d7ccfc07cd02d4e45eca360a7cb83c69ec4fa0692922fb97fb592e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "example_randomization_helps_Durham_numeric": {
+      "accepted_source_role_contract_sha256": "24af3b57d5538434b02162eaed2147ad48cd373b770e44446d79c3c9a8da45f3",
+      "public_source_role_projection_sha256": "24af3b57d5538434b02162eaed2147ad48cd373b770e44446d79c3c9a8da45f3",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "example_randomization_helps_constructed_distribution": {
+      "accepted_source_role_contract_sha256": "1a87ebea96d7ccfc07cd02d4e45eca360a7cb83c69ec4fa0692922fb97fb592e",
+      "public_source_role_projection_sha256": "1a87ebea96d7ccfc07cd02d4e45eca360a7cb83c69ec4fa0692922fb97fb592e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "formula_approval_one_sided_probabilities": {
+      "accepted_source_role_contract_sha256": "a330329badf1fd97b0f683ad1a79ce3a95f8b10055dc2d728029e12259aff27c",
+      "public_source_role_projection_sha256": "a330329badf1fd97b0f683ad1a79ce3a95f8b10055dc2d728029e12259aff27c",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "formula_outcome_error_QN": {
+      "accepted_source_role_contract_sha256": "a330329badf1fd97b0f683ad1a79ce3a95f8b10055dc2d728029e12259aff27c",
+      "public_source_role_projection_sha256": "a330329badf1fd97b0f683ad1a79ce3a95f8b10055dc2d728029e12259aff27c",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "formula_randomized_pair_and_outcome_rates": {
+      "accepted_source_role_contract_sha256": "a330329badf1fd97b0f683ad1a79ce3a95f8b10055dc2d728029e12259aff27c",
+      "public_source_role_projection_sha256": "a330329badf1fd97b0f683ad1a79ce3a95f8b10055dc2d728029e12259aff27c",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "model_arbitrary_ordered_tier_goal": {
+      "accepted_source_role_contract_sha256": "cb4c52d7162057fe79d176483b8606eae69ef415544ac40e16cd2b0dd1287867",
+      "public_source_role_projection_sha256": "cb4c52d7162057fe79d176483b8606eae69ef415544ac40e16cd2b0dd1287867",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "model_cumulative_scores_ranking_and_outcome": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "model_expected_score_limit_and_tier_outcome": {
+      "accepted_source_role_contract_sha256": "57d1240a50e85ecbfbe1c2bd86229cc96e9d07cbb4be088315502d05b43f78e5",
+      "public_source_role_projection_sha256": "57d1240a50e85ecbfbe1c2bd86229cc96e9d07cbb4be088315502d05b43f78e5",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "model_finite_iid_strict_rankings": {
+      "accepted_source_role_contract_sha256": "cb4c52d7162057fe79d176483b8606eae69ef415544ac40e16cd2b0dd1287867",
+      "public_source_role_projection_sha256": "cb4c52d7162057fe79d176483b8606eae69ef415544ac40e16cd2b0dd1287867",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "model_k_approval_score": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "model_k_ranking_score": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "model_mallows_ranking_mass_and_parameter_domain": {
+      "accepted_source_role_contract_sha256": "cb4c52d7162057fe79d176483b8606eae69ef415544ac40e16cd2b0dd1287867",
+      "public_source_role_projection_sha256": "cb4c52d7162057fe79d176483b8606eae69ef415544ac40e16cd2b0dd1287867",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "model_randomized_scoring_mechanism": {
+      "accepted_source_role_contract_sha256": "cb4c52d7162057fe79d176483b8606eae69ef415544ac40e16cd2b0dd1287867",
+      "public_source_role_projection_sha256": "cb4c52d7162057fe79d176483b8606eae69ef415544ac40e16cd2b0dd1287867",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "model_reasonable_positional_scoring_rules": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_constructed_all_other_cutoffs_worse": {
+      "accepted_source_role_contract_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "public_source_role_projection_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_constructed_design_invariance_and_feasibility": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_constructed_other_pairs_not_pivotal": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_constructed_randomization_strictly_improves_minimum": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_mallows_common_pivotal_pair": {
+      "accepted_source_role_contract_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
+      "public_source_role_projection_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_mallows_four_candidate_approval_probabilities_and_rates": {
+      "accepted_source_role_contract_sha256": "1a87ebea96d7ccfc07cd02d4e45eca360a7cb83c69ec4fa0692922fb97fb592e",
+      "public_source_role_projection_sha256": "1a87ebea96d7ccfc07cd02d4e45eca360a7cb83c69ec4fa0692922fb97fb592e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_mallows_four_candidate_joint_location_matrix": {
+      "accepted_source_role_contract_sha256": "e7960301914702af45e2b6b68d20aef532fe8473849db58c6eda39068f6de8d1",
+      "public_source_role_projection_sha256": "e7960301914702af45e2b6b68d20aef532fe8473849db58c6eda39068f6de8d1",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_mallows_repeated_insertion_probability": {
+      "accepted_source_role_contract_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
+      "public_source_role_projection_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_prop1_cutoff_rule_witness": {
+      "accepted_source_role_contract_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "public_source_role_projection_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_prop1_expected_gap_and_slln": {
+      "accepted_source_role_contract_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "public_source_role_projection_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_prop1_score_summation_by_parts": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_prop2_chernoff_chain": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_prop2_ldp_identity": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_prop2_log_mgf_and_rate": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_prop2_sample_size_formula": {
+      "accepted_source_role_contract_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "public_source_role_projection_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_prop2_score_gap_random_variable": {
+      "accepted_source_role_contract_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "public_source_role_projection_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_prop3_closed_rate_substitution": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_prop3_optimizer": {
+      "accepted_source_role_contract_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "public_source_role_projection_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_prop3_ternary_log_mgf": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_prop3_ternary_score_gap_law": {
+      "accepted_source_role_contract_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "public_source_role_projection_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_prop4_finite_log_sum_min_rate": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_prop4_union_bound_and_M_sq": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_theorem1_convexity_jensen_step": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_theorem1_hessian_psd_calculation": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_theorem1_randomized_pair_mgf": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_theorem1_static_pair_rate": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_theorem1_uniform_pair_to_goal_step": {
+      "accepted_source_role_contract_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "public_source_role_projection_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_theorem2_convex_average_to_max_component": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_theorem2_convex_composition": {
+      "accepted_source_role_contract_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "public_source_role_projection_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proof_theorem2_mixed_approval_probabilities": {
+      "accepted_source_role_contract_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "public_source_role_projection_sha256": "3a8e03e95c34d11d52f67b2123658030c43d7588d33e47abdf0c45821a23a83b",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "remark_approval_rate_monotonicity": {
+      "accepted_source_role_contract_sha256": "581440dfd564e79e623e51ab1405cee6a60dc9d12e4e8765d870fb79460b2da5",
+      "public_source_role_projection_sha256": "581440dfd564e79e623e51ab1405cee6a60dc9d12e4e8765d870fb79460b2da5",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_corollary_mallows_randomization_no_improvement_positive_noise": {
+      "accepted_source_role_contract_sha256": "f4254796949514af697b1a57a525740c36a37b17d9eafef0da4f0bb27d637328",
+      "public_source_role_projection_sha256": "f4254796949514af697b1a57a525740c36a37b17d9eafef0da4f0bb27d637328",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_corollary_mallows_randomization_no_improvement_zero_noise": {
+      "accepted_source_role_contract_sha256": "f4254796949514af697b1a57a525740c36a37b17d9eafef0da4f0bb27d637328",
+      "public_source_role_projection_sha256": "f4254796949514af697b1a57a525740c36a37b17d9eafef0da4f0bb27d637328",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_definition1_design_invariance": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_definition2_large_deviation_rate": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_definition3_rate_optimality": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_proposition1_design_invariance_iff_strict_prefix_separation": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_proposition2_pairwise_learning_rate_and_bound": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_proposition3_k_approval_closed_pairwise_rate": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_proposition4_finite_sample_M_sq_bound": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_proposition4_outcome_exact_minimum_rate": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_theorem1_randomized_scoring_no_improvement": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_theorem2_randomized_k_approval_fixed_pair_no_improvement": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_theorem_mallows_W_approval_not_rate_optimal": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_theorem_randomized_approval_can_help_W_selection": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    }
+  },
+  "paper": "GGSG19TopThree",
+  "private_role_material_included": false,
+  "private_source_map_material_sha256": "973aa042f788859424fb333c79095f0e5e1850dc08e9b67305b5e7ce03ef2665",
+  "private_source_map_sha256": "705b03cfa388ac28e350b152b62d475412f90fe976554aaba63b49ba1fb156c1",
+  "projection_contract_sha256": "ed0964edc9c70f5ce087ce9bf134712ca40c7964ecaefd403309ac9a1b47d34d",
+  "public_display_manifest_material_sha256": "c6357e3fc9e9fe3e6f9fa89d3aec5ffff44402084253eeb567c6b73200b31152",
+  "public_display_manifest_sha256": "d4ff6154f80a2806c399b9f62b2562cb9434b5c8fa6036ce3e63e7564d595e2a",
+  "public_source_map_material_sha256": "17fbd6124ceade451ed0dbc334e85ee1ddb74af26609ad7d7a0db53f5d5f9ce5",
+  "public_source_map_sha256": "dd603b13942186c41e168c2f6b62f8ddc78fd56a0eb75dd2e221ad2f72dcd3dd",
+  "raw_private_approval_material_included": false,
+  "schema": 1
+}

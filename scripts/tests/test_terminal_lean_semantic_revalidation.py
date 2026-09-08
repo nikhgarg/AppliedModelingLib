@@ -4,6 +4,7 @@ import hashlib
 import json
 import subprocess
 import sys
+import tempfile
 import unittest
 from contextlib import ExitStack
 from pathlib import Path
@@ -21,6 +22,89 @@ from scripts.obligation_evidence_graph import (
 
 
 class TerminalLeanSemanticRevalidationTests(unittest.TestCase):
+    def test_public_projection_authority_requires_canonical_main_and_exact_bytes(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            paper = root / "papers/Fixture"
+            envelope = paper / terminal.PUBLIC_SOURCE_ROLE_PROJECTION_FILE
+            envelope.parent.mkdir(parents=True)
+            envelope.write_bytes(b"trusted envelope\n")
+
+            def git(*args):
+                subprocess.run(["git", "-C", directory, *args], check=True,
+                               capture_output=True)
+
+            git("init", "-b", "main")
+            git("config", "user.name", "Fixture")
+            git("config", "user.email", "fixture@example.invalid")
+            git("add", "papers")
+            git("commit", "-m", "Fixture envelope")
+            git("remote", "add", "origin", "https://github.com/untrusted/AppliedModelingLib.git")
+            git("update-ref", "refs/remotes/origin/main", "HEAD")
+            with self.assertRaisesRegex(ValueError, "not authenticated"):
+                terminal._trusted_public_source_role_envelope(paper)
+            for url in ("https://github.com/nikhgarg/AppliedModelingLib.git",
+                        "git@github.com:nikhgarg/EconCSLib.git"):
+                git("remote", "set-url", "origin", url)
+                self.assertEqual(terminal._trusted_public_source_role_envelope(paper),
+                                 b"trusted envelope\n")
+            envelope.write_bytes(b"branch-only replacement\n")
+            git("add", "papers")
+            git("commit", "-m", "Unreleased replacement")
+            with self.assertRaisesRegex(ValueError, "not authenticated"):
+                terminal._trusted_public_source_role_envelope(paper)
+            git("update-ref", "-d", "refs/remotes/origin/main")
+            with self.assertRaisesRegex(ValueError, "not authenticated"):
+                terminal._trusted_public_source_role_envelope(paper)
+
+    def test_projected_roles_require_authenticated_bridge_before_atom_comparison(self) -> None:
+        original = source_atom_leaf(
+            contract_sha256="1" * 64, source_artifact_sha256="2" * 64,
+            source_quote_sha256="3" * 64, source_component_sha256="4" * 64,
+            source_role_contract_sha256="5" * 64,
+        )
+        changed_role = source_atom_leaf(
+            contract_sha256="1" * 64, source_artifact_sha256="2" * 64,
+            source_quote_sha256="3" * 64, source_component_sha256="4" * 64,
+            source_role_contract_sha256="6" * 64,
+        )
+        loaded = SimpleNamespace(
+            paper_index=SimpleNamespace(
+                route_leaf_sha256s_by_source_item={
+                    "claim": {"source_atom": (original.leaf_sha256,)}},
+                prerequisite_leaf_sha256s_by_declaration={}),
+            graph=SimpleNamespace(graph_sha256="9" * 64,
+                                  leaves={original.leaf_sha256: original}))
+        for role_field in ("corrected_target", "user_approved_scope_exclusion"):
+            source = {"items": {"claim": {role_field: {}}},
+                      "publication_corrected_target_projection": {
+                          "schema": 1, "approval_material_included": False}}
+            with self.subTest(role_field=role_field), \
+                 mock.patch.object(terminal, "project_source_route_leaf_material_from_validated_inputs",
+                                   return_value=({changed_role.leaf_sha256: changed_role},
+                                                 {"claim": (changed_role.leaf_sha256,)})), \
+                 mock.patch.object(terminal, "_json_bytes",
+                                   side_effect=lambda path, label: (source, b"map")
+                                   if label == "public source map" else ({}, b"display")), \
+                 mock.patch.object(terminal, "_trusted_public_source_role_envelope",
+                                   return_value=b"trusted") as trusted, \
+                 mock.patch.object(terminal, "validate_runtime_public_source_role_projection") as validate:
+                call = lambda: terminal._validate_current_source_routes(
+                    loaded, source, SimpleNamespace(),
+                    paper_dir=Path("/repo/papers/Fixture"), allow_withheld_source_material=True)
+                self.assertEqual(call(), {"claim": "claim"})
+                self.assertEqual(validate.call_args.kwargs["accepted_role_sha256s_by_source_item"],
+                                 {"claim": ("5" * 64,)})
+                validate.side_effect = ValueError("retained public role changed")
+                with self.assertRaisesRegex(terminal.TerminalLeanSemanticRevalidationError,
+                                            "retained public role changed"):
+                    call()
+                validate.side_effect = None
+                trusted.side_effect = ValueError("unreleased envelope")
+                with self.assertRaisesRegex(terminal.TerminalLeanSemanticRevalidationError,
+                                            "unreleased envelope"):
+                    call()
+
     def test_public_source_recovery_requires_exact_routes_and_atoms(self) -> None:
         def atom(quote):
             return source_atom_leaf(

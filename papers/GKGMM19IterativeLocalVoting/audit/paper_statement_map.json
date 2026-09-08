@@ -1910,6 +1910,11 @@
     "GKGMM19IterativeLocalVoting.utilityBoundedOnSolutionSpaceFormulaData": "ilv_background_geometry_and_bounded_utility_formula",
     "GKGMM19IterativeLocalVoting.weightedEuclideanJointSampleFormulaData": "definition2_weighted_euclidean_utilities_formula"
   },
+  "publication_source_display_projection": {
+    "manifest": "audit/public_source_display_projection.json",
+    "raw_source_bytes_included": false,
+    "schema": 1
+  },
   "schema": 1,
   "semantic_contract_schema": 1,
   "semantic_route_schema": 2,

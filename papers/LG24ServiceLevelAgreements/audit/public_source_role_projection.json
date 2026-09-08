@@ -1,0 +1,215 @@
+{
+  "acceptance_credential": false,
+  "accepted_graph_sha256": "58d8317cf8ef69bf4bb4461e1427ede9dfc61e605ba5082c1aff8a8cd51e788d",
+  "bindings_by_source_item": {
+    "centralization_gain_relative_identity": {
+      "accepted_source_role_contract_sha256": "e7960301914702af45e2b6b68d20aef532fe8473849db58c6eda39068f6de8d1",
+      "public_source_role_projection_sha256": "e7960301914702af45e2b6b68d20aef532fe8473849db58c6eda39068f6de8d1",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "city_extreme_efficiency_context": {
+      "accepted_source_role_contract_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
+      "public_source_role_projection_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "global_steady_gps_condition_context": {
+      "accepted_source_role_contract_sha256": "25ae0445cbad5700740ca0d901cdb22fa81678daaa2adcfa53e3e0db581adee2",
+      "public_source_role_projection_sha256": "25ae0445cbad5700740ca0d901cdb22fa81678daaa2adcfa53e3e0db581adee2",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "post_thinning_admitted_poisson_normal_form_context": {
+      "accepted_source_role_contract_sha256": "25ae0445cbad5700740ca0d901cdb22fa81678daaa2adcfa53e3e0db581adee2",
+      "public_source_role_projection_sha256": "25ae0445cbad5700740ca0d901cdb22fa81678daaa2adcfa53e3e0db581adee2",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "prop_centralization_gain": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "prop_extreme_efficiency": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "prop_extreme_equity": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "prop_opt_reformulation": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "prop_price_of_equity": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "relative_price_of_equity_nonnegative_context": {
+      "accepted_source_role_contract_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
+      "public_source_role_projection_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "sla_rate_fraction_context": {
+      "accepted_source_role_contract_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
+      "public_source_role_projection_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_all_request_cost": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_all_request_response_fraction": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_capacity_share": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_categorywise_fixed_noninspection": {
+      "accepted_source_role_contract_sha256": "db44c18598bbc1aa2abd9cbe5cb163e3e73f9adb39b6b98a4360a91e30a2e805",
+      "public_source_role_projection_sha256": "db44c18598bbc1aa2abd9cbe5cb163e3e73f9adb39b6b98a4360a91e30a2e805",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_city_effective_load": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_city_efficiency_loss": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_city_efficient_delay": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_effective_load": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_efficiency_best_equitable": {
+      "accepted_source_role_contract_sha256": "db44c18598bbc1aa2abd9cbe5cb163e3e73f9adb39b6b98a4360a91e30a2e805",
+      "public_source_role_projection_sha256": "db44c18598bbc1aa2abd9cbe5cb163e3e73f9adb39b6b98a4360a91e30a2e805",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_efficiency_loss": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_efficient_delay_endpoint": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_equity_loss": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_excess_capacity": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_fixed_noninspection_cost": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_original_fixed_load_feasibility": {
+      "accepted_source_role_contract_sha256": "db44c18598bbc1aa2abd9cbe5cb163e3e73f9adb39b6b98a4360a91e30a2e805",
+      "public_source_role_projection_sha256": "db44c18598bbc1aa2abd9cbe5cb163e3e73f9adb39b6b98a4360a91e30a2e805",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_pearson_chi_square": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_relative_centralization_gain": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_relative_price_of_equity": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_context_tradeoff_objective": {
+      "accepted_source_role_contract_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "public_source_role_projection_sha256": "1313a0bddba002f7992221c8dfa03ba9c6cdba3177ad2ee0df61034508d83a95",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_domain_conditions": {
+      "accepted_source_role_contract_sha256": "25ae0445cbad5700740ca0d901cdb22fa81678daaa2adcfa53e3e0db581adee2",
+      "public_source_role_projection_sha256": "25ae0445cbad5700740ca0d901cdb22fa81678daaa2adcfa53e3e0db581adee2",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "stationary_gps_response_tail_context": {
+      "accepted_source_role_contract_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
+      "public_source_role_projection_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "target_guaranteed_service_margin_context": {
+      "accepted_source_role_contract_sha256": "25ae0445cbad5700740ca0d901cdb22fa81678daaa2adcfa53e3e0db581adee2",
+      "public_source_role_projection_sha256": "25ae0445cbad5700740ca0d901cdb22fa81678daaa2adcfa53e3e0db581adee2",
+      "schema": 1,
+      "withheld_field_paths": []
+    }
+  },
+  "paper": "LG24ServiceLevelAgreements",
+  "private_role_material_included": false,
+  "private_source_map_material_sha256": "ebb085516d49dd5bc48e7c5a17eb34be34e138082100c5530541fdf72b7261f8",
+  "private_source_map_sha256": "fdbc4d5420378eeb7686b6b8ce9f7afb4f3527de8831124b833fc825dedcb621",
+  "projection_contract_sha256": "ed0964edc9c70f5ce087ce9bf134712ca40c7964ecaefd403309ac9a1b47d34d",
+  "public_display_manifest_material_sha256": "665078d0a7b5f06a3c8682b612d6e5c6b8fe282890f2c73325430d13b1539b26",
+  "public_display_manifest_sha256": "6c70846ed13d1f294345669e29baf8b778fed2164ae180a03ca2cc3ba5604e59",
+  "public_source_map_material_sha256": "841920543d1557bda3eb03e8af4dddcde2d6293e6d46543b55e9ca6671398bbb",
+  "public_source_map_sha256": "d9e6853f43302aaacf5445d4a7b964f0eddfc13a7f14298e61e05039bf47fe6c",
+  "raw_private_approval_material_included": false,
+  "schema": 1
+}

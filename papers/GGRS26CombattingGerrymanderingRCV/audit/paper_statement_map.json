@@ -686,6 +686,11 @@
     "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_selected_seat_counts_spec": "pav_party_seat_selector_definition",
     "GGRS26CombattingGerrymanderingRCV.paper_two_party_voter_model": "solid_coalition_voter_model"
   },
+  "publication_source_display_projection": {
+    "manifest": "audit/public_source_display_projection.json",
+    "raw_source_bytes_included": false,
+    "schema": 1
+  },
   "schema": 1,
   "semantic_contract_schema": 1,
   "semantic_route_schema": 2,

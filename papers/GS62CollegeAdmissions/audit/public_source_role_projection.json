@@ -1,0 +1,59 @@
+{
+  "acceptance_credential": false,
+  "accepted_graph_sha256": "984111887de81d66476413c0f385d7f3088b511673ae0ac07c221f719b1a1fd3",
+  "bindings_by_source_item": {
+    "displayed_optimal_assignment_definition": {
+      "accepted_source_role_contract_sha256": "4a5d5e0481f12028d09716bdc408f7660f44a95750daceeff5b45886ab5c7091",
+      "public_source_role_projection_sha256": "4a5d5e0481f12028d09716bdc408f7660f44a95750daceeff5b45886ab5c7091",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "displayed_unstable_college_assignment_definition": {
+      "accepted_source_role_contract_sha256": "4a5d5e0481f12028d09716bdc408f7660f44a95750daceeff5b45886ab5c7091",
+      "public_source_role_projection_sha256": "4a5d5e0481f12028d09716bdc408f7660f44a95750daceeff5b45886ab5c7091",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "section3_marriage_instability_definition": {
+      "accepted_source_role_contract_sha256": "4a5d5e0481f12028d09716bdc408f7660f44a95750daceeff5b45886ab5c7091",
+      "public_source_role_projection_sha256": "4a5d5e0481f12028d09716bdc408f7660f44a95750daceeff5b45886ab5c7091",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "section4_waiting_list_procedure_model": {
+      "accepted_source_role_contract_sha256": "e8bd731c387f27f23e485836c19e8cd56ab3be13060fd6b4343e29952fe8b856",
+      "public_source_role_projection_sha256": "e8bd731c387f27f23e485836c19e8cd56ab3be13060fd6b4343e29952fe8b856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "section4_waiting_list_terminal_stability": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem1_stable_marriage_exists": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem2_applicant_optimality": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    }
+  },
+  "paper": "GS62CollegeAdmissions",
+  "private_role_material_included": false,
+  "private_source_map_material_sha256": "33b53c99e6af102233444fd089fd0488abbd0def06938525640f64bdf61df290",
+  "private_source_map_sha256": "60e662193001f2021ead099c251c4960b9be228a132a0b256eed1f98f5fcced7",
+  "projection_contract_sha256": "ed0964edc9c70f5ce087ce9bf134712ca40c7964ecaefd403309ac9a1b47d34d",
+  "public_display_manifest_material_sha256": "1af13de47fd8dd6b40097ef27c010165458d728931489616ed89d98063113187",
+  "public_display_manifest_sha256": "324e9a94aba2f36ca2e341ff8bd926e966a2cf8e158e01b02fd47675fbf71706",
+  "public_source_map_material_sha256": "802b343430aa19716174854bfebe23b57be76de21068a8429536e80c8bc2da8c",
+  "public_source_map_sha256": "cde327469dd4eedcd8e6ea623f755630af8598558428126eb553797e8508a5d7",
+  "raw_private_approval_material_included": false,
+  "schema": 1
+}

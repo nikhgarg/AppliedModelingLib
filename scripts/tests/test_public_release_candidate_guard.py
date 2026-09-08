@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from dataclasses import replace
 from pathlib import Path
 from unittest import mock
 
@@ -20,6 +21,8 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts import public_release_candidate_guard as guard  # noqa: E402
+from scripts import public_source_role_projection as role_projection  # noqa: E402
+from scripts.obligation_evidence_projection import _source_role_contract  # noqa: E402
 from scripts.corrected_target_identity import (  # noqa: E402
     CORRECTED_TARGET_RECORD_SHA256_FIELD,
     CORRECTED_TARGET_REVIEW_SHA256_FIELD,
@@ -800,6 +803,7 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
             ),
         }
         private_map = {
+            "paper": "Fixture",
             "source_artifact_path": ".audit_source/Fixture.txt",
             "source_artifact_sha256": "a" * 64,
             "source_coverage_mode": "named_theoretical_statements",
@@ -1002,6 +1006,23 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
                 candidate, retained_path_commit, [entry], private_repo=private
             )
 
+            # A saved manifest cannot be used to authenticate an unmarked map.
+            private_blob = subprocess.run(
+                ["git", "show", f"{entry.source_commit}:{entry.path}"],
+                cwd=private,
+                check=True,
+                stdout=subprocess.PIPE,
+            ).stdout
+            unmarked_blob = guard.project_bytes(entry.path, private_blob)
+            (candidate / entry.path).write_bytes(unmarked_blob)
+            (candidate / "papers/Fixture/audit/public_source_display_projection.json").write_bytes(
+                manifest_blob
+            )
+            unmarked_commit = self.commit(candidate, "remove display marker")
+            unmarked_issues = guard.public_source_display_projection_issues(
+                candidate, unmarked_commit, [entry], private_repo=private
+            )
+
         self.assertTrue(any("missing" in issue for issue in missing_manifest_issues), missing_manifest_issues)
         self.assertTrue(
             any("public_source_map_sha256" in issue for issue in tampered_map_issues),
@@ -1022,6 +1043,143 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
         self.assertTrue(
             any("retains a source path" in issue for issue in retained_path_issues),
             retained_path_issues,
+        )
+        self.assertTrue(
+            any("requires the exact display-projection marker" in issue
+                for issue in unmarked_issues),
+            unmarked_issues,
+        )
+
+    def test_public_role_projection_requires_pinned_map_and_exact_private_graph(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (
+                private,
+                candidate,
+                source_commit,
+                _candidate_commit,
+                entry,
+                public_blob,
+                manifest_blob,
+            ) = self._display_projection_fixture(root)
+            graph_sha256 = "9" * 64
+            pointer_path = (
+                "papers/Fixture/audit/obligation_evidence/current_accepted_graph.json"
+            )
+            pack_path = (
+                "papers/Fixture/audit/obligation_evidence/accepted_graphs/sha256/"
+                f"{graph_sha256[:2]}/{graph_sha256}.json"
+            )
+            pointer_bytes = (
+                json.dumps(
+                    {"schema": 2, "graph_sha256": graph_sha256}, sort_keys=True
+                )
+                + "\n"
+            ).encode("utf-8")
+            pack_bytes = b'{"fixture":"accepted graph bytes"}\n'
+            for path, raw in ((pointer_path, pointer_bytes), (pack_path, pack_bytes)):
+                destination = private / path
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.write_bytes(raw)
+            pinned_commit = self.commit(private, "pin selected accepted graph")
+            private_blob = subprocess.run(
+                ["git", "show", f"{pinned_commit}:{entry.path}"],
+                cwd=private,
+                check=True,
+                stdout=subprocess.PIPE,
+            ).stdout
+            entry = replace(entry, source_commit=pinned_commit)
+            private_map = json.loads(private_blob)
+            accepted_roles = {
+                "fixture_definition": _source_role_contract(
+                    private_map["items"]["fixture_definition"]
+                )
+            }
+            envelope = role_projection.build_public_source_role_projection_envelope(
+                paper="Fixture",
+                private_source_map_bytes=private_blob,
+                public_source_map_bytes=public_blob,
+                public_display_manifest_bytes=manifest_blob,
+                accepted_graph_sha256=graph_sha256,
+                accepted_role_sha256s_by_source_item=accepted_roles,
+            )
+            envelope_path = (
+                candidate / "papers/Fixture/audit/public_source_role_projection.json"
+            )
+            envelope_path.write_bytes(
+                role_projection.canonical_public_source_role_projection_bytes(envelope)
+            )
+            candidate_commit = self.commit(candidate, "add public role projection")
+            accepted_material = (
+                graph_sha256,
+                accepted_roles,
+                pointer_bytes,
+                pack_bytes,
+                pack_path,
+            )
+
+            with mock.patch.object(
+                guard,
+                "_accepted_source_role_material",
+                return_value=accepted_material,
+            ):
+                issues = guard.public_source_role_projection_issues(
+                    candidate,
+                    candidate_commit,
+                    [entry],
+                    private_repo=private,
+                    public_base_ref=None,
+                )
+                missing_provenance = guard.public_source_role_projection_issues(
+                    candidate,
+                    candidate_commit,
+                    [],
+                    private_repo=private,
+                    public_base_ref=None,
+                )
+                wrong_graph_material = (
+                    graph_sha256,
+                    accepted_roles,
+                    b"different pointer bytes\n",
+                    pack_bytes,
+                    pack_path,
+                )
+            with mock.patch.object(
+                guard,
+                "_accepted_source_role_material",
+                return_value=wrong_graph_material,
+            ):
+                wrong_graph = guard.public_source_role_projection_issues(
+                    candidate,
+                    candidate_commit,
+                    [entry],
+                    private_repo=private,
+                    public_base_ref=None,
+                )
+            with mock.patch.object(
+                guard,
+                "_accepted_source_role_material",
+                return_value=accepted_material,
+            ):
+                unchanged = guard.public_source_role_projection_issues(
+                    candidate,
+                    candidate_commit,
+                    [],
+                    private_repo=private,
+                    public_base_ref=candidate_commit,
+                )
+
+        self.assertEqual(issues, [])
+        self.assertEqual(unchanged, [])
+        self.assertTrue(
+            any("private_projection allowlist provenance" in issue
+                for issue in missing_provenance),
+            missing_provenance,
+        )
+        self.assertTrue(
+            any("differs from the pinned private source commit" in issue
+                for issue in wrong_graph),
+            wrong_graph,
         )
 
     def test_packet_pdf_and_tex_private_workflow_scan_is_committed_and_bounded(self) -> None:

@@ -1,0 +1,131 @@
+{
+  "acceptance_credential": false,
+  "accepted_graph_sha256": "e9dc6e77e8632d46b8a246b832524956557a0713ba87534b9d96cb5d0fd841a7",
+  "bindings_by_source_item": {
+    "appendix_priority_queueing_time": {
+      "accepted_source_role_contract_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "public_source_role_projection_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "arrival_process_condition": {
+      "accepted_source_role_contract_sha256": "833843175a57efcc42628b0a84e8c38255ed09660fd387cb299770e41e9ed782",
+      "public_source_role_projection_sha256": "833843175a57efcc42628b0a84e8c38255ed09660fd387cb299770e41e9ed782",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "cheating_penalty_definition": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "delay_cost_condition": {
+      "accepted_source_role_contract_sha256": "833843175a57efcc42628b0a84e8c38255ed09660fd387cb299770e41e9ed782",
+      "public_source_role_projection_sha256": "833843175a57efcc42628b0a84e8c38255ed09660fd387cb299770e41e9ed782",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "homogeneous_price_formula": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "homogeneous_queue_formulas": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "individual_decision_condition": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "net_value_objective": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "priority_queueing_time_formula": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "priority_time_dependent_price_formula": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "ptd_optimality_and_incentive_compatibility_definition": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "service_process_condition": {
+      "accepted_source_role_contract_sha256": "833843175a57efcc42628b0a84e8c38255ed09660fd387cb299770e41e9ed782",
+      "public_source_role_projection_sha256": "833843175a57efcc42628b0a84e8c38255ed09660fd387cb299770e41e9ed782",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem_1": {
+      "accepted_source_role_contract_sha256": "134c72d24878dcabd1db1bd46e19dc2ad578a7396db953beefa8facf45524d8d",
+      "public_source_role_projection_sha256": "c82f816774232e76e5e9c18decb26a310736658f10669a4997e496f157ea6586",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "theorem_2": {
+      "accepted_source_role_contract_sha256": "33f423c544ca8892bc64e09a2ec657046694cbcf22d356eda2199a3dbbdeea44",
+      "public_source_role_projection_sha256": "c64bf620fad0c8a71b2443d96a1f431bd67473cc0d1ddd80d612f7f65094c4b1",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "theorem_3": {
+      "accepted_source_role_contract_sha256": "96614745f3d1b6683a166c8a4a1a16d2931a448223d57ba1fac011112cdcbe12",
+      "public_source_role_projection_sha256": "57915c463c091fbe1c29fc9bf202efc049c74712f4b1f1cb60cf18c6543571a6",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "theorem_4": {
+      "accepted_source_role_contract_sha256": "4f86ace77ae3dcabc714d3f48afc44fa550d75fd3a8f9d7c20ce0e5101f5070d",
+      "public_source_role_projection_sha256": "353004ee13ff973b89094017522f6485b11bf6821b32fca3dbf273a915712696",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "value_function_condition": {
+      "accepted_source_role_contract_sha256": "833843175a57efcc42628b0a84e8c38255ed09660fd387cb299770e41e9ed782",
+      "public_source_role_projection_sha256": "833843175a57efcc42628b0a84e8c38255ed09660fd387cb299770e41e9ed782",
+      "schema": 1,
+      "withheld_field_paths": []
+    }
+  },
+  "paper": "MendelsonWhang1990PriorityPricing",
+  "private_role_material_included": false,
+  "private_source_map_material_sha256": "3d33e052eb9455b40fa015dea909d80eb6fc012eb0d53adcfb13a20f0bd5eac6",
+  "private_source_map_sha256": "b10bc9e637acf8319d84bdc2b21853101df10ff69595568f1fe56749db2dfe06",
+  "projection_contract_sha256": "ed0964edc9c70f5ce087ce9bf134712ca40c7964ecaefd403309ac9a1b47d34d",
+  "public_display_manifest_material_sha256": "6fde54a06d0276c0b354ecab5a43bbe41e5b88c37825c034ec0fa33416588e7f",
+  "public_display_manifest_sha256": "9f387dbb51e5f30267f0b8bdd318a63d3b6f187dd3d4d72c6ea42c9c2bb3ed15",
+  "public_source_map_material_sha256": "ad504de4e9f69e22e00a5d87add1f6950329eddf6d4bb2e6fa7528935cf27f46",
+  "public_source_map_sha256": "b85b8de803c6240d1aa8b82888307375c014a921748e7f5c5d332fbdc665f650",
+  "raw_private_approval_material_included": false,
+  "schema": 1
+}

@@ -21,6 +21,7 @@ class PublicReleaseArtifactPolicyTests(unittest.TestCase):
     def test_canonical_current_audit_artifacts_are_allowed(self) -> None:
         paths = [
             "papers/Fixture/audit/paper_statement_map.json",
+            "papers/Fixture/audit/public_source_role_projection.json",
             "papers/Fixture/audit/source_record_audit.json",
             "papers/Fixture/audit/source_record_match_llm.json",
             "papers/Fixture/audit/source_proof_fidelity.json",
@@ -65,6 +66,7 @@ class PublicReleaseArtifactPolicyTests(unittest.TestCase):
             "papers/Fixture/audit/manual_review_template.json",
             "papers/Fixture/audit/semantic_review_noncanonical_draft.json",
             "papers/Fixture/audit/receipt_reissue_action_scaffold.json",
+            "papers/Fixture/audit/public_source_role_projection.draft.json",
         ]
 
         issues = public_release_artifact_issues(paths)

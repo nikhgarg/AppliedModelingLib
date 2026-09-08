@@ -1,0 +1,515 @@
+{
+  "acceptance_credential": false,
+  "accepted_graph_sha256": "6c6e61cdb0d135642e433337bb2eb6e3902aaa0da97eaa4cf5f1f1c2aaea1ee6",
+  "bindings_by_source_item": {
+    "lg21_access_action_constraints": {
+      "accepted_source_role_contract_sha256": "a2ff2d71935837942c6e7cb81e488a564084c2e4a4c0b5a89f6ca8cec5c1589d",
+      "public_source_role_projection_sha256": "a2ff2d71935837942c6e7cb81e488a564084c2e4a4c0b5a89f6ca8cec5c1589d",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_access_observation_regimes": {
+      "accepted_source_role_contract_sha256": "a2ff2d71935837942c6e7cb81e488a564084c2e4a4c0b5a89f6ca8cec5c1589d",
+      "public_source_role_projection_sha256": "a2ff2d71935837942c6e7cb81e488a564084c2e4a4c0b5a89f6ca8cec5c1589d",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_admission_probability_objective_generalization": {
+      "accepted_source_role_contract_sha256": "a0e18c23a4be0db47d687fcfcb8ca488bb3d41ba7b896463a273d74f14c3d69e",
+      "public_source_role_projection_sha256": "a0e18c23a4be0db47d687fcfcb8ca488bb3d41ba7b896463a273d74f14c3d69e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_approximate_fairness_future_work": {
+      "accepted_source_role_contract_sha256": "f7da4c6a3a6b4924896044af51f42135eb58e7b8f045b9e0422f261cef21e892",
+      "public_source_role_projection_sha256": "f7da4c6a3a6b4924896044af51f42135eb58e7b8f045b9e0422f261cef21e892",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_cross_student_noise_independence": {
+      "accepted_source_role_contract_sha256": "43d104eeb60bd11ad20669157825c9920d8d29c92451f4a88cf58c2431f84686",
+      "public_source_role_projection_sha256": "43d104eeb60bd11ad20669157825c9920d8d29c92451f4a88cf58c2431f84686",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_definition1_best_response": {
+      "accepted_source_role_contract_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "public_source_role_projection_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_definition1_estimation_consistency": {
+      "accepted_source_role_contract_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "public_source_role_projection_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_definition1_feasibility": {
+      "accepted_source_role_contract_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "public_source_role_projection_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_definition1_hidden_access_optional_protocol": {
+      "accepted_source_role_contract_sha256": "822eb6b726c650e8a7462f68776e0205749acc68d410f952bf00a8d8778c10d4",
+      "public_source_role_projection_sha256": "822eb6b726c650e8a7462f68776e0205749acc68d410f952bf00a8d8778c10d4",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_definition2_latent_skill_fair": {
+      "accepted_source_role_contract_sha256": "822eb6b726c650e8a7462f68776e0205749acc68d410f952bf00a8d8778c10d4",
+      "public_source_role_projection_sha256": "822eb6b726c650e8a7462f68776e0205749acc68d410f952bf00a8d8778c10d4",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_definition3_observable_fair": {
+      "accepted_source_role_contract_sha256": "822eb6b726c650e8a7462f68776e0205749acc68d410f952bf00a8d8778c10d4",
+      "public_source_role_projection_sha256": "822eb6b726c650e8a7462f68776e0205749acc68d410f952bf00a8d8778c10d4",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_definition4_demographic_fair": {
+      "accepted_source_role_contract_sha256": "822eb6b726c650e8a7462f68776e0205749acc68d410f952bf00a8d8778c10d4",
+      "public_source_role_projection_sha256": "822eb6b726c650e8a7462f68776e0205749acc68d410f952bf00a8d8778c10d4",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_definition5_test_blank": {
+      "accepted_source_role_contract_sha256": "822eb6b726c650e8a7462f68776e0205749acc68d410f952bf00a8d8778c10d4",
+      "public_source_role_projection_sha256": "822eb6b726c650e8a7462f68776e0205749acc68d410f952bf00a8d8778c10d4",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_definition6_access_estimator": {
+      "accepted_source_role_contract_sha256": "822eb6b726c650e8a7462f68776e0205749acc68d410f952bf00a8d8778c10d4",
+      "public_source_role_projection_sha256": "822eb6b726c650e8a7462f68776e0205749acc68d410f952bf00a8d8778c10d4",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_definition6_no_access_resampling": {
+      "accepted_source_role_contract_sha256": "9cd5b379bbd174c42f14ecd1532d788af8b0461c789ae699828e98715ff434fa",
+      "public_source_role_projection_sha256": "9cd5b379bbd174c42f14ecd1532d788af8b0461c789ae699828e98715ff434fa",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_distributional_equality_notation": {
+      "accepted_source_role_contract_sha256": "50a4960d7df863d2f8473dec892d9d3052a30fa225d62278c722e978b339aa7f",
+      "public_source_role_projection_sha256": "50a4960d7df863d2f8473dec892d9d3052a30fa225d62278c722e978b339aa7f",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_fairness_implication_chain": {
+      "accepted_source_role_contract_sha256": "cda49d27d03d0611b210c217f18f31beddb3acae966283e8fdfcffb046b71e67",
+      "public_source_role_projection_sha256": "cda49d27d03d0611b210c217f18f31beddb3acae966283e8fdfcffb046b71e67",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_hidden_access_demographic_question": {
+      "accepted_source_role_contract_sha256": "f7da4c6a3a6b4924896044af51f42135eb58e7b8f045b9e0422f261cef21e892",
+      "public_source_role_projection_sha256": "f7da4c6a3a6b4924896044af51f42135eb58e7b8f045b9e0422f261cef21e892",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_ignoring_test_scores_achieves_fairness": {
+      "accepted_source_role_contract_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "public_source_role_projection_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_known_parameters_cutoff_model": {
+      "accepted_source_role_contract_sha256": "e742a3d968b8b236f9085e2edfcf7fb2fdb92de48db046d8fe9222b77c39ec50",
+      "public_source_role_projection_sha256": "e742a3d968b8b236f9085e2edfcf7fb2fdb92de48db046d8fe9222b77c39ec50",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_lemma41_lower_tail_reporting_deviation": {
+      "accepted_source_role_contract_sha256": "917ab9132fbcec5d9b4835f27a0d85c878949dee9f78c5a22e9f44331ccd1059",
+      "public_source_role_projection_sha256": "917ab9132fbcec5d9b4835f27a0d85c878949dee9f78c5a22e9f44331ccd1059",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_lemma41_no_taker_lower_tail_deviation": {
+      "accepted_source_role_contract_sha256": "917ab9132fbcec5d9b4835f27a0d85c878949dee9f78c5a22e9f44331ccd1059",
+      "public_source_role_projection_sha256": "917ab9132fbcec5d9b4835f27a0d85c878949dee9f78c5a22e9f44331ccd1059",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_lemma41_observed_test_law": {
+      "accepted_source_role_contract_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "public_source_role_projection_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_lemma41_proof_presentation": {
+      "accepted_source_role_contract_sha256": "f712a128a06b4e15ff2d16311dbbb7cbc3920b95aeae2da76ba5083d135d267f",
+      "public_source_role_projection_sha256": "f712a128a06b4e15ff2d16311dbbb7cbc3920b95aeae2da76ba5083d135d267f",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_lemma41_reporting_monotonicity": {
+      "accepted_source_role_contract_sha256": "917ab9132fbcec5d9b4835f27a0d85c878949dee9f78c5a22e9f44331ccd1059",
+      "public_source_role_projection_sha256": "917ab9132fbcec5d9b4835f27a0d85c878949dee9f78c5a22e9f44331ccd1059",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_lemma41_strategy_proofness": {
+      "accepted_source_role_contract_sha256": "dab322d39a20a21d84bc8ea0aa762690a3758b4566eb05f235aaa4f1e2eac62e",
+      "public_source_role_projection_sha256": "dab322d39a20a21d84bc8ea0aa762690a3758b4566eb05f235aaa4f1e2eac62e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_lemma41_taking_indifference_equation": {
+      "accepted_source_role_contract_sha256": "358b131b61ca36faf8de707fae21a25a13e8ad4aa504873b3eca45aa572f03cb",
+      "public_source_role_projection_sha256": "358b131b61ca36faf8de707fae21a25a13e8ad4aa504873b3eca45aa572f03cb",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_nongaussian_generality_expectation": {
+      "accepted_source_role_contract_sha256": "f7da4c6a3a6b4924896044af51f42135eb58e7b8f045b9e0422f261cef21e892",
+      "public_source_role_projection_sha256": "f7da4c6a3a6b4924896044af51f42135eb58e7b8f045b9e0422f261cef21e892",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_observed_access_gaussian_nondegeneracy_domain": {
+      "accepted_source_role_contract_sha256": "de4eaf03389fb2330f2f149a9c6bb40f10e8662748443332425cc8198d83eaab",
+      "public_source_role_projection_sha256": "de4eaf03389fb2330f2f149a9c6bb40f10e8662748443332425cc8198d83eaab",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_pbo_posterior_mean_formula": {
+      "accepted_source_role_contract_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "public_source_role_projection_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_proposition42_access_gaussian_laws": {
+      "accepted_source_role_contract_sha256": "9cd5b379bbd174c42f14ecd1532d788af8b0461c789ae699828e98715ff434fa",
+      "public_source_role_projection_sha256": "9cd5b379bbd174c42f14ecd1532d788af8b0461c789ae699828e98715ff434fa",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_proposition42_four_group_argument": {
+      "accepted_source_role_contract_sha256": "917ab9132fbcec5d9b4835f27a0d85c878949dee9f78c5a22e9f44331ccd1059",
+      "public_source_role_projection_sha256": "917ab9132fbcec5d9b4835f27a0d85c878949dee9f78c5a22e9f44331ccd1059",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_proposition42_gaussian_pbo_source_model": {
+      "accepted_source_role_contract_sha256": "de4eaf03389fb2330f2f149a9c6bb40f10e8662748443332425cc8198d83eaab",
+      "public_source_role_projection_sha256": "de4eaf03389fb2330f2f149a9c6bb40f10e8662748443332425cc8198d83eaab",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_proposition42_not_latent_skill_fair": {
+      "accepted_source_role_contract_sha256": "6fde81007543b56d77ccd940268d0d6ca11b2fc01734f027f902c3d87d07a7ae",
+      "public_source_role_projection_sha256": "6fde81007543b56d77ccd940268d0d6ca11b2fc01734f027f902c3d87d07a7ae",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_proposition42_proof_presentation": {
+      "accepted_source_role_contract_sha256": "16cfcd287e08ec46601a9221bff6cf8e13fdf5eb096f17c2d9894d3b40f27e7a",
+      "public_source_role_projection_sha256": "16cfcd287e08ec46601a9221bff6cf8e13fdf5eb096f17c2d9894d3b40f27e7a",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_proposition43_access_gaussian_law": {
+      "accepted_source_role_contract_sha256": "9cd5b379bbd174c42f14ecd1532d788af8b0461c789ae699828e98715ff434fa",
+      "public_source_role_projection_sha256": "9cd5b379bbd174c42f14ecd1532d788af8b0461c789ae699828e98715ff434fa",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_proposition43_demographic_marginal_step": {
+      "accepted_source_role_contract_sha256": "9a8b8f2de47fa7e003e3f43580f63100282bbcf44e75dcd00c73301c78d3f2fe",
+      "public_source_role_projection_sha256": "9a8b8f2de47fa7e003e3f43580f63100282bbcf44e75dcd00c73301c78d3f2fe",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_proposition43_no_access_point_estimate": {
+      "accepted_source_role_contract_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "public_source_role_projection_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_proposition43_not_observable_or_demographic_fair": {
+      "accepted_source_role_contract_sha256": "6fde81007543b56d77ccd940268d0d6ca11b2fc01734f027f902c3d87d07a7ae",
+      "public_source_role_projection_sha256": "6fde81007543b56d77ccd940268d0d6ca11b2fc01734f027f902c3d87d07a7ae",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_proposition43_proof_presentation": {
+      "accepted_source_role_contract_sha256": "16cfcd287e08ec46601a9221bff6cf8e13fdf5eb096f17c2d9894d3b40f27e7a",
+      "public_source_role_projection_sha256": "16cfcd287e08ec46601a9221bff6cf8e13fdf5eb096f17c2d9894d3b40f27e7a",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_report_decision_skill_independence": {
+      "accepted_source_role_contract_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "public_source_role_projection_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_reporting_conditioned_generalization": {
+      "accepted_source_role_contract_sha256": "e323e454489b1280e3bea671d0ecdd4b378ba23ce2fd20e7047866c946208b84",
+      "public_source_role_projection_sha256": "e323e454489b1280e3bea671d0ecdd4b378ba23ce2fd20e7047866c946208b84",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_requirement_policies": {
+      "accepted_source_role_contract_sha256": "00ae4cb206dfc1e33f3fade96fd7087e741bc4dea5e1052bf813b368d68938f7",
+      "public_source_role_projection_sha256": "00ae4cb206dfc1e33f3fade96fd7087e741bc4dea5e1052bf813b368d68938f7",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_requirement_policy_scope_generalization": {
+      "accepted_source_role_contract_sha256": "228620af5f5d034f80a68f03c96d52a9ac89c60ad19a1ef47a7a526bb77c36ff",
+      "public_source_role_projection_sha256": "228620af5f5d034f80a68f03c96d52a9ac89c60ad19a1ef47a7a526bb77c36ff",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_school_information_and_policy": {
+      "accepted_source_role_contract_sha256": "a2ff2d71935837942c6e7cb81e488a564084c2e4a4c0b5a89f6ca8cec5c1589d",
+      "public_source_role_projection_sha256": "a2ff2d71935837942c6e7cb81e488a564084c2e4a4c0b5a89f6ca8cec5c1589d",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_student_decision_objective": {
+      "accepted_source_role_contract_sha256": "00ae4cb206dfc1e33f3fade96fd7087e741bc4dea5e1052bf813b368d68938f7",
+      "public_source_role_projection_sha256": "00ae4cb206dfc1e33f3fade96fd7087e741bc4dea5e1052bf813b368d68938f7",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_student_gaussian_signal_model": {
+      "accepted_source_role_contract_sha256": "00ae4cb206dfc1e33f3fade96fd7087e741bc4dea5e1052bf813b368d68938f7",
+      "public_source_role_projection_sha256": "00ae4cb206dfc1e33f3fade96fd7087e741bc4dea5e1052bf813b368d68938f7",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_test_taking_probability_preference": {
+      "accepted_source_role_contract_sha256": "2d6df3df23dfc6bde6da0073116e6b4bb3a841d86daed6f8b12513f1ec5cfccd",
+      "public_source_role_projection_sha256": "2d6df3df23dfc6bde6da0073116e6b4bb3a841d86daed6f8b12513f1ec5cfccd",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_all_fairness_fail": {
+      "accepted_source_role_contract_sha256": "cabd14a783c9ee8afa4cd763507c1a5f94e86e285f7063b45b81ad5554b8cb10",
+      "public_source_role_projection_sha256": "cabd14a783c9ee8afa4cd763507c1a5f94e86e285f7063b45b81ad5554b8cb10",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_cutoff_best_response": {
+      "accepted_source_role_contract_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "public_source_role_projection_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_cutoff_fixed_point": {
+      "accepted_source_role_contract_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "public_source_role_projection_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_extreme_reporting_profiles_unstable": {
+      "accepted_source_role_contract_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "public_source_role_projection_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_no_report_decomposition": {
+      "accepted_source_role_contract_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "public_source_role_projection_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_no_take_mixture": {
+      "accepted_source_role_contract_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "public_source_role_projection_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_nonreport_mixture_weights": {
+      "accepted_source_role_contract_sha256": "9e06f29730422876440127e5201ad6058e1fd5a68c7a53c5eb5cca236d2eece4",
+      "public_source_role_projection_sha256": "9e06f29730422876440127e5201ad6058e1fd5a68c7a53c5eb5cca236d2eece4",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_optional_reporting": {
+      "accepted_source_role_contract_sha256": "cabd14a783c9ee8afa4cd763507c1a5f94e86e285f7063b45b81ad5554b8cb10",
+      "public_source_role_projection_sha256": "cabd14a783c9ee8afa4cd763507c1a5f94e86e285f7063b45b81ad5554b8cb10",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_pooled_no_report_estimate": {
+      "accepted_source_role_contract_sha256": "9e06f29730422876440127e5201ad6058e1fd5a68c7a53c5eb5cca236d2eece4",
+      "public_source_role_projection_sha256": "9e06f29730422876440127e5201ad6058e1fd5a68c7a53c5eb5cca236d2eece4",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_proof_presentation": {
+      "accepted_source_role_contract_sha256": "18678200494b5733d8d94d1998063f9d55ccb348125ea070c4daab4102dab5e7",
+      "public_source_role_projection_sha256": "18678200494b5733d8d94d1998063f9d55ccb348125ea070c4daab4102dab5e7",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_report_required": {
+      "accepted_source_role_contract_sha256": "cabd14a783c9ee8afa4cd763507c1a5f94e86e285f7063b45b81ad5554b8cb10",
+      "public_source_role_projection_sha256": "cabd14a783c9ee8afa4cd763507c1a5f94e86e285f7063b45b81ad5554b8cb10",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_report_required_expected_posterior": {
+      "accepted_source_role_contract_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "public_source_role_projection_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_report_required_threshold_fixed_point": {
+      "accepted_source_role_contract_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "public_source_role_projection_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_reported_posterior_formula": {
+      "accepted_source_role_contract_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "public_source_role_projection_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_reporting_monotonicity_cutoff": {
+      "accepted_source_role_contract_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "public_source_role_projection_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_reporting_share_A": {
+      "accepted_source_role_contract_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "public_source_role_projection_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_strategic_dominance_unfairness": {
+      "accepted_source_role_contract_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "public_source_role_projection_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem31_truncated_no_report_integral": {
+      "accepted_source_role_contract_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "public_source_role_projection_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem32_fairness_impossibility": {
+      "accepted_source_role_contract_sha256": "9fe140c3aa6023bb903acb22b8a8939afb68e4d620b5e7f4b0f31efde078052e",
+      "public_source_role_projection_sha256": "d8e8cecbb3c5cf9642f1c8407c956f0c5d35285fa85e5e4d14468a6d50a22148",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "lg21_theorem32_observable_fairness_identity": {
+      "accepted_source_role_contract_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "public_source_role_projection_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem32_observable_summary": {
+      "accepted_source_role_contract_sha256": "2ce108069e4ebe0818e13fbdc5dd2d1603b1e55cbc203e15b5c43408eadb69df",
+      "public_source_role_projection_sha256": "42ed7578f75ca0d7ae99d9a33867f6607260a1d18310d33840d7de171676899b",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "lg21_theorem32_optional_profitable_deviation": {
+      "accepted_source_role_contract_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "public_source_role_projection_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem32_proof_presentation": {
+      "accepted_source_role_contract_sha256": "18678200494b5733d8d94d1998063f9d55ccb348125ea070c4daab4102dab5e7",
+      "public_source_role_projection_sha256": "18678200494b5733d8d94d1998063f9d55ccb348125ea070c4daab4102dab5e7",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem32_report_required_profitable_deviation": {
+      "accepted_source_role_contract_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "public_source_role_projection_sha256": "2e65992c7219a67ec20e6b0ae9dabba2331a4e6601bd2d221e33cec700eae857",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem32_report_required_proof_conclusion": {
+      "accepted_source_role_contract_sha256": "dd5600843e0537cfa4f4eb3e11d614c1111f37cd3e999f5c521232205c7f6048",
+      "public_source_role_projection_sha256": "160fd30d2fb138fc29605539f0f66497fe002a4dd43f3484d3a95af9670f42da",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "lg21_theorem32_report_required_source_statement": {
+      "accepted_source_role_contract_sha256": "2d2297a6055d703c8f0527c883498befce7b598a03c43687bc86f0a90571f22a",
+      "public_source_role_projection_sha256": "81944761981a528ebe83ad3edcb36c82bb7da16fd418a68eb5f178a84083c7a8",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "lg21_theorem32_reporter_nonreporter_laws": {
+      "accepted_source_role_contract_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "public_source_role_projection_sha256": "836e5dd7fbd4a07c400d1cb4125c280b917ca9bb5f811d1e892ce089f0a9f05e",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem44_common_gaussian_law_equation2": {
+      "accepted_source_role_contract_sha256": "c19ede5ed51f17490a3a344a79ad1e1ec78938fee7a42426cae0fecbf0badcea",
+      "public_source_role_projection_sha256": "c19ede5ed51f17490a3a344a79ad1e1ec78938fee7a42426cae0fecbf0badcea",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem44_proof_presentation": {
+      "accepted_source_role_contract_sha256": "18678200494b5733d8d94d1998063f9d55ccb348125ea070c4daab4102dab5e7",
+      "public_source_role_projection_sha256": "18678200494b5733d8d94d1998063f9d55ccb348125ea070c4daab4102dab5e7",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_theorem44_resampling_fairness": {
+      "accepted_source_role_contract_sha256": "cabd14a783c9ee8afa4cd763507c1a5f94e86e285f7063b45b81ad5554b8cb10",
+      "public_source_role_projection_sha256": "cabd14a783c9ee8afa4cd763507c1a5f94e86e285f7063b45b81ad5554b8cb10",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lg21_thompson_acceptance_interpretation": {
+      "accepted_source_role_contract_sha256": "e323e454489b1280e3bea671d0ecdd4b378ba23ce2fd20e7047866c946208b84",
+      "public_source_role_projection_sha256": "e323e454489b1280e3bea671d0ecdd4b378ba23ce2fd20e7047866c946208b84",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "model_theorem31_optional_local_candidate_stability_refinement": {
+      "accepted_source_role_contract_sha256": "25ae0445cbad5700740ca0d901cdb22fa81678daaa2adcfa53e3e0db581adee2",
+      "public_source_role_projection_sha256": "25ae0445cbad5700740ca0d901cdb22fa81678daaa2adcfa53e3e0db581adee2",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "model_theorem31_report_required_local_tail_stability_refinement": {
+      "accepted_source_role_contract_sha256": "25ae0445cbad5700740ca0d901cdb22fa81678daaa2adcfa53e3e0db581adee2",
+      "public_source_role_projection_sha256": "25ae0445cbad5700740ca0d901cdb22fa81678daaa2adcfa53e3e0db581adee2",
+      "schema": 1,
+      "withheld_field_paths": []
+    }
+  },
+  "paper": "LG21TestOptionalPolicies",
+  "private_role_material_included": false,
+  "private_source_map_material_sha256": "aac9b34c337fa29baf653a75bc6597d0be3e3842048e644319906580e8eaa5c5",
+  "private_source_map_sha256": "9780e24dcb4da51c3f8015d96213f112947365ef10f16904ddf222ea6fe2b983",
+  "projection_contract_sha256": "ed0964edc9c70f5ce087ce9bf134712ca40c7964ecaefd403309ac9a1b47d34d",
+  "public_display_manifest_material_sha256": "943c3b81ba335e0a8d0798a1b456ab60f48feba5335392c07c9398c412cdf917",
+  "public_display_manifest_sha256": "981b583a010d90fe15f1987fd183a155b1634aec2012926a33f155d02c47d73b",
+  "public_source_map_material_sha256": "aea97c90919c3919ce0f68401acb0376b161969959414ae457350ecf01033da6",
+  "public_source_map_sha256": "fa02972f5708ddff672b96c9cd78bbf51c1eafab69a5c3d1bb6ef22a233fa0a1",
+  "raw_private_approval_material_included": false,
+  "schema": 1
+}

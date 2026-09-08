@@ -1,0 +1,473 @@
+{
+  "acceptance_credential": false,
+  "accepted_graph_sha256": "e9df2a6817bef27523e8f49b054f0a47994c0bccb01740d2302dd4c1b6b8b02c",
+  "bindings_by_source_item": {
+    "appendix_c_lemma2_item_fairness_equality_lp_solution_set": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "appendix_c_lemma2_item_fairness_equality_lp_solution_set_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_positive_recommendation_utilities": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_theorem3_first_half_alpha_domain": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_theorem3_opposing_type_model": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_theorem3_second_half_alpha_domain": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_theorem4_at_least_three_items": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_theorem4_cold_start_type_wiring": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_theorem4_displayed_reduced_models": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_theorem4_estimated_model_reduction": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_theorem4_parameter_domain": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_theorem4_true_model_reduction": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "assumption_theorem4_universal_value_vector": {
+      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "audit_appendix_e_lemma15_printed_center_counterexample": {
+      "accepted_source_role_contract_sha256": "2f781ccac18b9456d44bed80028730188e98669be23ab77632dde773d10d03c4",
+      "public_source_role_projection_sha256": "2f781ccac18b9456d44bed80028730188e98669be23ab77632dde773d10d03c4",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "itemFairness": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "itemNormalizer": {
+      "accepted_source_role_contract_sha256": "1013bac0f64d961cf710c45bb3ffa3c3e7f4a01364f2c91a5854886aa5488ca1",
+      "public_source_role_projection_sha256": "1013bac0f64d961cf710c45bb3ffa3c3e7f4a01364f2c91a5854886aa5488ca1",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "model_proposition2_equality_defined_type_partition": {
+      "accepted_source_role_contract_sha256": "cb4c52d7162057fe79d176483b8606eae69ef415544ac40e16cd2b0dd1287867",
+      "public_source_role_projection_sha256": "cb4c52d7162057fe79d176483b8606eae69ef415544ac40e16cd2b0dd1287867",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "normalizedItemUtility": {
+      "accepted_source_role_contract_sha256": "1013bac0f64d961cf710c45bb3ffa3c3e7f4a01364f2c91a5854886aa5488ca1",
+      "public_source_role_projection_sha256": "1013bac0f64d961cf710c45bb3ffa3c3e7f4a01364f2c91a5854886aa5488ca1",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "normalizedUserUtility": {
+      "accepted_source_role_contract_sha256": "1013bac0f64d961cf710c45bb3ffa3c3e7f4a01364f2c91a5854886aa5488ca1",
+      "public_source_role_projection_sha256": "1013bac0f64d961cf710c45bb3ffa3c3e7f4a01364f2c91a5854886aa5488ca1",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "priceOfFairness": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "priceOfFairnessAt": {
+      "accepted_source_role_contract_sha256": "2aaf7c890c1f07219efc7866d58de2054ba340b5c30cc595f524608dd0049f2a",
+      "public_source_role_projection_sha256": "2aaf7c890c1f07219efc7866d58de2054ba340b5c30cc595f524608dd0049f2a",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "priceOfMisestimation": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "problem11BasicFeasible": {
+      "accepted_source_role_contract_sha256": "19f3c3198275beddf106c0578e1b854122d7060121a70a8735b5fbe5ed3acc78",
+      "public_source_role_projection_sha256": "19f3c3198275beddf106c0578e1b854122d7060121a70a8735b5fbe5ed3acc78",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "problem11EqualityFeasibleSet": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proposition1_symmetric_lp_reduction": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proposition1_symmetric_lp_reduction_proof_presentation": {
+      "accepted_source_role_contract_sha256": "f6219d29e655cb81f1bbf1cddd4cad8536f81fed7bde5e2a7974535920df7f44",
+      "public_source_role_projection_sha256": "f6219d29e655cb81f1bbf1cddd4cad8536f81fed7bde5e2a7974535920df7f44",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proposition2_symmetric_optimum_exists": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proposition2_symmetric_optimum_exists_proof_presentation": {
+      "accepted_source_role_contract_sha256": "f6219d29e655cb81f1bbf1cddd4cad8536f81fed7bde5e2a7974535920df7f44",
+      "public_source_role_projection_sha256": "f6219d29e655cb81f1bbf1cddd4cad8536f81fed7bde5e2a7974535920df7f44",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "rawItemUtility": {
+      "accepted_source_role_contract_sha256": "1013bac0f64d961cf710c45bb3ffa3c3e7f4a01364f2c91a5854886aa5488ca1",
+      "public_source_role_projection_sha256": "1013bac0f64d961cf710c45bb3ffa3c3e7f4a01364f2c91a5854886aa5488ca1",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "rawUserUtility": {
+      "accepted_source_role_contract_sha256": "1013bac0f64d961cf710c45bb3ffa3c3e7f4a01364f2c91a5854886aa5488ca1",
+      "public_source_role_projection_sha256": "1013bac0f64d961cf710c45bb3ffa3c3e7f4a01364f2c91a5854886aa5488ca1",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "recommendationUtility": {
+      "accepted_source_role_contract_sha256": "e8bd731c387f27f23e485836c19e8cd56ab3be13060fd6b4343e29952fe8b856",
+      "public_source_role_projection_sha256": "e8bd731c387f27f23e485836c19e8cd56ab3be13060fd6b4343e29952fe8b856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "solvesProblemOne": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_c_lemma1_item_fairness_positive": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma10_midpoint_candidate": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma10_midpoint_candidate_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma11_denominator_monotonicity": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma11_denominator_monotonicity_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma3_unconstrained_baseline": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma3_unconstrained_baseline_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma4_problem6_structure": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma4_problem6_structure_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma5_problem6_closed_form": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma5_problem6_closed_form_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma6_mirror_inverse_gap": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma6_mirror_inverse_gap_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma7_pivot_monotonicity": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma7_pivot_monotonicity_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma8_selected_pivot_stitching": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma8_selected_pivot_stitching_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma9_pair_share_algebra": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_d_lemma9_pair_share_algebra_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_e_lemma12_symmetrized_policy": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_e_lemma12_symmetrized_policy_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_e_lemma13_pivot_support": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_e_lemma13_pivot_support_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_e_lemma14_uniqueness": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_e_lemma14_uniqueness_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_e_lemma15_closed_formula": {
+      "accepted_source_role_contract_sha256": "b01fe9ae8493431f17ba5f594835acb0ef813c99a1ad7a3ece5934f014b41a2a",
+      "public_source_role_projection_sha256": "eed54ab3457c64bf7501eb1ab8234e0de643ad6da649386a292beb1dd2216c51",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "source_appendix_e_lemma15_closed_formula_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_e_lemma15_printed_center_formula": {
+      "accepted_source_role_contract_sha256": "7605b117da77dd852c4483d7a1593014f819ef8349fb9e5a5f0c2f92b7a31db0",
+      "public_source_role_projection_sha256": "7605b117da77dd852c4483d7a1593014f819ef8349fb9e5a5f0c2f92b7a31db0",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_e_lemma16_midpoint_order_algebra": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_e_lemma17_no_right_half_support": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_appendix_e_lemma17_no_right_half_support_proof_presentation": {
+      "accepted_source_role_contract_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "public_source_role_projection_sha256": "06314758836e13a85a5bfb2b8461b35a83af82fe5dc0672f8fafca8ced1dda74",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_example1_diverse_item_fairness": {
+      "accepted_source_role_contract_sha256": "ab2e10bba5209f916b3118da33aecadff0441da901fc2904eb7406db00dd018f",
+      "public_source_role_projection_sha256": "b574ecb5f9b95bbefe00e4ef2aecb0cf599aa24cbde8cd8724b47d4ccedf3357",
+      "schema": 1,
+      "withheld_field_paths": [
+        "user_approved_scope_exclusion.approval_reference",
+        "user_approved_scope_exclusion.source_locator"
+      ]
+    },
+    "source_example1_diverse_user_fairness": {
+      "accepted_source_role_contract_sha256": "ab2e10bba5209f916b3118da33aecadff0441da901fc2904eb7406db00dd018f",
+      "public_source_role_projection_sha256": "b574ecb5f9b95bbefe00e4ef2aecb0cf599aa24cbde8cd8724b47d4ccedf3357",
+      "schema": 1,
+      "withheld_field_paths": [
+        "user_approved_scope_exclusion.approval_reference",
+        "user_approved_scope_exclusion.source_locator"
+      ]
+    },
+    "source_example1_homogeneous_tradeoff": {
+      "accepted_source_role_contract_sha256": "94c82032537876e73f571aefba95d343c89f320e95daef08ebac14029d16a3e7",
+      "public_source_role_projection_sha256": "99a6b13ce49c8bff6817998df935bdf0e38c7095c4d51dbdb0a6c6dbed70d675",
+      "schema": 1,
+      "withheld_field_paths": [
+        "user_approved_scope_exclusion.approval_reference",
+        "user_approved_scope_exclusion.source_locator"
+      ]
+    },
+    "theorem3_price_decreases_first_half": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem3_price_decreases_first_half_proof_presentation": {
+      "accepted_source_role_contract_sha256": "1d239652a90cbe5e5a6acfbc5170f0d2356a133066e0067a00e2dbb97c464b60",
+      "public_source_role_projection_sha256": "1d239652a90cbe5e5a6acfbc5170f0d2356a133066e0067a00e2dbb97c464b60",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem3_price_increases_second_half": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem3_price_increases_second_half_proof_presentation": {
+      "accepted_source_role_contract_sha256": "1d239652a90cbe5e5a6acfbc5170f0d2356a133066e0067a00e2dbb97c464b60",
+      "public_source_role_projection_sha256": "1d239652a90cbe5e5a6acfbc5170f0d2356a133066e0067a00e2dbb97c464b60",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem4_misestimation_tradeoff": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem4_misestimation_tradeoff_proof_presentation": {
+      "accepted_source_role_contract_sha256": "1d239652a90cbe5e5a6acfbc5170f0d2356a133066e0067a00e2dbb97c464b60",
+      "public_source_role_projection_sha256": "1d239652a90cbe5e5a6acfbc5170f0d2356a133066e0067a00e2dbb97c464b60",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem4_misestimation_without_fairness_universal": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "userFairness": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    }
+  },
+  "paper": "GCG24UserItemFairness",
+  "private_role_material_included": false,
+  "private_source_map_material_sha256": "0ead93625f2ce66590e77a67238a5ce08bcd8f1486bda79a82b6559b351f3277",
+  "private_source_map_sha256": "6f5b351d593758acb4d115093cf5d139af970ea267831657d1d9b4a5ad6527d8",
+  "projection_contract_sha256": "ed0964edc9c70f5ce087ce9bf134712ca40c7964ecaefd403309ac9a1b47d34d",
+  "public_display_manifest_material_sha256": "b5859216f0359260fcafbadc02933bacf140e4c17e69d5ce1989a930cde1c9c7",
+  "public_display_manifest_sha256": "9e646c12d62ba6bea8ae533a68302aa1aae3dc7ec98f840463767d7fdb88d6de",
+  "public_source_map_material_sha256": "5094ffceafb1a3a57d260bd66fd7c7869a22c68179d43347277c5aa5b82663bf",
+  "public_source_map_sha256": "6908b7c647ef70c92171f4ef66608c2483acdb96109150a4cd399629e04e6aa6",
+  "raw_private_approval_material_included": false,
+  "schema": 1
+}

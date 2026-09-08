@@ -1,0 +1,134 @@
+{
+  "acceptance_credential": false,
+  "accepted_graph_sha256": "4875ef3733cf1f2340af3c538b3dc247d17d45a22f6521215eacd5b4773cdd81",
+  "bindings_by_source_item": {
+    "claim3_4_bounded_optimal_of_exact_allocations_with_nonempty_positive_goods": {
+      "accepted_source_role_contract_sha256": "00e1f6be2fabc7d38672f43c5503002ec7b42ef8e333c09fe21a4f3b24346abd",
+      "public_source_role_projection_sha256": "c5bf762e5fc813bb28ecaedffef6adf44a3232f12beefbac46640bc4e2a51879",
+      "schema": 1,
+      "withheld_field_paths": [
+        "user_approved_scope_exclusion.approval_reference",
+        "user_approved_scope_exclusion.source_locator"
+      ]
+    },
+    "lemma2_2_acyclic_reduction": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lemma2_4_real_interval_low_value_partition": {
+      "accepted_source_role_contract_sha256": "f1f2ce68674255f3934110992be612e207b0eb4bcfe816758f55a4021c770af8",
+      "public_source_role_projection_sha256": "d66345b7c58790410b05af5cf36b9257039222b02c64a0f1d9212b1991d406bc",
+      "schema": 1,
+      "withheld_field_paths": [
+        "user_approved_scope_exclusion.approval_reference",
+        "user_approved_scope_exclusion.source_locator"
+      ]
+    },
+    "lemma3_5_additive_transfer_epsilon_bound": {
+      "accepted_source_role_contract_sha256": "1026b4a548f59944acf0088e7187a4f57febf0ba1706115e111281023fe8d78a",
+      "public_source_role_projection_sha256": "f25817d9619d58d4a632528134201dfb351b0c1a7bd5e198b4307c2b0178e08f",
+      "schema": 1,
+      "withheld_field_paths": [
+        "user_approved_scope_exclusion.approval_reference",
+        "user_approved_scope_exclusion.source_locator"
+      ]
+    },
+    "theorem2_1_bounded_envy_allocation_exists": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem2_1_runtime_bound": {
+      "accepted_source_role_contract_sha256": "eb0b4c3ee87897559f0dd349f0bd63f9b9e62e875868db1ac8a7c79757e6fc7e",
+      "public_source_role_projection_sha256": "a61c065cd4a8dba26f2688bacd49f7246d2942e52217a624482cc4bfd72fbe10",
+      "schema": 1,
+      "withheld_field_paths": [
+        "user_approved_scope_exclusion.approval_reference",
+        "user_approved_scope_exclusion.source_locator"
+      ]
+    },
+    "theorem2_3_real_interval_supported_atom_bound": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem2_3_zero_atom_envyfree_external_boundary": {
+      "accepted_source_role_contract_sha256": "435da3defea5b4fddac10c8ae6bf83d0f8df077186392aa1fd27ff441b636a73",
+      "public_source_role_projection_sha256": "0c7052c4e128a817ef5502b764b70bd04bc78d067d9fe3e01e5649c5c2c56d4d",
+      "schema": 1,
+      "withheld_field_paths": [
+        "user_approved_scope_exclusion.approval_reference",
+        "user_approved_scope_exclusion.source_locator"
+      ]
+    },
+    "theorem3_1_eventually_minimum_envy_lower_bound_from_twoBit_adaptive_queries": {
+      "accepted_source_role_contract_sha256": "f92b95f320ba64b0234e8b7e1d502d064eb9424c68b016b12e3fd57b8eb4bfa9",
+      "public_source_role_projection_sha256": "19445bc25350154226fa2a9e37723b12cfb2f5437755c9ec65cd87f668d0191c",
+      "schema": 1,
+      "withheld_field_paths": [
+        "user_approved_scope_exclusion.approval_reference",
+        "user_approved_scope_exclusion.source_locator"
+      ]
+    },
+    "theorem3_2_graham_certificate_to_envy_ratio_bound": {
+      "accepted_source_role_contract_sha256": "9928863071dd83e86fa78781021bf607d3a27d5472bceafaddb6784b76e3051b",
+      "public_source_role_projection_sha256": "c5e27f0ef48352225cf15f53dfbdeb96825e7f9212c337051b3ac39e99c25bc7",
+      "schema": 1,
+      "withheld_field_paths": [
+        "user_approved_scope_exclusion.approval_reference",
+        "user_approved_scope_exclusion.source_locator"
+      ]
+    },
+    "theorem3_3_solver_auto_cap_full_ip_summary_with_ratio_guarantee": {
+      "accepted_source_role_contract_sha256": "3b40b623cb8babe3e0f361abd8a379943fc836bf0f41b03059e169c37b16dc2e",
+      "public_source_role_projection_sha256": "b81f445066fa3605a700163cbb55e0d8b25d17f51bc81f66b37b67f38c2f4d80",
+      "schema": 1,
+      "withheld_field_paths": [
+        "user_approved_scope_exclusion.approval_reference",
+        "user_approved_scope_exclusion.source_locator"
+      ]
+    },
+    "theorem4_1_source_minimum_envy_not_truthful": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem4_1_source_not_truthful_envy_free_whenever_exists": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem4_2_asymptotic_high_probability_rate": {
+      "accepted_source_role_contract_sha256": "d3327cc28d3936f3b59f92d50c632a6a5b800fb0242d0edb624eb6044ff8e344",
+      "public_source_role_projection_sha256": "f36ff59ac9de37343fab3bfb02de03586c477c97fde3a52de472a07ea29cfd4c",
+      "schema": 1,
+      "withheld_field_paths": [
+        "user_approved_scope_exclusion.approval_reference",
+        "user_approved_scope_exclusion.source_locator"
+      ]
+    },
+    "theorem4_2_uniform_random_mechanism_truthful": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    }
+  },
+  "paper": "LMMS04FairDivision",
+  "private_role_material_included": false,
+  "private_source_map_material_sha256": "206df2dfed5341fc7d69769b1a5867d7e913c8b54ddfdab33c105354e586ed0d",
+  "private_source_map_sha256": "b600ce818d61496619eb406d10651c5b82591828d766ef3cfab8aa43479c0a6b",
+  "projection_contract_sha256": "ed0964edc9c70f5ce087ce9bf134712ca40c7964ecaefd403309ac9a1b47d34d",
+  "public_display_manifest_material_sha256": "04d83f67fb19628c59a1db3559b1aaa742fc22bfde440d4fbf7d05b0506da569",
+  "public_display_manifest_sha256": "22b594bb56a17afd0420e6e0c96afbc1c33db979a83503dfc6f52ca97a12c4da",
+  "public_source_map_material_sha256": "f2f1f262360b3482e73de7b66554ed0dc31d637e208a555321b9ec3e4d001a0a",
+  "public_source_map_sha256": "cc1f117f46a2d31cd4859a208eacb4502f7e43fd6e2713cc23721e551271f529",
+  "raw_private_approval_material_included": false,
+  "schema": 1
+}

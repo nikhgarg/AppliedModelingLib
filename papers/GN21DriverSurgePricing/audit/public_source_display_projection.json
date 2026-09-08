@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "GN21DriverSurgePricing",
-  "private_source_map_sha256": "8533e36ee10f0eadc60ef0d110fa512f80f730a99cbf4c373c1004e6a9e9b765",
+  "private_source_map_sha256": "a9d3c6228db98112a39c95482beee91e91b803e5a91c6750836f007470dc0d7b",
   "public_manifest_path": "papers/GN21DriverSurgePricing/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "1c445d55a863421d362e5973dc9232a198af1ffc5d9930587fef77f0913d733b",
+  "public_source_map_sha256": "e1c9f52e5f9db748e5f5096155a7b5679a601daf60ea29fa4d0c1f1c34e29e4e",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,

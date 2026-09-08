@@ -3019,6 +3019,11 @@
     "GJ19OptimalBinaryRatingSystems.spearmanLinearWeightOrderedPairIntervalObjective": "definitionC1_kendall_spearman",
     "GJ19OptimalBinaryRatingSystems.theorem32WeightedNestedBisectionOutput": "algorithm1_high_level"
   },
+  "publication_source_display_projection": {
+    "manifest": "audit/public_source_display_projection.json",
+    "raw_source_bytes_included": false,
+    "schema": 1
+  },
   "schema": 1,
   "semantic_contract_schema": 1,
   "semantic_route_schema": 2,

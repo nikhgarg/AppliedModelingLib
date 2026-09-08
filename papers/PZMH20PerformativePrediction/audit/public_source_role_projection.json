@@ -1,0 +1,188 @@
+{
+  "acceptance_credential": false,
+  "accepted_graph_sha256": "dc51b908bfabd3cf71b5ce9fd95cb1d5fe666af6c35a6ea8cdb95f6820e4d811",
+  "bindings_by_source_item": {
+    "assumptions_a1_a2_joint_smoothness_and_strong_convexity": {
+      "accepted_source_role_contract_sha256": "833843175a57efcc42628b0a84e8c38255ed09660fd387cb299770e41e9ed782",
+      "public_source_role_projection_sha256": "833843175a57efcc42628b0a84e8c38255ed09660fd387cb299770e41e9ed782",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "corollary_5_1_stable_objective_gap": {
+      "accepted_source_role_contract_sha256": "eb279e2349a10df247f9f213cab536779edfc92b0daec91ed330d3975eae0312",
+      "public_source_role_projection_sha256": "24f4b2381fac9575e56cabdc0de3de1e7b6e957e6154e879a4ee52dceae942e0",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "definition_2_1_performative_optimality_and_risk": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "definition_2_3_performative_stability_and_decoupled_risk": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "definition_3_1_epsilon_sensitivity": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "definition_3_3_repeated_risk_minimization": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "definition_3_7_repeated_gradient_descent": {
+      "accepted_source_role_contract_sha256": "c1fbff08da70538ceb15a5516f967964a49d4b1f6ef1a703d776707c7545f903",
+      "public_source_role_projection_sha256": "c1fbff08da70538ceb15a5516f967964a49d4b1f6ef1a703d776707c7545f903",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "definition_3_9_repeated_empirical_updates": {
+      "accepted_source_role_contract_sha256": "c1fbff08da70538ceb15a5516f967964a49d4b1f6ef1a703d776707c7545f903",
+      "public_source_role_projection_sha256": "c1fbff08da70538ceb15a5516f967964a49d4b1f6ef1a703d776707c7545f903",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "domain_relative_performative_model": {
+      "accepted_source_role_contract_sha256": "cb4c52d7162057fe79d176483b8606eae69ef415544ac40e16cd2b0dd1287867",
+      "public_source_role_projection_sha256": "cb4c52d7162057fe79d176483b8606eae69ef415544ac40e16cd2b0dd1287867",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proposition_3_6_counterexamples_a": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proposition_3_6_counterexamples_b": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proposition_3_6_counterexamples_c": {
+      "accepted_source_role_contract_sha256": "7a713420b31af12a5ff75494f9f4a652dc590cb9a03100eda84e01a43f300454",
+      "public_source_role_projection_sha256": "af099bbc53adb478f7e459d0f2a8a7e9655df7177d83b3e36164abfce93a40d1",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "proposition_4_1_stable_point_existence": {
+      "accepted_source_role_contract_sha256": "0c10351149313d7c130b6ec265bbca74393517e72f976c8e3265050d7a23b3d5",
+      "public_source_role_projection_sha256": "a17ce7bc2d37ae2c499fe465ce1f734fbdf74eba3458e5866095075d27808da0",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "proposition_4_2_concave_performative_risk": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem_1_1_informal_overview": {
+      "accepted_source_role_contract_sha256": "eccee30332c79050699ba71291b1e8c5ba2c6ab01e06fd1d40df0b291f7e1aa8",
+      "public_source_role_projection_sha256": "eccee30332c79050699ba71291b1e8c5ba2c6ab01e06fd1d40df0b291f7e1aa8",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem_1_2_informal_overview": {
+      "accepted_source_role_contract_sha256": "eccee30332c79050699ba71291b1e8c5ba2c6ab01e06fd1d40df0b291f7e1aa8",
+      "public_source_role_projection_sha256": "eccee30332c79050699ba71291b1e8c5ba2c6ab01e06fd1d40df0b291f7e1aa8",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem_3_10_finite_sample_retraining_rerm": {
+      "accepted_source_role_contract_sha256": "19c0513a508924a0ba6ed08b40f2b3b1fb62e06a6c3030bf26a7d697088760da",
+      "public_source_role_projection_sha256": "11abaa98e1817620c2bab904c1d700c22fb570b2ab8959e0a74ed6814858e744",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "theorem_3_10_finite_sample_retraining_rgd": {
+      "accepted_source_role_contract_sha256": "1f6fe883034a9afcc78185870b21d528963a57a0f9a07b19e990fda25871ba49",
+      "public_source_role_projection_sha256": "9052afc080dae5811ad338d2c410f685b42179d8afae222105e5e74177b8e096",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "theorem_3_10_rerm_formalized_premises": {
+      "accepted_source_role_contract_sha256": "61ad9a5ad5b1b845313c71351a3643d8937dbc8d7b3c3538cc0c42a4130dff1c",
+      "public_source_role_projection_sha256": "d625e97cac05308062af57a188c89bae526789046d1ed8ab9fa59809b3685cb6",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "theorem_3_10_rgd_formalized_premises": {
+      "accepted_source_role_contract_sha256": "c5e1281d8ede286cd968bf1a8bb8bcbac10233148b7a7bca131198c9cc45bda8",
+      "public_source_role_projection_sha256": "da746894c7831af213d2f4f79970e9a33fd0ce8ea6636aba3911f2460f81d0d3",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "theorem_3_5_repeated_risk_minimization_convergence": {
+      "accepted_source_role_contract_sha256": "e126d7160f5718c97b981ad01e5916c780dd4f61146263d5ed7ac652ce698693",
+      "public_source_role_projection_sha256": "feaa22a043d666976740e77407faeeeb9594be25bec95f3571db9884cecad9c9",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "theorem_3_8_repeated_gradient_descent_convergence": {
+      "accepted_source_role_contract_sha256": "48997c479b80ed3a4b767c97f36ffa11580c40bba361f996c3b4fab669a49cd2",
+      "public_source_role_projection_sha256": "ee5d86257d0ce84529d040ac6eed6804470387737253eeccf3e6796b8caa1640",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
+    },
+    "theorem_4_3_data_lipschitz_premise": {
+      "accepted_source_role_contract_sha256": "2d6df3df23dfc6bde6da0073116e6b4bb3a841d86daed6f8b12513f1ec5cfccd",
+      "public_source_role_projection_sha256": "2d6df3df23dfc6bde6da0073116e6b4bb3a841d86daed6f8b12513f1ec5cfccd",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "theorem_4_3_optimum_stable_distance": {
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "schema": 1,
+      "withheld_field_paths": []
+    }
+  },
+  "paper": "PZMH20PerformativePrediction",
+  "private_role_material_included": false,
+  "private_source_map_material_sha256": "744a4abfefa6703a15f3b0eb9837efce0e5ed9491e513ca9aafe9105132f16c7",
+  "private_source_map_sha256": "e4950a1d816aff2fcb574a66ba7bb00cbbb1dafce02bbfad09bd96e9a547e008",
+  "projection_contract_sha256": "ed0964edc9c70f5ce087ce9bf134712ca40c7964ecaefd403309ac9a1b47d34d",
+  "public_display_manifest_material_sha256": "c13c4dbec73c942c15e8bce23cb766d2b09d6e18ada77987d9e34115ba18f586",
+  "public_display_manifest_sha256": "e667f712e8ff56ed70a405abc553b62ec9929af5a17b8546fb62a9b7443bf8b5",
+  "public_source_map_material_sha256": "5a05fded19edeae2b6326740b8c4e8bea0efe49f284d3eeca7aecc15714aeaa2",
+  "public_source_map_sha256": "4132fe3a15f0bae85961945d95b5ed394903af38b23068ae452779f7e906f9f3",
+  "raw_private_approval_material_included": false,
+  "schema": 1
+}

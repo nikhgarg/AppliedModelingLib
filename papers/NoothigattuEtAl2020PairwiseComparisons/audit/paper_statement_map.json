@@ -825,6 +825,11 @@
     "NoothigattuEtAl2020PairwiseComparisons.definition5_1_pairwise_majority_consistencySpec": "definition5_1",
     "NoothigattuEtAl2020PairwiseComparisons.definition6_1_separabilitySpec": "definition6_1"
   },
+  "publication_source_display_projection": {
+    "manifest": "audit/public_source_display_projection.json",
+    "raw_source_bytes_included": false,
+    "schema": 1
+  },
   "schema": 1,
   "semantic_contract_schema": 1,
   "semantic_route_schema": 2,

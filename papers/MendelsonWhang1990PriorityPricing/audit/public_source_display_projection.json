@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "MendelsonWhang1990PriorityPricing",
-  "private_source_map_sha256": "1967991c6cd010d970e355809366300b05409a2557592116c4213f254371506d",
+  "private_source_map_sha256": "b10bc9e637acf8319d84bdc2b21853101df10ff69595568f1fe56749db2dfe06",
   "public_manifest_path": "papers/MendelsonWhang1990PriorityPricing/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "5cd393d3fd632f0514e027d1b4e9d2c76b95d21576ba6cb68a70481b31cd7ced",
+  "public_source_map_sha256": "b85b8de803c6240d1aa8b82888307375c014a921748e7f5c5d332fbdc665f650",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
@@ -202,7 +202,35 @@
       "source_kind": "definition"
     },
     "ptd_optimality_and_incentive_compatibility_definition": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 666,
+              "line_start": 660,
+              "publication_locator": "cited publication",
+              "quoted_text": "                                                              Consider a system with R job classes that satisfy\nclass-i jobs. As before, all aggregate class characteristics\n                                                            assumptions A1-A5 of Section 1, where class-i jobs\nare common knowledge, whereas individual job char-\n                                                            have exponential processing requirements with mean\nacteristics are known only to the user. Thus, both the\n                                                           ci. We assume that",
+              "quoted_text_sha256": "993883d717a1a4cfdd0622c48cc1f520b4300b83efb7f3f295bc15f36288c2ff"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
+        {
+          "line_end": 362,
+          "line_start": 326,
+          "publication_locator": "cited publication",
+          "quoted_text": "Hence                                                                  becomes\n\n                                                                                   r     R   R\n            a\n                                                                        maxf j Vi(Xi) - viLi(, r)t.\n    P~E\n     d oi 3ax,\n                                                                       If X * and r* are the optimal arrival-rate vector and\n      + vi *[Wi(X*)+x* Wi(X*)]-viWi(X*)                                scheduling permutation, respectively, then by the opti-\n                                                                       mality of the c-, rule for fixed X = X * we have\n           R a~~~i x\n      R                                                                             R            R\n\n   - JX,*- W (X*)                                                       max{ Vi(Xi) - viLi(X,(r)\n      j=1 J axj\n\nsince for] i d                                                                   R           R\n\n\n                                                                          = E Vi(Xi) -E viLi(2*, r*)\n                                                                               i=l       i=l\n\n\n1a-\n Ax.Li (2X) a - xa\n          axi    iW xi\n                    = -i a 'J/(X).                                               R           R\n\n\n                                                                           X Vi(X*) - E viLi(X, rO)\n  Note that when R = 1, (6) reduces to (3). Also, as\nin (3), the right-hand side of (6) represents the expected                                   R   R\n\ncost inflicted on all other users as a consequence of                      < max Vi(xi) - viLi(X, rO)}\nan infinitesimal unit increase in the job flow of a class-\ni user. Thus, similar to (3), we may call the right-hand               which demonstrates that the same scheduling rate is\nside of (6) the externality cost. The result of Theorem                also optimal in the current setting.",
+          "quoted_text_sha256": "b64b9e832e3a72a15dd6f496e703d5dedb7daefa350fc4932de19e531d58329e"
+        },
+        {
+          "line_end": 666,
+          "line_start": 660,
+          "publication_locator": "cited publication",
+          "quoted_text": "                                                              Consider a system with R job classes that satisfy\nclass-i jobs. As before, all aggregate class characteristics\n                                                            assumptions A1-A5 of Section 1, where class-i jobs\nare common knowledge, whereas individual job char-\n                                                            have exponential processing requirements with mean\nacteristics are known only to the user. Thus, both the\n                                                           ci. We assume that",
+          "quoted_text_sha256": "993883d717a1a4cfdd0622c48cc1f520b4300b83efb7f3f295bc15f36288c2ff"
+        },
         {
           "line_end": 731,
           "line_start": 692,
@@ -260,6 +288,30 @@
               "publication_locator": "cited publication",
               "quoted_text": "  Under this general framework, an equilibrium can                     geneous service requirements. The answer is negative,\nbe defined in a similar way to (12) and (13). Let WJi                  as the following example demonstrates. Consider the\ndenote the expected total waiting time in the system                   case of two job classes (R = 2) and let p(t) = (pI (t),\nfor a class-i job picking priority-class j. Then, ( X (p),            P2(t)) be given by (16). Ifp(t) is optimal and incentive-\nf(p)) is an equilibrium with respect to the PTD pricing compatible, optimality implies that for a class-i job,\nscheme p(t) if for each i = 1, 2, . . ., R              we just have E[pi(ri)] = p*, where p* are given by\n                                                                       Theorem 1. Also from (16)\nE[pr,(p)(ri)] + viWri,(p)(2(p), r(p))\n\n   = min E[pj(ri)] + viWj(X(p), r(p))}                                 E[p2(T )] =- E[pl(Tri)] =- P\n                                                                                             a   a\n\n\nand                                                                          and                          (17)\n\nVi'(Xi(p)) = E[prj(p)(Ti)] + Vi Wr,(p)(X (p), r(p))\n                                                                       E[pl(T2)] = a * E[p2(T2)] = a *2\nwhere Ti is the actual processing requirement of a\n                                                                      where a = K1/K2.\nclass-i job.\n                                                                         In order for the pricing schedule p(t) to be incentive-\n  A PTD pricing scheme p0(t) will be called optimal\n                                                                       compatible, it should satisfy\nand incentive-compatible if it satisfies the following\nconditions:\n                                                                       E[pI(TI)] + v* W < S E[p2(rl)] + V1 WY\n   1. Incentive-compatibility: For all i = 1, 2, . .. , R\n                                                                       and\n   ri(p?)                   =        i      (14)\n                                                                       E[pi(T2)] + v2 * Wl q E[p2(T2)] + V2 WY-\n      2.       Optimality:                                       The                 resulting                         arrival\n                                                                       Hence using (17), incentive-compatibility implies\n  the expected                                          net                value                 of        the            system\nis, for all i= 1, 2, .. ., R\n                                                                       pi +V* 1 S-*p* + VI * W\n  X(pO)                =     _X*                (15)                                         a\n\n\n\nwhere X * achieves the overall optimum.                                      and                          (18)",
               "quoted_text_sha256": "0c50f43265ad3a7580c1b84755d8e82dd80cffa10c6140bb1ee6592c437baf71"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 362,
+              "line_start": 326,
+              "publication_locator": "cited publication",
+              "quoted_text": "Hence                                                                  becomes\n\n                                                                                   r     R   R\n            a\n                                                                        maxf j Vi(Xi) - viLi(, r)t.\n    P~E\n     d oi 3ax,\n                                                                       If X * and r* are the optimal arrival-rate vector and\n      + vi *[Wi(X*)+x* Wi(X*)]-viWi(X*)                                scheduling permutation, respectively, then by the opti-\n                                                                       mality of the c-, rule for fixed X = X * we have\n           R a~~~i x\n      R                                                                             R            R\n\n   - JX,*- W (X*)                                                       max{ Vi(Xi) - viLi(X,(r)\n      j=1 J axj\n\nsince for] i d                                                                   R           R\n\n\n                                                                          = E Vi(Xi) -E viLi(2*, r*)\n                                                                               i=l       i=l\n\n\n1a-\n Ax.Li (2X) a - xa\n          axi    iW xi\n                    = -i a 'J/(X).                                               R           R\n\n\n                                                                           X Vi(X*) - E viLi(X, rO)\n  Note that when R = 1, (6) reduces to (3). Also, as\nin (3), the right-hand side of (6) represents the expected                                   R   R\n\ncost inflicted on all other users as a consequence of                      < max Vi(xi) - viLi(X, rO)}\nan infinitesimal unit increase in the job flow of a class-\ni user. Thus, similar to (3), we may call the right-hand               which demonstrates that the same scheduling rate is\nside of (6) the externality cost. The result of Theorem                also optimal in the current setting.",
+              "quoted_text_sha256": "b64b9e832e3a72a15dd6f496e703d5dedb7daefa350fc4932de19e531d58329e"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 666,
+              "line_start": 660,
+              "publication_locator": "cited publication",
+              "quoted_text": "                                                              Consider a system with R job classes that satisfy\nclass-i jobs. As before, all aggregate class characteristics\n                                                            assumptions A1-A5 of Section 1, where class-i jobs\nare common knowledge, whereas individual job char-\n                                                            have exponential processing requirements with mean\nacteristics are known only to the user. Thus, both the\n                                                           ci. We assume that",
+              "quoted_text_sha256": "993883d717a1a4cfdd0622c48cc1f520b4300b83efb7f3f295bc15f36288c2ff"
             }
           ]
         }

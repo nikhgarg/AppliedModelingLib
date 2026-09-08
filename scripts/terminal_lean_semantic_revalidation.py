@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from collections.abc import Mapping
 from pathlib import Path
@@ -55,6 +56,10 @@ from scripts.obligation_preflight import ObligationStructuralPreflight
 from scripts.obligation_routes import EvidenceRoute, EvidenceRouteSet, RouteKind
 from scripts.semantic_review_binding import (
     unique_reusable_judgment_bindings,
+)
+from scripts.public_source_role_projection import (
+    PUBLIC_SOURCE_ROLE_PROJECTION_FILE,
+    validate_runtime_public_source_role_projection,
 )
 
 
@@ -152,6 +157,54 @@ def _current_review_import_module(
     return module
 
 
+def _trusted_public_source_role_envelope(paper_dir: Path) -> bytes:
+    """Read release authority from a fetched canonical public main Git tree.
+
+    A contributor's working file or branch cannot issue this bridge. CI checks
+    out the canonical repository with full remote history; offline readers
+    must likewise have fetched its main ref. The private release guard checks
+    issuance against private inputs before the public maintainer merges it.
+    """
+
+    paper_dir = paper_dir.resolve()
+    root = paper_dir.parents[1]
+    if paper_dir.parent.name != "papers" or not re.fullmatch(
+        r"[A-Za-z0-9][A-Za-z0-9_-]*", paper_dir.name
+    ):
+        raise ValueError("public source-role envelope has an invalid paper path")
+    relative = f"papers/{paper_dir.name}/{PUBLIC_SOURCE_ROLE_PROJECTION_FILE}"
+
+    def git(*args: str) -> bytes:
+        result = subprocess.run(
+            ["git", "-C", str(root), *args], capture_output=True, timeout=30
+        )
+        if result.returncode:
+            raise ValueError("canonical public Git source-role authority is unavailable")
+        return result.stdout
+
+    canonical = re.compile(
+        r"(?:https://github\.com/|git@github\.com:|ssh://git@github\.com/)"
+        r"nikhgarg/(?:AppliedModelingLib|EconCSLib)(?:\.git)?"
+    )
+    candidates = []
+    for remote in git("remote").decode().splitlines():
+        urls = git("remote", "get-url", "--all", remote).decode().splitlines()
+        if len(urls) == 1 and canonical.fullmatch(urls[0]):
+            try:
+                candidates.append(git("show", f"refs/remotes/{remote}/main:{relative}"))
+            except ValueError:
+                continue
+    try:
+        current = (root / relative).read_bytes()
+    except OSError as exc:
+        raise ValueError("public source-role envelope is unavailable") from exc
+    if current not in candidates:
+        raise ValueError(
+            "public source-role envelope is not authenticated by canonical public main"
+        )
+    return current
+
+
 def _validate_current_source_routes(
     loaded: object,
     source_map: Mapping[str, Any],
@@ -193,18 +246,23 @@ def _validate_current_source_routes(
             if "source_text_file" in source_map:
                 raise ValueError("public source recovery requires a withheld source locator")
             items = source_map.get("items", {})
-            withheld_roles = {
+            corrected_roles = {
                 key for key, item in items.items()
                 if isinstance(item, Mapping) and item.get("corrected_target") is not None
             }
-            if withheld_roles:
+            withheld_roles = corrected_roles | {
+                key for key, item in items.items()
+                if isinstance(item, Mapping)
+                and item.get("user_approved_scope_exclusion") is not None
+            }
+            if corrected_roles:
                 if source_map.get("publication_corrected_target_projection") != {
                     "schema": 1, "approval_material_included": False
                 }:
                     raise ValueError("public corrected targets lack their withholding declaration")
-                # Approval provenance participates in the private role digest.
-                # Public transport checks the retained clauses and current Lean
-                # meanings; it cannot attest to withheld approval provenance.
+                # The private corrected-target parser requires the withheld
+                # approval. Project its atoms without that object; the trusted
+                # bridge below independently binds every retained target field.
                 projected_source_map = dict(source_map, items={
                     key: {k: v for k, v in item.items() if k != "corrected_target"}
                     for key, item in items.items()
@@ -266,6 +324,30 @@ def _validate_current_source_routes(
         accepted_bundles[str(source_item_id)] = set()
 
     if allow_withheld_source_material:
+        if withheld_roles:
+            try:
+                map_payload, map_bytes = _json_bytes(
+                    paper_dir / "audit/paper_statement_map.json", "public source map"
+                )
+                if map_payload != source_map:
+                    raise ValueError("public source map changed during revalidation")
+                _, display_bytes = _json_bytes(
+                    paper_dir / "audit/public_source_display_projection.json",
+                    "public source display manifest",
+                )
+                validate_runtime_public_source_role_projection(
+                    trusted_envelope_bytes=_trusted_public_source_role_envelope(paper_dir),
+                    paper=paper_dir.name,
+                    public_source_map_bytes=map_bytes,
+                    public_display_manifest_bytes=display_bytes,
+                    accepted_graph_sha256=getattr(graph, "graph_sha256", ""),
+                    accepted_role_sha256s_by_source_item={
+                        key: tuple(atom[2] for atom in entry["source_atoms"])
+                        for key, entry in accepted_entries.items()
+                    },
+                )
+            except (ValueError, OSError, subprocess.SubprocessError) as exc:
+                raise TerminalLeanSemanticRevalidationError(str(exc)) from exc
         # Public exports cannot replay private verbatim/approval bundles. Keep
         # their exact route names and semantic source atoms fixed instead;
         # subsequent Lean checks still validate every target and dependency.

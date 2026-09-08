@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "MSVV07AdWords",
-  "private_source_map_sha256": "cc59638a786d30d79b10d3a47968726f608df7544a944842200bba021275456c",
+  "private_source_map_sha256": "a3f41b7d9bf3c4f54fe6c7fd98563323b94d87c05b1455d10895cd996463282a",
   "public_manifest_path": "papers/MSVV07AdWords/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "f40280afc9c512418801365dd5388804f6101d94362395d0e165afd57c96c60c",
+  "public_source_map_sha256": "f5c5d40128a7c88520c59a9b0a7a54f6aa0bdc970f8ddd1bfa9534efa429c015",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,

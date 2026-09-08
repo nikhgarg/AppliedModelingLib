@@ -22,6 +22,7 @@ _CANONICAL_AUDIT_FILENAMES = frozenset(
         "paper_coverage_llm.json",
         "paper_statement_map.json",
         "public_source_display_projection.json",
+        "public_source_role_projection.json",
         "review_surface_llm.json",
         "source_proof_fidelity.json",
         "source_record_audit.json",

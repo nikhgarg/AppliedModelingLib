@@ -1,15 +1,13 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "FalahatgarEtAl2017MaxingRanking",
-  "private_source_map_sha256": "f0b0580f46f823b9693d1f23de2488fec6ec9232c176808b2504811b69d30eb5",
+  "private_source_map_sha256": "041533c6b92f17b6dab44c087b5a0373838743b92bf075896c5e57408ab28dd3",
   "public_manifest_path": "papers/FalahatgarEtAl2017MaxingRanking/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "e0322325e87e571855763b8b91aeb969ee4926a494728c513f8bc7795d6a5c06",
+  "public_source_map_sha256": "cb3e550a64bbe162bd8ce31fee2ff2e14634ddff785339c84695c15751edb868",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
   "selected_source_item_ids": [
-    "algorithm2_prune",
-    "algorithm3_opt_maximize",
     "approximate_preference_vocabulary",
     "borda_vocabulary",
     "comparison_model",
@@ -41,30 +39,6 @@
     "theorem9"
   ],
   "selected_source_items": {
-    "algorithm2_prune": {
-      "source_anchors": [
-        {
-          "line_end": 324,
-          "line_start": 308,
-          "publication_locator": "cited publication",
-          "quoted_text": "\fAlgorithm 2 P RUNE\n 1: inputs\n 2:   Set S, element a, size n′ , lower bias εl , upper bias εu , confidence δ.\n 3: t ← 1\n 4: S1 ← S\n                                   2\n 5: while ∣St ∣ > 2n′ and t < log n do\n 6:   Initialize: Qt ← ∅\n 7:   for e in St do\n 8:      if C OMPARE(e, a, εl , εu , δ/2t+1 ) = 1 then\n 9:         Qt ← Qt ⋃{e}\n10:      end if\n11:   end for\n12:   St+1 ← St ∖ Qt\n13:   t←t+1\n14: end while\n15: return St .",
-          "quoted_text_sha256": "87856fad50592758dec7727cf854b466e352adb1a44f78fe97284f416b8a6a16"
-        }
-      ],
-      "source_kind": "algorithm"
-    },
-    "algorithm3_opt_maximize": {
-      "source_anchors": [
-        {
-          "line_end": 391,
-          "line_start": 375,
-          "publication_locator": "cited publication",
-          "quoted_text": "\fAlgorithm 3 O PT-M AXIMIZE\n 1: inputs\n 2:    Set S, bias ε, confidence δ.\n 3: if δ ≤ n1 then\n 4:    return S EQ -E LIMINATE(S, ε, δ)\n 5: end if                    √\n 6: a ← P ICK -A NCHOR(S, 6n log n, ε/3, 4δ )\n                         √\n 7: S ′ ← P RUNE(S, a, 6n log n, ε/3, 2ε/3, 4δ )\n 8: for element e in S ′ do\n 9:    if C OMPARE(e, a, 2ε3\n                                   δ\n                             , ε, 4n ) = 2 then\n10:      return S EQ -E LIMINATE(S ′ , ε, 4δ )\n11:   end if\n12: end for\n13: return a",
-          "quoted_text_sha256": "e5961e520770e304d779876de8b646de0a4098dbde83afabe582064834f3de2e"
-        }
-      ],
-      "source_kind": "algorithm"
-    },
     "approximate_preference_vocabulary": {
       "source_anchors": [
         {

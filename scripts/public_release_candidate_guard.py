@@ -65,6 +65,22 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - module-style import.
     from scripts.public_release_artifact_policy import public_release_artifact_issues
 try:
+    from public_source_role_projection import (
+        PUBLIC_SOURCE_ROLE_PROJECTION_FILE,
+        PublicSourceRoleProjectionError,
+        accepted_source_role_sha256s_by_source_item,
+        validate_public_source_role_projection_envelope,
+        validate_runtime_public_source_role_projection,
+    )
+except ModuleNotFoundError:  # pragma: no cover - module-style import.
+    from scripts.public_source_role_projection import (
+        PUBLIC_SOURCE_ROLE_PROJECTION_FILE,
+        PublicSourceRoleProjectionError,
+        accepted_source_role_sha256s_by_source_item,
+        validate_public_source_role_projection_envelope,
+        validate_runtime_public_source_role_projection,
+    )
+try:
     from public_release_projection import (
         PUBLIC_CONTRIBUTOR_WORKFLOW_PATHS,
         PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD,
@@ -1463,13 +1479,18 @@ def public_source_display_projection_issues(
         if map_payload is None or map_bytes is None:
             continue
         marker = map_payload.get(PUBLIC_SOURCE_DISPLAY_PROJECTION_FIELD)
+        paper_dir = PurePosixPath(map_path).parents[1]
+        expected_manifest = str(paper_dir / PUBLIC_SOURCE_DISPLAY_PROJECTION_MANIFEST)
         if marker is None:
+            if expected_manifest in candidate_paths:
+                issues.append(
+                    f"{map_path}: saved public display manifest requires the exact "
+                    "display-projection marker"
+                )
             continue
         if not isinstance(marker, dict):
             issues.append(f"{map_path}: public display-projection marker must be an object")
             continue
-        paper_dir = PurePosixPath(map_path).parents[1]
-        expected_manifest = str(paper_dir / PUBLIC_SOURCE_DISPLAY_PROJECTION_MANIFEST)
         if marker.get("schema") != PUBLIC_SOURCE_DISPLAY_PROJECTION_SCHEMA:
             issues.append(f"{map_path}: public display-projection marker has the wrong schema")
         if marker.get("manifest") != PUBLIC_SOURCE_DISPLAY_PROJECTION_MANIFEST:
@@ -1912,6 +1933,231 @@ def _public_artifact_string_issues(
             continue
         if pattern.search(scan_value):
             issues.append((".".join(route) or "$", label))
+    return issues
+
+
+def _accepted_source_role_material(
+    repo: Path,
+    candidate_ref: str,
+    paper: str,
+) -> tuple[str, dict[str, str], bytes, bytes, str]:
+    """Load exact selected graph bytes and their validated source-role index."""
+
+    try:
+        from scripts.obligation_evidence_graph import build_obligation_graph
+        from scripts.obligation_evidence_store import (
+            load_recorded_current_accepted_obligation_graph,
+        )
+        from scripts.obligation_paper_index import validate_paper_obligation_index
+    except ModuleNotFoundError:  # pragma: no cover - direct-script support.
+        from obligation_evidence_graph import build_obligation_graph
+        from obligation_evidence_store import (
+            load_recorded_current_accepted_obligation_graph,
+        )
+        from obligation_paper_index import validate_paper_obligation_index
+
+    base = f"papers/{paper}/audit/obligation_evidence"
+    pointer_path = f"{base}/current_accepted_graph.json"
+    pointer_bytes = _git_bytes(repo, ["show", f"{candidate_ref}:{pointer_path}"])
+    try:
+        pointer = json.loads(pointer_bytes)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError("selected accepted-graph pointer is not valid JSON") from exc
+    graph_sha256 = pointer.get("graph_sha256") if isinstance(pointer, dict) else None
+    if (
+        not isinstance(pointer, dict)
+        or set(pointer) != {"schema", "graph_sha256"}
+        or pointer.get("schema") != 2
+        or not isinstance(graph_sha256, str)
+        or not SHA256_RE.fullmatch(graph_sha256)
+    ):
+        raise ValueError("selected accepted-graph pointer is malformed")
+    pack_path = (
+        f"{base}/accepted_graphs/sha256/{graph_sha256[:2]}/{graph_sha256}.json"
+    )
+    pack_bytes = _git_bytes(repo, ["show", f"{candidate_ref}:{pack_path}"])
+    try:
+        packed = json.loads(pack_bytes)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError("selected packed accepted graph is not valid JSON") from exc
+    if not isinstance(packed, dict):
+        raise ValueError("selected packed accepted graph is malformed")
+
+    # Reuse the store owner for canonical pointer, graph, leaf, and pack
+    # validation. The temporary tree contains only the exact candidate blobs.
+    with tempfile.TemporaryDirectory(prefix="public-role-accepted-graph-") as temporary:
+        snapshot = Path(temporary)
+        for path, raw in ((pointer_path, pointer_bytes), (pack_path, pack_bytes)):
+            destination = snapshot / path
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(raw)
+        accepted = load_recorded_current_accepted_obligation_graph(
+            snapshot, paper, graph_sha256
+        )
+
+    if accepted.graph_sha256 != graph_sha256 or len(accepted.root_leaf_sha256s) != 1:
+        raise ValueError("selected accepted graph identity or root is malformed")
+    closure = accepted.leaves[accepted.root_leaf_sha256s[0]]
+    semantic = build_obligation_graph(
+        (
+            leaf
+            for digest, leaf in accepted.leaves.items()
+            if digest != closure.leaf_sha256
+        ),
+        root_leaf_sha256s=closure.depends_on,
+    )
+    if closure.semantic_payload.get("semantic_graph_sha256") != semantic.graph_sha256:
+        raise ValueError("selected closure binds a different semantic graph")
+    paper_index = validate_paper_obligation_index(
+        packed.get("paper_index"),
+        graph=semantic,
+        require_complete=True,
+        preflight=None,
+        require_current_aggregate_identity=False,
+    )
+    if closure.semantic_payload.get("paper_index_sha256") != paper_index.index_sha256:
+        raise ValueError("selected closure binds a different paper index")
+    roles = accepted_source_role_sha256s_by_source_item(accepted, paper_index)
+    return graph_sha256, roles, pointer_bytes, pack_bytes, pack_path
+
+
+def public_source_role_projection_issues(
+    candidate_repo: Path,
+    candidate_ref: str,
+    entries: list[AllowlistEntry],
+    *,
+    private_repo: Path,
+    public_base_ref: str | None = PUBLIC_BASE_REF,
+) -> list[str]:
+    """Validate guard-issued role bridges or exact trusted-base carryforward."""
+
+    candidate_paths = set(
+        _git(candidate_repo, ["ls-tree", "-r", "--name-only", candidate_ref]).splitlines()
+    )
+    manifest_paths = sorted(
+        path
+        for path in candidate_paths
+        if len(PurePosixPath(path).parts) == 4
+        and PurePosixPath(path).parts[0] == "papers"
+        and PurePosixPath(path).parts[2:] == (
+            "audit",
+            "public_source_display_projection.json",
+        )
+    )
+    issues: list[str] = []
+    for manifest_path in manifest_paths:
+        paper = PurePosixPath(manifest_path).parts[1]
+        prefix = f"papers/{paper}/audit"
+        map_path = f"{prefix}/paper_statement_map.json"
+        envelope_path = f"{prefix}/{PurePosixPath(PUBLIC_SOURCE_ROLE_PROJECTION_FILE).name}"
+        missing = [
+            path for path in (map_path, envelope_path) if path not in candidate_paths
+        ]
+        if missing:
+            issues.append(
+                f"{manifest_path}: public source-role projection is incomplete; missing "
+                + ", ".join(missing)
+            )
+            continue
+        try:
+            map_bytes = _git_bytes(
+                candidate_repo, ["show", f"{candidate_ref}:{map_path}"]
+            )
+            manifest_bytes = _git_bytes(
+                candidate_repo, ["show", f"{candidate_ref}:{manifest_path}"]
+            )
+            envelope_bytes = _git_bytes(
+                candidate_repo, ["show", f"{candidate_ref}:{envelope_path}"]
+            )
+            (
+                graph_sha256,
+                accepted_roles,
+                pointer_bytes,
+                pack_bytes,
+                pack_path,
+            ) = _accepted_source_role_material(candidate_repo, candidate_ref, paper)
+        except (RuntimeError, ValueError, PublicSourceRoleProjectionError) as exc:
+            issues.append(
+                f"{envelope_path}: cannot load accepted public source-role inputs: {exc}"
+            )
+            continue
+
+        unchanged_from_base = False
+        if public_base_ref is not None:
+            try:
+                unchanged_from_base = all(
+                    _git_bytes(candidate_repo, ["show", f"{public_base_ref}:{path}"])
+                    == raw
+                    for path, raw in (
+                        (map_path, map_bytes),
+                        (manifest_path, manifest_bytes),
+                        (envelope_path, envelope_bytes),
+                    )
+                )
+            except RuntimeError:
+                unchanged_from_base = False
+
+        try:
+            if unchanged_from_base:
+                validate_runtime_public_source_role_projection(
+                    trusted_envelope_bytes=envelope_bytes,
+                    paper=paper,
+                    public_source_map_bytes=map_bytes,
+                    public_display_manifest_bytes=manifest_bytes,
+                    accepted_graph_sha256=graph_sha256,
+                    accepted_role_sha256s_by_source_item=accepted_roles,
+                )
+                continue
+
+            entry = matching_allowlist_entry(map_path, entries)
+            if (
+                entry is None
+                or entry.provenance != "private_projection"
+                or entry.source_commit is None
+            ):
+                raise PublicSourceRoleProjectionError(
+                    "new or changed role projection requires the source map's exact "
+                    "private_projection allowlist provenance"
+                )
+            private_map_bytes = _git_bytes(
+                private_repo, ["show", f"{entry.source_commit}:{map_path}"]
+            )
+            if (
+                _sha256_bytes(private_map_bytes) != entry.private_source_blob_sha256
+                or _sha256_bytes(map_bytes) != entry.candidate_blob_sha256
+            ):
+                raise PublicSourceRoleProjectionError(
+                    "source map bytes do not match private_projection allowlist digests"
+                )
+            private_pointer_bytes = _git_bytes(
+                private_repo,
+                [
+                    "show",
+                    f"{entry.source_commit}:papers/{paper}/audit/obligation_evidence/"
+                    "current_accepted_graph.json",
+                ],
+            )
+            private_pack_bytes = _git_bytes(
+                private_repo, ["show", f"{entry.source_commit}:{pack_path}"]
+            )
+            if (
+                private_pointer_bytes != pointer_bytes
+                or private_pack_bytes != pack_bytes
+            ):
+                raise PublicSourceRoleProjectionError(
+                    "selected accepted graph differs from the pinned private source commit"
+                )
+            validate_public_source_role_projection_envelope(
+                envelope_bytes,
+                paper=paper,
+                private_source_map_bytes=private_map_bytes,
+                public_source_map_bytes=map_bytes,
+                public_display_manifest_bytes=manifest_bytes,
+                accepted_graph_sha256=graph_sha256,
+                accepted_role_sha256s_by_source_item=accepted_roles,
+            )
+        except (RuntimeError, ValueError, PublicSourceRoleProjectionError) as exc:
+            issues.append(f"{envelope_path}: {exc}")
     return issues
 
 
@@ -2649,6 +2895,19 @@ def candidate_public_artifact_policy_issues(
         repo,
         candidate_ref,
         candidate_paths,
+    )
+    # This exact non-accepting envelope is validated independently against the
+    # selected accepted graph, display manifest, public map, and pinned private
+    # projection. It is the only new audit filename admitted by this guard.
+    current_audit_artifacts.update(
+        path
+        for path in candidate_paths
+        if len(PurePosixPath(path).parts) == 4
+        and PurePosixPath(path).parts[0] == "papers"
+        and PurePosixPath(path).parts[2:] == (
+            "audit",
+            PurePosixPath(PUBLIC_SOURCE_ROLE_PROJECTION_FILE).name,
+        )
     )
     receipt_ledgers, receipt_issues = _candidate_receipt_review_ledgers(
         repo,
@@ -3581,6 +3840,15 @@ def run_guard(
             candidate_commit,
             entries,
             private_repo=private_repo,
+        )
+    )
+    issues.extend(
+        public_source_role_projection_issues(
+            repo,
+            candidate_commit,
+            entries,
+            private_repo=private_repo,
+            public_base_ref=public_base_commit,
         )
     )
     issues.extend(forbidden_candidate_path_issues(repo, candidate_commit))

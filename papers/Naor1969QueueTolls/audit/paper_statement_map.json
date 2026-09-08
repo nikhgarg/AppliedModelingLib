@@ -668,6 +668,11 @@
   },
   "paper": "Naor1969QueueTolls",
   "paper_interface_namespace": "Naor1969QueueTolls",
+  "publication_source_display_projection": {
+    "manifest": "audit/public_source_display_projection.json",
+    "raw_source_bytes_included": false,
+    "schema": 1
+  },
   "schema": 1,
   "seed_scaffold": false,
   "semantic_contract_policy": {

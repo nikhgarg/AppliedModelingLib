@@ -991,6 +991,15 @@
       "verification": [
         "27 focused CI scope and workflow tests pass, including canceled proof changes followed by documentation."
       ]
+    },
+    {
+      "engine_tree_sha256": "31d87678dd350d0b474d04ebc137df73f7e87975a960e46e31cdda7baa451c53",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Authenticate exact public source-role projections using accepted private role bindings and canonical public main release metadata.",
+      "sequence": 83,
+      "verification": [
+        "59 focused terminal and source-role projection tests pass; deterministic metadata generated for the same 36 public papers without modifying accepted graphs or claims."
+      ]
     }
   ],
   "schema": 2

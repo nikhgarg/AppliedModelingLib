@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "PRPKG24AccuracyDiversity",
-  "private_source_map_sha256": "f72f20a5f4188d45df50524bea68bc2ae85cf11a0d151905a99fa5b35227c3d7",
+  "private_source_map_sha256": "05a59f471e8ee6c8bf164d3542aa3d7d0eb0f4eab5e8d6c9ce52370756c5079f",
   "public_manifest_path": "papers/PRPKG24AccuracyDiversity/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "bad4e351d924ec3d8d965a6a83ea1b8f6db7c2db1dd96ac0c17324a70d07cf69",
+  "public_source_map_sha256": "7f4bae9f4cba0809b40e3a78eadcc2a6612036abf5e4e942e7c4fc66c7c83665",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,

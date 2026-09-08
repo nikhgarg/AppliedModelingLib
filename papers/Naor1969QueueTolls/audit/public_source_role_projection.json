@@ -1,0 +1,83 @@
+{
+  "acceptance_credential": false,
+  "accepted_graph_sha256": "4f402768cf049355e602392a4fa06ce431d0aef2ed37cf40ea56b1859f1e4e2a",
+  "bindings_by_source_item": {
+    "finiteCapacityStationaryLaw": {
+      "accepted_source_role_contract_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "public_source_role_projection_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "revenueContinuousCrossing": {
+      "accepted_source_role_contract_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "public_source_role_projection_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "selfOptimizingThreshold": {
+      "accepted_source_role_contract_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "public_source_role_projection_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "socialAndRevenueThresholdOrder": {
+      "accepted_source_role_contract_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "public_source_role_projection_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "socialContinuousCrossing": {
+      "accepted_source_role_contract_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "public_source_role_projection_sha256": "b5f4804192214264d69cde3f0680e8ffdbbff8a552d1c1351ffe3d859c5b31d6",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "socialOptimalThreshold": {
+      "accepted_source_role_contract_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "public_source_role_projection_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "socialTollImplementsOptimalThreshold": {
+      "accepted_source_role_contract_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "public_source_role_projection_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "source_concluding_qualitative_generalizations": {
+      "accepted_source_role_contract_sha256": "29221fcaff4a9f5951c216ae67d395d55f5d4df1f6192d34d463906ccbf7b2b3",
+      "public_source_role_projection_sha256": "dcc6af3d5c1a9129cfb1347aa02fce758460f6f6bf383a3449bbe09cfcd2b3ef",
+      "schema": 1,
+      "withheld_field_paths": [
+        "user_approved_scope_exclusion.approval_reference",
+        "user_approved_scope_exclusion.source_locator"
+      ]
+    },
+    "source_social_crossing_numerical_generalizations": {
+      "accepted_source_role_contract_sha256": "6cd28a895594f265ca3aa6792834da1f4c089e4827919b06cd95eca770be7360",
+      "public_source_role_projection_sha256": "953ed3c877155903c802e71ac3f3e0b7c2cba65d1cfc0e2404af0768621755be",
+      "schema": 1,
+      "withheld_field_paths": [
+        "user_approved_scope_exclusion.approval_reference",
+        "user_approved_scope_exclusion.source_locator"
+      ]
+    },
+    "stationaryPerformance": {
+      "accepted_source_role_contract_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "public_source_role_projection_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "schema": 1,
+      "withheld_field_paths": []
+    }
+  },
+  "paper": "Naor1969QueueTolls",
+  "private_role_material_included": false,
+  "private_source_map_material_sha256": "84e7eb1bd49fefe472aeb52cdf1917e359059737a985fa15bcdc15e9597c4b6a",
+  "private_source_map_sha256": "a2472bcc7371b52090c3183ff1abc54f09647934acf0a4ab1aeae39a41017730",
+  "projection_contract_sha256": "ed0964edc9c70f5ce087ce9bf134712ca40c7964ecaefd403309ac9a1b47d34d",
+  "public_display_manifest_material_sha256": "11cc0f9986aca439fb68802ed44d5b9e905ce1672d9cc4bc2946fb5e725017d5",
+  "public_display_manifest_sha256": "3fb974c8ec7b8aca3418a4bd75f670002d434f8b126da2a711d04be7ac582fa6",
+  "public_source_map_material_sha256": "f4b8de3361f548d0dc81578d0ab7a5a536ae9c288ef4366a6f8ecd1381af29b3",
+  "public_source_map_sha256": "dbaa0331e335c0dc94c13e0d6a11a4763db5c22084f236b1d7dff244159879fa",
+  "raw_private_approval_material_included": false,
+  "schema": 1
+}

@@ -1210,6 +1210,11 @@
   },
   "paper": "LG24ServiceLevelAgreements",
   "paper_interface_namespace": "LG24ServiceLevelAgreements",
+  "publication_source_display_projection": {
+    "manifest": "audit/public_source_display_projection.json",
+    "raw_source_bytes_included": false,
+    "schema": 1
+  },
   "schema": 1,
   "semantic_contract_schema": 1,
   "semantic_preflight_import_module": "LG24ServiceLevelAgreements.PaperInterface",

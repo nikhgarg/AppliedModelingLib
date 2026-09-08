@@ -1,0 +1,89 @@
+{
+  "acceptance_credential": false,
+  "accepted_graph_sha256": "0f3fdc68ff5454594d71ce605a7faf1dda272944c10c9ee97093003e0faa8ab0",
+  "bindings_by_source_item": {
+    "footnote10_pav_unique_integer_characterization": {
+      "accepted_source_role_contract_sha256": "89dacab7b10d470297c3b013139ddd6b123a5ca7b5d9e1862b2eb933993aa8ea",
+      "public_source_role_projection_sha256": "89dacab7b10d470297c3b013139ddd6b123a5ca7b5d9e1862b2eb933993aa8ea",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "lemma_c1_pav_min_argmax_interval": {
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "map_level_party_share_pigeonhole_and_minority_seat_guarantee": {
+      "accepted_source_role_contract_sha256": "89dacab7b10d470297c3b013139ddd6b123a5ca7b5d9e1862b2eb933993aa8ea",
+      "public_source_role_projection_sha256": "89dacab7b10d470297c3b013139ddd6b123a5ca7b5d9e1862b2eb933993aa8ea",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "pav_party_seat_selector_definition": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "pav_thiele_rule_definition": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "population_tolerance_prose": {
+      "accepted_source_role_contract_sha256": "d80cd02da539720788a835057cd4195ef2209ae3c6ca0339b15a652f317500f4",
+      "public_source_role_projection_sha256": "d80cd02da539720788a835057cd4195ef2209ae3c6ca0339b15a652f317500f4",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proposition1_stv_pav_rounded_seats": {
+      "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "public_source_role_projection_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "proposition1_stv_pav_rounded_seats_appendix_presentation": {
+      "accepted_source_role_contract_sha256": "f6219d29e655cb81f1bbf1cddd4cad8536f81fed7bde5e2a7974535920df7f44",
+      "public_source_role_projection_sha256": "f6219d29e655cb81f1bbf1cddd4cad8536f81fed7bde5e2a7974535920df7f44",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "solid_coalition_voter_model": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "stv_iterative_rule_definition": {
+      "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "public_source_role_projection_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "surplus_preserving_transfer_rule_seat_share_formula": {
+      "accepted_source_role_contract_sha256": "89dacab7b10d470297c3b013139ddd6b123a5ca7b5d9e1862b2eb933993aa8ea",
+      "public_source_role_projection_sha256": "89dacab7b10d470297c3b013139ddd6b123a5ca7b5d9e1862b2eb933993aa8ea",
+      "schema": 1,
+      "withheld_field_paths": []
+    },
+    "vote_share_calculation_and_optimization_prose": {
+      "accepted_source_role_contract_sha256": "89dacab7b10d470297c3b013139ddd6b123a5ca7b5d9e1862b2eb933993aa8ea",
+      "public_source_role_projection_sha256": "89dacab7b10d470297c3b013139ddd6b123a5ca7b5d9e1862b2eb933993aa8ea",
+      "schema": 1,
+      "withheld_field_paths": []
+    }
+  },
+  "paper": "GGRS26CombattingGerrymanderingRCV",
+  "private_role_material_included": false,
+  "private_source_map_material_sha256": "870f647ad88debbf136e127c9306f10e550a64d1ed724fae920c198b4633f89e",
+  "private_source_map_sha256": "ca6cd8d4651997c617a634e1da967274b3c94ff3665ee21cc38ff97f714ee9c2",
+  "projection_contract_sha256": "ed0964edc9c70f5ce087ce9bf134712ca40c7964ecaefd403309ac9a1b47d34d",
+  "public_display_manifest_material_sha256": "9e997e2cd1f1f82b38a10556bb011501823baf3355fb9e7b1f3804187e882966",
+  "public_display_manifest_sha256": "e444408970ab32cb0fdf23efe389adb35da92874bb987a4634688f96f8467946",
+  "public_source_map_material_sha256": "0a67dfa19af9becbed08e31e6f3dad25d0b8dfc18d285c6b43d799eb3a86ea41",
+  "public_source_map_sha256": "448394d2661c177e965f67c97af97e4e9b9aeaf00a1960e6d68b1cf151902490",
+  "raw_private_approval_material_included": false,
+  "schema": 1
+}

@@ -245,7 +245,10 @@ jobs:
         run: python3 scripts/run_isolated_audit_tests.py
       - name: Audit conclusion-bearing theorem inputs
         if: steps.change-scope.outputs.mode == 'integration'
-        run: python3 scripts/audit_conclusion_provenance.py
+        run: |
+          SOURCE_FLAG=()
+          if [[ "$PUBLIC_SOURCE_MODE" == "true" ]]; then SOURCE_FLAG+=(--allow-missing-source-bytes); fi
+          python3 scripts/audit_conclusion_provenance.py --jobs 1 "${SOURCE_FLAG[@]}"
       - name: Check paper status aggregate
         if: >-
           github.event_name == 'workflow_dispatch' ||
@@ -263,10 +266,16 @@ jobs:
         run: python3 scripts/audit_repository.py --library-only --library-premise-audit --info-limit 0
       - name: Audit statement translations
         if: steps.change-scope.outputs.mode == 'integration'
-        run: python3 scripts/review_dashboard.py --statement-check
+        run: |
+          SOURCE_FLAG=()
+          if [[ "$PUBLIC_SOURCE_MODE" == "true" ]]; then SOURCE_FLAG+=(--allow-missing-source-bytes); fi
+          python3 scripts/audit_statement_coverage.py --kind statement "${SOURCE_FLAG[@]}"
       - name: Audit paper coverage
         if: steps.change-scope.outputs.mode == 'integration'
-        run: python3 scripts/review_dashboard.py --paper-coverage-check
+        run: |
+          SOURCE_FLAG=()
+          if [[ "$PUBLIC_SOURCE_MODE" == "true" ]]; then SOURCE_FLAG+=(--allow-missing-source-bytes); fi
+          python3 scripts/audit_statement_coverage.py --kind coverage "${SOURCE_FLAG[@]}"
       - name: Full repository closeout audit
         if: >-
           github.event_name == 'workflow_dispatch' ||

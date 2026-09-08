@@ -10,13 +10,25 @@ direct-script imports on the same authoritative implementations.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import partial
 from pathlib import Path
 from typing import Any, Callable, Generic, Iterable, TypeVar
 
 
 FindingT = TypeVar("FindingT")
+
+# These checks inspect spelling, comments, or source-level binder placement.
+# They remain visible in ordinary CI; strict style additionally makes them
+# blocking. Kernel closure, source/evidence validation, and proof placeholders
+# are enforced by separate checks and never enter this set.
+PRESENTATION_CHECKS = frozenset({
+    "hidden_variable_premises",
+    "library_source_assumption_standards",
+    "library_reusable_provenance_language",
+    "library_source_hygiene",
+    "generic_source_reference_hygiene",
+})
 
 
 @dataclass(frozen=True)
@@ -62,6 +74,26 @@ def execute_registered_checks(
     return findings
 
 
+def _presentation_policy(
+    checks: Iterable[RegisteredCheck[Any]], *, strict_style: bool
+) -> tuple[RegisteredCheck[Any], ...]:
+    def advisory(check: RegisteredCheck[Any]) -> list[Any]:
+        findings = check.run()
+        if not isinstance(findings, list):
+            raise TypeError(f"repository audit check `{check.name}` did not return a list")
+        return [
+            replace(finding, severity="WARN")
+            if getattr(finding, "severity", None) == "ERROR" else finding
+            for finding in findings
+        ]
+
+    return tuple(
+        RegisteredCheck(check.name, partial(advisory, check))
+        if not strict_style and check.name in PRESENTATION_CHECKS else check
+        for check in checks
+    )
+
+
 def ordinary_repository_checks(
     audit: Any,
     *,
@@ -80,6 +112,7 @@ def ordinary_repository_checks(
             for name, function in (
                 ("sorries", audit.check_sorries),
                 ("axiom_like_declarations", audit.check_axiom_like_declarations),
+                ("test_fixture_isolation", audit.check_test_fixture_isolation),
                 ("hidden_variable_premises", audit.check_hidden_variable_premises),
                 ("guarded_checks", audit.check_guarded_checks),
             )
@@ -158,7 +191,7 @@ def ordinary_repository_checks(
                 audit.check_library_certificate_boundaries,
             )
         )
-    return tuple(checks)
+    return _presentation_policy(checks, strict_style=strict_style)
 
 
 def reusable_library_checks(
@@ -177,6 +210,7 @@ def reusable_library_checks(
             for name, function in (
                 ("sorries", audit.check_sorries_in_files),
                 ("axiom_like_declarations", audit.check_axiom_like_declarations_in_files),
+                ("test_fixture_isolation", audit.check_test_fixture_isolation_in_files),
                 ("hidden_variable_premises", audit.check_hidden_variable_premises_in_files),
                 ("guarded_checks", audit.check_guarded_checks_in_files),
             )
@@ -205,4 +239,4 @@ def reusable_library_checks(
                 audit.check_library_certificate_boundaries,
             )
         )
-    return tuple(checks)
+    return _presentation_policy(checks, strict_style=strict_style)

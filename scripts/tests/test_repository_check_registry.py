@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 
 from scripts import audit_repository
 from scripts.repository_check_registry import (
@@ -15,6 +17,50 @@ from scripts.repository_check_registry import (
 
 
 class RepositoryCheckRegistryTests(unittest.TestCase):
+    def test_advisory_policy_does_not_hide_malformed_validator_output(self) -> None:
+        with patch.object(audit_repository, "check_library_source_hygiene", return_value=()):
+            checks = {check.name: check for check in reusable_library_checks(
+                audit_repository, files=(), strict_style=False, library_premise_audit=False,
+            )}
+            with self.assertRaisesRegex(TypeError, "did not return a list"):
+                checks["library_source_hygiene"].run()
+
+    def test_presentation_stays_visible_and_proof_errors_stay_blocking(self) -> None:
+        for strict in (False, True):
+            with self.subTest(strict_style=strict), patch.object(
+                audit_repository, "check_library_source_hygiene",
+                return_value=[audit_repository.Finding("ERROR", Path("Library.lean"), "numbered API name")],
+            ), patch.object(
+                audit_repository, "check_axiom_like_declarations_in_files",
+                return_value=[audit_repository.Finding("ERROR", Path("Library.lean"), "unproved axiom")],
+            ):
+                checks = {check.name: check for check in reusable_library_checks(
+                    audit_repository, files=(), strict_style=strict, library_premise_audit=False,
+                )}
+                presentation = checks["library_source_hygiene"].run()
+                proof = checks["axiom_like_declarations"].run()
+                self.assertEqual(presentation[0].severity, "ERROR" if strict else "WARN")
+                self.assertEqual(presentation[0].message, "numbered API name")
+                self.assertEqual(proof[0].severity, "ERROR")
+
+    def test_ordinary_audit_keeps_source_validation_blocking_in_both_modes(self) -> None:
+        for strict in (False, True):
+            with self.subTest(strict_style=strict), patch.object(
+                audit_repository, "check_generic_source_reference_hygiene",
+                return_value=[audit_repository.Finding("ERROR", Path("Library.lean"), "paper label")],
+            ), patch.object(
+                audit_repository, "check_library_standard_definition_audits",
+                return_value=[audit_repository.Finding("ERROR", Path("Library.lean"), "missing definition audit")],
+            ):
+                checks = {check.name: check for check in ordinary_repository_checks(
+                    audit_repository, include_active=True, strict_style=strict,
+                    library_premise_audit=True, paper_filter=None,
+                    require_source_bytes=True, deep_paper_prose=False,
+                )}
+                self.assertEqual(checks["generic_source_reference_hygiene"].run()[0].severity,
+                                 "ERROR" if strict else "WARN")
+                self.assertEqual(checks["library_standard_definition_audits"].run()[0].severity, "ERROR")
+
     def test_executor_preserves_declared_order_and_runs_each_check_once(self) -> None:
         calls: list[str] = []
 
@@ -66,6 +112,7 @@ class RepositoryCheckRegistryTests(unittest.TestCase):
             (
                 "sorries",
                 "axiom_like_declarations",
+                "test_fixture_isolation",
                 "hidden_variable_premises",
                 "guarded_checks",
                 "library_source_assumption_standards",
@@ -107,6 +154,7 @@ class RepositoryCheckRegistryTests(unittest.TestCase):
             (
                 "sorries",
                 "axiom_like_declarations",
+                "test_fixture_isolation",
                 "hidden_variable_premises",
                 "guarded_checks",
                 "library_source_assumption_standards",

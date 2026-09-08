@@ -700,7 +700,7 @@ ASSUMPTION_POLICY_ALLOWED_VALUES = ASSUMPTION_POLICY_STRICT_VALUES | {
     "source-plus-proof-boundary",
 }
 AXIOM_LIKE_DECL_NAME_RE = re.compile(
-    r"^\s*(?:axiom|opaque|constant|unsafe\s+(?:axiom|def|theorem|lemma))\s+"
+    r"^\s*(?:axiom|opaque|unsafe\s+(?:axiom|def|theorem|lemma))\s+"
     r"(?P<name>[A-Za-z_][A-Za-z0-9_']*)\b"
 )
 ASSUMPTION_AUDIT_PREMISE_RE = re.compile(r"^\s*--\s*audit-premise:\s*(.+?)\s*$")
@@ -799,7 +799,9 @@ PROOF_FACING_AUDIT_FORMULA_RE = re.compile(
     r"/--(?:(?!-/).)*\bformula\b(?:(?!-/).)*-/\s*noncomputable\s+abbrev\s+audit[A-Za-z0-9_]*",
     re.I | re.S,
 )
-AXIOM_LIKE_DECL_RE = re.compile(r"^\s*(?:axiom|opaque|constant|unsafe\s+(?:axiom|def|theorem|lemma))\b")
+# Lean 4 uses `axiom` for declarations without values. `constant` is an ordinary
+# identifier, including in definition bodies and theorem binder continuations.
+AXIOM_LIKE_DECL_RE = re.compile(r"^\s*(?:axiom|opaque|unsafe\s+(?:axiom|def|theorem|lemma))\b")
 LIBRARY_STANDARD_DEFINITION_AUDIT_FILE = ROOT / "AppliedModelingLib" / "LibraryDefinitionAudit.lean"
 REQUIRED_LIBRARY_STANDARD_AUDITS = {
     "jensenConvex_iff_convexOn_univ": "JensenConvex matches mathlib `ConvexOn ℝ Set.univ`",
@@ -1095,6 +1097,44 @@ def git_ls_files() -> list[str]:
     return result.stdout.splitlines()
 
 
+REGRESSION_FIXTURE_MODULES = frozenset({
+    "AppliedModelingLib.Audit.DeclarationGraphFixture",
+    "AppliedModelingLib.Audit.DeclarationGraphFixtureLibrary",
+    "AppliedModelingLib.AllForSemanticInventory",
+})
+
+
+def is_regression_fixture(path: Path) -> bool:
+    try:
+        module = ".".join(path.relative_to(ROOT).with_suffix("").parts)
+    except ValueError:
+        return False
+    return module in REGRESSION_FIXTURE_MODULES
+
+
+def check_test_fixture_isolation_in_files(files: Iterable[Path]) -> list[Finding]:
+    """Keep deliberately invalid regression declarations out of production imports.
+
+    The semantic-inventory aggregate also imports the regression fixtures and
+    is tooling-only. Native declaration-graph tests still compile and inspect
+    these modules, including their deliberately unproved boundary.
+    """
+    pattern = re.compile(
+        r"(?<![A-Za-z0-9_'.])(?:"
+        + "|".join(re.escape(name) for name in sorted(REGRESSION_FIXTURE_MODULES))
+        + r")(?![A-Za-z0-9_'])"
+    )
+    return [
+        Finding("ERROR", path, f"production Lean code references test-only module `{match.group(0)}`")
+        for path in files if not is_regression_fixture(path)
+        for match in pattern.finditer(lean_code_text(path.read_text(encoding="utf-8")))
+    ]
+
+
+def check_test_fixture_isolation(include_active: bool) -> list[Finding]:
+    return check_test_fixture_isolation_in_files(lean_files(include_active))
+
+
 def lean_files(include_active: bool) -> list[Path]:
     files: list[Path] = []
     try:
@@ -1110,6 +1150,8 @@ def lean_files(include_active: bool) -> list[Path]:
                 continue
             if path.relative_to(ROOT).parts[0] not in {"AppliedModelingLib", "papers"}:
                 continue
+            if is_regression_fixture(path):
+                continue
             if not include_active and any(part in ACTIVE_PAPERS for part in path.parts):
                 continue
             files.append(path)
@@ -1119,6 +1161,8 @@ def lean_files(include_active: bool) -> list[Path]:
         if not root.exists():
             continue
         for path in root.rglob("*.lean"):
+            if is_regression_fixture(path):
+                continue
             if not include_active and any(part in ACTIVE_PAPERS for part in path.parts):
                 continue
             files.append(path)
@@ -2398,7 +2442,7 @@ def paper_lean_declaration_index(folder: Path) -> dict[str, list[LeanDeclaration
 
 
 def library_lean_files() -> list[Path]:
-    """Return tracked reusable-library Lean files."""
+    """Return reusable-library Lean files, excluding isolated regression modules."""
 
     files: set[Path] = set()
     root = ROOT / "AppliedModelingLib"
@@ -2412,7 +2456,7 @@ def library_lean_files() -> list[Path]:
         path = ROOT / rel
         if path.suffix == ".lean" and path.exists() and path.relative_to(ROOT).parts[0] == "AppliedModelingLib":
             files.add(path)
-    return sorted(files)
+    return sorted(path for path in files if not is_regression_fixture(path))
 
 
 def library_lean_declaration_index() -> dict[str, list[LeanDeclaration]]:
@@ -21880,7 +21924,7 @@ def main() -> int:
     parser.add_argument(
         "--strict-style",
         action="store_true",
-        help="also report Mathlib-style module-docstring guidance for reusable AppliedModelingLib modules",
+        help="make naming, provenance-comment, binder-placement, and Mathlib-style guidance blocking",
     )
     parser.add_argument(
         "--library-premise-audit",

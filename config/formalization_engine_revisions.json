@@ -1009,6 +1009,15 @@
       "verification": [
         "59 focused tests pass; actual accepted-credential regression distinguishes its semantic graph from its accepting graph."
       ]
+    },
+    {
+      "engine_tree_sha256": "106e2c1b34dfd43140eaae71fc64ac31972491f637aff0ab682aa354baa789d0",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Repair direct audit startup and current graph CI dispatch; distinguish Lean commands and isolate regression fixtures; keep presentation findings visible with strict-style escalation",
+      "sequence": 85,
+      "verification": [
+        "84 CI dispatch regressions and 51 native fixture tests pass; focused conclusion and reusable-library audits pass"
+      ]
     }
   ],
   "schema": 2

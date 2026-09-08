@@ -26,6 +26,13 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Any, Iterable, Mapping, Sequence, cast
 
+# The CI workflow executes this file directly. Resolve its transitive imports
+# through the same repository package used by module-style execution.
+if __package__ in {None, ""}:
+    repository_root = str(Path(__file__).resolve().parents[1])
+    if repository_root not in sys.path:
+        sys.path.insert(0, repository_root)
+
 try:
     from scripts.source_record_projection_contract import (
         CheckedProjectionResult,
@@ -7701,8 +7708,30 @@ def audit_paper(
     *,
     theorem_realization_component_prevalidated: bool = False,
     source_record_snapshot: SourceRecordAuditSnapshot | None = None,
+    require_source_bytes: bool = True,
 ) -> list[Finding]:
     """Audit one paper and finalize every transaction acquired by this call."""
+
+    if source_record_snapshot is None:
+        from scripts.audit_evidence_integrity import (
+            graph_native_closure_fast_path_findings,
+        )
+
+        # A canonical graph credential owns the complete conclusion/dependency
+        # closure. Its validator rechecks the current Lean and source bindings;
+        # neither a selected schema nor a stored success flag confers acceptance.
+        # Only an unselected graph lane may continue to the legacy transaction.
+        graph_findings = graph_native_closure_fast_path_findings(
+            PAPERS / paper,
+            release=False,
+            require_source_bytes=require_source_bytes,
+        )
+        if graph_findings is not None:
+            return [
+                Finding(paper, "<audit>", "<accepted graph>", (), finding.message)
+                for finding in graph_findings
+                if finding.severity == "ERROR"
+            ]
 
     return _audit_paper(
         paper,
@@ -7793,6 +7822,11 @@ def main() -> int:
     )
     parser.add_argument("--json", action="store_true", help="emit findings as JSON")
     parser.add_argument(
+        "--allow-missing-source-bytes",
+        action="store_true",
+        help="validate public graph credentials without requiring private source artifacts",
+    )
+    parser.add_argument(
         "--jobs",
         type=int,
         default=min(4, os.cpu_count() or 1),
@@ -7810,11 +7844,16 @@ def main() -> int:
         parser.error(f"paper folder/status.json not found: {args.paper}")
     if args.public_complete and not papers:
         parser.error("no explicitly public fully formalized papers found")
+    def audit_selected_paper(paper: str) -> list[Finding]:
+        return audit_paper(
+            paper, require_source_bytes=not args.allow_missing_source_bytes
+        )
+
     if args.jobs == 1 or len(papers) <= 1:
-        paper_findings = [audit_paper(paper) for paper in papers]
+        paper_findings = [audit_selected_paper(paper) for paper in papers]
     else:
         with ThreadPoolExecutor(max_workers=args.jobs) as executor:
-            paper_findings = list(executor.map(audit_paper, papers))
+            paper_findings = list(executor.map(audit_selected_paper, papers))
     findings = [finding for group in paper_findings for finding in group]
     findings.sort(key=lambda item: (item.paper, item.row, item.binder, item.fields))
     if args.json:

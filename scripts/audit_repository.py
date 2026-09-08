@@ -426,7 +426,6 @@ DEPENDENCY_DAG_PDF_FILE = f"{PAPER_DOCS_DIR}/DependencyDAG.pdf"
 AGENT_SOURCE_AUDIT_FILE = f"{PAPER_DOCS_DIR}/AGENT_SOURCE_AUDIT.md"
 REQUIRED_PAPER_FILES = {
     ".gitignore",
-    "MainTheorems.lean",
     "PaperInterface.lean",
     "status.json",
 }
@@ -1472,6 +1471,22 @@ def check_paper_contract(include_active: bool) -> list[Finding]:
         for filename in sorted(REQUIRED_PAPER_FILES):
             if not (folder / filename).exists():
                 findings.append(Finding("ERROR", folder, f"missing required file `{filename}`"))
+
+        # Migrated papers may keep their theorem endpoints in ProofInterface
+        # (or another explicitly configured module) instead of MainTheorems.
+        # Validate that owner; a legacy filename is not a second proof obligation.
+        proof_file = folder / "MainTheorems.lean"
+        try:
+            status_payload = json.loads((folder / "status.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            status_payload = {}
+        review_surface = status_payload.get("review_surface") if isinstance(status_payload, dict) else None
+        if isinstance(review_surface, dict):
+            configured_file = review_surface.get("proof_file")
+            if isinstance(configured_file, str) and configured_file.strip():
+                proof_file = proof_endpoint_source_file_path(folder, review_surface)
+        if not proof_file.is_file():
+            findings.append(Finding("ERROR", folder, f"missing required proof file `{proof_file}`"))
 
         dag_pdf = paper_relative_file(folder, DEPENDENCY_DAG_PDF_FILE, "DependencyDAG.pdf")
         if not dag_pdf.exists():
@@ -18057,6 +18072,27 @@ def check_library_standard_definition_audits() -> list[Finding]:
     return findings
 
 
+def configured_review_rows(
+    interface_text: str, review_surface: dict[str, object]
+) -> list[tuple[int, str]]:
+    """Count the configured human surface, including assumptions, without helpers."""
+
+    rows = _legacy_review_surface_structure_module().review_rows_from_interface_text(interface_text)
+
+    def names(field: str) -> set[str]:
+        raw = review_surface.get(field)
+        return {str(value).strip() for value in raw if str(value).strip()} if isinstance(raw, list) else set()
+
+    included = names("include_names")
+    assumptions = names("assumption_names")
+    auxiliary = names("auxiliary_names")
+    return [
+        row for row in rows
+        if (not included or row[1] in included or row[1] in assumptions)
+        and row[1] not in auxiliary
+    ]
+
+
 def review_surface_slice_counts(interface_text: str, status_file: Path) -> tuple[list[str], dict[str, int]]:
     """Count human-review declaration rows by paper-local status review slices."""
 
@@ -18075,6 +18111,7 @@ def review_surface_slice_counts(interface_text: str, status_file: Path) -> tuple
     review_surface = payload.get("review_surface")
     if not isinstance(review_surface, dict):
         return ["status.json should define a `review_surface` object"], {"all": len(decls)}
+    decls = configured_review_rows(interface_text, review_surface)
     raw_slices = review_surface.get("slices")
     if not isinstance(raw_slices, list) or not raw_slices:
         return ["status.json review_surface should define a nonempty `slices` list"], {"all": len(decls)}
@@ -18202,11 +18239,7 @@ def check_review_launcher_readiness(include_active: bool) -> list[Finding]:
             findings.append(Finding("ERROR", review_source, "configured review surface does not exist"))
             continue
         review_source_text = review_source.read_text(encoding="utf-8")
-        item_count = len(
-            _legacy_review_surface_structure_module().review_rows_from_interface_text(
-                review_source_text
-            )
-        )
+        item_count = len(configured_review_rows(review_source_text, review_surface))
         if item_count == 0:
             if not status_allows_empty_review_surface(status_payload):
                 findings.append(Finding("ERROR", review_source, "review dashboard finds no review rows"))
@@ -20950,7 +20983,13 @@ def check_human_facing_readme() -> list[Finding]:
         findings.append(Finding("ERROR", docs_index, "docs index is missing"))
     else:
         docs_text = docs_index.read_text(encoding="utf-8")
-        if "Human-Facing" not in docs_text or "Agent And Maintainer-Facing" not in docs_text:
+        headings = {
+            match.group(1).strip().casefold()
+            for match in re.finditer(r"(?m)^##\s+(.+?)\s*$", docs_text)
+        }
+        reader_sections = {"human-facing", "reading and reviewing a formalization"}
+        maintainer_sections = {"agent and maintainer-facing", "maintaining the website and releases"}
+        if not headings.intersection(reader_sections) or not headings.intersection(maintainer_sections):
             findings.append(
                 Finding(
                     "ERROR",

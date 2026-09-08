@@ -642,7 +642,7 @@
       "human_translation": "0/15 reviewed",
       "llm_as_judge_translation": "accepted closeout: 15/15 raw-source-to-Spec match",
       "llm_as_judge_paper_coverage": "accepted closeout: 15/15 source claims covered",
-      "lean_loc": 210343,
+      "lean_loc": 210358,
       "main_note": "Formalization gap: Theorem 3.1 assumes stability against profitable group entry; voluntary Lemma 4.1 assumes maximal participation. Deriving these refinements from the paper’s equilibrium definition remains unproved.",
       "main_note_citation": null,
       "main_note_review": {

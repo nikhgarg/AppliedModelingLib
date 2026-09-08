@@ -6,7 +6,7 @@
 | Final status | Formalized |
 | Scope note | The formalized model differs from the pinned archive; the report details the changes |
 | Paper reference | [Test-optional Policies: Overcoming Strategic Behavior and Informational Gaps](https://arxiv.org/pdf/2107.08922) by Zhi Liu and Nikhil Garg; EAAMO, 2021. |
-| Lines of Code | 210,343 |
+| Lines of Code | 210,358 |
 
 ## Key Links
 

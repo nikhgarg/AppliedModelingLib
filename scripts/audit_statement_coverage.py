@@ -50,16 +50,31 @@ def audit_paper(folder: Path, kind: str, *, require_source_bytes: bool = True) -
     return legacy_check(folder.name)
 
 
+def selected_paper_folders(paper_filter: str | None) -> list[Path]:
+    """Keep the review cohort inside the evidence audit's paper inventory.
+
+    Legacy Lean source directories can remain tracked without being registered
+    as papers. A readable interface alone must not promote such a directory to
+    a CI paper target. Keep the dashboard's existing active-paper exclusions.
+    """
+
+    paper_inventory = set(audit_evidence_integrity.paper_dirs(paper_filter))
+    return [
+        folder for folder in review_dashboard.iter_paper_folders(paper_filter)
+        if folder in paper_inventory
+    ]
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--kind", choices=("statement", "coverage"), required=True)
-    parser.add_argument("--paper", help="Check one paper instead of the normal dashboard cohort.")
+    parser.add_argument("--paper", help="Check one status-bearing paper instead of the normal review cohort.")
     parser.add_argument(
         "--allow-missing-source-bytes", action="store_true",
         help="Validate the public source projection when private source artifacts are absent.",
     )
     args = parser.parse_args(argv)
-    folders = review_dashboard.iter_paper_folders(args.paper)
+    folders = selected_paper_folders(args.paper)
     if not folders:
         parser.error("no paper review surfaces selected")
     failures = 0

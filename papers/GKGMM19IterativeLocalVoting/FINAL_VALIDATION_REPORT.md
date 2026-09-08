@@ -92,18 +92,6 @@ The memo also specifies the
 Proposition 2's extra geometric condition is in Section 6; the Appendix C.6
 event repair is in Section 7; the deterministic-bias specialization is in Section 5.
 
-<!-- BEGIN GENERATED SETTLED REVIEW CONTEXT -->
-<!-- settled-review-context-sha256: a5bfeaf5393a333e870284a9c971b67402ac669beec9114f7d2155c88d3b8e9e -->
-<!-- settled-review-context-presentation-sha256: 90124902293868ed5af1ed307f5fc72c65c891bf89d33dd0efa2e81be9dbfd70 -->
-### Source readings and additional assumptions
-
-- The checked Appendix Theorem 5 is specialized to a deterministic summable bias sequence. This suffices for the zero-bias main-text application; the broader adapted-bias statement is not established by this specialization.
-- When the displayed Model B gradient is zero, the voter remains at the current point.
-- For Proposition 2 with a Linfinity neighborhood, Model B moves every non-tied decomposition coordinate by the full current radius toward that coordinate of the sampled voter's ideal; tied coordinates do not move.
-- The checked Proposition 2 assumes that replacing one coordinate of a feasible point by that of another feasible point preserves feasibility. This is stronger than C1’s closed convex domain; it is the current statement scope, not a proved necessary condition for the conclusion.
-- The checked Theorem 3 zero-field result uses an explicit full-space condition; the constrained-space result gives zero field or no feasible aggregate direction. The printed theorem invokes C1–C3, including bounded convex X; these results alone do not prove or refute zero field on every such X.
-<!-- END GENERATED SETTLED REVIEW CONTEXT -->
-
 ## 11. Paper Issues or Caveats
 
 The statement scopes and proof replacements have their respective explanations in Sections 6, 7, and 9; the memo linked in Section 10 supplies the details.

@@ -106,6 +106,10 @@ def ordinary_repository_checks(
 ) -> tuple[RegisteredCheck[Any], ...]:
     """Return the complete ordinary non-closeout repository check registry."""
 
+    # This selection belongs to one ordered audit execution. The graph check
+    # fills it only after invoking the canonical validator; errors stay in the
+    # result and selected graphs never fall back to legacy evidence producers.
+    graph_native_papers: set[str] = set()
     checks: list[RegisteredCheck[Any]] = [
         *(
             _bound(name, function, include_active)
@@ -129,6 +133,14 @@ def ordinary_repository_checks(
         ),
         _bound("paper_contract", audit.check_paper_contract, include_active),
         _bound(
+            "graph_native_paper_closure",
+            audit.check_graph_native_paper_closure,
+            include_active,
+            paper_filter=paper_filter,
+            require_source_bytes=require_source_bytes,
+            selected_papers=graph_native_papers,
+        ),
+        _bound(
             "final_report_status_alignment",
             audit.check_final_report_status_alignment,
             include_active,
@@ -145,11 +157,15 @@ def ordinary_repository_checks(
             audit.check_dag_and_validation_report_closeout,
             include_active=include_active,
             paper_filter=paper_filter,
+            public_graph_papers=graph_native_papers if not require_source_bytes else (),
         ),
         _bound("review_launcher_readiness", audit.check_review_launcher_readiness, include_active),
         _bound("dag_status_styles", audit.check_dag_status_styles),
         _bound("paper_facing_ledgers", audit.check_paper_facing_ledgers, include_active),
-        _bound("post_paper_audit_interfaces", audit.check_post_paper_audit_interfaces, include_active),
+        _bound(
+            "post_paper_audit_interfaces", audit.check_post_paper_audit_interfaces,
+            include_active, graph_native_papers=graph_native_papers,
+        ),
         _bound(
             "machine_paper_status",
             audit.check_machine_paper_status,
@@ -158,6 +174,7 @@ def ordinary_repository_checks(
             paper_closeout=False,
             require_source_bytes=require_source_bytes,
             deep_paper_prose=deep_paper_prose,
+            graph_native_papers=graph_native_papers,
         ),
         *(
             _bound(name, function)

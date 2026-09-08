@@ -121,6 +121,7 @@ class RepositoryCheckRegistryTests(unittest.TestCase):
                 "library_source_hygiene",
                 "generic_source_reference_hygiene",
                 "paper_contract",
+                "graph_native_paper_closure",
                 "final_report_status_alignment",
                 "final_report_human_facing_front_matter",
                 "dag_and_validation_report_closeout",

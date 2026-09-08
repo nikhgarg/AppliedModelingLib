@@ -93,14 +93,6 @@ for other prediction models.
 
 Observation 4 becomes an almost-everywhere equivalence for arbitrary laws. Algorithms 4–5 make the shared checker/restart and fresh-block operations explicit; Lemma 15 changes `g_p` to `g`. See the [source memo](docs/SOURCE_CLARIFICATIONS.md) and [compact companion](docs/PUBLIC_FORMALIZATION_NOTE.pdf). Sections 6–7 discuss the other changes.
 
-<!-- BEGIN GENERATED SETTLED REVIEW CONTEXT -->
-<!-- settled-review-context-sha256: 1f0db158e7c8e947434d021d0381e0bded62a619d016e1fd43d2e4d160b77595 -->
-<!-- settled-review-context-presentation-sha256: d3295c9ee0ac3c8e3696ee11edd691c0839961d19a9ec23ddc405edeadc1d403 -->
-### Source readings and additional assumptions
-
-- The mass-weighted group-loss numerator is the total primitive; conditional group loss is totalized to zero at mass zero, and every divided source display is recovered on positive-mass groups.
-<!-- END GENERATED SETTLED REVIEW CONTEXT -->
-
 ## 11. Paper Issues or Caveats
 
 The statement readings and positive-initialization scope are in Sections 6 and 10; the changed proof arguments are in Section 7.

@@ -159,6 +159,7 @@ def closeout_document_hard_errors(
     final_holistic_required: bool = False,
     check_final_holistic: bool = True,
     require_visual_dag_inspection: bool = False,
+    check_private_review_artifacts: bool = True,
     final_holistic_surface_sha256: str = "",
     all_selected_semantic_review_sha256: str | None = None,
     final_holistic_review_policy_assurance: Mapping[str, object] | None = None,
@@ -178,6 +179,11 @@ def closeout_document_hard_errors(
     at the terminal-document boundary, after the semantic graph and focused
     build are current; it must not make draft documentation an early audit
     prerequisite.
+
+    ``check_private_review_artifacts=False`` is reserved for ordinary public
+    transport validation after the caller validates the canonical recorded
+    graph. It preserves published report and packet checks; strict paper
+    closeout always keeps the default and verifies its private review inputs.
     """
 
     errors: list[CloseoutDocumentHardError] = []
@@ -233,7 +239,7 @@ def closeout_document_hard_errors(
                     )
                 )
 
-    if require_visual_dag_inspection:
+    if require_visual_dag_inspection and check_private_review_artifacts:
         semantic_basis = (
             all_selected_semantic_review_sha256
             if final_holistic_required
@@ -256,6 +262,17 @@ def closeout_document_hard_errors(
                     "human-review packet: " + packet_error,
                 )
             )
+
+    if require_visual_dag_inspection and not check_private_review_artifacts:
+        # Ordinary public CI has already authenticated the immutable recorded
+        # graph and current Lean inputs. Private review/cache records are not
+        # exported, but the published human packet must still be available.
+        for suffix in ("tex", "pdf"):
+            packet_path = folder / "docs" / f"{PACKET_NAME}.{suffix}"
+            if not packet_path.is_file() or not packet_path.stat().st_size:
+                errors.append(CloseoutDocumentHardError(
+                    packet_path, "missing or empty published human-review packet artifact",
+                ))
 
     if post_audit.is_file():
         try:

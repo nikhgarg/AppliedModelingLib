@@ -80,14 +80,6 @@ conditional-expectation infrastructure and is outside this paper's proof.
 
 The memo gives the [loss/accuracy correction](docs/SOURCE_CLARIFICATIONS.md#loss-correctness-and-calibration), [component-weight typo and null-cell completion](docs/SOURCE_CLARIFICATIONS.md#mixtures-and-finite-partitions), and [Proposition 9 parameter/denominator fixes](docs/SOURCE_CLARIFICATIONS.md#proposition-9s-two-settings).
 
-<!-- BEGIN GENERATED SETTLED REVIEW CONTEXT -->
-<!-- settled-review-context-sha256: 908c66a18323f2577411dc8eec37a35e314fe673eefa40bc69c61257bd1e7fd9 -->
-<!-- settled-review-context-presentation-sha256: 6d01ddf4fae5fae3315dbd54c89379fc93464fee062afaa9fb810c243f449df4 -->
-### Source readings and additional assumptions
-
-- The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).
-<!-- END GENERATED SETTLED REVIEW CONTEXT -->
-
 ## 11. Paper Issues or Caveats
 
 None beyond the specific qualifications in Section 10.

@@ -103,15 +103,6 @@ separation once their process laws and definedness conditions are supplied.
 
 The [memo](docs/SOURCE_CLARIFICATIONS.md) specifies calendar-time first reports and Equation (3)’s nonnegative-rate endpoint. Section 6 states Proposition 1’s positive-rate scope, and Section 7 links the two likelihood-algebra corrections.
 
-<!-- BEGIN GENERATED SETTLED REVIEW CONTEXT -->
-<!-- settled-review-context-sha256: d1e306b2b8f6bb3d93ebfaf3f886bc4e4b4b7111955cad3935d5102cd37b6066 -->
-<!-- settled-review-context-presentation-sha256: 2b6c571267628ce0df39723bfe0208580453ab292e44fa0a3dd8d0231e8a2257 -->
-### Source readings and additional assumptions
-
-- **Additional assumptions.** The additional conditions have their main discussion in Section 6 and the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).
-- The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).
-<!-- END GENERATED SETTLED REVIEW CONTEXT -->
-
 ## 11. Paper Issues or Caveats
 
 Section 5 records the formalization gap in Lemma 2 and Appendix D.8.2.

@@ -55,14 +55,6 @@ No additional generalization is established here.
 
 Theorem 4's cold-start population mass changes from `1-beta` to `1-2 beta` so the three masses sum to one. Appendix E Lemma 15's center equation includes both mirrored types, giving `lambda=1/(1+L_t)`. See the [population note](docs/SOURCE_CLARIFICATIONS.md#theorem-4-population-masses-and-positive-tolerance-section-5-p-7-appendix-e-p-39) and [center-equation note](docs/APPENDIX_E_LEMMA15_SOURCE_NOTE.md#appendix-e-lemma-15-source-clarification).
 
-<!-- BEGIN GENERATED SETTLED REVIEW CONTEXT -->
-<!-- settled-review-context-sha256: 7ed2f7d51f011de1d6e6651cdaa68aa3c867bc958182e40f5c13bf14a0c1dc0a -->
-<!-- settled-review-context-presentation-sha256: 0685128706672e74e3977463dbd8a0e2b2a1323f04cb2d5c2d4b7cd0997fd00c -->
-### Source readings and additional assumptions
-
-- For Theorem 4, the normalized three-type construction uses masses beta, beta, and 1 - 2 beta; the stated beta range keeps all three masses positive.
-<!-- END GENERATED SETTLED REVIEW CONTEXT -->
-
 ## 11. Paper Issues or Caveats
 
 None.

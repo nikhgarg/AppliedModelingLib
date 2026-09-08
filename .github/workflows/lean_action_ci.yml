@@ -240,6 +240,13 @@ jobs:
         # defaultTargets intentionally excludes some private/new paper targets.
         # Integration must still compile every registered lean_lib.
         run: python3 scripts/paper_target_registration.py build-all
+      - name: Save trusted main project build cache
+        # Persist successful compilation independently of later audit results.
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.change-scope.outputs.mode != 'docs'
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .lake/build
+          key: ${{ runner.os }}-aml-project-v1-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.sha }}
       - name: Test semantic provenance audits
         if: steps.change-scope.outputs.mode == 'integration'
         run: python3 scripts/run_isolated_audit_tests.py
@@ -285,9 +292,3 @@ jobs:
           SOURCE_FLAG=()
           if [[ "$PUBLIC_SOURCE_MODE" == "true" ]]; then SOURCE_FLAG+=(--allow-missing-source-bytes); fi
           python3 scripts/audit_repository.py --include-active --library-premise-audit --info-limit 0 "${SOURCE_FLAG[@]}"
-      - name: Save trusted main project build cache
-        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.change-scope.outputs.mode != 'docs'
-        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
-        with:
-          path: .lake/build
-          key: ${{ runner.os }}-aml-project-v1-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.sha }}

@@ -107,14 +107,6 @@ or optimal assignment totals tie. [Tie rules](docs/SOURCE_CLARIFICATIONS.md#scor
 
 The [appendix corrections](docs/SOURCE_CLARIFICATIONS.md#exact-appendix-corrections) replace the removable-set self-equality, tightly-even parameter, and local set/index expressions. Capacity restrictions are discussed in Section 6.
 
-<!-- BEGIN GENERATED SETTLED REVIEW CONTEXT -->
-<!-- settled-review-context-sha256: 961644235c93d72dbcbdd10a964fb2c2b6b0650d91470bbd0b6bb5d73d5073c6 -->
-<!-- settled-review-context-presentation-sha256: 26b3fa2eafa8d4897ddff237dcc861668656033a6749f28c86b86bec5d9cce22 -->
-### Source readings and additional assumptions
-
-- The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).
-<!-- END GENERATED SETTLED REVIEW CONTEXT -->
-
 ## 11. Paper Issues or Caveats
 
 None.

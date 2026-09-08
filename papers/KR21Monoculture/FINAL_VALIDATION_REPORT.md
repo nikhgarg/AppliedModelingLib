@@ -62,14 +62,6 @@ scope is described in the [source note](docs/SOURCE_CLARIFICATIONS.md#representa
   finite first moments, measurable ranking probabilities, and well-defined
   conditional and payoff expectations. [Details](docs/SOURCE_CLARIFICATIONS.md#representation-boundaries).
 
-<!-- BEGIN GENERATED SETTLED REVIEW CONTEXT -->
-<!-- settled-review-context-sha256: 6ae32f599d7c6805a0db1854e0586e8fa4276d8aeaee501756447b5629a75785 -->
-<!-- settled-review-context-presentation-sha256: 451017f402148b8476e86669a1ba8eb09b323afff4ee29d9b706551faf116e5b -->
-### Source readings and additional assumptions
-
-- **Additional assumptions.** Equation (6)'s total-family regularity inputs are discussed in Section 6; the [memo](docs/SOURCE_CLARIFICATIONS.md#representation-boundaries) distinguishes them from source-model conditions.
-<!-- END GENERATED SETTLED REVIEW CONTEXT -->
-
 ## 7. Proof-Strategy Deviations
 
 Appendix C.1's derivative-to-limit step is replaced by direct strict comparisons

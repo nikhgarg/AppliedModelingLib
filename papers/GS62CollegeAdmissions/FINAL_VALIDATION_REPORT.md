@@ -76,14 +76,6 @@ vacancy blocks and mutual acceptability. Page 10's replacement-pair definition
 remains a separate literal claim. The [memo](docs/SOURCE_CLARIFICATIONS.md#reading-used-for-theorem-2)
 explains the distinction.
 
-<!-- BEGIN GENERATED SETTLED REVIEW CONTEXT -->
-<!-- settled-review-context-sha256: aa8087a4dfdf0d5e9c6df25e751cee64b2500ecc917f94b494bb0bc7faa6c79a -->
-<!-- settled-review-context-presentation-sha256: 1d96adc5888518e89d45d4268b1d84b158cfc02d6a2a0e67980b4d80b6cff309 -->
-### Source readings and additional assumptions
-
-- The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).
-<!-- END GENERATED SETTLED REVIEW CONTEXT -->
-
 ## 11. Paper Issues or Caveats
 
 None within the reviewed named theoretical surface. The distinct scope of the

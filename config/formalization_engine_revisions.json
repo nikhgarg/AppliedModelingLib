@@ -1027,6 +1027,16 @@
       "verification": [
         "94 focused regressions pass; public file, launcher, heading, and diagnostic checks pass; no mathematical Lean changes"
       ]
+    },
+    {
+      "engine_tree_sha256": "93c9256fcee9e597437ed064ec7a555054d579ba7ff4b4315854a0c200e827a9",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Ordinary CI uses canonical accepted-graph validation before legacy consumers; public checks retain report and packet requirements without withheld private inputs",
+      "sequence": 87,
+      "verification": [
+        "234 graph-dispatch, source-route, document, and strict-closeout regressions pass; defaults preserve private source requirements and unfinished-paper checks",
+        "Full isolated regression suite: 4,333 tests across 225 modules, zero failed modules"
+      ]
     }
   ],
   "schema": 2

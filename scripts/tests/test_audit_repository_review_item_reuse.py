@@ -1646,6 +1646,7 @@ class PaperCloseoutRunContextTests(unittest.TestCase):
             "check_library_source_hygiene",
             "check_generic_source_reference_hygiene",
             "check_paper_contract",
+            "check_graph_native_paper_closure",
             "check_final_report_status_alignment",
             "check_final_report_human_facing_front_matter",
             "check_dag_and_validation_report_closeout",

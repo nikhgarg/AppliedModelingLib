@@ -83,6 +83,39 @@ def _projected_corrected_target_map() -> dict[str, object]:
 
 
 class PublicReleaseCandidateGuardTests(unittest.TestCase):
+    def test_paper_target_guard_checks_registered_roots_beyond_default_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir)
+            self.init_repo(repo)
+            (repo / "lakefile.toml").write_text(
+                'name = "Fixture"\ndefaultTargets = []\n'
+                '[[lean_lib]]\nname = "HiddenPaper"\nsrcDir = "papers"\n'
+            )
+            commit = self.commit(repo, "unexported registered paper")
+            self.assertEqual(guard.public_paper_target_issues(repo, commit), [
+                "public paper target HiddenPaper: registered root is not exported: "
+                "papers/HiddenPaper.lean"
+            ])
+            (repo / "papers").mkdir()
+            (repo / "papers/HiddenPaper.lean").write_text("import Lean\n")
+            # A local file must not hide a missing file in the release commit.
+            self.assertTrue(guard.public_paper_target_issues(repo, commit))
+            complete = self.commit(repo, "export the registered root")
+            self.assertEqual(guard.public_paper_target_issues(repo, complete), [])
+
+    def test_paper_target_guard_uses_explicit_roots(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir)
+            self.init_repo(repo)
+            (repo / "lakefile.toml").write_text(
+                'name = "Fixture"\n[[lean_lib]]\nname = "Paper"\n'
+                'srcDir = "papers"\nroots = ["Paper.ProofInterface"]\n'
+            )
+            (repo / "papers/Paper").mkdir(parents=True)
+            (repo / "papers/Paper/ProofInterface.lean").write_text("import Lean\n")
+            complete = self.commit(repo, "export explicit paper root")
+            self.assertEqual(guard.public_paper_target_issues(repo, complete), [])
+
     def test_dependency_closure_resolves_explicit_lake_script_root(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo = Path(temp_dir)
@@ -2351,6 +2384,7 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
             candidate = root / "candidate"
             self.init_repo(private)
             self.init_repo(candidate)
+            (candidate / "lakefile.toml").write_text('name = "Fixture"\n', encoding="utf-8")
 
             (private / "reviewed.txt").write_text("reviewed\n", encoding="utf-8")
             source_commit = self.commit(private, "private source")

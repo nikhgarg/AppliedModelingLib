@@ -224,12 +224,3 @@ srcDir = "papers"
 [[lean_lib]]
 name = "SeshadriUgander2020IIATesting"
 srcDir = "papers"
-
-
-[[lean_lib]]
-name = "AL16SupplyDemandMatching"
-srcDir = "papers"
-
-[[lean_lib]]
-name = "ZhouChenLi2014OptimalPACMultipleArm"
-srcDir = "papers"

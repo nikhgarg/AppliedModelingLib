@@ -12,6 +12,7 @@ from types import SimpleNamespace
 from unittest import mock
 
 from scripts import terminal_lean_semantic_revalidation as terminal
+from scripts.accepted_obligation_graph import AcceptedObligationGraphCredential
 from scripts.lean_review_surface import (
     lean_owned_semantic_review_display_surface_from_inventory,
 )
@@ -68,13 +69,15 @@ class TerminalLeanSemanticRevalidationTests(unittest.TestCase):
             source_quote_sha256="3" * 64, source_component_sha256="4" * 64,
             source_role_contract_sha256="6" * 64,
         )
-        loaded = SimpleNamespace(
+        loaded = AcceptedObligationGraphCredential(
+            accepted_graph=SimpleNamespace(graph_sha256="9" * 64),
             paper_index=SimpleNamespace(
                 route_leaf_sha256s_by_source_item={
                     "claim": {"source_atom": (original.leaf_sha256,)}},
                 prerequisite_leaf_sha256s_by_declaration={}),
-            graph=SimpleNamespace(graph_sha256="9" * 64,
-                                  leaves={original.leaf_sha256: original}))
+            semantic_graph=SimpleNamespace(graph_sha256="8" * 64,
+                                           leaves={original.leaf_sha256: original}),
+            closure_leaf=None)
         for role_field in ("corrected_target", "user_approved_scope_exclusion"):
             source = {"items": {"claim": {role_field: {}}},
                       "publication_corrected_target_projection": {
@@ -95,6 +98,7 @@ class TerminalLeanSemanticRevalidationTests(unittest.TestCase):
                 self.assertEqual(call(), {"claim": "claim"})
                 self.assertEqual(validate.call_args.kwargs["accepted_role_sha256s_by_source_item"],
                                  {"claim": ("5" * 64,)})
+                self.assertEqual(validate.call_args.kwargs["accepted_graph_sha256"], "9" * 64)
                 validate.side_effect = ValueError("retained public role changed")
                 with self.assertRaisesRegex(terminal.TerminalLeanSemanticRevalidationError,
                                             "retained public role changed"):

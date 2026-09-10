@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "paper": "LOS02CombinatorialAuctions",
+  "summaries": {},
+  "omitted_conventions": [
+    "LOS02-CONSISTENT-TIES-01",
+    "LOS02-NONEMPTY-REQUESTS-01"
+  ]
+}

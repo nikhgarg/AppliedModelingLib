@@ -1,0 +1,100 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+
+% Agent visual validation loop:
+% 1. Compile this file to PDF after every substantive DAG edit.
+% 2. Inspect the PDF or a rendered PNG, not just the TeX source.
+% 3. Increase spacing or reroute arrows until no box, legend, note, edge, or label overlaps.
+%
+% Arrow direction rule:
+% Draw edges from prerequisite/source node to dependent/target node.  The
+% `dag_arrow` and `dag_dashed_arrow` styles use an explicit end-arrow (`->`),
+% so the arrowhead should always land on the node that consumes the dependency.
+
+\begin{tikzpicture}[
+  x=1cm,
+  y=1cm,
+  every node/.append style={outer sep=4pt,font=\sffamily\normalsize}
+]
+
+\dagPaperMetadata
+  {How Many Features Can a Language Model Store Under the Linear Representation Hypothesis?}
+  {Garg, Kleinberg, Peng}
+  {arXiv v1}
+  {2026}
+  {}
+
+\dagPaperLegendRightOfMetadata{
+\node[dag_result, dag_template_legend] (legRes) at (0,0) {formalized\\result};
+\node[dag_lemma, dag_template_legend] (legLem) at (4.2,0) {formalized\\lemma};
+\node[dag_model, dag_template_legend] (legDef) at (8.4,0) {formalized\\definition};
+\node[dag_partial, dag_template_legend] (legPartial) at (12.6,0) {partial\\result};
+}
+\daglegend{(legRes)(legLem)(legDef)(legPartial)}{Legend}
+
+\begin{dagPaperBody}
+
+\node[dag_model] (Defs) at (0,0) {
+  \textbf{Source Definitions} \\
+  feature vectors, $k$-sparsity, recovery, feasibility, $d(m,k,\epsilon)$
+};
+
+\node[dag_result] (ClassicalCS) at (8,0) {
+  \textbf{Theorem: compressed sensing} \\
+  finite Rademacher/RIP proof of $O(k\log(m/k))$ basis pursuit
+};
+
+\node[dag_lemma] (Rademacher) at (0,-3.6) {
+  \textbf{Proposition: incoherent matrices} \\
+  finite Rademacher union-bound construction
+};
+
+\node[dag_result] (Upper) at (8,-3.6) {
+  \textbf{Theorem: upper bound} \\
+  source $O_\epsilon(k^2\log m)$ wrapper from finite Rademacher envelope
+};
+
+\node[dag_result] (GeometryOne) at (16,-3.6) {
+  \textbf{Geometry Proposition 1} \\
+  finite construction and $o(1)$ correlation envelopes
+};
+
+\node[dag_partial] (RankTuran) at (0,-7.2) {
+  \textbf{Alon rank theorem} \\
+  cited theorem not natively proved; row normalization and counting proved
+};
+
+\node[dag_partial] (Lower) at (8,-7.2) {
+  \textbf{Theorem: lower bound} \\
+  source-scale lower bound conditional on the cited Alon theorem
+};
+
+\node[dag_result] (GeometryTwo) at (16,-7.2) {
+  \textbf{Geometry Prop. 2} \\
+  proved with documented squared-denominator correction
+};
+
+\node[dag_partial] (Threshold) at (0,-10.8) {
+  \textbf{Theorem: threshold} \\
+  printed $k<\sqrt m$ regime, conditional on the cited Alon theorem
+};
+
+\node[dag_partial] (Activation) at (8,-10.8) {
+  \textbf{Corollary: activation/bias} \\
+  full printed regime via threshold reduction, conditional on cited Alon theorem
+};
+
+\draw[dag_arrow] (Defs.east) -- (ClassicalCS.west);
+\draw[dag_arrow] (Defs.south) -- (Rademacher.north);
+\draw[dag_arrow] (Rademacher.east) -- (Upper.west);
+\draw[dag_arrow] (Upper.east) -- (GeometryOne.west);
+\draw[dag_arrow] (Rademacher.south) -- (RankTuran.north);
+\draw[dag_dashed_arrow] (RankTuran.east) -- (Lower.west);
+\draw[dag_dashed_arrow] (RankTuran.south) -- (Threshold.north);
+\draw[dag_dashed_arrow] (Threshold.east) -- (Activation.west);
+
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

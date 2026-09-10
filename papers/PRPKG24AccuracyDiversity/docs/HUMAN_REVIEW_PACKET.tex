@@ -46,7 +46,7 @@ specifications, and hash-bound raw-source-to-Spec screening records.
 \textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright The ACM Web Conference, 2024, pp. 1318--1329; arXiv:2307.15142v1}\\
 \textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
 \textbf{Rows:} 25\\
-\textbf{Generated:} 2026-09-07\\
+\textbf{Generated:} 2026-09-08\\
 \textbf{Source URL:} \href{https://arxiv.org/pdf/2307.15142}{official source}
 
 
@@ -75,13 +75,13 @@ reviewer-owned review record.
 
 \section*{Contents}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{governing-declaration-section-5ef5ef0364b6939c}{Governing Lean declarations (151; supporting context)}
+\item \hyperlink{governing-declaration-section-5ef5ef0364b6939c}{Governing Lean declarations (154; supporting context)}
 \item \hyperlink{paper-prerequisite-section-5ef5ef0364b6939c}{Paper-specific semantic prerequisites (7; not paper claims)}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{paper-prerequisite-c2104a34d19d06bb}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Allocation\allowbreak{}Sequence.\allowbreak{}Converges\allowbreak{}To\allowbreak{}Profile}
 \item \hyperlink{paper-prerequisite-29fb13a9ce74aef5}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Count\allowbreak{}Allocation.\allowbreak{}representation}
 \item \hyperlink{paper-prerequisite-89d4ec041bc132b6}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Gamma\allowbreak{}Homogeneity\allowbreak{}Profile.\allowbreak{}Exact}
 \item \hyperlink{paper-prerequisite-91ccf3df6a31f41a}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Infinite\allowbreak{}Gamma\allowbreak{}Homogeneity\allowbreak{}Profile.\allowbreak{}Exact}
+\item \hyperlink{paper-prerequisite-f3d17537ee262027}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Recommendation\allowbreak{}Set\allowbreak{}Sequence.\allowbreak{}Is\allowbreak{}Gamma\allowbreak{}Homogeneous}
 \item \hyperlink{paper-prerequisite-62a80495e02812f6}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}definition3\allowbreak{}Iid\allowbreak{}Order\allowbreak{}Statistic\allowbreak{}Mean}
 \item \hyperlink{paper-prerequisite-150779389af71b90}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}gamma\allowbreak{}Likelihood\allowbreak{}Profile}
 \item \hyperlink{paper-prerequisite-bfb02fb80c6bf7e1}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}infinite\allowbreak{}Likelihood\allowbreak{}Profile}
@@ -1308,6 +1308,29 @@ fun {T : ℕ} (G : PRPKG24AccuracyDiversity.GammaHomogeneityProfile T) (t : PRPK
 \item \hyperlink{governing-declaration-8dfc71098bb999c1}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Gamma\allowbreak{}Homogeneity\allowbreak{}Profile.\allowbreak{}normalizer}
 \item \hyperlink{governing-declaration-562ef32e180a12be}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Item\allowbreak{}Type}
 \end{itemize}
+\hypertarget{governing-declaration-c2104a34d19d06bb}{}
+\subsection*{\small\ttfamily\raggedright PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Allocation\allowbreak{}Sequence.\allowbreak{}Converges\allowbreak{}To\allowbreak{}Profile}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{T : ℕ} → PRPKG24AccuracyDiversity.AllocationSequence T → PRPKG24AccuracyDiversity.GammaHomogeneityProfile T → Prop
+
+value:
+fun {T : ℕ} (seq : PRPKG24AccuracyDiversity.AllocationSequence T)
+    (G : PRPKG24AccuracyDiversity.GammaHomogeneityProfile T) =>
+  ∀ (t : PRPKG24AccuracyDiversity.ItemType T),
+    Filter.Tendsto (fun (N : ℕ) => seq.representation N t) Filter.atTop (nhds (G.targetShare t))
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-8eab762ae76d7ab8}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Allocation\allowbreak{}Sequence}
+\item \hyperlink{governing-declaration-bfa925f17fa027d9}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Allocation\allowbreak{}Sequence.\allowbreak{}representation}
+\item \hyperlink{governing-declaration-e9cbaafdc37c50e8}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Gamma\allowbreak{}Homogeneity\allowbreak{}Profile}
+\item \hyperlink{governing-declaration-0d768647f875f8c9}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Gamma\allowbreak{}Homogeneity\allowbreak{}Profile.\allowbreak{}target\allowbreak{}Share}
+\item \hyperlink{governing-declaration-562ef32e180a12be}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Item\allowbreak{}Type}
+\end{itemize}
 \hypertarget{governing-declaration-5fc487eda7159512}{}
 \subsection*{\small\ttfamily\raggedright PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Gamma\allowbreak{}Homogeneity\allowbreak{}Profile.\allowbreak{}Approx}
 \textbf{Declaration location:} paper-local
@@ -1614,6 +1637,39 @@ fun {E : Type u_1} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [MeasurableS
 \begin{itemize}\raggedright
 \item \hyperlink{governing-declaration-2eb72c62aa16afd0}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Proposition4\allowbreak{}Sphere.\allowbreak{}Unit\allowbreak{}Sphere}
 \item \hyperlink{governing-declaration-eaa19779f7cfd160}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Proposition4\allowbreak{}Sphere.\allowbreak{}sphere\allowbreak{}Uniform\allowbreak{}Measure}
+\end{itemize}
+\hypertarget{governing-declaration-971a317750580d7e}{}
+\subsection*{\small\ttfamily\raggedright PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Recommendation\allowbreak{}Set\allowbreak{}Sequence}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+field allocation:
+{T : ℕ} → PRPKG24AccuracyDiversity.RecommendationSetSequence T → ℕ → PRPKG24AccuracyDiversity.CountAllocation T
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-4fbd8fa467bd5d78}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Count\allowbreak{}Allocation}
+\end{itemize}
+\hypertarget{governing-declaration-38b482fdc6810ec4}{}
+\subsection*{\small\ttfamily\raggedright PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Recommendation\allowbreak{}Set\allowbreak{}Sequence.\allowbreak{}representation}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{T : ℕ} → PRPKG24AccuracyDiversity.RecommendationSetSequence T → ℕ → PRPKG24AccuracyDiversity.ItemType T → ℝ
+
+value:
+fun {T : ℕ} (seq : PRPKG24AccuracyDiversity.RecommendationSetSequence T) (N : ℕ)
+    (t : PRPKG24AccuracyDiversity.ItemType T) =>
+  (seq.allocation N).representation t
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-29fb13a9ce74aef5}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Count\allowbreak{}Allocation.\allowbreak{}representation}
+\item \hyperlink{governing-declaration-562ef32e180a12be}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Item\allowbreak{}Type}
+\item \hyperlink{governing-declaration-971a317750580d7e}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Recommendation\allowbreak{}Set\allowbreak{}Sequence}
 \end{itemize}
 \hypertarget{governing-declaration-e662f313179ba80f}{}
 \subsection*{\small\ttfamily\raggedright PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Source\allowbreak{}Preference\allowbreak{}Law}
@@ -2645,13 +2701,17 @@ fun {T : ℕ} (likelihood : PRPKG24AccuracyDiversity.ItemType T → ℝ) (k : �
 \paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
 type:
-{T : ℕ} → (PRPKG24AccuracyDiversity.ItemType T → ℝ) → ℝ → ℕ → PRPKG24AccuracyDiversity.ConsumptionModel T → Prop
+{T : ℕ} →
+  (PRPKG24AccuracyDiversity.ItemType T → ℝ) →
+    ℝ → ℕ → MeasureTheory.Measure ℝ → PRPKG24AccuracyDiversity.ConsumptionModel T → Prop
 
 constructor PRPKG24AccuracyDiversity.Corollary1SourceIidFamily.finiteTwoPointBernoulli:
 ∀ {T : ℕ} {likelihood : PRPKG24AccuracyDiversity.ItemType T → ℝ} {gamma : ℝ} {k : ℕ} (q : ℝ) (hq_pos : 0 < q)
   (hq_lt_one : q < 1),
   gamma = 0 →
     PRPKG24AccuracyDiversity.Corollary1SourceIidFamily likelihood gamma k
+      (MeasureTheory.Measure.map AppliedModelingLib.Probability.binaryRatingScore
+        (AppliedModelingLib.Probability.realBernoulliPMF q (LT.lt.le hq_pos) (LT.lt.le hq_lt_one)).toMeasure)
       (PRPKG24AccuracyDiversity.corollary1FiniteTwoPointBernoulliSourceIidModel likelihood k q (LT.lt.le hq_pos)
         (LT.lt.le hq_lt_one))
 
@@ -2661,32 +2721,39 @@ constructor PRPKG24AccuracyDiversity.Corollary1SourceIidFamily.boundedReflectedP
     0 < k →
       beta / (beta + 1) = gamma →
         PRPKG24AccuracyDiversity.Corollary1SourceIidFamily likelihood gamma k
+          (PRPKG24AccuracyDiversity.boundedReflectedPowerSourceMeasure beta)
           (PRPKG24AccuracyDiversity.boundedReflectedPowerSourceIidOrderStatisticConsumptionModel likelihood k beta)
 
 constructor PRPKG24AccuracyDiversity.Corollary1SourceIidFamily.exponentialOrderStatistic:
-∀ {T : ℕ} {likelihood : PRPKG24AccuracyDiversity.ItemType T → ℝ} {gamma : ℝ} {k : ℕ} (lambda : ℝ),
-  0 < lambda →
-    0 < k →
-      gamma = 1 →
-        PRPKG24AccuracyDiversity.Corollary1SourceIidFamily likelihood gamma k
-          ((PRPKG24AccuracyDiversity.exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel likelihood k)
+∀ {T : ℕ} {likelihood : PRPKG24AccuracyDiversity.ItemType T → ℝ} {gamma : ℝ} {k : ℕ} (lambda : ℝ)
+  (hlambda_pos : 0 < lambda),
+  0 < k →
+    gamma = 1 →
+      PRPKG24AccuracyDiversity.Corollary1SourceIidFamily likelihood gamma k
+        (PRPKG24AccuracyDiversity.exponentialDistributionModel lambda hlambda_pos).measure
+        ((PRPKG24AccuracyDiversity.exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel likelihood k)
 
 constructor PRPKG24AccuracyDiversity.Corollary1SourceIidFamily.paretoOrderStatistic:
 ∀ {T : ℕ} {likelihood : PRPKG24AccuracyDiversity.ItemType T → ℝ} {gamma : ℝ} {k : ℕ} (alpha : ℝ),
   1 < alpha →
     0 < k →
       alpha / (alpha - 1) = gamma →
-        PRPKG24AccuracyDiversity.Corollary1SourceIidFamily likelihood gamma k
+        PRPKG24AccuracyDiversity.Corollary1SourceIidFamily likelihood gamma k (ProbabilityTheory.paretoMeasure 1 alpha)
           (PRPKG24AccuracyDiversity.paretoIidOrderStatisticConsumptionModel likelihood k alpha)
 \end{ReviewVerbatim}
 
 \paragraph{Direct retained dependencies}
 \begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-204558c62e63ea8d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Exponential.\allowbreak{}Model.\allowbreak{}measure}
+\item \hyperlink{governing-declaration-c71eaa38276816e2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}binary\allowbreak{}Rating\allowbreak{}Score}
+\item \hyperlink{governing-declaration-0af9560a94422208}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}real\allowbreak{}Bernoulli\allowbreak{}PMF}
 \item \hyperlink{governing-declaration-ee3d86b30aa41ed7}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Consumption\allowbreak{}Model}
 \item \hyperlink{governing-declaration-562ef32e180a12be}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Item\allowbreak{}Type}
 \item \hyperlink{governing-declaration-588a2f7919921f81}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Top\allowbreak{}K\allowbreak{}Value\allowbreak{}Oracle.\allowbreak{}to\allowbreak{}Consumption\allowbreak{}Model}
 \item \hyperlink{governing-declaration-feab7cfa13bfcde0}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}bounded\allowbreak{}Reflected\allowbreak{}Power\allowbreak{}Source\allowbreak{}Iid\allowbreak{}Order\allowbreak{}Statistic\allowbreak{}Consumption\allowbreak{}Model}
+\item \hyperlink{governing-declaration-bc27f6b70e492863}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}bounded\allowbreak{}Reflected\allowbreak{}Power\allowbreak{}Source\allowbreak{}Measure}
 \item \hyperlink{governing-declaration-1d49eb232cf9f684}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}corollary1\allowbreak{}Finite\allowbreak{}Two\allowbreak{}Point\allowbreak{}Bernoulli\allowbreak{}Source\allowbreak{}Iid\allowbreak{}Model}
+\item \hyperlink{governing-declaration-50b1da7b92c4bb45}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}exponential\allowbreak{}Distribution\allowbreak{}Model}
 \item \hyperlink{governing-declaration-d8497abe2c9d995d}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}exponential\allowbreak{}Top\allowbreak{}K\allowbreak{}Order\allowbreak{}Statistic\allowbreak{}Oracle}
 \item \hyperlink{governing-declaration-9af16f6791d21c9c}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}pareto\allowbreak{}Iid\allowbreak{}Order\allowbreak{}Statistic\allowbreak{}Consumption\allowbreak{}Model}
 \end{itemize}
@@ -2779,92 +2846,6 @@ fun {T : ℕ} (likelihood : PRPKG24AccuracyDiversity.ItemType T → ℝ) (k : �
 \clearpage
 \hypertarget{paper-prerequisite-section-5ef5ef0364b6939c}{}
 \section*{Paper-specific semantic prerequisites}
-\hypertarget{paper-prerequisite-c2104a34d19d06bb}{}
-\subsection*{\small\ttfamily\raggedright PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Allocation\allowbreak{}Sequence.\allowbreak{}Converges\allowbreak{}To\allowbreak{}Profile}
-\noindent\textbf{Paper-local declaration:}\par
-{\footnotesize\ttfamily\raggedright PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Allocation\allowbreak{}Sequence.\allowbreak{}Converges\allowbreak{}To\allowbreak{}Profile\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 301-\allowbreak{}338\par}
-\paragraph{Verbatim paper-source connection}
-\begin{ReviewVerbatim}
-Definition 2 (γ-homogeneity for set sequences). A sequence of sets {Sn }∞
-n=1 is γ-homogeneous if for all
-t ∈ [m],
-pγ
-(6)
-lim rt (Sn ) = Pmt γ .
-n→∞
-i=1 pi
-One perhaps surprising aspect of our results is that γ-homogeneity is sufficient to characterize diversity
-in a large class of settings, as opposed to requiring more complicated functions of proportions pt .
-
-3
-
-Main results
-
-We now state our main results, which consider several settings reflecting different assumptions about the
-(t)
-(t) iid
-conditional item values Xi . In Section 3.1, we assume that Xi ∼ D are drawn from a shared distribution,
-which implies that the recommender has little information about the value of specific items. In Section 3.2,
-(t)
-Xi are Bernoulli random variables with success probabilities differing depending on i and t, meaning that
-the recommender has information about which items are more likely to satisfy a user.
-In each setting, we analyze the diversity of optimal sets Sn,k for when k is fixed (i.e., accounting for
-consumption constraints) and k = n (i.e., not accounting for consumption constraints). We sketch our proof
-strategy in Section 4 and defer full proofs to Appendix D.
-
-3.1
-
-i.i.d. conditional item values
-(t) iid
-
-Consider the setting in which Xi ∼ D, i.e., conditional item values are drawn from a shared distribution.
-This implies that the values of items behave similarly across types and within types, and the platform cannot
-easily distinguish between the items in a type. From the perspective of a hiring platform, there may be many
-candidates with similar backgrounds (e.g., education or work history), none of whom can be distinguished
-from another by the platform. Conditional on a recruiter preferring this background, candidate values can
-be modeled as coming from a shared distribution.
-
-[Next verbatim source excerpt]
-
-Xi as a conditional item value (the value of an item conditional on the user preferring the item’s type).
-Let Sn,k be the set of n items that maximizes the expected total value of the k items with the highest
-realized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit
-the dependency of Sn,k on the other model parameters, as these will be clear from context.)
-\end{ReviewVerbatim}
-
-
-
-\paragraph{Lean-expanded paper semantic target}
-\begin{ReviewVerbatim}
-type:
-{T : ℕ} → PRPKG24AccuracyDiversity.AllocationSequence T → PRPKG24AccuracyDiversity.GammaHomogeneityProfile T → Prop
-
-value:
-fun {T : ℕ} (seq : PRPKG24AccuracyDiversity.AllocationSequence T)
-    (G : PRPKG24AccuracyDiversity.GammaHomogeneityProfile T) =>
-  ∀ (t : PRPKG24AccuracyDiversity.ItemType T),
-    Filter.Tendsto (fun (N : ℕ) => seq.representation N t) Filter.atTop (nhds (G.targetShare t))
-\end{ReviewVerbatim}
-
-\paragraph{Direct retained dependencies}
-\begin{itemize}\raggedright
-\item \hyperlink{governing-declaration-8eab762ae76d7ab8}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Allocation\allowbreak{}Sequence}
-\item \hyperlink{governing-declaration-bfa925f17fa027d9}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Allocation\allowbreak{}Sequence.\allowbreak{}representation}
-\item \hyperlink{governing-declaration-e9cbaafdc37c50e8}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Gamma\allowbreak{}Homogeneity\allowbreak{}Profile}
-\item \hyperlink{governing-declaration-0d768647f875f8c9}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Gamma\allowbreak{}Homogeneity\allowbreak{}Profile.\allowbreak{}target\allowbreak{}Share}
-\item \hyperlink{governing-declaration-562ef32e180a12be}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Item\allowbreak{}Type}
-\end{itemize}
-\paragraph{Recorded source-to-declaration screening}
-\textbf{Verdict:} \texttt{matches}
-\\
-{\raggedright
-\textbf{Reason:} The source's Definition 2 requires every type's representation along the set sequence to converge to its normalized p\_\allowbreak{}t\textasciicircum{}gamma share;\allowbreak{} the expanded target quantifies every Fin T type and applies Tendsto atTop to the allocation share with the profile's normalized target share, so the source case is preserved.\allowbreak{}
-\par}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
 \hypertarget{paper-prerequisite-29fb13a9ce74aef5}{}
 \subsection*{\small\ttfamily\raggedright PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Count\allowbreak{}Allocation.\allowbreak{}representation}
 \noindent\textbf{Paper-local declaration:}\par
@@ -3048,6 +3029,95 @@ fun {T : ℕ} (G : PRPKG24AccuracyDiversity.InfiniteGammaHomogeneityProfile T)
 \\
 {\raggedright
 \textbf{Reason:} The source's gamma=infinity case assigns share one to a highest-\allowbreak{}likelihood type and zero to every other type;\allowbreak{} the expanded profile records a proved maximizer, defines exactly that indicator target share, and Exact requires pointwise equality to it.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-f3d17537ee262027}{}
+\subsection*{\small\ttfamily\raggedright PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Recommendation\allowbreak{}Set\allowbreak{}Sequence.\allowbreak{}Is\allowbreak{}Gamma\allowbreak{}Homogeneous}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Recommendation\allowbreak{}Set\allowbreak{}Sequence.\allowbreak{}Is\allowbreak{}Gamma\allowbreak{}Homogeneous\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 301-\allowbreak{}338\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Definition 2 (γ-homogeneity for set sequences). A sequence of sets {Sn }∞
+n=1 is γ-homogeneous if for all
+t ∈ [m],
+pγ
+(6)
+lim rt (Sn ) = Pmt γ .
+n→∞
+i=1 pi
+One perhaps surprising aspect of our results is that γ-homogeneity is sufficient to characterize diversity
+in a large class of settings, as opposed to requiring more complicated functions of proportions pt .
+
+3
+
+Main results
+
+We now state our main results, which consider several settings reflecting different assumptions about the
+(t)
+(t) iid
+conditional item values Xi . In Section 3.1, we assume that Xi ∼ D are drawn from a shared distribution,
+which implies that the recommender has little information about the value of specific items. In Section 3.2,
+(t)
+Xi are Bernoulli random variables with success probabilities differing depending on i and t, meaning that
+the recommender has information about which items are more likely to satisfy a user.
+In each setting, we analyze the diversity of optimal sets Sn,k for when k is fixed (i.e., accounting for
+consumption constraints) and k = n (i.e., not accounting for consumption constraints). We sketch our proof
+strategy in Section 4 and defer full proofs to Appendix D.
+
+3.1
+
+i.i.d. conditional item values
+(t) iid
+
+Consider the setting in which Xi ∼ D, i.e., conditional item values are drawn from a shared distribution.
+This implies that the values of items behave similarly across types and within types, and the platform cannot
+easily distinguish between the items in a type. From the perspective of a hiring platform, there may be many
+candidates with similar backgrounds (e.g., education or work history), none of whom can be distinguished
+from another by the platform. Conditional on a recruiter preferring this background, candidate values can
+be modeled as coming from a shared distribution.
+
+[Next verbatim source excerpt]
+
+We now formalize our approach to evaluating diversity. For a set S of items, we define
+rt (S) :=
+
+# of items in S of type t
+,
+|S|
+
+(4)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{T : ℕ} → PRPKG24AccuracyDiversity.RecommendationSetSequence T → (PRPKG24AccuracyDiversity.ItemType T → ℝ) → ℝ → Prop
+
+value:
+fun {T : ℕ} (seq : PRPKG24AccuracyDiversity.RecommendationSetSequence T)
+    (likelihood : PRPKG24AccuracyDiversity.ItemType T → ℝ) (gamma : ℝ) =>
+  ∀ (t : PRPKG24AccuracyDiversity.ItemType T),
+    Filter.Tendsto (fun (N : ℕ) => seq.representation N t) Filter.atTop
+      (nhds (likelihood t ^ gamma / ∑ i : PRPKG24AccuracyDiversity.ItemType T, likelihood i ^ gamma))
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-562ef32e180a12be}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Item\allowbreak{}Type}
+\item \hyperlink{governing-declaration-971a317750580d7e}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Recommendation\allowbreak{}Set\allowbreak{}Sequence}
+\item \hyperlink{governing-declaration-38b482fdc6810ec4}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Recommendation\allowbreak{}Set\allowbreak{}Sequence.\allowbreak{}representation}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Compared Definition 2 equation (6), which requires for every t in [m] that r\_\allowbreak{}t(S\_\allowbreak{}n) tends to p\_\allowbreak{}t\textasciicircum{}gamma divided by the sum over i in [m] of p\_\allowbreak{}i\textasciicircum{}gamma, with the expanded target.\allowbreak{} ItemType T is Fin T, representation is the displayed count-\allowbreak{}over-\allowbreak{}total share, and the target universally quantifies each type and states exactly the same atTop limit to likelihood t \textasciicircum{} gamma /\allowbreak{} sum\_\allowbreak{}i likelihood i \textasciicircum{} gamma.\allowbreak{} The source does not impose a cardinality-\allowbreak{}equals-\allowbreak{}index condition, and the displayed sequence carrier likewise leaves its natural-\allowbreak{}number index unrestricted;\allowbreak{} its zero-\allowbreak{}based indexing is immaterial to an atTop limit.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -3500,7 +3570,13 @@ Theorem 1(ii):\allowbreak{} an upper-\allowbreak{}bounded conditional value law 
 \begin{sloppypar}
 All-\allowbreak{}coordinate share limits:\allowbreak{} possibly zero type masses → strictly positive mass for every named type.\allowbreak{}
 \end{sloppypar}
+\paragraph{Formalized review target}
+The archival source above is not asserted equivalent to this formalized target.
+\begin{ReviewVerbatim}
+For a finite nonempty preferred-type PMF whose every type mass is strictly positive, a fixed positive k, and an iid conditional-value probability law D with an a.e. nonnegative density on a bounded interval [L, M], with 0 < M and 0 < M-L, finite mean, and the displayed beta,c>0 bounded-upper-endpoint density tail, there exists a selected fixed-total optimal recommendation sequence whose type shares converge to p_t^(beta/(beta+1)) divided by the sum of those powers.
+\end{ReviewVerbatim}
 
+\textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 351-\allowbreak{}365\par}
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {T : ℕ} [NeZero T] {beta c M L : ℝ} {k : ℕ} (preferenceLaw : PRPKG24AccuracyDiversity.SourcePreferenceLaw T)
@@ -3519,12 +3595,11 @@ All-\allowbreak{}coordinate share limits:\allowbreak{} possibly zero type masses
                         (∀ (t : PRPKG24AccuracyDiversity.ItemType T), 0 < (preferenceLaw t).toReal) →
                           0 < k →
                             0 < M - L →
-                              ∀
-                                (seq :
-                                  PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) =>
-                                    PRPKG24AccuracyDiversity.boundedIidOrderStatisticConsumptionModel
-                                      (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k
-                                      baseMeasure),
+                              ∃ (seq :
+                                PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) =>
+                                  PRPKG24AccuracyDiversity.boundedIidOrderStatisticConsumptionModel
+                                    (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k
+                                    baseMeasure),
                                 (∀ (a : PRPKG24AccuracyDiversity.CountAllocation T),
                                     (PRPKG24AccuracyDiversity.boundedIidOrderStatisticConsumptionModel
                                             (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal)
@@ -3582,21 +3657,22 @@ All-\allowbreak{}coordinate share limits:\allowbreak{} possibly zero type masses
 22. assumption: ∀ (t : PRPKG24AccuracyDiversity.ItemType T), 0 < (preferenceLaw t).toReal
 23. assumption: 0 < k
 24. assumption: 0 < M - L
-25. parameter: PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) =>
-  PRPKG24AccuracyDiversity.boundedIidOrderStatisticConsumptionModel
-    (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k baseMeasure
-26. conclusion: (∀ (a : PRPKG24AccuracyDiversity.CountAllocation T),
-    (PRPKG24AccuracyDiversity.boundedIidOrderStatisticConsumptionModel
-            (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k baseMeasure).objective
-        a =
-      AppliedModelingLib.pmfExp preferenceLaw fun (t : PRPKG24AccuracyDiversity.ItemType T) =>
-        AppliedModelingLib.Probability.expectedSampleTopKSum
-          (PRPKG24AccuracyDiversity.definition3IidSampleMeasure baseMeasure (a.count t)) k) ∧
-  ∀ (t : PRPKG24AccuracyDiversity.ItemType T),
-    Filter.Tendsto (fun (N : ℕ) => (seq.allocation N).representation t) Filter.atTop
-      (nhds
-        ((preferenceLaw t).toReal ^ (beta / (beta + 1)) /
-          ∑ i : PRPKG24AccuracyDiversity.ItemType T, (preferenceLaw i).toReal ^ (beta / (beta + 1))))
+25. conclusion: ∃ (seq :
+  PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) =>
+    PRPKG24AccuracyDiversity.boundedIidOrderStatisticConsumptionModel
+      (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k baseMeasure),
+  (∀ (a : PRPKG24AccuracyDiversity.CountAllocation T),
+      (PRPKG24AccuracyDiversity.boundedIidOrderStatisticConsumptionModel
+              (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k baseMeasure).objective
+          a =
+        AppliedModelingLib.pmfExp preferenceLaw fun (t : PRPKG24AccuracyDiversity.ItemType T) =>
+          AppliedModelingLib.Probability.expectedSampleTopKSum
+            (PRPKG24AccuracyDiversity.definition3IidSampleMeasure baseMeasure (a.count t)) k) ∧
+    ∀ (t : PRPKG24AccuracyDiversity.ItemType T),
+      Filter.Tendsto (fun (N : ℕ) => (seq.allocation N).representation t) Filter.atTop
+        (nhds
+          ((preferenceLaw t).toReal ^ (beta / (beta + 1)) /
+            ∑ i : PRPKG24AccuracyDiversity.ItemType T, (preferenceLaw i).toReal ^ (beta / (beta + 1))))
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -3604,12 +3680,12 @@ PRPKG24AccuracyDiversity.PaperInterface.theorem1_ii_formulaSpec_proof
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{matches}
+\textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Matches:\allowbreak{} Lean gives the source bounded-\allowbreak{}PDF endpoint, fixed positive k, two-\allowbreak{}stage iid expectation bridge, and normalized p\textasciicircum{}(beta/\allowbreak{}(beta+1)) shares under its visible positive-\allowbreak{}support convention.\allowbreak{}
+\textbf{Reason:} The selected source span gives the bounded upper-\allowbreak{}endpoint pdf tail with beta,c > 0 and beta/\allowbreak{}(beta+1)-\allowbreak{}homogeneity, while its displayed surrounding theorem/\allowbreak{}model text fixes common iid conditional values and the top-\allowbreak{}k finite objective.\allowbreak{} The approval record explicitly binds the restricted positive-\allowbreak{}support, positive-\allowbreak{}k, selected-\allowbreak{}optimizer, nonnegative bounded-\allowbreak{}value target.\allowbreak{} The expanded target includes a probability density measure, finite mean, a.\allowbreak{}e.\allowbreak{} support in [L,M], a.\allowbreak{}e.\allowbreak{} nonnegative values, M > 0 and M-\allowbreak{}L > 0, the displayed left-\allowbreak{}limit density ratio, beta,c > 0, and strictly positive PMF masses;\allowbreak{} it concludes a selected fixed-\allowbreak{}total optimum sequence, its exact PMF-\allowbreak{}weighted iid expected-\allowbreak{}top-\allowbreak{}k objective, and the beta/\allowbreak{}(beta+1) share limit.\allowbreak{} Thus its quantified domain and conclusion are the complete approved corrected target.\allowbreak{}
 \par}
-\reviewmatch{Matches source input}
+\reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
@@ -3667,18 +3743,23 @@ Theorem 1. Suppose Xi
 \begin{sloppypar}
 All-\allowbreak{}coordinate share limits:\allowbreak{} possibly zero type masses → strictly positive mass for every named type.\allowbreak{}
 \end{sloppypar}
+\paragraph{Formalized review target}
+The archival source above is not asserted equivalent to this formalized target.
+\begin{ReviewVerbatim}
+For a finite nonempty preferred-type PMF whose every type mass is strictly positive, a fixed positive k, and iid conditional values with an exponential probability law of positive rate lambda, there exists a selected fixed-total optimal recommendation sequence whose type shares converge to p_t divided by the sum of all type masses.
+\end{ReviewVerbatim}
 
+\textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 431-\allowbreak{}433\par}
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {T : ℕ} [NeZero T] (preferenceLaw : PRPKG24AccuracyDiversity.SourcePreferenceLaw T) (lambda : ℝ) (k : ℕ)
   (hlambda_pos : 0 < lambda),
   0 < k →
     (∀ (t : PRPKG24AccuracyDiversity.ItemType T), 0 < (preferenceLaw t).toReal) →
-      ∀
-        (seq :
-          PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) =>
-            (PRPKG24AccuracyDiversity.exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
-              (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k),
+      ∃ (seq :
+        PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) =>
+          (PRPKG24AccuracyDiversity.exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
+            (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k),
         (∀ (a : PRPKG24AccuracyDiversity.CountAllocation T),
             ((PRPKG24AccuracyDiversity.exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
                     (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k).objective
@@ -3720,20 +3801,21 @@ All-\allowbreak{}coordinate share limits:\allowbreak{} possibly zero type masses
 6. assumption: 0 < lambda
 7. assumption: 0 < k
 8. assumption: ∀ (t : PRPKG24AccuracyDiversity.ItemType T), 0 < (preferenceLaw t).toReal
-9. parameter: PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) =>
-  (PRPKG24AccuracyDiversity.exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
-    (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k
-10. conclusion: (∀ (a : PRPKG24AccuracyDiversity.CountAllocation T),
-    ((PRPKG24AccuracyDiversity.exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
-            (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k).objective
-        a =
-      AppliedModelingLib.pmfExp preferenceLaw fun (t : PRPKG24AccuracyDiversity.ItemType T) =>
-        AppliedModelingLib.Probability.expectedSampleTopKSum
-          ((PRPKG24AccuracyDiversity.exponentialDistributionModel lambda hlambda_pos).iidProductMeasure (a.count t))
-          k) ∧
-  ∀ (t : PRPKG24AccuracyDiversity.ItemType T),
-    Filter.Tendsto (fun (N : ℕ) => (seq.allocation N).representation t) Filter.atTop
-      (nhds ((preferenceLaw t).toReal ^ 1 / ∑ i : PRPKG24AccuracyDiversity.ItemType T, (preferenceLaw i).toReal ^ 1))
+9. conclusion: ∃ (seq :
+  PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) =>
+    (PRPKG24AccuracyDiversity.exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
+      (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k),
+  (∀ (a : PRPKG24AccuracyDiversity.CountAllocation T),
+      ((PRPKG24AccuracyDiversity.exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
+              (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k).objective
+          a =
+        AppliedModelingLib.pmfExp preferenceLaw fun (t : PRPKG24AccuracyDiversity.ItemType T) =>
+          AppliedModelingLib.Probability.expectedSampleTopKSum
+            ((PRPKG24AccuracyDiversity.exponentialDistributionModel lambda hlambda_pos).iidProductMeasure (a.count t))
+            k) ∧
+    ∀ (t : PRPKG24AccuracyDiversity.ItemType T),
+      Filter.Tendsto (fun (N : ℕ) => (seq.allocation N).representation t) Filter.atTop
+        (nhds ((preferenceLaw t).toReal ^ 1 / ∑ i : PRPKG24AccuracyDiversity.ItemType T, (preferenceLaw i).toReal ^ 1))
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -3741,12 +3823,12 @@ PRPKG24AccuracyDiversity.PaperInterface.theorem1_iii_formulaSpec_proof
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{matches}
+\textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Matches:\allowbreak{} the exponential lambda>0, fixed-\allowbreak{}positive-\allowbreak{}k source model and its exact selected-\allowbreak{}type iid expectation bridge yield the stated proportional limiting shares.\allowbreak{}
+\textbf{Reason:} The selected source span states the positive-\allowbreak{}rate exponential case and 1-\allowbreak{}homogeneity, with the displayed surrounding source context supplying common iid conditional values, fixed k, and selected finite top-\allowbreak{}k optima.\allowbreak{} The approved corrected target narrows this route to a nonempty finite PMF with every mass positive and positive k.\allowbreak{} The expanded target has precisely lambda > 0, 0 < k, and that all-\allowbreak{}coordinate PMF domain;\allowbreak{} it selects an optimum at every total for the concrete exponential iid top-\allowbreak{}k model, equates every finite allocation objective with the PMF-\allowbreak{}weighted expected top-\allowbreak{}k sum under the exponential product law, and makes every type share tend to p\_\allowbreak{}t\textasciicircum{}1 /\allowbreak{} sum\_\allowbreak{}i p\_\allowbreak{}i\textasciicircum{}1.\allowbreak{} This exactly implements the stated approved corrected target rather than asserting archival equivalence on zero-\allowbreak{}mass cases.\allowbreak{}
 \par}
-\reviewmatch{Matches source input}
+\reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
@@ -3805,18 +3887,23 @@ Theorem 1. Suppose Xi
 \begin{sloppypar}
 All-\allowbreak{}coordinate share limits:\allowbreak{} possibly zero type masses → strictly positive mass for every named type.\allowbreak{}
 \end{sloppypar}
+\paragraph{Formalized review target}
+The archival source above is not asserted equivalent to this formalized target.
+\begin{ReviewVerbatim}
+For a finite nonempty preferred-type PMF whose every type mass is strictly positive, a fixed positive k, and iid conditional values with a Pareto probability law of parameter alpha>1, there exists a selected fixed-total optimal recommendation sequence whose type shares converge to p_t^(alpha/(alpha-1)) divided by the sum of those powers.
+\end{ReviewVerbatim}
 
+\textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 434-\allowbreak{}437\par}
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {T : ℕ} [NeZero T] (preferenceLaw : PRPKG24AccuracyDiversity.SourcePreferenceLaw T) {k : ℕ} {alpha : ℝ},
   1 < alpha →
     0 < k →
       (∀ (t : PRPKG24AccuracyDiversity.ItemType T), 0 < (preferenceLaw t).toReal) →
-        ∀
-          (seq :
-            PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) =>
-              PRPKG24AccuracyDiversity.paretoIidOrderStatisticConsumptionModel
-                (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k alpha),
+        ∃ (seq :
+          PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) =>
+            PRPKG24AccuracyDiversity.paretoIidOrderStatisticConsumptionModel
+              (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k alpha),
           (∀ (a : PRPKG24AccuracyDiversity.CountAllocation T),
               (PRPKG24AccuracyDiversity.paretoIidOrderStatisticConsumptionModel
                       (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k alpha).objective
@@ -3854,21 +3941,22 @@ All-\allowbreak{}coordinate share limits:\allowbreak{} possibly zero type masses
 6. assumption: 1 < alpha
 7. assumption: 0 < k
 8. assumption: ∀ (t : PRPKG24AccuracyDiversity.ItemType T), 0 < (preferenceLaw t).toReal
-9. parameter: PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) =>
-  PRPKG24AccuracyDiversity.paretoIidOrderStatisticConsumptionModel
-    (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k alpha
-10. conclusion: (∀ (a : PRPKG24AccuracyDiversity.CountAllocation T),
-    (PRPKG24AccuracyDiversity.paretoIidOrderStatisticConsumptionModel
-            (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k alpha).objective
-        a =
-      AppliedModelingLib.pmfExp preferenceLaw fun (t : PRPKG24AccuracyDiversity.ItemType T) =>
-        AppliedModelingLib.Probability.expectedSampleTopKSum
-          (PRPKG24AccuracyDiversity.paretoIidSampleMeasure alpha (a.count t)) k) ∧
-  ∀ (t : PRPKG24AccuracyDiversity.ItemType T),
-    Filter.Tendsto (fun (N : ℕ) => (seq.allocation N).representation t) Filter.atTop
-      (nhds
-        ((preferenceLaw t).toReal ^ (alpha / (alpha - 1)) /
-          ∑ i : PRPKG24AccuracyDiversity.ItemType T, (preferenceLaw i).toReal ^ (alpha / (alpha - 1))))
+9. conclusion: ∃ (seq :
+  PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) =>
+    PRPKG24AccuracyDiversity.paretoIidOrderStatisticConsumptionModel
+      (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k alpha),
+  (∀ (a : PRPKG24AccuracyDiversity.CountAllocation T),
+      (PRPKG24AccuracyDiversity.paretoIidOrderStatisticConsumptionModel
+              (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) k alpha).objective
+          a =
+        AppliedModelingLib.pmfExp preferenceLaw fun (t : PRPKG24AccuracyDiversity.ItemType T) =>
+          AppliedModelingLib.Probability.expectedSampleTopKSum
+            (PRPKG24AccuracyDiversity.paretoIidSampleMeasure alpha (a.count t)) k) ∧
+    ∀ (t : PRPKG24AccuracyDiversity.ItemType T),
+      Filter.Tendsto (fun (N : ℕ) => (seq.allocation N).representation t) Filter.atTop
+        (nhds
+          ((preferenceLaw t).toReal ^ (alpha / (alpha - 1)) /
+            ∑ i : PRPKG24AccuracyDiversity.ItemType T, (preferenceLaw i).toReal ^ (alpha / (alpha - 1))))
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -3876,12 +3964,12 @@ PRPKG24AccuracyDiversity.PaperInterface.theorem1_iv_formulaSpec_proof
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{matches}
+\textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Matches:\allowbreak{} the target retains the Pareto alpha>1 fixed-\allowbreak{}positive-\allowbreak{}k iid model, makes its expectation bridge explicit, and has the source exponent alpha/\allowbreak{}(alpha-\allowbreak{}1) in the normalized share profile.\allowbreak{}
+\textbf{Reason:} The selected source span gives the Pareto(alpha), alpha > 1 heavy-\allowbreak{}tail case and its alpha/\allowbreak{}(alpha-\allowbreak{}1)-\allowbreak{}homogeneity conclusion, in the displayed common-\allowbreak{}iid, selected-\allowbreak{}top-\allowbreak{}k model context.\allowbreak{} The approval record binds the regular all-\allowbreak{}coordinate route with positive k and strictly positive preferred-\allowbreak{}type masses.\allowbreak{} The expanded target imposes exactly alpha > 1, 0 < k, and the all-\allowbreak{}coordinate PMF condition;\allowbreak{} it selects fixed-\allowbreak{}total optima for the concrete scale-\allowbreak{}one Pareto iid model, identifies each finite objective with the PMF-\allowbreak{}weighted expected top-\allowbreak{}k sum under its iid product measure, and gives the p\_\allowbreak{}t\textasciicircum{}(alpha/\allowbreak{}(alpha-\allowbreak{}1)) normalized share limit for every type.\allowbreak{} It therefore matches the full approved corrected target.\allowbreak{}
 \par}
-\reviewmatch{Matches source input}
+\reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
@@ -4025,19 +4113,29 @@ Sn,n contains the n items with the highest individual expected values.
 \begin{sloppypar}
 All-\allowbreak{}coordinate share limits:\allowbreak{} possibly zero type masses → strictly positive mass for every named type.\allowbreak{}
 \end{sloppypar}
+\paragraph{Formalized review target}
+The archival source above is not asserted equivalent to this formalized target.
+\begin{ReviewVerbatim}
+For every gamma>=0, every fixed positive k, and every finite nonempty preferred-type PMF whose every type mass is strictly positive, there is a concrete probability law D and constructed iid top-k consumption model with a selected fixed-total optimal recommendation sequence whose type shares converge to p_t^gamma divided by the sum of those powers.
+\end{ReviewVerbatim}
 
+\textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 443-\allowbreak{}457\par}
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ {T : ℕ} [NeZero T] {k : ℕ} (likelihood : PRPKG24AccuracyDiversity.ItemType T → ℝ) (gamma : ℝ),
+∀ {T : ℕ} [NeZero T] {k : ℕ} (preferenceLaw : PRPKG24AccuracyDiversity.SourcePreferenceLaw T) (gamma : ℝ),
   0 < k →
     0 ≤ gamma →
-      (∀ (t : PRPKG24AccuracyDiversity.ItemType T), 0 < likelihood t) →
-        ∃ (M : PRPKG24AccuracyDiversity.ConsumptionModel T),
-          PRPKG24AccuracyDiversity.Corollary1SourceIidFamily likelihood gamma k M ∧
-            ∀ (seq : PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) => M)
-              (t : PRPKG24AccuracyDiversity.ItemType T),
-              Filter.Tendsto (fun (N : ℕ) => (seq.allocation N).representation t) Filter.atTop
-                (nhds (likelihood t ^ gamma / ∑ i : PRPKG24AccuracyDiversity.ItemType T, likelihood i ^ gamma))
+      (∀ (t : PRPKG24AccuracyDiversity.ItemType T), 0 < (preferenceLaw t).toReal) →
+        ∃ (D : MeasureTheory.Measure ℝ) (M : PRPKG24AccuracyDiversity.ConsumptionModel T),
+          MeasureTheory.IsProbabilityMeasure D ∧
+            PRPKG24AccuracyDiversity.Corollary1SourceIidFamily
+                (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) gamma k D M ∧
+              ∃ (seq : PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) => M),
+                ∀ (t : PRPKG24AccuracyDiversity.ItemType T),
+                  Filter.Tendsto (fun (N : ℕ) => (seq.allocation N).representation t) Filter.atTop
+                    (nhds
+                      ((preferenceLaw t).toReal ^ gamma /
+                        ∑ i : PRPKG24AccuracyDiversity.ItemType T, (preferenceLaw i).toReal ^ gamma))
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
@@ -4047,22 +4145,27 @@ All-\allowbreak{}coordinate share limits:\allowbreak{} possibly zero type masses
 \item \hyperlink{paper-prerequisite-29fb13a9ce74aef5}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Count\allowbreak{}Allocation.\allowbreak{}representation}
 \item \hyperlink{governing-declaration-562ef32e180a12be}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Item\allowbreak{}Type}
 \item \hyperlink{governing-declaration-98821e74d0c4230b}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Optimal\allowbreak{}Allocation\allowbreak{}Sequence}
+\item \hyperlink{governing-declaration-e662f313179ba80f}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Source\allowbreak{}Preference\allowbreak{}Law}
 \end{itemize}
 \paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
 1. parameter: ℕ
 2. assumption: NeZero T
 3. parameter: ℕ
-4. parameter: PRPKG24AccuracyDiversity.ItemType T → ℝ
+4. parameter: PRPKG24AccuracyDiversity.SourcePreferenceLaw T
 5. parameter: ℝ
 6. assumption: 0 < k
 7. assumption: 0 ≤ gamma
-8. assumption: ∀ (t : PRPKG24AccuracyDiversity.ItemType T), 0 < likelihood t
-9. conclusion: ∃ (M : PRPKG24AccuracyDiversity.ConsumptionModel T),
-  PRPKG24AccuracyDiversity.Corollary1SourceIidFamily likelihood gamma k M ∧
-    ∀ (seq : PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) => M)
-      (t : PRPKG24AccuracyDiversity.ItemType T),
-      Filter.Tendsto (fun (N : ℕ) => (seq.allocation N).representation t) Filter.atTop
-        (nhds (likelihood t ^ gamma / ∑ i : PRPKG24AccuracyDiversity.ItemType T, likelihood i ^ gamma))
+8. assumption: ∀ (t : PRPKG24AccuracyDiversity.ItemType T), 0 < (preferenceLaw t).toReal
+9. conclusion: ∃ (D : MeasureTheory.Measure ℝ) (M : PRPKG24AccuracyDiversity.ConsumptionModel T),
+  MeasureTheory.IsProbabilityMeasure D ∧
+    PRPKG24AccuracyDiversity.Corollary1SourceIidFamily
+        (fun (t : PRPKG24AccuracyDiversity.ItemType T) => (preferenceLaw t).toReal) gamma k D M ∧
+      ∃ (seq : PRPKG24AccuracyDiversity.OptimalAllocationSequence fun (x : ℕ) => M),
+        ∀ (t : PRPKG24AccuracyDiversity.ItemType T),
+          Filter.Tendsto (fun (N : ℕ) => (seq.allocation N).representation t) Filter.atTop
+            (nhds
+              ((preferenceLaw t).toReal ^ gamma /
+                ∑ i : PRPKG24AccuracyDiversity.ItemType T, (preferenceLaw i).toReal ^ gamma))
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -4070,12 +4173,12 @@ PRPKG24AccuracyDiversity.PaperInterface.corollary1Spec_proof
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{matches}
+\textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Matches:\allowbreak{} the source's existence claim for every nonnegative gamma and fixed k is realized by a common-\allowbreak{}iid Corollary1SourceIidFamily witness and its gamma-\allowbreak{}power limiting shares;\allowbreak{} positive likelihood is the visible all-\allowbreak{}coordinate convention.\allowbreak{}
+\textbf{Reason:} The selected source bundle states the any-\allowbreak{}gamma, fixed-\allowbreak{}k homogeneous corollary and its model context defines a finite preferred-\allowbreak{}type PMF and selected finite optimum.\allowbreak{} The displayed approved corrected target expressly narrows that archival statement to positive k and strictly positive type masses, and requires a concrete iid law/\allowbreak{}model and selected fixed-\allowbreak{}total optima.\allowbreak{} The expanded target has exactly gamma >= 0, 0 < k, a nonempty finite PMF with every mass positive, an existential probability law and model linked by the displayed concrete-\allowbreak{}family predicate, and one optimum at every total whose each share tends to p\_\allowbreak{}t\textasciicircum{}gamma /\allowbreak{} sum\_\allowbreak{}i p\_\allowbreak{}i\textasciicircum{}gamma.\allowbreak{} The displayed family constructors tie each permitted gamma regime to an actual iid conditional-\allowbreak{}value law and generated top-\allowbreak{}k objective, so this is a match to the approved corrected target rather than archival equivalence.\allowbreak{}
 \par}
-\reviewmatch{Matches source input}
+\reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
@@ -4196,7 +4299,7 @@ For the iid Uniform([0,1]) source model with positive type likelihoods and every
 
 \paragraph{Retained governing declarations}
 \begin{itemize}\raggedright
-\item \hyperlink{paper-prerequisite-c2104a34d19d06bb}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Allocation\allowbreak{}Sequence.\allowbreak{}Converges\allowbreak{}To\allowbreak{}Profile}
+\item \hyperlink{governing-declaration-c2104a34d19d06bb}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Allocation\allowbreak{}Sequence.\allowbreak{}Converges\allowbreak{}To\allowbreak{}Profile}
 \item \hyperlink{governing-declaration-dce768684c24aad2}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Consumption\allowbreak{}Model.\allowbreak{}Is\allowbreak{}Optimal\allowbreak{}At\allowbreak{}Total}
 \item \hyperlink{governing-declaration-4fbd8fa467bd5d78}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Count\allowbreak{}Allocation}
 \item \hyperlink{governing-declaration-5fc487eda7159512}{PRPKG24\allowbreak{}Accuracy\allowbreak{}Diversity.\allowbreak{}Gamma\allowbreak{}Homogeneity\allowbreak{}Profile.\allowbreak{}Approx}

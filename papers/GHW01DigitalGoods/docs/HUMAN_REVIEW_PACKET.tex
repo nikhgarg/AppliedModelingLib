@@ -46,7 +46,7 @@ specifications, and hash-bound raw-source-to-Spec screening records.
 \textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright GHW01 byte-pinned source inventory}\\
 \textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
 \textbf{Rows:} 12\\
-\textbf{Generated:} 2026-09-06\\
+\textbf{Generated:} 2026-09-08\\
 \textbf{Source URL:} \href{http://www.eecs.northwestern.edu/~hartline/papers/auctions-SODA-01.pdf}{official source}
 
 
@@ -695,26 +695,6 @@ fun {α : Type u_1} [Fintype α] (μ : PMF α) (f : α → ℝ) => ∑ a : α, (
 \end{ReviewVerbatim}
 
 
-\hypertarget{governing-declaration-16c75aadb4994356}{}
-\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Auction.\allowbreak{}paper\_\allowbreak{}theorem8\_\allowbreak{}2\_\allowbreak{}raw\_\allowbreak{}cdf\_\allowbreak{}expected\_\allowbreak{}revenue}
-\textbf{Declaration location:} paper-local
-\paragraph{Lean declaration body}
-\begin{ReviewVerbatim}
-type:
-{Agent : Type u_1} →
-  {Price : Type u_2} →
-    [Fintype Agent] → [Fintype Price] → [DecidableEq Price] → (Agent → ℝ) → (Price → ℝ) → (Agent → PMF Price) → ℝ
-
-value:
-fun {Agent : Type u_1} {Price : Type u_2} [Fintype Agent] [Fintype Price] [DecidableEq Price] (values : Agent → ℝ)
-    (price : Price → ℝ) (offerLaw : Agent → PMF Price) =>
-  ∑ i : Agent, AppliedModelingLib.pmfExp (offerLaw i) fun (p : Price) => if price p ≤ values i then price p else 0
-\end{ReviewVerbatim}
-
-\paragraph{Direct retained dependencies}
-\begin{itemize}\raggedright
-\item \hyperlink{governing-declaration-8e4b4389a4f6454b}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}pmf\allowbreak{}Exp}
-\end{itemize}
 \hypertarget{governing-declaration-360203898ba7822a}{}
 \subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}pmf\allowbreak{}Pi}
 \textbf{Declaration location:} reusable library
@@ -1723,6 +1703,20 @@ fun (rule : GHW01DigitalGoods.PaperBidIndependentBoundaryRule) (others : Multise
 \begin{itemize}\raggedright
 \item \hyperlink{governing-declaration-02f98bee2ca3e61e}{GHW01\allowbreak{}Digital\allowbreak{}Goods.\allowbreak{}Paper\allowbreak{}Bid\allowbreak{}Independent\allowbreak{}Boundary\allowbreak{}Rule}
 \end{itemize}
+\hypertarget{governing-declaration-c4eaca5dfe00366c}{}
+\subsection*{\small\ttfamily\raggedright GHW01\allowbreak{}Digital\allowbreak{}Goods.\allowbreak{}paper\_\allowbreak{}theorem8\_\allowbreak{}2\_\allowbreak{}continuous\_\allowbreak{}marginal\_\allowbreak{}expected\_\allowbreak{}revenue}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Agent : Type u_1} → [Fintype Agent] → (Agent → ℝ) → (Agent → MeasureTheory.Measure ℝ) → ℝ
+
+value:
+fun {Agent : Type u_1} [Fintype Agent] (values : Agent → ℝ) (offerLaw : Agent → MeasureTheory.Measure ℝ) =>
+  ∑ i : Agent, ∫ (p : ℝ), if p ≤ values i then p else 0 ∂offerLaw i
+\end{ReviewVerbatim}
+
+
 \hypertarget{governing-declaration-f58112aa068aee00}{}
 \subsection*{\small\ttfamily\raggedright GHW01\allowbreak{}Digital\allowbreak{}Goods.\allowbreak{}pmf\allowbreak{}Event\allowbreak{}Probability}
 \textbf{Declaration location:} paper-local
@@ -2284,7 +2278,9 @@ R is a random variable.
 
 % report-context-presentation-sha256: 9e13a43933e4ab90cb961fb44761b47ed3ac1ace0022316f0dbbcd366efba8c0
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -2680,7 +2676,9 @@ study randomized auctions that use randomization to
 
 % report-context-presentation-sha256: 9e13a43933e4ab90cb961fb44761b47ed3ac1ace0022316f0dbbcd366efba8c0
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -2846,7 +2844,9 @@ sets of bids to probability distributions on auction
 
 % report-context-presentation-sha256: 9e13a43933e4ab90cb961fb44761b47ed3ac1ace0022316f0dbbcd366efba8c0
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -2892,7 +2892,9 @@ any fixed values of the other bidders’ bids. Truthful
 
 % report-context-presentation-sha256: d754dfda6ae58ab20e5c395b7d1d2a0f5dcf5152ba98e1fa0dd7000653c86a8b
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -2937,7 +2939,9 @@ and fills each winning bid at or below the bid value.
 
 % report-context-presentation-sha256: d754dfda6ae58ab20e5c395b7d1d2a0f5dcf5152ba98e1fa0dd7000653c86a8b
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -2982,7 +2986,9 @@ study randomized auctions that use randomization to
 
 % report-context-presentation-sha256: 9e13a43933e4ab90cb961fb44761b47ed3ac1ace0022316f0dbbcd366efba8c0
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -3721,7 +3727,9 @@ sets of bids to probability distributions on auction
 
 % report-context-presentation-sha256: 9e13a43933e4ab90cb961fb44761b47ed3ac1ace0022316f0dbbcd366efba8c0
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -3767,7 +3775,9 @@ any fixed values of the other bidders’ bids. Truthful
 
 % report-context-presentation-sha256: d754dfda6ae58ab20e5c395b7d1d2a0f5dcf5152ba98e1fa0dd7000653c86a8b
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -3815,7 +3825,9 @@ and fills each winning bid at or below the bid value.
 
 % report-context-presentation-sha256: d754dfda6ae58ab20e5c395b7d1d2a0f5dcf5152ba98e1fa0dd7000653c86a8b
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -3863,7 +3875,9 @@ study randomized auctions that use randomization to
 
 % report-context-presentation-sha256: 9e13a43933e4ab90cb961fb44761b47ed3ac1ace0022316f0dbbcd366efba8c0
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -4115,7 +4129,9 @@ their total revenue.
 
 % report-context-presentation-sha256: 9e13a43933e4ab90cb961fb44761b47ed3ac1ace0022316f0dbbcd366efba8c0
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -4159,7 +4175,9 @@ their total revenue.
 
 % report-context-presentation-sha256: 9e13a43933e4ab90cb961fb44761b47ed3ac1ace0022316f0dbbcd366efba8c0
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -4384,9 +4402,13 @@ truthful and competitive.
 
 % report-context-presentation-sha256: 88d412c23d0fb4221ce56a547dd63732df5ac401daef3ba5b22ede8fd079d234
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -4446,9 +4468,13 @@ truthful and competitive.
 
 % report-context-presentation-sha256: 88d412c23d0fb4221ce56a547dd63732df5ac401daef3ba5b22ede8fd079d234
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -4517,7 +4543,9 @@ and that this auction is competitive.
 
 % report-context-presentation-sha256: f145e05bbd028dad8211e9c6bebdf5f77f1623856c4e5aad9736bf995d9dc703
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -4586,7 +4614,9 @@ and that this auction is competitive.
 
 % report-context-presentation-sha256: f145e05bbd028dad8211e9c6bebdf5f77f1623856c4e5aad9736bf995d9dc703
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -4798,7 +4828,9 @@ R is a random variable.
 
 % report-context-presentation-sha256: 9e13a43933e4ab90cb961fb44761b47ed3ac1ace0022316f0dbbcd366efba8c0
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -5333,7 +5365,9 @@ R is a random variable.
 
 % report-context-presentation-sha256: 9e13a43933e4ab90cb961fb44761b47ed3ac1ace0022316f0dbbcd366efba8c0
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -5865,7 +5899,9 @@ bid to the lowest bid.
 
 % report-context-presentation-sha256: 8b81843442881d3a5ff7ff2a28a157cf858380ebf834f471b720764aabf0e3d1
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
@@ -6585,48 +6621,42 @@ we study deterministic auctions.
 \paragraph{Formalized review target}
 The archival source above is not asserted equivalent to this formalized target.
 \begin{ReviewVerbatim}
-For a finite randomized offer auction with nonnegative bid values and nonnegative prices, suppose that whenever b_i <= b_j and x <= b_i, the probability that bidder i wins at a price at most x is at most the corresponding probability for bidder j. Then its expected revenue on every bid vector is at most the optimal fixed-price revenue F of that vector.
+For a randomized offer auction on a finite bidder set with nonnegative bid values and nonnegative real offer prices, with arbitrary bidderwise probability laws, suppose that whenever b_i <= b_j and x <= b_i, the probability that bidder i wins at a price at most x is at most the corresponding probability for bidder j. Then its expected revenue on every bid vector is at most the optimal fixed-price revenue F of that vector.
 \end{ReviewVerbatim}
 
 \textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 833-\allowbreak{}833\par}
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ {Agent : Type u_1} {Price : Type u_2} [inst : Fintype Agent] [inst_1 : Nonempty Agent] [inst_2 : Fintype Price]
-  (values : Agent → ℝ) (price : Price → ℝ) (offerLaw : Agent → PMF Price),
-  (∀ (i : Agent), 0 ≤ values i) →
-    (∀ (p : Price), 0 ≤ price p) →
-      (∀ (i j : Agent),
-          values i ≤ values j →
-            ∀ t ≤ values i,
-              (AppliedModelingLib.pmfProb (offerLaw i) fun (p : Price) => price p ≤ t) ≤
-                AppliedModelingLib.pmfProb (offerLaw j) fun (p : Price) => price p ≤ t) →
-        AppliedModelingLib.Auction.paper_theorem8_2_raw_cdf_expected_revenue values price offerLaw ≤
-          GHW01DigitalGoods.ProofBridge.fixedPriceBenchmark values
+∀ {Agent : Type u_1} [inst : Fintype Agent] [inst_1 : Nonempty Agent] (values : Agent → ℝ)
+  (offerLaw : Agent → MeasureTheory.Measure ℝ),
+  (∀ (i : Agent), MeasureTheory.IsProbabilityMeasure (offerLaw i)) →
+    (∀ (i : Agent), 0 ≤ values i) →
+      (∀ (i : Agent), (offerLaw i) (Set.Iio 0) = 0) →
+        (∀ (i j : Agent),
+            values i ≤ values j →
+              ∀ t ≤ values i, ↑(ProbabilityTheory.cdf (offerLaw i)) t ≤ ↑(ProbabilityTheory.cdf (offerLaw j)) t) →
+          GHW01DigitalGoods.paper_theorem8_2_continuous_marginal_expected_revenue values offerLaw ≤
+            GHW01DigitalGoods.ProofBridge.fixedPriceBenchmark values
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
 \begin{itemize}\raggedright
-\item \hyperlink{governing-declaration-16c75aadb4994356}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Auction.\allowbreak{}paper\_\allowbreak{}theorem8\_\allowbreak{}2\_\allowbreak{}raw\_\allowbreak{}cdf\_\allowbreak{}expected\_\allowbreak{}revenue}
-\item \hyperlink{governing-declaration-9c38d53b9d664221}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}pmf\allowbreak{}Prob}
 \item \hyperlink{governing-declaration-999c32dc6e9adaf2}{GHW01\allowbreak{}Digital\allowbreak{}Goods.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}fixed\allowbreak{}Price\allowbreak{}Benchmark}
+\item \hyperlink{governing-declaration-c4eaca5dfe00366c}{GHW01\allowbreak{}Digital\allowbreak{}Goods.\allowbreak{}paper\_\allowbreak{}theorem8\_\allowbreak{}2\_\allowbreak{}continuous\_\allowbreak{}marginal\_\allowbreak{}expected\_\allowbreak{}revenue}
 \end{itemize}
 \paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
 1. parameter: Type u_1
-2. parameter: Type u_2
-3. parameter: Fintype Agent
-4. assumption: Nonempty Agent
-5. parameter: Fintype Price
-6. parameter: Agent → ℝ
-7. parameter: Price → ℝ
-8. parameter: Agent → PMF Price
-9. assumption: ∀ (i : Agent), 0 ≤ values i
-10. assumption: ∀ (p : Price), 0 ≤ price p
-11. assumption: ∀ (i j : Agent),
+2. parameter: Fintype Agent
+3. assumption: Nonempty Agent
+4. parameter: Agent → ℝ
+5. parameter: Agent → MeasureTheory.Measure ℝ
+6. assumption: ∀ (i : Agent), MeasureTheory.IsProbabilityMeasure (offerLaw i)
+7. assumption: ∀ (i : Agent), 0 ≤ values i
+8. assumption: ∀ (i : Agent), (offerLaw i) (Set.Iio 0) = 0
+9. assumption: ∀ (i j : Agent),
   values i ≤ values j →
-    ∀ t ≤ values i,
-      (AppliedModelingLib.pmfProb (offerLaw i) fun (p : Price) => price p ≤ t) ≤
-        AppliedModelingLib.pmfProb (offerLaw j) fun (p : Price) => price p ≤ t
-12. conclusion: AppliedModelingLib.Auction.paper_theorem8_2_raw_cdf_expected_revenue values price offerLaw ≤
+    ∀ t ≤ values i, ↑(ProbabilityTheory.cdf (offerLaw i)) t ≤ ↑(ProbabilityTheory.cdf (offerLaw j)) t
+10. conclusion: GHW01DigitalGoods.paper_theorem8_2_continuous_marginal_expected_revenue values offerLaw ≤
   GHW01DigitalGoods.ProofBridge.fixedPriceBenchmark values
 \end{ReviewVerbatim}
 
@@ -6638,7 +6668,7 @@ GHW01DigitalGoods.PaperInterface.result_theorem8_2_journal_revenue_upper_bound
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} The archival SODA Theorem 8.\allowbreak{}2 wording is retained separately.\allowbreak{} The expanded finite-\allowbreak{}domain CDF target matches the exact approved correction and does not misstate that its later journal condition was in the SODA text.\allowbreak{}
+\textbf{Reason:} Compared the approval-\allowbreak{}pinned journal Definition 8.\allowbreak{}1/\allowbreak{}Theorem 8.\allowbreak{}2 target with the expanded Spec and its displayed revenue and benchmark definitions.\allowbreak{} The Spec quantifies a finite bidder profile with nonnegative real values and arbitrary bidderwise probability measures supported on nonnegative real offers, assumes exactly the Definition 8.\allowbreak{}1 CDF inequality for values i <= values j and t <= values i, and concludes that the sum of expected accepted offers is at most the one-\allowbreak{}price fixed-\allowbreak{}price benchmark.\allowbreak{} On this finite nonnegative profile domain, the displayed candidate-\allowbreak{}price maximization is the stated optimal fixed-\allowbreak{}price revenue F.\allowbreak{} This is the approved journal monotone-\allowbreak{}offer target, expressly not the archival SODA truthfulness-\allowbreak{}only claim.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
@@ -6767,7 +6797,9 @@ that R = O(F /h).
 
 % report-context-presentation-sha256: e013af569db23a8efb503eca58ea050f121f0fd53d9b947549ae4c77cb9f9906
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
@@ -6918,7 +6950,9 @@ which R/F = O(1/h) and αh ≤ F.
 
 % report-context-presentation-sha256: aae9bba8ae282c446ea3f986fbd019207c653e4989e359c30f1bd938dd184639
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}

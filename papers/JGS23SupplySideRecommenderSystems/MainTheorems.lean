@@ -157,6 +157,41 @@ noncomputable def score {D : ℕ} (u p : Content D) : ℝ :=
 def scaleContent {D : ℕ} (a : ℝ) (p : Content D) : Content D :=
   fun d => a * p d
 
+/-- Coordinatewise content scaling is measurable in the finite source action
+space. -/
+theorem measurable_scaleContent {D : ℕ} (a : ℝ) :
+    Measurable (scaleContent a : Content D → Content D) := by
+  rw [measurable_pi_iff]
+  intro d
+  change Measurable (fun p : Content D => a * p d)
+  exact measurable_const.mul (measurable_pi_apply d)
+
+/-- Coordinatewise content scaling is continuous in the finite source action
+space. -/
+theorem continuous_scaleContent {D : ℕ} (a : ℝ) :
+    Continuous (scaleContent a : Content D → Content D) := by
+  apply continuous_pi
+  intro d
+  change Continuous (fun p : Content D => a * p d)
+  exact continuous_const.mul (continuous_apply d)
+
+@[simp] theorem scaleContent_scaleContent {D : ℕ} (a b : ℝ) (p : Content D) :
+    scaleContent a (scaleContent b p) = scaleContent (a * b) p := by
+  ext d
+  simp [scaleContent, mul_assoc]
+
+@[simp] theorem scaleContent_inv_scaleContent {D : ℕ} {a : ℝ} (ha : a ≠ 0)
+    (p : Content D) :
+    scaleContent a⁻¹ (scaleContent a p) = p := by
+  ext d
+  simp [scaleContent, ha]
+
+@[simp] theorem scaleContent_scaleContent_inv {D : ℕ} {a : ℝ} (ha : a ≠ 0)
+    (p : Content D) :
+    scaleContent a (scaleContent a⁻¹ p) = p := by
+  ext d
+  simp [scaleContent, ha]
+
 @[simp] theorem scaleContent_one {D : ℕ} (p : Content D) :
     scaleContent 1 p = p := by
   ext d
@@ -264,6 +299,43 @@ theorem score_le_of_nonnegativeContent_le {D : ℕ} {u p q : Content D}
   apply Finset.sum_le_sum
   intro d _hd
   exact mul_le_mul_of_nonneg_left (hpq d) (hu d)
+
+/-- The coordinatewise positive part of an ambient content vector. -/
+def nonnegativePart {D : ℕ} (p : Content D) : Content D :=
+  fun d => max 0 (p d)
+
+/-- Coordinatewise positive part lies in the source's nonnegative action domain. -/
+theorem nonnegativePart_nonnegative {D : ℕ} (p : Content D) :
+    NonnegativeContent (nonnegativePart p) := by
+  intro d
+  exact le_max_left _ _
+
+/-- Every content vector is coordinatewise below its positive part. -/
+theorem le_nonnegativePart {D : ℕ} (p : Content D) (d : Fin D) :
+    p d ≤ nonnegativePart p d := by
+  exact le_max_right _ _
+
+/-- Positive-part projection weakly raises the score of every nonnegative user. -/
+theorem score_le_score_nonnegativePart {D : ℕ} {u p : Content D}
+    (hu : NonnegativeContent u) :
+    score u p ≤ score u (nonnegativePart p) := by
+  exact score_le_of_nonnegativeContent_le hu (le_nonnegativePart p)
+
+/-- Coordinatewise positive-part projection does not increase finite Euclidean norm. -/
+theorem l2_nonnegativePart_le {D : ℕ} (p : Content D) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2 (nonnegativePart p) ≤
+      AppliedModelingLib.FiniteDimensionalNorms.l2 p := by
+  refine AppliedModelingLib.FiniteDimensionalNorms.normL2_le_of_normL2Sq_le
+    (nonnegativePart p) (AppliedModelingLib.FiniteDimensionalNorms.normL2_nonneg p) ?_
+  rw [AppliedModelingLib.FiniteDimensionalNorms.normL2_sq_eq_normL2Sq]
+  unfold AppliedModelingLib.FiniteDimensionalNorms.l2Sq nonnegativePart
+  apply Finset.sum_le_sum
+  intro d _hd
+  by_cases hp : 0 ≤ p d
+  · rw [max_eq_right hp]
+  · have hp_le : p d ≤ 0 := le_of_lt (lt_of_not_ge hp)
+    rw [max_eq_left hp_le]
+    simpa using (sq_nonneg (p d))
 
 /-- The aggregate of nonnegative user embeddings remains in the source action domain. -/
 theorem aggregateUsersContent_nonnegative {D N : ℕ}
@@ -807,6 +879,40 @@ theorem tieShare_scaleUser_pos {D P : ℕ}
   unfold tieShare
   rw [hW]
 
+/-- A common positive rescaling of every content action preserves all score
+comparisons, including ties.  This is the profile-level ranking component of
+the positive cost/content scale transport used by the two-population phase
+theorem. -/
+theorem winningProducers_scaleProfile_pos {D P : ℕ}
+    {u : Content D} {profile : Fin P → Content D} {a : ℝ}
+    (ha : 0 < a) :
+    winningProducers u (fun j => scaleContent a (profile j)) =
+      winningProducers u profile := by
+  ext j
+  rw [mem_winningProducers, mem_winningProducers]
+  constructor
+  · intro h k
+    have hk := h k
+    rw [score_scaleContent, score_scaleContent] at hk
+    exact le_of_mul_le_mul_left hk ha
+  · intro h k
+    have hk := h k
+    rw [score_scaleContent, score_scaleContent]
+    exact mul_le_mul_of_nonneg_left hk (le_of_lt ha)
+
+/-- Uniform-tie shares are invariant under a common positive rescaling of a
+full producer profile. -/
+theorem tieShare_scaleProfile_pos {D P : ℕ}
+    {u : Content D} {profile : Fin P → Content D} {j : Fin P} {a : ℝ}
+    (ha : 0 < a) :
+    tieShare u (fun k => scaleContent a (profile k)) j =
+      tieShare u profile j := by
+  have hW : winningProducers u (fun k => scaleContent a (profile k)) =
+      winningProducers u profile :=
+    winningProducers_scaleProfile_pos ha
+  unfold tieShare
+  rw [hW]
+
 /--
 If all producers choose the same content vector, every producer is a maximizer
 for every user.
@@ -884,6 +990,18 @@ theorem usersWon_scaleUsers_pos {D N P : ℕ}
   refine Finset.sum_congr rfl ?_
   intro i _hi
   exact tieShare_scaleUser_pos (hscale i)
+
+/-- Total recommendation mass is invariant when every producer action in a
+realized profile is multiplied by the same positive scalar. -/
+theorem usersWon_scaleProfile_pos {D N P : ℕ}
+    {users : Fin N → Content D} {profile : Fin P → Content D} {j : Fin P}
+    {a : ℝ} (ha : 0 < a) :
+    usersWon users (fun k => scaleContent a (profile k)) j =
+      usersWon users profile j := by
+  unfold usersWon
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  exact tieShare_scaleProfile_pos ha
 
 /-- A two-population user market with exactly `K` copies of each type. -/
 def twoPopulationUsers {D : ℕ} (K : ℕ) (users : Fin 2 → Content D) :
@@ -1247,6 +1365,28 @@ theorem deviateProfile_of_ne {D P : ℕ}
     (profile : Fin P → Content D) {j k : Fin P} (p : Content D) (h : k ≠ j) :
     deviateProfile profile j p k = profile k := by
   simp [deviateProfile, h]
+
+/-- Scaling commutes with overwriting one coordinate of a finite producer
+profile. -/
+theorem scaleProfile_deviateProfile {D P : ℕ}
+    (profile : Fin P → Content D) (j : Fin P) (p : Content D) (a : ℝ) :
+    (fun k => scaleContent a (deviateProfile profile j p k)) =
+      deviateProfile (fun k => scaleContent a (profile k)) j (scaleContent a p) := by
+  ext k
+  by_cases hkj : k = j
+  · subst k
+    simp
+  · rw [deviateProfile_of_ne profile p hkj,
+      deviateProfile_of_ne (fun k => scaleContent a (profile k)) (scaleContent a p) hkj]
+
+/-- A coordinatewise positive content rescaling is measurable on finite
+producer profiles. -/
+theorem measurable_scaleProfile {D P : ℕ} (a : ℝ) :
+    Measurable (fun profile : Fin P → Content D =>
+      fun k => scaleContent a (profile k)) := by
+  rw [measurable_pi_iff]
+  intro k
+  exact (measurable_scaleContent a).comp (measurable_pi_apply k)
 
 /-- Overwriting one producer coordinate by a fixed content vector is measurable. -/
 theorem measurable_deviateProfile_const {D P : ℕ} (j : Fin P) (p : Content D) :
@@ -3175,6 +3315,41 @@ theorem expectedUsersWonAgainstSymmetricMixed_scaleUsers_pos
     usersWon_scaleUsers_pos (users := users)
       (profile := deviateProfile profile j p) (j := j) hscale
 
+/-- Pushing an iid content law through a common positive content scale and
+scaling the focal action by the same factor leaves the actual uniform-tie
+allocation unchanged.  The product-measure step is explicit: this is not an
+informal identification of scaled iid profiles. -/
+theorem expectedUsersWonAgainstSymmetricMixed_scaleContent_map
+    {D N P : ℕ} {users : Fin N → Content D} {j : Fin P}
+    {p : Content D} {μ : MeasureTheory.Measure (Content D)}
+    [MeasureTheory.IsProbabilityMeasure μ] {a : ℝ} (ha : 0 < a) :
+    ExpectedUsersWonAgainstSymmetricMixed users j (scaleContent a p)
+      (MeasureTheory.Measure.map (scaleContent a) μ) =
+      ExpectedUsersWonAgainstSymmetricMixed users j p μ := by
+  let profileScale : (Fin P → Content D) → Fin P → Content D :=
+    fun profile k => scaleContent a (profile k)
+  have hprofileScale_meas : Measurable profileScale := by
+    simpa [profileScale] using (measurable_scaleProfile (D := D) (P := P) a)
+  have hpi : MeasureTheory.Measure.map profileScale
+      (MeasureTheory.Measure.pi (fun _ : Fin P => μ)) =
+      MeasureTheory.Measure.pi (fun _ : Fin P =>
+        MeasureTheory.Measure.map (scaleContent a) μ) := by
+    simpa [profileScale] using
+      (MeasureTheory.Measure.pi_map_pi (μ := fun _ : Fin P => μ)
+        (fun _ => (measurable_scaleContent a).aemeasurable))
+  unfold ExpectedUsersWonAgainstSymmetricMixed
+  rw [← hpi]
+  rw [MeasureTheory.integral_map hprofileScale_meas.aemeasurable
+    (measurable_usersWon_deviateProfile_const users j
+      (scaleContent a p)).aestronglyMeasurable]
+  apply MeasureTheory.integral_congr_ae
+  exact Filter.Eventually.of_forall fun profile => by
+    change usersWon users
+        (deviateProfile (profileScale profile) j (scaleContent a p)) j =
+      usersWon users (deviateProfile profile j p) j
+    rw [← scaleProfile_deviateProfile profile j p a]
+    exact usersWon_scaleProfile_pos ha
+
 /-- Repeating each of two user types `K` times scales the symmetric mixed
 assigned-user payoff by `K`. -/
 theorem expectedUsersWonAgainstSymmetricMixed_twoPopulationUsers
@@ -4288,6 +4463,25 @@ theorem normalizedContent_scale_of_norm_eq_one {D : ℕ} (ν : SourceNorm D)
   ext d
   simp [scaleContent]
   field_simp [ha_ne]
+
+/-- Positive scaling preserves the normalized source direction of every
+nonzero content vector. -/
+theorem normalizedContent_scaleContent_pos {D : ℕ} (ν : SourceNorm D)
+    {a : ℝ} {p : Content D} (ha : 0 < a) (hp : NonzeroContent p) :
+    normalizedContent ν (scaleContent a p) = normalizedContent ν p := by
+  have hp_norm_pos : 0 < ν.norm p := ν.pos_of_nonzero hp
+  have hfactor_pos : 0 < a * ν.norm p := mul_pos ha hp_norm_pos
+  have hscale : scaleContent a p =
+      scaleContent (a * ν.norm p) (normalizedContent ν p) := by
+    calc
+      scaleContent a p =
+          scaleContent a (scaleContent (ν.norm p) (normalizedContent ν p)) :=
+        (congrArg (scaleContent a) (scale_norm_normalizedContent_eq_self ν hp)).symm
+      _ = scaleContent (a * ν.norm p) (normalizedContent ν p) := by
+        rw [scaleContent_scaleContent]
+  rw [hscale]
+  exact normalizedContent_scale_of_norm_eq_one ν hfactor_pos.le hfactor_pos.ne'
+    (norm_normalizedContent_eq_one ν hp)
 
 theorem score_eq_norm_mul_score_normalizedContent {D : ℕ}
     (ν : SourceNorm D) (u : Content D) {p : Content D}
@@ -6352,6 +6546,296 @@ noncomputable def twoUserInducedCostCrossPartial
       Real.cos θ *
         (twoUserInducedCostNumerator θ z1 z2) ^ (β / 2 - 1))
 
+/-- Away from the zero induced-cost numerator, the explicit mixed partial is
+continuous.  This is the local regularity used by the C1 four-point proof of
+`regionscolor`; it follows from real-power continuity and does not assume
+smoothness of either marginal reward. -/
+theorem continuousAt_twoUserInducedCostCrossPartial_of_numerator_ne_zero
+    {α β θ z1 z2 : ℝ}
+    (hnum_ne : twoUserInducedCostNumerator θ z1 z2 ≠ 0) :
+    ContinuousAt
+      (fun z : ℝ × ℝ => twoUserInducedCostCrossPartial α β θ z.1 z.2)
+      (z1, z2) := by
+  have hnum : Continuous
+      (fun z : ℝ × ℝ => twoUserInducedCostNumerator θ z.1 z.2) := by
+    unfold twoUserInducedCostNumerator
+    fun_prop
+  have hpow_high : ContinuousAt
+      (fun z : ℝ × ℝ =>
+        (twoUserInducedCostNumerator θ z.1 z.2) ^ (β / 2 - 1))
+      (z1, z2) := by
+    simpa using hnum.continuousAt.rpow_const (p := β / 2 - 1) (Or.inl hnum_ne)
+  have hpow_low : ContinuousAt
+      (fun z : ℝ × ℝ =>
+        (twoUserInducedCostNumerator θ z.1 z.2) ^ (β / 2 - 2))
+      (z1, z2) := by
+    simpa using hnum.continuousAt.rpow_const (p := β / 2 - 2) (Or.inl hnum_ne)
+  have hlin_left : ContinuousAt
+      (fun z : ℝ × ℝ => z.2 - z.1 * Real.cos θ) (z1, z2) :=
+    continuous_snd.continuousAt.sub
+      (continuous_fst.continuousAt.mul continuousAt_const)
+  have hlin_right : ContinuousAt
+      (fun z : ℝ × ℝ => z.1 - z.2 * Real.cos θ) (z1, z2) :=
+    continuous_fst.continuousAt.sub
+      (continuous_snd.continuousAt.mul continuousAt_const)
+  have hleft : ContinuousAt
+      (fun z : ℝ × ℝ =>
+        (β - 2) *
+          (twoUserInducedCostNumerator θ z.1 z.2) ^ (β / 2 - 2) *
+            (z.2 - z.1 * Real.cos θ) * (z.1 - z.2 * Real.cos θ))
+      (z1, z2) :=
+    ((continuousAt_const.mul hpow_low).mul hlin_left).mul hlin_right
+  have hright : ContinuousAt
+      (fun z : ℝ × ℝ => Real.cos θ *
+        (twoUserInducedCostNumerator θ z.1 z.2) ^ (β / 2 - 1))
+      (z1, z2) :=
+    continuousAt_const.mul hpow_high
+  simpa only [twoUserInducedCostCrossPartial] using
+    (continuousAt_const.mul (hleft.sub hright))
+
+/-- A strict positive value of a continuous two-variable function persists on
+an explicit open coordinate rectangle.  This small topological bridge is used
+to turn the pointwise `secondderiv` sign into the local C1 rectangle required
+by the four-point argument. -/
+theorem exists_openRectangle_of_continuousAt_pos
+    {f : ℝ × ℝ → ℝ} {x y : ℝ}
+    (hcont : ContinuousAt f (x, y)) (hpos : 0 < f (x, y)) :
+    ∃ ε : ℝ, 0 < ε ∧ ∀ u v : ℝ,
+      u ∈ Set.Ioo (x - ε / 2) (x + ε / 2) →
+      v ∈ Set.Ioo (y - ε / 2) (y + ε / 2) →
+        0 < f (u, v) := by
+  have hevent : {z : ℝ × ℝ | 0 < f z} ∈ nhds (x, y) :=
+    hcont.eventually (Ioi_mem_nhds hpos)
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hevent
+  refine ⟨ε, hε, ?_⟩
+  intro u v hu hv
+  apply hball
+  rw [Metric.mem_ball, Prod.dist_eq, max_lt_iff]
+  constructor
+  · rw [Real.dist_eq, abs_lt]
+    constructor <;> linarith [hu.1, hu.2, hε]
+  · rw [Real.dist_eq, abs_lt]
+    constructor <;> linarith [hv.1, hv.2, hε]
+
+/-- The negative-sign companion of
+`exists_openRectangle_of_continuousAt_pos`. -/
+theorem exists_openRectangle_of_continuousAt_neg
+    {f : ℝ × ℝ → ℝ} {x y : ℝ}
+    (hcont : ContinuousAt f (x, y)) (hneg : f (x, y) < 0) :
+    ∃ ε : ℝ, 0 < ε ∧ ∀ u v : ℝ,
+      u ∈ Set.Ioo (x - ε / 2) (x + ε / 2) →
+      v ∈ Set.Ioo (y - ε / 2) (y + ε / 2) →
+        f (u, v) < 0 := by
+  obtain ⟨ε, hε, hrect⟩ := exists_openRectangle_of_continuousAt_pos
+    (f := fun z : ℝ × ℝ => -f z) hcont.neg (by simpa using neg_pos.mpr hneg)
+  refine ⟨ε, hε, ?_⟩
+  intro u v hu hv
+  have h := hrect u v hu hv
+  linarith
+
+/-- If a continuous graph passes through a point where a continuous
+two-variable function is positive, then every sufficiently short increasing
+graph chord spans a rectangle on which that function remains positive. -/
+theorem exists_local_increasingGraphRectangles_of_continuousAt_pos
+    {f : ℝ × ℝ → ℝ} {g : ℝ → ℝ} {x : ℝ}
+    (hcontg : ContinuousAt g x) (hcontf : ContinuousAt f (x, g x))
+    (hpos : 0 < f (x, g x)) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ y : ℝ, x < y → y < x + δ → g x < g y →
+      ∀ u v : ℝ, u ∈ Set.Ioo x y → v ∈ Set.Ioo (g x) (g y) →
+        0 < f (u, v) := by
+  obtain ⟨ε, hε, hrect⟩ :=
+    exists_openRectangle_of_continuousAt_pos hcontf hpos
+  obtain ⟨η, hη, hgη⟩ :=
+    (Metric.continuousAt_iff.mp hcontg) (ε / 2) (half_pos hε)
+  let δ : ℝ := min (ε / 2) η
+  have hδ : 0 < δ := lt_min (half_pos hε) hη
+  refine ⟨δ, hδ, ?_⟩
+  intro y hxy hyδ hgy u v hu hv
+  have hyε : y - x < ε / 2 := by
+    have hδle : δ ≤ ε / 2 := min_le_left _ _
+    linarith
+  have hyη : y - x < η := by
+    have hδle : δ ≤ η := min_le_right _ _
+    linarith
+  have hdist_y : dist y x < η := by
+    rw [Real.dist_eq, abs_of_nonneg (by linarith)]
+    exact hyη
+  have hdist_gy : dist (g y) (g x) < ε / 2 := hgη hdist_y
+  have hgyε : g y - g x < ε / 2 := by
+    rw [Real.dist_eq, abs_of_nonneg (by linarith)] at hdist_gy
+    exact hdist_gy
+  apply hrect u v
+  · constructor <;> linarith [hu.1, hu.2, hε]
+  · constructor <;> linarith [hv.1, hv.2, hε]
+
+/-- The decreasing-graph analogue of
+`exists_local_increasingGraphRectangles_of_continuousAt_pos`. -/
+theorem exists_local_decreasingGraphRectangles_of_continuousAt_neg
+    {f : ℝ × ℝ → ℝ} {g : ℝ → ℝ} {x : ℝ}
+    (hcontg : ContinuousAt g x) (hcontf : ContinuousAt f (x, g x))
+    (hneg : f (x, g x) < 0) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ y : ℝ, x < y → y < x + δ → g y < g x →
+      ∀ u v : ℝ, u ∈ Set.Ioo x y → v ∈ Set.Ioo (g y) (g x) →
+        f (u, v) < 0 := by
+  have hmap : ContinuousAt (fun z : ℝ × ℝ => (z.1, -z.2)) (x, -g x) :=
+    continuousAt_fst.prodMk continuousAt_snd.neg
+  have hcont_transformed : ContinuousAt
+      (fun z : ℝ × ℝ => -f (z.1, -z.2)) (x, -g x) := by
+    simpa [Function.comp_def] using hcontf.neg.comp_of_eq hmap (by simp)
+  obtain ⟨δ, hδ, hlocal⟩ :=
+    exists_local_increasingGraphRectangles_of_continuousAt_pos
+      (f := fun z : ℝ × ℝ => -f (z.1, -z.2)) hcontg.neg hcont_transformed
+      (by simpa using neg_pos.mpr hneg)
+  refine ⟨δ, hδ, ?_⟩
+  intro y hxy hyδ hgy u v hu hv
+  have hgy' : -g x < -g y := by linarith
+  have hv' : -v ∈ Set.Ioo (-g x) (-g y) := by
+    constructor <;> linarith [hv.1, hv.2]
+  have h := hlocal y hxy hyδ hgy' u (-v) hu hv'
+  simpa using h
+
+/-- At a positive first score and nonzero two-user sine, a positive induced
+cost mixed partial supplies the complete local rectangle package used by the
+C1 increasing-graph contradiction: the real-power base is nonzero throughout
+the rectangle and the mixed partial stays positive there. -/
+theorem exists_local_increasingGraphRectangles_of_crossPartial_pos
+    {α β θ x : ℝ} {g : ℝ → ℝ}
+    (hsin : Real.sin θ ≠ 0) (hx : 0 < x)
+    (hcontg : ContinuousAt g x)
+    (hcross : 0 < twoUserInducedCostCrossPartial α β θ x (g x)) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ y : ℝ, x < y → y < x + δ → g x < g y →
+      (∀ u v : ℝ, u ∈ Set.Icc x y → v ∈ Set.Icc (g x) (g y) →
+        twoUserInducedCostNumerator θ u v ≠ 0 ∨ 1 ≤ β / 2 - 1) ∧
+      (∀ u v : ℝ, u ∈ Set.Ioo x y → v ∈ Set.Ioo (g x) (g y) →
+        0 < twoUserInducedCostCrossPartial α β θ u v) := by
+  have hnum_ne : twoUserInducedCostNumerator θ x (g x) ≠ 0 :=
+    twoUserInducedCostNumerator_ne_zero_of_pair_ne_zero hsin (Or.inl hx.ne')
+  obtain ⟨δ, hδ, hlocal⟩ :=
+    exists_local_increasingGraphRectangles_of_continuousAt_pos hcontg
+      (continuousAt_twoUserInducedCostCrossPartial_of_numerator_ne_zero hnum_ne)
+      hcross
+  refine ⟨δ, hδ, ?_⟩
+  intro y hxy hyδ hgy
+  refine ⟨?_, hlocal y hxy hyδ hgy⟩
+  intro u v hu _hv
+  left
+  apply twoUserInducedCostNumerator_ne_zero_of_pair_ne_zero hsin
+  left
+  exact (lt_of_lt_of_le hx hu.1).ne'
+
+/-- The negative mixed-partial counterpart of
+`exists_local_increasingGraphRectangles_of_crossPartial_pos`. -/
+theorem exists_local_decreasingGraphRectangles_of_crossPartial_neg
+    {α β θ x : ℝ} {g : ℝ → ℝ}
+    (hsin : Real.sin θ ≠ 0) (hx : 0 < x)
+    (hcontg : ContinuousAt g x)
+    (hcross : twoUserInducedCostCrossPartial α β θ x (g x) < 0) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ y : ℝ, x < y → y < x + δ → g y < g x →
+      (∀ u v : ℝ, u ∈ Set.Icc x y → v ∈ Set.Icc (g y) (g x) →
+        twoUserInducedCostNumerator θ u v ≠ 0 ∨ 1 ≤ β / 2 - 1) ∧
+      (∀ u v : ℝ, u ∈ Set.Ioo x y → v ∈ Set.Ioo (g y) (g x) →
+        twoUserInducedCostCrossPartial α β θ u v < 0) := by
+  have hnum_ne : twoUserInducedCostNumerator θ x (g x) ≠ 0 :=
+    twoUserInducedCostNumerator_ne_zero_of_pair_ne_zero hsin (Or.inl hx.ne')
+  obtain ⟨δ, hδ, hlocal⟩ :=
+    exists_local_decreasingGraphRectangles_of_continuousAt_neg hcontg
+      (continuousAt_twoUserInducedCostCrossPartial_of_numerator_ne_zero hnum_ne)
+      hcross
+  refine ⟨δ, hδ, ?_⟩
+  intro y hxy hyδ hgy
+  refine ⟨?_, hlocal y hxy hyδ hgy⟩
+  intro u v hu _hv
+  left
+  apply twoUserInducedCostNumerator_ne_zero_of_pair_ne_zero hsin
+  left
+  exact (lt_of_lt_of_le hx hu.1).ne'
+
+/-- On either boundary ray of the original nonnegative-content score cone,
+the explicit two-user mixed partial is nonpositive.  Thus the positive-sign
+branch of the C1 four-point argument automatically occurs in the interior of
+the actual feasible cone; this is geometry of the displayed source formula,
+not an additional regularity hypothesis. -/
+theorem twoUserInducedCostCrossPartial_nonpos_of_leftConeBoundary
+    {α β θ z1 z2 : ℝ}
+    (hα : 0 < α) (hβ : 0 < β) (hsin : 0 < Real.sin θ)
+    (hcos : 0 ≤ Real.cos θ)
+    (hboundary : z1 = Real.cos θ * z2) :
+    twoUserInducedCostCrossPartial α β θ z1 z2 ≤ 0 := by
+  have hscale : 0 ≤ β * α * (Real.sin θ) ^ (-β) :=
+    (mul_pos (mul_pos hβ hα) (Real.rpow_pos_of_pos hsin _)).le
+  have hpow : 0 ≤
+      (twoUserInducedCostNumerator θ z1 z2) ^ (β / 2 - 1) :=
+    Real.rpow_nonneg (twoUserInducedCostNumerator_nonneg θ z1 z2) _
+  have hzero : z1 - z2 * Real.cos θ = 0 := by
+    rw [hboundary]
+    ring
+  unfold twoUserInducedCostCrossPartial
+  apply mul_nonpos_of_nonneg_of_nonpos hscale
+  rw [hzero]
+  simpa only [mul_zero, zero_mul, zero_sub] using
+    (neg_nonpos.mpr (mul_nonneg hcos hpow))
+
+/-- The symmetric boundary-ray form of
+`twoUserInducedCostCrossPartial_nonpos_of_leftConeBoundary`. -/
+theorem twoUserInducedCostCrossPartial_nonpos_of_rightConeBoundary
+    {α β θ z1 z2 : ℝ}
+    (hα : 0 < α) (hβ : 0 < β) (hsin : 0 < Real.sin θ)
+    (hcos : 0 ≤ Real.cos θ)
+    (hboundary : z2 = Real.cos θ * z1) :
+    twoUserInducedCostCrossPartial α β θ z1 z2 ≤ 0 := by
+  have hscale : 0 ≤ β * α * (Real.sin θ) ^ (-β) :=
+    (mul_pos (mul_pos hβ hα) (Real.rpow_pos_of_pos hsin _)).le
+  have hpow : 0 ≤
+      (twoUserInducedCostNumerator θ z1 z2) ^ (β / 2 - 1) :=
+    Real.rpow_nonneg (twoUserInducedCostNumerator_nonneg θ z1 z2) _
+  have hzero : z2 - z1 * Real.cos θ = 0 := by
+    rw [hboundary]
+    ring
+  unfold twoUserInducedCostCrossPartial
+  apply mul_nonpos_of_nonneg_of_nonpos hscale
+  rw [hzero]
+  simpa only [mul_zero, zero_mul, zero_sub] using
+    (neg_nonpos.mpr (mul_nonneg hcos hpow))
+
+/-- A positive explicit mixed partial cannot occur on the boundary of the
+closed original score cone. -/
+theorem twoUserClosedUserCone_strict_of_crossPartial_pos
+    {α β θ : ℝ} {z : ℝ × ℝ}
+    (hα : 0 < α) (hβ : 0 < β) (hsin : 0 < Real.sin θ)
+    (hcos : 0 ≤ Real.cos θ)
+    (hz : z ∈ twoUserClosedUserCone θ)
+    (hcross : 0 < twoUserInducedCostCrossPartial α β θ z.1 z.2) :
+    Real.cos θ * z.2 < z.1 ∧ Real.cos θ * z.1 < z.2 := by
+  constructor
+  · apply lt_of_le_of_ne hz.1
+    intro heq
+    have hnonpos := twoUserInducedCostCrossPartial_nonpos_of_leftConeBoundary
+      hα hβ hsin hcos heq.symm
+    exact (not_le_of_gt hcross) hnonpos
+  · apply lt_of_le_of_ne hz.2
+    intro heq
+    have hnonpos := twoUserInducedCostCrossPartial_nonpos_of_rightConeBoundary
+      hα hβ hsin hcos heq.symm
+    exact (not_le_of_gt hcross) hnonpos
+
+/-- At a positive-mixed-partial score-cone point, the actual nonnegative
+content feasible set is a neighborhood. -/
+theorem twoUserScoreFeasibleSet_mem_nhds_of_crossPartial_pos
+    {u v : Content 2} {α β θ : ℝ} {z : ℝ × ℝ}
+    (hu_nonnegative : NonnegativeContent u)
+    (hv_nonnegative : NonnegativeContent v)
+    (hu : score u u = 1) (hv : score v v = 1)
+    (huv : score u v = Real.cos θ)
+    (hα : 0 < α) (hβ : 0 < β) (hsin : 0 < Real.sin θ)
+    (hcos : 0 ≤ Real.cos θ)
+    (hz : z ∈ twoUserClosedUserCone θ)
+    (hcross : 0 < twoUserInducedCostCrossPartial α β θ z.1 z.2) :
+    twoUserScoreFeasibleSet u v ∈ 𝓝 z := by
+  obtain ⟨hz1, hz2⟩ := twoUserClosedUserCone_strict_of_crossPartial_pos
+    hα hβ hsin hcos hz hcross
+  exact twoUserScoreFeasibleSet_mem_nhds_of_closedUserCone_strict
+    hu_nonnegative hv_nonnegative hu hv huv hsin hz1 hz2
+
 /-- The source first-partial expression is continuous whenever the exact
 derivative-side base condition holds pointwise.  At a zero numerator that
 condition forces its rpow exponent to be nonnegative; away from zero,
@@ -6652,6 +7136,46 @@ theorem twoUserInducedCost_strictSubmodular_of_crossPartial_neg_on_rectangle
   dsimp [F] at hF
   linarith
 
+/-- Negating the positive cost scale negates the induced cost pointwise.  This
+elementary symmetry lets the positive-cross-partial comparative statics reuse
+the already verified negative-cross-partial calculus. -/
+theorem twoUserInducedCost_neg_scale
+    (α β θ z1 z2 : ℝ) :
+    twoUserInducedCost (-α) β θ z1 z2 =
+      -twoUserInducedCost α β θ z1 z2 := by
+  simp only [twoUserInducedCost]
+  ring
+
+/-- The mixed cross partial is likewise linear in the cost scale. -/
+theorem twoUserInducedCostCrossPartial_neg_scale
+    (α β θ z1 z2 : ℝ) :
+    twoUserInducedCostCrossPartial (-α) β θ z1 z2 =
+      -twoUserInducedCostCrossPartial α β θ z1 z2 := by
+  simp only [twoUserInducedCostCrossPartial]
+  ring
+
+/-- A strictly positive mixed cross partial makes the induced cost strictly
+supermodular on a rectangle.  This is the sign-reversed companion of the
+negative-cross-partial result above, obtained without duplicating its
+one-dimensional real-power calculus. -/
+theorem twoUserInducedCost_strictSupermodular_of_crossPartial_pos_on_rectangle
+    {α β θ a b c d : ℝ}
+    (hab : a < b) (hcd : c < d)
+    (hbase : ∀ x y : ℝ, x ∈ Set.Icc a b → y ∈ Set.Icc c d →
+      twoUserInducedCostNumerator θ x y ≠ 0 ∨ 1 ≤ β / 2 - 1)
+    (hcross : ∀ x y : ℝ, x ∈ Set.Ioo a b → y ∈ Set.Ioo c d →
+      0 < twoUserInducedCostCrossPartial α β θ x y) :
+    twoUserInducedCost α β θ a c + twoUserInducedCost α β θ b d >
+      twoUserInducedCost α β θ a d + twoUserInducedCost α β θ b c := by
+  have hneg := twoUserInducedCost_strictSubmodular_of_crossPartial_neg_on_rectangle
+    (α := -α) hab hcd hbase (by
+      intro x y hx hy
+      rw [twoUserInducedCostCrossPartial_neg_scale]
+      simpa using neg_lt_neg (hcross x y hx hy))
+  rw [twoUserInducedCost_neg_scale, twoUserInducedCost_neg_scale,
+    twoUserInducedCost_neg_scale, twoUserInducedCost_neg_scale] at hneg
+  linarith
+
 /-- Boundary-safe strict submodularity on a nonnegative rectangle in the
 below-phase regime.  The rectangle may contain the origin: continuity handles
 its boundary, while every point of the open rectangle has two positive scores,
@@ -6778,6 +7302,425 @@ theorem ordered_snd_of_isMaxOn_and_strictSubmodular
           (H1 q.1 + H2 p.2 - cost (q.1, p.2)) := by
     linarith
   exact (not_lt_of_ge hle) (by simpa using hlt)
+
+/-- Strict supermodularity of cost reverses the C1 ordering conclusion: two
+maximizers cannot have both coordinates strictly increasing when their crossed
+coordinate deviations are feasible.  This is the four-point form of the C1
+argument and requires no derivatives of the marginal-value functions. -/
+theorem antiOrdered_snd_of_isMaxOn_and_strictSupermodular
+    {H1 H2 : ℝ → ℝ} {cost : ℝ × ℝ → ℝ} {feasible S : Set (ℝ × ℝ)}
+    (hmax : ∀ z : ℝ × ℝ, z ∈ S →
+      IsMaxOn (fun w : ℝ × ℝ => H1 w.1 + H2 w.2 - cost w) feasible z)
+    (hrectangle : ∀ p q : ℝ × ℝ, p ∈ S → q ∈ S →
+      p.1 < q.1 → p.2 < q.2 →
+        (p.1, q.2) ∈ feasible ∧ (q.1, p.2) ∈ feasible)
+    (hsuper : ∀ x1 x2 y1 y2 : ℝ, x1 < x2 → y1 < y2 →
+      cost (x1, y1) + cost (x2, y2) >
+        cost (x1, y2) + cost (x2, y1)) :
+    ∀ p ∈ S, ∀ q ∈ S, p.1 < q.1 → q.2 ≤ p.2 := by
+  intro p hp q hq hpq
+  by_contra hnot
+  have hpq_snd : p.2 < q.2 := lt_of_not_ge hnot
+  obtain ⟨hcross_left, hcross_right⟩ := hrectangle p q hp hq hpq hpq_snd
+  have hcross_left_le := hmax p hp hcross_left
+  have hcross_right_le := hmax q hq hcross_right
+  change H1 p.1 + H2 q.2 - cost (p.1, q.2) ≤
+    H1 p.1 + H2 p.2 - cost p at hcross_left_le
+  change H1 q.1 + H2 p.2 - cost (q.1, p.2) ≤
+    H1 q.1 + H2 q.2 - cost q at hcross_right_le
+  have hle := add_le_add hcross_left_le hcross_right_le
+  have hcost := hsuper p.1 q.1 p.2 q.2 hpq hpq_snd
+  have hlt :
+      (H1 p.1 + H2 p.2 - cost p) + (H1 q.1 + H2 q.2 - cost q) <
+        (H1 p.1 + H2 q.2 - cost (p.1, q.2)) +
+          (H1 q.1 + H2 p.2 - cost (q.1, p.2)) := by
+    linarith
+  exact (not_lt_of_ge hle) (by simpa using hlt)
+
+/-- A differentiable graph that is locally antitone on an open interval has
+nonpositive derivative at every interior point.  Written in this explicit
+one-sided form so the C1 four-point argument can use only a local support
+order, rather than assuming global regularity of the graph. -/
+theorem deriv_nonpos_of_antitoneOn_Ioo
+    {g : ℝ → ℝ} {a b x g' : ℝ}
+    (hx : x ∈ Set.Ioo a b)
+    (hderiv : HasDerivAt g g' x)
+    (hanti : ∀ y ∈ Set.Ioo a b, x < y → g y ≤ g x) :
+    g' ≤ 0 := by
+  by_contra hnot
+  have hgpos : 0 < g' := lt_of_not_ge hnot
+  have hright : 0 < b - x := sub_pos.mpr hx.2
+  obtain ⟨ε, hε_pos, hε_lt, himprove⟩ :=
+    exists_pos_right_improvement_of_hasDerivAt_pos_lt hderiv hgpos hright
+  have hy : x + ε ∈ Set.Ioo a b := by
+    constructor
+    · exact lt_of_lt_of_le hx.1 (le_add_of_nonneg_right hε_pos.le)
+    · linarith
+  have hle := hanti (x + ε) hy (by linarith)
+  exact (not_lt_of_ge hle) (by simpa using himprove)
+
+/-- The monotone counterpart of `deriv_nonpos_of_antitoneOn_Ioo`.  Negating
+the graph turns a negative derivative into a positive right-side improvement,
+so this proof uses the same local argument. -/
+theorem deriv_nonneg_of_monotoneOn_Ioo
+    {g : ℝ → ℝ} {a b x g' : ℝ}
+    (hx : x ∈ Set.Ioo a b)
+    (hderiv : HasDerivAt g g' x)
+    (hmono : ∀ y ∈ Set.Ioo a b, x < y → g x ≤ g y) :
+    0 ≤ g' := by
+  by_contra hnot
+  have hgneg : g' < 0 := lt_of_not_ge hnot
+  have hright : 0 < b - x := sub_pos.mpr hx.2
+  obtain ⟨ε, hε_pos, hε_lt, himprove⟩ :=
+    exists_pos_right_improvement_of_hasDerivAt_pos_lt hderiv.neg
+      (by linarith : 0 < -g') hright
+  have hy : x + ε ∈ Set.Ioo a b := by
+    constructor
+    · exact lt_of_lt_of_le hx.1 (le_add_of_nonneg_right hε_pos.le)
+    · linarith
+  have hle := hmono (x + ε) hy (by linarith)
+  have hlt : g (x + ε) < g x := by
+    have himprove' : -(g x) < -(g (x + ε)) := by
+      simpa using himprove
+    exact neg_lt_neg_iff.mp himprove'
+  exact (not_lt_of_ge hle) hlt
+
+/-- Local positive-cross-partial C1 graph bridge.  At a differentiable graph
+point, if the induced cost is strictly supermodular on every sufficiently
+small increasing graph rectangle, C1 maximization rules out a positive graph
+derivative.  The marginal rewards are never differentiated. -/
+theorem deriv_nonpos_of_isMaxOn_graph_of_crossPartial_pos_local
+    {H1 H2 g : ℝ → ℝ} {feasible S : Set (ℝ × ℝ)}
+    {α β θ a b x g' : ℝ}
+    (hx : x ∈ Set.Ioo a b)
+    (hderiv : HasDerivAt g g' x)
+    (hgraph : ∀ w ∈ Set.Ioo a b, (w, g w) ∈ S)
+    (hmax : ∀ z : ℝ × ℝ, z ∈ S →
+      IsMaxOn (fun w : ℝ × ℝ => H1 w.1 + H2 w.2 -
+        twoUserInducedCost α β θ w.1 w.2) feasible z)
+    (hrectangle : ∃ δ : ℝ, 0 < δ ∧ ∀ y : ℝ,
+      x < y → y < x + δ → g x < g y →
+        (x, g y) ∈ feasible ∧ (y, g x) ∈ feasible)
+    (hlocal : ∃ δ : ℝ, 0 < δ ∧ ∀ y : ℝ, x < y → y < x + δ → g x < g y →
+      (∀ u v : ℝ, u ∈ Set.Icc x y → v ∈ Set.Icc (g x) (g y) →
+        twoUserInducedCostNumerator θ u v ≠ 0 ∨ 1 ≤ β / 2 - 1) ∧
+      (∀ u v : ℝ, u ∈ Set.Ioo x y → v ∈ Set.Ioo (g x) (g y) →
+        0 < twoUserInducedCostCrossPartial α β θ u v)) :
+    g' ≤ 0 := by
+  obtain ⟨δrect, hδrect, hrectangle⟩ := hrectangle
+  obtain ⟨δ, hδ, hlocal⟩ := hlocal
+  by_contra hnot
+  have hgpos : 0 < g' := lt_of_not_ge hnot
+  have hbound : 0 < min (min (b - x) δrect) δ :=
+    lt_min (lt_min (sub_pos.mpr hx.2) hδrect) hδ
+  obtain ⟨ε, hε_pos, hε_lt, himprove⟩ :=
+    exists_pos_right_improvement_of_hasDerivAt_pos_lt hderiv hgpos hbound
+  have hε_b : ε < b - x :=
+    lt_of_lt_of_le hε_lt (le_trans (min_le_left _ _) (min_le_left _ _))
+  have hε_rect : ε < δrect :=
+    lt_of_lt_of_le hε_lt (le_trans (min_le_left _ _) (min_le_right _ _))
+  have hε_local : ε < δ := lt_of_lt_of_le hε_lt (min_le_right _ _)
+  have hy : x + ε ∈ Set.Ioo a b := by
+    constructor
+    · exact lt_of_lt_of_le hx.1 (le_add_of_nonneg_right hε_pos.le)
+    · linarith
+  have hxy : x < x + ε := by linarith
+  have hgxy : g x < g (x + ε) := by simpa using himprove
+  obtain ⟨hcross_left, hcross_right⟩ := hrectangle (x + ε) hxy
+    (by linarith) hgxy
+  obtain ⟨hbase, hcross⟩ := hlocal (x + ε) hxy
+    (by linarith) hgxy
+  have hsuper := twoUserInducedCost_strictSupermodular_of_crossPartial_pos_on_rectangle
+    (α := α) (β := β) (θ := θ) hxy hgxy hbase hcross
+  have hleft_le := hmax (x, g x) (hgraph x hx) hcross_left
+  have hright_le := hmax (x + ε, g (x + ε)) (hgraph (x + ε) hy) hcross_right
+  change H1 x + H2 (g (x + ε)) - twoUserInducedCost α β θ x (g (x + ε)) ≤
+    H1 x + H2 (g x) - twoUserInducedCost α β θ x (g x) at hleft_le
+  change H1 (x + ε) + H2 (g x) - twoUserInducedCost α β θ (x + ε) (g x) ≤
+    H1 (x + ε) + H2 (g (x + ε)) -
+      twoUserInducedCost α β θ (x + ε) (g (x + ε)) at hright_le
+  have hle := add_le_add hleft_le hright_le
+  have hlt :
+      (H1 x + H2 (g x) - twoUserInducedCost α β θ x (g x)) +
+        (H1 (x + ε) + H2 (g (x + ε)) -
+          twoUserInducedCost α β θ (x + ε) (g (x + ε))) <
+      (H1 x + H2 (g (x + ε)) - twoUserInducedCost α β θ x (g (x + ε))) +
+        (H1 (x + ε) + H2 (g x) - twoUserInducedCost α β θ (x + ε) (g x)) := by
+    linarith
+  exact (not_lt_of_ge hle) hlt
+
+/-- Local negative-cross-partial C1 graph bridge.  This is the complementary
+four-point argument: strict submodularity rules out a negative graph derivative
+without differentiating either marginal reward. -/
+theorem deriv_nonneg_of_isMaxOn_graph_of_crossPartial_neg_local
+    {H1 H2 g : ℝ → ℝ} {feasible S : Set (ℝ × ℝ)}
+    {α β θ a b x g' : ℝ}
+    (hx : x ∈ Set.Ioo a b)
+    (hderiv : HasDerivAt g g' x)
+    (hgraph : ∀ w ∈ Set.Ioo a b, (w, g w) ∈ S)
+    (hmax : ∀ z : ℝ × ℝ, z ∈ S →
+      IsMaxOn (fun w : ℝ × ℝ => H1 w.1 + H2 w.2 -
+        twoUserInducedCost α β θ w.1 w.2) feasible z)
+    (hrectangle : ∃ δ : ℝ, 0 < δ ∧ ∀ y : ℝ,
+      x < y → y < x + δ → g y < g x →
+        (x, g y) ∈ feasible ∧ (y, g x) ∈ feasible)
+    (hlocal : ∃ δ : ℝ, 0 < δ ∧ ∀ y : ℝ, x < y → y < x + δ → g y < g x →
+      (∀ u v : ℝ, u ∈ Set.Icc x y → v ∈ Set.Icc (g y) (g x) →
+        twoUserInducedCostNumerator θ u v ≠ 0 ∨ 1 ≤ β / 2 - 1) ∧
+      (∀ u v : ℝ, u ∈ Set.Ioo x y → v ∈ Set.Ioo (g y) (g x) →
+        twoUserInducedCostCrossPartial α β θ u v < 0)) :
+    0 ≤ g' := by
+  obtain ⟨δrect, hδrect, hrectangle⟩ := hrectangle
+  obtain ⟨δ, hδ, hlocal⟩ := hlocal
+  by_contra hnot
+  have hgneg : g' < 0 := lt_of_not_ge hnot
+  have hbound : 0 < min (min (b - x) δrect) δ :=
+    lt_min (lt_min (sub_pos.mpr hx.2) hδrect) hδ
+  obtain ⟨ε, hε_pos, hε_lt, himprove⟩ :=
+    exists_pos_right_improvement_of_hasDerivAt_pos_lt hderiv.neg
+      (by linarith : 0 < -g') hbound
+  have hε_b : ε < b - x :=
+    lt_of_lt_of_le hε_lt (le_trans (min_le_left _ _) (min_le_left _ _))
+  have hε_rect : ε < δrect :=
+    lt_of_lt_of_le hε_lt (le_trans (min_le_left _ _) (min_le_right _ _))
+  have hε_local : ε < δ := lt_of_lt_of_le hε_lt (min_le_right _ _)
+  have hy : x + ε ∈ Set.Ioo a b := by
+    constructor
+    · exact lt_of_lt_of_le hx.1 (le_add_of_nonneg_right hε_pos.le)
+    · linarith
+  have hxy : x < x + ε := by linarith
+  have hgxy : g (x + ε) < g x := by
+    have himprove' : -(g x) < -(g (x + ε)) := by
+      simpa using himprove
+    exact neg_lt_neg_iff.mp himprove'
+  obtain ⟨hcross_left, hcross_right⟩ := hrectangle (x + ε) hxy
+    (by linarith) hgxy
+  obtain ⟨hbase, hcross⟩ := hlocal (x + ε) hxy
+    (by linarith) hgxy
+  have hsub := twoUserInducedCost_strictSubmodular_of_crossPartial_neg_on_rectangle
+    (α := α) (β := β) (θ := θ) hxy hgxy hbase hcross
+  have hleft_le := hmax (x, g x) (hgraph x hx) hcross_left
+  have hright_le := hmax (x + ε, g (x + ε)) (hgraph (x + ε) hy) hcross_right
+  change H1 x + H2 (g (x + ε)) - twoUserInducedCost α β θ x (g (x + ε)) ≤
+    H1 x + H2 (g x) - twoUserInducedCost α β θ x (g x) at hleft_le
+  change H1 (x + ε) + H2 (g x) - twoUserInducedCost α β θ (x + ε) (g x) ≤
+    H1 (x + ε) + H2 (g (x + ε)) -
+      twoUserInducedCost α β θ (x + ε) (g (x + ε)) at hright_le
+  have hle := add_le_add hleft_le hright_le
+  have hlt :
+      (H1 x + H2 (g x) - twoUserInducedCost α β θ x (g x)) +
+        (H1 (x + ε) + H2 (g (x + ε)) -
+          twoUserInducedCost α β θ (x + ε) (g (x + ε))) <
+      (H1 x + H2 (g (x + ε)) - twoUserInducedCost α β θ x (g (x + ε))) +
+        (H1 (x + ε) + H2 (g x) - twoUserInducedCost α β θ (x + ε) (g x)) := by
+    linarith
+  exact (not_lt_of_ge hle) hlt
+
+/-- C1 four-point recovery for a positive mixed partial.  The local sign
+rectangle is derived from the explicit induced-cost formula and continuity of
+the differentiable graph, so no marginal-density or SOC hypothesis appears. -/
+theorem deriv_nonpos_of_isMaxOn_graph_of_crossPartial_pos
+    {H1 H2 g : ℝ → ℝ} {feasible S : Set (ℝ × ℝ)}
+    {α β θ a b x g' : ℝ}
+    (hxI : x ∈ Set.Ioo a b) (hx : 0 < x) (hsin : Real.sin θ ≠ 0)
+    (hderiv : HasDerivAt g g' x)
+    (hgraph : ∀ w ∈ Set.Ioo a b, (w, g w) ∈ S)
+    (hmax : ∀ z : ℝ × ℝ, z ∈ S →
+      IsMaxOn (fun w : ℝ × ℝ => H1 w.1 + H2 w.2 -
+        twoUserInducedCost α β θ w.1 w.2) feasible z)
+    (hrectangle : ∀ y : ℝ, y ∈ Set.Ioo a b → x < y → g x < g y →
+      (x, g y) ∈ feasible ∧ (y, g x) ∈ feasible)
+    (hcross : 0 < twoUserInducedCostCrossPartial α β θ x (g x)) :
+    g' ≤ 0 := by
+  apply deriv_nonpos_of_isMaxOn_graph_of_crossPartial_pos_local
+    hxI hderiv hgraph hmax
+  · refine ⟨b - x, sub_pos.mpr hxI.2, ?_⟩
+    intro y hxy hy hgy
+    apply hrectangle y
+    · constructor
+      · exact lt_trans hxI.1 hxy
+      · linarith
+    · exact hxy
+    · exact hgy
+  · exact exists_local_increasingGraphRectangles_of_crossPartial_pos
+      hsin hx hderiv.continuousAt hcross
+
+/-- C1 four-point recovery for a negative mixed partial, dual to the positive
+branch above. -/
+theorem deriv_nonneg_of_isMaxOn_graph_of_crossPartial_neg
+    {H1 H2 g : ℝ → ℝ} {feasible S : Set (ℝ × ℝ)}
+    {α β θ a b x g' : ℝ}
+    (hxI : x ∈ Set.Ioo a b) (hx : 0 < x) (hsin : Real.sin θ ≠ 0)
+    (hderiv : HasDerivAt g g' x)
+    (hgraph : ∀ w ∈ Set.Ioo a b, (w, g w) ∈ S)
+    (hmax : ∀ z : ℝ × ℝ, z ∈ S →
+      IsMaxOn (fun w : ℝ × ℝ => H1 w.1 + H2 w.2 -
+        twoUserInducedCost α β θ w.1 w.2) feasible z)
+    (hrectangle : ∀ y : ℝ, y ∈ Set.Ioo a b → x < y → g y < g x →
+      (x, g y) ∈ feasible ∧ (y, g x) ∈ feasible)
+    (hcross : twoUserInducedCostCrossPartial α β θ x (g x) < 0) :
+    0 ≤ g' := by
+  apply deriv_nonneg_of_isMaxOn_graph_of_crossPartial_neg_local
+    hxI hderiv hgraph hmax
+  · refine ⟨b - x, sub_pos.mpr hxI.2, ?_⟩
+    intro y hxy hy hgy
+    apply hrectangle y
+    · constructor
+      · exact lt_trans hxI.1 hxy
+      · linarith
+    · exact hxy
+    · exact hgy
+  · exact exists_local_decreasingGraphRectangles_of_crossPartial_neg
+      hsin hx hderiv.continuousAt hcross
+
+/-- A feasible neighborhood of a differentiable graph point supplies the
+small crossed-coordinate deviations used by the C1 four-point proof. -/
+theorem exists_local_graphCrosses_feasible_of_mem_nhds
+    {feasible : Set (ℝ × ℝ)} {g : ℝ → ℝ} {x : ℝ}
+    (hfeasible : feasible ∈ 𝓝 (x, g x))
+    (hcontg : ContinuousAt g x) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ y : ℝ, x < y → y < x + δ →
+      (x, g y) ∈ feasible ∧ (y, g x) ∈ feasible := by
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hfeasible
+  obtain ⟨η, hη, hgη⟩ :=
+    (Metric.continuousAt_iff.mp hcontg) (ε / 2) (half_pos hε)
+  let δ : ℝ := min (ε / 2) η
+  have hδ : 0 < δ := lt_min (half_pos hε) hη
+  refine ⟨δ, hδ, ?_⟩
+  intro y hxy hy
+  have hyε : y - x < ε / 2 := by
+    have hδle : δ ≤ ε / 2 := min_le_left _ _
+    linarith
+  have hyη : y - x < η := by
+    have hδle : δ ≤ η := min_le_right _ _
+    linarith
+  have hdist : dist y x < η := by
+    rw [Real.dist_eq, abs_of_nonneg (by linarith)]
+    exact hyη
+  have hdistg : dist (g y) (g x) < ε / 2 := hgη hdist
+  constructor
+  · apply hball
+    rw [Metric.mem_ball, Prod.dist_eq, max_lt_iff]
+    constructor
+    · simp [hε]
+    · exact lt_trans hdistg (half_lt_self hε)
+  · apply hball
+    rw [Metric.mem_ball, Prod.dist_eq, max_lt_iff]
+    constructor
+    · rw [Real.dist_eq, abs_of_nonneg (by linarith)]
+      exact lt_trans hyε (half_lt_self hε)
+    · simp [hε]
+
+/-- Source-faithful positive-cross-partial branch of `regionscolor`: a
+positive cross partial forces the graph point into the interior of the actual
+nonnegative-content score region, where C1 supplies local deviations. -/
+theorem twoUser_deriv_nonpos_of_isMaxOn_graph_of_crossPartial_pos_of_cone
+    {u v : Content 2} {H1 H2 g : ℝ → ℝ} {S : Set (ℝ × ℝ)}
+    {α β θ a b x g' : ℝ}
+    (hu_nonnegative : NonnegativeContent u)
+    (hv_nonnegative : NonnegativeContent v)
+    (hu : score u u = 1) (hv : score v v = 1)
+    (huv : score u v = Real.cos θ)
+    (hα : 0 < α) (hβ : 0 < β) (hsin : 0 < Real.sin θ)
+    (hcos : 0 ≤ Real.cos θ)
+    (hxI : x ∈ Set.Ioo a b) (hx : 0 < x)
+    (hderiv : HasDerivAt g g' x)
+    (hgraph : ∀ w ∈ Set.Ioo a b, (w, g w) ∈ S)
+    (hScone : S ⊆ twoUserClosedUserCone θ)
+    (hmax : ∀ z : ℝ × ℝ, z ∈ S →
+      IsMaxOn (fun w : ℝ × ℝ => H1 w.1 + H2 w.2 -
+        twoUserInducedCost α β θ w.1 w.2) (twoUserScoreFeasibleSet u v) z)
+    (hcross : 0 < twoUserInducedCostCrossPartial α β θ x (g x)) :
+    g' ≤ 0 := by
+  have hpointcone : (x, g x) ∈ twoUserClosedUserCone θ :=
+    hScone (hgraph x hxI)
+  have hfeasible : twoUserScoreFeasibleSet u v ∈ 𝓝 (x, g x) :=
+    twoUserScoreFeasibleSet_mem_nhds_of_crossPartial_pos
+      hu_nonnegative hv_nonnegative hu hv huv hα hβ hsin hcos hpointcone hcross
+  apply deriv_nonpos_of_isMaxOn_graph_of_crossPartial_pos_local
+    hxI hderiv hgraph hmax
+  · obtain ⟨δ, hδ, hcrosses⟩ :=
+      exists_local_graphCrosses_feasible_of_mem_nhds hfeasible hderiv.continuousAt
+    refine ⟨δ, hδ, ?_⟩
+    intro y hxy hy _
+    exact hcrosses y hxy hy
+  · exact exists_local_increasingGraphRectangles_of_crossPartial_pos
+      hsin.ne' hx hderiv.continuousAt hcross
+
+/-- Source-faithful negative-cross-partial branch of `regionscolor`: the
+closed score cone is min/max closed, so every required crossed deviation is
+realized by nonnegative content even at a boundary support point. -/
+theorem twoUser_deriv_nonneg_of_isMaxOn_graph_of_crossPartial_neg_of_cone
+    {u v : Content 2} {H1 H2 g : ℝ → ℝ} {S : Set (ℝ × ℝ)}
+    {α β θ a b x g' : ℝ}
+    (hu_nonnegative : NonnegativeContent u)
+    (hv_nonnegative : NonnegativeContent v)
+    (hu : score u u = 1) (hv : score v v = 1)
+    (huv : score u v = Real.cos θ)
+    (hsin : 0 < Real.sin θ) (hcos : 0 ≤ Real.cos θ)
+    (hxI : x ∈ Set.Ioo a b) (hx : 0 < x)
+    (hderiv : HasDerivAt g g' x)
+    (hgraph : ∀ w ∈ Set.Ioo a b, (w, g w) ∈ S)
+    (hScone : S ⊆ twoUserClosedUserCone θ)
+    (hmax : ∀ z : ℝ × ℝ, z ∈ S →
+      IsMaxOn (fun w : ℝ × ℝ => H1 w.1 + H2 w.2 -
+        twoUserInducedCost α β θ w.1 w.2) (twoUserScoreFeasibleSet u v) z)
+    (hcross : twoUserInducedCostCrossPartial α β θ x (g x) < 0) :
+    0 ≤ g' := by
+  apply deriv_nonneg_of_isMaxOn_graph_of_crossPartial_neg_local
+    hxI hderiv hgraph hmax
+  · refine ⟨b - x, sub_pos.mpr hxI.2, ?_⟩
+    intro y hxy hy hgy
+    have hyI : y ∈ Set.Ioo a b := by
+      constructor
+      · exact lt_trans hxI.1 hxy
+      · linarith
+    have hpcone := hScone (hgraph x hxI)
+    have hqcone := hScone (hgraph y hyI)
+    refine ⟨?_, ?_⟩
+    · have hmincone := twoUserClosedUserCone_min_mem hcos hpcone hqcone
+      have hminfeasible := twoUserClosedUserCone_subset_scoreFeasible
+        hu_nonnegative hv_nonnegative hu hv huv hsin.ne' hmincone
+      simpa [min_eq_left hxy.le, min_eq_right hgy.le] using hminfeasible
+    · have hmaxcone := twoUserClosedUserCone_max_mem hpcone hqcone
+      have hmaxfeasible := twoUserClosedUserCone_subset_scoreFeasible
+        hu_nonnegative hv_nonnegative hu hv huv hsin.ne' hmaxcone
+      simpa [max_eq_right hxy.le, max_eq_left hgy.le] using hmaxfeasible
+  · exact exists_local_decreasingGraphRectangles_of_crossPartial_neg
+      hsin.ne' hx hderiv.continuousAt hcross
+
+/-- Complete C1 graph sign theorem behind the source's `regionscolor` lemma.
+It uses no marginal-density differentiation and no objective Hessian premise:
+the two signs of the mixed partial are handled by cone geometry and the C1
+four-point comparison. -/
+theorem twoUser_slope_crossPartial_nonpos_of_isMaxOn_graph_of_cone
+    {u v : Content 2} {H1 H2 g : ℝ → ℝ} {S : Set (ℝ × ℝ)}
+    {α β θ a b x g' : ℝ}
+    (hu_nonnegative : NonnegativeContent u)
+    (hv_nonnegative : NonnegativeContent v)
+    (hu : score u u = 1) (hv : score v v = 1)
+    (huv : score u v = Real.cos θ)
+    (hα : 0 < α) (hβ : 0 < β) (hsin : 0 < Real.sin θ)
+    (hcos : 0 ≤ Real.cos θ)
+    (hxI : x ∈ Set.Ioo a b) (hx : 0 < x)
+    (hderiv : HasDerivAt g g' x)
+    (hgraph : ∀ w ∈ Set.Ioo a b, (w, g w) ∈ S)
+    (hScone : S ⊆ twoUserClosedUserCone θ)
+    (hmax : ∀ z : ℝ × ℝ, z ∈ S →
+      IsMaxOn (fun w : ℝ × ℝ => H1 w.1 + H2 w.2 -
+        twoUserInducedCost α β θ w.1 w.2) (twoUserScoreFeasibleSet u v) z) :
+    g' * twoUserInducedCostCrossPartial α β θ x (g x) ≤ 0 := by
+  rcases lt_trichotomy (twoUserInducedCostCrossPartial α β θ x (g x)) 0 with
+    hneg | hzero | hpos
+  · exact mul_nonpos_of_nonneg_of_nonpos
+      (twoUser_deriv_nonneg_of_isMaxOn_graph_of_crossPartial_neg_of_cone
+        hu_nonnegative hv_nonnegative hu hv huv hsin hcos hxI hx hderiv hgraph hScone hmax
+        hneg) hneg.le
+  · simp [hzero]
+  · exact mul_nonpos_of_nonpos_of_nonneg
+      (twoUser_deriv_nonpos_of_isMaxOn_graph_of_crossPartial_pos_of_cone
+        hu_nonnegative hv_nonnegative hu hv huv hα hβ hsin hcos hxI hx hderiv hgraph hScone
+        hmax hpos) hpos.le
 
 /--
 Global score-support ordering without canonicalizing the original action cone.
@@ -9616,6 +10559,38 @@ theorem twoUser_regionscolor_param_bracket_nonpos_of_cross_nonpos
         twoUserSecondDerivPositiveScale α β θ r * 0 := by
     simpa using hcross
   exact le_of_mul_le_mul_left hcross' hscale_pos
+
+/-- Source-faithful `regionscolor` endpoint.  A differentiable support graph
+of C1 maximizers in the original nonnegative-content score cone satisfies the
+printed slope/bracket inequality.  This replaces the source proof's
+unjustified density-derivative and Hessian-SOC steps with the C1 four-point
+argument above. -/
+theorem twoUser_regionscolor_param_bracket_nonpos_of_C1_graph_cone
+    {u v : Content 2} {H1 H2 g : ℝ → ℝ} {S : Set (ℝ × ℝ)}
+    {α β θ φ r a b x slope : ℝ}
+    (hu_nonnegative : NonnegativeContent u)
+    (hv_nonnegative : NonnegativeContent v)
+    (hu : score u u = 1) (hv : score v v = 1)
+    (huv : score u v = Real.cos θ)
+    (hα : 0 < α) (hβ : 0 < β) (hsin : 0 < Real.sin θ)
+    (hcos : 0 ≤ Real.cos θ)
+    (hNpos : 0 < r ^ 2 * (Real.sin θ) ^ 2)
+    (hxI : x ∈ Set.Ioo a b) (hx : 0 < x)
+    (hxparam : x = r * Real.cos φ)
+    (hgparam : g x = r * Real.cos (θ - φ))
+    (hderiv : HasDerivAt g slope x)
+    (hgraph : ∀ w ∈ Set.Ioo a b, (w, g w) ∈ S)
+    (hScone : S ⊆ twoUserClosedUserCone θ)
+    (hmax : ∀ z : ℝ × ℝ, z ∈ S →
+      IsMaxOn (fun w : ℝ × ℝ => H1 w.1 + H2 w.2 -
+        twoUserInducedCost α β θ w.1 w.2) (twoUserScoreFeasibleSet u v) z) :
+    slope * twoUserSecondDerivSignBracket β θ φ ≤ 0 := by
+  apply twoUser_regionscolor_param_bracket_nonpos_of_cross_nonpos
+    hα hβ hsin hNpos
+  have hcross := twoUser_slope_crossPartial_nonpos_of_isMaxOn_graph_of_cone
+    hu_nonnegative hv_nonnegative hu hv huv hα hβ hsin hcos hxI hx hderiv hgraph hScone hmax
+  rw [hgparam, hxparam] at hcross
+  exact hcross
 
 /--
 Lemma `regionscolor`, composed C1/Hessian endpoint: the negative-semidefinite
@@ -17892,6 +18867,15 @@ theorem normRpowCost_nonneg {D : ℕ} (ν : SourceNorm D) (β : ℝ)
   unfold normRpowCost
   exact Real.rpow_nonneg (ν.nonneg p) β
 
+/-- Positive content scaling transports a homogeneous norm-power cost by the
+corresponding real power of the scale. -/
+theorem normRpowCost_scaleContent {D : ℕ} (ν : SourceNorm D) (β : ℝ)
+    {a : ℝ} (ha : 0 ≤ a) (p : Content D) :
+    normRpowCost ν β (scaleContent a p) =
+      a ^ β * normRpowCost ν β p := by
+  unfold normRpowCost
+  rw [ν.scale_nonneg ha, Real.mul_rpow ha (ν.nonneg p)]
+
 /--
 Scaled L2 cost identity for an arbitrary two-dimensional unit user pair.  It
 is the source cost equality in the original score coordinates, and therefore
@@ -19676,8 +20660,11 @@ theorem exists_correctedInfiniteTwoGenreContentEquilibrium_of_phaseThreshold_lt
     (htheta_pos : 0 < theta) (htheta_lt_half_pi : theta < Real.pi / 2)
     (hphase : twoUserPhaseThreshold theta < beta) :
     ∃ a C1 C2 A B phi : ℝ,
-      ∃ _ : CorrectedInfiniteTwoGenreContentEquilibrium
+      ∃ model : CorrectedInfiniteTwoGenreContentEquilibrium
         (infiniteGenreCandidateCdf a C1 C2 beta) beta theta,
+      model.firstGenre = infiniteGenreFirstGenre phi ∧
+      model.secondGenre = infiniteGenreSecondGenre theta phi ∧
+      model.firstGenre ≠ model.secondGenre ∧
       phi ∈ Set.Icc 0 (theta / 2) ∧
       IsMaxOn (twoUserCosPowerSum beta theta) (Set.Icc 0 (theta / 2)) phi ∧
       0 < a ∧ 0 < C2 ∧ C2 < 1 ∧
@@ -19755,12 +20742,34 @@ theorem exists_correctedInfiniteTwoGenreContentEquilibrium_of_phaseThreshold_lt
   have hA_angle : A = Real.cos phi := by rfl
   have hB_angle : B = Real.cos (theta - phi) := by rfl
   have hratio_eq : C2 = B / A := by rfl
-  refine ⟨a, C1, C2, A, B, phi, ?_, hphi, hmax, ha, hC2, hC2_one, hC1,
-    hbalance, hA_angle, hB_angle, hratio_eq⟩
-  exact infiniteGenreCandidate_correctedInfiniteTwoGenreContentEquilibrium_of_leftHalf_angle_max
+  let model :=
+    infiniteGenreCandidate_correctedInfiniteTwoGenreContentEquilibrium_of_leftHalf_angle_max
     ha hC2 hC2_one hbeta_pos hC1 hbalance hA hB hratio_eq hsin_theta
     htheta_pos htheta_lt_half_pi.le hbeta_one hcos_theta hphi_sin hother_sin
     hA_angle hB_angle hmax
+  have hfirst_eq : model.firstGenre = infiniteGenreFirstGenre phi := by rfl
+  have hsecond_eq : model.secondGenre = infiniteGenreSecondGenre theta phi := by rfl
+  have hgenres_ne : model.firstGenre ≠ model.secondGenre := by
+    intro hgenres_eq
+    have hcanonical : infiniteGenreFirstGenre phi =
+        infiniteGenreSecondGenre theta phi :=
+      hfirst_eq.symm.trans (hgenres_eq.trans hsecond_eq)
+    have hcos_eq : Real.cos phi = Real.cos (theta - phi) := by
+      have hcoordinate := congrArg (fun genre : Content 2 => genre (0 : Fin 2)) hcanonical
+      simpa [infiniteGenreFirstGenre, infiniteGenreSecondGenre, content2] using hcoordinate
+    have hB_eq_A : B = A := by
+      calc
+        B = Real.cos (theta - phi) := hB_angle
+        _ = Real.cos phi := hcos_eq.symm
+        _ = A := hA_angle.symm
+    have hC2_eq_one : C2 = 1 := by
+      calc
+        C2 = B / A := hratio_eq
+        _ = A / A := by rw [hB_eq_A]
+        _ = 1 := div_self hA.ne'
+    exact (ne_of_lt hC2_one) hC2_eq_one
+  exact ⟨a, C1, C2, A, B, phi, model, hfirst_eq, hsecond_eq, hgenres_ne,
+    hphi, hmax, ha, hC2, hC2_one, hC1, hbalance, hA_angle, hB_angle, hratio_eq⟩
 
 /-- The corrected two-genre infinite-producer objective in the source's full
 nonnegative ambient content space.  The users, genre directions, and deviation
@@ -23725,6 +24734,58 @@ def SourceNonzeroSupportGenres {D : ℕ} (ν : SourceNorm D)
     (μ : MixedContentStrategy D) : Set (Content D) :=
   {genre | ∃ p : Content D, p ∈ μ.support ∧ NonzeroContent p ∧
     genre = SourceNorm.normalizedContent ν p}
+
+/-- A common positive content scale preserves the normalized directions of all
+nonzero topological-support actions. -/
+theorem sourceNonzeroSupportGenres_scaleContent_map
+    {D : ℕ} (ν : SourceNorm D) {μ : MixedContentStrategy D} {a : ℝ}
+    (ha : 0 < a) :
+    SourceNonzeroSupportGenres ν (Measure.map (scaleContent a) μ) =
+      SourceNonzeroSupportGenres ν μ := by
+  ext genre
+  constructor
+  · rintro ⟨p, hp, hp_nonzero, rfl⟩
+    have ha_ne : a ≠ 0 := ha.ne'
+    have hinverseMap :
+        Measure.map (scaleContent a⁻¹) (Measure.map (scaleContent a) μ) = μ := by
+      calc
+        Measure.map (scaleContent a⁻¹) (Measure.map (scaleContent a) μ) =
+            Measure.map ((scaleContent a⁻¹) ∘ (scaleContent a)) μ :=
+          Measure.map_map (measurable_scaleContent a⁻¹) (measurable_scaleContent a)
+        _ = Measure.map id μ := by
+          apply Measure.map_congr
+          filter_upwards [] with q
+          simpa only [Function.comp_apply] using scaleContent_inv_scaleContent ha_ne q
+        _ = μ := Measure.map_id
+    have hp_back : scaleContent a⁻¹ p ∈ μ.support := by
+      have hmap := AppliedModelingLib.Probability.mem_support_map_of_continuous
+        (continuous_scaleContent a⁻¹) hp
+      rwa [hinverseMap] at hmap
+    have hp_back_nonzero : NonzeroContent (scaleContent a⁻¹ p) := by
+      rcases hp_nonzero with ⟨d, hd⟩
+      refine ⟨d, ?_⟩
+      intro hzero
+      apply hd
+      rw [← scaleContent_scaleContent_inv ha_ne p]
+      change a * (a⁻¹ * p d) = 0
+      change a⁻¹ * p d = 0 at hzero
+      rw [hzero, mul_zero]
+    refine ⟨scaleContent a⁻¹ p, hp_back, hp_back_nonzero, ?_⟩
+    calc
+      SourceNorm.normalizedContent ν p =
+          SourceNorm.normalizedContent ν (scaleContent a (scaleContent a⁻¹ p)) := by
+        rw [scaleContent_scaleContent_inv ha_ne p]
+      _ = SourceNorm.normalizedContent ν (scaleContent a⁻¹ p) :=
+        SourceNorm.normalizedContent_scaleContent_pos ν ha hp_back_nonzero
+  · rintro ⟨p, hp, hp_nonzero, rfl⟩
+    refine ⟨scaleContent a p,
+      AppliedModelingLib.Probability.mem_support_map_of_continuous
+        (continuous_scaleContent a) hp, ?_, ?_⟩
+    · rcases hp_nonzero with ⟨d, hd⟩
+      refine ⟨d, ?_⟩
+      change a * p d ≠ 0
+      exact mul_ne_zero ha.ne' hd
+    · exact (SourceNorm.normalizedContent_scaleContent_pos ν ha hp_nonzero).symm
 
 /--
 A corrected singleton nonzero-support-genre condition puts every support
@@ -28639,6 +29700,60 @@ def SourceSymmetricMixedNash {D N P : ℕ}
               (ExpectedUsersWonAgainstSymmetricMixed users j) cost q μ ≤
           SourceMixedPurePayoff
               (ExpectedUsersWonAgainstSymmetricMixed users j) cost p μ
+
+/-- A positive content dilation converts a symmetric mixed Nash law with the
+cost multiplier `a ^ beta` into the coefficient-one law on the pushed-forward
+strategy.  Both the iid-profile allocation and the support-action best-response
+condition are transported explicitly. -/
+theorem sourceSymmetricMixedNash_scaleContent_map_of_rpow_eq
+    {D N P : ℕ} {users : Fin N → Content D} {ν : SourceNorm D}
+    {μ : MixedContentStrategy D} {alpha beta a : ℝ}
+    (ha : 0 < a) (hscale_cost : a ^ beta = alpha)
+    (hnash : SourceSymmetricMixedNash (P := P) users
+      (fun p => alpha * normRpowCost ν beta p) μ) :
+    SourceSymmetricMixedNash (P := P) users
+      (normRpowCost ν beta) (Measure.map (scaleContent a) μ) := by
+  letI : IsProbabilityMeasure μ := hnash.1
+  letI : IsProbabilityMeasure (Measure.map (scaleContent a) μ) :=
+    Measure.isProbabilityMeasure_map (measurable_scaleContent a).aemeasurable
+  have ha_ne : a ≠ 0 := ha.ne'
+  have hinverseMap :
+      Measure.map (scaleContent a⁻¹) (Measure.map (scaleContent a) μ) = μ := by
+    calc
+      Measure.map (scaleContent a⁻¹) (Measure.map (scaleContent a) μ) =
+          Measure.map ((scaleContent a⁻¹) ∘ (scaleContent a)) μ :=
+        Measure.map_map (measurable_scaleContent a⁻¹) (measurable_scaleContent a)
+      _ = Measure.map id μ := by
+        apply Measure.map_congr
+        filter_upwards [] with p
+        simpa only [Function.comp_apply] using scaleContent_inv_scaleContent ha_ne p
+      _ = μ := Measure.map_id
+  refine ⟨inferInstance, ?_, ?_⟩
+  · intro p hp
+    have hp_back : scaleContent a⁻¹ p ∈ μ.support := by
+      have hmap := AppliedModelingLib.Probability.mem_support_map_of_continuous
+        (continuous_scaleContent a⁻¹) hp
+      rwa [hinverseMap] at hmap
+    rw [← scaleContent_scaleContent_inv ha_ne p]
+    exact scaleContent_nonnegative ha.le (hnash.2.1 hp_back)
+  · intro j p hp q hq
+    have hp_back : scaleContent a⁻¹ p ∈ μ.support := by
+      have hmap := AppliedModelingLib.Probability.mem_support_map_of_continuous
+        (continuous_scaleContent a⁻¹) hp
+      rwa [hinverseMap] at hmap
+    have hq_back : NonnegativeContent (scaleContent a⁻¹ q) :=
+      scaleContent_nonnegative (inv_nonneg.mpr ha.le) hq
+    have hbest := hnash.2.2 j (scaleContent a⁻¹ p) hp_back
+      (scaleContent a⁻¹ q) hq_back
+    unfold SourceMixedPurePayoff at hbest ⊢
+    rw [← scaleContent_scaleContent_inv ha_ne q,
+      ← scaleContent_scaleContent_inv ha_ne p,
+      expectedUsersWonAgainstSymmetricMixed_scaleContent_map ha,
+      expectedUsersWonAgainstSymmetricMixed_scaleContent_map ha,
+      normRpowCost_scaleContent ν beta ha.le,
+      normRpowCost_scaleContent ν beta ha.le,
+      hscale_cost]
+    exact hbest
 
 /-- Positive independent rescaling of user vectors leaves the source
 uniform-tie symmetric mixed-Nash predicate unchanged. -/
@@ -33658,6 +34773,142 @@ theorem exists_coordinateProductMaximizer_inPoweredUnitImage_lp
   exact ⟨y, hy, hymax⟩
 
 /--
+The product-condition form of the strict upper-threshold argument in Corollary
+`beta`.  A strict convex-hull product improvement contradicts the condition
+once compact source attainment supplies a maximizing source row.  This is the
+direct bridge from the fixed-exponent calculation to the source beta-star
+supremum.
+-/
+theorem not_singleGenreProductSupCondition_inPoweredUnitImage_of_lt_general_threshold
+    {D N : ℕ} [Nontrivial (Fin N)] {β Z : ℝ}
+    {users : Fin N → Content D} (ν : SourceNorm D)
+    (husers_nonnegative : ∀ i, NonnegativeContent (users i))
+    (hcompact_sublevels : SourceNormCompactSublevels ν)
+    (haggregate_bound : ∀ p : Content D, NonnegativeContent p → ν.norm p ≤ 1 →
+      (∑ i : Fin N, score (users i) p) ≤ Z)
+    (hdual_witness : ∀ i : Fin N, ∃ p : Content D,
+      NonnegativeContent p ∧ ν.norm p = 1 ∧ score (users i) p = 1)
+    (hZ_one_lt : 1 < Z) (hZ_lt_card : Z < (N : ℝ))
+    (hβ_bound : Real.log (N : ℝ) /
+        (Real.log (N : ℝ) - Real.log Z) < β) :
+    ¬ SingleGenreProductSupCondition
+      {z : Fin N → ℝ | InPoweredUnitImage users
+        (fun p => NonnegativeContent p ∧ ν.norm p ≤ 1) β z} := by
+  obtain ⟨hβ_pos, _⟩ :=
+    generalThreshold_scalar_strict_gap_of_lt_log_bound hZ_one_lt hZ_lt_card hβ_bound
+  let S : Set (Fin N → ℝ) :=
+    {z | InPoweredUnitImage users
+      (fun p => NonnegativeContent p ∧ ν.norm p ≤ 1) β z}
+  intro hproduct
+  have hproductS : SingleGenreProductSupCondition S := by
+    simpa [S] using hproduct
+  obtain ⟨x, hx⟩ :=
+    exists_coordinateProductMaximizer_inPoweredUnitImage_of_compactSublevels
+      users ν hcompact_sublevels hβ_pos.le
+  have hxS : IsCoordinateProductMaximizer S x := by
+    simpa [S] using hx
+  have hbounded : BddAbove (coordinateProduct '' convexHull ℝ S) := by
+    simpa [S] using
+      (bddAbove_coordinateProduct_image_convexHull_inPoweredUnitImage_of_compactSublevels
+        (ν := ν) husers_nonnegative hcompact_sublevels hβ_pos.le)
+  have hxHull : IsCoordinateProductMaximizer (convexHull ℝ S) x :=
+    isCoordinateProductMaximizer_convexHull_of_productSupCondition_of_bddAbove
+      hproductS hxS hbounded
+  obtain ⟨y, hy, hgap⟩ :=
+    exists_convexHull_poweredUnitImage_coordinateProduct_strict_gap_of_lt_general_threshold
+      ν husers_nonnegative haggregate_bound hdual_witness hZ_one_lt hZ_lt_card hβ_bound
+  exact (not_lt_of_ge (hxHull.2 y (by simpa [S] using hy)))
+    (hgap x (by simpa [S] using hxS.1))
+
+/--
+The product-condition version of the `Z = 1` endpoint in Corollary `beta`.
+As in the finite interior branch, compact source attainment turns the strict
+convex-hull improvement into a contradiction to the source beta-star
+condition.
+-/
+theorem not_singleGenreProductSupCondition_inPoweredUnitImage_of_Z_eq_one
+    {D N : ℕ} [Nontrivial (Fin N)] {β : ℝ}
+    {users : Fin N → Content D} (ν : SourceNorm D)
+    (husers_nonnegative : ∀ i, NonnegativeContent (users i))
+    (hcompact_sublevels : SourceNormCompactSublevels ν)
+    (haggregate_bound : ∀ p : Content D, NonnegativeContent p → ν.norm p ≤ 1 →
+      (∑ i : Fin N, score (users i) p) ≤ 1)
+    (hdual_witness : ∀ i : Fin N, ∃ p : Content D,
+      NonnegativeContent p ∧ ν.norm p = 1 ∧ score (users i) p = 1)
+    (hβ_one_lt : 1 < β) :
+    ¬ SingleGenreProductSupCondition
+      {z : Fin N → ℝ | InPoweredUnitImage users
+        (fun p => NonnegativeContent p ∧ ν.norm p ≤ 1) β z} := by
+  let S : Set (Fin N → ℝ) :=
+    {z | InPoweredUnitImage users
+      (fun p => NonnegativeContent p ∧ ν.norm p ≤ 1) β z}
+  have hβ_nonnegative : 0 ≤ β := le_trans zero_le_one hβ_one_lt.le
+  intro hproduct
+  have hproductS : SingleGenreProductSupCondition S := by
+    simpa [S] using hproduct
+  obtain ⟨x, hx⟩ :=
+    exists_coordinateProductMaximizer_inPoweredUnitImage_of_compactSublevels
+      users ν hcompact_sublevels hβ_nonnegative
+  have hxS : IsCoordinateProductMaximizer S x := by
+    simpa [S] using hx
+  have hbounded : BddAbove (coordinateProduct '' convexHull ℝ S) := by
+    simpa [S] using
+      (bddAbove_coordinateProduct_image_convexHull_inPoweredUnitImage_of_compactSublevels
+        (ν := ν) husers_nonnegative hcompact_sublevels hβ_nonnegative)
+  have hxHull : IsCoordinateProductMaximizer (convexHull ℝ S) x :=
+    isCoordinateProductMaximizer_convexHull_of_productSupCondition_of_bddAbove
+      hproductS hxS hbounded
+  obtain ⟨y, hy, hgap⟩ :=
+    exists_convexHull_poweredUnitImage_coordinateProduct_strict_gap_of_Z_eq_one
+      ν husers_nonnegative haggregate_bound hdual_witness hβ_one_lt
+  exact (not_lt_of_ge (hxHull.2 y (by simpa [S] using hy)))
+    (hgap x (by simpa [S] using hxS.1))
+
+/--
+The standard-basis sharpness half of Corollary `betap`: once the exponent
+exceeds `q`, the displayed strict convex-hull product improvement rules out
+the source product-supremum condition.  Compactness supplies the source
+product maximizer used to turn that strict gap into a contradiction.
+-/
+theorem not_singleGenreProductSupCondition_inPoweredUnitImage_standardBasis_lp_of_lt
+    {D : ℕ} [Nontrivial (Fin D)] {q β : ℝ}
+    (hq : 1 ≤ q) (hβ : q < β) :
+    ¬ SingleGenreProductSupCondition
+      {z : Fin D → ℝ |
+        InPoweredUnitImage (standardBasisUsers D)
+          (fun p => NonnegativeContent p ∧
+            AppliedModelingLib.FiniteDimensionalNorms.lp q p ≤ 1) β z} := by
+  let S : Set (Fin D → ℝ) :=
+    {z | InPoweredUnitImage (standardBasisUsers D)
+      (fun p => NonnegativeContent p ∧
+        AppliedModelingLib.FiniteDimensionalNorms.lp q p ≤ 1) β z}
+  let hq_pos : 0 < q := lt_of_lt_of_le zero_lt_one hq
+  have hβ_nonnegative : 0 ≤ β := by linarith
+  have husers_nonnegative : ∀ i : Fin D, NonnegativeContent (standardBasisUsers D i) := by
+    intro i
+    simpa [standardBasisUsers] using standardBasisContent_nonnegative D i
+  intro hproduct
+  have hproductS : SingleGenreProductSupCondition S := by
+    simpa [S] using hproduct
+  obtain ⟨x, hx⟩ :=
+    exists_coordinateProductMaximizer_inPoweredUnitImage_lp
+      (standardBasisUsers D) hq_pos hβ_nonnegative
+  have hxS : IsCoordinateProductMaximizer S x := by
+    simpa [S] using hx
+  have hbounded : BddAbove (coordinateProduct '' convexHull ℝ S) := by
+    simpa [S, SourceNorm.lp] using
+      (bddAbove_coordinateProduct_image_convexHull_inPoweredUnitImage_of_compactSublevels
+        (ν := SourceNorm.lp D hq_pos) husers_nonnegative
+        (SourceNorm.lp_compactSublevels hq_pos) hβ_nonnegative)
+  have hxHull : IsCoordinateProductMaximizer (convexHull ℝ S) x :=
+    isCoordinateProductMaximizer_convexHull_of_productSupCondition_of_bddAbove
+      hproductS hxS hbounded
+  obtain ⟨y, hy, hgap⟩ :=
+    standardBasis_convexHull_coordinateProduct_strict_gap (D := D) hq_pos hβ
+  exact (not_lt_of_ge (hxHull.2 y (by simpa [S] using hy)))
+    (hgap x (by simpa [S] using hxS.1))
+
+/--
 At `β = q ≥ 1`, compact source-side attainment and the `Lq` barycenter
 domination theorem together produce an attained coordinate-product maximizer
 over the convex hull as well.  No independent compactness theorem for the
@@ -34846,6 +36097,86 @@ theorem twoUserScore_firstUserRay_le_of_isMaxOn_of_mono_secondReward
           twoUserInducedCost α β θ z1 (Real.cos θ * z1) := by
     linarith
   exact (not_lt_of_ge (hmax hq_feasible)) hobjective_lt
+
+/-- C1 itself supplies the closed user-cone condition used by `regionscolor`.
+A support score outside either ray boundary can be improved by the corresponding
+user ray, because the other marginal CDF is monotone and induced cost strictly
+falls.  This is the source-to-cone bridge in the original score coordinates. -/
+theorem twoUser_slope_crossPartial_nonpos_of_isMaxOn_graph
+    {u v : Content 2} {H1 H2 g : ℝ → ℝ} {S : Set (ℝ × ℝ)}
+    {α β θ a b x g' : ℝ}
+    (hu_nonnegative : NonnegativeContent u)
+    (hv_nonnegative : NonnegativeContent v)
+    (hu : score u u = 1) (hv : score v v = 1)
+    (huv : score u v = Real.cos θ)
+    (hα : 0 < α) (hβ : 0 < β) (hsin : 0 < Real.sin θ)
+    (hH1_mono : Monotone H1) (hH2_mono : Monotone H2)
+    (hSnonnegative : ∀ z : ℝ × ℝ, z ∈ S → 0 ≤ z.1 ∧ 0 ≤ z.2)
+    (hxI : x ∈ Set.Ioo a b) (hx : 0 < x)
+    (hderiv : HasDerivAt g g' x)
+    (hgraph : ∀ w ∈ Set.Ioo a b, (w, g w) ∈ S)
+    (hmax : ∀ z : ℝ × ℝ, z ∈ S →
+      IsMaxOn (fun w : ℝ × ℝ => H1 w.1 + H2 w.2 -
+        twoUserInducedCost α β θ w.1 w.2) (twoUserScoreFeasibleSet u v) z) :
+    g' * twoUserInducedCostCrossPartial α β θ x (g x) ≤ 0 := by
+  have hcos : 0 ≤ Real.cos θ := by
+    rw [← huv]
+    exact score_nonneg_of_nonnegative hu_nonnegative hv_nonnegative
+  have hScone : S ⊆ twoUserClosedUserCone θ := by
+    intro z hz
+    obtain ⟨hz1, hz2⟩ := hSnonnegative z hz
+    constructor
+    · exact twoUserScore_secondUserRay_le_of_isMaxOn_of_mono_firstReward
+        (hmax z hz) hz2 hv_nonnegative hv huv hα hβ hsin hH1_mono
+    · exact twoUserScore_firstUserRay_le_of_isMaxOn_of_mono_secondReward
+        (hmax z hz) hz1 hu_nonnegative hu huv hα hβ hsin hH2_mono
+  exact twoUser_slope_crossPartial_nonpos_of_isMaxOn_graph_of_cone
+    hu_nonnegative hv_nonnegative hu hv huv hα hβ hsin hcos hxI hx hderiv hgraph hScone hmax
+
+/-- Literal C1-graph form of `regionscolor`.  The support-score nonnegativity
+and monotonicity of the two source CDFs derive the closed cone, rather than
+being added as a separate geometric hypothesis. -/
+theorem twoUser_regionscolor_param_bracket_nonpos_of_C1_graph
+    {u v : Content 2} {H1 H2 g : ℝ → ℝ} {S : Set (ℝ × ℝ)}
+    {α β θ φ r a b x slope : ℝ}
+    (hu_nonnegative : NonnegativeContent u)
+    (hv_nonnegative : NonnegativeContent v)
+    (hu : score u u = 1) (hv : score v v = 1)
+    (huv : score u v = Real.cos θ)
+    (hα : 0 < α) (hβ : 0 < β) (hsin : 0 < Real.sin θ)
+    (hH1_mono : Monotone H1) (hH2_mono : Monotone H2)
+    (hSnonnegative : ∀ z : ℝ × ℝ, z ∈ S → 0 ≤ z.1 ∧ 0 ≤ z.2)
+    (hxI : x ∈ Set.Ioo a b)
+    (hxparam : x = r * Real.cos φ)
+    (hgparam : g x = r * Real.cos (θ - φ))
+    (hderiv : HasDerivAt g slope x)
+    (hgraph : ∀ w ∈ Set.Ioo a b, (w, g w) ∈ S)
+    (hmax : ∀ z : ℝ × ℝ, z ∈ S →
+      IsMaxOn (fun w : ℝ × ℝ => H1 w.1 + H2 w.2 -
+        twoUserInducedCost α β θ w.1 w.2) (twoUserScoreFeasibleSet u v) z) :
+    slope * twoUserSecondDerivSignBracket β θ φ ≤ 0 := by
+  have hx : 0 < x := by
+    by_contra hnot
+    have hxnonpos : x ≤ 0 := le_of_not_gt hnot
+    let y : ℝ := (a + x) / 2
+    have hyI : y ∈ Set.Ioo a b := by
+      constructor <;> dsimp [y] <;> linarith [hxI.1, hxI.2]
+    have hy_nonnegative := (hSnonnegative (y, g y) (hgraph y hyI)).1
+    dsimp [y] at hy_nonnegative
+    linarith [hxI.1]
+  have hr : r ≠ 0 := by
+    intro hr
+    rw [hr, zero_mul] at hxparam
+    linarith
+  have hNpos : 0 < r ^ 2 * (Real.sin θ) ^ 2 :=
+    mul_pos (sq_pos_of_ne_zero hr) (sq_pos_of_pos hsin)
+  apply twoUser_regionscolor_param_bracket_nonpos_of_cross_nonpos
+    hα hβ hsin hNpos
+  have hcross := twoUser_slope_crossPartial_nonpos_of_isMaxOn_graph
+    hu_nonnegative hv_nonnegative hu hv huv hα hβ hsin hH1_mono hH2_mono hSnonnegative
+    hxI hx hderiv hgraph hmax
+  rw [hgparam, hxparam] at hcross
+  exact hcross
 
 /--
 Arbitrary-dimensional, cone-safe first score inequality at a support action.
@@ -45314,14 +46645,15 @@ The convention is explicit because an unrestricted real-valued trigonometric
 parameter would not determine a unique polar angle.
 -/
 theorem finiteGenre_angle_mem_Icc_zero_theta_of_scaledNormRpowCostNash_of_angle_mem_Icc_zero_pi_div_two
-    {G P : ℕ} [Nonempty (Fin P)] {beta theta : ℝ}
+    {G P : ℕ} [Nonempty (Fin P)] {alpha beta theta : ℝ}
     {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu] {angle : Fin G → ℝ}
     (law : FiniteGenreConditionalNormLaw mu angle)
-    (hbeta : 0 < beta) (htheta_pos : 0 < theta) (htheta_le : theta ≤ Real.pi / 2)
+    (hbeta : 0 < beta) (halpha : 0 < alpha)
+    (htheta_pos : 0 < theta) (htheta_le : theta ≤ Real.pi / 2)
     (hangle_chart : ∀ i, angle i ∈ Set.Icc 0 (Real.pi / 2))
     (hnash : SourceSymmetricMixedNash (P := P)
       (fun j : Fin 2 => if j = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta)
-      (normRpowCost (SourceNorm.l2 2) beta) mu)
+      (fun p => alpha * normRpowCost (SourceNorm.l2 2) beta p) mu)
     (hscore_ac : ∀ j : Fin 2,
       Measure.map
         (fun q : Content 2 =>
@@ -45371,13 +46703,13 @@ theorem finiteGenre_angle_mem_Icc_zero_theta_of_scaledNormRpowCostNash_of_angle_
         _ = r * Real.cos (theta - angle i) := by rw [Real.cos_sub]
   have hmax :=
     canonicalTwoUser_isMaxOn_iidMaximumCdfObjective_of_scaledNormRpowCostNash
-      (α := 1) hsin (by simpa using hnash) hscore_ac
+      (α := alpha) (β := beta) (θ := theta) hsin hnash hscore_ac
       (r * Real.cos (angle i), r * Real.cos (theta - angle i)) hz_support
   letI : IsProbabilityMeasure
       (Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) mu) :=
     Measure.isProbabilityMeasure_map (measurable_score_content _).aemeasurable
   have hcone := canonicalTwoUser_secondUserSlope_le_of_isMaxOn_of_mono_rewards
-    hmax hz_feasible zero_lt_one hbeta hsin hcos_theta
+    hmax hz_feasible halpha hbeta hsin hcos_theta
     (AppliedModelingLib.Probability.iidMaximumCdf_mono
       (n := P - 1)
       (Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) mu))
@@ -48757,8 +50089,8 @@ theorem exists_correctedInfiniteTwoGenreGeneralContentEquilibrium_of_phaseThresh
     twoUser_two_lt_beta_of_phaseThreshold_lt_beta hden hcos hphase
   have hbeta_pos : 0 < beta := by linarith
   have hbeta_one : 1 ≤ beta := by linarith
-  obtain ⟨a, C1, C2, A, B, phi, _hcanonical, hphi, hmax, ha, hC2, hC2_one,
-    hC1, hbalance, hA, hB, hratio⟩ :=
+  obtain ⟨a, C1, C2, A, B, phi, _hcanonical, _hfirst, _hsecond, _hdistinct,
+    hphi, hmax, ha, hC2, hC2_one, hC1, hbalance, hA, hB, hratio⟩ :=
     exists_correctedInfiniteTwoGenreContentEquilibrium_of_phaseThreshold_lt
       htheta_pos htheta_lt_half_pi hphase
   have hA_pos : 0 < A := by
@@ -50040,7 +51372,7 @@ theorem finiteGenreFirstAngleLabel_ne_of_lt_orthogonal
 would imply the source's product-sup condition on powered unit-score vectors,
 whereas the strict above-phase inequality rules that condition out.  The proof
 covers both acute and orthogonal user angles. -/
-theorem no_singletonGenre_scaledNormRpowCostNash_abovePhase
+theorem no_singletonGenre_normRpowCostNash_abovePhase
     {P : ℕ} [Nonempty (Fin P)] {beta theta : ℝ}
     {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu]
     (hP : 1 < P) (htheta_pos : 0 < theta)
@@ -50095,6 +51427,44 @@ theorem no_singletonGenre_scaledNormRpowCostNash_abovePhase
     husers_nonnegative hfirst_unit hsecond_unit hcross hbeta_one
     hphase_mul htheta_pos htheta_le) hproduct
 
+/-- Positive homogeneous cost multipliers can be removed by a common content
+rescaling.  The game preserves all ordinal winning events, while
+`a ^ beta = alpha` sends the multiplied norm-power cost back to unit scale. -/
+theorem no_singletonGenre_scaledNormRpowCostNash_abovePhase
+    {P : ℕ} [Nonempty (Fin P)] {alpha beta theta : ℝ}
+    {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu]
+    (hP : 1 < P) (htheta_pos : 0 < theta)
+    (htheta_le : theta ≤ Real.pi / 2)
+    (halpha : 0 < alpha) (hbeta : 0 < beta) (hbeta_one : 1 ≤ beta)
+    (hphase_mul : 2 < beta * (1 - Real.cos theta))
+    (hnash : SourceSymmetricMixedNash (P := P)
+      (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta)
+      (fun p => alpha * normRpowCost (SourceNorm.l2 2) beta p) mu)
+    {genre : Content 2}
+    (hgenres : SourceNonzeroSupportGenres (SourceNorm.l2 2) mu ⊆
+      ({genre} : Set (Content 2))) :
+    False := by
+  let a : ℝ := alpha ^ beta⁻¹
+  have ha : 0 < a := Real.rpow_pos_of_pos halpha _
+  have hscale_cost : a ^ beta = alpha := by
+    dsimp [a]
+    exact Real.rpow_inv_rpow halpha.le hbeta.ne'
+  let nu : MixedContentStrategy 2 := Measure.map (scaleContent a) mu
+  letI : IsProbabilityMeasure nu :=
+    Measure.isProbabilityMeasure_map (measurable_scaleContent a).aemeasurable
+  have hnash_unit : SourceSymmetricMixedNash (P := P)
+      (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta)
+      (normRpowCost (SourceNorm.l2 2) beta) nu := by
+    simpa [nu] using
+      sourceSymmetricMixedNash_scaleContent_map_of_rpow_eq ha hscale_cost hnash
+  have hgenres_unit : SourceNonzeroSupportGenres (SourceNorm.l2 2) nu ⊆
+      ({genre} : Set (Content 2)) := by
+    rw [show nu = Measure.map (scaleContent a) mu by rfl,
+      sourceNonzeroSupportGenres_scaleContent_map (SourceNorm.l2 2) ha]
+    exact hgenres
+  exact no_singletonGenre_normRpowCostNash_abovePhase
+    hP htheta_pos htheta_le hbeta hbeta_one hphase_mul hnash_unit hgenres_unit
+
 /-- Proposition `finitegenre` in the canonical two-user model.  Above the
 source phase threshold, no Nash law satisfying the finite conditional radial
 decomposition can have finitely many distinct nonzero support genres.
@@ -50103,17 +51473,18 @@ The proof derives the two score-support intervals and common FOC labels from
 the Nash condition, treats the orthogonal endpoint separately, reduces the
 acute case to at most two genres, and closes the singleton and both ordered
 two-genre branches by their respective analytic contradictions. -/
-theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase
+theorem no_finiteGenreConditionalNormLaw_of_scaledNormRpowCostNash_abovePhase
     {P G : ℕ} [Nonempty (Fin P)] [Nonempty (Fin G)]
-    {beta theta : ℝ} {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu]
+    {alpha beta theta : ℝ} {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu]
     (angle : Fin G → ℝ) (law : FiniteGenreConditionalNormLaw mu angle)
     (hangle_injective : Function.Injective angle)
     (hP : 1 < P) (htheta_pos : 0 < theta)
     (htheta_le : theta ≤ Real.pi / 2)
+    (halpha : 0 < alpha)
     (hphase : twoUserPhaseThreshold theta < beta)
     (hnash : SourceSymmetricMixedNash (P := P)
       (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta)
-      (normRpowCost (SourceNorm.l2 2) beta) mu)
+      (fun p => alpha * normRpowCost (SourceNorm.l2 2) beta p) mu)
     (hscore_ac : ∀ i : Fin 2,
       Measure.map
         (fun q : Content 2 =>
@@ -50206,12 +51577,11 @@ theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase
         (by norm_num)).hasDerivAt
   have hnash_scaled : SourceSymmetricMixedNash (P := P)
       (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta)
-      (fun p => 1 * normRpowCost (SourceNorm.l2 2) beta p) mu := by
-    simpa using hnash
+      (fun p => alpha * normRpowCost (SourceNorm.l2 2) beta p) mu := hnash
   obtain ⟨B1, B2, epsilon1, epsilon2, hB1, hB2, hepsilon1, hepsilon2,
       hfirst_support, hsecond_support, hlabels⟩ :=
     finiteGenre_exists_scoreIntervals_and_angleLabel_eq_of_finiteGenres
-      (ν := SourceNorm.l2 2) angle zero_lt_one hbeta_pos hsin hcos_nonneg
+      (ν := SourceNorm.l2 2) angle halpha hbeta_pos hsin hcos_nonneg
       htheta_lt_pi hnash_scaled hscore_ac hinterior hderiv1 hderiv2
       hangle_pos hangle_lt hcos_first hcos_second hgenres
   have singleton_contradiction (hcard_one : Fintype.card (Fin G) ≤ 1) : False := by
@@ -50225,7 +51595,8 @@ theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase
       simp only [Set.mem_singleton_iff]
       rw [Subsingleton.elim i i0]
     exact no_singletonGenre_scaledNormRpowCostNash_abovePhase
-      hP htheta_pos htheta_le hbeta_pos (by linarith) hphase_mul hnash hgenres_single
+      hP htheta_pos htheta_le halpha hbeta_pos (by linarith) hphase_mul
+        hnash hgenres_single
   by_cases horth : theta = Real.pi / 2
   · have hcard_one : Fintype.card (Fin G) ≤ 1 := by
       apply Fintype.card_le_one_iff_subsingleton.mpr
@@ -50272,7 +51643,7 @@ theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase
           funext i
           fin_cases i <;> simp
         exact no_twoGenreConditionalNormLaw_of_scaledNormRpowCostNash
-          law.toTwoGenre hP zero_lt_one hbeta_pos (hangle_pos 0) hstraddle.1
+          law.toTwoGenre hP halpha hbeta_pos (hangle_pos 0) hstraddle.1
           hstraddle.2 (hangle_lt 1) htheta_le hnash_scaled hscore_ac
           hinterior hderiv1 hderiv2 hgenres_two
       · have hstraddle :=
@@ -50295,25 +51666,62 @@ theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase
             · exact ⟨1, by simp⟩
             · exact ⟨0, by simp⟩
         exact no_twoGenreConditionalNormLaw_of_scaledNormRpowCostNash
-          law.toTwoGenre.swap hP zero_lt_one hbeta_pos (hangle_pos 1) hstraddle.1
+          law.toTwoGenre.swap hP halpha hbeta_pos (hangle_pos 1) hstraddle.1
           hstraddle.2 (hangle_lt 0) htheta_le hnash_scaled hscore_ac
           hinterior hderiv1 hderiv2 hgenres_two
+
+/-- Unit-cost specialization of the finite-genre capstone. -/
+theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase
+    {P G : ℕ} [Nonempty (Fin P)] [Nonempty (Fin G)]
+    {beta theta : ℝ} {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu]
+    (angle : Fin G → ℝ) (law : FiniteGenreConditionalNormLaw mu angle)
+    (hangle_injective : Function.Injective angle)
+    (hP : 1 < P) (htheta_pos : 0 < theta)
+    (htheta_le : theta ≤ Real.pi / 2)
+    (hphase : twoUserPhaseThreshold theta < beta)
+    (hnash : SourceSymmetricMixedNash (P := P)
+      (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta)
+      (normRpowCost (SourceNorm.l2 2) beta) mu)
+    (hscore_ac : ∀ i : Fin 2,
+      Measure.map
+        (fun q : Content 2 =>
+          score (if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta) q) mu ≪
+        volume)
+    (hcdf1 : ∀ z : ℝ × ℝ,
+      z ∈ (Measure.map (canonicalTwoUserValueMap theta) mu).support → z ≠ (0, 0) →
+      ContDiffAt ℝ 2
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) mu)) z.1)
+    (hcdf2 : ∀ z : ℝ × ℝ,
+      z ∈ (Measure.map (canonicalTwoUserValueMap theta) mu).support → z ≠ (0, 0) →
+      ContDiffAt ℝ 2
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content 2 => score (canonicalTwoUserSecond theta) q) mu)) z.2)
+    (hangle_pos : ∀ i, 0 < angle i)
+    (hangle_lt : ∀ i, angle i < theta)
+    (hgenres : SourceNonzeroSupportGenres (SourceNorm.l2 2) mu =
+      Set.range (fun i => content2 (Real.cos (angle i)) (Real.sin (angle i)))) :
+    False := by
+  exact no_finiteGenreConditionalNormLaw_of_scaledNormRpowCostNash_abovePhase
+    angle law hangle_injective hP htheta_pos htheta_le zero_lt_one hphase
+    (by simpa using hnash) hscore_ac hcdf1 hcdf2 hangle_pos hangle_lt hgenres
 
 /--
 Acute-angle completion of the finite-genre endpoint repair.  Once C1 has
 provided the source's closed angle-cone inclusion, the two endpoint theorems
 upgrade it to the strict angle range required by the finite-genre capstone.
 -/
-theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase_of_angle_mem_Icc
+theorem no_finiteGenreConditionalNormLaw_of_scaledNormRpowCostNash_abovePhase_of_angle_mem_Icc
     {P G : ℕ} [Nonempty (Fin P)] [Nonempty (Fin G)]
-    {beta theta : ℝ} {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu]
+    {alpha beta theta : ℝ} {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu]
     (angle : Fin G → ℝ) (law : FiniteGenreConditionalNormLaw mu angle)
     (hangle_injective : Function.Injective angle)
     (hP : 1 < P) (htheta_pos : 0 < theta) (htheta_lt : theta < Real.pi / 2)
+    (halpha : 0 < alpha)
     (hphase : twoUserPhaseThreshold theta < beta)
     (hnash : SourceSymmetricMixedNash (P := P)
       (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta)
-      (normRpowCost (SourceNorm.l2 2) beta) mu)
+      (fun p => alpha * normRpowCost (SourceNorm.l2 2) beta p) mu)
     (hscore_ac : ∀ i : Fin 2,
       Measure.map
         (fun q : Content 2 =>
@@ -50350,19 +51758,19 @@ theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase_of_angle
   have hangle_ne_zero : ∀ i, angle i ≠ 0 := by
     intro i
     exact finiteGenre_angle_ne_zero_of_scaledNormRpowCostNash
-      (alpha := 1) law hP hsin hcos_second (by simpa using hnash) hscore_ac i
+      (alpha := alpha) law hP hsin hcos_second hnash hscore_ac i
   have hangle_ne_theta : ∀ i, angle i ≠ theta := by
     intro i
     exact finiteGenre_angle_ne_theta_of_scaledNormRpowCostNash
-      (alpha := 1) law hP hsin hcos_first (by simpa using hnash) hscore_ac i
+      (alpha := alpha) law hP hsin hcos_first hnash hscore_ac i
   have hangle_pos : ∀ i, 0 < angle i := by
     intro i
     exact lt_of_le_of_ne (hangle_range i).1 (Ne.symm (hangle_ne_zero i))
   have hangle_lt : ∀ i, angle i < theta := by
     intro i
     exact lt_of_le_of_ne (hangle_range i).2 (hangle_ne_theta i)
-  exact no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase
-    angle law hangle_injective hP htheta_pos htheta_le hphase hnash hscore_ac
+  exact no_finiteGenreConditionalNormLaw_of_scaledNormRpowCostNash_abovePhase
+    angle law hangle_injective hP htheta_pos htheta_le halpha hphase hnash hscore_ac
     hcdf1 hcdf2 hangle_pos hangle_lt hgenres
 
 /--
@@ -50371,16 +51779,17 @@ representation.  The `Icc 0 (pi / 2)` convention is the formal counterpart
 of the source's `acos` definition of a nonnegative content genre; C1 then
 derives the sharper closed interval `Icc 0 theta` used by the endpoint proof.
 -/
-theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase_of_angle_mem_Icc_zero_pi_div_two
+theorem no_finiteGenreConditionalNormLaw_of_scaledNormRpowCostNash_abovePhase_of_angle_mem_Icc_zero_pi_div_two
     {P G : ℕ} [Nonempty (Fin P)] [Nonempty (Fin G)]
-    {beta theta : ℝ} {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu]
+    {alpha beta theta : ℝ} {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu]
     (angle : Fin G → ℝ) (law : FiniteGenreConditionalNormLaw mu angle)
     (hangle_injective : Function.Injective angle)
     (hP : 1 < P) (htheta_pos : 0 < theta) (htheta_lt : theta < Real.pi / 2)
+    (halpha : 0 < alpha)
     (hphase : twoUserPhaseThreshold theta < beta)
     (hnash : SourceSymmetricMixedNash (P := P)
       (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta)
-      (normRpowCost (SourceNorm.l2 2) beta) mu)
+      (fun p => alpha * normRpowCost (SourceNorm.l2 2) beta p) mu)
     (hscore_ac : ∀ i : Fin 2,
       Measure.map
         (fun q : Content 2 =>
@@ -50422,11 +51831,11 @@ theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase_of_angle
     · exact h.1
     · linarith
   have hangle_range : ∀ i, angle i ∈ Set.Icc 0 theta := by
-    intro i
-    exact finiteGenre_angle_mem_Icc_zero_theta_of_scaledNormRpowCostNash_of_angle_mem_Icc_zero_pi_div_two
-      law hbeta_pos htheta_pos htheta_le hangle_chart hnash hscore_ac i
-  exact no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase_of_angle_mem_Icc
-    angle law hangle_injective hP htheta_pos htheta_lt hphase hnash hscore_ac
+      intro i
+      exact finiteGenre_angle_mem_Icc_zero_theta_of_scaledNormRpowCostNash_of_angle_mem_Icc_zero_pi_div_two
+        (alpha := alpha) law hbeta_pos halpha htheta_pos htheta_le hangle_chart hnash hscore_ac i
+  exact no_finiteGenreConditionalNormLaw_of_scaledNormRpowCostNash_abovePhase_of_angle_mem_Icc
+    angle law hangle_injective hP htheta_pos htheta_lt halpha hphase hnash hscore_ac
     hcdf1 hcdf2 hangle_range hgenres
 
 /--
@@ -51393,17 +52802,18 @@ from C1 and excludes both endpoints by the finite CDF argument.  At the
 orthogonal endpoint, the same exclusions instead follow from the forced score
 atom at zero, so no division by a vanishing cosine is used.
 -/
-theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase_of_principalAngleChart
+theorem no_finiteGenreConditionalNormLaw_of_scaledNormRpowCostNash_abovePhase_of_principalAngleChart
     {P G : ℕ} [Nonempty (Fin P)] [Nonempty (Fin G)]
-    {beta theta : ℝ} {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu]
+    {alpha beta theta : ℝ} {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu]
     (angle : Fin G → ℝ) (law : FiniteGenreConditionalNormLaw mu angle)
     (hangle_injective : Function.Injective angle)
     (hP : 1 < P) (htheta_pos : 0 < theta)
     (htheta_le : theta ≤ Real.pi / 2)
+    (halpha : 0 < alpha)
     (hphase : twoUserPhaseThreshold theta < beta)
     (hnash : SourceSymmetricMixedNash (P := P)
       (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta)
-      (normRpowCost (SourceNorm.l2 2) beta) mu)
+      (fun p => alpha * normRpowCost (SourceNorm.l2 2) beta p) mu)
     (hscore_ac : ∀ i : Fin 2,
       Measure.map
         (fun q : Content 2 =>
@@ -51447,7 +52857,7 @@ theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase_of_princ
     have hangle_range : ∀ i, angle i ∈ Set.Icc 0 theta := by
       intro i
       exact finiteGenre_angle_mem_Icc_zero_theta_of_scaledNormRpowCostNash_of_angle_mem_Icc_zero_pi_div_two
-        law hbeta_pos htheta_pos htheta_le hangle_chart hnash hscore_ac i
+        law hbeta_pos halpha htheta_pos htheta_le hangle_chart hnash hscore_ac i
     have hangle_ne_zero : ∀ i, angle i ≠ 0 := by
       intro i
       exact finiteGenre_angle_ne_zero_of_secondScore_absContinuous_of_orthogonal
@@ -51462,14 +52872,49 @@ theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase_of_princ
     have hangle_lt : ∀ i, angle i < theta := by
       intro i
       exact lt_of_le_of_ne (hangle_range i).2 (hangle_ne_theta i)
-    exact no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase
-      angle law hangle_injective hP htheta_pos htheta_le hphase hnash hscore_ac
+    exact no_finiteGenreConditionalNormLaw_of_scaledNormRpowCostNash_abovePhase
+      angle law hangle_injective hP htheta_pos htheta_le halpha hphase hnash hscore_ac
       hcdf1 hcdf2 hangle_pos hangle_lt hgenres
   · have htheta_lt : theta < Real.pi / 2 :=
       lt_of_le_of_ne htheta_le horthogonal
-    exact no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase_of_angle_mem_Icc_zero_pi_div_two
-      angle law hangle_injective hP htheta_pos htheta_lt hphase hnash hscore_ac
+    exact no_finiteGenreConditionalNormLaw_of_scaledNormRpowCostNash_abovePhase_of_angle_mem_Icc_zero_pi_div_two
+      angle law hangle_injective hP htheta_pos htheta_lt halpha hphase hnash hscore_ac
       hcdf1 hcdf2 hangle_chart hgenres
+
+/-- Unit-cost specialization of the principal-angle finite-genre capstone. -/
+theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase_of_principalAngleChart
+    {P G : ℕ} [Nonempty (Fin P)] [Nonempty (Fin G)]
+    {beta theta : ℝ} {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu]
+    (angle : Fin G → ℝ) (law : FiniteGenreConditionalNormLaw mu angle)
+    (hangle_injective : Function.Injective angle)
+    (hP : 1 < P) (htheta_pos : 0 < theta)
+    (htheta_le : theta ≤ Real.pi / 2)
+    (hphase : twoUserPhaseThreshold theta < beta)
+    (hnash : SourceSymmetricMixedNash (P := P)
+      (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta)
+      (normRpowCost (SourceNorm.l2 2) beta) mu)
+    (hscore_ac : ∀ i : Fin 2,
+      Measure.map
+        (fun q : Content 2 =>
+          score (if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta) q) mu ≪
+        volume)
+    (hcdf1 : ∀ z : ℝ × ℝ,
+      z ∈ (Measure.map (canonicalTwoUserValueMap theta) mu).support → z ≠ (0, 0) →
+      ContDiffAt ℝ 2
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) mu)) z.1)
+    (hcdf2 : ∀ z : ℝ × ℝ,
+      z ∈ (Measure.map (canonicalTwoUserValueMap theta) mu).support → z ≠ (0, 0) →
+      ContDiffAt ℝ 2
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content 2 => score (canonicalTwoUserSecond theta) q) mu)) z.2)
+    (hangle_chart : ∀ i, angle i ∈ Set.Icc 0 (Real.pi / 2))
+    (hgenres : SourceNonzeroSupportGenres (SourceNorm.l2 2) mu =
+      Set.range (fun i => content2 (Real.cos (angle i)) (Real.sin (angle i)))) :
+    False := by
+  exact no_finiteGenreConditionalNormLaw_of_scaledNormRpowCostNash_abovePhase_of_principalAngleChart
+    angle law hangle_injective hP htheta_pos htheta_le zero_lt_one hphase
+    (by simpa using hnash) hscore_ac hcdf1 hcdf2 hangle_chart hgenres
 
 /--
 The principal-angle finite-genre capstone with the source's direct C2
@@ -51478,6 +52923,45 @@ at every point of its own topological support.  Coordinate support transport
 supplies the value-space regularity consumed by the C1/FOC proof, and the
 finite radial decomposition itself identifies the realized genre set.
 -/
+theorem no_finiteGenreConditionalNormLaw_of_scaledNormRpowCostNash_abovePhase_of_principalAngleChart_of_scoreCdfContDiffAtOnSupport
+    {P G : ℕ} [Nonempty (Fin P)] [Nonempty (Fin G)]
+    {alpha beta theta : ℝ} {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu]
+    (angle : Fin G → ℝ) (law : FiniteGenreConditionalNormLaw mu angle)
+    (hangle_injective : Function.Injective angle)
+    (hP : 1 < P) (htheta_pos : 0 < theta)
+    (htheta_le : theta ≤ Real.pi / 2)
+    (halpha : 0 < alpha)
+    (hphase : twoUserPhaseThreshold theta < beta)
+    (hnash : SourceSymmetricMixedNash (P := P)
+      (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta)
+      (fun p => alpha * normRpowCost (SourceNorm.l2 2) beta p) mu)
+    (hscore_ac : ∀ i : Fin 2,
+      Measure.map
+        (fun q : Content 2 =>
+          score (if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta) q) mu ≪
+        volume)
+    (hcdf1 : ∀ x,
+      x ∈ (Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) mu).support →
+      ContDiffAt ℝ 2
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) mu)) x)
+    (hcdf2 : ∀ x,
+      x ∈ (Measure.map (fun q : Content 2 => score (canonicalTwoUserSecond theta) q) mu).support →
+      ContDiffAt ℝ 2
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content 2 => score (canonicalTwoUserSecond theta) q) mu)) x)
+    (hangle_chart : ∀ i, angle i ∈ Set.Icc 0 (Real.pi / 2)) :
+    False := by
+  apply no_finiteGenreConditionalNormLaw_of_scaledNormRpowCostNash_abovePhase_of_principalAngleChart
+    angle law hangle_injective hP htheta_pos htheta_le halpha hphase hnash hscore_ac
+  · intro z hz _
+    exact hcdf1 z.1 (canonicalTwoUser_firstScore_mem_support_of_mem_valueSupport hz)
+  · intro z hz _
+    exact hcdf2 z.2 (canonicalTwoUser_secondScore_mem_support_of_mem_valueSupport hz)
+  · exact hangle_chart
+  · exact law.nonzeroSupportGenres_eq_angleRange
+
+/-- Unit-cost specialization with the source's raw-score C2 regularity. -/
 theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase_of_principalAngleChart_of_scoreCdfContDiffAtOnSupport
     {P G : ℕ} [Nonempty (Fin P)] [Nonempty (Fin G)]
     {beta theta : ℝ} {mu : MixedContentStrategy 2} [IsProbabilityMeasure mu]
@@ -51506,14 +52990,10 @@ theorem no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase_of_princ
           (Measure.map (fun q : Content 2 => score (canonicalTwoUserSecond theta) q) mu)) x)
     (hangle_chart : ∀ i, angle i ∈ Set.Icc 0 (Real.pi / 2)) :
     False := by
-  apply no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase_of_principalAngleChart
-    angle law hangle_injective hP htheta_pos htheta_le hphase hnash hscore_ac
-  · intro z hz _
-    exact hcdf1 z.1 (canonicalTwoUser_firstScore_mem_support_of_mem_valueSupport hz)
-  · intro z hz _
-    exact hcdf2 z.2 (canonicalTwoUser_secondScore_mem_support_of_mem_valueSupport hz)
-  · exact hangle_chart
-  · exact law.nonzeroSupportGenres_eq_angleRange
+  exact
+    no_finiteGenreConditionalNormLaw_of_scaledNormRpowCostNash_abovePhase_of_principalAngleChart_of_scoreCdfContDiffAtOnSupport
+      angle law hangle_injective hP htheta_pos htheta_le zero_lt_one hphase
+      (by simpa using hnash) hscore_ac hcdf1 hcdf2 hangle_chart
 
 /--
 Arbitrary-dimensional source form of Proposition `finitegenre`.  For two
@@ -51522,9 +53002,9 @@ through the cone-preserving two-score map to the canonical capstone above.
 The polar chart, its injectivity, canonical feasibility, exact support cost,
 and canonical Nash property are all derived rather than assumed.
 -/
-theorem no_finiteGenreConditionalNormLawAnyDim_of_normRpowCostNash_abovePhase
+theorem no_finiteGenreConditionalNormLawAnyDim_of_scaledNormRpowCostNash_abovePhase
     {D P G : ℕ} [Nonempty (Fin P)] [Nonempty (Fin G)]
-    {beta theta : ℝ} {u v : Content D}
+    {alpha beta theta : ℝ} {u v : Content D}
     {mu : MixedContentStrategy D} [IsProbabilityMeasure mu]
     (direction : Fin G → Content D)
     (law : FiniteGenreConditionalNormLawAnyDim mu direction)
@@ -51534,10 +53014,11 @@ theorem no_finiteGenreConditionalNormLawAnyDim_of_normRpowCostNash_abovePhase
     (hu_nonnegative : NonnegativeContent u) (hv_nonnegative : NonnegativeContent v)
     (hP : 1 < P) (htheta_pos : 0 < theta)
     (htheta_le : theta ≤ Real.pi / 2)
+    (halpha : 0 < alpha)
     (hphase : twoUserPhaseThreshold theta < beta)
     (hnash : SourceSymmetricMixedNash (P := P)
       (fun i : Fin 2 => if i = 0 then u else v)
-      (normRpowCost (SourceNorm.l2 D) beta) mu)
+      (fun q => alpha * normRpowCost (SourceNorm.l2 D) beta q) mu)
     (hscore_ac : ∀ i : Fin 2,
       Measure.map (fun q : Content D => score (if i = 0 then u else v) q) mu ≪ volume)
     (hcdf1 : ∀ x,
@@ -51570,10 +53051,9 @@ theorem no_finiteGenreConditionalNormLawAnyDim_of_normRpowCostNash_abovePhase
   have hbeta_pos : 0 < beta := lt_trans hthreshold_pos hphase
   have hnash_one : SourceSymmetricMixedNash (P := P)
       (fun i : Fin 2 => if i = 0 then u else v)
-      (fun q => (1 : ℝ) * normRpowCost (SourceNorm.l2 D) beta q) mu := by
-    simpa using hnash
+      (fun q => alpha * normRpowCost (SourceNorm.l2 D) beta q) mu := hnash
   obtain ⟨angle, hangle⟩ := law.exists_twoUser_polar_angle
-    hu hv huv hu_nonnegative hv_nonnegative zero_lt_one hbeta_pos
+    hu hv huv hu_nonnegative hv_nonnegative halpha hbeta_pos
     htheta_pos htheta_le hnash_one hscore_ac
   let ν : Measure (Content 2) :=
     twoUserConeCanonicalizedMeasure theta u v mu
@@ -51587,15 +53067,15 @@ theorem no_finiteGenreConditionalNormLawAnyDim_of_normRpowCostNash_abovePhase
       (fun i => (hangle i).2.2)
   have hangle_injective : Function.Injective angle :=
     law.polar_angle_injective hdirection_injective hu hv huv
-      hu_nonnegative hv_nonnegative zero_lt_one hbeta_pos hsin.ne'
+      hu_nonnegative hv_nonnegative halpha hbeta_pos hsin.ne'
       hnash_one hscore_ac (fun i => (hangle i).2.1) (fun i => (hangle i).2.2)
   have hnash_canonical : SourceSymmetricMixedNash (P := P)
       (fun i : Fin 2 =>
         if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond theta)
-      (normRpowCost (SourceNorm.l2 2) beta) ν := by
+      (fun q => alpha * normRpowCost (SourceNorm.l2 2) beta q) ν := by
     simpa [ν] using
       sourceSymmetricMixedNash_twoUserConeCanonicalizedMeasure
-        hu hv huv hu_nonnegative hv_nonnegative zero_lt_one hbeta_pos
+        hu hv huv hu_nonnegative hv_nonnegative halpha hbeta_pos
         htheta_pos htheta_le hnash_one hscore_ac
   have hfirst_law :
       Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) ν =
@@ -51633,9 +53113,194 @@ theorem no_finiteGenreConditionalNormLawAnyDim_of_normRpowCostNash_abovePhase
     intro i
     exact ⟨(hangle i).1.1, (hangle i).1.2.trans htheta_le⟩
   exact
-    no_finiteGenreConditionalNormLaw_of_normRpowCostNash_abovePhase_of_principalAngleChart_of_scoreCdfContDiffAtOnSupport
-      angle canonicalLaw hangle_injective hP htheta_pos htheta_le hphase
+    no_finiteGenreConditionalNormLaw_of_scaledNormRpowCostNash_abovePhase_of_principalAngleChart_of_scoreCdfContDiffAtOnSupport
+      angle canonicalLaw hangle_injective hP htheta_pos htheta_le halpha hphase
       hnash_canonical hscore_ac_canonical hcdf1_canonical hcdf2_canonical hangle_chart
+
+/-- Unit-cost specialization of the arbitrary-dimensional finite-genre
+capstone. -/
+theorem no_finiteGenreConditionalNormLawAnyDim_of_normRpowCostNash_abovePhase
+    {D P G : ℕ} [Nonempty (Fin P)] [Nonempty (Fin G)]
+    {beta theta : ℝ} {u v : Content D}
+    {mu : MixedContentStrategy D} [IsProbabilityMeasure mu]
+    (direction : Fin G → Content D)
+    (law : FiniteGenreConditionalNormLawAnyDim mu direction)
+    (hdirection_injective : Function.Injective direction)
+    (hu : score u u = 1) (hv : score v v = 1)
+    (huv : score u v = Real.cos theta)
+    (hu_nonnegative : NonnegativeContent u) (hv_nonnegative : NonnegativeContent v)
+    (hP : 1 < P) (htheta_pos : 0 < theta)
+    (htheta_le : theta ≤ Real.pi / 2)
+    (hphase : twoUserPhaseThreshold theta < beta)
+    (hnash : SourceSymmetricMixedNash (P := P)
+      (fun i : Fin 2 => if i = 0 then u else v)
+      (normRpowCost (SourceNorm.l2 D) beta) mu)
+    (hscore_ac : ∀ i : Fin 2,
+      Measure.map (fun q : Content D => score (if i = 0 then u else v) q) mu ≪ volume)
+    (hcdf1 : ∀ x,
+      x ∈ (Measure.map (fun q : Content D => score u q) mu).support →
+      ContDiffAt ℝ 2
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content D => score u q) mu)) x)
+    (hcdf2 : ∀ x,
+      x ∈ (Measure.map (fun q : Content D => score v q) mu).support →
+      ContDiffAt ℝ 2
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content D => score v q) mu)) x) :
+    False := by
+  exact no_finiteGenreConditionalNormLawAnyDim_of_scaledNormRpowCostNash_abovePhase
+    direction law hdirection_injective hu hv huv hu_nonnegative hv_nonnegative
+    hP htheta_pos htheta_le zero_lt_one hphase (by simpa using hnash)
+    hscore_ac hcdf1 hcdf2
+
+/-- Raw-user form of the above-phase finite-genre impossibility.  Positive
+Euclidean normalization of the two users transports the Nash and score-law
+regularity hypotheses exactly, so no unit-user assumption is added. -/
+theorem twoUser_no_finiteGenreConditionalNormLawAnyDim_of_scaledNormRpowCostNash_abovePhase_raw_users
+    {D P G : ℕ} [Nonempty (Fin P)] [Nonempty (Fin G)]
+    {alpha beta theta : ℝ} {u v : Content D}
+    {mu : MixedContentStrategy D} [IsProbabilityMeasure mu]
+    (direction : Fin G → Content D)
+    (law : FiniteGenreConditionalNormLawAnyDim mu direction)
+    (hdirection_injective : Function.Injective direction)
+    (hu_nonzero : NonzeroContent u) (hv_nonzero : NonzeroContent v)
+    (hu_nonnegative : NonnegativeContent u) (hv_nonnegative : NonnegativeContent v)
+    (hangle : score u v /
+      (AppliedModelingLib.FiniteDimensionalNorms.l2 u *
+        AppliedModelingLib.FiniteDimensionalNorms.l2 v) = Real.cos theta)
+    (hP : 1 < P) (htheta_pos : 0 < theta)
+    (htheta_le : theta ≤ Real.pi / 2)
+    (halpha : 0 < alpha)
+    (hphase : twoUserPhaseThreshold theta < beta)
+    (hnash : SourceSymmetricMixedNash (P := P)
+      (fun i : Fin 2 => if i = 0 then u else v)
+      (fun q => alpha * normRpowCost (SourceNorm.l2 D) beta q) mu)
+    (hscore_ac : ∀ i : Fin 2,
+      Measure.map (fun q : Content D => score (if i = 0 then u else v) q) mu ≪ volume)
+    (hcdf1 : ∀ x,
+      x ∈ (Measure.map (fun q : Content D => score u q) mu).support →
+      ContDiffAt ℝ 2
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content D => score u q) mu)) x)
+    (hcdf2 : ∀ x,
+      x ∈ (Measure.map (fun q : Content D => score v q) mu).support →
+      ContDiffAt ℝ 2
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content D => score v q) mu)) x) :
+    False := by
+  have hu_norm : 0 < AppliedModelingLib.FiniteDimensionalNorms.l2 u :=
+    (SourceNorm.l2 D).pos_of_nonzero hu_nonzero
+  have hv_norm : 0 < AppliedModelingLib.FiniteDimensionalNorms.l2 v :=
+    (SourceNorm.l2 D).pos_of_nonzero hv_nonzero
+  let users : Fin 2 → Content D := fun i => if i = 0 then u else v
+  have husers_nonzero : ∀ i, NonzeroContent (users i) := by
+    intro i
+    fin_cases i
+    · simpa [users] using hu_nonzero
+    · simpa [users] using hv_nonzero
+  have hnash_normalized : SourceSymmetricMixedNash (P := P)
+      (fun i : Fin 2 =>
+        if i = 0 then twoUserNormalizedContent u else twoUserNormalizedContent v)
+      (fun q => alpha * normRpowCost (SourceNorm.l2 D) beta q) mu := by
+    have h := (sourceSymmetricMixedNash_l2NormalizedUsers_iff
+      (P := P) users husers_nonzero).2 (by simpa [users] using hnash)
+    simpa [users, l2NormalizedUsers, SourceNorm.normalizedContent,
+      twoUserNormalizedContent] using h
+  have hfirst_law := scoreLaw_twoUserNormalizedContent u mu
+  have hsecond_law := scoreLaw_twoUserNormalizedContent v mu
+  have hscore_ac_normalized : ∀ i : Fin 2,
+      Measure.map (fun q : Content D => score
+        (if i = 0 then twoUserNormalizedContent u else twoUserNormalizedContent v) q) mu ≪
+          volume := by
+    intro i
+    fin_cases i
+    · simpa [hfirst_law] using
+        (AppliedModelingLib.Probability.map_mul_const_absolutelyContinuous (inv_ne_zero hu_norm.ne')
+          (by simpa using hscore_ac 0))
+    · simpa [hsecond_law] using
+        (AppliedModelingLib.Probability.map_mul_const_absolutelyContinuous (inv_ne_zero hv_norm.ne')
+          (by simpa using hscore_ac 1))
+  have hcdf1_normalized : ∀ x,
+      x ∈ (Measure.map (fun q : Content D =>
+        score (twoUserNormalizedContent u) q) mu).support →
+      ContDiffAt ℝ 2
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content D =>
+            score (twoUserNormalizedContent u) q) mu)) x := by
+    rw [hfirst_law]
+    letI : IsProbabilityMeasure
+        (Measure.map (fun q : Content D => score u q) mu) :=
+      Measure.isProbabilityMeasure_map (measurable_score_content u).aemeasurable
+    exact AppliedModelingLib.Probability.lowerCDFMass_map_mul_const_contDiffAt_on_support
+      (inv_pos.mpr hu_norm) hcdf1
+  have hcdf2_normalized : ∀ x,
+      x ∈ (Measure.map (fun q : Content D =>
+        score (twoUserNormalizedContent v) q) mu).support →
+      ContDiffAt ℝ 2
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content D =>
+            score (twoUserNormalizedContent v) q) mu)) x := by
+    rw [hsecond_law]
+    letI : IsProbabilityMeasure
+        (Measure.map (fun q : Content D => score v q) mu) :=
+      Measure.isProbabilityMeasure_map (measurable_score_content v).aemeasurable
+    exact AppliedModelingLib.Probability.lowerCDFMass_map_mul_const_contDiffAt_on_support
+      (inv_pos.mpr hv_norm) hcdf2
+  exact no_finiteGenreConditionalNormLawAnyDim_of_scaledNormRpowCostNash_abovePhase
+    direction law hdirection_injective
+    (score_twoUserNormalizedContent_self hu_norm)
+    (score_twoUserNormalizedContent_self hv_norm)
+    (score_twoUserNormalizedContent_pair_eq_cos hu_norm hv_norm hangle)
+    (twoUserNormalizedContent_nonnegative hu_nonnegative)
+    (twoUserNormalizedContent_nonnegative hv_nonnegative)
+    hP htheta_pos htheta_le halpha hphase hnash_normalized hscore_ac_normalized
+    hcdf1_normalized hcdf2_normalized
+
+/-- Literal equal-population above-phase form.  Equal replication changes the
+representative two-user cost coefficient to K inverse, and the positive
+homogeneous-cost theorem above removes that coefficient exactly. -/
+theorem twoPopulation_no_finiteGenreConditionalNormLawAnyDim_of_normRpowCostNash_abovePhase_raw_users
+    {D K P G : ℕ} [Nonempty (Fin P)] [Nonempty (Fin G)]
+    {beta theta : ℝ} {u v : Content D}
+    {mu : MixedContentStrategy D} [IsProbabilityMeasure mu]
+    (direction : Fin G → Content D)
+    (law : FiniteGenreConditionalNormLawAnyDim mu direction)
+    (hdirection_injective : Function.Injective direction)
+    (hK : 0 < K)
+    (hu_nonzero : NonzeroContent u) (hv_nonzero : NonzeroContent v)
+    (hu_nonnegative : NonnegativeContent u) (hv_nonnegative : NonnegativeContent v)
+    (hangle : score u v /
+      (AppliedModelingLib.FiniteDimensionalNorms.l2 u *
+        AppliedModelingLib.FiniteDimensionalNorms.l2 v) = Real.cos theta)
+    (hP : 1 < P) (htheta_pos : 0 < theta)
+    (htheta_le : theta ≤ Real.pi / 2)
+    (hphase : twoUserPhaseThreshold theta < beta)
+    (hnash : SourceSymmetricMixedNash (P := P)
+      (twoPopulationUsers K (fun i : Fin 2 => if i = 0 then u else v))
+      (normRpowCost (SourceNorm.l2 D) beta) mu)
+    (hscore_ac : ∀ i : Fin 2,
+      Measure.map (fun q : Content D => score (if i = 0 then u else v) q) mu ≪ volume)
+    (hcdf1 : ∀ x,
+      x ∈ (Measure.map (fun q : Content D => score u q) mu).support →
+      ContDiffAt ℝ 2
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content D => score u q) mu)) x)
+    (hcdf2 : ∀ x,
+      x ∈ (Measure.map (fun q : Content D => score v q) mu).support →
+      ContDiffAt ℝ 2
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content D => score v q) mu)) x) :
+    False := by
+  have hKreal : 0 < (K : ℝ) := by exact_mod_cast hK
+  have hnash_two : SourceSymmetricMixedNash (P := P)
+      (fun i : Fin 2 => if i = 0 then u else v)
+      (fun q => (K : ℝ)⁻¹ * normRpowCost (SourceNorm.l2 D) beta q) mu :=
+    (sourceSymmetricMixedNash_twoPopulationUsers_iff
+      (P := P) (fun i : Fin 2 => if i = 0 then u else v) hK).mp hnash
+  exact twoUser_no_finiteGenreConditionalNormLawAnyDim_of_scaledNormRpowCostNash_abovePhase_raw_users
+    direction law hdirection_injective hu_nonzero hv_nonzero
+    hu_nonnegative hv_nonnegative hangle hP htheta_pos htheta_le
+    (inv_pos.mpr hKreal) hphase hnash_two hscore_ac hcdf1 hcdf2
 
 /--
 Below the phase threshold, the finite conditional radial-law interpretation
@@ -51694,7 +53359,8 @@ theorem canonicalTwoUser_nonzeroSupportGenres_eq_singleton_of_finiteGenreConditi
   have hangle_range : ∀ i, angle i ∈ Set.Icc 0 theta := by
     intro i
     exact finiteGenre_angle_mem_Icc_zero_theta_of_scaledNormRpowCostNash_of_angle_mem_Icc_zero_pi_div_two
-      law hbeta_pos htheta_pos htheta_le hangle_chart hnash hscore_ac i
+      (alpha := 1) law hbeta_pos zero_lt_one htheta_pos htheta_le hangle_chart
+        (by simpa using hnash) hscore_ac i
   have hangle_strict : ∀ i, 0 < angle i ∧ angle i < theta := by
     by_cases horthogonal : theta = Real.pi / 2
     · intro i
@@ -51817,5 +53483,1465 @@ theorem canonicalTwoUser_corrected_phaseTransition
         angle law hangle_injective hP htheta_pos htheta_le hphase hnash hscore_ac
         hcdf1 hcdf2 hangle_chart
 
+/-- A source symmetric mixed Nash law has a nonempty topological support. -/
+theorem sourceSymmetricMixedNash_exists_mem_support
+    {D N P : ℕ} {users : Fin N → Content D} {cost : Content D → ℝ}
+    {μ : MixedContentStrategy D}
+    (hnash : SourceSymmetricMixedNash (P := P) users cost μ) :
+    ∃ p : Content D, p ∈ μ.support := by
+  letI : MeasureTheory.IsProbabilityMeasure μ := hnash.1
+  exact MeasureTheory.Measure.nonempty_support (by
+    intro hzero
+    have hmass := MeasureTheory.IsProbabilityMeasure.measure_univ (μ := μ)
+    rw [hzero] at hmass
+    norm_num at hmass)
+
+/--
+An almost-everywhere source-norm cap makes the norm-power cost integrable
+under a probability mixed strategy.
+-/
+theorem integrable_normRpowCost_of_ae_norm_le
+    {D : ℕ} {ν : SourceNorm D} {β R : ℝ}
+    {μ : MixedContentStrategy D} [MeasureTheory.IsProbabilityMeasure μ]
+    (hcontinuous : Continuous ν.norm) (hβ : 0 ≤ β)
+    (hae_norm : ∀ᵐ p ∂μ, ν.norm p ≤ R) :
+    MeasureTheory.Integrable (normRpowCost ν β) μ := by
+  apply MeasureTheory.Integrable.of_bound
+    (continuous_normRpowCost_of_continuous_norm ν hβ hcontinuous).aestronglyMeasurable
+    (R ^ β)
+  filter_upwards [hae_norm] with p hp
+  rw [normRpowCost, Real.norm_eq_abs,
+    abs_of_nonneg (Real.rpow_nonneg (ν.nonneg p) β)]
+  exact Real.rpow_le_rpow (ν.nonneg p) hp hβ
+
+/--
+Source mixed Nash makes the pure payoff equal almost everywhere to the payoff
+of any fixed support action, so that pure-payoff random variable is integrable
+without a separate measurability certificate.
+-/
+theorem integrable_sourceMixedPurePayoff_of_sourceSymmetricMixedNash_of_mem_support
+    {D N P : ℕ} {users : Fin N → Content D} {cost : Content D → ℝ}
+    {μ : MixedContentStrategy D} [MeasureTheory.IsProbabilityMeasure μ]
+    {j : Fin P} {p0 : Content D}
+    (hnash : SourceSymmetricMixedNash (P := P) users cost μ)
+    (hp0 : p0 ∈ μ.support) :
+    MeasureTheory.Integrable
+      (fun p => SourceMixedPurePayoff
+        (ExpectedUsersWonAgainstSymmetricMixed users j) cost p μ) μ := by
+  apply (MeasureTheory.integrable_const
+    (SourceMixedPurePayoff
+      (ExpectedUsersWonAgainstSymmetricMixed users j) cost p0 μ)).congr
+  filter_upwards [ae_sourceMixedPurePayoff_eq_of_sourceSymmetricMixedNash_of_mem_support
+    (j := j) hnash hp0] with p hp
+  exact hp.symm
+
+/--
+Every source-Nash support action is below the elementary norm cap, and hence
+so is the mixed action almost everywhere.  This is the source-action-space
+version of the radius bound used by Proposition `utility`.
+-/
+theorem ae_norm_le_supportCap_of_sourceSymmetricMixedNash_of_mem_support
+    {D N P : ℕ} [Nonempty (Fin N)] [Nonempty (Fin P)]
+    {users : Fin N → Content D} {ν : SourceNorm D}
+    {μ : MixedContentStrategy D} {j : Fin P} {p0 : Content D} {β : ℝ}
+    (hnash : SourceSymmetricMixedNash (P := P) users (normRpowCost ν β) μ)
+    (hp0 : p0 ∈ μ.support) (hβ : 0 < β) :
+    ∀ᵐ p ∂μ, ν.norm p ≤ (N : ℝ) ^ β⁻¹ := by
+  letI : MeasureTheory.IsProbabilityMeasure μ := hnash.1
+  have hae_support_payoff :=
+    ae_sourceMixedPurePayoff_eq_of_sourceSymmetricMixedNash_of_mem_support
+      (j := j) hnash hp0
+  have hpayoff_nonneg :
+      0 ≤ SourceMixedPurePayoff
+        (ExpectedUsersWonAgainstSymmetricMixed users j)
+        (normRpowCost ν β) p0 μ :=
+    le_trans (sourceMixedPurePayoff_zero_nonneg_of_normRpowCost ν hβ)
+      (hnash.2.2 j p0 hp0 (0 : Content D) zeroContent_nonnegative)
+  filter_upwards [hae_support_payoff] with p hp
+  by_contra hnot
+  have hcap : (N : ℝ) ^ β⁻¹ < ν.norm p := lt_of_not_ge hnot
+  have hcost : (N : ℝ) < normRpowCost ν β p :=
+    normRpowCost_gt_card_of_support_cap_lt_norm ν hβ hcap
+  have hpayoff_nonneg_p :
+      0 ≤ SourceMixedPurePayoff
+        (ExpectedUsersWonAgainstSymmetricMixed users j)
+        (normRpowCost ν β) p μ := by
+    rw [hp]
+    exact hpayoff_nonneg
+  have hupper :
+      SourceMixedPurePayoff
+          (ExpectedUsersWonAgainstSymmetricMixed users j)
+          (normRpowCost ν β) p μ ≤
+        (N : ℝ) - normRpowCost ν β p :=
+    sourceMixedPurePayoff_le_card_sub_normRpowCost
+      (users := users) (j := j) (μ := μ) ν (β := β) (p := p)
+      (integrable_usersWon_deviateProfile_const users j p)
+  linarith
+
+/--
+The paper's displayed equilibrium-profit notation is the integral of a pure
+action payoff against the focal producer's mixed law.  Source mixed Nash makes
+that payoff equal to the payoff of each support action almost everywhere.
+Consequently, once the two integrability conditions required by the displayed
+expectation are available, the diagonal expected profit is exactly that common
+support payoff.
+-/
+theorem sourceSymmetricMixedDiagonalPayoff_eq_supportPayoff_of_mem_support
+    {D N P : ℕ} [Nonempty (Fin P)]
+    {users : Fin N → Content D} {cost : Content D → ℝ}
+    {μ : MixedContentStrategy D} [MeasureTheory.IsProbabilityMeasure μ]
+    {j : Fin P} {p0 : Content D}
+    (hnash : SourceSymmetricMixedNash (P := P) users cost μ)
+    (hp0 : p0 ∈ μ.support)
+    (hcost : MeasureTheory.Integrable cost μ)
+    (hpayoff : MeasureTheory.Integrable
+      (fun p => SourceMixedPurePayoff
+        (ExpectedUsersWonAgainstSymmetricMixed users j) cost p μ) μ) :
+    SourceSymmetricMixedDiagonalPayoff users cost j μ =
+      SourceMixedPurePayoff
+        (ExpectedUsersWonAgainstSymmetricMixed users j) cost p0 μ := by
+  rw [← integral_sourceMixedPurePayoff_eq_sourceSymmetricMixedDiagonalPayoff
+    users cost j μ hcost hpayoff]
+  exact MeasureTheory.integral_eq_const
+    (ae_sourceMixedPurePayoff_eq_of_sourceSymmetricMixedNash_of_mem_support
+      (j := j) hnash hp0)
+
+/--
+Integral form of Proposition `utility`.  The existing support-payoff proof
+supplies the source geometric argument.  This theorem is the separate
+population-law/integrability bridge required to identify that support payoff
+with the paper's expected equilibrium profit.
+-/
+theorem sourceSymmetricMixedDiagonalPayoff_pos_of_positive_profit_condition_l2_normalized_users_of_integrable
+    {D N P : ℕ} [Nonempty (Fin N)] [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {j : Fin P}
+    {μ : MixedContentStrategy D} {p0 : Content D}
+    {β Q : ℝ}
+    (hnash : SourceSymmetricMixedNash (P := P) users
+      (normRpowCost (SourceNorm.l2 D) β) μ)
+    (hp0 : p0 ∈ μ.support)
+    (husers_nonnegative : ∀ i : Fin N, NonnegativeContent (users i))
+    (husers_nonzero : ∀ i : Fin N, NonzeroContent (users i))
+    (hQupper :
+      SourceUnitDirectionQUpperBound
+        (l2NormalizedUsers users) (SourceNorm.l2 D) Q)
+    (hβ : 0 < β) (hQ_nonneg : 0 ≤ Q)
+    (hQ : Q < (1 / (N : ℝ)) ^ ((P : ℝ) / β))
+    (hcost : MeasureTheory.Integrable (normRpowCost (SourceNorm.l2 D) β) μ)
+    (hpayoff : MeasureTheory.Integrable
+      (fun p => SourceMixedPurePayoff
+        (ExpectedUsersWonAgainstSymmetricMixed users j)
+        (normRpowCost (SourceNorm.l2 D) β) p μ) μ) :
+    0 < SourceSymmetricMixedDiagonalPayoff users
+      (normRpowCost (SourceNorm.l2 D) β) j μ := by
+  letI : MeasureTheory.IsProbabilityMeasure μ := hnash.1
+  rw [sourceSymmetricMixedDiagonalPayoff_eq_supportPayoff_of_mem_support
+    hnash hp0 hcost hpayoff]
+  exact sourceSymmetricMixedNash_supportPayoff_pos_of_positive_profit_condition_l2_normalized_users
+    hnash hp0 husers_nonnegative husers_nonzero hQupper hβ hQ_nonneg hQ
+
+/--
+Expected-profit form of Proposition `utility` with its integrability recovered
+from source mixed Nash.  The source payoff cap bounds the norm-power cost
+almost everywhere, while support indifference makes the pure-payoff random
+variable almost everywhere constant.
+-/
+theorem sourceSymmetricMixedDiagonalPayoff_pos_of_positive_profit_condition_l2_normalized_users
+    {D N P : ℕ} [Nonempty (Fin N)] [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {j : Fin P}
+    {μ : MixedContentStrategy D} {β Q : ℝ}
+    (hnash : SourceSymmetricMixedNash (P := P) users
+      (normRpowCost (SourceNorm.l2 D) β) μ)
+    (husers_nonnegative : ∀ i : Fin N, NonnegativeContent (users i))
+    (husers_nonzero : ∀ i : Fin N, NonzeroContent (users i))
+    (hQupper :
+      SourceUnitDirectionQUpperBound
+        (l2NormalizedUsers users) (SourceNorm.l2 D) Q)
+    (hβ : 0 < β) (hQ_nonneg : 0 ≤ Q)
+    (hQ : Q < (1 / (N : ℝ)) ^ ((P : ℝ) / β)) :
+    0 < SourceSymmetricMixedDiagonalPayoff users
+      (normRpowCost (SourceNorm.l2 D) β) j μ := by
+  letI : MeasureTheory.IsProbabilityMeasure μ := hnash.1
+  obtain ⟨p0, hp0⟩ := sourceSymmetricMixedNash_exists_mem_support hnash
+  have hae_norm : ∀ᵐ p ∂μ, (SourceNorm.l2 D).norm p ≤ (N : ℝ) ^ β⁻¹ :=
+    ae_norm_le_supportCap_of_sourceSymmetricMixedNash_of_mem_support
+      (j := j) hnash hp0 hβ
+  have hcost : MeasureTheory.Integrable (normRpowCost (SourceNorm.l2 D) β) μ :=
+    integrable_normRpowCost_of_ae_norm_le (SourceNorm.l2_continuous D) hβ.le hae_norm
+  have hpayoff : MeasureTheory.Integrable
+      (fun p => SourceMixedPurePayoff
+        (ExpectedUsersWonAgainstSymmetricMixed users j)
+        (normRpowCost (SourceNorm.l2 D) β) p μ) μ :=
+    integrable_sourceMixedPurePayoff_of_sourceSymmetricMixedNash_of_mem_support hnash hp0
+  exact
+    sourceSymmetricMixedDiagonalPayoff_pos_of_positive_profit_condition_l2_normalized_users_of_integrable
+      hnash hp0 husers_nonnegative husers_nonzero hQupper hβ hQ_nonneg hQ hcost hpayoff
+
+/--
+Literal expected-profit form of the positive-profit condition.  Source Nash
+supplies both integrability facts: the norm cap controls the norm-power cost,
+and support indifference makes the pure-payoff integrand almost everywhere
+constant.  Thus the conclusion is the source's integral notation itself.
+-/
+theorem integral_sourceMixedPurePayoff_pos_of_positive_profit_condition_l2_normalized_users
+    {D N P : ℕ} [Nonempty (Fin N)] [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {j : Fin P}
+    {μ : MixedContentStrategy D} {β Q : ℝ}
+    (hnash : SourceSymmetricMixedNash (P := P) users
+      (normRpowCost (SourceNorm.l2 D) β) μ)
+    (husers_nonnegative : ∀ i : Fin N, NonnegativeContent (users i))
+    (husers_nonzero : ∀ i : Fin N, NonzeroContent (users i))
+    (hQupper :
+      SourceUnitDirectionQUpperBound
+        (l2NormalizedUsers users) (SourceNorm.l2 D) Q)
+    (hβ : 0 < β) (hQ_nonneg : 0 ≤ Q)
+    (hQ : Q < (1 / (N : ℝ)) ^ ((P : ℝ) / β)) :
+    0 < ∫ p, SourceMixedPurePayoff
+      (ExpectedUsersWonAgainstSymmetricMixed users j)
+      (normRpowCost (SourceNorm.l2 D) β) p μ ∂μ := by
+  letI : MeasureTheory.IsProbabilityMeasure μ := hnash.1
+  obtain ⟨p0, hp0⟩ := sourceSymmetricMixedNash_exists_mem_support hnash
+  have hae_norm : ∀ᵐ p ∂μ, (SourceNorm.l2 D).norm p ≤ (N : ℝ) ^ β⁻¹ :=
+    ae_norm_le_supportCap_of_sourceSymmetricMixedNash_of_mem_support
+      (j := j) hnash hp0 hβ
+  have hcost : MeasureTheory.Integrable (normRpowCost (SourceNorm.l2 D) β) μ :=
+    integrable_normRpowCost_of_ae_norm_le (SourceNorm.l2_continuous D) hβ.le hae_norm
+  have hpayoff : MeasureTheory.Integrable
+      (fun p => SourceMixedPurePayoff
+        (ExpectedUsersWonAgainstSymmetricMixed users j)
+        (normRpowCost (SourceNorm.l2 D) β) p μ) μ :=
+    integrable_sourceMixedPurePayoff_of_sourceSymmetricMixedNash_of_mem_support hnash hp0
+  rw [integral_sourceMixedPurePayoff_eq_sourceSymmetricMixedDiagonalPayoff
+    users (normRpowCost (SourceNorm.l2 D) β) j μ hcost hpayoff]
+  exact sourceSymmetricMixedDiagonalPayoff_pos_of_positive_profit_condition_l2_normalized_users
+    hnash husers_nonnegative husers_nonzero hQupper hβ hQ_nonneg hQ
+
+/--
+Diagonal-payoff bridge for Proposition `zeroutilitysinglegenre`. The source's
+single-genre CDF argument identifies every support payoff with zero; the two
+integrability hypotheses identify the diagonal payoff with that common support
+payoff. The literal integral form appears below.
+-/
+theorem sourceSymmetricMixedDiagonalPayoff_eq_zero_of_singleton_nonzeroSupportGenres_of_integrable
+    {D N P : ℕ} [Nonempty (Fin N)] [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {ν : SourceNorm D}
+    {μ : MixedContentStrategy D} {j : Fin P} {p genre : Content D} {β : ℝ}
+    (hnash : SourceSymmetricMixedNash (P := P) users (normRpowCost ν β) μ)
+    (hno_atoms : MeasureTheory.NoAtoms μ)
+    (hgenres : SourceNonzeroSupportGenres ν μ ⊆ ({genre} : Set (Content D)))
+    (hgenre_score : ∀ i : Fin N, 0 < score (users i) genre)
+    (hmeas_norm : Measurable ν.norm)
+    (husers : ∀ i : Fin N, NonnegativeContent (users i))
+    (hβ : 0 < β) (hcompact_sublevels : SourceNormCompactSublevels ν)
+    (hcontinuous : Continuous ν.norm)
+    (hp : p ∈ μ.support)
+    (hcost : MeasureTheory.Integrable (normRpowCost ν β) μ)
+    (hpayoff : MeasureTheory.Integrable
+      (fun q => SourceMixedPurePayoff
+        (ExpectedUsersWonAgainstSymmetricMixed users j)
+        (normRpowCost ν β) q μ) μ) :
+    SourceSymmetricMixedDiagonalPayoff users (normRpowCost ν β) j μ = 0 := by
+  letI : MeasureTheory.IsProbabilityMeasure μ := hnash.1
+  rw [sourceSymmetricMixedDiagonalPayoff_eq_supportPayoff_of_mem_support
+    hnash hp hcost hpayoff]
+  exact sourceSymmetricMixedNash_supportPayoff_eq_zero_of_compactSublevels_of_singleton_nonzeroSupportGenres_without_zeroSupportPremise
+    (j := j) hnash hno_atoms hgenres hgenre_score hmeas_norm husers hβ
+    hcompact_sublevels hcontinuous hp
+
+/--
+Diagonal-payoff form of Proposition `zeroutilitysinglegenre`.  Source Nash
+supplies the almost-everywhere norm cap and support-payoff indifference, so the
+integrability needed to identify this quantity with expected profit is derived
+without an additional assumption.
+-/
+theorem sourceSymmetricMixedDiagonalPayoff_eq_zero_of_singleton_nonzeroSupportGenres
+    {D N P : ℕ} [Nonempty (Fin N)] [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {ν : SourceNorm D}
+    {μ : MixedContentStrategy D} {j : Fin P} {genre : Content D} {β : ℝ}
+    (hnash : SourceSymmetricMixedNash (P := P) users (normRpowCost ν β) μ)
+    (hno_atoms : MeasureTheory.NoAtoms μ)
+    (hgenres : SourceNonzeroSupportGenres ν μ ⊆ ({genre} : Set (Content D)))
+    (hgenre_score : ∀ i : Fin N, 0 < score (users i) genre)
+    (hmeas_norm : Measurable ν.norm)
+    (husers : ∀ i : Fin N, NonnegativeContent (users i))
+    (hβ : 0 < β) (hcompact_sublevels : SourceNormCompactSublevels ν)
+    (hcontinuous : Continuous ν.norm) :
+    SourceSymmetricMixedDiagonalPayoff users (normRpowCost ν β) j μ = 0 := by
+  letI : MeasureTheory.IsProbabilityMeasure μ := hnash.1
+  obtain ⟨p, hp⟩ := sourceSymmetricMixedNash_exists_mem_support hnash
+  have hae_norm : ∀ᵐ q ∂μ, ν.norm q ≤ (N : ℝ) ^ β⁻¹ :=
+    ae_norm_le_supportCap_of_sourceSymmetricMixedNash_of_mem_support
+      (j := j) hnash hp hβ
+  have hcost : MeasureTheory.Integrable (normRpowCost ν β) μ :=
+    integrable_normRpowCost_of_ae_norm_le hcontinuous hβ.le hae_norm
+  have hpayoff : MeasureTheory.Integrable
+      (fun q => SourceMixedPurePayoff
+        (ExpectedUsersWonAgainstSymmetricMixed users j)
+        (normRpowCost ν β) q μ) μ :=
+    integrable_sourceMixedPurePayoff_of_sourceSymmetricMixedNash_of_mem_support hnash hp
+  exact
+    sourceSymmetricMixedDiagonalPayoff_eq_zero_of_singleton_nonzeroSupportGenres_of_integrable
+      hnash hno_atoms hgenres hgenre_score hmeas_norm husers hβ hcompact_sublevels hcontinuous hp
+      hcost hpayoff
+
+/--
+Literal expected-profit form of Proposition `zeroutilitysinglegenre`.
+The source Nash condition supplies the integrability bridge internally, so the
+conclusion is the integral that defines the common equilibrium profit rather
+than only its diagonal-payoff abbreviation.
+-/
+theorem integral_sourceMixedPurePayoff_eq_zero_of_singleton_nonzeroSupportGenres
+    {D N P : ℕ} [Nonempty (Fin N)] [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {ν : SourceNorm D}
+    {μ : MixedContentStrategy D} {j : Fin P} {genre : Content D} {β : ℝ}
+    (hnash : SourceSymmetricMixedNash (P := P) users (normRpowCost ν β) μ)
+    (hno_atoms : MeasureTheory.NoAtoms μ)
+    (hgenres : SourceNonzeroSupportGenres ν μ ⊆ ({genre} : Set (Content D)))
+    (hgenre_score : ∀ i : Fin N, 0 < score (users i) genre)
+    (hmeas_norm : Measurable ν.norm)
+    (husers : ∀ i : Fin N, NonnegativeContent (users i))
+    (hβ : 0 < β) (hcompact_sublevels : SourceNormCompactSublevels ν)
+    (hcontinuous : Continuous ν.norm) :
+    (∫ q, SourceMixedPurePayoff
+      (ExpectedUsersWonAgainstSymmetricMixed users j)
+      (normRpowCost ν β) q μ ∂μ) = 0 := by
+  letI : MeasureTheory.IsProbabilityMeasure μ := hnash.1
+  obtain ⟨p, hp⟩ := sourceSymmetricMixedNash_exists_mem_support hnash
+  have hae_norm : ∀ᵐ q ∂μ, ν.norm q ≤ (N : ℝ) ^ β⁻¹ :=
+    ae_norm_le_supportCap_of_sourceSymmetricMixedNash_of_mem_support
+      (j := j) hnash hp hβ
+  have hcost : MeasureTheory.Integrable (normRpowCost ν β) μ :=
+    integrable_normRpowCost_of_ae_norm_le hcontinuous hβ.le hae_norm
+  have hpayoff : MeasureTheory.Integrable
+      (fun q => SourceMixedPurePayoff
+        (ExpectedUsersWonAgainstSymmetricMixed users j)
+        (normRpowCost ν β) q μ) μ :=
+    integrable_sourceMixedPurePayoff_of_sourceSymmetricMixedNash_of_mem_support hnash hp
+  rw [integral_sourceMixedPurePayoff_eq_sourceSymmetricMixedDiagonalPayoff
+    users (normRpowCost ν β) j μ hcost hpayoff]
+  exact sourceSymmetricMixedDiagonalPayoff_eq_zero_of_singleton_nonzeroSupportGenres
+    hnash hno_atoms hgenres hgenre_score hmeas_norm husers hβ hcompact_sublevels hcontinuous
+
+/--
+Source-regularity form of Proposition `zeroutilitysinglegenre`.  The source
+model's nonzero-user condition and continuous radial norm make the apparent
+atomlessness, score-positivity, and norm-measurability inputs consequences of
+the symmetric Nash condition.  Thus the displayed expected-profit conclusion
+needs no separately supplied probabilistic regularity certificate.
+-/
+theorem sourceSymmetricMixedDiagonalPayoff_eq_zero_of_singleton_nonzeroSupportGenres_of_sourceRegularity
+    {D N P : ℕ} [Nonempty (Fin N)] [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {ν : SourceNorm D}
+    {μ : MixedContentStrategy D} {j : Fin P} {genre : Content D} {β : ℝ}
+    (hnash : SourceSymmetricMixedNash (P := P) users (normRpowCost ν β) μ)
+    (hgenres : SourceNonzeroSupportGenres ν μ ⊆ ({genre} : Set (Content D)))
+    (husers : ∀ i : Fin N, NonnegativeContent (users i))
+    (husers_nonzero : ∀ i : Fin N, NonzeroContent (users i))
+    (hperturb : SourceNormPerturbationContinuous ν)
+    (hβ : 0 < β) (hcompact_sublevels : SourceNormCompactSublevels ν)
+    (hcontinuous : Continuous ν.norm) :
+    SourceSymmetricMixedDiagonalPayoff users (normRpowCost ν β) j μ = 0 := by
+  letI : MeasureTheory.IsProbabilityMeasure μ := hnash.1
+  have hcost_cont : PerturbationCostContinuous (normRpowCost ν β) :=
+    perturbationCostContinuous_normRpowCost ν hβ.le hperturb
+  have hno_atoms : MeasureTheory.NoAtoms μ :=
+    noAtoms_of_sourceSymmetricMixedNash hnash hcost_cont husers
+      (husers_nonzero (Classical.choice (inferInstance : Nonempty (Fin N))))
+  have hgenre_score : ∀ i : Fin N, 0 < score (users i) genre :=
+    sourceSymmetricMixedNash_genre_score_pos_of_singleton_nonzeroSupportGenres_of_nonzero_users
+      hnash hgenres husers husers_nonzero hcost_cont
+  exact sourceSymmetricMixedDiagonalPayoff_eq_zero_of_singleton_nonzeroSupportGenres
+    hnash hno_atoms hgenres hgenre_score hcontinuous.measurable husers hβ
+    hcompact_sublevels hcontinuous
+
+/-- The positive unit action in the source's one-user, one-dimensional example. -/
+def oneDimensionalUnitContent : Content 1 := fun _ => 1
+
+/--
+In one dimension, every nonzero nonnegative action has the positive unit
+direction after Euclidean normalization.  This is the geometric bridge that
+turns the paper's one-dimensional equilibrium into a singleton-genre
+equilibrium without adding a direction assumption.
+-/
+theorem normalizedContent_l2_one_eq_oneDimensionalUnitContent_of_nonnegative
+    {p : Content 1} (hp : NonnegativeContent p) (hp_nonzero : NonzeroContent p) :
+    SourceNorm.normalizedContent (SourceNorm.l2 1) p = oneDimensionalUnitContent := by
+  have hp0_ne : p 0 ≠ 0 := by
+    rcases hp_nonzero with ⟨d, hd⟩
+    fin_cases d
+    exact hd
+  have hnorm : (SourceNorm.l2 1).norm p = p 0 := by
+    simp [SourceNorm.l2, AppliedModelingLib.FiniteDimensionalNorms.l2,
+      AppliedModelingLib.FiniteDimensionalNorms.l2Sq, Real.sqrt_sq_eq_abs,
+      abs_of_nonneg (hp 0)]
+  ext d
+  fin_cases d
+  change ((SourceNorm.l2 1).norm p)⁻¹ * p 0 = 1
+  rw [hnorm, inv_mul_cancel₀ hp0_ne]
+
+/--
+Source-faithful uniqueness for Example `1d`.  Every source symmetric mixed
+equilibrium with one unit user and Euclidean power cost is the explicit
+power-law content measure.  The singleton-genre, atomlessness, compactness,
+and CDF bridges are all recovered from the source Nash hypotheses; in
+particular, no uniqueness assumption is carried over from the printed example.
+-/
+theorem sourceSymmetricMixedNash_eq_oneDimensionalContentLaw
+    {P : ℕ} [Nonempty (Fin P)] [Nontrivial (Fin P)]
+    {μ : MixedContentStrategy 1} {β : ℝ}
+    (hnash : SourceSymmetricMixedNash (P := P)
+      (fun _ : Fin 1 => oneDimensionalUnitContent)
+      (normRpowCost (SourceNorm.l2 1) β) μ)
+    (hβ : 0 < β) :
+    μ = singleGenreContentLaw 1 P β oneDimensionalUnitContent := by
+  have husers : ∀ i : Fin 1, NonnegativeContent
+      ((fun _ : Fin 1 => oneDimensionalUnitContent) i) := by
+    intro i d
+    simp [oneDimensionalUnitContent]
+  have husers_nonzero : ∀ i : Fin 1, NonzeroContent
+      ((fun _ : Fin 1 => oneDimensionalUnitContent) i) := by
+    intro i
+    refine ⟨0, by simp [oneDimensionalUnitContent]⟩
+  have hgenres : SourceNonzeroSupportGenres (SourceNorm.l2 1) μ ⊆
+      ({oneDimensionalUnitContent} : Set (Content 1)) := by
+    rintro direction ⟨p, hp, hp_nonzero, rfl⟩
+    rw [Set.mem_singleton_iff]
+    exact normalizedContent_l2_one_eq_oneDimensionalUnitContent_of_nonnegative
+      (hnash.2.1 hp) hp_nonzero
+  exact
+    sourceSymmetricMixedNash_eq_singleGenreContentLaw_of_compactSublevels_of_singleton_nonzeroSupportGenres_of_nonzero_users
+      (j := Classical.choice (inferInstance : Nonempty (Fin P)))
+      hnash hgenres husers husers_nonzero SourceNorm.l2_perturbationContinuous hβ
+      (SourceNorm.l2_compactSublevels 1) (SourceNorm.l2_continuous 1)
+
+/--
+The unique one-dimensional equilibrium has the corrected clipped power CDF
+for its Euclidean quality.  On the displayed support interval this agrees with
+the source's power-law expression; the clip supplies the required CDF value
+above that interval.
+-/
+theorem sourceSymmetricMixedNash_oneDimensional_normCdf_eq_singleGenreCdf
+    {P : ℕ} [Nonempty (Fin P)] [Nontrivial (Fin P)]
+    {μ : MixedContentStrategy 1} {β z : ℝ}
+    (hnash : SourceSymmetricMixedNash (P := P)
+      (fun _ : Fin 1 => oneDimensionalUnitContent)
+      (normRpowCost (SourceNorm.l2 1) β) μ)
+    (hβ : 0 < β) (hz : 0 ≤ z) :
+    Measure.map (SourceNorm.l2 1).norm μ (Set.Iic z) =
+      ENNReal.ofReal (singleGenreCdf 1 P β z) := by
+  rw [sourceSymmetricMixedNash_eq_oneDimensionalContentLaw hnash hβ]
+  exact singleGenreContentLaw_sourceNorm_map_cdf_eq_singleGenreCdf_of_nonneg
+    (SourceNorm.l2 1) (SourceNorm.l2_measurable 1) (by
+      simp [oneDimensionalUnitContent, SourceNorm.l2,
+        AppliedModelingLib.FiniteDimensionalNorms.l2,
+        AppliedModelingLib.FiniteDimensionalNorms.l2Sq]) hβ hz
+
+/--
+The linear-span conclusion printed in Lemma `nonzero` is false for the
+paper's arbitrary-norm model.  With one nonnegative user `(1,2)`, `l1` cost,
+and exponent one, the score-maximizing singleton genre is `(0,1)`: it has a
+strictly positive user score but is not in the span of that user.  The
+constructed ray law is nevertheless a source symmetric mixed Nash equilibrium.
+This leaves the positive-score conclusion as the faithful repaired endpoint.
+-/
+theorem sourceSymmetricMixedNash_exists_singleton_nonzeroSupportGenre_not_mem_userSpan_l1 :
+    ∃ (μ : MixedContentStrategy 2) (genre : Content 2),
+      SourceSymmetricMixedNash (P := 2) (fun _ : Fin 1 => content2 1 2)
+        (normRpowCost (SourceNorm.lp 2 (q := 1) (by norm_num)) 1) μ ∧
+      SourceNonzeroSupportGenres (SourceNorm.lp 2 (q := 1) (by norm_num)) μ =
+        ({genre} : Set (Content 2)) ∧
+      0 < score (content2 1 2) genre ∧
+      genre ∉ Submodule.span ℝ (Set.range (fun _ : Fin 1 => content2 1 2)) := by
+  let ν : SourceNorm 2 := SourceNorm.lp 2 (q := 1) (by norm_num)
+  let genre : Content 2 := content2 0 1
+  let μ : MixedContentStrategy 2 := singleGenreContentLaw 1 2 1 genre
+  have hgenre_nonnegative : NonnegativeContent genre := by
+    intro d
+    fin_cases d <;> simp [genre]
+  have hgenre_norm : ν.norm genre = 1 := by
+    simp [ν, genre, SourceNorm.lp, AppliedModelingLib.FiniteDimensionalNorms.lp_one,
+      AppliedModelingLib.FiniteDimensionalNorms.l1, content2]
+  have huser_nonnegative : NonnegativeContent (content2 1 2) := by
+    intro d
+    fin_cases d <;> norm_num [content2]
+  have hscore_pos : 0 < score (content2 1 2) genre := by
+    simp [genre, score_content2]
+  have hunit_max : ∀ d : Content 2, NonnegativeContent d → ν.norm d = 1 →
+      score (content2 1 2) d ≤ score (content2 1 2) genre := by
+    intro d hd hdnorm
+    have hsum : d 0 + d 1 = 1 := by
+      simpa [ν, SourceNorm.lp, AppliedModelingLib.FiniteDimensionalNorms.lp_one,
+        AppliedModelingLib.FiniteDimensionalNorms.l1, abs_of_nonneg (hd 0),
+        abs_of_nonneg (hd 1)] using hdnorm
+    dsimp [genre]
+    simp only [score, content2, Fin.sum_univ_two]
+    norm_num
+    nlinarith [hd 0, hd 1]
+  refine ⟨μ, genre, ?_, ?_, hscore_pos, ?_⟩
+  · exact onePopulationSingleGenreContentLaw_is_sourceSymmetricMixedNash
+      ν (by norm_num) huser_nonnegative hgenre_nonnegative hgenre_norm hscore_pos hunit_max
+  · exact singleGenreContentLaw_nonzeroSupportGenres_eq_singleton ν (by norm_num) hgenre_norm
+  · dsimp [genre]
+    rw [show Set.range (fun _ : Fin 1 => content2 1 2) =
+        ({content2 1 2} : Set (Content 2)) by
+      ext p
+      constructor
+      · rintro ⟨i, rfl⟩
+        simp
+      · intro hp
+        rw [Set.mem_singleton_iff] at hp
+        exact ⟨0, hp.symm⟩]
+    rw [Submodule.mem_span_singleton]
+    rintro ⟨a, ha⟩
+    have h0 := congr_fun ha 0
+    have h1 := congr_fun ha 1
+    simp [content2] at h0 h1
+    linarith
+
+/--
+Necessary C1 bridge for Lemma `necessarysuff` without an externally imposed
+tie-null assumption.  In the source equilibrium model, an active nonnegative
+user and continuous perturbation cost rule out every atom of that user's
+score law.  Hence the source's strict-CDF objective is valid for the
+necessary support-maximizer direction under the paper's ordinary regularity
+conditions.
+
+The converse still needs a tie-aware hypothesis: an arbitrary law satisfying
+a strict-CDF maximizer condition need not itself have null score fibres.
+-/
+theorem supportMaximizer_strictScoreMass_of_sourceSymmetricMixedNash_of_nonzero_users
+    {D N P : ℕ} [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {cost : Content D → ℝ}
+    {μ : MixedContentStrategy D}
+    (hnash : SourceSymmetricMixedNash (P := P) users cost μ)
+    (husers_nonnegative : ∀ i : Fin N, NonnegativeContent (users i))
+    (husers_nonzero : ∀ i : Fin N, NonzeroContent (users i))
+    (hcont : PerturbationCostContinuous cost) :
+    ∀ (j : Fin P) (p : Content D), p ∈ μ.support → ∀ q : Content D,
+      NonnegativeContent q →
+        strictScoreMassReparamObjective (P := P) users μ cost q ≤
+          strictScoreMassReparamObjective (P := P) users μ cost p := by
+  letI : MeasureTheory.IsProbabilityMeasure μ := hnash.1
+  apply supportMaximizer_strictScoreMass_of_sourceSymmetricMixedNash hnash
+    (fun i => measurable_score_content (users i))
+  intro i z
+  exact sourceSymmetricMixedNash_score_level_measure_eq_zero
+    (j := Classical.choice (inferInstance : Nonempty (Fin P))) hnash
+    husers_nonnegative (husers_nonzero i) hcont z
+
+/--
+The source's induced cost is genuinely attained on every feasible score fibre
+for a continuous proper source norm.  It suffices to minimize on the compact
+norm ball through an existing representative: any representative outside that
+ball has strictly larger positive-power norm cost.
+-/
+theorem exists_minimal_normRpowCost_representative_of_nonnegative_userValueFiber
+    {D N : ℕ} (ν : SourceNorm D) {β : ℝ}
+    (users : Fin N → Content D)
+    (hβ : 0 < β) (hcompact_sublevels : SourceNormCompactSublevels ν)
+    (hcontinuous : Continuous ν.norm)
+    {q : Content D} (hq_nonnegative : NonnegativeContent q) :
+    ∃ qmin : Content D, NonnegativeContent qmin ∧
+      userValueMap users qmin = userValueMap users q ∧
+      ∀ r : Content D, NonnegativeContent r →
+        userValueMap users r = userValueMap users q →
+        normRpowCost ν β qmin ≤ normRpowCost ν β r := by
+  let fibre : Set (Content D) :=
+    sourceTruncatedActionSet ν (ν.norm q) ∩
+      (userValueMap users) ⁻¹' ({userValueMap users q} : Set (Fin N → ℝ))
+  have hfibre_compact : IsCompact fibre := by
+    dsimp [fibre]
+    apply (isCompact_sourceTruncatedActionSet_of_compactSublevels ν (ν.norm q)
+      hcompact_sublevels).inter_right
+    exact isClosed_singleton.preimage (continuous_userValueMap users)
+  have hq_fibre : q ∈ fibre := by
+    refine ⟨?_, ?_⟩
+    · exact ⟨hq_nonnegative, le_rfl⟩
+    · simp
+  obtain ⟨qmin, hqmin_fibre, hqmin_min⟩ :=
+    hfibre_compact.exists_isMinOn ⟨q, hq_fibre⟩
+      (continuous_normRpowCost_of_continuous_norm ν hβ.le hcontinuous).continuousOn
+  refine ⟨qmin, hqmin_fibre.1.1, ?_, ?_⟩
+  · simpa using hqmin_fibre.2
+  · intro r hr_nonnegative hr_value
+    by_cases hr_norm : ν.norm r ≤ ν.norm q
+    · exact hqmin_min ⟨⟨hr_nonnegative, hr_norm⟩, by simpa [hr_value]⟩
+    · have hnorm_lt : ν.norm q < ν.norm r := lt_of_not_ge hr_norm
+      have hcost_lt : normRpowCost ν β q < normRpowCost ν β r := by
+        unfold normRpowCost
+        exact Real.rpow_lt_rpow (ν.nonneg q) hnorm_lt hβ
+      exact (hqmin_min hq_fibre).trans_lt hcost_lt |>.le
+
+/--
+The genuine source induced cost for a real-valued score vector.  At infeasible
+score vectors it is set to zero, but every use below is at a nonnegative
+content image, where the compact fibre minimizer is selected.
+-/
+noncomputable def normRpowInducedCost {D N : ℕ}
+    (ν : SourceNorm D) (β : ℝ) (users : Fin N → Content D)
+    (hβ : 0 < β) (hcompact_sublevels : SourceNormCompactSublevels ν)
+    (hcontinuous : Continuous ν.norm) (z : Fin N → ℝ) : ℝ :=
+  by
+    classical
+    exact if hz : ∃ q : Content D, NonnegativeContent q ∧ userValueMap users q = z then
+      let q := Classical.choose hz
+      let qmin := Classical.choose
+        (exists_minimal_normRpowCost_representative_of_nonnegative_userValueFiber
+          ν users hβ hcompact_sublevels hcontinuous (Classical.choose_spec hz).1)
+      normRpowCost ν β qmin
+    else 0
+
+/-- Every nonnegative source action upper-bounds the induced cost of its scores. -/
+theorem normRpowInducedCost_le_normRpowCost_of_nonnegative
+    {D N : ℕ} (ν : SourceNorm D) {β : ℝ}
+    (users : Fin N → Content D)
+    (hβ : 0 < β) (hcompact_sublevels : SourceNormCompactSublevels ν)
+    (hcontinuous : Continuous ν.norm)
+    {q : Content D} (hq_nonnegative : NonnegativeContent q) :
+    normRpowInducedCost ν β users hβ hcompact_sublevels hcontinuous
+      (userValueMap users q) ≤ normRpowCost ν β q := by
+  classical
+  let hz : ∃ r : Content D, NonnegativeContent r ∧
+      userValueMap users r = userValueMap users q := ⟨q, hq_nonnegative, rfl⟩
+  rw [normRpowInducedCost, dif_pos hz]
+  exact (Classical.choose_spec
+    (exists_minimal_normRpowCost_representative_of_nonnegative_userValueFiber
+      ν users hβ hcompact_sublevels hcontinuous
+      (Classical.choose_spec hz).1)).2.2 q hq_nonnegative
+        (Classical.choose_spec hz).2.symm
+
+/-- Every feasible source score vector has a nonnegative induced-cost minimizer. -/
+theorem exists_normRpowInducedCost_representative_of_nonnegative
+    {D N : ℕ} (ν : SourceNorm D) {β : ℝ}
+    (users : Fin N → Content D)
+    (hβ : 0 < β) (hcompact_sublevels : SourceNormCompactSublevels ν)
+    (hcontinuous : Continuous ν.norm)
+    {q : Content D} (hq_nonnegative : NonnegativeContent q) :
+    ∃ qmin : Content D, NonnegativeContent qmin ∧
+      userValueMap users qmin = userValueMap users q ∧
+      normRpowCost ν β qmin =
+        normRpowInducedCost ν β users hβ hcompact_sublevels hcontinuous
+          (userValueMap users q) := by
+  classical
+  let hz : ∃ r : Content D, NonnegativeContent r ∧
+      userValueMap users r = userValueMap users q := ⟨q, hq_nonnegative, rfl⟩
+  rw [normRpowInducedCost, dif_pos hz]
+  refine ⟨Classical.choose
+    (exists_minimal_normRpowCost_representative_of_nonnegative_userValueFiber
+      ν users hβ hcompact_sublevels hcontinuous
+      (Classical.choose_spec hz).1), ?_, ?_, rfl⟩
+  · exact (Classical.choose_spec
+      (exists_minimal_normRpowCost_representative_of_nonnegative_userValueFiber
+        ν users hβ hcompact_sublevels hcontinuous
+        (Classical.choose_spec hz).1)).1
+  · exact ((Classical.choose_spec
+      (exists_minimal_normRpowCost_representative_of_nonnegative_userValueFiber
+        ν users hβ hcompact_sublevels hcontinuous
+        (Classical.choose_spec hz).1)).2.1).trans
+          (Classical.choose_spec hz).2
+
+/--
+At a source-Nash support action, the action already realizes the supplied
+induced fibre minimum.  This is a direct best-response consequence: replacing
+the action by an equally scored minimum-cost representative cannot lower its
+allocation payoff.  Thus the support-cost equality in the C1 bridge is not an
+independent economic assumption once the displayed fibre minimum has been
+constructed.
+-/
+theorem inducedCost_eq_cost_of_mem_support_sourceSymmetricMixedNash_of_nonzero_users
+    {D N P : ℕ} [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {cost : Content D → ℝ}
+    {μ : MixedContentStrategy D} {inducedCost : (Fin N → ℝ) → ℝ}
+    (hnash : SourceSymmetricMixedNash (P := P) users cost μ)
+    (husers_nonnegative : ∀ i : Fin N, NonnegativeContent (users i))
+    (husers_nonzero : ∀ i : Fin N, NonzeroContent (users i))
+    (hcont : PerturbationCostContinuous cost)
+    (hinduced_le_cost : ∀ q : Content D, NonnegativeContent q →
+      inducedCost (userValueMap users q) ≤ cost q)
+    (hinduced_attained : ∀ q : Content D, NonnegativeContent q →
+      ∃ qmin : Content D, NonnegativeContent qmin ∧
+        userValueMap users qmin = userValueMap users q ∧
+        cost qmin = inducedCost (userValueMap users q))
+    {p : Content D} (hp : p ∈ μ.support) :
+    inducedCost (userValueMap users p) = cost p := by
+  have hp_nonnegative : NonnegativeContent p := hnash.2.1 hp
+  obtain ⟨qmin, hqmin_nonnegative, hqmin_value, hqmin_cost⟩ :=
+    hinduced_attained p hp_nonnegative
+  apply le_antisymm (hinduced_le_cost p hp_nonnegative)
+  have hmax := supportMaximizer_strictScoreMass_of_sourceSymmetricMixedNash_of_nonzero_users
+    hnash husers_nonnegative husers_nonzero hcont
+    (Classical.choice (inferInstance : Nonempty (Fin P))) p hp qmin hqmin_nonnegative
+  have hreward :
+      (∑ i : Fin N,
+        (μ.real {q : Content D | score (users i) q < score (users i) qmin}) ^
+          (P - 1)) =
+        ∑ i : Fin N,
+          (μ.real {q : Content D | score (users i) q < score (users i) p}) ^
+            (P - 1) := by
+    apply Finset.sum_congr rfl
+    intro i _
+    have hscore := congrFun hqmin_value i
+    change score (users i) qmin = score (users i) p at hscore
+    rw [hscore]
+  have hqmin_cost' : cost qmin = inducedCost (userValueMap users qmin) := by
+    rw [hqmin_value]
+    exact hqmin_cost
+  unfold strictScoreMassReparamObjective at hmax
+  rw [hreward, hqmin_cost', hqmin_value] at hmax
+  linarith
+
+/--
+Necessary value-space C1 bridge for Lemma `necessarysuff` under the paper's
+ordinary active-user and continuous-cost conditions.  The fibre-cost and
+value-support hypotheses remain explicit because they describe the displayed
+induced-cost minimum; unlike score-level nullness, they do not follow merely
+from source Nash.
+-/
+theorem valueSpaceC1_of_sourceSymmetricMixedNash_of_nonzero_users
+    {D N P : ℕ} [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {cost : Content D → ℝ}
+    {μ : MixedContentStrategy D} {H : Fin N → ℝ → ℝ}
+    {inducedCost : (Fin N → ℝ) → ℝ} {S : Set (Fin N → ℝ)}
+    (hnash : SourceSymmetricMixedNash (P := P) users cost μ)
+    (husers_nonnegative : ∀ i : Fin N, NonnegativeContent (users i))
+    (husers_nonzero : ∀ i : Fin N, NonzeroContent (users i))
+    (hcont : PerturbationCostContinuous cost)
+    (hmeas_score : ∀ i : Fin N,
+      Measurable (fun q : Content D => score (users i) q))
+    (hH : ∀ (i : Fin N) (z : ℝ),
+      H i z = (μ.real {q : Content D | score (users i) q < z}) ^ (P - 1))
+    (hsupport_realizes : ∀ z : Fin N → ℝ, z ∈ S →
+      ∃ p : Content D, p ∈ μ.support ∧ userValueMap users p = z)
+    (hinduced_attained : ∀ q : Content D, NonnegativeContent q →
+      ∃ qmin : Content D, NonnegativeContent qmin ∧
+        userValueMap users qmin = userValueMap users q ∧
+        cost qmin = inducedCost (userValueMap users q))
+    (hsupport_cost : ∀ p : Content D, p ∈ μ.support →
+      inducedCost (userValueMap users p) = cost p) :
+    ∀ z : Fin N → ℝ, z ∈ S → ∀ q : Content D,
+      NonnegativeContent q →
+        valueSpaceReparamObjective H inducedCost (userValueMap users q) ≤
+          valueSpaceReparamObjective H inducedCost z := by
+  apply valueSpaceC1_of_sourceSymmetricMixedNash_strictScoreMass
+    hnash hmeas_score ?_ hH hsupport_realizes hinduced_attained hsupport_cost
+  intro i z
+  exact sourceSymmetricMixedNash_score_level_measure_eq_zero
+    (j := Classical.choice (inferInstance : Nonempty (Fin P))) hnash
+    husers_nonnegative (husers_nonzero i) hcont z
+
+/--
+Source-Nash C1 bridge with the support-cost equality discharged internally.
+The remaining fibre hypothesis is only the actual existence of the
+minimum-cost representative that the source's induced-cost definition uses.
+-/
+theorem valueSpaceC1_of_sourceSymmetricMixedNash_of_nonzero_users_of_inducedCost
+    {D N P : ℕ} [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {cost : Content D → ℝ}
+    {μ : MixedContentStrategy D} {H : Fin N → ℝ → ℝ}
+    {inducedCost : (Fin N → ℝ) → ℝ} {S : Set (Fin N → ℝ)}
+    (hnash : SourceSymmetricMixedNash (P := P) users cost μ)
+    (husers_nonnegative : ∀ i : Fin N, NonnegativeContent (users i))
+    (husers_nonzero : ∀ i : Fin N, NonzeroContent (users i))
+    (hcont : PerturbationCostContinuous cost)
+    (hmeas_score : ∀ i : Fin N,
+      Measurable (fun q : Content D => score (users i) q))
+    (hH : ∀ (i : Fin N) (z : ℝ),
+      H i z = (μ.real {q : Content D | score (users i) q < z}) ^ (P - 1))
+    (hsupport_realizes : ∀ z : Fin N → ℝ, z ∈ S →
+      ∃ p : Content D, p ∈ μ.support ∧ userValueMap users p = z)
+    (hinduced_le_cost : ∀ q : Content D, NonnegativeContent q →
+      inducedCost (userValueMap users q) ≤ cost q)
+    (hinduced_attained : ∀ q : Content D, NonnegativeContent q →
+      ∃ qmin : Content D, NonnegativeContent qmin ∧
+        userValueMap users qmin = userValueMap users q ∧
+        cost qmin = inducedCost (userValueMap users q)) :
+    ∀ z : Fin N → ℝ, z ∈ S → ∀ q : Content D,
+      NonnegativeContent q →
+        valueSpaceReparamObjective H inducedCost (userValueMap users q) ≤
+          valueSpaceReparamObjective H inducedCost z := by
+  apply valueSpaceC1_of_sourceSymmetricMixedNash_of_nonzero_users
+    hnash husers_nonnegative husers_nonzero hcont hmeas_score hH
+    hsupport_realizes hinduced_attained
+  intro p hp
+  exact inducedCost_eq_cost_of_mem_support_sourceSymmetricMixedNash_of_nonzero_users
+    hnash husers_nonnegative husers_nonzero hcont hinduced_le_cost
+    hinduced_attained hp
+
+/--
+The actual source norm-power induced cost discharges both fibre hypotheses in
+the C1 bridge.  Compact proper sublevels give the minimum-cost representative,
+and Nash then proves that each support action realizes it.
+-/
+theorem valueSpaceC1_of_sourceSymmetricMixedNash_of_nonzero_users_of_normRpowInducedCost
+    {D N P : ℕ} [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {ν : SourceNorm D} {β : ℝ}
+    {μ : MixedContentStrategy D} {H : Fin N → ℝ → ℝ} {S : Set (Fin N → ℝ)}
+    (hnash : SourceSymmetricMixedNash (P := P) users (normRpowCost ν β) μ)
+    (husers_nonnegative : ∀ i : Fin N, NonnegativeContent (users i))
+    (husers_nonzero : ∀ i : Fin N, NonzeroContent (users i))
+    (hperturb : SourceNormPerturbationContinuous ν)
+    (hβ : 0 < β) (hcompact_sublevels : SourceNormCompactSublevels ν)
+    (hcontinuous : Continuous ν.norm)
+    (hmeas_score : ∀ i : Fin N,
+      Measurable (fun q : Content D => score (users i) q))
+    (hH : ∀ (i : Fin N) (z : ℝ),
+      H i z = (μ.real {q : Content D | score (users i) q < z}) ^ (P - 1))
+    (hsupport_realizes : ∀ z : Fin N → ℝ, z ∈ S →
+      ∃ p : Content D, p ∈ μ.support ∧ userValueMap users p = z) :
+    ∀ z : Fin N → ℝ, z ∈ S → ∀ q : Content D,
+      NonnegativeContent q →
+        valueSpaceReparamObjective H
+          (normRpowInducedCost ν β users hβ hcompact_sublevels hcontinuous)
+          (userValueMap users q) ≤
+          valueSpaceReparamObjective H
+            (normRpowInducedCost ν β users hβ hcompact_sublevels hcontinuous) z := by
+  apply valueSpaceC1_of_sourceSymmetricMixedNash_of_nonzero_users_of_inducedCost
+    hnash husers_nonnegative husers_nonzero
+    (perturbationCostContinuous_normRpowCost ν hβ.le hperturb)
+    hmeas_score hH hsupport_realizes
+  · intro q hq
+    exact normRpowInducedCost_le_normRpowCost_of_nonnegative
+      ν users hβ hcompact_sublevels hcontinuous hq
+  · intro q hq
+    exact exists_normRpowInducedCost_representative_of_nonnegative
+      ν users hβ hcompact_sublevels hcontinuous hq
+
+/--
+With compact source support, every point in the realized-value support has an
+actual support-action preimage.  This is the source C3 support realization
+needed by the C1 direction.
+-/
+theorem sourceSymmetricMixedNash_valueSupport_realizes_of_normRpowCost
+    {D N P : ℕ} [Nonempty (Fin N)] [Nonempty (Fin P)]
+    {users : Fin N → Content D} {ν : SourceNorm D} {β : ℝ}
+    {μ : MixedContentStrategy D}
+    (hnash : SourceSymmetricMixedNash (P := P) users (normRpowCost ν β) μ)
+    (hβ : 0 < β) (hcompact_sublevels : SourceNormCompactSublevels ν) :
+    ∀ z : Fin N → ℝ,
+      z ∈ (MeasureTheory.Measure.map (userValueMap users) μ).support →
+        ∃ p : Content D, p ∈ μ.support ∧ userValueMap users p = z := by
+  have hcompact : IsCompact μ.support :=
+    sourceSymmetricMixedNash_isCompact_support_of_compactSublevels_of_normRpowCost
+      (j := Classical.choice inferInstance) hnash hβ hcompact_sublevels
+  have hmap :
+      (MeasureTheory.Measure.map (userValueMap users) μ).support =
+        userValueMap users '' μ.support :=
+    AppliedModelingLib.Probability.map_support_eq_image_support_of_isCompact
+      hcompact (continuous_userValueMap users)
+  intro z hz
+  rw [hmap] at hz
+  exact hz
+
+/--
+The preceding C1 bridge in the source's weak-CDF notation.  C2 identifies
+`H_i` with the `(P - 1)`-fold maximum CDF, written here in its equivalent
+power form.  Source Nash makes score fibres null, so weak and strict score
+masses agree and the genuine C1 conclusion follows without separately
+assuming atomlessness.
+-/
+theorem valueSpaceC1_of_sourceSymmetricMixedNash_of_nonzero_users_of_weakCdfPower
+    {D N P : ℕ} [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {cost : Content D → ℝ}
+    {μ : MixedContentStrategy D} {H : Fin N → ℝ → ℝ}
+    {inducedCost : (Fin N → ℝ) → ℝ} {S : Set (Fin N → ℝ)}
+    (hnash : SourceSymmetricMixedNash (P := P) users cost μ)
+    (husers_nonnegative : ∀ i : Fin N, NonnegativeContent (users i))
+    (husers_nonzero : ∀ i : Fin N, NonzeroContent (users i))
+    (hcont : PerturbationCostContinuous cost)
+    (hmeas_score : ∀ i : Fin N,
+      Measurable (fun q : Content D => score (users i) q))
+    (hH : ∀ (i : Fin N) (z : ℝ),
+      H i z = (μ.real {q : Content D | score (users i) q ≤ z}) ^ (P - 1))
+    (hsupport_realizes : ∀ z : Fin N → ℝ, z ∈ S →
+      ∃ p : Content D, p ∈ μ.support ∧ userValueMap users p = z)
+    (hinduced_attained : ∀ q : Content D, NonnegativeContent q →
+      ∃ qmin : Content D, NonnegativeContent qmin ∧
+        userValueMap users qmin = userValueMap users q ∧
+        cost qmin = inducedCost (userValueMap users q))
+    (hsupport_cost : ∀ p : Content D, p ∈ μ.support →
+      inducedCost (userValueMap users p) = cost p) :
+    ∀ z : Fin N → ℝ, z ∈ S → ∀ q : Content D,
+      NonnegativeContent q →
+        valueSpaceReparamObjective H inducedCost (userValueMap users q) ≤
+          valueSpaceReparamObjective H inducedCost z := by
+  apply valueSpaceC1_of_sourceSymmetricMixedNash_of_nonzero_users
+    hnash husers_nonnegative husers_nonzero hcont hmeas_score ?_
+    hsupport_realizes hinduced_attained hsupport_cost
+  intro i z
+  rw [hH i z]
+  congr 1
+  exact congrArg ENNReal.toReal
+    (score_lt_measure_eq_score_le_measure_of_score_level_null
+      (hmeas_score i)
+      (fun t => sourceSymmetricMixedNash_score_level_measure_eq_zero
+        (j := Classical.choice (inferInstance : Nonempty (Fin P))) hnash
+        husers_nonnegative (husers_nonzero i) hcont t)
+      z).symm
+
+/--
+Complete necessary C1 bridge in the source's weak-CDF notation for its
+continuous proper norm-power model.  The source Nash law supplies null score
+fibres; compactness supplies both score-support preimages and fibre minima.
+-/
+theorem valueSpaceC1_of_sourceSymmetricMixedNash_of_nonzero_users_of_weakCdfPower_normRpowInducedCost
+    {D N P : ℕ} [Nonempty (Fin N)] [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {ν : SourceNorm D} {β : ℝ}
+    {μ : MixedContentStrategy D} {H : Fin N → ℝ → ℝ}
+    (hnash : SourceSymmetricMixedNash (P := P) users (normRpowCost ν β) μ)
+    (husers_nonnegative : ∀ i : Fin N, NonnegativeContent (users i))
+    (husers_nonzero : ∀ i : Fin N, NonzeroContent (users i))
+    (hperturb : SourceNormPerturbationContinuous ν)
+    (hβ : 0 < β) (hcompact_sublevels : SourceNormCompactSublevels ν)
+    (hcontinuous : Continuous ν.norm)
+    (hmeas_score : ∀ i : Fin N,
+      Measurable (fun q : Content D => score (users i) q))
+    (hH : ∀ (i : Fin N) (z : ℝ),
+      H i z = (μ.real {q : Content D | score (users i) q ≤ z}) ^ (P - 1)) :
+    ∀ z : Fin N → ℝ,
+      z ∈ (MeasureTheory.Measure.map (userValueMap users) μ).support →
+      ∀ q : Content D, NonnegativeContent q →
+        valueSpaceReparamObjective H
+          (normRpowInducedCost ν β users hβ hcompact_sublevels hcontinuous)
+          (userValueMap users q) ≤
+          valueSpaceReparamObjective H
+            (normRpowInducedCost ν β users hβ hcompact_sublevels hcontinuous) z := by
+  apply valueSpaceC1_of_sourceSymmetricMixedNash_of_nonzero_users_of_normRpowInducedCost
+    hnash husers_nonnegative husers_nonzero hperturb hβ hcompact_sublevels
+    hcontinuous hmeas_score ?_
+    (sourceSymmetricMixedNash_valueSupport_realizes_of_normRpowCost
+      hnash hβ hcompact_sublevels)
+  intro i z
+  rw [hH i z]
+  congr 1
+  exact congrArg ENNReal.toReal
+    (score_lt_measure_eq_score_le_measure_of_score_level_null
+      (hmeas_score i)
+      (fun t => sourceSymmetricMixedNash_score_level_measure_eq_zero
+        (j := Classical.choice (inferInstance : Nonempty (Fin P))) hnash
+        husers_nonnegative (husers_nonzero i)
+        (perturbationCostContinuous_normRpowCost ν hβ.le hperturb) t)
+      z).symm
+
+/--
+The source's C2--C3 data are canonically available from any source Nash law.
+`Z` is the pushforward of the content law by the score vector, and `H_i` is
+the CDF of the maximum of the other `P - 1` iid score draws, written as the
+corresponding natural power of the weak marginal CDF.  The displayed root
+identity is the literal C2 form; it uses only `P > 1`, not any smoothness or
+density assertion.
+
+This packages the probabilistic C2--C3 bridge separately from C1 and from the
+fibre-cost/attainment facts needed for the source's full converse.
+-/
+theorem sourceSymmetricMixedNash_exists_weakCdf_C2C3_data
+    {D N P : ℕ} {users : Fin N → Content D} {cost : Content D → ℝ}
+    {μ : MixedContentStrategy D}
+    (hnash : SourceSymmetricMixedNash (P := P) users cost μ)
+    (hP : 1 < P) :
+    ∃ (H : Fin N → ℝ → ℝ) (Z : MeasureTheory.Measure (Fin N → ℝ))
+      (S : Set (Fin N → ℝ)),
+      MeasureTheory.IsProbabilityMeasure Z ∧
+      Z = MeasureTheory.Measure.map (userValueMap users) μ ∧
+      Z.support = S ∧
+      ∀ (i : Fin N) (z : ℝ),
+        Z.real {w : Fin N → ℝ | w i ≤ z} =
+          H i z ^ (1 / ((P : ℝ) - 1)) := by
+  letI : MeasureTheory.IsProbabilityMeasure μ := hnash.1
+  let H : Fin N → ℝ → ℝ := fun i z =>
+    AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1)
+      (MeasureTheory.Measure.map
+        (fun q : Content D => score (users i) q) μ) z
+  let Z : MeasureTheory.Measure (Fin N → ℝ) :=
+    MeasureTheory.Measure.map (userValueMap users) μ
+  let S : Set (Fin N → ℝ) := Z.support
+  have hZprob : MeasureTheory.IsProbabilityMeasure Z :=
+    MeasureTheory.Measure.isProbabilityMeasure_map
+      (continuous_userValueMap users).measurable.aemeasurable
+  have hcount_ne : P - 1 ≠ 0 := by omega
+  have hP_le : 1 ≤ P := by omega
+  have hcount_cast : ((P - 1 : ℕ) : ℝ) = (P : ℝ) - 1 := by
+    rw [Nat.cast_sub hP_le]
+    norm_num
+  refine ⟨H, Z, S, hZprob, rfl, rfl, ?_⟩
+  intro i z
+  have hroot :
+      μ.real {q : Content D | score (users i) q ≤ z} =
+        H i z ^ (1 / ((P : ℝ) - 1)) := by
+    letI : MeasureTheory.IsProbabilityMeasure
+        (MeasureTheory.Measure.map
+          (fun q : Content D => score (users i) q) μ) :=
+      MeasureTheory.Measure.isProbabilityMeasure_map
+        (continuous_score_right (users i)).measurable.aemeasurable
+    have hscore_cdf :
+        (MeasureTheory.Measure.map
+          (fun q : Content D => score (users i) q) μ).real (Set.Iic z) =
+          μ.real {q : Content D | score (users i) q ≤ z} := by
+      unfold MeasureTheory.Measure.real
+      rw [MeasureTheory.Measure.map_apply
+        (continuous_score_right (users i)).measurable measurableSet_Iic]
+      rfl
+    dsimp [H]
+    rw [AppliedModelingLib.Probability.iidMaximumCdf_eq_lowerCDFMass_pow]
+    unfold AppliedModelingLib.Probability.lowerCDFMass
+    rw [hscore_cdf]
+    rw [← hcount_cast]
+    simpa only [one_div] using
+      (Real.pow_rpow_inv_natCast
+        (MeasureTheory.measureReal_nonneg :
+          0 ≤ μ.real {q : Content D | score (users i) q ≤ z}) hcount_ne).symm
+  calc
+    Z.real {w : Fin N → ℝ | w i ≤ z} =
+        μ.real {q : Content D | score (users i) q ≤ z} := by
+      change ((MeasureTheory.Measure.map (userValueMap users) μ)
+          {w : Fin N → ℝ | w i ≤ z}).toReal =
+        (μ {q : Content D | score (users i) q ≤ z}).toReal
+      congr 1
+      change (MeasureTheory.Measure.map (userValueMap users) μ)
+          ((fun w : Fin N → ℝ => w i) ⁻¹' Set.Iic z) =
+        μ ((fun q : Content D => score (users i) q) ⁻¹' Set.Iic z)
+      rw [MeasureTheory.Measure.map_apply
+        (continuous_userValueMap users).measurable
+        ((continuous_apply i).measurable measurableSet_Iic)]
+      rfl
+    _ = H i z ^ (1 / ((P : ℝ) - 1)) := hroot
+
+/--
+An atomic law at zero cannot be a source symmetric mixed equilibrium when a
+nonnegative user has positive value for some content and costs vary
+continuously.  This is the basic obstruction behind the tie-null condition in
+the sufficient direction of Lemma `necessarysuff`; it is stated separately so
+that a proposed value-space certificate can be tested against the source's
+actual uniform-tie game rather than its tie-free reduction.
+-/
+theorem dirac_zero_not_sourceSymmetricMixedNash_of_nonzero_user
+    {D N P : ℕ} [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {cost : Content D → ℝ}
+    (husers_nonnegative : ∀ i : Fin N, NonnegativeContent (users i))
+    (husers_nonzero : ∃ i : Fin N, NonzeroContent (users i))
+    (hcont : PerturbationCostContinuous cost) :
+    ¬ SourceSymmetricMixedNash (P := P) users cost
+        (MeasureTheory.Measure.dirac (0 : Content D)) := by
+  intro hnash
+  obtain ⟨i, hi⟩ := husers_nonzero
+  have hatom := sourceSymmetricMixedNash_score_level_measure_eq_zero
+    (j := Classical.choice (inferInstance : Nonempty (Fin P))) hnash
+    husers_nonnegative hi hcont 0
+  have hzero_mem : (0 : Content D) ∈
+      {q : Content D | score (users i) q = (0 : ℝ)} := by
+    simp
+  have hdirac : MeasureTheory.Measure.dirac (0 : Content D)
+      {q : Content D | score (users i) q = (0 : ℝ)} = 1 :=
+    MeasureTheory.Measure.dirac_apply_of_mem hzero_mem
+  rw [hdirac] at hatom
+  exact zero_ne_one hatom.symm
+
+/-- In the one-user, one-dimensional source instance, the beta-one Euclidean
+cost is the realized user value on the nonnegative content domain. -/
+theorem normRpowCost_l2_one_eq_score_oneDim_of_nonnegative
+    (p : Content 1) (hp : NonnegativeContent p) :
+    normRpowCost (SourceNorm.l2 1) 1 p =
+      score (fun _ : Fin 1 => (1 : ℝ)) p := by
+  simp [normRpowCost, SourceNorm.l2,
+    AppliedModelingLib.FiniteDimensionalNorms.l2,
+    AppliedModelingLib.FiniteDimensionalNorms.l2Sq, score, Real.sqrt_sq_eq_abs,
+    abs_of_nonneg (hp 0)]
+
+/-- The support of a Dirac measure in the Hausdorff source spaces is its
+singleton atom. -/
+private theorem support_dirac_eq_singleton {α : Type*}
+    [TopologicalSpace α] [T2Space α] [MeasurableSpace α] [BorelSpace α]
+    [MeasurableSingletonClass α] (a : α) :
+    (MeasureTheory.Measure.dirac a).support = ({a} : Set α) := by
+  ext x
+  constructor
+  · intro hx
+    rw [Set.mem_singleton_iff]
+    by_contra hxa
+    have hx_compl : x ∈ ({a} : Set α)ᶜ := by simp [hxa]
+    have hneighborhood : ({a} : Set α)ᶜ ∈ nhds x :=
+      isClosed_singleton.isOpen_compl.mem_nhds hx_compl
+    have hpositive : 0 < MeasureTheory.Measure.dirac a ({a} : Set α)ᶜ :=
+      (MeasureTheory.Measure.mem_support_iff_forall x).mp hx _ hneighborhood
+    simp at hpositive
+  · intro hxa
+    rw [Set.mem_singleton_iff] at hxa
+    subst x
+    apply (MeasureTheory.Measure.mem_support_iff_forall a).mpr
+    intro U hU
+    have haU : a ∈ U := mem_of_mem_nhds hU
+    rw [MeasureTheory.Measure.dirac_apply_of_mem haU]
+    exact zero_lt_one
+
+/--
+The literal weak-CDF C1--C3 data printed in Lemma `necessarysuff` admit an
+atomic law in the paper's own one-dimensional `l2`, beta-one model.  The law
+meets C1 (with the actual induced cost), C2, and C3, but it is not a symmetric
+mixed equilibrium of the formalized uniform-tie game.  Thus the sufficient
+direction cannot recover the source claim without a tie-null regularity
+condition; this is a concrete source counterexample, not a proof-interface
+artifact.
+-/
+theorem weakCdf_C1C2C3_dirac_zero_not_sourceSymmetricMixedNash :
+    ∃ (users : Fin 1 → Content 1) (μ : MixedContentStrategy 1)
+      (H : Fin 1 → ℝ → ℝ) (inducedCost : (Fin 1 → ℝ) → ℝ)
+      (S : Set (Fin 1 → ℝ)),
+      (∀ (i : Fin 1) (z : ℝ),
+        μ.real {q : Content 1 | score (users i) q ≤ z} =
+          H i z ^ (1 / ((2 : ℝ) - 1))) ∧
+      (MeasureTheory.Measure.map (userValueMap users) μ).support = S ∧
+      (∀ z : Fin 1 → ℝ, z ∈ S → ∀ w : Fin 1 → ℝ,
+        (∀ i : Fin 1, 0 ≤ w i) →
+          valueSpaceReparamObjective H inducedCost w ≤
+            valueSpaceReparamObjective H inducedCost z) ∧
+      (∀ q : Content 1, NonnegativeContent q →
+        inducedCost (userValueMap users q) = normRpowCost (SourceNorm.l2 1) 1 q) ∧
+      ¬ SourceSymmetricMixedNash (P := 2) users
+        (normRpowCost (SourceNorm.l2 1) 1) μ := by
+  let users : Fin 1 → Content 1 :=
+    fun _ => fun _ => (1 : ℝ)
+  let μ : MixedContentStrategy 1 := MeasureTheory.Measure.dirac (0 : Content 1)
+  let H : Fin 1 → ℝ → ℝ := fun i z =>
+    μ.real {q : Content 1 | score (users i) q ≤ z}
+  let inducedCost : (Fin 1 → ℝ) → ℝ := fun z => z 0
+  let S : Set (Fin 1 → ℝ) := ({0} : Set (Fin 1 → ℝ))
+  refine ⟨users, μ, H, inducedCost, S, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i z
+    norm_num [H]
+  · have hmap :
+        MeasureTheory.Measure.map (userValueMap users) μ =
+          MeasureTheory.Measure.dirac (0 : Fin 1 → ℝ) := by
+      change MeasureTheory.Measure.map (userValueMap users)
+          (MeasureTheory.Measure.dirac (0 : Content 1)) = _
+      rw [MeasureTheory.Measure.map_dirac]
+      congr 1
+      ext i
+      fin_cases i
+      simp [userValueMap, users]
+    calc
+      (MeasureTheory.Measure.map (userValueMap users) μ).support =
+          (MeasureTheory.Measure.dirac (0 : Fin 1 → ℝ)).support := by rw [hmap]
+      _ = ({0} : Set (Fin 1 → ℝ)) := support_dirac_eq_singleton _
+      _ = S := rfl
+  · intro z hz w hw
+    rw [Set.mem_singleton_iff] at hz
+    subst z
+    have hwzero : 0 ≤ w 0 := hw 0
+    have hHw : H 0 (w 0) = 1 := by
+      have hmem : (0 : Content 1) ∈
+          {r : Content 1 | score (users 0) r ≤ w 0} := by
+        simp [hwzero]
+      change (MeasureTheory.Measure.dirac (0 : Content 1)).real
+        {r : Content 1 | score (users 0) r ≤ w 0} = 1
+      rw [MeasureTheory.Measure.real,
+        MeasureTheory.Measure.dirac_apply_of_mem hmem]
+      norm_num
+    have hHzero : H 0 0 = 1 := by
+      have hmem : (0 : Content 1) ∈
+          {r : Content 1 | score (users 0) r ≤ (0 : ℝ)} := by simp
+      change (MeasureTheory.Measure.dirac (0 : Content 1)).real
+        {r : Content 1 | score (users 0) r ≤ (0 : ℝ)} = 1
+      rw [MeasureTheory.Measure.real,
+        MeasureTheory.Measure.dirac_apply_of_mem hmem]
+      norm_num
+    simp only [valueSpaceReparamObjective, Fin.sum_univ_one, inducedCost]
+    simp only [Pi.zero_apply, sub_zero]
+    change H 0 (w 0) - w 0 ≤ H 0 0
+    rw [hHw, hHzero]
+    linarith
+  · intro q hq
+    simpa [inducedCost, userValueMap, users] using
+      (normRpowCost_l2_one_eq_score_oneDim_of_nonnegative q hq).symm
+  · apply dirac_zero_not_sourceSymmetricMixedNash_of_nonzero_user
+      (users := users)
+      (cost := normRpowCost (SourceNorm.l2 1) 1)
+    · intro i
+      simp [users, NonnegativeContent]
+    · refine ⟨0, ?_⟩
+      simp [users, NonzeroContent]
+    · exact perturbationCostContinuous_normRpowCost (SourceNorm.l2 1) (by norm_num)
+        (SourceNorm.l2_perturbationContinuous)
+
+
+/-- If the actual score law is absolutely continuous with respect to Lebesgue measure,
+the iid-maximum CDF is differentiable at the realized score for `μ`-almost every content.
+
+This is the measure-theoretic bridge needed when the paper writes a score-law density:
+absolute continuity supplies an a.e. derivative, rather than a pointwise density at every
+support value. -/
+theorem ae_hasDerivAt_iidMaximumCdf_of_scoreLaw_absolutelyContinuous
+    {D P : ℕ} {u : Content D} {μ : MixedContentStrategy D}
+    [MeasureTheory.IsProbabilityMeasure μ]
+    (hscore_ac : Measure.map (fun q : Content D => score u q) μ ≪ volume) :
+    ∀ᵐ p ∂μ,
+      HasDerivAt
+        (fun x : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1)
+          (Measure.map (fun q : Content D => score u q) μ) x)
+        (deriv (fun x : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1)
+          (Measure.map (fun q : Content D => score u q) μ) x) (score u p))
+        (score u p) := by
+  let scoreLaw : Measure ℝ := Measure.map (fun q : Content D => score u q) μ
+  letI : MeasureTheory.IsProbabilityMeasure scoreLaw :=
+    Measure.isProbabilityMeasure_map (measurable_score_content u).aemeasurable
+  have hdiff_volume : ∀ᵐ x ∂volume,
+      DifferentiableAt ℝ
+        (fun y : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1)
+          scoreLaw y) x :=
+    (AppliedModelingLib.Probability.iidMaximumCdf_mono scoreLaw).ae_differentiableAt
+  have hdiff_scoreLaw : ∀ᵐ x ∂scoreLaw,
+      DifferentiableAt ℝ
+        (fun y : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1)
+          scoreLaw y) x := by
+    exact hscore_ac.ae_le hdiff_volume
+  have hdiff_content : ∀ᵐ p ∂μ,
+      DifferentiableAt ℝ
+        (fun y : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1)
+          scoreLaw y) (score u p) :=
+    MeasureTheory.ae_of_ae_map (measurable_score_content u).aemeasurable hdiff_scoreLaw
+  filter_upwards [hdiff_content] with p hp
+  exact hp.hasDerivAt
+
+/-- An absolutely continuous actual score law assigns zero mass to the zero-score event. -/
+theorem ae_score_ne_zero_of_scoreLaw_absolutelyContinuous
+    {D : ℕ} {u : Content D} {μ : MixedContentStrategy D}
+    [MeasureTheory.IsProbabilityMeasure μ]
+    (hscore_ac : Measure.map (fun q : Content D => score u q) μ ≪ volume) :
+    ∀ᵐ p ∂μ, score u p ≠ 0 := by
+  let scoreLaw : Measure ℝ := Measure.map (fun q : Content D => score u q) μ
+  have hscore_ne : ∀ᵐ x ∂scoreLaw, x ≠ 0 :=
+    hscore_ac.ae_le (MeasureTheory.volume.ae_ne 0)
+  exact MeasureTheory.ae_of_ae_map (measurable_score_content u).aemeasurable hscore_ne
+
+/-- The first-coordinate CDF density identity used in the paper's two-user FOC holds at
+`μ`-almost every realized content under the stated score-law absolute-continuity and strict
+interiority conditions. It is intentionally an a.e. statement: absolute continuity does
+not select a pointwise density at every support score. -/
+theorem ae_first_iidMaximumCdf_deriv_eq_inducedCostPartial_of_sourceSymmetricMixedNash_of_strictInteriorAwayOrigin
+    {P : ℕ} [Nonempty (Fin P)] {α β θ : ℝ}
+    {μ : MixedContentStrategy 2} [MeasureTheory.IsProbabilityMeasure μ]
+    (hsin : 0 < Real.sin θ)
+    (hnash : SourceSymmetricMixedNash (P := P)
+      (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond θ)
+      (fun p => α * normRpowCost (SourceNorm.l2 2) β p) μ)
+    (hscore_ac : ∀ i : Fin 2,
+      Measure.map
+        (fun q : Content 2 =>
+          score (if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond θ) q) μ ≪
+        volume)
+    (hinterior : ∀ z : ℝ × ℝ,
+      z ∈ (Measure.map (canonicalTwoUserValueMap θ) μ).support →
+      z ≠ (0, 0) → 0 < z.1 ∧ z.1 * Real.cos θ < z.2) :
+    ∀ᵐ p ∂μ,
+      β * α * (Real.sin θ) ^ (-β) *
+          (twoUserInducedCostNumerator θ
+            (score canonicalTwoUserFirst p) (score (canonicalTwoUserSecond θ) p)) ^
+            (β / 2 - 1) *
+          (score canonicalTwoUserFirst p -
+            score (canonicalTwoUserSecond θ) p * Real.cos θ) =
+        deriv (fun x : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1)
+          (Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) μ) x)
+          (score canonicalTwoUserFirst p) := by
+  have hfirst_ac : Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) μ ≪
+      volume := by
+    simpa using hscore_ac 0
+  have hderiv := ae_hasDerivAt_iidMaximumCdf_of_scoreLaw_absolutelyContinuous
+    (P := P) (u := canonicalTwoUserFirst) hfirst_ac
+  have hnonzero := ae_score_ne_zero_of_scoreLaw_absolutelyContinuous
+    (u := canonicalTwoUserFirst) hfirst_ac
+  filter_upwards [Measure.support_mem_ae, hderiv, hnonzero] with p hp hderivp hp_score_ne
+  have hzsupport : canonicalTwoUserValueMap θ p ∈
+      (Measure.map (canonicalTwoUserValueMap θ) μ).support :=
+    canonicalTwoUserValueMap_mem_support_of_mem_content_support hp
+  have hvalue_ne : canonicalTwoUserValueMap θ p ≠ (0, 0) := by
+    intro hzero
+    apply hp_score_ne
+    simpa only [canonicalTwoUserValueMap] using congrArg Prod.fst hzero
+  have hpos := hinterior _ hzsupport hvalue_ne
+  have hbase : twoUserInducedCostNumerator θ
+      (score canonicalTwoUserFirst p) (score (canonicalTwoUserSecond θ) p) ≠ 0 := by
+    simpa only [canonicalTwoUserValueMap] using
+      (twoUserInducedCostNumerator_ne_zero_of_ne_zero hsin.ne' hvalue_ne)
+  simpa only [canonicalTwoUserValueMap] using
+    twoUserInducedCostFirstPartial_eq_of_isMaxOn_of_feasibleInterior
+      (canonicalTwoUser_isMaxOn_iidMaximumCdfObjective_of_scaledNormRpowCostNash
+        hsin hnash hscore_ac _ hzsupport)
+      hsin hpos.1 hpos.2 hderivp (Or.inl hbase)
+
+/-- The second-coordinate counterpart of
+`ae_first_iidMaximumCdf_deriv_eq_inducedCostPartial_of_sourceSymmetricMixedNash_of_strictInteriorAwayOrigin`.
+Both identities use the actual coordinate score laws and hold at realized contents almost
+everywhere, which is the density interpretation justified by score-law absolute continuity. -/
+theorem ae_second_iidMaximumCdf_deriv_eq_inducedCostPartial_of_sourceSymmetricMixedNash_of_strictInteriorAwayOrigin
+    {P : ℕ} [Nonempty (Fin P)] {α β θ : ℝ}
+    {μ : MixedContentStrategy 2} [MeasureTheory.IsProbabilityMeasure μ]
+    (hsin : 0 < Real.sin θ)
+    (hnash : SourceSymmetricMixedNash (P := P)
+      (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond θ)
+      (fun p => α * normRpowCost (SourceNorm.l2 2) β p) μ)
+    (hscore_ac : ∀ i : Fin 2,
+      Measure.map
+        (fun q : Content 2 =>
+          score (if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond θ) q) μ ≪
+        volume)
+    (hinterior : ∀ z : ℝ × ℝ,
+      z ∈ (Measure.map (canonicalTwoUserValueMap θ) μ).support →
+      z ≠ (0, 0) → 0 < z.1 ∧ z.1 * Real.cos θ < z.2) :
+    ∀ᵐ p ∂μ,
+      β * α * (Real.sin θ) ^ (-β) *
+          (twoUserInducedCostNumerator θ
+            (score canonicalTwoUserFirst p) (score (canonicalTwoUserSecond θ) p)) ^
+            (β / 2 - 1) *
+          (score (canonicalTwoUserSecond θ) p -
+            score canonicalTwoUserFirst p * Real.cos θ) =
+        deriv (fun x : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1)
+          (Measure.map (fun q : Content 2 => score (canonicalTwoUserSecond θ) q) μ) x)
+          (score (canonicalTwoUserSecond θ) p) := by
+  have hfirst_ac : Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) μ ≪
+      volume := by
+    simpa using hscore_ac 0
+  have hsecond_ac : Measure.map
+      (fun q : Content 2 => score (canonicalTwoUserSecond θ) q) μ ≪ volume := by
+    simpa using hscore_ac 1
+  have hderiv := ae_hasDerivAt_iidMaximumCdf_of_scoreLaw_absolutelyContinuous
+    (P := P) (u := canonicalTwoUserSecond θ) hsecond_ac
+  have hnonzero := ae_score_ne_zero_of_scoreLaw_absolutelyContinuous
+    (u := canonicalTwoUserFirst) hfirst_ac
+  filter_upwards [Measure.support_mem_ae, hderiv, hnonzero] with p hp hderivp hp_score_ne
+  have hzsupport : canonicalTwoUserValueMap θ p ∈
+      (Measure.map (canonicalTwoUserValueMap θ) μ).support :=
+    canonicalTwoUserValueMap_mem_support_of_mem_content_support hp
+  have hvalue_ne : canonicalTwoUserValueMap θ p ≠ (0, 0) := by
+    intro hzero
+    apply hp_score_ne
+    simpa only [canonicalTwoUserValueMap] using congrArg Prod.fst hzero
+  have hpos := hinterior _ hzsupport hvalue_ne
+  have hbase : twoUserInducedCostNumerator θ
+      (score canonicalTwoUserFirst p) (score (canonicalTwoUserSecond θ) p) ≠ 0 := by
+    simpa only [canonicalTwoUserValueMap] using
+      (twoUserInducedCostNumerator_ne_zero_of_ne_zero hsin.ne' hvalue_ne)
+  simpa only [canonicalTwoUserValueMap] using
+    twoUserInducedCostSecondPartial_eq_of_isMaxOn_of_feasibleInterior
+      (canonicalTwoUser_isMaxOn_iidMaximumCdfObjective_of_scaledNormRpowCostNash
+        hsin hnash hscore_ac _ hzsupport)
+      hsin hpos.1 hpos.2 hderivp (Or.inl hbase)
+
+/--
+Pointwise first-coordinate form of the source's two-user FOC calculation.
+
+Absolute continuity alone only yields the preceding almost-everywhere
+statement.  Here the source's stronger CDF regularity is supplied explicitly:
+at a non-origin realized support value whose first raw score CDF is
+differentiable, the Nash maximization condition gives the displayed first
+partial identity.  The strict-cone premise is kept explicit because Fermat's
+condition need not hold at a constrained boundary point.
+-/
+theorem first_iidMaximumCdf_deriv_eq_inducedCostPartial_of_sourceSymmetricMixedNash_of_scoreCdfContDiffAt_of_strictInteriorAwayOrigin
+    {P : ℕ} [Nonempty (Fin P)] {α β θ : ℝ}
+    {μ : MixedContentStrategy 2} [MeasureTheory.IsProbabilityMeasure μ]
+    (hsin : 0 < Real.sin θ)
+    (hnash : SourceSymmetricMixedNash (P := P)
+      (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond θ)
+      (fun p => α * normRpowCost (SourceNorm.l2 2) β p) μ)
+    (hscore_ac : ∀ i : Fin 2,
+      Measure.map
+        (fun q : Content 2 =>
+          score (if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond θ) q) μ ≪
+        volume)
+    (hcdf1 : ∀ x,
+      x ∈ (Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) μ).support →
+      ContDiffAt ℝ 1
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) μ)) x)
+    (hinterior : ∀ z : ℝ × ℝ,
+      z ∈ (Measure.map (canonicalTwoUserValueMap θ) μ).support →
+      z ≠ (0, 0) → 0 < z.1 ∧ z.1 * Real.cos θ < z.2)
+    {z : ℝ × ℝ}
+    (hz : z ∈ (Measure.map (canonicalTwoUserValueMap θ) μ).support)
+    (hz_ne : z ≠ (0, 0)) :
+    β * α * (Real.sin θ) ^ (-β) *
+        (twoUserInducedCostNumerator θ z.1 z.2) ^ (β / 2 - 1) *
+          (z.1 - z.2 * Real.cos θ) =
+      deriv (fun x : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1)
+        (Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) μ) x) z.1 := by
+  let μ1 : Measure ℝ :=
+    Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) μ
+  letI : MeasureTheory.IsProbabilityMeasure μ1 :=
+    Measure.isProbabilityMeasure_map
+      (measurable_score_content canonicalTwoUserFirst).aemeasurable
+  have hz1 : z.1 ∈ μ1.support := by
+    simpa [μ1] using canonicalTwoUser_firstScore_mem_support_of_mem_valueSupport hz
+  have hderiv : HasDerivAt
+      (fun x : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1) μ1 x)
+      (deriv (fun x : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1) μ1 x) z.1)
+      z.1 := by
+    exact ((AppliedModelingLib.Probability.iidMaximumCdf_contDiffAt_of_lowerCDFMass
+      (n := P - 1) (by simpa [μ1] using hcdf1 z.1 hz1)).differentiableAt
+        one_ne_zero).hasDerivAt
+  have hinterior_z := hinterior z hz hz_ne
+  have hbase : twoUserInducedCostNumerator θ z.1 z.2 ≠ 0 :=
+    twoUserInducedCostNumerator_ne_zero_of_ne_zero hsin.ne' hz_ne
+  simpa [μ1] using
+    twoUserInducedCostFirstPartial_eq_of_isMaxOn_of_feasibleInterior
+      (canonicalTwoUser_isMaxOn_iidMaximumCdfObjective_of_scaledNormRpowCostNash
+        hsin hnash hscore_ac z hz)
+      hsin hinterior_z.1 hinterior_z.2 hderiv (Or.inl hbase)
+
+/--
+Pointwise second-coordinate counterpart of
+`first_iidMaximumCdf_deriv_eq_inducedCostPartial_of_sourceSymmetricMixedNash_of_scoreCdfContDiffAt_of_strictInteriorAwayOrigin`.
+As in that theorem, score-CDF regularity and strict feasibility are explicit;
+the conclusion is not derived from score-law absolute continuity alone.
+-/
+theorem second_iidMaximumCdf_deriv_eq_inducedCostPartial_of_sourceSymmetricMixedNash_of_scoreCdfContDiffAt_of_strictInteriorAwayOrigin
+    {P : ℕ} [Nonempty (Fin P)] {α β θ : ℝ}
+    {μ : MixedContentStrategy 2} [MeasureTheory.IsProbabilityMeasure μ]
+    (hsin : 0 < Real.sin θ)
+    (hnash : SourceSymmetricMixedNash (P := P)
+      (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond θ)
+      (fun p => α * normRpowCost (SourceNorm.l2 2) β p) μ)
+    (hscore_ac : ∀ i : Fin 2,
+      Measure.map
+        (fun q : Content 2 =>
+          score (if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond θ) q) μ ≪
+        volume)
+    (hcdf2 : ∀ x,
+      x ∈ (Measure.map (fun q : Content 2 =>
+        score (canonicalTwoUserSecond θ) q) μ).support →
+      ContDiffAt ℝ 1
+        (AppliedModelingLib.Probability.lowerCDFMass
+          (Measure.map (fun q : Content 2 =>
+            score (canonicalTwoUserSecond θ) q) μ)) x)
+    (hinterior : ∀ z : ℝ × ℝ,
+      z ∈ (Measure.map (canonicalTwoUserValueMap θ) μ).support →
+      z ≠ (0, 0) → 0 < z.1 ∧ z.1 * Real.cos θ < z.2)
+    {z : ℝ × ℝ}
+    (hz : z ∈ (Measure.map (canonicalTwoUserValueMap θ) μ).support)
+    (hz_ne : z ≠ (0, 0)) :
+    β * α * (Real.sin θ) ^ (-β) *
+        (twoUserInducedCostNumerator θ z.1 z.2) ^ (β / 2 - 1) *
+          (z.2 - z.1 * Real.cos θ) =
+      deriv (fun x : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1)
+        (Measure.map (fun q : Content 2 => score (canonicalTwoUserSecond θ) q) μ) x) z.2 := by
+  let μ2 : Measure ℝ :=
+    Measure.map (fun q : Content 2 => score (canonicalTwoUserSecond θ) q) μ
+  letI : MeasureTheory.IsProbabilityMeasure μ2 :=
+    Measure.isProbabilityMeasure_map
+      (measurable_score_content (canonicalTwoUserSecond θ)).aemeasurable
+  have hz2 : z.2 ∈ μ2.support := by
+    simpa [μ2] using canonicalTwoUser_secondScore_mem_support_of_mem_valueSupport hz
+  have hderiv : HasDerivAt
+      (fun x : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1) μ2 x)
+      (deriv (fun x : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1) μ2 x) z.2)
+      z.2 := by
+    exact ((AppliedModelingLib.Probability.iidMaximumCdf_contDiffAt_of_lowerCDFMass
+      (n := P - 1) (by simpa [μ2] using hcdf2 z.2 hz2)).differentiableAt
+        one_ne_zero).hasDerivAt
+  have hinterior_z := hinterior z hz hz_ne
+  have hbase : twoUserInducedCostNumerator θ z.1 z.2 ≠ 0 :=
+    twoUserInducedCostNumerator_ne_zero_of_ne_zero hsin.ne' hz_ne
+  simpa [μ2] using
+    twoUserInducedCostSecondPartial_eq_of_isMaxOn_of_feasibleInterior
+      (canonicalTwoUser_isMaxOn_iidMaximumCdfObjective_of_scaledNormRpowCostNash
+        hsin hnash hscore_ac z hz)
+      hsin hinterior_z.1 hinterior_z.2 hderiv (Or.inl hbase)
 
 end JGS23SupplySideRecommenderSystems

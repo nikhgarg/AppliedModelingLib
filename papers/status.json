@@ -6,6 +6,113 @@
   "papers": [
     {
       "schema": 1,
+      "id": "CGGG20SelectiveInformationAcquisition",
+      "repository_visibility": "public",
+      "title": "Fair Allocation through Selective Information Acquisition",
+      "authors": "William Cai, Johann Gaebler, Nikhil Garg, Sharad Goel",
+      "source_version": "AIES 2020 / arXiv v3",
+      "build_target": "lake build CGGG20SelectiveInformationAcquisition",
+      "status": "formalized",
+      "main_caveat": "No theorem-level Lean proof boundary remains for the selected source surface. The full-vector posterior reading used by the allocation model is recorded as a source clarification.",
+      "human_summary": "Formalized: the main threshold-sufficiency theorem and selected appendix threshold results are proved for allocation rules that use the full vector of post-screening estimates, under the clarified source reading of those estimates as the lender's full-information posteriors.",
+      "human_summary_review": {
+        "status": "draft",
+        "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+      },
+      "review_entrypoint": "papers/CGGG20SelectiveInformationAcquisition/FINAL_VALIDATION_REPORT.md",
+      "human_review": {
+        "reviewed_rows": 0,
+        "total_rows": 5,
+        "stale_rows": 0,
+        "mismatch_rows": 0,
+        "uncertain_rows": 0,
+        "source": "v11 PaperInterface claim surface; human entries are recorded after direct review"
+      },
+      "paper_interface": {
+        "path": "papers/CGGG20SelectiveInformationAcquisition/PaperInterface.lean",
+        "line_count": 756,
+        "declaration_rows": 56,
+        "review_rows": 5,
+        "oversized": false,
+        "maintainability_issue": null
+      },
+      "artifacts": {
+        "paper_interface": "papers/CGGG20SelectiveInformationAcquisition/PaperInterface.lean",
+        "assumptions": "papers/CGGG20SelectiveInformationAcquisition/Assumptions.lean",
+        "final_validation_report": "papers/CGGG20SelectiveInformationAcquisition/FINAL_VALIDATION_REPORT.md",
+        "dependency_dag_tex": "papers/CGGG20SelectiveInformationAcquisition/docs/DependencyDAG.tex",
+        "dependency_dag_pdf": "papers/CGGG20SelectiveInformationAcquisition/docs/DependencyDAG.pdf",
+        "human_review_packet_pdf": "papers/CGGG20SelectiveInformationAcquisition/docs/HUMAN_REVIEW_PACKET.pdf",
+        "human_review_packet_tex": "papers/CGGG20SelectiveInformationAcquisition/docs/HUMAN_REVIEW_PACKET.tex"
+      },
+      "review_surface": {
+        "source_file": "papers/CGGG20SelectiveInformationAcquisition/PaperInterface.lean",
+        "assumption_source_file": "papers/CGGG20SelectiveInformationAcquisition/Assumptions.lean",
+        "llm_statement_review": {
+          "lean_to_tex_file": "papers/CGGG20SelectiveInformationAcquisition/audit/lean_to_tex_llm.json",
+          "match_judgment_file": "papers/CGGG20SelectiveInformationAcquisition/audit/statement_match_llm.json",
+          "review_surface_audit_file": "papers/CGGG20SelectiveInformationAcquisition/audit/review_surface_llm.json",
+          "paper_coverage_audit_file": "papers/CGGG20SelectiveInformationAcquisition/audit/paper_coverage_llm.json",
+          "assumption_judgment_file": "papers/CGGG20SelectiveInformationAcquisition/audit/assumption_match_llm.json",
+          "surface_audit_threshold": 30,
+          "surface_warning_threshold": 120,
+          "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
+          "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
+        },
+        "llm_paper_coverage_review": {
+          "paper_coverage_audit_file": "papers/CGGG20SelectiveInformationAcquisition/audit/paper_coverage_llm.json",
+          "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more dashboard rows. If coverage uses a reusable library declaration, it must route through an audited paper-local semantic bridge/equivalence row; matching by Lean/library/source names is not semantic evidence. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
+        },
+        "llm_assumption_review": {
+          "assumption_judgment_file": "papers/CGGG20SelectiveInformationAcquisition/audit/assumption_match_llm.json",
+          "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
+        },
+        "llm_source_record_review": {
+          "source_record_audit_file": "papers/CGGG20SelectiveInformationAcquisition/audit/source_record_audit.json",
+          "source_record_judgment_file": "papers/CGGG20SelectiveInformationAcquisition/audit/source_record_match_llm.json",
+          "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt."
+        },
+        "source_proof_fidelity_review": {
+          "ledger_file": "papers/CGGG20SelectiveInformationAcquisition/audit/source_proof_fidelity.json",
+          "policy": "Audit source proof steps and model conventions by exact source locator and mathematical claim. The Appendix Lemma 2 interpolation typo is a formalized note; the strictly-positive allocation-cost convention is an approved clarification required by the source's cost-aware ratios."
+        },
+        "assumption_policy": "strict",
+        "assumption_names": [],
+        "paper_coverage_required": true,
+        "include_names": [
+          "theorem1_threshold_policies_sufficeSpec",
+          "lemma1_cost_aware_threshold_non_dominationSpec",
+          "lemma2_full_range_cost_aware_threshold_attainmentSpec",
+          "appendix_theorem_cost_aware_threshold_policies_sufficeSpec",
+          "lemma3_equality_diversity_threshold_sufficiencySpec"
+        ],
+        "slices": [
+          {
+            "id": "additional_source_results",
+            "title": "Additional source results",
+            "names": [
+              "theorem1_threshold_policies_sufficeSpec",
+              "lemma1_cost_aware_threshold_non_dominationSpec",
+              "lemma2_full_range_cost_aware_threshold_attainmentSpec",
+              "appendix_theorem_cost_aware_threshold_policies_sufficeSpec",
+              "lemma3_equality_diversity_threshold_sufficiencySpec"
+            ]
+          }
+        ],
+        "source_definition_names": [],
+        "proposition_spec_proofs": {
+          "theorem1_threshold_policies_sufficeSpec": "theorem1_threshold_policies_suffice",
+          "lemma1_cost_aware_threshold_non_dominationSpec": "lemma1_cost_aware_threshold_non_domination_realizes_spec",
+          "lemma2_full_range_cost_aware_threshold_attainmentSpec": "lemma2_full_range_cost_aware_threshold_attainment_realizes_spec",
+          "appendix_theorem_cost_aware_threshold_policies_sufficeSpec": "appendix_theorem_cost_aware_threshold_policies_suffice",
+          "lemma3_equality_diversity_threshold_sufficiencySpec": "lemma3_equality_diversity_threshold_sufficiency"
+        },
+        "require_v11_raw_source_spec_screening": true,
+        "require_source_spec_correspondence": true
+      }
+    },
+    {
+      "schema": 1,
       "id": "DGD26AdmissionsPredictability",
       "repository_visibility": "public",
       "title": "Capacity Constraints Make Admissions Processes Less Predictable",
@@ -1852,10 +1959,11 @@
         "url": "https://www.sciencedirect.com/science/article/pii/S0899825606000303"
       },
       "id": "GHW01DigitalGoods",
-      "main_caveat": "",
+      "main_caveat": "The preliminary SODA Theorem 8.2 is checked through the later journal monotone-offer formulation. Its common-uniform construction is formalized for arbitrary real offer laws using the lower generalized inverse at CDF jumps; this is a source-proof clarification, not a weakened theorem.",
+      "open_source_boundaries": [],
       "paper_interface": {
         "declaration_rows": 153,
-        "line_count": 525,
+        "line_count": 563,
         "maintainability_issue": null,
         "oversized": false,
         "path": "papers/GHW01DigitalGoods/PaperInterface.lean",
@@ -2826,12 +2934,13 @@
         "total_rows": 33,
         "uncertain_rows": 0
       },
-      "human_summary": "",
+      "human_summary": "The paper’s selected results on optimal binary ratings, ranking accuracy, and learning are formalized.",
       "id": "GJ19OptimalBinaryRatingSystems",
-      "main_caveat": "Theorem 3.1's displayed rate is optimized for at least three levels; its identification with the ranking-quality exponent and Lemma C.4's same-objective equivalence remain unproved.",
+      "main_caveat": "",
+      "open_source_boundaries": [],
       "paper_interface": {
         "declaration_rows": 59,
-        "line_count": 1059,
+        "line_count": 1089,
         "maintainability_issue": null,
         "oversized": false,
         "path": "papers/GJ19OptimalBinaryRatingSystems/PaperInterface.lean",
@@ -2991,7 +3100,7 @@
       "schema": 1,
       "source_url": "https://proceedings.mlr.press/v89/garg19a/garg19a.pdf",
       "source_version": "AISTATS 2019 / PMLR 89 version, 2019",
-      "status": "partially formalized",
+      "status": "formalized",
       "title": "Designing Optimal Binary Rating Systems"
     },
     {
@@ -3026,10 +3135,10 @@
       },
       "id": "GKGMM19IterativeLocalVoting",
       "repository_visibility": "public",
-      "main_caveat": "No theorem-level formalization boundary remains. Proposition 2 uses the paper proof's coordinatewise-boundary Model B reading, and Theorem 3's projected/full-space distinction is recorded as a source clarification.",
+      "main_caveat": "The Proposition 2 C1 repair proves convergence of the paper proof's coordinate-sign processes to feasible expected-L1 minimizers; its printed ambient coordinate-median target is false on coupled convex domains. Appendix Theorem 5's adapted random-bias statement is proved with explicit probability-space regularity. Proposition 2's coordinatewise Model B reading and Theorem 3's projected/full-space distinction remain recorded source clarifications.",
       "paper_interface": {
         "declaration_rows": 189,
-        "line_count": 5523,
+        "line_count": 5647,
         "maintainability_issue": "PaperInterface.lean is intentionally large; human review is restricted to the 11 source-claim Spec rows.",
         "oversized": true,
         "path": "papers/GKGMM19IterativeLocalVoting/PaperInterface.lean",
@@ -3052,6 +3161,8 @@
           "stale_judgment_count": 0
         },
         "auxiliary_names": [
+          "AppendixTheorem5AdaptedBiasHypotheses",
+          "AppendixTheorem5AdaptedBiasRegularity",
           "AppendixTheorem5ExecutionRegularity",
           "AppendixTheorem5ExecutionRegularity.ae_tendsto",
           "AppendixTheorem5ExecutionRegularity.toProjectedSSGMExecution",
@@ -3135,12 +3246,12 @@
         "include_names": [
           "lemma3_finite_holder_dual_gradient_candidate_norm_formulaSpec",
           "proposition1_weighted_euclidean_joint_c3Spec",
-          "proposition2_coordinatewise_boundary_finite_c3_medianSpec",
+          "proposition2_convex_domain_constrained_l1Spec",
           "appendix_lemma1_uniform_direction_errorSpec",
           "appendix_lemma2_bad_event_linear_rateSpec",
           "appendix_lemma4_weighted_bad_event_linear_rateSpec",
           "appendix_theorem4_expected_subgradient_boundarySpec",
-          "appendix_theorem5_ssgm_convergence_boundarySpec",
+          "appendix_theorem5_adapted_biasSpec",
           "theorem1_finite_c3_six_casesSpec",
           "theorem2_modelB_finite_holder_dual_c3Spec",
           "theorem3_population_fullspaceSpec"
@@ -3152,7 +3263,7 @@
               "theorem1_finite_c3_six_casesSpec",
               "theorem2_modelB_finite_holder_dual_c3Spec",
               "proposition1_weighted_euclidean_joint_c3Spec",
-              "proposition2_coordinatewise_boundary_finite_c3_medianSpec",
+              "proposition2_convex_domain_constrained_l1Spec",
               "theorem3_population_fullspaceSpec"
             ]
           },
@@ -3164,7 +3275,7 @@
               "appendix_lemma2_bad_event_linear_rateSpec",
               "appendix_lemma4_weighted_bad_event_linear_rateSpec",
               "appendix_theorem4_expected_subgradient_boundarySpec",
-              "appendix_theorem5_ssgm_convergence_boundarySpec"
+              "appendix_theorem5_adapted_biasSpec"
             ]
           }
         ],
@@ -3222,7 +3333,7 @@
               "theorem1_finite_c3_six_casesSpec",
               "theorem2_modelB_finite_holder_dual_c3Spec",
               "proposition1_weighted_euclidean_joint_c3Spec",
-              "proposition2_coordinatewise_boundary_finite_c3_medianSpec"
+              "proposition2_convex_domain_constrained_l1Spec"
             ]
           },
           {
@@ -3234,7 +3345,7 @@
               "appendix_lemma2_bad_event_linear_rateSpec",
               "appendix_lemma4_weighted_bad_event_linear_rateSpec",
               "appendix_theorem4_expected_subgradient_boundarySpec",
-              "appendix_theorem5_ssgm_convergence_boundarySpec"
+              "appendix_theorem5_adapted_biasSpec"
             ]
           },
           {
@@ -3292,12 +3403,12 @@
         "proposition_spec_proofs": {
           "lemma3_finite_holder_dual_gradient_candidate_norm_formulaSpec": "lemma3_finite_holder_dual_gradient_candidate_norm_formula",
           "proposition1_weighted_euclidean_joint_c3Spec": "proposition1_weighted_euclidean_joint_c3",
-          "proposition2_coordinatewise_boundary_finite_c3_medianSpec": "proposition2_coordinatewise_boundary_finite_c3_median",
+          "proposition2_convex_domain_constrained_l1Spec": "proposition2_convex_domain_constrained_l1",
           "appendix_lemma1_uniform_direction_errorSpec": "appendix_lemma1_uniform_direction_error",
           "appendix_lemma2_bad_event_linear_rateSpec": "appendix_lemma2_bad_event_linear_rate",
           "appendix_lemma4_weighted_bad_event_linear_rateSpec": "appendix_lemma4_weighted_bad_event_linear_rate",
           "appendix_theorem4_expected_subgradient_boundarySpec": "appendix_theorem4_expected_subgradient_boundary",
-          "appendix_theorem5_ssgm_convergence_boundarySpec": "appendix_theorem5_ssgm_convergence_boundary",
+          "appendix_theorem5_adapted_biasSpec": "appendix_theorem5_adapted_bias",
           "theorem1_finite_c3_six_casesSpec": "theorem1_finite_c3_six_cases",
           "theorem2_modelB_finite_holder_dual_c3Spec": "theorem2_modelB_finite_holder_dual_c3",
           "theorem3_population_fullspaceSpec": "theorem3_population_fullspace"
@@ -3307,8 +3418,164 @@
       },
       "schema": 1,
       "source_version": "JAIR 64 (2019), 315-355; published 2019-02-18",
-      "status": "formalized",
+      "status": "partially formalized",
       "title": "Iterative Local Voting for Collective Decision-making in Continuous Spaces"
+    },
+    {
+      "schema": 1,
+      "id": "GKP26LinearRepresentationHypothesis",
+      "repository_visibility": "public",
+      "title": "How Many Features Can a Language Model Store Under the Linear Representation Hypothesis?",
+      "authors": "Nikhil Garg, Jon Kleinberg, Kenny Peng",
+      "source_version": "arXiv v1, 2026",
+      "build_target": "lake build GKP26LinearRepresentationHypothesis",
+      "status": "partially formalized",
+      "main_caveat": "Partial-formalization boundary: the cited Alon (2003) normalized near-identity matrix-rank theorem, used by the lower, threshold, and activation/bias bounds, is not yet proved in AppliedModelingLib. The compressed-sensing, random-incoherence, upper-bound, and geometry result families are natively formalized.",
+      "human_summary": "",
+      "human_summary_review": {
+        "status": "draft",
+        "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+      },
+      "review_entrypoint": "papers/GKP26LinearRepresentationHypothesis/FINAL_VALIDATION_REPORT.md",
+      "human_review": {
+        "reviewed_rows": 0,
+        "total_rows": 11,
+        "stale_rows": 0,
+        "mismatch_rows": 0,
+        "uncertain_rows": 0,
+        "source": "v11 PaperInterface claim surface; human entries are recorded after direct review"
+      },
+      "paper_interface": {
+        "path": "papers/GKP26LinearRepresentationHypothesis/PaperInterface.lean",
+        "line_count": 2513,
+        "declaration_rows": 89,
+        "review_rows": 11,
+        "oversized": true,
+        "maintainability_issue": "The canonical interface contains 14 human-review claims plus two cited proof-support boundaries; auxiliary declarations remain outside the human-review denominator."
+      },
+      "artifacts": {
+        "paper_interface": "papers/GKP26LinearRepresentationHypothesis/PaperInterface.lean",
+        "assumptions": "papers/GKP26LinearRepresentationHypothesis/Assumptions.lean",
+        "final_validation_report": "papers/GKP26LinearRepresentationHypothesis/FINAL_VALIDATION_REPORT.md",
+        "human_review_packet_pdf": "papers/GKP26LinearRepresentationHypothesis/docs/HUMAN_REVIEW_PACKET.pdf",
+        "human_review_packet_tex": "papers/GKP26LinearRepresentationHypothesis/docs/HUMAN_REVIEW_PACKET.tex",
+        "agent_source_audit": "papers/GKP26LinearRepresentationHypothesis/docs/AGENT_SOURCE_AUDIT.md",
+        "dependency_dag_tex": "papers/GKP26LinearRepresentationHypothesis/docs/DependencyDAG.tex",
+        "dependency_dag_pdf": "papers/GKP26LinearRepresentationHypothesis/docs/DependencyDAG.pdf"
+      },
+      "review_surface": {
+        "source_file": "papers/GKP26LinearRepresentationHypothesis/PaperInterface.lean",
+        "assumption_source_file": "papers/GKP26LinearRepresentationHypothesis/Assumptions.lean",
+        "llm_statement_review": {
+          "lean_to_tex_file": "papers/GKP26LinearRepresentationHypothesis/audit/lean_to_tex_llm.json",
+          "match_judgment_file": "papers/GKP26LinearRepresentationHypothesis/audit/statement_match_llm.json",
+          "review_surface_audit_file": "papers/GKP26LinearRepresentationHypothesis/audit/review_surface_llm.json",
+          "paper_coverage_audit_file": "papers/GKP26LinearRepresentationHypothesis/audit/paper_coverage_llm.json",
+          "assumption_judgment_file": "papers/GKP26LinearRepresentationHypothesis/audit/assumption_match_llm.json",
+          "require_explicit_source_routes": true,
+          "require_source_claim_atoms": true,
+          "surface_audit_threshold": 30,
+          "surface_warning_threshold": 120,
+          "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
+          "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
+        },
+        "llm_paper_coverage_review": {
+          "paper_coverage_audit_file": "papers/GKP26LinearRepresentationHypothesis/audit/paper_coverage_llm.json",
+          "defect_support_judgment_file": "papers/GKP26LinearRepresentationHypothesis/audit/defect_support_match_llm.json",
+          "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more dashboard rows. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
+        },
+        "llm_assumption_review": {
+          "assumption_judgment_file": "papers/GKP26LinearRepresentationHypothesis/audit/assumption_match_llm.json",
+          "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
+        },
+        "llm_source_record_review": {
+          "source_record_audit_file": "papers/GKP26LinearRepresentationHypothesis/audit/source_record_audit.json",
+          "source_record_judgment_file": "papers/GKP26LinearRepresentationHypothesis/audit/source_record_match_llm.json",
+          "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt."
+        },
+        "semantic_model_review": {
+          "schema": 2,
+          "required_dimensions": [
+            "expanded_binders_and_domain",
+            "carrier_and_domain",
+            "probability_support_endpoints",
+            "joint_law_and_state_evolution",
+            "conditioning_and_calibration_semantics",
+            "expectation_definedness",
+            "null_cell_totalization_and_partition_scope",
+            "extended_rate_codomain"
+          ],
+          "policy": "Review every expanded paper-facing model surface semantically against the pinned source text and recorded corrected targets. Record not-applicable only after inspecting the carrier, probability, conditioning, expectation, partition, and rate semantics; declaration names are routing only."
+        },
+        "source_proof_fidelity_review": {
+          "ledger_file": "papers/GKP26LinearRepresentationHypothesis/audit/source_proof_fidelity.json",
+          "policy": "Record source-proof defects and corrected targets by exact source locator and mathematical obligation. The Geometry Proposition 2 correction retains the archival denominator, explicitly rejects archival equivalence, and proves the documented squared-denominator target without treating the repaired proof step as a source assumption."
+        },
+        "assumption_policy": "strict",
+        "assumption_names": [
+          "assumption_alon_normalized_rank_bound"
+        ],
+        "paper_coverage_required": false,
+        "include_names": [
+          "paper_compressed_sensing_external_basis_pursuitSpec",
+          "paper_geometry1_source_constructed_rateSpec",
+          "paper_geometry2_probe_column_correlation_upper_correctedSpec",
+          "paper_geometry2_representation_column_correlation_upper_correctedSpec",
+          "paper_geometry2_self_column_correlation_lowerSpec",
+          "paper_lower_bound_dimension_isBigO_source_log_source_regimeSpec",
+          "paper_random_rademacher_strict_incoherence_source_rateSpec",
+          "paper_upper_bound_dimension_isBigO_k_sq_log_mSpec",
+          "paper_rademacher_strict_incoherent_exists_source_rateSpec",
+          "paper_threshold_separation_dimension_isBigO_lower_source_log_original_regimeSpec",
+          "paper_activation_separation_dimension_isBigO_lower_source_log_original_regimeSpec"
+        ],
+        "slices": [
+          {
+            "id": "main_named_results",
+            "title": "Named theorem-level results",
+            "names": [
+              "paper_compressed_sensing_external_basis_pursuitSpec",
+              "paper_upper_bound_dimension_isBigO_k_sq_log_mSpec",
+              "paper_lower_bound_dimension_isBigO_source_log_source_regimeSpec",
+              "paper_geometry2_self_column_correlation_lowerSpec",
+              "paper_geometry2_representation_column_correlation_upper_correctedSpec",
+              "paper_geometry2_probe_column_correlation_upper_correctedSpec",
+              "paper_threshold_separation_dimension_isBigO_lower_source_log_original_regimeSpec",
+              "paper_activation_separation_dimension_isBigO_lower_source_log_original_regimeSpec"
+            ]
+          },
+          {
+            "id": "additional_source_results",
+            "title": "Additional source results",
+            "names": [
+              "paper_geometry1_source_constructed_rateSpec",
+              "paper_random_rademacher_strict_incoherence_source_rateSpec"
+            ]
+          },
+          {
+            "id": "additional_source_results",
+            "title": "Additional source results",
+            "names": [
+              "paper_rademacher_strict_incoherent_exists_source_rateSpec"
+            ]
+          }
+        ],
+        "proposition_spec_proofs": {
+          "paper_compressed_sensing_external_basis_pursuitSpec": "paper_compressed_sensing_external_basis_pursuit",
+          "paper_geometry1_source_constructed_rateSpec": "paper_geometry1_source_constructed_rate",
+          "paper_geometry2_probe_column_correlation_upper_correctedSpec": "paper_geometry2_probe_column_correlation_upper_corrected",
+          "paper_geometry2_representation_column_correlation_upper_correctedSpec": "paper_geometry2_representation_column_correlation_upper_corrected",
+          "paper_geometry2_self_column_correlation_lowerSpec": "paper_geometry2_self_column_correlation_lowerSpec_proof",
+          "paper_lower_bound_dimension_isBigO_source_log_source_regimeSpec": "paper_lower_bound_dimension_isBigO_source_log_source_regime",
+          "paper_random_rademacher_strict_incoherence_source_rateSpec": "paper_random_rademacher_strict_incoherence_source_rate",
+          "paper_upper_bound_dimension_isBigO_k_sq_log_mSpec": "paper_upper_bound_dimension_isBigO_k_sq_log_m",
+          "paper_rademacher_strict_incoherent_exists_source_rateSpec": "paper_rademacher_strict_incoherent_exists_source_rate",
+          "paper_threshold_separation_dimension_isBigO_lower_source_log_original_regimeSpec": "paper_threshold_separation_dimension_isBigO_lower_source_log_original_regime",
+          "paper_activation_separation_dimension_isBigO_lower_source_log_original_regimeSpec": "paper_activation_separation_dimension_isBigO_lower_source_log_original_regime"
+        },
+        "require_v11_raw_source_spec_screening": true,
+        "require_source_spec_correspondence": true
+      }
     },
     {
       "artifacts": {
@@ -4184,8 +4451,8 @@
       "source_version": "arXiv full version, arXiv:2206.13489",
       "build_target": "lake build JGS23SupplySideRecommenderSystems",
       "status": "formalized",
-      "main_caveat": "Finite Section 2 primitives, Proposition pure finite-deviation routes, a conditional Proposition atom product-integral route, single-genre CDF/optimization algebra, two-user induced-cost and regionscolor calculus plus the supportrestriction content-to-value-ball/canonical-feasible-domain/C1-ball/local-max/FOC/cross-partial, polar-chart, and bracket-nonvanishing substeps, literal Ptwo and finiteP standard-basis C1 maximizer steps (the finiteP route uses coordinate bounds rather than the source's false unit-radius assertion), infinite-genre algebra, support-cap pieces of Proposition existence, and exact Ptwo and finiteP source constructions are formalized. The Ptwo angle sampler equals the stated zero-extended density measure, the circle measure has exact literal-circle topological support and direct P=2 C2 marginals, and a concrete almost-everywhere-nonnegative Content 2 measure transports through the actual standard-basis score map to that circle law. Its fixed score levels are null, so the actual uniform-tie assigned-user mass against every pure action is the source sum of marginal CDF values. On the actual nonnegative source action domain, the corresponding cost-subtracted payoff is bounded by `1 - 2 / beta`, with equality for support actions at either producer index; those support actions are direct best responses over nonnegative deviations. The finiteP unit-interval source-curve sampler gives a nonnegative content probability law whose standard-basis score law is exactly its coordinate law. Its coordinate and transported standard-basis value laws have the literal curve as exact topological support, and both coordinate CDFs satisfy the proposition's zero-extended `min(1, z^(2/(P-1)))` law and the equivalent direct C2 root-CDF equality. This closes the direct finiteP C1/C2/C3 components, but not the generic necessary/sufficient or mixed-Nash semantic bridge. The structural source statements' explicit absolutely continuous score-law hypothesis now has a checked tie-null and weak-CDF payoff consequence. The canonical two-user transport separately turns a visible topological content-support l2 ball into a realized-value support ball; under nonzero sine and a.e. nonnegative content, its actual value-map image is a closed feasible domain containing that ball. The C1-ball endpoint now derives its nonzero polar point and angle interval internally. None derives the map/law identification, either support ball, nonzero sine, a.e. content nonnegativity, a source-valid generic C1 domain, pointwise derivatives, or a valid generic C1-C3 theorem from equilibrium semantics. The proof prose at `arxiv-update.tex:1706` conflicts with the proposition's CDF except at `P = 3`. The Ptwo facts remain intentionally unbundled. The full paper remains open; the main boundaries are general mixed-measure semantics and existence, a source-faithful tie-aware necessary/sufficient bridge, the source-to-supportrestriction canonical-map/feasible-domain/C1 bridge, and later distributional work for the continuous-equilibrium results.",
-      "human_summary": "Formalization gap: Theorem 2 uses a specific two-dimensional user model; Theorems 3–4 cover user vectors at angles below 90°; Lemma 2 proves a restricted equilibrium characterization.",
+      "main_caveat": "The selected theoretical source surface is formalized. Material source corrections and clarified regularity conditions are recorded in docs/SOURCE_CLARIFICATIONS.md and summarized in FINAL_VALIDATION_REPORT.md; empirical results are outside this paper-local scope.",
+      "human_summary": "Selected theoretical surface formalized: Theorem 2 covers arbitrary finite-dimensional two-user geometry; Theorems 3–4 prove the corrected strictly acute canonical two-genre construction; Lemma 2 uses the tie-aware corrected characterization. See FINAL_VALIDATION_REPORT.md.",
       "review_entrypoint": "papers/JGS23SupplySideRecommenderSystems/FINAL_VALIDATION_REPORT.md",
       "human_review": {
         "reviewed_rows": 0,
@@ -4197,11 +4464,11 @@
       },
       "paper_interface": {
         "path": "papers/JGS23SupplySideRecommenderSystems/PaperInterface.lean",
-        "line_count": 1016,
+        "line_count": 1104,
         "declaration_rows": 453,
         "review_rows": 36,
         "oversized": true,
-        "maintainability_issue": "Large in-progress review surface retained during source-first expansion; split it into review_surface.slices before a closeout audit."
+        "maintainability_issue": "The 36-result paper-facing interface is intentionally retained as the source-to-Spec review surface; its size is not an open formalization boundary."
       },
       "artifacts": {
         "readme": "papers/JGS23SupplySideRecommenderSystems/README.md",
@@ -5070,6 +5337,146 @@
       }
     },
     {
+      "schema": 1,
+      "id": "LBG22StrategicRanking",
+      "repository_visibility": "public",
+      "title": "Strategic ranking",
+      "authors": "Lydia T. Liu, Nikhil Garg, Christian Borgs",
+      "source_version": "Proceedings of The 25th International Conference on Artificial Intelligence and Statistics (AISTATS 2022), PMLR Vol. 151, pp. 2489–2518",
+      "build_target": "lake build LBG22StrategicRanking",
+      "status": "formalized with caveat",
+      "main_caveat": "All eighteen selected named results have proved endpoints and current independent source-semantic review, final audit, and strict closeout. Proposition 3.1's cutoff-monotonicity clause and Proposition B.2's every-cutoff optimum use explicit local primitive restrictions; known-priority, continuum, and weak/strict readings are clarifications.",
+      "human_summary": "The finite-level equilibrium exists and is unique almost everywhere under the paper's known-priority boundary model. Main-text weak/strict comparisons are exact under the clarified interpretation, with derivative existence qualified separately. Applicant-welfare cutoff monotonicity and the appendix's every-cutoff weighted optimum use explicit local primitive restrictions. All eighteen theorem targets are proved and independently source-reviewed; final audit and strict closeout are complete.",
+      "human_summary_review": {
+        "status": "draft",
+        "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+      },
+      "review_entrypoint": "papers/LBG22StrategicRanking/FINAL_VALIDATION_REPORT.md",
+      "human_review": {
+        "reviewed_rows": 0,
+        "total_rows": 18,
+        "stale_rows": 0,
+        "mismatch_rows": 0,
+        "uncertain_rows": 0,
+        "source": "v11 PaperInterface claim surface; human entries are recorded after direct review"
+      },
+      "paper_interface": {
+        "path": "papers/LBG22StrategicRanking/PaperInterface.lean",
+        "review_rows": 18,
+        "oversized": false,
+        "maintainability_issue": "One complete transparent Spec per named result; archival assertions are separated. All selected targets have current independent semantic review.",
+        "line_count": 546
+      },
+      "artifacts": {
+        "readme": "papers/LBG22StrategicRanking/README.md",
+        "paper_interface": "papers/LBG22StrategicRanking/PaperInterface.lean",
+        "final_validation_report": "papers/LBG22StrategicRanking/FINAL_VALIDATION_REPORT.md",
+        "dependency_dag_tex": "papers/LBG22StrategicRanking/docs/DependencyDAG.tex",
+        "dependency_dag_pdf": "papers/LBG22StrategicRanking/docs/DependencyDAG.pdf",
+        "human_review_packet_pdf": "papers/LBG22StrategicRanking/docs/HUMAN_REVIEW_PACKET.pdf",
+        "human_review_packet_tex": "papers/LBG22StrategicRanking/docs/HUMAN_REVIEW_PACKET.tex",
+        "audit_interface": "papers/LBG22StrategicRanking/AuditInterface.lean",
+        "proof_interface": "papers/LBG22StrategicRanking/ProofInterface.lean"
+      },
+      "review_surface": {
+        "source_file": "papers/LBG22StrategicRanking/PaperInterface.lean",
+        "llm_statement_review": {
+          "lean_to_tex_file": "papers/LBG22StrategicRanking/audit/lean_to_tex_llm.json",
+          "match_judgment_file": "papers/LBG22StrategicRanking/audit/statement_match_llm.json",
+          "review_surface_audit_file": "papers/LBG22StrategicRanking/audit/review_surface_llm.json",
+          "surface_audit_threshold": 30,
+          "surface_warning_threshold": 120,
+          "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
+          "v11_screening_file": "papers/LBG22StrategicRanking/audit/v11_raw_source_spec_screening.json",
+          "paper_semantic_prerequisites_file": "papers/LBG22StrategicRanking/audit/paper_semantic_prerequisites.json",
+          "library_semantic_review_file": "papers/LBG22StrategicRanking/audit/library_semantic_review.json",
+          "require_explicit_source_routes": true,
+          "require_source_claim_atoms": true,
+          "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
+        },
+        "include_names": [
+          "RankPreservationSpec",
+          "SecondPriceEffortSpec",
+          "ApplicantWelfareSpec",
+          "PrivateUtilitySpec",
+          "ThreeLevelImprovementSpec",
+          "SocietalUtilitySpec",
+          "EnvironmentRankPreservationSpec",
+          "EnvironmentWelfareSpec",
+          "WelfareGapDerivativeSpec",
+          "AccessSpec",
+          "EffortComparativeStaticsSpec",
+          "MultidimensionalRankSpec",
+          "WeightedPrivateUtilitySpec",
+          "EqualScoreRewardsSpec",
+          "NullDeviationsSpec",
+          "CostGapSpec",
+          "ProductionGapSpec",
+          "PreEffortSkillRegularitySpec"
+        ],
+        "slices": [
+          {
+            "id": "main",
+            "title": "Main-text source statements",
+            "names": [
+              "RankPreservationSpec",
+              "SecondPriceEffortSpec",
+              "ApplicantWelfareSpec",
+              "PrivateUtilitySpec",
+              "ThreeLevelImprovementSpec",
+              "SocietalUtilitySpec",
+              "EnvironmentRankPreservationSpec",
+              "EnvironmentWelfareSpec",
+              "WelfareGapDerivativeSpec",
+              "AccessSpec"
+            ]
+          },
+          {
+            "id": "appendix",
+            "title": "Appendix and supplement source statements",
+            "names": [
+              "PreEffortSkillRegularitySpec",
+              "EffortComparativeStaticsSpec",
+              "MultidimensionalRankSpec",
+              "WeightedPrivateUtilitySpec",
+              "EqualScoreRewardsSpec",
+              "NullDeviationsSpec",
+              "CostGapSpec",
+              "ProductionGapSpec"
+            ]
+          }
+        ],
+        "auxiliary_names": [],
+        "require_v11_raw_source_spec_screening": true,
+        "require_source_spec_correspondence": true,
+        "paper_coverage_required": true,
+        "source_proof_fidelity_review": {
+          "ledger_file": "papers/LBG22StrategicRanking/audit/source_proof_fidelity.json",
+          "policy": "Review exact source proof scopes and the mathematical replacement derivations. Distinguish stated-model and weak/strict clarifications from the local primitive restrictions of Proposition 3.1 and B.2. Neither approval nor a compiled proof supplies an independent source-semantic judgment."
+        },
+        "proposition_spec_proofs": {
+          "RankPreservationSpec": "rankPreservation",
+          "SecondPriceEffortSpec": "secondPriceEffort",
+          "ApplicantWelfareSpec": "applicantWelfare",
+          "PrivateUtilitySpec": "privateUtility",
+          "ThreeLevelImprovementSpec": "threeLevelImprovement",
+          "SocietalUtilitySpec": "societalUtility",
+          "EnvironmentRankPreservationSpec": "environmentRankPreservation",
+          "EnvironmentWelfareSpec": "environmentWelfare",
+          "WelfareGapDerivativeSpec": "welfareGapDerivative",
+          "AccessSpec": "access",
+          "EffortComparativeStaticsSpec": "effortComparativeStatics",
+          "MultidimensionalRankSpec": "multidimensionalRank",
+          "WeightedPrivateUtilitySpec": "weightedPrivateUtility",
+          "EqualScoreRewardsSpec": "equalScoreRewards",
+          "NullDeviationsSpec": "nullDeviations",
+          "CostGapSpec": "costGap",
+          "ProductionGapSpec": "productionGap",
+          "PreEffortSkillRegularitySpec": "preEffortSkillRegularity"
+        }
+      }
+    },
+    {
       "additional_assumption_notes": [
         {
           "condition": "The Eq. (3) maximum-likelihood wrapper uses explicit positive-total-exposure and parameter-domain/boundary conventions.",
@@ -5113,25 +5520,25 @@
         "reviewed_rows": 0,
         "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
         "stale_rows": 0,
-        "total_rows": 17,
+        "total_rows": 19,
         "uncertain_rows": 0
       },
-      "human_summary": "Formalized: the likelihood, Lemma 1, and Proposition 1 are checked. Lemma 1 and Proposition 1 now count actual calendar-time first reports through a stationary marked-displacement construction; the duration mixture is the explicitly stated pre-first-report survival condition.",
+      "human_summary": "Formalized: the likelihood, Lemma 1, Proposition 1, Lemma 2, and the Appendix D.8.2 shifted-process claim are checked. Lemma 1 and Proposition 1 count actual calendar-time first reports through a stationary marked-displacement construction; Lemma 2 conditions on the actual first report and transports the iid future exponential tail.",
       "human_summary_review": {
         "note": "Updated after the 2026-08-16 calendar-time source-model repair; do not mark human_written or human_approved without an explicit human review.",
         "status": "agent_draft"
       },
       "id": "LBG24SpatialUnderreporting",
-      "last_status_checkpoint": "2026-08-16: The literal calendar-time first-report route now compiles. A stationary marked birth process is displaced by its retained first-report delay; Lean derives the interval Poisson laws, independent increments, and Proposition 1 limits. The approved source clarification makes the pre-first-report survival bridge explicit and leaves post-first-report behavior unrestricted.",
+      "last_status_checkpoint": "2026-09-07: The Appendix Lemma 2 repair is synchronized. The actual first report is used as the conditioning variable, the selected start is constrained only after that report and before the horizon, and the iid future interarrival law is transported to the source carrier. The selected-start tail and D.8.2 shifted-process endpoints compile under this corrected model.",
       "main_caveat": "",
       "open_source_boundaries": [],
       "paper_interface": {
         "declaration_rows": 9,
-        "line_count": 219,
+        "line_count": 243,
         "maintainability_issue": null,
         "oversized": false,
         "path": "papers/LBG24SpatialUnderreporting/PaperInterface.lean",
-        "review_rows": 8
+        "review_rows": 10
       },
       "repository_visibility": "public",
       "review_entrypoint": "papers/LBG24SpatialUnderreporting/FINAL_VALIDATION_REPORT.md",
@@ -5534,7 +5941,9 @@
           "sourceEquation6PoissonRegressionLikelihoodSpec",
           "sourceZeroInflatedLikelihoodExtensionSpec",
           "sourceLemma1CalendarTimeDurationObservedProcessSpec",
-          "sourceProposition1CalendarTimeNonidentifiabilitySpec"
+          "sourceProposition1CalendarTimeNonidentifiabilitySpec",
+          "sourceLemma2SelectedStartExponentialTailSpec",
+          "sourcePostFirstJumpPoissonShiftSpec"
         ],
         "llm_assumption_review": {
           "assumption_judgment_file": "papers/LBG24SpatialUnderreporting/audit/assumption_match_llm.json",
@@ -5573,6 +5982,8 @@
           "sourceEquation6PoissonRegressionLikelihoodSpec": "sourceEquation6PoissonRegressionLikelihood",
           "sourceHomogeneousReportingDelayMeanSpec": "sourceHomogeneousReportingDelayMean",
           "sourceLemma1CalendarTimeDurationObservedProcessSpec": "sourceLemma1CalendarTimeDurationObservedProcess",
+          "sourceLemma2SelectedStartExponentialTailSpec": "sourceLemma2SelectedStartExponentialTail",
+          "sourcePostFirstJumpPoissonShiftSpec": "sourcePostFirstJumpPoissonShift",
           "sourceProposition1CalendarTimeNonidentifiabilitySpec": "sourceProposition1CalendarTimeNonidentifiability",
           "sourceTheorem1LikelihoodDecompositionSpec": "sourceTheorem1LikelihoodDecomposition",
           "sourceZeroInflatedLikelihoodExtensionSpec": "sourceZeroInflatedLikelihoodExtension"
@@ -5619,6 +6030,14 @@
             "id": "additional_source_results",
             "names": [
               "sourceEquation2PoissonCountPMFSpec"
+            ],
+            "title": "Additional source results"
+          },
+          {
+            "id": "additional_source_results",
+            "names": [
+              "sourceLemma2SelectedStartExponentialTailSpec",
+              "sourcePostFirstJumpPoissonShiftSpec"
             ],
             "title": "Additional source results"
           }
@@ -6405,7 +6824,14 @@
       },
       "human_summary": "The auction, greedy approximation, critical-price, and truthfulness results are formalized; Theorem 6.1's native complexity conclusion is an explicit zero-proof partial boundary.",
       "id": "LOS02CombinatorialAuctions",
-      "main_caveat": "Partial-formalization boundary: the external computational-complexity consequences for the native Theorem 6.1 hardness and NP=ZPP claims remain reusable library infrastructure work.",
+      "main_caveat": "Partial-formalization boundary: reusable runtime composition for Theorem 6.1 is now explicit, and the shared library now has encoding-aware costed-map contracts plus verified unary finite-index, unary-Nat, generic finite-carrier, Boolean-incidence, and finite-set encodings with round trips. The graph reduction now has exact adjacency-input and combined-output size witnesses, including a polynomial bound in encoded input length, and the executable ordered-good representation is proved equivalent to graph-independent-set feasibility. A symmetric loop-free Boolean-table adapter now recovers the corresponding SimpleGraph adjacency exactly, and the typed Boolean-table-to-ordered-incidence PolynomialTimeMap is proved pointwise equal to the executable incidence entries with separate emitted-cell and output-size bounds; encoded feasibility is also proved equivalent to graph-independent selection, while flattened map rows, row-derived feasibility, and the exact emitted-cell work count are proved to have exactly the intended ordered-incidence semantics. These semantic results are exported through ProofInterface. Arbitrary real-valued bids and source-faithful full-reduction step bounds remain IN PROGRESS; native polynomial-time semantics, hardness, approximation, and NP=ZPP consequences remain IN PROGRESS.",
+      "open_source_boundaries": [
+        {
+          "description": "Finite source/target encodings and output-size bounds are checked, including the executable FiniteGraphTable adjacency code of exact length n*n. A concrete machine step model for the full reduction, arbitrary real-valued bid representation, native hardness/approximation semantics, and the NP=ZPP implication remain unresolved.",
+          "id": "LOS02-NATIVE-COMPLEXITY-BOUNDARY-2026-09-08",
+          "status": "IN PROGRESS"
+        }
+      ],
       "paper_interface": {
         "declaration_rows": 12,
         "line_count": 139,
@@ -7638,7 +8064,7 @@
         "reviewed_rows": 0,
         "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
         "stale_rows": 0,
-        "total_rows": 25,
+        "total_rows": 19,
         "uncertain_rows": 0
       },
       "human_summary": "",
@@ -7647,21 +8073,22 @@
         "status": "human_approved"
       },
       "id": "PG24NoisyMatchingMarkets",
-      "main_caveat": "Formalized under documented source corrections: the printed thm1v2 upper-tail display is replaced by its source-supported lower-tail target, while beet(ii) and goose-2 retain the valid qualitative convergence available under beta-max concentration rather than unsupported one-draw polynomial rates. These corrections add no economic assumption to Theorems 1--4.",
+      "main_caveat": "Formalized under documented source corrections: Appendix Proposition 1 uses its source-supported lower-tail target, and Appendix Proposition 7(ii) and Appendix Proposition 8 use the one-draw finite-second-moment condition required by their polynomial-rate Chebyshev argument. These corrections do not alter the economic primitives or the four main theorem conclusions.",
       "paper_interface": {
         "declaration_rows": 26,
-        "line_count": 881,
+        "line_count": 975,
         "maintainability_issue": null,
         "oversized": false,
         "path": "papers/PG24NoisyMatchingMarkets/PaperInterface.lean",
         "proof_interface_path": "papers/PG24NoisyMatchingMarkets/ProofInterface.lean",
-        "review_rows": 25
+        "review_rows": 19
       },
       "repository_visibility": "public",
       "review_entrypoint": "papers/PG24NoisyMatchingMarkets/FINAL_VALIDATION_REPORT.md",
       "review_surface": {
         "assumption_names": [
-          "PG24NoisyMatchingMarkets.source_assumption_iid_beta_max_variance_bound"
+          "PG24NoisyMatchingMarkets.source_assumption_iid_beta_max_variance_bound",
+          "PG24NoisyMatchingMarkets.source_clarification_one_draw_finite_second_moment"
         ],
         "assumption_policy": "strict",
         "assumption_source_file": "papers/PG24NoisyMatchingMarkets/Assumptions.lean",
@@ -7854,12 +8281,6 @@
           "PG24NoisyMatchingMarkets.upperTailMass_quantile_lower_bound_eventually_of_longTailed"
         ],
         "include_names": [
-          "holder_value_law_regularitySpec",
-          "capacity_regularitySpec",
-          "beta_max_concentratingSpec",
-          "long_tailed_noiseSpec",
-          "stable_matching_cutoff_definitionSpec",
-          "match_probability_formulaSpec",
           "review_theorem1_attenuationSpec",
           "review_theorem2_amplificationSpec",
           "review_theorem3_attenuationInCoalitionsSpec",
@@ -7911,11 +8332,6 @@
         "proof_file": "papers/PG24NoisyMatchingMarkets/ProofInterface.lean",
         "proof_module": "PG24NoisyMatchingMarkets.ProofInterface",
         "proposition_spec_proofs": {
-          "beta_max_concentratingSpec": "beta_max_concentratingSpec_proof",
-          "capacity_regularitySpec": "capacity_regularitySpec_proof",
-          "holder_value_law_regularitySpec": "holder_value_law_regularitySpec_proof",
-          "long_tailed_noiseSpec": "long_tailed_noiseSpec_proof",
-          "match_probability_formulaSpec": "match_probability_formulaSpec_proof",
           "review_theorem1_attenuationSpec": "review_theorem1_attenuationSpec_proof",
           "review_theorem2_amplificationSpec": "review_theorem2_amplificationSpec_proof",
           "review_theorem3_attenuationInCoalitionsSpec": "review_theorem3_attenuationInCoalitionsSpec_proof",
@@ -7934,8 +8350,7 @@
           "source_thm1_corrected_lower_tailSpec": "source_thm1_corrected_lower_tailSpec_proof",
           "source_thm2_equivalent_boundSpec": "source_thm2_equivalent_boundSpec_proof",
           "source_tomatoSpec": "source_tomatoSpec_proof",
-          "source_unbounded_cutoffsSpec": "source_unbounded_cutoffsSpec_proof",
-          "stable_matching_cutoff_definitionSpec": "stable_matching_cutoff_definitionSpec_proof"
+          "source_unbounded_cutoffsSpec": "source_unbounded_cutoffsSpec_proof"
         },
         "quarantined_auxiliary_names": [
           "PG24NoisyMatchingMarkets.Theorem1AttenuationSourceModel",
@@ -8157,24 +8572,24 @@
           {
             "id": "additional_source_results",
             "names": [
-              "holder_value_law_regularitySpec",
-              "capacity_regularitySpec",
-              "beta_max_concentratingSpec",
-              "long_tailed_noiseSpec",
-              "stable_matching_cutoff_definitionSpec",
-              "match_probability_formulaSpec",
               "review_theorem1_attenuationSpec",
               "review_theorem2_amplificationSpec",
               "review_theorem3_attenuationInCoalitionsSpec",
               "review_theorem4_amplificationInCoalitionsSpec",
               "source_thm1_corrected_lower_tailSpec",
+              "source_beetSpec",
+              "source_goose_2Spec"
+            ],
+            "title": "Additional source results"
+          },
+          {
+            "id": "additional_source_results",
+            "names": [
               "source_duck_1Spec",
               "source_tomatoSpec",
               "source_duck_2Spec",
               "source_goose_1Spec",
               "source_log_boundSpec",
-              "source_beetSpec",
-              "source_goose_2Spec",
               "source_thm2_equivalent_boundSpec",
               "source_lt_large_firmsSpec",
               "source_unbounded_cutoffsSpec",
@@ -8321,7 +8736,7 @@
         },
         {
           "condition": "Corollary 1 inherits the paper's fixed consumption constraint convention: k is an arbitrary fixed positive natural number. The source does not state the positivity separately, but top-k evaluation and every Theorem 1 branch use that intended domain.",
-          "disposition": "Routine quantifier/domain clarification. PaperInterface.corollary1 now takes arbitrary k with 0 < k and returns a source-iid witness indexed by that same k; the former k = 1 theorem is retained only as an explicitly labelled support specialization.",
+          "disposition": "Routine quantifier/domain clarification. PaperInterface.corollary1 now takes arbitrary k with 0 < k and returns an explicit probability-law/source-iid witness indexed by that same k; the former k = 1 theorem is retained only as an explicitly labelled support specialization.",
           "source_location": "cited publication:333-350; cited publication:443-447"
         },
         {
@@ -8402,11 +8817,20 @@
       },
       "id": "PRPKG24AccuracyDiversity",
       "last_status_checkpoint": "2026-08-15: A direct source-first review covered all 30 normal named-theory rows; the eight rows implicated by an older raw-receipt telescope diagnostic (Theorem 3 log shares, Lemma 1, Proposition 4, Lemma D.1(i)--(iv), and Lemma D.2) received focused rechecks within that pass. Each pinned source anchor and surrounding model text was compared with the complete current PaperInterface endpoint or explicit Spec/proof surface, including actual premises, quantifiers, and conclusion rather than declaration names. No new hidden premise, weakened conclusion, or unapproved correction was found. The direct review is recorded in docs/DIRECT_NAMED_ROW_REVIEW_2026-08-15.md, and `lake build PRPKG24AccuracyDiversity.PaperInterface` passed. No raw receipt was recovered or reissued, so the older frozen source-record snapshot remains historical provenance rather than claimed as current evidence.",
-      "main_caveat": "No status-bearing caveat. The audited endpoints retain the source's selected-type PMF and conditional finite experiment, while every correction or additional model convention is explicit in the source map, fidelity ledger, and post-formalization materials. The 2026-08-15 direct 30-row review is recorded in docs/DIRECT_NAMED_ROW_REVIEW_2026-08-15.md and the final validation report; the older frozen source-record snapshot is historical procedural provenance, not a mathematical boundary, archival-equivalence claim, or current-raw assertion.",
-      "open_source_boundaries": [],
+      "main_caveat": "The all-coordinate Theorem 1(ii)--(iv) and Corollary 1 endpoints are formalized as disclosed corrected targets: they use positive type probabilities, fixed positive k, and one selected optimum. Theorem 1(ii) additionally uses its stated nonnegative bounded-PDF value domain; zero-support and every-optimizer extensions are not claimed.",
+      "open_source_boundaries": [
+        {
+          "current_lean_treatment": "The source-facing Specs use a PMF, explicitly return a probability law D tied to each concrete iid construction, and existentially select one finite-optimal sequence; their stronger universal-optimizer theorems are support only. Strict-positive support, supportwise objective/optimizer invariance lemmas, and a checked generic two-type zero-support optimizer witness are proved. A context-isolated source-fidelity review completed on 2026-09-08 and found no further mismatch on this clarified domain.",
+          "id": "PRPKG24-COROLLARY1-POSITIVE-SUPPORT-2026-09-08",
+          "issue": "The formalized all-coordinate endpoints use strict positive preferred-type likelihoods, although the source model permits zero masses. The source selects one S_(n,k) at each budget; it does not state a zero-support convention for the displayed gamma-share profile.",
+          "review_needed": false,
+          "source_location": "cited publication:55-63, 270-280, 443-447",
+          "status": "COMPLETE_UNDER_CLARIFICATION"
+        }
+      ],
       "paper_interface": {
         "declaration_rows": 133,
-        "line_count": 3037,
+        "line_count": 3068,
         "maintainability_issue": "The large interface separates the selected transparent specifications from proof endpoints, governing definitions, and supplemental material.",
         "oversized": true,
         "path": "papers/PRPKG24AccuracyDiversity/PaperInterface.lean",

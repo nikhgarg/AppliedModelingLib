@@ -65,6 +65,47 @@ def linearized {T : ℕ}
     (M : ConsumptionModel T) (a : CountAllocation T) :
     M.objective a = AppliedModelingLib.Allocation.objective a M.likelihood M.valueOfCount := rfl
 
+/-- Zero-likelihood coordinates do not affect the consumption objective.
+
+This is the supportwise bridge needed when a source population law permits
+types of zero probability: two allocations may differ arbitrarily off the
+positive-likelihood support while having identical objective value whenever
+their counts agree on every nonzero-weight type. -/
+theorem objective_eq_of_agree_on_likelihood_support
+    {T : ℕ} (M : ConsumptionModel T)
+    (a b : CountAllocation T)
+    (hcounts : ∀ t, M.likelihood t ≠ 0 → a.count t = b.count t) :
+    M.objective a = M.objective b := by
+  classical
+  unfold objective AppliedModelingLib.Allocation.objective
+  refine Finset.sum_congr rfl ?_
+  intro t _
+  by_cases ht : M.likelihood t = 0
+  · simp [ht]
+  · rw [hcounts t ht]
+
+/-
+If one feasible optimizer is modified only on zero-likelihood coordinates,
+the modified allocation is an optimizer as well.  This is the optimizer-level
+supportwise consequence used when assessing the paper's zero-support case.
+It deliberately does not choose a canonical off-support tie-break.
+-/
+theorem isOptimalAtTotal_of_agree_on_likelihood_support
+    {T : ℕ} (M : ConsumptionModel T) (N : ℕ)
+    {a b : CountAllocation T}
+    (hopt : M.IsOptimalAtTotal N a)
+    (hb : FeasibleAtTotal N b)
+    (hcounts : ∀ t, M.likelihood t ≠ 0 → a.count t = b.count t) :
+    M.IsOptimalAtTotal N b := by
+  rcases hopt with ⟨ha, hmax⟩
+  have hobj : M.objective a = M.objective b :=
+    objective_eq_of_agree_on_likelihood_support M a b hcounts
+  refine ⟨hb, ?_⟩
+  intro c hc
+  calc
+    M.objective c ≤ M.objective a := hmax c hc
+    _ = M.objective b := hobj
+
 @[simp] theorem marginalValue_apply {T : ℕ}
     (M : ConsumptionModel T) (t : ItemType T) (q : ℕ) :
     M.marginalValue t q = M.valueOfCount t (q + 1) - M.valueOfCount t q := rfl

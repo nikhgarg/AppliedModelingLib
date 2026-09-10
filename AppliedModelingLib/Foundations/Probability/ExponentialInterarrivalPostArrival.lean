@@ -551,6 +551,65 @@ theorem canonicalFirstArrival_toNNReal_condDistrib_futureInterarrival_eq_const
   simpa only [Measure.compProd_const] using hjoint
 
 /--
+Transport the post-first-arrival regeneration law to any measurable path with
+the iid exponential interarrival law.  This is the process-level form of the
+standard Poisson restart after the first arrival; it does not impose any
+selected-start or observation-window condition.
+-/
+theorem condDistrib_futureInterarrival_one_of_hasLaw
+    {Ω : Type*} [MeasurableSpace Ω] [StandardBorelSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {rate : ℝ} (rate_pos : 0 < rate)
+    (interarrivalPath : Ω → ℕ → ℝ)
+    (interarrivalPath_measurable : Measurable interarrivalPath)
+    (interarrivalPath_hasLaw : ProbabilityTheory.HasLaw interarrivalPath
+      (exponentialInterarrivalMeasure rate) P) :
+    ProbabilityTheory.condDistrib
+      (fun ω => futureInterarrival 1 (interarrivalPath ω))
+      (fun ω => (canonicalFirstArrival (interarrivalPath ω)).toNNReal) P =ᵐ[
+        P.map (fun ω => (canonicalFirstArrival (interarrivalPath ω)).toNNReal)]
+      Kernel.const ℝ≥0 (exponentialInterarrivalMeasure rate) := by
+  let μ : Measure (ℕ → ℝ) := exponentialInterarrivalMeasure rate
+  let X : (ℕ → ℝ) → ℝ≥0 :=
+    fun path => (canonicalFirstArrival path).toNNReal
+  let Y : (ℕ → ℝ) → (ℕ → ℝ) := futureInterarrival 1
+  letI : IsProbabilityMeasure μ := by
+    simpa only [μ] using
+      isProbabilityMeasure_exponentialInterarrivalMeasure rate_pos
+  have hX : Measurable X := by
+    simpa only [X, canonicalFirstArrival] using
+      measurable_real_toNNReal.comp (measurable_interarrival 0)
+  have hY : Measurable Y := by
+    simpa only [Y] using
+      measurable_pi_iff.2 fun k => measurable_futureInterarrival 1 k
+  have hcanonical :
+      ProbabilityTheory.condDistrib Y X μ =ᵐ[μ.map X]
+        Kernel.const ℝ≥0 μ := by
+    simpa only [μ, X, Y] using
+      canonicalFirstArrival_toNNReal_condDistrib_futureInterarrival_eq_const
+        rate_pos
+  have htransport := ProbabilityTheory.condDistrib_map
+    (ν := P) (X := X) (Y := Y) (f := interarrivalPath)
+    (by simpa only [interarrivalPath_hasLaw.map_eq] using hX.aemeasurable)
+    (by simpa only [interarrivalPath_hasLaw.map_eq] using hY.aemeasurable)
+    interarrivalPath_measurable.aemeasurable
+  have hfirstMap : P.map (X ∘ interarrivalPath) = μ.map X := by
+    rw [← Measure.map_map hX interarrivalPath_measurable,
+      interarrivalPath_hasLaw.map_eq]
+  have htransport' :
+      ProbabilityTheory.condDistrib Y X μ =ᵐ[P.map (X ∘ interarrivalPath)]
+        ProbabilityTheory.condDistrib (Y ∘ interarrivalPath)
+          (X ∘ interarrivalPath) P := by
+    simpa only [interarrivalPath_hasLaw.map_eq] using htransport
+  have hcanonical' :
+      ProbabilityTheory.condDistrib Y X μ =ᵐ[P.map (X ∘ interarrivalPath)]
+        Kernel.const ℝ≥0 μ := by
+    rw [hfirstMap]
+    exact hcanonical
+  simpa only [μ, X, Y, Function.comp_apply] using
+    htransport'.symm.trans hcanonical'
+
+/--
 The first report time is independent of the canonical renewal count in the
 full post-first-report tail at every fixed horizon.
 -/

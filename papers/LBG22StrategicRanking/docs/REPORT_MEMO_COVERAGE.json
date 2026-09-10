@@ -1,0 +1,876 @@
+{
+  "schema": 2,
+  "paper": "LBG22StrategicRanking",
+  "report_sha256": "3298be725fb7dc4dbc32d9c20c9f42e71717f1b2ad2611f223320eb941313e72",
+  "source_items_sha256": "78f298ce6d165f36fb0eb778c407b1caadfc21d4014bde97b2df80db7a6e81e0",
+  "all_selected_semantic_review_sha256": "6be09e746e0a30f23a1903444ef4c7e3a765914f8970bb9883c914eb0c554334",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/LBG22-C1": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Proposition 3.1",
+      "memo_anchor": "proposition-31",
+      "report_home": 4,
+      "source_reading": "Two-level applicant welfare is unconditionally non-increasing in the cutoff."
+    },
+    "defect/LBG22-P1": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Proposition 3.1",
+      "memo_anchor": "proposition-31",
+      "report_home": 7,
+      "source_reading": "The proof uses unweighted conditional band means and asserts unique attainment at the c=0 boundary."
+    },
+    "defect/LBG22-P2": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Associated normalization and access corrections",
+      "memo_anchor": "associated-normalization-and-access-corrections",
+      "report_home": 7,
+      "source_reading": "The proof drops the rho factor and assumes admitted scores all equal the threshold via g(0)=0."
+    },
+    "defect/LBG22-P3": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Associated normalization and access corrections",
+      "memo_anchor": "associated-normalization-and-access-corrections",
+      "report_home": 7,
+      "source_reading": "The witness assumes g(p^{-1}(x))=x, incompatible with strict convex cost and concave production, and overclaims every three-level policy."
+    },
+    "defect/LBG22-P4": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Associated normalization and access corrections",
+      "memo_anchor": "associated-normalization-and-access-corrections",
+      "report_home": 7,
+      "source_reading": "The proof gives rho<5/9 and infers global optimality from one endpoint derivative."
+    },
+    "defect/LBG22-P5": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Associated normalization and access corrections",
+      "memo_anchor": "associated-normalization-and-access-corrections",
+      "report_home": 7,
+      "source_reading": "The mixture-rank inverse notation and proof presume a globally invertible mixture CDF."
+    },
+    "defect/LBG22-C3": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Propositions 4.2 and 4.3: exact under clarified weak/strict interpretation",
+      "memo_anchor": "propositions-42-and-43-exact-under-clarified-weakstrict-interpretation",
+      "report_home": 4,
+      "source_reading": "The high-region welfare gap has a strictly positive classical derivative at every feasible cutoff."
+    },
+    "defect/LBG22-P6": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Associated normalization and access corrections",
+      "memo_anchor": "associated-normalization-and-access-corrections",
+      "report_home": 7,
+      "source_reading": "The access proof sets pure access to zero, reverses theta_B(c)>=c, and ignores exhausted support."
+    },
+    "defect/LBG22-P7": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Appendix effort comparative statics and Proposition B.1",
+      "memo_anchor": "appendix-effort-comparative-statics-and-proposition-b1",
+      "report_home": 7,
+      "source_reading": "The proof changes the corollary's i<k range to i<k-1 and suppresses baseline clipping."
+    },
+    "defect/LBG22-C4": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Appendix effort comparative statics and Proposition B.1",
+      "memo_anchor": "appendix-effort-comparative-statics-and-proposition-b1",
+      "report_home": 4,
+      "source_reading": "Strict reward ordering is equivalent to strict ordering of maximum weighted-skill indices."
+    },
+    "defect/LBG22-P8": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Proposition B.2",
+      "memo_anchor": "proposition-b2",
+      "report_home": 4,
+      "source_reading": "The displayed penalty is said to implement eU=B-eM."
+    },
+    "defect/LBG22-P9": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Proposition B.2",
+      "memo_anchor": "proposition-b2",
+      "report_home": 7,
+      "source_reading": "The proof omits conditional normalization, uses E[theta_U] instead of E[f_U(theta_U)], and turns stationarity into global optimality."
+    },
+    "defect/LBG22-C5": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Proposition B.2",
+      "memo_anchor": "proposition-b2",
+      "report_home": 4,
+      "source_reading": "Every interior cutoff is globally supportable by a positive private-utility weight under all source-admissible primitives."
+    },
+    "convention/LBG22-KNOWN-PRIORITY-ORDER-BOUNDARY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Stated model: known priorities and continuum best response",
+      "memo_anchor": "stated-model-known-priorities-and-continuum-best-response",
+      "report_home": 3,
+      "source_reading": "A publicly known fixed injective priority breaks actual score-boundary ties and is held fixed with the score law across every deviation; strict-percentile equilibrium is used only through proved all-deviation equivalence."
+    },
+    "convention/LBG22-CONTINUUM-AE-BEST-RESPONSE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Stated model: known priorities and continuum best response",
+      "memo_anchor": "stated-model-known-priorities-and-continuum-best-response",
+      "report_home": 3,
+      "source_reading": "One full-measure applicant set best responds against every feasible deviation; uniqueness is equality almost everywhere."
+    },
+    "convention/LBG22-WEAK-STRICT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Propositions 4.2 and 4.3: exact under clarified weak/strict interpretation",
+      "memo_anchor": "propositions-42-and-43-exact-under-clarified-weakstrict-interpretation",
+      "report_home": 10,
+      "source_reading": "Section 4 comparisons are weak generally and strict exactly with positive disadvantaged effort; derivative signs are asserted only where derivatives exist."
+    },
+    "convention/LBG22-HARD-BUDGET-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Proposition B.2",
+      "memo_anchor": "proposition-b2",
+      "report_home": 4,
+      "source_reading": "Applicants choose nonnegative eM,eU with eM+eU=B and utility reward-p(eM); the printed unused-budget term is not an enforcement device."
+    },
+    "source/applicant_welfare/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Proposition 3.1",
+      "memo_anchor": "proposition-31",
+      "report_home": 4,
+      "source_reading": "applicant_welfare"
+    },
+    "source/applicant_welfare/additional_assumptions": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Proposition 3.1",
+      "memo_anchor": "proposition-31",
+      "report_home": 4,
+      "source_reading": "applicant_welfare"
+    },
+    "source/multidimensional_rank/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Appendix effort comparative statics and Proposition B.1",
+      "memo_anchor": "appendix-effort-comparative-statics-and-proposition-b1",
+      "report_home": 4,
+      "source_reading": "multidimensional_rank"
+    },
+    "source/weighted_private_utility/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Proposition B.2",
+      "memo_anchor": "proposition-b2",
+      "report_home": 4,
+      "source_reading": "weighted_private_utility"
+    },
+    "source/weighted_private_utility/additional_assumptions": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Proposition B.2",
+      "memo_anchor": "proposition-b2",
+      "report_home": 4,
+      "source_reading": "weighted_private_utility"
+    },
+    "source/welfare_gap_derivative/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Propositions 4.2 and 4.3: exact under clarified weak/strict interpretation",
+      "memo_anchor": "propositions-42-and-43-exact-under-clarified-weakstrict-interpretation",
+      "report_home": 4,
+      "source_reading": "welfare_gap_derivative"
+    },
+    "report/two-level-welfare-derivative": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Proposition 3.1",
+      "memo_anchor": "proposition-31",
+      "report_home": 7,
+      "source_reading": "The changing-boundary sign and population band weighting explain the welfare derivation; unrestricted monotonicity remains false."
+    },
+    "report/normalization-access-and-feasibility": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Associated normalization and access corrections",
+      "memo_anchor": "associated-normalization-and-access-corrections",
+      "report_home": 7,
+      "source_reading": "The capacity factor, baseline clipping, replacement three-level witness, societal-witness feasibility, mixture quantiles, and access boundaries are retained with their separate theorem effects."
+    },
+    "report/proposition-b2-global-optimality": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Proposition B.2",
+      "memo_anchor": "proposition-b2",
+      "report_home": 7,
+      "source_reading": "Conditional means and the independent unmeasurable-skill factor enter the global supporting argument; stationarity alone is insufficient."
+    },
+    "report/upper-tail-generalizations": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Proposition 3.1",
+      "memo_anchor": "proposition-31",
+      "report_home": 9,
+      "source_reading": "Upper-tail log concavity is weaker than ordinary log concavity; the reciprocal-affine example, derivative characterization, powers, and affine skills have the displayed domains."
+    },
+    "report/derivative-regularity": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "50d66b922e288b6d5fa602e3bc1344fb9abe751602dfc98c0b9b3198d54c2692",
+      "memo_heading": "Propositions 4.2 and 4.3: exact under clarified weak/strict interpretation",
+      "memo_anchor": "propositions-42-and-43-exact-under-clarified-weakstrict-interpretation",
+      "report_home": 4,
+      "source_reading": "Where-defined feasible derivatives and finite comparisons do not assert classical differentiability at every cutoff or for every representative of an equilibrium family."
+    },
+    "report/unnumbered-social-welfare-footnote": {
+      "disposition": "not_material",
+      "reason": "The report records the selected-scope exclusion, not a theorem or proof claim for the unnumbered footnote. It expressly identifies the separate analytic proposal as not Lean-certified."
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "f1bcd43db3082a1ac00d8125dcbd2b0132397ff0a15ac362f8948afa8ad0060a",
+      "discovered_named_result_sha256": "b4d6f571e54c0b71f643eb225898407ab5b77f25004404e4e639504e427c9337",
+      "source_format": "tex",
+      "results": {
+        "access": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 339,
+              "line_start": 335,
+              "presentation": "tex_environment",
+              "presentation_sha256": "cce97d2ab67225a23171d60cbb213a01dac60ddb7b4dc5684cb9cb6b551933ef",
+              "source_item_id": "access",
+              "source_label": "prop:access"
+            }
+          ],
+          "source_item_ids": [
+            "access"
+          ]
+        },
+        "applicant_welfare": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 137,
+              "line_start": 135,
+              "presentation": "tex_environment",
+              "presentation_sha256": "c2a44c9f24bcfdff57c9e439c4ceb8b9d27656a6c2478dbd7148db22e1f9e652",
+              "source_item_id": "applicant_welfare",
+              "source_label": "prop:student-welfare"
+            }
+          ],
+          "source_item_ids": [
+            "applicant_welfare"
+          ]
+        },
+        "cost_gap": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2016,
+              "line_start": 2005,
+              "presentation": "tex_environment",
+              "presentation_sha256": "256ed810f56fd5d8d520f9fae60df2b776d102ec1c99903a585e1531f52a8ed5",
+              "source_item_id": "cost_gap",
+              "source_label": "lem:order_p"
+            }
+          ],
+          "source_item_ids": [
+            "cost_gap"
+          ]
+        },
+        "effort_comparative_statics": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 1703,
+              "line_start": 1698,
+              "presentation": "tex_environment",
+              "presentation_sha256": "69c501dcbddb571eafe1e2e8a6592e90062e37c7ca1b44c3a43a1b02f6f4e4ea",
+              "source_item_id": "effort_comparative_statics",
+              "source_label": "corr:effectcomparativestatics"
+            }
+          ],
+          "source_item_ids": [
+            "effort_comparative_statics"
+          ]
+        },
+        "environment_rank_preservation": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 235,
+              "line_start": 224,
+              "presentation": "tex_environment",
+              "presentation_sha256": "385eafca77e21594f0e8a16cb6ecb508cbbe054aac8bce62e58a356164ff1839",
+              "source_item_id": "environment_rank_preservation",
+              "source_label": "prop:equi-env"
+            }
+          ],
+          "source_item_ids": [
+            "environment_rank_preservation"
+          ]
+        },
+        "environment_welfare": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 310,
+              "line_start": 281,
+              "presentation": "tex_environment",
+              "presentation_sha256": "dffd2001b01a7a90f84ff6211ccf85afd19fa683a864667d4398a2928c81e54c",
+              "source_item_id": "environment_welfare",
+              "source_label": "prop:environment-diff"
+            }
+          ],
+          "source_item_ids": [
+            "environment_welfare"
+          ]
+        },
+        "equal_score_rewards": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1852,
+              "line_start": 1844,
+              "presentation": "tex_environment",
+              "presentation_sha256": "039b430f2bec506c6c7ca6c3a9550f3201035b01894b306f15b0c041d30bd6dc",
+              "source_item_id": "equal_score_rewards",
+              "source_label": "lem:tienotmatter"
+            }
+          ],
+          "source_item_ids": [
+            "equal_score_rewards"
+          ]
+        },
+        "multidimensional_rank": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 1780,
+              "line_start": 1768,
+              "presentation": "tex_environment",
+              "presentation_sha256": "ae571911e4685db7508c1e67fd478b2cd8e6115c6dd7946c6a2d5022c5a68336",
+              "source_item_id": "multidimensional_rank",
+              "source_label": "prop:linearg"
+            }
+          ],
+          "source_item_ids": [
+            "multidimensional_rank"
+          ]
+        },
+        "null_deviations": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1883,
+              "line_start": 1869,
+              "presentation": "tex_environment",
+              "presentation_sha256": "c8272105cb740c1278b7eb24ae50492655b5ef82cfc58e8a8f098ecbe0f8d8e5",
+              "source_item_id": "null_deviations",
+              "source_label": "lem:deviationsmeasure0"
+            }
+          ],
+          "source_item_ids": [
+            "null_deviations"
+          ]
+        },
+        "pre_effort_skill_regularity": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 1676,
+              "line_start": 1674,
+              "presentation": "tex_environment",
+              "presentation_sha256": "810fbb3cdb44bed0ba6aff6965a36868298adab8693b850a941d6ee1e67bbab1",
+              "source_item_id": "pre_effort_skill_regularity",
+              "source_label": "remark@1674"
+            }
+          ],
+          "source_item_ids": [
+            "pre_effort_skill_regularity"
+          ]
+        },
+        "private_utility": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 151,
+              "line_start": 148,
+              "presentation": "tex_environment",
+              "presentation_sha256": "c5104ef2f13eac631da1d1384d7477aac64d2f832a4098c21c5404257f6f4efd",
+              "source_item_id": "private_utility",
+              "source_label": "prop:private-util-max"
+            }
+          ],
+          "source_item_ids": [
+            "private_utility"
+          ]
+        },
+        "production_gap": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2051,
+              "line_start": 2049,
+              "presentation": "tex_environment",
+              "presentation_sha256": "c861a35eba51f93c55c5c240d5a41c9dcd77869e2b435f68c41e86579b9c65ca",
+              "source_item_id": "production_gap",
+              "source_label": "lem:order_g"
+            }
+          ],
+          "source_item_ids": [
+            "production_gap"
+          ]
+        },
+        "rank_preservation": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 1165,
+              "line_start": 1161,
+              "presentation": "tex_environment",
+              "presentation_sha256": "1ed6e034cf6b61a7ef2b2cc9c666379c48bb60232c064f3e5934f7fd71718dd1",
+              "source_item_id": "rank_preservation",
+              "source_label": "lem:rankpreservedindex"
+            }
+          ],
+          "source_item_ids": [
+            "rank_preservation"
+          ]
+        },
+        "second_price_effort": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1207,
+              "line_start": 1192,
+              "presentation": "tex_environment",
+              "presentation_sha256": "dfdb6b22d59cae32f68d94c7bb2e2e08b65540365f5f1675d8b8f36376f1f3bc",
+              "source_item_id": "second_price_effort",
+              "source_label": "lem:effort"
+            }
+          ],
+          "source_item_ids": [
+            "second_price_effort"
+          ]
+        },
+        "societal_utility": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 177,
+              "line_start": 173,
+              "presentation": "tex_environment",
+              "presentation_sha256": "85e558bc28358f0ba37c1708b680ce488bff39af680c9ef1d2db5c6a3297c330",
+              "source_item_id": "societal_utility",
+              "source_label": "prop:SocUtil"
+            }
+          ],
+          "source_item_ids": [
+            "societal_utility"
+          ]
+        },
+        "three_level_improvement": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 163,
+              "line_start": 161,
+              "presentation": "tex_environment",
+              "presentation_sha256": "a302c084966df07bacb73bb18ed8a499bb86175f5d054460203710c44a55538f",
+              "source_item_id": "three_level_improvement",
+              "source_label": "prop-counterex-priv-util"
+            }
+          ],
+          "source_item_ids": [
+            "three_level_improvement"
+          ]
+        },
+        "weighted_private_utility": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 1828,
+              "line_start": 1826,
+              "presentation": "tex_environment",
+              "presentation_sha256": "f0d9c5defca006f18162ce0c6d98a65f57f2c590f58346c7d63146820a7bba7c",
+              "source_item_id": "weighted_private_utility",
+              "source_label": "prop:2levels-fixedcap"
+            }
+          ],
+          "source_item_ids": [
+            "weighted_private_utility"
+          ]
+        },
+        "welfare_gap_derivative": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 326,
+              "line_start": 321,
+              "presentation": "tex_environment",
+              "presentation_sha256": "6744a2bcbc75cb3781cf4ad4315003b9f6bd371eb11b494b9a2318feb8a70ac6",
+              "source_item_id": "welfare_gap_derivative",
+              "source_label": "prop:deriv-welfare-gap"
+            }
+          ],
+          "source_item_ids": [
+            "welfare_gap_derivative"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "6c2f9300b07da737508eb559f2912ff8d0afced152b7b267b337301b2eaa35cb",
+    "results": {
+      "access": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 4.4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 4.4",
+            "row_sha256": "7760a3848999a0af95aa5e04e0be83a954f4e789c80a76c4db2576d0275e8c2b"
+          }
+        ]
+      },
+      "applicant_welfare": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 3.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 3.1",
+            "row_sha256": "847e65f8b069ae67cba8c1db213bd5e5eb67d0ad4360ccab8ff40785ec971921"
+          }
+        ]
+      },
+      "cost_gap": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma C.3",
+            "row_sha256": "048755189c41b06939ead24c8b007e3808b516b96026f952cc13bbde1ea66c0a"
+          }
+        ]
+      },
+      "effort_comparative_statics": {
+        "numbering": "numbered",
+        "printed_label": "Corollary A.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Corollary A.1",
+            "row_sha256": "022fb04014c0d3e56a216e427631a231ca001e781eec32179ce6a7e9b611b84e"
+          }
+        ]
+      },
+      "environment_rank_preservation": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 4.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 4.1",
+            "row_sha256": "613a8f27f7df74911786352e3b02fcca66cef237631016f2665895497461daf6"
+          }
+        ]
+      },
+      "environment_welfare": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 4.2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 4.2",
+            "row_sha256": "87dc82bdeece4344e4345c709decbcc4517d8366d318229fe3a0524e0acff3c2"
+          }
+        ]
+      },
+      "equal_score_rewards": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma C.1",
+            "row_sha256": "221253dbec3e48ace9b803645790d3b629771e3e6a3976a3dcd5bc1613f0fe8b"
+          }
+        ]
+      },
+      "multidimensional_rank": {
+        "numbering": "numbered",
+        "printed_label": "Proposition B.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition B.1",
+            "row_sha256": "71d9abe33cc10b6944bbe9c1308d3d88bec9063aa812b6b7c55146f5f7fcae32"
+          }
+        ]
+      },
+      "null_deviations": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma C.2",
+            "row_sha256": "016b5ee952ff6f3d24e7f37d7a05fac48e01a9058d7de1a6116bd11e3707f470"
+          }
+        ]
+      },
+      "pre_effort_skill_regularity": {
+        "numbering": "numbered",
+        "printed_label": "Remark A.2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Remark A.2",
+            "row_sha256": "bd6b754c11d0c380d6803c7f7ee5243f34041922a0038152ca7adcfb39457114"
+          }
+        ]
+      },
+      "private_utility": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 3.2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 3.2",
+            "row_sha256": "3eb2fe19e99b32fa5725f6f71ed26ea9afb50a05728f6ee27a6dbcdac25d38cd"
+          }
+        ]
+      },
+      "production_gap": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma C.4",
+            "row_sha256": "34952e3e70184af2be5964142f0e4bb98f9a9e74e97e8db61b59909ad7e0482d"
+          }
+        ]
+      },
+      "rank_preservation": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 2.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 2.1",
+            "row_sha256": "20aa606b3e17066fefe6c78e2a28a11feee2c8ecff9a2e7cd89db8705c6bd372"
+          }
+        ]
+      },
+      "second_price_effort": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2.2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2.2",
+            "row_sha256": "5a75c5951e156e26736deddd8f67ba3669f8ea49c149c27ce24cbacf4d1ac994"
+          }
+        ]
+      },
+      "societal_utility": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 3.4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 3.4",
+            "row_sha256": "228d9e330cf95adecc8d0dd270e7d375a2e631a06a824565f533671372096a79"
+          }
+        ]
+      },
+      "three_level_improvement": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 3.3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 3.3",
+            "row_sha256": "5f34f9e7a98ee868054f6f13eb427ea7d2f91d1263a5336a378b4025ac0921bf"
+          }
+        ]
+      },
+      "weighted_private_utility": {
+        "numbering": "numbered",
+        "printed_label": "Proposition B.2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition B.2",
+            "row_sha256": "358e5c6dd0b0cc72d71f5d711c8407425cf790013ee8e8a6fd002f0cc6603961"
+          }
+        ]
+      },
+      "welfare_gap_derivative": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 4.3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 4.3",
+            "row_sha256": "0a42eab25567226f3d3cecd1e38543d001fd6f428e89a41ada7e82c6062afdee"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "20aa606b3e17066fefe6c78e2a28a11feee2c8ecff9a2e7cd89db8705c6bd372": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "5a75c5951e156e26736deddd8f67ba3669f8ea49c149c27ce24cbacf4d1ac994": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "847e65f8b069ae67cba8c1db213bd5e5eb67d0ad4360ccab8ff40785ec971921": {
+        "explanation_keys": [
+          "defect/LBG22-C1",
+          "source/applicant_welfare/corrected_target",
+          "source/applicant_welfare/additional_assumptions"
+        ],
+        "supplemental_reason": ""
+      },
+      "3eb2fe19e99b32fa5725f6f71ed26ea9afb50a05728f6ee27a6dbcdac25d38cd": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "5f34f9e7a98ee868054f6f13eb427ea7d2f91d1263a5336a378b4025ac0921bf": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "228d9e330cf95adecc8d0dd270e7d375a2e631a06a824565f533671372096a79": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "613a8f27f7df74911786352e3b02fcca66cef237631016f2665895497461daf6": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "87dc82bdeece4344e4345c709decbcc4517d8366d318229fe3a0524e0acff3c2": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "0a42eab25567226f3d3cecd1e38543d001fd6f428e89a41ada7e82c6062afdee": {
+        "explanation_keys": [
+          "defect/LBG22-C3",
+          "source/welfare_gap_derivative/corrected_target",
+          "report/derivative-regularity"
+        ],
+        "supplemental_reason": ""
+      },
+      "7760a3848999a0af95aa5e04e0be83a954f4e789c80a76c4db2576d0275e8c2b": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "022fb04014c0d3e56a216e427631a231ca001e781eec32179ce6a7e9b611b84e": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "bd6b754c11d0c380d6803c7f7ee5243f34041922a0038152ca7adcfb39457114": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "71d9abe33cc10b6944bbe9c1308d3d88bec9063aa812b6b7c55146f5f7fcae32": {
+        "explanation_keys": [
+          "defect/LBG22-C4",
+          "source/multidimensional_rank/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "358e5c6dd0b0cc72d71f5d711c8407425cf790013ee8e8a6fd002f0cc6603961": {
+        "explanation_keys": [
+          "defect/LBG22-C5",
+          "defect/LBG22-P8",
+          "convention/LBG22-HARD-BUDGET-01",
+          "source/weighted_private_utility/corrected_target",
+          "source/weighted_private_utility/additional_assumptions"
+        ],
+        "supplemental_reason": ""
+      },
+      "221253dbec3e48ace9b803645790d3b629771e3e6a3976a3dcd5bc1613f0fe8b": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "016b5ee952ff6f3d24e7f37d7a05fac48e01a9058d7de1a6116bd11e3707f470": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "048755189c41b06939ead24c8b007e3808b516b96026f952cc13bbde1ea66c0a": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "34952e3e70184af2be5964142f0e4bb98f9a9e74e97e8db61b59909ad7e0482d": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "acceptance_credential": false,
-  "accepted_graph_sha256": "747b5452b39547b2ad70615090aa8fbd47d7cf1991dd013e11a34ab3857d4956",
+  "accepted_graph_sha256": "6ff8b04390329134ceabd387dbefe15892ffc7800de1cd601aa3642c686ef6f0",
   "bindings_by_source_item": {
     "algorithm1_bisect_next_level": {
       "accepted_source_role_contract_sha256": "542a8edab99fe7ae92184dbbc9611804cfb7900f01fd8d788b3e25bec732afbb",

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "paper": "LBG22StrategicRanking",
+  "review_material_sha256": "41f68210007938a001254bb40ad640501041db8f6e606d3f2c78a0f3f04f4064",
+  "required_reviewer_count": 1,
+  "ineligible_reviewer_identities": [
+    "root",
+    "/root",
+    "approved_b2_endpoint",
+    "/root/approved_b2_endpoint",
+    "lbg22_proof_fidelity",
+    "/root/lbg22_proof_fidelity",
+    "lbg22_preflight_review",
+    "/root/lbg22_preflight_review"
+  ],
+  "reviews": [
+    {
+      "reviewer_identity": "lbg22_final_adversary",
+      "audit_artifact_path": "docs/AGENT_SOURCE_AUDIT.md",
+      "audit_artifact_sha256": "a73837ef922550017b5eccb1f0bb46539b70d1457916f3bdc8847e6b75bf9562",
+      "reviewed_surface_sha256": "41f68210007938a001254bb40ad640501041db8f6e606d3f2c78a0f3f04f4064",
+      "judgment": "PASS",
+      "scope": "complete_current_surface",
+      "reviewed_at": "2026-09-09T15:52:52Z",
+      "independence": {
+        "did_not_author_or_repair": true,
+        "did_not_issue_semantic_judgments": true
+      }
+    }
+  ]
+}

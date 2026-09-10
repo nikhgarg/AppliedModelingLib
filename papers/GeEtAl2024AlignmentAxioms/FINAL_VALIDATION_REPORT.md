@@ -1,6 +1,6 @@
 # Final Validation Report: Axioms for AI Alignment from Human Feedback
 
-Updated: 2026-09-06
+Updated: 2026-09-10
 
 ## 1. Human Verdict
 
@@ -37,9 +37,9 @@ Exact source spans, semantic contexts, and Lean routes are in
 | Result | Comparison with the paper |
 | --- | --- |
 | Definition 2.2; Lemmas 3.2–3.3; Theorems 3.6–3.7; Appendix B; Theorem C.4 | **Exact.** |
-| [Theorem 3.1, positive-input branch](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#theorem-31-positive-input-branch-restricted-infimum-sign) | **Typo fixed:** reverse the printed restricted-infimum sign; the impossibility conclusion is unchanged. |
+| [Theorem 3.1, positive-input branch](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#theorem-31-positive-input-branch-restricted-infimum-sign) | **Exact impossibility conclusion after correcting the sign typo:** reverse the printed restricted-infimum sign; the impossibility conclusion is unchanged. |
 | [Lemmas 3.4–3.5](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#lemmas-3435-the-perturbation-seam) | **Changed statements:** a strict minimizer cone and closed-half-space objective gap replace the invalid weak-inclusion route; Theorem 3.1 is unchanged. |
-| [Footnote 7 witness](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#six-candidate-feasibility-witness) | **Typo fixed:** parameter `(delta,2)` replaces `(1,1)`. |
+| [Footnote 7 witness](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#six-candidate-feasibility-witness) | **Exact witness after correcting the parameter typo:** parameter `(delta,2)` replaces `(1,1)`. |
 | [Theorem 4.3; Theorems C.2–C.3; Theorem C.6](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#rule-level-tie-conventions) | **Restricted scope:** fixed profile-independent tie keys. The broader selector claims remain unproved; necessity of fixed keys is unknown. |
 | [Theorem C.5](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#rule-level-tie-conventions) | **Formalization gap:** assume the source proof’s first-profile output. The reduction from every Pareto–Kemeny selector is unproved; necessity of that choice is unknown. |
 

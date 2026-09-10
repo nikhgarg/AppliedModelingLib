@@ -47,6 +47,32 @@ def _corrected_target(
 
 
 class PublicReleaseProjectionTests(unittest.TestCase):
+    def test_packet_mixed_indentation_preserves_quote_text_and_alignment(self):
+        raw = "\\begin{ReviewVerbatim}\n    \t\\lambda(x) >= 0\n\\end{ReviewVerbatim}\n"
+        self.assertEqual(
+            projection.project_text(raw, relative_path="papers/Fixture/docs/HUMAN_REVIEW_PACKET.tex"),
+            raw.replace("    \t", "        "),
+        )
+        self.assertEqual(
+            projection.project_text(raw, relative_path="papers/Fixture/docs/MEMO.tex"),
+            raw,
+        )
+
+    def test_reader_inventory_locations_preserve_claims_without_local_paths(self):
+        payload = {
+            "canonical_source_path": "sources/source_archive_surface.tex",
+            "source_label": "Appendix B example (sources/paper.txt:1333-1385)",
+            "grouping_reason": "Section 4 states stability at source.txt:232–249.",
+            "source_sha256": "a" * 64,
+        }
+        public = projection.project_json_payload(
+            payload, relative_path="papers/Fixture/docs/REPORT_MEMO_COVERAGE.json"
+        )
+        self.assertEqual(public["canonical_source_path"], "cited publication")
+        self.assertEqual(public["source_label"], "Appendix B example (cited publication:1333-1385)")
+        self.assertIn("Section 4 states stability at cited publication", public["grouping_reason"])
+        self.assertEqual(public["source_sha256"], payload["source_sha256"])
+
     def test_status_omits_historical_review_surface_but_preserves_current_route(self):
         payload = {"artifacts": {
             "legacy_review_surface": "LegacyReviewSurface.lean",

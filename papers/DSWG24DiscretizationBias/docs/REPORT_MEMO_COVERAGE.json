@@ -1,0 +1,329 @@
+{
+  "schema": 2,
+  "paper": "DSWG24DiscretizationBias",
+  "report_sha256": "28893d2ccb81532889dcf8848e2615a589e90be5ecfb8bbbd2fdb96527def387",
+  "source_items_sha256": "27633d95604e96d6a37fc467e912b64f10e7095fa067b2eec14a7fc347069ba4",
+  "all_selected_semantic_review_sha256": "309056b2081d412aa1a77b58837137e5a23827eedada13a1a0744af6fbf994e7",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/DSWG24-T1II-SUPPORT-01": {
+      "disposition": "not_material",
+      "reason": "The perfect-classifier identity is required only on positive-probability joint atoms. Removing a product-space premise corrects the formal representation and leaves the source model and conclusion unchanged."
+    },
+    "defect/DSWG24-T2III-PNQ-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8f1fd4e3c26f8eaf57da292b0c955d530199ef6eae389146775a7c035a15fbbc",
+      "memo_heading": "Theorem 2(iii) weighted-objective wording",
+      "memo_anchor": "theorem-2iii-weighted-objective-wording"
+    },
+    "defect/DSWG24-T1III-CALIBRATION-READING-02": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-1iii-calibration-reading",
+      "memo_heading": "Theorem 1(iii): calibration reading",
+      "memo_sha256": "8f1fd4e3c26f8eaf57da292b0c955d530199ef6eae389146775a7c035a15fbbc",
+      "report_home": 10,
+      "source_reading": "The printed score-value calibration display uses the standard measurable score-event identity intended by the source proof."
+    },
+    "defect/DSWG24-PARETO-VOCABULARY-03": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "pareto-optimal-terminology",
+      "memo_heading": "Pareto-optimal terminology",
+      "memo_sha256": "8f1fd4e3c26f8eaf57da292b0c955d530199ef6eae389146775a7c035a15fbbc",
+      "report_home": 11,
+      "source_reading": "The source uses Pareto-optimal terminology for maximization of the accuracy/fidelity weighted objective for some gamma in (0,1]."
+    },
+    "convention/DSWG24-CALIBRATION-EVENT-READING-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8f1fd4e3c26f8eaf57da292b0c955d530199ef6eae389146775a7c035a15fbbc",
+      "memo_heading": "Theorem 1(iii): calibration reading",
+      "memo_anchor": "theorem-1iii-calibration-reading",
+      "report_home": 10,
+      "source_reading": "Calibration uses the standard conditional-expectation event identity intended by the source proof."
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "2370832850d19fc3e0b74c5471316b099bcab9f958c268ffcd9de9d38ef55295",
+      "discovered_named_result_sha256": "7f2da4a6ca4055827009aaa16d9dd814e66a5255e0020357fd2a787f91709a54",
+      "source_format": "text",
+      "results": {
+        "theorem1i_no_information_bias": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 663,
+              "line_start": 645,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "27868c9db352937803d2cbf66ea13fca0a3cbd94a27bdcdb7ed06e828736597f",
+              "source_item_id": "theorem1i_no_information_bias",
+              "source_label": "Theorem 1(i)"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 1306,
+              "line_start": 1298,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "ffd112cf843577af8202b797b30334145467cd8a1b51236186fded0bbae8205a",
+              "source_item_id": "theorem1i_appendix_presentation",
+              "source_label": "Theorem 1(i)"
+            }
+          ],
+          "source_item_ids": [
+            "theorem1i_appendix_presentation",
+            "theorem1i_no_information_bias"
+          ]
+        },
+        "theorem1ii_prior_reference_zero_bias": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 666,
+              "line_start": 664,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "73e2334e8f7e245c5073edc9a9774ce28e4c1ec927f3c1b185fc34324cb675e0",
+              "source_item_id": "theorem1ii_prior_reference_zero_bias",
+              "source_label": "Theorem 1(ii)"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 1309,
+              "line_start": 1307,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "8a47afd691e5a43a8f6284f1d2e1a462c76466fb22cf95462ab00c002662fca8",
+              "source_item_id": "theorem1ii_appendix_presentation",
+              "source_label": "Theorem 1(ii)"
+            }
+          ],
+          "source_item_ids": [
+            "assumption_theorem1_perfect_classifier",
+            "perfectClassifierOnSupport",
+            "theorem1ii_appendix_presentation",
+            "theorem1ii_prior_reference_zero_bias"
+          ]
+        },
+        "theorem1iii_argmax_bias_le_mae": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 707,
+              "line_start": 667,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "a50a392838e109d812b4a43cc554adf2463718504821e7889ea3d55709f99053",
+              "source_item_id": "theorem1iii_argmax_bias_le_mae",
+              "source_label": "Theorem 1(iii)"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 1316,
+              "line_start": 1310,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "25c49f6c923ac1811f802293ca9ed7a1e54ceecb3c14e5a1eaaec9fb704a5253",
+              "source_item_id": "theorem1iii_appendix_presentation",
+              "source_label": "Theorem 1(iii)"
+            }
+          ],
+          "source_item_ids": [
+            "theorem1iii_appendix_presentation",
+            "theorem1iii_argmax_bias_le_mae",
+            "theorem1iii_tight_binary_example"
+          ]
+        },
+        "theorem2i_joint_rule_exists": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 758,
+              "line_start": 757,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "7c47b431fd66a5764da11bb36620735574f5a666fcbf87548bcebc24a79af034",
+              "source_item_id": "theorem2i_joint_rule_exists",
+              "source_label": "Theorem 2(i)"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 1568,
+              "line_start": 1567,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "2667afeeb17b39393a7cf509f6ed2ab2fa40f7cfdb11a25453d4a247d206952d",
+              "source_item_id": "theorem2i_appendix_presentation",
+              "source_label": "Theorem 2(i)"
+            }
+          ],
+          "source_item_ids": [
+            "theorem2i_appendix_presentation",
+            "theorem2i_joint_rule_exists"
+          ]
+        },
+        "theorem2ii_argmax_accuracy_maximizing": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 760,
+              "line_start": 760,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "7d7ebf70170160cf6b409c2289b6f966ddce06246b5bb1fb2670f485160e8b50",
+              "source_item_id": "theorem2ii_argmax_accuracy_maximizing",
+              "source_label": "Theorem 2(ii)"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 1569,
+              "line_start": 1569,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "1fb346a2fea85d759501881634a681eaf74b7778a085a0ab986115fd29af6536",
+              "source_item_id": "theorem2ii_appendix_presentation",
+              "source_label": "Theorem 2(ii)"
+            }
+          ],
+          "source_item_ids": [
+            "theorem2ii_appendix_presentation",
+            "theorem2ii_argmax_accuracy_maximizing"
+          ]
+        },
+        "theorem2iii_non_argmax_not_pareto": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 794,
+              "line_start": 761,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "114d858ba86f452c26ef13c56fb8c7c42e62eaec7788bdce173e8acb1135dbad",
+              "source_item_id": "theorem2iii_non_argmax_not_pareto",
+              "source_label": "Theorem 2(iii)"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 1576,
+              "line_start": 1570,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "8b52b1e93340e858adc38fc2e802bd748f1e5e00ef3d47995b0494a6ffa46270",
+              "source_item_id": "theorem2iii_appendix_presentation",
+              "source_label": "Theorem 2(iii)"
+            }
+          ],
+          "source_item_ids": [
+            "theorem2iii_appendix_presentation",
+            "theorem2iii_non_argmax_not_pareto",
+            "theorem2iii_weighted_objective_maximizer_agrees_argmax"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "e25a55bd23ac54e787ea3fb5c05dcdcb1f1c13595796d14a162c744dabae75ff",
+    "results": {
+      "theorem1i_no_information_bias": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1(i)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1(i)",
+            "row_sha256": "c7bd7f93e43fb29247931e1f628ecaa69f49ab39b1717efd0fe42c94cd9070f4"
+          }
+        ],
+        "grouping_reason": "The no-information and perfect-classifier clauses share a row with the separate exact Theorem 1(iii) tightness conclusion."
+      },
+      "theorem1ii_prior_reference_zero_bias": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1(ii)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1(i)–(ii); Theorem 1(iii) tightness example",
+            "row_sha256": "c7bd7f93e43fb29247931e1f628ecaa69f49ab39b1717efd0fe42c94cd9070f4"
+          }
+        ],
+        "grouping_reason": "The no-information and perfect-classifier clauses share a row with the separate exact Theorem 1(iii) tightness conclusion."
+      },
+      "theorem1iii_argmax_bias_le_mae": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1(iii)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1(iii)",
+            "row_sha256": "c7bd7f93e43fb29247931e1f628ecaa69f49ab39b1717efd0fe42c94cd9070f4"
+          },
+          {
+            "report_label": "Theorem 1(iii)",
+            "row_sha256": "344004e3ae4599bdb6d7cff40ed2f18b7aabb31ee8cda43193fff1831d3ec312"
+          }
+        ],
+        "grouping_reason": "The report separates the exact tightness conclusion from the exact general bound and its source-reading note.",
+        "split_reason": "The source presents the MAE bound and its tightness conclusion together; the report uses separate rows so the calibration reading attaches only to the general bound."
+      },
+      "theorem2i_joint_rule_exists": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2(i)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2(i)–(ii)",
+            "row_sha256": "c7c8b3419db63c6a883e611da27955ddd4e83e02b4ea7a30b878f1303691ed98"
+          }
+        ],
+        "grouping_reason": "The table groups the two existence and optimality clauses of the same numbered theorem while retaining each source identity."
+      },
+      "theorem2ii_argmax_accuracy_maximizing": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2(ii)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2(i)–(ii)",
+            "row_sha256": "c7c8b3419db63c6a883e611da27955ddd4e83e02b4ea7a30b878f1303691ed98"
+          }
+        ],
+        "grouping_reason": "The table groups the two existence and optimality clauses of the same numbered theorem while retaining each source identity."
+      },
+      "theorem2iii_non_argmax_not_pareto": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2(iii)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2(iii), weighted clause",
+            "row_sha256": "241de355ea2c216699db128ee8efb6bd5cf23d8e26e5eb7feafd15ad8050d2e5"
+          }
+        ],
+        "grouping_reason": "The row states the checked weighted-objective consequence and links the exact wording for the associated nondomination and argmax clauses of Theorem 2(iii)."
+      }
+    },
+    "rows": {
+      "c7bd7f93e43fb29247931e1f628ecaa69f49ab39b1717efd0fe42c94cd9070f4": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "344004e3ae4599bdb6d7cff40ed2f18b7aabb31ee8cda43193fff1831d3ec312": {
+        "explanation_keys": [
+          "convention/DSWG24-CALIBRATION-EVENT-READING-01",
+          "defect/DSWG24-T1III-CALIBRATION-READING-02"
+        ],
+        "supplemental_reason": ""
+      },
+      "c7c8b3419db63c6a883e611da27955ddd4e83e02b4ea7a30b878f1303691ed98": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "241de355ea2c216699db128ee8efb6bd5cf23d8e26e5eb7feafd15ad8050d2e5": {
+        "explanation_keys": [
+          "defect/DSWG24-T2III-PNQ-01"
+        ],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

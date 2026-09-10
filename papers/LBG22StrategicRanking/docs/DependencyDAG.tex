@@ -1,0 +1,67 @@
+\documentclass[tikz,border=10pt]{standalone}
+\IfFileExists{../../../docs/tikz/dag_preamble.tex}
+  {\input{../../../docs/tikz/dag_preamble.tex}}
+  {\input{../../docs/tikz/dag_preamble.tex}}
+\begin{document}
+\begin{tikzpicture}[x=1cm,y=1cm,every node/.append style={outer sep=4pt},
+  sourcebox/.style={rectangle,rounded corners=2pt,text width=4.9cm,
+    minimum height=1.6cm,inner sep=5pt,font=\sffamily\small,align=center}]
+\dagPaperMetadata{Strategic ranking}{Liu, Garg, Borgs}{AISTATS}{2022}{https://proceedings.mlr.press/v151/liu22b/liu22b.pdf}
+\dagPaperLegendRightOfMetadata{
+  \node[dag_result,dag_template_legend] (legResult) at (0,0) {proved result};
+  \node[dag_lemma,dag_template_legend] (legLemma) at (4.2,0) {named lemma};
+  \node[dag_model,dag_template_legend] (legModel) at (8.4,0) {source model};
+  \node[dag_caveat_legend,rectangle] (legLocal) at (12.6,0) {local primitive\\restriction};
+}
+\daglegend{(legResult)(legLemma)(legModel)(legLocal)}{Selected mathematical scope}
+\begin{dagPaperBody}
+\node[dag_model,sourcebox,text width=10.8cm] (model) at (9.3,0) {
+  \textbf{Scalar model and policies}\\
+  Convex cost, concave production, continuous skill; finite reward levels.\\
+  Known score-boundary priority; one full-measure best-response set.
+};
+\node[dag_lemma,sourcebox] (pre) at (0,-3) {\textbf{Remark A.2: pre-effort skill}\\No skill atoms; positive mass between distinct supported skills};
+\node[dag_lemma,sourcebox] (tie) at (6.2,-3) {\textbf{Lemma C.1: tied scores}\\Equal rewards on a common full-measure set};
+\node[dag_lemma,sourcebox] (cost) at (12.4,-3) {\textbf{Lemma C.3: cost gaps}\\Ordering from the two best-response inequalities};
+\node[dag_lemma,sourcebox] (production) at (18.6,-3) {\textbf{Lemma C.4: production gaps}\\Ordering from skill, effort, and concavity};
+\node[dag_lemma,sourcebox] (null) at (0,-6) {\textbf{Lemma C.2: null deviations}\\All counterfactual rewards remain unchanged};
+\node[dag_result,sourcebox] (rank) at (6.2,-6) {\textbf{Proposition 2.1}\\Rank preserves reward bands almost everywhere};
+\node[dag_result,sourcebox] (effort) at (12.4,-6) {\textbf{Theorem 2.2}\\Second-price effort formula; equilibrium existence and AE uniqueness};
+\node[dag_result,sourcebox] (comparative) at (18.6,-6) {\textbf{Corollary A.1}\\Finite reward-transfer effort comparisons; baseline clipping};
+\node[dag_caveat,sourcebox] (welfare) at (0,-9.5) {\textbf{Proposition 3.1}\\Pure randomization maximizes welfare. Cutoff monotonicity: upper-tail skill and score-cost concavity};
+\node[dag_result,sourcebox] (private) at (6.2,-9.5) {\textbf{Proposition 3.2}\\Deterministic admission maximizes two-level private utility};
+\node[dag_result,sourcebox] (three) at (12.4,-9.5) {\textbf{Proposition 3.3}\\An admissible three-level policy strictly improves private utility};
+\node[dag_result,sourcebox] (societal) at (18.6,-9.5) {\textbf{Proposition 3.4}\\Interior societal optimum exists; printed witness uses $\rho<3/7$};
+\node[dag_model,sourcebox] (groups) at (0,-13) {\textbf{Group model}\\Scaled skills, actual mixture CDF, clipped thresholds; welfare gap and access};
+\node[dag_result,sourcebox] (groupRank) at (6.2,-13) {\textbf{Proposition 4.1}\\Environment-scaled rank preserves rewards, including separated supports};
+\node[dag_result,sourcebox] (gap) at (12.4,-13) {\textbf{Proposition 4.2}\\Weak welfare gap; strict in common admission exactly at positive disadvantaged effort};
+\node[dag_result,sourcebox] (gapChange) at (18.6,-13) {\textbf{Proposition 4.3}\\Finite weak/strict comparison; derivative signs where derivatives exist};
+\node[dag_result,sourcebox] (access) at (6.2,-16.5) {\textbf{Proposition 4.4}\\Pure randomization improves access; cutoff monotonicity under the source inverse-skill condition};
+\node[dag_model,sourcebox] (multi) at (0,-20) {\textbf{Multidimensional models}\\B.1: exchangeable cost, linear production, all nonnegative vectors.\\B.2: hard residual budget};
+\node[dag_result,sourcebox] (best) at (6.2,-20) {\textbf{Proposition B.1}\\Best-coordinate effort and reward-band preservation. No hard budget};
+\node[dag_caveat,sourcebox,text width=10.8cm] (weighted) at (15.5,-20) {\textbf{Proposition B.2}\\Every interior cutoff globally optimal for a positive weight independent of equilibrium selection.\\Local affine skill, budget, production/cost curvature, and regularity conditions; square-root/quadratic example};
+\draw[dag_arrow] (model.south) -- ++(0,-0.6) -| (pre.north);
+\draw[dag_arrow] (model.south) -- ++(0,-0.6) -| (tie.north);
+\draw[dag_arrow] (model.south) -- ++(0,-0.6) -| (cost.north);
+\draw[dag_arrow] (model.south) -- ++(0,-0.6) -| (production.north);
+\draw[dag_arrow] (tie.south) -- (rank.north);
+\draw[dag_arrow] (cost.south) -- ++(0,-0.4) -| (rank.north);
+\draw[dag_arrow] (production.south) -- ++(0,-0.4) -| (rank.north);
+\draw[dag_arrow] (null.east) -- (rank.west);
+\draw[dag_arrow] (rank.east) -- (effort.west);
+\draw[dag_arrow] (effort.east) -- (comparative.west);
+\draw[dag_arrow] (effort.south) -- ++(0,-0.7) -| (welfare.north);
+\draw[dag_arrow] (effort.south) -- ++(0,-0.7) -| (private.north);
+\draw[dag_arrow] (effort.south) -- (three.north);
+\draw[dag_arrow] (effort.south) -- ++(0,-0.7) -| (societal.north);
+\draw[dag_arrow] (groups.east) -- (groupRank.west);
+\draw[dag_arrow] (rank.south west) -- ++(-0.45,-0.4) |- ([yshift=0.45cm]groupRank.north) -- (groupRank.north);
+\draw[dag_arrow] (groupRank.east) -- (gap.west);
+\draw[dag_arrow] (gap.east) -- (gapChange.west);
+\draw[dag_arrow] (groupRank.south) -- (access.north);
+\draw[dag_arrow] (multi.east) -- (best.west);
+\draw[dag_arrow] (multi.south) -- ++(0,-1.3) -| (weighted.south);
+\draw[dag_arrow] (effort.south east) -- ++(0.5,-0.4) |- ([yshift=0.45cm]weighted.north) -- (weighted.north);
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

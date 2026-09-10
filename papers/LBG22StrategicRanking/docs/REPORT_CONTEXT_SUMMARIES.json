@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "paper": "LBG22StrategicRanking",
+  "summaries": {
+    "LBG22-KNOWN-PRIORITY-ORDER-BOUNDARY-01": "Applicants know the fixed priority used at score-boundary ties. This clarifies the stated model, not a corrected admission policy or a new economic assumption.",
+    "LBG22-CONTINUUM-AE-BEST-RESPONSE-01": "Equilibrium means that almost every applicant best responds against every feasible deviation; uniqueness is up to a null set.",
+    "LBG22-WEAK-STRICT-01": "The main-text group comparisons are exact under clarified weak/strict interpretation. Strictness requires positive disadvantaged effort; classical derivative existence is qualified separately.",
+    "LBG22-HARD-BUDGET-01": "The multitask model has nonnegative effort on both tasks summing to the stated budget. This is distinct from the unrestricted total effort in the multidimensional ranking model."
+  },
+  "assumption_summaries": {
+    "43c1d9f8274ce1870dee5d5d57abbeccd376af5986bd71f52303c93aa13a0f68": "Proposition 3.1's two-level monotonicity clause uses local upper-tail skill and score-cost concavity. Pure-randomization optimality has no added shape assumption.",
+    "f2c5303f950a6e3f57cde94c07778165e8416f539e976b055005714adb7a5b26": "Proposition B.2 uses local affine measurable skill, a sufficient budget bound, production/cost curvature, and regularity conditions. The precise primitive package is stated in the source clarification note."
+  }
+}

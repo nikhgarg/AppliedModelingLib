@@ -483,6 +483,36 @@ def source_definition_weighted_objective_eq2Spec : Prop :=
 def source_definition_large_deviation_rateSpec : Prop :=
   (∀ (W : ℝ) (Wk : ℕ → ℝ) (rate : ℝ), GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_large_deviation_rate (W := W) (Wk := Wk) (rate := rate) = HasExponentialRate (fun k : ℕ => W - Wk k) rate)
 
+/--
+Project-approved clarification of the Equation-(2) large-deviation target:
+only pairs in different rating bins are evaluated.  The Appendix-C cross-bin
+error rate then governs the gap between the corresponding limiting and finite
+objectives without a same-bin cancellation condition.
+-/
+def source_clarified_crossBin_objective_rate_from_appendixCSpec
+    {μ : Measure ℝ} {sameLevel : ℝ × ℝ → Prop} [DecidablePred sameLevel]
+    (model : SourceStrictUpperPairCrossBinObjectiveRealization μ sameLevel)
+    {rate : ℝ}
+    (haux : HasExponentialRate
+      (sourceStrictUpperPairWeightedSeparatedRawError μ model.weight sameLevel
+        model.pairwiseAccuracy) rate) : Prop :=
+  source_definition_large_deviation_rate model.W model.Wk rate
+
+/--
+The same project-approved clarification phrased with the exact tie-erased
+`Wbar_k` sequence displayed and analyzed in Appendix C.  Its kernel is zero
+on same-bin pairs and is `1 - P_k` on cross-bin pairs.
+-/
+def source_clarified_crossBin_objective_rate_from_tieErasedSourceWbarSpec
+    {μ : Measure ℝ} {sameLevel : ℝ × ℝ → Prop} [DecidablePred sameLevel]
+    (model : SourceStrictUpperPairCrossBinObjectiveRealization μ sameLevel)
+    {rate : ℝ}
+    (haux : HasExponentialRate
+      (lemmaC4TieErasedSourceWbar μ model.weight
+        (fun k q => if sameLevel q then 0 else 1 - model.pairwiseAccuracy k q))
+      rate) : Prop :=
+  source_definition_large_deviation_rate model.W model.Wk rate
+
 /-- Source-facing semantic target for the bundled definition `source_definition_step_rule_partition_levels`. -/
 def source_definition_step_rule_partition_levelsSpec : Prop :=
   (∀ (m : ℕ) (cutpoints : Fin ((m + 2) + 1) → ℝ) (levels : Fin (m + 2) → ℝ),

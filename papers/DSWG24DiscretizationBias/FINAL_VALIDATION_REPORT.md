@@ -1,6 +1,6 @@
-# Final Validation Report: DSWG24 Discretization Bias
+# Final Validation Report: Addressing Discretization-Induced Bias in Demographic Prediction
 
-Updated: 2026-09-07
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -34,9 +34,9 @@ implementation code are not formal theorem targets.
 | Result | Comparison with the paper |
 | --- | --- |
 | Theorem 1(i)–(ii); Theorem 1(iii) tightness example | **Exact.** |
-| Theorem 1(iii) general bound | **Exact.** Calibration uses the [standard score-event reading](docs/SOURCE_CLARIFICATIONS.md#theorem-1iii-calibration-reading) intended by the source proof. |
-| Theorem 2(i)–(ii) | **Exact.** The source model and the formal statements both assume at least two labels. |
-| [Theorem 2(iii), weighted clause](docs/SOURCE_CLARIFICATIONS.md#theorem-2iii-weighted-objective-wording) | **Statement clarified:** an optimal independent rule must agree almost surely with argmax; the proof also covers `gamma=0`. [Exact wording](docs/SOURCE_CLARIFICATIONS.md#theorem-2iii-weighted-objective-wording). |
+| Theorem 1(iii) general bound | **Exact.** [standard score-event reading](docs/SOURCE_CLARIFICATIONS.md#theorem-1iii-calibration-reading) |
+| Theorem 2(i)–(ii) | **Exact.** |
+| [Theorem 2(iii), weighted clause](docs/SOURCE_CLARIFICATIONS.md#theorem-2iii-weighted-objective-wording) | **Exact with source clarification:** an optimal independent rule must agree almost surely with argmax; the proof also covers `gamma=0`. [Exact wording](docs/SOURCE_CLARIFICATIONS.md#theorem-2iii-weighted-objective-wording). |
 
 ## 5. Remaining Boundaries and Gaps
 

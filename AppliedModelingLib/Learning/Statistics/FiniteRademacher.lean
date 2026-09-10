@@ -2,6 +2,7 @@ import AppliedModelingLib.Foundations.Probability.FiniteExpectation
 import AppliedModelingLib.Foundations.Probability.BoundedDifferences
 import AppliedModelingLib.Foundations.Probability.IndependentProduct
 import AppliedModelingLib.Foundations.Probability.RademacherMatrix
+import Mathlib.Data.Real.Pointwise
 import Mathlib.Topology.UnitInterval
 
 /-!
@@ -69,7 +70,7 @@ namespace AppliedModelingLib
 namespace Statistics
 namespace FiniteRademacher
 
-open scoped BigOperators
+open scoped BigOperators Pointwise
 open AppliedModelingLib.Probability.RademacherMatrix
 
 variable {Hypothesis : Type*}
@@ -856,6 +857,92 @@ theorem bddAbove_range_rademacherScore_of_abs_le_one
           rw [abs_mul, abs_rademacherSign, one_mul]
         _ ≤ 1 := hvalue hypothesis index
     _ = n := by simp
+
+/-- The normalized signed supremum for one fixed sign vector, with a real
+supremum so it can index a countable or otherwise non-finite class. -/
+noncomputable def signedEmpiricalSupSet
+    {Class : Type*} (n : ℕ) (value : Class → Fin n → ℝ)
+    (signs : Fin n → Bool) : ℝ :=
+  sSup (Set.range fun hypothesis =>
+    (n : ℝ)⁻¹ * ∑ index : Fin n,
+      rademacherSign (signs index) * value hypothesis index)
+
+/-- A real supremum commutes with multiplication by a nonnegative scalar. -/
+theorem sSup_range_const_mul_eq_const_sSup_range
+    {Class : Type*} (scalar : ℝ) (hscalar : 0 ≤ scalar)
+    (score : Class → ℝ) :
+    sSup (Set.range fun hypothesis => scalar * score hypothesis) =
+      scalar * sSup (Set.range score) := by
+  have hrange : Set.range (fun hypothesis => scalar * score hypothesis) =
+      scalar • Set.range score := by
+    ext result
+    constructor
+    · rintro ⟨hypothesis, rfl⟩
+      exact ⟨score hypothesis, ⟨hypothesis, rfl⟩, rfl⟩
+    · rintro ⟨scoreValue, ⟨hypothesis, rfl⟩, rfl⟩
+      exact ⟨hypothesis, rfl⟩
+  rw [hrange]
+  exact Real.sSup_smul_of_nonneg hscalar (Set.range score)
+
+/-- Translating every score by the same constant translates its real
+supremum.  This is the deterministic part of the usual fact that
+Rademacher complexity is invariant under an affine shift after averaging
+over the signs. -/
+theorem sSup_range_add_const_eq_add_sSup_range
+    {Class : Type*} [Nonempty Class] (score : Class → ℝ)
+    (hscore : BddAbove (Set.range score)) (constant : ℝ) :
+    sSup (Set.range fun hypothesis => score hypothesis + constant) =
+      sSup (Set.range score) + constant := by
+  have hrange : Set.range (fun hypothesis => score hypothesis + constant) =
+      Set.range score + ({constant} : Set ℝ) := by
+    ext result
+    constructor
+    · rintro ⟨hypothesis, rfl⟩
+      exact ⟨score hypothesis, ⟨hypothesis, rfl⟩, constant, rfl, rfl⟩
+    · rintro ⟨scoreValue, ⟨hypothesis, rfl⟩, constantValue, rfl, rfl⟩
+      exact ⟨hypothesis, rfl⟩
+  rw [hrange, csSup_add (Set.range_nonempty _) hscore
+    (Set.singleton_nonempty constant)]
+  · simp
+  · refine ⟨constant, ?_⟩
+    rintro result rfl
+    exact le_rfl
+
+/-- Averaging the normalized fixed-sign supremum recovers the shared
+one-sided empirical Rademacher complexity for an arbitrary nonempty class. -/
+theorem pmfExp_signedEmpiricalSupSet_eq_empiricalOneSidedRademacherSet
+    {Class : Type*} [Nonempty Class]
+    (n : ℕ) (value : Class → Fin n → ℝ) :
+    AppliedModelingLib.pmfExp (AppliedModelingLib.uniformPMF (Fin n → Bool))
+        (signedEmpiricalSupSet n value) =
+      empiricalOneSidedRademacherSet n value := by
+  have hnormalized : ∀ signs : Fin n → Bool,
+      signedEmpiricalSupSet n value signs =
+        (n : ℝ)⁻¹ * sSup (Set.range fun hypothesis =>
+          ∑ index : Fin n, rademacherSign (signs index) * value hypothesis index) := by
+    intro signs
+    unfold signedEmpiricalSupSet
+    exact sSup_range_const_mul_eq_const_sSup_range (n : ℝ)⁻¹
+      (inv_nonneg.mpr (Nat.cast_nonneg _)) _
+  rw [AppliedModelingLib.pmfExp_congr
+    (AppliedModelingLib.uniformPMF (Fin n → Bool)) hnormalized]
+  rw [AppliedModelingLib.pmfExp_const_mul]
+  rfl
+
+/-- A real supremum of pointwise sums is bounded by the sum of the two real
+suprema whenever both component ranges are bounded above. -/
+theorem sSup_range_add_le_add_sSup_range
+    {Class : Type*} [Nonempty Class]
+    (left right : Class → ℝ)
+    (hleft : BddAbove (Set.range left))
+    (hright : BddAbove (Set.range right)) :
+    sSup (Set.range fun hypothesis => left hypothesis + right hypothesis) ≤
+      sSup (Set.range left) + sSup (Set.range right) := by
+  apply csSup_le (Set.range_nonempty _)
+  rintro score ⟨hypothesis, rfl⟩
+  exact add_le_add
+    (le_csSup hleft ⟨hypothesis, rfl⟩)
+    (le_csSup hright ⟨hypothesis, rfl⟩)
 
 /-- Reindexing an arbitrary class through a value-preserving map cannot
 increase its one-sided empirical Rademacher complexity. -/
@@ -3764,6 +3851,75 @@ theorem pmfExp_rademacherSign_uniformBooleanFunction
   rw [AppliedModelingLib.pmfExp_eq_integral_toMeasure]
   rw [uniformBooleanFunction_toMeasure_eq_fairProduct]
   exact integral_rademacherSign_productMeasure (Fin n) index
+
+/-- Affinely normalizing a `[-1,1]`-valued class to `[0,1]` halves its
+one-sided empirical Rademacher complexity.  The additive shift has zero
+Rademacher average, so this equality does not require the class to be
+finite. -/
+theorem empiricalOneSidedRademacherSet_affine_half
+    {Class : Type*} [Nonempty Class] (n : ℕ) (value : Class → Fin n → ℝ)
+    (hvalue : ∀ hypothesis index, |value hypothesis index| ≤ 1) :
+    empiricalOneSidedRademacherSet n
+        (fun hypothesis index => (1 / 2 : ℝ) * value hypothesis index + 1 / 2) =
+      (1 / 2 : ℝ) * empiricalOneSidedRademacherSet n value := by
+  let score : (Fin n → Bool) → Class → ℝ := fun signs hypothesis =>
+    ∑ index : Fin n, rademacherSign (signs index) * value hypothesis index
+  have hscoreBdd : ∀ signs, BddAbove (Set.range (score signs)) := by
+    intro signs
+    exact bddAbove_range_rademacherScore_of_abs_le_one n value hvalue signs
+  have hsum : ∀ signs hypothesis,
+      (∑ index : Fin n, rademacherSign (signs index) *
+          ((1 / 2 : ℝ) * value hypothesis index + 1 / 2)) =
+        (1 / 2 : ℝ) * score signs hypothesis +
+          (1 / 2 : ℝ) * ∑ index : Fin n, rademacherSign (signs index) := by
+    intro signs hypothesis
+    simp only [score]
+    calc
+      (∑ index : Fin n, rademacherSign (signs index) *
+          ((1 / 2 : ℝ) * value hypothesis index + 1 / 2)) =
+        ∑ index : Fin n, ((1 / 2 : ℝ) *
+          (rademacherSign (signs index) * value hypothesis index) +
+          (1 / 2 : ℝ) * rademacherSign (signs index)) := by
+            apply Finset.sum_congr rfl
+            intro index _
+            ring
+      _ = _ := by
+        rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
+  have hsup : ∀ signs,
+      sSup (Set.range fun hypothesis =>
+          ∑ index : Fin n, rademacherSign (signs index) *
+            ((1 / 2 : ℝ) * value hypothesis index + 1 / 2)) =
+        (1 / 2 : ℝ) * sSup (Set.range (score signs)) +
+          (1 / 2 : ℝ) * ∑ index : Fin n, rademacherSign (signs index) := by
+    intro signs
+    have hscaledBdd : BddAbove (Set.range fun hypothesis =>
+        (1 / 2 : ℝ) * score signs hypothesis) := by
+      rcases hscoreBdd signs with ⟨upper, hupper⟩
+      refine ⟨(1 / 2 : ℝ) * upper, ?_⟩
+      rintro result ⟨hypothesis, rfl⟩
+      exact mul_le_mul_of_nonneg_left (hupper ⟨hypothesis, rfl⟩) (by norm_num)
+    rw [show (fun hypothesis =>
+      ∑ index : Fin n, rademacherSign (signs index) *
+        ((1 / 2 : ℝ) * value hypothesis index + 1 / 2)) =
+      fun hypothesis => (1 / 2 : ℝ) * score signs hypothesis +
+        (1 / 2 : ℝ) * ∑ index : Fin n, rademacherSign (signs index) by
+          funext hypothesis
+          exact hsum signs hypothesis]
+    rw [sSup_range_add_const_eq_add_sSup_range _ hscaledBdd]
+    rw [sSup_range_const_mul_eq_const_sSup_range (1 / 2 : ℝ) (by norm_num)]
+  have hmeanSign : AppliedModelingLib.pmfExp
+      (AppliedModelingLib.uniformPMF (Fin n → Bool))
+      (fun signs => ∑ index : Fin n, rademacherSign (signs index)) = 0 := by
+    rw [AppliedModelingLib.pmfExp_sum]
+    apply Finset.sum_eq_zero
+    intro index _
+    exact pmfExp_rademacherSign_uniformBooleanFunction n index
+  unfold empiricalOneSidedRademacherSet
+  rw [AppliedModelingLib.pmfExp_congr
+    (AppliedModelingLib.uniformPMF (Fin n → Bool)) hsup]
+  rw [AppliedModelingLib.pmfExp_add, AppliedModelingLib.pmfExp_const_mul,
+    AppliedModelingLib.pmfExp_const_mul, hmeanSign, mul_zero]
+  ring
 
 /-- A singleton function class has zero one-sided empirical complexity. -/
 theorem empiricalOneSidedRademacher_eq_zero_of_subsingleton

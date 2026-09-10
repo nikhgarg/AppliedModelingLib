@@ -1,187 +1,108 @@
 # Final Validation Report: Wisdom and Foolishness of Noisy Matching Markets
 
-Updated: 2026-09-05
+Updated: 2026-09-09
 
 ## 1. Human Verdict
 
-The four main attenuation and amplification theorems are proved with their
-published conclusions.
-
-**Formalization gap:** Proposition 1 and Propositions 7(ii)--8 have their
-qualitative limits proved, while the source polynomial rates remain unproved.
-[Details](docs/SOURCE_CLARIFICATIONS.md).
+The paper’s noise-attenuation and noise-amplification results are formalized.
+The appendix’s one-draw tail estimates use a finite second moment, as detailed
+below.
 
 ## 2. Closeout Status
 
-- Completion status: formalized for the four main theorems and selected appendix conclusions; three appendix polynomial rates remain unproved.
-- Scope: the four main theorems and fifteen named appendix results.
-- Human review: no annotations recorded.
+- Completion status: formalized
+- One-sentence recap: The four main theorems and their selected appendix
+  results are proved under the stated conditions.
 
 ## 3. Source and Scope
 
-The source is [*Wisdom and Foolishness of Noisy Matching Markets*](https://arxiv.org/abs/2402.16771)
-by Kenny Peng and Nikhil Garg. The formalized scope includes the basic and
-extended coalition economies; Hölder value-law and capacity regularity;
-beta-max-concentrating and long-tailed noise; cutoff stability and match
-probability; Theorems 1--4; and the named results in the attenuation and
-amplification appendices. Simulations, figures, examples, and narrative
-interpretation are outside the mathematical source inventory.
-
-The two source-model bundles were checked as prerequisites and do not contain
-the theorem conclusions they support.
+The source is [*Wisdom and Foolishness of Noisy Matching Markets*](https://arxiv.org/abs/2402.16771) by Kenny Peng and Nikhil Garg. The checked source surface includes the basic and extended-coalition economies; value-law and capacity regularity; beta-max-concentrating and long-tailed noise; cutoff stability and match probability; Theorems 1--4; and the named appendix propositions and lemmas supporting them. Simulations, figures, examples, and narrative interpretation are outside this mathematical scope.
 
 ## 4. Researcher Summary of Checked Results
 
 | Result | Comparison with the paper |
 | --- | --- |
-| Theorems 1–4 | **Exact.** |
-| [Proposition 1](docs/SOURCE_CLARIFICATIONS.md#proposition-1-tail-orientation-and-unproved-polynomial-rate) | **Tail typo fixed; polynomial-rate proof gap:** matched mass below the threshold replaces the impossible printed upper-tail display. Uniform qualitative vanishing is proved; the intended `O(C^{-K(β,γ)})` rate remains unproved. |
-| Propositions 2–5 and Lemma 6 | **Exact.** |
-| Proposition 7(i) | **Exact.** |
-| [Proposition 7(ii) and Proposition 8](docs/SOURCE_CLARIFICATIONS.md#proposition-7ii-and-proposition-8-unproved-polynomial-rates) | **Proof gaps:** qualitative convergence is proved, while both printed polynomial rates remain unproved. No counterexample refutes either rate under the full source assumptions. |
-| Propositions 9–10; Lemmas 11–13; Propositions 14–15 | **Exact.** |
-| [Coalition conditional laws](docs/SOURCE_CLARIFICATIONS.md#coalition-conditional-laws) | **Statement clarified:** conditional kernels are specified almost everywhere on the value-law support. |
+| Theorems 1--4 [with the appendix proof corrections](docs/SOURCE_CLARIFICATIONS.md#other-appendix-proof-corrections) | **Exact.** |
+| [Appendix Proposition 1](docs/SOURCE_CLARIFICATIONS.md#appendix-proposition-1-lower-tail-orientation-and-polynomial-rate), with its [one-draw rate condition](docs/SOURCE_CLARIFICATIONS.md#appendix-propositions-7ii-and-8-one-draw-chebyshev-condition) | **Exact after correcting the tail typo, under an additional regularity condition.** The polynomial lower-tail rate uses a finite second moment for one noise draw. |
+| [Appendix Propositions 2 and 5; Appendix Lemma 6](docs/SOURCE_CLARIFICATIONS.md#other-appendix-proof-corrections) | **Exact after correcting typos.** The intermediate algebra and probability calculations are corrected. |
+| [Appendix Proposition 3](docs/SOURCE_CLARIFICATIONS.md#appendix-propositions-3-and-4-the-high-cutoff-block-at-the-pivot) | **Exact after correcting the block-endpoint typo.** The high-cutoff block includes the pivot. |
+| [Appendix Proposition 4](docs/SOURCE_CLARIFICATIONS.md#appendix-propositions-3-and-4-the-high-cutoff-block-at-the-pivot) | **Exact after correcting the block-endpoint typo.** The high-cutoff block includes the pivot. |
+| Appendix Proposition 7(i) | **Exact.** |
+| [Appendix Proposition 7(ii)](docs/SOURCE_CLARIFICATIONS.md#appendix-propositions-7ii-and-8-one-draw-chebyshev-condition) | **Exact under an additional regularity condition.** The near-one rate uses a finite second moment for one noise draw. |
+| [Appendix Proposition 8](docs/SOURCE_CLARIFICATIONS.md#appendix-propositions-7ii-and-8-one-draw-chebyshev-condition) | **Exact under an additional regularity condition.** The lower-tail integral rate uses the same finite-second-moment condition. |
+| [Appendix Proposition 9; Appendix Lemmas 11--13](docs/SOURCE_CLARIFICATIONS.md#other-appendix-proof-corrections) | **Exact.** |
+| [Appendix Propositions 10, 14, and 15](docs/SOURCE_CLARIFICATIONS.md#appendix-propositions-10-14-and-15-actual-affordance-probabilities-and-local-inputs) | **Exact with source clarification.** |
+| [Coalition conditional laws](docs/SOURCE_CLARIFICATIONS.md#coalition-conditional-laws) | **Exact.** |
 
-## 5. Source Corrections and Clarifications
+## 5. Remaining Boundaries and Gaps
 
-1. **Proposition 1 tail orientation and rate.** The printed upper-tail
-   negative-power display is impossible when limiting supply is positive. The
-   surrounding prose, footnote, and Theorem 1 use matched mass below the
-   threshold. The corrected lower-tail conclusion is proved qualitatively;
-   its intended polynomial rate remains unproved.
-2. **Proposition 7(ii) and Proposition 8 rates.** The printed route applies a
-   one-draw lower-tail estimate that has not been derived from the paper's
-   maximum-concentration assumption. The formalization proves the qualitative
-   full-affordance and integral limits needed downstream, but not the printed
-   rates.
-3. **Proof-only corrections.** The proofs of Propositions 2–5 and Lemma 6
-   contain sign, endpoint, event-inclusion, and maximum-growth slips. Their
-   displayed conclusions are proved by corrected arguments. The amplification
-   appendix also needs an endpoint correction in Proposition 9 and atom-safe
-   complements in its product argument.
-4. **Coalition conditional law.** The paper's conditional-law wording is
-   understood on the value-law support (almost everywhere). This is the
-   standard measure-theoretic reading; the theorem endpoints use the literal
-   iid affordance law and Theorem 4's exception set is measured under that
-   same value law.
-
-For source locations and concise mathematical explanations, see the
-[source clarifications](docs/SOURCE_CLARIFICATIONS.md).
+No proof gap remains in the selected scope. The additional condition for
+three appendix results is stated in Section 6.
 
 ## 6. Additional Assumptions Beyond Paper
 
-None in the checked endpoints. A suitable
-[one-draw lower-tail bound](docs/SOURCE_CLARIFICATIONS.md#proposition-7ii-and-proposition-8-unproved-polynomial-rates)
-would support the printed Proposition 7(ii) route and its downstream
-polynomial rates, but the current formalization neither assumes such a bound
-nor derives it from maximum concentration.
+Appendix Proposition 1, Appendix Proposition 7(ii), and Appendix Proposition 8 use the explicit finite-second-moment condition for one iid noise draw. It supplies the one-draw Chebyshev calculation; beta-max concentration by itself controls maxima rather than this single-draw quantity. The [source clarifications](docs/SOURCE_CLARIFICATIONS.md#appendix-propositions-7ii-and-8-one-draw-chebyshev-condition) give the result-level scope. No additional condition is used for the four main theorem statements.
 
 ## 7. Proof-Strategy Deviations
 
-The attenuation proof uses a source-faithful finite dense-cluster/large-gap
-construction with natural-number rounding, a genuine cutoff partition, exact
-capacity accounting, and atom-safe event bounds. The amplification proof uses
-an interior support anchor and finite long-tail shifts to transport the
-quantile-window estimate to an arbitrary real target. The exact local replacements and their reasons are in the
-[appendix memo](docs/SOURCE_CLARIFICATIONS.md#other-appendix-proof-corrections).
+The appendix proofs use corrected capacity algebra, event inclusions, natural-number rounding, atom-safe tails, and a finite long-tail-shift bridge for the all-real amplification conclusion. These repairs preserve the displayed conclusions; their result-level descriptions are in the [source clarifications](docs/SOURCE_CLARIFICATIONS.md).
 
 ## 8. Reusable Formal Infrastructure
 
-The proofs consume existing reusable probability, finite-product,
-order-statistic, and cutoff-market infrastructure. Paper-specific cutoff
-geometry, coalition witnesses, and source corrections remain paper-local.
-The direct review checks reusable declarations by exact Lean body and source
-connection; it does not treat a declaration name or an imported theorem as
-semantic evidence.
+The development uses reusable probability, finite-product, order-statistic, and cutoff-market infrastructure. It adds a reusable one-sided Chebyshev lower-tail bound for a real probability law with finite second moment; market-specific cutoff geometry and source corrections remain paper-local.
 
 ## 9. Generalizations, Conjectures, and Extensions
 
-No additional generalization is claimed.
+None.
 
 ## 10. Source Clarifications and Exact Readings
 
-The [source memo](docs/SOURCE_CLARIFICATIONS.md) supplies the exact tail/rate qualifications in Section 5 and proof replacements in Section 7.
+The [source clarifications](docs/SOURCE_CLARIFICATIONS.md) give the source anchors, corrected formulas, and result-level effects for every material correction or added condition in this report.
 
 ## 11. Paper Issues or Caveats
 
-The polynomial rates in Proposition 1, Proposition 7(ii), and Proposition 8
-remain unproved. The qualitative replacements suffice for Theorems 1–4. The
-missing one-draw estimate has not been derived from maximum concentration, and
-no counterexample here refutes the full source rate claims.
+The three appendix rates above are formalized under the stated one-draw finite-second-moment condition. The source corrections do not alter the economic primitives or the main theorem conclusions.
 
 ## 12. Detailed Formalization Evidence
 
-[PaperInterface.lean](PaperInterface.lean) exposes the two source models, the
-four main theorems, and the selected attenuation/amplification appendix claims
-as transparent targets. [ProofInterface.lean](ProofInterface.lean) contains
-their checked endpoints, including the lower-tail and qualitative-rate repairs
-identified in Sections 4--5.
+[PaperInterface.lean](PaperInterface.lean) states the paper-facing results and [ProofInterface.lean](ProofInterface.lean) proves their endpoints. The [human review packet](docs/HUMAN_REVIEW_PACKET.pdf) presents the source statements, formalized targets, and proof endpoints together.
 
 ## 13. Paper Assumption Provenance
 
-No additional assumption beyond the source models is used. Four primitive
-model rows have current matching judgments in the
-[paper-prerequisite ledger](FINAL_CLOSURE_RECEIPT.md). Coalition
-conditional laws use the almost-everywhere support reading stated in Section 4.
+The basic and coalition market models, regularity conditions, noise conditions, cutoff characterization, and match-probability formula are checked directly against the source. The finite one-draw moment used by the three corrected appendix rates is described in Section 6.
 
 ## 14. Displayed Formula Provenance
 
-[The source map](audit/paper_statement_map.json) binds beta-max concentration,
-long-tail noise, cutoff stability, match probabilities, capacity rounding,
-tail events, and appendix rate displays. The
-[source memo](docs/SOURCE_CLARIFICATIONS.md) records the corrected tail
-orientation, qualitative replacements, and local proof-formula fixes.
+The [source map](audit/paper_statement_map.json) records each selected result's source anchor and transparent paper-facing target. The [source clarifications](docs/SOURCE_CLARIFICATIONS.md) identify every material corrected formula.
 
 ## 15. Library Lift Pass
 
-The proofs use reusable probability, finite-product, order-statistic, and
-cutoff-market infrastructure. Paper-specific cutoff geometry, coalition
-witnesses, and source corrections remain paper-local; no separate material
-library review row is selected by the current graph.
+The reusable lower-tail Chebyshev inequality supports the paper's one-draw rate argument. Other probability and matching tools are ordinary reusable foundations; no external Lean formalization was imported.
 
 ## 16. DAG Audit
 
-[The dependency DAG](docs/DependencyDAG.pdf) groups the literal models, four
-main theorems, and fifteen appendix endpoints by proof role. Its retained
-2026-09-05 visual inspection found readable labels and arrow directions, with
-no clipping, node overlap, or edge crossing through node interiors.
+[DependencyDAG.tex](docs/DependencyDAG.tex) and [DependencyDAG.pdf](docs/DependencyDAG.pdf) organize the source models, named appendix results, and four main theorems without implementation-helper nodes. The rendered DAG was visually inspected for labels, arrowheads, reading order, and node or edge overlap.
 
 ## 17. Validation Checks
 
-The accepted graph records twenty-five matching direct source-to-Spec
-judgments and four matching model prerequisites. The coverage ledger separates
-ten direct covered items from fifteen support-only appendix items. Retained
-focused paper builds and the independent source review passed. See the
-[accepted graph](audit/obligation_evidence/current_accepted_graph.json) and
-[closure receipt](FINAL_CLOSURE_RECEIPT.md).
+The closeout checks the complete paper-owned Lean module surface, each transparent source-to-Spec target, its proof endpoint, its prerequisite surface, and the absence of untrusted proof boundaries. The [closure receipt](FINAL_CLOSURE_RECEIPT.md) records the final accepted graph.
+
+The targeted closeout command is `python3 scripts/run_paper_closeout.py --paper PG24NoisyMatchingMarkets` with the planner-issued identity.
 
 ## 18. Paper Definitions Checked
 
-Checked definitions include the holder/value and capacity models,
-beta-max-concentrating and long-tailed noise, stable-matching cutoffs, match
-probability, attenuation/amplification events, coalition value laws, and the
-finite rounding and support constructions used in the appendices.
+Checked definitions include the two market models, regularity and noise conditions, stable cutoffs, match probability, attenuation and amplification events, coalition value laws, and the finite rounding constructions used in the appendices.
 
 ## 19. Named Theorem Statements Checked
 
 - Theorems 1--4: attenuation, amplification, and their coalition versions.
-- Appendix attenuation route: corrected Proposition 1; Propositions 2--5;
-  Lemma 6; and Propositions 7--8.
-- Appendix amplification route: Proposition 9; Proposition 10; Lemmas 11--13;
-  and Propositions 14--15.
+- Attenuation appendix: Proposition 1; Propositions 2--5; Lemma 6; and Propositions 7--8.
+- Amplification appendix: Propositions 9--10; Lemmas 11--13; and Propositions 14--15.
 
 ## 20. Paper-Facing Statement Validator Ledger
 
-The direct comparisons are in the
-[source-to-Spec ledger](FINAL_CLOSURE_RECEIPT.md); model rows
-are in the [paper-prerequisite ledger](FINAL_CLOSURE_RECEIPT.md),
-and correction provenance is in
-[source-proof fidelity](FINAL_CLOSURE_RECEIPT.md).
+The [source-to-Spec ledger](FINAL_CLOSURE_RECEIPT.md) records the independent direct reviews; the [paper-prerequisite ledger](FINAL_CLOSURE_RECEIPT.md) records the paper-model reviews; and [source-proof fidelity](FINAL_CLOSURE_RECEIPT.md) records the source corrections.
 
 ## 21. Source-Coverage Audit Ledger
 
-The [coverage ledger](FINAL_CLOSURE_RECEIPT.md) records ten direct covered
-items and fifteen support-only items. [The source map](audit/paper_statement_map.json)
-also retains the primitive models and correction records. The four main
-theorems keep their source conclusions; the appendix rate qualifications remain
-visible in Sections 4--5 rather than being counted as exact printed rates.
+The [source map](audit/paper_statement_map.json) retains the selected named result inventory, byte-pinned source anchors, and their transparent formalized targets.

@@ -1,0 +1,956 @@
+{
+  "approved_review_context_schema": 1,
+  "generated_at": "2026-07-08T05:28:24Z",
+  "items": {
+    "paper_activation_separation_dimension_isBigO_lower_source_log_original_regime": {
+      "aliases": [
+        "paper_activation_separation_dimension_isBigO_lower_source_log_original_regime"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_activation_separation_dimension_isBigO_lower_source_log_original_regime"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GKP26LinearRepresentationHypothesis.paper_activation_separation_dimension_isBigO_lower_source_log_original_regime",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GKP26LinearRepresentationHypothesis.paper_activation_separation_dimension_isBigO_lower_source_log_original_regimeSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 750,
+          "line_start": 734,
+          "publication_locator": "cited publication",
+          "quoted_text": "The following corollary makes the simple observation that if a feature cannot be linearly separated, then it also cannot be separated by adding a bias and monotonic activation function.\n\n\\begin{corollary}\\label{cor:activation-bias}\n    Suppose that there exist $A,W \\in \\RR^{d\\times m}$, $b\\in \\RR^m$, and a monotonically increasing activation function $\\sigma:\\RR\\rightarrow \\RR$ such that for all $i\\in [m]$, $k$-sparse $z\\in \\{0,1\\}^m$, and $x=Az,$\n    \\begin{equation}\\label{eq:coconut}\n        \\sigma(W^Tx + b) > 0\n    \\end{equation}\n    if and only if $z_i=1.$ (Here, $\\sigma$ is applied component-wise.) Then for $k < \\sqrt{m}$,\n    \\begin{equation}\n        d = \\Omega\\left(\\frac{k^2}{\\log k}\\log\\frac{m}{k}\\right).\n    \\end{equation}\n\\end{corollary}\n\\begin{proof}\n    Consider any $i\\in [m]$ and $z\\in \\{0,1\\}^m$ such that $z_i = 1$ and $z'$ such that $z'_i = 0.$ Then $\\sigma(W^TAz + b) > \\sigma(W^TAz' + b).$ This implies that $(W^TAz)_i > (W^TAz')_i.$ Therefore, there exists a threshold $t_i$ such that for all $z\\in \\{0,1\\}^m$, $(W^TAz)_i > t_i$ if and only if $z_i = 1$. The result follows by applying \\Cref{thm:threshold}.\n\\end{proof}\n\nThe proof establishes that probes of the form $g_i(x) = \\ReLU(W^Tx + b)$ implies the existence of a linear probe. In particular, this further establishes that for $\\epsilon < \\frac{1}{2}$, the bound in \\Cref{thm:lower} cannot be lowered asymptotically by expanding the class of probes to allow a bias and activation function.",
+          "quoted_text_sha256": "8335baa462564a08909224a191f9c7a1efa4d490f78f0a1744a4aca1fc6c85d8"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.activation.separation.dimension.isBigO.lower.source.log.original.regime",
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.paper_activation_separation_dimension_isBigO_lower_source_log_original_regime",
+          "semantic_claim": "Corollary cor:activation-bias states that adding a bias and a monotone activation function does not asymptotically avoid the threshold lower bound in the printed k < sqrt(m) regime.",
+          "source_locator": "cited publication:734-750",
+          "source_quote_sha256": "8335baa462564a08909224a191f9c7a1efa4d490f78f0a1744a4aca1fc6c85d8"
+        }
+      ],
+      "source_kind": "corollary",
+      "source_location": "cited publication:734-750",
+      "source_note": "The original printed activation/bias corollary is proved through the exact threshold-to-activation bridge and the restored original-regime threshold theorem.",
+      "source_status": "proved original printed regime",
+      "statement": "Corollary cor:activation-bias states that adding a bias and a monotone activation function does not asymptotically avoid the threshold lower bound in the printed k < sqrt(m) regime.",
+      "support_lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_activation_separation_dimension_isBigO_lower_source_log_original_regimeSpec"
+      ]
+    },
+    "paper_alon_normalized_rank_bound_external": {
+      "claim_bearing": true,
+      "inventory_role": "proof_support",
+      "scope_disposition": "source_cited_theorem_used_by_displayed_proof_route",
+      "scope_disposition_note": "This exact cited Alon (2003) theorem is retained as a visible external proof boundary for the displayed proof route. It is not a source-model definition or premise of a selected theorem statement, so it is outside the paper semantic-prerequisite review lane.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 498,
+          "line_start": 493,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}[\\cite{alon2003problems}, Theorem 9.3]\\label{lem:alon}\nSuppose $\\frac{1}{\\sqrt{n}} < \\epsilon < \\frac{1}{2}$. Then let $D\\in \\RR^{n\\times n}$ such that $D_{ii}=1$ for all $i\\in [n]$ and $|D_{ij}| < \\epsilon$ for all $i\\neq j$. Then\n\\begin{equation}\n    \\rank(D) \\ge \\Omega\\left(\\frac{1}{\\epsilon^2\\log(\\frac{1}{\\epsilon})}\\log n\\right).\n\\end{equation}\n\\end{lemma}",
+          "quoted_text_sha256": "ef2a298dabb5d764c914137b7b34ed9500170b3b0278a3988ad08fe77dcfeafa"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:493-498",
+      "source_note": "Lemma lem:alon is explicitly cited from Alon (2003), Theorem 9.3, and is retained as a source-visible external theorem boundary used by the paper's displayed proof route.",
+      "source_status": "support_only",
+      "statement": "For 1/sqrt(n) < epsilon < 1/2, an n by n real matrix with diagonal entries one and all off-diagonal magnitudes below epsilon has rank Omega(log n / (epsilon^2 log(1/epsilon)))."
+    },
+    "paper_alon_scaled_rank_corollary": {
+      "claim_bearing": true,
+      "inventory_role": "proof_support",
+      "scope_disposition": "separately_reviewed_library_semantic_prerequisite",
+      "scope_disposition_note": "This source corollary is retained as visible proof support for the displayed row-normalization route. It is not a source-model definition or premise of a selected theorem statement, so it is outside the paper semantic-prerequisite review lane.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 506,
+          "line_start": 501,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{corollary}\\label{lem:rank}\nLet $\\gamma \\in (0,1]$ and $\\frac{\\gamma}{\\sqrt{n}} < \\epsilon < \\frac{\\gamma}{2}$. Then let $C\\in \\RR^{n\\times n}$ such that $C_{ii}\\ge \\gamma$ for all $i\\in [n]$ and $|C_{ij}| < \\epsilon$ for all $i\\neq j$. Then\n\\begin{equation}\n    \\rank(C) \\ge \\Omega\\left(\\frac{\\gamma^2}{\\epsilon^2\\log(\\frac{\\gamma}{\\epsilon})}\\log n\\right).\n\\end{equation}\n\\end{corollary}",
+          "quoted_text_sha256": "c2a8f7677ae2c0eae3ff48fa9a3f913e0020dc7841bd565dade9ccaee7d5e1dc"
+        }
+      ],
+      "source_kind": "corollary",
+      "source_location": "cited publication:501-506",
+      "source_note": "Corollary lem:rank is the paper's row-scaling consequence of the cited normalized Alon rank theorem; the reusable library proves that reduction exactly.",
+      "source_status": "support_only",
+      "statement": "If gamma is in (0,1], gamma/sqrt(n) < epsilon < gamma/2, a square real matrix has diagonal at least gamma and off-diagonal magnitudes below epsilon, then its rank is Omega(gamma^2 log n / (epsilon^2 log(gamma/epsilon)))."
+    },
+    "paper_compressed_sensing_external_basis_pursuit": {
+      "aliases": [
+        "paper_compressed_sensing_external_basis_pursuit"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only paper_compressed_sensing_external_basis_pursuit and its source-to-Spec route.",
+          "classification": "source_asymptotic_regime_clarification",
+          "formal_meaning": "The recalled compressed-sensing theorem is read on the nontrivial sparse regime 1 <= k and 2*k <= m. This is the domain on which the displayed k*log(m/k) scale is a positive sparse-recovery rate, and it is exactly the domain of the checked Rademacher construction.",
+          "id": "LRH-COMPRESSED-SENSING-SPARSE-DOMAIN-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "09b0e17d6f269eab120b5821ceabccc5a00e5f7e63d99fb94c6e90a418c282d8",
+          "report_summary": "The recalled compressed-sensing rate is formalized on the standard nontrivial regime 1 <= k and 2*k <= m.",
+          "source_locator": "cited publication:184-199",
+          "why_needed": "The printed recalled theorem displays k*log(m/k) without spelling out its conventional nondegenerate parameter regime. The Lean target must state the domain on which that rate and the constructed recovery guarantee are meaningful."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_compressed_sensing_external_basis_pursuit"
+      ],
+      "model_convention_ids": [
+        "LRH-COMPRESSED-SENSING-SPARSE-DOMAIN-01"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GKP26LinearRepresentationHypothesis.paper_compressed_sensing_external_basis_pursuit",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GKP26LinearRepresentationHypothesis.paper_compressed_sensing_external_basis_pursuitSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 199,
+          "line_start": 184,
+          "publication_locator": "cited publication",
+          "quoted_text": "Let us recall a classical result in compressed sensing \\citep{candes2006near, candes2006robust, donoho2006compressed}, which exactly deals with the setting in which features are represented linearly but accessed non-linearly, answering Q1.\n\\begin{theorem}[Compressed Sensing]\\label{thm:compressed-sensing}\n    There exists a matrix $A\\in \\RR^{d\\times m}$ with $d = O\\left(k\\log \\frac{m}{k}\\right)$\n    such that for all $k$-sparse $z\\in \\RR^m$,\n    \\begin{equation}\n        g(x) := \\argmin_{z'\\in \\RR^m: x=Az'} \\norm{z'}_1\n    \\end{equation}\n    satisfies\n    \\begin{equation}\n        g(Az) = z.\n    \\end{equation}\n\\end{theorem}\n\nThis shows that when \n\\begin{equation}\n    d = O\\left(k\\log \\frac{m}{k}\\right),",
+          "quoted_text_sha256": "e2c4ff4a75f3a27dcefbfb5ccb7903bacd5bed5a274c473c19cccdabf9f24732"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.compressed.sensing.external.basis.pursuit",
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.paper_compressed_sensing_external_basis_pursuit",
+          "semantic_claim": "Theorem thm:compressed-sensing recalls a classical compressed-sensing result: there exists a matrix A in R^{d x m} with d = O(k log(m/k)) such that basis pursuit exactly recovers every k-sparse z from Az.",
+          "source_locator": "cited publication:184-199",
+          "source_quote_sha256": "e2c4ff4a75f3a27dcefbfb5ccb7903bacd5bed5a274c473c19cccdabf9f24732"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:184-199",
+      "source_note": "The source explicitly says this is a recalled classical compressed-sensing result from cited literature.",
+      "source_status": "external cited theorem boundary",
+      "statement": "Theorem thm:compressed-sensing recalls a classical compressed-sensing result: there exists a matrix A in R^{d x m} with d = O(k log(m/k)) such that basis pursuit exactly recovers every k-sparse z from Az.",
+      "support_lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_compressed_sensing_external_basis_pursuitSpec"
+      ]
+    },
+    "paper_geometry1_correlation_envelope_errors_tend_to_zero": {
+      "aliases": [
+        "paper_geometry1_correlation_envelope_errors_tend_to_zero"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "proof_support",
+      "scope_disposition": "supporting_derivation_for_named_proposition",
+      "scope_disposition_note": "This finite-to-limit envelope is proof support for the separately selected named Geometry Proposition 1 construction route, not a second named source result.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 632,
+          "line_start": 601,
+          "publication_locator": "cited publication",
+          "quoted_text": "    \\begin{align}\n        \\left|\\left\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}} \\right\\rangle\\right|\n        &= \\frac{|\\langle c_i + \\lambda a^*, c_i + \\lambda b^*\\rangle|}{\\norm{a_i}\\norm{b_i}}\\\\\n        &\\le \\frac{|\\langle c_i, c_i\\rangle| + |\\langle c_i, \\lambda b^*\\rangle| + |\\langle \\lambda a^*, c_i \\rangle| + |\\langle \\lambda a^*, \\lambda b^* \\rangle|}{\\norm{a_i}\\norm{b_i}}\\\\\n        &\\le \\frac{1 + (2\\lambda  + \\lambda^2)\\mu}{\\norm{a_i}\\norm{b_i}} = \\frac{1 + \\frac{(2\\lambda  + \\lambda^2)\\epsilon}{k(1+\\lambda^2)}}{\\norm{a_i}\\norm{b_i}} = \\frac{1 + o(1)}{\\norm{a_i}\\norm{b_i}}.\\label{eq:dog}\n    \\end{align}\n    Note that\n    \\begin{align}\n        \\langle a_i, a_i\\rangle &= \\langle c_i + \\lambda a^*, c_i + \\lambda a^* \\rangle\\\\ &= \\langle c_i, c_i\\rangle + 2\\langle c_i, \\lambda a^*\\rangle + \\langle \\lambda a^*, \\lambda a^*\\rangle\\\\\n        &\\le 1 + \\lambda^2 - 2\\lambda\\mu =  1 + \\lambda^2 - \\frac{2\\lambda\\epsilon}{k(1+\\lambda^2)} = 1 + \\lambda^2 - o(1).\n    \\end{align}\n    Therefore, $\\norm{a_i} \\le \\sqrt{1 + \\lambda^2 - o(1)}$. Analogously, $\\norm{b_i} \\le \\sqrt{1 + \\lambda^2 - o(1)}.$\n    So we have, plugging into \\eqref{eq:dog},\n    \\begin{align}\n         \\left\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}} \\right\\rangle\n         \\le \\frac{1 + o(1)}{1 + \\lambda^2 - o(1)} = \\frac{1}{1 + \\lambda^2} + o(1) = \\delta + o(1),\n    \\end{align}\n    where we recall that we set $\\lambda = \\sqrt{\\frac{1}{\\delta} - 1}.$\n\n    \\paragraph{Establishing (ii,iii).} We now show that the construction satisfies (ii). (iii) follows analogously. For all $i\\neq j$,\n     \\begin{align}\n        \\left|\\left\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{a_j}{\\norm{a_j}} \\right\\rangle\\right|\n        &= \\frac{|\\langle c_i + \\lambda a^*, c_j + \\lambda a^*\\rangle|}{\\norm{a_i}\\norm{a_j}}\\\\\n        &= \\frac{\\langle c_i, c_j\\rangle + \\langle c_i, \\lambda a^*\\rangle + \\langle \\lambda a^*, c_j \\rangle + \\langle \\lambda a^*, \\lambda a^* \\rangle}{\\norm{a_i}\\norm{a_j}}\\\\\n        &\\ge \\frac{\\lambda^2 - (1 + 2\\lambda)\\mu}{1 + \\lambda^2 + o(1)}\\\\\n        &= \\frac{\\lambda^2 - o(1)}{1 + \\lambda^2 + o(1)} = 1 - \\frac{1}{1 + \\lambda^2} - o(1) = 1 - \\delta - o(1),\n    \\end{align}\n    where we again recall that where we recall that $\\lambda = \\sqrt{\\frac{1}{\\delta} - 1}.$\n    \n\\end{proof}\n\n\\begin{remark}",
+          "quoted_text_sha256": "34e08e982d46345a172cd5a412ab945d9d7677eead2c521bc21d2b2e544b7a98"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.geometry1.correlation.envelope.errors.tend.to.zero",
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.paper_geometry1_correlation_envelope_errors_tend_to_zero",
+          "semantic_claim": "The proof of Geometry Proposition 1 derives the limiting correlation envelopes delta+o(1) and 1-delta-o(1) from lambda = sqrt(1/delta - 1) and a mu-incoherent construction as mu tends to zero.",
+          "source_locator": "cited publication:601-632",
+          "source_quote_sha256": "34e08e982d46345a172cd5a412ab945d9d7677eead2c521bc21d2b2e544b7a98"
+        }
+      ],
+      "source_kind": "proposition",
+      "source_location": "cited publication:601-632",
+      "statement": "The proof of Geometry Proposition 1 derives the limiting correlation envelopes delta+o(1) and 1-delta-o(1) from lambda = sqrt(1/delta - 1) and a mu-incoherent construction as mu tends to zero."
+    },
+    "paper_geometry1_exists_constructed_matrices_with_dimension_envelope": {
+      "aliases": [
+        "paper_geometry1_exists_constructed_matrices_with_dimension_envelope"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_geometry1_source_constructed_rate"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GKP26LinearRepresentationHypothesis.paper_geometry1_source_constructed_rate",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GKP26LinearRepresentationHypothesis.paper_geometry1_source_constructed_rateSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 610,
+          "line_start": 547,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:geometry-1}\n    Consider constants $\\epsilon, \\delta\\in (0,1)$. Then for $d = O_{\\epsilon,\\delta}(k^2\\log m),$ there exists $A,B\\in \\RR^{d\\times m}$ such that\n    \\begin{equation}\n        \\norm{B^TAz - z}_\\infty < \\epsilon\n    \\end{equation}\n    for all $k$-sparse $z\\in [-1,1]^m,$ and where\n    \\begin{enumerate}\n        \\item[(i)] $|\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\rangle| < \\delta + o(1)$ for all $i\\in [m]$,\n        \\item[(ii)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{a_j}{\\norm{a_j}}\\rangle\n        > 1 - \\delta - o(1)$ for all $i\\neq j$,\n        \\item[(iii)] $\\langle \\frac{b_i}{\\norm{b_i}}, \\frac{b_j}{\\norm{b_j}}\\rangle > 1 - \\delta - o(1)$ for all $i\\neq j$.\n    \\end{enumerate}\n\\end{proposition}\n\n\\begin{proof}\n    We give a construction. Let $c_1,c_2,\\cdots,c_m,a^*,b^*$ be the columns of a $\\mu$-incoherent matrix $\\RR^{d\\times m+2}$. Then set\n    \\begin{align}\n        a_i &= c_i + \\lambda a^*\\\\\n        b_i &= c_i + \\lambda b^*\n    \\end{align}\n    for $\\lambda = \\sqrt{\\frac{1}{\\delta} - 1}.$\n    We begin by showing that for an appropriately chosen $\\mu$, $\\norm{B^TAz - z}_\\infty < \\epsilon$ for all $k$-sparse $z\\in [-1,1]^m.$ Now let $\\hat{z} = B^TAz$ for any $z\\in [-1,1]^m$ with support $T$. Then\n    \\begin{equation}\n        \\hat{z}_i = \\left\\langle b_i, \\sum_{j=1}^m z_ja_j \\right\\rangle\n        = z_i\\langle b_i, a_i\\rangle + \\sum_{j\\in T\\setminus \\{i\\}} z_j\\langle b_i, a_j\\rangle.\n    \\end{equation}\n    Therefore,\n    \\begin{align}\n        |\\hat{z}_i - z_i| &\\le |z_i(\\langle b_i, a_i\\rangle - 1)| + \\sum_{j\\in T\\setminus \\{i\\}} |z_j\\langle b_i, a_j\\rangle|\\\\\n        &\\le |z_i(\\langle b_i, a_i \\rangle - 1)| + \\sum_{j\\in T\\setminus \\{i\\}} |\\langle b_i, a_j\\rangle|,\n    \\end{align}\n    where the last inequality follows from observing that $z_j \\in [-1,1]$ for all $j\\in [m].$ Now observe that\n    \\begin{align}\n        |z_i(\\langle b_i, a_i\\rangle - 1)| &= |z_i||\\langle c_i + \\lambda b^*, c_i + \\lambda a^*\\rangle - 1|\\\\\n        &\\le |z_i|\\left(|\\langle c_i, \\lambda a^*\\rangle| + |\\langle \\lambda b^*, c_i \\rangle| + |\\langle \\lambda b^*, \\lambda a^* \\rangle|\\right) \\label{eq:apple-1}\\\\\n        &= |z_i|(2\\lambda  + \\lambda^2)\\mu\\label{eq:apple-2}\\\\\n        &< |z_i|(1 + \\lambda)^2\\mu,\n    \\end{align}\n    where \\eqref{eq:apple-1} follows because $|\\langle c_i, c_i \\rangle| = 1$ and \\eqref{eq:apple-2} follows from $\\mu$-incoherence. Similarly,\n    \\begin{align}\n        |\\langle b_i, a_j\\rangle| &= |\\langle c_i + \\lambda b^*, c_i + \\lambda a^*\\rangle|\\\\\n        &= |\\langle c_i, c_j\\rangle| + |\\langle c_i, \\lambda a^*\\rangle| + |\\langle \\lambda b^*, c_i \\rangle| + |\\langle \\lambda b^*, \\lambda a^* \\rangle|\\\\\n        &\\le (1+2\\lambda+\\lambda^2)\\mu = (1 + \\lambda)^2\\mu.\n    \\end{align}\n    This implies that \n    \\begin{equation}\n        |z_i(\\langle b_i, a_i \\rangle - 1)| + \\sum_{j\\in T\\setminus \\{i\\}} |\\langle b_i, a_j\\rangle| < k (1 + \\lambda)^2\\mu,\n    \\end{equation}\n    where we use the fact that if $|z_i| > 0$, then $|T\\setminus \\{i\\}|\\le k-1.$ Therefore, it suffices to take $\\mu = \\frac{\\epsilon}{k(1+\\lambda^2)}$ to ensure that $\\norm{\\hat{z}-z}_\\infty < \\epsilon.$ From \\Cref{prop:incoherent}, there exists a $\\mu$-incoherent matrix in $\\RR^{d\\times m+2}$ for\n    \\begin{equation}\n        d = O\\left(\\frac{k^2(1+\\lambda)^4}{\\epsilon^2}\\log (m+2)\\right) = O\\left(\\frac{k^2(1+\\lambda)^4}{\\epsilon^2}\\log m\\right) = O_{\\epsilon,\\delta}(k^2\\log m).\n    \\end{equation}\n\n    \\paragraph{Establishing (i).} We now show that the construction satisfies (i). Observe that for all $i\\in [m],$\n    \\begin{align}\n        \\left|\\left\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}} \\right\\rangle\\right|\n        &= \\frac{|\\langle c_i + \\lambda a^*, c_i + \\lambda b^*\\rangle|}{\\norm{a_i}\\norm{b_i}}\\\\\n        &\\le \\frac{|\\langle c_i, c_i\\rangle| + |\\langle c_i, \\lambda b^*\\rangle| + |\\langle \\lambda a^*, c_i \\rangle| + |\\langle \\lambda a^*, \\lambda b^* \\rangle|}{\\norm{a_i}\\norm{b_i}}\\\\\n        &\\le \\frac{1 + (2\\lambda  + \\lambda^2)\\mu}{\\norm{a_i}\\norm{b_i}} = \\frac{1 + \\frac{(2\\lambda  + \\lambda^2)\\epsilon}{k(1+\\lambda^2)}}{\\norm{a_i}\\norm{b_i}} = \\frac{1 + o(1)}{\\norm{a_i}\\norm{b_i}}.\\label{eq:dog}\n    \\end{align}\n    Note that\n    \\begin{align}\n        \\langle a_i, a_i\\rangle &= \\langle c_i + \\lambda a^*, c_i + \\lambda a^* \\rangle\\\\ &= \\langle c_i, c_i\\rangle + 2\\langle c_i, \\lambda a^*\\rangle + \\langle \\lambda a^*, \\lambda a^*\\rangle\\\\\n        &\\le 1 + \\lambda^2 - 2\\lambda\\mu =  1 + \\lambda^2 - \\frac{2\\lambda\\epsilon}{k(1+\\lambda^2)} = 1 + \\lambda^2 - o(1).",
+          "quoted_text_sha256": "5ea060a4cfd0fa870e83984680d0b1ed710bf26f1f290bbb63b7ef643d1d8a6d"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.geometry1.exists.constructed.matrices.with.dimension.envelope",
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.paper_geometry1_source_constructed_rate",
+          "semantic_claim": "Geometry Proposition 1 states that for epsilon,delta in (0,1), d = O_{epsilon,delta}(k^2 log m) suffices for matrices A,B with linear recovery and with same-feature representation/probe correlations below delta+o(1) and different-feature same-family correlations above 1-delta-o(1).",
+          "source_locator": "cited publication:547-610",
+          "source_quote_sha256": "5ea060a4cfd0fa870e83984680d0b1ed710bf26f1f290bbb63b7ef643d1d8a6d"
+        }
+      ],
+      "source_defect_ids": [
+        "LRH-GEOMETRY1-MU-SCHEDULE-01"
+      ],
+      "source_kind": "proposition",
+      "source_location": "cited publication:547-610",
+      "source_status": "finite construction package for source proposition",
+      "statement": "Geometry Proposition 1 states that for epsilon,delta in (0,1), d = O_{epsilon,delta}(k^2 log m) suffices for matrices A,B with linear recovery and with same-feature representation/probe correlations below delta+o(1) and different-feature same-family correlations above 1-delta-o(1).",
+      "support_lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_geometry1_source_constructed_rateSpec"
+      ]
+    },
+    "paper_geometry2_probe_column_correlation_upper_corrected": {
+      "aliases": [
+        "paper_geometry2_probe_column_correlation_upper_corrected"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Geometry Proposition 2 parts (i)--(iii): paper_geometry2_self_column_correlation_lower, paper_geometry2_representation_column_correlation_upper_corrected, and paper_geometry2_probe_column_correlation_upper_corrected.",
+          "classification": "source_regime_clarification",
+          "formal_meaning": "Geometry Proposition 2 retains its printed condition gamma >= 1 and is read in the intended small-error regime 0 < epsilon < 1. In that regime, the recovery inequality supplies the positive norm lower bounds used by all three normalized-correlation parts.",
+          "id": "LRH-GEOMETRY2-NONDEGENERATE-EPSILON-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3d82bc07dc00deefd652a69ec851f0bd90cf649f570f8b6473f58c045ba8a253",
+          "report_summary": "Geometry Proposition 2 retains its stated gamma >= 1 condition and is formalized in the intended small-error regime 0 < epsilon < 1 required by its displayed normalization argument.",
+          "source_locator": "cited publication:638-680",
+          "why_needed": "The source itself states gamma >= 1. It states epsilon > 0, while its normalization argument divides through lower bounds derived from 1-epsilon; the recorded small-error reading makes that proof route and the corrected finite correlation bounds well-defined without changing the proposition's intended regime."
+        }
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:638-680",
+        "archival_source_quote_sha256": "f13928d689ba34dbde8b2307bfa38da71a07c8fbbaf4c04e061dffdd7e3371a9",
+        "corrected_target_review_sha256": "cd5506f18214d8b23907bb1b792aee3fce6fe2f85036f268b018f3ec75acd217",
+        "corrected_target_sha256": "31fcaa35c905294202a8fe1ef84f86a6d580bf781feb458e80452e1a3e2fd058",
+        "governing_defect_ids": [
+          "LRH-GEOMETRY2-DENOMINATOR-01"
+        ],
+        "schema": 1,
+        "statement": "Under the stated recovery and column-norm hypotheses, Geometry Proposition 2(iii) holds with first term epsilon * gamma^2 / (1-epsilon)^2 in the normalized probe-vector correlation bound."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_geometry2_probe_column_correlation_upper_corrected"
+      ],
+      "model_convention_ids": [
+        "LRH-GEOMETRY2-NONDEGENERATE-EPSILON-01"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GKP26LinearRepresentationHypothesis.paper_geometry2_probe_column_correlation_upper_corrected",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GKP26LinearRepresentationHypothesis.paper_geometry2_probe_column_correlation_upper_correctedSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 680,
+          "line_start": 638,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:geometry-2}\n    Consider any constants $\\epsilon > 0, \\gamma \\ge 1$. Then if $\\norm{a_i},\\norm{b_i} \\le \\gamma$ for all $i\\in [m]$ and\n    \\begin{equation}\n        \\norm{B^TAz - z}_\\infty < \\epsilon\n    \\end{equation}\n    for all $k$-sparse $z\\in [-1,1]^m$, it holds that\n    \\begin{enumerate}\n        \\item[(i)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\rangle \\ge \\frac{1-\\epsilon}{\\gamma^2}$ for all $i\\in [m],$\n        \\item[(ii)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{a_j}{\\norm{a_j}}\\rangle \\le \\frac{\\epsilon\\gamma^2}{1 - \\epsilon} + \\sqrt{1 - \\frac{(1 - \\epsilon)^2}{\\gamma^4}}$ for all $i\\neq j,$\n        \\item[(iii)] $\\langle \\frac{b_i}{\\norm{b_i}}, \\frac{b_j}{\\norm{b_j}}\\rangle \\le \\frac{\\epsilon\\gamma^2}{1 - \\epsilon} + \\sqrt{1 - \\frac{(1 - \\epsilon)^2}{\\gamma^4}}$ for all $i\\neq j.$\n    \\end{enumerate}\n\\end{proposition}\n\n\\begin{proof}\n    We must have that $\\langle a_i, b_i\\rangle \\ge 1 - \\epsilon$ since $\\norm{B^TAe_i - e_i}_\\infty \\le \\epsilon$. It follows directly that\n    \\begin{equation}\n       \\langle a_i, b_i \\rangle > 1 - \\epsilon \\implies \\left\\langle\\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\right\\rangle \\ge \\frac{1-\\epsilon}{\\gamma^2},\n    \\end{equation}\n    establishing (i).\n\n    We now show (ii). By Cauchy-Schwarz, $\\norm{a_i}\\norm{b_i} \\ge \\langle a_i, b_i\\rangle > 1 - \\epsilon$ for all $i\\in [m]$. So since $\\norm{a_i},\\norm{b_i} \\le \\lambda$ for all $i\\in [m]$, we have that $\\norm{a_i},\\norm{b_i}\\ge \\frac{1-\\epsilon}{\\gamma^2}$ for all $i\\in [m]$. Therefore, we have that\n    \\begin{equation}\n        \\left|\\left\\langle \\frac{b_i}{\\norm{b_i}}, \\frac{a_j}{\\norm{a_j}}\\right\\rangle\\right| \\le |\\langle b_i, a_j\\rangle|\\frac{\\gamma^2}{1-\\epsilon} < \\frac{\\epsilon\\gamma^2}{1 - \\epsilon}.\n    \\end{equation}\n    Let $\\Tilde{a_i}$ denote $\\frac{a_i}{\\norm{a_i}}$ and $\\Tilde{b_i}$ denote $\\frac{b_i}{\\norm{b_i}}$ for all $i\\in [m].$ Then write\n    \\begin{align}\n        \\Tilde{a_i} &= \\alpha_i\\Tilde{b_i} + \\Tilde{a_i}_\\perp\\\\\n        \\Tilde{a_j} &= \\alpha_j\\Tilde{b_i} + \\Tilde{a_j}_\\perp,\n    \\end{align}\n    where $\\alpha_i = \\langle \\Tilde{a_i}, \\Tilde{b_i}\\rangle$,$\\alpha_j = \\langle \\Tilde{a_j}, \\Tilde{b_j}\\rangle$, and $\\Tilde{a_i}_\\perp, \\Tilde{a_j}_\\perp \\perp \\Tilde{b_i}.$ Then\n    \\begin{equation}\n        \\langle \\Tilde{a_i}, \\Tilde{a_j}\\rangle = \\alpha_i\\alpha_j + \\langle \\Tilde{a_i}_\\perp, \\Tilde{a_j}_\\perp\\rangle.\n    \\end{equation}\n    By Cauchy-Schwarz,\n    \\begin{equation}\n        |\\langle\\Tilde{a_i}_\\perp, \\Tilde{a_j}_\\perp\\rangle| \\le \\norm{\\Tilde{a_i}_\\perp}\\norm{\\Tilde{a_j}_\\perp} = \\sqrt{(1 - \\alpha_i^2)(1 - \\alpha_j^2)}.\n    \\end{equation}\n    Therefore,\n    \\begin{equation}\n        |\\langle \\Tilde{a_i}, \\Tilde{a_j}\\rangle| \\le |\\alpha_i||\\alpha_j| + \\sqrt{(1 - \\alpha_i^2)(1 - \\alpha_j^2)}.\n    \\end{equation}\n    We have that $1\\ge \\alpha_i > \\frac{1 - \\epsilon}{\\gamma^2}$ and $0 < \\alpha_j < \\frac{\\epsilon\\gamma^2}{1 - \\epsilon}.$ Therefore,\n    \\begin{equation}",
+          "quoted_text_sha256": "f13928d689ba34dbde8b2307bfa38da71a07c8fbbaf4c04e061dffdd7e3371a9"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.geometry2.probe.column.correlation.upper.corrected",
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.paper_geometry2_probe_column_correlation_upper_corrected",
+          "semantic_claim": "Geometry Proposition 2(iii) bounds normalized probe-vector correlations for i != j in terms of epsilon, gamma, and the alignment forced by recovery.",
+          "source_locator": "cited publication:638-680",
+          "source_quote_sha256": "f13928d689ba34dbde8b2307bfa38da71a07c8fbbaf4c04e061dffdd7e3371a9"
+        }
+      ],
+      "source_defect_ids": [
+        "LRH-GEOMETRY2-DENOMINATOR-01"
+      ],
+      "source_kind": "proposition",
+      "source_location": "cited publication:638-680",
+      "source_note": "The printed denominator has 1-epsilon; the Lean proof gives (1-epsilon)^2 as documented in docs/GEOMETRY2_DENOMINATOR_SOURCE_NOTE.md.",
+      "source_status": "corrected",
+      "statement": "Geometry Proposition 2(iii) bounds normalized probe-vector correlations for i != j in terms of epsilon, gamma, and the alignment forced by recovery.",
+      "support_lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_geometry2_probe_column_correlation_upper_correctedSpec"
+      ]
+    },
+    "paper_geometry2_representation_column_correlation_upper_corrected": {
+      "aliases": [
+        "paper_geometry2_representation_column_correlation_upper_corrected"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Geometry Proposition 2 parts (i)--(iii): paper_geometry2_self_column_correlation_lower, paper_geometry2_representation_column_correlation_upper_corrected, and paper_geometry2_probe_column_correlation_upper_corrected.",
+          "classification": "source_regime_clarification",
+          "formal_meaning": "Geometry Proposition 2 retains its printed condition gamma >= 1 and is read in the intended small-error regime 0 < epsilon < 1. In that regime, the recovery inequality supplies the positive norm lower bounds used by all three normalized-correlation parts.",
+          "id": "LRH-GEOMETRY2-NONDEGENERATE-EPSILON-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3d82bc07dc00deefd652a69ec851f0bd90cf649f570f8b6473f58c045ba8a253",
+          "report_summary": "Geometry Proposition 2 retains its stated gamma >= 1 condition and is formalized in the intended small-error regime 0 < epsilon < 1 required by its displayed normalization argument.",
+          "source_locator": "cited publication:638-680",
+          "why_needed": "The source itself states gamma >= 1. It states epsilon > 0, while its normalization argument divides through lower bounds derived from 1-epsilon; the recorded small-error reading makes that proof route and the corrected finite correlation bounds well-defined without changing the proposition's intended regime."
+        }
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:638-680",
+        "archival_source_quote_sha256": "f13928d689ba34dbde8b2307bfa38da71a07c8fbbaf4c04e061dffdd7e3371a9",
+        "corrected_target_review_sha256": "13ec6b8b8ece4309565fd9ce3ef81b8ccf5af151df70045fc67a1c5faa46d8da",
+        "corrected_target_sha256": "73add65b2c1a72fefdb30109703d1cabf0087f7c5c44c5e0a410567f78abad15",
+        "governing_defect_ids": [
+          "LRH-GEOMETRY2-DENOMINATOR-01"
+        ],
+        "schema": 1,
+        "statement": "Under the stated recovery and column-norm hypotheses, Geometry Proposition 2(ii) holds with first term epsilon * gamma^2 / (1-epsilon)^2 in the normalized representation-vector correlation bound."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_geometry2_representation_column_correlation_upper_corrected"
+      ],
+      "model_convention_ids": [
+        "LRH-GEOMETRY2-NONDEGENERATE-EPSILON-01"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GKP26LinearRepresentationHypothesis.paper_geometry2_representation_column_correlation_upper_corrected",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GKP26LinearRepresentationHypothesis.paper_geometry2_representation_column_correlation_upper_correctedSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 680,
+          "line_start": 638,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:geometry-2}\n    Consider any constants $\\epsilon > 0, \\gamma \\ge 1$. Then if $\\norm{a_i},\\norm{b_i} \\le \\gamma$ for all $i\\in [m]$ and\n    \\begin{equation}\n        \\norm{B^TAz - z}_\\infty < \\epsilon\n    \\end{equation}\n    for all $k$-sparse $z\\in [-1,1]^m$, it holds that\n    \\begin{enumerate}\n        \\item[(i)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\rangle \\ge \\frac{1-\\epsilon}{\\gamma^2}$ for all $i\\in [m],$\n        \\item[(ii)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{a_j}{\\norm{a_j}}\\rangle \\le \\frac{\\epsilon\\gamma^2}{1 - \\epsilon} + \\sqrt{1 - \\frac{(1 - \\epsilon)^2}{\\gamma^4}}$ for all $i\\neq j,$\n        \\item[(iii)] $\\langle \\frac{b_i}{\\norm{b_i}}, \\frac{b_j}{\\norm{b_j}}\\rangle \\le \\frac{\\epsilon\\gamma^2}{1 - \\epsilon} + \\sqrt{1 - \\frac{(1 - \\epsilon)^2}{\\gamma^4}}$ for all $i\\neq j.$\n    \\end{enumerate}\n\\end{proposition}\n\n\\begin{proof}\n    We must have that $\\langle a_i, b_i\\rangle \\ge 1 - \\epsilon$ since $\\norm{B^TAe_i - e_i}_\\infty \\le \\epsilon$. It follows directly that\n    \\begin{equation}\n       \\langle a_i, b_i \\rangle > 1 - \\epsilon \\implies \\left\\langle\\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\right\\rangle \\ge \\frac{1-\\epsilon}{\\gamma^2},\n    \\end{equation}\n    establishing (i).\n\n    We now show (ii). By Cauchy-Schwarz, $\\norm{a_i}\\norm{b_i} \\ge \\langle a_i, b_i\\rangle > 1 - \\epsilon$ for all $i\\in [m]$. So since $\\norm{a_i},\\norm{b_i} \\le \\lambda$ for all $i\\in [m]$, we have that $\\norm{a_i},\\norm{b_i}\\ge \\frac{1-\\epsilon}{\\gamma^2}$ for all $i\\in [m]$. Therefore, we have that\n    \\begin{equation}\n        \\left|\\left\\langle \\frac{b_i}{\\norm{b_i}}, \\frac{a_j}{\\norm{a_j}}\\right\\rangle\\right| \\le |\\langle b_i, a_j\\rangle|\\frac{\\gamma^2}{1-\\epsilon} < \\frac{\\epsilon\\gamma^2}{1 - \\epsilon}.\n    \\end{equation}\n    Let $\\Tilde{a_i}$ denote $\\frac{a_i}{\\norm{a_i}}$ and $\\Tilde{b_i}$ denote $\\frac{b_i}{\\norm{b_i}}$ for all $i\\in [m].$ Then write\n    \\begin{align}\n        \\Tilde{a_i} &= \\alpha_i\\Tilde{b_i} + \\Tilde{a_i}_\\perp\\\\\n        \\Tilde{a_j} &= \\alpha_j\\Tilde{b_i} + \\Tilde{a_j}_\\perp,\n    \\end{align}\n    where $\\alpha_i = \\langle \\Tilde{a_i}, \\Tilde{b_i}\\rangle$,$\\alpha_j = \\langle \\Tilde{a_j}, \\Tilde{b_j}\\rangle$, and $\\Tilde{a_i}_\\perp, \\Tilde{a_j}_\\perp \\perp \\Tilde{b_i}.$ Then\n    \\begin{equation}\n        \\langle \\Tilde{a_i}, \\Tilde{a_j}\\rangle = \\alpha_i\\alpha_j + \\langle \\Tilde{a_i}_\\perp, \\Tilde{a_j}_\\perp\\rangle.\n    \\end{equation}\n    By Cauchy-Schwarz,\n    \\begin{equation}\n        |\\langle\\Tilde{a_i}_\\perp, \\Tilde{a_j}_\\perp\\rangle| \\le \\norm{\\Tilde{a_i}_\\perp}\\norm{\\Tilde{a_j}_\\perp} = \\sqrt{(1 - \\alpha_i^2)(1 - \\alpha_j^2)}.\n    \\end{equation}\n    Therefore,\n    \\begin{equation}\n        |\\langle \\Tilde{a_i}, \\Tilde{a_j}\\rangle| \\le |\\alpha_i||\\alpha_j| + \\sqrt{(1 - \\alpha_i^2)(1 - \\alpha_j^2)}.\n    \\end{equation}\n    We have that $1\\ge \\alpha_i > \\frac{1 - \\epsilon}{\\gamma^2}$ and $0 < \\alpha_j < \\frac{\\epsilon\\gamma^2}{1 - \\epsilon}.$ Therefore,\n    \\begin{equation}",
+          "quoted_text_sha256": "f13928d689ba34dbde8b2307bfa38da71a07c8fbbaf4c04e061dffdd7e3371a9"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.geometry2.representation.column.correlation.upper.corrected",
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.paper_geometry2_representation_column_correlation_upper_corrected",
+          "semantic_claim": "Geometry Proposition 2(ii) bounds normalized representation-vector correlations for i != j in terms of epsilon, gamma, and the alignment forced by recovery.",
+          "source_locator": "cited publication:638-680",
+          "source_quote_sha256": "f13928d689ba34dbde8b2307bfa38da71a07c8fbbaf4c04e061dffdd7e3371a9"
+        }
+      ],
+      "source_defect_ids": [
+        "LRH-GEOMETRY2-DENOMINATOR-01"
+      ],
+      "source_kind": "proposition",
+      "source_location": "cited publication:638-680",
+      "source_note": "The printed denominator has 1-epsilon; the Lean proof gives (1-epsilon)^2 as documented in docs/GEOMETRY2_DENOMINATOR_SOURCE_NOTE.md.",
+      "source_status": "corrected",
+      "statement": "Geometry Proposition 2(ii) bounds normalized representation-vector correlations for i != j in terms of epsilon, gamma, and the alignment forced by recovery.",
+      "support_lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_geometry2_representation_column_correlation_upper_correctedSpec"
+      ]
+    },
+    "paper_geometry2_self_column_correlation_lower": {
+      "aliases": [
+        "paper_geometry2_self_column_correlation_lower"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Geometry Proposition 2 parts (i)--(iii): paper_geometry2_self_column_correlation_lower, paper_geometry2_representation_column_correlation_upper_corrected, and paper_geometry2_probe_column_correlation_upper_corrected.",
+          "classification": "source_regime_clarification",
+          "formal_meaning": "Geometry Proposition 2 retains its printed condition gamma >= 1 and is read in the intended small-error regime 0 < epsilon < 1. In that regime, the recovery inequality supplies the positive norm lower bounds used by all three normalized-correlation parts.",
+          "id": "LRH-GEOMETRY2-NONDEGENERATE-EPSILON-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3d82bc07dc00deefd652a69ec851f0bd90cf649f570f8b6473f58c045ba8a253",
+          "report_summary": "Geometry Proposition 2 retains its stated gamma >= 1 condition and is formalized in the intended small-error regime 0 < epsilon < 1 required by its displayed normalization argument.",
+          "source_locator": "cited publication:638-680",
+          "why_needed": "The source itself states gamma >= 1. It states epsilon > 0, while its normalization argument divides through lower bounds derived from 1-epsilon; the recorded small-error reading makes that proof route and the corrected finite correlation bounds well-defined without changing the proposition's intended regime."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_geometry2_self_column_correlation_lowerSpec_proof"
+      ],
+      "model_convention_ids": [
+        "LRH-GEOMETRY2-NONDEGENERATE-EPSILON-01"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GKP26LinearRepresentationHypothesis.paper_geometry2_self_column_correlation_lowerSpec_proof",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GKP26LinearRepresentationHypothesis.paper_geometry2_self_column_correlation_lowerSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 655,
+          "line_start": 638,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:geometry-2}\n    Consider any constants $\\epsilon > 0, \\gamma \\ge 1$. Then if $\\norm{a_i},\\norm{b_i} \\le \\gamma$ for all $i\\in [m]$ and\n    \\begin{equation}\n        \\norm{B^TAz - z}_\\infty < \\epsilon\n    \\end{equation}\n    for all $k$-sparse $z\\in [-1,1]^m$, it holds that\n    \\begin{enumerate}\n        \\item[(i)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\rangle \\ge \\frac{1-\\epsilon}{\\gamma^2}$ for all $i\\in [m],$\n        \\item[(ii)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{a_j}{\\norm{a_j}}\\rangle \\le \\frac{\\epsilon\\gamma^2}{1 - \\epsilon} + \\sqrt{1 - \\frac{(1 - \\epsilon)^2}{\\gamma^4}}$ for all $i\\neq j,$\n        \\item[(iii)] $\\langle \\frac{b_i}{\\norm{b_i}}, \\frac{b_j}{\\norm{b_j}}\\rangle \\le \\frac{\\epsilon\\gamma^2}{1 - \\epsilon} + \\sqrt{1 - \\frac{(1 - \\epsilon)^2}{\\gamma^4}}$ for all $i\\neq j.$\n    \\end{enumerate}\n\\end{proposition}\n\n\\begin{proof}\n    We must have that $\\langle a_i, b_i\\rangle \\ge 1 - \\epsilon$ since $\\norm{B^TAe_i - e_i}_\\infty \\le \\epsilon$. It follows directly that\n    \\begin{equation}\n       \\langle a_i, b_i \\rangle > 1 - \\epsilon \\implies \\left\\langle\\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\right\\rangle \\ge \\frac{1-\\epsilon}{\\gamma^2},\n    \\end{equation}",
+          "quoted_text_sha256": "ce8661d14b694a2aed740f94423f8143f6de6535e2dc841a788c91f4708ccc62"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.geometry2.self.column.correlation.lower",
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.paper_geometry2_self_column_correlation_lowerSpec_proof",
+          "semantic_claim": "Geometry Proposition 2(i) states that if ||a_i||, ||b_i|| <= gamma and linear recovery holds, then normalized a_i and b_i have inner product at least (1-epsilon)/gamma^2.",
+          "source_locator": "cited publication:638-655",
+          "source_quote_sha256": "ce8661d14b694a2aed740f94423f8143f6de6535e2dc841a788c91f4708ccc62"
+        }
+      ],
+      "source_kind": "proposition",
+      "source_location": "cited publication:638-655",
+      "source_status": "direct source proposition subclaim",
+      "statement": "Geometry Proposition 2(i) states that if ||a_i||, ||b_i|| <= gamma and linear recovery holds, then normalized a_i and b_i have inner product at least (1-epsilon)/gamma^2.",
+      "support_lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_geometry2_self_column_correlation_lowerSpec"
+      ]
+    },
+    "paper_linear_compressed_sensing_dimension_value": {
+      "aliases": [
+        "paper_linear_compressed_sensing_dimension_value"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.linearCompressedSensingDimensionValue"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 209,
+          "line_start": 205,
+          "publication_locator": "cited publication",
+          "quoted_text": "Let $d(m,k,\\epsilon)$ be the smallest choice of $d$ such that there exists $A,B\\in \\RR^{d\\times m}$ such that\n\\begin{equation}\n    \\norm{B^TAz - z}_\\infty < \\epsilon\n\\end{equation}\nfor all $k$-sparse $z\\in [-1,1]^m$. (Here, any bounded interval would suffice.)",
+          "quoted_text_sha256": "9cae23f15efe37132d3f989b30181999903421840b90bc956e4eea5ca492d484"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.linear.compressed.sensing.dimension.value",
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.linearCompressedSensingDimensionValue",
+          "semantic_claim": "d(m,k,epsilon) is the smallest d such that there exist A,B in R^{d x m} satisfying ||B^T A z - z||_infty < epsilon for every k-sparse z in [-1,1]^m.",
+          "source_locator": "cited publication:205-209",
+          "source_quote_sha256": "9cae23f15efe37132d3f989b30181999903421840b90bc956e4eea5ca492d484"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:205-209",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "b782414a57d9cd3f914195a5d4c7409f0661196043ecf1fd92a6c5ad3956d80f",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "The exact source clause defines d(m,k,epsilon) as the least dimension admitting matrices A and B with the stated uniform linear-recovery error bound on every bounded k-sparse vector, which is the complete object represented by this source-map item.",
+        "source_item_statement_sha256": "36d77dad053b8f2789bb212e79661e7a69c4085c7e7f32d1f131c53dde39d0fe",
+        "validated_at": "2026-08-23T23:02:01Z",
+        "validator": "Independent Codex GKP source-to-map definition comparison",
+        "validator_type": "agent"
+      },
+      "source_status": "direct source definition",
+      "statement": "d(m,k,epsilon) is the smallest d such that there exist A,B in R^{d x m} satisfying ||B^T A z - z||_infty < epsilon for every k-sparse z in [-1,1]^m."
+    },
+    "paper_linear_recovery_condition_iff": {
+      "aliases": [
+        "paper_linear_recovery_condition_iff"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.linearRecoveryCondition"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 209,
+          "line_start": 205,
+          "publication_locator": "cited publication",
+          "quoted_text": "Let $d(m,k,\\epsilon)$ be the smallest choice of $d$ such that there exists $A,B\\in \\RR^{d\\times m}$ such that\n\\begin{equation}\n    \\norm{B^TAz - z}_\\infty < \\epsilon\n\\end{equation}\nfor all $k$-sparse $z\\in [-1,1]^m$. (Here, any bounded interval would suffice.)",
+          "quoted_text_sha256": "9cae23f15efe37132d3f989b30181999903421840b90bc956e4eea5ca492d484"
+        },
+        {
+          "line_end": 320,
+          "line_start": 305,
+          "publication_locator": "cited publication",
+          "quoted_text": "\n\n\n\n\n\n\n\n\n\\subsection{Intuition and Proof Techniques}\nWe begin by developing some geometric intuition for the problem. Let $a_1,\\cdots,a_m\\in \\RR^d$ be the columns of $A\\in \\RR^{d\\times m}$ and $b_1,\\cdots,b_m\\in \\RR^d$ be the columns of $B\\in \\RR^{d\\times m}$. For each $i\\in [m]$, we recall that $a_i$ is feature $i$'s \\textbf{representation vector} and $b_i$ is feature $i$'s \\textbf{probe vector}. Now let $\\hat{z} = B^TAz.$ We are interested in when\n\\begin{equation}\\label{eq:salmon}\n    \\norm{\\hat{z}-z}_\\infty < \\epsilon \\iff |\\hat{z}_i - z_i| < \\epsilon,\\quad \\forall i\\in [m].\n\\end{equation}\nNote that\n\\begin{equation}",
+          "quoted_text_sha256": "7e3924ff2b78026f4671e3e775cc6f5490e3f80bcb1a1766b7cb171d11cdc3c6"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.linear.recovery.condition.iff",
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.linearRecoveryCondition",
+          "semantic_claim": "The linear compressed-sensing definition requires ||B^T A z - z||_infty < epsilon for all k-sparse z in [-1,1]^m; equivalently, every coordinate error is strictly below epsilon.",
+          "source_locator": "cited publication:205-209",
+          "source_quote_sha256": "9cae23f15efe37132d3f989b30181999903421840b90bc956e4eea5ca492d484"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:205-209 and cited publication:305-320",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "8f3f80f142d554e65a338c201ed6a7f70f83e667919f957c55e06fe686f203d1",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "The exact source display expands the infinity-norm recovery inequality into the coordinatewise strict-error condition for every coordinate, which is precisely the equivalence represented by this source-map item.",
+        "source_item_statement_sha256": "34b9182901ffc0cd2e17f262070dc7f8fe04e34f235b80bd1b3f7e7088ed4def",
+        "validated_at": "2026-08-23T23:02:01Z",
+        "validator": "Independent Codex GKP source-to-map definition comparison",
+        "validator_type": "agent"
+      },
+      "source_status": "direct source definition/formula",
+      "statement": "The linear compressed-sensing definition requires ||B^T A z - z||_infty < epsilon for all k-sparse z in [-1,1]^m; equivalently, every coordinate error is strictly below epsilon."
+    },
+    "paper_lower_bound_dimension_isBigO_source_log_source_regime": {
+      "aliases": [
+        "paper_lower_bound_dimension_isBigO_source_log_source_regime"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only paper_lower_bound_dimension_isBigO_source_log_source_regime and its source-to-Spec route.",
+          "classification": "source_regime_clarification",
+          "formal_meaning": "The lower-bound theorem's error tolerance is read in the nondegenerate recovery regime 0 < epsilon < 1, in addition to its displayed lower relation between epsilon, k, and m.",
+          "id": "LRH-LOWER-BOUND-NONDEGENERATE-EPSILON-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "bc38489fad51952d28bb017018232f0702bf8bee95c0c7a4f96420b6c7b28223",
+          "report_summary": "The lower bound uses the intended nondegenerate error regime 0 < epsilon < 1.",
+          "source_locator": "cited publication:220-227",
+          "why_needed": "For epsilon at least one, the coordinatewise recovery requirement admits a degenerate zero-dimensional alternative and the printed lower-dimensional recovery claim is not its intended regime. The proof's normalization and quantitative lower-bound construction also use epsilon < 1."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_lower_bound_dimension_isBigO_source_log_source_regime"
+      ],
+      "model_convention_ids": [
+        "LRH-LOWER-BOUND-NONDEGENERATE-EPSILON-01"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GKP26LinearRepresentationHypothesis.paper_lower_bound_dimension_isBigO_source_log_source_regime",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GKP26LinearRepresentationHypothesis.paper_lower_bound_dimension_isBigO_source_log_source_regimeSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 227,
+          "line_start": 220,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{theorem}[Lower Bound]\\label{thm:lower}\nFor $\\epsilon > \\frac{k^{3/2}\\sqrt{5}}{\\sqrt{m}},$\n    \\begin{equation}\n        d(m,k,\\epsilon) = \\Omega_\\epsilon\\left(\\frac{k^2}{\\log k}\\log \\frac{m}{k}\\right).\n    \\end{equation}\n\\end{theorem}\n\n(Here, the restriction $\\epsilon > \\frac{k^{3/2}\\sqrt{5}}{\\sqrt{m}}$ is not very consequential, since we are generally interested in the regime where $k = O(\\log m).$)",
+          "quoted_text_sha256": "5440f7507691d860faefbf45851fc3d4a8ea352824a59bf501073b2bf3ff5d8c"
+        },
+        {
+          "line_end": 380,
+          "line_start": 327,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\paragraph{Upper bound sketch.} We can give a fairly straightforward construction to establish the upper bound. In particular, we can give a construction where $A=B$. Then it suffices to find a matrix $A$ such that $\\langle a_i, a_i\\rangle = 1$ and such that $\\langle a_i, a_j\\rangle < \\frac{\\epsilon}{k}.$ Leveraging the $k$-sparsity of $z$, this would show that the total interference for any feature is bounded by $k \\cdot \\frac{\\epsilon}{k} = \\epsilon$. We can then use standard constructions of incoherent matrices (i.e., matrices with approximately-orthonormal columns), such as appropriately-scaled random Gaussian matrices, to obtain the desired bound. \n\n\\paragraph{Initial attempt at lower bound.}\nTo prove the lower bound, a natural first inclination is to show that among a sufficiently large set of directions in $\\RR^d$, there must exist correlated directions. In particular, it is possible to show that for $d$ small relative to $m$, there exists $i\\in [m]$ and $k$ choices of $j$ such that $|\\langle a_i,a_j\\rangle| > \\frac{\\epsilon}{k}$ and such that $\\langle a_i,a_j\\rangle$ have the same sign (and thus compound in interference). However, this approach does not generally work when $A\\neq B,$ since we do not strictly require representation directions of different features (or probe directions of different features) to be orthogonal. For $i\\neq j$, it is only necessary for the inner product of feature $i$'s representation vector to be orthogonal to feature $j$'s \\textit{probe} vector. This means that there may exist ``good'' sets of representation directions and probe directions among which many are pairwise correlated.\n\nIn fact, in \\Cref{sec:feature-geometry}, we show that there are constructions with $B\\neq A$ where probe directions are highly correlated with each other and representation directions are also highly correlated with each other. So while showing the existence of correlated vectors gives a lower bound in the case $A=B$, it does not suffice in general.\n\n\\paragraph{Lower bound sketch.} \nIt would suffice to show that if $\\langle b_i, a_i\\rangle$ is near $1$ (as is required if $B^TAe_i \\approx e_i$) and $d$ is small, then there must exist many pairs $i\\neq j$ such that $|\\langle b_i, a_j \\rangle|$ is large. In particular, we would like to find a feature $i$ such that there are $k$ choices of $j$ such that $|\\langle b_i, a_j \\rangle| > \\frac{\\epsilon}{k}$ and such that the interference is all in the same direction. To do this, it suffices to find $2k$ such vectors $a_j$ with $|\\langle b_i, a_j \\rangle| > \\frac{\\epsilon}{k}$ (by the pigeonhole principle).\n\nWe employ a few ideas. The first is to use a result of \\cite{alon2003problems}, which demonstrates that low-rank matrices that are $1$ on the diagonal must have a large off-diagonal entry. (This result also notably provides a near-optimal lower bound on the Johnson-Lindenstrauss Lemma.) In particular, we know that $B^TA$ has rank at most $d$, and we can minimally scale rows to allow diagonal entries to be $1$. Note, however, that applying the result to $B^TA$ itself does not suffice since this only guarantees the existence of a single interfering pair of features.\n\nTherefore, the second main idea is to apply the result instead to large principal submatrices of $B^TA$, which demonstrates that any submatrix of $B^TA$ must have a large off-diagonal entry. Equivalently, among any large subset $R\\subseteq [m]$, there must exist a pair $i,j\\in R$ with $i\\neq j$ such that $\\langle b_i, a_j \\rangle$ is large. \n\nFinally, we consider a graph reduction and apply Tur\\'an's theorem. Consider a graph $G$ with vertices $[m]$ and such that there is an edge between $i$ and $j$ if and only if $|\\langle b_i, a_j\\rangle| > \\frac{\\epsilon}{k}$ or $|\\langle b_j, a_i\\rangle| > \\frac{\\epsilon}{k}$. Then $G$ has no independent set of size $r$. Then we can apply Tur\\'an's theorem (which gives an upper bound on the number of edges in a graph without an $r$-clique) on $\\overline{G}$, hence providing a lower bound on the number of edges in $G$, which in turns gives a lower bound on the number of pairs of interfering features. Then we can use the pigeonhole principle to show that there must exist some probe vector that has large interference with \\textit{many} representation vectors, as desired.\n\n\\begin{figure}\n\\centering\n\\begin{tikzpicture}[\n    >=stealth,\n    scale=2.5,\n    vector/.style={->, very thick},\n    axis/.style={very thin, gray!60},\n    grid/.style={thin, gray!20}\n]\n\n\\draw[grid] (-0.1,-0.8) grid (1.2,1.2);\n\n\\draw[axis,->] (-0.1,0) -- (1.2,0) node[right] {};\n\\draw[axis,->] (0,-0.8) -- (0,1.3) node[above] {};\n\n\\draw[vector,Bittersweet] (0,0) -- (0.5,0.866) \n   node[above right] {$a_{\\texttt{cat}} = \\left(\\frac{1}{2}, \\frac{\\sqrt{3}}{2}\\right)$};\n\n\\draw[vector,Bittersweet] (0,0) -- (1,0) \n   node[below right] {$a_{\\texttt{happy}} = (1,0)$};\n\n\\draw[vector,ForestGreen] (0,0) -- (0,1.1547) \n   node[above left] {$b_{\\texttt{cat}} = \\left(0, \\frac{2}{\\sqrt{3}}\\right)$};\n\n\\draw[vector,ForestGreen] (0,0) -- (1,-0.577) \n   node[below right] {$b_{\\texttt{happy}} = \\left(1, -\\frac{1}{\\sqrt{3}}\\right)$};\n\n\n\\end{tikzpicture}\n\\caption{Representation vectors $a_{\\texttt{cat}}, a_{\\texttt{happy}}$ and probe vectors $b_{\\texttt{cat}}, b_{\\texttt{happy}}$ that yield perfect linear recovery of the \\texttt{cat} and \\texttt{happy} features. Notice that while the representation vectors are not orthogonal, the probe vectors are able perfectly extract features since the \\texttt{cat} probe is orthogonal to the \\texttt{happy} representation and the \\texttt{happy} probe is orthogonal to the \\texttt{cat} representation. Indeed, observe that $b_{\\texttt{cat}}(z_{\\texttt{cat}}a_{\\texttt{cat}} + z_{\\texttt{happy}}a_{\\texttt{happy}}) = z_{\\texttt{cat}}\\langle b_{\\texttt{cat}}, a_{\\texttt{cat}}\\rangle + z_{\\texttt{happy}}\\langle b_{\\texttt{cat}}, a_{\\texttt{happy}}\\rangle = z_{\\texttt{cat}}\\cdot 1 + z_{\\texttt{happy}}\\cdot 0.$}\n\\end{figure}\n\n\\subsection{Contributions: Implications for the Linear Representation Hypothesis and the Theory of Language Models}\n\nWhile linear representations have long been a central character in the empirical study of language models \\citep{mikolov2013distributed,alain2016understanding}, it has been unclear whether the LRH can provide a theoretical basis by which to study language models. Here, we explore this possibility by providing mathematical foundations for the linear representation hypothesis. The framework we introduce provides definitional clarity on the LRH, cleanly distinguishing the distinct assumptions of linear representation and linear accessibility, and allowing us to formally consider the amount of superposition (i.e., the number of features stored relative to the number of neurons) possible under the LRH.\n\nThe framework allows us to then derive theoretical implications of the linear representation hypothesis. Mathematically, we establish a quantitative gap between compressed sensing and \\textit{linear} compressed sensing. Our main results demonstrate dependencies between superposition (the number of features stored relative to the number of neurons), sparsity (the number of features active per input), accessibility (the precision by which the next layer can access features stored in the previous layer), and feature geometry (the arrangement of linear directions corresponding to features). \n",
+          "quoted_text_sha256": "be5e423ac256a7d0888da49221d2ca6b6d7d3356a87b8992616287db0e021f01"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.lower.bound.dimension.bigO.source.log.source.regime",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.paper_lower_bound_dimension_isBigO_source_log_source_regime",
+          "semantic_claim": "Theorem thm:lower states that for epsilon > k^(3/2) sqrt(5) / sqrt(m), d(m,k,epsilon) = Omega_epsilon((k^2/log k) log(m/k)).",
+          "source_locator": "cited publication:220-227",
+          "source_quote_sha256": "5440f7507691d860faefbf45851fc3d4a8ea352824a59bf501073b2bf3ff5d8c"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:220-227 and cited publication:327-380",
+      "source_note": "Lean proves the displayed Landau lower-bound scale by first proving the source-selected finite floor-log lower envelope and then comparing log(m/k) to log(floor(m/(4k+1))) along the source lower-bound regime.",
+      "source_status": "source-scale asymptotic theorem",
+      "statement": "Theorem thm:lower states that for epsilon > k^(3/2) sqrt(5) / sqrt(m), d(m,k,epsilon) = Omega_epsilon((k^2/log k) log(m/k)).",
+      "support_lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_lower_bound_dimension_isBigO_source_log_source_regimeSpec"
+      ]
+    },
+    "paper_mu_incoherent_source_definition": {
+      "aliases": [
+        "paper_mu_incoherent_source_definitionSpec_proof"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_strict_mu_incoherent"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 409,
+          "line_start": 399,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}[$\\mu$-incoherence]\n    Say that a matrix $C$ with columns $c_1,\\cdots,c_m$ is $\\mu$-incoherent if \n    \\begin{equation}\n        \\langle c_i, c_i\\rangle = 1\n    \\end{equation}\n    for all $i\\in [m]$, and\n    \\begin{equation}\n        |\\langle c_i, c_j\\rangle| < \\mu\n    \\end{equation}\n    for all $i\\neq j$.\n\\end{definition}",
+          "quoted_text_sha256": "18913d920c53ee7b27265b524ffbdb4fb5c88f8fb70efea64e8b2bfc146587af"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.mu.incoherent.source.definition",
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.paper_strict_mu_incoherent",
+          "semantic_claim": "A matrix C with columns c_1,...,c_m is mu-incoherent exactly when every column has squared norm one and every distinct pair has inner-product magnitude strictly below mu.",
+          "source_locator": "cited publication:399-409",
+          "source_quote_sha256": "18913d920c53ee7b27265b524ffbdb4fb5c88f8fb70efea64e8b2bfc146587af"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:399-409",
+      "source_note": "This is the paper's displayed definition of mu-incoherence, with the strict off-diagonal inequality preserved literally.",
+      "statement": "A matrix C with columns c_1,...,c_m is mu-incoherent exactly when every column has squared norm one and every distinct pair has inner-product magnitude strictly below mu."
+    },
+    "paper_rademacher_incoherent_dimension_real_bigO_envelope_prose": {
+      "aliases": [
+        "paper_rademacher_incoherent_dimension_real_bigO_envelope"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_rademacher_strict_incoherent_exists_source_rate"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GKP26LinearRepresentationHypothesis.paper_rademacher_strict_incoherent_exists_source_rate",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GKP26LinearRepresentationHypothesis.paper_rademacher_strict_incoherent_exists_source_rateSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 436,
+          "line_start": 436,
+          "publication_locator": "cited publication",
+          "quoted_text": "In particular, the result guarantees the existence of a $\\mu$-incoherent matrix with $d = O(\\frac{\\log m}{\\mu^2}).$ ",
+          "quoted_text_sha256": "e8445d8cd3d26d05f73a59e6226f00ff0ef525e04ef268e5b64bb67b6a02addf"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.rademacher.incoherent.dimension.real.bigO.envelope",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.paper_rademacher_strict_incoherent_exists_source_rate",
+          "semantic_claim": "The random-matrix lemma in particular guarantees existence of a mu-incoherent matrix with d = O(log m / mu^2).",
+          "source_locator": "cited publication:436",
+          "source_quote_sha256": "e8445d8cd3d26d05f73a59e6226f00ff0ef525e04ef268e5b64bb67b6a02addf"
+        }
+      ],
+      "source_kind": "claim",
+      "source_location": "cited publication:436",
+      "source_note": "This is the source's explicit existence consequence immediately following Lemma prop:incoherent; it is distinct from the lemma's probability statement.",
+      "statement": "The random-matrix lemma in particular guarantees existence of a mu-incoherent matrix with d = O(log m / mu^2).",
+      "support_lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_rademacher_strict_incoherent_exists_source_rateSpec"
+      ]
+    },
+    "paper_random_rademacher_strict_incoherence_probability_high_probability": {
+      "aliases": [
+        "paper_random_rademacher_strict_incoherence_probability_high_probability"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only the named Lemma prop:incoherent source-to-Spec route.",
+          "classification": "source_regime_clarification",
+          "formal_meaning": "The random-incoherence lemma is read for m >= 2, mu > 0, and 0 < delta <= 1. In that ordinary nondegenerate regime, Lean supplies an explicit rounded dimension bounded by log(2*m^2/delta)/(mu^2/2) + 2 and proves the stated probability at least 1-delta.",
+          "id": "LRH-RANDOM-INCOHERENCE-NONDEGENERATE-RANGE-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "4980b17aa7e7c2fd57243c73f3906c371e36f8571803d0b7f52bbfb4e8ccff4e",
+          "report_summary": "The random-matrix lemma is formalized with its explicit logarithmic construction on the standard m >= 2, mu > 0, 0 < delta <= 1 regime.",
+          "source_locator": "cited publication:412-436",
+          "why_needed": "The source displays an asymptotic dimension scale and a confidence conclusion without spelling out the ordinary positive accuracy and confidence domain. Those conditions make the logarithmic rate and the probability guarantee mathematically meaningful; they do not alter the lemma's construction or headline conclusion."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_random_rademacher_strict_incoherence_source_rate"
+      ],
+      "model_convention_ids": [
+        "LRH-RANDOM-INCOHERENCE-NONDEGENERATE-RANGE-01"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GKP26LinearRepresentationHypothesis.paper_random_rademacher_strict_incoherence_source_rate",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GKP26LinearRepresentationHypothesis.paper_random_rademacher_strict_incoherence_source_rateSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 418,
+          "line_start": 412,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}[Incoherence of Random Matrices]\\label{prop:incoherent}\n    Let $C\\in \\RR^{d\\times m}$ be a matrix with i.i.d. scaled Rademacher entries $\\pm\\frac{1}{\\sqrt{d}}$. For\n    \\begin{equation}\n        d = O\\left(\\frac{\\log m + \\log \\frac{1}{\\delta}}{\\mu^2}\\right),\n    \\end{equation}\n    $C$ is $\\mu$-incoherent with probability at least $1 - \\delta$.\n\\end{lemma}",
+          "quoted_text_sha256": "f5f9149b2dd47b6129465968982b76698571b46ebc3979a337d65dfa75579d02"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.random.rademacher.strict.incoherence.probability.high.probability",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.paper_random_rademacher_strict_incoherence_source_rate",
+          "semantic_claim": "Lemma prop:incoherent states that an m-column matrix with independent scaled Rademacher entries is mu-incoherent with probability at least 1-delta in a dimension d = O((log m + log(1/delta))/mu^2).",
+          "source_locator": "cited publication:412-418",
+          "source_quote_sha256": "f5f9149b2dd47b6129465968982b76698571b46ebc3979a337d65dfa75579d02"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:412-418",
+      "source_note": "The direct source-facing endpoint chooses a rounded logarithmic dimension, exposes both unit self-inner-products and strict off-diagonal incoherence, and proves the stated 1-delta probability guarantee.",
+      "source_status": "direct_source_target",
+      "statement": "Lemma prop:incoherent states that an m-column matrix with independent scaled Rademacher entries is mu-incoherent with probability at least 1-delta in a dimension d = O((log m + log(1/delta))/mu^2).",
+      "support_lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_random_rademacher_strict_incoherence_source_rateSpec"
+      ]
+    },
+    "paper_threshold_separation_dimension_isBigO_lower_source_log_original_regime": {
+      "aliases": [
+        "paper_threshold_separation_dimension_isBigO_lower_source_log_original_regime"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_threshold_separation_dimension_isBigO_lower_source_log_original_regime"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GKP26LinearRepresentationHypothesis.paper_threshold_separation_dimension_isBigO_lower_source_log_original_regime",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GKP26LinearRepresentationHypothesis.paper_threshold_separation_dimension_isBigO_lower_source_log_original_regimeSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 733,
+          "line_start": 700,
+          "publication_locator": "cited publication",
+          "quoted_text": "Here, we prove that when feature representations are restricted to the Boolean cube $\\{0,1\\}^m,$ $\\Omega(k^2\\log (m/k))$ embedding dimensions are required to linearly separate embeddings with and without a feature. A corollary is that adding a bias and monotonic activation function does not increase the asymptotic capacity of embeddings.\n\n\\begin{theorem}\\label{thm:threshold}\n    Suppose that there exist $A,B \\in \\RR^{d\\times m}$ and $t\\in \\RR^m$ such that for all $i\\in [m]$ and $k$-sparse $z\\in \\{0,1\\}^m$,\n    \\begin{equation}\\label{eq:pineapple}\n        (B^TAz)_i > t_i\n    \\end{equation}\n    if and only if $z_i=1.$ Then for $k < \\sqrt{m}$,\n    \\begin{equation}\n        d = \\Omega\\left(\\frac{k^2}{\\log k}\\log\\frac{m}{k}\\right).\n    \\end{equation}\n\\end{theorem}\nIt's worth noting here that taking $\\epsilon < \\frac{1}{2}$ in \\Cref{thm:upper} provides a nearly-matching upper bound of $\\Omega(k^2\\log m)$, since $\\epsilon < \\frac{1}{2}$ implies that $(B^TAz)_i < \\frac{1}{2}$ when $z_i = 0$ and $(B^TAz)_i > \\frac{1}{2}$ when $z_i = 1$. Similarly, \\Cref{thm:threshold} implies \\Cref{thm:lower} in the case $\\epsilon < \\frac{1}{2}$. However, the lower bound in \\Cref{thm:lower} does not directly imply \\Cref{thm:threshold} since we do not require that $\\norm{B^TAz - z}_\\infty$ is small here, but rather that $Az$ linearly separates positive and negative examples for each feature. That being said, the proof is very similar to that of \\Cref{thm:lower}, relying on the same overall strategy.\n\n\\begin{proof}\n    Suppose that there existed $A,B\\in \\RR^{d\\times m}$ and $t\\in \\RR^m$ such that for all $i\\in [m]$ and $k$-sparse $z\\in \\{0,1\\}^m,$ $(B^TAz)_i > t_i$ if and only if $z_i = 1.$ Then notice that we could scale the $i$-th column of $B$ and $\\gamma_i$ by any constant positive factor to get another solution. In particular, we can obtain a solution where $B^TA$ is $1$ on the diagonal. Therefore, it suffices to show that for $d \\le O(\\frac{k^2}{\\log k}\\log \\frac{m}{k}),$ there does not exist $B,A,t$ satisfying \\eqref{eq:pineapple} and such that $(B^TA)_{ii} = 1$ for all $i\\in [m].$\n\n    Then we have that $t_i \\le 1,$ since $(B^TAe_i) > t_i$ Then, along the lines of the proof of \\Cref{thm:lower}, it suffices to find $i\\in [m]$ and $T^*\\subseteq [m]\\setminus \\{i\\}$ with $|T^*|=2k$ and\n    \\begin{equation}\n        |\\langle b_i, a_j \\rangle| > \\frac{1}{k}\n    \\end{equation}\n    for all $j\\in T^*$. Indeed, this would imply the existence of a pair $i\\in [m], T\\subseteq [m]\\setminus\\{i\\}$ (with $|T|=k$), such that\n    \\begin{equation}\n        (B^TAz)_i > k\\cdot \\frac{1}{k} = 1 \\ge t_i,\n    \\end{equation}\n    giving a contradiction.\n\n    We will again apply \\Cref{lem:alon} to submatrices of $C$ of size $r$. Indeed, \\Cref{lem:alon} implies that there exists a constant $\\alpha > 0$ such that if $|R|=r$ and\n    \\begin{equation}\n        \\rank(C_R) < \\alpha \\frac{\\log r}{(\\frac{1}{k})^2\\log k} = \\alpha \\frac{k^2}{\\log k}\\log r,\n    \\end{equation}\n    then $C_R$ has an off-diagonal entry with absolute value at least $\\frac{1}{k}.$ Then we can proceed as in the proof of \\Cref{thm:lower}, taking $r = \\frac{m}{4k+1}$ and applying Tur\\'an's theorem.\n\\end{proof}\n",
+          "quoted_text_sha256": "961b1fdcea1d38594fb001d32c1b919183159dc8db5927dbb7a1b679f7cb0760"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.threshold.separation.dimension.isBigO.lower.source.log.original.regime",
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.paper_threshold_separation_dimension_isBigO_lower_source_log_original_regime",
+          "semantic_claim": "Theorem thm:threshold states that if Boolean k-sparse feature vectors are linearly separated coordinatewise by thresholds, then for k < sqrt(m) the minimum dimension is Omega((k^2/log k) log(m/k)).",
+          "source_locator": "cited publication:700-733",
+          "source_quote_sha256": "961b1fdcea1d38594fb001d32c1b919183159dc8db5927dbb7a1b679f7cb0760"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:700-733",
+      "source_note": "The original printed asymptotic theorem is proved by combining the source's large-instance rank/Turan route with the complementary trace/Frobenius argument documented in docs/THRESHOLD_ACTIVATION_ASYMPTOTIC_SCOPE_MEMO.md.",
+      "source_status": "proved original printed regime",
+      "statement": "Theorem thm:threshold states that if Boolean k-sparse feature vectors are linearly separated coordinatewise by thresholds, then for k < sqrt(m) the minimum dimension is Omega((k^2/log k) log(m/k)).",
+      "support_lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_threshold_separation_dimension_isBigO_lower_source_log_original_regimeSpec"
+      ]
+    },
+    "paper_upper_bound_dimension_isBigO_k_sq_log_m": {
+      "aliases": [
+        "paper_upper_bound_dimension_isBigO_k_sq_log_m"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_upper_bound_dimension_isBigO_k_sq_log_m"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GKP26LinearRepresentationHypothesis.paper_upper_bound_dimension_isBigO_k_sq_log_m",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GKP26LinearRepresentationHypothesis.paper_upper_bound_dimension_isBigO_k_sq_log_mSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 217,
+          "line_start": 213,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{theorem}[Upper Bound]\\label{thm:upper}\n    \\begin{equation}\n        d(m,k,\\epsilon) = O_\\epsilon\\left(k^2\\log m\\right).\n    \\end{equation}\n\\end{theorem}",
+          "quoted_text_sha256": "7cc41e6386eb21122bb36f0019acc3da0a5e7ca35763178bfa3a68cefd7c6193"
+        },
+        {
+          "line_end": 452,
+          "line_start": 450,
+          "publication_locator": "cited publication",
+          "quoted_text": "Taking $\\mu = \\frac{\\epsilon}{k}$ and applying \\Cref{prop:incoherent}, we have\n\\begin{equation}\n    d(m,k,\\epsilon) = O\\left(\\frac{k^2\\log m}{\\epsilon^2}\\right),",
+          "quoted_text_sha256": "02110bcec01343daa56244721458da3aeed4b2f50520d1423a47620d71c63582"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "paper.upper.bound.dimension.bigO.k.sq.log.m",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GKP26LinearRepresentationHypothesis.paper_upper_bound_dimension_isBigO_k_sq_log_m",
+          "semantic_claim": "Theorem thm:upper states d(m,k,epsilon) = O_epsilon(k^2 log m).",
+          "source_locator": "cited publication:213-217",
+          "source_quote_sha256": "7cc41e6386eb21122bb36f0019acc3da0a5e7ca35763178bfa3a68cefd7c6193"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:213-217; cited publication:450-452",
+      "source_note": "Lean now exposes the source theorem as a genuine Asymptotics.IsBigO wrapper for the minimum dimension function, proved from the explicit finite Rademacher envelope.",
+      "source_status": "proved source Landau theorem",
+      "source_url": "https://arxiv.org/abs/2602.11246",
+      "statement": "Theorem thm:upper states d(m,k,epsilon) = O_epsilon(k^2 log m).",
+      "support_lean_declarations": [
+        "GKP26LinearRepresentationHypothesis.paper_upper_bound_dimension_isBigO_k_sq_log_mSpec"
+      ]
+    }
+  },
+  "library_semantic_prerequisite_sources": {
+    "AppliedModelingLib.FairCoin.fairMeasure": "paper_random_rademacher_strict_incoherence_probability_high_probability",
+    "AppliedModelingLib.FairCoin.productMeasure": "paper_random_rademacher_strict_incoherence_probability_high_probability",
+    "AppliedModelingLib.FiniteDimensionalNorms.l1": "paper_compressed_sensing_external_basis_pursuit",
+    "AppliedModelingLib.FiniteDimensionalNorms.l2": "paper_geometry1_exists_constructed_matrices_with_dimension_envelope",
+    "AppliedModelingLib.FiniteDimensionalNorms.l2Sq": "paper_geometry2_self_column_correlation_lower",
+    "AppliedModelingLib.Math.LinearCompressedSensing.InUnitBox": "paper_linear_recovery_condition_iff",
+    "AppliedModelingLib.Math.LinearCompressedSensing.InZeroOne": "paper_threshold_separation_dimension_isBigO_lower_source_log_original_regime",
+    "AppliedModelingLib.Math.LinearCompressedSensing.KSparse": "paper_linear_recovery_condition_iff",
+    "AppliedModelingLib.Math.LinearCompressedSensing.SupErrorLt": "paper_linear_recovery_condition_iff",
+    "AppliedModelingLib.Math.LinearCompressedSensing.ThresholdSeparates": "paper_threshold_separation_dimension_isBigO_lower_source_log_original_regime",
+    "AppliedModelingLib.Math.LinearCompressedSensing.inner": "paper_geometry2_self_column_correlation_lower",
+    "AppliedModelingLib.Math.LinearCompressedSensing.linearProbe": "paper_linear_recovery_condition_iff",
+    "AppliedModelingLib.Math.LinearCompressedSensing.normalizedVector": "paper_geometry2_representation_column_correlation_upper_corrected",
+    "AppliedModelingLib.Math.LinearCompressedSensing.support": "paper_linear_recovery_condition_iff",
+    "AppliedModelingLib.Math.LinearCompressedSensing.vectorCorrelation": "paper_geometry2_probe_column_correlation_upper_corrected",
+    "AppliedModelingLib.Math.LinearCompressedSensing.vectorNorm": "paper_geometry2_self_column_correlation_lower",
+    "AppliedModelingLib.Math.TendsToZero": "paper_geometry1_correlation_envelope_errors_tend_to_zero",
+    "AppliedModelingLib.Probability.RademacherMatrix.rademacherSign": "paper_random_rademacher_strict_incoherence_probability_high_probability",
+    "AppliedModelingLib.Probability.RademacherMatrix.rowsMeasure": "paper_random_rademacher_strict_incoherence_probability_high_probability",
+    "AppliedModelingLib.Probability.RademacherMatrix.scaledMatrix": "paper_random_rademacher_strict_incoherence_probability_high_probability",
+    "AppliedModelingLib.measureProb": "paper_random_rademacher_strict_incoherence_probability_high_probability"
+  },
+  "paper": "GKP26LinearRepresentationHypothesis",
+  "paper_interface_namespace": "GKP26LinearRepresentationHypothesis",
+  "paper_semantic_prerequisite_sources": {
+    "GKP26LinearRepresentationHypothesis.linearCompressedSensingDimensionValue": "paper_linear_compressed_sensing_dimension_value",
+    "GKP26LinearRepresentationHypothesis.linearRecoveryCondition": "paper_linear_recovery_condition_iff",
+    "GKP26LinearRepresentationHypothesis.paper_strict_mu_incoherent": "paper_mu_incoherent_source_definition"
+  },
+  "publication_corrected_target_projection": {
+    "approval_material_included": false,
+    "schema": 1
+  },
+  "publication_source_display_projection": {
+    "manifest": "audit/public_source_display_projection.json",
+    "raw_source_bytes_included": false,
+    "schema": 1
+  },
+  "schema": 1,
+  "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
+  "source_anchor_evidence_required": true,
+  "source_artifact_sha256": "c60fc515f127f893dc99f592ac304c06f41e255abdea6bb21f82227187b3dfbc",
+  "source_claim_atoms_schema": 1,
+  "source_coverage_mode": "named_theoretical_statements",
+  "source_curated": true,
+  "source_inventory_kind": "source_curated_agent",
+  "source_inventory_policy": "Source-grounded inventory curated from cited publication for LRH closeout; dashboard rows are aliases for these source items. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
+  "source_named_result_inventory_review": {
+    "candidate_presentations": [
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_001",
+        "presentation_label": "remark@456",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This unnumbered remark only interprets the already selected upper-bound and Geometry Proposition 1 constructions; it is not an independently named theorem-level claim.",
+        "source_anchor": {
+          "line_end": 460,
+          "line_start": 456,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{remark}\nThe construction we have provided has $B=A$, meaning that features are represented with and probed with vectors in the same direction. In fact, as we show in \\Cref{sec:feature-geometry}, there exist constructions where a feature's representation and probe vectors are themselves approximately orthogonal, while all feature directions are highly correlated and all probe directions are also highly correlated.\n\nThe observation here also implies that attempts to show lower bounds by proving that sufficiently large sets of vectors must contain a pair of correlated vectors does not succeed, since collections of ``good'' representation and probe directions can in general contain many highly correlated directions.\n\\end{remark}",
+          "quoted_text_sha256": "49f40c81c55ff7fbad9a94bf222817ffe54442f8b52039fcaf8c0dcfcada62f4"
+        },
+        "visible_kind": "remark"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_002",
+        "presentation_label": "remark@632",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This unnumbered applied interpretation restates the selected Geometry Proposition 1 distinction between representation and probe directions; it is not an independently named theorem-level claim.",
+        "source_anchor": {
+          "line_end": 634,
+          "line_start": 632,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{remark}\n    In practice, different representation and probe vectors are seen in different decoder and encoder weights in SAEs, respectively (e.g., \\citep{templeton2024scaling, paulo2025sparse}). This had led to some confusion about which sets of weights are the ``true'' feature vectors. \\Cref{prop:geometry-1} illustrates that under the LRH, features have both a representation vector and a probe direction, and that these directions can be \\textit{distinct}.\n\\end{remark}",
+          "quoted_text_sha256": "e552cadb0c439272cc7ed083de75908658229c73161c7c9134d156b25e00e8b7"
+        },
+        "visible_kind": "remark"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "candidate_003",
+        "presentation_label": "geometry-2 limiting interpretation@687",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This unnumbered limiting interpretation is a stated consequence of the selected Geometry Proposition 2 bounds, not a separately named theorem, proposition, lemma, corollary, or definition.",
+        "source_anchor": {
+          "line_end": 693,
+          "line_start": 687,
+          "publication_locator": "cited publication",
+          "quoted_text": "In particular, taking $\\epsilon\\rightarrow 0, \\gamma = 1$ in \\Cref{prop:geometry-2}, we get that\n\\begin{enumerate}\n    \\item[(i)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\rangle \\rightarrow 1$ for all $i\\in [m],$\n    \\item[(ii)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{a_j}{\\norm{a_j}}\\rangle \\rightarrow 0$ for all $i\\neq j,$\n    \\item[(iii)] $\\langle \\frac{b_i}{\\norm{b_i}}, \\frac{b_j}{\\norm{b_j}}\\rangle \\rightarrow 0$ for all $i\\neq j.$\n\\end{enumerate}\nThis shows that when representation and probe vectors are restricted to have unit norm, the clean behavior of equal representation and probe directions emerges (meaning that each feature is given by a single direction), and that different features have orthogonal directions.",
+          "quoted_text_sha256": "de0e01f91170d2c2b23978b6e2ef6313002dc2ff4cb92aa8027653dd06c26683"
+        },
+        "visible_kind": "holistic"
+      }
+    ],
+    "complete": true,
+    "discovered_candidate_presentation_sha256": "ca2126e5a23e7e804337a1270d74ed01833afc96cb59e7e593ed447853272a02",
+    "discovered_named_result_sha256": "354e4fdaf8db380ab3cf214cde558a003141d0104f8c209db619fb0f2075e60a",
+    "discovered_prose_definition_sha256": "752de3216f2ea1507c55cebe165e9944fd55d5b3243a40a5b53ecb7f3802bbd6",
+    "method": "Complete source-first reading of the byte-pinned arXiv v1 TeX, classifying the mechanically labelled remarks and recording the one additional unnumbered mathematical consequence discovered in the full-text pass. Named theorems, propositions, lemmas, corollaries, and definitions are already represented by the source map; unnumbered explanatory/proof material remains deep-audit material unless it changes a selected named result.",
+    "prose_definition_presentations": [
+      {
+        "defined_entity_kind": "object",
+        "defined_object": "d(m,k,\\epsilon)",
+        "definitional_clause": "Let $d(m,k,\\epsilon)$ be the smallest choice of $d$ such that there exists $A,B\\in \\RR^{d\\times m}$ such that\n\\begin{equation}\n    \\norm{B^TAz - z}_\\infty < \\epsilon\n\\end{equation}\nfor all $k$-sparse $z\\in [-1,1]^m$. (Here, any bounded interval would suffice.)",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 209,
+          "line_start": 205,
+          "publication_locator": "cited publication",
+          "quoted_text": "Let $d(m,k,\\epsilon)$ be the smallest choice of $d$ such that there exists $A,B\\in \\RR^{d\\times m}$ such that\n\\begin{equation}\n    \\norm{B^TAz - z}_\\infty < \\epsilon\n\\end{equation}\nfor all $k$-sparse $z\\in [-1,1]^m$. (Here, any bounded interval would suffice.)",
+          "quoted_text_sha256": "9cae23f15efe37132d3f989b30181999903421840b90bc956e4eea5ca492d484"
+        }
+      },
+      {
+        "defined_entity_kind": "predicate",
+        "defined_object": "\\norm{\\hat{z}-z}_\\infty < \\epsilon",
+        "definitional_clause": "We begin by developing some geometric intuition for the problem. Let $a_1,\\cdots,a_m\\in \\RR^d$ be the columns of $A\\in \\RR^{d\\times m}$ and $b_1,\\cdots,b_m\\in \\RR^d$ be the columns of $B\\in \\RR^{d\\times m}$. For each $i\\in [m]$, we recall that $a_i$ is feature $i$'s \\textbf{representation vector} and $b_i$ is feature $i$'s \\textbf{probe vector}. Now let $\\hat{z} = B^TAz.$ We are interested in when\n\\begin{equation}\\label{eq:salmon}\n    \\norm{\\hat{z}-z}_\\infty < \\epsilon \\iff |\\hat{z}_i - z_i| < \\epsilon,\\quad \\forall i\\in [m].\n\\end{equation}",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 318,
+          "line_start": 315,
+          "publication_locator": "cited publication",
+          "quoted_text": "We begin by developing some geometric intuition for the problem. Let $a_1,\\cdots,a_m\\in \\RR^d$ be the columns of $A\\in \\RR^{d\\times m}$ and $b_1,\\cdots,b_m\\in \\RR^d$ be the columns of $B\\in \\RR^{d\\times m}$. For each $i\\in [m]$, we recall that $a_i$ is feature $i$'s \\textbf{representation vector} and $b_i$ is feature $i$'s \\textbf{probe vector}. Now let $\\hat{z} = B^TAz.$ We are interested in when\n\\begin{equation}\\label{eq:salmon}\n    \\norm{\\hat{z}-z}_\\infty < \\epsilon \\iff |\\hat{z}_i - z_i| < \\epsilon,\\quad \\forall i\\in [m].\n\\end{equation}",
+          "quoted_text_sha256": "c9a7a91cb5f2c58d886ce7caaa35eac46c51ebe8e7b9cb7b6c78e4c8f3beca8c"
+        }
+      }
+    ],
+    "schema": 1,
+    "source_artifact_sha256": "c60fc515f127f893dc99f592ac304c06f41e255abdea6bb21f82227187b3dfbc",
+    "validated_at": "2026-09-04T04:14:21Z",
+    "validator": "root-coordinator-source-inventory-2026-09-04"
+  },
+  "source_spec_correspondence_schema": 1,
+  "source_url": "https://arxiv.org/abs/2602.11246",
+  "title": "How Many Features Can a Language Model Store Under the Linear Representation Hypothesis?"
+}

@@ -43,7 +43,7 @@ class FinalValidationReportTemplateTests(unittest.TestCase):
             ROOT / "papers" / "TEMPLATE" / "FINAL_VALIDATION_REPORT.md"
         ).read_text(encoding="utf-8")
         expected = template.replace(
-            "# Final Validation Report: [Paper Short Name]",
+            "# Final Validation Report: [Full Paper Title]",
             "# Final Validation Report: Example Paper",
             1,
         ).replace("papers/TEMPLATE", "papers/EX24Example")

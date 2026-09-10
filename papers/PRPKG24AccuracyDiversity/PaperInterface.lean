@@ -90,20 +90,22 @@ theorem definition1_eq5_gamma_homogeneitySpec_proof :
 
 /-- Definition 2 with the source preferred-type PMF in equation (6). -/
 theorem definition2_source_preference_law
-    {T : ℕ} (seq : AllocationSequence T) (preferenceLaw : SourcePreferenceLaw T)
+    {T : ℕ} (seq : RecommendationSetSequence T) (preferenceLaw : SourcePreferenceLaw T)
     (gamma : ℝ) :
     seq.ConvergesToProfile
       (gammaLikelihoodProfile (fun t => (preferenceLaw t).toReal) gamma) ↔
-      ∀ t : ItemType T,
-        Filter.Tendsto
-          (fun N => CountAllocation.representation (seq.allocation N) t)
-          Filter.atTop
-          (nhds
-            (((preferenceLaw t).toReal) ^ gamma /
-              ∑ i : ItemType T, ((preferenceLaw i).toReal) ^ gamma)) :=
-  definition2_gamma_homogeneity_sequence_iff seq
-    (fun t => (preferenceLaw t).toReal) gamma
-    (sourcePreferenceLaw_gamma_normalizer_ne_zero preferenceLaw gamma)
+      seq.IsGammaHomogeneous (fun t => (preferenceLaw t).toReal) gamma := by
+  constructor
+  · intro h t
+    have htarget := gammaLikelihoodProfile_targetShare_eq
+      (fun t => (preferenceLaw t).toReal) gamma t
+      (sourcePreferenceLaw_gamma_normalizer_ne_zero preferenceLaw gamma)
+    simpa [RecommendationSetSequence.representation, htarget] using h t
+  · intro h t
+    have htarget := gammaLikelihoodProfile_targetShare_eq
+      (fun t => (preferenceLaw t).toReal) gamma t
+      (sourcePreferenceLaw_gamma_normalizer_ne_zero preferenceLaw gamma)
+    simpa [RecommendationSetSequence.representation, htarget] using h t
 
 abbrev definition2 := @definition2_source_preference_law
 
@@ -113,17 +115,11 @@ convergence of every type's representation to the normalized-power profile.
 -/
 def definition2_eq6_sequence_homogeneitySpec : Prop :=
   ∀
-    {T : ℕ} (seq : AllocationSequence T) (preferenceLaw : SourcePreferenceLaw T)
+    {T : ℕ} (seq : RecommendationSetSequence T) (preferenceLaw : SourcePreferenceLaw T)
     (gamma : ℝ),
     seq.ConvergesToProfile
       (gammaLikelihoodProfile (fun t => (preferenceLaw t).toReal) gamma) ↔
-      ∀ t : ItemType T,
-        Filter.Tendsto
-          (fun N => CountAllocation.representation (seq.allocation N) t)
-          Filter.atTop
-          (nhds
-            (((preferenceLaw t).toReal) ^ gamma /
-              ∑ i : ItemType T, ((preferenceLaw i).toReal) ^ gamma))
+      seq.IsGammaHomogeneous (fun t => (preferenceLaw t).toReal) gamma
 
 theorem definition2_eq6_sequence_homogeneitySpec_proof :
     definition2_eq6_sequence_homogeneitySpec := by
@@ -668,7 +664,8 @@ abbrev theorem1_v := @theorem1_v_source_model_endpoint
 /--
 Corollary 1: every nonnegative `gamma` is attained by a concrete source-iid
 conditional-value model.  The witness records its source family, parameters,
-and exponent identity; every optimal fixed-`k` sequence has the stated limit.
+base law, and exponent identity; every optimal fixed-`k` sequence has the
+stated limit.
 
 Source clarification: every named preferred type has strictly positive mass
 `p_t > 0`; zero-mass labels are removed before applying the all-coordinate
@@ -680,8 +677,9 @@ theorem corollary1
     (likelihood : ItemType T → ℝ) (gamma : ℝ)
     (hk_pos : 0 < k) (hgamma_nonneg : 0 ≤ gamma)
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t) :
-    ∃ M : ConsumptionModel T,
-      Corollary1SourceIidFamily likelihood gamma k M ∧
+    ∃ (D : Measure ℝ) (M : ConsumptionModel T),
+      IsProbabilityMeasure D ∧
+      Corollary1SourceIidFamily likelihood gamma k D M ∧
         ∀ seq : OptimalAllocationSequence (fun _ => M),
           ∀ t : ItemType T,
             Filter.Tendsto
@@ -2395,7 +2393,13 @@ def theorem1_i_formulaSpec : Prop :=
 theorem theorem1_i_formulaSpec_proof : theorem1_i_formulaSpec := by
   exact theorem1_i_formula
 
-/-- The exact paper-facing proposition of Theorem 1(ii). -/
+/--
+The exact paper-facing proposition of Theorem 1(ii).
+
+The source writes `S_{n,k}` for a selected maximizer at each finite budget, so
+the conclusion supplies one optimal-allocation sequence rather than quantifying
+over all possible finite tie choices.
+-/
 def theorem1_ii_formulaSpec : Prop :=
   ∀
     {T : ℕ} [NeZero T] {beta c M L : ℝ} {k : ℕ}
@@ -2418,12 +2422,12 @@ def theorem1_ii_formulaSpec : Prop :=
         (nhdsWithin M (Set.Iio M)) (nhds c))
     (hpreference_pos : ∀ t : ItemType T, 0 < (preferenceLaw t).toReal)
     (k_pos : 0 < k)
-    (hwidth_pos : 0 < M - L)
-    (seq :
+    (hwidth_pos : 0 < M - L),
+    ∃ seq :
       OptimalAllocationSequence
         (fun _ =>
           boundedIidOrderStatisticConsumptionModel
-            (fun t => (preferenceLaw t).toReal) k baseMeasure)),
+            (fun t => (preferenceLaw t).toReal) k baseMeasure),
     (∀ a : CountAllocation T,
       (boundedIidOrderStatisticConsumptionModel
           (fun t => (preferenceLaw t).toReal) k baseMeasure).objective a =
@@ -2441,21 +2445,30 @@ def theorem1_ii_formulaSpec : Prop :=
                 ((preferenceLaw i).toReal) ^ (beta / (beta + 1))))
 
 theorem theorem1_ii_formulaSpec_proof : theorem1_ii_formulaSpec := by
-  exact theorem1_ii_formula
+  intro T _ beta c M L k preferenceLaw baseMeasure _ h_finite_mean h_base_bounds
+    h_nonneg hM_pos f hpdf hf_nonneg hf_measurable hbeta_pos hc_pos hratio
+    hpreference_pos k_pos hwidth_pos
+  refine ⟨OptimalAllocationSequence.selected _, ?_⟩
+  exact theorem1_ii_formula preferenceLaw baseMeasure h_finite_mean h_base_bounds
+    h_nonneg hM_pos f hpdf hf_nonneg hf_measurable hbeta_pos hc_pos hratio
+    hpreference_pos k_pos hwidth_pos (OptimalAllocationSequence.selected _)
 
-/-- The exact paper-facing proposition of Theorem 1(iii). -/
+/--
+The exact paper-facing proposition of Theorem 1(iii), with the source's
+selected finite optimizer convention.
+-/
 def theorem1_iii_formulaSpec : Prop :=
   ∀
     {T : ℕ} [NeZero T]
     (preferenceLaw : SourcePreferenceLaw T) (lambda : ℝ) (k : ℕ)
     (hlambda_pos : 0 < lambda)
     (hk_pos : 0 < k)
-    (hpreference_pos : ∀ t : ItemType T, 0 < (preferenceLaw t).toReal)
-    (seq :
+    (hpreference_pos : ∀ t : ItemType T, 0 < (preferenceLaw t).toReal),
+    ∃ seq :
       OptimalAllocationSequence
         (fun _ =>
           (exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
-            (fun t => (preferenceLaw t).toReal) k)),
+            (fun t => (preferenceLaw t).toReal) k),
     (∀ a : CountAllocation T,
       ((exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
           (fun t => (preferenceLaw t).toReal) k).objective a =
@@ -2473,20 +2486,26 @@ def theorem1_iii_formulaSpec : Prop :=
               ∑ i : ItemType T, ((preferenceLaw i).toReal) ^ (1 : ℝ)))
 
 theorem theorem1_iii_formulaSpec_proof : theorem1_iii_formulaSpec := by
-  exact theorem1_iii_formula
+  intro T _ preferenceLaw lambda k hlambda_pos hk_pos hpreference_pos
+  refine ⟨OptimalAllocationSequence.selected _, ?_⟩
+  exact theorem1_iii_formula preferenceLaw lambda k hlambda_pos hk_pos
+    hpreference_pos (OptimalAllocationSequence.selected _)
 
-/-- The exact paper-facing proposition of Theorem 1(iv). -/
+/--
+The exact paper-facing proposition of Theorem 1(iv), with the source's
+selected finite optimizer convention.
+-/
 def theorem1_iv_formulaSpec : Prop :=
   ∀
     {T : ℕ} [NeZero T]
     (preferenceLaw : SourcePreferenceLaw T) {k : ℕ} {alpha : ℝ}
     (halpha : 1 < alpha) (hk : 0 < k)
-    (hpreference_pos : ∀ t : ItemType T, 0 < (preferenceLaw t).toReal)
-    (seq :
+    (hpreference_pos : ∀ t : ItemType T, 0 < (preferenceLaw t).toReal),
+    ∃ seq :
       OptimalAllocationSequence
         (fun _ =>
           paretoIidOrderStatisticConsumptionModel
-            (fun t => (preferenceLaw t).toReal) k alpha)),
+            (fun t => (preferenceLaw t).toReal) k alpha),
     (∀ a : CountAllocation T,
       (paretoIidOrderStatisticConsumptionModel
           (fun t => (preferenceLaw t).toReal) k alpha).objective a =
@@ -2504,7 +2523,10 @@ def theorem1_iv_formulaSpec : Prop :=
                 ((preferenceLaw i).toReal) ^ (alpha / (alpha - 1))))
 
 theorem theorem1_iv_formulaSpec_proof : theorem1_iv_formulaSpec := by
-  exact theorem1_iv_formula
+  intro T _ preferenceLaw k alpha halpha hk hpreference_pos
+  refine ⟨OptimalAllocationSequence.selected _, ?_⟩
+  exact theorem1_iv_formula preferenceLaw halpha hk hpreference_pos
+    (OptimalAllocationSequence.selected _)
 
 /-- The exact paper-facing proposition of Theorem 1(v). -/
 def theorem1_v_selected_maximizer_conclusionSpec : Prop :=
@@ -2522,26 +2544,35 @@ def theorem1_v_selected_maximizer_conclusionSpec : Prop :=
 theorem theorem1_v_selected_maximizer_conclusionSpec_proof : theorem1_v_selected_maximizer_conclusionSpec := by
   exact theorem1_v_selected_maximizer_conclusion
 
-/-- The exact paper-facing proposition of Corollary 1. -/
+/--
+The exact paper-facing proposition of Corollary 1.  The source's likelihoods
+are a preferred-type PMF, and its `S_{n,k}` notation selects one optimum at
+each finite budget.
+-/
 def corollary1Spec : Prop :=
   ∀
     {T : ℕ} [NeZero T] {k : ℕ}
-    (likelihood : ItemType T → ℝ) (gamma : ℝ)
+    (preferenceLaw : SourcePreferenceLaw T) (gamma : ℝ)
     (hk_pos : 0 < k) (hgamma_nonneg : 0 ≤ gamma)
-    (hlike_pos : ∀ t : ItemType T, 0 < likelihood t),
-    ∃ M : ConsumptionModel T,
-      Corollary1SourceIidFamily likelihood gamma k M ∧
-        ∀ seq : OptimalAllocationSequence (fun _ => M),
+    (hpreference_pos : ∀ t : ItemType T, 0 < (preferenceLaw t).toReal),
+    ∃ (D : Measure ℝ) (M : ConsumptionModel T),
+      IsProbabilityMeasure D ∧
+      Corollary1SourceIidFamily (fun t => (preferenceLaw t).toReal) gamma k D M ∧
+        ∃ seq : OptimalAllocationSequence (fun _ => M),
           ∀ t : ItemType T,
             Filter.Tendsto
               (fun N => CountAllocation.representation (seq.allocation N) t)
               Filter.atTop
               (nhds
-                ((likelihood t) ^ gamma /
-                  ∑ i : ItemType T, (likelihood i) ^ gamma))
+                (((preferenceLaw t).toReal) ^ gamma /
+                  ∑ i : ItemType T, ((preferenceLaw i).toReal) ^ gamma))
 
 theorem corollary1Spec_proof : corollary1Spec := by
-  exact corollary1
+  intro T _ k preferenceLaw gamma hk_pos hgamma_nonneg hpreference_pos
+  rcases corollary1 (fun t => (preferenceLaw t).toReal) gamma hk_pos
+    hgamma_nonneg hpreference_pos with ⟨D, M, hD_prob, hsource, hlimit⟩
+  refine ⟨D, M, hD_prob, hsource, OptimalAllocationSequence.selected _, ?_⟩
+  exact hlimit (OptimalAllocationSequence.selected _)
 
 /-- The corrected exact paper-facing proposition of Proposition 2. -/
 def proposition2_corrected_finite_and_sequence_sourceSpec : Prop :=

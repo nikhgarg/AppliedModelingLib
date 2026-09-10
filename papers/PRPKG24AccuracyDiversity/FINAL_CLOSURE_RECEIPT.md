@@ -3,11 +3,11 @@ schema = 6
 paper = "PRPKG24AccuracyDiversity"
 closure_status = "current"
 acceptance_credential = false
-closed_at = "2026-09-07"
+closed_at = "2026-09-08"
 
 [accepted_graph]
 pointer = "papers/PRPKG24AccuracyDiversity/audit/obligation_evidence/current_accepted_graph.json"
-graph_sha256 = "72a29aa4f6c37913bd3e980b6a963ad1da6ecf640ec7b7e70ffcbbf804c81e8e"
+graph_sha256 = "4efa352cd9c6985407f24ce96bcb2f78aa7f348a93b6e7dc2854b5f6ebafa2f4"
 
 +++
 

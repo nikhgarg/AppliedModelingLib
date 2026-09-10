@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "paper": "GGRS26CombattingGerrymanderingRCV",
+  "summaries": {},
+  "omitted_conventions": [
+    "GGRS26-POSITIVE-DISTRICT-MAGNITUDE-01",
+    "GGRS26-POSITIVE-PARTY-SHARE-CONVENTION-01",
+    "GGRS26-RANDOM-WITHIN-PARTY-SUPPORT-01",
+    "GGRS26-TWO-PARTY-ACTIVE-CANDIDATE-UNIVERSE-01"
+  ]
+}

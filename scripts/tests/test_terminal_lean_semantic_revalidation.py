@@ -58,6 +58,80 @@ class TerminalLeanSemanticRevalidationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "not authenticated"):
                 terminal._trusted_public_source_role_envelope(paper)
 
+    def test_public_projection_registry_requires_canonical_main_and_exact_paper_hash(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+
+            def git(*args):
+                subprocess.run(["git", "-C", directory, *args], check=True,
+                               capture_output=True)
+
+            git("init", "-b", "main")
+            git("config", "user.name", "Fixture")
+            git("config", "user.email", "fixture@example.invalid")
+            (root / "README.md").write_text("Fixture\n")
+            git("add", "README.md")
+            git("commit", "-m", "Public base")
+            git("remote", "add", "origin", "https://github.com/nikhgarg/AppliedModelingLib.git")
+            git("update-ref", "refs/remotes/origin/main", "HEAD")
+
+            paper = root / "papers/Fixture"
+            envelope = paper / terminal.PUBLIC_SOURCE_ROLE_PROJECTION_FILE
+            envelope.parent.mkdir(parents=True)
+            envelope.write_bytes(b"approved future envelope\n")
+            approved_digest = hashlib.sha256(envelope.read_bytes()).hexdigest()
+            registry = root / terminal.PUBLIC_SOURCE_ROLE_APPROVALS_FILE
+            registry.parent.mkdir(parents=True)
+            registry.write_text(json.dumps({
+                "schema": 1,
+                "approved_envelope_sha256s_by_paper": {"Fixture": [approved_digest]},
+            }))
+            git("add", terminal.PUBLIC_SOURCE_ROLE_APPROVALS_FILE)
+            git("commit", "-m", "Branch-only approval")
+            with self.assertRaisesRegex(ValueError, "not authenticated"):
+                terminal._trusted_public_source_role_envelope(paper)
+
+            # The envelope itself has never been committed. Only the fetched
+            # canonical-main registry can authorize its exact future bytes.
+            git("update-ref", "refs/remotes/origin/main", "HEAD")
+            self.assertEqual(terminal._trusted_public_source_role_envelope(paper),
+                             b"approved future envelope\n")
+            envelope.write_bytes(b"changed future envelope\n")
+            with self.assertRaisesRegex(ValueError, "not authenticated"):
+                terminal._trusted_public_source_role_envelope(paper)
+            envelope.write_bytes(b"approved future envelope\n")
+
+            other_paper = root / "papers/OtherFixture"
+            other_envelope = other_paper / terminal.PUBLIC_SOURCE_ROLE_PROJECTION_FILE
+            other_envelope.parent.mkdir(parents=True)
+            other_envelope.write_bytes(envelope.read_bytes())
+            with self.assertRaisesRegex(ValueError, "not authenticated"):
+                terminal._trusted_public_source_role_envelope(other_paper)
+
+            git("remote", "set-url", "origin", "https://github.com/untrusted/AppliedModelingLib.git")
+            with self.assertRaisesRegex(ValueError, "not authenticated"):
+                terminal._trusted_public_source_role_envelope(paper)
+
+    def test_public_projection_registry_rejects_malformed_approvals(self) -> None:
+        valid = {"schema": 1,
+                 "approved_envelope_sha256s_by_paper": {"Fixture": ["1" * 64]}}
+        self.assertEqual(
+            terminal._approved_public_source_role_digests(json.dumps(valid).encode(), "Fixture"),
+            ("1" * 64,),
+        )
+        malformed = [
+            {**valid, "schema": True},
+            {**valid, "extra": "unrecognized"},
+            {**valid, "approved_envelope_sha256s_by_paper": []},
+        ]
+        malformed.extend(
+            {**valid, "approved_envelope_sha256s_by_paper": {"Fixture": digests}}
+            for digests in ([], ["bad"], ["A" * 64], [None], ["1" * 64, "1" * 64])
+        )
+        for payload in malformed:
+            with self.subTest(payload=payload), self.assertRaises(ValueError):
+                terminal._approved_public_source_role_digests(json.dumps(payload).encode(), "Fixture")
+
     def test_projected_roles_require_authenticated_bridge_before_atom_comparison(self) -> None:
         original = source_atom_leaf(
             contract_sha256="1" * 64, source_artifact_sha256="2" * 64,
@@ -141,6 +215,55 @@ class TerminalLeanSemanticRevalidationTests(unittest.TestCase):
             project.return_value = ({original.leaf_sha256: original}, {"renamed": (original.leaf_sha256,)})
             with self.assertRaisesRegex(terminal.TerminalLeanSemanticRevalidationError, "source routes"):
                 call({}, True)
+
+    def test_legacy_public_header_citation_preserves_only_exact_accepted_statement(self) -> None:
+        original_statement = "- Remark 2 (source.txt:10-12): x > 0."
+        public_statement = original_statement.replace("source.txt", "cited publication")
+
+        def atom(statement):
+            return source_atom_leaf(
+                contract_sha256="1" * 64, source_artifact_sha256="2" * 64,
+                source_quote_sha256="3" * 64,
+                source_component_sha256=terminal.portable_evidence_sha256({
+                    "schema": 1, "source_quote_sha256": "3" * 64,
+                    "semantic_claim": statement,
+                }),
+                source_role_contract_sha256="5" * 64,
+            )
+
+        accepted = atom(original_statement)
+        loaded = SimpleNamespace(
+            paper_index=SimpleNamespace(
+                route_leaf_sha256s_by_source_item={
+                    "claim": {"source_atom": (accepted.leaf_sha256,)}},
+                prerequisite_leaf_sha256s_by_declaration={}),
+            graph=SimpleNamespace(leaves={accepted.leaf_sha256: accepted}))
+
+        def project(*, source_map, preflight):
+            current = atom(source_map["items"]["claim"]["statement"])
+            return {current.leaf_sha256: current}, {"claim": (current.leaf_sha256,)}
+
+        with mock.patch.object(terminal, "project_source_route_leaf_material_from_validated_inputs",
+                               side_effect=project):
+            def check(statement, **extra):
+                return terminal._validate_current_source_routes(
+                    loaded, {"items": {"claim": {"statement": statement, **extra}}},
+                    SimpleNamespace(), paper_dir=Path("/fixture"),
+                    allow_withheld_source_material=True,
+                )
+
+            self.assertEqual(check(public_statement), {"claim": "claim"})
+            for changed in (public_statement.replace("x > 0", "x < 0"),
+                            public_statement.replace("10-12", "10-13"),
+                            public_statement.replace("Remark 2", "Remark 3")):
+                with self.subTest(changed=changed), self.assertRaisesRegex(
+                    terminal.TerminalLeanSemanticRevalidationError, "semantic atoms changed"
+                ):
+                    check(changed)
+            with self.assertRaisesRegex(
+                terminal.TerminalLeanSemanticRevalidationError, "semantic atoms changed"
+            ):
+                check(public_statement, source_claim_atoms=[{"semantic_claim": "explicit atom"}])
 
     def test_module_discovery_failure_preserves_bounded_causal_diagnostic(self) -> None:
         root = Path("/tmp/diagnostic-fixture")

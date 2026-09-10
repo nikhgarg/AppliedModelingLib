@@ -1,0 +1,894 @@
+{
+  "all_selected_semantic_review_sha256": "a55325f40fd5ae2ce147d3536c4b38df4ab3b1fb28a955346e74b4d914cc01ac",
+  "items": {
+    "defect/MSVV07-APPENDIX-KAPPA-WITNESS-03": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "the-kappa-witness-family",
+      "memo_heading": "The `kappa` witness family",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "For every kappa greater than one, the Appendix asserts an unspecified discrete {0,a,kappa a} counterexample family and gives its limiting factors."
+    },
+    "defect/MSVV07-APPENDIX-PHASE3-RESIDUAL-02": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "appendix-counterexample-three-phase-revenue",
+      "memo_heading": "Appendix counterexample: three-phase revenue",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "The source says bidders 0.5N+1 through N have spent all their money after phase 2, so every phase-3 query is discarded, and uses that execution to claim algorithm revenue 0.62N."
+    },
+    "defect/MSVV07-APPENDIX-REVENUE-ARITHMETIC-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "appendix-counterexample-three-phase-revenue",
+      "memo_heading": "Appendix counterexample: three-phase revenue",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "After 0.4N rounds with m bids of a, 0.1N rounds with m bids of 2a, and a third phase whose queries are all discarded, the source says the algorithm makes 0.62N."
+    },
+    "defect/MSVV07-FINITE-CONVENTIONS-05": {
+      "disposition": "not_material",
+      "reason": "Nonnegative bids are part of the source economic bid model, and 0 ≤ ε ≤ 1 is the finite small-fraction regime, automatically eventual when nonnegative bid fractions tend to zero; neither adds the unresolved relative-error bridge."
+    },
+    "defect/MSVV07-S4-EXTERNAL-TIGHTNESS-WITNESS-06": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "section-4-tightness",
+      "memo_heading": "Section 4 tightness",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "Section 4 states that a cited KP00 construction gives a BALANCE instance of exact factor 1-1/e, but does not print the finite instance or its equality proof."
+    },
+    "defect/MSVV07-S6-NEXTPRICE-EFFECTIVE-SMALL-BIDS-07": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "section-6-variants",
+      "memo_heading": "Section 6 variants",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "Section 6 says the next-highest-bid modifications achieve factor 1-1/e but does not state the finite effective-charge small-bids condition required when budgets differ."
+    },
+    "defect/MSVV07-T8-TRADEOFF-EXPONENT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-8-finite-suffix-index",
+      "memo_heading": "Theorem 8: finite suffix index",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "The source defines psi_k(i) as the suffix sum of y_j* from j=i through k-1 and prints the closed form 1-(1-1/k)^(k-i+1). The simple proof repeats the same shift by calling (k-i+1)/k precisely the unspent fraction of a type-i bidder whose exact spent fraction is i/k."
+    },
+    "defect/MSVV07-T8-TYPED-LIMIT-REGIME-04": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "finite-and-limiting-theorem-8-readings",
+      "memo_heading": "Finite and limiting Theorem 8 readings",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "Theorem 8 takes a finite discretization/small-bids parameter to infinity but does not state a typed sequence-of-instances and error-convergence regime."
+    },
+    "report/exact-arithmetic-efficiency-domain": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "section-6-variants",
+      "memo_heading": "Section 6 variants",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "The Section 6 efficiency statement is a unit-cost arithmetic operation count rather than a bit-complexity theorem."
+    },
+    "source/appendix_kappa_counterexample_family/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "the-kappa-witness-family",
+      "memo_heading": "The `kappa` witness family",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "appendix_kappa_counterexample_family"
+    },
+    "source/appendix_naive_algorithm_revenue_formula/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "appendix-counterexample-three-phase-revenue",
+      "memo_heading": "Appendix counterexample: three-phase revenue",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "appendix_naive_algorithm_revenue_formula"
+    },
+    "source/appendix_naive_three_phase_construction/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "appendix-counterexample-three-phase-revenue",
+      "memo_heading": "Appendix counterexample: three-phase revenue",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "appendix_naive_three_phase_construction"
+    },
+    "source/assumption_epsilon_range/corrected_target": {
+      "disposition": "not_material",
+      "reason": "Nonnegative bids are part of the source economic bid model, and 0 ≤ ε ≤ 1 is the finite small-fraction regime, automatically eventual when nonnegative bid fractions tend to zero; neither adds the unresolved relative-error bridge."
+    },
+    "source/assumption_nonnegative_bids/corrected_target": {
+      "disposition": "not_material",
+      "reason": "Nonnegative bids are part of the source economic bid model, and 0 ≤ ε ≤ 1 is the finite small-fraction regime, automatically eventual when nonnegative bid fractions tend to zero; neither adds the unresolved relative-error bridge."
+    },
+    "source/paperSmallBidsLimitFamily_fields/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "finite-and-limiting-theorem-8-readings",
+      "memo_heading": "Finite and limiting Theorem 8 readings",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "paperSmallBidsLimitFamily_fields"
+    },
+    "source/section4_balance_exact_tightness_instance/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "section-4-tightness",
+      "memo_heading": "Section 4 tightness",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "section4_balance_exact_tightness_instance"
+    },
+    "source/section6_next_highest_bid_alive_theorem8_finite_explicit_error/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "section-6-variants",
+      "memo_heading": "Section 6 variants",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "section6_next_highest_bid_alive_theorem8_finite_explicit_error"
+    },
+    "source/section6_next_highest_bid_all_theorem8_finite_explicit_error/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "section-6-variants",
+      "memo_heading": "Section 6 variants",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "section6_next_highest_bid_all_theorem8_finite_explicit_error"
+    },
+    "source/theorem8_balance_msvv_competitive_of_small_bids_limit_family/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "finite-and-limiting-theorem-8-readings",
+      "memo_heading": "Finite and limiting Theorem 8 readings",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "theorem8_balance_msvv_competitive_of_small_bids_limit_family"
+    },
+    "source/theorem8_dual_induced_tradeoff_formula/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-8-finite-suffix-index",
+      "memo_heading": "Theorem 8: finite suffix index",
+      "memo_sha256": "b3d25551331eccf3f809f617aad1feda91a2a97236ed07d4b3fdd4e64846d56a",
+      "report_home": 4,
+      "source_reading": "theorem8_dual_induced_tradeoff_formula"
+    },
+    "convention/MSVV07-ADWORDS-FINITE-DOMAIN-09": {
+      "disposition": "not_material",
+      "reason": "Nonnegative bids and strictly positive daily budgets are ordinary source AdWords-domain conventions needed to interpret spent-budget fractions; they do not add a result-level hypothesis or change Lemma 4."
+    },
+    "defect/MSVV07-L4-SOURCE-LP-BRIDGE-08": {
+      "disposition": "not_material",
+      "reason": "This historical proof-completeness record is resolved: the current direct source-to-Spec review verifies Lemma 4's actual-run tradeoff-LP endpoint. It does not identify a source-statement correction or a remaining result-level caveat."
+    }
+  },
+  "paper": "MSVV07AdWords",
+  "report_inventory_complete": true,
+  "report_sha256": "ae5396435cd2761b8b88280a10c4a6d0aba97ccf686c355759149b1b6ea16990",
+  "result_table": {
+    "complete": true,
+    "results": {
+      "appendix_kappa_counterexample_family": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "unnumbered",
+        "printed_label": "Appendix kappa counterexample family",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "[`kappa>1` witness](docs/SOURCE_CLARIFICATIONS.md#the-kappa-witness-family)",
+            "row_sha256": "06bcd99ca2e46953b8f2d14df4ccc798ded9576dbc229e6e2f002ddf8a800a39"
+          }
+        ]
+      },
+      "appendix_kappa_ratio_limit_infinity": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "unnumbered",
+        "printed_label": "Appendix kappa-to-infinity ratio limit",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "[`kappa>1` witness](docs/SOURCE_CLARIFICATIONS.md#the-kappa-witness-family)",
+            "row_sha256": "06bcd99ca2e46953b8f2d14df4ccc798ded9576dbc229e6e2f002ddf8a800a39"
+          }
+        ]
+      },
+      "appendix_kappa_ratio_limit_one": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "unnumbered",
+        "printed_label": "Appendix kappa-to-one ratio limit",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "[`kappa>1` witness](docs/SOURCE_CLARIFICATIONS.md#the-kappa-witness-family)",
+            "row_sha256": "06bcd99ca2e46953b8f2d14df4ccc798ded9576dbc229e6e2f002ddf8a800a39"
+          }
+        ]
+      },
+      "appendix_naive_strict_ratio_conclusion": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "unnumbered",
+        "printed_label": "Appendix naive-rule strict ratio conclusion",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix A three-phase example",
+            "row_sha256": "23a679edf74bf908f879e44b0f02de745d87a7516b4da3954a713f3e56e3c99c"
+          }
+        ]
+      },
+      "appendix_naive_three_phase_construction": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "unnumbered",
+        "printed_label": "Appendix A three-phase example",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix A three-phase example",
+            "row_sha256": "23a679edf74bf908f879e44b0f02de745d87a7516b4da3954a713f3e56e3c99c"
+          }
+        ]
+      },
+      "section3_discrete_tradeoff_convergence": {
+        "grouping_reason": "The report groups the four selected unnumbered Section 3 results in one exact comparison row.",
+        "numbering": "unnumbered",
+        "printed_label": "Section 3 discrete tradeoff convergence",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "discrete tradeoff monotonicity/convergence",
+            "row_sha256": "49ff7eb5e347b8cf6271a1ee202859d27c0ba9d52f231c485a4d04119b4d839f"
+          }
+        ]
+      },
+      "section3_discrete_tradeoff_monotonicity": {
+        "grouping_reason": "The report groups the four selected unnumbered Section 3 results in one exact comparison row.",
+        "numbering": "unnumbered",
+        "printed_label": "Section 3 discrete tradeoff monotonicity",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "discrete tradeoff monotonicity",
+            "row_sha256": "49ff7eb5e347b8cf6271a1ee202859d27c0ba9d52f231c485a4d04119b4d839f"
+          }
+        ]
+      },
+      "section3_equal_bid_discrete_msvv_is_balance": {
+        "grouping_reason": "The report groups the four selected unnumbered Section 3 results in one exact comparison row.",
+        "numbering": "unnumbered",
+        "printed_label": "Section 3 equal-bid MSVV/BALANCE identity",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "equal-bid BALANCE identity",
+            "row_sha256": "49ff7eb5e347b8cf6271a1ee202859d27c0ba9d52f231c485a4d04119b4d839f"
+          }
+        ]
+      },
+      "section3_greedy_tight_half_example": {
+        "grouping_reason": "The report groups the four selected unnumbered Section 3 results in one exact comparison row.",
+        "numbering": "unnumbered",
+        "printed_label": "Section 3 GREEDY tight one-half example",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "GREEDY tight example",
+            "row_sha256": "49ff7eb5e347b8cf6271a1ee202859d27c0ba9d52f231c485a4d04119b4d839f"
+          }
+        ]
+      },
+      "section4_balance_exact_tightness_instance": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "unnumbered",
+        "printed_label": "Section 4 BALANCE tightness instance",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Section 4 tightness",
+            "row_sha256": "d20c9006b6ec4fe2bd48cdba84664c40d942c28728d29abdfd87caeaeeb985ea"
+          }
+        ]
+      },
+      "section4_discretization_error_bound": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "unnumbered",
+        "printed_label": "Section 4 discretization-error bound",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Section 4 tightness",
+            "row_sha256": "d20c9006b6ec4fe2bd48cdba84664c40d942c28728d29abdfd87caeaeeb985ea"
+          }
+        ]
+      },
+      "section4_lemma1_balance_pays_no_later_slab": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1–3",
+            "row_sha256": "b339bffb94b144a13810f1239e6d152c780ea0c2bcd9f392d1f020bcf56a5e18"
+          }
+        ]
+      },
+      "section4_lemma2_factor_revealing_lp_constraint": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1–3",
+            "row_sha256": "b339bffb94b144a13810f1239e6d152c780ea0c2bcd9f392d1f020bcf56a5e18"
+          }
+        ]
+      },
+      "section5_lemma4_dual_optimal_from_primal_dual_match": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 4",
+            "row_sha256": "48a18b11795c8019e91f5cefc4e020f88d36c7b41413b60a9ef275d9a12e100d"
+          }
+        ]
+      },
+      "section5_lemma5_tradeoff_rhs_eq_base_add_delta": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 5",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 5–7",
+            "row_sha256": "e73a1c3f032bdb5e839bc0b2bffed8dd54440c14e0e9e042a41a8e9e2d5125b8"
+          }
+        ]
+      },
+      "section5_lemma6_per_query_tradeoff": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 6",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 5–7",
+            "row_sha256": "e73a1c3f032bdb5e839bc0b2bffed8dd54440c14e0e9e042a41a8e9e2d5125b8"
+          }
+        ]
+      },
+      "section5_lemma7_weighted_perturbation_bound": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 7",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 5–7",
+            "row_sha256": "e73a1c3f032bdb5e839bc0b2bffed8dd54440c14e0e9e042a41a8e9e2d5125b8"
+          }
+        ]
+      },
+      "section6_availability_theorem8_finite_explicit_error": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "unnumbered",
+        "printed_label": "Section 6 availability variant",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Section 6 variants",
+            "row_sha256": "cb94f73d279318b7ae6e875ec9c3f5a6a57a370fc4513dee0b96fcf62e94d744"
+          }
+        ]
+      },
+      "section6_click_through_rates_theorem8_finite_explicit_error": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "unnumbered",
+        "printed_label": "Section 6 click-through-rate variant",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Section 6 variants",
+            "row_sha256": "cb94f73d279318b7ae6e875ec9c3f5a6a57a370fc4513dee0b96fcf62e94d744"
+          }
+        ]
+      },
+      "section6_different_budgets_and_nonexhaustive_optimum_theorem8_finite_explicit_error": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "unnumbered",
+        "printed_label": "Section 6 unequal-budget variant",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Section 6 variants",
+            "row_sha256": "cb94f73d279318b7ae6e875ec9c3f5a6a57a370fc4513dee0b96fcf62e94d744"
+          }
+        ]
+      },
+      "section6_next_highest_alive_keep_alive_reduction": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "unnumbered",
+        "printed_label": "Section 6 next-highest-alive reduction",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Section 6 variants",
+            "row_sha256": "cb94f73d279318b7ae6e875ec9c3f5a6a57a370fc4513dee0b96fcf62e94d744"
+          }
+        ]
+      },
+      "section6_next_highest_bid_alive_theorem8_finite_explicit_error": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "unnumbered",
+        "printed_label": "Section 6 next-highest-alive price variant",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Section 6 variants",
+            "row_sha256": "cb94f73d279318b7ae6e875ec9c3f5a6a57a370fc4513dee0b96fcf62e94d744"
+          }
+        ]
+      },
+      "section6_next_highest_bid_all_theorem8_finite_explicit_error": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "unnumbered",
+        "printed_label": "Section 6 next-highest-bid price variant",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Section 6 variants",
+            "row_sha256": "cb94f73d279318b7ae6e875ec9c3f5a6a57a370fc4513dee0b96fcf62e94d744"
+          }
+        ]
+      },
+      "theorem8_balance_msvv_competitive_of_small_bids_limit_family": {
+        "grouping_reason": "The suffix row isolates a formula within the printed Theorem 8 route.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 8",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 8",
+            "row_sha256": "a7ee21518b293b0792152341c9c5584940ddcc80b9a701dd60614cf7758c772b"
+          },
+          {
+            "report_label": "Theorem 8 suffix",
+            "row_sha256": "584186375dd5f2132ae6d178ed9f612de18c91757721cd1f3574de88a59e4d0d"
+          }
+        ],
+        "split_reason": "The report separates the main finite/limit theorem comparison from the corrected suffix formula printed in the same theorem route."
+      },
+      "theorem8_unspent_budget_bound_formula": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 8 unspent-budget formula",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 8 suffix",
+            "row_sha256": "584186375dd5f2132ae6d178ed9f612de18c91757721cd1f3574de88a59e4d0d"
+          }
+        ]
+      },
+      "theorem9_no_randomized_online_algorithm_beats_msvv_ratio": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 9",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 9",
+            "row_sha256": "53e4d9ab990ecba88f4a04aedbb9c3dffdd326aeb2b81249c8e842672c7c7a72"
+          }
+        ]
+      },
+      "section4_lemma3_factor_revealing_lp_optimality": {
+        "grouping_reason": "The report groups the selected source results that share one comparison and memo entry.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1–3",
+            "row_sha256": "b339bffb94b144a13810f1239e6d152c780ea0c2bcd9f392d1f020bcf56a5e18"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "584186375dd5f2132ae6d178ed9f612de18c91757721cd1f3574de88a59e4d0d": {
+        "explanation_keys": [
+          "defect/MSVV07-T8-TRADEOFF-EXPONENT-01",
+          "source/theorem8_dual_induced_tradeoff_formula/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "49ff7eb5e347b8cf6271a1ee202859d27c0ba9d52f231c485a4d04119b4d839f": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "53e4d9ab990ecba88f4a04aedbb9c3dffdd326aeb2b81249c8e842672c7c7a72": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "a7ee21518b293b0792152341c9c5584940ddcc80b9a701dd60614cf7758c772b": {
+        "explanation_keys": [
+          "defect/MSVV07-T8-TYPED-LIMIT-REGIME-04",
+          "source/paperSmallBidsLimitFamily_fields/corrected_target",
+          "source/theorem8_balance_msvv_competitive_of_small_bids_limit_family/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "06bcd99ca2e46953b8f2d14df4ccc798ded9576dbc229e6e2f002ddf8a800a39": {
+        "explanation_keys": [
+          "defect/MSVV07-APPENDIX-KAPPA-WITNESS-03",
+          "source/appendix_kappa_counterexample_family/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "b339bffb94b144a13810f1239e6d152c780ea0c2bcd9f392d1f020bcf56a5e18": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "23a679edf74bf908f879e44b0f02de745d87a7516b4da3954a713f3e56e3c99c": {
+        "explanation_keys": [
+          "defect/MSVV07-APPENDIX-REVENUE-ARITHMETIC-01",
+          "defect/MSVV07-APPENDIX-PHASE3-RESIDUAL-02",
+          "source/appendix_naive_algorithm_revenue_formula/corrected_target",
+          "source/appendix_naive_three_phase_construction/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "cb94f73d279318b7ae6e875ec9c3f5a6a57a370fc4513dee0b96fcf62e94d744": {
+        "explanation_keys": [
+          "defect/MSVV07-S6-NEXTPRICE-EFFECTIVE-SMALL-BIDS-07",
+          "source/section6_next_highest_bid_alive_theorem8_finite_explicit_error/corrected_target",
+          "source/section6_next_highest_bid_all_theorem8_finite_explicit_error/corrected_target",
+          "report/exact-arithmetic-efficiency-domain"
+        ],
+        "supplemental_reason": ""
+      },
+      "d20c9006b6ec4fe2bd48cdba84664c40d942c28728d29abdfd87caeaeeb985ea": {
+        "explanation_keys": [
+          "defect/MSVV07-S4-EXTERNAL-TIGHTNESS-WITNESS-06",
+          "source/section4_balance_exact_tightness_instance/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "f9b74705f75a0355ee2eff769d61165e8ef3797e6020d500a85ec2bb0c835169": {
+        "explanation_keys": [],
+        "supplemental_reason": "This source discussion presents open algorithm proposals rather than a selected theorem conclusion."
+      },
+      "48a18b11795c8019e91f5cefc4e020f88d36c7b41413b60a9ef275d9a12e100d": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "e73a1c3f032bdb5e839bc0b2bffed8dd54440c14e0e9e042a41a8e9e2d5125b8": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    },
+    "schema": 1,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "fb4c0a197b196279e47b3606734c945c937c3691a0f7025b3d889eec1868c105",
+      "discovered_named_result_sha256": "6bf26c7372203b8010b9e707986bd5410de12bbde3b7db2dcf3c5df8f70c6464",
+      "source_format": "text",
+      "results": {
+        "section4_lemma1_balance_pays_no_later_slab": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 296,
+              "line_start": 264,
+              "presentation": "text_heading",
+              "presentation_sha256": "e87ca6e2a71ea8107bdaa9de04efba30c33e9a7448b932b4a9b11fe0e39e2011",
+              "source_item_id": "section4_lemma1_balance_pays_no_later_slab",
+              "source_label": "Lemma 1"
+            }
+          ],
+          "source_item_ids": [
+            "section4_lemma1_balance_pays_no_later_slab"
+          ]
+        },
+        "section4_lemma2_factor_revealing_lp_constraint": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 313,
+              "line_start": 300,
+              "presentation": "text_heading",
+              "presentation_sha256": "1ef5934283771d9b53c3b2aab9a6feb7e978c590a610c078f8f79c7006b77ebe",
+              "source_item_id": "section4_lemma2_factor_revealing_lp_constraint",
+              "source_label": "Lemma 2"
+            }
+          ],
+          "source_item_ids": [
+            "section4_lemma2_factor_revealing_lp_constraint"
+          ]
+        },
+        "section4_lemma3_factor_revealing_lp_optimality": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 456,
+              "line_start": 456,
+              "presentation": "text_heading",
+              "presentation_sha256": "2f2a66f05ee12242d5609035ca5bd19d7acee148097b730dd747061e19bf6557",
+              "source_item_id": "section4_lemma3_factor_revealing_lp_optimality",
+              "source_label": "Lemma 3"
+            }
+          ],
+          "source_item_ids": [
+            "section4_factor_revealing_primal_dual_lp_formulas",
+            "section4_lemma3_displayed_primal_dual_witnesses_optimal",
+            "section4_lemma3_factor_revealing_lp_optimality"
+          ]
+        },
+        "section5_lemma4_dual_optimal_from_primal_dual_match": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 561,
+              "line_start": 548,
+              "presentation": "text_heading",
+              "presentation_sha256": "d8a2f78ff38ee510c6fca6f200172588a2ccf5d8eb4e256253dfb5624aca8b90",
+              "source_item_id": "section5_lemma4_dual_optimal_from_primal_dual_match",
+              "source_label": "Lemma 4"
+            }
+          ],
+          "source_item_ids": [
+            "section5_lemma4_dual_optimal_from_primal_dual_match",
+            "section5_tradeoff_revealing_primal_dual_lp_formulas"
+          ]
+        },
+        "section5_lemma5_tradeoff_rhs_eq_base_add_delta": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 562,
+              "line_start": 562,
+              "presentation": "text_heading",
+              "presentation_sha256": "0cd88d3d0baeefcf4de3c79037f5234dcd38471992359703e0eff05c58c4443e",
+              "source_item_id": "section5_lemma5_tradeoff_rhs_eq_base_add_delta",
+              "source_label": "Lemma 5"
+            }
+          ],
+          "source_item_ids": [
+            "section5_alpha_type_count_definition",
+            "section5_beta_slab_spend_definition",
+            "section5_exact_type_spend_simplifying_assumption",
+            "section5_lemma5_tradeoff_rhs_eq_base_add_delta",
+            "theorem8_corrected_unspent_fraction_formula"
+          ]
+        },
+        "section5_lemma6_per_query_tradeoff": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 587,
+              "line_start": 586,
+              "presentation": "text_heading",
+              "presentation_sha256": "f748918d205b33442d87d093411fa45e42e306f75c2e80ea1a6381b85ac09923",
+              "source_item_id": "section5_lemma6_per_query_tradeoff",
+              "source_label": "Lemma 6"
+            }
+          ],
+          "source_item_ids": [
+            "section5_lemma6_per_query_tradeoff"
+          ]
+        },
+        "section5_lemma7_weighted_perturbation_bound": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 601,
+              "line_start": 597,
+              "presentation": "text_heading",
+              "presentation_sha256": "2d9bb0ef45f969e5d11de33fb6889f30011973e7b7f7325ca0cf4d2662f43dff",
+              "source_item_id": "section5_lemma7_weighted_perturbation_bound",
+              "source_label": "Lemma 7"
+            }
+          ],
+          "source_item_ids": [
+            "section5_lemma7_weighted_perturbation_bound",
+            "section5_slab_fiber_beta_accounting_formula",
+            "section5_type_fiber_alpha_accounting_formula"
+          ]
+        },
+        "theorem8_balance_msvv_competitive_of_small_bids_limit_family": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 729,
+              "line_start": 718,
+              "presentation": "text_heading",
+              "presentation_sha256": "c9d5b991ec62d8bd4e11bc309aababdcb4d47fadebba9e216ef6bd084dc1d4e0",
+              "source_item_id": "theorem8_balance_msvv_competitive_of_small_bids_limit_family",
+              "source_label": "Theorem 8"
+            }
+          ],
+          "source_item_ids": [
+            "assumption_epsilon_range",
+            "paperMsvvRatio_formula",
+            "paperSmallBidsLimitFamily_fields",
+            "paperTradeoff_formula",
+            "theorem8_balance_msvv_competitive_of_small_bids_limit_family",
+            "theorem8_dual_induced_tradeoff_formula"
+          ]
+        },
+        "theorem9_no_randomized_online_algorithm_beats_msvv_ratio": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 898,
+              "line_start": 897,
+              "presentation": "text_heading",
+              "presentation_sha256": "d254960da3d4fdf0616e18c174c7fc839b9ffa8a08ba8c971d3ee18e20afacbd",
+              "source_item_id": "theorem9_no_randomized_online_algorithm_beats_msvv_ratio",
+              "source_label": "Theorem 9"
+            }
+          ],
+          "source_item_ids": [
+            "theorem9HardDistribution_uniform",
+            "theorem9_base_instance_balance_revenue_claim",
+            "theorem9_hard_instance_round_bids_and_optimum",
+            "theorem9_no_randomized_online_algorithm_beats_msvv_ratio"
+          ]
+        },
+        "appendix_kappa_counterexample_family": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "appendix_kappa_counterexample_family"
+          ]
+        },
+        "appendix_kappa_ratio_limit_infinity": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "appendix_kappa_ratio_limit_infinity"
+          ]
+        },
+        "appendix_kappa_ratio_limit_one": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "appendix_kappa_ratio_limit_one"
+          ]
+        },
+        "appendix_naive_strict_ratio_conclusion": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "appendix_naive_strict_ratio_conclusion"
+          ]
+        },
+        "appendix_naive_three_phase_construction": {
+          "kind": "example",
+          "presentations": [],
+          "source_item_ids": [
+            "appendix_naive_three_phase_construction"
+          ]
+        },
+        "section3_discrete_tradeoff_convergence": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "section3_discrete_tradeoff_convergence"
+          ]
+        },
+        "section3_discrete_tradeoff_monotonicity": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "section3_discrete_tradeoff_monotonicity"
+          ]
+        },
+        "section3_equal_bid_discrete_msvv_is_balance": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "section3_equal_bid_discrete_msvv_is_balance"
+          ]
+        },
+        "section3_greedy_tight_half_example": {
+          "kind": "example",
+          "presentations": [],
+          "source_item_ids": [
+            "section3_greedy_tight_half_example"
+          ]
+        },
+        "section4_balance_exact_tightness_instance": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "section4_balance_exact_tightness_instance"
+          ]
+        },
+        "section4_discretization_error_bound": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "section4_discretization_error_bound"
+          ]
+        },
+        "section6_availability_theorem8_finite_explicit_error": {
+          "kind": "theorem",
+          "presentations": [],
+          "source_item_ids": [
+            "section6_availability_theorem8_finite_explicit_error"
+          ]
+        },
+        "section6_click_through_rates_theorem8_finite_explicit_error": {
+          "kind": "theorem",
+          "presentations": [],
+          "source_item_ids": [
+            "section6_click_through_rates_theorem8_finite_explicit_error"
+          ]
+        },
+        "section6_different_budgets_and_nonexhaustive_optimum_theorem8_finite_explicit_error": {
+          "kind": "theorem",
+          "presentations": [],
+          "source_item_ids": [
+            "section6_different_budgets_and_nonexhaustive_optimum_theorem8_finite_explicit_error"
+          ]
+        },
+        "section6_next_highest_alive_keep_alive_reduction": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "section6_next_highest_alive_keep_alive_reduction"
+          ]
+        },
+        "section6_next_highest_bid_alive_theorem8_finite_explicit_error": {
+          "kind": "theorem",
+          "presentations": [],
+          "source_item_ids": [
+            "section6_next_highest_bid_alive_theorem8_finite_explicit_error"
+          ]
+        },
+        "section6_next_highest_bid_all_theorem8_finite_explicit_error": {
+          "kind": "theorem",
+          "presentations": [],
+          "source_item_ids": [
+            "section6_next_highest_bid_all_theorem8_finite_explicit_error"
+          ]
+        },
+        "theorem8_unspent_budget_bound_formula": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "theorem8_unspent_budget_bound_formula"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "c09dbe00b576258e82151bc0500f304ede60baf5bc45fc7ef78cc2b1d17a2a9f"
+  },
+  "schema": 2,
+  "source_items_sha256": "4bb012011a2f08d65e5d2ebe21fe0632382a36b1df19ae39609032bf543f7247"
+}

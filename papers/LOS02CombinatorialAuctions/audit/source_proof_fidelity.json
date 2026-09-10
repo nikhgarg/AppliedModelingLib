@@ -1,0 +1,30 @@
+{
+  "defects": [],
+  "model_conventions": [
+    {
+      "checked_scope": "The actual average-order greedy allocation/payment mechanism of Theorem 10.2, the source average-order and payment-rule prerequisites, and the greedy-run negative results of Sections 8 and 12. The strict-density counterexample runs do not depend on a tie outcome.",
+      "classification": "source_supported_model_interpretation",
+      "formal_meaning": "The greedy algorithm uses one fixed deterministic bidder priority to break equal average-value norms, and keeps that priority unchanged when comparing different reports. This is the source's consistent-treatment-of-ties convention, extended through the report comparisons; it does not allow arbitrary report-dependent priorities.",
+      "id": "LOS02-CONSISTENT-TIES-01",
+      "report_summary": "Equal average values are resolved by one fixed bidder priority, unchanged across declarations.",
+      "source_locator": "cited publication:591-598; cited publication:1228-1247",
+      "why_needed": "Section 7 expressly requires consistent tie treatment before its no-ties simplification. The later examples themselves admit tied norms. The truthfulness comparisons therefore need an explicit consistent rule rather than a different tie choice in each auction."
+    },
+    {
+      "approval_reference": "The underlying approval record is withheld from this public projection.",
+      "approved_at": "2026-09-04T23:08:55-04:00",
+      "checked_scope": "Definition 5.1; Theorem 7.2; Exactness/Participation/Critical as used in Section 9; Lemmas 9.1--9.5; Theorem 9.6; and Theorem 10.2. The Section 8 and 12 counterexamples remain valid on their explicit nonempty witness bids and receive no broader domain claim from this convention.",
+      "classification": "user_approved_source_model_clarification",
+      "formal_meaning": "For the selected results whose source definitions use an average per requested good or a critical payment, a single-minded true type and declaration has a nonempty requested bundle. This is a formalization convention for the legal profile and deviation domains in Sections 7, 9, and 10; it does not claim that Definition 5.1 alone printed this exclusion.",
+      "id": "LOS02-NONEMPTY-REQUESTS-01",
+      "report_summary": "Sections 7, 9, and 10 formalize single-minded requests as nonempty, as required for their average-per-good and critical-payment formulas.",
+      "source_locator": "cited publication:453-455; cited publication:630-632; cited publication:924-927",
+      "why_needed": "Definition 7.1 divides the declared amount by the cardinality of the requested bundle, and the Section 9 zero-utility/payment route treats an unallocated requested bundle through the intended nondegenerate single-minded domain. The source leaves the empty-bundle convention implicit. The user directed completion of the public partial-paper closeout, authorizing this narrow and interpretable convention rather than a silent stronger theorem."
+    }
+  ],
+  "paper": "LOS02CombinatorialAuctions",
+  "review_status": "in_progress",
+  "reviewed_proof_scopes": [],
+  "schema": 2,
+  "source_artifact_sha256": "ac47ef3801288291f7f7e8d0114c31d1a3c79c4649ebeefe660098f63b2625c6"
+}

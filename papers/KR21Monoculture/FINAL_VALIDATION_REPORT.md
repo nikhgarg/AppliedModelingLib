@@ -1,5 +1,5 @@
-# Final Validation Report: KR21 Monoculture
-Updated: 2026-09-07
+# Final Validation Report: Algorithmic Monoculture and Social Welfare
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -29,16 +29,16 @@ separates the finite-support and simulation remarks from the checked results.
 
 | Result | Comparison with source |
 | --- | --- |
-| Theorem 1 | **Exact.** The strict full-set comparison is evaluated on the source's standing strictly ordered candidate-value domain. [Source reading](docs/SOURCE_CLARIFICATIONS.md#theorem-1-strict-improvement-domain). |
-| Theorem 2 | **Formalized under explicit outer-$D$ regularity:** the candidate-value law has ordered support, finite first moments, measurable ranking probabilities, and well-defined conditional and payoff expectations. [Conditions](docs/SOURCE_CLARIFICATIONS.md#representation-boundaries). |
-| Theorem 3 | **Corrected domain:** at least three candidates; with two, total hiring welfare is constant. [Example](docs/SOURCE_CLARIFICATIONS.md#strictness-and-candidate-domain-readings). |
+| Theorem 1 | **Exact.** [Source reading](docs/SOURCE_CLARIFICATIONS.md#theorem-1-strict-improvement-domain) |
+| Theorem 2 | **Exact under additional outer-$D$ regularity:** the candidate-value law has ordered support, finite first moments, measurable ranking probabilities, and well-defined conditional and payoff expectations. [Conditions](docs/SOURCE_CLARIFICATIONS.md#representation-boundaries). |
+| Theorem 3 | **Exact under the restriction to at least three candidates.** With two, total hiring welfare is constant. [Example](docs/SOURCE_CLARIFICATIONS.md#strictness-and-candidate-domain-readings). |
 | Theorem 4 | **Exact.** |
-| Theorem 5 | **Density condition clarified:** global absolute continuity and an integrable derivative suffice; smooth full support alone does not. Necessity of this sufficient condition is unresolved. [Counterexample and condition](docs/SOURCE_CLARIFICATIONS.md#strictness-and-candidate-domain-readings). |
+| Theorem 5 | **Exact under sufficient additional density regularity:** global absolute continuity and an integrable derivative suffice; smooth full support alone does not. Necessity of this sufficient condition is unresolved. [Counterexample and condition](docs/SOURCE_CLARIFICATIONS.md#strictness-and-candidate-domain-readings). |
 | Theorem 6 | **Exact.** |
 | Theorem 7 (Laplace) | **Exact.** |
 | Theorem 8 (Gaussian) | **Exact.** |
 | Theorem 9 | **Exact.** |
-| Appendix C Lemma 1 | **Changed inequality:** weak globally, strict on overlap. [Exact comparison](docs/LAPLACIAN_SOURCE_CLARIFICATION.md#appendix-c-lemma-1-laplacian-clarification). |
+| Appendix C Lemma 1 | **Changed inequality:** weak globally, strict on overlap. [Explanation and downstream consequences](docs/LAPLACIAN_LEMMA1_SOURCE_NOTE.md#paper-statement). |
 | Lemma 4 | **Strictness clarified:** a strict likelihood-ratio witness for the strict expectation comparison. [Condition](docs/SOURCE_CLARIFICATIONS.md#strictness-and-candidate-domain-readings). |
 | Lemmas 2–3, 5–8 | **Exact.** |
 | Appendix B counterexamples and smoothing | **Exact.** |

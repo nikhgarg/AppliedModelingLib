@@ -260,6 +260,37 @@ closeout sequence. Before treating copied sidecars as current:
    merging, the maintainer reruns it with `--authoritative` to validate the
    approval pin.
 
+## Source-role authority before a release
+
+An exported source-role envelope may need canonical-public-main authority
+before CI can revalidate changed Lean containers. After the canonical private
+guard has authenticated the exact envelope against the private source map,
+display projection, and accepted graph, record its SHA256 under its paper ID
+in `docs/PUBLIC_SOURCE_ROLE_APPROVALS.json`. The schema-1 file has the fields
+`schema` and `approved_envelope_sha256s_by_paper`; each paper maps to a sorted,
+unique list of approved hashes. Preserve earlier approvals. Publish only
+these hashes, never private approval files, review records, or source bytes.
+
+Merge this small authority record through its own exact allowlist and pinned
+authoritative guard first. Then rebuild the one-commit paper release on that
+new public base and run CI. Runtime verification reads approvals only from a
+fetched canonical public `main`, not from the PR's working tree. It still
+checks the complete envelope's map, display, accepted-graph, and source-role
+bindings. The registry grants transport authority; it issues no new source
+judgment or proof acceptance and does not excuse a semantic mismatch.
+
+Before the full CI build, check portable recorded-graph/card projections and
+current source-route identities. These checks require no Lean execution and
+expose transport mismatches early. A legacy display-locator change may reuse
+an old record only when the complete accepted identity is reproduced; never
+ignore a changed equation, source quote, role, or line range.
+
+Keep a report update consistent with its selected proof/evidence snapshot.
+Do not copy a newer private source-fidelity ledger or paper-local proof files
+into a report-only release while retaining an older unmatched source map or
+accepted graph. Preserve those updates privately until their matching
+closeout is ready; retain the approved reader edits and explanatory memos.
+
 ## What Not To Do
 
 - Do not raw-merge private `main` into public `main`.

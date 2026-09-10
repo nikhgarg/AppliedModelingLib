@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "paper": "GN21DriverSurgePricing",
+  "summaries": {
+    "GN21-L5-ENDPOINT-COMPACTNESS-CONTINUITY-01": "The generic Lemma 5 statement explicitly assumes continuity on each compact endpoint-parameter domain. Continuity on the source’s open policy domain alone is not treated as a proof of extension to the limiting endpoints.",
+    "GN21-L5-GLOBAL-POLICY-CONTINUITY-REGULARITY-01": "The generic Lemma 5 continuity premise quantifies over all TripPolicy centers and comparison policies. This is broader than the source-open domain; the added quantification is a current-proof premise, not evidence that the source theorem requires it.",
+    "GN21-L5-GLOBAL-POLICY-RESPONSE-SHAPE-REGULARITY-01": "The generic Lemma 5 shape premises quantify over every policy in the near-optimal reward band, beyond the source-open domain, and explicitly state the quasi-shape comparisons involving zero trip length. The memo gives their precise scope.",
+    "GN21-T4-GLOBAL-POLICY-CONTINUITY-REGULARITY-01": "Theorem 4 uses the paper's assumed policy continuity on the acceptance-set domain of the formalization."
+  },
+  "omitted_conventions": [
+    "GN21-FINITE-ENDPOINT-CALCULUS-REGULARITY-01",
+    "GN21-IID-RENEWAL-CYCLE-MODEL-01",
+    "GN21-L5-AE-NULL-SET-CONVENTION-01",
+    "GN21-T3-NONNEGATIVE-TARGET-RATE-CONVENTION-01"
+  ]
+}

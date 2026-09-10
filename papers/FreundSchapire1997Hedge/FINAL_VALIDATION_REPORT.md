@@ -1,6 +1,6 @@
 # Final Validation Report: A Decision-Theoretic Generalization of On-Line Learning and an Application to Boosting
 
-Updated: 2026-09-06
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -59,15 +59,15 @@ of Lemma 1, Theorems 2--6, Theorems 8--12, and Eqs. (21)--(23).
 
 | Result | Comparison with source |
 | --- | --- |
-| Lemma 1; Theorem 2 | **Formula domain required:** $0<\beta\leq1$ (Lemma 1), $0<\beta<1$ (Theorem 2). At zero, weights can vanish; at one, Theorem 2 divides by zero. Endpoint conventions could give separate statements. [Details](docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md#lemma-1-and-theorem-2-the-hedge-parameter-endpoints). |
-| Theorem 3 | **Exact:** the two-constant lower tradeoff for a uniform finite-expert policy guarantee. |
+| Lemma 1; Theorem 2 | **Exact on the displayed formula’s domain:** $0<\beta\leq1$ (Lemma 1), $0<\beta<1$ (Theorem 2). At zero, weights can vanish; at one, Theorem 2 divides by zero. Endpoint conventions could give separate statements. [Details](docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md#lemma-1-and-theorem-2-the-hedge-parameter-endpoints). |
+| Theorem 3 | **Exact.** |
 | Lemma 4 | **Endpoint extension:** define the zero-loss-bound case by continuity; no extra assumption. [Details](docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md#lemma-4-the-zero-loss-bound-extension). |
-| Theorem 5 | **Formula domain required:** $N\geq2$ and positive loss bound avoid division by zero in the displayed tuning. Necessity for the regret guarantee is not claimed. [Details](docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md#theorem-5-the-tuned-hedge-parameter). |
-| Theorem 6 | **Formula domain required:** $0<\epsilon_t<1$ keeps executed rounds defined. Zero or unit error needs a stopping or limiting convention; the exclusion is not shown necessary for a suitably extended error bound. [Details](docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md#theorem-6-endpoint-errors). |
-| Equations (21)–(23) | **Exact:** binary-KL/product identities, uniform-edge bounds, and iteration ceilings. |
-| Theorem 8 | **Exact:** finite-trace VC bound for affine thresholds of binary hypotheses. |
-| Theorem 9 | **Exact:** the soft-threshold error bound for the normalized vote defined in the source. |
-| Theorems 10–12 | **Formula domains required:** exclude zero-error rounds (also unit error for M2) to avoid undefined quotients or logarithms. Separate endpoint rules are not formalized. [Details](docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md#theorems-1012-endpoint-errors-in-the-variant-algorithms). |
+| Theorem 5 | **Exact on the displayed formula’s domain:** $N\geq2$ and positive loss bound avoid division by zero in the displayed tuning. Necessity for the regret guarantee is not claimed. [Details](docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md#theorem-5-the-tuned-hedge-parameter). |
+| Theorem 6 | **Exact on the displayed formula’s domain:** $0<\epsilon_t<1$ keeps executed rounds defined. Zero or unit error needs a stopping or limiting convention; the exclusion is not shown necessary for a suitably extended error bound. [Details](docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md#theorem-6-endpoint-errors). |
+| Equations (21)–(23) | **Exact.** |
+| Theorem 8 | **Exact.** |
+| Theorem 9 | **Exact.** |
+| Theorems 10–12 | **Exact on the displayed formulas’ domains:** exclude zero-error rounds (also unit error for M2) to avoid undefined quotients or logarithms. Separate endpoint rules are not formalized. [Details](docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md#theorems-1012-endpoint-errors-in-the-variant-algorithms). |
 
 ## 5. Remaining Boundaries and Gaps
 

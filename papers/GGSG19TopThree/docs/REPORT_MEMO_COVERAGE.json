@@ -1,0 +1,362 @@
+{
+  "schema": 2,
+  "paper": "GGSG19TopThree",
+  "report_sha256": "121a91f3d8c84f5aa87b2d04b673aae465f83fe58765ce1607b4fb9b753a71fb",
+  "source_items_sha256": "c7dab662bff5c05088cb1a4908eb55a6ef09b20297782da74ca5a1ced57b915a",
+  "all_selected_semantic_review_sha256": "47f6389353e56856c2a11dc3ec37260efdde5196dbfbfe743dbebbc85349ef5f",
+  "report_inventory_complete": true,
+  "items": {
+    "report/proposition2-one-sided-rate": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "73082e390feb731bf41f5f5d2c0ebe190a65a90972c0c4601598eb9e77d1f146",
+      "memo_heading": "Proposition 2: pairwise rate and finite-sample bound",
+      "memo_anchor": "proposition-2-pairwise-rate-and-finite-sample-bound",
+      "report_home": 4
+    },
+    "report/proposition4-one-sided-rate": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "73082e390feb731bf41f5f5d2c0ebe190a65a90972c0c4601598eb9e77d1f146",
+      "memo_heading": "Proposition 4: outcome rate and $M^2$ bound",
+      "memo_anchor": "proposition-4-outcome-rate-and-m2-bound",
+      "report_home": 4
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "a8032b5c1b9bb4015edaf92f7b2a76cdc66643ff5bc27ea39f8f5b7c48f29f1a",
+      "discovered_named_result_sha256": "741f78c023c48ad9dade03db4a66e08e938ca6b110feaf6ea81c4e31d235f254",
+      "source_format": "tex",
+      "results": {
+        "source_corollary_mallows_randomization_no_improvement_positive_noise": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 732,
+              "line_start": 728,
+              "presentation": "tex_environment",
+              "presentation_sha256": "81bb68e5ba0d7061e9b8404a17b0e50e63b183a85dbff449836babf1da96c072",
+              "source_item_id": "source_corollary_mallows_randomization_no_improvement_positive_noise",
+              "source_label": "lem:mallowsnorando"
+            }
+          ],
+          "source_item_ids": [
+            "assumption_mallows_nontrivial_winner_and_parameter_domain",
+            "proof_mallows_common_pivotal_pair",
+            "source_corollary_mallows_randomization_no_improvement_positive_noise",
+            "source_corollary_mallows_randomization_no_improvement_zero_noise"
+          ]
+        },
+        "source_proposition1_design_invariance_iff_strict_prefix_separation": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 391,
+              "line_start": 388,
+              "presentation": "tex_environment",
+              "presentation_sha256": "ef4208482e598bd0030242e95418cf5e13a0ed0cba4f988632a4932dcfb8f987",
+              "source_item_id": "source_proposition1_design_invariance_iff_strict_prefix_separation",
+              "source_label": "thm:consistency"
+            }
+          ],
+          "source_item_ids": [
+            "source_proposition1_design_invariance_iff_strict_prefix_separation"
+          ]
+        },
+        "source_proposition2_pairwise_learning_rate_and_bound": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 485,
+              "line_start": 476,
+              "presentation": "tex_environment",
+              "presentation_sha256": "bdb8d7f328443597f2d2974971284ef9de53624977ccb3cbdf34afd6c9eba739",
+              "source_item_id": "source_proposition2_pairwise_learning_rate_and_bound",
+              "source_label": "thm:pairwiselearning"
+            }
+          ],
+          "source_item_ids": [
+            "source_proposition2_pairwise_learning_rate_and_bound"
+          ]
+        },
+        "source_proposition3_k_approval_closed_pairwise_rate": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 516,
+              "line_start": 508,
+              "presentation": "tex_environment",
+              "presentation_sha256": "c7f3a90b218c40f55dd9c6e7a1f5b6506905b36ea26d4113e0e03814bb5c8774",
+              "source_item_id": "source_proposition3_k_approval_closed_pairwise_rate",
+              "source_label": "lem:pairwiselearning_approval"
+            }
+          ],
+          "source_item_ids": [
+            "assumption_pairwise_approval_ternary_gap_domain",
+            "formula_approval_one_sided_probabilities",
+            "source_proposition3_k_approval_closed_pairwise_rate"
+          ]
+        },
+        "source_proposition4_finite_sample_M_sq_bound": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 538,
+              "line_start": 525,
+              "presentation": "tex_environment",
+              "presentation_sha256": "3e85dbd5dc428b18f2d88e6b1ad4d9defa8c1f730124521fda265aef3e1c6315",
+              "source_item_id": "source_proposition4_finite_sample_M_sq_bound",
+              "source_label": "thm:goal_learning"
+            }
+          ],
+          "source_item_ids": [
+            "source_proposition4_finite_sample_M_sq_bound",
+            "source_proposition4_outcome_exact_minimum_rate"
+          ]
+        },
+        "source_theorem1_randomized_scoring_no_improvement": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 690,
+              "line_start": 683,
+              "presentation": "tex_environment",
+              "presentation_sha256": "ba607d1c518379aab7be34cdf5b4f2ff4db97eae264308fa080b83f850c704ec",
+              "source_item_id": "source_theorem1_randomized_scoring_no_improvement",
+              "source_label": "lem:randomizebetterscoring"
+            }
+          ],
+          "source_item_ids": [
+            "source_theorem1_randomized_scoring_no_improvement"
+          ]
+        },
+        "source_theorem2_randomized_k_approval_fixed_pair_no_improvement": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 722,
+              "line_start": 708,
+              "presentation": "tex_environment",
+              "presentation_sha256": "855d25cd0989dbc7152d9140a01cc2313d6b86f80a2ebfb71187a2f33025075d",
+              "source_item_id": "source_theorem2_randomized_k_approval_fixed_pair_no_improvement",
+              "source_label": "lem:randomizenotbetterapproval"
+            }
+          ],
+          "source_item_ids": [
+            "assumption_nontrivial_k_approval_cutoffs",
+            "source_theorem2_randomized_k_approval_fixed_pair_no_improvement"
+          ]
+        },
+        "source_theorem_mallows_W_approval_not_rate_optimal": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 761,
+              "line_start": 758,
+              "presentation": "tex_environment",
+              "presentation_sha256": "b37e973e751bfb63cbb88117b4745c2ca3cda40cabfa8e3c11d1ccb0074626fd",
+              "source_item_id": "source_theorem_mallows_W_approval_not_rate_optimal",
+              "source_label": "lem:mallowsnotWK"
+            }
+          ],
+          "source_item_ids": [
+            "source_theorem_mallows_W_approval_not_rate_optimal"
+          ]
+        },
+        "source_theorem_randomized_approval_can_help_W_selection": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 746,
+              "line_start": 741,
+              "presentation": "tex_environment",
+              "presentation_sha256": "a82f98c97c77f5c97a08e6fce9a33c27c8f99bf09f348818cee52b3a9849b9fd",
+              "source_item_id": "source_theorem_randomized_approval_can_help_W_selection",
+              "source_label": "lem:randomizebetterapproval_Wselection"
+            }
+          ],
+          "source_item_ids": [
+            "source_theorem_randomized_approval_can_help_W_selection"
+          ]
+        },
+        "example_randomization_helps_Durham_numeric": {
+          "kind": "example",
+          "presentations": [],
+          "source_item_ids": [
+            "example_randomization_helps_Durham_numeric"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "6eef1229ac5eb5cf335a91ba7fc7168a3a75b69d42f9339a5ac60816e8fdd2cf",
+    "results": {
+      "example_randomization_helps_Durham_numeric": {
+        "numbering": "unnumbered",
+        "printed_label": "Unnumbered Durham Ward 1 numerical example",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "W-selection, Durham, and high-noise examples",
+            "row_sha256": "13457a25bbbbb4f518ff3310c1b7165e9a51c6b60ae83f5f221bc930f37c5222"
+          }
+        ],
+        "grouping_reason": "The report groups related source results and examples in one comparison row."
+      },
+      "source_corollary_mallows_randomization_no_improvement_positive_noise": {
+        "numbering": "numbered",
+        "printed_label": "Corollary 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 1–2; Mallows corollary",
+            "row_sha256": "ac3e345ad958c3909d65836d4ba9c75edef6f406b0916bc1679ab6dcccd85bd7"
+          }
+        ],
+        "grouping_reason": "The report groups related adjacent source results in one comparison row."
+      },
+      "source_proposition1_design_invariance_iff_strict_prefix_separation": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 1",
+            "row_sha256": "423c3c37daa9e2ffc58bc1448966ee089c4cc54c148bf7e3a86b6fe5aacf50dc"
+          }
+        ]
+      },
+      "source_proposition2_pairwise_learning_rate_and_bound": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 2",
+            "row_sha256": "bcb3017b8333db982a0ee82b5eef6de7d52a1d3a64e39945afad8a135568797b"
+          }
+        ]
+      },
+      "source_proposition3_k_approval_closed_pairwise_rate": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 3",
+            "row_sha256": "8eae98b017e6a7e6e49a1f669561dd0d9181953062ea5d83edfc8c5f7f7f6573"
+          }
+        ]
+      },
+      "source_proposition4_finite_sample_M_sq_bound": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 4",
+            "row_sha256": "f80f6471a6b34f34e8192b90557d679c7b2c32863dd8a986aca72f46a470fe76"
+          }
+        ]
+      },
+      "source_theorem1_randomized_scoring_no_improvement": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 1–2; Mallows corollary",
+            "row_sha256": "ac3e345ad958c3909d65836d4ba9c75edef6f406b0916bc1679ab6dcccd85bd7"
+          }
+        ],
+        "grouping_reason": "The report groups related adjacent source results in one comparison row."
+      },
+      "source_theorem2_randomized_k_approval_fixed_pair_no_improvement": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 1–2; Mallows corollary",
+            "row_sha256": "ac3e345ad958c3909d65836d4ba9c75edef6f406b0916bc1679ab6dcccd85bd7"
+          }
+        ],
+        "grouping_reason": "The report groups related adjacent source results in one comparison row."
+      },
+      "source_theorem_mallows_W_approval_not_rate_optimal": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "W-selection, Durham, and high-noise examples",
+            "row_sha256": "13457a25bbbbb4f518ff3310c1b7165e9a51c6b60ae83f5f221bc930f37c5222"
+          }
+        ],
+        "grouping_reason": "The report groups related source results and examples in one comparison row."
+      },
+      "source_theorem_randomized_approval_can_help_W_selection": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "W-selection, Durham, and high-noise examples",
+            "row_sha256": "13457a25bbbbb4f518ff3310c1b7165e9a51c6b60ae83f5f221bc930f37c5222"
+          }
+        ],
+        "grouping_reason": "The report groups related source results and examples in one comparison row."
+      }
+    },
+    "rows": {
+      "b2d94c0279a50af27fd6ef18cf55047e47956058f4457d3a731852c29262561d": {
+        "explanation_keys": [],
+        "supplemental_reason": "The definitions are source model content, not selected theorem-like results."
+      },
+      "423c3c37daa9e2ffc58bc1448966ee089c4cc54c148bf7e3a86b6fe5aacf50dc": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "8eae98b017e6a7e6e49a1f669561dd0d9181953062ea5d83edfc8c5f7f7f6573": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "ac3e345ad958c3909d65836d4ba9c75edef6f406b0916bc1679ab6dcccd85bd7": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "13457a25bbbbb4f518ff3310c1b7165e9a51c6b60ae83f5f221bc930f37c5222": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "c5907a3a98ff63908262ad02f4715f6c03fd2099401f96a55020b1f90c2ba60c": {
+        "explanation_keys": [],
+        "supplemental_reason": "The dynamic-program recurrence is supplemental source formula content, not a selected named theorem-like result."
+      },
+      "bcb3017b8333db982a0ee82b5eef6de7d52a1d3a64e39945afad8a135568797b": {
+        "explanation_keys": [
+          "report/proposition2-one-sided-rate"
+        ],
+        "supplemental_reason": ""
+      },
+      "f80f6471a6b34f34e8192b90557d679c7b2c32863dd8a986aca72f46a470fe76": {
+        "explanation_keys": [
+          "report/proposition4-one-sided-rate"
+        ],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

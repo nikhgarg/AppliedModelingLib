@@ -1,6 +1,6 @@
-# Final Validation Report: LG21 Test-Optional Policies
+# Final Validation Report: Test-optional Policies: Overcoming Strategic Behavior and Informational Gaps
 
-Updated: 2026-09-06
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -28,11 +28,11 @@ The fairness and policy results are proved on the stated policy domains.
 | Fairness definitions and implications; score-ignoring policy | **Exact.** |
 | [Theorem 3.1](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches) | **Formalization gap:** assume stability against profitable group entry with recalibrated school estimates; deriving this from source equilibrium remains unproved. Necessity is unknown. |
 | [Theorem 3.2](docs/SOURCE_CLARIFICATIONS.md#theorem-32-policy-scope-and-operational-blankness) | **Restricted scope:** deterministic reported output; the memo’s randomized counterexample refutes the unrestricted conclusion. Determinism is sufficient, not shown necessary. |
-| [Theorem 3.2 summary](docs/SOURCE_CLARIFICATIONS.md#theorem-32-policy-scope-and-operational-blankness) | **Typo fixed:** “demographic” becomes “observable,” matching the argument. |
+| [Theorem 3.2 summary](docs/SOURCE_CLARIFICATIONS.md#theorem-32-policy-scope-and-operational-blankness) | **Exact after correcting the terminology typo:** “demographic” becomes “observable,” matching the argument. |
 | [Lemma 4.1, voluntary regimes](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches) | **Formalization gap:** select self-enforcing participation that no admissible candidate can strictly enlarge. The source equilibrium definition has not been shown to imply this selection; necessity is unknown. |
-| Proposition 4.2 | **Exact:** the Gaussian observed-score model allows any base-only policy for students without access. |
+| Proposition 4.2 | **Exact.** |
 | [Proposition 4.3](docs/SOURCE_CLARIFICATIONS.md#lemma-41-and-proposition-43-calculations) | **Exact conclusion:** an unfair equilibrium in each regime refutes fairness, which the paper requires in every equilibrium. The variance comparison uses a direct calculation; voluntary equilibria use the Lemma 4.1 convention. |
-| [Lemma 4.1 cutoff](docs/SOURCE_CLARIFICATIONS.md#lemma-41-and-proposition-43-calculations) | **Typo fixed:** `c=(qtilde-intercept)/slope` on the positive-slope domain. |
+| [Lemma 4.1 cutoff](docs/SOURCE_CLARIFICATIONS.md#lemma-41-and-proposition-43-calculations) | **Exact after correcting the cutoff typo:** `c=(qtilde-intercept)/slope` on the positive-slope domain. |
 | [Theorem 4.4 and its reporting-conditioned generalization](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches) | **Exact for mandatory participation; restricted voluntary equilibria:** the latter use the same maximal-participation selection as Lemma 4.1. Necessity is unknown. |
 
 ## 5. Remaining Boundaries and Gaps

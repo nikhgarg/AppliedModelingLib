@@ -1,0 +1,595 @@
+{
+  "schema": 2,
+  "paper": "GHW01DigitalGoods",
+  "report_sha256": "f585ed2006085cedb54674aa9b116a4d645d28e7c78fee8e430162f0883905bc",
+  "source_items_sha256": "34c165efed55ddf1b44998956f2c5e217e55fc7ddc62b24ca408748b7e1568a6",
+  "all_selected_semantic_review_sha256": "8489c7fbb09a7c80b3dff6a55be195c2481c73e4d9d1f6f14517cea0a7b2ad0a",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/GHW01-LEMMA8.1-CROSS-BIDDER-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8400c8a578211901be7e3dc42cbd46771a83227df38ce01b965d46733bb93256",
+      "source_reading": "The preliminary SODA text claims that truthfulness alone makes winning probabilities monotone across two bidders ordered by their bid values.",
+      "memo_heading": "Lemma 8.1 and Theorem 8.2",
+      "memo_anchor": "lemma-81-and-theorem-82",
+      "report_home": 4
+    },
+    "defect/GHW01-THEOREM82-SODA-SOURCE-VERSION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8400c8a578211901be7e3dc42cbd46771a83227df38ce01b965d46733bb93256",
+      "source_reading": "The preliminary SODA text states E[R] <= F for any truthful auction, while the proof uses a cross-bidder monotonicity step not implied by truthfulness alone.",
+      "memo_heading": "Lemma 8.1 and Theorem 8.2",
+      "memo_anchor": "lemma-81-and-theorem-82",
+      "report_home": 4
+    },
+    "defect/GHW01-THEOREM4.1-LOG-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8400c8a578211901be7e3dc42cbd46771a83227df38ce01b965d46733bb93256",
+      "source_reading": "Theorem 4.1 states F >= T/(2 log h) without an explicit nondegenerate logarithmic domain.",
+      "memo_heading": "Logarithmic domains",
+      "memo_anchor": "logarithmic-domains",
+      "report_home": 4
+    },
+    "defect/GHW01-COROLLARY4.2-LOG-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8400c8a578211901be7e3dc42cbd46771a83227df38ce01b965d46733bb93256",
+      "source_reading": "Corollary 4.2 states F >= T/(4 log n) without excluding the one-bidder case.",
+      "memo_heading": "Logarithmic domains",
+      "memo_anchor": "logarithmic-domains",
+      "report_home": 4
+    },
+    "defect/GHW01-THEOREM7-LOG-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8400c8a578211901be7e3dc42cbd46771a83227df38ce01b965d46733bb93256",
+      "source_reading": "Theorems 7.1 and 7.2 use logarithmic and square-root-logarithmic asymptotic denominators without excluding the normalized boundary h = 1.",
+      "memo_heading": "Logarithmic domains",
+      "memo_anchor": "logarithmic-domains",
+      "report_home": 4
+    },
+    "convention/GHW01-NORMALIZED-BID-DOMAIN-01": {
+      "disposition": "not_material",
+      "reason": "Bids at least one are the explicit source normalization."
+    },
+    "convention/GHW01-HIGHEST-BID-PARAMETER-01": {
+      "disposition": "not_material",
+      "reason": "The maximum bid h is attained by definition in the source finite model."
+    },
+    "convention/GHW01-TOTAL-VALUE-TRUTHFUL-BIDDING-01": {
+      "disposition": "not_material",
+      "reason": "Truthful bidding identifies bids and values exactly as in the source utility interpretation."
+    },
+    "convention/GHW01-BOUNDED-OPT-CAP-SEMANTICS-01": {
+      "disposition": "not_material",
+      "reason": "Capping threshold sales at supply implements the source bounded-supply benchmark without an extra no-ties assumption."
+    },
+    "convention/GHW01-BOUNDED-TOP-K-EXACT-CARDINALITY-01": {
+      "disposition": "not_material",
+      "reason": "On the stated nonnegative source domain, the top-k sum equals both the exact-k and at-most-k revenue maximum."
+    },
+    "convention/GHW01-BID-INDEPENDENT-BOUNDARY-01": {
+      "disposition": "not_material",
+      "reason": "The own-erased multiset and boundary acceptance flag represent source bid independence and preserve repeated bids."
+    },
+    "convention/GHW01-RANDOMIZED-EXPECTED-PROFIT-FINITENESS-01": {
+      "disposition": "not_material",
+      "reason": "Finite expected profit is the source domain of the compared real-valued expected utilities."
+    },
+    "convention/GHW01-RANDOMIZED-AUCTION-PMF-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8400c8a578211901be7e3dc42cbd46771a83227df38ce01b965d46733bb93256",
+      "source_reading": "The generic randomized-auction carrier is restricted to discrete, countably supported probability laws, represented in Lean by BidProfile Agent -> PMF (AuctionOutcome Agent). It does not claim to represent every continuous probability law on the real-price outcome space allowed by the source's unrestricted phrase 'probability distributions on auction outcomes'.",
+      "memo_heading": "Randomization and bounded supply",
+      "memo_anchor": "randomization-and-bounded-supply",
+      "report_home": 10
+    },
+    "convention/GHW01-NONEMPTY-OTHER-BID-DOMAIN-01": {
+      "disposition": "not_material",
+      "reason": "Choosing an optimal offer from other bids or a sample already requires that source input to be nonempty."
+    },
+    "convention/GHW01-THEOREM93-SET-OF-BIDS-ERASED-MULTISET-01": {
+      "disposition": "not_material",
+      "reason": "The erased multiset encodes the source bid collection while preserving multiplicities and anonymity."
+    },
+    "convention/GHW01-THEOREM93-SALE-PRICE-CONVENTION-01": {
+      "disposition": "not_material",
+      "reason": "Binary allocation, loser-zero payments, and prices between zero and the winning bid are source auction conventions."
+    },
+    "convention/GHW01-THEOREM93-HIGH-VALUE-DISCRETIZATION-01": {
+      "disposition": "not_material",
+      "reason": "This is a concrete finite representation of an already stated auction primitive; it does not repair a source formula or add a condition to a named paper conclusion."
+    },
+    "convention/GHW01-THEOREM62-EXACT-HALF-SAMPLING-01": {
+      "disposition": "not_material",
+      "reason": "Uniform exact-half sampling and complementary selling are the source mechanism."
+    },
+    "convention/GHW01-THEOREM62-DISCRETE-ALPHA-01": {
+      "disposition": "not_material",
+      "reason": "This is a concrete finite representation of an already stated auction primitive; it does not repair a source formula or add a condition to a named paper conclusion."
+    },
+    "convention/GHW01-WEIGHTED-PAIRING-PROBABILITY-DOMAIN-01": {
+      "disposition": "not_material",
+      "reason": "Source normalized bids and an available other bidder imply the positive denominator of its displayed pairing law."
+    },
+    "convention/GHW01-WEIGHTED-PAIRING-JOINT-LAW-01": {
+      "disposition": "not_material",
+      "reason": "Independent bidderwise weighted draws implement the source randomized mechanism."
+    },
+    "convention/GHW01-BOUNDED-SAMPLE-CAPACITY-FLOOR-01": {
+      "disposition": "not_material",
+      "reason": "The floor turns source proportional sample capacity into its integer item count."
+    },
+    "convention/GHW01-BOUNDED-REJECTION-PRIORITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8400c8a578211901be7e3dc42cbd46771a83227df38ce01b965d46733bb93256",
+      "source_reading": "When more than k bids satisfy the bounded-sampling threshold, the source permits an arbitrary rejection rule. The formal model instantiates that choice with one fixed exogenous linear priority order on bidder labels and retains the first k accepted bidders in that order.",
+      "memo_heading": "Randomization and bounded supply",
+      "memo_anchor": "randomization-and-bounded-supply",
+      "report_home": 4
+    },
+    "convention/GHW01-BOUNDED-DUAL-EVEN-CAPACITY-01": {
+      "disposition": "not_material",
+      "reason": "This is a concrete finite representation of an already stated auction primitive; it does not repair a source formula or add a condition to a named paper conclusion."
+    },
+    "convention/GHW01-SECTION11-STRICT-THRESHOLD-TIE-01": {
+      "disposition": "not_material",
+      "reason": "This Section 11 implementation convention is outside the selected named-theory scope."
+    },
+    "source/result_corollary4_2/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8400c8a578211901be7e3dc42cbd46771a83227df38ce01b965d46733bb93256",
+      "source_reading": "result_corollary4_2",
+      "memo_heading": "Logarithmic domains",
+      "memo_anchor": "logarithmic-domains",
+      "report_home": 4
+    },
+    "source/result_lemma8_1_monotone_allocation/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8400c8a578211901be7e3dc42cbd46771a83227df38ce01b965d46733bb93256",
+      "source_reading": "result_lemma8_1_monotone_allocation",
+      "memo_heading": "Lemma 8.1 and Theorem 8.2",
+      "memo_anchor": "lemma-81-and-theorem-82",
+      "report_home": 4
+    },
+    "source/result_theorem4_1/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8400c8a578211901be7e3dc42cbd46771a83227df38ce01b965d46733bb93256",
+      "source_reading": "result_theorem4_1",
+      "memo_heading": "Logarithmic domains",
+      "memo_anchor": "logarithmic-domains",
+      "report_home": 4
+    },
+    "source/result_theorem7_1_weighted_pairing/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8400c8a578211901be7e3dc42cbd46771a83227df38ce01b965d46733bb93256",
+      "source_reading": "result_theorem7_1_weighted_pairing",
+      "memo_heading": "Logarithmic domains",
+      "memo_anchor": "logarithmic-domains",
+      "report_home": 4
+    },
+    "source/result_theorem7_2_lower_bound/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8400c8a578211901be7e3dc42cbd46771a83227df38ce01b965d46733bb93256",
+      "source_reading": "result_theorem7_2_lower_bound",
+      "memo_heading": "Logarithmic domains",
+      "memo_anchor": "logarithmic-domains",
+      "report_home": 4
+    },
+    "source/result_theorem8_2_journal_revenue_upper_bound/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8400c8a578211901be7e3dc42cbd46771a83227df38ce01b965d46733bb93256",
+      "source_reading": "result_theorem8_2_journal_revenue_upper_bound",
+      "memo_heading": "Lemma 8.1 and Theorem 8.2",
+      "memo_anchor": "lemma-81-and-theorem-82",
+      "report_home": 4
+    },
+    "report/theorem82-finite-offer-support": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "8400c8a578211901be7e3dc42cbd46771a83227df38ce01b965d46733bb93256",
+      "source_reading": "The reader-facing Theorem 8.2 discussion explains its arbitrary-real-offer-law scope.",
+      "memo_heading": "Lemma 8.1 and Theorem 8.2",
+      "memo_anchor": "lemma-81-and-theorem-82",
+      "report_home": 4
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "16a8854d7e81a6d10168bb5559a71703d4c6d4cb52c7740aab747bc05c33e66a",
+      "discovered_named_result_sha256": "a54ecb316676cd2d6d6fa07ef72f7885b40594bd44501f3b8a4a9a9d5191385a",
+      "source_format": "text",
+      "results": {
+        "result_corollary4_2": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 301,
+              "line_start": 301,
+              "presentation": "text_heading",
+              "presentation_sha256": "ae1afbee4dcd2b4f862e63ad724fa0c670ad09f7069bdbc6d4f83ce031403c90",
+              "source_item_id": "result_corollary4_2",
+              "source_label": "Corollary 4.2"
+            }
+          ],
+          "source_item_ids": [
+            "result_corollary4_2"
+          ]
+        },
+        "result_lemma6_1_fixed_size_lower_tail": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 432,
+              "line_start": 428,
+              "presentation": "text_heading",
+              "presentation_sha256": "b011babe7f80acad7ea82b09578ac76ccc39e3cef748ce522bc97994a8467ba3",
+              "source_item_id": "result_lemma6_1_fixed_size_lower_tail",
+              "source_label": "Lemma 6.1"
+            }
+          ],
+          "source_item_ids": [
+            "result_lemma6_1_fixed_size_lower_tail"
+          ]
+        },
+        "result_lemma8_1_monotone_allocation": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 755,
+              "line_start": 747,
+              "presentation": "text_heading",
+              "presentation_sha256": "1a7a262be7c091a4404a64b60af529a610c81868725bd010ef86590f4e704b92",
+              "source_item_id": "result_lemma8_1_monotone_allocation",
+              "source_label": "Lemma 8.1"
+            }
+          ],
+          "source_item_ids": [
+            "result_lemma8_1_monotone_allocation"
+          ]
+        },
+        "result_lemma9_2_bid_independence": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1106,
+              "line_start": 1105,
+              "presentation": "text_heading",
+              "presentation_sha256": "34da0a4c54674e5cc557cacc24038d8053f7321bdbb5e90fdd14bc5772ab1499",
+              "source_item_id": "result_lemma9_2_bid_independence",
+              "source_label": "Lemma 9.2"
+            }
+          ],
+          "source_item_ids": [
+            "result_lemma9_2_bid_independence"
+          ]
+        },
+        "result_theorem4_1": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 359,
+              "line_start": 359,
+              "presentation": "text_heading",
+              "presentation_sha256": "acf01069c3c35ca0d469e922c71a141ee316522c3a42da92ac10e39f1e04e0bf",
+              "source_item_id": "result_theorem4_1",
+              "source_label": "Theorem 4.1"
+            }
+          ],
+          "source_item_ids": [
+            "result_theorem4_1"
+          ]
+        },
+        "result_theorem6_2_random_sampling": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 482,
+              "line_start": 479,
+              "presentation": "text_heading",
+              "presentation_sha256": "25671c69b758e906c07329d9ce4f181337c5c55b62e8610b5bf1688ac6d721f5",
+              "source_item_id": "result_theorem6_2_random_sampling",
+              "source_label": "Theorem 6.2"
+            }
+          ],
+          "source_item_ids": [
+            "result_theorem6_2_random_sampling"
+          ]
+        },
+        "result_theorem7_1_weighted_pairing": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 571,
+              "line_start": 563,
+              "presentation": "text_heading",
+              "presentation_sha256": "a45aaaf0a64fe51d68792a0ffce49fea68b69ce0f2d6907545c17b07666661b4",
+              "source_item_id": "result_theorem7_1_weighted_pairing",
+              "source_label": "Theorem 7.1"
+            }
+          ],
+          "source_item_ids": [
+            "result_theorem7_1_weighted_pairing"
+          ]
+        },
+        "result_theorem7_2_tightness": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 689,
+              "line_start": 626,
+              "presentation": "text_heading",
+              "presentation_sha256": "9847b3200ac6af5e041a10ba641e264fef78917b4eac29e0a38e06a6072052fd",
+              "source_item_id": "result_theorem7_2_tightness",
+              "source_label": "Theorem 7.2"
+            }
+          ],
+          "source_item_ids": [
+            "result_theorem7_2_lower_bound",
+            "result_theorem7_2_tightness"
+          ]
+        },
+        "result_theorem8_2_journal_revenue_upper_bound": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 971,
+              "line_start": 833,
+              "presentation": "text_heading",
+              "presentation_sha256": "e34c2eb50b08933a995c8b0434d104e9c09d98b2b7d689c8697dfc764e5320e2",
+              "source_item_id": "result_theorem8_2_journal_revenue_upper_bound",
+              "source_label": "Theorem 8.2"
+            }
+          ],
+          "source_item_ids": [
+            "result_theorem8_2_journal_revenue_upper_bound"
+          ]
+        },
+        "result_theorem9_1_bid_independent_lower_bound": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 986,
+              "line_start": 979,
+              "presentation": "text_heading",
+              "presentation_sha256": "774210e45bee319569f6d78dbc0637d6f6735e6d67366b632509e4611547c551",
+              "source_item_id": "result_theorem9_1_bid_independent_lower_bound",
+              "source_label": "Theorem 9.1"
+            }
+          ],
+          "source_item_ids": [
+            "result_theorem9_1_bid_independent_lower_bound"
+          ]
+        },
+        "result_theorem9_3_deterministic_lower_bound": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1106,
+              "line_start": 1100,
+              "presentation": "text_heading",
+              "presentation_sha256": "1a63a371ac980e1109fb2a3da4047a68bd9d302c6f3c7214b4f4e8e73f48c803",
+              "source_item_id": "result_theorem9_3_deterministic_lower_bound",
+              "source_label": "Theorem 9.3"
+            }
+          ],
+          "source_item_ids": [
+            "result_theorem9_3_deterministic_lower_bound"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "2b3e8355e1379cbca95a907f3f1d3dae92850c55b94f0746c56bc20ba4b75dbd",
+    "results": {
+      "result_corollary4_2": {
+        "numbering": "numbered",
+        "printed_label": "Corollary 4.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 4.1; Corollary 4.2; Theorems 7.1–7.2",
+            "row_sha256": "5c8ca613909a3bc317d7398aa0eb37106357ee3fbf3c0db14c26e5cbfd5eaead"
+          }
+        ],
+        "grouping_reason": "The report groups these adjacent logarithmic-domain results under one shared comparison."
+      },
+      "result_lemma6_1_fixed_size_lower_tail": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 6.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 6.1",
+            "row_sha256": "b1833b4d7598a747a9199a9db70526b82c0a4642e391830892b86dd7c0a92c24"
+          }
+        ]
+      },
+      "result_lemma8_1_monotone_allocation": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 8.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 8.1",
+            "row_sha256": "9362af9df24f4ef08c8f8934eb36fd0b19b069dba5184ba26d9b8890ec8a2af9"
+          }
+        ]
+      },
+      "result_lemma9_2_bid_independence": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 9.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 9.2",
+            "row_sha256": "35afb1bfa8909c42269dd11d318de8417616d07d713768089c1e9d22a78cfc8e"
+          }
+        ]
+      },
+      "result_theorem4_1": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 4.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 4.1; Corollary 4.2; Theorems 7.1–7.2",
+            "row_sha256": "5c8ca613909a3bc317d7398aa0eb37106357ee3fbf3c0db14c26e5cbfd5eaead"
+          }
+        ],
+        "grouping_reason": "The report groups these adjacent logarithmic-domain results under one shared comparison."
+      },
+      "result_theorem6_2_random_sampling": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 6.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 6.2",
+            "row_sha256": "a4af8332d445087b1db83c3928f385fcee8c4e73998d0d0581f23f63b21292d3"
+          }
+        ]
+      },
+      "result_theorem7_1_weighted_pairing": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 7.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 4.1; Corollary 4.2; Theorems 7.1–7.2",
+            "row_sha256": "5c8ca613909a3bc317d7398aa0eb37106357ee3fbf3c0db14c26e5cbfd5eaead"
+          }
+        ],
+        "grouping_reason": "The report groups these adjacent logarithmic-domain results under one shared comparison."
+      },
+      "result_theorem7_2_tightness": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 7.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 4.1; Corollary 4.2; Theorems 7.1–7.2",
+            "row_sha256": "5c8ca613909a3bc317d7398aa0eb37106357ee3fbf3c0db14c26e5cbfd5eaead"
+          }
+        ],
+        "grouping_reason": "The report groups these adjacent logarithmic-domain results under one shared comparison."
+      },
+      "result_theorem8_2_journal_revenue_upper_bound": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 8.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 8.2",
+            "row_sha256": "04719f0c5c4dc192f3557104b4454fb3676c0b52c09ec4a7604cf6f15ac65dec"
+          }
+        ]
+      },
+      "result_theorem9_1_bid_independent_lower_bound": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 9.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 9.1",
+            "row_sha256": "92ad930986bc58cc28a713603be243592083716e262e83bb248a1db8fa8b0e7d"
+          }
+        ]
+      },
+      "result_theorem9_3_deterministic_lower_bound": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 9.3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 9.3",
+            "row_sha256": "f0004a1fb59ab115ba82b6b25bd2d5656a97e47572fa7ecc8f00e0c009bfccab"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "5c8ca613909a3bc317d7398aa0eb37106357ee3fbf3c0db14c26e5cbfd5eaead": {
+        "explanation_keys": [
+          "defect/GHW01-COROLLARY4.2-LOG-DOMAIN-01",
+          "source/result_corollary4_2/corrected_target",
+          "defect/GHW01-THEOREM4.1-LOG-DOMAIN-01",
+          "source/result_theorem4_1/corrected_target",
+          "defect/GHW01-THEOREM7-LOG-DOMAIN-01",
+          "source/result_theorem7_1_weighted_pairing/corrected_target",
+          "source/result_theorem7_2_lower_bound/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "b1833b4d7598a747a9199a9db70526b82c0a4642e391830892b86dd7c0a92c24": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "12589143ded943a85e45d7ef3339292dbc479629cd7cd4e42a8e368749dc53a6": {
+        "explanation_keys": [],
+        "supplemental_reason": "The mechanism construction is source content but is not a separately selected named result."
+      },
+      "a4af8332d445087b1db83c3928f385fcee8c4e73998d0d0581f23f63b21292d3": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "9362af9df24f4ef08c8f8934eb36fd0b19b069dba5184ba26d9b8890ec8a2af9": {
+        "explanation_keys": [
+          "defect/GHW01-LEMMA8.1-CROSS-BIDDER-01",
+          "source/result_lemma8_1_monotone_allocation/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "04719f0c5c4dc192f3557104b4454fb3676c0b52c09ec4a7604cf6f15ac65dec": {
+        "explanation_keys": [
+          "report/theorem82-finite-offer-support",
+          "defect/GHW01-THEOREM82-SODA-SOURCE-VERSION-01",
+          "source/result_theorem8_2_journal_revenue_upper_bound/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "92ad930986bc58cc28a713603be243592083716e262e83bb248a1db8fa8b0e7d": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "35afb1bfa8909c42269dd11d318de8417616d07d713768089c1e9d22a78cfc8e": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "f0004a1fb59ab115ba82b6b25bd2d5656a97e47572fa7ecc8f00e0c009bfccab": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "423bb6dadab4bb1ad91d8a67a6c227a0ac030a42c0c4b9a7bac5eaea0f054c6e": {
+        "explanation_keys": [
+          "convention/GHW01-BOUNDED-REJECTION-PRIORITY-01"
+        ],
+        "supplemental_reason": "The bounded-supply selector is source mechanism content but is not a separately selected named result."
+      }
+    }
+  }
+}

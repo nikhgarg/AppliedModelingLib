@@ -1,4 +1,5 @@
 import AppliedModelingLib.Foundations.Probability.MeasureInequalities
+import AppliedModelingLib.Foundations.Probability.ExtendedExpectation
 import AppliedModelingLib.Foundations.Optimization.ScalarStrongDuality
 import Mathlib.Data.Real.Pointwise
 import Mathlib.MeasureTheory.Integral.Prod
@@ -635,6 +636,39 @@ noncomputable def unpenalizedValue (loss : α → ℝ) : ℝ :=
     ∫ x, loss x ∂(source : Measure α))
 
 /--
+The unrestricted zero-transport-penalty value with the extended maximization
+convention from `upperExpectation`.
+
+Unlike `unpenalizedValue`, this value does not turn a nonintegrable reward
+into the default Bochner integral `0`.  It is therefore the source-compatible
+zero-multiplier endpoint when every probability law is admissible and the
+absent transport term imposes no moment restriction.  The real-valued
+`unpenalizedValue` remains useful for finite/integrable transport arguments.
+-/
+noncomputable def extendedUnpenalizedValue (loss : α → ℝ) : EReal :=
+  sSup (Set.range fun source : ProbabilityMeasure α =>
+    upperExpectation loss (source : Measure α))
+
+/-- Every admissible source law supplies a lower bound on the unrestricted
+extended zero-penalty value. -/
+theorem upperExpectation_le_extendedUnpenalizedValue
+    (loss : α → ℝ) (source : ProbabilityMeasure α) :
+    upperExpectation loss (source : Measure α) ≤ extendedUnpenalizedValue loss := by
+  unfold extendedUnpenalizedValue
+  exact le_sSup (Set.mem_range_self source)
+
+/--
+Each measurable point payoff is attained by its Dirac adversarial law in the
+unrestricted extended zero-penalty value.
+-/
+theorem coe_loss_le_extendedUnpenalizedValue_of_measurable
+    (loss : α → ℝ) (hloss : Measurable loss) (point : α) :
+    (loss point : EReal) ≤ extendedUnpenalizedValue loss := by
+  rw [← upperExpectation_dirac loss hloss point]
+  change upperExpectation loss (diracProba point : Measure α) ≤ _
+  exact upperExpectation_le_extendedUnpenalizedValue loss (diracProba point)
+
+/--
 An unpenalized expected-loss supremum equals the pointwise loss supremum when
 the loss is integrable under every probability law.  In particular, this
 recovers the `gamma = 0` branch of a transport-penalized objective under the
@@ -834,6 +868,68 @@ theorem exists_realExpectedCost_lt_of_realTransportCost_lt
   obtain ⟨costValue, ⟨π, rfl⟩, hπcost⟩ :=
     exists_lt_of_csInf_lt (Set.range_nonempty _) hcost
   exact ⟨π, hπcost⟩
+
+/--
+The infimum transport cost is convex under mixing of source laws.  The proof
+uses epsilon-optimal finite-cost couplings on both sides before mixing them;
+it does not assume that either infimum is attained.
+-/
+theorem realTransportCost_convexCombination_le
+    (c : α × β → ℝ) (ν : ProbabilityMeasure β)
+    (weight : ℝ) (hweight_nonneg : 0 ≤ weight) (hweight_le_one : weight ≤ 1)
+    (first second : { source : ProbabilityMeasure α //
+      Nonempty (FiniteRealCostCoupling c source ν) })
+    (hcost_nonneg : ∀ pair, 0 ≤ c pair) :
+    realTransportCost c
+        (ProbabilityMeasure.convexCombination weight hweight_nonneg hweight_le_one first.1 second.1)
+        ν ≤
+      weight * realTransportCost c first.1 ν +
+        (1 - weight) * realTransportCost c second.1 ν := by
+  apply le_of_forall_pos_le_add
+  intro epsilon hepsilon
+  obtain ⟨firstPlan, hfirstPlan⟩ :=
+    exists_realExpectedCost_lt_of_realTransportCost_lt c first.1 ν first.2
+      (bound := realTransportCost c first.1 ν + epsilon) (by linarith)
+  obtain ⟨secondPlan, hsecondPlan⟩ :=
+    exists_realExpectedCost_lt_of_realTransportCost_lt c second.1 ν second.2
+      (bound := realTransportCost c second.1 ν + epsilon) (by linarith)
+  let firstCandidate : FiniteRealCostCouplingTo c ν := {
+    source := first.1
+    coupling := firstPlan.1
+    cost_integrable := firstPlan.2 }
+  let secondCandidate : FiniteRealCostCouplingTo c ν := {
+    source := second.1
+    coupling := secondPlan.1
+    cost_integrable := secondPlan.2 }
+  let mixed := FiniteRealCostCouplingTo.convexCombination c ν weight hweight_nonneg hweight_le_one
+    firstCandidate secondCandidate
+  have hmixed_cost := realTransportCost_le_expectedCost c mixed.source ν hcost_nonneg
+    ⟨mixed.coupling, mixed.cost_integrable⟩
+  change realTransportCost c
+      (ProbabilityMeasure.convexCombination weight hweight_nonneg hweight_le_one first.1 second.1)
+      ν ≤
+    ∫ pair, c pair ∂(mixed.coupling.joint : Measure (α × β)) at hmixed_cost
+  rw [FiniteRealCostCouplingTo.integral_cost_convexCombination] at hmixed_cost
+  have hweight_compl_nonneg : 0 ≤ 1 - weight := sub_nonneg.mpr hweight_le_one
+  have hfirst_weighted : weight * ∫ pair, c pair ∂(firstPlan.1.joint : Measure (α × β)) ≤
+      weight * (realTransportCost c first.1 ν + epsilon) :=
+    mul_le_mul_of_nonneg_left hfirstPlan.le hweight_nonneg
+  have hsecond_weighted : (1 - weight) * ∫ pair, c pair ∂
+      (secondPlan.1.joint : Measure (α × β)) ≤
+      (1 - weight) * (realTransportCost c second.1 ν + epsilon) :=
+    mul_le_mul_of_nonneg_left hsecondPlan.le hweight_compl_nonneg
+  calc
+    realTransportCost c
+        (ProbabilityMeasure.convexCombination weight hweight_nonneg hweight_le_one first.1 second.1)
+        ν ≤ weight * ∫ pair, c pair ∂(firstPlan.1.joint : Measure (α × β)) +
+          (1 - weight) * ∫ pair, c pair ∂(secondPlan.1.joint : Measure (α × β)) := by
+            simpa [mixed, firstCandidate, secondCandidate] using hmixed_cost
+    _ ≤ weight * (realTransportCost c first.1 ν + epsilon) +
+          (1 - weight) * (realTransportCost c second.1 ν + epsilon) :=
+      add_le_add hfirst_weighted hsecond_weighted
+    _ = weight * realTransportCost c first.1 ν +
+          (1 - weight) * realTransportCost c second.1 ν + epsilon := by
+      ring
 
 /--
 Weak real-cost transport duality at the infimum-ball level.  Starting from the
@@ -1195,6 +1291,100 @@ noncomputable def realTransportCostPayoffFrontier
       ∫ x, loss x ∂(candidate.1 : Measure α))
 
 /--
+The attainable upper/lower cost--payoff hypograph of an infimum-cost
+transport frontier is convex.  Exact transport-cost pairs need not themselves
+be convex because mixing can improve the infimum cost; the upper cost and
+lower payoff coordinates in `Optimization.scalarAchievableSet` capture the
+correct convex geometry.  The proof uses
+`realTransportCost_convexCombination_le`, hence requires no optimal plan.
+-/
+theorem convex_scalarAchievableSet_realTransportCostPayoffFrontier
+    (loss : α → ℝ) (c : α × β → ℝ) (radius : ℝ)
+    (nominal : ProbabilityMeasure β)
+    (hloss_integrable : ∀ candidate : { source : ProbabilityMeasure α //
+      Nonempty (FiniteRealCostCoupling c source nominal) },
+      Integrable loss (candidate.1 : Measure α))
+    (hcost_nonneg : ∀ pair, 0 ≤ c pair) :
+    Convex ℝ (Optimization.scalarAchievableSet
+      (realTransportCostPayoffFrontier loss c nominal) Prod.snd
+      (fun point => point.1 - radius)) := by
+  rintro ⟨firstCost, firstPayoff⟩
+    ⟨firstPoint, hfirstPoint, hfirstCost, hfirstPayoff⟩
+    ⟨secondCost, secondPayoff⟩
+    ⟨secondPoint, hsecondPoint, hsecondCost, hsecondPayoff⟩
+    weightFirst weightSecond hweightFirst hweightSecond hweights
+  obtain ⟨first, hfirst_eq⟩ := hfirstPoint
+  obtain ⟨second, hsecond_eq⟩ := hsecondPoint
+  have hfirst_cost_eq : realTransportCost c first.1 nominal = firstPoint.1 := by
+    simpa using congrArg Prod.fst hfirst_eq
+  have hfirst_payoff_eq : (∫ x, loss x ∂(first.1 : Measure α)) = firstPoint.2 := by
+    simpa using congrArg Prod.snd hfirst_eq
+  have hsecond_cost_eq : realTransportCost c second.1 nominal = secondPoint.1 := by
+    simpa using congrArg Prod.fst hsecond_eq
+  have hsecond_payoff_eq : (∫ x, loss x ∂(second.1 : Measure α)) = secondPoint.2 := by
+    simpa using congrArg Prod.snd hsecond_eq
+  let firstPlan : FiniteRealCostCoupling c first.1 nominal := Classical.choice first.2
+  let secondPlan : FiniteRealCostCoupling c second.1 nominal := Classical.choice second.2
+  let firstCandidate : FiniteRealCostCouplingTo c nominal := {
+    source := first.1
+    coupling := firstPlan.1
+    cost_integrable := firstPlan.2 }
+  let secondCandidate : FiniteRealCostCouplingTo c nominal := {
+    source := second.1
+    coupling := secondPlan.1
+    cost_integrable := secondPlan.2 }
+  let mixedCandidate := FiniteRealCostCouplingTo.convexCombination c nominal
+    weightFirst hweightFirst (by linarith) firstCandidate secondCandidate
+  let mixedSource : { source : ProbabilityMeasure α //
+      Nonempty (FiniteRealCostCoupling c source nominal) } :=
+    ⟨ProbabilityMeasure.convexCombination weightFirst hweightFirst (by linarith) first.1 second.1,
+      ⟨⟨mixedCandidate.coupling, mixedCandidate.cost_integrable⟩⟩⟩
+  have hmixed_cost : realTransportCost c mixedSource.1 nominal ≤
+      weightFirst * realTransportCost c first.1 nominal +
+        (1 - weightFirst) * realTransportCost c second.1 nominal := by
+    simpa [mixedSource] using realTransportCost_convexCombination_le c nominal
+      weightFirst hweightFirst (by linarith) first second hcost_nonneg
+  have hmixed_payoff : (∫ x, loss x ∂(mixedSource.1 : Measure α)) =
+      weightFirst * (∫ x, loss x ∂(first.1 : Measure α)) +
+        (1 - weightFirst) * (∫ x, loss x ∂(second.1 : Measure α)) := by
+    simpa [mixedSource, smul_eq_mul] using
+      integral_probabilityMeasure_convexCombination weightFirst hweightFirst (by linarith)
+        first.1 second.1 loss (hloss_integrable first) (hloss_integrable second)
+  refine ⟨(realTransportCost c mixedSource.1 nominal,
+      ∫ x, loss x ∂(mixedSource.1 : Measure α)), ?_, ?_, ?_⟩
+  · exact ⟨mixedSource, rfl⟩
+  · have hfirst_weighted : weightFirst * (firstPoint.1 - radius) ≤
+        weightFirst * firstCost :=
+      mul_le_mul_of_nonneg_left hfirstCost hweightFirst
+    have hsecond_weighted : weightSecond * (secondPoint.1 - radius) ≤
+        weightSecond * secondCost :=
+      mul_le_mul_of_nonneg_left hsecondCost hweightSecond
+    rw [← hfirst_cost_eq] at hfirst_weighted
+    rw [← hsecond_cost_eq] at hsecond_weighted
+    simp only [Prod.smul_mk, Prod.mk_add_mk, smul_eq_mul]
+    calc
+      realTransportCost c mixedSource.1 nominal - radius ≤
+          weightFirst * realTransportCost c first.1 nominal +
+            (1 - weightFirst) * realTransportCost c second.1 nominal - radius :=
+        sub_le_sub_right hmixed_cost radius
+      _ = weightFirst * (realTransportCost c first.1 nominal - radius) +
+            weightSecond * (realTransportCost c second.1 nominal - radius) := by
+        rw [show weightSecond = 1 - weightFirst by linarith]
+        ring
+      _ ≤ weightFirst * firstCost + weightSecond * secondCost := by
+        exact add_le_add hfirst_weighted hsecond_weighted
+  · have hfirst_weighted : weightFirst * firstPayoff ≤ weightFirst * firstPoint.2 :=
+      mul_le_mul_of_nonneg_left hfirstPayoff hweightFirst
+    have hsecond_weighted : (1 - weightFirst) * secondPayoff ≤
+        (1 - weightFirst) * secondPoint.2 := by
+      rw [← show weightSecond = 1 - weightFirst by linarith]
+      exact mul_le_mul_of_nonneg_left hsecondPayoff hweightSecond
+    simp only [Prod.smul_mk, Prod.mk_add_mk, smul_eq_mul]
+    rw [show weightSecond = 1 - weightFirst by linarith]
+    rw [hmixed_payoff, hfirst_payoff_eq, hsecond_payoff_eq]
+    exact add_le_add hfirst_weighted hsecond_weighted
+
+/--
 The Lagrangian value formed from an infimum real transport cost, with the
 candidate source law restricted precisely to those admitting a finite-cost
 coupling to the nominal law.  This is the fixed-penalty counterpart of
@@ -1311,6 +1501,112 @@ theorem constrainedRealCouplingValue_eq_scalarDualValue_of_compact_convex_fronti
   exact Optimization.scalarStrongDuality_costPayoffFrontier
     (realCouplingCostPayoffFrontier loss c nominal) radius hfrontier_compact hfrontier_convex
       hstrict
+
+/--
+Strong scalar duality for a coupling-level transport ball from convexity,
+strict diagonal feasibility, and real boundedness alone.  The scalar Slater
+argument works with the closure of the attainable hypograph, so a nonattained
+bounded frontier payoff does not force a separate closed-frontier assumption.
+-/
+theorem constrainedRealCouplingValue_eq_scalarDualValue_of_bdd
+    (loss : α → ℝ) (c : α × β → ℝ) (radius : ℝ)
+    (nominal : ProbabilityMeasure β)
+    (hfrontier_convex : Convex ℝ (realCouplingCostPayoffFrontier loss c nominal))
+    (hstrict : ∃ point ∈ realCouplingCostPayoffFrontier loss c nominal, point.1 < radius)
+    (hprimal_bdd : BddAbove (Prod.snd '' Optimization.scalarFeasible
+      (realCouplingCostPayoffFrontier loss c nominal) (fun point => point.1 - radius)))
+    (hdual_bdd : ∀ penalty, 0 ≤ penalty →
+      BddAbove ((fun point => Optimization.scalarLagrangian Prod.snd
+        (fun point => point.1 - radius) point penalty) ''
+          realCouplingCostPayoffFrontier loss c nominal)) :
+    constrainedRealCouplingValue loss c radius nominal =
+      Optimization.scalarDualValue (realCouplingCostPayoffFrontier loss c nominal)
+        Prod.snd (fun point => point.1 - radius) := by
+  rw [constrainedRealCouplingValue_eq_scalarPrimalValue_frontier]
+  apply Optimization.scalarStrongDuality_of_isScalarSlater_of_bdd
+  · refine ⟨hfrontier_convex, ?_⟩
+    intro first hfirst second hsecond weightFirst weightSecond hweightFirst hweightSecond hweights
+    change weightFirst * first.2 + weightSecond * second.2 ≤
+      weightFirst * first.2 + weightSecond * second.2
+    exact le_rfl
+  · refine {
+      convex_X := hfrontier_convex
+      convex_g := ?_
+      strict_feasible := ?_ }
+    · refine ⟨hfrontier_convex, ?_⟩
+      intro first hfirst second hsecond weightFirst weightSecond hweightFirst hweightSecond hweights
+      change weightFirst * first.1 + weightSecond * second.1 - radius ≤
+        weightFirst * (first.1 - radius) + weightSecond * (second.1 - radius)
+      have hradius : (weightFirst + weightSecond) * radius = radius := by
+        rw [hweights]
+        ring
+      exact le_of_eq (by
+        calc
+          weightFirst * first.1 + weightSecond * second.1 - radius =
+              weightFirst * first.1 + weightSecond * second.1 -
+                (weightFirst + weightSecond) * radius := by rw [hradius]
+          _ = weightFirst * (first.1 - radius) +
+              weightSecond * (second.1 - radius) := by ring)
+    · obtain ⟨point, hpoint, hcost⟩ := hstrict
+      exact ⟨point, hpoint, sub_neg.mpr hcost⟩
+  · exact hprimal_bdd
+  · exact hdual_bdd
+
+/--
+Strong scalar duality for a coupling-level transport ball from closedness of
+its attainable cost--payoff hypograph.  This is the noncompact counterpart of
+`constrainedRealCouplingValue_eq_scalarDualValue_of_compact_convex_frontier`:
+the underlying probability-law carrier need not be compact once the exact
+finite-dimensional no-gap condition and real boundedness of the primal and
+fixed-multiplier objectives are established.
+-/
+theorem constrainedRealCouplingValue_eq_scalarDualValue_of_closed_achievable
+    (loss : α → ℝ) (c : α × β → ℝ) (radius : ℝ)
+    (nominal : ProbabilityMeasure β)
+    (hfrontier_convex : Convex ℝ (realCouplingCostPayoffFrontier loss c nominal))
+    (hstrict : ∃ point ∈ realCouplingCostPayoffFrontier loss c nominal, point.1 < radius)
+    (hprimal_bdd : BddAbove (Prod.snd '' Optimization.scalarFeasible
+      (realCouplingCostPayoffFrontier loss c nominal) (fun point => point.1 - radius)))
+    (hdual_bdd : ∀ penalty, 0 ≤ penalty →
+      BddAbove ((fun point => Optimization.scalarLagrangian Prod.snd
+        (fun point => point.1 - radius) point penalty) ''
+          realCouplingCostPayoffFrontier loss c nominal))
+    (hachievable_closed : IsClosed (Optimization.scalarAchievableSet
+      (realCouplingCostPayoffFrontier loss c nominal) Prod.snd
+      (fun point => point.1 - radius))) :
+    constrainedRealCouplingValue loss c radius nominal =
+      Optimization.scalarDualValue (realCouplingCostPayoffFrontier loss c nominal)
+        Prod.snd (fun point => point.1 - radius) := by
+  rw [constrainedRealCouplingValue_eq_scalarPrimalValue_frontier]
+  apply Optimization.scalarStrongDuality_of_isScalarSlater_of_closed_achievable
+  · refine ⟨hfrontier_convex, ?_⟩
+    intro first hfirst second hsecond weightFirst weightSecond hweightFirst hweightSecond hweights
+    change weightFirst * first.2 + weightSecond * second.2 ≤
+      weightFirst * first.2 + weightSecond * second.2
+    exact le_rfl
+  · refine {
+      convex_X := hfrontier_convex
+      convex_g := ?_
+      strict_feasible := ?_ }
+    · refine ⟨hfrontier_convex, ?_⟩
+      intro first hfirst second hsecond weightFirst weightSecond hweightFirst hweightSecond hweights
+      change weightFirst * first.1 + weightSecond * second.1 - radius ≤
+        weightFirst * (first.1 - radius) + weightSecond * (second.1 - radius)
+      have hradius : (weightFirst + weightSecond) * radius = radius := by
+        rw [hweights]
+        ring
+      exact le_of_eq (by
+        calc
+          weightFirst * first.1 + weightSecond * second.1 - radius =
+              weightFirst * first.1 + weightSecond * second.1 -
+                (weightFirst + weightSecond) * radius := by rw [hradius]
+          _ = weightFirst * (first.1 - radius) +
+              weightSecond * (second.1 - radius) := by ring)
+    · obtain ⟨point, hpoint, hcost⟩ := hstrict
+      exact ⟨point, hpoint, sub_neg.mpr hcost⟩
+  · exact hprimal_bdd
+  · exact hdual_bdd
+  · exact hachievable_closed
 
 /--
 The infimum-cost transport ball and the concrete-coupling transport ball have
@@ -1608,6 +1904,80 @@ theorem realTransportCostPenalizedValue_zero_eq_unpenalizedValue
     simp
 
 /--
+The zero-penalty value over finite-cost source laws never exceeds the
+unrestricted zero-penalty value.  This is the one-sided comparison needed
+when the extended-value convention admits every source law only at multiplier
+zero; it does not assert finite transport cost for those additional laws.
+-/
+theorem realTransportCostPenalizedValue_zero_le_unpenalizedValue
+    (loss : α → ℝ) (c : α × β → ℝ) (nominal : ProbabilityMeasure β)
+    (hfinite : Nonempty { source : ProbabilityMeasure α //
+      Nonempty (FiniteRealCostCoupling c source nominal) })
+    (hunpenalized_bdd : BddAbove (Set.range fun source : ProbabilityMeasure α =>
+      ∫ x, loss x ∂(source : Measure α))) :
+    realTransportCostPenalizedValue loss c 0 nominal ≤ unpenalizedValue loss := by
+  unfold realTransportCostPenalizedValue unpenalizedValue
+  simp only [zero_mul, sub_zero]
+  apply csSup_le
+  · obtain ⟨source⟩ := hfinite
+    exact ⟨_, ⟨source, rfl⟩⟩
+  · rintro _ ⟨source, rfl⟩
+    exact le_csSup hunpenalized_bdd ⟨source.1, rfl⟩
+
+/--
+At zero penalty, finite-cost access to each Dirac source law already suffices
+to recover the unrestricted payoff value.  This is strictly weaker than
+finite-cost access for every source law: bounded/integrable loss controls the
+upper bound, while Dirac laws recover every pointwise payoff lower bound.
+-/
+theorem realTransportCostPenalizedValue_zero_eq_unpenalizedValue_of_dirac
+    [Nonempty α]
+    (loss : α → ℝ) (c : α × β → ℝ) (nominal : ProbabilityMeasure β)
+    (hloss_strongly_measurable : StronglyMeasurable loss)
+    (hloss_integrable : ∀ source : ProbabilityMeasure α,
+      Integrable loss (source : Measure α))
+    (hloss_bddAbove : BddAbove (Set.range loss))
+    (hdirac_finite : ∀ point : α,
+      Nonempty (FiniteRealCostCoupling c (diracProba point) nominal)) :
+    realTransportCostPenalizedValue loss c 0 nominal = unpenalizedValue loss := by
+  rw [unpenalizedValue_eq_sSup_range loss hloss_strongly_measurable
+    hloss_integrable hloss_bddAbove]
+  unfold realTransportCostPenalizedValue
+  simp only [zero_mul, sub_zero]
+  let finiteScores : Set ℝ := Set.range fun candidate : { source : ProbabilityMeasure α //
+    Nonempty (FiniteRealCostCoupling c source nominal) } =>
+      ∫ x, loss x ∂(candidate.1 : Measure α)
+  change sSup finiteScores = sSup (Set.range loss)
+  have hfinite_ne : finiteScores.Nonempty := by
+    let point : α := Classical.choice inferInstance
+    exact ⟨∫ x, loss x ∂(diracProba point : Measure α),
+      ⟨⟨diracProba point, hdirac_finite point⟩, rfl⟩⟩
+  have hscore_le : ∀ candidate : { source : ProbabilityMeasure α //
+      Nonempty (FiniteRealCostCoupling c source nominal) },
+      (∫ x, loss x ∂(candidate.1 : Measure α)) ≤ sSup (Set.range loss) := by
+    intro candidate
+    calc
+      (∫ x, loss x ∂(candidate.1 : Measure α)) ≤
+          ∫ _ : α, sSup (Set.range loss) ∂(candidate.1 : Measure α) := by
+        apply integral_mono (hloss_integrable candidate.1) (integrable_const _)
+        intro x
+        exact le_csSup hloss_bddAbove (Set.mem_range_self x)
+      _ = sSup (Set.range loss) := by simp
+  have hfinite_bdd : BddAbove finiteScores := by
+    refine ⟨sSup (Set.range loss), ?_⟩
+    rintro value ⟨candidate, rfl⟩
+    exact hscore_le candidate
+  apply le_antisymm
+  · exact csSup_le hfinite_ne (by
+      rintro value ⟨candidate, rfl⟩
+      exact hscore_le candidate)
+  · apply csSup_le (Set.range_nonempty loss)
+    rintro value ⟨point, rfl⟩
+    rw [← integral_dirac' loss point hloss_strongly_measurable]
+    exact le_csSup hfinite_bdd
+      ⟨⟨diracProba point, hdirac_finite point⟩, rfl⟩
+
+/--
 The real transport-ball value is exactly the scalar-constrained primal value
 of its concrete cost--payoff frontier.  This conversion is algebraic: it does
 not assume transport-plan attainment, compactness, or strong duality.
@@ -1634,6 +2004,36 @@ theorem constrainedRealTransportValue_eq_scalarPrimalValue_frontier
     subst point
     refine ⟨⟨candidate.1, candidate.2, sub_nonpos.mp hfeasible⟩, ?_⟩
     simpa using hpayoff
+
+/--
+Strong scalar duality for the source's infimum-cost transport ball, assuming
+convexity of its attainable upper/lower hypograph rather than convexity of the
+exact cost graph.  This is the noncompact no-gap step that remains valid when
+finite-cost plans only approximate the transport infimum.
+-/
+theorem constrainedRealTransportValue_eq_scalarDualValue_of_convex_achievableSet
+    (loss : α → ℝ) (c : α × β → ℝ) (radius : ℝ)
+    (nominal : ProbabilityMeasure β)
+    (hachievable_convex : Convex ℝ (Optimization.scalarAchievableSet
+      (realTransportCostPayoffFrontier loss c nominal) Prod.snd
+      (fun point => point.1 - radius)))
+    (hstrict : ∃ point ∈ realTransportCostPayoffFrontier loss c nominal, point.1 < radius)
+    (hprimal_bdd : BddAbove (Prod.snd '' Optimization.scalarFeasible
+      (realTransportCostPayoffFrontier loss c nominal) (fun point => point.1 - radius)))
+    (hdual_bdd : ∀ penalty, 0 ≤ penalty →
+      BddAbove ((fun point => Optimization.scalarLagrangian Prod.snd
+        (fun point => point.1 - radius) point penalty) ''
+          realTransportCostPayoffFrontier loss c nominal)) :
+    constrainedRealTransportValue loss c radius nominal =
+      Optimization.scalarDualValue (realTransportCostPayoffFrontier loss c nominal)
+        Prod.snd (fun point => point.1 - radius) := by
+  rw [constrainedRealTransportValue_eq_scalarPrimalValue_frontier]
+  apply Optimization.scalarStrongDuality_of_convex_achievableSet_of_bdd
+  · exact hachievable_convex
+  · obtain ⟨point, hpoint, hcost⟩ := hstrict
+    exact ⟨point, hpoint, sub_neg.mpr hcost⟩
+  · exact hprimal_bdd
+  · exact hdual_bdd
 
 /--
 Weak duality for the real-cost transport-ball value.  No optimal transport
@@ -1884,6 +2284,262 @@ theorem constrainedRealTransportValue_eq_envelopeDualValue_of_compact_convex_fro
         exact ⟨penalty, hpenalty, hfixed penalty hpenalty⟩
 
 /--
+The source's infimum-cost transport ball equals its envelope dual whenever the
+attainable upper/lower hypograph is convex and the infimum-cost fixed-penalty
+values have been identified with that envelope.  No transport-plan attainment
+is assumed: the scalar no-gap step is the direct
+`constrainedRealTransportValue_eq_scalarDualValue_of_convex_achievableSet`
+route.
+-/
+theorem constrainedRealTransportValue_eq_envelopeDualValue_of_convex_achievableSet
+    (loss : α → ℝ) (c : α × α → ℝ) (radius : ℝ)
+    (nominal : ProbabilityMeasure α) (envelope : ℝ → α → ℝ)
+    (hachievable_convex : Convex ℝ (Optimization.scalarAchievableSet
+      (realTransportCostPayoffFrontier loss c nominal) Prod.snd
+      (fun point => point.1 - radius)))
+    (hstrict : ∃ point ∈ realTransportCostPayoffFrontier loss c nominal, point.1 < radius)
+    (hprimal_bdd : BddAbove (Prod.snd '' Optimization.scalarFeasible
+      (realTransportCostPayoffFrontier loss c nominal) (fun point => point.1 - radius)))
+    (hdual_bdd : ∀ penalty, 0 ≤ penalty →
+      BddAbove ((fun point => Optimization.scalarLagrangian Prod.snd
+        (fun point => point.1 - radius) point penalty) ''
+          realTransportCostPayoffFrontier loss c nominal))
+    (hfinite : Nonempty { source : ProbabilityMeasure α //
+      Nonempty (FiniteRealCostCoupling c source nominal) })
+    (hsource_bounded : ∀ penalty, 0 ≤ penalty →
+      BddAbove (Set.range fun candidate : { source : ProbabilityMeasure α //
+        Nonempty (FiniteRealCostCoupling c source nominal) } =>
+        (∫ x, loss x ∂(candidate.1 : Measure α)) -
+          penalty * realTransportCost c candidate.1 nominal))
+    (hpenalized_envelope : ∀ penalty, 0 ≤ penalty →
+      realTransportCostPenalizedValue loss c penalty nominal =
+        ∫ x, envelope penalty x ∂(nominal : Measure α)) :
+    constrainedRealTransportValue loss c radius nominal =
+      constrainedRealTransportEnvelopeDualValue loss c radius nominal envelope := by
+  have hfixed : ∀ penalty, penalty ∈ Set.Ici (0 : ℝ) →
+      Optimization.scalarDualObjective (realTransportCostPayoffFrontier loss c nominal)
+        Prod.snd (fun point => point.1 - radius) penalty =
+        (∫ x, envelope penalty x ∂(nominal : Measure α)) + penalty * radius := by
+    intro penalty hpenalty
+    calc
+      Optimization.scalarDualObjective (realTransportCostPayoffFrontier loss c nominal)
+          Prod.snd (fun point => point.1 - radius) penalty =
+          realTransportCostPenalizedValue loss c penalty nominal + penalty * radius :=
+        scalarDualObjective_frontier_eq_realTransportCostPenalizedValue_add
+          loss c penalty radius nominal hfinite
+            (hsource_bounded penalty (Set.mem_Ici.mp hpenalty))
+      _ = (∫ x, envelope penalty x ∂(nominal : Measure α)) + penalty * radius := by
+        rw [hpenalized_envelope penalty (Set.mem_Ici.mp hpenalty)]
+  calc
+    constrainedRealTransportValue loss c radius nominal =
+        Optimization.scalarDualValue (realTransportCostPayoffFrontier loss c nominal)
+          Prod.snd (fun point => point.1 - radius) :=
+      constrainedRealTransportValue_eq_scalarDualValue_of_convex_achievableSet
+        loss c radius nominal hachievable_convex hstrict hprimal_bdd hdual_bdd
+    _ = constrainedRealTransportEnvelopeDualValue loss c radius nominal envelope := by
+      unfold Optimization.scalarDualValue constrainedRealTransportEnvelopeDualValue
+      congr 1
+      ext value
+      constructor
+      · rintro ⟨penalty, hpenalty, rfl⟩
+        exact ⟨penalty, hpenalty, (hfixed penalty hpenalty).symm⟩
+      · rintro ⟨penalty, hpenalty, rfl⟩
+        exact ⟨penalty, hpenalty, hfixed penalty hpenalty⟩
+
+/--
+The source-compatible zero-multiplier version of constrained transport
+duality.  Positive multipliers use the finite-real-cost transport domain, but
+at multiplier zero the envelope may use the unrestricted expected-payoff
+value.  The latter replacement does not change the infimum: for every
+positive tolerance, a positive-multiplier finite-cost Lagrangian objective is
+at most its zero-multiplier value plus that tolerance when the radius is
+nonnegative.
+-/
+theorem constrainedRealTransportValue_eq_envelopeDualValue_of_convex_achievableSet_of_pos
+    (loss : α → ℝ) (c : α × α → ℝ) (radius : ℝ)
+    (nominal : ProbabilityMeasure α) (envelope : ℝ → α → ℝ)
+    (hachievable_convex : Convex ℝ (Optimization.scalarAchievableSet
+      (realTransportCostPayoffFrontier loss c nominal) Prod.snd
+      (fun point => point.1 - radius)))
+    (hstrict : ∃ point ∈ realTransportCostPayoffFrontier loss c nominal, point.1 < radius)
+    (hprimal_bdd : BddAbove (Prod.snd '' Optimization.scalarFeasible
+      (realTransportCostPayoffFrontier loss c nominal) (fun point => point.1 - radius)))
+    (hdual_bdd : ∀ penalty, 0 ≤ penalty →
+      BddAbove ((fun point => Optimization.scalarLagrangian Prod.snd
+        (fun point => point.1 - radius) point penalty) ''
+          realTransportCostPayoffFrontier loss c nominal))
+    (hfinite : Nonempty { source : ProbabilityMeasure α //
+      Nonempty (FiniteRealCostCoupling c source nominal) })
+    (hcost_nonneg : ∀ pair, 0 ≤ c pair)
+    (hradius_nonneg : 0 ≤ radius)
+    (hsource_bounded : ∀ penalty, 0 ≤ penalty →
+      BddAbove (Set.range fun candidate : { source : ProbabilityMeasure α //
+        Nonempty (FiniteRealCostCoupling c source nominal) } =>
+        (∫ x, loss x ∂(candidate.1 : Measure α)) -
+          penalty * realTransportCost c candidate.1 nominal))
+    (hunpenalized_bdd : BddAbove (Set.range fun source : ProbabilityMeasure α =>
+      ∫ x, loss x ∂(source : Measure α)))
+    (hpenalized_envelope : ∀ penalty, 0 < penalty →
+      realTransportCostPenalizedValue loss c penalty nominal =
+        ∫ x, envelope penalty x ∂(nominal : Measure α))
+    (hzero_envelope : unpenalizedValue loss =
+      ∫ x, envelope 0 x ∂(nominal : Measure α)) :
+    constrainedRealTransportValue loss c radius nominal =
+      constrainedRealTransportEnvelopeDualValue loss c radius nominal envelope := by
+  let fixedDual : ℝ → ℝ := fun penalty =>
+    Optimization.scalarDualObjective (realTransportCostPayoffFrontier loss c nominal)
+      Prod.snd (fun point => point.1 - radius) penalty
+  let envelopeDual : ℝ → ℝ := fun penalty =>
+    (∫ x, envelope penalty x ∂(nominal : Measure α)) + penalty * radius
+  obtain ⟨strictPoint, hstrictPoint, hstrictCost⟩ := hstrict
+  have hfrontier_ne : (realTransportCostPayoffFrontier loss c nominal).Nonempty := by
+    obtain ⟨source⟩ := hfinite
+    exact ⟨(realTransportCost c source.1 nominal,
+      ∫ x, loss x ∂(source.1 : Measure α)), ⟨source, rfl⟩⟩
+  have hfixed_lower : ∀ penalty, penalty ∈ Set.Ici (0 : ℝ) →
+      strictPoint.2 ≤ fixedDual penalty := by
+    intro penalty hpenalty
+    have hlagrangian : strictPoint.2 ≤ Optimization.scalarLagrangian Prod.snd
+        (fun point => point.1 - radius) strictPoint penalty := by
+      unfold Optimization.scalarLagrangian
+      have hmult : penalty * (strictPoint.1 - radius) ≤ 0 :=
+        mul_nonpos_of_nonneg_of_nonpos (Set.mem_Ici.mp hpenalty)
+          (sub_nonpos.mpr hstrictCost.le)
+      linarith
+    have hsup := Optimization.scalarLagrangian_le_scalarDualObjective
+      (hdual_bdd penalty (Set.mem_Ici.mp hpenalty)) hstrictPoint
+    exact hlagrangian.trans (by simpa [fixedDual] using hsup)
+  have hfixed_bddBelow : BddBelow (fixedDual '' Set.Ici (0 : ℝ)) := by
+    refine ⟨strictPoint.2, ?_⟩
+    rintro value ⟨penalty, hpenalty, rfl⟩
+    exact hfixed_lower penalty hpenalty
+  have hfixed_ne : (fixedDual '' Set.Ici (0 : ℝ)).Nonempty :=
+    ⟨fixedDual 0, 0, Set.mem_Ici.mpr le_rfl, rfl⟩
+  have hfixed_pos : ∀ penalty, 0 < penalty → fixedDual penalty = envelopeDual penalty := by
+    intro penalty hpenalty
+    dsimp [fixedDual, envelopeDual]
+    calc
+      Optimization.scalarDualObjective (realTransportCostPayoffFrontier loss c nominal)
+          Prod.snd (fun point => point.1 - radius) penalty =
+          realTransportCostPenalizedValue loss c penalty nominal + penalty * radius :=
+        scalarDualObjective_frontier_eq_realTransportCostPenalizedValue_add
+          loss c penalty radius nominal hfinite (hsource_bounded penalty hpenalty.le)
+      _ = (∫ x, envelope penalty x ∂(nominal : Measure α)) + penalty * radius := by
+        rw [hpenalized_envelope penalty hpenalty]
+  have hzero_dominates : fixedDual 0 ≤ envelopeDual 0 := by
+    dsimp [fixedDual, envelopeDual]
+    calc
+      Optimization.scalarDualObjective (realTransportCostPayoffFrontier loss c nominal)
+          Prod.snd (fun point => point.1 - radius) 0 =
+          realTransportCostPenalizedValue loss c 0 nominal + 0 * radius :=
+        scalarDualObjective_frontier_eq_realTransportCostPenalizedValue_add
+          loss c 0 radius nominal hfinite (hsource_bounded 0 (by norm_num))
+      _ = realTransportCostPenalizedValue loss c 0 nominal := by ring
+      _ ≤ unpenalizedValue loss :=
+        realTransportCostPenalizedValue_zero_le_unpenalizedValue
+          loss c nominal hfinite hunpenalized_bdd
+      _ = (∫ x, envelope 0 x ∂(nominal : Measure α)) + 0 * radius := by
+        rw [hzero_envelope]
+        ring
+  have henvelope_lower : ∀ penalty, penalty ∈ Set.Ici (0 : ℝ) →
+      strictPoint.2 ≤ envelopeDual penalty := by
+    intro penalty hpenalty
+    rcases eq_or_lt_of_le (Set.mem_Ici.mp hpenalty) with rfl | hpenalty_pos
+    · exact (hfixed_lower 0 (Set.mem_Ici.mpr le_rfl)).trans hzero_dominates
+    · rw [← hfixed_pos penalty hpenalty_pos]
+      exact hfixed_lower penalty hpenalty
+  have henvelope_bddBelow : BddBelow (envelopeDual '' Set.Ici (0 : ℝ)) := by
+    refine ⟨strictPoint.2, ?_⟩
+    rintro value ⟨penalty, hpenalty, rfl⟩
+    exact henvelope_lower penalty hpenalty
+  have henvelope_ne : (envelopeDual '' Set.Ici (0 : ℝ)).Nonempty :=
+    ⟨envelopeDual 0, 0, Set.mem_Ici.mpr le_rfl, rfl⟩
+  have hfixed_upper : ∀ penalty, 0 ≤ penalty →
+      fixedDual penalty ≤ fixedDual 0 + penalty * radius := by
+    intro penalty hpenalty
+    dsimp [fixedDual]
+    apply Optimization.scalarDualObjective_le hfrontier_ne
+    intro point hpoint
+    obtain ⟨source, rfl⟩ := hpoint
+    have hcost : 0 ≤ realTransportCost c source.1 nominal :=
+      realTransportCost_nonneg c source.1 nominal source.2 hcost_nonneg
+    have hpayoff : (∫ x, loss x ∂(source.1 : Measure α)) ≤
+        Optimization.scalarDualObjective (realTransportCostPayoffFrontier loss c nominal)
+          Prod.snd (fun point => point.1 - radius) 0 := by
+      have hsup := Optimization.scalarLagrangian_le_scalarDualObjective
+        (hdual_bdd 0 (by norm_num)) ⟨source, rfl⟩
+      simpa [Optimization.scalarLagrangian] using hsup
+    have hpenalized_cost : 0 ≤ penalty * realTransportCost c source.1 nominal :=
+      mul_nonneg hpenalty hcost
+    change (∫ x, loss x ∂(source.1 : Measure α)) -
+        penalty * (realTransportCost c source.1 nominal - radius) ≤
+      Optimization.scalarDualObjective (realTransportCostPayoffFrontier loss c nominal)
+          Prod.snd (fun point => point.1 - radius) 0 + penalty * radius
+    calc
+      (∫ x, loss x ∂(source.1 : Measure α)) -
+          penalty * (realTransportCost c source.1 nominal - radius) =
+          ((∫ x, loss x ∂(source.1 : Measure α)) -
+            penalty * realTransportCost c source.1 nominal) + penalty * radius := by ring
+      _ ≤ Optimization.scalarDualObjective (realTransportCostPayoffFrontier loss c nominal)
+          Prod.snd (fun point => point.1 - radius) 0 + penalty * radius := by
+        linarith
+  have hfixed_approaches_zero : ∀ epsilon, 0 < epsilon →
+      ∃ penalty, 0 < penalty ∧ fixedDual penalty < fixedDual 0 + epsilon := by
+    intro epsilon hepsilon
+    let penalty : ℝ := epsilon / (radius + 1)
+    have hdenom_pos : 0 < radius + 1 := by linarith
+    have hpenalty_pos : 0 < penalty := div_pos hepsilon hdenom_pos
+    refine ⟨penalty, hpenalty_pos, ?_⟩
+    have hpenalty_radius : penalty * radius < epsilon := by
+      dsimp [penalty]
+      calc
+        epsilon / (radius + 1) * radius = epsilon * (radius / (radius + 1)) := by
+          field_simp
+        _ < epsilon * 1 := by
+          gcongr
+          exact (div_lt_one₀ hdenom_pos).mpr (by linarith)
+        _ = epsilon := by ring
+    exact (hfixed_upper penalty hpenalty_pos.le).trans_lt (by linarith)
+  have hsInf_eq : sInf (fixedDual '' Set.Ici (0 : ℝ)) =
+      sInf (envelopeDual '' Set.Ici (0 : ℝ)) := by
+    apply le_antisymm
+    · apply le_csInf henvelope_ne
+      rintro value ⟨penalty, hpenalty, rfl⟩
+      rcases eq_or_lt_of_le (Set.mem_Ici.mp hpenalty) with rfl | hpenalty_pos
+      · exact (csInf_le hfixed_bddBelow ⟨0, Set.mem_Ici.mpr le_rfl, rfl⟩).trans
+          hzero_dominates
+      · calc
+          sInf (fixedDual '' Set.Ici (0 : ℝ)) ≤ fixedDual penalty :=
+            csInf_le hfixed_bddBelow ⟨penalty, hpenalty, rfl⟩
+          _ = envelopeDual penalty := hfixed_pos penalty hpenalty_pos
+    · apply le_csInf hfixed_ne
+      rintro value ⟨penalty, hpenalty, rfl⟩
+      rcases eq_or_lt_of_le (Set.mem_Ici.mp hpenalty) with rfl | hpenalty_pos
+      · apply le_of_forall_pos_le_add
+        intro epsilon hepsilon
+        obtain ⟨positivePenalty, hpositivePenalty, hnear⟩ :=
+          hfixed_approaches_zero epsilon hepsilon
+        calc
+          sInf (envelopeDual '' Set.Ici (0 : ℝ)) ≤ envelopeDual positivePenalty :=
+            csInf_le henvelope_bddBelow ⟨positivePenalty, hpositivePenalty.le, rfl⟩
+          _ = fixedDual positivePenalty := (hfixed_pos positivePenalty hpositivePenalty).symm
+          _ ≤ fixedDual 0 + epsilon := hnear.le
+      · calc
+          sInf (envelopeDual '' Set.Ici (0 : ℝ)) ≤ envelopeDual penalty :=
+            csInf_le henvelope_bddBelow ⟨penalty, hpenalty, rfl⟩
+          _ = fixedDual penalty := (hfixed_pos penalty hpenalty_pos).symm
+  calc
+    constrainedRealTransportValue loss c radius nominal =
+        Optimization.scalarDualValue (realTransportCostPayoffFrontier loss c nominal)
+          Prod.snd (fun point => point.1 - radius) :=
+      constrainedRealTransportValue_eq_scalarDualValue_of_convex_achievableSet
+        loss c radius nominal hachievable_convex
+          ⟨strictPoint, hstrictPoint, hstrictCost⟩ hprimal_bdd hdual_bdd
+    _ = constrainedRealTransportEnvelopeDualValue loss c radius nominal envelope := by
+      simpa [Optimization.scalarDualValue, constrainedRealTransportEnvelopeDualValue,
+        fixedDual, envelopeDual] using hsInf_eq
+
+/--
 The coupling-level constrained transport value equals its pointwise-envelope
 dual once the concrete coupling frontier has compact convex geometry and the
 fixed-penalty envelope identities have been established.  This is the
@@ -1936,6 +2592,145 @@ theorem constrainedRealCouplingValue_eq_envelopeDualValue_of_compact_convex_fron
           Prod.snd (fun point => point.1 - radius) :=
       constrainedRealCouplingValue_eq_scalarDualValue_of_compact_convex_frontier
         loss c radius nominal hfrontier_compact hfrontier_convex hstrict
+    _ = constrainedRealTransportEnvelopeDualValue loss c radius nominal envelope := by
+      unfold Optimization.scalarDualValue constrainedRealTransportEnvelopeDualValue
+      congr 1
+      ext value
+      constructor
+      · rintro ⟨penalty, hpenalty, rfl⟩
+        exact ⟨penalty, hpenalty, (hfixed penalty hpenalty).symm⟩
+      · rintro ⟨penalty, hpenalty, rfl⟩
+        exact ⟨penalty, hpenalty, hfixed penalty hpenalty⟩
+
+/--
+The coupling-level transport value equals its pointwise-envelope dual from
+convexity, strict feasibility, and real boundedness.  This is the noncompact
+counterpart of the preceding compact-frontier theorem and does not require
+closedness of the attainable frontier hypograph.
+-/
+theorem constrainedRealCouplingValue_eq_envelopeDualValue_of_bdd
+    (loss : α → ℝ) (c : α × α → ℝ) (radius : ℝ)
+    (nominal : ProbabilityMeasure α) (envelope : ℝ → α → ℝ)
+    (hfrontier_convex : Convex ℝ (realCouplingCostPayoffFrontier loss c nominal))
+    (hstrict : ∃ point ∈ realCouplingCostPayoffFrontier loss c nominal, point.1 < radius)
+    (hprimal_bdd : BddAbove (Prod.snd '' Optimization.scalarFeasible
+      (realCouplingCostPayoffFrontier loss c nominal) (fun point => point.1 - radius)))
+    (hdual_bdd : ∀ penalty, 0 ≤ penalty →
+      BddAbove ((fun point => Optimization.scalarLagrangian Prod.snd
+        (fun point => point.1 - radius) point penalty) ''
+          realCouplingCostPayoffFrontier loss c nominal))
+    (hfinite : Nonempty (FiniteRealCostCouplingTo c nominal))
+    (hcoupling_bounded : ∀ penalty, 0 ≤ penalty →
+      BddAbove (Set.range fun candidate : FiniteRealCostCouplingTo c nominal =>
+        (∫ x, loss x ∂(candidate.source : Measure α)) -
+          penalty * ∫ pair, c pair ∂(candidate.coupling.joint : Measure (α × α))))
+    (hpenalized_envelope : ∀ penalty, 0 < penalty →
+      penalizedCouplingValue loss c penalty nominal =
+        ∫ x, envelope penalty x ∂(nominal : Measure α))
+    (hzero_envelope : penalizedCouplingValue loss c 0 nominal =
+      ∫ x, envelope 0 x ∂(nominal : Measure α)) :
+    constrainedRealCouplingValue loss c radius nominal =
+      constrainedRealTransportEnvelopeDualValue loss c radius nominal envelope := by
+  have hfixed : ∀ penalty, penalty ∈ Set.Ici (0 : ℝ) →
+      Optimization.scalarDualObjective (realCouplingCostPayoffFrontier loss c nominal)
+        Prod.snd (fun point => point.1 - radius) penalty =
+        (∫ x, envelope penalty x ∂(nominal : Measure α)) + penalty * radius := by
+    intro penalty hpenalty_nonneg
+    rcases eq_or_lt_of_le (Set.mem_Ici.mp hpenalty_nonneg) with rfl | hpenalty_pos
+    · calc
+        Optimization.scalarDualObjective (realCouplingCostPayoffFrontier loss c nominal)
+            Prod.snd (fun point => point.1 - radius) 0 =
+            penalizedCouplingValue loss c 0 nominal + 0 * radius :=
+          scalarDualObjective_couplingFrontier_eq_penalizedCouplingValue_add
+            loss c 0 radius nominal hfinite (hcoupling_bounded 0 le_rfl)
+        _ = (∫ x, envelope 0 x ∂(nominal : Measure α)) + 0 * radius := by
+          rw [hzero_envelope]
+    · calc
+        Optimization.scalarDualObjective (realCouplingCostPayoffFrontier loss c nominal)
+            Prod.snd (fun point => point.1 - radius) penalty =
+            penalizedCouplingValue loss c penalty nominal + penalty * radius :=
+          scalarDualObjective_couplingFrontier_eq_penalizedCouplingValue_add
+            loss c penalty radius nominal hfinite (hcoupling_bounded penalty hpenalty_pos.le)
+        _ = (∫ x, envelope penalty x ∂(nominal : Measure α)) + penalty * radius := by
+          rw [hpenalized_envelope penalty hpenalty_pos]
+  calc
+    constrainedRealCouplingValue loss c radius nominal =
+        Optimization.scalarDualValue (realCouplingCostPayoffFrontier loss c nominal)
+          Prod.snd (fun point => point.1 - radius) :=
+      constrainedRealCouplingValue_eq_scalarDualValue_of_bdd
+        loss c radius nominal hfrontier_convex hstrict hprimal_bdd hdual_bdd
+    _ = constrainedRealTransportEnvelopeDualValue loss c radius nominal envelope := by
+      unfold Optimization.scalarDualValue constrainedRealTransportEnvelopeDualValue
+      congr 1
+      ext value
+      constructor
+      · rintro ⟨penalty, hpenalty, rfl⟩
+        exact ⟨penalty, hpenalty, (hfixed penalty hpenalty).symm⟩
+      · rintro ⟨penalty, hpenalty, rfl⟩
+        exact ⟨penalty, hpenalty, hfixed penalty hpenalty⟩
+
+/--
+The coupling-level transport value equals its pointwise-envelope dual under a
+closed attainable cost--payoff hypograph.  This generalizes the preceding
+compact-frontier theorem to noncompact transport-law domains.  Fixed-penalty
+envelope identities and their real boundedness remain explicit, so this does
+not hide a measurable-selection or extended-value convention.
+-/
+theorem constrainedRealCouplingValue_eq_envelopeDualValue_of_closed_achievable
+    (loss : α → ℝ) (c : α × α → ℝ) (radius : ℝ)
+    (nominal : ProbabilityMeasure α) (envelope : ℝ → α → ℝ)
+    (hfrontier_convex : Convex ℝ (realCouplingCostPayoffFrontier loss c nominal))
+    (hstrict : ∃ point ∈ realCouplingCostPayoffFrontier loss c nominal, point.1 < radius)
+    (hprimal_bdd : BddAbove (Prod.snd '' Optimization.scalarFeasible
+      (realCouplingCostPayoffFrontier loss c nominal) (fun point => point.1 - radius)))
+    (hdual_bdd : ∀ penalty, 0 ≤ penalty →
+      BddAbove ((fun point => Optimization.scalarLagrangian Prod.snd
+        (fun point => point.1 - radius) point penalty) ''
+          realCouplingCostPayoffFrontier loss c nominal))
+    (hachievable_closed : IsClosed (Optimization.scalarAchievableSet
+      (realCouplingCostPayoffFrontier loss c nominal) Prod.snd
+      (fun point => point.1 - radius)))
+    (hfinite : Nonempty (FiniteRealCostCouplingTo c nominal))
+    (hcoupling_bounded : ∀ penalty, 0 ≤ penalty →
+      BddAbove (Set.range fun candidate : FiniteRealCostCouplingTo c nominal =>
+        (∫ x, loss x ∂(candidate.source : Measure α)) -
+          penalty * ∫ pair, c pair ∂(candidate.coupling.joint : Measure (α × α))))
+    (hpenalized_envelope : ∀ penalty, 0 < penalty →
+      penalizedCouplingValue loss c penalty nominal =
+        ∫ x, envelope penalty x ∂(nominal : Measure α))
+    (hzero_envelope : penalizedCouplingValue loss c 0 nominal =
+      ∫ x, envelope 0 x ∂(nominal : Measure α)) :
+    constrainedRealCouplingValue loss c radius nominal =
+      constrainedRealTransportEnvelopeDualValue loss c radius nominal envelope := by
+  have hfixed : ∀ penalty, penalty ∈ Set.Ici (0 : ℝ) →
+      Optimization.scalarDualObjective (realCouplingCostPayoffFrontier loss c nominal)
+        Prod.snd (fun point => point.1 - radius) penalty =
+        (∫ x, envelope penalty x ∂(nominal : Measure α)) + penalty * radius := by
+    intro penalty hpenalty_nonneg
+    rcases eq_or_lt_of_le (Set.mem_Ici.mp hpenalty_nonneg) with rfl | hpenalty_pos
+    · calc
+        Optimization.scalarDualObjective (realCouplingCostPayoffFrontier loss c nominal)
+            Prod.snd (fun point => point.1 - radius) 0 =
+            penalizedCouplingValue loss c 0 nominal + 0 * radius :=
+          scalarDualObjective_couplingFrontier_eq_penalizedCouplingValue_add
+            loss c 0 radius nominal hfinite (hcoupling_bounded 0 le_rfl)
+        _ = (∫ x, envelope 0 x ∂(nominal : Measure α)) + 0 * radius := by
+          rw [hzero_envelope]
+    · calc
+        Optimization.scalarDualObjective (realCouplingCostPayoffFrontier loss c nominal)
+            Prod.snd (fun point => point.1 - radius) penalty =
+            penalizedCouplingValue loss c penalty nominal + penalty * radius :=
+          scalarDualObjective_couplingFrontier_eq_penalizedCouplingValue_add
+            loss c penalty radius nominal hfinite (hcoupling_bounded penalty hpenalty_pos.le)
+        _ = (∫ x, envelope penalty x ∂(nominal : Measure α)) + penalty * radius := by
+          rw [hpenalized_envelope penalty hpenalty_pos]
+  calc
+    constrainedRealCouplingValue loss c radius nominal =
+        Optimization.scalarDualValue (realCouplingCostPayoffFrontier loss c nominal)
+          Prod.snd (fun point => point.1 - radius) :=
+      constrainedRealCouplingValue_eq_scalarDualValue_of_closed_achievable
+        loss c radius nominal hfrontier_convex hstrict hprimal_bdd hdual_bdd
+          hachievable_closed
     _ = constrainedRealTransportEnvelopeDualValue loss c radius nominal envelope := by
       unfold Optimization.scalarDualValue constrainedRealTransportEnvelopeDualValue
       congr 1

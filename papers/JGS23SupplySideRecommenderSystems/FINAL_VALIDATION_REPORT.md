@@ -1,24 +1,17 @@
 # Final Validation Report: Supply-Side Equilibria in Recommender Systems
 
-Updated: 2026-09-06
+Updated: 2026-09-09
 
 ## 1. Human Verdict
 
-The selected results are formalized across the finite-market, single-genre,
-two-user, profit, and infinite-producer parts of the paper. Local formula
-clarifications are reflected in the checked statements, and the
-source-faithful results are identified below by paper number.
-
-**Formalization gap:** Theorem 2 uses a specific two-dimensional user model; Theorems 3–4 cover user vectors at angles below 90°; Lemma 2 proves a restricted equilibrium characterization.
+The paper’s results on producer equilibria, specialization, and profits are
+formalized on the domains listed below.
 
 ## 2. Closeout Status
 
-- Completion status: formalized for the selected statements.
-- Scope: finite symmetric equilibria, single-genre structure and thresholds,
-  two-user score geometry and phase behavior, producer profit, and the
-  infinite-producer construction.
-- Reader boundary: the formalization does not establish the broader claims
-  listed in Sections 5--6.
+- Completion status: formalized
+- One-sentence recap: The formalization covers finite-market equilibria,
+  specialization thresholds, two-user geometry, and the infinite-producer limit.
 
 ## 3. Source and Scope
 
@@ -33,66 +26,59 @@ source-faithful results are identified below by paper number.
 
 | Paper results | Comparison with the paper |
 | --- | --- |
+| [Theorem 1](docs/SOURCE_CLARIFICATIONS.md#one-dimensional-law-and-genre-convention) | **Exact.** |
+| [Theorem 2 and Propositions 9--10](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit) | **Exact with source clarification.** The phase transition holds in arbitrary dimension under the source score-law and conditional radial-law regularity; Section 7 explains the dimension-reduction proof. |
+| [Definition 1 and Theorems 3--4](docs/SOURCE_CLARIFICATIONS.md#infinite-producer-limit) | **Exact construction after formula corrections, on a restricted angle domain.** Genre weights and the quality cap are corrected; the checked two-genre construction uses canonical users with a strictly acute angle. |
 | Propositions 1--3 | **Exact.** |
-| [Corollary 1 and Lemma 3](docs/SOURCE_CLARIFICATIONS.md#one-dimensional-law-and-genre-convention) | **Typo.** The CDF exponent is corrected, and the resulting distribution and equilibrium are proved. |
-| [Example 1](docs/SOURCE_CLARIFICATIONS.md#one-dimensional-law-and-genre-convention) | **Formalization gap.** The equilibrium construction is proved; the separate uniqueness sentence is not asserted. |
-| [Theorem 1](docs/SOURCE_CLARIFICATIONS.md#one-dimensional-law-and-genre-convention) | **Typo.** The product characterization and its multi-genre alternative are proved with genre normalized only at nonzero support points. |
-| [Lemma 4](docs/SOURCE_CLARIFICATIONS.md#one-dimensional-law-and-genre-convention) | **Formalization gap.** The paper's span conclusion remains unproved. |
-| [Lemmas 1 and 5--8](docs/SOURCE_CLARIFICATIONS.md#single-genre-optimization-and-thresholds) | **Formalization gap.** The checked optimization route uses positive denominators and an attained product maximizer; it does not assert the unrestricted printed minimax identities. |
-| [Corollaries 2, 3, and 5](docs/SOURCE_CLARIFICATIONS.md#single-genre-optimization-and-thresholds) | **Formalization gap.** These are fixed-exponent existence and exclusion results; they do not assert the paper's full supremal-threshold package. |
-| [Corollaries 4 and 6](docs/SOURCE_CLARIFICATIONS.md#single-genre-optimization-and-thresholds) | **Typo.** The two-user genre threshold and welfare conclusion are proved after the local formula and zero-normalization corrections. |
+| [Corollary 1 and Lemma 3](docs/SOURCE_CLARIFICATIONS.md#one-dimensional-law-and-genre-convention) | **Exact after correcting the CDF typo.** |
+| [Example 1](docs/SOURCE_CLARIFICATIONS.md#one-dimensional-law-and-genre-convention) | **Exact.** |
+| [Lemma 4](docs/SOURCE_CLARIFICATIONS.md#one-dimensional-law-and-genre-convention) | **Positive-score conclusion exact; span assertion corrected.** The positive-score result used by the later argument is proved directly; a source-domain counterexample rules out the printed span assertion. See the [potential generalization](#9-generalizations-conjectures-and-extensions). |
+| [Lemmas 1 and 5--8](docs/SOURCE_CLARIFICATIONS.md#single-genre-optimization-and-thresholds) | **Exact with regularity made explicit for the source score sets.** Ratios use positive coordinates and an attained product maximum. Lemma 8's arbitrary-set wording needs a boundedness qualification. |
+| [Corollary 2](docs/SOURCE_CLARIFICATIONS.md#single-genre-optimization-and-thresholds) | **Exact.** |
+| [Corollary 3](docs/SOURCE_CLARIFICATIONS.md#single-genre-optimization-and-thresholds) | **Exact with a dimension clarification.** The threshold is at least $q$, with equality for at least two standard-basis users. The one-user basis threshold is unbounded. |
+| [Corollary 5](docs/SOURCE_CLARIFICATIONS.md#single-genre-optimization-and-thresholds) | **Exact on the finite-formula domain.** The bound and singleton-equilibrium exclusion hold for $Z=1$ and $1<Z<N$; $Z=N$ uses a separate extended-real convention. |
+| [Corollary 4](docs/SOURCE_CLARIFICATIONS.md#single-genre-optimization-and-thresholds) | **Exact.** |
+| [Corollary 6](docs/SOURCE_CLARIFICATIONS.md#single-genre-optimization-and-thresholds) | **Exact.** |
 | Claim 1 and Proposition 4 | **Exact.** |
-| [Theorem 2 and Propositions 9--10](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit) | **Formalization gap.** The selected phase results use the canonical two-dimensional realization of the two-user model. |
 | Propositions 5--6, Corollary 7, and Lemma 13 | **Exact.** |
-| [Lemma 2](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit) | **Additional premise; formalization gap.** Score-tie nullness is sufficient for the checked strict-CDF best-response equivalence; its necessity for a general tie-aware characterization is unresolved. The paper's C1--C3 equivalence is not proved. |
-| [Lemma 9](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit) | **Formalization gap.** The checked identity is the minimum cost over a feasible score fibre in the canonical two-dimensional model, rather than the cost of every content vector in arbitrary dimension. |
-| [Lemma 10](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit) | **Formalization gap.** The displayed cost derivatives are proved; their identification with equilibrium density derivatives is not asserted. |
+| [Lemma 2](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit) | **Exact with an atomless score-law clarification.** |
+| [Lemma 9](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit) | **Exact on equilibrium support; global formula corrected.** The cost formula holds at equilibrium in any dimension, but can fail for other feasible score pairs. |
+| [Lemma 10](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit) | **Exact on the smooth interior domain.** The canonical derivative calculation applies after dimension reduction; boundary points require one-sided conditions. |
 | Lemma 11 | **Exact.** |
-| [Lemma 12](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit) | **Additional premise; formalization gap.** The support-slope inequality is proved from differentiated first-order identities and a negative-semidefinite payoff Hessian. Deriving them from equilibrium and C1 remains unproved; their necessity is unresolved. |
-| [Propositions 7--8](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit) | **Formalization gap.** The checked conclusions concern every support action; Proposition 7 uses the Euclidean route. Passing to the paper's expected-profit wording requires the corresponding population-law and integrability bridge. |
-| [Definition 1 and Theorems 3--4](docs/SOURCE_CLARIFICATIONS.md#infinite-producer-limit) | **Typo fixed; formalization gap.** Genre weights, the CDF quality cap, and the feasible angle domain are corrected; the construction proves the strictly acute two-user case above threshold. |
+| [Lemma 12](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit) | **Exact in the canonical calculation.** The slope inequality follows from equilibrium optimality; Theorem 2 transfers arbitrary-dimensional equilibria to this setting. |
+| [Propositions 7--8](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit) | **Exact.** |
+
+Theorem 3 is the main-text infinite-producer result; Theorem 4 is its formal
+appendix version. They are grouped with Definition 1 above.
 
 ## 5. Remaining Boundaries and Gaps
 
-- Example 1: uniqueness among all symmetric mixed laws is not proved.
-- Lemmas 1, 5, and 8: the unrestricted ratio minimax and sup-inf formulas are
-  not proved. Lemma 8 does not hold for a one-dimensional set in its printed
-  domain; the memo gives the witness.
-- Corollaries 2, 3, and 5: the selected endpoints do not package the results as
-  exact claims about attainment or equality of the supremum \(\beta^*\).
-- Lemma 4: the span claim is not proved.
-- Theorem 2 and Propositions 9--10: the selected endpoints do not assert the
-  general-user statement outside the canonical two-dimensional realization.
-- Lemma 9: the paper's arbitrary-dimensional content-cost identity does not
-  hold for the nonnegative source-domain witness in the memo.
-- Lemma 10: the equilibrium-to-density derivation is not proved.
-- Propositions 7--8: the support-action conclusions are not promoted to the
-  paper's expected-profit wording.
-- Theorems 3--4: the orthogonal endpoint and any uniqueness or necessity claim
-  outside the corrected strictly acute construction are not proved.
-
-Except for the explicit Lemma 8 and Lemma 9 counterexamples, these omissions
-do not establish that the omitted source claims are false or that the stated
-restrictions are necessary.
+The standalone versions of Lemmas 9–12 are stated in canonical
+two-dimensional coordinates. Theorem 2 nevertheless covers arbitrary-dimensional
+users through the [equilibrium reduction in Section 7](#7-proof-strategy-deviations).
+The infinite-producer construction in Theorems 3–4 remains checked for the
+canonical strictly acute case; its broader dimension and angle extensions
+are outside that construction.
 
 ## 6. Additional Assumptions Beyond Paper
 
-- **Lemma 2 — Additional premise.** Score-tie nullness is assumed for the
-  strict-CDF best-response equivalence. Its necessity for every possible
-  tie-aware characterization remains unresolved.
-- **Lemma 12 — Additional premise.** Differentiated first-order identities and
-  a negative-semidefinite payoff Hessian are assumed for the graph inequality.
-  Establishing them from equilibrium and C1 remains an undischarged bridge;
-  the formalization does not claim they are necessary economic assumptions.
-
-The [clarification memo](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit) gives the exact
-original-to-formalized comparison for both results.
+The source norm, score-law, and conditional-law regularity is made explicit in
+the [clarification memo](docs/SOURCE_CLARIFICATIONS.md). For Lemma 2, the CDF
+equivalence uses atomless score laws. Lemma 10's pointwise identities use a
+smooth interior support domain. The table states the separate dimension and
+angle restrictions; their necessity for broader results is not claimed.
 
 ## 7. Proof-Strategy Deviations
 
-Theorem 1's product characterization is proved using an attained positive
-product maximizer and its supporting inequality, bypassing the unrestricted
-minimax step. See the [optimization clarification](docs/SOURCE_CLARIFICATIONS.md#single-genre-optimization-and-thresholds).
+**Theorem 2 (and Propositions 9–10):** first reduce an arbitrary-dimensional
+equilibrium to the canonical two-dimensional model, preserving scores, costs,
+and the relevant genre conclusions. Apply Lemmas 9–12 there; this avoids
+using Lemma 9's cost formula away from equilibrium in the original space.
+The [reduction accounts for every feasible deviation](docs/SOURCE_CLARIFICATIONS.md#theorem-2-reduction-to-the-two-user-plane),
+so Theorem 2 retains its arbitrary-dimensional scope and phase threshold.
+
+The single-genre optimization arguments are discussed in
+[their source note](docs/SOURCE_CLARIFICATIONS.md#single-genre-optimization-and-thresholds).
 
 ## 8. Proof Tricks Worth Reusing
 
@@ -105,15 +91,29 @@ minimax step. See the [optimization clarification](docs/SOURCE_CLARIFICATIONS.md
 
 ## 9. Generalizations, Conjectures, and Extensions
 
-None.
+**Potential correction to Lemma 4 (not yet proved in Lean).** For a smooth
+production cost $c$ and an interior equilibrium support action $p>0$, the
+proposed statement is $\nabla c(p)\in\operatorname{cone}\{u_1,\ldots,u_N\}$,
+the set of nonnegative combinations of user vectors. For
+$c(p)=\lVert p\rVert_q^\beta$, $q>1$, this becomes
+$p^{q-1}\in\operatorname{cone}\{u_1,\ldots,u_N\}$, with powers taken
+coordinatewise. This would recover the span assertion for Euclidean costs
+($q=2$) and any number of users. This proposal is outside the checked results
+above.
 
 ## 10. Source Clarifications and Exact Readings
 
+Genres are normalized at nonzero support points; the zero vector is left
+unnormalized. This is the convention for Theorem 1 and Corollary 6, not a
+change to their conclusions.
+
 The [source clarification memo](docs/SOURCE_CLARIFICATIONS.md#source-clarifications) is the single
-substantive account of the corrected CDF, [nonzero genre convention](docs/SOURCE_CLARIFICATIONS.md#one-dimensional-law-and-genre-convention), positive
-optimization domain, fixed-exponent thresholds, tie-aware characterization,
-[canonical score-cost calculation](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit), profit interpretation, and
-infinite-producer construction.
+substantive account of the corrected CDF, nonzero genre convention,
+optimization domain, threshold endpoints, tie handling, score-cost calculation,
+profit interpretation, and infinite-producer construction.
+The [one-dimensional formulas and genre convention](docs/SOURCE_CLARIFICATIONS.md#one-dimensional-law-and-genre-convention)
+and [two-user formulas and regularity](docs/SOURCE_CLARIFICATIONS.md#two-user-characterization-phase-results-and-profit)
+give the result-level details.
 
 ## 11. Paper Issues or Caveats
 
@@ -123,20 +123,17 @@ None.
 
 [PaperInterface.lean](PaperInterface.lean) exposes 36 source-facing result
 specifications, and [ProofInterface.lean](ProofInterface.lean) supplies their
-checked endpoints. Selected expanded targets were compared directly for
-Example 1, Lemma 1, Theorem 2, Proposition 7, and Theorem 4. The result and
-prerequisite ledgers bind the remaining interface statements to the same
-source inventory.
+checked endpoints. The current source-to-Spec and prerequisite ledgers cover
+the complete selected result and model surface summarized in Sections 4 and
+18--21.
 
 ## 13. Paper Assumption Provenance
 
-[status.json](status.json) lists no standalone paper assumption declaration.
-Result-level hypotheses are visible in the interface specifications. The
-[prerequisite ledger](FINAL_CLOSURE_RECEIPT.md) records six
-source matches and five corrected-target matches for the paper-local models
-and definitions. The finite-dimensional norm regularity convention is omitted
-from the public context summary because it follows from the paper's norm
-model.
+Result-level hypotheses are visible in the interface specifications, and the
+[prerequisite ledger](FINAL_CLOSURE_RECEIPT.md) records the
+source models and definitions on which they depend. Conditions already present
+in the paper's norm and score-law models are stated as clarifications rather
+than additional assumptions.
 
 ## 14. Displayed Formula Provenance
 
@@ -156,25 +153,18 @@ equilibrium definitions in this paper.
 ## 16. DAG Audit
 
 [DependencyDAG.tex](docs/DependencyDAG.tex) now presents the numbered paper
-models and results, their mathematical dependencies, and the three relevant
-reader statuses: exact, corrected source text, and formalization gaps. The
+models and results, their mathematical dependencies, and the result-level
+distinction between exact and corrected source statements. The
 [compiled diagram](docs/DependencyDAG.pdf) was visually checked for readable
 labels, arrow direction, and node overlap.
 
 ## 17. Validation Checks
 
-The extended-valued threshold definition compiles and passes bounded
-independent source comparison. Its current closeout evidence is being
-synchronized; the retained receipt describes its pinned prior tree.
-
-The retained [focused-build receipt](FINAL_CLOSURE_RECEIPT.md) records
-a passing build for its pinned tree. The [import-closure receipt](FINAL_CLOSURE_RECEIPT.md)
-records the refreshed checked import surface. The
-[review packet](docs/HUMAN_REVIEW_PACKET.pdf) was regenerated from the
-authenticated review graph, compiled, and visually inspected. Report structure,
-memo coverage, and rendered links pass. The retained
-[final closure receipt](FINAL_CLOSURE_RECEIPT.md) describes the most recently
-completed terminal transaction.
+The refreshed [import-closure receipt](FINAL_CLOSURE_RECEIPT.md),
+source-to-Spec review, prerequisite review, and focused proof check cover the
+current source and Lean surface. The [review packet](docs/HUMAN_REVIEW_PACKET.pdf)
+was regenerated and compiled from that surface. Report structure, memo coverage,
+and rendered links were checked before the pending terminal validation.
 
 ## 18. Paper Definitions Checked
 
@@ -196,14 +186,13 @@ states every material difference.
 ## 20. Paper-Facing Statement Validator Ledger
 
 The [source-to-Spec ledger](FINAL_CLOSURE_RECEIPT.md) contains
-36 recorded machine comparisons: eight source matches and 28 corrected-target
-matches. None of these rows carries a human-review judgment; this report gives
-the reader-facing interpretation of those machine comparisons.
+one current source-to-Spec comparison for each of the 36 selected results.
+Section 4 and the clarification memo give the reader-facing interpretation of
+the exact and corrected-target rows.
 
 ## 21. Source-Coverage Audit Ledger
 
 The [statement map](audit/paper_statement_map.json) inventories 47 source
 items: 36 selected results and 11 prerequisite model or definition items. The
-36 result comparisons and 11 prerequisite comparisons account for the full
-inventory. Coverage is composed from those source-bound result and
-prerequisite reviews.
+result and prerequisite comparisons account for this selected inventory.
+Coverage is composed from those source-bound result and prerequisite reviews.

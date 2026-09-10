@@ -1,0 +1,564 @@
+{
+  "current_review_surface": {
+    "commit": "d913fa47aaa2ec18347e102f17b1ce7369fa816d",
+    "focused_build": {
+      "command": "lake build LBG24SpatialUnderreporting.ProofInterface",
+      "result": "completed successfully",
+      "scope": "The configured proof import surface only; it is not a repository-wide build or an acceptance check."
+    },
+    "lean_modules": {
+      "Assumptions.lean": "fcbdf6296e8826a74681ce619b44a0420107e72e32b9d3aec948a29b682cc543",
+      "ConditionOneTail.lean": "5790828d09e3d9a1b8432bc5398d5654e2c133a9e41190aa0c4a7a527a1572fa",
+      "CorrectedTheorem2Causal.lean": "56e02545c1946031dc2d9bed672636230753989a7f5655643a9e8a98fdd6bcf6",
+      "ObservationEndpointFormulas.lean": "1cc7040b3b65ded12ce7199f6b74ea28dabd3e865b135009f5c9b8afad48226c",
+      "PaperInterface.lean": "5475d3790054b3226d5c965fe4fc709dcc4456fd211dcf3f542482cbced8af69",
+      "ProofInterface.lean": "7f3a2874f7b6c289aca6d93bcd8f24f914952ca210d16eeae3c9e82ba68d30cd",
+      "SourceTheoremModels.lean": "05488c43690ed0be96503ddc686c79813add2fe8fa73369a38b118156531b0ca"
+    },
+    "proof_boundary_scan": {
+      "axiom_check": "#print axioms for every current ProofInterface source endpoint reported only propext, Classical.choice, and Quot.sound.",
+      "command": "rg -n '\\b(sorry|admit|axiom)\\b' papers/LBG24SpatialUnderreporting --glob '*.lean'",
+      "result": "No placeholder command or user axiom was found; the only hits were ordinary English uses of 'admit' in comments."
+    },
+    "statement_map": {
+      "path": "audit/paper_statement_map.json",
+      "sha256": "f63ff72faf94e86898037b0bcd2eb016f173688aef0d5336536bf75f48ac5383"
+    },
+    "v11_preparation_config": {
+      "path": "audit/v11_source_map_preparation_config.json",
+      "semantic_preflight_import_module": "LBG24SpatialUnderreporting.ProofInterface",
+      "sha256": "ed3635d3cb4e56e7bb39982afcf94e752aee0815f2771ea65a728cb9c0c06b45"
+    }
+  },
+  "defects": [
+    {
+      "acceptance_condition": "Lean proves the ordered finite post-tag gap density and corrected Eq. (8) wrapper with the first factor measured from the selected start, without a rate-dependent residual term.",
+      "affected_source_locators": [
+        "cited publication:1812-1845",
+        "cited publication:1849-1862"
+      ],
+      "defect_kind": "index_or_integrality",
+      "id": "LBG24-EQ30-FIRST-GAP-01",
+      "repair_obligation": "Derive the multi-report timeline density with the first post-start arrival measured from s, followed by consecutive gaps and the terminal no-arrival tail.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "The corrected causal-stopping Eq. (8) theorem derives the ordered finite post-start gap factorization from the source causal endpoint model.",
+      "source_claim": "The printed product in Eq. (30) uses the generic gap t_{m+i}-t_{m+i-1} for every i, even though the observed interval starts at s and only t_m <= s is pre-start history.",
+      "source_locator": "cited publication:1812-1847, Appendix B.2 Eq. (30) first-arrival factor",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Replacing the first gap by t_{m+1}-s changes only the intermediate density calculation; the advertised Eq. (8) likelihood factorization is preserved."
+    },
+    {
+      "acceptance_condition": "Lean proves a rate-independent residual equal to the corrected M!/(e-s)^M factor in the final Eq. (8) wrapper.",
+      "affected_source_locators": [
+        "cited publication:1831-1847",
+        "cited publication:1869-1883"
+      ],
+      "defect_kind": "normalization_or_scaling",
+      "id": "LBG24-EQ31-RESIDUAL-RECIPROCAL-01",
+      "repair_obligation": "Match lambda^M exp(-lambda L) to exp(-lambda L)(lambda L)^M/M! and solve for the residual multiplier for L=e-s>0.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "The causal-stopping likelihood factorization exposes the corrected residual normalization and proves the rate-free-residual times Poisson-PMF form.",
+      "source_claim": "After collecting lambda^M exp(-lambda(e-s)), the printed residual multiplies by (e-s)^M/M!, the reciprocal of the factor required to rewrite the expression as a rate-free factor times the Poisson PMF.",
+      "source_locator": "cited publication:1831-1847; cited publication:1869-1883, Appendix B.2 Eqs. (31)-(32) residual definition",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The reciprocal correction is an algebraic proof typo: the same rate-likelihood endpoint follows with the rate-free residual M!/(e-s)^M."
+    },
+    {
+      "acceptance_condition": "A paper-facing Eq. (8) theorem takes the source-shaped rate-free causal policy, constructs one endpoint, and proves a rate-free residual times the Poisson count PMF.",
+      "affected_source_locators": [
+        "cited publication:254-290",
+        "cited publication:1571-1590",
+        "cited publication:1785-1883"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "LBG24-EQ8-CAUSAL-PREEND-01",
+      "repair_obligation": "Model the endpoint as a rate-free visible-history response kernel and derive the likelihood factorization without a globally resampled vector of endpoint clocks.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "AppendixTheorem2CausalStoppingSourceModel and CausalStoppingEndpointTrace replace the resampled-clock route; the PaperInterface Eq. (8) endpoint proves the factorization from that source policy model.",
+      "source_claim": "A former formalization route replaced the one endpoint E by separately resampled stage clocks and thereby required a stronger global product law than the source stopping-policy semantics.",
+      "source_locator": "cited publication:1571-1590, Appendix B.2 Conditions 1-2 and Eq. (8)",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The live-history, rate-free stopping-policy reading formalizes the main theorem and application text without the former stronger resampled-clock product law."
+    },
+    {
+      "acceptance_condition": "The direct Eq. (8) route uses one terminal endpoint from the source policy and proves the factorization in its stated density presentation with an atom-safe kernel carrier underneath.",
+      "affected_source_locators": [
+        "cited publication:254-290",
+        "cited publication:1567-1590",
+        "cited publication:1675-1883",
+        "cited publication:2086-2110"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "LBG24-EQ8-SOURCE-MODEL-COHERENCE-01",
+      "repair_obligation": "Construct one endpoint from the visible-history stopping policy and expose its rate-free density presentation without identifying it with resampled candidate clocks.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "CausalStoppingEndpointTrace supplies the single terminal endpoint and EndpointDensityPresentation supplies the checked density branch; the direct PaperInterface theorem replaces the retired stationary/Palm route.",
+      "source_claim": "The source likelihood is about one endpoint E, a selected start S, and a conditioned history H; the prior stationary/Palm route did not preserve that one-endpoint carrier.",
+      "source_locator": "cited publication:254-290; cited publication:1567-1590; cited publication:1675-1883, Theorem 1 and Appendix Theorem 2 source variables and proof conditioning",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The current causal trace has one terminal endpoint and a rate-free selected-start contribution; the former Palm construction is no longer a source route."
+    },
+    {
+      "acceptance_condition": "The source map and PaperInterface direct rows use only nonvacuous source model types, with the legacy theorem quarantined as auxiliary material.",
+      "affected_source_locators": [
+        "cited publication:1567-1573",
+        "cited publication:1580-1590"
+      ],
+      "defect_kind": "event_or_measure",
+      "id": "LBG24-LEGACY-POISSON-UNINHABITED-01",
+      "repair_obligation": "Exclude the uninhabited all-real-time interface from every direct source route.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "Eq. (8) now uses the direct causal-stopping route and Lemma 1/Proposition 1 use the calendar-time marked-process routes; the legacy all-real-time interface remains outside the review surface.",
+      "source_claim": "The source assumes a positive-rate Poisson process on the forward observation horizon; an older Lean route instead packaged an all-real-time count interface inconsistent with that source model.",
+      "source_locator": "cited publication:1567-1590, Appendix B.2 Poisson-process statement",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Every direct LBG source theorem now uses a nonvacuous finite causal endpoint or forward-time marked process, so the old interface is retained only as a route-exclusion note."
+    },
+    {
+      "acceptance_condition": "Current paper-facing Lemma 1 and Proposition 1 routes expose the chosen source event semantics and derive the process law, count-rate limit, and compensating-rate claim from the same source-backed primitives.",
+      "affected_source_locators": [
+        "cited publication:1453-1520",
+        "cited publication:1521-1542"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "LBG24-LEMMA1-PROP1-STEADY-STATE-SCOPE-01",
+      "repair_obligation": "Choose calendar-time first-report semantics, state the pre-first-report duration/report survival bridge, and derive the displaced process from a stationary marked birth process rather than assuming observed counts.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "CalendarFirstReportDisplacement derives the first-report process from a stationary marked birth process; the Lemma 1 and Proposition 1 source models bind retained mass to the stated survival mixture and their PaperInterface endpoints prove the resulting process and nonidentifiability claims.",
+      "source_claim": "Lemma 1 asserts a steady-state observed Poisson process with a duration density, and Proposition 1 uses that process and an iid unit-window law of large numbers to state nonidentifiability from observed unique-incident counts.",
+      "source_locator": "cited publication:1433-1542, Appendix B.1 Proposition 1 and Lemma 1",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The final route uses literal calendar-time first-report semantics and an explicit narrow pre-first-report survival clarification, without imposing a later-report or lifetime restriction."
+    }
+  ],
+  "disposition_vocabulary": {
+    "compiled_source_model_proof": "A current ProofInterface theorem compiled and proves the transparent Spec, conditional on the explicit source-model bridge named in the route.",
+    "direct_source_encoding": "A live definition or structure records the source formula/model; this is not an independently derived stochastic theorem.",
+    "proof_support_reviewed": "A printed proof cluster was checked against the live proof route; this is not a separate public theorem.",
+    "scope_excluded": "Explicit user-approved release exclusion. It is not credited as coverage, even when a current Lean declaration of a related claim exists.",
+    "source_context_or_alias": "Source context or a duplicate source presentation deliberately carried by another route."
+  },
+  "issued_at": "2026-09-09",
+  "ledger_kind": "independent_current_source_to_lean_semantic_ledger",
+  "material_open_boundaries": [
+    "The printed Appendix B.2 Equation (32) has the reciprocal of the residual required by Equation (31) and the Poisson PMF. The Lean theorem proves the corrected factorization, not the printed residual formula.",
+    "The MLE endpoint has an explicit positive-exposure condition and uses a closed nonnegative rate domain at zero total count. That boundary clarification differs from treating the paper's earlier lambda>0 wording as an attained zero-count MLE.",
+    "Theorem 2/Equation (6) are proved only after the explicit causal endpoint-kernel/density bridge; the ledger does not claim that the source text alone derives that bridge for arbitrary agency behavior.",
+    "Lemma 1 and Proposition 1 use explicit stationary marked-birth and retained-first-report survival bridges. The derived calendar first-report process is proved from those bridges, not from an unmodeled empirical process.",
+    "The two newly direct Appendix routes are credited only as conditional source-model proofs; they neither erase the Equation (32) discrepancy nor establish empirical validity of the reporting or endpoint model."
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "The direct Condition 1 semantic-model review exposes the measurable first-report/start/tail maps, one Markov conditional start kernel, its support after the first report, its conditional law, and conditional tail independence. The Lemma 2 source theorem derives the stated exponential tail from that condition and a constructed forward Poisson process. This convention supplies no inherited recursive-field credit.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "The source's pointwise conditional-density notation for S given the continuously valued first report is represented by one rate-free regular conditional start kernel. This is the approved fixed-model reading: the kernel is a model component whose Lean type has no rate argument, rather than a family separately quantified over counterfactual rate values. Its support begins at the first report and it is conditionally independent of the supplied post-first-report tail; the fixed-history g(s) factor is separately rate independent.",
+      "id": "LBG24-CONDITION1-KERNEL-CONDITIONING-01",
+      "protocol": "approved-source-review-context-v1",
+      "record_sha256": "c04ed2599d1f98c6c4590cf0ecf81f85d42cc1439f1bf2ca26ab2e9909c1419d",
+      "report_summary": "Condition 1 is read as a rate-free conditional rule for selecting a start after the first report: one fixed-model kernel, not a cross-model counterfactual family. The selection cannot depend on the unseen future report path.",
+      "source_locator": "cited publication:1567-1590; cited publication:1593-1674",
+      "why_needed": "A literal probability P(S=t | T1=t1) is not a well-typed point-mass formula on a continuous carrier. Treating it as an unconditional scalar or as an arbitrary tail-dependent selector would lose the source's conditional and future-path independence content."
+    },
+    {
+      "checked_scope": "SourceTheoremModels.AppendixTheorem2CausalStoppingSourceModel exposes only a selected-start likelihood and visible-prefix endpoint kernels with measurability and nonnegative remaining-time support. CausalStoppingEndpointTrace constructs one endpoint from that policy, and PaperInterface.appendix_theorem2_eq8_causal_stopping_source_model derives the rate-free residual times the Poisson count PMF. The exact three endpoint-policy leaves below, and no density-presentation or container fields, receive this convention's source credit.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "Theorem 1's endpoint condition is read as one rate-free causal stopping policy: after a visible report prefix, its conditional endpoint-response law may use that prefix but cannot inspect a future report gap. The selected-start contribution is conditioned on the pre-start history and is rate free. A canonical finite trace samples one terminal endpoint, rather than a global family of independently resampled counterfactual endpoint clocks.",
+      "id": "LBG24-EQ8-CAUSAL-STOPPING-SEMANTICS-01",
+      "protocol": "approved-source-review-context-v1",
+      "record_sha256": "012f70bbc7495264c1e47634d5bc0969224209f0b47e6616265d6b63a5756a66",
+      "report_summary": "The observation endpoint is one rate-free causal policy. It may respond to reports already seen, but it cannot inspect the next unseen report gap or resample different hypothetical endpoints for different histories.",
+      "source_locator": "cited publication:254-290; cited publication:1567-1590; cited publication:1675-1883; cited publication:2086-2110",
+      "why_needed": "The Appendix's terse final independence display can be misread as only a marginal statement after T1. The main theorem explicitly conditions on reports observed up to the endpoint and the application calls its end rule a stopping-times assumption. The live-history reading preserves those source semantics and is the minimum policy content needed for the likelihood calculation."
+    },
+    {
+      "checked_scope": "The endpoint kernel is primary in AppendixTheorem2CausalStoppingSourceModel. EndpointDensityPresentation is an explicit AC presentation with a checked kernel-with-density equality. The canonical endpoint-law construction is atom safe, while the PaperInterface Eq. (8) theorem checks the scalar density factorization in exactly the source display's branch. Only the exact three density-presentation leaves below receive this convention's source credit; endpoint-policy and carrier fields do not.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "The source's h_m(e) point-density notation is the absolutely-continuous presentation of an endpoint kernel. A deterministic cap or stopping endpoint can have an atom, so the general source model is a kernel law; the displayed scalar likelihood uses the explicitly supplied density presentation when the relevant endpoint branch is absolutely continuous.",
+      "id": "LBG24-EQ8-ENDPOINT-REFERENCE-MEASURE-01",
+      "protocol": "approved-source-review-context-v1",
+      "record_sha256": "0d3da91dc85c4333d8e2791e9e7fe0e9f1e0d66779893278c471ad28d3f0f5b8",
+      "report_summary": "The endpoint rule is modeled generally as a probability law, which permits deterministic caps as well as continuously distributed endpoints. The displayed scalar density formula is used on the absolutely continuous branch.",
+      "source_locator": "cited publication:1567-1590; cited publication:1692-1883",
+      "why_needed": "Treating every endpoint as Lebesgue-density-valued would silently exclude the fixed-cap observation policies described in the source application. Conversely, treating a point-density equation as a literal atom probability would not be a valid continuous likelihood statement."
+    },
+    {
+      "checked_scope": "CalendarFirstReportSourceModel takes a stationary marked birth process with finite retained-delay measure and the explicit pre-first-report survival probability. CalendarFirstReportDisplacement derives finite interval intensity, increment identities, Poisson laws, and independent increments for displaced calendar first reports. Lemma1CalendarTimeDurationSourceModel and Proposition1CalendarTimeDurationSourceModel tie that probability to the source duration mixture and derive the Lemma 1 process, Proposition 1 limit, and equal-observed-rate nonidentifiability implication. The older birth-cohort model remains supporting evidence only.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "N_observed(T) is read as the number of incidents whose first report falls in the calendar interval (0,T]. Incidents are born on a stationary marked Poisson process; a retained mark is its first-report delay when that first report precedes the incident duration. The retained-delay mass is the source duration-mixture probability of a pre-duration first report. This is the approved calendar-time reading and weakest pre-first-report survival bridge; it does not constrain reports or endpoints after the first report.",
+      "id": "LBG24-LEMMA1-CALENDAR-FIRST-REPORT-SEMANTICS-01",
+      "protocol": "approved-source-review-context-v1",
+      "record_sha256": "d94a32417a2588f95f35edcccbe67e4f625b3c5d16aefd7ad9fcc726a5750f09",
+      "report_summary": "Lemma 1 and Proposition 1 count first reports that occur in the calendar observation interval. An incident born before the interval may therefore be observed inside it. The duration mixture is the probability of reporting before death under the pre-first-report survival rule; it does not restrict later report or lifetime behavior.",
+      "source_locator": "cited publication:194-204; cited publication:205-220; cited publication:1433-1542",
+      "why_needed": "A retained birth in a window and a first report in that window are different events. The source's data and Proposition 1 language use observed report times and calendar windows, so the birth-cohort proof calculation cannot be the final event-time model. The source's displayed p calculation also needs its conditional survival content to be stated rather than inferred from a marginal count law."
+    }
+  ],
+  "non_acceptance_statement": "This independent ledger records supported routes, explicit bridges, exclusions, and discrepancies. It intentionally gives no acceptance, completion, or release verdict.",
+  "paper": "LBG24SpatialUnderreporting",
+  "purpose": "Records the current non-accepting source-to-Lean review after Appendix Lemma 2 and Appendix D.8.2 were promoted to direct source-Spec-proof routes. It records their independent source comparison, the current approved source-model conventions required by the map, and the retained route context; it is not a closeout receipt or acceptance verdict.",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Theorem 1 and Appendix Theorem 2 endpoint semantics and likelihood factorization, including the source-visible causal stopping policy and one-endpoint carrier.",
+      "source_locator": "cited publication:1567-1590; cited publication:1785-1883"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The Appendix B.2 multi-report density calculation and its conversion to the Poisson count mass.",
+      "source_locator": "cited publication:1812-1883"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Lemma 1 and Proposition 1 steady-state observed-process semantics and their calendar-time first-report interpretation.",
+      "source_locator": "cited publication:1433-1542"
+    }
+  ],
+  "routes": [
+    {
+      "anchors": [
+        "source.txt:219-226#37be2350bcb3aaf3e1666e452d815dbd221dc56732ba9833c70099c180f713dc"
+      ],
+      "comparison": "The structure records each incident's type, a possibly time-varying Lambda_theta occurrence parameter, and a measurable typed birth-time process driven by that parameter. It keeps births latent, permits absent or sound partial death-time information, and requires reports to occur in the active window. It deliberately does not impose a Poisson incidence law, as the source gives homogeneous Poisson incidence only as an example.",
+      "disposition": "direct_source_encoding",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel"
+      ],
+      "source_claim": "Incidents have unobserved births and finite-or-nonnegative lifetimes; reports are logged only while the incident is active.",
+      "source_item": "source_incident_birth_death_model"
+    },
+    {
+      "anchors": [
+        "source.txt:228-230#8caf8832f1abfb7020d94a87a63bac09b9d5d1a837471ef770c9d6e70c206ca0",
+        "source.txt:1839-1842#ad508214915e91e6f7845f60a0348a411d138c62e4f5df283675ba8007d4f102"
+      ],
+      "comparison": "The finite gap law is a product of exponential measures and the forward-process structure packages the process law. These are model interfaces used by downstream proofs, rather than a derivation of the paper's empirical reporting process.",
+      "disposition": "direct_source_encoding",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.CollapsedFiniteStageEndpointModel.iidGapLaw",
+        "AppliedModelingLib.Probability.PoissonProcess.ForwardHomogeneousPoissonCountingProcessByLaw"
+      ],
+      "source_claim": "Reports have a positive homogeneous-Poisson rate, with independent exponential interarrival gaps in the finite observation calculation.",
+      "source_item": "source_reporting_process_model"
+    },
+    {
+      "anchors": [
+        "source.txt:231-246#8f33ca338188502e58fcd4e4ef2612f07c5e921b1e7b696af61cc95bfe32484a",
+        "source.txt:285-323#8b712fa38be240dc6cd078902a1aa0b84db465984c11220a6928a4be9b6ddde7"
+      ],
+      "comparison": "The timeline arguments to the likelihood Specs retain the ordered in-window count/history. There is no separately proved claim that formalizes every empirical observed-data field, and none is asserted here.",
+      "disposition": "source_context_or_alias",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.OrderedFiniteJumpTimeline"
+      ],
+      "source_claim": "Observed data retain reported incidents, counts, report times, and agency actions; Theorem 1 additionally conditions on an interval realization and its in-window report times.",
+      "source_item": "source_observed_data_model"
+    },
+    {
+      "anchors": [
+        "source.txt:206-214#f444789487a8fed1f63df373b7072eda7b0d630b264df5d0d03d424e3c418cfa",
+        "source.txt:247-254#c941fa69d15b0bffb4037bf35b147032a681cee96eb3ae91def547970d306893"
+      ],
+      "comparison": "The transparent Spec quantifies a strictly positive real rate and states the exponential-measure mean exactly as 1/rate. This is the source formula on its positive-rate domain.",
+      "disposition": "compiled_source_model_proof",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.sourceHomogeneousReportingDelayMeanSpec",
+        "LBG24SpatialUnderreporting.sourceHomogeneousReportingDelayMean"
+      ],
+      "source_claim": "For homogeneous reporting rate lambda_theta, the first-report delay has mean 1/lambda_theta.",
+      "source_item": "homogeneous_reporting_delay_mean_formula"
+    },
+    {
+      "anchors": [
+        "source.txt:1833-1868#369b89e4a100cc642fc9916ef0262c53efac3063dc01bf4620d2cc25bed36eb3"
+      ],
+      "comparison": "The compiled endpoint proves the transparent fixed-timeline factorization under a rate-free causal endpoint kernel and its density presentation, positive rate, and positive exposure. The causal kernel is an explicit source-to-model bridge: it operationalizes the visible-prefix/no-future-lookahead content of Condition 2 and is stronger/more typed than the paper's informal point-density notation. The proof does not establish that an arbitrary empirical endpoint rule supplies this model.",
+      "disposition": "compiled_source_model_proof",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.sourceTheorem1LikelihoodDecompositionSpec",
+        "LBG24SpatialUnderreporting.sourceTheorem1LikelihoodDecomposition",
+        "LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood_factorizes_eq8"
+      ],
+      "source_claim": "Under the homogeneous Poisson model and Conditions 1--2, the fixed-history likelihood is a rate-independent factor times the Poisson count mass with mean lambda(e-s).",
+      "source_item": "theorem1_theorem2_likelihood_decomposition"
+    },
+    {
+      "anchors": [
+        "source.txt:285-323#8b712fa38be240dc6cd078902a1aa0b84db465984c11220a6928a4be9b6ddde7"
+      ],
+      "comparison": "The source explicitly calls Theorem 2 a restatement of Theorem 1. The single current theorem route above carries the factorization; this row adds no second proof claim.",
+      "disposition": "source_context_or_alias",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.sourceTheorem1LikelihoodDecomposition"
+      ],
+      "source_claim": "Theorem 1 presents the same likelihood decomposition in the main text.",
+      "source_item": "theorem1_likelihood_decomposition_presentation"
+    },
+    {
+      "anchors": [
+        "source.txt:291-323#2dd643d075d1746f70a6b160318b2d4770aa08bfb68c4262d9f2111f48f28a66",
+        "source.txt:1978-1984#9dea09a89ff9aaa49d7d2911bb8d9051343cc18d872466bdb81f4402e94c1add"
+      ],
+      "comparison": "The displayed algebra is definitionally equal in Lean on the explicit positive rate-times-exposure domain. The live Spec intentionally does not cover a degenerate zero Poisson parameter; that domain restriction should not be read as a theorem about every interval allowed by informal source notation.",
+      "disposition": "compiled_source_model_proof",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.sourceEquation2PoissonCountPMFSpec",
+        "LBG24SpatialUnderreporting.sourceEquation2PoissonCountPMF"
+      ],
+      "source_claim": "p(M;lambda(e-s)) = exp(-lambda(e-s))[lambda(e-s)]^M/M!.",
+      "source_item": "equation2_poisson_count_pmf_formula"
+    },
+    {
+      "anchors": [
+        "source.txt:325-334#841be8aaa8e8dd3ec68729fd369287a467424daed79e9311801624aeb4116489"
+      ],
+      "comparison": "For positive total exposure, Lean proves the displayed ratio and global maximization of the Poisson log-likelihood. At total count zero it maximizes on the closed nonnegative rate domain; at positive count it quantifies positive rates. This is a necessary boundary clarification: under the paper's earlier strict lambda>0 wording, zero is a supremum rather than an attained MLE. The ledger therefore does not treat the zero-count boundary as a literal source-domain identity.",
+      "disposition": "compiled_source_model_proof",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.sourceEquation3MaximumLikelihoodEstimateSpec",
+        "LBG24SpatialUnderreporting.sourceEquation3MaximumLikelihoodEstimate"
+      ],
+      "source_claim": "The source identifies sum_i Mtilde_i / sum_i(e_i-s_i) as the maximum-likelihood estimate of lambda.",
+      "source_item": "equation3_mle_formula_and_maximum_likelihood_claim"
+    },
+    {
+      "anchors": [
+        "source.txt:351-365#5a7aa0de12a861a9a58450b2e30f4082cc517d8de7e662bb127584baa49a4fc1",
+        "source.txt:920-929#f6092fb8a0f24f0c02c19d99317b1d8a798c2324bd353309c7f78555fa21b3b0"
+      ],
+      "comparison": "The definition is exactly the finite-feature exponential log link. It is a formula encoding, not a separate estimation theorem.",
+      "disposition": "direct_source_encoding",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.poissonRegressionRate"
+      ],
+      "source_claim": "Equations (4) and (5) give lambda_theta = exp(alpha + beta^T theta).",
+      "source_item": "equation4_equation5_poisson_regression_rate_formula"
+    },
+    {
+      "anchors": [
+        "source.txt:920-944#502ef48423763da66bec1cd2708557c9887fa76e13ffc539a2d867e278367392"
+      ],
+      "comparison": "The endpoint substitutes exp(alpha + sum beta_j theta_j) into the same fixed-history causal likelihood and proves equality to a rate-free residual times the source PMF. It inherits the explicit causal endpoint-model and positive-exposure boundary of the Theorem 2 route.",
+      "disposition": "compiled_source_model_proof",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.sourceEquation6PoissonRegressionLikelihoodSpec",
+        "LBG24SpatialUnderreporting.sourceEquation6PoissonRegressionLikelihood"
+      ],
+      "source_claim": "Substitution of the log-link rate leaves the Poisson count factor up to a lambda-independent proportionality factor.",
+      "source_item": "equation6_poisson_regression_likelihood_formula"
+    },
+    {
+      "anchors": [
+        "source.txt:336-339#c8218f9af7865933269578e2adf03278a87fde6531fd5dbf822ce86aaf84415f",
+        "source.txt:945-971#796121819e90c355fc87bc2ba262047b799037e4aa53b28c6e5c36235193921d"
+      ],
+      "comparison": "Lean proves both displayed branches for gamma in [0,1] and positive rate/exposure. The across-incident product is the explicit definition used to encode the source's independence assumption; it is not a probabilistic derivation of independence from unrelated premises.",
+      "disposition": "compiled_source_model_proof",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.sourceZeroInflatedLikelihoodExtensionSpec",
+        "LBG24SpatialUnderreporting.sourceZeroInflatedLikelihoodExtension",
+        "LBG24SpatialUnderreporting.zeroInflatedIndependentIncidentFamilyLikelihood"
+      ],
+      "source_claim": "The likelihood result extends to a structural-zero model: gamma plus (1-gamma) times the zero-count mass at zero duplicates, and (1-gamma) times the Poisson mass at positive duplicates, independently across incidents.",
+      "source_item": "equation7_zero_inflated_extension_and_likelihood"
+    },
+    {
+      "anchors": [
+        "source.txt:1660-1770#30f62e0afb5210536e03bb31f8848647f2eac429349557ca0863af9c0ed6a263"
+      ],
+      "comparison": "The compiled result gives measurable calendar first-report counts, zero initial count, monotonicity, independent increments, and the exact Poisson increment mass at the displayed cumulative-intensity duration-mixture rate. It depends on an explicit stationary marked-birth/displacement model and an explicit equality from retained first-report mass to the source survival mixture. Those are source-to-model bridge premises, not consequences manufactured by the conclusion.",
+      "disposition": "compiled_source_model_proof",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.sourceLemma1CalendarTimeDurationObservedProcessSpec",
+        "LBG24SpatialUnderreporting.sourceLemma1CalendarTimeDurationObservedProcess",
+        "LBG24SpatialUnderreporting.Lemma1CalendarTimeDurationSourceModel"
+      ],
+      "source_claim": "Under steady state, independently reported incidents yield a Poisson observed process at Lambda_theta times the duration-mixture probability of at least one report, with the stated inhomogeneous and homogeneous forms.",
+      "source_item": "lemma1_process_thinning_and_detection_rate"
+    },
+    {
+      "anchors": [
+        "source.txt:1626-1658#14d4b0e5e5263b28d588f932ca66e45dd84604728349509e04b9fc9ef9eeb67e"
+      ],
+      "comparison": "For two supplied calendar-time source models with distinct reporting rates and compensating incident rates, Lean proves equal observed process rates and both almost-sure count-rate limits. The endpoint is conditional on the supplied source models and positive first-report probabilities; it does not separately construct such models for every candidate duration density.",
+      "disposition": "compiled_source_model_proof",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.sourceProposition1CalendarTimeNonidentifiabilitySpec",
+        "LBG24SpatialUnderreporting.sourceProposition1CalendarTimeNonidentifiability",
+        "LBG24SpatialUnderreporting.Proposition1CalendarTimeDurationSourceModel"
+      ],
+      "source_claim": "With homogeneous incident/reporting Poisson processes and duration law F, reporting rate is not identifiable from observed unique-incident counts alone; the source gives the common observed rate and large-time limit.",
+      "source_item": "proposition1_nonidentifiability"
+    },
+    {
+      "anchors": [
+        "source.txt:1843-1847#e81209546b2fa4748be9200956979c3a24be8858d19d0efe64e64629bb413339"
+      ],
+      "comparison": "The Lean structure replaces informal continuous conditioning/density notation with a measurable rate-free conditional kernel, support after the first report and before a horizon, and conditional independence from a supplied post-first-report tail. Cross-rate rate-freedom requires reuse of the same kernel/model and is not inferred merely from a name.",
+      "disposition": "direct_source_encoding",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.Theorem2ConditionOneSelection"
+      ],
+      "source_claim": "Conditional on the first report, S has a rate-free density on [T1,T] and is independent of the post-T1 sample path.",
+      "source_item": "condition1_selected_start"
+    },
+    {
+      "anchors": [
+        "source.txt:1848-1856#86c7caa6d575d3ba832514f168a04c0c61ed6d31799c577382e6eea9e31dc19c"
+      ],
+      "comparison": "The live model uses rate-free endpoint kernels indexed by the visible prefix, plus a separate density presentation for the paper's h_m notation. This is a typed causal/no-lookahead operationalization of the source condition; it is an explicit assumption required for the likelihood proof, not a theorem about agency endpoints.",
+      "disposition": "direct_source_encoding",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel",
+        "LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.EndpointDensityPresentation"
+      ],
+      "source_claim": "Given visible history, E has a rate-free h_m law and, given T1, is independent of S.",
+      "source_item": "condition2_endpoint_selection"
+    },
+    {
+      "anchors": [
+        "source.txt:1870-1875#4aaf9b7c1f0a4bf928bcdfe3a4d1a2d606533778215c428e0842367c32101e65"
+      ],
+      "comparison": "The transparent Spec states, for every nonnegative duration, the conditional no-arrival probability after the selected start as the positive-rate exponential tail. The source lemma conditions on the first report, uses Condition 1's start rule and future-report independence, and derives that same tail. Lemma2ForwardSourceModel exposes the rate-free conditional start kernel, support after the first report, and iid exponential interarrival law; its conditional no-report statement is a derived theorem rather than a source-model field. Thus the route matches the source lemma conditional on the explicit Condition 1 bridge, without treating the informal pointwise density notation as a literal atom probability.",
+      "disposition": "compiled_source_model_proof",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.sourceLemma2SelectedStartExponentialTailSpec",
+        "LBG24SpatialUnderreporting.sourceLemma2SelectedStartExponentialTail"
+      ],
+      "source_claim": "Under Condition 1, the wait from any realized S to the next jump is exponential with rate lambda.",
+      "source_item": "lemma2_exponential_waiting_tail"
+    },
+    {
+      "anchors": [
+        "source.txt:1880-1969#a7e2c04a147a3d57d934e250b8bb3b2575cf52f76475e61b544b96fa8704cde2"
+      ],
+      "comparison": "This is supporting derivation for the excluded Lemma 2, not a separately credited proof route. The live route deliberately requires an explicit full-tail conditional-law bridge rather than treating the printed density manipulation as a completed general proof.",
+      "disposition": "scope_excluded",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.ConditionOneTail",
+        "LBG24SpatialUnderreporting.sourceLemma2SelectedStartExponentialTail"
+      ],
+      "source_claim": "The printed Lemma 2 derivation uses Condition 1, Poisson memorylessness, a Poisson mass sum, and normalization of g to obtain exp(-lambda epsilon).",
+      "source_item": "equations9_16_lemma2_proof_cluster"
+    },
+    {
+      "anchors": [
+        "source.txt:1993-2016#4616f050707a2fb9628dd08715ada082f9837abddb895560afb709da8df1bd35"
+      ],
+      "comparison": "For count zero the printed residual and PMF conversion agree with the corrected finite causal calculation, conditional on the live endpoint kernel/density model.",
+      "disposition": "proof_support_reviewed",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.FiniteStageCausalEndpointProfile.rawLikelihood_factorizes_corrected_eq8"
+      ],
+      "source_claim": "The zero-report case collects rate-free start/end factors and the exponential no-arrival term into the Poisson zero-count mass.",
+      "source_item": "equations17_20_zero_report_proof_cluster"
+    },
+    {
+      "anchors": [
+        "source.txt:2017-2084#5717ae3b9ebc8c6b79c608c8477522ef8603bf5b68a62987187954de0faf66b9"
+      ],
+      "comparison": "For count one, the source residual contains 1/(e-s), which is the factor needed to convert lambda exp(-lambda(e-s)) to the Poisson PMF. The current causal proof has the same conversion.",
+      "disposition": "proof_support_reviewed",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.FiniteStageCausalEndpointProfile.rawLikelihood_factorizes_corrected_eq8"
+      ],
+      "source_claim": "The one-report case factors its start, survival, interarrival, terminal-density, and terminal-no-report terms into the Poisson one-count mass.",
+      "source_item": "equations21_26_one_report_proof_cluster"
+    },
+    {
+      "anchors": [
+        "source.txt:2085-2195#510f5fd46c92d4cf946c11ae05759ed79a59a10caaa0c38c56b3228aeafc2a1a"
+      ],
+      "comparison": "There is a material printed proof discrepancy: Equation (31) has A lambda^M exp(-lambda d), whereas multiplying the source PMF (lambda d)^M exp(-lambda d)/M! requires residual A M!/d^M. The printed Equation (32) instead gives A d^M/M!, its reciprocal. The live Lean proof uses the corrected M!/d^M residual, so it supports the factorization conclusion under its causal model but does not validate the printed Equation (32) definition.",
+      "disposition": "proof_support_reviewed",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.FiniteStageCausalEndpointProfile.correctedResidual",
+        "LBG24SpatialUnderreporting.FiniteStageCausalEndpointProfile.rawLikelihood_factorizes_corrected_eq8"
+      ],
+      "source_claim": "The multi-report derivation intends to express the raw lambda^M exp(-lambda(e-s)) term as a rate-free residual times the Poisson M-count mass.",
+      "source_item": "equations27_32_multi_report_proof_cluster"
+    },
+    {
+      "anchors": [
+        "source.txt:2437-2467#69825b3e964d636b93a23d65a1eed2ef288e08348d30399203fd2f5978ea0cf2"
+      ],
+      "comparison": "The nested minimum is exact. The definition alone does not prove the application-specific inspection/work-order stopping-time premise; that remains an empirical/model applicability condition.",
+      "disposition": "direct_source_encoding",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.equation33_nyc_observation_end"
+      ],
+      "source_claim": "NYC endpoint is min(S_i+100 days, inspection time, work-order time); the surrounding application text requires agency endpoints to be stopping times.",
+      "source_item": "equation33_nyc_observation_end"
+    },
+    {
+      "anchors": [
+        "source.txt:5610-5628#89b8351cce699e6a3f69af024ef968a6927394ff7ffbc94b006c3ef7cd50bb5b"
+      ],
+      "comparison": "The live definition is exactly the displayed three-way minimum. No additional stopping-time conclusion is attached to this source row.",
+      "disposition": "direct_source_encoding",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.equation34_chicago_observation_end"
+      ],
+      "source_claim": "Chicago endpoint is min(first-report time+100 days, closed time, retrieval/update time).",
+      "source_item": "equation34_chicago_observation_end"
+    },
+    {
+      "anchors": [
+        "source.txt:4402-4420#b12d9435f13c0820dc6362c191d2b143474303aac09352848e35df92aed3db87"
+      ],
+      "comparison": "The transparent Spec identifies the conditional law of the complete post-first-arrival interarrival tail, given the first arrival, with the same-rate exponential interarrival law. Its measurable HasLaw premise is exactly the generic iid-exponential interarrival characterization of a homogeneous Poisson process, without unrelated selected-start or finite-window conditions. The library theorem derives the conditional-tail equality from the canonical process law; the route does not claim empirical validity of the application-specific estimator.",
+      "disposition": "compiled_source_model_proof",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.sourcePostFirstJumpPoissonShiftSpec",
+        "LBG24SpatialUnderreporting.sourcePostFirstJumpPoissonShift"
+      ],
+      "source_claim": "After the first jump, the shifted Poisson process retains the same rate, supporting a second-report start.",
+      "source_item": "appendix_shifted_poisson_after_first_jump"
+    },
+    {
+      "anchors": [
+        "source.txt:1660-1770#30f62e0afb5210536e03bb31f8848647f2eac429349557ca0863af9c0ed6a263"
+      ],
+      "comparison": "These interfaces make the density, local integrability/nonnegativity, stationary marked-birth law, retained-delay mass, and survival-mixture equality explicit. They expose the bridge used by the Lemma 1/Proposition 1 endpoints rather than disguising it as an already-proved conclusion.",
+      "disposition": "direct_source_encoding",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.ContinuousDurationDensitySourceCondition",
+        "LBG24SpatialUnderreporting.Lemma1ReportingIntensitySourceCondition",
+        "LBG24SpatialUnderreporting.CalendarFirstReportSourceModel",
+        "LBG24SpatialUnderreporting.Lemma1CalendarTimeDurationSourceModel",
+        "LBG24SpatialUnderreporting.Proposition1CalendarTimeDurationSourceModel"
+      ],
+      "source_claim": "Lemma 1 uses a duration density, age-dependent reporting intensity, stationary Poisson births, independent first-report delays, and calendar-time displacement of retained marks.",
+      "source_item": "source_lemma1_reporting_duration_primitives"
+    },
+    {
+      "anchors": [
+        "source.txt:945-971#796121819e90c355fc87bc2ba262047b799037e4aa53b28c6e5c36235193921d"
+      ],
+      "comparison": "The model makes gamma bounds and positive ordinary-component rate/exposure explicit; the finite product is the source independence encoding. It is model structure, not an empirical validation of the zero-inflated assumption.",
+      "disposition": "direct_source_encoding",
+      "lean_surface": [
+        "LBG24SpatialUnderreporting.ZeroInflatedIncidentSourceModel",
+        "LBG24SpatialUnderreporting.zeroInflatedIndependentIncidentFamilyLikelihood"
+      ],
+      "source_claim": "Independently by incident, a structural class of probability gamma produces zero duplicate reports; otherwise the ordinary Poisson component applies.",
+      "source_item": "source_zero_inflated_incident_model"
+    }
+  ],
+  "schema": 2,
+  "scope_exclusions": [],
+  "source": {
+    "anchor_validation": "The two newly direct Appendix anchors and all four convention records were independently checked against this pinned source and current map. Current source-map preparation is separately used for structural validation of the full pinned anchor surface.",
+    "artifact": "source.txt",
+    "quote_identity_protocol": "Each quote_sha256 is SHA-256 of the UTF-8 bytes in the inclusive source.txt line span, excluding the terminal linefeed added by text display.",
+    "sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5"
+  },
+  "source_artifact_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
+  "title": "Quantifying Spatial Under-reporting Disparities in Resident Crowdsourcing"
+}

@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "paper": "GeEtAl2024AlignmentAxioms",
+  "summaries": {
+    "GE24-C5-LOCAL-WLOG-SELECTION-01": "The checked C.5 counterexample retains the source proof’s local choice of v1 on its first profile as an explicit premise. Recording that premise does not itself prove a reduction from every Pareto-Kemeny selector.",
+    "GE24-C6-FIXED-TIE-CONVENTION-01": "The checked C.6 rule uses a fixed profile-independent tie key for the sequential highest-plurality prescription. Strict plurality comparisons are unchanged; the theorem has this specified rule-family scope."
+  }
+}

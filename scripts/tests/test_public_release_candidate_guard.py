@@ -1123,6 +1123,15 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
                 "_accepted_source_role_material",
                 return_value=accepted_material,
             ):
+                used_entries = set()
+                unchanged_map_dependency = guard.public_source_role_projection_issues(
+                    candidate,
+                    candidate_commit,
+                    [entry],
+                    private_repo=private,
+                    public_base_ref=_candidate_commit,
+                    used_entries=used_entries,
+                )
                 issues = guard.public_source_role_projection_issues(
                     candidate,
                     candidate_commit,
@@ -1170,6 +1179,8 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
                 )
 
         self.assertEqual(issues, [])
+        self.assertEqual(unchanged_map_dependency, [])
+        self.assertEqual(used_entries, {entry})
         self.assertEqual(unchanged, [])
         self.assertTrue(
             any("private_projection allowlist provenance" in issue

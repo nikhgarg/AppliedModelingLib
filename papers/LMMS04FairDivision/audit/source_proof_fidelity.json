@@ -1,0 +1,42 @@
+{
+  "defects": [
+    {
+      "acceptance_condition": "Retain the advertised finite low-value partition and Theorem 2.3 alpha-envy endpoint, while making the constructive high-atom/residual partition route explicit and independent of the non-progressing printed choice.",
+      "affected_source_locators": [
+        "cited publication:313-315",
+        "cited publication:337-342"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "LMMS04-LEMMA24-ENDPOINT-01",
+      "repair_obligation": "A progressing partition construction must choose a maximal or supremal feasible endpoint (with the required measurable limiting argument), not a minimum feasible endpoint: x = 0 is feasible and cannot advance the cut.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "`Lemma24.theorem2_3_real_interval_supported_atom_bound` splits the finite aggregate high-point set, invokes a finite residual real-interval partition at alpha/2, and applies the finite allocation theorem. Its progress is supplied by the partition certificate and does not use the printed minimum-endpoint instruction.",
+      "source_claim": "Lemma 2.4 claims a finite partition of [0,1] into pieces of value at most alpha for every player. Its proof says to choose the minimum x whose prefix [0,x] has value at most alpha for every player.",
+      "source_locator": "cited publication:337-342",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The error is confined to an auxiliary proof step. The repaired Lean route establishes the same advertised alpha-bounded allocation result, so it is a disclosed formalization note rather than a caveat or a change to the mathematical endpoint."
+    }
+  ],
+  "paper": "LMMS04FairDivision",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Theorem 2.1's bounded-envy existence claim and Lemma 2.2's cycle-elimination reduction, excluding the separately retained oracle-runtime clause.",
+      "source_locator": "cited publication:161-174"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Theorem 2.3's measure-to-finite-partition route and the displayed Lemma 2.4 endpoint-selection proof step.",
+      "source_locator": "cited publication:313-342"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Theorem 4.2's uniform-random truthfulness component and Theorem 4.1's finite truthful-mechanism impossibility argument, excluding the separately retained asymptotic-rate conclusion.",
+      "source_locator": "cited publication:764-817"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "0dd14a20e6667cff71dc2a8834df2d12649372127d07295c1ab6ad9b94516f14"
+}

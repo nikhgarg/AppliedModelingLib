@@ -232,6 +232,9 @@ _CONTROLLED_TEXT_FIELDS = frozenset(
         "validator",
         "statement",
         "printed_source_locations",
+        "canonical_source_path",
+        "source_label",
+        "grouping_reason",
     }
 )
 

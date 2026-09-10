@@ -2,6 +2,7 @@ import GHW01DigitalGoods.AuctionMainTheorems
 import GHW01DigitalGoods.BoundedSupply
 import GHW01DigitalGoods.Theorem72Bridge
 import GHW01DigitalGoods.RandomSamplingDirectional
+import GHW01DigitalGoods.ContinuousOfferBridge
 
 /-!
 # Paper-Facing Theorems: Competitive Auctions and Digital Goods

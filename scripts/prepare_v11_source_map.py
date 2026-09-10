@@ -374,6 +374,67 @@ def _apply_corrected_targets(
         item["corrected_target"] = target
 
 
+def _apply_selected_item_dispositions(
+    items: dict[str, dict[str, Any]],
+    config: Mapping[str, Any],
+    selected_by_item: Mapping[str, str],
+) -> None:
+    """Materialize configured non-archival dispositions on selected rows.
+
+    A source map is itself the input to a clean semantic review. Keeping a
+    finite-replacement disposition solely in preparation configuration makes
+    that review depend on an implicit side channel. This helper places the
+    configured classification and its reason on the generated source row;
+    approved corrected targets are subsequently allowed to replace this
+    provisional status with their stricter correction record.
+    """
+
+    raw_dispositions = config.get("selected_item_dispositions", {})
+    if raw_dispositions in ({}, None):
+        return
+    if not isinstance(raw_dispositions, Mapping):
+        raise PreparationError("selected_item_dispositions must be an object")
+    for raw_key, raw_value in raw_dispositions.items():
+        key = str(raw_key).strip()
+        if not key or key not in items or not isinstance(raw_value, Mapping):
+            raise PreparationError(
+                "each selected_item_dispositions entry needs an existing source-map item and object"
+            )
+        if key not in selected_by_item:
+            raise PreparationError(
+                f"{key}: selected_item_dispositions may only classify a selected source item"
+            )
+        source_status = str(raw_value.get("source_status") or "").strip()
+        coverage_status = str(raw_value.get("coverage_status") or "").strip()
+        reason = str(raw_value.get("reason") or "").strip()
+        archival_equivalence_claimed = raw_value.get("archival_equivalence_claimed")
+        if not source_status or not coverage_status or not reason:
+            raise PreparationError(
+                f"{key}: selected disposition needs source_status, coverage_status, and reason"
+            )
+        if not isinstance(archival_equivalence_claimed, bool):
+            raise PreparationError(
+                f"{key}: selected disposition needs boolean archival_equivalence_claimed"
+            )
+        item = items[key]
+        item["source_status"] = source_status
+        item["coverage_status"] = coverage_status
+        item["archival_equivalence_claimed"] = archival_equivalence_claimed
+        existing_note = str(item.get("source_note") or "").strip()
+        disposition_note = f"Formalization disposition: {reason}"
+        # Preparation may be rerun against a previously materialized map.
+        # Replace, rather than append to, the prior generated disposition so
+        # the canonical map is byte-stable under that normal workflow.
+        generated_marker = " Formalization disposition: "
+        if existing_note.startswith("Formalization disposition: "):
+            existing_note = ""
+        elif generated_marker in existing_note:
+            existing_note = existing_note.split(generated_marker, maxsplit=1)[0]
+        item["source_note"] = (
+            f"{existing_note} {disposition_note}" if existing_note else disposition_note
+        )
+
+
 def _upgrade_legacy_corrected_target_approval_artifacts(
     items: Mapping[str, dict[str, Any]],
     config: Mapping[str, Any],
@@ -2406,11 +2467,11 @@ def prepare(
         )
     invalid_evidence_modes = sorted(
         spec for spec, mode in evidence_modes.items()
-        if mode not in {"proves", "definitionally_realizes"}
+        if mode not in {"proves", "refutes", "definitionally_realizes"}
     )
     if invalid_evidence_modes:
         raise PreparationError(
-            "evidence_mode_for_spec values must be `proves` or `definitionally_realizes`: "
+            "evidence_mode_for_spec values must be `proves`, `refutes`, or `definitionally_realizes`: "
             + ", ".join(invalid_evidence_modes)
         )
 
@@ -2745,6 +2806,12 @@ def prepare(
             "source_defect_ids": defect_ids,
             "source_defect_ids_configured": "source_defect_ids" in raw_value,
         }
+
+    # Materialize selected-result dispositions before pinning approved
+    # corrections. Corrections below then replace this provisional status by
+    # their stronger reviewed target record, while finite replacements remain
+    # visible directly on the generated source-map row.
+    _apply_selected_item_dispositions(items, config, selected_by_item)
 
     # Pin approved corrected targets before assigning typed routes.  A
     # corrected theorem is then routed through its selected Spec, while a

@@ -1918,6 +1918,45 @@ theorem appendix_theorem5_ssgm_convergence_boundary
     trajectory meanSubgradient noise bias radius xstar hsource
 
 /--
+Source-faithful adapted-bias reading of Appendix Theorem 5.  The bias and
+noise terms remain sample-path processes; regularity only supplies the
+measurability needed for their stated conditional expectations and martingale
+partial sum.
+-/
+def appendix_theorem5_adapted_biasSpec
+    {Omega Coord : Type*} {mOmega : MeasurableSpace Omega}
+    [Fintype Coord] [Nonempty Coord]
+    (mu : Measure Omega) [IsProbabilityMeasure mu]
+    (filtration : Filtration (Ω := Omega) ℕ mOmega)
+    (solutionSpace : Set (Coord → ℝ))
+    (objective : (Coord → ℝ) → ℝ)
+    (project : (Coord → ℝ) → Coord → ℝ)
+    (trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ)
+    (radius : ℕ → ℝ) (xstar : Coord → ℝ) : Prop :=
+  ∀ (h : AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective
+      project trajectory meanSubgradient noise bias radius xstar)
+    (R : AppendixTheorem5AdaptedBiasRegularity mu filtration solutionSpace objective
+      project trajectory meanSubgradient noise bias radius xstar),
+    ∀ᵐ omega ∂mu, Filter.Tendsto (fun t => trajectory t omega) Filter.atTop (nhds xstar)
+
+/-- The adapted-bias Appendix Theorem 5 endpoint is realized in Lean. -/
+theorem appendix_theorem5_adapted_bias
+    {Omega Coord : Type*} {mOmega : MeasurableSpace Omega}
+    [Fintype Coord] [Nonempty Coord]
+    (mu : Measure Omega) [IsProbabilityMeasure mu]
+    (filtration : Filtration (Ω := Omega) ℕ mOmega)
+    (solutionSpace : Set (Coord → ℝ))
+    (objective : (Coord → ℝ) → ℝ)
+    (project : (Coord → ℝ) → Coord → ℝ)
+    (trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ)
+    (radius : ℕ → ℝ) (xstar : Coord → ℝ) :
+    appendix_theorem5_adapted_biasSpec mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar := by
+  intro h R
+  exact R.ae_tendsto mu filtration solutionSpace objective project trajectory
+    meanSubgradient noise bias radius xstar h
+
+/--
 Corrected set-valued replacement for Appendix Theorem 5.  This is the route
 for the main-text branches whose social optimum can be nonunique under C1--C3;
 it proves convergence to the minimizer set rather than adding a uniqueness
@@ -5511,6 +5550,91 @@ theorem proposition2_coordinatewise_boundary_finite_c3_median :
         (decomposableLinfCoordinateReplacement_of_finiteCoordinate R)
     intro center response r voter hresponse m
     exact B.coordinate_response_isMaxOn hresponse m (by simp [hcoords])
+  · intro n omega
+    exact finiteModelBOutcomeRawResponse_one_is_coordinatewiseBoundary
+      r0 (finiteModelBOutcomeTrajectory C3.data 1 r0 project initial)
+      finiteModelBIdealSample n omega
+  · exact finiteModelAL1LinfCanonicalPerturbedMinimizerSetExecution_outcomeIndexedConverges
+      C3 S hr0 initial hinitial
+  · exact finiteModelBCanonicalLpOneMinimizerSetExecution_outcomeIndexedConverges
+      C3 S hr0 initial hinitial
+
+/--
+Convex-domain repair for Proposition 2.  C1 permits coupled feasible sets, so
+the source's ambient coordinatewise median need not be feasible.  Retaining
+the paper's exact sampled Model A execution premise and its proof's
+coordinatewise-boundary Model B reading, the checked recursions converge on
+every C1 domain to the minimizer set of expected `L1` distance restricted to
+that feasible domain.  On a product domain this constrained target is the
+ordinary coordinatewise median set used in the printed proposition.
+-/
+def proposition2_convex_domain_constrained_l1Spec : Prop :=
+  ∀ {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (C3 : FiniteCoordinateC3Carrier E)
+    (D : DecomposableStructure Voter (Coord → ℝ) Coord)
+    (hdecomposable : IsDecomposableUtilitiesWith E D)
+    (hcoords : D.coords = Finset.univ)
+    (hcoordinate : ∀ m x, D.coordinate m x = x m)
+    (hnorm : UsesFiniteCoordinateNormDistance E)
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (S : FiniteModelBC1C2Source E C3.data project)
+    {r0 : ℝ}, 0 < r0 →
+    ∀ initial : Coord → ℝ, initial ∈ E.solutionSpace →
+      (∃ sampledVoter : (Coord → ℝ) → Voter,
+        (∀ᵐ ideal ∂C3.data.idealMeasure,
+          E.ideal (sampledVoter ideal) = ideal) ∧
+          (∀ᵐ omega ∂finiteModelBIdealSequenceMeasure C3.data, ∀ n,
+            ModelARawResponseAt E SourceNorm.linfty
+              (finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial n omega)
+              (ilvRadius r0 (n + 1))
+              (sampledVoter (finiteModelBIdealSample n omega))
+              (finiteModelAL1LinfOutcomeRawResponse r0
+                (finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial)
+                finiteModelBIdealSample n omega))) →
+      finiteCoordinateC3CarrierFormula C3 ∧
+        finiteModelBC1C2SourceFormula S ∧
+          (∃ sampledVoter : (Coord → ℝ) → Voter,
+            (∀ᵐ ideal ∂C3.data.idealMeasure,
+              E.ideal (sampledVoter ideal) = ideal) ∧
+              (∀ᵐ omega ∂finiteModelBIdealSequenceMeasure C3.data, ∀ n,
+                ModelARawResponseAt E SourceNorm.linfty
+                  (finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial n omega)
+                  (ilvRadius r0 (n + 1))
+                  (sampledVoter (finiteModelBIdealSample n omega))
+                  (finiteModelAL1LinfOutcomeRawResponse r0
+                    (finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial)
+                    finiteModelBIdealSample n omega))) ∧
+          (∀ n omega,
+            ModelBCoordinatewiseBoundaryResponseAt
+              (finiteModelBOutcomeTrajectory C3.data 1 r0 project initial n omega)
+              (finiteModelBIdealSample n omega) (ilvRadius r0 (n + 1))
+              (finiteModelBOutcomeRawResponse 1 r0
+                (finiteModelBOutcomeTrajectory C3.data 1 r0 project initial)
+                finiteModelBIdealSample n omega)) ∧
+          @AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
+            (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance
+            (finiteModelBIdealSequenceMeasure C3.data)
+            (finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial)
+            (finiteModelBExpectedLpMinimizerSet C3.data 1 E.solutionSpace) ∧
+          @AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
+            (ℕ → Coord → ℝ) (Coord → ℝ) inferInstance inferInstance
+            (finiteModelBIdealSequenceMeasure C3.data)
+            (finiteModelBOutcomeTrajectory C3.data 1 r0 project initial)
+            (finiteModelBExpectedLpMinimizerSet C3.data 1 E.solutionSpace)
+
+/--
+The C1-only recovery of Proposition 2's convergence argument.  It removes the
+coordinate-replacement condition from the convergence proof and changes only
+the infeasible ambient-median target to the constrained expected-`L1`
+minimizer set.
+-/
+theorem proposition2_convex_domain_constrained_l1 :
+    proposition2_convex_domain_constrained_l1Spec := by
+  intro Voter Coord _ _ E C3 D hdecomposable hcoords hcoordinate hnorm project S r0 hr0 initial
+    hinitial hexecution
+  refine ⟨⟨C3.data.probability, C3.data.densityBound_ne_top,
+    C3.data.density_measurable⟩, S.finiteModelBC1C2SourceFormula, hexecution, ?_, ?_, ?_⟩
   · intro n omega
     exact finiteModelBOutcomeRawResponse_one_is_coordinatewiseBoundary
       r0 (finiteModelBOutcomeTrajectory C3.data 1 r0 project initial)

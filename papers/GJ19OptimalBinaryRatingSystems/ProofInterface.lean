@@ -330,6 +330,311 @@ theorem source_definition_large_deviation_rate_realizes_spec : source_definition
   unfold source_definition_large_deviation_rateSpec
   exact by intros; rfl
 
+/--
+The project-approved cross-bin Equation-(2) clarification identifies its
+large-deviation gap with the error already analyzed in Appendix C.  Same-bin
+pairs are outside this objective and require no cancellation condition.
+-/
+theorem source_clarified_crossBin_objective_rate_from_appendixC
+    {μ : Measure ℝ} {sameLevel : ℝ × ℝ → Prop} [DecidablePred sameLevel]
+    (model : SourceStrictUpperPairCrossBinObjectiveRealization μ sameLevel)
+    {rate : ℝ}
+    (haux : HasExponentialRate
+      (sourceStrictUpperPairWeightedSeparatedRawError μ model.weight sameLevel
+        model.pairwiseAccuracy) rate) :
+    source_clarified_crossBin_objective_rate_from_appendixCSpec model haux := by
+  exact
+    GJ19OptimalBinaryRatingSystems.ProofBridge.SourceStrictUpperPairCrossBinObjectiveRealization_large_deviation_rate
+      model haux
+
+/--
+Source-facing form of the corrected cross-bin objective transfer when the
+input rate is the tie-erased `Wbar_k` sequence of Appendix C.  This is a
+project-approved correction to the rate objective, not a claim that the
+archival all-pairs Equation (2) already had this domain restriction.
+-/
+theorem source_clarified_crossBin_objective_rate_from_tieErasedSourceWbar
+    {μ : Measure ℝ} {sameLevel : ℝ × ℝ → Prop} [DecidablePred sameLevel]
+    (model : SourceStrictUpperPairCrossBinObjectiveRealization μ sameLevel)
+    {rate : ℝ}
+    (haux : HasExponentialRate
+      (lemmaC4TieErasedSourceWbar μ model.weight
+        (fun k q => if sameLevel q then 0 else 1 - model.pairwiseAccuracy k q))
+      rate) :
+    source_clarified_crossBin_objective_rate_from_tieErasedSourceWbarSpec
+      model haux := by
+  exact
+    GJ19OptimalBinaryRatingSystems.ProofBridge.SourceStrictUpperPairCrossBinObjectiveRealization_large_deviation_rate_of_lemmaC4TieErasedSourceWbar
+      model haux
+
+/-! Minimal source-to-auxiliary transfer contract for the still-open Lemma C.4
+identification.  This is intentionally a proof-facing helper rather than a
+source claim: the eventual equality premise must still be established from a
+chosen population/ranking model. -/
+theorem source_definition_large_deviation_rate_of_eventually_eq_auxiliary
+    {W : ℝ} {Wk auxiliary : ℕ → ℝ} {rate : ℝ}
+    (haux : HasExponentialRate auxiliary rate)
+    (heq : ∀ᶠ k : ℕ in Filter.atTop, W - Wk k = auxiliary k) :
+    source_definition_large_deviation_rate W Wk rate := by
+  exact GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_large_deviation_rate_of_eventually_eq_auxiliary haux heq
+
+/-! Exact objective algebra for the explicit strict-upper-pair source
+convention. The remaining source review is only the instantiation of these
+objects with the paper's printed `W` and `W_k`. -/
+theorem source_strictUpperPair_weighted_limit_sub_finiteObjective_eq_rawError
+    (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ)
+    (pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ) (k : ℕ)
+    (hweight_int : Integrable weight
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
+    (hfinite_int : Integrable
+      (fun q : ℝ × ℝ => weight q * pairwiseAccuracy k q)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) :
+    GJ19OptimalBinaryRatingSystems.ProofBridge.sourceStrictUpperPairWeightedLimit μ weight -
+        GJ19OptimalBinaryRatingSystems.ProofBridge.sourceStrictUpperPairWeightedFiniteObjective μ weight pairwiseAccuracy k =
+      GJ19OptimalBinaryRatingSystems.ProofBridge.sourceStrictUpperPairWeightedRawError μ weight pairwiseAccuracy k := by
+  exact GJ19OptimalBinaryRatingSystems.ProofBridge.sourceStrictUpperPairWeightedLimit_sub_finiteObjective_eq_rawError
+    μ weight pairwiseAccuracy k hweight_int hfinite_int
+
+theorem source_strictUpperPair_objectiveRealization_error_eq_rawError
+    {μ : Measure ℝ}
+    (model : GJ19OptimalBinaryRatingSystems.ProofBridge.SourceStrictUpperPairObjectiveRealization μ) :
+    ∀ k : ℕ, model.W - model.Wk k =
+      GJ19OptimalBinaryRatingSystems.ProofBridge.sourceStrictUpperPairWeightedRawError
+        μ model.weight model.pairwiseAccuracy k := by
+  exact GJ19OptimalBinaryRatingSystems.ProofBridge.sourceStrictUpperPairObjectiveRealization_error_eq_rawError model
+
+/-! Minimal finite repair for the paper's same-level cancellation sentence:
+equal seller laws plus equal sample counts force the strict-order objective to
+cancel by exchange symmetry. -/
+theorem source_same_level_equal_law_equal_counts_objective_eq_zero
+    {Seller Rating : Type*} [Fintype Rating] [DecidableEq Rating]
+    (M : FiniteRatingLDPModel Seller Rating) (hi lo : Seller) (n : ℕ)
+    (hlaw : M.typeLaw hi = M.typeLaw lo) :
+    twoSamplePkObjectiveProb M hi lo n n (n : ℝ)⁻¹ (n : ℝ)⁻¹ = 0 := by
+  exact
+    GJ19OptimalBinaryRatingSystems.ProofBridge.twoSamplePkObjectiveProb_eq_zero_of_equal_law_equal_counts
+      M hi lo n hlaw
+
+/-! Source-level same-cell repair: equality of rating laws and matching rates
+forces exact floor-count cancellation at every horizon. -/
+theorem source_same_level_equal_law_equal_sampleRate_objective_eq_zero
+    {Seller Rating : Type*} [Fintype Rating] [DecidableEq Rating]
+    (M : FiniteRatingLDPModel Seller Rating) (sampleRate : Seller → ℝ)
+    (hi lo : Seller) (k : ℕ)
+    (hlaw : M.typeLaw hi = M.typeLaw lo)
+    (hsample : sampleRate hi = sampleRate lo) :
+    twoSampleFloorPkObjectiveProb M sampleRate hi lo k = 0 := by
+  exact
+    GJ19OptimalBinaryRatingSystems.ProofBridge.twoSampleFloorPkObjectiveProb_eq_zero_of_equal_law_equal_sampleRate
+      M sampleRate hi lo k hlaw hsample
+
+/-! For the source Bernoulli model, constant rating and matching probabilities
+within a level cell give the exact signed-order cancellation needed by the
+literal `W-W_k` bridge. -/
+theorem source_same_level_equal_successProb_equal_sampleRate_objective_eq_zero
+    {Seller : Type*}
+    (successProb : Seller → ℝ)
+    (hprob0 : ∀ θ, 0 ≤ successProb θ)
+    (hprob1 : ∀ θ, successProb θ ≤ 1)
+    (sampleRate : Seller → ℝ) (hi lo : Seller) (k : ℕ)
+    (hsuccess : successProb hi = successProb lo)
+    (hsample : sampleRate hi = sampleRate lo) :
+    twoSampleFloorPkObjectiveProb
+      (binaryRatingModel successProb hprob0 hprob1) sampleRate hi lo k = 0 := by
+  exact
+    GJ19OptimalBinaryRatingSystems.ProofBridge.binaryRatingModel_twoSampleFloorPkObjectiveProb_eq_zero_of_equal_successProb_equal_sampleRate
+      successProb hprob0 hprob1 sampleRate hi lo k hsuccess hsample
+
+/-! General source-gap algebra retaining the limiting same-level accuracy
+instead of silently replacing it by one. -/
+theorem source_strictUpperPair_limitingAccuracy_sub_finiteObjective_eq_gap
+    (μ : Measure ℝ) (weight limitingAccuracy : ℝ × ℝ → ℝ)
+    (pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ) (k : ℕ)
+    (hlimit_int : Integrable
+      (fun q : ℝ × ℝ => weight q * limitingAccuracy q)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
+    (hfinite_int : Integrable
+      (fun q : ℝ × ℝ => weight q * pairwiseAccuracy k q)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) :
+    GJ19OptimalBinaryRatingSystems.ProofBridge.sourceStrictUpperPairWeightedLimitingAccuracyObjective
+          μ weight limitingAccuracy -
+        GJ19OptimalBinaryRatingSystems.ProofBridge.sourceStrictUpperPairWeightedFiniteObjective
+          μ weight pairwiseAccuracy k =
+      ∫ q in AppliedModelingLib.strictUpperPairSet,
+        weight q * (limitingAccuracy q - pairwiseAccuracy k q) ∂(μ.prod μ) := by
+  exact
+    GJ19OptimalBinaryRatingSystems.ProofBridge.sourceStrictUpperPairWeightedLimitingAccuracyObjective_sub_finiteObjective_eq_gap
+      μ weight limitingAccuracy pairwiseAccuracy k hlimit_int hfinite_int
+
+/-! Literal signed-objective repair for Lemma C.4.  The level-aware gap is the
+printed `W - W_k`; the tie-erased cross-level error is equal to it only after
+same-level signed-order cancellation has been established. -/
+theorem source_strictUpperPair_levelGap_eq_limitingAccuracy_sub_finiteObjective
+    (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ)
+    (sameLevel : ℝ × ℝ → Prop) [DecidablePred sameLevel]
+    (pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ) (k : ℕ)
+    (hlimit_int : Integrable
+      (fun q : ℝ × ℝ => weight q *
+        sourceStrictUpperPairLevelLimitingAccuracy sameLevel q)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
+    (hfinite_int : Integrable
+      (fun q : ℝ × ℝ => weight q * pairwiseAccuracy k q)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) :
+    sourceStrictUpperPairWeightedLimitingAccuracyObjective μ weight
+          (sourceStrictUpperPairLevelLimitingAccuracy sameLevel) -
+        sourceStrictUpperPairWeightedFiniteObjective μ weight pairwiseAccuracy k =
+      sourceStrictUpperPairWeightedLevelGap μ weight sameLevel pairwiseAccuracy k := by
+  exact
+    GJ19OptimalBinaryRatingSystems.ProofBridge.sourceStrictUpperPairWeightedLevelGap_eq_limitingAccuracy_sub_finiteObjective
+      μ weight sameLevel pairwiseAccuracy k hlimit_int hfinite_int
+
+theorem source_strictUpperPair_levelGap_eq_separatedRawError_of_sameLevel_cancellation
+    (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ)
+    (sameLevel : ℝ × ℝ → Prop) [DecidablePred sameLevel]
+    (pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ) (k : ℕ)
+    (hsame :
+      ∀ᵐ q ∂((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet),
+        sameLevel q → pairwiseAccuracy k q = 0) :
+    sourceStrictUpperPairWeightedLevelGap μ weight sameLevel pairwiseAccuracy k =
+      sourceStrictUpperPairWeightedSeparatedRawError μ weight sameLevel pairwiseAccuracy k := by
+  exact
+    GJ19OptimalBinaryRatingSystems.ProofBridge.sourceStrictUpperPairWeightedLevelGap_eq_separatedRawError_of_sameLevel_cancellation
+      μ weight sameLevel pairwiseAccuracy k hsame
+
+/-! Finite uniform-pair specialization: once pairwise error-rate certificates
+are available, the actual finite ranking-objective error inherits the minimum
+certificate rate. This is a proved finite bridge, not the unresolved continuum
+identification in Lemma C.4. -/
+theorem finite_binary_uniform_ranking_objective_exact_rate_from_error_rate_certificates
+    {Seller Rating Pair : Type*} [Fintype Rating] [DecidableEq Rating]
+    [Fintype Pair] [DecidableEq Pair] [Nonempty Pair]
+    (M : FiniteRatingLDPModel Seller Rating) (sampleRate : Seller → ℝ)
+    (pairHi pairLo : Pair → Seller)
+    (E : FiniteErrorRateCertificate Pair)
+    (herror :
+      ∀ p : Pair,
+        E.errorProb p =
+          twoSampleFloorPkComplementErrorProb M sampleRate (pairHi p) (pairLo p))
+    (pMin : Pair)
+    (hrate_ge : ∀ p : Pair, E.rate pMin ≤ E.rate p) :
+    HasExponentialRate
+      (fun k : ℕ =>
+        1 - finiteUniformFloorPkObjective M sampleRate pairHi pairLo k)
+      (E.rate pMin) := by
+  exact GJ19OptimalBinaryRatingSystems.finite_binary_uniform_ranking_objective_exact_rate_from_error_rate_certificates
+    M sampleRate pairHi pairLo E herror pMin hrate_ge
+
+/-! The source's ordered adjacent-level specialization is also exported at
+the paper-facing interface.  This closes only the finite adjacent aggregation
+step; the continuum Lemma C.4 identification remains open. -/
+theorem finite_binary_adjacent_uniform_ranking_objective_exact_rate_from_error_rate_certificates
+    {m : ℕ} {Rating : Type*} [Fintype Rating] [DecidableEq Rating]
+    (M : FiniteRatingLDPModel (Fin (m + 2)) Rating)
+    (sampleRate : Fin (m + 2) → ℝ)
+    (E : FiniteErrorRateCertificate (Fin (m + 1)))
+    (herror :
+      ∀ i : Fin (m + 1),
+        E.errorProb i =
+          twoSampleFloorPkComplementErrorProb M sampleRate
+            (adjacentHighIndex i) (adjacentLowIndex i))
+    (iMin : Fin (m + 1))
+    (hrate_ge : ∀ i : Fin (m + 1), E.rate iMin ≤ E.rate i) :
+    HasExponentialRate
+      (fun k : ℕ =>
+        1 -
+          finiteUniformFloorPkObjective M sampleRate
+            (fun i : Fin (m + 1) => adjacentHighIndex i)
+            (fun i : Fin (m + 1) => adjacentLowIndex i) k)
+      (E.rate iMin) := by
+  exact
+    GJ19OptimalBinaryRatingSystems.finite_binary_adjacent_uniform_objective_exact_rate_from_error_rate_certificates
+      M sampleRate E herror iMin hrate_ge
+
+/-! Conditional source-facing composition for the remaining continuum seam.
+The eventual-equality premise is intentionally explicit: it is the exact
+source-model obligation still missing from Lemma C.4. -/
+theorem source_definition_large_deviation_rate_of_eventually_eq_finite_adjacent_uniform_objective
+    {W : ℝ} {Wk : ℕ → ℝ}
+    {m : ℕ} {Rating : Type*} [Fintype Rating] [DecidableEq Rating]
+    (M : FiniteRatingLDPModel (Fin (m + 2)) Rating)
+    (sampleRate : Fin (m + 2) → ℝ)
+    (E : FiniteErrorRateCertificate (Fin (m + 1)))
+    (herror :
+      ∀ i : Fin (m + 1),
+        E.errorProb i =
+          twoSampleFloorPkComplementErrorProb M sampleRate
+            (adjacentHighIndex i) (adjacentLowIndex i))
+    (iMin : Fin (m + 1))
+    (hrate_ge : ∀ i : Fin (m + 1), E.rate iMin ≤ E.rate i)
+    (heq : ∀ᶠ k : ℕ in Filter.atTop,
+      W - Wk k =
+        1 -
+          finiteUniformFloorPkObjective M sampleRate
+            (fun i : Fin (m + 1) => adjacentHighIndex i)
+            (fun i : Fin (m + 1) => adjacentLowIndex i) k) :
+    source_definition_large_deviation_rate W Wk (E.rate iMin) := by
+  apply source_definition_large_deviation_rate_of_eventually_eq_auxiliary
+      (W := W) (Wk := Wk)
+      (auxiliary := fun k : ℕ =>
+        1 -
+          finiteUniformFloorPkObjective M sampleRate
+            (fun i : Fin (m + 1) => adjacentHighIndex i)
+            (fun i : Fin (m + 1) => adjacentLowIndex i) k)
+  · exact
+      GJ19OptimalBinaryRatingSystems.finite_binary_adjacent_uniform_objective_exact_rate_from_error_rate_certificates
+        M sampleRate E herror iMin hrate_ge
+  · exact heq
+
+/-! Source-facing export of the already proved canonical selected-pullback C.4
+forward branch.  This is conditional on the named pullback convention and is
+not the unresolved raw continuum objective identification. -/
+theorem lemmaC4_appropriate_finite_levels_weighted_pullback_source_rate_certificate
+    (μ : Measure ℝ) [SFinite μ] [IsFiniteMeasure (μ.prod μ)]
+    [Measure.IsOpenPosMeasure (μ.prod μ)]
+    (S : LemmaC4AppropriateFiniteLevelsWeightedModel μ) :
+    ∃ levels : Fin (S.m + 2) → ℝ,
+      ∃ hlevels : BinaryEndpointLevelVector levels,
+        BinaryEndpointAwareAdjacentRatesEqualize levels S.sampleRate ∧
+          AppliedModelingLib.Optimization.IsMaximizerOn
+            (BinaryEndpointLevelVector : (Fin (S.m + 2) → ℝ) → Prop)
+            (fun candidate : Fin (S.m + 2) → ℝ =>
+              binaryEndpointAwareAdjacentRateObjective candidate S.sampleRate)
+            levels ∧
+          0 < binaryEndpointAwareAdjacentRateObjective levels S.sampleRate ∧
+          ExponentialRateCertificate
+            (lemmaC4TieErasedSourceWbar μ
+              (theorem31SelectedPullbackSourceWeight S.weight)
+              (theorem31SelectedPullbackSourceKernel μ (m := S.m) S.cut
+                S.hmono S.sampleRate levels hlevels))
+            (binaryEndpointAwareAdjacentRateObjective levels S.sampleRate) := by
+  exact
+    GJ19OptimalBinaryRatingSystems.lemmaC4_appropriate_finite_levels_weighted_pullback_source_rate_certificate
+      μ S
+
+theorem lemmaC4_appropriate_finite_levels_const_weight_pullback_source_rate_certificate
+    (μ : Measure ℝ) [SFinite μ] [IsFiniteMeasure (μ.prod μ)]
+    [Measure.IsOpenPosMeasure (μ.prod μ)]
+    (S : LemmaC4AppropriateFiniteLevelsConstWeightModel μ) :
+    ∃ levels : Fin (S.m + 2) → ℝ,
+      ∃ hlevels : BinaryEndpointLevelVector levels,
+        BinaryEndpointAwareAdjacentRatesEqualize levels S.sampleRate ∧
+          AppliedModelingLib.Optimization.IsMaximizerOn
+            (BinaryEndpointLevelVector : (Fin (S.m + 2) → ℝ) → Prop)
+            (fun candidate : Fin (S.m + 2) → ℝ =>
+              binaryEndpointAwareAdjacentRateObjective candidate S.sampleRate)
+            levels ∧
+          0 < binaryEndpointAwareAdjacentRateObjective levels S.sampleRate ∧
+          ExponentialRateCertificate
+            (lemmaC4TieErasedSourceWbar μ
+              (theorem31SelectedPullbackSourceWeight
+                (fun _ : ℝ × ℝ => (1 : ℝ)))
+              (theorem31SelectedPullbackSourceKernel μ (m := S.m) S.cut
+                S.hmono S.sampleRate levels hlevels))
+            (binaryEndpointAwareAdjacentRateObjective levels S.sampleRate) := by
+  exact
+    GJ19OptimalBinaryRatingSystems.lemmaC4_appropriate_finite_levels_const_weight_pullback_source_rate_certificate
+      μ S
+
 theorem source_definition_step_rule_partition_levels_realizes_spec : source_definition_step_rule_partition_levelsSpec := by
   unfold source_definition_step_rule_partition_levelsSpec
   exact by intros; rfl

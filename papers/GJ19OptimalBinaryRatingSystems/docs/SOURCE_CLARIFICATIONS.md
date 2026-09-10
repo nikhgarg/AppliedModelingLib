@@ -42,21 +42,38 @@ Source line numbers refer to the retained publication text and supplement.
   $M[\log_2(\max\{1,1/\delta\})+2]^2$; this is a refinement of the
   runtime rate, not a slower asymptotic guarantee.
 
-## Lemma C.4: the two objective comparisons
+<a id="lemma-c4-the-two-objective-comparisons"></a>
 
-- **Paper:** the gap between limiting and current ranking quality, $W-W_k$,
-  decays exponentially at a positive rate if and only if the rating rule uses
-  finitely many probability levels.
-- **Formalized:** the finite-level positive-rate proof omits pairs assigned
-  the same level; the other direction proves zero rate for a separately
-  defined pairwise-error integral.
-- **Missing proof:** connect both integrals to $W-W_k$ and establish the
-  adjacent-rate formula in Theorem 3.1, equation (3) (main lines 487–517).
-  Equal assigned rating probabilities need not make a pair's finite-sample
-  ranking contribution zero when sample counts differ: with common probability
-  $1/3$, two samples beat one by signed ordering probability $2/27$.
-  Erasing those pairs therefore needs a proof. This finite-sample example does
-  not refute the paper's asymptotic characterization.
-- **Two-level endpoint:** the formalized optimization covers $M\ge3$.
-  With two deterministic endpoint levels, cross-cell separation has infinite
-  rate, which the current real-valued rate formula does not represent.
+## Theorem 3.1 and Lemmas C.3–C.4: cross-bin ranking rates
+
+- **Rate-comparison domain:** the paper's cross-bin reading is made explicit as
+  $\beta_1\ne\beta_2$, where $\beta_i$ is item $i$'s assigned rating
+  probability. Items in the same bin are not asymptotically distinguished by
+  the rating system. For the paper's pair weight $w$ and signed ranking
+  accuracy $P_k$, the limiting and finite objectives are
+  $$
+  W^{\mathrm{cross}}=\int_{\beta_1\ne\beta_2}w,\qquad
+  W_k^{\mathrm{cross}}=\int_{\beta_1\ne\beta_2}wP_k.
+  $$
+  Therefore
+  $$
+  W^{\mathrm{cross}}-W_k^{\mathrm{cross}}
+  =\int_{\beta_1\ne\beta_2}w(1-P_k),
+  $$
+  exactly the error quantity analyzed in Appendix C. Theorem 3.1 and Lemmas
+  C.3–C.4 are formalized with this intended reading. No assumption that
+  matching rates are constant within bins is needed.
+
+- **Complement notation (supplement lines 1150–1171):** read
+  $\bar P_k=1-P_k$ on cross-bin pairs, with zero contribution from same-bin
+  pairs. Applying the complement formula to every pair would give a different
+  quantity: identical score laws and counts have signed $P_k=0$, hence
+  $1-P_k=1$. Nor can same-bin signed contributions always be canceled when
+  counts differ: with common rating probability $1/3$, two samples beat one
+  by signed ordering probability $2/27$. These observations explain the
+  domain convention; they do not change the intended rate conclusion.
+
+- **Two-level endpoint:** a real-valued rate formula for at least three
+  rating levels → a separate extended-rate statement for two levels. Uniform
+  positive matching rates make the two-level error eventually zero, so its
+  exponential rate is $+\infty$. This is an endpoint clarification.

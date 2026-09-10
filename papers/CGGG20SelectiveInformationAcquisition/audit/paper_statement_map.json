@@ -1,0 +1,1431 @@
+{
+  "approved_review_context_schema": 1,
+  "comment": "Source-first inventory curated from the local AIES/arXiv TeX cache. Keys preserve the dashboard fallback numbering where present; aliases record human source labels.",
+  "curated_at": "2026-07-07T17:48:30Z",
+  "curator": "codex-agent-semantic-closeout-pass",
+  "items": {
+    "definition1": {
+      "aliases": [
+        "threshold_policy_definition"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "CGGG20SelectiveInformationAcquisition.PaperInterface.definition1_threshold_policySpec"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 376,
+              "line_start": 366,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\begin{defn}[Threshold Policy]\n    A \\emph{threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i = t_{g_i}, \\\\\n                0 & \\hat U_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\).\n\\end{defn}",
+              "quoted_text_sha256": "733ad868657280cb448a5f74f68389826b2564633afa738153e7db0aecb742ff"
+            }
+          ]
+        }
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 376,
+          "line_start": 366,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{defn}[Threshold Policy]\n    A \\emph{threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i = t_{g_i}, \\\\\n                0 & \\hat U_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\).\n\\end{defn}",
+          "quoted_text_sha256": "733ad868657280cb448a5f74f68389826b2564633afa738153e7db0aecb742ff"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "definition1",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.PaperInterface.definition1_threshold_policySpec",
+          "semantic_claim": "A threshold policy uses one group threshold and one boundary-randomization probability per group, allocating with probability one above the threshold, the boundary probability at equality, and zero below it.",
+          "source_locator": "audit/cited publication:366-376",
+          "source_quote_sha256": "733ad868657280cb448a5f74f68389826b2564633afa738153e7db0aecb742ff"
+        }
+      ],
+      "source_kind": "definition",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:366-376",
+      "source_note": "The main-text threshold definition is formalized directly as a groupwise posterior-utility threshold rule. Its earlier route through the cost-aware appendix interface is not reused: the latter thresholds posterior utility divided by applicant-specific cost.",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "80b838ee81bdba1093cee45fcdc0818297ed454b8de47ed14ce018b55e952253",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "The source-map item preserves the labelled ordinary threshold-policy definition and its complete byte-pinned display; its selected Spec gives the groupwise posterior-utility comparison and boundary randomization rule directly.",
+        "source_item_statement_sha256": "b17a3b53bb56fdaf16422cfd656d4e095732a93a2ddbe75c8e8670c4404f3c6c",
+        "validated_at": "2026-09-02T00:00:00Z",
+        "validator": "CGGG20 independent literal-definition reconciliation",
+        "validator_type": "agent"
+      },
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "A threshold policy uses one group threshold and one boundary-randomization probability per group, allocating with probability one above the threshold, the boundary probability at equality, and zero below it.",
+      "title": "Definition 1, Threshold Policy"
+    },
+    "definition3": {
+      "aliases": [
+        "cost_aware_threshold_policy_definition"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The cost-aware definition, Appendix Lemmas 1--3, the appendix replacement theorem, and the main-text common-cost specialization use this convention. It is projected into every affected source-to-Spec reviewer bundle rather than being silently added as proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "Every allocation cost is strictly positive. In the main-text common-cost specialization this means `0 < c_a`; in the appendix applicant-specific model it means `forall i, 0 < c_i`.",
+          "id": "CGGG20-STRICT-POSITIVE-ALLOCATION-COST-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "b66dc1db169ded5dd222473952b43fa442e2c385289730077a6f152d8084b433",
+          "report_summary": "The paper's ratio-based cost-aware model is read with strictly positive allocation costs; this is an approved clarification that makes the displayed score and exchange inequalities well-defined.",
+          "source_locator": "audit/cited publication:619-636; 643-730; 737-777",
+          "why_needed": "The appendix defines the threshold score as `hat U_i / c_i` and its proof multiplies score inequalities by `c_i`. Zero costs leave the displayed ratio undefined and negative costs reverse those inequalities. The maintainer approved the strictly-positive reading on 2026-09-02."
+        }
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "CGGG20SelectiveInformationAcquisition.PaperInterface.definition3_cost_aware_threshold_policySpec"
+      ],
+      "model_convention_ids": [
+        "CGGG20-STRICT-POSITIVE-ALLOCATION-COST-01"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 636,
+          "line_start": 626,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{defn}[Cost-Aware Threshold Policy]\n    A \\emph{cost-aware threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i / c_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i / c_i = t_{g_i}, \\\\\n                0 & \\hat U_i / c_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\) and \\(c_i\\) denotes the cost of allocating resources to individual \\(i\\).\n\\end{defn}",
+          "quoted_text_sha256": "2350a9f211af4796282435ab1344eff61fcda254ce18219ebe2ba168700876a5"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "definition3",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.PaperInterface.definition3_cost_aware_threshold_policySpec",
+          "semantic_claim": "A cost-aware threshold policy is an allocation policy A for fixed group thresholds t_j in R union {-infinity, infinity} and alpha_j in [0,1] such that A_i is 1 when hat U_i / c_i is above the group threshold, alpha at equality, and 0 below it.",
+          "source_locator": "audit/cited publication:626-636",
+          "source_quote_sha256": "2350a9f211af4796282435ab1344eff61fcda254ce18219ebe2ba168700876a5"
+        }
+      ],
+      "source_kind": "definition",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:626-636",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "71b5e0d472813511abf82a0128167b7a31e32267e55230e91b9c9bc3c144ed23",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "The source-map item preserves the labelled appendix definition's threshold domain, boundary randomization, group indexing, and utility-over-cost comparison.",
+        "source_item_statement_sha256": "05783c561e63e471dda8ac93088bfe4aab707f501a600f417d1853456c7bb1d6",
+        "validated_at": "2026-09-02T00:00:00Z",
+        "validator": "CGGG20 independent literal-definition reconciliation",
+        "validator_type": "agent"
+      },
+      "source_status": "Direct appendix source definition.",
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "A cost-aware threshold policy is an allocation policy A for fixed group thresholds t_j in R union {-infinity, infinity} and alpha_j in [0,1] such that A_i is 1 when hat U_i / c_i is above the group threshold, alpha at equality, and 0 below it.",
+      "title": "Definition 3, Cost-Aware Threshold Policy"
+    },
+    "equation_constr1": {
+      "aliases": [
+        "eq_constr1"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "deep_audit_material",
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "Standalone LP display for a separate computational procedure; under named-theoretical-statement scope, an equation is deep-audit material and does not govern the selected threshold results.",
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 417,
+              "line_start": 398,
+              "publication_locator": "cited publication",
+              "quoted_text": "Now, \ngiven a threshold policy \\(\\C T\\) with  thresholds \\(t_1, \\dots, t_m  \\in \\B R\\) and boundary randomization probabilities \\(\\alpha_1, \\dots, \\alpha_m \\in [0,1]\\),\nwe turn to finding an optimal companion screening policy. \nWe show that such an optimal screening policy \\(\\C P\\) can be found by solving an LP.\nIn particular, the LP has \\(n\\) decision variables \\(p_1, \\dots, p_n\\), with \\(p_i \\in [0,1]\\) specifying the probability that applicant \\(i\\) is screened;\nthe objective equals the utility of the \ncombined screening and allocation policy;\nand the constraints encode our budget and diversity conditions.\n\nTo construct the LP, we first define the following quantities that depend on both the threshold rule \\(\\C T\\) and the lender's prior knowledge on the value of screening:\n    \\begin{align*}\n        q_i &= \\Pr(D_i > t_{g_i}),\\\\\n        e_i &= \\EE[U_i \\mid D_i > t_{g_i}],\\\\\n        o_i &= \\B 1_{\\mu_i > t_{g_i}} + \\alpha_{g_i} \\cdot \\B 1_{\\mu_i = t_{g_i}},\n    \\end{align*}\nwhere \\(g_i\\) denotes applicant \\(i\\)'s group membership. Recall that \n\\(\\mu_i\\) denotes pre-screening expected utility\nand \\(D_i\\) denotes post-screening expected utility \nif applicant \\(i\\) is screened. \nBoth \\(\\mu_i\\) and the distribution of \\(D_i\\) are known in advance.",
+              "quoted_text_sha256": "2718c32b3f3b9685ba509731652cf564655c45d7cb7b27bd4d564077f583d534"
+            }
+          ]
+        }
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 435,
+          "line_start": 429,
+          "publication_locator": "cited publication",
+          "quoted_text": "Our goal is to maximize the expression in Eq.~\\eqref{eq:obj} subject to the budget and diversity conditions, which we now show can also be expressed as linear constraints on \\(p\\).\nIn terms of the constants defined above,\nthe budget constraint can be written as\n\\begin{equation}\n    \\label{eq:constr1}\n        \\sum_{i = 1}^n \\left[ \\cs \\cdot p_i + \\ca \\cdot q_i \\cdot p_i + \\ca \\cdot o_i \\cdot (1-p_i) \\right] \\leq B.\n    \\end{equation}",
+          "quoted_text_sha256": "4f10bd8f8865c7d03def92ada316ea46e3cd7a835a195c58a8330bd36c44838c"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "equation.constr1",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.PaperInterface.equation_constr1_fixed_threshold_budget",
+          "semantic_claim": "The fixed-threshold budget constraint is sum_i [c_s p_i + c_a q_i p_i + c_a o_i (1 - p_i)] <= B.",
+          "source_locator": "audit/cited publication:429-435",
+          "source_quote_sha256": "4f10bd8f8865c7d03def92ada316ea46e3cd7a835a195c58a8330bd36c44838c"
+        }
+      ],
+      "source_kind": "formula",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:429-435",
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "The fixed-threshold budget constraint is sum_i [c_s p_i + c_a q_i p_i + c_a o_i (1 - p_i)] <= B.",
+      "title": "Equation (constr1), fixed-threshold budget constraint"
+    },
+    "equation_constr2": {
+      "aliases": [
+        "eq_constr2"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "deep_audit_material",
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "Standalone LP display for a separate computational procedure; under named-theoretical-statement scope, an equation is deep-audit material and does not govern the selected threshold results.",
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 417,
+              "line_start": 398,
+              "publication_locator": "cited publication",
+              "quoted_text": "Now, \ngiven a threshold policy \\(\\C T\\) with  thresholds \\(t_1, \\dots, t_m  \\in \\B R\\) and boundary randomization probabilities \\(\\alpha_1, \\dots, \\alpha_m \\in [0,1]\\),\nwe turn to finding an optimal companion screening policy. \nWe show that such an optimal screening policy \\(\\C P\\) can be found by solving an LP.\nIn particular, the LP has \\(n\\) decision variables \\(p_1, \\dots, p_n\\), with \\(p_i \\in [0,1]\\) specifying the probability that applicant \\(i\\) is screened;\nthe objective equals the utility of the \ncombined screening and allocation policy;\nand the constraints encode our budget and diversity conditions.\n\nTo construct the LP, we first define the following quantities that depend on both the threshold rule \\(\\C T\\) and the lender's prior knowledge on the value of screening:\n    \\begin{align*}\n        q_i &= \\Pr(D_i > t_{g_i}),\\\\\n        e_i &= \\EE[U_i \\mid D_i > t_{g_i}],\\\\\n        o_i &= \\B 1_{\\mu_i > t_{g_i}} + \\alpha_{g_i} \\cdot \\B 1_{\\mu_i = t_{g_i}},\n    \\end{align*}\nwhere \\(g_i\\) denotes applicant \\(i\\)'s group membership. Recall that \n\\(\\mu_i\\) denotes pre-screening expected utility\nand \\(D_i\\) denotes post-screening expected utility \nif applicant \\(i\\) is screened. \nBoth \\(\\mu_i\\) and the distribution of \\(D_i\\) are known in advance.",
+              "quoted_text_sha256": "2718c32b3f3b9685ba509731652cf564655c45d7cb7b27bd4d564077f583d534"
+            }
+          ]
+        }
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 441,
+          "line_start": 436,
+          "publication_locator": "cited publication",
+          "quoted_text": "Likewise, the \\(j\\) diversity constraints in Eq.~\\eqref{eq:def3} become\n    \\begin{equation}\n    \\label{eq:constr2}\n        \\sum_{i \\in G_j} \\left[ q_i \\cdot e_i \\cdot p_i + o_i \\cdot \\mu_i \\cdot (1 - p_i) \\right] \\geq \\Lambda_j,\n    \\end{equation}\nfor \\(j = 1, \\ldots, m\\).",
+          "quoted_text_sha256": "8614f64d652a563c7b5b88cf26a7ef8158708fc583d0b376d73f087954544a7b"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "equation.constr2",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.PaperInterface.equation_constr2_fixed_threshold_diversity",
+          "semantic_claim": "For each group j, the fixed-threshold diversity constraint is sum_{i in G_j} [q_i e_i p_i + o_i mu_i (1 - p_i)] >= Lambda_j.",
+          "source_locator": "audit/cited publication:436-441",
+          "source_quote_sha256": "8614f64d652a563c7b5b88cf26a7ef8158708fc583d0b376d73f087954544a7b"
+        }
+      ],
+      "source_kind": "formula",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:436-441",
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "For each group j, the fixed-threshold diversity constraint is sum_{i in G_j} [q_i e_i p_i + o_i mu_i (1 - p_i)] >= Lambda_j.",
+      "title": "Equation (constr2), fixed-threshold diversity constraint"
+    },
+    "equation_lp1": {
+      "aliases": [
+        "eq_lp1"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "deep_audit_material",
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "Standalone LP display for a separate computational procedure; under named-theoretical-statement scope, an equation is deep-audit material and does not govern the selected threshold results.",
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 417,
+              "line_start": 407,
+              "publication_locator": "cited publication",
+              "quoted_text": "To construct the LP, we first define the following quantities that depend on both the threshold rule \\(\\C T\\) and the lender's prior knowledge on the value of screening:\n    \\begin{align*}\n        q_i &= \\Pr(D_i > t_{g_i}),\\\\\n        e_i &= \\EE[U_i \\mid D_i > t_{g_i}],\\\\\n        o_i &= \\B 1_{\\mu_i > t_{g_i}} + \\alpha_{g_i} \\cdot \\B 1_{\\mu_i = t_{g_i}},\n    \\end{align*}\nwhere \\(g_i\\) denotes applicant \\(i\\)'s group membership. Recall that \n\\(\\mu_i\\) denotes pre-screening expected utility\nand \\(D_i\\) denotes post-screening expected utility \nif applicant \\(i\\) is screened. \nBoth \\(\\mu_i\\) and the distribution of \\(D_i\\) are known in advance.",
+              "quoted_text_sha256": "f39fea6ed73a78fe8bde48c5f63807b05e03b3b125de1484b063a25b81759bd8"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 793,
+              "line_start": 781,
+              "publication_locator": "cited publication",
+              "quoted_text": "\nIn our experiments we consider cases in which screening provides no additional information about one group of individuals (i.e., \\(D_i\\) is concentrated at a single point for \\(i \\in G_j\\)).\nIn this case, it is possible to significantly reduce the number of LPs the decision maker must solve to find an optimal policy or calculate the Pareto frontier.\nFor instance, a lender may already possess all available information relevant to the creditworthiness of those with traditional credit histories.\n\nIn this case, the cost of allocating resources to group \\(G_j\\) does not depend on the screening policy \\(\\C P\\).\nTherefore, rather than sweeping over all possible pairs of thresholds and boundary randomization probabilities \\((t_j, \\alpha_j)\\), \none can encode the allocation policy to \\(G_j\\) directly as a collection of allocation probabilities \\(\\{a_i\\}_{i \\in G_j}\\).\n\nFor notational simplicity, suppose without loss of generality that \\(m = 2\\), that \\(G_1 = \\{1, \\ldots, n_1\\}\\) and \\(G_2 = \\{n_1 + 1, \\ldots, n_1 + n_2\\}\\), and that \\(D_i\\) is a pointmass for all \\(i \\in G_2\\).\n\nThen, let \\(p = (p_1, \\ldots, p_{n_1})\\) be a length \\(n_1\\) vector of probabilities indicating the probability of screening the members of \\(G_1\\). Let \\(a = (a_{n_1 + 1}, \\ldots, a_{n_1 + n_2})\\) be a length \\(n_2\\) vector of probabilities indicating the probability of allocating resources to members of \\(G_2\\). We keep the rest of the notation the same as in Section \\ref{sec:solution}.\n",
+              "quoted_text_sha256": "e6d13191c49afb579ff4a62232eae589cfa088b597c5a9683742779f6a185761"
+            }
+          ]
+        }
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 798,
+          "line_start": 794,
+          "publication_locator": "cited publication",
+          "quoted_text": "Fix threshold \\(t_1\\) and boundary randomization probability \\(\\alpha_1\\) for \\(G_1\\). Then, the expected utility of any pair of screening policies (for \\(G_1\\)) and allocation policies (for \\(G_2\\)) can be expressed as a linear function of \\(p\\) and \\(a\\):\n    \\begin{equation}\n    \\label{eq:lp1}\n        \\sum_{i \\in G_1} \\left[ q_i \\cdot e_i \\cdot p_i + o_i \\cdot \\mu_i \\cdot (1 - p_i) \\right] + \\sum_{i \\in G_2} \\left[ \\mu_i \\cdot a_i \\right].\n    \\end{equation}",
+          "quoted_text_sha256": "209541115bb73b96e91178dc3e79baeb7af464abf5bd1e4318332eb001d16a6d"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "equation.lp1",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.PaperInterface.equation_lp1_optimized_two_group_objective",
+          "semantic_claim": "For the optimized two-group procedure, the objective is sum_{i in G1} [q_i e_i p_i + o_i mu_i (1 - p_i)] plus sum_{i in G2} [mu_i a_i].",
+          "source_locator": "audit/cited publication:794-798",
+          "source_quote_sha256": "209541115bb73b96e91178dc3e79baeb7af464abf5bd1e4318332eb001d16a6d"
+        }
+      ],
+      "source_kind": "formula",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:794-798",
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "For the optimized two-group procedure, the objective is sum_{i in G1} [q_i e_i p_i + o_i mu_i (1 - p_i)] plus sum_{i in G2} [mu_i a_i].",
+      "title": "Equation (lp1), optimized two-group objective"
+    },
+    "equation_lp2": {
+      "aliases": [
+        "eq_lp2"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "deep_audit_material",
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "Standalone LP display for a separate computational procedure; under named-theoretical-statement scope, an equation is deep-audit material and does not govern the selected threshold results.",
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 417,
+              "line_start": 407,
+              "publication_locator": "cited publication",
+              "quoted_text": "To construct the LP, we first define the following quantities that depend on both the threshold rule \\(\\C T\\) and the lender's prior knowledge on the value of screening:\n    \\begin{align*}\n        q_i &= \\Pr(D_i > t_{g_i}),\\\\\n        e_i &= \\EE[U_i \\mid D_i > t_{g_i}],\\\\\n        o_i &= \\B 1_{\\mu_i > t_{g_i}} + \\alpha_{g_i} \\cdot \\B 1_{\\mu_i = t_{g_i}},\n    \\end{align*}\nwhere \\(g_i\\) denotes applicant \\(i\\)'s group membership. Recall that \n\\(\\mu_i\\) denotes pre-screening expected utility\nand \\(D_i\\) denotes post-screening expected utility \nif applicant \\(i\\) is screened. \nBoth \\(\\mu_i\\) and the distribution of \\(D_i\\) are known in advance.",
+              "quoted_text_sha256": "f39fea6ed73a78fe8bde48c5f63807b05e03b3b125de1484b063a25b81759bd8"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 793,
+              "line_start": 781,
+              "publication_locator": "cited publication",
+              "quoted_text": "\nIn our experiments we consider cases in which screening provides no additional information about one group of individuals (i.e., \\(D_i\\) is concentrated at a single point for \\(i \\in G_j\\)).\nIn this case, it is possible to significantly reduce the number of LPs the decision maker must solve to find an optimal policy or calculate the Pareto frontier.\nFor instance, a lender may already possess all available information relevant to the creditworthiness of those with traditional credit histories.\n\nIn this case, the cost of allocating resources to group \\(G_j\\) does not depend on the screening policy \\(\\C P\\).\nTherefore, rather than sweeping over all possible pairs of thresholds and boundary randomization probabilities \\((t_j, \\alpha_j)\\), \none can encode the allocation policy to \\(G_j\\) directly as a collection of allocation probabilities \\(\\{a_i\\}_{i \\in G_j}\\).\n\nFor notational simplicity, suppose without loss of generality that \\(m = 2\\), that \\(G_1 = \\{1, \\ldots, n_1\\}\\) and \\(G_2 = \\{n_1 + 1, \\ldots, n_1 + n_2\\}\\), and that \\(D_i\\) is a pointmass for all \\(i \\in G_2\\).\n\nThen, let \\(p = (p_1, \\ldots, p_{n_1})\\) be a length \\(n_1\\) vector of probabilities indicating the probability of screening the members of \\(G_1\\). Let \\(a = (a_{n_1 + 1}, \\ldots, a_{n_1 + n_2})\\) be a length \\(n_2\\) vector of probabilities indicating the probability of allocating resources to members of \\(G_2\\). We keep the rest of the notation the same as in Section \\ref{sec:solution}.\n",
+              "quoted_text_sha256": "e6d13191c49afb579ff4a62232eae589cfa088b597c5a9683742779f6a185761"
+            }
+          ]
+        }
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 807,
+          "line_start": 800,
+          "publication_locator": "cited publication",
+          "quoted_text": "Likewise, our budget constraint can be expressed as follows:\n    \\begin{equation}\n    \\label{eq:lp2}\n        \\begin{split}\n            B &\\geq \\sum_{i \\in G_1} \\left[ \\cs \\cdot p_i + \\ca \\cdot q_i \\cdot p_i + \\ca \\cdot o_i \\cdot (1-p_i) \\right] \\\\\n                &\\hspace{.5cm} + \\sum_{i \\in G_2} \\left[ \\ca \\cdot a_i \\right]\n        \\end{split}\n    \\end{equation}",
+          "quoted_text_sha256": "7168d2bd989784b28be12e3debfc87c14b95e3587ea1a3a42b61b8ac650649bf"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "equation.lp2",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.PaperInterface.equation_lp2_optimized_two_group_budget",
+          "semantic_claim": "For the optimized two-group procedure, the budget constraint is B at least sum_{i in G1} [c_s p_i + c_a q_i p_i + c_a o_i (1 - p_i)] plus sum_{i in G2} [c_a a_i].",
+          "source_locator": "audit/cited publication:800-807",
+          "source_quote_sha256": "7168d2bd989784b28be12e3debfc87c14b95e3587ea1a3a42b61b8ac650649bf"
+        }
+      ],
+      "source_kind": "formula",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:800-807",
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "For the optimized two-group procedure, the budget constraint is B at least sum_{i in G1} [c_s p_i + c_a q_i p_i + c_a o_i (1 - p_i)] plus sum_{i in G2} [c_a a_i].",
+      "title": "Equation (lp2), optimized two-group budget constraint"
+    },
+    "equation_lp3": {
+      "aliases": [
+        "eq_lp3"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "deep_audit_material",
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "Standalone LP display for a separate computational procedure; under named-theoretical-statement scope, an equation is deep-audit material and does not govern the selected threshold results.",
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 417,
+              "line_start": 407,
+              "publication_locator": "cited publication",
+              "quoted_text": "To construct the LP, we first define the following quantities that depend on both the threshold rule \\(\\C T\\) and the lender's prior knowledge on the value of screening:\n    \\begin{align*}\n        q_i &= \\Pr(D_i > t_{g_i}),\\\\\n        e_i &= \\EE[U_i \\mid D_i > t_{g_i}],\\\\\n        o_i &= \\B 1_{\\mu_i > t_{g_i}} + \\alpha_{g_i} \\cdot \\B 1_{\\mu_i = t_{g_i}},\n    \\end{align*}\nwhere \\(g_i\\) denotes applicant \\(i\\)'s group membership. Recall that \n\\(\\mu_i\\) denotes pre-screening expected utility\nand \\(D_i\\) denotes post-screening expected utility \nif applicant \\(i\\) is screened. \nBoth \\(\\mu_i\\) and the distribution of \\(D_i\\) are known in advance.",
+              "quoted_text_sha256": "f39fea6ed73a78fe8bde48c5f63807b05e03b3b125de1484b063a25b81759bd8"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 793,
+              "line_start": 781,
+              "publication_locator": "cited publication",
+              "quoted_text": "\nIn our experiments we consider cases in which screening provides no additional information about one group of individuals (i.e., \\(D_i\\) is concentrated at a single point for \\(i \\in G_j\\)).\nIn this case, it is possible to significantly reduce the number of LPs the decision maker must solve to find an optimal policy or calculate the Pareto frontier.\nFor instance, a lender may already possess all available information relevant to the creditworthiness of those with traditional credit histories.\n\nIn this case, the cost of allocating resources to group \\(G_j\\) does not depend on the screening policy \\(\\C P\\).\nTherefore, rather than sweeping over all possible pairs of thresholds and boundary randomization probabilities \\((t_j, \\alpha_j)\\), \none can encode the allocation policy to \\(G_j\\) directly as a collection of allocation probabilities \\(\\{a_i\\}_{i \\in G_j}\\).\n\nFor notational simplicity, suppose without loss of generality that \\(m = 2\\), that \\(G_1 = \\{1, \\ldots, n_1\\}\\) and \\(G_2 = \\{n_1 + 1, \\ldots, n_1 + n_2\\}\\), and that \\(D_i\\) is a pointmass for all \\(i \\in G_2\\).\n\nThen, let \\(p = (p_1, \\ldots, p_{n_1})\\) be a length \\(n_1\\) vector of probabilities indicating the probability of screening the members of \\(G_1\\). Let \\(a = (a_{n_1 + 1}, \\ldots, a_{n_1 + n_2})\\) be a length \\(n_2\\) vector of probabilities indicating the probability of allocating resources to members of \\(G_2\\). We keep the rest of the notation the same as in Section \\ref{sec:solution}.\n",
+              "quoted_text_sha256": "e6d13191c49afb579ff4a62232eae589cfa088b597c5a9683742779f6a185761"
+            }
+          ]
+        }
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 812,
+          "line_start": 808,
+          "publication_locator": "cited publication",
+          "quoted_text": "The allocation diversity constraint will take one of the following two forms. If the constrained group is \\(G_1\\),\n    \\begin{equation}\n    \\label{eq:lp3}\n        \\sum_{i \\in G_1} \\left[ q_i \\cdot e_i \\cdot p_i + o_i \\cdot \\mu_i \\cdot (1 - p_i) \\right] = \\Lambda_1.\n    \\end{equation}",
+          "quoted_text_sha256": "0870d00fad0a007a286d2b8892c034537f7adccd6ac0d36155e438447fc6e359"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "equation.lp3",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.PaperInterface.equation_lp3_optimized_screened_group_equality",
+          "semantic_claim": "If the constrained group is G1, the optimized two-group diversity equality is sum_{i in G1} [q_i e_i p_i + o_i mu_i (1 - p_i)] = Lambda_1.",
+          "source_locator": "audit/cited publication:808-812",
+          "source_quote_sha256": "0870d00fad0a007a286d2b8892c034537f7adccd6ac0d36155e438447fc6e359"
+        }
+      ],
+      "source_kind": "formula",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:808-812",
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "If the constrained group is G1, the optimized two-group diversity equality is sum_{i in G1} [q_i e_i p_i + o_i mu_i (1 - p_i)] = Lambda_1.",
+      "title": "Equation (lp3), optimized screened-group equality constraint"
+    },
+    "equation_lp4": {
+      "aliases": [
+        "eq_lp4"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "deep_audit_material",
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "Standalone LP display for a separate computational procedure; under named-theoretical-statement scope, an equation is deep-audit material and does not govern the selected threshold results.",
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 417,
+              "line_start": 407,
+              "publication_locator": "cited publication",
+              "quoted_text": "To construct the LP, we first define the following quantities that depend on both the threshold rule \\(\\C T\\) and the lender's prior knowledge on the value of screening:\n    \\begin{align*}\n        q_i &= \\Pr(D_i > t_{g_i}),\\\\\n        e_i &= \\EE[U_i \\mid D_i > t_{g_i}],\\\\\n        o_i &= \\B 1_{\\mu_i > t_{g_i}} + \\alpha_{g_i} \\cdot \\B 1_{\\mu_i = t_{g_i}},\n    \\end{align*}\nwhere \\(g_i\\) denotes applicant \\(i\\)'s group membership. Recall that \n\\(\\mu_i\\) denotes pre-screening expected utility\nand \\(D_i\\) denotes post-screening expected utility \nif applicant \\(i\\) is screened. \nBoth \\(\\mu_i\\) and the distribution of \\(D_i\\) are known in advance.",
+              "quoted_text_sha256": "f39fea6ed73a78fe8bde48c5f63807b05e03b3b125de1484b063a25b81759bd8"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 793,
+              "line_start": 781,
+              "publication_locator": "cited publication",
+              "quoted_text": "\nIn our experiments we consider cases in which screening provides no additional information about one group of individuals (i.e., \\(D_i\\) is concentrated at a single point for \\(i \\in G_j\\)).\nIn this case, it is possible to significantly reduce the number of LPs the decision maker must solve to find an optimal policy or calculate the Pareto frontier.\nFor instance, a lender may already possess all available information relevant to the creditworthiness of those with traditional credit histories.\n\nIn this case, the cost of allocating resources to group \\(G_j\\) does not depend on the screening policy \\(\\C P\\).\nTherefore, rather than sweeping over all possible pairs of thresholds and boundary randomization probabilities \\((t_j, \\alpha_j)\\), \none can encode the allocation policy to \\(G_j\\) directly as a collection of allocation probabilities \\(\\{a_i\\}_{i \\in G_j}\\).\n\nFor notational simplicity, suppose without loss of generality that \\(m = 2\\), that \\(G_1 = \\{1, \\ldots, n_1\\}\\) and \\(G_2 = \\{n_1 + 1, \\ldots, n_1 + n_2\\}\\), and that \\(D_i\\) is a pointmass for all \\(i \\in G_2\\).\n\nThen, let \\(p = (p_1, \\ldots, p_{n_1})\\) be a length \\(n_1\\) vector of probabilities indicating the probability of screening the members of \\(G_1\\). Let \\(a = (a_{n_1 + 1}, \\ldots, a_{n_1 + n_2})\\) be a length \\(n_2\\) vector of probabilities indicating the probability of allocating resources to members of \\(G_2\\). We keep the rest of the notation the same as in Section \\ref{sec:solution}.\n",
+              "quoted_text_sha256": "e6d13191c49afb579ff4a62232eae589cfa088b597c5a9683742779f6a185761"
+            }
+          ]
+        }
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 817,
+          "line_start": 813,
+          "publication_locator": "cited publication",
+          "quoted_text": "Otherwise, if the constrained group is \\(G_2\\), the constraint will be\n    \\begin{equation}\n    \\label{eq:lp4}\n        \\sum_{i \\in G_2} \\left[ \\mu_i \\cdot a_i \\right] = \\Lambda_2.\n    \\end{equation}",
+          "quoted_text_sha256": "58169b245fe74ba54b08b3b98c240e8e1dae30f5d72f76ccbd06b4fa574a8e5e"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "equation.lp4",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.PaperInterface.equation_lp4_optimized_direct_group_equality",
+          "semantic_claim": "If the constrained group is G2, the optimized two-group diversity equality is sum_{i in G2} [mu_i a_i] = Lambda_2.",
+          "source_locator": "audit/cited publication:813-817",
+          "source_quote_sha256": "58169b245fe74ba54b08b3b98c240e8e1dae30f5d72f76ccbd06b4fa574a8e5e"
+        }
+      ],
+      "source_kind": "formula",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:813-817",
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "If the constrained group is G2, the optimized two-group diversity equality is sum_{i in G2} [mu_i a_i] = Lambda_2.",
+      "title": "Equation (lp4), optimized direct-group equality constraint"
+    },
+    "equation_lp5": {
+      "aliases": [
+        "eq_lp5"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "deep_audit_material",
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "Probability-vector bounds supporting the optimized LP display; they are not a selected named threshold result or a governing prerequisite of one.",
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 823,
+              "line_start": 792,
+              "publication_locator": "cited publication",
+              "quoted_text": "Then, let \\(p = (p_1, \\ldots, p_{n_1})\\) be a length \\(n_1\\) vector of probabilities indicating the probability of screening the members of \\(G_1\\). Let \\(a = (a_{n_1 + 1}, \\ldots, a_{n_1 + n_2})\\) be a length \\(n_2\\) vector of probabilities indicating the probability of allocating resources to members of \\(G_2\\). We keep the rest of the notation the same as in Section \\ref{sec:solution}.\n\nFix threshold \\(t_1\\) and boundary randomization probability \\(\\alpha_1\\) for \\(G_1\\). Then, the expected utility of any pair of screening policies (for \\(G_1\\)) and allocation policies (for \\(G_2\\)) can be expressed as a linear function of \\(p\\) and \\(a\\):\n    \\begin{equation}\n    \\label{eq:lp1}\n        \\sum_{i \\in G_1} \\left[ q_i \\cdot e_i \\cdot p_i + o_i \\cdot \\mu_i \\cdot (1 - p_i) \\right] + \\sum_{i \\in G_2} \\left[ \\mu_i \\cdot a_i \\right].\n    \\end{equation}\n\nLikewise, our budget constraint can be expressed as follows:\n    \\begin{equation}\n    \\label{eq:lp2}\n        \\begin{split}\n            B &\\geq \\sum_{i \\in G_1} \\left[ \\cs \\cdot p_i + \\ca \\cdot q_i \\cdot p_i + \\ca \\cdot o_i \\cdot (1-p_i) \\right] \\\\\n                &\\hspace{.5cm} + \\sum_{i \\in G_2} \\left[ \\ca \\cdot a_i \\right]\n        \\end{split}\n    \\end{equation}\nThe allocation diversity constraint will take one of the following two forms. If the constrained group is \\(G_1\\),\n    \\begin{equation}\n    \\label{eq:lp3}\n        \\sum_{i \\in G_1} \\left[ q_i \\cdot e_i \\cdot p_i + o_i \\cdot \\mu_i \\cdot (1 - p_i) \\right] = \\Lambda_1.\n    \\end{equation}\nOtherwise, if the constrained group is \\(G_2\\), the constraint will be\n    \\begin{equation}\n    \\label{eq:lp4}\n        \\sum_{i \\in G_2} \\left[ \\mu_i \\cdot a_i \\right] = \\Lambda_2.\n    \\end{equation}\nLastly, we ensure that \\(a\\) and \\(p\\) are probability vectors:\n    \\begin{align}\n    \\label{eq:lp5}\n        a_i &\\leq 1,\\\\\n        p_i &\\leq 1.\n    \\end{align}",
+              "quoted_text_sha256": "2165cd302a55fe834014c045970d5eb223dd5ec715109cc31b922b201d8c4a2b"
+            }
+          ]
+        }
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 823,
+          "line_start": 818,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lastly, we ensure that \\(a\\) and \\(p\\) are probability vectors:\n    \\begin{align}\n    \\label{eq:lp5}\n        a_i &\\leq 1,\\\\\n        p_i &\\leq 1.\n    \\end{align}",
+          "quoted_text_sha256": "c833c2e49e8296bd4aa156bb265a4a11286540fbfbf45ad8cb4c72d9643fd78b"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "equation.lp5",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.OptimizedTwoGroupLPSourceData.probabilityBounds",
+          "semantic_claim": "The optimized two-group decision vectors a and p are probability vectors, with upper bounds a_i <= 1 and p_i <= 1.",
+          "source_locator": "audit/cited publication:818-823",
+          "source_quote_sha256": "c833c2e49e8296bd4aa156bb265a4a11286540fbfbf45ad8cb4c72d9643fd78b"
+        }
+      ],
+      "source_kind": "formula",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:818-823",
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "The optimized two-group decision vectors a and p are probability vectors, with upper bounds a_i <= 1 and p_i <= 1.",
+      "title": "Equation (lp5), optimized probability upper bounds"
+    },
+    "equation_obj": {
+      "aliases": [
+        "eq_obj"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "deep_audit_material",
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "Standalone LP display for a separate computational procedure; under named-theoretical-statement scope, an equation is deep-audit material and does not govern the selected threshold results.",
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 417,
+              "line_start": 398,
+              "publication_locator": "cited publication",
+              "quoted_text": "Now, \ngiven a threshold policy \\(\\C T\\) with  thresholds \\(t_1, \\dots, t_m  \\in \\B R\\) and boundary randomization probabilities \\(\\alpha_1, \\dots, \\alpha_m \\in [0,1]\\),\nwe turn to finding an optimal companion screening policy. \nWe show that such an optimal screening policy \\(\\C P\\) can be found by solving an LP.\nIn particular, the LP has \\(n\\) decision variables \\(p_1, \\dots, p_n\\), with \\(p_i \\in [0,1]\\) specifying the probability that applicant \\(i\\) is screened;\nthe objective equals the utility of the \ncombined screening and allocation policy;\nand the constraints encode our budget and diversity conditions.\n\nTo construct the LP, we first define the following quantities that depend on both the threshold rule \\(\\C T\\) and the lender's prior knowledge on the value of screening:\n    \\begin{align*}\n        q_i &= \\Pr(D_i > t_{g_i}),\\\\\n        e_i &= \\EE[U_i \\mid D_i > t_{g_i}],\\\\\n        o_i &= \\B 1_{\\mu_i > t_{g_i}} + \\alpha_{g_i} \\cdot \\B 1_{\\mu_i = t_{g_i}},\n    \\end{align*}\nwhere \\(g_i\\) denotes applicant \\(i\\)'s group membership. Recall that \n\\(\\mu_i\\) denotes pre-screening expected utility\nand \\(D_i\\) denotes post-screening expected utility \nif applicant \\(i\\) is screened. \nBoth \\(\\mu_i\\) and the distribution of \\(D_i\\) are known in advance.",
+              "quoted_text_sha256": "2718c32b3f3b9685ba509731652cf564655c45d7cb7b27bd4d564077f583d534"
+            }
+          ]
+        }
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 427,
+          "line_start": 419,
+          "publication_locator": "cited publication",
+          "quoted_text": "For fixed screening probabilities \\(p = (p_1, \\dots p_n)\\), the expected utility of the corresponding \nscreening and allocation policy\ncan now be expressed as a linear function of \\(p\\):\n    \\begin{equation}\n    \\label{eq:obj}\n        \\sum_{i = 1}^n \\left[ q_i \\cdot e_i \\cdot p_i + o_i \\cdot \\mu_i \\cdot (1 - p_i) \\right].\n    \\end{equation}\nThe first summand reflects the expected utility associated with applicant \\(i\\) if they were screened,\nand the second summand reflects the expected utility if they were not screened.",
+          "quoted_text_sha256": "9adc8157e4edaed7de90623709b3c5e68868e80772d29a793ab55535cb6784bf"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "equation.obj",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.PaperInterface.equation_obj_fixed_threshold_utility",
+          "semantic_claim": "For fixed screening probabilities p, the expected utility of the fixed-threshold screening and allocation policy is sum_i [q_i e_i p_i + o_i mu_i (1 - p_i)], a linear function of p.",
+          "source_locator": "audit/cited publication:419-427",
+          "source_quote_sha256": "9adc8157e4edaed7de90623709b3c5e68868e80772d29a793ab55535cb6784bf"
+        }
+      ],
+      "source_kind": "formula",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:419-427",
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "For fixed screening probabilities p, the expected utility of the fixed-threshold screening and allocation policy is sum_i [q_i e_i p_i + o_i mu_i (1 - p_i)], a linear function of p.",
+      "title": "Equation (obj), fixed-threshold utility objective"
+    },
+    "fixed_threshold_lp_primitives": {
+      "aliases": [
+        "paper_fixed_threshold_data"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "deep_audit_material",
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "LP-only source model used to interpret the demoted standalone displays; it does not govern Definition 1, Theorem 2, Definition 3, Lemmas 4--5, Theorem 6, or Lemma 7.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 417,
+          "line_start": 398,
+          "publication_locator": "cited publication",
+          "quoted_text": "Now, \ngiven a threshold policy \\(\\C T\\) with  thresholds \\(t_1, \\dots, t_m  \\in \\B R\\) and boundary randomization probabilities \\(\\alpha_1, \\dots, \\alpha_m \\in [0,1]\\),\nwe turn to finding an optimal companion screening policy. \nWe show that such an optimal screening policy \\(\\C P\\) can be found by solving an LP.\nIn particular, the LP has \\(n\\) decision variables \\(p_1, \\dots, p_n\\), with \\(p_i \\in [0,1]\\) specifying the probability that applicant \\(i\\) is screened;\nthe objective equals the utility of the \ncombined screening and allocation policy;\nand the constraints encode our budget and diversity conditions.\n\nTo construct the LP, we first define the following quantities that depend on both the threshold rule \\(\\C T\\) and the lender's prior knowledge on the value of screening:\n    \\begin{align*}\n        q_i &= \\Pr(D_i > t_{g_i}),\\\\\n        e_i &= \\EE[U_i \\mid D_i > t_{g_i}],\\\\\n        o_i &= \\B 1_{\\mu_i > t_{g_i}} + \\alpha_{g_i} \\cdot \\B 1_{\\mu_i = t_{g_i}},\n    \\end{align*}\nwhere \\(g_i\\) denotes applicant \\(i\\)'s group membership. Recall that \n\\(\\mu_i\\) denotes pre-screening expected utility\nand \\(D_i\\) denotes post-screening expected utility \nif applicant \\(i\\) is screened. \nBoth \\(\\mu_i\\) and the distribution of \\(D_i\\) are known in advance.",
+          "quoted_text_sha256": "2718c32b3f3b9685ba509731652cf564655c45d7cb7b27bd4d564077f583d534"
+        }
+      ],
+      "source_kind": "model",
+      "source_location": "audit/cited publication:398-417",
+      "source_note": "The source-facing wrapper records the fixed threshold, boundary randomization, probability-vector domain, and coefficient contract needed to interpret the three formulas.",
+      "statement": "For a fixed threshold policy, the source treats each applicant's screening success probability q_i, screened conditional utility e_i, unscreened allocation probability o_i, prior expected utility mu_i, costs, budget, and group targets as fixed data while screening probabilities p_i vary."
+    },
+    "lemma4": {
+      "aliases": [
+        "lemma1",
+        "lem_main"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The shared screening-and-allocation model and the source rows for Theorem 2, Appendix Lemmas 4--5 and 7, and Appendix Theorem 6 use this clarification. It is projected into each affected source-to-Spec reviewer bundle rather than added as hidden proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "For every screening policy and applicant, the displayed post-screening estimate hat U_i is a version of E[U_i | sigma(hat U)], where sigma(hat U) is generated by the entire vector of post-screening estimates available to the lender. Allocation remains an arbitrary bounded Borel rule A(hat U) of that full vector.",
+          "id": "CGGG20-FULL-VECTOR-POSTERIOR-SUFFICIENCY-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "91b9b578cf94342fe8244a1874117cabd7ba1912cc923e00d7ede8d8247bbcb0",
+          "report_summary": "The paper's displayed estimates are read as the lender's posterior utilities given the full post-screening estimate vector used by allocation; thus observing another applicant's estimate supplies no residual information about an applicant's utility.",
+          "source_locator": "audit/cited publication:250-291; 693-697",
+          "why_needed": "The source defines allocation as A(hat U) of the full observed estimate vector and later uses the realized-to-posterior utility identity for every such allocation. The maintainer clarified on 2026-09-09 that this full-vector posterior reading is implied by the paper. It makes the source's conditional-independence proof step precise without restricting its full-vector allocation class."
+        },
+        {
+          "checked_scope": "The cost-aware definition, Appendix Lemmas 1--3, the appendix replacement theorem, and the main-text common-cost specialization use this convention. It is projected into every affected source-to-Spec reviewer bundle rather than being silently added as proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "Every allocation cost is strictly positive. In the main-text common-cost specialization this means `0 < c_a`; in the appendix applicant-specific model it means `forall i, 0 < c_i`.",
+          "id": "CGGG20-STRICT-POSITIVE-ALLOCATION-COST-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "b66dc1db169ded5dd222473952b43fa442e2c385289730077a6f152d8084b433",
+          "report_summary": "The paper's ratio-based cost-aware model is read with strictly positive allocation costs; this is an approved clarification that makes the displayed score and exchange inequalities well-defined.",
+          "source_locator": "audit/cited publication:619-636; 643-730; 737-777",
+          "why_needed": "The appendix defines the threshold score as `hat U_i / c_i` and its proof multiplies score inequalities by `c_i`. Zero costs leave the displayed ratio undefined and negative costs reverse those inequalities. The maintainer approved the strictly-positive reading on 2026-09-02."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma1_cost_aware_threshold_non_domination_realizes_spec"
+      ],
+      "model_convention_ids": [
+        "CGGG20-STRICT-POSITIVE-ALLOCATION-COST-01",
+        "CGGG20-FULL-VECTOR-POSTERIOR-SUFFICIENCY-01"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 636,
+              "line_start": 626,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\begin{defn}[Cost-Aware Threshold Policy]\n    A \\emph{cost-aware threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i / c_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i / c_i = t_{g_i}, \\\\\n                0 & \\hat U_i / c_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\) and \\(c_i\\) denotes the cost of allocating resources to individual \\(i\\).\n\\end{defn}",
+              "quoted_text_sha256": "2350a9f211af4796282435ab1344eff61fcda254ce18219ebe2ba168700876a5"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 290,
+              "line_start": 250,
+              "publication_locator": "cited publication",
+              "quoted_text": "We assume the value of lending to an applicant \\(i\\) is given by the random variable \\(U_i\\).\nThese utilities are intended to capture the full social value of providing loans, and we imagine the lender aims to optimize social welfare, as in the case of a government agency.\nIn general, the lender has only partial information about \\(U_i\\). More specifically, if the lender chooses not to screen an applicant, we assume the lender knows only the applicant's conditional expectation \\(\\mu_i = \\EE [U_i \\mid X_i = x_i]\\)\ngiven their pre-screening covariates \\(x_i\\), such as credit score for those applicants who have traditional credit histories.\nOn the other hand, if the lender opts to screen an applicant, they learn \\(\\EE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i]\\), where \\(\\tilde{x}_i\\) denotes the additional information one gains through screening. \nFor example, \\(\\tilde{x}_i\\) might encode applicant \\(i\\)'s history of paying\ntheir electricity or phone bills---information that is often feasible to acquire with some extra effort and which is a good indicator of creditworthiness~\\cite{fdic2018}.\n\nWhen deciding whom to screen, we assume \nthe lender knows the distribution of \\(\\C D = (D_1, \\ldots, D_n)\\), where \\(D_i = \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i]\\).\nThat is, the lender knows how their estimate of utility could change if they decide to screen each applicant, where these distributions may depend on the available pre-screening covariates.\nA lender may, for example, thus choose only to screen applicants whose estimate is likely to substantially change given additional information.\nWe further assume the lender must pay a\nfixed cost \\(\\cs\\) for screening an applicant\nand a cost \\(\\ca\\) for underwriting a loan. \nFor simplicity we assume these costs do not vary across applicants, though it is straightforward to extend to the more general case; see the online appendix for details.\n\nBased on knowledge of the above information and cost structure, the lender selects a randomized strategy to screen applicants.\nThat is, the lender chooses a vector \n\\(\\C P = (p_1, \\dots, p_n)\\), meaning that each applicant \\(i\\) is selected to be screened independently with probability \\(p_i\\).\nLet \\(\\C S = (S_1, \\dots, S_n)\\) indicate which applicants are ultimately screened under this policy; therefore, \\(S_i \\in \\{0,1\\}\\) is a Bernoulli random variable with probability of success \\(p_i\\).\n\nGiven this randomized screening policy, we can now write the information \\(\\hat {\\C U} = (\\hat U_1, \\ldots, \\hat U_n)\\) the lender has at the end of the screening phase as follows:\n    \\begin{equation}\n        \\hat U_i = \\begin{cases}\n            \\EE[U_i \\mid X_i = x_i] & \\text{ if } S_i = 0, \\\\\n            \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i] & \\text{ if } S_i =1.\n        \\end{cases}\n    \\end{equation}\nIn other words, \\(\\hat U_i\\) is the lender's post-screening estimated utility of giving a loan to applicant \\(i\\).\nIn particular, if \\(S_i = 1\\) (i.e., the applicant is screened), the lender's estimate changes from \\(\\EE[U_i\\mid X_i = x_i]\\),\nthe estimate based only on applicant \\(i\\)'s pre-screening covariates \\(x_i\\),\nto \n\\(\\bbE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i] \\), which incorporates the post-screening information \\(\\tilde{x}_i\\).\n\nFinally, the lender chooses an allocation policy, denoted \\(\\C A(\\hat {\\C U}) = (A_1, \\dots A_n)\\), \nwhere \\(A_i \\in [0,1]\\)\nspecifies the probability a loan is (independently) offered to each applicant.\nImportantly, \\(\\C A\\) is a function of \nthe lender's post-screening utility estimates\n\\(\\hat {\\C U}\\).",
+              "quoted_text_sha256": "3a1974227e1ea13d42e9c6af9ee5c59cf930f309460f44fdb0de4b5237177ae3"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchor_evidence": [
+            {
+              "line_end": 697,
+              "line_start": 693,
+              "publication_locator": "cited publication",
+              "quoted_text": "Now, since any allocation policy is by definition conditionally independent of \\(U_i\\) given \\(\\hat U_i\\), it follows that \\(\\EE [A_i U_i] = \\EE [A_i \\hat U_i]\\) and \\(\\EE [T_i U_i] = \\EE [T_i \\hat U_i]\\). In consequence,\n\\begin{equation}\n    \\label{eq:key}\n        \\EE \\left[ \\sum_{i = 1}^n \\Delta_i U_i \\right] \\geq t \\cdot \\EE \\left[ \\sum_{i = 1}^n c_i \\Delta_i \\right].\n    \\end{equation}",
+              "quoted_text_sha256": "6aeb62355306f9ba59c60b86fe814f49104b58e534230026b7c7a0169cde9c9f"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma1_cost_aware_threshold_non_domination_realizes_spec",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma1_cost_aware_threshold_non_dominationSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 650,
+          "line_start": 643,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lem}\n\\label{lem:main}\n    Let \\(\\C T\\) be a cost-aware threshold policy with a single threshold \\(t > 0\\), and suppose \\(\\C T\\) has an expected cost \\(C\\)---i.e., \\(\\sum_i \\EE [c_i \\cdot T_i] = C\\)---and expected utility \\(\\Upsilon\\)---i.e., \\(\\sum_i \\EE [U_i \\cdot T_i] = \\Upsilon\\). Let \\(\\C A\\) be any other allocation policy.\n    \\begin{description}\n        \\item[Case 1:] If the expected cost of \\(\\C A\\) is \\(C\\), then the expected utility of \\(\\C A\\) is less than or equal to \\(\\Upsilon\\).\n        \\item[Case 2:] If the expected utility of \\(\\C A\\) is \\(\\Upsilon\\), then the expected cost of \\(\\C A\\) is greater than or equal to \\(C\\).\n    \\end{description}\n\\end{lem}",
+          "quoted_text_sha256": "8df947150d31f234504608dd3408525d95c9ec98fb042a48d3089e9801460346"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma4",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma1_cost_aware_threshold_non_domination_realizes_spec",
+          "semantic_claim": "For a single-threshold cost-aware threshold policy T with threshold t > 0, expected cost C, and expected utility Upsilon, any other allocation policy A with the same expected cost has expected utility at most Upsilon, and any other allocation policy A with the same expected utility has expected cost at least C.",
+          "source_locator": "audit/cited publication:643-650",
+          "source_quote_sha256": "8df947150d31f234504608dd3408525d95c9ec98fb042a48d3089e9801460346"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:643-650",
+      "source_status": "Direct appendix lemma statement.",
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "For a single-threshold cost-aware threshold policy T with threshold t > 0, expected cost C, and expected utility Upsilon, any other allocation policy A with the same expected cost has expected utility at most Upsilon, and any other allocation policy A with the same expected utility has expected cost at least C.",
+      "support_lean_declarations": [
+        "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma1_cost_aware_threshold_non_dominationSpec"
+      ],
+      "title": "Lemma 1, Cost-Aware Threshold Non-Domination"
+    },
+    "lemma5": {
+      "aliases": [
+        "lemma2",
+        "lem_full_range"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The shared screening-and-allocation model and the source rows for Theorem 2, Appendix Lemmas 4--5 and 7, and Appendix Theorem 6 use this clarification. It is projected into each affected source-to-Spec reviewer bundle rather than added as hidden proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "For every screening policy and applicant, the displayed post-screening estimate hat U_i is a version of E[U_i | sigma(hat U)], where sigma(hat U) is generated by the entire vector of post-screening estimates available to the lender. Allocation remains an arbitrary bounded Borel rule A(hat U) of that full vector.",
+          "id": "CGGG20-FULL-VECTOR-POSTERIOR-SUFFICIENCY-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "91b9b578cf94342fe8244a1874117cabd7ba1912cc923e00d7ede8d8247bbcb0",
+          "report_summary": "The paper's displayed estimates are read as the lender's posterior utilities given the full post-screening estimate vector used by allocation; thus observing another applicant's estimate supplies no residual information about an applicant's utility.",
+          "source_locator": "audit/cited publication:250-291; 693-697",
+          "why_needed": "The source defines allocation as A(hat U) of the full observed estimate vector and later uses the realized-to-posterior utility identity for every such allocation. The maintainer clarified on 2026-09-09 that this full-vector posterior reading is implied by the paper. It makes the source's conditional-independence proof step precise without restricting its full-vector allocation class."
+        },
+        {
+          "checked_scope": "The cost-aware definition, Appendix Lemmas 1--3, the appendix replacement theorem, and the main-text common-cost specialization use this convention. It is projected into every affected source-to-Spec reviewer bundle rather than being silently added as proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "Every allocation cost is strictly positive. In the main-text common-cost specialization this means `0 < c_a`; in the appendix applicant-specific model it means `forall i, 0 < c_i`.",
+          "id": "CGGG20-STRICT-POSITIVE-ALLOCATION-COST-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "b66dc1db169ded5dd222473952b43fa442e2c385289730077a6f152d8084b433",
+          "report_summary": "The paper's ratio-based cost-aware model is read with strictly positive allocation costs; this is an approved clarification that makes the displayed score and exchange inequalities well-defined.",
+          "source_locator": "audit/cited publication:619-636; 643-730; 737-777",
+          "why_needed": "The appendix defines the threshold score as `hat U_i / c_i` and its proof multiplies score inequalities by `c_i`. Zero costs leave the displayed ratio undefined and negative costs reverse those inequalities. The maintainer approved the strictly-positive reading on 2026-09-02."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma2_full_range_cost_aware_threshold_attainment_realizes_spec"
+      ],
+      "model_convention_ids": [
+        "CGGG20-STRICT-POSITIVE-ALLOCATION-COST-01",
+        "CGGG20-FULL-VECTOR-POSTERIOR-SUFFICIENCY-01"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 636,
+              "line_start": 626,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\begin{defn}[Cost-Aware Threshold Policy]\n    A \\emph{cost-aware threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i / c_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i / c_i = t_{g_i}, \\\\\n                0 & \\hat U_i / c_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\) and \\(c_i\\) denotes the cost of allocating resources to individual \\(i\\).\n\\end{defn}",
+              "quoted_text_sha256": "2350a9f211af4796282435ab1344eff61fcda254ce18219ebe2ba168700876a5"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 290,
+              "line_start": 250,
+              "publication_locator": "cited publication",
+              "quoted_text": "We assume the value of lending to an applicant \\(i\\) is given by the random variable \\(U_i\\).\nThese utilities are intended to capture the full social value of providing loans, and we imagine the lender aims to optimize social welfare, as in the case of a government agency.\nIn general, the lender has only partial information about \\(U_i\\). More specifically, if the lender chooses not to screen an applicant, we assume the lender knows only the applicant's conditional expectation \\(\\mu_i = \\EE [U_i \\mid X_i = x_i]\\)\ngiven their pre-screening covariates \\(x_i\\), such as credit score for those applicants who have traditional credit histories.\nOn the other hand, if the lender opts to screen an applicant, they learn \\(\\EE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i]\\), where \\(\\tilde{x}_i\\) denotes the additional information one gains through screening. \nFor example, \\(\\tilde{x}_i\\) might encode applicant \\(i\\)'s history of paying\ntheir electricity or phone bills---information that is often feasible to acquire with some extra effort and which is a good indicator of creditworthiness~\\cite{fdic2018}.\n\nWhen deciding whom to screen, we assume \nthe lender knows the distribution of \\(\\C D = (D_1, \\ldots, D_n)\\), where \\(D_i = \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i]\\).\nThat is, the lender knows how their estimate of utility could change if they decide to screen each applicant, where these distributions may depend on the available pre-screening covariates.\nA lender may, for example, thus choose only to screen applicants whose estimate is likely to substantially change given additional information.\nWe further assume the lender must pay a\nfixed cost \\(\\cs\\) for screening an applicant\nand a cost \\(\\ca\\) for underwriting a loan. \nFor simplicity we assume these costs do not vary across applicants, though it is straightforward to extend to the more general case; see the online appendix for details.\n\nBased on knowledge of the above information and cost structure, the lender selects a randomized strategy to screen applicants.\nThat is, the lender chooses a vector \n\\(\\C P = (p_1, \\dots, p_n)\\), meaning that each applicant \\(i\\) is selected to be screened independently with probability \\(p_i\\).\nLet \\(\\C S = (S_1, \\dots, S_n)\\) indicate which applicants are ultimately screened under this policy; therefore, \\(S_i \\in \\{0,1\\}\\) is a Bernoulli random variable with probability of success \\(p_i\\).\n\nGiven this randomized screening policy, we can now write the information \\(\\hat {\\C U} = (\\hat U_1, \\ldots, \\hat U_n)\\) the lender has at the end of the screening phase as follows:\n    \\begin{equation}\n        \\hat U_i = \\begin{cases}\n            \\EE[U_i \\mid X_i = x_i] & \\text{ if } S_i = 0, \\\\\n            \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i] & \\text{ if } S_i =1.\n        \\end{cases}\n    \\end{equation}\nIn other words, \\(\\hat U_i\\) is the lender's post-screening estimated utility of giving a loan to applicant \\(i\\).\nIn particular, if \\(S_i = 1\\) (i.e., the applicant is screened), the lender's estimate changes from \\(\\EE[U_i\\mid X_i = x_i]\\),\nthe estimate based only on applicant \\(i\\)'s pre-screening covariates \\(x_i\\),\nto \n\\(\\bbE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i] \\), which incorporates the post-screening information \\(\\tilde{x}_i\\).\n\nFinally, the lender chooses an allocation policy, denoted \\(\\C A(\\hat {\\C U}) = (A_1, \\dots A_n)\\), \nwhere \\(A_i \\in [0,1]\\)\nspecifies the probability a loan is (independently) offered to each applicant.\nImportantly, \\(\\C A\\) is a function of \nthe lender's post-screening utility estimates\n\\(\\hat {\\C U}\\).",
+              "quoted_text_sha256": "3a1974227e1ea13d42e9c6af9ee5c59cf930f309460f44fdb0de4b5237177ae3"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchor_evidence": [
+            {
+              "line_end": 697,
+              "line_start": 693,
+              "publication_locator": "cited publication",
+              "quoted_text": "Now, since any allocation policy is by definition conditionally independent of \\(U_i\\) given \\(\\hat U_i\\), it follows that \\(\\EE [A_i U_i] = \\EE [A_i \\hat U_i]\\) and \\(\\EE [T_i U_i] = \\EE [T_i \\hat U_i]\\). In consequence,\n\\begin{equation}\n    \\label{eq:key}\n        \\EE \\left[ \\sum_{i = 1}^n \\Delta_i U_i \\right] \\geq t \\cdot \\EE \\left[ \\sum_{i = 1}^n c_i \\Delta_i \\right].\n    \\end{equation}",
+              "quoted_text_sha256": "6aeb62355306f9ba59c60b86fe814f49104b58e534230026b7c7a0169cde9c9f"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma2_full_range_cost_aware_threshold_attainment_realizes_spec",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma2_full_range_cost_aware_threshold_attainmentSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 712,
+          "line_start": 704,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lem}\n\\label{lem:full_range}\n    Let \\(\\Upsilon > 0\\) be an achievable expected utility---that is, there is an allocation policy \\(\\C A\\) such that \\(\\EE[\\sum_i A_i U_i] = \\Upsilon\\)---and let \\(C\\) be an achievable expected cost.\n    Then,\n        \\begin{itemize}\n            \\item There exists a cost-aware threshold policy \\(\\C T\\) of expected utility \\(\\Upsilon\\); and,\n            \\item There exists a (possibly different) cost-aware threshold policy \\(\\C T\\) of expected cost \\(C\\).\n        \\end{itemize}\n\\end{lem}",
+          "quoted_text_sha256": "e33bd7f06c2b1cc12d0c0fd73940f23f5e76a9a3a5fea765736cee31f10a2cad"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma5",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma2_full_range_cost_aware_threshold_attainment_realizes_spec",
+          "semantic_claim": "Every achievable positive expected utility can be achieved by a cost-aware threshold policy, and every achievable expected cost can be achieved by a possibly different cost-aware threshold policy.",
+          "source_locator": "audit/cited publication:704-712",
+          "source_quote_sha256": "e33bd7f06c2b1cc12d0c0fd73940f23f5e76a9a3a5fea765736cee31f10a2cad"
+        }
+      ],
+      "source_defect_ids": [
+        "CGGG20-LEMMA2-INTERPOLATION-TYPO-01"
+      ],
+      "source_kind": "lemma",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:704-712",
+      "source_status": "Direct appendix lemma statement; Lean proves a finite-measure version using boundary interpolation.",
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "Every achievable positive expected utility can be achieved by a cost-aware threshold policy, and every achievable expected cost can be achieved by a possibly different cost-aware threshold policy.",
+      "support_lean_declarations": [
+        "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma2_full_range_cost_aware_threshold_attainmentSpec"
+      ],
+      "title": "Lemma 2, Full-Range Cost-Aware Threshold Attainment"
+    },
+    "lemma7": {
+      "aliases": [
+        "lemma3",
+        "lem_modest_gen"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The shared screening-and-allocation model and the source rows for Theorem 1, the appendix threshold-replacement theorem, and Lemma 3 use this convention. It is projected into each affected reviewer bundle rather than added as hidden proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "The independently randomized screening indicators are exogenous to the joint potential realized-utility and screened-information vector. The joint law of those potential quantities is fixed before the screening probability vector is chosen and does not change with that vector.",
+          "id": "CGGG20-EXOGENOUS-SCREENING-RANDOMIZATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "d718488514446a1be0cf2957dd42b029f4e90717cb0974a07db795d7e69a600d",
+          "report_summary": "The screening coins are read as exogenous randomization over a fixed latent applicant population; changing screening probabilities changes who is observed, not the potential utility or information distribution.",
+          "source_locator": "audit/cited publication:250-290",
+          "why_needed": "The paper introduces the distribution of the latent utility/information model before the lender selects its randomized screening policy. Mutual independence among screening indicators alone would permit the `p`-indexed post-screening law to change the latent population as `p` changes. The maintainer approved the exogenous sequential reading on 2026-09-02."
+        },
+        {
+          "checked_scope": "The shared screening-and-allocation model and the source rows for Theorem 2, Appendix Lemmas 4--5 and 7, and Appendix Theorem 6 use this clarification. It is projected into each affected source-to-Spec reviewer bundle rather than added as hidden proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "For every screening policy and applicant, the displayed post-screening estimate hat U_i is a version of E[U_i | sigma(hat U)], where sigma(hat U) is generated by the entire vector of post-screening estimates available to the lender. Allocation remains an arbitrary bounded Borel rule A(hat U) of that full vector.",
+          "id": "CGGG20-FULL-VECTOR-POSTERIOR-SUFFICIENCY-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "91b9b578cf94342fe8244a1874117cabd7ba1912cc923e00d7ede8d8247bbcb0",
+          "report_summary": "The paper's displayed estimates are read as the lender's posterior utilities given the full post-screening estimate vector used by allocation; thus observing another applicant's estimate supplies no residual information about an applicant's utility.",
+          "source_locator": "audit/cited publication:250-291; 693-697",
+          "why_needed": "The source defines allocation as A(hat U) of the full observed estimate vector and later uses the realized-to-posterior utility identity for every such allocation. The maintainer clarified on 2026-09-09 that this full-vector posterior reading is implied by the paper. It makes the source's conditional-independence proof step precise without restricting its full-vector allocation class."
+        },
+        {
+          "checked_scope": "The cost-aware definition, Appendix Lemmas 1--3, the appendix replacement theorem, and the main-text common-cost specialization use this convention. It is projected into every affected source-to-Spec reviewer bundle rather than being silently added as proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "Every allocation cost is strictly positive. In the main-text common-cost specialization this means `0 < c_a`; in the appendix applicant-specific model it means `forall i, 0 < c_i`.",
+          "id": "CGGG20-STRICT-POSITIVE-ALLOCATION-COST-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "b66dc1db169ded5dd222473952b43fa442e2c385289730077a6f152d8084b433",
+          "report_summary": "The paper's ratio-based cost-aware model is read with strictly positive allocation costs; this is an approved clarification that makes the displayed score and exchange inequalities well-defined.",
+          "source_locator": "audit/cited publication:619-636; 643-730; 737-777",
+          "why_needed": "The appendix defines the threshold score as `hat U_i / c_i` and its proof multiplies score inequalities by `c_i`. Zero costs leave the displayed ratio undefined and negative costs reverse those inequalities. The maintainer approved the strictly-positive reading on 2026-09-02."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma3_equality_diversity_threshold_sufficiency"
+      ],
+      "model_convention_ids": [
+        "CGGG20-STRICT-POSITIVE-ALLOCATION-COST-01",
+        "CGGG20-EXOGENOUS-SCREENING-RANDOMIZATION-01",
+        "CGGG20-FULL-VECTOR-POSTERIOR-SUFFICIENCY-01"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 323,
+              "line_start": 314,
+              "publication_locator": "cited publication",
+              "quoted_text": "Here we take a complementary approach that explicitly allows value for diversity to differ across decision makers.\nSuppose the applicant pool is partitioned into \\(m\\) groups \\(\\{G_1, \\ldots, G_m\\}\\);\nfor example, if \\(m = 2\\), we might partition candidates into those who traditionally have had access to credit markets and those who have not.\nThen we require the selected policy \\((\\C{P}^*, \\C{A}^*)\\)\nto allocate at least \\(\\Lambda_j \\geq 0\\) utility to group \\(G_j\\), where these utilities do not themselves include any value for diversity:\n    \\begin{equation}\n    \\label{eq:def3}\n        \\EE \\left[ \\sum_{i \\in G_j} U_i A_i \\right] \\geq \\Lambda_j.\n    \\end{equation}\nIn practice, as we discuss below, one would solve this optimization problem for a range of \\(\\Lambda\\), which traces out the Pareto frontier of possible policies across different group constraints, corresponding to different values for diversity.",
+              "quoted_text_sha256": "f4452057fc56e3cbe13bee8dc99c228a8542331076e1915406da66d9562b30bc"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 290,
+              "line_start": 250,
+              "publication_locator": "cited publication",
+              "quoted_text": "We assume the value of lending to an applicant \\(i\\) is given by the random variable \\(U_i\\).\nThese utilities are intended to capture the full social value of providing loans, and we imagine the lender aims to optimize social welfare, as in the case of a government agency.\nIn general, the lender has only partial information about \\(U_i\\). More specifically, if the lender chooses not to screen an applicant, we assume the lender knows only the applicant's conditional expectation \\(\\mu_i = \\EE [U_i \\mid X_i = x_i]\\)\ngiven their pre-screening covariates \\(x_i\\), such as credit score for those applicants who have traditional credit histories.\nOn the other hand, if the lender opts to screen an applicant, they learn \\(\\EE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i]\\), where \\(\\tilde{x}_i\\) denotes the additional information one gains through screening. \nFor example, \\(\\tilde{x}_i\\) might encode applicant \\(i\\)'s history of paying\ntheir electricity or phone bills---information that is often feasible to acquire with some extra effort and which is a good indicator of creditworthiness~\\cite{fdic2018}.\n\nWhen deciding whom to screen, we assume \nthe lender knows the distribution of \\(\\C D = (D_1, \\ldots, D_n)\\), where \\(D_i = \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i]\\).\nThat is, the lender knows how their estimate of utility could change if they decide to screen each applicant, where these distributions may depend on the available pre-screening covariates.\nA lender may, for example, thus choose only to screen applicants whose estimate is likely to substantially change given additional information.\nWe further assume the lender must pay a\nfixed cost \\(\\cs\\) for screening an applicant\nand a cost \\(\\ca\\) for underwriting a loan. \nFor simplicity we assume these costs do not vary across applicants, though it is straightforward to extend to the more general case; see the online appendix for details.\n\nBased on knowledge of the above information and cost structure, the lender selects a randomized strategy to screen applicants.\nThat is, the lender chooses a vector \n\\(\\C P = (p_1, \\dots, p_n)\\), meaning that each applicant \\(i\\) is selected to be screened independently with probability \\(p_i\\).\nLet \\(\\C S = (S_1, \\dots, S_n)\\) indicate which applicants are ultimately screened under this policy; therefore, \\(S_i \\in \\{0,1\\}\\) is a Bernoulli random variable with probability of success \\(p_i\\).\n\nGiven this randomized screening policy, we can now write the information \\(\\hat {\\C U} = (\\hat U_1, \\ldots, \\hat U_n)\\) the lender has at the end of the screening phase as follows:\n    \\begin{equation}\n        \\hat U_i = \\begin{cases}\n            \\EE[U_i \\mid X_i = x_i] & \\text{ if } S_i = 0, \\\\\n            \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i] & \\text{ if } S_i =1.\n        \\end{cases}\n    \\end{equation}\nIn other words, \\(\\hat U_i\\) is the lender's post-screening estimated utility of giving a loan to applicant \\(i\\).\nIn particular, if \\(S_i = 1\\) (i.e., the applicant is screened), the lender's estimate changes from \\(\\EE[U_i\\mid X_i = x_i]\\),\nthe estimate based only on applicant \\(i\\)'s pre-screening covariates \\(x_i\\),\nto \n\\(\\bbE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i] \\), which incorporates the post-screening information \\(\\tilde{x}_i\\).\n\nFinally, the lender chooses an allocation policy, denoted \\(\\C A(\\hat {\\C U}) = (A_1, \\dots A_n)\\), \nwhere \\(A_i \\in [0,1]\\)\nspecifies the probability a loan is (independently) offered to each applicant.\nImportantly, \\(\\C A\\) is a function of \nthe lender's post-screening utility estimates\n\\(\\hat {\\C U}\\).",
+              "quoted_text_sha256": "3a1974227e1ea13d42e9c6af9ee5c59cf930f309460f44fdb0de4b5237177ae3"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchor_evidence": [
+            {
+              "line_end": 697,
+              "line_start": 693,
+              "publication_locator": "cited publication",
+              "quoted_text": "Now, since any allocation policy is by definition conditionally independent of \\(U_i\\) given \\(\\hat U_i\\), it follows that \\(\\EE [A_i U_i] = \\EE [A_i \\hat U_i]\\) and \\(\\EE [T_i U_i] = \\EE [T_i \\hat U_i]\\). In consequence,\n\\begin{equation}\n    \\label{eq:key}\n        \\EE \\left[ \\sum_{i = 1}^n \\Delta_i U_i \\right] \\geq t \\cdot \\EE \\left[ \\sum_{i = 1}^n c_i \\Delta_i \\right].\n    \\end{equation}",
+              "quoted_text_sha256": "6aeb62355306f9ba59c60b86fe814f49104b58e534230026b7c7a0169cde9c9f"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 376,
+              "line_start": 366,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\begin{defn}[Threshold Policy]\n    A \\emph{threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i = t_{g_i}, \\\\\n                0 & \\hat U_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\).\n\\end{defn}",
+              "quoted_text_sha256": "733ad868657280cb448a5f74f68389826b2564633afa738153e7db0aecb742ff"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma3_equality_diversity_threshold_sufficiency",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma3_equality_diversity_threshold_sufficiencySpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 777,
+          "line_start": 763,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lem}\n\\label{lem:modest_gen}\n    The conclusion of Theorem~\\ref{thm:main} still holds even if the inequalities in Eq.~\\eqref{eq:def3} are replaced with equalities, i.e., if the optimal policy pair \\((\\C P^*, \\C A^*)\\) satisfies\n        \\begin{equation}\n            \\EE \\left[ \\sum_{i \\in G_j} U_i A_i \\right] = \\Lambda_j.\n        \\end{equation}\n\\end{lem}\n\n\\begin{proof}\n    The proof is identical to that of Theorem~\\ref{thm:main}, except that Lemma~\\ref{lem:full_range} is used to construct a threshold policy \\(\\C T^*\\) achieving exactly utility \\(\\Lambda_j\\) on any constrained group \\(G_j\\).\n    Case 2 of Lemma~\\ref{lem:main} then shows that this utility is achieved at possibly less expected cost than \\(\\C A^*\\).\n    It follows immediately that the pair \\((\\C P^*, \\C T^*)\\) is a solution to the optimization problem.\\footnote{\n        In this case, it is actually possible that \\(\\C T^*\\) will result in expected cost savings over \\(\\C A^*\\), even though \\(\\C A^*\\) is optimal. This can occur if there is no remaining positive utility to ``spend'' the savings on, since resources are already allocated at total expected cost less than \\(B\\) in all cases where \\(\\hat U_i\\) is positive.\n    }\n\\end{proof}",
+          "quoted_text_sha256": "df66de56961dfa2036065974f08bf710109985041c0838319e87fe2bcce29830"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma7",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma3_equality_diversity_threshold_sufficiency",
+          "semantic_claim": "The conclusion of Theorem 1 still holds when the diversity inequalities in Eq. (def3) are replaced with equalities requiring each constrained group utility to equal Lambda_j.",
+          "source_locator": "audit/cited publication:763-777",
+          "source_quote_sha256": "df66de56961dfa2036065974f08bf710109985041c0838319e87fe2bcce29830"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:763-777",
+      "source_status": "Direct appendix lemma statement and proof route.",
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "The conclusion of Theorem 1 still holds when the diversity inequalities in Eq. (def3) are replaced with equalities requiring each constrained group utility to equal Lambda_j.",
+      "support_lean_declarations": [
+        "CGGG20SelectiveInformationAcquisition.PaperInterface.lemma3_equality_diversity_threshold_sufficiencySpec"
+      ],
+      "title": "Lemma 3, Equality-Diversity Threshold Sufficiency"
+    },
+    "optimized_two_group_lp_primitives": {
+      "aliases": [
+        "paper_optimized_two_group_data"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "deep_audit_material",
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "LP-only source model used to interpret the demoted standalone displays; it does not govern Definition 1, Theorem 2, Definition 3, Lemmas 4--5, Theorem 6, or Lemma 7.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 793,
+          "line_start": 781,
+          "publication_locator": "cited publication",
+          "quoted_text": "\nIn our experiments we consider cases in which screening provides no additional information about one group of individuals (i.e., \\(D_i\\) is concentrated at a single point for \\(i \\in G_j\\)).\nIn this case, it is possible to significantly reduce the number of LPs the decision maker must solve to find an optimal policy or calculate the Pareto frontier.\nFor instance, a lender may already possess all available information relevant to the creditworthiness of those with traditional credit histories.\n\nIn this case, the cost of allocating resources to group \\(G_j\\) does not depend on the screening policy \\(\\C P\\).\nTherefore, rather than sweeping over all possible pairs of thresholds and boundary randomization probabilities \\((t_j, \\alpha_j)\\), \none can encode the allocation policy to \\(G_j\\) directly as a collection of allocation probabilities \\(\\{a_i\\}_{i \\in G_j}\\).\n\nFor notational simplicity, suppose without loss of generality that \\(m = 2\\), that \\(G_1 = \\{1, \\ldots, n_1\\}\\) and \\(G_2 = \\{n_1 + 1, \\ldots, n_1 + n_2\\}\\), and that \\(D_i\\) is a pointmass for all \\(i \\in G_2\\).\n\nThen, let \\(p = (p_1, \\ldots, p_{n_1})\\) be a length \\(n_1\\) vector of probabilities indicating the probability of screening the members of \\(G_1\\). Let \\(a = (a_{n_1 + 1}, \\ldots, a_{n_1 + n_2})\\) be a length \\(n_2\\) vector of probabilities indicating the probability of allocating resources to members of \\(G_2\\). We keep the rest of the notation the same as in Section \\ref{sec:solution}.\n",
+          "quoted_text_sha256": "e6d13191c49afb579ff4a62232eae589cfa088b597c5a9683742779f6a185761"
+        }
+      ],
+      "source_kind": "model",
+      "source_location": "audit/cited publication:781-793",
+      "source_note": "Source model vocabulary needed to interpret the optimized two-group LP expressions and their two blocks of decision variables.",
+      "statement": "The optimized procedure fixes one threshold and boundary probability for the screened group, uses screening probabilities for that group and direct allocation probabilities for the other group, and assumes the second group's post-screening utility is degenerate."
+    },
+    "screening_allocation_pair_model": {
+      "aliases": [
+        "ScreeningAllocationData"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The shared screening-and-allocation model and the source rows for Theorem 1, the appendix threshold-replacement theorem, and Lemma 3 use this convention. It is projected into each affected reviewer bundle rather than added as hidden proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "The independently randomized screening indicators are exogenous to the joint potential realized-utility and screened-information vector. The joint law of those potential quantities is fixed before the screening probability vector is chosen and does not change with that vector.",
+          "id": "CGGG20-EXOGENOUS-SCREENING-RANDOMIZATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "d718488514446a1be0cf2957dd42b029f4e90717cb0974a07db795d7e69a600d",
+          "report_summary": "The screening coins are read as exogenous randomization over a fixed latent applicant population; changing screening probabilities changes who is observed, not the potential utility or information distribution.",
+          "source_locator": "audit/cited publication:250-290",
+          "why_needed": "The paper introduces the distribution of the latent utility/information model before the lender selects its randomized screening policy. Mutual independence among screening indicators alone would permit the `p`-indexed post-screening law to change the latent population as `p` changes. The maintainer approved the exogenous sequential reading on 2026-09-02."
+        },
+        {
+          "checked_scope": "The shared screening-and-allocation model and the source rows for Theorem 2, Appendix Lemmas 4--5 and 7, and Appendix Theorem 6 use this clarification. It is projected into each affected source-to-Spec reviewer bundle rather than added as hidden proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "For every screening policy and applicant, the displayed post-screening estimate hat U_i is a version of E[U_i | sigma(hat U)], where sigma(hat U) is generated by the entire vector of post-screening estimates available to the lender. Allocation remains an arbitrary bounded Borel rule A(hat U) of that full vector.",
+          "id": "CGGG20-FULL-VECTOR-POSTERIOR-SUFFICIENCY-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "91b9b578cf94342fe8244a1874117cabd7ba1912cc923e00d7ede8d8247bbcb0",
+          "report_summary": "The paper's displayed estimates are read as the lender's posterior utilities given the full post-screening estimate vector used by allocation; thus observing another applicant's estimate supplies no residual information about an applicant's utility.",
+          "source_locator": "audit/cited publication:250-291; 693-697",
+          "why_needed": "The source defines allocation as A(hat U) of the full observed estimate vector and later uses the realized-to-posterior utility identity for every such allocation. The maintainer clarified on 2026-09-09 that this full-vector posterior reading is implied by the paper. It makes the source's conditional-independence proof step precise without restricting its full-vector allocation class."
+        }
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "CGGG20SelectiveInformationAcquisition.ScreeningPolicy",
+        "CGGG20SelectiveInformationAcquisition.ScreeningAllocationData",
+        "CGGG20SelectiveInformationAcquisition.ScreeningAllocationData.PolicyPair",
+        "CGGG20SelectiveInformationAcquisition.ScreeningAllocationData.evaluatePostScreeningAllocationRule"
+      ],
+      "model_convention_ids": [
+        "CGGG20-EXOGENOUS-SCREENING-RANDOMIZATION-01",
+        "CGGG20-FULL-VECTOR-POSTERIOR-SUFFICIENCY-01"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model_construction",
+          "source_anchor_evidence": [
+            {
+              "line_end": 697,
+              "line_start": 693,
+              "publication_locator": "cited publication",
+              "quoted_text": "Now, since any allocation policy is by definition conditionally independent of \\(U_i\\) given \\(\\hat U_i\\), it follows that \\(\\EE [A_i U_i] = \\EE [A_i \\hat U_i]\\) and \\(\\EE [T_i U_i] = \\EE [T_i \\hat U_i]\\). In consequence,\n\\begin{equation}\n    \\label{eq:key}\n        \\EE \\left[ \\sum_{i = 1}^n \\Delta_i U_i \\right] \\geq t \\cdot \\EE \\left[ \\sum_{i = 1}^n c_i \\Delta_i \\right].\n    \\end{equation}",
+              "quoted_text_sha256": "6aeb62355306f9ba59c60b86fe814f49104b58e534230026b7c7a0169cde9c9f"
+            }
+          ]
+        }
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 323,
+          "line_start": 250,
+          "publication_locator": "cited publication",
+          "quoted_text": "We assume the value of lending to an applicant \\(i\\) is given by the random variable \\(U_i\\).\nThese utilities are intended to capture the full social value of providing loans, and we imagine the lender aims to optimize social welfare, as in the case of a government agency.\nIn general, the lender has only partial information about \\(U_i\\). More specifically, if the lender chooses not to screen an applicant, we assume the lender knows only the applicant's conditional expectation \\(\\mu_i = \\EE [U_i \\mid X_i = x_i]\\)\ngiven their pre-screening covariates \\(x_i\\), such as credit score for those applicants who have traditional credit histories.\nOn the other hand, if the lender opts to screen an applicant, they learn \\(\\EE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i]\\), where \\(\\tilde{x}_i\\) denotes the additional information one gains through screening. \nFor example, \\(\\tilde{x}_i\\) might encode applicant \\(i\\)'s history of paying\ntheir electricity or phone bills---information that is often feasible to acquire with some extra effort and which is a good indicator of creditworthiness~\\cite{fdic2018}.\n\nWhen deciding whom to screen, we assume \nthe lender knows the distribution of \\(\\C D = (D_1, \\ldots, D_n)\\), where \\(D_i = \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i]\\).\nThat is, the lender knows how their estimate of utility could change if they decide to screen each applicant, where these distributions may depend on the available pre-screening covariates.\nA lender may, for example, thus choose only to screen applicants whose estimate is likely to substantially change given additional information.\nWe further assume the lender must pay a\nfixed cost \\(\\cs\\) for screening an applicant\nand a cost \\(\\ca\\) for underwriting a loan. \nFor simplicity we assume these costs do not vary across applicants, though it is straightforward to extend to the more general case; see the online appendix for details.\n\nBased on knowledge of the above information and cost structure, the lender selects a randomized strategy to screen applicants.\nThat is, the lender chooses a vector \n\\(\\C P = (p_1, \\dots, p_n)\\), meaning that each applicant \\(i\\) is selected to be screened independently with probability \\(p_i\\).\nLet \\(\\C S = (S_1, \\dots, S_n)\\) indicate which applicants are ultimately screened under this policy; therefore, \\(S_i \\in \\{0,1\\}\\) is a Bernoulli random variable with probability of success \\(p_i\\).\n\nGiven this randomized screening policy, we can now write the information \\(\\hat {\\C U} = (\\hat U_1, \\ldots, \\hat U_n)\\) the lender has at the end of the screening phase as follows:\n    \\begin{equation}\n        \\hat U_i = \\begin{cases}\n            \\EE[U_i \\mid X_i = x_i] & \\text{ if } S_i = 0, \\\\\n            \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i] & \\text{ if } S_i =1.\n        \\end{cases}\n    \\end{equation}\nIn other words, \\(\\hat U_i\\) is the lender's post-screening estimated utility of giving a loan to applicant \\(i\\).\nIn particular, if \\(S_i = 1\\) (i.e., the applicant is screened), the lender's estimate changes from \\(\\EE[U_i\\mid X_i = x_i]\\),\nthe estimate based only on applicant \\(i\\)'s pre-screening covariates \\(x_i\\),\nto \n\\(\\bbE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i] \\), which incorporates the post-screening information \\(\\tilde{x}_i\\).\n\nFinally, the lender chooses an allocation policy, denoted \\(\\C A(\\hat {\\C U}) = (A_1, \\dots A_n)\\), \nwhere \\(A_i \\in [0,1]\\)\nspecifies the probability a loan is (independently) offered to each applicant.\nImportantly, \\(\\C A\\) is a function of \nthe lender's post-screening utility estimates\n\\(\\hat {\\C U}\\).\nFor example, the lender might give loans to the individuals with the highest post-screening utility estimates, up to the budget constraint.\n\nCombining all of the above, the lender's optimization problem is to choose screening and allocation policies \\((\\C P^*, \\C A^*)\\) that maximize expected welfare,\n\\begin{equation}\n\\label{eq:def1}\n    (\\C P^*, \\C A^*) \\in \\argmax_{\\C P, \\C A} \\bbE\\left[\\sum_{i = 1}^n U_i A_i\\right],\n\\end{equation}\nsubject to being budget-balanced in expectation,%\n\\footnote{By requiring the budget constraint to hold only in expectation---rather than exactly---we are able to find a computationally tractable solution to the problem. In practice, such a constraint means that agencies are allowed some flexibility as long as they don't overspend on average,\nwhich, we believe, is often a realistic requirement.\n}\n\n\\begin{equation}\n\\label{eq:def2}\n    \\EE \\left[ \\sum_{i = 1}^n \\cs S_i + \\ca  A_i \\right] \\leq B,\n\\end{equation}\nwhere \\(B\\) is a fixed, non-negative constant.\n\nIn some settings, decision makers may value diversity in their allocations.\nFor example, they may wish to ensure a certain minimum number of loans are provided to groups that historically have been excluded from credit markets.\nOne can encode this policy preference directly into the utilities, in which case the resulting optimization problem would incorporate one's value for diversity.\nThat approach, however, requires decision makers to agree upon these utilities to interpret the results, which can be challenging. \n\nHere we take a complementary approach that explicitly allows value for diversity to differ across decision makers.\nSuppose the applicant pool is partitioned into \\(m\\) groups \\(\\{G_1, \\ldots, G_m\\}\\);\nfor example, if \\(m = 2\\), we might partition candidates into those who traditionally have had access to credit markets and those who have not.\nThen we require the selected policy \\((\\C{P}^*, \\C{A}^*)\\)\nto allocate at least \\(\\Lambda_j \\geq 0\\) utility to group \\(G_j\\), where these utilities do not themselves include any value for diversity:\n    \\begin{equation}\n    \\label{eq:def3}\n        \\EE \\left[ \\sum_{i \\in G_j} U_i A_i \\right] \\geq \\Lambda_j.\n    \\end{equation}\nIn practice, as we discuss below, one would solve this optimization problem for a range of \\(\\Lambda\\), which traces out the Pareto frontier of possible policies across different group constraints, corresponding to different values for diversity.",
+          "quoted_text_sha256": "152535ff989c6053f4cdfedd2eaef5ea83a221e4a24d883e619cc1aa61427732"
+        }
+      ],
+      "source_kind": "model",
+      "source_location": "audit/cited publication:250-323",
+      "source_note": "The source-pair model retains the paper's fixed pre-screening costs, A(hat U) allocation-policy domain, and realized-utility objective. Under the maintainer-approved source clarification, each displayed estimate is the lender's posterior given the full observed estimate vector used by allocation, making the source proof's realized-to-posterior utility identity precise.",
+      "statement": "A screening policy selects each applicant independently by an exogenous Bernoulli draw with applicant-wise probability over a fixed latent utility-and-information population; its joint law induces the post-screening allocation model while applicant groups and screening and allocation costs remain fixed.  An allocation policy is a function A(hat U) of the full vector of post-screening utility estimates only, and the paper optimizes expected realized utility jointly over screening and such allocation rules subject to expected screening-plus-allocation cost and group utility constraints."
+    },
+    "theorem2": {
+      "aliases": [
+        "theorem1",
+        "thm_main"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The shared screening-and-allocation model and the source rows for Theorem 1, the appendix threshold-replacement theorem, and Lemma 3 use this convention. It is projected into each affected reviewer bundle rather than added as hidden proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "The independently randomized screening indicators are exogenous to the joint potential realized-utility and screened-information vector. The joint law of those potential quantities is fixed before the screening probability vector is chosen and does not change with that vector.",
+          "id": "CGGG20-EXOGENOUS-SCREENING-RANDOMIZATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "d718488514446a1be0cf2957dd42b029f4e90717cb0974a07db795d7e69a600d",
+          "report_summary": "The screening coins are read as exogenous randomization over a fixed latent applicant population; changing screening probabilities changes who is observed, not the potential utility or information distribution.",
+          "source_locator": "audit/cited publication:250-290",
+          "why_needed": "The paper introduces the distribution of the latent utility/information model before the lender selects its randomized screening policy. Mutual independence among screening indicators alone would permit the `p`-indexed post-screening law to change the latent population as `p` changes. The maintainer approved the exogenous sequential reading on 2026-09-02."
+        },
+        {
+          "checked_scope": "The shared screening-and-allocation model and the source rows for Theorem 2, Appendix Lemmas 4--5 and 7, and Appendix Theorem 6 use this clarification. It is projected into each affected source-to-Spec reviewer bundle rather than added as hidden proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "For every screening policy and applicant, the displayed post-screening estimate hat U_i is a version of E[U_i | sigma(hat U)], where sigma(hat U) is generated by the entire vector of post-screening estimates available to the lender. Allocation remains an arbitrary bounded Borel rule A(hat U) of that full vector.",
+          "id": "CGGG20-FULL-VECTOR-POSTERIOR-SUFFICIENCY-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "91b9b578cf94342fe8244a1874117cabd7ba1912cc923e00d7ede8d8247bbcb0",
+          "report_summary": "The paper's displayed estimates are read as the lender's posterior utilities given the full post-screening estimate vector used by allocation; thus observing another applicant's estimate supplies no residual information about an applicant's utility.",
+          "source_locator": "audit/cited publication:250-291; 693-697",
+          "why_needed": "The source defines allocation as A(hat U) of the full observed estimate vector and later uses the realized-to-posterior utility identity for every such allocation. The maintainer clarified on 2026-09-09 that this full-vector posterior reading is implied by the paper. It makes the source's conditional-independence proof step precise without restricting its full-vector allocation class."
+        },
+        {
+          "checked_scope": "The cost-aware definition, Appendix Lemmas 1--3, the appendix replacement theorem, and the main-text common-cost specialization use this convention. It is projected into every affected source-to-Spec reviewer bundle rather than being silently added as proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "Every allocation cost is strictly positive. In the main-text common-cost specialization this means `0 < c_a`; in the appendix applicant-specific model it means `forall i, 0 < c_i`.",
+          "id": "CGGG20-STRICT-POSITIVE-ALLOCATION-COST-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "b66dc1db169ded5dd222473952b43fa442e2c385289730077a6f152d8084b433",
+          "report_summary": "The paper's ratio-based cost-aware model is read with strictly positive allocation costs; this is an approved clarification that makes the displayed score and exchange inequalities well-defined.",
+          "source_locator": "audit/cited publication:619-636; 643-730; 737-777",
+          "why_needed": "The appendix defines the threshold score as `hat U_i / c_i` and its proof multiplies score inequalities by `c_i`. Zero costs leave the displayed ratio undefined and negative costs reverse those inequalities. The maintainer approved the strictly-positive reading on 2026-09-02."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "CGGG20SelectiveInformationAcquisition.PaperInterface.theorem1_threshold_policies_suffice"
+      ],
+      "model_convention_ids": [
+        "CGGG20-STRICT-POSITIVE-ALLOCATION-COST-01",
+        "CGGG20-EXOGENOUS-SCREENING-RANDOMIZATION-01",
+        "CGGG20-FULL-VECTOR-POSTERIOR-SUFFICIENCY-01"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 290,
+              "line_start": 250,
+              "publication_locator": "cited publication",
+              "quoted_text": "We assume the value of lending to an applicant \\(i\\) is given by the random variable \\(U_i\\).\nThese utilities are intended to capture the full social value of providing loans, and we imagine the lender aims to optimize social welfare, as in the case of a government agency.\nIn general, the lender has only partial information about \\(U_i\\). More specifically, if the lender chooses not to screen an applicant, we assume the lender knows only the applicant's conditional expectation \\(\\mu_i = \\EE [U_i \\mid X_i = x_i]\\)\ngiven their pre-screening covariates \\(x_i\\), such as credit score for those applicants who have traditional credit histories.\nOn the other hand, if the lender opts to screen an applicant, they learn \\(\\EE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i]\\), where \\(\\tilde{x}_i\\) denotes the additional information one gains through screening. \nFor example, \\(\\tilde{x}_i\\) might encode applicant \\(i\\)'s history of paying\ntheir electricity or phone bills---information that is often feasible to acquire with some extra effort and which is a good indicator of creditworthiness~\\cite{fdic2018}.\n\nWhen deciding whom to screen, we assume \nthe lender knows the distribution of \\(\\C D = (D_1, \\ldots, D_n)\\), where \\(D_i = \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i]\\).\nThat is, the lender knows how their estimate of utility could change if they decide to screen each applicant, where these distributions may depend on the available pre-screening covariates.\nA lender may, for example, thus choose only to screen applicants whose estimate is likely to substantially change given additional information.\nWe further assume the lender must pay a\nfixed cost \\(\\cs\\) for screening an applicant\nand a cost \\(\\ca\\) for underwriting a loan. \nFor simplicity we assume these costs do not vary across applicants, though it is straightforward to extend to the more general case; see the online appendix for details.\n\nBased on knowledge of the above information and cost structure, the lender selects a randomized strategy to screen applicants.\nThat is, the lender chooses a vector \n\\(\\C P = (p_1, \\dots, p_n)\\), meaning that each applicant \\(i\\) is selected to be screened independently with probability \\(p_i\\).\nLet \\(\\C S = (S_1, \\dots, S_n)\\) indicate which applicants are ultimately screened under this policy; therefore, \\(S_i \\in \\{0,1\\}\\) is a Bernoulli random variable with probability of success \\(p_i\\).\n\nGiven this randomized screening policy, we can now write the information \\(\\hat {\\C U} = (\\hat U_1, \\ldots, \\hat U_n)\\) the lender has at the end of the screening phase as follows:\n    \\begin{equation}\n        \\hat U_i = \\begin{cases}\n            \\EE[U_i \\mid X_i = x_i] & \\text{ if } S_i = 0, \\\\\n            \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i] & \\text{ if } S_i =1.\n        \\end{cases}\n    \\end{equation}\nIn other words, \\(\\hat U_i\\) is the lender's post-screening estimated utility of giving a loan to applicant \\(i\\).\nIn particular, if \\(S_i = 1\\) (i.e., the applicant is screened), the lender's estimate changes from \\(\\EE[U_i\\mid X_i = x_i]\\),\nthe estimate based only on applicant \\(i\\)'s pre-screening covariates \\(x_i\\),\nto \n\\(\\bbE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i] \\), which incorporates the post-screening information \\(\\tilde{x}_i\\).\n\nFinally, the lender chooses an allocation policy, denoted \\(\\C A(\\hat {\\C U}) = (A_1, \\dots A_n)\\), \nwhere \\(A_i \\in [0,1]\\)\nspecifies the probability a loan is (independently) offered to each applicant.\nImportantly, \\(\\C A\\) is a function of \nthe lender's post-screening utility estimates\n\\(\\hat {\\C U}\\).",
+              "quoted_text_sha256": "3a1974227e1ea13d42e9c6af9ee5c59cf930f309460f44fdb0de4b5237177ae3"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 323,
+              "line_start": 293,
+              "publication_locator": "cited publication",
+              "quoted_text": "Combining all of the above, the lender's optimization problem is to choose screening and allocation policies \\((\\C P^*, \\C A^*)\\) that maximize expected welfare,\n\\begin{equation}\n\\label{eq:def1}\n    (\\C P^*, \\C A^*) \\in \\argmax_{\\C P, \\C A} \\bbE\\left[\\sum_{i = 1}^n U_i A_i\\right],\n\\end{equation}\nsubject to being budget-balanced in expectation,%\n\\footnote{By requiring the budget constraint to hold only in expectation---rather than exactly---we are able to find a computationally tractable solution to the problem. In practice, such a constraint means that agencies are allowed some flexibility as long as they don't overspend on average,\nwhich, we believe, is often a realistic requirement.\n}\n\n\\begin{equation}\n\\label{eq:def2}\n    \\EE \\left[ \\sum_{i = 1}^n \\cs S_i + \\ca  A_i \\right] \\leq B,\n\\end{equation}\nwhere \\(B\\) is a fixed, non-negative constant.\n\nIn some settings, decision makers may value diversity in their allocations.\nFor example, they may wish to ensure a certain minimum number of loans are provided to groups that historically have been excluded from credit markets.\nOne can encode this policy preference directly into the utilities, in which case the resulting optimization problem would incorporate one's value for diversity.\nThat approach, however, requires decision makers to agree upon these utilities to interpret the results, which can be challenging. \n\nHere we take a complementary approach that explicitly allows value for diversity to differ across decision makers.\nSuppose the applicant pool is partitioned into \\(m\\) groups \\(\\{G_1, \\ldots, G_m\\}\\);\nfor example, if \\(m = 2\\), we might partition candidates into those who traditionally have had access to credit markets and those who have not.\nThen we require the selected policy \\((\\C{P}^*, \\C{A}^*)\\)\nto allocate at least \\(\\Lambda_j \\geq 0\\) utility to group \\(G_j\\), where these utilities do not themselves include any value for diversity:\n    \\begin{equation}\n    \\label{eq:def3}\n        \\EE \\left[ \\sum_{i \\in G_j} U_i A_i \\right] \\geq \\Lambda_j.\n    \\end{equation}\nIn practice, as we discuss below, one would solve this optimization problem for a range of \\(\\Lambda\\), which traces out the Pareto frontier of possible policies across different group constraints, corresponding to different values for diversity.",
+              "quoted_text_sha256": "1078eade56afbc397c7d2ae3cc822072711eb0b897552eabd8291f260fa5b392"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchor_evidence": [
+            {
+              "line_end": 697,
+              "line_start": 693,
+              "publication_locator": "cited publication",
+              "quoted_text": "Now, since any allocation policy is by definition conditionally independent of \\(U_i\\) given \\(\\hat U_i\\), it follows that \\(\\EE [A_i U_i] = \\EE [A_i \\hat U_i]\\) and \\(\\EE [T_i U_i] = \\EE [T_i \\hat U_i]\\). In consequence,\n\\begin{equation}\n    \\label{eq:key}\n        \\EE \\left[ \\sum_{i = 1}^n \\Delta_i U_i \\right] \\geq t \\cdot \\EE \\left[ \\sum_{i = 1}^n c_i \\Delta_i \\right].\n    \\end{equation}",
+              "quoted_text_sha256": "6aeb62355306f9ba59c60b86fe814f49104b58e534230026b7c7a0169cde9c9f"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 376,
+              "line_start": 366,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\begin{defn}[Threshold Policy]\n    A \\emph{threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i = t_{g_i}, \\\\\n                0 & \\hat U_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\).\n\\end{defn}",
+              "quoted_text_sha256": "733ad868657280cb448a5f74f68389826b2564633afa738153e7db0aecb742ff"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "CGGG20SelectiveInformationAcquisition.PaperInterface.theorem1_threshold_policies_suffice",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "CGGG20SelectiveInformationAcquisition.PaperInterface.theorem1_threshold_policies_sufficeSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 388,
+          "line_start": 385,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{thm}\n\\label{thm:main}\n    Suppose the constrained optimization problem defined by Eqs.~\\eqref{eq:def1}, \\eqref{eq:def2}, and \\eqref{eq:def3} has a solution \\((\\C P^*, \\C A^*)\\). Then there is a threshold policy \\(\\C T^*\\) such that \\((\\C P^*, \\C T^*)\\) is also a solution.\n\\end{thm}",
+          "quoted_text_sha256": "6715a3d6065d623477c3a8acf18a48af9af0f8cf30a56e3ae6712c3e9989478b"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem2",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.PaperInterface.theorem1_threshold_policies_suffice",
+          "semantic_claim": "Whenever the main-text constrained screening-and-allocation optimization problem has an optimal pair, some threshold allocation policy paired with the same screening policy is also optimal.",
+          "source_locator": "audit/cited publication:385-388",
+          "source_quote_sha256": "6715a3d6065d623477c3a8acf18a48af9af0f8cf30a56e3ae6712c3e9989478b"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:385-388",
+      "source_note": "The main-text theorem is formalized as the positive-common-cost specialization of the appendix replacement theorem, with the score-to-utility threshold bridge proved explicitly.",
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "Whenever the main-text constrained screening-and-allocation optimization problem has an optimal pair, some threshold allocation policy paired with the same screening policy is also optimal.",
+      "support_lean_declarations": [
+        "CGGG20SelectiveInformationAcquisition.PaperInterface.theorem1_threshold_policies_sufficeSpec"
+      ],
+      "title": "Theorem 1, Threshold Policies Suffice"
+    },
+    "theorem6": {
+      "aliases": [
+        "appendix_cost_aware_theorem"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The shared screening-and-allocation model and the source rows for Theorem 1, the appendix threshold-replacement theorem, and Lemma 3 use this convention. It is projected into each affected reviewer bundle rather than added as hidden proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "The independently randomized screening indicators are exogenous to the joint potential realized-utility and screened-information vector. The joint law of those potential quantities is fixed before the screening probability vector is chosen and does not change with that vector.",
+          "id": "CGGG20-EXOGENOUS-SCREENING-RANDOMIZATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "d718488514446a1be0cf2957dd42b029f4e90717cb0974a07db795d7e69a600d",
+          "report_summary": "The screening coins are read as exogenous randomization over a fixed latent applicant population; changing screening probabilities changes who is observed, not the potential utility or information distribution.",
+          "source_locator": "audit/cited publication:250-290",
+          "why_needed": "The paper introduces the distribution of the latent utility/information model before the lender selects its randomized screening policy. Mutual independence among screening indicators alone would permit the `p`-indexed post-screening law to change the latent population as `p` changes. The maintainer approved the exogenous sequential reading on 2026-09-02."
+        },
+        {
+          "checked_scope": "The shared screening-and-allocation model and the source rows for Theorem 2, Appendix Lemmas 4--5 and 7, and Appendix Theorem 6 use this clarification. It is projected into each affected source-to-Spec reviewer bundle rather than added as hidden proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "For every screening policy and applicant, the displayed post-screening estimate hat U_i is a version of E[U_i | sigma(hat U)], where sigma(hat U) is generated by the entire vector of post-screening estimates available to the lender. Allocation remains an arbitrary bounded Borel rule A(hat U) of that full vector.",
+          "id": "CGGG20-FULL-VECTOR-POSTERIOR-SUFFICIENCY-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "91b9b578cf94342fe8244a1874117cabd7ba1912cc923e00d7ede8d8247bbcb0",
+          "report_summary": "The paper's displayed estimates are read as the lender's posterior utilities given the full post-screening estimate vector used by allocation; thus observing another applicant's estimate supplies no residual information about an applicant's utility.",
+          "source_locator": "audit/cited publication:250-291; 693-697",
+          "why_needed": "The source defines allocation as A(hat U) of the full observed estimate vector and later uses the realized-to-posterior utility identity for every such allocation. The maintainer clarified on 2026-09-09 that this full-vector posterior reading is implied by the paper. It makes the source's conditional-independence proof step precise without restricting its full-vector allocation class."
+        },
+        {
+          "checked_scope": "The cost-aware definition, Appendix Lemmas 1--3, the appendix replacement theorem, and the main-text common-cost specialization use this convention. It is projected into every affected source-to-Spec reviewer bundle rather than being silently added as proof plumbing.",
+          "classification": "maintainer_approved_source_model_clarification",
+          "formal_meaning": "Every allocation cost is strictly positive. In the main-text common-cost specialization this means `0 < c_a`; in the appendix applicant-specific model it means `forall i, 0 < c_i`.",
+          "id": "CGGG20-STRICT-POSITIVE-ALLOCATION-COST-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "b66dc1db169ded5dd222473952b43fa442e2c385289730077a6f152d8084b433",
+          "report_summary": "The paper's ratio-based cost-aware model is read with strictly positive allocation costs; this is an approved clarification that makes the displayed score and exchange inequalities well-defined.",
+          "source_locator": "audit/cited publication:619-636; 643-730; 737-777",
+          "why_needed": "The appendix defines the threshold score as `hat U_i / c_i` and its proof multiplies score inequalities by `c_i`. Zero costs leave the displayed ratio undefined and negative costs reverse those inequalities. The maintainer approved the strictly-positive reading on 2026-09-02."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "CGGG20SelectiveInformationAcquisition.PaperInterface.appendix_theorem_cost_aware_threshold_policies_suffice"
+      ],
+      "model_convention_ids": [
+        "CGGG20-STRICT-POSITIVE-ALLOCATION-COST-01",
+        "CGGG20-EXOGENOUS-SCREENING-RANDOMIZATION-01",
+        "CGGG20-FULL-VECTOR-POSTERIOR-SUFFICIENCY-01"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 290,
+              "line_start": 250,
+              "publication_locator": "cited publication",
+              "quoted_text": "We assume the value of lending to an applicant \\(i\\) is given by the random variable \\(U_i\\).\nThese utilities are intended to capture the full social value of providing loans, and we imagine the lender aims to optimize social welfare, as in the case of a government agency.\nIn general, the lender has only partial information about \\(U_i\\). More specifically, if the lender chooses not to screen an applicant, we assume the lender knows only the applicant's conditional expectation \\(\\mu_i = \\EE [U_i \\mid X_i = x_i]\\)\ngiven their pre-screening covariates \\(x_i\\), such as credit score for those applicants who have traditional credit histories.\nOn the other hand, if the lender opts to screen an applicant, they learn \\(\\EE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i]\\), where \\(\\tilde{x}_i\\) denotes the additional information one gains through screening. \nFor example, \\(\\tilde{x}_i\\) might encode applicant \\(i\\)'s history of paying\ntheir electricity or phone bills---information that is often feasible to acquire with some extra effort and which is a good indicator of creditworthiness~\\cite{fdic2018}.\n\nWhen deciding whom to screen, we assume \nthe lender knows the distribution of \\(\\C D = (D_1, \\ldots, D_n)\\), where \\(D_i = \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i]\\).\nThat is, the lender knows how their estimate of utility could change if they decide to screen each applicant, where these distributions may depend on the available pre-screening covariates.\nA lender may, for example, thus choose only to screen applicants whose estimate is likely to substantially change given additional information.\nWe further assume the lender must pay a\nfixed cost \\(\\cs\\) for screening an applicant\nand a cost \\(\\ca\\) for underwriting a loan. \nFor simplicity we assume these costs do not vary across applicants, though it is straightforward to extend to the more general case; see the online appendix for details.\n\nBased on knowledge of the above information and cost structure, the lender selects a randomized strategy to screen applicants.\nThat is, the lender chooses a vector \n\\(\\C P = (p_1, \\dots, p_n)\\), meaning that each applicant \\(i\\) is selected to be screened independently with probability \\(p_i\\).\nLet \\(\\C S = (S_1, \\dots, S_n)\\) indicate which applicants are ultimately screened under this policy; therefore, \\(S_i \\in \\{0,1\\}\\) is a Bernoulli random variable with probability of success \\(p_i\\).\n\nGiven this randomized screening policy, we can now write the information \\(\\hat {\\C U} = (\\hat U_1, \\ldots, \\hat U_n)\\) the lender has at the end of the screening phase as follows:\n    \\begin{equation}\n        \\hat U_i = \\begin{cases}\n            \\EE[U_i \\mid X_i = x_i] & \\text{ if } S_i = 0, \\\\\n            \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i] & \\text{ if } S_i =1.\n        \\end{cases}\n    \\end{equation}\nIn other words, \\(\\hat U_i\\) is the lender's post-screening estimated utility of giving a loan to applicant \\(i\\).\nIn particular, if \\(S_i = 1\\) (i.e., the applicant is screened), the lender's estimate changes from \\(\\EE[U_i\\mid X_i = x_i]\\),\nthe estimate based only on applicant \\(i\\)'s pre-screening covariates \\(x_i\\),\nto \n\\(\\bbE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i] \\), which incorporates the post-screening information \\(\\tilde{x}_i\\).\n\nFinally, the lender chooses an allocation policy, denoted \\(\\C A(\\hat {\\C U}) = (A_1, \\dots A_n)\\), \nwhere \\(A_i \\in [0,1]\\)\nspecifies the probability a loan is (independently) offered to each applicant.\nImportantly, \\(\\C A\\) is a function of \nthe lender's post-screening utility estimates\n\\(\\hat {\\C U}\\).",
+              "quoted_text_sha256": "3a1974227e1ea13d42e9c6af9ee5c59cf930f309460f44fdb0de4b5237177ae3"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 624,
+              "line_start": 619,
+              "publication_locator": "cited publication",
+              "quoted_text": "We prove Theorem~\\ref{thm:main} in a more general setting in which we allow the cost of screening \\(\\cs\\) and cost of allocation \\(\\ca\\) to vary for each individual.\nIn the special case of no screening (but with applicant-specific costs of allocation), we note that our optimization problem is equivalent to the fractional knapsack problem. \nFor fractional knapsack, the greedy strategy---in which one packs items in descending order of their value per weight---yields an optimal solution~\\cite{dantzig1957discrete}.\nIn our case, we show that the same approach can be used to find an optimal allocation of loans once the set of applicants to screen has been appropriately selected.\n\nTo start, we generalize our definition of a threshold policy to account for the applicant-specific allocation costs.",
+              "quoted_text_sha256": "48af34375c67f4cbc0d353985442e4119fd257a4fe87a404583765e942d30f1c"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 323,
+              "line_start": 293,
+              "publication_locator": "cited publication",
+              "quoted_text": "Combining all of the above, the lender's optimization problem is to choose screening and allocation policies \\((\\C P^*, \\C A^*)\\) that maximize expected welfare,\n\\begin{equation}\n\\label{eq:def1}\n    (\\C P^*, \\C A^*) \\in \\argmax_{\\C P, \\C A} \\bbE\\left[\\sum_{i = 1}^n U_i A_i\\right],\n\\end{equation}\nsubject to being budget-balanced in expectation,%\n\\footnote{By requiring the budget constraint to hold only in expectation---rather than exactly---we are able to find a computationally tractable solution to the problem. In practice, such a constraint means that agencies are allowed some flexibility as long as they don't overspend on average,\nwhich, we believe, is often a realistic requirement.\n}\n\n\\begin{equation}\n\\label{eq:def2}\n    \\EE \\left[ \\sum_{i = 1}^n \\cs S_i + \\ca  A_i \\right] \\leq B,\n\\end{equation}\nwhere \\(B\\) is a fixed, non-negative constant.\n\nIn some settings, decision makers may value diversity in their allocations.\nFor example, they may wish to ensure a certain minimum number of loans are provided to groups that historically have been excluded from credit markets.\nOne can encode this policy preference directly into the utilities, in which case the resulting optimization problem would incorporate one's value for diversity.\nThat approach, however, requires decision makers to agree upon these utilities to interpret the results, which can be challenging. \n\nHere we take a complementary approach that explicitly allows value for diversity to differ across decision makers.\nSuppose the applicant pool is partitioned into \\(m\\) groups \\(\\{G_1, \\ldots, G_m\\}\\);\nfor example, if \\(m = 2\\), we might partition candidates into those who traditionally have had access to credit markets and those who have not.\nThen we require the selected policy \\((\\C{P}^*, \\C{A}^*)\\)\nto allocate at least \\(\\Lambda_j \\geq 0\\) utility to group \\(G_j\\), where these utilities do not themselves include any value for diversity:\n    \\begin{equation}\n    \\label{eq:def3}\n        \\EE \\left[ \\sum_{i \\in G_j} U_i A_i \\right] \\geq \\Lambda_j.\n    \\end{equation}\nIn practice, as we discuss below, one would solve this optimization problem for a range of \\(\\Lambda\\), which traces out the Pareto frontier of possible policies across different group constraints, corresponding to different values for diversity.",
+              "quoted_text_sha256": "1078eade56afbc397c7d2ae3cc822072711eb0b897552eabd8291f260fa5b392"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 636,
+              "line_start": 626,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\begin{defn}[Cost-Aware Threshold Policy]\n    A \\emph{cost-aware threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i / c_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i / c_i = t_{g_i}, \\\\\n                0 & \\hat U_i / c_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\) and \\(c_i\\) denotes the cost of allocating resources to individual \\(i\\).\n\\end{defn}",
+              "quoted_text_sha256": "2350a9f211af4796282435ab1344eff61fcda254ce18219ebe2ba168700876a5"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchor_evidence": [
+            {
+              "line_end": 697,
+              "line_start": 693,
+              "publication_locator": "cited publication",
+              "quoted_text": "Now, since any allocation policy is by definition conditionally independent of \\(U_i\\) given \\(\\hat U_i\\), it follows that \\(\\EE [A_i U_i] = \\EE [A_i \\hat U_i]\\) and \\(\\EE [T_i U_i] = \\EE [T_i \\hat U_i]\\). In consequence,\n\\begin{equation}\n    \\label{eq:key}\n        \\EE \\left[ \\sum_{i = 1}^n \\Delta_i U_i \\right] \\geq t \\cdot \\EE \\left[ \\sum_{i = 1}^n c_i \\Delta_i \\right].\n    \\end{equation}",
+              "quoted_text_sha256": "6aeb62355306f9ba59c60b86fe814f49104b58e534230026b7c7a0169cde9c9f"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "CGGG20SelectiveInformationAcquisition.PaperInterface.appendix_theorem_cost_aware_threshold_policies_suffice",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "CGGG20SelectiveInformationAcquisition.PaperInterface.appendix_theorem_cost_aware_threshold_policies_sufficeSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 757,
+          "line_start": 735,
+          "publication_locator": "cited publication",
+          "quoted_text": "We are now equipped to move to analyze settings in which there are multiple groups. We prove the following generalization of Theorem~\\ref{thm:main}.\n\n\\begin{thm}\n     Suppose the constrained optimization problem defined by Eqs.~\\eqref{eq:def1}, \\eqref{eq:def2}, and \\eqref{eq:def3} has a solution \\((\\C P^*, \\C A^*)\\).\n     Then there is a (not necessarily single-threshold) cost-aware threshold policy \\(\\C T^*\\) such that \\((\\C P^*, \\C T^*)\\) is also a solution.\n\\end{thm}\n\n\\begin{proof}[Proof of Theorem \\ref{thm:main}]\n    Consider a solution screening and allocation policy pair \\((\\C P^*, \\C A^*)\\) satisfying the allocation diversity constraints.\n    \n    Note that each of the collections \\(\\C A_j^* = \\{A_i^*\\}_{i \\in G_j}\\) defines an allocation policy on the subpopulation \\(G_j\\).\n    Applying Lemma~\\ref{lem:full_range} to each of them yields a threshold policy \\(\\C T_j^*\\)---defined by the pair \\((t_j, \\alpha_j)\\)---of the same expected cost as \\(\\C A_j^*\\). \n    By Lemma~\\ref{lem:main}, \\(\\C T_j^*\\) achieves the same or higher expected utility on \\(G_j\\) as \\(\\C A_j^*\\).\n    \n    Let \\(\\C T^*\\) be the threshold policy defined by thresholds \\(t_1, \\ldots, t_m\\) and boundary randomization probabilities \\(\\alpha_1, \\ldots, \\alpha_m\\).\n    The expected cost of \\(\\C T^*\\) is the same as \\(\\C A^*\\).\n    Moreover, \\(\\C T^*\\) satisfies the group utility constraints, since the utility it achieves on each group \\(G_j\\) is greater than or equal to \\(\\C A^*\\).\n    Lastly, the expected utility achieved by \\(\\C T^*\\) is greater than or equal to that of \\(\\C A^*\\).\n    \n    Since \\(\\C A^*\\) was assumed optimal, it must be that the expected utilities are equal. Therefore the pair \\((\\C P^*, \\C T^*)\\) is also a solution to the constrained optimization problem defined by Eqs.~\\eqref{eq:def1}, \\eqref{eq:def2}, and \\eqref{eq:def3}.\n\\end{proof}\n\nTheorem~\\ref{thm:main} follows as an immediate corollary.",
+          "quoted_text_sha256": "560083dcddc675dc99e84a71689a0907b90fdb2730c297e1f601edb4edf8c682"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem6",
+          "identity_schema": 2,
+          "reviewed_lean_route": "CGGG20SelectiveInformationAcquisition.PaperInterface.appendix_theorem_cost_aware_threshold_policies_suffice",
+          "semantic_claim": "If the constrained optimization problem has a solution (P*, A*), then there is a not-necessarily-single-threshold cost-aware threshold policy T* such that (P*, T*) is also a solution; the proof applies Lemma 2 groupwise to preserve expected cost and Lemma 1 to weakly improve each group utility.",
+          "source_locator": "audit/cited publication:735-757",
+          "source_quote_sha256": "560083dcddc675dc99e84a71689a0907b90fdb2730c297e1f601edb4edf8c682"
+        }
+      ],
+      "source_defect_ids": [
+        "CGGG20-THEOREM6-THRESHOLD-DOMAIN-PROOF-GAP-01"
+      ],
+      "source_kind": "theorem",
+      "source_kind_validated_at": "2026-07-12T00:00:00Z",
+      "source_kind_validator": "source-kind verification",
+      "source_location": "audit/cited publication:735-757",
+      "source_status": "Direct appendix theorem and proof route generalizing Theorem 1 to applicant-specific allocation costs.",
+      "source_url": "https://arxiv.org/abs/1911.02715",
+      "statement": "If the constrained optimization problem has a solution (P*, A*), then there is a not-necessarily-single-threshold cost-aware threshold policy T* such that (P*, T*) is also a solution; the proof applies Lemma 2 groupwise to preserve expected cost and Lemma 1 to weakly improve each group utility.",
+      "support_lean_declarations": [
+        "CGGG20SelectiveInformationAcquisition.PaperInterface.appendix_theorem_cost_aware_threshold_policies_sufficeSpec"
+      ],
+      "title": "Appendix theorem, Cost-Aware Threshold Policies Suffice"
+    }
+  },
+  "paper": "CGGG20SelectiveInformationAcquisition",
+  "paper_interface_namespace": "CGGG20SelectiveInformationAcquisition",
+  "paper_semantic_prerequisite_sources": {
+    "CGGG20SelectiveInformationAcquisition.PaperInterface.definition1_threshold_policySpec": "definition1",
+    "CGGG20SelectiveInformationAcquisition.PaperInterface.definition3_cost_aware_threshold_policySpec": "definition3",
+    "CGGG20SelectiveInformationAcquisition.ScreeningAllocationData": "screening_allocation_pair_model",
+    "CGGG20SelectiveInformationAcquisition.ScreeningAllocationData.PolicyPair": "screening_allocation_pair_model",
+    "CGGG20SelectiveInformationAcquisition.ScreeningAllocationData.evaluatePostScreeningAllocationRule": "screening_allocation_pair_model",
+    "CGGG20SelectiveInformationAcquisition.ScreeningPolicy": "screening_allocation_pair_model"
+  },
+  "publication_source_display_projection": {
+    "manifest": "audit/public_source_display_projection.json",
+    "raw_source_bytes_included": false,
+    "schema": 1
+  },
+  "schema": 1,
+  "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
+  "source_anchor_evidence_required": true,
+  "source_artifact_sha256": "0a870dd32ca03101e1e2f0c141184ea53fa2ac43ad4df4162995e6d3778a9f60",
+  "source_claim_atoms_schema": 1,
+  "source_coverage_mode": "named_theoretical_statements",
+  "source_curated": true,
+  "source_inventory_kind": "source_curated",
+  "source_inventory_policy": "Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
+  "source_kind_policy": "Source item kinds classified from pinned TeX source labels and displayed formula context; validator identity is an agent judgment, not human source-definition certification.",
+  "source_named_result_inventory_review": {
+    "candidate_presentations": [],
+    "complete": true,
+    "discovered_candidate_presentation_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "discovered_named_result_sha256": "56a2e230e75c6041d2b53c193dcf73f5adcb488e06dbcad4e1e054b431361c1a",
+    "discovered_prose_definition_sha256": "9332bd5fc3553c435b5f7cf90cf324d211256536bbde01ebf8252e832fc6d914",
+    "method": "Read the byte-pinned AIES/arXiv TeX surface end to end; classify every mechanically discovered named definition, theorem, and lemma as a material named claim; retain displayed formulas and their model context in the same source inventory; and route the main-text threshold definition and theorem through their direct ordinary-threshold formalization rather than an appendix generalization by name.",
+    "prose_definition_presentations": [
+      {
+        "defined_entity_kind": "predicate",
+        "defined_object": "threshold policy",
+        "definitional_clause": "\\begin{defn}[Threshold Policy]\n    A \\emph{threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i = t_{g_i}, \\\\\n                0 & \\hat U_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\).\n\\end{defn}",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 376,
+          "line_start": 366,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{defn}[Threshold Policy]\n    A \\emph{threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i = t_{g_i}, \\\\\n                0 & \\hat U_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\).\n\\end{defn}",
+          "quoted_text_sha256": "733ad868657280cb448a5f74f68389826b2564633afa738153e7db0aecb742ff"
+        }
+      },
+      {
+        "defined_entity_kind": "predicate",
+        "defined_object": "cost-aware threshold policy",
+        "definitional_clause": "\\begin{defn}[Cost-Aware Threshold Policy]\n    A \\emph{cost-aware threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i / c_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i / c_i = t_{g_i}, \\\\\n                0 & \\hat U_i / c_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\) and \\(c_i\\) denotes the cost of allocating resources to individual \\(i\\).\n\\end{defn}",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 636,
+          "line_start": 626,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{defn}[Cost-Aware Threshold Policy]\n    A \\emph{cost-aware threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i / c_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i / c_i = t_{g_i}, \\\\\n                0 & \\hat U_i / c_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\) and \\(c_i\\) denotes the cost of allocating resources to individual \\(i\\).\n\\end{defn}",
+          "quoted_text_sha256": "2350a9f211af4796282435ab1344eff61fcda254ce18219ebe2ba168700876a5"
+        }
+      }
+    ],
+    "schema": 1,
+    "source_artifact_sha256": "0a870dd32ca03101e1e2f0c141184ea53fa2ac43ad4df4162995e6d3778a9f60",
+    "validated_at": "2026-09-02T00:00:00Z",
+    "validator": "CGGG20 v12 source-first migration review"
+  },
+  "source_spec_correspondence_schema": 1,
+  "source_url": "https://arxiv.org/abs/1911.02715",
+  "source_version": "AIES 2020 arXiv:1911.02715 source archive; canonical audit surface is the byte-pinned cited publication archive member"
+}

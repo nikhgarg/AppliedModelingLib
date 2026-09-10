@@ -2176,12 +2176,12 @@ evidence; independently verify every retained item during closeout.
 
 
 def final_validation_report_text(title: str, folder: str) -> str:
-    title_text = title or "[Paper Short Name]"
+    title_text = title or "[Full Paper Title]"
     template = (PAPERS / "TEMPLATE" / "FINAL_VALIDATION_REPORT.md").read_text(
         encoding="utf-8"
     )
     return template.replace(
-        "# Final Validation Report: [Paper Short Name]",
+        "# Final Validation Report: [Full Paper Title]",
         f"# Final Validation Report: {title_text}",
         1,
     ).replace("papers/TEMPLATE", f"papers/{folder}")

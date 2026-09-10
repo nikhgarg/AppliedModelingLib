@@ -1,0 +1,589 @@
+{
+  "all_selected_semantic_review_sha256": "f4001d8bd2852870d9cc4f004d8b1668cb1d0681209bc50c4883d88030419785",
+  "items": {
+    "defect/PG23-CONTINUOUS-REGULARITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "cutoff-probabilities-and-support-arguments",
+      "memo_heading": "Cutoff probabilities and support arguments",
+      "memo_sha256": "acb4b060c82f693425eb1f2e51c469fa40ba48cb33690b7fb4b6794f097846e5",
+      "report_home": 4,
+      "source_reading": "The model assumes connected support, but later exact-cutoff, strict-tail, strict-comparison, and welfare conclusions use atomlessness, score-level nullity, nondegeneracy, or integrability not implied by connected support alone."
+    },
+    "defect/PG23-ENDPOINT-AND-INTERVAL-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "cutoff-probabilities-and-support-arguments",
+      "memo_heading": "Cutoff probabilities and support arguments",
+      "memo_sha256": "acb4b060c82f693425eb1f2e51c469fa40ba48cb33690b7fb4b6794f097846e5",
+      "report_home": 4,
+      "source_reading": "The appendix derives endpoint CDF identities from connected support and states positive mass for an unqualified interval meeting the support interior."
+    },
+    "defect/PG23-NASH-EXANTE-SEMANTICS-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "welfare-and-the-application-game",
+      "memo_heading": "Welfare and the application game",
+      "memo_sha256": "acb4b060c82f693425eb1f2e51c469fa40ba48cb33690b7fb4b6794f097846e5",
+      "report_home": 4,
+      "source_reading": "The Nash proposition says that no applicant benefits ex ante from deviating from the top-k set, but it does not define the payoff functional, feasible-deviation domain, or success-law coupling needed to state that claim as a finite mathematical theorem."
+    },
+    "source/review_corollary4_monocultureCutoff_lt_polycultureCutoff/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "cutoff-probabilities-and-support-arguments",
+      "memo_heading": "Cutoff probabilities and support arguments",
+      "memo_sha256": "acb4b060c82f693425eb1f2e51c469fa40ba48cb33690b7fb4b6794f097846e5",
+      "report_home": 4,
+      "source_reading": "review_corollary4_monocultureCutoff_lt_polycultureCutoff"
+    },
+    "source/review_lemma2_equalCutoffs/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "cutoff-probabilities-and-support-arguments",
+      "memo_heading": "Cutoff probabilities and support arguments",
+      "memo_sha256": "acb4b060c82f693425eb1f2e51c469fa40ba48cb33690b7fb4b6794f097846e5",
+      "report_home": 4,
+      "source_reading": "review_lemma2_equalCutoffs"
+    },
+    "source/review_lemma_equalCutoffs_differentialAccess/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "cutoff-probabilities-and-support-arguments",
+      "memo_heading": "Cutoff probabilities and support arguments",
+      "memo_sha256": "acb4b060c82f693425eb1f2e51c469fa40ba48cb33690b7fb4b6794f097846e5",
+      "report_home": 4,
+      "source_reading": "review_lemma_equalCutoffs_differentialAccess"
+    },
+    "source/review_proposition_nash_differentialApplicationAccess/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "welfare-and-the-application-game",
+      "memo_heading": "Welfare and the application game",
+      "memo_sha256": "acb4b060c82f693425eb1f2e51c469fa40ba48cb33690b7fb4b6794f097846e5",
+      "report_home": 4,
+      "source_reading": "review_proposition_nash_differentialApplicationAccess"
+    },
+    "source/review_proposition_nonzeroMeasure_openInterval/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "cutoff-probabilities-and-support-arguments",
+      "memo_heading": "Cutoff probabilities and support arguments",
+      "memo_sha256": "acb4b060c82f693425eb1f2e51c469fa40ba48cb33690b7fb4b6794f097846e5",
+      "report_home": 4,
+      "source_reading": "review_proposition_nonzeroMeasure_openInterval"
+    },
+    "source/review_proposition_probabilityFormula/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "cutoff-probabilities-and-support-arguments",
+      "memo_heading": "Cutoff probabilities and support arguments",
+      "memo_sha256": "acb4b060c82f693425eb1f2e51c469fa40ba48cb33690b7fb4b6794f097846e5",
+      "report_home": 4,
+      "source_reading": "review_proposition_probabilityFormula"
+    },
+    "source/review_theorem1_wisdom/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "welfare-and-the-application-game",
+      "memo_heading": "Welfare and the application game",
+      "memo_sha256": "acb4b060c82f693425eb1f2e51c469fa40ba48cb33690b7fb4b6794f097846e5",
+      "report_home": 4,
+      "source_reading": "review_theorem1_wisdom"
+    },
+    "source/review_theorem2_topChoice/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "cutoff-probabilities-and-support-arguments",
+      "memo_heading": "Cutoff probabilities and support arguments",
+      "memo_sha256": "acb4b060c82f693425eb1f2e51c469fa40ba48cb33690b7fb4b6794f097846e5",
+      "report_home": 4,
+      "source_reading": "review_theorem2_topChoice"
+    },
+    "source/review_theorem3_differentialApplicationAccess/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "cutoff-probabilities-and-support-arguments",
+      "memo_heading": "Cutoff probabilities and support arguments",
+      "memo_sha256": "acb4b060c82f693425eb1f2e51c469fa40ba48cb33690b7fb4b6794f097846e5",
+      "report_home": 4,
+      "source_reading": "review_theorem3_differentialApplicationAccess"
+    }
+  },
+  "paper": "PG23MonocultureMatching",
+  "report_inventory_complete": true,
+  "report_sha256": "455eba216745453887cb44d0fbcb63d0f8a06e0c53035a5135429aca0a647e5f",
+  "result_table": {
+    "complete": true,
+    "results": {
+      "lemma_potato": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 10",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 10",
+            "row_sha256": "8dea188631d78b7323ce7cb2511f345320e1fad6947efc5652617a312b327e63"
+          }
+        ]
+      },
+      "proposition_lattice": {
+        "grouping_reason": "The report uses the source result\u2019s descriptive title instead of its printed counter.",
+        "numbering": "numbered",
+        "printed_label": "Proposition 9",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Clearing-cutoff lattice",
+            "row_sha256": "0cb6f0bfc98c288ad8669094f4cfd19c96e12953486ebf169d46de0bc98834ce"
+          }
+        ]
+      },
+      "review_corollary4_monocultureCutoff_lt_polycultureCutoff": {
+        "numbering": "numbered",
+        "printed_label": "Corollary 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Corollary 4",
+            "row_sha256": "16b608bcf649c5e3a76230ffe7781077044afdc478fde70015a15712ca85c86b"
+          }
+        ]
+      },
+      "review_lemma1_supplyDemand": {
+        "grouping_reason": "The report uses the source result\u2019s descriptive title instead of its printed counter.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Supply and Demand",
+            "row_sha256": "74129b664aae26cfd1eead3c4109a9483eef37d0e61a24f41c3153aef1c6a1d2"
+          }
+        ]
+      },
+      "review_lemma2_equalCutoffs": {
+        "grouping_reason": "The report uses the source result\u2019s descriptive title instead of its printed counter.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Equal Cutoffs",
+            "row_sha256": "7008267cda4630d5f84dee18f1e183f9bd514495f94b1e9c6f98c85fcf4efc7a"
+          }
+        ]
+      },
+      "review_lemma_equalCutoffs_differentialAccess": {
+        "grouping_reason": "The report uses the source result\u2019s descriptive title instead of its printed counter.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 5",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Differential-access Equal Cutoffs",
+            "row_sha256": "712d6345833991727581a994e4f50217ca7ed2bb96bf3377ad0237ef95eb0e50"
+          }
+        ]
+      },
+      "review_proposition_cdfIncreasing_connectedSupport": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 7",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 7",
+            "row_sha256": "9caad6c2ca1488f3e3472a486c445581d5ce0e6f3efef5ba33600251399f7ca0"
+          }
+        ]
+      },
+      "review_proposition_nash_differentialApplicationAccess": {
+        "grouping_reason": "The report uses the source result\u2019s descriptive title instead of its printed counter.",
+        "numbering": "numbered",
+        "printed_label": "Proposition 6",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Finite application game",
+            "row_sha256": "ab8760df8bc67d6448b123e8990a526ab64ae8b8a84ec36bc119b3a15a96ac1a"
+          }
+        ]
+      },
+      "review_proposition_nonzeroMeasure_openInterval": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 8",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 8",
+            "row_sha256": "d20fee7752773d82543acc5fb9965787310777a63c8682eeec53fb2c7c642029"
+          }
+        ]
+      },
+      "review_proposition_probabilityFormula": {
+        "grouping_reason": "The report uses the source result\u2019s descriptive title instead of its printed counter.",
+        "numbering": "numbered",
+        "printed_label": "Proposition 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Probability formula",
+            "row_sha256": "678f6a46b115ffab119cddfe8d6f044c67056f87558d075767dc02ee11ea5958"
+          }
+        ]
+      },
+      "review_theorem1_wisdom": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1",
+            "row_sha256": "4a1a104945e049b3eaa9d40e1bbab1672cc8aafa8ab8c5c72a13553683c18b09"
+          }
+        ]
+      },
+      "review_theorem2_topChoice": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2",
+            "row_sha256": "cd3f5eb16e55d8432cf20f2ad98d615819694e3c3159b797dadb338d45d0f060"
+          }
+        ]
+      },
+      "review_theorem3_differentialApplicationAccess": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3",
+            "row_sha256": "870a571fd542d9eba65ed2df136264580be07ca2d1ab766c6322412a37b8f2d8"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "16b608bcf649c5e3a76230ffe7781077044afdc478fde70015a15712ca85c86b": {
+        "explanation_keys": [
+          "defect/PG23-CONTINUOUS-REGULARITY-01",
+          "source/review_corollary4_monocultureCutoff_lt_polycultureCutoff/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "0cb6f0bfc98c288ad8669094f4cfd19c96e12953486ebf169d46de0bc98834ce": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "4a1a104945e049b3eaa9d40e1bbab1672cc8aafa8ab8c5c72a13553683c18b09": {
+        "explanation_keys": [
+          "defect/PG23-CONTINUOUS-REGULARITY-01",
+          "source/review_theorem1_wisdom/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "678f6a46b115ffab119cddfe8d6f044c67056f87558d075767dc02ee11ea5958": {
+        "explanation_keys": [
+          "defect/PG23-CONTINUOUS-REGULARITY-01",
+          "source/review_proposition_probabilityFormula/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "7008267cda4630d5f84dee18f1e183f9bd514495f94b1e9c6f98c85fcf4efc7a": {
+        "explanation_keys": [
+          "defect/PG23-CONTINUOUS-REGULARITY-01",
+          "source/review_lemma2_equalCutoffs/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "712d6345833991727581a994e4f50217ca7ed2bb96bf3377ad0237ef95eb0e50": {
+        "explanation_keys": [
+          "defect/PG23-CONTINUOUS-REGULARITY-01",
+          "source/review_lemma_equalCutoffs_differentialAccess/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "74129b664aae26cfd1eead3c4109a9483eef37d0e61a24f41c3153aef1c6a1d2": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "8dea188631d78b7323ce7cb2511f345320e1fad6947efc5652617a312b327e63": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "8fca183dc197a3a3b73f33c115d7b3cbe3d25ac4e64e99e1116d649b3c7632a5": {
+        "explanation_keys": [],
+        "supplemental_reason": "This corrected illustrative source example is explicitly outside the selected named-result inventory."
+      },
+      "9caad6c2ca1488f3e3472a486c445581d5ce0e6f3efef5ba33600251399f7ca0": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "ab8760df8bc67d6448b123e8990a526ab64ae8b8a84ec36bc119b3a15a96ac1a": {
+        "explanation_keys": [
+          "defect/PG23-NASH-EXANTE-SEMANTICS-01",
+          "source/review_proposition_nash_differentialApplicationAccess/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "cd3f5eb16e55d8432cf20f2ad98d615819694e3c3159b797dadb338d45d0f060": {
+        "explanation_keys": [
+          "defect/PG23-ENDPOINT-AND-INTERVAL-01",
+          "defect/PG23-CONTINUOUS-REGULARITY-01",
+          "source/review_theorem2_topChoice/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "d20fee7752773d82543acc5fb9965787310777a63c8682eeec53fb2c7c642029": {
+        "explanation_keys": [
+          "defect/PG23-ENDPOINT-AND-INTERVAL-01",
+          "source/review_proposition_nonzeroMeasure_openInterval/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "870a571fd542d9eba65ed2df136264580be07ca2d1ab766c6322412a37b8f2d8": {
+        "explanation_keys": [
+          "defect/PG23-ENDPOINT-AND-INTERVAL-01",
+          "source/review_theorem3_differentialApplicationAccess/corrected_target"
+        ],
+        "supplemental_reason": ""
+      }
+    },
+    "schema": 1,
+    "source_inventory": {
+      "discovered_named_result_sha256": "a48e2e25cd4482e9b937b2f908f664644d56467bb546e49b47c7965b7dbad328",
+      "results": {
+        "lemma_potato": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 340,
+              "line_start": 324,
+              "presentation": "tex_environment",
+              "presentation_sha256": "3f3e4f509cba5ac63fedd4abae9702e8a04aab16831c3545960e6e711c0c0a87",
+              "source_item_id": "lemma_potato",
+              "source_label": "lem:potato"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_potato"
+          ]
+        },
+        "proposition_lattice": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 200,
+              "line_start": 198,
+              "presentation": "tex_environment",
+              "presentation_sha256": "d80d6d2982d55e680ceac951fb8b89e55aea173053da4f9e3d59edc45e69b5cb",
+              "source_item_id": "proposition_lattice",
+              "source_label": "prop:lattice"
+            }
+          ],
+          "source_item_ids": [
+            "proposition_lattice"
+          ]
+        },
+        "review_corollary4_monocultureCutoff_lt_polycultureCutoff": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 105,
+              "line_start": 100,
+              "presentation": "tex_environment",
+              "presentation_sha256": "7df49fc18abbba4c3085ee065c355f0624eea41f4f6c45f71887ebe1255d5ad4",
+              "source_item_id": "review_corollary4_monocultureCutoff_lt_polycultureCutoff",
+              "source_label": "cor:cutoff-inequality"
+            }
+          ],
+          "source_item_ids": [
+            "review_corollary4_monocultureCutoff_lt_polycultureCutoff"
+          ]
+        },
+        "review_lemma1_supplyDemand": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 43,
+              "line_start": 38,
+              "presentation": "tex_environment",
+              "presentation_sha256": "79ebdb2a7a954a7e5eba58dd853c23aebf668dfc90f5d90caa4d8f5d63ee4955",
+              "source_item_id": "review_lemma1_supplyDemand",
+              "source_label": "lem:supply-demand"
+            }
+          ],
+          "source_item_ids": [
+            "review_lemma1_supplyDemand"
+          ]
+        },
+        "review_lemma2_equalCutoffs": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 74,
+              "line_start": 71,
+              "presentation": "tex_environment",
+              "presentation_sha256": "d16e67eec2bce252b76df260e34ed0748df17a980ad7296f2f90eed5c0171e90",
+              "source_item_id": "review_lemma2_equalCutoffs",
+              "source_label": "prop:equal-cutoffs"
+            }
+          ],
+          "source_item_ids": [
+            "review_lemma2_equalCutoffs"
+          ]
+        },
+        "review_lemma_equalCutoffs_differentialAccess": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 684,
+              "line_start": 681,
+              "presentation": "tex_environment",
+              "presentation_sha256": "fb43fb4f6af46edcfaf523277a601254ac5a3f47a988e8140cba20ca2f5ba158",
+              "source_item_id": "review_lemma_equalCutoffs_differentialAccess",
+              "source_label": "lem:equal-cutoffs-diff-access"
+            }
+          ],
+          "source_item_ids": [
+            "review_lemma_equalCutoffs_differentialAccess"
+          ]
+        },
+        "review_proposition_cdfIncreasing_connectedSupport": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 166,
+              "line_start": 159,
+              "presentation": "tex_environment",
+              "presentation_sha256": "c8d0dcc02dfa3ada7d7cfc30dafb9f85999d6c431349711699bf396df7096250",
+              "source_item_id": "review_proposition_cdfIncreasing_connectedSupport",
+              "source_label": "prop:cdf-increasing"
+            }
+          ],
+          "source_item_ids": [
+            "review_proposition_cdfIncreasing_connectedSupport"
+          ]
+        },
+        "review_proposition_nash_differentialApplicationAccess": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 691,
+              "line_start": 689,
+              "presentation": "tex_environment",
+              "presentation_sha256": "ef1283b95ef4a4da716d37c223e4cb7aa192ca8c37dcfdcb1329ebc2c90957e0",
+              "source_item_id": "review_proposition_nash_differentialApplicationAccess",
+              "source_label": "prop:nash"
+            }
+          ],
+          "source_item_ids": [
+            "review_proposition_nash_differentialApplicationAccess"
+          ]
+        },
+        "review_proposition_nonzeroMeasure_openInterval": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 182,
+              "line_start": 176,
+              "presentation": "tex_environment",
+              "presentation_sha256": "3ff4059097d41091abfa5cd6c54a2cf06966ceb40457492b7dc381b124dbf80f",
+              "source_item_id": "review_proposition_nonzeroMeasure_openInterval",
+              "source_label": "prop:nonzero-measure"
+            }
+          ],
+          "source_item_ids": [
+            "review_proposition_nonzeroMeasure_openInterval"
+          ]
+        },
+        "review_proposition_probabilityFormula": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 95,
+              "line_start": 81,
+              "presentation": "tex_environment",
+              "presentation_sha256": "d389eb65db52ebe2a0161e2567ccf7960d09bb9bd371f3ae7f4c3b618cc64c05",
+              "source_item_id": "review_proposition_probabilityFormula",
+              "source_label": "prop:prob-match"
+            }
+          ],
+          "source_item_ids": [
+            "review_proposition_probabilityFormula"
+          ]
+        },
+        "review_theorem1_wisdom": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 558,
+              "line_start": 539,
+              "presentation": "tex_environment",
+              "presentation_sha256": "b84bb0f1b018b0ea5423110878f863ec2e754cde2d98b6ffcf497429c79e0f82",
+              "source_item_id": "review_theorem1_wisdom",
+              "source_label": "thm:wisdom"
+            }
+          ],
+          "source_item_ids": [
+            "review_theorem1_wisdom"
+          ]
+        },
+        "review_theorem2_topChoice": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 628,
+              "line_start": 609,
+              "presentation": "tex_environment",
+              "presentation_sha256": "c2786522bcca6b8ff9d573700a93073aa509434e1ed9da2855f448318f14f757",
+              "source_item_id": "review_theorem2_topChoice",
+              "source_label": "thm:top-choice"
+            }
+          ],
+          "source_item_ids": [
+            "review_theorem2_topChoice"
+          ]
+        },
+        "review_theorem3_differentialApplicationAccess": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 719,
+              "line_start": 705,
+              "presentation": "tex_environment",
+              "presentation_sha256": "04527acbf2a3df55296c0e19cc82fdbbe12ddbc7ccb29eae05fa6f1e21b1c20b",
+              "source_item_id": "review_theorem3_differentialApplicationAccess",
+              "source_label": "thm:diff-app-access"
+            }
+          ],
+          "source_item_ids": [
+            "review_theorem3_differentialApplicationAccess"
+          ]
+        }
+      },
+      "schema": 1,
+      "source_artifact_sha256": "3faa7451a9943a22cb15008b6e37d34b3be9390d9c9e00b22b0db949ab3b10fb",
+      "source_format": "tex"
+    },
+    "source_inventory_sha256": "4c946363f3bb2adee33da3ce8f80959d1dbb945144d688b9b2be083038bd2371"
+  },
+  "schema": 2,
+  "source_items_sha256": "8ba4797b50fd780600926cc62057d45537e6afbcf6bf6ef4bc443b15c2296787"
+}

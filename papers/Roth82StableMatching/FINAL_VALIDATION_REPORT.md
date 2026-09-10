@@ -1,6 +1,6 @@
-# Final Validation Report: Roth 1982
+# Final Validation Report: The Economics of Matching: Stability and Incentives
 
-Updated: 2026-08-04
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -36,9 +36,9 @@ one of those endpoints.
 
 | Result | Comparison with the paper |
 | --- | --- |
-| Theorems 1–2 | **Exact:** stable complete matching and both side-optimal outcomes. |
-| Theorems 3–5; Corollary 5.1; Lemmas 1–2 | **Exact:** same truthfulness, impossibility, and misrepresentation statements. |
-| Theorems 6–7 | **Exact:** same welfare and arbitrary-rank impossibility conclusions. |
+| Theorems 1–2 | **Exact.** |
+| Theorems 3–5; Corollary 5.1; Lemmas 1–2 | **Exact.** |
+| Theorems 6–7 | **Exact.** |
 | Broad both-sided-quota extension | **Deferred:** the unnumbered claim is not used as credit for a general many-to-many incentive theorem. |
 
 ## 5. Remaining Boundaries and Gaps

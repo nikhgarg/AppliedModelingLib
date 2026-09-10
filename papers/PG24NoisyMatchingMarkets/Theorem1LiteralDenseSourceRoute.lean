@@ -19,7 +19,7 @@ namespace PG24NoisyMatchingMarkets
 
 noncomputable section
 
-universe u v
+universe u v w
 
 /--
 The source Holder witness controls the closed three-radius transition window
@@ -977,6 +977,44 @@ theorem theorem1_dense_holder_envelope_tendsto_zero
           Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) := by
       rw [theorem1Tail_gamma_mul_phi1_eq_neg_K beta gamma]
 
+/-- The exact rate form of the dense Holder-window envelope. -/
+theorem theorem1_dense_holder_envelope_eventually_le_source_rate
+    {beta gamma holderConstant : ℝ}
+    (hbeta : 0 < beta) (hgamma : 0 < gamma)
+    (hholder_nonneg : 0 ≤ holderConstant) :
+    ∃ A : ℝ, 0 ≤ A ∧
+      ∀ᶠ C : ℕ in atTop,
+        holderConstant * Real.rpow
+          (5 * theorem1DenseDeviationRadius C beta gamma) gamma ≤
+          A * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) := by
+  refine ⟨holderConstant * Real.rpow 5 gamma,
+    mul_nonneg hholder_nonneg (Real.rpow_nonneg (by norm_num) _), ?_⟩
+  filter_upwards [eventually_gt_atTop 0] with C hC_pos
+  have hC_real_pos : 0 < (C : ℝ) := by exact_mod_cast hC_pos
+  unfold theorem1DenseDeviationRadius
+  calc
+    holderConstant * Real.rpow
+        (5 * Real.rpow (C : ℝ) (theorem1TailPhi1 beta gamma)) gamma =
+        (holderConstant * Real.rpow 5 gamma) *
+          Real.rpow (C : ℝ)
+            (gamma * theorem1TailPhi1 beta gamma) := by
+      have hmul : Real.rpow
+          (5 * Real.rpow (C : ℝ) (theorem1TailPhi1 beta gamma)) gamma =
+          Real.rpow 5 gamma * Real.rpow
+            (Real.rpow (C : ℝ) (theorem1TailPhi1 beta gamma)) gamma := by
+        exact Real.mul_rpow (by norm_num) (le_of_lt
+          (Real.rpow_pos_of_pos hC_real_pos _))
+      have hcompose : Real.rpow
+          (Real.rpow (C : ℝ) (theorem1TailPhi1 beta gamma)) gamma =
+          Real.rpow (C : ℝ) (theorem1TailPhi1 beta gamma * gamma) := by
+        exact (Real.rpow_mul (le_of_lt hC_real_pos)
+          (theorem1TailPhi1 beta gamma) gamma).symm
+      rw [hmul, hcompose]
+      ring
+    _ ≤ (holderConstant * Real.rpow 5 gamma) *
+          Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) := by
+      rw [theorem1Tail_gamma_mul_phi1_eq_neg_K beta gamma]
+
 /-- The start-independent dense union-error envelope tends to zero. -/
 theorem theorem1_dense_group_error_envelope_tendsto_zero_of_beta
     (noiseLaw : Measure ℝ) [IsProbabilityMeasure noiseLaw]
@@ -1082,6 +1120,95 @@ theorem theorem1_dense_group_error_envelope_tendsto_zero_of_beta
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le'
     (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (nhds 0))
     hupper_zero (Filter.Eventually.of_forall hnonneg) hupper_bound
+
+/-- The dense-block union envelope has the literal Case-1 `C^(-K)` rate.
+This is the rate-bearing form of the convergence estimate above, retained
+separately so later source conclusions can compose constants without
+recovering them from a limit proof. -/
+theorem theorem1_dense_group_error_envelope_eventually_le_source_rate_of_beta
+    (noiseLaw : Measure ℝ) [IsProbabilityMeasure noiseLaw]
+    {beta gamma : ℝ} {maxVariance : ℕ → ℝ}
+    (hbeta : betaMaxConcentratingVariance maxVariance beta)
+    (hgamma : 0 < gamma)
+    (hvariance : source_assumption_iid_beta_max_variance_bound
+      noiseLaw maxVariance) :
+    ∃ A : ℝ, 0 ≤ A ∧
+      ∀ᶠ C : ℕ in atTop,
+        (3 * Real.rpow (C : ℝ) (1 - theorem1TailPhi2 beta gamma)) *
+          AppliedModelingLib.Matching.topOrderDeviationProbability
+            (Measure.pi (fun _ : Fin
+              (theorem1DenseGroupIndex C beta gamma + 1) => noiseLaw))
+            (theorem1DenseGroupCenter noiseLaw C beta gamma)
+            (theorem1DenseDeviationRadius C beta gamma) ≤
+          A * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) := by
+  rcases theorem1DenseGroup_deviation_eventually_le_of_beta
+      noiseLaw hbeta hgamma hvariance with ⟨A, hA_nonneg, hdeviation⟩
+  refine ⟨3 * A, mul_nonneg (by norm_num) hA_nonneg, ?_⟩
+  filter_upwards [eventually_ge_atTop 1, hdeviation] with C hC_one herror
+  have hC_pos : 0 < (C : ℝ) := by
+    exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hC_one)
+  have herror' :
+      AppliedModelingLib.Matching.topOrderDeviationProbability
+          (Measure.pi (fun _ : Fin
+            (theorem1DenseGroupIndex C beta gamma + 1) => noiseLaw))
+          (theorem1DenseGroupCenter noiseLaw C beta gamma)
+          (theorem1DenseDeviationRadius C beta gamma) ≤
+        A * Real.rpow (C : ℝ)
+          (-2 * theorem1TailPhi1 beta gamma - beta * theorem1TailPhi2 beta gamma) := by
+    simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using herror
+  have hbase := theorem1Tail_case1_union_error_le_rpow_neg_K
+    hbeta.1 hgamma hC_pos herror'
+  calc
+    (3 * Real.rpow (C : ℝ) (1 - theorem1TailPhi2 beta gamma)) *
+        AppliedModelingLib.Matching.topOrderDeviationProbability
+          (Measure.pi (fun _ : Fin
+            (theorem1DenseGroupIndex C beta gamma + 1) => noiseLaw))
+          (theorem1DenseGroupCenter noiseLaw C beta gamma)
+          (theorem1DenseDeviationRadius C beta gamma) =
+        3 * (Real.rpow (C : ℝ) (1 - theorem1TailPhi2 beta gamma) *
+          AppliedModelingLib.Matching.topOrderDeviationProbability
+            (Measure.pi (fun _ : Fin
+              (theorem1DenseGroupIndex C beta gamma + 1) => noiseLaw))
+            (theorem1DenseGroupCenter noiseLaw C beta gamma)
+            (theorem1DenseDeviationRadius C beta gamma)) := by ring
+    _ ≤ 3 * (A * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma))) :=
+      mul_le_mul_of_nonneg_left hbase (by norm_num)
+    _ = (3 * A) * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) := by ring
+
+/-- The exact rounded group-count version of the Case-1 union rate. -/
+theorem theorem1_dense_group_union_error_eventually_le_source_rate_of_beta
+    (noiseLaw : Measure ℝ) [IsProbabilityMeasure noiseLaw]
+    {beta gamma : ℝ} {maxVariance : ℕ → ℝ}
+    (hbeta : betaMaxConcentratingVariance maxVariance beta)
+    (hgamma : 0 < gamma)
+    (hvariance : source_assumption_iid_beta_max_variance_bound
+      noiseLaw maxVariance)
+    (block : ∀ C : ℕ, Finset (Fin (C + 1))) :
+    ∃ A : ℝ, 0 ≤ A ∧
+      ∀ᶠ C : ℕ in atTop,
+        (theorem1IntegerGroupCount (block C)
+          (theorem1DenseGroupIndex C beta gamma + 1) : ℝ) *
+          AppliedModelingLib.Matching.topOrderDeviationProbability
+            (Measure.pi (fun _ : Fin
+              (theorem1DenseGroupIndex C beta gamma + 1) => noiseLaw))
+            (theorem1DenseGroupCenter noiseLaw C beta gamma)
+            (theorem1DenseDeviationRadius C beta gamma) ≤
+          A * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) := by
+  rcases theorem1_dense_group_error_envelope_eventually_le_source_rate_of_beta
+      noiseLaw hbeta hgamma hvariance with ⟨A, hA, henvelope⟩
+  refine ⟨A, hA, ?_⟩
+  have hcount := theorem1_dense_group_count_eventually_le_three_rpow
+    hbeta.1 hgamma block
+  filter_upwards [hcount, henvelope] with C hcount_C henvelope_C
+  have hdeviation_nonneg : 0 ≤
+      AppliedModelingLib.Matching.topOrderDeviationProbability
+        (Measure.pi (fun _ : Fin
+          (theorem1DenseGroupIndex C beta gamma + 1) => noiseLaw))
+        (theorem1DenseGroupCenter noiseLaw C beta gamma)
+        (theorem1DenseDeviationRadius C beta gamma) :=
+    theorem1_iid_topOrderDeviationProbability_nonneg
+      (m := theorem1DenseGroupIndex C beta gamma + 1) noiseLaw _ _
+  exact (mul_le_mul_of_nonneg_right hcount_C hdeviation_nonneg).trans henvelope_C
 
 /--
 Every actual canonical dense window has vanishing literal selected low matched
@@ -1276,6 +1403,173 @@ theorem theorem1_literal_selected_dense_branch_eventually_small_of_holder
       exact add_le_add_left
         (add_le_add_left (add_le_add_right hgroup_le _) _) _
     _ < epsilon := hbound_small
+
+/-- The literal dense branch has the source's exact `C^(-K)` rate, uniformly
+over all canonical dense windows.  The four displayed constants correspond to
+the sparse capacity, union/deviation, Holder window, and high-side clearing
+terms in the printed Case-1 proof. -/
+theorem theorem1_literal_selected_dense_branch_eventually_le_source_rate_of_holder
+    {Admissible : ℕ → Type w}
+    {StudentType : (C : ℕ) → Admissible C → Type u}
+    [∀ (C : ℕ) (a : Admissible C), MeasurableSpace (StudentType C a)]
+    {Cutoff : (C : ℕ) → Admissible C → Type v}
+    (noiseLaw eta : Measure ℝ) [IsProbabilityMeasure noiseLaw]
+    {maxVariance : ℕ → ℝ} {alpha beta vS totalSupply : ℝ}
+    (inst : ∀ (C : ℕ) (a : Admissible C),
+      PG24LiteralBasicTwoScaleInstance C noiseLaw eta totalSupply alpha
+        (StudentType C a) (Cutoff C a))
+    (hbeta : betaMaxConcentratingVariance maxVariance beta)
+    (hvariance : source_assumption_iid_beta_max_variance_bound
+      noiseLaw maxVariance)
+    (halpha_nonneg : 0 ≤ alpha)
+    (hregular : PG24HolderIntervalRegular eta)
+    (htail_normalization : eta.real (Set.Ioi vS) = totalSupply) :
+    ∃ holderConstant gamma A : ℝ,
+      0 < gamma ∧ 0 ≤ holderConstant ∧
+      (∀ (x delta : ℝ), 0 < delta →
+        eta.real (Set.Ioo x (x + delta)) ≤
+          holderConstant * Real.rpow delta gamma) ∧
+      0 ≤ A ∧ ∀ᶠ C : ℕ in atTop, ∀ a : Admissible C, ∀ start : ℕ,
+        start + theorem3DenseWindowCount C
+            (theorem1TailPhi2 beta gamma) ≤
+          theorem3DenseGapBlockCount C
+              (theorem1TailPhi2 beta gamma)
+              (theorem1TailPhi3 beta gamma) *
+            theorem3DenseWindowCount C
+              (theorem1TailPhi2 beta gamma) →
+        theorem1TailDenseRankWindow
+            (theorem3RankedCutoffNat C (inst C a).selectedCutoffVector) start
+            (theorem3DenseWindowCount C
+              (theorem1TailPhi2 beta gamma))
+            (theorem1DenseDeviationRadius C beta gamma) →
+        eventMass
+          ((inst C a).studentLaw.prod
+            (Measure.pi (fun _ : Fin (C + 1) => noiseLaw)))
+          (fun outcome : StudentType C a × (Fin (C + 1) → ℝ) =>
+            (inst C a).value outcome.1 ∈ Set.Iic vS ∧
+              chosenInActive
+                ((inst C a).literal.demand.demandAt
+                  (inst C a).literal.selectedCutoff)
+                (Finset.univ : Finset (Fin (C + 1))) outcome) ≤
+          A * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) := by
+  rcases hregular with ⟨holderConstant, gamma, hgamma, hholder_nonneg, hholder⟩
+  rcases theorem1_dense_group_error_envelope_eventually_le_source_rate_of_beta
+      noiseLaw hbeta hgamma hvariance with ⟨groupA, hgroupA_nonneg, hgroup_rate⟩
+  rcases theorem1_dense_holder_envelope_eventually_le_source_rate
+      hbeta.1 hgamma hholder_nonneg with ⟨holderA, hholderA_nonneg, hholder_rate⟩
+  have htotalSupply_nonneg : 0 ≤ totalSupply := by
+    rw [← htail_normalization]
+    exact measureReal_nonneg
+  let rate : ℕ → ℝ := fun C =>
+    Real.rpow (C : ℝ) (-(theorem1TailK beta gamma))
+  let A : ℝ := alpha + groupA + holderA + 2 * totalSupply * groupA
+  have hA_nonneg : 0 ≤ A := by
+    dsimp [A]
+    positivity
+  have hrate_zero : Tendsto rate atTop (nhds 0) := by
+    dsimp [rate]
+    simpa using
+      ((tendsto_rpow_neg_atTop (theorem1TailK_pos hbeta.1 hgamma)).comp
+        tendsto_natCast_atTop_atTop)
+  have hgroup_small : ∀ᶠ C : ℕ in atTop, groupA * rate C ≤ 1 / 2 := by
+    have hstrict : ∀ᶠ C : ℕ in atTop, groupA * rate C < 1 / 2 := by
+      have hlimit : Tendsto (fun C : ℕ => groupA * rate C)
+          atTop (nhds (groupA * 0)) := hrate_zero.const_mul groupA
+      simpa using hlimit (Iio_mem_nhds (by norm_num : groupA * 0 < (1 / 2 : ℝ)))
+    filter_upwards [hstrict] with C hC
+    exact le_of_lt hC
+  refine ⟨holderConstant, gamma, A, hgamma, hholder_nonneg, hholder, hA_nonneg, ?_⟩
+  filter_upwards [eventually_ge_atTop 1, hgroup_rate, hholder_rate, hgroup_small] with
+      C hC_one hgroup_C hholder_C hgroup_small_C a start hstart_window hdense
+  have hC_pos : 0 < C := lt_of_lt_of_le Nat.zero_lt_one hC_one
+  have hC_real_pos : 0 < (C : ℝ) := by exact_mod_cast hC_pos
+  let deviation : ℝ :=
+    AppliedModelingLib.Matching.topOrderDeviationProbability
+      (Measure.pi (fun _ : Fin
+        (theorem1DenseGroupIndex C beta gamma + 1) => noiseLaw))
+      (theorem1DenseGroupCenter noiseLaw C beta gamma)
+      (theorem1DenseDeviationRadius C beta gamma)
+  have hdeviation_nonneg : 0 ≤ deviation := by
+    exact theorem1_iid_topOrderDeviationProbability_nonneg
+      (m := theorem1DenseGroupIndex C beta gamma + 1) noiseLaw _ _
+  have hfactor_one : 1 ≤
+      3 * Real.rpow (C : ℝ) (1 - theorem1TailPhi2 beta gamma) := by
+    have hpower_one : 1 ≤ Real.rpow (C : ℝ)
+        (1 - theorem1TailPhi2 beta gamma) :=
+      Real.one_le_rpow (by exact_mod_cast hC_one)
+        (theorem1Tail_one_sub_phi2_pos hbeta.1 hgamma).le
+    linarith
+  have hdeviation_le_envelope : deviation ≤
+      (3 * Real.rpow (C : ℝ) (1 - theorem1TailPhi2 beta gamma)) *
+        deviation := by
+    calc
+      deviation = 1 * deviation := by ring
+      _ ≤ (3 * Real.rpow (C : ℝ) (1 - theorem1TailPhi2 beta gamma)) *
+          deviation := mul_le_mul_of_nonneg_right hfactor_one hdeviation_nonneg
+  have hdeviation_rate : deviation ≤ groupA * rate C := by
+    have henvelope :
+        (3 * Real.rpow (C : ℝ) (1 - theorem1TailPhi2 beta gamma)) *
+          deviation ≤ groupA * rate C := by
+      simpa [deviation, rate] using hgroup_C
+    exact hdeviation_le_envelope.trans henvelope
+  have hhigh_rate : 2 * totalSupply * deviation ≤
+      (2 * totalSupply * groupA) * rate C := by
+    calc
+      2 * totalSupply * deviation ≤ 2 * totalSupply * (groupA * rate C) :=
+        mul_le_mul_of_nonneg_left hdeviation_rate
+          (mul_nonneg (by norm_num) htotalSupply_nonneg)
+      _ = (2 * totalSupply * groupA) * rate C := by ring
+  let upper : Finset (Fin (C + 1)) := theorem1CutoffAtOrAboveBlock
+    Finset.univ (inst C a).selectedCutoffVector
+    (theorem3RankedCutoffNat C (inst C a).selectedCutoffVector start)
+  have hcount : (theorem1IntegerGroupCount upper
+      (theorem1DenseGroupIndex C beta gamma + 1) : ℝ) ≤
+      3 * Real.rpow (C : ℝ) (1 - theorem1TailPhi2 beta gamma) :=
+    theorem1_dense_group_count_le_three_rpow_of_one_le
+      hbeta.1 hgamma hC_one upper
+  have hactual_group_le :
+      (theorem1IntegerGroupCount upper
+        (theorem1DenseGroupIndex C beta gamma + 1) : ℝ) * deviation ≤
+      (3 * Real.rpow (C : ℝ) (1 - theorem1TailPhi2 beta gamma)) *
+        deviation :=
+    mul_le_mul_of_nonneg_right hcount hdeviation_nonneg
+  have hstatic := theorem1_literal_selected_dense_low_matched_mass_le_of_ranked_window
+    noiseLaw eta (inst C a) hbeta.1 hgamma halpha_nonneg hholder hC_pos start
+    hstart_window hdense (by
+      simpa [deviation] using hdeviation_rate.trans hgroup_small_C) htail_normalization
+  calc
+    eventMass
+        ((inst C a).studentLaw.prod
+          (Measure.pi (fun _ : Fin (C + 1) => noiseLaw)))
+        (fun outcome : StudentType C a × (Fin (C + 1) → ℝ) =>
+          (inst C a).value outcome.1 ∈ Set.Iic vS ∧
+            chosenInActive
+              ((inst C a).literal.demand.demandAt
+                (inst C a).literal.selectedCutoff)
+              (Finset.univ : Finset (Fin (C + 1))) outcome) ≤
+        alpha * rate C +
+          (theorem1IntegerGroupCount upper
+            (theorem1DenseGroupIndex C beta gamma + 1) : ℝ) * deviation +
+          holderConstant * Real.rpow
+            (5 * theorem1DenseDeviationRadius C beta gamma) gamma +
+          2 * totalSupply * deviation := by
+        simpa [upper, deviation, rate] using hstatic
+    _ ≤ alpha * rate C +
+          (3 * Real.rpow (C : ℝ) (1 - theorem1TailPhi2 beta gamma)) * deviation +
+          holderConstant * Real.rpow
+            (5 * theorem1DenseDeviationRadius C beta gamma) gamma +
+          2 * totalSupply * deviation := by
+        gcongr
+    _ ≤ alpha * rate C + groupA * rate C + holderA * rate C +
+          (2 * totalSupply * groupA) * rate C := by
+        have hholder_rate' : holderConstant * Real.rpow
+            (5 * theorem1DenseDeviationRadius C beta gamma) gamma ≤
+            holderA * rate C := by
+          simpa [rate] using hholder_C
+        gcongr
+    _ = A * rate C := by
+      dsimp [A]
+      ring
 
 end
 

@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "paper": "PKG25NoFreeLunch",
+  "summaries": {
+    "PKG25-FINITE-MEASURABLE-PARTITION-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md)."
+  },
+  "omitted_conventions": [
+    "PKG25-MEASURABILITY-AND-EXPECTATION-01",
+    "PKG25-NONEMPTY-AGENT-DOMAIN-01",
+    "PKG25-RAW-JOINT-LAW-01"
+  ]
+}

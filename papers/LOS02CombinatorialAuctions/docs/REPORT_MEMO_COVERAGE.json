@@ -1,0 +1,414 @@
+{
+  "all_selected_semantic_review_sha256": "f1bd4d41c197529e3d5ca6fa000fd47b091f08b1b057e68a34bad9fa2cbdac31",
+  "items": {
+    "convention/LOS02-CONSISTENT-TIES-01": {
+      "disposition": "not_material",
+      "reason": "One fixed bidder priority implements the source consistent tie treatment across compared declarations."
+    },
+    "convention/LOS02-NONEMPTY-REQUESTS-01": {
+      "disposition": "not_material",
+      "reason": "Nonempty requests are the source domain of average-per-good and critical-payment formulas."
+    },
+    "report/theorem6-1-zero-proof-boundary": {
+      "disposition": "not_material",
+      "reason": "The zero-proof statement reports formalization credit for the native complexity theorem and does not change its mathematical source statement, hypothesis, or source reading."
+    }
+  },
+  "paper": "LOS02CombinatorialAuctions",
+  "report_inventory_complete": true,
+  "report_sha256": "d1d5b616fb45b59ca3c3fd6f3a133a36a452e18045a2ea58ea629c16e7c8a845",
+  "result_table": {
+    "complete": true,
+    "results": {
+      "lemma9_1": {
+        "grouping_reason": "The report groups the Section 9 critical-value lemmas and truthfulness theorem.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 9.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Section 9",
+            "row_sha256": "feb0e69c5e7893cd2298181162ede6b81aa3adc2f707a096fad78902c6ba4113"
+          }
+        ]
+      },
+      "lemma9_2": {
+        "grouping_reason": "The report groups the Section 9 critical-value lemmas and truthfulness theorem.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 9.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Section 9",
+            "row_sha256": "feb0e69c5e7893cd2298181162ede6b81aa3adc2f707a096fad78902c6ba4113"
+          }
+        ]
+      },
+      "lemma9_3": {
+        "grouping_reason": "The report groups the Section 9 critical-value lemmas and truthfulness theorem.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 9.3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Section 9",
+            "row_sha256": "feb0e69c5e7893cd2298181162ede6b81aa3adc2f707a096fad78902c6ba4113"
+          }
+        ]
+      },
+      "lemma9_4": {
+        "grouping_reason": "The report groups the Section 9 critical-value lemmas and truthfulness theorem.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 9.4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Section 9",
+            "row_sha256": "feb0e69c5e7893cd2298181162ede6b81aa3adc2f707a096fad78902c6ba4113"
+          }
+        ]
+      },
+      "lemma9_5": {
+        "grouping_reason": "The report groups the Section 9 critical-value lemmas and truthfulness theorem.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 9.5",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Section 9",
+            "row_sha256": "feb0e69c5e7893cd2298181162ede6b81aa3adc2f707a096fad78902c6ba4113"
+          }
+        ]
+      },
+      "proposition4_2": {
+        "grouping_reason": "The report uses a descriptive row label for this exact printed source result.",
+        "numbering": "numbered",
+        "printed_label": "Proposition 4.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Generalized Vickrey results",
+            "row_sha256": "d1b8871e8ebc11531870097de7c22b37ac638140a7aad3f8ca92c84efed9f3fe"
+          }
+        ]
+      },
+      "section12": {
+        "numbering": "numbered",
+        "printed_label": "Section 12",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Section 12",
+            "row_sha256": "29bbe41073551b0e25aeaa9ee3ce88f7a783bcba1bd107c5524871648e0c2afb"
+          }
+        ]
+      },
+      "section8": {
+        "grouping_reason": "The report uses a descriptive row label for this exact printed source result.",
+        "numbering": "numbered",
+        "printed_label": "Section 8",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Example 8.1",
+            "row_sha256": "f6791a4e0f8f4320aac91bf8827d6bbfafbf7eef3e14d6676702dd8051ee2c68"
+          }
+        ]
+      },
+      "theorem10_2": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 10.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 10.2",
+            "row_sha256": "3ef8b26f7b357c7dfaafa0565e0b2863dd0b98186cf2dd03d8243a8505801606"
+          }
+        ]
+      },
+      "theorem4_1": {
+        "grouping_reason": "The report uses a descriptive row label for this exact printed source result.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 4.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Generalized Vickrey results",
+            "row_sha256": "d1b8871e8ebc11531870097de7c22b37ac638140a7aad3f8ca92c84efed9f3fe"
+          }
+        ]
+      },
+      "theorem7_2": {
+        "grouping_reason": "The report uses a descriptive row label for this exact printed source result.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 7.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Square-root greedy bound",
+            "row_sha256": "72a329c54965a1a7dfeb23302854d62317c57eaf4e4cf40e3e5671b58f935321"
+          }
+        ]
+      },
+      "theorem9_6": {
+        "grouping_reason": "The report groups the Section 9 critical-value lemmas and truthfulness theorem.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 9.6",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Section 9",
+            "row_sha256": "feb0e69c5e7893cd2298181162ede6b81aa3adc2f707a096fad78902c6ba4113"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "44b5cee2033d34b60d2db977ff51275b8b2145748dc15be55e7c03969f11bbbc": {
+        "explanation_keys": [],
+        "supplemental_reason": "Theorem 6.1 remains visible under the explicit partial-formalization scope exclusion: its native NP-hardness and approximation-to-NP=ZPP conclusions receive no selected-result credit."
+      },
+      "72a329c54965a1a7dfeb23302854d62317c57eaf4e4cf40e3e5671b58f935321": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "feb0e69c5e7893cd2298181162ede6b81aa3adc2f707a096fad78902c6ba4113": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "29bbe41073551b0e25aeaa9ee3ce88f7a783bcba1bd107c5524871648e0c2afb": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "d1b8871e8ebc11531870097de7c22b37ac638140a7aad3f8ca92c84efed9f3fe": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "3ef8b26f7b357c7dfaafa0565e0b2863dd0b98186cf2dd03d8243a8505801606": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "f6791a4e0f8f4320aac91bf8827d6bbfafbf7eef3e14d6676702dd8051ee2c68": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    },
+    "schema": 1,
+    "source_inventory": {
+      "discovered_named_result_sha256": "1198b3dc330f9b5be857a78b975ee9ee28215be314950b01221a5fdcb51f6f04",
+      "results": {
+        "lemma9_1": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 884,
+              "line_start": 878,
+              "presentation": "text_heading",
+              "presentation_sha256": "099f321c0802a8b52cacbc9bf6f588ce9af6a1ffa9ecd9f88db9a987884141ca",
+              "source_item_id": "lemma9_1",
+              "source_label": "Lemma 9.1"
+            }
+          ],
+          "source_item_ids": [
+            "lemma9_1"
+          ]
+        },
+        "lemma9_2": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 925,
+              "line_start": 924,
+              "presentation": "text_heading",
+              "presentation_sha256": "71e3d0ac61ebb46764a63764ff8e8b6fb631caa25dd2d760e5a97b8382152f22",
+              "source_item_id": "lemma9_2",
+              "source_label": "Lemma 9.2"
+            }
+          ],
+          "source_item_ids": [
+            "lemma9_2"
+          ]
+        },
+        "lemma9_3": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 928,
+              "line_start": 928,
+              "presentation": "text_heading",
+              "presentation_sha256": "9f6512dedd7b767cbc68c4f80353b8b21d8cd47ef79dc9ebc6fd840fb4db7a5c",
+              "source_item_id": "lemma9_3",
+              "source_label": "Lemma 9.3"
+            }
+          ],
+          "source_item_ids": [
+            "lemma9_3"
+          ]
+        },
+        "lemma9_4": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 936,
+              "line_start": 935,
+              "presentation": "text_heading",
+              "presentation_sha256": "d87cc462340d35dcdaeba95378078d180951ff47bfcda2d288cdb678d8642633",
+              "source_item_id": "lemma9_4",
+              "source_label": "Lemma 9.4"
+            }
+          ],
+          "source_item_ids": [
+            "lemma9_4"
+          ]
+        },
+        "lemma9_5": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 948,
+              "line_start": 946,
+              "presentation": "text_heading",
+              "presentation_sha256": "bd0e96cdaf3f70d2c26fdacb0f0bd08c0c1dc0e1667fa1c7282c6e5c55e9806f",
+              "source_item_id": "lemma9_5",
+              "source_label": "Lemma 9.5"
+            }
+          ],
+          "source_item_ids": [
+            "lemma9_5"
+          ]
+        },
+        "proposition4_2": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 389,
+              "line_start": 389,
+              "presentation": "text_heading",
+              "presentation_sha256": "b0e0c6816bd177055f942ec8ba35688bc07329560daf5cf9e618b5820510665e",
+              "source_item_id": "proposition4_2",
+              "source_label": "Proposition 4.2"
+            }
+          ],
+          "source_item_ids": [
+            "proposition4_2"
+          ]
+        },
+        "section12": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 1141,
+              "line_start": 1140,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "fd6b7dce1a9139f2fab75a2a0c8e6fc06725d09b291de16128383150ea9bdf80",
+              "source_item_id": "section12",
+              "source_label": "12. No Payment Scheme Makes the Greedy Allocation a Truthful Mechanism for Complex Bidders"
+            }
+          ],
+          "source_item_ids": [
+            "section12"
+          ]
+        },
+        "section8": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 758,
+              "line_start": 757,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "b02ca6c005454358cc3b1ca592ef7b726526d47a9c0551ef200352fa2f1be62f",
+              "source_item_id": "section8",
+              "source_label": "8. Greedy Allocation and Clarke’s Payment Scheme Do Not Make a Truthful Mechanism, Even for Single-Minded Bidders"
+            }
+          ],
+          "source_item_ids": [
+            "section8"
+          ]
+        },
+        "theorem10_2": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 993,
+              "line_start": 993,
+              "presentation": "text_heading",
+              "presentation_sha256": "c1fc97dea10d9a973866342b8f8ade71ecbdca08bd2bb6f05953cdb72243f0b5",
+              "source_item_id": "theorem10_2",
+              "source_label": "Theorem 10.2"
+            }
+          ],
+          "source_item_ids": [
+            "theorem10_2"
+          ]
+        },
+        "theorem4_1": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 346,
+              "line_start": 346,
+              "presentation": "text_heading",
+              "presentation_sha256": "de0bc12d3b3c1bbe61d50ce860da5343439234e0a39525f2878bbebb860a390c",
+              "source_item_id": "theorem4_1",
+              "source_label": "Theorem 4.1"
+            }
+          ],
+          "source_item_ids": [
+            "theorem4_1"
+          ]
+        },
+        "theorem7_2": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 654,
+              "line_start": 653,
+              "presentation": "text_heading",
+              "presentation_sha256": "3dfe83d96ec96d98497622757044eeb2d2845246cd899313718625e7d4a4a71e",
+              "source_item_id": "theorem7_2",
+              "source_label": "Theorem 7.2"
+            }
+          ],
+          "source_item_ids": [
+            "source_sqrt_objective",
+            "theorem7_2"
+          ]
+        },
+        "theorem9_6": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 955,
+              "line_start": 954,
+              "presentation": "text_heading",
+              "presentation_sha256": "1d0369a7926dc694b01d6e5a8cb1d22fdad204f04f5bb2e559d9ade038a103d6",
+              "source_item_id": "theorem9_6",
+              "source_label": "Theorem 9.6"
+            }
+          ],
+          "source_item_ids": [
+            "theorem9_6"
+          ]
+        }
+      },
+      "schema": 1,
+      "source_artifact_sha256": "ac47ef3801288291f7f7e8d0114c31d1a3c79c4649ebeefe660098f63b2625c6",
+      "source_format": "text"
+    },
+    "source_inventory_sha256": "43c9eeae5cdd91effaac6ca3cf679a5fea8320114d73a419e0922bd139073422"
+  },
+  "schema": 2,
+  "source_items_sha256": "fae82a039792cbf55bc0897ffbd10d7f94908507093edff402769e2bb07d09e5"
+}

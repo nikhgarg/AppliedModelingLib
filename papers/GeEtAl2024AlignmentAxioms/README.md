@@ -5,7 +5,7 @@
 |---|---|
 | Final status | Formalized |
 | Paper reference | [Axioms for AI Alignment from Human Feedback](https://proceedings.neurips.cc/paper_files/paper/2024/hash/9328208f88ec69420031647e6ff97727-Abstract-Conference.html) by Luise Ge, Daniel Halpern, Evi Micha, Ariel D. Procaccia, Itai Shapira, Yevgeniy Vorobeychik, and Junlin Wu; NeurIPS, 2024. |
-| Lines of Code | 9,919 |
+| Lines of Code | 10,776 |
 
 ## Key Links
 

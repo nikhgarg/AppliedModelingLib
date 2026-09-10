@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "paper": "LG21TestOptionalPolicies",
+  "summaries": {
+    "LG21-LEMMA41-AE-EQUILIBRIUM-01": "**Formalization gap:** the [Section 4 explanation](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches) records the added maximal active-branch selection, which has not been derived from the source equilibrium definition.",
+    "LG21-SECTION4-PRESET-ACCESS-INDEPENDENCE-01": "The [access-law explanation](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches) distinguishes the source's uncorrelated-access wording from the independence used by the current law.",
+    "LG21-THEOREM31-LOCAL-RECALIBRATION-STABILITY-01": "The [equilibrium-timing explanation](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches) states the local recalibration refinement separately for optional and required reporting."
+  },
+  "omitted_conventions": [
+    "LG21-GAUSSIAN-PRECISION-NONDEGENERACY-01"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "paper": "GKGMM19IterativeLocalVoting",
+  "prompt_version": "defect-support-v1-exact-source-defect-to-lean-semantic",
+  "audit_kind": "source_defect_to_lean_llm",
+  "source_grounded": true,
+  "validator": "",
+  "validator_type": "",
+  "validated_at": "",
+  "comment": "No source item uses the quarantined-defect support lane. Proposition 2 instead uses an approved corrected target with its archival statement preserved.",
+  "items": {}
+}

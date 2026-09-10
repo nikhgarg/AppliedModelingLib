@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "paper": "GCG24UserItemFairness",
+  "summaries": {
+    "GCG24-T4-POPULATION-MASS-01": "For Theorem 4, the normalized three-type construction uses masses beta, beta, and 1 - 2 beta; the stated beta range keeps all three masses positive."
+  },
+  "omitted_conventions": [
+    "GCG24-P2-EQUALITY-DEFINED-TYPE-PARTITION-01",
+    "GCG24-T4-POSITIVE-TOLERANCE-01"
+  ]
+}

@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "GHW01DigitalGoods",
-  "private_source_map_sha256": "3c181e698d2bc474699c440512a1742f97dc038a7bb7c0e34b8140f196d642a8",
+  "private_source_map_sha256": "a2aa334598275b15e4cd073001279b3145a48146d75cf8f86734e48b69dcdc8a",
   "public_manifest_path": "papers/GHW01DigitalGoods/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "dd0424eee4e0e5183d84192afa197560dfa400e11b9ba09520c728ce8c11dc66",
+  "public_source_map_sha256": "b7f968fa174ff5d4316efbce8fca346e41436fcefeee565aa2506433527bdb52",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,

@@ -1,0 +1,815 @@
+{
+  "schema": 2,
+  "paper": "PG24NoisyMatchingMarkets",
+  "report_sha256": "dabd15848eb005f244a069c24ed563078e5cc45e7aaa83104044b31da47abc77",
+  "source_items_sha256": "0c10c1cbd7b3666135a27b51f6f97d5efc1fe6509da35a6ba8b486875d448842",
+  "all_selected_semantic_review_sha256": "69b64a2ce5509bf83b2a9b899a03c42e79661894c59feff467e5d3965ffb7058",
+  "report_inventory_complete": true,
+  "items": {
+    "convention/PG24-BASIC-MARKET-RECORD-01": {
+      "disposition": "not_material",
+      "reason": "The basic-market record packages the source student law, preferences, iid scores, capacities, and cutoff conditions without adding a premise."
+    },
+    "defect/PG24-APP-CASE1-BLOCK-BOUNDARY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Propositions 3 and 4: the high-cutoff block at the pivot",
+      "memo_anchor": "appendix-propositions-3-and-4-the-high-cutoff-block-at-the-pivot",
+      "source_reading": "The Case-1 proof uses the closed high-cutoff block beginning at P*, while its initial definition has an open lower endpoint."
+    },
+    "defect/PG24-APP-LOCAL-CONTEXT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Propositions 10, 14, and 15: actual affordance probabilities and local inputs",
+      "memo_anchor": "appendix-propositions-10-14-and-15-actual-affordance-probabilities-and-local-inputs",
+      "source_reading": "The three amplification propositions use the paper's iid cutoff-affordance probabilities and their immediately preceding endpoint, capacity, and tail-ratio estimates."
+    },
+    "defect/PG24-APP-PROP1-TAIL-ORIENTATION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Proposition 1: lower-tail orientation and polynomial rate",
+      "memo_anchor": "appendix-proposition-1-lower-tail-orientation-and-polynomial-rate",
+      "source_reading": "The displayed decaying integral is the lower-tail matched mass described by the surrounding proof and Theorem 1, rather than the positive upper-tail mass."
+    },
+    "defect/PG24-APP-PROP7-ONE-DRAW-MOMENT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Propositions 7(ii) and 8: one-draw Chebyshev condition",
+      "memo_anchor": "appendix-propositions-7ii-and-8-one-draw-chebyshev-condition",
+      "source_reading": "The polynomial near-one rate uses Chebyshev for one iid draw and therefore needs its finite second moment in addition to beta-max concentration."
+    },
+    "defect/PG24-APP-PROP8-INHERITED-ONE-DRAW-MOMENT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Propositions 7(ii) and 8: one-draw Chebyshev condition",
+      "memo_anchor": "appendix-propositions-7ii-and-8-one-draw-chebyshev-condition",
+      "source_reading": "The Appendix Proposition 8 rate inherits the finite one-draw second-moment condition from Appendix Proposition 7(ii)."
+    },
+    "defect/PG24-THEOREM1-PROOF-ROUTE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Other appendix proof corrections",
+      "memo_anchor": "other-appendix-proof-corrections",
+      "source_reading": "The attenuation appendix needs corrected capacity algebra, event inclusions, rounding, and atom-safe tail arguments while retaining its displayed conclusions."
+    },
+    "defect/PG24-THEOREM2-ALL-REAL-ROUTE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Other appendix proof corrections",
+      "memo_anchor": "other-appendix-proof-corrections",
+      "source_reading": "The all-real amplification conclusion follows from the central interval by finitely many long-tail shifts from an interior anchor."
+    },
+    "report/coalition-conditional-laws": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Coalition conditional laws",
+      "memo_anchor": "coalition-conditional-laws"
+    },
+    "source/source_beet/additional_assumptions": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Propositions 7(ii) and 8: one-draw Chebyshev condition",
+      "memo_anchor": "appendix-propositions-7ii-and-8-one-draw-chebyshev-condition",
+      "source_reading": "Appendix Proposition 7(ii) adds the finite second moment of one iid noise draw used by its Chebyshev step."
+    },
+    "source/source_beet/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Propositions 7(ii) and 8: one-draw Chebyshev condition",
+      "memo_anchor": "appendix-propositions-7ii-and-8-one-draw-chebyshev-condition",
+      "source_reading": "Appendix Proposition 7(i) retains its exact rate and Appendix Proposition 7(ii) retains its displayed rate under the one-draw moment condition."
+    },
+    "source/source_duck_2/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Propositions 3 and 4: the high-cutoff block at the pivot",
+      "memo_anchor": "appendix-propositions-3-and-4-the-high-cutoff-block-at-the-pivot",
+      "source_reading": "Appendix Proposition 4 uses the closed high-cutoff block at P* in its lower-tail integral."
+    },
+    "source/source_goose_2/additional_assumptions": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Propositions 7(ii) and 8: one-draw Chebyshev condition",
+      "memo_anchor": "appendix-propositions-7ii-and-8-one-draw-chebyshev-condition",
+      "source_reading": "Appendix Proposition 8 inherits the finite second moment of one iid noise draw used by the Appendix Proposition 7(ii) rate."
+    },
+    "source/source_goose_2/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Propositions 7(ii) and 8: one-draw Chebyshev condition",
+      "memo_anchor": "appendix-propositions-7ii-and-8-one-draw-chebyshev-condition",
+      "source_reading": "Appendix Proposition 8 retains its lower-tail rate under the inherited one-draw moment condition."
+    },
+    "source/source_lt_approx_f2/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Propositions 10, 14, and 15: actual affordance probabilities and local inputs",
+      "memo_anchor": "appendix-propositions-10-14-and-15-actual-affordance-probabilities-and-local-inputs",
+      "source_reading": "Appendix Proposition 14 is the strict large-firm iid cutoff-affordance probability-difference bound with its local tail-ratio inputs."
+    },
+    "source/source_lt_large_firms/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Propositions 10, 14, and 15: actual affordance probabilities and local inputs",
+      "memo_anchor": "appendix-propositions-10-14-and-15-actual-affordance-probabilities-and-local-inputs",
+      "source_reading": "Appendix Proposition 10 is the strict open interval for the paper's large-firm iid cutoff-affordance probability with its endpoint and product-gap inputs."
+    },
+    "source/source_lt_small_firms/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Propositions 10, 14, and 15: actual affordance probabilities and local inputs",
+      "memo_anchor": "appendix-propositions-10-14-and-15-actual-affordance-probabilities-and-local-inputs",
+      "source_reading": "Appendix Proposition 15 is the small-firm iid cutoff-affordance probability bound with its selected value interval and capacity-mass input."
+    },
+    "source/source_thm1_equivalent_bound/additional_assumptions": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Proposition 1: lower-tail orientation and polynomial rate",
+      "memo_anchor": "appendix-proposition-1-lower-tail-orientation-and-polynomial-rate",
+      "source_reading": "Appendix Proposition 1 adds the finite second moment of one iid noise draw for its polynomial lower-tail Chebyshev calculation."
+    },
+    "source/source_thm1_equivalent_bound/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Proposition 1: lower-tail orientation and polynomial rate",
+      "memo_anchor": "appendix-proposition-1-lower-tail-orientation-and-polynomial-rate",
+      "source_reading": "Appendix Proposition 1 bounds the below-vS matched mass, rather than the nonvanishing upper-tail mass, at the displayed polynomial rate."
+    },
+    "source/source_tomato/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "6987c2f535669cbae757732d1e93dac5725546d7d56e72dac4e08eb5bf98e5c4",
+      "memo_heading": "Appendix Propositions 3 and 4: the high-cutoff block at the pivot",
+      "memo_anchor": "appendix-propositions-3-and-4-the-high-cutoff-block-at-the-pivot",
+      "source_reading": "Appendix Proposition 3 uses the closed high-cutoff block at P* for its dense-cluster rates."
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "076257837016bf0c005b16d463f365f84467a84f1fbe0bfad713c63c638ddf3d",
+      "discovered_named_result_sha256": "6d78b5ec02b1be2f30179364ed16d5c06759f75cacf4b5a771d4fc3dbca5d9bb",
+      "source_format": "tex",
+      "results": {
+        "source_apple": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 785,
+              "line_start": 779,
+              "presentation": "tex_environment",
+              "presentation_sha256": "7f4e95446f3c2c122800fff43fd7e98f290bfe806d7598f664c9b003ee6be660",
+              "source_item_id": "source_apple",
+              "source_label": "lem:apple"
+            }
+          ],
+          "source_item_ids": [
+            "source_apple"
+          ]
+        },
+        "source_beet": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 611,
+              "line_start": 599,
+              "presentation": "tex_environment",
+              "presentation_sha256": "5ebfb14e8be7f8f830b194fb62f3b501238b553a8706923f13c8e0d14c241f56",
+              "source_item_id": "source_beet",
+              "source_label": "prop:beet"
+            }
+          ],
+          "source_item_ids": [
+            "source_beet"
+          ]
+        },
+        "source_duck_1": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 395,
+              "line_start": 391,
+              "presentation": "tex_environment",
+              "presentation_sha256": "36f44b084d2f1402335c0a49d1c54c761f729290d45c93860d407b6b9fc335c0",
+              "source_item_id": "source_duck_1",
+              "source_label": "prop:duck-1"
+            }
+          ],
+          "source_item_ids": [
+            "source_duck_1"
+          ]
+        },
+        "source_duck_2": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 473,
+              "line_start": 469,
+              "presentation": "tex_environment",
+              "presentation_sha256": "4b53cd7ee61efbe4b2980a0d838e3c23d722dbe3ba765d5b18f368afb071697d",
+              "source_item_id": "source_duck_2",
+              "source_label": "prop:duck-2"
+            }
+          ],
+          "source_item_ids": [
+            "source_duck_2"
+          ]
+        },
+        "source_goose_1": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 557,
+              "line_start": 553,
+              "presentation": "tex_environment",
+              "presentation_sha256": "75a4e94d75319729e367245d45af64c401c3516c780d30290ad6a712a43c86a0",
+              "source_item_id": "source_goose_1",
+              "source_label": "prop:goose-1"
+            }
+          ],
+          "source_item_ids": [
+            "source_goose_1"
+          ]
+        },
+        "source_goose_2": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 651,
+              "line_start": 647,
+              "presentation": "tex_environment",
+              "presentation_sha256": "443e0e16279dfefc9d6712d9621dfbb2307e719aa69e8501e8dad46d1b9af3a3",
+              "source_item_id": "source_goose_2",
+              "source_label": "prop:goose-2"
+            }
+          ],
+          "source_item_ids": [
+            "source_goose_2"
+          ]
+        },
+        "source_large_firm_tail_bound": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 803,
+              "line_start": 797,
+              "presentation": "tex_environment",
+              "presentation_sha256": "3cf1bc196ca862c917ca7bffdf265d361fefca926511a30b2525e1c5652697bb",
+              "source_item_id": "source_large_firm_tail_bound",
+              "source_label": "lemma@797"
+            }
+          ],
+          "source_item_ids": [
+            "source_large_firm_tail_bound"
+          ]
+        },
+        "source_log_bound": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 570,
+              "line_start": 565,
+              "presentation": "tex_environment",
+              "presentation_sha256": "20340f660d38a3643d16d9165e730574e22cdd01d811a085797091f41eaed85c",
+              "source_item_id": "source_log_bound",
+              "source_label": "lem:log-bound"
+            }
+          ],
+          "source_item_ids": [
+            "source_log_bound"
+          ]
+        },
+        "source_lt_approx_f2": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 836,
+              "line_start": 831,
+              "presentation": "tex_environment",
+              "presentation_sha256": "d62f9eba9198fddda42185cb91d6f6afcd124cd4120ea7f391e16d642b117749",
+              "source_item_id": "source_lt_approx_f2",
+              "source_label": "prop:lt-approx-F2"
+            }
+          ],
+          "source_item_ids": [
+            "source_lt_approx_f2"
+          ]
+        },
+        "source_lt_large_firms": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 750,
+              "line_start": 744,
+              "presentation": "tex_environment",
+              "presentation_sha256": "ee9f28e8ba51baca87d30d2adbeed8294947a4b536db2001760a6cc1c2019786",
+              "source_item_id": "source_lt_large_firms",
+              "source_label": "prop:lt-large-firms"
+            }
+          ],
+          "source_item_ids": [
+            "source_lt_large_firms"
+          ]
+        },
+        "source_lt_small_firms": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 923,
+              "line_start": 918,
+              "presentation": "tex_environment",
+              "presentation_sha256": "bf94936088601de90ed7f73463ac729cb2ba432a5c87588bbe92f4c71f4011d0",
+              "source_item_id": "source_lt_small_firms",
+              "source_label": "prop:lt-small-firms"
+            }
+          ],
+          "source_item_ids": [
+            "source_lt_small_firms"
+          ]
+        },
+        "source_thm1_equivalent_bound": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 321,
+              "line_start": 312,
+              "presentation": "tex_environment",
+              "presentation_sha256": "bac03b9f7b46db0c3f58c9f7358620503de711caeb0f1dd1ddd29e7495d15586",
+              "source_item_id": "source_thm1_equivalent_bound",
+              "source_label": "thm1v2"
+            }
+          ],
+          "source_item_ids": [
+            "source_thm1_equivalent_bound"
+          ]
+        },
+        "source_thm2_equivalent_bound": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 709,
+              "line_start": 703,
+              "presentation": "tex_environment",
+              "presentation_sha256": "7a4301cf0991ca913b0a76f04e7d5a255edfd17cb258d21c0f8e0dd2838be97d",
+              "source_item_id": "source_thm2_equivalent_bound",
+              "source_label": "thm2v2"
+            }
+          ],
+          "source_item_ids": [
+            "source_thm2_equivalent_bound"
+          ]
+        },
+        "source_tomato": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 416,
+              "line_start": 404,
+              "presentation": "tex_environment",
+              "presentation_sha256": "228c1c0ab150f7598c034385bd4b9507442a12515b8db558a6fd99ed8d13586c",
+              "source_item_id": "source_tomato",
+              "source_label": "prop:tomato"
+            }
+          ],
+          "source_item_ids": [
+            "source_tomato"
+          ]
+        },
+        "source_unbounded_cutoffs": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 759,
+              "line_start": 757,
+              "presentation": "tex_environment",
+              "presentation_sha256": "435002ef71b5c0cdc8f25ce830e2407820b722a464aab87fe715cce3c0d1cd9d",
+              "source_item_id": "source_unbounded_cutoffs",
+              "source_label": "lem:unbounded-cutoffs"
+            }
+          ],
+          "source_item_ids": [
+            "source_unbounded_cutoffs"
+          ]
+        },
+        "theorem1_attenuation": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 268,
+              "line_start": 259,
+              "presentation": "tex_environment",
+              "presentation_sha256": "c256b123c6faeef31b3f935f1f549b03e3d27264a9ab6c3f38485938d927a326",
+              "source_item_id": "theorem1_attenuation",
+              "source_label": "thm:attenuating"
+            }
+          ],
+          "source_item_ids": [
+            "theorem1_attenuation"
+          ]
+        },
+        "theorem2_amplification": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 279,
+              "line_start": 274,
+              "presentation": "tex_environment",
+              "presentation_sha256": "21935504eee6ea0f3c649c06c6da65c9563bc31d4aa61ba45514ac7a0ad285ce",
+              "source_item_id": "theorem2_amplification",
+              "source_label": "thm:amplifying"
+            }
+          ],
+          "source_item_ids": [
+            "theorem2_amplification"
+          ]
+        },
+        "theorem3_attenuation_in_coalitions": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 206,
+              "line_start": 196,
+              "presentation": "tex_environment",
+              "presentation_sha256": "b4ed3d9944a62aa0fd599d56888f8093e4f3f588cd50a1531bb4a3bff59a9767",
+              "source_item_id": "theorem3_attenuation_in_coalitions",
+              "source_label": "thm:attenuating-extended"
+            }
+          ],
+          "source_item_ids": [
+            "theorem3_attenuation_in_coalitions"
+          ]
+        },
+        "theorem4_amplification_in_coalitions": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 220,
+              "line_start": 213,
+              "presentation": "tex_environment",
+              "presentation_sha256": "bfe60257e3feaa25b41340ee7e4e154f66865ad1983f09869de41dab12addce9",
+              "source_item_id": "theorem4_amplification_in_coalitions",
+              "source_label": "thm:amplifying-extended"
+            }
+          ],
+          "source_item_ids": [
+            "theorem4_amplification_in_coalitions"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "97032f1fc817162ad517123a3a3d6eef98f1811e4c9569ccb0e40c3617994dba",
+    "results": {
+      "source_apple": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 12",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Proposition 9; Appendix Lemmas 11--13",
+            "row_sha256": "03eab75056a886b84b128b6bfad8c5a88070a7fbfa1d4da9fda8caf490561e16"
+          }
+        ],
+        "grouping_reason": "The report groups Appendix Proposition 9 with Appendix Lemmas 11--13 as exact amplification supporting conclusions."
+      },
+      "source_beet": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 7",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Proposition 7(i)",
+            "row_sha256": "fed2fdde7d6d585e85d43e430e3bd277aa20f53271d05af1f7f2a389cc22194c"
+          },
+          {
+            "report_label": "Appendix Proposition 7(ii)",
+            "row_sha256": "3d95c5c866a48e4073d808d96e68f6260522a5bf6cd068cd93d9bc7d02a60910"
+          }
+        ],
+        "grouping_reason": "The report assesses the two source subparts of Appendix Proposition 7 separately.",
+        "split_reason": "Appendix Proposition 7(i) is exact, while Appendix Proposition 7(ii) uses the documented one-draw finite-second-moment condition for its displayed rate."
+      },
+      "source_duck_1": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Propositions 2 and 5; Appendix Lemma 6",
+            "row_sha256": "4e285d7d4f993855b66c5569d70ab745af177e0d1df8b91fe5b03d8bac3bb4a5"
+          }
+        ],
+        "grouping_reason": "The report groups Appendix Propositions 2 and 5 with Appendix Lemma 6 because their conclusions are exact after documented local proof corrections."
+      },
+      "source_duck_2": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Proposition 4",
+            "row_sha256": "e103bf0b0f8baccc3e2451a9e8ac275f02b4cf5105ffd85bb3fe5bec20ae6c36"
+          }
+        ],
+        "grouping_reason": "The report identifies Appendix Proposition 4 separately because its corrected closed-block target has its own reader-facing explanation."
+      },
+      "source_goose_1": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 5",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Propositions 2 and 5; Appendix Lemma 6",
+            "row_sha256": "4e285d7d4f993855b66c5569d70ab745af177e0d1df8b91fe5b03d8bac3bb4a5"
+          }
+        ],
+        "grouping_reason": "The report groups Appendix Propositions 2 and 5 with Appendix Lemma 6 because their conclusions are exact after documented local proof corrections."
+      },
+      "source_goose_2": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 8",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Proposition 8",
+            "row_sha256": "7e93d030505e24cce889681a7c00b1a7ab73765365a2050010fb89e40d96bd13"
+          }
+        ],
+        "grouping_reason": "The report identifies Appendix Proposition 8 separately because it inherits the documented one-draw finite-second-moment condition."
+      },
+      "source_large_firm_tail_bound": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 13",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Proposition 9; Appendix Lemmas 11--13",
+            "row_sha256": "03eab75056a886b84b128b6bfad8c5a88070a7fbfa1d4da9fda8caf490561e16"
+          }
+        ],
+        "grouping_reason": "The report groups Appendix Proposition 9 with Appendix Lemmas 11--13 as exact amplification supporting conclusions."
+      },
+      "source_log_bound": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 6",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Propositions 2 and 5; Appendix Lemma 6",
+            "row_sha256": "4e285d7d4f993855b66c5569d70ab745af177e0d1df8b91fe5b03d8bac3bb4a5"
+          }
+        ],
+        "grouping_reason": "The report groups Appendix Propositions 2 and 5 with Appendix Lemma 6 because their conclusions are exact after documented local proof corrections."
+      },
+      "source_lt_approx_f2": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 14",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Propositions 10, 14, and 15",
+            "row_sha256": "e41aad4f8097c88f8819214caaa8e4087d59779d04ec47991971f1b518f4a9ae"
+          }
+        ],
+        "grouping_reason": "The report groups Appendix Propositions 10, 14, and 15 because their clarified local probability inputs are presented together."
+      },
+      "source_lt_large_firms": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 10",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Propositions 10, 14, and 15",
+            "row_sha256": "e41aad4f8097c88f8819214caaa8e4087d59779d04ec47991971f1b518f4a9ae"
+          }
+        ],
+        "grouping_reason": "The report groups Appendix Propositions 10, 14, and 15 because their clarified local probability inputs are presented together."
+      },
+      "source_lt_small_firms": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 15",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Propositions 10, 14, and 15",
+            "row_sha256": "e41aad4f8097c88f8819214caaa8e4087d59779d04ec47991971f1b518f4a9ae"
+          }
+        ],
+        "grouping_reason": "The report groups Appendix Propositions 10, 14, and 15 because their clarified local probability inputs are presented together."
+      },
+      "source_thm1_equivalent_bound": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Proposition 1",
+            "row_sha256": "1c8383b8094532bc5b3f71eaf4f8894d89ddc9dfdd0a043b454f0d100469f805"
+          }
+        ],
+        "grouping_reason": "The report distinguishes the appendix proposition from the four main theorems while retaining its rendered proposition number."
+      },
+      "source_thm2_equivalent_bound": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 9",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Proposition 9; Appendix Lemmas 11--13",
+            "row_sha256": "03eab75056a886b84b128b6bfad8c5a88070a7fbfa1d4da9fda8caf490561e16"
+          }
+        ],
+        "grouping_reason": "The report groups Appendix Proposition 9 with Appendix Lemmas 11--13 as exact amplification supporting conclusions."
+      },
+      "source_tomato": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Proposition 3",
+            "row_sha256": "c12278ed0c8f061ea9c4fa130af381dc685b197a1fed91d4a5cda5a16be34b65"
+          }
+        ],
+        "grouping_reason": "The report identifies Appendix Proposition 3 separately because its corrected closed-block target has its own reader-facing explanation."
+      },
+      "source_unbounded_cutoffs": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 11",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Proposition 9; Appendix Lemmas 11--13",
+            "row_sha256": "03eab75056a886b84b128b6bfad8c5a88070a7fbfa1d4da9fda8caf490561e16"
+          }
+        ],
+        "grouping_reason": "The report groups Appendix Proposition 9 with Appendix Lemmas 11--13 as exact amplification supporting conclusions."
+      },
+      "theorem1_attenuation": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 1--4",
+            "row_sha256": "42a6343fdd392ff0071294eb52655ce4416af7a3cd6aef1181776d4b4b45eec6"
+          }
+        ],
+        "grouping_reason": "The report gives one row for the four main theorem conclusions: attenuation and amplification in the basic and coalition models."
+      },
+      "theorem2_amplification": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 1--4",
+            "row_sha256": "42a6343fdd392ff0071294eb52655ce4416af7a3cd6aef1181776d4b4b45eec6"
+          }
+        ],
+        "grouping_reason": "The report gives one row for the four main theorem conclusions: attenuation and amplification in the basic and coalition models."
+      },
+      "theorem3_attenuation_in_coalitions": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 1--4",
+            "row_sha256": "42a6343fdd392ff0071294eb52655ce4416af7a3cd6aef1181776d4b4b45eec6"
+          }
+        ],
+        "grouping_reason": "The report gives one row for the four main theorem conclusions: attenuation and amplification in the basic and coalition models."
+      },
+      "theorem4_amplification_in_coalitions": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 1--4",
+            "row_sha256": "42a6343fdd392ff0071294eb52655ce4416af7a3cd6aef1181776d4b4b45eec6"
+          }
+        ],
+        "grouping_reason": "The report gives one row for the four main theorem conclusions: attenuation and amplification in the basic and coalition models."
+      }
+    },
+    "rows": {
+      "42a6343fdd392ff0071294eb52655ce4416af7a3cd6aef1181776d4b4b45eec6": {
+        "explanation_keys": [
+          "defect/PG24-THEOREM1-PROOF-ROUTE-01",
+          "defect/PG24-THEOREM2-ALL-REAL-ROUTE-01"
+        ],
+        "supplemental_reason": ""
+      },
+      "1c8383b8094532bc5b3f71eaf4f8894d89ddc9dfdd0a043b454f0d100469f805": {
+        "explanation_keys": [
+          "defect/PG24-APP-PROP1-TAIL-ORIENTATION-01",
+          "defect/PG24-APP-PROP7-ONE-DRAW-MOMENT-01",
+          "source/source_thm1_equivalent_bound/additional_assumptions",
+          "source/source_thm1_equivalent_bound/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "4e285d7d4f993855b66c5569d70ab745af177e0d1df8b91fe5b03d8bac3bb4a5": {
+        "explanation_keys": [
+          "defect/PG24-THEOREM1-PROOF-ROUTE-01"
+        ],
+        "supplemental_reason": ""
+      },
+      "c12278ed0c8f061ea9c4fa130af381dc685b197a1fed91d4a5cda5a16be34b65": {
+        "explanation_keys": [
+          "defect/PG24-APP-CASE1-BLOCK-BOUNDARY-01",
+          "source/source_tomato/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "e103bf0b0f8baccc3e2451a9e8ac275f02b4cf5105ffd85bb3fe5bec20ae6c36": {
+        "explanation_keys": [
+          "defect/PG24-APP-CASE1-BLOCK-BOUNDARY-01",
+          "source/source_duck_2/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "fed2fdde7d6d585e85d43e430e3bd277aa20f53271d05af1f7f2a389cc22194c": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "3d95c5c866a48e4073d808d96e68f6260522a5bf6cd068cd93d9bc7d02a60910": {
+        "explanation_keys": [
+          "defect/PG24-APP-PROP7-ONE-DRAW-MOMENT-01",
+          "source/source_beet/additional_assumptions",
+          "source/source_beet/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "7e93d030505e24cce889681a7c00b1a7ab73765365a2050010fb89e40d96bd13": {
+        "explanation_keys": [
+          "defect/PG24-APP-PROP8-INHERITED-ONE-DRAW-MOMENT-01",
+          "source/source_goose_2/additional_assumptions",
+          "source/source_goose_2/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "03eab75056a886b84b128b6bfad8c5a88070a7fbfa1d4da9fda8caf490561e16": {
+        "explanation_keys": [
+          "defect/PG24-THEOREM2-ALL-REAL-ROUTE-01"
+        ],
+        "supplemental_reason": ""
+      },
+      "e41aad4f8097c88f8819214caaa8e4087d59779d04ec47991971f1b518f4a9ae": {
+        "explanation_keys": [
+          "defect/PG24-APP-LOCAL-CONTEXT-01",
+          "source/source_lt_approx_f2/corrected_target",
+          "source/source_lt_large_firms/corrected_target",
+          "source/source_lt_small_firms/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "c8e0e4139258aa19e4803507aeea4282f5a9a4ee64db0b77e39baea38e1ffb7d": {
+        "explanation_keys": [
+          "report/coalition-conditional-laws"
+        ],
+        "supplemental_reason": "The coalition conditional-law clarification is a source-model condition used by Theorems 3 and 4, not a separately numbered result."
+      }
+    }
+  }
+}

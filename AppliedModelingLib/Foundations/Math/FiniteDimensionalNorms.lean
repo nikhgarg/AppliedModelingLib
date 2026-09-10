@@ -709,6 +709,19 @@ theorem abs_dot_le_l2_mul_l2 {ι : Type*} [Fintype ι]
     linarith
   exact abs_le.mpr ⟨hleft, hpos⟩
 
+/-- Squared finite-dimensional Cauchy--Schwarz in the `l2Sq` normalization. -/
+theorem dot_sq_le_l2Sq_mul_l2Sq {ι : Type*} [Fintype ι]
+    (x y : ι → ℝ) :
+    dot x y ^ 2 ≤ l2Sq x * l2Sq y := by
+  have habs := abs_dot_le_l2_mul_l2 x y
+  have hsq : dot x y ^ 2 ≤ (l2 x * l2 y) ^ 2 := by
+    rw [← sq_abs (dot x y)]
+    exact sq_le_sq₀ (abs_nonneg _) (mul_nonneg (normL2_nonneg _) (normL2_nonneg _)) |>.mpr habs
+  calc
+    dot x y ^ 2 ≤ (l2 x * l2 y) ^ 2 := hsq
+    _ = l2Sq x * l2Sq y := by
+      rw [mul_pow, normL2_sq_eq_normL2Sq, normL2_sq_eq_normL2Sq]
+
 /-- Each coordinate is bounded by the finite-coordinate `L2` norm. -/
 theorem normL2_coord_abs_le {ι : Type*} [Fintype ι]
     (x : ι → ℝ) (i : ι) :

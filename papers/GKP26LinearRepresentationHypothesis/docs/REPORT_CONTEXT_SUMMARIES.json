@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "paper": "GKP26LinearRepresentationHypothesis",
+  "summaries": {
+    "LRH-COMPRESSED-SENSING-SPARSE-DOMAIN-01": "Theorem 1: the checked compressed-sensing construction covers 1 ≤ k and 2k ≤ m.",
+    "LRH-LOWER-BOUND-NONDEGENERATE-EPSILON-01": "Theorem 3: use the nontrivial accuracy range 0 < ε < 1 together with the displayed lower restriction on ε.",
+    "LRH-GEOMETRY2-NONDEGENERATE-EPSILON-01": "Proposition 11: the normalized bounds use 0 < ε < 1; the denominator typo in parts (ii)–(iii) is corrected to (1 − ε)²."
+  },
+  "omitted_conventions": [
+    "LRH-RANDOM-INCOHERENCE-NONDEGENERATE-RANGE-01"
+  ]
+}

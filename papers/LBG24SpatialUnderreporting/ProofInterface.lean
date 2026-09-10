@@ -72,6 +72,7 @@ theorem sourceLemma2SelectedStartExponentialTail
     sourceLemma2SelectedStartExponentialTailSpec M := by
   intro u
   filter_upwards [M.conditional_no_report_given_firstReport u] with omega homega
+  intro _
   rw [homega]
   exact noArrivalProb_eq_exponential_tail M.rate M.rate_pos
     (NNReal.coe_nonneg u)
@@ -83,6 +84,7 @@ theorem sourceTheorem1LikelihoodDecomposition
     {rate : ℝ} (rate_pos : 0 < rate)
     (exposure_pos : 0 < T.window.exposure) :
     sourceTheorem1LikelihoodDecompositionSpec T M D rate_pos exposure_pos := by
+  intro Omega _ _ P _ Tail _ selection startReference _ G selected_start_likelihood
   refine ⟨AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood_factorizes_eq8
     M D rate_pos exposure_pos, ?_⟩
   exact ⟨AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D,
@@ -106,7 +108,8 @@ theorem sourceEquation3MaximumLikelihoodEstimate :
 
 theorem sourceEquation6PoissonRegressionLikelihood :
     sourceEquation6PoissonRegressionLikelihoodSpec := by
-  intro Feature _ alpha beta theta T M D exposure_pos
+  intro Feature _ alpha beta theta T M D exposure_pos Omega _ _ P _ Tail _ selection
+    startReference _ G selected_start_likelihood
   constructor
   · simpa only [poissonRegressionRate_eq_logLink] using
       (AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood_factorizes_eq8
@@ -128,8 +131,10 @@ theorem sourceZeroInflatedLikelihoodExtension :
 
 theorem sourcePostFirstJumpPoissonShift :
     sourcePostFirstJumpPoissonShiftSpec := by
-  intro Omega _ _ P _ M
-  exact M.postFirstReportTail_conditional_law
+  intro Omega _ _ P _ rate rate_pos interarrivalPath
+    interarrivalPath_measurable interarrivalPath_hasLaw
+  exact condDistrib_futureInterarrival_one_of_hasLaw rate_pos interarrivalPath
+    interarrivalPath_measurable interarrivalPath_hasLaw
 
 end
 

@@ -1,27 +1,18 @@
-# Final Validation Report: LOS02 Combinatorial Auctions
+# Final Validation Report: Truth Revelation in Approximately Efficient Combinatorial Auctions
 
-Updated: 2026-09-05 (current-protocol terminal-document refresh)
+Updated: 2026-09-09
 
 ## 1. Human Verdict
 
-The current graph-native surface proves the selected greedy-approximation,
-truthfulness, payment, and counterexample results.
-
-**Formalization gap:** twelve selected auction-theoretic results are proved, while
-Theorem 6.1's native NP-hardness and `NP = ZPP` consequences remain unproved.
-[Details](#5-remaining-boundaries-and-gaps).
+The selected approximation, truthfulness, payment, and counterexample
+results are formalized. Theorem 6.1’s computational-hardness conclusions
+remain unproved.
 
 ## 2. Closeout Status
 
-- Completion status: partially formalized.
-- Current protocol: v11 graph-native closeout.
-- Reviewed nonaccepting graph:
-  `03c97d562cd0e46cc0c93769b55dd8da700173a044653ff7a60653da091e89c5`.
-- Graph-bound semantic review: 12 direct source-to-Spec matches, 18
-  paper-local prerequisite matches, and five reusable-library prerequisite
-  matches.
-- This document records the terminal surface; the strict closeout transaction
-  is the only process that can issue the final acceptance credential.
+- Completion status: partially formalized
+- One-sentence recap: Twelve selected auction results are proved; the
+  computational-hardness branch remains open.
 
 ## 3. Source and Scope
 
@@ -46,20 +37,28 @@ consistent priority used where the source compares tied greedy runs.
 
 | Result | Comparison with source |
 | --- | --- |
-| Generalized Vickrey results | **Exact:** truthfulness and nonnegative truthful utility on the source admissible domain. |
-| Square-root greedy bound | **Exact:** OPT ≤ √m GREEDY for m goods under the source no-equal-norm condition. |
+| Generalized Vickrey results | **Exact.** |
+| Square-root greedy bound | **Exact.** |
 | Example 8.1: greedy allocation with Clarke payments permits profitable misreporting | **Exact.** |
 | Section 12: no payment rule makes greedy allocation truthful for the two-bundle bidder domain | **Exact.** |
-| Section 9 | **Exact:** critical-value lemmas and truthfulness on the legal single-minded domain. |
-| Theorem 10.2 | **Exact:** average-per-good ordering with Definition 10.1’s first-qualifying-denied-bid payment. |
-| Theorem 6.1 | **Unproved scope:** the source machine-complexity conclusions; see Section 5. |
+| Section 9 | **Exact.** |
+| Theorem 10.2 | **Exact.** |
+| Theorem 6.1 | **Formalization gap.** The finite reduction is proved, but NP-hardness of optimal allocation and the claim that beating the square-root approximation barrier in polynomial time implies $NP=ZPP$ remain unproved. |
 
 ## 5. Remaining Boundaries and Gaps
 
-Theorem 6.1's native computational-complexity statements are excluded under
-the explicit public-partial-formalization instruction. No abstract complexity
-wrapper, reduction helper, or certificate is counted as a proof of that source
-theorem. This is the sole stated reason the paper remains partially formalized.
+Theorem 6.1's native NP-hardness, approximation-hardness, and `NP = ZPP`
+conclusions remain unproved. The checked finite reduction maps a clique
+instance through graph complementation and unit-weight set packing to the
+auction decision problem. It includes an injective varying-size binary
+encoding, semantic correctness, and polynomial bounds for the explicit
+incidence-table map.
+
+These results establish the reduction's finite construction and its stated
+operation counts. They do not supply a native machine-model hardness theorem
+or the randomized complexity-class consequence. The source hardness
+construction uses unit bids, which the encoding covers; encoding arbitrary
+real-valued optimization inputs is a separate remaining boundary.
 
 ## 6. Additional Assumptions Beyond Paper
 

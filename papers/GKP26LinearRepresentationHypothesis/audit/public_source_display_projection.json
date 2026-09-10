@@ -1,0 +1,232 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "GKP26LinearRepresentationHypothesis",
+  "private_source_map_sha256": "59f5911003967baa9ee98e0a9dfed0c514afae125bc4443749f9362ee128c2ea",
+  "public_manifest_path": "papers/GKP26LinearRepresentationHypothesis/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "0ebe1d240163e5af7b019c293de6018a9bfba0efdff4e24b63b0ede48635cdd9",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "paper_activation_separation_dimension_isBigO_lower_source_log_original_regime",
+    "paper_alon_normalized_rank_bound_external",
+    "paper_alon_scaled_rank_corollary",
+    "paper_compressed_sensing_external_basis_pursuit",
+    "paper_geometry1_exists_constructed_matrices_with_dimension_envelope",
+    "paper_geometry2_probe_column_correlation_upper_corrected",
+    "paper_geometry2_representation_column_correlation_upper_corrected",
+    "paper_geometry2_self_column_correlation_lower",
+    "paper_linear_compressed_sensing_dimension_value",
+    "paper_linear_recovery_condition_iff",
+    "paper_lower_bound_dimension_isBigO_source_log_source_regime",
+    "paper_mu_incoherent_source_definition",
+    "paper_random_rademacher_strict_incoherence_probability_high_probability",
+    "paper_threshold_separation_dimension_isBigO_lower_source_log_original_regime",
+    "paper_upper_bound_dimension_isBigO_k_sq_log_m"
+  ],
+  "selected_source_items": {
+    "paper_activation_separation_dimension_isBigO_lower_source_log_original_regime": {
+      "source_anchors": [
+        {
+          "line_end": 750,
+          "line_start": 734,
+          "publication_locator": "cited publication",
+          "quoted_text": "The following corollary makes the simple observation that if a feature cannot be linearly separated, then it also cannot be separated by adding a bias and monotonic activation function.\n\n\\begin{corollary}\\label{cor:activation-bias}\n    Suppose that there exist $A,W \\in \\RR^{d\\times m}$, $b\\in \\RR^m$, and a monotonically increasing activation function $\\sigma:\\RR\\rightarrow \\RR$ such that for all $i\\in [m]$, $k$-sparse $z\\in \\{0,1\\}^m$, and $x=Az,$\n    \\begin{equation}\\label{eq:coconut}\n        \\sigma(W^Tx + b) > 0\n    \\end{equation}\n    if and only if $z_i=1.$ (Here, $\\sigma$ is applied component-wise.) Then for $k < \\sqrt{m}$,\n    \\begin{equation}\n        d = \\Omega\\left(\\frac{k^2}{\\log k}\\log\\frac{m}{k}\\right).\n    \\end{equation}\n\\end{corollary}\n\\begin{proof}\n    Consider any $i\\in [m]$ and $z\\in \\{0,1\\}^m$ such that $z_i = 1$ and $z'$ such that $z'_i = 0.$ Then $\\sigma(W^TAz + b) > \\sigma(W^TAz' + b).$ This implies that $(W^TAz)_i > (W^TAz')_i.$ Therefore, there exists a threshold $t_i$ such that for all $z\\in \\{0,1\\}^m$, $(W^TAz)_i > t_i$ if and only if $z_i = 1$. The result follows by applying \\Cref{thm:threshold}.\n\\end{proof}\n\nThe proof establishes that probes of the form $g_i(x) = \\ReLU(W^Tx + b)$ implies the existence of a linear probe. In particular, this further establishes that for $\\epsilon < \\frac{1}{2}$, the bound in \\Cref{thm:lower} cannot be lowered asymptotically by expanding the class of probes to allow a bias and activation function.",
+          "quoted_text_sha256": "8335baa462564a08909224a191f9c7a1efa4d490f78f0a1744a4aca1fc6c85d8"
+        }
+      ],
+      "source_kind": "corollary"
+    },
+    "paper_alon_normalized_rank_bound_external": {
+      "source_anchors": [
+        {
+          "line_end": 498,
+          "line_start": 493,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}[\\cite{alon2003problems}, Theorem 9.3]\\label{lem:alon}\nSuppose $\\frac{1}{\\sqrt{n}} < \\epsilon < \\frac{1}{2}$. Then let $D\\in \\RR^{n\\times n}$ such that $D_{ii}=1$ for all $i\\in [n]$ and $|D_{ij}| < \\epsilon$ for all $i\\neq j$. Then\n\\begin{equation}\n    \\rank(D) \\ge \\Omega\\left(\\frac{1}{\\epsilon^2\\log(\\frac{1}{\\epsilon})}\\log n\\right).\n\\end{equation}\n\\end{lemma}",
+          "quoted_text_sha256": "ef2a298dabb5d764c914137b7b34ed9500170b3b0278a3988ad08fe77dcfeafa"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "paper_alon_scaled_rank_corollary": {
+      "source_anchors": [
+        {
+          "line_end": 506,
+          "line_start": 501,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{corollary}\\label{lem:rank}\nLet $\\gamma \\in (0,1]$ and $\\frac{\\gamma}{\\sqrt{n}} < \\epsilon < \\frac{\\gamma}{2}$. Then let $C\\in \\RR^{n\\times n}$ such that $C_{ii}\\ge \\gamma$ for all $i\\in [n]$ and $|C_{ij}| < \\epsilon$ for all $i\\neq j$. Then\n\\begin{equation}\n    \\rank(C) \\ge \\Omega\\left(\\frac{\\gamma^2}{\\epsilon^2\\log(\\frac{\\gamma}{\\epsilon})}\\log n\\right).\n\\end{equation}\n\\end{corollary}",
+          "quoted_text_sha256": "c2a8f7677ae2c0eae3ff48fa9a3f913e0020dc7841bd565dade9ccaee7d5e1dc"
+        }
+      ],
+      "source_kind": "corollary"
+    },
+    "paper_compressed_sensing_external_basis_pursuit": {
+      "source_anchors": [
+        {
+          "line_end": 199,
+          "line_start": 184,
+          "publication_locator": "cited publication",
+          "quoted_text": "Let us recall a classical result in compressed sensing \\citep{candes2006near, candes2006robust, donoho2006compressed}, which exactly deals with the setting in which features are represented linearly but accessed non-linearly, answering Q1.\n\\begin{theorem}[Compressed Sensing]\\label{thm:compressed-sensing}\n    There exists a matrix $A\\in \\RR^{d\\times m}$ with $d = O\\left(k\\log \\frac{m}{k}\\right)$\n    such that for all $k$-sparse $z\\in \\RR^m$,\n    \\begin{equation}\n        g(x) := \\argmin_{z'\\in \\RR^m: x=Az'} \\norm{z'}_1\n    \\end{equation}\n    satisfies\n    \\begin{equation}\n        g(Az) = z.\n    \\end{equation}\n\\end{theorem}\n\nThis shows that when \n\\begin{equation}\n    d = O\\left(k\\log \\frac{m}{k}\\right),",
+          "quoted_text_sha256": "e2c4ff4a75f3a27dcefbfb5ccb7903bacd5bed5a274c473c19cccdabf9f24732"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "paper_geometry1_exists_constructed_matrices_with_dimension_envelope": {
+      "source_anchors": [
+        {
+          "line_end": 610,
+          "line_start": 547,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:geometry-1}\n    Consider constants $\\epsilon, \\delta\\in (0,1)$. Then for $d = O_{\\epsilon,\\delta}(k^2\\log m),$ there exists $A,B\\in \\RR^{d\\times m}$ such that\n    \\begin{equation}\n        \\norm{B^TAz - z}_\\infty < \\epsilon\n    \\end{equation}\n    for all $k$-sparse $z\\in [-1,1]^m,$ and where\n    \\begin{enumerate}\n        \\item[(i)] $|\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\rangle| < \\delta + o(1)$ for all $i\\in [m]$,\n        \\item[(ii)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{a_j}{\\norm{a_j}}\\rangle\n        > 1 - \\delta - o(1)$ for all $i\\neq j$,\n        \\item[(iii)] $\\langle \\frac{b_i}{\\norm{b_i}}, \\frac{b_j}{\\norm{b_j}}\\rangle > 1 - \\delta - o(1)$ for all $i\\neq j$.\n    \\end{enumerate}\n\\end{proposition}\n\n\\begin{proof}\n    We give a construction. Let $c_1,c_2,\\cdots,c_m,a^*,b^*$ be the columns of a $\\mu$-incoherent matrix $\\RR^{d\\times m+2}$. Then set\n    \\begin{align}\n        a_i &= c_i + \\lambda a^*\\\\\n        b_i &= c_i + \\lambda b^*\n    \\end{align}\n    for $\\lambda = \\sqrt{\\frac{1}{\\delta} - 1}.$\n    We begin by showing that for an appropriately chosen $\\mu$, $\\norm{B^TAz - z}_\\infty < \\epsilon$ for all $k$-sparse $z\\in [-1,1]^m.$ Now let $\\hat{z} = B^TAz$ for any $z\\in [-1,1]^m$ with support $T$. Then\n    \\begin{equation}\n        \\hat{z}_i = \\left\\langle b_i, \\sum_{j=1}^m z_ja_j \\right\\rangle\n        = z_i\\langle b_i, a_i\\rangle + \\sum_{j\\in T\\setminus \\{i\\}} z_j\\langle b_i, a_j\\rangle.\n    \\end{equation}\n    Therefore,\n    \\begin{align}\n        |\\hat{z}_i - z_i| &\\le |z_i(\\langle b_i, a_i\\rangle - 1)| + \\sum_{j\\in T\\setminus \\{i\\}} |z_j\\langle b_i, a_j\\rangle|\\\\\n        &\\le |z_i(\\langle b_i, a_i \\rangle - 1)| + \\sum_{j\\in T\\setminus \\{i\\}} |\\langle b_i, a_j\\rangle|,\n    \\end{align}\n    where the last inequality follows from observing that $z_j \\in [-1,1]$ for all $j\\in [m].$ Now observe that\n    \\begin{align}\n        |z_i(\\langle b_i, a_i\\rangle - 1)| &= |z_i||\\langle c_i + \\lambda b^*, c_i + \\lambda a^*\\rangle - 1|\\\\\n        &\\le |z_i|\\left(|\\langle c_i, \\lambda a^*\\rangle| + |\\langle \\lambda b^*, c_i \\rangle| + |\\langle \\lambda b^*, \\lambda a^* \\rangle|\\right) \\label{eq:apple-1}\\\\\n        &= |z_i|(2\\lambda  + \\lambda^2)\\mu\\label{eq:apple-2}\\\\\n        &< |z_i|(1 + \\lambda)^2\\mu,\n    \\end{align}\n    where \\eqref{eq:apple-1} follows because $|\\langle c_i, c_i \\rangle| = 1$ and \\eqref{eq:apple-2} follows from $\\mu$-incoherence. Similarly,\n    \\begin{align}\n        |\\langle b_i, a_j\\rangle| &= |\\langle c_i + \\lambda b^*, c_i + \\lambda a^*\\rangle|\\\\\n        &= |\\langle c_i, c_j\\rangle| + |\\langle c_i, \\lambda a^*\\rangle| + |\\langle \\lambda b^*, c_i \\rangle| + |\\langle \\lambda b^*, \\lambda a^* \\rangle|\\\\\n        &\\le (1+2\\lambda+\\lambda^2)\\mu = (1 + \\lambda)^2\\mu.\n    \\end{align}\n    This implies that \n    \\begin{equation}\n        |z_i(\\langle b_i, a_i \\rangle - 1)| + \\sum_{j\\in T\\setminus \\{i\\}} |\\langle b_i, a_j\\rangle| < k (1 + \\lambda)^2\\mu,\n    \\end{equation}\n    where we use the fact that if $|z_i| > 0$, then $|T\\setminus \\{i\\}|\\le k-1.$ Therefore, it suffices to take $\\mu = \\frac{\\epsilon}{k(1+\\lambda^2)}$ to ensure that $\\norm{\\hat{z}-z}_\\infty < \\epsilon.$ From \\Cref{prop:incoherent}, there exists a $\\mu$-incoherent matrix in $\\RR^{d\\times m+2}$ for\n    \\begin{equation}\n        d = O\\left(\\frac{k^2(1+\\lambda)^4}{\\epsilon^2}\\log (m+2)\\right) = O\\left(\\frac{k^2(1+\\lambda)^4}{\\epsilon^2}\\log m\\right) = O_{\\epsilon,\\delta}(k^2\\log m).\n    \\end{equation}\n\n    \\paragraph{Establishing (i).} We now show that the construction satisfies (i). Observe that for all $i\\in [m],$\n    \\begin{align}\n        \\left|\\left\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}} \\right\\rangle\\right|\n        &= \\frac{|\\langle c_i + \\lambda a^*, c_i + \\lambda b^*\\rangle|}{\\norm{a_i}\\norm{b_i}}\\\\\n        &\\le \\frac{|\\langle c_i, c_i\\rangle| + |\\langle c_i, \\lambda b^*\\rangle| + |\\langle \\lambda a^*, c_i \\rangle| + |\\langle \\lambda a^*, \\lambda b^* \\rangle|}{\\norm{a_i}\\norm{b_i}}\\\\\n        &\\le \\frac{1 + (2\\lambda  + \\lambda^2)\\mu}{\\norm{a_i}\\norm{b_i}} = \\frac{1 + \\frac{(2\\lambda  + \\lambda^2)\\epsilon}{k(1+\\lambda^2)}}{\\norm{a_i}\\norm{b_i}} = \\frac{1 + o(1)}{\\norm{a_i}\\norm{b_i}}.\\label{eq:dog}\n    \\end{align}\n    Note that\n    \\begin{align}\n        \\langle a_i, a_i\\rangle &= \\langle c_i + \\lambda a^*, c_i + \\lambda a^* \\rangle\\\\ &= \\langle c_i, c_i\\rangle + 2\\langle c_i, \\lambda a^*\\rangle + \\langle \\lambda a^*, \\lambda a^*\\rangle\\\\\n        &\\le 1 + \\lambda^2 - 2\\lambda\\mu =  1 + \\lambda^2 - \\frac{2\\lambda\\epsilon}{k(1+\\lambda^2)} = 1 + \\lambda^2 - o(1).",
+          "quoted_text_sha256": "5ea060a4cfd0fa870e83984680d0b1ed710bf26f1f290bbb63b7ef643d1d8a6d"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "paper_geometry2_probe_column_correlation_upper_corrected": {
+      "source_anchors": [
+        {
+          "line_end": 680,
+          "line_start": 638,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:geometry-2}\n    Consider any constants $\\epsilon > 0, \\gamma \\ge 1$. Then if $\\norm{a_i},\\norm{b_i} \\le \\gamma$ for all $i\\in [m]$ and\n    \\begin{equation}\n        \\norm{B^TAz - z}_\\infty < \\epsilon\n    \\end{equation}\n    for all $k$-sparse $z\\in [-1,1]^m$, it holds that\n    \\begin{enumerate}\n        \\item[(i)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\rangle \\ge \\frac{1-\\epsilon}{\\gamma^2}$ for all $i\\in [m],$\n        \\item[(ii)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{a_j}{\\norm{a_j}}\\rangle \\le \\frac{\\epsilon\\gamma^2}{1 - \\epsilon} + \\sqrt{1 - \\frac{(1 - \\epsilon)^2}{\\gamma^4}}$ for all $i\\neq j,$\n        \\item[(iii)] $\\langle \\frac{b_i}{\\norm{b_i}}, \\frac{b_j}{\\norm{b_j}}\\rangle \\le \\frac{\\epsilon\\gamma^2}{1 - \\epsilon} + \\sqrt{1 - \\frac{(1 - \\epsilon)^2}{\\gamma^4}}$ for all $i\\neq j.$\n    \\end{enumerate}\n\\end{proposition}\n\n\\begin{proof}\n    We must have that $\\langle a_i, b_i\\rangle \\ge 1 - \\epsilon$ since $\\norm{B^TAe_i - e_i}_\\infty \\le \\epsilon$. It follows directly that\n    \\begin{equation}\n       \\langle a_i, b_i \\rangle > 1 - \\epsilon \\implies \\left\\langle\\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\right\\rangle \\ge \\frac{1-\\epsilon}{\\gamma^2},\n    \\end{equation}\n    establishing (i).\n\n    We now show (ii). By Cauchy-Schwarz, $\\norm{a_i}\\norm{b_i} \\ge \\langle a_i, b_i\\rangle > 1 - \\epsilon$ for all $i\\in [m]$. So since $\\norm{a_i},\\norm{b_i} \\le \\lambda$ for all $i\\in [m]$, we have that $\\norm{a_i},\\norm{b_i}\\ge \\frac{1-\\epsilon}{\\gamma^2}$ for all $i\\in [m]$. Therefore, we have that\n    \\begin{equation}\n        \\left|\\left\\langle \\frac{b_i}{\\norm{b_i}}, \\frac{a_j}{\\norm{a_j}}\\right\\rangle\\right| \\le |\\langle b_i, a_j\\rangle|\\frac{\\gamma^2}{1-\\epsilon} < \\frac{\\epsilon\\gamma^2}{1 - \\epsilon}.\n    \\end{equation}\n    Let $\\Tilde{a_i}$ denote $\\frac{a_i}{\\norm{a_i}}$ and $\\Tilde{b_i}$ denote $\\frac{b_i}{\\norm{b_i}}$ for all $i\\in [m].$ Then write\n    \\begin{align}\n        \\Tilde{a_i} &= \\alpha_i\\Tilde{b_i} + \\Tilde{a_i}_\\perp\\\\\n        \\Tilde{a_j} &= \\alpha_j\\Tilde{b_i} + \\Tilde{a_j}_\\perp,\n    \\end{align}\n    where $\\alpha_i = \\langle \\Tilde{a_i}, \\Tilde{b_i}\\rangle$,$\\alpha_j = \\langle \\Tilde{a_j}, \\Tilde{b_j}\\rangle$, and $\\Tilde{a_i}_\\perp, \\Tilde{a_j}_\\perp \\perp \\Tilde{b_i}.$ Then\n    \\begin{equation}\n        \\langle \\Tilde{a_i}, \\Tilde{a_j}\\rangle = \\alpha_i\\alpha_j + \\langle \\Tilde{a_i}_\\perp, \\Tilde{a_j}_\\perp\\rangle.\n    \\end{equation}\n    By Cauchy-Schwarz,\n    \\begin{equation}\n        |\\langle\\Tilde{a_i}_\\perp, \\Tilde{a_j}_\\perp\\rangle| \\le \\norm{\\Tilde{a_i}_\\perp}\\norm{\\Tilde{a_j}_\\perp} = \\sqrt{(1 - \\alpha_i^2)(1 - \\alpha_j^2)}.\n    \\end{equation}\n    Therefore,\n    \\begin{equation}\n        |\\langle \\Tilde{a_i}, \\Tilde{a_j}\\rangle| \\le |\\alpha_i||\\alpha_j| + \\sqrt{(1 - \\alpha_i^2)(1 - \\alpha_j^2)}.\n    \\end{equation}\n    We have that $1\\ge \\alpha_i > \\frac{1 - \\epsilon}{\\gamma^2}$ and $0 < \\alpha_j < \\frac{\\epsilon\\gamma^2}{1 - \\epsilon}.$ Therefore,\n    \\begin{equation}",
+          "quoted_text_sha256": "f13928d689ba34dbde8b2307bfa38da71a07c8fbbaf4c04e061dffdd7e3371a9"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "paper_geometry2_representation_column_correlation_upper_corrected": {
+      "source_anchors": [
+        {
+          "line_end": 680,
+          "line_start": 638,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:geometry-2}\n    Consider any constants $\\epsilon > 0, \\gamma \\ge 1$. Then if $\\norm{a_i},\\norm{b_i} \\le \\gamma$ for all $i\\in [m]$ and\n    \\begin{equation}\n        \\norm{B^TAz - z}_\\infty < \\epsilon\n    \\end{equation}\n    for all $k$-sparse $z\\in [-1,1]^m$, it holds that\n    \\begin{enumerate}\n        \\item[(i)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\rangle \\ge \\frac{1-\\epsilon}{\\gamma^2}$ for all $i\\in [m],$\n        \\item[(ii)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{a_j}{\\norm{a_j}}\\rangle \\le \\frac{\\epsilon\\gamma^2}{1 - \\epsilon} + \\sqrt{1 - \\frac{(1 - \\epsilon)^2}{\\gamma^4}}$ for all $i\\neq j,$\n        \\item[(iii)] $\\langle \\frac{b_i}{\\norm{b_i}}, \\frac{b_j}{\\norm{b_j}}\\rangle \\le \\frac{\\epsilon\\gamma^2}{1 - \\epsilon} + \\sqrt{1 - \\frac{(1 - \\epsilon)^2}{\\gamma^4}}$ for all $i\\neq j.$\n    \\end{enumerate}\n\\end{proposition}\n\n\\begin{proof}\n    We must have that $\\langle a_i, b_i\\rangle \\ge 1 - \\epsilon$ since $\\norm{B^TAe_i - e_i}_\\infty \\le \\epsilon$. It follows directly that\n    \\begin{equation}\n       \\langle a_i, b_i \\rangle > 1 - \\epsilon \\implies \\left\\langle\\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\right\\rangle \\ge \\frac{1-\\epsilon}{\\gamma^2},\n    \\end{equation}\n    establishing (i).\n\n    We now show (ii). By Cauchy-Schwarz, $\\norm{a_i}\\norm{b_i} \\ge \\langle a_i, b_i\\rangle > 1 - \\epsilon$ for all $i\\in [m]$. So since $\\norm{a_i},\\norm{b_i} \\le \\lambda$ for all $i\\in [m]$, we have that $\\norm{a_i},\\norm{b_i}\\ge \\frac{1-\\epsilon}{\\gamma^2}$ for all $i\\in [m]$. Therefore, we have that\n    \\begin{equation}\n        \\left|\\left\\langle \\frac{b_i}{\\norm{b_i}}, \\frac{a_j}{\\norm{a_j}}\\right\\rangle\\right| \\le |\\langle b_i, a_j\\rangle|\\frac{\\gamma^2}{1-\\epsilon} < \\frac{\\epsilon\\gamma^2}{1 - \\epsilon}.\n    \\end{equation}\n    Let $\\Tilde{a_i}$ denote $\\frac{a_i}{\\norm{a_i}}$ and $\\Tilde{b_i}$ denote $\\frac{b_i}{\\norm{b_i}}$ for all $i\\in [m].$ Then write\n    \\begin{align}\n        \\Tilde{a_i} &= \\alpha_i\\Tilde{b_i} + \\Tilde{a_i}_\\perp\\\\\n        \\Tilde{a_j} &= \\alpha_j\\Tilde{b_i} + \\Tilde{a_j}_\\perp,\n    \\end{align}\n    where $\\alpha_i = \\langle \\Tilde{a_i}, \\Tilde{b_i}\\rangle$,$\\alpha_j = \\langle \\Tilde{a_j}, \\Tilde{b_j}\\rangle$, and $\\Tilde{a_i}_\\perp, \\Tilde{a_j}_\\perp \\perp \\Tilde{b_i}.$ Then\n    \\begin{equation}\n        \\langle \\Tilde{a_i}, \\Tilde{a_j}\\rangle = \\alpha_i\\alpha_j + \\langle \\Tilde{a_i}_\\perp, \\Tilde{a_j}_\\perp\\rangle.\n    \\end{equation}\n    By Cauchy-Schwarz,\n    \\begin{equation}\n        |\\langle\\Tilde{a_i}_\\perp, \\Tilde{a_j}_\\perp\\rangle| \\le \\norm{\\Tilde{a_i}_\\perp}\\norm{\\Tilde{a_j}_\\perp} = \\sqrt{(1 - \\alpha_i^2)(1 - \\alpha_j^2)}.\n    \\end{equation}\n    Therefore,\n    \\begin{equation}\n        |\\langle \\Tilde{a_i}, \\Tilde{a_j}\\rangle| \\le |\\alpha_i||\\alpha_j| + \\sqrt{(1 - \\alpha_i^2)(1 - \\alpha_j^2)}.\n    \\end{equation}\n    We have that $1\\ge \\alpha_i > \\frac{1 - \\epsilon}{\\gamma^2}$ and $0 < \\alpha_j < \\frac{\\epsilon\\gamma^2}{1 - \\epsilon}.$ Therefore,\n    \\begin{equation}",
+          "quoted_text_sha256": "f13928d689ba34dbde8b2307bfa38da71a07c8fbbaf4c04e061dffdd7e3371a9"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "paper_geometry2_self_column_correlation_lower": {
+      "source_anchors": [
+        {
+          "line_end": 655,
+          "line_start": 638,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{proposition}\\label{prop:geometry-2}\n    Consider any constants $\\epsilon > 0, \\gamma \\ge 1$. Then if $\\norm{a_i},\\norm{b_i} \\le \\gamma$ for all $i\\in [m]$ and\n    \\begin{equation}\n        \\norm{B^TAz - z}_\\infty < \\epsilon\n    \\end{equation}\n    for all $k$-sparse $z\\in [-1,1]^m$, it holds that\n    \\begin{enumerate}\n        \\item[(i)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\rangle \\ge \\frac{1-\\epsilon}{\\gamma^2}$ for all $i\\in [m],$\n        \\item[(ii)] $\\langle \\frac{a_i}{\\norm{a_i}}, \\frac{a_j}{\\norm{a_j}}\\rangle \\le \\frac{\\epsilon\\gamma^2}{1 - \\epsilon} + \\sqrt{1 - \\frac{(1 - \\epsilon)^2}{\\gamma^4}}$ for all $i\\neq j,$\n        \\item[(iii)] $\\langle \\frac{b_i}{\\norm{b_i}}, \\frac{b_j}{\\norm{b_j}}\\rangle \\le \\frac{\\epsilon\\gamma^2}{1 - \\epsilon} + \\sqrt{1 - \\frac{(1 - \\epsilon)^2}{\\gamma^4}}$ for all $i\\neq j.$\n    \\end{enumerate}\n\\end{proposition}\n\n\\begin{proof}\n    We must have that $\\langle a_i, b_i\\rangle \\ge 1 - \\epsilon$ since $\\norm{B^TAe_i - e_i}_\\infty \\le \\epsilon$. It follows directly that\n    \\begin{equation}\n       \\langle a_i, b_i \\rangle > 1 - \\epsilon \\implies \\left\\langle\\frac{a_i}{\\norm{a_i}}, \\frac{b_i}{\\norm{b_i}}\\right\\rangle \\ge \\frac{1-\\epsilon}{\\gamma^2},\n    \\end{equation}",
+          "quoted_text_sha256": "ce8661d14b694a2aed740f94423f8143f6de6535e2dc841a788c91f4708ccc62"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "paper_linear_compressed_sensing_dimension_value": {
+      "source_anchors": [
+        {
+          "line_end": 209,
+          "line_start": 205,
+          "publication_locator": "cited publication",
+          "quoted_text": "Let $d(m,k,\\epsilon)$ be the smallest choice of $d$ such that there exists $A,B\\in \\RR^{d\\times m}$ such that\n\\begin{equation}\n    \\norm{B^TAz - z}_\\infty < \\epsilon\n\\end{equation}\nfor all $k$-sparse $z\\in [-1,1]^m$. (Here, any bounded interval would suffice.)",
+          "quoted_text_sha256": "9cae23f15efe37132d3f989b30181999903421840b90bc956e4eea5ca492d484"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "paper_linear_recovery_condition_iff": {
+      "source_anchors": [
+        {
+          "line_end": 209,
+          "line_start": 205,
+          "publication_locator": "cited publication",
+          "quoted_text": "Let $d(m,k,\\epsilon)$ be the smallest choice of $d$ such that there exists $A,B\\in \\RR^{d\\times m}$ such that\n\\begin{equation}\n    \\norm{B^TAz - z}_\\infty < \\epsilon\n\\end{equation}\nfor all $k$-sparse $z\\in [-1,1]^m$. (Here, any bounded interval would suffice.)",
+          "quoted_text_sha256": "9cae23f15efe37132d3f989b30181999903421840b90bc956e4eea5ca492d484"
+        },
+        {
+          "line_end": 320,
+          "line_start": 305,
+          "publication_locator": "cited publication",
+          "quoted_text": "\n\n\n\n\n\n\n\n\n\\subsection{Intuition and Proof Techniques}\nWe begin by developing some geometric intuition for the problem. Let $a_1,\\cdots,a_m\\in \\RR^d$ be the columns of $A\\in \\RR^{d\\times m}$ and $b_1,\\cdots,b_m\\in \\RR^d$ be the columns of $B\\in \\RR^{d\\times m}$. For each $i\\in [m]$, we recall that $a_i$ is feature $i$'s \\textbf{representation vector} and $b_i$ is feature $i$'s \\textbf{probe vector}. Now let $\\hat{z} = B^TAz.$ We are interested in when\n\\begin{equation}\\label{eq:salmon}\n    \\norm{\\hat{z}-z}_\\infty < \\epsilon \\iff |\\hat{z}_i - z_i| < \\epsilon,\\quad \\forall i\\in [m].\n\\end{equation}\nNote that\n\\begin{equation}",
+          "quoted_text_sha256": "7e3924ff2b78026f4671e3e775cc6f5490e3f80bcb1a1766b7cb171d11cdc3c6"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "paper_lower_bound_dimension_isBigO_source_log_source_regime": {
+      "source_anchors": [
+        {
+          "line_end": 227,
+          "line_start": 220,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{theorem}[Lower Bound]\\label{thm:lower}\nFor $\\epsilon > \\frac{k^{3/2}\\sqrt{5}}{\\sqrt{m}},$\n    \\begin{equation}\n        d(m,k,\\epsilon) = \\Omega_\\epsilon\\left(\\frac{k^2}{\\log k}\\log \\frac{m}{k}\\right).\n    \\end{equation}\n\\end{theorem}\n\n(Here, the restriction $\\epsilon > \\frac{k^{3/2}\\sqrt{5}}{\\sqrt{m}}$ is not very consequential, since we are generally interested in the regime where $k = O(\\log m).$)",
+          "quoted_text_sha256": "5440f7507691d860faefbf45851fc3d4a8ea352824a59bf501073b2bf3ff5d8c"
+        },
+        {
+          "line_end": 380,
+          "line_start": 327,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\paragraph{Upper bound sketch.} We can give a fairly straightforward construction to establish the upper bound. In particular, we can give a construction where $A=B$. Then it suffices to find a matrix $A$ such that $\\langle a_i, a_i\\rangle = 1$ and such that $\\langle a_i, a_j\\rangle < \\frac{\\epsilon}{k}.$ Leveraging the $k$-sparsity of $z$, this would show that the total interference for any feature is bounded by $k \\cdot \\frac{\\epsilon}{k} = \\epsilon$. We can then use standard constructions of incoherent matrices (i.e., matrices with approximately-orthonormal columns), such as appropriately-scaled random Gaussian matrices, to obtain the desired bound. \n\n\\paragraph{Initial attempt at lower bound.}\nTo prove the lower bound, a natural first inclination is to show that among a sufficiently large set of directions in $\\RR^d$, there must exist correlated directions. In particular, it is possible to show that for $d$ small relative to $m$, there exists $i\\in [m]$ and $k$ choices of $j$ such that $|\\langle a_i,a_j\\rangle| > \\frac{\\epsilon}{k}$ and such that $\\langle a_i,a_j\\rangle$ have the same sign (and thus compound in interference). However, this approach does not generally work when $A\\neq B,$ since we do not strictly require representation directions of different features (or probe directions of different features) to be orthogonal. For $i\\neq j$, it is only necessary for the inner product of feature $i$'s representation vector to be orthogonal to feature $j$'s \\textit{probe} vector. This means that there may exist ``good'' sets of representation directions and probe directions among which many are pairwise correlated.\n\nIn fact, in \\Cref{sec:feature-geometry}, we show that there are constructions with $B\\neq A$ where probe directions are highly correlated with each other and representation directions are also highly correlated with each other. So while showing the existence of correlated vectors gives a lower bound in the case $A=B$, it does not suffice in general.\n\n\\paragraph{Lower bound sketch.} \nIt would suffice to show that if $\\langle b_i, a_i\\rangle$ is near $1$ (as is required if $B^TAe_i \\approx e_i$) and $d$ is small, then there must exist many pairs $i\\neq j$ such that $|\\langle b_i, a_j \\rangle|$ is large. In particular, we would like to find a feature $i$ such that there are $k$ choices of $j$ such that $|\\langle b_i, a_j \\rangle| > \\frac{\\epsilon}{k}$ and such that the interference is all in the same direction. To do this, it suffices to find $2k$ such vectors $a_j$ with $|\\langle b_i, a_j \\rangle| > \\frac{\\epsilon}{k}$ (by the pigeonhole principle).\n\nWe employ a few ideas. The first is to use a result of \\cite{alon2003problems}, which demonstrates that low-rank matrices that are $1$ on the diagonal must have a large off-diagonal entry. (This result also notably provides a near-optimal lower bound on the Johnson-Lindenstrauss Lemma.) In particular, we know that $B^TA$ has rank at most $d$, and we can minimally scale rows to allow diagonal entries to be $1$. Note, however, that applying the result to $B^TA$ itself does not suffice since this only guarantees the existence of a single interfering pair of features.\n\nTherefore, the second main idea is to apply the result instead to large principal submatrices of $B^TA$, which demonstrates that any submatrix of $B^TA$ must have a large off-diagonal entry. Equivalently, among any large subset $R\\subseteq [m]$, there must exist a pair $i,j\\in R$ with $i\\neq j$ such that $\\langle b_i, a_j \\rangle$ is large. \n\nFinally, we consider a graph reduction and apply Tur\\'an's theorem. Consider a graph $G$ with vertices $[m]$ and such that there is an edge between $i$ and $j$ if and only if $|\\langle b_i, a_j\\rangle| > \\frac{\\epsilon}{k}$ or $|\\langle b_j, a_i\\rangle| > \\frac{\\epsilon}{k}$. Then $G$ has no independent set of size $r$. Then we can apply Tur\\'an's theorem (which gives an upper bound on the number of edges in a graph without an $r$-clique) on $\\overline{G}$, hence providing a lower bound on the number of edges in $G$, which in turns gives a lower bound on the number of pairs of interfering features. Then we can use the pigeonhole principle to show that there must exist some probe vector that has large interference with \\textit{many} representation vectors, as desired.\n\n\\begin{figure}\n\\centering\n\\begin{tikzpicture}[\n    >=stealth,\n    scale=2.5,\n    vector/.style={->, very thick},\n    axis/.style={very thin, gray!60},\n    grid/.style={thin, gray!20}\n]\n\n\\draw[grid] (-0.1,-0.8) grid (1.2,1.2);\n\n\\draw[axis,->] (-0.1,0) -- (1.2,0) node[right] {};\n\\draw[axis,->] (0,-0.8) -- (0,1.3) node[above] {};\n\n\\draw[vector,Bittersweet] (0,0) -- (0.5,0.866) \n   node[above right] {$a_{\\texttt{cat}} = \\left(\\frac{1}{2}, \\frac{\\sqrt{3}}{2}\\right)$};\n\n\\draw[vector,Bittersweet] (0,0) -- (1,0) \n   node[below right] {$a_{\\texttt{happy}} = (1,0)$};\n\n\\draw[vector,ForestGreen] (0,0) -- (0,1.1547) \n   node[above left] {$b_{\\texttt{cat}} = \\left(0, \\frac{2}{\\sqrt{3}}\\right)$};\n\n\\draw[vector,ForestGreen] (0,0) -- (1,-0.577) \n   node[below right] {$b_{\\texttt{happy}} = \\left(1, -\\frac{1}{\\sqrt{3}}\\right)$};\n\n\n\\end{tikzpicture}\n\\caption{Representation vectors $a_{\\texttt{cat}}, a_{\\texttt{happy}}$ and probe vectors $b_{\\texttt{cat}}, b_{\\texttt{happy}}$ that yield perfect linear recovery of the \\texttt{cat} and \\texttt{happy} features. Notice that while the representation vectors are not orthogonal, the probe vectors are able perfectly extract features since the \\texttt{cat} probe is orthogonal to the \\texttt{happy} representation and the \\texttt{happy} probe is orthogonal to the \\texttt{cat} representation. Indeed, observe that $b_{\\texttt{cat}}(z_{\\texttt{cat}}a_{\\texttt{cat}} + z_{\\texttt{happy}}a_{\\texttt{happy}}) = z_{\\texttt{cat}}\\langle b_{\\texttt{cat}}, a_{\\texttt{cat}}\\rangle + z_{\\texttt{happy}}\\langle b_{\\texttt{cat}}, a_{\\texttt{happy}}\\rangle = z_{\\texttt{cat}}\\cdot 1 + z_{\\texttt{happy}}\\cdot 0.$}\n\\end{figure}\n\n\\subsection{Contributions: Implications for the Linear Representation Hypothesis and the Theory of Language Models}\n\nWhile linear representations have long been a central character in the empirical study of language models \\citep{mikolov2013distributed,alain2016understanding}, it has been unclear whether the LRH can provide a theoretical basis by which to study language models. Here, we explore this possibility by providing mathematical foundations for the linear representation hypothesis. The framework we introduce provides definitional clarity on the LRH, cleanly distinguishing the distinct assumptions of linear representation and linear accessibility, and allowing us to formally consider the amount of superposition (i.e., the number of features stored relative to the number of neurons) possible under the LRH.\n\nThe framework allows us to then derive theoretical implications of the linear representation hypothesis. Mathematically, we establish a quantitative gap between compressed sensing and \\textit{linear} compressed sensing. Our main results demonstrate dependencies between superposition (the number of features stored relative to the number of neurons), sparsity (the number of features active per input), accessibility (the precision by which the next layer can access features stored in the previous layer), and feature geometry (the arrangement of linear directions corresponding to features). \n",
+          "quoted_text_sha256": "be5e423ac256a7d0888da49221d2ca6b6d7d3356a87b8992616287db0e021f01"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "paper_mu_incoherent_source_definition": {
+      "source_anchors": [
+        {
+          "line_end": 409,
+          "line_start": 399,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}[$\\mu$-incoherence]\n    Say that a matrix $C$ with columns $c_1,\\cdots,c_m$ is $\\mu$-incoherent if \n    \\begin{equation}\n        \\langle c_i, c_i\\rangle = 1\n    \\end{equation}\n    for all $i\\in [m]$, and\n    \\begin{equation}\n        |\\langle c_i, c_j\\rangle| < \\mu\n    \\end{equation}\n    for all $i\\neq j$.\n\\end{definition}",
+          "quoted_text_sha256": "18913d920c53ee7b27265b524ffbdb4fb5c88f8fb70efea64e8b2bfc146587af"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "paper_random_rademacher_strict_incoherence_probability_high_probability": {
+      "source_anchors": [
+        {
+          "line_end": 418,
+          "line_start": 412,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}[Incoherence of Random Matrices]\\label{prop:incoherent}\n    Let $C\\in \\RR^{d\\times m}$ be a matrix with i.i.d. scaled Rademacher entries $\\pm\\frac{1}{\\sqrt{d}}$. For\n    \\begin{equation}\n        d = O\\left(\\frac{\\log m + \\log \\frac{1}{\\delta}}{\\mu^2}\\right),\n    \\end{equation}\n    $C$ is $\\mu$-incoherent with probability at least $1 - \\delta$.\n\\end{lemma}",
+          "quoted_text_sha256": "f5f9149b2dd47b6129465968982b76698571b46ebc3979a337d65dfa75579d02"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "paper_threshold_separation_dimension_isBigO_lower_source_log_original_regime": {
+      "source_anchors": [
+        {
+          "line_end": 733,
+          "line_start": 700,
+          "publication_locator": "cited publication",
+          "quoted_text": "Here, we prove that when feature representations are restricted to the Boolean cube $\\{0,1\\}^m,$ $\\Omega(k^2\\log (m/k))$ embedding dimensions are required to linearly separate embeddings with and without a feature. A corollary is that adding a bias and monotonic activation function does not increase the asymptotic capacity of embeddings.\n\n\\begin{theorem}\\label{thm:threshold}\n    Suppose that there exist $A,B \\in \\RR^{d\\times m}$ and $t\\in \\RR^m$ such that for all $i\\in [m]$ and $k$-sparse $z\\in \\{0,1\\}^m$,\n    \\begin{equation}\\label{eq:pineapple}\n        (B^TAz)_i > t_i\n    \\end{equation}\n    if and only if $z_i=1.$ Then for $k < \\sqrt{m}$,\n    \\begin{equation}\n        d = \\Omega\\left(\\frac{k^2}{\\log k}\\log\\frac{m}{k}\\right).\n    \\end{equation}\n\\end{theorem}\nIt's worth noting here that taking $\\epsilon < \\frac{1}{2}$ in \\Cref{thm:upper} provides a nearly-matching upper bound of $\\Omega(k^2\\log m)$, since $\\epsilon < \\frac{1}{2}$ implies that $(B^TAz)_i < \\frac{1}{2}$ when $z_i = 0$ and $(B^TAz)_i > \\frac{1}{2}$ when $z_i = 1$. Similarly, \\Cref{thm:threshold} implies \\Cref{thm:lower} in the case $\\epsilon < \\frac{1}{2}$. However, the lower bound in \\Cref{thm:lower} does not directly imply \\Cref{thm:threshold} since we do not require that $\\norm{B^TAz - z}_\\infty$ is small here, but rather that $Az$ linearly separates positive and negative examples for each feature. That being said, the proof is very similar to that of \\Cref{thm:lower}, relying on the same overall strategy.\n\n\\begin{proof}\n    Suppose that there existed $A,B\\in \\RR^{d\\times m}$ and $t\\in \\RR^m$ such that for all $i\\in [m]$ and $k$-sparse $z\\in \\{0,1\\}^m,$ $(B^TAz)_i > t_i$ if and only if $z_i = 1.$ Then notice that we could scale the $i$-th column of $B$ and $\\gamma_i$ by any constant positive factor to get another solution. In particular, we can obtain a solution where $B^TA$ is $1$ on the diagonal. Therefore, it suffices to show that for $d \\le O(\\frac{k^2}{\\log k}\\log \\frac{m}{k}),$ there does not exist $B,A,t$ satisfying \\eqref{eq:pineapple} and such that $(B^TA)_{ii} = 1$ for all $i\\in [m].$\n\n    Then we have that $t_i \\le 1,$ since $(B^TAe_i) > t_i$ Then, along the lines of the proof of \\Cref{thm:lower}, it suffices to find $i\\in [m]$ and $T^*\\subseteq [m]\\setminus \\{i\\}$ with $|T^*|=2k$ and\n    \\begin{equation}\n        |\\langle b_i, a_j \\rangle| > \\frac{1}{k}\n    \\end{equation}\n    for all $j\\in T^*$. Indeed, this would imply the existence of a pair $i\\in [m], T\\subseteq [m]\\setminus\\{i\\}$ (with $|T|=k$), such that\n    \\begin{equation}\n        (B^TAz)_i > k\\cdot \\frac{1}{k} = 1 \\ge t_i,\n    \\end{equation}\n    giving a contradiction.\n\n    We will again apply \\Cref{lem:alon} to submatrices of $C$ of size $r$. Indeed, \\Cref{lem:alon} implies that there exists a constant $\\alpha > 0$ such that if $|R|=r$ and\n    \\begin{equation}\n        \\rank(C_R) < \\alpha \\frac{\\log r}{(\\frac{1}{k})^2\\log k} = \\alpha \\frac{k^2}{\\log k}\\log r,\n    \\end{equation}\n    then $C_R$ has an off-diagonal entry with absolute value at least $\\frac{1}{k}.$ Then we can proceed as in the proof of \\Cref{thm:lower}, taking $r = \\frac{m}{4k+1}$ and applying Tur\\'an's theorem.\n\\end{proof}\n",
+          "quoted_text_sha256": "961b1fdcea1d38594fb001d32c1b919183159dc8db5927dbb7a1b679f7cb0760"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "paper_upper_bound_dimension_isBigO_k_sq_log_m": {
+      "source_anchors": [
+        {
+          "line_end": 217,
+          "line_start": 213,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{theorem}[Upper Bound]\\label{thm:upper}\n    \\begin{equation}\n        d(m,k,\\epsilon) = O_\\epsilon\\left(k^2\\log m\\right).\n    \\end{equation}\n\\end{theorem}",
+          "quoted_text_sha256": "7cc41e6386eb21122bb36f0019acc3da0a5e7ca35763178bfa3a68cefd7c6193"
+        },
+        {
+          "line_end": 452,
+          "line_start": 450,
+          "publication_locator": "cited publication",
+          "quoted_text": "Taking $\\mu = \\frac{\\epsilon}{k}$ and applying \\Cref{prop:incoherent}, we have\n\\begin{equation}\n    d(m,k,\\epsilon) = O\\left(\\frac{k^2\\log m}{\\epsilon^2}\\right),",
+          "quoted_text_sha256": "02110bcec01343daa56244721458da3aeed4b2f50520d1423a47620d71c63582"
+        }
+      ],
+      "source_kind": "theorem"
+    }
+  },
+  "source_artifact_sha256": "c60fc515f127f893dc99f592ac304c06f41e255abdea6bb21f82227187b3dfbc",
+  "source_coverage_mode": "named_theoretical_statements"
+}

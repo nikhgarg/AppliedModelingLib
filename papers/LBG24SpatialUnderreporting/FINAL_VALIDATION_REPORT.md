@@ -1,32 +1,17 @@
-# Final Validation Report: LBG24 Spatial Underreporting
+# Final Validation Report: Quantifying Spatial Under-reporting Disparities in Resident Crowdsourcing
 
-Updated: 2026-09-06
+Updated: 2026-09-09
 
 ## 1. Human Verdict
 
-The formalization covers the calendar-time first-report model, the likelihood
-factorization in Theorem 1 and Appendix Theorem 2, Lemma 1, Proposition 1,
-and the principal likelihood formulas.
-
-**Formalization gap:** Lemma 2 and the Appendix D.8.2 shifted-process claim
-remain uncredited, and their proof repair is deferred. Their current proofs
-use incompatible arrival-time premises.
-[Explanation](docs/SOURCE_CLARIFICATIONS.md#lemma-2-conditioning-on-an-observed-first-report).
+The paper’s reporting-process, likelihood, and estimation results are
+formalized, including the first-report and waiting-time arguments.
 
 ## 2. Closeout Status
 
-- Completion status: formalized.
-- Selected source surface: eight result or formula claims and nine distinct
-  model, definition, or condition presentations.
-- Selected paper result identifiers: Theorem 1; Appendix Theorem 2; Lemma 1;
-  Proposition 1; Equations (2)--(7), (30)--(31), (33)--(34); the homogeneous
-  reporting-delay formula.
-- Deferred and uncredited: Lemma 2 and the Appendix D.8.2 shifted-process claim.
-- The [human review packet](docs/HUMAN_REVIEW_PACKET.pdf) presents the exact
-  source and semantic Lean surface for optional annotation. The interactive
-  dashboard is an optional alternative to the PDF.
-- This researcher-facing report does not itself issue machine acceptance; the
-  canonical closeout record is `FINAL_CLOSURE_RECEIPT.md`.
+- Completion status: formalized
+- One-sentence recap: The formalization establishes how incident and reporting
+  rates determine observed reports and the likelihood used for estimation.
 
 ## 3. Source and Scope
 
@@ -49,30 +34,21 @@ and Chicago administrative timestamps are not mathematical theorem targets.
 | Result | Comparison with source |
 | --- | --- |
 | Reporting delay | **Exact.** |
-| Lemma 1 | **Process clarified:** first reports inside a calendar-time window form the thinned-and-displaced Poisson process, including zero detection. [Reading](docs/SOURCE_CLARIFICATIONS.md#lemma-1-and-proposition-1-calendar-time-first-reports). |
-| Proposition 1 | **Restricted construction:** two reporting/incident-rate pairs share one positive observed first-report rate. [Domain](docs/SOURCE_CLARIFICATIONS.md#lemma-1-and-proposition-1-calendar-time-first-reports). |
-| Lemma 2; Appendix D.8.2 | **Deferred; uncredited.** The current arrival-time premises are incompatible. [Conditioning](docs/SOURCE_CLARIFICATIONS.md#lemma-2-conditioning-on-an-observed-first-report). |
-| Theorem 1; Appendix Theorem 2 | **Exact.** |
-| Equation (3) | **Endpoint convention:** nonnegative rates and positive exposure include the zero-count maximum-likelihood estimate. [Domain](docs/SOURCE_CLARIFICATIONS.md#equation-3-rate-estimation-convention). |
+| Lemma 1 | **Exact with source clarification.** [First reports are counted by their reporting time](docs/SOURCE_CLARIFICATIONS.md#lemma-1-and-proposition-1-calendar-time-first-reports), including reports of incidents born before the observation window. |
+| Proposition 1 | **Exact on the positive observed-rate domain.** [Positive observed rate](docs/SOURCE_CLARIFICATIONS.md#lemma-1-and-proposition-1-calendar-time-first-reports) permits two distinct positive incident rates to generate the same observed process. |
+| Lemma 2; Appendix D.8.2 | **Exact with source clarification.** [Condition on an observed first report](docs/SOURCE_CLARIFICATIONS.md#lemma-2-conditioning-on-an-observed-first-report) and choose the observation start between that report and the horizon. |
+| Theorem 1; Appendix Theorem 2 | **Exact with source clarification.** The continuous-time [selection probabilities are read as conditional densities](docs/SOURCE_CLARIFICATIONS.md#appendix-b2-likelihood-factorization-algebra). |
+| Equation (3) | **Exact with source clarification.** [Rates may be zero and total exposure must be positive](docs/SOURCE_CLARIFICATIONS.md#equation-3-rate-estimation-convention), so zero observed reports give an attained maximum-likelihood estimate of zero. |
 | Equations (2), (4)–(7), (33)–(34) | **Exact.** |
 
 ## 5. Remaining Boundaries and Gaps
 
-[Lemma 2 and Appendix D.8.2](docs/SOURCE_CLARIFICATIONS.md#lemma-2-conditioning-on-an-observed-first-report)
-require a consistent model of conditioning on an observed first report.
-The current premises combine an unconditional exponential first-arrival law
-with a fixed finite upper bound on that arrival.
-Both appendix claims remain outside the selected formalization surface;
-their proof repair is deferred. The main likelihood-factorization proof uses
-a separate causal observation model. This is a formalization gap, not a
-counterexample to the paper's claims.
+None for the selected theoretical results.
 
 ## 6. Additional Assumptions Beyond Paper
 
-Proposition 1's checked construction uses a positive observed first-report
-rate; Lemma 1 separately includes the zero-detection process. The
-[memo](docs/SOURCE_CLARIFICATIONS.md#lemma-1-and-proposition-1-calendar-time-first-reports)
-states this restriction.
+Proposition 1’s construction uses a positive observed first-report rate.
+Lemma 1 separately covers zero detection; see the [rate-domain note](docs/SOURCE_CLARIFICATIONS.md#lemma-1-and-proposition-1-calendar-time-first-reports).
 
 ## 7. Proof-Strategy Deviations
 
@@ -101,29 +77,21 @@ separation once their process laws and definedness conditions are supplied.
 
 ## 10. Source Clarifications and Exact Readings
 
-The [memo](docs/SOURCE_CLARIFICATIONS.md) specifies calendar-time first reports and Equation (3)’s nonnegative-rate endpoint. Section 6 states Proposition 1’s positive-rate scope, and Section 7 links the two likelihood-algebra corrections.
+The [memo](docs/SOURCE_CLARIFICATIONS.md) explains calendar-time first reports,
+conditioning on the observed first report, continuous-time density notation,
+and the local likelihood-formula corrections.
 
 ## 11. Paper Issues or Caveats
 
-Section 5 records the formalization gap in Lemma 2 and Appendix D.8.2.
+None beyond the clarifications above.
 
 ## 12. Detailed Formalization Evidence
 
-The selected review surface contains eight transparent source-claim Specs, eight
-paired proof endpoints, fourteen source-mapped paper prerequisites, and two
-source-mapped reusable-library prerequisites. The compact source-facing surface is
-[PaperInterface.lean](PaperInterface.lean), and the paired proof routes are
-collected in [ProofInterface.lean](ProofInterface.lean).
-
-The current machine-readable evidence is:
-
-- [source statement map](audit/paper_statement_map.json);
-- [raw-source-to-expanded-Spec screening](FINAL_CLOSURE_RECEIPT.md);
-- [paper-prerequisite semantic review](FINAL_CLOSURE_RECEIPT.md);
-- [library-prerequisite semantic review](FINAL_CLOSURE_RECEIPT.md).
-
-Each of the eight selected source claims has one semantic target and one proof endpoint;
-the proof endpoint is not counted as a second paper claim.
+[PaperInterface.lean](PaperInterface.lean) states the selected results;
+[ProofInterface.lean](ProofInterface.lean) connects them to their proofs.
+The [source review](FINAL_CLOSURE_RECEIPT.md) and
+[model review](FINAL_CLOSURE_RECEIPT.md) record their comparison
+with the paper.
 
 ## 13. Paper Assumption Provenance
 
@@ -136,15 +104,15 @@ The source-defined premise families are:
 - a positive-rate homogeneous Poisson report process for the homogeneous
   results;
 - Condition 1's rate-free selected-start kernel and conditional independence
-  from the post-first-report path;
+  from the post-first-report path, presented by the source's rate-free
+  conditional density at the observed start;
 - Condition 2's rate-free causal endpoint law and its absolutely continuous
   density presentation;
 - positive exposure and the valid parameter domains for Poisson and
   zero-inflated likelihoods.
 
-The reporting-process roots have passed their independent semantic review. The incompatible
-arrival-time premises described in Section 5 remain confined to the deferred,
-uncredited Lemma 2 and Appendix D.8.2 claims.
+The [model review](FINAL_CLOSURE_RECEIPT.md) records these
+assumptions and their source locations.
 
 ## 14. Displayed Formula Provenance
 
@@ -173,7 +141,7 @@ measure-theoretic and probability foundations.
 ## 16. DAG Audit
 
 The [Dependency DAG](docs/DependencyDAG.pdf) records the source models,
-Conditions 1--2, checked claim clusters and two uncredited appendix claims,
+Conditions 1--2 and the checked Lemma 2/Appendix D.8.2 claim clusters,
 likelihood consequences, city endpoint formulas, and the empirical scope boundary. The rendered PDF was
 visually inspected after the scope update: labels and arrowheads are legible, reading
 order is clear, and no node, edge, or legend overlaps another node.
@@ -181,8 +149,9 @@ order is clear, and no node, edge, or legend overlaps another node.
 ## 17. Validation Checks
 
 - The focused LBG proof-interface build passed for the current Lean surface.
-- The eight selected proof contracts and their reporting-process roots have
-  current semantic reviews. Lemma 2 and Appendix D.8.2 receive no proof credit;
+- The ten selected proof contracts and their reporting-process roots have
+  current semantic reviews. Lemma 2 and Appendix D.8.2 receive proof credit
+  under the actual-first-report model;
   the [closeout record](FINAL_CLOSURE_RECEIPT.md) records acceptance for its
   pinned inputs.
 - The human review packet is generated from that graph; the dependency DAG
@@ -209,16 +178,17 @@ endpoints. Their exact source connections and declaration bodies are in the
 | Equation (7) | `sourceZeroInflatedLikelihoodExtensionSpec` | `sourceZeroInflatedLikelihoodExtension` |
 | Lemma 1 | `sourceLemma1CalendarTimeDurationObservedProcessSpec` | `sourceLemma1CalendarTimeDurationObservedProcess` |
 | Proposition 1 | `sourceProposition1CalendarTimeNonidentifiabilitySpec` | `sourceProposition1CalendarTimeNonidentifiability` |
-| Lemma 2 | Deferred; not selected | No proof credit |
-| Appendix D.8.2 shifted process | Deferred; not selected | No proof credit |
+| Lemma 2 | `sourceLemma2SelectedStartExponentialTailSpec` | `sourceLemma2SelectedStartExponentialTail` |
+| Appendix D.8.2 shifted process | `sourcePostFirstJumpPoissonShiftSpec` | `sourcePostFirstJumpPoissonShift` |
 
 ## 20. Semantic Review Ledger
 
-The selected surface has eight source claims, fourteen paper-specific semantic
+The selected surface has ten source claims, fourteen paper-specific semantic
 prerequisites, and two material library prerequisites. Existing judgments are
 reused only when their exact source and semantic inputs are unchanged. The changed
-reporting-process roots have passed independent semantic review. The two deferred
-appendix claims receive no source-coverage credit.
+reporting-process roots have passed independent semantic review. The Lemma 2 and
+D.8.2 endpoints are direct source-Spec-proof routes under the actual-first-report
+model.
 
 Human annotation is optional; no human review is fabricated or inferred from
 semantic screening.
@@ -229,10 +199,8 @@ in the linked JSON ledgers in Section 12 and in the
 
 ## 21. Source-Coverage Audit Ledger
 
-The eight selected direct claims form the paper-result review denominator. The source
+The ten selected direct claims form the paper-result review denominator. The source
 map also retains model declarations, Appendix proof support, observed-data
 context, and the link between Theorem 1 and its Appendix Theorem 2 restatement.
-Lemma 2 and the Appendix D.8.2 claim remain visible as source claims with explicit
-scope exclusions and no proof or coverage credit. The fourteen paper prerequisites
-and two library prerequisites are
+The fourteen paper prerequisites and two library prerequisites are
 semantic inputs rather than additional paper-result rows.

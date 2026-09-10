@@ -205,8 +205,8 @@
       "human_translation": "0/12 reviewed",
       "llm_as_judge_translation": "accepted closeout: 12/12 raw-source-to-Spec match",
       "llm_as_judge_paper_coverage": "accepted closeout: 12/12 source claims covered",
-      "lean_loc": 24842,
-      "main_note": "Formalizes the SODA paper; Theorem 8.2 uses the refined monotone-auction wording from the journal version. Formalization gap: Lemma 8.1 and Theorem 8.2 are proved for finite offer support; continuous-offer cases remain unproved.",
+      "lean_loc": 25382,
+      "main_note": "Formalizes the SODA paper; Theorem 8.2 uses the refined monotone-auction wording from the journal version. The continuous-outcome extension assumes a common monotone coupling and integrable revenue; deriving such a coupling from arbitrary marginal offer laws remains outside the checked result.",
       "main_note_citation": {
         "label": "Goldberg-Hartline-Karlin-Saks-Wright 2006",
         "url": "https://www.sciencedirect.com/science/article/pii/S0899825606000303"
@@ -348,8 +348,8 @@
       "human_translation": "0/33 reviewed",
       "llm_as_judge_translation": "accepted closeout: 33/33 raw-source-to-Spec match",
       "llm_as_judge_paper_coverage": "accepted closeout: 33/33 source claims covered",
-      "lean_loc": 96123,
-      "main_note": "Formalization gap: Theorem 3.1 is proved for optimization of its displayed rate formula for at least three levels; identifying that formula with the actual ranking-quality exponent and proving Lemma C.4's same-objective equivalence remain unproved.",
+      "lean_loc": 96988,
+      "main_note": "",
       "main_note_citation": null,
       "main_note_review": null,
       "paper_folder": "papers/GJ19OptimalBinaryRatingSystems",
@@ -417,7 +417,7 @@
       "human_translation": "0/12 reviewed",
       "llm_as_judge_translation": "accepted closeout: 12/12 raw-source-to-Spec match",
       "llm_as_judge_paper_coverage": "accepted closeout: 12/12 source claims covered",
-      "lean_loc": 54809,
+      "lean_loc": 55549,
       "main_note": "Theorem 3 is proved as a constrained alternative in general and as the original statement under the explicit full-space condition.",
       "main_note_citation": null,
       "main_note_review": {
@@ -555,6 +555,38 @@
         "source_rate_positivity": "papers/GJ18InformativeRatingSystems/SourceRatePositivity.lean",
         "source_state_completion": "papers/GJ18InformativeRatingSystems/SourceStateCompletion.lean",
         "source_text": "papers/GJ18InformativeRatingSystems/cited publication"
+      }
+    },
+    {
+      "id": "CGGG20SelectiveInformationAcquisition",
+      "title": "Fair Allocation through Selective Information Acquisition",
+      "authors": "William Cai, Johann Gaebler, Nikhil Garg, Sharad Goel",
+      "publication": "AAAI/ACM AIES, 2020",
+      "publication_year": 2020,
+      "source_url": "https://arxiv.org/abs/1911.02715v3",
+      "paper_info": "Fair Allocation through Selective Information Acquisition by William Cai, Johann Gaebler, Nikhil Garg, Sharad Goel; AAAI/ACM AIES, 2020.",
+      "status": "Formalized",
+      "human_review": "0/5",
+      "human_translation": "0/5 reviewed",
+      "llm_as_judge_translation": "accepted closeout: 5/5 raw-source-to-Spec match",
+      "llm_as_judge_paper_coverage": "accepted closeout: 5/5 source claims covered",
+      "lean_loc": 12387,
+      "main_note": "",
+      "main_note_citation": null,
+      "main_note_review": {
+        "status": "draft",
+        "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+      },
+      "paper_folder": "papers/CGGG20SelectiveInformationAcquisition",
+      "review_entrypoint": "papers/CGGG20SelectiveInformationAcquisition/FINAL_VALIDATION_REPORT.md",
+      "artifacts": {
+        "paper_interface": "papers/CGGG20SelectiveInformationAcquisition/PaperInterface.lean",
+        "assumptions": "papers/CGGG20SelectiveInformationAcquisition/Assumptions.lean",
+        "final_validation_report": "papers/CGGG20SelectiveInformationAcquisition/FINAL_VALIDATION_REPORT.md",
+        "dependency_dag_tex": "papers/CGGG20SelectiveInformationAcquisition/docs/DependencyDAG.tex",
+        "dependency_dag_pdf": "papers/CGGG20SelectiveInformationAcquisition/docs/DependencyDAG.pdf",
+        "human_review_packet_pdf": "papers/CGGG20SelectiveInformationAcquisition/docs/HUMAN_REVIEW_PACKET.pdf",
+        "human_review_packet_tex": "papers/CGGG20SelectiveInformationAcquisition/docs/HUMAN_REVIEW_PACKET.tex"
       }
     },
     {
@@ -748,6 +780,40 @@
       }
     },
     {
+      "id": "LBG22StrategicRanking",
+      "title": "Strategic ranking",
+      "authors": "Lydia T. Liu, Nikhil Garg, Christian Borgs",
+      "publication": "AISTATS / PMLR 151, 2022",
+      "publication_year": 2022,
+      "source_url": "https://proceedings.mlr.press/v151/liu22b.html",
+      "paper_info": "Strategic ranking by Lydia T. Liu, Nikhil Garg, Christian Borgs; AISTATS / PMLR 151, 2022.",
+      "status": "Formalized",
+      "human_review": "0/18",
+      "human_translation": "0/18 reviewed",
+      "llm_as_judge_translation": "accepted closeout: 18/18 raw-source-to-Spec match",
+      "llm_as_judge_paper_coverage": "accepted closeout: 18/18 source claims covered",
+      "lean_loc": 51185,
+      "main_note": "Proposition 3.1’s cutoff monotonicity and Proposition B.2’s optimum use the additional regularity conditions stated in the report.",
+      "main_note_citation": null,
+      "main_note_review": {
+        "status": "draft",
+        "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+      },
+      "paper_folder": "papers/LBG22StrategicRanking",
+      "review_entrypoint": "papers/LBG22StrategicRanking/FINAL_VALIDATION_REPORT.md",
+      "artifacts": {
+        "readme": "papers/LBG22StrategicRanking/README.md",
+        "paper_interface": "papers/LBG22StrategicRanking/PaperInterface.lean",
+        "final_validation_report": "papers/LBG22StrategicRanking/FINAL_VALIDATION_REPORT.md",
+        "dependency_dag_tex": "papers/LBG22StrategicRanking/docs/DependencyDAG.tex",
+        "dependency_dag_pdf": "papers/LBG22StrategicRanking/docs/DependencyDAG.pdf",
+        "human_review_packet_pdf": "papers/LBG22StrategicRanking/docs/HUMAN_REVIEW_PACKET.pdf",
+        "human_review_packet_tex": "papers/LBG22StrategicRanking/docs/HUMAN_REVIEW_PACKET.tex",
+        "audit_interface": "papers/LBG22StrategicRanking/AuditInterface.lean",
+        "proof_interface": "papers/LBG22StrategicRanking/ProofInterface.lean"
+      }
+    },
+    {
       "id": "JGS23SupplySideRecommenderSystems",
       "title": "Supply-Side Equilibria in Recommender Systems",
       "authors": "Meena Jagadeesan, Nikhil Garg, and Jacob Steinhardt",
@@ -760,8 +826,8 @@
       "human_translation": "0/36 reviewed",
       "llm_as_judge_translation": "accepted closeout: 36/36 raw-source-to-Spec match",
       "llm_as_judge_paper_coverage": "accepted closeout: 36/36 source claims covered",
-      "lean_loc": 65464,
-      "main_note": "Formalization gap: Theorem 2 uses a specific two-dimensional user model; Theorems 3–4 cover user vectors at angles below 90°; Lemma 2 proves a restricted equilibrium characterization.",
+      "lean_loc": 69062,
+      "main_note": "Selected theoretical surface formalized: Theorem 2 covers arbitrary finite-dimensional two-user geometry; Theorems 3–4 prove the corrected strictly acute canonical two-genre construction; Lemma 2 uses the tie-aware corrected characterization. See FINAL_VALIDATION_REPORT.md.",
       "main_note_citation": null,
       "main_note_review": null,
       "paper_folder": "papers/JGS23SupplySideRecommenderSystems",
@@ -792,7 +858,7 @@
       "human_translation": "0/27 reviewed",
       "llm_as_judge_translation": "accepted closeout: 27/27 raw-source-to-Spec match",
       "llm_as_judge_paper_coverage": "accepted closeout: 27/27 source claims covered",
-      "lean_loc": 9919,
+      "lean_loc": 10776,
       "main_note": "",
       "main_note_citation": null,
       "main_note_review": {
@@ -857,11 +923,11 @@
       "source_url": "https://www.nature.com/articles/s43588-023-00572-6",
       "paper_info": "Quantifying Spatial Under-reporting Disparities in Resident Crowdsourcing by Zhi Liu, Uma Bhandaram, Nikhil Garg; Nature Computational Science, 2024.",
       "status": "Formalized",
-      "human_review": "0/17",
-      "human_translation": "0/17 reviewed",
-      "llm_as_judge_translation": "accepted closeout: 17/17 raw-source-to-Spec match",
-      "llm_as_judge_paper_coverage": "accepted closeout: 17/17 source claims covered",
-      "lean_loc": 30584,
+      "human_review": "0/19",
+      "human_translation": "0/19 reviewed",
+      "llm_as_judge_translation": "accepted closeout: 19/19 raw-source-to-Spec match",
+      "llm_as_judge_paper_coverage": "accepted closeout: 19/19 source claims covered",
+      "lean_loc": 30658,
       "main_note": "",
       "main_note_citation": null,
       "main_note_review": {
@@ -897,7 +963,7 @@
       "human_translation": "0/25 reviewed",
       "llm_as_judge_translation": "accepted closeout: 25/25 raw-source-to-Spec match",
       "llm_as_judge_paper_coverage": "accepted closeout: 25/25 source claims covered",
-      "lean_loc": 63979,
+      "lean_loc": 64182,
       "main_note": "",
       "main_note_citation": null,
       "main_note_review": {
@@ -997,12 +1063,12 @@
       "source_url": "https://arxiv.org/abs/2402.16771",
       "paper_info": "Wisdom and Foolishness of Noisy Matching Markets by Kenny Peng, Nikhil Garg; ACM EC, 2024.",
       "status": "Formalized",
-      "human_review": "0/25",
-      "human_translation": "0/25 reviewed",
-      "llm_as_judge_translation": "accepted closeout: 25/25 raw-source-to-Spec match",
-      "llm_as_judge_paper_coverage": "accepted closeout: 25/25 source claims covered",
-      "lean_loc": 73910,
-      "main_note": "Formalization gap: Proposition 1 and Propositions 7(ii)-8 have their qualitative limits proved, while the source polynomial rates remain unproved.",
+      "human_review": "0/19",
+      "human_translation": "0/19 reviewed",
+      "llm_as_judge_translation": "accepted closeout: 19/19 raw-source-to-Spec match",
+      "llm_as_judge_paper_coverage": "accepted closeout: 19/19 source claims covered",
+      "lean_loc": 75243,
+      "main_note": "Appendix polynomial-rate results use the documented lower-tail correction and finite-second-moment condition.",
       "main_note_citation": null,
       "main_note_review": {
         "status": "human_approved",
@@ -1252,7 +1318,7 @@
       "human_translation": "0/12 reviewed",
       "llm_as_judge_translation": "accepted closeout: 12/12 raw-source-to-Spec match",
       "llm_as_judge_paper_coverage": "accepted closeout: 12/12 source claims covered",
-      "lean_loc": 7978,
+      "lean_loc": 12186,
       "main_note": "Formalization gap: twelve selected auction-theoretic results are proved; Theorem 6.1's native NP-hardness and NP = ZPP consequences remain unproved.",
       "main_note_citation": null,
       "main_note_review": null,
@@ -1300,6 +1366,39 @@
         "proof_interface": "papers/LMMS04FairDivision/ProofInterface.lean",
         "readme": "papers/LMMS04FairDivision/README.md",
         "source_text": "cited publication"
+      }
+    },
+    {
+      "id": "GKP26LinearRepresentationHypothesis",
+      "title": "How Many Features Can a Language Model Store Under the Linear Representation Hypothesis?",
+      "authors": "Nikhil Garg, Jon Kleinberg, Kenny Peng",
+      "publication": "arXiv:2602.11246v1, 2026",
+      "publication_year": 2026,
+      "source_url": "https://arxiv.org/abs/2602.11246v1",
+      "paper_info": "How Many Features Can a Language Model Store Under the Linear Representation Hypothesis? by Nikhil Garg, Jon Kleinberg, Kenny Peng; arXiv:2602.11246v1, 2026.",
+      "status": "Partially formalized",
+      "human_review": "0/11",
+      "human_translation": "0/11 reviewed",
+      "llm_as_judge_translation": "stale/unavailable: recorded accepted graph projection is unavailable: recorded prerequisite source atoms do not resolve to one source item for AppliedModelingLib.Math.LinearCompressedSensing.InUnitBox",
+      "llm_as_judge_paper_coverage": "stale/unavailable: recorded accepted graph projection is unavailable: recorded prerequisite source atoms do not resolve to one source item for AppliedModelingLib.Math.LinearCompressedSensing.InUnitBox",
+      "lean_loc": 11528,
+      "main_note": "Theorem 3, Corollary 8, Theorem 12, and Corollary 13 use the cited Alon rank theorem as an external assumption.",
+      "main_note_citation": null,
+      "main_note_review": {
+        "status": "draft",
+        "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+      },
+      "paper_folder": "papers/GKP26LinearRepresentationHypothesis",
+      "review_entrypoint": "papers/GKP26LinearRepresentationHypothesis/FINAL_VALIDATION_REPORT.md",
+      "artifacts": {
+        "paper_interface": "papers/GKP26LinearRepresentationHypothesis/PaperInterface.lean",
+        "assumptions": "papers/GKP26LinearRepresentationHypothesis/Assumptions.lean",
+        "final_validation_report": "papers/GKP26LinearRepresentationHypothesis/FINAL_VALIDATION_REPORT.md",
+        "human_review_packet_pdf": "papers/GKP26LinearRepresentationHypothesis/docs/HUMAN_REVIEW_PACKET.pdf",
+        "human_review_packet_tex": "papers/GKP26LinearRepresentationHypothesis/docs/HUMAN_REVIEW_PACKET.tex",
+        "agent_source_audit": "papers/GKP26LinearRepresentationHypothesis/docs/AGENT_SOURCE_AUDIT.md",
+        "dependency_dag_tex": "papers/GKP26LinearRepresentationHypothesis/docs/DependencyDAG.tex",
+        "dependency_dag_pdf": "papers/GKP26LinearRepresentationHypothesis/docs/DependencyDAG.pdf"
       }
     }
   ]

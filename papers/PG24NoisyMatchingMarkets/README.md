@@ -5,7 +5,7 @@
 |---|---|
 | Final status | Formalized |
 | Paper reference | [Wisdom and Foolishness of Noisy Matching Markets](https://arxiv.org/abs/2402.16771) by Kenny Peng, Nikhil Garg; ACM EC, 2024. |
-| Lines of Code | 73,910 |
+| Lines of Code | 75,243 |
 
 ## Key Links
 

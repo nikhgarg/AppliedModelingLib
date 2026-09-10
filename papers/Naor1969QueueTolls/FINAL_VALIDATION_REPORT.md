@@ -1,6 +1,6 @@
 # Final Validation Report: The Regulation of Queue Size by Levying Tolls
 
-Updated: 2026-09-02
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -46,11 +46,11 @@ the source inventory outside the selected theorem denominator.
 
 | Result | Comparison with the paper |
 | --- | --- |
-| Equations (3)–(11) | **Exact:** stationary distribution and queue-flow identities. |
-| Equations (12)–(16) | **Exact:** private admission threshold `n_s=floor(R mu/C)`. |
-| Equations (17)–(25) | **Exact:** a social optimum exists no higher than the private threshold. |
-| Equation (26) | **Exact:** the stated toll interval implements the social threshold. |
-| Equations (27)–(31) | **Exact:** a revenue optimum exists no higher than the social threshold, with toll `R-C n_r/mu`. |
+| Equations (3)–(11) | **Exact.** |
+| Equations (12)–(16) | **Exact.** |
+| Equations (17)–(25) | **Exact.** |
+| Equation (26) | **Exact.** |
+| Equations (27)–(31) | **Exact.** |
 
 ## 5. Remaining Boundaries and Gaps
 

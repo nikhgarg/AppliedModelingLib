@@ -5,6 +5,7 @@ namespace GHW01DigitalGoods
 namespace PaperInterface
 
 open AppliedModelingLib.Auction
+open MeasureTheory
 open scoped BigOperators
 open GHW01DigitalGoods.ProofBridge
 noncomputable section
@@ -138,6 +139,23 @@ def result_theorem6_2_random_samplingSpec : Prop :=
                   (sampledSideAssignment sample.1) true 1)
                   values)
 
+/-- Supporting extension of Theorem 6.2 with the source's real scale
+parameter.  The source-facing row above remains the archival natural-count
+contract; this extension keeps `0 ≤ alpha` explicit and uses the same finite
+candidate benchmark and fair-coin event. -/
+def extension_theorem6_2_real_alphaSpec : Prop :=
+  ∀ {n : ℕ} [NeZero n] (values : Fin n → ℝ) (keep : Bool)
+    {alpha highValue : ℝ}
+    (_halpha_nonneg : 0 ≤ alpha)
+    (_hhigh_pos : 0 < highValue)
+    (_hvalue_bound : ∀ i, values i ≤ highValue)
+    (_halpha_highValue : alpha * highValue ≤ finiteCandidateFixedPriceBenchmark values 1),
+    1 - Real.exp (-alpha / 36) - 40 * Real.exp (-alpha / 72) ≤
+      (AppliedModelingLib.FairCoin.productMeasure (Fin n)).real
+        {side |
+          finiteCandidateFixedPriceBenchmark values 1 ≤
+            6 * (randomSamplingOptimalThresholdAuction side keep 1).revenue values}
+
 /-- Source-facing semantic target migrated from `theorem7_1_weighted_pairingSpec`. -/
 def result_theorem7_1_weighted_pairingSpec : Prop :=
   by
@@ -195,18 +213,38 @@ def result_theorem8_2_journal_revenue_upper_boundSpec : Prop :=
   by
     classical
     exact
-    ∀ {Agent Price : Type*} [Fintype Agent] [Nonempty Agent]
-      [Fintype Price]
-      (values : Agent → ℝ) (price : Price → ℝ) (offerLaw : Agent → PMF Price)
+    ∀ {Agent : Type*} [Fintype Agent] [Nonempty Agent]
+      (values : Agent → ℝ) (offerLaw : Agent → Measure ℝ)
+      (_hofferLaw_isProbability : ∀ i, IsProbabilityMeasure (offerLaw i))
       (_hvalue_nonneg : ∀ i, 0 ≤ values i)
-      (_hprice_nonneg : ∀ p, 0 ≤ price p)
+      (_hoffer_nonneg : ∀ i, offerLaw i (Set.Iio 0) = 0)
       (_hcdf_monotone :
         ∀ i j, values i ≤ values j → ∀ t, t ≤ values i →
-          AppliedModelingLib.pmfProb (offerLaw i) (fun p => price p ≤ t) ≤
-            AppliedModelingLib.pmfProb (offerLaw j) (fun p => price p ≤ t)),
-      paper_theorem8_2_raw_cdf_expected_revenue
-          values price offerLaw ≤
-        fixedPriceBenchmark values
+          ProbabilityTheory.cdf (offerLaw i) t ≤
+            ProbabilityTheory.cdf (offerLaw j) t),
+      paper_theorem8_2_continuous_marginal_expected_revenue
+          values offerLaw ≤ fixedPriceBenchmark values
+
+/-! A reusable extension of the journal Theorem 8.2 bridge.  The source says
+"probability distributions" without restricting the offer seed to finite or
+countable support.  This supporting target therefore uses an arbitrary
+probability measure and exposes the sole analytic obligation—integrability of
+the realized revenue—rather than silently treating a continuous law as a PMF.
+It is not counted as a new numbered source claim. -/
+def extension_theorem8_2_continuous_measure_revenueSpec : Prop :=
+  ∀ {Agent Outcome : Type*} [Fintype Agent] [Nonempty Agent]
+    [DecidableEq Agent] [MeasurableSpace Outcome]
+    (μ : Measure Outcome) [IsProbabilityMeasure μ]
+    (values : Agent → ℝ) (offerPrice : Outcome → Agent → ℝ)
+    (_hoff_integrable : Integrable
+      (fun outcome => paper_theorem8_2_journal_monotone_offer_revenue
+        values (offerPrice outcome)) μ)
+    (_hoff_nonneg : ∀ᵐ outcome ∂μ, ∀ i, 0 ≤ offerPrice outcome i)
+    (_hoff_accept_monotone : ∀ᵐ outcome ∂μ, ∀ i j, values i ≤ values j →
+      offerPrice outcome i ≤ values i → offerPrice outcome j ≤ offerPrice outcome i),
+    paper_theorem8_2_journal_monotone_measure_expected_revenue
+        μ values offerPrice ≤
+      finiteCandidateFixedPriceBenchmark values 1
 
 /-- Source-facing semantic target migrated from `theorem9_1_bid_independent_lower_boundSpec`. -/
 def result_theorem9_1_bid_independent_lower_boundSpec : Prop :=

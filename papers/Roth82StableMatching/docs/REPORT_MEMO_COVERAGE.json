@@ -1,0 +1,349 @@
+{
+  "schema": 2,
+  "paper": "Roth82StableMatching",
+  "report_sha256": "281beb7cddb2f71bc510eecc1173312595ebac39afed7c61b17922dbdf59b62b",
+  "source_items_sha256": "2a50d2103b7e3813d7a77566c5318a10034b84baef4325aeeae9579c1ba8ee20",
+  "all_selected_semantic_review_sha256": "13d926a08f96c324453b9c267a7dd56c8fa2141c1aa3c600f043bfa61b4f9e21",
+  "report_inventory_complete": true,
+  "items": {
+    "convention/ROTH82-ORDINAL-SCORE-ENCODING-01": {
+      "disposition": "not_material",
+      "reason": "Finite strict rankings can be encoded injectively by real scores; only the order enters the matching results."
+    },
+    "convention/ROTH82-COMPLETE-MARRIAGE-OUTSIDE-OPTION-01": {
+      "disposition": "not_material",
+      "reason": "Putting every partner above the unmatched option encodes the source complete marriage domain and does not exclude any source ranking."
+    },
+    "convention/ROTH82-GENERIC-ASSIGNMENT-CARRIER-01": {
+      "disposition": "not_material",
+      "reason": "The general partial-assignment carrier is restricted to finite balanced complete source outcomes at the theorem endpoints; its extra representational capacity is not an economic premise."
+    },
+    "convention/ROTH82-NONEMPTY-PARTICIPANT-SIDES-01": {
+      "disposition": "not_material",
+      "reason": "The named-agent and first-choice statements already require participants; nonemptiness makes those source quantifiers explicit."
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4",
+      "discovered_named_result_sha256": "40c5528df62749a9fcf16866705cee04567ec6725d4c219c78c44cebeb139494",
+      "source_format": "text",
+      "results": {
+        "corollary5_1": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 535,
+              "line_start": 477,
+              "presentation": "text_heading",
+              "presentation_sha256": "bea80853767fad8b08b813a8ce48c6e23b86db079f85a87ac58d6684b44357fb",
+              "source_item_id": "corollary5_1",
+              "source_label": "Corollary 5.1"
+            }
+          ],
+          "source_item_ids": [
+            "corollary5_1"
+          ]
+        },
+        "lemma1": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 537,
+              "line_start": 537,
+              "presentation": "text_heading",
+              "presentation_sha256": "5a4f23b7eda7b1579bed3e52226b01d2af498ae6047421ab5ef41cfc99a6d738",
+              "source_item_id": "lemma1",
+              "source_label": "Lemma 1"
+            }
+          ],
+          "source_item_ids": [
+            "lemma1"
+          ]
+        },
+        "lemma2": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 567,
+              "line_start": 564,
+              "presentation": "text_heading",
+              "presentation_sha256": "624cd9a31652f201c50b723823e0adfb6fa4240c050072abd106b86f5318c2d4",
+              "source_item_id": "lemma2",
+              "source_label": "Lemma 2"
+            }
+          ],
+          "source_item_ids": [
+            "lemma2"
+          ]
+        },
+        "theorem1": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 227,
+              "line_start": 227,
+              "presentation": "text_heading",
+              "presentation_sha256": "d505833316516321fa81643af795381abe36c2b2cbfedfca73f8c7cdd8a30419",
+              "source_item_id": "theorem1",
+              "source_label": "Theorem 1"
+            }
+          ],
+          "source_item_ids": [
+            "theorem1"
+          ]
+        },
+        "theorem2": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 259,
+              "line_start": 258,
+              "presentation": "text_heading",
+              "presentation_sha256": "dd283305f81205026f16135d07a28583da61ec3b95ae782f426579171b60b40c",
+              "source_item_id": "theorem2",
+              "source_label": "Theorem 2"
+            }
+          ],
+          "source_item_ids": [
+            "theorem2"
+          ]
+        },
+        "theorem3": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 357,
+              "line_start": 356,
+              "presentation": "text_heading",
+              "presentation_sha256": "c853abf8e82b38dea33bab9ccd43ea1e9d8fa7ed2ccab7c33bb7d7e533dcf5f1",
+              "source_item_id": "theorem3",
+              "source_label": "Theorem 3"
+            }
+          ],
+          "source_item_ids": [
+            "theorem3"
+          ]
+        },
+        "theorem4": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 439,
+              "line_start": 438,
+              "presentation": "text_heading",
+              "presentation_sha256": "ac9598178a929374e0bdff4bfbd3cb50a3a1191782c63591f2fadf3f10100201",
+              "source_item_id": "theorem4",
+              "source_label": "Theorem 4"
+            }
+          ],
+          "source_item_ids": [
+            "theorem4"
+          ]
+        },
+        "theorem5": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 475,
+              "line_start": 468,
+              "presentation": "text_heading",
+              "presentation_sha256": "95dd89713894ab038e8e7c1de58f6b7e211b721a575e843df084344542bd2e59",
+              "source_item_id": "theorem5",
+              "source_label": "Theorem 5"
+            }
+          ],
+          "source_item_ids": [
+            "theorem5"
+          ]
+        },
+        "theorem6": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 684,
+              "line_start": 678,
+              "presentation": "text_heading",
+              "presentation_sha256": "14f292de92b9f3189342d5acaa6dddc9a4ea4006e9d5dc0b44d94ff48b8a64cf",
+              "source_item_id": "theorem6",
+              "source_label": "Theorem 6"
+            }
+          ],
+          "source_item_ids": [
+            "theorem6"
+          ]
+        },
+        "theorem7": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 714,
+              "line_start": 713,
+              "presentation": "text_heading",
+              "presentation_sha256": "15450edf0de0f930314c339084edbf1af564dccabaaea5243ec4f4d4dd004e77",
+              "source_item_id": "theorem7",
+              "source_label": "Theorem 7"
+            }
+          ],
+          "source_item_ids": [
+            "theorem7"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "a3f4ded193d53027db9886760e7d91e6a24dcc84dbba04e2c6a2147a6b20be85",
+    "results": {
+      "corollary5_1": {
+        "numbering": "numbered",
+        "printed_label": "Corollary 5.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 3–5; Corollary 5.1; Lemmas 1–2",
+            "row_sha256": "063175db5fbed79c7f1c8c566c4664a9129675e8d506a1224ef5d5738e0e7921"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent results with one shared Exact comparison."
+      },
+      "lemma1": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 3–5; Corollary 5.1; Lemmas 1–2",
+            "row_sha256": "063175db5fbed79c7f1c8c566c4664a9129675e8d506a1224ef5d5738e0e7921"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent results with one shared Exact comparison."
+      },
+      "lemma2": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 3–5; Corollary 5.1; Lemmas 1–2",
+            "row_sha256": "063175db5fbed79c7f1c8c566c4664a9129675e8d506a1224ef5d5738e0e7921"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent results with one shared Exact comparison."
+      },
+      "theorem1": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 1–2",
+            "row_sha256": "662db78b8bde617ec5651dc721e8072daca8d7f52c670a569cd46d1e7f27ca20"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent results with one shared Exact comparison."
+      },
+      "theorem2": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 1–2",
+            "row_sha256": "662db78b8bde617ec5651dc721e8072daca8d7f52c670a569cd46d1e7f27ca20"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent results with one shared Exact comparison."
+      },
+      "theorem3": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 3–5; Corollary 5.1; Lemmas 1–2",
+            "row_sha256": "063175db5fbed79c7f1c8c566c4664a9129675e8d506a1224ef5d5738e0e7921"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent results with one shared Exact comparison."
+      },
+      "theorem4": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 3–5; Corollary 5.1; Lemmas 1–2",
+            "row_sha256": "063175db5fbed79c7f1c8c566c4664a9129675e8d506a1224ef5d5738e0e7921"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent results with one shared Exact comparison."
+      },
+      "theorem5": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 5",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 3–5; Corollary 5.1; Lemmas 1–2",
+            "row_sha256": "063175db5fbed79c7f1c8c566c4664a9129675e8d506a1224ef5d5738e0e7921"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent results with one shared Exact comparison."
+      },
+      "theorem6": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 6",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 6–7",
+            "row_sha256": "90c67258a3cb53a65d4777b64ad3e4a49666d211e538a6b5c7149149330235d3"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent results with one shared Exact comparison."
+      },
+      "theorem7": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 7",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 6–7",
+            "row_sha256": "90c67258a3cb53a65d4777b64ad3e4a49666d211e538a6b5c7149149330235d3"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent results with one shared Exact comparison."
+      }
+    },
+    "rows": {
+      "662db78b8bde617ec5651dc721e8072daca8d7f52c670a569cd46d1e7f27ca20": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "063175db5fbed79c7f1c8c566c4664a9129675e8d506a1224ef5d5738e0e7921": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "90c67258a3cb53a65d4777b64ad3e4a49666d211e538a6b5c7149149330235d3": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "2bfa8a4493da6f04d52961a3d0661e88cdfba2f3777d03419cdb0fcb25bb8557": {
+        "explanation_keys": [],
+        "supplemental_reason": "This unnumbered extension is explicitly deferred and is not a selected named result."
+      }
+    }
+  }
+}

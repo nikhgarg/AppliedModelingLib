@@ -166,6 +166,25 @@ theorem c4Ranking_v1_isParetoKemenyMinimizer :
   rw [c4Ranking_v1_kemenyDisagreement]
   exact hbound
 
+/-!
+The source's “without loss of generality” choice of `v1` on the first C.4
+profile is not forced by Pareto-constrained Kemeny minimization.  The second
+source ballot is a distinct feasible minimizer as well.  This witness records
+the minimal tie-selection boundary needed by the C.5 separability argument.
+-/
+theorem c4Ranking_v2_isParetoKemenyMinimizer :
+    IsParetoKemenyMinimizer c4Profile c4Ranking_v2 := by
+  refine ⟨?_, ?_⟩
+  · refine ⟨c4Profile_linearFeasible 1, ?_⟩
+    decide
+  · intro contender hcontender
+    have honeAboveTwo : StrictlyPrefers contender 0 1 :=
+      hcontender.2 0 1 c4Profile_universallyPrefersOneTwo
+    have hbound := c4LinearFeasible_kemenyDisagreement_ge_thirty_of_oneAboveTwo
+      contender hcontender.1 honeAboveTwo
+    rw [show kemenyDisagreement c4Profile c4Ranking_v2 = 30 by decide]
+    exact hbound
+
 /-- The first ballot is admissible under the second profile's Pareto constraints. -/
 theorem c5SecondProfile_v1_paretoFeasible :
     ParetoFeasibleRanking (LinearFeasibleRanking c4Features) c5SecondProfile c4Ranking_v1 := by

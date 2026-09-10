@@ -573,24 +573,6 @@
       ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:2158-2160; audit/cited publication:2575-2630",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "dad8abc82a86a0143e8744ae2401552deb44584ab777842ff2ad922a05067fbe",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "36b36ac6e2722a82a3607a2353d293694f246a789ab614f820fd64a0a74d135c",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "For positive finite Holder-dual p and q and coordinatewise noncollision, the expanded Spec computes the source gradient candidate for the p-norm distance and states that its q norm is exactly one, which is the complete Appendix Lemma 3 claim.",
-            "source_atom_sha256": "2fa8e08b08171e9fd8f90b08161a446623e9455521692e5e0eb8448ac9737f77",
-            "spec_component_sha256s": [
-              "e7c1d2adf010e7feea03ea4a0fa3417074d1a28f6ce4c986fc4994686c03d8c4"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "cc3e2389db651da9232c226eb09c83a6953bb54e2da0feae99017d5cf2843772",
-        "spec_closure_sha256": "2eb31ab918c9079dc4bd5f86cc1863dbfac97f0d89272ad904a95f8318a0ba3a",
-        "spec_surface_sha256": "e7c1d2adf010e7feea03ea4a0fa3417074d1a28f6ce4c986fc4994686c03d8c4"
-      },
       "source_url": "https://www.jair.org/index.php/jair/article/download/11358/26474/21047; https://doi.org/10.1613/jair.1.11358",
       "statement": "Lemma 3 source norm claim: for p,q > 0 with 1/p + 1/q = 1 and away from coordinate equalities, the Lq norm of the gradient of ||x-x_v||_p is 1.",
       "support_lean_declarations": [
@@ -804,24 +786,6 @@
         "validated_at": "2026-08-24T00:00:00Z",
         "validator": "GKGMM19 independent source-boundary review"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "1c1d1a270c48d8b1df7c14173a34d8dbcd33c044d1291cf4528a12d3193ab5a2",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "e31f283c3eb5e2ccc164bda790a44d8c08257641937214211d7c7f724d631bb7",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The two conjuncts are the source's Model A and Model B L2-neighborhood executions for the separately reviewed weighted-ideal distribution and C1-C3 model. Each concludes almost-sure convergence to the societal-optimal set, exactly the Proposition 1 target.",
-            "source_atom_sha256": "b8b45a926b5bd6a2e02d3586a4cfb6330f165b330ad58c2f0aee666a13701549",
-            "spec_component_sha256s": [
-              "c62ce135ce717a5d8a85d477bcda152e942f2e3bdd49df928530e5ea9835ab22"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "9d0a3aca32e4584655b53936895892bb3d99c85dcb911eb07e870bf6526328e3",
-        "spec_closure_sha256": "577b557d63430b5964e6795340d3f3eb5984d39c428ea85b1086c3616e12c952",
-        "spec_surface_sha256": "c62ce135ce717a5d8a85d477bcda152e942f2e3bdd49df928530e5ea9835ab22"
-      },
       "source_url": "https://www.jair.org/index.php/jair/article/download/11358/26474/21047; https://doi.org/10.1613/jair.1.11358",
       "statement": "Proposition 1 source statement: under C1-C3, weighted-Euclidean utilities, and correct Model A or Model B responses, ILV with L2 neighborhoods converges almost surely to the societal optimal point.",
       "support_lean_declarations": [
@@ -843,17 +807,6 @@
           "why_needed": "The general Model B display describes a normalized gradient ray, whereas the Proposition 2 proof explicitly treats dimensions separately and moves each coordinate by the full radius according to its sign. The paper's Proposition 2 argument and ordinary-median target use the coordinatewise-boundary reading."
         },
         {
-          "checked_scope": "Proposition 2's finite-coordinate coordinatewise Model A and Model B execution and its median conclusion.",
-          "classification": "maintainer_approved_source_model_clarification",
-          "formal_meaning": "For Proposition 2's coordinatewise Algorithm 1 analysis, the feasible solution space permits a one-coordinate replacement: for feasible x and y and every coordinate m, the point obtained from x by replacing coordinate m with y m is feasible. In the finite-coordinate realization, this is the displayed product-coordinate feasible-set condition.",
-          "id": "GKGMM19-PROPOSITION2-PRODUCT-GEOMETRY-01",
-          "kind": "source_model_convention",
-          "protocol": "approved-source-review-context-v1",
-          "record_sha256": "7f6337ebd4b0a549663a75674a69ab6362bc190899804b5eaf2561ff90bdc903",
-          "source_locator": "audit/cited publication:574-600; audit/cited publication:2203-2221",
-          "why_needed": "The printed proof analyzes each dimension separately and describes changing that coordinate by the full local radius. Arbitrary convex feasible sets need not admit those coordinatewise replacements. The maintainer approved this condition as the intended coordinatewise geometry for the Proposition 2 reading on 2026-09-03; it makes the proof's stated step valid without changing the utility model, response rule, or median conclusion."
-        },
-        {
           "checked_scope": "Definition 1, Definition 2, Definition 3, Algorithm 1, Theorems 1--2, and Propositions 1--2.",
           "classification": "source_text_model_convention",
           "formal_meaning": "For each of Definitions 1--3, the displayed utility formula is evaluated at every raw candidate queried by Algorithm 1 before projection onto X. Equivalently, in the finite-coordinate realization the corresponding utility equality is available for every ambient candidate used by the raw local-response relation, including a candidate outside the feasible solution space.",
@@ -866,19 +819,31 @@
         }
       ],
       "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "audit/cited publication:597-600",
+        "archival_source_quote_sha256": "a0120c5bfcfbca09dc036892335cbaae8f8cee3a5036985e3f1ce46a025e2404",
+        "corrected_target_review_sha256": "53c03b558a653b845044c41ce66eb75b7b8aae719c4282de1315c74af4643603",
+        "corrected_target_sha256": "d51f7af59dfb3f6e5fa43c3bb1ddc4dce208f217f87027b82f1e93749f23f489",
+        "governing_defect_ids": [
+          "GKGMM19-PROPOSITION2-C1-AMBIENT-MEDIAN-01"
+        ],
+        "schema": 1,
+        "statement": "For a finite nonempty coordinate set, a C1 feasible set (nonempty bounded closed convex), C2 unique feasible ideal points, C3 iid ideal sampling with bounded measurable density, decomposable utilities, Algorithm 1's sampled Model A raw-response execution, and the Proposition 2 proof's coordinatewise-boundary Model B execution, the ILV trajectories converge almost surely to the feasible minimizer set of expected coordinatewise absolute deviation."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
-        "GKGMM19IterativeLocalVoting.proposition2_coordinatewise_boundary_finite_c3_median"
+        "GKGMM19IterativeLocalVoting.proposition2_convex_domain_constrained_l1"
       ],
       "model_convention_ids": [
         "GKGMM19-PROPOSITION2-COORDINATEWISE-MODELB-01",
-        "GKGMM19-PROPOSITION2-PRODUCT-GEOMETRY-01",
         "GKGMM19-RAW-UTILITY-QUERY-DOMAIN-01"
       ],
       "semantic_contract": {
-        "evidence_declaration": "GKGMM19IterativeLocalVoting.proposition2_coordinatewise_boundary_finite_c3_median",
+        "evidence_declaration": "GKGMM19IterativeLocalVoting.proposition2_convex_domain_constrained_l1",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "GKGMM19IterativeLocalVoting.proposition2_coordinatewise_boundary_finite_c3_medianSpec"
+        "spec_declaration": "GKGMM19IterativeLocalVoting.proposition2_convex_domain_constrained_l1Spec"
       },
       "source_anchor_evidence": [
         {
@@ -921,15 +886,18 @@
         {
           "id": "proposition2.decomposable.linf.medians",
           "identity_schema": 2,
-          "reviewed_lean_route": "GKGMM19IterativeLocalVoting.proposition2_coordinatewise_boundary_finite_c3_median",
-          "semantic_claim": "Proposition 2 source statement and proof convention: under C1-C3 and decomposable utilities, Model A or the proof's coordinatewise-boundary Model B process with L_infinity neighborhoods converges almost surely to the feasible expected-coordinatewise-absolute-deviation median target.",
+          "reviewed_lean_route": "GKGMM19IterativeLocalVoting.proposition2_convex_domain_constrained_l1",
+          "semantic_claim": "Proposition 2's archival statement is false on coupled C1 domains because its ambient coordinatewise-median target can be infeasible. Under the corrected C1 target, the finite-coordinate Model A execution and the proof's coordinatewise-boundary Model B process with L-infinity neighborhoods converge almost surely to the feasible minimizer set of expected coordinatewise absolute deviation.",
           "source_locator": "audit/cited publication:587-600",
           "source_quote_sha256": "ed305f6e818e7649c8c578ccdd23721b8601f52698540334093fafc33c510caa"
         }
       ],
+      "source_defect_ids": [
+        "GKGMM19-PROPOSITION2-C1-AMBIENT-MEDIAN-01"
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:587-600; audit/cited publication:118-194; audit/cited publication:449-465; audit/cited publication:574-586; audit/cited publication:2203-2221",
-      "source_note": "The raw bundle includes the general Model B display, the Proposition 2 statement, and the proof passage that treats dimensions separately. The paper-facing route uses the proof's coordinatewise-boundary Model B convention and exposes its feasible expected-absolute-deviation median target directly, as documented in docs/PROPOSITION2_MODEL_B_SOURCE_NOTE.md. The raw source bundle also includes the explicitly merged source presentation(s) needed to interpret this one canonical claim.",
+      "source_note": "The corrected target retains the finite-coordinate C1-C3 and decomposable-response execution scope, but replaces the infeasible ambient coordinatewise-median endpoint on coupled C1 domains by the feasible minimizer set of expected coordinatewise absolute deviation. The ordinary coordinatewise-median conclusion is retained only for the separately checked product-domain specialization.",
       "source_presentation_reconciliation": {
         "boundary_reason": "completed_statement_then_explanation",
         "core_anchor": {
@@ -947,29 +915,11 @@
         "validated_at": "2026-08-24T00:00:00Z",
         "validator": "GKGMM19 independent source-boundary review"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "b206a9d84333148639ac5ad335b9f61a4deb9580a1db5705a1828518224f462c",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "c98b67d35fd58103b467500722df1c4103da1463a1a539738a0d52fafb7a555b",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The expanded Spec retains the source's finite C1-C3 and decomposable ambient-coordinate scope, displays the Proposition 2 proof's full-radius coordinatewise Model B response at every step, and proves that both Model A and this clarified Model B process converge almost surely to the transparent feasible expected-coordinatewise-absolute-deviation target used as the coordinatewise-median representation.",
-            "source_atom_sha256": "76361b3b8e96f82e65657fb0bebc3344ff51ef595d60c2f139c556889b14f090",
-            "spec_component_sha256s": [
-              "7f67a15cc8f623801ac8fbff316f3d6295fa1f1a51867e8a15b5403187360a30"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "acabbb66028776480a9955f527eebd0ca7dd8106c7149b4306eb3291605637cd",
-        "spec_closure_sha256": "fe85ef664ee363422926e7dc231c4f8287f7b22a72b1dc164998f6dbae897f40",
-        "spec_surface_sha256": "7f67a15cc8f623801ac8fbff316f3d6295fa1f1a51867e8a15b5403187360a30"
-      },
-      "source_status": "documented_source_model_convention",
+      "source_status": "corrected",
       "source_url": "https://www.jair.org/index.php/jair/article/download/11358/26474/21047; https://doi.org/10.1613/jair.1.11358",
       "statement": "Proposition 2: under C1-C3 and decomposable utilities, either Model A or Model B ILV with Linfinity neighborhoods converges almost surely to the coordinatewise median set.",
       "support_lean_declarations": [
-        "GKGMM19IterativeLocalVoting.proposition2_coordinatewise_boundary_finite_c3_medianSpec"
+        "GKGMM19IterativeLocalVoting.proposition2_convex_domain_constrained_l1Spec"
       ]
     },
     "raw_utility_query_domain": {
@@ -1032,7 +982,7 @@
       ],
       "source_kind": "model",
       "source_location": "audit/cited publication:177-190; audit/cited publication:474-475; audit/cited publication:521-537; audit/cited publication:574-584",
-      "source_note": "The selected source convention makes each displayed utility formula available at the raw points queried by Algorithm 1, including raw candidates outside X; this is necessary to interpret the printed argmax before its projection.",
+      "source_note": "This is a claim-bearing source-model statement: the selected source convention makes each displayed utility formula available at the raw points queried by Algorithm 1, including raw candidates outside X; this is necessary to interpret the printed argmax before its projection.",
       "statement": "Definitions 1--3 give the utility formula on the feasible solution space, and Algorithm 1 evaluates that same utility at each raw local-query candidate before projecting the selected point onto X."
     },
     "source_appendix_lemma1_uniform_direction_error": {
@@ -1083,24 +1033,6 @@
         "semantic_basis": "The first two lines contain Lemma 1's complete quantified uniform-bound statement; the remaining extracted lines explain the bound and introduce Lemma 2.",
         "validated_at": "2026-08-24T00:00:00Z",
         "validator": "GKGMM19 independent source-boundary review"
-      },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "dad8abc82a86a0143e8744ae2401552deb44584ab777842ff2ad922a05067fbe",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "0aa4dbf71cf07510475294730db662f3840deece1f9df2abd36818709f3240f3",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The expanded Spec gives the three q=2, q=infinity, and q=1 finite-coordinate movement/subgradient-direction bounds. Its explicit finite bounds supply the source's uniform K2 in each norm case.",
-            "source_atom_sha256": "e85f7a5466df22fe963ae82bee5471f9698548ecc1a35850e0e2857a4e155f5d",
-            "spec_component_sha256s": [
-              "63beeba825398ec24ba9a699e6bcce7e28d6b02361098ba8ee6e500494da69fa"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "59fe0111f1654ebfebd10693c8f1c6d5fbbc9975c851904646eee983477aeb3a",
-        "spec_closure_sha256": "5636dbfc227f81006dd94428b8b52450fd33a97f8c007d46e3efd83eb98aadb8",
-        "spec_surface_sha256": "63beeba825398ec24ba9a699e6bcce7e28d6b02361098ba8ee6e500494da69fa"
       },
       "source_url": "https://www.jair.org/index.php/jair/article/download/11358/26474/21047; https://doi.org/10.1613/jair.1.11358",
       "statement": "Appendix Lemma 1: for q in {1,2,infinity}, the Euclidean norm of the difference between the normalized voter movement and any relevant cost subgradient is bounded by a finite constant K2 uniformly over voters and states.",
@@ -1157,24 +1089,6 @@
         "validated_at": "2026-08-24T00:00:00Z",
         "validator": "GKGMM19 independent source-boundary review"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "1c1d1a270c48d8b1df7c14173a34d8dbcd33c044d1291cf4528a12d3193ab5a2",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "fafdc009966bd285c3cc203c7cd9c15c60c7b718e168a065722c37bea1506adc",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The expanded Spec states an explicit constant-times-radius measure bound for each of the source's three Holder-dual norm pairs, on exactly the bad events where normalized movement can fail to be the stated sampled-cost subgradient.",
-            "source_atom_sha256": "878eb31f5f85dcc68e2ab9f84093d8611828a50ec060f429ef1af027d90ebbec",
-            "spec_component_sha256s": [
-              "a5faedb884de616dd5d22a76906da71509eac8dcb386ae09b9b8f7509b93493c"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "ca23f0d95ab8b7a5ccb3efa1c2184b89b878a0421f149416eccd1c3b8852682a",
-        "spec_closure_sha256": "33c406e901b5f42d4c2f13a34266c6fc5e341ba2e3337f2cf470fca96ab2c661",
-        "spec_surface_sha256": "a5faedb884de616dd5d22a76906da71509eac8dcb386ae09b9b8f7509b93493c"
-      },
       "source_url": "https://www.jair.org/index.php/jair/article/download/11358/26474/21047; https://doi.org/10.1613/jair.1.11358",
       "statement": "Appendix Lemma 2: in the three Theorem 1 norm pairs, the conditional probability that the normalized voter movement is not a valid sampled cost subgradient is bounded by C times the current radius.",
       "support_lean_declarations": [
@@ -1213,24 +1127,6 @@
       ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:2183-2190",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "1c1d1a270c48d8b1df7c14173a34d8dbcd33c044d1291cf4528a12d3193ab5a2",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "bcfbda46d83620863e6deb670242648cbdc16c11c1f62158099587a4c13bdcdb",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The expanded Spec gives the weighted-Euclidean q=2 bad-event measure bound as radius times an explicit finite density-and-box constant, matching the source Lemma 4 conditional-probability conclusion.",
-            "source_atom_sha256": "721ed858b3eaa3a299d9e6d0b1a7748ec803c26ea4c9e206d057920f4e29b6c3",
-            "spec_component_sha256s": [
-              "a719d519a5a19b9f144ccf99acf1b0f41c4c4814e4c4e65ad867356a753f1a7c"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "2055e19c8f3a983a2c2dbbd44cfebd0d899eb0ee28993423be317797648fafb2",
-        "spec_closure_sha256": "2263f6029059ed46331896d7d02b7366275109063879e54cb5cb25e6764d0869",
-        "spec_surface_sha256": "a719d519a5a19b9f144ccf99acf1b0f41c4c4814e4c4e65ad867356a753f1a7c"
-      },
       "source_url": "https://www.jair.org/index.php/jair/article/download/11358/26474/21047; https://doi.org/10.1613/jair.1.11358",
       "statement": "Appendix Lemma 4: for weighted-Euclidean utilities with q=2, the conditional probability that the normalized voter movement is not a valid sampled cost subgradient is bounded by C times the current radius.",
       "support_lean_declarations": [
@@ -1289,24 +1185,6 @@
         "validated_at": "2026-08-24T00:00:00Z",
         "validator": "GKGMM19 independent source-boundary review"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "7fa69a46b6bc380d06626b20e5f1669e8385df66716d061dceff1a0badf19733",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "690ee8b65fbf10ddef439fce9b5045922a021a391067f4ddbd6c9a09bd48118b",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The expanded Spec assumes the source's bounded closed convex domain, finite integrable expectations, pointwise convexity, continuity at x, and measurable coordinatewise subgradient selection, and concludes that the expected selection is a subgradient of the expected objective at x.",
-            "source_atom_sha256": "358307fd1efbe54bc293790e1de31e8b938099d234caac414fc5629b41f3167e",
-            "spec_component_sha256s": [
-              "eade713ebc7b42854b04151843e0515fa6f77b84e459d7a6b2d552ecc6e47a9a"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "fdd0e29646dba38c57e858a0b675a4e14664a5a3b6caf7abb663e97b73100e23",
-        "spec_closure_sha256": "752d6420581066fcfc0552dd3d97de499a8aac23424a62c9235b6ac862b2fef2",
-        "spec_surface_sha256": "eade713ebc7b42854b04151843e0515fa6f77b84e459d7a6b2d552ecc6e47a9a"
-      },
       "source_url": "https://www.jair.org/index.php/jair/article/download/11358/26474/21047; https://doi.org/10.1613/jair.1.11358",
       "statement": "Appendix Theorem 4 boundary: expected selected subgradients are subgradients of the expected objective.",
       "support_lean_declarations": [
@@ -1315,34 +1193,34 @@
     },
     "source_appendix_theorem5_ssgm_convergence": {
       "aliases": [
-        "appendix_theorem5_ssgm_convergence_boundary"
+        "appendix_theorem5_adapted_bias"
       ],
       "approved_review_context_schema": 1,
       "approved_review_contexts": [
         {
-          "checked_scope": "Appendix Theorem 5 and the source-to-library projected stochastic-subgradient bridge.",
+          "checked_scope": "Appendix Theorem 5's adapted random-bias endpoint and the finite-dimensional stochastic-subgradient proof route.",
           "classification": "source_text_interpretation",
-          "formal_meaning": "Appendix Theorem 5 is instantiated with a deterministic bias sequence `b_t : Nat -> Coord -> Real`. The setup immediately preceding the theorem calls `b_t` a constant; consequently the displayed almost-sure summability condition is the same deterministic summability condition for this source reading.",
-          "id": "GKGMM19-APPENDIX5-DETERMINISTIC-BIAS-01",
+          "formal_meaning": "Appendix Theorem 5's bias is a sample-path process: its uniform bound and the weighted summability condition are almost-sure statements, and its update is evaluated on those same paths. The finite-dimensional formalization supplies only the measurability and adaptedness needed to define the printed conditional-noise expressions and partial sums.",
+          "id": "GKGMM19-APPENDIX5-ADAPTED-BIAS-01",
           "kind": "source_model_convention",
           "protocol": "approved-source-review-context-v1",
-          "record_sha256": "61048352d59382f8ea866a6a6032d238046562af8ae9d8373a5e3b0bdf7fb676",
+          "record_sha256": "c7f38cbbd17b64c0853a72388ac62adfcecd24262ab93e9d928f1d2f4303a41f",
           "source_locator": "audit/cited publication:1992-2016",
-          "why_needed": "This prevents treating the redundant `w.p. 1` wording in the printed summability line as an unstated requirement that `b_t` be an adapted random process. The Lean theorem retains the source's constant-bias reading and separately makes the stochastic noise conditions explicit."
+          "why_needed": "Although the preceding prose calls `b_t` a constant, the theorem's weighted-bias condition is explicitly stated with probability one. Reading that condition pathwise preserves the theorem's displayed stochastic scope and avoids replacing a summable realized linear bias term by a generally non-summable deterministic envelope."
         }
       ],
       "claim_bearing": true,
       "lean_declarations": [
-        "GKGMM19IterativeLocalVoting.appendix_theorem5_ssgm_convergence_boundary"
+        "GKGMM19IterativeLocalVoting.appendix_theorem5_adapted_bias"
       ],
       "model_convention_ids": [
-        "GKGMM19-APPENDIX5-DETERMINISTIC-BIAS-01"
+        "GKGMM19-APPENDIX5-ADAPTED-BIAS-01"
       ],
       "semantic_contract": {
-        "evidence_declaration": "GKGMM19IterativeLocalVoting.appendix_theorem5_ssgm_convergence_boundary",
+        "evidence_declaration": "GKGMM19IterativeLocalVoting.appendix_theorem5_adapted_bias",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "GKGMM19IterativeLocalVoting.appendix_theorem5_ssgm_convergence_boundarySpec"
+        "spec_declaration": "GKGMM19IterativeLocalVoting.appendix_theorem5_adapted_biasSpec"
       },
       "source_anchor_evidence": [
         {
@@ -1357,8 +1235,8 @@
         {
           "id": "source.appendix.theorem5.ssgm.convergence",
           "identity_schema": 2,
-          "reviewed_lean_route": "GKGMM19IterativeLocalVoting.appendix_theorem5_ssgm_convergence_boundary",
-          "semantic_claim": "Appendix Theorem 5 boundary: the stochastic subgradient method convergence bundle quoted by the paper.",
+          "reviewed_lean_route": "GKGMM19IterativeLocalVoting.appendix_theorem5_adapted_bias",
+          "semantic_claim": "Appendix Theorem 5: under its stated unique-minimizer, step-size, bounded-subgradient, conditional-noise, bounded-bias, and almost-sure weighted-bias-summability conditions, the projected stochastic-subgradient update with its adapted random bias process converges almost surely to the minimizer.",
           "source_locator": "audit/cited publication:2004-2024",
           "source_quote_sha256": "622523be4c004d150ef6fc4ec99a4de41c938fa5c26808cb46e8abaec10f5602"
         }
@@ -1382,28 +1260,10 @@
         "validated_at": "2026-08-24T00:00:00Z",
         "validator": "GKGMM19 independent source-boundary review"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "3ad1a90e036bd74e8f5db20c7c2a926474decdcecf3915058fd9b76bcf03dda1",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "d541428161e30d4e9654c4f7b5c27273ef57bdcdcdec6afce04b6e6b565964f3",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The expanded Spec concludes almost-sure convergence of the projected stochastic-subgradient trajectory from the separately source-reviewed theorem hypotheses and execution-regularity records, which expose the source's minimizer, step-size, boundedness, bias, filtration, projection, and update conditions.",
-            "source_atom_sha256": "c1464bec509cb78903a69366bb88db0687cfca3a31ee47863f75e5254a34f728",
-            "spec_component_sha256s": [
-              "4b6865083ddf033cd9b7502d3c73936e19910701a243741f8b4c36aaa3224ea5"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "c363fd18924ecbde2fe2ec03f17ecb7ab8927c6670ac7dbdc60b12b5efede434",
-        "spec_closure_sha256": "a4aecb0ca48a09cca6fbd7c4dac549e7898aa930fdf2042d7bf990544a1212e0",
-        "spec_surface_sha256": "4b6865083ddf033cd9b7502d3c73936e19910701a243741f8b4c36aaa3224ea5"
-      },
       "source_url": "https://www.jair.org/index.php/jair/article/download/11358/26474/21047; https://doi.org/10.1613/jair.1.11358",
       "statement": "Appendix Theorem 5 boundary: the stochastic subgradient method convergence bundle quoted by the paper.",
       "support_lean_declarations": [
-        "GKGMM19IterativeLocalVoting.appendix_theorem5_ssgm_convergence_boundarySpec"
+        "GKGMM19IterativeLocalVoting.appendix_theorem5_adapted_biasSpec"
       ]
     },
     "source_definition4_dlcd": {
@@ -1566,24 +1426,6 @@
         "validated_at": "2026-08-24T00:00:00Z",
         "validator": "GKGMM19 independent source-boundary review"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "1c1d1a270c48d8b1df7c14173a34d8dbcd33c044d1291cf4528a12d3193ab5a2",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "3e134c6f7b2f5e7e797f1c60a91287437a0e564f1b35423408efee9c3b53a91c",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The expanded Spec is the conjunction of all six source cases: Model A and Model B for (p,q)=(2,2), (1,infinity), and (infinity,1), under the finite C1-C3 carrier, Lp objective, and projected movement model, with almost-sure convergence to the societal-optimal set.",
-            "source_atom_sha256": "ae6a3c3e06f5a51e776de11cbf0902e102acf265bbbe4a75b9da07ec323bd81d",
-            "spec_component_sha256s": [
-              "1283969ee9957d47778cbc68babd82348dbe897ee7790b444d21b849c42b636e"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "81734bfb0757d842462a33d6e9940c6999445827eae3732b2081cc98e529d84a",
-        "spec_closure_sha256": "b6c8acc3413513c2c06f9f7dc8df4cca301e93cb58b8e740070ad564761c308e",
-        "spec_surface_sha256": "1283969ee9957d47778cbc68babd82348dbe897ee7790b444d21b849c42b636e"
-      },
       "source_url": "https://www.jair.org/index.php/jair/article/download/11358/26474/21047; https://doi.org/10.1613/jair.1.11358",
       "statement": "Theorem 1 source statement: under C1-C3, Lp-normed utilities, Model A or Model B responses, and norm pairs (p,q) = (2,2), (1,infinity), or (infinity,1), ILV with Lq neighborhoods converges almost surely to the societal optimal point.",
       "support_lean_declarations": [
@@ -1670,24 +1512,6 @@
         "semantic_basis": "The four pinned lines contain Theorem 2's complete hypotheses, Holder-dual condition, and almost-sure conclusion; the following lines are proof intuition.",
         "validated_at": "2026-08-24T00:00:00Z",
         "validator": "GKGMM19 independent source-boundary review"
-      },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "1c1d1a270c48d8b1df7c14173a34d8dbcd33c044d1291cf4528a12d3193ab5a2",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "f712b255493fdddb47faa48061b9143f80897a004a48b875c55e7d3977f5cf0f",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The expanded Spec quantifies over every positive finite Holder-dual pair p,q, uses the finite C1-C3 and Model B execution semantics with the Lp societal objective, and concludes almost-sure convergence to the societal-optimal set.",
-            "source_atom_sha256": "295058d7fe68bd5640d391af7da6e92570459877ffeb284d6d3140383671edcb",
-            "spec_component_sha256s": [
-              "730b28556f8d792c5cc587673600d0b19f04913f6bd7070c759a070d36c56aa4"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "76e89ec48a78a2ba45786a1d4ad2394f8fa0a245b5b2b0bb33917db5849ade32",
-        "spec_closure_sha256": "72c804394fe761d1729b091ecaf8505b143e2b78612c6a1c58ef626a72fd381a",
-        "spec_surface_sha256": "730b28556f8d792c5cc587673600d0b19f04913f6bd7070c759a070d36c56aa4"
       },
       "source_url": "https://www.jair.org/index.php/jair/article/download/11358/26474/21047; https://doi.org/10.1613/jair.1.11358",
       "statement": "Theorem 2 source statement: under C1-C3, Lp-normed utilities, Model B responses, and p > 0, q > 0 with 1/p + 1/q = 1, ILV with Lq neighborhoods converges almost surely to the societal optimal point.",
@@ -1885,7 +1709,7 @@
       ],
       "source_kind": "model",
       "source_location": "audit/cited publication:118-194; audit/cited publication:449-465; audit/cited publication:627-637",
-      "source_note": "This is the source-model prerequisite for the selected Theorem 3 result, not a second paper claim. Its expected normalized-gradient field is tied directly to source subgradients of the voters' utilities. The finite projected-space alternative is retained as a separately labelled supplementary theorem, not as a source-model premise.",
+      "source_note": "This is a claim-bearing source-model statement supporting the selected Theorem 3 result, rather than a second numbered conclusion. Its expected normalized-gradient field is tied directly to source subgradients of the voters' utilities. The finite projected-space alternative is retained as a separately labelled supplementary theorem, not as a source-model premise.",
       "statement": "Theorem 3's source model: a general-population iid full-space Model B trace with the literal expectation field, its stated uniform-continuity premise, and the directional-equilibrium endpoint."
     }
   },
@@ -1909,6 +1733,10 @@
     "GKGMM19IterativeLocalVoting.theorem3_population_iid_trace_source_formula": "theorem3_projected_source_model",
     "GKGMM19IterativeLocalVoting.utilityBoundedOnSolutionSpaceFormulaData": "ilv_background_geometry_and_bounded_utility_formula",
     "GKGMM19IterativeLocalVoting.weightedEuclideanJointSampleFormulaData": "definition2_weighted_euclidean_utilities_formula"
+  },
+  "publication_corrected_target_projection": {
+    "approval_material_included": false,
+    "schema": 1
   },
   "publication_source_display_projection": {
     "manifest": "audit/public_source_display_projection.json",

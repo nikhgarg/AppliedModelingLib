@@ -1,0 +1,761 @@
+{
+  "schema": 2,
+  "paper": "FalahatgarEtAl2017MaxingRanking",
+  "report_sha256": "e6150f03deb444e09038fb604c58e4ea886d7a53c873aeae87d8ca23d72ff02b",
+  "source_items_sha256": "3e281ab04ec6b2be7e93c9301ecf33a0b078f94eca9c268bfbb2f22a466b592d",
+  "all_selected_semantic_review_sha256": "21c753ed841fa9243a6c9c9ca96dc48fa83e89299bd34f5d33e25a5b889c535a",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/FMR17-LEMMA5-CARDINALITY-TYPO-03": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "411e906b2c25795f40d771e64f2b49a5454d931ffe6176799c0e049ba080408c",
+      "source_reading": "Main Lemma 5 and Supplement Lemma 15 say that Prune outputs a set of size less than 2n'; Main Lemma 5 also retains its weak cutoff, confidence, comparison-rate, and conditional absolute-maximum clauses.",
+      "report_home": 4,
+      "memo_heading": "Prune output size",
+      "memo_anchor": "prune-output-size"
+    },
+    "defect/FMR17-ALGORITHM7-DISPLAY-TYPOS-02": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "411e906b2c25795f40d771e64f2b49a5454d931ffe6176799c0e049ba080408c",
+      "source_reading": "Algorithm 7 fills the reverse pair entry from the forward estimate and selects an arm whose estimated pairwise probabilities are at least one half minus the accuracy threshold; Lemma 20 concludes that the resulting procedure returns an epsilon-ranking with probability at least 1-delta.",
+      "report_home": 4,
+      "memo_heading": "Algorithm 7: complementary estimates and threshold",
+      "memo_anchor": "algorithm-7-complementary-estimates-and-threshold"
+    },
+    "source/lemma15/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "411e906b2c25795f40d771e64f2b49a5454d931ffe6176799c0e049ba080408c",
+      "source_reading": "lemma15",
+      "report_home": 4,
+      "memo_heading": "Prune output size",
+      "memo_anchor": "prune-output-size"
+    },
+    "source/lemma5/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "411e906b2c25795f40d771e64f2b49a5454d931ffe6176799c0e049ba080408c",
+      "source_reading": "lemma5",
+      "report_home": 4,
+      "memo_heading": "Prune output size",
+      "memo_anchor": "prune-output-size"
+    },
+    "report/fixed-estimator-and-pick-anchor-readings": {
+      "disposition": "not_material",
+      "reason": "The visually checked sample counts and confidence/cutoff glyphs correct text extraction only. The finite 1+log envelopes imply the same source rates on 0<delta<=1/2 and do not change the paper claims."
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "22407a45267c62e11b46ea3a6c7c392099d91dae0c469274936b6a3461c59e09",
+      "discovered_named_result_sha256": "d9fc2a24a342f87e2a988acf2dd0f0ff6fb0e8fabcbdb0d37aad8dab867e4219",
+      "source_format": "text",
+      "results": {
+        "lemma1": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 220,
+              "line_start": 206,
+              "presentation": "text_heading",
+              "presentation_sha256": "0d39c7c7218979244eaafb0181ee01e8c4d9ffaa348f3a5f8bf26a3fe59f14a7",
+              "source_item_id": "lemma1",
+              "source_label": "Lemma 1"
+            }
+          ],
+          "source_item_ids": [
+            "lemma1"
+          ]
+        },
+        "lemma10": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 768,
+              "line_start": 764,
+              "presentation": "text_heading",
+              "presentation_sha256": "a9d67fdbb8d0c62f1138dd88d62a1bea210f5e923ea37f57472425df398a49bb",
+              "source_item_id": "lemma10",
+              "source_label": "Lemma 10"
+            }
+          ],
+          "source_item_ids": [
+            "lemma10"
+          ]
+        },
+        "lemma11": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 779,
+              "line_start": 779,
+              "presentation": "text_heading",
+              "presentation_sha256": "fb634c6e2583f01681526f21529ffbb989e266f80ef1e4dcc8dd450fb40375a3",
+              "source_item_id": "lemma11",
+              "source_label": "Lemma 11"
+            }
+          ],
+          "source_item_ids": [
+            "lemma11"
+          ]
+        },
+        "lemma12": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 811,
+              "line_start": 811,
+              "presentation": "text_heading",
+              "presentation_sha256": "4e43aa5f578f702804fd07b4d139f4c61e1d257271d5c8b0d1c3ec05c72e1776",
+              "source_item_id": "lemma12",
+              "source_label": "Lemma 12"
+            }
+          ],
+          "source_item_ids": [
+            "lemma12"
+          ]
+        },
+        "lemma13": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 923,
+              "line_start": 923,
+              "presentation": "text_heading",
+              "presentation_sha256": "702b14b15ba011bb437624843d0f8d4524e581f0bd04c6892ee43265fe1c2437",
+              "source_item_id": "lemma13",
+              "source_label": "Lemma 13"
+            }
+          ],
+          "source_item_ids": [
+            "lemma13"
+          ]
+        },
+        "lemma14": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 948,
+              "line_start": 943,
+              "presentation": "text_heading",
+              "presentation_sha256": "4c95eddb36ae6501fa6d89a4cb1dc76bf8db7fb74e9c429a0647a3121e4cf239",
+              "source_item_id": "lemma14",
+              "source_label": "Lemma 14"
+            }
+          ],
+          "source_item_ids": [
+            "lemma14"
+          ]
+        },
+        "lemma15": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 984,
+              "line_start": 974,
+              "presentation": "text_heading",
+              "presentation_sha256": "a5e87617797b8c388af722e6a39480a2e1f8fe7796c347cd6ecd86b4830d06f6",
+              "source_item_id": "lemma15",
+              "source_label": "Lemma 15"
+            }
+          ],
+          "source_item_ids": [
+            "lemma15"
+          ]
+        },
+        "lemma16": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1054,
+              "line_start": 1051,
+              "presentation": "text_heading",
+              "presentation_sha256": "e7f9ae5f52bc9e0aa04b1c4005605dca028a06ce613b44a3e525c8c3c2ef485b",
+              "source_item_id": "lemma16",
+              "source_label": "Lemma 16"
+            }
+          ],
+          "source_item_ids": [
+            "lemma16"
+          ]
+        },
+        "lemma17": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1077,
+              "line_start": 1071,
+              "presentation": "text_heading",
+              "presentation_sha256": "cc9c4c29473d7dc6343ec8f75d2c483cf88d967d3b9b3f1c1d3f9d20f2ef3d4a",
+              "source_item_id": "lemma17",
+              "source_label": "Lemma 17"
+            }
+          ],
+          "source_item_ids": [
+            "lemma17"
+          ]
+        },
+        "lemma18": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1094,
+              "line_start": 1091,
+              "presentation": "text_heading",
+              "presentation_sha256": "d3586c042dbb5ef987e2e2318bbd27456a7430d7c9b85259d4594aacf4ce06e1",
+              "source_item_id": "lemma18",
+              "source_label": "Lemma 18"
+            }
+          ],
+          "source_item_ids": [
+            "lemma18"
+          ]
+        },
+        "lemma19": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1177,
+              "line_start": 1176,
+              "presentation": "text_heading",
+              "presentation_sha256": "d3815012e1d430b5634561f947f05a647a59f44ded6c27f858835054c5175bc6",
+              "source_item_id": "lemma19",
+              "source_label": "Lemma 19"
+            }
+          ],
+          "source_item_ids": [
+            "lemma19"
+          ]
+        },
+        "lemma20": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1203,
+              "line_start": 1202,
+              "presentation": "text_heading",
+              "presentation_sha256": "fdac4f1d16915bfd6bb41ffb87ea0afe94592749def6ff0ad28129c881e238a7",
+              "source_item_id": "lemma20",
+              "source_label": "Lemma 20"
+            }
+          ],
+          "source_item_ids": [
+            "lemma20"
+          ]
+        },
+        "lemma21": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1243,
+              "line_start": 1242,
+              "presentation": "text_heading",
+              "presentation_sha256": "a53ced7a2a42b027da7028b3c20fce59b3d6849a2141fc2f38504fae6a0c4cfd",
+              "source_item_id": "lemma21",
+              "source_label": "Lemma 21"
+            }
+          ],
+          "source_item_ids": [
+            "lemma21"
+          ]
+        },
+        "lemma3": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 281,
+              "line_start": 279,
+              "presentation": "text_heading",
+              "presentation_sha256": "3eb25d7976c81bd157023ec402185400c09df748f4bbf5ba1758264c0f8db057",
+              "source_item_id": "lemma3",
+              "source_label": "Lemma 3"
+            }
+          ],
+          "source_item_ids": [
+            "lemma3"
+          ]
+        },
+        "lemma5": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 336,
+              "line_start": 330,
+              "presentation": "text_heading",
+              "presentation_sha256": "c5e73a33e902be66816d7b27ffeb8b5f399e24606101fcf449bb73869a24c89e",
+              "source_item_id": "lemma5",
+              "source_label": "Lemma 5"
+            }
+          ],
+          "source_item_ids": [
+            "lemma5"
+          ]
+        },
+        "remark4": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 286,
+              "line_start": 282,
+              "presentation": "text_heading",
+              "presentation_sha256": "c3989a9a5cdb58cb8dcd963995c7c3a65bf7457ba9f10e0d1b62e5e73ef77173",
+              "source_item_id": "remark4",
+              "source_label": "Remark 4"
+            }
+          ],
+          "source_item_ids": [
+            "remark4"
+          ]
+        },
+        "sst_maximum_ranking_existence": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 91,
+              "line_start": 90,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "d4e7b1e91e975c8cd25cf42b42f88aeb2fa1e4a340ed16c36366365cfc367e2c",
+              "source_item_id": "sst_maximum_ranking_existence",
+              "source_label": "Finite SST maximum-and-ranking existence claim"
+            }
+          ],
+          "source_item_ids": [
+            "sst_maximum_ranking_existence",
+            "strong_stochastic_transitivity"
+          ]
+        },
+        "theorem2": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 247,
+              "line_start": 239,
+              "presentation": "text_heading",
+              "presentation_sha256": "9b8d29e048d6f69715ffc8688ea80488e70c47f0ef2e18d01072b69d1e0ebfa4",
+              "source_item_id": "theorem2",
+              "source_label": "Theorem 2"
+            }
+          ],
+          "source_item_ids": [
+            "theorem2"
+          ]
+        },
+        "theorem22": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1263,
+              "line_start": 1258,
+              "presentation": "text_heading",
+              "presentation_sha256": "ba9719caf18d42811358cbf103f799761fb1da03290bd41def5a22c6ae441491",
+              "source_item_id": "theorem22",
+              "source_label": "Theorem 22"
+            }
+          ],
+          "source_item_ids": [
+            "theorem22"
+          ]
+        },
+        "theorem6": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 364,
+              "line_start": 363,
+              "presentation": "text_heading",
+              "presentation_sha256": "341671416c4412eab2d243312eb08474ef4a3ada4e31024432662ef157542146",
+              "source_item_id": "theorem6",
+              "source_label": "Theorem 6"
+            }
+          ],
+          "source_item_ids": [
+            "theorem6"
+          ]
+        },
+        "theorem7": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 414,
+              "line_start": 408,
+              "presentation": "text_heading",
+              "presentation_sha256": "40d0330c613075b558e3fa6015dac4d0505c70efabb1cd10df595a2d9325812f",
+              "source_item_id": "theorem7",
+              "source_label": "Theorem 7"
+            }
+          ],
+          "source_item_ids": [
+            "theorem7"
+          ]
+        },
+        "theorem8": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 448,
+              "line_start": 431,
+              "presentation": "text_heading",
+              "presentation_sha256": "4de46c8814e6d0c824e28a4399044938da5b85a2dce49b5addf4edf15b60d897",
+              "source_item_id": "theorem8",
+              "source_label": "Theorem 8"
+            }
+          ],
+          "source_item_ids": [
+            "theorem8"
+          ]
+        },
+        "theorem9": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 453,
+              "line_start": 449,
+              "presentation": "text_heading",
+              "presentation_sha256": "4ff91da75680901e240db6c5ed5ea937f6bdc85d418317944eeeff116f30c2ba",
+              "source_item_id": "theorem9",
+              "source_label": "Theorem 9"
+            }
+          ],
+          "source_item_ids": [
+            "theorem9"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "6e3a61e9fcb77fdf6eb73e4a484681cd37d5860a2024b32fb22fbf93f0d5089a",
+    "results": {
+      "lemma1": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Finite SST existence; Lemmas 1 and 3; Remark 4; Theorems 2 and 7–9; Supplemental Theorem 22",
+            "row_sha256": "c67cf4dfe28ed9d1f6d691c829b708e1a5e8491e6fbf41ec39fed18c7e9a821b"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "lemma10": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 10",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Supplemental Lemmas 10–14, 16, 18, and 21",
+            "row_sha256": "4bdc84a34ae28d2666be9a83edc20e6a89f9f866cd2e186c67e915e84c4154d7"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "lemma11": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 11",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Supplemental Lemmas 10–14, 16, 18, and 21",
+            "row_sha256": "4bdc84a34ae28d2666be9a83edc20e6a89f9f866cd2e186c67e915e84c4154d7"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "lemma12": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 12",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Supplemental Lemmas 10–14, 16, 18, and 21",
+            "row_sha256": "4bdc84a34ae28d2666be9a83edc20e6a89f9f866cd2e186c67e915e84c4154d7"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "lemma13": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 13",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Supplemental Lemmas 10–14, 16, 18, and 21",
+            "row_sha256": "4bdc84a34ae28d2666be9a83edc20e6a89f9f866cd2e186c67e915e84c4154d7"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "lemma14": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 14",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Supplemental Lemmas 10–14, 16, 18, and 21",
+            "row_sha256": "4bdc84a34ae28d2666be9a83edc20e6a89f9f866cd2e186c67e915e84c4154d7"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "lemma15": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 15",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Main Lemma 5; Supplemental Lemma 15",
+            "row_sha256": "8c474daeec49638a7dc69d419fc61d13ba641e7d534cfac1b5c79182b6d07c1d"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "lemma16": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 16",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Supplemental Lemmas 10–14, 16, 18, and 21",
+            "row_sha256": "4bdc84a34ae28d2666be9a83edc20e6a89f9f866cd2e186c67e915e84c4154d7"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "lemma17": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 17",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 6; Supplemental Lemma 17",
+            "row_sha256": "b984fcfda52fb0efc91c6b7cab5d2ae8a50d16a9c855a8493fcd52ba1187f986"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "lemma18": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 18",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Supplemental Lemmas 10–14, 16, 18, and 21",
+            "row_sha256": "4bdc84a34ae28d2666be9a83edc20e6a89f9f866cd2e186c67e915e84c4154d7"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "lemma19": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 19",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Algorithm 7; Lemmas 19–20",
+            "row_sha256": "d550a2454e6447f767eac70ce66c4a403a64a6ff14603da6eb90a72eedeb19a9"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "lemma20": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 20",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Algorithm 7; Lemmas 19–20",
+            "row_sha256": "d550a2454e6447f767eac70ce66c4a403a64a6ff14603da6eb90a72eedeb19a9"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "lemma21": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 21",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Supplemental Lemmas 10–14, 16, 18, and 21",
+            "row_sha256": "4bdc84a34ae28d2666be9a83edc20e6a89f9f866cd2e186c67e915e84c4154d7"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "lemma3": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Finite SST existence; Lemmas 1 and 3; Remark 4; Theorems 2 and 7–9; Supplemental Theorem 22",
+            "row_sha256": "c67cf4dfe28ed9d1f6d691c829b708e1a5e8491e6fbf41ec39fed18c7e9a821b"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "lemma5": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 5",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Main Lemma 5; Supplemental Lemma 15",
+            "row_sha256": "8c474daeec49638a7dc69d419fc61d13ba641e7d534cfac1b5c79182b6d07c1d"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "remark4": {
+        "numbering": "numbered",
+        "printed_label": "Remark 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Finite SST existence; Lemmas 1 and 3; Remark 4; Theorems 2 and 7–9; Supplemental Theorem 22",
+            "row_sha256": "c67cf4dfe28ed9d1f6d691c829b708e1a5e8491e6fbf41ec39fed18c7e9a821b"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "sst_maximum_ranking_existence": {
+        "numbering": "unnumbered",
+        "printed_label": "Unnumbered finite SST maximum-ranking existence statement",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Finite SST existence; Lemmas 1 and 3; Remark 4; Theorems 2 and 7–9; Supplemental Theorem 22",
+            "row_sha256": "c67cf4dfe28ed9d1f6d691c829b708e1a5e8491e6fbf41ec39fed18c7e9a821b"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "theorem2": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Finite SST existence; Lemmas 1 and 3; Remark 4; Theorems 2 and 7–9; Supplemental Theorem 22",
+            "row_sha256": "c67cf4dfe28ed9d1f6d691c829b708e1a5e8491e6fbf41ec39fed18c7e9a821b"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "theorem22": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 22",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Finite SST existence; Lemmas 1 and 3; Remark 4; Theorems 2 and 7–9; Supplemental Theorem 22",
+            "row_sha256": "c67cf4dfe28ed9d1f6d691c829b708e1a5e8491e6fbf41ec39fed18c7e9a821b"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "theorem6": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 6",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 6; Supplemental Lemma 17",
+            "row_sha256": "b984fcfda52fb0efc91c6b7cab5d2ae8a50d16a9c855a8493fcd52ba1187f986"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "theorem7": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 7",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Finite SST existence; Lemmas 1 and 3; Remark 4; Theorems 2 and 7–9; Supplemental Theorem 22",
+            "row_sha256": "c67cf4dfe28ed9d1f6d691c829b708e1a5e8491e6fbf41ec39fed18c7e9a821b"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "theorem8": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 8",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Finite SST existence; Lemmas 1 and 3; Remark 4; Theorems 2 and 7–9; Supplemental Theorem 22",
+            "row_sha256": "c67cf4dfe28ed9d1f6d691c829b708e1a5e8491e6fbf41ec39fed18c7e9a821b"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      },
+      "theorem9": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 9",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Finite SST existence; Lemmas 1 and 3; Remark 4; Theorems 2 and 7–9; Supplemental Theorem 22",
+            "row_sha256": "c67cf4dfe28ed9d1f6d691c829b708e1a5e8491e6fbf41ec39fed18c7e9a821b"
+          }
+        ],
+        "grouping_reason": "The report groups results with the same source comparison."
+      }
+    },
+    "rows": {
+      "c67cf4dfe28ed9d1f6d691c829b708e1a5e8491e6fbf41ec39fed18c7e9a821b": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "8c474daeec49638a7dc69d419fc61d13ba641e7d534cfac1b5c79182b6d07c1d": {
+        "explanation_keys": [
+          "defect/FMR17-LEMMA5-CARDINALITY-TYPO-03",
+          "source/lemma15/corrected_target",
+          "source/lemma5/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "d550a2454e6447f767eac70ce66c4a403a64a6ff14603da6eb90a72eedeb19a9": {
+        "explanation_keys": [
+          "defect/FMR17-ALGORITHM7-DISPLAY-TYPOS-02"
+        ],
+        "supplemental_reason": ""
+      },
+      "4bdc84a34ae28d2666be9a83edc20e6a89f9f866cd2e186c67e915e84c4154d7": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "b984fcfda52fb0efc91c6b7cab5d2ae8a50d16a9c855a8493fcd52ba1187f986": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

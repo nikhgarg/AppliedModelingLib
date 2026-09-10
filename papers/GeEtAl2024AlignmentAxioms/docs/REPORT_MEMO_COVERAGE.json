@@ -1,0 +1,585 @@
+{
+  "all_selected_semantic_review_sha256": "7074bfd950d7aa29b305ce31aaecd3370e7202141808de99080c09633b22653d",
+  "items": {
+    "convention/GE24-C5-LOCAL-WLOG-SELECTION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "rule-level-tie-conventions",
+      "memo_heading": "Rule-level tie conventions",
+      "memo_sha256": "7c39d809159f5fd1a886e84b3f3458dabb8bf8dc27dd320e26eac1c5d08104dd",
+      "report_home": 4,
+      "source_reading": "For the finite C.5 construction, Lean assumes only the source proof's displayed local choice that the rule outputs v1 on the first profile. On every source-feasible profile it otherwise requires only Pareto-constrained Kemeny minimization; it does not assume a global tie key or a profile-independent tie-selection law."
+    },
+    "convention/GE24-C6-FIXED-TIE-CONVENTION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "rule-level-tie-conventions",
+      "memo_heading": "Rule-level tie conventions",
+      "memo_sha256": "7c39d809159f5fd1a886e84b3f3458dabb8bf8dc27dd320e26eac1c5d08104dd",
+      "report_home": 4,
+      "source_reading": "Lean makes each sequential Leximax Plurality choice deterministic by using a fixed candidate-index order only when plurality scores tie. A strictly higher plurality score always wins, and the same fixed tie choice applies at every profile and prefix."
+    },
+    "defect/GE24-APPENDIX-A1-ONE-SIDED-DERIVATIVE-03": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "appendix-a1-one-sided-derivatives",
+      "memo_heading": "Appendix A.1: one-sided derivatives",
+      "memo_sha256": "7c39d809159f5fd1a886e84b3f3458dabb8bf8dc27dd320e26eac1c5d08104dd",
+      "report_home": 7,
+      "source_reading": "Appendix A.1 uses point-selection and derivative reasoning to obtain the four finite inequalities needed for Lemma 3.2, but later abbreviates the selected points at a different scale."
+    },
+    "defect/GE24-LEMMA32-INTERIOR-WEIGHT-05": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "appendix-a1-one-sided-derivatives",
+      "memo_heading": "Appendix A.1: one-sided derivatives",
+      "memo_sha256": "7c39d809159f5fd1a886e84b3f3458dabb8bf8dc27dd320e26eac1c5d08104dd",
+      "report_home": 7,
+      "source_reading": "Lemma 3.2 permits a rational weight in (1/2, 1], while its minimizer-existence proof uses two-sided coercivity of the weighted loss."
+    },
+    "defect/GE24-LEMMA34-WEAK-RELATION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "lemmas-3435-the-perturbation-seam",
+      "memo_heading": "Lemmas 3.4--3.5: the perturbation seam",
+      "memo_sha256": "7c39d809159f5fd1a886e84b3f3458dabb8bf8dc27dd320e26eac1c5d08104dd",
+      "report_home": 4,
+      "source_reading": "The printed Lemma 3.4 uses the weak region R_{c-prime over c} at epsilon zero as the optimizer-containment premise for perturbation stability."
+    },
+    "defect/GE24-LEMMA35-WEAK-HALFSPACE-02": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "lemmas-3435-the-perturbation-seam",
+      "memo_heading": "Lemmas 3.4--3.5: the perturbation seam",
+      "memo_sha256": "7c39d809159f5fd1a886e84b3f3458dabb8bf8dc27dd320e26eac1c5d08104dd",
+      "report_home": 4,
+      "source_reading": "The printed Lemma 3.5 claims that the weak epsilon-zero optimizer containment suffices for a strict positive-epsilon infimum gap and argues through an open-set stability step."
+    },
+    "defect/GE24-RULE-LEVEL-TIE-CONVENTION-04": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "rule-level-tie-conventions",
+      "memo_heading": "Rule-level tie conventions",
+      "memo_sha256": "7c39d809159f5fd1a886e84b3f3458dabb8bf8dc27dd320e26eac1c5d08104dd",
+      "report_home": 4,
+      "source_reading": "The source permits arbitrary or consistent ties while stating winner-monotonicity and separability as properties of aggregation rules."
+    },
+    "defect/GE24-SIX-CANDIDATE-FORWARD-WITNESS-06": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "six-candidate-feasibility-witness",
+      "memo_heading": "Six-candidate feasibility witness",
+      "memo_sha256": "7c39d809159f5fd1a886e84b3f3458dabb8bf8dc27dd320e26eac1c5d08104dd",
+      "report_home": 10,
+      "source_reading": "Footnote 7 says the forward six-candidate ranking is induced by parameter (1,1)."
+    },
+    "defect/GE24-THEOREM31-POSITIVE-INFIMUM-DIRECTION-07": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "theorem-31-positive-input-branch-restricted-infimum-sign",
+      "memo_heading": "Theorem 3.1 positive-input branch: restricted-infimum sign",
+      "memo_sha256": "7c39d809159f5fd1a886e84b3f3458dabb8bf8dc27dd320e26eac1c5d08104dd",
+      "report_home": 4,
+      "source_reading": "In the positive-input branch of Theorem 3.1, after correctly asserting that every negative input has loss above loss(0), the proof prints inf_{y <= 0} loss(y) < inf_y loss(y) and later says the unanimous-order loss is lower bounded by loss(0) from above."
+    },
+    "defect/GE24-THEOREM37-PROOF-WITNESS-LOCATION-08": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "post-theorem-37-proof-location-sentence",
+      "memo_heading": "Post-Theorem 3.7 proof-location sentence",
+      "memo_sha256": "7c39d809159f5fd1a886e84b3f3458dabb8bf8dc27dd320e26eac1c5d08104dd",
+      "report_home": 7,
+      "source_reading": "The paragraph after Theorem 3.7 says its Appendix-A.6 proof constructs a profile with a PMC ranking that is not linearly feasible."
+    },
+    "source/lemma3_4/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "lemmas-3435-the-perturbation-seam",
+      "memo_heading": "Lemmas 3.4--3.5: the perturbation seam",
+      "memo_sha256": "7c39d809159f5fd1a886e84b3f3458dabb8bf8dc27dd320e26eac1c5d08104dd",
+      "report_home": 4,
+      "source_reading": "lemma3_4"
+    },
+    "source/lemma3_5/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "lemmas-3435-the-perturbation-seam",
+      "memo_heading": "Lemmas 3.4--3.5: the perturbation seam",
+      "memo_sha256": "7c39d809159f5fd1a886e84b3f3458dabb8bf8dc27dd320e26eac1c5d08104dd",
+      "report_home": 4,
+      "source_reading": "lemma3_5"
+    },
+    "source/theorem3_7_and_attached_consequences/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "post-theorem-37-proof-location-sentence",
+      "memo_heading": "Post-Theorem 3.7 proof-location sentence",
+      "memo_sha256": "7c39d809159f5fd1a886e84b3f3458dabb8bf8dc27dd320e26eac1c5d08104dd",
+      "report_home": 7,
+      "source_reading": "theorem3_7_and_attached_consequences"
+    }
+  },
+  "paper": "GeEtAl2024AlignmentAxioms",
+  "report_inventory_complete": true,
+  "report_sha256": "ed1d154947a603daf4dbd9f83841193c3a91d036c15faa8413a4e9744cb96852",
+  "result_table": {
+    "complete": true,
+    "results": {
+      "appendix_b_unique_pmc_infeasible_example": {
+        "grouping_reason": "The report groups the unnumbered Appendix B construction with the adjacent exact results.",
+        "numbering": "unnumbered",
+        "printed_label": "Appendix B infeasibility example",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Definition 2.2; Lemmas 3.2–3.3; Theorems 3.6–3.7; Appendix B; Theorem C.4",
+            "row_sha256": "09931274e62bdc750a27cf84a9f2d20cfa1b5b5e0cc57bc34a4607850e1faf58"
+          }
+        ]
+      },
+      "lemma3_2": {
+        "grouping_reason": "The report groups the unnumbered Appendix B construction with the adjacent exact results.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 3.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Definition 2.2; Lemmas 3.2–3.3; Theorems 3.6–3.7; Appendix B; Theorem C.4",
+            "row_sha256": "09931274e62bdc750a27cf84a9f2d20cfa1b5b5e0cc57bc34a4607850e1faf58"
+          }
+        ]
+      },
+      "lemma3_3": {
+        "grouping_reason": "The report groups the unnumbered Appendix B construction with the adjacent exact results.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 3.3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Definition 2.2; Lemmas 3.2–3.3; Theorems 3.6–3.7; Appendix B; Theorem C.4",
+            "row_sha256": "09931274e62bdc750a27cf84a9f2d20cfa1b5b5e0cc57bc34a4607850e1faf58"
+          }
+        ]
+      },
+      "lemma3_4": {
+        "grouping_reason": "The report groups the two perturbation lemmas that share one repaired proof seam.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 3.4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 3.4–3.5",
+            "row_sha256": "9c68e303fd5b73384adfb1abef34660f8eaba4234c91991a29fd3e48ba95b46f"
+          }
+        ]
+      },
+      "lemma3_5": {
+        "grouping_reason": "The report groups the two perturbation lemmas that share one repaired proof seam.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 3.5",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 3.4–3.5",
+            "row_sha256": "9c68e303fd5b73384adfb1abef34660f8eaba4234c91991a29fd3e48ba95b46f"
+          }
+        ]
+      },
+      "theorem3_1": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3.1",
+            "row_sha256": "c4f2a992fdb86180bc02f2c68f1875bcfdb6e340727380ba0f033c8d36ce5e0a"
+          }
+        ]
+      },
+      "theorem3_6": {
+        "grouping_reason": "The report groups the unnumbered Appendix B construction with the adjacent exact results.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 3.6",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Definition 2.2; Lemmas 3.2–3.3; Theorems 3.6–3.7; Appendix B; Theorem C.4",
+            "row_sha256": "09931274e62bdc750a27cf84a9f2d20cfa1b5b5e0cc57bc34a4607850e1faf58"
+          }
+        ]
+      },
+      "theorem3_7_and_attached_consequences": {
+        "grouping_reason": "The report groups the unnumbered Appendix B construction with the adjacent exact results.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 3.7",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Definition 2.2; Lemmas 3.2–3.3; Theorems 3.6–3.7; Appendix B; Theorem C.4",
+            "row_sha256": "09931274e62bdc750a27cf84a9f2d20cfa1b5b5e0cc57bc34a4607850e1faf58"
+          }
+        ]
+      },
+      "theorem4_3": {
+        "grouping_reason": "The report groups the rule-level results sharing the fixed tie-key scope.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 4.3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 4.3; Theorems C.2–C.3; Theorem C.6",
+            "row_sha256": "ad611178192e607aaa9cd113653a0b76b216f5c6fafeabd1518d1d1dc56cd56a"
+          }
+        ]
+      },
+      "theoremC_2": {
+        "grouping_reason": "The report groups the rule-level results sharing the fixed tie-key scope.",
+        "numbering": "numbered",
+        "printed_label": "Theorem C.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 4.3; Theorems C.2–C.3; Theorem C.6",
+            "row_sha256": "ad611178192e607aaa9cd113653a0b76b216f5c6fafeabd1518d1d1dc56cd56a"
+          }
+        ]
+      },
+      "theoremC_3": {
+        "grouping_reason": "The report groups the rule-level results sharing the fixed tie-key scope.",
+        "numbering": "numbered",
+        "printed_label": "Theorem C.3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 4.3; Theorems C.2–C.3; Theorem C.6",
+            "row_sha256": "ad611178192e607aaa9cd113653a0b76b216f5c6fafeabd1518d1d1dc56cd56a"
+          }
+        ]
+      },
+      "theoremC_4": {
+        "grouping_reason": "The report groups the unnumbered Appendix B construction with the adjacent exact results.",
+        "numbering": "numbered",
+        "printed_label": "Theorem C.4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Definition 2.2; Lemmas 3.2–3.3; Theorems 3.6–3.7; Appendix B; Theorem C.4",
+            "row_sha256": "09931274e62bdc750a27cf84a9f2d20cfa1b5b5e0cc57bc34a4607850e1faf58"
+          }
+        ]
+      },
+      "theoremC_5": {
+        "numbering": "numbered",
+        "printed_label": "Theorem C.5",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem C.5",
+            "row_sha256": "c39769a5f906b9b2f9a5751b4b2bcc03ea18fae9fc4b3630413e185b5874c380"
+          }
+        ]
+      },
+      "theoremC_6": {
+        "grouping_reason": "The report groups the rule-level results sharing the fixed tie-key scope.",
+        "numbering": "numbered",
+        "printed_label": "Theorem C.6",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 4.3; Theorems C.2–C.3; Theorem C.6",
+            "row_sha256": "ad611178192e607aaa9cd113653a0b76b216f5c6fafeabd1518d1d1dc56cd56a"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "09931274e62bdc750a27cf84a9f2d20cfa1b5b5e0cc57bc34a4607850e1faf58": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "9c68e303fd5b73384adfb1abef34660f8eaba4234c91991a29fd3e48ba95b46f": {
+        "explanation_keys": [
+          "defect/GE24-LEMMA34-WEAK-RELATION-01",
+          "source/lemma3_4/corrected_target",
+          "defect/GE24-LEMMA35-WEAK-HALFSPACE-02",
+          "source/lemma3_5/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "ad611178192e607aaa9cd113653a0b76b216f5c6fafeabd1518d1d1dc56cd56a": {
+        "explanation_keys": [
+          "defect/GE24-RULE-LEVEL-TIE-CONVENTION-04",
+          "convention/GE24-C6-FIXED-TIE-CONVENTION-01"
+        ],
+        "supplemental_reason": ""
+      },
+      "c39769a5f906b9b2f9a5751b4b2bcc03ea18fae9fc4b3630413e185b5874c380": {
+        "explanation_keys": [
+          "convention/GE24-C5-LOCAL-WLOG-SELECTION-01",
+          "defect/GE24-RULE-LEVEL-TIE-CONVENTION-04"
+        ],
+        "supplemental_reason": ""
+      },
+      "c4f2a992fdb86180bc02f2c68f1875bcfdb6e340727380ba0f033c8d36ce5e0a": {
+        "explanation_keys": [
+          "defect/GE24-THEOREM31-POSITIVE-INFIMUM-DIRECTION-07"
+        ],
+        "supplemental_reason": ""
+      },
+      "f99b2b3d37833528f4480b3425e5312b5ea5a5410b43d54732d4b3a58a392156": {
+        "explanation_keys": [],
+        "supplemental_reason": "The footnote witness is a corrected source construction, not a separately selected named result."
+      }
+    },
+    "schema": 1,
+    "source_inventory": {
+      "discovered_named_result_sha256": "6a9c6584d6d930e1aeebfafa4ed05ad87c27418ff355aedbe1c4973295921a21",
+      "results": {
+        "appendix_b_unique_pmc_infeasible_example": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 1385,
+              "line_start": 1333,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "7b4c6a4e545d34f3e0acdaa4a566ac3026a231c5f1657df2d3fd0f1173e1d981",
+              "source_item_id": "appendix_b_unique_pmc_infeasible_example",
+              "source_label": "Appendix B PMC Infeasibility Example (cited publication:1333-1385)"
+            }
+          ],
+          "source_item_ids": [
+            "appendix_b_unique_pmc_infeasible_example"
+          ]
+        },
+        "lemma3_2": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 319,
+              "line_start": 318,
+              "presentation": "text_heading",
+              "presentation_sha256": "29869cf4f86828269aa9f23ddfc0ee1098e5a8c0080f27d7059ef5b19c001a53",
+              "source_item_id": "lemma3_2",
+              "source_label": "Lemma 3.2"
+            }
+          ],
+          "source_item_ids": [
+            "lemma3_2"
+          ]
+        },
+        "lemma3_3": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 349,
+              "line_start": 320,
+              "presentation": "text_heading",
+              "presentation_sha256": "c3ee8b2a9233ce4032c15bdcf5c5cd214507e4aafe5524fb9b1db1e3fbbb2424",
+              "source_item_id": "lemma3_3",
+              "source_label": "Lemma 3.3"
+            }
+          ],
+          "source_item_ids": [
+            "lemma3_3"
+          ]
+        },
+        "lemma3_4": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 351,
+              "line_start": 351,
+              "presentation": "text_heading",
+              "presentation_sha256": "7621538a99bab8b8a34724e0c2177a330190913539c20e90214c3c62683a5996",
+              "source_item_id": "lemma3_4",
+              "source_label": "Lemma 3.4"
+            }
+          ],
+          "source_item_ids": [
+            "lemma3_4"
+          ]
+        },
+        "lemma3_5": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 368,
+              "line_start": 353,
+              "presentation": "text_heading",
+              "presentation_sha256": "7a45009c7aba07e96a1bbf09d9f14d6972160b34b68eec08e1125bed4ce21ccd",
+              "source_item_id": "lemma3_5",
+              "source_label": "Lemma 3.5"
+            }
+          ],
+          "source_item_ids": [
+            "lemma3_5"
+          ]
+        },
+        "theorem3_1": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 269,
+              "line_start": 267,
+              "presentation": "text_heading",
+              "presentation_sha256": "a3b68de4d730a0fd9b9ffe50475e66bc7be2db786f62232fe06ae1483bd46d12",
+              "source_item_id": "theorem3_1",
+              "source_label": "Theorem 3.1"
+            }
+          ],
+          "source_item_ids": [
+            "theorem3_1"
+          ]
+        },
+        "theorem3_6": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 401,
+              "line_start": 389,
+              "presentation": "text_heading",
+              "presentation_sha256": "c94fb665be8b08d2e643b83fb9c78a7e5962fb91b3b9fa837c8318ab7761b709",
+              "source_item_id": "theorem3_6",
+              "source_label": "Theorem 3.6"
+            }
+          ],
+          "source_item_ids": [
+            "theorem3_6"
+          ]
+        },
+        "theorem3_7_and_attached_consequences": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 410,
+              "line_start": 402,
+              "presentation": "text_heading",
+              "presentation_sha256": "4c2bb8b21979e024cd4469021830d92c2f4e5b3b185a82a00622509fef900bc0",
+              "source_item_id": "theorem3_7_and_attached_consequences",
+              "source_label": "Theorem 3.7"
+            }
+          ],
+          "source_item_ids": [
+            "theorem3_7_and_attached_consequences"
+          ]
+        },
+        "theorem4_3": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 459,
+              "line_start": 459,
+              "presentation": "text_heading",
+              "presentation_sha256": "fa73b9ed894b28ddfbd5cb458ce602d0fdd184b1e4e6bd86a957f7452058fe4e",
+              "source_item_id": "theorem4_3",
+              "source_label": "Theorem 4.3"
+            }
+          ],
+          "source_item_ids": [
+            "theorem4_3"
+          ]
+        },
+        "theoremC_2": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1399,
+              "line_start": 1398,
+              "presentation": "text_heading",
+              "presentation_sha256": "872012c99e4d99a43cfcdd9b5ed2d4212c75ef8920026da7cf6a297bb939b73e",
+              "source_item_id": "theoremC_2",
+              "source_label": "Theorem C.2"
+            }
+          ],
+          "source_item_ids": [
+            "theoremC_2"
+          ]
+        },
+        "theoremC_3": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1450,
+              "line_start": 1450,
+              "presentation": "text_heading",
+              "presentation_sha256": "44651036b731f344741e8deb8c539773dbe3709843454e95e291ad3762cbb260",
+              "source_item_id": "theoremC_3",
+              "source_label": "Theorem C.3"
+            }
+          ],
+          "source_item_ids": [
+            "theoremC_3"
+          ]
+        },
+        "theoremC_4": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1457,
+              "line_start": 1457,
+              "presentation": "text_heading",
+              "presentation_sha256": "c09e7cc7a95c212e0bfed1ba0888d99573f7418d4a06de59d7bb05bff73c18bc",
+              "source_item_id": "theoremC_4",
+              "source_label": "Theorem C.4"
+            }
+          ],
+          "source_item_ids": [
+            "theoremC_4"
+          ]
+        },
+        "theoremC_5": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1509,
+              "line_start": 1509,
+              "presentation": "text_heading",
+              "presentation_sha256": "fe750e36433e7ecd29debaba613a1d1bfd44587c2537ec9e6e8f5e65ebd97065",
+              "source_item_id": "theoremC_5",
+              "source_label": "Theorem C.5"
+            }
+          ],
+          "source_item_ids": [
+            "theoremC_5"
+          ]
+        },
+        "theoremC_6": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1544,
+              "line_start": 1543,
+              "presentation": "text_heading",
+              "presentation_sha256": "5409996201b410b18457ee2d4f64a7507e3d6af8b08b81af5ef8d3220effadbf",
+              "source_item_id": "theoremC_6",
+              "source_label": "Theorem C.6"
+            }
+          ],
+          "source_item_ids": [
+            "theoremC_6"
+          ]
+        }
+      },
+      "schema": 1,
+      "source_artifact_sha256": "f529f160b3948006993860690b17106037212012b0dfe25d9d76ef013eed22b6",
+      "source_format": "text"
+    },
+    "source_inventory_sha256": "6eb2ffe13471c8a8b12111d5371f4cb447ec21cb1977913322ed076629b99ce7"
+  },
+  "schema": 2,
+  "source_items_sha256": "e115f3545799cdfe4a0cf35d08bee9a15d94ffa9bb2cb32706ad8c7882b0f5d8"
+}

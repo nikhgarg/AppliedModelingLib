@@ -34,4 +34,4 @@ Source: the official NeurIPS 2024 paper.
 ## Rule-level tie conventions
 
 - The LCPO, Copeland, and leximax-plurality correspondences → selectors with profile-independent candidate or ranking tie keys in the checked rule-level results. A single-valued selector need not admit such a key; necessity of this restriction for the broader claims is not established. LCPO means leximax Copeland subject to Pareto optimality.
-- Theorem C.5's “without loss of generality” first-profile output → an explicit premise that the Pareto-Kemeny rule returns the source ranking `v1` there. The reduction from every selector to that local case remains a formalization gap; necessity of the local choice is unknown.
+- Theorem C.5's “without loss of generality” first-profile output → an explicit premise that the Pareto-Kemeny rule returns the source ranking `v1` there. This premise is mathematically necessary for the source proof route: `c4Ranking_v2` is a distinct feasible Pareto-Kemeny minimizer on the same first profile, formalized by `c4Ranking_v2_isParetoKemenyMinimizer`. The broader fixed-key selector question remains separate.

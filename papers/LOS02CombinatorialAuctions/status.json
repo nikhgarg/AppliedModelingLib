@@ -22,7 +22,14 @@
   },
   "human_summary": "The auction, greedy approximation, critical-price, and truthfulness results are formalized; Theorem 6.1's native complexity conclusion is an explicit zero-proof partial boundary.",
   "id": "LOS02CombinatorialAuctions",
-  "main_caveat": "Partial-formalization boundary: the external computational-complexity consequences for the native Theorem 6.1 hardness and NP=ZPP claims remain reusable library infrastructure work.",
+  "main_caveat": "Partial-formalization boundary: reusable runtime composition for Theorem 6.1 is now explicit, and the shared library now has encoding-aware costed-map contracts plus verified unary finite-index, unary-Nat, generic finite-carrier, Boolean-incidence, and finite-set encodings with round trips. The graph reduction now has exact adjacency-input and combined-output size witnesses, including a polynomial bound in encoded input length, and the executable ordered-good representation is proved equivalent to graph-independent-set feasibility. A symmetric loop-free Boolean-table adapter now recovers the corresponding SimpleGraph adjacency exactly, and the typed Boolean-table-to-ordered-incidence PolynomialTimeMap is proved pointwise equal to the executable incidence entries with separate emitted-cell and output-size bounds; encoded feasibility is also proved equivalent to graph-independent selection, while flattened map rows, row-derived feasibility, and the exact emitted-cell work count are proved to have exactly the intended ordered-incidence semantics. These semantic results are exported through ProofInterface. Arbitrary real-valued bids and source-faithful full-reduction step bounds remain IN PROGRESS; native polynomial-time semantics, hardness, approximation, and NP=ZPP consequences remain IN PROGRESS.",
+  "open_source_boundaries": [
+    {
+      "description": "Finite source/target encodings and output-size bounds are checked, including the executable FiniteGraphTable adjacency code of exact length n*n. A concrete machine step model for the full reduction, arbitrary real-valued bid representation, native hardness/approximation semantics, and the NP=ZPP implication remain unresolved.",
+      "id": "LOS02-NATIVE-COMPLEXITY-BOUNDARY-2026-09-08",
+      "status": "IN PROGRESS"
+    }
+  ],
   "paper_interface": {
     "declaration_rows": 12,
     "line_count": 139,

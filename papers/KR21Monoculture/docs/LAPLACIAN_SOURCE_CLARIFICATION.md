@@ -12,3 +12,5 @@
   Density normalization cancels from the comparison. Integrating the weak
   global inequality with strictness on a positive-mass overlap region supplies
   the downstream strict Laplace ranking comparison.
+
+The [full explanation and downstream consequences](LAPLACIAN_LEMMA1_SOURCE_NOTE.md) give the source comparison and complete four-point calculation.

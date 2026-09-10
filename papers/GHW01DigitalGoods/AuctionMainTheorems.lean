@@ -1192,6 +1192,61 @@ theorem paper_aux_theorem6_2_selected_offer_large_sample_count_of_alpha_h
     exact (mul_le_mul_iff_of_pos_right hh_pos).mp hmul
   exact_mod_cast halpha_real
 
+/-! A real-parameter version of the selected-offer bridge.  The surrounding
+finite tail argument still uses the natural count `⌈alpha⌉`; this lemma keeps
+the source scale condition real until that final integerization step. -/
+theorem paper_aux_theorem6_2_selected_offer_large_sample_count_of_real_alpha_h
+    {Agent : Type*} [Fintype Agent] [Nonempty Agent] [DecidableEq Agent]
+    (side : Agent → Bool) (keep : Bool)
+    (values : Agent → ℝ) {minWinners : ℕ} {alpha p h : ℝ}
+    (hmin : 1 ≤ minWinners)
+    (hp : 0 ≤ p)
+    (hh_pos : 0 < h)
+    (halpha_sale : alpha ≤ saleCount values p)
+    (hlarge_real : 3 * (minWinners : ℝ) ≤ saleCount values p)
+    (hvalue_bound : ∀ i, values i ≤ h)
+    (halpha_h : alpha * h ≤ singlePriceRevenue values p)
+    (hthird :
+      saleCount values p ≤ 3 * sideSaleCount side keep values p) :
+    alpha ≤
+      3 * sideSaleCount side keep values
+        (finiteCandidateOfferPrice
+          (restrictBidsBySide side keep values) minWinners) := by
+  classical
+  let q : ℝ :=
+    finiteCandidateOfferPrice
+      (restrictBidsBySide side keep values) minWinners
+  let sampleBenchmark : ℝ :=
+    finiteCandidateFixedPriceBenchmark
+      (restrictBidsBySide side keep values) minWinners
+  have hlarge : 3 * minWinners ≤ saleCount values p := by
+    exact_mod_cast hlarge_real
+  have hcount_min : minWinners ≤ sideSaleCount side keep values p := by
+    omega
+  have hfixed_le_sample :
+      singlePriceRevenue values p ≤ 3 * sampleBenchmark := by
+    simpa [sampleBenchmark] using
+      paper_theorem6_2_original_revenue_le_three_sample_benchmark
+        side keep values hmin hp hcount_min hthird
+  have hsample_le_count :
+      sampleBenchmark ≤
+        (sideSaleCount side keep values q : ℝ) * h := by
+    simpa [sampleBenchmark, q] using
+      finiteCandidateFixedPriceBenchmark_restrictBidsBySide_le_sideSaleCount_mul_bound
+        side keep values minWinners (le_of_lt hh_pos) hvalue_bound
+  have halpha_le_sample :
+      alpha * h ≤
+        3 * ((sideSaleCount side keep values q : ℝ) * h) := by
+    nlinarith
+  have halpha_real :
+      alpha ≤ 3 * (sideSaleCount side keep values q : ℝ) := by
+    have hmul :
+        alpha * h ≤
+          (3 * (sideSaleCount side keep values q : ℝ)) * h := by
+      simpa [mul_assoc, mul_left_comm, mul_comm] using halpha_le_sample
+    exact (mul_le_mul_iff_of_pos_right hh_pos).mp hmul
+  simpa [q] using halpha_real
+
 /--
 GHW Theorem 6.2, paper-constant fair-coin sampling guarantee from the
 selected-price large-sample bridge.

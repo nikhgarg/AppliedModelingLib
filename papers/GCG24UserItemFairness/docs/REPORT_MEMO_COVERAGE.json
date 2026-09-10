@@ -1,0 +1,907 @@
+{
+  "schema": 2,
+  "paper": "GCG24UserItemFairness",
+  "report_sha256": "0a2bf8846de599ef68fe1debf9b3d6695980d52ee71e5afc7b4db3caa8aa2bf1",
+  "source_items_sha256": "81325d635bea35ab0dacc78477cc5e60637a206bcbb5572b128bd796b5571d6d",
+  "all_selected_semantic_review_sha256": "0c7a02121f89617cf81ea04cc60477d13fc6a555cf06752acaccd73aa117f9b6",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/GCG24-T4-POPULATION-MASS-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "f5d8b4ae748534f9fe064338e44f64515d5eea912c6f49d0910813713f1a8248",
+      "source_reading": "The main-text setup assigns mass beta to each known opposing group and prints mass 1 - beta for the new-user group.",
+      "memo_heading": "Theorem 4: population masses and positive tolerance ([Section 5, p. 7](https://openreview.net/pdf?id=ZOZjMs3JTs#page=7); [Appendix E, p. 39](https://openreview.net/pdf?id=ZOZjMs3JTs#page=39))",
+      "memo_anchor": "theorem-4-population-masses-and-positive-tolerance-section-5-p-7-appendix-e-p-39",
+      "report_home": 10
+    },
+    "defect/GCG24-E15-CENTER-MIRROR-01": {
+      "disposition": "memo",
+      "memo": "docs/APPENDIX_E_LEMMA15_SOURCE_NOTE.md",
+      "memo_sha256": "54f52245a171c6f9e0b78c7df54a7d29a421fee5aea189ebd6b07fd48274fa92",
+      "source_reading": "At the center pivot, the source displays lambda = (2 beta q_t + (1 - 2 beta)) / (1 + q_t L_t).",
+      "memo_heading": "Appendix E Lemma 15 Source Clarification",
+      "memo_anchor": "appendix-e-lemma-15-source-clarification",
+      "report_home": 4
+    },
+    "convention/GCG24-P2-EQUALITY-DEFINED-TYPE-PARTITION-01": {
+      "disposition": "not_material",
+      "reason": "The source defines types by equality of complete utility rows; no hypothesis or conclusion changes."
+    },
+    "convention/GCG24-T4-POPULATION-MASS-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "f5d8b4ae748534f9fe064338e44f64515d5eea912c6f49d0910813713f1a8248",
+      "source_reading": "The two known opposing types have masses beta and beta, and the cold-start type has mass 1 - 2 beta. The source's printed 1 - beta cold-start mass is replaced only for this normalized three-type construction; beta < 1/2 keeps that mass positive.",
+      "memo_heading": "Theorem 4: population masses and positive tolerance ([Section 5, p. 7](https://openreview.net/pdf?id=ZOZjMs3JTs#page=7); [Appendix E, p. 39](https://openreview.net/pdf?id=ZOZjMs3JTs#page=39))",
+      "memo_anchor": "theorem-4-population-masses-and-positive-tolerance-section-5-p-7-appendix-e-p-39",
+      "report_home": 10
+    },
+    "convention/GCG24-T4-POSITIVE-TOLERANCE-01": {
+      "disposition": "not_material",
+      "reason": "Arbitrarily close approximation and the positive-value construction already use positive tolerance; this is not an additional assumption."
+    },
+    "source/source_appendix_e_lemma15_closed_formula/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/APPENDIX_E_LEMMA15_SOURCE_NOTE.md",
+      "memo_sha256": "54f52245a171c6f9e0b78c7df54a7d29a421fee5aea189ebd6b07fd48274fa92",
+      "source_reading": "source_appendix_e_lemma15_closed_formula",
+      "memo_heading": "Appendix E Lemma 15 Source Clarification",
+      "memo_anchor": "appendix-e-lemma-15-source-clarification",
+      "report_home": 4
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "7a0981ed1c26b7e69886e093b37d24b7778a645fe205c301ee14928ddd9c81ea",
+      "discovered_named_result_sha256": "94cd2afd33108268c51306ce0cf5fe24813a9964bdec145f3eb8b816f6fb578e",
+      "source_format": "text",
+      "results": {
+        "appendix_c_lemma2_item_fairness_equality_lp_solution_set": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1800,
+              "line_start": 1759,
+              "presentation": "text_heading",
+              "presentation_sha256": "fdab79579be4ae957b639215b2458d7688abb936469bf9adf832f8ff3469e842",
+              "source_item_id": "appendix_c_lemma2_item_fairness_equality_lp_solution_set",
+              "source_label": "Lemma 2"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 1827,
+              "line_start": 1802,
+              "presentation": "text_heading",
+              "presentation_sha256": "c8592f6454a21fb6fc7aefd3e37e75ba0deb9fc5e12eb6890fdb47f67da66eea",
+              "source_item_id": "appendix_c_lemma2_item_fairness_equality_lp_solution_set_proof_presentation",
+              "source_label": "Lemma 2"
+            }
+          ],
+          "source_item_ids": [
+            "appendix_c_lemma2_item_fairness_equality_lp_solution_set",
+            "appendix_c_lemma2_item_fairness_equality_lp_solution_set_proof_presentation"
+          ]
+        },
+        "proposition1_symmetric_lp_reduction": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 316,
+              "line_start": 292,
+              "presentation": "text_heading",
+              "presentation_sha256": "7f625d98d52a2c16170c3d2443b9bfe623d61141a95ed3a12bc185907c05ab96",
+              "source_item_id": "proposition1_symmetric_lp_reduction",
+              "source_label": "Proposition 1"
+            },
+            {
+              "kind": "proposition",
+              "line_end": 1756,
+              "line_start": 1751,
+              "presentation": "text_heading",
+              "presentation_sha256": "4ac3bce90a44e10644c6731753d1818dafba98944b4645a611cd39d5a251302a",
+              "source_item_id": "proposition1_symmetric_lp_reduction_proof_presentation",
+              "source_label": "Proposition 1"
+            }
+          ],
+          "source_item_ids": [
+            "proposition1_symmetric_lp_reduction",
+            "proposition1_symmetric_lp_reduction_proof_presentation"
+          ]
+        },
+        "proposition2_symmetric_optimum_exists": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 338,
+              "line_start": 317,
+              "presentation": "text_heading",
+              "presentation_sha256": "d95b94db4326682efad270c0f54c094e8d9803196dad819b4087ee5fbcab5684",
+              "source_item_id": "proposition2_symmetric_optimum_exists",
+              "source_label": "Proposition 2"
+            },
+            {
+              "kind": "proposition",
+              "line_end": 1872,
+              "line_start": 1867,
+              "presentation": "text_heading",
+              "presentation_sha256": "164e2729f85a837b9fd25425d72f9ea937513467bcc55e9a57fb03706d4c7a0a",
+              "source_item_id": "proposition2_symmetric_optimum_exists_proof_presentation",
+              "source_label": "Proposition 2"
+            }
+          ],
+          "source_item_ids": [
+            "proposition2_symmetric_optimum_exists",
+            "proposition2_symmetric_optimum_exists_proof_presentation"
+          ]
+        },
+        "source_appendix_c_lemma1_item_fairness_positive": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1745,
+              "line_start": 1742,
+              "presentation": "text_heading",
+              "presentation_sha256": "327901b82b585b8580e34629d5de36591df9c8b15b523b90476f1c31b9db453a",
+              "source_item_id": "source_appendix_c_lemma1_item_fairness_positive",
+              "source_label": "Lemma 1"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_c_lemma1_item_fairness_positive"
+          ]
+        },
+        "source_appendix_d_lemma10_midpoint_candidate": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3078,
+              "line_start": 3071,
+              "presentation": "text_heading",
+              "presentation_sha256": "d00a7639dceec83ad60bf6329bc8ae7d633c1d8efbc722f9ccac325877acd524",
+              "source_item_id": "source_appendix_d_lemma10_midpoint_candidate",
+              "source_label": "Lemma 10"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 3101,
+              "line_start": 3101,
+              "presentation": "text_heading",
+              "presentation_sha256": "cd642913dd54483e3e4b7ee0f6c42c067027dcb16ee57df1c5e4db1a90663cf5",
+              "source_item_id": "source_appendix_d_lemma10_midpoint_candidate_proof_presentation",
+              "source_label": "Lemma 10"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_d_lemma10_midpoint_candidate",
+            "source_appendix_d_lemma10_midpoint_candidate_proof_presentation"
+          ]
+        },
+        "source_appendix_d_lemma11_denominator_monotonicity": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3100,
+              "line_start": 3079,
+              "presentation": "text_heading",
+              "presentation_sha256": "6404e55afc4b82fd8dfdafd9ac9845b8bd1ba931dc391939451c1d2ad5e817e6",
+              "source_item_id": "source_appendix_d_lemma11_denominator_monotonicity",
+              "source_label": "Lemma 11"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 3152,
+              "line_start": 3151,
+              "presentation": "text_heading",
+              "presentation_sha256": "52ae7ab3ce2119cec9a464e8ff14e2d0b86cd5339060d68536427a33883929d5",
+              "source_item_id": "source_appendix_d_lemma11_denominator_monotonicity_proof_presentation",
+              "source_label": "Lemma 11"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_d_lemma11_denominator_monotonicity",
+            "source_appendix_d_lemma11_denominator_monotonicity_proof_presentation"
+          ]
+        },
+        "source_appendix_d_lemma3_unconstrained_baseline": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2182,
+              "line_start": 2098,
+              "presentation": "text_heading",
+              "presentation_sha256": "c876d7432430c903f39f619e90a5183ba4d2ff3e5d277ab3d5cd790d2b8d9d7a",
+              "source_item_id": "source_appendix_d_lemma3_unconstrained_baseline",
+              "source_label": "Lemma 3"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 2382,
+              "line_start": 2381,
+              "presentation": "text_heading",
+              "presentation_sha256": "306301204a33abb052c2661b72053bcdf2600187de42b7fea559648d9ac40ee0",
+              "source_item_id": "source_appendix_d_lemma3_unconstrained_baseline_proof_presentation",
+              "source_label": "Lemma 3"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_d_lemma3_unconstrained_baseline",
+            "source_appendix_d_lemma3_unconstrained_baseline_proof_presentation"
+          ]
+        },
+        "source_appendix_d_lemma4_problem6_structure": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2188,
+              "line_start": 2183,
+              "presentation": "text_heading",
+              "presentation_sha256": "929c9e73eb862b256f81e7d6cfcc0a1891196d36ba44f350d1232df7c355088a",
+              "source_item_id": "source_appendix_d_lemma4_problem6_structure",
+              "source_label": "Lemma 4"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 2418,
+              "line_start": 2417,
+              "presentation": "text_heading",
+              "presentation_sha256": "e43c9128454cbd04cd38f098f5c93451d5dfdff031104d183182ee927192121e",
+              "source_item_id": "source_appendix_d_lemma4_problem6_structure_proof_presentation",
+              "source_label": "Lemma 4"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_d_lemma4_problem6_structure",
+            "source_appendix_d_lemma4_problem6_structure_proof_presentation"
+          ]
+        },
+        "source_appendix_d_lemma5_problem6_closed_form": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2256,
+              "line_start": 2190,
+              "presentation": "text_heading",
+              "presentation_sha256": "b93755f7b965933fc55bcde1890f13fd9673cb220b664806c11ed52011132f98",
+              "source_item_id": "source_appendix_d_lemma5_problem6_closed_form",
+              "source_label": "Lemma 5"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 2701,
+              "line_start": 2641,
+              "presentation": "text_heading",
+              "presentation_sha256": "bd78ad86a65351d853a8c0fc72be2e6a1594ad96e6f399429e7fdf903e69d261",
+              "source_item_id": "source_appendix_d_lemma5_problem6_closed_form_proof_presentation",
+              "source_label": "Lemma 5"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_d_lemma5_problem6_closed_form",
+            "source_appendix_d_lemma5_problem6_closed_form_proof_presentation"
+          ]
+        },
+        "source_appendix_d_lemma6_mirror_inverse_gap": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2313,
+              "line_start": 2257,
+              "presentation": "text_heading",
+              "presentation_sha256": "59642adb8771a32394377ab876d7e290bfb30e61a8e6ed13d358fa6a501081a3",
+              "source_item_id": "source_appendix_d_lemma6_mirror_inverse_gap",
+              "source_label": "Lemma 6"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 2829,
+              "line_start": 2828,
+              "presentation": "text_heading",
+              "presentation_sha256": "aac38440d0dd85be3af93530dff936559e6f4096cc8fe30659b8a69f4da528ed",
+              "source_item_id": "source_appendix_d_lemma6_mirror_inverse_gap_proof_presentation",
+              "source_label": "Lemma 6"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_d_lemma6_mirror_inverse_gap",
+            "source_appendix_d_lemma6_mirror_inverse_gap_proof_presentation"
+          ]
+        },
+        "source_appendix_d_lemma7_pivot_monotonicity": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2316,
+              "line_start": 2315,
+              "presentation": "text_heading",
+              "presentation_sha256": "4ef9b506dac921cf9e055521b9d4456705dc7dc9bdb849de141e62f1505c325e",
+              "source_item_id": "source_appendix_d_lemma7_pivot_monotonicity",
+              "source_label": "Lemma 7"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 2963,
+              "line_start": 2963,
+              "presentation": "text_heading",
+              "presentation_sha256": "ce841f383c1abce9bb2024b60988bfdd3a895b3436e3209f2ef974c4edfb5010",
+              "source_item_id": "source_appendix_d_lemma7_pivot_monotonicity_proof_presentation",
+              "source_label": "Lemma 7"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_d_lemma7_pivot_monotonicity",
+            "source_appendix_d_lemma7_pivot_monotonicity_proof_presentation"
+          ]
+        },
+        "source_appendix_d_lemma8_selected_pivot_stitching": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2318,
+              "line_start": 2317,
+              "presentation": "text_heading",
+              "presentation_sha256": "f8142d4b964538695bacb545cce10f1b6ce6bde52c768ffcff31be5c1f90e2c1",
+              "source_item_id": "source_appendix_d_lemma8_selected_pivot_stitching",
+              "source_label": "Lemma 8"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 3067,
+              "line_start": 3066,
+              "presentation": "text_heading",
+              "presentation_sha256": "9bf00dcf7bf3e3efc82192c71bbdcdf15d24717b70693ca2612b7f56f6dc3e16",
+              "source_item_id": "source_appendix_d_lemma8_selected_pivot_stitching_proof_presentation",
+              "source_label": "Lemma 8"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_d_lemma8_selected_pivot_stitching",
+            "source_appendix_d_lemma8_selected_pivot_stitching_proof_presentation"
+          ]
+        },
+        "source_appendix_d_lemma9_pair_share_algebra": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2339,
+              "line_start": 2320,
+              "presentation": "text_heading",
+              "presentation_sha256": "30e9f0f7f5dcaf85aa5f90fe14173445b0817e703d2d7f218bd37ced08edc9bd",
+              "source_item_id": "source_appendix_d_lemma9_pair_share_algebra",
+              "source_label": "Lemma 9"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 2340,
+              "line_start": 2340,
+              "presentation": "text_heading",
+              "presentation_sha256": "eee1ed01109e4715511a3e7fefa0f9c65373546f9f523c80bd408787c73df5db",
+              "source_item_id": "source_appendix_d_lemma9_pair_share_algebra_proof_presentation",
+              "source_label": "Lemma 9"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_d_lemma9_pair_share_algebra",
+            "source_appendix_d_lemma9_pair_share_algebra_proof_presentation"
+          ]
+        },
+        "source_appendix_e_lemma12_symmetrized_policy": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3402,
+              "line_start": 3379,
+              "presentation": "text_heading",
+              "presentation_sha256": "581fc488cca6b5d6c683b9a79d3eaf7e2c4cfe3d22167b3c7c6de18ddfc589b6",
+              "source_item_id": "source_appendix_e_lemma12_symmetrized_policy",
+              "source_label": "Lemma 12"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 3747,
+              "line_start": 3739,
+              "presentation": "text_heading",
+              "presentation_sha256": "400ebdd47c4beac49a0b7c822060a23b13aa69960259993d46c4d8b605b24b07",
+              "source_item_id": "source_appendix_e_lemma12_symmetrized_policy_proof_presentation",
+              "source_label": "Lemma 12"
+            }
+          ],
+          "source_item_ids": [
+            "assumption_theorem4_displayed_reduced_models",
+            "source_appendix_e_lemma12_symmetrized_policy",
+            "source_appendix_e_lemma12_symmetrized_policy_proof_presentation"
+          ]
+        },
+        "source_appendix_e_lemma13_pivot_support": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3412,
+              "line_start": 3403,
+              "presentation": "text_heading",
+              "presentation_sha256": "9e735ec56d0f49c8c2c5c56fd110c7753955bfc566fe5d26cb80a05d62edc9cf",
+              "source_item_id": "source_appendix_e_lemma13_pivot_support",
+              "source_label": "Lemma 13"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 3841,
+              "line_start": 3833,
+              "presentation": "text_heading",
+              "presentation_sha256": "1d9772002733024c57d87348279b8088f8c67cf5587d6c29f3d4d763ec5de193",
+              "source_item_id": "source_appendix_e_lemma13_pivot_support_proof_presentation",
+              "source_label": "Lemma 13"
+            }
+          ],
+          "source_item_ids": [
+            "problem11BasicFeasible",
+            "source_appendix_e_lemma13_pivot_support",
+            "source_appendix_e_lemma13_pivot_support_proof_presentation"
+          ]
+        },
+        "source_appendix_e_lemma14_uniqueness": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3414,
+              "line_start": 3413,
+              "presentation": "text_heading",
+              "presentation_sha256": "5991c6ddb14bf6647dc8de5780f2c420b8b501813a4d1e8a14cc2e4126704497",
+              "source_item_id": "source_appendix_e_lemma14_uniqueness",
+              "source_label": "Lemma 14"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 4153,
+              "line_start": 4153,
+              "presentation": "text_heading",
+              "presentation_sha256": "d651873865cbf98b8a377136140f301b40e28c1f197552478f1c87565afefdec",
+              "source_item_id": "source_appendix_e_lemma14_uniqueness_proof_presentation",
+              "source_label": "Lemma 14"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_e_lemma14_uniqueness",
+            "source_appendix_e_lemma14_uniqueness_proof_presentation"
+          ]
+        },
+        "source_appendix_e_lemma15_closed_formula": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3416,
+              "line_start": 3415,
+              "presentation": "text_heading",
+              "presentation_sha256": "ce512fb3fba3844ead3de86c75f74a8c5e69ebf1790025e89a0ac18be9e52fc7",
+              "source_item_id": "source_appendix_e_lemma15_closed_formula",
+              "source_label": "Lemma 15"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 4240,
+              "line_start": 4239,
+              "presentation": "text_heading",
+              "presentation_sha256": "aa3a3a0a2faf41d8be27a845ce94a3f60299e597aa7cdb64011f369f8b99cc31",
+              "source_item_id": "source_appendix_e_lemma15_closed_formula_proof_presentation",
+              "source_label": "Lemma 15"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_e_lemma15_closed_formula",
+            "source_appendix_e_lemma15_closed_formula_proof_presentation"
+          ]
+        },
+        "source_appendix_e_lemma16_midpoint_order_algebra": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3714,
+              "line_start": 3713,
+              "presentation": "text_heading",
+              "presentation_sha256": "be950475a899c64a0bda6f785f6fa3ee4dfb47a63b0e4c69ab51751d5d6c4304",
+              "source_item_id": "source_appendix_e_lemma16_midpoint_order_algebra",
+              "source_label": "Lemma 16"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_e_lemma16_midpoint_order_algebra"
+          ]
+        },
+        "source_appendix_e_lemma17_no_right_half_support": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3925,
+              "line_start": 3845,
+              "presentation": "text_heading",
+              "presentation_sha256": "d231c3485fbd8e7084230ac2eebf62ef80fe435395cf01b49edc8823caaeccff",
+              "source_item_id": "source_appendix_e_lemma17_no_right_half_support",
+              "source_label": "Lemma 17"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 4110,
+              "line_start": 4108,
+              "presentation": "text_heading",
+              "presentation_sha256": "1512d2ccf4afcdb9ca98481ab0eae6d78d9bd168488970925b497a0f34ccc5a8",
+              "source_item_id": "source_appendix_e_lemma17_no_right_half_support_proof_presentation",
+              "source_label": "Lemma 17"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_e_lemma17_no_right_half_support",
+            "source_appendix_e_lemma17_no_right_half_support_proof_presentation"
+          ]
+        },
+        "theorem3_price_decreases_first_half": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 397,
+              "line_start": 396,
+              "presentation": "text_heading",
+              "presentation_sha256": "a517f6d9e503e1034d2a6b34747018021041597a13a334b91b63cbc73faf4d82",
+              "source_item_id": "theorem3_price_decreases_first_half",
+              "source_label": "Theorem 3"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 2089,
+              "line_start": 2085,
+              "presentation": "text_heading",
+              "presentation_sha256": "b9d12cd55a67112b576a64730995a39539e909e4760520d47dd780f1377f2b3e",
+              "source_item_id": "theorem3_price_decreases_first_half_proof_presentation",
+              "source_label": "Theorem 3"
+            }
+          ],
+          "source_item_ids": [
+            "assumption_theorem3_first_half_alpha_domain",
+            "assumption_theorem3_opposing_type_model",
+            "assumption_theorem3_second_half_alpha_domain",
+            "theorem3_price_decreases_first_half",
+            "theorem3_price_decreases_first_half_proof_presentation",
+            "theorem3_price_increases_second_half",
+            "theorem3_price_increases_second_half_proof_presentation"
+          ]
+        },
+        "theorem4_misestimation_tradeoff": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 476,
+              "line_start": 456,
+              "presentation": "text_heading",
+              "presentation_sha256": "1db3a4a535b35689021304d441fb4a4b24025d73d7e6a9b2b53b8a4b560b3b9a",
+              "source_item_id": "theorem4_misestimation_tradeoff",
+              "source_label": "Theorem 4"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 3364,
+              "line_start": 3341,
+              "presentation": "text_heading",
+              "presentation_sha256": "c0298567f7917675368fa60d1af9a295435e48f3ceba9699354883a70ecbcf2f",
+              "source_item_id": "theorem4_misestimation_tradeoff_proof_presentation",
+              "source_label": "Theorem 4"
+            }
+          ],
+          "source_item_ids": [
+            "theorem4_misestimation_tradeoff",
+            "theorem4_misestimation_tradeoff_proof_presentation",
+            "theorem4_misestimation_without_fairness_universal"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "43b67ba8da24f6d3ebe62f77845d87faa8ebb74271bccf6df5b3ae9ab18e12f4",
+    "results": {
+      "appendix_c_lemma2_item_fairness_equality_lp_solution_set": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix C Lemmas 1--2",
+            "row_sha256": "02c2e6866ec59aebc0409afd21f60913b47def5d8a747bd63ffc3096fc168797"
+          }
+        ],
+        "grouping_reason": "The report groups the two Appendix C item-fairness lemmas."
+      },
+      "proposition1_symmetric_lp_reduction": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 1--2",
+            "row_sha256": "2d9af327b2d7eb2b1a8fd73c809e5a44bd0f5c7b6c9fc5a580e660c5059b9396"
+          }
+        ],
+        "grouping_reason": "The report groups the two main symmetric-reduction propositions."
+      },
+      "proposition2_symmetric_optimum_exists": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 1--2",
+            "row_sha256": "2d9af327b2d7eb2b1a8fd73c809e5a44bd0f5c7b6c9fc5a580e660c5059b9396"
+          }
+        ],
+        "grouping_reason": "The report groups the two main symmetric-reduction propositions."
+      },
+      "source_appendix_c_lemma1_item_fairness_positive": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix C Lemmas 1--2",
+            "row_sha256": "02c2e6866ec59aebc0409afd21f60913b47def5d8a747bd63ffc3096fc168797"
+          }
+        ],
+        "grouping_reason": "The report groups the two Appendix C item-fairness lemmas."
+      },
+      "source_appendix_d_lemma10_midpoint_candidate": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 10",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix D Lemmas 3--11",
+            "row_sha256": "e64753a99829229c6ae76f4af06e2c6421ddd3abffca0f31e14712a4a3b93bb5"
+          }
+        ],
+        "grouping_reason": "The report groups the complete Appendix D Lemmas 3–11 chain."
+      },
+      "source_appendix_d_lemma11_denominator_monotonicity": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 11",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix D Lemmas 3--11",
+            "row_sha256": "e64753a99829229c6ae76f4af06e2c6421ddd3abffca0f31e14712a4a3b93bb5"
+          }
+        ],
+        "grouping_reason": "The report groups the complete Appendix D Lemmas 3–11 chain."
+      },
+      "source_appendix_d_lemma3_unconstrained_baseline": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix D Lemmas 3--11",
+            "row_sha256": "e64753a99829229c6ae76f4af06e2c6421ddd3abffca0f31e14712a4a3b93bb5"
+          }
+        ],
+        "grouping_reason": "The report groups the complete Appendix D Lemmas 3–11 chain."
+      },
+      "source_appendix_d_lemma4_problem6_structure": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix D Lemmas 3--11",
+            "row_sha256": "e64753a99829229c6ae76f4af06e2c6421ddd3abffca0f31e14712a4a3b93bb5"
+          }
+        ],
+        "grouping_reason": "The report groups the complete Appendix D Lemmas 3–11 chain."
+      },
+      "source_appendix_d_lemma5_problem6_closed_form": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 5",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix D Lemmas 3--11",
+            "row_sha256": "e64753a99829229c6ae76f4af06e2c6421ddd3abffca0f31e14712a4a3b93bb5"
+          }
+        ],
+        "grouping_reason": "The report groups the complete Appendix D Lemmas 3–11 chain."
+      },
+      "source_appendix_d_lemma6_mirror_inverse_gap": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 6",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix D Lemmas 3--11",
+            "row_sha256": "e64753a99829229c6ae76f4af06e2c6421ddd3abffca0f31e14712a4a3b93bb5"
+          }
+        ],
+        "grouping_reason": "The report groups the complete Appendix D Lemmas 3–11 chain."
+      },
+      "source_appendix_d_lemma7_pivot_monotonicity": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 7",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix D Lemmas 3--11",
+            "row_sha256": "e64753a99829229c6ae76f4af06e2c6421ddd3abffca0f31e14712a4a3b93bb5"
+          }
+        ],
+        "grouping_reason": "The report groups the complete Appendix D Lemmas 3–11 chain."
+      },
+      "source_appendix_d_lemma8_selected_pivot_stitching": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 8",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix D Lemmas 3--11",
+            "row_sha256": "e64753a99829229c6ae76f4af06e2c6421ddd3abffca0f31e14712a4a3b93bb5"
+          }
+        ],
+        "grouping_reason": "The report groups the complete Appendix D Lemmas 3–11 chain."
+      },
+      "source_appendix_d_lemma9_pair_share_algebra": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 9",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix D Lemmas 3--11",
+            "row_sha256": "e64753a99829229c6ae76f4af06e2c6421ddd3abffca0f31e14712a4a3b93bb5"
+          }
+        ],
+        "grouping_reason": "The report groups the complete Appendix D Lemmas 3–11 chain."
+      },
+      "source_appendix_e_lemma12_symmetrized_policy": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 12",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix E Lemmas 12--14 and 16--17",
+            "row_sha256": "3dd59527c836d0838b8bf23024ceec7681523cc828a750f3c0e866db98071176"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix E lemmas other than the separately corrected Lemma 15."
+      },
+      "source_appendix_e_lemma13_pivot_support": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 13",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix E Lemmas 12--14 and 16--17",
+            "row_sha256": "3dd59527c836d0838b8bf23024ceec7681523cc828a750f3c0e866db98071176"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix E lemmas other than the separately corrected Lemma 15."
+      },
+      "source_appendix_e_lemma14_uniqueness": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 14",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix E Lemmas 12--14 and 16--17",
+            "row_sha256": "3dd59527c836d0838b8bf23024ceec7681523cc828a750f3c0e866db98071176"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix E lemmas other than the separately corrected Lemma 15."
+      },
+      "source_appendix_e_lemma15_closed_formula": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 15",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix E Lemma 15",
+            "row_sha256": "25e60b901ee428788199947c11f24fe7bc40b0725c4e9cee8da40cd04839a4d7"
+          }
+        ],
+        "grouping_reason": "The report spells out the appendix location in its result label; it refers to the single printed Lemma 15."
+      },
+      "source_appendix_e_lemma16_midpoint_order_algebra": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 16",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix E Lemmas 12--14 and 16--17",
+            "row_sha256": "3dd59527c836d0838b8bf23024ceec7681523cc828a750f3c0e866db98071176"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix E lemmas other than the separately corrected Lemma 15."
+      },
+      "source_appendix_e_lemma17_no_right_half_support": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 17",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix E Lemmas 12--14 and 16--17",
+            "row_sha256": "3dd59527c836d0838b8bf23024ceec7681523cc828a750f3c0e866db98071176"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix E lemmas other than the separately corrected Lemma 15."
+      },
+      "theorem3_price_decreases_first_half": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3",
+            "row_sha256": "355211852a3f5139f2c07cfb7b050b5182be766a91ba65e219abc10c9c91da2c"
+          }
+        ]
+      },
+      "theorem4_misestimation_tradeoff": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 4",
+            "row_sha256": "eea7c65b3ceae07abe4649fd846f21a246ba46d81d4ea5e58ab80ee6c22f858d"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "2d9af327b2d7eb2b1a8fd73c809e5a44bd0f5c7b6c9fc5a580e660c5059b9396": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "355211852a3f5139f2c07cfb7b050b5182be766a91ba65e219abc10c9c91da2c": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "eea7c65b3ceae07abe4649fd846f21a246ba46d81d4ea5e58ab80ee6c22f858d": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "02c2e6866ec59aebc0409afd21f60913b47def5d8a747bd63ffc3096fc168797": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "e64753a99829229c6ae76f4af06e2c6421ddd3abffca0f31e14712a4a3b93bb5": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "3dd59527c836d0838b8bf23024ceec7681523cc828a750f3c0e866db98071176": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "25e60b901ee428788199947c11f24fe7bc40b0725c4e9cee8da40cd04839a4d7": {
+        "explanation_keys": [
+          "defect/GCG24-E15-CENTER-MIRROR-01",
+          "source/source_appendix_e_lemma15_closed_formula/corrected_target"
+        ],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

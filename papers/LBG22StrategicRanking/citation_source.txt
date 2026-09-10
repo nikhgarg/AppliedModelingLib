@@ -1,0 +1,4 @@
+source: PMLR proceedings page
+url: https://proceedings.mlr.press/v151/liu22b/liu22b.pdf
+retrieved: 2026-06-11
+notes: Canonical source is the PMLR version for AISTATS 2022 (arXiv:2109.08240).

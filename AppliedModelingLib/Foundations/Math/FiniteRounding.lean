@@ -1,6 +1,7 @@
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
 import Mathlib.Data.Fintype.Card
+import Mathlib.Analysis.SpecialFunctions.Exp
 
 open scoped BigOperators
 
@@ -394,6 +395,27 @@ theorem count_le_close
   omega
 
 end NoRoundingCrossingBetween
+
+/-! ### Real thresholds and integer majorants -/
+
+/--
+An integer majorant satisfying a nonnegative scaled budget exists exactly when
+the ceiling majorant satisfies that budget.  This isolates the precise
+rounding condition needed when a discrete tail proof is applied to a real
+threshold.
+-/
+theorem exists_nat_majorant_mul_le_iff
+    {alpha scale budget : ℝ} (hscale : 0 ≤ scale) :
+    (∃ a : ℕ, alpha ≤ (a : ℝ) ∧ (a : ℝ) * scale ≤ budget) ↔
+      (Nat.ceil alpha : ℝ) * scale ≤ budget := by
+  constructor
+  · rintro ⟨a, halpha, hbudget⟩
+    have hceil_nat : Nat.ceil alpha ≤ a := (Nat.ceil_le).2 halpha
+    have hceil_real : (Nat.ceil alpha : ℝ) ≤ (a : ℝ) := by
+      exact_mod_cast hceil_nat
+    exact (mul_le_mul_of_nonneg_right hceil_real hscale).trans hbudget
+  · intro hbudget
+    exact ⟨Nat.ceil alpha, Nat.le_ceil alpha, hbudget⟩
 
 end FiniteRounding
 end AppliedModelingLib

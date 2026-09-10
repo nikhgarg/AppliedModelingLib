@@ -1,0 +1,1241 @@
+{
+  "all_selected_semantic_review_sha256": "9d78ad04d4d612f207336f907bfb978c79cf5d2759cd4bb4341b768ab7a584b8",
+  "items": {
+    "convention/PRPKG24-BOUNDED-PDF-MEASURE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "clarified-regularity-conditions",
+      "memo_heading": "Clarified regularity conditions",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 10,
+      "source_reading": "The phrase 'D has pdf f_D' is represented by a probability measure equal to Lebesgue volume with density ofReal(f_D), with f_D nonnegative, measurable, and integrable. The Theorem 1(ii) allocation endpoint additionally adopts an a.e. nonnegative conditional-value convention. Given that convention, its lower endpoint L, positive width, and positive M are support normalizations rather than separate claims about every merely upper-bounded translated law."
+    },
+    "convention/PRPKG24-COMMON-MEAN-SIGN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "all-consumed-and-bernoulli-endpoints",
+      "memo_heading": "All-consumed and Bernoulli endpoints",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "For the all-consumed common-distribution endpoint, the common conditional mean is nonnegative for the weak argmax direction and positive for the unique argmax direction."
+    },
+    "convention/PRPKG24-POSITIVE-PREFERENCE-SUPPORT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "clarified-regularity-conditions",
+      "memo_heading": "Clarified regularity conditions",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "For the checked fixed-k gamma-share endpoints that assert a limiting representation for every named type, the source-selected preferred-type PMF has strictly positive mass at every type. This is an additional regularity condition on the all-coordinate route, not a claim that the archival model text excluded zero-probability types."
+    },
+    "convention/PRPKG24-THEOREM2-INDEPENDENT-RANK-BERNOULLI-MODEL-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-2-independent-rank-varying-bernoulli-values",
+      "memo_heading": "Theorem 2: independent rank-varying Bernoulli values",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "For each type and finite count, the rank coordinates are independent Boolean variables with rank-specific success parameter c*((i+1)+d)^(-alpha). They are not asserted iid across ranks; cross-type independence is neither asserted nor needed because one preferred type is evaluated."
+    },
+    "defect/PRPKG24-COROLLARY3-QONE-OPTIMALITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "all-consumed-and-bernoulli-endpoints",
+      "memo_heading": "All-consumed and Bernoulli endpoints",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "Corollary 3 assumes q>0 and concludes that every top-one optimal sequence is asymptotically uniform. The stated domain includes q=1. With at least two positively likely types and q=1, every allocation that gives each such type at least one item already has top-one success probability one, so nonuniform optimal sequences exist."
+    },
+    "defect/PRPKG24-LEMMAD1-GENERIC-ASYMPTOTICS-02": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-1-and-appendix-lemma-d1-share-asymptotics",
+      "memo_heading": "Theorem 1 and Appendix Lemma D.1 share asymptotics",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "The single named lemma asserts four generic optimizer-share limits from nonnegative weights and asymptotics of h, then its proof uses every coordinate's divergence to infinity and a limiting compact optimization argument. Its proof divides through min_i p_i despite allowing zeros; case (ii) turns a deficit ratio into a strict objective-value ratio although both objectives approach A sum p; and case (iii) labels the required log-objective maximum a minimum."
+    },
+    "defect/PRPKG24-LEMMAD1-II-OBJECTIVE-RATIO-03": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-1-and-appendix-lemma-d1-share-asymptotics",
+      "memo_heading": "Theorem 1 and Appendix Lemma D.1 share asymptotics",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 7,
+      "source_reading": "After proving a strict ratio comparison of the saturation deficits A-h(a), the proof concludes that the ratio of the original objective values is strictly below one in Equation (61)."
+    },
+    "defect/PRPKG24-LEMMAD1-III-MAX-DIRECTION-04": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-1-and-appendix-lemma-d1-share-asymptotics",
+      "memo_heading": "Theorem 1 and Appendix Lemma D.1 share asymptotics",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 7,
+      "source_reading": "The proof says that sum_t p_t log(x_t) has a unique minimum at the target shares, while its preceding strict inequality and the correct entropy calculation require a unique maximum."
+    },
+    "defect/PRPKG24-LEMMAD1-SIGN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-1-and-appendix-lemma-d1-share-asymptotics",
+      "memo_heading": "Theorem 1 and Appendix Lemma D.1 share asymptotics",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "Lemma D.1(i) assumes A,B>0 and sigma<0 while concluding uniform shares from log(A-h(a))/(B a^sigma) -> 1. This is false as written even for positive normalized weights: m=2, p=(1/4,3/4), h(a)=1-1/(a+1), A=2, B=1, sigma=-1 satisfies the displayed limit but has square-root rather than uniform optimizer shares."
+    },
+    "defect/PRPKG24-LEMMAD3-SCALE-CONSTANT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "order-statistics-and-integer-rounding",
+      "memo_heading": "Order statistics and integer rounding",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "For an exponential distribution with rate lambda, Lemma D.3 prints mu_D(a-i,a) - log a - B(i) -> 0 for a positive constant B(i), and calls the sequence strictly concave without stating the valid-rank domain."
+    },
+    "defect/PRPKG24-LEMMAD4-PDF-RANK-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "order-statistics-and-integer-rounding",
+      "memo_heading": "Order statistics and integer rounding",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "Lemma D.4 calls x^(-alpha-1) a Pareto PDF for alpha > 1, omitting its alpha normalizer, and asserts strict concavity over a totalized fixed-rank order-statistic expression without a valid-rank/eventual domain."
+    },
+    "defect/PRPKG24-LEMMAD5-CONCAVITY-REGULARITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "order-statistics-and-integer-rounding",
+      "memo_heading": "Order statistics and integer rounding",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "Lemma D.5 prints strictly convex summands while maximizing their sum, but Equation 197 and the marginal comparison in Equations 194-195 require concavity; the proof also invokes partial derivatives without stating differentiability."
+    },
+    "defect/PRPKG24-LEMMAD5-GENERAL-ROUNDING-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "order-statistics-and-integer-rounding",
+      "memo_heading": "Order statistics and integer rounding",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "Lemma D.5 claims that an optimal nonnegative integer solution of a separable fixed-sum problem lies within m coordinates of an optimal nonnegative real solution."
+    },
+    "defect/PRPKG24-PROP2-FINITE-CONSTANT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "proposition-2-and-the-finite-uniform-model",
+      "memo_heading": "Proposition 2 and the finite uniform model",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "Proposition 2 prints the finite representation error bound (m+1)/n, while the displayed relaxed optimizer and rounding argument yield the corrected bound (2m+1)/n."
+    },
+    "defect/PRPKG24-PROP4-CONTINUITY-BOUNDARY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "clarified-regularity-conditions",
+      "memo_heading": "Clarified regularity conditions",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "The source assumes only a nonconstant radial probability kernel, but the pointwise-supremum Laplace identity needs regularity excluding isolated measure-zero payoff spikes."
+    },
+    "defect/PRPKG24-PROP4-EQ18-TYPE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "proposition-4",
+      "memo_heading": "Proposition 4",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "Equation 18 prints Gamma(pi) as an element of inf_alpha Gamma(alpha), although both sides are real-valued; the intended claim is that the uniform profile attains the infimum."
+    },
+    "defect/PRPKG24-PROP4-EQ20-MEASURE-OMISSION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "proposition-4",
+      "memo_heading": "Proposition 4",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "Equation 20 changes the finite-n integral from the preference-weighted measure in Equation 17 to bare surface measure as a displayed equality. Full support preserves the limiting Laplace rate, not the finite-n integral itself."
+    },
+    "defect/PRPKG24-THEOREM1I-NONDEGENERATE-TOP-05": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "value-and-type-support-restrictions",
+      "memo_heading": "Value and type-support restrictions",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "Theorem 1(i) says every finite discrete D gives an all-type uniform limiting representation for arbitrary optimal sets."
+    },
+    "defect/PRPKG24-THEOREM1V-NEGATIVE-MEAN-DIRECTION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "all-consumed-and-bernoulli-endpoints",
+      "memo_heading": "All-consumed and Bernoulli endpoints",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "Theorem 1 assumes only that the common iid conditional-value law has finite mean, then says that the all-consumed optimum uses a type maximizing p_t. A negative common mean reverses that direction: the all-consumed expected value of an item of type t is p_t times the common mean."
+    },
+    "defect/PRPKG24-THEOREM2-RANK-VARYING-IID-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-2-independent-rank-varying-bernoulli-values",
+      "memo_heading": "Theorem 2: independent rank-varying Bernoulli values",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "The Theorem 2 header calls X_i^(t) iid Bernoulli while prescribing the rank-dependent parameter q_i = c(i+d)^(-alpha). It also permits c=0 and a first-rank success probability of one although the top-one universal-optimizer conclusions become flat or tie-degenerate there."
+    },
+    "defect/PRPKG24-THEOREM3-ENDPOINT-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "all-consumed-and-bernoulli-endpoints",
+      "memo_heading": "All-consumed and Bernoulli endpoints",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "Theorem 3 prints the all-type share weight 1 / log(1 / (1-q_t)) for Bernoulli(q_t) conditional values without excluding q_t=0 or q_t=1. At q_t=0 the denominator is zero, and at q_t=1 the displayed real-valued expression is not a finite defined share weight."
+    },
+    "report/equation4-and-definition3-domains": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "clarified-regularity-conditions",
+      "memo_heading": "Clarified regularity conditions",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 10
+    },
+    "report/finite-scope-boundaries": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "order-statistics-and-integer-rounding",
+      "memo_heading": "Order statistics and integer rounding",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 10
+    },
+    "report/selected-named-results": {
+      "disposition": "not_material",
+      "reason": "This is an inventory of the named theorem surface; its material source assumptions, corrected constants, and endpoint domains are assessed in the individual source records and clarification memo."
+    },
+    "source/prpkg_corollary3_iid_bernoulli/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "all-consumed-and-bernoulli-endpoints",
+      "memo_heading": "All-consumed and Bernoulli endpoints",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_corollary3_iid_bernoulli"
+    },
+    "source/prpkg_eq18_uniform_minimizes_gamma/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "proposition-4",
+      "memo_heading": "Proposition 4",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_eq18_uniform_minimizes_gamma"
+    },
+    "source/prpkg_eq8_proposition2_uniform_finite/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "proposition-2-and-the-finite-uniform-model",
+      "memo_heading": "Proposition 2 and the finite uniform model",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_eq8_proposition2_uniform_finite"
+    },
+    "source/prpkg_eq9_theorem3_log_share/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "all-consumed-and-bernoulli-endpoints",
+      "memo_heading": "All-consumed and Bernoulli endpoints",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_eq9_theorem3_log_share"
+    },
+    "source/prpkg_lemmaD1_i_exponential_limit/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-1-and-appendix-lemma-d1-share-asymptotics",
+      "memo_heading": "Theorem 1 and Appendix Lemma D.1 share asymptotics",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_lemmaD1_i_exponential_limit"
+    },
+    "source/prpkg_lemmaD1_ii_power_limit/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-1-and-appendix-lemma-d1-share-asymptotics",
+      "memo_heading": "Theorem 1 and Appendix Lemma D.1 share asymptotics",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_lemmaD1_ii_power_limit"
+    },
+    "source/prpkg_lemmaD1_iii_log_limit/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-1-and-appendix-lemma-d1-share-asymptotics",
+      "memo_heading": "Theorem 1 and Appendix Lemma D.1 share asymptotics",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_lemmaD1_iii_log_limit"
+    },
+    "source/prpkg_lemmaD1_iv_sublinear_power_limit/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-1-and-appendix-lemma-d1-share-asymptotics",
+      "memo_heading": "Theorem 1 and Appendix Lemma D.1 share asymptotics",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_lemmaD1_iv_sublinear_power_limit"
+    },
+    "source/prpkg_lemmaD3_exponential_order_stats/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "order-statistics-and-integer-rounding",
+      "memo_heading": "Order statistics and integer rounding",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_lemmaD3_exponential_order_stats"
+    },
+    "source/prpkg_lemmaD4_pareto_order_stats/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "order-statistics-and-integer-rounding",
+      "memo_heading": "Order statistics and integer rounding",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_lemmaD4_pareto_order_stats"
+    },
+    "source/prpkg_lemmaD5_rounding/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "order-statistics-and-integer-rounding",
+      "memo_heading": "Order statistics and integer rounding",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_lemmaD5_rounding"
+    },
+    "source/prpkg_main_text_lemmaD1_ii_bounded_tail/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-1-and-appendix-lemma-d1-share-asymptotics",
+      "memo_heading": "Theorem 1 and Appendix Lemma D.1 share asymptotics",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_main_text_lemmaD1_ii_bounded_tail"
+    },
+    "source/prpkg_theorem1_i_finite_discrete/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "value-and-type-support-restrictions",
+      "memo_heading": "Value and type-support restrictions",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_theorem1_i_finite_discrete"
+    },
+    "source/prpkg_theorem1_v_all_consumed/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "all-consumed-and-bernoulli-endpoints",
+      "memo_heading": "All-consumed and Bernoulli endpoints",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_theorem1_v_all_consumed"
+    },
+    "source/prpkg_theorem2_i_subunit_decay/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-2-independent-rank-varying-bernoulli-values",
+      "memo_heading": "Theorem 2: independent rank-varying Bernoulli values",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_theorem2_i_subunit_decay"
+    },
+    "source/prpkg_theorem2_ii_unit_decay/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-2-independent-rank-varying-bernoulli-values",
+      "memo_heading": "Theorem 2: independent rank-varying Bernoulli values",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_theorem2_ii_unit_decay"
+    },
+    "source/prpkg_theorem2_iii_superunit_decay/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-2-independent-rank-varying-bernoulli-values",
+      "memo_heading": "Theorem 2: independent rank-varying Bernoulli values",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_theorem2_iii_superunit_decay"
+    },
+    "source/prpkg_theorem2_iv_all_consumed_decay/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-2-independent-rank-varying-bernoulli-values",
+      "memo_heading": "Theorem 2: independent rank-varying Bernoulli values",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_theorem2_iv_all_consumed_decay"
+    },
+    "defect/PRPKG24-ALL-COORDINATE-SHARE-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "clarified-regularity-conditions",
+      "memo_heading": "Clarified regularity conditions",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "The model permits a preferred-type probability p_t of zero, while the stated all-coordinate homogeneity formulas include p_t^gamma divided by a sum of such powers and do not state an optimizer tie-selection rule. Corollary 1 includes gamma=0, for which the all-coordinate expression needs a zero-power convention at p_t=0."
+    },
+    "defect/PRPKG24-THEOREM1II-VALUE-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "clarified-regularity-conditions",
+      "memo_heading": "Clarified regularity conditions",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "Theorem 1(ii) states only an upper support bound and an upper-endpoint PDF tail. The direct formal PDF-to-top-k bridge instead verifies a nonnegative bounded density law on [L,M], with finite lower endpoint L, 0<M, and positive width M-L."
+    },
+    "source/prpkg_corollary1_any_gamma/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "clarified-regularity-conditions",
+      "memo_heading": "Clarified regularity conditions",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_corollary1_any_gamma"
+    },
+    "source/prpkg_theorem1_ii_bounded/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "clarified-regularity-conditions",
+      "memo_heading": "Clarified regularity conditions",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_theorem1_ii_bounded"
+    },
+    "source/prpkg_theorem1_iii_exponential/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "clarified-regularity-conditions",
+      "memo_heading": "Clarified regularity conditions",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_theorem1_iii_exponential"
+    },
+    "source/prpkg_theorem1_iv_pareto/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "clarified-regularity-conditions",
+      "memo_heading": "Clarified regularity conditions",
+      "memo_sha256": "94f77cee9b61ee149d40be65d5a4011095a1b0311f6bacb97deb1c819f06ec84",
+      "report_home": 4,
+      "source_reading": "prpkg_theorem1_iv_pareto"
+    }
+  },
+  "paper": "PRPKG24AccuracyDiversity",
+  "report_inventory_complete": true,
+  "report_sha256": "cec4f460c46e97887a76639067218f38d85f4f6a61c757b63593edcc793284ba",
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "4dd55b1445de448e81d5494fbf9bafe4aac3f8c59f0ee62dac00aa1345dc4830",
+      "discovered_named_result_sha256": "f207ff787ea276b563ef0be3e57aaeababbeec1c59544021d375ef562697c5ca",
+      "source_format": "text",
+      "results": {
+        "prpkg_corollary1_any_gamma": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 457,
+              "line_start": 443,
+              "presentation": "text_heading",
+              "presentation_sha256": "d8007d0f098ce03abe2688fdf75352675fc4625a86273e542ae0ebf2bbbb8a5d",
+              "source_item_id": "prpkg_corollary1_any_gamma",
+              "source_label": "Corollary 1"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_corollary1_any_gamma"
+          ]
+        },
+        "prpkg_corollary3_iid_bernoulli": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 524,
+              "line_start": 518,
+              "presentation": "text_heading",
+              "presentation_sha256": "561896d2c4e1a39bc20322900832d3095a62eb21b1895c79830e82ff4bdeb0fd",
+              "source_item_id": "prpkg_corollary3_iid_bernoulli",
+              "source_label": "Corollary 3"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_corollary3_iid_bernoulli"
+          ]
+        },
+        "prpkg_eq18_uniform_minimizes_gamma": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 1145,
+              "line_start": 1122,
+              "presentation": "text_heading",
+              "presentation_sha256": "d12eb96b916bac8fc8c57145521f9a3c2c596eb8a37736c6841a2b2a69c99e1d",
+              "source_item_id": "prpkg_eq18_uniform_minimizes_gamma",
+              "source_label": "Proposition 4"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_eq18_uniform_minimizes_gamma"
+          ]
+        },
+        "prpkg_eq8_proposition2_uniform_finite": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 490,
+              "line_start": 459,
+              "presentation": "text_heading",
+              "presentation_sha256": "e9b9a888464f1850711451155369f3c7ad3df9f310b646fd832337b31f78c6c0",
+              "source_item_id": "prpkg_eq8_proposition2_uniform_finite",
+              "source_label": "Proposition 2"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_eq8_proposition2_uniform_finite"
+          ]
+        },
+        "prpkg_eq9_theorem3_log_share": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 662,
+              "line_start": 605,
+              "presentation": "text_heading",
+              "presentation_sha256": "8f67527f5022c162cc8d9b505b82aaf816fcfb67ce48d8b833dc02e67391cd9d",
+              "source_item_id": "prpkg_eq9_theorem3_log_share",
+              "source_label": "Theorem 3"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_eq9_theorem3_log_share",
+            "prpkg_theorem3_all_consumed_argmax"
+          ]
+        },
+        "prpkg_lemma1_bounded_tail": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 729,
+              "line_start": 703,
+              "presentation": "text_heading",
+              "presentation_sha256": "0b326d3b5279c5723dc5ccca8c4ab7654257793abcf3087408406dad589f566e",
+              "source_item_id": "prpkg_lemma1_bounded_tail",
+              "source_label": "Lemma 1"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_eq11_bounded_share_limit",
+            "prpkg_lemma1_bounded_tail"
+          ]
+        },
+        "prpkg_lemmaD1_i_exponential_limit": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1322,
+              "line_start": 1298,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "0ee73cf582ff3f503b5d4486b94c41db92165ccb202585876a0dbb18d2ce6ba2",
+              "source_item_id": "prpkg_lemmaD1_i_exponential_limit",
+              "source_label": "Lemma D.1(i)"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_lemmaD1_i_exponential_limit"
+          ]
+        },
+        "prpkg_lemmaD1_ii_power_limit": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 702,
+              "line_start": 678,
+              "presentation": "text_heading",
+              "presentation_sha256": "ce3352f65a8290ce64b48c071f9ab43a2cb0b37fbebe3648a463e84f1c4de1f1",
+              "source_item_id": "prpkg_main_text_lemmaD1_ii_bounded_tail",
+              "source_label": "Lemma D.1(ii)"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 1350,
+              "line_start": 1324,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "d4ae863c7b41a7d457ce309f4a435678eb0351de130883c4a9399b8b32de8734",
+              "source_item_id": "prpkg_lemmaD1_ii_power_limit",
+              "source_label": "Lemma D.1(ii)"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_lemmaD1_ii_power_limit",
+            "prpkg_main_text_lemmaD1_ii_bounded_tail"
+          ]
+        },
+        "prpkg_lemmaD1_iii_log_limit": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1369,
+              "line_start": 1352,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "6e9a53ba3f571a05b04b3bc2a6981a5d64dc64ece3e0188621a5b59348f80dfa",
+              "source_item_id": "prpkg_lemmaD1_iii_log_limit",
+              "source_label": "Lemma D.1(iii)"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_lemmaD1_iii_log_limit"
+          ]
+        },
+        "prpkg_lemmaD1_iv_sublinear_power_limit": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1399,
+              "line_start": 1371,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "6a778e7188c8367ac48b8889d9e193b96cefe0b7dd61e17bcc09327fd8efc8dd",
+              "source_item_id": "prpkg_lemmaD1_iv_sublinear_power_limit",
+              "source_label": "Lemma D.1(iv)"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_lemmaD1_iv_sublinear_power_limit"
+          ]
+        },
+        "prpkg_lemmaD2_bounded_integral": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2287,
+              "line_start": 2264,
+              "presentation": "text_heading",
+              "presentation_sha256": "19cd60b3888da9660685a839a6f73cec5e0a280ca05dc16681a9134a49b992c3",
+              "source_item_id": "prpkg_lemmaD2_bounded_integral",
+              "source_label": "Lemma D.2"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_assumption_lemmaD2_domain",
+            "prpkg_lemmaD2_bounded_integral"
+          ]
+        },
+        "prpkg_lemmaD3_exponential_order_stats": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2785,
+              "line_start": 2778,
+              "presentation": "text_heading",
+              "presentation_sha256": "57bff635698547309e0856212981e00cfcd5fbb75aa5f089cfdd8261f398497b",
+              "source_item_id": "prpkg_lemmaD3_exponential_order_stats",
+              "source_label": "Lemma D.3"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_lemmaD3_exponential_order_stats"
+          ]
+        },
+        "prpkg_lemmaD4_pareto_order_stats": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2858,
+              "line_start": 2844,
+              "presentation": "text_heading",
+              "presentation_sha256": "18e6b0e9d82eca8a0b0b9dfec3aad6059851144bd0fa9ce66fa8af7ae4d98a96",
+              "source_item_id": "prpkg_lemmaD4_pareto_order_stats",
+              "source_label": "Lemma D.4"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_lemmaD4_pareto_order_stats"
+          ]
+        },
+        "prpkg_lemmaD5_rounding": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3840,
+              "line_start": 3819,
+              "presentation": "text_heading",
+              "presentation_sha256": "f7fee66a688952fc50de111585b8c6604b77cec589076d65482bce4ce2bf5020",
+              "source_item_id": "prpkg_lemmaD5_rounding",
+              "source_label": "Lemma D.5"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_assumption_positive_rounding_size",
+            "prpkg_lemmaD5_rounding"
+          ]
+        },
+        "prpkg_proposition5_uniform_order_statistic": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 2087,
+              "line_start": 2071,
+              "presentation": "text_heading",
+              "presentation_sha256": "c5deca4b186b553bb2cd48e05d7081c56f80294e6d998c3059223cdd191b58b7",
+              "source_item_id": "prpkg_proposition5_uniform_order_statistic",
+              "source_label": "Proposition 5"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_proposition5_uniform_order_statistic"
+          ]
+        },
+        "prpkg_theorem1_i_finite_discrete": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 350,
+              "line_start": 349,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "f7faf94a6a8e9a497758057323df502fe434f5b013f9634c72a2138b2d15bb0a",
+              "source_item_id": "prpkg_theorem1_i_finite_discrete",
+              "source_label": "Theorem 1(i)"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_theorem1_i_finite_discrete"
+          ]
+        },
+        "prpkg_theorem1_ii_bounded": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 365,
+              "line_start": 351,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "d789882d58c705af2042f01c960c702fadd5c57e0798430478d85ed46aa3811d",
+              "source_item_id": "prpkg_theorem1_ii_bounded",
+              "source_label": "Theorem 1(ii)"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_theorem1_ii_bounded"
+          ]
+        },
+        "prpkg_theorem2_i_subunit_decay": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 543,
+              "line_start": 540,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "516bc90c909a492f8f1bfc5ef374449ff17ec8e1d168503cf55f09b20ff09dbf",
+              "source_item_id": "prpkg_theorem2_i_subunit_decay",
+              "source_label": "Theorem 2(i)"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_theorem2_i_subunit_decay"
+          ]
+        },
+        "prpkg_theorem2_ii_unit_decay": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 546,
+              "line_start": 544,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "71b1705573707ea876f04ba32b951a390cc607b20101adea8294d1fa3c20bd5a",
+              "source_item_id": "prpkg_theorem2_ii_unit_decay",
+              "source_label": "Theorem 2(ii)"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_theorem2_ii_unit_decay"
+          ]
+        },
+        "prpkg_theorem2_iii_superunit_decay": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 551,
+              "line_start": 547,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "4b8565bf37599261a2c574d2d32e08044c1dac9d64a4ed3b1eeb55e8022baeb6",
+              "source_item_id": "prpkg_theorem2_iii_superunit_decay",
+              "source_label": "Theorem 2(iii)"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_theorem2_iii_superunit_decay"
+          ]
+        },
+        "prpkg_theorem2_iv_all_consumed_decay": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 564,
+              "line_start": 552,
+              "presentation": "text_heading_subpart",
+              "presentation_sha256": "59ecfd99c11903b1775f4c1ded4ce9da96e8510bc10af99d53f79070c78131e5",
+              "source_item_id": "prpkg_theorem2_iv_all_consumed_decay",
+              "source_label": "Theorem 2(iv)"
+            }
+          ],
+          "source_item_ids": [
+            "prpkg_theorem2_iv_all_consumed_decay"
+          ]
+        },
+        "prpkg_theorem1_iii_exponential": {
+          "kind": "theorem",
+          "presentations": [],
+          "source_item_ids": [
+            "prpkg_theorem1_iii_exponential"
+          ]
+        },
+        "prpkg_theorem1_iv_pareto": {
+          "kind": "theorem",
+          "presentations": [],
+          "source_item_ids": [
+            "prpkg_theorem1_iv_pareto"
+          ]
+        },
+        "prpkg_theorem1_v_all_consumed": {
+          "kind": "theorem",
+          "presentations": [],
+          "source_item_ids": [
+            "prpkg_theorem1_v_all_consumed"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "de61f153911b5396c04911df267b31a9ebd839c9771c5885158046a0b0f37fad",
+    "results": {
+      "prpkg_corollary1_any_gamma": {
+        "numbering": "numbered",
+        "printed_label": "Corollary 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Corollary 1",
+            "row_sha256": "f9d6c3a0856896f439f579588e6ade51ed94d7bd00fe337af64706d0f14076f1"
+          }
+        ]
+      },
+      "prpkg_corollary3_iid_bernoulli": {
+        "grouping_reason": "The report groups Theorem 3 with its common-parameter Corollary 3 because both require nondegenerate Bernoulli endpoints.",
+        "numbering": "numbered",
+        "printed_label": "Corollary 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3; Corollary 3",
+            "row_sha256": "d7a5ca9f8552317302a344f9542eccec29be2b15e3cba0a755b62eedd4c60532"
+          }
+        ]
+      },
+      "prpkg_eq18_uniform_minimizes_gamma": {
+        "grouping_reason": "The report splits Proposition 4 into its displayed-formula correction and its pointwise-supremum limit condition.",
+        "numbering": "numbered",
+        "printed_label": "Proposition 4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 4, Equations (18) and (20)",
+            "row_sha256": "28413f30425faaba29e806ee2055e0ad7020426b1541441a312487e9339116cf"
+          },
+          {
+            "report_label": "Proposition 4, limit step",
+            "row_sha256": "4227b1f330a98172f03402b22aba0311659648594de3455c830baa540f642b83"
+          }
+        ],
+        "split_reason": "The displayed Equations (18) and (20) need formula corrections, while the limit step uses a separate sufficient continuity condition."
+      },
+      "prpkg_eq8_proposition2_uniform_finite": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 2",
+            "row_sha256": "2c72e3dfab6b15b71556bb9a6a3968c7451e61532076829e323df55cd53fc640"
+          }
+        ]
+      },
+      "prpkg_eq9_theorem3_log_share": {
+        "grouping_reason": "The report groups Theorem 3 with its common-parameter Corollary 3 because both require nondegenerate Bernoulli endpoints.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3; Corollary 3",
+            "row_sha256": "d7a5ca9f8552317302a344f9542eccec29be2b15e3cba0a755b62eedd4c60532"
+          }
+        ]
+      },
+      "prpkg_lemma1_bounded_tail": {
+        "grouping_reason": "The report groups Equation (4) and Definitions 1–3 with Proposition 5 and Lemma 1 in one exact row.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 1",
+            "row_sha256": "8c3f09906c72f262ac0b9f196d064d0053dbfd62d32a2ae8e711df21e2fb1f21"
+          }
+        ]
+      },
+      "prpkg_lemmaD1_i_exponential_limit": {
+        "grouping_reason": "The report groups the four printed parts of Appendix Lemma D.1 because they share the corrected asymptotic framework.",
+        "numbering": "numbered",
+        "printed_label": "Lemma D.1(i)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemma D.1",
+            "row_sha256": "93a7d2b1b67d5f52f3adc23c5ac904e5be72d95f28214031464cd9a97912728b"
+          }
+        ]
+      },
+      "prpkg_lemmaD1_ii_power_limit": {
+        "grouping_reason": "The report groups the four printed parts of Appendix Lemma D.1 because they share the corrected asymptotic framework.",
+        "numbering": "numbered",
+        "printed_label": "Lemma D.1(ii)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemma D.1",
+            "row_sha256": "93a7d2b1b67d5f52f3adc23c5ac904e5be72d95f28214031464cd9a97912728b"
+          }
+        ]
+      },
+      "prpkg_lemmaD1_iii_log_limit": {
+        "grouping_reason": "The report groups the four printed parts of Appendix Lemma D.1 because they share the corrected asymptotic framework.",
+        "numbering": "numbered",
+        "printed_label": "Lemma D.1(iii)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemma D.1",
+            "row_sha256": "93a7d2b1b67d5f52f3adc23c5ac904e5be72d95f28214031464cd9a97912728b"
+          }
+        ]
+      },
+      "prpkg_lemmaD1_iv_sublinear_power_limit": {
+        "grouping_reason": "The report groups the four printed parts of Appendix Lemma D.1 because they share the corrected asymptotic framework.",
+        "numbering": "numbered",
+        "printed_label": "Lemma D.1(iv)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemma D.1",
+            "row_sha256": "93a7d2b1b67d5f52f3adc23c5ac904e5be72d95f28214031464cd9a97912728b"
+          }
+        ]
+      },
+      "prpkg_lemmaD2_bounded_integral": {
+        "grouping_reason": "The report groups Appendix Lemmas D.2–D.5 under their valid-rank and rounding qualifications.",
+        "numbering": "numbered",
+        "printed_label": "Lemma D.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemmas D.2–D.5",
+            "row_sha256": "03e08db2f4e9406a2fadc8905fd76c23019ecdc6386bbfadae213802132e0130"
+          }
+        ]
+      },
+      "prpkg_lemmaD3_exponential_order_stats": {
+        "grouping_reason": "The report groups Appendix Lemmas D.2–D.5 under their valid-rank and rounding qualifications.",
+        "numbering": "numbered",
+        "printed_label": "Lemma D.3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemmas D.2–D.5",
+            "row_sha256": "03e08db2f4e9406a2fadc8905fd76c23019ecdc6386bbfadae213802132e0130"
+          }
+        ]
+      },
+      "prpkg_lemmaD4_pareto_order_stats": {
+        "grouping_reason": "The report groups Appendix Lemmas D.2–D.5 under their valid-rank and rounding qualifications.",
+        "numbering": "numbered",
+        "printed_label": "Lemma D.4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemmas D.2–D.5",
+            "row_sha256": "03e08db2f4e9406a2fadc8905fd76c23019ecdc6386bbfadae213802132e0130"
+          }
+        ]
+      },
+      "prpkg_lemmaD5_rounding": {
+        "grouping_reason": "The report groups Appendix Lemmas D.2–D.5 under their valid-rank and rounding qualifications.",
+        "numbering": "numbered",
+        "printed_label": "Lemma D.5",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemmas D.2–D.5",
+            "row_sha256": "03e08db2f4e9406a2fadc8905fd76c23019ecdc6386bbfadae213802132e0130"
+          }
+        ]
+      },
+      "prpkg_proposition5_uniform_order_statistic": {
+        "grouping_reason": "The report groups Equation (4) and Definitions 1–3 with Proposition 5 and Lemma 1 in one exact row.",
+        "numbering": "numbered",
+        "printed_label": "Proposition 5",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 5",
+            "row_sha256": "8c3f09906c72f262ac0b9f196d064d0053dbfd62d32a2ae8e711df21e2fb1f21"
+          }
+        ]
+      },
+      "prpkg_theorem1_i_finite_discrete": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1(i)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1(i)",
+            "row_sha256": "e5afcd42c7e91f0ce7a53af677c2524cbf309b0cfb8268f3c4e738b93423fb3f"
+          }
+        ]
+      },
+      "prpkg_theorem1_ii_bounded": {
+        "grouping_reason": "The report groups Theorem 1(ii)–(iv) because the bounded, exponential, and Pareto branches share the stated all-coordinate regularity conditions.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 1(ii)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1(ii)--(iv)",
+            "row_sha256": "1d73c174042ac733421dd0e41b446e69d90e0fb2c02bea0c3163e8c0719064a5"
+          }
+        ]
+      },
+      "prpkg_theorem1_iii_exponential": {
+        "grouping_reason": "The report groups Theorem 1(ii)–(iv) because the bounded, exponential, and Pareto branches share the stated all-coordinate regularity conditions.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 1(iii)",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1(ii)--(iv)",
+            "row_sha256": "1d73c174042ac733421dd0e41b446e69d90e0fb2c02bea0c3163e8c0719064a5"
+          }
+        ]
+      },
+      "prpkg_theorem1_iv_pareto": {
+        "grouping_reason": "The report groups Theorem 1(ii)–(iv) because the bounded, exponential, and Pareto branches share the stated all-coordinate regularity conditions.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 1(iv)",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1(ii)--(iv)",
+            "row_sha256": "1d73c174042ac733421dd0e41b446e69d90e0fb2c02bea0c3163e8c0719064a5"
+          }
+        ]
+      },
+      "prpkg_theorem1_v_all_consumed": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1(v)",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1(v)",
+            "row_sha256": "e7d2ce59225ed3076f132df2cbeb87c6e195298d1aa58f3cd31c263e280fa101"
+          }
+        ]
+      },
+      "prpkg_theorem2_i_subunit_decay": {
+        "grouping_reason": "The report groups the four printed parts of Theorem 2 under their shared corrected rank-varying Bernoulli model.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 2(i)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2",
+            "row_sha256": "01d09fedbefea186147d27817a175b4bf790ada1e76ff103ae92d2d9f755d0b2"
+          }
+        ]
+      },
+      "prpkg_theorem2_ii_unit_decay": {
+        "grouping_reason": "The report groups the four printed parts of Theorem 2 under their shared corrected rank-varying Bernoulli model.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 2(ii)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2",
+            "row_sha256": "01d09fedbefea186147d27817a175b4bf790ada1e76ff103ae92d2d9f755d0b2"
+          }
+        ]
+      },
+      "prpkg_theorem2_iii_superunit_decay": {
+        "grouping_reason": "The report groups the four printed parts of Theorem 2 under their shared corrected rank-varying Bernoulli model.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 2(iii)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2",
+            "row_sha256": "01d09fedbefea186147d27817a175b4bf790ada1e76ff103ae92d2d9f755d0b2"
+          }
+        ]
+      },
+      "prpkg_theorem2_iv_all_consumed_decay": {
+        "grouping_reason": "The report groups the four printed parts of Theorem 2 under their shared corrected rank-varying Bernoulli model.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 2(iv)",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2",
+            "row_sha256": "01d09fedbefea186147d27817a175b4bf790ada1e76ff103ae92d2d9f755d0b2"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "4b925af18f679d67bd1ff40740caf993399cad46b0decebb5efe1e1d598b1404": {
+        "explanation_keys": [],
+        "supplemental_reason": "Example 1 is retained as deep-audit illustrative material. This row describes the proved continuous relaxation only and gives no selected-result or whole-example credit."
+      },
+      "8c3f09906c72f262ac0b9f196d064d0053dbfd62d32a2ae8e711df21e2fb1f21": {
+        "explanation_keys": [],
+        "supplemental_reason": "Equation (4) and Definitions 1–3 are formula/definition content rather than selected theorem-like results."
+      },
+      "f9d6c3a0856896f439f579588e6ade51ed94d7bd00fe337af64706d0f14076f1": {
+        "explanation_keys": [
+          "convention/PRPKG24-POSITIVE-PREFERENCE-SUPPORT-01",
+          "defect/PRPKG24-ALL-COORDINATE-SHARE-DOMAIN-01",
+          "source/prpkg_corollary1_any_gamma/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "e5afcd42c7e91f0ce7a53af677c2524cbf309b0cfb8268f3c4e738b93423fb3f": {
+        "explanation_keys": [
+          "defect/PRPKG24-THEOREM1I-NONDEGENERATE-TOP-05",
+          "source/prpkg_theorem1_i_finite_discrete/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "1d73c174042ac733421dd0e41b446e69d90e0fb2c02bea0c3163e8c0719064a5": {
+        "explanation_keys": [
+          "convention/PRPKG24-BOUNDED-PDF-MEASURE-01",
+          "convention/PRPKG24-POSITIVE-PREFERENCE-SUPPORT-01",
+          "defect/PRPKG24-ALL-COORDINATE-SHARE-DOMAIN-01",
+          "defect/PRPKG24-THEOREM1II-VALUE-DOMAIN-01",
+          "source/prpkg_theorem1_ii_bounded/corrected_target",
+          "source/prpkg_theorem1_iii_exponential/corrected_target",
+          "source/prpkg_theorem1_iv_pareto/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "e7d2ce59225ed3076f132df2cbeb87c6e195298d1aa58f3cd31c263e280fa101": {
+        "explanation_keys": [
+          "defect/PRPKG24-THEOREM1V-NEGATIVE-MEAN-DIRECTION-01",
+          "convention/PRPKG24-COMMON-MEAN-SIGN-01",
+          "source/prpkg_theorem1_v_all_consumed/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "2c72e3dfab6b15b71556bb9a6a3968c7451e61532076829e323df55cd53fc640": {
+        "explanation_keys": [
+          "defect/PRPKG24-PROP2-FINITE-CONSTANT-01",
+          "source/prpkg_eq8_proposition2_uniform_finite/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "01d09fedbefea186147d27817a175b4bf790ada1e76ff103ae92d2d9f755d0b2": {
+        "explanation_keys": [
+          "defect/PRPKG24-THEOREM2-RANK-VARYING-IID-01",
+          "convention/PRPKG24-THEOREM2-INDEPENDENT-RANK-BERNOULLI-MODEL-01",
+          "source/prpkg_theorem2_i_subunit_decay/corrected_target",
+          "source/prpkg_theorem2_ii_unit_decay/corrected_target",
+          "source/prpkg_theorem2_iii_superunit_decay/corrected_target",
+          "source/prpkg_theorem2_iv_all_consumed_decay/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "93a7d2b1b67d5f52f3adc23c5ac904e5be72d95f28214031464cd9a97912728b": {
+        "explanation_keys": [
+          "defect/PRPKG24-LEMMAD1-SIGN-01",
+          "defect/PRPKG24-LEMMAD1-GENERIC-ASYMPTOTICS-02",
+          "source/prpkg_lemmaD1_i_exponential_limit/corrected_target",
+          "source/prpkg_lemmaD1_ii_power_limit/corrected_target",
+          "source/prpkg_lemmaD1_iii_log_limit/corrected_target",
+          "source/prpkg_lemmaD1_iv_sublinear_power_limit/corrected_target",
+          "source/prpkg_main_text_lemmaD1_ii_bounded_tail/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "03e08db2f4e9406a2fadc8905fd76c23019ecdc6386bbfadae213802132e0130": {
+        "explanation_keys": [
+          "defect/PRPKG24-LEMMAD3-SCALE-CONSTANT-01",
+          "source/prpkg_lemmaD3_exponential_order_stats/corrected_target",
+          "defect/PRPKG24-LEMMAD4-PDF-RANK-DOMAIN-01",
+          "source/prpkg_lemmaD4_pareto_order_stats/corrected_target",
+          "defect/PRPKG24-LEMMAD5-GENERAL-ROUNDING-01",
+          "defect/PRPKG24-LEMMAD5-CONCAVITY-REGULARITY-01",
+          "source/prpkg_lemmaD5_rounding/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "28413f30425faaba29e806ee2055e0ad7020426b1541441a312487e9339116cf": {
+        "explanation_keys": [
+          "defect/PRPKG24-PROP4-EQ18-TYPE-01",
+          "defect/PRPKG24-PROP4-EQ20-MEASURE-OMISSION-01",
+          "source/prpkg_eq18_uniform_minimizes_gamma/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "4227b1f330a98172f03402b22aba0311659648594de3455c830baa540f642b83": {
+        "explanation_keys": [
+          "defect/PRPKG24-PROP4-CONTINUITY-BOUNDARY-01"
+        ],
+        "supplemental_reason": ""
+      },
+      "d7a5ca9f8552317302a344f9542eccec29be2b15e3cba0a755b62eedd4c60532": {
+        "explanation_keys": [
+          "defect/PRPKG24-THEOREM3-ENDPOINT-DOMAIN-01",
+          "source/prpkg_eq9_theorem3_log_share/corrected_target",
+          "defect/PRPKG24-COROLLARY3-QONE-OPTIMALITY-01",
+          "source/prpkg_corollary3_iid_bernoulli/corrected_target"
+        ],
+        "supplemental_reason": ""
+      }
+    }
+  },
+  "schema": 2,
+  "source_items_sha256": "aa556a502696cd6e19e6734557e67805a6d8ea820ffc4a28fe2aebb6549171e0"
+}

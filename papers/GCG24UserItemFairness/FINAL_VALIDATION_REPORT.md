@@ -1,5 +1,5 @@
-# Final Validation Report: User-Item Fairness Tradeoffs in Recommendations
-Updated: 2026-09-06
+# Final Validation Report: User-item fairness tradeoffs in recommendations
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -25,11 +25,11 @@ surface and are not counted as formalized results.
 | --- | --- |
 | Propositions 1--2 | **Exact.** |
 | Theorem 3 | **Exact.** |
-| [Theorem 4](docs/SOURCE_CLARIFICATIONS.md#theorem-4-population-masses-and-positive-tolerance-section-5-p-7-appendix-e-p-39) | **Typo fixed:** cold-start mass `1-beta` becomes `1-2 beta`, alongside two masses `beta`. |
+| [Theorem 4](docs/SOURCE_CLARIFICATIONS.md#theorem-4-population-masses-and-positive-tolerance-section-5-p-7-appendix-e-p-39) | **Exact after correcting the mass typo:** cold-start mass `1-beta` becomes `1-2 beta`, alongside two masses `beta`. |
 | Appendix C Lemmas 1--2 | **Exact.** |
 | Appendix D Lemmas 3--11 | **Exact.** |
 | Appendix E Lemmas 12--14 and 16--17 | **Exact.** |
-| [Appendix E Lemma 15](docs/APPENDIX_E_LEMMA15_SOURCE_NOTE.md#appendix-e-lemma-15-source-clarification) | **Typo fixed:** the center branch includes both mirrored known types, giving `lambda=1/(1+L_t)`. |
+| [Appendix E Lemma 15](docs/APPENDIX_E_LEMMA15_SOURCE_NOTE.md#appendix-e-lemma-15-source-clarification) | **Exact after correcting the branch typo:** the center branch includes both mirrored known types, giving `lambda=1/(1+L_t)`. |
 
 ## 5. Remaining Boundaries and Gaps
 

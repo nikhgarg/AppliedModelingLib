@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "paper": "GKP26LinearRepresentationHypothesis",
+  "report_sha256": "fc0560ea1ddcd759e25cbc8f30de3a0e9516b9d816020eabaddfc820dcf56b98",
+  "source_items_sha256": "d99eae02b474b436b8360daf2be8a2f7f7372451a4f94d2d4cc2b2f5d4d54495",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/LRH-GEOMETRY2-DENOMINATOR-01": {
+      "disposition": "memo",
+      "memo": "docs/GEOMETRY2_DENOMINATOR_SOURCE_NOTE.md",
+      "memo_sha256": "2cfc23836570056abd8788ec1c16e9814beff30aae80a734279ee1dbdca25872",
+      "memo_heading": "Proposition 11: Denominator Typo"
+    },
+    "defect/LRH-GEOMETRY1-MU-SCHEDULE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "fb82f7e2eebfb19352e029a692b0c622d045c8057c2dc30eba1ea90526d1909f"
+    },
+    "convention/LRH-COMPRESSED-SENSING-SPARSE-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "fb82f7e2eebfb19352e029a692b0c622d045c8057c2dc30eba1ea90526d1909f"
+    },
+    "convention/LRH-RANDOM-INCOHERENCE-NONDEGENERATE-RANGE-01": {
+      "disposition": "not_material",
+      "reason": "Positive incoherence tolerance and a probability parameter in (0,1] are implicit in the source logarithmic tail calculation; m=1 has no off-diagonal pairs. This only spells out the nontrivial random-matrix regime and adds no material restriction to its asymptotic claim."
+    },
+    "convention/LRH-LOWER-BOUND-NONDEGENERATE-EPSILON-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "fb82f7e2eebfb19352e029a692b0c622d045c8057c2dc30eba1ea90526d1909f"
+    },
+    "convention/LRH-GEOMETRY2-NONDEGENERATE-EPSILON-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "fb82f7e2eebfb19352e029a692b0c622d045c8057c2dc30eba1ea90526d1909f"
+    },
+    "source/paper_geometry2_probe_column_correlation_upper_corrected/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/GEOMETRY2_DENOMINATOR_SOURCE_NOTE.md",
+      "memo_sha256": "2cfc23836570056abd8788ec1c16e9814beff30aae80a734279ee1dbdca25872",
+      "memo_heading": "Proposition 11: Denominator Typo"
+    },
+    "source/paper_geometry2_representation_column_correlation_upper_corrected/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/GEOMETRY2_DENOMINATOR_SOURCE_NOTE.md",
+      "memo_sha256": "2cfc23836570056abd8788ec1c16e9814beff30aae80a734279ee1dbdca25872",
+      "memo_heading": "Proposition 11: Denominator Typo"
+    },
+    "report/threshold-proof-range": {
+      "disposition": "memo",
+      "memo": "docs/THRESHOLD_ACTIVATION_ASYMPTOTIC_SCOPE_MEMO.md",
+      "memo_sha256": "056db3e09ab07c69ae9acd0144724f8b5e9acd5f56e211f10f99216919eec767",
+      "memo_heading": "Theorem 12 and Corollary 13: Threshold and Activation Bounds"
+    },
+    "report/external-rank-boundary": {
+      "disposition": "memo",
+      "memo": "docs/ALON_RANK_COROLLARY_SOURCE_NOTE.md",
+      "memo_sha256": "ca33d08210febd32e207b36f6a3c31b9711322e5091c11e75ea79eef41106b34",
+      "memo_heading": "Lemma 7 and Corollary 8: Alon Rank Bound"
+    }
+  }
+}

@@ -16,6 +16,13 @@ and Appendices B.1–B.2, C.2.
 
 ## Appendix B.2: likelihood-factorization algebra
 
+- **Condition 1: point probability → conditional density.** In continuous
+  time, read the displayed $P(S=t)$ as a density $g(s\mid T_1)$ for the
+  selected start $S$, given the first report time $T_1$. The density
+  integrates to one, does not depend on the reporting rate, and selects a
+  start between $T_1$ and the observation horizon $T$ when $T_1\le T$.
+  The likelihood uses its value at the observed start. This preserves the
+  paper's selection rule and independence from subsequent reports.
 - **Equation (30) first post-start gap → $t_{m+1}-s$**, where $s$ is the
   selected start after report $m$ and $t_{m+1}$ the next report time.
 - **Equation (31) residual normalization → multiply by $M!/(e-s)^M$**, where
@@ -34,14 +41,11 @@ and Appendices B.1–B.2, C.2.
 
 ## Lemma 2: conditioning on an observed first report
 
-- **Source → formalized:** Appendix Theorem 2, Condition 1 selects a start
-  after a realized first report within the observation window. The current
-  Lemma 2 model instead requires an unconditional exponential first arrival
-  to lie before a fixed finite horizon $H$ for every outcome.
-- **Why this needs repair:** for reporting rate $\lambda>0$, the exponential
-  law gives $P(T_1>H)=e^{-\lambda H}>0$, contradicting that bound. No process
-  satisfies both premises, so the Lemma 2 and Appendix D.8.2 proofs do not
-  establish the source claims.
-- **Scope:** the main likelihood-factorization proof uses a separate causal
-  observation model. This finding concerns the formalization's conditioning,
-  not a counterexample to the paper's waiting-time result.
+- **Observed first report:** condition on the actual first report, then select
+  a start between that report and the observation horizon. The subsequent
+  interarrival times are independent exponential draws. This proves the
+  waiting-time conclusion in Lemma 2 and the shifted-process result in
+  Appendix D.8.2.
+- The first report need not occur before the horizon on every possible path;
+  the claim concerns paths on which it has been observed. This is a
+  conditioning convention, not an additional behavioral assumption.

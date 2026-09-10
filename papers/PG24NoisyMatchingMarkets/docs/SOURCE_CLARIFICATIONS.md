@@ -1,26 +1,32 @@
 # Source clarifications: Wisdom and Foolishness of Noisy Matching Markets
 
-Source: [*Wisdom and Foolishness of Noisy Matching Markets*](https://arxiv.org/abs/2402.16771). Propositions, lemmas, definitions, corollaries, remarks, examples, and conjectures share one counter, separate from the main theorem counter; the numbering below is the numbering rendered by the paper.
+Source: [*Wisdom and Foolishness of Noisy Matching Markets*](https://arxiv.org/abs/2402.16771). Proposition and lemma numbers below are the numbers rendered in the paper's attenuation and amplification appendices.
 
-## Proposition 1: tail orientation and unproved polynomial rate
+## Appendix Proposition 1: lower-tail orientation and polynomial rate
 
-- The displayed integral above the market-clearing threshold has the wrong tail orientation. The surrounding prose and footnote concern matched mass below that threshold. Above the threshold, matching probability tends to one, so the integral tends to the positive supply and cannot decay to zero.
-- The corrected lower-tail mass is proved to vanish uniformly over the admissible economies and stable matchings. The intended `O(C^{-K(β,γ)})` rate remains unproved. The printed big-O statement does not specify a constant uniform over varying stable matchings, and its large-gap route also uses the unresolved Proposition 7(ii) estimate. The qualitative conclusion suffices for Theorem 1.
+- **What changes:** the displayed integral from `vS` to infinity → the matched mass at values at or below `vS`, with the displayed `O(C^{-K(β,γ)})` rate. The sentence immediately after the display, the preceding reduction, and Theorem 1 all concern students below `vS`; by contrast, the displayed upper-tail integral converges to the positive supply when match probability converges to one above `vS`.
+- **Additional condition:** beta-max concentration alone → beta-max concentration plus `MemLp (fun x : ℝ => x) 2 D` for one iid noise draw. The Case-2 lower-tail Chebyshev calculation is a statement about a single draw, whereas beta-max concentration controls maxima. Under this explicit finite-second-moment condition, the formalization proves the stated polynomial lower-tail rate uniformly over the literal stable-market instances.
 
-## Proposition 7(ii) and Proposition 8: unproved polynomial rates
+## Appendix Propositions 7(ii) and 8: one-draw Chebyshev condition
 
-- Proposition 7(i)'s maximum-affordance rate is proved exactly. For Proposition 7(ii), the current proof establishes convergence to one of high-value affordability but not its printed error rate `O(C^{-2φ₁-2φ₃+2φ₂}) = O(C^{-K(β,γ)})`. The source's maximum-concentration assumption bounds variances of large-sample maxima, while the printed step invokes a one-draw lower-tail Chebyshev estimate. It also uses an atom-sensitive strict-tail complement and omits the square in Chebyshev's denominator.
-- Proposition 8 displays the rate `O(C^{-K(β,γ)})`. Its printed proof depends on Proposition 7(ii)'s unavailable polynomial estimate. The current formalization proves only that the same high-cutoff, low-value integral converges to zero.
-- A suitable one-draw lower-tail bound would support the printed route. The current work neither derives that bound from maximum concentration nor gives a counterexample to the two rate claims under all source hypotheses.
+- **What changes:** the Proposition 7(ii) near-one rate under beta-max concentration alone → the same rate with the finite iid one-draw second moment above. The proof applies Chebyshev to one draw. The formalization uses the lower-tail complement valid in the presence of atoms and the squared Chebyshev denominator; it retains the displayed exponent.
+- **What changes:** the Proposition 8 lower-tail high-cutoff integral rate under beta-max concentration alone → the same `O(C^{-K(β,γ)})` rate with that inherited one-draw finite-second-moment condition. Proposition 8 invokes Proposition 7(ii), so it needs the same condition. The corrected result retains the paper's below-`vS` integral and exponent.
+
+## Appendix Propositions 3 and 4: the high-cutoff block at the pivot
+
+- **What changes:** the initially defined open block `C((P*, infinity))` → the closed block `C([P*, infinity))` used by the dense-cluster proof. At a cutoff tie, the two sets differ. The proof's dense cluster begins at `P*`, and its subsequent integral argument also uses the closed block. The formalization retains Proposition 3's two displayed rates, Proposition 4's lower-tail integral rate, and the strict low-side separation; this is a boundary convention, not a change to the market primitives.
+
+## Appendix Propositions 10, 14, and 15: actual affordance probabilities and local inputs
+
+- **What changes:** an informal use of `p_mu(v,F_i)` with immediately preceding calculations left implicit → the actual iid cutoff-affordance probability together with precisely the endpoint, capacity, and tail-ratio estimates used in the local derivation. Proposition 10 retains its positive `sigma` witness, positive `epsilon`, and strict open interval. Proposition 14 retains its strict large-firm probability-difference bound. Proposition 15 retains the `eta((v*,v_+)) = sqrt(epsilon)` selection and its small-firm bound below `v*`. These are explicit proof-context inputs rather than additional economic assumptions.
 
 ## Other appendix proof corrections
 
-- Cutoff blocks omitting equality at boundary `P*` → a complete partition assigning each boundary college to one side, with integer rounding of block sizes.
-- Propositions 2 and 5 use `φ₃-1=-K(β,γ)`: a block of `C^φ₃` colleges, each of capacity `α/C`, has capacity `α C^(φ₃-1)`. The printed proofs contain sign errors; the displayed conclusions are unchanged.
-- Propositions 3 and 4 require the low-value deviation event to be contained in the Chebyshev event, together with the actual endpoints from the middle-integral decomposition. The corrected argument preserves their displayed conclusions and polynomial exponents.
-- Lemma 6 replaces the printed maximum-growth equality with a triangle inequality and an independent-sample dyadic argument. The associated large-gap calculation also uses atom-safe strict and weak tails and a squared deviation denominator.
-- Proposition 9's central interval uses its upper quantile endpoint consistently. To obtain Theorem 2 for every real target, the proof starts from an interior anchor and applies the source long-tail comparison through finitely many value shifts. A bounded connected value support cannot eventually contain every real target inside the central quantile interval.
+- **What changes:** the printed capacity algebra in Appendix Propositions 2 and 5 → the correctly signed capacity calculation. The displayed rates are unchanged.
+- **What changes:** the intermediate event comparisons in Appendix Propositions 3 and 4 → the valid Chebyshev inclusions at the stated endpoints. The displayed rates are unchanged.
+- **What changes:** the maximum-growth equality in Appendix Lemma 6 → a triangle-inequality and independent-sample argument, with atom-safe tail events. Its `o(log n)` conclusion is unchanged.
+- **What changes:** the central-window and all-real bridge in the amplification appendix → the displayed central interval together with a finite long-tail shift argument from an interior anchor. Theorem 2's all-real conclusion is retained.
 
 ## Coalition conditional laws
 
-- Conditional noise specifications for every true-value vector → almost-everywhere conditional laws on the student-law support. This determines all affordability probabilities and integrals in Theorems 3–4; no off-support kernel is specified.
+- **What changes:** a conditional-noise description stated for every value vector → a conditional law on the student-law support, almost everywhere. This is the measure-theoretic reading needed for the affordability probabilities and integrals in Theorems 3 and 4.

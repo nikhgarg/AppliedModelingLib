@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "paper": "GKP26LinearRepresentationHypothesis",
+  "prompt_version": "defect-support-v1-exact-source-defect-to-lean-semantic",
+  "audit_kind": "source_defect_to_lean_agent",
+  "source_grounded": true,
+  "validator": "Codex LRH corrected-target defect-support inventory review",
+  "validator_type": "agent",
+  "validated_at": "2026-08-24T03:48:00Z",
+  "comment": "The reviewed source-proof-fidelity ledger contains one corrected-source-statement target. No source-map item is quarantined and no source item claims support_only or covered_by_support credit from a Lean counterexample or refutation, so an empty defect-support judgment set is intentional. The corrected Geometry 2 theorem routes are reviewed through ordinary corrected-target semantic evidence instead.",
+  "items": {}
+}

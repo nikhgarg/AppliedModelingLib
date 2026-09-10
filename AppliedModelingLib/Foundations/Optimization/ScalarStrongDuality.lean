@@ -180,8 +180,14 @@ section ScalarStrongDuality
 
 variable {E : Type*} [TopologicalSpace E]
 
-/-- The achievable hypograph for one scalar inequality-constrained program. -/
-private def scalarAchievableSet (X : Set E) (f g : E → ℝ) : Set (ℝ × ℝ) :=
+/--
+The achievable upper-lower hypograph for one scalar inequality-constrained
+program.  Its first coordinate is an upper bound on constraint consumption and
+its second coordinate is a lower bound on payoff.  Closedness of this set is
+the exact finite-dimensional no-gap condition used by
+`scalarStrongDuality_of_isScalarSlater_of_closed_achievable`.
+-/
+def scalarAchievableSet (X : Set E) (f g : E → ℝ) : Set (ℝ × ℝ) :=
   {point | ∃ x ∈ X, g x ≤ point.1 ∧ point.2 ≤ f x}
 
 omit [TopologicalSpace E] in
@@ -273,6 +279,112 @@ private lemma scalar_not_mem_achievableSet_of_gt_primalValue
   have hle : f x ≤ scalarPrimalValue X f g := le_csSup hbdd hmem
   linarith
 
+omit [TopologicalSpace E] in
+private lemma scalar_not_mem_achievableSet_of_gt_primalValue_of_bdd
+    {X : Set E} {f g : E → ℝ}
+    (hprimal_bdd : BddAbove (f '' scalarFeasible X g))
+    {epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    (0, scalarPrimalValue X f g + epsilon) ∉ scalarAchievableSet X f g := by
+  rintro ⟨x, hxX, hgx, hVepsilon_le_fx⟩
+  have hx_feas : x ∈ scalarFeasible X g := ⟨hxX, hgx⟩
+  have hmem : f x ∈ f '' scalarFeasible X g := ⟨x, hx_feas, rfl⟩
+  have hle : f x ≤ scalarPrimalValue X f g := le_csSup hprimal_bdd hmem
+  linarith
+
+/-
+`scalarAchievableSet` itself need not be closed: a bounded continuous
+objective can have a nonattained supremum.  Strict feasibility nevertheless
+keeps every point strictly above the primal value out of its closure.  The
+argument first mixes a hypothetical boundary point with a strict Slater point,
+then uses the negative slack to recover a genuinely feasible nearby point.
+-/
+omit [TopologicalSpace E] in
+private lemma scalar_not_mem_closure_achievableSet_of_gt_primalValue_of_slater
+    [AddCommGroup E] [Module ℝ E]
+    {X : Set E} {f g : E → ℝ}
+    (hachievable_convex : Convex ℝ (scalarAchievableSet X f g))
+    (hstrict : ∃ x₀ ∈ X, g x₀ < 0)
+    (hprimal_bdd : BddAbove (f '' scalarFeasible X g))
+    {epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    (0, scalarPrimalValue X f g + epsilon) ∉ closure (scalarAchievableSet X f g) := by
+  obtain ⟨x₀, hx₀X, hg_x₀⟩ := hstrict
+  set primal := scalarPrimalValue X f g
+  have hx₀_mem : (g x₀, f x₀) ∈ scalarAchievableSet X f g :=
+    scalar_image_mem_achievableSet hx₀X
+  rintro htarget
+  have hmix_parameter : ∃ t : ℝ, 0 < t ∧ t < 1 ∧
+      primal < (1 - t) * (primal + epsilon) + t * f x₀ := by
+    by_cases hfx₀ : primal ≤ f x₀
+    · refine ⟨1 / 2, by norm_num, by norm_num, ?_⟩
+      nlinarith
+    · have hfx₀_lt : f x₀ < primal := lt_of_not_ge hfx₀
+      let denom : ℝ := primal + epsilon - f x₀
+      have hdenom_pos : 0 < denom := by
+        dsimp [denom]
+        linarith
+      have hepsilon_lt_denom : epsilon < denom := by
+        dsimp [denom]
+        linarith
+      let t : ℝ := epsilon / (2 * denom)
+      have ht_pos : 0 < t := by
+        exact div_pos hepsilon (mul_pos (by norm_num) hdenom_pos)
+      have ht_lt_one : t < 1 := by
+        change epsilon / (2 * denom) < 1
+        apply (div_lt_one₀ (mul_pos (by norm_num) hdenom_pos)).mpr
+        nlinarith
+      have ht_denom : t * denom = epsilon / 2 := by
+        change epsilon / (2 * denom) * denom = epsilon / 2
+        field_simp [ne_of_gt hdenom_pos]
+      refine ⟨t, ht_pos, ht_lt_one, ?_⟩
+      dsimp [denom] at ht_denom
+      nlinarith
+  obtain ⟨t, ht_pos, ht_lt_one, hmix_payoff⟩ := hmix_parameter
+  let mixed : ℝ × ℝ :=
+    (t * g x₀, (1 - t) * (primal + epsilon) + t * f x₀)
+  have hmixed : mixed ∈ closure (scalarAchievableSet X f g) := by
+    have hcombo := hachievable_convex.closure htarget (subset_closure hx₀_mem)
+      (sub_nonneg.mpr ht_lt_one.le) ht_pos.le (by ring)
+    convert hcombo using 1
+    dsimp [mixed, primal]
+    ring_nf
+  have hmixed_first_neg : mixed.1 < 0 := by
+    dsimp [mixed]
+    exact mul_neg_of_pos_of_neg ht_pos hg_x₀
+  have hmixed_second_gt : primal < mixed.2 := by
+    simpa [mixed] using hmix_payoff
+  let delta : ℝ := min (-mixed.1) (mixed.2 - primal) / 2
+  have hmin_pos : 0 < min (-mixed.1) (mixed.2 - primal) :=
+    lt_min (neg_pos.mpr hmixed_first_neg) (sub_pos.mpr hmixed_second_gt)
+  have hdelta_pos : 0 < delta := by
+    exact div_pos hmin_pos (by norm_num)
+  have hdelta_first : delta ≤ -mixed.1 := by
+    dsimp [delta]
+    nlinarith [min_le_left (-mixed.1) (mixed.2 - primal)]
+  have hdelta_second : delta ≤ mixed.2 - primal := by
+    dsimp [delta]
+    nlinarith [min_le_right (-mixed.1) (mixed.2 - primal)]
+  obtain ⟨point, hpoint, hpoint_dist⟩ :=
+    (Metric.mem_closure_iff.mp hmixed) delta hdelta_pos
+  have hcoordinate_dist : dist mixed.1 point.1 < delta ∧ dist mixed.2 point.2 < delta := by
+    apply max_lt_iff.mp
+    simpa only [Prod.dist_eq] using hpoint_dist
+  have hfirst_abs : |mixed.1 - point.1| < delta := by
+    simpa only [Real.dist_eq] using hcoordinate_dist.1
+  have hsecond_abs : |mixed.2 - point.2| < delta := by
+    simpa only [Real.dist_eq] using hcoordinate_dist.2
+  have hpoint_first_neg : point.1 < 0 := by
+    have hbounds := abs_sub_lt_iff.mp hfirst_abs
+    linarith
+  have hpoint_second_gt : primal < point.2 := by
+    have hbounds := abs_sub_lt_iff.mp hsecond_abs
+    linarith
+  obtain ⟨x, hxX, hgx, hpoint_le_fx⟩ := hpoint
+  have hx_feasible : x ∈ scalarFeasible X g := ⟨hxX, hgx.trans hpoint_first_neg.le⟩
+  have hmem : f x ∈ f '' scalarFeasible X g := ⟨x, hx_feasible, rfl⟩
+  have hle : f x ≤ primal := by
+    exact le_csSup hprimal_bdd hmem
+  linarith
+
 private lemma scalar_prod_apply_eq (linear : (ℝ × ℝ) →L[ℝ] ℝ) (first second : ℝ) :
     linear (first, second) = first * linear (1, 0) + second * linear (0, 1) := by
   have hsplit : (first, second) = first • ((1, 0) : ℝ × ℝ) + second • ((0, 1) : ℝ × ℝ) := by
@@ -299,6 +411,242 @@ namespace Optimization
 section ScalarStrongDualityTheorem
 
 variable {E : Type*} [TopologicalSpace E]
+
+omit [TopologicalSpace E] in
+/--
+Strong duality when the attainable cost--payoff upper/lower hypograph is
+convex, a strict feasible point exists, and both real scalar objectives are
+bounded above.  Unlike the compact-domain theorem below, this result does not
+require `X` itself to be convex or compact, nor the maps to be continuous.
+Strict feasibility excludes points above the primal value from the closure of
+the attainable hypograph, so nonattainment of a bounded objective does not
+create a duality gap.
+
+This form is useful when convexity comes from epsilon-optimal mixing, as in an
+infimum-cost transport frontier whose exact cost graph need not be convex.
+-/
+lemma scalarStrongDuality_of_convex_achievableSet_of_bdd
+    [AddCommGroup E] [Module ℝ E]
+    {X : Set E} {f g : E → ℝ}
+    (hachievable_convex : Convex ℝ (scalarAchievableSet X f g))
+    (hstrict : ∃ x₀ ∈ X, g x₀ < 0)
+    (hprimal_bdd : BddAbove (f '' scalarFeasible X g))
+    (hdual_bdd : ∀ multiplier, 0 ≤ multiplier →
+      BddAbove ((fun x => scalarLagrangian f g x multiplier) '' X)) :
+    scalarPrimalValue X f g = scalarDualValue X f g := by
+  have hstrict_for_closure := hstrict
+  obtain ⟨x₀, hx₀X, hg_x₀⟩ := hstrict
+  have hfeas_ne : (scalarFeasible X g).Nonempty :=
+    ⟨x₀, hx₀X, hg_x₀.le⟩
+  have hweak : scalarPrimalValue X f g ≤ scalarDualValue X f g := by
+    have hfeas_img_ne : (f '' scalarFeasible X g).Nonempty := hfeas_ne.image f
+    have hdual_img_ne : (scalarDualObjective X f g '' Ici 0).Nonempty :=
+      ⟨scalarDualObjective X f g 0, 0, self_mem_Ici, rfl⟩
+    refine le_csInf hdual_img_ne ?_
+    rintro value ⟨multiplier, hmultiplier, rfl⟩
+    refine csSup_le hfeas_img_ne ?_
+    rintro payoff ⟨x, hx, rfl⟩
+    obtain ⟨hxX, hgx⟩ := hx
+    have hpayoff_le : f x ≤ scalarLagrangian f g x multiplier := by
+      unfold scalarLagrangian
+      have hproduct : multiplier * g x ≤ 0 :=
+        mul_nonpos_of_nonneg_of_nonpos hmultiplier hgx
+      linarith
+    exact hpayoff_le.trans (le_csSup (hdual_bdd multiplier hmultiplier)
+      ⟨x, hxX, rfl⟩)
+  refine le_antisymm hweak ?_
+  set primal := scalarPrimalValue X f g with hprimal_def
+  by_contra hlt
+  push Not at hlt
+  set epsilon := (scalarDualValue X f g - primal) / 2 with hepsilon_def
+  have hepsilon_pos : 0 < epsilon := by
+    have : 0 < scalarDualValue X f g - primal := sub_pos.mpr hlt
+    positivity
+  have hprimal_epsilon_lt : primal + epsilon < scalarDualValue X f g := by
+    rw [hepsilon_def]
+    linarith
+  have hachievable_excluded :=
+    scalar_not_mem_closure_achievableSet_of_gt_primalValue_of_slater
+      hachievable_convex hstrict_for_closure hprimal_bdd hepsilon_pos
+  obtain ⟨linear, constant, hlinear_point, hlinear_set⟩ :=
+    geometric_hahn_banach_point_closed hachievable_convex.closure isClosed_closure
+      hachievable_excluded
+  set firstCoefficient := linear (1, 0) with hfirstCoefficient_def
+  set secondCoefficient := linear (0, 1) with hsecondCoefficient_def
+  have hlinear_decomp : ∀ first second : ℝ,
+      linear (first, second) = first * firstCoefficient + second * secondCoefficient :=
+    fun first second => scalar_prod_apply_eq linear first second
+  have hseparate_point : (primal + epsilon) * secondCoefficient < constant := by
+    have h := hlinear_point
+    rw [hlinear_decomp] at h
+    linarith
+  have hseparate_set : ∀ point ∈ scalarAchievableSet X f g,
+      constant < point.1 * firstCoefficient + point.2 * secondCoefficient := by
+    intro point hpoint
+    have h := hlinear_set point (subset_closure hpoint)
+    rw [hlinear_decomp] at h
+    linarith
+  have hx₀_mem : (g x₀, f x₀) ∈ scalarAchievableSet X f g :=
+    scalar_image_mem_achievableSet hx₀X
+  have hfirst_nonneg : 0 ≤ firstCoefficient := by
+    by_contra hfirst_neg
+    push Not at hfirst_neg
+    have hfirst_ne : firstCoefficient ≠ 0 := ne_of_lt hfirst_neg
+    set offset : ℝ := constant - firstCoefficient * g x₀ - f x₀ * secondCoefficient
+      with hoffset_def
+    set shift : ℝ := (|offset| + 1) * (-1 / firstCoefficient) with hshift_def
+    have hinv_pos : 0 < -1 / firstCoefficient := by
+      rw [neg_div]
+      exact neg_pos.mpr (div_neg_of_pos_of_neg one_pos hfirst_neg)
+    have hshift_pos : 0 < shift := by
+      apply mul_pos _ hinv_pos
+      linarith [abs_nonneg offset]
+    have hmem : (g x₀ + shift, f x₀) ∈ scalarAchievableSet X f g := by
+      refine scalarAchievableSet_comprehensive hx₀_mem ?_ le_rfl
+      linarith
+    have hsep : constant <
+        (g x₀ + shift) * firstCoefficient + f x₀ * secondCoefficient :=
+      hseparate_set (g x₀ + shift, f x₀) hmem
+    have hfirst_shift : firstCoefficient * shift = -(|offset| + 1) := by
+      rw [hshift_def]
+      field_simp
+    have hexpand : (g x₀ + shift) * firstCoefficient + f x₀ * secondCoefficient =
+        firstCoefficient * g x₀ + firstCoefficient * shift + f x₀ * secondCoefficient := by
+      ring
+    rw [hexpand, hfirst_shift] at hsep
+    have hoffset_lt : offset < -(|offset| + 1) := by
+      rw [hoffset_def]
+      linarith
+    linarith [abs_nonneg offset, neg_abs_le offset]
+  have hsecond_nonpos : secondCoefficient ≤ 0 := by
+    by_contra hsecond_pos
+    push Not at hsecond_pos
+    have hsecond_ne : secondCoefficient ≠ 0 := ne_of_gt hsecond_pos
+    set offset : ℝ := constant - g x₀ * firstCoefficient - secondCoefficient * f x₀
+      with hoffset_def
+    set shift : ℝ := (|offset| + 1) / secondCoefficient with hshift_def
+    have hshift_pos : 0 < shift := by
+      apply div_pos _ hsecond_pos
+      linarith [abs_nonneg offset]
+    have hmem : (g x₀, f x₀ - shift) ∈ scalarAchievableSet X f g := by
+      refine scalarAchievableSet_comprehensive hx₀_mem le_rfl ?_
+      linarith
+    have hsep : constant <
+        g x₀ * firstCoefficient + (f x₀ - shift) * secondCoefficient :=
+      hseparate_set (g x₀, f x₀ - shift) hmem
+    have hsecond_shift : secondCoefficient * shift = |offset| + 1 := by
+      rw [hshift_def]
+      field_simp
+    have hexpand : g x₀ * firstCoefficient + (f x₀ - shift) * secondCoefficient =
+        g x₀ * firstCoefficient + secondCoefficient * f x₀ - secondCoefficient * shift := by
+      ring
+    rw [hexpand, hsecond_shift] at hsep
+    have hoffset_lt : offset < -(|offset| + 1) := by
+      rw [hoffset_def]
+      linarith
+    linarith [abs_nonneg offset, neg_abs_le offset]
+  have hsecond_neg : secondCoefficient < 0 := by
+    rcases lt_or_eq_of_le hsecond_nonpos with hsecond_lt | hsecond_eq
+    · exact hsecond_lt
+    · exfalso
+      have hprimal_epsilon_mul : (primal + epsilon) * secondCoefficient = 0 := by
+        rw [hsecond_eq]
+        ring
+      have hconstant_pos : 0 < constant := by
+        linarith
+      have hmem_sep := hseparate_set (g x₀, f x₀) hx₀_mem
+      have hfx₀_second : f x₀ * secondCoefficient = 0 := by
+        rw [hsecond_eq]
+        ring
+      have hfirst_gx₀_le : firstCoefficient * g x₀ ≤ 0 :=
+        mul_nonpos_of_nonneg_of_nonpos hfirst_nonneg hg_x₀.le
+      nlinarith [hmem_sep, hfirst_gx₀_le, hfx₀_second]
+  set multiplier : ℝ := -firstCoefficient / secondCoefficient with hmultiplier_def
+  have hmultiplier_nonneg : 0 ≤ multiplier := by
+    rw [hmultiplier_def]
+    exact div_nonneg_of_nonpos (neg_nonpos_of_nonneg hfirst_nonneg) hsecond_neg.le
+  have hdual_bound : ∀ x ∈ X,
+      scalarLagrangian f g x multiplier ≤ constant / secondCoefficient := by
+    intro x hxX
+    have hmem := hseparate_set (g x, f x) (scalar_image_mem_achievableSet hxX)
+    unfold scalarLagrangian
+    rw [hmultiplier_def]
+    have hsecond_ne : secondCoefficient ≠ 0 := ne_of_lt hsecond_neg
+    have hdiv : (g x * firstCoefficient + f x * secondCoefficient) / secondCoefficient <
+        constant / secondCoefficient :=
+      div_lt_div_of_neg_of_lt hsecond_neg hmem
+    have heq : (g x * firstCoefficient + f x * secondCoefficient) / secondCoefficient =
+        f x + firstCoefficient * g x / secondCoefficient := by
+      field_simp
+      ring
+    rw [heq] at hdiv
+    have hsub : f x - -firstCoefficient / secondCoefficient * g x =
+        f x + firstCoefficient * g x / secondCoefficient := by
+      field_simp
+      ring
+    linarith
+  have hX_ne : X.Nonempty := ⟨x₀, hx₀X⟩
+  have hdualObjective_le : scalarDualObjective X f g multiplier ≤ constant / secondCoefficient :=
+    scalarDualObjective_le hX_ne hdual_bound
+  have hconstant_div : constant / secondCoefficient < primal + epsilon := by
+    have hsecond_ne : secondCoefficient ≠ 0 := ne_of_lt hsecond_neg
+    have hstep : constant / secondCoefficient <
+        (primal + epsilon) * secondCoefficient / secondCoefficient :=
+      div_lt_div_of_neg_of_lt hsecond_neg hseparate_point
+    rwa [mul_div_assoc, div_self hsecond_ne, mul_one] at hstep
+  have hdualValue_le : scalarDualValue X f g ≤ scalarDualObjective X f g multiplier := by
+    unfold scalarDualValue
+    have hmem : scalarDualObjective X f g multiplier ∈ scalarDualObjective X f g '' Ici 0 :=
+      ⟨multiplier, hmultiplier_nonneg, rfl⟩
+    refine csInf_le ?_ hmem
+    refine ⟨f x₀, ?_⟩
+    rintro value ⟨candidateMultiplier, hcandidateMultiplier, rfl⟩
+    have hfx₀_le : f x₀ ≤ scalarLagrangian f g x₀ candidateMultiplier := by
+      unfold scalarLagrangian
+      have hproduct : candidateMultiplier * g x₀ ≤ 0 :=
+        mul_nonpos_of_nonneg_of_nonpos hcandidateMultiplier hg_x₀.le
+      linarith
+    exact hfx₀_le.trans (le_csSup (hdual_bdd candidateMultiplier hcandidateMultiplier)
+      ⟨x₀, hx₀X, rfl⟩)
+  rw [hprimal_def] at hprimal_epsilon_lt
+  linarith
+
+omit [TopologicalSpace E] in
+/--
+Strong duality under scalar Slater data and real boundedness.  This derives
+convexity of the attainable upper/lower hypograph from concavity of the
+objective, convexity of the constraint, and convexity of the domain.
+-/
+lemma scalarStrongDuality_of_isScalarSlater_of_bdd
+    [AddCommGroup E] [Module ℝ E]
+    {X : Set E} {f g : E → ℝ}
+    (hf_concave : ConcaveOn ℝ X f)
+    (hslater : IsScalarSlater X g)
+    (hprimal_bdd : BddAbove (f '' scalarFeasible X g))
+    (hdual_bdd : ∀ multiplier, 0 ≤ multiplier →
+      BddAbove ((fun x => scalarLagrangian f g x multiplier) '' X)) :
+    scalarPrimalValue X f g = scalarDualValue X f g :=
+  scalarStrongDuality_of_convex_achievableSet_of_bdd
+    (scalarAchievableSet_convex hslater.convex_X hf_concave hslater.convex_g)
+    hslater.strict_feasible hprimal_bdd hdual_bdd
+
+omit [TopologicalSpace E] in
+/--
+Compatibility form of scalar strong duality.  Closedness of the attainable
+hypograph is sufficient, but the preceding bounded Slater theorem shows it is
+not needed for the equality itself.
+-/
+lemma scalarStrongDuality_of_isScalarSlater_of_closed_achievable
+    [AddCommGroup E] [Module ℝ E]
+    {X : Set E} {f g : E → ℝ}
+    (hf_concave : ConcaveOn ℝ X f)
+    (hslater : IsScalarSlater X g)
+    (hprimal_bdd : BddAbove (f '' scalarFeasible X g))
+    (hdual_bdd : ∀ multiplier, 0 ≤ multiplier →
+      BddAbove ((fun x => scalarLagrangian f g x multiplier) '' X))
+    (_hachievable_closed : IsClosed (scalarAchievableSet X f g)) :
+    scalarPrimalValue X f g = scalarDualValue X f g :=
+  scalarStrongDuality_of_isScalarSlater_of_bdd hf_concave hslater hprimal_bdd hdual_bdd
 
 /--
 Strong duality for a compact scalar-constrained convex maximization problem.

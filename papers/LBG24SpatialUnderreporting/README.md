@@ -5,7 +5,7 @@
 |---|---|
 | Final status | Formalized |
 | Paper reference | [Quantifying Spatial Under-reporting Disparities in Resident Crowdsourcing](https://www.nature.com/articles/s43588-023-00572-6) by Zhi Liu, Uma Bhandaram, Nikhil Garg; Nature Computational Science, 2024. |
-| Lines of Code | 30,584 |
+| Lines of Code | 30,658 |
 
 ## Key Links
 

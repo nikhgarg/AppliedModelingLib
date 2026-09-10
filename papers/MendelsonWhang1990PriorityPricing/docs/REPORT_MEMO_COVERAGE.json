@@ -1,0 +1,257 @@
+{
+  "schema": 2,
+  "paper": "MendelsonWhang1990PriorityPricing",
+  "report_sha256": "56029c00b6df2949f085c0bd4089033d59398b60728a785d8b5afe1fcd53c5a4",
+  "source_items_sha256": "369e762dd1e656afbeb573e8cdce2120427b52c1fcbed19c2fda005da3116cbe",
+  "all_selected_semantic_review_sha256": "800eb06ec817a901a286212f638d9dfb43f1f507877143d245aa60188855b215",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/MW90-APPROVED-INTERIOR-FULL-SUPPORT-01": {
+      "disposition": "not_material",
+      "reason": "This umbrella record adds no independent domain condition: selected-class positivity for Theorem 1 and all-class positivity for the strict Theorems 2--4 conclusions are already carried by their theorem-specific conventions and corrected targets."
+    },
+    "convention/MW90-THEOREM1-POSITIVE-FLOW-INTERIOR-01": {
+      "disposition": "memo",
+      "source_reading": "Theorem 1's displayed ordinary first-order equality is applied to a class whose welfare-maximizing arrival rate is positive. The feasible flow domain is nonnegative, so a zero-flow coordinate instead has a one-sided optimality condition.",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "56487507dae312302d2b75c7d83dbc85211b724164cdb53d8f8f64ad1de4a5cd",
+      "memo_heading": "Positive-flow and interior reading",
+      "memo_anchor": "positive-flow-and-interior-reading",
+      "report_home": 4
+    },
+    "convention/MW90-STRICT-SELF-SELECTION-POSITIVE-FLOW-02": {
+      "disposition": "memo",
+      "source_reading": "The strict self-selection and strict cheating-penalty comparisons in Theorems 2--4 are the positive-flow interior statements. Each adjacent strict gap contains the neighboring equilibrium arrival rate as a factor; if that rate is zero, the corresponding comparison can be weak instead of strict.",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "56487507dae312302d2b75c7d83dbc85211b724164cdb53d8f8f64ad1de4a5cd",
+      "memo_heading": "Effect on the theorem conclusions",
+      "memo_anchor": "effect-on-the-theorem-conclusions",
+      "report_home": 4
+    },
+    "source/theorem_1/corrected_target": {
+      "disposition": "memo",
+      "source_reading": "theorem_1",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "56487507dae312302d2b75c7d83dbc85211b724164cdb53d8f8f64ad1de4a5cd",
+      "memo_heading": "Positive-flow and interior reading",
+      "memo_anchor": "positive-flow-and-interior-reading",
+      "report_home": 4
+    },
+    "source/theorem_2/corrected_target": {
+      "disposition": "memo",
+      "source_reading": "theorem_2",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "56487507dae312302d2b75c7d83dbc85211b724164cdb53d8f8f64ad1de4a5cd",
+      "memo_heading": "Effect on the theorem conclusions",
+      "memo_anchor": "effect-on-the-theorem-conclusions",
+      "report_home": 4
+    },
+    "source/theorem_3/corrected_target": {
+      "disposition": "memo",
+      "source_reading": "theorem_3",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "56487507dae312302d2b75c7d83dbc85211b724164cdb53d8f8f64ad1de4a5cd",
+      "memo_heading": "Effect on the theorem conclusions",
+      "memo_anchor": "effect-on-the-theorem-conclusions",
+      "report_home": 4
+    },
+    "source/theorem_4/corrected_target": {
+      "disposition": "memo",
+      "source_reading": "theorem_4",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "56487507dae312302d2b75c7d83dbc85211b724164cdb53d8f8f64ad1de4a5cd",
+      "memo_heading": "Effect on the theorem conclusions",
+      "memo_anchor": "effect-on-the-theorem-conclusions",
+      "report_home": 4
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "48eec2a13fea8cbfcf732cd1f31fc7d7828d2af25f403589ec4f96d2f9d3c06f",
+      "discovered_named_result_sha256": "998207d259465b3939a840c383ac9a8ce7fab652f8e44eb4768a3ed111cca30b",
+      "source_format": "text",
+      "results": {
+        "appendix_priority_queueing_time": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 1130,
+              "line_start": 1123,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "5e736ec06cb3f18540be5e663200c3fee4705e714d707fdefb09739b8805e9b5",
+              "source_item_id": "appendix_priority_queueing_time",
+              "source_label": "Appendix (A-1)"
+            }
+          ],
+          "source_item_ids": [
+            "appendix_priority_queueing_time"
+          ]
+        },
+        "theorem_1": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 285,
+              "line_start": 272,
+              "presentation": "text_heading",
+              "presentation_sha256": "d584a03e29e874edf28bfcb6804e458586c70a56df978abf5d403f5da362c575",
+              "source_item_id": "theorem_1",
+              "source_label": "Theorem 1"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_1"
+          ]
+        },
+        "theorem_2": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 559,
+              "line_start": 550,
+              "presentation": "text_heading",
+              "presentation_sha256": "8b2821299349ef2b8ffa0610409f5982f5a3f297333c0e35b1fe85f9387ceaf3",
+              "source_item_id": "theorem_2",
+              "source_label": "Theorem 2"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_2"
+          ]
+        },
+        "theorem_3": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 809,
+              "line_start": 806,
+              "presentation": "text_heading",
+              "presentation_sha256": "97e7b5f50b03727aad50d12518d03a9a20e40b90bf3d13a3555b868ae74b1b2a",
+              "source_item_id": "theorem_3",
+              "source_label": "Theorem 3"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_3"
+          ]
+        },
+        "theorem_4": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 985,
+              "line_start": 940,
+              "presentation": "text_heading",
+              "presentation_sha256": "f89b73e4cc1e15325e04134e9195a532cb096837d8f7e968496094c7f7da5f27",
+              "source_item_id": "theorem_4",
+              "source_label": "Theorem 4"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_4"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "402cb37e3c8d9133194b18bc4b32cfb163c72e0503b999061aba67dafd8a4f0d",
+    "results": {
+      "appendix_priority_queueing_time": {
+        "numbering": "unnumbered",
+        "printed_label": "Appendix (A-1)",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix (A-1)",
+            "row_sha256": "47d92963ab71b06b6fd2e64c93fc16ad1541a3a9151c68d71c5aa4690a81faae"
+          }
+        ]
+      },
+      "theorem_1": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1",
+            "row_sha256": "b6c9d946540c3437123b9c6170479b02b5a633757d531b5a1e00a9835d9f4780"
+          }
+        ]
+      },
+      "theorem_2": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2",
+            "row_sha256": "641cd6d6c9803cd104933ef234d51015e214bc2ceef771e5ee9f34f3587868e5"
+          }
+        ]
+      },
+      "theorem_3": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3",
+            "row_sha256": "43b1ee2ca152d70b0d22438815cd61946b34a838551fa9c41b015512033e50b5"
+          }
+        ]
+      },
+      "theorem_4": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 4",
+            "row_sha256": "c33e69a45fcb65977ea8376d1523a85a413507d8efc7725b8af593ae1e8da611"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "47d92963ab71b06b6fd2e64c93fc16ad1541a3a9151c68d71c5aa4690a81faae": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "b6c9d946540c3437123b9c6170479b02b5a633757d531b5a1e00a9835d9f4780": {
+        "explanation_keys": [
+          "convention/MW90-THEOREM1-POSITIVE-FLOW-INTERIOR-01",
+          "source/theorem_1/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "641cd6d6c9803cd104933ef234d51015e214bc2ceef771e5ee9f34f3587868e5": {
+        "explanation_keys": [
+          "convention/MW90-STRICT-SELF-SELECTION-POSITIVE-FLOW-02",
+          "source/theorem_2/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "43b1ee2ca152d70b0d22438815cd61946b34a838551fa9c41b015512033e50b5": {
+        "explanation_keys": [
+          "convention/MW90-STRICT-SELF-SELECTION-POSITIVE-FLOW-02",
+          "source/theorem_3/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "c33e69a45fcb65977ea8376d1523a85a413507d8efc7725b8af593ae1e8da611": {
+        "explanation_keys": [
+          "convention/MW90-STRICT-SELF-SELECTION-POSITIVE-FLOW-02",
+          "source/theorem_4/corrected_target"
+        ],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

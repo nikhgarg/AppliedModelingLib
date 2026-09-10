@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "approved_envelope_sha256s_by_paper": {
+    "CGGG20SelectiveInformationAcquisition": [
+      "92d7fd1b885fcddced93569eaa952039af5ac30322230968fda3d3f939898c90"
+    ],
+    "GHW01DigitalGoods": [
+      "4c6e152295995d46241cb46cced8dd4bf225b88da477659909764340003a6448"
+    ],
+    "GJ19OptimalBinaryRatingSystems": [
+      "40743a9f4943d9e49faa7a8908f4d9561c3aa2ae45b9165d37ab1a0ea515d0cd"
+    ],
+    "GKGMM19IterativeLocalVoting": [
+      "133f5dfd733286836ac91c79b6de6fa1fc50fa1af0501ed7d2d2073c4c458689"
+    ],
+    "GKP26LinearRepresentationHypothesis": [
+      "e0a415eed7b53687466134cea1521e9bafa6031dd67ba39580fd8d62e58a915b"
+    ],
+    "JGS23SupplySideRecommenderSystems": [
+      "24e6cc4d7dd04201cb8c9d99e363c796abd7b13d22e73d248ce11743ed648d81"
+    ],
+    "LBG22StrategicRanking": [
+      "c421d501a31b8a30c35d67cc4542ccf1531720b15dd3aaebaaefd5415b3aa01b"
+    ],
+    "LBG24SpatialUnderreporting": [
+      "8a107a5112138a9dc0c318e6913a32ecc908890a68860c33d097b4767512bcbd"
+    ],
+    "PG24NoisyMatchingMarkets": [
+      "3fb5c849517edc67e1345816e0f54df4041895b38f888db3efb9c59457f97014"
+    ],
+    "PRPKG24AccuracyDiversity": [
+      "07c5e9e2ae1801711ba948a99eb857d36a7fe267ce48130b5eaf47fda6741c45"
+    ]
+  }
+}

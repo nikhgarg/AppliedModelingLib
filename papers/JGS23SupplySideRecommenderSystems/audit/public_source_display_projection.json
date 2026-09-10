@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "JGS23SupplySideRecommenderSystems",
-  "private_source_map_sha256": "e58cd31b4212f08a9ff21f1e0b2efd2ea5de6441bf4d69e21a204dbe63efbe08",
+  "private_source_map_sha256": "a4221b894079c2fb59f429d0f01d574bf14b7aca1dbb59fcb851da20218ee32b",
   "public_manifest_path": "papers/JGS23SupplySideRecommenderSystems/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "48751038f5ec0469ab6028d95a444c210a75990b46510fd769aadc142db3fb3d",
+  "public_source_map_sha256": "b7048140852bffb4bfb2f36f76b472ec80bb4713b9511918f409ca2c75b658fc",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,

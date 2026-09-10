@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "paper": "GHW01DigitalGoods",
+  "summaries": {
+    "GHW01-BOUNDED-DUAL-EVEN-CAPACITY-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).",
+    "GHW01-BOUNDED-REJECTION-PRIORITY-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).",
+    "GHW01-RANDOMIZED-AUCTION-PMF-DOMAIN-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).",
+    "GHW01-THEOREM62-DISCRETE-ALPHA-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).",
+    "GHW01-THEOREM93-HIGH-VALUE-DISCRETIZATION-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md)."
+  },
+  "omitted_conventions": [
+    "GHW01-BID-INDEPENDENT-BOUNDARY-01",
+    "GHW01-BOUNDED-OPT-CAP-SEMANTICS-01",
+    "GHW01-BOUNDED-SAMPLE-CAPACITY-FLOOR-01",
+    "GHW01-BOUNDED-TOP-K-EXACT-CARDINALITY-01",
+    "GHW01-HIGHEST-BID-PARAMETER-01",
+    "GHW01-NONEMPTY-OTHER-BID-DOMAIN-01",
+    "GHW01-NORMALIZED-BID-DOMAIN-01",
+    "GHW01-RANDOMIZED-EXPECTED-PROFIT-FINITENESS-01",
+    "GHW01-SECTION11-STRICT-THRESHOLD-TIE-01",
+    "GHW01-THEOREM62-EXACT-HALF-SAMPLING-01",
+    "GHW01-THEOREM93-SALE-PRICE-CONVENTION-01",
+    "GHW01-THEOREM93-SET-OF-BIDS-ERASED-MULTISET-01",
+    "GHW01-TOTAL-VALUE-TRUTHFUL-BIDDING-01",
+    "GHW01-WEIGHTED-PAIRING-JOINT-LAW-01",
+    "GHW01-WEIGHTED-PAIRING-PROBABILITY-DOMAIN-01"
+  ]
+}

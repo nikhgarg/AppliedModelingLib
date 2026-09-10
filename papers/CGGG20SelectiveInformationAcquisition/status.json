@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "id": "CGGG20SelectiveInformationAcquisition",
+  "repository_visibility": "public",
+  "title": "Fair Allocation through Selective Information Acquisition",
+  "authors": "William Cai, Johann Gaebler, Nikhil Garg, Sharad Goel",
+  "source_version": "AIES 2020 / arXiv v3",
+  "build_target": "lake build CGGG20SelectiveInformationAcquisition",
+  "status": "formalized",
+  "main_caveat": "No theorem-level Lean proof boundary remains for the selected source surface. The full-vector posterior reading used by the allocation model is recorded as a source clarification.",
+  "human_summary": "Formalized: the main threshold-sufficiency theorem and selected appendix threshold results are proved for allocation rules that use the full vector of post-screening estimates, under the clarified source reading of those estimates as the lender's full-information posteriors.",
+  "human_summary_review": {
+    "status": "draft",
+    "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+  },
+  "review_entrypoint": "papers/CGGG20SelectiveInformationAcquisition/FINAL_VALIDATION_REPORT.md",
+  "human_review": {
+    "reviewed_rows": 0,
+    "total_rows": 5,
+    "stale_rows": 0,
+    "mismatch_rows": 0,
+    "uncertain_rows": 0,
+    "source": "v11 PaperInterface claim surface; human entries are recorded after direct review"
+  },
+  "paper_interface": {
+    "path": "papers/CGGG20SelectiveInformationAcquisition/PaperInterface.lean",
+    "line_count": 756,
+    "declaration_rows": 56,
+    "review_rows": 5,
+    "oversized": false,
+    "maintainability_issue": null
+  },
+  "artifacts": {
+    "paper_interface": "papers/CGGG20SelectiveInformationAcquisition/PaperInterface.lean",
+    "assumptions": "papers/CGGG20SelectiveInformationAcquisition/Assumptions.lean",
+    "final_validation_report": "papers/CGGG20SelectiveInformationAcquisition/FINAL_VALIDATION_REPORT.md",
+    "dependency_dag_tex": "papers/CGGG20SelectiveInformationAcquisition/docs/DependencyDAG.tex",
+    "dependency_dag_pdf": "papers/CGGG20SelectiveInformationAcquisition/docs/DependencyDAG.pdf",
+    "human_review_packet_pdf": "papers/CGGG20SelectiveInformationAcquisition/docs/HUMAN_REVIEW_PACKET.pdf",
+    "human_review_packet_tex": "papers/CGGG20SelectiveInformationAcquisition/docs/HUMAN_REVIEW_PACKET.tex"
+  },
+  "review_surface": {
+    "source_file": "papers/CGGG20SelectiveInformationAcquisition/PaperInterface.lean",
+    "assumption_source_file": "papers/CGGG20SelectiveInformationAcquisition/Assumptions.lean",
+    "llm_statement_review": {
+      "lean_to_tex_file": "papers/CGGG20SelectiveInformationAcquisition/audit/lean_to_tex_llm.json",
+      "match_judgment_file": "papers/CGGG20SelectiveInformationAcquisition/audit/statement_match_llm.json",
+      "review_surface_audit_file": "papers/CGGG20SelectiveInformationAcquisition/audit/review_surface_llm.json",
+      "paper_coverage_audit_file": "papers/CGGG20SelectiveInformationAcquisition/audit/paper_coverage_llm.json",
+      "assumption_judgment_file": "papers/CGGG20SelectiveInformationAcquisition/audit/assumption_match_llm.json",
+      "surface_audit_threshold": 30,
+      "surface_warning_threshold": 120,
+      "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
+    },
+    "llm_paper_coverage_review": {
+      "paper_coverage_audit_file": "papers/CGGG20SelectiveInformationAcquisition/audit/paper_coverage_llm.json",
+      "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more dashboard rows. If coverage uses a reusable library declaration, it must route through an audited paper-local semantic bridge/equivalence row; matching by Lean/library/source names is not semantic evidence. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
+    },
+    "llm_assumption_review": {
+      "assumption_judgment_file": "papers/CGGG20SelectiveInformationAcquisition/audit/assumption_match_llm.json",
+      "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
+    },
+    "llm_source_record_review": {
+      "source_record_audit_file": "papers/CGGG20SelectiveInformationAcquisition/audit/source_record_audit.json",
+      "source_record_judgment_file": "papers/CGGG20SelectiveInformationAcquisition/audit/source_record_match_llm.json",
+      "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt."
+    },
+    "source_proof_fidelity_review": {
+      "ledger_file": "papers/CGGG20SelectiveInformationAcquisition/audit/source_proof_fidelity.json",
+      "policy": "Audit source proof steps and model conventions by exact source locator and mathematical claim. The Appendix Lemma 2 interpolation typo is a formalized note; the strictly-positive allocation-cost convention is an approved clarification required by the source's cost-aware ratios."
+    },
+    "assumption_policy": "strict",
+    "assumption_names": [],
+    "paper_coverage_required": true,
+    "include_names": [
+      "theorem1_threshold_policies_sufficeSpec",
+      "lemma1_cost_aware_threshold_non_dominationSpec",
+      "lemma2_full_range_cost_aware_threshold_attainmentSpec",
+      "appendix_theorem_cost_aware_threshold_policies_sufficeSpec",
+      "lemma3_equality_diversity_threshold_sufficiencySpec"
+    ],
+    "slices": [
+      {
+        "id": "additional_source_results",
+        "title": "Additional source results",
+        "names": [
+          "theorem1_threshold_policies_sufficeSpec",
+          "lemma1_cost_aware_threshold_non_dominationSpec",
+          "lemma2_full_range_cost_aware_threshold_attainmentSpec",
+          "appendix_theorem_cost_aware_threshold_policies_sufficeSpec",
+          "lemma3_equality_diversity_threshold_sufficiencySpec"
+        ]
+      }
+    ],
+    "source_definition_names": [],
+    "proposition_spec_proofs": {
+      "theorem1_threshold_policies_sufficeSpec": "theorem1_threshold_policies_suffice",
+      "lemma1_cost_aware_threshold_non_dominationSpec": "lemma1_cost_aware_threshold_non_domination_realizes_spec",
+      "lemma2_full_range_cost_aware_threshold_attainmentSpec": "lemma2_full_range_cost_aware_threshold_attainment_realizes_spec",
+      "appendix_theorem_cost_aware_threshold_policies_sufficeSpec": "appendix_theorem_cost_aware_threshold_policies_suffice",
+      "lemma3_equality_diversity_threshold_sufficiencySpec": "lemma3_equality_diversity_threshold_sufficiency"
+    },
+    "require_v11_raw_source_spec_screening": true,
+    "require_source_spec_correspondence": true
+  }
+}

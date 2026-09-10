@@ -1,4 +1,4 @@
-# Final Validation Report: EOS07GSP
+# Final Validation Report: Internet Advertising and the Generalized Second Price Auction: Selling Billions of Dollars Worth of Keywords
 
 Updated: 2026-09-04
 

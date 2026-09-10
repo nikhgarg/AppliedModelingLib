@@ -1,6 +1,6 @@
-# Final Validation Report: Fundamental Limits of Testing IIA
+# Final Validation Report: Fundamental Limits of Testing the Independence of Irrelevant Alternatives in Discrete Choice
 
-Updated: 2026-09-06
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -31,7 +31,7 @@ bipartite cycle-decomposition argument.
 | Result | Comparison with the paper |
 | --- | --- |
 | Lemma 2 | **Exact.** |
-| [Theorem 1](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#theorem-1-perturbation-range) | **Source clarification:** `2 mu(sigma) delta <= 1` keeps the proof’s perturbation in its defined range. |
+| [Theorem 1](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#theorem-1-perturbation-range) | **Exact on the proof’s perturbation range:** `2 mu(sigma) delta <= 1` keeps the proof’s perturbation in its defined range. |
 | Lemmas 3–4; Appendix Fact 5; Appendix Lemma 6; Appendix Fact 7; Appendix Lemma 9 | **Exact.** |
 | [Corollary 1; Appendix Lemma 10](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#appendix-comparison-incidence-bound) | **Restricted scope:** positive denominator for the rational branch and the valid real-log range. |
 | [Appendix Corollary 2](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#all-even-subsets-endpoint) | **Changed statement:** valid range begins at `n=3`, not `n=2`. |

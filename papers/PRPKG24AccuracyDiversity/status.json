@@ -27,7 +27,7 @@
     },
     {
       "condition": "Corollary 1 inherits the paper's fixed consumption constraint convention: k is an arbitrary fixed positive natural number. The source does not state the positivity separately, but top-k evaluation and every Theorem 1 branch use that intended domain.",
-      "disposition": "Routine quantifier/domain clarification. PaperInterface.corollary1 now takes arbitrary k with 0 < k and returns a source-iid witness indexed by that same k; the former k = 1 theorem is retained only as an explicitly labelled support specialization.",
+      "disposition": "Routine quantifier/domain clarification. PaperInterface.corollary1 now takes arbitrary k with 0 < k and returns an explicit probability-law/source-iid witness indexed by that same k; the former k = 1 theorem is retained only as an explicitly labelled support specialization.",
       "source_location": "cited publication:333-350; cited publication:443-447"
     },
     {
@@ -108,11 +108,20 @@
   },
   "id": "PRPKG24AccuracyDiversity",
   "last_status_checkpoint": "2026-08-15: A direct source-first review covered all 30 normal named-theory rows; the eight rows implicated by an older raw-receipt telescope diagnostic (Theorem 3 log shares, Lemma 1, Proposition 4, Lemma D.1(i)--(iv), and Lemma D.2) received focused rechecks within that pass. Each pinned source anchor and surrounding model text was compared with the complete current PaperInterface endpoint or explicit Spec/proof surface, including actual premises, quantifiers, and conclusion rather than declaration names. No new hidden premise, weakened conclusion, or unapproved correction was found. The direct review is recorded in docs/DIRECT_NAMED_ROW_REVIEW_2026-08-15.md, and `lake build PRPKG24AccuracyDiversity.PaperInterface` passed. No raw receipt was recovered or reissued, so the older frozen source-record snapshot remains historical provenance rather than claimed as current evidence.",
-  "main_caveat": "No status-bearing caveat. The audited endpoints retain the source's selected-type PMF and conditional finite experiment, while every correction or additional model convention is explicit in the source map, fidelity ledger, and post-formalization materials. The 2026-08-15 direct 30-row review is recorded in docs/DIRECT_NAMED_ROW_REVIEW_2026-08-15.md and the final validation report; the older frozen source-record snapshot is historical procedural provenance, not a mathematical boundary, archival-equivalence claim, or current-raw assertion.",
-  "open_source_boundaries": [],
+  "main_caveat": "The all-coordinate Theorem 1(ii)--(iv) and Corollary 1 endpoints are formalized as disclosed corrected targets: they use positive type probabilities, fixed positive k, and one selected optimum. Theorem 1(ii) additionally uses its stated nonnegative bounded-PDF value domain; zero-support and every-optimizer extensions are not claimed.",
+  "open_source_boundaries": [
+    {
+      "current_lean_treatment": "The source-facing Specs use a PMF, explicitly return a probability law D tied to each concrete iid construction, and existentially select one finite-optimal sequence; their stronger universal-optimizer theorems are support only. Strict-positive support, supportwise objective/optimizer invariance lemmas, and a checked generic two-type zero-support optimizer witness are proved. A context-isolated source-fidelity review completed on 2026-09-08 and found no further mismatch on this clarified domain.",
+      "id": "PRPKG24-COROLLARY1-POSITIVE-SUPPORT-2026-09-08",
+      "issue": "The formalized all-coordinate endpoints use strict positive preferred-type likelihoods, although the source model permits zero masses. The source selects one S_(n,k) at each budget; it does not state a zero-support convention for the displayed gamma-share profile.",
+      "review_needed": false,
+      "source_location": "cited publication:55-63, 270-280, 443-447",
+      "status": "COMPLETE_UNDER_CLARIFICATION"
+    }
+  ],
   "paper_interface": {
     "declaration_rows": 133,
-    "line_count": 3037,
+    "line_count": 3068,
     "maintainability_issue": "The large interface separates the selected transparent specifications from proof endpoints, governing definitions, and supplemental material.",
     "oversized": true,
     "path": "papers/PRPKG24AccuracyDiversity/PaperInterface.lean",

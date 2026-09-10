@@ -1309,6 +1309,231 @@ theorem exists_measureReal_Iio_Iic_bracket
     simpa [F] using hleft
   · simpa [F, ProbabilityTheory.cdf_eq_real μ c] using hright
 
+/-- The lower generalized inverse of a real probability measure's CDF.
+
+Outside the probability-relevant interval `(0, 1)` this totalized definition
+has no probabilistic interpretation.  The accompanying transport lemmas state
+their hypotheses on that interval explicitly. -/
+noncomputable def cdfQuantile (μ : Measure ℝ) (u : ℝ) : ℝ :=
+  sInf {x : ℝ | u ≤ ProbabilityTheory.cdf μ x}
+
+/-- For an interior probability level, the CDF upper-level set defining
+`cdfQuantile` is nonempty. -/
+theorem cdfQuantile_threshold_nonempty
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] {u : ℝ}
+    (hu : u ∈ Ioo (0 : ℝ) 1) :
+    {x : ℝ | u ≤ ProbabilityTheory.cdf μ x}.Nonempty := by
+  have htop :
+      ∀ᶠ x in atTop, u < ProbabilityTheory.cdf μ x :=
+    (ProbabilityTheory.tendsto_cdf_atTop μ).eventually
+      (eventually_gt_nhds hu.2)
+  rcases htop.exists with ⟨x, hx⟩
+  exact ⟨x, le_of_lt hx⟩
+
+/-- For an interior probability level, the CDF upper-level set defining
+`cdfQuantile` is bounded below. -/
+theorem cdfQuantile_threshold_bddBelow
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] {u : ℝ}
+    (hu : u ∈ Ioo (0 : ℝ) 1) :
+    BddBelow {x : ℝ | u ≤ ProbabilityTheory.cdf μ x} := by
+  have hbot :
+      ∀ᶠ x in atBot, ProbabilityTheory.cdf μ x < u :=
+    (ProbabilityTheory.tendsto_cdf_atBot μ).eventually
+      (eventually_lt_nhds hu.1)
+  rcases eventually_atBot.1 hbot with ⟨b, hb⟩
+  refine ⟨b, ?_⟩
+  intro x hx
+  by_contra hbx
+  have hxb : x ≤ b := le_of_lt (lt_of_not_ge hbx)
+  exact not_lt_of_ge hx (hb x hxb)
+
+/-- At an interior level, the CDF at its lower generalized inverse reaches
+that level.  Right continuity, rather than atomlessness, is the key fact. -/
+theorem le_cdf_cdfQuantile
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] {u : ℝ}
+    (hu : u ∈ Ioo (0 : ℝ) 1) :
+    u ≤ ProbabilityTheory.cdf μ (cdfQuantile μ u) := by
+  classical
+  let F : ℝ → ℝ := ProbabilityTheory.cdf μ
+  let S : Set ℝ := {x | u ≤ F x}
+  have hS_nonempty : S.Nonempty := by
+    simpa [S, F] using cdfQuantile_threshold_nonempty μ hu
+  have hS_bddBelow : BddBelow S := by
+    simpa [S, F] using cdfQuantile_threshold_bddBelow μ hu
+  let c : ℝ := sInf S
+  have hright :
+      u ≤ F c := by
+    by_contra hnot
+    have hFc_lt : F c < u := lt_of_not_ge hnot
+    have hright_tend :
+        Tendsto F (𝓝[>] c) (𝓝 (F c)) :=
+      ((ProbabilityTheory.cdf μ).right_continuous c).mono
+        Ioi_subset_Ici_self
+    have hsmall :
+        ∀ᶠ y in 𝓝[>] c, F y < u :=
+      hright_tend.eventually (eventually_lt_nhds hFc_lt)
+    rcases (hsmall.and self_mem_nhdsWithin).exists with
+      ⟨y, hyF, hcy⟩
+    rcases (csInf_lt_iff hS_bddBelow hS_nonempty).1 hcy with
+      ⟨d, hdS, hdy⟩
+    have hFd_le_Fy : F d ≤ F y :=
+      ProbabilityTheory.monotone_cdf μ (le_of_lt hdy)
+    exact not_lt_of_ge hdS (lt_of_le_of_lt hFd_le_Fy hyF)
+  simpa [cdfQuantile, S, F, c] using hright
+
+/-- The lower generalized inverse is characterized by the usual CDF
+inequality at every interior probability level. -/
+theorem cdfQuantile_le_iff
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] {u : ℝ}
+    (hu : u ∈ Ioo (0 : ℝ) 1) (x : ℝ) :
+    cdfQuantile μ u ≤ x ↔ u ≤ ProbabilityTheory.cdf μ x := by
+  constructor
+  · intro hquantile
+    exact (le_cdf_cdfQuantile μ hu).trans
+      (ProbabilityTheory.monotone_cdf μ hquantile)
+  · intro hx
+    unfold cdfQuantile
+    exact csInf_le (cdfQuantile_threshold_bddBelow μ hu) hx
+
+/-- The CDF generalized inverse is monotone on the probability-relevant
+uniform interval. -/
+theorem monotoneOn_cdfQuantile
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] :
+    MonotoneOn (cdfQuantile μ) (Ioo (0 : ℝ) 1) := by
+  intro u hu v hv huv
+  exact (cdfQuantile_le_iff μ hu (cdfQuantile μ v)).2
+    (huv.trans (le_cdf_cdfQuantile μ hv))
+
+/-- On the uniform interval, a CDF-quantile sublevel event is exactly the
+corresponding CDF sublevel event. -/
+theorem cdfQuantile_preimage_Iic_inter_Ioo
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] (x : ℝ) :
+    (cdfQuantile μ ⁻¹' Iic x) ∩ Ioo (0 : ℝ) 1 =
+      Iic (ProbabilityTheory.cdf μ x) ∩ Ioo (0 : ℝ) 1 := by
+  ext u
+  simp only [mem_inter_iff, mem_preimage, mem_Iic]
+  constructor
+  · rintro ⟨hquantile, hu⟩
+    exact ⟨(cdfQuantile_le_iff μ hu x).1 hquantile, hu⟩
+  · rintro ⟨hu_cdf, hu⟩
+    exact ⟨(cdfQuantile_le_iff μ hu x).2 hu_cdf, hu⟩
+
+/-- The CDF generalized inverse is almost-everywhere measurable under the
+uniform measure on its probability-relevant interval. -/
+theorem aemeasurable_cdfQuantile_volume_restrict_Ioo
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] :
+    AEMeasurable (cdfQuantile μ) (volume.restrict (Ioo (0 : ℝ) 1)) := by
+  exact aemeasurable_restrict_of_monotoneOn measurableSet_Ioo
+    (monotoneOn_cdfQuantile μ)
+
+/-- A CDF inequality through a cutoff orders generalized inverses whenever
+the first inverse lies below that cutoff. -/
+theorem cdfQuantile_le_of_cdf_le_on
+    (μ ν : Measure ℝ) [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    {u cut : ℝ} (hu : u ∈ Ioo (0 : ℝ) 1)
+    (hquantile_cut : cdfQuantile μ u ≤ cut)
+    (hcdf : ∀ t : ℝ, t ≤ cut →
+      ProbabilityTheory.cdf μ t ≤ ProbabilityTheory.cdf ν t) :
+    cdfQuantile ν u ≤ cdfQuantile μ u := by
+  apply (cdfQuantile_le_iff ν hu (cdfQuantile μ u)).2
+  exact (le_cdf_cdfQuantile μ hu).trans
+    (hcdf (cdfQuantile μ u) hquantile_cut)
+
+/-- If a real probability law places no mass below zero, its interior CDF
+quantiles are nonnegative. -/
+theorem cdfQuantile_nonneg_of_measure_Iio_eq_zero
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] {u : ℝ}
+    (hu : u ∈ Ioo (0 : ℝ) 1) (hIio_zero : μ (Iio 0) = 0) :
+    0 ≤ cdfQuantile μ u := by
+  by_contra hnonneg
+  have hquantile_neg : cdfQuantile μ u < 0 := lt_of_not_ge hnonneg
+  have hcdf_le_zero : ProbabilityTheory.cdf μ (cdfQuantile μ u) ≤ 0 := by
+    rw [ProbabilityTheory.cdf_eq_real]
+    calc
+      μ.real (Iic (cdfQuantile μ u)) ≤ μ.real (Iio 0) :=
+        measureReal_mono (Iic_subset_Iio.mpr hquantile_neg) (measure_ne_top μ _)
+      _ = 0 := by rw [measureReal_def, hIio_zero]; simp
+  have hu_nonpos : u ≤ 0 := (le_cdf_cdfQuantile μ hu).trans hcdf_le_zero
+  exact (not_lt_of_ge hu_nonpos) hu.1
+
+/-- A real law with zero mass below zero is nonnegative almost everywhere. -/
+theorem ae_nonneg_of_measure_Iio_eq_zero
+    (μ : Measure ℝ) (hIio_zero : μ (Iio 0) = 0) :
+    ∀ᵐ p ∂μ, 0 ≤ p := by
+  rw [ae_iff]
+  simpa only [not_le] using hIio_zero
+
+/-- A nonnegative offer law has an integrable accepted-payment function at
+every finite value threshold. -/
+theorem integrable_if_le_id_of_ae_nonneg
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] (value : ℝ)
+    (hnonneg : ∀ᵐ p ∂μ, 0 ≤ p) :
+    Integrable (fun p : ℝ => if p ≤ value then p else 0) μ := by
+  have hmeas : Measurable (fun p : ℝ => if p ≤ value then p else 0) := by
+    exact measurable_id.ite measurableSet_Iic measurable_const
+  refine Integrable.of_bound hmeas.aestronglyMeasurable (max 0 value) ?_
+  filter_upwards [hnonneg] with p hp
+  by_cases hp_value : p ≤ value
+  · rw [if_pos hp_value, Real.norm_eq_abs, abs_of_nonneg hp]
+    exact hp_value.trans (le_max_right _ _)
+  · rw [if_neg hp_value, norm_zero]
+    exact le_max_left _ _
+
+/-- The uniform mass below a CDF level agrees with that CDF's original
+probability mass. -/
+theorem volume_Iic_inter_Ioo_cdf_eq
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] (x : ℝ) :
+    volume (Iic (ProbabilityTheory.cdf μ x) ∩ Ioo (0 : ℝ) 1) = μ (Iic x) := by
+  have hnonneg : 0 ≤ ProbabilityTheory.cdf μ x :=
+    ProbabilityTheory.cdf_nonneg μ x
+  have hle_one : ProbabilityTheory.cdf μ x ≤ 1 :=
+    ProbabilityTheory.cdf_le_one μ x
+  rcases lt_or_eq_of_le hle_one with hlt | heq
+  · have hset :
+        Iic (ProbabilityTheory.cdf μ x) ∩ Ioo (0 : ℝ) 1 =
+          Ioc 0 (ProbabilityTheory.cdf μ x) := by
+      ext u
+      simp only [mem_inter_iff, mem_Iic, mem_Ioo, mem_Ioc]
+      constructor
+      · rintro ⟨hu_cdf, hu⟩
+        exact ⟨hu.1, hu_cdf⟩
+      · rintro ⟨hu_pos, hu_cdf⟩
+        exact ⟨hu_cdf, hu_pos, lt_of_le_of_lt hu_cdf hlt⟩
+    calc
+      volume (Iic (ProbabilityTheory.cdf μ x) ∩ Ioo (0 : ℝ) 1) =
+          volume (Ioc 0 (ProbabilityTheory.cdf μ x)) := by rw [hset]
+      _ = ENNReal.ofReal (ProbabilityTheory.cdf μ x - 0) := Real.volume_Ioc
+      _ = ENNReal.ofReal (ProbabilityTheory.cdf μ x) := by rw [sub_zero]
+      _ = μ (Iic x) := ProbabilityTheory.ofReal_cdf μ x
+  · have hset : Iic (1 : ℝ) ∩ Ioo (0 : ℝ) 1 = Ioo 0 1 := by
+      ext u
+      simp only [mem_inter_iff, mem_Iic, mem_Ioo]
+      constructor
+      · rintro ⟨_, hu⟩
+        exact hu
+      · intro hu
+        exact ⟨hu.2.le, hu⟩
+    calc
+      volume (Iic (ProbabilityTheory.cdf μ x) ∩ Ioo (0 : ℝ) 1) =
+          volume (Iic (1 : ℝ) ∩ Ioo (0 : ℝ) 1) := by rw [heq]
+      _ = volume (Ioo (0 : ℝ) 1) := by rw [hset]
+      _ = ENNReal.ofReal ((1 : ℝ) - 0) := Real.volume_Ioo
+      _ = ENNReal.ofReal (ProbabilityTheory.cdf μ x) := by rw [heq]; norm_num
+      _ = μ (Iic x) := ProbabilityTheory.ofReal_cdf μ x
+
+/-- Pushing uniform mass on `(0,1)` through the lower generalized inverse of
+a real CDF recovers the original probability law. -/
+theorem map_cdfQuantile_volume_restrict_Ioo
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] :
+    Measure.map (cdfQuantile μ) (volume.restrict (Ioo (0 : ℝ) 1)) = μ := by
+  apply Measure.ext_of_Iic
+  intro x
+  rw [Measure.map_apply_of_aemeasurable
+    (aemeasurable_cdfQuantile_volume_restrict_Ioo μ) measurableSet_Iic,
+    Measure.restrict_apply' measurableSet_Ioo,
+    cdfQuantile_preimage_Iic_inter_Ioo]
+  exact volume_Iic_inter_Ioo_cdf_eq μ x
+
 /--
 Lower-tail bracket with a supplied left endpoint carrying no open-left mass.
 

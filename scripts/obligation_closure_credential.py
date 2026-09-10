@@ -1643,12 +1643,19 @@ def _recorded_card_review_declarations_by_source_item(
         if typed_source_items is not None or not atoms:
             continue
         source_items = source_items_by_atoms.get(atoms, [])
-        if len(source_items) != 1:
+        if not source_items:
             raise ObligationClosureCredentialError(
-                "recorded prerequisite source atoms do not resolve to one "
+                "recorded prerequisite source atoms do not resolve to a "
                 f"source item for {declaration}"
             )
-        declarations.setdefault(source_items[0], set()).add(str(declaration))
+        # This is nonaccepting card navigation, not an ownership judgment.
+        # Public graph-only exports omit private issuance rows, and distinct
+        # source cards may share the very same accepted atom tuple. Preserve
+        # every matching card, just as the source-bundle projection retains
+        # every graph-authenticated bundle; do not invent a unique owner or
+        # discard a reviewed prerequisite. Explicit owners above still win.
+        for source_item in source_items:
+            declarations.setdefault(source_item, set()).add(str(declaration))
 
     return MappingProxyType(
         {

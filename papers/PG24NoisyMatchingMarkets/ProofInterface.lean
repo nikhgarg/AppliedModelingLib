@@ -9,6 +9,7 @@ import PG24NoisyMatchingMarkets.Theorem2AllRealLiteralBasic
 import PG24NoisyMatchingMarkets.Theorem1SourceProofHelpers
 import PG24NoisyMatchingMarkets.Theorem1RoundedChebyshevRates
 import PG24NoisyMatchingMarkets.Theorem1LargeGapQualitativeRoute
+import PG24NoisyMatchingMarkets.Theorem1LargeGapPolynomialRate
 import PG24NoisyMatchingMarkets.Theorem2AppendixSourceClaims
 import PG24NoisyMatchingMarkets.Theorem2LiteralAppendixClaims
 import AL16SupplyDemandMatching.Assumptions
@@ -14952,14 +14953,14 @@ theorem source_log_boundSpec_proof :
   exact theorem3_iidExpectedMaximum_div_log_tendsto_zero_of_beta
     noiseLaw hbeta hvariance
 
-/-- Corrected lower-tail endpoint for Appendix Proposition `thm1v2`. -/
+/-- Corrected lower-tail endpoint for Appendix Proposition 1. -/
 theorem source_thm1_corrected_lower_tailSpec_proof :
     PaperInterface.source_thm1_corrected_lower_tailSpec := by
   intro Admissible StudentType _ Cutoff noiseLaw eta _ _ maxVariance alpha beta
-    totalSupply vS inst hbeta hvariance halpha_nonneg hregular htail_normalization
-  exact theorem1_literal_uniform_low_matched_mass_eventually_small_of_beta_holder
-    (Admissible := Admissible) noiseLaw eta inst hbeta hvariance halpha_nonneg
-      hregular htail_normalization
+    totalSupply vS inst hbeta hvariance hone_draw halpha_nonneg hregular htail_normalization
+  exact theorem1_literal_uniform_low_matched_mass_eventually_le_source_rate_of_beta_holder
+    (Admissible := Admissible) noiseLaw eta inst hbeta hvariance hone_draw
+      halpha_nonneg hregular htail_normalization
 
 /-- A positive limiting upper-tail mass is incompatible with the printed
 negative-power display in Appendix Proposition `thm1v2`. -/
@@ -15002,24 +15003,37 @@ theorem source_goose_1Spec_proof :
 /-- Appendix Proposition `lt-large-firms`, with its strict open interval. -/
 theorem source_lt_large_firmsSpec_proof :
     PaperInterface.source_lt_large_firmsSpec := by
-  intro pLarge vLow vHigh S alpha epsilon sigma hmono hupper hlower hdiff
+  intro noiseLaw _ active cutoff vLow vHigh totalSupply alpha epsilon
+    _hepsilon_pos ⟨sigma, hsigma_pos, hmono, hupper, hlower, hdiff⟩
+  refine ⟨sigma, hsigma_pos, ?_⟩
   exact theorem2_largeFirm_strict_interval_eventually_of_endpoint_product_error
     hmono hupper hlower hdiff
 
 /-- Appendix Proposition `lt-small-firms`, uniformly for all values below `v*`. -/
 theorem source_lt_small_firmsSpec_proof :
     PaperInterface.source_lt_small_firmsSpec := by
-  intro pSmall vStar totalSupply alpha epsilon sigma hepsilon hden hmono hcapacity
+  intro noiseLaw eta _ _ active cutoff vStar vHigh totalSupply alpha epsilon sigma
+    hepsilon _hstar_window hden hmono hcapacity
   exact theorem2_smallFirmSourceBound_eventually_uniform_of_star_capacity_mass
     hepsilon hden hmono hcapacity
 
 /-- Appendix Proposition `lt-approx-F2`, retaining the source's strict gap. -/
 theorem source_lt_approx_f2Spec_proof :
     PaperInterface.source_lt_approx_f2Spec := by
-  intro active qLow qHigh epsilon sigma hepsilon hsigma hactive hratio
+  intro noiseLaw _ active cutoff vLow vHigh epsilon sigma hepsilon hsigma hactive hratio
     hlowPos hlowLe
-  exact theorem2_independentAffordanceProbability_difference_eventually_lt_exp_error
-    hepsilon hsigma hactive hratio hlowPos hlowLe
+  have hproduct :=
+    theorem2_independentAffordanceProbability_difference_eventually_lt_exp_error
+      (active := active)
+      (qLow := fun n c =>
+        AppliedModelingLib.Probability.upperTailMass noiseLaw (cutoff n c - vLow))
+      (qHigh := fun n c =>
+        AppliedModelingLib.Probability.upperTailMass noiseLaw (cutoff n c - vHigh))
+      hepsilon hsigma hactive hratio hlowPos hlowLe
+  filter_upwards [hproduct] with n hn
+  rw [cutoffAffordanceProbability_iidProduct_eq_independentAffordanceProbability_upperTailMass,
+    cutoffAffordanceProbability_iidProduct_eq_independentAffordanceProbability_upperTailMass]
+  exact hn
 
 /-- Appendix Lemma `unbounded-cutoffs`, through literal clearing demand. -/
 theorem source_unbounded_cutoffsSpec_proof :
@@ -15049,14 +15063,14 @@ theorem source_large_firm_tail_boundSpec_proof :
 theorem source_tomatoSpec_proof :
     PaperInterface.source_tomatoSpec := by
   intro noiseLaw _ maxVariance beta gamma hbeta hgamma hvariance dense upper cutoff
-    highValue ceiling lowValue pivot hdense_subset hdense_card hupper hhigh_separation
+    highValue ceiling lowValue pivot _hupper_block hdense_subset hdense_card hupper hhigh_separation
     hlower hlow_separation
   rcases theorem1DenseGroup_one_sub_cutoff_affordance_eventually_le_chebyshev_rate_of_beta
     noiseLaw hbeta hgamma hvariance dense upper cutoff highValue ceiling
       hdense_subset hdense_card hupper hhigh_separation with ⟨A, hA, hhigh⟩
   rcases theorem1DenseGroup_cutoff_affordance_eventually_le_source_rate_of_beta
     noiseLaw hbeta hgamma hvariance upper cutoff lowValue pivot
-      hlower hlow_separation with ⟨B, hB, hlow⟩
+      hlower (hlow_separation.mono fun _ h => h.le) with ⟨B, hB, hlow⟩
   refine ⟨⟨A, hA, ?_⟩, ⟨B, hB, ?_⟩⟩
   · filter_upwards [hhigh] with C hC
     convert hC using 1 <;> ring
@@ -15067,16 +15081,17 @@ theorem source_tomatoSpec_proof :
 /-- Appendix Proposition `duck-2`, at its literal first-case integral rate. -/
 theorem source_duck_2Spec_proof :
     PaperInterface.source_duck_2Spec := by
-  intro noiseLaw valueLaw _ _ maxVariance beta gamma hbeta hgamma hvariance
-    upper cutoff lowValue pivot hlower hseparation
-  exact theorem1DenseGroup_low_affordance_integral_eventually_le_source_rate_of_beta
-    noiseLaw hbeta hgamma hvariance valueLaw upper cutoff lowValue pivot
-      hlower hseparation
+  intro noiseLaw valueLaw _ _ maxVariance beta gamma vS hbeta hgamma hvariance
+    upper cutoff pivot _hupper_block hlower hseparation
+  rcases theorem1DenseGroup_low_affordance_integral_eventually_le_source_rate_of_beta
+    noiseLaw hbeta hgamma hvariance valueLaw upper cutoff (fun _ => vS) pivot
+      hlower (hseparation.mono fun _ h => h.le) with ⟨A, hA, hbound⟩
+  exact ⟨A, hA, by simpa using hbound⟩
 
-/-- Appendix Proposition `beet`: literal low rate and repaired high endpoint. -/
+/-- Appendix Proposition 7: literal low rate and corrected high-side rate. -/
 theorem source_beetSpec_proof :
     PaperInterface.source_beetSpec := by
-  intro noiseLaw _ maxVariance beta gamma hbeta hgamma hvariance cutoff hlarge_gap
+  intro noiseLaw _ maxVariance beta gamma hbeta hgamma hvariance hone_draw cutoff hlarge_gap
   rcases theorem1_fullBlock_deviation_eventually_le_source_rate_of_beta
     noiseLaw hbeta hgamma hvariance with ⟨A, hA, hdeviation⟩
   constructor
@@ -15120,43 +15135,45 @@ theorem source_beetSpec_proof :
       _ = A * Real.rpow (C : ℝ)
             (-beta - 2 * theorem1TailPhi4 beta gamma) := by
           rw [theorem1Tail_case2_chebyshev_exp_eq_neg_K]
-  · intro value hvalue
-    have hendpoint := theorem1_ranked_largeGap_full_affordance_tendsto_one
-      noiseLaw hbeta hgamma hvariance hlarge_gap
-    rw [tendsto_order]
-    constructor
-    · intro lower hlower
-      filter_upwards [hendpoint (Ioi_mem_nhds hlower), hvalue] with C hC hvalueC
-      exact lt_of_lt_of_le hC
-        (cutoffAffordanceProbability_mono_value
-          (Measure.pi (fun _ : Fin (C + 1) => noiseLaw)) (le_of_lt hvalueC))
-    · intro upper hupper
-      filter_upwards with C
-      exact lt_of_le_of_lt
-        (cutoffAffordanceProbability_le_one
-          (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
-          (Finset.univ : Finset (Fin (C + 1))) (value C) (cutoff C)) hupper
+  · rcases theorem1_ranked_largeGap_full_affordance_eventually_le_source_rate_of_one_draw_second_moment
+      noiseLaw hbeta hgamma hvariance hone_draw hlarge_gap with ⟨B, hB, hrate⟩
+    refine ⟨B, hB, ?_⟩
+    intro value hvalue
+    filter_upwards [hrate, hvalue] with C hrate_C hvalue_C
+    have hmono := cutoffAffordanceProbability_mono_value
+      (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+      (active := Finset.univ) (cutoff := cutoff C) (le_of_lt hvalue_C)
+    exact (sub_le_sub_left hmono 1).trans hrate_C
 
-/-- Appendix Proposition `goose-2`, under its source-valid qualitative repair. -/
+/-- Appendix Proposition 8, under the one-draw second-moment clarification. -/
 theorem source_goose_2Spec_proof :
     PaperInterface.source_goose_2Spec := by
   intro noiseLaw valueLaw _ _ maxVariance beta gamma vS totalSupply
-    hbeta hgamma hvariance cutoff hfull_capacity htail_normalization hlarge_gap
-  exact theorem1_largeGap_upper_low_integral_tendsto_zero_of_beta
-    noiseLaw valueLaw hbeta hgamma hvariance hfull_capacity htail_normalization
-      hlarge_gap
+    hbeta hgamma hvariance hone_draw cutoff hfull_capacity htail_normalization hlarge_gap
+  exact theorem1_largeGap_upper_low_integral_eventually_le_source_rate_of_one_draw_second_moment
+    noiseLaw valueLaw hbeta hgamma hvariance hone_draw hfull_capacity
+      htail_normalization hlarge_gap
 
 /-- Proposition `thm2v2`, derived from the all-real source theorem at its endpoints. -/
 theorem source_thm2_equivalent_boundSpec_proof :
     PaperInterface.source_thm2_equivalent_boundSpec := by
-  intro Admissible matchProb eta _ totalSupply hmono hall epsilon vLow vHigh
-    hepsilon _hLowerTail _hUpperTail hwindow
+  intro StudentTypeSeq _ Admissible CutoffSeq noiseLaw eta _ _ totalSupply alpha
+    inst hregular _hconnected hlong htotalSupply_pos htotalSupply_lt_one halpha_pos
+    epsilon vLow vHigh hepsilon _hLowerTail _hUpperTail hwindow
+  have hall :=
+    PG24LiteralBasicTwoScaleInstance.theorem2_eventually_allRealTargetAbsBound_uniform_of_holder_longTailed
+      CutoffSeq inst hregular hlong htotalSupply_pos htotalSupply_lt_one
+      halpha_pos.le
   filter_upwards [hall vLow epsilon hepsilon, hall vHigh epsilon hepsilon]
     with C hlow hhigh a value hvalueLow hvalueHigh
-  have hmono_low : matchProb C a vLow ≤ matchProb C a value :=
-    hmono C a (le_of_lt hvalueLow)
-  have hmono_high : matchProb C a value ≤ matchProb C a vHigh :=
-    hmono C a (le_of_lt hvalueHigh)
+  have hmono_low := cutoffAffordanceProbability_mono_value
+    (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+    (active := Finset.univ) (cutoff := (inst C a).selectedCutoffVector)
+    (le_of_lt hvalueLow)
+  have hmono_high := cutoffAffordanceProbability_mono_value
+    (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+    (active := Finset.univ) (cutoff := (inst C a).selectedCutoffVector)
+    (le_of_lt hvalueHigh)
   have hlow_a := hlow a
   have hhigh_a := hhigh a
   rw [abs_sub_lt_iff] at hlow_a hhigh_a

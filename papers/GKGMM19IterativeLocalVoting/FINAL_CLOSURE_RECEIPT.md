@@ -3,11 +3,11 @@ schema = 6
 paper = "GKGMM19IterativeLocalVoting"
 closure_status = "current"
 acceptance_credential = false
-closed_at = "2026-09-06"
+closed_at = "2026-09-09"
 
 [accepted_graph]
 pointer = "papers/GKGMM19IterativeLocalVoting/audit/obligation_evidence/current_accepted_graph.json"
-graph_sha256 = "1c10acd9ec32d9bb2d37fa53d24794a28e7618989d0e8d8e647cf6dfd9d556ae"
+graph_sha256 = "99e4baab2dc895fbefb0333ecdb204bbce0fd94bafb01c2ab39bb0cb8eb3a853"
 
 +++
 

@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "paper": "LBG24SpatialUnderreporting",
+  "summaries": {
+    "LBG24-CONDITION1-KERNEL-CONDITIONING-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).",
+    "LBG24-EQ8-CAUSAL-STOPPING-SEMANTICS-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).",
+    "LBG24-EQ8-ENDPOINT-REFERENCE-MEASURE-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).",
+    "LBG24-LEMMA1-CALENDAR-FIRST-REPORT-SEMANTICS-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md)."
+  },
+  "assumption_summaries": {
+    "9887e73286eb5445a10ec998931c9ea1a229056b29aa6232e9aef0455337dfd0": "The additional conditions have their main discussion in Section 6 and the [clarification memo](docs/SOURCE_CLARIFICATIONS.md)."
+  }
+}

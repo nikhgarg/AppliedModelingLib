@@ -1,0 +1,106 @@
+{
+  "checked_proof_steps": [],
+  "defects": [
+    {
+      "acceptance_condition": "The source-facing target records the non-equivalent C1 correction, its exact archival anchors, and the checked Model A and coordinatewise-boundary Model B convergence routes without a product-domain premise.",
+      "affected_source_locators": [
+        "audit/cited publication:449-465",
+        "audit/cited publication:587-600",
+        "audit/cited publication:2203-2221"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "GKGMM19-PROPOSITION2-C1-AMBIENT-MEDIAN-01",
+      "repair_obligation": "Replace the ambient coordinatewise-median conclusion on arbitrary C1 domains by convergence to the feasible minimizer set of expected coordinatewise absolute deviation; retain the ordinary coordinatewise-median conclusion only as the product-domain specialization.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "proposition2_convex_domain_constrained_l1Spec proves both source execution routes to the feasible expected-L1 minimizer set; docs/PROPOSITION2_C1_CORRECTION.md records the precise corrected target and docs/SOURCE_CLARIFICATIONS.md gives the coupled-domain counterexample.",
+      "source_claim": "Proposition 2 assumes C1--C3 and concludes convergence to the ambient vector of coordinatewise medians.",
+      "source_locator": "audit/cited publication:449-465; audit/cited publication:587-600; audit/cited publication:2203-2221",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "C1 permits coupled convex domains on which the ambient coordinatewise median is infeasible. The checked corrected target retains C1--C3 and the source executions, changing only the endpoint to the feasible expected-L1 minimizer set."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "Definition 1, Definition 2, Definition 3, Algorithm 1, Theorems 1--2, and Propositions 1--2.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "For each of Definitions 1--3, the displayed utility formula is evaluated at every raw candidate queried by Algorithm 1 before projection onto X. Equivalently, in the finite-coordinate realization the corresponding utility equality is available for every ambient candidate used by the raw local-response relation, including a candidate outside the feasible solution space.",
+      "id": "GKGMM19-RAW-UTILITY-QUERY-DOMAIN-01",
+      "source_locator": "audit/cited publication:177-190; audit/cited publication:474-475; audit/cited publication:521-537; audit/cited publication:574-584",
+      "supporting_memo": "docs/UTILITY_DOMAIN_SOURCE_NOTE.md",
+      "why_needed": "Algorithm 1 first maximizes the voter utility over a raw Lq ball and only then projects the selected raw point onto X, while the three definition displays write their formulas for x in X. The raw maximization is otherwise not defined when its ball leaves X. This convention is the minimal reading that makes the printed Algorithm 1 and its stated utility classes a single executable model; it does not change the query, projection, or named conclusion."
+    },
+    {
+      "checked_scope": "Algorithm 1 and the source-model routes that use its projection or stopping relation.",
+      "classification": "source_text_interpretation",
+      "formal_meaning": "In the paper's ambient finite-dimensional real decision space, the unqualified projection [.]_X is Euclidean projection onto X, and the vector magnitude in the stopping display is the corresponding Euclidean distance. The local query ball remains the separately supplied Lq ball.",
+      "id": "GKGMM19-ALGORITHM1-EUCLIDEAN-PROJECTION-WINDOW-01",
+      "source_locator": "audit/cited publication:177-194",
+      "why_needed": "Algorithm 1 explicitly supplies q only for its local neighborhood, then uses an unqualified projection and vector magnitude. The finite-coordinate Lean declaration records the standard Euclidean meanings of those two unqualified ambient-space operations without changing the query rule, stopping threshold, or output."
+    },
+    {
+      "checked_scope": "This convention is used only for Proposition 2's decomposable-utility Linfinity branch. Theorem 2's finite-q Model B result and the q=2 Proposition 1 and Theorem 3 results retain the general normalized-gradient formula.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "For Proposition 2 with a Linfinity neighborhood, Model B moves every non-tied decomposition coordinate by the full current radius toward that coordinate of the sampled voter's ideal; tied coordinates do not move. Relative derivative magnitudes do not scale those coordinate steps. The proof's coordinatewise-median target is represented transparently by the feasible minimizers of expected coordinatewise absolute deviation.",
+      "id": "GKGMM19-PROPOSITION2-COORDINATEWISE-MODELB-01",
+      "source_locator": "audit/cited publication:587-600; audit/cited publication:2203-2221",
+      "supporting_memo": "docs/PROPOSITION2_MODEL_B_SOURCE_NOTE.md",
+      "why_needed": "The general Model B display describes a normalized gradient ray, whereas the Proposition 2 proof explicitly treats dimensions separately and moves each coordinate by the full radius according to its sign. The paper's Proposition 2 argument and ordinary-median target use the coordinatewise-boundary reading."
+    },
+    {
+      "checked_scope": "Theorem 3, its Appendix C.6 proof route, and the paired `theorem3_population_full_space_and_restricted_space` source-facing endpoint.",
+      "classification": "maintainer_approved_source_model_clarification",
+      "formal_meaning": "Theorem 3 is reviewed as an approved two-part clarification and expansion. For an arbitrary standard-Borel population sampled iid from the paper's population measure, the literal full-space Model B trace has zero aggregate directional field at every almost-sure convergent limit. For the separately represented finite-coordinate projected decision space, the proved alternative is that the aggregate directional field is zero or that no aggregate feasible direction exists at that limit.",
+      "id": "GKGMM19-THEOREM3-FULL-SPACE-RESTRICTED-SPACE-01",
+      "source_locator": "audit/cited publication:627-637; audit/cited publication:2240-2308",
+      "supporting_memo": "docs/THEOREM3_CONSTRAINED_SPACE_SOURCE_NOTE.md",
+      "why_needed": "The printed theorem gives the zero-direction conclusion while its projected update can encounter a constraint boundary. The two-part statement keeps the general-population full-space zero-direction result explicit and makes the restricted-space projection alternative explicit. The maintainer approved this clarification and expansion on 2026-09-03."
+    },
+    {
+      "checked_scope": "Theorem 3's literal general-population iid full-space route and its Appendix C.6 proof route.",
+      "classification": "source_text_interpretation",
+      "formal_meaning": "The paper's iid voter sampling, probability-one convergence, and expectation/conditional-expectation proof language is formalized with the measurable, history-adapted, integrable random-trace conditions needed to define those probability expressions. These conditions describe well-definedness of the displayed recursion; they do not add a convergence, equilibrium, or martingale premise.",
+      "id": "GKGMM19-THEOREM3-IID-TRACE-WELLDEFINEDNESS-01",
+      "source_locator": "audit/cited publication:449-465; audit/cited publication:627-647; audit/cited publication:2224-2308",
+      "why_needed": "Lean cannot form the probability-one and conditional-expectation argument from an untyped phrase such as 'a trajectory of the algorithm.' The record makes the ordinary measurable stochastic-process obligations explicit while deriving, rather than assuming, the conditional-mean-zero conclusion used in the proof."
+    },
+    {
+      "checked_scope": "The Model B response formula and each selected theorem route that uses its exact normalized-gradient update, including Theorem 3.",
+      "classification": "maintainer_approved_source_model_clarification",
+      "formal_meaning": "When the displayed Model B gradient is zero, the voter remains at the current point. Equivalently, the normalized-gradient displacement is the zero vector in that case; otherwise it is the displayed radius times the normalized gradient.",
+      "id": "GKGMM19-MODELB-ZERO-GRADIENT-STAY-PUT-01",
+      "source_locator": "audit/cited publication:140-148; audit/cited publication:627-637",
+      "supporting_memo": "docs/THEOREM3_CONSTRAINED_SPACE_SOURCE_NOTE.md",
+      "why_needed": "The printed normalized-gradient quotient is undefined at a zero gradient. The stay-put branch is the natural total source-model reading, and the maintainer approved it on 2026-09-03."
+    },
+    {
+      "checked_scope": "Appendix Theorem 5's adapted random-bias endpoint and the finite-dimensional stochastic-subgradient proof route.",
+      "classification": "source_text_interpretation",
+      "formal_meaning": "Appendix Theorem 5's bias is a sample-path process: its uniform bound and the weighted summability condition are almost-sure statements, and its update is evaluated on those same paths. The finite-dimensional formalization supplies only the measurability and adaptedness needed to define the printed conditional-noise expressions and partial sums.",
+      "id": "GKGMM19-APPENDIX5-ADAPTED-BIAS-01",
+      "source_locator": "audit/cited publication:1992-2016",
+      "supporting_memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "why_needed": "Although the preceding prose calls `b_t` a constant, the theorem's weighted-bias condition is explicitly stated with probability one. Reading that condition pathwise preserves the theorem's displayed stochastic scope and avoids replacing a summable realized linear bias term by a generally non-summable deterministic envelope."
+    },
+    {
+      "checked_scope": "Definition 2, Proposition 1, and Definition 4.",
+      "classification": "maintainer_approved_source_model_clarification",
+      "formal_meaning": "For Definition 2, individual coordinates of the nonnegative weight vector may equal zero, but the vector itself is nonzero because the displayed utility divides by its L2 norm. For Definition 4, the nonnegative scalar deficit weight may equal zero because its displayed linear-cost formula remains defined.",
+      "id": "GKGMM19-NONNEGATIVE-WEIGHT-DOMAINS-01",
+      "source_locator": "audit/cited publication:521-537; audit/cited publication:707-716",
+      "supporting_memo": "docs/WEIGHT_DOMAIN_SOURCE_NOTE.md",
+      "why_needed": "The source writes R+ in both places. The Definition 2 denominator makes the all-zero vector inadmissible, while Definition 4 has no denominator and permits the zero-cost boundary. The maintainer approved this reading on 2026-09-03."
+    }
+  ],
+  "paper": "GKGMM19IterativeLocalVoting",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Proposition 2, including the general Model B display, the decomposable-utility median claim, and the coordinatewise proof rule used for the Linfinity branch.",
+      "source_locator": "audit/cited publication:140-148; audit/cited publication:587-600; audit/cited publication:2203-2221"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "00dc65bbee160e2c7f5eb9007fe25963059fb4949fcfec81abdcfd36094869ea"
+}

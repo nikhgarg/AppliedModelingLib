@@ -427,18 +427,31 @@
       "approved_review_context_schema": 1,
       "approved_review_contexts": [
         {
-          "checked_scope": "PaperInterface.theorem1_ii_formula, theorem1_iii_formula, theorem1_iv_formula, and corollary1 visibly retain strict positivity of each preferred-type mass. Their PMF-selected source objectives and fixed-k conclusions are checked only on that regular all-coordinate domain. The convention does not provide archival source credit and does not assert a zero-support extension.",
+          "checked_scope": "PaperInterface.theorem1_ii_formulaSpec, theorem1_iii_formulaSpec, theorem1_iv_formulaSpec, and corollary1Spec visibly retain strict positivity of each preferred-type mass and existentially select the source's finite optima. Corollary 1 also returns an explicit probability law D, tied to the concrete iid model branch. Their PMF-selected source objectives and fixed-k conclusions are checked only on that regular all-coordinate domain. The stronger universal formulas remain support and the convention does not assert a zero-support extension.",
           "classification": "all_coordinate_positive_support_convention",
           "formal_meaning": "For the checked fixed-k gamma-share endpoints that assert a limiting representation for every named type, the source-selected preferred-type PMF has strictly positive mass at every type. This is an additional regularity condition on the all-coordinate route, not a claim that the archival model text excluded zero-probability types.",
           "id": "PRPKG24-POSITIVE-PREFERENCE-SUPPORT-01",
           "kind": "source_model_convention",
           "protocol": "approved-source-review-context-v1",
-          "record_sha256": "6c4c8eb58ebf65e83758e8aecab604f9421f0d7fe78b7cbbc30056a6ad0620fd",
+          "record_sha256": "e3c4173e28107c8d9a402b22c458dbbb21ab824496bc692a9acb43cf5648462e",
           "source_locator": "cited publication:55-63; cited publication:351-457",
           "why_needed": "The source says only that one type is selected with probabilities p_t, which permits zero masses. The direct all-coordinate optimizer-share arguments use positive weights and finite normalized powers for every coordinate; a zero-probability type instead requires a separate supportwise formulation and optimizer-selection analysis. Recording the restriction prevents that zero-support boundary from being smuggled into a source theorem match."
         }
       ],
       "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:443-457",
+        "archival_source_quote_sha256": "b9dbe262b946484f31ba554fcd35a6f4e15d416eb5ddb1f01b397d574b274d50",
+        "corrected_target_review_sha256": "b46ae8fada3a31381edb26b1a3a56db21c0293e2daa6325befdc6af0a40ed5fb",
+        "corrected_target_sha256": "3fb046a982b5fa8e58e7bff4348576de2bef465f0e861edb6e49992b039750d1",
+        "governing_defect_ids": [
+          "PRPKG24-ALL-COORDINATE-SHARE-DOMAIN-01"
+        ],
+        "schema": 1,
+        "statement": "For every gamma>=0, every fixed positive k, and every finite nonempty preferred-type PMF whose every type mass is strictly positive, there is a concrete probability law D and constructed iid top-k consumption model with a selected fixed-total optimal recommendation sequence whose type shares converge to p_t^gamma divided by the sum of those powers."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PRPKG24AccuracyDiversity.PaperInterface.corollary1Spec_proof"
       ],
@@ -481,17 +494,20 @@
         {
           "id": "corollary1.any_gamma",
           "reviewed_lean_route": "PRPKG24AccuracyDiversity.PaperInterface.corollary1Spec_proof",
-          "semantic_claim": "For every nonnegative gamma and fixed positive k, some iid conditional-value distribution has gamma-homogeneous optimal recommendation sequences.",
+          "semantic_claim": "For every nonnegative gamma and fixed positive k, some iid conditional-value distribution has a gamma-homogeneous source-selected optimal recommendation sequence.",
           "source_locator": "cited publication:443-457",
           "source_quote_sha256": "b9dbe262b946484f31ba554fcd35a6f4e15d416eb5ddb1f01b397d574b274d50"
         }
       ],
+      "source_defect_ids": [
+        "PRPKG24-ALL-COORDINATE-SHARE-DOMAIN-01"
+      ],
       "source_kind": "corollary",
       "source_location": "cited publication:443-457",
-      "source_note": "The direct source-iid endpoint states the fixed positive-k branch explicitly and takes positive type likelihoods, the regular branch on which its displayed finite-exponent share profile is defined. This is a visible regularity condition, not evidence inferred from its declaration name.",
-      "source_status": "direct source statement",
+      "source_note": "The approved target makes the direct source-iid construction's positive-support, positive-k, and selected-optimizer regular domain explicit. It is a restricted corrected target, not archival equivalence or a claim about zero-type-support cases or an unspecified zero-power convention.",
+      "source_status": "corrected",
       "source_url": "https://arxiv.org/pdf/2307.15142",
-      "statement": "Corollary 1: for every gamma>=0 and every fixed positive k, there is an iid conditional-value distribution D whose optimal sequences are gamma-homogeneous.",
+      "statement": "Corollary 1: for every gamma>=0, there exists D such that with conditional iid values and fixed k, the sequence S_(n,k) is gamma-homogeneous.",
       "support_lean_declarations": [
         "PRPKG24AccuracyDiversity.PaperInterface.corollary1Spec"
       ]
@@ -607,18 +623,18 @@
       "claim_bearing": true,
       "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PRPKG24AccuracyDiversity.AllocationSequence.ConvergesToProfile"
+        "PRPKG24AccuracyDiversity.RecommendationSetSequence.IsGammaHomogeneous"
       ],
       "semantic_context_requirements": [
         {
-          "semantic_role": "scope",
+          "semantic_role": "definition",
           "source_anchor_evidence": [
             {
-              "line_end": 66,
-              "line_start": 63,
+              "line_end": 268,
+              "line_start": 261,
               "publication_locator": "cited publication",
-              "quoted_text": "Xi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)",
-              "quoted_text_sha256": "2981d1412721c030594a6beee24228c2d6eafc9b710e2e74d7296df8aba82aad"
+              "quoted_text": "We now formalize our approach to evaluating diversity. For a set S of items, we define\nrt (S) :=\n\n# of items in S of type t\n,\n|S|\n\n(4)",
+              "quoted_text_sha256": "174ed845d282b9c63756274eec7e3969f0779012faef13cb338b800d5c5b653a"
             }
           ]
         }
@@ -636,7 +652,7 @@
         {
           "id": "prpkg.definition2.eq6.sequence.homogeneity",
           "identity_schema": 2,
-          "reviewed_lean_route": "PRPKG24AccuracyDiversity.AllocationSequence.ConvergesToProfile",
+          "reviewed_lean_route": "PRPKG24AccuracyDiversity.RecommendationSetSequence.IsGammaHomogeneous",
           "semantic_claim": "Definition 2 and Equation 6 define sequence gamma-homogeneity by convergence of every type representation to p_t^gamma/sum_i p_i^gamma.",
           "source_locator": "cited publication:301-338",
           "source_quote_sha256": "d56fc209aa60c1a4057d88272a631fe5c1b6b1c58e904629ab5e9d1efa88bf06"
@@ -644,10 +660,10 @@
       ],
       "source_kind": "definition",
       "source_location": "cited publication:301-338",
-      "source_note": "The printed Definition 2 applies to arbitrary set sequences. This route instantiates it only at the paper's n-item recommendation sequences S_{n,k}, defined in the bound source model. That specialization leaves the main optimal-set theorem domains unchanged; it does not claim a generic formalization for sequences whose cardinality differs from the index.",
+      "source_note": "The direct Lean carrier is an arbitrary indexed sequence of finite type-count vectors: its total cardinality is not constrained to equal its index. The fixed-total n-item optimal-set sequences used in the paper's theorems are separately bridged into this general Definition 2 carrier.",
       "source_status": "direct source statement",
       "source_url": "https://arxiv.org/pdf/2307.15142",
-      "statement": "Definition 2's representation-limit condition, specialized to the size-indexed n-item recommendation sequences used by the main optimal-set theorems."
+      "statement": "Definition 2's representation-limit condition for an arbitrary indexed sequence of recommendation sets."
     },
     "prpkg_definition3_order_statistic_mean": {
       "claim_bearing": true,
@@ -2382,18 +2398,32 @@
           "why_needed": "The source proof silently changes from a reflected density to an integral representation of upper-tail mass and then to CDF-power bounds. These are not theorem-name consequences of a function called pdf: they require an actual density measure and enough boundedness/integrability for the expected top-k loss to be well defined. The source says only bounded above, so the nonnegative value-domain convention must remain visible rather than being inferred from the tail formula."
         },
         {
-          "checked_scope": "PaperInterface.theorem1_ii_formula, theorem1_iii_formula, theorem1_iv_formula, and corollary1 visibly retain strict positivity of each preferred-type mass. Their PMF-selected source objectives and fixed-k conclusions are checked only on that regular all-coordinate domain. The convention does not provide archival source credit and does not assert a zero-support extension.",
+          "checked_scope": "PaperInterface.theorem1_ii_formulaSpec, theorem1_iii_formulaSpec, theorem1_iv_formulaSpec, and corollary1Spec visibly retain strict positivity of each preferred-type mass and existentially select the source's finite optima. Corollary 1 also returns an explicit probability law D, tied to the concrete iid model branch. Their PMF-selected source objectives and fixed-k conclusions are checked only on that regular all-coordinate domain. The stronger universal formulas remain support and the convention does not assert a zero-support extension.",
           "classification": "all_coordinate_positive_support_convention",
           "formal_meaning": "For the checked fixed-k gamma-share endpoints that assert a limiting representation for every named type, the source-selected preferred-type PMF has strictly positive mass at every type. This is an additional regularity condition on the all-coordinate route, not a claim that the archival model text excluded zero-probability types.",
           "id": "PRPKG24-POSITIVE-PREFERENCE-SUPPORT-01",
           "kind": "source_model_convention",
           "protocol": "approved-source-review-context-v1",
-          "record_sha256": "6c4c8eb58ebf65e83758e8aecab604f9421f0d7fe78b7cbbc30056a6ad0620fd",
+          "record_sha256": "e3c4173e28107c8d9a402b22c458dbbb21ab824496bc692a9acb43cf5648462e",
           "source_locator": "cited publication:55-63; cited publication:351-457",
           "why_needed": "The source says only that one type is selected with probabilities p_t, which permits zero masses. The direct all-coordinate optimizer-share arguments use positive weights and finite normalized powers for every coordinate; a zero-probability type instead requires a separate supportwise formulation and optimizer-selection analysis. Recording the restriction prevents that zero-support boundary from being smuggled into a source theorem match."
         }
       ],
       "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:351-365",
+        "archival_source_quote_sha256": "aa0eb5b26d5becb5c5a09579f8adf3a806f2ef546cbd39b49def196f247326f9",
+        "corrected_target_review_sha256": "49a710b59ff5c904e575f83df05ea898cf4679489f5a3768c5889d642cbb40e4",
+        "corrected_target_sha256": "2f32bb2f833c39932985152d8912b3a90c31bdd1c3dd8bedcbbb5885a763e4a9",
+        "governing_defect_ids": [
+          "PRPKG24-ALL-COORDINATE-SHARE-DOMAIN-01",
+          "PRPKG24-THEOREM1II-VALUE-DOMAIN-01"
+        ],
+        "schema": 1,
+        "statement": "For a finite nonempty preferred-type PMF whose every type mass is strictly positive, a fixed positive k, and an iid conditional-value probability law D with an a.e. nonnegative density on a bounded interval [L, M], with 0 < M and 0 < M-L, finite mean, and the displayed beta,c>0 bounded-upper-endpoint density tail, there exists a selected fixed-total optimal recommendation sequence whose type shares converge to p_t^(beta/(beta+1)) divided by the sum of those powers."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PRPKG24AccuracyDiversity.PaperInterface.theorem1_ii_formulaSpec_proof"
       ],
@@ -2467,17 +2497,21 @@
         {
           "id": "theorem1.ii.bounded_tail",
           "reviewed_lean_route": "PRPKG24AccuracyDiversity.PaperInterface.theorem1_ii_formulaSpec_proof",
-          "semantic_claim": "Under the displayed bounded-density tail condition, every fixed-k optimal sequence has the stated beta over beta-plus-one limiting type-share profile.",
+          "semantic_claim": "Under the displayed bounded-density tail condition, the source-selected fixed-k optimal recommendation sequence has the stated beta over beta-plus-one limiting type-share profile.",
           "source_locator": "cited publication:351-365",
           "source_quote_sha256": "aa0eb5b26d5becb5c5a09579f8adf3a806f2ef546cbd39b49def196f247326f9"
         }
       ],
+      "source_defect_ids": [
+        "PRPKG24-ALL-COORDINATE-SHARE-DOMAIN-01",
+        "PRPKG24-THEOREM1II-VALUE-DOMAIN-01"
+      ],
       "source_kind": "theorem",
       "source_location": "cited publication:351-365",
-      "source_note": "Direct PMF source route: PaperInterface.theorem1_ii_formula realizes the paper's preferred type as a finite PMF, instantiates likelihood literally as its atom mass, and proves the allocation objective is the corresponding outer PMF expectation. Its conditional branch derives the tail, mass, local-integrability, and CDF-power bridge from the withDensity PDF model rather than accepting them as caller premises. It adopts the recorded a.e. nonnegative conditional-value convention and all-positive PMF support; L/width/M are support normalizations under that convention. It does not claim the translated/lower-tail or zero-type extensions of the archival wording.",
-      "source_status": "direct source statement",
+      "source_note": "The approved target makes the direct all-coordinate PMF/PDF route's positive-support, positive-k, selected-optimizer, and nonnegative bounded-value regular domain explicit. It is a restricted corrected target, not archival equivalence or a claim about translated/lower-tail or zero-type-support cases.",
+      "source_status": "corrected",
       "source_url": "https://arxiv.org/pdf/2307.15142",
-      "statement": "Theorem 1(ii): under the Equation 7 bounded-density tail, fixed-k optimal sequences are beta/(beta+1)-homogeneous.",
+      "statement": "Theorem 1(ii): under the displayed bounded-density tail condition, the source-selected fixed-k optimal recommendation sequence is beta/(beta+1)-homogeneous.",
       "support_lean_declarations": [
         "PRPKG24AccuracyDiversity.PaperInterface.theorem1_ii_formulaSpec"
       ]
@@ -2486,18 +2520,31 @@
       "approved_review_context_schema": 1,
       "approved_review_contexts": [
         {
-          "checked_scope": "PaperInterface.theorem1_ii_formula, theorem1_iii_formula, theorem1_iv_formula, and corollary1 visibly retain strict positivity of each preferred-type mass. Their PMF-selected source objectives and fixed-k conclusions are checked only on that regular all-coordinate domain. The convention does not provide archival source credit and does not assert a zero-support extension.",
+          "checked_scope": "PaperInterface.theorem1_ii_formulaSpec, theorem1_iii_formulaSpec, theorem1_iv_formulaSpec, and corollary1Spec visibly retain strict positivity of each preferred-type mass and existentially select the source's finite optima. Corollary 1 also returns an explicit probability law D, tied to the concrete iid model branch. Their PMF-selected source objectives and fixed-k conclusions are checked only on that regular all-coordinate domain. The stronger universal formulas remain support and the convention does not assert a zero-support extension.",
           "classification": "all_coordinate_positive_support_convention",
           "formal_meaning": "For the checked fixed-k gamma-share endpoints that assert a limiting representation for every named type, the source-selected preferred-type PMF has strictly positive mass at every type. This is an additional regularity condition on the all-coordinate route, not a claim that the archival model text excluded zero-probability types.",
           "id": "PRPKG24-POSITIVE-PREFERENCE-SUPPORT-01",
           "kind": "source_model_convention",
           "protocol": "approved-source-review-context-v1",
-          "record_sha256": "6c4c8eb58ebf65e83758e8aecab604f9421f0d7fe78b7cbbc30056a6ad0620fd",
+          "record_sha256": "e3c4173e28107c8d9a402b22c458dbbb21ab824496bc692a9acb43cf5648462e",
           "source_locator": "cited publication:55-63; cited publication:351-457",
           "why_needed": "The source says only that one type is selected with probabilities p_t, which permits zero masses. The direct all-coordinate optimizer-share arguments use positive weights and finite normalized powers for every coordinate; a zero-probability type instead requires a separate supportwise formulation and optimizer-selection analysis. Recording the restriction prevents that zero-support boundary from being smuggled into a source theorem match."
         }
       ],
       "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:431-433",
+        "archival_source_quote_sha256": "5079b0959ef907d1642c7b255a53bbc0b115536cf7f07d3e65e7223fe863d74c",
+        "corrected_target_review_sha256": "30a1dbf6ce06682903796c73080405ec3452c7085a3c59403d8472fdff3d77d7",
+        "corrected_target_sha256": "e5a967b11f9bf0b42c7e5c1d515a5db91cafd951324b2a7f74f33da9594cde23",
+        "governing_defect_ids": [
+          "PRPKG24-ALL-COORDINATE-SHARE-DOMAIN-01"
+        ],
+        "schema": 1,
+        "statement": "For a finite nonempty preferred-type PMF whose every type mass is strictly positive, a fixed positive k, and iid conditional values with an exponential probability law of positive rate lambda, there exists a selected fixed-total optimal recommendation sequence whose type shares converge to p_t divided by the sum of all type masses."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PRPKG24AccuracyDiversity.PaperInterface.theorem1_iii_formulaSpec_proof"
       ],
@@ -2570,17 +2617,20 @@
         {
           "id": "theorem1.iii.exponential",
           "reviewed_lean_route": "PRPKG24AccuracyDiversity.PaperInterface.theorem1_iii_formulaSpec_proof",
-          "semantic_claim": "For exponential conditional values with positive rate, every fixed-k optimal sequence has proportional limiting type representation.",
+          "semantic_claim": "For exponential conditional values with positive rate, the source-selected fixed-k optimal recommendation sequence has proportional limiting type representation.",
           "source_locator": "cited publication:431-433",
           "source_quote_sha256": "5079b0959ef907d1642c7b255a53bbc0b115536cf7f07d3e65e7223fe863d74c"
         }
       ],
+      "source_defect_ids": [
+        "PRPKG24-ALL-COORDINATE-SHARE-DOMAIN-01"
+      ],
       "source_kind": "theorem",
       "source_location": "cited publication:431-433",
-      "source_note": "Direct PMF source route: PaperInterface.theorem1_iii_formula realizes the preferred type as a finite PMF, instantiates the likelihood exactly as its atom mass, proves the outer PMF expectation identity for each allocation, and then applies the exponential iid conditional branch. The raw arbitrary-positive-likelihood theorem is retained only as support.",
-      "source_status": "direct source statement",
+      "source_note": "The approved target makes the direct all-coordinate PMF route's positive-support, positive-k, and selected-optimizer regular domain explicit. It is a restricted corrected target, not archival equivalence or a claim about zero-type-support cases.",
+      "source_status": "corrected",
       "source_url": "https://arxiv.org/pdf/2307.15142",
-      "statement": "Theorem 1(iii): exponential conditional values with positive rate yield 1-homogeneous fixed-k optimal sequences.",
+      "statement": "Theorem 1(iii): exponential conditional values with positive rate yield a 1-homogeneous fixed-k optimal recommendation sequence.",
       "support_lean_declarations": [
         "PRPKG24AccuracyDiversity.PaperInterface.theorem1_iii_formulaSpec"
       ]
@@ -2589,18 +2639,31 @@
       "approved_review_context_schema": 1,
       "approved_review_contexts": [
         {
-          "checked_scope": "PaperInterface.theorem1_ii_formula, theorem1_iii_formula, theorem1_iv_formula, and corollary1 visibly retain strict positivity of each preferred-type mass. Their PMF-selected source objectives and fixed-k conclusions are checked only on that regular all-coordinate domain. The convention does not provide archival source credit and does not assert a zero-support extension.",
+          "checked_scope": "PaperInterface.theorem1_ii_formulaSpec, theorem1_iii_formulaSpec, theorem1_iv_formulaSpec, and corollary1Spec visibly retain strict positivity of each preferred-type mass and existentially select the source's finite optima. Corollary 1 also returns an explicit probability law D, tied to the concrete iid model branch. Their PMF-selected source objectives and fixed-k conclusions are checked only on that regular all-coordinate domain. The stronger universal formulas remain support and the convention does not assert a zero-support extension.",
           "classification": "all_coordinate_positive_support_convention",
           "formal_meaning": "For the checked fixed-k gamma-share endpoints that assert a limiting representation for every named type, the source-selected preferred-type PMF has strictly positive mass at every type. This is an additional regularity condition on the all-coordinate route, not a claim that the archival model text excluded zero-probability types.",
           "id": "PRPKG24-POSITIVE-PREFERENCE-SUPPORT-01",
           "kind": "source_model_convention",
           "protocol": "approved-source-review-context-v1",
-          "record_sha256": "6c4c8eb58ebf65e83758e8aecab604f9421f0d7fe78b7cbbc30056a6ad0620fd",
+          "record_sha256": "e3c4173e28107c8d9a402b22c458dbbb21ab824496bc692a9acb43cf5648462e",
           "source_locator": "cited publication:55-63; cited publication:351-457",
           "why_needed": "The source says only that one type is selected with probabilities p_t, which permits zero masses. The direct all-coordinate optimizer-share arguments use positive weights and finite normalized powers for every coordinate; a zero-probability type instead requires a separate supportwise formulation and optimizer-selection analysis. Recording the restriction prevents that zero-support boundary from being smuggled into a source theorem match."
         }
       ],
       "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:434-437",
+        "archival_source_quote_sha256": "25ab3c7ffd8577c221555bc05692913ce64bb78c35ff3915892efe46071532fe",
+        "corrected_target_review_sha256": "1c0dbd17e36f47be1057b4805ac668bb0f6754db3fe0c60c80183a1ae98255c1",
+        "corrected_target_sha256": "e39c22829a7cc1a0edd992592d18ff70894fe2bc04dc82aa3c724b1f2915dae4",
+        "governing_defect_ids": [
+          "PRPKG24-ALL-COORDINATE-SHARE-DOMAIN-01"
+        ],
+        "schema": 1,
+        "statement": "For a finite nonempty preferred-type PMF whose every type mass is strictly positive, a fixed positive k, and iid conditional values with a Pareto probability law of parameter alpha>1, there exists a selected fixed-total optimal recommendation sequence whose type shares converge to p_t^(alpha/(alpha-1)) divided by the sum of those powers."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PRPKG24AccuracyDiversity.PaperInterface.theorem1_iv_formulaSpec_proof"
       ],
@@ -2673,17 +2736,20 @@
         {
           "id": "theorem1.iv.pareto",
           "reviewed_lean_route": "PRPKG24AccuracyDiversity.PaperInterface.theorem1_iv_formulaSpec_proof",
-          "semantic_claim": "For Pareto conditional values with alpha greater than one, every fixed-k optimal sequence has the stated alpha over alpha-minus-one limiting type-share profile.",
+          "semantic_claim": "For Pareto conditional values with alpha greater than one, the source-selected fixed-k optimal recommendation sequence has the stated alpha over alpha-minus-one limiting type-share profile.",
           "source_locator": "cited publication:434-437",
           "source_quote_sha256": "25ab3c7ffd8577c221555bc05692913ce64bb78c35ff3915892efe46071532fe"
         }
       ],
+      "source_defect_ids": [
+        "PRPKG24-ALL-COORDINATE-SHARE-DOMAIN-01"
+      ],
       "source_kind": "theorem",
       "source_location": "cited publication:434-437",
-      "source_note": "Direct PMF source route: PaperInterface.theorem1_iv_formula realizes the preferred type as a finite PMF, instantiates the likelihood exactly as its atom mass, proves the outer PMF expectation identity for each allocation, and then applies the Pareto iid conditional branch. The raw arbitrary-positive-likelihood theorem is retained only as support.",
-      "source_status": "direct source statement",
+      "source_note": "The approved target makes the direct all-coordinate PMF route's positive-support, positive-k, and selected-optimizer regular domain explicit. It is a restricted corrected target, not archival equivalence or a claim about zero-type-support cases.",
+      "source_status": "corrected",
       "source_url": "https://arxiv.org/pdf/2307.15142",
-      "statement": "Theorem 1(iv): Pareto(alpha) conditional values with alpha>1 yield alpha/(alpha-1)-homogeneous fixed-k optimal sequences.",
+      "statement": "Theorem 1(iv): Pareto(alpha) conditional values with alpha>1 yield an alpha/(alpha-1)-homogeneous fixed-k optimal recommendation sequence.",
       "support_lean_declarations": [
         "PRPKG24AccuracyDiversity.PaperInterface.theorem1_iv_formulaSpec"
       ]
@@ -3206,10 +3272,10 @@
   "paper": "PRPKG24AccuracyDiversity",
   "paper_interface_namespace": "PRPKG24AccuracyDiversity",
   "paper_semantic_prerequisite_sources": {
-    "PRPKG24AccuracyDiversity.AllocationSequence.ConvergesToProfile": "prpkg_definition2_eq6_sequence_homogeneity",
     "PRPKG24AccuracyDiversity.CountAllocation.representation": "prpkg_eq4_representation",
     "PRPKG24AccuracyDiversity.GammaHomogeneityProfile.Exact": "prpkg_definition1_eq5_gamma_homogeneity",
     "PRPKG24AccuracyDiversity.InfiniteGammaHomogeneityProfile.Exact": "prpkg_definition1_eq5_gamma_homogeneity",
+    "PRPKG24AccuracyDiversity.RecommendationSetSequence.IsGammaHomogeneous": "prpkg_definition2_eq6_sequence_homogeneity",
     "PRPKG24AccuracyDiversity.definition3IidOrderStatisticMean": "prpkg_definition3_order_statistic_mean",
     "PRPKG24AccuracyDiversity.gammaLikelihoodProfile": "prpkg_definition1_eq5_gamma_homogeneity",
     "PRPKG24AccuracyDiversity.infiniteLikelihoodProfile": "prpkg_definition1_eq5_gamma_homogeneity"

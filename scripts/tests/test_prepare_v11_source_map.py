@@ -19,6 +19,51 @@ from scripts.source_coverage_scope import (
 
 
 class PrepareV11SourceMapTests(unittest.TestCase):
+    def test_selected_disposition_is_materialized_on_selected_source_row(self) -> None:
+        items: dict[str, dict[str, object]] = {"claim": {}}
+        preparer._apply_selected_item_dispositions(
+            items,
+            {
+                "selected_item_dispositions": {
+                    "claim": {
+                        "source_status": "finite_explicit_replacement",
+                        "coverage_status": "pending_final_independent_review",
+                        "archival_equivalence_claimed": False,
+                        "reason": "The exact finite target replaces a soft-O display.",
+                    }
+                }
+            },
+            {"claim": "claimSpec"},
+        )
+        self.assertEqual(items["claim"]["source_status"], "finite_explicit_replacement")
+        self.assertEqual(
+            items["claim"]["coverage_status"],
+            "pending_final_independent_review",
+        )
+        self.assertFalse(items["claim"]["archival_equivalence_claimed"])
+        self.assertEqual(
+            items["claim"]["source_note"],
+            "Formalization disposition: The exact finite target replaces a soft-O display.",
+        )
+        preparer._apply_selected_item_dispositions(
+            items,
+            {
+                "selected_item_dispositions": {
+                    "claim": {
+                        "source_status": "finite_explicit_replacement",
+                        "coverage_status": "pending_final_independent_review",
+                        "archival_equivalence_claimed": False,
+                        "reason": "The exact finite target replaces a soft-O display.",
+                    }
+                }
+            },
+            {"claim": "claimSpec"},
+        )
+        self.assertEqual(
+            items["claim"]["source_note"],
+            "Formalization disposition: The exact finite target replaces a soft-O display.",
+        )
+
     def test_explicit_review_policy_requires_partition_and_matching_coverage(self) -> None:
         default_policy = {
             "schema": 1,
@@ -983,6 +1028,72 @@ class PrepareV11SourceMapTests(unittest.TestCase):
                     "paper_semantic_prerequisite_sources": {
                         "Fixture.Shared": "absent"
                     },
+                },
+            )
+
+    def test_role_schema_preserves_explicit_refutation_contract(self) -> None:
+        source_map = {
+            "paper": "Fixture",
+            "items": {
+                "result": {
+                    "source_kind": "theorem",
+                    "source_location": "source.tex:1",
+                    "claim_bearing": True,
+                    "lean_declarations": ["Fixture.resultSpec"],
+                }
+            },
+        }
+        config = {
+            "paper": "Fixture",
+            "namespace": "Fixture",
+            "paper_interface_module": "",
+            "semantic_route_schema": 2,
+            "include_specs": ["result"],
+            "source_item_for_spec": {"result": "result"},
+            "evidence_declaration_for_spec": {
+                "result": "Fixture.Proofs.refutation"
+            },
+            "evidence_mode_for_spec": {"result": "refutes"},
+        }
+        prepared = preparer.prepare(source_map, config)
+        expected = {
+            "spec_declaration": "Fixture.resultSpec",
+            "evidence_declaration": "Fixture.Proofs.refutation",
+            "evidence_mode": "refutes",
+            "semantic_shape": "plain",
+        }
+        self.assertEqual(prepared["items"]["result"]["semantic_contract"], expected)
+        self.assertEqual(
+            preparer.prepare(prepared, config)["items"]["result"]["semantic_contract"],
+            expected,
+        )
+
+    def test_evidence_mode_rejects_unknown_relation(self) -> None:
+        with self.assertRaisesRegex(
+            preparer.PreparationError, "evidence_mode_for_spec values must be"
+        ):
+            preparer.prepare(
+                {"paper": "Fixture", "items": {}},
+                {
+                    "paper": "Fixture",
+                    "namespace": "Fixture",
+                    "include_specs": ["result"],
+                    "evidence_mode_for_spec": {"result": "assumes"},
+                },
+            )
+
+    def test_refutation_mode_rejects_unselected_spec(self) -> None:
+        with self.assertRaisesRegex(
+            preparer.PreparationError,
+            "evidence_mode_for_spec names not selected by include_specs",
+        ):
+            preparer.prepare(
+                {"paper": "Fixture", "items": {}},
+                {
+                    "paper": "Fixture",
+                    "namespace": "Fixture",
+                    "include_specs": [],
+                    "evidence_mode_for_spec": {"absent": "refutes"},
                 },
             )
 

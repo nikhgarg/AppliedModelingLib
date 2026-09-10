@@ -1,0 +1,112 @@
+{
+  "defects": [
+    {
+      "acceptance_condition": "Lean checks both reference alternatives from the support-sensitive one-hot posterior condition on a nondegenerate multiclass joint law, with no all-product-pairs truth premise.",
+      "affected_source_locators": [
+        "Theorem 1(ii), publication text:662-666",
+        "Appendix B.1 proof of Theorem 1(ii), publication text:1305-1327"
+      ],
+      "defect_kind": "quantifier_or_uniformity",
+      "id": "DSWG24-T1II-SUPPORT-01",
+      "repair_obligation": "Prove prior- and aggregate-reference zero bias from perfectClassifierOnSupport, using equality only on positive-probability joint atoms rather than all product pairs.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "PaperInterface.theorem1iiPriorReferenceZeroBiasSpec and theorem1iiAggregateReferenceZeroBiasSpec are proved exactly by their corresponding *_on_support_spec theorems, via finite positive-mass atom identities. The older all-product-pairs theorem remains support only.",
+      "source_claim": "For a perfect classifier under the joint data law, the posterior is one-hot at the realized true class and argmax bias is zero for either the prior or aggregate-posterior reference.",
+      "source_locator": "Theorem 1(ii) and its proof; publication text:662-666 and 1294-1327",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "This was an incomplete historical Lean wrapper, not an error in the source paper. The exact support-sensitive premise now proves both reference alternatives, so the repaired route is a note-only formalization repair and does not warrant a paper caveat."
+    },
+    {
+      "acceptance_condition": "Lean proves the source's Pareto endpoint and the Appendix-supported weighted-objective necessity endpoint for 0 <= gamma < 1 with expectedFidelityAt, assuming only referenceSimplexAt and the selected aggregate-max 1/N bound for each dataset, and without an all-label lower bound or fixed reference.",
+      "affected_source_locators": [
+        "Definition of P_N^q, publication text:744-755",
+        "Theorem 2(iii), publication text:756-763",
+        "Appendix B.1 switch proof, publication text:1651-1692"
+      ],
+      "defect_kind": "quantifier_or_uniformity",
+      "id": "DSWG24-T2III-PNQ-01",
+      "repair_obligation": "Lift the per-dataset sourcePNq switch bridges through the positive-probability sampled-dataset event for deterministic and randomized independent rules, with expected fidelity evaluated at prefAt sample.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "PaperInterface.theorem2iiiParetoOptimalAgreesArgmaxSpec and theorem2iiiWeightedObjectiveMaximizerAgreesArgmaxSpec are proved by their corresponding *_spec theorems. The weighted contract states exactly 0 <= gamma < 1 implies almost-sure argmax agreement for a maximizer; it does not assert the overbroad converse that gamma=1 is necessary for an already agreeing rule. The proof derives the aggregate fixed-order argmax on the selected iid sample, changes the policy only at that positive-mass sample, evaluates fidelity at prefAt sample, and theorem2iii_source_randomized_augmented_endpoints supplies the finite randomized-rule realization.",
+      "source_claim": "The non-trivial reference is a dataset-dependent map p^q from observed datasets to the label simplex, and for each selected dataset only its tie-broken aggregate-max class must receive reference mass at least 1/N. The Appendix B.1 switch proof implies that, for 0 <= gamma < 1, a weighted-objective-maximizing independent rule must agree with argmax almost surely.",
+      "source_locator": "Theorem 2(iii) and its proof; publication text:744-763 and 1651-1692",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The historical Lean wrapper was incomplete, and the main-text phrase 'unless gamma=1 and D agrees' is overbroad if read as making gamma=1 necessary even for an agreeing rule. The Appendix proof supplies the valid necessity clause: positive disagreement yields a strict samplewise accuracy-and-fidelity improvement. Lean now carries that exact clause through the dataset-dependent P_N^q positive-mass iid expectation lift for Pareto and every weighted objective with 0 <= gamma < 1, including the finite realized-randomness specialization. This is a formalized source-wording note, not a caveat to the proved mathematical result."
+    },
+    {
+      "acceptance_condition": "The current calibrated prerequisite and Theorem 1(iii) source route cite the same byte-pinned source reading and receive independent semantic review.",
+      "affected_source_locators": [
+        "publication text:635-658",
+        "publication text:667-673",
+        "publication text:1291-1293"
+      ],
+      "defect_kind": "event_or_measure",
+      "id": "DSWG24-T1III-CALIBRATION-READING-02",
+      "repair_obligation": "Record the standard event-calibration reading and bind it explicitly to the calibrated prerequisite and Theorem 1(iii) source route.",
+      "resolution": "resolved_in_current_source",
+      "resolution_evidence": "The source states calibration at lines 635-658 and repeats it for the proof at lines 1291-1293. The maintainer clarified exactly, \"yes intend the usual definition, as in the proof\"; the governing convention is the conditional-expectation event identity already used by the Lean helper.",
+      "source_claim": "Theorem 1(iii) gives the MAE bound for calibrated classifiers; footnote 10 states calibration at score values with positive probability.",
+      "source_locator": "publication text:635-658; publication text:667-673; publication text:1291-1293",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The maintainer confirms that the source uses standard event calibration as in its proof. The existing calibrated prerequisite and Theorem 1(iii) Spec state that meaning directly, so the clarification adds no premise and changes no theorem conclusion."
+    },
+    {
+      "acceptance_condition": "The source definition has an exact independently checked target; no generic equivalence is asserted.",
+      "affected_source_locators": [
+        "publication text:620-633",
+        "publication text:1651-1692"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "DSWG24-PARETO-VOCABULARY-03",
+      "repair_obligation": "Give the source weighted-optimality vocabulary its own exact predicate or establish the required model-specific relation without identifying generic nondominance with supported optimality.",
+      "resolution": "open_proof_obligation",
+      "resolution_evidence": "Metric pairs (1,0), (0,1), and (0.4,0.4) separate the generic notions. This is not a counterexample to Theorem 2(iii), whose proof uses a concrete dominating switch.",
+      "source_claim": "The source uses Pareto-optimal terminology for maximization of the accuracy/fidelity weighted objective for some gamma in (0,1].",
+      "source_locator": "publication text:620-633",
+      "statement_impact": "proof_only",
+      "status_impact": "partially_formalized",
+      "status_impact_rationale": "The generic wrapper means nondominance and is not equivalent to weighted optimality on arbitrary feasible sets. Its definition correspondence is uncredited; selected Theorem 2(iii) does not depend on that wrapper and proves domination and the weighted conclusion separately."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "Only the calibrated source-semantic prerequisite and the selected Theorem 1(iii) argmax-bias-by-MAE bound cite this reading.",
+      "classification": "maintainer_approved_source_model_clarification",
+      "formal_meaning": "For each label y and every measurable set A of score values, E[1_{Y=y} 1_{q_y in A}] = E[q_y 1_{q_y in A}], equivalently E[1_{Y=y} | sigma(q_y)] = q_y almost surely. This is the governing meaning of the source display Pr(Y=y | q(y,x)=c)=c.",
+      "id": "DSWG24-CALIBRATION-EVENT-READING-01",
+      "report_summary": "Calibration uses the standard conditional-expectation event identity intended by the source proof.",
+      "source_locator": "publication text:635-658; publication text:1291-1293",
+      "unresolved_relation_to_literal_source": "This resolves the null-fiber wording as a source-model clarification. It is not an added hypothesis, a corrected theorem, or a claim that a pointwise conditional value is defined on null score fibers.",
+      "why_needed": "The printed footnote discusses score values of positive measure, while the proof uses calibration through score-event expectation identities. The maintainer resolved the intended reading exactly: \"yes intend the usual definition, as in the proof\"."
+    }
+  ],
+  "paper": "DSWG24DiscretizationBias",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "No-information, perfect-classifier, calibrated argmax-bias, tightness, and the prior/aggregate-posterior reference alternatives.",
+      "source_locator": "Theorem 1 and Appendix B.1; publication text:642-673 and 1291-1327"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Joint-rule existence, Bayes argmax accuracy, independent-rule Pareto uniqueness, weighted-objective necessity, and the dataset-dependent P_N^q reference family.",
+      "source_locator": "Theorem 2 and Appendix B.1; publication text:744-786 and 1566-1692"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Accuracy, bias, fidelity, aggregate posterior, tie-broken argmax, threshold, Thompson sampling, independent rules, Bayes q*, and expected objectives.",
+      "source_locator": "Main definitions and Equations (1)-(3); publication text:155-283 and 590-633"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Numbered proof equations (4)-(33), source regions S_a through S_e, transformation accounting, tower-property calculation, and the one-row switch argument.",
+      "source_locator": "Appendix B.1 proof equations; publication text:1291-1692"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "2370832850d19fc3e0b74c5471316b099bcab9f958c268ffcd9de9d38ef55295"
+}

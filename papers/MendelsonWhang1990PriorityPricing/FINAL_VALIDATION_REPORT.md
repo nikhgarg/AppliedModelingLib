@@ -1,4 +1,4 @@
-# Final Validation Report: Mendelson and Whang (1990)
+# Final Validation Report: Optimal Incentive-Compatible Priority Pricing for the M/M/1 Queue
 
 Updated: 2026-09-07
 

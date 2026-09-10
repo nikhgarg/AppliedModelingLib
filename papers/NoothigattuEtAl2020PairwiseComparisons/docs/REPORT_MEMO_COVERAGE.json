@@ -1,0 +1,364 @@
+{
+  "schema": 2,
+  "paper": "NoothigattuEtAl2020PairwiseComparisons",
+  "report_sha256": "e08c78036c63383979c9fdd476b8aa34b1ba13f053f338eaa31de30d406305ed",
+  "source_items_sha256": "7e88aaf19920973ebaa95d5387db6194e2753e336000087641fbafb0e7b51661",
+  "all_selected_semantic_review_sha256": "137c11eece7e608f558ac6bc3814211003241d84ca91f6f7ecd15f6f235f6d5b",
+  "report_inventory_complete": true,
+  "items": {
+    "convention/NOOTHIGATTU-FIXED-REFERENCE-NORMALIZATION-01": {
+      "disposition": "not_material",
+      "reason": "Fixing one reference score to zero is equivalent to the source shift-invariant score representation because every likelihood and conclusion depends only on score differences."
+    },
+    "convention/NOOTHIGATTU-LEMMA23-DISTINCT-PAIRS-01": {
+      "disposition": "memo",
+      "source_reading": "The positive-count premise in Lemma 2.3 ranges over distinct alternatives. Diagonal counts are definitionally zero in the source pairwise-comparison model, and the proof groups unordered distinct pairs, so a literal diagonal-inclusive reading would make the premise inconsistent.",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_sha256": "93c8286f677ddc93f798dc60e7a0302fd3ad8760722f179de918480e4baa9506",
+      "memo_heading": "Lemma 2.3 distinct alternatives",
+      "memo_anchor": "lemma-23-distinct-alternatives",
+      "report_home": 4
+    },
+    "report/definition51-weak-score-order": {
+      "disposition": "not_material",
+      "reason": "The implementation-only strict-versus-weak mismatch is repaired. The definition and Theorem 5.3 now match the source, so no source deviation or extra premise remains to explain."
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "4fb2747b73e16ea3f73e3739b6b6e0e231820384225d3094ed0fb5f057a68e82",
+      "discovered_named_result_sha256": "a284718ca0534401e05e78deca25fc9fc0a0aad21498ef4a8a1f7f257cf22c30",
+      "source_format": "text",
+      "results": {
+        "claimA_1": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 784,
+              "line_start": 780,
+              "presentation": "text_heading",
+              "presentation_sha256": "5d18f1376c2aff38a0bbadaef021d9601c5973506f45c19c8d42c28226684925",
+              "source_item_id": "claimA_1",
+              "source_label": "Claim A.1"
+            }
+          ],
+          "source_item_ids": [
+            "claimA_1"
+          ]
+        },
+        "claimC_1": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 1055,
+              "line_start": 1055,
+              "presentation": "text_heading",
+              "presentation_sha256": "3b64cfae12e3d4466815cb8600749ae3f0191d82d6370106f7cdc562b07f37c4",
+              "source_item_id": "claimC_1",
+              "source_label": "Claim C.1"
+            }
+          ],
+          "source_item_ids": [
+            "claimC_1"
+          ]
+        },
+        "lemma2_1": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 216,
+              "line_start": 207,
+              "presentation": "text_heading",
+              "presentation_sha256": "91dbf141879a12fdf4616f05dfbbb5f0fd2504efca29611527e52d699787ff66",
+              "source_item_id": "lemma2_1",
+              "source_label": "Lemma 2.1"
+            }
+          ],
+          "source_item_ids": [
+            "lemma2_1"
+          ]
+        },
+        "lemma2_2": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 223,
+              "line_start": 217,
+              "presentation": "text_heading",
+              "presentation_sha256": "1175a4972b8b68d648cd3fc9748d2e3c7ae0083f9cdb739bfffee5dbac8f9d42",
+              "source_item_id": "lemma2_2",
+              "source_label": "Lemma 2.2"
+            }
+          ],
+          "source_item_ids": [
+            "lemma2_2"
+          ]
+        },
+        "lemma2_3": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 227,
+              "line_start": 224,
+              "presentation": "text_heading",
+              "presentation_sha256": "d3cc79cd960805b590d5e256d8345df114fc34a5a930a342a01fafc884fc6092",
+              "source_item_id": "lemma2_3",
+              "source_label": "Lemma 2.3"
+            }
+          ],
+          "source_item_ids": [
+            "lemma2_3"
+          ]
+        },
+        "lemma2_4": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 240,
+              "line_start": 239,
+              "presentation": "text_heading",
+              "presentation_sha256": "fd603acda477232f438420db5031cff6daa92b851fe45d5837ece1a2fcb204b5",
+              "source_item_id": "lemma2_4",
+              "source_label": "Lemma 2.4"
+            }
+          ],
+          "source_item_ids": [
+            "lemma2_4"
+          ]
+        },
+        "theorem3_2": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 271,
+              "line_start": 266,
+              "presentation": "text_heading",
+              "presentation_sha256": "8a2414ee080190035ddbc983b5f3fc63485a02cc0bdd34f66d6fb62fd92cbf24",
+              "source_item_id": "theorem3_2",
+              "source_label": "Theorem 3.2"
+            }
+          ],
+          "source_item_ids": [
+            "theorem3_2"
+          ]
+        },
+        "theorem4_2": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 371,
+              "line_start": 324,
+              "presentation": "text_heading",
+              "presentation_sha256": "741f774b05c162c70c709d99472740f232fa3241797bcc38d1763acf245177f3",
+              "source_item_id": "theorem4_2",
+              "source_label": "Theorem 4.2"
+            }
+          ],
+          "source_item_ids": [
+            "theorem4_2"
+          ]
+        },
+        "theorem5_3": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 416,
+              "line_start": 406,
+              "presentation": "text_heading",
+              "presentation_sha256": "69de9a630ad278bfa1d1475a1aa71ff5baf514681380a28a6606d4f5dde29a38",
+              "source_item_id": "theorem5_3",
+              "source_label": "Theorem 5.3"
+            }
+          ],
+          "source_item_ids": [
+            "theorem5_3"
+          ]
+        },
+        "theorem6_3": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 496,
+              "line_start": 485,
+              "presentation": "text_heading",
+              "presentation_sha256": "6a529ae968c1198e80ff6e6f59aaa009254a50b95cef82e37822d99c7b9e3db0",
+              "source_item_id": "theorem6_3",
+              "source_label": "Theorem 6.3"
+            }
+          ],
+          "source_item_ids": [
+            "theorem6_3"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "2bccb4d6dfed87bdcc97d9b20e2844b61976376fc4dedae08f6e45981b551475",
+    "results": {
+      "claimA_1": {
+        "numbering": "numbered",
+        "printed_label": "Claim A.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Supplementary Claims A.1 and C.1",
+            "row_sha256": "5b39c658e502df96a4e492cb810a89ef6e05e0691de3fa198c0b929340b59c64"
+          }
+        ],
+        "grouping_reason": "The report groups the two supplementary claims because both are exact and appear only in the supplement."
+      },
+      "claimC_1": {
+        "numbering": "numbered",
+        "printed_label": "Claim C.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Supplementary Claims A.1 and C.1",
+            "row_sha256": "5b39c658e502df96a4e492cb810a89ef6e05e0691de3fa198c0b929340b59c64"
+          }
+        ],
+        "grouping_reason": "The report groups the two supplementary claims because both are exact and appear only in the supplement."
+      },
+      "lemma2_1": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 2.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 2.1",
+            "row_sha256": "4894ce19913e54b7488ca7e84f7d3836a4939e924582f38df01b6f01dd5a1e12"
+          }
+        ]
+      },
+      "lemma2_2": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 2.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 2.2",
+            "row_sha256": "9fe5a5efd4f6888879c33c1920dd86f76195df33aa4b9fde5c132d1286d2c581"
+          }
+        ]
+      },
+      "lemma2_3": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 2.3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 2.3",
+            "row_sha256": "5eb7dbc36f5c4d840b297f8f187987cfaf75bb47cbd794daa97da61244b7742f"
+          }
+        ]
+      },
+      "lemma2_4": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 2.4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 2.4",
+            "row_sha256": "8dd5779f814877b4011fbb5902d54dca6618698f0e8faedaa4c8e65863831afd"
+          }
+        ]
+      },
+      "theorem3_2": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Definitions 3.1, 4.1; Theorems 3.2, 4.2",
+            "row_sha256": "12bb1ba792992883cc38b49f9c6cb259a1dbb28ec4035ab9004841e0ea56367c"
+          }
+        ],
+        "grouping_reason": "The report groups the paired definitions and theorem conclusions from the two adjacent source sections."
+      },
+      "theorem4_2": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 4.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Definitions 3.1, 4.1; Theorems 3.2, 4.2",
+            "row_sha256": "12bb1ba792992883cc38b49f9c6cb259a1dbb28ec4035ab9004841e0ea56367c"
+          }
+        ],
+        "grouping_reason": "The report groups the paired definitions and theorem conclusions from the two adjacent source sections."
+      },
+      "theorem5_3": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 5.3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Definition 5.1; Theorem 5.3",
+            "row_sha256": "77bb31f55a50b8ca115b0771697eb63c44921db11fd6b8180b431f08ce4a2755"
+          }
+        ],
+        "grouping_reason": "The definition and its theorem are presented together in the source section."
+      },
+      "theorem6_3": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 6.3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Definition 6.1; Theorem 6.3",
+            "row_sha256": "32d20178905ded0558ee1e2096c9e313f5df6670b09aaf259d234e920069f638"
+          }
+        ],
+        "grouping_reason": "The definition and its theorem are presented together in the source section."
+      }
+    },
+    "rows": {
+      "4894ce19913e54b7488ca7e84f7d3836a4939e924582f38df01b6f01dd5a1e12": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "9fe5a5efd4f6888879c33c1920dd86f76195df33aa4b9fde5c132d1286d2c581": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "5eb7dbc36f5c4d840b297f8f187987cfaf75bb47cbd794daa97da61244b7742f": {
+        "explanation_keys": [
+          "convention/NOOTHIGATTU-LEMMA23-DISTINCT-PAIRS-01"
+        ],
+        "supplemental_reason": ""
+      },
+      "8dd5779f814877b4011fbb5902d54dca6618698f0e8faedaa4c8e65863831afd": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "12bb1ba792992883cc38b49f9c6cb259a1dbb28ec4035ab9004841e0ea56367c": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "5b39c658e502df96a4e492cb810a89ef6e05e0691de3fa198c0b929340b59c64": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "32d20178905ded0558ee1e2096c9e313f5df6670b09aaf259d234e920069f638": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "77bb31f55a50b8ca115b0771697eb63c44921db11fd6b8180b431f08ce4a2755": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

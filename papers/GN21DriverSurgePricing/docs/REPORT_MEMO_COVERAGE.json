@@ -1,0 +1,654 @@
+{
+  "all_selected_semantic_review_sha256": "f206da6059b01f2c1016fd588d9b92460db03e3a97baa4d65c201dfe384ffd4a",
+  "items": {
+    "convention/GN21-FINITE-ENDPOINT-CALCULUS-REGULARITY-01": {
+      "disposition": "not_material",
+      "reason": "The finite derivative and sign facts are the source variation calculations, not a new economic restriction."
+    },
+    "convention/GN21-IID-RENEWAL-CYCLE-MODEL-01": {
+      "disposition": "not_material",
+      "reason": "Independent arrival/mark and switching streams are source primitives; the renewal cycles are derived from them."
+    },
+    "convention/GN21-L5-AE-NULL-SET-CONVENTION-01": {
+      "disposition": "not_material",
+      "reason": "Source reward integrals identify policies modulo trip-law null sets and already restrict derivative signs to positive density."
+    },
+    "convention/GN21-L5-ENDPOINT-COMPACTNESS-CONTINUITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "policy-domain-and-endpoint-regularity",
+      "memo_heading": "Policy domain and endpoint regularity",
+      "memo_sha256": "ffbabba9f92b392f673236dbe7b30127de41499351bd6b4543d9461bd8611306",
+      "report_home": 4,
+      "source_reading": "For the direct Lemma 5 route only, the source's continuity-in-policy assumption is used along each finite endpoint-coordinate family, including the compactified boundary representatives, so the corresponding finite endpoint reward map is continuous on the shape-specific compact domain. This is the precise source-model premise represented by the visible `hendpoint_continuous` binder; it supplies compact maximizer existence but no optimizer, policy form, dominance inequality, or strictness conclusion."
+    },
+    "convention/GN21-L5-GLOBAL-POLICY-CONTINUITY-REGULARITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "policy-domain-and-endpoint-regularity",
+      "memo_heading": "Policy domain and endpoint regularity",
+      "memo_sha256": "ffbabba9f92b392f673236dbe7b30127de41499351bd6b4543d9461bd8611306",
+      "report_home": 4,
+      "source_reading": "Lemma 5 explicitly assumes that Rhat is continuous in its open measurable policy argument. The current Lean interface totalizes Rhat to arbitrary `TripPolicy` values and expresses that continuity as `GN21SymmDiffContinuousAt` at every such value. The resulting global extension is a visible source-model regularity: it supplies only continuity at policy arguments, never a policy form, reward comparison, maximizer, or strictness conclusion."
+    },
+    "convention/GN21-L5-GLOBAL-POLICY-RESPONSE-SHAPE-REGULARITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "policy-domain-and-endpoint-regularity",
+      "memo_heading": "Policy domain and endpoint regularity",
+      "memo_sha256": "ffbabba9f92b392f673236dbe7b30127de41499351bd6b4543d9461bd8611306",
+      "report_home": 4,
+      "source_reading": "Lemma 5 states its response-shape property for every policy in the displayed near-optimal reward band after defining the policy domain to be open measurable subsets of positive trip lengths. The current Lean endpoint totalizes policies to arbitrary `TripPolicy` values and asks for the five response shapes at every such reward-admissible value. In the two quasi cases, its core predicates quantify strictly positive trip lengths and the two visible `hzero_*` binders supply the boundary-at-zero comparisons used by the finite endpoint-vector proof. Together these are a visible source-model regularity for the current direct variation engine, not a literal restatement of the printed domain wording."
+    },
+    "convention/GN21-P31-TRIP-LAW-FINITE-MOMENT-REGULARITY-01": {
+      "disposition": "not_material",
+      "reason": "The source renewal-reward expression uses finite real mean trip and cycle lengths. For its nonnegative trip lengths, finite mean is precisely the finite-first-moment domain, not an additional restriction on that reading."
+    },
+    "convention/GN21-T1-PAYOUT-NONNEGATIVITY-01": {
+      "disposition": "not_material",
+      "reason": "The source payout domain derives the hourly-rate sign inside the theorem interface and changes no source premise or conclusion."
+    },
+    "convention/GN21-T3-NONNEGATIVE-TARGET-RATE-CONVENTION-01": {
+      "disposition": "not_material",
+      "reason": "The source target-rate domain derives the sign inside the theorem interface and changes no source premise or conclusion."
+    },
+    "convention/GN21-T4-CANONICAL-PAIR-COMPACTNESS-CONTINUITY-REGULARITY-01": {
+      "disposition": "not_material",
+      "reason": "The product endpoint family combines the two source statewise finite families; its continuity/compactness bridge is proof organization for joint attainment and adds no economic condition."
+    },
+    "convention/GN21-T4-EMPTY-BASELINE-REGULARITY-01": {
+      "disposition": "not_material",
+      "reason": "The better-than-empty witness selects the nontrivial branch of the source Lemma 5 application; empty and degenerate branches remain available, so no Theorem 4 domain is removed."
+    },
+    "convention/GN21-T4-ENDPOINT-COMPACTNESS-CONTINUITY-REGULARITY-01": {
+      "disposition": "not_material",
+      "reason": "The endpoint family is the finite parameterization used by the source variation argument, and continuity on that represented compact family supplies attainment without restricting the paper’s feasible policies."
+    },
+    "convention/GN21-T4-GLOBAL-POLICY-CONTINUITY-REGULARITY-01": {
+      "disposition": "not_material",
+      "reason": "Theorem 4 applies the paper’s own continuity assumption on each source-feasible acceptance-set context; totalizing the ambient policy carrier changes no source policy premise or conclusion."
+    },
+    "convention/GN21-T4-LOCAL-REWARD-BAND-MARGIN-REGULARITY-01": {
+      "disposition": "not_material",
+      "reason": "The positive margin is a selected witness for the source’s local existential reward band at each nontrivial policy, with no uniform lower bound or extra policy restriction."
+    },
+    "convention/GN21-T4-UNIFORM-VARIATION-REGULARITY-01": {
+      "disposition": "not_material",
+      "reason": "The paper’s universal surge and response-shape conditions are reapplied at each source-feasible statewise replacement; exposing those repeated applications adds no theorem premise."
+    },
+    "report/theorem3-proof-route": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "theorem-3-proof-route",
+      "memo_heading": "Theorem 3 proof route",
+      "memo_sha256": "ffbabba9f92b392f673236dbe7b30127de41499351bd6b4543d9461bd8611306",
+      "report_home": 7,
+      "source_reading": "The Lemma 9 quantifier-scope gap and the direct two-case route that preserves Theorem 3."
+    }
+  },
+  "paper": "GN21DriverSurgePricing",
+  "report_inventory_complete": true,
+  "report_sha256": "908947595f00f64a0b95a94358052870a5bb8bd702e93436a618ff7630022f85",
+  "result_table": {
+    "complete": true,
+    "results": {
+      "review_lemma10_nonsurge_derivative_positive_of_acceptAll_bounds": {
+        "grouping_reason": "The report groups the four derivative and response-shape lemmas as one exact block.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 10",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 6--8 and 10",
+            "row_sha256": "d5450ab830842f1bac244703d7ee431df955e7c0adf54bde232bb7269b087849"
+          }
+        ]
+      },
+      "review_lemma1_measured_dynamic_reward_decomposition": {
+        "grouping_reason": "The report groups the three renewal and switching lemmas as one exact block.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1--3",
+            "row_sha256": "4f6c2d5d9df5ba584b45d3754273a2798dfd505f7cc1bcec20b3d6aeca20ae39"
+          }
+        ]
+      },
+      "review_lemma2_switch_probability_formula": {
+        "grouping_reason": "The report groups the three renewal and switching lemmas as one exact block.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1--3",
+            "row_sha256": "4f6c2d5d9df5ba584b45d3754273a2798dfd505f7cc1bcec20b3d6aeca20ae39"
+          }
+        ]
+      },
+      "review_lemma3_measured_time_fraction_formula": {
+        "grouping_reason": "The report groups the three renewal and switching lemmas as one exact block.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1--3",
+            "row_sha256": "4f6c2d5d9df5ba584b45d3754273a2798dfd505f7cc1bcec20b3d6aeca20ae39"
+          }
+        ]
+      },
+      "review_lemma4_single_state_threshold_uniqueness": {
+        "grouping_reason": "The report groups Theorem 1, the source's unnumbered Proposition in Section 3.1, and Lemma 4 as the single-state result block.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 4",
+            "row_sha256": "5107fd289d4c9be3973f751a53bb7e1d201cdfdfbd1e6435db3937c4de442b11"
+          }
+        ]
+      },
+      "review_lemma6_upper_endpoint_derivative_formula": {
+        "grouping_reason": "The report groups the four derivative and response-shape lemmas as one exact block.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 6",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 6--8 and 10",
+            "row_sha256": "d5450ab830842f1bac244703d7ee431df955e7c0adf54bde232bb7269b087849"
+          }
+        ]
+      },
+      "review_lemma7_affine_positive_additive_response_quasi_convex": {
+        "grouping_reason": "The report groups the four derivative and response-shape lemmas as one exact block.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 7",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 6--8 and 10",
+            "row_sha256": "d5450ab830842f1bac244703d7ee431df955e7c0adf54bde232bb7269b087849"
+          }
+        ]
+      },
+      "review_lemma8_affine_negative_additive_response_quasi_concave": {
+        "grouping_reason": "The report groups the four derivative and response-shape lemmas as one exact block.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 8",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 6--8 and 10",
+            "row_sha256": "d5450ab830842f1bac244703d7ee431df955e7c0adf54bde232bb7269b087849"
+          }
+        ]
+      },
+      "review_lemma9_surge_derivative_positive_of_acceptAll_bounds": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 9",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 9",
+            "row_sha256": "97bf0d54e30e8d4474d21409af9bf9339d5ca7524458ffcb0f6b86c6feb40824"
+          }
+        ]
+      },
+      "review_proposition3_1_affine_single_state_ic": {
+        "grouping_reason": "The report groups Theorem 1, the source's unnumbered Proposition in Section 3.1, and Lemma 4 as the single-state result block.",
+        "numbering": "unnumbered",
+        "printed_label": "Single-state affine-pricing proposition",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition in Section 3.1",
+            "row_sha256": "5107fd289d4c9be3973f751a53bb7e1d201cdfdfbd1e6435db3937c4de442b11"
+          }
+        ]
+      },
+      "review_theorem1_single_state_threshold_best_response": {
+        "grouping_reason": "The report groups Theorem 1, the source's unnumbered Proposition in Section 3.1, and Lemma 4 as the single-state result block.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1",
+            "row_sha256": "5107fd289d4c9be3973f751a53bb7e1d201cdfdfbd1e6435db3937c4de442b11"
+          }
+        ]
+      },
+      "review_theorem2_multiplicative_policy_shape_source_claim": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2",
+            "row_sha256": "996056617597900df82b7d432d1d3010d32a491d9e8672952f79bdb487f04c35"
+          }
+        ]
+      },
+      "review_theorem3_structured_pricing": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3",
+            "row_sha256": "80f08809c79249b9909830d222a75d7c1687a451df226b3d76c96990aebea86f"
+          }
+        ]
+      },
+      "source_lemma5_full_variational_policy_forms": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 5",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 5",
+            "row_sha256": "45822437798bbce175b5546572a9a46167c0c7057057b80b1e86792de4e22306"
+          }
+        ]
+      },
+      "source_theorem4_full_structural_policy_forms": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 4",
+            "row_sha256": "e5bd248ecabfb74b021654ca22582ba9240a2b789b945c63da3b7dc0f2de90d8"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "0d24bd70e422d42890b2b7391e692677ff6fed5f4674f85a8cff1677ac379deb": {
+        "explanation_keys": [],
+        "supplemental_reason": "This row records source model and incentive-compatibility definitions, not a theorem-like result."
+      },
+      "4f6c2d5d9df5ba584b45d3754273a2798dfd505f7cc1bcec20b3d6aeca20ae39": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "5107fd289d4c9be3973f751a53bb7e1d201cdfdfbd1e6435db3937c4de442b11": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "80f08809c79249b9909830d222a75d7c1687a451df226b3d76c96990aebea86f": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "45822437798bbce175b5546572a9a46167c0c7057057b80b1e86792de4e22306": {
+        "explanation_keys": [
+          "convention/GN21-L5-GLOBAL-POLICY-CONTINUITY-REGULARITY-01",
+          "convention/GN21-L5-ENDPOINT-COMPACTNESS-CONTINUITY-01",
+          "convention/GN21-L5-GLOBAL-POLICY-RESPONSE-SHAPE-REGULARITY-01"
+        ],
+        "supplemental_reason": ""
+      },
+      "97bf0d54e30e8d4474d21409af9bf9339d5ca7524458ffcb0f6b86c6feb40824": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "996056617597900df82b7d432d1d3010d32a491d9e8672952f79bdb487f04c35": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "d5450ab830842f1bac244703d7ee431df955e7c0adf54bde232bb7269b087849": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "e5bd248ecabfb74b021654ca22582ba9240a2b789b945c63da3b7dc0f2de90d8": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    },
+    "schema": 1,
+    "source_inventory": {
+      "discovered_named_result_sha256": "12e483e98247c1e06e3795599f9481ed9fdf3190d86c29eaaa27c7948db4f680",
+      "results": {
+        "review_lemma10_nonsurge_derivative_positive_of_acceptAll_bounds": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3853,
+              "line_start": 3834,
+              "presentation": "text_heading",
+              "presentation_sha256": "b55a6729a09f5d3b5f93b16d545ccef604cf65331df87728fa0da026e3101dda",
+              "source_item_id": "review_lemma10_nonsurge_derivative_positive_of_acceptAll_bounds",
+              "source_label": "Lemma 10"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 4748,
+              "line_start": 4729,
+              "presentation": "text_heading",
+              "presentation_sha256": "e71fdf5c2ce3f45ec11d81f89e91aa233b32346756db6be7d5d3aa8226a4733e",
+              "source_item_id": "gn21_lemma10_appendix_presentation",
+              "source_label": "Lemma 10"
+            }
+          ],
+          "source_item_ids": [
+            "gn21_lemma10_appendix_presentation",
+            "review_lemma10_nonsurge_derivative_positive_of_acceptAll_bounds"
+          ]
+        },
+        "review_lemma1_measured_dynamic_reward_decomposition": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 348,
+              "line_start": 324,
+              "presentation": "text_heading",
+              "presentation_sha256": "cf4bee7b3308413a1f2fefc85efd9363edc7eb94726fcd77775a7b1507b334c2",
+              "source_item_id": "review_lemma1_measured_dynamic_reward_decomposition",
+              "source_label": "Lemma 1"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 3052,
+              "line_start": 3032,
+              "presentation": "text_heading",
+              "presentation_sha256": "eb848e5758b9c75841868e1ab231f5002fcd3adf142488a53ee7701d89ec65c5",
+              "source_item_id": "gn21_lemma1_appendix_presentation",
+              "source_label": "Lemma 1"
+            }
+          ],
+          "source_item_ids": [
+            "gn21_lemma1_appendix_presentation",
+            "review_lemma1_measured_dynamic_reward_decomposition"
+          ]
+        },
+        "review_lemma2_switch_probability_formula": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 670,
+              "line_start": 657,
+              "presentation": "text_heading",
+              "presentation_sha256": "07600b2b9b51f2dd1f633abd8496da66c8f7a628a1a2d30aad267bc92ff405c1",
+              "source_item_id": "review_lemma2_switch_probability_formula",
+              "source_label": "Lemma 2"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 3007,
+              "line_start": 3000,
+              "presentation": "text_heading",
+              "presentation_sha256": "a3c6d24d1c4efea3eef1094c7c2ecbb341e525cf7f9227b697216bc5c8096d5e",
+              "source_item_id": "gn21_lemma2_appendix_presentation",
+              "source_label": "Lemma 2"
+            }
+          ],
+          "source_item_ids": [
+            "gn21_lemma2_appendix_presentation",
+            "review_lemma2_switch_probability_formula"
+          ]
+        },
+        "review_lemma3_measured_time_fraction_formula": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 682,
+              "line_start": 671,
+              "presentation": "text_heading",
+              "presentation_sha256": "fa007fc1a1b6eaf119ff1f199e392c5f2fa2f6c8b592d7fb46bd083a215fb104",
+              "source_item_id": "review_lemma3_measured_time_fraction_formula",
+              "source_label": "Lemma 3"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 3067,
+              "line_start": 3054,
+              "presentation": "text_heading",
+              "presentation_sha256": "2e933f78790b7cd944b77315bdbab7e4e7227aab118c95bcc54d6d5c7cd56fb6",
+              "source_item_id": "gn21_lemma3_appendix_presentation",
+              "source_label": "Lemma 3"
+            }
+          ],
+          "source_item_ids": [
+            "gn21_lemma3_appendix_presentation",
+            "review_lemma3_measured_time_fraction_formula"
+          ]
+        },
+        "review_lemma4_single_state_threshold_uniqueness": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2853,
+              "line_start": 2841,
+              "presentation": "text_heading",
+              "presentation_sha256": "700f2f0c24e91da65571425a23938e49b634f6ebc410f19ccae7e779dcad1c9c",
+              "source_item_id": "review_lemma4_single_state_threshold_uniqueness",
+              "source_label": "Lemma 4"
+            }
+          ],
+          "source_item_ids": [
+            "review_lemma4_single_state_threshold_uniqueness"
+          ]
+        },
+        "review_lemma6_upper_endpoint_derivative_formula": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3746,
+              "line_start": 3724,
+              "presentation": "text_heading",
+              "presentation_sha256": "4079a94db1adbf3333deccf511c586e704286fb1e087a604d8bf4031fbf7694e",
+              "source_item_id": "review_lemma6_upper_endpoint_derivative_formula",
+              "source_label": "Lemma 6"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 4124,
+              "line_start": 4105,
+              "presentation": "text_heading",
+              "presentation_sha256": "c659041b5059ac8261bcb6a1dbeb1897f2e7c2808463ea28308858848548d540",
+              "source_item_id": "gn21_lemma6_appendix_presentation",
+              "source_label": "Lemma 6"
+            }
+          ],
+          "source_item_ids": [
+            "condition_lemma6_endpoint_derivative_data",
+            "gn21_lemma6_appendix_presentation",
+            "model_policy_equalities_modulo_null_sets",
+            "review_lemma6_upper_endpoint_derivative_formula"
+          ]
+        },
+        "review_lemma7_affine_positive_additive_response_quasi_convex": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3774,
+              "line_start": 3773,
+              "presentation": "text_heading",
+              "presentation_sha256": "a51b54ed72c3c7279f1115731358eef794e4a7150539ccf19bdb018aaf640711",
+              "source_item_id": "review_lemma7_affine_positive_additive_response_quasi_convex",
+              "source_label": "Lemma 7"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 4236,
+              "line_start": 4234,
+              "presentation": "text_heading",
+              "presentation_sha256": "9c517ef5fa41c6e10d9973076df548c9b93505d919d91f27ef5b87217bf28559",
+              "source_item_id": "gn21_lemma7_appendix_presentation",
+              "source_label": "Lemma 7"
+            }
+          ],
+          "source_item_ids": [
+            "gn21_lemma7_appendix_presentation",
+            "review_lemma7_affine_positive_additive_response_quasi_convex"
+          ]
+        },
+        "review_lemma8_affine_negative_additive_response_quasi_concave": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3779,
+              "line_start": 3775,
+              "presentation": "text_heading",
+              "presentation_sha256": "600c27ec883e324b1291ac8805ca9238fbe56d18941c2c9bd9a1e9325e59b551",
+              "source_item_id": "review_lemma8_affine_negative_additive_response_quasi_concave",
+              "source_label": "Lemma 8"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 4462,
+              "line_start": 4461,
+              "presentation": "text_heading",
+              "presentation_sha256": "2d03e6531d6e6835f660f154e4d9f08eac2cb5c4aec514c25b2f33913b2a0db7",
+              "source_item_id": "gn21_lemma8_appendix_presentation",
+              "source_label": "Lemma 8"
+            }
+          ],
+          "source_item_ids": [
+            "gn21_lemma8_appendix_presentation",
+            "review_lemma8_affine_negative_additive_response_quasi_concave"
+          ]
+        },
+        "review_lemma9_surge_derivative_positive_of_acceptAll_bounds": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3833,
+              "line_start": 3809,
+              "presentation": "text_heading",
+              "presentation_sha256": "68e9037d327446fd765b2eac58d930b51c0a4575875929a887b2712ea82a8595",
+              "source_item_id": "review_lemma9_surge_derivative_positive_of_acceptAll_bounds",
+              "source_label": "Lemma 9"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 4585,
+              "line_start": 4571,
+              "presentation": "text_heading",
+              "presentation_sha256": "8f258fb5a94a5edd2610ba24277c604cf33cfa375d7592b1aea25366896bfa5a",
+              "source_item_id": "gn21_lemma9_appendix_presentation",
+              "source_label": "Lemma 9"
+            }
+          ],
+          "source_item_ids": [
+            "gn21_lemma9_appendix_presentation",
+            "review_lemma9_surge_derivative_positive_of_acceptAll_bounds"
+          ]
+        },
+        "review_proposition3_1_affine_single_state_ic": {
+          "kind": "proposition",
+          "presentations": [],
+          "source_item_ids": [
+            "review_proposition3_1_affine_single_state_ic"
+          ]
+        },
+        "review_theorem1_single_state_threshold_best_response": {
+          "kind": "theorem",
+          "presentations": [],
+          "source_item_ids": [
+            "review_theorem1_single_state_threshold_best_response"
+          ]
+        },
+        "review_theorem2_multiplicative_policy_shape_source_claim": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 648,
+              "line_start": 560,
+              "presentation": "text_heading",
+              "presentation_sha256": "f933616c8c2b01b80f470d95f5d4da4540f90fd4b70c4be4355b111a49e87e2a",
+              "source_item_id": "review_theorem2_multiplicative_policy_shape_source_claim",
+              "source_label": "Theorem 2"
+            }
+          ],
+          "source_item_ids": [
+            "review_theorem2_multiplicative_policy_shape_source_claim",
+            "review_theorem2_multiplicative_positive_finite_cutoff_not_ic_both_states"
+          ]
+        },
+        "review_theorem3_structured_pricing": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 817,
+              "line_start": 704,
+              "presentation": "text_heading",
+              "presentation_sha256": "036380a1729f9b2f66517331b241956bed6d2649af5855d84d6e9a5f1d30cc07",
+              "source_item_id": "review_theorem3_structured_pricing",
+              "source_label": "Theorem 3"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 3960,
+              "line_start": 3944,
+              "presentation": "text_heading",
+              "presentation_sha256": "2c31e1cf399dbc10d78635a330d07407eef2d02c0de28ced010f9a5b215ef192",
+              "source_item_id": "gn21_theorem3_appendix_presentation",
+              "source_label": "Theorem 3"
+            }
+          ],
+          "source_item_ids": [
+            "gn21_theorem3_appendix_presentation",
+            "review_theorem3_structured_pricing"
+          ]
+        },
+        "source_lemma5_full_variational_policy_forms": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3386,
+              "line_start": 3343,
+              "presentation": "text_heading",
+              "presentation_sha256": "4c20943eee295b993c1601fc65a7dda9f1f61cb0ac3f8964b6149e651ab67af3",
+              "source_item_id": "source_lemma5_full_variational_policy_forms",
+              "source_label": "Lemma 5"
+            }
+          ],
+          "source_item_ids": [
+            "source_lemma5_full_variational_policy_forms"
+          ]
+        },
+        "source_theorem4_full_structural_policy_forms": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 3880,
+              "line_start": 3859,
+              "presentation": "text_heading",
+              "presentation_sha256": "f25c9dad4215d0518b6fbd7adc7a0ba3a86631b30229f4db9ece4168e59d3c62",
+              "source_item_id": "source_theorem4_full_structural_policy_forms",
+              "source_label": "Theorem 4"
+            }
+          ],
+          "source_item_ids": [
+            "source_theorem4_full_structural_policy_forms"
+          ]
+        }
+      },
+      "schema": 1,
+      "source_artifact_sha256": "6b6668553e576084e0c6c9995964252bed6b14aae113d6ce90f78538a7eb9889",
+      "source_format": "text"
+    },
+    "source_inventory_sha256": "aaf5d7446e3359e02499e7c33bc2700c09c977e8b8ae71eb00e408b0f912f197"
+  },
+  "schema": 2,
+  "source_items_sha256": "6b0197d4cfcf022cd8df465b751713c5bde5197b00c1ee19736827152e72b49d"
+}

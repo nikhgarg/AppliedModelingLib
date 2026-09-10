@@ -2,6 +2,7 @@ import LBG24SpatialUnderreporting.CausalStoppingEndpointTrace
 import LBG24SpatialUnderreporting.CorrectedTheorem2Causal
 import LBG24SpatialUnderreporting.CalendarFirstReportDisplacement
 import LBG24SpatialUnderreporting.Lemma1MarkedPoissonThinning
+import LBG24SpatialUnderreporting.ConditionOneTail
 
 /-!
 # Source-shaped theorem models for LBG24
@@ -61,6 +62,50 @@ structure AppendixTheorem2CausalStoppingSourceModel (count : ℕ) where
     Measurable (fun gaps : Fin count → ℝ =>
       endpointResponse i.castSucc (finiteArrivalPrefix gaps i.castSucc)
         (Set.Ioi (gaps i)))
+
+/--
+The fixed-history density reading of Condition 1 used by Theorem 2.
+
+The source writes a pointwise ``g(s)`` after conditioning on the continuously
+valued first report.  This presentation makes that statement a proper
+conditional kernel with a density, then identifies the finite likelihood's
+selected-start factor with the density at the observed first-report/start
+pair.  The finite causal calculation itself needs only that evaluated factor,
+but this bridge preserves its source origin and the source's support and
+future-tail-independence conditions.
+-/
+structure Theorem2ConditionOneFixedHistoryDensityPresentation
+    {Omega : Type*} [MeasurableSpace Omega] [StandardBorelSpace Omega]
+    {P : Measure Omega} [IsProbabilityMeasure P]
+    {Tail : Type*} [MeasurableSpace Tail]
+    (selection : Theorem2ConditionOneSelection Omega P Tail)
+    (startReference : Measure ℝ≥0) [SFinite startReference]
+    (T : OrderedFiniteJumpTimeline) where
+  /-- The source's rate-free conditional density `g(s | T₁)`. -/
+  startDensity : ℝ≥0 → ℝ≥0 → ℝ≥0∞
+  startDensity_measurable : Measurable (Function.uncurry startDensity)
+  startKernel_eq_withDensity :
+    selection.rateFreeStartKernel = Kernel.withDensity
+      (Kernel.const ℝ≥0 startReference) startDensity
+  /-- The fixed source realization at which the likelihood is evaluated. -/
+  observedState : Omega
+  /-- The finite-horizon upper endpoint in Condition 1. -/
+  observationHorizon : ℝ≥0
+  /-- The source imposes the upper support only when `T₁ = t` is within the
+  finite horizon.  Requiring it for every `t`, including `t > T`, would be
+  incompatible with the selection kernel's lower support. -/
+  startKernel_supported_before_horizon : ∀ t : ℝ≥0, t ≤ observationHorizon →
+    selection.rateFreeStartKernel t (Set.Iic observationHorizon) = 1
+  observed_start_le_horizon :
+    selection.startTime observedState ≤ observationHorizon
+  /-- The fixed timeline begins at the observed selected start. -/
+  observed_start_eq_timeline_start :
+    (selection.startTime observedState : ℝ) = T.window.startTime
+  /-- The scalar entering the finite likelihood is the evaluated `g` density. -/
+  selectedStartLikelihood : ℝ≥0∞
+  selectedStartLikelihood_eq_density : selectedStartLikelihood =
+    startDensity (selection.firstReportTime observedState)
+      (selection.startTime observedState)
 
 namespace AppendixTheorem2CausalStoppingSourceModel
 
@@ -178,19 +223,54 @@ end AppendixTheorem2CausalStoppingSourceModel
 
 /-! ## Lemma 1 and Proposition 1 -/
 
-/-- The source's incident birth/death window: every logged report occurs while
-its incident is active, between the unobserved birth time and the death time
-`birthTime + duration`. -/
-structure IncidentBirthDeathSourceModel (Incident Report : Type*) where
-  birthTime : Incident → ℝ
-  duration : Incident → ℝ
-  duration_nonnegative : ∀ incident, 0 ≤ duration incident
+/--
+The source's incident birth/death model.
+
+`occurrenceParameter` is the source's possibly time-varying `Λθ`.  The
+source deliberately leaves the occurrence process otherwise arbitrary (a
+homogeneous Poisson process is only an example), so `birthProcess` is a
+measurable family of birth-time processes indexed by that parameter rather
+than a Poisson-law assumption.  For every realized incident, `birthTime` is
+the corresponding process output.  Birth times are latent; death-time
+information may be absent or a partial set of possible times.  Every logged
+report then occurs while its incident is active, between its unobserved birth
+and death times.
+-/
+structure IncidentBirthDeathSourceModel
+    (IncidentType Ω Incident Report : Type*) [MeasurableSpace Ω]
+    (P : Measure Ω) where
+  /-- The probability law carrying the source's random occurrence process. -/
+  isProbability : IsProbabilityMeasure P
+  /-- The incident type `θ` associated with each incident. -/
+  incidentType : Incident → IncidentType
+  /-- The source's incidence parameter `Λθ`, allowing time variation. -/
+  occurrenceParameter : IncidentType → ℝ → ℝ
+  /-- A family of random birth-time processes indexed by `Λθ` and type. -/
+  birthProcess :
+    (IncidentType → ℝ → ℝ) → IncidentType → Ω → Incident → ℝ
+  birthProcess_measurable : ∀ occurrenceParameter incidentType incident,
+    Measurable (fun ω => birthProcess occurrenceParameter incidentType ω incident)
+  /-- The realized birth time comes from the process at that incident's `Λθ`. -/
+  birthTime : Ω → Incident → ℝ
+  birthTime_from_occurrence_process : ∀ ω incident,
+    birthTime ω incident =
+      birthProcess occurrenceParameter (incidentType incident) ω incident
+  duration : Ω → Incident → ℝ
+  duration_nonnegative : ∀ ω incident, 0 ≤ duration ω incident
+  /-- Birth times are latent to the researcher in the source model. -/
+  birthTimeObservable : Ω → Incident → Prop
+  birthTime_unobserved : ∀ ω incident, ¬ birthTimeObservable ω incident
+  /-- `none` is unobserved death time; a set records partial information. -/
+  deathTimeInformation : Ω → Incident → Option (Set ℝ)
+  deathTimeInformation_sound : ∀ ω incident candidates,
+    deathTimeInformation ω incident = some candidates →
+      birthTime ω incident + duration ω incident ∈ candidates
   reportIncident : Report → Incident
-  reportTime : Report → ℝ
-  report_during_active_window : ∀ report,
-    birthTime (reportIncident report) ≤ reportTime report ∧
-      reportTime report ≤
-        birthTime (reportIncident report) + duration (reportIncident report)
+  reportTime : Ω → Report → ℝ
+  report_during_active_window : ∀ ω report,
+    birthTime ω (reportIncident report) ≤ reportTime ω report ∧
+      reportTime ω report ≤
+        birthTime ω (reportIncident report) + duration ω (reportIncident report)
 
 /--
 The source's duration law is a probability density on nonnegative durations.

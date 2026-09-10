@@ -30,7 +30,6 @@
         "validator": "context-isolated JGS source-to-map definition reconciliation",
         "validator_type": "agent"
       },
-      "source_status": "formalization_pending",
       "statement": "The source defines beta-star as the supremum of exponents at least one for which the powered-score product condition holds."
     },
     "claim_equivalence": {
@@ -66,7 +65,6 @@
       "source_kind": "claim",
       "source_location": "audit/cited publication:1279-1282",
       "source_note": "Named appendix claim retained as an ordinary source claim pending its source-facing Spec.",
-      "source_status": "formalization_pending",
       "statement": "Claim equivalence reduces equal two-population markets to normalized two-user markets with rescaled cost.",
       "support_lean_declarations": [
         "JGS23SupplySideRecommenderSystems.claimEquivalenceSpec"
@@ -120,7 +118,7 @@
       ],
       "source_kind": "claim",
       "source_location": "audit/cited publication:679-693",
-      "source_note": "Corrected target: score-level nullness and the uniform-tie payoff are explicit, rather than silently replacing weak score probabilities by CDF values.",
+      "source_note": "Corrected target: score-level nullness and the uniform-tie payoff are explicit. For the source's continuous proper norm-power model, source Nash now derives the complete weak-CDF C1 direction, including support preimages and fibre minima. The converse remains visibly tie-aware because the literal C1--C3 sufficient direction has a source-domain atomic counterexample.",
       "source_status": "corrected",
       "statement": "Claim necessarysuff gives necessary and sufficient equilibrium conditions C1--C3 in the reparameterized score model.",
       "support_lean_declarations": [
@@ -147,13 +145,13 @@
         "archival_equivalence_claimed": false,
         "archival_source_locator": "audit/cited publication:486-493",
         "archival_source_quote_sha256": "bafea91c3a29e052cf0119ce32c93e79e6035255b60ca6934015004c1beb2bc7",
-        "corrected_target_review_sha256": "4617854f40edd384f8e8804d43347b624aea394e9b554706a6c84f2b988b6a50",
-        "corrected_target_sha256": "878da72cf9f86d159b008ffd0adff997963f8dc61eb688a0e92b1bdfa3acbb1b",
+        "corrected_target_review_sha256": "5640f4f06974ce0aeb0816e14eceb552db09f927b9b90ba78f34a44bfa99fc54",
+        "corrected_target_sha256": "b1b4b6f8f6e6f137b65e54af19dcc655b79ad05ffeeef2b4623c40dc0d5270a9",
         "governing_defect_ids": [
           "JGS23-BETASTAR-COROLLARY-ENDPOINT-01"
         ],
         "schema": 1,
-        "statement": "For a fixed exponent strictly above the finite logarithmic threshold, nonnegative nonzero users under compact perturbation-continuous norm regularity cannot have a source symmetric equilibrium with one nonzero support genre."
+        "statement": "For normalized nonnegative users with compact source-norm sublevels and score-one unit witnesses, the source product-condition beta-star is at most one when Z=1 and at most the displayed logarithmic threshold when 1<Z<N; above the finite threshold no compact regular source symmetric equilibrium has one nonzero support genre."
       },
       "coverage_status": "corrected_source_statement",
       "lean_declarations": [
@@ -192,7 +190,7 @@
       ],
       "source_kind": "corollary",
       "source_location": "audit/cited publication:486-493",
-      "source_note": "Corrected target: the source defines beta-star only as a supremum and its displayed dual-norm notation is malformed. The checked statement gives the actual fixed-exponent exclusion under the compact regularity and dual-witness assumptions used by the proof route.",
+      "source_note": "The finite source beta-star bounds are checked directly by compact source attainment and strict convex-hull product gaps. The source's Z=N prose means an unbounded/extended-real endpoint, whereas the printed real quotient has zero denominator there and is deliberately excluded.",
       "source_status": "corrected",
       "statement": "Corollary beta gives the stated logarithmic upper bound on beta-star from the dual-norm aggregate Z.",
       "support_lean_declarations": [
@@ -219,13 +217,13 @@
         "archival_equivalence_claimed": false,
         "archival_source_locator": "audit/cited publication:459-462",
         "archival_source_quote_sha256": "3a2dfed152547dd6ead7f97bc64dd7401b479fdbae15987fc846da8e5bbabd4b",
-        "corrected_target_review_sha256": "b680b5f4d38df824aa88bd5aba07bf818ba1d98fbf61e19372b2bdbfff8e98a6",
-        "corrected_target_sha256": "5a961688fdbe70e0c551c74ae26ffe54747b1867c0409ab3374b7884681afab7",
+        "corrected_target_review_sha256": "2f52138c96cc7e7d635cdbf6be97a5fed557964a0b3cee7367f4ed27c748235f",
+        "corrected_target_sha256": "7cbcc8e0a4609f06807e54ce7a078917f39692e008a0c7bd228af8c2f35d3d9e",
         "governing_defect_ids": [
           "JGS23-BETASTAR-COROLLARY-ENDPOINT-01"
         ],
         "schema": 1,
-        "statement": "For nonnegative nonzero users and a compact convex source norm, beta equal to one has an explicit positive-score single-ray symmetric mixed equilibrium."
+        "statement": "For nonnegative nonzero users and a compact convex source norm, beta equal to one belongs to the source product-condition beta-star set and has an explicit positive-score single-ray symmetric mixed equilibrium."
       },
       "coverage_status": "corrected_source_statement",
       "lean_declarations": [
@@ -264,7 +262,7 @@
       ],
       "source_kind": "corollary",
       "source_location": "audit/cited publication:459-462",
-      "source_note": "Corrected target: the concrete beta-one conclusion replaces an unproved beta-star endpoint package and exposes its compact-convex regularity domain.",
+      "source_note": "The beta-star lower-bound conclusion is now checked directly from membership of exponent one in the source product-condition set. The compact-convex regularity domain is explicit.",
       "source_status": "corrected",
       "statement": "Corollary betaone states beta-star is at least one and a single-genre equilibrium exists at beta equal to one.",
       "support_lean_declarations": [
@@ -277,13 +275,13 @@
         "archival_equivalence_claimed": false,
         "archival_source_locator": "audit/cited publication:470-473",
         "archival_source_quote_sha256": "5d6e342e308799cd53f6e7df305d9f28c7b940ac141599a355e236cf6aa7591d",
-        "corrected_target_review_sha256": "307d60ca84725ce8b768e75af460a2cdeaded47ee876242cf37f77d49cac3c8c",
-        "corrected_target_sha256": "e41ccd0c41251c4063ee9585a4347c719437e4db739577a372b55a827aab2f9b",
+        "corrected_target_review_sha256": "111aed50b85d87171d430ca44f25648b83438e4005683d2c686d147a44a5115f",
+        "corrected_target_sha256": "933653794febf9bd0d28ad0618d82139785af9a71dc5020d458d33897cedb2f3",
         "governing_defect_ids": [
           "JGS23-BETASTAR-COROLLARY-ENDPOINT-01"
         ],
         "schema": 1,
-        "statement": "For an Lq source norm, nonnegative nonzero users, and every positive beta at most q with q at least one, a singleton nonzero-support-genre symmetric mixed equilibrium exists."
+        "statement": "For an Lq source norm, nonnegative nonzero users, and q at least one, the source product-condition beta-star is at least q; a singleton nonzero-support-genre symmetric mixed equilibrium exists for every positive beta at most q. For at least two standard-basis users, beta-star equals q."
       },
       "coverage_status": "corrected_source_statement",
       "lean_declarations": [
@@ -319,7 +317,7 @@
       ],
       "source_kind": "corollary",
       "source_location": "audit/cited publication:470-473",
-      "source_note": "Corrected target: the finite-exponent Lq construction replaces the source beta-star shorthand and makes the actual user assumptions visible.",
+      "source_note": "The beta-star lower-bound conclusion is checked directly at exponent q. Standard-basis sharpness is also checked for nontrivial dimension. The archival statement needs that qualification: with one basis user the powered score image is an interval at every exponent and beta-star is unbounded, not q.",
       "source_status": "corrected",
       "statement": "Corollary betap gives the Lq lower threshold and the standard-basis equality case.",
       "support_lean_declarations": [
@@ -476,13 +474,13 @@
         "archival_equivalence_claimed": false,
         "archival_source_locator": "audit/cited publication:548-554",
         "archival_source_quote_sha256": "fba9d694e6da7a70e424b0f1924b24a139365a714f360e0ba210c4c21a4c27f7",
-        "corrected_target_review_sha256": "a5d5396cad6f39ffd16e50e09110d8f667b8b128e5c1ac4ec9281a0108001ada",
-        "corrected_target_sha256": "005c8dd588cb3f51c2c905369360b58d43b6a8a2ca72a087b95134f7106189a7",
+        "corrected_target_review_sha256": "3ee6c25f79d74f5566a7f0fb6dba43fb45b011d64c65c5c6ab8e29cd72dcb62f",
+        "corrected_target_sha256": "2434f66e41685f7e6849fbf8c6845d9673e11fa0ba2b5a59c39b549be9425d9d",
         "governing_defect_ids": [
           "JGS23-ZERO-GENRE-NORMALIZATION-01"
         ],
         "schema": 1,
-        "statement": "For two equal nonzero user populations at angle theta with L2 power cost, a zero-safe single-genre symmetric equilibrium exists exactly when beta is at most the two-user phase threshold."
+        "statement": "For two equal nonzero user populations at angle theta with L2 power cost, the source product-condition beta-star is exactly the two-user phase threshold; the accompanying zero-safe single-genre symmetric-equilibrium condition holds exactly at exponents below that threshold."
       },
       "coverage_status": "corrected_source_statement",
       "lean_declarations": [
@@ -518,7 +516,7 @@
       ],
       "source_kind": "corollary",
       "source_location": "audit/cited publication:477-481",
-      "source_note": "Corrected target: the source genre is interpreted through nonzero support directions; the threshold conclusion is otherwise retained.",
+      "source_note": "The beta-star equality is literal for the source product-condition definition. The accompanying equilibrium iff is corrected only by interpreting the source genre through nonzero support directions.",
       "source_status": "corrected",
       "statement": "Corollary 2users gives the equal-two-population single-genre threshold characterization.",
       "support_lean_declarations": [
@@ -558,7 +556,6 @@
       "source_kind": "corollary",
       "source_location": "audit/cited publication:727-730",
       "source_note": "Named main-text corollary retained pending its source-facing Spec.",
-      "source_status": "formalization_pending",
       "statement": "Corollary 2usersprofit states the Ptwo equilibrium profit is one minus two divided by beta.",
       "support_lean_declarations": [
         "JGS23SupplySideRecommenderSystems.corollaryTwoUsersProfitSpec"
@@ -648,7 +645,6 @@
         "validator": "context-isolated JGS source-to-map definition reconciliation",
         "validator_type": "agent"
       },
-      "source_status": "formalization_pending",
       "statement": "The source defines the common symmetric-equilibrium profit and the geometric alignment quantity used in its positive-profit sufficient condition."
     },
     "example_one_dimensional_setup": {
@@ -671,14 +667,14 @@
         "archival_equivalence_claimed": false,
         "archival_source_locator": "audit/cited publication:346-349",
         "archival_source_quote_sha256": "9faa0d5ac8320eb71d35a6632e84d3cf3277401731a79ed8c2cb7d88f15e4b32",
-        "corrected_target_review_sha256": "cf62cf2f3554665e0753f9bfdc3e28e1ce971cb68f6076ab5d7808d93857ef5c",
-        "corrected_target_sha256": "cd4667287d288727a627d1006b2588161f0681590142259f3f0a40a4a9238752",
+        "corrected_target_review_sha256": "3b3b899b4efaebf5b94ef34487441a916f4dbc8a48046e88fb372c6b555a0f64",
+        "corrected_target_sha256": "c1cc8d049defc76db157085e648e000d7ddf77cfdbae8ca47621367a46d2b4e8",
         "governing_defect_ids": [
           "JGS23-ONEPOPULATION-CDF-EXPONENT-01",
           "JGS23-ONE-DIMENSIONAL-UNIQUENESS-01"
         ],
         "schema": 1,
-        "statement": "For a one-dimensional homogeneous population, every nonnegative unit genre maximizing the single user's score yields the checked single-ray symmetric equilibrium and corrected radial CDF."
+        "statement": "For the literal one-user, one-dimensional Euclidean source model, every symmetric mixed equilibrium equals the displayed single-ray law; its power-law CDF is therefore unique. The generic unit-genre construction remains available for the homogeneous one-dimensional specialization."
       },
       "coverage_status": "corrected_source_statement",
       "lean_declarations": [
@@ -718,7 +714,7 @@
       ],
       "source_kind": "example",
       "source_location": "audit/cited publication:345-349",
-      "source_note": "Corrected target: the checked endpoint is the explicit one-dimensional specialization of the homogeneous ray-law construction, with its norm, score, and CDF hypotheses visible. The archival uniqueness assertion is not silently credited by this construction and remains recorded as a separate unresolved strengthening.",
+      "source_note": "The checked source-specific uniqueness theorem derives the unique law from the actual symmetric Nash condition. The generic construction retains explicit unit-genre, score-maximization, norm-measurability, and clipped-CDF hypotheses.",
       "source_status": "corrected",
       "statement": "Example 1-dimensional setup asserts a unique one-user one-dimensional equilibrium with a displayed power-law CDF.",
       "support_lean_declarations": [
@@ -760,7 +756,6 @@
       "source_kind": "model",
       "source_location": "audit/cited publication:265-285",
       "source_note": "Governing source model for every equilibrium and profit claim; a semantic declaration route will be added with the source-facing Specs.",
-      "source_status": "formalization_pending",
       "statement": "The market has finitely many nonnegative user and content vectors, hard-max personalized recommendations with uniform tie sharing, and producer payoff equal to assigned-user mass minus an arbitrary-norm power cost."
     },
     "infinite_producer_model": {
@@ -952,14 +947,14 @@
         "archival_equivalence_claimed": false,
         "archival_source_locator": "audit/cited publication:1318-1333",
         "archival_source_quote_sha256": "542f716f77ee78e0c591ce2a727ed0ce5a34ff1f0fca11242b96002120753117",
-        "corrected_target_review_sha256": "7c2887fb312282f84b60e006db4e34ed42daaa8a0cf3a8721d5ff3ce491b3258",
-        "corrected_target_sha256": "eb8612605c0d02af88db479e26f49aa8a1de472381f030dc62fc2c094ce6cf72",
+        "corrected_target_review_sha256": "a99602dfe3e09de710aeb34f172c75f3e09df38f9540279b3584fcd5e0ff93e2",
+        "corrected_target_sha256": "4d441d8c0b6fa8ab126a7c93adc3eebe5630d8ab85f925396a95df4cf8d316b2",
         "governing_defect_ids": [
           "JGS23-TWO-USER-CALCULUS-DOMAIN-01",
           "JGS23-INDUCED-COST-GENERAL-DIMENSION-01"
         ],
         "schema": 1,
-        "statement": "At a canonical two-user score pair where the power-cost derivative is defined, both first partial derivatives equal the displayed induced-cost formulas."
+        "statement": "At a canonical two-user score pair where the power-cost derivative is defined, both first partial derivatives equal the displayed induced-cost formulas; at every nonzero strictly interior C1 support value of a source symmetric Nash law with absolutely continuous score laws and support-local C2 raw score CDFs, those formulas equal the two iid maximum-score CDF derivatives."
       },
       "coverage_status": "corrected_source_statement",
       "lean_declarations": [
@@ -996,7 +991,7 @@
       ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:1318-1343",
-      "source_note": "Corrected target: the archival statement omits the derivative-base condition and silently identifies objective derivatives with marginal CDF densities. The checked target proves the local induced-cost derivatives; the equilibrium-density identification remains an explicit separate premise where used.",
+      "source_note": "Corrected target: the archival statement omits the derivative-base condition, C1/Nash context, score-law regularity, and the strict score-feasibility needed for an ambient Fermat identity. The checked target proves both local induced-cost derivatives and the resulting pointwise maximum-score CDF derivative identities under those visible conditions.",
       "source_status": "corrected",
       "statement": "Lemma FOC gives the stated first-order and marginal-density formulas for the two-user score model.",
       "support_lean_declarations": [
@@ -1108,9 +1103,9 @@
       ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:958-963",
-      "source_note": "Corrected target: linear-span membership does not by itself imply positive scores. The checked conclusion is the positive-score fact actually needed downstream, derived from source-Nash score-level perturbations under explicit nonzero-user and continuity assumptions.",
+      "source_note": "Corrected target: the literal span assertion is refuted by the checked source-domain l1 singleton-equilibrium witness. The checked conclusion is the positive-score fact actually needed downstream, derived from source-Nash score-level perturbations under explicit nonzero-user and continuity assumptions.",
       "source_status": "corrected",
-      "statement": "Lemma nonzero states the claimed span and positive-score properties of a single-genre direction.",
+      "statement": "Lemma nonzero claims span membership and positive user scores for a singleton equilibrium genre.",
       "support_lean_declarations": [
         "JGS23SupplySideRecommenderSystems.lemmaNonzeroSpec"
       ]
@@ -1341,15 +1336,15 @@
       "claim_bearing": true,
       "corrected_target": {
         "archival_equivalence_claimed": false,
-        "archival_source_locator": "audit/cited publication:1348-1355",
-        "archival_source_quote_sha256": "8f0358a2d5e83c0f167db3d1706775dd6f668d354d815aba395ff3b7ad726e56",
-        "corrected_target_review_sha256": "c1962cae133fe623054d194da848350fe47489a64547026e60792c00d4cdffc9",
-        "corrected_target_sha256": "2b5556c9c5cdc36f9d99d801d926ce6bac0a5e4d141d78590a27658a87fc0ed5",
+        "archival_source_locator": "audit/cited publication:1351-1355",
+        "archival_source_quote_sha256": "0786d4303495481a3eae65c18c1e26c46d0c90c80582e4c10ab5d0f42d849c60",
+        "corrected_target_review_sha256": "30f13903b94be361ed4b2d532182bab1f268d71f450fab64d2ef624c47d53b0e",
+        "corrected_target_sha256": "79924f6262646a4e976e650b0e0edf51497e08d0ae79a4fe56c7b516ae93ccb3",
         "governing_defect_ids": [
-          "JGS23-TWO-USER-CALCULUS-DOMAIN-01"
+          "JGS23-INDUCED-COST-GENERAL-DIMENSION-01"
         ],
         "schema": 1,
-        "statement": "For a supplied local support graph, negative-semidefinite objective second-order condition, and both differentiated FOC identities, the graph slope times the two-user second-derivative bracket is nonpositive."
+        "statement": "For two nonnegative unit users in the canonical two-dimensional score realization, a differentiable C1 support curve in the canonical nonnegative score cone has slope times the displayed induced-cost bracket at most zero."
       },
       "coverage_status": "corrected_source_statement",
       "lean_declarations": [
@@ -1381,13 +1376,13 @@
         }
       ],
       "source_defect_ids": [
-        "JGS23-TWO-USER-CALCULUS-DOMAIN-01"
+        "JGS23-INDUCED-COST-GENERAL-DIMENSION-01"
       ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:1351-1355",
-      "source_note": "Corrected target: C1--C3 as stated do not by themselves supply a differentiable graph, density derivatives, or the displayed SOC matrix; the source also has a bound-variable typo in its curve display. The checked local implication retains the mathematical slope-sign conclusion with these requirements stated.",
+      "source_note": "Corrected target: the source states the slope restriction for arbitrary-dimensional user vectors, but its prior induced-cost equality fails on score fibres with unused coordinates. The checked result is the same slope restriction in the canonical two-dimensional nonnegative score realization, where the induced-cost bracket is justified.",
       "source_status": "corrected",
-      "statement": "Lemma regionscolor restricts a support-curve slope according to the induced-cost mixed-partial sign.",
+      "statement": "Lemma regionscolor restricts a differentiable C1 support-curve slope according to the induced-cost mixed-partial sign.",
       "support_lean_declarations": [
         "JGS23SupplySideRecommenderSystems.lemmaRegionsColorSpec"
       ]
@@ -1482,7 +1477,6 @@
       "source_kind": "lemma",
       "source_location": "audit/cited publication:1906-1911",
       "source_note": "Named appendix lemma retained as an ordinary source claim pending its source-facing Spec.",
-      "source_status": "formalization_pending",
       "statement": "Lemma standardbasismax identifies the maximizers of the stated two-coordinate objective.",
       "support_lean_declarations": [
         "JGS23SupplySideRecommenderSystems.lemmaStandardBasisMaxSpec"
@@ -1572,7 +1566,6 @@
         "validator": "context-isolated JGS source-to-map definition reconciliation",
         "validator_type": "agent"
       },
-      "source_status": "formalization_pending",
       "statement": "The source defines the user matrix, its nonnegative unit-ball image, coordinatewise beta powers, and the convex hull used in the product condition."
     },
     "proposition_atom": {
@@ -1608,7 +1601,6 @@
       "source_kind": "proposition",
       "source_location": "audit/cited publication:311-314",
       "source_note": "Named main-text proposition retained pending its source-facing Spec.",
-      "source_status": "formalization_pending",
       "statement": "Proposition atom: every symmetric mixed equilibrium is atomless.",
       "support_lean_declarations": [
         "JGS23SupplySideRecommenderSystems.propositionAtomSpec"
@@ -1664,7 +1656,6 @@
       "source_kind": "proposition",
       "source_location": "audit/cited publication:305-308",
       "source_note": "Named main-text proposition retained pending its source-facing Spec.",
-      "source_status": "formalization_pending",
       "statement": "Proposition existence: for any user set and beta at least one, a symmetric mixed equilibrium exists.",
       "support_lean_declarations": [
         "JGS23SupplySideRecommenderSystems.propositionExistenceSpec"
@@ -1758,7 +1749,6 @@
       "source_kind": "proposition",
       "source_location": "audit/cited publication:635-642",
       "source_note": "Named main-text proposition retained pending its source-facing Spec.",
-      "source_status": "formalization_pending",
       "statement": "Proposition finiteP gives the stated closed-form multi-genre equilibrium for two orthogonal users, beta two, and any finite producer count.",
       "support_lean_declarations": [
         "JGS23SupplySideRecommenderSystems.propositionFinitePSpec"
@@ -1797,7 +1787,6 @@
       "source_kind": "proposition",
       "source_location": "audit/cited publication:616-619",
       "source_note": "Named main-text proposition retained pending its source-facing Spec.",
-      "source_status": "formalization_pending",
       "statement": "Proposition Ptwo gives the stated quarter-circle equilibrium for two orthogonal users, two producers, and beta at least two.",
       "support_lean_declarations": [
         "JGS23SupplySideRecommenderSystems.propositionPTwoSpec"
@@ -1853,7 +1842,6 @@
       "source_kind": "proposition",
       "source_location": "audit/cited publication:296-299",
       "source_note": "Named main-text proposition retained pending its source-facing Spec.",
-      "source_status": "formalization_pending",
       "statement": "Proposition pure: for any user set and beta at least one, no pure-strategy equilibrium exists.",
       "support_lean_declarations": [
         "JGS23SupplySideRecommenderSystems.propositionPureSpec"
@@ -1977,13 +1965,13 @@
         "archival_equivalence_claimed": false,
         "archival_source_locator": "audit/cited publication:734-742",
         "archival_source_quote_sha256": "5fad0c90ee88dea18ea7c95833befa622886fd560081d4eb58e8381bd615e276",
-        "corrected_target_review_sha256": "548a5a84e2da5f7f6f283bd8a9e2b6a24522db13e5cd4d01c0cc90455a81784b",
-        "corrected_target_sha256": "0b7a506011bea0b0d3244f1521f3ef4bb65f1a50fb39383e7994a3e15407ec08",
+        "corrected_target_review_sha256": "7917f1247a0bdb11e8aeff0e54ac74d3d536360057c704a273848812ef6a6234",
+        "corrected_target_sha256": "7b18155299e4edccc56f62a4d4b72817fdc78d04216bb0a677f2f6193b8e0dc0",
         "governing_defect_ids": [
           "JGS23-UTILITY-PROFIT-BRIDGE-01"
         ],
         "schema": 1,
-        "statement": "For the normalized Euclidean source game, the displayed strict geometric Q bound implies that every support action has strictly positive common equilibrium payoff."
+        "statement": "For the normalized Euclidean source game, the displayed strict geometric Q bound implies strictly positive common expected equilibrium profit."
       },
       "coverage_status": "corrected_source_statement",
       "lean_declarations": [
@@ -2019,7 +2007,7 @@
       ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:734-742",
-      "source_note": "Corrected target: the checked theorem makes the L2 and nonzero-user normalization domain explicit and concludes positive support payoff, which is the direct common-payoff statement of source Nash. Identifying that number with the source's expected-profit notation requires a separately stated integrability bridge.",
+      "source_note": "Corrected target: the checked theorem makes the L2 and nonzero-user normalization domain explicit. Source Nash supplies the norm-cap and payoff-integrability bridge internally, so the endpoint now concludes the source's expected-profit expression itself.",
       "source_status": "corrected",
       "statement": "Proposition utility states that the geometric condition implies every symmetric equilibrium has strictly positive profit.",
       "support_lean_declarations": [
@@ -2046,14 +2034,14 @@
         "archival_equivalence_claimed": false,
         "archival_source_locator": "audit/cited publication:748-990",
         "archival_source_quote_sha256": "da48d3aff523ef14ca51ac5a8f3ce4692d99a1ec6d1d372ec4acf0b75a3e9885",
-        "corrected_target_review_sha256": "641143ba4f7422ae6761d003c2b62054a03e641eccc2de2e21291bd0754eeeda",
-        "corrected_target_sha256": "7598eb4b29bb3e6351f8f21e654b5e5f3774902002b46d770c2bf290888dc41e",
+        "corrected_target_review_sha256": "372da99fdd33975ccfbcb0af1cae1f1e86d70acc45b37edd1c945d4021911a57",
+        "corrected_target_sha256": "e3fec2891ea268a4ee6c2b8144846b5aefcec9a828f1fbdb611415fde25cb23a",
         "governing_defect_ids": [
           "JGS23-SINGLE-GENRE-PROFIT-REGULARITY-01",
           "JGS23-ZERO-GENRE-NORMALIZATION-01"
         ],
         "schema": 1,
-        "statement": "Under the explicit source-Nash, atomlessness, singleton-nonzero-genre, positive-score, measurable proper-norm, and compactness hypotheses, every support action has zero actual uniform-tie payoff."
+        "statement": "Under the explicit source-Nash, atomlessness, singleton-nonzero-genre, positive-score, measurable proper-norm, and compactness hypotheses, the common expected equilibrium profit is zero."
       },
       "coverage_status": "corrected_source_statement",
       "lean_declarations": [
@@ -2093,7 +2081,7 @@
       ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:749-752",
-      "source_note": "Corrected target: the source proof uses atomlessness, zero support, positive genre scores, and norm-topology facts without stating them, and it moves from support-action payoff to expected profit without an explicit integrability bridge. The checked endpoint retains the zero-payoff economic content at the direct support-action level with all used hypotheses exposed.",
+      "source_note": "Corrected target: the source proof uses atomlessness, zero support, positive genre scores, and norm-topology facts without stating them. The checked endpoint derives the required integrability bridge from source Nash and proves the source's common expected-profit conclusion under the exposed regularity domain.",
       "source_status": "corrected",
       "statement": "Proposition zeroutilitysinglegenre states that every single-genre equilibrium has zero profit.",
       "support_lean_declarations": [
@@ -2265,7 +2253,6 @@
       "source_kind": "model",
       "source_location": "audit/cited publication:291-318",
       "source_note": "This source definition governs the pure, existence, atomlessness, genre, and profit results; its pointwise support-action refinement must remain visible.",
-      "source_status": "formalization_pending",
       "statement": "Mixed strategies are probability measures over nonnegative content, and a symmetric equilibrium requires every support action to be a pure best response to independently sampled opponents."
     },
     "theorem_infinitegenre": {
@@ -2384,14 +2371,14 @@
         "archival_equivalence_claimed": false,
         "archival_source_locator": "audit/cited publication:586-602",
         "archival_source_quote_sha256": "ecf8ba72187b08e1d0c6a97915b17c7212f188cfa6483aef75d0e677b73d613d",
-        "corrected_target_review_sha256": "e1c23f388e3e6256320b6326ecbc845369919d7b680ecbe09ea20a46c9e15741",
-        "corrected_target_sha256": "40544127834d73b57b8d14077af9463706ff16ed929c89ae47503277e138daad",
+        "corrected_target_review_sha256": "3626bf132b3955f4bb54bf74d431a4e935ad31462dc9bfe3e74d0789e019f1af",
+        "corrected_target_sha256": "b9b0d799b25a389df56c1fdba700ecd59b6bc3520683f791e2923a5db494a2ab",
         "governing_defect_ids": [
           "JGS23-ZERO-GENRE-NORMALIZATION-01",
           "JGS23-PHASE-TRANSITION-REGULARITY-01"
         ],
         "schema": 1,
-        "statement": "For the canonical two-user L2 model with absolutely continuous score laws and twice differentiable score CDFs on support, beta below the phase threshold forces one nonzero support genre, while beta above it excludes every finite conditional norm-law genre representation."
+        "statement": "For arbitrary nonzero nonnegative equal-population two-user L2 markets with absolutely continuous score laws and twice differentiable score CDFs on support, beta below the phase threshold forces one nonzero support genre, while beta above it excludes every finite conditional norm-law genre representation."
       },
       "coverage_status": "corrected_source_statement",
       "lean_declarations": [
@@ -2428,7 +2415,7 @@
       ],
       "source_kind": "theorem",
       "source_location": "audit/cited publication:590-597",
-      "source_note": "Corrected target: the lower and upper phase implications are checked with the regularity and finite-genre representation hypotheses their proof uses.",
+      "source_note": "Corrected target: the lower and upper phase implications are checked in the literal arbitrary-user equal-population market, with the regularity and finite-genre representation hypotheses their proof uses.",
       "source_status": "corrected",
       "statement": "Theorem phasetransition gives the source phase transition for two equal populations.",
       "support_lean_declarations": [
@@ -2532,7 +2519,6 @@
       "source_kind": "model",
       "source_location": "audit/cited publication:571-573; audit/cited publication:609-612",
       "source_note": "This model governs the support, phase-transition, and closed-form two-user claims.",
-      "source_status": "formalization_pending",
       "statement": "The two-population analysis assumes equal populations of two linearly independent nonnegative users and L2 power cost."
     }
   },
@@ -2578,8 +2564,8 @@
         "id": "one_dimensional_example",
         "presentation_label": "example:1d",
         "schema": 1,
-        "scope_disposition": "deep_audit_material",
-        "semantic_basis": "The source presents this as an example rather than a named theorem, proposition, lemma, corollary, claim, or definition. Its CDF is audited as supporting context for the named one-population corollary.",
+        "scope_disposition": "material_named_claim",
+        "semantic_basis": "The labelled example asserts a unique symmetric equilibrium and its CDF, so it is a material theoretical claim under the maintainer's selected full-theoretical-results scope. Its relation to the one-population corollary is supporting context, but does not erase its own stated uniqueness conclusion.",
         "source_anchor": {
           "line_end": 349,
           "line_start": 346,
@@ -2688,9 +2674,9 @@
     ],
     "complete": true,
     "discovered_candidate_presentation_sha256": "4da799d3533a53d1616b39bd8aca2214880da5294bc61bc23a58e95ecfd35958",
-    "discovered_named_result_sha256": "6be2e52b5c64dddbbaa7b5c61e04a05b37eb65954643f0e30fc2e9865e34f883",
+    "discovered_named_result_sha256": "d12347fdabf1e32f7951813cb2e3e4194068d004097c4c7a64a7fc166556b839",
     "discovered_prose_definition_sha256": "61a6d7e3af7f1605db6db2a17b617791627bd121f2ad446ecdbf6958d659edb7",
-    "method": "A context-isolated reviewer read the complete byte-pinned arXiv TeX surface before consulting Lean, maps, status, reports, or proof artifacts. The reviewer enumerated all named theorem-like presentations, governing prose models, and holistic deep-audit candidates. Every labelled theorem, proposition, lemma, corollary, claim, and definition is retained as an ordinary source obligation; examples and unlabelled supporting prose are retained in the explicit deep-audit candidate ledger.",
+    "method": "A context-isolated reviewer read the complete byte-pinned arXiv TeX surface before consulting Lean, maps, status, reports, or proof artifacts. The reviewer enumerated all named theorem-like presentations, governing prose models, and holistic deep-audit candidates. Every labelled theorem, proposition, lemma, corollary, claim, and definition is retained as an ordinary source obligation. The labelled one-dimensional equilibrium example is also retained as a material named claim under the maintainer's full-theoretical-results scope; other examples and unlabelled supporting prose remain in the explicit deep-audit candidate ledger.",
     "prose_definition_presentations": [
       {
         "defined_entity_kind": "object",

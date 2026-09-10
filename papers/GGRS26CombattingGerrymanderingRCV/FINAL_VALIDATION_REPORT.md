@@ -1,4 +1,4 @@
-# Final Validation Report: GGRS26 Combatting Gerrymandering with Ranked Choice Voting
+# Final Validation Report: Combatting Gerrymandering with Ranked Choice Voting: An Experimental Analysis of Multi-member Districts in the United States
 
 Updated: 2026-09-02
 

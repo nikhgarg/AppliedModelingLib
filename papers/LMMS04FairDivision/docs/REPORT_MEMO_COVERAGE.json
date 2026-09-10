@@ -1,0 +1,171 @@
+{
+  "all_selected_semantic_review_sha256": "fd34ee99ffcdf5a5b5fd4776001e9d4040d5ce4c71ea5fc3210c3ba6d883d26c",
+  "items": {
+    "defect/LMMS04-LEMMA24-ENDPOINT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "lemma-24-choosing-a-progressing-endpoint",
+      "memo_heading": "Lemma 2.4: choosing a progressing endpoint",
+      "memo_sha256": "b45ce5818a0bcd5b54a2b5bbec426b3d8b0aa01d3ad23bdd0821a57541ffdf62",
+      "report_home": 4,
+      "source_reading": "Lemma 2.4 claims a finite partition of [0,1] into pieces of value at most alpha for every player. Its proof says to choose the minimum x whose prefix [0,x] has value at most alpha for every player."
+    }
+  },
+  "paper": "LMMS04FairDivision",
+  "report_inventory_complete": true,
+  "report_sha256": "d4566ae408231a9f69185a7792cd3eb3c1f11a55bfca05e099c20b30806b51a1",
+  "result_table": {
+    "complete": true,
+    "results": {
+      "lemma2_2_acyclic_reduction": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 2.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 2.2",
+            "row_sha256": "7e5b5acada28d9f171477fe00680c1c24ffbc9805e221a0f0d3dc77c1194c55d"
+          }
+        ]
+      },
+      "theorem2_1_bounded_envy_allocation_exists": {
+        "grouping_reason": "The report separates the selected existence clause from the deferred runtime clause.",
+        "numbering": "numbered",
+        "printed_label": "Theorem 2.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2.1 existence",
+            "row_sha256": "7e5b5acada28d9f171477fe00680c1c24ffbc9805e221a0f0d3dc77c1194c55d"
+          }
+        ]
+      },
+      "theorem2_3_real_interval_supported_atom_bound": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2.3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2.3",
+            "row_sha256": "5bad8a2e49ec08e5adac76b45e4e1807a1fe3fcc23ac2ff62a774e17c0079fdd"
+          }
+        ]
+      },
+      "theorem4_1_source_minimum_envy_not_truthful": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 4.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 4.1",
+            "row_sha256": "7e5b5acada28d9f171477fe00680c1c24ffbc9805e221a0f0d3dc77c1194c55d"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "58e1d18965fdea3dbfb702a4d69b0454a22a271f4c75d4b13900d2fb6c79a568": {
+        "explanation_keys": [],
+        "supplemental_reason": "The runtime clause is explicitly deferred and is not a separately selected formalized result."
+      },
+      "5bad8a2e49ec08e5adac76b45e4e1807a1fe3fcc23ac2ff62a774e17c0079fdd": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "7c2b21f8263cfdcafc214e4be9f65e853f199695d362ed11b37f883960478107": {
+        "explanation_keys": [],
+        "supplemental_reason": "The Section 3 theorems, claim, and lemma remain visible under the explicit partial-formalization scope exclusion and receive no selected-result credit."
+      },
+      "7e5b5acada28d9f171477fe00680c1c24ffbc9805e221a0f0d3dc77c1194c55d": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "ed246f69651d44d489a64e80be497efb78b86bd22ffb2309e5f255113229c22d": {
+        "explanation_keys": [],
+        "supplemental_reason": "Theorem 4.2 remains visible as a partial boundary: the independent uniform mechanism's truthfulness component is checked, while its explicitly excluded high-probability asymptotic envy-rate conclusion receives no selected-result credit."
+      }
+    },
+    "schema": 1,
+    "source_inventory": {
+      "discovered_named_result_sha256": "22198fd9d73273cd99a67a73a03f10dc7c6e9993c258689922c45f0c0e29d7a9",
+      "results": {
+        "lemma2_2_acyclic_reduction": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 174,
+              "line_start": 170,
+              "presentation": "text_heading",
+              "presentation_sha256": "90c527f2db33221c0be6deaac77ef0dc1542b9df3e7045d9c8420804e9030855",
+              "source_item_id": "lemma2_2_acyclic_reduction",
+              "source_label": "Lemma 2.2"
+            }
+          ],
+          "source_item_ids": [
+            "lemma2_2_acyclic_reduction"
+          ]
+        },
+        "theorem2_1_bounded_envy_allocation_exists": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 169,
+              "line_start": 161,
+              "presentation": "text_heading",
+              "presentation_sha256": "53d7bc3db24bbea9d19302ff324ddabf97027cb9479f6e32ca105ef2a20592bc",
+              "source_item_id": "theorem2_1_bounded_envy_allocation_exists",
+              "source_label": "Theorem 2.1"
+            }
+          ],
+          "source_item_ids": [
+            "theorem2_1_bounded_envy_allocation_exists"
+          ]
+        },
+        "theorem2_3_real_interval_supported_atom_bound": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 315,
+              "line_start": 313,
+              "presentation": "text_heading",
+              "presentation_sha256": "4247f96aa4f4ba228d429ebb1d6a0fc8bcab66a354f84959c2979ecb0e2a180e",
+              "source_item_id": "theorem2_3_real_interval_supported_atom_bound",
+              "source_label": "Theorem 2.3"
+            }
+          ],
+          "source_item_ids": [
+            "theorem2_3_real_interval_supported_atom_bound"
+          ]
+        },
+        "theorem4_1_source_minimum_envy_not_truthful": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 773,
+              "line_start": 770,
+              "presentation": "text_heading",
+              "presentation_sha256": "cd3b510af95cdcc66bddbae135c20b9d449337652fb686fde33a30ed4df23a7f",
+              "source_item_id": "theorem4_1_source_minimum_envy_not_truthful",
+              "source_label": "Theorem 4.1"
+            }
+          ],
+          "source_item_ids": [
+            "theorem4_1_source_minimum_envy_not_truthful",
+            "theorem4_1_source_not_truthful_envy_free_whenever_exists",
+            "theorem4_2_uniform_random_mechanism_truthful"
+          ]
+        }
+      },
+      "schema": 1,
+      "source_artifact_sha256": "0dd14a20e6667cff71dc2a8834df2d12649372127d07295c1ab6ad9b94516f14",
+      "source_format": "text"
+    },
+    "source_inventory_sha256": "8a9134c778a351817b8133849017a3e62b9a72b147869ceccd50774d7cfbf4e5"
+  },
+  "schema": 2,
+  "source_items_sha256": "574d8ca0908fb27452dd74232b5ffe91cc42712edcb0e082cadb9e680bb2fb05"
+}

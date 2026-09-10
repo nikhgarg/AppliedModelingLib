@@ -1,4 +1,4 @@
-# Final Validation Report: LMMS04 Fair Division
+# Final Validation Report: On Approximately Fair Allocations of Indivisible Goods
 
 Updated: 2026-09-05 (current-protocol terminal-document refresh)
 

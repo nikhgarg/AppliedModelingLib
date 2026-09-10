@@ -1,0 +1,83 @@
+{
+  "defects": [
+    {
+      "acceptance_condition": "The reviewed Lean source model gives the known types weights beta and beta and the cold-start type weight 1 - 2 beta, and the Theorem 4 source-facing results are compiled under the displayed beta domain.",
+      "affected_source_locators": [
+        "cited publication:444-452",
+        "cited publication:3884-3924"
+      ],
+      "defect_kind": "normalization_or_scaling",
+      "id": "GCG24-T4-POPULATION-MASS-01",
+      "repair_obligation": "Replace the printed new-user mass 1 - beta by 1 - 2 beta so that the three type masses sum to one, and retain beta < 1/2 when the cold-start type is required to have positive mass.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "Misestimation.lean:187-197 defines theorem4EstimatedReducedModel with weights beta, beta, and 1 - 2 * beta. The direct Theorem 4 PaperInterface results instantiate that model under the source parameter interval 1 / n < beta < 1 / 2.",
+      "source_claim": "The main-text setup assigns mass beta to each known opposing group and prints mass 1 - beta for the new-user group.",
+      "source_locator": "cited publication:444-452, Section 4 Theorem 4 population setup",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "This is a localized arithmetic typo in the main-text model description. The adjacent Appendix E equation and the Lean model use the normalized weights beta, beta, and 1 - 2 beta, under the same substantive beta domain. The advertised Theorem 4 endpoint is proved for that coherent source model, so the issue is a documented formalized note rather than a caveat or partial boundary."
+    },
+    {
+      "acceptance_condition": "Lean derives the corrected center value from the full Problem 11 optimality equations and checks an admissible source-domain witness for which the corrected value differs from the printed display.",
+      "affected_source_locators": [
+        "cited publication:3899-3924",
+        "cited publication:4290-4332"
+      ],
+      "defect_kind": "algebra_or_sign",
+      "id": "GCG24-E15-CENTER-MIRROR-01",
+      "repair_obligation": "Retain both mirrored known-type contributions in the center item equation. With q_t = 1/2 and the center symmetry, solve the full Problem 11 equation to obtain lambda = 1 / (1 + L_t), while leaving the noncenter formulas unchanged.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "appendix_e_lemma15_optimal_solution_full_closed_form proves all corrected coordinates for every global optimum. appendix_e_lemma15_printed_center_value_counterexample checks n = 3, beta = 2/5, q_t = 1/2, and L_t = 4/3: the full item equation gives 3/7, whereas the printed expression gives 9/25.",
+      "source_claim": "At the center pivot, the source displays lambda = (2 beta q_t + (1 - 2 beta)) / (1 + q_t L_t).",
+      "source_locator": "cited publication:4290-4332, Appendix E Lemma 15 center-pivot derivation and displayed value",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "This is an Appendix E display/derivation typo. Lean proves the corrected full characterization and a concrete counterexample to the printed value, while all substantive advertised main-text results and the full audited inventory remain directly closed. It is a documented post-formalization source note, not a paper-level caveat."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "model_proposition2_equality_defined_type_partition and proposition2_symmetric_optimum_exists",
+      "classification": "source-faithful equality-defined type convention",
+      "formal_meaning": "A declared type has one complete utility row, and equal complete utility rows have the same declared type. Lean's deterministic handling only totalizes the identifier of an equality class; the visible row-to-type premise retains the source convention.",
+      "id": "GCG24-P2-EQUALITY-DEFINED-TYPE-PARTITION-01",
+      "report_summary": "Settled source clarification: the deterministic tie rule is a totalization device, while the equality-defined partition remains explicit and source-faithful.",
+      "source_locator": "cited publication:312-316 and :1889-1890, Proposition 2 symmetric-policy setup and Appendix C type notation",
+      "why_needed": "The Proposition 2 source result is about symmetry under equality of utility rows. Review must not mistake deterministic type-label totalization for an additional economic assumption or replace the equality-defined partition by arbitrary label symmetry."
+    },
+    {
+      "checked_scope": "assumption_theorem4_displayed_reduced_models, assumption_theorem4_parameter_domain, theorem4_misestimation_tradeoff, and theorem4_misestimation_without_fairness_universal",
+      "classification": "approved localized correction of an internally inconsistent source model display",
+      "formal_meaning": "The two known opposing types have masses beta and beta, and the cold-start type has mass 1 - 2 beta. The source's printed 1 - beta cold-start mass is replaced only for this normalized three-type construction; beta < 1/2 keeps that mass positive.",
+      "id": "GCG24-T4-POPULATION-MASS-01",
+      "report_summary": "User-approved correction preserved from the recovered closeout authority: this is the recorded GCG24-T4-POPULATION-MASS-01 source defect, not a new assumption or a new correction.",
+      "source_locator": "cited publication:444-452 and :3884-3924, Theorem 4 population setup and Appendix E Problem 11 item equation",
+      "why_needed": "The main-text display does not normalize, whereas the adjacent Appendix E equation and Lean construction use the coherent normalized weights. Review therefore needs the settled correction when comparing the Theorem 4 model and its beta domain."
+    },
+    {
+      "checked_scope": "assumption_theorem4_parameter_domain and theorem4_misestimation_tradeoff",
+      "classification": "source-faithful positive-tolerance convention",
+      "formal_meaning": "Theorem 4’s “arbitrarily large” high-item-fairness conclusion ranges over positive tolerances eps. The source construction requires v2 < (v1 / n) * eps while v1 > v2 > ... > vn > 0 and n is positive; that displayed construction is possible only when 0 < eps.",
+      "id": "GCG24-T4-POSITIVE-TOLERANCE-01",
+      "report_summary": "For Theorem 4, “arbitrarily large” uses positive tolerances: the Appendix E construction requires v2 < (v1 / n) * eps with positive value entries, so 0 < eps.",
+      "source_locator": "cited publication:367-370, :470-476, and :3529-3556, Section 4 positive utility-vector model, Theorem 4 high-fairness statement, and Appendix E construction",
+      "why_needed": "The theorem display writes forall eps without printing its positivity domain. The cited Appendix E construction and the positive source value-vector model make the ordinary arbitrary-positive-tolerance reading explicit, matching Lean’s 0 < eps premise without adding an economic assumption."
+    }
+  ],
+  "paper": "GCG24UserItemFairness",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The normalized population weights of the two known opposing types and the cold-start type in the Theorem 4 construction.",
+      "source_locator": "cited publication:444-452 and :3884-3924, Section 4 population masses and the Appendix E Problem 11 item equation"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The full optimal-solution coordinate formulas, with special attention to the center-pivot item equation and both mirrored known-type contributions.",
+      "source_locator": "cited publication:3899-3924 and :4239-4404, Problem 11 item equations and Appendix E Lemma 15 proof"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "7a0981ed1c26b7e69886e093b37d24b7778a645fe205c301ee14928ddd9c81ea"
+}

@@ -73,14 +73,14 @@
   expected first-report delay is $1/\lambda$
 };
 
-\node[dag_unformalized] (ShiftedProcess) at (11.5,-8) {
-  \textbf{Appendix shifted-process claim (uncredited)} \\
+\node[dag_result] (ShiftedProcess) at (11.5,-8) {
+  \textbf{Appendix D.8.2 shifted process} \\
   after the first jump, the remaining gaps are \\
   iid exponential at the original rate
 };
 
-\node[dag_unformalized] (Lemma2) at (17.5,-8) {
-  \textbf{Lemma 2 (uncredited)} \\
+\node[dag_result] (Lemma2) at (17.5,-8) {
+  \textbf{Lemma 2} \\
   the wait from the selected start to the next report \\
   has the exponential tail at rate $\lambda$
 };
@@ -118,10 +118,10 @@
 \draw[dag_arrow] (IncidentModel) -- (Lemma1);
 \draw[dag_arrow] (Lemma1) -- (Prop1);
 \draw[dag_arrow] (ReportingModel) -- (MeanDelay);
-\draw[dag_dashed_arrow] (ReportingModel.east) -- ++(1.0,0) |- ([yshift=0.7cm]ShiftedProcess.north) -- (ShiftedProcess.north);
-\draw[dag_dashed_arrow] (StartCondition.south) to[out=-90,in=90] (Lemma2.north);
-\draw[dag_dashed_arrow] (ShiftedProcess) -- (Lemma2);
-\draw[dag_dashed_arrow] (Lemma2.north east) -- (Theorem.south west);
+\draw[dag_arrow] (ReportingModel.east) -- ++(1.0,0) |- ([yshift=0.7cm]ShiftedProcess.north) -- (ShiftedProcess.north);
+\draw[dag_arrow] (StartCondition.south) to[out=-90,in=90] (Lemma2.north);
+\draw[dag_arrow] (ShiftedProcess) -- (Lemma2);
+\draw[dag_arrow] (Lemma2.north east) -- (Theorem.south west);
 \draw[dag_arrow] (StartCondition.south east) to[out=-45,in=180] (Theorem.west);
 \draw[dag_arrow] (EndpointCondition) -- (Theorem);
 \draw[dag_arrow] (Theorem) -- (LikelihoodConsequences);

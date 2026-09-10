@@ -5,7 +5,7 @@
 |---|---|
 | Final status | Formalized |
 | Paper reference | [Supply-Side Equilibria in Recommender Systems](https://arxiv.org/abs/2206.13489v3) by Meena Jagadeesan, Nikhil Garg, and Jacob Steinhardt; NeurIPS, 2023. |
-| Lines of Code | 65,464 |
+| Lines of Code | 69,062 |
 
 ## Key Links
 

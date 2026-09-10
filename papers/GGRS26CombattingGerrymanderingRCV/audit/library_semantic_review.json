@@ -1,0 +1,8 @@
+{
+  "comment": "Each verdict compares the byte-pinned paper-source bundle with Lean's current semantic target and exact bounded declaration code. These prerequisites are not additional paper-claim rows.",
+  "items": {},
+  "paper": "GGRS26CombattingGerrymanderingRCV",
+  "prompt_version": "library-statement-match-v2-verbatim-source-anchor-lean-display-exact-code",
+  "schema": 1,
+  "target_protocol": "lean-library-display-plus-exact-code-v1"
+}

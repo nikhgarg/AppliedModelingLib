@@ -5,7 +5,7 @@
 |---|---|
 | Final status | Formalized |
 | Paper reference | [Reconciling the Accuracy-Diversity Trade-off in Recommendations](https://arxiv.org/abs/2307.15142) by Kenny Peng, Manish Raghavan, Emma Pierson, Jon Kleinberg, and Nikhil Garg; The ACM Web Conference, 2024. |
-| Lines of Code | 63,979 |
+| Lines of Code | 64,182 |
 
 ## Key Links
 

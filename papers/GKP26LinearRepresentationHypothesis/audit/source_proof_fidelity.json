@@ -1,0 +1,91 @@
+{
+  "checked_proof_steps": [],
+  "defects": [
+    {
+      "acceptance_condition": "The paper-facing statements expose the corrected squared denominator, prove both representation- and probe-correlation bounds from the recovery and norm hypotheses, and preserve the archival printed statement only as a documented non-equivalent source target.",
+      "affected_source_locators": [
+        "cited publication:638-680"
+      ],
+      "defect_kind": "normalization_or_scaling",
+      "id": "LRH-GEOMETRY2-DENOMINATOR-01",
+      "repair_obligation": "Replace the first term in Proposition 2(ii) and (iii) by epsilon * gamma^2 / (1 - epsilon)^2, or add and prove a stronger product lower bound sufficient for the printed denominator.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "docs/GEOMETRY2_DENOMINATOR_SOURCE_NOTE.md gives the source-located algebra, and PaperInterface.lean exposes paper_geometry2_representation_column_correlation_upper_corrected and paper_geometry2_probe_column_correlation_upper_corrected with the squared denominator proved in Lean.",
+      "source_claim": "Geometry Proposition 2(ii) and (iii) print the first normalized cross-correlation term as epsilon * gamma^2 / (1 - epsilon).",
+      "source_locator": "cited publication:638-680",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The printed finite inequality loses one factor of (1 - epsilon) when normalizing by two vector norms. Lean proves the corrected finite bound with denominator (1 - epsilon)^2. This is a documented source typo/error rather than a paper-level caveat: the corrected finite term is explicit and the qualitative epsilon-to-zero conclusion is unchanged."
+    },
+    {
+      "acceptance_condition": "A direct epsilon,delta source target fixes lambda = sqrt(1/delta - 1), proves an explicit conservative mu schedule, the finite construction, and the two correlation-error limits without treating the source's displayed mu choice as an assumption.",
+      "affected_source_locators": [
+        "cited publication:580-597"
+      ],
+      "defect_kind": "algebra_or_sign",
+      "id": "LRH-GEOMETRY1-MU-SCHEDULE-01",
+      "repair_obligation": "Use a positive mu(epsilon,delta,k) small enough simultaneously for the recovery envelope and the normalized-correlation denominators, and prove that its finite construction has the source rate.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "docs/GEOMETRY1_MU_SCHEDULE_SOURCE_NOTE.md gives the source-located inequality and replacement schedule. MainTheorems.lean proves geometry1SourceMu_construction_side_conditions, geometry1SourceMu_dimension_coefficient, exists_geometry1_source_parameter_construction, and geometry1Source_correlation_errors_tendToZero; PaperInterface.lean exposes their combined direct source target.",
+      "source_claim": "The proof of Geometry Proposition 1 bounds the recovery error by k(1+lambda)^2 mu and then says that mu = epsilon/(k(1+lambda^2)) suffices.",
+      "source_locator": "cited publication:580-597",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "For lambda > 0, the displayed recovery envelope uses (1+lambda)^2, so the stated choice with 1+lambda^2 in its denominator does not establish the strict epsilon bound. The proposition's O_{epsilon,delta}(k^2 log m) conclusion remains true: Lean proves it using a conservative positive schedule proportional to 1/(k+1), which also supplies the finite normalized-correlation side conditions."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "Only paper_compressed_sensing_external_basis_pursuit and its source-to-Spec route.",
+      "classification": "source_asymptotic_regime_clarification",
+      "formal_meaning": "The recalled compressed-sensing theorem is read on the nontrivial sparse regime 1 <= k and 2*k <= m. This is the domain on which the displayed k*log(m/k) scale is a positive sparse-recovery rate, and it is exactly the domain of the checked Rademacher construction.",
+      "id": "LRH-COMPRESSED-SENSING-SPARSE-DOMAIN-01",
+      "report_summary": "The recalled compressed-sensing rate is formalized on the standard nontrivial regime 1 <= k and 2*k <= m.",
+      "source_locator": "cited publication:184-199",
+      "why_needed": "The printed recalled theorem displays k*log(m/k) without spelling out its conventional nondegenerate parameter regime. The Lean target must state the domain on which that rate and the constructed recovery guarantee are meaningful."
+    },
+    {
+      "checked_scope": "Only the named Lemma prop:incoherent source-to-Spec route.",
+      "classification": "source_regime_clarification",
+      "formal_meaning": "The random-incoherence lemma is read for m >= 2, mu > 0, and 0 < delta <= 1. In that ordinary nondegenerate regime, Lean supplies an explicit rounded dimension bounded by log(2*m^2/delta)/(mu^2/2) + 2 and proves the stated probability at least 1-delta.",
+      "id": "LRH-RANDOM-INCOHERENCE-NONDEGENERATE-RANGE-01",
+      "report_summary": "The random-matrix lemma is formalized with its explicit logarithmic construction on the standard m >= 2, mu > 0, 0 < delta <= 1 regime.",
+      "source_locator": "cited publication:412-436",
+      "why_needed": "The source displays an asymptotic dimension scale and a confidence conclusion without spelling out the ordinary positive accuracy and confidence domain. Those conditions make the logarithmic rate and the probability guarantee mathematically meaningful; they do not alter the lemma's construction or headline conclusion."
+    },
+    {
+      "checked_scope": "Only paper_lower_bound_dimension_isBigO_source_log_source_regime and its source-to-Spec route.",
+      "classification": "source_regime_clarification",
+      "formal_meaning": "The lower-bound theorem's error tolerance is read in the nondegenerate recovery regime 0 < epsilon < 1, in addition to its displayed lower relation between epsilon, k, and m.",
+      "id": "LRH-LOWER-BOUND-NONDEGENERATE-EPSILON-01",
+      "report_summary": "The lower bound uses the intended nondegenerate error regime 0 < epsilon < 1.",
+      "source_locator": "cited publication:220-227",
+      "why_needed": "For epsilon at least one, the coordinatewise recovery requirement admits a degenerate zero-dimensional alternative and the printed lower-dimensional recovery claim is not its intended regime. The proof's normalization and quantitative lower-bound construction also use epsilon < 1."
+    },
+    {
+      "checked_scope": "Geometry Proposition 2 parts (i)--(iii): paper_geometry2_self_column_correlation_lower, paper_geometry2_representation_column_correlation_upper_corrected, and paper_geometry2_probe_column_correlation_upper_corrected.",
+      "classification": "source_regime_clarification",
+      "formal_meaning": "Geometry Proposition 2 retains its printed condition gamma >= 1 and is read in the intended small-error regime 0 < epsilon < 1. In that regime, the recovery inequality supplies the positive norm lower bounds used by all three normalized-correlation parts.",
+      "id": "LRH-GEOMETRY2-NONDEGENERATE-EPSILON-01",
+      "report_summary": "Geometry Proposition 2 retains its stated gamma >= 1 condition and is formalized in the intended small-error regime 0 < epsilon < 1 required by its displayed normalization argument.",
+      "source_locator": "cited publication:638-680",
+      "why_needed": "The source itself states gamma >= 1. It states epsilon > 0, while its normalization argument divides through lower bounds derived from 1-epsilon; the recorded small-error reading makes that proof route and the corrected finite correlation bounds well-defined without changing the proposition's intended regime."
+    }
+  ],
+  "paper": "GKP26LinearRepresentationHypothesis",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Geometry Proposition 2 and its normalization argument, including the same-family representation- and probe-correlation bounds in parts (ii) and (iii).",
+      "source_locator": "cited publication:638-680"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The binary threshold theorem and activation/bias corollary, including the finite-size step in the displayed rank/Turan proof route.",
+      "source_locator": "cited publication:700-750"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "c60fc515f127f893dc99f592ac304c06f41e255abdea6bb21f82227187b3dfbc"
+}

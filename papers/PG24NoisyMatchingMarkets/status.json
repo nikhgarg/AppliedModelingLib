@@ -17,7 +17,7 @@
     "reviewed_rows": 0,
     "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     "stale_rows": 0,
-    "total_rows": 25,
+    "total_rows": 19,
     "uncertain_rows": 0
   },
   "human_summary": "",
@@ -26,21 +26,22 @@
     "status": "human_approved"
   },
   "id": "PG24NoisyMatchingMarkets",
-  "main_caveat": "Formalized under documented source corrections: the printed thm1v2 upper-tail display is replaced by its source-supported lower-tail target, while beet(ii) and goose-2 retain the valid qualitative convergence available under beta-max concentration rather than unsupported one-draw polynomial rates. These corrections add no economic assumption to Theorems 1--4.",
+  "main_caveat": "Formalized under documented source corrections: Appendix Proposition 1 uses its source-supported lower-tail target, and Appendix Proposition 7(ii) and Appendix Proposition 8 use the one-draw finite-second-moment condition required by their polynomial-rate Chebyshev argument. These corrections do not alter the economic primitives or the four main theorem conclusions.",
   "paper_interface": {
     "declaration_rows": 26,
-    "line_count": 881,
+    "line_count": 975,
     "maintainability_issue": null,
     "oversized": false,
     "path": "papers/PG24NoisyMatchingMarkets/PaperInterface.lean",
     "proof_interface_path": "papers/PG24NoisyMatchingMarkets/ProofInterface.lean",
-    "review_rows": 25
+    "review_rows": 19
   },
   "repository_visibility": "public",
   "review_entrypoint": "papers/PG24NoisyMatchingMarkets/FINAL_VALIDATION_REPORT.md",
   "review_surface": {
     "assumption_names": [
-      "PG24NoisyMatchingMarkets.source_assumption_iid_beta_max_variance_bound"
+      "PG24NoisyMatchingMarkets.source_assumption_iid_beta_max_variance_bound",
+      "PG24NoisyMatchingMarkets.source_clarification_one_draw_finite_second_moment"
     ],
     "assumption_policy": "strict",
     "assumption_source_file": "papers/PG24NoisyMatchingMarkets/Assumptions.lean",
@@ -233,12 +234,6 @@
       "PG24NoisyMatchingMarkets.upperTailMass_quantile_lower_bound_eventually_of_longTailed"
     ],
     "include_names": [
-      "holder_value_law_regularitySpec",
-      "capacity_regularitySpec",
-      "beta_max_concentratingSpec",
-      "long_tailed_noiseSpec",
-      "stable_matching_cutoff_definitionSpec",
-      "match_probability_formulaSpec",
       "review_theorem1_attenuationSpec",
       "review_theorem2_amplificationSpec",
       "review_theorem3_attenuationInCoalitionsSpec",
@@ -290,11 +285,6 @@
     "proof_file": "papers/PG24NoisyMatchingMarkets/ProofInterface.lean",
     "proof_module": "PG24NoisyMatchingMarkets.ProofInterface",
     "proposition_spec_proofs": {
-      "beta_max_concentratingSpec": "beta_max_concentratingSpec_proof",
-      "capacity_regularitySpec": "capacity_regularitySpec_proof",
-      "holder_value_law_regularitySpec": "holder_value_law_regularitySpec_proof",
-      "long_tailed_noiseSpec": "long_tailed_noiseSpec_proof",
-      "match_probability_formulaSpec": "match_probability_formulaSpec_proof",
       "review_theorem1_attenuationSpec": "review_theorem1_attenuationSpec_proof",
       "review_theorem2_amplificationSpec": "review_theorem2_amplificationSpec_proof",
       "review_theorem3_attenuationInCoalitionsSpec": "review_theorem3_attenuationInCoalitionsSpec_proof",
@@ -313,8 +303,7 @@
       "source_thm1_corrected_lower_tailSpec": "source_thm1_corrected_lower_tailSpec_proof",
       "source_thm2_equivalent_boundSpec": "source_thm2_equivalent_boundSpec_proof",
       "source_tomatoSpec": "source_tomatoSpec_proof",
-      "source_unbounded_cutoffsSpec": "source_unbounded_cutoffsSpec_proof",
-      "stable_matching_cutoff_definitionSpec": "stable_matching_cutoff_definitionSpec_proof"
+      "source_unbounded_cutoffsSpec": "source_unbounded_cutoffsSpec_proof"
     },
     "quarantined_auxiliary_names": [
       "PG24NoisyMatchingMarkets.Theorem1AttenuationSourceModel",
@@ -536,24 +525,24 @@
       {
         "id": "additional_source_results",
         "names": [
-          "holder_value_law_regularitySpec",
-          "capacity_regularitySpec",
-          "beta_max_concentratingSpec",
-          "long_tailed_noiseSpec",
-          "stable_matching_cutoff_definitionSpec",
-          "match_probability_formulaSpec",
           "review_theorem1_attenuationSpec",
           "review_theorem2_amplificationSpec",
           "review_theorem3_attenuationInCoalitionsSpec",
           "review_theorem4_amplificationInCoalitionsSpec",
           "source_thm1_corrected_lower_tailSpec",
+          "source_beetSpec",
+          "source_goose_2Spec"
+        ],
+        "title": "Additional source results"
+      },
+      {
+        "id": "additional_source_results",
+        "names": [
           "source_duck_1Spec",
           "source_tomatoSpec",
           "source_duck_2Spec",
           "source_goose_1Spec",
           "source_log_boundSpec",
-          "source_beetSpec",
-          "source_goose_2Spec",
           "source_thm2_equivalent_boundSpec",
           "source_lt_large_firmsSpec",
           "source_unbounded_cutoffsSpec",

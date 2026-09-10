@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "paper": "DGD26AdmissionsPredictability",
+  "summaries": {
+    "DGD26-LAP-DETERMINATE-TIEFREE-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).",
+    "DGD26-QREP-NONDEGENERATE-DOMAIN-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).",
+    "DGD26-RANK-ORDER-STATISTIC-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).",
+    "DGD26-THEOREM1-NONDEGENERATE-EXACT-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).",
+    "DGD26-TIGHT-POSITIVE-DOMAIN-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md)."
+  },
+  "omitted_conventions": [
+    "DGD26-FINITE-UNIVERSE-01",
+    "DGD26-ML-POOL-CONTEXT-01",
+    "DGD26-ML-REAL-SCORE-NORMALIZATION-01",
+    "DGD26-PROGRAM-QUEUE-PROCEDURES-01",
+    "DGD26-SEQUENTIAL-RECURSIVE-MODEL-01"
+  ]
+}

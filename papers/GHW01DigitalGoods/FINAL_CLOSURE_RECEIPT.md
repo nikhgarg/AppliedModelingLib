@@ -3,11 +3,11 @@ schema = 6
 paper = "GHW01DigitalGoods"
 closure_status = "current"
 acceptance_credential = false
-closed_at = "2026-09-06"
+closed_at = "2026-09-08"
 
 [accepted_graph]
 pointer = "papers/GHW01DigitalGoods/audit/obligation_evidence/current_accepted_graph.json"
-graph_sha256 = "1aeefb91212c6a3155f1ea5600ca20e7e7b35dff12f4d9010abaa0526c2f3abb"
+graph_sha256 = "68126cde6478aa773303cbf9a8ac1ba59456dbb1b86ceef9193bbae80f0c7dd2"
 
 +++
 

@@ -2,36 +2,55 @@
 
 ## Logarithmic domains
 
-- **Unqualified logarithmic revenue bounds → $h\geq2$** in Theorem 4.1,
-  Theorem 7.1, and Theorem 7.2's lower bound; **at least two bidders** in
-  Corollary 4.2. Here $h$ is the largest normalized bid. At $h=1$ or bidder
-  count $n=1$, the relevant denominator $\log_2h$ or $\log_2n$ is zero.
-  The $h\geq2$ scope also excludes $1<h<2$, where the logarithm is defined;
-  this proof restriction is not shown necessary for every revenue bound.
+- **Finite logarithmic bounds:** use $h\geq2$ for Theorems 4.1 and 7.1–7.2,
+  and at least two bidders for Corollary 4.2, where $h$ is the largest
+  normalized bid. The denominators vanish at $h=1$ or bidder count $n=1$.
+  For $1<h<2$, the logarithm is defined but the dyadic proof's finite
+  constant needs adjustment. The checked bounds give the source asymptotics;
+  they do not assert the same finite coefficient throughout that smaller range.
 
 ## Lemma 8.1 and Theorem 8.2
 
-- **Preliminary-version inference from truthfulness → the journal version's
-  monotone-offer condition:** if bids satisfy $b_i\leq b_j$ and $x\leq b_i$,
-  bidder $i$'s probability of receiving and accepting an offer at price at
-  most $x$ is no greater than bidder $j$'s. Truthfulness controls changes in
-  one's own report and does not alone supply this cross-bidder comparison.
-  The Lemma 8.1 and Theorem 8.2 proofs use the journal condition.
+- **Journal monotonicity condition:** for bids $b_i\leq b_j$ and prices
+  $x\leq b_i$, bidder $i$'s probability of winning at a price at most $x$ is
+  no greater than bidder $j$'s. This cross-bidder condition gives Lemma 8.1's
+  allocation ordering and Theorem 8.2's bound $\mathbb{E}[R]\leq F$, where
+  $F$ is optimal fixed-price revenue. The preliminary paper infers the
+  condition from truthfulness; the [journal version, Definition 8.1 and
+  Theorem 8.2](../cited publication), states it separately.
+  Truthfulness by itself does not imply that comparison.
+- **Inverse-CDF notation:** use the lower generalized inverse
+  $\inf\{x:y\leq g_i(x)\}$ in the journal's common-uniform coupling.
+  Its printed equality-level-set formula can be undefined at a CDF jump.
+  The lower inverse has the required marginals and preserves the CDF ordering,
+  so the expected-revenue argument applies to arbitrary real offer laws.
 
 ## Randomization and bounded supply
 
-- **General randomized offers → countably supported outcome laws, and finite
-  offer support in Lemma 8.1 and Theorem 8.2.** These restrict the current formalization's
-  randomization domain; continuous-offer extensions remain unproved.
-- **Arbitrary excess-demand rejection → one report-independent priority**
-  among accepted bidders. This fixes the source's unspecified choice; the
-  current result does not quantify over every rejection rule.
-
-- **Theorem 6.2 count parameter → natural-number $\alpha$** in the current
-  probability bound; arbitrary real parameters would need a rounding argument.
-- **Theorems 9.1 and 9.3 high-value constructions → integer $H\geq2$**, with bids
-  $1$ or $H$ and at least one high bid. Its revenue/benchmark ratio is at
-  most $1/H$; no arbitrary-real-$H$ construction is asserted.
-- **Bounded dual-price mechanism → an exact equal-half partition and even
-  total supply $2q$**, assigning capacity $q$ to each side. Other partition
-  or odd-supply cases are outside that checked mechanism.
+- **Randomization model:** the concrete mechanisms have finite outcome
+  distributions, represented within a general model allowing countable
+  distributions. Theorem 8.2 separately covers arbitrary real offer
+  distributions. Accepted nonnegative offers are bounded by the bids, so
+  their expected revenue is defined without an additional moment condition.
+- **Excess demand:** when more bidders accept the price than there are items,
+  serve them in a fixed priority order chosen independently of bids. This
+  specifies one of the source's permitted rejection rules; it does not claim
+  truthfulness for every possible rule that reacts to the bid amounts.
+- **Theorem 6.2 count parameter:** take $\alpha$ to be a natural-number lower
+  bound on the winner count, the role it plays in the source proof. The
+  formalization proves the displayed probability bound for uniform exact
+  half-sampling. A separate real-$\alpha$ calculation uses independent coin
+  flips and is not an equivalence between the two sampling schemes.
+- **Theorems 9.1 and 9.3 impossibility examples:** for every integer $H\geq2$
+  and real $\alpha>0$, bids at $1$ and $H$ give $R/F\leq1/H$ and
+  $F\geq\alpha H$. As $H$ grows, the revenue fraction tends to zero even
+  with a large benchmark. Integer examples therefore prove the paper's
+  no-constant-competitive-ratio conclusion. Theorem 9.1 treats deterministic
+  bid-independent auctions; Lemma 9.2 extends it to the truthful deterministic
+  set-of-bids model in Theorem 9.3. The construction does not parameterize
+  every real $H$.
+- **Half-sizes and parity:** interpret $n/2$ and $k/2$ as floor division for
+  odd bidder counts or capacities. Truthfulness and total supply feasibility
+  hold for all natural inputs; even inputs give exact halves. The bounded
+  dual-price revenue guarantee remains conditional on its sampling good-event
+  bounds, so this convention does not by itself prove an odd-input rate.

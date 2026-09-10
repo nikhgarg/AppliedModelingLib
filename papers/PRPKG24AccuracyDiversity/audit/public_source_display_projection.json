@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "PRPKG24AccuracyDiversity",
-  "private_source_map_sha256": "05a59f471e8ee6c8bf164d3542aa3d7d0eb0f4eab5e8d6c9ce52370756c5079f",
+  "private_source_map_sha256": "f15cc966fe4e8d06cb0fb898827b77fc6c5bc6ba0d9e1bd7816631092c51de6d",
   "public_manifest_path": "papers/PRPKG24AccuracyDiversity/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "7f4bae9f4cba0809b40e3a78eadcc2a6612036abf5e4e942e7c4fc66c7c83665",
+  "public_source_map_sha256": "4a57958efea362ff06a8b7246c1c72f3faca0f89f4c1172a0f9bedf5a855c965",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
@@ -133,14 +133,14 @@
     "prpkg_definition2_eq6_sequence_homogeneity": {
       "semantic_context": [
         {
-          "semantic_role": "scope",
+          "semantic_role": "definition",
           "source_anchors": [
             {
-              "line_end": 66,
-              "line_start": 63,
+              "line_end": 268,
+              "line_start": 261,
               "publication_locator": "cited publication",
-              "quoted_text": "Xi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)",
-              "quoted_text_sha256": "2981d1412721c030594a6beee24228c2d6eafc9b710e2e74d7296df8aba82aad"
+              "quoted_text": "We now formalize our approach to evaluating diversity. For a set S of items, we define\nrt (S) :=\n\n# of items in S of type t\n,\n|S|\n\n(4)",
+              "quoted_text_sha256": "174ed845d282b9c63756274eec7e3969f0779012faef13cb338b800d5c5b653a"
             }
           ]
         }

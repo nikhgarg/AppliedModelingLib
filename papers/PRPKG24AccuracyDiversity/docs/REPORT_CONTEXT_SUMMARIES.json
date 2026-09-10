@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "paper": "PRPKG24AccuracyDiversity",
+  "summaries": {
+    "PRPKG24-BOUNDED-PDF-MEASURE-01": "Theorem 1(ii): an upper-bounded conditional value law \u2192 an upper-bounded law with nonnegative values almost surely. The current allocation proof does not establish the translated negative-value domain.",
+    "PRPKG24-POSITIVE-PREFERENCE-SUPPORT-01": "All-coordinate share limits: possibly zero type masses \u2192 strictly positive mass for every named type."
+  }
+}

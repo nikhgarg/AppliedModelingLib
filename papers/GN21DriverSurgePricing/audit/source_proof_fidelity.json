@@ -1,0 +1,784 @@
+{
+  "checked_proof_steps": [
+    {
+      "checked_conclusion": "The direct Lean theorem applies strong laws to explicit IID state-time and state-earning cycle variables, proves convergence of cumulative earnings divided by cumulative cycle time, and identifies its limit with gn21MeasuredDynamicReward, the state-fraction-weighted state-reward sum.",
+      "id": "GN21-L1-IID-RENEWAL-DECOMPOSITION-01",
+      "scope": "MainTheorems.paper_lemma1_stochastic_dynamic_reward_decomposition_of_iid_cycles and PaperInterface.review_lemma1_measured_dynamic_reward_decomposition.",
+      "source_locator": "cited publication:217-252; cited publication:324-367",
+      "source_step": "Lemma 1 defines a larger renewal cycle returning to state 1 after visiting state 2, invokes independence and Wald's identity, and states the dynamic earnings-rate decomposition with probability 1."
+    },
+    {
+      "checked_conclusion": "The direct Lean theorem applies strong laws to explicit IID per-cycle state-time variables, proves almost-sure convergence of the empirical state-time share, and derives exactly gn21MeasuredTimeFraction from the checked expected-cycle/geometric algebra.",
+      "id": "GN21-L3-IID-RENEWAL-TIME-FRACTION-01",
+      "scope": "MainTheorems.paper_lemma3_stochastic_time_fraction_formula_of_iid_cycles and PaperInterface.review_lemma3_measured_time_fraction_formula.",
+      "source_locator": "cited publication:217-252; cited publication:671-696",
+      "source_step": "Lemma 3 computes the expected number of state sub-cycles in the larger renewal cycle from geometric transition probabilities and gives the state time fraction in the displayed T,Q form."
+    },
+    {
+      "checked_conclusion": "The reviewed Lean row has no positive-payout-mass premise. Its internal dichotomy uses the existing compact proof when that mass is positive; otherwise it proves every feasible policy has zero payment and renewal reward, then selects the complete cutoff-zero policy as an optimal threshold policy.",
+      "id": "GN21-T1-ZERO-PAYOUT-COVERAGE-01",
+      "scope": "MainTheorems.singleStateTripPayment_eq_zero_of_zero_positive_payout_mass; MainTheorems.singleStateRenewalReward_eq_zero_of_zero_positive_payout_mass; MainTheorems.paper_theorem1_single_state_threshold_best_response_measurable_of_nonnegative_rate; PaperInterface.review_theorem1_single_state_threshold_best_response.",
+      "source_locator": "cited publication:491-520",
+      "source_step": "Theorem 1 states threshold-optimality for each pricing function w and does not exclude the case in which positive payouts have zero feasible measure."
+    },
+    {
+      "checked_conclusion": "The reviewed Lean row has no positive-payout-mass premise. In the zero branch it chooses the complete cutoff-zero policy, proves its reward is zero and optimal, proves the strict cutoff-zero policy has zero measure, and derives both advertised trip-mass difference clauses; the positive branch uses the existing uniqueness proof.",
+      "id": "GN21-L4-ZERO-PAYOUT-COVERAGE-01",
+      "scope": "MainTheorems.strictThresholdPolicy_zero_measure_of_zero_positive_payout_mass; MainTheorems.paper_lemma4_single_state_threshold_mass_zero_uniqueness_measurable_of_nonnegative_rate; PaperInterface.review_lemma4_single_state_threshold_uniqueness.",
+      "source_locator": "cited publication:2841-2853",
+      "source_step": "Lemma 4 states threshold-optimality and uniqueness up to null sets without excluding the zero-positive-payout case."
+    },
+    {
+      "checked_conclusion": "A null interval endpoint traversal leaves the source reward unchanged, with no full-support or optimizer assumption.",
+      "id": "GN21-L5-NULL-INTERVAL-BRIDGE-01",
+      "scope": "PaperInterface.review_lemma5_null_interval_reward_invariance and ZeroDensityBridge.lean.",
+      "source_locator": "cited publication:3660-3692",
+      "source_step": "Appendix D defines equality of policies only up to measure zero while using derivative signs only away from f(u)=0."
+    },
+    {
+      "checked_conclusion": "The direct Lean route constructs a compact canonical-pair maximizer and derives the every-optimum a.e. clause by strict replacement, with all variation regularities explicit in the theorem type.",
+      "id": "GN21-T4-COMPACT-ALL-OPTIMA-01",
+      "scope": "Lemma5Variational.paper_theorem4_source_structural_policy_forms_open_corrected and PaperInterface.theorem4_full_structural_policy_forms_open_corrected.",
+      "source_locator": "cited publication:3884-3943",
+      "source_step": "After the source surge-state replacement, Theorem 4 performs the two statewise Lemma 5 replacements and concludes existence plus the forms of all optima."
+    },
+    {
+      "checked_conclusion": "The source-facing Lean witness is a bounded-density continuous law: a half-and-half mixture of normalized Lebesgue restrictions to [0.99,1.01] and [5.99,6.01]. It proves the required mass, moment, CTMC-average, aggregate-reward, profitable-deviation, and non-IC obligations without using the historical atomic law.",
+      "id": "GN21-T2-CONTINUOUS-WITNESS-01",
+      "scope": "Theorem2ContinuousInstance.lean; PaperInterface.review_theorem2_multiplicative_positive_finite_cutoff_not_ic_both_states; PostPaperAudit Theorem 2 aliases.",
+      "source_locator": "cited publication:217-228; cited publication:554-597; cited publication:3710-3714",
+      "source_step": "The model draws job lengths independently and identically from a continuous distribution, and Theorem 2 asserts settings with positive finite cutoff deviations and multiplicative-pricing non-incentive compatibility."
+    }
+  ],
+  "defects": [],
+  "model_conventions": [
+    {
+      "checked_scope": "PaperInterface.GN21Lemma5AENullEndpointVariation and PaperInterface.GN21Theorem4AENullEndpointVariation expose the with-density law, a.e. policy equality, and transparent endpoint-calculus realization for the one-state and statewise routes. Their zero_density_interval_reward_eq theorems prove reward equality for a density-zero interval; ZeroDensityBridge.lean proves that interval nullness. GN21Lemma5EndpointSignRealization and GN21Theorem4EndpointSignRealization contain the separately authorized raw finite endpoint derivative/sign fields, which the current finite-variation engine still consumes directly. The null-interval theorems are supporting source-model facts, not a Lean derivation that replaces those raw fields. The v10 source-record receipt must expand and hash each field; density-a.e. equality alone cannot certify them.",
+      "classification": "human_verified_source_implicit",
+      "formal_meaning": "Policies are identified modulo the trip-length law. The source's derivative-sign notation explicitly excludes f(u)=0, so a density-zero interval traversal preserves reward instead of requiring a fictitious strict endpoint sign there; the Lemma 6 calculation supplies the density-factor route for positive-density moves. This a.e. equality does not itself derive a raw derivative/sign fact at a finite zero-density endpoint.",
+      "id": "GN21-L5-AE-NULL-SET-CONVENTION-01",
+      "recursive_field_source_scope": {
+        "entries": [
+          {
+            "field_chain": [
+              {
+                "field": "densityNN",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              }
+            ],
+            "permitted_classifications": [
+              "nonpropositional_witness_data"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:3711-3714"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "measure_eq_withDensity",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:3711-3714"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "density_measurable",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:3711-3714"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "policy_equalities_modulo_null_sets",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:264-285; cited publication:3660-3692"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              }
+            ],
+            "permitted_classifications": [
+              "container_recursively_audited"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3660-3692; cited publication:4105-4152"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "densityNN",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              }
+            ],
+            "permitted_classifications": [
+              "nonpropositional_witness_data"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:3711-3714; cited publication:3859-3943"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "measure_eq_withDensity",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:3711-3714; cited publication:3859-3943"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "density_measurable",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:3711-3714; cited publication:3859-3943"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "policy_equalities_modulo_null_sets",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:264-285; cited publication:3660-3692; cited publication:3859-3943"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              }
+            ],
+            "permitted_classifications": [
+              "container_recursively_audited"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3660-3692; cited publication:3859-3943; cited publication:4105-4152"
+          }
+        ],
+        "schema": 1
+      },
+      "source_locator": "cited publication:264-284; cited publication:3660-3692; cited publication:4105-4152",
+      "why_needed": "This keeps the Lemma 5 a.e. conclusion faithful to the source without silently strengthening the density to full support or treating a zero-density endpoint as economically relevant. The separately authorized finite endpoint-sign realization remains transparent source-model regularity for the variation engine, not a hidden theorem conclusion and not an inference from the a.e. convention."
+    },
+    {
+      "checked_scope": "Only the 24 exact paths listed below, rooted at the two a.e. variation records for the direct Lemma 5 and Theorem 4 source rows. This convention does not credit the raw endpoint engine support declaration, nor does it alter the source theorem conclusions.",
+      "classification": "human_verified_source_implicit",
+      "formal_meaning": "The endpoint-variation arguments for Lemma 5 and Theorem 4 use finite endpoint derivative, one-sided boundary derivative, continuity, and sign-witness facts for each concrete variation they perform. These are source-model regularity premises for the raw Lean variation engine; they are not inferred from policy equality modulo null sets or from the source's f(u)>0 notation alone.",
+      "id": "GN21-FINITE-ENDPOINT-CALCULUS-REGULARITY-01",
+      "recursive_field_source_scope": {
+        "entries": [
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              },
+              {
+                "field": "upper_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:4105-4165"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              },
+              {
+                "field": "lower_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:4105-4165"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              },
+              {
+                "field": "upper_right_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:3660-3692"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              },
+              {
+                "field": "lower_right_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:3660-3692"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              },
+              {
+                "field": "positive_path_continuous",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3353-3360; cited publication:3745-3751"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              },
+              {
+                "field": "positive_path_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:4105-4165"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              },
+              {
+                "field": "right_top_witness",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3496-3500; cited publication:3564-3581; cited publication:3632-3644"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              },
+              {
+                "field": "open_interval_upper_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3394-3437; cited publication:3445-3644; cited publication:4105-4165"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              },
+              {
+                "field": "open_interval_lower_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3394-3437; cited publication:3445-3644; cited publication:4105-4165"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              },
+              {
+                "field": "open_interval_lower_right_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3394-3437; cited publication:3445-3644; cited publication:3660-3692"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              },
+              {
+                "field": "open_tail_lower_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3394-3437; cited publication:3445-3644; cited publication:4105-4165"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation"
+              },
+              {
+                "field": "open_split_lower_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Lemma5AENullEndpointVariation",
+            "source_item": "source_lemma5_full_variational_policy_forms",
+            "source_locator": "cited publication:3394-3437; cited publication:3445-3644; cited publication:4105-4165"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              },
+              {
+                "field": "upper_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:3859-3943; cited publication:4105-4165"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              },
+              {
+                "field": "lower_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:3859-3943; cited publication:4105-4165"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              },
+              {
+                "field": "upper_right_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:3660-3692; cited publication:3859-3943"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              },
+              {
+                "field": "lower_right_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:3660-3692; cited publication:3859-3943"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              },
+              {
+                "field": "positive_path_continuous",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3353-3360; cited publication:3745-3751; cited publication:3859-3943"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              },
+              {
+                "field": "positive_path_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3343-3366; cited publication:3859-3943; cited publication:4105-4165"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              },
+              {
+                "field": "right_top_witness",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3496-3500; cited publication:3564-3581; cited publication:3632-3644; cited publication:3859-3943"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              },
+              {
+                "field": "open_interval_upper_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3394-3437; cited publication:3445-3644; cited publication:3859-3943; cited publication:4105-4165"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              },
+              {
+                "field": "open_interval_lower_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3394-3437; cited publication:3445-3644; cited publication:3859-3943; cited publication:4105-4165"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              },
+              {
+                "field": "open_interval_lower_right_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3394-3437; cited publication:3445-3644; cited publication:3660-3692; cited publication:3859-3943"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              },
+              {
+                "field": "open_tail_lower_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3394-3437; cited publication:3445-3644; cited publication:3859-3943; cited publication:4105-4165"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "endpoint_sign_realization",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation"
+              },
+              {
+                "field": "open_split_lower_derivative",
+                "structure": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4EndpointSignRealization"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "GN21DriverSurgePricing.PaperInterface.GN21Theorem4AENullEndpointVariation",
+            "source_item": "source_theorem4_full_structural_policy_forms",
+            "source_locator": "cited publication:3394-3437; cited publication:3445-3644; cited publication:3859-3943; cited publication:4105-4165"
+          }
+        ],
+        "schema": 1
+      },
+      "source_locator": "cited publication:3343-3366; cited publication:3394-3644; cited publication:4105-4165",
+      "why_needed": "The direct proof engine consumes the finite endpoint facts field-by-field. Enumerating them gives every such field a separately pinned source route and prevents a support declaration, a record name, or a sibling field from conferring blanket source credit."
+    },
+    {
+      "checked_scope": "Only `PaperInterface.lemma5_full_variational_policy_forms.hcontinuous`. It does not authorize endpoint-coordinate compactness, derivative/sign realization, the Theorem 4 continuity binder, or any conclusion-bearing package. A future scoped-domain refactor may replace this convention by a direct derivation from the literal source-domain continuity condition.",
+      "classification": "human_verified_source_implicit",
+      "formal_meaning": "Lemma 5 explicitly assumes that Rhat is continuous in its open measurable policy argument. The current Lean interface totalizes Rhat to arbitrary `TripPolicy` values and expresses that continuity as `GN21SymmDiffContinuousAt` at every such value. The resulting global extension is a visible source-model regularity: it supplies only continuity at policy arguments, never a policy form, reward comparison, maximizer, or strictness conclusion.",
+      "id": "GN21-L5-GLOBAL-POLICY-CONTINUITY-REGULARITY-01",
+      "source_locator": "cited publication:3343-3366; cited publication:3394-3404",
+      "why_needed": "The finite-interval source proof uses continuity after symmetric-difference approximation, but the current reusable Lean variation engine is typed over total set functions and takes an all-policy continuity binder. Recording that extension explicitly prevents the source-domain wording from being overstated as an exact match for the broader Lean binder, while keeping the theorem conclusion unchanged."
+    },
+    {
+      "checked_scope": "Only `PaperInterface.lemma5_full_variational_policy_forms.hendpoint_continuous`. It does not authorize the raw derivative/sign realization fields, the Theorem 4 endpoint-continuity binder, or any conclusion-bearing package. `PaperInterface.lemma5_full_variational_policy_forms.hcontinuous` is separately recorded as the scoped global-policy-continuity regularity.",
+      "classification": "human_verified_source_implicit",
+      "formal_meaning": "For the direct Lemma 5 route only, the source's continuity-in-policy assumption is used along each finite endpoint-coordinate family, including the compactified boundary representatives, so the corresponding finite endpoint reward map is continuous on the shape-specific compact domain. This is the precise source-model premise represented by the visible `hendpoint_continuous` binder; it supplies compact maximizer existence but no optimizer, policy form, dominance inequality, or strictness conclusion.",
+      "id": "GN21-L5-ENDPOINT-COMPACTNESS-CONTINUITY-01",
+      "source_locator": "cited publication:3343-3366; cited publication:3388-3404; cited publication:3496-3500; cited publication:3564-3581; cited publication:3632-3644",
+      "why_needed": "The source explicitly invokes one- and two-coordinate endpoint continuity and compact maximum existence after reducing to finite interval families, but does not spell out a topological bridge from continuity in the symmetric-difference policy metric to Lean's `ContinuousOn` over every finite extended-endpoint vector. The direct interface exposes that bridge as an auditable, non-result model premise instead of treating it as a consequence of a record name or allowing the compact maximizer to be caller-supplied."
+    },
+    {
+      "checked_scope": "Only these seven binders of `PaperInterface.lemma5_full_variational_policy_forms`: `hresponse_positive`, `hresponse_increasing`, `hresponse_decreasing`, `hresponse_quasiConvex`, `hzero_quasiConvex`, `hresponse_quasiConcave`, and `hzero_quasiConcave`. It does not authorize `hcontinuous`, `hendpoint_continuous`, any raw derivative/sign realization field, any Theorem 4 binder, or any conclusion-bearing package. A future scoped-domain/inclusive-endpoint refactor may replace this convention with direct source-domain lemmas.",
+      "classification": "human_verified_source_implicit",
+      "formal_meaning": "Lemma 5 states its response-shape property for every policy in the displayed near-optimal reward band after defining the policy domain to be open measurable subsets of positive trip lengths. The current Lean endpoint totalizes policies to arbitrary `TripPolicy` values and asks for the five response shapes at every such reward-admissible value. In the two quasi cases, its core predicates quantify strictly positive trip lengths and the two visible `hzero_*` binders supply the boundary-at-zero comparisons used by the finite endpoint-vector proof. Together these are a visible source-model regularity for the current direct variation engine, not a literal restatement of the printed domain wording.",
+      "id": "GN21-L5-GLOBAL-POLICY-RESPONSE-SHAPE-REGULARITY-01",
+      "source_locator": "cited publication:3343-3366; cited publication:3370-3387; cited publication:3407-3425; cited publication:3509-3537; cited publication:3582-3610",
+      "why_needed": "The former literal-source labels hid both the total-policy extension and the boundary bridge. The source proof works with finite interval families that include `(0, u)` and reasons from the advertised shape property while moving and collapsing endpoints; it does not spell Lean's all-`TripPolicy` totalization or separate its positive-domain quasi predicates from their zero-boundary comparisons. Recording the seven inputs as one narrow convention keeps those proof obligations explicit without supplying an optimizer, policy form, dominance comparison, strictness fact, or any other conclusion."
+    },
+    {
+      "checked_scope": "Only the payment-domain field of `ProofBridge.GN21PayoutFunction` and the derived hourly-rate sign used by `PaperInterface.review_theorem1_single_state_threshold_best_response`. It does not authorize measurability, integrability, arrival positivity, a threshold witness, or the optimality conclusion.",
+      "classification": "human_verified_source_implicit",
+      "formal_meaning": "The source-facing single-state payout argument is represented by `GN21PayoutFunction`, whose on-trip payments are nonnegative. Its hourly-rate nonnegativity is derived within the theorem rather than supplied as a separate rate premise.",
+      "id": "GN21-T1-PAYOUT-NONNEGATIVITY-01",
+      "source_locator": "cited publication:222-228; cited publication:2538-2562",
+      "why_needed": "Theorem 1's source proof treats the absence of positive payouts as the zero-reward case and otherwise orders trips by their per-time earnings. The current construction uses the resulting hourly-rate sign in its threshold argument. This source-model representation supplies no threshold, policy, reward comparison, or conclusion."
+    },
+    {
+      "checked_scope": "Only the first target-rate domain in `PaperInterface.review_theorem3_structured_general_policy_source_claim` and the paired Theorem 3 Spec. It does not authorize the strict target-rate order, arrival or switching conditions, finite-trip-law assumptions, price construction, or either policy conclusion.",
+      "classification": "human_verified_source_implicit",
+      "formal_meaning": "Theorem 3's first target-earning-rate argument is represented as `NNReal`. Its real-valued nonnegativity is therefore derived within the source-facing construction rather than supplied as a theorem premise.",
+      "id": "GN21-T3-NONNEGATIVE-TARGET-RATE-CONVENTION-01",
+      "source_locator": "cited publication:704-711; cited publication:4083-4091",
+      "why_needed": "The real-valued construction derives positivity of R2 from the target-rate order and uses the resulting signs in the low-ratio derivative inequalities. This source-model representation supplies no price witness, policy form, optimality comparison, or conclusion."
+    },
+    {
+      "checked_scope": "Only `PaperInterface.theorem4_full_structural_policy_forms_open_corrected.hcontinuous`. It does not authorize either endpoint-family continuity binder, the canonical-pair compactness binder, response-shape or reward-band inputs, any raw derivative/sign realization field, or any conclusion-bearing package. A future scoped-domain refactor may replace this convention by a direct source-domain continuity derivation.",
+      "classification": "human_verified_source_implicit",
+      "formal_meaning": "For each source-feasible open two-state context reached by the sequential Theorem 4 replacements and each replaced state, the statewise reward is continuous at each source-open measurable policy in the symmetric-difference sense used by Lemma 5. The current Lean binder totalizes both the continuity centre and the comparison policy to arbitrary `TripPolicy` values. That ambient totalization is an explicit source-model regularity, not a literal claim that the paper defines or assumes continuity at non-open policies.",
+      "id": "GN21-T4-GLOBAL-POLICY-CONTINUITY-REGULARITY-01",
+      "source_locator": "cited publication:3343-3366; cited publication:3394-3404; cited publication:3660-3692; cited publication:3711-3714; cited publication:3884-3943",
+      "why_needed": "The source applies Lemma 5 after statewise replacements, while the reusable Lean variation engine is typed over total set functions and its continuity predicate quantifies raw sets. Making the totalization visible prevents the open-policy source domain from being silently enlarged, without supplying a policy form, reward comparison, maximizer, strictness fact, or any other theorem conclusion."
+    },
+    {
+      "checked_scope": "Only `PaperInterface.theorem4_full_structural_policy_forms_open_corrected.hendpoint_continuous`. It does not authorize global raw-policy continuity, canonical-pair compactness, derivative/sign realization fields, response-shape or reward-band inputs, or any conclusion-bearing package.",
+      "classification": "human_verified_source_implicit",
+      "formal_meaning": "For every source-feasible open two-state context reached by Theorem 4, each statewise finite endpoint family used by Lemma 5 has a reward map continuous on its shape-specific compact endpoint domain. The family represents finite unions of open positive intervals together with collision and infinity boundary representatives; it does not assert continuity at arbitrary raw policies.",
+      "id": "GN21-T4-ENDPOINT-COMPACTNESS-CONTINUITY-REGULARITY-01",
+      "source_locator": "cited publication:3343-3366; cited publication:3394-3404; cited publication:3496-3500; cited publication:3564-3581; cited publication:3632-3644; cited publication:3711-3714; cited publication:3884-3943",
+      "why_needed": "The source invokes endpoint continuity and compact maximum arguments after finite-interval reduction, but does not spell out the topological bridge to Lean's `ContinuousOn` over every finite extended-endpoint vector and every sequential context. This visible model regularity supplies only that bridge, never an optimizer, policy form, dominance inequality, or strictness conclusion."
+    },
+    {
+      "checked_scope": "Only `PaperInterface.theorem4_full_structural_policy_forms_open_corrected.hpair_continuous`. It does not authorize either statewise continuity binder, any derivative/sign realization field, response-shape or reward-band input, or any conclusion-bearing package.",
+      "classification": "human_verified_source_implicit",
+      "formal_meaning": "After the two statewise Lemma 5 reductions, the aggregate reward is continuous on the Cartesian product of their canonical finite endpoint families, including the compactified boundary representatives. This is the precise premise used to obtain a joint compact maximizer; it does not state a maximizer or a policy-form conclusion.",
+      "id": "GN21-T4-CANONICAL-PAIR-COMPACTNESS-CONTINUITY-REGULARITY-01",
+      "source_locator": "cited publication:3343-3360; cited publication:3496-3500; cited publication:3564-3581; cited publication:3632-3644; cited publication:3859-3943",
+      "why_needed": "The source gives statewise endpoint continuity and then asserts Theorem 4 optimizer existence through sequential replacements, but does not separately spell out the product-space continuity bridge used by the Lean compact-attainment proof. Recording that bridge makes the proof obligation explicit rather than hiding it behind a compactness theorem or a result-bearing input."
+    },
+    {
+      "checked_scope": "Only these seven binders of `PaperInterface.theorem4_full_structural_policy_forms_open_corrected`: `hresponse_positive`, `hresponse_increasing`, `hresponse_decreasing`, `hresponse_quasiConvex`, `hzero_quasiConvex`, `hresponse_quasiConcave`, and `hzero_quasiConcave`. It does not authorize `hmargin_pos`, either continuity binder, canonical-pair compactness, raw derivative/sign realization fields, or any conclusion-bearing package. A future scoped-domain/inclusive-endpoint refactor may replace this convention with direct source-domain lemmas.",
+      "classification": "human_verified_source_implicit",
+      "formal_meaning": "At every source-feasible open context reached by the sequential Theorem 4 replacements, Lemma 5's near-optimal reward-band response-shape hypothesis is available for each source-open policy used in the variation. The current Lean interface additionally quantifies its selected `tau` over arbitrary `TripPolicy` values. Its increasing/decreasing clauses include the zero boundary, and its two visible `hzero_*` clauses provide the zero-boundary quasi-shape comparisons consumed by the finite endpoint proof. These total-policy and boundary extensions are explicit source-model regularity, not literal restatements of the paper's open-positive policy domain.",
+      "id": "GN21-T4-UNIFORM-VARIATION-REGULARITY-01",
+      "source_locator": "cited publication:3343-3366; cited publication:3370-3387; cited publication:3407-3425; cited publication:3509-3537; cited publication:3582-3610; cited publication:3660-3692; cited publication:3711-3714; cited publication:3747-3776; cited publication:3859-3943",
+      "why_needed": "The source's universal surge condition and Appendix-D shape lemmas justify applying Lemma 5 after both statewise replacements, but do not state Lean's all-raw-policy totalization or separate the positive-domain quasi predicates from their boundary-at-zero bridges. Recording all seven direct inputs together keeps the sequential scope, raw-policy extension, and boundary obligation visible without supplying an optimizer, policy form, dominance comparison, strictness fact, or any other conclusion."
+    },
+    {
+      "checked_scope": "Only `PaperInterface.theorem4_full_structural_policy_forms_open_corrected.hmargin_pos`. It does not authorize `hnontrivial`, any response-shape input, either continuity binder, derivative/sign realization fields, or any conclusion-bearing package.",
+      "classification": "human_verified_source_implicit",
+      "formal_meaning": "For each source-feasible open two-state context, state, and source-open policy whose statewise reward strictly exceeds the empty policy, `margin i rho source` is a positive Skolem witness for Lemma 5's local existential reward-band width. The corresponding response-shape obligations are recorded separately by `GN21-T4-UNIFORM-VARIATION-REGULARITY-01`; this record supplies only the positivity of the selected witness and requires no global uniform lower bound.",
+      "id": "GN21-T4-LOCAL-REWARD-BAND-MARGIN-REGULARITY-01",
+      "source_locator": "cited publication:3370-3373; cited publication:3424-3425; cited publication:3711-3714; cited publication:3884-3943",
+      "why_needed": "Lemma 5 writes an existential epsilon for each starting policy, while the sequential Lean theorem passes a reusable margin function through both statewise calls. Exposing the positive witness separately prevents the existential choice from being treated as a derived theorem conclusion or hidden inside the response-shape binder."
+    },
+    {
+      "checked_scope": "Only `PaperInterface.theorem4_full_structural_policy_forms_open_corrected.hnontrivial`. It does not authorize `hmargin_pos`, either continuity binder, any response-shape input, raw derivative/sign realization fields, or any conclusion-bearing package.",
+      "classification": "human_verified_source_implicit",
+      "formal_meaning": "For every source-feasible open two-state context reached by the sequential Theorem 4 replacements and each state, there is a feasible open policy whose statewise reward strictly exceeds the empty policy. This is the explicit statewise lift of Lemma 5's nonempty-baseline premise; degenerate endpoint forms remain available in the branches where the source statement allows them.",
+      "id": "GN21-T4-EMPTY-BASELINE-REGULARITY-01",
+      "source_locator": "cited publication:3362-3500; cited publication:3711-3714; cited publication:3884-3943",
+      "why_needed": "The printed Lemma 5 uses a strictly-better-than-empty starting policy, while Theorem 4 invokes it after statewise replacement without deriving that premise for every resulting context. The visible regularity supplies a better seed for the complementary case; treating it as a conclusion would make the all-optima clause circular."
+    },
+    {
+      "checked_scope": "PaperInterface.review_proposition3_1_affine_single_state_ic exposes only source-facing mass, finite-first-moment, positive-arrival, and affine-bound premises. It derives finite mass through singleStateTripMass_ne_top_of_eq_one and builds SingleStateTripMeasureAssumptions internally through singleStateTripMeasureAssumptions_of_standard. The Lean interface permits irrelevant mass outside the positive policy domain; that is a generalization, not a hidden source assumption.",
+      "classification": "human_verified_source_implicit",
+      "formal_meaning": "For Proposition 3.1, the source trip-length law is a probability law on positive trip lengths with finite first moment. The paper-facing Lean theorem expresses this as unit mass on accept-all and integrability of the identity over accept-all; its finite accepted-set measure and the internal nonnegative-time, monotonicity, and zero-time facts are derived inside the proof.",
+      "id": "GN21-P31-TRIP-LAW-FINITE-MOMENT-REGULARITY-01",
+      "source_locator": "cited publication:217-228; cited publication:253-268; cited publication:293-309; cited publication:530-548; cited publication:2759-2834",
+      "why_needed": "The source writes the real-valued renewal-reward formula using T = integral tau dF and cross-multiplies finite real expressions. A continuous probability law on unbounded positive support need not have finite first moment, so the finite-mean reading is an implicit model-definedness regularity rather than a new conclusion or a weakened parameter condition."
+    },
+    {
+      "checked_scope": "The reusable IID convergence endpoints remain the Lemma 1 dynamic-reward and Lemma 3 time-fraction interfaces. Their raw source-model companions are the public actual-calendar endpoints, backed by the two raw-calendar constructors and direct convergence theorems. No optimizer or policy-form conclusion is supplied as a premise.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "The literal raw source seed contains independent Poisson arrival/mark streams and alternating CTMC switch-clock streams. The actual-calendar time and earnings constructors read successive observations from deterministic post-exit tails of that one seed, and prove the required measurability, integrability, pairwise independence, identical distributions, and expected-cycle identities. The records therefore describe derived source observables rather than assumed renewal samples.",
+      "id": "GN21-IID-RENEWAL-CYCLE-MODEL-01",
+      "source_locator": "cited publication:217-252; cited publication:264-285; cited publication:324-367; cited publication:671-696",
+      "why_needed": "Lemmas 1 and 3 invoke a renewal process, independence, geometric exit structure, and Wald/strong-law mean identities. The raw-calendar construction now derives those ingredients from the source primitives and makes the literal same-tail route explicit, rather than representing a CTMC/Poisson construction by an unproved record premise."
+    }
+  ],
+  "paper": "GN21DriverSurgePricing",
+  "review_status": "reviewed_no_defects",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Lemma 1's probability-one dynamic earnings-rate decomposition, including the larger renewal-cycle construction, independence/Wald route, and identification of the limiting state-fraction-weighted reward expression.",
+      "source_locator": "cited publication:217-252; cited publication:324-367"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Lemma 3's probability-one dynamic state-time fraction, including the larger renewal-cycle construction, geometric sub-cycle-count calculation, and identification of the displayed T,Q formula.",
+      "source_locator": "cited publication:217-252; cited publication:671-696"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Lemma 5's five response-shape rows, finite approximation, endpoint variations, compact attainment, and strict-unless-same-form conclusion, interpreted under the Appendix-D policy-equality-up-to-measure-zero convention.",
+      "source_locator": "cited publication:3343-3644"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Theorem 4's six price-to-form cases, surge-state replacement, sequential statewise variations, optimizer existence, and every-optimum policy-form conclusion under the source's universal variation regularity and nonempty-seed reading.",
+      "source_locator": "cited publication:3859-3943"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "6b6668553e576084e0c6c9995964252bed6b14aae113d6ce90f78538a7eb9889"
+}

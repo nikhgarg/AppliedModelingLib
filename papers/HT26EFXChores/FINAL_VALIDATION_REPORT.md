@@ -1,6 +1,6 @@
-# Final Validation Report: EFX for Additive Chores
+# Final Validation Report: EFX for Additive Chores: Nonexistence, Pareto Incompatibility, and Bi-Valued Existence
 
-Updated: 2026-08-31
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -33,7 +33,7 @@ packet or dashboard, but are not a prerequisite for this formalization status.
   propositions.
 - Scope boundary: the complete source review also records two explanatory
   remarks about the general-
-  \(n\) construction and tightness as deep-audit material. They do not add a
+  $n$ construction and tightness as deep-audit material. They do not add a
   separate mathematical endpoint beyond Theorem 1 and its appendix route.
 
 ## 4. Researcher Summary of Checked Results
@@ -71,7 +71,7 @@ the lower bounds rule out for an EFX allocation.
 
 This closeout makes no existence claim for more than four agents beyond the
 results stated in the source. Theorem 1 and Theorem 2 already quantify over
-arbitrary \(n \geq 4\); Theorem 3 is deliberately reported only in its stated
+arbitrary $n \geq 4$; Theorem 3 is deliberately reported only in its stated
 four-agent form.
 
 ## 10. Source Clarifications and Exact Readings

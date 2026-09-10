@@ -1,0 +1,380 @@
+{
+  "deep_audit_observations": [
+    {
+      "affected_source_locators": [
+        "cited publication:170-173",
+        "cited publication:2455-2469"
+      ],
+      "finding": "Component optima do not imply an optimum of their sum. In the explicit family, direct calculation gives rho+rho^(1/4)c(1-c)^(3/4)-rho*c*(1+c+c^2)/3, with positive right derivative at zero and negative derivative at 1-rho when rho<3/7.",
+      "id": "LBG22-P10",
+      "normal_scope_disposition": "unnumbered_prose_outside_named_theory",
+      "scope_note": "If retained, add the direct continuity and endpoint-derivative argument; do not claim a separate Lean theorem.",
+      "source_claim": "The footnote says Propositions 3.1 and 3.4 imply an interior optimum for traditional social welfare.",
+      "source_locator": "cited publication:170-173"
+    }
+  ],
+  "defects": [
+    {
+      "acceptance_condition": "Show W(1/10)<W(1/5) in the admissible quadratic/identity example and prove W(d)<=W(c) from upper-tail log-skill and geometric score-cost concavity without g(0)=0.",
+      "affected_source_locators": [
+        "cited publication:135-137",
+        "cited publication:2370-2398"
+      ],
+      "defect_kind": "inequality_direction",
+      "id": "LBG22-C1",
+      "repair_obligation": "Refute the universal clause in an actual equilibrium and prove a primitive sufficient recovery.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "The exact example gives 18/665<14/495 and exposes the wrong moving-boundary sign. The current proof derives admitted-tail ratio monotonicity and aggregate cost monotonicity from the two stated concavity conditions.",
+      "source_claim": "Two-level applicant welfare is unconditionally non-increasing in the cutoff.",
+      "source_locator": "cited publication:135-137",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_with_caveat",
+      "status_impact_rationale": "The universal clause is false; its repair adds substantive local shape restrictions, while pure-randomization optimality remains unrestricted."
+    },
+    {
+      "acceptance_condition": "Nonnegative cost gives W<=rho and an actual pure-randomization equilibrium attains rho.",
+      "affected_source_locators": [
+        "cited publication:2370-2398"
+      ],
+      "defect_kind": "normalization_or_scaling",
+      "id": "LBG22-P1",
+      "repair_obligation": "Use band masses to obtain W=rho-E[p(e)] and prove attainment without uniqueness.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "The welfare integral carries population weights; the proved pure-randomization equilibrium has zero effort cost and welfare rho.",
+      "source_claim": "The proof uses unweighted conditional band means and asserts unique attainment at the c=0 boundary.",
+      "source_locator": "cited publication:2370-2398",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The named pure-randomization maximum is unchanged."
+    },
+    {
+      "acceptance_condition": "Prove monotonicity and deterministic optimality with positive baseline production.",
+      "affected_source_locators": [
+        "cited publication:1118-1122",
+        "cited publication:2400-2410"
+      ],
+      "defect_kind": "normalization_or_scaling",
+      "id": "LBG22-P2",
+      "repair_obligation": "Use E[v lambda]=rho E[v|Z=1] and max of threshold and baseline score.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "The actual admission integral is compared at fixed normalized admitted quantiles with baseline clipping.",
+      "source_claim": "The proof drops the rho factor and assumes admitted scores all equal the threshold via g(0)=0.",
+      "source_locator": "cited publication:2400-2410",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The source definition E[v lambda] and named monotonicity endpoint survive."
+    },
+    {
+      "acceptance_condition": "For p=e^2, g=e, f=t^3, rho=1/2, rewards (0,1/2,1), prove utility >9/128>1/16.",
+      "affected_source_locators": [
+        "cited publication:161-163",
+        "cited publication:2425-2452"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "LBG22-P3",
+      "repair_obligation": "Construct one actual source-admissible three-level improvement.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "The current construction verifies both policies, both equilibria, all primitives, and the strict comparison.",
+      "source_claim": "The witness assumes g(p^{-1}(x))=x, incompatible with strict convex cost and concave production, and overclaims every three-level policy.",
+      "source_locator": "cited publication:2425-2452",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "A new admissible witness proves the unchanged existential proposition."
+    },
+    {
+      "acceptance_condition": "Prove the global comparison on every feasible cutoff for a concrete rho<3/7.",
+      "affected_source_locators": [
+        "cited publication:173-177",
+        "cited publication:2455-2469"
+      ],
+      "defect_kind": "algebra_or_sign",
+      "id": "LBG22-P4",
+      "repair_obligation": "Derive U=rho^(1/4)c(1-c)^(3/4), c*=4/7, and rho<3/7.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "The current endpoint instantiates rho=1/4, c*=4/7 and proves equilibrium, capacity, integrability, and the global bound.",
+      "source_claim": "The proof gives rho<5/9 and infers global optimality from one endpoint derivative.",
+      "source_locator": "cited publication:2455-2469",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The existential result remains true with the corrected bound and direct global proof."
+    },
+    {
+      "acceptance_condition": "Handle flat gaps from disjoint supports without smooth inverse assumptions.",
+      "affected_source_locators": [
+        "cited publication:210-235",
+        "cited publication:2658-2664"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "LBG22-P5",
+      "repair_obligation": "Use extended group CDFs, generalized mixture rank, and clipped thresholds.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "The proved population-rank route uses extended CDFs and establishes the reward identity for arbitrary source-admissible supports.",
+      "source_claim": "The mixture-rank inverse notation and proof presume a globally invertible mixture CDF.",
+      "source_locator": "cited publication:224-235",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Support-safe generalized ranks clarify the proof without changing reward preservation."
+    },
+    {
+      "acceptance_condition": "Prove finite comparisons under source primitives and exhibit unequal one-sided slopes at a mixture-support junction.",
+      "affected_source_locators": [
+        "cited publication:321-326",
+        "cited publication:2686-2727"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "LBG22-C3",
+      "repair_obligation": "Prove finite monotonicity and conditional strictness, and sign every feasible derivative that exists.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "The p=e^2,g=e,f=1+t, psiA=3/2,psiB=1 example has unequal positive slopes at c=1/4. The current proof establishes finite comparison, conditional derivative signs, and canonical almost-everywhere differentiability.",
+      "source_claim": "The high-region welfare gap has a strictly positive classical derivative at every feasible cutoff.",
+      "source_locator": "cited publication:321-326",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The finite weak/strict comparison preserves the intended direction; only derivative existence is qualified."
+    },
+    {
+      "acceptance_condition": "Prove strict loss at every positive cutoff and antitonicity under convex skill CDF, including theta_B=1.",
+      "affected_source_locators": [
+        "cited publication:335-339",
+        "cited publication:2730-2752"
+      ],
+      "defect_kind": "inequality_direction",
+      "id": "LBG22-P6",
+      "repair_obligation": "Use pure access rho and a clipped finite-difference proof.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "The current proof separately establishes pure access, strict comparison, and antitonicity with exhausted-support cases.",
+      "source_claim": "The access proof sets pure access to zero, reverses theta_B(c)>=c, and ignores exhausted support.",
+      "source_locator": "cited publication:2730-2752",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Both named access conclusions are retained."
+    },
+    {
+      "acceptance_condition": "Use actual equilibria and make no comparison above j.",
+      "affected_source_locators": [
+        "cited publication:1698-1707",
+        "cited publication:2314-2367"
+      ],
+      "defect_kind": "index_or_integrality",
+      "id": "LBG22-P7",
+      "repair_obligation": "Prove equality for i<k, increase at k, and decrease for k<i<=j.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "The finite reward-transfer theorem returns exactly the three original band-index conclusions with baseline clipping.",
+      "source_claim": "The proof changes the corollary's i<k range to i<k-1 and suppresses baseline clipping.",
+      "source_locator": "cited publication:2314-2367",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The original finite comparative-statics conclusion is proved without new smoothness."
+    },
+    {
+      "acceptance_condition": "Use all nonnegative vector deviations, with no hard budget in B.1.",
+      "affected_source_locators": [
+        "cited publication:1768-1780",
+        "cited publication:2804-2820"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "LBG22-C4",
+      "repair_obligation": "Refute strict pairwise equivalence and prove reward-band preservation plus best-coordinate effort concentration.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "A two-skill actual equilibrium has distinct indices in one constant reward band. The current proof establishes almost-everywhere band identity and concentration on a maximizing coordinate.",
+      "source_claim": "Strict reward ordering is equivalent to strict ordering of maximum weighted-skill indices.",
+      "source_locator": "cited publication:1768-1780",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Step rewards make the literal biconditional false within a band; band preservation retains the intended rank result."
+    },
+    {
+      "acceptance_condition": "Every deviation satisfies the hard budget and no penalty argument excludes overspending.",
+      "affected_source_locators": [
+        "cited publication:1799-1806"
+      ],
+      "defect_kind": "model_semantics",
+      "id": "LBG22-P8",
+      "repair_obligation": "Require eM,eU>=0 and eM+eU=B; use reward-p(eM).",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "The hard-budget best-response relation quantifies over exactly the equality-budget feasible set; the extra printed term is zero there.",
+      "source_claim": "The displayed penalty is said to implement eU=B-eM.",
+      "source_locator": "cited publication:1799-1806",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The hard equality feasible set makes the already stated residual-effort model literal."
+    },
+    {
+      "acceptance_condition": "Choose beta before equilibrium selection and compare every feasible cutoff.",
+      "affected_source_locators": [
+        "cited publication:1809-1812",
+        "cited publication:2822-2855"
+      ],
+      "defect_kind": "normalization_or_scaling",
+      "id": "LBG22-P9",
+      "repair_obligation": "Use normalized conditional means, the unmeasurable-skill mean, and a global supporting-weight inequality.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "Actual admitted-event utilities divide by capacity mass and include both skill functions; the current primitive proof establishes the full global inequality.",
+      "source_claim": "The proof omits conditional normalization, uses E[theta_U] instead of E[f_U(theta_U)], and turns stationarity into global optimality.",
+      "source_locator": "cited publication:2822-2855",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Correct formulas support the separately restricted C5 endpoint."
+    },
+    {
+      "acceptance_condition": "Show c=7/16 is dominated for every beta in the admissible counterexample; under affine skill, B>=E, g(0)=0, concave g^2, convex x/C(x), and stated smoothness, globally support every interior cutoff.",
+      "affected_source_locators": [
+        "cited publication:1826-1828",
+        "cited publication:2822-2855"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "LBG22-C5",
+      "repair_obligation": "Refute unrestricted supportability and prove a primitive sufficient global theorem without an optimality certificate.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "The actual-equilibrium counterexample produces a dominating cutoff for every positive weight. The compiled broader primitive endpoint derives frontier curvature and a positive supporting weight from the listed hypotheses for every equilibrium family.",
+      "source_claim": "Every interior cutoff is globally supportable by a positive private-utility weight under all source-admissible primitives.",
+      "source_locator": "cited publication:1826-1828",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_with_caveat",
+      "status_impact_rationale": "The universal endpoint is false; the replacement adds substantive local affine-skill, budget, curvature, and regularity restrictions."
+    }
+  ],
+  "model_conventions": [
+    {
+      "approval_reference": "The underlying approval record is withheld from this public projection.",
+      "checked_scope": "Scalar, group, multidimensional, and hard-budget equilibria and all policy comparisons.",
+      "classification": "maintainer_approved_source_model_clarification",
+      "formal_meaning": "A publicly known fixed injective priority breaks actual score-boundary ties and is held fixed with the score law across every deviation; strict-percentile equilibrium is used only through proved all-deviation equivalence.",
+      "id": "LBG22-KNOWN-PRIORITY-ORDER-BOUNDARY-01",
+      "report_summary": "Admission uses the publicly known score-priority boundary.",
+      "source_locator": "cited publication:1026-1030; cited publication:1043-1044; cited publication:1659-1670",
+      "unresolved_relation_to_literal_source": "No correction: the source announces the priority and fixes the population ranking for individual deviations.",
+      "why_needed": "Numeric percentile alone does not determine off-path admission in score gaps."
+    },
+    {
+      "approval_reference": "The underlying approval record is withheld from this public projection.",
+      "checked_scope": "Every equilibrium definition and dependent result; Lemma C.2 remains pointwise after profile a.e. equality.",
+      "classification": "maintainer_approved_source_model_clarification",
+      "formal_meaning": "One full-measure applicant set best responds against every feasible deviation; uniqueness is equality almost everywhere.",
+      "id": "LBG22-CONTINUUM-AE-BEST-RESPONSE-01",
+      "report_summary": "Almost every applicant best responds against all deviations.",
+      "source_locator": "cited publication:1071-1097; cited publication:1192-1207",
+      "unresolved_relation_to_literal_source": "Settled continuum reading, not logical equivalence with the literal all-applicant display.",
+      "why_needed": "This is the strong quantifier order, not a deviation-dependent null set."
+    },
+    {
+      "approval_reference": "The underlying approval record is withheld from this public projection.",
+      "checked_scope": "Propositions 4.2-4.3 and their proof prose.",
+      "classification": "maintainer_approved_source_statement_interpretation",
+      "formal_meaning": "Section 4 comparisons are weak generally and strict exactly with positive disadvantaged effort; derivative signs are asserted only where derivatives exist.",
+      "id": "LBG22-WEAK-STRICT-01",
+      "report_summary": "Weak comparisons have positive-effort strictness; derivative existence is qualified.",
+      "source_locator": "cited publication:281-326",
+      "unresolved_relation_to_literal_source": "C2 is reviewed as an ordinary intended weak/strict reading; C3 separately corrects universal derivative existence.",
+      "why_needed": "Zero effort can give equality, and mixture-support junctions can kink under smooth primitives."
+    },
+    {
+      "approval_reference": "The underlying approval record is withheld from this public projection.",
+      "checked_scope": "B.2 deviations, equilibria, conditional utilities, counterexample, and corrected theorem.",
+      "classification": "maintainer_approved_source_model_clarification",
+      "formal_meaning": "Applicants choose nonnegative eM,eU with eM+eU=B and utility reward-p(eM); the printed unused-budget term is not an enforcement device.",
+      "id": "LBG22-HARD-BUDGET-01",
+      "report_summary": "The multitask action space is a hard equality budget.",
+      "source_locator": "cited publication:1799-1806",
+      "unresolved_relation_to_literal_source": "LBG22-P8 records the displayed-model correction; B>=E belongs only to C5.",
+      "why_needed": "The prose states residual effort, while the displayed penalty alone does not exclude overspending."
+    }
+  ],
+  "paper": "LBG22StrategicRanking",
+  "review_note": "Independent review of the complete pinned source and all 18 selected named-result proof scopes. The approval record fixes model readings but is not proof evidence. C1 and C5 are substantive local restrictions; C3 and C4 are minor corrected clauses. C2 is an ordinary source match under the approved weak/strict convention. P10 is deep-only.",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Proposition 2.1 rank-reward preservation, convex-cost crossing argument, and fixed tie priority.",
+      "source_locator": "cited publication:1161-1165; cited publication:1890-2062"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Theorem 2.2 recursive effort construction, all-deviation equilibrium, and uniqueness up to null sets.",
+      "source_locator": "cited publication:1192-1207; cited publication:2064-2311"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Proposition 3.1 pure-randomization optimum and two-level monotonicity proof.",
+      "source_locator": "cited publication:135-137; cited publication:2370-2398"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Proposition 3.2 private-utility normalization and baseline-score clipping.",
+      "source_locator": "cited publication:148-151; cited publication:2400-2410"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Proposition 3.3 admissibility of the existential three-level witness.",
+      "source_locator": "cited publication:161-163; cited publication:2425-2452"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Proposition 3.4 feasible parameter bound and global interior optimum.",
+      "source_locator": "cited publication:173-177; cited publication:2455-2469"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Proposition 4.1 mixture CDF/quantile construction and support-safe reward preservation.",
+      "source_locator": "cited publication:224-235; cited publication:2658-2664"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Proposition 4.2 weak welfare ordering and positive-effort strictness.",
+      "source_locator": "cited publication:281-310; cited publication:2666-2684"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Proposition 4.3 finite comparison and derivative existence/sign.",
+      "source_locator": "cited publication:321-326; cited publication:2686-2727"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Proposition 4.4 access comparison including exhausted support.",
+      "source_locator": "cited publication:335-339; cited publication:2730-2752"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Corollary A.1 reward-transfer indices and baseline clipping.",
+      "source_locator": "cited publication:1698-1707; cited publication:2314-2367"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Supplemental no-ties and positive-mass strict-skill interval claim.",
+      "source_locator": "cited publication:1674-1676"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Proposition B.1 strict pairwise clause, band preservation, and best-coordinate effort.",
+      "source_locator": "cited publication:1768-1780; cited publication:2804-2820"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Proposition B.2 hard budget, conditional utility, and global supportability.",
+      "source_locator": "cited publication:1826-1828; cited publication:2822-2855"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Lemma C.1 equal scores imply equal rewards on one full-measure best-response set.",
+      "source_locator": "cited publication:1844-1852"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Lemma C.2 null profile changes preserve score laws and counterfactual ranks.",
+      "source_locator": "cited publication:1869-1883"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Lemma C.3 cost-gap inequality from paired best responses.",
+      "source_locator": "cited publication:2005-2016"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Lemma C.4 production-gap inequality from concavity and skill ordering.",
+      "source_locator": "cited publication:2049-2051"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "f1bcd43db3082a1ac00d8125dcbd2b0132397ff0a15ac362f8948afa8ad0060a"
+}

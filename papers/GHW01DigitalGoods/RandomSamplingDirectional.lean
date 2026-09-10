@@ -1,5 +1,6 @@
 import GHW01DigitalGoods.AuctionMainTheorems
 import GHW01DigitalGoods.Section11FixedSizeBridge
+import AppliedModelingLib.Foundations.Math.FiniteRounding
 
 /-!
 # Directional random-sampling optimal-threshold auction
@@ -1151,6 +1152,186 @@ theorem theorem6_2_directional_fair_coin_revenue_bound_of_finite_candidate_bench
       (paper_theorem6_2_probability_bound_nonpos_of_alpha_lt_three
         halpha_lt_three)
       (by positivity)
+
+/-! The printed real-parameter endpoint.  The probability argument is still
+indexed by the natural count `⌈alpha⌉`, but the source scale condition is
+used before that integerization through the real selected-offer bridge. -/
+theorem theorem6_2_directional_fair_coin_revenue_bound_of_finite_candidate_benchmark_real_alpha
+    {n : ℕ} [NeZero n] (values : Fin n → ℝ) (keep : Bool)
+    {alpha highValue : ℝ}
+    (halpha_nonneg : 0 ≤ alpha)
+    (hhigh_pos : 0 < highValue)
+    (hvalue_bound : ∀ i, values i ≤ highValue)
+    (halpha_highValue : alpha * highValue ≤
+      finiteCandidateFixedPriceBenchmark values 1) :
+    1 - Real.exp (-alpha / 36) - 40 * Real.exp (-alpha / 72) ≤
+      (FairCoin.productMeasure (Fin n)).real
+        {side |
+          finiteCandidateFixedPriceBenchmark values 1 ≤
+            6 * (randomSamplingOptimalThresholdAuction side keep 1).revenue values} := by
+  let f : ℝ → ℝ := fun x =>
+    1 - Real.exp (-x / 36) - 40 * Real.exp (-x / 72)
+  have hmono : ∀ {x y : ℝ}, x ≤ y → f x ≤ f y := by
+    intro x y hxy
+    dsimp [f]
+    have h36 : Real.exp (-y / 36) ≤ Real.exp (-x / 36) := by
+      apply Real.exp_le_exp.mpr
+      linarith
+    have h72 : Real.exp (-y / 72) ≤ Real.exp (-x / 72) := by
+      apply Real.exp_le_exp.mpr
+      linarith
+    linarith
+  by_cases halpha_le_two : alpha ≤ 2
+  · have htwo : f (2 : ℝ) ≤ 0 := by
+      have htwo_nat :=
+        paper_theorem6_2_probability_bound_nonpos_of_alpha_lt_three
+          (alpha := 2) (by omega)
+      simpa [f] using htwo_nat
+    have hbound : f alpha ≤ 0 := hmono halpha_le_two |>.trans htwo
+    exact hbound.trans (by positivity)
+  · have halpha_gt_two : 2 < alpha := lt_of_not_ge halpha_le_two
+    let a : ℕ := Nat.ceil alpha
+    have halpha_le_a : alpha ≤ (a : ℝ) := by
+      simpa [a] using Nat.le_ceil alpha
+    have ha_ge_three : 3 ≤ a := by
+      by_contra hnot
+      have ha_le_two : a ≤ 2 := by omega
+      have : alpha ≤ 2 := le_trans halpha_le_a (by exact_mod_cast ha_le_two)
+      linarith
+    have hfixed_le_count_h :
+        finiteCandidateFixedPriceBenchmark values 1 ≤
+          (saleCount values (finiteCandidateOfferPrice values 1) : ℝ) * highValue := by
+      simpa [singlePriceRevenue_finiteCandidateOfferPrice_eq_benchmark] using
+        singlePriceRevenue_le_saleCount_mul_bound values
+          (finiteCandidateOfferPrice_nonneg values 1) hvalue_bound
+    have halpha_sale_real :
+        alpha ≤ saleCount values (finiteCandidateOfferPrice values 1) := by
+      have hmul : alpha * highValue ≤
+          (saleCount values (finiteCandidateOfferPrice values 1) : ℝ) * highValue :=
+        le_trans halpha_highValue hfixed_le_count_h
+      exact (mul_le_mul_iff_of_pos_right hhigh_pos).mp hmul
+    have ha_sale : a ≤ saleCount values (finiteCandidateOfferPrice values 1) := by
+      apply Nat.ceil_le.mpr
+      exact halpha_sale_real
+    have hlarge_real : (3 : ℝ) ≤
+        saleCount values (finiteCandidateOfferPrice values 1) := by
+      have ha_real : (a : ℝ) ≤ saleCount values (finiteCandidateOfferPrice values 1) := by
+        exact_mod_cast ha_sale
+      have ha_three : (3 : ℝ) ≤ a := by exact_mod_cast ha_ge_three
+      linarith
+    have hreal_result :=
+      theorem6_2_directional_fair_coin_revenue_bound_top_prefix_of_selected_large
+        (values := values) (keep := keep) (minWinners := 1)
+        (a := a) (p := finiteCandidateOfferPrice values 1)
+        (rankedTopPrefixFamily values) (by simp)
+        (finiteCandidateOfferPrice_nonneg values 1) (by simpa using ha_ge_three)
+        ha_sale
+        (fun side hthird => by
+          have hreal :=
+            paper_aux_theorem6_2_selected_offer_large_sample_count_of_real_alpha_h
+              side keep values (minWinners := 1)
+              (p := finiteCandidateOfferPrice values 1) (h := highValue)
+              (by simp) (finiteCandidateOfferPrice_nonneg values 1) hhigh_pos
+              halpha_sale_real (by simpa using hlarge_real) hvalue_bound
+              (by simpa [singlePriceRevenue_finiteCandidateOfferPrice_eq_benchmark] using
+                halpha_highValue) hthird
+          exact Nat.ceil_le.mpr (by simpa [Nat.cast_mul] using hreal))
+    have hfinal : f alpha ≤ f (a : ℝ) := hmono halpha_le_a
+    exact hfinal.trans (by simpa [f, a,
+      singlePriceRevenue_finiteCandidateOfferPrice_eq_benchmark] using hreal_result)
+
+/-- Real-`alpha` bridge under an explicit integer majorant.  The finite tail
+argument is indexed by a natural winner count, so this theorem separates the
+source-level real parameter from that discrete proof index.  The majorant
+condition is stronger than the printed `alpha * h ≤ F` premise and is exposed
+rather than hidden behind a rounding convention. -/
+theorem theorem6_2_directional_fair_coin_revenue_bound_of_finite_candidate_benchmark_real_alpha_of_integer_majorant
+    {n : ℕ} [NeZero n] (values : Fin n → ℝ) (keep : Bool)
+    {alpha : ℝ} {a : ℕ} {highValue : ℝ}
+    (hhigh_pos : 0 < highValue)
+    (hvalue_bound : ∀ i, values i ≤ highValue)
+    (halpha_le_a : alpha ≤ a)
+    (ha_highValue : (a : ℝ) * highValue ≤
+      finiteCandidateFixedPriceBenchmark values 1) :
+    1 - Real.exp (-alpha / 36) - 40 * Real.exp (-alpha / 72) ≤
+      (FairCoin.productMeasure (Fin n)).real
+        {side |
+          finiteCandidateFixedPriceBenchmark values 1 ≤
+            6 *
+              (randomSamplingOptimalThresholdAuction side keep 1).revenue values} := by
+  have ha_bound :=
+    theorem6_2_directional_fair_coin_revenue_bound_of_finite_candidate_benchmark_all_alpha
+      (values := values) (keep := keep) (alpha := a) (highValue := highValue)
+      hhigh_pos hvalue_bound ha_highValue
+  have harg36 : -(a : ℝ) / 36 ≤ -alpha / 36 := by linarith
+  have harg72 : -(a : ℝ) / 72 ≤ -alpha / 72 := by linarith
+  have hexp36 : Real.exp (-(a : ℝ) / 36) ≤ Real.exp (-alpha / 36) :=
+    Real.exp_le_exp.mpr harg36
+  have hexp72 : Real.exp (-(a : ℝ) / 72) ≤ Real.exp (-alpha / 72) :=
+    Real.exp_le_exp.mpr harg72
+  have hbound :
+      1 - Real.exp (-alpha / 36) - 40 * Real.exp (-alpha / 72) ≤
+        1 - Real.exp (-(a : ℝ) / 36) - 40 * Real.exp (-(a : ℝ) / 72) := by
+    linarith
+  exact le_trans hbound ha_bound
+
+/-! A source-premise-compatible real-parameter variant.  The discrete proof
+can always use `⌊alpha⌋`; this keeps the printed benchmark premise but makes
+the unavoidable loss in the exponent explicit rather than silently coercing a
+real threshold to a natural number. -/
+
+theorem theorem6_2_directional_fair_coin_revenue_bound_of_finite_candidate_benchmark_real_alpha_floor
+    {n : ℕ} [NeZero n] (values : Fin n → ℝ) (keep : Bool)
+    {alpha : ℝ} {highValue : ℝ}
+    (halpha_nonneg : 0 ≤ alpha)
+    (hhigh_pos : 0 < highValue)
+    (hvalue_bound : ∀ i, values i ≤ highValue)
+    (halpha_highValue : alpha * highValue ≤
+      finiteCandidateFixedPriceBenchmark values 1) :
+    1 - Real.exp (-(Nat.floor alpha : ℝ) / 36) -
+        40 * Real.exp (-(Nat.floor alpha : ℝ) / 72) ≤
+      (FairCoin.productMeasure (Fin n)).real
+        {side |
+          finiteCandidateFixedPriceBenchmark values 1 ≤
+            6 *
+              (randomSamplingOptimalThresholdAuction side keep 1).revenue values} := by
+  let a : ℕ := Nat.floor alpha
+  have ha_le : (a : ℝ) ≤ alpha := by
+    simpa [a] using (Nat.floor_le halpha_nonneg)
+  have ha_highValue : (a : ℝ) * highValue ≤
+      finiteCandidateFixedPriceBenchmark values 1 := by
+    exact (mul_le_mul_of_nonneg_right ha_le (le_of_lt hhigh_pos)).trans
+      halpha_highValue
+  simpa [a] using
+    (theorem6_2_directional_fair_coin_revenue_bound_of_finite_candidate_benchmark_all_alpha
+      (values := values) (keep := keep) (alpha := a) (highValue := highValue)
+      hhigh_pos hvalue_bound ha_highValue)
+
+/-- Recover the source's printed real-`alpha` exponent under the transparent
+ceiling-majorant repair.  The extra premise is exactly what lets the
+integer-indexed tail proof use `ceil alpha` without weakening the exponent. -/
+theorem theorem6_2_directional_fair_coin_revenue_bound_of_finite_candidate_benchmark_real_alpha_of_ceiling_majorant
+    {n : ℕ} [NeZero n] (values : Fin n → ℝ) (keep : Bool)
+    {alpha : ℝ} {highValue : ℝ}
+    (hhigh_pos : 0 < highValue)
+    (hvalue_bound : ∀ i, values i ≤ highValue)
+    (hceil_highValue : (Nat.ceil alpha : ℝ) * highValue ≤
+      finiteCandidateFixedPriceBenchmark values 1) :
+    1 - Real.exp (-alpha / 36) - 40 * Real.exp (-alpha / 72) ≤
+      (FairCoin.productMeasure (Fin n)).real
+    {side |
+          finiteCandidateFixedPriceBenchmark values 1 ≤
+            6 *
+              (randomSamplingOptimalThresholdAuction side keep 1).revenue values} := by
+  have hmajorant : ∃ a : ℕ, alpha ≤ (a : ℝ) ∧
+      (a : ℝ) * highValue ≤ finiteCandidateFixedPriceBenchmark values 1 :=
+    (AppliedModelingLib.FiniteRounding.exists_nat_majorant_mul_le_iff
+      (hscale := le_of_lt hhigh_pos)).2 hceil_highValue
+  rcases hmajorant with ⟨a, ha, ha_budget⟩
+  exact
+    theorem6_2_directional_fair_coin_revenue_bound_of_finite_candidate_benchmark_real_alpha_of_integer_majorant
+      (values := values) (keep := keep) (alpha := alpha) (a := a)
+      (highValue := highValue) hhigh_pos hvalue_bound ha ha_budget
 
 /-- Ranked finite-bid exact-half form of the alpha/high-value directional
 guarantee.  `a` remains a natural number deliberately: this is the current

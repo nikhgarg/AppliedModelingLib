@@ -36,11 +36,14 @@ open scoped ENNReal NNReal
 noncomputable section
 
 /--
-Kernelized selection portion of the paper's Condition 1.  The source writes a
-density-style `g(t)` despite conditioning on a continuously valued `T₁`; this
-record uses the well-typed conditional kernel `g(· | T₁)` instead.  The source
-states that the selected start lies in `[T₁,T]`, so the observation horizon is
-recorded explicitly. In a family indexed by the Poisson rate, callers must
+Kernelized post-first-report portion of the paper's Condition 1.  The source
+writes a density-style `g(t)` despite conditioning on a continuously valued
+`T₁`; this record uses the well-typed conditional kernel `g(· | T₁)` instead.
+It records the lower support and conditional future-tail independence needed
+for Lemma 2.  The finite-horizon upper support `S ≤ T`, which applies only
+when the observed first report lies within that horizon, belongs to
+`Theorem2ConditionOneFixedHistoryDensityPresentation` at the fixed-history
+likelihood boundary. In a family indexed by the Poisson rate, callers must
 reuse `rateFreeStartKernel` across rates. The existing algebraic
 `Theorem2ConditionOneSource` separately records the rate-independent
 fixed-history likelihood term.
@@ -55,8 +58,6 @@ structure Theorem2ConditionOneSelection
     (Tail : Type*) [MeasurableSpace Tail] where
   firstReportTime : Ω → ℝ≥0
   startTime : Ω → ℝ≥0
-  /-- The source observation horizon `T`. -/
-  observationHorizon : ℝ≥0
   /-- A caller-supplied measurable representation of the post-`T₁` tail. -/
   postFirstReportTail : Ω → Tail
   rateFreeStartKernel : Kernel ℝ≥0 ℝ≥0
@@ -65,7 +66,6 @@ structure Theorem2ConditionOneSelection
   startTime_measurable : Measurable startTime
   postFirstReportTail_measurable : Measurable postFirstReportTail
   firstReport_le_start : ∀ ω, firstReportTime ω ≤ startTime ω
-  start_le_observationHorizon : ∀ ω, startTime ω ≤ observationHorizon
   start_conditional_law : ∀ᵐ ω ∂P,
     ProbabilityTheory.HasLaw startTime
       (rateFreeStartKernel (firstReportTime ω))

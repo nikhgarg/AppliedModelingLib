@@ -1,16 +1,12 @@
 {
   "acceptance_credential": false,
-  "accepted_graph_sha256": "25a60d60a6d6593115c20140f4affe08542fefa5eef9bea35676529eba4e25e9",
+  "accepted_graph_sha256": "80be721f98a072d6eb17a1dce51210f873efb3211114f0f86d35c74ed63006be",
   "bindings_by_source_item": {
     "appendix_shifted_poisson_after_first_jump": {
-      "accepted_source_role_contract_sha256": "fbd7d013fc26dae1ee512eacbe6d0a8fe53945fcbb556d797c54410e7db5387a",
-      "public_source_role_projection_sha256": "eb4f0aa3eed12d66850601dee10f018fece1fcd1613f722d860509db87ab38b7",
+      "accepted_source_role_contract_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "public_source_role_projection_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
       "schema": 1,
-      "withheld_field_paths": [
-        "user_approved_scope_exclusion.approval_reference",
-        "user_approved_scope_exclusion.source_evidence",
-        "user_approved_scope_exclusion.source_locator"
-      ]
+      "withheld_field_paths": []
     },
     "condition1_selected_start": {
       "accepted_source_role_contract_sha256": "833843175a57efcc42628b0a84e8c38255ed09660fd387cb299770e41e9ed782",
@@ -43,8 +39,8 @@
       "withheld_field_paths": []
     },
     "equation3_mle_formula_and_maximum_likelihood_claim": {
-      "accepted_source_role_contract_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
-      "public_source_role_projection_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
+      "accepted_source_role_contract_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "public_source_role_projection_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
       "schema": 1,
       "withheld_field_paths": []
     },
@@ -103,14 +99,10 @@
       "withheld_field_paths": []
     },
     "lemma2_exponential_waiting_tail": {
-      "accepted_source_role_contract_sha256": "1b4ca7631f977342bd0ed4254a6a5dcbfd6642d29b6a00be3214a7b7ebde0d57",
-      "public_source_role_projection_sha256": "0763d88ae4e0880db5b2a101cad7167889163e94143484425062b6c46c0f8e0a",
+      "accepted_source_role_contract_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
+      "public_source_role_projection_sha256": "c09b92ec6ce609fc3a6f3c5dd73a42330a857021aaefb024976859ada081a856",
       "schema": 1,
-      "withheld_field_paths": [
-        "user_approved_scope_exclusion.approval_reference",
-        "user_approved_scope_exclusion.source_evidence",
-        "user_approved_scope_exclusion.source_locator"
-      ]
+      "withheld_field_paths": []
     },
     "proposition1_nonidentifiability": {
       "accepted_source_role_contract_sha256": "64a83a0ae6edbdb2d3cfb6cb84e3bf045734ef9303f62643ff780eff69b02885",
@@ -163,13 +155,13 @@
   },
   "paper": "LBG24SpatialUnderreporting",
   "private_role_material_included": false,
-  "private_source_map_material_sha256": "9ffd37b09aab6bb9d535233df2f9830634f2f04740393d394fe2cd445d472038",
-  "private_source_map_sha256": "b0b4f69ef6bc83617265144a67105e734bd0d684a4f48cea5f5a5a781ee814f9",
+  "private_source_map_material_sha256": "90d2dd9be44609dd4bd96afa11dcbd6630c1401114373300f561a9de900a0dda",
+  "private_source_map_sha256": "439beb647cf89833594643f57dc28ef1be0bcf036cf1b1b9c9b739a01e63651a",
   "projection_contract_sha256": "ed0964edc9c70f5ce087ce9bf134712ca40c7964ecaefd403309ac9a1b47d34d",
-  "public_display_manifest_material_sha256": "a62c630ee56f52dbdfa83259fe32c6058a6a1806e3df0759b36226bea64a9501",
-  "public_display_manifest_sha256": "5e79247a572e30bee393770f63bdcf0e8403f772a0ce8351527cd8bad02e2602",
-  "public_source_map_material_sha256": "5a04d786dfa611e0826df3a36fc239787b1a1c454dd4c61396224059c542c226",
-  "public_source_map_sha256": "7d769ed629ad9832559d030f1cdbfcfcbd19e04e4fa87c0ad620810a383b915c",
+  "public_display_manifest_material_sha256": "385f024bdf649e69b0a1fca9638f3ba823784412e6c38c0abf4e6547104b55c9",
+  "public_display_manifest_sha256": "02caed32ae0ab4db4cd7aa54c9602a03d16b30baa410fc2c0038aad7c8ae02e8",
+  "public_source_map_material_sha256": "99a0536747776462883d5bd3e3a2f7d15ef1b386ddbe8063a51f1b805e65acaa",
+  "public_source_map_sha256": "fb3720b0bbf1036915a7b4639792d80c82354ae5c8cf30deed023e4cefcfb4aa",
   "raw_private_approval_material_included": false,
   "schema": 1
 }

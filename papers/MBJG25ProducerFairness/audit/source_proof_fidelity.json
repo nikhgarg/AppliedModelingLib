@@ -1,0 +1,90 @@
+{
+  "defects": [
+    {
+      "acceptance_condition": "Lean checks full-interval weak decrease, interior strict decrease at positive discrete review counts under the source model conditions, and explicit endpoint counterexamples.",
+      "affected_source_locators": [
+        "cited publication:313-320",
+        "cited publication:1090-1098",
+        "cited publication:1120-1132"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "MBJG25-THEOREM3-1-STRICT-ENDPOINT-01",
+      "repair_obligation": "Replace the printed closed-interval strict clause by a weak full-interval theorem plus a strict theorem on 0 < q_v < 1, and prove that strictness fails at q_v = 0 and q_v = 1.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "The owner-authorized corrected Theorem 3.1 Spec exposes the weak closed-interval theorem and strict interior theorem at a positive natural review count; `paper_theorem3_1_proof` checks both, and `paper_theorem3_1_variance_endpoint_zero` refutes the printed strict conclusion at the lower endpoint.",
+      "source_claim": "Theorem 3.1 says posterior-rating variance is strictly decreasing in prior strength for every source-model quality 0 <= q_v <= 1, but the displayed variance is identically zero at q_v=0 and q_v=1.",
+      "source_locator": "cited publication:313-320; cited publication:1090-1098; cited publication:1120-1132",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "This is a two-endpoint domain slip, not a substantive error in the efficiency-fairness result: the advertised monotonicity is strict at every interior Bernoulli quality, weak on the full closed interval, and both excluded endpoints are exactly characterized in Lean."
+    },
+    {
+      "acceptance_condition": "Lean proves both equalities from a positive observed rating count and exposes the corrected baseline shape in the paper-facing theorem.",
+      "affected_source_locators": [
+        "cited publication:1271-1287"
+      ],
+      "defect_kind": "normalization_or_scaling",
+      "id": "MBJG25-EQ20-BETA-SHAPE-01",
+      "repair_obligation": "Prove the displayed weighted-average simplification and identify it with the binary posterior formula using pseudo-counts m*C and m*(1-C).",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "The Equation 20 paper-facing theorem proves the weighted-average identity and its equality to the binary posterior rating with scaled Beta(C,1-C) pseudo-counts.",
+      "source_claim": "The source says Equation 20 is a prior-weighted binary posterior with baseline prior distribution Beta(C,1), but Beta(C,1) has mean C/(C+1) and does not produce the displayed denominator n+m.",
+      "source_locator": "cited publication:1271-1287",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Equation 20 and the phrase population baseline rating C uniquely determine pseudo-counts m*C and m*(1-C), hence baseline shape Beta(C,1-C). Correcting the second shape parameter is a local label typo and leaves the displayed estimator and every paper conclusion unchanged."
+    },
+    {
+      "acceptance_condition": "Lean exposes the corrected finite Dirichlet posterior formula and proves its exact reduction to the printed Equation 21 expression when every prior pseudo-count is zero.",
+      "affected_source_locators": [
+        "cited publication:1305-1322"
+      ],
+      "defect_kind": "algebra_or_sign",
+      "id": "MBJG25-EQ21-PRIOR-OMISSION-01",
+      "repair_obligation": "State the ordinal posterior expected rating with prior plus observed counts in both weighted and total sums, and prove that the printed expression is exactly its zero-prior special case.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "The paper-facing ordinal posterior definition includes prior pseudo-counts in both sums, and the adjacent theorem proves the printed expression exactly at zero prior mass.",
+      "source_claim": "The source introduces Dirichlet prior pseudo-counts alphaHat and prior strength eta, but printed Equation 21 sums only observed counts, making the displayed estimate independent of every prior parameter.",
+      "source_locator": "cited publication:1305-1322",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The notation qHat_alphaHat, the conjugate-Dirichlet sentence immediately before the display, and the alphaHat_j=eta*alphaTilde_j sentence immediately after it uniquely determine adding alphaHat_j to each observed count. This local omission does not alter the empirical conclusion and is fully repaired with comparison evidence."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "This convention is used only by the fixed-model formula specification and Theorems 3.1--3.2. It does not alter the reusable real-analytic lemmas that prove the displayed formulas after the natural review count is cast to `Real`.",
+      "classification": "source_supported_model_interpretation",
+      "formal_meaning": "The fixed-model theorems range over a positive natural number of accumulated binary reviews. Lean therefore uses `t : Nat` with `0 < t`, and casts that count into the displayed rational formulas; `t` is not silently generalized to an arbitrary positive real.",
+      "id": "MBJG25-DISCRETE-NONDEGENERATE-OBSERVATION-01",
+      "source_locator": "cited publication:164-180; cited publication:195-219; cited publication:1069-1104",
+      "why_needed": "The source says ratings arrive in discrete time periods and that the fixed model accumulates one rating at each timestep. The sample-average interpretation at zero prior strength is undefined with no reviews, so the source-facing conditional formulas require a nondegenerate observation count."
+    }
+  ],
+  "paper": "MBJG25ProducerFairness",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Fixed Beta--Bernoulli model: binary reviews, true quality in the closed unit interval, discrete review counts, prior strength, conditional expected posterior mean, bias, variance, and squared bias.",
+      "source_locator": "cited publication:159-219; cited publication:1069-1104"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Theorem 3.1's squared-bias and variance monotonicity in prior strength, including the printed strict variance clause and its Appendix A differentiation argument.",
+      "source_locator": "cited publication:313-320; cited publication:1120-1132"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Theorem 3.2's source-domain convexity/minimum and concavity/maximum conclusions as functions of true quality after a positive discrete review count.",
+      "source_locator": "cited publication:335-344; cited publication:1137-1155"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Appendix D's Bayesian weighted-rating display and Appendix E's ordinal Dirichlet posterior display.",
+      "source_locator": "cited publication:1271-1287; cited publication:1305-1322"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "c5ae8e229ea8033e636af335e5d63f5dd27e098492c9fb013f333e71edd5c1f9"
+}

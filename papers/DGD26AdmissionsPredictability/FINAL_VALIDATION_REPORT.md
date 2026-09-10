@@ -1,6 +1,6 @@
 # Final Validation Report: Capacity Constraints Make Admissions Processes Less Predictable
 
-Updated: 2026-09-06
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -39,13 +39,13 @@ claims as abstract queue-procedure results.
 | Theorem 1, substitutability and instability | **Exact.** |
 | Theorem 1, no-zero and exact-one claims | **Necessary domain restriction:** $0<q<\lvert U\rvert$; zero or nonbinding capacity permits instability zero. [Domain](docs/SOURCE_CLARIFICATIONS.md#capacity-variability-and-queue-representation). |
 | Proposition 1, fixed-threshold clause | **Exact.** |
-| Proposition 1, rank-threshold clauses | **Tie rule specified:** a fixed tie order specifies rank selection; the instability/variability bounds and exact-one score construction are proved. [Selector](docs/SOURCE_CLARIFICATIONS.md#scores-strict-orders-and-assignment-choices). |
-| Theorem 2 | **Statement clarified:** variability one means representability by one priority order, regardless of redundant queue copies. The range uses positive binding capacity. [Details](docs/SOURCE_CLARIFICATIONS.md#capacity-variability-and-queue-representation). |
+| Proposition 1, rank-threshold clauses | **Exact with source clarification:** a fixed tie order specifies rank selection; the instability/variability bounds and exact-one score construction are proved. [Selector](docs/SOURCE_CLARIFICATIONS.md#scores-strict-orders-and-assignment-choices). |
+| Theorem 2 | **Exact with source clarification:** variability one means representability by one priority order, regardless of redundant queue copies. The range uses positive binding capacity. [Details](docs/SOURCE_CLARIFICATIONS.md#capacity-variability-and-queue-representation). |
 | Proposition 2 | **Exact for the abstract queue procedures.** |
-| Lemma A.6, consistency of removable sets | **Changed statement:** equal choices on two pools imply equality of their removable sets, replacing the printed self-equality. [Correction](docs/SOURCE_CLARIFICATIONS.md#exact-appendix-corrections). |
-| Corollary A.3, no consistent tightly-even instability | **Changed statement:** the instability parameter is the positive even value $d=2k$ with $k>0$. [Correction](docs/SOURCE_CLARIFICATIONS.md#exact-appendix-corrections). |
+| Lemma A.6, consistency of removable sets | **Exact after correcting the equality typo:** equal choices on two pools imply equality of their removable sets, replacing the printed self-equality. [Correction](docs/SOURCE_CLARIFICATIONS.md#exact-appendix-corrections). |
+| Corollary A.3, no consistent tightly-even instability | **Exact after correcting the parameter typo:** the instability parameter is the positive even value $d=2k$ with $k>0$. [Correction](docs/SOURCE_CLARIFICATIONS.md#exact-appendix-corrections). |
 | Theorems A.1–A.9; Lemmas A.1–A.5 and A.7; Corollaries A.1–A.2 | **Exact under the [capacity conditions above](docs/SOURCE_CLARIFICATIONS.md#capacity-variability-and-queue-representation).** |
-| Lemma A.8 and Theorems A.10–A.11, linear-assignment admissions | **Source clarification:** a fixed generic refinement specifies the choice among tied optimal assignments. [Tie rule](docs/SOURCE_CLARIFICATIONS.md#scores-strict-orders-and-assignment-choices). |
+| Lemma A.8 and Theorems A.10–A.11, linear-assignment admissions | **Exact with source clarification:** a fixed generic refinement specifies the choice among tied optimal assignments. [Tie rule](docs/SOURCE_CLARIFICATIONS.md#scores-strict-orders-and-assignment-choices). |
 
 ## 5. Remaining Boundaries and Gaps
 

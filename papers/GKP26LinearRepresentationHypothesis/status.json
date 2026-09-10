@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "id": "GKP26LinearRepresentationHypothesis",
+  "repository_visibility": "public",
+  "title": "How Many Features Can a Language Model Store Under the Linear Representation Hypothesis?",
+  "authors": "Nikhil Garg, Jon Kleinberg, Kenny Peng",
+  "source_version": "arXiv v1, 2026",
+  "build_target": "lake build GKP26LinearRepresentationHypothesis",
+  "status": "partially formalized",
+  "main_caveat": "Partial-formalization boundary: the cited Alon (2003) normalized near-identity matrix-rank theorem, used by the lower, threshold, and activation/bias bounds, is not yet proved in AppliedModelingLib. The compressed-sensing, random-incoherence, upper-bound, and geometry result families are natively formalized.",
+  "human_summary": "",
+  "human_summary_review": {
+    "status": "draft",
+    "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+  },
+  "review_entrypoint": "papers/GKP26LinearRepresentationHypothesis/FINAL_VALIDATION_REPORT.md",
+  "human_review": {
+    "reviewed_rows": 0,
+    "total_rows": 11,
+    "stale_rows": 0,
+    "mismatch_rows": 0,
+    "uncertain_rows": 0,
+    "source": "v11 PaperInterface claim surface; human entries are recorded after direct review"
+  },
+  "paper_interface": {
+    "path": "papers/GKP26LinearRepresentationHypothesis/PaperInterface.lean",
+    "line_count": 2513,
+    "declaration_rows": 89,
+    "review_rows": 11,
+    "oversized": true,
+    "maintainability_issue": "The canonical interface contains 14 human-review claims plus two cited proof-support boundaries; auxiliary declarations remain outside the human-review denominator."
+  },
+  "artifacts": {
+    "paper_interface": "papers/GKP26LinearRepresentationHypothesis/PaperInterface.lean",
+    "assumptions": "papers/GKP26LinearRepresentationHypothesis/Assumptions.lean",
+    "final_validation_report": "papers/GKP26LinearRepresentationHypothesis/FINAL_VALIDATION_REPORT.md",
+    "human_review_packet_pdf": "papers/GKP26LinearRepresentationHypothesis/docs/HUMAN_REVIEW_PACKET.pdf",
+    "human_review_packet_tex": "papers/GKP26LinearRepresentationHypothesis/docs/HUMAN_REVIEW_PACKET.tex",
+    "agent_source_audit": "papers/GKP26LinearRepresentationHypothesis/docs/AGENT_SOURCE_AUDIT.md",
+    "dependency_dag_tex": "papers/GKP26LinearRepresentationHypothesis/docs/DependencyDAG.tex",
+    "dependency_dag_pdf": "papers/GKP26LinearRepresentationHypothesis/docs/DependencyDAG.pdf"
+  },
+  "review_surface": {
+    "source_file": "papers/GKP26LinearRepresentationHypothesis/PaperInterface.lean",
+    "assumption_source_file": "papers/GKP26LinearRepresentationHypothesis/Assumptions.lean",
+    "llm_statement_review": {
+      "lean_to_tex_file": "papers/GKP26LinearRepresentationHypothesis/audit/lean_to_tex_llm.json",
+      "match_judgment_file": "papers/GKP26LinearRepresentationHypothesis/audit/statement_match_llm.json",
+      "review_surface_audit_file": "papers/GKP26LinearRepresentationHypothesis/audit/review_surface_llm.json",
+      "paper_coverage_audit_file": "papers/GKP26LinearRepresentationHypothesis/audit/paper_coverage_llm.json",
+      "assumption_judgment_file": "papers/GKP26LinearRepresentationHypothesis/audit/assumption_match_llm.json",
+      "require_explicit_source_routes": true,
+      "require_source_claim_atoms": true,
+      "surface_audit_threshold": 30,
+      "surface_warning_threshold": 120,
+      "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
+    },
+    "llm_paper_coverage_review": {
+      "paper_coverage_audit_file": "papers/GKP26LinearRepresentationHypothesis/audit/paper_coverage_llm.json",
+      "defect_support_judgment_file": "papers/GKP26LinearRepresentationHypothesis/audit/defect_support_match_llm.json",
+      "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more dashboard rows. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
+    },
+    "llm_assumption_review": {
+      "assumption_judgment_file": "papers/GKP26LinearRepresentationHypothesis/audit/assumption_match_llm.json",
+      "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
+    },
+    "llm_source_record_review": {
+      "source_record_audit_file": "papers/GKP26LinearRepresentationHypothesis/audit/source_record_audit.json",
+      "source_record_judgment_file": "papers/GKP26LinearRepresentationHypothesis/audit/source_record_match_llm.json",
+      "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt."
+    },
+    "semantic_model_review": {
+      "schema": 2,
+      "required_dimensions": [
+        "expanded_binders_and_domain",
+        "carrier_and_domain",
+        "probability_support_endpoints",
+        "joint_law_and_state_evolution",
+        "conditioning_and_calibration_semantics",
+        "expectation_definedness",
+        "null_cell_totalization_and_partition_scope",
+        "extended_rate_codomain"
+      ],
+      "policy": "Review every expanded paper-facing model surface semantically against the pinned source text and recorded corrected targets. Record not-applicable only after inspecting the carrier, probability, conditioning, expectation, partition, and rate semantics; declaration names are routing only."
+    },
+    "source_proof_fidelity_review": {
+      "ledger_file": "papers/GKP26LinearRepresentationHypothesis/audit/source_proof_fidelity.json",
+      "policy": "Record source-proof defects and corrected targets by exact source locator and mathematical obligation. The Geometry Proposition 2 correction retains the archival denominator, explicitly rejects archival equivalence, and proves the documented squared-denominator target without treating the repaired proof step as a source assumption."
+    },
+    "assumption_policy": "strict",
+    "assumption_names": [
+      "assumption_alon_normalized_rank_bound"
+    ],
+    "paper_coverage_required": false,
+    "include_names": [
+      "paper_compressed_sensing_external_basis_pursuitSpec",
+      "paper_geometry1_source_constructed_rateSpec",
+      "paper_geometry2_probe_column_correlation_upper_correctedSpec",
+      "paper_geometry2_representation_column_correlation_upper_correctedSpec",
+      "paper_geometry2_self_column_correlation_lowerSpec",
+      "paper_lower_bound_dimension_isBigO_source_log_source_regimeSpec",
+      "paper_random_rademacher_strict_incoherence_source_rateSpec",
+      "paper_upper_bound_dimension_isBigO_k_sq_log_mSpec",
+      "paper_rademacher_strict_incoherent_exists_source_rateSpec",
+      "paper_threshold_separation_dimension_isBigO_lower_source_log_original_regimeSpec",
+      "paper_activation_separation_dimension_isBigO_lower_source_log_original_regimeSpec"
+    ],
+    "slices": [
+      {
+        "id": "main_named_results",
+        "title": "Named theorem-level results",
+        "names": [
+          "paper_compressed_sensing_external_basis_pursuitSpec",
+          "paper_upper_bound_dimension_isBigO_k_sq_log_mSpec",
+          "paper_lower_bound_dimension_isBigO_source_log_source_regimeSpec",
+          "paper_geometry2_self_column_correlation_lowerSpec",
+          "paper_geometry2_representation_column_correlation_upper_correctedSpec",
+          "paper_geometry2_probe_column_correlation_upper_correctedSpec",
+          "paper_threshold_separation_dimension_isBigO_lower_source_log_original_regimeSpec",
+          "paper_activation_separation_dimension_isBigO_lower_source_log_original_regimeSpec"
+        ]
+      },
+      {
+        "id": "additional_source_results",
+        "title": "Additional source results",
+        "names": [
+          "paper_geometry1_source_constructed_rateSpec",
+          "paper_random_rademacher_strict_incoherence_source_rateSpec"
+        ]
+      },
+      {
+        "id": "additional_source_results",
+        "title": "Additional source results",
+        "names": [
+          "paper_rademacher_strict_incoherent_exists_source_rateSpec"
+        ]
+      }
+    ],
+    "proposition_spec_proofs": {
+      "paper_compressed_sensing_external_basis_pursuitSpec": "paper_compressed_sensing_external_basis_pursuit",
+      "paper_geometry1_source_constructed_rateSpec": "paper_geometry1_source_constructed_rate",
+      "paper_geometry2_probe_column_correlation_upper_correctedSpec": "paper_geometry2_probe_column_correlation_upper_corrected",
+      "paper_geometry2_representation_column_correlation_upper_correctedSpec": "paper_geometry2_representation_column_correlation_upper_corrected",
+      "paper_geometry2_self_column_correlation_lowerSpec": "paper_geometry2_self_column_correlation_lowerSpec_proof",
+      "paper_lower_bound_dimension_isBigO_source_log_source_regimeSpec": "paper_lower_bound_dimension_isBigO_source_log_source_regime",
+      "paper_random_rademacher_strict_incoherence_source_rateSpec": "paper_random_rademacher_strict_incoherence_source_rate",
+      "paper_upper_bound_dimension_isBigO_k_sq_log_mSpec": "paper_upper_bound_dimension_isBigO_k_sq_log_m",
+      "paper_rademacher_strict_incoherent_exists_source_rateSpec": "paper_rademacher_strict_incoherent_exists_source_rate",
+      "paper_threshold_separation_dimension_isBigO_lower_source_log_original_regimeSpec": "paper_threshold_separation_dimension_isBigO_lower_source_log_original_regime",
+      "paper_activation_separation_dimension_isBigO_lower_source_log_original_regimeSpec": "paper_activation_separation_dimension_isBigO_lower_source_log_original_regime"
+    },
+    "require_v11_raw_source_spec_screening": true,
+    "require_source_spec_correspondence": true
+  }
+}

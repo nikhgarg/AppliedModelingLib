@@ -1,6 +1,7 @@
 import GHW01DigitalGoods.PaperInterface
 
 import GHW01DigitalGoods.ProofBridge
+import GHW01DigitalGoods.ContinuousOfferBridge
 
 
 
@@ -45,6 +46,14 @@ theorem result_lemma6_1_fixed_size_lower_tail : result_lemma6_1_fixed_size_lower
 theorem result_theorem6_2_random_sampling : result_theorem6_2_random_samplingSpec := by
   exact GHW01DigitalGoods.ProofBridge.theorem6_2_random_sampling
 
+theorem extension_theorem6_2_real_alpha :
+    extension_theorem6_2_real_alphaSpec := by
+  intro n _ values keep alpha highValue halpha_nonneg hhigh_pos hvalue_bound
+    halpha_highValue
+  exact
+    theorem6_2_directional_fair_coin_revenue_bound_of_finite_candidate_benchmark_real_alpha
+      values keep halpha_nonneg hhigh_pos hvalue_bound halpha_highValue
+
 theorem result_theorem7_1_weighted_pairing : result_theorem7_1_weighted_pairingSpec := by
   exact GHW01DigitalGoods.ProofBridge.theorem7_1_weighted_pairing
 
@@ -59,6 +68,26 @@ theorem result_lemma8_1_monotone_allocation : result_lemma8_1_monotone_allocatio
 
 theorem result_theorem8_2_journal_revenue_upper_bound : result_theorem8_2_journal_revenue_upper_boundSpec := by
   exact GHW01DigitalGoods.ProofBridge.theorem8_2_truthful_revenue_upper_bound
+
+theorem extension_theorem8_2_continuous_measure_revenue :
+    extension_theorem8_2_continuous_measure_revenueSpec := by
+  intro Agent Outcome _ _ _ _ μ _ values offerPrice hoff_integrable
+    hoff_nonneg hoff_accept_monotone
+  exact
+    paper_theorem8_2_expected_revenue_le_finite_candidate_benchmark_of_measure_accept_monotone_offer_source_model
+      μ values offerPrice hoff_integrable hoff_nonneg hoff_accept_monotone
+
+/-! The marginal-law version keeps the common coupling explicit while exposing
+the reusable `Measure.map` bridge from each continuous offer marginal. -/
+theorem extension_theorem8_2_continuous_marginal_coupling_revenue :
+    ∀ {Agent Outcome : Type*} [Fintype Agent] [Nonempty Agent]
+      [DecidableEq Agent] [MeasurableSpace Outcome]
+      (model : PaperTheorem82ContinuousMarginalCoupling Agent Outcome),
+      paper_theorem8_2_continuous_marginal_expected_revenue
+          model.values model.offerLaw ≤
+        finiteCandidateFixedPriceBenchmark model.values 1 := by
+  intro Agent Outcome _ _ _ _ model
+  exact paper_theorem8_2_expected_marginal_revenue_le_finite_candidate_benchmark model
 
 theorem result_theorem9_1_bid_independent_lower_bound : result_theorem9_1_bid_independent_lower_boundSpec := by
   exact GHW01DigitalGoods.ProofBridge.theorem9_1_bid_independent_lower_bound

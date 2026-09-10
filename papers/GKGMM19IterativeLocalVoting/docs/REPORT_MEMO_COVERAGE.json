@@ -1,0 +1,528 @@
+{
+  "schema": 2,
+  "paper": "GKGMM19IterativeLocalVoting",
+  "report_sha256": "512de4ff425c64d2761373e4963faa25e74fc5c304945390a8d30c740c6e7171",
+  "source_items_sha256": "b8a0d6ff4e4e636534e444f36d7ce3fba9250e80ed5eb9ab35f307cfaa184d29",
+  "all_selected_semantic_review_sha256": "1a0211020255167d936d0b01038b5d0756280ae4d7672dc53691bb4843dbe15e",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/GKGMM19-PROPOSITION2-C1-AMBIENT-MEDIAN-01": {
+      "disposition": "memo",
+      "memo": "docs/PROPOSITION2_C1_CORRECTION.md",
+      "memo_sha256": "a55d9b5a8d07bf8fee31a1db8a96962a75026e9c897ff3ad79566cc4fbdf37a2",
+      "memo_heading": "C1 corrected target",
+      "memo_anchor": "c1-corrected-target",
+      "source_reading": "Proposition 2 assumes C1--C3 and concludes convergence to the ambient vector of coordinatewise medians."
+    },
+    "convention/GKGMM19-RAW-UTILITY-QUERY-DOMAIN-01": {
+      "disposition": "not_material",
+      "reason": "This is the definition-level convention that makes the pre-projection query total; it leaves every reported theorem endpoint and its mathematical comparison unchanged."
+    },
+    "convention/GKGMM19-ALGORITHM1-EUCLIDEAN-PROJECTION-WINDOW-01": {
+      "disposition": "not_material",
+      "reason": "This fixes the ordinary ambient interpretation of unqualified projection and magnitude without changing the separately specified local Lq query, stopping rule, or any reported conclusion."
+    },
+    "convention/GKGMM19-PROPOSITION2-COORDINATEWISE-MODELB-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "fefb4e82e543716029c5a172f12cf419718c3d84c0201e54e9df986a7939c5fc",
+      "memo_heading": "Proposition 2's coordinatewise Model B",
+      "memo_anchor": "proposition-2s-coordinatewise-model-b",
+      "source_reading": "For Proposition 2 with a Linfinity neighborhood, Model B moves every non-tied decomposition coordinate by the full current radius toward that coordinate of the sampled voter's ideal; tied coordinates do not move. Relative derivative magnitudes do not scale those coordinate steps. The proof's coordinatewise-median target is represented transparently by the feasible minimizers of expected coordinatewise absolute deviation."
+    },
+    "convention/GKGMM19-THEOREM3-FULL-SPACE-RESTRICTED-SPACE-01": {
+      "disposition": "memo",
+      "memo": "docs/THEOREM3_CONSTRAINED_SPACE_SOURCE_NOTE.md",
+      "memo_sha256": "06089e222bb2a68575d5dc478ccc07f69b525333c94318482520341dbafdcfbf",
+      "memo_heading": "The two formal results",
+      "memo_anchor": "the-two-formal-results",
+      "source_reading": "Theorem 3 is reviewed as an approved two-part clarification and expansion. For an arbitrary standard-Borel population sampled iid from the paper's population measure, the literal full-space Model B trace has zero aggregate directional field at every almost-sure convergent limit. For the separately represented finite-coordinate projected decision space, the proved alternative is that the aggregate directional field is zero or that no aggregate feasible direction exists at that limit."
+    },
+    "convention/GKGMM19-THEOREM3-IID-TRACE-WELLDEFINEDNESS-01": {
+      "disposition": "not_material",
+      "reason": "These are typed measurability, adaptation, and integrability conditions needed to state the source's stochastic expressions, not added convergence, equilibrium, or martingale conclusions."
+    },
+    "convention/GKGMM19-MODELB-ZERO-GRADIENT-STAY-PUT-01": {
+      "disposition": "not_material",
+      "reason": "The zero-gradient stay-put branch merely totalizes the displayed normalized response at its undefined denominator and leaves every nonzero-gradient formula and reported result endpoint unchanged."
+    },
+    "convention/GKGMM19-APPENDIX5-ADAPTED-BIAS-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "fefb4e82e543716029c5a172f12cf419718c3d84c0201e54e9df986a7939c5fc",
+      "memo_heading": "Appendix Theorem 5: random bias",
+      "memo_anchor": "appendix-theorem-5-random-bias",
+      "source_reading": "Appendix Theorem 5's bias is a sample-path process: its uniform bound and the weighted summability condition are almost-sure statements, and its update is evaluated on those same paths. The finite-dimensional formalization supplies only the measurability and adaptedness needed to define the printed conditional-noise expressions and partial sums."
+    },
+    "convention/GKGMM19-NONNEGATIVE-WEIGHT-DOMAINS-01": {
+      "disposition": "not_material",
+      "reason": "The nonzero vector condition is forced by Definition 2's displayed denominator, while Definition 4's scalar boundary remains defined; this only states each formula's natural domain."
+    },
+    "source/proposition2_decomposable_linf_medians/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/PROPOSITION2_C1_CORRECTION.md",
+      "memo_sha256": "a55d9b5a8d07bf8fee31a1db8a96962a75026e9c897ff3ad79566cc4fbdf37a2",
+      "memo_heading": "C1 corrected target",
+      "memo_anchor": "c1-corrected-target",
+      "source_reading": "proposition2_decomposable_linf_medians"
+    },
+    "report/theorem3-constrained-alternative": {
+      "disposition": "memo",
+      "memo": "docs/THEOREM3_CONSTRAINED_SPACE_SOURCE_NOTE.md",
+      "memo_sha256": "06089e222bb2a68575d5dc478ccc07f69b525333c94318482520341dbafdcfbf",
+      "memo_heading": "The two formal results",
+      "memo_anchor": "the-two-formal-results",
+      "report_home": 9,
+      "source_reading": "The combined Theorem 3 endpoint proves the conditional zero-field conclusion and a separate bounded-convex-domain alternative: zero limiting aggregate field or failure of the aggregate tail-feasibility condition. Sections 4 and 9 now report both; this does not establish a full boundary-equilibrium characterization."
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "00dc65bbee160e2c7f5eb9007fe25963059fb4949fcfec81abdcfd36094869ea",
+      "discovered_named_result_sha256": "b9ba70d431f14d4556b64092a8445ed5938220c5f67c2b4ad34ab89cfdd6dcad",
+      "source_format": "text",
+      "results": {
+        "lemma3_finite_holder_dual_gradient_candidate_norm_formula": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2160,
+              "line_start": 2158,
+              "presentation": "text_heading",
+              "presentation_sha256": "5620211ae0ef915bbba03846cac3dccb1f4320552a1d9ce65b74bbcfbeb59ac9",
+              "source_item_id": "lemma3_finite_holder_dual_gradient_candidate_norm_formula",
+              "source_label": "Lemma 3"
+            }
+          ],
+          "source_item_ids": [
+            "lemma3_finite_holder_dual_gradient_candidate_norm_formula"
+          ]
+        },
+        "proposition1_weighted_euclidean_l2": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 570,
+              "line_start": 556,
+              "presentation": "text_heading",
+              "presentation_sha256": "e98c00b289f762ede521f4f5dbf9589bd5af8ce7a3638b9cd6865e39d3384502",
+              "source_item_id": "proposition1_weighted_euclidean_l2",
+              "source_label": "Proposition 1"
+            },
+            {
+              "kind": "proposition",
+              "line_end": 2194,
+              "line_start": 2191,
+              "presentation": "text_heading",
+              "presentation_sha256": "2385a02e14cec9a74bdca088570081ae6e82f8987d79bb7cdbcfc380a08d2f67",
+              "source_item_id": "appendix_proposition1_restatement",
+              "source_label": "Proposition 1"
+            }
+          ],
+          "source_item_ids": [
+            "appendix_proposition1_restatement",
+            "proposition1_weighted_euclidean_l2"
+          ]
+        },
+        "proposition2_decomposable_linf_medians": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 613,
+              "line_start": 597,
+              "presentation": "text_heading",
+              "presentation_sha256": "68d3243217a6a0b1a1abc21cb76370c7c049172cd5ab808cec67fd40c219f5ff",
+              "source_item_id": "proposition2_decomposable_linf_medians",
+              "source_label": "Proposition 2"
+            },
+            {
+              "kind": "proposition",
+              "line_end": 2210,
+              "line_start": 2207,
+              "presentation": "text_heading",
+              "presentation_sha256": "9602d1b5a8f8ce9f194d5a0c6c54dcf37392b1f1a6130766cfcf90ab8791178c",
+              "source_item_id": "appendix_proposition2_restatement",
+              "source_label": "Proposition 2"
+            }
+          ],
+          "source_item_ids": [
+            "appendix_proposition2_restatement",
+            "proposition2_decomposable_linf_medians"
+          ]
+        },
+        "source_appendix_lemma1_uniform_direction_error": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2090,
+              "line_start": 2082,
+              "presentation": "text_heading",
+              "presentation_sha256": "2774c87ac0ec00666bb458e2b6f7b7dc49211a770a29d5e810735246032041fc",
+              "source_item_id": "source_appendix_lemma1_uniform_direction_error",
+              "source_label": "Lemma 1"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 2333,
+              "line_start": 2330,
+              "presentation": "text_heading",
+              "presentation_sha256": "fa8c39a6b4f7b2573ae57f5c555a0e5a6dd099768255edea0dc907d8809df0f3",
+              "source_item_id": "appendix_lemma1_proof_restatement",
+              "source_label": "Lemma 1"
+            }
+          ],
+          "source_item_ids": [
+            "appendix_lemma1_proof_restatement",
+            "source_appendix_lemma1_uniform_direction_error"
+          ]
+        },
+        "source_appendix_lemma2_bad_event_linear_rate": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2104,
+              "line_start": 2093,
+              "presentation": "text_heading",
+              "presentation_sha256": "59fcde5327d1ac036678f40b343c6d5c19699fe30f9c43192391694b404fa02f",
+              "source_item_id": "source_appendix_lemma2_bad_event_linear_rate",
+              "source_label": "Lemma 2"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_lemma2_bad_event_linear_rate"
+          ]
+        },
+        "source_appendix_lemma4_weighted_bad_event_linear_rate": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2190,
+              "line_start": 2183,
+              "presentation": "text_heading",
+              "presentation_sha256": "bc633170a71b35a0264f62d4d7ba420f0e6151d9ed8a05fd53760c66b3e0663b",
+              "source_item_id": "source_appendix_lemma4_weighted_bad_event_linear_rate",
+              "source_label": "Lemma 4"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 2642,
+              "line_start": 2634,
+              "presentation": "text_heading",
+              "presentation_sha256": "35793eab9506c977ff52783088e7a30e989ec69c9fce3e8ed7ed00caad9279a8",
+              "source_item_id": "appendix_lemma4_proof_restatement",
+              "source_label": "Lemma 4"
+            }
+          ],
+          "source_item_ids": [
+            "appendix_lemma4_proof_restatement",
+            "source_appendix_lemma4_weighted_bad_event_linear_rate"
+          ]
+        },
+        "source_appendix_theorem4_expected_subgradient": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 2001,
+              "line_start": 1976,
+              "presentation": "text_heading",
+              "presentation_sha256": "06eff7d4dd59d91d9e8895c109fecb23bd661fd7d7eb7b7c6f610dba852f20de",
+              "source_item_id": "source_appendix_theorem4_expected_subgradient",
+              "source_label": "Theorem 4"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_theorem4_expected_subgradient"
+          ]
+        },
+        "source_appendix_theorem5_ssgm_convergence": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 2032,
+              "line_start": 2004,
+              "presentation": "text_heading",
+              "presentation_sha256": "f97ead8e1ce34ec6b2e76ac35e0630ce43f6321afbc8da34ab6bbc0815c5a48b",
+              "source_item_id": "source_appendix_theorem5_ssgm_convergence",
+              "source_label": "Theorem 5"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_theorem5_ssgm_convergence"
+          ]
+        },
+        "theorem1_lp_normed_dual_cases": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 502,
+              "line_start": 481,
+              "presentation": "text_heading",
+              "presentation_sha256": "1e8649353e5ada8a858e377b7e4a03bdf71bce7e1f8bfa9640825da5523a6d74",
+              "source_item_id": "theorem1_lp_normed_dual_cases",
+              "source_label": "Theorem 1"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 2110,
+              "line_start": 2107,
+              "presentation": "text_heading",
+              "presentation_sha256": "32d5c03d6bbf2fad864d85946014457a00172520725cd9185ca332329892bf4e",
+              "source_item_id": "appendix_theorem1_restatement",
+              "source_label": "Theorem 1"
+            }
+          ],
+          "source_item_ids": [
+            "appendix_theorem1_restatement",
+            "theorem1_lp_normed_dual_cases"
+          ]
+        },
+        "theorem2_modelB_holder_dual_norms": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 520,
+              "line_start": 505,
+              "presentation": "text_heading",
+              "presentation_sha256": "ab4ef58087528abd1f5ed5ed06e5883299b3e9f5ce770bbd5d8589fcaa79d74c",
+              "source_item_id": "theorem2_modelB_holder_dual_norms",
+              "source_label": "Theorem 2"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 2165,
+              "line_start": 2162,
+              "presentation": "text_heading",
+              "presentation_sha256": "9b6954df9034e575ef0355c18b75b819cb3b5763d0b12c0b418fecf1179af8a7",
+              "source_item_id": "appendix_theorem2_restatement",
+              "source_label": "Theorem 2"
+            }
+          ],
+          "source_item_ids": [
+            "appendix_theorem2_restatement",
+            "theorem2_modelB_holder_dual_norms"
+          ]
+        },
+        "theorem3_convergent_l2_modelB_is_directional_equilibrium": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 665,
+              "line_start": 627,
+              "presentation": "text_heading",
+              "presentation_sha256": "f72517ea0007b356bcc2762ffa5f222f10810478fde2078e4d3de6a8147636cd",
+              "source_item_id": "theorem3_convergent_l2_modelB_is_directional_equilibrium",
+              "source_label": "Theorem 3"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 2239,
+              "line_start": 2229,
+              "presentation": "text_heading",
+              "presentation_sha256": "41b3340b4f7f416b11fb88afccd761b7ed7d2e8d21f5cc9736569aceedca0c1b",
+              "source_item_id": "appendix_theorem3_restatement",
+              "source_label": "Theorem 3"
+            }
+          ],
+          "source_item_ids": [
+            "appendix_theorem3_restatement",
+            "theorem3_convergent_l2_modelB_is_directional_equilibrium"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "10fea149c8ad1b41634580790ae0c86d2b1c7fd8bf28eefe2691e83fcf1ec490",
+    "results": {
+      "lemma3_finite_holder_dual_gradient_candidate_norm_formula": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemmas 1–4; Theorem 4",
+            "row_sha256": "6e40e4607fbae174a974c23e90bd2dbf525ac9ffece81a6a2117465330eaa60a"
+          }
+        ],
+        "grouping_reason": "Section 4 groups the Appendix support lemmas and Theorem 4 in one exact-result row."
+      },
+      "proposition1_weighted_euclidean_l2": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 1",
+            "row_sha256": "66def522362f2254cd9baa69f77efa3d3864196be8a751e9560dde81525fd7b6"
+          }
+        ]
+      },
+      "proposition2_decomposable_linf_medians": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 2, Model B",
+            "row_sha256": "db216db6d8d5eec98b85b5283dfadcff7a74e5fe304d48e5db78c66bbd501f94"
+          },
+          {
+            "report_label": "Proposition 2, both models",
+            "row_sha256": "baeed771937cb8351c8f91c2f5df03a35d19e1fbee98b48276b0843bd1e2ffc7"
+          }
+        ],
+        "grouping_reason": "Section 4 separates the Proposition 2 Model B source convention from the C1 corrected endpoint shared by both executions.",
+        "split_reason": "The two rows distinguish the coordinatewise-boundary Model B reading from the non-equivalent ambient-median correction."
+      },
+      "source_appendix_lemma1_uniform_direction_error": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemmas 1–4; Theorem 4",
+            "row_sha256": "6e40e4607fbae174a974c23e90bd2dbf525ac9ffece81a6a2117465330eaa60a"
+          }
+        ],
+        "grouping_reason": "Section 4 groups the Appendix support lemmas and Theorem 4 in one exact-result row."
+      },
+      "source_appendix_lemma2_bad_event_linear_rate": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemmas 1–4; Theorem 4",
+            "row_sha256": "6e40e4607fbae174a974c23e90bd2dbf525ac9ffece81a6a2117465330eaa60a"
+          }
+        ],
+        "grouping_reason": "Section 4 groups the Appendix support lemmas and Theorem 4 in one exact-result row."
+      },
+      "source_appendix_lemma4_weighted_bad_event_linear_rate": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemmas 1–4; Theorem 4",
+            "row_sha256": "6e40e4607fbae174a974c23e90bd2dbf525ac9ffece81a6a2117465330eaa60a"
+          }
+        ],
+        "grouping_reason": "Section 4 groups the Appendix support lemmas and Theorem 4 in one exact-result row."
+      },
+      "source_appendix_theorem4_expected_subgradient": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemmas 1–4; Theorem 4",
+            "row_sha256": "6e40e4607fbae174a974c23e90bd2dbf525ac9ffece81a6a2117465330eaa60a"
+          }
+        ],
+        "grouping_reason": "Section 4 groups the Appendix support lemmas and Theorem 4 in one exact-result row."
+      },
+      "source_appendix_theorem5_ssgm_convergence": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 5",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Theorem 5",
+            "row_sha256": "858571c7ba7675e60d47e15dfec88b180f291c74eee3ec91c37d6a205f7fdb83"
+          }
+        ],
+        "grouping_reason": "Section 4 prefixes the source label with ‘Appendix’ to distinguish the cited theorem from the paper’s main-text results."
+      },
+      "theorem1_lp_normed_dual_cases": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1",
+            "row_sha256": "ade971b1c04506c0dd973903109cff11c7ddcc45251a9f6ce5681843997dc98c"
+          }
+        ]
+      },
+      "theorem2_modelB_holder_dual_norms": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2",
+            "row_sha256": "996056617597900df82b7d432d1d3010d32a491d9e8672952f79bdb487f04c35"
+          }
+        ]
+      },
+      "theorem3_convergent_l2_modelB_is_directional_equilibrium": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3",
+            "row_sha256": "de6f1d3f23180d2db568f70587b4635b78bfb05e647357152cb05c093e01ea99"
+          }
+        ],
+        "grouping_reason": "The row accounts for both conclusions of the combined checked endpoint: the zero-field statement under feasibility and the constrained-domain zero-field-or-feasibility-failure alternative, with the latter also explained in Section 9."
+      }
+    },
+    "rows": {
+      "ade971b1c04506c0dd973903109cff11c7ddcc45251a9f6ce5681843997dc98c": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "996056617597900df82b7d432d1d3010d32a491d9e8672952f79bdb487f04c35": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "66def522362f2254cd9baa69f77efa3d3864196be8a751e9560dde81525fd7b6": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "db216db6d8d5eec98b85b5283dfadcff7a74e5fe304d48e5db78c66bbd501f94": {
+        "explanation_keys": [
+          "convention/GKGMM19-PROPOSITION2-COORDINATEWISE-MODELB-01"
+        ],
+        "supplemental_reason": ""
+      },
+      "baeed771937cb8351c8f91c2f5df03a35d19e1fbee98b48276b0843bd1e2ffc7": {
+        "explanation_keys": [
+          "defect/GKGMM19-PROPOSITION2-C1-AMBIENT-MEDIAN-01",
+          "source/proposition2_decomposable_linf_medians/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "de6f1d3f23180d2db568f70587b4635b78bfb05e647357152cb05c093e01ea99": {
+        "explanation_keys": [
+          "convention/GKGMM19-THEOREM3-FULL-SPACE-RESTRICTED-SPACE-01"
+        ],
+        "supplemental_reason": ""
+      },
+      "858571c7ba7675e60d47e15dfec88b180f291c74eee3ec91c37d6a205f7fdb83": {
+        "explanation_keys": [
+          "convention/GKGMM19-APPENDIX5-ADAPTED-BIAS-01"
+        ],
+        "supplemental_reason": ""
+      },
+      "6e40e4607fbae174a974c23e90bd2dbf525ac9ffece81a6a2117465330eaa60a": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

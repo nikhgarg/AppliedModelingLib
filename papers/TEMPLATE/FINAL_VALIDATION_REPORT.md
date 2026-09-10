@@ -1,4 +1,4 @@
-# Final Validation Report: [Paper Short Name]
+# Final Validation Report: [Full Paper Title]
 Updated: YYYY-MM-DD
 
 ## 1. Human Verdict

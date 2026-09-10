@@ -154,6 +154,35 @@ theorem stationaryTrajMeasure_consecutivePair_recurrence
           rw [Measure.map_map hlastState hhist]
           rfl
 
+/-- An almost-sure one-step property of a Markov kernel holds for the
+corresponding consecutive coordinate pair of every Ionescu--Tulcea
+trajectory.  No invariance assumption is needed on the initial law. -/
+theorem ae_stationaryTrajMeasure_consecutivePair_of_ae
+    {π : Measure α} [IsProbabilityMeasure π] {K : Kernel α α} [IsMarkovKernel K]
+    (property : α → α → Prop)
+    (hproperty : MeasurableSet {statePair : α × α |
+      property statePair.1 statePair.2})
+    (hkernel : ∀ state : α, ∀ᵐ next ∂K state, property state next)
+    (n : ℕ) :
+    ∀ᵐ path ∂stationaryTrajMeasure π K, property (path n) (path (n + 1)) := by
+  let trajectory : Measure (ℕ → α) := stationaryTrajMeasure π K
+  let statePair : (ℕ → α) → α × α := fun path => (path n, path (n + 1))
+  letI : IsProbabilityMeasure trajectory := by
+    dsimp [trajectory, stationaryTrajMeasure]
+    infer_instance
+  have hpair : ∀ᵐ pair ∂((trajectory.map (fun path => path n)) ⊗ₘ K),
+      property pair.1 pair.2 := by
+    refine Measure.ae_compProd_of_ae_ae hproperty ?_
+    exact Filter.Eventually.of_forall hkernel
+  have hpairMap : Measure.map statePair trajectory =
+      (trajectory.map (fun path => path n)) ⊗ₘ K := by
+    exact stationaryTrajMeasure_consecutivePair_recurrence (π := π) (K := K) n
+  refine ae_of_ae_map (μ := trajectory) (f := statePair)
+    (p := fun pair : α × α => property pair.1 pair.2)
+    ((measurable_pi_apply n).prodMk (measurable_pi_apply (n + 1))).aemeasurable ?_
+  rw [hpairMap]
+  exact hpair
+
 /-- A uniform bound on the conditional norm integral of a one-step reward
 lifts its statewise integrability to any coordinate transition of an
 Ionescu--Tulcea trajectory. -/

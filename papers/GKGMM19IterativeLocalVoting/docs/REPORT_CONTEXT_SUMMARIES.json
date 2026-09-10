@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "paper": "GKGMM19IterativeLocalVoting",
+  "summaries": {
+    "GKGMM19-THEOREM3-FULL-SPACE-RESTRICTED-SPACE-01": "The checked Theorem 3 zero-field result uses an explicit full-space condition; the constrained-space result gives zero field or no feasible aggregate direction. The printed theorem invokes C1\u2013C3, including bounded convex X; these results alone do not prove or refute zero field on every such X.",
+    "GKGMM19-APPENDIX5-ADAPTED-BIAS-01": "The checked Appendix Theorem 5 treats the source bias as an adapted sample-path process. Its almost-sure weighted summability is retained pathwise, while the explicit measurable/adapted conditions make the conditional-noise martingale terms well defined."
+  },
+  "omitted_conventions": [
+    "GKGMM19-ALGORITHM1-EUCLIDEAN-PROJECTION-WINDOW-01",
+    "GKGMM19-NONNEGATIVE-WEIGHT-DOMAINS-01",
+    "GKGMM19-RAW-UTILITY-QUERY-DOMAIN-01",
+    "GKGMM19-THEOREM3-IID-TRACE-WELLDEFINEDNESS-01"
+  ]
+}

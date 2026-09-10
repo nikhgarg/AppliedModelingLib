@@ -1,5 +1,5 @@
 # Final Validation Report: Monoculture in Matching Markets
-Updated: 2026-09-06
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -36,7 +36,7 @@ prose are outside the mathematical formalization scope.
 | Result | Comparison with source |
 | --- | --- |
 | Supply and Demand | **Exact.** |
-| Clearing-cutoff lattice | **Exact:** market-clearing cutoffs form a complete lattice under the source's coordinatewise operations. |
+| Clearing-cutoff lattice | **Exact.** |
 | Equal Cutoffs | **Additional assumptions:** zero score-boundary mass and ranking/noise regularity; necessity for the full claim is unknown. [Conditions](docs/SOURCE_CLARIFICATIONS.md#cutoff-probabilities-and-support-arguments). |
 | Probability formula | **Source clarification:** atomless noise identifies strict-tail formulas with literal weak matching events. [Identity](docs/SOURCE_CLARIFICATIONS.md#cutoff-probabilities-and-support-arguments). |
 | Proposition 7 | **Exact.** |

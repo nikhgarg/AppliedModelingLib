@@ -4420,8 +4420,11 @@ theorem paper_exists_corrected_infinite_two_genre_content_equilibrium_of_phase_t
     (htheta_pos : 0 < theta) (htheta_lt_half_pi : theta < Real.pi / 2)
     (hphase : twoUserPhaseThreshold theta < beta) :
     ∃ a C1 C2 A B phi : ℝ,
-      ∃ _ : CorrectedInfiniteTwoGenreContentEquilibrium
+      ∃ model : CorrectedInfiniteTwoGenreContentEquilibrium
         (infiniteGenreCandidateCdf a C1 C2 beta) beta theta,
+      model.firstGenre = infiniteGenreFirstGenre phi ∧
+      model.secondGenre = infiniteGenreSecondGenre theta phi ∧
+      model.firstGenre ≠ model.secondGenre ∧
       phi ∈ Set.Icc 0 (theta / 2) ∧
       IsMaxOn (twoUserCosPowerSum beta theta) (Set.Icc 0 (theta / 2)) phi ∧
       0 < a ∧ 0 < C2 ∧ C2 < 1 ∧
@@ -9732,6 +9735,29 @@ theorem paper_proposition_zeroutilitysinglegenre_source_nash_of_compact_sublevel
     hcompact_sublevels hcontinuous hp
 
 /--
+Proposition `zeroutilitysinglegenre`, expected-profit form.  The source's
+diagonal mixed payoff is the integral of its support-action payoff.  Source
+Nash itself supplies the needed norm cap and integrability; no independent
+population-law premise is being silently added.
+-/
+theorem paper_proposition_zeroutilitysinglegenre_expected_profit_zero
+    {D N P : ℕ} [Nonempty (Fin N)] [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {ν : SourceNorm D}
+    {μ : MixedContentStrategy D} {j : Fin P} {genre : Content D} {β : ℝ}
+    (hnash : paper_source_symmetric_mixed_nash P users (normRpowCost ν β) μ)
+    (hgenres : paper_nonzero_support_genres ν μ ⊆ ({genre} : Set (Content D)))
+    (husers : ∀ i : Fin N, NonnegativeContent (users i))
+    (husers_nonzero : ∀ i : Fin N, NonzeroContent (users i))
+    (hperturb : SourceNormPerturbationContinuous ν)
+    (hβ : 0 < β) (hcompact_sublevels : SourceNormCompactSublevels ν)
+    (hcontinuous : Continuous ν.norm) :
+    paper_source_symmetric_mixed_diagonal_payoff P users (normRpowCost ν β) j μ = 0 := by
+  simpa [paper_source_symmetric_mixed_diagonal_payoff] using
+    sourceSymmetricMixedDiagonalPayoff_eq_zero_of_singleton_nonzeroSupportGenres_of_sourceRegularity
+      (j := j) hnash hgenres husers husers_nonzero hperturb hβ
+      hcompact_sublevels hcontinuous
+
+/--
 Concrete finite-`L2` corrected zero-utility endpoint: every fixed support
 action has zero actual uniform-tie payoff once the visible CDF, zero-support,
 and singleton nonzero-genre premises are supplied.
@@ -9915,6 +9941,31 @@ theorem paper_proposition_utility_source_symmetric_mixed_nash_support_payoff_pos
       (normRpowCost (SourceNorm.l2 D) β) p0 μ :=
   sourceSymmetricMixedNash_supportPayoff_pos_of_positive_profit_condition_l2_normalized_users
     hnash hp0 husers_nonnegative husers_nonzero hQupper hβ hQ_nonneg hQ
+
+/--
+Proposition `utility`, expected-profit form.  The displayed equilibrium
+profit is the focal producer's diagonal mixed payoff.  The source Nash
+condition recovers the payoff and cost integrability used to pass from the
+positive support payoff to that expectation.
+-/
+theorem paper_proposition_utility_source_symmetric_mixed_nash_expected_profit_pos
+    {D N P : ℕ} [Nonempty (Fin N)] [Nontrivial (Fin P)]
+    {users : Fin N → Content D} {j : Fin P}
+    {μ : MixedContentStrategy D} {β Q : ℝ}
+    (hnash : paper_source_symmetric_mixed_nash P users
+      (normRpowCost (SourceNorm.l2 D) β) μ)
+    (husers_nonnegative : ∀ i : Fin N, NonnegativeContent (users i))
+    (husers_nonzero : ∀ i : Fin N, NonzeroContent (users i))
+    (hQupper :
+      SourceUnitDirectionQUpperBound
+        (l2NormalizedUsers users) (SourceNorm.l2 D) Q)
+    (hβ : 0 < β) (hQ_nonneg : 0 ≤ Q)
+    (hQ : Q < (1 / (N : ℝ)) ^ ((P : ℝ) / β)) :
+    0 < paper_source_symmetric_mixed_diagonal_payoff P users
+      (normRpowCost (SourceNorm.l2 D) β) j μ := by
+  simpa [paper_source_symmetric_mixed_diagonal_payoff] using
+    sourceSymmetricMixedDiagonalPayoff_pos_of_positive_profit_condition_l2_normalized_users
+      (j := j) hnash husers_nonnegative husers_nonzero hQupper hβ hQ_nonneg hQ
 
 /--
 Tie-aware replacement for Lemma `necessarysuff`'s reparameterized objective:
@@ -10186,6 +10237,16 @@ theorem paper_lemma_singlegenre_genre_scores_positive_of_nonzero_users
     ∀ i : Fin N, 0 < paper_inferred_user_value (users i) genre :=
   sourceSymmetricMixedNash_genre_score_pos_of_singleton_nonzeroSupportGenres_of_nonzero_users
     hnash hgenres husers husers_nonzero hcont
+
+/--
+Counterexample to the linear-span conclusion printed in Lemma `nonzero`.
+For the source-permitted L1 norm, the one-user ray law with user `(1,2)` and
+genre `(0,1)` is a source symmetric mixed Nash equilibrium with positive
+score, but that genre is not in the user's linear span.  Thus the repaired
+Lemma 4 endpoint records the valid positive-score conclusion directly.
+-/
+abbrev paper_counterexample_lemma_nonzero_span_l1 :=
+  sourceSymmetricMixedNash_exists_singleton_nonzeroSupportGenre_not_mem_userSpan_l1
 
 /--
 Corrected full form of Theorem `singlegenre`.  For the paper's nonzero-user
@@ -12147,6 +12208,18 @@ assumption.
 -/
 abbrev paper_no_finite_genre_conditional_norm_law_any_dim_of_norm_rpow_cost_nash_above_phase :=
   @no_finiteGenreConditionalNormLawAnyDim_of_normRpowCostNash_abovePhase
+
+/-- Proposition finitegenre for arbitrary nonzero raw user magnitudes.  The
+statement transports user normalization and score-law regularity rather than
+assuming them after a cone-changing coordinate rotation. -/
+abbrev paper_two_user_no_finite_genre_conditional_norm_law_any_dim_of_scaled_norm_rpow_cost_nash_above_phase_raw_users :=
+  @twoUser_no_finiteGenreConditionalNormLawAnyDim_of_scaledNormRpowCostNash_abovePhase_raw_users
+
+/-- Literal equal-population form of Proposition finitegenre.  Equal
+replication produces the K inverse representative cost coefficient, which is
+discharged by the positive homogeneous content-scale transport. -/
+abbrev paper_two_population_no_finite_genre_conditional_norm_law_any_dim_of_norm_rpow_cost_nash_above_phase_raw_users :=
+  @twoPopulation_no_finiteGenreConditionalNormLawAnyDim_of_normRpowCostNash_abovePhase_raw_users
 
 /--
 Canonical two-dimensional form of Proposition `uniqueness`, with C2 stated on

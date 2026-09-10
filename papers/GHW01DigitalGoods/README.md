@@ -5,7 +5,7 @@
 |---|---|
 | Final status | Formalized |
 | Paper reference | [Competitive Auctions and Digital Goods](https://www.cs.miami.edu/home/burt/learning/Csc597.052/docs/goldberg.pdf) by Andrew V. Goldberg, Jason D. Hartline, and Andrew Wright; SODA, 2001. |
-| Lines of Code | 24,842 |
+| Lines of Code | 25,382 |
 
 ## Key Links
 

@@ -1,18 +1,17 @@
-# Final Validation Report: PRPKG24 Accuracy-Diversity
-Updated: 2026-09-07
+# Final Validation Report: Reconciling the accuracy-diversity trade-off in recommendations
+Updated: 2026-09-09
 
 ## 1. Human Verdict
 
-The paper's named theoretical results are proved on the domains stated below.
-Shared clarified regularity conditions are consolidated once in Section 6;
-genuine source corrections remain result-local.
+The selected accuracy–diversity results are formalized under the source
+readings below. Proposition 2 has the exact asymptotic conclusion, with a
+factor-of-two correction in its finite type-count term.
 
 ## 2. Closeout Status
 
-- Completion status: formalized.
-- Scope: the paper's named definitions, theoretical results, and Equation (4)'s
-  representation definition.
-- Human review: not yet recorded.
+- Completion status: formalized
+- One-sentence recap: The formalization proves the selected allocation and
+  diversity results on their stated value and probability domains.
 
 ## 3. Source and Scope
 
@@ -28,39 +27,42 @@ figures, captions, and other numerical observations are outside this scope.
 | --- | --- |
 | Example 1, continuous top-one relaxation (Equation 2) | **Supplemental illustration.** The continuous relaxation is proved; Example 1 as a whole is outside the selected result scope. |
 | Equation (4); Definitions 1–3; Proposition 5; Lemma 1 | **Exact.** |
-| [Corollary 1](docs/SOURCE_CLARIFICATIONS.md#clarified-regularity-conditions) | **Exact with clarified regularity conditions.** |
-| [Theorem 1(i)](docs/SOURCE_CLARIFICATIONS.md#value-and-type-support-restrictions) | **Corrected target:** the finite-discrete conclusion needs a nondegenerate top-value split; a point-mass law does not force uniform optimal shares. |
-| [Theorem 1(ii)--(iv)](docs/SOURCE_CLARIFICATIONS.md#clarified-regularity-conditions) | **Exact with clarified regularity conditions.** |
-| [Theorem 1(v)](docs/SOURCE_CLARIFICATIONS.md#all-consumed-and-bernoulli-endpoints) | **Additional sign condition:** the common conditional mean is nonnegative. A negative mean reverses the maximal-weight choice; at zero mean every allocation ties. |
-| [Proposition 2](docs/SOURCE_CLARIFICATIONS.md#proposition-2-and-the-finite-uniform-model) | **Source correction:** a compiled strictly-positive-PMF counterexample refutes the printed `(T+1)/N` constant. The checked `(2T+1)/N` bound retains the same square-root limit. |
-| [Theorem 2](docs/SOURCE_CLARIFICATIONS.md#theorem-2-independent-rank-varying-bernoulli-values) | **Source clarification:** independent Bernoulli coordinates with rank-dependent probabilities. |
-| [Appendix Lemma D.1](docs/SOURCE_CLARIFICATIONS.md#theorem-1-and-appendix-lemma-d1-share-asymptotics) | **Changed statement:** corrected sign regimes and deficit comparison replace the printed asymptotic branches. |
-| [Appendix Lemmas D.2–D.5](docs/SOURCE_CLARIFICATIONS.md#order-statistics-and-integer-rounding) | **Restricted scope:** eventual valid ranks and the corrected strictly-concave rounding statement. |
-| [Proposition 4, Equations (18) and (20)](docs/SOURCE_CLARIFICATIONS.md#proposition-4) | **Formulas corrected:** Equation (18) is an inequality; Equation (20) uses the preference-weighted measure from Equation (17). |
-| [Proposition 4, limit step](docs/SOURCE_CLARIFICATIONS.md#clarified-regularity-conditions) | **Exact with clarified regularity conditions.** |
-| [Theorem 3; Corollary 3](docs/SOURCE_CLARIFICATIONS.md#all-consumed-and-bernoulli-endpoints) | **Restricted scope:** nondegenerate Bernoulli endpoint domains. |
+| [Corollary 1](docs/SOURCE_CLARIFICATIONS.md#clarified-regularity-conditions) | **Exact with source clarification.** |
+| [Theorem 1(i)](docs/SOURCE_CLARIFICATIONS.md#value-and-type-support-restrictions) | **Exact under a nondegeneracy condition.** The top value has positive mass, with positive mass below it; a point mass does not force uniform shares. |
+| [Theorem 1(ii)--(iv)](docs/SOURCE_CLARIFICATIONS.md#clarified-regularity-conditions) | **Exact with source clarification.** |
+| [Theorem 1(v)](docs/SOURCE_CLARIFICATIONS.md#all-consumed-and-bernoulli-endpoints) | **Exact with source clarification.** The item-value reading is nonnegative; at zero mean a maximal-weight allocation is optimal but need not be unique. |
+| [Proposition 2](docs/SOURCE_CLARIFICATIONS.md#proposition-2-and-the-finite-uniform-model) | **Exact asymptotic conclusion.** The finite bound is missing a factor of two in the type-count term: `(T+1)/N` → `(2T+1)/N`. |
+| [Theorem 2](docs/SOURCE_CLARIFICATIONS.md#theorem-2-independent-rank-varying-bernoulli-values) | **Exact with source clarification.** Independent Bernoulli values have rank-dependent probabilities. |
+| [Appendix Lemma D.1](docs/SOURCE_CLARIFICATIONS.md#theorem-1-and-appendix-lemma-d1-share-asymptotics) | **Exact after correcting the asymptotic signs and optimization comparison.** The saturation branch uses a negative coefficient and positive exponent; the proof compares deficits. |
+| [Appendix Lemmas D.2–D.5](docs/SOURCE_CLARIFICATIONS.md#order-statistics-and-integer-rounding) | **Exact with source clarification and a concavity typo corrected.** Order-statistic limits use valid ranks; the rounding lemma maximizes a strictly concave objective. |
+| [Proposition 4, Equations (18) and (20)](docs/SOURCE_CLARIFICATIONS.md#proposition-4) | **Exact after correcting the displayed formulas.** Equation (18) is an inequality; Equation (20) uses the preference-weighted measure from Equation (17). |
+| [Proposition 4, limit step](docs/SOURCE_CLARIFICATIONS.md#clarified-regularity-conditions) | **Exact with source clarification.** |
+| [Theorem 3; Corollary 3](docs/SOURCE_CLARIFICATIONS.md#all-consumed-and-bernoulli-endpoints) | **Exact on the nondegenerate Bernoulli domain.** The share formulas use probabilities strictly between zero and one; deterministic endpoints require separate statements. |
 
 ## 5. Remaining Boundaries and Gaps
 
-The corrected Proposition 2 finite constant and the other result-local source
-corrections are stated in Sections 4 and 7. Shared model domains are in Section
-6, and the Theorem 2 reading is in Section 10. Computational claims are
-outside this theoretical scope.
+The selected theoretical results are checked under the readings in Section 6.
+Zero-probability types, degenerate value laws, and deterministic Bernoulli
+endpoints are not assigned the nondegenerate all-coordinate share conclusions.
+Computational claims are outside this theoretical scope.
 
 ## 6. Clarified Regularity Conditions
 
-These clarified regularity conditions state the common domains for the rows
-marked **Exact with clarified regularity conditions**. They do not convert a
-false source claim, a changed finite constant, or a non-equivalent repair into
-an exact reading.
+The result table uses the following interpretation of the paper's model and
+proof context. These conventions make that reading explicit.
 
-- When a result states a coordinatewise share formula for all named types,
-  each named preferred-type probability is positive. This is the intended
-  regular domain for Corollary 1 and Theorem 1(ii)--(iv).
-- In the fixed-top-`k` value model, conditional values are nonnegative almost
-  surely. This makes the source top-`k` value primitive coincide with the
-  finite allocation objective used for Theorem 1(i)--(ii); Theorem 1(i)'s
-  separate nondegeneracy repair remains visible in its own row.
+- Corollary 1 and Theorem 1(ii)--(iv) concern types with positive selection
+  probability and fixed positive consumption `k`. The paper explicitly fixes
+  `k` in Section 3 and Corollary 1, defines `S_{n,k}` as a selected maximizing
+  set in Section 1.1, and selects a maximizing allocation in Appendix D.1.
+  Positive type probabilities are the intended nondegenerate reading of the
+  all-coordinate share formula; zero-probability coordinates need a separate
+  support convention.
+- Theorem 1(ii) uses nonnegative conditional values almost surely on a finite
+  interval with positive upper endpoint and width. This makes the nonnegative
+  item-value reading explicit; it does not establish the result for every
+  lower-unbounded or translated value law. Theorem 1(i)'s nondegeneracy
+  condition is stated separately in the table.
 - For Proposition 4, the preference measure is normalized sphere volume with
   an a.e.-measurable density that is positive almost everywhere, and the
   nonconstant radial kernel is continuous with values in `(0,1]`. The density
@@ -68,16 +70,16 @@ an exact reading.
   radial continuity rules out a pointwise Laplace maximum supported only on a
   null spike.
 
-Theorem 1(v)'s sign condition and the Bernoulli endpoint exclusions are
-separate result-local restrictions. See the
+Theorem 1(v) uses the same nonnegative item-value reading. For negative mean,
+maximal type weight would minimize rather than maximize expected value.
+The Bernoulli formulas use their nondegenerate endpoints. See the
 [source clarification record](docs/SOURCE_CLARIFICATIONS.md).
 
 ## 7. Proof-Strategy Deviations
 
-The checked Proposition 2 allocation is $(N+T)s_t-1$ and gives the finite
-bound $(2T+1)/N$. A compiled strictly-positive-PMF witness refutes the paper's
-$(T+1)/N$ bound under its printed finite model. The asymptotic square-root
-shares are unchanged.
+Proposition 2's square-root share limit is exact. Its finite error bound needs
+a factor of two in the type-count term: $(T+1)/N$ becomes $(2T+1)/N$.
+The feasible relaxed allocation is $(N+T)s_t-1$, whose coordinates sum to $N$.
 [Exact comparison](docs/SOURCE_CLARIFICATIONS.md#proposition-2-and-the-finite-uniform-model).
 
 The memo also gives [D.1’s deficit and maximization comparisons](docs/SOURCE_CLARIFICATIONS.md#theorem-1-and-appendix-lemma-d1-share-asymptotics) and [Proposition 4’s measure correction](docs/SOURCE_CLARIFICATIONS.md#proposition-4).
@@ -103,10 +105,8 @@ other result-local corrections remain separately stated.
 
 ## 11. Paper Issues or Caveats
 
-The formalization boundaries are stated in the limited-scope paragraph and
-Sections 4--6. Proposition 2's sharper printed finite bound is false under its
-printed model; its checked counterexample and corrected constant are visible
-in Sections 4 and 7.
+Sections 4--6 state the result domains. Proposition 2's finite constant
+correction is separate from its exact asymptotic conclusion.
 
 ## 12. Detailed Formalization Evidence
 
@@ -174,9 +174,10 @@ reviewed as governing definitions. Section 4 gives the source comparison.
 ## 20. Paper-Facing Statement Validator Ledger
 
 The [source-to-Spec ledger](FINAL_CLOSURE_RECEIPT.md) contains
-25 selected judgments: eight matches and 17 corrected-target matches.
-The corrected statements and restrictions are explained in the
-[source clarification memo](docs/SOURCE_CLARIFICATIONS.md).
+25 selected judgments: four matches and 21 corrected-target matches.
+Those technical categories include source conventions and local formula
+corrections. Section 4 gives the mathematical comparison; the
+[source clarification memo](docs/SOURCE_CLARIFICATIONS.md) gives its basis.
 
 ## 21. Source-Coverage Audit Ledger
 

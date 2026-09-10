@@ -46,7 +46,7 @@ specifications, and hash-bound raw-source-to-Spec screening records.
 \textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright JAIR 64 (2019), 315-355; published 2019-02-18}\\
 \textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
 \textbf{Rows:} 11\\
-\textbf{Generated:} 2026-09-06\\
+\textbf{Generated:} 2026-09-09\\
 \textbf{Source URL:} \href{https://www.jair.org/index.php/jair/article/download/11358/26474/21047}{official source}
 
 
@@ -75,7 +75,7 @@ reviewer-owned review record.
 
 \section*{Contents}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{governing-declaration-section-5ef5ef0364b6939c}{Governing Lean declarations (113; supporting context)}
+\item \hyperlink{governing-declaration-section-5ef5ef0364b6939c}{Governing Lean declarations (115; supporting context)}
 \item \hyperlink{library-section-7af9edee67c68478}{Semantic library prerequisites (1; not paper claims)}
 \begin{itemize}[leftmargin=1.2em]
 \item \hyperlink{library-prerequisite-dee93285823cfb6a}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Optimization.\allowbreak{}Euclidean\allowbreak{}Projection\allowbreak{}Source\allowbreak{}Geometry}
@@ -104,7 +104,7 @@ reviewer-owned review record.
 \item \hyperlink{source-section-0c7af8265958a9ea}{Main-text source claims (2)}
 \begin{itemize}[leftmargin=1.2em]
 \item \hyperlink{source-claim-807172637313be6b}{proposition1\_\allowbreak{}weighted\_\allowbreak{}euclidean\_\allowbreak{}joint\_\allowbreak{}c3\allowbreak{}Spec}
-\item \hyperlink{source-claim-5da11e8f46618b8e}{proposition2\_\allowbreak{}coordinatewise\_\allowbreak{}boundary\_\allowbreak{}finite\_\allowbreak{}c3\_\allowbreak{}median\allowbreak{}Spec}
+\item \hyperlink{source-claim-d36270613434ba50}{proposition2\_\allowbreak{}convex\_\allowbreak{}domain\_\allowbreak{}constrained\_\allowbreak{}l1\allowbreak{}Spec}
 \end{itemize}
 \item \hyperlink{source-section-ff6e74b6c8cd2005}{Appendix and supplement source claims (continued) (5)}
 \begin{itemize}[leftmargin=1.2em]
@@ -112,7 +112,7 @@ reviewer-owned review record.
 \item \hyperlink{source-claim-50059dcbca6a7d66}{appendix\_\allowbreak{}lemma2\_\allowbreak{}bad\_\allowbreak{}event\_\allowbreak{}linear\_\allowbreak{}rate\allowbreak{}Spec}
 \item \hyperlink{source-claim-4069888dfd6281a0}{appendix\_\allowbreak{}lemma4\_\allowbreak{}weighted\_\allowbreak{}bad\_\allowbreak{}event\_\allowbreak{}linear\_\allowbreak{}rate\allowbreak{}Spec}
 \item \hyperlink{source-claim-4f41e995c4d500c9}{appendix\_\allowbreak{}theorem4\_\allowbreak{}expected\_\allowbreak{}subgradient\_\allowbreak{}boundary\allowbreak{}Spec}
-\item \hyperlink{source-claim-0f5dabcd51f758b4}{appendix\_\allowbreak{}theorem5\_\allowbreak{}ssgm\_\allowbreak{}convergence\_\allowbreak{}boundary\allowbreak{}Spec}
+\item \hyperlink{source-claim-f8e78133bd080649}{appendix\_\allowbreak{}theorem5\_\allowbreak{}adapted\_\allowbreak{}bias\allowbreak{}Spec}
 \end{itemize}
 \item \hyperlink{source-section-c08c7eca66416a2f}{Main-text source claims (continued) (3)}
 \begin{itemize}[leftmargin=1.2em]
@@ -136,6 +136,19 @@ type:
 
 value:
 fun {ι : Type u_1} [Fintype ι] (g : ι → ℝ) => ∑ i : ι, g i • ContinuousLinearMap.proj i
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-d753b2b5361dc53d}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Finite\allowbreak{}Dimensional\allowbreak{}Norms.\allowbreak{}dot}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{ι : Type u_1} → [Fintype ι] → (ι → ℝ) → (ι → ℝ) → ℝ
+
+value:
+fun {ι : Type u_1} [Fintype ι] (x y : ι → ℝ) => ∑ i : ι, x i * y i
 \end{ReviewVerbatim}
 
 
@@ -476,6 +489,100 @@ fun {Coord : Type u_1} [Fintype Coord] (cost : (Coord → ℝ) → ℝ) (solutio
 \begin{itemize}\raggedright
 \item \hyperlink{governing-declaration-5ca28f2103903951}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Optimization.\allowbreak{}Finite\allowbreak{}Subgradient\allowbreak{}On}
 \end{itemize}
+\hypertarget{governing-declaration-95e55498d2355ed0}{}
+\subsection*{\small\ttfamily\raggedright GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Appendix\allowbreak{}Theorem5\allowbreak{}Adapted\allowbreak{}Bias\allowbreak{}Regularity}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+field noise_product_integrable:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ}
+  (self :
+    GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasRegularity mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar)
+  (t : ℕ) (i : Coord),
+  MeasureTheory.Integrable (fun (omega : Omega) => (trajectory t omega i - xstar i) * noise t omega i) mu
+
+field distanceBound:
+{Omega : Type u_1} →
+  {Coord : Type u_2} →
+    {mOmega : MeasurableSpace Omega} →
+      [inst : Fintype Coord] →
+        [inst_1 : Nonempty Coord] →
+          {mu : MeasureTheory.Measure Omega} →
+            [inst_2 : MeasureTheory.IsProbabilityMeasure mu] →
+              {filtration : MeasureTheory.Filtration ℕ mOmega} →
+                {solutionSpace : Set (Coord → ℝ)} →
+                  {objective : (Coord → ℝ) → ℝ} →
+                    {project : (Coord → ℝ) → Coord → ℝ} →
+                      {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} →
+                        {radius : ℕ → ℝ} →
+                          {xstar : Coord → ℝ} →
+                            GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasRegularity mu filtration
+                                solutionSpace objective project trajectory meanSubgradient noise bias radius xstar →
+                              ℝ
+
+field distanceBound_nonneg:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ}
+  (self :
+    GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasRegularity mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar),
+  0 ≤ self.distanceBound
+
+field distance_bound:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ}
+  (self :
+    GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasRegularity mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar)
+  (t : ℕ),
+  ∀ᵐ (omega : Omega) ∂mu,
+    (AppliedModelingLib.FiniteDimensionalNorms.l2 fun (i : Coord) => trajectory t omega i - xstar i) ≤
+      self.distanceBound
+
+field subgradient_exists:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ}
+  (self :
+    GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasRegularity mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar),
+  ∀ x ∈ solutionSpace,
+    ∃ (g : Coord → ℝ), GKGMM19IterativeLocalVoting.FiniteSubgradientWithinAt objective solutionSpace x g
+
+field noise_dot_partialSum_adapted:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ}
+  (self :
+    GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasRegularity mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar),
+  MeasureTheory.StronglyAdapted filtration fun (k : ℕ) (omega : Omega) =>
+    ∑ t ∈ Finset.range k,
+      -(2 * radius (t + 1)) *
+        AppliedModelingLib.FiniteDimensionalNorms.dot (noise t omega) fun (i : Coord) => trajectory t omega i - xstar i
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-d753b2b5361dc53d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Finite\allowbreak{}Dimensional\allowbreak{}Norms.\allowbreak{}dot}
+\item \hyperlink{governing-declaration-08313452edb53fe9}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Finite\allowbreak{}Dimensional\allowbreak{}Norms.\allowbreak{}l2}
+\item \hyperlink{governing-declaration-299655269609640a}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Finite\allowbreak{}Subgradient\allowbreak{}Within\allowbreak{}At}
+\end{itemize}
 \hypertarget{governing-declaration-e4a57c47bb5fbb49}{}
 \subsection*{\small\ttfamily\raggedright GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Holder\allowbreak{}Dual\allowbreak{}Finite}
 \textbf{Declaration location:} paper-local
@@ -515,6 +622,22 @@ value:
 fun {Coord : Type u_1} {Omega : Type u_2} [Fintype Coord] (trajectory : ℕ → Omega → Coord → ℝ) (omega : Omega)
     (xstar : Coord → ℝ) =>
   ∀ (i : Coord), Filter.Tendsto (fun (n : ℕ) => trajectory n omega i) Filter.atTop (nhds (xstar i))
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-0d57afe39513c2cc}{}
+\subsection*{\small\ttfamily\raggedright GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}SSGM\allowbreak{}Step\allowbreak{}Size\allowbreak{}Conditions}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+(ℕ → ℝ) → Prop
+
+value:
+fun (radius : ℕ → ℝ) =>
+  (∀ (t : ℕ), 0 < t → 0 < radius t) ∧
+    (Summable fun (t : ℕ) => radius (t + 1) ^ 2) ∧
+      Filter.Tendsto (fun (n : ℕ) => ∑ t ∈ Finset.range n, radius (t + 1)) Filter.atTop Filter.atTop
 \end{ReviewVerbatim}
 
 
@@ -765,53 +888,6 @@ fun {Voter : Type u_1} {Point : Type u_2} (E : GKGMM19IterativeLocalVoting.ILVEn
 \paragraph{Direct retained dependencies}
 \begin{itemize}\raggedright
 \item \hyperlink{governing-declaration-df2ca62df1846667}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}ILV\allowbreak{}Environment}
-\end{itemize}
-\hypertarget{governing-declaration-ee7273129bc9838b}{}
-\subsection*{\small\ttfamily\raggedright GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Local\allowbreak{}Neighborhood}
-\textbf{Declaration location:} paper-local
-\paragraph{Lean declaration body}
-\begin{ReviewVerbatim}
-type:
-{Voter : Type u_1} →
-  {Point : Type u_2} →
-    GKGMM19IterativeLocalVoting.ILVEnvironment Voter Point →
-      GKGMM19IterativeLocalVoting.SourceNorm → Point → ℝ → Point → Prop
-
-value:
-fun {Voter : Type u_1} {Point : Type u_2} (E : GKGMM19IterativeLocalVoting.ILVEnvironment Voter Point)
-    (q : GKGMM19IterativeLocalVoting.SourceNorm) (center : Point) (r : ℝ) (a : Point) =>
-  {candidate : Point | candidate ∈ E.solutionSpace ∧ E.normDistance q candidate center ≤ r} a
-\end{ReviewVerbatim}
-
-\paragraph{Direct retained dependencies}
-\begin{itemize}\raggedright
-\item \hyperlink{governing-declaration-df2ca62df1846667}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}ILV\allowbreak{}Environment}
-\item \hyperlink{governing-declaration-6fa4ab9852321b03}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Source\allowbreak{}Norm}
-\end{itemize}
-\hypertarget{governing-declaration-d8e75394d3eaa44b}{}
-\subsection*{\small\ttfamily\raggedright GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Model\allowbreak{}A\allowbreak{}Response\allowbreak{}At}
-\textbf{Declaration location:} paper-local
-\paragraph{Lean declaration body}
-\begin{ReviewVerbatim}
-type:
-{Voter : Type u_1} →
-  {Point : Type u_2} →
-    GKGMM19IterativeLocalVoting.ILVEnvironment Voter Point →
-      GKGMM19IterativeLocalVoting.SourceNorm → Point → ℝ → Voter → Point → Prop
-
-value:
-fun {Voter : Type u_1} {Point : Type u_2} (E : GKGMM19IterativeLocalVoting.ILVEnvironment Voter Point)
-    (q : GKGMM19IterativeLocalVoting.SourceNorm) (center : Point) (r : ℝ) (voter : Voter) (response : Point) =>
-  response ∈ GKGMM19IterativeLocalVoting.LocalNeighborhood E q center r ∧
-    ∀ candidate ∈ GKGMM19IterativeLocalVoting.LocalNeighborhood E q center r,
-      E.utility voter candidate ≤ E.utility voter response
-\end{ReviewVerbatim}
-
-\paragraph{Direct retained dependencies}
-\begin{itemize}\raggedright
-\item \hyperlink{governing-declaration-df2ca62df1846667}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}ILV\allowbreak{}Environment}
-\item \hyperlink{governing-declaration-ee7273129bc9838b}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Local\allowbreak{}Neighborhood}
-\item \hyperlink{governing-declaration-6fa4ab9852321b03}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Source\allowbreak{}Norm}
 \end{itemize}
 \hypertarget{governing-declaration-3e297ee911a81a7e}{}
 \subsection*{\small\ttfamily\raggedright GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Outcome\allowbreak{}Indexed\allowbreak{}ILV\allowbreak{}Converges\allowbreak{}To\allowbreak{}Societal\allowbreak{}Optimal}
@@ -1221,6 +1297,269 @@ fun {Coord : Type u_1} [Fintype Coord] [Nonempty Coord] (p : GKGMM19IterativeLoc
 \paragraph{Direct retained dependencies}
 \begin{itemize}\raggedright
 \item \hyperlink{governing-declaration-6fa4ab9852321b03}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Source\allowbreak{}Norm}
+\item \hyperlink{governing-declaration-6b5981b41f6efa87}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}finite\allowbreak{}Coordinate\allowbreak{}Norm}
+\end{itemize}
+\hypertarget{governing-declaration-6ad80e26591c9c53}{}
+\subsection*{\small\ttfamily\raggedright GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Appendix\allowbreak{}Theorem5\allowbreak{}Adapted\allowbreak{}Bias\allowbreak{}Hypotheses}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+field solutionSpace_nonempty:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    solutionSpace.Nonempty
+
+field solutionSpace_bounded:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    Bornology.IsBounded solutionSpace
+
+field solutionSpace_closed:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    IsClosed solutionSpace
+
+field solutionSpace_convex:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    Convex ℝ solutionSpace
+
+field objective_convex:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ConvexOn ℝ solutionSpace objective
+
+field target_mem_solutionSpace:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    xstar ∈ solutionSpace
+
+field target_minimizes:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    IsMinOn objective solutionSpace xstar
+
+field target_unique:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ∀ y ∈ solutionSpace, objective y = objective xstar → y = xstar
+
+field step_sizes:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    GKGMM19IterativeLocalVoting.SSGMStepSizeConditions radius
+
+field closest_point_projection:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ∀ (y : Coord → ℝ),
+      project y ∈ solutionSpace ∧
+        IsMinOn
+          (fun (x : Coord → ℝ) =>
+            GKGMM19IterativeLocalVoting.finiteCoordinateDistance GKGMM19IterativeLocalVoting.SourceNorm.l2 x y)
+          solutionSpace (project y)
+
+field update:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ∀ (t : ℕ),
+      ∀ᵐ (omega : Omega) ∂mu,
+        trajectory (t + 1) omega =
+          project fun (i : Coord) =>
+            trajectory t omega i - radius (t + 1) * (meanSubgradient t omega i + noise t omega i + bias t omega i)
+
+field trajectory_adapted:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ∀ (i : Coord), MeasureTheory.StronglyAdapted filtration fun (t : ℕ) (omega : Omega) => trajectory t omega i
+
+field bias_adapted:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ∀ (i : Coord), MeasureTheory.StronglyAdapted filtration fun (t : ℕ) (omega : Omega) => bias t omega i
+
+field trajectory_subgradient:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ∀ (t : ℕ),
+      ∀ᵐ (omega : Omega) ∂mu,
+        trajectory t omega ∈ solutionSpace ∧
+          GKGMM19IterativeLocalVoting.FiniteSubgradientWithinAt objective solutionSpace (trajectory t omega)
+            (meanSubgradient t omega)
+
+field bounded_subgradients:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ∃ (C1 : ℝ),
+      0 ≤ C1 ∧
+        ∀ x ∈ solutionSpace,
+          ∀ (g : Coord → ℝ),
+            GKGMM19IterativeLocalVoting.FiniteSubgradientWithinAt objective solutionSpace x g →
+              GKGMM19IterativeLocalVoting.finiteCoordinateNorm GKGMM19IterativeLocalVoting.SourceNorm.l2 g ≤ C1
+
+field noise_coordinate_integrable:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ∀ (t : ℕ) (i : Coord), MeasureTheory.Integrable (fun (omega : Omega) => noise t omega i) mu
+
+field noise_mean_zero:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ∀ (t : ℕ) (i : Coord), mu[fun (omega : Omega) => noise t omega i | ↑filtration t] =ᵐ[mu] 0
+
+field noise_energy_integrable:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ∀ (t : ℕ),
+      MeasureTheory.Integrable
+        (fun (omega : Omega) =>
+          GKGMM19IterativeLocalVoting.finiteCoordinateNorm GKGMM19IterativeLocalVoting.SourceNorm.l2 (noise t omega) ^
+            2)
+        mu
+
+field bounded_noise_energy:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ∃ (C2 : ℝ),
+      0 ≤ C2 ∧
+        ∀ (t : ℕ),
+          mu[fun (omega : Omega) =>
+              GKGMM19IterativeLocalVoting.finiteCoordinateNorm GKGMM19IterativeLocalVoting.SourceNorm.l2
+                  (noise t omega) ^
+                2 |
+              ↑filtration t] ≤ᵐ[mu]
+            fun (x : Omega) => C2
+
+field bounded_bias:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ∃ (C3 : ℝ),
+      0 ≤ C3 ∧
+        ∀ (t : ℕ),
+          ∀ᵐ (omega : Omega) ∂mu,
+            GKGMM19IterativeLocalVoting.finiteCoordinateNorm GKGMM19IterativeLocalVoting.SourceNorm.l2 (bias t omega) ≤
+              C3
+
+field step_bias_summable:
+∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
+  [inst_1 : Nonempty Coord] {mu : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
+  {filtration : MeasureTheory.Filtration ℕ mOmega} {solutionSpace : Set (Coord → ℝ)} {objective : (Coord → ℝ) → ℝ}
+  {project : (Coord → ℝ) → Coord → ℝ} {trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ} {radius : ℕ → ℝ}
+  {xstar : Coord → ℝ},
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ∀ᵐ (omega : Omega) ∂mu,
+      Summable fun (t : ℕ) =>
+        radius (t + 1) *
+          GKGMM19IterativeLocalVoting.finiteCoordinateNorm GKGMM19IterativeLocalVoting.SourceNorm.l2 (bias t omega)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-299655269609640a}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Finite\allowbreak{}Subgradient\allowbreak{}Within\allowbreak{}At}
+\item \hyperlink{governing-declaration-0d57afe39513c2cc}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}SSGM\allowbreak{}Step\allowbreak{}Size\allowbreak{}Conditions}
+\item \hyperlink{governing-declaration-6fa4ab9852321b03}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Source\allowbreak{}Norm}
+\item \hyperlink{governing-declaration-54228ebaec750c58}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}finite\allowbreak{}Coordinate\allowbreak{}Distance}
 \item \hyperlink{governing-declaration-6b5981b41f6efa87}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}finite\allowbreak{}Coordinate\allowbreak{}Norm}
 \end{itemize}
 \hypertarget{governing-declaration-f3282f086fe40a02}{}
@@ -3358,7 +3697,9 @@ fun {Voter : Type u_1} {Coord : Type u_2} [Fintype Coord] [Nonempty Coord]
 
 % report-context-presentation-sha256: dfc8b90631021656999bda9ee7e1bce6ea612e113370ea173c54379267a0b105
 \paragraph{Settled source reading}
+\begin{sloppypar}
 When the displayed Model B gradient is zero, the voter remains at the current point.\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
@@ -4058,9 +4399,13 @@ xt → x , then x is a directional equilibrium, i.e. G(x ) = 0.
 
 % report-context-presentation-sha256: cde7683565fa05d1b91a76faaf14baa6391f0452f3dc4e8aac45a6af282c2d2f
 \paragraph{Settled source reading}
+\begin{sloppypar}
 When the displayed Model B gradient is zero, the voter remains at the current point.\allowbreak{}
+\end{sloppypar}
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The checked Theorem 3 zero-\allowbreak{}field result uses an explicit full-\allowbreak{}space condition;\allowbreak{} the constrained-\allowbreak{}space result gives zero field or no feasible aggregate direction.\allowbreak{} The printed theorem invokes C1–C3, including bounded convex X;\allowbreak{} these results alone do not prove or refute zero field on every such X.\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-elaborated paper signature}
 \begin{ReviewVerbatim}
@@ -4238,9 +4583,13 @@ xt → x , then x is a directional equilibrium, i.e. G(x ) = 0.
 
 % report-context-presentation-sha256: cde7683565fa05d1b91a76faaf14baa6391f0452f3dc4e8aac45a6af282c2d2f
 \paragraph{Settled source reading}
+\begin{sloppypar}
 When the displayed Model B gradient is zero, the voter remains at the current point.\allowbreak{}
+\end{sloppypar}
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The checked Theorem 3 zero-\allowbreak{}field result uses an explicit full-\allowbreak{}space condition;\allowbreak{} the constrained-\allowbreak{}space result gives zero field or no feasible aggregate direction.\allowbreak{} The printed theorem invokes C1–C3, including bounded convex X;\allowbreak{} these results alone do not prove or refute zero field on every such X.\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Lean-elaborated paper signature}
 \begin{ReviewVerbatim}
@@ -4839,7 +5188,7 @@ GKGMM19IterativeLocalVoting.proposition1_weighted_euclidean_joint_c3
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-5da11e8f46618b8e}{}
+\hypertarget{source-claim-d36270613434ba50}{}
 \section*{Review row 3}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 587-\allowbreak{}600\par}
 \paragraph{Verbatim source input}
@@ -5000,12 +5349,18 @@ on each dimension separately as if the utility function was L
 dimension. Thus a proof akin to that of Theorem 1 with p = 1, q = ∞ holds.
 \end{ReviewVerbatim}
 
-% report-context-presentation-sha256: dd37aa485b7a86310ab182b89df375eba755ea00a859ca1dfad3d54ddb4e652b
+% report-context-presentation-sha256: 8006a58cecdfc3fe4fbbb9d6d00856cc095ce238f8115dfb7609bc694d25efd0
 \paragraph{Settled source reading}
+\begin{sloppypar}
 For Proposition 2 with a Linfinity neighborhood, Model B moves every non-\allowbreak{}tied decomposition coordinate by the full current radius toward that coordinate of the sampled voter's ideal;\allowbreak{} tied coordinates do not move.\allowbreak{}
-\paragraph{Settled source reading}
-The checked Proposition 2 assumes that replacing one coordinate of a feasible point by that of another feasible point preserves feasibility.\allowbreak{} This is stronger than C1’s closed convex domain;\allowbreak{} it is the current statement scope, not a proved necessary condition for the conclusion.\allowbreak{}
+\end{sloppypar}
+\paragraph{Formalized review target}
+The archival source above is not asserted equivalent to this formalized target.
+\begin{ReviewVerbatim}
+For a finite nonempty coordinate set, a C1 feasible set (nonempty bounded closed convex), C2 unique feasible ideal points, C3 iid ideal sampling with bounded measurable density, decomposable utilities, Algorithm 1's sampled Model A raw-response execution, and the Proposition 2 proof's coordinatewise-boundary Model B execution, the ILV trajectories converge almost surely to the feasible minimizer set of expected coordinatewise absolute deviation.
+\end{ReviewVerbatim}
 
+\textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 597-\allowbreak{}600\par}
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {Voter : Type u_1} {Coord : Type u_2} [inst : Fintype Coord] [inst_1 : Nonempty Coord]
@@ -5016,81 +5371,60 @@ The checked Proposition 2 assumes that replacing one coordinate of a feasible po
     D.coords = Finset.univ →
       (∀ (m : Coord) (x : Coord → ℝ), D.coordinate m x = x m) →
         GKGMM19IterativeLocalVoting.UsesFiniteCoordinateNormDistance E →
-          (∀ {x y : Coord → ℝ},
-              x ∈ E.solutionSpace →
-                y ∈ E.solutionSpace →
-                  ∀ (m : Coord),
-                    ∃ replacement ∈ E.solutionSpace, replacement m = y m ∧ ∀ (l : Coord), l ≠ m → replacement l = x l) →
-            ∀ {project : (Coord → ℝ) → Coord → ℝ}
-              (S : GKGMM19IterativeLocalVoting.FiniteModelBC1C2Source E C3.data project) {r0 : ℝ},
-              0 < r0 →
-                ∀ initial ∈ E.solutionSpace,
-                  (∃ (sampledVoter : (Coord → ℝ) → Voter),
-                      (∀ᵐ (ideal : Coord → ℝ) ∂C3.data.idealMeasure, E.ideal (sampledVoter ideal) = ideal) ∧
-                        ∀ᵐ (omega :
-                          ℕ → Coord → ℝ) ∂GKGMM19IterativeLocalVoting.finiteModelBIdealSequenceMeasure C3.data,
-                          ∀ (n : ℕ),
-                            GKGMM19IterativeLocalVoting.ModelARawResponseAt E
-                              GKGMM19IterativeLocalVoting.SourceNorm.linfty
+          ∀ {project : (Coord → ℝ) → Coord → ℝ}
+            (S : GKGMM19IterativeLocalVoting.FiniteModelBC1C2Source E C3.data project) {r0 : ℝ},
+            0 < r0 →
+              ∀ initial ∈ E.solutionSpace,
+                (∃ (sampledVoter : (Coord → ℝ) → Voter),
+                    (∀ᵐ (ideal : Coord → ℝ) ∂C3.data.idealMeasure, E.ideal (sampledVoter ideal) = ideal) ∧
+                      ∀ᵐ (omega : ℕ → Coord → ℝ) ∂GKGMM19IterativeLocalVoting.finiteModelBIdealSequenceMeasure C3.data,
+                        ∀ (n : ℕ),
+                          GKGMM19IterativeLocalVoting.ModelARawResponseAt E
+                            GKGMM19IterativeLocalVoting.SourceNorm.linfty
+                            (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial
+                              n omega)
+                            (GKGMM19IterativeLocalVoting.ilvRadius r0 (n + 1))
+                            (sampledVoter (GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega))
+                            (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeRawResponse r0
                               (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeTrajectory C3.data r0 project
-                                initial n omega)
-                              (GKGMM19IterativeLocalVoting.ilvRadius r0 (n + 1))
-                              (sampledVoter (GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega))
-                              (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeRawResponse r0
-                                (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeTrajectory C3.data r0 project
-                                  initial)
-                                GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega)) →
-                    GKGMM19IterativeLocalVoting.finiteCoordinateC3CarrierFormula C3 ∧
-                      GKGMM19IterativeLocalVoting.finiteModelBC1C2SourceFormula S ∧
-                        (∃ (sampledVoter : (Coord → ℝ) → Voter),
-                            (∀ᵐ (ideal : Coord → ℝ) ∂C3.data.idealMeasure, E.ideal (sampledVoter ideal) = ideal) ∧
-                              ∀ᵐ (omega :
-                                ℕ → Coord → ℝ) ∂GKGMM19IterativeLocalVoting.finiteModelBIdealSequenceMeasure C3.data,
-                                ∀ (n : ℕ),
-                                  GKGMM19IterativeLocalVoting.ModelARawResponseAt E
-                                    GKGMM19IterativeLocalVoting.SourceNorm.linfty
-                                    (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeTrajectory C3.data r0 project
-                                      initial n omega)
-                                    (GKGMM19IterativeLocalVoting.ilvRadius r0 (n + 1))
-                                    (sampledVoter (GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega))
-                                    (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeRawResponse r0
-                                      (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeTrajectory C3.data r0
-                                        project initial)
-                                      GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega)) ∧
-                          (∀ {center response : Coord → ℝ} {r : ℝ} {voter : Voter},
-                              GKGMM19IterativeLocalVoting.ModelAResponseAt E
-                                  GKGMM19IterativeLocalVoting.SourceNorm.linfty center r voter response →
-                                ∀ (m : Coord),
-                                  IsMaxOn (fun (z : ℝ) => D.coordinateUtility m voter z)
-                                    {z : ℝ |
-                                      ∃
-                                        candidate ∈
-                                          GKGMM19IterativeLocalVoting.LocalNeighborhood E
-                                            GKGMM19IterativeLocalVoting.SourceNorm.linfty center r,
-                                        D.coordinate m candidate = z}
-                                    (D.coordinate m response)) ∧
-                            (∀ (n : ℕ) (omega : ℕ → Coord → ℝ),
-                                GKGMM19IterativeLocalVoting.ModelBCoordinatewiseBoundaryResponseAt
-                                  (GKGMM19IterativeLocalVoting.finiteModelBOutcomeTrajectory C3.data 1 r0 project
+                                initial)
+                              GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega)) →
+                  GKGMM19IterativeLocalVoting.finiteCoordinateC3CarrierFormula C3 ∧
+                    GKGMM19IterativeLocalVoting.finiteModelBC1C2SourceFormula S ∧
+                      (∃ (sampledVoter : (Coord → ℝ) → Voter),
+                          (∀ᵐ (ideal : Coord → ℝ) ∂C3.data.idealMeasure, E.ideal (sampledVoter ideal) = ideal) ∧
+                            ∀ᵐ (omega :
+                              ℕ → Coord → ℝ) ∂GKGMM19IterativeLocalVoting.finiteModelBIdealSequenceMeasure C3.data,
+                              ∀ (n : ℕ),
+                                GKGMM19IterativeLocalVoting.ModelARawResponseAt E
+                                  GKGMM19IterativeLocalVoting.SourceNorm.linfty
+                                  (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeTrajectory C3.data r0 project
                                     initial n omega)
-                                  (GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega)
                                   (GKGMM19IterativeLocalVoting.ilvRadius r0 (n + 1))
-                                  (GKGMM19IterativeLocalVoting.finiteModelBOutcomeRawResponse 1 r0
-                                    (GKGMM19IterativeLocalVoting.finiteModelBOutcomeTrajectory C3.data 1 r0 project
+                                  (sampledVoter (GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega))
+                                  (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeRawResponse r0
+                                    (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeTrajectory C3.data r0 project
                                       initial)
                                     GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega)) ∧
-                              AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
-                                  (GKGMM19IterativeLocalVoting.finiteModelBIdealSequenceMeasure C3.data)
-                                  (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeTrajectory C3.data r0 project
-                                    initial)
-                                  (GKGMM19IterativeLocalVoting.finiteModelBExpectedLpMinimizerSet C3.data 1
-                                    E.solutionSpace) ∧
-                                AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
-                                  (GKGMM19IterativeLocalVoting.finiteModelBIdealSequenceMeasure C3.data)
-                                  (GKGMM19IterativeLocalVoting.finiteModelBOutcomeTrajectory C3.data 1 r0 project
-                                    initial)
-                                  (GKGMM19IterativeLocalVoting.finiteModelBExpectedLpMinimizerSet C3.data 1
-                                    E.solutionSpace)
+                        (∀ (n : ℕ) (omega : ℕ → Coord → ℝ),
+                            GKGMM19IterativeLocalVoting.ModelBCoordinatewiseBoundaryResponseAt
+                              (GKGMM19IterativeLocalVoting.finiteModelBOutcomeTrajectory C3.data 1 r0 project initial n
+                                omega)
+                              (GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega)
+                              (GKGMM19IterativeLocalVoting.ilvRadius r0 (n + 1))
+                              (GKGMM19IterativeLocalVoting.finiteModelBOutcomeRawResponse 1 r0
+                                (GKGMM19IterativeLocalVoting.finiteModelBOutcomeTrajectory C3.data 1 r0 project initial)
+                                GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega)) ∧
+                          AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
+                              (GKGMM19IterativeLocalVoting.finiteModelBIdealSequenceMeasure C3.data)
+                              (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeTrajectory C3.data r0 project
+                                initial)
+                              (GKGMM19IterativeLocalVoting.finiteModelBExpectedLpMinimizerSet C3.data 1
+                                E.solutionSpace) ∧
+                            AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
+                              (GKGMM19IterativeLocalVoting.finiteModelBIdealSequenceMeasure C3.data)
+                              (GKGMM19IterativeLocalVoting.finiteModelBOutcomeTrajectory C3.data 1 r0 project initial)
+                              (GKGMM19IterativeLocalVoting.finiteModelBExpectedLpMinimizerSet C3.data 1 E.solutionSpace)
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
@@ -5102,9 +5436,7 @@ The checked Proposition 2 assumes that replacing one coordinate of a feasible po
 \item \hyperlink{governing-declaration-b2172f203bb89b25}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Finite\allowbreak{}Model\allowbreak{}BC1\allowbreak{}C2\allowbreak{}Source}
 \item \hyperlink{governing-declaration-df2ca62df1846667}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}ILV\allowbreak{}Environment}
 \item \hyperlink{governing-declaration-ccb024dc87ffc578}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Is\allowbreak{}Decomposable\allowbreak{}Utilities\allowbreak{}With}
-\item \hyperlink{governing-declaration-ee7273129bc9838b}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Local\allowbreak{}Neighborhood}
 \item \hyperlink{governing-declaration-24745e7c99610404}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Model\allowbreak{}A\allowbreak{}Raw\allowbreak{}Response\allowbreak{}At}
-\item \hyperlink{governing-declaration-d8e75394d3eaa44b}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Model\allowbreak{}A\allowbreak{}Response\allowbreak{}At}
 \item \hyperlink{governing-declaration-b594ba8d8a1eacd7}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Model\allowbreak{}B\allowbreak{}Coordinatewise\allowbreak{}Boundary\allowbreak{}Response\allowbreak{}At}
 \item \hyperlink{governing-declaration-6fa4ab9852321b03}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Source\allowbreak{}Norm}
 \item \hyperlink{governing-declaration-f3282f086fe40a02}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Uses\allowbreak{}Finite\allowbreak{}Coordinate\allowbreak{}Norm\allowbreak{}Distance}
@@ -5131,17 +5463,13 @@ The checked Proposition 2 assumes that replacing one coordinate of a feasible po
 9. assumption: D.coords = Finset.univ
 10. assumption: ∀ (m : Coord) (x : Coord → ℝ), D.coordinate m x = x m
 11. assumption: GKGMM19IterativeLocalVoting.UsesFiniteCoordinateNormDistance E
-12. assumption: ∀ {x y : Coord → ℝ},
-  x ∈ E.solutionSpace →
-    y ∈ E.solutionSpace →
-      ∀ (m : Coord), ∃ replacement ∈ E.solutionSpace, replacement m = y m ∧ ∀ (l : Coord), l ≠ m → replacement l = x l
-13. parameter: (Coord → ℝ) → Coord → ℝ
-14. assumption: GKGMM19IterativeLocalVoting.FiniteModelBC1C2Source E C3.data project
-15. parameter: ℝ
-16. assumption: 0 < r0
-17. parameter: Coord → ℝ
-18. assumption: initial ∈ E.solutionSpace
-19. assumption: ∃ (sampledVoter : (Coord → ℝ) → Voter),
+12. parameter: (Coord → ℝ) → Coord → ℝ
+13. assumption: GKGMM19IterativeLocalVoting.FiniteModelBC1C2Source E C3.data project
+14. parameter: ℝ
+15. assumption: 0 < r0
+16. parameter: Coord → ℝ
+17. assumption: initial ∈ E.solutionSpace
+18. assumption: ∃ (sampledVoter : (Coord → ℝ) → Voter),
   (∀ᵐ (ideal : Coord → ℝ) ∂C3.data.idealMeasure, E.ideal (sampledVoter ideal) = ideal) ∧
     ∀ᵐ (omega : ℕ → Coord → ℝ) ∂GKGMM19IterativeLocalVoting.finiteModelBIdealSequenceMeasure C3.data,
       ∀ (n : ℕ),
@@ -5152,7 +5480,7 @@ The checked Proposition 2 assumes that replacing one coordinate of a feasible po
           (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeRawResponse r0
             (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial)
             GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega)
-20. conclusion: GKGMM19IterativeLocalVoting.finiteCoordinateC3CarrierFormula C3 ∧
+19. conclusion: GKGMM19IterativeLocalVoting.finiteCoordinateC3CarrierFormula C3 ∧
   GKGMM19IterativeLocalVoting.finiteModelBC1C2SourceFormula S ∧
     (∃ (sampledVoter : (Coord → ℝ) → Voter),
         (∀ᵐ (ideal : Coord → ℝ) ∂C3.data.idealMeasure, E.ideal (sampledVoter ideal) = ideal) ∧
@@ -5165,47 +5493,35 @@ The checked Proposition 2 assumes that replacing one coordinate of a feasible po
                 (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeRawResponse r0
                   (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial)
                   GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega)) ∧
-      (∀ {center response : Coord → ℝ} {r : ℝ} {voter : Voter},
-          GKGMM19IterativeLocalVoting.ModelAResponseAt E GKGMM19IterativeLocalVoting.SourceNorm.linfty center r voter
-              response →
-            ∀ (m : Coord),
-              IsMaxOn (fun (z : ℝ) => D.coordinateUtility m voter z)
-                {z : ℝ |
-                  ∃
-                    candidate ∈
-                      GKGMM19IterativeLocalVoting.LocalNeighborhood E GKGMM19IterativeLocalVoting.SourceNorm.linfty
-                        center r,
-                    D.coordinate m candidate = z}
-                (D.coordinate m response)) ∧
-        (∀ (n : ℕ) (omega : ℕ → Coord → ℝ),
-            GKGMM19IterativeLocalVoting.ModelBCoordinatewiseBoundaryResponseAt
-              (GKGMM19IterativeLocalVoting.finiteModelBOutcomeTrajectory C3.data 1 r0 project initial n omega)
-              (GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega)
-              (GKGMM19IterativeLocalVoting.ilvRadius r0 (n + 1))
-              (GKGMM19IterativeLocalVoting.finiteModelBOutcomeRawResponse 1 r0
-                (GKGMM19IterativeLocalVoting.finiteModelBOutcomeTrajectory C3.data 1 r0 project initial)
-                GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega)) ∧
-          AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
-              (GKGMM19IterativeLocalVoting.finiteModelBIdealSequenceMeasure C3.data)
-              (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial)
-              (GKGMM19IterativeLocalVoting.finiteModelBExpectedLpMinimizerSet C3.data 1 E.solutionSpace) ∧
-            AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
-              (GKGMM19IterativeLocalVoting.finiteModelBIdealSequenceMeasure C3.data)
+      (∀ (n : ℕ) (omega : ℕ → Coord → ℝ),
+          GKGMM19IterativeLocalVoting.ModelBCoordinatewiseBoundaryResponseAt
+            (GKGMM19IterativeLocalVoting.finiteModelBOutcomeTrajectory C3.data 1 r0 project initial n omega)
+            (GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega)
+            (GKGMM19IterativeLocalVoting.ilvRadius r0 (n + 1))
+            (GKGMM19IterativeLocalVoting.finiteModelBOutcomeRawResponse 1 r0
               (GKGMM19IterativeLocalVoting.finiteModelBOutcomeTrajectory C3.data 1 r0 project initial)
-              (GKGMM19IterativeLocalVoting.finiteModelBExpectedLpMinimizerSet C3.data 1 E.solutionSpace)
+              GKGMM19IterativeLocalVoting.finiteModelBIdealSample n omega)) ∧
+        AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
+            (GKGMM19IterativeLocalVoting.finiteModelBIdealSequenceMeasure C3.data)
+            (GKGMM19IterativeLocalVoting.finiteModelAL1LinfOutcomeTrajectory C3.data r0 project initial)
+            (GKGMM19IterativeLocalVoting.finiteModelBExpectedLpMinimizerSet C3.data 1 E.solutionSpace) ∧
+          AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
+            (GKGMM19IterativeLocalVoting.finiteModelBIdealSequenceMeasure C3.data)
+            (GKGMM19IterativeLocalVoting.finiteModelBOutcomeTrajectory C3.data 1 r0 project initial)
+            (GKGMM19IterativeLocalVoting.finiteModelBExpectedLpMinimizerSet C3.data 1 E.solutionSpace)
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-GKGMM19IterativeLocalVoting.proposition2_coordinatewise_boundary_finite_c3_median
+GKGMM19IterativeLocalVoting.proposition2_convex_domain_constrained_l1
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{matches}
+\textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} The target quantifies decomposable coordinate utilities with concave coordinate components and applies the approved ambient raw-\allowbreak{}query reading.\allowbreak{} It records the approved product-\allowbreak{}coordinate feasible geometry, ties the canonical clamp trajectory to exact Model-\allowbreak{}A responses, and uses the approved Proposition 2 Model-\allowbreak{}B rule that every non-\allowbreak{}tied coordinate moves the full Linfinity radius toward the sampled ideal while ties stay fixed.\allowbreak{} Both projected iid traces converge almost surely to the feasible minimizers of expected coordinatewise L1 distance, the displayed representation of the coordinatewise median set approved for this row.\allowbreak{}
+\textbf{Reason:} The queue binds Proposition 2's archival text, defect identifier, non-\allowbreak{}equivalence disclaimer, and approved C1 corrected target.\allowbreak{} The Lean target retains finite nonempty coordinates, C1-\allowbreak{}C2 compact convex feasible geometry, C3 iid bounded measurable ideal density, decomposable utilities, Algorithm 1's raw Model A response before projection, and the proof's coordinatewise-\allowbreak{}boundary L-\allowbreak{}infinity Model B execution.\allowbreak{} Both trajectories converge to finiteModelBExpectedLpMinimizerSet at p = 1 over E.\allowbreak{}solutionSpace, which is expected coordinatewise absolute deviation by lp\_\allowbreak{}one;\allowbreak{} it introduces neither a product-\allowbreak{}domain nor coordinate-\allowbreak{}replacement premise.\allowbreak{} The recorded three-\allowbreak{}coordinate bounded-\allowbreak{}density mixture has an infeasible ambient-\allowbreak{}median vector while projected iterates remain feasible, so the archival target is genuinely false and the approved feasible expected-\allowbreak{}L1 target matches this Spec.\allowbreak{}
 \par}
-\reviewmatch{Matches source input}
+\reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
@@ -5766,7 +6082,7 @@ GKGMM19IterativeLocalVoting.appendix_theorem4_expected_subgradient_boundary
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-0f5dabcd51f758b4}{}
+\hypertarget{source-claim-f8e78133bd080649}{}
 \section*{Review row 8}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 2004-\allowbreak{}2024\par}
 \paragraph{Verbatim source input}
@@ -5794,134 +6110,32 @@ Theorem 46, provide a convergence proof for the stochastic subgradient method wi
 projections and the extra noise terms.
 \end{ReviewVerbatim}
 
-% report-context-presentation-sha256: b75e2ea39a51781bb51282ceda4961752fb5dbf6ce2cedccbb32096f995c9500
+% report-context-presentation-sha256: 1f2fcb51fc34a84056f41237e2d438afabb385511d96fa6ad3face1534143889
 \paragraph{Settled source reading}
-The checked Appendix Theorem 5 is specialized to a deterministic summable bias sequence.\allowbreak{} This suffices for the zero-\allowbreak{}bias main-\allowbreak{}text application;\allowbreak{} the broader adapted-\allowbreak{}bias statement is not established by this specialization.\allowbreak{}
+\begin{sloppypar}
+The checked Appendix Theorem 5 treats the source bias as an adapted sample-\allowbreak{}path process.\allowbreak{} Its almost-\allowbreak{}sure weighted summability is retained pathwise, while the explicit measurable/\allowbreak{}adapted conditions make the conditional-\allowbreak{}noise martingale terms well defined.\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {Omega : Type u_1} {Coord : Type u_2} {mOmega : MeasurableSpace Omega} [inst : Fintype Coord]
-  [inst_1 : Nonempty Coord] (mu : MeasureTheory.Measure Omega) [MeasureTheory.IsProbabilityMeasure mu]
+  [inst_1 : Nonempty Coord] (mu : MeasureTheory.Measure Omega) [inst_2 : MeasureTheory.IsProbabilityMeasure mu]
   (filtration : MeasureTheory.Filtration ℕ mOmega) (solutionSpace : Set (Coord → ℝ)) (objective : (Coord → ℝ) → ℝ)
-  (project : (Coord → ℝ) → Coord → ℝ) (trajectory meanSubgradient noise : ℕ → Omega → Coord → ℝ) (bias : ℕ → Coord → ℝ)
-  (radius : ℕ → ℝ) (xstar : Coord → ℝ),
-  solutionSpace.Nonempty →
-    Bornology.IsBounded solutionSpace →
-      IsClosed solutionSpace →
-        Convex ℝ solutionSpace →
-          ConvexOn ℝ solutionSpace objective →
-            xstar ∈ solutionSpace →
-              IsMinOn objective solutionSpace xstar →
-                (∀ y ∈ solutionSpace, objective y = objective xstar → y = xstar) →
-                  (∀ (t : ℕ), 0 < t → 0 < radius t) →
-                    (Summable fun (t : ℕ) => radius (t + 1) ^ 2) →
-                      Filter.Tendsto (fun (n : ℕ) => ∑ t ∈ Finset.range n, radius (t + 1)) Filter.atTop Filter.atTop →
-                        (∀ (y : Coord → ℝ),
-                            project y ∈ solutionSpace ∧
-                              IsMinOn
-                                (fun (z : Coord → ℝ) =>
-                                  GKGMM19IterativeLocalVoting.finiteCoordinateDistance
-                                    GKGMM19IterativeLocalVoting.SourceNorm.l2 z y)
-                                solutionSpace (project y)) →
-                          (∀ (t : ℕ),
-                              ∀ᵐ (omega : Omega) ∂mu,
-                                trajectory (t + 1) omega =
-                                  project fun (i : Coord) =>
-                                    trajectory t omega i -
-                                      radius (t + 1) * (meanSubgradient t omega i + noise t omega i + bias t i)) →
-                            (∀ (i : Coord),
-                                MeasureTheory.StronglyAdapted filtration fun (t : ℕ) (omega : Omega) =>
-                                  trajectory t omega i) →
-                              (∀ (i : Coord),
-                                  MeasureTheory.StronglyAdapted filtration fun (t : ℕ) (omega : Omega) =>
-                                    meanSubgradient t omega i) →
-                                (∀ (t : ℕ),
-                                    ∀ᵐ (omega : Omega) ∂mu,
-                                      trajectory t omega ∈ solutionSpace ∧
-                                        GKGMM19IterativeLocalVoting.FiniteSubgradientWithinAt objective solutionSpace
-                                          (trajectory t omega) (meanSubgradient t omega)) →
-                                  (∃ (C1 : ℝ),
-                                      0 ≤ C1 ∧
-                                        ∀ y ∈ solutionSpace,
-                                          ∀ (g : Coord → ℝ),
-                                            GKGMM19IterativeLocalVoting.FiniteSubgradientWithinAt objective
-                                                solutionSpace y g →
-                                              GKGMM19IterativeLocalVoting.finiteCoordinateNorm
-                                                  GKGMM19IterativeLocalVoting.SourceNorm.l2 g ≤
-                                                C1) →
-                                    (∀ (t : ℕ) (i : Coord),
-                                        MeasureTheory.Integrable (fun (omega : Omega) => noise t omega i) mu) →
-                                      (∀ (t : ℕ) (i : Coord),
-                                          mu[fun (omega : Omega) => noise t omega i | ↑filtration t] =ᵐ[mu] 0) →
-                                        (∀ (t : ℕ),
-                                            MeasureTheory.Integrable
-                                              (fun (omega : Omega) =>
-                                                GKGMM19IterativeLocalVoting.finiteCoordinateNorm
-                                                    GKGMM19IterativeLocalVoting.SourceNorm.l2 (noise t omega) ^
-                                                  2)
-                                              mu) →
-                                          (∃ (C2 : ℝ),
-                                              0 ≤ C2 ∧
-                                                ∀ (t : ℕ),
-                                                  mu[fun (omega : Omega) =>
-                                                      GKGMM19IterativeLocalVoting.finiteCoordinateNorm
-                                                          GKGMM19IterativeLocalVoting.SourceNorm.l2 (noise t omega) ^
-                                                        2 |
-                                                      ↑filtration t] ≤ᵐ[mu]
-                                                    fun (x : Omega) => C2) →
-                                            (∃ (C3 : ℝ),
-                                                0 ≤ C3 ∧
-                                                  ∀ (t : ℕ),
-                                                    GKGMM19IterativeLocalVoting.finiteCoordinateNorm
-                                                        GKGMM19IterativeLocalVoting.SourceNorm.l2 (bias t) ≤
-                                                      C3) →
-                                              (Summable fun (t : ℕ) =>
-                                                  radius (t + 1) *
-                                                    GKGMM19IterativeLocalVoting.finiteCoordinateNorm
-                                                      GKGMM19IterativeLocalVoting.SourceNorm.l2 (bias t)) →
-                                                (MeasureTheory.StronglyAdapted filtration fun (t : ℕ) (omega : Omega) =>
-                                                    objective (trajectory t omega) - objective xstar) →
-                                                  (∀ (t : ℕ),
-                                                      MeasureTheory.Integrable
-                                                        (fun (omega : Omega) =>
-                                                          AppliedModelingLib.FiniteDimensionalNorms.l2Sq
-                                                            fun (i : Coord) => trajectory t omega i - xstar i)
-                                                        mu) →
-                                                    (∀ (t : ℕ),
-                                                        MeasureTheory.Integrable
-                                                          (fun (omega : Omega) =>
-                                                            objective (trajectory t omega) - objective xstar)
-                                                          mu) →
-                                                      (∀ (t : ℕ) (i : Coord),
-                                                          MeasureTheory.Integrable
-                                                            (fun (omega : Omega) =>
-                                                              (trajectory t omega i - xstar i) * noise t omega i)
-                                                            mu) →
-                                                        (∃ (distanceBound : ℝ),
-                                                            0 ≤ distanceBound ∧
-                                                              ∀ (t : ℕ),
-                                                                ∀ᵐ (omega : Omega) ∂mu,
-                                                                  (AppliedModelingLib.FiniteDimensionalNorms.l2
-                                                                      fun (i : Coord) =>
-                                                                      trajectory t omega i - xstar i) ≤
-                                                                    distanceBound) →
-                                                          (∀ y ∈ solutionSpace,
-                                                              ∃ (g : Coord → ℝ),
-                                                                GKGMM19IterativeLocalVoting.FiniteSubgradientWithinAt
-                                                                  objective solutionSpace y g) →
-                                                            ∀ᵐ (omega : Omega) ∂mu,
-                                                              Filter.Tendsto (fun (t : ℕ) => trajectory t omega)
-                                                                Filter.atTop (nhds xstar)
+  (project : (Coord → ℝ) → Coord → ℝ) (trajectory meanSubgradient noise bias : ℕ → Omega → Coord → ℝ) (radius : ℕ → ℝ)
+  (xstar : Coord → ℝ),
+  GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+      trajectory meanSubgradient noise bias radius xstar →
+    ∀
+      (R :
+        GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasRegularity mu filtration solutionSpace objective project
+          trajectory meanSubgradient noise bias radius xstar),
+      ∀ᵐ (omega : Omega) ∂mu, Filter.Tendsto (fun (t : ℕ) => trajectory t omega) Filter.atTop (nhds xstar)
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
 \begin{itemize}\raggedright
-\item \hyperlink{governing-declaration-08313452edb53fe9}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Finite\allowbreak{}Dimensional\allowbreak{}Norms.\allowbreak{}l2}
-\item \hyperlink{governing-declaration-634c9de2aa959a7a}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Finite\allowbreak{}Dimensional\allowbreak{}Norms.\allowbreak{}l2\allowbreak{}Sq}
-\item \hyperlink{governing-declaration-299655269609640a}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Finite\allowbreak{}Subgradient\allowbreak{}Within\allowbreak{}At}
-\item \hyperlink{governing-declaration-6fa4ab9852321b03}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Source\allowbreak{}Norm}
-\item \hyperlink{governing-declaration-54228ebaec750c58}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}finite\allowbreak{}Coordinate\allowbreak{}Distance}
-\item \hyperlink{governing-declaration-6b5981b41f6efa87}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}finite\allowbreak{}Coordinate\allowbreak{}Norm}
+\item \hyperlink{governing-declaration-6ad80e26591c9c53}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Appendix\allowbreak{}Theorem5\allowbreak{}Adapted\allowbreak{}Bias\allowbreak{}Hypotheses}
+\item \hyperlink{governing-declaration-95e55498d2355ed0}{GKGMM19\allowbreak{}Iterative\allowbreak{}Local\allowbreak{}Voting.\allowbreak{}Appendix\allowbreak{}Theorem5\allowbreak{}Adapted\allowbreak{}Bias\allowbreak{}Regularity}
 \end{itemize}
 \paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
 1. parameter: Type u_1
@@ -5938,92 +6152,25 @@ The checked Appendix Theorem 5 is specialized to a deterministic summable bias s
 12. parameter: ℕ → Omega → Coord → ℝ
 13. parameter: ℕ → Omega → Coord → ℝ
 14. parameter: ℕ → Omega → Coord → ℝ
-15. parameter: ℕ → Coord → ℝ
+15. parameter: ℕ → Omega → Coord → ℝ
 16. parameter: ℕ → ℝ
 17. parameter: Coord → ℝ
-18. assumption: solutionSpace.Nonempty
-19. assumption: Bornology.IsBounded solutionSpace
-20. assumption: IsClosed solutionSpace
-21. assumption: Convex ℝ solutionSpace
-22. assumption: ConvexOn ℝ solutionSpace objective
-23. assumption: xstar ∈ solutionSpace
-24. assumption: IsMinOn objective solutionSpace xstar
-25. assumption: ∀ y ∈ solutionSpace, objective y = objective xstar → y = xstar
-26. assumption: ∀ (t : ℕ), 0 < t → 0 < radius t
-27. assumption: Summable fun (t : ℕ) => radius (t + 1) ^ 2
-28. assumption: Filter.Tendsto (fun (n : ℕ) => ∑ t ∈ Finset.range n, radius (t + 1)) Filter.atTop Filter.atTop
-29. assumption: ∀ (y : Coord → ℝ),
-  project y ∈ solutionSpace ∧
-    IsMinOn
-      (fun (z : Coord → ℝ) =>
-        GKGMM19IterativeLocalVoting.finiteCoordinateDistance GKGMM19IterativeLocalVoting.SourceNorm.l2 z y)
-      solutionSpace (project y)
-30. assumption: ∀ (t : ℕ),
-  ∀ᵐ (omega : Omega) ∂mu,
-    trajectory (t + 1) omega =
-      project fun (i : Coord) =>
-        trajectory t omega i - radius (t + 1) * (meanSubgradient t omega i + noise t omega i + bias t i)
-31. assumption: ∀ (i : Coord), MeasureTheory.StronglyAdapted filtration fun (t : ℕ) (omega : Omega) => trajectory t omega i
-32. assumption: ∀ (i : Coord), MeasureTheory.StronglyAdapted filtration fun (t : ℕ) (omega : Omega) => meanSubgradient t omega i
-33. assumption: ∀ (t : ℕ),
-  ∀ᵐ (omega : Omega) ∂mu,
-    trajectory t omega ∈ solutionSpace ∧
-      GKGMM19IterativeLocalVoting.FiniteSubgradientWithinAt objective solutionSpace (trajectory t omega)
-        (meanSubgradient t omega)
-34. assumption: ∃ (C1 : ℝ),
-  0 ≤ C1 ∧
-    ∀ y ∈ solutionSpace,
-      ∀ (g : Coord → ℝ),
-        GKGMM19IterativeLocalVoting.FiniteSubgradientWithinAt objective solutionSpace y g →
-          GKGMM19IterativeLocalVoting.finiteCoordinateNorm GKGMM19IterativeLocalVoting.SourceNorm.l2 g ≤ C1
-35. assumption: ∀ (t : ℕ) (i : Coord), MeasureTheory.Integrable (fun (omega : Omega) => noise t omega i) mu
-36. assumption: ∀ (t : ℕ) (i : Coord), mu[fun (omega : Omega) => noise t omega i | ↑filtration t] =ᵐ[mu] 0
-37. assumption: ∀ (t : ℕ),
-  MeasureTheory.Integrable
-    (fun (omega : Omega) =>
-      GKGMM19IterativeLocalVoting.finiteCoordinateNorm GKGMM19IterativeLocalVoting.SourceNorm.l2 (noise t omega) ^ 2)
-    mu
-38. assumption: ∃ (C2 : ℝ),
-  0 ≤ C2 ∧
-    ∀ (t : ℕ),
-      mu[fun (omega : Omega) =>
-          GKGMM19IterativeLocalVoting.finiteCoordinateNorm GKGMM19IterativeLocalVoting.SourceNorm.l2 (noise t omega) ^
-            2 |
-          ↑filtration t] ≤ᵐ[mu]
-        fun (x : Omega) => C2
-39. assumption: ∃ (C3 : ℝ),
-  0 ≤ C3 ∧
-    ∀ (t : ℕ), GKGMM19IterativeLocalVoting.finiteCoordinateNorm GKGMM19IterativeLocalVoting.SourceNorm.l2 (bias t) ≤ C3
-40. assumption: Summable fun (t : ℕ) =>
-  radius (t + 1) * GKGMM19IterativeLocalVoting.finiteCoordinateNorm GKGMM19IterativeLocalVoting.SourceNorm.l2 (bias t)
-41. assumption: MeasureTheory.StronglyAdapted filtration fun (t : ℕ) (omega : Omega) => objective (trajectory t omega) - objective xstar
-42. assumption: ∀ (t : ℕ),
-  MeasureTheory.Integrable
-    (fun (omega : Omega) =>
-      AppliedModelingLib.FiniteDimensionalNorms.l2Sq fun (i : Coord) => trajectory t omega i - xstar i)
-    mu
-43. assumption: ∀ (t : ℕ), MeasureTheory.Integrable (fun (omega : Omega) => objective (trajectory t omega) - objective xstar) mu
-44. assumption: ∀ (t : ℕ) (i : Coord),
-  MeasureTheory.Integrable (fun (omega : Omega) => (trajectory t omega i - xstar i) * noise t omega i) mu
-45. assumption: ∃ (distanceBound : ℝ),
-  0 ≤ distanceBound ∧
-    ∀ (t : ℕ),
-      ∀ᵐ (omega : Omega) ∂mu,
-        (AppliedModelingLib.FiniteDimensionalNorms.l2 fun (i : Coord) => trajectory t omega i - xstar i) ≤ distanceBound
-46. assumption: ∀ y ∈ solutionSpace,
-  ∃ (g : Coord → ℝ), GKGMM19IterativeLocalVoting.FiniteSubgradientWithinAt objective solutionSpace y g
-47. conclusion: ∀ᵐ (omega : Omega) ∂mu, Filter.Tendsto (fun (t : ℕ) => trajectory t omega) Filter.atTop (nhds xstar)
+18. assumption: GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasHypotheses mu filtration solutionSpace objective project
+  trajectory meanSubgradient noise bias radius xstar
+19. parameter: GKGMM19IterativeLocalVoting.AppendixTheorem5AdaptedBiasRegularity mu filtration solutionSpace objective project
+  trajectory meanSubgradient noise bias radius xstar
+20. conclusion: ∀ᵐ (omega : Omega) ∂mu, Filter.Tendsto (fun (t : ℕ) => trajectory t omega) Filter.atTop (nhds xstar)
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-GKGMM19IterativeLocalVoting.appendix_theorem5_ssgm_convergence_boundary
+GKGMM19IterativeLocalVoting.appendix_theorem5_adapted_bias
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} Under the displayed projected stochastic-\allowbreak{}subgradient update, the target requires the source's unique feasible minimizer, positive nonsummable steps with summable squares, uniformly bounded objective subgradients, conditionally mean-\allowbreak{}zero noise with bounded conditional second moment, uniformly bounded deterministic bias, and summability of radius times the bias norm.\allowbreak{} The extra adaptedness, measurability, integrability, projection, and bounded-\allowbreak{}trajectory clauses make those source expectations and update well defined.\allowbreak{} With the approved deterministic-\allowbreak{}bias reading, the conclusion is precisely almost-\allowbreak{}sure convergence of x\_\allowbreak{}t to xstar.\allowbreak{}
+\textbf{Reason:} The Appendix Theorem 5 source bundle (lines 2004-\allowbreak{}2024) requires a unique feasible minimizer, positive/\allowbreak{}divergent/\allowbreak{}square-\allowbreak{}summable steps, bounded subgradients, conditional noise-\allowbreak{}energy control, a bounded bias, almost-\allowbreak{}sure weighted-\allowbreak{}bias summability, and almost-\allowbreak{}sure convergence.\allowbreak{} The expanded target quantifies the source-\allowbreak{}shaped adapted-\allowbreak{}bias hypotheses and concludes almost-\allowbreak{}everywhere trajectory convergence to xstar.\allowbreak{} The displayed approved context correctly reads the probability-\allowbreak{}one bias bound and weighted series pathwise;\allowbreak{} its regularity record supplies measurability/\allowbreak{}adaptedness and the noise partial-\allowbreak{}sum well-\allowbreak{}definedness needed by the source's conditional-\allowbreak{}expectation language, not a replacement convergence premise.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -6673,9 +6820,13 @@ directional equilibria in Section 3.3.
 
 % report-context-presentation-sha256: cde7683565fa05d1b91a76faaf14baa6391f0452f3dc4e8aac45a6af282c2d2f
 \paragraph{Settled source reading}
+\begin{sloppypar}
 When the displayed Model B gradient is zero, the voter remains at the current point.\allowbreak{}
+\end{sloppypar}
 \paragraph{Settled source reading}
+\begin{sloppypar}
 The checked Theorem 3 zero-\allowbreak{}field result uses an explicit full-\allowbreak{}space condition;\allowbreak{} the constrained-\allowbreak{}space result gives zero field or no feasible aggregate direction.\allowbreak{} The printed theorem invokes C1–C3, including bounded convex X;\allowbreak{} these results alone do not prove or refute zero field on every such X.\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}

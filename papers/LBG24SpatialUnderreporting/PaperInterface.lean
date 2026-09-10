@@ -99,6 +99,8 @@ def sourceLemma2SelectedStartExponentialTailSpec
     {P : Measure Omega} [IsProbabilityMeasure P]
     (M : Lemma2ForwardSourceModel Omega P) : Prop :=
     ∀ u : ℝ≥0, ∀ᵐ omega ∂P,
+        (canonicalFirstArrival (M.interarrivalPath omega)).toNNReal ≤
+            M.observationHorizon →
         (ProbabilityTheory.condExpKernel P
           (MeasurableSpace.comap M.selection.firstReportTime inferInstance) omega).real
             {omega' | forwardPostStopIntervalCount M.process
@@ -115,11 +117,19 @@ def sourceTheorem1LikelihoodDecompositionSpec
     (D : AppendixTheorem2CausalStoppingSourceModel.EndpointDensityPresentation M)
     {rate : ℝ} (rate_pos : 0 < rate)
     (exposure_pos : 0 < T.window.exposure) : Prop :=
-    AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood T M D rate =
-        AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D *
-          sourcePoissonPMFOnSourceDomain rate T.window.exposure T.count ∧
-      RateIndependent (fun _rate : ℝ =>
-        AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D)
+    ∀ {Omega : Type*} [MeasurableSpace Omega] [StandardBorelSpace Omega]
+        {P : Measure Omega} [IsProbabilityMeasure P]
+        {Tail : Type*} [MeasurableSpace Tail]
+        (selection : Theorem2ConditionOneSelection Omega P Tail)
+        {startReference : Measure ℝ≥0} [SFinite startReference]
+        (G : Theorem2ConditionOneFixedHistoryDensityPresentation
+          selection startReference T),
+      M.selectedStartLikelihood = G.selectedStartLikelihood →
+        AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood T M D rate =
+            AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D *
+              sourcePoissonPMFOnSourceDomain rate T.window.exposure T.count ∧
+          RateIndependent (fun _rate : ℝ =>
+            AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D)
 
 /-- The homogeneous Poisson first-report delay has mean `1 / rate`. -/
 def sourceHomogeneousReportingDelayMeanSpec : Prop :=
@@ -151,14 +161,22 @@ def sourceEquation6PoissonRegressionLikelihoodSpec : Prop :=
       (M : AppendixTheorem2CausalStoppingSourceModel T.count)
       (D : AppendixTheorem2CausalStoppingSourceModel.EndpointDensityPresentation M)
       (exposure_pos : 0 < T.window.exposure),
-      AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood T M D
-          (poissonRegressionRate alpha beta theta) =
-        AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D *
-          sourcePoissonPMFOnSourceDomain
-            (Real.exp (alpha + ∑ j, beta j * theta j))
-            T.window.exposure T.count ∧
-      RateIndependent (fun _rate : ℝ ↦
-        AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D)
+      ∀ {Omega : Type*} [MeasurableSpace Omega] [StandardBorelSpace Omega]
+          {P : Measure Omega} [IsProbabilityMeasure P]
+          {Tail : Type*} [MeasurableSpace Tail]
+          (selection : Theorem2ConditionOneSelection Omega P Tail)
+          {startReference : Measure ℝ≥0} [SFinite startReference]
+          (G : Theorem2ConditionOneFixedHistoryDensityPresentation
+            selection startReference T),
+        M.selectedStartLikelihood = G.selectedStartLikelihood →
+          AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood T M D
+              (poissonRegressionRate alpha beta theta) =
+            AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D *
+              sourcePoissonPMFOnSourceDomain
+                (Real.exp (alpha + ∑ j, beta j * theta j))
+                T.window.exposure T.count ∧
+          RateIndependent (fun _rate : ℝ ↦
+            AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D)
 
 /-- Valid parameters for one incident in the source's zero-inflated model. -/
 structure ZeroInflatedIncidentSourceModel where
@@ -208,11 +226,17 @@ interarrival sequence retains the iid exponential law at the same rate. -/
 def sourcePostFirstJumpPoissonShiftSpec : Prop :=
   ∀ {Omega : Type*} [MeasurableSpace Omega] [StandardBorelSpace Omega]
       {P : Measure Omega} [IsProbabilityMeasure P]
-      (M : Lemma2ForwardSourceModel Omega P),
-    ProbabilityTheory.condDistrib M.selection.postFirstReportTail
-      M.selection.firstReportTime P =ᵐ[P.map M.selection.firstReportTime]
+      {rate : ℝ} (rate_pos : 0 < rate)
+      (interarrivalPath : Omega → ℕ → ℝ)
+      (interarrivalPath_measurable : Measurable interarrivalPath)
+      (interarrivalPath_hasLaw : ProbabilityTheory.HasLaw interarrivalPath
+        (exponentialInterarrivalMeasure rate) P),
+    ProbabilityTheory.condDistrib
+      (fun omega => futureInterarrival 1 (interarrivalPath omega))
+      (fun omega => (canonicalFirstArrival (interarrivalPath omega)).toNNReal) P =ᵐ[
+        P.map (fun omega => (canonicalFirstArrival (interarrivalPath omega)).toNNReal)]
         ProbabilityTheory.Kernel.const ℝ≥0
-          (exponentialInterarrivalMeasure M.rate)
+          (exponentialInterarrivalMeasure rate)
 
 end
 

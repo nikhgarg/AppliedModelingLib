@@ -1,0 +1,693 @@
+{
+  "schema": 2,
+  "paper": "GHKR22BiasBounties",
+  "report_sha256": "b489015e788c99a8ec0e2a063d916bcb41bc6fd6b539199b4c8bfc846fcc6a8c",
+  "source_items_sha256": "d9dd6ca5f1c9951a3195a19178ad9a9c23f32ec712cd496e89d6d6344622c162",
+  "all_selected_semantic_review_sha256": "50e55d724c5478f010c69332652ab3a6aa45178366058ffa9f87595c08d9c0d2",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/observation-4-pointwise-null-set": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "Bayes optimality, defined through pointwise conditional risk on the support, is equivalent to optimality against every alternative model on every subgroup.",
+      "report_home": 4,
+      "memo_heading": "Bayes optimality and Observation 4",
+      "memo_anchor": "bayes-optimality-and-observation-4"
+    },
+    "defect/adaptive-checker-confidence-and-transcript-count": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "The adaptive certificate checker and its downstream update processes satisfy the stated accept/reject guarantees at the displayed logarithmic sample size.",
+      "report_home": 4,
+      "memo_heading": "Adaptive certificate checking",
+      "memo_anchor": "adaptive-certificate-checking"
+    },
+    "defect/algorithm-4-shared-state-and-restart": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "MonotoneFalsifyAndUpdate feeds external proposals and repair proposals through CertificateChecker and recursively repairs losses on protected historical groups.",
+      "report_home": 4,
+      "memo_heading": "Shared state in Algorithm 4",
+      "memo_anchor": "shared-state-in-algorithm-4"
+    },
+    "defect/algorithm-2-nonstrict-guard-final-acceptance": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "The printed non-strict guard processes a proposal while NumberAccepted is at most 2/epsilon, while the proof says the transcript contains at most 2/epsilon acceptances.",
+      "report_home": 4,
+      "memo_heading": "Adaptive certificate checking",
+      "memo_anchor": "adaptive-certificate-checking"
+    },
+    "defect/algorithm-5-fresh-block-and-integer-horizon": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "TrainByOpt partitions the sample into T=2/epsilon blocks and optimizes and tests one certificate at every round before either halting or applying ListUpdate.",
+      "report_home": 4,
+      "memo_heading": "Fresh blocks, integer rounds, and the Lemma 15 typo",
+      "memo_anchor": "fresh-blocks-integer-rounds-and-the-lemma-15-typo"
+    },
+    "defect/lemma-15-undefined-gp": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "Uniform convergence bounds the difference between the population and empirical certificate objectives for every quantified g in G and h in H.",
+      "report_home": 4,
+      "memo_heading": "Fresh blocks, integer rounds, and the Lemma 15 typo",
+      "memo_anchor": "fresh-blocks-integer-rounds-and-the-lemma-15-typo"
+    },
+    "defect/lemma-22-disagreement-normalization": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "An empirical-risk minimizer on the disagreement-labelled sample maximizes the fixed-model certificate objective over the group class.",
+      "report_home": 7,
+      "memo_heading": "Lemma 22 proof route",
+      "memo_anchor": "lemma-22-proof-route"
+    },
+    "defect/algorithm-6-two-gap-and-positive-initialization": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "From an arbitrary initial pair, alternating ERM returns after at most 2/epsilon ERM calls over each class with a positive certificate that is epsilon-locally optimal in both coordinates.",
+      "report_home": 4,
+      "memo_heading": "Algorithm 6 and Theorem 23",
+      "memo_anchor": "algorithm-6-and-theorem-23"
+    },
+    "convention/measurable-arbitrary-population-law": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "Population expectations are taken under an arbitrary probability measure; losses, models, groups, adaptive submissions, and bad events carry the measurability or integrability premises needed for those expectations and probabilities to exist.",
+      "report_home": 4,
+      "memo_heading": "Conditional group loss and null groups",
+      "memo_anchor": "conditional-group-loss-and-null-groups"
+    },
+    "convention/zero-mass-group-totalization": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "The mass-weighted group-loss numerator is the total primitive; conditional group loss is totalized to zero at mass zero, and every divided source display is recovered on positive-mass groups.",
+      "report_home": 4,
+      "memo_heading": "Conditional group loss and null groups",
+      "memo_anchor": "conditional-group-loss-and-null-groups"
+    },
+    "source/algorithm_4_monotone_falsify_and_update/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "algorithm_4_monotone_falsify_and_update",
+      "report_home": 4,
+      "memo_heading": "Shared state in Algorithm 4",
+      "memo_anchor": "shared-state-in-algorithm-4"
+    },
+    "source/algorithm_5_train_by_opt/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "algorithm_5_train_by_opt",
+      "report_home": 4,
+      "memo_heading": "Fresh blocks, integer rounds, and the Lemma 15 typo",
+      "memo_anchor": "fresh-blocks-integer-rounds-and-the-lemma-15-typo"
+    },
+    "source/algorithm_6_alternating_maximization/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "algorithm_6_alternating_maximization",
+      "report_home": 4,
+      "memo_heading": "Conditional group loss and null groups",
+      "memo_anchor": "conditional-group-loss-and-null-groups"
+    },
+    "source/definition_3_bayes_optimal/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "definition_3_bayes_optimal",
+      "report_home": 4,
+      "memo_heading": "Bayes optimality and Observation 4",
+      "memo_anchor": "bayes-optimality-and-observation-4"
+    },
+    "source/lemma_15_vc_uniform_convergence/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "lemma_15_vc_uniform_convergence",
+      "report_home": 4,
+      "memo_heading": "Fresh blocks, integer rounds, and the Lemma 15 typo",
+      "memo_anchor": "fresh-blocks-integer-rounds-and-the-lemma-15-typo"
+    },
+    "source/observation_4_bayes_groupwise/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "observation_4_bayes_groupwise",
+      "report_home": 4,
+      "memo_heading": "Bayes optimality and Observation 4",
+      "memo_anchor": "bayes-optimality-and-observation-4"
+    },
+    "source/theorem_11_adaptive_checker/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "theorem_11_adaptive_checker",
+      "report_home": 4,
+      "memo_heading": "Adaptive certificate checking",
+      "memo_anchor": "adaptive-certificate-checking"
+    },
+    "source/theorem_12_falsify_and_update/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "theorem_12_falsify_and_update",
+      "report_home": 4,
+      "memo_heading": "Adaptive certificate checking",
+      "memo_anchor": "adaptive-certificate-checking"
+    },
+    "source/theorem_14_monotone_bounty/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "theorem_14_monotone_bounty",
+      "report_home": 4,
+      "memo_heading": "Shared state in Algorithm 4",
+      "memo_anchor": "shared-state-in-algorithm-4"
+    },
+    "source/theorem_23_coordinate_ascent/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "5952dac0f4dd51b2f269e0d84802a6780d4c6d09f33dd17355e7823e3f89ecc8",
+      "source_reading": "theorem_23_coordinate_ascent",
+      "report_home": 4,
+      "memo_heading": "Algorithm 6 and Theorem 23",
+      "memo_anchor": "algorithm-6-and-theorem-23"
+    },
+    "report/long-form-explanation": {
+      "disposition": "memo",
+      "memo": "docs/PUBLIC_FORMALIZATION_NOTE.pdf",
+      "memo_sha256": "bb99d39507bdcd4212645989f2007d369d94e103a8ede926582d28b39ac49f18",
+      "source_reading": "report/long-form-explanation",
+      "report_home": 10
+    },
+    "report/algorithm6-detailed-replacement": {
+      "disposition": "memo",
+      "memo": "docs/ALGORITHM6_THEOREM23_CLARIFICATION.pdf",
+      "memo_sha256": "f259114c8d74850511ab8e7673ab66a571ad4754a80046f0a9ec17fc20c40991",
+      "source_reading": "report/algorithm6-detailed-replacement",
+      "report_home": 7
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "138f9031c66f3688e484aec30eee2152ed3e3f6ea002d1b31f3ea786b15cd155",
+      "discovered_named_result_sha256": "1afaac257334d8c0114cbb156b77301f7bfe57aa3c31e31769cb79ba62ec9bb1",
+      "source_format": "tex",
+      "results": {
+        "lemma_15_vc_uniform_convergence": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 779,
+              "line_start": 773,
+              "presentation": "tex_environment",
+              "presentation_sha256": "e8c1ab3957fa01f0c49b021e1c029538b060b8692326e330d4168e794375a668",
+              "source_item_id": "lemma_15_vc_uniform_convergence",
+              "source_label": "lem:samplecomplexity"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_15_vc_uniform_convergence"
+          ]
+        },
+        "lemma_21_fixed_group_erm": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 942,
+              "line_start": 939,
+              "presentation": "tex_environment",
+              "presentation_sha256": "be2655c91f14ccd718525c0c0062da6b471506926c67871df33444380e452d8b",
+              "source_item_id": "lemma_21_fixed_group_erm",
+              "source_label": "lem:hopt"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_21_fixed_group_erm"
+          ]
+        },
+        "lemma_22_fixed_model_erm": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 966,
+              "line_start": 957,
+              "presentation": "tex_environment",
+              "presentation_sha256": "6527e5b2cae9f45da9fef2d5993ade706a3c34f9abed2dd5d680f4aa27bac95c",
+              "source_item_id": "lemma_22_fixed_model_erm",
+              "source_label": "lem:gopt"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_22_fixed_model_erm"
+          ]
+        },
+        "observation_4_bayes_groupwise": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 348,
+              "line_start": 342,
+              "presentation": "tex_environment",
+              "presentation_sha256": "1518de8b2c10aae27796e007a435af8383261b8da5637939eb0d62eb3629b7d8",
+              "source_item_id": "observation_4_bayes_groupwise",
+              "source_label": "obs:BO"
+            }
+          ],
+          "source_item_ids": [
+            "observation_4_bayes_groupwise"
+          ]
+        },
+        "remark_13_complexity_independence": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 661,
+              "line_start": 659,
+              "presentation": "tex_environment",
+              "presentation_sha256": "4ec5ae4472a1dc574da216cdeeade3b9325cbccc10aadc773350e08f3bf5189f",
+              "source_item_id": "remark_13_complexity_independence",
+              "source_label": "remark@659"
+            }
+          ],
+          "source_item_ids": [
+            "remark_13_complexity_independence"
+          ]
+        },
+        "theorem_10_update_bound": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 464,
+              "line_start": 461,
+              "presentation": "tex_environment",
+              "presentation_sha256": "46b8abb870142b8e7449908710783f60602e0701ba592e9777e70f347f79c9f3",
+              "source_item_id": "theorem_10_update_bound",
+              "source_label": "thm:updatebound"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_10_update_bound"
+          ]
+        },
+        "theorem_11_adaptive_checker": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 561,
+              "line_start": 549,
+              "presentation": "tex_environment",
+              "presentation_sha256": "de3d9bd124a78bfc2d2432e4dfba3a8c62a4a71fab0dbdcdf66303fbc08b8155",
+              "source_item_id": "theorem_11_adaptive_checker",
+              "source_label": "thm:adaptive"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_11_adaptive_checker"
+          ]
+        },
+        "theorem_12_falsify_and_update": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 645,
+              "line_start": 633,
+              "presentation": "tex_environment",
+              "presentation_sha256": "df3973432e5775176d64e0ab5cb7293c10de9eb3298f1fccb2c03a4274616c72",
+              "source_item_id": "theorem_12_falsify_and_update",
+              "source_label": "thm:bounty-SC"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_12_falsify_and_update"
+          ]
+        },
+        "theorem_14_monotone_bounty": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 726,
+              "line_start": 717,
+              "presentation": "tex_environment",
+              "presentation_sha256": "2bfef47214d32c9807850cca6e7e8c9456be948b1273c24695778601ff544d04",
+              "source_item_id": "theorem_14_monotone_bounty",
+              "source_label": "thm:bounty-monotone-SC"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_14_monotone_bounty"
+          ]
+        },
+        "theorem_16_train_by_opt": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 822,
+              "line_start": 816,
+              "presentation": "tex_environment",
+              "presentation_sha256": "b21564522a342a6c975195517fc0ce70dc35eb3f893b9297cd6594ff706ce026",
+              "source_item_id": "theorem_16_train_by_opt",
+              "source_label": "theorem@816"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_16_train_by_opt"
+          ]
+        },
+        "theorem_20_ternary_reduction": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 900,
+              "line_start": 893,
+              "presentation": "tex_environment",
+              "presentation_sha256": "b891f91d52ce3cf9b1c65d7a0ac897eb1145027654afbca36fd78cac3e1831e6",
+              "source_item_id": "theorem_20_ternary_reduction",
+              "source_label": "lem:CSC"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_20_ternary_reduction"
+          ]
+        },
+        "theorem_23_coordinate_ascent": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1014,
+              "line_start": 1008,
+              "presentation": "tex_environment",
+              "presentation_sha256": "0a790a8f64a0314e2ec91dd3b4e6c971096a9b615d2e8b08d41ffcb4e681e568",
+              "source_item_id": "theorem_23_coordinate_ascent",
+              "source_label": "theorem@1008"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_23_coordinate_ascent"
+          ]
+        },
+        "theorem_8_certificate_characterization": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 392,
+              "line_start": 389,
+              "presentation": "tex_environment",
+              "presentation_sha256": "39bf5467b00f5b7a299bb5a54a2a19a410dc3952d41287bacbf364f2157c0a87",
+              "source_item_id": "theorem_8_certificate_characterization",
+              "source_label": "thm:BOQ"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_8_certificate_characterization"
+          ]
+        },
+        "theorem_9_list_update_progress": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 433,
+              "line_start": 426,
+              "presentation": "tex_environment",
+              "presentation_sha256": "9e5f7ea195f2aa4b1494bbc51fe45db438110bd21061c02555c83c734f246e8d",
+              "source_item_id": "theorem_9_list_update_progress",
+              "source_label": "thm:progress"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_9_list_update_progress"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "f04233e2f5bf9404b17c05b772488764dfa1aa4590df4ca787ca261d8d34edde",
+    "results": {
+      "lemma_15_vc_uniform_convergence": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 15",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 15",
+            "row_sha256": "8171bb257be6fb4f5b90e19a7501a97dd364b4597bfabce2e218f00f03042cd7"
+          }
+        ]
+      },
+      "lemma_21_fixed_group_erm": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 21",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Definitions 17\u201319; Theorem 20; Lemmas 21\u201322",
+            "row_sha256": "d5207fced507547fe931797d952979fe3b4d20310f316a73580954e25a5115b1"
+          }
+        ],
+        "grouping_reason": "The report groups source definitions, algorithms, formulas, and adjacent results under one comparison."
+      },
+      "lemma_22_fixed_model_erm": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 22",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Definitions 17\u201319; Theorem 20; Lemmas 21\u201322",
+            "row_sha256": "d5207fced507547fe931797d952979fe3b4d20310f316a73580954e25a5115b1"
+          }
+        ],
+        "grouping_reason": "The report groups source definitions, algorithms, formulas, and adjacent results under one comparison."
+      },
+      "observation_4_bayes_groupwise": {
+        "numbering": "numbered",
+        "printed_label": "Observation 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Observation 4",
+            "row_sha256": "61d9635875867c71eb26ae864bde72dea653caa892b7253d4e9b2ff292d386f7"
+          }
+        ]
+      },
+      "remark_13_complexity_independence": {
+        "numbering": "numbered",
+        "printed_label": "Remark 13",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Definitions 5 and 7; Theorem 8; Algorithm 1; Theorems 9\u201310; Remark 13",
+            "row_sha256": "f4e6f3705b1d833ce29ab310d80be15e5ac3c3280dd07f0b1b894917c9dad2cf"
+          }
+        ],
+        "grouping_reason": "The report groups source definitions, algorithms, formulas, and adjacent results under one comparison."
+      },
+      "theorem_10_update_bound": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 10",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Definitions 5 and 7; Theorem 8; Algorithm 1; Theorems 9\u201310; Remark 13",
+            "row_sha256": "f4e6f3705b1d833ce29ab310d80be15e5ac3c3280dd07f0b1b894917c9dad2cf"
+          }
+        ],
+        "grouping_reason": "The report groups source definitions, algorithms, formulas, and adjacent results under one comparison."
+      },
+      "theorem_11_adaptive_checker": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 11",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 11",
+            "row_sha256": "a8df86785c9caea0ce7089a6429af8e54564fd3674a265afd070a8d4e0a503b8"
+          }
+        ]
+      },
+      "theorem_12_falsify_and_update": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 12",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 12",
+            "row_sha256": "d984b2d76d3e82d6f9fd8e04ad537d2aec8327e4fe8b33a52202809cbd260c13"
+          }
+        ]
+      },
+      "theorem_14_monotone_bounty": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 14",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 14",
+            "row_sha256": "b05bb2d61951d003f71fea9c67204969cfd89e059308fab38f95371d0493ab6f"
+          }
+        ]
+      },
+      "theorem_16_train_by_opt": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 16",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 16",
+            "row_sha256": "f662708b474b3f7a2b1c83d2721e4f14a8795bade265a76b40ebc99e21c452cc"
+          }
+        ]
+      },
+      "theorem_20_ternary_reduction": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 20",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Definitions 17\u201319; Theorem 20; Lemmas 21\u201322",
+            "row_sha256": "d5207fced507547fe931797d952979fe3b4d20310f316a73580954e25a5115b1"
+          }
+        ],
+        "grouping_reason": "The report groups source definitions, algorithms, formulas, and adjacent results under one comparison."
+      },
+      "theorem_23_coordinate_ascent": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 23",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 23 local-optimality clause",
+            "row_sha256": "58b61a03d792664f3f783bed01f330bbede6b9c8f68f546ae30d52bd781bb9d9"
+          },
+          {
+            "report_label": "Theorem 23 positive-certificate clause",
+            "row_sha256": "d05f696530b1fdfdb06f242aeb5143e08f3604dd0872d959175c36e8ff0c08fb"
+          }
+        ],
+        "grouping_reason": "The report splits the theorem into its retained local-optimality clause and corrected positive-certificate clause.",
+        "split_reason": "The two report rows assess distinct clauses of the single printed theorem."
+      },
+      "theorem_8_certificate_characterization": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 8",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Definitions 5 and 7; Theorem 8; Algorithm 1; Theorems 9\u201310; Remark 13",
+            "row_sha256": "f4e6f3705b1d833ce29ab310d80be15e5ac3c3280dd07f0b1b894917c9dad2cf"
+          }
+        ],
+        "grouping_reason": "The report groups source definitions, algorithms, formulas, and adjacent results under one comparison."
+      },
+      "theorem_9_list_update_progress": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 9",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Definitions 5 and 7; Theorem 8; Algorithm 1; Theorems 9\u201310; Remark 13",
+            "row_sha256": "f4e6f3705b1d833ce29ab310d80be15e5ac3c3280dd07f0b1b894917c9dad2cf"
+          }
+        ],
+        "grouping_reason": "The report groups source definitions, algorithms, formulas, and adjacent results under one comparison."
+      }
+    },
+    "rows": {
+      "bc7efd8b0731c4cb267d65aef376e91db28e13e8e21149a9b523c2583ee88828": {
+        "explanation_keys": [],
+        "supplemental_reason": "The report row also covers numbered definitions not separately selected as theorem-like results."
+      },
+      "61d9635875867c71eb26ae864bde72dea653caa892b7253d4e9b2ff292d386f7": {
+        "explanation_keys": [
+          "defect/observation-4-pointwise-null-set",
+          "source/observation_4_bayes_groupwise/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "f4e6f3705b1d833ce29ab310d80be15e5ac3c3280dd07f0b1b894917c9dad2cf": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "a8df86785c9caea0ce7089a6429af8e54564fd3674a265afd070a8d4e0a503b8": {
+        "explanation_keys": [
+          "defect/adaptive-checker-confidence-and-transcript-count",
+          "defect/algorithm-2-nonstrict-guard-final-acceptance",
+          "source/theorem_11_adaptive_checker/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "d984b2d76d3e82d6f9fd8e04ad537d2aec8327e4fe8b33a52202809cbd260c13": {
+        "explanation_keys": [
+          "defect/adaptive-checker-confidence-and-transcript-count",
+          "source/theorem_12_falsify_and_update/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "b05bb2d61951d003f71fea9c67204969cfd89e059308fab38f95371d0493ab6f": {
+        "explanation_keys": [
+          "defect/adaptive-checker-confidence-and-transcript-count",
+          "defect/algorithm-4-shared-state-and-restart",
+          "source/theorem_14_monotone_bounty/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "8171bb257be6fb4f5b90e19a7501a97dd364b4597bfabce2e218f00f03042cd7": {
+        "explanation_keys": [
+          "defect/lemma-15-undefined-gp",
+          "source/lemma_15_vc_uniform_convergence/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "f662708b474b3f7a2b1c83d2721e4f14a8795bade265a76b40ebc99e21c452cc": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "d5207fced507547fe931797d952979fe3b4d20310f316a73580954e25a5115b1": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "58b61a03d792664f3f783bed01f330bbede6b9c8f68f546ae30d52bd781bb9d9": {
+        "explanation_keys": [
+          "defect/algorithm-6-two-gap-and-positive-initialization",
+          "source/theorem_23_coordinate_ascent/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "d05f696530b1fdfdb06f242aeb5143e08f3604dd0872d959175c36e8ff0c08fb": {
+        "explanation_keys": [
+          "defect/algorithm-6-two-gap-and-positive-initialization",
+          "source/theorem_23_coordinate_ascent/corrected_target"
+        ],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

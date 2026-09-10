@@ -180,6 +180,19 @@ def infiniteGenreDefinitionSpec {D N G : ℕ} (users : Fin N → Content D)
         (scaleContent r (genres g))
 
 /--
+Corrected governing source model for the infinite-producer limit.  This keeps
+the source's arbitrary finite genre family separate from the particular
+two-genre construction used in Theorems `infinitegenre` and
+`infinitegenreformal`.
+-/
+def infiniteProducerModelSpec {D N G : ℕ} (users : Fin N → Content D)
+    (cost : Content D → ℝ) (genres : Fin G → Content D)
+    (conditionalQuality : Fin G → Measure ℝ)
+    (maximumQualityCdf : Fin G → ℝ → ℝ) (weights : Fin G → ℝ) : Prop :=
+  infiniteGenreDefinitionSpec users cost genres conditionalQuality
+    maximumQualityCdf weights
+
+/--
 Transparent source model for the corrected two-genre infinite-producer
 construction: two unit nonnegative genres, a common conditional-quality law,
 equal weights, and the C1 best-response property on the nonnegative cone.
@@ -212,14 +225,18 @@ def correctedInfiniteTwoGenreContentEquilibriumSpec
           (scaleContent r secondGenre)
 
 /--
-Corrected finite-genre infinite-producer model predicate, repeated at the
-paper-facing boundary so its weights, conditional CDF, and support-wise global
-optimality condition remain inspectable without following an implementation
-alias.
+Transparent candidate used by the corrected two-genre infinite-producer
+theorems: two explicit canonical unit nonnegative genres, a common
+conditional-quality law, equal weights, and the C1 best-response property on
+the nonnegative cone.  This is an instantiated theorem witness, not the
+generic finite-genre source model.
 -/
-def infiniteProducerModelSpec (cdf : ℝ → ℝ) (β θ : ℝ) : Prop :=
+def infiniteProducerCandidateSpec (cdf : ℝ → ℝ) (β θ phi : ℝ) : Prop :=
   ∃ (firstGenre secondGenre : Content 2) (conditionalQuality : Measure ℝ)
       (firstWeight secondWeight : ℝ),
+    firstGenre = infiniteGenreFirstGenre phi ∧
+    secondGenre = infiniteGenreSecondGenre θ phi ∧
+    firstGenre ≠ secondGenre ∧
     NonnegativeContent firstGenre ∧
     NonnegativeContent secondGenre ∧
     (SourceNorm.l2 2).norm firstGenre = 1 ∧
@@ -322,9 +339,9 @@ def corollaryOnePopulationSpec : Prop :=
 Corrected Example `1d`: the source's one-dimensional construction is the
 one-user specialization of the homogeneous-population ray law.  The endpoint
 checks the displayed equilibrium and its corrected radial CDF under the
-explicit unit-genre and score-maximization hypotheses.  The archival
-uniqueness assertion is deliberately not folded into this construction route;
-it is recorded as a separate source clarification.
+explicit unit-genre and score-maximization hypotheses.  It also recovers the
+source's uniqueness assertion in the literal one-user, Euclidean,
+one-dimensional model.
 -/
 def exampleOneDimensionalSetupSpec : Prop :=
   ∀ {P : ℕ} [Nonempty (Fin P)] [Nontrivial (Fin P)]
@@ -340,9 +357,14 @@ def exampleOneDimensionalSetupSpec : Prop :=
     (singleGenreContentLaw 1 P β genre).support ⊆
       {p : Content 1 | ∃ q ∈ Set.Icc (0 : ℝ) (1 : ℝ),
         p = scaleContent q genre} ∧
-    ∀ z : ℝ, 0 ≤ z →
+    (∀ z : ℝ, 0 ≤ z →
       Measure.map ν.norm (singleGenreContentLaw 1 P β genre) (Set.Iic z) =
-        ENNReal.ofReal (min 1 (((z ^ β) / (1 : ℝ)) ^ (((P : ℝ) - 1)⁻¹)))
+        ENNReal.ofReal (min 1 (((z ^ β) / (1 : ℝ)) ^ (((P : ℝ) - 1)⁻¹)))) ∧
+    ∀ {μ : MixedContentStrategy 1},
+      SourceSymmetricMixedNash (P := P)
+        (fun _ : Fin 1 => oneDimensionalUnitContent)
+        (normRpowCost (SourceNorm.l2 1) β) μ →
+      μ = singleGenreContentLaw 1 P β oneDimensionalUnitContent
 
 /-- Corrected Theorem `singlegenre`: a zero-safe, nondegenerate iff. -/
 def theoremSingleGenreSpec : Prop :=
@@ -451,7 +473,9 @@ def corollaryTwoUsersSpec : Prop :=
       symmetricMixedNashModelSpec (P := P) (twoPopulationUsers K users)
         (normPowerCostSpec (SourceNorm.l2 D) β) μ ∧
       nonzeroSupportGenresSpec (SourceNorm.l2 D) μ = ({genre} : Set (Content D))) ↔
-      β ≤ twoUserPhaseThreshold θ)
+      β ≤ twoUserPhaseThreshold θ) ∧
+    betaStarDefinitionSpec (twoPopulationUsers K users) (SourceNorm.l2 D) =
+      (twoUserPhaseThreshold θ : WithTop ℝ)
 
 /--
 Source Proposition `Ptwo`: the displayed law is an equilibrium, its
@@ -517,47 +541,46 @@ def claimNecessarySufficientSpec : Prop :=
               (μ.real {r : Content D | score (users i) r < score (users i) p}) ^ (P - 1)) -
               cost p)
 
-/-- Corrected two-user phase transition: below-threshold uniqueness and above-threshold finite-genre exclusion. -/
+/--
+Corrected source Theorem `phasetransitionformal`: the literal equal-population
+two-user L2 market, rather than a canonical-coordinate specialization.  The
+angle identity, nonzero-user conditions, and interval for `θ` unpack the
+source's nonnegative linearly independent two-vector geometry.  The finite
+conditional radial-law record is the concrete reading of the source's
+conditional-norm regularity and finite-genre premise.
+-/
 def theoremPhaseTransitionSpec : Prop :=
-  ∀ {P : ℕ} [Nonempty (Fin P)] {β θ : ℝ}
-    {μ : MixedContentStrategy 2} [IsProbabilityMeasure μ],
-    1 < P → 1 ≤ β → 0 < θ → θ ≤ Real.pi / 2 →
+  ∀ {D K P : ℕ} [Nonempty (Fin P)] {β θ : ℝ}
+    {u v : Content D} {μ : MixedContentStrategy D} [IsProbabilityMeasure μ],
+    0 < K → 1 < P →
+    NonzeroContent u → NonzeroContent v →
+    NonnegativeContent u → NonnegativeContent v →
+    score u v /
+        (AppliedModelingLib.FiniteDimensionalNorms.l2 u *
+          AppliedModelingLib.FiniteDimensionalNorms.l2 v) = Real.cos θ →
+    1 ≤ β → 0 < θ → θ ≤ Real.pi / 2 →
     SourceSymmetricMixedNash (P := P)
-      (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond θ)
-      (normPowerCostSpec (SourceNorm.l2 2) β) μ →
+      (twoPopulationUsers K (fun i : Fin 2 => if i = 0 then u else v))
+      (normPowerCostSpec (SourceNorm.l2 D) β) μ →
     (∀ i : Fin 2,
-      (Measure.map (fun q => score
-        (if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond θ) q) μ).AbsolutelyContinuous volume) →
-    (∀ x ∈ (Measure.map (fun q => score canonicalTwoUserFirst q) μ).support,
+      (Measure.map (fun q => score (if i = 0 then u else v) q) μ).AbsolutelyContinuous volume) →
+    (∀ x ∈ (Measure.map (fun q => score u q) μ).support,
       ContDiffAt ℝ 2
         (AppliedModelingLib.Probability.lowerCDFMass
-          (Measure.map (fun q => score canonicalTwoUserFirst q) μ)) x) →
-    (∀ x ∈ (Measure.map (fun q => score (canonicalTwoUserSecond θ) q) μ).support,
+          (Measure.map (fun q => score u q) μ)) x) →
+    (∀ x ∈ (Measure.map (fun q => score v q) μ).support,
       ContDiffAt ℝ 2
         (AppliedModelingLib.Probability.lowerCDFMass
-          (Measure.map (fun q => score (canonicalTwoUserSecond θ) q) μ)) x) →
+          (Measure.map (fun q => score v q) μ)) x) →
     (β < twoUserPhaseThreshold θ →
-      SourceNonzeroSupportGenres (SourceNorm.l2 2) μ =
-        {(SourceNorm.l2 2).normalizedContent
-          (canonicalTwoUserContentOfValues θ 1 1)}) ∧
+      SourceNonzeroSupportGenres (SourceNorm.l2 D) μ =
+        ({SourceNorm.normalizedContent (SourceNorm.l2 D)
+          (twoUserNormalizedContent u + twoUserNormalizedContent v)} : Set (Content D))) ∧
     (twoUserPhaseThreshold θ < β →
       ∀ {G : ℕ}, Nonempty (Fin G) →
-        ∀ (angle : Fin G → ℝ) (weight : Fin G → ℝ)
-          (radial : Fin G → Measure ℝ),
-          (∀ i, 0 < weight i) →
-          (∑ i, weight i) = 1 →
-          (∀ i, IsProbabilityMeasure (radial i)) →
-          (∀ i, (radial i).support ⊆ Set.Ici 0) →
-          (∀ i, ∃ r ∈ (radial i).support, 0 < r) →
-          (∀ i, ContDiff ℝ 1
-            (AppliedModelingLib.Probability.lowerCDFMass (radial i))) →
-          μ = ∑ i, ENNReal.ofReal (weight i) •
-            Measure.map
-              (fun r : ℝ => scaleContent r
-                (content2 (Real.cos (angle i)) (Real.sin (angle i))))
-              (radial i) →
-          Function.Injective angle →
-          (∀ i : Fin G, angle i ∈ Set.Icc 0 (Real.pi / 2)) → False)
+        ∀ (direction : Fin G → Content D),
+          FiniteGenreConditionalNormLawAnyDim μ direction →
+          Function.Injective direction → False)
 
 /--
 Corrected Theorem `infinitegenreformal`: a coherent two-genre
@@ -569,7 +592,7 @@ def theoremInfiniteGenreSpec : Prop :=
   ∀ {β θ : ℝ},
     0 < θ → θ < Real.pi / 2 → twoUserPhaseThreshold θ < β →
     ∃ a C1 C2 A B phi : ℝ,
-      infiniteProducerModelSpec
+      infiniteProducerCandidateSpec
         (fun q : ℝ =>
           if q ≤ 0 then 0
           else if a ≤ q then 1
@@ -579,7 +602,7 @@ def theoremInfiniteGenreSpec : Prop :=
               exact if h : ∃ n : ℕ, a * C2 ^ n ≤ q then Nat.find h else 0
             if Even k then C2 ^ ((k : ℝ) * β)
             else C1 ^ (-2 : ℝ) * C2 ^ (-2 * ((k / 2 : ℕ) : ℝ) * β) *
-              q ^ (2 * β)) β θ ∧
+              q ^ (2 * β)) β θ phi ∧
       phi ∈ Set.Icc 0 (θ / 2) ∧
       IsMaxOn (fun x : ℝ =>
         (Real.cos x) ^ β + (Real.cos (θ - x)) ^ β) (Set.Icc 0 (θ / 2)) phi ∧
@@ -592,7 +615,7 @@ def theoremInfiniteGenreInformalSpec : Prop :=
   ∀ {β θ : ℝ},
     0 < θ → θ < Real.pi / 2 → twoUserPhaseThreshold θ < β →
     ∃ a C1 C2 A B phi : ℝ,
-      infiniteProducerModelSpec
+      infiniteProducerCandidateSpec
         (fun q : ℝ =>
           if q ≤ 0 then 0
           else if a ≤ q then 1
@@ -602,7 +625,7 @@ def theoremInfiniteGenreInformalSpec : Prop :=
               exact if h : ∃ n : ℕ, a * C2 ^ n ≤ q then Nat.find h else 0
             if Even k then C2 ^ ((k : ℝ) * β)
             else C1 ^ (-2 : ℝ) * C2 ^ (-2 * ((k / 2 : ℕ) : ℝ) * β) *
-              q ^ (2 * β)) β θ ∧
+              q ^ (2 * β)) β θ phi ∧
       phi ∈ Set.Icc 0 (θ / 2) ∧
       IsMaxOn (fun x : ℝ =>
         (Real.cos x) ^ β + (Real.cos (θ - x)) ^ β) (Set.Icc 0 (θ / 2)) phi ∧
@@ -718,29 +741,36 @@ def corollaryBetaOneSpec : Prop :=
     ∃ p : Content D, NonnegativeContent p ∧ ν.norm p ≤ 1 ∧
       (∀ i : Fin N, 0 < paper_inferred_user_value (users i) p) ∧
       symmetricMixedNashModelSpec (P := P) users (normPowerCostSpec ν 1)
-        (singleGenreContentLaw N P 1 (SourceNorm.normalizedContent ν p))
+        (singleGenreContentLaw N P 1 (SourceNorm.normalizedContent ν p)) ∧
+    (1 : WithTop ℝ) ≤ betaStarDefinitionSpec users ν
 
 /-- Corrected Corollary `betap`: Lq cost has a singleton nonzero-genre equilibrium below q. -/
 def corollaryBetaPSpec : Prop :=
-  ∀ {D N P : ℕ} [Nonempty (Fin N)] [Nonempty (Fin P)] [Nontrivial (Fin P)]
+  (∀ {D N P : ℕ} [Nonempty (Fin N)] [Nonempty (Fin P)] [Nontrivial (Fin P)]
     {q β : ℝ} {users : Fin N → Content D} (hq : 1 ≤ q),
     0 < β → β ≤ q →
     (∀ i : Fin N, NonnegativeContent (users i)) →
     (∀ i : Fin N, NonzeroContent (users i)) →
-    ∃ (μ : MixedContentStrategy D) (genre : Content D),
+    (∃ (μ : MixedContentStrategy D) (genre : Content D),
       symmetricMixedNashModelSpec (P := P) users
         (normPowerCostSpec (SourceNorm.lp D (lt_of_lt_of_le zero_lt_one hq)) β) μ ∧
       nonzeroSupportGenresSpec (SourceNorm.lp D (lt_of_lt_of_le zero_lt_one hq)) μ =
-        ({genre} : Set (Content D))
+        ({genre} : Set (Content D))) ∧
+    (q : WithTop ℝ) ≤ betaStarDefinitionSpec users
+      (SourceNorm.lp D (lt_of_lt_of_le zero_lt_one hq))) ∧
+  ∀ {D : ℕ} [Nontrivial (Fin D)] {q : ℝ} (hq : 1 ≤ q),
+    betaStarDefinitionSpec (standardBasisUsers D)
+      (SourceNorm.lp D (lt_of_lt_of_le zero_lt_one hq)) = (q : WithTop ℝ)
 
 /--
-Corrected Corollary `beta`: above the explicit finite logarithmic threshold,
-no compact regular symmetric equilibrium can have exactly one nonzero support
-genre.  This is a fixed-exponent exclusion, not an assertion that the source
-supremum `beta-star` is attained.
+Corrected Corollary `beta`: in the finite interior regime `1 < Z < N`, the
+source beta-star is at most the explicit logarithmic threshold; consequently,
+above that threshold no compact regular symmetric equilibrium can have exactly
+one nonzero support genre.  The printed endpoint `Z = N` has an undefined
+denominator, so it is deliberately not included here.
 -/
 def corollaryBetaSpec : Prop :=
-  ∀ {D N P : ℕ} [Nontrivial (Fin N)] [Nonempty (Fin P)] [Nontrivial (Fin P)]
+  (∀ {D N P : ℕ} [Nontrivial (Fin N)] [Nonempty (Fin P)] [Nontrivial (Fin P)]
     {β Z : ℝ} {users : Fin N → Content D} (ν : SourceNorm D),
     (∀ i : Fin N, NonnegativeContent (users i)) →
     (∀ i : Fin N, NonzeroContent (users i)) →
@@ -755,7 +785,29 @@ def corollaryBetaSpec : Prop :=
     Real.log (N : ℝ) / (Real.log (N : ℝ) - Real.log Z) < β →
     ¬ ∃ (μ : MixedContentStrategy D) (genre : Content D),
       symmetricMixedNashModelSpec (P := P) users (normPowerCostSpec ν β) μ ∧
-      nonzeroSupportGenresSpec ν μ = ({genre} : Set (Content D))
+      nonzeroSupportGenresSpec ν μ = ({genre} : Set (Content D))) ∧
+  (∀ {D N : ℕ} [Nontrivial (Fin N)]
+    {users : Fin N → Content D} (ν : SourceNorm D),
+    (∀ i : Fin N, NonnegativeContent (users i)) →
+    SourceNormCompactSublevels ν →
+    (∀ p : Content D, NonnegativeContent p → ν.norm p ≤ 1 →
+      (∑ i : Fin N, paper_inferred_user_value (users i) p) ≤ 1) →
+    (∀ i : Fin N, ∃ p : Content D,
+      NonnegativeContent p ∧ ν.norm p = 1 ∧
+        paper_inferred_user_value (users i) p = 1) →
+    betaStarDefinitionSpec users ν ≤ (1 : WithTop ℝ)) ∧
+  ∀ {D N : ℕ} [Nontrivial (Fin N)] {Z : ℝ}
+    {users : Fin N → Content D} (ν : SourceNorm D),
+    (∀ i : Fin N, NonnegativeContent (users i)) →
+    SourceNormCompactSublevels ν →
+    (∀ p : Content D, NonnegativeContent p → ν.norm p ≤ 1 →
+      (∑ i : Fin N, paper_inferred_user_value (users i) p) ≤ Z) →
+    (∀ i : Fin N, ∃ p : Content D,
+      NonnegativeContent p ∧ ν.norm p = 1 ∧
+        paper_inferred_user_value (users i) p = 1) →
+    1 < Z → Z < (N : ℝ) →
+    betaStarDefinitionSpec users ν ≤
+      (Real.log (N : ℝ) / (Real.log (N : ℝ) - Real.log Z) : WithTop ℝ)
 
 /--
 Corrected Proposition `supportrestriction`: after the source's harmless
@@ -784,26 +836,20 @@ def propositionSupportRestrictionSpec : Prop :=
     False
 
 /--
-Corrected Proposition `utility`: in the normalized Euclidean source game,
-the geometric bound makes every support action's common equilibrium payoff
-strictly positive.  This direct support-payoff formulation avoids silently
-adding an expectation/integrability bridge to the source's profit notation.
+Proposition `utility`: in the normalized Euclidean source game, the source
+geometric condition makes the common symmetric-equilibrium expected profit
+strictly positive.  `equilibriumProfitModelSpec` retains the paper's literal
+integral notation, while the proof endpoint derives its integrability bridge
+from source Nash rather than adding it as a premise.
 -/
 def propositionUtilitySpec : Prop :=
   ∀ {D N P : ℕ} [Nonempty (Fin N)] [Nontrivial (Fin P)]
-    {users : Fin N → Content D} {j : Fin P}
-    {μ : MixedContentStrategy D} {p0 : Content D} {β Q : ℝ},
-    symmetricMixedNashModelSpec (P := P) users
-      (normPowerCostSpec (SourceNorm.l2 D) β) μ →
-    p0 ∈ μ.support →
+    {users : Fin N → Content D} {μ : MixedContentStrategy D}
+    {β profit Q : ℝ},
+    equilibriumProfitModelSpec (P := P) users (SourceNorm.l2 D)
+      (normPowerCostSpec (SourceNorm.l2 D) β) μ profit Q →
     (∀ i : Fin N, NonnegativeContent (users i)) →
-    (∀ i : Fin N, NonzeroContent (users i)) →
-    SourceUnitDirectionQUpperBound
-      (l2NormalizedUsers users) (SourceNorm.l2 D) Q →
-    0 < β → 0 ≤ Q → Q < (1 / (N : ℝ)) ^ ((P : ℝ) / β) →
-    0 < SourceMixedPurePayoff
-      (ExpectedUsersWonAgainstSymmetricMixed users j)
-      (normPowerCostSpec (SourceNorm.l2 D) β) p0 μ
+    0 < β → Q < (1 / (N : ℝ)) ^ ((P : ℝ) / β) → 0 < profit
 
 /--
 Corrected Lemma `nonzero`: in a singleton nonzero-genre equilibrium, that
@@ -822,25 +868,27 @@ def lemmaNonzeroSpec : Prop :=
     ∀ i : Fin N, 0 < paper_inferred_user_value (users i) genre
 
 /--
-Corrected Proposition `zeroutilitysinglegenre`: every support action in the
-regular singleton-nonzero-genre source equilibrium has zero actual payoff.
-The displayed source profit conclusion additionally needs the usual
-integrability bridge from support-action payoff to expected profit.
+Corrected Proposition `zeroutilitysinglegenre`: every regular
+singleton-nonzero-genre source equilibrium has zero common expected profit.
+The equation binding `profit` to the source mixed-payoff integral retains the
+proposition's literal profit conclusion; its integrability bridge is derived
+from source Nash in the proof endpoint.
 -/
 def propositionZeroUtilitySingleGenreSpec : Prop :=
   ∀ {D N P : ℕ} [Nonempty (Fin N)] [Nontrivial (Fin P)]
     {users : Fin N → Content D} {ν : SourceNorm D}
-    {μ : MixedContentStrategy D} {j : Fin P} {p genre : Content D} {β : ℝ},
+    {μ : MixedContentStrategy D} {j : Fin P} {genre : Content D} {β profit : ℝ},
     symmetricMixedNashModelSpec (P := P) users (normPowerCostSpec ν β) μ →
+    (∫ q, SourceMixedPurePayoff
+      (ExpectedUsersWonAgainstSymmetricMixed users j)
+      (normPowerCostSpec ν β) q μ ∂μ) = profit →
     MeasureTheory.NoAtoms μ →
     nonzeroSupportGenresSpec ν μ ⊆ ({genre} : Set (Content D)) →
     (∀ i : Fin N, 0 < paper_inferred_user_value (users i) genre) →
     Measurable ν.norm →
     (∀ i : Fin N, NonnegativeContent (users i)) →
     0 < β → SourceNormCompactSublevels ν → Continuous ν.norm →
-    p ∈ μ.support →
-    SourceMixedPurePayoff (ExpectedUsersWonAgainstSymmetricMixed users j)
-      (normPowerCostSpec ν β) p μ = 0
+    profit = 0
 
 /--
 Corrected Lemma `inducedcost`: in the canonical two-user cone, the actual
@@ -858,8 +906,11 @@ def lemmaInducedCostSpec : Prop :=
 /--
 Corrected Lemma `FOC`: away from the singular power base (or at the stated
 regular exponent), the two canonical partial derivatives have the displayed
-formula.  Identifying these derivatives with marginal CDF densities remains a
-separate equilibrium regularity step.
+formula.  Under the paper's score-law regularity and an explicit strict
+score-feasibility condition, C1 identifies those partials with the two
+opponents' maximum-score CDF derivatives at every nonzero realized support
+value.  The feasibility condition remains explicit: an ambient Fermat
+identity cannot be inferred at a constrained boundary.
 -/
 def lemmaFocSpec : Prop :=
   ∀ {α β θ z1 z2 : ℝ},
@@ -872,6 +923,42 @@ def lemmaFocSpec : Prop :=
       (β * α * (Real.sin θ) ^ (-β) *
         (twoUserInducedCostNumerator θ z1 z2) ^ (β / 2 - 1) *
           (z2 - z1 * Real.cos θ)) z2
+  ∧ ∀ {P : ℕ} [Nonempty (Fin P)] {α β θ : ℝ}
+      {μ : MixedContentStrategy 2} [MeasureTheory.IsProbabilityMeasure μ],
+      0 < Real.sin θ →
+      SourceSymmetricMixedNash (P := P)
+        (fun i : Fin 2 => if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond θ)
+        (fun p => α * normRpowCost (SourceNorm.l2 2) β p) μ →
+      (∀ i : Fin 2,
+        Measure.map
+          (fun q : Content 2 =>
+            score (if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond θ) q) μ ≪
+          volume) →
+      (∀ i : Fin 2, ∀ x,
+        x ∈ (Measure.map
+          (fun q : Content 2 =>
+            score (if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond θ) q) μ).support →
+        ContDiffAt ℝ 2
+          (AppliedModelingLib.Probability.lowerCDFMass
+            (Measure.map
+              (fun q : Content 2 =>
+                score (if i = 0 then canonicalTwoUserFirst else canonicalTwoUserSecond θ) q) μ)) x) →
+      (∀ z : ℝ × ℝ,
+        z ∈ (Measure.map (canonicalTwoUserValueMap θ) μ).support →
+        z ≠ (0, 0) → 0 < z.1 ∧ z.1 * Real.cos θ < z.2) →
+      ∀ z : ℝ × ℝ,
+        z ∈ (Measure.map (canonicalTwoUserValueMap θ) μ).support →
+        z ≠ (0, 0) →
+        β * α * (Real.sin θ) ^ (-β) *
+            (twoUserInducedCostNumerator θ z.1 z.2) ^ (β / 2 - 1) *
+              (z.1 - z.2 * Real.cos θ) =
+          deriv (fun x : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1)
+            (Measure.map (fun q : Content 2 => score canonicalTwoUserFirst q) μ) x) z.1 ∧
+        β * α * (Real.sin θ) ^ (-β) *
+            (twoUserInducedCostNumerator θ z.1 z.2) ^ (β / 2 - 1) *
+              (z.2 - z.1 * Real.cos θ) =
+          deriv (fun x : ℝ => AppliedModelingLib.Probability.iidMaximumCdf (n := P - 1)
+            (Measure.map (fun q : Content 2 => score (canonicalTwoUserSecond θ) q) μ) x) z.2
 
 /--
 Corrected Lemma `secondderiv`: at a nonsingular positive-radius canonical
@@ -887,24 +974,25 @@ def lemmaSecondDerivativeSpec : Prop :=
         ((r ^ 2 * (Real.sin θ) ^ 2) ^ (β / 2 - 1) *
           ((β / 2) * paper_two_user_second_deriv_sign_bracket β θ φ))
 
-/--
-Corrected Lemma `regionscolor`: a local graph-SOC and its two differentiated
-FOC identities imply the source slope/bracket inequality.  The graph and
-regularity hypotheses are explicit rather than inferred from C1--C3.
--/
+/-- Literal Lemma `regionscolor`: on a differentiable curve of C1 score
+maximizers, the slope times the induced-cost bracket is nonpositive.  The two
+rewards are distribution functions, the support is a nonnegative score set,
+and `φ` is the polar parameter of the displayed score pair. -/
 def lemmaRegionsColorSpec : Prop :=
-  ∀ {α β θ φ r slope c11 c22 h1prime h2prime : ℝ},
+  ∀ {u v : Content 2} {H1 H2 g : ℝ → ℝ} {S : Set (ℝ × ℝ)}
+    {α β θ φ r a b x slope : ℝ},
+    NonnegativeContent u → NonnegativeContent v →
+    score u u = 1 → score v v = 1 → score u v = Real.cos θ →
     0 < α → 0 < β → 0 < Real.sin θ →
-    0 < r ^ 2 * (Real.sin θ) ^ 2 →
-    paper_negative_semidefinite_quadratic2
-      (h1prime - c11)
-      (-(paper_two_user_induced_cost_cross_partial α β θ
-        (r * Real.cos φ) (r * Real.cos (θ - φ))))
-      (h2prime - c22) →
-    h1prime = c11 + slope * paper_two_user_induced_cost_cross_partial α β θ
-      (r * Real.cos φ) (r * Real.cos (θ - φ)) →
-    h2prime = c22 + slope⁻¹ * paper_two_user_induced_cost_cross_partial α β θ
-      (r * Real.cos φ) (r * Real.cos (θ - φ)) →
+    Monotone H1 → Monotone H2 →
+    (∀ z : ℝ × ℝ, z ∈ S → 0 ≤ z.1 ∧ 0 ≤ z.2) →
+    x ∈ Set.Ioo a b →
+    x = r * Real.cos φ → g x = r * Real.cos (θ - φ) →
+    HasDerivAt g slope x →
+    (∀ w ∈ Set.Ioo a b, (w, g w) ∈ S) →
+    (∀ z : ℝ × ℝ, z ∈ S →
+      IsMaxOn (fun w : ℝ × ℝ => H1 w.1 + H2 w.2 -
+        twoUserInducedCost α β θ w.1 w.2) (twoUserScoreFeasibleSet u v) z) →
     slope * paper_two_user_second_deriv_sign_bracket β θ φ ≤ 0
 
 /--

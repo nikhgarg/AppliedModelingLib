@@ -5,7 +5,7 @@
 |---|---|
 | Final status | Partially formalized |
 | Paper reference | [Truth Revelation in Approximately Efficient Combinatorial Auctions](https://jmvidal.cse.sc.edu/library/lehmann02a.pdf) by Daniel Lehmann, Liadan Ita O'Callaghan, and Yoav Shoham; Journal of the ACM, 2002. |
-| Lines of Code | 7,978 |
+| Lines of Code | 12,186 |
 
 ## Key Links
 

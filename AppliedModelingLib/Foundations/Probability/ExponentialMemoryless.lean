@@ -1,4 +1,5 @@
 import AppliedModelingLib.Foundations.Probability.Exponential
+import AppliedModelingLib.Foundations.Probability.IidStatePrefixStopping
 
 /-!
 # Measure-level exponential memorylessness
@@ -107,6 +108,61 @@ theorem expMeasure_restrict_Ioi_map_sub_eq_smul
     rw [Measure.map_apply hsub MeasurableSet.univ,
       Measure.restrict_apply (hsub MeasurableSet.univ)]
     simp [c]
+
+/-- If an exponential clock is independent of an arbitrary elapsed-time law,
+then its residual after restricting to survival past that elapsed time has no
+atoms.  The statement needs no regularity or atomlessness of `elapsedLaw`:
+every possible residual value pins the exponential coordinate to one point.
+-/
+theorem map_snd_sub_fst_restrict_prod_apply_singleton_eq_zero
+    (elapsedLaw : Measure ℝ) [SFinite elapsedLaw] {rate : ℝ}
+    (hrate : 0 < rate) (residual : ℝ) :
+    Measure.map (fun value : ℝ × ℝ => value.2 - value.1)
+      ((elapsedLaw.prod (ProbabilityTheory.expMeasure rate)).restrict
+        {value : ℝ × ℝ | value.1 < value.2}) ({residual} : Set ℝ) = 0 := by
+  let E : Measure ℝ := ProbabilityTheory.expMeasure rate
+  letI : IsProbabilityMeasure E := by
+    simpa only [E] using ProbabilityTheory.isProbabilityMeasure_expMeasure hrate
+  letI : NoAtoms E := by
+    dsimp [E]
+    unfold ProbabilityTheory.expMeasure ProbabilityTheory.gammaMeasure
+    infer_instance
+  let residualMap : ℝ × ℝ → ℝ := fun value => value.2 - value.1
+  let survivorSet : Set (ℝ × ℝ) := {value | value.1 < value.2}
+  have hresidualMap : Measurable residualMap := by
+    exact measurable_snd.sub measurable_fst
+  have htarget : MeasurableSet (residualMap ⁻¹' ({residual} : Set ℝ)) :=
+    (measurableSet_singleton residual).preimage hresidualMap
+  have hgraph :
+      (elapsedLaw.prod E) {value : ℝ × ℝ | value.2 = value.1 + residual} = 0 := by
+    exact IIDStream.measure_prod_graph_eq_zero elapsedLaw E
+      (fun elapsed : ℝ => elapsed + residual) (measurable_id.add measurable_const)
+  change Measure.map residualMap ((elapsedLaw.prod E).restrict survivorSet)
+    ({residual} : Set ℝ) = 0
+  rw [Measure.map_apply hresidualMap (measurableSet_singleton residual),
+    Measure.restrict_apply htarget]
+  apply measure_mono_null ?_ hgraph
+  intro value hvalue
+  rcases hvalue with ⟨hvalue, _⟩
+  change value.2 = value.1 + residual
+  change value.2 - value.1 = residual at hvalue
+  calc
+    value.2 = (value.2 - value.1) + value.1 := (sub_add_cancel value.2 value.1).symm
+    _ = residual + value.1 := by rw [hvalue]
+    _ = value.1 + residual := add_comm _ _
+
+/-- The surviving residual of an exponential clock after an independent
+arbitrary elapsed time is atomless. -/
+theorem noAtoms_map_snd_sub_fst_restrict_prod
+    (elapsedLaw : Measure ℝ) [SFinite elapsedLaw] {rate : ℝ}
+    (hrate : 0 < rate) :
+    NoAtoms (Measure.map (fun value : ℝ × ℝ => value.2 - value.1)
+      ((elapsedLaw.prod (ProbabilityTheory.expMeasure rate)).restrict
+        {value : ℝ × ℝ | value.1 < value.2})) := by
+  refine ⟨?_⟩
+  intro residual
+  exact map_snd_sub_fst_restrict_prod_apply_singleton_eq_zero
+    elapsedLaw hrate residual
 
 end
 end AppliedModelingLib.Probability.Exponential

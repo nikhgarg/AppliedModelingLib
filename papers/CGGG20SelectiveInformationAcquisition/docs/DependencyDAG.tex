@@ -1,0 +1,92 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+
+% Arrows run from a source-presented prerequisite to the source-presented
+% definition or result that uses it.
+\begin{tikzpicture}[
+  x=1cm,
+  y=1cm,
+  every node/.append style={outer sep=4pt}
+]
+
+\dagPaperMetadata
+  {Fair Allocation through Selective Information Acquisition}
+  {William Cai, Johann Gaebler, Nikhil Garg, Sharad Goel}
+  {AIES}
+  {2020}
+  {}
+
+\dagPaperLegendRightOfMetadata{
+\node[dag_result, dag_template_legend] (legRes) at (0,0) {formalized\\result};
+\node[dag_lemma, dag_template_legend] (legLem) at (4.2,0) {formalized\\appendix result};
+\node[dag_model, dag_template_legend] (legDef) at (8.4,0) {source model or\\definition};
+}
+\daglegend{(legRes)(legLem)(legDef)}{Legend}
+
+\begin{dagPaperBody}
+
+\node[dag_model] (SourceModel) at (0,0) {
+  \textbf{Screening and}\\
+  \textbf{Allocation Model}\\
+  full-vector\\
+  posterior reading
+};
+
+\node[dag_model] (ThresholdDef) at (0,-3.2) {
+  \textbf{Definition 1}\\
+  groupwise threshold policy
+};
+\node[dag_result] (TheoremOne) at (2.5,-6.5) {
+  \textbf{Theorem 2}\\
+  threshold allocation\\
+  preserves a\\
+  constrained optimum
+};
+
+\node[dag_model] (CostAwareDef) at (-8,-3.2) {
+  \textbf{Appendix Definition 3}\\
+  cost-aware threshold policy
+};
+\node[dag_lemma] (LemmaOne) at (-12,-6.5) {
+  \textbf{Appendix Lemma 4}\\
+  cost-aware threshold\\
+  non-domination
+};
+\node[dag_lemma] (LemmaTwo) at (-4,-6.5) {
+  \textbf{Appendix Lemma 5}\\
+  exact cost/utility\\
+  attainment
+};
+\node[dag_lemma] (AppendixTheorem) at (-8,-9.8) {
+  \textbf{Appendix Theorem 6}\\
+  cost-aware threshold\\
+  policies suffice
+};
+\node[dag_lemma] (LemmaThree) at (-8,-13.1) {
+  \textbf{Appendix Lemma 7}\\
+  equality-diversity variant
+};
+
+\draw[dag_arrow] (SourceModel.south) -- (ThresholdDef.north);
+\draw[dag_arrow] (ThresholdDef.south) -- (TheoremOne.north);
+\draw[dag_arrow] (SourceModel.west) to[out=180,in=90] (CostAwareDef.north);
+\draw[dag_arrow] (CostAwareDef.south west) to[out=245,in=90] (LemmaOne.north);
+\draw[dag_arrow] (CostAwareDef.south east) to[out=295,in=90] (LemmaTwo.north);
+\draw[dag_arrow] (LemmaOne.south east) to[out=330,in=150] (AppendixTheorem.west);
+\draw[dag_arrow] (LemmaTwo.south west) to[out=210,in=30] (AppendixTheorem.east);
+\draw[dag_arrow] (AppendixTheorem.south) -- (LemmaThree.north);
+\draw[dag_arrow] (AppendixTheorem.east) to[out=15,in=195] (TheoremOne.west);
+
+\node[dag_template_note, text width=15cm] at (0,-16.3) {
+  \textbf{Scope.} The central main-text result is Theorem 2. The appendix
+  results form a single cluster. The model node records the full-vector
+  posterior reading used by the allocation rule. The Theorem 6 route uses an
+  endpoint-aware equal-cost comparison before cost attainment; see the final
+  validation report's threshold-domain proof note.
+};
+
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

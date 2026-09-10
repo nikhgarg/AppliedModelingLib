@@ -2,18 +2,25 @@
 
 ## Clarified regularity conditions
 
-The following source-consistent, natural model conventions state the shared
-regularity domains. The report therefore describes only the affected results as
-exact with these conditions; this presentation does not erase the result-local
-source corrections below.
+The following conventions specify the reading of the source model used by the
+report's “Exact with source clarification” rows.
 
-- For Corollary 1 and Theorem 1(ii)--(iv), every named preferred type has
-  positive probability: $p_t>0$. These are the all-coordinate share formulas;
-  a zero-probability type calls for a separate supportwise formulation.
-- In the fixed-top-$k$ model of Theorem 1(i)--(ii), conditional values are
-  nonnegative almost surely. This identifies the finite allocation objective
-  with the source's exact top-$k$ value primitive. Theorem 1(i)'s separate
-  nondegenerate-top-value repair is not absorbed by this condition.
+- For Corollary 1 and Theorem 1(ii)--(iv), the checked all-coordinate
+  statement uses $p_t>0$ for every named type, a fixed $k>0$, and one selected
+  optimal recommendation sequence at each total. Fixed $k$ is explicit in
+  Section 3 and Corollary 1; Section 1.1 defines a selected maximizing set,
+  and Appendix D.1 selects a maximizing allocation at each budget. Positive
+  type probabilities give the intended nondegenerate all-coordinate reading.
+  The nonnegative-weight notation also admits zero weights, but their
+  all-coordinate power profile needs a support convention, including $0^0$
+  when $\gamma=0$. No claim about those coordinates or every tied optimizer
+  is inferred from the selected positive-support result.
+- Theorem 1(ii)'s direct bounded-density statement additionally uses
+  nonnegative conditional values almost surely and a finite interval $[L,M]$
+  with $0<M$ and $0<M-L$. The source states an upper endpoint and a density
+  tail; the checked theorem uses the nonnegative item-value interpretation.
+  The full result for arbitrary translated or lower-unbounded laws is not
+  established by this reading, nor is a counterexample to those cases claimed.
 - For Proposition 4, write the preference measure as normalized sphere volume
   with an a.e.-measurable density that is positive almost everywhere, and take
   the nonconstant radial kernel to be continuous with values in $(0,1]$. The
@@ -31,7 +38,7 @@ source corrections below.
 ## Proposition 2 and the finite uniform model
 
 - Relaxed allocation $a_t=N s_t-1$ → $(N+T)s_t-1$, where $s_t=\sqrt{p_t}/\sum_j\sqrt{p_j}$, $p_t$ is type weight, $T$ the type count, and $N$ the budget. The printed coordinates sum to $N-T$, not $N$.
-- Printed rounding error $(T+1)/N$ → checked bound $(2T+1)/N$ on $|a_t/N-s_t|$ in the positive top-$k$ domain, where $k$ is the consumption count. A compiled strictly-positive-PMF witness refutes the sharper printed bound. Both bounds give the same square-root share limit.
+- **Exact asymptotic conclusion; finite constant correction:** $(T+1)/N$ → $(2T+1)/N$ on $|a_t/N-s_t|$ in the positive top-$k$ domain, where $k$ is the consumption count. The type-count term is missing a factor of two. The checked strictly-positive-PMF counterexample concerns this finite constant; the square-root share limit is exact.
 
 ## Theorem 2: independent rank-varying Bernoulli values
 

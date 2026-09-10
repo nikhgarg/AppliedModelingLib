@@ -1,0 +1,1048 @@
+{
+  "schema": 2,
+  "paper": "KR21Monoculture",
+  "report_sha256": "bf6f2b59f5d901202257c7d0961c4ec73edbf21f88177234c07db0c67b5c89c6",
+  "source_items_sha256": "448a6092a90f11aff0c4c40b7a698c99a56d96fa873073894caafeb13c9ce14d",
+  "all_selected_semantic_review_sha256": "7c635ad9e4d5a239329b3a957bcf98890e088e5a36f2f7bd3978c2a7c566519e",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/KR21-THEOREM5-DIFFERENTIABILITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Strictness and candidate-domain readings",
+      "memo_anchor": "strictness-and-candidate-domain-readings",
+      "source_reading": "Theorem 5 says that differentiability and full positive support of the noise density imply differentiability in theta of every scaled-noise ranking probability. Its proof concludes that an integral over a fixed ranking region is differentiable merely because its product integrand is pointwise differentiable.",
+      "report_home": 4
+    },
+    "defect/KR21-LAPLACE-STRICT-01": {
+      "disposition": "memo",
+      "memo": "docs/LAPLACIAN_LEMMA1_SOURCE_NOTE.md",
+      "memo_sha256": "ac96b0279d6a28cf76095051b114b924628fe224963592247225afc85722a19c",
+      "memo_heading": "Paper Statement",
+      "memo_anchor": "paper-statement",
+      "source_reading": "Definition 4 requires a strict four-point product inequality for every a>b and c>d, and Lemma 1 says Laplace noise satisfies that global strict condition.",
+      "report_home": 4
+    },
+    "defect/KR21-LAPLACE-SOURCE-NORMALIZATION-01": {
+      "disposition": "not_material",
+      "reason": "This records a repaired historical Lean rate/scale mismatch. The current source-facing law uses unit-variance innovations, rate sqrt(2)*theta after score scaling, and proves the exact source ranking law, so it creates no current result qualification."
+    },
+    "defect/KR21-PLACKETT-LUCE-SCALE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Noise normalizations and ranking laws",
+      "memo_anchor": "noise-normalizations-and-ranking-laws",
+      "source_reading": "The RUM discussion first assumes unit-variance noise, then says a Gumbel RUM produces the Plackett-Luce formula with weights exp(theta*x_i). For scores x_i + epsilon_i/theta, a scale-1 Gumbel gives those weights, but its variance is pi^2/6; a unit-variance Gumbel gives weights exp((pi/sqrt(6))*theta*x_i).",
+      "report_home": 4
+    },
+    "defect/KR21-THEOREM3-CARDINALITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Strictness and candidate-domain readings",
+      "memo_anchor": "strictness-and-candidate-domain-readings",
+      "source_reading": "Theorem 3 asserts the strict Definition 2 and Definition 3 Mallows conclusions for every candidate distribution without a lower candidate-cardinality bound. Its Appendix E strictness step requires a pair of true ranks other than the first and last.",
+      "report_home": 4
+    },
+    "defect/KR21-SIMULATION-EFFICIENCY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Representation boundaries",
+      "memo_anchor": "representation-boundaries",
+      "source_reading": "The paper says that whether an RUM satisfies Definitions 2 and 3 can be tested efficiently by simulation, after describing repeated draws of candidate values and noisy rankings.",
+      "report_home": 3
+    },
+    "defect/KR21-FINITE-SUPPORT-WEAKENING-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Representation boundaries",
+      "memo_anchor": "representation-boundaries",
+      "source_reading": "The paper says that for finite-support distributions many results can be generalized by relaxing strict inequalities in Definition 1 and Theorem 1 to weak inequalities.",
+      "report_home": 3
+    },
+    "defect/KR21-THEOREM2-DEFINITION1-PACKAGE-01": {
+      "disposition": "not_material",
+      "reason": "The general archival Theorem 5 route is defective, but the selected Gaussian and Laplace Theorem 2 families now derive their complete Definition 1 and Theorem 1 premises directly. Theorem 2 therefore has no remaining source-result restriction from this historical proof route."
+    },
+    "defect/KR21-GAUSSIAN-LEMMA1-DIRECTION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Appendix algebra and sequential experiments",
+      "memo_anchor": "appendix-algebra-and-sequential-experiments",
+      "source_reading": "Definition 4 requires f(a-c) f(b-d) > f(a-d) f(b-c) for a>b and c>d, and Lemma 1 says Gaussian noise has that property. The displayed Gaussian calculation instead ends with the reverse strict inequality.",
+      "report_home": 7
+    },
+    "defect/KR21-APPENDIX-C1-STRICT-BRIDGE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Appendix algebra and sequential experiments",
+      "memo_anchor": "appendix-algebra-and-sequential-experiments",
+      "source_reading": "After C.1, the source says that a nonnegative derivative for every cutoff together with strict positivity for some cutoff suffices to conclude the strict C.1 inequality for every finite cutoff from the limit at infinity.",
+      "report_home": 7
+    },
+    "defect/KR21-APPENDIX-C8-C9-ALGEBRA-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Appendix algebra and sequential experiments",
+      "memo_anchor": "appendix-algebra-and-sequential-experiments",
+      "source_reading": "Theorem 8 rewrites the full C.6 expression, differentiates it in C.8, and then says the displayed C.8 derivative factors through the printed prefactor to give the C.9 bracket g(t) delta sqrt(pi) + 1/g(t+delta) - 1 > 0.",
+      "report_home": 7
+    },
+    "defect/KR21-APPENDIX-D1-MLR-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Appendix algebra and sequential experiments",
+      "memo_anchor": "appendix-algebra-and-sequential-experiments",
+      "source_reading": "The source Mallows mass is proportional to phi^(-distance), and D.1 then prints a reverse likelihood-ratio cross inequality after the preceding text asserts that the relevant first-choice probability ratio has positive derivative in phi.",
+      "report_home": 7
+    },
+    "defect/KR21-APPENDIX-E3-SIGN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Appendix algebra and sequential experiments",
+      "memo_anchor": "appendix-algebra-and-sequential-experiments",
+      "source_reading": "In the E.3 simplification, the line expanding the swapped top-choice term ends with a negative phi^{-(|i-j|+1)} Pr[tau_1=x_i] contribution, while the algebra from the preceding parenthesis requires a positive contribution and the following displayed inequality uses the positive sign.",
+      "report_home": 7
+    },
+    "defect/KR21-LEMMA4-STRICTNESS-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Strictness and candidate-domain readings",
+      "memo_anchor": "strictness-and-candidate-domain-readings",
+      "source_reading": "Lemma 4 assumes only that p_i/q_i is decreasing and concludes a strict weighted-average inequality for every strictly increasing outcome sequence.",
+      "report_home": 4
+    },
+    "defect/KR21-MULTIFIRM-KGT2-COMPUTATION-01": {
+      "disposition": "not_material",
+      "reason": "The fixed numerical k>2 example is explicitly excluded from theorem scope as a non-analytic computation. It is not one of the selected named or unnumbered theoretical results represented in the researcher table."
+    },
+    "convention/KR21-OUTER-D-RANK-LABEL-01": {
+      "disposition": "not_material",
+      "reason": "The paper globally fixes x1>...>xn and keeps candidate identities fixed. A fixed ranking center with D-almost-everywhere strict order is exactly that source labeling convention."
+    },
+    "convention/KR21-TWO-FIRM-UNIFORM-ORDER-01": {
+      "disposition": "not_material",
+      "reason": "With exactly two labelled firms, the paper says their order is random and its symmetric payoff equations weight the two arrival positions equally. The one-half mixture is the source model reading, not a narrower formalized result."
+    },
+    "convention/KR21-TWO-FIRM-CANDIDATE-DOMAIN-01": {
+      "disposition": "not_material",
+      "reason": "The source has two firms each hire one distinct candidate and invokes the next available candidate. At least two candidates is therefore required by the printed selection experiment itself."
+    },
+    "convention/KR21-OUTER-D-FIRST-MOMENT-01": {
+      "disposition": "not_material",
+      "reason": "The paper states real-valued expected utilities and welfare under D. Coordinatewise finite first moments are the ordinary well-definedness condition for those finite-choice expectations, not an economic restriction introduced by the proof."
+    },
+    "convention/KR21-DEFINITION2-POSITIVE-CONDITIONING-01": {
+      "disposition": "not_material",
+      "reason": "The printed conditional expectation is defined only when the two iid rankings disagree with positive probability. The selected Gaussian, Laplace, and Mallows families derive that positivity rather than assuming a new result premise."
+    },
+    "convention/KR21-RUM-UNIT-VARIANCE-NORMALIZATION-01": {
+      "disposition": "not_material",
+      "reason": "The source explicitly assumes unit innovation variance without loss of generality. The formal transport centers and rescales any finite positive-variance law and reparameterizes theta while preserving every ranking atom exactly."
+    },
+    "convention/KR21-RUM-TIE-CONVENTION-01": {
+      "disposition": "not_material",
+      "reason": "A deterministic finite tie order only totalizes the generic ranking map. Ties have probability zero for the selected continuous laws, and the normalization transport uses the same totalization on both sides."
+    },
+    "convention/KR21-GUMBEL-UNIT-VARIANCE-SPECIAL-VALUE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Noise normalizations and ranking laws",
+      "memo_anchor": "noise-normalizations-and-ranking-laws",
+      "source_reading": "For the literal Gumbel innovation epsilon = location - (sqrt(6)/pi) * log T with T distributed as unit-rate exponential, the source-facing endpoint takes the explicit analytic premise Var[-log T] = pi^2/6. From that premise it proves that the actual finite iid product law has unit-variance coordinates and that scores value_i + epsilon_i/theta induce Plackett--Luce at inverse temperature theta/(sqrt(6)/pi).",
+      "report_home": 4
+    },
+    "convention/KR21-THEOREM2-OUTER-D-REGULARITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Representation boundaries",
+      "memo_anchor": "representation-boundaries",
+      "source_reading": "Theorem 2 states its Gaussian and Laplace conclusion for any candidate distribution D, while the checked outer experiment requires ordered support, finite first moments, measurable ranking probabilities, and defined conditional and payoff expectations.",
+      "report_home": 6
+    },
+    "convention/KR21-EQ6-ALL-PROFILE-REGULARITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Representation boundaries",
+      "memo_anchor": "representation-boundaries",
+      "source_reading": "The direct Equation (6) endpoint asks for atomwise continuity, differentiability, and convergence to the fixed true ranking for every Lean ValueProfile. The source's rank-labelled outer-D model only uses profiles in its ordered support, so this is an explicit total-family extension off that support rather than an assertion that arbitrary identity-labelled profiles are source instances.",
+      "report_home": 6
+    },
+    "convention/KR21-K3-TIE-BREAKING-01": {
+      "disposition": "not_material",
+      "reason": "The finite-index tie break makes the realized true-rank function total on every value vector. It has no effect on the continuously distributed four-candidate example because value ties are null."
+    },
+    "convention/KR21-APPENDIX-C-LEMMA3-IID-RUM-01": {
+      "disposition": "not_material",
+      "reason": "The source explicitly uses iid scalar noise with a density and couples two accuracies by contracting the same innovation coordinates. The product density, positive-accuracy domain, and strict value order spell out that source construction."
+    },
+    "convention/KR21-APPENDIX-C-PAIRWISE-ORDER-SCALE-01": {
+      "disposition": "not_material",
+      "reason": "The paper globally orders candidate values, writes xi>xj in the Laplace calculation, uses delta=xi-xj>0 in the Gaussian calculation, and treats sigma as a positive standard deviation. These are source-domain conditions."
+    },
+    "convention/KR21-THEOREM4-SEQUENTIAL-INFORMATION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Appendix algebra and sequential experiments",
+      "memo_anchor": "appendix-algebra-and-sequential-experiments",
+      "source_reading": "Theorem 4 is represented as an ex-ante sequential best-response result at each feasible remaining candidate set. A fixed rank-labelled Mallows center orders the outer value profiles almost everywhere; each firm receives a fresh independent ranking after the previous hires; no payoff is defined after candidate exhaustion; and no posterior update from observed prior hires is supplied or inferred.",
+      "report_home": 10
+    },
+    "convention/KR21-APPENDIX-C8-C9-NORMALIZED-COORDINATES-01": {
+      "disposition": "not_material",
+      "reason": "The Appendix C Gaussian proof explicitly normalizes the positive scale and defines t=a-xi and delta=xi-xj. The formal coordinates reproduce that displayed calculation."
+    },
+    "convention/KR21-APPENDIX-D1-PHI-NORMALIZATION-01": {
+      "disposition": "not_material",
+      "reason": "The paper defines Mallows mass proportional to phi^(-distance) and accuracy theta=phi-1. Writing q=phi^(-1) is the exact inverse parameterization of the same probability law."
+    },
+    "source/kr21_eq_c9_gaussian_bracket/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Appendix algebra and sequential experiments",
+      "memo_anchor": "appendix-algebra-and-sequential-experiments",
+      "source_reading": "kr21_eq_c9_gaussian_bracket",
+      "report_home": 7
+    },
+    "source/kr21_eq_d1_mallows_likelihood_ratio/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Appendix algebra and sequential experiments",
+      "memo_anchor": "appendix-algebra-and-sequential-experiments",
+      "source_reading": "kr21_eq_d1_mallows_likelihood_ratio",
+      "report_home": 7
+    },
+    "source/kr21_eq_e1_mallows_definition2_target/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Strictness and candidate-domain readings",
+      "memo_anchor": "strictness-and-candidate-domain-readings",
+      "source_reading": "kr21_eq_e1_mallows_definition2_target",
+      "report_home": 4
+    },
+    "source/kr21_eq_e2_mallows_top_two_comparison/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Strictness and candidate-domain readings",
+      "memo_anchor": "strictness-and-candidate-domain-readings",
+      "source_reading": "kr21_eq_e2_mallows_top_two_comparison",
+      "report_home": 4
+    },
+    "source/kr21_eq_e3_mallows_unconditional_product/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Appendix algebra and sequential experiments",
+      "memo_anchor": "appendix-algebra-and-sequential-experiments",
+      "source_reading": "kr21_eq_e3_mallows_unconditional_product",
+      "report_home": 7
+    },
+    "source/kr21_gumbel_to_plackett_luce_identification/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Noise normalizations and ranking laws",
+      "memo_anchor": "noise-normalizations-and-ranking-laws",
+      "source_reading": "kr21_gumbel_to_plackett_luce_identification",
+      "report_home": 4
+    },
+    "source/kr21_lemma1_gaussian_laplace_well_ordering/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/LAPLACIAN_LEMMA1_SOURCE_NOTE.md",
+      "memo_sha256": "ac96b0279d6a28cf76095051b114b924628fe224963592247225afc85722a19c",
+      "memo_heading": "Paper Statement",
+      "memo_anchor": "paper-statement",
+      "source_reading": "kr21_lemma1_gaussian_laplace_well_ordering",
+      "report_home": 4
+    },
+    "source/kr21_lemma4_weighted_average/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Strictness and candidate-domain readings",
+      "memo_anchor": "strictness-and-candidate-domain-readings",
+      "source_reading": "kr21_lemma4_weighted_average",
+      "report_home": 4
+    },
+    "source/kr21_outer_candidate_distribution_D/additional_assumptions": {
+      "disposition": "not_material",
+      "reason": "Its rank support and moment clauses are the source ordering and expected-utility domain; finite atom measurability and positive disagreement are derived for the selected laws. The separate all-profile Equation (6) strengthening remains material and is assessed under its own convention key."
+    },
+    "source/kr21_theorem2_gaussian_laplace_rum/additional_assumptions": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Representation boundaries",
+      "memo_anchor": "representation-boundaries",
+      "source_reading": "The Theorem 2 endpoint makes the outer candidate law's ordered support, finite first moments, ranking-probability measurability, and defined conditional and payoff expectations explicit before concluding the Gaussian and Laplace results.",
+      "report_home": 6
+    },
+    "source/kr21_theorem3_mallows_conditions/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Strictness and candidate-domain readings",
+      "memo_anchor": "strictness-and-candidate-domain-readings",
+      "source_reading": "kr21_theorem3_mallows_conditions",
+      "report_home": 4
+    },
+    "source/kr21_theorem4_mallows_all_human_optimal/additional_assumptions": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Appendix algebra and sequential experiments",
+      "memo_anchor": "appendix-algebra-and-sequential-experiments",
+      "source_reading": "kr21_theorem4_mallows_all_human_optimal",
+      "report_home": 10
+    },
+    "source/kr21_theorem5_scaled_noise_definition1/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "17d8ce2ff990e74c1faa4695745ac7fef0ebe46629cf75e63452985a1e5545d6",
+      "memo_heading": "Strictness and candidate-domain readings",
+      "memo_anchor": "strictness-and-candidate-domain-readings",
+      "source_reading": "kr21_theorem5_scaled_noise_definition1",
+      "report_home": 4
+    },
+    "source/kr21_two_firm_selection_game/additional_assumptions": {
+      "disposition": "not_material",
+      "reason": "Exactly two firms, random symmetric arrival order, and independence of arrival from values and rankings are the source selection experiment at lines 176-192 and its payoff equations, so this record adds no formalization gap."
+    },
+    "report/laplace-precise-strictness": {
+      "disposition": "memo",
+      "memo": "docs/LAPLACIAN_LEMMA1_SOURCE_NOTE.md",
+      "memo_sha256": "ac96b0279d6a28cf76095051b114b924628fe224963592247225afc85722a19c",
+      "memo_heading": "Paper Statement",
+      "memo_anchor": "paper-statement",
+      "source_reading": "Definition 4 requires a strict four-point product inequality for every a>b and c>d, and Lemma 1 says Laplace noise satisfies that global strict condition.",
+      "report_home": 4
+    },
+    "report/theorem1-unguarded-strict-improvement": {
+      "disposition": "not_material",
+      "reason": "The source-domain route is now restored: Definition 1 full-set strictness is evaluated on the paper's standing strictly ordered candidate values, so the former unrestricted-profile diagnostic no longer qualifies the current Theorem 1 result."
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "aed647e81248dd53a36395cbaef93a343a9b6a8a525da05f3dcd06662384fb23",
+      "discovered_named_result_sha256": "4ba6f01356cac48a39ad7c99ff039752063e6991951ad04299dbc9eed1dc1d2c",
+      "source_format": "text",
+      "results": {
+        "kr21_lemma1_gaussian_laplace_well_ordering": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1293,
+              "line_start": 1293,
+              "presentation": "text_heading",
+              "presentation_sha256": "4ba42f373d211bc538701d2d9d256f157430ede7bae456af7edcb6b60cc2dbf1",
+              "source_item_id": "kr21_lemma1_gaussian_laplace_well_ordering",
+              "source_label": "Lemma 1"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_lemma1_gaussian_laplace_well_ordering"
+          ]
+        },
+        "kr21_lemma2_bottom_probability": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1341,
+              "line_start": 1340,
+              "presentation": "text_heading",
+              "presentation_sha256": "b215681663c3fadff34c014b3d98f60cf5af953151fa067b6623de8be8e1bf35",
+              "source_item_id": "kr21_lemma2_bottom_probability",
+              "source_label": "Lemma 2"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_lemma2_bottom_probability"
+          ]
+        },
+        "kr21_lemma3_middle_gain_bound": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1369,
+              "line_start": 1366,
+              "presentation": "text_heading",
+              "presentation_sha256": "6ddbb138c84f7f7aff8c50afe4c137df501b8fff9c25e2929b577c4258f73df0",
+              "source_item_id": "kr21_lemma3_middle_gain_bound",
+              "source_label": "Lemma 3"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_lemma3_middle_gain_bound"
+          ]
+        },
+        "kr21_lemma4_weighted_average": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2713,
+              "line_start": 2703,
+              "presentation": "text_heading",
+              "presentation_sha256": "8b99edce0069a0347f2ab903875800fad831c7cb6525b9141065c5ee64cdf74f",
+              "source_item_id": "kr21_lemma4_weighted_average",
+              "source_label": "Lemma 4"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_lemma4_weighted_average"
+          ]
+        },
+        "kr21_lemma5_mallows_top_two_ratio": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2855,
+              "line_start": 2852,
+              "presentation": "text_heading",
+              "presentation_sha256": "a641d097f876c86f3af56dfafae72bce586a7fe783d56dddbc4f3a786f630a33",
+              "source_item_id": "kr21_lemma5_mallows_top_two_ratio",
+              "source_label": "Lemma 5"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_lemma5_mallows_top_two_ratio"
+          ]
+        },
+        "kr21_lemma6_mallows_first_choice": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2882,
+              "line_start": 2875,
+              "presentation": "text_heading",
+              "presentation_sha256": "93ce1f89b83a8391be9ac458bde24690a497fea33b4fce413f42e76c5f51a798",
+              "source_item_id": "kr21_lemma6_mallows_first_choice",
+              "source_label": "Lemma 6"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_eq_f2_mallows_first_choice",
+            "kr21_lemma6_mallows_first_choice"
+          ]
+        },
+        "kr21_lemma7_first_mover_advantage": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2933,
+              "line_start": 2933,
+              "presentation": "text_heading",
+              "presentation_sha256": "976ffbcc74218240ceb69f1c8c4e99325eca4bd76f4fa4aefe90fa30e47b1edb",
+              "source_item_id": "kr21_lemma7_first_mover_advantage",
+              "source_label": "Lemma 7"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_lemma7_first_mover_advantage"
+          ]
+        },
+        "kr21_lemma8_mallows_pairwise_accuracy": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2990,
+              "line_start": 2985,
+              "presentation": "text_heading",
+              "presentation_sha256": "293cf525539e52a1711b75fcd104835c965c2530e6ae49c3dc28310c280c070f",
+              "source_item_id": "kr21_lemma8_mallows_pairwise_accuracy",
+              "source_label": "Lemma 8"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_lemma8_mallows_pairwise_accuracy"
+          ]
+        },
+        "kr21_theorem1_monoculture_paradox": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 246,
+              "line_start": 244,
+              "presentation": "text_heading",
+              "presentation_sha256": "08290024b9e64bc4338acf998078ef600ace6a9e2426c35be07101202f52d167",
+              "source_item_id": "kr21_theorem1_monoculture_paradox",
+              "source_label": "Theorem 1"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_theorem1_monoculture_paradox"
+          ]
+        },
+        "kr21_theorem2_gaussian_laplace_rum": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 568,
+              "line_start": 517,
+              "presentation": "text_heading",
+              "presentation_sha256": "5010a6a70186d812afc8fbf51537c39fe3e2e18603b91c127b074f22e9b8f2c9",
+              "source_item_id": "kr21_theorem2_gaussian_laplace_rum",
+              "source_label": "Theorem 2"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_theorem2_gaussian_laplace_rum"
+          ]
+        },
+        "kr21_theorem3_mallows_conditions": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 591,
+              "line_start": 590,
+              "presentation": "text_heading",
+              "presentation_sha256": "204558de5224219c1dcaeb838efddf7821eec7011d04a9c0fd3e01f12e0ebdb8",
+              "source_item_id": "kr21_theorem3_mallows_conditions",
+              "source_label": "Theorem 3"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_theorem3_mallows_conditions"
+          ]
+        },
+        "kr21_theorem4_mallows_all_human_optimal": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 651,
+              "line_start": 650,
+              "presentation": "text_heading",
+              "presentation_sha256": "925464c430d1c4fccd5c8d5ced16ffef3851ed5cfbeb0285e91f3a88b0a8b75f",
+              "source_item_id": "kr21_theorem4_mallows_all_human_optimal",
+              "source_label": "Theorem 4"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_theorem4_mallows_all_human_optimal"
+          ]
+        },
+        "kr21_theorem5_scaled_noise_definition1": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 787,
+              "line_start": 784,
+              "presentation": "text_heading",
+              "presentation_sha256": "04f8edc18d7b4e0fb73ecaf8610049f88d87f3965d6a0ea0a46b6fa295ec3d87",
+              "source_item_id": "kr21_theorem5_scaled_noise_definition1",
+              "source_label": "Theorem 5"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_theorem5_scaled_noise_definition1"
+          ]
+        },
+        "kr21_theorem6_well_ordered_rum_definition3": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1166,
+              "line_start": 1165,
+              "presentation": "text_heading",
+              "presentation_sha256": "07dacc93234cbb370b6a1f19dbcbf81a31045709ed5d08cd7649b3d7b38ea2cf",
+              "source_item_id": "kr21_theorem6_well_ordered_rum_definition3",
+              "source_label": "Theorem 6"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_theorem6_well_ordered_rum_definition3"
+          ]
+        },
+        "kr21_theorem7_laplace_conditional_derivative": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1471,
+              "line_start": 1467,
+              "presentation": "text_heading",
+              "presentation_sha256": "412d3e41c8b3f96e5d01f191f1180cd21c6347610e9483348061096c9e710881",
+              "source_item_id": "kr21_theorem7_laplace_conditional_derivative",
+              "source_label": "Theorem 7"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_theorem7_laplace_conditional_derivative"
+          ]
+        },
+        "kr21_theorem8_gaussian_conditional_derivative": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1806,
+              "line_start": 1801,
+              "presentation": "text_heading",
+              "presentation_sha256": "b51e9a8ab2e5c4f33f771d446755c368112b61472196c0a430733bb7a21bcc04",
+              "source_item_id": "kr21_theorem8_gaussian_conditional_derivative",
+              "source_label": "Theorem 8"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_eq_c9_gaussian_bracket",
+            "kr21_theorem8_gaussian_conditional_derivative"
+          ]
+        },
+        "kr21_theorem9_mallows_definition1": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 2167,
+              "line_start": 2166,
+              "presentation": "text_heading",
+              "presentation_sha256": "cdffc320e70c84a38335ebb1edfa294ce2b3165e4ccb7029904e224b69c6ac6f",
+              "source_item_id": "kr21_theorem9_mallows_definition1",
+              "source_label": "Theorem 9"
+            }
+          ],
+          "source_item_ids": [
+            "kr21_eq_d1_mallows_likelihood_ratio",
+            "kr21_theorem9_mallows_definition1"
+          ]
+        },
+        "kr21_appendix_b_definition2_counterexample": {
+          "kind": "example",
+          "presentations": [],
+          "source_item_ids": [
+            "kr21_appendix_b_definition2_counterexample"
+          ]
+        },
+        "kr21_appendix_b_definition3_counterexample": {
+          "kind": "example",
+          "presentations": [],
+          "source_item_ids": [
+            "kr21_appendix_b_definition3_counterexample"
+          ]
+        },
+        "kr21_appendix_b_smoothing_approximation": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "kr21_appendix_b_smoothing_approximation"
+          ]
+        },
+        "kr21_gumbel_to_plackett_luce_identification": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "kr21_gumbel_to_plackett_luce_identification"
+          ]
+        },
+        "kr21_plackett_luce_strategy_conclusion": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "kr21_plackett_luce_strategy_conclusion"
+          ]
+        },
+        "kr21_plackett_luce_zero_monoculture_effect": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "kr21_plackett_luce_zero_monoculture_effect"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "d1b0e61f33dd8af5b8809e5077281a390084ab338f529fbb66a43cc6f9181483",
+    "results": {
+      "kr21_appendix_b_definition2_counterexample": {
+        "numbering": "unnumbered",
+        "printed_label": "Appendix B.1: Violating Definition 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix B counterexamples and smoothing",
+            "row_sha256": "8a62a27c7ce59045773a887d830b30127af83bbc596be04f587651ff05a72223"
+          }
+        ],
+        "grouping_reason": "The row groups the two unnumbered Appendix B counterexamples with the source smoothing claim that preserves both strict reversals."
+      },
+      "kr21_appendix_b_definition3_counterexample": {
+        "numbering": "unnumbered",
+        "printed_label": "Appendix B.2: Violating Definition 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix B counterexamples and smoothing",
+            "row_sha256": "8a62a27c7ce59045773a887d830b30127af83bbc596be04f587651ff05a72223"
+          }
+        ],
+        "grouping_reason": "The row groups the two unnumbered Appendix B counterexamples with the source smoothing claim that preserves both strict reversals."
+      },
+      "kr21_appendix_b_smoothing_approximation": {
+        "numbering": "unnumbered",
+        "printed_label": "Appendix B: Gaussian-mixture smoothing",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix B counterexamples and smoothing",
+            "row_sha256": "8a62a27c7ce59045773a887d830b30127af83bbc596be04f587651ff05a72223"
+          }
+        ],
+        "grouping_reason": "The row groups the two unnumbered Appendix B counterexamples with the source smoothing claim that preserves both strict reversals."
+      },
+      "kr21_gumbel_to_plackett_luce_identification": {
+        "numbering": "unnumbered",
+        "printed_label": "Gumbel RUM / Plackett–Luce identification",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Gumbel RUM / Plackett–Luce identification",
+            "row_sha256": "4e95f4a54f208fd5d14ecd47480c0204ab952b089c055ce2e8faf614fdaa23f0"
+          }
+        ]
+      },
+      "kr21_lemma1_gaussian_laplace_well_ordering": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Appendix C Lemma 1",
+            "row_sha256": "f0e0c573f5f96f3ae73a77d454411cade829c45a39d842670f6f15ce07ad6f86"
+          }
+        ],
+        "grouping_reason": "The appendix qualifier distinguishes this source Lemma 1 from other numbered material while preserving its printed label."
+      },
+      "kr21_lemma2_bottom_probability": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 2–3, 5–8",
+            "row_sha256": "badd918da4fc5d41aea8c5af36d70001e27977b3fb3e6ac4a88450091f05be42"
+          }
+        ],
+        "grouping_reason": "The row groups the six supporting lemmas whose checked conclusions are exact."
+      },
+      "kr21_lemma3_middle_gain_bound": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 2–3, 5–8",
+            "row_sha256": "badd918da4fc5d41aea8c5af36d70001e27977b3fb3e6ac4a88450091f05be42"
+          }
+        ],
+        "grouping_reason": "The row groups the six supporting lemmas whose checked conclusions are exact."
+      },
+      "kr21_lemma4_weighted_average": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 4",
+            "row_sha256": "8bd35f0a148a60cd7f00c34afc1e51678ae6cdd120eeb67dc9c5894196f70343"
+          }
+        ]
+      },
+      "kr21_lemma5_mallows_top_two_ratio": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 5",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 2–3, 5–8",
+            "row_sha256": "badd918da4fc5d41aea8c5af36d70001e27977b3fb3e6ac4a88450091f05be42"
+          }
+        ],
+        "grouping_reason": "The row groups the six supporting lemmas whose checked conclusions are exact."
+      },
+      "kr21_lemma6_mallows_first_choice": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 6",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 2–3, 5–8",
+            "row_sha256": "badd918da4fc5d41aea8c5af36d70001e27977b3fb3e6ac4a88450091f05be42"
+          }
+        ],
+        "grouping_reason": "The row groups the six supporting lemmas whose checked conclusions are exact."
+      },
+      "kr21_lemma7_first_mover_advantage": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 7",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 2–3, 5–8",
+            "row_sha256": "badd918da4fc5d41aea8c5af36d70001e27977b3fb3e6ac4a88450091f05be42"
+          }
+        ],
+        "grouping_reason": "The row groups the six supporting lemmas whose checked conclusions are exact."
+      },
+      "kr21_lemma8_mallows_pairwise_accuracy": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 8",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 2–3, 5–8",
+            "row_sha256": "badd918da4fc5d41aea8c5af36d70001e27977b3fb3e6ac4a88450091f05be42"
+          }
+        ],
+        "grouping_reason": "The row groups the six supporting lemmas whose checked conclusions are exact."
+      },
+      "kr21_plackett_luce_strategy_conclusion": {
+        "numbering": "unnumbered",
+        "printed_label": "Plackett–Luce strategy comparison",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Plackett–Luce strategy comparison and zero monoculture effect",
+            "row_sha256": "5c9cac1c9a6ad46d015c7d4ac60d64876ed7ddd5a35b05e0ede67c6aa67c057b"
+          }
+        ],
+        "grouping_reason": "The row groups the adjoining unnumbered Plackett–Luce equal-payoff comparison and zero-monoculture strategic conclusion."
+      },
+      "kr21_plackett_luce_zero_monoculture_effect": {
+        "numbering": "unnumbered",
+        "printed_label": "Plackett–Luce zero monoculture effect",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Gumbel RUM / Plackett–Luce identification",
+            "row_sha256": "4e95f4a54f208fd5d14ecd47480c0204ab952b089c055ce2e8faf614fdaa23f0"
+          },
+          {
+            "report_label": "Plackett–Luce strategy comparison and zero monoculture effect",
+            "row_sha256": "5c9cac1c9a6ad46d015c7d4ac60d64876ed7ddd5a35b05e0ede67c6aa67c057b"
+          }
+        ],
+        "grouping_reason": "The source zero-effect endpoint includes the corrected Gumbel-to-Plackett–Luce law and the adjoining strategic consequence, represented by these two rows.",
+        "split_reason": "The identification row records its corrected scale-dependent law; the strategic row records the exact scale-invariant equal-payoff and zero-effect conclusion."
+      },
+      "kr21_theorem1_monoculture_paradox": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1",
+            "row_sha256": "c460f24ed2ccdbfc9eae915cde01ce7c5ada3002a96e2a15898fcba4a2cde08a"
+          }
+        ]
+      },
+      "kr21_theorem2_gaussian_laplace_rum": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2",
+            "row_sha256": "38547c35fed31ae0170871a802177a0f338ec83a98108db8a00afc7d475705e8"
+          }
+        ]
+      },
+      "kr21_theorem3_mallows_conditions": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3",
+            "row_sha256": "276e7326784c1490b411f378c44db8f594647434ed77ef202028ed22c0296f47"
+          }
+        ]
+      },
+      "kr21_theorem4_mallows_all_human_optimal": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 4",
+            "row_sha256": "d54d170955ca2db6dc159553b26bb4daa6a0fd61a89f0f0c5447365b3f0cec1e"
+          }
+        ]
+      },
+      "kr21_theorem5_scaled_noise_definition1": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 5",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 5",
+            "row_sha256": "2d1cfc88ba0feaec8d20c9a8aab5412af0574618525126fd46abeef972d0b979"
+          }
+        ]
+      },
+      "kr21_theorem6_well_ordered_rum_definition3": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 6",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 6",
+            "row_sha256": "05fa7b5db23e385812dcb89dfbc343d8383c102ad62db80ee78cb2190f86523e"
+          }
+        ]
+      },
+      "kr21_theorem7_laplace_conditional_derivative": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 7",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 7 (Laplace)",
+            "row_sha256": "1ae606ec352074acc5fd40ebcd9a5557fb921d937ffd3f82dfc9047b4ed016ae"
+          }
+        ],
+        "grouping_reason": "The parenthetical identifies the Laplace law proved under the source heading Theorem 7."
+      },
+      "kr21_theorem8_gaussian_conditional_derivative": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 8",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 8 (Gaussian)",
+            "row_sha256": "34fd0a9e8272496c026068a480719a2dc09af8f03599589110474b5365eca8fe"
+          }
+        ],
+        "grouping_reason": "The parenthetical identifies the Gaussian law proved under the source heading Theorem 8."
+      },
+      "kr21_theorem9_mallows_definition1": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 9",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 9",
+            "row_sha256": "53e4d9ab990ecba88f4a04aedbb9c3dffdd326aeb2b81249c8e842672c7c7a72"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "38547c35fed31ae0170871a802177a0f338ec83a98108db8a00afc7d475705e8": {
+        "explanation_keys": [
+          "convention/KR21-THEOREM2-OUTER-D-REGULARITY-01",
+          "source/kr21_theorem2_gaussian_laplace_rum/additional_assumptions"
+        ],
+        "supplemental_reason": ""
+      },
+      "276e7326784c1490b411f378c44db8f594647434ed77ef202028ed22c0296f47": {
+        "explanation_keys": [
+          "defect/KR21-THEOREM3-CARDINALITY-01",
+          "source/kr21_eq_e1_mallows_definition2_target/corrected_target",
+          "source/kr21_eq_e2_mallows_top_two_comparison/corrected_target",
+          "source/kr21_theorem3_mallows_conditions/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "d54d170955ca2db6dc159553b26bb4daa6a0fd61a89f0f0c5447365b3f0cec1e": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "2d1cfc88ba0feaec8d20c9a8aab5412af0574618525126fd46abeef972d0b979": {
+        "explanation_keys": [
+          "defect/KR21-THEOREM5-DIFFERENTIABILITY-01",
+          "source/kr21_theorem5_scaled_noise_definition1/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "05fa7b5db23e385812dcb89dfbc343d8383c102ad62db80ee78cb2190f86523e": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "1ae606ec352074acc5fd40ebcd9a5557fb921d937ffd3f82dfc9047b4ed016ae": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "34fd0a9e8272496c026068a480719a2dc09af8f03599589110474b5365eca8fe": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "53e4d9ab990ecba88f4a04aedbb9c3dffdd326aeb2b81249c8e842672c7c7a72": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "f0e0c573f5f96f3ae73a77d454411cade829c45a39d842670f6f15ce07ad6f86": {
+        "explanation_keys": [
+          "defect/KR21-LAPLACE-STRICT-01",
+          "report/laplace-precise-strictness",
+          "source/kr21_lemma1_gaussian_laplace_well_ordering/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "8bd35f0a148a60cd7f00c34afc1e51678ae6cdd120eeb67dc9c5894196f70343": {
+        "explanation_keys": [
+          "defect/KR21-LEMMA4-STRICTNESS-01",
+          "source/kr21_lemma4_weighted_average/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "badd918da4fc5d41aea8c5af36d70001e27977b3fb3e6ac4a88450091f05be42": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "8a62a27c7ce59045773a887d830b30127af83bbc596be04f587651ff05a72223": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "4e95f4a54f208fd5d14ecd47480c0204ab952b089c055ce2e8faf614fdaa23f0": {
+        "explanation_keys": [
+          "defect/KR21-PLACKETT-LUCE-SCALE-01",
+          "convention/KR21-GUMBEL-UNIT-VARIANCE-SPECIAL-VALUE-01",
+          "source/kr21_gumbel_to_plackett_luce_identification/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "5c9cac1c9a6ad46d015c7d4ac60d64876ed7ddd5a35b05e0ede67c6aa67c057b": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "c460f24ed2ccdbfc9eae915cde01ce7c5ada3002a96e2a15898fcba4a2cde08a": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

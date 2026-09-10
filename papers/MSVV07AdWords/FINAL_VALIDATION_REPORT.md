@@ -1,6 +1,6 @@
-# Final Validation Report: MSVV07 AdWords
+# Final Validation Report: AdWords and Generalized On-line Matching
 
-Updated: 2026-09-07
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -38,12 +38,12 @@ The public source is the [paper PDF](https://people.eecs.berkeley.edu/~vazirani/
 | Lemmas 5–7 | **Exact.** |
 | Theorem 9 | **Exact.** |
 | [Theorem 8](docs/SOURCE_CLARIFICATIONS.md#finite-and-limiting-theorem-8-readings) | **Formalization gap:** the finite bound and limiting inequality under vanishing finite error are proved; deriving that limit condition from the paper's fixed-advertiser small-bid regime remains unproved. |
-| [Theorem 8 suffix](docs/SOURCE_CLARIFICATIONS.md#theorem-8-finite-suffix-index) | **Typo fixed:** exponent `k-i` and unspent fraction `(k-i)/k`. |
+| [Theorem 8 suffix](docs/SOURCE_CLARIFICATIONS.md#theorem-8-finite-suffix-index) | **Exact after correcting the suffix-index typo:** exponent `k-i` and unspent fraction `(k-i)/k`. |
 | [Section 4 tightness](docs/SOURCE_CLARIFICATIONS.md#section-4-tightness) | **Formalization gap:** a fluid tightness construction is proved; the asserted finite instance is not constructed. |
 | [Section 6 variants](docs/SOURCE_CLARIFICATIONS.md#section-6-variants) | **Current proof restrictions:** each possible charge is small relative to its winner’s budget; all bidders remain alive for the charge comparison. Necessity is unproved. Efficiency is a unit-cost operation count. |
-| [Appendix A three-phase example](docs/SOURCE_CLARIFICATIONS.md#appendix-counterexample-three-phase-revenue) | **Formula corrected:** corrected phase revenue and residual service; the strict counterexample remains. |
-| [`kappa>1` witness](docs/SOURCE_CLARIFICATIONS.md#the-kappa-witness-family) | **Exact:** an explicit continuous-limit family supplies the source existence claim; no fixed-positive-bid discretization bound is asserted. |
-| Section 8 retained formulas and definitions | **Exact.** The weighted-bid runner is [uncredited](docs/SOURCE_CLARIFICATIONS.md#section-8-weighted-bid-proposal). |
+| [Appendix A three-phase example](docs/SOURCE_CLARIFICATIONS.md#appendix-counterexample-three-phase-revenue) | **Exact counterexample after correcting the revenue calculation:** corrected phase revenue and residual service; the strict counterexample remains. |
+| [`kappa>1` witness](docs/SOURCE_CLARIFICATIONS.md#the-kappa-witness-family) | **Exact.** |
+| Section 8 retained formulas and definitions | **Exact.** [uncredited](docs/SOURCE_CLARIFICATIONS.md#section-8-weighted-bid-proposal) |
 
 ## 5. Remaining Boundaries and Gaps
 

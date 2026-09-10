@@ -4965,7 +4965,7 @@ theorem theorem1_concrete_mallows_family
   KR21Monoculture.paper_theorem1_concrete_mallows_family
     center value hvalue hn θH hθH
 
-/-! ## source verification: outer `D`, Theorem 5, PL, simulation, and appendices -/
+/-! ## Source-first remediation: outer `D`, Theorem 5, PL, simulation, and appendices -/
 
 /--
 D-averaged Definition 2/3 component of the Gaussian Theorem 2 route. Its

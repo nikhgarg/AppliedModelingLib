@@ -36,10 +36,11 @@
     "url": "https://www.sciencedirect.com/science/article/pii/S0899825606000303"
   },
   "id": "GHW01DigitalGoods",
-  "main_caveat": "",
+  "main_caveat": "The preliminary SODA Theorem 8.2 is checked through the later journal monotone-offer formulation. Its common-uniform construction is formalized for arbitrary real offer laws using the lower generalized inverse at CDF jumps; this is a source-proof clarification, not a weakened theorem.",
+  "open_source_boundaries": [],
   "paper_interface": {
     "declaration_rows": 153,
-    "line_count": 525,
+    "line_count": 563,
     "maintainability_issue": null,
     "oversized": false,
     "path": "papers/GHW01DigitalGoods/PaperInterface.lean",

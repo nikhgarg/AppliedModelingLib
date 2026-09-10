@@ -5,6 +5,7 @@ import LBG24SpatialUnderreporting.CanonicalSelectedStart
 import LBG24SpatialUnderreporting.CorrectedTheorem2Causal
 import LBG24SpatialUnderreporting.StationaryPalmCausalObservationLaw
 import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalForwardPoisson
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalPostArrival
 
 /-!
 # Paper Assumptions: Quantifying Spatial Under-reporting Disparities
@@ -116,7 +117,12 @@ structure Lemma2ForwardSourceModel
   startTime_measurable : Measurable startTime
   firstReport_le_start : ∀ ω,
     (canonicalFirstArrival (interarrivalPath ω)).toNNReal ≤ startTime ω
-  start_le_observationHorizon : ∀ ω, startTime ω ≤ observationHorizon
+  /-- On paths whose first report lies in the fixed paper window, Condition 1
+  selects a start in that same window.  The source does not define a selected
+  start for paths with no first report by the horizon. -/
+  start_le_observationHorizon_of_firstReport_le : ∀ ω,
+    (canonicalFirstArrival (interarrivalPath ω)).toNNReal ≤ observationHorizon →
+      startTime ω ≤ observationHorizon
   start_conditional_law : ∀ᵐ ω ∂P,
     ProbabilityTheory.HasLaw startTime
       (rateFreeStartKernel
@@ -148,7 +154,6 @@ def selection (M : Lemma2ForwardSourceModel Ω P) :
   firstReportTime :=
     fun ω => (canonicalFirstArrival (M.interarrivalPath ω)).toNNReal
   startTime := M.startTime
-  observationHorizon := M.observationHorizon
   postFirstReportTail :=
     fun ω => futureInterarrival 1 (M.interarrivalPath ω)
   rateFreeStartKernel := M.rateFreeStartKernel
@@ -160,7 +165,6 @@ def selection (M : Lemma2ForwardSourceModel Ω P) :
     (measurable_pi_iff.2 fun k => measurable_futureInterarrival 1 k).comp
       M.interarrivalPath_measurable
   firstReport_le_start := M.firstReport_le_start
-  start_le_observationHorizon := M.start_le_observationHorizon
   start_conditional_law := M.start_conditional_law
   rateFreeStartKernel_supported_after_first :=
     M.rateFreeStartKernel_supported_after_first
@@ -256,48 +260,9 @@ theorem postFirstReportTail_conditional_law
     ProbabilityTheory.condDistrib M.selection.postFirstReportTail
       M.selection.firstReportTime P =ᵐ[P.map M.selection.firstReportTime]
         Kernel.const ℝ≥0 (exponentialInterarrivalMeasure M.rate) := by
-  let μ : Measure (ℕ → ℝ) := exponentialInterarrivalMeasure M.rate
-  let X : (ℕ → ℝ) → ℝ≥0 :=
-    fun path => (canonicalFirstArrival path).toNNReal
-  let Y : (ℕ → ℝ) → (ℕ → ℝ) := futureInterarrival 1
-  letI : IsProbabilityMeasure μ := by
-    simpa only [μ] using
-      isProbabilityMeasure_exponentialInterarrivalMeasure M.rate_pos
-  have hX : Measurable X := by
-    simpa only [X, canonicalFirstArrival] using
-      measurable_real_toNNReal.comp (measurable_interarrival 0)
-  have hY : Measurable Y := by
-    simpa only [Y] using
-      measurable_pi_iff.2 fun k => measurable_futureInterarrival 1 k
-  have hcanonical :
-      ProbabilityTheory.condDistrib Y X μ =ᵐ[μ.map X]
-        Kernel.const ℝ≥0 μ := by
-    simpa only [μ, X, Y] using
-      canonicalFirstArrival_toNNReal_condDistrib_futureInterarrival_eq_const
-        M.rate_pos
-  have htransport := ProbabilityTheory.condDistrib_map
-    (ν := P) (X := X) (Y := Y) (f := M.interarrivalPath)
-    (by simpa only [M.interarrivalPath_hasLaw.map_eq] using
-      hX.aemeasurable)
-    (by simpa only [M.interarrivalPath_hasLaw.map_eq] using
-      hY.aemeasurable)
-    M.interarrivalPath_measurable.aemeasurable
-  have hfirstMap : P.map (X ∘ M.interarrivalPath) = μ.map X := by
-    rw [← Measure.map_map hX M.interarrivalPath_measurable,
-      M.interarrivalPath_hasLaw.map_eq]
-  have htransport' :
-      ProbabilityTheory.condDistrib Y X μ =ᵐ[
-        P.map (X ∘ M.interarrivalPath)]
-        ProbabilityTheory.condDistrib (Y ∘ M.interarrivalPath)
-          (X ∘ M.interarrivalPath) P := by
-    simpa only [M.interarrivalPath_hasLaw.map_eq] using htransport
-  have hcanonical' :
-      ProbabilityTheory.condDistrib Y X μ =ᵐ[
-        P.map (X ∘ M.interarrivalPath)] Kernel.const ℝ≥0 μ := by
-    rw [hfirstMap]
-    exact hcanonical
-  simpa only [selection_firstReportTime, selection_postFirstReportTail, μ, X, Y,
-    Function.comp_apply] using htransport'.symm.trans hcanonical'
+  simpa only [selection_firstReportTime, selection_postFirstReportTail] using
+    condDistrib_futureInterarrival_one_of_hasLaw M.rate_pos M.interarrivalPath
+      M.interarrivalPath_measurable M.interarrivalPath_hasLaw
 
 end Lemma2ForwardSourceModel
 

@@ -49,6 +49,16 @@ abbrev source_assumption_iid_beta_max_variance_bound
     maxVariance
 
 /--
+Source-used clarification for the Case-2 one-college tail step: one noise draw
+has a finite second moment.  This is not implied by beta-max concentration,
+which controls only the maximum of an iid sample.
+-/
+-- audit-premise: one noise draw has finite second moment for the Case-2 lower-tail Chebyshev bound
+abbrev source_clarification_one_draw_finite_second_moment
+    (noiseLaw : MeasureTheory.Measure ℝ) : Prop :=
+  MeasureTheory.MemLp (fun x : ℝ => x) 2 noiseLaw
+
+/--
 Source model package for the active PG24 Theorem 1 attenuation route.
 
 This records the paper's beta-max variance condition together with the

@@ -1,4 +1,4 @@
-# Final Validation Report: Who is in Your Top Three?
+# Final Validation Report: Who is in Your Top Three? Optimizing Learning in Elections with Many Candidates
 
 Updated: 2026-09-06
 

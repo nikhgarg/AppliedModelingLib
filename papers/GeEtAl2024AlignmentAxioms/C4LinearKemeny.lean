@@ -848,6 +848,116 @@ theorem theoremC_4_linearKemeny_failsParetoAndMajorityConsistency
     rw [hfirst] at honeAboveTwo
     exact (lt_asymm honeAboveTwo) htwoAboveOne
 
+/-!
+## Theorem C.3 selector boundary
+
+The C.3 proof's additive-objective step establishes only that a common
+component minimizer remains a minimizer after concatenation.  It does not
+force an arbitrary single-valued selector to choose that minimizer after
+concatenation.  This literal two-candidate witness records the resulting
+rule-level counterexample.
+-/
+
+def c3CounterexampleAllFeasible : Ranking 0 → Prop := fun _ => True
+def c3CounterexampleAB : Ranking 0 := Equiv.refl _
+def c3CounterexampleBA : Ranking 0 := Equiv.swap 0 1
+
+def c3CounterexampleProfile : RankingProfile (Fin 2) 0 :=
+  ![c3CounterexampleAB, c3CounterexampleBA]
+
+def c3CounterexampleCombined : RankingProfile (Fin 4) 0 :=
+  rankingProfileAppend c3CounterexampleProfile c3CounterexampleProfile
+
+theorem c3CounterexampleAB_isKemenyMinimizer :
+    IsKemenyMinimizer c3CounterexampleAllFeasible
+      c3CounterexampleProfile c3CounterexampleAB := by
+  refine ⟨trivial, ?_⟩
+  intro contender _
+  fin_cases contender <;> decide
+
+theorem c3CounterexampleBA_isKemenyMinimizer :
+    IsKemenyMinimizer c3CounterexampleAllFeasible
+      c3CounterexampleCombined c3CounterexampleBA := by
+  refine ⟨trivial, ?_⟩
+  intro contender _
+  fin_cases contender <;> decide
+
+/--
+An arbitrary profile-dependent Kemeny selector: it differs from the canonical
+fixed-key selector only on two tied finite profiles.
+-/
+noncomputable def c3ProfileDependentKemenyRule :
+    (voterCount : ℕ) →
+      LinearRankAggregationRule (Fin voterCount) 0 c3CounterexampleAllFeasible
+  | 0 => canonicalKemenyRule c3CounterexampleAllFeasible c3CounterexampleAB trivial 0
+  | 1 => canonicalKemenyRule c3CounterexampleAllFeasible c3CounterexampleAB trivial 1
+  | 2 =>
+      { run := fun profile => if profile = c3CounterexampleProfile then c3CounterexampleAB else
+          (canonicalKemenyRule c3CounterexampleAllFeasible c3CounterexampleAB trivial 2).run profile
+        output_feasible := fun _ => trivial }
+  | 3 => canonicalKemenyRule c3CounterexampleAllFeasible c3CounterexampleAB trivial 3
+  | 4 =>
+      { run := fun profile => if profile = c3CounterexampleCombined then c3CounterexampleBA else
+          (canonicalKemenyRule c3CounterexampleAllFeasible c3CounterexampleAB trivial 4).run profile
+        output_feasible := fun _ => trivial }
+  | voterCount =>
+      canonicalKemenyRule c3CounterexampleAllFeasible c3CounterexampleAB trivial voterCount
+
+theorem c3ProfileDependentKemenyRule_isKemenySelector :
+    ∀ voterCount, IsKemenySelector c3CounterexampleAllFeasible
+      (c3ProfileDependentKemenyRule voterCount) := by
+  intro voterCount
+  have hcanonical (count : ℕ) :
+      IsKemenySelector c3CounterexampleAllFeasible
+        (canonicalKemenyRule c3CounterexampleAllFeasible c3CounterexampleAB trivial count) := by
+    intro profile
+    exact (canonicalKemenyRule_isFixedTieKemenySelector
+      c3CounterexampleAllFeasible c3CounterexampleAB trivial).2 count profile |>.1
+  cases voterCount with
+  | zero => exact hcanonical 0
+  | succ voterCount =>
+    cases voterCount with
+    | zero => exact hcanonical 1
+    | succ voterCount =>
+      cases voterCount with
+      | zero =>
+        intro profile
+        by_cases hprofile : profile = c3CounterexampleProfile
+        · subst profile
+          simpa [c3ProfileDependentKemenyRule] using
+            c3CounterexampleAB_isKemenyMinimizer
+        · simp only [c3ProfileDependentKemenyRule, hprofile, if_false]
+          exact hcanonical 2 profile
+      | succ voterCount =>
+        cases voterCount with
+        | zero => exact hcanonical 3
+        | succ voterCount =>
+          cases voterCount with
+          | zero =>
+            intro profile
+            by_cases hprofile : profile = c3CounterexampleCombined
+            · subst profile
+              simpa [c3ProfileDependentKemenyRule] using
+                c3CounterexampleBA_isKemenyMinimizer
+            · simp only [c3ProfileDependentKemenyRule, hprofile, if_false]
+              exact hcanonical 4 profile
+          | succ voterCount => exact hcanonical (voterCount + 5)
+
+theorem c3CounterexampleBA_ne_AB : c3CounterexampleBA ≠ c3CounterexampleAB := by
+  decide
+
+/--
+Arbitrary profile-dependent selection among Kemeny minimizers does not imply
+the rule-level separability conclusion of source Theorem C.3.
+-/
+theorem c3ProfileDependentKemenyRule_not_rankingSeparability :
+    ¬ RankingSeparability c3CounterexampleAllFeasible c3ProfileDependentKemenyRule := by
+  intro hseparable
+  have hcombined := hseparable 2 2 c3CounterexampleProfile c3CounterexampleProfile rfl
+  have hBAeqAB : c3CounterexampleBA = c3CounterexampleAB := by
+    simpa [c3ProfileDependentKemenyRule, c3CounterexampleCombined] using hcombined
+  exact c3CounterexampleBA_ne_AB hBAeqAB
+
 /-- The cyclic-pair portion already accounts for all 24 disagreements of the witness. -/
 theorem c4TwoAboveOneRanking_cycleKemenyCost :
     c4CycleKemenyCost c4TwoAboveOneRanking = 24 := by

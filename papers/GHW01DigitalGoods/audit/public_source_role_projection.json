@@ -1,6 +1,6 @@
 {
   "acceptance_credential": false,
-  "accepted_graph_sha256": "1aeefb91212c6a3155f1ea5600ca20e7e7b35dff12f4d9010abaa0526c2f3abb",
+  "accepted_graph_sha256": "68126cde6478aa773303cbf9a8ac1ba59456dbb1b86ceef9193bbae80f0c7dd2",
   "bindings_by_source_item": {
     "assumption_bounded_supply_alpha_h_lt_Fk": {
       "accepted_source_role_contract_sha256": "f10959bfcbdee741f53823d96ce6c7546c2e9c1fb3c549ffffc9a1e4b36ffdd7",
@@ -348,8 +348,8 @@
       "withheld_field_paths": []
     },
     "result_theorem8_2_journal_revenue_upper_bound": {
-      "accepted_source_role_contract_sha256": "3ff7ead084be38086ee2be567521c8826b4b423b39c6ada3985cd93502da4e5d",
-      "public_source_role_projection_sha256": "6fd174b3eb56cc5039bf28ea6b76e8e435dbb924ba31501c97107c385d3fd8c0",
+      "accepted_source_role_contract_sha256": "c4ab78912e8a7b85a49de9c5e94c59934a83205c331c38e3cdf63684408a5105",
+      "public_source_role_projection_sha256": "deac1e7788dbb5f073e64b4435c726c028e0faa569cd3abd26da841e5ddfd6d2",
       "schema": 1,
       "withheld_field_paths": [
         "corrected_target.approval",
@@ -377,13 +377,13 @@
   },
   "paper": "GHW01DigitalGoods",
   "private_role_material_included": false,
-  "private_source_map_material_sha256": "ba9c0f824a94a64d159693f0a034de0d11f140de40ba8bcb90e11a74b98b8457",
-  "private_source_map_sha256": "3c181e698d2bc474699c440512a1742f97dc038a7bb7c0e34b8140f196d642a8",
+  "private_source_map_material_sha256": "cc1b63ef2322e67f816eff9f1e0623fb3e6ca937a3fae6914970adffaacf6a07",
+  "private_source_map_sha256": "a2aa334598275b15e4cd073001279b3145a48146d75cf8f86734e48b69dcdc8a",
   "projection_contract_sha256": "ed0964edc9c70f5ce087ce9bf134712ca40c7964ecaefd403309ac9a1b47d34d",
-  "public_display_manifest_material_sha256": "0eca4794bfd8f21d847f05e6e2727ddce50ce4b1945f0002869cf4298cc617d2",
-  "public_display_manifest_sha256": "e8788439a2a5060cabe65c0b0d6127ff86a4bacdc12aea6f54d1a408d78c9087",
-  "public_source_map_material_sha256": "26a5a55066e24f81855ceb9b9d2605a7797da0325b5d3d56a41c688c38342690",
-  "public_source_map_sha256": "dd0424eee4e0e5183d84192afa197560dfa400e11b9ba09520c728ce8c11dc66",
+  "public_display_manifest_material_sha256": "6255343730c51ae2af1c993c25ebf63320e4544396766cafea9a4ec56626626c",
+  "public_display_manifest_sha256": "430186b3c2c90fa504d140a2efcd20c8bd9f33ed6582d5d64f13eeb8ccb443e9",
+  "public_source_map_material_sha256": "9d56f1a10a66020a5528bcc158c4e4a6225fd55d136e5d2a15ed6be095d2c1f0",
+  "public_source_map_sha256": "b7f968fa174ff5d4316efbce8fca346e41436fcefeee565aa2506433527bdb52",
   "raw_private_approval_material_included": false,
   "schema": 1
 }

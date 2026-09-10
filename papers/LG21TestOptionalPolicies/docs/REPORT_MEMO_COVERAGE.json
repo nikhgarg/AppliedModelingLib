@@ -1,0 +1,676 @@
+{
+  "schema": 2,
+  "paper": "LG21TestOptionalPolicies",
+  "report_sha256": "c82f400a07d8189156322a93062bf62b9de037da3f90a533f0a6695d8e9b90af",
+  "source_items_sha256": "b4c5c6135417e35dc9867ec947e28a01e0c90d94335809424375d52d34c23751",
+  "all_selected_semantic_review_sha256": "917eea4905139f9fb7dd4a1e0c69937121155fe0c7b596be880eba6e3b3afe40",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/LG21-THEOREM31-NONREPORT-MIXTURE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Theorem 3.1: nonreport mixture and fixed point",
+      "memo_anchor": "theorem-31-nonreport-mixture-and-fixed-point",
+      "report_home": 7
+    },
+    "defect/LG21-THEOREM31-CONTINUITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Theorem 3.1: nonreport mixture and fixed point",
+      "memo_anchor": "theorem-31-nonreport-mixture-and-fixed-point",
+      "report_home": 5
+    },
+    "defect/LG21-THEOREM31-SOURCE-MODEL-BRIDGE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Equilibrium timing, population laws, and active branches",
+      "memo_anchor": "equilibrium-timing-population-laws-and-active-branches",
+      "report_home": 5
+    },
+    "defect/LG21-DEFINITION1-OPAQUE-ESTIMATION-CONSISTENT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Equilibrium timing, population laws, and active branches",
+      "memo_anchor": "equilibrium-timing-population-laws-and-active-branches",
+      "report_home": 5
+    },
+    "defect/LG21-THEOREM32-ARBITRARY-POLICY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Theorem 3.2: policy scope and operational blankness",
+      "memo_anchor": "theorem-32-policy-scope-and-operational-blankness"
+    },
+    "defect/LG21-THEOREM32-DEMOGRAPHIC-TYPO-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Theorem 3.2: policy scope and operational blankness",
+      "memo_anchor": "theorem-32-policy-scope-and-operational-blankness"
+    },
+    "defect/LG21-LEMMA41-AE-POSITIVE-BRANCH-PBO-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Equilibrium timing, population laws, and active branches",
+      "memo_anchor": "equilibrium-timing-population-laws-and-active-branches",
+      "report_home": 5
+    },
+    "defect/LG21-LEMMA41-SEQUENTIAL-SELECTION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Equilibrium timing, population laws, and active branches",
+      "memo_anchor": "equilibrium-timing-population-laws-and-active-branches",
+      "report_home": 5
+    },
+    "defect/LG21-LEMMA41-NULL-BRANCH-EQUILIBRIUM-02": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Equilibrium timing, population laws, and active branches",
+      "memo_anchor": "equilibrium-timing-population-laws-and-active-branches",
+      "report_home": 5
+    },
+    "defect/LG21-LEMMA41-TWO-SIDED-CLOSURE-03": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Equilibrium timing, population laws, and active branches",
+      "memo_anchor": "equilibrium-timing-population-laws-and-active-branches",
+      "report_home": 5
+    },
+    "defect/LG21-LEMMA41-TEST-CUTOFF-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Lemma 4.1 and Proposition 4.3: calculations",
+      "memo_anchor": "lemma-41-and-proposition-43-calculations",
+      "report_home": 10
+    },
+    "defect/LG21-SECTION4-ACTUAL-LAW-BRIDGE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Equilibrium timing, population laws, and active branches",
+      "memo_anchor": "equilibrium-timing-population-laws-and-active-branches",
+      "report_home": 5
+    },
+    "defect/LG21-PROPOSITION43-MARGINAL-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Lemma 4.1 and Proposition 4.3: calculations",
+      "memo_anchor": "lemma-41-and-proposition-43-calculations",
+      "report_home": 7
+    },
+    "convention/LG21-LEMMA41-AE-EQUILIBRIUM-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Equilibrium timing, population laws, and active branches",
+      "memo_anchor": "equilibrium-timing-population-laws-and-active-branches",
+      "report_home": 5
+    },
+    "convention/LG21-THEOREM31-LOCAL-RECALIBRATION-STABILITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Equilibrium timing, population laws, and active branches",
+      "memo_anchor": "equilibrium-timing-population-laws-and-active-branches",
+      "report_home": 5
+    },
+    "convention/LG21-SECTION4-PRESET-ACCESS-INDEPENDENCE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Equilibrium timing, population laws, and active branches",
+      "memo_anchor": "equilibrium-timing-population-laws-and-active-branches",
+      "report_home": 5
+    },
+    "convention/LG21-GAUSSIAN-PRECISION-NONDEGENERACY-01": {
+      "disposition": "not_material",
+      "reason": "The source Gaussian precision formulas use nondegenerate positive variances; their ordinary definedness is unchanged."
+    },
+    "source/lg21_theorem32_fairness_impossibility/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Theorem 3.2: policy scope and operational blankness",
+      "memo_anchor": "theorem-32-policy-scope-and-operational-blankness"
+    },
+    "source/lg21_theorem32_observable_summary/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Theorem 3.2: policy scope and operational blankness",
+      "memo_anchor": "theorem-32-policy-scope-and-operational-blankness"
+    },
+    "source/lg21_theorem32_report_required_proof_conclusion/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Theorem 3.2: policy scope and operational blankness",
+      "memo_anchor": "theorem-32-policy-scope-and-operational-blankness"
+    },
+    "source/lg21_theorem32_report_required_source_statement/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d196d060a4b41c61b195a9c83896f567319ef893d4d62eff9ffe6c3777a5a7c8",
+      "memo_heading": "Theorem 3.2: policy scope and operational blankness",
+      "memo_anchor": "theorem-32-policy-scope-and-operational-blankness"
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "11fb7a52959948847ce19d85adf97256a30c3f1575941ff6efec0e33bf908e1c",
+      "discovered_named_result_sha256": "6899ec88ec0f5f4697282b79700a801f5de6b4b342ce5b5eaaa43557b9d879b8",
+      "source_format": "text",
+      "results": {
+        "lg21_fairness_implication_chain": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 365,
+              "line_start": 365,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "bd0ac730915926208d303fbf87db4eb39345fd031946bcebbc22b4a606512c9f",
+              "source_item_id": "lg21_fairness_implication_chain",
+              "source_label": "Each definition is less stringent than the previous"
+            }
+          ],
+          "source_item_ids": [
+            "lg21_fairness_implication_chain"
+          ]
+        },
+        "lg21_ignoring_test_scores_achieves_fairness": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 369,
+              "line_start": 369,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "357cf0f78c3337440289f2415f4a50cbee3a79eb33cd4e5fc98c54e6e03f4ecf",
+              "source_item_id": "lg21_ignoring_test_scores_achieves_fairness",
+              "source_label": "A school can trivially achieve these notions if test scores are ignored altogether"
+            }
+          ],
+          "source_item_ids": [
+            "lg21_ignoring_test_scores_achieves_fairness"
+          ]
+        },
+        "lg21_lemma41_strategy_proofness": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 539,
+              "line_start": 492,
+              "presentation": "text_heading",
+              "presentation_sha256": "1ddf3b452f8f4aa5a03d66b81d835a68436eeaeaf99f2ec5f71550654fc0c785",
+              "source_item_id": "lg21_lemma41_strategy_proofness",
+              "source_label": "Lemma 4.1"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 1796,
+              "line_start": 1784,
+              "presentation": "text_heading",
+              "presentation_sha256": "2f183018302defcd5a68c1c22dbeae53dedb2f86462797abd4b984d109bbe207",
+              "source_item_id": "lg21_lemma41_proof_presentation",
+              "source_label": "Lemma 4.1"
+            }
+          ],
+          "source_item_ids": [
+            "lg21_lemma41_proof_presentation",
+            "lg21_lemma41_strategy_proofness"
+          ]
+        },
+        "lg21_proposition42_not_latent_skill_fair": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 560,
+              "line_start": 550,
+              "presentation": "text_heading",
+              "presentation_sha256": "d32709728af13646ea5bd39ff565039b1e944914280a42884ca1ec2dcdff8176",
+              "source_item_id": "lg21_proposition42_not_latent_skill_fair",
+              "source_label": "Proposition 4.2"
+            },
+            {
+              "kind": "proposition",
+              "line_end": 2319,
+              "line_start": 2318,
+              "presentation": "text_heading",
+              "presentation_sha256": "c8d88ff7fecd5ff7028d4dfc0dcac6bc6ed1c067eb0711eeb2268ffa660abbbf",
+              "source_item_id": "lg21_proposition42_proof_presentation",
+              "source_label": "Proposition 4.2"
+            }
+          ],
+          "source_item_ids": [
+            "lg21_proposition42_not_latent_skill_fair",
+            "lg21_proposition42_proof_presentation"
+          ]
+        },
+        "lg21_proposition43_not_observable_or_demographic_fair": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 575,
+              "line_start": 561,
+              "presentation": "text_heading",
+              "presentation_sha256": "2b211a3523d81bc161a332a1b397c3338e4d0f2a80dfcf7ebbfaca880b8e1968",
+              "source_item_id": "lg21_proposition43_not_observable_or_demographic_fair",
+              "source_label": "Proposition 4.3"
+            },
+            {
+              "kind": "proposition",
+              "line_end": 2418,
+              "line_start": 2417,
+              "presentation": "text_heading",
+              "presentation_sha256": "e9960426fb3861da8429dc9d2213927888634280f1add9e99b4a4e93a7c504a4",
+              "source_item_id": "lg21_proposition43_proof_presentation",
+              "source_label": "Proposition 4.3"
+            }
+          ],
+          "source_item_ids": [
+            "lg21_proposition43_not_observable_or_demographic_fair",
+            "lg21_proposition43_proof_presentation"
+          ]
+        },
+        "lg21_report_decision_skill_independence": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 250,
+              "line_start": 249,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "4f05f99573135e47ac44df2ef91013fe6a8b4a89a877b8cfab20e63811b48ad1",
+              "source_item_id": "lg21_report_decision_skill_independence",
+              "source_label": "X should not depend on q, given theta_K"
+            }
+          ],
+          "source_item_ids": [
+            "lg21_report_decision_skill_independence"
+          ]
+        },
+        "lg21_reporting_conditioned_generalization": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 395,
+              "line_start": 391,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "50603defa80c9441c7330df454825aee29edfcdb60211321820f20908234ace4",
+              "source_item_id": "lg21_reporting_conditioned_generalization",
+              "source_label": "all of our results also hold for the corresponding definition for which access Z is replaced by reporting X"
+            }
+          ],
+          "source_item_ids": [
+            "lg21_reporting_conditioned_generalization"
+          ]
+        },
+        "lg21_theorem31_all_fairness_fail": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 438,
+              "line_start": 424,
+              "presentation": "text_heading",
+              "presentation_sha256": "3ac08a7729033f2c8afe2de09b95ab66d8606d4182993e93c7f2fbb9a640ecb9",
+              "source_item_id": "lg21_theorem31_all_fairness_fail",
+              "source_label": "Theorem 3.1"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 846,
+              "line_start": 829,
+              "presentation": "text_heading",
+              "presentation_sha256": "647a49f17336aff0f24533de9aeb4ab9017c67fdac3524171a639c0403423790",
+              "source_item_id": "lg21_theorem31_proof_presentation",
+              "source_label": "Theorem 3.1"
+            }
+          ],
+          "source_item_ids": [
+            "lg21_theorem31_all_fairness_fail",
+            "lg21_theorem31_optional_reporting",
+            "lg21_theorem31_proof_presentation",
+            "lg21_theorem31_report_required"
+          ]
+        },
+        "lg21_theorem32_fairness_impossibility": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 491,
+              "line_start": 455,
+              "presentation": "text_heading",
+              "presentation_sha256": "497db12b9c31682d0c4e7a06c6dbe2af16f9a34b00e2a673942f6ee28c7fb97d",
+              "source_item_id": "lg21_theorem32_fairness_impossibility",
+              "source_label": "Theorem 3.2"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 1615,
+              "line_start": 1614,
+              "presentation": "text_heading",
+              "presentation_sha256": "10eadcc7c37a0fd70955ef775efbf84438a47f7dfc7f1e6361b7b5ca2a3df21c",
+              "source_item_id": "lg21_theorem32_proof_presentation",
+              "source_label": "Theorem 3.2"
+            }
+          ],
+          "source_item_ids": [
+            "lg21_theorem32_fairness_impossibility",
+            "lg21_theorem32_proof_presentation",
+            "lg21_theorem32_report_required_source_statement"
+          ]
+        },
+        "lg21_theorem32_observable_summary": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 1780,
+              "line_start": 1779,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "155e4fa04de00e1f017a8eb1bfc6bd84969652081fdd9a32fb8b2b17cba2f6f5",
+              "source_item_id": "lg21_theorem32_observable_summary",
+              "source_label": "any policy that satisfies demographic fairness will be either test-blank, or lead to no one reporting in equilibrium"
+            }
+          ],
+          "source_item_ids": [
+            "lg21_theorem32_observable_summary"
+          ]
+        },
+        "lg21_theorem32_report_required_proof_conclusion": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 1778,
+              "line_start": 1776,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "0470ae153f51be100459837247805b0648d7f1cfa9f44d63fbe126aa5e54d185",
+              "source_item_id": "lg21_theorem32_report_required_proof_conclusion",
+              "source_label": "the result is that the unique equilibrium is no one takes the test and reports the score"
+            }
+          ],
+          "source_item_ids": [
+            "lg21_theorem32_report_required_proof_conclusion"
+          ]
+        },
+        "lg21_theorem44_resampling_fairness": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 674,
+              "line_start": 610,
+              "presentation": "text_heading",
+              "presentation_sha256": "1a9b8e935b6837f7d988a6858b1e8f455c1a6ad7db888bbeacb780405dae225b",
+              "source_item_id": "lg21_theorem44_resampling_fairness",
+              "source_label": "Theorem 4.4"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 2510,
+              "line_start": 2509,
+              "presentation": "text_heading",
+              "presentation_sha256": "e8e62608cc452fe1846599116f3ab8cafc092f4c8992e246c12df605d4e13cb4",
+              "source_item_id": "lg21_theorem44_proof_presentation",
+              "source_label": "Theorem 4.4"
+            }
+          ],
+          "source_item_ids": [
+            "lg21_theorem44_proof_presentation",
+            "lg21_theorem44_resampling_fairness"
+          ]
+        },
+        "lg21_thompson_acceptance_interpretation": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 622,
+              "line_start": 617,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "7deaa305616c04589d27f8b7a785c127342b0fdf44b11131bad3ee218f0b224f",
+              "source_item_id": "lg21_thompson_acceptance_interpretation",
+              "source_label": "each student without access is accepted with probability equal to the probability they would receive a high enough score"
+            }
+          ],
+          "source_item_ids": [
+            "lg21_thompson_acceptance_interpretation"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "4f7fb4dfaae189d578e75898c1f1e5c83498bcdd40cb3909341da10cbe27c42d",
+    "results": {
+      "lg21_fairness_implication_chain": {
+        "numbering": "unnumbered",
+        "printed_label": "Fairness implication chain",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Fairness definitions and implications; score-ignoring policy",
+            "row_sha256": "f8647508061019e08d321fc24278f3a6e85ab74a4db1bcaeacad76bb11c8e9cb"
+          }
+        ],
+        "grouping_reason": "The indicated proof or interpretation belongs to the named result group; distinct voluntary and cutoff clauses retain their separate rows."
+      },
+      "lg21_ignoring_test_scores_achieves_fairness": {
+        "numbering": "unnumbered",
+        "printed_label": "Score-ignoring fairness claim",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Fairness definitions and implications; score-ignoring policy",
+            "row_sha256": "f8647508061019e08d321fc24278f3a6e85ab74a4db1bcaeacad76bb11c8e9cb"
+          }
+        ],
+        "grouping_reason": "The indicated proof or interpretation belongs to the named result group; distinct voluntary and cutoff clauses retain their separate rows."
+      },
+      "lg21_lemma41_strategy_proofness": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 4.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "[Lemma 4.1, voluntary regimes](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches)",
+            "row_sha256": "43295d15c0eacdf5b7c71f38b18cdc691c6f1bbcad94be9c195d85c99537d7ba"
+          },
+          {
+            "report_label": "[Lemma 4.1 cutoff](docs/SOURCE_CLARIFICATIONS.md#lemma-41-and-proposition-43-calculations)",
+            "row_sha256": "7a276d73f05d41f0fab9344435951cf860b1849987022717a6f8b88f124aa6e3"
+          }
+        ],
+        "grouping_reason": "The indicated proof or interpretation belongs to the named result group; distinct voluntary and cutoff clauses retain their separate rows.",
+        "split_reason": "Distinct source clauses are discussed in separate rows."
+      },
+      "lg21_proposition42_not_latent_skill_fair": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 4.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 4.2",
+            "row_sha256": "88e4c60ff2f41dfab1b8be21a56f688bdae6313c0a888311e9702aaa2fdd1523"
+          }
+        ],
+        "grouping_reason": "The indicated proof or interpretation belongs to the named result group; distinct voluntary and cutoff clauses retain their separate rows."
+      },
+      "lg21_proposition43_not_observable_or_demographic_fair": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 4.3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "[Proposition 4.3](docs/SOURCE_CLARIFICATIONS.md#lemma-41-and-proposition-43-calculations)",
+            "row_sha256": "a74f9cca0b6593942390a914d80efdd6215d14ed1a5458920977476562bcd7ab"
+          }
+        ],
+        "grouping_reason": "The indicated proof or interpretation belongs to the named result group; distinct voluntary and cutoff clauses retain their separate rows."
+      },
+      "lg21_report_decision_skill_independence": {
+        "numbering": "unnumbered",
+        "printed_label": "Report-decision skill-independence claim",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "[Lemma 4.1, voluntary regimes](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches)",
+            "row_sha256": "43295d15c0eacdf5b7c71f38b18cdc691c6f1bbcad94be9c195d85c99537d7ba"
+          }
+        ],
+        "grouping_reason": "The indicated proof or interpretation belongs to the named result group; distinct voluntary and cutoff clauses retain their separate rows."
+      },
+      "lg21_reporting_conditioned_generalization": {
+        "numbering": "unnumbered",
+        "printed_label": "Reporting-conditioned fairness generalization",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "[Theorem 4.4 and its reporting-conditioned generalization](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches)",
+            "row_sha256": "1e699c82e3fef2c56ff4e2bee69d46663061b48061b9a822f99cad046e62ef79"
+          }
+        ],
+        "grouping_reason": "The indicated proof or interpretation belongs to the named result group; distinct voluntary and cutoff clauses retain their separate rows."
+      },
+      "lg21_theorem31_all_fairness_fail": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "[Theorem 3.1](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches)",
+            "row_sha256": "29c803ef3051956ee374dd351a6ebfe35a4dc4c8f26a497906d865454dbf25ee"
+          }
+        ],
+        "grouping_reason": "The indicated proof or interpretation belongs to the named result group; distinct voluntary and cutoff clauses retain their separate rows."
+      },
+      "lg21_theorem32_fairness_impossibility": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "[Theorem 3.2](docs/SOURCE_CLARIFICATIONS.md#theorem-32-policy-scope-and-operational-blankness)",
+            "row_sha256": "a62365b2d2b921553aa0a761075e4f040d4a13003bb05c889579831194f0afad"
+          }
+        ],
+        "grouping_reason": "The indicated proof or interpretation belongs to the named result group; distinct voluntary and cutoff clauses retain their separate rows."
+      },
+      "lg21_theorem32_observable_summary": {
+        "numbering": "unnumbered",
+        "printed_label": "Theorem 3.2 summary",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "[Theorem 3.2 summary](docs/SOURCE_CLARIFICATIONS.md#theorem-32-policy-scope-and-operational-blankness)",
+            "row_sha256": "c0d6af80cbbb30e964f4838c59d5f5f29b1e08e1e549183532acaf6b1ce69cdf"
+          }
+        ],
+        "grouping_reason": "The indicated proof or interpretation belongs to the named result group; distinct voluntary and cutoff clauses retain their separate rows."
+      },
+      "lg21_theorem32_report_required_proof_conclusion": {
+        "numbering": "unnumbered",
+        "printed_label": "Theorem 3.2 report-required proof conclusion",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "[Theorem 3.2](docs/SOURCE_CLARIFICATIONS.md#theorem-32-policy-scope-and-operational-blankness)",
+            "row_sha256": "a62365b2d2b921553aa0a761075e4f040d4a13003bb05c889579831194f0afad"
+          }
+        ],
+        "grouping_reason": "The indicated proof or interpretation belongs to the named result group; distinct voluntary and cutoff clauses retain their separate rows."
+      },
+      "lg21_theorem44_resampling_fairness": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 4.4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "[Theorem 4.4 and its reporting-conditioned generalization](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches)",
+            "row_sha256": "1e699c82e3fef2c56ff4e2bee69d46663061b48061b9a822f99cad046e62ef79"
+          }
+        ],
+        "grouping_reason": "The indicated proof or interpretation belongs to the named result group; distinct voluntary and cutoff clauses retain their separate rows."
+      },
+      "lg21_thompson_acceptance_interpretation": {
+        "numbering": "unnumbered",
+        "printed_label": "Thompson acceptance interpretation",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "[Theorem 4.4 and its reporting-conditioned generalization](docs/SOURCE_CLARIFICATIONS.md#equilibrium-timing-population-laws-and-active-branches)",
+            "row_sha256": "1e699c82e3fef2c56ff4e2bee69d46663061b48061b9a822f99cad046e62ef79"
+          }
+        ],
+        "grouping_reason": "The indicated proof or interpretation belongs to the named result group; distinct voluntary and cutoff clauses retain their separate rows."
+      }
+    },
+    "rows": {
+      "f8647508061019e08d321fc24278f3a6e85ab74a4db1bcaeacad76bb11c8e9cb": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "29c803ef3051956ee374dd351a6ebfe35a4dc4c8f26a497906d865454dbf25ee": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "a62365b2d2b921553aa0a761075e4f040d4a13003bb05c889579831194f0afad": {
+        "explanation_keys": [
+          "defect/LG21-THEOREM32-ARBITRARY-POLICY-01",
+          "defect/LG21-THEOREM32-DEMOGRAPHIC-TYPO-01",
+          "source/lg21_theorem32_fairness_impossibility/corrected_target",
+          "source/lg21_theorem32_report_required_proof_conclusion/corrected_target",
+          "source/lg21_theorem32_report_required_source_statement/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "c0d6af80cbbb30e964f4838c59d5f5f29b1e08e1e549183532acaf6b1ce69cdf": {
+        "explanation_keys": [
+          "defect/LG21-THEOREM32-ARBITRARY-POLICY-01",
+          "defect/LG21-THEOREM32-DEMOGRAPHIC-TYPO-01",
+          "source/lg21_theorem32_observable_summary/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "43295d15c0eacdf5b7c71f38b18cdc691c6f1bbcad94be9c195d85c99537d7ba": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "88e4c60ff2f41dfab1b8be21a56f688bdae6313c0a888311e9702aaa2fdd1523": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "a74f9cca0b6593942390a914d80efdd6215d14ed1a5458920977476562bcd7ab": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "7a276d73f05d41f0fab9344435951cf860b1849987022717a6f8b88f124aa6e3": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "1e699c82e3fef2c56ff4e2bee69d46663061b48061b9a822f99cad046e62ef79": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

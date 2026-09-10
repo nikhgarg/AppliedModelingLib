@@ -210,16 +210,13 @@ CDF monotonicity condition on raw marginal offer laws; the adjacent surplus
 recursion is derived internally from those CDF inequalities.
 -/
 theorem audit_theorem8_2_truthful_revenue_upper_bound
-    {Agent Price : Type*} [Fintype Agent] [Nonempty Agent]
-    [DecidableEq Agent] [Fintype Price] [DecidableEq Price]
-    [LinearOrder Agent]
-    (model :
-      PaperTheorem82JournalRawCDFMonotoneOfferSourceModel Agent Price) :
-    paper_theorem8_2_raw_cdf_expected_revenue
-        model.values model.price model.offerLaw ≤
+    {Agent : Type*} [Fintype Agent] [Nonempty Agent] [DecidableEq Agent]
+    (model : PaperTheorem82ContinuousRawCDFMonotoneOfferSourceModel Agent) :
+    paper_theorem8_2_continuous_marginal_expected_revenue
+        model.values model.offerLaw ≤
       finiteCandidateFixedPriceBenchmark model.values 1 := by
   exact
-    paper_theorem8_2_expected_revenue_le_finite_candidate_benchmark_of_raw_cdf_monotone_offer_source_model
+    paper_theorem8_2_expected_marginal_revenue_le_finite_candidate_benchmark_of_raw_cdf_monotone_offer_source_model
       model
 
 /--

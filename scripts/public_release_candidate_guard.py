@@ -2028,6 +2028,7 @@ def public_source_role_projection_issues(
     *,
     private_repo: Path,
     public_base_ref: str | None = PUBLIC_BASE_REF,
+    used_entries: set[AllowlistEntry] | None = None,
 ) -> list[str]:
     """Validate guard-issued role bridges or exact trusted-base carryforward."""
 
@@ -2156,6 +2157,21 @@ def public_source_role_projection_issues(
                 accepted_graph_sha256=graph_sha256,
                 accepted_role_sha256s_by_source_item=accepted_roles,
             )
+            if used_entries is not None and entry not in used_entries:
+                # A new graph envelope can consume an unchanged public map.
+                # Recompute its pinned projection before counting that exact
+                # dependency as used; unrelated unused entries still fail.
+                provenance_issues = source_provenance_issues(
+                    candidate_repo,
+                    private_repo,
+                    candidate_ref,
+                    [CandidateChange(status="M", path=map_path)],
+                    [entry],
+                    public_base_ref=public_base_ref or candidate_ref,
+                )
+                if provenance_issues:
+                    raise PublicSourceRoleProjectionError("; ".join(provenance_issues))
+                used_entries.add(entry)
         except (RuntimeError, ValueError, PublicSourceRoleProjectionError) as exc:
             issues.append(f"{envelope_path}: {exc}")
     return issues
@@ -3824,7 +3840,6 @@ def run_guard(
                 public_base_ref=public_base_commit,
             )
         )
-    issues.extend(unused_allowlist_issues(entries, used_entries))
     issues.extend(status_visibility_issues(repo, candidate_commit, entries=entries))
     issues.extend(
         changed_formalized_packet_issues(
@@ -3849,8 +3864,10 @@ def run_guard(
             entries,
             private_repo=private_repo,
             public_base_ref=public_base_commit,
+            used_entries=used_entries,
         )
     )
+    issues.extend(unused_allowlist_issues(entries, used_entries))
     issues.extend(forbidden_candidate_path_issues(repo, candidate_commit))
     issues.extend(session_insights_path_issues(repo, candidate_commit))
     issues.extend(

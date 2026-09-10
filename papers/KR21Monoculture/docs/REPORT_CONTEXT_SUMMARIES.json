@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "paper": "KR21Monoculture",
+  "summaries": {},
+  "assumption_summaries": {
+    "1d118cab92ab092de584186a6ffc3e6f20dd572fff2dffe73c5cefd3a1aa5bf4": "Equation (6)'s total-family regularity inputs are discussed in Section 6; the [memo](docs/SOURCE_CLARIFICATIONS.md#representation-boundaries) distinguishes them from source-model conditions.",
+    "82f01658bc343e8280ff2c5da4544fee376c7905a1b028bfcff0e2d1921336f9": "Equation (6)'s total-family regularity inputs are discussed in Section 6; the [memo](docs/SOURCE_CLARIFICATIONS.md#representation-boundaries) distinguishes them from source-model conditions.",
+    "bc46e1843c76df8bbc932a5b2eac170d8cb5a4c9b7ddca501079d22bd83559e7": "Equation (6)'s total-family regularity inputs are discussed in Section 6; the [memo](docs/SOURCE_CLARIFICATIONS.md#representation-boundaries) distinguishes them from source-model conditions.",
+    "e8e4801d39c4949557eec0346888479cab034a88f7ee0c73198ef4141367a969": "Equation (6)'s total-family regularity inputs are discussed in Section 6; the [memo](docs/SOURCE_CLARIFICATIONS.md#representation-boundaries) distinguishes them from source-model conditions."
+  }
+}

@@ -45,8 +45,8 @@ specifications, and hash-bound raw-source-to-Spec screening records.
 \textbf{Paper id:} \texttt{LBG24SpatialUnderreporting}\\
 \textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright Nature Computational Science 4, 57-65 (2024); version of record published 2023-12-05; DOI 10.1038/s43588-023-00572-6}\\
 \textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
-\textbf{Rows:} 8\\
-\textbf{Generated:} 2026-09-07\\
+\textbf{Rows:} 10\\
+\textbf{Generated:} 2026-09-09\\
 \textbf{Source URL:} \href{https://arxiv.org/pdf/2204.08620}{official source}
 
 
@@ -75,7 +75,7 @@ reviewer-owned review record.
 
 \section*{Contents}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{governing-declaration-section-5ef5ef0364b6939c}{Governing Lean declarations (51; supporting context)}
+\item \hyperlink{governing-declaration-section-5ef5ef0364b6939c}{Governing Lean declarations (65; supporting context)}
 \item \hyperlink{library-section-378529c53c19af58}{Semantic library prerequisites (2; not paper claims)}
 \begin{itemize}[leftmargin=1.2em]
 \item \hyperlink{library-prerequisite-c7492b765918e40d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}rate\allowbreak{}Exposure\allowbreak{}Param}
@@ -92,13 +92,13 @@ reviewer-owned review record.
 \item \hyperlink{paper-prerequisite-ab0d1d436c9b4cd5}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Lemma1\allowbreak{}Reporting\allowbreak{}Intensity\allowbreak{}Source\allowbreak{}Condition}
 \item \hyperlink{paper-prerequisite-c4bb9830feab9643}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Lemma1\allowbreak{}Calendar\allowbreak{}Time\allowbreak{}Duration\allowbreak{}Source\allowbreak{}Model}
 \item \hyperlink{paper-prerequisite-12e4cb02af85f9fa}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Proposition1\allowbreak{}Calendar\allowbreak{}Time\allowbreak{}Duration\allowbreak{}Source\allowbreak{}Model}
-\item \hyperlink{paper-prerequisite-b86695ea0bdc7438}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Selection}
+\item \hyperlink{paper-prerequisite-fc4b987b63d7ffe8}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Fixed\allowbreak{}History\allowbreak{}Density\allowbreak{}Presentation}
 \item \hyperlink{paper-prerequisite-751408eb4fd42b04}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}equation33\_\allowbreak{}nyc\_\allowbreak{}observation\_\allowbreak{}end}
 \item \hyperlink{paper-prerequisite-1061ea72385fd3fe}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}equation34\_\allowbreak{}chicago\_\allowbreak{}observation\_\allowbreak{}end}
 \item \hyperlink{paper-prerequisite-7f3c5743111cd486}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}poisson\allowbreak{}Regression\allowbreak{}Rate}
 \item \hyperlink{paper-prerequisite-a737593e189d73f6}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}zero\allowbreak{}Inflated\allowbreak{}Independent\allowbreak{}Incident\allowbreak{}Family\allowbreak{}Likelihood}
 \end{itemize}
-\item \hyperlink{source-section-f10b5f68e4acf3dc}{Source claims (8)}
+\item \hyperlink{source-section-f10b5f68e4acf3dc}{Source claims (10)}
 \begin{itemize}[leftmargin=1.2em]
 \item \hyperlink{source-claim-ce9253f67ee0c7eb}{source\allowbreak{}Homogeneous\allowbreak{}Reporting\allowbreak{}Delay\allowbreak{}Mean\allowbreak{}Spec}
 \item \hyperlink{source-claim-7c39e59245058bff}{source\allowbreak{}Theorem1\allowbreak{}Likelihood\allowbreak{}Decomposition\allowbreak{}Spec}
@@ -108,6 +108,8 @@ reviewer-owned review record.
 \item \hyperlink{source-claim-9e3150507c569b02}{source\allowbreak{}Zero\allowbreak{}Inflated\allowbreak{}Likelihood\allowbreak{}Extension\allowbreak{}Spec}
 \item \hyperlink{source-claim-5df3c4be72017231}{source\allowbreak{}Lemma1\allowbreak{}Calendar\allowbreak{}Time\allowbreak{}Duration\allowbreak{}Observed\allowbreak{}Process\allowbreak{}Spec}
 \item \hyperlink{source-claim-314139008a3bface}{source\allowbreak{}Proposition1\allowbreak{}Calendar\allowbreak{}Time\allowbreak{}Nonidentifiability\allowbreak{}Spec}
+\item \hyperlink{source-claim-73044f3612c3e67c}{source\allowbreak{}Lemma2\allowbreak{}Selected\allowbreak{}Start\allowbreak{}Exponential\allowbreak{}Tail\allowbreak{}Spec}
+\item \hyperlink{source-claim-7c756377fe4100a9}{source\allowbreak{}Post\allowbreak{}First\allowbreak{}Jump\allowbreak{}Poisson\allowbreak{}Shift\allowbreak{}Spec}
 \end{itemize}
 \end{itemize}
 
@@ -296,6 +298,97 @@ fun (rate : ℝ) (q : ℕ) (a : Fin q → ℝ) => ∏ i : Fin q, ProbabilityTheo
 \end{ReviewVerbatim}
 
 
+\hypertarget{governing-declaration-e0cfe0aeed0b2d78}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}exponential\allowbreak{}Interarrival\allowbreak{}Measure}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℝ → MeasureTheory.Measure (ℕ → ℝ)
+
+value:
+fun (rate : ℝ) => MeasureTheory.Measure.infinitePi fun (x : ℕ) => ProbabilityTheory.expMeasure rate
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-0d8c93dcf696a606}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}interarrival}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℕ → (ℕ → ℝ) → ℝ
+
+value:
+fun (n : ℕ) (a : ℕ → ℝ) => a n
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-544406615ce2d8dc}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}arrival\allowbreak{}Time}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℕ → (ℕ → ℝ) → ℝ
+
+value:
+fun (n : ℕ) (a : ℕ → ℝ) => ∑ i ∈ Finset.range (n + 1), AppliedModelingLib.Probability.PoissonProcess.interarrival i a
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-0d8c93dcf696a606}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}interarrival}
+\end{itemize}
+\hypertarget{governing-declaration-b0f010330c55d613}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}canonical\allowbreak{}First\allowbreak{}Arrival}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+(ℕ → ℝ) → ℝ
+
+value:
+fun (a : ℕ → ℝ) => AppliedModelingLib.Probability.PoissonProcess.interarrival 0 a
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-0d8c93dcf696a606}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}interarrival}
+\end{itemize}
+\hypertarget{governing-declaration-9fb1a8c287ed38cc}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}canonical\allowbreak{}Renewal\allowbreak{}Count}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℝ → (ℕ → ℝ) → ℕ
+
+value:
+fun (t : ℝ) (a : ℕ → ℝ) =>
+  if h : ∃ (n : ℕ), t < AppliedModelingLib.Probability.PoissonProcess.arrivalTime n a then Nat.find h else 0
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-544406615ce2d8dc}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}arrival\allowbreak{}Time}
+\end{itemize}
+\hypertarget{governing-declaration-2f60f71b80c5c3dd}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}future\allowbreak{}Interarrival}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℕ → (ℕ → ℝ) → ℕ → ℝ
+
+value:
+fun (n : ℕ) (a : ℕ → ℝ) (a_1 : ℕ) => AppliedModelingLib.Probability.PoissonProcess.interarrival (n + a_1) a
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-0d8c93dcf696a606}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}interarrival}
+\end{itemize}
 \hypertarget{governing-declaration-2f5567345c01b8db}{}
 \subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}jump\allowbreak{}Timeline\allowbreak{}Endpoint}
 \textbf{Declaration location:} reusable library
@@ -405,6 +498,92 @@ fun (count : ℕ) (exposure rate : ℝ) => ↑count * Real.log rate - rate * exp
 \end{ReviewVerbatim}
 
 
+\hypertarget{governing-declaration-5e7e095aeaaae64f}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}Forward\allowbreak{}Homogeneous\allowbreak{}Poisson\allowbreak{}Counting\allowbreak{}Process\allowbreak{}By\allowbreak{}Law.\allowbreak{}interval\allowbreak{}Count}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Ω : Type u_1} →
+  [inst : MeasurableSpace Ω] →
+    {P : MeasureTheory.Measure Ω} →
+      AppliedModelingLib.Probability.PoissonProcess.ForwardHomogeneousPoissonCountingProcessByLaw Ω P →
+        NNReal → NNReal → Ω → ℕ
+
+value:
+fun {Ω : Type u_1} [MeasurableSpace Ω] {P : MeasureTheory.Measure Ω}
+    (H : AppliedModelingLib.Probability.PoissonProcess.ForwardHomogeneousPoissonCountingProcessByLaw Ω P) (s t : NNReal)
+    (ω : Ω) =>
+  H.count t ω - H.count s ω
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{library-prerequisite-fb517e3d857fbe00}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}Forward\allowbreak{}Homogeneous\allowbreak{}Poisson\allowbreak{}Counting\allowbreak{}Process\allowbreak{}By\allowbreak{}Law}
+\end{itemize}
+\hypertarget{governing-declaration-26e1473b3070e12a}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}canonical\allowbreak{}Forward\allowbreak{}Homogeneous\allowbreak{}Poisson\allowbreak{}Counting\allowbreak{}Process\allowbreak{}By\allowbreak{}Law}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{rate : ℝ} →
+  0 < rate →
+    AppliedModelingLib.Probability.PoissonProcess.ForwardHomogeneousPoissonCountingProcessByLaw (ℕ → ℝ)
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate)
+
+value:
+fun {rate : ℝ} (hrate : 0 < rate) =>
+  {
+    isProbability :=
+      AppliedModelingLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure hrate,
+    rate := rate, rate_pos := hrate,
+    count := fun (t : NNReal) (ω : ℕ → ℝ) => AppliedModelingLib.Probability.PoissonProcess.canonicalRenewalCount (↑t) ω,
+    count_measurable :=
+      AppliedModelingLib.Probability.PoissonProcess.canonicalForwardHomogeneousPoissonCountingProcessByLaw._proof_1,
+    count_zero_ae :=
+      AppliedModelingLib.Probability.PoissonProcess.canonicalForwardHomogeneousPoissonCountingProcessByLaw._proof_3
+        hrate,
+    count_mono_ae :=
+      AppliedModelingLib.Probability.PoissonProcess.canonicalForwardHomogeneousPoissonCountingProcessByLaw._proof_4
+        hrate,
+    hasIndepIncrements := AppliedModelingLib.Probability.PoissonProcess.canonicalForwardCount_hasIndepIncrements hrate,
+    increment_hasLaw :=
+      @AppliedModelingLib.Probability.PoissonProcess.canonicalForwardHomogeneousPoissonCountingProcessByLaw._proof_6
+        rate hrate }
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{library-prerequisite-fb517e3d857fbe00}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}Forward\allowbreak{}Homogeneous\allowbreak{}Poisson\allowbreak{}Counting\allowbreak{}Process\allowbreak{}By\allowbreak{}Law}
+\item \hyperlink{governing-declaration-9fb1a8c287ed38cc}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}canonical\allowbreak{}Renewal\allowbreak{}Count}
+\item \hyperlink{governing-declaration-e0cfe0aeed0b2d78}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}exponential\allowbreak{}Interarrival\allowbreak{}Measure}
+\item \hyperlink{library-prerequisite-c7492b765918e40d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}rate\allowbreak{}Exposure\allowbreak{}Param}
+\end{itemize}
+\hypertarget{governing-declaration-2069441088df424d}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}forward\allowbreak{}Post\allowbreak{}Stop\allowbreak{}Interval\allowbreak{}Count}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Ω : Type u_1} →
+  [inst : MeasurableSpace Ω] →
+    {P : MeasureTheory.Measure Ω} →
+      AppliedModelingLib.Probability.PoissonProcess.ForwardHomogeneousPoissonCountingProcessByLaw Ω P →
+        (Ω → NNReal) → NNReal → Ω → ℕ
+
+value:
+fun {Ω : Type u_1} [MeasurableSpace Ω] {P : MeasureTheory.Measure Ω}
+    (H : AppliedModelingLib.Probability.PoissonProcess.ForwardHomogeneousPoissonCountingProcessByLaw Ω P)
+    (τ : Ω → NNReal) (u : NNReal) (a : Ω) =>
+  H.intervalCount (τ a) (τ a + u) a
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{library-prerequisite-fb517e3d857fbe00}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}Forward\allowbreak{}Homogeneous\allowbreak{}Poisson\allowbreak{}Counting\allowbreak{}Process\allowbreak{}By\allowbreak{}Law}
+\item \hyperlink{governing-declaration-5e7e095aeaaae64f}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}Forward\allowbreak{}Homogeneous\allowbreak{}Poisson\allowbreak{}Counting\allowbreak{}Process\allowbreak{}By\allowbreak{}Law.\allowbreak{}interval\allowbreak{}Count}
+\end{itemize}
 \hypertarget{governing-declaration-4889b0027b058582}{}
 \subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}terminal\allowbreak{}Tail\allowbreak{}From\allowbreak{}Jump\allowbreak{}Times}
 \textbf{Declaration location:} reusable library
@@ -550,6 +729,271 @@ field endKernel_eq_withDensity:
 \begin{itemize}\raggedright
 \item \hyperlink{governing-declaration-f690c3c90ba9b3a6}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}Ordered\allowbreak{}Finite\allowbreak{}Jump\allowbreak{}Timeline}
 \end{itemize}
+\hypertarget{governing-declaration-2f059522a9b873ec}{}
+\subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Lemma2\allowbreak{}Forward\allowbreak{}Source\allowbreak{}Model}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+field rate:
+{Ω : Type u_1} →
+  [inst : MeasurableSpace Ω] →
+    [inst_1 : StandardBorelSpace Ω] →
+      {P : MeasureTheory.Measure Ω} →
+        [inst_2 : MeasureTheory.IsProbabilityMeasure P] → LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P → ℝ
+
+field rate_pos:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] (self : LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P),
+  0 < self.rate
+
+field interarrivalPath:
+{Ω : Type u_1} →
+  [inst : MeasurableSpace Ω] →
+    [inst_1 : StandardBorelSpace Ω] →
+      {P : MeasureTheory.Measure Ω} →
+        [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
+          LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P → Ω → ℕ → ℝ
+
+field interarrivalPath_measurable:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] (self : LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P),
+  Measurable self.interarrivalPath
+
+field interarrivalPath_hasLaw:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] (self : LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P),
+  ProbabilityTheory.HasLaw self.interarrivalPath
+    (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure self.rate) P
+
+field startTime:
+{Ω : Type u_1} →
+  [inst : MeasurableSpace Ω] →
+    [inst_1 : StandardBorelSpace Ω] →
+      {P : MeasureTheory.Measure Ω} →
+        [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
+          LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P → Ω → NNReal
+
+field observationHorizon:
+{Ω : Type u_1} →
+  [inst : MeasurableSpace Ω] →
+    [inst_1 : StandardBorelSpace Ω] →
+      {P : MeasureTheory.Measure Ω} →
+        [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
+          LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P → NNReal
+
+field rateFreeStartKernel:
+{Ω : Type u_1} →
+  [inst : MeasurableSpace Ω] →
+    [inst_1 : StandardBorelSpace Ω] →
+      {P : MeasureTheory.Measure Ω} →
+        [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
+          LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P → ProbabilityTheory.Kernel NNReal NNReal
+
+field rateFreeStartKernel_isMarkov:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] (self : LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P),
+  ProbabilityTheory.IsMarkovKernel self.rateFreeStartKernel
+
+field startTime_measurable:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] (self : LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P),
+  Measurable self.startTime
+
+field firstReport_le_start:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] (self : LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P)
+  (ω : Ω),
+  (AppliedModelingLib.Probability.PoissonProcess.canonicalFirstArrival (self.interarrivalPath ω)).toNNReal ≤
+    self.startTime ω
+
+field start_le_observationHorizon_of_firstReport_le:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] (self : LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P)
+  (ω : Ω),
+  (AppliedModelingLib.Probability.PoissonProcess.canonicalFirstArrival (self.interarrivalPath ω)).toNNReal ≤
+      self.observationHorizon →
+    self.startTime ω ≤ self.observationHorizon
+
+field start_conditional_law:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] (self : LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P),
+  ∀ᵐ (ω : Ω) ∂P,
+    ProbabilityTheory.HasLaw self.startTime
+      (self.rateFreeStartKernel
+        (AppliedModelingLib.Probability.PoissonProcess.canonicalFirstArrival (self.interarrivalPath ω)).toNNReal)
+      ((ProbabilityTheory.condExpKernel P
+          (MeasurableSpace.comap
+            (fun (ω : Ω) =>
+              (AppliedModelingLib.Probability.PoissonProcess.canonicalFirstArrival (self.interarrivalPath ω)).toNNReal)
+            inferInstance))
+        ω)
+
+field rateFreeStartKernel_supported_after_first:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] (self : LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P)
+  (t : NNReal), (self.rateFreeStartKernel t) (Set.Ici t) = 1
+
+field start_condIndep_postFirstReportTail:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] (self : LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P),
+  ProbabilityTheory.CondIndepFun
+    (MeasurableSpace.comap
+      (fun (ω : Ω) =>
+        (AppliedModelingLib.Probability.PoissonProcess.canonicalFirstArrival (self.interarrivalPath ω)).toNNReal)
+      inferInstance)
+    (Measurable.comap_le
+      (Measurable.comp
+        (Measurable.comp measurable_real_toNNReal
+          (AppliedModelingLib.Probability.PoissonProcess.measurable_interarrival 0))
+        self.interarrivalPath_measurable))
+    self.startTime
+    (fun (ω : Ω) => AppliedModelingLib.Probability.PoissonProcess.futureInterarrival 1 (self.interarrivalPath ω)) P
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-b0f010330c55d613}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}canonical\allowbreak{}First\allowbreak{}Arrival}
+\item \hyperlink{governing-declaration-e0cfe0aeed0b2d78}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}exponential\allowbreak{}Interarrival\allowbreak{}Measure}
+\item \hyperlink{governing-declaration-2f60f71b80c5c3dd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}future\allowbreak{}Interarrival}
+\item \hyperlink{governing-declaration-0d8c93dcf696a606}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}interarrival}
+\end{itemize}
+\hypertarget{governing-declaration-d4ebdfd9cf876fb9}{}
+\subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Lemma2\allowbreak{}Forward\allowbreak{}Source\allowbreak{}Model.\allowbreak{}process}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Ω : Type u_1} →
+  [inst : MeasurableSpace Ω] →
+    [inst_1 : StandardBorelSpace Ω] →
+      {P : MeasureTheory.Measure Ω} →
+        [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
+          LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P →
+            AppliedModelingLib.Probability.PoissonProcess.ForwardHomogeneousPoissonCountingProcessByLaw Ω P
+
+value:
+fun {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+    [inst_2 : MeasureTheory.IsProbabilityMeasure P] (M : LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P) =>
+  let μ : MeasureTheory.Measure (ℕ → ℝ) :=
+    AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure M.rate;
+  let H :
+    AppliedModelingLib.Probability.PoissonProcess.ForwardHomogeneousPoissonCountingProcessByLaw (ℕ → ℝ)
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure M.rate) :=
+    AppliedModelingLib.Probability.PoissonProcess.canonicalForwardHomogeneousPoissonCountingProcessByLaw M.rate_pos;
+  have hpath : MeasureTheory.MeasurePreserving M.interarrivalPath P μ :=
+    LBG24SpatialUnderreporting.Lemma2ForwardSourceModel.process._proof_1 M;
+  { isProbability := LBG24SpatialUnderreporting.Lemma2ForwardSourceModel.process._proof_2, rate := M.rate,
+    rate_pos := M.rate_pos, count := fun (t : NNReal) => H.count t ∘ M.interarrivalPath,
+    count_measurable := LBG24SpatialUnderreporting.Lemma2ForwardSourceModel.process._proof_3 M,
+    count_zero_ae := LBG24SpatialUnderreporting.Lemma2ForwardSourceModel.process._proof_4 M,
+    count_mono_ae := LBG24SpatialUnderreporting.Lemma2ForwardSourceModel.process._proof_5 M,
+    hasIndepIncrements := LBG24SpatialUnderreporting.Lemma2ForwardSourceModel.process._proof_6 M,
+    increment_hasLaw := @LBG24SpatialUnderreporting.Lemma2ForwardSourceModel.process._proof_8 Ω inst inst_1 P inst_2 M }
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{library-prerequisite-fb517e3d857fbe00}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}Forward\allowbreak{}Homogeneous\allowbreak{}Poisson\allowbreak{}Counting\allowbreak{}Process\allowbreak{}By\allowbreak{}Law}
+\item \hyperlink{governing-declaration-26e1473b3070e12a}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}canonical\allowbreak{}Forward\allowbreak{}Homogeneous\allowbreak{}Poisson\allowbreak{}Counting\allowbreak{}Process\allowbreak{}By\allowbreak{}Law}
+\item \hyperlink{governing-declaration-e0cfe0aeed0b2d78}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}exponential\allowbreak{}Interarrival\allowbreak{}Measure}
+\item \hyperlink{library-prerequisite-c7492b765918e40d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}rate\allowbreak{}Exposure\allowbreak{}Param}
+\item \hyperlink{governing-declaration-2f059522a9b873ec}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Lemma2\allowbreak{}Forward\allowbreak{}Source\allowbreak{}Model}
+\end{itemize}
+\hypertarget{governing-declaration-b86695ea0bdc7438}{}
+\subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Selection}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+field firstReportTime:
+{Ω : Type u_1} →
+  [inst : MeasurableSpace Ω] →
+    [inst_1 : StandardBorelSpace Ω] →
+      {P : MeasureTheory.Measure Ω} →
+        [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
+          {Tail : Type u_2} →
+            [inst_3 : MeasurableSpace Tail] →
+              LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail → Ω → NNReal
+
+field startTime:
+{Ω : Type u_1} →
+  [inst : MeasurableSpace Ω] →
+    [inst_1 : StandardBorelSpace Ω] →
+      {P : MeasureTheory.Measure Ω} →
+        [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
+          {Tail : Type u_2} →
+            [inst_3 : MeasurableSpace Tail] →
+              LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail → Ω → NNReal
+
+field postFirstReportTail:
+{Ω : Type u_1} →
+  [inst : MeasurableSpace Ω] →
+    [inst_1 : StandardBorelSpace Ω] →
+      {P : MeasureTheory.Measure Ω} →
+        [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
+          {Tail : Type u_2} →
+            [inst_3 : MeasurableSpace Tail] →
+              LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail → Ω → Tail
+
+field rateFreeStartKernel:
+{Ω : Type u_1} →
+  [inst : MeasurableSpace Ω] →
+    [inst_1 : StandardBorelSpace Ω] →
+      {P : MeasureTheory.Measure Ω} →
+        [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
+          {Tail : Type u_2} →
+            [inst_3 : MeasurableSpace Tail] →
+              LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail → ProbabilityTheory.Kernel NNReal NNReal
+
+field rateFreeStartKernel_isMarkov:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
+  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail),
+  ProbabilityTheory.IsMarkovKernel self.rateFreeStartKernel
+
+field firstReportTime_measurable:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
+  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail), Measurable self.firstReportTime
+
+field startTime_measurable:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
+  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail), Measurable self.startTime
+
+field postFirstReportTail_measurable:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
+  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail), Measurable self.postFirstReportTail
+
+field firstReport_le_start:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
+  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail) (ω : Ω),
+  self.firstReportTime ω ≤ self.startTime ω
+
+field start_conditional_law:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
+  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail),
+  ∀ᵐ (ω : Ω) ∂P,
+    ProbabilityTheory.HasLaw self.startTime (self.rateFreeStartKernel (self.firstReportTime ω))
+      ((ProbabilityTheory.condExpKernel P (MeasurableSpace.comap self.firstReportTime inferInstance)) ω)
+
+field rateFreeStartKernel_supported_after_first:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
+  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail) (t : NNReal),
+  (self.rateFreeStartKernel t) (Set.Ici t) = 1
+
+field start_condIndep_postFirstReportTail:
+∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
+  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail),
+  ProbabilityTheory.CondIndepFun (MeasurableSpace.comap self.firstReportTime inferInstance)
+    (Measurable.comap_le self.firstReportTime_measurable) self.startTime self.postFirstReportTail P
+\end{ReviewVerbatim}
+
+
 \hypertarget{governing-declaration-a3d1dc2c498506a2}{}
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Zero\allowbreak{}Inflated\allowbreak{}Incident\allowbreak{}Source\allowbreak{}Model}
 \textbf{Declaration location:} paper-local
@@ -578,6 +1022,69 @@ field exposure_pos:
 \end{ReviewVerbatim}
 
 
+\hypertarget{governing-declaration-45e8ee3301975dbf}{}
+\subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}assumption\_\allowbreak{}lemma2\_\allowbreak{}condition\_\allowbreak{}one\_\allowbreak{}selection}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+(Ω : Type u_1) →
+  [inst : MeasurableSpace Ω] →
+    [StandardBorelSpace Ω] →
+      (P : MeasureTheory.Measure Ω) →
+        [MeasureTheory.IsProbabilityMeasure P] → (Tail : Type u_2) → [MeasurableSpace Tail] → Type (max u_1 u_2)
+
+value:
+fun (Ω : Type u_1) [MeasurableSpace Ω] [StandardBorelSpace Ω] (P : MeasureTheory.Measure Ω)
+    [MeasureTheory.IsProbabilityMeasure P] (Tail : Type u_2) [MeasurableSpace Tail] =>
+  LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-b86695ea0bdc7438}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Selection}
+\end{itemize}
+\hypertarget{governing-declaration-d1966c1bd14884cd}{}
+\subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Lemma2\allowbreak{}Forward\allowbreak{}Source\allowbreak{}Model.\allowbreak{}selection}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Ω : Type u_1} →
+  [inst : MeasurableSpace Ω] →
+    [inst_1 : StandardBorelSpace Ω] →
+      {P : MeasureTheory.Measure Ω} →
+        [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
+          LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P →
+            LBG24SpatialUnderreporting.assumption_lemma2_condition_one_selection Ω P (ℕ → ℝ)
+
+value:
+fun {Ω : Type u_1} [MeasurableSpace Ω] [StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
+    [MeasureTheory.IsProbabilityMeasure P] (M : LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Ω P) =>
+  {
+    firstReportTime := fun (ω : Ω) =>
+      (AppliedModelingLib.Probability.PoissonProcess.canonicalFirstArrival (M.interarrivalPath ω)).toNNReal,
+    startTime := M.startTime,
+    postFirstReportTail := fun (ω : Ω) =>
+      AppliedModelingLib.Probability.PoissonProcess.futureInterarrival 1 (M.interarrivalPath ω),
+    rateFreeStartKernel := M.rateFreeStartKernel, rateFreeStartKernel_isMarkov := M.rateFreeStartKernel_isMarkov,
+    firstReportTime_measurable := LBG24SpatialUnderreporting.Lemma2ForwardSourceModel.selection._proof_1 M,
+    startTime_measurable := M.startTime_measurable,
+    postFirstReportTail_measurable := LBG24SpatialUnderreporting.Lemma2ForwardSourceModel.selection._proof_2 M,
+    firstReport_le_start := M.firstReport_le_start, start_conditional_law := M.start_conditional_law,
+    rateFreeStartKernel_supported_after_first := M.rateFreeStartKernel_supported_after_first,
+    start_condIndep_postFirstReportTail := M.start_condIndep_postFirstReportTail }
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-b0f010330c55d613}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}canonical\allowbreak{}First\allowbreak{}Arrival}
+\item \hyperlink{governing-declaration-2f60f71b80c5c3dd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}future\allowbreak{}Interarrival}
+\item \hyperlink{governing-declaration-0d8c93dcf696a606}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}interarrival}
+\item \hyperlink{governing-declaration-2f059522a9b873ec}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Lemma2\allowbreak{}Forward\allowbreak{}Source\allowbreak{}Model}
+\item \hyperlink{governing-declaration-b86695ea0bdc7438}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Selection}
+\item \hyperlink{governing-declaration-45e8ee3301975dbf}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}assumption\_\allowbreak{}lemma2\_\allowbreak{}condition\_\allowbreak{}one\_\allowbreak{}selection}
+\end{itemize}
 \hypertarget{governing-declaration-a597a5c2c788878f}{}
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}continuous\allowbreak{}Duration\allowbreak{}No\allowbreak{}Report\allowbreak{}Probability}
 \textbf{Declaration location:} paper-local
@@ -1175,32 +1682,54 @@ fun (gamma rate exposure : ℝ) (count : ℕ) =>
 \section*{Material library prerequisites}
 \hypertarget{library-prerequisite-c7492b765918e40d}{}
 \subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}rate\allowbreak{}Exposure\allowbreak{}Param}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 30-\allowbreak{}41\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 291-\allowbreak{}323\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
-) [λ(e − s )]M̃i
-i
-i
-p M̃i ; λ(ei − si ) =
-exp (−λ(ei − si ))
-M̃i !
-5
+Then, the likelihood of the data Di as a function of the reporting rate λ, conditional on all
+reports before si, can be decomposed as
 
+L(λ|Di) = p
+�
+˜
+Mi; λ(ei −si)
+�
+f(Di),
+(1)
+
+where
+
+p
+�
+˜
+Mi; λ(ei −si)
+�
+= [λ(ei −si)]
+˜
+Mi
+
+˜
+Mi!
+exp (−λ(ei −si))
 (2)
+
+5
 
 
 [form-feed in source extraction]
-is the probability mass function of a Poisson distributed random variable with M̃i occurrences and
-rate parameter λ(ei − si ), and f (Di ) is a function that does not depend on λ.
+
+is the probability mass function of a Poisson distributed random variable with ˜
+Mi occurrences and
+rate parameter λ(ei −si), and f(Di) is a function that does not depend on λ.
 
 [Next verbatim source excerpt]
 
-As reference, the likelihood of a Poisson distribution with M ≥ 0 occurrences and rate λ(e−s) >
+As reference, the likelihood of a Poisson distribution with M ≥0 occurrences and rate λ(e−s) >
 0 is as follows:
-[λ(e − s)]M
-p(M |λ(e − s)) =
-exp(−λ(e − s)).
+
+p(M|λ(e −s)) = [λ(e −s)]M
+
 M!
+exp(−λ(e −s)).
 \end{ReviewVerbatim}
 
 
@@ -1226,7 +1755,7 @@ def rateExposureParam (rate exposure : ℝ)
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} It is exactly Equation (2)'s nonnegative Poisson mean lambda times (e minus s), with the required nonnegativity witness.\allowbreak{}
+\textbf{Reason:} The source Poisson parameter is lambda(e-\allowbreak{}s).\allowbreak{} The target constructs precisely that rate-\allowbreak{}exposure product as a nonnegative real parameter, and displayed uses supply positive rate and nonnegative interval exposure.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -1234,17 +1763,19 @@ def rateExposureParam (rate exposure : ℝ)
 \clearpage
 \hypertarget{library-prerequisite-fb517e3d857fbe00}{}
 \subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}Forward\allowbreak{}Homogeneous\allowbreak{}Poisson\allowbreak{}Counting\allowbreak{}Process\allowbreak{}By\allowbreak{}Law}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 202-\allowbreak{}204\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 228-\allowbreak{}230\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
-Model part 2: reports. An incident i of type θ is active in time window [ti , ti + Ti ]. During this
+Model part 2: reports. An incident i of type θ is active in time window [ti, ti + Ti]. During this
 time, reports are submitted according to a homogeneous Poisson process, with rate λθ > 0. Thus,
-the number of reports Mi for incident i follows a Poisson distribution, Mi ∼ Poisson (λθ Ti ).
+the number of reports Mi for incident i follows a Poisson distribution, Mi ∼Poisson (λθTi).
 
 [Next verbatim source excerpt]
 
-Theorem 2. Consider a Poisson process {X(t), T ≥ t ≥ 0} with rate λ (where X(t) denotes the
-number of jumps up to time t), and denote the jumping times {T1 , T2 , . . . }. Denote the random
+Theorem 2. Consider a Poisson process {X(t), T ≥t ≥0} with rate λ (where X(t) denotes the
+number of jumps up to time t), and denote the jumping times {T1, T2, . . . }. Denote the random
+variables of the start and end of an observation period S and E, and suppose S and E satisfy the
+following conditions, respectively:
 \end{ReviewVerbatim}
 
 
@@ -1343,7 +1874,7 @@ structure ForwardHomogeneousPoissonCountingProcessByLaw
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} The exact structure requires a probability law, a strictly positive rate, measurable monotone counts starting at zero a.\allowbreak{}e.\allowbreak{}, independent increments, and for every deterministic s <= t a Poisson increment law with parameter rate * (t -\allowbreak{} s), as made exact by rateExposureParam.\allowbreak{} This matches the positive-\allowbreak{}rate homogeneous-\allowbreak{}Poisson reporting premise.\allowbreak{} Its displayed claim use assumes 0 < observedRate and asks only for processes whose count fields equal the displayed calendar counts and whose rates equal observedRate;\allowbreak{} it does not assert a Poisson count-\allowbreak{}law transfer at an arbitrary process-\allowbreak{}dependent endpoint.\allowbreak{}
+\textbf{Reason:} The source requires a positive-\allowbreak{}rate homogeneous Poisson counting process.\allowbreak{} The target has positive rate, zero initial count, monotone paths, independent increments, and Poisson increment law with parameter rate*(t-\allowbreak{}s);\allowbreak{} its displayed constructions and uses remain on nonnegative forward time.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -1355,28 +1886,18 @@ structure ForwardHomogeneousPoissonCountingProcessByLaw
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Appendix\allowbreak{}Theorem2\allowbreak{}Causal\allowbreak{}Stopping\allowbreak{}Source\allowbreak{}Model}
 \noindent\textbf{Paper-local declaration:}\par
 {\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Appendix\allowbreak{}Theorem2\allowbreak{}Causal\allowbreak{}Stopping\allowbreak{}Source\allowbreak{}Model\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1574-\allowbreak{}1592\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1848-\allowbreak{}1856\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 Condition 2: Given the jumping times of the Poisson process up to any time t, that is, for some
-m ∈ Z+, given {T1 = t1 , . . . , Tm = tm , Tm+1 > t}, the distribution of E is
-P[E = t|{T1 = t1 , . . . , Tm = tm , Tm+1 > t}] = hm (t), for some m ∈ Z+, ∀T ≥ t ≥ tm ,
-where hm (t) is a function independent of λ. Furthermore, given T1 = t1 , the distribution of E is
+m ∈Z+, given {T1 = t1, . . . , Tm = tm, Tm+1 > t}, the distribution of E is
+
+P[E = t|{T1 = t1, . . . , Tm = tm, Tm+1 > t}] = hm(t), for some m ∈Z+, ∀T ≥t ≥tm,
+
+where hm(t) is a function independent of λ. Furthermore, given T1 = t1, the distribution of E is
 independent of the realization of S:
-P[E = t|T1 = t1 , S = s] = P[E = t|T1 = t1 ], ∀T ≥ t ≥ t1 , ∀s ≥ t1 .
-Now, suppose we observe data which contains for each incident, S = s, E = e, X(e) − X(s) =
-M , where X(s) = m ≥ 1, and all the jumping times within interval (s, e]: JM = {Tm+1 =
-tm+1 , . . . , Tm+M = tm+M }, where tm+1 > s and Tm+M ≤ e. Then, conditional on the observed
-jumping times before s: H := {T1 = t1 , . . . , Tm = tm ≤ s}, the likelihood of the data can be
-decomposed as follows:
-P[X(e) − X(s) = M, E = e, S = s, JM |H] = f (e, s, H, JM )p(M |λ(e − s)),
 
-(8)
-
-where p(M |λ(e − s)) denotes the likelihood of a Poisson distribution with M occurrences and rate
-parameter λ(e − s), and f (e, s, H, JM ) is a function that does not depend on λ.
-The proof of the theorem relies on the following lemma, which establishes the distribution of
-the (random) time between S and the first jump time after S.
+P[E = t|T1 = t1, S = s] = P[E = t|T1 = t1], ∀T ≥t ≥t1, ∀s ≥t1.
 \end{ReviewVerbatim}
 
 
@@ -1414,7 +1935,7 @@ field responseSurvival_measurable:
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} Condition 2 specifies a rate-\allowbreak{}independent endpoint law conditional on the visible jump prefix and independence from the selected start;\allowbreak{} the approved causal-\allowbreak{}stopping context identifies this as one visible-\allowbreak{}prefix, future-\allowbreak{}gap-\allowbreak{}blind endpoint kernel with the regularity and nonnegative remaining-\allowbreak{}time semantics in the target.\allowbreak{}
+\textbf{Reason:} Condition 2 makes the endpoint law depend only on the report prefix visible at the current time and not on the reporting rate or selected start.\allowbreak{} The target uses a rate-\allowbreak{}free Markov kernel on exactly that visible finite arrival prefix, with nonnegative response support and the displayed fixed-\allowbreak{}model likelihood use.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -1424,28 +1945,18 @@ field responseSurvival_measurable:
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Appendix\allowbreak{}Theorem2\allowbreak{}Causal\allowbreak{}Stopping\allowbreak{}Source\allowbreak{}Model.\allowbreak{}Endpoint\allowbreak{}Density\allowbreak{}Presentation}
 \noindent\textbf{Paper-local declaration:}\par
 {\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Appendix\allowbreak{}Theorem2\allowbreak{}Causal\allowbreak{}Stopping\allowbreak{}Source\allowbreak{}Model.\allowbreak{}Endpoint\allowbreak{}Density\allowbreak{}Presentation\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1574-\allowbreak{}1592\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1848-\allowbreak{}1856\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 Condition 2: Given the jumping times of the Poisson process up to any time t, that is, for some
-m ∈ Z+, given {T1 = t1 , . . . , Tm = tm , Tm+1 > t}, the distribution of E is
-P[E = t|{T1 = t1 , . . . , Tm = tm , Tm+1 > t}] = hm (t), for some m ∈ Z+, ∀T ≥ t ≥ tm ,
-where hm (t) is a function independent of λ. Furthermore, given T1 = t1 , the distribution of E is
+m ∈Z+, given {T1 = t1, . . . , Tm = tm, Tm+1 > t}, the distribution of E is
+
+P[E = t|{T1 = t1, . . . , Tm = tm, Tm+1 > t}] = hm(t), for some m ∈Z+, ∀T ≥t ≥tm,
+
+where hm(t) is a function independent of λ. Furthermore, given T1 = t1, the distribution of E is
 independent of the realization of S:
-P[E = t|T1 = t1 , S = s] = P[E = t|T1 = t1 ], ∀T ≥ t ≥ t1 , ∀s ≥ t1 .
-Now, suppose we observe data which contains for each incident, S = s, E = e, X(e) − X(s) =
-M , where X(s) = m ≥ 1, and all the jumping times within interval (s, e]: JM = {Tm+1 =
-tm+1 , . . . , Tm+M = tm+M }, where tm+1 > s and Tm+M ≤ e. Then, conditional on the observed
-jumping times before s: H := {T1 = t1 , . . . , Tm = tm ≤ s}, the likelihood of the data can be
-decomposed as follows:
-P[X(e) − X(s) = M, E = e, S = s, JM |H] = f (e, s, H, JM )p(M |λ(e − s)),
 
-(8)
-
-where p(M |λ(e − s)) denotes the likelihood of a Poisson distribution with M occurrences and rate
-parameter λ(e − s), and f (e, s, H, JM ) is a function that does not depend on λ.
-The proof of the theorem relies on the following lemma, which establishes the distribution of
-the (random) time between S and the first jump time after S.
+P[E = t|T1 = t1, S = s] = P[E = t|T1 = t1], ∀T ≥t ≥t1, ∀s ≥t1.
 \end{ReviewVerbatim}
 
 
@@ -1483,7 +1994,7 @@ field terminalDensity_measurable:
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} The source writes the conditional endpoint term h\_\allowbreak{}m(t);\allowbreak{} the approved endpoint-\allowbreak{}reference-\allowbreak{}measure context explicitly treats that displayed point-\allowbreak{}density notation as the absolutely-\allowbreak{}continuous density presentation of the endpoint kernel, which is exactly the target's density/\allowbreak{}measurability branch.\allowbreak{}
+\textbf{Reason:} The source writes the conditional endpoint law as h\_\allowbreak{}m(t).\allowbreak{} The target supplies a measurable h\_\allowbreak{}m-\allowbreak{}style density for each visible prefix and identifies the endpoint kernel with Lebesgue measure weighted by that density, matching the density branch used by the displayed Equation (8) likelihood.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -1493,77 +2004,122 @@ field terminalDensity_measurable:
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Calendar\allowbreak{}First\allowbreak{}Report\allowbreak{}Source\allowbreak{}Model}
 \noindent\textbf{Paper-local declaration:}\par
 {\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Calendar\allowbreak{}First\allowbreak{}Report\allowbreak{}Source\allowbreak{}Model\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 126-\allowbreak{}193\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1660-\allowbreak{}1770\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 Lemma 1. Suppose each incident gets reported independently, and the distribution of the interval
-of reporting duration Ti has density function f (·) : [0, ∞) 7→ R. Then under steady state, Nθobserved
-follows a Poisson process with rate Λ′θ , where
-[
-( Z t
-)
-]
-Z ∞
-′
-Λθ = Λθ 1 −
-exp −
-λθ (u)du f (t)dt .
-0
+of reporting duration Ti has density function f(·) : [0, ∞) �→R. Then under steady state, Nobserved
+θ
+follows a Poisson process with rate Λ′
+θ, where
+
+Λ′
+θ = Λθ
+
+�
+1 −
+�∞
 
 0
+exp
+�
+−
+�t
+
+0
+λθ(u)du
+�
+f(t)dt
+�
+.
 
 In the simplest time-homogeneous case, this rate simplifies to:
-[
-]
-Z ∞
-′
-Λθ = Λθ 1 −
-exp (−λθ t) f (t)dt .
+
+Λ′
+θ = Λθ
+
+�
+1 −
+�∞
+
 0
+exp (−λθt) f(t)dt
+�
+.
+
 Proof of Lemma 1. Let m(t) be the number of times an incident is reported in an interval of t,
-starting from its birth. We know from the model assumption that m(t) follows a Poisson distribution:
-(Z t
-)
-m(t) ∼ Poisson
-λθ (u)du .
+starting from its birth. We know from the model assumption that m(t) follows a Poisson distribu-
+tion:
+
+m(t) ∼Poisson
+��t
+
 0
+λθ(u)du
+�
+.
 
 23
 
 
+[form-feed in source extraction]
+
 In steady state, each unique incident gets reported with probability
-Z ∞
-Pr[m(t) ≥ 1|Ti = t]f (t)dt
-p=
-0
-)]
-( Z t
-Z ∞[
-λθ (u)du f (t)dt
-=
-1 − exp −
-0
-0
-)
-( Z t
-Z ∞
-λθ (u)du f (t)dt,
-exp −
-=1−
-0
+
+p =
+�∞
 
 0
+Pr[m(t) ≥1|Ti = t]f(t)dt
+
+=
+�∞
+
+0
+
+�
+1 −exp
+�
+−
+�t
+
+0
+λθ(u)du
+��
+f(t)dt
+
+= 1 −
+�∞
+
+0
+exp
+�
+−
+�t
+
+0
+λθ(u)du
+�
+f(t)dt,
 
 which simplifies under time-homogeneity to
-Z ∞
-exp (−λθ t) f (t)dt.
-p=1−
-0
 
-Over a time interval of t, the total number of incidents of type θ that happen, Nθ (t) follows
-a Poisson process with rate Λθ . Conditional on Nθ (t) = n, n = 0, 1, . . . , under steady state,
-Nθobserved (t) follows a binomial distribution with parameters (n, p). Thus Nθobserved (t) follows a
-Poisson distribution with rate Λθ p, which completes the proof.
+p = 1 −
+�∞
+
+0
+exp (−λθt) f(t)dt.
+
+Over a time interval of t, the total number of incidents of type θ that happen, Nθ(t) follows
+a Poisson process with rate Λθ.
+Conditional on Nθ(t) = n, n = 0, 1, . . . , under steady state,
+Nobserved
+θ
+(t) follows a binomial distribution with parameters (n, p).
+Thus Nobserved
+θ
+(t) follows a
+Poisson distribution with rate Λθp, which completes the proof.
 \end{ReviewVerbatim}
 
 % report-context-presentation-sha256: f4388148d7adac93fa24e6582c6e9d6d7557b13364760188521d012a2fd464c2
@@ -1633,7 +2189,7 @@ field markedBirths:
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} Lemma 1 gives Poisson incident arrivals, independent reporting, and a first-\allowbreak{}report-\allowbreak{}before-\allowbreak{}duration probability;\allowbreak{} the approved calendar-\allowbreak{}first-\allowbreak{}report context specifically authorizes the stationary marked birth process, finite retained-\allowbreak{}delay measure, and calendar-\allowbreak{}time first-\allowbreak{}report interpretation.\allowbreak{} The target correctly allows zero incidence and zero retention.\allowbreak{}
+\textbf{Reason:} Under the approved calendar-\allowbreak{}first-\allowbreak{}report reading, observed incidents are calendar-\allowbreak{}time first reports.\allowbreak{} The target's stationary marked Poisson births, nonnegative retained delays, and retained-\allowbreak{}delay mass p yield first-\allowbreak{}report intensity Lambda*p and support the displayed Lemma 1 and Proposition 1 uses.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -1643,17 +2199,19 @@ field markedBirths:
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Collapsed\allowbreak{}Finite\allowbreak{}Stage\allowbreak{}Endpoint\allowbreak{}Model.\allowbreak{}iid\allowbreak{}Gap\allowbreak{}Law}
 \noindent\textbf{Paper-local declaration:}\par
 {\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Collapsed\allowbreak{}Finite\allowbreak{}Stage\allowbreak{}Endpoint\allowbreak{}Model.\allowbreak{}iid\allowbreak{}Gap\allowbreak{}Law\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 202-\allowbreak{}204\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 228-\allowbreak{}230\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
-Model part 2: reports. An incident i of type θ is active in time window [ti , ti + Ti ]. During this
+Model part 2: reports. An incident i of type θ is active in time window [ti, ti + Ti]. During this
 time, reports are submitted according to a homogeneous Poisson process, with rate λθ > 0. Thus,
-the number of reports Mi for incident i follows a Poisson distribution, Mi ∼ Poisson (λθ Ti ).
+the number of reports Mi for incident i follows a Poisson distribution, Mi ∼Poisson (λθTi).
 
 [Next verbatim source excerpt]
 
-Theorem 2. Consider a Poisson process {X(t), T ≥ t ≥ 0} with rate λ (where X(t) denotes the
-number of jumps up to time t), and denote the jumping times {T1 , T2 , . . . }. Denote the random
+Theorem 2. Consider a Poisson process {X(t), T ≥t ≥0} with rate λ (where X(t) denotes the
+number of jumps up to time t), and denote the jumping times {T1, T2, . . . }. Denote the random
+variables of the start and end of an observation period S and E, and suppose S and E satisfy the
+following conditions, respectively:
 \end{ReviewVerbatim}
 
 
@@ -1672,7 +2230,7 @@ fun (count : ℕ) (rate : ℝ) => MeasureTheory.Measure.pi fun (x : Fin count) =
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} The source requires positive-\allowbreak{}rate homogeneous-\allowbreak{}Poisson reporting and uses finite iid exponential interarrival gaps.\allowbreak{} The exact Lean value is the product measure on Fin count with every coordinate distributed as expMeasure rate, so at every source-\allowbreak{}admissible positive rate it is exactly a finite iid exponential-\allowbreak{}gap block;\allowbreak{} accepting additional rate arguments does not remove or alter any source case.\allowbreak{}
+\textbf{Reason:} The source assumes a positive-\allowbreak{}rate homogeneous Poisson report process;\allowbreak{} on that domain its finite interarrival blocks have the target's product law of iid exponential gaps.\allowbreak{} The target's additional out-\allowbreak{}of-\allowbreak{}domain rate inputs do not alter positive-\allowbreak{}rate behavior.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -1682,77 +2240,122 @@ fun (count : ℕ) (rate : ℝ) => MeasureTheory.Measure.pi fun (x : Fin count) =
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Continuous\allowbreak{}Duration\allowbreak{}Density\allowbreak{}Source\allowbreak{}Condition}
 \noindent\textbf{Paper-local declaration:}\par
 {\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Continuous\allowbreak{}Duration\allowbreak{}Density\allowbreak{}Source\allowbreak{}Condition\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 126-\allowbreak{}193\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1660-\allowbreak{}1770\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 Lemma 1. Suppose each incident gets reported independently, and the distribution of the interval
-of reporting duration Ti has density function f (·) : [0, ∞) 7→ R. Then under steady state, Nθobserved
-follows a Poisson process with rate Λ′θ , where
-[
-( Z t
-)
-]
-Z ∞
-′
-Λθ = Λθ 1 −
-exp −
-λθ (u)du f (t)dt .
-0
+of reporting duration Ti has density function f(·) : [0, ∞) �→R. Then under steady state, Nobserved
+θ
+follows a Poisson process with rate Λ′
+θ, where
+
+Λ′
+θ = Λθ
+
+�
+1 −
+�∞
 
 0
+exp
+�
+−
+�t
+
+0
+λθ(u)du
+�
+f(t)dt
+�
+.
 
 In the simplest time-homogeneous case, this rate simplifies to:
-[
-]
-Z ∞
-′
-Λθ = Λθ 1 −
-exp (−λθ t) f (t)dt .
+
+Λ′
+θ = Λθ
+
+�
+1 −
+�∞
+
 0
+exp (−λθt) f(t)dt
+�
+.
+
 Proof of Lemma 1. Let m(t) be the number of times an incident is reported in an interval of t,
-starting from its birth. We know from the model assumption that m(t) follows a Poisson distribution:
-(Z t
-)
-m(t) ∼ Poisson
-λθ (u)du .
+starting from its birth. We know from the model assumption that m(t) follows a Poisson distribu-
+tion:
+
+m(t) ∼Poisson
+��t
+
 0
+λθ(u)du
+�
+.
 
 23
 
 
+[form-feed in source extraction]
+
 In steady state, each unique incident gets reported with probability
-Z ∞
-Pr[m(t) ≥ 1|Ti = t]f (t)dt
-p=
-0
-)]
-( Z t
-Z ∞[
-λθ (u)du f (t)dt
-=
-1 − exp −
-0
-0
-)
-( Z t
-Z ∞
-λθ (u)du f (t)dt,
-exp −
-=1−
-0
+
+p =
+�∞
 
 0
+Pr[m(t) ≥1|Ti = t]f(t)dt
+
+=
+�∞
+
+0
+
+�
+1 −exp
+�
+−
+�t
+
+0
+λθ(u)du
+��
+f(t)dt
+
+= 1 −
+�∞
+
+0
+exp
+�
+−
+�t
+
+0
+λθ(u)du
+�
+f(t)dt,
 
 which simplifies under time-homogeneity to
-Z ∞
-exp (−λθ t) f (t)dt.
-p=1−
-0
 
-Over a time interval of t, the total number of incidents of type θ that happen, Nθ (t) follows
-a Poisson process with rate Λθ . Conditional on Nθ (t) = n, n = 0, 1, . . . , under steady state,
-Nθobserved (t) follows a binomial distribution with parameters (n, p). Thus Nθobserved (t) follows a
-Poisson distribution with rate Λθ p, which completes the proof.
+p = 1 −
+�∞
+
+0
+exp (−λθt) f(t)dt.
+
+Over a time interval of t, the total number of incidents of type θ that happen, Nθ(t) follows
+a Poisson process with rate Λθ.
+Conditional on Nθ(t) = n, n = 0, 1, . . . , under steady state,
+Nobserved
+θ
+(t) follows a binomial distribution with parameters (n, p).
+Thus Nobserved
+θ
+(t) follows a
+Poisson distribution with rate Λθp, which completes the proof.
 \end{ReviewVerbatim}
 
 % report-context-presentation-sha256: f4388148d7adac93fa24e6582c6e9d6d7557b13364760188521d012a2fd464c2
@@ -1784,7 +2387,7 @@ field integral_eq_one:
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} The pinned Lemma 1 text calls f a density on [0,infinity) and integrates it as the duration law;\allowbreak{} nonnegativity, unit mass, and integrability on that source domain are the exact density semantics represented by the target.\allowbreak{}
+\textbf{Reason:} The source specifies f as a probability density on [0,infinity).\allowbreak{} The target states the corresponding restricted-\allowbreak{}domain integrability, almost-\allowbreak{}everywhere nonnegativity, and unit integral, with values outside that interval semantically irrelevant.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -1794,13 +2397,13 @@ field integral_eq_one:
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Incident\allowbreak{}Birth\allowbreak{}Death\allowbreak{}Source\allowbreak{}Model}
 \noindent\textbf{Paper-local declaration:}\par
 {\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Incident\allowbreak{}Birth\allowbreak{}Death\allowbreak{}Source\allowbreak{}Model\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 194-\allowbreak{}201\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 219-\allowbreak{}226\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 Model part 1: incident birth and death. Incidents of type θ occur (“are born”) according to
-a random process parameterized by Λθ . (For example, a homogeneous Poisson process with rate
-Λθ ). Type θ encodes geographic and incident-level (e.g., whether it is a hazard) characteristics. For
-each incident i, let ti denote its birth time. Furthermore, the incident “dies” at some time ti + Ti ,
+a random process parameterized by Λθ. (For example, a homogeneous Poisson process with rate
+Λθ). Type θ encodes geographic and incident-level (e.g., whether it is a hazard) characteristics. For
+each incident i, let ti denote its birth time. Furthermore, the incident “dies” at some time ti + Ti,
 and no more reports are logged. The death time reflects, for example, the incident being resolved
 by the agency or by an outside group, or reports no longer being logged because the issue has been
 inspected. Crucially, birth times are unobserved in the model; death times may be unobserved or
@@ -1811,32 +2414,141 @@ partially observed.4
 
 \paragraph{Lean-elaborated paper signature}
 \begin{ReviewVerbatim}
+field isProbability:
+∀ {IncidentType : Type u_1} {Ω : Type u_2} {Incident : Type u_3} {Report : Type u_4} [inst : MeasurableSpace Ω]
+  {P : MeasureTheory.Measure Ω}
+  (self : LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P),
+  MeasureTheory.IsProbabilityMeasure P
+
+field incidentType:
+{IncidentType : Type u_1} →
+  {Ω : Type u_2} →
+    {Incident : Type u_3} →
+      {Report : Type u_4} →
+        [inst : MeasurableSpace Ω] →
+          {P : MeasureTheory.Measure Ω} →
+            LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P →
+              Incident → IncidentType
+
+field occurrenceParameter:
+{IncidentType : Type u_1} →
+  {Ω : Type u_2} →
+    {Incident : Type u_3} →
+      {Report : Type u_4} →
+        [inst : MeasurableSpace Ω] →
+          {P : MeasureTheory.Measure Ω} →
+            LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P →
+              IncidentType → ℝ → ℝ
+
+field birthProcess:
+{IncidentType : Type u_1} →
+  {Ω : Type u_2} →
+    {Incident : Type u_3} →
+      {Report : Type u_4} →
+        [inst : MeasurableSpace Ω] →
+          {P : MeasureTheory.Measure Ω} →
+            LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P →
+              (IncidentType → ℝ → ℝ) → IncidentType → Ω → Incident → ℝ
+
+field birthProcess_measurable:
+∀ {IncidentType : Type u_1} {Ω : Type u_2} {Incident : Type u_3} {Report : Type u_4} [inst : MeasurableSpace Ω]
+  {P : MeasureTheory.Measure Ω}
+  (self : LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P)
+  (occurrenceParameter : IncidentType → ℝ → ℝ) (incidentType : IncidentType) (incident : Incident),
+  Measurable fun (ω : Ω) => self.birthProcess occurrenceParameter incidentType ω incident
+
 field birthTime:
-{Incident : Type u_1} →
-  {Report : Type u_2} → LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel Incident Report → Incident → ℝ
+{IncidentType : Type u_1} →
+  {Ω : Type u_2} →
+    {Incident : Type u_3} →
+      {Report : Type u_4} →
+        [inst : MeasurableSpace Ω] →
+          {P : MeasureTheory.Measure Ω} →
+            LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P → Ω → Incident → ℝ
+
+field birthTime_from_occurrence_process:
+∀ {IncidentType : Type u_1} {Ω : Type u_2} {Incident : Type u_3} {Report : Type u_4} [inst : MeasurableSpace Ω]
+  {P : MeasureTheory.Measure Ω}
+  (self : LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P) (ω : Ω)
+  (incident : Incident),
+  self.birthTime ω incident = self.birthProcess self.occurrenceParameter (self.incidentType incident) ω incident
 
 field duration:
-{Incident : Type u_1} →
-  {Report : Type u_2} → LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel Incident Report → Incident → ℝ
+{IncidentType : Type u_1} →
+  {Ω : Type u_2} →
+    {Incident : Type u_3} →
+      {Report : Type u_4} →
+        [inst : MeasurableSpace Ω] →
+          {P : MeasureTheory.Measure Ω} →
+            LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P → Ω → Incident → ℝ
 
 field duration_nonnegative:
-∀ {Incident : Type u_1} {Report : Type u_2}
-  (self : LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel Incident Report) (incident : Incident),
-  0 ≤ self.duration incident
+∀ {IncidentType : Type u_1} {Ω : Type u_2} {Incident : Type u_3} {Report : Type u_4} [inst : MeasurableSpace Ω]
+  {P : MeasureTheory.Measure Ω}
+  (self : LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P) (ω : Ω)
+  (incident : Incident), 0 ≤ self.duration ω incident
+
+field birthTimeObservable:
+{IncidentType : Type u_1} →
+  {Ω : Type u_2} →
+    {Incident : Type u_3} →
+      {Report : Type u_4} →
+        [inst : MeasurableSpace Ω] →
+          {P : MeasureTheory.Measure Ω} →
+            LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P →
+              Ω → Incident → Prop
+
+field birthTime_unobserved:
+∀ {IncidentType : Type u_1} {Ω : Type u_2} {Incident : Type u_3} {Report : Type u_4} [inst : MeasurableSpace Ω]
+  {P : MeasureTheory.Measure Ω}
+  (self : LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P) (ω : Ω)
+  (incident : Incident), ¬self.birthTimeObservable ω incident
+
+field deathTimeInformation:
+{IncidentType : Type u_1} →
+  {Ω : Type u_2} →
+    {Incident : Type u_3} →
+      {Report : Type u_4} →
+        [inst : MeasurableSpace Ω] →
+          {P : MeasureTheory.Measure Ω} →
+            LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P →
+              Ω → Incident → Option (Set ℝ)
+
+field deathTimeInformation_sound:
+∀ {IncidentType : Type u_1} {Ω : Type u_2} {Incident : Type u_3} {Report : Type u_4} [inst : MeasurableSpace Ω]
+  {P : MeasureTheory.Measure Ω}
+  (self : LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P) (ω : Ω)
+  (incident : Incident) (candidates : Set ℝ),
+  self.deathTimeInformation ω incident = some candidates →
+    self.birthTime ω incident + self.duration ω incident ∈ candidates
 
 field reportIncident:
-{Incident : Type u_1} →
-  {Report : Type u_2} → LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel Incident Report → Report → Incident
+{IncidentType : Type u_1} →
+  {Ω : Type u_2} →
+    {Incident : Type u_3} →
+      {Report : Type u_4} →
+        [inst : MeasurableSpace Ω] →
+          {P : MeasureTheory.Measure Ω} →
+            LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P →
+              Report → Incident
 
 field reportTime:
-{Incident : Type u_1} →
-  {Report : Type u_2} → LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel Incident Report → Report → ℝ
+{IncidentType : Type u_1} →
+  {Ω : Type u_2} →
+    {Incident : Type u_3} →
+      {Report : Type u_4} →
+        [inst : MeasurableSpace Ω] →
+          {P : MeasureTheory.Measure Ω} →
+            LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P → Ω → Report → ℝ
 
 field report_during_active_window:
-∀ {Incident : Type u_1} {Report : Type u_2}
-  (self : LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel Incident Report) (report : Report),
-  self.birthTime (self.reportIncident report) ≤ self.reportTime report ∧
-    self.reportTime report ≤ self.birthTime (self.reportIncident report) + self.duration (self.reportIncident report)
+∀ {IncidentType : Type u_1} {Ω : Type u_2} {Incident : Type u_3} {Report : Type u_4} [inst : MeasurableSpace Ω]
+  {P : MeasureTheory.Measure Ω}
+  (self : LBG24SpatialUnderreporting.IncidentBirthDeathSourceModel IncidentType Ω Incident Report P) (ω : Ω)
+  (report : Report),
+  self.birthTime ω (self.reportIncident report) ≤ self.reportTime ω report ∧
+    self.reportTime ω report ≤
+      self.birthTime ω (self.reportIncident report) + self.duration ω (self.reportIncident report)
 \end{ReviewVerbatim}
 
 
@@ -1844,7 +2556,7 @@ field report_during_active_window:
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} The source makes t\_\allowbreak{}i the incident birth time, t\_\allowbreak{}i+T\_\allowbreak{}i its later death time, and says that no reports are logged after death.\allowbreak{} The exact constructor is the corresponding incident/\allowbreak{}report carrier:\allowbreak{} T\_\allowbreak{}i is represented by a nonnegative duration, and every report linked to an incident is temporally between that incident's birth and death.\allowbreak{}
+\textbf{Reason:} The target models a measurable type-\allowbreak{}indexed random birth process driven by a generic Lambda\_\allowbreak{}theta-\allowbreak{}like parameter without imposing a Poisson law.\allowbreak{} It assigns latent birth times and nonnegative lifetimes, represents absent, exact, or partial sound death-\allowbreak{}time information through Option (Set Real), and confines logged reports to each incident's active birth-\allowbreak{}to-\allowbreak{}death window.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -1854,77 +2566,122 @@ field report_during_active_window:
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Lemma1\allowbreak{}Reporting\allowbreak{}Intensity\allowbreak{}Source\allowbreak{}Condition}
 \noindent\textbf{Paper-local declaration:}\par
 {\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Lemma1\allowbreak{}Reporting\allowbreak{}Intensity\allowbreak{}Source\allowbreak{}Condition\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 126-\allowbreak{}193\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1660-\allowbreak{}1770\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 Lemma 1. Suppose each incident gets reported independently, and the distribution of the interval
-of reporting duration Ti has density function f (·) : [0, ∞) 7→ R. Then under steady state, Nθobserved
-follows a Poisson process with rate Λ′θ , where
-[
-( Z t
-)
-]
-Z ∞
-′
-Λθ = Λθ 1 −
-exp −
-λθ (u)du f (t)dt .
-0
+of reporting duration Ti has density function f(·) : [0, ∞) �→R. Then under steady state, Nobserved
+θ
+follows a Poisson process with rate Λ′
+θ, where
+
+Λ′
+θ = Λθ
+
+�
+1 −
+�∞
 
 0
+exp
+�
+−
+�t
+
+0
+λθ(u)du
+�
+f(t)dt
+�
+.
 
 In the simplest time-homogeneous case, this rate simplifies to:
-[
-]
-Z ∞
-′
-Λθ = Λθ 1 −
-exp (−λθ t) f (t)dt .
+
+Λ′
+θ = Λθ
+
+�
+1 −
+�∞
+
 0
+exp (−λθt) f(t)dt
+�
+.
+
 Proof of Lemma 1. Let m(t) be the number of times an incident is reported in an interval of t,
-starting from its birth. We know from the model assumption that m(t) follows a Poisson distribution:
-(Z t
-)
-m(t) ∼ Poisson
-λθ (u)du .
+starting from its birth. We know from the model assumption that m(t) follows a Poisson distribu-
+tion:
+
+m(t) ∼Poisson
+��t
+
 0
+λθ(u)du
+�
+.
 
 23
 
 
+[form-feed in source extraction]
+
 In steady state, each unique incident gets reported with probability
-Z ∞
-Pr[m(t) ≥ 1|Ti = t]f (t)dt
-p=
-0
-)]
-( Z t
-Z ∞[
-λθ (u)du f (t)dt
-=
-1 − exp −
-0
-0
-)
-( Z t
-Z ∞
-λθ (u)du f (t)dt,
-exp −
-=1−
-0
+
+p =
+�∞
 
 0
+Pr[m(t) ≥1|Ti = t]f(t)dt
+
+=
+�∞
+
+0
+
+�
+1 −exp
+�
+−
+�t
+
+0
+λθ(u)du
+��
+f(t)dt
+
+= 1 −
+�∞
+
+0
+exp
+�
+−
+�t
+
+0
+λθ(u)du
+�
+f(t)dt,
 
 which simplifies under time-homogeneity to
-Z ∞
-exp (−λθ t) f (t)dt.
-p=1−
-0
 
-Over a time interval of t, the total number of incidents of type θ that happen, Nθ (t) follows
-a Poisson process with rate Λθ . Conditional on Nθ (t) = n, n = 0, 1, . . . , under steady state,
-Nθobserved (t) follows a binomial distribution with parameters (n, p). Thus Nθobserved (t) follows a
-Poisson distribution with rate Λθ p, which completes the proof.
+p = 1 −
+�∞
+
+0
+exp (−λθt) f(t)dt.
+
+Over a time interval of t, the total number of incidents of type θ that happen, Nθ(t) follows
+a Poisson process with rate Λθ.
+Conditional on Nθ(t) = n, n = 0, 1, . . . , under steady state,
+Nobserved
+θ
+(t) follows a binomial distribution with parameters (n, p).
+Thus Nobserved
+θ
+(t) follows a
+Poisson distribution with rate Λθp, which completes the proof.
 \end{ReviewVerbatim}
 
 % report-context-presentation-sha256: f4388148d7adac93fa24e6582c6e9d6d7557b13364760188521d012a2fd464c2
@@ -1951,7 +2708,7 @@ field intervalIntegrable:
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} Lemma 1's age-\allowbreak{}varying report count has Poisson mean integral\_\allowbreak{}0\textasciicircum{}t lambda(u) du for every nonnegative duration;\allowbreak{} treating lambda as a reporting intensity gives the target's nonnegativity and finite-\allowbreak{}interval integrability without adding strict positivity.\allowbreak{}
+\textbf{Reason:} The source's age-\allowbreak{}varying reporting rate lambda\_\allowbreak{}theta(u) appears through finite cumulative intensities in Poisson parameters.\allowbreak{} Nonnegativity and finite-\allowbreak{}interval integrability are the domain conditions needed for that source intensity, and the displayed use retains the same cumulative-\allowbreak{}intensity formula.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -1961,77 +2718,122 @@ field intervalIntegrable:
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Lemma1\allowbreak{}Calendar\allowbreak{}Time\allowbreak{}Duration\allowbreak{}Source\allowbreak{}Model}
 \noindent\textbf{Paper-local declaration:}\par
 {\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Lemma1\allowbreak{}Calendar\allowbreak{}Time\allowbreak{}Duration\allowbreak{}Source\allowbreak{}Model\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 126-\allowbreak{}193\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1660-\allowbreak{}1770\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 Lemma 1. Suppose each incident gets reported independently, and the distribution of the interval
-of reporting duration Ti has density function f (·) : [0, ∞) 7→ R. Then under steady state, Nθobserved
-follows a Poisson process with rate Λ′θ , where
-[
-( Z t
-)
-]
-Z ∞
-′
-Λθ = Λθ 1 −
-exp −
-λθ (u)du f (t)dt .
-0
+of reporting duration Ti has density function f(·) : [0, ∞) �→R. Then under steady state, Nobserved
+θ
+follows a Poisson process with rate Λ′
+θ, where
+
+Λ′
+θ = Λθ
+
+�
+1 −
+�∞
 
 0
+exp
+�
+−
+�t
+
+0
+λθ(u)du
+�
+f(t)dt
+�
+.
 
 In the simplest time-homogeneous case, this rate simplifies to:
-[
-]
-Z ∞
-′
-Λθ = Λθ 1 −
-exp (−λθ t) f (t)dt .
+
+Λ′
+θ = Λθ
+
+�
+1 −
+�∞
+
 0
+exp (−λθt) f(t)dt
+�
+.
+
 Proof of Lemma 1. Let m(t) be the number of times an incident is reported in an interval of t,
-starting from its birth. We know from the model assumption that m(t) follows a Poisson distribution:
-(Z t
-)
-m(t) ∼ Poisson
-λθ (u)du .
+starting from its birth. We know from the model assumption that m(t) follows a Poisson distribu-
+tion:
+
+m(t) ∼Poisson
+��t
+
 0
+λθ(u)du
+�
+.
 
 23
 
 
+[form-feed in source extraction]
+
 In steady state, each unique incident gets reported with probability
-Z ∞
-Pr[m(t) ≥ 1|Ti = t]f (t)dt
-p=
-0
-)]
-( Z t
-Z ∞[
-λθ (u)du f (t)dt
-=
-1 − exp −
-0
-0
-)
-( Z t
-Z ∞
-λθ (u)du f (t)dt,
-exp −
-=1−
-0
+
+p =
+�∞
 
 0
+Pr[m(t) ≥1|Ti = t]f(t)dt
+
+=
+�∞
+
+0
+
+�
+1 −exp
+�
+−
+�t
+
+0
+λθ(u)du
+��
+f(t)dt
+
+= 1 −
+�∞
+
+0
+exp
+�
+−
+�t
+
+0
+λθ(u)du
+�
+f(t)dt,
 
 which simplifies under time-homogeneity to
-Z ∞
-exp (−λθ t) f (t)dt.
-p=1−
-0
 
-Over a time interval of t, the total number of incidents of type θ that happen, Nθ (t) follows
-a Poisson process with rate Λθ . Conditional on Nθ (t) = n, n = 0, 1, . . . , under steady state,
-Nθobserved (t) follows a binomial distribution with parameters (n, p). Thus Nθobserved (t) follows a
-Poisson distribution with rate Λθ p, which completes the proof.
+p = 1 −
+�∞
+
+0
+exp (−λθt) f(t)dt.
+
+Over a time interval of t, the total number of incidents of type θ that happen, Nθ(t) follows
+a Poisson process with rate Λθ.
+Conditional on Nθ(t) = n, n = 0, 1, . . . , under steady state,
+Nobserved
+θ
+(t) follows a binomial distribution with parameters (n, p).
+Thus Nobserved
+θ
+(t) follows a
+Poisson distribution with rate Λθp, which completes the proof.
 \end{ReviewVerbatim}
 
 % report-context-presentation-sha256: f4388148d7adac93fa24e6582c6e9d6d7557b13364760188521d012a2fd464c2
@@ -2088,7 +2890,7 @@ field preFirstReport_survival_retention_probability:
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} Under the approved calendar-\allowbreak{}first-\allowbreak{}report reading, the stationary marked Poisson model and retained first-\allowbreak{}report mass are exactly the Lemma 1 reporting-\allowbreak{}before-\allowbreak{}duration probability.\allowbreak{}
+\textbf{Reason:} The target combines the source intensity and duration-\allowbreak{}density primitives with the approved stationary calendar-\allowbreak{}first-\allowbreak{}report model, and equates retained mass to one minus the integral of exp(-\allowbreak{}integral\_\allowbreak{}0\textasciicircum{}t lambda(u)du)f(t).\allowbreak{} This is the source rate formula under the approved pre-\allowbreak{}first-\allowbreak{}report survival bridge.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -2098,77 +2900,122 @@ field preFirstReport_survival_retention_probability:
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Proposition1\allowbreak{}Calendar\allowbreak{}Time\allowbreak{}Duration\allowbreak{}Source\allowbreak{}Model}
 \noindent\textbf{Paper-local declaration:}\par
 {\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Proposition1\allowbreak{}Calendar\allowbreak{}Time\allowbreak{}Duration\allowbreak{}Source\allowbreak{}Model\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 126-\allowbreak{}193\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1660-\allowbreak{}1770\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 Lemma 1. Suppose each incident gets reported independently, and the distribution of the interval
-of reporting duration Ti has density function f (·) : [0, ∞) 7→ R. Then under steady state, Nθobserved
-follows a Poisson process with rate Λ′θ , where
-[
-( Z t
-)
-]
-Z ∞
-′
-Λθ = Λθ 1 −
-exp −
-λθ (u)du f (t)dt .
-0
+of reporting duration Ti has density function f(·) : [0, ∞) �→R. Then under steady state, Nobserved
+θ
+follows a Poisson process with rate Λ′
+θ, where
+
+Λ′
+θ = Λθ
+
+�
+1 −
+�∞
 
 0
+exp
+�
+−
+�t
+
+0
+λθ(u)du
+�
+f(t)dt
+�
+.
 
 In the simplest time-homogeneous case, this rate simplifies to:
-[
-]
-Z ∞
-′
-Λθ = Λθ 1 −
-exp (−λθ t) f (t)dt .
+
+Λ′
+θ = Λθ
+
+�
+1 −
+�∞
+
 0
+exp (−λθt) f(t)dt
+�
+.
+
 Proof of Lemma 1. Let m(t) be the number of times an incident is reported in an interval of t,
-starting from its birth. We know from the model assumption that m(t) follows a Poisson distribution:
-(Z t
-)
-m(t) ∼ Poisson
-λθ (u)du .
+starting from its birth. We know from the model assumption that m(t) follows a Poisson distribu-
+tion:
+
+m(t) ∼Poisson
+��t
+
 0
+λθ(u)du
+�
+.
 
 23
 
 
+[form-feed in source extraction]
+
 In steady state, each unique incident gets reported with probability
-Z ∞
-Pr[m(t) ≥ 1|Ti = t]f (t)dt
-p=
-0
-)]
-( Z t
-Z ∞[
-λθ (u)du f (t)dt
-=
-1 − exp −
-0
-0
-)
-( Z t
-Z ∞
-λθ (u)du f (t)dt,
-exp −
-=1−
-0
+
+p =
+�∞
 
 0
+Pr[m(t) ≥1|Ti = t]f(t)dt
+
+=
+�∞
+
+0
+
+�
+1 −exp
+�
+−
+�t
+
+0
+λθ(u)du
+��
+f(t)dt
+
+= 1 −
+�∞
+
+0
+exp
+�
+−
+�t
+
+0
+λθ(u)du
+�
+f(t)dt,
 
 which simplifies under time-homogeneity to
-Z ∞
-exp (−λθ t) f (t)dt.
-p=1−
-0
 
-Over a time interval of t, the total number of incidents of type θ that happen, Nθ (t) follows
-a Poisson process with rate Λθ . Conditional on Nθ (t) = n, n = 0, 1, . . . , under steady state,
-Nθobserved (t) follows a binomial distribution with parameters (n, p). Thus Nθobserved (t) follows a
-Poisson distribution with rate Λθ p, which completes the proof.
+p = 1 −
+�∞
+
+0
+exp (−λθt) f(t)dt.
+
+Over a time interval of t, the total number of incidents of type θ that happen, Nθ(t) follows
+a Poisson process with rate Λθ.
+Conditional on Nθ(t) = n, n = 0, 1, . . . , under steady state,
+Nobserved
+θ
+(t) follows a binomial distribution with parameters (n, p).
+Thus Nobserved
+θ
+(t) follows a
+Poisson distribution with rate Λθp, which completes the proof.
 \end{ReviewVerbatim}
 
 % report-context-presentation-sha256: f4388148d7adac93fa24e6582c6e9d6d7557b13364760188521d012a2fd464c2
@@ -2222,138 +3069,161 @@ field preFirstReport_survival_retention_probability:
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} The homogeneous specialization identifies the retained first-\allowbreak{}report probability with the source's displayed 1 -\allowbreak{} integral exp(-\allowbreak{}lambda t) f(t) dt.\allowbreak{}
+\textbf{Reason:} The target is the homogeneous specialization of the approved calendar-\allowbreak{}time model:\allowbreak{} reporting rate lambda, duration density f, and retention probability one minus the integral of exp(-\allowbreak{}lambda*t)f(t).\allowbreak{} Its displayed use varies Lambda inversely with that probability and obtains the same observed rate while retaining distinct reporting rates.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{paper-prerequisite-b86695ea0bdc7438}{}
-\subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Selection}
+\hypertarget{paper-prerequisite-fc4b987b63d7ffe8}{}
+\subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Fixed\allowbreak{}History\allowbreak{}Density\allowbreak{}Presentation}
 \noindent\textbf{Paper-local declaration:}\par
-{\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Selection\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1571-\allowbreak{}1573\par}
+{\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Fixed\allowbreak{}History\allowbreak{}Density\allowbreak{}Presentation\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1843-\allowbreak{}1847\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
-Condition 1: Given T1 = t1 , S is defined on [t1 , T ], and
-P(S = t|T1 = t1 ) = g(t), ∀T ≥ t ≥ t1 ,
-where g(t) is not dependent on λ or the sample path of the Poisson process after t1 .
+Condition 1: Given T1 = t1, S is defined on [t1, T], and
+
+P(S = t|T1 = t1) = g(t), ∀T ≥t ≥t1,
+
+where g(t) is not dependent on λ or the sample path of the Poisson process after t1.
 \end{ReviewVerbatim}
 
 
 
 \paragraph{Lean-elaborated paper signature}
 \begin{ReviewVerbatim}
-field firstReportTime:
-{Ω : Type u_1} →
-  [inst : MeasurableSpace Ω] →
-    [inst_1 : StandardBorelSpace Ω] →
-      {P : MeasureTheory.Measure Ω} →
+field startDensity:
+{Omega : Type u_1} →
+  [inst : MeasurableSpace Omega] →
+    [inst_1 : StandardBorelSpace Omega] →
+      {P : MeasureTheory.Measure Omega} →
         [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
           {Tail : Type u_2} →
             [inst_3 : MeasurableSpace Tail] →
-              LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail → Ω → NNReal
+              {selection : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Omega P Tail} →
+                {startReference : MeasureTheory.Measure NNReal} →
+                  [inst_4 : MeasureTheory.SFinite startReference] →
+                    {T : AppliedModelingLib.Probability.PoissonProcess.OrderedFiniteJumpTimeline} →
+                      LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation selection
+                          startReference T →
+                        NNReal → NNReal → ENNReal
 
-field startTime:
-{Ω : Type u_1} →
-  [inst : MeasurableSpace Ω] →
-    [inst_1 : StandardBorelSpace Ω] →
-      {P : MeasureTheory.Measure Ω} →
+field startDensity_measurable:
+∀ {Omega : Type u_1} [inst : MeasurableSpace Omega] [inst_1 : StandardBorelSpace Omega]
+  {P : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2}
+  [inst_3 : MeasurableSpace Tail] {selection : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Omega P Tail}
+  {startReference : MeasureTheory.Measure NNReal} [inst_4 : MeasureTheory.SFinite startReference]
+  {T : AppliedModelingLib.Probability.PoissonProcess.OrderedFiniteJumpTimeline}
+  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation selection startReference T),
+  Measurable (Function.uncurry self.startDensity)
+
+field startKernel_eq_withDensity:
+∀ {Omega : Type u_1} [inst : MeasurableSpace Omega] [inst_1 : StandardBorelSpace Omega]
+  {P : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2}
+  [inst_3 : MeasurableSpace Tail] {selection : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Omega P Tail}
+  {startReference : MeasureTheory.Measure NNReal} [inst_4 : MeasureTheory.SFinite startReference]
+  {T : AppliedModelingLib.Probability.PoissonProcess.OrderedFiniteJumpTimeline}
+  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation selection startReference T),
+  selection.rateFreeStartKernel = (ProbabilityTheory.Kernel.const NNReal startReference).withDensity self.startDensity
+
+field observedState:
+{Omega : Type u_1} →
+  [inst : MeasurableSpace Omega] →
+    [inst_1 : StandardBorelSpace Omega] →
+      {P : MeasureTheory.Measure Omega} →
         [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
           {Tail : Type u_2} →
             [inst_3 : MeasurableSpace Tail] →
-              LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail → Ω → NNReal
+              {selection : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Omega P Tail} →
+                {startReference : MeasureTheory.Measure NNReal} →
+                  [inst_4 : MeasureTheory.SFinite startReference] →
+                    {T : AppliedModelingLib.Probability.PoissonProcess.OrderedFiniteJumpTimeline} →
+                      LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation selection
+                          startReference T →
+                        Omega
 
 field observationHorizon:
-{Ω : Type u_1} →
-  [inst : MeasurableSpace Ω] →
-    [inst_1 : StandardBorelSpace Ω] →
-      {P : MeasureTheory.Measure Ω} →
-        [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
-          {Tail : Type u_2} →
-            [inst_3 : MeasurableSpace Tail] → LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail → NNReal
-
-field postFirstReportTail:
-{Ω : Type u_1} →
-  [inst : MeasurableSpace Ω] →
-    [inst_1 : StandardBorelSpace Ω] →
-      {P : MeasureTheory.Measure Ω} →
+{Omega : Type u_1} →
+  [inst : MeasurableSpace Omega] →
+    [inst_1 : StandardBorelSpace Omega] →
+      {P : MeasureTheory.Measure Omega} →
         [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
           {Tail : Type u_2} →
             [inst_3 : MeasurableSpace Tail] →
-              LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail → Ω → Tail
+              {selection : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Omega P Tail} →
+                {startReference : MeasureTheory.Measure NNReal} →
+                  [inst_4 : MeasureTheory.SFinite startReference] →
+                    {T : AppliedModelingLib.Probability.PoissonProcess.OrderedFiniteJumpTimeline} →
+                      LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation selection
+                          startReference T →
+                        NNReal
 
-field rateFreeStartKernel:
-{Ω : Type u_1} →
-  [inst : MeasurableSpace Ω] →
-    [inst_1 : StandardBorelSpace Ω] →
-      {P : MeasureTheory.Measure Ω} →
+field startKernel_supported_before_horizon:
+∀ {Omega : Type u_1} [inst : MeasurableSpace Omega] [inst_1 : StandardBorelSpace Omega]
+  {P : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2}
+  [inst_3 : MeasurableSpace Tail] {selection : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Omega P Tail}
+  {startReference : MeasureTheory.Measure NNReal} [inst_4 : MeasureTheory.SFinite startReference]
+  {T : AppliedModelingLib.Probability.PoissonProcess.OrderedFiniteJumpTimeline}
+  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation selection startReference T),
+  ∀ t ≤ self.observationHorizon, (selection.rateFreeStartKernel t) (Set.Iic self.observationHorizon) = 1
+
+field observed_start_le_horizon:
+∀ {Omega : Type u_1} [inst : MeasurableSpace Omega] [inst_1 : StandardBorelSpace Omega]
+  {P : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2}
+  [inst_3 : MeasurableSpace Tail] {selection : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Omega P Tail}
+  {startReference : MeasureTheory.Measure NNReal} [inst_4 : MeasureTheory.SFinite startReference]
+  {T : AppliedModelingLib.Probability.PoissonProcess.OrderedFiniteJumpTimeline}
+  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation selection startReference T),
+  selection.startTime self.observedState ≤ self.observationHorizon
+
+field observed_start_eq_timeline_start:
+∀ {Omega : Type u_1} [inst : MeasurableSpace Omega] [inst_1 : StandardBorelSpace Omega]
+  {P : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2}
+  [inst_3 : MeasurableSpace Tail] {selection : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Omega P Tail}
+  {startReference : MeasureTheory.Measure NNReal} [inst_4 : MeasureTheory.SFinite startReference]
+  {T : AppliedModelingLib.Probability.PoissonProcess.OrderedFiniteJumpTimeline}
+  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation selection startReference T),
+  ↑(selection.startTime self.observedState) = T.window.startTime
+
+field selectedStartLikelihood:
+{Omega : Type u_1} →
+  [inst : MeasurableSpace Omega] →
+    [inst_1 : StandardBorelSpace Omega] →
+      {P : MeasureTheory.Measure Omega} →
         [inst_2 : MeasureTheory.IsProbabilityMeasure P] →
           {Tail : Type u_2} →
             [inst_3 : MeasurableSpace Tail] →
-              LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail → ProbabilityTheory.Kernel NNReal NNReal
+              {selection : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Omega P Tail} →
+                {startReference : MeasureTheory.Measure NNReal} →
+                  [inst_4 : MeasureTheory.SFinite startReference] →
+                    {T : AppliedModelingLib.Probability.PoissonProcess.OrderedFiniteJumpTimeline} →
+                      LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation selection
+                          startReference T →
+                        ENNReal
 
-field rateFreeStartKernel_isMarkov:
-∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
-  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
-  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail),
-  ProbabilityTheory.IsMarkovKernel self.rateFreeStartKernel
-
-field firstReportTime_measurable:
-∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
-  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
-  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail), Measurable self.firstReportTime
-
-field startTime_measurable:
-∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
-  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
-  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail), Measurable self.startTime
-
-field postFirstReportTail_measurable:
-∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
-  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
-  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail), Measurable self.postFirstReportTail
-
-field firstReport_le_start:
-∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
-  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
-  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail) (ω : Ω),
-  self.firstReportTime ω ≤ self.startTime ω
-
-field start_le_observationHorizon:
-∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
-  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
-  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail) (ω : Ω),
-  self.startTime ω ≤ self.observationHorizon
-
-field start_conditional_law:
-∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
-  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
-  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail),
-  ∀ᵐ (ω : Ω) ∂P,
-    ProbabilityTheory.HasLaw self.startTime (self.rateFreeStartKernel (self.firstReportTime ω))
-      ((ProbabilityTheory.condExpKernel P (MeasurableSpace.comap self.firstReportTime inferInstance)) ω)
-
-field rateFreeStartKernel_supported_after_first:
-∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
-  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
-  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail) (t : NNReal),
-  (self.rateFreeStartKernel t) (Set.Ici t) = 1
-
-field start_condIndep_postFirstReportTail:
-∀ {Ω : Type u_1} [inst : MeasurableSpace Ω] [inst_1 : StandardBorelSpace Ω] {P : MeasureTheory.Measure Ω}
-  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2} [inst_3 : MeasurableSpace Tail]
-  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Ω P Tail),
-  ProbabilityTheory.CondIndepFun (MeasurableSpace.comap self.firstReportTime inferInstance)
-    (Measurable.comap_le self.firstReportTime_measurable) self.startTime self.postFirstReportTail P
+field selectedStartLikelihood_eq_density:
+∀ {Omega : Type u_1} [inst : MeasurableSpace Omega] [inst_1 : StandardBorelSpace Omega]
+  {P : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2}
+  [inst_3 : MeasurableSpace Tail] {selection : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Omega P Tail}
+  {startReference : MeasureTheory.Measure NNReal} [inst_4 : MeasureTheory.SFinite startReference]
+  {T : AppliedModelingLib.Probability.PoissonProcess.OrderedFiniteJumpTimeline}
+  (self : LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation selection startReference T),
+  self.selectedStartLikelihood =
+    self.startDensity (selection.firstReportTime self.observedState) (selection.startTime self.observedState)
 \end{ReviewVerbatim}
 
-
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-d7b8ba1fb1aa61f7}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}Observation\allowbreak{}Window}
+\item \hyperlink{governing-declaration-f690c3c90ba9b3a6}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}Ordered\allowbreak{}Finite\allowbreak{}Jump\allowbreak{}Timeline}
+\item \hyperlink{governing-declaration-b86695ea0bdc7438}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Selection}
+\end{itemize}
 \paragraph{Recorded source-to-declaration screening}
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} Under the approved fixed-\allowbreak{}model Condition 1 reading, the kernel is supported on [T1,T], is rate-\allowbreak{}free as a model component, and is conditionally independent of the post-\allowbreak{}first-\allowbreak{}report tail.\allowbreak{}
+\textbf{Reason:} Its dependent selection supplies an a.\allowbreak{}e.\allowbreak{} conditional start law via a rate-\allowbreak{}free kernel, lower support S >= T1, and conditional independence from the post-\allowbreak{}T1 tail;\allowbreak{} this presentation identifies that kernel with a measurable conditional density.\allowbreak{} Its upper support is correctly guarded by t <= observationHorizon, which gives [t, observationHorizon] on the source domain T >= t >= t1 without imposing an inconsistent requirement for t > T.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -2363,28 +3233,33 @@ field start_condIndep_postFirstReportTail:
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}equation33\_\allowbreak{}nyc\_\allowbreak{}observation\_\allowbreak{}end}
 \noindent\textbf{Paper-local declaration:}\par
 {\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}equation33\_\allowbreak{}nyc\_\allowbreak{}observation\_\allowbreak{}end\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 248-\allowbreak{}272\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 2437-\allowbreak{}2467\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
-Constructing an observation interval (Si , Ei ] As outlined in Theorem 1, we must be careful
-in how we choose an observation interval (Si , Ei ] in which we count reports – we need that the
+Constructing an observation interval (Si, Ei]
+As outlined in Theorem 1, we must be careful
+in how we choose an observation interval (Si, Ei] in which we count reports – we need that the
 interval is inside the incident lifetime, i.e., we must end the interval before the incident is addressed,
-Ei ≤ ti + Ti . Both endpoints of the interval must also satisfy the conditions outlined in Theorem 1.
+Ei ≤ti +Ti. Both endpoints of the interval must also satisfy the conditions outlined in Theorem 1.
 As discussed above, the best choice to start the observation period Si is the time of the first report,
 but choosing the observation end is a design choice.
 We make the following choice. Let tINSP
+i
 be the inspection time of incident i, and, tWO
+i
 be the
-i
-i
 time that a work order is placed for incident i, if applicable. Then, Ei of each incident i is:
-{
-Ei = min 100 days + Si , tINSP
+
+Ei = min
+�
+100 days + Si, tINSP
+i
 , tWO
+i
+�
 .
 (33)
-i
-i
+
 The maximum duration of 100 is a design choice, for which we perform robustness checks (with 30
 and 200 days); a maximum mitigates – for incidents not inspected for a long time – the inclusion
 of a time period in which an issue might have been resolved before an inspection, which would bias
@@ -2409,7 +3284,7 @@ fun (startTime inspectionTime workOrderTime : ℝ) => min (min (startTime + 100)
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} Equation (33) ends the NYC observation interval at the minimum of 100 days after S\_\allowbreak{}i, the inspection time, and the work-\allowbreak{}order time.\allowbreak{} The exact Lean value is that same three-\allowbreak{}way minimum, with only binary min association made explicit.\allowbreak{}
+\textbf{Reason:} The target is min(S\_\allowbreak{}i+100, inspectionTime\_\allowbreak{}i, workOrderTime\_\allowbreak{}i), matching Equation (33)'s three endpoint candidates.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -2419,21 +3294,27 @@ fun (startTime inspectionTime workOrderTime : ℝ) => min (min (startTime + 100)
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}equation34\_\allowbreak{}chicago\_\allowbreak{}observation\_\allowbreak{}end}
 \noindent\textbf{Paper-local declaration:}\par
 {\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}equation34\_\allowbreak{}chicago\_\allowbreak{}observation\_\allowbreak{}end\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 273-\allowbreak{}285\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 5610-\allowbreak{}5628\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
-Constructing an observation interval (Si , Ei ] For Chicago reports, we make the following
-choice. Let t̃i be the first time an incident is reported, tCLOSED
+Constructing an observation interval (Si, Ei]
+For Chicago reports, we make the following
+choice. Let ˜ti be the first time an incident is reported, tCLOSED
+i
 be the time an incident is marked
-i
-closed, and t̄ be the time that we retrieved the dataset (and that it was last updated), 7/4/2022 at
+closed, and ¯t be the time that we retrieved the dataset (and that it was last updated), 7/4/2022 at
 21:40 EDT. Then, Ei of each incident i is:
-{
-Ei = min 100 days + t̃i , tCLOSED
-, t̄ .
-(34)
+
+Ei = min
+�
+100 days + ˜ti, tCLOSED
 i
-The choice of adding t̄ ensures that for “open” incidents, the observation interval is not overly
+, ¯t
+�
+.
+(34)
+
+The choice of adding ¯t ensures that for “open” incidents, the observation interval is not overly
 long, which could bias our estimates for the reporting rate downward.
 \end{ReviewVerbatim}
 
@@ -2453,7 +3334,7 @@ fun (firstReportTime closedTime retrievalTime : ℝ) => min (min (firstReportTim
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} Equation (34) ends the Chicago observation interval at the minimum of 100 days after the first report, the closed time, and the dataset retrieval time.\allowbreak{} The exact Lean value is the identical three-\allowbreak{}way minimum.\allowbreak{}
+\textbf{Reason:} The target is min(firstReportTime\_\allowbreak{}i+100, closedTime\_\allowbreak{}i, retrievalTime), matching Equation (34)'s three endpoint candidates.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -2463,37 +3344,36 @@ fun (firstReportTime closedTime retrievalTime : ℝ) => min (min (firstReportTim
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}poisson\allowbreak{}Regression\allowbreak{}Rate}
 \noindent\textbf{Paper-local declaration:}\par
 {\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}poisson\allowbreak{}Regression\allowbreak{}Rate\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 64-\allowbreak{}72\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 351-\allowbreak{}365\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 Second, we must empirically estimate reporting rates given high dimensional incident types θ.
 We leverage Poisson regression, i.e., we assume the form
-(
-λθ = exp α + β T θ .
+
+λθ = exp
+�
+α + βT θ
+�
+.
 (4)
+
 To better match the data distribution, we further fit a zero-inflation component (corresponding
-to the probability that we receive no reports in the given period). To accommodate the high
+to the probability that we receive no reports in the given period).
+To accommodate the high
 dimensionality of the incident type vector θ, we fit our models in a Bayesian setting and report
 posterior distributions of regression coefficients α and β.
 
 [Next verbatim source excerpt]
 
 First, we assume that the reporting rate is affected by the type vector θ as in a Poisson regression:
-for each model, we have a standard reporting rate λθ , defined as:
-(
-λθ = exp α + β T θ ,
+for each model, we have a standard reporting rate λθ, defined as:
+
+λθ = exp
+�
+α + βT θ
+�
+,
 (5)
-and so, for each incident i, the likelihood follows from Equation (1) and satisfies the following:
-(
-)
-L(λθi |Di ) ∝ p M̃i ; λθi (ei − si ) ,
-(6)
-13
-
-
-[form-feed in source extraction]
-where β is a coefficient vector of appropriate dimension, (α, β) are coefficients to be estimated, and
-p(·) is the Poisson likelihood function as defined in Equation (2).
 \end{ReviewVerbatim}
 
 
@@ -2513,7 +3393,7 @@ fun {Feature : Type u_1} [Fintype Feature] (alpha : ℝ) (beta theta : Feature �
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} Equations (4) and (5) specify lambda\_\allowbreak{}theta = exp(alpha + beta\textasciicircum{}T theta).\allowbreak{} The exact Lean value expands the finite dot product beta\textasciicircum{}T theta as a sum over the finite feature type and applies the same exponential link.\allowbreak{}
+\textbf{Reason:} The target computes exp(alpha + sum\_\allowbreak{}j beta\_\allowbreak{}j*theta\_\allowbreak{}j), the finite-\allowbreak{}coordinate expansion of the source formulas lambda\_\allowbreak{}theta=exp(alpha+beta\textasciicircum{}T theta) in Equations (4) and (5).\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -2523,16 +3403,36 @@ fun {Feature : Type u_1} [Fintype Feature] (alpha : ℝ) (beta theta : Feature �
 \subsection*{\small\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}zero\allowbreak{}Inflated\allowbreak{}Independent\allowbreak{}Incident\allowbreak{}Family\allowbreak{}Likelihood}
 \noindent\textbf{Paper-local declaration:}\par
 {\footnotesize\ttfamily\raggedright LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}zero\allowbreak{}Inflated\allowbreak{}Independent\allowbreak{}Incident\allowbreak{}Family\allowbreak{}Likelihood\par}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 87-\allowbreak{}93\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 945-\allowbreak{}971\par}
 \paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 We further fit a zero-inflated Poisson regression [19], which corresponds to a data generating
 process in which, independently for each incident, only one report can be generated with probability
-γ, and thus there are 0 duplicate reports: M̃i = 0.9 For example, perhaps those incidents are
+γ, and thus there are 0 duplicate reports:
+˜
+Mi = 0.9
+For example, perhaps those incidents are
 personal requests for service (e.g., to plant a tree somewhere or to prune a tree to enable certain
 construction), for which duplicates are unlikely; alternatively, officials may physically mark the
 location of an incident as “report received; full inspection pending,” preventing future reports.
 Under this case, the likelihood of the data satisfies:
+
+L(λθi|Di) ∝
+
+�
+(1 −γ)p
+�
+˜
+Mi; λθi(ei −si)
+�
+,
+˜
+Mi ≥1;
+
+γ + (1 −γ)p (0; λθi(ei −si)) ,
+˜
+Mi = 0.
+(7)
 \end{ReviewVerbatim}
 
 
@@ -2560,7 +3460,7 @@ fun {Incident : Type u_1} (incidents : Finset Incident)
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} The target is the product over independent incidents of the observed structural-\allowbreak{}zero or ordinary-\allowbreak{}Poisson duplicate-\allowbreak{}count mixture likelihood.\allowbreak{}
+\textbf{Reason:} Equation (7) gives gamma+(1-\allowbreak{}gamma)p(0) for zero duplicates and (1-\allowbreak{}gamma)p(M) for positive duplicates, independently by incident.\allowbreak{} The target multiplies exactly those per-\allowbreak{}incident mixture likelihoods over the finite incident family.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -2571,23 +3471,29 @@ fun {Incident : Type u_1} (incidents : Finset Incident)
 \hypertarget{source-section-f10b5f68e4acf3dc}{}
 \section*{Source claims}
 \subsection*{Review row 1}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 184-\allowbreak{}190\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 206-\allowbreak{}214\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
 Figure 1: Model of resident reports of an incident i of type θ. Observed and unobserved events
 are marked with solid and dotted lines, respectively. In this example, there are a total of 3 reports
 made about this incident. When the reports are generated according to a homogeneous Poisson
-process with rate λθ , the average reporting delay is λ1θ . Incident ‘death’ refers to the incident being
+process with rate λθ, the average reporting delay is
+1
+λθ . Incident ‘death’ refers to the incident being
 resolved or otherwise marked such that no future reports are submitted and logged. The goal is to
 estimate the reporting rate λθ (and consequently, the unobserved reporting delay) for each incident
 of type θ.
 
 [Next verbatim source excerpt]
 
-Research question. We are interested in auditing the efficiency and equity of the reporting
+Research question.
+We are interested in auditing the efficiency and equity of the reporting
 process: how quickly are incidents reported, and how does that reporting rate λθ vary with the
-incident type θ? Estimating this value directly reveals heterogeneous reporting delays, as the
-expected time between incident occurrence and first report in the model is λ1θ . The primary
+incident type θ?
+Estimating this value directly reveals heterogeneous reporting delays, as the
+expected time between incident occurrence and first report in the model is
+1
+λθ .
 \end{ReviewVerbatim}
 
 
@@ -2616,7 +3522,7 @@ LBG24SpatialUnderreporting.sourceHomogeneousReportingDelayMean
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} The source says that a homogeneous Poisson reporting process of rate lambda\_\allowbreak{}theta has expected first-\allowbreak{}report delay 1/\allowbreak{}lambda\_\allowbreak{}theta.\allowbreak{} The Lean target assumes a strictly positive real rate and states that the mean of the corresponding exponential probability measure is exactly 1/\allowbreak{}rate, with the same parameter and no extra conclusion.\allowbreak{}
+\textbf{Reason:} The source identifies the homogeneous-\allowbreak{}Poisson first-\allowbreak{}report delay expectation as reciprocal rate;\allowbreak{} the Spec is precisely the expectation of the rate-\allowbreak{}exponential law.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -2624,35 +3530,45 @@ LBG24SpatialUnderreporting.sourceHomogeneousReportingDelayMean
 \clearpage
 \hypertarget{source-claim-7c39e59245058bff}{}
 \section*{Review row 2}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1565-\allowbreak{}1590\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1833-\allowbreak{}1868\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
+Formally, we separate terms involving λ from terms independent of λ, which requires the two
+conditions; then, we arrange the likelihood function to exhibit the structure of a Poisson distribution
+likelihood.
 The following Theorem 2 is a restated version of Theorem 1, where we use standard Poisson
 process notation, and state mathematically the two conditions we introduce in Theorem 1.
-Theorem 2. Consider a Poisson process {X(t), T ≥ t ≥ 0} with rate λ (where X(t) denotes the
-number of jumps up to time t), and denote the jumping times {T1 , T2 , . . . }. Denote the random
+
+Theorem 2. Consider a Poisson process {X(t), T ≥t ≥0} with rate λ (where X(t) denotes the
+number of jumps up to time t), and denote the jumping times {T1, T2, . . . }. Denote the random
 variables of the start and end of an observation period S and E, and suppose S and E satisfy the
 following conditions, respectively:
-Condition 1: Given T1 = t1 , S is defined on [t1 , T ], and
-P(S = t|T1 = t1 ) = g(t), ∀T ≥ t ≥ t1 ,
-where g(t) is not dependent on λ or the sample path of the Poisson process after t1 .
-Condition 2: Given the jumping times of the Poisson process up to any time t, that is, for some
-m ∈ Z+, given {T1 = t1 , . . . , Tm = tm , Tm+1 > t}, the distribution of E is
-P[E = t|{T1 = t1 , . . . , Tm = tm , Tm+1 > t}] = hm (t), for some m ∈ Z+, ∀T ≥ t ≥ tm ,
-where hm (t) is a function independent of λ. Furthermore, given T1 = t1 , the distribution of E is
-independent of the realization of S:
-P[E = t|T1 = t1 , S = s] = P[E = t|T1 = t1 ], ∀T ≥ t ≥ t1 , ∀s ≥ t1 .
-Now, suppose we observe data which contains for each incident, S = s, E = e, X(e) − X(s) =
-M , where X(s) = m ≥ 1, and all the jumping times within interval (s, e]: JM = {Tm+1 =
-tm+1 , . . . , Tm+M = tm+M }, where tm+1 > s and Tm+M ≤ e. Then, conditional on the observed
-jumping times before s: H := {T1 = t1 , . . . , Tm = tm ≤ s}, the likelihood of the data can be
-decomposed as follows:
-P[X(e) − X(s) = M, E = e, S = s, JM |H] = f (e, s, H, JM )p(M |λ(e − s)),
+Condition 1: Given T1 = t1, S is defined on [t1, T], and
 
+P(S = t|T1 = t1) = g(t), ∀T ≥t ≥t1,
+
+where g(t) is not dependent on λ or the sample path of the Poisson process after t1.
+Condition 2: Given the jumping times of the Poisson process up to any time t, that is, for some
+m ∈Z+, given {T1 = t1, . . . , Tm = tm, Tm+1 > t}, the distribution of E is
+
+P[E = t|{T1 = t1, . . . , Tm = tm, Tm+1 > t}] = hm(t), for some m ∈Z+, ∀T ≥t ≥tm,
+
+where hm(t) is a function independent of λ. Furthermore, given T1 = t1, the distribution of E is
+independent of the realization of S:
+
+P[E = t|T1 = t1, S = s] = P[E = t|T1 = t1], ∀T ≥t ≥t1, ∀s ≥t1.
+
+Now, suppose we observe data which contains for each incident, S = s, E = e, X(e) −X(s) =
+M, where X(s) = m ≥1, and all the jumping times within interval (s, e]: JM = {Tm+1 =
+tm+1, . . . , Tm+M = tm+M}, where tm+1 > s and Tm+M ≤e. Then, conditional on the observed
+jumping times before s: H := {T1 = t1, . . . , Tm = tm ≤s}, the likelihood of the data can be
+decomposed as follows:
+
+P[X(e) −X(s) = M, E = e, S = s, JM|H] = f(e, s, H, JM)p(M|λ(e −s)),
 (8)
 
-where p(M |λ(e − s)) denotes the likelihood of a Poisson distribution with M occurrences and rate
-parameter λ(e − s), and f (e, s, H, JM ) is a function that does not depend on λ.
+where p(M|λ(e −s)) denotes the likelihood of a Poisson distribution with M occurrences and rate
+parameter λ(e −s), and f(e, s, H, JM) is a function that does not depend on λ.
 \end{ReviewVerbatim}
 
 % report-context-presentation-sha256: e629b32ddb93ba31c965eefc6623cab7a3a20e83080f89eced7336aba825b7fa
@@ -2672,11 +3588,18 @@ The result-\allowbreak{}specific conditions and corrections are stated in the [c
   {rate : ℝ},
   0 < rate →
     0 < T.window.exposure →
-      LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood T M D rate =
-          LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D *
-            LBG24SpatialUnderreporting.sourcePoissonPMFOnSourceDomain rate T.window.exposure T.count ∧
-        AppliedModelingLib.Probability.PoissonProcess.RateIndependent fun (_rate : ℝ) =>
-          LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D
+      ∀ {Omega : Type u_1} [inst : MeasurableSpace Omega] [inst_1 : StandardBorelSpace Omega]
+        {P : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_2}
+        [inst_3 : MeasurableSpace Tail]
+        (selection : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Omega P Tail)
+        {startReference : MeasureTheory.Measure NNReal} [inst_4 : MeasureTheory.SFinite startReference]
+        (G : LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation selection startReference T),
+        M.selectedStartLikelihood = G.selectedStartLikelihood →
+          LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood T M D rate =
+              LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D *
+                LBG24SpatialUnderreporting.sourcePoissonPMFOnSourceDomain rate T.window.exposure T.count ∧
+            AppliedModelingLib.Probability.PoissonProcess.RateIndependent fun (_rate : ℝ) =>
+              LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
@@ -2688,6 +3611,8 @@ The result-\allowbreak{}specific conditions and corrections are stated in the [c
 \item \hyperlink{paper-prerequisite-389857bc4c8477de}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Appendix\allowbreak{}Theorem2\allowbreak{}Causal\allowbreak{}Stopping\allowbreak{}Source\allowbreak{}Model.\allowbreak{}Endpoint\allowbreak{}Density\allowbreak{}Presentation}
 \item \hyperlink{governing-declaration-14dc9c88dba1e06b}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Appendix\allowbreak{}Theorem2\allowbreak{}Causal\allowbreak{}Stopping\allowbreak{}Source\allowbreak{}Model.\allowbreak{}conditional\allowbreak{}Likelihood}
 \item \hyperlink{governing-declaration-7cf05f25acbc109f}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Appendix\allowbreak{}Theorem2\allowbreak{}Causal\allowbreak{}Stopping\allowbreak{}Source\allowbreak{}Model.\allowbreak{}rate\allowbreak{}Free\allowbreak{}Residual}
+\item \hyperlink{paper-prerequisite-fc4b987b63d7ffe8}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Fixed\allowbreak{}History\allowbreak{}Density\allowbreak{}Presentation}
+\item \hyperlink{governing-declaration-b86695ea0bdc7438}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Selection}
 \item \hyperlink{governing-declaration-9a24d22062827cef}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}source\allowbreak{}Poisson\allowbreak{}PMF\allowbreak{}On\allowbreak{}Source\allowbreak{}Domain}
 \end{itemize}
 \paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
@@ -2697,7 +3622,19 @@ The result-\allowbreak{}specific conditions and corrections are stated in the [c
 4. parameter: ℝ
 5. assumption: 0 < rate
 6. assumption: 0 < T.window.exposure
-7. conclusion: LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood T M D rate =
+7. parameter: Type u_1
+8. parameter: MeasurableSpace Omega
+9. assumption: StandardBorelSpace Omega
+10. parameter: MeasureTheory.Measure Omega
+11. assumption: MeasureTheory.IsProbabilityMeasure P
+12. parameter: Type u_2
+13. parameter: MeasurableSpace Tail
+14. parameter: LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Omega P Tail
+15. parameter: MeasureTheory.Measure NNReal
+16. assumption: MeasureTheory.SFinite startReference
+17. parameter: LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation selection startReference T
+18. assumption: M.selectedStartLikelihood = G.selectedStartLikelihood
+19. conclusion: LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood T M D rate =
     LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D *
       LBG24SpatialUnderreporting.sourcePoissonPMFOnSourceDomain rate T.window.exposure T.count ∧
   AppliedModelingLib.Probability.PoissonProcess.RateIndependent fun (_rate : ℝ) =>
@@ -2712,7 +3649,7 @@ LBG24SpatialUnderreporting.sourceTheorem1LikelihoodDecomposition
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} The target is the source's fixed-\allowbreak{}history factorization:\allowbreak{} conditional observation likelihood equals a rate-\allowbreak{}free factor times the Poisson mass with mean rate times exposure.\allowbreak{}
+\textbf{Reason:} It gives Equation (8)'s fixed-\allowbreak{}history likelihood as a rate-\allowbreak{}independent residual times the Poisson mass at rate times (e -\allowbreak{} s).\allowbreak{} The bridge identifies the selected-\allowbreak{}start factor with a proper conditional density g(s | T1), tied to the timeline start, with Condition-\allowbreak{}1 support and future-\allowbreak{}tail independence retained.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -2720,32 +3657,54 @@ LBG24SpatialUnderreporting.sourceTheorem1LikelihoodDecomposition
 \clearpage
 \hypertarget{source-claim-4f511eea15da72c2}{}
 \section*{Review row 3}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 30-\allowbreak{}41\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 291-\allowbreak{}323\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
-) [λ(e − s )]M̃i
-i
-i
-p M̃i ; λ(ei − si ) =
-exp (−λ(ei − si ))
-M̃i !
-5
+Then, the likelihood of the data Di as a function of the reporting rate λ, conditional on all
+reports before si, can be decomposed as
 
+L(λ|Di) = p
+�
+˜
+Mi; λ(ei −si)
+�
+f(Di),
+(1)
+
+where
+
+p
+�
+˜
+Mi; λ(ei −si)
+�
+= [λ(ei −si)]
+˜
+Mi
+
+˜
+Mi!
+exp (−λ(ei −si))
 (2)
+
+5
 
 
 [form-feed in source extraction]
-is the probability mass function of a Poisson distributed random variable with M̃i occurrences and
-rate parameter λ(ei − si ), and f (Di ) is a function that does not depend on λ.
+
+is the probability mass function of a Poisson distributed random variable with ˜
+Mi occurrences and
+rate parameter λ(ei −si), and f(Di) is a function that does not depend on λ.
 
 [Next verbatim source excerpt]
 
-As reference, the likelihood of a Poisson distribution with M ≥ 0 occurrences and rate λ(e−s) >
+As reference, the likelihood of a Poisson distribution with M ≥0 occurrences and rate λ(e−s) >
 0 is as follows:
-[λ(e − s)]M
-p(M |λ(e − s)) =
-exp(−λ(e − s)).
+
+p(M|λ(e −s)) = [λ(e −s)]M
+
 M!
+exp(−λ(e −s)).
 \end{ReviewVerbatim}
 
 
@@ -2779,7 +3738,7 @@ LBG24SpatialUnderreporting.sourceEquation2PoissonCountPMF
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} The source and transparent Spec give the same Poisson mass on the explicitly positive rate-\allowbreak{}times-\allowbreak{}exposure domain.\allowbreak{}
+\textbf{Reason:} Equation (2) gives the exponential/\allowbreak{}factorial Poisson mass for positive lambda times exposure;\allowbreak{} the Spec is exactly that count-\allowbreak{}likelihood expansion.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -2787,19 +3746,19 @@ LBG24SpatialUnderreporting.sourceEquation2PoissonCountPMF
 \clearpage
 \hypertarget{source-claim-4e5d367d4931bb6a}{}
 \section*{Review row 4}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 279-\allowbreak{}288\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 325-\allowbreak{}334\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
 The decomposition in Equation (1) enables standard Poisson rate estimation methods to be
 applied. For example, the maximum likelihood estimate for λ is:
-P
-M̃i
-M LE
-λ̂
-=P i
-.
+
+ˆλMLE =
+�
+i ˜
+Mi
+�
+i(ei −si).
 (3)
-i (ei − si )
 \end{ReviewVerbatim}
 
 
@@ -2855,7 +3814,7 @@ LBG24SpatialUnderreporting.sourceEquation3MaximumLikelihoodEstimate
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} The Spec unfolds the aggregate Poisson MLE to totalCount divided by positive totalExposure and formalizes log-\allowbreak{}likelihood maximization, including the zero-\allowbreak{}count boundary, exactly as Equation (3) requires.\allowbreak{}
+\textbf{Reason:} Equation (3) gives total duplicate count divided by total exposure as the MLE;\allowbreak{} the Spec states that formula and its Poisson log-\allowbreak{}likelihood maximum on the relevant rate branches.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -2863,23 +3822,34 @@ LBG24SpatialUnderreporting.sourceEquation3MaximumLikelihoodEstimate
 \clearpage
 \hypertarget{source-claim-91a0a6f8108d4306}{}
 \section*{Review row 5}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 832-\allowbreak{}845\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 920-\allowbreak{}944\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
 First, we assume that the reporting rate is affected by the type vector θ as in a Poisson regression:
-for each model, we have a standard reporting rate λθ , defined as:
-[U+0001 control character]
-λθ = exp α + β T θ ,
+for each model, we have a standard reporting rate λθ, defined as:
+
+λθ = exp
+�
+α + βT θ
+�
+,
 (5)
+
 and so, for each incident i, the likelihood follows from Equation (1) and satisfies the following:
-[U+0010 control character]
-[U+0011 control character]
-L(λθi |Di ) ∝ p M̃i ; λθi (ei − si ) ,
+
+L(λθi|Di) ∝p
+�
+˜
+Mi; λθi(ei −si)
+�
+,
 (6)
+
 13
 
 
 [form-feed in source extraction]
+
 where β is a coefficient vector of appropriate dimension, (α, β) are coefficients to be estimated, and
 p(·) is the Poisson likelihood function as defined in Equation (2).
 \end{ReviewVerbatim}
@@ -2893,13 +3863,20 @@ p(·) is the Poisson likelihood function as defined in Equation (2).
   (M : LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel T.count)
   (D : M.EndpointDensityPresentation),
   0 < T.window.exposure →
-    LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood T M D
-          (LBG24SpatialUnderreporting.poissonRegressionRate alpha beta theta) =
-        LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D *
-          LBG24SpatialUnderreporting.sourcePoissonPMFOnSourceDomain (Real.exp (alpha + ∑ j : Feature, beta j * theta j))
-            T.window.exposure T.count ∧
-      AppliedModelingLib.Probability.PoissonProcess.RateIndependent fun (_rate : ℝ) =>
-        LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D
+    ∀ {Omega : Type u_2} [inst_1 : MeasurableSpace Omega] [inst_2 : StandardBorelSpace Omega]
+      {P : MeasureTheory.Measure Omega} [inst_3 : MeasureTheory.IsProbabilityMeasure P] {Tail : Type u_3}
+      [inst_4 : MeasurableSpace Tail]
+      (selection : LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Omega P Tail)
+      {startReference : MeasureTheory.Measure NNReal} [inst_5 : MeasureTheory.SFinite startReference]
+      (G : LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation selection startReference T),
+      M.selectedStartLikelihood = G.selectedStartLikelihood →
+        LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood T M D
+              (LBG24SpatialUnderreporting.poissonRegressionRate alpha beta theta) =
+            LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D *
+              LBG24SpatialUnderreporting.sourcePoissonPMFOnSourceDomain
+                (Real.exp (alpha + ∑ j : Feature, beta j * theta j)) T.window.exposure T.count ∧
+          AppliedModelingLib.Probability.PoissonProcess.RateIndependent fun (_rate : ℝ) =>
+            LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
@@ -2911,6 +3888,8 @@ p(·) is the Poisson likelihood function as defined in Equation (2).
 \item \hyperlink{paper-prerequisite-389857bc4c8477de}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Appendix\allowbreak{}Theorem2\allowbreak{}Causal\allowbreak{}Stopping\allowbreak{}Source\allowbreak{}Model.\allowbreak{}Endpoint\allowbreak{}Density\allowbreak{}Presentation}
 \item \hyperlink{governing-declaration-14dc9c88dba1e06b}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Appendix\allowbreak{}Theorem2\allowbreak{}Causal\allowbreak{}Stopping\allowbreak{}Source\allowbreak{}Model.\allowbreak{}conditional\allowbreak{}Likelihood}
 \item \hyperlink{governing-declaration-7cf05f25acbc109f}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Appendix\allowbreak{}Theorem2\allowbreak{}Causal\allowbreak{}Stopping\allowbreak{}Source\allowbreak{}Model.\allowbreak{}rate\allowbreak{}Free\allowbreak{}Residual}
+\item \hyperlink{paper-prerequisite-fc4b987b63d7ffe8}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Fixed\allowbreak{}History\allowbreak{}Density\allowbreak{}Presentation}
+\item \hyperlink{governing-declaration-b86695ea0bdc7438}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Selection}
 \item \hyperlink{paper-prerequisite-7f3c5743111cd486}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}poisson\allowbreak{}Regression\allowbreak{}Rate}
 \item \hyperlink{governing-declaration-9a24d22062827cef}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}source\allowbreak{}Poisson\allowbreak{}PMF\allowbreak{}On\allowbreak{}Source\allowbreak{}Domain}
 \end{itemize}
@@ -2924,7 +3903,19 @@ p(·) is the Poisson likelihood function as defined in Equation (2).
 7. parameter: LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel T.count
 8. parameter: M.EndpointDensityPresentation
 9. assumption: 0 < T.window.exposure
-10. conclusion: LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood T M D
+10. parameter: Type u_2
+11. parameter: MeasurableSpace Omega
+12. assumption: StandardBorelSpace Omega
+13. parameter: MeasureTheory.Measure Omega
+14. assumption: MeasureTheory.IsProbabilityMeasure P
+15. parameter: Type u_3
+16. parameter: MeasurableSpace Tail
+17. parameter: LBG24SpatialUnderreporting.Theorem2ConditionOneSelection Omega P Tail
+18. parameter: MeasureTheory.Measure NNReal
+19. assumption: MeasureTheory.SFinite startReference
+20. parameter: LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation selection startReference T
+21. assumption: M.selectedStartLikelihood = G.selectedStartLikelihood
+22. conclusion: LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.conditionalLikelihood T M D
       (LBG24SpatialUnderreporting.poissonRegressionRate alpha beta theta) =
     LBG24SpatialUnderreporting.AppendixTheorem2CausalStoppingSourceModel.rateFreeResidual T M D *
       LBG24SpatialUnderreporting.sourcePoissonPMFOnSourceDomain (Real.exp (alpha + ∑ j : Feature, beta j * theta j))
@@ -2941,7 +3932,7 @@ LBG24SpatialUnderreporting.sourceEquation6PoissonRegressionLikelihood
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} The log link is the displayed exp(alpha + sum\_\allowbreak{}j beta\_\allowbreak{}j theta\_\allowbreak{}j), and the source's proportional likelihood is exactly a Poisson mass times a rate-\allowbreak{}independent residual under the selected fixed-\allowbreak{}history model.\allowbreak{}
+\textbf{Reason:} It substitutes Equation (5)'s log link exp(alpha + beta\textasciicircum{}T theta) into the Equation (8) decomposition, yielding Equation (6)'s Poisson mass with a rate-\allowbreak{}independent residual.\allowbreak{} The explicit equality witnesses the source's proportional-\allowbreak{}likelihood notation and retains the selected-\allowbreak{}start density bridge.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -2949,30 +3940,43 @@ LBG24SpatialUnderreporting.sourceEquation6PoissonRegressionLikelihood
 \clearpage
 \hypertarget{source-claim-9e3150507c569b02}{}
 \section*{Review row 6}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 289-\allowbreak{}291\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 336-\allowbreak{}339\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
 The proof is in Appendix B.2 and follows from decomposing the likelihood function into full
-conditional probabilities. The key step is to find the conditions under which one can use datadependent observation period length Ei − Si , while maintaining a Poisson likelihood for reports
+conditional probabilities. The key step is to find the conditions under which one can use data-
+dependent observation period length Ei −Si, while maintaining a Poisson likelihood for reports
 within the period.5 The result extends to the zero-inflated model we use in our empirical estimation.
 
 [Next verbatim source excerpt]
 
 We further fit a zero-inflated Poisson regression [19], which corresponds to a data generating
 process in which, independently for each incident, only one report can be generated with probability
-γ, and thus there are 0 duplicate reports: M̃i = 0.9 For example, perhaps those incidents are
+γ, and thus there are 0 duplicate reports:
+˜
+Mi = 0.9
+For example, perhaps those incidents are
 personal requests for service (e.g., to plant a tree somewhere or to prune a tree to enable certain
 construction), for which duplicates are unlikely; alternatively, officials may physically mark the
 location of an incident as “report received; full inspection pending,” preventing future reports.
 Under this case, the likelihood of the data satisfies:
-[U+0011 control character]
-[U+0010 control character]
-(
-M̃i ≥ 1;
-(1 − γ)p M̃i ; λθi (ei − si ) ,
-L(λθi |Di ) ∝
+
+L(λθi|Di) ∝
+
+�
+(1 −γ)p
+�
+˜
+Mi; λθi(ei −si)
+�
+,
+˜
+Mi ≥1;
+
+γ + (1 −γ)p (0; λθi(ei −si)) ,
+˜
+Mi = 0.
 (7)
-γ + (1 − γ)p (0; λθi (ei − si )) , M̃i = 0.
 \end{ReviewVerbatim}
 
 
@@ -3025,7 +4029,7 @@ LBG24SpatialUnderreporting.sourceZeroInflatedLikelihoodExtension
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} The Spec gives the source's gamma structural-\allowbreak{}zero plus 1-\allowbreak{}gamma Poisson branches and its independent-\allowbreak{}incidents observed likelihood product.\allowbreak{}
+\textbf{Reason:} Equation (7)'s zero and positive count mixture branches and independent incident product are exactly the branches and product in the Spec.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -3033,79 +4037,122 @@ LBG24SpatialUnderreporting.sourceZeroInflatedLikelihoodExtension
 \clearpage
 \hypertarget{source-claim-5df3c4be72017231}{}
 \section*{Review row 7}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1453-\allowbreak{}1520\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1660-\allowbreak{}1770\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
 Lemma 1. Suppose each incident gets reported independently, and the distribution of the interval
-of reporting duration Ti has density function f (·) : [0, ∞) 7→ R. Then under steady state, Nθobserved
-follows a Poisson process with rate Λ′θ , where
-[U+0014 control character]
-[U+0012 control character] Z t
-[U+0013 control character]
-[U+0015 control character]
-Z ∞
-′
-Λθ = Λθ 1 −
-exp −
-λθ (u)du f (t)dt .
-0
+of reporting duration Ti has density function f(·) : [0, ∞) �→R. Then under steady state, Nobserved
+θ
+follows a Poisson process with rate Λ′
+θ, where
+
+Λ′
+θ = Λθ
+
+�
+1 −
+�∞
 
 0
+exp
+�
+−
+�t
+
+0
+λθ(u)du
+�
+f(t)dt
+�
+.
 
 In the simplest time-homogeneous case, this rate simplifies to:
-[U+0014 control character]
-[U+0015 control character]
-Z ∞
-′
-Λθ = Λθ 1 −
-exp (−λθ t) f (t)dt .
+
+Λ′
+θ = Λθ
+
+�
+1 −
+�∞
+
 0
+exp (−λθt) f(t)dt
+�
+.
 
 Proof of Lemma 1. Let m(t) be the number of times an incident is reported in an interval of t,
-starting from its birth. We know from the model assumption that m(t) follows a Poisson distribution:
-[U+0012 control character]Z t
-[U+0013 control character]
-m(t) ∼ Poisson
-λθ (u)du .
+starting from its birth. We know from the model assumption that m(t) follows a Poisson distribu-
+tion:
+
+m(t) ∼Poisson
+��t
+
 0
+λθ(u)du
+�
+.
 
 23
 
 
 [form-feed in source extraction]
+
 In steady state, each unique incident gets reported with probability
-Z ∞
-Pr[m(t) ≥ 1|Ti = t]f (t)dt
-p=
-0
-[U+0013 control character][U+0015 control character]
-[U+0012 control character] Z t
-Z ∞[U+0014 control character]
-λθ (u)du f (t)dt
-=
-1 − exp −
-0
-0
-[U+0013 control character]
-[U+0012 control character] Z t
-Z ∞
-λθ (u)du f (t)dt,
-exp −
-=1−
-0
+
+p =
+�∞
 
 0
+Pr[m(t) ≥1|Ti = t]f(t)dt
+
+=
+�∞
+
+0
+
+�
+1 −exp
+�
+−
+�t
+
+0
+λθ(u)du
+��
+f(t)dt
+
+= 1 −
+�∞
+
+0
+exp
+�
+−
+�t
+
+0
+λθ(u)du
+�
+f(t)dt,
 
 which simplifies under time-homogeneity to
-Z ∞
-exp (−λθ t) f (t)dt.
-p=1−
-0
 
-Over a time interval of t, the total number of incidents of type θ that happen, Nθ (t) follows
-a Poisson process with rate Λθ . Conditional on Nθ (t) = n, n = 0, 1, . . . , under steady state,
-Nθobserved (t) follows a binomial distribution with parameters (n, p). Thus Nθobserved (t) follows a
-Poisson distribution with rate Λθ p, which completes the proof.
+p = 1 −
+�∞
+
+0
+exp (−λθt) f(t)dt.
+
+Over a time interval of t, the total number of incidents of type θ that happen, Nθ(t) follows
+a Poisson process with rate Λθ.
+Conditional on Nθ(t) = n, n = 0, 1, . . . , under steady state,
+Nobserved
+θ
+(t) follows a binomial distribution with parameters (n, p).
+Thus Nobserved
+θ
+(t) follows a
+Poisson distribution with rate Λθp, which completes the proof.
 \end{ReviewVerbatim}
 
 % report-context-presentation-sha256: f4388148d7adac93fa24e6582c6e9d6d7557b13364760188521d012a2fd464c2
@@ -3175,7 +4222,7 @@ LBG24SpatialUnderreporting.sourceLemma1CalendarTimeDurationObservedProcess
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} Lemma 1 states that calendar-\allowbreak{}time observed incidents form a Poisson process at incidentRate times the duration-\allowbreak{}mixture reporting probability;\allowbreak{} under the approved first-\allowbreak{}report calendar interpretation, the target gives measurable monotone counts, independent increments, and the exact Poisson increment law at that rate.\allowbreak{}
+\textbf{Reason:} Lemma 1 gives the same duration-\allowbreak{}mixture observed rate and Poisson process under the queue's embedded calendar-\allowbreak{}time convention.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
@@ -3183,27 +4230,40 @@ LBG24SpatialUnderreporting.sourceLemma1CalendarTimeDurationObservedProcess
 \clearpage
 \hypertarget{source-claim-314139008a3bface}{}
 \section*{Review row 8}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1433-\allowbreak{}1452\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1626-\allowbreak{}1658\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
-Proposition 1. Consider the simplest setting: both incident occurrence and reporting follow timehomogeneous Poisson processes, with Λθ (τ ) = Λθ and λθ (τ ) = λθ . Further, let incident reporting duration Ti be distributed according to F . Then using just the number of observed incidents
-Nθobserved (T ) of type θ in a known time duration [0, T ], the reporting rate λθ is not identifiable. In
-other words, Nθobserved (T ) is a function of both Λθ and λθ :
-Nθobserved (T )
-= Λ′θ
-T →∞
-T
-[U+0014 control character]
-[U+0015 control character]
-Z ∞
-′
-exp (−λθ t) dF (t) .
-Λθ = Λθ 1 −
+Proposition 1. Consider the simplest setting: both incident occurrence and reporting follow time-
+homogeneous Poisson processes, with Λθ(τ) = Λθ and λθ(τ) = λθ. Further, let incident report-
+ing duration Ti be distributed according to F. Then using just the number of observed incidents
+Nobserved
+θ
+(T) of type θ in a known time duration [0, T], the reporting rate λθ is not identifiable. In
+other words, Nobserved
+θ
+(T) is a function of both Λθ and λθ:
+
 lim
+T→∞
+Nobserved
+θ
+(T)
+T
+= Λ′
+θ
 
 where
+Λ′
+θ = Λθ
+
+�
+1 −
+�∞
 
 0
+exp (−λθt) dF(t)
+�
+.
 
 The proof of Proposition 1 follows directly from the following Lemma.
 \end{ReviewVerbatim}
@@ -3305,7 +4365,196 @@ LBG24SpatialUnderreporting.sourceProposition1CalendarTimeNonidentifiability
 \textbf{Verdict:} \texttt{matches}
 \\
 {\raggedright
-\textbf{Reason:} For each distinct reporting rate, the Spec fixes the compensating incident rate as observedRate divided by the displayed first-\allowbreak{}report probability 1 -\allowbreak{} integral exp(-\allowbreak{}lambda t)dF(t).\allowbreak{} The selected calendar-\allowbreak{}count declarations then give both the common-\allowbreak{}rate homogeneous Poisson process and the stated almost-\allowbreak{}sure count-\allowbreak{}rate limit.\allowbreak{}
+\textbf{Reason:} Proposition 1 pairs distinct reporting rates with offsetting incidence rates to give the same observed Poisson rate and long-\allowbreak{}run count rate, exactly as the Spec encodes.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-73044f3612c3e67c}{}
+\section*{Review row 9}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1870-\allowbreak{}1875\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+The proof of the theorem relies on the following lemma, which establishes the distribution of
+the (random) time between S and the first jump time after S.
+
+Lemma 2. If the distribution of S satisfies condition 1, then the distribution of the time between
+any realization of S and the next jump time TX(S)+1 is an exponential random variable with rate
+λ.
+
+[Next verbatim source excerpt]
+
+differentially report those problems to the government. Such differences might emerge, for example,
+due to access to communications technologies, familiarity with the system, or trust in government
+[3]. As discussed above, the biggest challenge to studying under-reporting is that researchers rarely
+
+[Next verbatim source excerpt]
+
+Condition 1: Given T1 = t1, S is defined on [t1, T], and
+
+P(S = t|T1 = t1) = g(t), ∀T ≥t ≥t1,
+
+where g(t) is not dependent on λ or the sample path of the Poisson process after t1.
+\end{ReviewVerbatim}
+
+% report-context-presentation-sha256: c2216ca8f51b1ec659cfe0a4a4a37aacf1ba6eaa615230ccafc1499925387492
+\paragraph{Settled source reading}
+\begin{sloppypar}
+The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+\end{sloppypar}
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {Omega : Type u_1} [inst : MeasurableSpace Omega] [inst_1 : StandardBorelSpace Omega]
+  {P : MeasureTheory.Measure Omega} [inst_2 : MeasureTheory.IsProbabilityMeasure P]
+  (M : LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Omega P) (u : NNReal),
+  ∀ᵐ (omega : Omega) ∂P,
+    (AppliedModelingLib.Probability.PoissonProcess.canonicalFirstArrival (M.interarrivalPath omega)).toNNReal ≤
+        M.observationHorizon →
+      ((ProbabilityTheory.condExpKernel P (MeasurableSpace.comap M.selection.firstReportTime inferInstance)) omega).real
+          {omega' : Omega |
+            AppliedModelingLib.Probability.PoissonProcess.forwardPostStopIntervalCount M.process M.selection.startTime u
+                omega' =
+              0} =
+        ({ rate := M.rate, rate_pos := M.rate_pos }.measure (Set.Ioi ↑u)).toReal
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-82b7914cdb2aa374}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Exponential.\allowbreak{}Model}
+\item \hyperlink{governing-declaration-204558c62e63ea8d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Exponential.\allowbreak{}Model.\allowbreak{}measure}
+\item \hyperlink{governing-declaration-b0f010330c55d613}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}canonical\allowbreak{}First\allowbreak{}Arrival}
+\item \hyperlink{governing-declaration-2069441088df424d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}forward\allowbreak{}Post\allowbreak{}Stop\allowbreak{}Interval\allowbreak{}Count}
+\item \hyperlink{governing-declaration-2f059522a9b873ec}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Lemma2\allowbreak{}Forward\allowbreak{}Source\allowbreak{}Model}
+\item \hyperlink{governing-declaration-d4ebdfd9cf876fb9}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Lemma2\allowbreak{}Forward\allowbreak{}Source\allowbreak{}Model.\allowbreak{}process}
+\item \hyperlink{governing-declaration-d1966c1bd14884cd}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Lemma2\allowbreak{}Forward\allowbreak{}Source\allowbreak{}Model.\allowbreak{}selection}
+\item \hyperlink{governing-declaration-b86695ea0bdc7438}{LBG24\allowbreak{}Spatial\allowbreak{}Underreporting.\allowbreak{}Theorem2\allowbreak{}Condition\allowbreak{}One\allowbreak{}Selection}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: MeasurableSpace Omega
+3. assumption: StandardBorelSpace Omega
+4. parameter: MeasureTheory.Measure Omega
+5. assumption: MeasureTheory.IsProbabilityMeasure P
+6. parameter: LBG24SpatialUnderreporting.Lemma2ForwardSourceModel Omega P
+7. parameter: NNReal
+8. conclusion: ∀ᵐ (omega : Omega) ∂P,
+  (AppliedModelingLib.Probability.PoissonProcess.canonicalFirstArrival (M.interarrivalPath omega)).toNNReal ≤
+      M.observationHorizon →
+    ((ProbabilityTheory.condExpKernel P (MeasurableSpace.comap M.selection.firstReportTime inferInstance)) omega).real
+        {omega' : Omega |
+          AppliedModelingLib.Probability.PoissonProcess.forwardPostStopIntervalCount M.process M.selection.startTime u
+              omega' =
+            0} =
+      ({ rate := M.rate, rate_pos := M.rate_pos }.measure (Set.Ioi ↑u)).toReal
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+LBG24SpatialUnderreporting.sourceLemma2SelectedStartExponentialTail
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Lemma 2's next-\allowbreak{}report wait after a Condition-\allowbreak{}1 selected start is the equivalent rate-\allowbreak{}exponential conditional no-\allowbreak{}arrival tail stated by the Spec.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-7c756377fe4100a9}{}
+\section*{Review row 10}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 4402-\allowbreak{}4420\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+In Section 6.2 and in Appendix D.8.1, the predictions were generated using the results of the
+spatial model we presented in the main text. The training set used to obtain such results was
+constructed by defining the time of the first report as the start of our observation period, as
+detailed in Appendix D.2.
+However, our theoretical analysis also holds if we instead use as the Poisson interval the time
+starting after the second report – if we split a Poisson process on the time of the first jump, and start
+counting subsequent jumps at that time, the resulting counting process would still be a Poisson
+process with the same rate. Thus, we can estimate the Poisson process rate using our methods,
+starting with the second report time.25 However, crucially, we as researchers know for the incident
+the time between the first and second report, which was not used to train the model (but which the
+model is trying to predict). Intuitively, this procedure evaluates our methods in a setting in which
+the ground truth is known.
+
+25Formally, consider a Poisson process with rate λ, denoted as {X(t), t ≥0}, with the first jump time denoted as
+T1. Based on the memoryless property of Poisson process jump times, the process {X(t)−1, t ≥T1} is still a Poisson
+process with the same rate parameter (see e.g., [34]). Thus in our context, for an incident with type θ, if we treat
+the first report as the start of a Poisson process, treat the second report as equivalent to the first report, and count
+duplicates starting at the third report, this reporting process is still a Poisson process with rate λθ, but now the start
+of this process is observed.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {Omega : Type u_1} [inst : MeasurableSpace Omega] [StandardBorelSpace Omega] {P : MeasureTheory.Measure Omega}
+  [inst_2 : MeasureTheory.IsProbabilityMeasure P] {rate : ℝ},
+  0 < rate →
+    ∀ (interarrivalPath : Omega → ℕ → ℝ),
+      Measurable interarrivalPath →
+        ProbabilityTheory.HasLaw interarrivalPath
+            (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate) P →
+          ⇑(ProbabilityTheory.condDistrib
+                (fun (omega : Omega) =>
+                  AppliedModelingLib.Probability.PoissonProcess.futureInterarrival 1 (interarrivalPath omega))
+                (fun (omega : Omega) =>
+                  (AppliedModelingLib.Probability.PoissonProcess.canonicalFirstArrival
+                      (interarrivalPath omega)).toNNReal)
+                P) =ᵐ[MeasureTheory.Measure.map
+              (fun (omega : Omega) =>
+                (AppliedModelingLib.Probability.PoissonProcess.canonicalFirstArrival (interarrivalPath omega)).toNNReal)
+              P]
+            ⇑(ProbabilityTheory.Kernel.const NNReal
+                (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate))
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-b0f010330c55d613}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}canonical\allowbreak{}First\allowbreak{}Arrival}
+\item \hyperlink{governing-declaration-e0cfe0aeed0b2d78}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}exponential\allowbreak{}Interarrival\allowbreak{}Measure}
+\item \hyperlink{governing-declaration-2f60f71b80c5c3dd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}Poisson\allowbreak{}Process.\allowbreak{}future\allowbreak{}Interarrival}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: MeasurableSpace Omega
+3. assumption: StandardBorelSpace Omega
+4. parameter: MeasureTheory.Measure Omega
+5. assumption: MeasureTheory.IsProbabilityMeasure P
+6. parameter: ℝ
+7. assumption: 0 < rate
+8. parameter: Omega → ℕ → ℝ
+9. assumption: Measurable interarrivalPath
+10. assumption: ProbabilityTheory.HasLaw interarrivalPath
+  (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate) P
+11. conclusion: ⇑(ProbabilityTheory.condDistrib
+      (fun (omega : Omega) =>
+        AppliedModelingLib.Probability.PoissonProcess.futureInterarrival 1 (interarrivalPath omega))
+      (fun (omega : Omega) =>
+        (AppliedModelingLib.Probability.PoissonProcess.canonicalFirstArrival (interarrivalPath omega)).toNNReal)
+      P) =ᵐ[MeasureTheory.Measure.map
+    (fun (omega : Omega) =>
+      (AppliedModelingLib.Probability.PoissonProcess.canonicalFirstArrival (interarrivalPath omega)).toNNReal)
+    P]
+  ⇑(ProbabilityTheory.Kernel.const NNReal
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate))
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+LBG24SpatialUnderreporting.sourcePostFirstJumpPoissonShift
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Appendix D.\allowbreak{}8.\allowbreak{}2 says the process shifted after the first jump remains same-\allowbreak{}rate Poisson;\allowbreak{} the generic HasLaw premise gives the equivalent unchanged future iid-\allowbreak{}exponential-\allowbreak{}sequence conditional law.\allowbreak{}
 \par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par

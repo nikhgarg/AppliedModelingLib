@@ -120,4 +120,60 @@ theorem pmfToMeasure_bind_pmfToMeasureKernel_eq_pmf_bind_toMeasure
   rw [PMF.toMeasure_bind_apply law transition event hevent]
   rfl
 
+/-- A finite-output PMF-valued rule is a genuine measure kernel over an
+arbitrary measurable input space when each output mass is measurable in the
+input.  This is the appropriate bridge for an algorithm whose finite random
+trace distribution is selected from a continuously distributed data set. -/
+noncomputable def pmfToMeasureKernelOfFinite
+    {Input Output : Type*} [MeasurableSpace Input] [MeasurableSpace Output]
+    [Fintype Output] [MeasurableSingletonClass Output]
+    (transition : PMFKernel Input Output)
+    (hmeasurable : ∀ output, Measurable (fun input => transition input output)) :
+    Kernel Input Output where
+  toFun input := (transition input).toMeasure
+  measurable' := by
+    refine Measure.measurable_of_measurable_coe _ fun event hevent => ?_
+    simp_rw [PMF.toMeasure_apply_fintype]
+    apply Finset.measurable_fun_sum
+    intro output _
+    by_cases houtput : output ∈ event
+    · simpa only [Set.indicator_of_mem houtput] using hmeasurable output
+    · simpa only [Set.indicator_of_notMem houtput] using measurable_const
+
+/-- The finite-output kernel has exactly the intended conditional PMF law. -/
+theorem pmfToMeasureKernelOfFinite_apply
+    {Input Output : Type*} [MeasurableSpace Input] [MeasurableSpace Output]
+    [Fintype Output] [MeasurableSingletonClass Output]
+    (transition : PMFKernel Input Output)
+    (hmeasurable : ∀ output, Measurable (fun input => transition input output))
+    (input : Input) :
+    pmfToMeasureKernelOfFinite transition hmeasurable input = (transition input).toMeasure := rfl
+
+/-- The finite-output PMF kernel is Markov because every PMF induces a
+probability measure. -/
+theorem isMarkovKernel_pmfToMeasureKernelOfFinite
+    {Input Output : Type*} [MeasurableSpace Input] [MeasurableSpace Output]
+    [Fintype Output] [MeasurableSingletonClass Output]
+    (transition : PMFKernel Input Output)
+    (hmeasurable : ∀ output, Measurable (fun input => transition input output)) :
+    IsMarkovKernel (pmfToMeasureKernelOfFinite transition hmeasurable) where
+  isProbabilityMeasure input := by
+    change IsProbabilityMeasure ((transition input).toMeasure)
+    infer_instance
+
+/-- A finite-PMF conditional tail is the corresponding real-probability tail
+under its measurable measure-kernel realization. -/
+theorem measureReal_pmfToMeasureKernelOfFinite_apply_le_of_pmfProb_le
+    {Input Output : Type*} [MeasurableSpace Input] [MeasurableSpace Output]
+    [Fintype Output] [DecidableEq Output] [DiscreteMeasurableSpace Output]
+    (transition : PMFKernel Input Output)
+    (hmeasurable : ∀ output, Measurable (fun input => transition input output))
+    (event : Input → Output → Prop) [∀ input, DecidablePred (event input)]
+    (bound : ℝ) (hbound : ∀ input, pmfProb (transition input) (event input) ≤ bound) :
+    ∀ input, (pmfToMeasureKernelOfFinite transition hmeasurable input).real
+      {output | event input output} ≤ bound := by
+  intro input
+  rw [pmfToMeasureKernelOfFinite_apply, ← pmfProb_eq_toMeasure_real]
+  exact hbound input
+
 end AppliedModelingLib

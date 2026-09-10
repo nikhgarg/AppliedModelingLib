@@ -232,6 +232,9 @@ _CONTROLLED_TEXT_FIELDS = frozenset(
         "validator",
         "statement",
         "printed_source_locations",
+        "canonical_source_path",
+        "source_label",
+        "grouping_reason",
     }
 )
 
@@ -1374,6 +1377,15 @@ def project_text(value: str, *, relative_path: str) -> str:
             _PUBLIC_SITE_PRIVATE_WORKFLOW_SENTINEL,
         )
     projected = _neutralize_text(protected_value)
+    if path.name == "HUMAN_REVIEW_PACKET.tex" and path.parts[:1] == ("papers",):
+        # TeX packets contain verbatim source quotations. Expand only mixed
+        # leading indentation, retaining tab-stop alignment and all text.
+        projected = re.sub(
+            r"^[ \t]* [ \t]*\t[ \t]*",
+            lambda match: match.group(0).expandtabs(8),
+            projected,
+            flags=re.MULTILINE,
+        )
     if len(path.parts) == 3 and path.parts[0] == "papers":
         if path.name == "FINAL_VALIDATION_REPORT.md":
             # Current closeouts retain these reviews inside the accepted graph.

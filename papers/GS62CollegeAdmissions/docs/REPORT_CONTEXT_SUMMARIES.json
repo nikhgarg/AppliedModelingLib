@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "paper": "GS62CollegeAdmissions",
+  "summaries": {
+    "GS62-COMPLETED-STABILITY-READING-01": "The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md)."
+  },
+  "omitted_conventions": [
+    "GS62-MUTUAL-APPLICATION-ELIGIBILITY-01",
+    "GS62-STRICT-LIST-NUMERIC-EXTENSION-01"
+  ]
+}

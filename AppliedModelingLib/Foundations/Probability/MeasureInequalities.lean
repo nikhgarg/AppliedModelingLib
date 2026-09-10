@@ -1269,6 +1269,46 @@ theorem one_sub_le_measureReal_of_measureReal_bad_le
       rw [probReal_compl_eq_one_sub (μ := μ) hbad_meas]
     _ ≤ μ.real safe := measureReal_mono hgood_subset (measure_ne_top μ _)
 
+/--
+One-sided Chebyshev bound for a real probability law.  Finite second moment
+controls the probability of lying strictly above the mean minus a positive
+radius.  This is the lower-tail form needed when a model compares a single
+draw to a moving cutoff.
+-/
+theorem one_sub_le_measureReal_Ioi_integral_sub_of_variance
+    (μ : Measure ℝ) [IsProbabilityMeasure μ]
+    (hmem : MemLp (fun x : ℝ => x) 2 μ)
+    {radius : ℝ} (hradius : 0 < radius) :
+    1 - ProbabilityTheory.variance (fun x : ℝ => x) μ / radius ^ 2 ≤
+      μ.real (Set.Ioi ((∫ x : ℝ, x ∂μ) - radius)) := by
+  let bad : Set ℝ := {x : ℝ | radius ≤ |x - ∫ y : ℝ, y ∂μ|}
+  have hbad_meas : MeasurableSet bad := by
+    dsimp [bad]
+    exact measurableSet_le measurable_const
+      ((measurable_id.sub measurable_const).abs)
+  have hvariance_nonneg :
+      0 ≤ ProbabilityTheory.variance (fun x : ℝ => x) μ / radius ^ 2 :=
+    div_nonneg
+      (ProbabilityTheory.variance_nonneg (fun x : ℝ => x) μ)
+      (sq_nonneg radius)
+  have hchebyshev_enn :
+      μ bad ≤ ENNReal.ofReal
+        (ProbabilityTheory.variance (fun x : ℝ => x) μ / radius ^ 2) := by
+    simpa [bad] using
+      (ProbabilityTheory.meas_ge_le_variance_div_sq
+        (μ := μ) (X := fun x : ℝ => x) hmem hradius)
+  have hbad : μ.real bad ≤
+      ProbabilityTheory.variance (fun x : ℝ => x) μ / radius ^ 2 :=
+    (ENNReal.le_ofReal_iff_toReal_le (measure_ne_top μ bad)
+      hvariance_nonneg).1 hchebyshev_enn
+  refine one_sub_le_measureReal_of_measureReal_bad_le μ hbad_meas hbad ?_
+  intro x hx
+  have habs : |x - ∫ y : ℝ, y ∂μ| < radius := by
+    exact lt_of_not_ge hx
+  have hlower : -radius < x - ∫ y : ℝ, y ∂μ := (abs_lt.mp habs).1
+  change (∫ y : ℝ, y ∂μ) - radius < x
+  linarith
+
 theorem isProbabilityMeasure_withDensity_of_lintegral_eq_one
     {α : Type*} [MeasurableSpace α] (μ : Measure α) (D : α → ENNReal)
     (hD : ∫⁻ a, D a ∂μ = 1) :
@@ -1695,6 +1735,26 @@ theorem ae_eventually_le_of_martingale_L2_bdd
           (hL2 n))
 
 /--
+An `L²`-bounded real martingale has an almost-sure finite limit.  This is the
+convergence counterpart of `ae_eventually_le_of_martingale_L2_bdd`, used when
+a pathwise stochastic-descent argument must retain the realized martingale
+term rather than replace it by a deterministic error budget.
+-/
+theorem Martingale.exists_ae_tendsto_of_L2_bdd
+    {Ω : Type*} {mΩ : MeasurableSpace Ω} {μ : Measure Ω}
+    [IsProbabilityMeasure μ]
+    {S : ℕ → Ω → ℝ} {ℱ : Filtration (Ω := Ω) ℕ mΩ} {R : ℝ≥0}
+    (hS : Martingale S ℱ μ)
+    (hL2 : ∀ n : ℕ, eLpNorm (S n) 2 μ ≤ R) :
+    ∀ᵐ ω ∂μ, ∃ limit : ℝ, Tendsto (fun n => S n ω) atTop (nhds limit) := by
+  apply hS.submartingale.exists_ae_tendsto_of_bdd
+  intro n
+  exact (eLpNorm_le_eLpNorm_of_exponent_le
+    (μ := μ) (f := S n)
+    (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+    ((hS.stronglyMeasurable n).mono (ℱ.le n)).aestronglyMeasurable).trans (hL2 n)
+
+/--
 For real random variables, a concrete second-moment bound supplies the
 corresponding `eLpNorm _ 2` bound.  This keeps martingale-convergence callers
 from having to state their square-moment estimates directly in `ENNReal`
@@ -2024,6 +2084,29 @@ theorem ae_eventually_le_of_partial_sum_condExp_zero_L2_bdd
     hL2
 
 /--
+Centered increments whose adapted partial sums are uniformly `L²`-bounded
+have almost-surely convergent partial sums.  This keeps the martingale term
+available as a realized convergent increment in pathwise stochastic-descent
+arguments.
+-/
+theorem ae_tendsto_partial_sum_of_condExp_zero_L2_bdd
+    {Ω : Type*} {mΩ : MeasurableSpace Ω} {μ : Measure Ω}
+    [IsProbabilityMeasure μ]
+    {Y : ℕ → Ω → ℝ} {ℱ : Filtration (Ω := Ω) ℕ mΩ} {R : ℝ≥0}
+    (hadapted :
+      StronglyAdapted ℱ (fun n ω => ∑ i ∈ Finset.range n, Y i ω))
+    (hintegrable :
+      ∀ n : ℕ, Integrable (fun ω => ∑ i ∈ Finset.range n, Y i ω) μ)
+    (hcond_zero : ∀ n : ℕ, μ[Y n | ℱ n] =ᵐ[μ] 0)
+    (hL2 :
+      ∀ n : ℕ, eLpNorm (fun ω => ∑ i ∈ Finset.range n, Y i ω) 2 μ ≤ R) :
+    ∀ᵐ ω ∂μ, ∃ limit : ℝ,
+      Tendsto (fun n => ∑ i ∈ Finset.range n, Y i ω) atTop (nhds limit) := by
+  exact Martingale.exists_ae_tendsto_of_L2_bdd
+    (martingale_partial_sum_of_condExp_eq_zero
+      (Y := Y) (ℱ := ℱ) hadapted hintegrable hcond_zero) hL2
+
+/--
 Second-moment form of the partial-sum martingale-convergence adapter.  This is
 the paper-facing square-summable-moment shape: once a caller proves a uniform
 bound on the second moments of the centered partial sums, the `L2` seminorm
@@ -2309,6 +2392,60 @@ theorem partial_sum_secondMoment_le_sum_of_cross_nonpos
             exact add_le_add ih (hY_second n)
         _ = ∑ i ∈ Finset.range (n + 1), b i := by
             rw [Finset.sum_range_succ]
+
+/--
+Centered adapted increments with summable second-moment bounds have almost
+surely convergent partial sums.  The proof exposes the finite-horizon
+orthogonality calculation, then applies the L2 martingale convergence adapter.
+-/
+theorem ae_tendsto_partial_sum_of_condExp_zero_of_summable_secondMoments
+    {Ω : Type*} {mΩ : MeasurableSpace Ω} {μ : Measure Ω}
+    [IsProbabilityMeasure μ]
+    {Y : ℕ → Ω → ℝ} {b : ℕ → ℝ} {ℱ : Filtration (Ω := Ω) ℕ mΩ}
+    (hadapted :
+      StronglyAdapted ℱ (fun n ω => ∑ i ∈ Finset.range n, Y i ω))
+    (hY_memLp : ∀ n : ℕ, MemLp (Y n) 2 μ)
+    (hcond_zero : ∀ n : ℕ, μ[Y n | ℱ n] =ᵐ[μ] 0)
+    (hY_second : ∀ n : ℕ, (∫ ω, (Y n ω) ^ 2 ∂μ) ≤ b n)
+    (hbsum : Summable b) (hb_nonneg : ∀ n : ℕ, 0 ≤ b n) :
+    ∀ᵐ ω ∂μ, ∃ limit : ℝ,
+      Tendsto (fun n => ∑ i ∈ Finset.range n, Y i ω) atTop (nhds limit) := by
+  have hY_integrable : ∀ n : ℕ, Integrable (Y n) μ := fun n =>
+    (hY_memLp n).integrable one_le_two
+  have hsum_memLp : ∀ n : ℕ,
+      MemLp (fun ω => ∑ i ∈ Finset.range n, Y i ω) 2 μ := by
+    intro n
+    exact MeasureTheory.memLp_finset_sum (Finset.range n)
+      (fun i _hi => hY_memLp i)
+  have hsum_sq_int : ∀ n : ℕ,
+      Integrable (fun ω => (∑ i ∈ Finset.range n, Y i ω) ^ 2) μ := by
+    intro n
+    exact (hsum_memLp n).integrable_sq
+  have hY_sq_int : ∀ n : ℕ, Integrable (fun ω => (Y n ω) ^ 2) μ := by
+    intro n
+    exact (hY_memLp n).integrable_sq
+  have hcross_int : ∀ n : ℕ,
+      Integrable (fun ω => (∑ i ∈ Finset.range n, Y i ω) * Y n ω) μ := by
+    intro n
+    have hproduct : MemLp (fun ω =>
+        (∑ i ∈ Finset.range n, Y i ω) * Y n ω) 1 μ :=
+      (hY_memLp n).mul' (hsum_memLp n)
+    exact hproduct.integrable (by norm_num)
+  have hcross_nonpos : ∀ n : ℕ,
+      (∫ ω, (∑ i ∈ Finset.range n, Y i ω) * Y n ω ∂μ) ≤ 0 :=
+    partial_sum_cross_integral_nonpos_of_condExp_eq_zero
+      hadapted hcross_int hY_integrable hcond_zero
+  have hsecond : ∀ n : ℕ,
+      (∫ ω, (∑ i ∈ Finset.range n, Y i ω) ^ 2 ∂μ) ≤
+        ∑ i ∈ Finset.range n, b i :=
+    partial_sum_secondMoment_le_sum_of_cross_nonpos
+      hsum_sq_int hcross_int hY_sq_int hY_second hcross_nonpos
+  rcases exists_nnreal_sq_bound_of_summable_nonneg hbsum hb_nonneg with ⟨R, hR⟩
+  apply ae_tendsto_partial_sum_of_condExp_zero_L2_bdd
+    hadapted (fun n => (hsum_memLp n).integrable one_le_two) hcond_zero
+  intro n
+  apply eLpNorm_two_le_nnreal_of_integral_sq_le (hX := hsum_memLp n)
+  exact (hsecond n).trans (hR n)
 
 /-- Exact second-moment identity for a finite sum with pairwise successive
 cross moments equal to zero.  This is the predictable-variance form of the

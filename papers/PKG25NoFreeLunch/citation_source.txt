@@ -1,0 +1,4 @@
+source: AAAI proceedings page
+url: https://ojs.aaai.org/index.php/AAAI/article/view/33574
+retrieved: 2026-06-11
+notes: Official published version used as canonical source; includes DOI 10.1609/aaai.v39i13.33574 and conference details. ArXiv preprint: https://arxiv.org/abs/2411.15230.

@@ -37,13 +37,13 @@
       "approved_review_context_schema": 1,
       "approved_review_contexts": [
         {
-          "checked_scope": "SourceDefinitions.RandomizedAuction and the generic randomized outcome, revenue, single-price, truthfulness, and correctness interfaces use this convention. The paper's concrete random-sampling, dual-price, exact-half, weighted-pairing, and bounded-sampling mechanisms have finite support and remain exact. PaperInterface.theorem8_2_truthful_revenue_upper_bound remains governed separately by the already approved finite corrected target GHW01-THEOREM82-SODA-SOURCE-VERSION-01.",
+          "checked_scope": "SourceDefinitions.RandomizedAuction and the generic randomized outcome, revenue, single-price, truthfulness, and correctness interfaces use this convention. The paper's concrete random-sampling, dual-price, exact-half, weighted-pairing, and bounded-sampling mechanisms have finite support and remain exact. Theorem 8.2 is a separately governed journal corrected target that proves its arbitrary-real-offer-law endpoint and therefore does not inherit this generic carrier restriction.",
           "classification": "documented_additional_assumption",
           "formal_meaning": "The generic randomized-auction carrier is restricted to discrete, countably supported probability laws, represented in Lean by BidProfile Agent -> PMF (AuctionOutcome Agent). It does not claim to represent every continuous probability law on the real-price outcome space allowed by the source's unrestricted phrase 'probability distributions on auction outcomes'.",
           "id": "GHW01-RANDOMIZED-AUCTION-PMF-DOMAIN-01",
           "kind": "source_model_convention",
           "protocol": "approved-source-review-context-v1",
-          "record_sha256": "2dae853452475858aa0462229fe2e13975b487e9327579b059ea87fe742b1547",
+          "record_sha256": "3ae98e8348c7d528fd2533bc0e45c68b66ef7a4c1ad459709ae3686f5d13d396",
           "source_locator": "cited publication:203-210",
           "why_needed": "A PMF assigns point masses and therefore cannot represent a general atomless outcome distribution. The source's generic definition does not impose discreteness, and the later journal Theorem 8.2 proof explicitly uses a continuous uniform random variable. Calling the PMF carrier unqualifiedly equivalent to the source definition would silently narrow the randomized-auction domain."
         },
@@ -160,13 +160,13 @@
       "approved_review_context_schema": 1,
       "approved_review_contexts": [
         {
-          "checked_scope": "SourceDefinitions.RandomizedAuction and the generic randomized outcome, revenue, single-price, truthfulness, and correctness interfaces use this convention. The paper's concrete random-sampling, dual-price, exact-half, weighted-pairing, and bounded-sampling mechanisms have finite support and remain exact. PaperInterface.theorem8_2_truthful_revenue_upper_bound remains governed separately by the already approved finite corrected target GHW01-THEOREM82-SODA-SOURCE-VERSION-01.",
+          "checked_scope": "SourceDefinitions.RandomizedAuction and the generic randomized outcome, revenue, single-price, truthfulness, and correctness interfaces use this convention. The paper's concrete random-sampling, dual-price, exact-half, weighted-pairing, and bounded-sampling mechanisms have finite support and remain exact. Theorem 8.2 is a separately governed journal corrected target that proves its arbitrary-real-offer-law endpoint and therefore does not inherit this generic carrier restriction.",
           "classification": "documented_additional_assumption",
           "formal_meaning": "The generic randomized-auction carrier is restricted to discrete, countably supported probability laws, represented in Lean by BidProfile Agent -> PMF (AuctionOutcome Agent). It does not claim to represent every continuous probability law on the real-price outcome space allowed by the source's unrestricted phrase 'probability distributions on auction outcomes'.",
           "id": "GHW01-RANDOMIZED-AUCTION-PMF-DOMAIN-01",
           "kind": "source_model_convention",
           "protocol": "approved-source-review-context-v1",
-          "record_sha256": "2dae853452475858aa0462229fe2e13975b487e9327579b059ea87fe742b1547",
+          "record_sha256": "3ae98e8348c7d528fd2533bc0e45c68b66ef7a4c1ad459709ae3686f5d13d396",
           "source_locator": "cited publication:203-210",
           "why_needed": "A PMF assigns point masses and therefore cannot represent a general atomless outcome distribution. The source's generic definition does not impose discreteness, and the later journal Theorem 8.2 proof explicitly uses a continuous uniform random variable. Calling the PMF carrier unqualifiedly equivalent to the source definition would silently narrow the randomized-auction domain."
         }
@@ -1694,13 +1694,13 @@
       "approved_review_context_schema": 1,
       "approved_review_contexts": [
         {
-          "checked_scope": "SourceDefinitions.RandomizedAuction and the generic randomized outcome, revenue, single-price, truthfulness, and correctness interfaces use this convention. The paper's concrete random-sampling, dual-price, exact-half, weighted-pairing, and bounded-sampling mechanisms have finite support and remain exact. PaperInterface.theorem8_2_truthful_revenue_upper_bound remains governed separately by the already approved finite corrected target GHW01-THEOREM82-SODA-SOURCE-VERSION-01.",
+          "checked_scope": "SourceDefinitions.RandomizedAuction and the generic randomized outcome, revenue, single-price, truthfulness, and correctness interfaces use this convention. The paper's concrete random-sampling, dual-price, exact-half, weighted-pairing, and bounded-sampling mechanisms have finite support and remain exact. Theorem 8.2 is a separately governed journal corrected target that proves its arbitrary-real-offer-law endpoint and therefore does not inherit this generic carrier restriction.",
           "classification": "documented_additional_assumption",
           "formal_meaning": "The generic randomized-auction carrier is restricted to discrete, countably supported probability laws, represented in Lean by BidProfile Agent -> PMF (AuctionOutcome Agent). It does not claim to represent every continuous probability law on the real-price outcome space allowed by the source's unrestricted phrase 'probability distributions on auction outcomes'.",
           "id": "GHW01-RANDOMIZED-AUCTION-PMF-DOMAIN-01",
           "kind": "source_model_convention",
           "protocol": "approved-source-review-context-v1",
-          "record_sha256": "2dae853452475858aa0462229fe2e13975b487e9327579b059ea87fe742b1547",
+          "record_sha256": "3ae98e8348c7d528fd2533bc0e45c68b66ef7a4c1ad459709ae3686f5d13d396",
           "source_locator": "cited publication:203-210",
           "why_needed": "A PMF assigns point masses and therefore cannot represent a general atomless outcome distribution. The source's generic definition does not impose discreteness, and the later journal Theorem 8.2 proof explicitly uses a continuous uniform random variable. Calling the PMF carrier unqualifiedly equivalent to the source definition would silently narrow the randomized-auction domain."
         }
@@ -1902,13 +1902,13 @@
       "approved_review_context_schema": 1,
       "approved_review_contexts": [
         {
-          "checked_scope": "SourceDefinitions.RandomizedAuction and the generic randomized outcome, revenue, single-price, truthfulness, and correctness interfaces use this convention. The paper's concrete random-sampling, dual-price, exact-half, weighted-pairing, and bounded-sampling mechanisms have finite support and remain exact. PaperInterface.theorem8_2_truthful_revenue_upper_bound remains governed separately by the already approved finite corrected target GHW01-THEOREM82-SODA-SOURCE-VERSION-01.",
+          "checked_scope": "SourceDefinitions.RandomizedAuction and the generic randomized outcome, revenue, single-price, truthfulness, and correctness interfaces use this convention. The paper's concrete random-sampling, dual-price, exact-half, weighted-pairing, and bounded-sampling mechanisms have finite support and remain exact. Theorem 8.2 is a separately governed journal corrected target that proves its arbitrary-real-offer-law endpoint and therefore does not inherit this generic carrier restriction.",
           "classification": "documented_additional_assumption",
           "formal_meaning": "The generic randomized-auction carrier is restricted to discrete, countably supported probability laws, represented in Lean by BidProfile Agent -> PMF (AuctionOutcome Agent). It does not claim to represent every continuous probability law on the real-price outcome space allowed by the source's unrestricted phrase 'probability distributions on auction outcomes'.",
           "id": "GHW01-RANDOMIZED-AUCTION-PMF-DOMAIN-01",
           "kind": "source_model_convention",
           "protocol": "approved-source-review-context-v1",
-          "record_sha256": "2dae853452475858aa0462229fe2e13975b487e9327579b059ea87fe742b1547",
+          "record_sha256": "3ae98e8348c7d528fd2533bc0e45c68b66ef7a4c1ad459709ae3686f5d13d396",
           "source_locator": "cited publication:203-210",
           "why_needed": "A PMF assigns point masses and therefore cannot represent a general atomless outcome distribution. The source's generic definition does not impose discreteness, and the later journal Theorem 8.2 proof explicitly uses a continuous uniform random variable. Calling the PMF carrier unqualifiedly equivalent to the source definition would silently narrow the randomized-auction domain."
         }
@@ -2414,13 +2414,13 @@
       "approved_review_context_schema": 1,
       "approved_review_contexts": [
         {
-          "checked_scope": "SourceDefinitions.RandomizedAuction and the generic randomized outcome, revenue, single-price, truthfulness, and correctness interfaces use this convention. The paper's concrete random-sampling, dual-price, exact-half, weighted-pairing, and bounded-sampling mechanisms have finite support and remain exact. PaperInterface.theorem8_2_truthful_revenue_upper_bound remains governed separately by the already approved finite corrected target GHW01-THEOREM82-SODA-SOURCE-VERSION-01.",
+          "checked_scope": "SourceDefinitions.RandomizedAuction and the generic randomized outcome, revenue, single-price, truthfulness, and correctness interfaces use this convention. The paper's concrete random-sampling, dual-price, exact-half, weighted-pairing, and bounded-sampling mechanisms have finite support and remain exact. Theorem 8.2 is a separately governed journal corrected target that proves its arbitrary-real-offer-law endpoint and therefore does not inherit this generic carrier restriction.",
           "classification": "documented_additional_assumption",
           "formal_meaning": "The generic randomized-auction carrier is restricted to discrete, countably supported probability laws, represented in Lean by BidProfile Agent -> PMF (AuctionOutcome Agent). It does not claim to represent every continuous probability law on the real-price outcome space allowed by the source's unrestricted phrase 'probability distributions on auction outcomes'.",
           "id": "GHW01-RANDOMIZED-AUCTION-PMF-DOMAIN-01",
           "kind": "source_model_convention",
           "protocol": "approved-source-review-context-v1",
-          "record_sha256": "2dae853452475858aa0462229fe2e13975b487e9327579b059ea87fe742b1547",
+          "record_sha256": "3ae98e8348c7d528fd2533bc0e45c68b66ef7a4c1ad459709ae3686f5d13d396",
           "source_locator": "cited publication:203-210",
           "why_needed": "A PMF assigns point masses and therefore cannot represent a general atomless outcome distribution. The source's generic definition does not impose discreteness, and the later journal Theorem 8.2 proof explicitly uses a continuous uniform random variable. Calling the PMF carrier unqualifiedly equivalent to the source definition would silently narrow the randomized-auction domain."
         },
@@ -3197,13 +3197,13 @@
       "approved_review_context_schema": 1,
       "approved_review_contexts": [
         {
-          "checked_scope": "SourceDefinitions.RandomizedAuction and the generic randomized outcome, revenue, single-price, truthfulness, and correctness interfaces use this convention. The paper's concrete random-sampling, dual-price, exact-half, weighted-pairing, and bounded-sampling mechanisms have finite support and remain exact. PaperInterface.theorem8_2_truthful_revenue_upper_bound remains governed separately by the already approved finite corrected target GHW01-THEOREM82-SODA-SOURCE-VERSION-01.",
+          "checked_scope": "SourceDefinitions.RandomizedAuction and the generic randomized outcome, revenue, single-price, truthfulness, and correctness interfaces use this convention. The paper's concrete random-sampling, dual-price, exact-half, weighted-pairing, and bounded-sampling mechanisms have finite support and remain exact. Theorem 8.2 is a separately governed journal corrected target that proves its arbitrary-real-offer-law endpoint and therefore does not inherit this generic carrier restriction.",
           "classification": "documented_additional_assumption",
           "formal_meaning": "The generic randomized-auction carrier is restricted to discrete, countably supported probability laws, represented in Lean by BidProfile Agent -> PMF (AuctionOutcome Agent). It does not claim to represent every continuous probability law on the real-price outcome space allowed by the source's unrestricted phrase 'probability distributions on auction outcomes'.",
           "id": "GHW01-RANDOMIZED-AUCTION-PMF-DOMAIN-01",
           "kind": "source_model_convention",
           "protocol": "approved-source-review-context-v1",
-          "record_sha256": "2dae853452475858aa0462229fe2e13975b487e9327579b059ea87fe742b1547",
+          "record_sha256": "3ae98e8348c7d528fd2533bc0e45c68b66ef7a4c1ad459709ae3686f5d13d396",
           "source_locator": "cited publication:203-210",
           "why_needed": "A PMF assigns point masses and therefore cannot represent a general atomless outcome distribution. The source's generic definition does not impose discreteness, and the later journal Theorem 8.2 proof explicitly uses a continuous uniform random variable. Calling the PMF carrier unqualifiedly equivalent to the source definition would silently narrow the randomized-auction domain."
         }
@@ -4073,13 +4073,13 @@
         "archival_equivalence_claimed": false,
         "archival_source_locator": "cited publication:833-833",
         "archival_source_quote_sha256": "4307ddebc6fae6358cb1edcc5f4bf57e20a8fdcf2c4d6270d6af16bdeebece69",
-        "corrected_target_review_sha256": "d46909feeb97cfa3de1f2a35925f1e6eec1edf8aeb330750d29491b4ece8a1ad",
-        "corrected_target_sha256": "13c635f50c1dd1d1170084b57166d2f30bd0203c7bf819b4110ca386fd50ea46",
+        "corrected_target_review_sha256": "a7385f312d2c0c9fdf939402e967381f9224d47f252990d8370a30e57fe49e39",
+        "corrected_target_sha256": "7c25e2e7c4822d3427d9bdc7baea611dff85e3c29e7e14a2260446696e31a3a5",
         "governing_defect_ids": [
           "GHW01-THEOREM82-SODA-SOURCE-VERSION-01"
         ],
         "schema": 1,
-        "statement": "For a finite randomized offer auction with nonnegative bid values and nonnegative prices, suppose that whenever b_i <= b_j and x <= b_i, the probability that bidder i wins at a price at most x is at most the corresponding probability for bidder j. Then its expected revenue on every bid vector is at most the optimal fixed-price revenue F of that vector."
+        "statement": "For a randomized offer auction on a finite bidder set with nonnegative bid values and nonnegative real offer prices, with arbitrary bidderwise probability laws, suppose that whenever b_i <= b_j and x <= b_i, the probability that bidder i wins at a price at most x is at most the corresponding probability for bidder j. Then its expected revenue on every bid vector is at most the optimal fixed-price revenue F of that vector."
       },
       "coverage_status": "corrected_source_statement",
       "lean_declarations": [
@@ -4116,7 +4116,7 @@
       "source_kind_validated_at": "2026-07-26T00:00:00Z",
       "source_kind_validator": "source-kind verification",
       "source_location": "cited publication:833-971",
-      "source_note": "The archival SODA theorem is unrestricted. The approved target instead states the later journal's offer-CDF monotonicity condition explicitly; the journal PDF/text pins, definition lines, and theorem lines are in docs/CORRECTED_TARGET_APPROVALS_2026-07-26.md. No archival equivalence is claimed.",
+      "source_note": "The archival SODA theorem is unrestricted. The corrected target instead states the later journal's offer-CDF monotonicity condition explicitly for arbitrary real bidderwise offer laws on the formalized nonnegative regularity domain; the journal PDF/text pins, definition lines, and theorem lines are in docs/CORRECTED_TARGET_APPROVALS_2026-07-26.md. No archival equivalence is claimed.",
       "source_status": "corrected",
       "source_url": "https://homes.cs.washington.edu/~karlin/papers/auctions-journal.pdf",
       "statement": "Theorem 8.2 (SODA): For any truthful auction, E[R] <= F.",

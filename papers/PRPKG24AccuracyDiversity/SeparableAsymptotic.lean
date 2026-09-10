@@ -493,8 +493,49 @@ theorem weightProfile_targetShare_eq_of_sum_eq_one {T : ℕ}
 end GammaHomogeneityProfile
 
 /--
-A sequence of feasible finite allocations, matching the paper's `{S_n}` after
-passing from sets to type-count vectors.
+The type-count presentation of an arbitrary sequence of finite recommended
+sets.  Its index is merely an index: unlike an optimization sequence, the
+total number of recommended items is not required to equal it.
+
+This is the direct source-level carrier for Definition 2.  Fixed-total
+allocation sequences used by the paper's optimal-set theorems map to it below.
+-/
+structure RecommendationSetSequence (T : ℕ) where
+  allocation : ℕ → CountAllocation T
+
+namespace RecommendationSetSequence
+
+/-- Type representation in the `N`th set of a recommendation-set sequence. -/
+noncomputable def representation {T : ℕ}
+    (seq : RecommendationSetSequence T) (N : ℕ) (t : ItemType T) : ℝ :=
+  CountAllocation.representation (seq.allocation N) t
+
+/--
+Definition 2-style asymptotic homogeneity for an arbitrary indexed set
+sequence: each type representation converges to the profile's target share.
+-/
+def ConvergesToProfile {T : ℕ}
+    (seq : RecommendationSetSequence T) (G : GammaHomogeneityProfile T) : Prop :=
+  ∀ t, Tendsto (fun N => seq.representation N t) atTop (nhds (G.targetShare t))
+
+/--
+The direct equation-(6) definition: an arbitrary indexed sequence is
+`gamma`-homogeneous when every type's representation has the displayed
+normalized-power limit.  No requirement relates a set's cardinality to its
+index.
+-/
+def IsGammaHomogeneous {T : ℕ}
+    (seq : RecommendationSetSequence T) (likelihood : ItemType T → ℝ)
+    (gamma : ℝ) : Prop :=
+  ∀ t : ItemType T,
+    Tendsto (fun N => seq.representation N t) atTop
+      (nhds ((likelihood t) ^ gamma / ∑ i : ItemType T, (likelihood i) ^ gamma))
+
+end RecommendationSetSequence
+
+/--
+A sequence of feasible finite allocations for the paper's `N`-item
+optimization problems, after passing from sets to type-count vectors.
 -/
 structure AllocationSequence (T : ℕ) where
   allocation : ℕ → CountAllocation T
@@ -512,6 +553,21 @@ each type share converges to the profile's target share.
 -/
 def ConvergesToProfile {T : ℕ}
     (seq : AllocationSequence T) (G : GammaHomogeneityProfile T) : Prop := ∀ t, Tendsto (fun N => seq.representation N t) atTop (nhds (G.targetShare t))
+
+/-- Forget fixed-total feasibility, retaining the underlying source Definition 2 set sequence. -/
+def toRecommendationSetSequence {T : ℕ}
+    (seq : AllocationSequence T) : RecommendationSetSequence T where
+  allocation := seq.allocation
+
+@[simp] theorem toRecommendationSetSequence_allocation {T : ℕ}
+    (seq : AllocationSequence T) (N : ℕ) :
+    seq.toRecommendationSetSequence.allocation N = seq.allocation N := rfl
+
+/-- The fixed-total theorem carrier has exactly the same coordinate limits. -/
+theorem toRecommendationSetSequence_convergesToProfile_iff {T : ℕ}
+    (seq : AllocationSequence T) (G : GammaHomogeneityProfile T) :
+    seq.toRecommendationSetSequence.ConvergesToProfile G ↔
+      seq.ConvergesToProfile G := Iff.rfl
 
 /--
 An eventual uniform approximation rate tending to zero implies Definition 2
@@ -559,6 +615,18 @@ structure OptimalAllocationSequence {T : ℕ}
   optimal : ∀ N, (Mseq N).IsOptimalAtTotal N (allocation N)
 
 namespace OptimalAllocationSequence
+
+/--
+The source convention selects one finite optimum for every recommendation
+budget.  Finite fixed-total optimization supplies that selection without an
+extra tie-breaking rule.
+-/
+noncomputable def selected {T : ℕ} [Nonempty (ItemType T)]
+    (Mseq : ℕ → ConsumptionModel T) : OptimalAllocationSequence Mseq where
+  allocation := fun N =>
+    Classical.choose (ConsumptionModel.exists_isOptimalAtTotal (Mseq N) N)
+  optimal := fun N =>
+    Classical.choose_spec (ConsumptionModel.exists_isOptimalAtTotal (Mseq N) N)
 
 /-- Forget optimality and keep only the feasible allocation sequence. -/
 def toAllocationSequence {T : ℕ} {Mseq : ℕ → ConsumptionModel T}

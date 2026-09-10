@@ -1,6 +1,6 @@
 # Final Validation Report: Axioms for Learning from Pairwise Comparisons
 
-Updated: 2026-08-26
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -52,7 +52,7 @@ Exact source spans, semantic context, and proof routes are in
 | --- | --- |
 | Lemma 2.1 | **Exact.** |
 | Lemma 2.2 | **Exact.** |
-| Lemma 2.3 | **Quantifier corrected:** positive directed counts only between distinct alternatives; the source sup-norm bound follows. [Correction](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#lemma-23-distinct-alternatives). |
+| Lemma 2.3 | **Exact with source clarification:** positive directed counts only between distinct alternatives; the source sup-norm bound follows. [Correction](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#lemma-23-distinct-alternatives). |
 | Lemma 2.4 | **Exact.** |
 | Definitions 3.1, 4.1; Theorems 3.2, 4.2 | **Exact.** |
 | Definition 5.1; Theorem 5.3 | **Exact.** |

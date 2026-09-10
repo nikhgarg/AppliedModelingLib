@@ -1,0 +1,41 @@
+{
+  "audit_kind": "raw_source_to_expanded_spec_screening",
+  "comment": "Each listed verdict compares the exact byte-pinned source-anchor bundle and explicitly pinned semantic context with Lean's fully expanded paper-local semantic target and Lean-elaborated parameter, premise, and conclusion roles. The paired proof endpoint is reviewed separately.",
+  "items": {
+    "GGRS26CombattingGerrymanderingRCV.paper_lemma_c1_pav_selector_eq_unique_integer_intervalSpec": {
+      "judgment": "matches",
+      "lean_expanded_statement_sha256": "ee7fa2abbfa355e1282d8c3eee71886a207901c1cc60fce83e8cf21d60a48b9d",
+      "lean_target_protocol": "lean_transparent_paper_expansion_with_claim_atoms_v2",
+      "paper_interface_sha256": "d50eff0dae22f15eba77736b037271863f18cb56777690cacbe22cb33ce8ce94",
+      "paper_statement_sha256": "b0969447885b7e0c9f0ac630f1331aed8ef3ae89f6f0111b1156d59d6f971c72",
+      "reason": "The frozen target has the source's positive party-share and positive district-magnitude domain, PAV harmonic leftmost maximizer on 0 through M, the displayed half-open integer interval, and equality of every such selector to its unique ell.",
+      "review_claim_atoms_sha256": "00562efd3443221f0338746e159c91ac3a2c204f1f48cb615aa193b4d5363443",
+      "review_claim_manifest_sha256": "bbb7bb18eb6d60b0ed6523a0ad060362e5e3ef21fdb82e709485bacc545915d9",
+      "semantic_target_declaration": "GGRS26CombattingGerrymanderingRCV.paper_lemma_c1_pav_selector_eq_unique_integer_intervalSpec",
+      "source_input_bundle_sha256": "3b0e9e3b4aa81a869b7f6dce3037c8acc1e7e05e0af3fced6ba7a041e04665c7",
+      "source_input_protocol": "verbatim_source_anchor_bundle_v1",
+      "source_item": "lemma_c1_pav_min_argmax_interval",
+      "source_review_target_sha256": "5d7aba44a67ba0d81827541579ed2b8b84ab51082eb9f78db05c59a6710a0f17"
+    },
+    "GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pavSpec": {
+      "judgment": "matches",
+      "lean_expanded_statement_sha256": "cca2ea51cf1ee9939e2fbafef0df07e398798537dc738d4114357750d301f223",
+      "lean_target_protocol": "lean_transparent_paper_expansion_with_claim_atoms_v2",
+      "paper_interface_sha256": "d50eff0dae22f15eba77736b037271863f18cb56777690cacbe22cb33ce8ce94",
+      "paper_statement_sha256": "610de791543b7a0449427c6c3a684eb6945de74c8bd60d4e5f56d48786b71687",
+      "reason": "The target retains V >= M(M+1), the two-party solid-coalition model, at least M candidates per party, exact Droop quota, D-favoring STV and the floor-or-ceiling STV/PAV conclusion; within-party randomness is used only as pathwise outcome support, not as a probability-law claim.",
+      "review_claim_atoms_sha256": "c0feff526bf25215862ee189cd40396cd6f57e2e02102cdc036a7bf4483df4e6",
+      "review_claim_manifest_sha256": "66521464fc2cc250e38a165524fb2b7649a6956847d4de3ce04597c2ab75c6f0",
+      "semantic_target_declaration": "GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pavSpec",
+      "source_input_bundle_sha256": "12638078af0643dd53ae7e68deb63288f3b190f07d005090f7df9d9e91f0c972",
+      "source_input_protocol": "verbatim_source_anchor_bundle_v1",
+      "source_item": "proposition1_stv_pav_rounded_seats",
+      "source_review_target_sha256": "0b672451c6d5160a1e392277472351c3acdca240abcedc9914832480be66d002"
+    }
+  },
+  "paper": "GGRS26CombattingGerrymanderingRCV",
+  "prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
+  "schema": 3,
+  "validated_at": "2026-09-02T11:42:23+00:00",
+  "validator": "context-isolated-ggrs-v12-semantic-review-20260902"
+}

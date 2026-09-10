@@ -1,6 +1,9 @@
 import AppliedModelingLib.Alignment.Axioms.LinearModel
+import Mathlib.Data.Fin.VecNotation
 import Mathlib.Order.Interval.Finset.Fin
 import Mathlib.Order.PiLex
+import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.NormNum
 
 /-!
 # Leximax Copeland subject to Pareto optimality
@@ -1212,6 +1215,235 @@ theorem fixedTieLCPOSelector_winnerMonotonic
   exact isFixedTieLCPOOutcome_winnerMonotonic feasible original updated voter candidate
     (rule.run original) (rule.run updated) (hselector original horiginal)
     (hselector updated hupdated) hfirst helevates
+
+/-!
+## Theorem 4.3 selector boundary
+
+The score-maximizing LCPO outcome condition alone permits profile-dependent
+selection among tied candidates.  The following literal three-candidate,
+six-voter construction shows that this freedom can violate winner
+monotonicity.  It isolates exactly why the theorem above assumes a fixed
+candidate-order tie convention.
+-/
+
+def lcpoCounterexampleAllFeasible : Ranking 1 → Prop := fun _ => True
+def lcpoCounterexampleABC : Ranking 1 := Equiv.refl _
+def lcpoCounterexampleBAC : Ranking 1 := Equiv.swap 0 1
+def lcpoCounterexampleACB : Ranking 1 := Equiv.swap 1 2
+def lcpoCounterexampleCBA : Ranking 1 := Equiv.swap 0 2
+def lcpoCounterexampleCAB : Ranking 1 :=
+  (Equiv.swap 1 2).trans (Equiv.swap 0 2)
+
+def lcpoCounterexampleOriginal : RankingProfile (Fin 6) 1 :=
+  ![lcpoCounterexampleBAC, lcpoCounterexampleBAC,
+    lcpoCounterexampleACB, lcpoCounterexampleACB,
+    lcpoCounterexampleCBA, lcpoCounterexampleCBA]
+
+def lcpoCounterexampleUpdated : RankingProfile (Fin 6) 1 :=
+  ![lcpoCounterexampleABC, lcpoCounterexampleBAC,
+    lcpoCounterexampleACB, lcpoCounterexampleACB,
+    lcpoCounterexampleCBA, lcpoCounterexampleCBA]
+
+theorem lcpoCounterexampleOriginal_scores :
+    copelandScore lcpoCounterexampleOriginal 0 = 1 ∧
+      copelandScore lcpoCounterexampleOriginal 1 = 1 ∧
+        copelandScore lcpoCounterexampleOriginal 2 = 1 := by
+  decide
+
+theorem lcpoCounterexampleUpdated_scores :
+    copelandScore lcpoCounterexampleUpdated 0 = 1 ∧
+      copelandScore lcpoCounterexampleUpdated 1 = 0 ∧
+        copelandScore lcpoCounterexampleUpdated 2 = 1 := by
+  decide
+
+theorem lcpoCounterexampleOriginal_isLCPOOutcome :
+    IsLCPOOutcome lcpoCounterexampleAllFeasible
+      lcpoCounterexampleOriginal lcpoCounterexampleACB := by
+  obtain ⟨hscore0, hscore1, hscore2⟩ := lcpoCounterexampleOriginal_scores
+  refine ⟨⟨trivial, by decide⟩, ?_⟩
+  intro position candidate _
+  fin_cases position
+  · fin_cases candidate
+    · change copelandScore lcpoCounterexampleOriginal 0 ≤
+        copelandScore lcpoCounterexampleOriginal 0
+      exact le_rfl
+    · change copelandScore lcpoCounterexampleOriginal 1 ≤
+        copelandScore lcpoCounterexampleOriginal 0
+      omega
+    · change copelandScore lcpoCounterexampleOriginal 2 ≤
+        copelandScore lcpoCounterexampleOriginal 0
+      omega
+  · fin_cases candidate
+    · change copelandScore lcpoCounterexampleOriginal 0 ≤
+        copelandScore lcpoCounterexampleOriginal 2
+      omega
+    · change copelandScore lcpoCounterexampleOriginal 1 ≤
+        copelandScore lcpoCounterexampleOriginal 2
+      omega
+    · change copelandScore lcpoCounterexampleOriginal 2 ≤
+        copelandScore lcpoCounterexampleOriginal 2
+      exact le_rfl
+  · fin_cases candidate
+    · change copelandScore lcpoCounterexampleOriginal 0 ≤
+        copelandScore lcpoCounterexampleOriginal 1
+      omega
+    · change copelandScore lcpoCounterexampleOriginal 1 ≤
+        copelandScore lcpoCounterexampleOriginal 1
+      exact le_rfl
+    · change copelandScore lcpoCounterexampleOriginal 2 ≤
+        copelandScore lcpoCounterexampleOriginal 1
+      omega
+
+theorem lcpoCounterexampleUpdated_isLCPOOutcome :
+    IsLCPOOutcome lcpoCounterexampleAllFeasible
+      lcpoCounterexampleUpdated lcpoCounterexampleCAB := by
+  obtain ⟨hscore0, hscore1, hscore2⟩ := lcpoCounterexampleUpdated_scores
+  refine ⟨⟨trivial, by decide⟩, ?_⟩
+  intro position candidate hcanPlace
+  fin_cases position
+  · fin_cases candidate
+    · change copelandScore lcpoCounterexampleUpdated 0 ≤
+        copelandScore lcpoCounterexampleUpdated 2
+      omega
+    · change copelandScore lcpoCounterexampleUpdated 1 ≤
+        copelandScore lcpoCounterexampleUpdated 2
+      omega
+    · change copelandScore lcpoCounterexampleUpdated 2 ≤
+        copelandScore lcpoCounterexampleUpdated 2
+      exact le_rfl
+  · fin_cases candidate
+    · change copelandScore lcpoCounterexampleUpdated 0 ≤
+        copelandScore lcpoCounterexampleUpdated 0
+      exact le_rfl
+    · change copelandScore lcpoCounterexampleUpdated 1 ≤
+        copelandScore lcpoCounterexampleUpdated 0
+      omega
+    · change copelandScore lcpoCounterexampleUpdated 2 ≤
+        copelandScore lcpoCounterexampleUpdated 0
+      omega
+  · fin_cases candidate
+    · exfalso
+      obtain ⟨contender, _, hagrees, hlast⟩ := hcanPlace
+      have hsecond : contender 1 = 0 := by
+        simpa [lcpoCounterexampleCAB, Equiv.swap_apply_def] using
+          hagrees 1 (by decide)
+      have hlast' : contender 2 = 0 := by simpa using hlast
+      have hcontra : (1 : Candidate 1) = 2 :=
+        contender.injective (hsecond.trans hlast'.symm)
+      have hcontraNat := congrArg Fin.val hcontra
+      norm_num at hcontraNat
+    · change copelandScore lcpoCounterexampleUpdated 1 ≤
+        copelandScore lcpoCounterexampleUpdated 1
+      exact le_rfl
+    · exfalso
+      obtain ⟨contender, _, hagrees, hlast⟩ := hcanPlace
+      have hfirst : contender 0 = 2 := by
+        simpa [lcpoCounterexampleCAB, Equiv.swap_apply_def] using
+          hagrees 0 (by decide)
+      have hlast' : contender 2 = 2 := by simpa using hlast
+      have hcontra : (0 : Candidate 1) = 2 :=
+        contender.injective (hfirst.trans hlast'.symm)
+      have hcontraNat := congrArg Fin.val hcontra
+      norm_num at hcontraNat
+
+theorem lcpoCounterexample_profileElevatesZero :
+    ProfileElevatesCandidate lcpoCounterexampleOriginal lcpoCounterexampleUpdated 0 0 := by
+  have hBAC0 : rankOf lcpoCounterexampleBAC 0 = 1 := by decide
+  have hBAC1 : rankOf lcpoCounterexampleBAC 1 = 0 := by decide
+  have hBAC2 : rankOf lcpoCounterexampleBAC 2 = 2 := by decide
+  have hABC0 : rankOf lcpoCounterexampleABC 0 = 0 := by decide
+  have hABC1 : rankOf lcpoCounterexampleABC 1 = 1 := by decide
+  have hABC2 : rankOf lcpoCounterexampleABC 2 = 2 := by decide
+  refine ⟨⟨?_, ?_⟩, ?_⟩
+  · change rankOf lcpoCounterexampleABC 0 ≤ rankOf lcpoCounterexampleBAC 0
+    rw [hABC0, hBAC0]
+    decide
+  · intro first second hfirst hsecond
+    fin_cases first
+    · exact False.elim (hfirst rfl)
+    · fin_cases second
+      · exact False.elim (hsecond rfl)
+      · exact ⟨fun h => False.elim (not_strictlyPrefers_self _ _ h),
+          fun h => False.elim (not_strictlyPrefers_self _ _ h)⟩
+      · change rankOf lcpoCounterexampleBAC 1 < rankOf lcpoCounterexampleBAC 2 ↔
+          rankOf lcpoCounterexampleABC 1 < rankOf lcpoCounterexampleABC 2
+        rw [hBAC1, hBAC2, hABC1, hABC2]
+        exact ⟨by decide, by decide⟩
+    · fin_cases second
+      · exact False.elim (hsecond rfl)
+      · change rankOf lcpoCounterexampleBAC 2 < rankOf lcpoCounterexampleBAC 1 ↔
+          rankOf lcpoCounterexampleABC 2 < rankOf lcpoCounterexampleABC 1
+        rw [hBAC2, hBAC1, hABC2, hABC1]
+        exact ⟨by decide, by decide⟩
+      · exact ⟨fun h => False.elim (not_strictlyPrefers_self _ _ h),
+          fun h => False.elim (not_strictlyPrefers_self _ _ h)⟩
+  · intro other hother
+    fin_cases other <;>
+      simp_all [lcpoCounterexampleOriginal, lcpoCounterexampleUpdated]
+
+/-- An LCPO selector that changes only two tied source-valid outcomes. -/
+noncomputable def lcpoProfileDependentTieRule :
+    LinearRankAggregationRule (Fin 6) 1 lcpoCounterexampleAllFeasible where
+  run profile := by
+    classical
+    exact if profile = lcpoCounterexampleOriginal then lcpoCounterexampleACB else
+      if profile = lcpoCounterexampleUpdated then lcpoCounterexampleCAB else
+        (fixedTieLCPO (Voter := Fin 6) lcpoCounterexampleAllFeasible
+          lcpoCounterexampleABC trivial).run profile
+  output_feasible _ := trivial
+
+theorem lcpoProfileDependentTieRule_isLCPOSelector :
+    IsLCPOSelector lcpoCounterexampleAllFeasible lcpoProfileDependentTieRule := by
+  intro profile hprofile
+  classical
+  by_cases horiginal : profile = lcpoCounterexampleOriginal
+  · subst profile
+    simpa [lcpoProfileDependentTieRule] using lcpoCounterexampleOriginal_isLCPOOutcome
+  by_cases hupdated : profile = lcpoCounterexampleUpdated
+  · subst profile
+    simp only [lcpoProfileDependentTieRule, horiginal, if_false, if_pos]
+    exact lcpoCounterexampleUpdated_isLCPOOutcome
+  · simp only [lcpoProfileDependentTieRule, horiginal, if_false, hupdated]
+    exact isFixedTieLCPOOutcome_isLCPOOutcome lcpoCounterexampleAllFeasible profile
+      ((fixedTieLCPO (Voter := Fin 6) lcpoCounterexampleAllFeasible
+        lcpoCounterexampleABC trivial).run profile)
+      (fixedTieLCPO_isFixedTieLCPOSelector (Voter := Fin 6)
+        lcpoCounterexampleAllFeasible lcpoCounterexampleABC trivial profile hprofile)
+
+theorem lcpoCounterexampleABC_ne_BAC :
+    lcpoCounterexampleABC ≠ lcpoCounterexampleBAC := by
+  decide
+
+theorem lcpoCounterexampleUpdated_ne_original :
+    lcpoCounterexampleUpdated ≠ lcpoCounterexampleOriginal := by
+  intro hequal
+  have hzero := congrFun hequal 0
+  change lcpoCounterexampleABC = lcpoCounterexampleBAC at hzero
+  exact lcpoCounterexampleABC_ne_BAC hzero
+
+/--
+The source LCPO outcome condition does not itself imply winner monotonicity;
+a stable tie convention is required at the rule level.
+-/
+theorem lcpoProfileDependentTieRule_not_winnerMonotonic :
+    ¬ WinnerMonotonic lcpoCounterexampleAllFeasible lcpoProfileDependentTieRule := by
+  intro hmonotonic
+  have hfirst := hmonotonic lcpoCounterexampleOriginal lcpoCounterexampleUpdated 0 0
+    (by intro voter; trivial) (by intro voter; trivial)
+    (by simp [lcpoProfileDependentTieRule, lcpoCounterexampleACB,
+      Equiv.swap_apply_def, firstChoice])
+    lcpoCounterexample_profileElevatesZero
+  have hupdated : firstChoice (lcpoProfileDependentTieRule.run lcpoCounterexampleUpdated) = 2 := by
+    change (if lcpoCounterexampleUpdated = lcpoCounterexampleOriginal then
+      lcpoCounterexampleACB else if lcpoCounterexampleUpdated = lcpoCounterexampleUpdated then
+      lcpoCounterexampleCAB else
+        (fixedTieLCPO (Voter := Fin 6) lcpoCounterexampleAllFeasible
+          lcpoCounterexampleABC trivial).run lcpoCounterexampleUpdated) 0 = 2
+    rw [if_neg lcpoCounterexampleUpdated_ne_original, if_pos rfl]
+    decide
+  have hzero_eq_two : (0 : Candidate 1) = 2 := hfirst.symm.trans hupdated
+  have hzero_eq_two_nat := congrArg Fin.val hzero_eq_two
+  norm_num at hzero_eq_two_nat
 
 /-- Every LCPO outcome satisfies the source paper's Pareto restriction. -/
 theorem isLCPOOutcome_respectsPareto

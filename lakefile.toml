@@ -228,3 +228,7 @@ srcDir = "papers"
 [[lean_lib]]
 name = "SeshadriUgander2020IIATesting"
 srcDir = "papers"
+
+[[lean_lib]]
+name = "QX26AgenticDelegation"
+srcDir = "papers"

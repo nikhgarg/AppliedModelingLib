@@ -1,0 +1,21 @@
+name: Check QX26 Agentic Delegation
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qx26-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Lean and build
+        uses: leanprover/lean-action@v1
+
+      - name: Run EconCSLib paper check
+        run: python3 scripts/paper_contribution.py check QX26AgenticDelegation --fast

@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "paper": "PRPKG24AccuracyDiversity",
+  "audit_kind": "source_defect_to_lean_agent",
+  "source_grounded": true,
+  "prompt_version": "defect-support-v1-exact-source-defect-to-lean-semantic",
+  "validator": "Codex PRPKG24 closeout defect-support inventory review",
+  "validator_type": "agent",
+  "validated_at": "2026-07-28T03:46:00Z",
+  "items": {},
+  "comment": "No normal-scope source item receives covered_by_support or support_only credit. Every retained source defect is handled by its direct corrected-target route or is excluded from normal named-theory coverage, so an empty judgment set is intentional and cannot be read as defect support."
+}

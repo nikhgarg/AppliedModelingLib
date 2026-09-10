@@ -1737,7 +1737,7 @@ def check_final_report_human_facing_front_matter(
         template_date = (
             folder.name == "TEMPLATE"
             and report_text.startswith(
-                "# Final Validation Report: [Paper Short Name]\nUpdated: YYYY-MM-DD\n"
+                "# Final Validation Report: [Full Paper Title]\nUpdated: YYYY-MM-DD\n"
             )
         )
         if not FINAL_REPORT_UPDATED_RE.search(report_text) and not template_date:

@@ -42,25 +42,25 @@
     "reviewed_rows": 0,
     "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     "stale_rows": 0,
-    "total_rows": 17,
+    "total_rows": 19,
     "uncertain_rows": 0
   },
-  "human_summary": "Formalized: the likelihood, Lemma 1, and Proposition 1 are checked. Lemma 1 and Proposition 1 now count actual calendar-time first reports through a stationary marked-displacement construction; the duration mixture is the explicitly stated pre-first-report survival condition.",
+  "human_summary": "Formalized: the likelihood, Lemma 1, Proposition 1, Lemma 2, and the Appendix D.8.2 shifted-process claim are checked. Lemma 1 and Proposition 1 count actual calendar-time first reports through a stationary marked-displacement construction; Lemma 2 conditions on the actual first report and transports the iid future exponential tail.",
   "human_summary_review": {
     "note": "Updated after the 2026-08-16 calendar-time source-model repair; do not mark human_written or human_approved without an explicit human review.",
     "status": "agent_draft"
   },
   "id": "LBG24SpatialUnderreporting",
-  "last_status_checkpoint": "2026-08-16: The literal calendar-time first-report route now compiles. A stationary marked birth process is displaced by its retained first-report delay; Lean derives the interval Poisson laws, independent increments, and Proposition 1 limits. The approved source clarification makes the pre-first-report survival bridge explicit and leaves post-first-report behavior unrestricted.",
+  "last_status_checkpoint": "2026-09-07: The Appendix Lemma 2 repair is synchronized. The actual first report is used as the conditioning variable, the selected start is constrained only after that report and before the horizon, and the iid future interarrival law is transported to the source carrier. The selected-start tail and D.8.2 shifted-process endpoints compile under this corrected model.",
   "main_caveat": "",
   "open_source_boundaries": [],
   "paper_interface": {
     "declaration_rows": 9,
-    "line_count": 219,
+    "line_count": 243,
     "maintainability_issue": null,
     "oversized": false,
     "path": "papers/LBG24SpatialUnderreporting/PaperInterface.lean",
-    "review_rows": 8
+    "review_rows": 10
   },
   "repository_visibility": "public",
   "review_entrypoint": "papers/LBG24SpatialUnderreporting/FINAL_VALIDATION_REPORT.md",
@@ -463,7 +463,9 @@
       "sourceEquation6PoissonRegressionLikelihoodSpec",
       "sourceZeroInflatedLikelihoodExtensionSpec",
       "sourceLemma1CalendarTimeDurationObservedProcessSpec",
-      "sourceProposition1CalendarTimeNonidentifiabilitySpec"
+      "sourceProposition1CalendarTimeNonidentifiabilitySpec",
+      "sourceLemma2SelectedStartExponentialTailSpec",
+      "sourcePostFirstJumpPoissonShiftSpec"
     ],
     "llm_assumption_review": {
       "assumption_judgment_file": "papers/LBG24SpatialUnderreporting/audit/assumption_match_llm.json",
@@ -502,6 +504,8 @@
       "sourceEquation6PoissonRegressionLikelihoodSpec": "sourceEquation6PoissonRegressionLikelihood",
       "sourceHomogeneousReportingDelayMeanSpec": "sourceHomogeneousReportingDelayMean",
       "sourceLemma1CalendarTimeDurationObservedProcessSpec": "sourceLemma1CalendarTimeDurationObservedProcess",
+      "sourceLemma2SelectedStartExponentialTailSpec": "sourceLemma2SelectedStartExponentialTail",
+      "sourcePostFirstJumpPoissonShiftSpec": "sourcePostFirstJumpPoissonShift",
       "sourceProposition1CalendarTimeNonidentifiabilitySpec": "sourceProposition1CalendarTimeNonidentifiability",
       "sourceTheorem1LikelihoodDecompositionSpec": "sourceTheorem1LikelihoodDecomposition",
       "sourceZeroInflatedLikelihoodExtensionSpec": "sourceZeroInflatedLikelihoodExtension"
@@ -548,6 +552,14 @@
         "id": "additional_source_results",
         "names": [
           "sourceEquation2PoissonCountPMFSpec"
+        ],
+        "title": "Additional source results"
+      },
+      {
+        "id": "additional_source_results",
+        "names": [
+          "sourceLemma2SelectedStartExponentialTailSpec",
+          "sourcePostFirstJumpPoissonShiftSpec"
         ],
         "title": "Additional source results"
       }

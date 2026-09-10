@@ -2,6 +2,9 @@ name = "AppliedModelingLib"
 version = "0.1.0"
 keywords = ["math"]
 defaultTargets = [
+  "LBG22StrategicRanking",
+  "GKP26LinearRepresentationHypothesis",
+  "CGGG20SelectiveInformationAcquisition",
   "AppliedModelingLib",
   "DGD26AdmissionsPredictability",
   "DSWG24DiscretizationBias",
@@ -227,4 +230,16 @@ srcDir = "papers"
 
 [[lean_lib]]
 name = "SeshadriUgander2020IIATesting"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "CGGG20SelectiveInformationAcquisition"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "GKP26LinearRepresentationHypothesis"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "LBG22StrategicRanking"
 srcDir = "papers"

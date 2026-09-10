@@ -1037,6 +1037,42 @@
         "234 graph-dispatch, source-route, document, and strict-closeout regressions pass; defaults preserve private source requirements and unfinished-paper checks",
         "Full isolated regression suite: 4,333 tests across 225 modules, zero failed modules"
       ]
+    },
+    {
+      "engine_tree_sha256": "61d4ef0fa424ea0b7b5f5175e43b19ef76e7c31e3456dcf1e4c17094014de3a9",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Register the issuing verifier for selected public paper closure graphs.",
+      "sequence": 88,
+      "verification": [
+        "Canonical public graph transport and source-role projection checks."
+      ]
+    },
+    {
+      "engine_tree_sha256": "918e7ae1810b57f73b93361f5f9150390bb2c0c8fa1ff2a98c57542ac8b0b66d",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Register the issuing verifier for selected public paper closure graphs.",
+      "sequence": 89,
+      "verification": [
+        "Canonical public graph transport and source-role projection checks."
+      ]
+    },
+    {
+      "engine_tree_sha256": "e6c8990b5d168f0964dfdea6cb09485f9e6b1149e9615d576f79bd9a9eb268d7",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Register the issuing verifier for selected public paper closure graphs.",
+      "sequence": 90,
+      "verification": [
+        "Canonical public graph transport and source-role projection checks."
+      ]
+    },
+    {
+      "engine_tree_sha256": "8d0cb764f772f1d1ea86cac41b7a55829c8e6b49ee07d61b7b51967697f51ec0",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Register public reader-template and source-map tooling updates with the selected paper release.",
+      "sequence": 91,
+      "verification": [
+        "84 focused report-template and source-map tests pass; public transport guard validates the exact candidate separately."
+      ]
     }
   ],
   "schema": 2

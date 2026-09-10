@@ -52,21 +52,21 @@
       "status_impact_rationale": "This is an isolated transcription slip in the proof; the correct endpoint formula is stated before and after it and is formalized directly."
     },
     {
-      "acceptance_condition": "The finite-level rate theorem is proved for the actual source ranking-quality gap, including all pair contributions required by its definition.",
+      "acceptance_condition": "A paper-facing theorem defines the corrected cross-bin ranking objective and transfers the Appendix-C tie-erased exponential rate to it without a same-bin premise.",
       "affected_source_locators": [
         "cited publication member cited publication, extracted lines 1143-1270; Supplement Appendix C",
         "cited publication member cited publication, extracted lines 1328-1364; Supplement Appendix C"
       ],
       "defect_kind": "event_or_measure",
       "id": "GJ19-C3-TIE-COMPLEMENT-01",
-      "repair_obligation": "Control the signed within-cell contributions and identify the full source W-W_k asymptotic exponent; do not replace that obligation by a tie-erased objective.",
-      "resolution": "open_proof_obligation",
-      "resolution_evidence": "The finite and non-finite-step branches currently concern different pairwise integrals. For equal Bernoulli parameter 1/3, the signed ordering advantage of a two-sample mean over a one-sample mean is 2/27. This witnesses a finite-sample obstruction to simply erasing within-cell pairs, not a counterexample to the asymptotic source theorem.",
+      "repair_obligation": "State the rate objective on distinct rating bins and prove that its limiting-minus-finite gap is the Appendix-C cross-bin error integral.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "SourceStrictUpperPairCrossBinObjectiveRealization defines the project-approved limiting and finite cross-bin objectives. sourceStrictUpperPairWeightedCrossBinLimit_sub_finiteObjective_eq_separatedRawError proves their gap equals the Appendix-C error at every horizon, and source_clarified_crossBin_objective_rate_from_tieErasedSourceWbar transfers its rate. The 2/27 unequal-count witness remains a diagnostic for the archival all-pairs display, not a premise of the corrected theorem.",
       "source_claim": "The Lemma C.3 proof says the complement error term is zero when two beta levels agree.",
       "source_locator": "cited publication member cited publication, extracted lines 1143-1198; Supplement Appendix C",
       "statement_impact": "proof_only",
-      "status_impact": "partially_formalized",
-      "status_impact_rationale": "The separated cross-cell rate theorem is proved, but its integral is not yet identified with the source W-W_k gap. Equal rating probabilities with different sample counts can have nonzero finite-sample signed ordering contributions, so erasing within-cell pairs is not an established source-model identity."
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The project-approved corrected rate objective explicitly evaluates only cross-bin pairs. Its finite and limiting objectives are formalized and their gap is exactly the Appendix-C tie-erased error integral, so no within-cell cancellation or cellwise-constant matching-rate condition is needed. The archival all-pairs mismatch remains recorded as a source correction."
     },
     {
       "acceptance_condition": "The checked lower-bound statement has an explicit inequality and positive constant or a stronger explicit formula.",
@@ -103,7 +103,7 @@
       "status_impact_rationale": "The finite cross-cell Laplace route and the weighted essential-infimum theorem avoid the false global uniformity assertion and preserve the advertised piecewise-constant rate conclusions."
     },
     {
-      "acceptance_condition": "A paper-facing theorem proves the complete general-nondecreasing-g Theorem 3.1 endpoint without accepting either optimization conclusion as an input.",
+      "acceptance_condition": "A paper-facing theorem proves the value-then-rate design endpoint with the project-approved cross-bin rate objective, without a hidden cellwise matching restriction or supplied optimization conclusion.",
       "affected_source_locators": [
         "cited publication member cited publication, extracted lines 320-367; Main paper Section 2",
         "cited publication member cited publication, extracted lines 458-517; Main paper Section 3",
@@ -111,14 +111,14 @@
       ],
       "defect_kind": "logical_dependency",
       "id": "GJ19-T31-GENERAL-G-CLOSURE-01",
-      "repair_obligation": "Prove the adjacent-rate formula for the actual source W-W_k quantity under the full matching model and cover the two-level endpoint.",
-      "resolution": "open_proof_obligation",
-      "resolution_evidence": "PaperInterface.theorem31_source_matching_function_lexicographic_formula constructs strict finite cutpoints, the full all-cross-cell value maximizer, and a globally rate-formula-optimal equalized design without uniqueness or supplied optimization conclusions. C.3/C.4 do not yet identify this formula with the source exponent.",
+      "repair_obligation": "Make the cross-bin rate-objective convention explicit and compose its exact Appendix-C error bridge with the existing finite-level rate certificate.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "PaperInterface.theorem31_source_matching_function_lexicographic_formula constructs strict finite cutpoints, the full all-cross-cell value maximizer, and a globally rate-formula-optimal equalized design without uniqueness or supplied optimization conclusions. SourceStrictUpperPairCrossBinObjectiveRealization and source_clarified_crossBin_objective_rate_from_tieErasedSourceWbar identify its corrected rate target with the Appendix-C tie-erased error; sourceTwoLevelWError_hasExtendedExponentialRate_top covers the two-level endpoint.",
       "source_claim": "Theorem 3.1 claims the continuum discretization and level choices jointly give the value-then-rate optimal binary system for the source nondecreasing matching function g.",
       "source_locator": "cited publication member cited publication, extracted lines 487-517; Main paper Section 3",
       "statement_impact": "source_statement",
-      "status_impact": "partially_formalized",
-      "status_impact_rationale": "Global maximization of the full cross-cell value and the displayed adjacent-rate formula is proved across all tied primary optimizers for M >= 3. Identifying that formula with the actual W-W_k exponent remains a formalization gap, and the two-level infinite-rate endpoint is outside the real-valued formula."
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Global maximization of the cross-cell value and the adjacent-rate formula is proved across all tied primary optimizers for M >= 3. Under the project-approved cross-bin correction, the rate formula governs the explicitly defined cross-bin ranking gap rather than the archival all-pairs W-W_k display. The two-level endpoint is separately formalized with extended rate +infinity."
     },
     {
       "acceptance_condition": "A paper-facing executable or operational theorem analyzes the returned output of Algorithm 1 itself and proves the source epsilon and runtime guarantees without reading the optimum as an input.",

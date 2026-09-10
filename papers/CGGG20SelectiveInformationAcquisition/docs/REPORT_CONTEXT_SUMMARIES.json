@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "paper": "CGGG20SelectiveInformationAcquisition",
+  "summaries": {},
+  "omitted_conventions": [
+    "CGGG20-EXOGENOUS-SCREENING-RANDOMIZATION-01",
+    "CGGG20-STRICT-POSITIVE-ALLOCATION-COST-01"
+  ]
+}

@@ -1,0 +1,573 @@
+{
+  "schema": 2,
+  "paper": "HT26EFXChores",
+  "report_sha256": "749f7ab1f71b3edf720bfd2e385c414b6bb775fa705da94eb6b1c3c81539dbd4",
+  "source_items_sha256": "9726152b1a9bbe9830eba67a1809152fbedf9a5dd321454fcfd6a9a7041fcb02",
+  "all_selected_semantic_review_sha256": "f5ae63bf131fdbda2a76b0d51d2058dc347a4368a8a9b700060c0b61f982d402",
+  "report_inventory_complete": true,
+  "items": {
+    "convention/HT26-FINITE-ADDITIVE-CHORES-01": {
+      "disposition": "not_material",
+      "reason": "Finite bundles, additive costs, and removal from the envious own bundle are the source chore model and EFX definition."
+    },
+    "convention/HT26-POSITIVE-BIVALUED-NORMALIZATION-01": {
+      "disposition": "not_material",
+      "reason": "Positive scaling preserves EFX. Constant and zero-low-value cases are handled separately, so normalization does not narrow the source bi-valued theorem."
+    },
+    "convention/HT26-M2-EDGE-REPRESENTATION-01": {
+      "disposition": "not_material",
+      "reason": "Encoding an M2 chore by the pair of agents for whom it is small is exactly the source multigraph construction, including multiplicities."
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "d6bb00d52184df636e5b690f5baa9da36aac2795b114cae10a113b5f32da9ba1",
+      "discovered_named_result_sha256": "41db2c5426adb414b54cf1add3e308c30aff967e9b598e8432d95faf1fd879cb",
+      "source_format": "tex",
+      "results": {
+        "appendix_no_two_a_items": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 2076,
+              "line_start": 2074,
+              "presentation": "tex_environment",
+              "presentation_sha256": "6f369734a0c45b7c3e4a8e484aebaa06af51e7ff7e7e8fe98e48628b748cad37",
+              "source_item_id": "appendix_no_two_a_items",
+              "source_label": "proposition@2074"
+            }
+          ],
+          "source_item_ids": [
+            "appendix_no_two_a_items"
+          ]
+        },
+        "appendix_p1_p2_lower_bounds": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 2106,
+              "line_start": 2104,
+              "presentation": "tex_environment",
+              "presentation_sha256": "efc33c765b8faafad70814de0d405c17e7de78e5fe8492738d62c25e7b175d00",
+              "source_item_id": "appendix_p1_p2_lower_bounds",
+              "source_label": "proposition@2104"
+            }
+          ],
+          "source_item_ids": [
+            "appendix_p1_p2_lower_bounds"
+          ]
+        },
+        "balanced_orientation": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1031,
+              "line_start": 1019,
+              "presentation": "tex_environment",
+              "presentation_sha256": "b6fa30bdbf55a1127b909ba3f814e475de2f72cbb8538882e69abb02edac2fdd",
+              "source_item_id": "balanced_orientation",
+              "source_label": "lem:balancedorientation"
+            }
+          ],
+          "source_item_ids": [
+            "balanced_orientation"
+          ]
+        },
+        "canonical_allocation_properties": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 767,
+              "line_start": 760,
+              "presentation": "tex_environment",
+              "presentation_sha256": "7524d7cdbb714eb05f8f851072db0ee37d0dc67fdce8c9de39b60ad6c0a3cbb5",
+              "source_item_id": "canonical_allocation_properties",
+              "source_label": "lem:canonical"
+            }
+          ],
+          "source_item_ids": [
+            "canonical_allocation_properties"
+          ]
+        },
+        "composition": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 724,
+              "line_start": 706,
+              "presentation": "tex_environment",
+              "presentation_sha256": "c6f13effe0d0774378e0cceab6d89635d786748b894ddbde9b658d19dd2d06a3",
+              "source_item_id": "composition",
+              "source_label": "lem:composition"
+            }
+          ],
+          "source_item_ids": [
+            "composition"
+          ]
+        },
+        "efx_pareto_construction_has_efx": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 452,
+              "line_start": 448,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "1d00f232477967a7ea75c6bee152d6ef1fd46300445b16a8ce21a41555d613d9",
+              "source_item_id": "efx_pareto_construction_has_efx",
+              "source_label": "Theorem 2 construction has an EFX allocation"
+            }
+          ],
+          "source_item_ids": [
+            "efx_pareto_construction_has_efx"
+          ]
+        },
+        "efx_pareto_incompatibility": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 418,
+              "line_start": 416,
+              "presentation": "tex_environment",
+              "presentation_sha256": "9d8da85dee705610bfdd9b32cfe8012cfe61e36a289ef271153a9003137df792",
+              "source_item_id": "efx_pareto_incompatibility",
+              "source_label": "thm:EFXPO"
+            }
+          ],
+          "source_item_ids": [
+            "efx_pareto_incompatibility"
+          ]
+        },
+        "efx_po_cost_lower_bounds": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 504,
+              "line_start": 502,
+              "presentation": "tex_environment",
+              "presentation_sha256": "80572357c5af40dac8c097841f0a2b81e643869c43c8065957fef30a4978a300",
+              "source_item_id": "efx_po_cost_lower_bounds",
+              "source_label": "prop:r+1r+2"
+            }
+          ],
+          "source_item_ids": [
+            "efx_po_cost_lower_bounds"
+          ]
+        },
+        "efx_po_every_agent_large": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 463,
+              "line_start": 461,
+              "presentation": "tex_environment",
+              "presentation_sha256": "5150ab06d0d4f4f2e79bd88b1e9e3314d84251a75267bcc2b4766708b4e27031",
+              "source_item_id": "efx_po_every_agent_large",
+              "source_label": "prop:PO-exist-large"
+            }
+          ],
+          "source_item_ids": [
+            "efx_po_every_agent_large"
+          ]
+        },
+        "exceptional_residue_combination": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1712,
+              "line_start": 1709,
+              "presentation": "tex_environment",
+              "presentation_sha256": "fc5146685cd24eefda2c015e786eb131b3ae5667dcf4afec87b1c37d0b10db25",
+              "source_item_id": "exceptional_residue_combination",
+              "source_label": "lem:easycombine"
+            }
+          ],
+          "source_item_ids": [
+            "exceptional_residue_combination"
+          ]
+        },
+        "four_agent_bi_valued_efx_exists": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 534,
+              "line_start": 532,
+              "presentation": "tex_environment",
+              "presentation_sha256": "d5269eaa33f3b6c6bf3594fb41ae143cf6c0b403646f2f66e0b0dc81fa7280b1",
+              "source_item_id": "four_agent_bi_valued_efx_exists",
+              "source_label": "thm:four"
+            }
+          ],
+          "source_item_ids": [
+            "four_agent_bi_valued_efx_exists"
+          ]
+        },
+        "m2_efx_allocation": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1047,
+              "line_start": 1045,
+              "presentation": "tex_environment",
+              "presentation_sha256": "28a47acccd766ac42fb1b5d99fc0f0dfa53c8b9580ed4ff908a31c37106cb3f8",
+              "source_item_id": "m2_efx_allocation",
+              "source_label": "lem:M2"
+            }
+          ],
+          "source_item_ids": [
+            "m2_efx_allocation"
+          ]
+        },
+        "m2_efx_allocation_properties": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1462,
+              "line_start": 1419,
+              "presentation": "tex_environment",
+              "presentation_sha256": "872a1ca069ce566c0bcd2536bbe069dc4218339f30d7b0b55023b178d01bb6c8",
+              "source_item_id": "m2_efx_allocation_properties",
+              "source_label": "lem:M2properties"
+            }
+          ],
+          "source_item_ids": [
+            "m2_efx_allocation_properties"
+          ]
+        },
+        "m34_insertion": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 581,
+              "line_start": 577,
+              "presentation": "tex_environment",
+              "presentation_sha256": "f833363f65a40cf96351243a109ec158fa080c1711272e4cad375bb479932255",
+              "source_item_id": "m34_insertion",
+              "source_label": "lem:insertion"
+            }
+          ],
+          "source_item_ids": [
+            "m34_insertion"
+          ]
+        },
+        "m34_insertion_general_agents": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 677,
+              "line_start": 673,
+              "presentation": "tex_environment",
+              "presentation_sha256": "25c45309cffd12dca26d431a9bd26c26df6425cbceb58450c037473fabdea922",
+              "source_item_id": "m34_insertion_general_agents",
+              "source_label": "remark@673"
+            }
+          ],
+          "source_item_ids": [
+            "m34_insertion_general_agents"
+          ]
+        },
+        "tri_four_no_a_bundle_expensive": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 365,
+              "line_start": 363,
+              "presentation": "tex_environment",
+              "presentation_sha256": "f623464248a0a6cbf85394741e749f170f956a79dbb5192525d1e4b7221ebd3f",
+              "source_item_id": "tri_four_no_a_bundle_expensive",
+              "source_label": "proposition@363"
+            }
+          ],
+          "source_item_ids": [
+            "tri_four_no_a_bundle_expensive"
+          ]
+        },
+        "tri_four_no_two_large": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 342,
+              "line_start": 340,
+              "presentation": "tex_environment",
+              "presentation_sha256": "5c0217531aa0af1b2faa5d684f7f7cf315a85ee5d723c2434b0e14cb0bdc4809",
+              "source_item_id": "tri_four_no_two_large",
+              "source_label": "proposition@340"
+            }
+          ],
+          "source_item_ids": [
+            "tri_four_no_two_large"
+          ]
+        },
+        "tri_valued_nonexistence": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 306,
+              "line_start": 304,
+              "presentation": "tex_environment",
+              "presentation_sha256": "885909aad9981e323f13d70e0b6be5db37f072429885be4c825be8bb1576845e",
+              "source_item_id": "tri_valued_nonexistence",
+              "source_label": "thm:tri"
+            }
+          ],
+          "source_item_ids": [
+            "tri_valued_nonexistence"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "eb793f816a475e03b892c820dd9f8175db20f609848d5c56dd85820f12eaac3f",
+    "results": {
+      "appendix_no_two_a_items": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 5",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 1–6",
+            "row_sha256": "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b"
+          }
+        ],
+        "grouping_reason": "The report groups the consecutively numbered propositions and lemmas in one exact comparison row."
+      },
+      "appendix_p1_p2_lower_bounds": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 6",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 1–6",
+            "row_sha256": "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b"
+          }
+        ],
+        "grouping_reason": "The report groups the consecutively numbered propositions and lemmas in one exact comparison row."
+      },
+      "balanced_orientation": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1–7",
+            "row_sha256": "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b"
+          }
+        ],
+        "grouping_reason": "The report groups the consecutively numbered propositions and lemmas in one exact comparison row."
+      },
+      "canonical_allocation_properties": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1–7",
+            "row_sha256": "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b"
+          }
+        ],
+        "grouping_reason": "The report groups the consecutively numbered propositions and lemmas in one exact comparison row."
+      },
+      "composition": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1–7",
+            "row_sha256": "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b"
+          }
+        ],
+        "grouping_reason": "The report groups the consecutively numbered propositions and lemmas in one exact comparison row."
+      },
+      "efx_pareto_construction_has_efx": {
+        "numbering": "unnumbered",
+        "printed_label": "Unnumbered EFX construction observation",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2",
+            "row_sha256": "996056617597900df82b7d432d1d3010d32a491d9e8672952f79bdb487f04c35"
+          }
+        ],
+        "grouping_reason": "This unnumbered construction observation is a proof component of Theorem 2."
+      },
+      "efx_pareto_incompatibility": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2",
+            "row_sha256": "996056617597900df82b7d432d1d3010d32a491d9e8672952f79bdb487f04c35"
+          }
+        ]
+      },
+      "efx_po_cost_lower_bounds": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 1–6",
+            "row_sha256": "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b"
+          }
+        ],
+        "grouping_reason": "The report groups the consecutively numbered propositions and lemmas in one exact comparison row."
+      },
+      "efx_po_every_agent_large": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 1–6",
+            "row_sha256": "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b"
+          }
+        ],
+        "grouping_reason": "The report groups the consecutively numbered propositions and lemmas in one exact comparison row."
+      },
+      "exceptional_residue_combination": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 7",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1–7",
+            "row_sha256": "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b"
+          }
+        ],
+        "grouping_reason": "The report groups the consecutively numbered propositions and lemmas in one exact comparison row."
+      },
+      "four_agent_bi_valued_efx_exists": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3",
+            "row_sha256": "355211852a3f5139f2c07cfb7b050b5182be766a91ba65e219abc10c9c91da2c"
+          }
+        ]
+      },
+      "m2_efx_allocation": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 5",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1–7",
+            "row_sha256": "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b"
+          }
+        ],
+        "grouping_reason": "The report groups the consecutively numbered propositions and lemmas in one exact comparison row."
+      },
+      "m2_efx_allocation_properties": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 6",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1–7",
+            "row_sha256": "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b"
+          }
+        ],
+        "grouping_reason": "The report groups the consecutively numbered propositions and lemmas in one exact comparison row."
+      },
+      "m34_insertion": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1–7",
+            "row_sha256": "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b"
+          }
+        ],
+        "grouping_reason": "The report groups the consecutively numbered propositions and lemmas in one exact comparison row."
+      },
+      "m34_insertion_general_agents": {
+        "numbering": "numbered",
+        "printed_label": "Remark 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Remark 3",
+            "row_sha256": "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b"
+          }
+        ]
+      },
+      "tri_four_no_a_bundle_expensive": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 1–6",
+            "row_sha256": "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b"
+          }
+        ],
+        "grouping_reason": "The report groups the consecutively numbered propositions and lemmas in one exact comparison row."
+      },
+      "tri_four_no_two_large": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 1–6",
+            "row_sha256": "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b"
+          }
+        ],
+        "grouping_reason": "The report groups the consecutively numbered propositions and lemmas in one exact comparison row."
+      },
+      "tri_valued_nonexistence": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1",
+            "row_sha256": "e9a9f3f4513672c851dc9149c4ea58027b936b10c2106e094669738156be29be"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "e9a9f3f4513672c851dc9149c4ea58027b936b10c2106e094669738156be29be": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "996056617597900df82b7d432d1d3010d32a491d9e8672952f79bdb487f04c35": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "355211852a3f5139f2c07cfb7b050b5182be766a91ba65e219abc10c9c91da2c": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "9f52cb34842226465d576fa516d95d99d69d6474b2721157df000c42026ad25b": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

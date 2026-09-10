@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "GKGMM19IterativeLocalVoting",
-  "private_source_map_sha256": "fa64599f8163036dce602b076dc8831c0f34ee63b250a494a0c31fa4b5c2fb60",
+  "private_source_map_sha256": "3e10dd62327534eac77e42374a393471800bb6e317a66a9dde42ef7aeb0661c7",
   "public_manifest_path": "papers/GKGMM19IterativeLocalVoting/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "685d910b26379959d1dfc6cc1c102f9c52fce805fce4fece21c6492800e54842",
+  "public_source_map_sha256": "7aa078430563137f70b40d7494c490a0eda03cdfeabb49caf4da81e5fe7402ce",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,

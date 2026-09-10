@@ -57,9 +57,15 @@ theorem corollaryOnePopulation : corollaryOnePopulationSpec := by
 
 theorem exampleOneDimensionalSetup : exampleOneDimensionalSetupSpec := by
   intro P _ _ β u genre ν hβ hu hgenre hgenre_norm hscore hmax hmeas
-  simpa [exampleOneDimensionalSetupSpec, paper_single_genre_cdf,
-    singleGenreCdf, singleGenreCdfRaw] using
-    (corollaryOnePopulation (N := 1) ν hβ hu hgenre hgenre_norm hscore hmax hmeas)
+  have hone :=
+    corollaryOnePopulation (D := 1) (N := 1) (P := P) (β := β)
+      (u := u) (genre := genre) ν hβ hu hgenre hgenre_norm hscore hmax hmeas
+  refine ⟨hone.1, ?_, ?_, ?_⟩
+  · simpa using hone.2.1
+  · simpa [paper_single_genre_cdf, singleGenreCdf, singleGenreCdfRaw] using hone.2.2
+  · intro μ hnash
+    exact sourceSymmetricMixedNash_eq_oneDimensionalContentLaw hnash
+      (by assumption)
 
 theorem theoremSingleGenre : theoremSingleGenreSpec := by
   intro D N P _ _ _ users ν β hβ husers husers_nonzero hperturb hcompact hcontinuous
@@ -97,10 +103,59 @@ theorem lemmaOptimizationProgramRestated : lemmaOptimizationProgramRestatedSpec 
       (D := D) (N := N) (P := P) (users := users) ν hβ husers husers_nonzero hcompact
 
 theorem corollaryTwoUsers : corollaryTwoUsersSpec := by
-  simpa [corollaryTwoUsersSpec, symmetricMixedNashModelSpec,
-    SourceSymmetricMixedNash, nonzeroSupportGenresSpec, SourceNonzeroSupportGenres,
-    normPowerCostSpec] using
-    @paper_corollary_twousers_corrected_single_genre_equilibrium_iff_phase_threshold
+  intro D K P _ _ users β θ hK husers_nonnegative hfirst_nonzero hsecond_nonzero
+    hangle hβ_one hθ_pos hθ_le_half_pi
+  constructor
+  · simpa [symmetricMixedNashModelSpec, SourceSymmetricMixedNash,
+      nonzeroSupportGenresSpec, SourceNonzeroSupportGenres, normPowerCostSpec] using
+      (@paper_corollary_twousers_corrected_single_genre_equilibrium_iff_phase_threshold
+        D K P _ _ users β θ hK husers_nonnegative hfirst_nonzero hsecond_nonzero
+        hangle hβ_one hθ_pos hθ_le_half_pi)
+  · have hθ_lt_pi : θ < Real.pi := by
+      nlinarith [Real.pi_pos]
+    have hsin_half : 0 < Real.sin (θ / 2) :=
+      Real.sin_pos_of_pos_of_lt_pi (by linarith) (by linarith [Real.pi_pos])
+    have htrig : 1 - Real.cos θ = 2 * (Real.sin (θ / 2)) ^ 2 := by
+      rw [Real.sin_sq_eq_half_sub]
+      have hdouble : 2 * (θ / 2) = θ := by ring
+      rw [hdouble]
+      ring
+    have hden : 0 < 1 - Real.cos θ := by
+      rw [htrig]
+      positivity
+    have hthreshold_ge_one : 1 ≤ twoUserPhaseThreshold θ := by
+      rw [twoUserPhaseThreshold]
+      apply (le_div_iff₀ hden).2
+      have hcos : -1 ≤ Real.cos θ := Real.neg_one_le_cos θ
+      nlinarith
+    let S : Set ℝ :=
+      {β : ℝ | 1 ≤ β ∧ SingleGenreProductSupCondition
+        (poweredScoreGeometrySpec (twoPopulationUsers K users) (SourceNorm.l2 D) β)}
+    have hset : S = Set.Icc 1 (twoUserPhaseThreshold θ) := by
+      ext β
+      simp only [S, Set.mem_setOf_eq, Set.mem_Icc]
+      constructor
+      · rintro ⟨hβ_one, hproduct⟩
+        exact ⟨hβ_one,
+          (singleGenreProductSupCondition_inPoweredUnitImage_twoPopulationUsers_l2_raw_iff_le_phaseThreshold
+            hK husers_nonnegative
+            (AppliedModelingLib.FiniteDimensionalNorms.normL2_pos_of_exists_ne_zero hfirst_nonzero)
+            (AppliedModelingLib.FiniteDimensionalNorms.normL2_pos_of_exists_ne_zero hsecond_nonzero)
+            hangle hβ_one hθ_pos hθ_le_half_pi).mp hproduct⟩
+      · rintro ⟨hβ_one, hβ_le⟩
+        exact ⟨hβ_one,
+          (singleGenreProductSupCondition_inPoweredUnitImage_twoPopulationUsers_l2_raw_iff_le_phaseThreshold
+            hK husers_nonnegative
+            (AppliedModelingLib.FiniteDimensionalNorms.normL2_pos_of_exists_ne_zero hfirst_nonzero)
+            (AppliedModelingLib.FiniteDimensionalNorms.normL2_pos_of_exists_ne_zero hsecond_nonzero)
+            hangle hβ_one hθ_pos hθ_le_half_pi).mpr hβ_le⟩
+    have hbounded : BddAbove S := by
+      refine ⟨twoUserPhaseThreshold θ, ?_⟩
+      intro β hβ
+      exact (Set.mem_Icc.mp (hset ▸ hβ)).2
+    change sSup ((fun β : ℝ => (β : WithTop ℝ)) '' S) =
+      (twoUserPhaseThreshold θ : WithTop ℝ)
+    rw [← WithTop.coe_sSup' hbounded, hset, csSup_Icc hthreshold_ge_one]
 
 theorem propositionPTwo : propositionPTwoSpec := by
   intro β hβ
@@ -134,27 +189,25 @@ theorem claimNecessarySufficient : claimNecessarySufficientSpec := by
     @paper_necessarysuff_tie_aware_iff
 
 theorem theoremPhaseTransition : theoremPhaseTransitionSpec := by
-  intro P _ β θ μ _ hP hβ hθ hθupper hnash hac hdiff1 hdiff2
-  have htransition :=
-    paper_canonical_two_user_corrected_phase_transition
-      (P := P) hP hβ hθ hθupper (by simpa [normPowerCostSpec] using hnash)
+  intro D K P _ β θ u v μ _ hK hP hu_nonzero hv_nonzero
+    hu_nonnegative hv_nonnegative hangle hβ hθ hθupper hnash hac hdiff1 hdiff2
+  refine ⟨?_, ?_⟩
+  · intro hphase
+    exact twoPopulation_nonzeroSupportGenres_eq_singleton_of_normRpowCostNash_belowPhase_raw_users
+      hK hP hu_nonzero hv_nonzero hu_nonnegative hv_nonnegative hangle hβ hθ hθupper
+      hphase (by simpa [normPowerCostSpec] using hnash) hac hdiff1 hdiff2
+  · intro hphase G hG direction law hdirection_injective
+    letI : Nonempty (Fin G) := hG
+    exact twoPopulation_no_finiteGenreConditionalNormLawAnyDim_of_normRpowCostNash_abovePhase_raw_users
+      direction law hdirection_injective hK hu_nonzero hv_nonzero hu_nonnegative hv_nonnegative
+      hangle hP hθ hθupper hphase (by simpa [normPowerCostSpec] using hnash)
       hac hdiff1 hdiff2
-  refine ⟨htransition.1, ?_⟩
-  intro hphase G hG angle weight radial hweight_pos hweights_sum
-    hradial_probability hradial_support_nonnegative hradial_has_positive_support
-    hradial_cdf_c1 hdecomposition hinjective hangle
-  let law : finiteGenreConditionalNormLawSpec μ angle :=
-    ⟨weight, radial, hweight_pos, hweights_sum, hradial_probability,
-      hradial_support_nonnegative, hradial_has_positive_support, hradial_cdf_c1,
-      hdecomposition⟩
-  exact htransition.2 hphase hG angle
-    (finiteGenreConditionalNormLaw_of_spec law) hinjective hangle
 
 private theorem infiniteGenreConclusion
     {β θ : ℝ} (hθ : 0 < θ) (hθupper : θ < Real.pi / 2)
     (hphase : twoUserPhaseThreshold θ < β) :
     ∃ a C1 C2 A B phi : ℝ,
-      infiniteProducerModelSpec
+      infiniteProducerCandidateSpec
         (fun q : ℝ =>
           if q ≤ 0 then 0
           else if a ≤ q then 1
@@ -164,7 +217,7 @@ private theorem infiniteGenreConclusion
               exact if h : ∃ n : ℕ, a * C2 ^ n ≤ q then Nat.find h else 0
             if Even k then C2 ^ ((k : ℝ) * β)
             else C1 ^ (-2 : ℝ) * C2 ^ (-2 * ((k / 2 : ℕ) : ℝ) * β) *
-              q ^ (2 * β)) β θ ∧
+              q ^ (2 * β)) β θ phi ∧
       phi ∈ Set.Icc 0 (θ / 2) ∧
       IsMaxOn (fun x : ℝ =>
         (Real.cos x) ^ β + (Real.cos (θ - x)) ^ β) (Set.Icc 0 (θ / 2)) phi ∧
@@ -173,24 +226,24 @@ private theorem infiniteGenreConclusion
       A = Real.cos phi ∧ B = Real.cos (θ - phi) ∧ C2 = B / A := by
   rcases paper_exists_corrected_infinite_two_genre_content_equilibrium_of_phase_threshold_lt
       hθ hθupper hphase with
-    ⟨a, C1, C2, A, B, phi, hmodel, hphi, hmax, ha, hC2, hC2one,
+    ⟨a, C1, C2, A, B, phi, hmodel, hfirst_eq, hsecond_eq, hgenres_ne,
+      hphi, hmax, ha, hC2, hC2one,
       hC1, hbalance, hA, hB, hratio⟩
   refine ⟨a, C1, C2, A, B, phi, ?_, hphi, ?_, ha, hC2, hC2one,
     hC1, hbalance, hA, hB, hratio⟩
-  · rw [infiniteProducerModelSpec]
-    rcases correctedInfiniteTwoGenreContentEquilibriumSpec_of_structure hmodel with
-      ⟨firstGenre, secondGenre, conditionalQuality, firstWeight, secondWeight,
-        hfirst_nonnegative, hsecond_nonnegative, hfirst_norm, hsecond_norm,
-        hquality_probability, hquality_cdf, hquality_support,
-        hfirstWeight_nonnegative, hsecondWeight_nonnegative,
-        hfirstWeight_half, hsecondWeight_half, hweights, hfirst_max, hsecond_max⟩
-    refine ⟨firstGenre, secondGenre, conditionalQuality, firstWeight, secondWeight,
-      hfirst_nonnegative, hsecond_nonnegative, hfirst_norm, hsecond_norm,
-      hquality_probability, ?_, hquality_support, hfirstWeight_nonnegative,
-      hsecondWeight_nonnegative, hfirstWeight_half, hsecondWeight_half, hweights,
-      hfirst_max, hsecond_max⟩
+  · rw [infiniteProducerCandidateSpec]
+    refine ⟨hmodel.firstGenre, hmodel.secondGenre, hmodel.conditionalQuality,
+      hmodel.firstWeight, hmodel.secondWeight, hfirst_eq, hsecond_eq, hgenres_ne,
+      hmodel.firstGenre_nonnegative, hmodel.secondGenre_nonnegative,
+      hmodel.firstGenre_l2_norm, hmodel.secondGenre_l2_norm,
+      hmodel.conditionalQuality_probability, ?_,
+      hmodel.conditionalQuality_support_nonnegative,
+      hmodel.firstWeight_nonnegative, hmodel.secondWeight_nonnegative,
+      hmodel.firstWeight_eq_half, hmodel.secondWeight_eq_half, hmodel.weights_sum,
+      hmodel.first_support_maximizes, hmodel.second_support_maximizes⟩
     intro q
-    simpa [infiniteGenreCandidateCdf, infiniteGenreCdfIndex] using hquality_cdf q
+    simpa [infiniteGenreCandidateCdf, infiniteGenreCdfIndex] using
+      hmodel.conditionalQuality_cdf q
   · simpa [twoUserCosPowerSum] using hmax
 
 theorem theoremInfiniteGenre : theoremInfiniteGenreSpec := by
@@ -294,21 +347,138 @@ theorem lemmaConditionGen : lemmaConditionGenSpec := by
           (SourceNorm.norm_normalizedContent_eq_one ν hp_nonzero))
 
 theorem corollaryBetaOne : corollaryBetaOneSpec := by
-  simpa [corollaryBetaOneSpec, symmetricMixedNashModelSpec,
-    paper_source_symmetric_mixed_nash, SourceSymmetricMixedNash, normPowerCostSpec] using
-    @paper_corollary_betaone_concrete_source_symmetric_mixed_nash_of_compact_convex_nonzero_users
+  intro D N P _ _ _ users ν husers husers_nonzero hcompact hconvex
+  obtain ⟨p, hp_nonnegative, hp_ball, hp_score, hp_nash⟩ :=
+    (@paper_corollary_betaone_concrete_source_symmetric_mixed_nash_of_compact_convex_nonzero_users
+      D N P _ _ _ users ν husers husers_nonzero hcompact hconvex)
+  refine ⟨p, hp_nonnegative, hp_ball, hp_score, ?_, ?_⟩
+  · simpa [symmetricMixedNashModelSpec, paper_source_symmetric_mixed_nash,
+      SourceSymmetricMixedNash, normPowerCostSpec] using hp_nash
+  · unfold betaStarDefinitionSpec
+    refine le_csSup ?_ ?_
+    · exact ⟨⊤, fun _ _ => le_top⟩
+    · refine ⟨1, ?_, rfl⟩
+      constructor
+      · norm_num
+      · simpa [poweredScoreGeometrySpec] using
+          (singleGenreProductSupCondition_poweredUnitImage_one_of_convex_unitFeasible
+            ((convex_nonnegativeContentSet (D := D)).inter (hconvex 1)))
 
 theorem corollaryBetaP : corollaryBetaPSpec := by
-  simpa [corollaryBetaPSpec, symmetricMixedNashModelSpec,
-    paper_source_symmetric_mixed_nash, SourceSymmetricMixedNash, nonzeroSupportGenresSpec,
-    paper_nonzero_support_genres, SourceNonzeroSupportGenres, normPowerCostSpec] using
-    @paper_corollary_betap_singleton_nonzero_support_equilibrium_of_pos_le_q
+  constructor
+  · intro D N P _ _ _ q β users hq hβ hβ_le_q husers husers_nonzero
+    constructor
+    · simpa [symmetricMixedNashModelSpec, paper_source_symmetric_mixed_nash,
+        SourceSymmetricMixedNash, nonzeroSupportGenresSpec, paper_nonzero_support_genres,
+        SourceNonzeroSupportGenres, normPowerCostSpec] using
+        (@paper_corollary_betap_singleton_nonzero_support_equilibrium_of_pos_le_q
+          D N P _ _ _ q β users hq hβ hβ_le_q husers husers_nonzero)
+    · unfold betaStarDefinitionSpec
+      refine le_csSup ?_ ?_
+      · exact ⟨⊤, fun _ _ => le_top⟩
+      · refine ⟨q, ?_, rfl⟩
+        constructor
+        · exact hq
+        · simpa [poweredScoreGeometrySpec, SourceNorm.lp] using
+            (singleGenreProductSupCondition_inPoweredUnitImage_lp_at_exponent hq husers)
+  · intro D _ q hq
+    let qpos : 0 < q := lt_of_lt_of_le zero_lt_one hq
+    let S : Set ℝ :=
+      {β : ℝ | 1 ≤ β ∧ SingleGenreProductSupCondition
+        (poweredScoreGeometrySpec (standardBasisUsers D) (SourceNorm.lp D qpos) β)}
+    have husers_nonnegative : ∀ i : Fin D, NonnegativeContent (standardBasisUsers D i) := by
+      intro i
+      simpa [standardBasisUsers] using standardBasisContent_nonnegative D i
+    have hproduct_q : SingleGenreProductSupCondition
+        (poweredScoreGeometrySpec (standardBasisUsers D) (SourceNorm.lp D qpos) q) := by
+      simpa [poweredScoreGeometrySpec, SourceNorm.lp] using
+        (singleGenreProductSupCondition_inPoweredUnitImage_lp_at_exponent hq
+          husers_nonnegative)
+    have hset : S = Set.Icc 1 q := by
+      ext β
+      simp only [S, Set.mem_setOf_eq, Set.mem_Icc]
+      constructor
+      · rintro ⟨hβ_one, hproduct⟩
+        refine ⟨hβ_one, ?_⟩
+        by_contra hnot
+        have hq_lt_β : q < β := lt_of_not_ge hnot
+        exact
+          (not_singleGenreProductSupCondition_inPoweredUnitImage_standardBasis_lp_of_lt
+            hq hq_lt_β) (by simpa [poweredScoreGeometrySpec, SourceNorm.lp] using hproduct)
+      · rintro ⟨hβ_one, hβ_le_q⟩
+        have hβ_pos : 0 < β := lt_of_lt_of_le zero_lt_one hβ_one
+        exact ⟨hβ_one,
+          singleGenreProductSupCondition_inPoweredUnitImage_of_le_exponent_of_compactSublevels
+            hβ_pos hβ_le_q husers_nonnegative
+            (SourceNorm.lp_compactSublevels qpos) hproduct_q⟩
+    have hbounded : BddAbove S := by
+      refine ⟨q, ?_⟩
+      intro β hβ
+      exact (Set.mem_Icc.mp (hset ▸ hβ)).2
+    change sSup ((fun β : ℝ => (β : WithTop ℝ)) '' S) = (q : WithTop ℝ)
+    rw [← WithTop.coe_sSup' hbounded, hset, csSup_Icc hq]
 
 theorem corollaryBeta : corollaryBetaSpec := by
-  simpa [corollaryBetaSpec, symmetricMixedNashModelSpec,
-    paper_source_symmetric_mixed_nash, SourceSymmetricMixedNash, nonzeroSupportGenresSpec,
-    paper_nonzero_support_genres, SourceNonzeroSupportGenres, normPowerCostSpec] using
-    @paper_corollary_beta_no_singleton_nonzero_support_equilibrium_of_lt_log_bound
+  constructor
+  · simpa [corollaryBetaSpec, symmetricMixedNashModelSpec,
+      paper_source_symmetric_mixed_nash, SourceSymmetricMixedNash, nonzeroSupportGenresSpec,
+      paper_nonzero_support_genres, SourceNonzeroSupportGenres, normPowerCostSpec] using
+      @paper_corollary_beta_no_singleton_nonzero_support_equilibrium_of_lt_log_bound
+  · constructor
+    · intro D N _ users ν husers_nonnegative hcompact_sublevels haggregate_bound hdual_witness
+      unfold betaStarDefinitionSpec
+      let S : Set ℝ :=
+        {β : ℝ | 1 ≤ β ∧ SingleGenreProductSupCondition
+          (poweredScoreGeometrySpec users ν β)}
+      change sSup ((fun β : ℝ => (β : WithTop ℝ)) '' S) ≤ (1 : WithTop ℝ)
+      have hupper : ∀ β ∈ S, β ≤ 1 := by
+        intro β hβ
+        rcases hβ with ⟨hβ_one, hproduct⟩
+        by_contra hnot
+        have hβ_one_lt : 1 < β := lt_of_not_ge hnot
+        exact
+          (not_singleGenreProductSupCondition_inPoweredUnitImage_of_Z_eq_one
+            ν husers_nonnegative hcompact_sublevels haggregate_bound hdual_witness hβ_one_lt)
+          (by simpa [poweredScoreGeometrySpec] using hproduct)
+      rcases S.eq_empty_or_nonempty with hS | hS
+      · rw [hS, Set.image_empty]
+        rw [WithTop.sSup_eq (by simp) (by simp)]
+        norm_num
+      · have hbounded : BddAbove S := ⟨1, fun β hβ => hupper β hβ⟩
+        rw [← WithTop.coe_sSup' hbounded]
+        exact WithTop.coe_le_coe.mpr (csSup_le hS fun β hβ => hupper β hβ)
+    · intro D N _ Z users ν husers_nonnegative hcompact_sublevels haggregate_bound hdual_witness
+      intro hZ_one_lt hZ_lt_card
+      unfold betaStarDefinitionSpec
+      let threshold : ℝ :=
+        Real.log (N : ℝ) / (Real.log (N : ℝ) - Real.log Z)
+      let S : Set ℝ :=
+        {β : ℝ | 1 ≤ β ∧ SingleGenreProductSupCondition
+          (poweredScoreGeometrySpec users ν β)}
+      change sSup ((fun β : ℝ => (β : WithTop ℝ)) '' S) ≤ (threshold : WithTop ℝ)
+      have hthreshold_pos : 0 < threshold := by
+        apply div_pos
+        · exact Real.log_pos (lt_trans hZ_one_lt hZ_lt_card)
+        · apply sub_pos.mpr
+          exact Real.log_lt_log (lt_trans zero_lt_one hZ_one_lt) hZ_lt_card
+      have hupper : ∀ β ∈ S, β ≤ threshold := by
+        intro β hβ
+        rcases hβ with ⟨hβ_one, hproduct⟩
+        by_contra hnot
+        have hbound : threshold < β := lt_of_not_ge hnot
+        exact
+          (not_singleGenreProductSupCondition_inPoweredUnitImage_of_lt_general_threshold
+            ν husers_nonnegative hcompact_sublevels haggregate_bound hdual_witness
+            hZ_one_lt hZ_lt_card hbound)
+          (by simpa [poweredScoreGeometrySpec] using hproduct)
+      rcases S.eq_empty_or_nonempty with hS | hS
+      · rw [hS, Set.image_empty]
+        rw [WithTop.sSup_eq (by simp) (by simp)]
+        simpa only [Set.preimage_empty, Real.sSup_empty] using
+          WithTop.coe_le_coe.mpr hthreshold_pos.le
+      · have hbounded : BddAbove S := ⟨threshold, fun β hβ => hupper β hβ⟩
+        rw [← WithTop.coe_sSup' hbounded]
+        exact WithTop.coe_le_coe.mpr (csSup_le hS fun β hβ => hupper β hβ)
 
 theorem propositionSupportRestriction : propositionSupportRestrictionSpec := by
   intro P _ α β θ ε u v p0 μ _ hP husers_nonnegative hε hcontent_ball hu hv huv hα hβ
@@ -319,10 +489,122 @@ theorem propositionSupportRestriction : propositionSupportRestrictionSpec := by
       hP husers_nonnegative hε hcontent_ball hu hv huv hα hβ hsin hθ_nonneg hθ_le_half_pi
       hnondegenerate hnash hscore_ac
 
+/--
+The source max--min definition of `Q` supplies the unit-direction bound used
+by the profitable-deviation argument.  Though source actions are nonnegative,
+the coordinatewise positive part of any ambient direction has no larger L2
+norm and weakly raises every nonnegative user's score, so the bound extends to
+the helper's all-direction formulation.
+-/
+theorem equilibriumProfitModel_qUpperBound_and_nonneg
+    {D N P : ℕ} [Nonempty (Fin N)] {users : Fin N → Content D}
+    {μ : MixedContentStrategy D} {β profit Q : ℝ}
+    (hmodel : equilibriumProfitModelSpec (P := P) users (SourceNorm.l2 D)
+      (normPowerCostSpec (SourceNorm.l2 D) β) μ profit Q)
+    (husers_nonnegative : ∀ i : Fin N, NonnegativeContent (users i)) :
+    SourceUnitDirectionQUpperBound
+      (l2NormalizedUsers users) (SourceNorm.l2 D) Q ∧ 0 ≤ Q := by
+  classical
+  rcases hmodel with ⟨_, husers_nonzero, _, hQ⟩
+  let S : Set ℝ := {q : ℝ | ∃ p : Content D,
+    NonnegativeContent p ∧ (SourceNorm.l2 D).norm p ≤ 1 ∧
+      ∀ i : Fin N, q ≤ score p ((SourceNorm.l2 D).normalizedContent (users i))}
+  have hbounded : BddAbove S := by
+    refine ⟨1, ?_⟩
+    intro q hq
+    rcases hq with ⟨p, _hp_nonnegative, hp_norm, hq⟩
+    let i0 : Fin N := Classical.choice inferInstance
+    have hp_norm' : AppliedModelingLib.FiniteDimensionalNorms.l2 p ≤ 1 := by
+      exact hp_norm
+    have hi0_norm : AppliedModelingLib.FiniteDimensionalNorms.l2
+        ((SourceNorm.l2 D).normalizedContent (users i0)) = 1 := by
+      exact SourceNorm.norm_normalizedContent_eq_one (SourceNorm.l2 D)
+        (husers_nonzero i0)
+    have hscore : score p ((SourceNorm.l2 D).normalizedContent (users i0)) ≤
+        AppliedModelingLib.FiniteDimensionalNorms.l2 p *
+          AppliedModelingLib.FiniteDimensionalNorms.l2
+            ((SourceNorm.l2 D).normalizedContent (users i0)) := by
+      change AppliedModelingLib.FiniteDimensionalNorms.dot p
+          ((SourceNorm.l2 D).normalizedContent (users i0)) ≤ _
+      exact le_trans (le_abs_self _)
+        (AppliedModelingLib.FiniteDimensionalNorms.abs_dot_le_l2_mul_l2 _ _)
+    calc
+      q ≤ score p ((SourceNorm.l2 D).normalizedContent (users i0)) := hq i0
+      _ ≤ AppliedModelingLib.FiniteDimensionalNorms.l2 p *
+          AppliedModelingLib.FiniteDimensionalNorms.l2
+            ((SourceNorm.l2 D).normalizedContent (users i0)) := hscore
+      _ = AppliedModelingLib.FiniteDimensionalNorms.l2 p := by rw [hi0_norm, mul_one]
+      _ ≤ 1 := hp_norm'
+  have hQ' : Q = sSup S := by
+    exact hQ
+  have hzero_mem : (0 : ℝ) ∈ S := by
+    refine ⟨0, zeroContent_nonnegative, ?_, ?_⟩
+    · rw [SourceNorm.norm_zero]
+      norm_num
+    · intro i
+      simp
+  constructor
+  · intro p hp_norm
+    let ppos : Content D := nonnegativePart p
+    have hppos_nonnegative : NonnegativeContent ppos := by
+      exact nonnegativePart_nonnegative p
+    have hp_norm' : AppliedModelingLib.FiniteDimensionalNorms.l2 p = 1 := by
+      exact hp_norm
+    have hppos_norm : (SourceNorm.l2 D).norm ppos ≤ 1 := by
+      calc
+        (SourceNorm.l2 D).norm ppos =
+            AppliedModelingLib.FiniteDimensionalNorms.l2 ppos := rfl
+        _ ≤ AppliedModelingLib.FiniteDimensionalNorms.l2 p :=
+          l2_nonnegativePart_le p
+        _ = 1 := hp_norm'
+    obtain ⟨i, _hi, hmin⟩ := Finset.exists_min_image
+      (Finset.univ : Finset (Fin N))
+      (fun i : Fin N => score (l2NormalizedUsers users i) ppos)
+      Finset.univ_nonempty
+    let q : ℝ := score (l2NormalizedUsers users i) ppos
+    have hq_mem : q ∈ S := by
+      refine ⟨ppos, hppos_nonnegative, hppos_norm, ?_⟩
+      intro k
+      dsimp [q]
+      calc
+        score (l2NormalizedUsers users i) ppos ≤
+            score (l2NormalizedUsers users k) ppos :=
+          hmin k (Finset.mem_univ k)
+        _ = score ppos (l2NormalizedUsers users k) := score_comm _ _
+        _ = score ppos ((SourceNorm.l2 D).normalizedContent (users k)) := rfl
+    have hq_le : q ≤ Q := by
+      rw [hQ']
+      exact le_csSup hbounded hq_mem
+    have hi_nonnegative : NonnegativeContent (l2NormalizedUsers users i) := by
+      dsimp [l2NormalizedUsers]
+      exact SourceNorm.normalizedContent_nonnegative (SourceNorm.l2 D)
+        (husers_nonnegative i)
+    refine ⟨i, ?_⟩
+    calc
+      score (l2NormalizedUsers users i) p ≤
+          score (l2NormalizedUsers users i) ppos :=
+        score_le_score_nonnegativePart hi_nonnegative
+      _ = q := rfl
+      _ ≤ Q := hq_le
+  · rw [hQ']
+    exact le_csSup hbounded hzero_mem
+
 theorem propositionUtility : propositionUtilitySpec := by
-  simpa [propositionUtilitySpec, symmetricMixedNashModelSpec,
-    paper_source_symmetric_mixed_nash, SourceSymmetricMixedNash, normPowerCostSpec] using
-    @paper_proposition_utility_source_symmetric_mixed_nash_support_payoff_pos
+  intro D N P _ _ users μ β profit Q hmodel husers_nonnegative hβ hQ
+  let j : Fin P := Classical.choice inferInstance
+  have hbridge := equilibriumProfitModel_qUpperBound_and_nonneg hmodel husers_nonnegative
+  rcases hmodel with ⟨hnash, husers_nonzero, hprofit, _⟩
+  have hnash' : SourceSymmetricMixedNash (P := P) users
+      (normRpowCost (SourceNorm.l2 D) β) μ := by
+    simpa [symmetricMixedNashModelSpec, paper_source_symmetric_mixed_nash,
+      SourceSymmetricMixedNash, normPowerCostSpec] using hnash
+  have hintegral : 0 < ∫ p, SourceMixedPurePayoff
+      (ExpectedUsersWonAgainstSymmetricMixed users j)
+      (normPowerCostSpec (SourceNorm.l2 D) β) p μ ∂μ := by
+    simpa [normPowerCostSpec] using
+      integral_sourceMixedPurePayoff_pos_of_positive_profit_condition_l2_normalized_users
+        (j := j) hnash' husers_nonnegative husers_nonzero hbridge.1 hβ hbridge.2 hQ
+  exact lt_of_lt_of_eq hintegral (hprofit j)
 
 theorem lemmaNonzero : lemmaNonzeroSpec := by
   simpa [lemmaNonzeroSpec, symmetricMixedNashModelSpec,
@@ -331,10 +613,22 @@ theorem lemmaNonzero : lemmaNonzeroSpec := by
     @paper_lemma_singlegenre_genre_scores_positive_of_nonzero_users
 
 theorem propositionZeroUtilitySingleGenre : propositionZeroUtilitySingleGenreSpec := by
-  simpa [propositionZeroUtilitySingleGenreSpec, symmetricMixedNashModelSpec,
-    paper_source_symmetric_mixed_nash, SourceSymmetricMixedNash, nonzeroSupportGenresSpec,
-    paper_nonzero_support_genres, SourceNonzeroSupportGenres, normPowerCostSpec] using
-    @paper_proposition_zeroutilitysinglegenre_source_nash_of_compact_sublevels_without_zero_support_premise
+  intro D N P _ _ users ν μ j genre β profit hnash hprofit hno_atoms hgenres hgenre_score
+    hmeas_norm husers hβ hcompact_sublevels hcontinuous
+  have hnash' : SourceSymmetricMixedNash (P := P) users (normRpowCost ν β) μ := by
+    simpa [symmetricMixedNashModelSpec, paper_source_symmetric_mixed_nash,
+      SourceSymmetricMixedNash, normPowerCostSpec] using hnash
+  have hintegral :
+      (∫ q, SourceMixedPurePayoff
+        (ExpectedUsersWonAgainstSymmetricMixed users j)
+        (normRpowCost ν β) q μ ∂μ) = 0 := by
+    exact integral_sourceMixedPurePayoff_eq_zero_of_singleton_nonzeroSupportGenres
+      hnash' hno_atoms hgenres hgenre_score hmeas_norm husers hβ hcompact_sublevels hcontinuous
+  calc
+    profit = ∫ q, SourceMixedPurePayoff
+        (ExpectedUsersWonAgainstSymmetricMixed users j)
+        (normPowerCostSpec ν β) q μ ∂μ := hprofit.symm
+    _ = 0 := by simpa [normPowerCostSpec] using hintegral
 
 theorem lemmaInducedCost : lemmaInducedCostSpec := by
   simpa [lemmaInducedCostSpec, twoUserNonnegativeFiberNormSq,
@@ -344,28 +638,45 @@ theorem lemmaInducedCost : lemmaInducedCostSpec := by
 
 theorem lemmaFoc : lemmaFocSpec := by
   intro α β θ z1 z2 hbase
-  exact ⟨paper_hasDerivAt_two_user_induced_cost_z1 hbase,
-    paper_hasDerivAt_two_user_induced_cost_z2 hbase⟩
+  refine ⟨paper_hasDerivAt_two_user_induced_cost_z1 hbase,
+    paper_hasDerivAt_two_user_induced_cost_z2 hbase, ?_⟩
+  intro P _ α β θ μ _ hsin hnash hscore_ac hcdf hinterior z hz hz_ne
+  constructor
+  · exact first_iidMaximumCdf_deriv_eq_inducedCostPartial_of_sourceSymmetricMixedNash_of_scoreCdfContDiffAt_of_strictInteriorAwayOrigin
+      hsin hnash hscore_ac
+      (fun x hx => (hcdf 0 x (by simpa using hx)).of_le (by norm_num))
+      hinterior hz hz_ne
+  · exact second_iidMaximumCdf_deriv_eq_inducedCostPartial_of_sourceSymmetricMixedNash_of_scoreCdfContDiffAt_of_strictInteriorAwayOrigin
+      hsin hnash hscore_ac
+      (fun x hx => (hcdf 1 x (by simpa using hx)).of_le (by norm_num))
+      hinterior hz hz_ne
 
 theorem lemmaSecondDerivative : lemmaSecondDerivativeSpec := by
   simpa [lemmaSecondDerivativeSpec] using
     @paper_two_user_induced_cost_cross_partial_param_factor
 
 theorem lemmaRegionsColor : lemmaRegionsColorSpec := by
+  intro u v H1 H2 g S α β θ φ r a b x slope
+    hu_nonnegative hv_nonnegative hu hv huv hα hβ hsin hH1_mono hH2_mono
+    hSnonnegative hxI hxparam hgparam hderiv hgraph hmax
   simpa [lemmaRegionsColorSpec] using
-    @paper_regionscolor_param_bracket_nonpos_of_objective_soc_and_graph_foc_derivatives
+    (twoUser_regionscolor_param_bracket_nonpos_of_C1_graph
+      hu_nonnegative hv_nonnegative hu hv huv hα hβ hsin hH1_mono hH2_mono
+      hSnonnegative hxI hxparam hgparam hderiv hgraph hmax)
 
 theorem propositionUniqueness : propositionUniquenessSpec := by
   intro P _ β θ μ _ hP hβ hθ hθupper hnash hac hdiff1 hdiff2 hphase
-  exact (theoremPhaseTransition hP hβ hθ hθupper hnash hac hdiff1 hdiff2).1 hphase
+  exact (paper_canonical_two_user_corrected_phase_transition
+    (P := P) hP hβ hθ hθupper (by simpa [normPowerCostSpec] using hnash)
+    hac hdiff1 hdiff2).1 hphase
 
 theorem propositionFiniteGenre : propositionFiniteGenreSpec := by
   intro P _ β θ μ _ hP hβ hθ hθupper hnash hac hdiff1 hdiff2 hphase
   intro G hG angle law hinjective hangle
-  exact (theoremPhaseTransition hP hβ hθ hθupper hnash hac hdiff1 hdiff2).2 hphase
-    hG angle law.weight law.radial law.weight_pos law.weights_sum
-    law.radial_probability law.radial_support_nonnegative law.radial_has_positive_support
-    law.radial_cdf_c1 law.decomposition hinjective hangle
+  exact (paper_canonical_two_user_corrected_phase_transition
+    (P := P) hP hβ hθ hθupper (by simpa [normPowerCostSpec] using hnash)
+    hac hdiff1 hdiff2).2 hphase
+    hG angle (finiteGenreConditionalNormLaw_of_spec law) hinjective hangle
 
 theorem lemmaSupInf : lemmaSupInfSpec := by
   simpa [lemmaSupInfSpec] using @paper_lemma_supinf_argmax_attains_inf

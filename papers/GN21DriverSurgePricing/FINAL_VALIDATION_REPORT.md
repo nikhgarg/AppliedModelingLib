@@ -1,5 +1,5 @@
 # Final Validation Report: Driver Surge Pricing
-Updated: 2026-09-07
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -29,7 +29,7 @@ those named theoretical claims is not part of this formalization.
 | Driver-surge model and incentive-compatibility definitions | **Exact.** |
 | Lemmas 1--3 | **Exact.** |
 | Theorem 1, the unnumbered Proposition in Section 3.1, and Lemma 4 | **Exact.** |
-| [Lemma 5](docs/SOURCE_CLARIFICATIONS.md#policy-domain-and-endpoint-regularity) | **Exact.** [Source clarification](docs/SOURCE_CLARIFICATIONS.md#policy-domain-and-endpoint-regularity). |
+| [Lemma 5](docs/SOURCE_CLARIFICATIONS.md#policy-domain-and-endpoint-regularity) | **Exact.** [Source clarification](docs/SOURCE_CLARIFICATIONS.md#policy-domain-and-endpoint-regularity) |
 | Lemmas 6--8 and 10 | **Exact.** |
 | [Lemma 9](docs/SOURCE_CLARIFICATIONS.md#theorem-3-proof-route) | **Exact.** |
 | Theorem 2 | **Exact.** |
@@ -51,7 +51,8 @@ policy. Its conclusion is therefore policy-dependent, whereas the Theorem 3
 argument needs one price to work uniformly over deviations. The checked proof
 instead fixes a structured price before optimizing and handles the target-rate
 range in two cases. The theorem's conclusion and source policy domain are
-unchanged.
+unchanged. The [proof-route memo](docs/THEOREM3_SOURCE_CLARIFICATION.md) explains
+the quantifier order and the direct two-case argument.
 
 ## 8. Proof Tricks Worth Reusing
 None.

@@ -1,0 +1,324 @@
+{
+  "schema": 2,
+  "paper": "LBG24SpatialUnderreporting",
+  "report_sha256": "3529a114263c0947a0eb6e929b3561dd140db5719830103745f4a3917e4c127b",
+  "source_items_sha256": "f05be8f6ffff951983d990d067733f29b3fa5e9dec91e73a013cbf299a0fa966",
+  "all_selected_semantic_review_sha256": "99702ddfe96b490b8eb2a332536be353b718aff6226be19fef444eca20029107",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/LBG24-EQ30-FIRST-GAP-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "1a12fe10bf62f82a0d05a72c2042096281c898537bc865899cb9c729d3ad89c8",
+      "memo_heading": "Appendix B.2: likelihood-factorization algebra",
+      "memo_anchor": "appendix-b2-likelihood-factorization-algebra",
+      "report_home": 7
+    },
+    "defect/LBG24-EQ31-RESIDUAL-RECIPROCAL-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "1a12fe10bf62f82a0d05a72c2042096281c898537bc865899cb9c729d3ad89c8",
+      "memo_heading": "Appendix B.2: likelihood-factorization algebra",
+      "memo_anchor": "appendix-b2-likelihood-factorization-algebra",
+      "report_home": 7
+    },
+    "defect/LBG24-EQ8-CAUSAL-PREEND-01": {
+      "disposition": "not_material",
+      "reason": "The former implementation route resampled stage clocks. The current one-endpoint causal policy follows Theorem 1 and the source stopping-time condition, so no source premise remains to explain."
+    },
+    "defect/LBG24-EQ8-SOURCE-MODEL-COHERENCE-01": {
+      "disposition": "not_material",
+      "reason": "The current route has one endpoint, a selected start, and pre-start-history conditioning, as in Theorem 1. This records a retired source-to-model mismatch rather than a remaining source change."
+    },
+    "defect/LBG24-LEGACY-POISSON-UNINHABITED-01": {
+      "disposition": "not_material",
+      "reason": "The old all-real-time count representation is not used by any current source route. The formalized route retains the source forward Poisson model without an added premise."
+    },
+    "defect/LBG24-LEMMA1-PROP1-STEADY-STATE-SCOPE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "1a12fe10bf62f82a0d05a72c2042096281c898537bc865899cb9c729d3ad89c8",
+      "memo_heading": "Lemma 1 and Proposition 1: calendar-time first reports",
+      "memo_anchor": "lemma-1-and-proposition-1-calendar-time-first-reports"
+    },
+    "convention/LBG24-CONDITION1-KERNEL-CONDITIONING-01": {
+      "disposition": "not_material",
+      "reason": "A regular conditional kernel represents the source conditional start rule after the first report. It is a typed presentation of the stated conditional independence, not a changed mathematical claim."
+    },
+    "convention/LBG24-EQ8-CAUSAL-STOPPING-SEMANTICS-01": {
+      "disposition": "not_material",
+      "reason": "Theorem 1 conditions on reports observed up to the endpoint and the application requires stopping times. The causal, rate-free endpoint policy expresses those source conditions."
+    },
+    "convention/LBG24-EQ8-ENDPOINT-REFERENCE-MEASURE-01": {
+      "disposition": "not_material",
+      "reason": "The source application includes deterministic caps. A probability kernel accommodates their atoms, while the displayed scalar density is the explicitly supplied absolutely continuous presentation."
+    },
+    "convention/LBG24-LEMMA1-CALENDAR-FIRST-REPORT-SEMANTICS-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "1a12fe10bf62f82a0d05a72c2042096281c898537bc865899cb9c729d3ad89c8",
+      "memo_heading": "Lemma 1 and Proposition 1: calendar-time first reports",
+      "memo_anchor": "lemma-1-and-proposition-1-calendar-time-first-reports"
+    },
+    "source/proposition1_nonidentifiability/additional_assumptions": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "1a12fe10bf62f82a0d05a72c2042096281c898537bc865899cb9c729d3ad89c8",
+      "memo_heading": "Lemma 1 and Proposition 1: calendar-time first reports",
+      "memo_anchor": "lemma-1-and-proposition-1-calendar-time-first-reports"
+    },
+    "report/rate-estimation-domain": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "1a12fe10bf62f82a0d05a72c2042096281c898537bc865899cb9c729d3ad89c8",
+      "memo_heading": "Equation (3): rate-estimation convention",
+      "memo_anchor": "equation-3-rate-estimation-convention"
+    },
+    "report/lemma2-arrival-conditioning": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "1a12fe10bf62f82a0d05a72c2042096281c898537bc865899cb9c729d3ad89c8",
+      "memo_heading": "Lemma 2: conditioning on an observed first report",
+      "memo_anchor": "lemma-2-conditioning-on-an-observed-first-report"
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
+      "discovered_named_result_sha256": "2cb8f5a710308601c4acc9eafd767375d9afbad6e121a766974d2675d7b4e22d",
+      "source_format": "text",
+      "results": {
+        "appendix_shifted_poisson_after_first_jump": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 4420,
+              "line_start": 4406,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "fdc109c4c974b59810bbe4b2d62c12cc780c39af82ead4b271e741e28b5248d4",
+              "source_item_id": "appendix_shifted_poisson_after_first_jump",
+              "source_label": "the resulting counting process would still be a Poisson process with the same rate"
+            }
+          ],
+          "source_item_ids": [
+            "appendix_shifted_poisson_after_first_jump"
+          ]
+        },
+        "equation3_mle_formula_and_maximum_likelihood_claim": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 334,
+              "line_start": 325,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "b1b0c2bafc7880a3be9f60c7d0ae5664e910aa060c58476017ea466ce22d1b34",
+              "source_item_id": "equation3_mle_formula_and_maximum_likelihood_claim",
+              "source_label": "the maximum likelihood estimate for lambda"
+            }
+          ],
+          "source_item_ids": [
+            "equation3_mle_formula_and_maximum_likelihood_claim"
+          ]
+        },
+        "lemma1_process_thinning_and_detection_rate": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1698,
+              "line_start": 1660,
+              "presentation": "text_heading",
+              "presentation_sha256": "a286b111bc5ada330a396c24a371c39a9764b7037400ba0d2df1c24954e4abbc",
+              "source_item_id": "lemma1_process_thinning_and_detection_rate",
+              "source_label": "Lemma 1"
+            }
+          ],
+          "source_item_ids": [
+            "lemma1_process_thinning_and_detection_rate",
+            "source_lemma1_reporting_duration_primitives"
+          ]
+        },
+        "lemma2_exponential_waiting_tail": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1877,
+              "line_start": 1873,
+              "presentation": "text_heading",
+              "presentation_sha256": "58e0627457f0103b7cd5c73f6aa833a3cdd07f063b3d85c79399abbeb9726673",
+              "source_item_id": "lemma2_exponential_waiting_tail",
+              "source_label": "Lemma 2"
+            }
+          ],
+          "source_item_ids": [
+            "lemma2_exponential_waiting_tail"
+          ]
+        },
+        "proposition1_nonidentifiability": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 1658,
+              "line_start": 1626,
+              "presentation": "text_heading",
+              "presentation_sha256": "ee7daaf1f3c8e05ae9433e66b8ac07ec358b06fdce336e275ca09e5bc5e4aeb6",
+              "source_item_id": "proposition1_nonidentifiability",
+              "source_label": "Proposition 1"
+            }
+          ],
+          "source_item_ids": [
+            "proposition1_nonidentifiability"
+          ]
+        },
+        "theorem1_theorem2_likelihood_decomposition": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 387,
+              "line_start": 285,
+              "presentation": "text_heading",
+              "presentation_sha256": "f0459a5a902522573b09808cf9232075b0c9b605ac3d2877b3301f91d4dd52c7",
+              "source_item_id": "theorem1_likelihood_decomposition_presentation",
+              "source_label": "Theorem 1"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 1842,
+              "line_start": 1839,
+              "presentation": "text_heading",
+              "presentation_sha256": "865e5f62a6d1d8b0ebd25ea3681ad018c9e0d0ab16f1e5b23a32c56d3f63a2c9",
+              "source_item_id": "theorem1_theorem2_likelihood_decomposition",
+              "source_label": "Theorem 2"
+            }
+          ],
+          "source_item_ids": [
+            "source_reporting_process_model",
+            "theorem1_likelihood_decomposition_presentation",
+            "theorem1_theorem2_likelihood_decomposition"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "31fc6534976381157273b31e842b599c81f7295bbf1722ac14a9595322a21d50",
+    "results": {
+      "appendix_shifted_poisson_after_first_jump": {
+        "numbering": "unnumbered",
+        "printed_label": "Claim: Appendix D.8.2 shifted process",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix D.8.2",
+            "row_sha256": "a1cab0e51965acd2e054d7e81a7d540fb022940bcc236303a14174d573978859"
+          }
+        ],
+        "grouping_reason": "Section 4 groups the unnumbered Appendix D.8.2 claim with Lemma 2 because both use the same actual-first-report and future-interarrival argument."
+      },
+      "equation3_mle_formula_and_maximum_likelihood_claim": {
+        "numbering": "unnumbered",
+        "printed_label": "Claim: Equation (3) maximum-likelihood estimate",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Equation (3)",
+            "row_sha256": "528a6ef876e1e2c66f8d538c1570a275b9a916a008603a7dbb0e9b42024c5df9"
+          }
+        ],
+        "grouping_reason": "Section 4 uses the displayed equation number as the concise reader-facing label for this unnumbered maximum-likelihood claim."
+      },
+      "lemma1_process_thinning_and_detection_rate": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 1",
+            "row_sha256": "327e75ee4c8f3d236fddc12f4b32a9cbde336492c11d9b32e18e21ac4331f4cc"
+          }
+        ]
+      },
+      "lemma2_exponential_waiting_tail": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 2",
+            "row_sha256": "a1cab0e51965acd2e054d7e81a7d540fb022940bcc236303a14174d573978859"
+          }
+        ]
+      },
+      "proposition1_nonidentifiability": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 1",
+            "row_sha256": "3fbddb9847819caf102d08bcb21c39202ddd9502b52992e50d4da93c10a1e8c2"
+          }
+        ]
+      },
+      "theorem1_theorem2_likelihood_decomposition": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1; Appendix Theorem 2",
+            "row_sha256": "ea3fd47f777b03042129d7ecb407439d55f6ba04b4df119089cdd35346584953"
+          }
+        ],
+        "grouping_reason": "The source states Appendix Theorem 2 as a restatement of Theorem 1, so Section 4 presents their shared checked factorization in one row."
+      }
+    },
+    "rows": {
+      "b3a45622f3392862db663f8275824a3bbf086d3a1759e323f3173225b2db29b0": {
+        "explanation_keys": [],
+        "supplemental_reason": "The reporting-delay formula is supplementary model content rather than a selected named result."
+      },
+      "327e75ee4c8f3d236fddc12f4b32a9cbde336492c11d9b32e18e21ac4331f4cc": {
+        "explanation_keys": [
+          "convention/LBG24-LEMMA1-CALENDAR-FIRST-REPORT-SEMANTICS-01",
+          "defect/LBG24-LEMMA1-PROP1-STEADY-STATE-SCOPE-01"
+        ],
+        "supplemental_reason": ""
+      },
+      "3fbddb9847819caf102d08bcb21c39202ddd9502b52992e50d4da93c10a1e8c2": {
+        "explanation_keys": [
+          "convention/LBG24-LEMMA1-CALENDAR-FIRST-REPORT-SEMANTICS-01",
+          "defect/LBG24-LEMMA1-PROP1-STEADY-STATE-SCOPE-01",
+          "source/proposition1_nonidentifiability/additional_assumptions"
+        ],
+        "supplemental_reason": ""
+      },
+      "a1cab0e51965acd2e054d7e81a7d540fb022940bcc236303a14174d573978859": {
+        "explanation_keys": [
+          "report/lemma2-arrival-conditioning"
+        ],
+        "supplemental_reason": ""
+      },
+      "ea3fd47f777b03042129d7ecb407439d55f6ba04b4df119089cdd35346584953": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "528a6ef876e1e2c66f8d538c1570a275b9a916a008603a7dbb0e9b42024c5df9": {
+        "explanation_keys": [
+          "report/rate-estimation-domain"
+        ],
+        "supplemental_reason": ""
+      },
+      "8552692dcb326a8066c5551ea23d0d0772393fd9822ae11613da0f39915fecc8": {
+        "explanation_keys": [],
+        "supplemental_reason": "These source likelihood and regression formulas are supplementary model content."
+      }
+    }
+  }
+}

@@ -169,6 +169,25 @@ structure ManyOneReduction
   map : Source → Target
   correct : ∀ x, source x ↔ target (map x)
 
+namespace ManyOneReduction
+
+variable {Source Mid Target : Type*}
+variable {source : DecisionProblem Source}
+variable {mid : DecisionProblem Mid}
+variable {target : DecisionProblem Target}
+
+/-! Reduction chains are mathematical correctness objects.  Running-time
+composition remains a separate obligation in the chosen machine model. -/
+
+/-- Compose two correctness-preserving many-one reductions. -/
+def comp (first : ManyOneReduction source mid)
+    (second : ManyOneReduction mid target) :
+    ManyOneReduction source target where
+  map := fun x => second.map (first.map x)
+  correct := fun x => (first.correct x).trans (second.correct (first.map x))
+
+end ManyOneReduction
+
 /--
 An abstract polynomial-time many-one reduction.
 
@@ -191,6 +210,36 @@ variable {source : DecisionProblem Source} {target : DecisionProblem Target}
 theorem correct (r : PolynomialTimeReduction source target) (x : Source) :
     source x ↔ target (r.reduction.map x) :=
   r.reduction.correct x
+
+/-!
+Runtime composition is intentionally parameterized by the chosen machine
+model.  The abstract `PolynomialTime` field above cannot compose by itself
+because two reductions may use different predicates.  This theorem exposes
+the exact closure obligation without smuggling in a machine model.
+-/
+
+def comp_of_closed
+    {S M T : Type u}
+    {s : DecisionProblem S} {m : DecisionProblem M}
+    {t : DecisionProblem T}
+    (first : PolynomialTimeReduction s m)
+    (second : PolynomialTimeReduction m t)
+    (FirstPolynomialTime : (S → M) → Prop)
+    (SecondPolynomialTime : (M → T) → Prop)
+    (ComposedPolynomialTime : (S → T) → Prop)
+    (hfirst : FirstPolynomialTime first.reduction.map)
+    (hsecond : SecondPolynomialTime second.reduction.map)
+    (hcomp : FirstPolynomialTime first.reduction.map →
+      SecondPolynomialTime second.reduction.map →
+        ComposedPolynomialTime
+          (fun x => second.reduction.map (first.reduction.map x))) :
+    PolynomialTimeReduction s t := by
+  let composed : ManyOneReduction s t :=
+    ManyOneReduction.comp first.reduction second.reduction
+  exact
+    { reduction := composed
+      PolynomialTime := ComposedPolynomialTime
+      polynomialTime := hcomp hfirst hsecond }
 
 end PolynomialTimeReduction
 

@@ -20,6 +20,7 @@ the reusable auction library.
 namespace GHW01DigitalGoods.ProofBridge
 
 open AppliedModelingLib.Auction
+open MeasureTheory
 open scoped BigOperators
 
 noncomputable section
@@ -1572,9 +1573,10 @@ For Section 8.2, the paper-facing formalization follows the journal version's
 refined monotone truthful randomized offer-auction wording. Every such auction
 has expected revenue at most the fixed-price benchmark `F`.
 
-This is the Theorem 8.2 endpoint used for the SODA paper. The preliminary
-unrestricted wording is tracked separately as source-version audit material,
-not as a paper-facing theorem.
+The common-uniform inverse-CDF construction is formalized for arbitrary real
+offer laws, as in the journal proof.  The preliminary unrestricted wording is
+tracked separately as source-version audit material, not as a paper-facing
+theorem.
 
 Source status: approved corrected source target.
 Source note: Formalized against the separately pinned later journal monotone
@@ -1583,40 +1585,37 @@ randomized-offer wording; it does not claim the preliminary SODA statement.
 def theorem8_2_truthful_revenue_upper_boundSpec : Prop := by
   classical
   exact
-  ∀ {Agent Price : Type*} [Fintype Agent] [Nonempty Agent]
-    [Fintype Price]
-    (values : Agent → ℝ) (price : Price → ℝ) (offerLaw : Agent → PMF Price)
+  ∀ {Agent : Type*} [Fintype Agent] [Nonempty Agent]
+    (values : Agent → ℝ) (offerLaw : Agent → Measure ℝ)
+    (_hofferLaw_isProbability : ∀ i, IsProbabilityMeasure (offerLaw i))
     (_hvalue_nonneg : ∀ i, 0 ≤ values i)
-    (_hprice_nonneg : ∀ p, 0 ≤ price p)
+    (_hoffer_nonneg : ∀ i, offerLaw i (Set.Iio 0) = 0)
     (_hcdf_monotone :
       ∀ i j, values i ≤ values j → ∀ t, t ≤ values i →
-        AppliedModelingLib.pmfProb (offerLaw i) (fun p => price p ≤ t) ≤
-          AppliedModelingLib.pmfProb (offerLaw j) (fun p => price p ≤ t)),
-    paper_theorem8_2_raw_cdf_expected_revenue
-        values price offerLaw ≤
-      fixedPriceBenchmark values
+        ProbabilityTheory.cdf (offerLaw i) t ≤
+          ProbabilityTheory.cdf (offerLaw j) t),
+    paper_theorem8_2_continuous_marginal_expected_revenue
+        values offerLaw ≤ fixedPriceBenchmark values
 
 theorem theorem8_2_truthful_revenue_upper_bound :
     theorem8_2_truthful_revenue_upper_boundSpec := by
   classical
-  intro Agent Price _ _ _ values price offerLaw hvalue_nonneg hprice_nonneg
-    hcdf_monotone
-  letI : LinearOrder Agent :=
-    LinearOrder.lift' (Fintype.equivFin Agent) (Fintype.equivFin Agent).injective
+  intro Agent _ _ values offerLaw hofferLaw_isProbability hvalue_nonneg
+    hoffer_nonneg hcdf_monotone
   letI : DecidableEq Agent := Classical.decEq Agent
-  let model : PaperTheorem82JournalRawCDFMonotoneOfferSourceModel Agent Price :=
+  let model : PaperTheorem82ContinuousRawCDFMonotoneOfferSourceModel Agent :=
     { values := values
-      price := price
       offerLaw := offerLaw
+      offerLaw_isProbability := hofferLaw_isProbability
       value_nonneg := hvalue_nonneg
-      price_nonneg := hprice_nonneg
+      offer_nonneg := hoffer_nonneg
       cdf_monotone := hcdf_monotone }
   change
-    paper_theorem8_2_raw_cdf_expected_revenue
-        model.values model.price model.offerLaw ≤
+    paper_theorem8_2_continuous_marginal_expected_revenue
+        model.values model.offerLaw ≤
       finiteCandidateFixedPriceBenchmark model.values 1
   exact
-    paper_theorem8_2_expected_revenue_le_finite_candidate_benchmark_of_raw_cdf_monotone_offer_source_model
+    paper_theorem8_2_expected_marginal_revenue_le_finite_candidate_benchmark_of_raw_cdf_monotone_offer_source_model
       model
 
 /--

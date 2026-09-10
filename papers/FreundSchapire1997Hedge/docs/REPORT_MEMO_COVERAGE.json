@@ -1,0 +1,489 @@
+{
+  "schema": 2,
+  "paper": "FreundSchapire1997Hedge",
+  "report_sha256": "f1010b6792306f7e63110801e8c32ccd5922ef4b5c603c0052e717403e5bdd65",
+  "source_items_sha256": "f6e9ea1959bf5c9209bae344c1adf7a6e807f23108eb7b69dd6e1137f6467e81",
+  "all_selected_semantic_review_sha256": "e2cb9d4e46005beb1634e8771ad18d614694091d79842bc4fdafb65aab2acbf9",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/FS97-HEDGE-ENDPOINT-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md",
+      "memo_sha256": "2e8f9b4d3d517b53bdbf8130f2ac227233d2dbc71be43a8d2a228ea885882d31",
+      "memo_heading": "Lemma 1 and Theorem 2: the Hedge parameter endpoints",
+      "memo_anchor": "lemma-1-and-theorem-2-the-hedge-parameter-endpoints"
+    },
+    "defect/FS97-THEOREM5-TUNING-DOMAIN-02": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md",
+      "memo_sha256": "2e8f9b4d3d517b53bdbf8130f2ac227233d2dbc71be43a8d2a228ea885882d31",
+      "memo_heading": "Theorem 5: the tuned Hedge parameter",
+      "memo_anchor": "theorem-5-the-tuned-hedge-parameter"
+    },
+    "defect/FS97-ADABOOST-ENDPOINT-DOMAIN-03": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md",
+      "memo_sha256": "2e8f9b4d3d517b53bdbf8130f2ac227233d2dbc71be43a8d2a228ea885882d31",
+      "memo_heading": "Theorem 6: endpoint errors",
+      "memo_anchor": "theorem-6-endpoint-errors"
+    },
+    "defect/FS97-LEMMA4-ZERO-LOSS-BOUND-05": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md",
+      "memo_sha256": "2e8f9b4d3d517b53bdbf8130f2ac227233d2dbc71be43a8d2a228ea885882d31",
+      "memo_heading": "Lemma 4: the zero-loss-bound extension",
+      "memo_anchor": "lemma-4-the-zero-loss-bound-extension"
+    },
+    "defect/FS97-ADABOOST-VARIANTS-ENDPOINT-DOMAIN-06": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md",
+      "memo_sha256": "2e8f9b4d3d517b53bdbf8130f2ac227233d2dbc71be43a8d2a228ea885882d31",
+      "memo_heading": "Theorems 10--12: endpoint errors in the variant algorithms",
+      "memo_anchor": "theorems-1012-endpoint-errors-in-the-variant-algorithms"
+    },
+    "convention/FS97-THEOREM9-VOTE-DOMAIN-04": {
+      "disposition": "not_material",
+      "reason": "The nonzero normalized-vote denominator and [0,1] range are the domains of the quotient and F stated in the source. The formalization now proves the displayed bound on those domains without the former strict-positive-weight restriction; there is no remaining additional source assumption to explain in the memo."
+    },
+    "source/lemma1_weight_potential/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md",
+      "memo_sha256": "2e8f9b4d3d517b53bdbf8130f2ac227233d2dbc71be43a8d2a228ea885882d31",
+      "memo_heading": "Lemma 1 and Theorem 2: the Hedge parameter endpoints",
+      "memo_anchor": "lemma-1-and-theorem-2-the-hedge-parameter-endpoints"
+    },
+    "source/lemma4_learning_rate_bound/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md",
+      "memo_sha256": "2e8f9b4d3d517b53bdbf8130f2ac227233d2dbc71be43a8d2a228ea885882d31",
+      "memo_heading": "Lemma 4: the zero-loss-bound extension",
+      "memo_anchor": "lemma-4-the-zero-loss-bound-extension"
+    },
+    "source/theorem10_adaboost_m1_error/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md",
+      "memo_sha256": "2e8f9b4d3d517b53bdbf8130f2ac227233d2dbc71be43a8d2a228ea885882d31",
+      "memo_heading": "Theorems 10--12: endpoint errors in the variant algorithms",
+      "memo_anchor": "theorems-1012-endpoint-errors-in-the-variant-algorithms"
+    },
+    "source/theorem11_adaboost_m2_error/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md",
+      "memo_sha256": "2e8f9b4d3d517b53bdbf8130f2ac227233d2dbc71be43a8d2a228ea885882d31",
+      "memo_heading": "Theorems 10--12: endpoint errors in the variant algorithms",
+      "memo_anchor": "theorems-1012-endpoint-errors-in-the-variant-algorithms"
+    },
+    "source/theorem12_adaboost_r_error/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md",
+      "memo_sha256": "2e8f9b4d3d517b53bdbf8130f2ac227233d2dbc71be43a8d2a228ea885882d31",
+      "memo_heading": "Theorems 10--12: endpoint errors in the variant algorithms",
+      "memo_anchor": "theorems-1012-endpoint-errors-in-the-variant-algorithms"
+    },
+    "source/theorem2_hedge_comparator_bounds/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md",
+      "memo_sha256": "2e8f9b4d3d517b53bdbf8130f2ac227233d2dbc71be43a8d2a228ea885882d31",
+      "memo_heading": "Lemma 1 and Theorem 2: the Hedge parameter endpoints",
+      "memo_anchor": "lemma-1-and-theorem-2-the-hedge-parameter-endpoints"
+    },
+    "source/theorem5_decision_prediction_general/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md",
+      "memo_sha256": "2e8f9b4d3d517b53bdbf8130f2ac227233d2dbc71be43a8d2a228ea885882d31",
+      "memo_heading": "Theorem 5: the tuned Hedge parameter",
+      "memo_anchor": "theorem-5-the-tuned-hedge-parameter"
+    },
+    "source/theorem6_adaboost_error/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_FORMULA_DOMAINS_AND_THEOREM9_CORRECTION.md",
+      "memo_sha256": "2e8f9b4d3d517b53bdbf8130f2ac227233d2dbc71be43a8d2a228ea885882d31",
+      "memo_heading": "Theorem 6: endpoint errors",
+      "memo_anchor": "theorem-6-endpoint-errors"
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "bd40f3e513c8a5b099ab06c9b66dca1ec1543694c40acce970e6122b491a0afc",
+      "discovered_named_result_sha256": "e98f841f43d865fc2d5fed6f8f3d16ceaad0948724e0576b6b2ebb6c2d1da989",
+      "source_format": "text",
+      "results": {
+        "lemma1_weight_potential": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 304,
+              "line_start": 286,
+              "presentation": "text_heading",
+              "presentation_sha256": "51ebbc53a4e2bab15bebb4e619987a3c72263e95204ca0ad258d7d79917aad6e",
+              "source_item_id": "lemma1_weight_potential",
+              "source_label": "Lemma 1"
+            }
+          ],
+          "source_item_ids": [
+            "lemma1_weight_potential"
+          ]
+        },
+        "lemma4_learning_rate_bound": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 498,
+              "line_start": 488,
+              "presentation": "text_heading",
+              "presentation_sha256": "5cd14b5753d45b9998c9a183b2e25ebef6095ee2ae1563e3db5cf235d55710cd",
+              "source_item_id": "lemma4_learning_rate_bound",
+              "source_label": "Lemma 4"
+            }
+          ],
+          "source_item_ids": [
+            "lemma4_learning_rate_bound"
+          ]
+        },
+        "theorem10_adaboost_m1_error": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1745,
+              "line_start": 1735,
+              "presentation": "text_heading",
+              "presentation_sha256": "25345475054969b1f51d30a54593848ae0bece2d9560c6799030998ba0677cd9",
+              "source_item_id": "theorem10_adaboost_m1_error",
+              "source_label": "Theorem 10"
+            }
+          ],
+          "source_item_ids": [
+            "theorem10_adaboost_m1_error"
+          ]
+        },
+        "theorem11_adaboost_m2_error": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 2037,
+              "line_start": 2028,
+              "presentation": "text_heading",
+              "presentation_sha256": "d36cf0462f5e763ef091569ef3a6ffc0017025c805f20b13679eeae4a41030b4",
+              "source_item_id": "theorem11_adaboost_m2_error",
+              "source_label": "Theorem 11"
+            }
+          ],
+          "source_item_ids": [
+            "theorem11_adaboost_m2_error"
+          ]
+        },
+        "theorem12_adaboost_r_error": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 2422,
+              "line_start": 2418,
+              "presentation": "text_heading",
+              "presentation_sha256": "21fc916311d1cf515b5bb540a1b4f098e3c6a1fd0d3680204eeb7ef34f8c2a6e",
+              "source_item_id": "theorem12_adaboost_r_error",
+              "source_label": "Theorem 12"
+            }
+          ],
+          "source_item_ids": [
+            "theorem12_adaboost_r_error"
+          ]
+        },
+        "theorem2_hedge_comparator_bounds": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 412,
+              "line_start": 398,
+              "presentation": "text_heading",
+              "presentation_sha256": "accea477b41ac07a5f780284df4740dd95ba2e1a50ca01216da9643766405e1d",
+              "source_item_id": "theorem2_hedge_comparator_bounds",
+              "source_label": "Theorem 2"
+            }
+          ],
+          "source_item_ids": [
+            "theorem2_hedge_comparator_bounds"
+          ]
+        },
+        "theorem3_global_allocation_lower_tradeoff": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 487,
+              "line_start": 462,
+              "presentation": "text_heading",
+              "presentation_sha256": "f6eedc01bd8363868b1e1ccf78f62dc838f79b28e1174fcfbf4a0dc74dc0c67f",
+              "source_item_id": "theorem3_global_allocation_lower_tradeoff",
+              "source_label": "Theorem 3"
+            }
+          ],
+          "source_item_ids": [
+            "theorem3_global_allocation_lower_tradeoff"
+          ]
+        },
+        "theorem5_decision_prediction_general": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 645,
+              "line_start": 625,
+              "presentation": "text_heading",
+              "presentation_sha256": "c717c020094dc4f0d3b9a3e1e709464628bdaf45b4c0924bae804c159091eb9e",
+              "source_item_id": "theorem5_decision_prediction_general",
+              "source_label": "Theorem 5"
+            }
+          ],
+          "source_item_ids": [
+            "theorem5_decision_prediction_general"
+          ]
+        },
+        "theorem6_adaboost_error": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1108,
+              "line_start": 1099,
+              "presentation": "text_heading",
+              "presentation_sha256": "5aa90f0a55a1edf9892364d191fad377afefbc21640909968b95c75d115739a9",
+              "source_item_id": "theorem6_adaboost_error",
+              "source_label": "Theorem 6"
+            }
+          ],
+          "source_item_ids": [
+            "theorem6_adaboost_error"
+          ]
+        },
+        "theorem8_weighted_threshold_vc": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1355,
+              "line_start": 1347,
+              "presentation": "text_heading",
+              "presentation_sha256": "ecb27c83a3231c71d0c10cafcd10d4831bd696deebb0fab4661b26a037f3dd48",
+              "source_item_id": "theorem8_weighted_threshold_vc",
+              "source_label": "Theorem 8"
+            }
+          ],
+          "source_item_ids": [
+            "theorem8_weighted_threshold_vc"
+          ]
+        },
+        "theorem9_soft_adaboost_error": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1510,
+              "line_start": 1486,
+              "presentation": "text_heading",
+              "presentation_sha256": "7ff33b591954ab834bcda4deaed0966db6525d12f23c5b75e106e2edcb63f06d",
+              "source_item_id": "theorem9_soft_adaboost_error",
+              "source_label": "Theorem 9"
+            }
+          ],
+          "source_item_ids": [
+            "theorem9_soft_adaboost_error"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "2c489d774c47060a1b17f4b67e0768e6954c1c06d6a66d346542a8215f599f8f",
+    "results": {
+      "lemma1_weight_potential": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 1; Theorem 2",
+            "row_sha256": "7563b32dda5f2f3b415f1d993381c4a1cf85482168202e409c46cdfa52661994"
+          }
+        ],
+        "grouping_reason": "The parameter-domain lemma and theorem share one row."
+      },
+      "lemma4_learning_rate_bound": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 4",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 4",
+            "row_sha256": "83bd38f3edac27559e398c01756b4837d68acc5ad571443507a5ee0b8d9fbdb8"
+          }
+        ]
+      },
+      "theorem10_adaboost_m1_error": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 10",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 10\u201312",
+            "row_sha256": "0487e33274ff4fe3d8d0e9898d6f68859e8e8674bc41f0f1e767b3d72dfbda09"
+          }
+        ],
+        "grouping_reason": "The three boosting variants share one endpoint-domain row."
+      },
+      "theorem11_adaboost_m2_error": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 11",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 10\u201312",
+            "row_sha256": "0487e33274ff4fe3d8d0e9898d6f68859e8e8674bc41f0f1e767b3d72dfbda09"
+          }
+        ],
+        "grouping_reason": "The three boosting variants share one endpoint-domain row."
+      },
+      "theorem12_adaboost_r_error": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 12",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorems 10\u201312",
+            "row_sha256": "0487e33274ff4fe3d8d0e9898d6f68859e8e8674bc41f0f1e767b3d72dfbda09"
+          }
+        ],
+        "grouping_reason": "The three boosting variants share one endpoint-domain row."
+      },
+      "theorem2_hedge_comparator_bounds": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 1; Theorem 2",
+            "row_sha256": "7563b32dda5f2f3b415f1d993381c4a1cf85482168202e409c46cdfa52661994"
+          }
+        ],
+        "grouping_reason": "The parameter-domain lemma and theorem share one row."
+      },
+      "theorem3_global_allocation_lower_tradeoff": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3",
+            "row_sha256": "355211852a3f5139f2c07cfb7b050b5182be766a91ba65e219abc10c9c91da2c"
+          }
+        ]
+      },
+      "theorem5_decision_prediction_general": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 5",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 5",
+            "row_sha256": "9e8c47d7efff0b0b78451ca94c553838c22e568046fd0d96137bef090599ba5c"
+          }
+        ]
+      },
+      "theorem6_adaboost_error": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 6",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 6",
+            "row_sha256": "3f4337e2cd89025e58c0c120c879c73ec3a68e68fd2ec45f48cf50ae35f516b2"
+          }
+        ]
+      },
+      "theorem8_weighted_threshold_vc": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 8",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 8",
+            "row_sha256": "ed16f621cedbe403e482a22e0a9c151644c8a032bc493eecc65e4fdb1390c893"
+          }
+        ]
+      },
+      "theorem9_soft_adaboost_error": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 9",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 9",
+            "row_sha256": "53e4d9ab990ecba88f4a04aedbb9c3dffdd326aeb2b81249c8e842672c7c7a72"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "7563b32dda5f2f3b415f1d993381c4a1cf85482168202e409c46cdfa52661994": {
+        "explanation_keys": [
+          "defect/FS97-HEDGE-ENDPOINT-DOMAIN-01",
+          "source/lemma1_weight_potential/corrected_target",
+          "source/theorem2_hedge_comparator_bounds/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "355211852a3f5139f2c07cfb7b050b5182be766a91ba65e219abc10c9c91da2c": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "83bd38f3edac27559e398c01756b4837d68acc5ad571443507a5ee0b8d9fbdb8": {
+        "explanation_keys": [
+          "defect/FS97-LEMMA4-ZERO-LOSS-BOUND-05",
+          "source/lemma4_learning_rate_bound/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "9e8c47d7efff0b0b78451ca94c553838c22e568046fd0d96137bef090599ba5c": {
+        "explanation_keys": [
+          "defect/FS97-THEOREM5-TUNING-DOMAIN-02",
+          "source/theorem5_decision_prediction_general/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "3f4337e2cd89025e58c0c120c879c73ec3a68e68fd2ec45f48cf50ae35f516b2": {
+        "explanation_keys": [
+          "defect/FS97-ADABOOST-ENDPOINT-DOMAIN-03",
+          "source/theorem6_adaboost_error/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "bc7d6bfbb7219f2838cb38aaaacdfe044c1d9a9d9cd38a0688c94eeb003ae32f": {
+        "explanation_keys": [],
+        "supplemental_reason": "Equations (21)\u2013(23) are selected supplemental identities and bounds, not separately numbered theorem statements."
+      },
+      "ed16f621cedbe403e482a22e0a9c151644c8a032bc493eecc65e4fdb1390c893": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "53e4d9ab990ecba88f4a04aedbb9c3dffdd326aeb2b81249c8e842672c7c7a72": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "0487e33274ff4fe3d8d0e9898d6f68859e8e8674bc41f0f1e767b3d72dfbda09": {
+        "explanation_keys": [
+          "defect/FS97-ADABOOST-VARIANTS-ENDPOINT-DOMAIN-06",
+          "source/theorem10_adaboost_m1_error/corrected_target",
+          "source/theorem11_adaboost_m2_error/corrected_target",
+          "source/theorem12_adaboost_r_error/corrected_target"
+        ],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

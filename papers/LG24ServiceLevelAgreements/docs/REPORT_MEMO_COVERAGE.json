@@ -1,0 +1,211 @@
+{
+  "schema": 2,
+  "paper": "LG24ServiceLevelAgreements",
+  "report_sha256": "289e66103aa1b5f4b9938bcb543c5e1738179e6d210dd6cd06acd7807adf5e92",
+  "source_items_sha256": "7bed9beb9cef23c2df4cbc954b899de9d7ea91e0b6d6384add6e34e7b8734ef8",
+  "all_selected_semantic_review_sha256": "f40b55ed711e4c8f8abb1d77537f7fe635ddef3b6baa9252562b58a00f93552f",
+  "report_inventory_complete": true,
+  "items": {
+    "convention/LG24-POST-THINNING-ADMITTED-POISSON-NORMAL-FORM-01": {
+      "disposition": "not_material",
+      "reason": "The source explicitly states independent admitted Poisson streams and iid unit-mean exponential work; the direct construction changes no stream law."
+    },
+    "convention/LG24-STEADY-SLA-SUBSYSTEM-CONDITION-01": {
+      "disposition": "not_material",
+      "reason": "Positive weights, feasible total weight, and aggregate SLA load below capacity express the source steady-operation domain; a single-category margin is not used to replace it."
+    },
+    "report/stationary-all-request-intensity-interpretation": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_heading": "Meaning of the all-request fraction",
+      "memo_sha256": "6f116ff9447693e9fe97004e61dff8c2239d567a61af420025da5d2cd5e5c42b",
+      "memo_anchor": "meaning-of-the-all-request-fraction"
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "eda9c8c9688a350b6d7696bb8e456ea0ce0ffe4b1f33e70636e24f82bb052b35",
+      "discovered_named_result_sha256": "38eddb1146d7ffd12489aaa9cc12d3e425c468623bb453a6c406d40da2a7f82d",
+      "source_format": "tex",
+      "results": {
+        "prop_centralization_gain": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 1155,
+              "line_start": 1136,
+              "presentation": "tex_environment",
+              "presentation_sha256": "62643f3505fcb25fbac4ec9f7c7d6e3510c3dbc32c53e306fc266b0c2e002587",
+              "source_item_id": "prop_centralization_gain",
+              "source_label": "prop:strict_improvements_from_centralization"
+            }
+          ],
+          "source_item_ids": [
+            "prop_centralization_gain"
+          ]
+        },
+        "prop_extreme_efficiency": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 832,
+              "line_start": 823,
+              "presentation": "tex_environment",
+              "presentation_sha256": "e0db2ce999c20bf913fb927418ee03592610d8486e48e0e126c4d798f576a588",
+              "source_item_id": "prop_extreme_efficiency",
+              "source_label": "prop:extremeeff"
+            }
+          ],
+          "source_item_ids": [
+            "prop_extreme_efficiency"
+          ]
+        },
+        "prop_extreme_equity": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 858,
+              "line_start": 842,
+              "presentation": "tex_environment",
+              "presentation_sha256": "6eb9e274839e2e0166c8002ce9ac173090ed0143aefc1efaf83e0d5e65d0edc7",
+              "source_item_id": "prop_extreme_equity",
+              "source_label": "prop:extremefair"
+            }
+          ],
+          "source_item_ids": [
+            "prop_extreme_equity"
+          ]
+        },
+        "prop_opt_reformulation": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 696,
+              "line_start": 686,
+              "presentation": "tex_environment",
+              "presentation_sha256": "0b59debc261424a2214a85c0af3f38a2417d8f9b49114b056fd3a05507fddd04",
+              "source_item_id": "prop_opt_reformulation",
+              "source_label": "prop:opt-reformulation"
+            }
+          ],
+          "source_item_ids": [
+            "prop_opt_reformulation"
+          ]
+        },
+        "prop_price_of_equity": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 959,
+              "line_start": 926,
+              "presentation": "tex_environment",
+              "presentation_sha256": "f18514757528df6d3c6cca4208ce541b62d24a03852ab6b912eba71b7b8f113f",
+              "source_item_id": "prop_price_of_equity",
+              "source_label": "prop:costofequity"
+            }
+          ],
+          "source_item_ids": [
+            "prop_price_of_equity"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "f0ae4b6ee764166ba6eae96b2d75287c1586806bcd23e4d1248d7d0d743bf60e",
+    "results": {
+      "prop_centralization_gain": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 2.5",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 2.5 (centralization gain)",
+            "row_sha256": "bb2b89c86142a3d8844460fd1ea2b8ab1d541839e1e4be2f93f3759eb35ed947"
+          }
+        ],
+        "grouping_reason": "The report retains the proposition number and adds its descriptive title."
+      },
+      "prop_extreme_efficiency": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 2.2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 2.2 and 2.3 (extreme efficiency and extreme equity)",
+            "row_sha256": "aaf21b205aab86fa15516d393b57c6bd3458ee9b607849c4ee72b112ad1d1f68"
+          }
+        ],
+        "grouping_reason": "The two extreme-objective propositions share one exact-result row."
+      },
+      "prop_extreme_equity": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 2.3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 2.2 and 2.3 (extreme efficiency and extreme equity)",
+            "row_sha256": "aaf21b205aab86fa15516d393b57c6bd3458ee9b607849c4ee72b112ad1d1f68"
+          }
+        ],
+        "grouping_reason": "The two extreme-objective propositions share one exact-result row."
+      },
+      "prop_opt_reformulation": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 2.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 2.1 (equivalent reciprocal-capacity representation)",
+            "row_sha256": "b90b22c56fa82035ffa41670e544d670fd688dc06a4ef6d2faabc663e49a0e00"
+          }
+        ],
+        "grouping_reason": "The report retains the proposition number and adds its descriptive title."
+      },
+      "prop_price_of_equity": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 2.4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 2.4 (price of equity)",
+            "row_sha256": "38972e97d0fa8c6da6fe749cb3cb10063e1fb389e245b838ef562c039d5eded8"
+          }
+        ],
+        "grouping_reason": "The report retains the proposition number and adds its descriptive title."
+      }
+    },
+    "rows": {
+      "b90b22c56fa82035ffa41670e544d670fd688dc06a4ef6d2faabc663e49a0e00": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "aaf21b205aab86fa15516d393b57c6bd3458ee9b607849c4ee72b112ad1d1f68": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "38972e97d0fa8c6da6fe749cb3cb10063e1fb389e245b838ef562c039d5eded8": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "bb2b89c86142a3d8844460fd1ea2b8ab1d541839e1e4be2f93f3759eb35ed947": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "27ac9c16833c5250c5ec145a53f8270d22643bbfb016e494807a7c4067a85422": {
+        "explanation_keys": [],
+        "supplemental_reason": "Equation (1) is a selected supplemental stationary response-tail display rather than a named proposition."
+      },
+      "1e725c2e8ded9c78cee4c7eff7f4a82cd9c38cc94b55f57695218540d2180784": {
+        "explanation_keys": [],
+        "supplemental_reason": "The all-request fraction following Equation (2) is a selected supplemental consequence, with its stationary interpretation linked explicitly."
+      }
+    }
+  }
+}

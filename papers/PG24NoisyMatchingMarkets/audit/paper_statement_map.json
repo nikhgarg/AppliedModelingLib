@@ -12,8 +12,7 @@
       "claim_bearing": false,
       "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
-        "PG24NoisyMatchingMarkets.PG24BasicEconomySourceData"
+        "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
       ],
       "source_anchor_evidence": [
         {
@@ -34,15 +33,10 @@
         "beta-max-concentrating"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PG24NoisyMatchingMarkets.ProofInterface.beta_max_concentratingSpec_proof"
+        "PG24NoisyMatchingMarkets.PaperInterface.beta_max_concentratingSpec"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.beta_max_concentratingSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PG24NoisyMatchingMarkets.PaperInterface.beta_max_concentratingSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 60,
@@ -55,7 +49,7 @@
       "source_claim_atoms": [
         {
           "id": "beta.max.concentrating",
-          "reviewed_lean_route": "PG24NoisyMatchingMarkets.ProofInterface.beta_max_concentratingSpec_proof",
+          "reviewed_lean_route": "PG24NoisyMatchingMarkets.PaperInterface.beta_max_concentratingSpec",
           "semantic_claim": "For some beta > 0, the variance of the maximum of n iid noise draws is O(n^(-beta)).",
           "source_locator": "audit/cited publication:55-60",
           "source_quote_sha256": "6f7f6cfbef7ad961825c42a140dac934197f5f56e113a04a9d0ccc5a920429ed"
@@ -74,44 +68,18 @@
         "validator": "Codex PG24 prose-definition semantic reconciliation",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "066180dbe19efe35f375e8be8aff6a95cadcf636f02001dff9c8a5a9a9e8fc99",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "518ab0ba91ac064097c20ad5d9f589d4846840aab014e4d7b5dda3080e548227",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The direct Spec explicitly displays the iid product law, maximum-order-statistic variance envelope, and positive-exponent asymptotic rate that yield the source variance bound.",
-            "source_atom_sha256": "16afc165f2a2b28ae82a8f3b7f77b0137d8bb51478c3cc9b7c9d4469e89671c9",
-            "spec_component_sha256s": [
-              "d416c6d55b51ce7465f82e216d00a8424f698e0a17ba8b61115a53307b86d842"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "87a3aca4ac1289402354d6828b9003669fe1a8a28fb14d23b97224540dbdc1e4",
-        "spec_closure_sha256": "0b84e033033ea57fb04524f809519775f03dbd645a8ad8e01f727f9095fc9d15",
-        "spec_surface_sha256": "d416c6d55b51ce7465f82e216d00a8424f698e0a17ba8b61115a53307b86d842"
-      },
       "source_url": "https://arxiv.org/abs/2402.16771",
-      "statement": "For some beta > 0, the variance of the maximum of n iid noise draws is O(n^(-beta)).",
-      "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.beta_max_concentratingSpec"
-      ]
+      "statement": "For some beta > 0, the variance of the maximum of n iid noise draws is O(n^(-beta))."
     },
     "capacity_regularity": {
       "aliases": [
         "regular college capacities"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PG24NoisyMatchingMarkets.ProofInterface.capacity_regularitySpec_proof"
+        "PG24NoisyMatchingMarkets.PaperInterface.capacity_regularitySpec"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.capacity_regularitySpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PG24NoisyMatchingMarkets.PaperInterface.capacity_regularitySpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 48,
@@ -124,7 +92,7 @@
       "source_claim_atoms": [
         {
           "id": "capacity.regularity",
-          "reviewed_lean_route": "PG24NoisyMatchingMarkets.ProofInterface.capacity_regularitySpec_proof",
+          "reviewed_lean_route": "PG24NoisyMatchingMarkets.PaperInterface.capacity_regularitySpec",
           "semantic_claim": "Every college capacity is strictly less than alpha/C; total-capacity normalization is part of the surrounding source economy model.",
           "source_locator": "audit/cited publication:42-48",
           "source_quote_sha256": "140f9fba69a557a96a98a41043290b02c3ede0932a72cc49889adcabfa19b8b9"
@@ -143,29 +111,8 @@
         "validator": "Codex PG24 prose-definition semantic reconciliation",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "ea97007a80b2163b3e37a33965853e8e1d58ee1c13247a17dd09f3ed90393672",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "f4416358322131ba978a485e14fcb2e4217534444f86c7eaa2c013b43de32207",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The direct Spec explicitly displays the source pointwise strict capacity bound and the total-capacity normalization.",
-            "source_atom_sha256": "3fc1a3566af61f5810ba2d2107ec78039d8d43501ce712538b7614bb78f7c2ea",
-            "spec_component_sha256s": [
-              "f9cce730ede6248e431bc9e65c5b02f137e7a002fe2677212acfd1edbb896ee3"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "4d82a0054e8e8b14462e0415961906ab0ec4da00ca1982afab187fb3681c7438",
-        "spec_closure_sha256": "96e07100b5ac3b0906838d5693055f925c26d65bb922730e5a4936d6650a9e47",
-        "spec_surface_sha256": "f9cce730ede6248e431bc9e65c5b02f137e7a002fe2677212acfd1edbb896ee3"
-      },
       "source_url": "https://arxiv.org/abs/2402.16771",
-      "statement": "Every college capacity is strictly less than alpha/C; total-capacity normalization is part of the surrounding source economy model.",
-      "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.capacity_regularitySpec"
-      ]
+      "statement": "Every college capacity is strictly less than alpha/C; total-capacity normalization is part of the surrounding source economy model."
     },
     "extended_coalition_model": {
       "aliases": [
@@ -176,8 +123,7 @@
       "claim_bearing": false,
       "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling",
-        "PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData"
+        "PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling"
       ],
       "source_anchor_evidence": [
         {
@@ -198,15 +144,10 @@
         "gamma-Holder value law"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PG24NoisyMatchingMarkets.ProofInterface.holder_value_law_regularitySpec_proof"
+        "PG24NoisyMatchingMarkets.PaperInterface.holder_value_law_regularitySpec"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.holder_value_law_regularitySpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PG24NoisyMatchingMarkets.PaperInterface.holder_value_law_regularitySpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 18,
@@ -219,7 +160,7 @@
       "source_claim_atoms": [
         {
           "id": "holder.value.law.regularity",
-          "reviewed_lean_route": "PG24NoisyMatchingMarkets.ProofInterface.holder_value_law_regularitySpec_proof",
+          "reviewed_lean_route": "PG24NoisyMatchingMarkets.PaperInterface.holder_value_law_regularitySpec",
           "semantic_claim": "The value law has connected support and one uniform O(delta^gamma) upper bound on every interval (v,v+delta), for some gamma > 0.",
           "source_locator": "audit/cited publication:16-18",
           "source_quote_sha256": "1203bcd40c44add1624b8f9dba4ddbf5bb304992c4047fc8b0b072e7d00deb3e"
@@ -238,44 +179,18 @@
         "validator": "Codex PG24 prose-definition semantic reconciliation",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "c31681b24cb09f293b84a3a974fdf9b24132b15b63ade91e9e556fc7c37f0884",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "1636d746f813462e46f5c328993eaf18a24cec231912d770f9f4598afcbedc0d",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The direct Spec explicitly displays both the connected-support condition and the uniform interval-mass bound with a positive exponent.",
-            "source_atom_sha256": "c2e998fb7cf036b9be4f587beec5a909a1427c8b1a26e66581b60363309ba63a",
-            "spec_component_sha256s": [
-              "8d0c24345e95659fb3542f354f430116b201077ed4e4608520d229fb5eb51e3f"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "f9bd67bd7be395b88ede04b532c6a7076c98ac2f60cdac7b0342dbd15cb1d285",
-        "spec_closure_sha256": "4a53d234c8ccab3f62ffef58ea0710e8ed08e7cec9f9d22ac13a7be2a28f514b",
-        "spec_surface_sha256": "8d0c24345e95659fb3542f354f430116b201077ed4e4608520d229fb5eb51e3f"
-      },
       "source_url": "https://arxiv.org/abs/2402.16771",
-      "statement": "The value law has connected support and one uniform O(delta^gamma) upper bound on every interval (v,v+delta), for some gamma > 0.",
-      "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.holder_value_law_regularitySpec"
-      ]
+      "statement": "The value law has connected support and one uniform O(delta^gamma) upper bound on every interval (v,v+delta), for some gamma > 0."
     },
     "long_tailed_noise": {
       "aliases": [
         "long-tailed"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PG24NoisyMatchingMarkets.ProofInterface.long_tailed_noiseSpec_proof"
+        "PG24NoisyMatchingMarkets.PaperInterface.long_tailed_noiseSpec"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.long_tailed_noiseSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PG24NoisyMatchingMarkets.PaperInterface.long_tailed_noiseSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 64,
@@ -288,7 +203,7 @@
       "source_claim_atoms": [
         {
           "id": "long.tailed.noise",
-          "reviewed_lean_route": "PG24NoisyMatchingMarkets.ProofInterface.long_tailed_noiseSpec_proof",
+          "reviewed_lean_route": "PG24NoisyMatchingMarkets.PaperInterface.long_tailed_noiseSpec",
           "semantic_claim": "For every d > 0, the conditional survival ratio Pr[X > x+d | X > x] converges to one as x tends to infinity.",
           "source_locator": "audit/cited publication:60-64",
           "source_quote_sha256": "be80c897fc46ff0fb0b6ebaed12c041e85f399409fcf4c69a0770dc6e2e60352"
@@ -307,44 +222,18 @@
         "validator": "Codex PG24 prose-definition semantic reconciliation",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "ea97007a80b2163b3e37a33965853e8e1d58ee1c13247a17dd09f3ed90393672",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "f3762b84bb09ddf56fbdd744255f7a23f3c13aa6a313841e00ba92b642e6613c",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The direct Spec explicitly displays the source noise law's all-positive-shifts conditional survival ratio and its limit at infinity.",
-            "source_atom_sha256": "bff1f91bc22f0d4c0275f6d4667beef42a855577c023d809250c61f7dbc1ed15",
-            "spec_component_sha256s": [
-              "386f41f79db5306eee39d79a0beeba757c4d796dcd30de5b6b46313d3781ac26"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "57a85f6eb288fbb8036d1c9f1d2371194db65140841466a7b9147ffc735913f7",
-        "spec_closure_sha256": "1735c4109b65fb0d88c00dfb0be2681ee6192494da7de94c9efe7b17b19f6255",
-        "spec_surface_sha256": "386f41f79db5306eee39d79a0beeba757c4d796dcd30de5b6b46313d3781ac26"
-      },
       "source_url": "https://arxiv.org/abs/2402.16771",
-      "statement": "For every d > 0, the conditional survival ratio Pr[X > x+d | X > x] converges to one as x tends to infinity.",
-      "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.long_tailed_noiseSpec"
-      ]
+      "statement": "For every d > 0, the conditional survival ratio Pr[X > x+d | X > x] converges to one as x tends to infinity."
     },
     "match_probability_formula": {
       "aliases": [
         "p_mu(v,C')"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PG24NoisyMatchingMarkets.ProofInterface.match_probability_formulaSpec_proof"
+        "PG24NoisyMatchingMarkets.PaperInterface.match_probability_formulaSpec"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.match_probability_formulaSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PG24NoisyMatchingMarkets.PaperInterface.match_probability_formulaSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 111,
@@ -365,7 +254,7 @@
         {
           "id": "match.probability.formula",
           "identity_schema": 2,
-          "reviewed_lean_route": "PG24NoisyMatchingMarkets.ProofInterface.match_probability_formulaSpec_proof",
+          "reviewed_lean_route": "PG24NoisyMatchingMarkets.PaperInterface.match_probability_formulaSpec",
           "semantic_claim": "p_mu(v,C') is the probability that value v plus at least one active college's noise draw strictly exceeds that college's cutoff; p_mu(v) uses all colleges.",
           "source_locator": "audit/cited publication:96-111",
           "source_quote_sha256": "9611a364cb2c19866b25421fbf9b1861cdc4a0a6bcf9ca0a33e3999e789471f5"
@@ -384,41 +273,17 @@
         "validator": "Codex PG24 prose-definition semantic reconciliation",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "ea97007a80b2163b3e37a33965853e8e1d58ee1c13247a17dd09f3ed90393672",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "07a9dbdd42980a68085aa73115de6233a5bef3973817f6aee1f0a2fcdad03007",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The direct Spec displays the same strict-crossing existential event under the joint sample law, restricts it to the active college set, and defines the all-college specialization explicitly.",
-            "source_atom_sha256": "c7827075e32c308e5b5b8c37f7fcb7644c8c13a0d351fbb007802af3da5f2962",
-            "spec_component_sha256s": [
-              "95a9b156e12766208addfa053fb8cbbcc9c4cec1481408c9f899a29433d47a89"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "8a2e8434345205c64250004f0e22c437b0ba138aae763d9a294bc17798205971",
-        "spec_closure_sha256": "4db80dbaf64c725c29f6af635e4c11e63294ac3483a8081de8dff5d2086917bd",
-        "spec_surface_sha256": "95a9b156e12766208addfa053fb8cbbcc9c4cec1481408c9f899a29433d47a89"
-      },
       "source_url": "https://arxiv.org/abs/2402.16771",
-      "statement": "p_mu(v,C') is the probability that value v plus at least one active college's noise draw strictly exceeds that college's cutoff; p_mu(v) uses all colleges.",
-      "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.match_probability_formulaSpec"
-      ]
+      "statement": "p_mu(v,C') is the probability that value v plus at least one active college's noise draw strictly exceeds that college's cutoff; p_mu(v) uses all colleges."
     },
     "source_apple": {
       "aliases": [
         "Lemma apple"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_v11_surface",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_appleSpec_proof"
       ],
-      "scope_disposition": "direct_source_target",
-      "scope_disposition_note": "The transparent Spec and endpoint prove the source's strict tail-ratio inequality throughout the rounded large-firm suffix, with positivity of its denominator derived rather than assumed.",
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_appleSpec_proof",
         "evidence_mode": "proves",
@@ -446,23 +311,51 @@
       ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:779-785",
-      "source_note": "The direct endpoint first proves the preceding unbounded-cutoff lemma from literal source primitives, then applies long-tailed survival at each large-firm cutoff. It records eventual positivity of the denominator explicitly; this is derived from long-tailed survival and is needed to interpret the printed tail ratio without relying on totalized division.",
-      "source_status": "formalized",
+      "source_note": "Named appendix lemma in the printed proof of Theorem 2; retained as a claim-bearing source presentation pending its own transparent Spec and proof endpoint.",
       "statement": "For sufficiently large markets, the displayed ratio of two tail probabilities exceeds 1-epsilon for every large-firm cutoff.",
       "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.source_appleSpec",
-        "PG24NoisyMatchingMarkets.theorem2_literalSource_apple_eventually",
-        "PG24NoisyMatchingMarkets.theorem2_literalSource_unbounded_cutoffs_eventually"
+        "PG24NoisyMatchingMarkets.PaperInterface.source_appleSpec"
       ]
     },
     "source_beet": {
+      "accepted_additional_assumptions": {
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-08",
+        "conditions": [
+          "The iid one-draw noise law satisfies MemLp (fun x : ℝ => x) 2 noiseLaw; this finite second moment is used only for the Appendix Proposition 7(ii) one-draw Chebyshev step."
+        ]
+      },
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "approval_reference": "The underlying approval record is withheld from this public projection.",
+          "approved_at": "2026-09-08",
+          "conditions": [
+            "The iid one-draw noise law satisfies MemLp (fun x : ℝ => x) 2 noiseLaw; this finite second moment is used only for the Appendix Proposition 7(ii) one-draw Chebyshev step."
+          ],
+          "id": "accepted_additional_assumptions",
+          "kind": "maintainer_approved_additional_assumptions",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "a258942e91ddf82ec2cfaa95c74c57ca1ccc121cf68cb17fd7dd9a3304b2f92d"
+        }
+      ],
       "claim_bearing": true,
-      "inventory_role": "direct_v11_surface",
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "audit/cited publication:599-611",
+        "archival_source_quote_sha256": "515fa06d1ed7878eab0d436435f952d995f819c89a293e7858a8294920c28c6a",
+        "corrected_target_review_sha256": "9583dda1015f19d203baee53e623751eb80e41c84c5ef8424e0e633bb6d9a722",
+        "corrected_target_sha256": "495f8693663299667c45fa961e3fed7b453dd96d641125baf3ffb5ab9e08602d",
+        "governing_defect_ids": [
+          "PG24-APP-PROP7-ONE-DRAW-MOMENT-01"
+        ],
+        "schema": 1,
+        "statement": "Appendix Proposition 7(i) has its literal full-maximum polynomial rate, and Appendix Proposition 7(ii) has its displayed near-one polynomial rate under the source beta-max condition plus a finite iid one-draw second moment, with an atom-safe lower-tail complement event."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_beetSpec_proof"
       ],
-      "scope_disposition": "source_target_with_documented_correction",
-      "scope_disposition_note": "The first branch is a direct source target. The second branch is formalized at its strongest valid conclusion under the printed beta-max premise; its printed rate remains conditional on an added one-draw moment repair.",
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_beetSpec_proof",
         "evidence_mode": "proves",
@@ -483,20 +376,21 @@
           "id": "appendix.beet.corrected",
           "identity_schema": 2,
           "reviewed_lean_route": "PG24NoisyMatchingMarkets.ProofInterface.source_beetSpec_proof",
-          "semantic_claim": "In the Case-2 branch, the low-side full-maximum bound has its displayed polynomial rate, while the source-valid high-side conclusion is that affordance tends to one above the stated threshold.",
+          "semantic_claim": "Under the approved finite one-draw second-moment clarification, Appendix Proposition 7's Case-2 low-side full-maximum and high-side full-affordance conclusions have their displayed polynomial rates.",
           "source_locator": "audit/cited publication:599-611",
           "source_quote_sha256": "515fa06d1ed7878eab0d436435f952d995f819c89a293e7858a8294920c28c6a"
         }
       ],
+      "source_defect_ids": [
+        "PG24-APP-PROP7-ONE-DRAW-MOMENT-01"
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:599-611",
-      "source_note": "The checked endpoint recovers beet(i)'s literal full-maximum Chebyshev rate. Beet(ii)'s printed polynomial rate does not follow from beta-max concentration: it invokes a one-draw Chebyshev calculation absent from that premise and has atom/complement defects (D12). Under the printed source assumptions, the endpoint proves the source-valid qualitative conclusion that full-market affordance tends to one for every value sequence strictly above the stated threshold. A finite one-draw lower-tail second moment is a sufficient additional condition for the printed rate, but is not silently added here.",
-      "source_status": "formalized_under_documented_correction",
-      "statement": "In the second cutoff case, the displayed threshold separates a small high-cutoff affordance probability from a near-one matching probability.",
+      "source_note": "The source proof of Appendix Proposition 7(ii) uses a one-draw Chebyshev calculation that beta-max concentration alone does not justify. The corrected target retains Case (i), makes the finite iid one-draw second moment explicit for Case (ii), and states the complement event with the lower-tail orientation needed in the presence of atoms.",
+      "source_status": "corrected",
+      "statement": "Appendix Proposition 7 states its two displayed Case-2 polynomial-rate conclusions under beta-max concentration alone.",
       "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.source_beetSpec",
-        "PG24NoisyMatchingMarkets.theorem1_fullBlock_deviation_eventually_le_source_rate_of_beta",
-        "PG24NoisyMatchingMarkets.theorem1_ranked_largeGap_full_affordance_tendsto_one"
+        "PG24NoisyMatchingMarkets.PaperInterface.source_beetSpec"
       ]
     },
     "source_duck_1": {
@@ -504,12 +398,9 @@
         "Proposition duck-1"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_v11_surface",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_duck_1Spec_proof"
       ],
-      "scope_disposition": "direct_source_target",
-      "scope_disposition_note": "The transparent Spec and checked endpoint directly prove the displayed capacity inequality.",
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_duck_1Spec_proof",
         "evidence_mode": "proves",
@@ -537,22 +428,56 @@
       ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:391-395",
-      "source_note": "The direct endpoint realizes the displayed capacity bound from the paper's strict per-college capacity condition and the first-case strict sparse-cardinality condition. The source's displayed big-O restatement follows from phi3 - 1 = -K but is not separately encoded as an asymptotic wrapper.",
-      "source_status": "formalized",
+      "source_note": "Named appendix proposition in the printed proof of Theorem 1; retained as a claim-bearing source presentation pending its own transparent Spec and proof endpoint.",
       "statement": "In the first cutoff case, the capacity mass of colleges below P-star is O(C^{-K(beta,gamma)}).",
       "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.source_duck_1Spec",
-        "PG24NoisyMatchingMarkets.theorem1Tail_sparseBlock_capacity_le_alpha_rpow_phi3_sub_one"
+        "PG24NoisyMatchingMarkets.PaperInterface.source_duck_1Spec"
       ]
     },
     "source_duck_2": {
       "claim_bearing": true,
-      "inventory_role": "direct_v11_surface",
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "audit/cited publication:371-473",
+        "archival_source_quote_sha256": "ef4daf7261fc44c31e06924abd66a7124f5f1699c9524a1482f8ff67defdb7b0",
+        "corrected_target_review_sha256": "ab0bc54b384ca1355991b9d18d7c630f7365cc3c77c1ab0c81ba194ac371a2cf",
+        "corrected_target_sha256": "3e2daa5e8da40cbffa6db7a56ad38d1cdcdab3a31aa62bff5d1e3e4a78b7d86b",
+        "governing_defect_ids": [
+          "PG24-APP-CASE1-BLOCK-BOUNDARY-01"
+        ],
+        "schema": 1,
+        "statement": "In the source Case-1 closed high-cutoff block C([P*, infinity)), the below-vS cutoff-affordance integral has the displayed O(C^(-K(beta,gamma))) rate."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_duck_2Spec_proof"
       ],
-      "scope_disposition": "direct_source_target",
-      "scope_disposition_note": "The transparent Spec and checked endpoint directly prove the displayed first-case low-value integral rate.",
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 111,
+              "line_start": 96,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\subsection{Preliminaries}\nWe now make some basic observations that will be useful for our results. We show that key properties of stable matchings operate at the level of student values rather than student types (which also encode student preferences). This means that in our analysis, we can focus on the fixed student value distribution $\\eta$ while mostly ignoring the varying student type distribution $\\rho$.\n\nConsider a matching $\\mu\\in M(\\DD, C)$, characterized by a vector of market-clearing cutoffs $\\vec{P}=\\vec{P}(\\mu)$. Our results focus on the probability that a student $\\theta=(v,\\succ)$ matches to a college. This probability is equal to\n\\begin{equation}\n    \\Pr[\\mu(\\theta)\\in C] = \\Pr[v + X_c > P_c\\text{ for some $c\\in C$}],\n\\end{equation}\nwhere $X_1, \\cdots, X_C \\simiid \\DD.$ Notice that this probability does not depend on $\\succ$, the student's preferences over colleges. Indeed, the probability that a student matches is exactly the probability that a student can afford some college; whether or not they can afford a college only depends on their value and the college's cutoff (not the student's preferences). Accordingly, we can drop $\\theta$ and define\n\\begin{equation}\n    p_\\mu(v) := \\Pr[v + X_c > P_c\\text{ for some $c\\in C$}],\n\\end{equation}\nthe probability that a student with value $v$ is matched under $\\mu$. More generally, for a subset of colleges $C'\\subseteq C$, we define\n\\begin{equation}\n    p_\\mu(v, C') := \\Pr[v + X_c > P_c\\text{ for some $c\\in C'$}],\n\\end{equation}\nthe probability that a student with value $v$ can afford some college in $C'$. By definition, $p_\\mu(v) = p_\\mu(v, C).$",
+              "quoted_text_sha256": "9611a364cb2c19866b25421fbf9b1861cdc4a0a6bcf9ca0a33e3999e789471f5"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchor_evidence": [
+            {
+              "line_end": 473,
+              "line_start": 371,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\end{itemize}\nWe choose these two cases for the following reason. The first case guarantees the existence of a dense set of cutoffs ``early on'' in the sequence of colleges. The second case, does not have a dense set of cutoffs early on. By the pigeonhole principle, this instead implies that there must exist a large gap between cutoffs early on. As we will see, both the existence of an ``early'' dense set or large gap is sufficient to obtain the desired result.\n\n\\subsubsection*{Case 1: Few Cutoffs Below $P^*$}\n\nAt a high level, our analysis in this case proceeds as follows. Set\n\\begin{align}\n    \\CC_1 &:= C((-\\infty, P^*))\\\\\n    \\CC_2 &:= C((P^*, \\infty)).\n\\end{align}\nFirst, because there are few cutoffs below $P^*$, the mass of students who match to colleges in $\\CC_1$ is small---i.e., going to $0$ as $C\\rightarrow \\infty$. Therefore, we can focus on the probability a student can afford a college in $\\CC_2.$ This probability is approximately a step function as for $C$ large, since the dense cluster of colleges in $[P^*, P^*+\\delta]$ contains a large number of colleges, serving as an ``arbitrarily strong filter.''\n\\\\\n\\\\\nIn accordance with this plan, observe that\n\\begin{equation}\n    \\int_{v_S}^\\infty p_\\mu(v)\\,d\\eta(v) \\le S(\\CC_1) + \\int_{v_S}^\\infty p_\\mu(v,\\CC_2)\\,d\\eta(v),\n\\end{equation}\nsince the total measure of students with value below $v_S$ who match to a college is at most the total measure $S(\\CC_1)$ of students (of any value) who match with a college in $\\CC_1$ plus the total measure of students with value below $v_S$ who can afford a college in $\\CC_2.$\n\nWe proceed by bounding the two components of the RHS. Bounding $S(\\CC_1)$ is straightforward: there are at most $C^{\\phi_3}$ colleges in this set, each of which has capacity at most $\\frac{\\alpha}{C}.$ This gives the following bound.\n\\begin{proposition}\\label{prop:duck-1}\n\\begin{equation}\n    S(\\CC_1) \\le \\alpha C^{\\phi_3 - 1} = O\\left(C^{-K(\\beta,\\gamma)}\\right).\n\\end{equation}\n\\end{proposition}\n\\begin{proof}\n    The capacity of each college is at most $\\frac{\\alpha}{C}$. Since there are fewer than $C^{\\phi_3}$ colleges in $C((-\\infty, P^*))$, the mass of students who match to these colleges is less than $C^{\\phi_3}\\cdot \\frac{\\alpha}{C} = \\alpha C^{\\phi_3 - 1}.$ The result follows since\n    \\begin{equation}\n        \\phi_3 - 1 = -\\frac{2\\beta\\gamma}{3\\beta\\gamma + 2\\beta + 5\\gamma + 6} = K(\\beta,\\gamma).\n    \\end{equation}\n\\end{proof}\nBounding the second component---the measure of students with value below $v_S$ who match with a college in $C([P^*,\\infty))$---is more involved. We start by showing that $p_\\mu(v, \\CC_2)$, the probability that a student with value $v$ can afford a college in $\\CC_2$, resembles a step function in $v$ that jumps at $P^* - \\EE[X^{(C^{\\phi_2})}],$ where we recall that $\\phi_2$ is the number of colleges in the dense cluster. We can use this result to analyze the second integral, since if $p_\\mu(v, \\CC_2)$ resembles a step function, then this step must occur at roughly $v_S$ or otherwise too many (more than $S$) or too few (at most $S$) students will be able to afford a college. In turn, $p_\\mu(v, \\CC_2)$ must be small for almost all students with value at most $v_S$.\n\n\\begin{proposition}\\label{prop:tomato}\n\\quad\n    \\begin{itemize}\n        \\item[(i)] If $v > P^* - \\EE[X^{(C^{\\phi_2})}]  + 2\\delta,$\n        \\begin{equation}\n            p_\\mu(v, \\CC_2) \\ge 1 - O\\left(C^{-2\\phi_1 - \\beta\\phi_2}\\right).\n        \\end{equation}\n        \\item[(ii)] If $v < P^* - \\EE[X^{(C^{\\phi_2})}]  - \\delta,$\n        \\begin{equation}\n            p_\\mu(v, \\CC_2) \\le O\\left(C^{1-2\\phi_1 - (1 + \\beta)\\phi_2}\\right).\n        \\end{equation}\n    \\end{itemize}\n\\end{proposition}\n\nWe first sketch the proof strategy and intuition for \\Cref{prop:tomato}. For part (i), we will lower bound $p_\\mu(v, \\CC_2)$ by the probability that a student with value $v$ can afford a college in the dense cluster $C([P^*, P^* + \\delta]).$ In turn, this can be lower bounded by the probability that among the at least $C^{\\phi_2}$ scores $\\theta$ receives from the colleges in the dense cluster, at least one exceeds $P^* + \\delta$, i.e., $\\Pr[v + X^{(C^{\\phi_2})} > P^* + \\delta$]. This probability is close to $1$, since $v + \\EE[X^{(C^{\\phi_2})}] > P^* + 2\\delta$ and $X^{(C^{\\phi_2})}$ concentrates as $C$ grows large (due to the $\\beta$-max-concentrating property).\n\nOur approach for part (ii) is similar, but uses an additional observation. We can upper bound $p_\\mu(v, \\CC_2)$ by the probability that among the at most $C$ scores $v$ receives from the colleges in $C([P^*,\\infty)),$ at least one exceeds $P^*$---i.e., $\\Pr[v + X^{(C)} > P^*].$ The key observation is that this probability is at most $C^{1 - \\phi_2}\\Pr[v + X^{(C^{\\phi_2})} > P^*]$ by a union bound. $\\Pr[v + X^{(C^{\\phi_2})} > P^*]$ is small since $v + \\EE[X^{(C^{\\phi_2})}] < P^* - \\delta$ and $X^{(C^{\\phi_2})}$ concentrates as $C$ grows large; in fact, we can show that it is so small that it overcomes the factor of $C^{1 - \\phi_2}$. \n\nWe now provide this analysis formally.\n\n\\begin{proof}[Proof of (i)]\n    We bound $p_\\mu(v, \\CC_2)$ from below by the probability that $v$ can afford a college in $C([P^*, P^* + \\delta])\\subseteq C([P^*, \\infty)).$\n    Observe that if $\\max_{c\\in C(P^*, P^* + \\delta)} \\{v + X_c\\} > P^* + \\delta$, then $v$ can afford at least one college in $C([P^*, \\infty))$.\n    Therefore,\n    \\begin{equation}\n        p_\\mu(v, \\CC_2) \\ge \\Pr\\left[\\max_{c\\in C([P^*, P^* + \\delta])} \\{v + X_c\\} > P^* + \\delta\\right] \\ge \\Pr\\left[v + X^{(C^{\\phi_2})} > P^* + \\delta\\right],\n    \\end{equation}\n    where the last inequality follows since there are more than $C^{\\phi_2}$ colleges in $C([P^*, P^* + \\delta])$.\n\n    Now observe that\n    \\begin{align}\n        \\Pr\\left[v + X^{(C^{\\phi_2})} > P^* + \\delta\\right] &= \\Pr\\left[X^{(C^{\\phi_2})} > P^* + \\delta - v\\right]\\\\\n        &\\ge \\Pr\\left[X^{(C^{\\phi_2})} > \\EE\\left[X^{(C^{\\phi_2})}\\right] - \\delta \\right] \\label{eq:potato-1} \\\\ \n        &\\ge \\Pr\\left[\\left|X^{(C^{\\phi_2})} - \\EE\\left[X^{(C^{\\phi_2})}\\right]\\right| < \\delta \\right] \\\\\n        &> 1 - \\frac{\\Var\\left[X^{(C^{\\phi_2})}\\right]}{\\delta^2} \\label{eq:potato-2} \\\\\n        &= 1 - O\\left(\\frac{C^{-\\beta\\phi_2}}{\\delta^2}\\right) \\label{eq:potato-3} \\\\\n        &= 1 - O\\left(C^{-2\\phi_1 - \\beta\\phi_2}\\right),\n    \\end{align}\n    where \\eqref{eq:potato-1} follows because $v > P^* - \\EE\\left[X^{(C^{\\phi_2})}\\right]  + 2\\delta,$ \\eqref{eq:potato-2} follows from Chebyshev's inequality, and \\eqref{eq:potato-3} follows from the fact that $\\Var[X^{(n)}] = O\\left(n^{-\\beta}\\right).$\n\\end{proof}\n\n\\begin{proof}[Proof of (ii).]\nNote that $v$ can afford at least one college in $C(P^*, \\infty)$ only if $v + X_c > P^*$ for some $c\\in C(P^*, \\infty).$ Thus,\n    \\begin{align}\n        p_\\mu(v, \\CC_2) &\\le \\Pr[v + X^{(C)} > P^*]\\\\\n        &\\le C^{1 - \\phi_2} \\cdot \\Pr[v + X^{(C^{\\phi_2})} > P^*],\n    \\end{align}\n    where the last inequality holds by a union bound (split the $C$ colleges into $C^{1-\\phi_2}$ groups each of size $C^{\\phi_2}$, and then bound the probability that the student is admitted to a college in any of these groups). \n    \n    Then, proceeding as in part (i), \n    \\begin{align}\n        \\Pr\\left[v + X^{(C^{\\phi_2})} > P^* \\right] &= \\Pr\\left[X^{(C^{\\phi_2})} > P^* - v\\right]\\\\\n        &\\ge \\Pr\\left[X^{(C^{\\phi_2})} > \\EE\\left[X^{(C^{\\phi_2})}\\right] + \\delta \\right] \\label{eq:yam-1} \\\\ \n        &\\ge \\Pr\\left[\\left|X^{(C^{\\phi_2})} - \\EE\\left[X^{(C^{\\phi_2})}\\right]\\right| > \\delta \\right] \\\\\n        &< \\frac{\\Var\\left[X^{(C^{\\phi_2})}\\right]}{\\delta^2} \\label{eq:yam-2} \\\\\n        &= O\\left(\\frac{C^{-\\beta \\phi_2}}{\\delta^2}\\right), \\label{eq:yam-3}\n    \\end{align}\n    where \\eqref{eq:yam-1} follows because $v < P^* - \\EE\\left[X^{(C^{\\phi_2})}\\right]  - \\delta,$ \\eqref{eq:yam-2} follows from Chebyshev's inequality, and \\eqref{eq:yam-3} follows from the fact that $\\Var[X^{(n)}] = O\\left(\\frac{1}{n}\\right).$ It follows that\n    \\begin{equation}\n        p_\\mu(v, \\CC_2) \\le C^{1 - \\phi_2}\\cdot O\\left(\\frac{C^{-\\beta \\phi_2}}{\\delta^2}\\right) = O\\left(C^{1-2\\phi_1-(1+\\beta)\\phi_2}\\right).\n    \\end{equation}\n\\end{proof}\n\nWe may now use the preceding result (\\Cref{prop:tomato}) to bound the second integral, the mass of students with value at most $v_S$ who can afford a college in $C([P^*,\\infty))$.\n\n\\begin{proposition}\\label{prop:duck-2}\n\\begin{equation}\n    \\int_{-\\infty}^{v_S} p_\\mu(v, \\CC_2)\\,d\\eta(v) = O\\left(C^{-K(\\beta,\\gamma)}\\right).\n\\end{equation}\n\\end{proposition}",
+              "quoted_text_sha256": "ef4daf7261fc44c31e06924abd66a7124f5f1699c9524a1482f8ff67defdb7b0"
+            }
+          ]
+        }
+      ],
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_duck_2Spec_proof",
         "evidence_mode": "proves",
@@ -578,14 +503,16 @@
           "source_quote_sha256": "1668fc3c11d7e6dd777f4d80d364e9f6b1c193ea86e01e2e3bafeb9e7649871a"
         }
       ],
+      "source_defect_ids": [
+        "PG24-APP-CASE1-BLOCK-BOUNDARY-01"
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:469-473",
-      "source_note": "The direct endpoint integrates the actual iid cutoff-affordance probability over the source low-value region. Its explicit cutoff lower bound and score-separation hypotheses are the contextual first-cutoff-case geometry used by the source proof.",
-      "source_status": "formalized",
-      "statement": "In the first cutoff case, the below-threshold integral of high-cutoff affordance probability is O(C^{-K(beta,gamma)}).",
+      "source_note": "The corrected target follows the closed high-cutoff block actually used by the preceding dense-cluster proof and fixes the integral endpoint at the source vS. It retains the printed rate and strict source separation.",
+      "source_status": "corrected",
+      "statement": "The high-cutoff lower-tail integral proposition is written for p_mu(v,C_2), after C_2 was defined with an open lower endpoint.",
       "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.source_duck_2Spec",
-        "PG24NoisyMatchingMarkets.theorem1DenseGroup_low_affordance_integral_eventually_le_source_rate_of_beta"
+        "PG24NoisyMatchingMarkets.PaperInterface.source_duck_2Spec"
       ]
     },
     "source_goose_1": {
@@ -593,12 +520,9 @@
         "Proposition goose-1"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_v11_surface",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_goose_1Spec_proof"
       ],
-      "scope_disposition": "direct_source_target",
-      "scope_disposition_note": "The transparent Spec and checked endpoint prove the source's displayed strict rate despite the proof-text sign error.",
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_goose_1Spec_proof",
         "evidence_mode": "proves",
@@ -626,22 +550,51 @@
       ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:553-557",
-      "source_note": "The direct endpoint proves the literal displayed strict -K rate from the paper's strict capacity and sparse-cardinality hypotheses. The printed proof's intermediate alpha*C^(1-phi3) line has the wrong sign; it is not used.",
-      "source_status": "formalized",
+      "source_note": "Named appendix proposition in the printed proof of Theorem 1; retained as a claim-bearing source presentation pending its own transparent Spec and proof endpoint.",
       "statement": "In the second cutoff case, the capacity mass of the early-college set satisfies the displayed polynomial bound.",
       "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.source_goose_1Spec",
-        "PG24NoisyMatchingMarkets.theorem1Tail_sparseBlock_capacity_lt_alpha_rpow_neg_K"
+        "PG24NoisyMatchingMarkets.PaperInterface.source_goose_1Spec"
       ]
     },
     "source_goose_2": {
+      "accepted_additional_assumptions": {
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-08",
+        "conditions": [
+          "The iid one-draw noise law satisfies MemLp (fun x : ℝ => x) 2 noiseLaw; this finite second moment supplies the inherited Appendix Proposition 8 Case-2 rate."
+        ]
+      },
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "approval_reference": "The underlying approval record is withheld from this public projection.",
+          "approved_at": "2026-09-08",
+          "conditions": [
+            "The iid one-draw noise law satisfies MemLp (fun x : ℝ => x) 2 noiseLaw; this finite second moment supplies the inherited Appendix Proposition 8 Case-2 rate."
+          ],
+          "id": "accepted_additional_assumptions",
+          "kind": "maintainer_approved_additional_assumptions",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "1be7ab0e0879da36a73a776bf419e517d70d5bdf6ff60f34cbfae5b38783dcf0"
+        }
+      ],
       "claim_bearing": true,
-      "inventory_role": "direct_v11_surface",
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "audit/cited publication:647-651",
+        "archival_source_quote_sha256": "e72e7f45cc5ee7e4f28f017b06fb6579dddbe33803531c5459d9c573f1687107",
+        "corrected_target_review_sha256": "e161f44e117d228fb252f3a1cff12284f87187c8d018c321009c8884a020432e",
+        "corrected_target_sha256": "f6a57cef41ed40f935cc39c67649d419c04ba68fc6273c7333925c2349ca16de",
+        "governing_defect_ids": [
+          "PG24-APP-PROP8-INHERITED-ONE-DRAW-MOMENT-01"
+        ],
+        "schema": 1,
+        "statement": "Under the source beta-max and value-law conditions plus a finite iid one-draw second moment, Appendix Proposition 8's below-vS high-cutoff-affordance integral is O(C^(-K(beta,gamma)))."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_goose_2Spec_proof"
       ],
-      "scope_disposition": "source_target_with_documented_correction",
-      "scope_disposition_note": "The source-valid qualitative integral conclusion is directly formalized; the printed polynomial rate requires the documented one-draw moment repair.",
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_goose_2Spec_proof",
         "evidence_mode": "proves",
@@ -662,19 +615,21 @@
           "id": "appendix.goose-2.corrected",
           "identity_schema": 2,
           "reviewed_lean_route": "PG24NoisyMatchingMarkets.ProofInterface.source_goose_2Spec_proof",
-          "semantic_claim": "In the Case-2 large-gap branch, the high-cutoff affordance integral over values below vS tends to zero.",
+          "semantic_claim": "Under the approved finite one-draw second-moment clarification, the Case-2 high-cutoff affordance integral over values below vS is at most a constant times C^(-K(beta,gamma)).",
           "source_locator": "audit/cited publication:647-651",
           "source_quote_sha256": "e72e7f45cc5ee7e4f28f017b06fb6579dddbe33803531c5459d9c573f1687107"
         }
       ],
+      "source_defect_ids": [
+        "PG24-APP-PROP8-INHERITED-ONE-DRAW-MOMENT-01"
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:647-651",
-      "source_note": "The direct source-model route proves that the identical Case-2 high-cutoff low-value integral tends to zero. The printed O(C^-K) rate depends on beet(ii)'s unavailable one-draw polynomial rate, so it is recorded as a conditional strengthening rather than attributed to beta-max concentration alone.",
-      "source_status": "formalized_under_documented_correction",
-      "statement": "In the second cutoff case, the below-threshold integral of high-cutoff affordance probability is O(C^{-K(beta,gamma)}).",
+      "source_note": "Appendix Proposition 8 inherits the Case-2 one-draw Chebyshev condition from Appendix Proposition 7(ii). The corrected target retains the printed below-threshold integral rate while making that finite iid one-draw second moment explicit.",
+      "source_status": "corrected",
+      "statement": "Appendix Proposition 8 states that its below-vS high-cutoff-affordance integral is O(C^(-K(beta,gamma))) under beta-max concentration alone.",
       "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.source_goose_2Spec",
-        "PG24NoisyMatchingMarkets.theorem1_largeGap_upper_low_integral_tendsto_zero_of_beta"
+        "PG24NoisyMatchingMarkets.PaperInterface.source_goose_2Spec"
       ]
     },
     "source_large_firm_tail_bound": {
@@ -682,12 +637,9 @@
         "unnumbered large-firm tail lemma"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_v11_surface",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_large_firm_tail_boundSpec_proof"
       ],
-      "scope_disposition": "direct_source_target",
-      "scope_disposition_note": "The transparent Spec and endpoint prove the displayed sigma/C upper-tail rate over the rounded source large-firm suffix.",
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_large_firm_tail_boundSpec_proof",
         "evidence_mode": "proves",
@@ -715,13 +667,10 @@
       ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:797-803",
-      "source_note": "The direct endpoint derives the sorted-suffix high-tail bound from the same literal iid sampling, exact clearing capacity, and long-tail route as unbounded-cutoffs. Its internal sigma/(C+1) estimate is stronger than the source's sigma/C display and is converted at positive market sizes. This avoids the printed proof's inconsistent F1/F2 references while preserving its stated conclusion.",
-      "source_status": "formalized",
+      "source_note": "Appendix lemma presentation in the printed proof of Theorem 2; retained as a claim-bearing source presentation pending its own transparent Spec and proof endpoint.",
       "statement": "For sufficiently large markets, every large-firm cutoff has the displayed O(1/C) tail-probability bound.",
       "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.source_large_firm_tail_boundSpec",
-        "PG24NoisyMatchingMarkets.theorem2_literalSource_large_firm_tail_bound_eventually",
-        "PG24NoisyMatchingMarkets.theorem2_literalSource_exists_sigma_suffix_geometry_of_longTailed"
+        "PG24NoisyMatchingMarkets.PaperInterface.source_large_firm_tail_boundSpec"
       ]
     },
     "source_log_bound": {
@@ -729,12 +678,9 @@
         "Lemma log-bound"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_v11_surface",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_log_boundSpec_proof"
       ],
-      "scope_disposition": "direct_source_target",
-      "scope_disposition_note": "The transparent Spec and its checked endpoint directly prove the source lemma, under the paper's iid beta-max variance premise.",
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_log_boundSpec_proof",
         "evidence_mode": "proves",
@@ -762,8 +708,7 @@
       ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:565-570",
-      "source_note": "The direct endpoint derives the iid two-block maximum coupling and eventual L2 bridge from the source beta-max premise. Lean indexes the source's n-sample maximum by Fin (n + 1) to avoid an empty order statistic.",
-      "source_status": "formalized",
+      "source_note": "Named appendix lemma in the printed proof of Theorem 1; retained as a claim-bearing source presentation pending its own transparent Spec and proof endpoint.",
       "statement": "For beta-max-concentrating noise, the expectation of the maximum order statistic is o(log n).",
       "support_lean_declarations": [
         "PG24NoisyMatchingMarkets.PaperInterface.source_log_boundSpec"
@@ -774,12 +719,48 @@
         "Proposition lt-approx-F2"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_v11_surface",
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "audit/cited publication:831-867",
+        "archival_source_quote_sha256": "78fbf90ba06986d67f244a3771a43e4325acfe650dec556182fa61d369fa6da9",
+        "corrected_target_review_sha256": "2d8ee96bdcb3d9e33fd5ddbfaf8f4733c90b302e55a483f0ded412da05092f88",
+        "corrected_target_sha256": "a469701157e45526c44616f9d78ead1595dceeb9cc97b6851aa2a887958685f2",
+        "governing_defect_ids": [
+          "PG24-APP-LOCAL-CONTEXT-01"
+        ],
+        "schema": 1,
+        "statement": "The large-firm affordance-difference proposition is the strict source p_mu(v_+,F2)-p_mu(v_-,F2) bound under its preceding tail-ratio and nonempty-block estimates."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_lt_approx_f2Spec_proof"
       ],
-      "scope_disposition": "direct_source_target",
-      "scope_disposition_note": "The transparent Spec and endpoint prove the source's strict exponential product-gap bound under its explicit strict local ingredients.",
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 111,
+              "line_start": 96,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\subsection{Preliminaries}\nWe now make some basic observations that will be useful for our results. We show that key properties of stable matchings operate at the level of student values rather than student types (which also encode student preferences). This means that in our analysis, we can focus on the fixed student value distribution $\\eta$ while mostly ignoring the varying student type distribution $\\rho$.\n\nConsider a matching $\\mu\\in M(\\DD, C)$, characterized by a vector of market-clearing cutoffs $\\vec{P}=\\vec{P}(\\mu)$. Our results focus on the probability that a student $\\theta=(v,\\succ)$ matches to a college. This probability is equal to\n\\begin{equation}\n    \\Pr[\\mu(\\theta)\\in C] = \\Pr[v + X_c > P_c\\text{ for some $c\\in C$}],\n\\end{equation}\nwhere $X_1, \\cdots, X_C \\simiid \\DD.$ Notice that this probability does not depend on $\\succ$, the student's preferences over colleges. Indeed, the probability that a student matches is exactly the probability that a student can afford some college; whether or not they can afford a college only depends on their value and the college's cutoff (not the student's preferences). Accordingly, we can drop $\\theta$ and define\n\\begin{equation}\n    p_\\mu(v) := \\Pr[v + X_c > P_c\\text{ for some $c\\in C$}],\n\\end{equation}\nthe probability that a student with value $v$ is matched under $\\mu$. More generally, for a subset of colleges $C'\\subseteq C$, we define\n\\begin{equation}\n    p_\\mu(v, C') := \\Pr[v + X_c > P_c\\text{ for some $c\\in C'$}],\n\\end{equation}\nthe probability that a student with value $v$ can afford some college in $C'$. By definition, $p_\\mu(v) = p_\\mu(v, C).$",
+              "quoted_text_sha256": "9611a364cb2c19866b25421fbf9b1861cdc4a0a6bcf9ca0a33e3999e789471f5"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchor_evidence": [
+            {
+              "line_end": 867,
+              "line_start": 720,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\end{equation}\nThis tells us that if a college's cutoff is large, two students (with different values) can afford the college with approximately equal probability. To leverage this fact, we will show that almost all colleges must have large cutoffs. Roughly speaking, this is true because if there were a large number of colleges with small cutoffs, then more students would be able to afford these firms than there is total capacity.\n\n\\subsection*{Proof of \\Cref{thm2v2}}\nWe consider a long-tailed probability distribution $\\DD$. To prove \\Cref{thm2v2}, we show the following equivalent statement: There exists a constant $\\sigma > 0$ such that for all $C$ sufficiently large, if $\\mu \\in M(\\DD, C),$ \n\\begin{equation}\\label{eq:equiv-lt}\n    p_\\mu(v) \\in \\left(S - (1 + \\alpha)\\epsilon - (1 - e^{-2\\epsilon\\sigma}), S + \\epsilon + (1 - e^{-2\\epsilon\\sigma}) + \\frac{\\alpha\\sqrt{\\epsilon}}{1 - S - \\epsilon - (1 - e^{-2\\epsilon\\sigma})}\\right)\n\\end{equation}\nfor all $v\\in (v_-,v^*)$, where $v_-, v_+$ are chosen such that $\\eta(-\\infty,v_-) = \\eta(v_+,\\infty) = \\frac{\\epsilon}{2}$ and $v^*$ is chosen such that $\\eta(v^*,v_+)=\\sqrt{\\epsilon}.$ Indeed, the result follows since the interval in \\eqref{eq:equiv-lt} is a vanishingly small interval around $S$ as $\\epsilon\\rightarrow 0$, and since every $v$ is contained in $(v_-, v^*)$ for $\\epsilon$ sufficiently small.\n\\\\\n\\\\\nConsider $\\mu \\in M(\\DD, C)$, with cutoffs $P_1\\le P_2 \\le \\cdots \\le P_C.$ Define the following two sets of colleges: \n\\begin{align}\n    \\FF_1 &:= \\{1, 2, \\cdots, \\epsilon C\\}\\\\\n    \\FF_2 &:= \\{\\epsilon C + 1, \\epsilon C + 2, \\cdots, C\\}.\n\\end{align}\nThen observe that\n\\begin{equation}\\label{eq:lt-bounds}\n    p_\\mu(v, \\CC_2) \\le p_\\mu(v) \\le p_\\mu(v, \\CC_1) + p_\\mu(v, \\CC_2). \n\\end{equation}\nWe use \\eqref{eq:lt-bounds} to show the desired result. To briefly outline our plan: First, we show that $\\Pr[\\mu(v)\\in \\FF_1]$ must be small for all $v$ except on a set of small $\\eta$-measure. Since $\\FF_1$ is a small fraction of the firms in the market, $p_\\mu(v, \\CC_1)$ can be thought of as an ``error term.'' Second, and more substantially, we show that $p_\\mu(v, \\CC_2) \\approx S$ for all $v$ except on a set of small $\\eta$-measure. Then the result will follow by applying the bounds in \\eqref{eq:lt-bounds}.\n\\\\\n\\\\\nWe focus first on $p_\\mu(v, \\CC_2)$. We will show the following result.\n\\begin{proposition}\\label{prop:lt-large-firms}\nThere exists a constant $\\sigma > 0$ such that for $C$ sufficiently large,\n    \\begin{equation}\\label{eq:lt-large-firms}\n    p_\\mu(v, \\CC_2) \\in (S - (1 + \\alpha)\\epsilon - (1 - e^{-2\\epsilon\\sigma}), S + \\epsilon + (1 - e^{-2\\epsilon\\sigma})).\n    \\end{equation}\nfor all $v\\in (v_-, v_+).$\n\\end{proposition}\n\nObserve that by using the bounds in \\Cref{prop:lt-small-firms} and \\Cref{prop:lt-large-firms} in combination with \\eqref{eq:lt-bounds}, we obtain the desired result \\eqref{eq:equiv-lt}. Therefore, it suffices to show \\Cref{prop:lt-large-firms}, which we devote the remainder of this section towards.\n\n\\paragraph{Proof of \\Cref{prop:lt-large-firms}.} \nWe first show a few useful lemmas. The first lemma demonstrates that as $C$ is taken large, almost all college cutoffs are must also be large.\n\n\\begin{lemma}\\label{lem:unbounded-cutoffs}\n    For any $P\\in \\RR$, $P_{\\epsilon C} > P$ for all $C$ sufficiently large.\n\\end{lemma}\n\n\\begin{proof}\n    Suppose otherwise. Then there exists $P$ such that there exists $C$ arbitrarily large and $\\mu \\in M(\\DD, C)$ with cutoffs $P_1\\le P_2\\le \\cdots \\le P_C$ such that $P_{\\epsilon C} \\le P$.\n    Then we show that the number of applicants who can afford a firm in $\\FF_1$ exceeds the total capacity $S$. Indeed,\n    \\begin{align}\n        \\int_{-\\infty}^\\infty p_\\mu(v, \\CC_1)\\,d\\eta(v)\n        &= \\int_{-\\infty}^\\infty \\Pr[v + X_c > P_c\\text{ for some $c\\in \\FF_1$}]\\,d\\eta(v)\\\\\n        &\\ge \\int_{-\\infty}^\\infty \\Pr[v + X^{(\\epsilon C)} > P_{\\epsilon C}]\\,d\\eta(v)\\\\\n        &\\ge \\int_{-\\infty}^\\infty \\Pr[v + X^{(\\epsilon C)} > P]\\,d\\eta(v).\n    \\end{align}\n    Since $\\DD$ is unbounded from above, the final integral approaches $1$ as $C$ grows large. So for $C$ sufficiently large,\n    \\begin{equation}\n        \\int_{-\\infty}^\\infty p_\\mu(v, \\CC_1)\\,d\\eta(v) > S,\n    \\end{equation}\n    which contradicts the fact that the total capacity of colleges is $S$.\n\\end{proof}\n\nWe now use \\Cref{lem:unbounded-cutoffs} to show that the probability that applicants with values $v_-$ and $v_+$ have approximately equal chances of affording a college in $\\FF_2$ when $C$ is sufficiently large.\n\n\\begin{lemma}\\label{lem:apple}\n    For $C$ sufficiently large,\n    \\begin{equation}\n        \\frac{\\Pr[v_- + X > P_c]}{\\Pr[v_+ + X > P_c]} > 1 - \\epsilon\n    \\end{equation}\n    for all $c\\in \\FF_2.$\n\\end{lemma}\n\n\\begin{proof}\n    For $P$ sufficiently large,\n    \\begin{equation}\n        \\frac{\\Pr[v_- + X > P]}{\\Pr[v_+ + X > P]} > 1 - \\epsilon\n    \\end{equation}\n    since $\\DD$ is long-tailed. By \\Cref{lem:unbounded-cutoffs}, for any $P\\in \\RR$, $P_{\\epsilon C} > P$ for all $C$ sufficiently large. Observing that $P_c\\ge P_{\\epsilon C}$ for all $c\\in \\FF_2,$ the result follows.\n\\end{proof}\n\n\\Cref{lem:apple} shows that the probability of affording a firm in $\\FF_2$ is approximately the same for $v_-$ and $v_+$ We require a slightly stronger result: that the probability of affording \\textit{at least one} college in $\\FF_2$ is approximately the same. To show this, we also require the following bound.\n\n\\begin{lemma}\n    There exists a constant $\\sigma>0$ such that for $C$ sufficiently large,\n    \\begin{equation}\n        \\Pr[v_+ + X > P_c] \\le \\frac{\\sigma}{C}\n    \\end{equation}\n    for all $c\\in \\FF_2.$\n\\end{lemma}\n\n\\begin{proof}\n    Assume otherwise, such that such that for all $\\sigma > 0$, there exists $C$ arbitrarily large and $\\mu \\in M(\\DD, C)$ with cutoffs $P_1\\le P_2\\le \\cdots \\le P_C$ such that\n    \\begin{equation}\n        \\Pr[v_+ + X > P_{\\epsilon C + 1}] > \\frac{\\sigma}{C}.\n    \\end{equation}\n\n    Then if we take $C$ and $\\sigma$ sufficiently large, and choose such a $\\mu,$ we have that\n    \\begin{align}\n        \\int_{-\\infty}^\\infty p_\\mu(v, \\CC_1)\\,d\\eta(v)\n        &= \\int_{v_-}^{v_+} \\Pr[v + X_c > P_c\\text{ for some $c\\in \\FF_1$}]\\,d\\eta(v)\\\\\n        &\\ge (1 - \\epsilon) \\Pr[v_- + X_c > P_{\\epsilon c}\\text{ for some $c\\in \\FF_1$}] \\label{eq:building-1}\\\\\n        &= (1-\\epsilon)\\left( 1 - \\left(1 - \\Pr[v_- + X > P_{\\epsilon m}]\\right)^{|\\FF_1|}\\right) \\label{eq:building-2}\\\\\n        &> (1-\\epsilon)\\left(1 - \\left(1 - (1-\\epsilon)\\Pr[v_+ + X > P_{\\epsilon C}]\\right)^{|\\FF_1|}\\right) \\label{eq:building-3}\n    \\end{align}\n    where \\eqref{eq:building-1} follows by noting that $\\eta(v_-, v_+)=1-\\epsilon$ and that $\\Pr[v + X_c > P_c\\text{ for some $c\\in \\FF_1$}] \\ge \\Pr[v_- + X_c > P_c\\text{ for some $c\\in \\FF_1$}]$ for $v\\in (v_-,v_+).$ \\eqref{eq:building-3} follows from taking $C$ sufficiently large and applying \\Cref{lem:apple}. Continuing,\n    \\begin{align}\n        (1-\\epsilon)\\left(1 - \\left(1 - (1-\\epsilon)\\Pr[v_+ + X > P_{\\epsilon C}]\\right)^{|\\FF_1|}\\right)\n        &> (1-\\epsilon)\\left(1 - \\left(1 - \\frac{(1-\\epsilon)\\sigma}{C}\\right)^{|\\FF_1|}\\right)\\\\\n        &> (1-\\epsilon)\\left(1 - \\exp\\left[- \\frac{|\\FF_1|(1-\\epsilon)\\sigma}{C}\\right]\\right)\\\\\n        &= (1-\\epsilon)\\left(1 - \\exp\\left[-\\epsilon(1-\\epsilon)\\sigma\\right]\\right)\\\\\n        &> S\n    \\end{align}\n    for $\\sigma$ sufficiently large when $\\epsilon < 1 - S$. This provides the desired contradiction, since the number of applicants who can afford a college in $\\FF_2$ cannot exceed the total capacity of colleges.\n\\end{proof}\n\nWe may now show that the probability $v_-$ and $v_+$ can afford at least one college in $\\FF_2$ is approximately the same when $C$ is large.\n\\begin{proposition}\\label{prop:lt-approx-F2}\nFor $C$ sufficiently large,\n\\begin{equation}\n    p_\\mu(v_+, \\CC_2) - p_\\mu(v_-, \\CC_2) < 1 - e^{-2\\epsilon\\sigma}.\n\\end{equation}\n\\end{proposition}\n\\begin{proof}\nWe have that\n\\begin{align}\n    p_\\mu(v_+, \\CC_2) - p_\\mu(v_-, \\CC_2)\n    &= \\prod_{c\\in \\FF_2}\\Pr[v_- + X < P_c] - \\prod_{c\\in \\FF_2}\\Pr[v_+ + X < P_c]\\\\\n    &= \\left(1 - \\prod_{c\\in \\FF_2}\\frac{\\Pr[v_+ + X < P_c]}{\\Pr[v_- + X < P_c]}\\right) \\prod_{c\\in \\FF_2}\\Pr[v_- + X < P_c]\\\\\n    &< 1 - \\prod_{c\\in \\FF_2}\\frac{\\Pr[v_+ + X < P_c]}{\\Pr[v_- + X < P_c]}\n\\end{align}\nFrom \\Cref{lem:apple},\n\\begin{equation}\n    \\Pr[v_- + X > P_c] > (1-\\epsilon)\\Pr[v_+ + X > P_c]\n\\end{equation}\nfor all $c\\in \\FF_2$. Therefore,\n\\begin{align}\n    \\frac{\\Pr[v_+ + X < P_c]}{\\Pr[v_- + X < P_c]} &= \\frac{1 - \\Pr[v_+ + X > P_c]}{1 - \\Pr[v_- + X > P_c]}\\\\\n    &> \\frac{1 - \\Pr[v_+ + X > P_c]}{1 - (1-\\epsilon)\\Pr[v_+ + X > P_c]}.\n\\end{align}\nContinuing,\n\\begin{align}\n    \\frac{1 - \\Pr[v_+ + X > P_c]}{1 - (1-\\epsilon)\\Pr[v_+ + X > P_c]} &= 1 - \\frac{\\epsilon \\Pr[v_+ + X > P_c]}{1 - (1-\\epsilon) \\Pr[v_+ + X > P_c]}\\\\\n    &\\ge 1 - \\frac{\\epsilon\\frac{\\sigma}{C}}{1 - (1-\\epsilon)\\frac{\\sigma}{C}}\\\\\n    &= 1 - \\frac{\\epsilon\\sigma}{C - (1-\\epsilon)\\sigma}\\\\\n    &> \\exp\\left[-\\frac{2\\epsilon\\sigma}{C}\\right]\n\\end{align}\nwhere the last inequality holds when $C$ is sufficiently large. Then we have that\n\\begin{align}\n    1 - \\prod_{c\\in \\FF_2}\\frac{\\Pr[v_+ + X < P_c]}{\\Pr[v_- + X < P_c]}\n    &< 1 - \\left(\\exp\\left[-\\frac{2\\epsilon\\sigma}{C}\\right]\\right)^{|\\FF_2|}\\\\\n    &< 1 - e^{-2\\epsilon\\sigma}.\n\\end{align}\n\\end{proof}",
+              "quoted_text_sha256": "ae5163132b99c83f01c8061c5719bf9911c0a1e20af5cdf172262b5b189ec2ad"
+            }
+          ]
+        }
+      ],
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_lt_approx_f2Spec_proof",
         "evidence_mode": "proves",
@@ -805,14 +786,16 @@
           "source_quote_sha256": "73fca0d55c129a98319e6a872f7630fd1dc5dde45a3193ae0265cccb5d26fd96"
         }
       ],
+      "source_defect_ids": [
+        "PG24-APP-LOCAL-CONTEXT-01"
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:831-836",
-      "source_note": "The direct endpoint recovers the literal strict product gap. It makes explicit the nonempty F2 and strict per-college failure-ratio floor that the printed strict conclusion needs. The formal failure event is 1-Pr[X>cutoff-value], avoiding the source proof's incorrect use of Pr[X<cutoff-value] as the complement of a strict upper tail when atoms may be present.",
-      "source_status": "formalized",
-      "statement": "For sufficiently large markets, the difference between the two displayed large-firm affordance probabilities is bounded by 1-exp(-2 epsilon sigma).",
+      "source_note": "The corrected target ties the probability directly to iid cutoff affordance and makes the immediately preceding tail-ratio and nonempty-block derivation context explicit, rather than replacing it with unlinked product coordinates.",
+      "source_status": "corrected",
+      "statement": "The appendix states a strict p_mu(v_+,F2)-p_mu(v_-,F2) exponential bound.",
       "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.source_lt_approx_f2Spec",
-        "PG24NoisyMatchingMarkets.theorem2_independentAffordanceProbability_difference_eventually_lt_exp_error"
+        "PG24NoisyMatchingMarkets.PaperInterface.source_lt_approx_f2Spec"
       ]
     },
     "source_lt_large_firms": {
@@ -820,12 +803,48 @@
         "Proposition lt-large-firms"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_v11_surface",
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "audit/cited publication:744-916",
+        "archival_source_quote_sha256": "b4fc70186ab9ca01cd188738069c1ead9ed6097bf9658a0609af08acdf31ee9c",
+        "corrected_target_review_sha256": "c5df8b0db0adf4a7f1780e8b4cf40b5c2bb48e74c0ac804cf0898cb6bfa1409c",
+        "corrected_target_sha256": "444003e8695402942d5286b9476f9e5c7e4d703753ed5d926dec854b30b1b236",
+        "governing_defect_ids": [
+          "PG24-APP-LOCAL-CONTEXT-01"
+        ],
+        "schema": 1,
+        "statement": "The large-firm interval proposition is the source p_mu(v,F2) strict open interval with its positive sigma witness, under the preceding endpoint and product-gap estimates."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_lt_large_firmsSpec_proof"
       ],
-      "scope_disposition": "direct_source_target",
-      "scope_disposition_note": "The transparent Spec and endpoint prove the source's strict open interval uniformly over its value interval.",
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 111,
+              "line_start": 96,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\subsection{Preliminaries}\nWe now make some basic observations that will be useful for our results. We show that key properties of stable matchings operate at the level of student values rather than student types (which also encode student preferences). This means that in our analysis, we can focus on the fixed student value distribution $\\eta$ while mostly ignoring the varying student type distribution $\\rho$.\n\nConsider a matching $\\mu\\in M(\\DD, C)$, characterized by a vector of market-clearing cutoffs $\\vec{P}=\\vec{P}(\\mu)$. Our results focus on the probability that a student $\\theta=(v,\\succ)$ matches to a college. This probability is equal to\n\\begin{equation}\n    \\Pr[\\mu(\\theta)\\in C] = \\Pr[v + X_c > P_c\\text{ for some $c\\in C$}],\n\\end{equation}\nwhere $X_1, \\cdots, X_C \\simiid \\DD.$ Notice that this probability does not depend on $\\succ$, the student's preferences over colleges. Indeed, the probability that a student matches is exactly the probability that a student can afford some college; whether or not they can afford a college only depends on their value and the college's cutoff (not the student's preferences). Accordingly, we can drop $\\theta$ and define\n\\begin{equation}\n    p_\\mu(v) := \\Pr[v + X_c > P_c\\text{ for some $c\\in C$}],\n\\end{equation}\nthe probability that a student with value $v$ is matched under $\\mu$. More generally, for a subset of colleges $C'\\subseteq C$, we define\n\\begin{equation}\n    p_\\mu(v, C') := \\Pr[v + X_c > P_c\\text{ for some $c\\in C'$}],\n\\end{equation}\nthe probability that a student with value $v$ can afford some college in $C'$. By definition, $p_\\mu(v) = p_\\mu(v, C).$",
+              "quoted_text_sha256": "9611a364cb2c19866b25421fbf9b1861cdc4a0a6bcf9ca0a33e3999e789471f5"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchor_evidence": [
+            {
+              "line_end": 916,
+              "line_start": 720,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\end{equation}\nThis tells us that if a college's cutoff is large, two students (with different values) can afford the college with approximately equal probability. To leverage this fact, we will show that almost all colleges must have large cutoffs. Roughly speaking, this is true because if there were a large number of colleges with small cutoffs, then more students would be able to afford these firms than there is total capacity.\n\n\\subsection*{Proof of \\Cref{thm2v2}}\nWe consider a long-tailed probability distribution $\\DD$. To prove \\Cref{thm2v2}, we show the following equivalent statement: There exists a constant $\\sigma > 0$ such that for all $C$ sufficiently large, if $\\mu \\in M(\\DD, C),$ \n\\begin{equation}\\label{eq:equiv-lt}\n    p_\\mu(v) \\in \\left(S - (1 + \\alpha)\\epsilon - (1 - e^{-2\\epsilon\\sigma}), S + \\epsilon + (1 - e^{-2\\epsilon\\sigma}) + \\frac{\\alpha\\sqrt{\\epsilon}}{1 - S - \\epsilon - (1 - e^{-2\\epsilon\\sigma})}\\right)\n\\end{equation}\nfor all $v\\in (v_-,v^*)$, where $v_-, v_+$ are chosen such that $\\eta(-\\infty,v_-) = \\eta(v_+,\\infty) = \\frac{\\epsilon}{2}$ and $v^*$ is chosen such that $\\eta(v^*,v_+)=\\sqrt{\\epsilon}.$ Indeed, the result follows since the interval in \\eqref{eq:equiv-lt} is a vanishingly small interval around $S$ as $\\epsilon\\rightarrow 0$, and since every $v$ is contained in $(v_-, v^*)$ for $\\epsilon$ sufficiently small.\n\\\\\n\\\\\nConsider $\\mu \\in M(\\DD, C)$, with cutoffs $P_1\\le P_2 \\le \\cdots \\le P_C.$ Define the following two sets of colleges: \n\\begin{align}\n    \\FF_1 &:= \\{1, 2, \\cdots, \\epsilon C\\}\\\\\n    \\FF_2 &:= \\{\\epsilon C + 1, \\epsilon C + 2, \\cdots, C\\}.\n\\end{align}\nThen observe that\n\\begin{equation}\\label{eq:lt-bounds}\n    p_\\mu(v, \\CC_2) \\le p_\\mu(v) \\le p_\\mu(v, \\CC_1) + p_\\mu(v, \\CC_2). \n\\end{equation}\nWe use \\eqref{eq:lt-bounds} to show the desired result. To briefly outline our plan: First, we show that $\\Pr[\\mu(v)\\in \\FF_1]$ must be small for all $v$ except on a set of small $\\eta$-measure. Since $\\FF_1$ is a small fraction of the firms in the market, $p_\\mu(v, \\CC_1)$ can be thought of as an ``error term.'' Second, and more substantially, we show that $p_\\mu(v, \\CC_2) \\approx S$ for all $v$ except on a set of small $\\eta$-measure. Then the result will follow by applying the bounds in \\eqref{eq:lt-bounds}.\n\\\\\n\\\\\nWe focus first on $p_\\mu(v, \\CC_2)$. We will show the following result.\n\\begin{proposition}\\label{prop:lt-large-firms}\nThere exists a constant $\\sigma > 0$ such that for $C$ sufficiently large,\n    \\begin{equation}\\label{eq:lt-large-firms}\n    p_\\mu(v, \\CC_2) \\in (S - (1 + \\alpha)\\epsilon - (1 - e^{-2\\epsilon\\sigma}), S + \\epsilon + (1 - e^{-2\\epsilon\\sigma})).\n    \\end{equation}\nfor all $v\\in (v_-, v_+).$\n\\end{proposition}\n\nObserve that by using the bounds in \\Cref{prop:lt-small-firms} and \\Cref{prop:lt-large-firms} in combination with \\eqref{eq:lt-bounds}, we obtain the desired result \\eqref{eq:equiv-lt}. Therefore, it suffices to show \\Cref{prop:lt-large-firms}, which we devote the remainder of this section towards.\n\n\\paragraph{Proof of \\Cref{prop:lt-large-firms}.} \nWe first show a few useful lemmas. The first lemma demonstrates that as $C$ is taken large, almost all college cutoffs are must also be large.\n\n\\begin{lemma}\\label{lem:unbounded-cutoffs}\n    For any $P\\in \\RR$, $P_{\\epsilon C} > P$ for all $C$ sufficiently large.\n\\end{lemma}\n\n\\begin{proof}\n    Suppose otherwise. Then there exists $P$ such that there exists $C$ arbitrarily large and $\\mu \\in M(\\DD, C)$ with cutoffs $P_1\\le P_2\\le \\cdots \\le P_C$ such that $P_{\\epsilon C} \\le P$.\n    Then we show that the number of applicants who can afford a firm in $\\FF_1$ exceeds the total capacity $S$. Indeed,\n    \\begin{align}\n        \\int_{-\\infty}^\\infty p_\\mu(v, \\CC_1)\\,d\\eta(v)\n        &= \\int_{-\\infty}^\\infty \\Pr[v + X_c > P_c\\text{ for some $c\\in \\FF_1$}]\\,d\\eta(v)\\\\\n        &\\ge \\int_{-\\infty}^\\infty \\Pr[v + X^{(\\epsilon C)} > P_{\\epsilon C}]\\,d\\eta(v)\\\\\n        &\\ge \\int_{-\\infty}^\\infty \\Pr[v + X^{(\\epsilon C)} > P]\\,d\\eta(v).\n    \\end{align}\n    Since $\\DD$ is unbounded from above, the final integral approaches $1$ as $C$ grows large. So for $C$ sufficiently large,\n    \\begin{equation}\n        \\int_{-\\infty}^\\infty p_\\mu(v, \\CC_1)\\,d\\eta(v) > S,\n    \\end{equation}\n    which contradicts the fact that the total capacity of colleges is $S$.\n\\end{proof}\n\nWe now use \\Cref{lem:unbounded-cutoffs} to show that the probability that applicants with values $v_-$ and $v_+$ have approximately equal chances of affording a college in $\\FF_2$ when $C$ is sufficiently large.\n\n\\begin{lemma}\\label{lem:apple}\n    For $C$ sufficiently large,\n    \\begin{equation}\n        \\frac{\\Pr[v_- + X > P_c]}{\\Pr[v_+ + X > P_c]} > 1 - \\epsilon\n    \\end{equation}\n    for all $c\\in \\FF_2.$\n\\end{lemma}\n\n\\begin{proof}\n    For $P$ sufficiently large,\n    \\begin{equation}\n        \\frac{\\Pr[v_- + X > P]}{\\Pr[v_+ + X > P]} > 1 - \\epsilon\n    \\end{equation}\n    since $\\DD$ is long-tailed. By \\Cref{lem:unbounded-cutoffs}, for any $P\\in \\RR$, $P_{\\epsilon C} > P$ for all $C$ sufficiently large. Observing that $P_c\\ge P_{\\epsilon C}$ for all $c\\in \\FF_2,$ the result follows.\n\\end{proof}\n\n\\Cref{lem:apple} shows that the probability of affording a firm in $\\FF_2$ is approximately the same for $v_-$ and $v_+$ We require a slightly stronger result: that the probability of affording \\textit{at least one} college in $\\FF_2$ is approximately the same. To show this, we also require the following bound.\n\n\\begin{lemma}\n    There exists a constant $\\sigma>0$ such that for $C$ sufficiently large,\n    \\begin{equation}\n        \\Pr[v_+ + X > P_c] \\le \\frac{\\sigma}{C}\n    \\end{equation}\n    for all $c\\in \\FF_2.$\n\\end{lemma}\n\n\\begin{proof}\n    Assume otherwise, such that such that for all $\\sigma > 0$, there exists $C$ arbitrarily large and $\\mu \\in M(\\DD, C)$ with cutoffs $P_1\\le P_2\\le \\cdots \\le P_C$ such that\n    \\begin{equation}\n        \\Pr[v_+ + X > P_{\\epsilon C + 1}] > \\frac{\\sigma}{C}.\n    \\end{equation}\n\n    Then if we take $C$ and $\\sigma$ sufficiently large, and choose such a $\\mu,$ we have that\n    \\begin{align}\n        \\int_{-\\infty}^\\infty p_\\mu(v, \\CC_1)\\,d\\eta(v)\n        &= \\int_{v_-}^{v_+} \\Pr[v + X_c > P_c\\text{ for some $c\\in \\FF_1$}]\\,d\\eta(v)\\\\\n        &\\ge (1 - \\epsilon) \\Pr[v_- + X_c > P_{\\epsilon c}\\text{ for some $c\\in \\FF_1$}] \\label{eq:building-1}\\\\\n        &= (1-\\epsilon)\\left( 1 - \\left(1 - \\Pr[v_- + X > P_{\\epsilon m}]\\right)^{|\\FF_1|}\\right) \\label{eq:building-2}\\\\\n        &> (1-\\epsilon)\\left(1 - \\left(1 - (1-\\epsilon)\\Pr[v_+ + X > P_{\\epsilon C}]\\right)^{|\\FF_1|}\\right) \\label{eq:building-3}\n    \\end{align}\n    where \\eqref{eq:building-1} follows by noting that $\\eta(v_-, v_+)=1-\\epsilon$ and that $\\Pr[v + X_c > P_c\\text{ for some $c\\in \\FF_1$}] \\ge \\Pr[v_- + X_c > P_c\\text{ for some $c\\in \\FF_1$}]$ for $v\\in (v_-,v_+).$ \\eqref{eq:building-3} follows from taking $C$ sufficiently large and applying \\Cref{lem:apple}. Continuing,\n    \\begin{align}\n        (1-\\epsilon)\\left(1 - \\left(1 - (1-\\epsilon)\\Pr[v_+ + X > P_{\\epsilon C}]\\right)^{|\\FF_1|}\\right)\n        &> (1-\\epsilon)\\left(1 - \\left(1 - \\frac{(1-\\epsilon)\\sigma}{C}\\right)^{|\\FF_1|}\\right)\\\\\n        &> (1-\\epsilon)\\left(1 - \\exp\\left[- \\frac{|\\FF_1|(1-\\epsilon)\\sigma}{C}\\right]\\right)\\\\\n        &= (1-\\epsilon)\\left(1 - \\exp\\left[-\\epsilon(1-\\epsilon)\\sigma\\right]\\right)\\\\\n        &> S\n    \\end{align}\n    for $\\sigma$ sufficiently large when $\\epsilon < 1 - S$. This provides the desired contradiction, since the number of applicants who can afford a college in $\\FF_2$ cannot exceed the total capacity of colleges.\n\\end{proof}\n\nWe may now show that the probability $v_-$ and $v_+$ can afford at least one college in $\\FF_2$ is approximately the same when $C$ is large.\n\\begin{proposition}\\label{prop:lt-approx-F2}\nFor $C$ sufficiently large,\n\\begin{equation}\n    p_\\mu(v_+, \\CC_2) - p_\\mu(v_-, \\CC_2) < 1 - e^{-2\\epsilon\\sigma}.\n\\end{equation}\n\\end{proposition}\n\\begin{proof}\nWe have that\n\\begin{align}\n    p_\\mu(v_+, \\CC_2) - p_\\mu(v_-, \\CC_2)\n    &= \\prod_{c\\in \\FF_2}\\Pr[v_- + X < P_c] - \\prod_{c\\in \\FF_2}\\Pr[v_+ + X < P_c]\\\\\n    &= \\left(1 - \\prod_{c\\in \\FF_2}\\frac{\\Pr[v_+ + X < P_c]}{\\Pr[v_- + X < P_c]}\\right) \\prod_{c\\in \\FF_2}\\Pr[v_- + X < P_c]\\\\\n    &< 1 - \\prod_{c\\in \\FF_2}\\frac{\\Pr[v_+ + X < P_c]}{\\Pr[v_- + X < P_c]}\n\\end{align}\nFrom \\Cref{lem:apple},\n\\begin{equation}\n    \\Pr[v_- + X > P_c] > (1-\\epsilon)\\Pr[v_+ + X > P_c]\n\\end{equation}\nfor all $c\\in \\FF_2$. Therefore,\n\\begin{align}\n    \\frac{\\Pr[v_+ + X < P_c]}{\\Pr[v_- + X < P_c]} &= \\frac{1 - \\Pr[v_+ + X > P_c]}{1 - \\Pr[v_- + X > P_c]}\\\\\n    &> \\frac{1 - \\Pr[v_+ + X > P_c]}{1 - (1-\\epsilon)\\Pr[v_+ + X > P_c]}.\n\\end{align}\nContinuing,\n\\begin{align}\n    \\frac{1 - \\Pr[v_+ + X > P_c]}{1 - (1-\\epsilon)\\Pr[v_+ + X > P_c]} &= 1 - \\frac{\\epsilon \\Pr[v_+ + X > P_c]}{1 - (1-\\epsilon) \\Pr[v_+ + X > P_c]}\\\\\n    &\\ge 1 - \\frac{\\epsilon\\frac{\\sigma}{C}}{1 - (1-\\epsilon)\\frac{\\sigma}{C}}\\\\\n    &= 1 - \\frac{\\epsilon\\sigma}{C - (1-\\epsilon)\\sigma}\\\\\n    &> \\exp\\left[-\\frac{2\\epsilon\\sigma}{C}\\right]\n\\end{align}\nwhere the last inequality holds when $C$ is sufficiently large. Then we have that\n\\begin{align}\n    1 - \\prod_{c\\in \\FF_2}\\frac{\\Pr[v_+ + X < P_c]}{\\Pr[v_- + X < P_c]}\n    &< 1 - \\left(\\exp\\left[-\\frac{2\\epsilon\\sigma}{C}\\right]\\right)^{|\\FF_2|}\\\\\n    &< 1 - e^{-2\\epsilon\\sigma}.\n\\end{align}\n\\end{proof}\n\nWe now use \\Cref{prop:lt-approx-F2} to show \\Cref{prop:lt-large-firms}, where primary remaining observation is that the average probability a student with value in $(v_-,v_+)$ can afford a college in $\\FF_2$ must be approximately $S.$ Then, since the probabilities for $v$ in this interval must be about the same (by \\Cref{prop:lt-approx-F2}), all the probabilities in this interval must be about $S$.\n\nFormally, we observe that\n\\begin{align}\n    (1 - \\epsilon) p_\\mu(v_-, \\CC_2) \\le \\int_{v_-}^{v_+} p_\\mu(v, \\CC_2)\\,d\\eta(v) \\le S,\n\\end{align}\nso\n\\begin{equation}\\label{eq:bbq-1}\n    p_\\mu(v_-, \\CC_2) \\le \\frac{S}{1-\\epsilon} < S + \\epsilon,\n\\end{equation}\nwhere the last inequality holds for $\\epsilon$ sufficiently small. We also have that\n\\begin{align}\n    p_\\mu(v_+, \\CC_2) &\\ge \\int_{v_-}^{v_+} \\Pr[B(v)\\cap \\FF_2\\neq \\emptyset]\\,d\\eta(v)\\\\\n    &\\ge \\int_{-\\infty}^\\infty \\Pr[B(v)\\cap \\FF_2\\neq \\emptyset]\\,d\\eta(v) - \\epsilon \\\\\n    &\\ge \\int_{-\\infty}^\\infty \\Pr[\\mu(v)\\cap \\FF_2\\neq \\emptyset]\\,d\\eta(v) - \\epsilon \\label{eq:ginger}\\\\\n    &= \\left(S - \\int_{-\\infty}^\\infty \\Pr[\\mu(v)\\in \\FF_1\\neq \\emptyset]\\,d\\eta(v)\\right) - \\epsilon\\\\\n    &\\ge S - \\alpha\\epsilon - \\epsilon,\n\\end{align}\nso\n\\begin{equation}\\label{eq:bbq-2}\n    p_\\mu(v_+, \\CC_2) \\ge S - \\alpha\\epsilon - \\epsilon.\n\\end{equation}\nThen, since\n\\begin{equation}\n    p_\\mu(v_+, \\CC_2) - p_\\mu(v_-, \\CC_2) < 1 - e^{-2\\epsilon\\sigma}\n\\end{equation}\n(by \\Cref{prop:lt-approx-F2}), we have that\n\\begin{align}\n    p_\\mu(v_+, \\CC_2) &< p_\\mu(v_-, \\CC_2) + (1 - e^{-2\\epsilon\\sigma})\\\\\n    &< S + \\epsilon + (1 - e^{-2\\epsilon\\sigma})\\label{eq:cucumber-1},\n\\end{align}\nwhere the last line follows from \\eqref{eq:bbq-1}, and that\n\\begin{align}\n    \\Pr[B(v_-)\\cap \\FF_2\\neq \\emptyset] &> \\Pr[B(v_+)\\cap \\FF_2\\neq \\emptyset] - (1 - e^{-2\\epsilon\\sigma})\\\\\n    &\\ge S - \\alpha\\epsilon - \\epsilon - (1 - e^{-2\\epsilon\\sigma}),\\label{eq:cucumber-2}\n\\end{align}\nwhere the last line follows from \\eqref{eq:bbq-2}.\nFinally, since \n\\begin{equation}\n    p_\\mu(v_-, \\CC_2) < p_\\mu(v, \\CC_2) < p_\\mu(v_+, \\CC_2),\n\\end{equation}\nit follows from \\eqref{eq:cucumber-1} and \\eqref{eq:cucumber-2} that\n\\begin{equation}\n    p_\\mu(v, \\CC_2) \\in (S - \\alpha\\epsilon - \\epsilon - (1 - e^{-2\\epsilon\\sigma}), S + \\epsilon + (1 - e^{-2\\epsilon\\sigma})),\n\\end{equation}\nas desired.\n\\\\\n\\\\",
+              "quoted_text_sha256": "de835a49dbf6c44bc5f19f13cb9574403f342b37ca00b2f5ba3c60033ce7138e"
+            }
+          ]
+        }
+      ],
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_lt_large_firmsSpec_proof",
         "evidence_mode": "proves",
@@ -851,14 +870,16 @@
           "source_quote_sha256": "8fdedd37ca75cc66288ee0b41eb2bc054debc35afd9b9a977215bb53d2e558ed"
         }
       ],
+      "source_defect_ids": [
+        "PG24-APP-LOCAL-CONTEXT-01"
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:744-750",
-      "source_note": "The direct endpoint retains the source's uniform-in-value strict open interval. It derives that interval from the preceding source proof's monotonicity, two supply-endpoint estimates, and strict lt-approx-F2 product gap; those are the local hypotheses discharged by the surrounding Theorem 2 route.",
-      "source_status": "formalized",
-      "statement": "For sufficiently large markets, the large-firm affordance probability lies in the source's displayed interval around total supply.",
+      "source_note": "The corrected target retains the source probability object, witness, strictness, and uniform interval, while making the immediately preceding endpoint and product-gap derivation context explicit.",
+      "source_status": "corrected",
+      "statement": "The appendix states a positive-sigma eventual open interval for p_mu(v,F2).",
       "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.source_lt_large_firmsSpec",
-        "PG24NoisyMatchingMarkets.theorem2_largeFirm_strict_interval_eventually_of_endpoint_product_error"
+        "PG24NoisyMatchingMarkets.PaperInterface.source_lt_large_firmsSpec"
       ]
     },
     "source_lt_small_firms": {
@@ -866,12 +887,48 @@
         "Proposition lt-small-firms"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_v11_surface",
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "audit/cited publication:918-950",
+        "archival_source_quote_sha256": "4da85195da34e8734af58aa661149baafb56cdf59071bcacda1624aacda9b8e3",
+        "corrected_target_review_sha256": "f89c7cc54466e0f4e872a8770a49746a3e3ab84d866f68748a4b7813db916cd6",
+        "corrected_target_sha256": "0f548def5755009e5e90e738eaa1d756f29d88cf2a7616d09881d9b310dec211",
+        "governing_defect_ids": [
+          "PG24-APP-LOCAL-CONTEXT-01"
+        ],
+        "schema": 1,
+        "statement": "The small-firm proposition is the source p_mu(v,F1) bound below v*, with eta((v*,v_+)) = sqrt(epsilon), under its preceding capacity-mass estimate."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_lt_small_firmsSpec_proof"
       ],
-      "scope_disposition": "direct_source_target",
-      "scope_disposition_note": "The transparent Spec and endpoint prove the displayed small-firm bound uniformly below v*.",
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 111,
+              "line_start": 96,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\subsection{Preliminaries}\nWe now make some basic observations that will be useful for our results. We show that key properties of stable matchings operate at the level of student values rather than student types (which also encode student preferences). This means that in our analysis, we can focus on the fixed student value distribution $\\eta$ while mostly ignoring the varying student type distribution $\\rho$.\n\nConsider a matching $\\mu\\in M(\\DD, C)$, characterized by a vector of market-clearing cutoffs $\\vec{P}=\\vec{P}(\\mu)$. Our results focus on the probability that a student $\\theta=(v,\\succ)$ matches to a college. This probability is equal to\n\\begin{equation}\n    \\Pr[\\mu(\\theta)\\in C] = \\Pr[v + X_c > P_c\\text{ for some $c\\in C$}],\n\\end{equation}\nwhere $X_1, \\cdots, X_C \\simiid \\DD.$ Notice that this probability does not depend on $\\succ$, the student's preferences over colleges. Indeed, the probability that a student matches is exactly the probability that a student can afford some college; whether or not they can afford a college only depends on their value and the college's cutoff (not the student's preferences). Accordingly, we can drop $\\theta$ and define\n\\begin{equation}\n    p_\\mu(v) := \\Pr[v + X_c > P_c\\text{ for some $c\\in C$}],\n\\end{equation}\nthe probability that a student with value $v$ is matched under $\\mu$. More generally, for a subset of colleges $C'\\subseteq C$, we define\n\\begin{equation}\n    p_\\mu(v, C') := \\Pr[v + X_c > P_c\\text{ for some $c\\in C'$}],\n\\end{equation}\nthe probability that a student with value $v$ can afford some college in $C'$. By definition, $p_\\mu(v) = p_\\mu(v, C).$",
+              "quoted_text_sha256": "9611a364cb2c19866b25421fbf9b1861cdc4a0a6bcf9ca0a33e3999e789471f5"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchor_evidence": [
+            {
+              "line_end": 950,
+              "line_start": 720,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\end{equation}\nThis tells us that if a college's cutoff is large, two students (with different values) can afford the college with approximately equal probability. To leverage this fact, we will show that almost all colleges must have large cutoffs. Roughly speaking, this is true because if there were a large number of colleges with small cutoffs, then more students would be able to afford these firms than there is total capacity.\n\n\\subsection*{Proof of \\Cref{thm2v2}}\nWe consider a long-tailed probability distribution $\\DD$. To prove \\Cref{thm2v2}, we show the following equivalent statement: There exists a constant $\\sigma > 0$ such that for all $C$ sufficiently large, if $\\mu \\in M(\\DD, C),$ \n\\begin{equation}\\label{eq:equiv-lt}\n    p_\\mu(v) \\in \\left(S - (1 + \\alpha)\\epsilon - (1 - e^{-2\\epsilon\\sigma}), S + \\epsilon + (1 - e^{-2\\epsilon\\sigma}) + \\frac{\\alpha\\sqrt{\\epsilon}}{1 - S - \\epsilon - (1 - e^{-2\\epsilon\\sigma})}\\right)\n\\end{equation}\nfor all $v\\in (v_-,v^*)$, where $v_-, v_+$ are chosen such that $\\eta(-\\infty,v_-) = \\eta(v_+,\\infty) = \\frac{\\epsilon}{2}$ and $v^*$ is chosen such that $\\eta(v^*,v_+)=\\sqrt{\\epsilon}.$ Indeed, the result follows since the interval in \\eqref{eq:equiv-lt} is a vanishingly small interval around $S$ as $\\epsilon\\rightarrow 0$, and since every $v$ is contained in $(v_-, v^*)$ for $\\epsilon$ sufficiently small.\n\\\\\n\\\\\nConsider $\\mu \\in M(\\DD, C)$, with cutoffs $P_1\\le P_2 \\le \\cdots \\le P_C.$ Define the following two sets of colleges: \n\\begin{align}\n    \\FF_1 &:= \\{1, 2, \\cdots, \\epsilon C\\}\\\\\n    \\FF_2 &:= \\{\\epsilon C + 1, \\epsilon C + 2, \\cdots, C\\}.\n\\end{align}\nThen observe that\n\\begin{equation}\\label{eq:lt-bounds}\n    p_\\mu(v, \\CC_2) \\le p_\\mu(v) \\le p_\\mu(v, \\CC_1) + p_\\mu(v, \\CC_2). \n\\end{equation}\nWe use \\eqref{eq:lt-bounds} to show the desired result. To briefly outline our plan: First, we show that $\\Pr[\\mu(v)\\in \\FF_1]$ must be small for all $v$ except on a set of small $\\eta$-measure. Since $\\FF_1$ is a small fraction of the firms in the market, $p_\\mu(v, \\CC_1)$ can be thought of as an ``error term.'' Second, and more substantially, we show that $p_\\mu(v, \\CC_2) \\approx S$ for all $v$ except on a set of small $\\eta$-measure. Then the result will follow by applying the bounds in \\eqref{eq:lt-bounds}.\n\\\\\n\\\\\nWe focus first on $p_\\mu(v, \\CC_2)$. We will show the following result.\n\\begin{proposition}\\label{prop:lt-large-firms}\nThere exists a constant $\\sigma > 0$ such that for $C$ sufficiently large,\n    \\begin{equation}\\label{eq:lt-large-firms}\n    p_\\mu(v, \\CC_2) \\in (S - (1 + \\alpha)\\epsilon - (1 - e^{-2\\epsilon\\sigma}), S + \\epsilon + (1 - e^{-2\\epsilon\\sigma})).\n    \\end{equation}\nfor all $v\\in (v_-, v_+).$\n\\end{proposition}\n\nObserve that by using the bounds in \\Cref{prop:lt-small-firms} and \\Cref{prop:lt-large-firms} in combination with \\eqref{eq:lt-bounds}, we obtain the desired result \\eqref{eq:equiv-lt}. Therefore, it suffices to show \\Cref{prop:lt-large-firms}, which we devote the remainder of this section towards.\n\n\\paragraph{Proof of \\Cref{prop:lt-large-firms}.} \nWe first show a few useful lemmas. The first lemma demonstrates that as $C$ is taken large, almost all college cutoffs are must also be large.\n\n\\begin{lemma}\\label{lem:unbounded-cutoffs}\n    For any $P\\in \\RR$, $P_{\\epsilon C} > P$ for all $C$ sufficiently large.\n\\end{lemma}\n\n\\begin{proof}\n    Suppose otherwise. Then there exists $P$ such that there exists $C$ arbitrarily large and $\\mu \\in M(\\DD, C)$ with cutoffs $P_1\\le P_2\\le \\cdots \\le P_C$ such that $P_{\\epsilon C} \\le P$.\n    Then we show that the number of applicants who can afford a firm in $\\FF_1$ exceeds the total capacity $S$. Indeed,\n    \\begin{align}\n        \\int_{-\\infty}^\\infty p_\\mu(v, \\CC_1)\\,d\\eta(v)\n        &= \\int_{-\\infty}^\\infty \\Pr[v + X_c > P_c\\text{ for some $c\\in \\FF_1$}]\\,d\\eta(v)\\\\\n        &\\ge \\int_{-\\infty}^\\infty \\Pr[v + X^{(\\epsilon C)} > P_{\\epsilon C}]\\,d\\eta(v)\\\\\n        &\\ge \\int_{-\\infty}^\\infty \\Pr[v + X^{(\\epsilon C)} > P]\\,d\\eta(v).\n    \\end{align}\n    Since $\\DD$ is unbounded from above, the final integral approaches $1$ as $C$ grows large. So for $C$ sufficiently large,\n    \\begin{equation}\n        \\int_{-\\infty}^\\infty p_\\mu(v, \\CC_1)\\,d\\eta(v) > S,\n    \\end{equation}\n    which contradicts the fact that the total capacity of colleges is $S$.\n\\end{proof}\n\nWe now use \\Cref{lem:unbounded-cutoffs} to show that the probability that applicants with values $v_-$ and $v_+$ have approximately equal chances of affording a college in $\\FF_2$ when $C$ is sufficiently large.\n\n\\begin{lemma}\\label{lem:apple}\n    For $C$ sufficiently large,\n    \\begin{equation}\n        \\frac{\\Pr[v_- + X > P_c]}{\\Pr[v_+ + X > P_c]} > 1 - \\epsilon\n    \\end{equation}\n    for all $c\\in \\FF_2.$\n\\end{lemma}\n\n\\begin{proof}\n    For $P$ sufficiently large,\n    \\begin{equation}\n        \\frac{\\Pr[v_- + X > P]}{\\Pr[v_+ + X > P]} > 1 - \\epsilon\n    \\end{equation}\n    since $\\DD$ is long-tailed. By \\Cref{lem:unbounded-cutoffs}, for any $P\\in \\RR$, $P_{\\epsilon C} > P$ for all $C$ sufficiently large. Observing that $P_c\\ge P_{\\epsilon C}$ for all $c\\in \\FF_2,$ the result follows.\n\\end{proof}\n\n\\Cref{lem:apple} shows that the probability of affording a firm in $\\FF_2$ is approximately the same for $v_-$ and $v_+$ We require a slightly stronger result: that the probability of affording \\textit{at least one} college in $\\FF_2$ is approximately the same. To show this, we also require the following bound.\n\n\\begin{lemma}\n    There exists a constant $\\sigma>0$ such that for $C$ sufficiently large,\n    \\begin{equation}\n        \\Pr[v_+ + X > P_c] \\le \\frac{\\sigma}{C}\n    \\end{equation}\n    for all $c\\in \\FF_2.$\n\\end{lemma}\n\n\\begin{proof}\n    Assume otherwise, such that such that for all $\\sigma > 0$, there exists $C$ arbitrarily large and $\\mu \\in M(\\DD, C)$ with cutoffs $P_1\\le P_2\\le \\cdots \\le P_C$ such that\n    \\begin{equation}\n        \\Pr[v_+ + X > P_{\\epsilon C + 1}] > \\frac{\\sigma}{C}.\n    \\end{equation}\n\n    Then if we take $C$ and $\\sigma$ sufficiently large, and choose such a $\\mu,$ we have that\n    \\begin{align}\n        \\int_{-\\infty}^\\infty p_\\mu(v, \\CC_1)\\,d\\eta(v)\n        &= \\int_{v_-}^{v_+} \\Pr[v + X_c > P_c\\text{ for some $c\\in \\FF_1$}]\\,d\\eta(v)\\\\\n        &\\ge (1 - \\epsilon) \\Pr[v_- + X_c > P_{\\epsilon c}\\text{ for some $c\\in \\FF_1$}] \\label{eq:building-1}\\\\\n        &= (1-\\epsilon)\\left( 1 - \\left(1 - \\Pr[v_- + X > P_{\\epsilon m}]\\right)^{|\\FF_1|}\\right) \\label{eq:building-2}\\\\\n        &> (1-\\epsilon)\\left(1 - \\left(1 - (1-\\epsilon)\\Pr[v_+ + X > P_{\\epsilon C}]\\right)^{|\\FF_1|}\\right) \\label{eq:building-3}\n    \\end{align}\n    where \\eqref{eq:building-1} follows by noting that $\\eta(v_-, v_+)=1-\\epsilon$ and that $\\Pr[v + X_c > P_c\\text{ for some $c\\in \\FF_1$}] \\ge \\Pr[v_- + X_c > P_c\\text{ for some $c\\in \\FF_1$}]$ for $v\\in (v_-,v_+).$ \\eqref{eq:building-3} follows from taking $C$ sufficiently large and applying \\Cref{lem:apple}. Continuing,\n    \\begin{align}\n        (1-\\epsilon)\\left(1 - \\left(1 - (1-\\epsilon)\\Pr[v_+ + X > P_{\\epsilon C}]\\right)^{|\\FF_1|}\\right)\n        &> (1-\\epsilon)\\left(1 - \\left(1 - \\frac{(1-\\epsilon)\\sigma}{C}\\right)^{|\\FF_1|}\\right)\\\\\n        &> (1-\\epsilon)\\left(1 - \\exp\\left[- \\frac{|\\FF_1|(1-\\epsilon)\\sigma}{C}\\right]\\right)\\\\\n        &= (1-\\epsilon)\\left(1 - \\exp\\left[-\\epsilon(1-\\epsilon)\\sigma\\right]\\right)\\\\\n        &> S\n    \\end{align}\n    for $\\sigma$ sufficiently large when $\\epsilon < 1 - S$. This provides the desired contradiction, since the number of applicants who can afford a college in $\\FF_2$ cannot exceed the total capacity of colleges.\n\\end{proof}\n\nWe may now show that the probability $v_-$ and $v_+$ can afford at least one college in $\\FF_2$ is approximately the same when $C$ is large.\n\\begin{proposition}\\label{prop:lt-approx-F2}\nFor $C$ sufficiently large,\n\\begin{equation}\n    p_\\mu(v_+, \\CC_2) - p_\\mu(v_-, \\CC_2) < 1 - e^{-2\\epsilon\\sigma}.\n\\end{equation}\n\\end{proposition}\n\\begin{proof}\nWe have that\n\\begin{align}\n    p_\\mu(v_+, \\CC_2) - p_\\mu(v_-, \\CC_2)\n    &= \\prod_{c\\in \\FF_2}\\Pr[v_- + X < P_c] - \\prod_{c\\in \\FF_2}\\Pr[v_+ + X < P_c]\\\\\n    &= \\left(1 - \\prod_{c\\in \\FF_2}\\frac{\\Pr[v_+ + X < P_c]}{\\Pr[v_- + X < P_c]}\\right) \\prod_{c\\in \\FF_2}\\Pr[v_- + X < P_c]\\\\\n    &< 1 - \\prod_{c\\in \\FF_2}\\frac{\\Pr[v_+ + X < P_c]}{\\Pr[v_- + X < P_c]}\n\\end{align}\nFrom \\Cref{lem:apple},\n\\begin{equation}\n    \\Pr[v_- + X > P_c] > (1-\\epsilon)\\Pr[v_+ + X > P_c]\n\\end{equation}\nfor all $c\\in \\FF_2$. Therefore,\n\\begin{align}\n    \\frac{\\Pr[v_+ + X < P_c]}{\\Pr[v_- + X < P_c]} &= \\frac{1 - \\Pr[v_+ + X > P_c]}{1 - \\Pr[v_- + X > P_c]}\\\\\n    &> \\frac{1 - \\Pr[v_+ + X > P_c]}{1 - (1-\\epsilon)\\Pr[v_+ + X > P_c]}.\n\\end{align}\nContinuing,\n\\begin{align}\n    \\frac{1 - \\Pr[v_+ + X > P_c]}{1 - (1-\\epsilon)\\Pr[v_+ + X > P_c]} &= 1 - \\frac{\\epsilon \\Pr[v_+ + X > P_c]}{1 - (1-\\epsilon) \\Pr[v_+ + X > P_c]}\\\\\n    &\\ge 1 - \\frac{\\epsilon\\frac{\\sigma}{C}}{1 - (1-\\epsilon)\\frac{\\sigma}{C}}\\\\\n    &= 1 - \\frac{\\epsilon\\sigma}{C - (1-\\epsilon)\\sigma}\\\\\n    &> \\exp\\left[-\\frac{2\\epsilon\\sigma}{C}\\right]\n\\end{align}\nwhere the last inequality holds when $C$ is sufficiently large. Then we have that\n\\begin{align}\n    1 - \\prod_{c\\in \\FF_2}\\frac{\\Pr[v_+ + X < P_c]}{\\Pr[v_- + X < P_c]}\n    &< 1 - \\left(\\exp\\left[-\\frac{2\\epsilon\\sigma}{C}\\right]\\right)^{|\\FF_2|}\\\\\n    &< 1 - e^{-2\\epsilon\\sigma}.\n\\end{align}\n\\end{proof}\n\nWe now use \\Cref{prop:lt-approx-F2} to show \\Cref{prop:lt-large-firms}, where primary remaining observation is that the average probability a student with value in $(v_-,v_+)$ can afford a college in $\\FF_2$ must be approximately $S.$ Then, since the probabilities for $v$ in this interval must be about the same (by \\Cref{prop:lt-approx-F2}), all the probabilities in this interval must be about $S$.\n\nFormally, we observe that\n\\begin{align}\n    (1 - \\epsilon) p_\\mu(v_-, \\CC_2) \\le \\int_{v_-}^{v_+} p_\\mu(v, \\CC_2)\\,d\\eta(v) \\le S,\n\\end{align}\nso\n\\begin{equation}\\label{eq:bbq-1}\n    p_\\mu(v_-, \\CC_2) \\le \\frac{S}{1-\\epsilon} < S + \\epsilon,\n\\end{equation}\nwhere the last inequality holds for $\\epsilon$ sufficiently small. We also have that\n\\begin{align}\n    p_\\mu(v_+, \\CC_2) &\\ge \\int_{v_-}^{v_+} \\Pr[B(v)\\cap \\FF_2\\neq \\emptyset]\\,d\\eta(v)\\\\\n    &\\ge \\int_{-\\infty}^\\infty \\Pr[B(v)\\cap \\FF_2\\neq \\emptyset]\\,d\\eta(v) - \\epsilon \\\\\n    &\\ge \\int_{-\\infty}^\\infty \\Pr[\\mu(v)\\cap \\FF_2\\neq \\emptyset]\\,d\\eta(v) - \\epsilon \\label{eq:ginger}\\\\\n    &= \\left(S - \\int_{-\\infty}^\\infty \\Pr[\\mu(v)\\in \\FF_1\\neq \\emptyset]\\,d\\eta(v)\\right) - \\epsilon\\\\\n    &\\ge S - \\alpha\\epsilon - \\epsilon,\n\\end{align}\nso\n\\begin{equation}\\label{eq:bbq-2}\n    p_\\mu(v_+, \\CC_2) \\ge S - \\alpha\\epsilon - \\epsilon.\n\\end{equation}\nThen, since\n\\begin{equation}\n    p_\\mu(v_+, \\CC_2) - p_\\mu(v_-, \\CC_2) < 1 - e^{-2\\epsilon\\sigma}\n\\end{equation}\n(by \\Cref{prop:lt-approx-F2}), we have that\n\\begin{align}\n    p_\\mu(v_+, \\CC_2) &< p_\\mu(v_-, \\CC_2) + (1 - e^{-2\\epsilon\\sigma})\\\\\n    &< S + \\epsilon + (1 - e^{-2\\epsilon\\sigma})\\label{eq:cucumber-1},\n\\end{align}\nwhere the last line follows from \\eqref{eq:bbq-1}, and that\n\\begin{align}\n    \\Pr[B(v_-)\\cap \\FF_2\\neq \\emptyset] &> \\Pr[B(v_+)\\cap \\FF_2\\neq \\emptyset] - (1 - e^{-2\\epsilon\\sigma})\\\\\n    &\\ge S - \\alpha\\epsilon - \\epsilon - (1 - e^{-2\\epsilon\\sigma}),\\label{eq:cucumber-2}\n\\end{align}\nwhere the last line follows from \\eqref{eq:bbq-2}.\nFinally, since \n\\begin{equation}\n    p_\\mu(v_-, \\CC_2) < p_\\mu(v, \\CC_2) < p_\\mu(v_+, \\CC_2),\n\\end{equation}\nit follows from \\eqref{eq:cucumber-1} and \\eqref{eq:cucumber-2} that\n\\begin{equation}\n    p_\\mu(v, \\CC_2) \\in (S - \\alpha\\epsilon - \\epsilon - (1 - e^{-2\\epsilon\\sigma}), S + \\epsilon + (1 - e^{-2\\epsilon\\sigma})),\n\\end{equation}\nas desired.\n\\\\\n\\\\\nWe now analyze $p_\\mu(v, \\CC_1)$.\n\\begin{proposition}\\label{prop:lt-small-firms}\n\\begin{equation}\n    p_\\mu(v, \\CC_1) \\le \\frac{\\alpha\\sqrt{\\epsilon}}{1 - S - \\epsilon - (1 - e^{-2\\epsilon\\sigma})}\n\\end{equation}\nfor all $v < v^*$ where $\\eta((v^*, v_+))=\\sqrt{\\epsilon}.$\n\\end{proposition}\n\\begin{proof}\nNote that any student who cannot afford any college in $\\CC_2$ but can afford a college in $\\CC_1$ will be matched to a college in $\\CC_1.$ Therefore, the measure of students with value in $(v_*, v_+)$ who match with a college in $\\CC_1$ is at least\n\\begin{equation}\\label{eq:monkey}\n    \\int_{v^*}^{v_+} (1 - p_\\mu(v, \\CC_2)) \\cdot p_\\mu(v, \\CC_1)\\,d\\eta(v).\n\\end{equation}\nWe have from \\eqref{eq:cucumber-1} that\n\\begin{equation}\n    1 - p_\\mu(v, \\CC_2) \\ge 1 - S - \\epsilon - (1 - e^{-2\\epsilon\\sigma})\n\\end{equation}\nfor all $v\\in (v^*, v_+)\\subseteq (v_-, v_+).$ \n\nAlso $S(\\CC_1)\\le \\epsilon C\\cdot \\frac{\\alpha}{C} = \\epsilon\\alpha.$ \\eqref{eq:monkey} can be at most $S(\\CC_1),$ so we have that\n\\begin{align}\n    \\epsilon\\alpha &\\ge \\int_{v^*}^{v_+} (1 - p_\\mu(v, \\CC_2)) \\cdot p_\\mu(v, \\CC_1)\\,d\\eta(v)\\\\\n    &\\ge \\int_{v^*}^{v_+} \\left(1 - S - \\epsilon - (1 - e^{-2\\epsilon\\sigma})\\right) \\cdot p_\\mu(v, \\CC_1)\\,d\\eta(v)\\\\\n    &\\ge \\eta((v^*,v_+)) \\left(1 - S - \\epsilon - (1 - e^{-2\\epsilon\\sigma})\\right) \\cdot p_\\mu(v^*, \\CC_1)\\\\\n    &= \\sqrt{\\epsilon} \\left(1 - S - \\epsilon - (1 - e^{-2\\epsilon\\sigma})\\right) \\cdot p_\\mu(v^*, \\CC_1).\n\\end{align}\n\\end{proof}\nIt follows that\n\\begin{equation}\n    p_\\mu(v^*, \\CC_1) \\le \\frac{\\alpha\\sqrt{\\epsilon}}{1 - S - \\epsilon - (1 - e^{-2\\epsilon\\sigma})}.\n\\end{equation}\nThe result follows since $p_\\mu(v^*, \\CC_1)$ is monotonically increasing in $v$.\n% === end archive member: proof-amplifying.tex ===\n% === archive member: proofs-extended.tex ===\n\\section{Proofs of Extended Results}\\label{sec:proofs-extended}",
+              "quoted_text_sha256": "4e6904e96a97edd6e5ff50f59e3ff5893ec72e2cd735a31ee78c70aa61432fa3"
+            }
+          ]
+        }
+      ],
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_lt_small_firmsSpec_proof",
         "evidence_mode": "proves",
@@ -897,24 +954,58 @@
           "source_quote_sha256": "25445c3482a659009b64810dba4caed959506690dbdebd4673edc5755d04e7aa"
         }
       ],
+      "source_defect_ids": [
+        "PG24-APP-LOCAL-CONTEXT-01"
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:918-923",
-      "source_note": "The direct endpoint preserves the source's uniform quantifier over every v<v*. It takes the source proof's positive denominator, monotonicity, and capacity-mass calculation at v* as the explicit local hypotheses and derives the displayed bound for every lower value.",
-      "source_status": "formalized",
-      "statement": "For values below the source cutoff, small-firm affordance probability has the displayed epsilon-dependent upper bound.",
+      "source_note": "The corrected target retains the source probability and eta selection condition, while exposing the capacity-mass calculation at v* which the source proof immediately derives before applying monotonicity.",
+      "source_status": "corrected",
+      "statement": "The appendix states the small-firm p_mu(v,F1) bound for all v<v* at its displayed eta-selected v*.",
       "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.source_lt_small_firmsSpec",
-        "PG24NoisyMatchingMarkets.theorem2_smallFirmSourceBound_eventually_uniform_of_star_capacity_mass"
+        "PG24NoisyMatchingMarkets.PaperInterface.source_lt_small_firmsSpec"
       ]
     },
     "source_thm1_equivalent_bound": {
+      "accepted_additional_assumptions": {
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-08",
+        "conditions": [
+          "The iid one-draw noise law satisfies MemLp (fun x : ℝ => x) 2 noiseLaw; this finite second moment is used only for the Case-2 one-draw Chebyshev step."
+        ]
+      },
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "approval_reference": "The underlying approval record is withheld from this public projection.",
+          "approved_at": "2026-09-08",
+          "conditions": [
+            "The iid one-draw noise law satisfies MemLp (fun x : ℝ => x) 2 noiseLaw; this finite second moment is used only for the Case-2 one-draw Chebyshev step."
+          ],
+          "id": "accepted_additional_assumptions",
+          "kind": "maintainer_approved_additional_assumptions",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "39aeab84df65f73e4a79ac46421770345a0eafbb928844c1cd2e6b4cb2df3452"
+        }
+      ],
       "claim_bearing": true,
-      "inventory_role": "corrected_v11_surface",
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "audit/cited publication:312-321",
+        "archival_source_quote_sha256": "42f5c8f631bdd9d4e80f656a98c21cc7f7a434f1b60992f6a26068087ae11d10",
+        "corrected_target_review_sha256": "8c8afe63cf028d729de91564a303f0de9bcc06685eef7305ac115fca8ff0b9f4",
+        "corrected_target_sha256": "d2a97ccb3635da3c8d95cff902cedc67a3f8cc87cf9899e7671178dc0bc999ce",
+        "governing_defect_ids": [
+          "PG24-APP-PROP1-TAIL-ORIENTATION-01",
+          "PG24-APP-PROP7-ONE-DRAW-MOMENT-01"
+        ],
+        "schema": 1,
+        "statement": "Under the source beta-max and value-law conditions plus a finite iid one-draw second moment, uniformly over literal selected stable instances the matched mass at values at or below vS is O(C^(-K(beta,gamma)))."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_thm1_corrected_lower_tailSpec_proof"
       ],
-      "scope_disposition": "printed_source_error_with_refutation_and_corrected_target",
-      "scope_disposition_note": "The checked obstruction records why the literal upper-tail negative-power display cannot coexist with its intended positive-supply attenuation limit. The separate transparent Spec proves the source-valid lower-tail matched-mass conclusion, without silently restoring the unsupported uniform polynomial rate.",
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_thm1_corrected_lower_tailSpec_proof",
         "evidence_mode": "proves",
@@ -935,32 +1026,29 @@
           "id": "appendix.thm1v2.corrected-lower-tail",
           "identity_schema": 2,
           "reviewed_lean_route": "PG24NoisyMatchingMarkets.ProofInterface.source_thm1_corrected_lower_tailSpec_proof",
-          "semantic_claim": "For every positive tolerance, sufficiently large markets make the actual matched mass at values at or below vS smaller than that tolerance uniformly over literal selected stable instances.",
+          "semantic_claim": "Under the approved finite one-draw second-moment clarification, the actual matched mass at values at or below vS is at most a constant times C^(-K(beta,gamma)) uniformly over literal selected stable instances.",
           "source_locator": "audit/cited publication:312-321",
           "source_quote_sha256": "42f5c8f631bdd9d4e80f656a98c21cc7f7a434f1b60992f6a26068087ae11d10"
         }
       ],
+      "source_defect_ids": [
+        "PG24-APP-PROP1-TAIL-ORIENTATION-01",
+        "PG24-APP-PROP7-ONE-DRAW-MOMENT-01"
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:312-321",
-      "source_note": "The display integrates p_mu over Ioi(vS), while the surrounding prose, footnote, and Theorem 1 concern values below vS. This is not harmless: any upper-tail mass converging to the positive total supply cannot obey a negative-power upper bound, as the checked obstruction proves. The corrected source target uses Iic(vS) and the literal selected demand event; it proves its uniform vanishing conclusion from the paper's iid beta-max, capacity, threshold-normalization, and Holder-regularity primitives. The printed proposition's O notation also fixes mu and does not state the uniform constant needed for the source theorem, so no uniform polynomial rate is attributed here.",
-      "source_status": "formalized_under_documented_correction",
-      "statement": "The printed proposition bounds the upper-tail affordability integral by O(C^{-K(beta,gamma)}); its source-valid corrected target is that the matched mass at values at or below the threshold vanishes uniformly over literal selected stable instances.",
+      "source_note": "The archival display has the upper-tail orientation, while its surrounding prose and the attenuation conclusion concern values below vS. The checked upper-tail obstruction shows that the display is not equivalent to the intended attenuation statement. The corrected lower-tail rate also makes the finite iid one-draw second moment used by the Case-2 Chebyshev step explicit.",
+      "source_status": "corrected",
+      "statement": "Appendix Proposition 1 states that, under beta-max concentration, the matched mass integrated from vS to infinity is O(C^(-K(beta,gamma))).",
       "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.source_thm1_corrected_lower_tailSpec",
-        "PG24NoisyMatchingMarkets.PaperInterface.source_thm1_printed_upper_tail_obstructionSpec",
-        "PG24NoisyMatchingMarkets.ProofInterface.source_thm1_printed_upper_tail_obstructionSpec_proof",
-        "PG24NoisyMatchingMarkets.theorem1_literal_uniform_low_matched_mass_eventually_small_of_beta_holder",
-        "PG24NoisyMatchingMarkets.theorem1_sourceDemand_value_restricted_matched_mass_eq_integral_affordance_iid"
+        "PG24NoisyMatchingMarkets.PaperInterface.source_thm1_corrected_lower_tailSpec"
       ]
     },
     "source_thm2_equivalent_bound": {
       "claim_bearing": true,
-      "inventory_role": "direct_v11_surface",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_thm2_equivalent_boundSpec_proof"
       ],
-      "scope_disposition": "direct_source_target",
-      "scope_disposition_note": "The transparent Spec and endpoint directly prove the stated central-window consequence from the all-real source theorem and monotonicity.",
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_thm2_equivalent_boundSpec_proof",
         "evidence_mode": "proves",
@@ -988,23 +1076,56 @@
       ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:703-709",
-      "source_note": "The endpoint derives one threshold uniform over the source central interval by applying the source-proved all-real amplification theorem at the two fixed quantile endpoints and using value monotonicity. The source's second endpoint displays v_epsilon without its plus superscript; the formal target names it vHigh and makes its ordering with vLow explicit.",
-      "source_status": "formalized",
+      "source_note": "Named appendix proposition in the printed proof of Theorem 2; retained as a claim-bearing source presentation pending its own transparent Spec and proof endpoint.",
       "statement": "For long-tailed noise, sufficiently large markets have match probability within epsilon of total supply on the source central value interval.",
       "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.source_thm2_equivalent_boundSpec",
-        "PG24NoisyMatchingMarkets.ProofInterface.review_theorem2_amplificationSpec_proof",
-        "PG24NoisyMatchingMarkets.cutoffAffordanceProbability_mono_value"
+        "PG24NoisyMatchingMarkets.PaperInterface.source_thm2_equivalent_boundSpec"
       ]
     },
     "source_tomato": {
       "claim_bearing": true,
-      "inventory_role": "direct_v11_surface",
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "audit/cited publication:371-416",
+        "archival_source_quote_sha256": "20a4ad628d77834a75dec45bccb1c6804ffbe80eb5b4943a4c0274bc4dbea4ac",
+        "corrected_target_review_sha256": "8e19ef238aee4af71123ef84f4776562476ff6d7419679a6c610b393cafedf35",
+        "corrected_target_sha256": "a37e3c100b9809acf811093ea1496b1707ca4f1af137d233a4c5fb47ac764188",
+        "governing_defect_ids": [
+          "PG24-APP-CASE1-BLOCK-BOUNDARY-01"
+        ],
+        "schema": 1,
+        "statement": "In the source Case-1 closed high-cutoff block C([P*, infinity)), the two displayed dense-cluster cutoff-affordance rates hold under the strict source value separations."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_tomatoSpec_proof"
       ],
-      "scope_disposition": "direct_source_target",
-      "scope_disposition_note": "The transparent Spec and checked endpoint directly prove both displayed first-case Chebyshev rates from the source cutoff geometry.",
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 111,
+              "line_start": 96,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\subsection{Preliminaries}\nWe now make some basic observations that will be useful for our results. We show that key properties of stable matchings operate at the level of student values rather than student types (which also encode student preferences). This means that in our analysis, we can focus on the fixed student value distribution $\\eta$ while mostly ignoring the varying student type distribution $\\rho$.\n\nConsider a matching $\\mu\\in M(\\DD, C)$, characterized by a vector of market-clearing cutoffs $\\vec{P}=\\vec{P}(\\mu)$. Our results focus on the probability that a student $\\theta=(v,\\succ)$ matches to a college. This probability is equal to\n\\begin{equation}\n    \\Pr[\\mu(\\theta)\\in C] = \\Pr[v + X_c > P_c\\text{ for some $c\\in C$}],\n\\end{equation}\nwhere $X_1, \\cdots, X_C \\simiid \\DD.$ Notice that this probability does not depend on $\\succ$, the student's preferences over colleges. Indeed, the probability that a student matches is exactly the probability that a student can afford some college; whether or not they can afford a college only depends on their value and the college's cutoff (not the student's preferences). Accordingly, we can drop $\\theta$ and define\n\\begin{equation}\n    p_\\mu(v) := \\Pr[v + X_c > P_c\\text{ for some $c\\in C$}],\n\\end{equation}\nthe probability that a student with value $v$ is matched under $\\mu$. More generally, for a subset of colleges $C'\\subseteq C$, we define\n\\begin{equation}\n    p_\\mu(v, C') := \\Pr[v + X_c > P_c\\text{ for some $c\\in C'$}],\n\\end{equation}\nthe probability that a student with value $v$ can afford some college in $C'$. By definition, $p_\\mu(v) = p_\\mu(v, C).$",
+              "quoted_text_sha256": "9611a364cb2c19866b25421fbf9b1861cdc4a0a6bcf9ca0a33e3999e789471f5"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchor_evidence": [
+            {
+              "line_end": 416,
+              "line_start": 371,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\end{itemize}\nWe choose these two cases for the following reason. The first case guarantees the existence of a dense set of cutoffs ``early on'' in the sequence of colleges. The second case, does not have a dense set of cutoffs early on. By the pigeonhole principle, this instead implies that there must exist a large gap between cutoffs early on. As we will see, both the existence of an ``early'' dense set or large gap is sufficient to obtain the desired result.\n\n\\subsubsection*{Case 1: Few Cutoffs Below $P^*$}\n\nAt a high level, our analysis in this case proceeds as follows. Set\n\\begin{align}\n    \\CC_1 &:= C((-\\infty, P^*))\\\\\n    \\CC_2 &:= C((P^*, \\infty)).\n\\end{align}\nFirst, because there are few cutoffs below $P^*$, the mass of students who match to colleges in $\\CC_1$ is small---i.e., going to $0$ as $C\\rightarrow \\infty$. Therefore, we can focus on the probability a student can afford a college in $\\CC_2.$ This probability is approximately a step function as for $C$ large, since the dense cluster of colleges in $[P^*, P^*+\\delta]$ contains a large number of colleges, serving as an ``arbitrarily strong filter.''\n\\\\\n\\\\\nIn accordance with this plan, observe that\n\\begin{equation}\n    \\int_{v_S}^\\infty p_\\mu(v)\\,d\\eta(v) \\le S(\\CC_1) + \\int_{v_S}^\\infty p_\\mu(v,\\CC_2)\\,d\\eta(v),\n\\end{equation}\nsince the total measure of students with value below $v_S$ who match to a college is at most the total measure $S(\\CC_1)$ of students (of any value) who match with a college in $\\CC_1$ plus the total measure of students with value below $v_S$ who can afford a college in $\\CC_2.$\n\nWe proceed by bounding the two components of the RHS. Bounding $S(\\CC_1)$ is straightforward: there are at most $C^{\\phi_3}$ colleges in this set, each of which has capacity at most $\\frac{\\alpha}{C}.$ This gives the following bound.\n\\begin{proposition}\\label{prop:duck-1}\n\\begin{equation}\n    S(\\CC_1) \\le \\alpha C^{\\phi_3 - 1} = O\\left(C^{-K(\\beta,\\gamma)}\\right).\n\\end{equation}\n\\end{proposition}\n\\begin{proof}\n    The capacity of each college is at most $\\frac{\\alpha}{C}$. Since there are fewer than $C^{\\phi_3}$ colleges in $C((-\\infty, P^*))$, the mass of students who match to these colleges is less than $C^{\\phi_3}\\cdot \\frac{\\alpha}{C} = \\alpha C^{\\phi_3 - 1}.$ The result follows since\n    \\begin{equation}\n        \\phi_3 - 1 = -\\frac{2\\beta\\gamma}{3\\beta\\gamma + 2\\beta + 5\\gamma + 6} = K(\\beta,\\gamma).\n    \\end{equation}\n\\end{proof}\nBounding the second component---the measure of students with value below $v_S$ who match with a college in $C([P^*,\\infty))$---is more involved. We start by showing that $p_\\mu(v, \\CC_2)$, the probability that a student with value $v$ can afford a college in $\\CC_2$, resembles a step function in $v$ that jumps at $P^* - \\EE[X^{(C^{\\phi_2})}],$ where we recall that $\\phi_2$ is the number of colleges in the dense cluster. We can use this result to analyze the second integral, since if $p_\\mu(v, \\CC_2)$ resembles a step function, then this step must occur at roughly $v_S$ or otherwise too many (more than $S$) or too few (at most $S$) students will be able to afford a college. In turn, $p_\\mu(v, \\CC_2)$ must be small for almost all students with value at most $v_S$.\n\n\\begin{proposition}\\label{prop:tomato}\n\\quad\n    \\begin{itemize}\n        \\item[(i)] If $v > P^* - \\EE[X^{(C^{\\phi_2})}]  + 2\\delta,$\n        \\begin{equation}\n            p_\\mu(v, \\CC_2) \\ge 1 - O\\left(C^{-2\\phi_1 - \\beta\\phi_2}\\right).\n        \\end{equation}\n        \\item[(ii)] If $v < P^* - \\EE[X^{(C^{\\phi_2})}]  - \\delta,$\n        \\begin{equation}\n            p_\\mu(v, \\CC_2) \\le O\\left(C^{1-2\\phi_1 - (1 + \\beta)\\phi_2}\\right).\n        \\end{equation}\n    \\end{itemize}\n\\end{proposition}",
+              "quoted_text_sha256": "20a4ad628d77834a75dec45bccb1c6804ffbe80eb5b4943a4c0274bc4dbea4ac"
+            }
+          ]
+        }
+      ],
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_tomatoSpec_proof",
         "evidence_mode": "proves",
@@ -1030,15 +1151,16 @@
           "source_quote_sha256": "94bc721354d4b12645596727d00f94b9847ee7a314683c4d5b1a1ea5dea23f0f"
         }
       ],
+      "source_defect_ids": [
+        "PG24-APP-CASE1-BLOCK-BOUNDARY-01"
+      ],
       "source_kind": "proposition",
       "source_location": "audit/cited publication:404-416",
-      "source_note": "The direct endpoint retains both printed asymptotic exponents. The source proof of the low-side bound has an inequality-direction slip in its intermediate event comparison; the checked route uses the valid cutoff-affordance union bound and recovers the displayed rate under the same first-case geometry.",
-      "source_status": "formalized",
-      "statement": "The first-case high-cutoff affordance probability has the two displayed max-concentration upper and lower bounds around its threshold.",
+      "source_note": "The source proof itself uses the dense block beginning at P* and later calls the high block C([P*, infinity)). The corrected target makes that closed-pivot convention and the strict low-side boundary explicit, while retaining both displayed rates.",
+      "source_status": "corrected",
+      "statement": "The dense-cluster proposition states two rates for p_mu(v,C_2) after defining C_2 with an open lower endpoint.",
       "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.source_tomatoSpec",
-        "PG24NoisyMatchingMarkets.theorem1DenseGroup_one_sub_cutoff_affordance_eventually_le_chebyshev_rate_of_beta",
-        "PG24NoisyMatchingMarkets.theorem1DenseGroup_cutoff_affordance_eventually_le_source_rate_of_beta"
+        "PG24NoisyMatchingMarkets.PaperInterface.source_tomatoSpec"
       ]
     },
     "source_unbounded_cutoffs": {
@@ -1046,12 +1168,9 @@
         "Lemma unbounded-cutoffs"
       ],
       "claim_bearing": true,
-      "inventory_role": "direct_v11_surface",
       "lean_declarations": [
         "PG24NoisyMatchingMarkets.ProofInterface.source_unbounded_cutoffsSpec_proof"
       ],
-      "scope_disposition": "direct_source_target",
-      "scope_disposition_note": "The transparent Spec and endpoint prove strict eventual cutoff divergence throughout the rounded source large-firm suffix.",
       "semantic_contract": {
         "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.source_unbounded_cutoffsSpec_proof",
         "evidence_mode": "proves",
@@ -1079,13 +1198,10 @@
       ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:757-759",
-      "source_note": "The direct endpoint derives strict divergence of every sorted large-firm cutoff from literal iid coalition sampling, actual cutoff demand, exact clearing capacity, and the source long-tail condition. Its Fin(C+1) carrier and epsilonFloorSplitIndex are explicit nonempty-product and rounding conventions for the source's epsilon-C suffix; total supply below one and positive epsilon are already part of the surrounding source regime.",
-      "source_status": "formalized",
+      "source_note": "Named appendix lemma in the printed proof of Theorem 2; retained as a claim-bearing source presentation pending its own transparent Spec and proof endpoint.",
       "statement": "For every real P, the epsilon-C cutoff exceeds P in sufficiently large markets.",
       "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.source_unbounded_cutoffsSpec",
-        "PG24NoisyMatchingMarkets.theorem2_literalSource_unbounded_cutoffs_eventually",
-        "PG24NoisyMatchingMarkets.theorem2_literalSource_exists_sigma_suffix_geometry_of_longTailed"
+        "PG24NoisyMatchingMarkets.PaperInterface.source_unbounded_cutoffsSpec"
       ]
     },
     "stable_matching_cutoff_definition": {
@@ -1107,18 +1223,13 @@
         }
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PG24NoisyMatchingMarkets.ProofInterface.stable_matching_cutoff_definitionSpec_proof"
+        "PG24NoisyMatchingMarkets.PaperInterface.stable_matching_cutoff_definitionSpec"
       ],
       "model_convention_ids": [
         "PG24-BASIC-MARKET-RECORD-01"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "PG24NoisyMatchingMarkets.ProofInterface.stable_matching_cutoff_definitionSpec_proof",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "PG24NoisyMatchingMarkets.PaperInterface.stable_matching_cutoff_definitionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 94,
@@ -1131,7 +1242,7 @@
       "source_claim_atoms": [
         {
           "id": "stable.matching.cutoff.definition",
-          "reviewed_lean_route": "PG24NoisyMatchingMarkets.ProofInterface.stable_matching_cutoff_definitionSpec_proof",
+          "reviewed_lean_route": "PG24NoisyMatchingMarkets.PaperInterface.stable_matching_cutoff_definitionSpec",
           "semantic_claim": "The PG24 model defines a stable matching to be favorite-affordable demand at a market-clearing cutoff, and cites Azevedo-Leshno for equivalence with classical blocking-pair stability.",
           "source_locator": "audit/cited publication:78-94",
           "source_quote_sha256": "12ea8e1edc6cf8d84f0fc5623eafcf0d3dcc545b842df223c06172551345cd1e"
@@ -1151,29 +1262,8 @@
         "validator": "Codex PG24 prose-definition semantic reconciliation",
         "validator_type": "agent"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "83f0d46342c55fa024267db0f05487ac2e54c3723dd4af84b9f7e671fdf9f4a1",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "73da128b8dd5cfebd09129578ad551d7f6a9c1b2811d8eda9559bcd2913557c8",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The direct Spec is exactly the equivalence between the paper's stable-matching predicate and existence of a market-clearing cutoff whose favorite-affordable demand rule equals the matching.",
-            "source_atom_sha256": "13efffeea82853ead3fe313be96bdfbdc0835f58ea68cf6a343429245366354c",
-            "spec_component_sha256s": [
-              "1a1adb2c4b8966d05678893c5c76b4cd669001ae1a1424887c2c3e57baac702f"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "1213a70a647ec8c1ef9334265650293481b9251ec1ab23044267bfda9d130d91",
-        "spec_closure_sha256": "0049312994c9fce4108216ab97bf8624872095cb67515b316344dc170bf9d56d",
-        "spec_surface_sha256": "1a1adb2c4b8966d05678893c5c76b4cd669001ae1a1424887c2c3e57baac702f"
-      },
       "source_url": "https://arxiv.org/abs/2402.16771",
-      "statement": "The PG24 model defines a stable matching to be favorite-affordable demand at a market-clearing cutoff, and cites Azevedo-Leshno for equivalence with classical blocking-pair stability.",
-      "support_lean_declarations": [
-        "PG24NoisyMatchingMarkets.PaperInterface.stable_matching_cutoff_definitionSpec"
-      ]
+      "statement": "The PG24 model defines a stable matching to be favorite-affordable demand at a market-clearing cutoff, and cites Azevedo-Leshno for equivalence with classical blocking-pair stability."
     },
     "theorem1_attenuation": {
       "aliases": [
@@ -1216,24 +1306,6 @@
       "source_kind": "theorem",
       "source_location": "audit/cited publication:259-268",
       "source_note": "Lean proves the published conclusion through a corrected dense/large-gap argument. See docs/SOURCE_PROOF_DEFECTS_2026-07-13.md.",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "4ef8980f12ada84f6263fa335ab013766a22a57348aa1def2b64816a9ba2ff47",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "e42c88466890c1ec18fa6140eee9db1876c3d6de1693fb6f0ec4ae30dae0650a",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The direct Spec retains the beta-max premise, fixed-value comparison with v_S, sufficiently-large uniform quantifiers over admissible economies and stable matchings, and the source zero/one probability conclusions.",
-            "source_atom_sha256": "b42004a74af1b5e070b2009060f1910d6afea65a69073798d4f6383cb22972ba",
-            "spec_component_sha256s": [
-              "2d45624c97c06ac89f3ccf2014fb71541ceb24ae447efceffdedebf21de34c9a"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "a33184002ae905c906f5776effd6b54d6740dfb255d392441e1fba276d500950",
-        "spec_closure_sha256": "88615b2be9f1f3501d9c201d830d794443fc7dcd97f0d13238a7af2174ae8461",
-        "spec_surface_sha256": "2d45624c97c06ac89f3ccf2014fb71541ceb24ae447efceffdedebf21de34c9a"
-      },
       "source_url": "https://arxiv.org/abs/2402.16771",
       "statement": "For beta-max-concentrating noise and each fixed value, uniformly over all sufficiently large admissible economies and stable matchings, match probability tends to zero below v_S and one above v_S.",
       "support_lean_declarations": [
@@ -1281,24 +1353,6 @@
       "source_kind": "theorem",
       "source_location": "audit/cited publication:274-279",
       "source_note": "Lean repairs the printed bounded-support quantile-window gap with an interior anchor and a long-tail value-shift multiplier.",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "452627dbb74d4eb62b3c49fec544bced67cddebfaef29788053ee88f47223fc4",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "fc19ce51018c5151c6ed178206c4e2563a04eff98d2baf57972623824353c86b",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The direct Spec retains the long-tailed premise, fixed-value and sufficiently-large uniform quantifiers over admissible economies and stable matchings, and convergence of match probability to total supply.",
-            "source_atom_sha256": "39ed9f46a39de59fcba54e73d8aa14f00d99c6731f4ae3e52854046b317e46a7",
-            "spec_component_sha256s": [
-              "6dc18299d82654f7eba7dea83cc6fb74fa334dc08c8cf193f08bae4a81de3398"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "79dafe9cf951672e66ab3f643fddefe4f895eeaddd3cb1a6b8017e41e1b3c00d",
-        "spec_closure_sha256": "a7ad459b77e3bf29e4125d15a5f8eb4d692b0e219be3c0aeea009ea04bbc4364",
-        "spec_surface_sha256": "6dc18299d82654f7eba7dea83cc6fb74fa334dc08c8cf193f08bae4a81de3398"
-      },
       "source_url": "https://arxiv.org/abs/2402.16771",
       "statement": "For long-tailed noise and each fixed real value, uniformly over all sufficiently large admissible economies and stable matchings, match probability converges to total supply S.",
       "support_lean_declarations": [
@@ -1355,24 +1409,6 @@
       ],
       "source_kind": "theorem",
       "source_location": "audit/cited publication:196-206",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "b4d0cc1a6ba26faafada769c8599175d46f6c527ce0a99a4da9c3deaeea241b6",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "9a92adf158619bf8c67310e3c40814c755a105fcc70154af97d3b51bfa44938e",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The direct Spec retains the epsilon and sufficiently-large coalition quantifiers, the large selected subset and threshold witnesses, and both source affordance-probability inequalities.",
-            "source_atom_sha256": "bc6cfaf5b56efae732f5713701f810142bff422ab06986b98a6d52a917c03761",
-            "spec_component_sha256s": [
-              "44af8215bfbdde24f5b93784f75cf9298a54e9cb4cb614d80288c4492eb0322d"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "71f2d0b7cfc29a4c698e0127c701208811ad181a2e8885b2baba518416633801",
-        "spec_closure_sha256": "f243f4662b583fba1ca449da6fcdb7fea5d55f6916d9d4c07c0bd3f5dbca8a6d",
-        "spec_surface_sha256": "44af8215bfbdde24f5b93784f75cf9298a54e9cb4cb614d80288c4492eb0322d"
-      },
       "source_url": "https://arxiv.org/abs/2402.16771",
       "statement": "For max-concentrating noise and every epsilon > 0, every sufficiently large coalition and stable matching has a threshold and a subset containing more than a 1-epsilon fraction of coalition colleges: values epsilon below the threshold afford that subset with probability below epsilon, while values epsilon above it afford some coalition college with probability above 1-epsilon.",
       "support_lean_declarations": [
@@ -1429,24 +1465,6 @@
       ],
       "source_kind": "theorem",
       "source_location": "audit/cited publication:213-220",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "1fa13f41358645e55311ce3374dfc5113a1ed24ef2e611e0be3831b08b564b8a",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "517bcc6c0f7e68b3467b7e5888887d75a852665dcd20871b26081ec35cb4d1b2",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The direct Spec retains the epsilon and sufficiently-large coalition quantifiers, the effective-supply, large-subset, and high-mass value-set witnesses, and the source uniform approximation inequality.",
-            "source_atom_sha256": "1f6ec42ce1854018142727278a91a15e853a94812145ff47d13ae7938c50bae8",
-            "spec_component_sha256s": [
-              "bc8693b91d14d1b7422fc9cd3ef33356d0dc51cfd3ab0ce719da78bd0f1673c6"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "74cf3c0225adc60631c4dc3da5f819a340530dda0c052dde427169be4442a078",
-        "spec_closure_sha256": "5b2e0377f69fae8d254b95ad90bae7d383685b4f23e16c2d9cae5b73d6109376",
-        "spec_surface_sha256": "bc8693b91d14d1b7422fc9cd3ef33356d0dc51cfd3ab0ce719da78bd0f1673c6"
-      },
       "source_url": "https://arxiv.org/abs/2402.16771",
       "statement": "For long-tailed noise and every epsilon > 0, every sufficiently large source coalition and stable matching has an effective supply, a subset containing more than a 1-epsilon fraction of coalition colleges, and a value set whose complement has eta-mass at most epsilon, on which coalition affordance probability is within epsilon of effective supply.",
       "support_lean_declarations": [
@@ -1457,10 +1475,18 @@
   "paper": "PG24NoisyMatchingMarkets",
   "paper_interface_namespace": "PG24NoisyMatchingMarkets",
   "paper_semantic_prerequisite_sources": {
-    "PG24NoisyMatchingMarkets.PG24BasicEconomySourceData": "basic_economy_model",
     "PG24NoisyMatchingMarkets.PG24CoalitionSourceSampling": "extended_coalition_model",
     "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket": "basic_economy_model",
-    "PG24NoisyMatchingMarkets.PG24TrueValueSourceStableData": "extended_coalition_model"
+    "PG24NoisyMatchingMarkets.PaperInterface.beta_max_concentratingSpec": "beta_max_concentrating",
+    "PG24NoisyMatchingMarkets.PaperInterface.capacity_regularitySpec": "capacity_regularity",
+    "PG24NoisyMatchingMarkets.PaperInterface.holder_value_law_regularitySpec": "holder_value_law_regularity",
+    "PG24NoisyMatchingMarkets.PaperInterface.long_tailed_noiseSpec": "long_tailed_noise",
+    "PG24NoisyMatchingMarkets.PaperInterface.match_probability_formulaSpec": "match_probability_formula",
+    "PG24NoisyMatchingMarkets.PaperInterface.stable_matching_cutoff_definitionSpec": "stable_matching_cutoff_definition"
+  },
+  "publication_corrected_target_projection": {
+    "approval_material_included": false,
+    "schema": 1
   },
   "publication_source_display_projection": {
     "manifest": "audit/public_source_display_projection.json",

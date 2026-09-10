@@ -1,0 +1,57 @@
+{
+  "audit_kind": "source_defect_to_lean_agent",
+  "items": {
+    "lemma15_center_formula_counterexample": {
+      "defect_id": "GCG24-E15-CENTER-MIRROR-01",
+      "judgment": "valid_counterexample",
+      "lean_obligations": [
+        {
+          "defect_relevance": "counterexample_conclusion",
+          "role": "conclusion",
+          "semantic_explanation": "The conjunction checks the admissible beta inequalities and the exact inequality between the corrected and printed center values.",
+          "signature_atom_sha256": "5eb6b2727d22fc774f9525a5ca1a07ec23ce796ae21031c441371bbb4c178114",
+          "signature_ref": "result"
+        }
+      ],
+      "lean_signature_sha256": "f24dfc5797a86ba527044f6eceb6661e1970cd1c16b856c10603f7bdf94a6f49",
+      "lean_statement": "@GCG24UserItemFairness.PaperInterface.appendix_e_lemma15_printed_center_value_counterexample :\n3⁻¹ < 2 / 5 ∧ 2 / 5 < 1 / 2 ∧ 1 / (1 + 4 / 3) ≠ (2 * (2 / 5) * (1 / 2) + (1 - 2 * (2 / 5))) / (1 + 1 / 2 * (4 / 3))",
+      "lean_statement_sha256": "d01a41b03495c2c1040e08ded79cbc6e6fec9d47651dad705b7fdffcc16540a1",
+      "obligation_alignment": [
+        {
+          "lean_signature_ref": "result",
+          "relation": "counterexample_to",
+          "semantic_basis": "The source claim equates lambda with the printed rational expression, while the Lean conclusion evaluates the same expression and the full-equation value at an admissible source-domain point and proves inequality.",
+          "source_defect_field": "source_claim",
+          "witness_or_derivation": "Set n=3, beta=2/5, q_t=1/2, and L_t=4/3. Then 1/n<beta<1/2, the corrected value is 3/7, and the printed value is 9/25."
+        }
+      ],
+      "reason": "Current-protocol source-first revalidation checked the pinned Appendix E display, the complete schema-2 defect record, and the current elaborated Lean conclusion. The closed rational witness satisfies 1/n < beta < 1/2 and proves that the value 3/7 forced by the full mirrored Problem 11 equation differs from the printed value 9/25.",
+      "source_defect": {
+        "acceptance_condition": "Lean derives the corrected center value from the full Problem 11 optimality equations and checks an admissible source-domain witness for which the corrected value differs from the printed display.",
+        "affected_source_locators": [
+          "cited publication:3899-3924",
+          "cited publication:4290-4332"
+        ],
+        "defect_kind": "algebra_or_sign",
+        "id": "GCG24-E15-CENTER-MIRROR-01",
+        "repair_obligation": "Retain both mirrored known-type contributions in the center item equation. With q_t = 1/2 and the center symmetry, solve the full Problem 11 equation to obtain lambda = 1 / (1 + L_t), while leaving the noncenter formulas unchanged.",
+        "resolution": "corrected_source_statement",
+        "resolution_evidence": "appendix_e_lemma15_optimal_solution_full_closed_form proves all corrected coordinates for every global optimum. appendix_e_lemma15_printed_center_value_counterexample checks n = 3, beta = 2/5, q_t = 1/2, and L_t = 4/3: the full item equation gives 3/7, whereas the printed expression gives 9/25.",
+        "source_claim": "At the center pivot, the source displays lambda = (2 beta q_t + (1 - 2 beta)) / (1 + q_t L_t).",
+        "source_locator": "cited publication:4290-4332, Appendix E Lemma 15 center-pivot derivation and displayed value",
+        "statement_impact": "source_statement"
+      },
+      "source_defect_sha256": "9dbc2d5dd324281f9d49fda72e397afd5abbc8cceed4c3faff9e59f5087013b9",
+      "source_item": "source_appendix_e_lemma15_closed_formula",
+      "source_statement_sha256": "68d0eac0c0f753b6f2f568d4b041ca8984d47552a78a8512f0416a8f0b56baf1",
+      "support_declaration": "appendix_e_lemma15_printed_center_value_counterexample"
+    }
+  },
+  "paper": "GCG24UserItemFairness",
+  "prompt_version": "defect-support-v1-exact-source-defect-to-lean-semantic",
+  "schema": 1,
+  "source_grounded": true,
+  "validated_at": "2026-07-18T16:17:46Z",
+  "validator": "Codex GCG24 current-protocol source-first defect-support revalidation",
+  "validator_type": "agent"
+}

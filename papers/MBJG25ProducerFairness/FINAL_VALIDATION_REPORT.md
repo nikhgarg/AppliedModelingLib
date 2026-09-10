@@ -1,6 +1,6 @@
-# Final Validation Report: MBJG25 Producer Fairness
+# Final Validation Report: Balancing Producer Fairness and Efficiency via Prior-Weighted Rating System Design
 
-Updated: 2026-09-04 (terminal-closeout document refresh)
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -48,8 +48,8 @@ conditions. No additional substantive model premise is used.
 | Result | Comparison with the paper |
 | --- | --- |
 | Beta–Bernoulli model and posterior identities; Theorem 3.2 | **Exact.** |
-| [Theorem 3.1](docs/SOURCE_CLARIFICATIONS.md#theorem-31-variance-at-bernoulli-endpoints) | **Source clarification:** variance decreases weakly on the closed Bernoulli interval `0 <= q_v <= 1`. |
-| [Appendix D, Equation (20)](docs/SOURCE_CLARIFICATIONS.md#appendix-d-equation-20-beta-prior-shape) | **Typo fixed:** `Beta(C,1-C)` replaces `Beta(C,1)`. |
+| [Theorem 3.1](docs/SOURCE_CLARIFICATIONS.md#theorem-31-variance-at-bernoulli-endpoints) | **Exact with source clarification:** variance decreases weakly on the closed Bernoulli interval `0 <= q_v <= 1`. |
+| [Appendix D, Equation (20)](docs/SOURCE_CLARIFICATIONS.md#appendix-d-equation-20-beta-prior-shape) | **Exact after correcting the prior typo:** `Beta(C,1-C)` replaces `Beta(C,1)`. |
 | [Appendix E, Equation (21)](docs/SOURCE_CLARIFICATIONS.md#appendix-e-equation-21-dirichlet-posterior-average) | **Formula corrected:** include prior pseudo-counts in numerator and denominator. |
 
 ## 5. Remaining Boundaries and Gaps

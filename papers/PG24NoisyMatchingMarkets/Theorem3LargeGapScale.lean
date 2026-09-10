@@ -124,6 +124,183 @@ theorem theorem3DenseGapBlockCount_eventually_ge_floor_lowerScale
     _ ≤ Real.rpow (C : ℝ) prefixExponent := hpower_target
 
 /--
+The rounded block count has the full source polynomial scale, up to a fixed
+constant.  Unlike the weaker half-exponent bound used only to prove
+divergence, this retains the exponent needed for quantitative tail bounds.
+-/
+theorem theorem3DenseGapBlockCount_eventually_ge_floor_quarter_fullScale
+    {denseExponent prefixExponent width gapExponent : ℝ}
+    (hdense_nonneg : 0 ≤ denseExponent)
+    (hwidth_neg : width < 0)
+    (hgap_pos : 0 < gapExponent)
+    (hgap_eq : gapExponent = width + prefixExponent - denseExponent) :
+    ∀ᶠ C : ℕ in Filter.atTop,
+      ⌊(1 / 4 : ℝ) *
+        Real.rpow (C : ℝ) (gapExponent - width)⌋₊ ≤
+        theorem3DenseGapBlockCount C denseExponent prefixExponent := by
+  have hfull_scale_pos : 0 < gapExponent - width := by
+    linarith
+  have hfull_scale_tendsto :
+      Filter.Tendsto
+        (fun C : ℕ => Real.rpow (C : ℝ) (gapExponent - width))
+        Filter.atTop Filter.atTop :=
+    (tendsto_rpow_atTop hfull_scale_pos).comp tendsto_natCast_atTop_atTop
+  filter_upwards [Filter.eventually_ge_atTop 1,
+    hfull_scale_tendsto.eventually_ge_atTop (4 : ℝ)] with C hC_one hfull_scale
+  have hC_pos : 0 < C := lt_of_lt_of_le Nat.zero_lt_one hC_one
+  have hC_real_pos : 0 < (C : ℝ) := by
+    exact_mod_cast hC_pos
+  have hC_real_one : (1 : ℝ) ≤ (C : ℝ) := by
+    exact_mod_cast hC_one
+  rw [show theorem3DenseGapBlockCount C denseExponent prefixExponent =
+      theorem3EarlyPrefixRank C prefixExponent /
+        theorem3DenseWindowCount C denseExponent from rfl]
+  apply (Nat.le_div_iff_mul_le
+    (theorem3DenseWindowCount_pos (C := C) (exponent := denseExponent) hC_pos)).2
+  rw [show theorem3EarlyPrefixRank C prefixExponent =
+      ⌊Real.rpow (C : ℝ) prefixExponent⌋₊ from rfl]
+  apply Nat.le_floor
+  have hquarter_nonneg :
+      0 ≤ (1 / 4 : ℝ) *
+        Real.rpow (C : ℝ) (gapExponent - width) :=
+    mul_nonneg (by norm_num) (Real.rpow_nonneg (Nat.cast_nonneg C) _)
+  have hfloor_le :
+      (⌊(1 / 4 : ℝ) *
+        Real.rpow (C : ℝ) (gapExponent - width)⌋₊ : ℝ) ≤
+        (1 / 4 : ℝ) *
+          Real.rpow (C : ℝ) (gapExponent - width) :=
+    Nat.floor_le hquarter_nonneg
+  have hdense_power_one :
+      1 ≤ Real.rpow (C : ℝ) denseExponent :=
+    Real.one_le_rpow hC_real_one hdense_nonneg
+  have hdense_count_le :
+      (theorem3DenseWindowCount C denseExponent : ℝ) ≤
+        2 * Real.rpow (C : ℝ) denseExponent := by
+    rw [show theorem3DenseWindowCount C denseExponent =
+        ⌈Real.rpow (C : ℝ) denseExponent⌉₊ from rfl]
+    calc
+      (⌈Real.rpow (C : ℝ) denseExponent⌉₊ : ℝ) ≤
+          Real.rpow (C : ℝ) denseExponent + 1 :=
+        (Nat.ceil_lt_add_one
+          (Real.rpow_nonneg (Nat.cast_nonneg C) denseExponent)).le
+      _ ≤ 2 * Real.rpow (C : ℝ) denseExponent := by
+        linarith
+  have hpower_product :
+      Real.rpow (C : ℝ) (gapExponent - width) *
+          Real.rpow (C : ℝ) denseExponent =
+        Real.rpow (C : ℝ) prefixExponent := by
+    calc
+      Real.rpow (C : ℝ) (gapExponent - width) *
+          Real.rpow (C : ℝ) denseExponent =
+          Real.rpow (C : ℝ) ((gapExponent - width) + denseExponent) :=
+        (Real.rpow_add hC_real_pos _ _).symm
+      _ = Real.rpow (C : ℝ) prefixExponent := by
+        congr 1
+        linarith [hgap_eq]
+  calc
+    ((⌊(1 / 4 : ℝ) *
+        Real.rpow (C : ℝ) (gapExponent - width)⌋₊ *
+        theorem3DenseWindowCount C denseExponent : ℕ) : ℝ) =
+        (⌊(1 / 4 : ℝ) *
+          Real.rpow (C : ℝ) (gapExponent - width)⌋₊ : ℝ) *
+          (theorem3DenseWindowCount C denseExponent : ℝ) := by
+      norm_num
+    _ ≤ ((1 / 4 : ℝ) *
+          Real.rpow (C : ℝ) (gapExponent - width)) *
+          (theorem3DenseWindowCount C denseExponent : ℝ) :=
+      mul_le_mul_of_nonneg_right hfloor_le (Nat.cast_nonneg _)
+    _ ≤ ((1 / 4 : ℝ) *
+          Real.rpow (C : ℝ) (gapExponent - width)) *
+          (2 * Real.rpow (C : ℝ) denseExponent) :=
+      mul_le_mul_of_nonneg_left hdense_count_le hquarter_nonneg
+    _ = (1 / 2 : ℝ) * Real.rpow (C : ℝ) prefixExponent := by
+      rw [show ((1 / 4 : ℝ) * Real.rpow (C : ℝ) (gapExponent - width)) *
+          (2 * Real.rpow (C : ℝ) denseExponent) =
+          ((1 / 2 : ℝ) *
+            (Real.rpow (C : ℝ) (gapExponent - width) *
+              Real.rpow (C : ℝ) denseExponent)) by ring]
+      rw [hpower_product]
+    _ ≤ Real.rpow (C : ℝ) prefixExponent := by
+      nlinarith [Real.rpow_nonneg (Nat.cast_nonneg C) prefixExponent]
+
+/--
+The exact rounded large-gap scale is eventually at least one eighth of its
+source real-power scale.  This is the quantitative counterpart of the
+divergence lemma below.
+-/
+theorem theorem3DenseGapBlockCount_mul_rpow_eventually_ge_eighth_rpow
+    {denseExponent prefixExponent width gapExponent : ℝ}
+    (hdense_nonneg : 0 ≤ denseExponent)
+    (hwidth_neg : width < 0)
+    (hgap_pos : 0 < gapExponent)
+    (hgap_eq : gapExponent = width + prefixExponent - denseExponent) :
+    ∀ᶠ C : ℕ in Filter.atTop,
+      (1 / 8 : ℝ) * Real.rpow (C : ℝ) gapExponent ≤
+        (theorem3DenseGapBlockCount C denseExponent prefixExponent : ℝ) *
+          Real.rpow (C : ℝ) width := by
+  have hfull_scale_pos : 0 < gapExponent - width := by
+    linarith
+  have hfull_scale_tendsto :
+      Filter.Tendsto
+        (fun C : ℕ => Real.rpow (C : ℝ) (gapExponent - width))
+        Filter.atTop Filter.atTop :=
+    (tendsto_rpow_atTop hfull_scale_pos).comp tendsto_natCast_atTop_atTop
+  filter_upwards [
+    theorem3DenseGapBlockCount_eventually_ge_floor_quarter_fullScale
+      hdense_nonneg hwidth_neg hgap_pos hgap_eq,
+    Filter.eventually_ge_atTop 1,
+    hfull_scale_tendsto.eventually_ge_atTop (4 : ℝ)] with
+      C hblock_lower hC_one hfull_scale
+  have hC_pos : 0 < C := lt_of_lt_of_le Nat.zero_lt_one hC_one
+  have hC_real_pos : 0 < (C : ℝ) := by
+    exact_mod_cast hC_pos
+  have hC_real_one : (1 : ℝ) ≤ (C : ℝ) := by
+    exact_mod_cast hC_one
+  have hquarter_one :
+      1 ≤ (1 / 4 : ℝ) *
+        Real.rpow (C : ℝ) (gapExponent - width) := by
+    linarith
+  have hfloor_lower :
+      ((1 / 4 : ℝ) *
+          Real.rpow (C : ℝ) (gapExponent - width)) / 2 ≤
+        (⌊(1 / 4 : ℝ) *
+          Real.rpow (C : ℝ) (gapExponent - width)⌋₊ : ℝ) :=
+    (Nat.div_two_lt_floor hquarter_one).le
+  have hblock_lower_real :
+      (⌊(1 / 4 : ℝ) *
+          Real.rpow (C : ℝ) (gapExponent - width)⌋₊ : ℝ) ≤
+        (theorem3DenseGapBlockCount C denseExponent prefixExponent : ℝ) := by
+    exact_mod_cast hblock_lower
+  have hwidth_nonneg : 0 ≤ Real.rpow (C : ℝ) width :=
+    Real.rpow_nonneg (Nat.cast_nonneg C) _
+  have hpower_product :
+      Real.rpow (C : ℝ) (gapExponent - width) *
+          Real.rpow (C : ℝ) width =
+        Real.rpow (C : ℝ) gapExponent := by
+    calc
+      Real.rpow (C : ℝ) (gapExponent - width) *
+          Real.rpow (C : ℝ) width =
+          Real.rpow (C : ℝ) ((gapExponent - width) + width) :=
+        (Real.rpow_add hC_real_pos _ _).symm
+      _ = Real.rpow (C : ℝ) gapExponent := by
+        congr 1
+        ring
+  calc
+    (1 / 8 : ℝ) * Real.rpow (C : ℝ) gapExponent =
+        (((1 / 4 : ℝ) *
+          Real.rpow (C : ℝ) (gapExponent - width)) / 2) *
+          Real.rpow (C : ℝ) width := by
+      rw [← hpower_product]
+      ring
+    _ ≤ (⌊(1 / 4 : ℝ) *
+          Real.rpow (C : ℝ) (gapExponent - width)⌋₊ : ℝ) *
+          Real.rpow (C : ℝ) width :=
+      mul_le_mul_of_nonneg_right hfloor_lower hwidth_nonneg
+    _ ≤ (theorem3DenseGapBlockCount C denseExponent prefixExponent : ℝ) *
+          Real.rpow (C : ℝ) width :=
+      mul_le_mul_of_nonneg_right hblock_lower_real hwidth_nonneg
+
+/--
 The rounded block count times a width of exponent `width` tends to infinity
 whenever the associated gap exponent is positive.  The only asymptotic input
 is the exponent relation; all finite integer rounding is discharged above.

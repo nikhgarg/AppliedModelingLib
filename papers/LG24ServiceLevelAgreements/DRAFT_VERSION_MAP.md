@@ -4,15 +4,12 @@
 
 - Paper: *Redesigning Service Level Agreements: Equity and Efficiency in City
   Government Operations*.
-- Private Overleaf revision: 887a5ccdb076b6e811d8cbc34d3b0eed9b5bdb1a.
-- Compiled entrypoint: main_msom.tex.
-- Canonical audit transcript: cited publication.
-- Transcript SHA-256:
-  eda9c8c9688a350b6d7696bb8e456ea0ce0ffe4b1f33e70636e24f82bb052b35.
+- Current public source: [arXiv:2410.14825v2](https://arxiv.org/abs/2410.14825v2),
+  revised September 7, 2026.
 
-The raw snapshot is byte-for-byte identical to the current private Overleaf
-checkout. The transcript manifest records the active source graph and the fact
-that appendix/proof.tex is read but not rendered.
+The selected source statements correspond to the arXiv version cited above.
+The tables below describe the formalized scope; transcript line ranges refer
+to the source text used for the accepted review.
 
 ## Normal Named Scope
 
@@ -55,11 +52,3 @@ s_target < C phi_target. Always-backlogged no-guarantee work is outside the
 SLA load sum and receives only residual capacity. This separation is explicit
 in the active interface; it is not an unexplained extra assumption or an
 unproved all-class per-weight slack condition.
-
-## Update Rule
-
-When the Overleaf theory changes, rebuild the intended transcript and compare
-source identities. Re-audit an item only if its source anchor/content or
-elaborated paper-facing Lean signature changed. Never carry evidence forward
-because a declaration has the same name, a source label is similar, or text is
-nearby.

@@ -9,8 +9,10 @@ import LOS02CombinatorialAuctions.NegativeResults
 Current-protocol migration draft: one transparent proposition per named result,
 with a separate proof. Definitions and algorithm rules are semantic prerequisites,
 not duplicate reflexive result rows. The native complexity conclusions of
-Theorem 6.1 are not realized by the old abstract complexity wrappers and remain
-an explicitly unformalized boundary. No semantic-review verdict is asserted.
+Theorem 6.1 are not realized by the abstract complexity wrappers alone and
+remain an explicitly unformalized boundary. The reusable runtime-composition
+interface is exposed separately, with all machine-model premises explicit. No
+semantic-review verdict is asserted.
 Single-minded results use nonnegative, nonempty requests.  The Section 7
 approximation endpoint also retains the source's explicit no-equal-norm
 condition; its separate fixed-priority convention is used only where the

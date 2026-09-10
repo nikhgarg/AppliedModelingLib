@@ -7,8 +7,8 @@
   "source_version": "arXiv full version, arXiv:2206.13489",
   "build_target": "lake build JGS23SupplySideRecommenderSystems",
   "status": "formalized",
-  "main_caveat": "Finite Section 2 primitives, Proposition pure finite-deviation routes, a conditional Proposition atom product-integral route, single-genre CDF/optimization algebra, two-user induced-cost and regionscolor calculus plus the supportrestriction content-to-value-ball/canonical-feasible-domain/C1-ball/local-max/FOC/cross-partial, polar-chart, and bracket-nonvanishing substeps, literal Ptwo and finiteP standard-basis C1 maximizer steps (the finiteP route uses coordinate bounds rather than the source's false unit-radius assertion), infinite-genre algebra, support-cap pieces of Proposition existence, and exact Ptwo and finiteP source constructions are formalized. The Ptwo angle sampler equals the stated zero-extended density measure, the circle measure has exact literal-circle topological support and direct P=2 C2 marginals, and a concrete almost-everywhere-nonnegative Content 2 measure transports through the actual standard-basis score map to that circle law. Its fixed score levels are null, so the actual uniform-tie assigned-user mass against every pure action is the source sum of marginal CDF values. On the actual nonnegative source action domain, the corresponding cost-subtracted payoff is bounded by `1 - 2 / beta`, with equality for support actions at either producer index; those support actions are direct best responses over nonnegative deviations. The finiteP unit-interval source-curve sampler gives a nonnegative content probability law whose standard-basis score law is exactly its coordinate law. Its coordinate and transported standard-basis value laws have the literal curve as exact topological support, and both coordinate CDFs satisfy the proposition's zero-extended `min(1, z^(2/(P-1)))` law and the equivalent direct C2 root-CDF equality. This closes the direct finiteP C1/C2/C3 components, but not the generic necessary/sufficient or mixed-Nash semantic bridge. The structural source statements' explicit absolutely continuous score-law hypothesis now has a checked tie-null and weak-CDF payoff consequence. The canonical two-user transport separately turns a visible topological content-support l2 ball into a realized-value support ball; under nonzero sine and a.e. nonnegative content, its actual value-map image is a closed feasible domain containing that ball. The C1-ball endpoint now derives its nonzero polar point and angle interval internally. None derives the map/law identification, either support ball, nonzero sine, a.e. content nonnegativity, a source-valid generic C1 domain, pointwise derivatives, or a valid generic C1-C3 theorem from equilibrium semantics. The proof prose at `arxiv-update.tex:1706` conflicts with the proposition's CDF except at `P = 3`. The Ptwo facts remain intentionally unbundled. The full paper remains open; the main boundaries are general mixed-measure semantics and existence, a source-faithful tie-aware necessary/sufficient bridge, the source-to-supportrestriction canonical-map/feasible-domain/C1 bridge, and later distributional work for the continuous-equilibrium results.",
-  "human_summary": "Formalization gap: Theorem 2 uses a specific two-dimensional user model; Theorems 3–4 cover user vectors at angles below 90°; Lemma 2 proves a restricted equilibrium characterization.",
+  "main_caveat": "The selected theoretical source surface is formalized. Material source corrections and clarified regularity conditions are recorded in docs/SOURCE_CLARIFICATIONS.md and summarized in FINAL_VALIDATION_REPORT.md; empirical results are outside this paper-local scope.",
+  "human_summary": "Selected theoretical surface formalized: Theorem 2 covers arbitrary finite-dimensional two-user geometry; Theorems 3–4 prove the corrected strictly acute canonical two-genre construction; Lemma 2 uses the tie-aware corrected characterization. See FINAL_VALIDATION_REPORT.md.",
   "review_entrypoint": "papers/JGS23SupplySideRecommenderSystems/FINAL_VALIDATION_REPORT.md",
   "human_review": {
     "reviewed_rows": 0,
@@ -20,11 +20,11 @@
   },
   "paper_interface": {
     "path": "papers/JGS23SupplySideRecommenderSystems/PaperInterface.lean",
-    "line_count": 1016,
+    "line_count": 1104,
     "declaration_rows": 453,
     "review_rows": 36,
     "oversized": true,
-    "maintainability_issue": "Large in-progress review surface retained during source-first expansion; split it into review_surface.slices before a closeout audit."
+    "maintainability_issue": "The 36-result paper-facing interface is intentionally retained as the source-to-Spec review surface; its size is not an open formalization boundary."
   },
   "artifacts": {
     "readme": "papers/JGS23SupplySideRecommenderSystems/README.md",

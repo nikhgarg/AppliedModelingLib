@@ -1,0 +1,924 @@
+{
+  "schema": 2,
+  "paper": "GJ19OptimalBinaryRatingSystems",
+  "report_sha256": "2dc41199eb1d8a4156e634905815b6c90a3f0670561934bfdeaf83d977dfdd1d",
+  "source_items_sha256": "253b39937ccc127d32bca27608de68cc9864b4c7a9979fc527c02031becc401b",
+  "all_selected_semantic_review_sha256": "d43991e64626bf5b478b8045936e86594114ca92bf94f25d2d6a3d79709f8c79",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/GJ19-C5-ENDPOINT-TYPO-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "f363c5044d82f4a9ad53b818fa7502c46d3dce70917214a3a1a9c6d6171e7086",
+      "memo_heading": "Local formulas and proof clarifications",
+      "memo_anchor": "local-formulas-and-proof-clarifications",
+      "report_home": 10
+    },
+    "defect/GJ19-ALG1-PSEUDOCODE-TYPO-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "f363c5044d82f4a9ad53b818fa7502c46d3dce70917214a3a1a9c6d6171e7086",
+      "memo_heading": "Local formulas and proof clarifications",
+      "memo_anchor": "local-formulas-and-proof-clarifications",
+      "report_home": 10
+    },
+    "defect/GJ19-T32-FIRST-RATE-TYPO-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "f363c5044d82f4a9ad53b818fa7502c46d3dce70917214a3a1a9c6d6171e7086",
+      "memo_heading": "Local formulas and proof clarifications",
+      "memo_anchor": "local-formulas-and-proof-clarifications",
+      "report_home": 10
+    },
+    "defect/GJ19-C3-TIE-COMPLEMENT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "f363c5044d82f4a9ad53b818fa7502c46d3dce70917214a3a1a9c6d6171e7086",
+      "memo_heading": "Theorem 3.1 and Lemmas C.3–C.4: cross-bin ranking rates",
+      "memo_anchor": "theorem-31-and-lemmas-c3c4-cross-bin-ranking-rates"
+    },
+    "defect/GJ19-C5-LANDAU-LOWER-BOUND-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "f363c5044d82f4a9ad53b818fa7502c46d3dce70917214a3a1a9c6d6171e7086",
+      "memo_heading": "Local formulas and proof clarifications",
+      "memo_anchor": "local-formulas-and-proof-clarifications",
+      "report_home": 10
+    },
+    "defect/GJ19-C1-UNIFORM-REMARK-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "f363c5044d82f4a9ad53b818fa7502c46d3dce70917214a3a1a9c6d6171e7086",
+      "memo_heading": "Local formulas and proof clarifications",
+      "memo_anchor": "local-formulas-and-proof-clarifications",
+      "report_home": 7
+    },
+    "defect/GJ19-T31-GENERAL-G-CLOSURE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "f363c5044d82f4a9ad53b818fa7502c46d3dce70917214a3a1a9c6d6171e7086",
+      "memo_heading": "Theorem 3.1 and Lemmas C.3–C.4: cross-bin ranking rates",
+      "memo_anchor": "theorem-31-and-lemmas-c3c4-cross-bin-ranking-rates"
+    },
+    "defect/GJ19-T32-EXECUTABLE-ALGORITHM-01": {
+      "disposition": "not_material",
+      "reason": "The exact bisection runner and loss/runtime derivation supply missing formal coverage of the advertised algorithm rather than a changed mathematical endpoint."
+    },
+    "defect/GJ19-B3-RANKING-IDENTIFIABILITY-01": {
+      "disposition": "not_material",
+      "reason": "Appendix B's learning proof uses question-response functions increasing in quality and a question distribution assigning positive mass to every question. Under that intended strict reading, their weighted expected score is strictly increasing. Exposing this consequence in Lemma B.3 adds no source condition; a constant-response diagnostic does not satisfy the source proof's reading."
+    },
+    "defect/GJ19-C2-JOINT-STRICT-CONVEXITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "f363c5044d82f4a9ad53b818fa7502c46d3dce70917214a3a1a9c6d6171e7086",
+      "memo_heading": "Local formulas and proof clarifications",
+      "memo_anchor": "local-formulas-and-proof-clarifications",
+      "report_home": 10
+    },
+    "report/lemma-c4-objectives": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "f363c5044d82f4a9ad53b818fa7502c46d3dce70917214a3a1a9c6d6171e7086",
+      "memo_heading": "Theorem 3.1 and Lemmas C.3–C.4: cross-bin ranking rates",
+      "memo_anchor": "theorem-31-and-lemmas-c3c4-cross-bin-ranking-rates"
+    },
+    "report/theorem32-explicit-grid": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_heading": "Theorem 3.2: an explicit grid and runtime bound",
+      "memo_sha256": "f363c5044d82f4a9ad53b818fa7502c46d3dce70917214a3a1a9c6d6171e7086",
+      "memo_anchor": "theorem-32-an-explicit-grid-and-runtime-bound"
+    },
+    "report/learning-identifiability": {
+      "disposition": "not_material",
+      "reason": "Appendix B's learning proof uses question-response functions increasing in quality and a question distribution assigning positive mass to every question. Under that intended strict reading, their weighted expected score is strictly increasing. Exposing this consequence in Lemma B.3 adds no source condition; a constant-response diagnostic does not satisfy the source proof's reading."
+    },
+    "convention/GJ19-OPTIMAL-ENDPOINT-DOMAIN-01": {
+      "disposition": "not_material",
+      "reason": "The normalized vector is the optimal-design domain already supplied by Lemma 3.1. It is not a new theorem assumption or a definition of every general step rule."
+    },
+    "convention/GJ19-BERNOULLI-KL-SIGN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "f363c5044d82f4a9ad53b818fa7502c46d3dce70917214a3a1a9c6d6171e7086",
+      "memo_heading": "Local formulas and proof clarifications",
+      "memo_anchor": "local-formulas-and-proof-clarifications",
+      "report_home": 10
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "d0575ebda40cce734106cc22a7da0bd8c5eb4dd04925c82af8fc6d30dc85a870",
+      "discovered_named_result_sha256": "cdc718d374ff7e0f284b53662439639f7a5216d13cd6fff9245723ca7b7f4cd0",
+      "source_format": "tex",
+      "results": {
+        "corollaryC1_rate_tends_to_zero": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 3042,
+              "line_start": 3041,
+              "presentation": "text_heading",
+              "presentation_sha256": "9e12458924ada6dc8d328f8689191cec4fba163e941bacadb3a39ae0415aa4fa",
+              "source_item_id": "corollaryC1_rate_tends_to_zero",
+              "source_label": "Corollary C.1"
+            }
+          ],
+          "source_item_ids": [
+            "corollaryC1_rate_tends_to_zero"
+          ]
+        },
+        "corollaryC2_mesh_tends_to_zero": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 3094,
+              "line_start": 3093,
+              "presentation": "text_heading",
+              "presentation_sha256": "8e3d460a72e2be49f37ae1513f012919c04e818ce4d7bc034b267068d86f2ee4",
+              "source_item_id": "corollaryC2_mesh_tends_to_zero",
+              "source_label": "Corollary C.2"
+            }
+          ],
+          "source_item_ids": [
+            "corollaryC2_mesh_tends_to_zero"
+          ]
+        },
+        "corollaryC3_monotone_first_level_bound": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 3268,
+              "line_start": 3267,
+              "presentation": "text_heading",
+              "presentation_sha256": "070c0ad763cb9f983d4bcb58329c69ea03c2557c4b06e3c96601390402812b28",
+              "source_item_id": "corollaryC3_monotone_first_level_bound",
+              "source_label": "Corollary C.3"
+            }
+          ],
+          "source_item_ids": [
+            "corollaryC3_monotone_first_level_bound"
+          ]
+        },
+        "corollaryC4_kendall_spearman_subsequence": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 3590,
+              "line_start": 3589,
+              "presentation": "text_heading",
+              "presentation_sha256": "d038d56bb5a14dac6fb77046523fc8d1cb89c863c3457b3d093525b6eb425405",
+              "source_item_id": "corollaryC4_kendall_spearman_subsequence",
+              "source_label": "Corollary C.4"
+            }
+          ],
+          "source_item_ids": [
+            "corollaryC4_kendall_spearman_subsequence"
+          ]
+        },
+        "lemma31_equalization_eq4": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 548,
+              "line_start": 535,
+              "presentation": "text_heading",
+              "presentation_sha256": "3d3ef1dc74b81927cb1d8c14e44a4c55ef983e3c27f3615c3efa2cb894c85064",
+              "source_item_id": "lemma31_equalization_eq4",
+              "source_label": "Lemma 3.1"
+            }
+          ],
+          "source_item_ids": [
+            "lemma31_equalization_eq4"
+          ]
+        },
+        "lemmaB1_matching_rate_shift": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1938,
+              "line_start": 1937,
+              "presentation": "text_heading",
+              "presentation_sha256": "898bbd23b348eb4e69e8eb72161adb0bd20ee61a531994c997da7723f870c82c",
+              "source_item_id": "lemmaB1_matching_rate_shift",
+              "source_label": "Lemma B.1"
+            }
+          ],
+          "source_item_ids": [
+            "lemmaB1_matching_rate_shift"
+          ]
+        },
+        "lemmaB2_fixed_finite_slln_step": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2027,
+              "line_start": 2026,
+              "presentation": "text_heading",
+              "presentation_sha256": "aafab4e26b0e2f675b0fab090e2b2585bf68ad5c1015fc215b0c588f5c38982a",
+              "source_item_id": "lemmaB2_fixed_finite_slln_step",
+              "source_label": "Lemma B.2"
+            }
+          ],
+          "source_item_ids": [
+            "experiment_empirical_question_response",
+            "experiment_random_question_observations",
+            "known_type_experiment_definition",
+            "known_type_neighbor_extension",
+            "lemmaB2_fixed_finite_slln_step",
+            "lemmaB2_known_type_learning"
+          ]
+        },
+        "lemmaB3_fixed_finite_slln_ranking_step": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2044,
+              "line_start": 2043,
+              "presentation": "text_heading",
+              "presentation_sha256": "9485bfb16bcccc37adecc4e41e3a547553b9eb04deca23b1f5a1e68769b882fd",
+              "source_item_id": "lemmaB3_fixed_finite_slln_ranking_step",
+              "source_label": "Lemma B.3"
+            }
+          ],
+          "source_item_ids": [
+            "lemmaB3_fixed_finite_slln_ranking_step",
+            "lemmaB3_unknown_type_learning",
+            "unknown_type_experiment_definition",
+            "unknown_type_percentile_extension"
+          ]
+        },
+        "lemmaC10_spearman_reduction": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3615,
+              "line_start": 3614,
+              "presentation": "text_heading",
+              "presentation_sha256": "830ea7ea76cc7834ffc6c69ac99830921d898edddeb1148679fb6896e69f9d04",
+              "source_item_id": "lemmaC10_spearman_reduction",
+              "source_label": "Lemma C.10"
+            }
+          ],
+          "source_item_ids": [
+            "lemmaC10_spearman_reduction"
+          ]
+        },
+        "lemmaC11_kendall_equispaced": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3711,
+              "line_start": 3697,
+              "presentation": "text_heading",
+              "presentation_sha256": "98d2da87f8a856e38dbdc3a973318609a0833d8af4d414c2fd35aa0c472dade6",
+              "source_item_id": "lemmaC11_kendall_equispaced",
+              "source_label": "Lemma C.11"
+            }
+          ],
+          "source_item_ids": [
+            "lemmaC11_kendall_equispaced"
+          ]
+        },
+        "lemmaC12_spearman_equispaced": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3722,
+              "line_start": 3712,
+              "presentation": "text_heading",
+              "presentation_sha256": "7da14db9ef3cc0a956648685bd4e327082c36a22b3ba398376d8f51d8561ab0e",
+              "source_item_id": "lemmaC12_spearman_equispaced",
+              "source_label": "Lemma C.12"
+            }
+          ],
+          "source_item_ids": [
+            "lemmaC12_spearman_equispaced"
+          ]
+        },
+        "lemmaC1_pairwise_error_rate": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2092,
+              "line_start": 2086,
+              "presentation": "text_heading",
+              "presentation_sha256": "774fe98a7723ea9c21848ff21257c0c720518336cd9d843df6ac2062c60ba76d",
+              "source_item_id": "lemmaC1_pairwise_error_rate",
+              "source_label": "Lemma C.1"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 2168,
+              "line_start": 2159,
+              "presentation": "text_heading",
+              "presentation_sha256": "0627b526157a05bd61e3a1ea899971c01c86a185dcdd226d3e180adb680b0b6b",
+              "source_item_id": "lemmaC1_transcript_repeated_label",
+              "source_label": "Lemma C.1"
+            }
+          ],
+          "source_item_ids": [
+            "lemmaC1_pairwise_error_rate",
+            "lemmaC1_transcript_repeated_label"
+          ]
+        },
+        "lemmaC2_binary_complement_rate": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2139,
+              "line_start": 2133,
+              "presentation": "text_heading",
+              "presentation_sha256": "0464e00008c3a8c771c4ecaee3371ff16f8cdc710a99fc9ad2c37c6bacbf7c37",
+              "source_item_id": "lemmaC2_binary_complement_rate",
+              "source_label": "Lemma C.2"
+            }
+          ],
+          "source_item_ids": [
+            "lemmaC2_binary_complement_rate"
+          ]
+        },
+        "lemmaC3_piecewise_constant_rate": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2245,
+              "line_start": 2238,
+              "presentation": "text_heading",
+              "presentation_sha256": "23c490298e3fcda2f955205619fe432d2bcee4e6d7bd41dfe69c52591b43a66f",
+              "source_item_id": "lemmaC3_piecewise_constant_rate",
+              "source_label": "Lemma C.3"
+            }
+          ],
+          "source_item_ids": [
+            "lemmaC3_piecewise_constant_rate"
+          ]
+        },
+        "lemmaC4_positive_rate_iff_step": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2365,
+              "line_start": 2365,
+              "presentation": "text_heading",
+              "presentation_sha256": "6e271e77da7348780b2487b939b85d298a52bf1c8450887a6cdcccf2db381f40",
+              "source_item_id": "lemmaC4_positive_rate_iff_step",
+              "source_label": "Lemma C.4"
+            }
+          ],
+          "source_item_ids": [
+            "lemmaC4_positive_rate_iff_step"
+          ]
+        },
+        "lemmaC5_uniform_doubled_chain": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2724,
+              "line_start": 2714,
+              "presentation": "text_heading",
+              "presentation_sha256": "3feecc37e10b352f24898af391c67c47031d2361ce5866f30cdd5087ce43b532",
+              "source_item_id": "lemmaC5_uniform_doubled_chain",
+              "source_label": "Lemma C.5"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 3092,
+              "line_start": 3071,
+              "presentation": "text_heading",
+              "presentation_sha256": "6fcf3e1fe9c599d95c78d250c7f46cbbab7d230b5135cf9b2affe0ecf607f7e8",
+              "source_item_id": "lemmaC5_transcript_repeated_label_3071",
+              "source_label": "Lemma C.5"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 3232,
+              "line_start": 3197,
+              "presentation": "text_heading",
+              "presentation_sha256": "80ed5e9901ba2b3ed588d3f9382cb0ec31c2af3c4ea1f0f1e9687bc21d78508f",
+              "source_item_id": "lemmaC5_transcript_repeated_label_3197",
+              "source_label": "Lemma C.5"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 3565,
+              "line_start": 3530,
+              "presentation": "text_heading",
+              "presentation_sha256": "ebece761d8026ff6b81cc7341336b7a8562a249375e1655e9924ca8ee28febe3",
+              "source_item_id": "lemmaC5_transcript_repeated_label_3530",
+              "source_label": "Lemma C.5"
+            },
+            {
+              "kind": "lemma",
+              "line_end": 3587,
+              "line_start": 3567,
+              "presentation": "text_heading",
+              "presentation_sha256": "379163213425a2e0ac3637196060d4a94ed610758f0157ff6cf2b5fdb8eac42e",
+              "source_item_id": "lemmaC5_transcript_repeated_label_3567",
+              "source_label": "Lemma C.5"
+            }
+          ],
+          "source_item_ids": [
+            "lemmaC5_transcript_repeated_label_3071",
+            "lemmaC5_transcript_repeated_label_3197",
+            "lemmaC5_transcript_repeated_label_3530",
+            "lemmaC5_transcript_repeated_label_3567",
+            "lemmaC5_uniform_doubled_chain"
+          ]
+        },
+        "lemmaC6_monotone_penultimate_bound": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3130,
+              "line_start": 3130,
+              "presentation": "text_heading",
+              "presentation_sha256": "ea6bd065e59c946d99976895fab3901166199a9bd0db5369f9d21fc62f5f8003",
+              "source_item_id": "lemmaC6_monotone_penultimate_bound",
+              "source_label": "Lemma C.6"
+            }
+          ],
+          "source_item_ids": [
+            "lemmaC6_monotone_penultimate_bound"
+          ]
+        },
+        "lemmaC7_uniform_refinement_rate": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3168,
+              "line_start": 3160,
+              "presentation": "text_heading",
+              "presentation_sha256": "87f8847b664fb1f6eac1e87f4db5b69bf617d4dae4258fa21fbb5cf46e7eaac5",
+              "source_item_id": "lemmaC7_uniform_refinement_rate",
+              "source_label": "Lemma C.7"
+            }
+          ],
+          "source_item_ids": [
+            "lemmaC7_uniform_refinement_rate"
+          ]
+        },
+        "lemmaC8_uniform_first_level_bound": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3234,
+              "line_start": 3233,
+              "presentation": "text_heading",
+              "presentation_sha256": "8fad3c041f862c8703f2ad90924ba8ae6b3002cda4d12a0b1cef08280ca533dd",
+              "source_item_id": "lemmaC8_uniform_first_level_bound",
+              "source_label": "Lemma C.8"
+            }
+          ],
+          "source_item_ids": [
+            "lemmaC8_uniform_first_level_bound"
+          ]
+        },
+        "lemmaC9_nested_bisection_runtime": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 3275,
+              "line_start": 3274,
+              "presentation": "text_heading",
+              "presentation_sha256": "028a9fb4be11c9ca9ed899036269fe9781ee3356b72df1f964ebbda9a2338210",
+              "source_item_id": "lemmaC9_nested_bisection_runtime",
+              "source_label": "Lemma C.9"
+            }
+          ],
+          "source_item_ids": [
+            "lemmaC9_nested_bisection_runtime"
+          ]
+        },
+        "theorem32_approximation_runtime": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 598,
+              "line_start": 588,
+              "presentation": "text_heading",
+              "presentation_sha256": "968198ff3470741a5aa0c8dfb874bba7991487f238e214c14e9d8928a1a0a9e3",
+              "source_item_id": "theorem32_approximation_runtime",
+              "source_label": "Theorem 3.2"
+            }
+          ],
+          "source_item_ids": [
+            "theorem32_approximation_runtime"
+          ]
+        },
+        "theoremB1_uniform_subsequence": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 2025,
+              "line_start": 1979,
+              "presentation": "text_heading",
+              "presentation_sha256": "7d832c8bbe888bf157b600aa8380e5921719024fef7833191aa43d4a3ea4dc44",
+              "source_item_id": "theoremB1_uniform_subsequence",
+              "source_label": "Theorem B.1"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 3528,
+              "line_start": 3478,
+              "presentation": "text_heading",
+              "presentation_sha256": "38c4cf363825ab665068042c8c25363f4afb44d5b4a26c1d2a9e41acb9c5b2a2",
+              "source_item_id": "theoremB1_proof_restatement",
+              "source_label": "Theorem B.1"
+            }
+          ],
+          "source_item_ids": [
+            "theoremB1_proof_restatement",
+            "theoremB1_uniform_subsequence"
+          ]
+        },
+        "theoremC1_laplace_principle": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 2190,
+              "line_start": 2169,
+              "presentation": "text_heading",
+              "presentation_sha256": "e73dbd215d11020b6b5da0d80137c67e43226c931de4fe7648a40c5611541c29",
+              "source_item_id": "theoremC1_laplace_principle",
+              "source_label": "Theorem C.1"
+            }
+          ],
+          "source_item_ids": [
+            "theoremC1_laplace_principle"
+          ]
+        },
+        "theorem31_adjacent_rate_eq3": {
+          "kind": "theorem",
+          "presentations": [],
+          "source_item_ids": [
+            "theorem31_adjacent_rate_eq3"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "fe0a5be1dd5bea904e2d4d1f04d172d985127adc354885f0046c8d7b205c2718",
+    "results": {
+      "corollaryC1_rate_tends_to_zero": {
+        "numbering": "numbered",
+        "printed_label": "Corollary C.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas C.5–C.9; Corollaries C.1–C.3",
+            "row_sha256": "db45c0cb745ae12b3f01de12234c7005369e662bc81da878e2325c36a6af9009"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "corollaryC2_mesh_tends_to_zero": {
+        "numbering": "numbered",
+        "printed_label": "Corollary C.2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas C.5–C.9; Corollaries C.1–C.3",
+            "row_sha256": "db45c0cb745ae12b3f01de12234c7005369e662bc81da878e2325c36a6af9009"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "corollaryC3_monotone_first_level_bound": {
+        "numbering": "numbered",
+        "printed_label": "Corollary C.3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas C.5–C.9; Corollaries C.1–C.3",
+            "row_sha256": "db45c0cb745ae12b3f01de12234c7005369e662bc81da878e2325c36a6af9009"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "corollaryC4_kendall_spearman_subsequence": {
+        "numbering": "numbered",
+        "printed_label": "Corollary C.4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas C.10–C.12; Corollary C.4",
+            "row_sha256": "35b7f7e5a6d7463aed2afc2812aca5c795db47d96b9a8c8c5b57e5e9021cb61d"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "lemma31_equalization_eq4": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 3.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 3.1",
+            "row_sha256": "d94d82a4ad969898954e5e4f2cbb4ea9b974270d6565d4399f3b2d824f66b29e"
+          }
+        ]
+      },
+      "lemmaB1_matching_rate_shift": {
+        "numbering": "numbered",
+        "printed_label": "Lemma B.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas B.1–B.2",
+            "row_sha256": "d40b9c2932fa93493ac32bb21bc1efed9dafcb7db05b5f7fb40aa0e4470f0892"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "lemmaB2_fixed_finite_slln_step": {
+        "numbering": "numbered",
+        "printed_label": "Lemma B.2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas B.1–B.2",
+            "row_sha256": "d40b9c2932fa93493ac32bb21bc1efed9dafcb7db05b5f7fb40aa0e4470f0892"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "lemmaB3_fixed_finite_slln_ranking_step": {
+        "numbering": "numbered",
+        "printed_label": "Lemma B.3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma B.3",
+            "row_sha256": "3ec615bd40b5f90c8479f69a8c607261548f90eaa0e468661abfe10d7b1e933b"
+          }
+        ]
+      },
+      "lemmaC10_spearman_reduction": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.10",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas C.10–C.12; Corollary C.4",
+            "row_sha256": "35b7f7e5a6d7463aed2afc2812aca5c795db47d96b9a8c8c5b57e5e9021cb61d"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "lemmaC11_kendall_equispaced": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.11",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas C.10–C.12; Corollary C.4",
+            "row_sha256": "35b7f7e5a6d7463aed2afc2812aca5c795db47d96b9a8c8c5b57e5e9021cb61d"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "lemmaC12_spearman_equispaced": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.12",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas C.10–C.12; Corollary C.4",
+            "row_sha256": "35b7f7e5a6d7463aed2afc2812aca5c795db47d96b9a8c8c5b57e5e9021cb61d"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "lemmaC1_pairwise_error_rate": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem C.1; Lemmas C.1–C.2",
+            "row_sha256": "616a911c9785480042251755c1bee89c10b00e3303d6dc9d2cf7df37817eba4c"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "lemmaC2_binary_complement_rate": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem C.1; Lemmas C.1–C.2",
+            "row_sha256": "616a911c9785480042251755c1bee89c10b00e3303d6dc9d2cf7df37817eba4c"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "lemmaC3_piecewise_constant_rate": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3.1; Lemmas C.3–C.4",
+            "row_sha256": "b889f29f4705213b9b33a929ada82fb2117bca48689f83ef88632f5b8c6fc7d7"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "lemmaC4_positive_rate_iff_step": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3.1; Lemmas C.3–C.4",
+            "row_sha256": "b889f29f4705213b9b33a929ada82fb2117bca48689f83ef88632f5b8c6fc7d7"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "lemmaC5_uniform_doubled_chain": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.5",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas C.5–C.9; Corollaries C.1–C.3",
+            "row_sha256": "db45c0cb745ae12b3f01de12234c7005369e662bc81da878e2325c36a6af9009"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "lemmaC6_monotone_penultimate_bound": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.6",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas C.5–C.9; Corollaries C.1–C.3",
+            "row_sha256": "db45c0cb745ae12b3f01de12234c7005369e662bc81da878e2325c36a6af9009"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "lemmaC7_uniform_refinement_rate": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.7",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas C.5–C.9; Corollaries C.1–C.3",
+            "row_sha256": "db45c0cb745ae12b3f01de12234c7005369e662bc81da878e2325c36a6af9009"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "lemmaC8_uniform_first_level_bound": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.8",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas C.5–C.9; Corollaries C.1–C.3",
+            "row_sha256": "db45c0cb745ae12b3f01de12234c7005369e662bc81da878e2325c36a6af9009"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "lemmaC9_nested_bisection_runtime": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.9",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas C.5–C.9; Corollaries C.1–C.3",
+            "row_sha256": "db45c0cb745ae12b3f01de12234c7005369e662bc81da878e2325c36a6af9009"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "theorem32_approximation_runtime": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3.2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3.2",
+            "row_sha256": "8d6f1994fec2ca99934de9034399c9dce21de6dd087727cd5c70b0d658db6fc0"
+          }
+        ]
+      },
+      "theoremB1_uniform_subsequence": {
+        "numbering": "numbered",
+        "printed_label": "Theorem B.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem B.1",
+            "row_sha256": "724a1d353bed9699cec5f64f7be591184b294b304f3745a85857ea63608def37"
+          }
+        ]
+      },
+      "theoremC1_laplace_principle": {
+        "numbering": "numbered",
+        "printed_label": "Theorem C.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem C.1; Lemmas C.1–C.2",
+            "row_sha256": "616a911c9785480042251755c1bee89c10b00e3303d6dc9d2cf7df37817eba4c"
+          }
+        ],
+        "grouping_reason": "The indicated source results share the stated mathematical comparison."
+      },
+      "theorem31_adjacent_rate_eq3": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3.1; Lemmas C.3–C.4",
+            "row_sha256": "b889f29f4705213b9b33a929ada82fb2117bca48689f83ef88632f5b8c6fc7d7"
+          }
+        ],
+        "grouping_reason": "Theorem 3.1 equation (3) and Lemmas C.3–C.4 share the stated exponent-identification boundary; the broader value-then-rate theorem is uncredited."
+      }
+    },
+    "rows": {
+      "b889f29f4705213b9b33a929ada82fb2117bca48689f83ef88632f5b8c6fc7d7": {
+        "explanation_keys": [
+          "defect/GJ19-C3-TIE-COMPLEMENT-01",
+          "defect/GJ19-T31-GENERAL-G-CLOSURE-01"
+        ],
+        "supplemental_reason": ""
+      },
+      "d94d82a4ad969898954e5e4f2cbb4ea9b974270d6565d4399f3b2d824f66b29e": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "1023307f46b25f0fcd1f293d3250858e32a8232c8b7c9ae72404ddbc98decbd4": {
+        "explanation_keys": [],
+        "supplemental_reason": "Algorithm 1 is selected algorithmic content, including its local pseudocode clarifications."
+      },
+      "8d6f1994fec2ca99934de9034399c9dce21de6dd087727cd5c70b0d658db6fc0": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "d40b9c2932fa93493ac32bb21bc1efed9dafcb7db05b5f7fb40aa0e4470f0892": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "3ec615bd40b5f90c8479f69a8c607261548f90eaa0e468661abfe10d7b1e933b": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "724a1d353bed9699cec5f64f7be591184b294b304f3745a85857ea63608def37": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "616a911c9785480042251755c1bee89c10b00e3303d6dc9d2cf7df37817eba4c": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "db45c0cb745ae12b3f01de12234c7005369e662bc81da878e2325c36a6af9009": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "a8c00c1e33073db8a9606cfcc9e6a21a584b0ae1bfc45cce6392ed64b540aa39": {
+        "explanation_keys": [],
+        "supplemental_reason": "Remark C.2 is a reader-relevant supporting source clarification, separately disclosed without adding a named theorem claim."
+      },
+      "35b7f7e5a6d7463aed2afc2812aca5c795db47d96b9a8c8c5b57e5e9021cb61d": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

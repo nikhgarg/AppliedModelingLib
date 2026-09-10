@@ -1,6 +1,6 @@
 # Final Validation Report: A No Free Lunch Theorem for Human-AI Collaboration
 
-Updated: 2026-09-06
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -41,7 +41,7 @@ the source inventory without becoming duplicate paper claims.
 | Result | Comparison with source |
 | --- | --- |
 | Theorem 1 | **Exact.** |
-| Proposition 6 | **Typo fixed:** component-m weight is λ_m; joint-law mixture accuracies are the weighted sums. [Correction](docs/SOURCE_CLARIFICATIONS.md#mixtures-and-finite-partitions). |
+| Proposition 6 | **Exact after correcting the mixture-weight typo:** component-m weight is λ_m; joint-law mixture accuracies are the weighted sums. [Correction](docs/SOURCE_CLARIFICATIONS.md#mixtures-and-finite-partitions). |
 | Lemma 8 | **Exact.** |
 | Proposition 7 | **Exact.** |
 | Proposition 9 | **Normalization corrected; witness explicit:** summed odds define the second setting, and mixture weights 7/8 and 1/8 prove fixed labeling on the half slice. [Construction](docs/SOURCE_CLARIFICATIONS.md#proposition-9s-two-settings). |

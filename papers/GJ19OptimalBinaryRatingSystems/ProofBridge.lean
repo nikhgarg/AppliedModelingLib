@@ -1225,6 +1225,21 @@ abbrev source_definition_large_deviation_rate
     (W : ℝ) (Wk : ℕ → ℝ) (rate : ℝ) : Prop :=
   HasExponentialRate (fun k : ℕ => W - Wk k) rate
 
+/-!
+The exact missing source-to-auxiliary bridge can be isolated independently of
+the analytic rate proof: an eventual equality between the printed ranking
+error `W - Wk` and the displayed auxiliary sequence transfers the same
+exponential-rate certificate.  This theorem deliberately does not assert that
+the equality follows from the current matching-function primitives.
+-/
+theorem source_definition_large_deviation_rate_of_eventually_eq_auxiliary
+    {W : ℝ} {Wk auxiliary : ℕ → ℝ} {rate : ℝ}
+    (haux : HasExponentialRate auxiliary rate)
+    (heq : ∀ᶠ k : ℕ in Filter.atTop, W - Wk k = auxiliary k) :
+    source_definition_large_deviation_rate W Wk rate := by
+  have heq' : (fun k : ℕ => W - Wk k) =ᶠ[Filter.atTop] auxiliary := heq
+  exact HasExponentialRate.congr heq'.symm haux
+
 /--
 The finite step-rule design vocabulary: ordered interval cutpoints together
 with strictly ordered endpoint-normalized binary levels.
@@ -1246,6 +1261,521 @@ Theorem 3.1 rows construct optimizers for the GJ19 design domain.
 -/
 abbrev source_definition_lexicographic_optimality :=
   @AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
+
+/-! A concrete source-to-model bridge for the objective comparison in Lemma C.4.
+Under the paper's limiting pairwise-accuracy-one clause on the strict quality
+triangle, the limiting-minus-finite objective is exactly the raw `1 - P_k`
+integral. -/
+
+noncomputable def sourceStrictUpperPairWeightedLimit
+    (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ) : ℝ :=
+  ∫ q in AppliedModelingLib.strictUpperPairSet,
+    weight q ∂(μ.prod μ)
+
+noncomputable def sourceStrictUpperPairWeightedFiniteObjective
+    (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ)
+    (pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ) (k : ℕ) : ℝ :=
+  ∫ q in AppliedModelingLib.strictUpperPairSet,
+    weight q * pairwiseAccuracy k q ∂(μ.prod μ)
+
+noncomputable def sourceStrictUpperPairWeightedRawError
+    (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ)
+    (pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ) (k : ℕ) : ℝ :=
+  ∫ q in AppliedModelingLib.strictUpperPairSet,
+    weight q * (1 - pairwiseAccuracy k q) ∂(μ.prod μ)
+
+theorem sourceStrictUpperPairWeightedLimit_sub_finiteObjective_eq_rawError
+    (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ)
+    (pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ) (k : ℕ)
+    (hweight_int : Integrable weight
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
+    (hfinite_int : Integrable
+      (fun q : ℝ × ℝ => weight q * pairwiseAccuracy k q)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) :
+    sourceStrictUpperPairWeightedLimit μ weight -
+        sourceStrictUpperPairWeightedFiniteObjective μ weight pairwiseAccuracy k =
+      sourceStrictUpperPairWeightedRawError μ weight pairwiseAccuracy k := by
+  unfold sourceStrictUpperPairWeightedLimit
+    sourceStrictUpperPairWeightedFiniteObjective
+    sourceStrictUpperPairWeightedRawError
+  rw [← integral_sub hweight_int hfinite_int]
+  apply integral_congr_ae
+  filter_upwards [] with q
+  ring
+
+/-! Paper-variable adapter for the preceding identity. Its fields are exactly
+the source-to-model facts still needed to identify the printed `W` and `W_k`;
+the adapter itself derives the raw-error equality without any conclusion-shaped
+assumption. -/
+
+structure SourceStrictUpperPairObjectiveRealization (μ : Measure ℝ) where
+  weight : ℝ × ℝ → ℝ
+  pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ
+  W : ℝ
+  Wk : ℕ → ℝ
+  W_eq_limit : W = sourceStrictUpperPairWeightedLimit μ weight
+  Wk_eq_finite : ∀ k,
+    Wk k = sourceStrictUpperPairWeightedFiniteObjective μ weight pairwiseAccuracy k
+  weight_integrable : Integrable weight
+    ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
+  finite_integrable : ∀ k, Integrable
+    (fun q : ℝ × ℝ => weight q * pairwiseAccuracy k q)
+    ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
+
+theorem sourceStrictUpperPairObjectiveRealization_error_eq_rawError
+    {μ : Measure ℝ} (model : SourceStrictUpperPairObjectiveRealization μ) :
+    ∀ k : ℕ,
+      model.W - model.Wk k =
+        sourceStrictUpperPairWeightedRawError μ model.weight
+          model.pairwiseAccuracy k := by
+  intro k
+  rw [model.W_eq_limit, model.Wk_eq_finite]
+  exact sourceStrictUpperPairWeightedLimit_sub_finiteObjective_eq_rawError
+    μ model.weight model.pairwiseAccuracy k model.weight_integrable
+    (model.finite_integrable k)
+
+/-! The source gap is more general than the `1 - P_k` specialization: on
+same-level cells the limiting strict-order accuracy is zero, while on
+cross-level cells it is one.  This algebraic layer keeps that limiting
+accuracy function visible instead of erasing same-level terms by definition. -/
+
+noncomputable def sourceStrictUpperPairWeightedLimitingAccuracyObjective
+    (μ : Measure ℝ) (weight limitingAccuracy : ℝ × ℝ → ℝ) : ℝ :=
+  ∫ q in AppliedModelingLib.strictUpperPairSet,
+    weight q * limitingAccuracy q ∂(μ.prod μ)
+
+theorem sourceStrictUpperPairWeightedLimitingAccuracyObjective_sub_finiteObjective_eq_gap
+    (μ : Measure ℝ) (weight limitingAccuracy : ℝ × ℝ → ℝ)
+    (pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ) (k : ℕ)
+    (hlimit_int : Integrable
+      (fun q : ℝ × ℝ => weight q * limitingAccuracy q)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
+    (hfinite_int : Integrable
+      (fun q : ℝ × ℝ => weight q * pairwiseAccuracy k q)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) :
+    sourceStrictUpperPairWeightedLimitingAccuracyObjective μ weight
+        limitingAccuracy -
+        sourceStrictUpperPairWeightedFiniteObjective μ weight pairwiseAccuracy k =
+      ∫ q in AppliedModelingLib.strictUpperPairSet,
+        weight q * (limitingAccuracy q - pairwiseAccuracy k q) ∂(μ.prod μ) := by
+  unfold sourceStrictUpperPairWeightedLimitingAccuracyObjective
+    sourceStrictUpperPairWeightedFiniteObjective
+  rw [← integral_sub hlimit_int hfinite_int]
+  apply integral_congr_ae
+  filter_upwards [] with q
+  ring
+
+/-! The paper's printed objective uses signed strict-order accuracy.  Its
+limit is therefore zero on pairs assigned one rating level and one on pairs
+assigned distinct levels.  The following definitions keep that split visible:
+the first is the literal limiting-minus-finite gap and the second is the
+cross-level `1 - P_k` error used in Appendix C.  They coincide precisely when
+the same-level signed terms cancel. -/
+
+def sourceStrictUpperPairLevelLimitingAccuracy
+    (sameLevel : ℝ × ℝ → Prop) [DecidablePred sameLevel] : ℝ × ℝ → ℝ :=
+  fun q => if sameLevel q then 0 else 1
+
+noncomputable def sourceStrictUpperPairWeightedLevelGap
+    (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ)
+    (sameLevel : ℝ × ℝ → Prop) [DecidablePred sameLevel]
+    (pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ) (k : ℕ) : ℝ :=
+  ∫ q in AppliedModelingLib.strictUpperPairSet,
+    weight q *
+      (sourceStrictUpperPairLevelLimitingAccuracy sameLevel q -
+        pairwiseAccuracy k q) ∂(μ.prod μ)
+
+noncomputable def sourceStrictUpperPairWeightedSeparatedRawError
+    (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ)
+    (sameLevel : ℝ × ℝ → Prop) [DecidablePred sameLevel]
+    (pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ) (k : ℕ) : ℝ :=
+  ∫ q in AppliedModelingLib.strictUpperPairSet,
+    weight q * (if sameLevel q then 0 else 1 - pairwiseAccuracy k q) ∂(μ.prod μ)
+
+/--
+Project-approved clarification of Equation (2) for the large-deviation
+objective: only strict quality pairs assigned different rating bins are
+evaluated.  Pairs assigned one bin are intentionally outside the asymptotically
+distinguishable comparison domain.
+
+This is not asserted to be the literal all-strict-pairs display in the
+archival paper.  It is the explicit cross-bin target whose error is analyzed
+in Appendix C.
+-/
+noncomputable def sourceStrictUpperPairWeightedCrossBinLimit
+    (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ)
+    (sameLevel : ℝ × ℝ → Prop) [DecidablePred sameLevel] : ℝ :=
+  ∫ q in AppliedModelingLib.strictUpperPairSet,
+    if sameLevel q then 0 else weight q ∂(μ.prod μ)
+
+/-- The finite cross-bin ranking objective corresponding to the clarified
+large-deviation target. -/
+noncomputable def sourceStrictUpperPairWeightedCrossBinFiniteObjective
+    (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ)
+    (sameLevel : ℝ × ℝ → Prop) [DecidablePred sameLevel]
+    (pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ) (k : ℕ) : ℝ :=
+  ∫ q in AppliedModelingLib.strictUpperPairSet,
+    if sameLevel q then 0 else weight q * pairwiseAccuracy k q ∂(μ.prod μ)
+
+/--
+The clarified cross-bin objective gap is exactly the tie-erased error integral
+used by Appendix C.  No condition on the finite signed accuracy of same-bin
+pairs is needed, because the clarified objective does not evaluate them.
+-/
+theorem sourceStrictUpperPairWeightedCrossBinLimit_sub_finiteObjective_eq_separatedRawError
+    (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ)
+    (sameLevel : ℝ × ℝ → Prop) [DecidablePred sameLevel]
+    (pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ) (k : ℕ)
+    (hlimit_int : Integrable
+      (fun q : ℝ × ℝ => if sameLevel q then 0 else weight q)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
+    (hfinite_int : Integrable
+      (fun q : ℝ × ℝ =>
+        if sameLevel q then 0 else weight q * pairwiseAccuracy k q)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) :
+    sourceStrictUpperPairWeightedCrossBinLimit μ weight sameLevel -
+        sourceStrictUpperPairWeightedCrossBinFiniteObjective μ weight sameLevel
+          pairwiseAccuracy k =
+      sourceStrictUpperPairWeightedSeparatedRawError μ weight sameLevel
+        pairwiseAccuracy k := by
+  unfold sourceStrictUpperPairWeightedCrossBinLimit
+    sourceStrictUpperPairWeightedCrossBinFiniteObjective
+    sourceStrictUpperPairWeightedSeparatedRawError
+  rw [← integral_sub hlimit_int hfinite_int]
+  apply integral_congr_ae
+  filter_upwards [] with q
+  by_cases hlevel : sameLevel q
+  · simp [hlevel]
+  · simp [hlevel]
+    ring
+
+/--
+An explicit realization of the project-approved cross-bin objective.  Its
+fields define the corrected limiting and finite objectives rather than
+assuming their error identity.
+-/
+structure SourceStrictUpperPairCrossBinObjectiveRealization
+    (μ : Measure ℝ) (sameLevel : ℝ × ℝ → Prop)
+    [DecidablePred sameLevel] where
+  weight : ℝ × ℝ → ℝ
+  pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ
+  W : ℝ
+  Wk : ℕ → ℝ
+  W_eq_limit : W = sourceStrictUpperPairWeightedCrossBinLimit μ weight sameLevel
+  Wk_eq_finite : ∀ k,
+    Wk k = sourceStrictUpperPairWeightedCrossBinFiniteObjective μ weight
+      sameLevel pairwiseAccuracy k
+  limiting_integrable : Integrable
+    (fun q : ℝ × ℝ => if sameLevel q then 0 else weight q)
+    ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
+  finite_integrable : ∀ k, Integrable
+    (fun q : ℝ × ℝ =>
+      if sameLevel q then 0 else weight q * pairwiseAccuracy k q)
+    ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
+
+/-- The corrected cross-bin objective gap is the Appendix-C error at every
+finite horizon. -/
+theorem SourceStrictUpperPairCrossBinObjectiveRealization_error_eq_separatedRawError
+    {μ : Measure ℝ} {sameLevel : ℝ × ℝ → Prop} [DecidablePred sameLevel]
+    (model : SourceStrictUpperPairCrossBinObjectiveRealization μ sameLevel) :
+    ∀ k : ℕ, model.W - model.Wk k =
+      sourceStrictUpperPairWeightedSeparatedRawError μ model.weight sameLevel
+        model.pairwiseAccuracy k := by
+  intro k
+  rw [model.W_eq_limit, model.Wk_eq_finite]
+  exact
+    sourceStrictUpperPairWeightedCrossBinLimit_sub_finiteObjective_eq_separatedRawError
+      μ model.weight sameLevel model.pairwiseAccuracy k model.limiting_integrable
+      (model.finite_integrable k)
+
+/--
+Any Appendix-C rate for the clarified cross-bin error is a rate for the
+corrected Equation-(2) objective.  The proof is an equality of explicit
+objectives, not a same-bin cancellation premise.
+-/
+theorem SourceStrictUpperPairCrossBinObjectiveRealization_large_deviation_rate
+    {μ : Measure ℝ} {sameLevel : ℝ × ℝ → Prop} [DecidablePred sameLevel]
+    (model : SourceStrictUpperPairCrossBinObjectiveRealization μ sameLevel)
+    {rate : ℝ}
+    (haux : HasExponentialRate
+      (sourceStrictUpperPairWeightedSeparatedRawError μ model.weight sameLevel
+        model.pairwiseAccuracy) rate) :
+    source_definition_large_deviation_rate model.W model.Wk rate := by
+  apply source_definition_large_deviation_rate_of_eventually_eq_auxiliary haux
+  filter_upwards with k
+  exact SourceStrictUpperPairCrossBinObjectiveRealization_error_eq_separatedRawError
+    model k
+
+/--
+The preceding transfer stated with the exact cross-bin integrand in the
+clarified objective is equivalently an Appendix-C tie-erased `Wbar` transfer.
+Writing this specialization explicitly binds the repaired main-text objective
+to the sequence actually used by the Appendix-C rate theorems.  It does not
+identify either sequence with the archival all-pairs Equation-(2) objective.
+-/
+theorem SourceStrictUpperPairCrossBinObjectiveRealization_large_deviation_rate_of_lemmaC4TieErasedSourceWbar
+    {μ : Measure ℝ} {sameLevel : ℝ × ℝ → Prop} [DecidablePred sameLevel]
+    (model : SourceStrictUpperPairCrossBinObjectiveRealization μ sameLevel)
+    {rate : ℝ}
+    (haux : HasExponentialRate
+      (lemmaC4TieErasedSourceWbar μ model.weight
+        (fun k q => if sameLevel q then 0 else 1 - model.pairwiseAccuracy k q))
+      rate) :
+    source_definition_large_deviation_rate model.W model.Wk rate := by
+  apply SourceStrictUpperPairCrossBinObjectiveRealization_large_deviation_rate
+    model
+  exact haux
+
+theorem sourceStrictUpperPairWeightedLevelGap_eq_limitingAccuracy_sub_finiteObjective
+    (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ)
+    (sameLevel : ℝ × ℝ → Prop) [DecidablePred sameLevel]
+    (pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ) (k : ℕ)
+    (hlimit_int : Integrable
+      (fun q : ℝ × ℝ =>
+        weight q * sourceStrictUpperPairLevelLimitingAccuracy sameLevel q)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
+    (hfinite_int : Integrable
+      (fun q : ℝ × ℝ => weight q * pairwiseAccuracy k q)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) :
+    sourceStrictUpperPairWeightedLimitingAccuracyObjective μ weight
+        (sourceStrictUpperPairLevelLimitingAccuracy sameLevel) -
+        sourceStrictUpperPairWeightedFiniteObjective μ weight pairwiseAccuracy k =
+      sourceStrictUpperPairWeightedLevelGap μ weight sameLevel pairwiseAccuracy k := by
+  simpa only [sourceStrictUpperPairWeightedLevelGap] using
+    sourceStrictUpperPairWeightedLimitingAccuracyObjective_sub_finiteObjective_eq_gap
+      μ weight (sourceStrictUpperPairLevelLimitingAccuracy sameLevel)
+      pairwiseAccuracy k hlimit_int hfinite_int
+
+theorem sourceStrictUpperPairWeightedLevelGap_eq_separatedRawError_of_sameLevel_cancellation
+    (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ)
+    (sameLevel : ℝ × ℝ → Prop) [DecidablePred sameLevel]
+    (pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ) (k : ℕ)
+    (hsame :
+      ∀ᵐ q ∂((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet),
+        sameLevel q → pairwiseAccuracy k q = 0) :
+    sourceStrictUpperPairWeightedLevelGap μ weight sameLevel pairwiseAccuracy k =
+      sourceStrictUpperPairWeightedSeparatedRawError μ weight sameLevel
+        pairwiseAccuracy k := by
+  apply setIntegral_congr_ae
+    AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet
+  have hsame' :=
+    (ae_restrict_iff'
+      AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet).mp hsame
+  filter_upwards [hsame'] with q hq hstrict
+  by_cases hlevel : sameLevel q
+  · simp [sourceStrictUpperPairLevelLimitingAccuracy, hlevel, hq hstrict hlevel]
+  · simp [sourceStrictUpperPairLevelLimitingAccuracy, hlevel]
+
+/-- Explicit realization of the literal signed ranking objective.  Unlike the
+older all-pairs `1 - P_k` adapter, this interface records the level-dependent
+limit appearing in the paper's strict-order definition. -/
+structure SourceStrictUpperPairLevelObjectiveRealization
+    (μ : Measure ℝ) (sameLevel : ℝ × ℝ → Prop)
+    [DecidablePred sameLevel] where
+  weight : ℝ × ℝ → ℝ
+  pairwiseAccuracy : ℕ → ℝ × ℝ → ℝ
+  W : ℝ
+  Wk : ℕ → ℝ
+  W_eq_limit :
+    W = sourceStrictUpperPairWeightedLimitingAccuracyObjective μ weight
+      (sourceStrictUpperPairLevelLimitingAccuracy sameLevel)
+  Wk_eq_finite : ∀ k,
+    Wk k = sourceStrictUpperPairWeightedFiniteObjective μ weight pairwiseAccuracy k
+  limiting_integrable : Integrable
+    (fun q : ℝ × ℝ =>
+      weight q * sourceStrictUpperPairLevelLimitingAccuracy sameLevel q)
+    ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
+  finite_integrable : ∀ k, Integrable
+    (fun q : ℝ × ℝ => weight q * pairwiseAccuracy k q)
+    ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
+
+theorem SourceStrictUpperPairLevelObjectiveRealization_error_eq_levelGap
+    {μ : Measure ℝ} {sameLevel : ℝ × ℝ → Prop} [DecidablePred sameLevel]
+    (model : SourceStrictUpperPairLevelObjectiveRealization μ sameLevel) :
+    ∀ k : ℕ, model.W - model.Wk k =
+      sourceStrictUpperPairWeightedLevelGap μ model.weight sameLevel
+        model.pairwiseAccuracy k := by
+  intro k
+  rw [model.W_eq_limit, model.Wk_eq_finite]
+  exact
+    sourceStrictUpperPairWeightedLevelGap_eq_limitingAccuracy_sub_finiteObjective
+      μ model.weight sameLevel model.pairwiseAccuracy k model.limiting_integrable
+      (model.finite_integrable k)
+
+theorem SourceStrictUpperPairLevelObjectiveRealization_large_deviation_rate_of_sameLevel_cancellation
+    {μ : Measure ℝ} {sameLevel : ℝ × ℝ → Prop} [DecidablePred sameLevel]
+    (model : SourceStrictUpperPairLevelObjectiveRealization μ sameLevel)
+    {rate : ℝ}
+    (haux : HasExponentialRate
+      (sourceStrictUpperPairWeightedSeparatedRawError μ model.weight sameLevel
+        model.pairwiseAccuracy) rate)
+    (hsame : ∀ᶠ k : ℕ in atTop,
+      ∀ᵐ q ∂((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet),
+        sameLevel q → model.pairwiseAccuracy k q = 0) :
+    source_definition_large_deviation_rate model.W model.Wk rate := by
+  apply source_definition_large_deviation_rate_of_eventually_eq_auxiliary haux
+  filter_upwards [hsame] with k hk
+  rw [SourceStrictUpperPairLevelObjectiveRealization_error_eq_levelGap model k]
+  exact
+    sourceStrictUpperPairWeightedLevelGap_eq_separatedRawError_of_sameLevel_cancellation
+      μ model.weight sameLevel model.pairwiseAccuracy k hk
+
+/-! A finite-comparison diagnostic for the still-open main-objective bridge.
+With a one-point rating carrier and zero score, two same-level sellers always
+tie.  The paper's strict-order definition therefore gives `1 - P_k = 1` at
+every horizon, so no positive exponential rate can be credited to a
+same-level pair without an additional non-atomic/no-tie or tie-breaking
+convention.  This is a model-level witness, not a blanket refutation of the
+full source model. -/
+
+noncomputable def degenerateSameLevelRatingModel :
+    FiniteRatingLDPModel PUnit PUnit where
+  typeLaw := fun _ => PMF.pure PUnit.unit
+  score := fun _ => 0
+
+@[simp] theorem degenerateSameLevelRatingModel_floor_error_eq_one (k : ℕ) :
+    twoSampleFloorPkComplementErrorProb degenerateSameLevelRatingModel
+      (fun _ : PUnit => (1 : ℝ)) PUnit.unit PUnit.unit k = 1 := by
+  simp [twoSampleFloorPkComplementErrorProb,
+    twoSamplePkComplementErrorProb, twoSampleScoreGapStrictLeftProb,
+    twoSampleScoreGapTieProb, twoSampleRatingLaw,
+    twoSampleScoreGapSum, finiteIidScoreSum, AppliedModelingLib.pmfProb]
+
+theorem degenerateSameLevelRatingModel_floor_error_has_zero_rate :
+    HasExponentialRate
+      (fun k : ℕ =>
+        twoSampleFloorPkComplementErrorProb degenerateSameLevelRatingModel
+          (fun _ : PUnit => (1 : ℝ)) PUnit.unit PUnit.unit k) 0 := by
+  simp only [degenerateSameLevelRatingModel_floor_error_eq_one]
+  unfold HasExponentialRate
+  have hlog : logDecay (fun _ : ℕ => (1 : ℝ)) =
+      (fun _ : ℕ => (0 : ℝ)) := by
+    funext k
+    simp [logDecay]
+  rw [hlog]
+  exact tendsto_const_nhds
+
+theorem degenerateSameLevelRatingModel_floor_error_no_positive_certificate
+    {rate : ℝ} (hrate : 0 < rate) :
+    ¬ ExponentialRateCertificate
+      (fun k : ℕ =>
+        twoSampleFloorPkComplementErrorProb degenerateSameLevelRatingModel
+          (fun _ : PUnit => (1 : ℝ)) PUnit.unit PUnit.unit k) rate := by
+  apply ExponentialRateCertificate.not_of_hasExponentialRate_zero hrate
+  exact degenerateSameLevelRatingModel_floor_error_has_zero_rate
+
+/-! If a same-level pair receives the same number of observations and the two
+seller laws coincide, its strict-order objective is exactly zero.  This is the
+minimal finite-sample repair for the source sentence that same-level pairs
+contribute zero; without equal counts, the diagnostic above shows that the
+claim is not valid for arbitrary interior Bernoulli levels. -/
+
+theorem twoSamplePkObjectiveProb_eq_zero_of_equal_law_equal_counts
+    {Seller Rating : Type*} [Fintype Rating] [DecidableEq Rating]
+    (M : FiniteRatingLDPModel Seller Rating) (hi lo : Seller) (n : ℕ)
+    (hlaw : M.typeLaw hi = M.typeLaw lo) :
+    twoSamplePkObjectiveProb M hi lo n n (n : ℝ)⁻¹ (n : ℝ)⁻¹ = 0 := by
+  unfold twoSamplePkObjectiveProb twoSampleScoreGapStrictRightProb
+    twoSampleScoreGapStrictLeftProb twoSampleRatingLaw
+    AppliedModelingLib.pmfProb
+  rw [AppliedModelingLib.pmfExp_pmfProd_eq_pairExp,
+    AppliedModelingLib.pmfExp_pmfProd_eq_pairExp]
+  rw [hlaw]
+  let μ := AppliedModelingLib.pmfProduct (Fin n) Rating (M.typeLaw lo)
+  have hswap := AppliedModelingLib.pmfPairExp_swap μ μ
+    (fun x y => if 0 < twoSampleScoreGapSum M (n : ℝ)⁻¹ (n : ℝ)⁻¹ (x, y)
+      then (1 : ℝ) else 0)
+  have hfun :
+      (fun (x y : Fin n → Rating) =>
+        if 0 < twoSampleScoreGapSum M (n : ℝ)⁻¹ (n : ℝ)⁻¹ (y, x)
+        then (1 : ℝ) else 0) =
+      (fun (x y : Fin n → Rating) =>
+        if twoSampleScoreGapSum M (n : ℝ)⁻¹ (n : ℝ)⁻¹ (x, y) < 0
+        then 1 else 0) := by
+    funext x y
+    simp only [twoSampleScoreGapSum]
+    have hneg :
+        (n : ℝ)⁻¹ * finiteIidScoreSum M.score x -
+            (n : ℝ)⁻¹ * finiteIidScoreSum M.score y =
+          -((n : ℝ)⁻¹ * finiteIidScoreSum M.score y -
+            (n : ℝ)⁻¹ * finiteIidScoreSum M.score x) := by ring
+    by_cases hpos :
+        0 < (n : ℝ)⁻¹ * finiteIidScoreSum M.score y -
+          (n : ℝ)⁻¹ * finiteIidScoreSum M.score x
+    · have hneg' :
+          (n : ℝ)⁻¹ * finiteIidScoreSum M.score x -
+              (n : ℝ)⁻¹ * finiteIidScoreSum M.score y < 0 := by
+          rw [hneg]
+          exact neg_lt_zero.mpr hpos
+      rw [if_pos hpos, if_pos hneg']
+    · have hnonpos :
+          (n : ℝ)⁻¹ * finiteIidScoreSum M.score y -
+              (n : ℝ)⁻¹ * finiteIidScoreSum M.score x ≤ 0 :=
+        le_of_not_gt hpos
+      by_cases hzero :
+          (n : ℝ)⁻¹ * finiteIidScoreSum M.score y -
+              (n : ℝ)⁻¹ * finiteIidScoreSum M.score x = 0
+      · have hzero' :
+            (n : ℝ)⁻¹ * finiteIidScoreSum M.score x -
+                (n : ℝ)⁻¹ * finiteIidScoreSum M.score y = 0 := by
+          rw [hneg, hzero]
+          norm_num
+        simp [hpos, hzero']
+      · have hnegB :
+            (n : ℝ)⁻¹ * finiteIidScoreSum M.score y -
+                (n : ℝ)⁻¹ * finiteIidScoreSum M.score x < 0 :=
+          by
+            exact lt_of_le_of_ne hnonpos hzero
+        have hposA :
+            0 < (n : ℝ)⁻¹ * finiteIidScoreSum M.score x -
+              (n : ℝ)⁻¹ * finiteIidScoreSum M.score y := by
+          rw [hneg]
+          exact neg_pos.mpr hnegB
+        rw [if_neg hpos, if_neg (not_lt_of_ge hposA.le)]
+  have hEq :
+      AppliedModelingLib.pmfPairExp μ μ
+          (fun x y => if 0 < twoSampleScoreGapSum M (n : ℝ)⁻¹ (n : ℝ)⁻¹ (x, y)
+            then 1 else 0) =
+        AppliedModelingLib.pmfPairExp μ μ
+          (fun x y => if twoSampleScoreGapSum M (n : ℝ)⁻¹ (n : ℝ)⁻¹ (x, y) < 0
+            then 1 else 0) := by
+    exact hswap.trans (congrArg (AppliedModelingLib.pmfPairExp μ μ) hfun)
+  simpa [μ] using sub_eq_zero.mpr hEq
+
+/-- A primitive source-model form of same-level cancellation.  If two sellers
+have the same rating law and matching rate, their floor sample counts agree at
+every horizon, so the signed strict-order objective is zero. -/
+theorem twoSampleFloorPkObjectiveProb_eq_zero_of_equal_law_equal_sampleRate
+    {Seller Rating : Type*} [Fintype Rating] [DecidableEq Rating]
+    (M : FiniteRatingLDPModel Seller Rating) (sampleRate : Seller → ℝ)
+    (hi lo : Seller) (k : ℕ)
+    (hlaw : M.typeLaw hi = M.typeLaw lo)
+    (hsample : sampleRate hi = sampleRate lo) :
+    twoSampleFloorPkObjectiveProb M sampleRate hi lo k = 0 := by
+  have hcount : floorSampleCount sampleRate hi k =
+      floorSampleCount sampleRate lo k := by
+    simp only [floorSampleCount, hsample]
+  simpa only [twoSampleFloorPkObjectiveProb, hcount] using
+    twoSamplePkObjectiveProb_eq_zero_of_equal_law_equal_counts
+      M hi lo (floorSampleCount sampleRate lo k) hlaw
+
+/-- In the paper's Bernoulli model, equality of the assigned rating
+probability and matching rate is a concrete sufficient condition for the
+same-level cancellation required by the literal objective bridge. -/
+theorem binaryRatingModel_twoSampleFloorPkObjectiveProb_eq_zero_of_equal_successProb_equal_sampleRate
+    {Seller : Type*}
+    (successProb : Seller → ℝ)
+    (hprob0 : ∀ θ, 0 ≤ successProb θ)
+    (hprob1 : ∀ θ, successProb θ ≤ 1)
+    (sampleRate : Seller → ℝ) (hi lo : Seller) (k : ℕ)
+    (hsuccess : successProb hi = successProb lo)
+    (hsample : sampleRate hi = sampleRate lo) :
+    twoSampleFloorPkObjectiveProb
+      (binaryRatingModel successProb hprob0 hprob1) sampleRate hi lo k = 0 := by
+  apply twoSampleFloorPkObjectiveProb_eq_zero_of_equal_law_equal_sampleRate
+    (binaryRatingModel successProb hprob0 hprob1) sampleRate hi lo k
+  · simp [binaryRatingModel, realBinaryRatingLDPModel, hsuccess]
+  · exact hsample
 
 /--
 Theorem 3.1 equation (3), with the source cell-rate coefficients derived from

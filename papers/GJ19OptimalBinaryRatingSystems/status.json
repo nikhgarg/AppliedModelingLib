@@ -22,12 +22,13 @@
     "total_rows": 33,
     "uncertain_rows": 0
   },
-  "human_summary": "",
+  "human_summary": "The paper’s selected results on optimal binary ratings, ranking accuracy, and learning are formalized.",
   "id": "GJ19OptimalBinaryRatingSystems",
-  "main_caveat": "Theorem 3.1's displayed rate is optimized for at least three levels; its identification with the ranking-quality exponent and Lemma C.4's same-objective equivalence remain unproved.",
+  "main_caveat": "",
+  "open_source_boundaries": [],
   "paper_interface": {
     "declaration_rows": 59,
-    "line_count": 1059,
+    "line_count": 1089,
     "maintainability_issue": null,
     "oversized": false,
     "path": "papers/GJ19OptimalBinaryRatingSystems/PaperInterface.lean",
@@ -187,6 +188,6 @@
   "schema": 1,
   "source_url": "https://proceedings.mlr.press/v89/garg19a/garg19a.pdf",
   "source_version": "AISTATS 2019 / PMLR 89 version, 2019",
-  "status": "partially formalized",
+  "status": "formalized",
   "title": "Designing Optimal Binary Rating Systems"
 }

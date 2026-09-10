@@ -1,0 +1,88 @@
+{
+  "defects": [
+    {
+      "acceptance_condition": "The CDF endpoint is proved on the support interior, the interval result is proved for a nonempty open interval meeting that interior, and downstream strict regions use the same support-interior reading.",
+      "affected_source_locators": [
+        "audit/cited publication:151-185",
+        "audit/cited publication:100-105",
+        "audit/cited publication:609-628",
+        "audit/cited publication:705-719"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "PG23-ENDPOINT-AND-INTERVAL-01",
+      "repair_obligation": "Retain the archival endpoint and interval wording, but state the checked target on support interiors and nonempty open intervals; do not infer endpoint CDF values from connected support when atoms are allowed.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "The v11 PaperInterface Specs for the interval, Theorem 2, and Theorem 3 targets make the support-interior domain explicit. docs/SOURCE_CLARIFICATIONS.md records the archival/corrected distinction.",
+      "source_claim": "The appendix derives endpoint CDF identities from connected support and states positive mass for an unqualified interval meeting the support interior.",
+      "source_locator": "audit/cited publication:151-185",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The endpoint and interval wording has a routine support-domain repair. Lean proves the advertised interior conclusions without relying on a false endpoint identity or on a degenerate interval, so this is a disclosed formalized note rather than a caveat or an open proof boundary."
+    },
+    {
+      "acceptance_condition": "The affected v11 Specs visibly bind the required regularity and literal clearing hypotheses, and their proof endpoints derive the results without a result-bearing certificate premise.",
+      "affected_source_locators": [
+        "audit/cited publication:71-105",
+        "audit/cited publication:539-628",
+        "audit/cited publication:681-684"
+      ],
+      "defect_kind": "model_semantics",
+      "id": "PG23-CONTINUOUS-REGULARITY-01",
+      "repair_obligation": "State zero score-level mass, atomlessness, nondegeneracy, and absolute integrability precisely where the corresponding weak-to-strict, comparison, or welfare argument needs them; do not derive any of them from connected support.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "PaperInterface.lean exposes the regularity binders in the Equal Cutoffs, probability-formula, Corollary 4, Theorems 1--2, and differential Equal Cutoffs Specs. docs/SOURCE_CLARIFICATIONS.md records why connected support is insufficient for strict crossing.",
+      "source_claim": "The model assumes connected support, but later exact-cutoff, strict-tail, strict-comparison, and welfare conclusions use atomlessness, score-level nullity, nondegeneracy, or integrability not implied by connected support alone.",
+      "source_locator": "audit/cited publication:50-75",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "These are the continuous-model regularity conditions needed for the strict reading of the advertised results. Lean proves the results with every such condition visible and does not hide a conclusion in a model record, so the correction is a formalized note rather than a status caveat."
+    },
+    {
+      "acceptance_condition": "The Nash Spec proves that the prescribed top-k set has no profitable feasible deviation under the visible finite expected favorite-success payoff semantics and derives the iid equal-cutoff coupling by finite product-law reindexing.",
+      "affected_source_locators": [
+        "audit/cited publication:681-691"
+      ],
+      "defect_kind": "model_semantics",
+      "id": "PG23-NASH-EXANTE-SEMANTICS-01",
+      "repair_obligation": "Specify same-cardinality feasible deviations, ranking-monotone utility, the outside option, and the application-set-invariant equal-cutoff success-law semantics before asserting the ex-ante comparison.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "PaperInterface.review_proposition_nash_differentialApplicationAccessSpec_proof proves the explicit finite ex-ante target; docs/SOURCE_CLARIFICATIONS.md records that this target is not claimed to be verbatim archival wording.",
+      "source_claim": "The Nash proposition says that no applicant benefits ex ante from deviating from the top-k set, but it does not define the payoff functional, feasible-deviation domain, or success-law coupling needed to state that claim as a finite mathematical theorem.",
+      "source_locator": "audit/cited publication:689-691",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The source's intended equal-cutoff comparison is a standard ex-ante payoff argument. Lean makes the payoff and coupling semantics explicit and proves the no-profitable-deviation endpoint, so the omitted semantic layer is disclosed as a formalized note rather than silently treated as a theorem-package premise."
+    }
+  ],
+  "paper": "PG23MonocultureMatching",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The continuum mono/polyculture model, connected-support condition, Equal Cutoffs Lemma, strict probability formulas, and strict cutoff comparison.",
+      "source_locator": "audit/cited publication:50-105"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The appendix CDF and interval-mass observations, including their endpoint and interval-domain reasoning.",
+      "source_locator": "audit/cited publication:151-185"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Lemma 10's eventual low/high match-probability bounds under weak affordability and its market-clearing derivation of adjusted-cutoff convergence.",
+      "source_locator": "audit/cited publication:324-340"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The two main asymptotic and matching-comparison theorems, including threshold, strictness, and welfare conclusions.",
+      "source_locator": "audit/cited publication:539-628"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Differential-application-access equal-cutoff, ex-ante Nash, and probability-comparison results.",
+      "source_locator": "audit/cited publication:681-719"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "3faa7451a9943a22cb15008b6e37d34b3be9390d9c9e00b22b0db949ab3b10fb"
+}

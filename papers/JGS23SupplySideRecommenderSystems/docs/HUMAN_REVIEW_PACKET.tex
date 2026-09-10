@@ -46,7 +46,7 @@ specifications, and hash-bound raw-source-to-Spec screening records.
 \textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright arXiv:2206.13489 archive member arxiv-update.tex, byte-pinned through audit/cited publication}\\
 \textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
 \textbf{Rows:} 36\\
-\textbf{Generated:} 2026-09-06\\
+\textbf{Generated:} 2026-09-08\\
 \textbf{Source URL:} \href{https://arxiv.org/abs/2206.13489}{official source}
 
 
@@ -75,7 +75,7 @@ reviewer-owned review record.
 
 \section*{Contents}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{governing-declaration-section-5ef5ef0364b6939c}{Governing Lean declarations (82; supporting context)}
+\item \hyperlink{governing-declaration-section-5ef5ef0364b6939c}{Governing Lean declarations (91; supporting context)}
 \item \hyperlink{paper-prerequisite-section-5ef5ef0364b6939c}{Paper-specific semantic prerequisites (11; not paper claims)}
 \begin{itemize}[leftmargin=1.2em]
 \item \hyperlink{paper-prerequisite-98c9dadb88a2e052}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}powered\allowbreak{}Score\allowbreak{}Geometry\allowbreak{}Spec}
@@ -221,6 +221,20 @@ fun {α : Type u_1} (feasible : α → Prop) (objective : α → ℝ) (x : α) =
 \end{ReviewVerbatim}
 
 
+\hypertarget{governing-declaration-bd46383e262e9ee8}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}iid\allowbreak{}Maximum\allowbreak{}Cdf}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{n : ℕ} → MeasureTheory.Measure ℝ → ℝ → ℝ
+
+value:
+fun {n : ℕ} (μ : MeasureTheory.Measure ℝ) (x : ℝ) =>
+  (MeasureTheory.Measure.pi fun (x : Fin n) => μ).real (Set.univ.pi fun (x_1 : Fin n) => Set.Iic x)
+\end{ReviewVerbatim}
+
+
 \hypertarget{governing-declaration-5dfc240c860659bf}{}
 \subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}lower\allowbreak{}CDF\allowbreak{}Mass}
 \textbf{Declaration location:} reusable library
@@ -314,19 +328,6 @@ fun {D : ℕ} (μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D) =>
 \item \hyperlink{governing-declaration-2f0b3962017be382}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Has\allowbreak{}Content\allowbreak{}Point\allowbreak{}Mass}
 \item \hyperlink{governing-declaration-2089965d06cf0282}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Mixed\allowbreak{}Content\allowbreak{}Strategy}
 \end{itemize}
-\hypertarget{governing-declaration-bee90219a2544fdd}{}
-\subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Negative\allowbreak{}Semidefinite\allowbreak{}Quadratic2}
-\textbf{Declaration location:} paper-local
-\paragraph{Lean declaration body}
-\begin{ReviewVerbatim}
-type:
-ℝ → ℝ → ℝ → Prop
-
-value:
-fun (a11 a12 a22 : ℝ) => ∀ (x y : ℝ), a11 * x ^ 2 + 2 * a12 * x * y + a22 * y ^ 2 ≤ 0
-\end{ReviewVerbatim}
-
-
 \hypertarget{governing-declaration-d426babe40b9593c}{}
 \subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonnegative\allowbreak{}Content}
 \textbf{Declaration location:} paper-local
@@ -581,6 +582,52 @@ fun (P : ℕ) =>
 \begin{itemize}\raggedright
 \item \hyperlink{governing-declaration-1049b344c6d42c40}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}finite\allowbreak{}P\allowbreak{}Source\allowbreak{}Curve\allowbreak{}Sample}
 \end{itemize}
+\hypertarget{governing-declaration-c4e1c2ecd90525fd}{}
+\subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}infinite\allowbreak{}Genre\allowbreak{}First\allowbreak{}Genre}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℝ → Fin 2 → ℝ
+
+value:
+fun (phi : ℝ) (a : Fin 2) => JGS23SupplySideRecommenderSystems.content2 (Real.cos phi) (Real.sin phi) a
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-ef2bbdff22adf3f1}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}content2}
+\end{itemize}
+\hypertarget{governing-declaration-4efa4a4608135f6d}{}
+\subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}infinite\allowbreak{}Genre\allowbreak{}Second\allowbreak{}Genre}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℝ → ℝ → Fin 2 → ℝ
+
+value:
+fun (theta phi : ℝ) (a : Fin 2) =>
+  JGS23SupplySideRecommenderSystems.content2 (Real.cos (theta - phi)) (Real.sin (theta - phi)) a
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-ef2bbdff22adf3f1}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}content2}
+\end{itemize}
+\hypertarget{governing-declaration-dc75be9b72bb3fe0}{}
+\subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}one\allowbreak{}Dimensional\allowbreak{}Unit\allowbreak{}Content}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+Fin 1 → ℝ
+
+value:
+fun (a : Fin 1) => 1
+\end{ReviewVerbatim}
+
+
 \hypertarget{governing-declaration-0f4d42c091554b20}{}
 \subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}p\allowbreak{}Two\allowbreak{}Content\allowbreak{}Of\allowbreak{}Coordinates}
 \textbf{Declaration location:} paper-local
@@ -719,22 +766,6 @@ fun {D : ℕ} (μ : JGS23SupplySideRecommenderSystems.paper_mixed_content_strate
 \item \hyperlink{governing-declaration-b053680a26c8a65d}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Mixed\allowbreak{}Content\allowbreak{}Strategy\allowbreak{}Atomless}
 \item \hyperlink{governing-declaration-2f2803c7f0c4e29a}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}paper\_\allowbreak{}mixed\_\allowbreak{}content\_\allowbreak{}strategy}
 \end{itemize}
-\hypertarget{governing-declaration-0160fb59497b863a}{}
-\subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}paper\_\allowbreak{}negative\_\allowbreak{}semidefinite\_\allowbreak{}quadratic2}
-\textbf{Declaration location:} paper-local
-\paragraph{Lean declaration body}
-\begin{ReviewVerbatim}
-type:
-ℝ → ℝ → ℝ → Prop
-
-value:
-fun (a11 a12 a22 : ℝ) => JGS23SupplySideRecommenderSystems.NegativeSemidefiniteQuadratic2 a11 a12 a22
-\end{ReviewVerbatim}
-
-\paragraph{Direct retained dependencies}
-\begin{itemize}\raggedright
-\item \hyperlink{governing-declaration-bee90219a2544fdd}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Negative\allowbreak{}Semidefinite\allowbreak{}Quadratic2}
-\end{itemize}
 \hypertarget{governing-declaration-fb3971dd0dc35efc}{}
 \subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}ratio\allowbreak{}Objective}
 \textbf{Declaration location:} paper-local
@@ -779,6 +810,92 @@ fun {D : ℕ} (a : ℝ) (p : JGS23SupplySideRecommenderSystems.Content D) (a_1 :
 \paragraph{Direct retained dependencies}
 \begin{itemize}\raggedright
 \item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
+\end{itemize}
+\hypertarget{governing-declaration-127f397c2234da77}{}
+\subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Finite\allowbreak{}Genre\allowbreak{}Conditional\allowbreak{}Norm\allowbreak{}Law\allowbreak{}Any\allowbreak{}Dim}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+field weight:
+{D G : ℕ} →
+  {mu : JGS23SupplySideRecommenderSystems.MixedContentStrategy D} →
+    {direction : Fin G → JGS23SupplySideRecommenderSystems.Content D} →
+      JGS23SupplySideRecommenderSystems.FiniteGenreConditionalNormLawAnyDim mu direction → Fin G → ℝ
+
+field radial:
+{D G : ℕ} →
+  {mu : JGS23SupplySideRecommenderSystems.MixedContentStrategy D} →
+    {direction : Fin G → JGS23SupplySideRecommenderSystems.Content D} →
+      JGS23SupplySideRecommenderSystems.FiniteGenreConditionalNormLawAnyDim mu direction →
+        Fin G → MeasureTheory.Measure ℝ
+
+field direction_nonnegative:
+∀ {D G : ℕ} {mu : JGS23SupplySideRecommenderSystems.MixedContentStrategy D}
+  {direction : Fin G → JGS23SupplySideRecommenderSystems.Content D}
+  (self : JGS23SupplySideRecommenderSystems.FiniteGenreConditionalNormLawAnyDim mu direction) (i : Fin G),
+  JGS23SupplySideRecommenderSystems.NonnegativeContent (direction i)
+
+field direction_l2_norm:
+∀ {D G : ℕ} {mu : JGS23SupplySideRecommenderSystems.MixedContentStrategy D}
+  {direction : Fin G → JGS23SupplySideRecommenderSystems.Content D}
+  (self : JGS23SupplySideRecommenderSystems.FiniteGenreConditionalNormLawAnyDim mu direction) (i : Fin G),
+  AppliedModelingLib.FiniteDimensionalNorms.l2 (direction i) = 1
+
+field weight_pos:
+∀ {D G : ℕ} {mu : JGS23SupplySideRecommenderSystems.MixedContentStrategy D}
+  {direction : Fin G → JGS23SupplySideRecommenderSystems.Content D}
+  (self : JGS23SupplySideRecommenderSystems.FiniteGenreConditionalNormLawAnyDim mu direction) (i : Fin G),
+  0 < self.weight i
+
+field weights_sum:
+∀ {D G : ℕ} {mu : JGS23SupplySideRecommenderSystems.MixedContentStrategy D}
+  {direction : Fin G → JGS23SupplySideRecommenderSystems.Content D}
+  (self : JGS23SupplySideRecommenderSystems.FiniteGenreConditionalNormLawAnyDim mu direction),
+  ∑ i : Fin G, self.weight i = 1
+
+field radial_probability:
+∀ {D G : ℕ} {mu : JGS23SupplySideRecommenderSystems.MixedContentStrategy D}
+  {direction : Fin G → JGS23SupplySideRecommenderSystems.Content D}
+  (self : JGS23SupplySideRecommenderSystems.FiniteGenreConditionalNormLawAnyDim mu direction) (i : Fin G),
+  MeasureTheory.IsProbabilityMeasure (self.radial i)
+
+field radial_support_nonnegative:
+∀ {D G : ℕ} {mu : JGS23SupplySideRecommenderSystems.MixedContentStrategy D}
+  {direction : Fin G → JGS23SupplySideRecommenderSystems.Content D}
+  (self : JGS23SupplySideRecommenderSystems.FiniteGenreConditionalNormLawAnyDim mu direction) (i : Fin G),
+  (self.radial i).support ⊆ Set.Ici 0
+
+field radial_has_positive_support:
+∀ {D G : ℕ} {mu : JGS23SupplySideRecommenderSystems.MixedContentStrategy D}
+  {direction : Fin G → JGS23SupplySideRecommenderSystems.Content D}
+  (self : JGS23SupplySideRecommenderSystems.FiniteGenreConditionalNormLawAnyDim mu direction) (i : Fin G),
+  ∃ r ∈ (self.radial i).support, 0 < r
+
+field radial_cdf_c1:
+∀ {D G : ℕ} {mu : JGS23SupplySideRecommenderSystems.MixedContentStrategy D}
+  {direction : Fin G → JGS23SupplySideRecommenderSystems.Content D}
+  (self : JGS23SupplySideRecommenderSystems.FiniteGenreConditionalNormLawAnyDim mu direction) (i : Fin G),
+  ContDiff ℝ 1 (AppliedModelingLib.Probability.lowerCDFMass (self.radial i))
+
+field decomposition:
+∀ {D G : ℕ} {mu : JGS23SupplySideRecommenderSystems.MixedContentStrategy D}
+  {direction : Fin G → JGS23SupplySideRecommenderSystems.Content D}
+  (self : JGS23SupplySideRecommenderSystems.FiniteGenreConditionalNormLawAnyDim mu direction),
+  mu =
+    ∑ i : Fin G,
+      ENNReal.ofReal (self.weight i) •
+        MeasureTheory.Measure.map (fun (r : ℝ) => JGS23SupplySideRecommenderSystems.scaleContent r (direction i))
+          (self.radial i)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-08313452edb53fe9}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Finite\allowbreak{}Dimensional\allowbreak{}Norms.\allowbreak{}l2}
+\item \hyperlink{governing-declaration-5dfc240c860659bf}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}lower\allowbreak{}CDF\allowbreak{}Mass}
+\item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
+\item \hyperlink{governing-declaration-2089965d06cf0282}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Mixed\allowbreak{}Content\allowbreak{}Strategy}
+\item \hyperlink{governing-declaration-d426babe40b9593c}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonnegative\allowbreak{}Content}
+\item \hyperlink{governing-declaration-c0824fcccb145634}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}scale\allowbreak{}Content}
 \end{itemize}
 \hypertarget{governing-declaration-6141339a5d3412d9}{}
 \subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm}
@@ -1166,26 +1283,25 @@ fun {D N : ℕ} (users : Fin N → JGS23SupplySideRecommenderSystems.Content D)
 \item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
 \item \hyperlink{governing-declaration-256e17a5e6af8074}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}In\allowbreak{}Unit\allowbreak{}Image}
 \end{itemize}
-\hypertarget{governing-declaration-25f67bcfa6dfef03}{}
-\subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Unit\allowbreak{}Direction\allowbreak{}Q\allowbreak{}Upper\allowbreak{}Bound}
+\hypertarget{governing-declaration-972ab8301f65eaeb}{}
+\subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}canonical\allowbreak{}Two\allowbreak{}User\allowbreak{}Value\allowbreak{}Map}
 \textbf{Declaration location:} paper-local
 \paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
 type:
-{D N : ℕ} →
-  (Fin N → JGS23SupplySideRecommenderSystems.Content D) → JGS23SupplySideRecommenderSystems.SourceNorm D → ℝ → Prop
+ℝ → JGS23SupplySideRecommenderSystems.Content 2 → ℝ × ℝ
 
 value:
-fun {D N : ℕ} (users : Fin N → JGS23SupplySideRecommenderSystems.Content D)
-    (ν : JGS23SupplySideRecommenderSystems.SourceNorm D) (Q : ℝ) =>
-  ∀ (p : JGS23SupplySideRecommenderSystems.Content D),
-    ν.norm p = 1 → ∃ (i : Fin N), JGS23SupplySideRecommenderSystems.score (users i) p ≤ Q
+fun (θ : ℝ) (p : JGS23SupplySideRecommenderSystems.Content 2) =>
+  (JGS23SupplySideRecommenderSystems.score JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst p,
+    JGS23SupplySideRecommenderSystems.score (JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ) p)
 \end{ReviewVerbatim}
 
 \paragraph{Direct retained dependencies}
 \begin{itemize}\raggedright
 \item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
-\item \hyperlink{governing-declaration-6141339a5d3412d9}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm}
+\item \hyperlink{governing-declaration-abb7b5a1ce6f14ba}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}canonical\allowbreak{}Two\allowbreak{}User\allowbreak{}First}
+\item \hyperlink{governing-declaration-fb292a037babdd07}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}canonical\allowbreak{}Two\allowbreak{}User\allowbreak{}Second}
 \item \hyperlink{governing-declaration-e3725af4eb21c4db}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}score}
 \end{itemize}
 \hypertarget{governing-declaration-013f58f28eea44cb}{}
@@ -1260,6 +1376,69 @@ fun (cdf : ℝ → ℝ) (β θ : ℝ) (firstGenre secondGenre p : JGS23SupplySid
 \item \hyperlink{governing-declaration-fb292a037babdd07}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}canonical\allowbreak{}Two\allowbreak{}User\allowbreak{}Second}
 \item \hyperlink{governing-declaration-6ba13dc1cae95e6e}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}norm\allowbreak{}Power\allowbreak{}Cost\allowbreak{}Spec}
 \item \hyperlink{governing-declaration-e3725af4eb21c4db}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}score}
+\end{itemize}
+\hypertarget{governing-declaration-6be812a4b679146a}{}
+\subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}infinite\allowbreak{}Producer\allowbreak{}Candidate\allowbreak{}Spec}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+(ℝ → ℝ) → ℝ → ℝ → ℝ → Prop
+
+value:
+fun (cdf : ℝ → ℝ) (β θ phi : ℝ) =>
+  ∃ (firstGenre : JGS23SupplySideRecommenderSystems.Content 2) (secondGenre :
+    JGS23SupplySideRecommenderSystems.Content 2) (conditionalQuality : MeasureTheory.Measure ℝ) (firstWeight : ℝ)
+    (secondWeight : ℝ),
+    firstGenre = JGS23SupplySideRecommenderSystems.infiniteGenreFirstGenre phi ∧
+      secondGenre = JGS23SupplySideRecommenderSystems.infiniteGenreSecondGenre θ phi ∧
+        firstGenre ≠ secondGenre ∧
+          JGS23SupplySideRecommenderSystems.NonnegativeContent firstGenre ∧
+            JGS23SupplySideRecommenderSystems.NonnegativeContent secondGenre ∧
+              (JGS23SupplySideRecommenderSystems.SourceNorm.l2 2).norm firstGenre = 1 ∧
+                (JGS23SupplySideRecommenderSystems.SourceNorm.l2 2).norm secondGenre = 1 ∧
+                  MeasureTheory.IsProbabilityMeasure conditionalQuality ∧
+                    (∀ (q : ℝ), conditionalQuality (Set.Iic q) = ENNReal.ofReal (cdf q)) ∧
+                      conditionalQuality.support ⊆ Set.Ici 0 ∧
+                        0 ≤ firstWeight ∧
+                          0 ≤ secondWeight ∧
+                            firstWeight = 1 / 2 ∧
+                              secondWeight = 1 / 2 ∧
+                                firstWeight + secondWeight = 1 ∧
+                                  (∀ {{r : ℝ}},
+                                      r ∈ conditionalQuality.support →
+                                        JGS23SupplySideRecommenderSystems.scaleContent r firstGenre ∈
+                                            {p : JGS23SupplySideRecommenderSystems.Content 2 |
+                                              JGS23SupplySideRecommenderSystems.NonnegativeContent p} ∧
+                                          IsMaxOn
+                                            (JGS23SupplySideRecommenderSystems.infiniteTwoGenreContentObjectiveSpec cdf
+                                              β θ firstGenre secondGenre)
+                                            {p : JGS23SupplySideRecommenderSystems.Content 2 |
+                                              JGS23SupplySideRecommenderSystems.NonnegativeContent p}
+                                            (JGS23SupplySideRecommenderSystems.scaleContent r firstGenre)) ∧
+                                    ∀ {{r : ℝ}},
+                                      r ∈ conditionalQuality.support →
+                                        JGS23SupplySideRecommenderSystems.scaleContent r secondGenre ∈
+                                            {p : JGS23SupplySideRecommenderSystems.Content 2 |
+                                              JGS23SupplySideRecommenderSystems.NonnegativeContent p} ∧
+                                          IsMaxOn
+                                            (JGS23SupplySideRecommenderSystems.infiniteTwoGenreContentObjectiveSpec cdf
+                                              β θ firstGenre secondGenre)
+                                            {p : JGS23SupplySideRecommenderSystems.Content 2 |
+                                              JGS23SupplySideRecommenderSystems.NonnegativeContent p}
+                                            (JGS23SupplySideRecommenderSystems.scaleContent r secondGenre)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
+\item \hyperlink{governing-declaration-d426babe40b9593c}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonnegative\allowbreak{}Content}
+\item \hyperlink{governing-declaration-6141339a5d3412d9}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm}
+\item \hyperlink{governing-declaration-9299663ffe3ecb38}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm.\allowbreak{}l2}
+\item \hyperlink{governing-declaration-c4e1c2ecd90525fd}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}infinite\allowbreak{}Genre\allowbreak{}First\allowbreak{}Genre}
+\item \hyperlink{governing-declaration-4efa4a4608135f6d}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}infinite\allowbreak{}Genre\allowbreak{}Second\allowbreak{}Genre}
+\item \hyperlink{governing-declaration-014c91b6cfe1e10b}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}infinite\allowbreak{}Two\allowbreak{}Genre\allowbreak{}Content\allowbreak{}Objective\allowbreak{}Spec}
+\item \hyperlink{governing-declaration-c0824fcccb145634}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}scale\allowbreak{}Content}
 \end{itemize}
 \hypertarget{governing-declaration-c13a6748f5c431e4}{}
 \subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}p\allowbreak{}Two\allowbreak{}Standard\allowbreak{}Basis\allowbreak{}Value\allowbreak{}Map}
@@ -1380,6 +1559,35 @@ fun {D : ℕ} (N P : ℕ) (β : ℝ) (genre : JGS23SupplySideRecommenderSystems.
 \item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
 \item \hyperlink{governing-declaration-59469d9bad51db22}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}single\allowbreak{}Genre\allowbreak{}Content\allowbreak{}Sample}
 \end{itemize}
+\hypertarget{governing-declaration-0a76b07688b0f653}{}
+\subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}standard\allowbreak{}Basis\allowbreak{}Content}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+(D : ℕ) → Fin D → Fin D → ℝ
+
+value:
+fun (D : ℕ) (i a : Fin D) => if a = i then 1 else 0
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-135fc11c64755ad6}{}
+\subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}standard\allowbreak{}Basis\allowbreak{}Users}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+(D : ℕ) → Fin D → Fin D → ℝ
+
+value:
+fun (D : ℕ) (i a : Fin D) => JGS23SupplySideRecommenderSystems.standardBasisContent D i a
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-0a76b07688b0f653}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}standard\allowbreak{}Basis\allowbreak{}Content}
+\end{itemize}
 \hypertarget{governing-declaration-43b84bc2140424db}{}
 \subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}Population\allowbreak{}Users}
 \textbf{Declaration location:} paper-local
@@ -1480,6 +1688,25 @@ fun (α β θ z1 z2 : ℝ) => JGS23SupplySideRecommenderSystems.twoUserInducedCo
 \begin{itemize}\raggedright
 \item \hyperlink{governing-declaration-b38685e3b8f83623}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}User\allowbreak{}Induced\allowbreak{}Cost\allowbreak{}Cross\allowbreak{}Partial}
 \end{itemize}
+\hypertarget{governing-declaration-ccdb8ef08ba775c0}{}
+\subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}User\allowbreak{}Normalized\allowbreak{}Content}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{D : ℕ} → JGS23SupplySideRecommenderSystems.Content D → Fin D → ℝ
+
+value:
+fun {D : ℕ} (u : JGS23SupplySideRecommenderSystems.Content D) (a : Fin D) =>
+  JGS23SupplySideRecommenderSystems.scaleContent (AppliedModelingLib.FiniteDimensionalNorms.l2 u)⁻¹ u a
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-08313452edb53fe9}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Finite\allowbreak{}Dimensional\allowbreak{}Norms.\allowbreak{}l2}
+\item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
+\item \hyperlink{governing-declaration-c0824fcccb145634}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}scale\allowbreak{}Content}
+\end{itemize}
 \hypertarget{governing-declaration-63bdc0df0d11c740}{}
 \subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}User\allowbreak{}Phase\allowbreak{}Threshold}
 \textbf{Declaration location:} paper-local
@@ -1493,6 +1720,46 @@ fun (θ : ℝ) => 2 / (1 - Real.cos θ)
 \end{ReviewVerbatim}
 
 
+\hypertarget{governing-declaration-2b42626a840c2ffe}{}
+\subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}User\allowbreak{}Score\allowbreak{}Map}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+JGS23SupplySideRecommenderSystems.Content 2 →
+  JGS23SupplySideRecommenderSystems.Content 2 → JGS23SupplySideRecommenderSystems.Content 2 → ℝ × ℝ
+
+value:
+fun (u v p : JGS23SupplySideRecommenderSystems.Content 2) =>
+  (JGS23SupplySideRecommenderSystems.score u p, JGS23SupplySideRecommenderSystems.score v p)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
+\item \hyperlink{governing-declaration-e3725af4eb21c4db}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}score}
+\end{itemize}
+\hypertarget{governing-declaration-bca7e2616269bec3}{}
+\subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}User\allowbreak{}Score\allowbreak{}Feasible\allowbreak{}Set}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+JGS23SupplySideRecommenderSystems.Content 2 → JGS23SupplySideRecommenderSystems.Content 2 → ℝ × ℝ → Prop
+
+value:
+fun (u v : JGS23SupplySideRecommenderSystems.Content 2) (a : ℝ × ℝ) =>
+  (JGS23SupplySideRecommenderSystems.twoUserScoreMap u v ''
+      {p : JGS23SupplySideRecommenderSystems.Content 2 | JGS23SupplySideRecommenderSystems.NonnegativeContent p})
+    a
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
+\item \hyperlink{governing-declaration-d426babe40b9593c}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonnegative\allowbreak{}Content}
+\item \hyperlink{governing-declaration-2b42626a840c2ffe}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}User\allowbreak{}Score\allowbreak{}Map}
+\end{itemize}
 \hypertarget{governing-declaration-102bf3bcfd98280b}{}
 \subsection*{\small\ttfamily\raggedright JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}User\allowbreak{}Second\allowbreak{}Deriv\allowbreak{}Sign\allowbreak{}Bracket}
 \textbf{Declaration location:} paper-local
@@ -2177,63 +2444,31 @@ The corrected finite-genre infinite-producer model uses normalized nonnegative g
 \paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
 type:
-(ℝ → ℝ) → ℝ → ℝ → Prop
+{D N G : ℕ} →
+  (Fin N → JGS23SupplySideRecommenderSystems.Content D) →
+    (JGS23SupplySideRecommenderSystems.Content D → ℝ) →
+      (Fin G → JGS23SupplySideRecommenderSystems.Content D) →
+        (Fin G → MeasureTheory.Measure ℝ) → (Fin G → ℝ → ℝ) → (Fin G → ℝ) → Prop
 
 value:
-fun (cdf : ℝ → ℝ) (β θ : ℝ) =>
-  ∃ (firstGenre : JGS23SupplySideRecommenderSystems.Content 2) (secondGenre :
-    JGS23SupplySideRecommenderSystems.Content 2) (conditionalQuality : MeasureTheory.Measure ℝ) (firstWeight : ℝ)
-    (secondWeight : ℝ),
-    JGS23SupplySideRecommenderSystems.NonnegativeContent firstGenre ∧
-      JGS23SupplySideRecommenderSystems.NonnegativeContent secondGenre ∧
-        (JGS23SupplySideRecommenderSystems.SourceNorm.l2 2).norm firstGenre = 1 ∧
-          (JGS23SupplySideRecommenderSystems.SourceNorm.l2 2).norm secondGenre = 1 ∧
-            MeasureTheory.IsProbabilityMeasure conditionalQuality ∧
-              (∀ (q : ℝ), conditionalQuality (Set.Iic q) = ENNReal.ofReal (cdf q)) ∧
-                conditionalQuality.support ⊆ Set.Ici 0 ∧
-                  0 ≤ firstWeight ∧
-                    0 ≤ secondWeight ∧
-                      firstWeight = 1 / 2 ∧
-                        secondWeight = 1 / 2 ∧
-                          firstWeight + secondWeight = 1 ∧
-                            (∀ {{r : ℝ}},
-                                r ∈ conditionalQuality.support →
-                                  JGS23SupplySideRecommenderSystems.scaleContent r firstGenre ∈
-                                      {p : JGS23SupplySideRecommenderSystems.Content 2 |
-                                        JGS23SupplySideRecommenderSystems.NonnegativeContent p} ∧
-                                    IsMaxOn
-                                      (JGS23SupplySideRecommenderSystems.infiniteTwoGenreContentObjectiveSpec cdf β θ
-                                        firstGenre secondGenre)
-                                      {p : JGS23SupplySideRecommenderSystems.Content 2 |
-                                        JGS23SupplySideRecommenderSystems.NonnegativeContent p}
-                                      (JGS23SupplySideRecommenderSystems.scaleContent r firstGenre)) ∧
-                              ∀ {{r : ℝ}},
-                                r ∈ conditionalQuality.support →
-                                  JGS23SupplySideRecommenderSystems.scaleContent r secondGenre ∈
-                                      {p : JGS23SupplySideRecommenderSystems.Content 2 |
-                                        JGS23SupplySideRecommenderSystems.NonnegativeContent p} ∧
-                                    IsMaxOn
-                                      (JGS23SupplySideRecommenderSystems.infiniteTwoGenreContentObjectiveSpec cdf β θ
-                                        firstGenre secondGenre)
-                                      {p : JGS23SupplySideRecommenderSystems.Content 2 |
-                                        JGS23SupplySideRecommenderSystems.NonnegativeContent p}
-                                      (JGS23SupplySideRecommenderSystems.scaleContent r secondGenre)
+fun {D N G : ℕ} (users : Fin N → JGS23SupplySideRecommenderSystems.Content D)
+    (cost : JGS23SupplySideRecommenderSystems.Content D → ℝ)
+    (genres : Fin G → JGS23SupplySideRecommenderSystems.Content D)
+    (conditionalQuality : Fin G → MeasureTheory.Measure ℝ) (maximumQualityCdf : Fin G → ℝ → ℝ) (weights : Fin G → ℝ) =>
+  JGS23SupplySideRecommenderSystems.infiniteGenreDefinitionSpec users cost genres conditionalQuality maximumQualityCdf
+    weights
 \end{ReviewVerbatim}
 
 \paragraph{Direct retained dependencies}
 \begin{itemize}\raggedright
 \item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
-\item \hyperlink{governing-declaration-d426babe40b9593c}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonnegative\allowbreak{}Content}
-\item \hyperlink{governing-declaration-6141339a5d3412d9}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm}
-\item \hyperlink{governing-declaration-9299663ffe3ecb38}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm.\allowbreak{}l2}
-\item \hyperlink{governing-declaration-014c91b6cfe1e10b}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}infinite\allowbreak{}Two\allowbreak{}Genre\allowbreak{}Content\allowbreak{}Objective\allowbreak{}Spec}
-\item \hyperlink{governing-declaration-c0824fcccb145634}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}scale\allowbreak{}Content}
+\item \hyperlink{paper-prerequisite-66c1847c0390affa}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}infinite\allowbreak{}Genre\allowbreak{}Definition\allowbreak{}Spec}
 \end{itemize}
 \paragraph{Recorded source-to-declaration screening}
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} The archival limiting display has the recorded index and weight defects.\allowbreak{} The declaration instead states the authorization-\allowbreak{}pinned coherent two-\allowbreak{}genre predicate with probability CDF, normalized half weights, and support-\allowbreak{}wise global best responses, so this is not a raw-\allowbreak{}source match.\allowbreak{}
+\textbf{Reason:} The source describes a finite-\allowbreak{}genre distribution by nonnegative genre directions, conditional radial/\allowbreak{}maximum-\allowbreak{}quality laws, probability weights, and support-\allowbreak{}wise maximization, but its limiting display has index/\allowbreak{}weight inconsistencies.\allowbreak{} The displayed approved correction calls for the coherent normalized model;\allowbreak{} the Lean target supplies exactly those probability laws, normalized nonnegative genres and weights, genre-\allowbreak{}indexed product objective, and support-\allowbreak{}wise global best responses.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
@@ -3127,7 +3362,7 @@ The threshold $\beta^*$ is always at least $1$. That is, if $\beta = 1$, there e
 \paragraph{Formalized review target}
 The archival source above is not asserted equivalent to this formalized target.
 \begin{ReviewVerbatim}
-For nonnegative nonzero users and a compact convex source norm, beta equal to one has an explicit positive-score single-ray symmetric mixed equilibrium.
+For nonnegative nonzero users and a compact convex source norm, beta equal to one belongs to the source product-condition beta-star set and has an explicit positive-score single-ray symmetric mixed equilibrium.
 \end{ReviewVerbatim}
 
 \textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 459-\allowbreak{}462\par}
@@ -3144,8 +3379,9 @@ For nonnegative nonzero users and a compact convex source norm, beta equal to on
               ν.norm p ≤ 1 ∧
                 (∀ (i : Fin N), 0 < JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p) ∧
                   JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec users
-                    (JGS23SupplySideRecommenderSystems.normPowerCostSpec ν 1)
-                    (JGS23SupplySideRecommenderSystems.singleGenreContentLaw N P 1 (ν.normalizedContent p))
+                      (JGS23SupplySideRecommenderSystems.normPowerCostSpec ν 1)
+                      (JGS23SupplySideRecommenderSystems.singleGenreContentLaw N P 1 (ν.normalizedContent p)) ∧
+                    1 ≤ JGS23SupplySideRecommenderSystems.betaStarDefinitionSpec users ν
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
@@ -3157,6 +3393,7 @@ For nonnegative nonzero users and a compact convex source norm, beta equal to on
 \item \hyperlink{governing-declaration-dd171705f4075880}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm.\allowbreak{}normalized\allowbreak{}Content}
 \item \hyperlink{governing-declaration-0d92048317064110}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm\allowbreak{}Compact\allowbreak{}Sublevels}
 \item \hyperlink{governing-declaration-00787188baa46dbd}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm\allowbreak{}Convex\allowbreak{}Sublevels}
+\item \hyperlink{paper-prerequisite-27ab0f155f5dcf24}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}beta\allowbreak{}Star\allowbreak{}Definition\allowbreak{}Spec}
 \item \hyperlink{governing-declaration-6ba13dc1cae95e6e}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}norm\allowbreak{}Power\allowbreak{}Cost\allowbreak{}Spec}
 \item \hyperlink{governing-declaration-48347eafb3702717}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}paper\_\allowbreak{}inferred\_\allowbreak{}user\_\allowbreak{}value}
 \item \hyperlink{governing-declaration-205216ea3d333b14}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}single\allowbreak{}Genre\allowbreak{}Content\allowbreak{}Law}
@@ -3180,8 +3417,9 @@ For nonnegative nonzero users and a compact convex source norm, beta equal to on
     ν.norm p ≤ 1 ∧
       (∀ (i : Fin N), 0 < JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p) ∧
         JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec users
-          (JGS23SupplySideRecommenderSystems.normPowerCostSpec ν 1)
-          (JGS23SupplySideRecommenderSystems.singleGenreContentLaw N P 1 (ν.normalizedContent p))
+            (JGS23SupplySideRecommenderSystems.normPowerCostSpec ν 1)
+            (JGS23SupplySideRecommenderSystems.singleGenreContentLaw N P 1 (ν.normalizedContent p)) ∧
+          1 ≤ JGS23SupplySideRecommenderSystems.betaStarDefinitionSpec users ν
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -3192,7 +3430,7 @@ JGS23SupplySideRecommenderSystems.corollaryBetaOne
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Anchor 459-\allowbreak{}462 supplies the beta=1 single-\allowbreak{}genre conclusion;\allowbreak{} the approved fixed-\allowbreak{}exponent target makes the compact-\allowbreak{}convex norm and positive ray witness explicit without asserting beta-\allowbreak{}star endpoint attainment.\allowbreak{}
+\textbf{Reason:} The approved beta-\allowbreak{}one repair is stated for nonnegative nonzero users and a source norm with compact and convex sublevels.\allowbreak{} The expanded proposition uses exactly that domain and returns one nonnegative unit-\allowbreak{}ball direction with positive score for every user, the explicit beta-\allowbreak{}one power-\allowbreak{}law measure on its normalized ray, symmetric Nash optimality under the displayed uniform-\allowbreak{}tie payoff, and the beta-\allowbreak{}star lower bound 1.\allowbreak{} The ray-\allowbreak{}law and beta-\allowbreak{}star prerequisites preserve the approved product-\allowbreak{}condition and equilibrium meanings, so the Lean target matches the corrected target.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
@@ -3213,31 +3451,40 @@ Let the cost function be $c(\p) = \|\p\|_{q}^{\beta}$. For any set of user vecto
 \paragraph{Formalized review target}
 The archival source above is not asserted equivalent to this formalized target.
 \begin{ReviewVerbatim}
-For an Lq source norm, nonnegative nonzero users, and every positive beta at most q with q at least one, a singleton nonzero-support-genre symmetric mixed equilibrium exists.
+For an Lq source norm, nonnegative nonzero users, and q at least one, the source product-condition beta-star is at least q; a singleton nonzero-support-genre symmetric mixed equilibrium exists for every positive beta at most q. For at least two standard-basis users, beta-star equals q.
 \end{ReviewVerbatim}
 
 \textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 470-\allowbreak{}473\par}
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ {D N P : ℕ} [Nonempty (Fin N)] [Nonempty (Fin P)] [Nontrivial (Fin P)] {q β : ℝ}
-  {users : Fin N → JGS23SupplySideRecommenderSystems.Content D} (hq : 1 ≤ q),
-  0 < β →
-    β ≤ q →
-      (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)) →
-        (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonzeroContent (users i)) →
-          ∃ (μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D) (genre :
-            JGS23SupplySideRecommenderSystems.Content D),
-            JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec users
-                (JGS23SupplySideRecommenderSystems.normPowerCostSpec
+(∀ {D N P : ℕ} [Nonempty (Fin N)] [Nonempty (Fin P)] [Nontrivial (Fin P)] {q β : ℝ}
+    {users : Fin N → JGS23SupplySideRecommenderSystems.Content D} (hq : 1 ≤ q),
+    0 < β →
+      β ≤ q →
+        (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)) →
+          (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonzeroContent (users i)) →
+            (∃ (μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D) (genre :
+                JGS23SupplySideRecommenderSystems.Content D),
+                JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec users
+                    (JGS23SupplySideRecommenderSystems.normPowerCostSpec
+                      (JGS23SupplySideRecommenderSystems.SourceNorm.lp D
+                        (JGS23SupplySideRecommenderSystems.corollaryBetaPSpec._proof_1 hq))
+                      β)
+                    μ ∧
+                  JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec
+                      (JGS23SupplySideRecommenderSystems.SourceNorm.lp D
+                        (JGS23SupplySideRecommenderSystems.corollaryBetaPSpec._proof_1 hq))
+                      μ =
+                    {genre}) ∧
+              ↑q ≤
+                JGS23SupplySideRecommenderSystems.betaStarDefinitionSpec users
                   (JGS23SupplySideRecommenderSystems.SourceNorm.lp D
-                    (JGS23SupplySideRecommenderSystems.corollaryBetaPSpec._proof_1 hq))
-                  β)
-                μ ∧
-              JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec
-                  (JGS23SupplySideRecommenderSystems.SourceNorm.lp D
-                    (JGS23SupplySideRecommenderSystems.corollaryBetaPSpec._proof_1 hq))
-                  μ =
-                {genre}
+                    (JGS23SupplySideRecommenderSystems.corollaryBetaPSpec._proof_1 hq))) ∧
+  ∀ {D : ℕ} [Nontrivial (Fin D)] {q : ℝ} (hq : 1 ≤ q),
+    JGS23SupplySideRecommenderSystems.betaStarDefinitionSpec (JGS23SupplySideRecommenderSystems.standardBasisUsers D)
+        (JGS23SupplySideRecommenderSystems.SourceNorm.lp D
+          (JGS23SupplySideRecommenderSystems.corollaryBetaPSpec._proof_1 hq)) =
+      ↑q
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
@@ -3247,37 +3494,41 @@ For an Lq source norm, nonnegative nonzero users, and every positive beta at mos
 \item \hyperlink{governing-declaration-d426babe40b9593c}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonnegative\allowbreak{}Content}
 \item \hyperlink{governing-declaration-90e2ac7d13788c50}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonzero\allowbreak{}Content}
 \item \hyperlink{governing-declaration-f359e4d59fc74c80}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm.\allowbreak{}lp}
+\item \hyperlink{paper-prerequisite-27ab0f155f5dcf24}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}beta\allowbreak{}Star\allowbreak{}Definition\allowbreak{}Spec}
 \item \hyperlink{governing-declaration-588c7a0b2af225d7}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}nonzero\allowbreak{}Support\allowbreak{}Genres\allowbreak{}Spec}
 \item \hyperlink{governing-declaration-6ba13dc1cae95e6e}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}norm\allowbreak{}Power\allowbreak{}Cost\allowbreak{}Spec}
+\item \hyperlink{governing-declaration-135fc11c64755ad6}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}standard\allowbreak{}Basis\allowbreak{}Users}
 \item \hyperlink{paper-prerequisite-b412efba7deb757f}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}symmetric\allowbreak{}Mixed\allowbreak{}Nash\allowbreak{}Model\allowbreak{}Spec}
 \end{itemize}
 \paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
-1. parameter: ℕ
-2. parameter: ℕ
-3. parameter: ℕ
-4. assumption: Nonempty (Fin N)
-5. assumption: Nonempty (Fin P)
-6. assumption: Nontrivial (Fin P)
-7. parameter: ℝ
-8. parameter: ℝ
-9. parameter: Fin N → JGS23SupplySideRecommenderSystems.Content D
-10. assumption: 1 ≤ q
-11. assumption: 0 < β
-12. assumption: β ≤ q
-13. assumption: ∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)
-14. assumption: ∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonzeroContent (users i)
-15. conclusion: ∃ (μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D) (genre : JGS23SupplySideRecommenderSystems.Content D),
-  JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec users
-      (JGS23SupplySideRecommenderSystems.normPowerCostSpec
+1. conclusion: (∀ {D N P : ℕ} [Nonempty (Fin N)] [Nonempty (Fin P)] [Nontrivial (Fin P)] {q β : ℝ}
+    {users : Fin N → JGS23SupplySideRecommenderSystems.Content D} (hq : 1 ≤ q),
+    0 < β →
+      β ≤ q →
+        (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)) →
+          (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonzeroContent (users i)) →
+            (∃ (μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D) (genre :
+                JGS23SupplySideRecommenderSystems.Content D),
+                JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec users
+                    (JGS23SupplySideRecommenderSystems.normPowerCostSpec
+                      (JGS23SupplySideRecommenderSystems.SourceNorm.lp D
+                        (JGS23SupplySideRecommenderSystems.corollaryBetaPSpec._proof_1 hq))
+                      β)
+                    μ ∧
+                  JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec
+                      (JGS23SupplySideRecommenderSystems.SourceNorm.lp D
+                        (JGS23SupplySideRecommenderSystems.corollaryBetaPSpec._proof_1 hq))
+                      μ =
+                    {genre}) ∧
+              ↑q ≤
+                JGS23SupplySideRecommenderSystems.betaStarDefinitionSpec users
+                  (JGS23SupplySideRecommenderSystems.SourceNorm.lp D
+                    (JGS23SupplySideRecommenderSystems.corollaryBetaPSpec._proof_1 hq))) ∧
+  ∀ {D : ℕ} [Nontrivial (Fin D)] {q : ℝ} (hq : 1 ≤ q),
+    JGS23SupplySideRecommenderSystems.betaStarDefinitionSpec (JGS23SupplySideRecommenderSystems.standardBasisUsers D)
         (JGS23SupplySideRecommenderSystems.SourceNorm.lp D
-          (JGS23SupplySideRecommenderSystems.corollaryBetaPSpec._proof_1 hq))
-        β)
-      μ ∧
-    JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec
-        (JGS23SupplySideRecommenderSystems.SourceNorm.lp D
-          (JGS23SupplySideRecommenderSystems.corollaryBetaPSpec._proof_1 hq))
-        μ =
-      {genre}
+          (JGS23SupplySideRecommenderSystems.corollaryBetaPSpec._proof_1 hq)) =
+      ↑q
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -3288,7 +3539,7 @@ JGS23SupplySideRecommenderSystems.corollaryBetaP
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Anchor 470-\allowbreak{}473 is the Lq beta-\allowbreak{}star corollary;\allowbreak{} the approved target states its concrete content, a singleton nonzero-\allowbreak{}support-\allowbreak{}genre equilibrium for each positive beta at most q, rather than an unproved supremum endpoint.\allowbreak{}
+\textbf{Reason:} For the Lq repair, the Lean conjunction has the same two scopes as the approved target.\allowbreak{} With q at least one, positive beta at most q, and arbitrary nonnegative nonzero users, it produces a symmetric Nash measure with exactly one nonzero support direction and proves beta-\allowbreak{}star at least q.\allowbreak{} Separately, for the standard-\allowbreak{}basis family in nontrivial dimension, it proves beta-\allowbreak{}star equals q.\allowbreak{} The expanded Lq norm, powered unit image, nonzero-\allowbreak{}genre, and beta-\allowbreak{}star definitions introduce no different formula or domain restriction.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
@@ -3310,7 +3561,7 @@ Suppose that there are $N$ users split equally between two linearly independentl
 \paragraph{Formalized review target}
 The archival source above is not asserted equivalent to this formalized target.
 \begin{ReviewVerbatim}
-For two equal nonzero user populations at angle theta with L2 power cost, a zero-safe single-genre symmetric equilibrium exists exactly when beta is at most the two-user phase threshold.
+For two equal nonzero user populations at angle theta with L2 power cost, the source product-condition beta-star is exactly the two-user phase threshold; the accompanying zero-safe single-genre symmetric-equilibrium condition holds exactly at exponents below that threshold.
 \end{ReviewVerbatim}
 
 \textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 548-\allowbreak{}554\par}
@@ -3330,16 +3581,20 @@ For two equal nonzero user populations at angle theta with L2 power cost, a zero
               0 < θ →
                 θ ≤ Real.pi / 2 →
                   ((∃ (μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D) (genre :
-                      JGS23SupplySideRecommenderSystems.Content D),
-                      JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec
-                          (JGS23SupplySideRecommenderSystems.twoPopulationUsers K users)
-                          (JGS23SupplySideRecommenderSystems.normPowerCostSpec
-                            (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) β)
-                          μ ∧
-                        JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec
-                            (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) μ =
-                          {genre}) ↔
-                    β ≤ JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ)
+                        JGS23SupplySideRecommenderSystems.Content D),
+                        JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec
+                            (JGS23SupplySideRecommenderSystems.twoPopulationUsers K users)
+                            (JGS23SupplySideRecommenderSystems.normPowerCostSpec
+                              (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) β)
+                            μ ∧
+                          JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec
+                              (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) μ =
+                            {genre}) ↔
+                      β ≤ JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ) ∧
+                    JGS23SupplySideRecommenderSystems.betaStarDefinitionSpec
+                        (JGS23SupplySideRecommenderSystems.twoPopulationUsers K users)
+                        (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) =
+                      ↑(JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ)
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
@@ -3350,6 +3605,7 @@ For two equal nonzero user populations at angle theta with L2 power cost, a zero
 \item \hyperlink{governing-declaration-d426babe40b9593c}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonnegative\allowbreak{}Content}
 \item \hyperlink{governing-declaration-90e2ac7d13788c50}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonzero\allowbreak{}Content}
 \item \hyperlink{governing-declaration-9299663ffe3ecb38}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm.\allowbreak{}l2}
+\item \hyperlink{paper-prerequisite-27ab0f155f5dcf24}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}beta\allowbreak{}Star\allowbreak{}Definition\allowbreak{}Spec}
 \item \hyperlink{governing-declaration-588c7a0b2af225d7}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}nonzero\allowbreak{}Support\allowbreak{}Genres\allowbreak{}Spec}
 \item \hyperlink{governing-declaration-6ba13dc1cae95e6e}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}norm\allowbreak{}Power\allowbreak{}Cost\allowbreak{}Spec}
 \item \hyperlink{governing-declaration-48347eafb3702717}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}paper\_\allowbreak{}inferred\_\allowbreak{}user\_\allowbreak{}value}
@@ -3376,13 +3632,20 @@ For two equal nonzero user populations at angle theta with L2 power cost, a zero
 14. assumption: 1 ≤ β
 15. assumption: 0 < θ
 16. assumption: θ ≤ Real.pi / 2
-17. conclusion: (∃ (μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D) (genre : JGS23SupplySideRecommenderSystems.Content D),
-    JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec
-        (JGS23SupplySideRecommenderSystems.twoPopulationUsers K users)
-        (JGS23SupplySideRecommenderSystems.normPowerCostSpec (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) β) μ ∧
-      JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) μ =
-        {genre}) ↔
-  β ≤ JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ
+17. conclusion: ((∃ (μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D) (genre :
+      JGS23SupplySideRecommenderSystems.Content D),
+      JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec
+          (JGS23SupplySideRecommenderSystems.twoPopulationUsers K users)
+          (JGS23SupplySideRecommenderSystems.normPowerCostSpec (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) β)
+          μ ∧
+        JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D)
+            μ =
+          {genre}) ↔
+    β ≤ JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ) ∧
+  JGS23SupplySideRecommenderSystems.betaStarDefinitionSpec
+      (JGS23SupplySideRecommenderSystems.twoPopulationUsers K users)
+      (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) =
+    ↑(JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ)
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -3393,7 +3656,7 @@ JGS23SupplySideRecommenderSystems.corollaryTwoUsers
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Anchor 477-\allowbreak{}481 gives the equal-\allowbreak{}population two-\allowbreak{}user threshold;\allowbreak{} the approved target makes normalization, nonzero users, and the zero-\allowbreak{}safe singleton-\allowbreak{}genre existence iff explicit at beta <= 2/\allowbreak{}(1-\allowbreak{}cos theta).\allowbreak{}
+\textbf{Reason:} The source's equal split is represented as K copies of each of two nonzero nonnegative user types, with K positive.\allowbreak{} The Lean angle premise is their L2-\allowbreak{}normalized inner product, theta is restricted to the nonnegative independent-\allowbreak{}user range, and the supporting threshold expands to 2/\allowbreak{}(1-\allowbreak{}cos theta).\allowbreak{} In this domain the conclusion gives both the zero-\allowbreak{}safe singleton-\allowbreak{}nonzero-\allowbreak{}genre equilibrium equivalence beta <= threshold and exact product-\allowbreak{}condition beta-\allowbreak{}star equality, which is the full approved corrected target.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
@@ -3418,35 +3681,64 @@ Let $\|\cdot\|_{*}$ denote the dual norm of $\|\cdot\|$, defined to be $\|\p\|_{
 \paragraph{Formalized review target}
 The archival source above is not asserted equivalent to this formalized target.
 \begin{ReviewVerbatim}
-For a fixed exponent strictly above the finite logarithmic threshold, nonnegative nonzero users under compact perturbation-continuous norm regularity cannot have a source symmetric equilibrium with one nonzero support genre.
+For normalized nonnegative users with compact source-norm sublevels and score-one unit witnesses, the source product-condition beta-star is at most one when Z=1 and at most the displayed logarithmic threshold when 1<Z<N; above the finite threshold no compact regular source symmetric equilibrium has one nonzero support genre.
 \end{ReviewVerbatim}
 
 \textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 486-\allowbreak{}493\par}
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ {D N P : ℕ} [Nontrivial (Fin N)] [Nonempty (Fin P)] [Nontrivial (Fin P)] {β Z : ℝ}
-  {users : Fin N → JGS23SupplySideRecommenderSystems.Content D} (ν : JGS23SupplySideRecommenderSystems.SourceNorm D),
-  (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)) →
-    (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonzeroContent (users i)) →
-      JGS23SupplySideRecommenderSystems.SourceNormPerturbationContinuous ν →
+(∀ {D N P : ℕ} [Nontrivial (Fin N)] [Nonempty (Fin P)] [Nontrivial (Fin P)] {β Z : ℝ}
+    {users : Fin N → JGS23SupplySideRecommenderSystems.Content D} (ν : JGS23SupplySideRecommenderSystems.SourceNorm D),
+    (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)) →
+      (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonzeroContent (users i)) →
+        JGS23SupplySideRecommenderSystems.SourceNormPerturbationContinuous ν →
+          JGS23SupplySideRecommenderSystems.SourceNormCompactSublevels ν →
+            Continuous ν.norm →
+              (∀ (p : JGS23SupplySideRecommenderSystems.Content D),
+                  JGS23SupplySideRecommenderSystems.NonnegativeContent p →
+                    ν.norm p ≤ 1 →
+                      ∑ i : Fin N, JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p ≤ Z) →
+                (∀ (i : Fin N),
+                    ∃ (p : JGS23SupplySideRecommenderSystems.Content D),
+                      JGS23SupplySideRecommenderSystems.NonnegativeContent p ∧
+                        ν.norm p = 1 ∧ JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p = 1) →
+                  1 < Z →
+                    Z < ↑N →
+                      Real.log ↑N / (Real.log ↑N - Real.log Z) < β →
+                        ¬∃ (μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D) (genre :
+                            JGS23SupplySideRecommenderSystems.Content D),
+                            JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec users
+                                (JGS23SupplySideRecommenderSystems.normPowerCostSpec ν β) μ ∧
+                              JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec ν μ = {genre}) ∧
+  (∀ {D N : ℕ} [Nontrivial (Fin N)] {users : Fin N → JGS23SupplySideRecommenderSystems.Content D}
+      (ν : JGS23SupplySideRecommenderSystems.SourceNorm D),
+      (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)) →
         JGS23SupplySideRecommenderSystems.SourceNormCompactSublevels ν →
-          Continuous ν.norm →
-            (∀ (p : JGS23SupplySideRecommenderSystems.Content D),
-                JGS23SupplySideRecommenderSystems.NonnegativeContent p →
-                  ν.norm p ≤ 1 →
-                    ∑ i : Fin N, JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p ≤ Z) →
-              (∀ (i : Fin N),
-                  ∃ (p : JGS23SupplySideRecommenderSystems.Content D),
-                    JGS23SupplySideRecommenderSystems.NonnegativeContent p ∧
-                      ν.norm p = 1 ∧ JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p = 1) →
-                1 < Z →
-                  Z < ↑N →
-                    Real.log ↑N / (Real.log ↑N - Real.log Z) < β →
-                      ¬∃ (μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D) (genre :
-                          JGS23SupplySideRecommenderSystems.Content D),
-                          JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec users
-                              (JGS23SupplySideRecommenderSystems.normPowerCostSpec ν β) μ ∧
-                            JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec ν μ = {genre}
+          (∀ (p : JGS23SupplySideRecommenderSystems.Content D),
+              JGS23SupplySideRecommenderSystems.NonnegativeContent p →
+                ν.norm p ≤ 1 →
+                  ∑ i : Fin N, JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p ≤ 1) →
+            (∀ (i : Fin N),
+                ∃ (p : JGS23SupplySideRecommenderSystems.Content D),
+                  JGS23SupplySideRecommenderSystems.NonnegativeContent p ∧
+                    ν.norm p = 1 ∧ JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p = 1) →
+              JGS23SupplySideRecommenderSystems.betaStarDefinitionSpec users ν ≤ 1) ∧
+    ∀ {D N : ℕ} [Nontrivial (Fin N)] {Z : ℝ} {users : Fin N → JGS23SupplySideRecommenderSystems.Content D}
+      (ν : JGS23SupplySideRecommenderSystems.SourceNorm D),
+      (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)) →
+        JGS23SupplySideRecommenderSystems.SourceNormCompactSublevels ν →
+          (∀ (p : JGS23SupplySideRecommenderSystems.Content D),
+              JGS23SupplySideRecommenderSystems.NonnegativeContent p →
+                ν.norm p ≤ 1 →
+                  ∑ i : Fin N, JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p ≤ Z) →
+            (∀ (i : Fin N),
+                ∃ (p : JGS23SupplySideRecommenderSystems.Content D),
+                  JGS23SupplySideRecommenderSystems.NonnegativeContent p ∧
+                    ν.norm p = 1 ∧ JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p = 1) →
+              1 < Z →
+                Z < ↑N →
+                  JGS23SupplySideRecommenderSystems.betaStarDefinitionSpec users ν ≤
+                    ↑(Real.log ↑N / (Real.log ↑N - Real.log Z))
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
@@ -3458,41 +3750,65 @@ For a fixed exponent strictly above the finite logarithmic threshold, nonnegativ
 \item \hyperlink{governing-declaration-6141339a5d3412d9}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm}
 \item \hyperlink{governing-declaration-0d92048317064110}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm\allowbreak{}Compact\allowbreak{}Sublevels}
 \item \hyperlink{governing-declaration-6ccc463be39b315f}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm\allowbreak{}Perturbation\allowbreak{}Continuous}
+\item \hyperlink{paper-prerequisite-27ab0f155f5dcf24}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}beta\allowbreak{}Star\allowbreak{}Definition\allowbreak{}Spec}
 \item \hyperlink{governing-declaration-588c7a0b2af225d7}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}nonzero\allowbreak{}Support\allowbreak{}Genres\allowbreak{}Spec}
 \item \hyperlink{governing-declaration-6ba13dc1cae95e6e}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}norm\allowbreak{}Power\allowbreak{}Cost\allowbreak{}Spec}
 \item \hyperlink{governing-declaration-48347eafb3702717}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}paper\_\allowbreak{}inferred\_\allowbreak{}user\_\allowbreak{}value}
 \item \hyperlink{paper-prerequisite-b412efba7deb757f}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}symmetric\allowbreak{}Mixed\allowbreak{}Nash\allowbreak{}Model\allowbreak{}Spec}
 \end{itemize}
 \paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
-1. parameter: ℕ
-2. parameter: ℕ
-3. parameter: ℕ
-4. assumption: Nontrivial (Fin N)
-5. assumption: Nonempty (Fin P)
-6. assumption: Nontrivial (Fin P)
-7. parameter: ℝ
-8. parameter: ℝ
-9. parameter: Fin N → JGS23SupplySideRecommenderSystems.Content D
-10. parameter: JGS23SupplySideRecommenderSystems.SourceNorm D
-11. assumption: ∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)
-12. assumption: ∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonzeroContent (users i)
-13. assumption: JGS23SupplySideRecommenderSystems.SourceNormPerturbationContinuous ν
-14. assumption: JGS23SupplySideRecommenderSystems.SourceNormCompactSublevels ν
-15. assumption: Continuous ν.norm
-16. assumption: ∀ (p : JGS23SupplySideRecommenderSystems.Content D),
-  JGS23SupplySideRecommenderSystems.NonnegativeContent p →
-    ν.norm p ≤ 1 → ∑ i : Fin N, JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p ≤ Z
-17. assumption: ∀ (i : Fin N),
-  ∃ (p : JGS23SupplySideRecommenderSystems.Content D),
-    JGS23SupplySideRecommenderSystems.NonnegativeContent p ∧
-      ν.norm p = 1 ∧ JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p = 1
-18. assumption: 1 < Z
-19. assumption: Z < ↑N
-20. assumption: Real.log ↑N / (Real.log ↑N - Real.log Z) < β
-21. conclusion: ¬∃ (μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D) (genre : JGS23SupplySideRecommenderSystems.Content D),
-    JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec users
-        (JGS23SupplySideRecommenderSystems.normPowerCostSpec ν β) μ ∧
-      JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec ν μ = {genre}
+1. conclusion: (∀ {D N P : ℕ} [Nontrivial (Fin N)] [Nonempty (Fin P)] [Nontrivial (Fin P)] {β Z : ℝ}
+    {users : Fin N → JGS23SupplySideRecommenderSystems.Content D} (ν : JGS23SupplySideRecommenderSystems.SourceNorm D),
+    (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)) →
+      (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonzeroContent (users i)) →
+        JGS23SupplySideRecommenderSystems.SourceNormPerturbationContinuous ν →
+          JGS23SupplySideRecommenderSystems.SourceNormCompactSublevels ν →
+            Continuous ν.norm →
+              (∀ (p : JGS23SupplySideRecommenderSystems.Content D),
+                  JGS23SupplySideRecommenderSystems.NonnegativeContent p →
+                    ν.norm p ≤ 1 →
+                      ∑ i : Fin N, JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p ≤ Z) →
+                (∀ (i : Fin N),
+                    ∃ (p : JGS23SupplySideRecommenderSystems.Content D),
+                      JGS23SupplySideRecommenderSystems.NonnegativeContent p ∧
+                        ν.norm p = 1 ∧ JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p = 1) →
+                  1 < Z →
+                    Z < ↑N →
+                      Real.log ↑N / (Real.log ↑N - Real.log Z) < β →
+                        ¬∃ (μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D) (genre :
+                            JGS23SupplySideRecommenderSystems.Content D),
+                            JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec users
+                                (JGS23SupplySideRecommenderSystems.normPowerCostSpec ν β) μ ∧
+                              JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec ν μ = {genre}) ∧
+  (∀ {D N : ℕ} [Nontrivial (Fin N)] {users : Fin N → JGS23SupplySideRecommenderSystems.Content D}
+      (ν : JGS23SupplySideRecommenderSystems.SourceNorm D),
+      (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)) →
+        JGS23SupplySideRecommenderSystems.SourceNormCompactSublevels ν →
+          (∀ (p : JGS23SupplySideRecommenderSystems.Content D),
+              JGS23SupplySideRecommenderSystems.NonnegativeContent p →
+                ν.norm p ≤ 1 →
+                  ∑ i : Fin N, JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p ≤ 1) →
+            (∀ (i : Fin N),
+                ∃ (p : JGS23SupplySideRecommenderSystems.Content D),
+                  JGS23SupplySideRecommenderSystems.NonnegativeContent p ∧
+                    ν.norm p = 1 ∧ JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p = 1) →
+              JGS23SupplySideRecommenderSystems.betaStarDefinitionSpec users ν ≤ 1) ∧
+    ∀ {D N : ℕ} [Nontrivial (Fin N)] {Z : ℝ} {users : Fin N → JGS23SupplySideRecommenderSystems.Content D}
+      (ν : JGS23SupplySideRecommenderSystems.SourceNorm D),
+      (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)) →
+        JGS23SupplySideRecommenderSystems.SourceNormCompactSublevels ν →
+          (∀ (p : JGS23SupplySideRecommenderSystems.Content D),
+              JGS23SupplySideRecommenderSystems.NonnegativeContent p →
+                ν.norm p ≤ 1 →
+                  ∑ i : Fin N, JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p ≤ Z) →
+            (∀ (i : Fin N),
+                ∃ (p : JGS23SupplySideRecommenderSystems.Content D),
+                  JGS23SupplySideRecommenderSystems.NonnegativeContent p ∧
+                    ν.norm p = 1 ∧ JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) p = 1) →
+              1 < Z →
+                Z < ↑N →
+                  JGS23SupplySideRecommenderSystems.betaStarDefinitionSpec users ν ≤
+                    ↑(Real.log ↑N / (Real.log ↑N - Real.log Z))
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -3503,7 +3819,7 @@ JGS23SupplySideRecommenderSystems.corollaryBeta
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Anchor 486-\allowbreak{}493 gives the logarithmic beta-\allowbreak{}star bound;\allowbreak{} the approved target is the corresponding fixed-\allowbreak{}exponent above-\allowbreak{}threshold exclusion with the needed compactness, continuity, and zero-\allowbreak{}safe genre conditions explicit.\allowbreak{}
+\textbf{Reason:} The corrected logarithmic target excludes the undefined Z = N quotient and retains the finite cases Z = 1 and 1 < Z < N.\allowbreak{} Lean exposes the source-\allowbreak{}norm compactness and perturbation/\allowbreak{}continuity conditions at the equilibrium-\allowbreak{}exclusion endpoint, represents Z by the displayed uniform upper bound on the sum of normalized user scores together with score-\allowbreak{}one unit witnesses, proves beta-\allowbreak{}star at most 1 in the Z = 1 case, and proves the stated log(N)/\allowbreak{}(log(N)-\allowbreak{}log(Z)) bound in the interior case.\allowbreak{} Its first conjunct also rules out a singleton nonzero-\allowbreak{}genre equilibrium strictly above that threshold, exactly as approved.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
@@ -3758,186 +4074,162 @@ Suppose that there are $N$ users split equally between two linearly independentl
 \paragraph{Formalized review target}
 The archival source above is not asserted equivalent to this formalized target.
 \begin{ReviewVerbatim}
-For the canonical two-user L2 model with absolutely continuous score laws and twice differentiable score CDFs on support, beta below the phase threshold forces one nonzero support genre, while beta above it excludes every finite conditional norm-law genre representation.
+For arbitrary nonzero nonnegative equal-population two-user L2 markets with absolutely continuous score laws and twice differentiable score CDFs on support, beta below the phase threshold forces one nonzero support genre, while beta above it excludes every finite conditional norm-law genre representation.
 \end{ReviewVerbatim}
 
 \textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 586-\allowbreak{}602\par}
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ {P : ℕ} [Nonempty (Fin P)] {β θ : ℝ} {μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy 2}
-  [MeasureTheory.IsProbabilityMeasure μ],
-  1 < P →
-    1 ≤ β →
-      0 < θ →
-        θ ≤ Real.pi / 2 →
-          JGS23SupplySideRecommenderSystems.SourceSymmetricMixedNash
-              (fun (i : Fin 2) =>
-                if i = 0 then JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst
-                else JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ)
-              (JGS23SupplySideRecommenderSystems.normPowerCostSpec (JGS23SupplySideRecommenderSystems.SourceNorm.l2 2)
-                β)
-              μ →
-            (∀ (i : Fin 2),
-                (MeasureTheory.Measure.map
-                      (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
-                        JGS23SupplySideRecommenderSystems.score
-                          (if i = 0 then JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst
-                          else JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ)
-                          q)
-                      μ).AbsolutelyContinuous
-                  MeasureTheory.volume) →
-              (∀
-                  x ∈
-                    (MeasureTheory.Measure.map
-                        (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
-                          JGS23SupplySideRecommenderSystems.score
-                            JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst q)
-                        μ).support,
-                  ContDiffAt ℝ 2
-                    (AppliedModelingLib.Probability.lowerCDFMass
-                      (MeasureTheory.Measure.map
-                        (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
-                          JGS23SupplySideRecommenderSystems.score
-                            JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst q)
-                        μ))
-                    x) →
-                (∀
-                    x ∈
-                      (MeasureTheory.Measure.map
-                          (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
-                            JGS23SupplySideRecommenderSystems.score
-                              (JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ) q)
-                          μ).support,
-                    ContDiffAt ℝ 2
-                      (AppliedModelingLib.Probability.lowerCDFMass
-                        (MeasureTheory.Measure.map
-                          (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
-                            JGS23SupplySideRecommenderSystems.score
-                              (JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ) q)
-                          μ))
-                      x) →
-                  (β < JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ →
-                      JGS23SupplySideRecommenderSystems.SourceNonzeroSupportGenres
-                          (JGS23SupplySideRecommenderSystems.SourceNorm.l2 2) μ =
-                        {(JGS23SupplySideRecommenderSystems.SourceNorm.l2 2).normalizedContent
-                            (JGS23SupplySideRecommenderSystems.canonicalTwoUserContentOfValues θ 1 1)}) ∧
-                    (JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ < β →
-                      ∀ {G : ℕ},
-                        Nonempty (Fin G) →
-                          ∀ (angle weight : Fin G → ℝ) (radial : Fin G → MeasureTheory.Measure ℝ),
-                            (∀ (i : Fin G), 0 < weight i) →
-                              ∑ i : Fin G, weight i = 1 →
-                                (∀ (i : Fin G), MeasureTheory.IsProbabilityMeasure (radial i)) →
-                                  (∀ (i : Fin G), (radial i).support ⊆ Set.Ici 0) →
-                                    (∀ (i : Fin G), ∃ r ∈ (radial i).support, 0 < r) →
-                                      (∀ (i : Fin G),
-                                          ContDiff ℝ 1 (AppliedModelingLib.Probability.lowerCDFMass (radial i))) →
-                                        μ =
-                                            ∑ i : Fin G,
-                                              ENNReal.ofReal (weight i) •
-                                                MeasureTheory.Measure.map
-                                                  (fun (r : ℝ) =>
-                                                    JGS23SupplySideRecommenderSystems.scaleContent r
-                                                      (JGS23SupplySideRecommenderSystems.content2 (Real.cos (angle i))
-                                                        (Real.sin (angle i))))
-                                                  (radial i) →
-                                          Function.Injective angle →
-                                            (∀ (i : Fin G), angle i ∈ Set.Icc 0 (Real.pi / 2)) → False)
+∀ {D K P : ℕ} [Nonempty (Fin P)] {β θ : ℝ} {u v : JGS23SupplySideRecommenderSystems.Content D}
+  {μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D} [MeasureTheory.IsProbabilityMeasure μ],
+  0 < K →
+    1 < P →
+      JGS23SupplySideRecommenderSystems.NonzeroContent u →
+        JGS23SupplySideRecommenderSystems.NonzeroContent v →
+          JGS23SupplySideRecommenderSystems.NonnegativeContent u →
+            JGS23SupplySideRecommenderSystems.NonnegativeContent v →
+              JGS23SupplySideRecommenderSystems.score u v /
+                    (AppliedModelingLib.FiniteDimensionalNorms.l2 u * AppliedModelingLib.FiniteDimensionalNorms.l2 v) =
+                  Real.cos θ →
+                1 ≤ β →
+                  0 < θ →
+                    θ ≤ Real.pi / 2 →
+                      JGS23SupplySideRecommenderSystems.SourceSymmetricMixedNash
+                          (JGS23SupplySideRecommenderSystems.twoPopulationUsers K fun (i : Fin 2) =>
+                            if i = 0 then u else v)
+                          (JGS23SupplySideRecommenderSystems.normPowerCostSpec
+                            (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) β)
+                          μ →
+                        (∀ (i : Fin 2),
+                            (MeasureTheory.Measure.map
+                                  (fun (q : JGS23SupplySideRecommenderSystems.Content D) =>
+                                    JGS23SupplySideRecommenderSystems.score (if i = 0 then u else v) q)
+                                  μ).AbsolutelyContinuous
+                              MeasureTheory.volume) →
+                          (∀
+                              x ∈
+                                (MeasureTheory.Measure.map
+                                    (fun (q : JGS23SupplySideRecommenderSystems.Content D) =>
+                                      JGS23SupplySideRecommenderSystems.score u q)
+                                    μ).support,
+                              ContDiffAt ℝ 2
+                                (AppliedModelingLib.Probability.lowerCDFMass
+                                  (MeasureTheory.Measure.map
+                                    (fun (q : JGS23SupplySideRecommenderSystems.Content D) =>
+                                      JGS23SupplySideRecommenderSystems.score u q)
+                                    μ))
+                                x) →
+                            (∀
+                                x ∈
+                                  (MeasureTheory.Measure.map
+                                      (fun (q : JGS23SupplySideRecommenderSystems.Content D) =>
+                                        JGS23SupplySideRecommenderSystems.score v q)
+                                      μ).support,
+                                ContDiffAt ℝ 2
+                                  (AppliedModelingLib.Probability.lowerCDFMass
+                                    (MeasureTheory.Measure.map
+                                      (fun (q : JGS23SupplySideRecommenderSystems.Content D) =>
+                                        JGS23SupplySideRecommenderSystems.score v q)
+                                      μ))
+                                  x) →
+                              (β < JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ →
+                                  JGS23SupplySideRecommenderSystems.SourceNonzeroSupportGenres
+                                      (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) μ =
+                                    {(JGS23SupplySideRecommenderSystems.SourceNorm.l2 D).normalizedContent
+                                        (JGS23SupplySideRecommenderSystems.twoUserNormalizedContent u +
+                                          JGS23SupplySideRecommenderSystems.twoUserNormalizedContent v)}) ∧
+                                (JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ < β →
+                                  ∀ {G : ℕ},
+                                    Nonempty (Fin G) →
+                                      ∀ (direction : Fin G → JGS23SupplySideRecommenderSystems.Content D)
+                                        (a :
+                                          JGS23SupplySideRecommenderSystems.FiniteGenreConditionalNormLawAnyDim μ
+                                            direction),
+                                        Function.Injective direction → False)
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
 \begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-08313452edb53fe9}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Finite\allowbreak{}Dimensional\allowbreak{}Norms.\allowbreak{}l2}
 \item \hyperlink{governing-declaration-5dfc240c860659bf}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}lower\allowbreak{}CDF\allowbreak{}Mass}
 \item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
+\item \hyperlink{governing-declaration-127f397c2234da77}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Finite\allowbreak{}Genre\allowbreak{}Conditional\allowbreak{}Norm\allowbreak{}Law\allowbreak{}Any\allowbreak{}Dim}
 \item \hyperlink{governing-declaration-2089965d06cf0282}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Mixed\allowbreak{}Content\allowbreak{}Strategy}
+\item \hyperlink{governing-declaration-d426babe40b9593c}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonnegative\allowbreak{}Content}
+\item \hyperlink{governing-declaration-90e2ac7d13788c50}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonzero\allowbreak{}Content}
 \item \hyperlink{governing-declaration-78e20e84abcc253b}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Nonzero\allowbreak{}Support\allowbreak{}Genres}
 \item \hyperlink{governing-declaration-9299663ffe3ecb38}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm.\allowbreak{}l2}
 \item \hyperlink{governing-declaration-dd171705f4075880}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm.\allowbreak{}normalized\allowbreak{}Content}
 \item \hyperlink{governing-declaration-8919e7334fa5ab60}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Symmetric\allowbreak{}Mixed\allowbreak{}Nash}
-\item \hyperlink{governing-declaration-7ec7c4b0b62e0ca8}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}canonical\allowbreak{}Two\allowbreak{}User\allowbreak{}Content\allowbreak{}Of\allowbreak{}Values}
-\item \hyperlink{governing-declaration-abb7b5a1ce6f14ba}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}canonical\allowbreak{}Two\allowbreak{}User\allowbreak{}First}
-\item \hyperlink{governing-declaration-fb292a037babdd07}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}canonical\allowbreak{}Two\allowbreak{}User\allowbreak{}Second}
-\item \hyperlink{governing-declaration-ef2bbdff22adf3f1}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}content2}
 \item \hyperlink{governing-declaration-6ba13dc1cae95e6e}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}norm\allowbreak{}Power\allowbreak{}Cost\allowbreak{}Spec}
-\item \hyperlink{governing-declaration-c0824fcccb145634}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}scale\allowbreak{}Content}
 \item \hyperlink{governing-declaration-e3725af4eb21c4db}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}score}
+\item \hyperlink{governing-declaration-43b84bc2140424db}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}Population\allowbreak{}Users}
+\item \hyperlink{governing-declaration-ccdb8ef08ba775c0}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}User\allowbreak{}Normalized\allowbreak{}Content}
 \item \hyperlink{governing-declaration-63bdc0df0d11c740}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}User\allowbreak{}Phase\allowbreak{}Threshold}
 \end{itemize}
 \paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
 1. parameter: ℕ
-2. assumption: Nonempty (Fin P)
-3. parameter: ℝ
-4. parameter: ℝ
-5. parameter: JGS23SupplySideRecommenderSystems.MixedContentStrategy 2
-6. assumption: MeasureTheory.IsProbabilityMeasure μ
-7. assumption: 1 < P
-8. assumption: 1 ≤ β
-9. assumption: 0 < θ
-10. assumption: θ ≤ Real.pi / 2
-11. assumption: JGS23SupplySideRecommenderSystems.SourceSymmetricMixedNash
-  (fun (i : Fin 2) =>
-    if i = 0 then JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst
-    else JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ)
-  (JGS23SupplySideRecommenderSystems.normPowerCostSpec (JGS23SupplySideRecommenderSystems.SourceNorm.l2 2) β) μ
-12. assumption: ∀ (i : Fin 2),
+2. parameter: ℕ
+3. parameter: ℕ
+4. assumption: Nonempty (Fin P)
+5. parameter: ℝ
+6. parameter: ℝ
+7. parameter: JGS23SupplySideRecommenderSystems.Content D
+8. parameter: JGS23SupplySideRecommenderSystems.Content D
+9. parameter: JGS23SupplySideRecommenderSystems.MixedContentStrategy D
+10. assumption: MeasureTheory.IsProbabilityMeasure μ
+11. assumption: 0 < K
+12. assumption: 1 < P
+13. assumption: JGS23SupplySideRecommenderSystems.NonzeroContent u
+14. assumption: JGS23SupplySideRecommenderSystems.NonzeroContent v
+15. assumption: JGS23SupplySideRecommenderSystems.NonnegativeContent u
+16. assumption: JGS23SupplySideRecommenderSystems.NonnegativeContent v
+17. assumption: JGS23SupplySideRecommenderSystems.score u v /
+    (AppliedModelingLib.FiniteDimensionalNorms.l2 u * AppliedModelingLib.FiniteDimensionalNorms.l2 v) =
+  Real.cos θ
+18. assumption: 1 ≤ β
+19. assumption: 0 < θ
+20. assumption: θ ≤ Real.pi / 2
+21. assumption: JGS23SupplySideRecommenderSystems.SourceSymmetricMixedNash
+  (JGS23SupplySideRecommenderSystems.twoPopulationUsers K fun (i : Fin 2) => if i = 0 then u else v)
+  (JGS23SupplySideRecommenderSystems.normPowerCostSpec (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) β) μ
+22. assumption: ∀ (i : Fin 2),
   (MeasureTheory.Measure.map
-        (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
-          JGS23SupplySideRecommenderSystems.score
-            (if i = 0 then JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst
-            else JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ)
-            q)
+        (fun (q : JGS23SupplySideRecommenderSystems.Content D) =>
+          JGS23SupplySideRecommenderSystems.score (if i = 0 then u else v) q)
         μ).AbsolutelyContinuous
     MeasureTheory.volume
-13. assumption: ∀
+23. assumption: ∀
   x ∈
     (MeasureTheory.Measure.map
-        (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
-          JGS23SupplySideRecommenderSystems.score JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst q)
+        (fun (q : JGS23SupplySideRecommenderSystems.Content D) => JGS23SupplySideRecommenderSystems.score u q)
         μ).support,
   ContDiffAt ℝ 2
     (AppliedModelingLib.Probability.lowerCDFMass
       (MeasureTheory.Measure.map
-        (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
-          JGS23SupplySideRecommenderSystems.score JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst q)
-        μ))
+        (fun (q : JGS23SupplySideRecommenderSystems.Content D) => JGS23SupplySideRecommenderSystems.score u q) μ))
     x
-14. assumption: ∀
+24. assumption: ∀
   x ∈
     (MeasureTheory.Measure.map
-        (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
-          JGS23SupplySideRecommenderSystems.score (JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ) q)
+        (fun (q : JGS23SupplySideRecommenderSystems.Content D) => JGS23SupplySideRecommenderSystems.score v q)
         μ).support,
   ContDiffAt ℝ 2
     (AppliedModelingLib.Probability.lowerCDFMass
       (MeasureTheory.Measure.map
-        (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
-          JGS23SupplySideRecommenderSystems.score (JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ) q)
-        μ))
+        (fun (q : JGS23SupplySideRecommenderSystems.Content D) => JGS23SupplySideRecommenderSystems.score v q) μ))
     x
-15. conclusion: (β < JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ →
-    JGS23SupplySideRecommenderSystems.SourceNonzeroSupportGenres (JGS23SupplySideRecommenderSystems.SourceNorm.l2 2) μ =
-      {(JGS23SupplySideRecommenderSystems.SourceNorm.l2 2).normalizedContent
-          (JGS23SupplySideRecommenderSystems.canonicalTwoUserContentOfValues θ 1 1)}) ∧
+25. conclusion: (β < JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ →
+    JGS23SupplySideRecommenderSystems.SourceNonzeroSupportGenres (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) μ =
+      {(JGS23SupplySideRecommenderSystems.SourceNorm.l2 D).normalizedContent
+          (JGS23SupplySideRecommenderSystems.twoUserNormalizedContent u +
+            JGS23SupplySideRecommenderSystems.twoUserNormalizedContent v)}) ∧
   (JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ < β →
     ∀ {G : ℕ},
       Nonempty (Fin G) →
-        ∀ (angle weight : Fin G → ℝ) (radial : Fin G → MeasureTheory.Measure ℝ),
-          (∀ (i : Fin G), 0 < weight i) →
-            ∑ i : Fin G, weight i = 1 →
-              (∀ (i : Fin G), MeasureTheory.IsProbabilityMeasure (radial i)) →
-                (∀ (i : Fin G), (radial i).support ⊆ Set.Ici 0) →
-                  (∀ (i : Fin G), ∃ r ∈ (radial i).support, 0 < r) →
-                    (∀ (i : Fin G), ContDiff ℝ 1 (AppliedModelingLib.Probability.lowerCDFMass (radial i))) →
-                      μ =
-                          ∑ i : Fin G,
-                            ENNReal.ofReal (weight i) •
-                              MeasureTheory.Measure.map
-                                (fun (r : ℝ) =>
-                                  JGS23SupplySideRecommenderSystems.scaleContent r
-                                    (JGS23SupplySideRecommenderSystems.content2 (Real.cos (angle i))
-                                      (Real.sin (angle i))))
-                                (radial i) →
-                        Function.Injective angle → (∀ (i : Fin G), angle i ∈ Set.Icc 0 (Real.pi / 2)) → False)
+        ∀ (direction : Fin G → JGS23SupplySideRecommenderSystems.Content D)
+          (a : JGS23SupplySideRecommenderSystems.FiniteGenreConditionalNormLawAnyDim μ direction),
+          Function.Injective direction → False)
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -3948,7 +4240,7 @@ JGS23SupplySideRecommenderSystems.theoremPhaseTransition
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Anchor 590-\allowbreak{}597 gives the below-\allowbreak{}threshold singleton and above-\allowbreak{}threshold finite-\allowbreak{}genre exclusion.\allowbreak{}  The approved target retains both branches while making canonical users, score-\allowbreak{}law regularity, and finite conditional radial-\allowbreak{}law data explicit.\allowbreak{}
+\textbf{Reason:} The Lean theorem retains arbitrary ambient dimension and represents the equal populations by two nonzero nonnegative types repeated K times.\allowbreak{} Its normalized-\allowbreak{}cosine premise and theta range give the source angle, while source Nash, absolute continuity, and support-\allowbreak{}local C2 score CDF hypotheses expose the approved regularity domain.\allowbreak{} Below 2/\allowbreak{}(1-\allowbreak{}cos theta) it identifies the nonzero support genres with the singleton normalized sum direction;\allowbreak{} above the threshold it contradicts every injectively enumerated finite positive-\allowbreak{}weight ray decomposition whose conditional radial laws have C1 CDFs.\allowbreak{} Those are exactly the two approved corrected phase-\allowbreak{}transition implications.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
@@ -4141,7 +4433,7 @@ For a strictly acute two-user geometry and beta strictly above the two-user phas
     θ < Real.pi / 2 →
       JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ < β →
         ∃ (a : ℝ) (C1 : ℝ) (C2 : ℝ) (A : ℝ) (B : ℝ) (phi : ℝ),
-          JGS23SupplySideRecommenderSystems.infiniteProducerModelSpec
+          JGS23SupplySideRecommenderSystems.infiniteProducerCandidateSpec
               (fun (q : ℝ) =>
                 if q ≤ 0 then 0
                 else
@@ -4149,7 +4441,7 @@ For a strictly acute two-user geometry and beta strictly above the two-user phas
                   else
                     have k : ℕ := if h : ∃ (n : ℕ), a * C2 ^ n ≤ q then Nat.find h else 0;
                     if Even k then C2 ^ (↑k * β) else C1 ^ (-2) * C2 ^ (-2 * ↑(k / 2) * β) * q ^ (2 * β))
-              β θ ∧
+              β θ phi ∧
             phi ∈ Set.Icc 0 (θ / 2) ∧
               IsMaxOn (fun (x : ℝ) => Real.cos x ^ β + Real.cos (θ - x) ^ β) (Set.Icc 0 (θ / 2)) phi ∧
                 0 < a ∧
@@ -4159,7 +4451,7 @@ For a strictly acute two-user geometry and beta strictly above the two-user phas
 
 \paragraph{Retained governing declarations}
 \begin{itemize}\raggedright
-\item \hyperlink{paper-prerequisite-3cb4f88465048830}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}infinite\allowbreak{}Producer\allowbreak{}Model\allowbreak{}Spec}
+\item \hyperlink{governing-declaration-6be812a4b679146a}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}infinite\allowbreak{}Producer\allowbreak{}Candidate\allowbreak{}Spec}
 \item \hyperlink{governing-declaration-63bdc0df0d11c740}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}User\allowbreak{}Phase\allowbreak{}Threshold}
 \end{itemize}
 \paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
@@ -4169,7 +4461,7 @@ For a strictly acute two-user geometry and beta strictly above the two-user phas
 4. assumption: θ < Real.pi / 2
 5. assumption: JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ < β
 6. conclusion: ∃ (a : ℝ) (C1 : ℝ) (C2 : ℝ) (A : ℝ) (B : ℝ) (phi : ℝ),
-  JGS23SupplySideRecommenderSystems.infiniteProducerModelSpec
+  JGS23SupplySideRecommenderSystems.infiniteProducerCandidateSpec
       (fun (q : ℝ) =>
         if q ≤ 0 then 0
         else
@@ -4177,7 +4469,7 @@ For a strictly acute two-user geometry and beta strictly above the two-user phas
           else
             have k : ℕ := if h : ∃ (n : ℕ), a * C2 ^ n ≤ q then Nat.find h else 0;
             if Even k then C2 ^ (↑k * β) else C1 ^ (-2) * C2 ^ (-2 * ↑(k / 2) * β) * q ^ (2 * β))
-      β θ ∧
+      β θ phi ∧
     phi ∈ Set.Icc 0 (θ / 2) ∧
       IsMaxOn (fun (x : ℝ) => Real.cos x ^ β + Real.cos (θ - x) ^ β) (Set.Icc 0 (θ / 2)) phi ∧
         0 < a ∧ 0 < C2 ∧ C2 < 1 ∧ C1 = a ^ β ∧ C1 = 1 + C2 ^ β ∧ A = Real.cos phi ∧ B = Real.cos (θ - phi) ∧ C2 = B / A
@@ -4191,7 +4483,7 @@ JGS23SupplySideRecommenderSystems.theoremInfiniteGenreInformal
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Anchor 659-\allowbreak{}666 is the informal infinite-\allowbreak{}producer theorem.\allowbreak{}  Its approved replacement uses the coherent strictly acute, above-\allowbreak{}threshold two-\allowbreak{}genre predicate, normalized half weights, and explicit piecewise conditional CDF.\allowbreak{}
+\textbf{Reason:} The archival informal theorem specifies a two-\allowbreak{}genre infinite-\allowbreak{}producer equilibrium above 2/\allowbreak{}(1-\allowbreak{}cos theta) with an alternating constant/\allowbreak{}power conditional CDF.\allowbreak{} Its displayed approved correction calls for the coherent normalized two-\allowbreak{}genre construction;\allowbreak{} the Lean target imposes the acute threshold regime, that explicit CDF, probability conditional law, equal half weights, and support-\allowbreak{}wise global optimality.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
@@ -4413,47 +4705,29 @@ Then for any symmetric equilibrium $\mu$, the profit $\ProfitEq(\mu)$ is strictl
 \paragraph{Formalized review target}
 The archival source above is not asserted equivalent to this formalized target.
 \begin{ReviewVerbatim}
-For the normalized Euclidean source game, the displayed strict geometric Q bound implies that every support action has strictly positive common equilibrium payoff.
+For the normalized Euclidean source game, the displayed strict geometric Q bound implies strictly positive common expected equilibrium profit.
 \end{ReviewVerbatim}
 
 \textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 734-\allowbreak{}742\par}
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {D N P : ℕ} [Nonempty (Fin N)] [Nontrivial (Fin P)] {users : Fin N → JGS23SupplySideRecommenderSystems.Content D}
-  {j : Fin P} {μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D}
-  {p0 : JGS23SupplySideRecommenderSystems.Content D} {β Q : ℝ},
-  JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec users
-      (JGS23SupplySideRecommenderSystems.normPowerCostSpec (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) β) μ →
-    p0 ∈ MeasureTheory.Measure.support μ →
-      (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)) →
-        (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonzeroContent (users i)) →
-          JGS23SupplySideRecommenderSystems.SourceUnitDirectionQUpperBound
-              (JGS23SupplySideRecommenderSystems.l2NormalizedUsers users)
-              (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) Q →
-            0 < β →
-              0 ≤ Q →
-                Q < (1 / ↑N) ^ (↑P / β) →
-                  0 <
-                    JGS23SupplySideRecommenderSystems.SourceMixedPurePayoff
-                      (JGS23SupplySideRecommenderSystems.ExpectedUsersWonAgainstSymmetricMixed users j)
-                      (JGS23SupplySideRecommenderSystems.normPowerCostSpec
-                        (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) β)
-                      p0 μ
+  {μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D} {β profit Q : ℝ},
+  JGS23SupplySideRecommenderSystems.equilibriumProfitModelSpec users (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D)
+      (JGS23SupplySideRecommenderSystems.normPowerCostSpec (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) β) μ
+      profit Q →
+    (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)) →
+      0 < β → Q < (1 / ↑N) ^ (↑P / β) → 0 < profit
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
 \begin{itemize}\raggedright
 \item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
-\item \hyperlink{governing-declaration-3a110916ca7725ab}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Expected\allowbreak{}Users\allowbreak{}Won\allowbreak{}Against\allowbreak{}Symmetric\allowbreak{}Mixed}
 \item \hyperlink{governing-declaration-2089965d06cf0282}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Mixed\allowbreak{}Content\allowbreak{}Strategy}
 \item \hyperlink{governing-declaration-d426babe40b9593c}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonnegative\allowbreak{}Content}
-\item \hyperlink{governing-declaration-90e2ac7d13788c50}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonzero\allowbreak{}Content}
-\item \hyperlink{governing-declaration-d3239873ad21d76c}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Mixed\allowbreak{}Pure\allowbreak{}Payoff}
 \item \hyperlink{governing-declaration-9299663ffe3ecb38}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm.\allowbreak{}l2}
-\item \hyperlink{governing-declaration-25f67bcfa6dfef03}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Unit\allowbreak{}Direction\allowbreak{}Q\allowbreak{}Upper\allowbreak{}Bound}
-\item \hyperlink{governing-declaration-779b1905167bbb9e}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}l2\allowbreak{}Normalized\allowbreak{}Users}
+\item \hyperlink{paper-prerequisite-b22f75a76a22c218}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}equilibrium\allowbreak{}Profit\allowbreak{}Model\allowbreak{}Spec}
 \item \hyperlink{governing-declaration-6ba13dc1cae95e6e}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}norm\allowbreak{}Power\allowbreak{}Cost\allowbreak{}Spec}
-\item \hyperlink{paper-prerequisite-b412efba7deb757f}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}symmetric\allowbreak{}Mixed\allowbreak{}Nash\allowbreak{}Model\allowbreak{}Spec}
 \end{itemize}
 \paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
 1. parameter: ℕ
@@ -4462,25 +4736,16 @@ For the normalized Euclidean source game, the displayed strict geometric Q bound
 4. assumption: Nonempty (Fin N)
 5. assumption: Nontrivial (Fin P)
 6. parameter: Fin N → JGS23SupplySideRecommenderSystems.Content D
-7. parameter: Fin P
-8. parameter: JGS23SupplySideRecommenderSystems.MixedContentStrategy D
-9. parameter: JGS23SupplySideRecommenderSystems.Content D
+7. parameter: JGS23SupplySideRecommenderSystems.MixedContentStrategy D
+8. parameter: ℝ
+9. parameter: ℝ
 10. parameter: ℝ
-11. parameter: ℝ
-12. assumption: JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec users
-  (JGS23SupplySideRecommenderSystems.normPowerCostSpec (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) β) μ
-13. assumption: p0 ∈ MeasureTheory.Measure.support μ
-14. assumption: ∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)
-15. assumption: ∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonzeroContent (users i)
-16. assumption: JGS23SupplySideRecommenderSystems.SourceUnitDirectionQUpperBound
-  (JGS23SupplySideRecommenderSystems.l2NormalizedUsers users) (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) Q
-17. assumption: 0 < β
-18. assumption: 0 ≤ Q
-19. assumption: Q < (1 / ↑N) ^ (↑P / β)
-20. conclusion: 0 <
-  JGS23SupplySideRecommenderSystems.SourceMixedPurePayoff
-    (JGS23SupplySideRecommenderSystems.ExpectedUsersWonAgainstSymmetricMixed users j)
-    (JGS23SupplySideRecommenderSystems.normPowerCostSpec (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) β) p0 μ
+11. assumption: JGS23SupplySideRecommenderSystems.equilibriumProfitModelSpec users (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D)
+  (JGS23SupplySideRecommenderSystems.normPowerCostSpec (JGS23SupplySideRecommenderSystems.SourceNorm.l2 D) β) μ profit Q
+12. assumption: ∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)
+13. assumption: 0 < β
+14. assumption: Q < (1 / ↑N) ^ (↑P / β)
+15. conclusion: 0 < profit
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -4491,7 +4756,7 @@ JGS23SupplySideRecommenderSystems.propositionUtility
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Anchor 734-\allowbreak{}742 concludes positive expected profit from the Q bound.\allowbreak{}  The approved target faithfully keeps the geometric condition but states the checked direct positive support-\allowbreak{}action payoff, avoiding an unstated expectation/\allowbreak{}integrability bridge.\allowbreak{}
+\textbf{Reason:} The displayed equilibrium-\allowbreak{}profit predicate unfolds Q as the supremum over nonnegative L2-\allowbreak{}unit-\allowbreak{}ball actions of their minimum score against L2-\allowbreak{}normalized nonzero users, binds one profit value to every producer's source payoff integral, and includes the full symmetric Nash condition.\allowbreak{} With nonnegative users and positive beta, the Lean endpoint turns Q < (1/\allowbreak{}N)\textasciicircum{}(P/\allowbreak{}beta), the same as the source's N\textasciicircum{}(-\allowbreak{}P/\allowbreak{}beta) threshold, into strictly positive profit.\allowbreak{} This is the normalized Euclidean profit statement authorized by the approved bridge repair.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
@@ -4512,7 +4777,7 @@ If $\mu$ is a single-genre equilibrium, then the profit $\ProfitEq(\mu)$ is equa
 \paragraph{Formalized review target}
 The archival source above is not asserted equivalent to this formalized target.
 \begin{ReviewVerbatim}
-Under the explicit source-Nash, atomlessness, singleton-nonzero-genre, positive-score, measurable proper-norm, and compactness hypotheses, every support action has zero actual uniform-tie payoff.
+Under the explicit source-Nash, atomlessness, singleton-nonzero-genre, positive-score, measurable proper-norm, and compactness hypotheses, the common expected equilibrium profit is zero.
 \end{ReviewVerbatim}
 
 \textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 748-\allowbreak{}990\par}
@@ -4520,22 +4785,20 @@ Under the explicit source-Nash, atomlessness, singleton-nonzero-genre, positive-
 \begin{ReviewVerbatim}
 ∀ {D N P : ℕ} [Nonempty (Fin N)] [Nontrivial (Fin P)] {users : Fin N → JGS23SupplySideRecommenderSystems.Content D}
   {ν : JGS23SupplySideRecommenderSystems.SourceNorm D} {μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy D}
-  {j : Fin P} {p genre : JGS23SupplySideRecommenderSystems.Content D} {β : ℝ},
+  {j : Fin P} {genre : JGS23SupplySideRecommenderSystems.Content D} {β profit : ℝ},
   JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec users
       (JGS23SupplySideRecommenderSystems.normPowerCostSpec ν β) μ →
-    MeasureTheory.NoAtoms μ →
-      JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec ν μ ⊆ {genre} →
-        (∀ (i : Fin N), 0 < JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) genre) →
-          Measurable ν.norm →
-            (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)) →
-              0 < β →
-                JGS23SupplySideRecommenderSystems.SourceNormCompactSublevels ν →
-                  Continuous ν.norm →
-                    p ∈ MeasureTheory.Measure.support μ →
-                      JGS23SupplySideRecommenderSystems.SourceMixedPurePayoff
-                          (JGS23SupplySideRecommenderSystems.ExpectedUsersWonAgainstSymmetricMixed users j)
-                          (JGS23SupplySideRecommenderSystems.normPowerCostSpec ν β) p μ =
-                        0
+    ∫ (q : JGS23SupplySideRecommenderSystems.Content D),
+          JGS23SupplySideRecommenderSystems.SourceMixedPurePayoff
+            (JGS23SupplySideRecommenderSystems.ExpectedUsersWonAgainstSymmetricMixed users j)
+            (JGS23SupplySideRecommenderSystems.normPowerCostSpec ν β) q μ ∂μ =
+        profit →
+      MeasureTheory.NoAtoms μ →
+        JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec ν μ ⊆ {genre} →
+          (∀ (i : Fin N), 0 < JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) genre) →
+            Measurable ν.norm →
+              (∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)) →
+                0 < β → JGS23SupplySideRecommenderSystems.SourceNormCompactSublevels ν → Continuous ν.norm → profit = 0
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
@@ -4563,23 +4826,24 @@ Under the explicit source-Nash, atomlessness, singleton-nonzero-genre, positive-
 8. parameter: JGS23SupplySideRecommenderSystems.MixedContentStrategy D
 9. parameter: Fin P
 10. parameter: JGS23SupplySideRecommenderSystems.Content D
-11. parameter: JGS23SupplySideRecommenderSystems.Content D
+11. parameter: ℝ
 12. parameter: ℝ
 13. assumption: JGS23SupplySideRecommenderSystems.symmetricMixedNashModelSpec users
   (JGS23SupplySideRecommenderSystems.normPowerCostSpec ν β) μ
-14. assumption: MeasureTheory.NoAtoms μ
-15. assumption: JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec ν μ ⊆ {genre}
-16. assumption: ∀ (i : Fin N), 0 < JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) genre
-17. assumption: Measurable ν.norm
-18. assumption: ∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)
-19. assumption: 0 < β
-20. assumption: JGS23SupplySideRecommenderSystems.SourceNormCompactSublevels ν
-21. assumption: Continuous ν.norm
-22. assumption: p ∈ MeasureTheory.Measure.support μ
-23. conclusion: JGS23SupplySideRecommenderSystems.SourceMixedPurePayoff
-    (JGS23SupplySideRecommenderSystems.ExpectedUsersWonAgainstSymmetricMixed users j)
-    (JGS23SupplySideRecommenderSystems.normPowerCostSpec ν β) p μ =
-  0
+14. assumption: ∫ (q : JGS23SupplySideRecommenderSystems.Content D),
+    JGS23SupplySideRecommenderSystems.SourceMixedPurePayoff
+      (JGS23SupplySideRecommenderSystems.ExpectedUsersWonAgainstSymmetricMixed users j)
+      (JGS23SupplySideRecommenderSystems.normPowerCostSpec ν β) q μ ∂μ =
+  profit
+15. assumption: MeasureTheory.NoAtoms μ
+16. assumption: JGS23SupplySideRecommenderSystems.nonzeroSupportGenresSpec ν μ ⊆ {genre}
+17. assumption: ∀ (i : Fin N), 0 < JGS23SupplySideRecommenderSystems.paper_inferred_user_value (users i) genre
+18. assumption: Measurable ν.norm
+19. assumption: ∀ (i : Fin N), JGS23SupplySideRecommenderSystems.NonnegativeContent (users i)
+20. assumption: 0 < β
+21. assumption: JGS23SupplySideRecommenderSystems.SourceNormCompactSublevels ν
+22. assumption: Continuous ν.norm
+23. conclusion: profit = 0
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -4590,7 +4854,7 @@ JGS23SupplySideRecommenderSystems.propositionZeroUtilitySingleGenre
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Anchor 749-\allowbreak{}752 claims zero expected profit for every single-\allowbreak{}genre equilibrium.\allowbreak{}  The approved target is the support-\allowbreak{}action payoff-\allowbreak{}zero result under explicit atomlessness, zero-\allowbreak{}safe genre, positive-\allowbreak{}score, measurability, and norm-\allowbreak{}regularity premises.\allowbreak{}
+\textbf{Reason:} The corrected zero-\allowbreak{}profit target makes all source-\allowbreak{}proof regularity visible.\allowbreak{} Lean assumes the uniform-\allowbreak{}tie symmetric Nash condition, identifies profit with the focal producer's mixed payoff integral, requires an atomless law, at most one normalized nonzero support direction with strictly positive scores for every user, a measurable continuous source norm with compact sublevels, nonnegative users, and positive beta, and concludes that profit is zero.\allowbreak{} The expanded support-\allowbreak{}genre and payoff definitions implement the approved zero-\allowbreak{}safe singleton-\allowbreak{}genre reading without changing the conclusion.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
@@ -5329,7 +5593,7 @@ h_2(z_2)
 \paragraph{Formalized review target}
 The archival source above is not asserted equivalent to this formalized target.
 \begin{ReviewVerbatim}
-At a canonical two-user score pair where the power-cost derivative is defined, both first partial derivatives equal the displayed induced-cost formulas.
+At a canonical two-user score pair where the power-cost derivative is defined, both first partial derivatives equal the displayed induced-cost formulas; at every nonzero strictly interior C1 support value of a source symmetric Nash law with absolutely continuous score laws and support-local C2 raw score CDFs, those formulas equal the two iid maximum-score CDF derivatives.
 \end{ReviewVerbatim}
 
 \textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 1318-\allowbreak{}1333\par}
@@ -5343,15 +5607,103 @@ At a canonical two-user score pair where the power-cost derivative is defined, b
           (z1 - z2 * Real.cos θ))
         z1 ∧
       HasDerivAt (fun (y : ℝ) => JGS23SupplySideRecommenderSystems.paper_two_user_induced_cost α β θ z1 y)
-        (β * α * Real.sin θ ^ (-β) *
-            JGS23SupplySideRecommenderSystems.twoUserInducedCostNumerator θ z1 z2 ^ (β / 2 - 1) *
-          (z2 - z1 * Real.cos θ))
-        z2
+          (β * α * Real.sin θ ^ (-β) *
+              JGS23SupplySideRecommenderSystems.twoUserInducedCostNumerator θ z1 z2 ^ (β / 2 - 1) *
+            (z2 - z1 * Real.cos θ))
+          z2 ∧
+        ∀ {P : ℕ} [Nonempty (Fin P)] {α β θ : ℝ} {μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy 2}
+          [MeasureTheory.IsProbabilityMeasure μ],
+          0 < Real.sin θ →
+            JGS23SupplySideRecommenderSystems.SourceSymmetricMixedNash
+                (fun (i : Fin 2) =>
+                  if i = 0 then JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst
+                  else JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ)
+                (fun (p : JGS23SupplySideRecommenderSystems.Content 2) =>
+                  α *
+                    JGS23SupplySideRecommenderSystems.normRpowCost (JGS23SupplySideRecommenderSystems.SourceNorm.l2 2) β
+                      p)
+                μ →
+              (∀ (i : Fin 2),
+                  (MeasureTheory.Measure.map
+                        (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
+                          JGS23SupplySideRecommenderSystems.score
+                            (if i = 0 then JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst
+                            else JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ)
+                            q)
+                        μ).AbsolutelyContinuous
+                    MeasureTheory.volume) →
+                (∀ (i : Fin 2),
+                    ∀
+                      x ∈
+                        (MeasureTheory.Measure.map
+                            (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
+                              JGS23SupplySideRecommenderSystems.score
+                                (if i = 0 then JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst
+                                else JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ)
+                                q)
+                            μ).support,
+                      ContDiffAt ℝ 2
+                        (AppliedModelingLib.Probability.lowerCDFMass
+                          (MeasureTheory.Measure.map
+                            (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
+                              JGS23SupplySideRecommenderSystems.score
+                                (if i = 0 then JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst
+                                else JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ)
+                                q)
+                            μ))
+                        x) →
+                  (∀
+                      z ∈
+                        (MeasureTheory.Measure.map (JGS23SupplySideRecommenderSystems.canonicalTwoUserValueMap θ)
+                            μ).support,
+                      z ≠ (0, 0) → 0 < z.1 ∧ z.1 * Real.cos θ < z.2) →
+                    ∀
+                      z ∈
+                        (MeasureTheory.Measure.map (JGS23SupplySideRecommenderSystems.canonicalTwoUserValueMap θ)
+                            μ).support,
+                      z ≠ (0, 0) →
+                        β * α * Real.sin θ ^ (-β) *
+                                JGS23SupplySideRecommenderSystems.twoUserInducedCostNumerator θ z.1 z.2 ^ (β / 2 - 1) *
+                              (z.1 - z.2 * Real.cos θ) =
+                            deriv
+                              (fun (x : ℝ) =>
+                                AppliedModelingLib.Probability.iidMaximumCdf
+                                  (MeasureTheory.Measure.map
+                                    (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
+                                      JGS23SupplySideRecommenderSystems.score
+                                        JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst q)
+                                    μ)
+                                  x)
+                              z.1 ∧
+                          β * α * Real.sin θ ^ (-β) *
+                                JGS23SupplySideRecommenderSystems.twoUserInducedCostNumerator θ z.1 z.2 ^ (β / 2 - 1) *
+                              (z.2 - z.1 * Real.cos θ) =
+                            deriv
+                              (fun (x : ℝ) =>
+                                AppliedModelingLib.Probability.iidMaximumCdf
+                                  (MeasureTheory.Measure.map
+                                    (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
+                                      JGS23SupplySideRecommenderSystems.score
+                                        (JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ) q)
+                                    μ)
+                                  x)
+                              z.2
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
 \begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-bd46383e262e9ee8}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}iid\allowbreak{}Maximum\allowbreak{}Cdf}
+\item \hyperlink{governing-declaration-5dfc240c860659bf}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Probability.\allowbreak{}lower\allowbreak{}CDF\allowbreak{}Mass}
+\item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
+\item \hyperlink{governing-declaration-2089965d06cf0282}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Mixed\allowbreak{}Content\allowbreak{}Strategy}
+\item \hyperlink{governing-declaration-9299663ffe3ecb38}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm.\allowbreak{}l2}
+\item \hyperlink{governing-declaration-8919e7334fa5ab60}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Symmetric\allowbreak{}Mixed\allowbreak{}Nash}
+\item \hyperlink{governing-declaration-abb7b5a1ce6f14ba}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}canonical\allowbreak{}Two\allowbreak{}User\allowbreak{}First}
+\item \hyperlink{governing-declaration-fb292a037babdd07}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}canonical\allowbreak{}Two\allowbreak{}User\allowbreak{}Second}
+\item \hyperlink{governing-declaration-972ab8301f65eaeb}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}canonical\allowbreak{}Two\allowbreak{}User\allowbreak{}Value\allowbreak{}Map}
+\item \hyperlink{governing-declaration-54533813c77cea72}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}norm\allowbreak{}Rpow\allowbreak{}Cost}
 \item \hyperlink{governing-declaration-04204b422df9012d}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}paper\_\allowbreak{}two\_\allowbreak{}user\_\allowbreak{}induced\_\allowbreak{}cost}
+\item \hyperlink{governing-declaration-e3725af4eb21c4db}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}score}
 \item \hyperlink{governing-declaration-1bddfdc6005d3a0f}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}User\allowbreak{}Induced\allowbreak{}Cost\allowbreak{}Numerator}
 \end{itemize}
 \paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
@@ -5366,9 +5718,85 @@ At a canonical two-user score pair where the power-cost derivative is defined, b
       (z1 - z2 * Real.cos θ))
     z1 ∧
   HasDerivAt (fun (y : ℝ) => JGS23SupplySideRecommenderSystems.paper_two_user_induced_cost α β θ z1 y)
-    (β * α * Real.sin θ ^ (-β) * JGS23SupplySideRecommenderSystems.twoUserInducedCostNumerator θ z1 z2 ^ (β / 2 - 1) *
-      (z2 - z1 * Real.cos θ))
-    z2
+      (β * α * Real.sin θ ^ (-β) * JGS23SupplySideRecommenderSystems.twoUserInducedCostNumerator θ z1 z2 ^ (β / 2 - 1) *
+        (z2 - z1 * Real.cos θ))
+      z2 ∧
+    ∀ {P : ℕ} [Nonempty (Fin P)] {α β θ : ℝ} {μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy 2}
+      [MeasureTheory.IsProbabilityMeasure μ],
+      0 < Real.sin θ →
+        JGS23SupplySideRecommenderSystems.SourceSymmetricMixedNash
+            (fun (i : Fin 2) =>
+              if i = 0 then JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst
+              else JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ)
+            (fun (p : JGS23SupplySideRecommenderSystems.Content 2) =>
+              α *
+                JGS23SupplySideRecommenderSystems.normRpowCost (JGS23SupplySideRecommenderSystems.SourceNorm.l2 2) β p)
+            μ →
+          (∀ (i : Fin 2),
+              (MeasureTheory.Measure.map
+                    (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
+                      JGS23SupplySideRecommenderSystems.score
+                        (if i = 0 then JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst
+                        else JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ)
+                        q)
+                    μ).AbsolutelyContinuous
+                MeasureTheory.volume) →
+            (∀ (i : Fin 2),
+                ∀
+                  x ∈
+                    (MeasureTheory.Measure.map
+                        (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
+                          JGS23SupplySideRecommenderSystems.score
+                            (if i = 0 then JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst
+                            else JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ)
+                            q)
+                        μ).support,
+                  ContDiffAt ℝ 2
+                    (AppliedModelingLib.Probability.lowerCDFMass
+                      (MeasureTheory.Measure.map
+                        (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
+                          JGS23SupplySideRecommenderSystems.score
+                            (if i = 0 then JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst
+                            else JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ)
+                            q)
+                        μ))
+                    x) →
+              (∀
+                  z ∈
+                    (MeasureTheory.Measure.map (JGS23SupplySideRecommenderSystems.canonicalTwoUserValueMap θ)
+                        μ).support,
+                  z ≠ (0, 0) → 0 < z.1 ∧ z.1 * Real.cos θ < z.2) →
+                ∀
+                  z ∈
+                    (MeasureTheory.Measure.map (JGS23SupplySideRecommenderSystems.canonicalTwoUserValueMap θ)
+                        μ).support,
+                  z ≠ (0, 0) →
+                    β * α * Real.sin θ ^ (-β) *
+                            JGS23SupplySideRecommenderSystems.twoUserInducedCostNumerator θ z.1 z.2 ^ (β / 2 - 1) *
+                          (z.1 - z.2 * Real.cos θ) =
+                        deriv
+                          (fun (x : ℝ) =>
+                            AppliedModelingLib.Probability.iidMaximumCdf
+                              (MeasureTheory.Measure.map
+                                (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
+                                  JGS23SupplySideRecommenderSystems.score
+                                    JGS23SupplySideRecommenderSystems.canonicalTwoUserFirst q)
+                                μ)
+                              x)
+                          z.1 ∧
+                      β * α * Real.sin θ ^ (-β) *
+                            JGS23SupplySideRecommenderSystems.twoUserInducedCostNumerator θ z.1 z.2 ^ (β / 2 - 1) *
+                          (z.2 - z.1 * Real.cos θ) =
+                        deriv
+                          (fun (x : ℝ) =>
+                            AppliedModelingLib.Probability.iidMaximumCdf
+                              (MeasureTheory.Measure.map
+                                (fun (q : JGS23SupplySideRecommenderSystems.Content 2) =>
+                                  JGS23SupplySideRecommenderSystems.score
+                                    (JGS23SupplySideRecommenderSystems.canonicalTwoUserSecond θ) q)
+                                μ)
+                              x)
+                          z.2
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -5379,7 +5807,7 @@ JGS23SupplySideRecommenderSystems.lemmaFoc
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Anchor 1318-\allowbreak{}1343 displays the two induced-\allowbreak{}cost partial derivatives.\allowbreak{}  The approved canonical target gives exactly those derivatives while making the power-\allowbreak{}base domain condition explicit and not claiming the separate density bridge.\allowbreak{}
+\textbf{Reason:} The first Lean conjunct states both partial derivatives of the canonical induced cost with the source formula and imposes precisely the approved rpow-\allowbreak{}base alternative.\allowbreak{} The second uses canonical two-\allowbreak{}user scores, a source symmetric Nash measure, absolutely continuous score laws, C2 lower CDFs on support, and the explicit strict interior score-\allowbreak{}cone inequalities;\allowbreak{} at every nonzero realized score it equates the two cost partials to derivatives of the P-\allowbreak{}1-\allowbreak{}draw iid maximum CDFs.\allowbreak{} Thus the formulas, derivative domains, Nash/\allowbreak{}C1 route, and regularity premises match the approved FOC correction.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
@@ -5467,70 +5895,86 @@ Let there be 2 users located at $u_1, u_2 \in \mathbb{R}_{\ge 0}^D$ such that  $
 \paragraph{Formalized review target}
 The archival source above is not asserted equivalent to this formalized target.
 \begin{ReviewVerbatim}
-For a supplied local support graph, negative-semidefinite objective second-order condition, and both differentiated FOC identities, the graph slope times the two-user second-derivative bracket is nonpositive.
+For two nonnegative unit users in the canonical two-dimensional score realization, a differentiable C1 support curve in the canonical nonnegative score cone has slope times the displayed induced-cost bracket at most zero.
 \end{ReviewVerbatim}
 
-\textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 1348-\allowbreak{}1355\par}
+\textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 1351-\allowbreak{}1355\par}
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ {α β θ φ r slope c11 c22 h1prime h2prime : ℝ},
-  0 < α →
-    0 < β →
-      0 < Real.sin θ →
-        0 < r ^ 2 * Real.sin θ ^ 2 →
-          JGS23SupplySideRecommenderSystems.paper_negative_semidefinite_quadratic2 (h1prime - c11)
-              (-JGS23SupplySideRecommenderSystems.paper_two_user_induced_cost_cross_partial α β θ (r * Real.cos φ)
-                  (r * Real.cos (θ - φ)))
-              (h2prime - c22) →
-            h1prime =
-                c11 +
-                  slope *
-                    JGS23SupplySideRecommenderSystems.paper_two_user_induced_cost_cross_partial α β θ (r * Real.cos φ)
-                      (r * Real.cos (θ - φ)) →
-              h2prime =
-                  c22 +
-                    slope⁻¹ *
-                      JGS23SupplySideRecommenderSystems.paper_two_user_induced_cost_cross_partial α β θ (r * Real.cos φ)
-                        (r * Real.cos (θ - φ)) →
-                slope * JGS23SupplySideRecommenderSystems.paper_two_user_second_deriv_sign_bracket β θ φ ≤ 0
+∀ {u v : JGS23SupplySideRecommenderSystems.Content 2} {H1 H2 g : ℝ → ℝ} {S : Set (ℝ × ℝ)} {α β θ φ r a b x slope : ℝ},
+  JGS23SupplySideRecommenderSystems.NonnegativeContent u →
+    JGS23SupplySideRecommenderSystems.NonnegativeContent v →
+      JGS23SupplySideRecommenderSystems.score u u = 1 →
+        JGS23SupplySideRecommenderSystems.score v v = 1 →
+          JGS23SupplySideRecommenderSystems.score u v = Real.cos θ →
+            0 < α →
+              0 < β →
+                0 < Real.sin θ →
+                  Monotone H1 →
+                    Monotone H2 →
+                      (∀ z ∈ S, 0 ≤ z.1 ∧ 0 ≤ z.2) →
+                        x ∈ Set.Ioo a b →
+                          x = r * Real.cos φ →
+                            g x = r * Real.cos (θ - φ) →
+                              HasDerivAt g slope x →
+                                (∀ w ∈ Set.Ioo a b, (w, g w) ∈ S) →
+                                  (∀ z ∈ S,
+                                      IsMaxOn
+                                        (fun (w : ℝ × ℝ) =>
+                                          H1 w.1 + H2 w.2 -
+                                            JGS23SupplySideRecommenderSystems.twoUserInducedCost α β θ w.1 w.2)
+                                        (JGS23SupplySideRecommenderSystems.twoUserScoreFeasibleSet u v) z) →
+                                    slope *
+                                        JGS23SupplySideRecommenderSystems.paper_two_user_second_deriv_sign_bracket β θ
+                                          φ ≤
+                                      0
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
 \begin{itemize}\raggedright
-\item \hyperlink{governing-declaration-0160fb59497b863a}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}paper\_\allowbreak{}negative\_\allowbreak{}semidefinite\_\allowbreak{}quadratic2}
-\item \hyperlink{governing-declaration-f149f020fbfde1e9}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}paper\_\allowbreak{}two\_\allowbreak{}user\_\allowbreak{}induced\_\allowbreak{}cost\_\allowbreak{}cross\_\allowbreak{}partial}
+\item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
+\item \hyperlink{governing-declaration-d426babe40b9593c}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonnegative\allowbreak{}Content}
 \item \hyperlink{governing-declaration-05e1b2c554446bd9}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}paper\_\allowbreak{}two\_\allowbreak{}user\_\allowbreak{}second\_\allowbreak{}deriv\_\allowbreak{}sign\_\allowbreak{}bracket}
+\item \hyperlink{governing-declaration-e3725af4eb21c4db}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}score}
+\item \hyperlink{governing-declaration-1ad07d9bd018250d}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}User\allowbreak{}Induced\allowbreak{}Cost}
+\item \hyperlink{governing-declaration-bca7e2616269bec3}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}User\allowbreak{}Score\allowbreak{}Feasible\allowbreak{}Set}
 \end{itemize}
 \paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
-1. parameter: ℝ
-2. parameter: ℝ
-3. parameter: ℝ
-4. parameter: ℝ
-5. parameter: ℝ
-6. parameter: ℝ
+1. parameter: JGS23SupplySideRecommenderSystems.Content 2
+2. parameter: JGS23SupplySideRecommenderSystems.Content 2
+3. parameter: ℝ → ℝ
+4. parameter: ℝ → ℝ
+5. parameter: ℝ → ℝ
+6. parameter: Set (ℝ × ℝ)
 7. parameter: ℝ
 8. parameter: ℝ
 9. parameter: ℝ
 10. parameter: ℝ
-11. assumption: 0 < α
-12. assumption: 0 < β
-13. assumption: 0 < Real.sin θ
-14. assumption: 0 < r ^ 2 * Real.sin θ ^ 2
-15. assumption: JGS23SupplySideRecommenderSystems.paper_negative_semidefinite_quadratic2 (h1prime - c11)
-  (-JGS23SupplySideRecommenderSystems.paper_two_user_induced_cost_cross_partial α β θ (r * Real.cos φ)
-      (r * Real.cos (θ - φ)))
-  (h2prime - c22)
-16. assumption: h1prime =
-  c11 +
-    slope *
-      JGS23SupplySideRecommenderSystems.paper_two_user_induced_cost_cross_partial α β θ (r * Real.cos φ)
-        (r * Real.cos (θ - φ))
-17. assumption: h2prime =
-  c22 +
-    slope⁻¹ *
-      JGS23SupplySideRecommenderSystems.paper_two_user_induced_cost_cross_partial α β θ (r * Real.cos φ)
-        (r * Real.cos (θ - φ))
-18. conclusion: slope * JGS23SupplySideRecommenderSystems.paper_two_user_second_deriv_sign_bracket β θ φ ≤ 0
+11. parameter: ℝ
+12. parameter: ℝ
+13. parameter: ℝ
+14. parameter: ℝ
+15. parameter: ℝ
+16. assumption: JGS23SupplySideRecommenderSystems.NonnegativeContent u
+17. assumption: JGS23SupplySideRecommenderSystems.NonnegativeContent v
+18. assumption: JGS23SupplySideRecommenderSystems.score u u = 1
+19. assumption: JGS23SupplySideRecommenderSystems.score v v = 1
+20. assumption: JGS23SupplySideRecommenderSystems.score u v = Real.cos θ
+21. assumption: 0 < α
+22. assumption: 0 < β
+23. assumption: 0 < Real.sin θ
+24. assumption: Monotone H1
+25. assumption: Monotone H2
+26. assumption: ∀ z ∈ S, 0 ≤ z.1 ∧ 0 ≤ z.2
+27. assumption: x ∈ Set.Ioo a b
+28. assumption: x = r * Real.cos φ
+29. assumption: g x = r * Real.cos (θ - φ)
+30. assumption: HasDerivAt g slope x
+31. assumption: ∀ w ∈ Set.Ioo a b, (w, g w) ∈ S
+32. assumption: ∀ z ∈ S,
+  IsMaxOn (fun (w : ℝ × ℝ) => H1 w.1 + H2 w.2 - JGS23SupplySideRecommenderSystems.twoUserInducedCost α β θ w.1 w.2)
+    (JGS23SupplySideRecommenderSystems.twoUserScoreFeasibleSet u v) z
+33. conclusion: slope * JGS23SupplySideRecommenderSystems.paper_two_user_second_deriv_sign_bracket β θ φ ≤ 0
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -5541,7 +5985,7 @@ JGS23SupplySideRecommenderSystems.lemmaRegionsColor
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Anchor 1351-\allowbreak{}1355 gives the slope/\allowbreak{}sign conclusion but suppresses graph and SOC data.\allowbreak{}  The approved target states the same slope-\allowbreak{}times-\allowbreak{}bracket inequality under supplied graph, negative-\allowbreak{}semidefinite, and differentiated-\allowbreak{}FOC hypotheses.\allowbreak{}
+\textbf{Reason:} The successor source bundle expressly records the arbitrary-\allowbreak{}dimensional archival statement as non-\allowbreak{}equivalent to the approved canonical two-\allowbreak{}dimensional repair under defect JGS23-\allowbreak{}INDUCED-\allowbreak{}COST-\allowbreak{}GENERAL-\allowbreak{}DIMENSION-\allowbreak{}01.\allowbreak{} The expanded Lean target is exactly on Content 2:\allowbreak{} u and v are nonnegative unit users with inner product cos(theta), the feasible score region is the image of nonnegative Content 2 under their two-\allowbreak{}score map, every support point satisfies the displayed C1 maximization condition, and a differentiable curve point with polar parameter phi concludes slope * (((beta-\allowbreak{}2)/\allowbreak{}beta) cos(theta-\allowbreak{}2 phi) -\allowbreak{} cos(theta)) <= 0.\allowbreak{} This matches the approved corrected target rather than claiming the false arbitrary-\allowbreak{}D induced-\allowbreak{}cost equality.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
@@ -5919,7 +6363,7 @@ For 0 < theta < pi/2 and beta strictly above the two-user phase threshold, there
     θ < Real.pi / 2 →
       JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ < β →
         ∃ (a : ℝ) (C1 : ℝ) (C2 : ℝ) (A : ℝ) (B : ℝ) (phi : ℝ),
-          JGS23SupplySideRecommenderSystems.infiniteProducerModelSpec
+          JGS23SupplySideRecommenderSystems.infiniteProducerCandidateSpec
               (fun (q : ℝ) =>
                 if q ≤ 0 then 0
                 else
@@ -5927,7 +6371,7 @@ For 0 < theta < pi/2 and beta strictly above the two-user phase threshold, there
                   else
                     have k : ℕ := if h : ∃ (n : ℕ), a * C2 ^ n ≤ q then Nat.find h else 0;
                     if Even k then C2 ^ (↑k * β) else C1 ^ (-2) * C2 ^ (-2 * ↑(k / 2) * β) * q ^ (2 * β))
-              β θ ∧
+              β θ phi ∧
             phi ∈ Set.Icc 0 (θ / 2) ∧
               IsMaxOn (fun (x : ℝ) => Real.cos x ^ β + Real.cos (θ - x) ^ β) (Set.Icc 0 (θ / 2)) phi ∧
                 0 < a ∧
@@ -5937,7 +6381,7 @@ For 0 < theta < pi/2 and beta strictly above the two-user phase threshold, there
 
 \paragraph{Retained governing declarations}
 \begin{itemize}\raggedright
-\item \hyperlink{paper-prerequisite-3cb4f88465048830}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}infinite\allowbreak{}Producer\allowbreak{}Model\allowbreak{}Spec}
+\item \hyperlink{governing-declaration-6be812a4b679146a}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}infinite\allowbreak{}Producer\allowbreak{}Candidate\allowbreak{}Spec}
 \item \hyperlink{governing-declaration-63bdc0df0d11c740}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}two\allowbreak{}User\allowbreak{}Phase\allowbreak{}Threshold}
 \end{itemize}
 \paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
@@ -5947,7 +6391,7 @@ For 0 < theta < pi/2 and beta strictly above the two-user phase threshold, there
 4. assumption: θ < Real.pi / 2
 5. assumption: JGS23SupplySideRecommenderSystems.twoUserPhaseThreshold θ < β
 6. conclusion: ∃ (a : ℝ) (C1 : ℝ) (C2 : ℝ) (A : ℝ) (B : ℝ) (phi : ℝ),
-  JGS23SupplySideRecommenderSystems.infiniteProducerModelSpec
+  JGS23SupplySideRecommenderSystems.infiniteProducerCandidateSpec
       (fun (q : ℝ) =>
         if q ≤ 0 then 0
         else
@@ -5955,7 +6399,7 @@ For 0 < theta < pi/2 and beta strictly above the two-user phase threshold, there
           else
             have k : ℕ := if h : ∃ (n : ℕ), a * C2 ^ n ≤ q then Nat.find h else 0;
             if Even k then C2 ^ (↑k * β) else C1 ^ (-2) * C2 ^ (-2 * ↑(k / 2) * β) * q ^ (2 * β))
-      β θ ∧
+      β θ phi ∧
     phi ∈ Set.Icc 0 (θ / 2) ∧
       IsMaxOn (fun (x : ℝ) => Real.cos x ^ β + Real.cos (θ - x) ^ β) (Set.Icc 0 (θ / 2)) phi ∧
         0 < a ∧ 0 < C2 ∧ C2 < 1 ∧ C1 = a ^ β ∧ C1 = 1 + C2 ^ β ∧ A = Real.cos phi ∧ B = Real.cos (θ - phi) ∧ C2 = B / A
@@ -5969,7 +6413,7 @@ JGS23SupplySideRecommenderSystems.theoremInfiniteGenre
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Anchor 1759-\allowbreak{}1771 has the impossible arccosine sign and weights summing to four.\allowbreak{}  The approved target gives the coherent strictly acute, above-\allowbreak{}threshold normalized two-\allowbreak{}genre construction with its explicit conditional CDF and global optimality predicate.\allowbreak{}
+\textbf{Reason:} The archival formal theorem has the impossible arccosine condition theta < 0 and weights alpha\_\allowbreak{}1 = alpha\_\allowbreak{}2 = 2.\allowbreak{} The displayed approved correction replaces these with the acute regime and normalized equal weights;\allowbreak{} the Lean target exactly uses 0 < theta < pi/\allowbreak{}2, half weights, the candidate CDF, normalized genres, and support-\allowbreak{}wise global best responses.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par
@@ -6051,7 +6495,7 @@ Let $D = 1$, and suppose that there is a single user $\u_1 =1$. Suppose the cost
 \paragraph{Formalized review target}
 The archival source above is not asserted equivalent to this formalized target.
 \begin{ReviewVerbatim}
-For a one-dimensional homogeneous population, every nonnegative unit genre maximizing the single user's score yields the checked single-ray symmetric equilibrium and corrected radial CDF.
+For the literal one-user, one-dimensional Euclidean source model, every symmetric mixed equilibrium equals the displayed single-ray law; its power-law CDF is therefore unique. The generic unit-genre construction remains available for the homogeneous one-dimensional specialization.
 \end{ReviewVerbatim}
 
 \textbf{Archival source anchor:} {\footnotesize\raggedright cited publication, lines 346-\allowbreak{}349\par}
@@ -6076,20 +6520,34 @@ For a one-dimensional homogeneous population, every nonnegative unit genre maxim
                   (JGS23SupplySideRecommenderSystems.singleGenreContentLaw 1 P β genre).support ⊆
                       {p : JGS23SupplySideRecommenderSystems.Content 1 |
                         ∃ q ∈ Set.Icc 0 1, p = JGS23SupplySideRecommenderSystems.scaleContent q genre} ∧
-                    ∀ (z : ℝ),
-                      0 ≤ z →
-                        (MeasureTheory.Measure.map ν.norm
-                              (JGS23SupplySideRecommenderSystems.singleGenreContentLaw 1 P β genre))
-                            (Set.Iic z) =
-                          ENNReal.ofReal (min 1 ((z ^ β / 1) ^ (↑P - 1)⁻¹))
+                    (∀ (z : ℝ),
+                        0 ≤ z →
+                          (MeasureTheory.Measure.map ν.norm
+                                (JGS23SupplySideRecommenderSystems.singleGenreContentLaw 1 P β genre))
+                              (Set.Iic z) =
+                            ENNReal.ofReal (min 1 ((z ^ β / 1) ^ (↑P - 1)⁻¹))) ∧
+                      ∀ {μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy 1},
+                        JGS23SupplySideRecommenderSystems.SourceSymmetricMixedNash
+                            (fun (x : Fin 1) => JGS23SupplySideRecommenderSystems.oneDimensionalUnitContent)
+                            (JGS23SupplySideRecommenderSystems.normRpowCost
+                              (JGS23SupplySideRecommenderSystems.SourceNorm.l2 1) β)
+                            μ →
+                          μ =
+                            JGS23SupplySideRecommenderSystems.singleGenreContentLaw 1 P β
+                              JGS23SupplySideRecommenderSystems.oneDimensionalUnitContent
 \end{ReviewVerbatim}
 
 \paragraph{Retained governing declarations}
 \begin{itemize}\raggedright
 \item \hyperlink{governing-declaration-367305fda50f0ada}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Content}
+\item \hyperlink{governing-declaration-2089965d06cf0282}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Mixed\allowbreak{}Content\allowbreak{}Strategy}
 \item \hyperlink{governing-declaration-d426babe40b9593c}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Nonnegative\allowbreak{}Content}
 \item \hyperlink{governing-declaration-6141339a5d3412d9}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm}
+\item \hyperlink{governing-declaration-9299663ffe3ecb38}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Norm.\allowbreak{}l2}
+\item \hyperlink{governing-declaration-8919e7334fa5ab60}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}Source\allowbreak{}Symmetric\allowbreak{}Mixed\allowbreak{}Nash}
 \item \hyperlink{governing-declaration-6ba13dc1cae95e6e}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}norm\allowbreak{}Power\allowbreak{}Cost\allowbreak{}Spec}
+\item \hyperlink{governing-declaration-54533813c77cea72}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}norm\allowbreak{}Rpow\allowbreak{}Cost}
+\item \hyperlink{governing-declaration-dc75be9b72bb3fe0}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}one\allowbreak{}Dimensional\allowbreak{}Unit\allowbreak{}Content}
 \item \hyperlink{governing-declaration-48347eafb3702717}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}paper\_\allowbreak{}inferred\_\allowbreak{}user\_\allowbreak{}value}
 \item \hyperlink{governing-declaration-c0824fcccb145634}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}scale\allowbreak{}Content}
 \item \hyperlink{governing-declaration-205216ea3d333b14}{JGS23\allowbreak{}Supply\allowbreak{}Side\allowbreak{}Recommender\allowbreak{}Systems.\allowbreak{}single\allowbreak{}Genre\allowbreak{}Content\allowbreak{}Law}
@@ -6120,11 +6578,18 @@ For a one-dimensional homogeneous population, every nonnegative unit genre maxim
   (JGS23SupplySideRecommenderSystems.singleGenreContentLaw 1 P β genre).support ⊆
       {p : JGS23SupplySideRecommenderSystems.Content 1 |
         ∃ q ∈ Set.Icc 0 1, p = JGS23SupplySideRecommenderSystems.scaleContent q genre} ∧
-    ∀ (z : ℝ),
-      0 ≤ z →
-        (MeasureTheory.Measure.map ν.norm (JGS23SupplySideRecommenderSystems.singleGenreContentLaw 1 P β genre))
-            (Set.Iic z) =
-          ENNReal.ofReal (min 1 ((z ^ β / 1) ^ (↑P - 1)⁻¹))
+    (∀ (z : ℝ),
+        0 ≤ z →
+          (MeasureTheory.Measure.map ν.norm (JGS23SupplySideRecommenderSystems.singleGenreContentLaw 1 P β genre))
+              (Set.Iic z) =
+            ENNReal.ofReal (min 1 ((z ^ β / 1) ^ (↑P - 1)⁻¹))) ∧
+      ∀ {μ : JGS23SupplySideRecommenderSystems.MixedContentStrategy 1},
+        JGS23SupplySideRecommenderSystems.SourceSymmetricMixedNash
+            (fun (x : Fin 1) => JGS23SupplySideRecommenderSystems.oneDimensionalUnitContent)
+            (JGS23SupplySideRecommenderSystems.normRpowCost (JGS23SupplySideRecommenderSystems.SourceNorm.l2 1) β) μ →
+          μ =
+            JGS23SupplySideRecommenderSystems.singleGenreContentLaw 1 P β
+              JGS23SupplySideRecommenderSystems.oneDimensionalUnitContent
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -6135,7 +6600,7 @@ JGS23SupplySideRecommenderSystems.exampleOneDimensionalSetup
 \textbf{Verdict:} \texttt{matches\_approved\_corrected\_target}
 \\
 {\raggedright
-\textbf{Reason:} Anchor 346-\allowbreak{}349 asserts a unique one-\allowbreak{}dimensional law with the defective CDF.\allowbreak{}  The approved target is precisely the construction-\allowbreak{}only homogeneous ray specialization with the corrected radial CDF, not an unproved uniqueness claim.\allowbreak{}
+\textbf{Reason:} The approved one-\allowbreak{}dimensional correction asks for the explicit homogeneous ray construction and uniqueness only in the literal one-\allowbreak{}user Euclidean model.\allowbreak{} Lean constructs the mapped uniform-\allowbreak{}power law under positive beta, a nonnegative unit genre, positive/\allowbreak{}maximal user score, and norm measurability;\allowbreak{} it states Nash optimality, unit-\allowbreak{}ray support, and the clipped radial CDF corresponding to exponent beta/\allowbreak{}(P-\allowbreak{}1).\allowbreak{} Its final clause says every source symmetric Nash measure for user 1 and L2 power cost is exactly that measure.\allowbreak{} These conclusions and the displayed sampler agree with the repaired CDF and uniqueness target.\allowbreak{}
 \par}
 \reviewmatch{Matches formalized target}
 \noindent\textbf{Reviewer annotation}\par

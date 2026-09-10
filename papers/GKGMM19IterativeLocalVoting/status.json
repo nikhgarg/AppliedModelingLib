@@ -30,10 +30,10 @@
   },
   "id": "GKGMM19IterativeLocalVoting",
   "repository_visibility": "public",
-  "main_caveat": "No theorem-level formalization boundary remains. Proposition 2 uses the paper proof's coordinatewise-boundary Model B reading, and Theorem 3's projected/full-space distinction is recorded as a source clarification.",
+  "main_caveat": "The Proposition 2 C1 repair proves convergence of the paper proof's coordinate-sign processes to feasible expected-L1 minimizers; its printed ambient coordinate-median target is false on coupled convex domains. Appendix Theorem 5's adapted random-bias statement is proved with explicit probability-space regularity. Proposition 2's coordinatewise Model B reading and Theorem 3's projected/full-space distinction remain recorded source clarifications.",
   "paper_interface": {
     "declaration_rows": 189,
-    "line_count": 5523,
+    "line_count": 5647,
     "maintainability_issue": "PaperInterface.lean is intentionally large; human review is restricted to the 11 source-claim Spec rows.",
     "oversized": true,
     "path": "papers/GKGMM19IterativeLocalVoting/PaperInterface.lean",
@@ -56,6 +56,8 @@
       "stale_judgment_count": 0
     },
     "auxiliary_names": [
+      "AppendixTheorem5AdaptedBiasHypotheses",
+      "AppendixTheorem5AdaptedBiasRegularity",
       "AppendixTheorem5ExecutionRegularity",
       "AppendixTheorem5ExecutionRegularity.ae_tendsto",
       "AppendixTheorem5ExecutionRegularity.toProjectedSSGMExecution",
@@ -139,12 +141,12 @@
     "include_names": [
       "lemma3_finite_holder_dual_gradient_candidate_norm_formulaSpec",
       "proposition1_weighted_euclidean_joint_c3Spec",
-      "proposition2_coordinatewise_boundary_finite_c3_medianSpec",
+      "proposition2_convex_domain_constrained_l1Spec",
       "appendix_lemma1_uniform_direction_errorSpec",
       "appendix_lemma2_bad_event_linear_rateSpec",
       "appendix_lemma4_weighted_bad_event_linear_rateSpec",
       "appendix_theorem4_expected_subgradient_boundarySpec",
-      "appendix_theorem5_ssgm_convergence_boundarySpec",
+      "appendix_theorem5_adapted_biasSpec",
       "theorem1_finite_c3_six_casesSpec",
       "theorem2_modelB_finite_holder_dual_c3Spec",
       "theorem3_population_fullspaceSpec"
@@ -156,7 +158,7 @@
           "theorem1_finite_c3_six_casesSpec",
           "theorem2_modelB_finite_holder_dual_c3Spec",
           "proposition1_weighted_euclidean_joint_c3Spec",
-          "proposition2_coordinatewise_boundary_finite_c3_medianSpec",
+          "proposition2_convex_domain_constrained_l1Spec",
           "theorem3_population_fullspaceSpec"
         ]
       },
@@ -168,7 +170,7 @@
           "appendix_lemma2_bad_event_linear_rateSpec",
           "appendix_lemma4_weighted_bad_event_linear_rateSpec",
           "appendix_theorem4_expected_subgradient_boundarySpec",
-          "appendix_theorem5_ssgm_convergence_boundarySpec"
+          "appendix_theorem5_adapted_biasSpec"
         ]
       }
     ],
@@ -226,7 +228,7 @@
           "theorem1_finite_c3_six_casesSpec",
           "theorem2_modelB_finite_holder_dual_c3Spec",
           "proposition1_weighted_euclidean_joint_c3Spec",
-          "proposition2_coordinatewise_boundary_finite_c3_medianSpec"
+          "proposition2_convex_domain_constrained_l1Spec"
         ]
       },
       {
@@ -238,7 +240,7 @@
           "appendix_lemma2_bad_event_linear_rateSpec",
           "appendix_lemma4_weighted_bad_event_linear_rateSpec",
           "appendix_theorem4_expected_subgradient_boundarySpec",
-          "appendix_theorem5_ssgm_convergence_boundarySpec"
+          "appendix_theorem5_adapted_biasSpec"
         ]
       },
       {
@@ -296,12 +298,12 @@
     "proposition_spec_proofs": {
       "lemma3_finite_holder_dual_gradient_candidate_norm_formulaSpec": "lemma3_finite_holder_dual_gradient_candidate_norm_formula",
       "proposition1_weighted_euclidean_joint_c3Spec": "proposition1_weighted_euclidean_joint_c3",
-      "proposition2_coordinatewise_boundary_finite_c3_medianSpec": "proposition2_coordinatewise_boundary_finite_c3_median",
+      "proposition2_convex_domain_constrained_l1Spec": "proposition2_convex_domain_constrained_l1",
       "appendix_lemma1_uniform_direction_errorSpec": "appendix_lemma1_uniform_direction_error",
       "appendix_lemma2_bad_event_linear_rateSpec": "appendix_lemma2_bad_event_linear_rate",
       "appendix_lemma4_weighted_bad_event_linear_rateSpec": "appendix_lemma4_weighted_bad_event_linear_rate",
       "appendix_theorem4_expected_subgradient_boundarySpec": "appendix_theorem4_expected_subgradient_boundary",
-      "appendix_theorem5_ssgm_convergence_boundarySpec": "appendix_theorem5_ssgm_convergence_boundary",
+      "appendix_theorem5_adapted_biasSpec": "appendix_theorem5_adapted_bias",
       "theorem1_finite_c3_six_casesSpec": "theorem1_finite_c3_six_cases",
       "theorem2_modelB_finite_holder_dual_c3Spec": "theorem2_modelB_finite_holder_dual_c3",
       "theorem3_population_fullspaceSpec": "theorem3_population_fullspace"
@@ -311,6 +313,6 @@
   },
   "schema": 1,
   "source_version": "JAIR 64 (2019), 315-355; published 2019-02-18",
-  "status": "formalized",
+  "status": "partially formalized",
   "title": "Iterative Local Voting for Collective Decision-making in Continuous Spaces"
 }

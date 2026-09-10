@@ -1,0 +1,273 @@
+{
+  "all_selected_semantic_review_sha256": "578dbfb1dfd39884bf034a055250c062ae09f7f0d67dbd7181a69b00ed265ff2",
+  "items": {
+    "convention/PKG25-FINITE-MEASURABLE-PARTITION-01": {
+      "disposition": "not_material",
+      "reason": "The source counterexamples themselves use finite measurable cells; making that finite witness partition explicit changes neither their domain nor any named conclusion."
+    },
+    "convention/PKG25-MEASURABILITY-AND-EXPECTATION-01": {
+      "disposition": "not_material",
+      "reason": "Measurable predictions and integrable correctness supply the source probability/expectation definitions; finite witnesses satisfy them automatically."
+    },
+    "convention/PKG25-NONEMPTY-AGENT-DOMAIN-01": {
+      "disposition": "not_material",
+      "reason": "The source minimum and existential deferral agent already require a nonempty agent set."
+    },
+    "convention/PKG25-RAW-JOINT-LAW-01": {
+      "disposition": "not_material",
+      "reason": "The joint-law calibration identity is the measurable-event form of source calibration and adds no population restriction."
+    },
+    "defect/PKG25-ACCURACY-LOSS-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "loss-correctness-and-calibration",
+      "memo_heading": "Loss, correctness, and calibration",
+      "memo_sha256": "c0e5223ca197ac0271f5ceebeee00c3ec7e63360f02226893c424da7684e5a50",
+      "report_home": 10,
+      "source_reading": "The source labels E[|Yhat(X)-Y|] as 0-1 accuracy, although this expectation is 0-1 loss; the later agent formula and proof use expected correctness."
+    },
+    "defect/PKG25-CALIBRATION-NULL-FIBERS-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "mixtures-and-finite-partitions",
+      "memo_heading": "Mixtures and finite partitions",
+      "memo_sha256": "c0e5223ca197ac0271f5ceebeee00c3ec7e63360f02226893c424da7684e5a50",
+      "report_home": 10,
+      "source_reading": "Calibration is written as a point-conditioned equality for every p in Image(P), without defining a conditional probability on a zero-probability prediction fiber."
+    },
+    "defect/PKG25-CORRECTNESS-TIE-01": {
+      "disposition": "not_material",
+      "reason": "The printed Lemma 8 already assumes an interior prediction profile and excludes the selected agent's half tie; the selected Spec has those same premises and conclusion. The generic proof-helper strictness observation is not a change to this named result."
+    },
+    "defect/PKG25-IFF-BOUNDARY-01": {
+      "disposition": "not_material",
+      "reason": "The selected Theorem 1 is exactly the source's forward implication. The separate proof-restatement converse observation changes neither that named result nor its checked proof and is omitted from reader prose at the maintainer's request; its technical evidence remains retained."
+    },
+    "defect/PKG25-P6-MIXTURE-INDEX-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "mixtures-and-finite-partitions",
+      "memo_heading": "Mixtures and finite partitions",
+      "memo_sha256": "c0e5223ca197ac0271f5ceebeee00c3ec7e63360f02226893c424da7684e5a50",
+      "report_home": 10,
+      "source_reading": "After defining the component law with lambda_m in the displayed equation, the prose says to sample component m with probability lambda_ell."
+    },
+    "defect/PKG25-P9-S1-EPSILON-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "proposition-9s-two-settings",
+      "memo_heading": "Proposition 9's two settings",
+      "memo_sha256": "c0e5223ca197ac0271f5ceebeee00c3ec7e63360f02226893c424da7684e5a50",
+      "report_home": 7,
+      "source_reading": "The first Proposition 9 setting says only epsilon < 1/2 while using epsilon and 1-epsilon as conditional probabilities and asserting that both induced profiles lie in (0,1)^n."
+    },
+    "defect/PKG25-P9-S2-DENOMINATOR-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "proposition-9s-two-settings",
+      "memo_heading": "Proposition 9's two settings",
+      "memo_sha256": "c0e5223ca197ac0271f5ceebeee00c3ec7e63360f02226893c424da7684e5a50",
+      "report_home": 7,
+      "source_reading": "The displayed S2 mass denominator writes a sum over j of p_j/(1-p_j) followed by a free-index term (1-q_j)/q_j, so as printed it does not define one normalized distribution."
+    },
+    "defect/PKG25-PARTITION-MEASURABLE-FINITE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "mixtures-and-finite-partitions",
+      "memo_heading": "Mixtures and finite partitions",
+      "memo_sha256": "c0e5223ca197ac0271f5ceebeee00c3ec7e63360f02226893c424da7684e5a50",
+      "report_home": 10,
+      "source_reading": "The source says that an arbitrary partition induces a calibrated predictor by assigning every cell its conditional label-one probability, without measurability, null-cell, or finiteness conditions."
+    },
+    "report/proposition9-explicit-mixture-weights": {
+      "disposition": "not_material",
+      "reason": "The explicit 7/8 and 1/8 witness is a proof choice for a reported finite construction, not a source ambiguity beyond the Proposition 9 domain and normalizer corrections."
+    },
+    "report/theorem1-forward-implication": {
+      "disposition": "not_material",
+      "reason": "The selected result exactly matches the advertised forward theorem; no source difference needs a reader note."
+    }
+  },
+  "paper": "PKG25NoFreeLunch",
+  "report_inventory_complete": true,
+  "report_sha256": "94475e4c9d85edab7936edfb041006f39cf2a36e06c76150409d94ed33731bc8",
+  "result_table": {
+    "complete": true,
+    "results": {
+      "source_lemma8_bad_tuple": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 8",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 8",
+            "row_sha256": "0fa9f03b84f8275dd5f31c5b524be82235c6af42c86c43bb92b0e735f66efb8f"
+          }
+        ]
+      },
+      "source_proposition6_linear_combination": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 6",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 6",
+            "row_sha256": "de9aa36662f952f4a9e9d03beaa37ae3cba2fc6cf50de63f69695b64fcd81b9f"
+          }
+        ]
+      },
+      "source_proposition7_fixed_deferral": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 7",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 7",
+            "row_sha256": "9caad6c2ca1488f3e3472a486c445581d5ce0e6f3efef5ba33600251399f7ca0"
+          }
+        ]
+      },
+      "source_proposition9_constant_tie_label": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 9",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 9",
+            "row_sha256": "f203f3a8ac664d88c8da5aaf6bd1f719ebb75c28a00f05dcb1d1211da1594331"
+          }
+        ]
+      },
+      "source_theorem1_no_free_lunch": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1",
+            "row_sha256": "e9a9f3f4513672c851dc9149c4ea58027b936b10c2106e094669738156be29be"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "0fa9f03b84f8275dd5f31c5b524be82235c6af42c86c43bb92b0e735f66efb8f": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "de9aa36662f952f4a9e9d03beaa37ae3cba2fc6cf50de63f69695b64fcd81b9f": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "9caad6c2ca1488f3e3472a486c445581d5ce0e6f3efef5ba33600251399f7ca0": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "e9a9f3f4513672c851dc9149c4ea58027b936b10c2106e094669738156be29be": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "f203f3a8ac664d88c8da5aaf6bd1f719ebb75c28a00f05dcb1d1211da1594331": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    },
+    "schema": 1,
+    "source_inventory": {
+      "discovered_named_result_sha256": "01bd8c908b65957a8f2d0f1c042d3585c44b3e1798d2ce549d525c4876405bf3",
+      "results": {
+        "source_lemma8_bad_tuple": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 169,
+              "line_start": 162,
+              "presentation": "tex_environment",
+              "presentation_sha256": "d103f576717f5da286bd126218e25374aa1c025d2aacb30ed4e6326e6a2b0069",
+              "source_item_id": "source_lemma8_bad_tuple",
+              "source_label": "lem:counterexample"
+            }
+          ],
+          "source_item_ids": [
+            "source_lemma8_bad_tuple"
+          ]
+        },
+        "source_proposition6_linear_combination": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 107,
+              "line_start": 100,
+              "presentation": "tex_environment",
+              "presentation_sha256": "3a01f3096685249cadf87cc5def411cbeb3f393d161527a54646a1be8838c9b7",
+              "source_item_id": "source_proposition6_linear_combination",
+              "source_label": "prop:linear-combination"
+            }
+          ],
+          "source_item_ids": [
+            "source_proposition6_linear_combination"
+          ]
+        },
+        "source_proposition7_fixed_deferral": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 154,
+              "line_start": 152,
+              "presentation": "tex_environment",
+              "presentation_sha256": "f506c5a77dbc025bdb3e121c6f5f08b75306db5218d36f18ae358bc08c871e28",
+              "source_item_id": "source_proposition7_fixed_deferral",
+              "source_label": "prop:part1"
+            }
+          ],
+          "source_item_ids": [
+            "source_proposition7_fixed_deferral"
+          ]
+        },
+        "source_proposition9_constant_tie_label": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 246,
+              "line_start": 241,
+              "presentation": "tex_environment",
+              "presentation_sha256": "3f3cea944a3c70d44479e5f8aa1ddd821b38b7eceb2b74d17a9458e3a597667f",
+              "source_item_id": "source_proposition9_constant_tie_label",
+              "source_label": "prop:part2"
+            }
+          ],
+          "source_item_ids": [
+            "source_proposition9_constant_tie_label"
+          ]
+        },
+        "source_theorem1_no_free_lunch": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 63,
+              "line_start": 57,
+              "presentation": "tex_environment",
+              "presentation_sha256": "c9cae345bb2cfb1a9d95d0c566cd06354c39e4804a82ca777193dc3a97cee222",
+              "source_item_id": "source_theorem1_no_free_lunch",
+              "source_label": "thm:main"
+            }
+          ],
+          "source_item_ids": [
+            "source_theorem1_no_free_lunch"
+          ]
+        }
+      },
+      "schema": 1,
+      "source_artifact_sha256": "50352a0df5c4722ad67ac01ec17d3fa4c9a79687453b8751587664092fe573cc",
+      "source_format": "tex"
+    },
+    "source_inventory_sha256": "a2be85bf96d488ed294c7316e86512e1656d728cd5627220893d9e02e6fe4ed8"
+  },
+  "schema": 2,
+  "source_items_sha256": "0838841164f646019460d8f29ed7a956d779771cbdd85f1f17ecaa826e16b578"
+}

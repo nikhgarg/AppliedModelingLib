@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "id": "LBG22StrategicRanking",
+  "repository_visibility": "public",
+  "title": "Strategic ranking",
+  "authors": "Lydia T. Liu, Nikhil Garg, Christian Borgs",
+  "source_version": "Proceedings of The 25th International Conference on Artificial Intelligence and Statistics (AISTATS 2022), PMLR Vol. 151, pp. 2489–2518",
+  "build_target": "lake build LBG22StrategicRanking",
+  "status": "formalized with caveat",
+  "main_caveat": "All eighteen selected named results have proved endpoints and current independent source-semantic review, final audit, and strict closeout. Proposition 3.1's cutoff-monotonicity clause and Proposition B.2's every-cutoff optimum use explicit local primitive restrictions; known-priority, continuum, and weak/strict readings are clarifications.",
+  "human_summary": "The finite-level equilibrium exists and is unique almost everywhere under the paper's known-priority boundary model. Main-text weak/strict comparisons are exact under the clarified interpretation, with derivative existence qualified separately. Applicant-welfare cutoff monotonicity and the appendix's every-cutoff weighted optimum use explicit local primitive restrictions. All eighteen theorem targets are proved and independently source-reviewed; final audit and strict closeout are complete.",
+  "human_summary_review": {
+    "status": "draft",
+    "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+  },
+  "review_entrypoint": "papers/LBG22StrategicRanking/FINAL_VALIDATION_REPORT.md",
+  "human_review": {
+    "reviewed_rows": 0,
+    "total_rows": 18,
+    "stale_rows": 0,
+    "mismatch_rows": 0,
+    "uncertain_rows": 0,
+    "source": "v11 PaperInterface claim surface; human entries are recorded after direct review"
+  },
+  "paper_interface": {
+    "path": "papers/LBG22StrategicRanking/PaperInterface.lean",
+    "review_rows": 18,
+    "oversized": false,
+    "maintainability_issue": "One complete transparent Spec per named result; archival assertions are separated. All selected targets have current independent semantic review.",
+    "line_count": 546
+  },
+  "artifacts": {
+    "readme": "papers/LBG22StrategicRanking/README.md",
+    "paper_interface": "papers/LBG22StrategicRanking/PaperInterface.lean",
+    "final_validation_report": "papers/LBG22StrategicRanking/FINAL_VALIDATION_REPORT.md",
+    "dependency_dag_tex": "papers/LBG22StrategicRanking/docs/DependencyDAG.tex",
+    "dependency_dag_pdf": "papers/LBG22StrategicRanking/docs/DependencyDAG.pdf",
+    "human_review_packet_pdf": "papers/LBG22StrategicRanking/docs/HUMAN_REVIEW_PACKET.pdf",
+    "human_review_packet_tex": "papers/LBG22StrategicRanking/docs/HUMAN_REVIEW_PACKET.tex",
+    "audit_interface": "papers/LBG22StrategicRanking/AuditInterface.lean",
+    "proof_interface": "papers/LBG22StrategicRanking/ProofInterface.lean"
+  },
+  "review_surface": {
+    "source_file": "papers/LBG22StrategicRanking/PaperInterface.lean",
+    "llm_statement_review": {
+      "lean_to_tex_file": "papers/LBG22StrategicRanking/audit/lean_to_tex_llm.json",
+      "match_judgment_file": "papers/LBG22StrategicRanking/audit/statement_match_llm.json",
+      "review_surface_audit_file": "papers/LBG22StrategicRanking/audit/review_surface_llm.json",
+      "surface_audit_threshold": 30,
+      "surface_warning_threshold": 120,
+      "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
+      "v11_screening_file": "papers/LBG22StrategicRanking/audit/v11_raw_source_spec_screening.json",
+      "paper_semantic_prerequisites_file": "papers/LBG22StrategicRanking/audit/paper_semantic_prerequisites.json",
+      "library_semantic_review_file": "papers/LBG22StrategicRanking/audit/library_semantic_review.json",
+      "require_explicit_source_routes": true,
+      "require_source_claim_atoms": true,
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
+    },
+    "include_names": [
+      "RankPreservationSpec",
+      "SecondPriceEffortSpec",
+      "ApplicantWelfareSpec",
+      "PrivateUtilitySpec",
+      "ThreeLevelImprovementSpec",
+      "SocietalUtilitySpec",
+      "EnvironmentRankPreservationSpec",
+      "EnvironmentWelfareSpec",
+      "WelfareGapDerivativeSpec",
+      "AccessSpec",
+      "EffortComparativeStaticsSpec",
+      "MultidimensionalRankSpec",
+      "WeightedPrivateUtilitySpec",
+      "EqualScoreRewardsSpec",
+      "NullDeviationsSpec",
+      "CostGapSpec",
+      "ProductionGapSpec",
+      "PreEffortSkillRegularitySpec"
+    ],
+    "slices": [
+      {
+        "id": "main",
+        "title": "Main-text source statements",
+        "names": [
+          "RankPreservationSpec",
+          "SecondPriceEffortSpec",
+          "ApplicantWelfareSpec",
+          "PrivateUtilitySpec",
+          "ThreeLevelImprovementSpec",
+          "SocietalUtilitySpec",
+          "EnvironmentRankPreservationSpec",
+          "EnvironmentWelfareSpec",
+          "WelfareGapDerivativeSpec",
+          "AccessSpec"
+        ]
+      },
+      {
+        "id": "appendix",
+        "title": "Appendix and supplement source statements",
+        "names": [
+          "PreEffortSkillRegularitySpec",
+          "EffortComparativeStaticsSpec",
+          "MultidimensionalRankSpec",
+          "WeightedPrivateUtilitySpec",
+          "EqualScoreRewardsSpec",
+          "NullDeviationsSpec",
+          "CostGapSpec",
+          "ProductionGapSpec"
+        ]
+      }
+    ],
+    "auxiliary_names": [],
+    "require_v11_raw_source_spec_screening": true,
+    "require_source_spec_correspondence": true,
+    "paper_coverage_required": true,
+    "source_proof_fidelity_review": {
+      "ledger_file": "papers/LBG22StrategicRanking/audit/source_proof_fidelity.json",
+      "policy": "Review exact source proof scopes and the mathematical replacement derivations. Distinguish stated-model and weak/strict clarifications from the local primitive restrictions of Proposition 3.1 and B.2. Neither approval nor a compiled proof supplies an independent source-semantic judgment."
+    },
+    "proposition_spec_proofs": {
+      "RankPreservationSpec": "rankPreservation",
+      "SecondPriceEffortSpec": "secondPriceEffort",
+      "ApplicantWelfareSpec": "applicantWelfare",
+      "PrivateUtilitySpec": "privateUtility",
+      "ThreeLevelImprovementSpec": "threeLevelImprovement",
+      "SocietalUtilitySpec": "societalUtility",
+      "EnvironmentRankPreservationSpec": "environmentRankPreservation",
+      "EnvironmentWelfareSpec": "environmentWelfare",
+      "WelfareGapDerivativeSpec": "welfareGapDerivative",
+      "AccessSpec": "access",
+      "EffortComparativeStaticsSpec": "effortComparativeStatics",
+      "MultidimensionalRankSpec": "multidimensionalRank",
+      "WeightedPrivateUtilitySpec": "weightedPrivateUtility",
+      "EqualScoreRewardsSpec": "equalScoreRewards",
+      "NullDeviationsSpec": "nullDeviations",
+      "CostGapSpec": "costGap",
+      "ProductionGapSpec": "productionGap",
+      "PreEffortSkillRegularitySpec": "preEffortSkillRegularity"
+    }
+  }
+}

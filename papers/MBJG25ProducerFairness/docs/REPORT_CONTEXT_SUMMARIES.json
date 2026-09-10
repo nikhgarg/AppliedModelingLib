@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "paper": "MBJG25ProducerFairness",
+  "summaries": {},
+  "omitted_conventions": [
+    "MBJG25-DISCRETE-NONDEGENERATE-OBSERVATION-01"
+  ]
+}

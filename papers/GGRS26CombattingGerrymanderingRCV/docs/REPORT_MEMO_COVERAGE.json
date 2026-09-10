@@ -1,0 +1,133 @@
+{
+  "schema": 2,
+  "paper": "GGRS26CombattingGerrymanderingRCV",
+  "report_sha256": "f61eb3fc0fe6916550d7611fa997bc29b347314ff91a730cef17c333a2888b93",
+  "source_items_sha256": "9caee8cdb58ea8dadb85540a515bb4d83f29ff92934a26ee4c457816558ff3ee",
+  "all_selected_semantic_review_sha256": "76735d9cc52b610cd063cbcbf28b3db530153b9754e553a4a59aa5673e517bd5",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/GGRS26-P1-DIVISIBILITY-PROOF-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "b1760d176aac78b562959a068b775d74e9d1f446db9114ddf52c0aeaef076d25",
+      "memo_heading": "Proposition 1: floor-Droop arithmetic",
+      "memo_anchor": "proposition-1-floor-droop-arithmetic",
+      "report_home": 7
+    },
+    "defect/GGRS26-P1-TRANSFER-GENERALITY-01": {
+      "disposition": "not_material",
+      "reason": "The completed construction proves the source transfer-rule generality from its operational invariants; the earlier gap was missing proof coverage, without a changed source conclusion."
+    },
+    "convention/GGRS26-POSITIVE-DISTRICT-MAGNITUDE-01": {
+      "disposition": "not_material",
+      "reason": "The source district has a positive integer seat count."
+    },
+    "convention/GGRS26-PAV-HARMONIC-WEIGHT-01": {
+      "disposition": "not_material",
+      "reason": "The positive-index reciprocal and accumulated harmonic weights are precisely the source PAV formula."
+    },
+    "convention/GGRS26-RANDOM-WITHIN-PARTY-SUPPORT-01": {
+      "disposition": "not_material",
+      "reason": "Proposition 1 asserts a seat bound for every admissible tie outcome; pathwise support proves that claim without a distributional conclusion."
+    },
+    "convention/GGRS26-POSITIVE-PARTY-SHARE-CONVENTION-01": {
+      "disposition": "not_material",
+      "reason": "Lemma C.1 explicitly assumes party share in (0,1]; Proposition 1 separately covers zero."
+    },
+    "convention/GGRS26-TWO-PARTY-ACTIVE-CANDIDATE-UNIVERSE-01": {
+      "disposition": "not_material",
+      "reason": "The two-party source model already excludes third-party active candidates."
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "57762234dc7b4a41d10b7f05110551853ab717136eca7b9216da9425cfb8bce5",
+      "discovered_named_result_sha256": "751c69772759fc0eb8dd07d7fcb2643122e065b508a1689b2491c2a06492abfb",
+      "source_format": "text",
+      "results": {
+        "lemma_c1_pav_min_argmax_interval": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 2433,
+              "line_start": 2414,
+              "presentation": "text_heading",
+              "presentation_sha256": "baabcbcd066fab46b15a283d49813dc6796a0d26169ad9a76b439cbe4b7b9e51",
+              "source_item_id": "lemma_c1_pav_min_argmax_interval",
+              "source_label": "Lemma C.1"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_c1_pav_min_argmax_interval"
+          ]
+        },
+        "proposition1_stv_pav_rounded_seats": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 545,
+              "line_start": 485,
+              "presentation": "text_heading",
+              "presentation_sha256": "d61e2bc5e8878c1b0e323b99b42c6f7966be934dc93cd26890ff574889695c74",
+              "source_item_id": "proposition1_stv_pav_rounded_seats",
+              "source_label": "Proposition 1"
+            },
+            {
+              "kind": "proposition",
+              "line_end": 2475,
+              "line_start": 2465,
+              "presentation": "text_heading",
+              "presentation_sha256": "65f2e94108db38e7d6570f8c02cf7ddf40979be0af58633d9d838207f7805eb7",
+              "source_item_id": "proposition1_stv_pav_rounded_seats_appendix_presentation",
+              "source_label": "Proposition 1"
+            }
+          ],
+          "source_item_ids": [
+            "proposition1_stv_pav_rounded_seats",
+            "proposition1_stv_pav_rounded_seats_appendix_presentation"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "1eedc5fcce7f6a4f030a39a12b8ba6a4efd0bc804b55e95c095f7d2b2a0153a9",
+    "results": {
+      "lemma_c1_pav_min_argmax_interval": {
+        "numbering": "numbered",
+        "printed_label": "Lemma C.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Lemma C.1",
+            "row_sha256": "4ebe5ae979a74d43c02f1ce7de0ecfee1a266e0371058a3937ae20f42d1770de"
+          }
+        ]
+      },
+      "proposition1_stv_pav_rounded_seats": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 1",
+            "row_sha256": "423c3c37daa9e2ffc58bc1448966ee089c4cc54c148bf7e3a86b6fe5aacf50dc"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "4ebe5ae979a74d43c02f1ce7de0ecfee1a266e0371058a3937ae20f42d1770de": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "423c3c37daa9e2ffc58bc1448966ee089c4cc54c148bf7e3a86b6fe5aacf50dc": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

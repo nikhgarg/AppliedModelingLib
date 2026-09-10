@@ -1,6 +1,6 @@
-# Final Validation Report: Gale--Shapley 1962
+# Final Validation Report: College Admissions and the Stability of Marriage
 
-Updated: 2026-09-04
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -36,10 +36,10 @@ packet or dashboard, but are not a prerequisite for this formalization status.
 
 | Result | Comparison with source |
 | --- | --- |
-| Theorem 1 | **Exact:** finite stable-marriage existence for strict complete preferences by deferred acceptance. |
-| Theorem 2 | **Stability notion clarified:** applicant optimality uses the full operational stability of Sections 4–5. [Reading](docs/SOURCE_CLARIFICATIONS.md#reading-used-for-theorem-2). |
-| Section 4 | **Exact:** the simultaneous waiting-list procedure terminates with a stable assignment. |
-| Printed definitions | **Exact:** the page-10 replacement-pair and optimality definitions, within their fixed-quota domain, and the separate marriage-instability definition. |
+| Theorem 1 | **Exact.** |
+| Theorem 2 | **Exact with source clarification:** applicant optimality uses the full operational stability of Sections 4–5. [Reading](docs/SOURCE_CLARIFICATIONS.md#reading-used-for-theorem-2). |
+| Section 4 | **Exact.** |
+| Printed definitions | **Exact.** |
 
 ## 5. Remaining Boundaries and Gaps
 

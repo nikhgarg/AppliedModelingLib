@@ -57,12 +57,12 @@
       "id": "GHW01-THEOREM82-SODA-SOURCE-VERSION-01",
       "repair_obligation": "Retain the SODA theorem as the archival statement and formalize only the later journal target with the complete offer-CDF monotonicity condition visible in the terminal theorem.",
       "resolution": "corrected_source_statement",
-      "resolution_evidence": "PaperInterface.theorem8_2_truthful_revenue_upper_bound assumes the journal offer-CDF monotonicity relation and proves expected revenue at most the finite fixed-price benchmark. docs/CORRECTED_TARGET_APPROVALS_2026-07-26.md pins the archival SODA line, the journal PDF/text hashes, Definition 8.1 transcript lines 40-42, and Theorem 8.2 transcript lines 58-61.",
+      "resolution_evidence": "The paper-facing Theorem 8.2 endpoint quantifies arbitrary probability measures on real offers, assumes the journal offer-CDF monotonicity relation, and proves expected revenue at most the finite fixed-price benchmark. Its bridge constructs the shared uniform coupling with the lower generalized inverse, preserving each marginal even at atoms. docs/CORRECTED_TARGET_APPROVALS_2026-07-26.md pins the archival SODA line, the journal PDF/text hashes, Definition 8.1 transcript lines 40-42, and Theorem 8.2 transcript lines 58-61.",
       "source_claim": "The preliminary SODA text states E[R] <= F for any truthful auction, while the proof uses a cross-bidder monotonicity step not implied by truthfulness alone.",
       "source_locator": "cited publication:833-833",
       "statement_impact": "source_statement",
       "status_impact": "formalized_note",
-      "status_impact_rationale": "The preliminary universal SODA endpoint is not credited. The separately pinned journal correction adds Definition 8.1's cross-bidder offer-CDF monotonicity condition, and the reviewed theorem proves exactly that corrected finite offer-auction endpoint. This is a source-version correction with an explicit archival/corrected distinction, not an equivalence claim."
+      "status_impact_rationale": "The preliminary universal SODA endpoint is not credited. The separately pinned journal correction adds Definition 8.1's cross-bidder offer-CDF monotonicity condition, and the reviewed theorem proves that corrected endpoint for arbitrary real bidderwise offer laws. This is a source-version correction with an explicit archival/corrected distinction, not an equivalence claim."
     },
     {
       "acceptance_condition": "A sole paper-facing endpoint proves T <= (2 log_2 h) F under h >= 2 and values in [1,h], while the source map retains the different archival statement and a byte-pinned source quote.",
@@ -172,7 +172,7 @@
       "why_needed": "The paper uses expected profit as an ordinary real quantity. Lean's unrestricted tsum is total even for a nonsummable real series, so omitting definedness could silently assign a value outside the source's intended expectation semantics. The concrete finite random-sampling mechanisms have finite support; the generic definition keeps the same regularity visible."
     },
     {
-      "checked_scope": "SourceDefinitions.RandomizedAuction and the generic randomized outcome, revenue, single-price, truthfulness, and correctness interfaces use this convention. The paper's concrete random-sampling, dual-price, exact-half, weighted-pairing, and bounded-sampling mechanisms have finite support and remain exact. PaperInterface.theorem8_2_truthful_revenue_upper_bound remains governed separately by the already approved finite corrected target GHW01-THEOREM82-SODA-SOURCE-VERSION-01.",
+      "checked_scope": "SourceDefinitions.RandomizedAuction and the generic randomized outcome, revenue, single-price, truthfulness, and correctness interfaces use this convention. The paper's concrete random-sampling, dual-price, exact-half, weighted-pairing, and bounded-sampling mechanisms have finite support and remain exact. Theorem 8.2 is a separately governed journal corrected target that proves its arbitrary-real-offer-law endpoint and therefore does not inherit this generic carrier restriction.",
       "classification": "documented_additional_assumption",
       "formal_meaning": "The generic randomized-auction carrier is restricted to discrete, countably supported probability laws, represented in Lean by BidProfile Agent -> PMF (AuctionOutcome Agent). It does not claim to represent every continuous probability law on the real-price outcome space allowed by the source's unrestricted phrase 'probability distributions on auction outcomes'.",
       "id": "GHW01-RANDOMIZED-AUCTION-PMF-DOMAIN-01",

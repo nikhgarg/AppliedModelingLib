@@ -1,0 +1,359 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "CGGG20SelectiveInformationAcquisition",
+  "private_source_map_sha256": "a4fcd78bc3befcf5fd7181200692a5da0a229e59a3f07f11c12566463777889e",
+  "public_manifest_path": "papers/CGGG20SelectiveInformationAcquisition/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "32beeb36ae27cde4320a7d1be54d8fddbbc0c1434c1372058fa7938e0f96d229",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "definition1",
+    "definition3",
+    "lemma4",
+    "lemma5",
+    "lemma7",
+    "theorem2",
+    "theorem6"
+  ],
+  "selected_source_items": {
+    "definition1": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 376,
+              "line_start": 366,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\begin{defn}[Threshold Policy]\n    A \\emph{threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i = t_{g_i}, \\\\\n                0 & \\hat U_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\).\n\\end{defn}",
+              "quoted_text_sha256": "733ad868657280cb448a5f74f68389826b2564633afa738153e7db0aecb742ff"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 376,
+          "line_start": 366,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{defn}[Threshold Policy]\n    A \\emph{threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i = t_{g_i}, \\\\\n                0 & \\hat U_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\).\n\\end{defn}",
+          "quoted_text_sha256": "733ad868657280cb448a5f74f68389826b2564633afa738153e7db0aecb742ff"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition3": {
+      "source_anchors": [
+        {
+          "line_end": 636,
+          "line_start": 626,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{defn}[Cost-Aware Threshold Policy]\n    A \\emph{cost-aware threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i / c_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i / c_i = t_{g_i}, \\\\\n                0 & \\hat U_i / c_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\) and \\(c_i\\) denotes the cost of allocating resources to individual \\(i\\).\n\\end{defn}",
+          "quoted_text_sha256": "2350a9f211af4796282435ab1344eff61fcda254ce18219ebe2ba168700876a5"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "lemma4": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 636,
+              "line_start": 626,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\begin{defn}[Cost-Aware Threshold Policy]\n    A \\emph{cost-aware threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i / c_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i / c_i = t_{g_i}, \\\\\n                0 & \\hat U_i / c_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\) and \\(c_i\\) denotes the cost of allocating resources to individual \\(i\\).\n\\end{defn}",
+              "quoted_text_sha256": "2350a9f211af4796282435ab1344eff61fcda254ce18219ebe2ba168700876a5"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 290,
+              "line_start": 250,
+              "publication_locator": "cited publication",
+              "quoted_text": "We assume the value of lending to an applicant \\(i\\) is given by the random variable \\(U_i\\).\nThese utilities are intended to capture the full social value of providing loans, and we imagine the lender aims to optimize social welfare, as in the case of a government agency.\nIn general, the lender has only partial information about \\(U_i\\). More specifically, if the lender chooses not to screen an applicant, we assume the lender knows only the applicant's conditional expectation \\(\\mu_i = \\EE [U_i \\mid X_i = x_i]\\)\ngiven their pre-screening covariates \\(x_i\\), such as credit score for those applicants who have traditional credit histories.\nOn the other hand, if the lender opts to screen an applicant, they learn \\(\\EE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i]\\), where \\(\\tilde{x}_i\\) denotes the additional information one gains through screening. \nFor example, \\(\\tilde{x}_i\\) might encode applicant \\(i\\)'s history of paying\ntheir electricity or phone bills---information that is often feasible to acquire with some extra effort and which is a good indicator of creditworthiness~\\cite{fdic2018}.\n\nWhen deciding whom to screen, we assume \nthe lender knows the distribution of \\(\\C D = (D_1, \\ldots, D_n)\\), where \\(D_i = \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i]\\).\nThat is, the lender knows how their estimate of utility could change if they decide to screen each applicant, where these distributions may depend on the available pre-screening covariates.\nA lender may, for example, thus choose only to screen applicants whose estimate is likely to substantially change given additional information.\nWe further assume the lender must pay a\nfixed cost \\(\\cs\\) for screening an applicant\nand a cost \\(\\ca\\) for underwriting a loan. \nFor simplicity we assume these costs do not vary across applicants, though it is straightforward to extend to the more general case; see the online appendix for details.\n\nBased on knowledge of the above information and cost structure, the lender selects a randomized strategy to screen applicants.\nThat is, the lender chooses a vector \n\\(\\C P = (p_1, \\dots, p_n)\\), meaning that each applicant \\(i\\) is selected to be screened independently with probability \\(p_i\\).\nLet \\(\\C S = (S_1, \\dots, S_n)\\) indicate which applicants are ultimately screened under this policy; therefore, \\(S_i \\in \\{0,1\\}\\) is a Bernoulli random variable with probability of success \\(p_i\\).\n\nGiven this randomized screening policy, we can now write the information \\(\\hat {\\C U} = (\\hat U_1, \\ldots, \\hat U_n)\\) the lender has at the end of the screening phase as follows:\n    \\begin{equation}\n        \\hat U_i = \\begin{cases}\n            \\EE[U_i \\mid X_i = x_i] & \\text{ if } S_i = 0, \\\\\n            \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i] & \\text{ if } S_i =1.\n        \\end{cases}\n    \\end{equation}\nIn other words, \\(\\hat U_i\\) is the lender's post-screening estimated utility of giving a loan to applicant \\(i\\).\nIn particular, if \\(S_i = 1\\) (i.e., the applicant is screened), the lender's estimate changes from \\(\\EE[U_i\\mid X_i = x_i]\\),\nthe estimate based only on applicant \\(i\\)'s pre-screening covariates \\(x_i\\),\nto \n\\(\\bbE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i] \\), which incorporates the post-screening information \\(\\tilde{x}_i\\).\n\nFinally, the lender chooses an allocation policy, denoted \\(\\C A(\\hat {\\C U}) = (A_1, \\dots A_n)\\), \nwhere \\(A_i \\in [0,1]\\)\nspecifies the probability a loan is (independently) offered to each applicant.\nImportantly, \\(\\C A\\) is a function of \nthe lender's post-screening utility estimates\n\\(\\hat {\\C U}\\).",
+              "quoted_text_sha256": "3a1974227e1ea13d42e9c6af9ee5c59cf930f309460f44fdb0de4b5237177ae3"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 697,
+              "line_start": 693,
+              "publication_locator": "cited publication",
+              "quoted_text": "Now, since any allocation policy is by definition conditionally independent of \\(U_i\\) given \\(\\hat U_i\\), it follows that \\(\\EE [A_i U_i] = \\EE [A_i \\hat U_i]\\) and \\(\\EE [T_i U_i] = \\EE [T_i \\hat U_i]\\). In consequence,\n\\begin{equation}\n    \\label{eq:key}\n        \\EE \\left[ \\sum_{i = 1}^n \\Delta_i U_i \\right] \\geq t \\cdot \\EE \\left[ \\sum_{i = 1}^n c_i \\Delta_i \\right].\n    \\end{equation}",
+              "quoted_text_sha256": "6aeb62355306f9ba59c60b86fe814f49104b58e534230026b7c7a0169cde9c9f"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 650,
+          "line_start": 643,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lem}\n\\label{lem:main}\n    Let \\(\\C T\\) be a cost-aware threshold policy with a single threshold \\(t > 0\\), and suppose \\(\\C T\\) has an expected cost \\(C\\)---i.e., \\(\\sum_i \\EE [c_i \\cdot T_i] = C\\)---and expected utility \\(\\Upsilon\\)---i.e., \\(\\sum_i \\EE [U_i \\cdot T_i] = \\Upsilon\\). Let \\(\\C A\\) be any other allocation policy.\n    \\begin{description}\n        \\item[Case 1:] If the expected cost of \\(\\C A\\) is \\(C\\), then the expected utility of \\(\\C A\\) is less than or equal to \\(\\Upsilon\\).\n        \\item[Case 2:] If the expected utility of \\(\\C A\\) is \\(\\Upsilon\\), then the expected cost of \\(\\C A\\) is greater than or equal to \\(C\\).\n    \\end{description}\n\\end{lem}",
+          "quoted_text_sha256": "8df947150d31f234504608dd3408525d95c9ec98fb042a48d3089e9801460346"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma5": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 636,
+              "line_start": 626,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\begin{defn}[Cost-Aware Threshold Policy]\n    A \\emph{cost-aware threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i / c_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i / c_i = t_{g_i}, \\\\\n                0 & \\hat U_i / c_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\) and \\(c_i\\) denotes the cost of allocating resources to individual \\(i\\).\n\\end{defn}",
+              "quoted_text_sha256": "2350a9f211af4796282435ab1344eff61fcda254ce18219ebe2ba168700876a5"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 290,
+              "line_start": 250,
+              "publication_locator": "cited publication",
+              "quoted_text": "We assume the value of lending to an applicant \\(i\\) is given by the random variable \\(U_i\\).\nThese utilities are intended to capture the full social value of providing loans, and we imagine the lender aims to optimize social welfare, as in the case of a government agency.\nIn general, the lender has only partial information about \\(U_i\\). More specifically, if the lender chooses not to screen an applicant, we assume the lender knows only the applicant's conditional expectation \\(\\mu_i = \\EE [U_i \\mid X_i = x_i]\\)\ngiven their pre-screening covariates \\(x_i\\), such as credit score for those applicants who have traditional credit histories.\nOn the other hand, if the lender opts to screen an applicant, they learn \\(\\EE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i]\\), where \\(\\tilde{x}_i\\) denotes the additional information one gains through screening. \nFor example, \\(\\tilde{x}_i\\) might encode applicant \\(i\\)'s history of paying\ntheir electricity or phone bills---information that is often feasible to acquire with some extra effort and which is a good indicator of creditworthiness~\\cite{fdic2018}.\n\nWhen deciding whom to screen, we assume \nthe lender knows the distribution of \\(\\C D = (D_1, \\ldots, D_n)\\), where \\(D_i = \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i]\\).\nThat is, the lender knows how their estimate of utility could change if they decide to screen each applicant, where these distributions may depend on the available pre-screening covariates.\nA lender may, for example, thus choose only to screen applicants whose estimate is likely to substantially change given additional information.\nWe further assume the lender must pay a\nfixed cost \\(\\cs\\) for screening an applicant\nand a cost \\(\\ca\\) for underwriting a loan. \nFor simplicity we assume these costs do not vary across applicants, though it is straightforward to extend to the more general case; see the online appendix for details.\n\nBased on knowledge of the above information and cost structure, the lender selects a randomized strategy to screen applicants.\nThat is, the lender chooses a vector \n\\(\\C P = (p_1, \\dots, p_n)\\), meaning that each applicant \\(i\\) is selected to be screened independently with probability \\(p_i\\).\nLet \\(\\C S = (S_1, \\dots, S_n)\\) indicate which applicants are ultimately screened under this policy; therefore, \\(S_i \\in \\{0,1\\}\\) is a Bernoulli random variable with probability of success \\(p_i\\).\n\nGiven this randomized screening policy, we can now write the information \\(\\hat {\\C U} = (\\hat U_1, \\ldots, \\hat U_n)\\) the lender has at the end of the screening phase as follows:\n    \\begin{equation}\n        \\hat U_i = \\begin{cases}\n            \\EE[U_i \\mid X_i = x_i] & \\text{ if } S_i = 0, \\\\\n            \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i] & \\text{ if } S_i =1.\n        \\end{cases}\n    \\end{equation}\nIn other words, \\(\\hat U_i\\) is the lender's post-screening estimated utility of giving a loan to applicant \\(i\\).\nIn particular, if \\(S_i = 1\\) (i.e., the applicant is screened), the lender's estimate changes from \\(\\EE[U_i\\mid X_i = x_i]\\),\nthe estimate based only on applicant \\(i\\)'s pre-screening covariates \\(x_i\\),\nto \n\\(\\bbE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i] \\), which incorporates the post-screening information \\(\\tilde{x}_i\\).\n\nFinally, the lender chooses an allocation policy, denoted \\(\\C A(\\hat {\\C U}) = (A_1, \\dots A_n)\\), \nwhere \\(A_i \\in [0,1]\\)\nspecifies the probability a loan is (independently) offered to each applicant.\nImportantly, \\(\\C A\\) is a function of \nthe lender's post-screening utility estimates\n\\(\\hat {\\C U}\\).",
+              "quoted_text_sha256": "3a1974227e1ea13d42e9c6af9ee5c59cf930f309460f44fdb0de4b5237177ae3"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 697,
+              "line_start": 693,
+              "publication_locator": "cited publication",
+              "quoted_text": "Now, since any allocation policy is by definition conditionally independent of \\(U_i\\) given \\(\\hat U_i\\), it follows that \\(\\EE [A_i U_i] = \\EE [A_i \\hat U_i]\\) and \\(\\EE [T_i U_i] = \\EE [T_i \\hat U_i]\\). In consequence,\n\\begin{equation}\n    \\label{eq:key}\n        \\EE \\left[ \\sum_{i = 1}^n \\Delta_i U_i \\right] \\geq t \\cdot \\EE \\left[ \\sum_{i = 1}^n c_i \\Delta_i \\right].\n    \\end{equation}",
+              "quoted_text_sha256": "6aeb62355306f9ba59c60b86fe814f49104b58e534230026b7c7a0169cde9c9f"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 712,
+          "line_start": 704,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lem}\n\\label{lem:full_range}\n    Let \\(\\Upsilon > 0\\) be an achievable expected utility---that is, there is an allocation policy \\(\\C A\\) such that \\(\\EE[\\sum_i A_i U_i] = \\Upsilon\\)---and let \\(C\\) be an achievable expected cost.\n    Then,\n        \\begin{itemize}\n            \\item There exists a cost-aware threshold policy \\(\\C T\\) of expected utility \\(\\Upsilon\\); and,\n            \\item There exists a (possibly different) cost-aware threshold policy \\(\\C T\\) of expected cost \\(C\\).\n        \\end{itemize}\n\\end{lem}",
+          "quoted_text_sha256": "e33bd7f06c2b1cc12d0c0fd73940f23f5e76a9a3a5fea765736cee31f10a2cad"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma7": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 323,
+              "line_start": 314,
+              "publication_locator": "cited publication",
+              "quoted_text": "Here we take a complementary approach that explicitly allows value for diversity to differ across decision makers.\nSuppose the applicant pool is partitioned into \\(m\\) groups \\(\\{G_1, \\ldots, G_m\\}\\);\nfor example, if \\(m = 2\\), we might partition candidates into those who traditionally have had access to credit markets and those who have not.\nThen we require the selected policy \\((\\C{P}^*, \\C{A}^*)\\)\nto allocate at least \\(\\Lambda_j \\geq 0\\) utility to group \\(G_j\\), where these utilities do not themselves include any value for diversity:\n    \\begin{equation}\n    \\label{eq:def3}\n        \\EE \\left[ \\sum_{i \\in G_j} U_i A_i \\right] \\geq \\Lambda_j.\n    \\end{equation}\nIn practice, as we discuss below, one would solve this optimization problem for a range of \\(\\Lambda\\), which traces out the Pareto frontier of possible policies across different group constraints, corresponding to different values for diversity.",
+              "quoted_text_sha256": "f4452057fc56e3cbe13bee8dc99c228a8542331076e1915406da66d9562b30bc"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 290,
+              "line_start": 250,
+              "publication_locator": "cited publication",
+              "quoted_text": "We assume the value of lending to an applicant \\(i\\) is given by the random variable \\(U_i\\).\nThese utilities are intended to capture the full social value of providing loans, and we imagine the lender aims to optimize social welfare, as in the case of a government agency.\nIn general, the lender has only partial information about \\(U_i\\). More specifically, if the lender chooses not to screen an applicant, we assume the lender knows only the applicant's conditional expectation \\(\\mu_i = \\EE [U_i \\mid X_i = x_i]\\)\ngiven their pre-screening covariates \\(x_i\\), such as credit score for those applicants who have traditional credit histories.\nOn the other hand, if the lender opts to screen an applicant, they learn \\(\\EE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i]\\), where \\(\\tilde{x}_i\\) denotes the additional information one gains through screening. \nFor example, \\(\\tilde{x}_i\\) might encode applicant \\(i\\)'s history of paying\ntheir electricity or phone bills---information that is often feasible to acquire with some extra effort and which is a good indicator of creditworthiness~\\cite{fdic2018}.\n\nWhen deciding whom to screen, we assume \nthe lender knows the distribution of \\(\\C D = (D_1, \\ldots, D_n)\\), where \\(D_i = \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i]\\).\nThat is, the lender knows how their estimate of utility could change if they decide to screen each applicant, where these distributions may depend on the available pre-screening covariates.\nA lender may, for example, thus choose only to screen applicants whose estimate is likely to substantially change given additional information.\nWe further assume the lender must pay a\nfixed cost \\(\\cs\\) for screening an applicant\nand a cost \\(\\ca\\) for underwriting a loan. \nFor simplicity we assume these costs do not vary across applicants, though it is straightforward to extend to the more general case; see the online appendix for details.\n\nBased on knowledge of the above information and cost structure, the lender selects a randomized strategy to screen applicants.\nThat is, the lender chooses a vector \n\\(\\C P = (p_1, \\dots, p_n)\\), meaning that each applicant \\(i\\) is selected to be screened independently with probability \\(p_i\\).\nLet \\(\\C S = (S_1, \\dots, S_n)\\) indicate which applicants are ultimately screened under this policy; therefore, \\(S_i \\in \\{0,1\\}\\) is a Bernoulli random variable with probability of success \\(p_i\\).\n\nGiven this randomized screening policy, we can now write the information \\(\\hat {\\C U} = (\\hat U_1, \\ldots, \\hat U_n)\\) the lender has at the end of the screening phase as follows:\n    \\begin{equation}\n        \\hat U_i = \\begin{cases}\n            \\EE[U_i \\mid X_i = x_i] & \\text{ if } S_i = 0, \\\\\n            \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i] & \\text{ if } S_i =1.\n        \\end{cases}\n    \\end{equation}\nIn other words, \\(\\hat U_i\\) is the lender's post-screening estimated utility of giving a loan to applicant \\(i\\).\nIn particular, if \\(S_i = 1\\) (i.e., the applicant is screened), the lender's estimate changes from \\(\\EE[U_i\\mid X_i = x_i]\\),\nthe estimate based only on applicant \\(i\\)'s pre-screening covariates \\(x_i\\),\nto \n\\(\\bbE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i] \\), which incorporates the post-screening information \\(\\tilde{x}_i\\).\n\nFinally, the lender chooses an allocation policy, denoted \\(\\C A(\\hat {\\C U}) = (A_1, \\dots A_n)\\), \nwhere \\(A_i \\in [0,1]\\)\nspecifies the probability a loan is (independently) offered to each applicant.\nImportantly, \\(\\C A\\) is a function of \nthe lender's post-screening utility estimates\n\\(\\hat {\\C U}\\).",
+              "quoted_text_sha256": "3a1974227e1ea13d42e9c6af9ee5c59cf930f309460f44fdb0de4b5237177ae3"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 697,
+              "line_start": 693,
+              "publication_locator": "cited publication",
+              "quoted_text": "Now, since any allocation policy is by definition conditionally independent of \\(U_i\\) given \\(\\hat U_i\\), it follows that \\(\\EE [A_i U_i] = \\EE [A_i \\hat U_i]\\) and \\(\\EE [T_i U_i] = \\EE [T_i \\hat U_i]\\). In consequence,\n\\begin{equation}\n    \\label{eq:key}\n        \\EE \\left[ \\sum_{i = 1}^n \\Delta_i U_i \\right] \\geq t \\cdot \\EE \\left[ \\sum_{i = 1}^n c_i \\Delta_i \\right].\n    \\end{equation}",
+              "quoted_text_sha256": "6aeb62355306f9ba59c60b86fe814f49104b58e534230026b7c7a0169cde9c9f"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 376,
+              "line_start": 366,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\begin{defn}[Threshold Policy]\n    A \\emph{threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i = t_{g_i}, \\\\\n                0 & \\hat U_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\).\n\\end{defn}",
+              "quoted_text_sha256": "733ad868657280cb448a5f74f68389826b2564633afa738153e7db0aecb742ff"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 777,
+          "line_start": 763,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lem}\n\\label{lem:modest_gen}\n    The conclusion of Theorem~\\ref{thm:main} still holds even if the inequalities in Eq.~\\eqref{eq:def3} are replaced with equalities, i.e., if the optimal policy pair \\((\\C P^*, \\C A^*)\\) satisfies\n        \\begin{equation}\n            \\EE \\left[ \\sum_{i \\in G_j} U_i A_i \\right] = \\Lambda_j.\n        \\end{equation}\n\\end{lem}\n\n\\begin{proof}\n    The proof is identical to that of Theorem~\\ref{thm:main}, except that Lemma~\\ref{lem:full_range} is used to construct a threshold policy \\(\\C T^*\\) achieving exactly utility \\(\\Lambda_j\\) on any constrained group \\(G_j\\).\n    Case 2 of Lemma~\\ref{lem:main} then shows that this utility is achieved at possibly less expected cost than \\(\\C A^*\\).\n    It follows immediately that the pair \\((\\C P^*, \\C T^*)\\) is a solution to the optimization problem.\\footnote{\n        In this case, it is actually possible that \\(\\C T^*\\) will result in expected cost savings over \\(\\C A^*\\), even though \\(\\C A^*\\) is optimal. This can occur if there is no remaining positive utility to ``spend'' the savings on, since resources are already allocated at total expected cost less than \\(B\\) in all cases where \\(\\hat U_i\\) is positive.\n    }\n\\end{proof}",
+          "quoted_text_sha256": "df66de56961dfa2036065974f08bf710109985041c0838319e87fe2bcce29830"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "theorem2": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 290,
+              "line_start": 250,
+              "publication_locator": "cited publication",
+              "quoted_text": "We assume the value of lending to an applicant \\(i\\) is given by the random variable \\(U_i\\).\nThese utilities are intended to capture the full social value of providing loans, and we imagine the lender aims to optimize social welfare, as in the case of a government agency.\nIn general, the lender has only partial information about \\(U_i\\). More specifically, if the lender chooses not to screen an applicant, we assume the lender knows only the applicant's conditional expectation \\(\\mu_i = \\EE [U_i \\mid X_i = x_i]\\)\ngiven their pre-screening covariates \\(x_i\\), such as credit score for those applicants who have traditional credit histories.\nOn the other hand, if the lender opts to screen an applicant, they learn \\(\\EE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i]\\), where \\(\\tilde{x}_i\\) denotes the additional information one gains through screening. \nFor example, \\(\\tilde{x}_i\\) might encode applicant \\(i\\)'s history of paying\ntheir electricity or phone bills---information that is often feasible to acquire with some extra effort and which is a good indicator of creditworthiness~\\cite{fdic2018}.\n\nWhen deciding whom to screen, we assume \nthe lender knows the distribution of \\(\\C D = (D_1, \\ldots, D_n)\\), where \\(D_i = \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i]\\).\nThat is, the lender knows how their estimate of utility could change if they decide to screen each applicant, where these distributions may depend on the available pre-screening covariates.\nA lender may, for example, thus choose only to screen applicants whose estimate is likely to substantially change given additional information.\nWe further assume the lender must pay a\nfixed cost \\(\\cs\\) for screening an applicant\nand a cost \\(\\ca\\) for underwriting a loan. \nFor simplicity we assume these costs do not vary across applicants, though it is straightforward to extend to the more general case; see the online appendix for details.\n\nBased on knowledge of the above information and cost structure, the lender selects a randomized strategy to screen applicants.\nThat is, the lender chooses a vector \n\\(\\C P = (p_1, \\dots, p_n)\\), meaning that each applicant \\(i\\) is selected to be screened independently with probability \\(p_i\\).\nLet \\(\\C S = (S_1, \\dots, S_n)\\) indicate which applicants are ultimately screened under this policy; therefore, \\(S_i \\in \\{0,1\\}\\) is a Bernoulli random variable with probability of success \\(p_i\\).\n\nGiven this randomized screening policy, we can now write the information \\(\\hat {\\C U} = (\\hat U_1, \\ldots, \\hat U_n)\\) the lender has at the end of the screening phase as follows:\n    \\begin{equation}\n        \\hat U_i = \\begin{cases}\n            \\EE[U_i \\mid X_i = x_i] & \\text{ if } S_i = 0, \\\\\n            \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i] & \\text{ if } S_i =1.\n        \\end{cases}\n    \\end{equation}\nIn other words, \\(\\hat U_i\\) is the lender's post-screening estimated utility of giving a loan to applicant \\(i\\).\nIn particular, if \\(S_i = 1\\) (i.e., the applicant is screened), the lender's estimate changes from \\(\\EE[U_i\\mid X_i = x_i]\\),\nthe estimate based only on applicant \\(i\\)'s pre-screening covariates \\(x_i\\),\nto \n\\(\\bbE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i] \\), which incorporates the post-screening information \\(\\tilde{x}_i\\).\n\nFinally, the lender chooses an allocation policy, denoted \\(\\C A(\\hat {\\C U}) = (A_1, \\dots A_n)\\), \nwhere \\(A_i \\in [0,1]\\)\nspecifies the probability a loan is (independently) offered to each applicant.\nImportantly, \\(\\C A\\) is a function of \nthe lender's post-screening utility estimates\n\\(\\hat {\\C U}\\).",
+              "quoted_text_sha256": "3a1974227e1ea13d42e9c6af9ee5c59cf930f309460f44fdb0de4b5237177ae3"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 323,
+              "line_start": 293,
+              "publication_locator": "cited publication",
+              "quoted_text": "Combining all of the above, the lender's optimization problem is to choose screening and allocation policies \\((\\C P^*, \\C A^*)\\) that maximize expected welfare,\n\\begin{equation}\n\\label{eq:def1}\n    (\\C P^*, \\C A^*) \\in \\argmax_{\\C P, \\C A} \\bbE\\left[\\sum_{i = 1}^n U_i A_i\\right],\n\\end{equation}\nsubject to being budget-balanced in expectation,%\n\\footnote{By requiring the budget constraint to hold only in expectation---rather than exactly---we are able to find a computationally tractable solution to the problem. In practice, such a constraint means that agencies are allowed some flexibility as long as they don't overspend on average,\nwhich, we believe, is often a realistic requirement.\n}\n\n\\begin{equation}\n\\label{eq:def2}\n    \\EE \\left[ \\sum_{i = 1}^n \\cs S_i + \\ca  A_i \\right] \\leq B,\n\\end{equation}\nwhere \\(B\\) is a fixed, non-negative constant.\n\nIn some settings, decision makers may value diversity in their allocations.\nFor example, they may wish to ensure a certain minimum number of loans are provided to groups that historically have been excluded from credit markets.\nOne can encode this policy preference directly into the utilities, in which case the resulting optimization problem would incorporate one's value for diversity.\nThat approach, however, requires decision makers to agree upon these utilities to interpret the results, which can be challenging. \n\nHere we take a complementary approach that explicitly allows value for diversity to differ across decision makers.\nSuppose the applicant pool is partitioned into \\(m\\) groups \\(\\{G_1, \\ldots, G_m\\}\\);\nfor example, if \\(m = 2\\), we might partition candidates into those who traditionally have had access to credit markets and those who have not.\nThen we require the selected policy \\((\\C{P}^*, \\C{A}^*)\\)\nto allocate at least \\(\\Lambda_j \\geq 0\\) utility to group \\(G_j\\), where these utilities do not themselves include any value for diversity:\n    \\begin{equation}\n    \\label{eq:def3}\n        \\EE \\left[ \\sum_{i \\in G_j} U_i A_i \\right] \\geq \\Lambda_j.\n    \\end{equation}\nIn practice, as we discuss below, one would solve this optimization problem for a range of \\(\\Lambda\\), which traces out the Pareto frontier of possible policies across different group constraints, corresponding to different values for diversity.",
+              "quoted_text_sha256": "1078eade56afbc397c7d2ae3cc822072711eb0b897552eabd8291f260fa5b392"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 697,
+              "line_start": 693,
+              "publication_locator": "cited publication",
+              "quoted_text": "Now, since any allocation policy is by definition conditionally independent of \\(U_i\\) given \\(\\hat U_i\\), it follows that \\(\\EE [A_i U_i] = \\EE [A_i \\hat U_i]\\) and \\(\\EE [T_i U_i] = \\EE [T_i \\hat U_i]\\). In consequence,\n\\begin{equation}\n    \\label{eq:key}\n        \\EE \\left[ \\sum_{i = 1}^n \\Delta_i U_i \\right] \\geq t \\cdot \\EE \\left[ \\sum_{i = 1}^n c_i \\Delta_i \\right].\n    \\end{equation}",
+              "quoted_text_sha256": "6aeb62355306f9ba59c60b86fe814f49104b58e534230026b7c7a0169cde9c9f"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 376,
+              "line_start": 366,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\begin{defn}[Threshold Policy]\n    A \\emph{threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i = t_{g_i}, \\\\\n                0 & \\hat U_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\).\n\\end{defn}",
+              "quoted_text_sha256": "733ad868657280cb448a5f74f68389826b2564633afa738153e7db0aecb742ff"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 388,
+          "line_start": 385,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{thm}\n\\label{thm:main}\n    Suppose the constrained optimization problem defined by Eqs.~\\eqref{eq:def1}, \\eqref{eq:def2}, and \\eqref{eq:def3} has a solution \\((\\C P^*, \\C A^*)\\). Then there is a threshold policy \\(\\C T^*\\) such that \\((\\C P^*, \\C T^*)\\) is also a solution.\n\\end{thm}",
+          "quoted_text_sha256": "6715a3d6065d623477c3a8acf18a48af9af0f8cf30a56e3ae6712c3e9989478b"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem6": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 290,
+              "line_start": 250,
+              "publication_locator": "cited publication",
+              "quoted_text": "We assume the value of lending to an applicant \\(i\\) is given by the random variable \\(U_i\\).\nThese utilities are intended to capture the full social value of providing loans, and we imagine the lender aims to optimize social welfare, as in the case of a government agency.\nIn general, the lender has only partial information about \\(U_i\\). More specifically, if the lender chooses not to screen an applicant, we assume the lender knows only the applicant's conditional expectation \\(\\mu_i = \\EE [U_i \\mid X_i = x_i]\\)\ngiven their pre-screening covariates \\(x_i\\), such as credit score for those applicants who have traditional credit histories.\nOn the other hand, if the lender opts to screen an applicant, they learn \\(\\EE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i]\\), where \\(\\tilde{x}_i\\) denotes the additional information one gains through screening. \nFor example, \\(\\tilde{x}_i\\) might encode applicant \\(i\\)'s history of paying\ntheir electricity or phone bills---information that is often feasible to acquire with some extra effort and which is a good indicator of creditworthiness~\\cite{fdic2018}.\n\nWhen deciding whom to screen, we assume \nthe lender knows the distribution of \\(\\C D = (D_1, \\ldots, D_n)\\), where \\(D_i = \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i]\\).\nThat is, the lender knows how their estimate of utility could change if they decide to screen each applicant, where these distributions may depend on the available pre-screening covariates.\nA lender may, for example, thus choose only to screen applicants whose estimate is likely to substantially change given additional information.\nWe further assume the lender must pay a\nfixed cost \\(\\cs\\) for screening an applicant\nand a cost \\(\\ca\\) for underwriting a loan. \nFor simplicity we assume these costs do not vary across applicants, though it is straightforward to extend to the more general case; see the online appendix for details.\n\nBased on knowledge of the above information and cost structure, the lender selects a randomized strategy to screen applicants.\nThat is, the lender chooses a vector \n\\(\\C P = (p_1, \\dots, p_n)\\), meaning that each applicant \\(i\\) is selected to be screened independently with probability \\(p_i\\).\nLet \\(\\C S = (S_1, \\dots, S_n)\\) indicate which applicants are ultimately screened under this policy; therefore, \\(S_i \\in \\{0,1\\}\\) is a Bernoulli random variable with probability of success \\(p_i\\).\n\nGiven this randomized screening policy, we can now write the information \\(\\hat {\\C U} = (\\hat U_1, \\ldots, \\hat U_n)\\) the lender has at the end of the screening phase as follows:\n    \\begin{equation}\n        \\hat U_i = \\begin{cases}\n            \\EE[U_i \\mid X_i = x_i] & \\text{ if } S_i = 0, \\\\\n            \\EE[U_i \\mid X_i = x_i, \\tilde{X}_i] & \\text{ if } S_i =1.\n        \\end{cases}\n    \\end{equation}\nIn other words, \\(\\hat U_i\\) is the lender's post-screening estimated utility of giving a loan to applicant \\(i\\).\nIn particular, if \\(S_i = 1\\) (i.e., the applicant is screened), the lender's estimate changes from \\(\\EE[U_i\\mid X_i = x_i]\\),\nthe estimate based only on applicant \\(i\\)'s pre-screening covariates \\(x_i\\),\nto \n\\(\\bbE[U_i \\mid X_i = x_i, \\tilde{X}_i = \\tilde{x}_i] \\), which incorporates the post-screening information \\(\\tilde{x}_i\\).\n\nFinally, the lender chooses an allocation policy, denoted \\(\\C A(\\hat {\\C U}) = (A_1, \\dots A_n)\\), \nwhere \\(A_i \\in [0,1]\\)\nspecifies the probability a loan is (independently) offered to each applicant.\nImportantly, \\(\\C A\\) is a function of \nthe lender's post-screening utility estimates\n\\(\\hat {\\C U}\\).",
+              "quoted_text_sha256": "3a1974227e1ea13d42e9c6af9ee5c59cf930f309460f44fdb0de4b5237177ae3"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 624,
+              "line_start": 619,
+              "publication_locator": "cited publication",
+              "quoted_text": "We prove Theorem~\\ref{thm:main} in a more general setting in which we allow the cost of screening \\(\\cs\\) and cost of allocation \\(\\ca\\) to vary for each individual.\nIn the special case of no screening (but with applicant-specific costs of allocation), we note that our optimization problem is equivalent to the fractional knapsack problem. \nFor fractional knapsack, the greedy strategy---in which one packs items in descending order of their value per weight---yields an optimal solution~\\cite{dantzig1957discrete}.\nIn our case, we show that the same approach can be used to find an optimal allocation of loans once the set of applicants to screen has been appropriately selected.\n\nTo start, we generalize our definition of a threshold policy to account for the applicant-specific allocation costs.",
+              "quoted_text_sha256": "48af34375c67f4cbc0d353985442e4119fd257a4fe87a404583765e942d30f1c"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 323,
+              "line_start": 293,
+              "publication_locator": "cited publication",
+              "quoted_text": "Combining all of the above, the lender's optimization problem is to choose screening and allocation policies \\((\\C P^*, \\C A^*)\\) that maximize expected welfare,\n\\begin{equation}\n\\label{eq:def1}\n    (\\C P^*, \\C A^*) \\in \\argmax_{\\C P, \\C A} \\bbE\\left[\\sum_{i = 1}^n U_i A_i\\right],\n\\end{equation}\nsubject to being budget-balanced in expectation,%\n\\footnote{By requiring the budget constraint to hold only in expectation---rather than exactly---we are able to find a computationally tractable solution to the problem. In practice, such a constraint means that agencies are allowed some flexibility as long as they don't overspend on average,\nwhich, we believe, is often a realistic requirement.\n}\n\n\\begin{equation}\n\\label{eq:def2}\n    \\EE \\left[ \\sum_{i = 1}^n \\cs S_i + \\ca  A_i \\right] \\leq B,\n\\end{equation}\nwhere \\(B\\) is a fixed, non-negative constant.\n\nIn some settings, decision makers may value diversity in their allocations.\nFor example, they may wish to ensure a certain minimum number of loans are provided to groups that historically have been excluded from credit markets.\nOne can encode this policy preference directly into the utilities, in which case the resulting optimization problem would incorporate one's value for diversity.\nThat approach, however, requires decision makers to agree upon these utilities to interpret the results, which can be challenging. \n\nHere we take a complementary approach that explicitly allows value for diversity to differ across decision makers.\nSuppose the applicant pool is partitioned into \\(m\\) groups \\(\\{G_1, \\ldots, G_m\\}\\);\nfor example, if \\(m = 2\\), we might partition candidates into those who traditionally have had access to credit markets and those who have not.\nThen we require the selected policy \\((\\C{P}^*, \\C{A}^*)\\)\nto allocate at least \\(\\Lambda_j \\geq 0\\) utility to group \\(G_j\\), where these utilities do not themselves include any value for diversity:\n    \\begin{equation}\n    \\label{eq:def3}\n        \\EE \\left[ \\sum_{i \\in G_j} U_i A_i \\right] \\geq \\Lambda_j.\n    \\end{equation}\nIn practice, as we discuss below, one would solve this optimization problem for a range of \\(\\Lambda\\), which traces out the Pareto frontier of possible policies across different group constraints, corresponding to different values for diversity.",
+              "quoted_text_sha256": "1078eade56afbc397c7d2ae3cc822072711eb0b897552eabd8291f260fa5b392"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 636,
+              "line_start": 626,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\begin{defn}[Cost-Aware Threshold Policy]\n    A \\emph{cost-aware threshold policy} is an allocation policy \\(\\C A\\) for some fixed \\(t_j \\in \\B R \\cup \\{-\\infty, \\infty\\}\\) and \\(\\alpha_j \\in [0,1]\\), \\(j = 1, \\ldots, m\\), such that\n        \\begin{equation*}\n            A_i = \\begin{cases}\n                1 & \\hat U_i / c_i > t_{g_i},\\\\\n                \\alpha_{g_i} & \\hat U_i / c_i = t_{g_i}, \\\\\n                0 & \\hat U_i / c_i < t_{g_i},\n            \\end{cases}\n        \\end{equation*}\n    where \\(g_i\\) denotes the group membership of individual \\(i\\) and \\(c_i\\) denotes the cost of allocating resources to individual \\(i\\).\n\\end{defn}",
+              "quoted_text_sha256": "2350a9f211af4796282435ab1344eff61fcda254ce18219ebe2ba168700876a5"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 697,
+              "line_start": 693,
+              "publication_locator": "cited publication",
+              "quoted_text": "Now, since any allocation policy is by definition conditionally independent of \\(U_i\\) given \\(\\hat U_i\\), it follows that \\(\\EE [A_i U_i] = \\EE [A_i \\hat U_i]\\) and \\(\\EE [T_i U_i] = \\EE [T_i \\hat U_i]\\). In consequence,\n\\begin{equation}\n    \\label{eq:key}\n        \\EE \\left[ \\sum_{i = 1}^n \\Delta_i U_i \\right] \\geq t \\cdot \\EE \\left[ \\sum_{i = 1}^n c_i \\Delta_i \\right].\n    \\end{equation}",
+              "quoted_text_sha256": "6aeb62355306f9ba59c60b86fe814f49104b58e534230026b7c7a0169cde9c9f"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 757,
+          "line_start": 735,
+          "publication_locator": "cited publication",
+          "quoted_text": "We are now equipped to move to analyze settings in which there are multiple groups. We prove the following generalization of Theorem~\\ref{thm:main}.\n\n\\begin{thm}\n     Suppose the constrained optimization problem defined by Eqs.~\\eqref{eq:def1}, \\eqref{eq:def2}, and \\eqref{eq:def3} has a solution \\((\\C P^*, \\C A^*)\\).\n     Then there is a (not necessarily single-threshold) cost-aware threshold policy \\(\\C T^*\\) such that \\((\\C P^*, \\C T^*)\\) is also a solution.\n\\end{thm}\n\n\\begin{proof}[Proof of Theorem \\ref{thm:main}]\n    Consider a solution screening and allocation policy pair \\((\\C P^*, \\C A^*)\\) satisfying the allocation diversity constraints.\n    \n    Note that each of the collections \\(\\C A_j^* = \\{A_i^*\\}_{i \\in G_j}\\) defines an allocation policy on the subpopulation \\(G_j\\).\n    Applying Lemma~\\ref{lem:full_range} to each of them yields a threshold policy \\(\\C T_j^*\\)---defined by the pair \\((t_j, \\alpha_j)\\)---of the same expected cost as \\(\\C A_j^*\\). \n    By Lemma~\\ref{lem:main}, \\(\\C T_j^*\\) achieves the same or higher expected utility on \\(G_j\\) as \\(\\C A_j^*\\).\n    \n    Let \\(\\C T^*\\) be the threshold policy defined by thresholds \\(t_1, \\ldots, t_m\\) and boundary randomization probabilities \\(\\alpha_1, \\ldots, \\alpha_m\\).\n    The expected cost of \\(\\C T^*\\) is the same as \\(\\C A^*\\).\n    Moreover, \\(\\C T^*\\) satisfies the group utility constraints, since the utility it achieves on each group \\(G_j\\) is greater than or equal to \\(\\C A^*\\).\n    Lastly, the expected utility achieved by \\(\\C T^*\\) is greater than or equal to that of \\(\\C A^*\\).\n    \n    Since \\(\\C A^*\\) was assumed optimal, it must be that the expected utilities are equal. Therefore the pair \\((\\C P^*, \\C T^*)\\) is also a solution to the constrained optimization problem defined by Eqs.~\\eqref{eq:def1}, \\eqref{eq:def2}, and \\eqref{eq:def3}.\n\\end{proof}\n\nTheorem~\\ref{thm:main} follows as an immediate corollary.",
+          "quoted_text_sha256": "560083dcddc675dc99e84a71689a0907b90fdb2730c297e1f601edb4edf8c682"
+        }
+      ],
+      "source_kind": "theorem"
+    }
+  },
+  "source_artifact_sha256": "0a870dd32ca03101e1e2f0c141184ea53fa2ac43ad4df4162995e6d3778a9f60",
+  "source_coverage_mode": "named_theoretical_statements"
+}
